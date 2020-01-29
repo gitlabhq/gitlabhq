@@ -8,8 +8,18 @@ module Metrics
       ALLOWED_FILE_TYPE = '.yml'
       USER_DASHBOARDS_DIR = ::Metrics::Dashboard::ProjectDashboardService::DASHBOARD_ROOT
 
-      def self.allowed_dashboard_templates
-        @allowed_dashboard_templates ||= Set[::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH].freeze
+      class << self
+        def allowed_dashboard_templates
+          @allowed_dashboard_templates ||= Set[::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH].freeze
+        end
+
+        def sequences
+          @sequences ||= {
+            ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH => [::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
+                                                                             ::Gitlab::Metrics::Dashboard::Stages::ProjectMetricsInserter,
+                                                                             ::Gitlab::Metrics::Dashboard::Stages::Sorter].freeze
+          }.freeze
+        end
       end
 
       def execute
@@ -92,7 +102,9 @@ module Metrics
       end
 
       def new_dashboard_content
-        File.read(Rails.root.join(dashboard_template))
+        ::Gitlab::Metrics::Dashboard::Processor
+          .new(project, raw_dashboard, sequence, {})
+          .process.deep_stringify_keys.to_yaml
       end
 
       def repository
@@ -105,6 +117,14 @@ module Metrics
         else
           result
         end
+      end
+
+      def raw_dashboard
+        YAML.safe_load(File.read(Rails.root.join(dashboard_template)))
+      end
+
+      def sequence
+        self.class.sequences[dashboard_template]
       end
     end
   end

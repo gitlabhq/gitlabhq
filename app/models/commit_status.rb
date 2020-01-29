@@ -200,6 +200,10 @@ class CommitStatus < ApplicationRecord
     update_all('processed=TRUE, lock_version=COALESCE(lock_version,0)+1')
   end
 
+  def self.locking_enabled?
+    false
+  end
+
   def locking_enabled?
     will_save_change_to_status?
   end

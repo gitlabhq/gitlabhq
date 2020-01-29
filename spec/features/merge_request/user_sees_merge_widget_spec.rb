@@ -604,7 +604,7 @@ describe 'Merge request > User sees merge widget', :js do
                 click_button 'addTest'
 
                 expect(page).to have_content('6.66')
-                expect(page).to have_content(sample_java_failed_message.gsub!(/\s+/, ' ').strip)
+                expect(page).to have_content(sample_java_failed_message.gsub(/\s+/, ' ').strip)
               end
             end
           end
@@ -649,7 +649,7 @@ describe 'Merge request > User sees merge widget', :js do
                 click_button 'Test#sum when a is 1 and b is 3 returns summary'
 
                 expect(page).to have_content('2.22')
-                expect(page).to have_content(sample_rspec_failed_message.gsub!(/\s+/, ' ').strip)
+                expect(page).to have_content(sample_rspec_failed_message.gsub(/\s+/, ' ').strip)
               end
             end
           end

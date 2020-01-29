@@ -19,7 +19,6 @@ describe AkismetService do
   end
 
   shared_examples 'no activity if Akismet is not enabled' do |method_call|
-    # if the method name is `submit`, it requires an argument, so add it
     before do
       stub_application_setting(akismet_enabled: false)
     end

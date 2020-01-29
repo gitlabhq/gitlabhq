@@ -41,13 +41,11 @@ RSpec.shared_examples 'a controller that can serve LFS files' do |options = {}|
       it 'serves the file' do
         lfs_uploader = LfsObjectUploader.new(lfs_object)
 
-        # Notice the filename= is omitted from the disposition; this is because
-        # Rails 5 will append this header in send_file
         expect(controller).to receive(:send_file)
                           .with(
                             File.join(lfs_uploader.root, lfs_uploader.store_dir, lfs_uploader.filename),
                             filename: filename,
-                            disposition: %Q(attachment; filename*=UTF-8''#{filename}))
+                            disposition: 'attachment')
 
         subject
 

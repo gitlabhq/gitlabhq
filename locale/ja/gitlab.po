@@ -19917,9 +19917,6 @@ msgstr "ステージを取り消し"
 msgid "Unstaged %{type}"
 msgstr "ステージを取り消し %{type}"
 
-msgid "Unstaged and staged %{type}"
-msgstr ""
-
 msgid "Unstar"
 msgstr "スターを外す"
 

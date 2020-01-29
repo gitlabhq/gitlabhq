@@ -20123,9 +20123,6 @@ msgstr ""
 msgid "Unstaged %{type}"
 msgstr ""
 
-msgid "Unstaged and staged %{type}"
-msgstr ""
-
 msgid "Unstar"
 msgstr ""
 

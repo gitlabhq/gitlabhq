@@ -7,7 +7,7 @@ See already supported package types in [Packages documentation](../administratio
 Since GitLab packages' UI is pretty generic, it is possible to add basic new
 package system support with solely backend changes. This guide is superficial and does
 not cover the way the code should be written. However, you can find a good example
-by looking at existing merge requests with Maven and NPM support:
+by looking at merge requests with Maven and NPM support:
 
 - [NPM registry support](https://gitlab.com/gitlab-org/gitlab/merge_requests/8673).
 - [Conan repository](https://gitlab.com/gitlab-org/gitlab/issues/8248).

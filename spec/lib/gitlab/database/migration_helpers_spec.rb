@@ -1541,7 +1541,7 @@ describe Gitlab::Database::MigrationHelpers do
       self.table_name = 'issues'
       self.inheritance_column = :_type_disabled
 
-      belongs_to :project
+      belongs_to :project, class_name: "::Project"
 
       has_internal_id :iid,
         scope: :project,

@@ -1,0 +1,5 @@
+---
+title: Remove unstaged and staged modification tooltip
+merge_request: 23847
+author:
+type: fixed

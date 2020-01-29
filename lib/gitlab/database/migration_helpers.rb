@@ -382,7 +382,7 @@ module Gitlab
         count_arel = table.project(Arel.star.count.as('count'))
         count_arel = yield table, count_arel if block_given?
 
-        total = exec_query(count_arel.to_sql).to_hash.first['count'].to_i
+        total = exec_query(count_arel.to_sql).to_a.first['count'].to_i
 
         return if total == 0
 
@@ -399,7 +399,7 @@ module Gitlab
 
         start_arel = table.project(table[:id]).order(table[:id].asc).take(1)
         start_arel = yield table, start_arel if block_given?
-        start_id = exec_query(start_arel.to_sql).to_hash.first['id'].to_i
+        start_id = exec_query(start_arel.to_sql).to_a.first['id'].to_i
 
         loop do
           stop_arel = table.project(table[:id])
@@ -409,7 +409,7 @@ module Gitlab
             .skip(batch_size)
 
           stop_arel = yield table, stop_arel if block_given?
-          stop_row = exec_query(stop_arel.to_sql).to_hash.first
+          stop_row = exec_query(stop_arel.to_sql).to_a.first
 
           update_arel = Arel::UpdateManager.new
             .table(table)

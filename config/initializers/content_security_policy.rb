@@ -12,4 +12,5 @@ if csp_settings['enabled']
 
   Rails.application.config.content_security_policy_report_only = csp_settings['report_only']
   Rails.application.config.content_security_policy_nonce_generator = ->(request) { SecureRandom.base64(16) }
+  Rails.application.config.content_security_policy_nonce_directives = %w(script-src)
 end

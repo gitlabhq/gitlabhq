@@ -8,19 +8,12 @@ import ModelManager from './common/model_manager';
 import editorOptions, { defaultEditorOptions } from './editor_options';
 import gitlabTheme from './themes/gl_theme';
 import keymap from './keymap.json';
+import { clearDomElement } from '~/editor/utils';
 
 function setupMonacoTheme() {
   monacoEditor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
   monacoEditor.setTheme('gitlab');
 }
-
-export const clearDomElement = el => {
-  if (!el || !el.firstChild) return;
-
-  while (el.firstChild) {
-    el.removeChild(el.firstChild);
-  }
-};
 
 export default class Editor {
   static create(options = {}) {

@@ -23,7 +23,7 @@ describe MetricsDashboard do
       routes.draw { get "metrics_dashboard" => "anonymous#metrics_dashboard" }
       response = get :metrics_dashboard, format: :json
 
-      JSON.parse(response.parsed_body)
+      response.parsed_body
     end
 
     context 'when no parameters are provided' do

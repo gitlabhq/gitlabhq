@@ -235,12 +235,6 @@ RSpec/FactoriesInMigrationSpecs:
     - 'spec/lib/ee/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
 
-Cop/IncludeActionViewContext:
-  Enabled: true
-  Exclude:
-    - 'spec/**/*'
-    - 'ee/spec/**/*'
-
 Cop/IncludeSidekiqWorker:
   Enabled: true
   Exclude:

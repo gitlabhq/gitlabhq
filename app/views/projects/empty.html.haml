@@ -11,9 +11,14 @@
 
   - if @project.can_current_user_push_code?
     %p.append-bottom-0
-      = _('You can create files directly in GitLab using one of the following options.')
+      = _('You can get started by cloning the repository or start adding files to it with one of the following options.')
 
   .project-buttons.qa-quick-actions
+    .project-clone-holder.d-block.d-md-none.mt-2.mr-2
+      = render "shared/mobile_clone_panel"
+
+    .project-clone-holder.d-none.d-md-inline-block.mt-2.mr-2.float-left
+      = render "projects/buttons/clone"
     = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
 
   - if can?(current_user, :push_code, @project)

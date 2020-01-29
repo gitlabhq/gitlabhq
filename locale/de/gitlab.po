@@ -20020,9 +20020,6 @@ msgstr "Nicht vorgemerkt"
 msgid "Unstaged %{type}"
 msgstr "Nicht vorgemerkt %{type}"
 
-msgid "Unstaged and staged %{type}"
-msgstr "Nicht vorgemerkt und vorgemerkt %{type}"
-
 msgid "Unstar"
 msgstr "Entfavorisieren"
 

@@ -41,7 +41,7 @@ export default {
     changedIcon() {
       // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
       // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
-      const suffix = !this.file.changed && this.file.staged && this.showStagedIcon ? '-solid' : '';
+      const suffix = this.file.staged && this.showStagedIcon ? '-solid' : '';
 
       return `${getCommitIconMap(this.file).icon}${suffix}`;
     },
@@ -49,25 +49,19 @@ export default {
       return `${this.changedIcon} float-left d-block`;
     },
     tooltipTitle() {
-      if (!this.showTooltip) return undefined;
+      if (!this.showTooltip || !this.file.changed) return undefined;
 
       const type = this.file.tempFile ? 'addition' : 'modification';
 
-      if (this.file.changed && !this.file.staged) {
-        return sprintf(__('Unstaged %{type}'), {
-          type,
-        });
-      } else if (!this.file.changed && this.file.staged) {
+      if (this.file.staged) {
         return sprintf(__('Staged %{type}'), {
-          type,
-        });
-      } else if (this.file.changed && this.file.staged) {
-        return sprintf(__('Unstaged and staged %{type}'), {
           type,
         });
       }
 
-      return undefined;
+      return sprintf(__('Unstaged %{type}'), {
+        type,
+      });
     },
     showIcon() {
       return (

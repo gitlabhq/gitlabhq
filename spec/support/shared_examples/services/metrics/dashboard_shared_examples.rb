@@ -50,3 +50,38 @@ RSpec.shared_examples 'raises error for users with insufficient permissions' do
     it_behaves_like 'misconfigured dashboard service response', :unauthorized
   end
 end
+
+RSpec.shared_examples 'valid dashboard cloning process' do |dashboard_template, sequence|
+  context "dashboard template: #{dashboard_template}" do
+    let(:dashboard) { dashboard_template }
+    let(:dashboard_attrs) do
+      {
+        commit_message: commit_message,
+        branch_name: branch,
+        start_branch: project.default_branch,
+        encoding: 'text',
+        file_path: ".gitlab/dashboards/#{file_name}",
+        file_content: file_content_hash.to_yaml
+      }
+    end
+
+    it 'delegates commit creation to Files::CreateService', :aggregate_failures do
+      service_instance = instance_double(::Files::CreateService)
+      expect(::Files::CreateService).to receive(:new).with(project, user, dashboard_attrs).and_return(service_instance)
+      expect(service_instance).to receive(:execute).and_return(status: :success)
+
+      service_call
+    end
+
+    context 'user has defined custom metrics' do
+      it 'uses external service to includes them into new file content', :aggregate_failures do
+        service_instance = double(::Gitlab::Metrics::Dashboard::Processor)
+        expect(::Gitlab::Metrics::Dashboard::Processor).to receive(:new).with(project, file_content_hash, sequence, {}).and_return(service_instance)
+        expect(service_instance).to receive(:process).and_return(file_content_hash)
+        expect(::Files::CreateService).to receive(:new).with(project, user, dashboard_attrs).and_return(double(execute: { status: :success }))
+
+        service_call
+      end
+    end
+  end
+end

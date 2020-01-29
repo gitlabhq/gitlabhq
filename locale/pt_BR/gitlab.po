@@ -20020,9 +20020,6 @@ msgstr "Fora da lista de commit"
 msgid "Unstaged %{type}"
 msgstr "%{type} fora da lista para commit"
 
-msgid "Unstaged and staged %{type}"
-msgstr "%{type} dentro e fora da lista para commit"
-
 msgid "Unstar"
 msgstr "Desmarcar como favorito"
 

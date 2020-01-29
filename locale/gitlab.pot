@@ -20259,9 +20259,6 @@ msgstr ""
 msgid "Unstaged %{type}"
 msgstr ""
 
-msgid "Unstaged and staged %{type}"
-msgstr ""
-
 msgid "Unstar"
 msgstr ""
 
@@ -21553,9 +21550,6 @@ msgstr ""
 msgid "You can create a new one or check them in your Personal Access Tokens settings %{pat_link}"
 msgstr ""
 
-msgid "You can create files directly in GitLab using one of the following options."
-msgstr ""
-
 msgid "You can create new ones at your %{pat_link_start}Personal Access Tokens%{pat_link_end} settings"
 msgstr ""
 
@@ -21569,6 +21563,9 @@ msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_p
 msgstr ""
 
 msgid "You can filter by 'days to merge' by clicking on the columns in the chart."
+msgstr ""
+
+msgid "You can get started by cloning the repository or start adding files to it with one of the following options."
 msgstr ""
 
 msgid "You can invite a new member to <strong>%{project_name}</strong> or invite another group."

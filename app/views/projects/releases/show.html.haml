@@ -1,0 +1,4 @@
+- add_to_breadcrumbs _("Releases"), project_releases_path(@project)
+- page_title @release.name
+
+#js-show-release-page{ data: { project_id: @project.id, tag_name: @release.tag } }

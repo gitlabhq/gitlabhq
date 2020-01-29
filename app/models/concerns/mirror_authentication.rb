@@ -37,6 +37,8 @@ module MirrorAuthentication
       end
 
       define_method("#{name}=") do |value|
+        credentials_will_change!
+
         self.credentials ||= {}
 
         # Removal of the password, username, etc, generally causes an update of

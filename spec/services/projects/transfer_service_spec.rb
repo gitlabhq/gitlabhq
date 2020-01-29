@@ -47,11 +47,12 @@ describe Projects::TransferService do
       end
     end
 
-    it 'disk path has moved' do
+    it 'moves the disk path', :aggregate_failures do
       old_path = project.repository.disk_path
       old_full_path = project.repository.full_path
 
       transfer_project(project, user, group)
+      project.reload_repository!
 
       expect(project.repository.disk_path).not_to eq(old_path)
       expect(project.repository.full_path).not_to eq(old_full_path)
@@ -298,22 +299,41 @@ describe Projects::TransferService do
   end
 
   context 'when hashed storage in use' do
-    let(:hashed_project) { create(:project, :repository, namespace: user.namespace) }
+    let!(:hashed_project) { create(:project, :repository, namespace: user.namespace) }
+    let!(:old_disk_path) { hashed_project.repository.disk_path }
 
     before do
       group.add_owner(user)
     end
 
-    it 'does not move the directory' do
-      old_path = hashed_project.repository.disk_path
-      old_full_path = hashed_project.repository.full_path
+    it 'does not move the disk path', :aggregate_failures do
+      new_full_path = "#{group.full_path}/#{hashed_project.path}"
 
       transfer_project(hashed_project, user, group)
-      project.reload
+      hashed_project.reload_repository!
 
-      expect(hashed_project.repository.disk_path).to eq(old_path)
-      expect(hashed_project.repository.full_path).to eq(old_full_path)
-      expect(hashed_project.disk_path).to eq(old_path)
+      expect(hashed_project.repository).to have_attributes(
+        disk_path: old_disk_path,
+        full_path: new_full_path
+      )
+      expect(hashed_project.disk_path).to eq(old_disk_path)
+    end
+
+    it 'does not move the disk path when the transfer fails', :aggregate_failures do
+      old_full_path = hashed_project.full_path
+
+      expect_next_instance_of(described_class) do |service|
+        allow(service).to receive(:execute_system_hooks).and_raise('foo')
+      end
+      expect { transfer_project(hashed_project, user, group) }.to raise_error('foo')
+
+      hashed_project.reload_repository!
+
+      expect(hashed_project.repository).to have_attributes(
+        disk_path: old_disk_path,
+        full_path: old_full_path
+      )
+      expect(hashed_project.disk_path).to eq(old_disk_path)
     end
   end
 

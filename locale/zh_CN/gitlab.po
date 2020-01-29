@@ -19917,9 +19917,6 @@ msgstr "未暂存"
 msgid "Unstaged %{type}"
 msgstr "未暂存的 %{type}"
 
-msgid "Unstaged and staged %{type}"
-msgstr "已暂存和未暂存的 %{type}"
-
 msgid "Unstar"
 msgstr "取消星标"
 

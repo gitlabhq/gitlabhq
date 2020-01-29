@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SpamCheckService do
+describe Spam::SpamCheckService do
   let(:fake_ip) { '1.2.3.4' }
   let(:fake_user_agent) { 'fake-user-agent' }
   let(:fake_referrer) { 'fake-http-referrer' }

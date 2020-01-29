@@ -130,6 +130,10 @@ module Issuable
 
     strip_attributes :title
 
+    def self.locking_enabled?
+      false
+    end
+
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
     def locking_enabled?

@@ -20020,9 +20020,6 @@ msgstr "Désindexé"
 msgid "Unstaged %{type}"
 msgstr "Désindexation de %{type}"
 
-msgid "Unstaged and staged %{type}"
-msgstr "%{type} non-indéxés et indexés"
-
 msgid "Unstar"
 msgstr "Supprimer des favoris"
 

@@ -20,6 +20,8 @@ module Projects
         ::Projects::MoveProjectAuthorizationsService.new(@project, @current_user)
           .execute(source_project, remove_remaining_elements: remove_remaining_elements)
 
+        @project.save(touch: false)
+
         success
       end
     end

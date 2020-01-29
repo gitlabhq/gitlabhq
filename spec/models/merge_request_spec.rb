@@ -302,7 +302,11 @@ describe MergeRequest do
 
       it 'returns empty requests' do
         latest_merge_request_diff = merge_request.merge_request_diffs.create
-        latest_merge_request_diff.merge_request_diff_commits.where(sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0').delete_all
+
+        MergeRequestDiffCommit.where(
+          merge_request_diff_id: latest_merge_request_diff,
+          sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+        ).delete_all
 
         expect(by_commit_sha).to be_empty
       end

@@ -20226,9 +20226,6 @@ msgstr "Неіндексовано"
 msgid "Unstaged %{type}"
 msgstr "Неіндексовані %{type}"
 
-msgid "Unstaged and staged %{type}"
-msgstr "Неіндексовані та проіндексовані %{type}"
-
 msgid "Unstar"
 msgstr "Видалити із обраних"
 

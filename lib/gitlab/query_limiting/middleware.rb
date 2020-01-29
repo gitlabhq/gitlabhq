@@ -37,10 +37,10 @@ module Gitlab
         controller = env[CONTROLLER_KEY]
         action = "#{controller.class.name}##{controller.action_name}"
 
-        if controller.content_type == 'text/html'
+        if controller.media_type == 'text/html'
           action
         else
-          "#{action} (#{controller.content_type})"
+          "#{action} (#{controller.media_type})"
         end
       end
 

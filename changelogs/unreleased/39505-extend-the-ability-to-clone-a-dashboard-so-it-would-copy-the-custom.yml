@@ -1,0 +1,6 @@
+---
+title: Extends 'Duplicate dashboard' feature, by including custom metrics added to
+  GitLab-defined dashboards.
+merge_request: 21923
+author:
+type: added

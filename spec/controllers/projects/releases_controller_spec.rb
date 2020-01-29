@@ -127,13 +127,13 @@ describe Projects::ReleasesController do
       sign_in(user)
     end
 
-    let!(:release) { create(:release, project: project) }
+    let(:release) { create(:release, project: project) }
     let(:tag) { CGI.escape(release.tag) }
 
     it_behaves_like 'successful request'
 
     context 'when tag name contains slash' do
-      let!(:release) { create(:release, project: project, tag: 'awesome/v1.0') }
+      let(:release) { create(:release, project: project, tag: 'awesome/v1.0') }
       let(:tag) { CGI.escape(release.tag) }
 
       it_behaves_like 'successful request'
@@ -145,7 +145,6 @@ describe Projects::ReleasesController do
     end
 
     context 'when release does not exist' do
-      let!(:release) { }
       let(:tag) { 'non-existent-tag' }
 
       it_behaves_like 'not found'
@@ -153,6 +152,47 @@ describe Projects::ReleasesController do
 
     context 'when user is a reporter' do
       let(:user) { reporter }
+
+      it_behaves_like 'not found'
+    end
+  end
+
+  describe 'GET #show' do
+    subject do
+      get :show, params: { namespace_id: project.namespace, project_id: project, tag: tag }
+    end
+
+    before do
+      sign_in(user)
+    end
+
+    let(:release) { create(:release, project: project) }
+    let(:tag) { CGI.escape(release.tag) }
+
+    it_behaves_like 'successful request'
+
+    context 'when tag name contains slash' do
+      let(:release) { create(:release, project: project, tag: 'awesome/v1.0') }
+      let(:tag) { CGI.escape(release.tag) }
+
+      it_behaves_like 'successful request'
+
+      it 'is accesible at a URL encoded path' do
+        expect(project_release_path(project, release))
+          .to eq("/#{project.namespace.path}/#{project.name}/-/releases/awesome%252Fv1.0")
+      end
+    end
+
+    context 'when feature flag `release_show_page` is disabled' do
+      before do
+        stub_feature_flags(release_show_page: false)
+      end
+
+      it_behaves_like 'not found'
+    end
+
+    context 'when release does not exist' do
+      let(:tag) { 'non-existent-tag' }
 
       it_behaves_like 'not found'
     end

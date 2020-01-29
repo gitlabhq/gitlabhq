@@ -712,7 +712,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def validate_branch_name(attr)
-    return unless changes_include?(attr)
+    return unless will_save_change_to_attribute?(attr)
 
     branch = read_attribute(attr)
 

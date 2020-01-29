@@ -385,7 +385,7 @@ describe Issues::CreateService do
 
       context 'when recaptcha was not verified' do
         before do
-          expect_next_instance_of(SpamCheckService) do |spam_service|
+          expect_next_instance_of(Spam::SpamCheckService) do |spam_service|
             expect(spam_service).to receive_messages(check_for_spam?: true)
           end
         end

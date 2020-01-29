@@ -5,6 +5,8 @@ require 'spec_helper'
 describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
+  STAGES = ::Gitlab::Metrics::Dashboard::Stages
+
   set(:user) { create(:user) }
   set(:project) { create(:project, :repository) }
   set(:environment) { create(:environment, project: project) }
@@ -16,23 +18,13 @@ describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_stor
     let(:branch) { "dashboard_new_branch" }
     let(:dashboard) { 'config/prometheus/common_metrics.yml' }
     let(:file_name) { 'custom_dashboard.yml' }
+    let(:file_content_hash) { YAML.safe_load(File.read(dashboard)) }
     let(:params) do
       {
         dashboard: dashboard,
         file_name: file_name,
         commit_message: commit_message,
         branch: branch
-      }
-    end
-
-    let(:dashboard_attrs) do
-      {
-        commit_message: commit_message,
-        branch_name: branch,
-        start_branch: project.default_branch,
-        encoding: 'text',
-        file_path: ".gitlab/dashboards/#{file_name}",
-        file_content: File.read(dashboard)
       }
     end
 
@@ -72,11 +64,12 @@ describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_stor
             start_branch: project.default_branch,
             encoding: 'text',
             file_path: ".gitlab/dashboards/custom_dashboard.yml",
-            file_content: File.read(dashboard)
+            file_content:  file_content_hash.to_yaml
           }
         end
 
         it 'strips target file name to safe value', :aggregate_failures do
+          allow(::Gitlab::Metrics::Dashboard::Processor).to receive(:new).and_return(double(process: file_content_hash))
           service_instance = instance_double(::Files::CreateService)
           expect(::Files::CreateService).to receive(:new).with(project, user, dashboard_attrs).and_return(service_instance)
           expect(service_instance).to receive(:execute).and_return(status: :success)
@@ -86,13 +79,11 @@ describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_stor
       end
 
       context 'valid parameters' do
-        it 'delegates commit creation to Files::CreateService', :aggregate_failures do
-          service_instance = instance_double(::Files::CreateService)
-          expect(::Files::CreateService).to receive(:new).with(project, user, dashboard_attrs).and_return(service_instance)
-          expect(service_instance).to receive(:execute).and_return(status: :success)
-
-          service_call
+        before do
+          allow(::Gitlab::Metrics::Dashboard::Processor).to receive(:new).and_return(double(process: file_content_hash))
         end
+
+        it_behaves_like 'valid dashboard cloning process', ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH, [STAGES::CommonMetricsInserter, STAGES::ProjectMetricsInserter, STAGES::Sorter]
 
         context 'selected branch already exists' do
           let(:branch) { 'existing_branch' }

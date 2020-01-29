@@ -19917,9 +19917,6 @@ msgstr "스테이징 안됨"
 msgid "Unstaged %{type}"
 msgstr "%{type} 스테이징 취소"
 
-msgid "Unstaged and staged %{type}"
-msgstr "스테이징 취소, 그리고 %{type} 스테이징"
-
 msgid "Unstar"
 msgstr "별표 제거"
 

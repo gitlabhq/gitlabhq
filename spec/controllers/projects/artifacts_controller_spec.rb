@@ -138,14 +138,14 @@ describe Projects::ArtifactsController do
       let(:filename) { job.artifacts_file.filename }
 
       it 'sends the artifacts file' do
-        # Notice the filename= is omitted from the disposition; this is because
-        # Rails 5 will append this header in send_file
         expect(controller).to receive(:send_file)
                           .with(
                             job.artifacts_file.file.path,
-                            hash_including(disposition: %Q(attachment; filename*=UTF-8''#{filename}))).and_call_original
+                            hash_including(disposition: 'attachment', filename: filename)).and_call_original
 
         download_artifact
+
+        expect(response.headers['Content-Disposition']).to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
       end
     end
 
@@ -170,13 +170,13 @@ describe Projects::ArtifactsController do
           end
 
           it 'sends the codequality report' do
-            # Notice the filename= is omitted from the disposition; this is because
-            # Rails 5 will append this header in send_file
             expect(controller).to receive(:send_file)
                               .with(job.job_artifacts_codequality.file.path,
-                                    hash_including(disposition: %Q(attachment; filename*=UTF-8''#{filename}))).and_call_original
+                                    hash_including(disposition: 'attachment', filename: filename)).and_call_original
 
             download_artifact(file_type: file_type)
+
+            expect(response.headers['Content-Disposition']).to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
           end
         end
 

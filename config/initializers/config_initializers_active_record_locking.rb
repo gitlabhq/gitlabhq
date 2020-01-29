@@ -26,7 +26,7 @@ module ActiveRecord
             locking_column => possible_previous_lock_value,
             self.class.primary_key => id_in_database
           ).update_all(
-            attributes_with_values_for_update(attribute_names)
+            attributes_with_values(attribute_names)
           )
 
           if affected_rows != 1
