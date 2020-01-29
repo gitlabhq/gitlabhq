@@ -116,6 +116,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     }
   end
 
+  def context_commits
+    return render_404 unless project.context_commits_enabled?
+
+    # Get commits from repository
+    # or from cache if already merged
+    commits = ContextCommitsFinder.new(project, @merge_request, { search: params[:search], limit: params[:limit], offset: params[:offset] }).execute
+    render json: CommitEntity.represent(commits, { type: :full, request: merge_request })
+  end
+
   def test_reports
     reports_response(@merge_request.compare_test_reports)
   end

@@ -225,6 +225,31 @@ MergeRequestDiffFile:
 - b_mode
 - too_large
 - binary
+MergeRequestContextCommit:
+- id
+- authored_date
+- committed_date
+- relative_order
+- sha
+- author_name
+- author_email
+- committer_name
+- committer_email
+- message
+- merge_request_id
+MergeRequestContextCommitDiffFile:
+- sha
+- relative_order
+- new_file
+- renamed_file
+- deleted_file
+- new_path
+- old_path
+- a_mode
+- b_mode
+- too_large
+- binary
+- text
 MergeRequest::Metrics:
 - id
 - created_at

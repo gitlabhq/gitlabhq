@@ -1,4 +1,4 @@
-# GitLab Dependency Proxy administration **(PREMIUM ONLY)**
+# GitLab Dependency Proxy administration **(ULTIMATE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
 

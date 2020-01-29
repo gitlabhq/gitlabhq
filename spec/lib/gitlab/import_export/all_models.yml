@@ -125,6 +125,8 @@ merge_requests:
 - merge_user
 - merge_request_diffs
 - merge_request_diff
+- merge_request_context_commits
+- merge_request_context_commit_diff_files
 - events
 - merge_requests_closing_issues
 - cached_closes_issues
@@ -170,6 +172,9 @@ merge_request_diff_commits:
 - merge_request_diff
 merge_request_diff_files:
 - merge_request_diff
+merge_request_context_commits:
+- merge_request
+- diff_files
 ci_pipelines:
 - project
 - user

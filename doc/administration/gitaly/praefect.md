@@ -166,16 +166,19 @@ praefect['auth_token'] = 'PRAEFECT_EXTERNAL_TOKEN'
 praefect['virtual_storages'] = {
   'praefect' => {
     'gitaly-1' => {
-      'address' => 'tcp://gitaly-1.internal:8075',
+      # Replace GITALY_URL_OR_IP below with the real address to connect to.
+      'address' => 'tcp://GITALY_URL_OR_IP:8075',
       'token'   => 'PRAEFECT_INTERNAL_TOKEN',
       'primary' => true
     },
     'gitaly-2' => {
-      'address' => 'tcp://gitaly-2.internal:8075',
+      # Replace GITALY_URL_OR_IP below with the real address to connect to.
+      'address' => 'tcp://GITALY_URL_OR_IP:8075',
       'token'   => 'PRAEFECT_INTERNAL_TOKEN'
     },
     'gitaly-3' => {
-      'address' => 'tcp://gitaly-3.internal:8075',
+      # Replace GITALY_URL_OR_IP below with the real address to connect to.
+      'address' => 'tcp://GITALY_URL_OR_IP:8075',
       'token'   => 'PRAEFECT_INTERNAL_TOKEN'
     }
   }
@@ -265,6 +268,8 @@ gitaly['auth_token'] = 'PRAEFECT_INTERNAL_TOKEN'
 gitaly['listen_addr'] = "0.0.0.0:8075"
 
 git_data_dirs({
+  # Update this to the name of this Gitaly server which will be later
+  # exposed in the UI under "Admin area > Gitaly"
   "gitaly-1" => {
     "path" => "/var/opt/gitlab/git-data"
   }
@@ -301,13 +306,14 @@ is present, there should be two storages available to GitLab:
 ```ruby
 # /etc/gitlab/gitlab.rb on gitlab server
 
+# Replace PRAEFECT_URL_OR_IP below with real address Praefect can be accessed at.
 # Replace PRAEFECT_EXTERNAL_TOKEN below with real secret.
 git_data_dirs({
   "default" => {
     "path" => "/var/opt/gitlab/git-data"
   },
   "praefect" => {
-    "gitaly_address" => "tcp://praefect.internal:2305",
+    "gitaly_address" => "tcp://PRAEFECT_URL_OR_IP:2305",
     "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
   }
 })
@@ -324,7 +330,7 @@ on the Praefect node.
 
 Save your changes and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-Run `gitlab-rake gitlab:gitaly:check` to confirm that GitLab can reach Praefect.
+Run `sudo gitlab-rake gitlab:gitaly:check` to confirm that GitLab can reach Praefect.
 
 ### Testing Praefect
 

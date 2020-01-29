@@ -755,6 +755,12 @@ module API
       end
     end
 
+    class MergeRequestContextCommit < Grape::Entity
+      expose :sha, :relative_order, :new_file, :renamed_file,
+        :deleted_file, :too_large, :a_mode, :b_mode, :new_path, :old_path,
+        :diff, :binary
+    end
+
     class SSHKey < Grape::Entity
       expose :id, :title, :key, :created_at
     end

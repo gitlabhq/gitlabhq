@@ -791,6 +791,21 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'GET context commits' do
+    it 'returns the commits for context commits' do
+      get :context_commits,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid
+        },
+        format: 'json'
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response).to be_an Array
+    end
+  end
+
   describe 'GET exposed_artifacts' do
     let(:merge_request) do
       create(:merge_request,

@@ -10,6 +10,7 @@ class Feature
         cache_invalidator
         inforef_uploadpack_cache
         commit_without_batch_check
+        use_core_delta_islands
       ].freeze
 
     DEFAULT_ON_FLAGS = Set.new([]).freeze

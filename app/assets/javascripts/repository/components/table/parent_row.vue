@@ -28,7 +28,7 @@ export default {
       return splitArray.join('/');
     },
     parentRoute() {
-      return { path: `/-/tree/${this.commitRef}/${this.parentPath}` };
+      return { path: `/-/tree/${escape(this.commitRef)}/${this.parentPath}` };
     },
   },
   methods: {

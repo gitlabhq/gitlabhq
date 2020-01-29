@@ -209,7 +209,7 @@
                     %span
                       = _('Artifacts')
 
-            - if !should_display_analytics_pages_in_sidebar && project_nav_tab?(:pipelines)
+            - if project_nav_tab?(:pipelines)
               = nav_link(controller: :pipeline_schedules) do
                 = link_to pipeline_schedules_path(@project), title: _('Schedules'), class: 'shortcuts-builds' do
                   %span

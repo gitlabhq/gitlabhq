@@ -64,6 +64,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     options = additional_attributes.merge(diff_view: diff_view)
 
+    if @merge_request.project.context_commits_enabled?
+      options[:context_commits] = @merge_request.context_commits
+    end
+
     render json: DiffsSerializer.new(request).represent(diffs, options)
   end
 

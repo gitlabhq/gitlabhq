@@ -34,6 +34,8 @@ class MergeRequest < ApplicationRecord
   has_internal_id :iid, scope: :target_project, track_if: -> { !importing? }, init: ->(s) { s&.target_project&.merge_requests&.maximum(:iid) }
 
   has_many :merge_request_diffs
+  has_many :merge_request_context_commits
+  has_many :merge_request_context_commit_diff_files, through: :merge_request_context_commits, source: :diff_files
 
   has_many :merge_request_milestones
   has_many :milestones, through: :merge_request_milestones
@@ -397,6 +399,10 @@ class MergeRequest < ApplicationRecord
     reference = "#{self.class.reference_prefix}#{iid}"
 
     "#{project.to_reference_base(from, full: full)}#{reference}"
+  end
+
+  def context_commits
+    @context_commits ||= merge_request_context_commits.map(&:to_commit)
   end
 
   def commits(limit: nil)

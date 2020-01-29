@@ -25,7 +25,7 @@ describe Gitlab::Database::ShaAttribute do
 
   describe '#serialize' do
     it 'converts a SHA String to binary data' do
-      expect(attribute.serialize(sha).to_s).to eq(binary_sha)
+      expect(described_class.serialize(sha).to_s).to eq(binary_sha)
     end
   end
 end

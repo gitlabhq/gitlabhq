@@ -129,9 +129,6 @@ export default {
     crossplaneInstalled() {
       return this.applications.crossplane.status === APPLICATION_STATUS.INSTALLED;
     },
-    enableClusterApplicationElasticStack() {
-      return gon.features && gon.features.enableClusterApplicationElasticStack;
-    },
     ingressModSecurityDescription() {
       const escapedUrl = _.escape(this.ingressModSecurityHelpPath);
 
@@ -655,7 +652,6 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         </div>
       </application-row>
       <application-row
-        v-if="enableClusterApplicationElasticStack"
         id="elastic_stack"
         :logo-url="elasticStackLogo"
         :title="applications.elastic_stack.title"

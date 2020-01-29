@@ -763,6 +763,10 @@ class Project < ApplicationRecord
     Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self, default_enabled: true)
   end
 
+  def context_commits_enabled?
+    Feature.enabled?(:context_commits, default_enabled: true)
+  end
+
   def empty_repo?
     repository.empty?
   end

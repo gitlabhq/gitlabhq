@@ -435,18 +435,7 @@ and you will have access to more advanced querying capabilities.
 
 Log data is automatically deleted after 15 days using [Curator](https://www.elastic.co/guide/en/elasticsearch/client/curator/5.5/about.html).
 
-This is a preliminary release of Elastic Stack as a GitLab-managed application. By default,
-the ability to install it is disabled.
-
-To allow installation of Elastic Stack as a GitLab-managed application, ask a GitLab
-administrator to run following command within a Rails console:
-
-```ruby
-Feature.enable(:enable_cluster_application_elastic_stack)
-```
-
-Once the feature flag is set, to enable log shipping, install Elastic Stack into the cluster with the
-**Install** button.
+To enable log shipping, install Elastic Stack into the cluster with the **Install** button.
 
 NOTE: **Note:**
 The [`stable/elastic-stack`](https://github.com/helm/charts/tree/master/stable/elastic-stack)

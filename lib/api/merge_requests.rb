@@ -4,6 +4,8 @@ module API
   class MergeRequests < Grape::API
     include PaginationParams
 
+    CONTEXT_COMMITS_POST_LIMIT = 20
+
     before { authenticate_non_get! }
 
     helpers ::Gitlab::IssuableMetadata
@@ -288,6 +290,72 @@ module API
             .map { |commit| Commit.from_hash(commit.to_hash, merge_request.project) }
 
         present commits, with: Entities::Commit
+      end
+
+      desc 'Get the context commits of a merge request' do
+        success Entities::CommitEntity
+      end
+      get ':id/merge_requests/:merge_request_iid/context_commits' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
+        project = merge_request.project
+
+        not_found! unless project.context_commits_enabled?
+
+        context_commits = merge_request.context_commits
+        CommitEntity.represent(context_commits, type: :full, request: merge_request)
+      end
+
+      params do
+        requires :commits, type: Array, allow_blank: false, desc: 'List of context commits sha'
+      end
+      desc 'create context commits of merge request' do
+        success Entities::Commit
+      end
+      post ':id/merge_requests/:merge_request_iid/context_commits' do
+        commit_ids = params[:commits]
+
+        if commit_ids.size > CONTEXT_COMMITS_POST_LIMIT
+          render_api_error!("Context commits array size should not be more than #{CONTEXT_COMMITS_POST_LIMIT}", 400)
+        end
+
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
+        project = merge_request.project
+
+        not_found! unless project.context_commits_enabled?
+
+        authorize!(:update_merge_request, merge_request)
+
+        project = merge_request.target_project
+        result = ::MergeRequests::AddContextService.new(project, current_user, merge_request: merge_request, commits: commit_ids).execute
+
+        if result.instance_of?(Array)
+          present result, with: Entities::Commit
+        else
+          render_api_error!(result[:message], result[:http_status])
+        end
+      end
+
+      params do
+        requires :commits, type: Array, allow_blank: false, desc: 'List of context commits sha'
+      end
+      desc 'remove context commits of merge request'
+      delete ':id/merge_requests/:merge_request_iid/context_commits' do
+        commit_ids = params[:commits]
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
+        project = merge_request.project
+
+        not_found! unless project.context_commits_enabled?
+
+        authorize!(:destroy_merge_request, merge_request)
+        project = merge_request.target_project
+        commits = project.repository.commits_by(oids: commit_ids)
+
+        if commits.size != commit_ids.size
+          render_api_error!("One or more context commits' sha is not valid.", 400)
+        end
+
+        MergeRequestContextCommit.delete_bulk(merge_request, commits)
+        status 204
       end
 
       desc 'Show the merge request changes' do

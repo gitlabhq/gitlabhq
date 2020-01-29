@@ -171,6 +171,31 @@ describe "User browses files" do
     end
   end
 
+  context "when browsing a `improve/awesome` branch", :js do
+    before do
+      visit(project_tree_path(project, "improve/awesome"))
+    end
+
+    it "shows files from a repository" do
+      expect(page).to have_content("VERSION")
+        .and have_content(".gitignore")
+        .and have_content("LICENSE")
+    end
+  end
+
+  context "when browsing a `test-#` branch", :js do
+    before do
+      project.repository.create_branch('test-#', project.repository.root_ref)
+      visit(project_tree_path(project, "test-#"))
+    end
+
+    it "shows files from a repository" do
+      expect(page).to have_content("VERSION")
+        .and have_content(".gitignore")
+        .and have_content("LICENSE")
+    end
+  end
+
   context "when browsing a specific ref", :js do
     let(:ref) { project_tree_path(project, "6d39438") }
 

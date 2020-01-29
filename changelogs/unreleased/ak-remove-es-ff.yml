@@ -1,0 +1,5 @@
+---
+title: Add new Elastic Stack cluster application for pod log aggregation
+merge_request: 23058
+author:
+type: added

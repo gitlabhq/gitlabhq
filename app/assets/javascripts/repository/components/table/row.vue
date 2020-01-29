@@ -90,7 +90,7 @@ export default {
   },
   computed: {
     routerLinkTo() {
-      return this.isFolder ? { path: `/-/tree/${this.ref}/${this.path}` } : null;
+      return this.isFolder ? { path: `/-/tree/${escape(this.ref)}/${this.path}` } : null;
     },
     iconName() {
       return `fa-${getIconName(this.type, this.path)}`;

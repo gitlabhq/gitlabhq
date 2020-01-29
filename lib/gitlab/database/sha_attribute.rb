@@ -24,7 +24,14 @@ module Gitlab
       def serialize(value)
         arg = value ? [value].pack(PACK_FORMAT) : nil
 
-        super(arg)
+        BINARY_TYPE.new.serialize(arg)
+      end
+
+      # Casts a SHA1 in hexadecimal to the proper binary format.
+      def self.serialize(value)
+        arg = value ? [value].pack(PACK_FORMAT) : nil
+
+        BINARY_TYPE.new.serialize(arg)
       end
     end
   end

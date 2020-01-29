@@ -1,0 +1,5 @@
+---
+title: Optimize ref name lookups in archive downloads
+merge_request: 23890
+author:
+type: performance

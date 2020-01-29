@@ -81,13 +81,33 @@ class Projects::RepositoriesController < Projects::ApplicationController
 
   def assign_archive_vars
     if params[:id]
-      @ref, @filename = extract_ref(params[:id])
+      @ref, @filename = extract_ref_and_filename(params[:id])
     else
       @ref = params[:ref]
       @filename = nil
     end
   rescue InvalidPathError
     render_404
+  end
+
+  # path can be of the form:
+  # master
+  # master/first.zip
+  # master/first/second.tar.gz
+  # master/first/second/third.zip
+  #
+  # In the archive case, we know that the last value is always the filename, so we
+  # do a greedy match to extract the ref. This avoid having to pull all ref names
+  # from Redis.
+  def extract_ref_and_filename(id)
+    path = id.strip
+    data = path.match(/(.*)\/(.*)/)
+
+    if data
+      [data[1], data[2]]
+    else
+      [path, nil]
+    end
   end
 end
 

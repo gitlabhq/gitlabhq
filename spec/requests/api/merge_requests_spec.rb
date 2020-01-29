@@ -12,7 +12,8 @@ describe API::MergeRequests do
   let(:project)     { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
   let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
   let(:milestone1)  { create(:milestone, title: '0.9', project: project) }
-  let!(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
+  let(:merge_request_context_commit) {create(:merge_request_context_commit, message: 'test')}
+  let!(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], merge_request_context_commits: [merge_request_context_commit], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
   let!(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignees: [user], source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
   let!(:merge_request_locked) { create(:merge_request, state: "locked", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Locked test", created_at: base_time + 1.second) }
@@ -1066,6 +1067,20 @@ describe API::MergeRequests do
     end
   end
 
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/:context_commits' do
+    it 'returns a 200 when merge request is valid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/context_commits", user)
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(merge_request.context_commits.size)
+    end
+
+    it 'returns a 404 when merge_request_iid not found' do
+      get api("/projects/#{project.id}/merge_requests/0/context_commits", user)
+      expect(response).to have_gitlab_http_status(404)
+    end
+  end
+
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/changes' do
     it 'returns the change information of the merge_request' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/changes", user)
@@ -1540,6 +1555,93 @@ describe API::MergeRequests do
     end
   end
 
+  describe "POST /projects/:id/merge_requests/:merge_request_iid/context_commits" do
+    let(:merge_request_iid)  { merge_request.iid }
+    let(:authenticated_user) { user }
+    let(:commit) { project.repository.commit }
+
+    let(:params) do
+      {
+        commits: [commit.id]
+      }
+    end
+
+    let(:params_empty_commits) do
+      {
+        commits: []
+      }
+    end
+
+    let(:params_invalid_shas) do
+      {
+        commits: ['invalid']
+      }
+    end
+
+    describe 'when authenticated' do
+      it 'creates and returns the new context commit' do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits", authenticated_user), params: params
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response).to be_an Array
+        expect(json_response.first['short_id']).to eq(commit.short_id)
+        expect(json_response.first['title']).to eq(commit.title)
+        expect(json_response.first['message']).to eq(commit.message)
+        expect(json_response.first['author_name']).to eq(commit.author_name)
+        expect(json_response.first['author_email']).to eq(commit.author_email)
+        expect(json_response.first['committer_name']).to eq(commit.committer_name)
+        expect(json_response.first['committer_email']).to eq(commit.committer_email)
+      end
+
+      context 'doesnt create when its already created' do
+        before do
+          create(:merge_request_context_commit, merge_request: merge_request, sha: commit.id)
+        end
+        it 'returns 400 when the context commit is already created' do
+          post api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits", authenticated_user), params: params
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['message']).to eq("Context commits: [\"#{commit.id}\"] are already created")
+        end
+      end
+
+      it 'returns 400 when one or more shas are invalid' do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits", authenticated_user), params: params_invalid_shas
+        expect(response).to have_gitlab_http_status(400)
+        expect(json_response['message']).to eq('One or more context commits\' sha is not valid.')
+      end
+
+      it 'returns 400 when the commits are empty' do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits", authenticated_user), params: params_empty_commits
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'returns 400 when params is empty' do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits", authenticated_user)
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'returns 403 when creating new context commit for guest role' do
+        guest = create(:user)
+        project.add_guest(guest)
+        post api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits", guest), params: params
+        expect(response).to have_gitlab_http_status(403)
+      end
+
+      it 'returns 403 when creating new context commit for reporter role' do
+        reporter = create(:user)
+        project.add_reporter(reporter)
+        post api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits", reporter), params: params
+        expect(response).to have_gitlab_http_status(403)
+      end
+    end
+
+    context 'when unauthenticated' do
+      it 'returns 401 if user tries to create context commits' do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits"), params: params
+        expect(response).to have_gitlab_http_status(401)
+      end
+    end
+  end
+
   describe "DELETE /projects/:id/merge_requests/:merge_request_iid" do
     context "when the user is developer" do
       let(:developer) { create(:user) }
@@ -1575,6 +1677,79 @@ describe API::MergeRequests do
 
       it_behaves_like '412 response' do
         let(:request) { api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user) }
+      end
+    end
+  end
+
+  describe "DELETE /projects/:id/merge_requests/:merge_request_iid/context_commits" do
+    let(:merge_request_iid)  { merge_request.iid }
+    let(:authenticated_user) { user }
+    let(:commit) { project.repository.commit }
+
+    context "when authenticated" do
+      let(:params) do
+        {
+          commits: [commit.id]
+        }
+      end
+
+      let(:params_invalid_shas) do
+        {
+          commits: ["invalid"]
+        }
+      end
+
+      let(:params_empty_commits) do
+        {
+          commits: []
+        }
+      end
+
+      it "deletes context commit" do
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/context_commits", authenticated_user), params: params
+
+        expect(response).to have_gitlab_http_status(204)
+      end
+
+      it "returns 400 when invalid commit sha is passed" do
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/context_commits", authenticated_user), params: params_invalid_shas
+
+        expect(response).to have_gitlab_http_status(400)
+        expect(json_response["message"]).to eq('One or more context commits\' sha is not valid.')
+      end
+
+      it "returns 400 when commits is empty" do
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/context_commits", authenticated_user), params: params_empty_commits
+
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it "returns 400 when no params is passed" do
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/context_commits", authenticated_user)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'returns 403 when deleting existing context commit for guest role' do
+        guest = create(:user)
+        project.add_guest(guest)
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits", guest), params: params
+        expect(response).to have_gitlab_http_status(403)
+      end
+
+      it 'returns 403 when deleting existing context commit for reporter role' do
+        reporter = create(:user)
+        project.add_reporter(reporter)
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/context_commits", reporter), params: params
+        expect(response).to have_gitlab_http_status(403)
+      end
+    end
+
+    context "when unauthenticated" do
+      it "returns 401, unauthorised error" do
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/context_commits")
+
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end

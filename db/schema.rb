@@ -2433,6 +2433,37 @@ ActiveRecord::Schema.define(version: 2020_01_27_090233) do
     t.index ["blocking_merge_request_id", "blocked_merge_request_id"], name: "index_mr_blocks_on_blocking_and_blocked_mr_ids", unique: true
   end
 
+  create_table "merge_request_context_commit_diff_files", id: false, force: :cascade do |t|
+    t.binary "sha", null: false
+    t.integer "relative_order", null: false
+    t.boolean "new_file", null: false
+    t.boolean "renamed_file", null: false
+    t.boolean "deleted_file", null: false
+    t.boolean "too_large", null: false
+    t.string "a_mode", limit: 255, null: false
+    t.string "b_mode", limit: 255, null: false
+    t.text "new_path", null: false
+    t.text "old_path", null: false
+    t.text "diff"
+    t.boolean "binary"
+    t.bigint "merge_request_context_commit_id"
+    t.index ["merge_request_context_commit_id", "sha"], name: "idx_mr_cc_diff_files_on_mr_cc_id_and_sha"
+  end
+
+  create_table "merge_request_context_commits", force: :cascade do |t|
+    t.datetime_with_timezone "authored_date"
+    t.datetime_with_timezone "committed_date"
+    t.integer "relative_order", null: false
+    t.binary "sha", null: false
+    t.text "author_name"
+    t.text "author_email"
+    t.text "committer_name"
+    t.text "committer_email"
+    t.text "message"
+    t.bigint "merge_request_id"
+    t.index ["merge_request_id", "sha"], name: "index_mr_context_commits_on_merge_request_id_and_sha", unique: true
+  end
+
   create_table "merge_request_diff_commits", id: false, force: :cascade do |t|
     t.datetime "authored_date"
     t.datetime "committed_date"
@@ -4702,6 +4733,8 @@ ActiveRecord::Schema.define(version: 2020_01_27_090233) do
   add_foreign_key "merge_request_assignees", "users", on_delete: :cascade
   add_foreign_key "merge_request_blocks", "merge_requests", column: "blocked_merge_request_id", on_delete: :cascade
   add_foreign_key "merge_request_blocks", "merge_requests", column: "blocking_merge_request_id", on_delete: :cascade
+  add_foreign_key "merge_request_context_commit_diff_files", "merge_request_context_commits", on_delete: :cascade
+  add_foreign_key "merge_request_context_commits", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_request_diff_commits", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diff_files", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diffs", "merge_requests", name: "fk_8483f3258f", on_delete: :cascade
