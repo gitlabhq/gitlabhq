@@ -1,0 +1,5 @@
+---
+title: Fix logs api etag issues with elasticsearch
+merge_request: 23249
+author:
+type: fixed

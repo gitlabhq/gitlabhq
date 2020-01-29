@@ -10,13 +10,27 @@ Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
 milestones.
 
-![epics list view](img/epics_list_view_v12.5.png)
+## Relationships between epics and issues
+
+The possible relationships between epics and issues are:
+
+- An epic is the parent of one or more issues.
+- An epic is the parent of one or more child epics. For details see [Multi-level child epics](#multi-level-child-epics).
+
+```mermaid
+graph TD
+    Parent_epic --> Issue1
+    Parent_epic --> Child_epic
+    Child_epic --> Issue2
+````
 
 ## Use cases
 
 - Suppose your team is working on a large feature that involves multiple discussions throughout different issues created in distinct projects within a [Group](../index.md). With Epics, you can track all the related activities that together contribute to that single feature.
 - Track when the work for the group of issues is targeted to begin, and when it is targeted to end.
 - Discuss and collaborate on feature ideas and scope at a high level.
+
+![epics list view](img/epics_list_view_v12.5.png)
 
 ## Creating an epic
 

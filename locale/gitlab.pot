@@ -1598,6 +1598,9 @@ msgstr ""
 msgid "Allow this key to push to repository as well? (Default only allows pull access.)"
 msgstr ""
 
+msgid "Allow this secondary node to replicate content on Object Storage"
+msgstr ""
+
 msgid "Allow users to register any application to use GitLab as an OAuth provider"
 msgstr ""
 
@@ -5038,6 +5041,9 @@ msgstr ""
 msgid "Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for Auto DevOps to work."
 msgstr ""
 
+msgid "Container repositories sync capacity"
+msgstr ""
+
 msgid "ContainerRegistry|Automatically remove extra images that aren't designed to be kept."
 msgstr ""
 
@@ -5244,7 +5250,19 @@ msgstr ""
 msgid "Control the display of third party offers."
 msgstr ""
 
+msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
+msgstr ""
+
+msgid "Control the maximum concurrency of container repository operations for this Geo node"
+msgstr ""
+
 msgid "Control the maximum concurrency of repository backfill for this secondary node"
+msgstr ""
+
+msgid "Control the maximum concurrency of verification operations for this Geo node"
+msgstr ""
+
+msgid "Control the minimum interval in days that a repository should be reverified for this primary node"
 msgstr ""
 
 msgid "Cookie domain"
@@ -8255,6 +8273,9 @@ msgstr ""
 msgid "File name"
 msgstr ""
 
+msgid "File sync capacity"
+msgstr ""
+
 msgid "File templates"
 msgstr ""
 
@@ -8559,9 +8580,6 @@ msgid "Geo"
 msgstr ""
 
 msgid "Geo Designs"
-msgstr ""
-
-msgid "Geo Node Form"
 msgstr ""
 
 msgid "Geo Nodes"
@@ -10042,6 +10060,9 @@ msgstr ""
 msgid "If enabled, access to projects will be validated on an external service using their classification label."
 msgstr ""
 
+msgid "If enabled, and if object storage is enabled, GitLab will handle Object Storage replication using Geo"
+msgstr ""
+
 msgid "If this was a mistake you can %{leave_link_start}leave the %{source_type}%{link_end}."
 msgstr ""
 
@@ -10351,6 +10372,9 @@ msgid "Internal - The group and any internal projects can be viewed by any logge
 msgstr ""
 
 msgid "Internal - The project can be accessed by any logged in user."
+msgstr ""
+
+msgid "Internal URL (optional)"
 msgstr ""
 
 msgid "Internal users"
@@ -15345,6 +15369,9 @@ msgstr ""
 msgid "Re-authentication required"
 msgstr ""
 
+msgid "Re-verification interval"
+msgstr ""
+
 msgid "Read more"
 msgstr ""
 
@@ -15851,6 +15878,9 @@ msgid "Repository static objects"
 msgstr ""
 
 msgid "Repository storage"
+msgstr ""
+
+msgid "Repository sync capacity"
 msgstr ""
 
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / LFS: %{counter_lfs_objects}"
@@ -18570,6 +18600,9 @@ msgstr ""
 msgid "The Prometheus server responded with \"bad request\". Please check your queries are correct and are supported in your Prometheus version. %{documentationLink}"
 msgstr ""
 
+msgid "The URL defined on the primary node that secondary nodes should use to contact it. Defaults to URL"
+msgstr ""
+
 msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
 msgstr ""
 
@@ -18849,6 +18882,9 @@ msgid "The time taken by each data entry gathered by that stage."
 msgstr ""
 
 msgid "The total stage shows the time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
+msgstr ""
+
+msgid "The unique identifier for the Geo node. Must match %{geoNodeName} if it is set in gitlab.rb, otherwise it must match %{externalUrl} with a trailing slash"
 msgstr ""
 
 msgid "The unique identifier for the Geo node. Must match `geo_node_name` if it is set in gitlab.rb, otherwise it must match `external_url` with a trailing slash"
@@ -19194,6 +19230,9 @@ msgid "This is a delayed job to run in %{remainingTime}"
 msgstr ""
 
 msgid "This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize."
+msgstr ""
+
+msgid "This is a primary node"
 msgstr ""
 
 msgid "This is a security log of important events involving your account."
@@ -20871,6 +20910,9 @@ msgstr ""
 msgid "Various settings that affect GitLab performance."
 msgstr ""
 
+msgid "Verification capacity"
+msgstr ""
+
 msgid "Verification information"
 msgstr ""
 
@@ -22423,6 +22465,9 @@ msgstr ""
 msgid "expires on %{milestone_due_date}"
 msgstr ""
 
+msgid "external_url"
+msgstr ""
+
 msgid "failed"
 msgstr ""
 
@@ -22451,6 +22496,9 @@ msgid "fork this project"
 msgstr ""
 
 msgid "from"
+msgstr ""
+
+msgid "geo_node_name"
 msgstr ""
 
 msgid "group"
