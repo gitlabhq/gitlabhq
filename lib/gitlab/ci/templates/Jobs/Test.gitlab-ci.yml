@@ -1,6 +1,6 @@
 test:
   services:
-    - postgres:latest
+    - "postgres:${POSTGRES_VERSION}"
   variables:
     POSTGRES_DB: test
   stage: test

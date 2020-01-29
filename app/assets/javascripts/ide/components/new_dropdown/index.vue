@@ -91,7 +91,7 @@ export default {
         </template>
         <li>
           <item-button
-            :label="__('Rename')"
+            :label="__('Rename/Move')"
             class="d-flex"
             icon="pencil"
             icon-classes="mr-2"

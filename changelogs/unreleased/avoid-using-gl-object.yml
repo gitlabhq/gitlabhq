@@ -1,0 +1,5 @@
+---
+title: Fix outdated MR security warning message
+merge_request: 23496
+author:
+type: fixed

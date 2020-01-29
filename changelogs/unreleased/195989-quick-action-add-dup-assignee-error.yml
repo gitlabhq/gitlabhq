@@ -1,0 +1,5 @@
+---
+title: Fix error when assigning an existing asignee
+merge_request: 23416
+author:
+type: fixed

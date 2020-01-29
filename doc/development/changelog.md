@@ -35,6 +35,8 @@ the `author` field. GitLab team members **should not**.
 
 - Any change that introduces a database migration, whether it's regular, post,
   or data migration, **must** have a changelog entry.
+- [Security fixes] **must** have a changelog entry, without `merge_request` value
+  and with `type` set to `security`.
 - Any user-facing change **should** have a changelog entry. Example: "GitLab now
   uses system fonts for all text."
 - Performance improvements **should** have a changelog entry.
@@ -289,6 +291,7 @@ and then compiling the entries into the overall `CHANGELOG.md` file during the
 [release managers]: https://gitlab.com/gitlab-org/release/docs/blob/master/quickstart/release-manager.md
 [started brainstorming]: https://gitlab.com/gitlab-org/gitlab-foss/issues/17826
 [release process]: https://gitlab.com/gitlab-org/release-tools
+[Security fixes]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md
 
 ---
 

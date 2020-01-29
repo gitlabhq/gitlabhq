@@ -13,6 +13,7 @@
     "value": { "type": "string" },
     "masked": { "type": "boolean" },
     "protected": { "type": "boolean" },
+    "variable_type": { "type": "string" },
     "environment_scope": { "type": "string", "optional": true }
   },
   "additionalProperties": false

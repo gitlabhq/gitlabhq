@@ -12,6 +12,15 @@ module Gitlab
         explanation do |users|
           _('Assigns %{assignee_users_sentence}.') % { assignee_users_sentence: assignee_users_sentence(users) }
         end
+        execution_message do |users = nil|
+          if users.blank?
+            _("Failed to assign a user because no user was found.")
+          else
+            users = [users.first] unless quick_action_target.allows_multiple_assignees?
+
+            _('Assigned %{assignee_users_sentence}.') % { assignee_users_sentence: assignee_users_sentence(users) }
+          end
+        end
         params do
           quick_action_target.allows_multiple_assignees? ? '@user1 @user2' : '@user'
         end
@@ -23,19 +32,14 @@ module Gitlab
           extract_users(assignee_param)
         end
         command :assign do |users|
-          if users.empty?
-            @execution_message[:assign] = _("Failed to assign a user because no user was found.")
-            next
-          end
+          next if users.empty?
 
           if quick_action_target.allows_multiple_assignees?
             @updates[:assignee_ids] ||= quick_action_target.assignees.map(&:id)
-            @updates[:assignee_ids] += users.map(&:id)
+            @updates[:assignee_ids] |= users.map(&:id)
           else
             @updates[:assignee_ids] = [users.first.id]
           end
-
-          @execution_message[:assign] = _('Assigned %{assignee_users_sentence}.') % { assignee_users_sentence: assignee_users_sentence(users) }
         end
 
         desc do
@@ -249,7 +253,7 @@ module Gitlab
         def assignees_for_removal(users)
           assignees = quick_action_target.assignees
           if users.present? && quick_action_target.allows_multiple_assignees?
-            assignees & users
+            users
           else
             assignees
           end
