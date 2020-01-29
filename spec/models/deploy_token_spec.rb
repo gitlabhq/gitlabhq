@@ -8,6 +8,8 @@ describe DeployToken do
   it { is_expected.to have_many :project_deploy_tokens }
   it { is_expected.to have_many(:projects).through(:project_deploy_tokens) }
 
+  it_behaves_like 'having unique enum values'
+
   describe 'validations' do
     let(:username_format_message) { "can contain only letters, digits, '_', '-', '+', and '.'" }
 

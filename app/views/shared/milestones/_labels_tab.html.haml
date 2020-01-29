@@ -5,12 +5,12 @@
     %li.no-border
       %span.label-row
         %span.label-name
-          = render_label(label, tooltip: false, link: milestones_issues_path(options))
+          = render_label(label, tooltip: false, link: milestones_label_path(options))
         %span.prepend-description-left
           = markdown_field(label, :description)
 
       .float-right.d-none.d-lg-block.d-xl-block
-        = link_to milestones_issues_path(options.merge(state: 'opened')), class: 'btn btn-transparent btn-action' do
+        = link_to milestones_label_path(options.merge(state: 'opened')), class: 'btn btn-transparent btn-action' do
           - pluralize milestone_issues_by_label_count(@milestone, label, state: :opened), 'open issue'
-        = link_to milestones_issues_path(options.merge(state: 'closed')), class: 'btn btn-transparent btn-action' do
+        = link_to milestones_label_path(options.merge(state: 'closed')), class: 'btn btn-transparent btn-action' do
           - pluralize milestone_issues_by_label_count(@milestone, label, state: :closed), 'closed issue'

@@ -24,6 +24,11 @@ class DeployToken < ApplicationRecord
       message: "can contain only letters, digits, '_', '-', '+', and '.'"
     }
 
+  enum deploy_token_type: {
+    group_type: 1,
+    project_type: 2
+  }
+
   before_save :ensure_token
 
   accepts_nested_attributes_for :project_deploy_tokens

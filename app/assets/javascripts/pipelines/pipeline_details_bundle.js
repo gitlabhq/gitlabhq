@@ -70,16 +70,16 @@ export default () => {
       eventHub.$off('headerDeleteAction', this.deleteAction);
     },
     methods: {
-      postAction(action) {
+      postAction(path) {
         this.mediator.service
-          .postAction(action.path)
+          .postAction(path)
           .then(() => this.mediator.refreshPipeline())
           .catch(() => Flash(__('An error occurred while making the request.')));
       },
-      deleteAction(action) {
+      deleteAction(path) {
         this.mediator.stopPipelinePoll();
         this.mediator.service
-          .deleteAction(action.path)
+          .deleteAction(path)
           .then(({ request }) => redirectTo(setUrlFragment(request.responseURL, 'delete_success')))
           .catch(() => Flash(__('An error occurred while deleting the pipeline.')));
       },

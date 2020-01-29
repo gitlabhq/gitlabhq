@@ -1358,6 +1358,7 @@ ActiveRecord::Schema.define(version: 2020_01_27_090233) do
     t.string "token"
     t.string "username"
     t.string "token_encrypted", limit: 255
+    t.integer "deploy_token_type", limit: 2, default: 2, null: false
     t.index ["token", "expires_at", "id"], name: "index_deploy_tokens_on_token_and_expires_at_and_id", where: "(revoked IS FALSE)"
     t.index ["token"], name: "index_deploy_tokens_on_token", unique: true
     t.index ["token_encrypted"], name: "index_deploy_tokens_on_token_encrypted", unique: true

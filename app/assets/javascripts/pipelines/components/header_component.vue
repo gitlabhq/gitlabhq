@@ -1,6 +1,7 @@
 <script>
-import { GlLoadingIcon, GlModal } from '@gitlab/ui';
-import ciHeader from '../../vue_shared/components/header_ci_component.vue';
+import { GlLoadingIcon, GlModal, GlModalDirective } from '@gitlab/ui';
+import ciHeader from '~/vue_shared/components/header_ci_component.vue';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import eventHub from '../event_hub';
 import { __ } from '~/locale';
 
@@ -12,6 +13,10 @@ export default {
     ciHeader,
     GlLoadingIcon,
     GlModal,
+    LoadingButton,
+  },
+  directives: {
+    GlModal: GlModalDirective,
   },
   props: {
     pipeline: {
@@ -25,7 +30,9 @@ export default {
   },
   data() {
     return {
-      actions: this.getActions(),
+      isCanceling: false,
+      isRetrying: false,
+      isDeleting: false,
     };
   },
 
@@ -43,67 +50,18 @@ export default {
     },
   },
 
-  watch: {
-    pipeline() {
-      this.actions = this.getActions();
-    },
-  },
-
   methods: {
-    onActionClicked(action) {
-      if (action.modal) {
-        this.$root.$emit('bv::show::modal', action.modal);
-      } else {
-        this.postAction(action);
-      }
+    cancelPipeline() {
+      this.isCanceling = true;
+      eventHub.$emit('headerPostAction', this.pipeline.cancel_path);
     },
-    postAction(action) {
-      const index = this.actions.indexOf(action);
-
-      this.$set(this.actions[index], 'isLoading', true);
-
-      eventHub.$emit('headerPostAction', action);
+    retryPipeline() {
+      this.isRetrying = true;
+      eventHub.$emit('headerPostAction', this.pipeline.retry_path);
     },
     deletePipeline() {
-      const index = this.actions.findIndex(action => action.modal === DELETE_MODAL_ID);
-
-      this.$set(this.actions[index], 'isLoading', true);
-
-      eventHub.$emit('headerDeleteAction', this.actions[index]);
-    },
-
-    getActions() {
-      const actions = [];
-
-      if (this.pipeline.retry_path) {
-        actions.push({
-          label: __('Retry'),
-          path: this.pipeline.retry_path,
-          cssClass: 'js-retry-button btn btn-inverted-secondary',
-          isLoading: false,
-        });
-      }
-
-      if (this.pipeline.cancel_path) {
-        actions.push({
-          label: __('Cancel running'),
-          path: this.pipeline.cancel_path,
-          cssClass: 'js-btn-cancel-pipeline btn btn-danger',
-          isLoading: false,
-        });
-      }
-
-      if (this.pipeline.delete_path) {
-        actions.push({
-          label: __('Delete'),
-          path: this.pipeline.delete_path,
-          modal: DELETE_MODAL_ID,
-          cssClass: 'js-btn-delete-pipeline btn btn-danger btn-inverted',
-          isLoading: false,
-        });
-      }
-
-      return actions;
+      this.isDeleting = true;
+      eventHub.$emit('headerDeleteAction', this.pipeline.delete_path);
     },
   },
   DELETE_MODAL_ID,
@@ -117,10 +75,38 @@ export default {
       :item-id="pipeline.id"
       :time="pipeline.created_at"
       :user="pipeline.user"
-      :actions="actions"
       item-name="Pipeline"
-      @actionClicked="onActionClicked"
-    />
+    >
+      <loading-button
+        v-if="pipeline.retry_path"
+        :loading="isRetrying"
+        :disabled="isRetrying"
+        class="js-retry-button btn btn-inverted-secondary"
+        container-class="d-inline"
+        :label="__('Retry')"
+        @click="retryPipeline()"
+      />
+
+      <loading-button
+        v-if="pipeline.cancel_path"
+        :loading="isCanceling"
+        :disabled="isCanceling"
+        class="js-btn-cancel-pipeline btn btn-danger"
+        container-class="d-inline"
+        :label="__('Cancel running')"
+        @click="cancelPipeline()"
+      />
+
+      <loading-button
+        v-if="pipeline.delete_path"
+        v-gl-modal="$options.DELETE_MODAL_ID"
+        :loading="isDeleting"
+        :disabled="isDeleting"
+        class="js-btn-delete-pipeline btn btn-danger btn-inverted"
+        container-class="d-inline"
+        :label="__('Delete')"
+      />
+    </ci-header>
 
     <gl-loading-icon v-if="isLoading" :size="2" class="prepend-top-default append-bottom-default" />
 

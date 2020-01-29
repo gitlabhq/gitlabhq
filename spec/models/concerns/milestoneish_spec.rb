@@ -33,31 +33,16 @@ describe Milestone, 'Milestoneish' do
   end
 
   describe '#sorted_issues' do
-    before do
+    it 'sorts issues by label priority' do
       issue.labels << label_1
       security_issue_1.labels << label_2
       closed_issue_1.labels << label_3
-    end
 
-    it 'sorts issues by label priority' do
       issues = milestone.sorted_issues(member)
 
       expect(issues.first).to eq(issue)
       expect(issues.second).to eq(security_issue_1)
       expect(issues.third).not_to eq(closed_issue_1)
-    end
-
-    it 'limits issue count' do
-      stub_const('Milestoneish::DISPLAY_ISSUES_LIMIT', 4)
-
-      issues = milestone.sorted_issues(member)
-
-      # Cannot use issues.count here because it is sorting
-      # by a virtual column 'highest_priority' and it will break
-      # the query.
-      total_issues_count = issues.opened.unassigned.length + issues.opened.assigned.length + issues.closed.length
-      expect(issues.length).to eq(4)
-      expect(total_issues_count).to eq(4)
     end
   end
 

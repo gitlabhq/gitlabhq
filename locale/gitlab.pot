@@ -17254,9 +17254,6 @@ msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Showing %{limit} of %{total_count} issues. "
-msgstr ""
-
 msgid "Showing %{pageSize} of %{total} issues"
 msgstr ""
 
@@ -20935,9 +20932,6 @@ msgid "Very helpful"
 msgstr ""
 
 msgid "View Documentation"
-msgstr ""
-
-msgid "View all issues"
 msgstr ""
 
 msgid "View blame prior to this change"

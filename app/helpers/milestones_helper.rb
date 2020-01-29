@@ -26,7 +26,7 @@ module MilestonesHelper
     end
   end
 
-  def milestones_issues_path(opts = {})
+  def milestones_label_path(opts = {})
     if @project
       project_issues_path(@project, opts)
     elsif @group
@@ -280,26 +280,6 @@ module MilestonesHelper
     strong_memoize(:can_admin_group_milestones) do
       can?(current_user, :admin_milestone, @project.group)
     end
-  end
-
-  def display_issues_count_warning?
-    milestone_visible_issues_count > Milestone::DISPLAY_ISSUES_LIMIT
-  end
-
-  def milestone_issues_count_message
-    total_count = milestone_visible_issues_count
-    limit = Milestone::DISPLAY_ISSUES_LIMIT
-
-    message = _('Showing %{limit} of %{total_count} issues. ') % { limit: limit, total_count: total_count }
-    message += link_to(_('View all issues'), milestones_issues_path)
-
-    message.html_safe
-  end
-
-  private
-
-  def milestone_visible_issues_count
-    @milestone_visible_issues_count ||= @milestone.issues_visible_to_user(current_user).size
   end
 end
 
