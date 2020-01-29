@@ -5587,6 +5587,25 @@ describe Project do
     end
   end
 
+  describe 'with_issues_or_mrs_available_for_user' do
+    before do
+      Project.delete_all
+    end
+
+    it 'returns correct projects' do
+      user = create(:user)
+      project1 = create(:project, :public, :merge_requests_disabled, :issues_enabled)
+      project2 = create(:project, :public, :merge_requests_disabled, :issues_disabled)
+      project3 = create(:project, :public, :issues_enabled, :merge_requests_enabled)
+      project4 = create(:project, :private, :issues_private, :merge_requests_private)
+
+      [project1, project2, project3, project4].each { |project| project.add_developer(user) }
+
+      expect(described_class.with_issues_or_mrs_available_for_user(user))
+        .to contain_exactly(project1, project3, project4)
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
   end

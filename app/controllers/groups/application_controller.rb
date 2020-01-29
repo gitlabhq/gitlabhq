@@ -20,6 +20,14 @@ class Groups::ApplicationController < ApplicationController
     @projects ||= GroupProjectsFinder.new(group: group, current_user: current_user).execute
   end
 
+  def group_projects_with_subgroups
+    @group_projects_with_subgroups ||= GroupProjectsFinder.new(
+      group: group,
+      current_user: current_user,
+      options: { include_subgroups: true }
+    ).execute
+  end
+
   def authorize_admin_group!
     unless can?(current_user, :admin_group, group)
       return render_404

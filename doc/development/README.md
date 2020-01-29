@@ -137,6 +137,7 @@ Complementary reads:
 - [Database helper modules](database_helpers.md)
 - [Code comments](code_comments.md)
 - [Creating enums](creating_enums.md)
+- [Renaming features](renaming_features.md)
 
 ### Case studies
 

@@ -32,8 +32,9 @@ export const setEndpoints = ({ commit }, endpoints) => {
   commit(types.SET_ENDPOINTS, endpoints);
 };
 
-export const setEnvironmentsSearchTerm = ({ commit }, searchTerm) => {
-  commit(types.SET_ENVIRONMENTS_SEARCH_TERM, searchTerm);
+export const filterEnvironments = ({ commit, dispatch }, searchTerm) => {
+  commit(types.SET_ENVIRONMENTS_FILTER, searchTerm);
+  dispatch('fetchEnvironmentsData');
 };
 
 export const setShowErrorBanner = ({ commit }, enabled) => {
@@ -56,6 +57,7 @@ export const receiveDeploymentsDataSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS, data);
 export const receiveDeploymentsDataFailure = ({ commit }) =>
   commit(types.RECEIVE_DEPLOYMENTS_DATA_FAILURE);
+export const requestEnvironmentsData = ({ commit }) => commit(types.REQUEST_ENVIRONMENTS_DATA);
 export const receiveEnvironmentsDataSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS, data);
 export const receiveEnvironmentsDataFailure = ({ commit }) =>
@@ -189,8 +191,9 @@ export const fetchDeploymentsData = ({ state, dispatch }) => {
     });
 };
 
-export const fetchEnvironmentsData = ({ state, dispatch }) =>
-  gqClient
+export const fetchEnvironmentsData = ({ state, dispatch }) => {
+  dispatch('requestEnvironmentsData');
+  return gqClient
     .mutate({
       mutation: getEnvironments,
       variables: {
@@ -207,12 +210,14 @@ export const fetchEnvironmentsData = ({ state, dispatch }) =>
           s__('Metrics|There was an error fetching the environments data, please try again'),
         );
       }
+
       dispatch('receiveEnvironmentsDataSuccess', environments);
     })
     .catch(() => {
       dispatch('receiveEnvironmentsDataFailure');
       createFlash(s__('Metrics|There was an error getting environments information.'));
     });
+};
 
 /**
  * Set a new array of metrics to a panel group

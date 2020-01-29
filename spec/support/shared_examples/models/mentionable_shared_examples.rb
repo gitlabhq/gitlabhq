@@ -229,16 +229,17 @@ RSpec.shared_examples 'mentions in description' do |mentionable_type|
 
     context 'when mentionable description contains mentions' do
       let(:user) { create(:user) }
+      let(:user2) { create(:user) }
       let(:group) { create(:group) }
 
-      let(:mentionable_desc) { "#{user.to_reference} some description #{group.to_reference(full: true)} and @all" }
+      let(:mentionable_desc) { "#{user.to_reference} #{user2.to_reference} #{user.to_reference} some description #{group.to_reference(full: true)} and #{user2.to_reference} @all" }
       let(:mentionable) { create(mentionable_type, description: mentionable_desc) }
 
       it 'stores mentions' do
         add_member(user)
 
         expect(mentionable.user_mentions.count).to eq 1
-        expect(mentionable.referenced_users).to match_array([user])
+        expect(mentionable.referenced_users).to match_array([user, user2])
         expect(mentionable.referenced_projects(user)).to match_array([mentionable.project].compact) # epic.project is nil, and we want empty []
         expect(mentionable.referenced_groups(user)).to match_array([group])
       end
@@ -249,8 +250,9 @@ end
 RSpec.shared_examples 'mentions in notes' do |mentionable_type|
   context 'when mentionable notes contain mentions' do
     let(:user) { create(:user) }
+    let(:user2) { create(:user) }
     let(:group) { create(:group) }
-    let(:note_desc) { "#{user.to_reference} and #{group.to_reference(full: true)} and @all" }
+    let(:note_desc) { "#{user.to_reference} #{user2.to_reference} #{user.to_reference} and #{group.to_reference(full: true)} and #{user2.to_reference} @all" }
     let!(:mentionable) { note.noteable }
 
     before do
@@ -261,7 +263,7 @@ RSpec.shared_examples 'mentions in notes' do |mentionable_type|
 
     it 'returns all mentionable mentions' do
       expect(mentionable.user_mentions.count).to eq 1
-      expect(mentionable.referenced_users).to eq [user]
+      expect(mentionable.referenced_users).to eq [user, user2]
       expect(mentionable.referenced_projects(user)).to eq [mentionable.project].compact # epic.project is nil, and we want empty []
       expect(mentionable.referenced_groups(user)).to eq [group]
     end

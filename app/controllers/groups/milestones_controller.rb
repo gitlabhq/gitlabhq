@@ -103,8 +103,15 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def group_projects_with_access
-    group_projects.with_issues_available_for_user(current_user)
-      .or(group_projects.with_merge_requests_available_for_user(current_user))
+    group_projects_with_subgroups.with_issues_or_mrs_available_for_user(current_user)
+  end
+
+  def group_ids(include_ancestors: false)
+    if include_ancestors
+      group.self_and_hierarchy.public_or_visible_to_user(current_user).select(:id)
+    else
+      group.self_and_descendants.public_or_visible_to_user(current_user).select(:id)
+    end
   end
 
   def milestone
@@ -119,7 +126,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def search_params
-    groups = request.format.json? ? group.self_and_ancestors.select(:id) : group.id
+    groups = request.format.json? ? group_ids(include_ancestors: true) : group_ids
 
     params.permit(:state, :search_title).merge(group_ids: groups)
   end

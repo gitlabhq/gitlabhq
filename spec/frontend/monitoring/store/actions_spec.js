@@ -17,10 +17,12 @@ import {
   fetchPrometheusMetrics,
   fetchPrometheusMetric,
   setEndpoints,
+  filterEnvironments,
   setGettingStartedEmptyState,
   duplicateSystemDashboard,
 } from '~/monitoring/stores/actions';
 import { gqClient, parseEnvironmentsResponse } from '~/monitoring/stores/utils';
+import getEnvironments from '~/monitoring/queries/getEnvironments.query.graphql';
 import storeState from '~/monitoring/stores/state';
 import {
   deploymentData,
@@ -105,12 +107,70 @@ describe('Monitoring store actions', () => {
         .catch(done.fail);
     });
   });
-  describe('fetchEnvironmentsData', () => {
-    it('commits RECEIVE_ENVIRONMENTS_DATA_SUCCESS on error', () => {
-      const dispatch = jest.fn();
-      const { state } = store;
-      state.projectPath = '/gitlab-org/gitlab-test';
 
+  describe('fetchEnvironmentsData', () => {
+    const dispatch = jest.fn();
+    const { state } = store;
+    state.projectPath = 'gitlab-org/gitlab-test';
+
+    afterEach(() => {
+      resetStore(store);
+      jest.restoreAllMocks();
+    });
+
+    it('setting SET_ENVIRONMENTS_FILTER should dispatch fetchEnvironmentsData', () => {
+      jest.spyOn(gqClient, 'mutate').mockReturnValue(
+        Promise.resolve({
+          data: {
+            project: {
+              data: {
+                environments: [],
+              },
+            },
+          },
+        }),
+      );
+
+      return testAction(
+        filterEnvironments,
+        {},
+        state,
+        [
+          {
+            type: 'SET_ENVIRONMENTS_FILTER',
+            payload: {},
+          },
+        ],
+        [
+          {
+            type: 'fetchEnvironmentsData',
+          },
+        ],
+      );
+    });
+
+    it('fetch environments data call takes in search param', () => {
+      const mockMutate = jest.spyOn(gqClient, 'mutate');
+      const searchTerm = 'Something';
+      const mutationVariables = {
+        mutation: getEnvironments,
+        variables: {
+          projectPath: state.projectPath,
+          search: searchTerm,
+        },
+      };
+      state.environmentsSearchTerm = searchTerm;
+      mockMutate.mockReturnValue(Promise.resolve());
+
+      return fetchEnvironmentsData({
+        state,
+        dispatch,
+      }).then(() => {
+        expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
+      });
+    });
+
+    it('commits RECEIVE_ENVIRONMENTS_DATA_SUCCESS on success', () => {
       jest.spyOn(gqClient, 'mutate').mockReturnValue(
         Promise.resolve({
           data: {
@@ -135,9 +195,6 @@ describe('Monitoring store actions', () => {
     });
 
     it('commits RECEIVE_ENVIRONMENTS_DATA_FAILURE on error', () => {
-      const dispatch = jest.fn();
-      const { state } = store;
-      state.projectPath = '/gitlab-org/gitlab-test';
       jest.spyOn(gqClient, 'mutate').mockReturnValue(Promise.reject());
 
       return fetchEnvironmentsData({
@@ -148,6 +205,7 @@ describe('Monitoring store actions', () => {
       });
     });
   });
+
   describe('Set endpoints', () => {
     let mockedState;
     beforeEach(() => {

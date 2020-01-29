@@ -31,10 +31,7 @@ describe('Dashboard', () => {
   const findEnvironmentsDropdown = () => wrapper.find({ ref: 'monitorEnvironmentsDropdown' });
   const findAllEnvironmentsDropdownItems = () => findEnvironmentsDropdown().findAll(GlDropdownItem);
   const setSearchTerm = searchTerm => {
-    wrapper.vm.$store.commit(
-      `monitoringDashboard/${types.SET_ENVIRONMENTS_SEARCH_TERM}`,
-      searchTerm,
-    );
+    wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_ENVIRONMENTS_FILTER}`, searchTerm);
   };
 
   const createShallowWrapper = (props = {}, options = {}) => {
@@ -312,6 +309,25 @@ describe('Dashboard', () => {
       return wrapper.vm.$nextTick(() => {
         expect(wrapper.find({ ref: 'monitorEnvironmentsDropdownMsg' }).isVisible()).toBe(true);
       });
+    });
+
+    it('shows loading element when environments fetch is still loading', () => {
+      wrapper.vm.$store.commit(`monitoringDashboard/${types.REQUEST_ENVIRONMENTS_DATA}`);
+
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          expect(wrapper.find({ ref: 'monitorEnvironmentsDropdownLoading' }).exists()).toBe(true);
+        })
+        .then(() => {
+          wrapper.vm.$store.commit(
+            `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
+            environmentData,
+          );
+        })
+        .then(() => {
+          expect(wrapper.find({ ref: 'monitorEnvironmentsDropdownLoading' }).exists()).toBe(false);
+        });
     });
   });
 

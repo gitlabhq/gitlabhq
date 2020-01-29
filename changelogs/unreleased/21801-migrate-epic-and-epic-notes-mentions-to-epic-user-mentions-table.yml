@@ -1,0 +1,5 @@
+---
+title: Migrate epic, epic notes mentions to respective DB table
+merge_request: 22333
+author:
+type: changed

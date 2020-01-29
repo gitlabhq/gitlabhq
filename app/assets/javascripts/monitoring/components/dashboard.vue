@@ -6,8 +6,11 @@ import {
   GlButton,
   GlDropdown,
   GlDropdownItem,
+  GlDropdownHeader,
+  GlDropdownDivider,
   GlFormGroup,
   GlModal,
+  GlLoadingIcon,
   GlSearchBoxByType,
   GlModalDirective,
   GlTooltipDirective,
@@ -41,7 +44,10 @@ export default {
     Icon,
     GlButton,
     GlDropdown,
+    GlLoadingIcon,
     GlDropdownItem,
+    GlDropdownHeader,
+    GlDropdownDivider,
     GlSearchBoxByType,
     GlFormGroup,
     GlModal,
@@ -210,6 +216,7 @@ export default {
       'useDashboardEndpoint',
       'allDashboards',
       'additionalPanelTypesEnabled',
+      'environmentsLoading',
     ]),
     ...mapGetters('monitoringDashboard', ['getMetricStates', 'filteredEnvironments']),
     firstDashboard() {
@@ -234,6 +241,9 @@ export default {
     },
     shouldRenderSearchableEnvironmentsDropdown() {
       return this.glFeatures.searchableEnvironmentsDropdown;
+    },
+    shouldShowEnvironmentsDropdownNoMatchedMsg() {
+      return !this.environmentsLoading && this.filteredEnvironments.length === 0;
     },
   },
   created() {
@@ -262,7 +272,7 @@ export default {
       'setGettingStartedEmptyState',
       'setEndpoints',
       'setPanelGroupMetrics',
-      'setEnvironmentsSearchTerm',
+      'filterEnvironments',
     ]),
     updatePanels(key, panels) {
       this.setPanelGroupMetrics({
@@ -305,7 +315,7 @@ export default {
       this.formIsValid = isValid;
     },
     debouncedEnvironmentsSearch: debounce(function environmentsSearchOnInput(searchTerm) {
-      this.setEnvironmentsSearchTerm(searchTerm);
+      this.filterEnvironments(searchTerm);
     }, 500),
     submitCustomMetricsForm() {
       this.$refs.customMetricsForm.submit();
@@ -390,16 +400,22 @@ export default {
             toggle-class="dropdown-menu-toggle"
             menu-class="monitor-environment-dropdown-menu"
             :text="currentEnvironmentName"
-            :disabled="filteredEnvironments.length === 0"
           >
             <div class="d-flex flex-column overflow-hidden">
+              <gl-dropdown-header class="text-center">{{ __('Environment') }}</gl-dropdown-header>
+              <gl-dropdown-divider />
               <gl-search-box-by-type
                 v-if="shouldRenderSearchableEnvironmentsDropdown"
                 ref="monitorEnvironmentsDropdownSearch"
                 class="m-2"
                 @input="debouncedEnvironmentsSearch"
               />
-              <div class="flex-fill overflow-auto">
+              <gl-loading-icon
+                v-if="environmentsLoading"
+                ref="monitorEnvironmentsDropdownLoading"
+                :inline="true"
+              />
+              <div v-else class="flex-fill overflow-auto">
                 <gl-dropdown-item
                   v-for="environment in filteredEnvironments"
                   :key="environment.id"
@@ -411,11 +427,11 @@ export default {
               </div>
               <div
                 v-if="shouldRenderSearchableEnvironmentsDropdown"
-                v-show="filteredEnvironments.length === 0"
+                v-show="shouldShowEnvironmentsDropdownNoMatchedMsg"
                 ref="monitorEnvironmentsDropdownMsg"
                 class="text-secondary no-matches-message"
               >
-                {{ s__('No matching results') }}
+                {{ __('No matching results') }}
               </div>
             </div>
           </gl-dropdown>

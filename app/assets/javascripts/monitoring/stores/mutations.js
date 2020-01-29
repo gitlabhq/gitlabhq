@@ -123,10 +123,15 @@ export default {
   [types.RECEIVE_DEPLOYMENTS_DATA_FAILURE](state) {
     state.deploymentData = [];
   },
+  [types.REQUEST_ENVIRONMENTS_DATA](state) {
+    state.environmentsLoading = true;
+  },
   [types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS](state, environments) {
+    state.environmentsLoading = false;
     state.environments = environments;
   },
   [types.RECEIVE_ENVIRONMENTS_DATA_FAILURE](state) {
+    state.environmentsLoading = false;
     state.environments = [];
   },
 
@@ -195,7 +200,7 @@ export default {
     const panelGroup = state.dashboard.panel_groups.find(pg => payload.key === pg.key);
     panelGroup.panels = payload.panels;
   },
-  [types.SET_ENVIRONMENTS_SEARCH_TERM](state, searchTerm) {
+  [types.SET_ENVIRONMENTS_FILTER](state, searchTerm) {
     state.environmentsSearchTerm = searchTerm;
   },
 };

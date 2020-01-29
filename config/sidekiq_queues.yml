@@ -152,6 +152,8 @@
   - 1
 - - object_storage
   - 1
+- - package_repositories
+  - 1
 - - pages
   - 1
 - - pages_domain_ssl_renewal
