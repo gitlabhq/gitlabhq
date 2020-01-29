@@ -8450,6 +8450,9 @@ msgstr ""
 msgid "For public projects, anyone can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
+msgid "For renewal instructions %{link_start}view our Licensing FAQ.%{link_end}"
+msgstr ""
+
 msgid "Forgot your password?"
 msgstr ""
 

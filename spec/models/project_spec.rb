@@ -131,23 +131,19 @@ describe Project do
     end
 
     context 'when creating a new project' do
-      it 'automatically creates a CI/CD settings row' do
-        project = create(:project)
+      let_it_be(:project) { create(:project) }
 
+      it 'automatically creates a CI/CD settings row' do
         expect(project.ci_cd_settings).to be_an_instance_of(ProjectCiCdSetting)
         expect(project.ci_cd_settings).to be_persisted
       end
 
       it 'automatically creates a container expiration policy row' do
-        project = create(:project)
-
         expect(project.container_expiration_policy).to be_an_instance_of(ContainerExpirationPolicy)
         expect(project.container_expiration_policy).to be_persisted
       end
 
       it 'automatically creates a Pages metadata row' do
-        project = create(:project)
-
         expect(project.pages_metadatum).to be_an_instance_of(ProjectPagesMetadatum)
         expect(project.pages_metadatum).to be_persisted
       end
@@ -532,111 +528,114 @@ describe Project do
     it { is_expected.to delegate_method(:last_pipeline).to(:commit).with_arguments(allow_nil: true) }
   end
 
-  describe '#to_reference_with_postfix' do
-    it 'returns the full path with reference_postfix' do
-      namespace = create(:namespace, path: 'sample-namespace')
-      project = create(:project, path: 'sample-project', namespace: namespace)
+  describe 'reference methods' do
+    let_it_be(:owner)     { create(:user, name: 'Gitlab') }
+    let_it_be(:namespace) { create(:namespace, name: 'Sample namespace', path: 'sample-namespace', owner: owner) }
+    let_it_be(:project)   { create(:project, name: 'Sample project', path: 'sample-project', namespace: namespace) }
+    let_it_be(:group)     { create(:group, name: 'Group', path: 'sample-group') }
+    let_it_be(:another_project) { create(:project, namespace: namespace) }
+    let_it_be(:another_namespace_project) { create(:project, name: 'another-project') }
 
-      expect(project.to_reference_with_postfix).to eq 'sample-namespace/sample-project>'
-    end
-  end
+    describe '#to_reference' do
+      it 'returns the path with reference_postfix' do
+        expect(project.to_reference).to eq("#{project.full_path}>")
+      end
 
-  describe '#to_reference' do
-    let(:owner)     { create(:user, name: 'Gitlab') }
-    let(:namespace) { create(:namespace, path: 'sample-namespace', owner: owner) }
-    let(:project)   { create(:project, path: 'sample-project', namespace: namespace) }
-    let(:group)     { create(:group, name: 'Group', path: 'sample-group') }
+      it 'returns the path with reference_postfix when arg is self' do
+        expect(project.to_reference(project)).to eq("#{project.full_path}>")
+      end
 
-    context 'when nil argument' do
-      it 'returns nil' do
-        expect(project.to_reference).to be_nil
+      it 'returns the full_path with reference_postfix when full' do
+        expect(project.to_reference(full: true)).to eq("#{project.full_path}>")
+      end
+
+      it 'returns the full_path with reference_postfix when cross-project' do
+        expect(project.to_reference(build_stubbed(:project))).to eq("#{project.full_path}>")
       end
     end
 
-    context 'when full is true' do
-      it 'returns complete path to the project' do
-        expect(project.to_reference(full: true)).to          eq 'sample-namespace/sample-project'
-        expect(project.to_reference(project, full: true)).to eq 'sample-namespace/sample-project'
-        expect(project.to_reference(group, full: true)).to   eq 'sample-namespace/sample-project'
+    describe '#to_reference_base' do
+      context 'when nil argument' do
+        it 'returns nil' do
+          expect(project.to_reference_base).to be_nil
+        end
       end
-    end
 
-    context 'when same project argument' do
-      it 'returns nil' do
-        expect(project.to_reference(project)).to be_nil
+      context 'when full is true' do
+        it 'returns complete path to the project', :aggregate_failures do
+          be_full_path = eq('sample-namespace/sample-project')
+
+          expect(project.to_reference_base(full: true)).to be_full_path
+          expect(project.to_reference_base(project, full: true)).to be_full_path
+          expect(project.to_reference_base(group, full: true)).to be_full_path
+        end
       end
-    end
 
-    context 'when cross namespace project argument' do
-      let(:another_namespace_project) { create(:project, name: 'another-project') }
-
-      it 'returns complete path to the project' do
-        expect(project.to_reference(another_namespace_project)).to eq 'sample-namespace/sample-project'
+      context 'when same project argument' do
+        it 'returns nil' do
+          expect(project.to_reference_base(project)).to be_nil
+        end
       end
-    end
 
-    context 'when same namespace / cross-project argument' do
-      let(:another_project) { create(:project, namespace: namespace) }
-
-      it 'returns path to the project' do
-        expect(project.to_reference(another_project)).to eq 'sample-project'
+      context 'when cross namespace project argument' do
+        it 'returns complete path to the project' do
+          expect(project.to_reference_base(another_namespace_project)).to eq 'sample-namespace/sample-project'
+        end
       end
-    end
 
-    context 'when different namespace / cross-project argument' do
-      let(:another_namespace) { create(:namespace, path: 'another-namespace', owner: owner) }
-      let(:another_project)   { create(:project, path: 'another-project', namespace: another_namespace) }
-
-      it 'returns full path to the project' do
-        expect(project.to_reference(another_project)).to eq 'sample-namespace/sample-project'
-      end
-    end
-
-    context 'when argument is a namespace' do
-      context 'with same project path' do
+      context 'when same namespace / cross-project argument' do
         it 'returns path to the project' do
-          expect(project.to_reference(namespace)).to eq 'sample-project'
+          expect(project.to_reference_base(another_project)).to eq 'sample-project'
         end
       end
 
-      context 'with different project path' do
+      context 'when different namespace / cross-project argument with same owner' do
+        let(:another_namespace_same_owner) { create(:namespace, path: 'another-namespace', owner: owner) }
+        let(:another_project_same_owner)   { create(:project, path: 'another-project', namespace: another_namespace_same_owner) }
+
         it 'returns full path to the project' do
-          expect(project.to_reference(group)).to eq 'sample-namespace/sample-project'
+          expect(project.to_reference_base(another_project_same_owner)).to eq 'sample-namespace/sample-project'
+        end
+      end
+
+      context 'when argument is a namespace' do
+        context 'with same project path' do
+          it 'returns path to the project' do
+            expect(project.to_reference_base(namespace)).to eq 'sample-project'
+          end
+        end
+
+        context 'with different project path' do
+          it 'returns full path to the project' do
+            expect(project.to_reference_base(group)).to eq 'sample-namespace/sample-project'
+          end
         end
       end
     end
-  end
 
-  describe '#to_human_reference' do
-    let(:owner) { create(:user, name: 'Gitlab') }
-    let(:namespace) { create(:namespace, name: 'Sample namespace', owner: owner) }
-    let(:project) { create(:project, name: 'Sample project', namespace: namespace) }
-
-    context 'when nil argument' do
-      it 'returns nil' do
-        expect(project.to_human_reference).to be_nil
+    describe '#to_human_reference' do
+      context 'when nil argument' do
+        it 'returns nil' do
+          expect(project.to_human_reference).to be_nil
+        end
       end
-    end
 
-    context 'when same project argument' do
-      it 'returns nil' do
-        expect(project.to_human_reference(project)).to be_nil
+      context 'when same project argument' do
+        it 'returns nil' do
+          expect(project.to_human_reference(project)).to be_nil
+        end
       end
-    end
 
-    context 'when cross namespace project argument' do
-      let(:another_namespace_project) { create(:project, name: 'another-project') }
-
-      it 'returns complete name with namespace of the project' do
-        expect(project.to_human_reference(another_namespace_project)).to eq 'Gitlab / Sample project'
+      context 'when cross namespace project argument' do
+        it 'returns complete name with namespace of the project' do
+          expect(project.to_human_reference(another_namespace_project)).to eq 'Gitlab / Sample project'
+        end
       end
-    end
 
-    context 'when same namespace / cross-project argument' do
-      let(:another_project) { create(:project, namespace: namespace) }
-
-      it 'returns name of the project' do
-        expect(project.to_human_reference(another_project)).to eq 'Sample project'
+      context 'when same namespace / cross-project argument' do
+        it 'returns name of the project' do
+          expect(project.to_human_reference(another_project)).to eq 'Sample project'
+        end
       end
     end
   end

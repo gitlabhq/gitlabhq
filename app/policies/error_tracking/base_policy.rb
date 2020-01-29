@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ErrorTracking
-  class DetailedErrorPolicy < BasePolicy
+  class BasePolicy < ::BasePolicy
     delegate { @subject.gitlab_project }
   end
 end

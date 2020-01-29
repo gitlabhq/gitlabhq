@@ -3,15 +3,17 @@
 module Gitlab
   module ImportExport
     class ProjectTreeRestorer
+      LARGE_PROJECT_FILE_SIZE_BYTES = 500.megabyte
+
       attr_reader :user
       attr_reader :shared
       attr_reader :project
 
       def initialize(user:, shared:, project:)
-        @path = File.join(shared.export_path, 'project.json')
         @user = user
         @shared = shared
         @project = project
+        @tree_loader = ProjectTreeLoader.new
       end
 
       def restore
@@ -36,9 +38,16 @@ module Gitlab
 
       private
 
+      def large_project?(path)
+        File.size(path) >= LARGE_PROJECT_FILE_SIZE_BYTES
+      end
+
       def read_tree_hash
-        json = IO.read(@path)
-        ActiveSupport::JSON.decode(json)
+        path = File.join(@shared.export_path, 'project.json')
+        dedup_entries = large_project?(path) &&
+          Feature.enabled?(:dedup_project_import_metadata, project.group)
+
+        @tree_loader.load(path, dedup_entries: dedup_entries)
       rescue => e
         Rails.logger.error("Import/Export error: #{e.message}") # rubocop:disable Gitlab/RailsLogger
         raise Gitlab::ImportExport::Error.new('Incorrect JSON format')

@@ -10,7 +10,7 @@ describe Banzai::Filter::ProjectReferenceFilter do
   end
 
   def get_reference(project)
-    project.to_reference_with_postfix
+    project.to_reference
   end
 
   let(:project) { create(:project, :public) }

@@ -23,6 +23,14 @@ module Referable
     ''
   end
 
+  # If this referable object can serve as the base for the
+  # reference of child objects (e.g. projects are the base of
+  # issues), but it is formatted differently, then you may wish
+  # to override this method.
+  def to_reference_base(from = nil, full:)
+    to_reference(from, full: full)
+  end
+
   def reference_link_text(from = nil)
     to_reference(from)
   end

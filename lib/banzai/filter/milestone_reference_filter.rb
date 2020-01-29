@@ -121,7 +121,7 @@ module Banzai
 
       def object_link_text(object, matches)
         milestone_link = escape_once(super)
-        reference = object.project&.to_reference(project)
+        reference = object.project&.to_reference_base(project)
 
         if reference.present?
           "#{milestone_link} <i>in #{reference}</i>".html_safe

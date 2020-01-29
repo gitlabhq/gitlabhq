@@ -180,7 +180,7 @@ class Snippet < ApplicationRecord
     reference = "#{self.class.reference_prefix}#{id}"
 
     if project.present?
-      "#{project.to_reference(from, full: full)}#{reference}"
+      "#{project.to_reference_base(from, full: full)}#{reference}"
     else
       reference
     end

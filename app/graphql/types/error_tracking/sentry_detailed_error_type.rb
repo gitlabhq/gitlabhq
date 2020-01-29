@@ -4,8 +4,9 @@ module Types
   module ErrorTracking
     class SentryDetailedErrorType < ::Types::BaseObject
       graphql_name 'SentryDetailedError'
+      description 'A Sentry error.'
 
-      present_using SentryDetailedErrorPresenter
+      present_using SentryErrorPresenter
 
       authorize :read_sentry_issue
 
@@ -92,18 +93,6 @@ module Types
       field :tags, Types::ErrorTracking::SentryErrorTagsType,
             null: false,
             description: 'Tags associated with the Sentry Error'
-
-      def first_seen
-        DateTime.parse(object.first_seen)
-      end
-
-      def last_seen
-        DateTime.parse(object.last_seen)
-      end
-
-      def project_id
-        Gitlab::GlobalId.build(model_name: 'Project', id: object.project_id).to_s
-      end
     end
   end
 end

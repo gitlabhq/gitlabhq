@@ -24,7 +24,7 @@ class Admin::SpamLogsController < Admin::ApplicationController
   def mark_as_ham
     spam_log = SpamLog.find(params[:id])
 
-    if HamService.new(spam_log).mark_as_ham!
+    if Spam::HamService.new(spam_log).mark_as_ham!
       redirect_to admin_spam_logs_path, notice: _('Spam log successfully submitted as ham.')
     else
       redirect_to admin_spam_logs_path, alert: _('Error with Akismet. Please check the logs for more info.')

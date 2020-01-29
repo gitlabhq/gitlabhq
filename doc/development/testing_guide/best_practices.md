@@ -385,6 +385,21 @@ NOTE: **Note:**
 The usage of `perform_enqueued_jobs` is currently useless since our
 workers aren't inheriting from `ApplicationJob` / `ActiveJob::Base`.
 
+#### DNS
+
+DNS requests are stubbed universally in the test suite
+(as of [!22368](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22368)), as DNS can
+cause issues depending on the developer's local network. There are RSpec labels
+available in `spec/support/dns.rb` which you can apply to tests if you need to
+bypass the DNS stubbing, e.g.:
+
+```
+it "really connects to Prometheus", :permit_dns do
+```
+
+And if you need more specific control, the DNS blocking is implemented in
+`spec/support/helpers/dns_helpers.rb` and these methods can be called elsewhere.
+
 #### Filesystem
 
 Filesystem data can be roughly split into "repositories", and "everything else".

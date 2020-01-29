@@ -1,0 +1,5 @@
+---
+title: refactoring gl_dropdown.js to use ES6 classes instead of constructor functions
+merge_request: 20488
+author: nuwe1
+type: other

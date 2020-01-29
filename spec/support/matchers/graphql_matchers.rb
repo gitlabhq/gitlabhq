@@ -108,6 +108,12 @@ RSpec::Matchers.define :have_graphql_resolver do |expected|
   end
 end
 
+RSpec::Matchers.define :have_graphql_extension do |expected|
+  match do |field|
+    expect(field.metadata[:type_class].extensions).to include(expected)
+  end
+end
+
 RSpec::Matchers.define :expose_permissions_using do |expected|
   match do |type|
     permission_field = type.fields['userPermissions']

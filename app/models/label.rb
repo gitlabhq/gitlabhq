@@ -225,7 +225,7 @@ class Label < ApplicationRecord
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
     if from
-      "#{from.to_reference(target_project, full: full)}#{reference}"
+      "#{from.to_reference_base(target_project, full: full)}#{reference}"
     else
       reference
     end

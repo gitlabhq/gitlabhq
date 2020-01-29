@@ -1068,12 +1068,19 @@ class Project < ApplicationRecord
     end
   end
 
-  def to_reference_with_postfix
-    "#{to_reference(full: true)}#{self.class.reference_postfix}"
+  # Produce a valid reference (see Referable#to_reference)
+  #
+  # NB: For projects, all references are 'full' - i.e. they all include the
+  # full_path, rather than just the project name. For this reason, we ignore
+  # the value of `full:` passed to this method, which is part of the Referable
+  # interface.
+  def to_reference(from = nil, full: false)
+    base = to_reference_base(from, full: true)
+    "#{base}#{self.class.reference_postfix}"
   end
 
   # `from` argument can be a Namespace or Project.
-  def to_reference(from = nil, full: false)
+  def to_reference_base(from = nil, full: false)
     if full || cross_namespace_reference?(from)
       full_path
     elsif cross_project_reference?(from)

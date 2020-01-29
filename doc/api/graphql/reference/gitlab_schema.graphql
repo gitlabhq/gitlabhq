@@ -5454,6 +5454,11 @@ type Project {
   ): SentryDetailedError
 
   """
+  Paginated collection of Sentry errors on the project
+  """
+  sentryErrors: SentryErrorCollection
+
+  """
   E-mail address of the service desk.
   """
   serviceDeskAddress: String
@@ -6054,6 +6059,9 @@ type RootStorageStatistics {
   wikiSize: Int!
 }
 
+"""
+A Sentry error.
+"""
 type SentryDetailedError {
   """
   Count of occurrences
@@ -6184,6 +6192,186 @@ type SentryDetailedError {
   Count of users affected by the error
   """
   userCount: Int!
+}
+
+"""
+A Sentry error. A simplified version of SentryDetailedError.
+"""
+type SentryError {
+  """
+  Count of occurrences
+  """
+  count: Int!
+
+  """
+  Culprit of the error
+  """
+  culprit: String!
+
+  """
+  External URL of the error
+  """
+  externalUrl: String!
+
+  """
+  Timestamp when the error was first seen
+  """
+  firstSeen: Time!
+
+  """
+  Last 24hr stats of the error
+  """
+  frequency: [SentryErrorFrequency!]!
+
+  """
+  ID (global ID) of the error
+  """
+  id: ID!
+
+  """
+  Timestamp when the error was last seen
+  """
+  lastSeen: Time!
+
+  """
+  Sentry metadata message of the error
+  """
+  message: String
+
+  """
+  ID (Sentry ID) of the error
+  """
+  sentryId: String!
+
+  """
+  ID of the project (Sentry project)
+  """
+  sentryProjectId: ID!
+
+  """
+  Name of the project affected by the error
+  """
+  sentryProjectName: String!
+
+  """
+  Slug of the project affected by the error
+  """
+  sentryProjectSlug: String!
+
+  """
+  Short ID (Sentry ID) of the error
+  """
+  shortId: String!
+
+  """
+  Status of the error
+  """
+  status: SentryErrorStatus!
+
+  """
+  Title of the error
+  """
+  title: String!
+
+  """
+  Type of the error
+  """
+  type: String!
+
+  """
+  Count of users affected by the error
+  """
+  userCount: Int!
+}
+
+"""
+An object containing a collection of Sentry errors, and a detailed error.
+"""
+type SentryErrorCollection {
+  """
+  Detailed version of a Sentry error on the project
+  """
+  detailedError(
+    """
+    ID of the Sentry issue
+    """
+    id: ID!
+  ): SentryDetailedError
+
+  """
+  Collection of Sentry Errors
+  """
+  errors(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Search term for the Sentry error.
+    """
+    searchTerm: String
+
+    """
+    Attribute to sort on. Options are frequency, first_seen, last_seen. last_seen is default.
+    """
+    sort: String
+  ): SentryErrorConnection
+
+  """
+  External URL for Sentry
+  """
+  externalUrl: String
+}
+
+"""
+The connection type for SentryError.
+"""
+type SentryErrorConnection {
+  """
+  A list of edges.
+  """
+  edges: [SentryErrorEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [SentryError]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type SentryErrorEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: SentryError
 }
 
 type SentryErrorFrequency {

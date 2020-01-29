@@ -1,0 +1,43 @@
+{
+  "simple": 42,
+  "duped_hash_with_id": {
+    "id": 0,
+    "v1": 1
+  },
+  "duped_hash_no_id": {
+    "v1": 1
+  },
+  "duped_array": [
+    "v2"
+  ],
+  "array": [
+    {
+      "duped_hash_with_id": {
+        "id": 0,
+        "v1": 1
+      }
+    },
+    {
+      "duped_array": [
+        "v2"
+      ]
+    },
+    {
+      "duped_hash_no_id": {
+        "v1": 1
+      }
+    }
+  ],
+  "nested": {
+    "duped_hash_with_id": {
+      "id": 0,
+      "v1": 1
+    },
+    "duped_array": [
+      "v2"
+    ],
+    "array": [
+      "don't touch"
+    ]
+  }
+}

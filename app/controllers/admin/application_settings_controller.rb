@@ -3,7 +3,13 @@
 class Admin::ApplicationSettingsController < Admin::ApplicationController
   include InternalRedirect
 
+  # NOTE: Use @application_setting in this controller when you need to access
+  # application_settings after it has been modified. This is because the
+  # ApplicationSetting model uses Gitlab::ThreadMemoryCache for caching and the
+  # cache might be stale immediately after an update.
+  # https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30233
   before_action :set_application_setting
+
   before_action :whitelist_query_limiting, only: [:usage_data]
   before_action :validate_self_monitoring_feature_flag_enabled, only: [
     :create_self_monitoring_project,
@@ -79,6 +85,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     redirect_to ::Gitlab::LetsEncrypt.terms_of_service_url
   end
 
+  # Specs are in spec/requests/self_monitoring_project_spec.rb
   def create_self_monitoring_project
     job_id = SelfMonitoringProjectCreateWorker.perform_async
 
@@ -88,6 +95,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     }
   end
 
+  # Specs are in spec/requests/self_monitoring_project_spec.rb
   def status_create_self_monitoring_project
     job_id = params[:job_id].to_s
 
@@ -98,15 +106,16 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       }
     end
 
-    if Gitlab::CurrentSettings.self_monitoring_project_id.present?
-      return render status: :ok, json: self_monitoring_data
-
-    elsif SelfMonitoringProjectCreateWorker.in_progress?(job_id)
+    if SelfMonitoringProjectCreateWorker.in_progress?(job_id)
       ::Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
       return render status: :accepted, json: {
         message: _('Job to create self-monitoring project is in progress')
       }
+    end
+
+    if @application_setting.self_monitoring_project_id.present?
+      return render status: :ok, json: self_monitoring_data
     end
 
     render status: :bad_request, json: {
@@ -115,6 +124,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     }
   end
 
+  # Specs are in spec/requests/self_monitoring_project_spec.rb
   def delete_self_monitoring_project
     job_id = SelfMonitoringProjectDeleteWorker.perform_async
 
@@ -124,6 +134,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     }
   end
 
+  # Specs are in spec/requests/self_monitoring_project_spec.rb
   def status_delete_self_monitoring_project
     job_id = params[:job_id].to_s
 
@@ -134,16 +145,17 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       }
     end
 
-    if Gitlab::CurrentSettings.self_monitoring_project_id.nil?
-      return render status: :ok, json: {
-        message: _('Self-monitoring project has been successfully deleted')
-      }
-
-    elsif SelfMonitoringProjectDeleteWorker.in_progress?(job_id)
+    if SelfMonitoringProjectDeleteWorker.in_progress?(job_id)
       ::Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
       return render status: :accepted, json: {
         message: _('Job to delete self-monitoring project is in progress')
+      }
+    end
+
+    if @application_setting.self_monitoring_project_id.nil?
+      return render status: :ok, json: {
+        message: _('Self-monitoring project has been successfully deleted')
       }
     end
 
@@ -161,8 +173,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def self_monitoring_data
     {
-      project_id: Gitlab::CurrentSettings.self_monitoring_project_id,
-      project_full_path: Gitlab::CurrentSettings.self_monitoring_project&.full_path
+      project_id: @application_setting.self_monitoring_project_id,
+      project_full_path: @application_setting.self_monitoring_project&.full_path
     }
   end
 

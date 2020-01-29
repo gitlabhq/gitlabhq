@@ -484,10 +484,10 @@ class Commit
   end
 
   def commit_reference(from, referable_commit_id, full: false)
-    reference = project.to_reference(from, full: full)
+    base = project.to_reference_base(from, full: full)
 
-    if reference.present?
-      "#{reference}#{self.class.reference_prefix}#{referable_commit_id}"
+    if base.present?
+      "#{base}#{self.class.reference_prefix}#{referable_commit_id}"
     else
       referable_commit_id
     end

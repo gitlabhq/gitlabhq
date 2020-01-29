@@ -369,7 +369,7 @@ describe Banzai::Filter::LabelReferenceFilter do
     end
 
     context 'with project reference' do
-      let(:reference) { "#{project.to_reference}#{group_label.to_reference(format: :name)}" }
+      let(:reference) { "#{project.to_reference_base}#{group_label.to_reference(format: :name)}" }
 
       it 'links to a valid reference' do
         doc = reference_filter("See #{reference}", project: project)
@@ -385,7 +385,7 @@ describe Banzai::Filter::LabelReferenceFilter do
       end
 
       it 'ignores invalid label names' do
-        exp = act = %(Label #{project.to_reference}#{Label.reference_prefix}"#{group_label.name.reverse}")
+        exp = act = %(Label #{project.to_reference_base}#{Label.reference_prefix}"#{group_label.name.reverse}")
 
         expect(reference_filter(act).to_html).to eq exp
       end

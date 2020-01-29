@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import Tracking from '~/tracking';
 import stubChildren from 'helpers/stub_children';
 import component from '~/registry/settings/components/settings_form.vue';
 import { createStore } from '~/registry/settings/store/';
@@ -15,6 +16,9 @@ describe('Settings Form', () => {
   let dispatchSpy;
 
   const FORM_ELEMENTS_ID_PREFIX = '#expiration-policy';
+  const trackingPayload = {
+    label: 'docker_container_retention_and_expiration_policies',
+  };
 
   const GlLoadingIcon = { name: 'gl-loading-icon-stub', template: '<svg></svg>' };
 
@@ -48,6 +52,7 @@ describe('Settings Form', () => {
     store.dispatch('setInitialState', stringifiedFormOptions);
     dispatchSpy = jest.spyOn(store, 'dispatch');
     mountComponent();
+    jest.spyOn(Tracking, 'event');
   });
 
   afterEach(() => {
@@ -118,15 +123,23 @@ describe('Settings Form', () => {
     beforeEach(() => {
       form = findForm();
     });
-    it('cancel has type reset', () => {
-      expect(findCancelButton().attributes('type')).toBe('reset');
-    });
 
-    it('form reset event call the appropriate function', () => {
-      dispatchSpy.mockReturnValue();
-      form.trigger('reset');
-      // expect.any(Object) is necessary because the event payload is passed to the function
-      expect(dispatchSpy).toHaveBeenCalledWith('resetSettings', expect.any(Object));
+    describe('form cancel event', () => {
+      it('has type reset', () => {
+        expect(findCancelButton().attributes('type')).toBe('reset');
+      });
+
+      it('calls the appropriate function', () => {
+        dispatchSpy.mockReturnValue();
+        form.trigger('reset');
+        expect(dispatchSpy).toHaveBeenCalledWith('resetSettings');
+      });
+
+      it('tracks the reset event', () => {
+        dispatchSpy.mockReturnValue();
+        form.trigger('reset');
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'reset_form', trackingPayload);
+      });
     });
 
     it('save has type submit', () => {
@@ -175,6 +188,12 @@ describe('Settings Form', () => {
         dispatchSpy.mockResolvedValue();
         form.trigger('submit');
         expect(dispatchSpy).toHaveBeenCalledWith('saveSettings');
+      });
+
+      it('tracks the submit event', () => {
+        dispatchSpy.mockResolvedValue();
+        form.trigger('submit');
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'submit_form', trackingPayload);
       });
 
       it('show a success toast when submit succeed', () => {

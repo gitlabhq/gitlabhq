@@ -35,7 +35,7 @@ module Gitlab
                     :user_count
 
       def self.declarative_policy_class
-        'ErrorTracking::DetailedErrorPolicy'
+        'ErrorTracking::BasePolicy'
       end
     end
   end

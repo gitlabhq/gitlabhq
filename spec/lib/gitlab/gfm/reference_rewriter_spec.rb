@@ -8,7 +8,7 @@ describe Gitlab::Gfm::ReferenceRewriter do
   let(:new_project) { create(:project, name: 'new-project', group: group) }
   let(:user) { create(:user) }
 
-  let(:old_project_ref) { old_project.to_reference(new_project) }
+  let(:old_project_ref) { old_project.to_reference_base(new_project) }
   let(:text) { 'some text' }
 
   before do

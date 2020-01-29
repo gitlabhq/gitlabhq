@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe SentryDetailedErrorPresenter do
+describe SentryErrorPresenter do
   let(:error) { build(:detailed_error_tracking_error) }
   let(:presenter) { described_class.new(error) }
 
@@ -10,7 +10,7 @@ describe SentryDetailedErrorPresenter do
     subject { presenter.frequency }
 
     it 'returns an array of frequency structs' do
-      expect(subject).to include(a_kind_of(SentryDetailedErrorPresenter::FrequencyStruct))
+      expect(subject).to include(a_kind_of(SentryErrorPresenter::FrequencyStruct))
     end
 
     it 'converts the times into UTC time objects' do
