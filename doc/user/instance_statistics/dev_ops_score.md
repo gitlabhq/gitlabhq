@@ -15,7 +15,7 @@ the last 30 days, averaged over the number of active users in that time period. 
 provides a Lead score per feature, which is calculated based on GitLab's analysis
 of top-performing instances based on [usage ping data](../admin_area/settings/usage_statistics.md#usage-ping-core-only) that GitLab has
 collected. Your score is compared to the lead score of each feature and then expressed as a percentage at the bottom of said feature.
-Your overall index score is an average of all your feature score percentages - this percentage value is presented above all the of features on the page.
+Your overall **index score** is an average of your feature scores. You can use this score to compare your DevOps status to other organizations.
 
 ![DevOps Score](img/dev_ops_score_v12_6.png)
 

@@ -59,8 +59,7 @@ integrity is guaranteed.
 ## Background migrations for EE-only features
 
 All the background migration classes for EE-only features should be present in GitLab CE.
-For this purpose, an empty class can be created for GitLab CE and for GitLab EE it can be extended
-For this purpose, an empty class can be created for GitLab CE,  and it can be extended for GitLab EE
+For this purpose, an empty class can be created for GitLab CE, and it can be extended for GitLab EE
 as explained in the [guidelines for implementing Enterprise Edition features](ee_features.md#code-in-libgitlabbackground_migration).
 
 ## How It Works

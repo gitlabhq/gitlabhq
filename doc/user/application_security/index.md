@@ -148,12 +148,15 @@ Clicking on this button will create a merge request to apply the solution onto t
 
 ![Create merge request from vulnerability](img/create_issue_with_list_hover.png)
 
-## Security approvals in merge requests **(ULTIMATE)**
+## Security approvals in merge requests
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9928) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.2.
 
-Merge Request Approvals can be configured to require approval from a member
-of your security team when a vulnerability, or a software license compliance violation would be introduced by a merge request.
+Merge Request Approvals can be configured to require approval from a member of your
+security team when a merge request would introduce one of the following security issues:
+
+- a security vulnerability
+- a software license compliance violation
 
 This threshold is defined as `high`, `critical`, or `unknown`
 severity. When any vulnerabilities are present within a merge request, an

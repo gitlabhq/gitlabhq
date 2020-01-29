@@ -73,6 +73,15 @@ You can filter issues and merge requests by specific terms included in titles or
 
 ![filter issues by specific terms](img/issue_search_by_term.png)
 
+### Filtering merge requests by approvers **(STARTER)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/9468) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.9.
+
+To filter merge requests by an individual approver, you can type (or select from
+the dropdown) `approver` and select the user.
+
+![Filter MRs by an approver](img/filter_approver_merge_requests.png)
+
 ## Search history
 
 You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.

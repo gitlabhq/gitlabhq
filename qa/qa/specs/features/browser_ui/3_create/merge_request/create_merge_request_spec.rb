@@ -32,7 +32,6 @@ module QA
 
         milestone = Resource::ProjectMilestone.fabricate_via_api! do |milestone|
           milestone.project = @project
-          milestone.title = 'milestone'
         end
 
         label = Resource::Label.fabricate_via_api! do |label|

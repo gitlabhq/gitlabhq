@@ -33,7 +33,7 @@ the given file.
 Once you've set Code Owners to a project, you can configure it to
 receive approvals:
 
-- As [merge request eligible approvers](merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers-starter). **(STARTER)**
+- As [merge request eligible approvers](merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers).
 - As required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners-premium). **(PREMIUM)**
 
 Once set, Code Owners are displayed in merge requests widgets:
