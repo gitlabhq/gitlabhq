@@ -10,9 +10,14 @@ describe('User Popovers', () => {
   const dummyUser = { name: 'root' };
   const dummyUserStatus = { message: 'active' };
 
+  let popovers;
+
   const triggerEvent = (eventName, el) => {
-    const event = document.createEvent('MouseEvents');
-    event.initMouseEvent(eventName, true, true, window);
+    const event = new MouseEvent(eventName, {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+    });
 
     el.dispatchEvent(event);
   };
@@ -26,46 +31,54 @@ describe('User Popovers', () => {
     const userStatusCacheSpy = () => Promise.resolve(dummyUserStatus);
     spyOn(UsersCache, 'retrieveStatusById').and.callFake(userId => userStatusCacheSpy(userId));
 
-    initUserPopovers(document.querySelectorAll('.js-user-link'));
+    popovers = initUserPopovers(document.querySelectorAll(selector));
   });
 
-  it('Should Show+Hide Popover on mouseenter and mouseleave', done => {
-    const targetLink = document.querySelector(selector);
-    const { userId } = targetLink.dataset;
-    triggerEvent('mouseenter', targetLink);
-
-    setTimeout(() => {
-      const shownPopover = document.querySelector('.popover');
-
-      expect(shownPopover).not.toBeNull();
-      expect(targetLink.getAttribute('aria-describedby')).not.toBeNull();
-
-      expect(shownPopover.innerHTML).toContain(dummyUser.name);
-      expect(UsersCache.retrieveById).toHaveBeenCalledWith(userId.toString());
-
-      triggerEvent('mouseleave', targetLink);
-
-      setTimeout(() => {
-        // After Mouse leave it should be hidden now
-        expect(document.querySelector('.popover')).toBeNull();
-        expect(targetLink.getAttribute('aria-describedby')).toBeNull();
-        done();
-      });
-    }, 210); // We need to wait until the 200ms mouseover delay is over, only then the popover will be visible
+  it('initializes a popover for each js-user-link element found in the document', () => {
+    expect(document.querySelectorAll(selector).length).toBe(popovers.length);
   });
 
-  it('Should Not show a popover on short mouse over', done => {
-    const targetLink = document.querySelector(selector);
-    const { userId } = targetLink.dataset;
-    triggerEvent('mouseenter', targetLink);
+  describe('when user link emits mouseenter event', () => {
+    let userLink;
 
-    setTimeout(() => {
-      expect(document.querySelector('.popover')).toBeNull();
-      expect(UsersCache.retrieveById).not.toHaveBeenCalledWith(userId.toString());
+    beforeEach(() => {
+      userLink = document.querySelector(selector);
 
-      triggerEvent('mouseleave', targetLink);
-
-      done();
+      triggerEvent('mouseenter', userLink);
     });
+
+    it('removes title attribute from user links', () => {
+      expect(userLink.getAttribute('title')).toBeFalsy();
+      expect(userLink.dataset.originalTitle).toBeFalsy();
+    });
+
+    it('populates popovers with preloaded user data', () => {
+      const { name, userId, username } = userLink.dataset;
+      const [firstPopover] = popovers;
+
+      expect(firstPopover.$props.user).toEqual(
+        jasmine.objectContaining({
+          name,
+          userId,
+          username,
+        }),
+      );
+    });
+
+    it('fetches user info and status from the user cache', () => {
+      const { userId } = userLink.dataset;
+
+      expect(UsersCache.retrieveById).toHaveBeenCalledWith(userId);
+      expect(UsersCache.retrieveStatusById).toHaveBeenCalledWith(userId);
+    });
+  });
+
+  it('removes aria-describedby attribute from the user link on mouseleave', () => {
+    const userLink = document.querySelector(selector);
+
+    userLink.setAttribute('aria-describedby', 'popover');
+    triggerEvent('mouseleave', userLink);
+
+    expect(userLink.getAttribute('aria-describedby')).toBe(null);
   });
 });

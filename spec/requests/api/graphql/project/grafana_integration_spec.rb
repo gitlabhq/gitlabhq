@@ -45,7 +45,7 @@ describe 'Getting Grafana Integration' do
 
       it_behaves_like 'a working graphql query'
 
-      it { expect(integration_data['token']).to eql grafana_integration.token }
+      it { expect(integration_data['token']).to eql grafana_integration.masked_token }
       it { expect(integration_data['grafanaUrl']).to eql grafana_integration.grafana_url }
 
       it do

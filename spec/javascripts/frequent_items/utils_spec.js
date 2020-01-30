@@ -1,5 +1,10 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import { isMobile, getTopFrequentItems, updateExistingFrequentItem } from '~/frequent_items/utils';
+import {
+  isMobile,
+  getTopFrequentItems,
+  updateExistingFrequentItem,
+  sanitizeItem,
+} from '~/frequent_items/utils';
 import { HOUR_IN_MS, FREQUENT_ITEMS } from '~/frequent_items/constants';
 import { mockProject, unsortedFrequentItems, sortedFrequentItems } from './mock_data';
 
@@ -90,6 +95,18 @@ describe('Frequent Items utils spec', () => {
       const result = updateExistingFrequentItem(mockedProject, newItem);
 
       expect(result.frequency).toBe(mockedProject.frequency);
+    });
+  });
+
+  describe('sanitizeItem', () => {
+    it('strips HTML tags for name and namespace', () => {
+      const input = {
+        name: '<br><b>test</b>',
+        namespace: '<br>test',
+        id: 1,
+      };
+
+      expect(sanitizeItem(input)).toEqual({ name: 'test', namespace: 'test', id: 1 });
     });
   });
 });

@@ -2658,9 +2658,9 @@ type GrafanaIntegration {
   id: ID!
 
   """
-  API token for the Grafana integration
+  API token for the Grafana integration. Field is permanently masked.
   """
-  token: String!
+  token: String! @deprecated(reason: "Plain text token has been masked for security reasons")
 
   """
   Timestamp of the issue's last activity

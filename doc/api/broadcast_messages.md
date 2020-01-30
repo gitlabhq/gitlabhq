@@ -35,7 +35,8 @@ Example response:
         "font":"#FFFFFF",
         "id":1,
         "active": false,
-        "target_path": "*/welcome"
+        "target_path": "*/welcome",
+        "broadcast_type": "banner"
     }
 ]
 ```
@@ -71,7 +72,8 @@ Example response:
     "font":"#FFFFFF",
     "id":1,
     "active":false,
-    "target_path": "*/welcome"
+    "target_path": "*/welcome",
+    "broadcast_type": "banner"
 }
 ```
 
@@ -92,6 +94,8 @@ Parameters:
 | `ends_at`   | datetime | no       | Ending time (defaults to one hour from current time). |
 | `color`     | string   | no       | Background color hex code.                            |
 | `font`      | string   | no       | Foreground color hex code.                            |
+| `target_path`| string  | no       | Target path of the broadcast message.                 |
+| `broadcast_type`| string | no     | Appearance type (defaults to banner)                  |
 
 Example request:
 
@@ -110,7 +114,8 @@ Example response:
     "font":"#FFFFFF",
     "id":1,
     "active": true,
-    "target_path": "*/welcome"
+    "target_path": "*/welcome",
+    "broadcast_type": "notification",
 }
 ```
 
@@ -132,6 +137,8 @@ Parameters:
 | `ends_at`   | datetime | no       | Ending time.                       |
 | `color`     | string   | no       | Background color hex code.         |
 | `font`      | string   | no       | Foreground color hex code.         |
+| `target_path`| string  | no       | Target path of the broadcast message. |
+| `broadcast_type`| string | no     | Appearance type (defaults to banner) |
 
 Example request:
 
@@ -150,7 +157,8 @@ Example response:
     "font":"#FFFFFF",
     "id":1,
     "active": true,
-    "target_path": "*/welcome"
+    "target_path": "*/welcome",
+    "broadcast_type": "notification",
 }
 ```
 

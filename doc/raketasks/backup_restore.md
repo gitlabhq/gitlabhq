@@ -355,10 +355,10 @@ For installations from source:
          # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
          # encryption: 'AES256'
          # Turns on AWS Server-Side Encryption with Amazon Customer-Provided Encryption Keys for backups, this is optional
-         #   This should be set to the base64-encoded encryption key for Amazon S3 to use to encrypt or decrypt your data.
+         #   This should be set to the encryption key for Amazon S3 to use to encrypt or decrypt your data.
          #   'encryption' must also be set in order for this to have any effect.
          #   To avoid storing the key on disk, the key can also be specified via the `GITLAB_BACKUP_ENCRYPTION_KEY` environment variable.
-         # encryption_key: '<base64 key>'
+         # encryption_key: '<key>'
          # Specifies Amazon S3 storage class to use for backups, this is optional
          # storage_class: 'STANDARD'
    ```

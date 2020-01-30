@@ -266,8 +266,8 @@ You can enable profile syncing from selected OmniAuth providers and for all or f
 When authenticating using LDAP, the user's name and email are always synced.
 
 ```ruby
-gitlab_rails['sync_profile_from_provider'] = ['twitter', 'google_oauth2']
-gitlab_rails['sync_profile_attributes'] = ['name', 'email', 'location']
+gitlab_rails['omniauth_sync_profile_from_provider'] = ['twitter', 'google_oauth2']
+gitlab_rails['omniauth_sync_profile_attributes'] = ['name', 'email', 'location']
 ```
 
 **For installations from source**

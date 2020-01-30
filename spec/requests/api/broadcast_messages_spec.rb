@@ -17,7 +17,7 @@ describe API::BroadcastMessages do
       expect(response).to include_pagination_headers
       expect(json_response).to be_kind_of(Array)
       expect(json_response.first.keys)
-        .to match_array(%w(id message starts_at ends_at color font active target_path))
+        .to match_array(%w(id message starts_at ends_at color font active target_path broadcast_type))
     end
   end
 
@@ -28,7 +28,7 @@ describe API::BroadcastMessages do
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['id']).to eq message.id
       expect(json_response.keys)
-        .to match_array(%w(id message starts_at ends_at color font active target_path))
+        .to match_array(%w(id message starts_at ends_at color font active target_path broadcast_type))
     end
   end
 
@@ -84,6 +84,32 @@ describe API::BroadcastMessages do
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['target_path']).to eq attrs[:target_path]
+      end
+
+      it 'accepts a broadcast type' do
+        attrs = attributes_for(:broadcast_message, broadcast_type: 'notification')
+
+        post api('/broadcast_messages', admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['broadcast_type']).to eq attrs[:broadcast_type]
+      end
+
+      it 'uses default broadcast type' do
+        attrs = attributes_for(:broadcast_message)
+
+        post api('/broadcast_messages', admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['broadcast_type']).to eq 'banner'
+      end
+
+      it 'errors for invalid broadcast type' do
+        attrs = attributes_for(:broadcast_message, broadcast_type: 'invalid-type')
+
+        post api('/broadcast_messages', admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end
@@ -143,6 +169,23 @@ describe API::BroadcastMessages do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['target_path']).to eq attrs[:target_path]
+      end
+
+      it 'accepts a new broadcast_type' do
+        attrs = { broadcast_type: 'notification' }
+
+        put api("/broadcast_messages/#{message.id}", admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['broadcast_type']).to eq attrs[:broadcast_type]
+      end
+
+      it 'errors for invalid broadcast type' do
+        attrs = { broadcast_type: 'invalid-type' }
+
+        put api("/broadcast_messages/#{message.id}", admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end

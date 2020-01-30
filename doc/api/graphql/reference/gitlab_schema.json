@@ -17380,7 +17380,7 @@
             },
             {
               "name": "token",
-              "description": "API token for the Grafana integration",
+              "description": "API token for the Grafana integration. Field is permanently masked.",
               "args": [
 
               ],
@@ -17393,8 +17393,8 @@
                   "ofType": null
                 }
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Plain text token has been masked for security reasons"
             },
             {
               "name": "updatedAt",

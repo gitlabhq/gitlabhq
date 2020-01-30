@@ -10,6 +10,8 @@ module Types
       @calls_gitaly = !!kwargs.delete(:calls_gitaly)
       @constant_complexity = !!kwargs[:complexity]
       kwargs[:complexity] ||= field_complexity(kwargs[:resolver_class])
+      @feature_flag = kwargs[:feature_flag]
+      kwargs = check_feature_flag(kwargs)
 
       super(*args, **kwargs, &block)
     end
@@ -28,7 +30,26 @@ module Types
       @constant_complexity
     end
 
+    def visible?(context)
+      return false if feature_flag.present? && !Feature.enabled?(feature_flag)
+
+      super
+    end
+
     private
+
+    attr_reader :feature_flag
+
+    def feature_documentation_message(key, description)
+      "#{description}. Available only when feature flag #{key} is enabled."
+    end
+
+    def check_feature_flag(args)
+      args[:description] = feature_documentation_message(args[:feature_flag], args[:description]) if args[:feature_flag].present?
+      args.delete(:feature_flag)
+
+      args
+    end
 
     def field_complexity(resolver_class)
       if resolver_class

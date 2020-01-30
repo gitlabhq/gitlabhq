@@ -5,9 +5,9 @@ require 'pathname'
 module QA
   context 'Configure' do
     let(:project) do
-      Resource::Project.fabricate_via_api! do |p|
-        p.name = Runtime::Env.auto_devops_project_name || 'autodevops-project'
-        p.auto_devops_enabled = true
+      Resource::Project.fabricate_via_api! do |project|
+        project.name = Runtime::Env.auto_devops_project_name || 'autodevops-project'
+        project.auto_devops_enabled = true
       end
     end
 

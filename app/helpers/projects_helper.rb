@@ -368,8 +368,8 @@ module ProjectsHelper
     @project.grafana_integration&.grafana_url
   end
 
-  def grafana_integration_token
-    @project.grafana_integration&.token
+  def grafana_integration_masked_token
+    @project.grafana_integration&.masked_token
   end
 
   def grafana_integration_enabled?
