@@ -59,13 +59,13 @@ describe 'Project navbar' do
             _('Environments'),
             _('Error Tracking'),
             _('Serverless'),
-            _('Kubernetes'),
-            _('Auto DevOps')
+            _('Kubernetes')
           ]
         },
         {
           nav_item: _('Analytics'),
           nav_sub_items: [
+            _('CI / CD Analytics'),
             (_('Code Review') if Gitlab.ee?),
             _('Cycle Analytics'),
             _('Repository Analytics')

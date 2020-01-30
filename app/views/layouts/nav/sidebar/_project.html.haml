@@ -298,7 +298,7 @@
 
       = render_if_exists 'layouts/nav/sidebar/project_packages_link'
 
-      = render 'layouts/nav/sidebar/project_analytics_link'
+      = render 'layouts/nav/sidebar/analytics_links', links: project_analytics_navbar_links(@project, current_user)
 
       - if project_nav_tab? :wiki
         - wiki_url = project_wiki_path(@project, :home)

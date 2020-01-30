@@ -402,7 +402,9 @@ export default {
             :text="currentEnvironmentName"
           >
             <div class="d-flex flex-column overflow-hidden">
-              <gl-dropdown-header class="text-center">{{ __('Environment') }}</gl-dropdown-header>
+              <gl-dropdown-header class="monitor-environment-dropdown-header text-center">{{
+                __('Environment')
+              }}</gl-dropdown-header>
               <gl-dropdown-divider />
               <gl-search-box-by-type
                 v-if="shouldRenderSearchableEnvironmentsDropdown"

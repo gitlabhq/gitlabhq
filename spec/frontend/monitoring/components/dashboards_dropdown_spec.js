@@ -35,19 +35,49 @@ describe('DashboardsDropdown', () => {
 
   const findItems = () => wrapper.findAll(GlDropdownItem);
   const findItemAt = i => wrapper.findAll(GlDropdownItem).at(i);
+  const findSearchInput = () => wrapper.find({ ref: 'monitorDashboardsDropdownSearch' });
+  const findNoItemsMsg = () => wrapper.find({ ref: 'monitorDashboardsDropdownMsg' });
+  const setSearchTerm = searchTerm => wrapper.setData({ searchTerm });
 
   describe('when it receives dashboards data', () => {
     beforeEach(() => {
       wrapper = createComponent();
     });
+
     it('displays an item for each dashboard', () => {
-      expect(wrapper.findAll(GlDropdownItem).length).toEqual(dashboardGitResponse.length);
+      expect(findItems().length).toEqual(dashboardGitResponse.length);
     });
 
     it('displays items with the dashboard display name', () => {
       expect(findItemAt(0).text()).toBe(dashboardGitResponse[0].display_name);
       expect(findItemAt(1).text()).toBe(dashboardGitResponse[1].display_name);
       expect(findItemAt(2).text()).toBe(dashboardGitResponse[2].display_name);
+    });
+
+    it('displays a search input', () => {
+      expect(findSearchInput().isVisible()).toBe(true);
+    });
+
+    it('hides no message text by default', () => {
+      expect(findNoItemsMsg().isVisible()).toBe(false);
+    });
+
+    it('filters dropdown items when searched for item exists in the list', () => {
+      const searchTerm = 'Default';
+      setSearchTerm(searchTerm);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findItems()).toHaveLength(1);
+      });
+    });
+
+    it('shows no items found message when searched for item does not exists in the list', () => {
+      const searchTerm = 'does-not-exist';
+      setSearchTerm(searchTerm);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findNoItemsMsg().isVisible()).toBe(true);
+      });
     });
   });
 
@@ -224,7 +254,7 @@ describe('DashboardsDropdown', () => {
     it('displays an item for each dashboard', () => {
       const item = wrapper.findAll({ ref: 'duplicateDashboardItem' });
 
-      expect(findItems().length).toEqual(dashboardGitResponse.length);
+      expect(findItems()).toHaveLength(dashboardGitResponse.length);
       expect(item.length).toBe(0);
     });
 

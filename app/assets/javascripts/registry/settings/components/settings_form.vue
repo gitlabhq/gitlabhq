@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import {
   GlFormGroup,
   GlToggle,
@@ -42,6 +42,7 @@ export default {
   },
   computed: {
     ...mapState(['formOptions', 'isLoading']),
+    ...mapGetters({ isEdited: 'getIsEdited' }),
     ...mapComputed(
       [
         'enabled',
@@ -91,6 +92,9 @@ export default {
     },
     isSubmitButtonDisabled() {
       return this.formIsInvalid || this.isLoading;
+    },
+    isCancelButtonDisabled() {
+      return !this.isEdited || this.isLoading;
     },
   },
   methods: {
@@ -211,7 +215,12 @@ export default {
       </template>
       <template #footer>
         <div class="d-flex justify-content-end">
-          <gl-button ref="cancel-button" type="reset" class="mr-2 d-block" :disabled="isLoading">
+          <gl-button
+            ref="cancel-button"
+            type="reset"
+            :disabled="isCancelButtonDisabled"
+            class="mr-2 d-block"
+          >
             {{ __('Cancel') }}
           </gl-button>
           <gl-button

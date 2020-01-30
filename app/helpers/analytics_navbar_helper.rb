@@ -20,6 +20,10 @@ module AnalyticsNavbarHelper
     ].compact
   end
 
+  def group_analytics_navbar_links(group, current_user)
+    []
+  end
+
   private
 
   def navbar_sub_item(args)

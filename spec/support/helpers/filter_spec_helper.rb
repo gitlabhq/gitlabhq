@@ -55,6 +55,7 @@ module FilterSpecHelper
 
   def reference_pipeline(context = {})
     context.reverse_merge!(project: project) if defined?(project)
+    context.reverse_merge!(current_user: current_user) if defined?(current_user)
 
     filters = [
       Banzai::Filter::AutolinkFilter,

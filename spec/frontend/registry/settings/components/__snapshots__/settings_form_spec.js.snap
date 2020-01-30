@@ -159,6 +159,7 @@ exports[`Settings Form renders 1`] = `
       >
         <glbutton-stub
           class="mr-2 d-block"
+          disabled="true"
           size="md"
           type="reset"
           variant="secondary"

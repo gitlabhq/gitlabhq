@@ -1,3 +1,4 @@
+- should_display_analytics_pages_in_sidebar = Feature.enabled?(:analytics_pages_under_group_analytics_sidebar, @group)
 - issues_count = group_issues_count(state: 'opened')
 - merge_requests_count = group_merge_requests_count(state: 'opened')
 
@@ -11,7 +12,9 @@
           = @group.name
     %ul.sidebar-top-level-items.qa-group-sidebar
       - if group_sidebar_link?(:overview)
-        = nav_link(path: group_overview_nav_link_paths, html_options: { class: 'home' }) do
+        - paths = group_overview_nav_link_paths
+        - paths << 'contribution_analytics#show' unless should_display_analytics_pages_in_sidebar
+        = nav_link(path: paths, unless: -> { should_display_analytics_pages_in_sidebar && current_path?('groups/contribution_analytics#show') }, html_options: { class: 'home' }) do
           = link_to group_path(@group) do
             .nav-icon-container
               = sprite_icon('home')
@@ -42,18 +45,19 @@
                   %span
                     = _('Activity')
 
-            - if group_sidebar_link?(:contribution_analytics)
-              = nav_link(path: 'analytics#show') do
-                = link_to group_contribution_analytics_path(@group), title: _('Contribution Analytics'), data: { placement: 'right', qa_selector: 'contribution_analytics_link' } do
-                  %span
-                    = _('Contribution Analytics')
+            - unless should_display_analytics_pages_in_sidebar
+              - if group_sidebar_link?(:contribution_analytics)
+                = nav_link(path: 'contribution_analytics#show') do
+                  = link_to group_contribution_analytics_path(@group), title: _('Contribution Analytics'), data: { placement: 'right', qa_selector: 'contribution_analytics_link' } do
+                    %span
+                      = _('Contribution Analytics')
 
-            = render_if_exists 'layouts/nav/group_insights_link'
+              = render_if_exists 'layouts/nav/group_insights_link'
 
       = render_if_exists "layouts/nav/ee/epic_link", group: @group
 
       - if group_sidebar_link?(:issues)
-        = nav_link(path: group_issues_sub_menu_items) do
+        = nav_link(path: group_issues_sub_menu_items, unless: -> { should_display_analytics_pages_in_sidebar && current_path?('issues_analytics#show') }) do
           = link_to issues_group_path(@group), data: { qa_selector: 'group_issues_item' } do
             .nav-icon-container
               = sprite_icon('issues')
@@ -80,7 +84,8 @@
                   %span
                     = boards_link_text
 
-            = render_if_exists 'layouts/nav/issues_analytics_link'
+            - unless should_display_analytics_pages_in_sidebar
+              = render_if_exists 'layouts/nav/issues_analytics_link'
 
             - if group_sidebar_link?(:labels)
               = nav_link(path: 'labels#index') do
@@ -125,6 +130,8 @@
                   = _('Kubernetes')
 
       = render_if_exists 'groups/sidebar/packages'
+
+      = render 'layouts/nav/sidebar/analytics_links', links: group_analytics_navbar_links(@group, current_user)
 
       - if group_sidebar_link?(:group_members)
         = nav_link(path: 'group_members#index') do

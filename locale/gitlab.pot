@@ -10581,6 +10581,9 @@ msgstr ""
 msgid "Issues / Merge Requests"
 msgstr ""
 
+msgid "Issues Analytics"
+msgstr ""
+
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 

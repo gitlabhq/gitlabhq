@@ -518,6 +518,15 @@ export const metricsDashboardPayload = {
   ],
 };
 
+const customDashboardsData = new Array(30).fill(null).map((_, idx) => ({
+  default: false,
+  display_name: `Custom Dashboard ${idx}`,
+  can_edit: true,
+  system_dashboard: false,
+  project_blob_path: `${mockProjectDir}/blob/master/dashboards/.gitlab/dashboards/dashboard_${idx}.yml`,
+  path: `.gitlab/dashboards/dashboard_${idx}.yml`,
+}));
+
 export const dashboardGitResponse = [
   {
     default: true,
@@ -527,22 +536,7 @@ export const dashboardGitResponse = [
     project_blob_path: null,
     path: 'config/prometheus/common_metrics.yml',
   },
-  {
-    default: false,
-    display_name: 'Custom Dashboard 1',
-    can_edit: true,
-    system_dashboard: false,
-    project_blob_path: `${mockProjectDir}/blob/master/dashboards/.gitlab/dashboards/dashboard_1.yml`,
-    path: '.gitlab/dashboards/dashboard_1.yml',
-  },
-  {
-    default: false,
-    display_name: 'Custom Dashboard 2',
-    can_edit: true,
-    system_dashboard: false,
-    project_blob_path: `${mockProjectDir}/blob/master/dashboards/.gitlab/dashboards/dashboard_2.yml`,
-    path: '.gitlab/dashboards/dashboard_2.yml',
-  },
+  ...customDashboardsData,
 ];
 
 export const graphDataPrometheusQuery = {

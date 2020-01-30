@@ -7,7 +7,6 @@ module GroupsHelper
       groups#details
       groups#activity
       groups#subgroups
-      analytics#show
     ]
   end
 

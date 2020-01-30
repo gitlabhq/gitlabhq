@@ -1152,13 +1152,6 @@ describe Projects::IssuesController do
         expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
       end
 
-      it "deletes the issue" do
-        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, destroy_confirm: true }
-
-        expect(response).to have_gitlab_http_status(:found)
-        expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
-      end
-
       it "prevents deletion if destroy_confirm is not set" do
         expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 

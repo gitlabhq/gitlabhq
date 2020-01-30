@@ -7,14 +7,22 @@ describe 'Group navbar' do
     let(:user) { create(:user) }
     let(:group) { create(:group) }
 
+    let(:analytics_nav_item) do
+      {
+        nav_item: _('Analytics'),
+        nav_sub_items: [
+          _('Contribution Analytics')
+        ]
+      }
+    end
+
     let(:structure) do
       [
         {
           nav_item: _('Group overview'),
           nav_sub_items: [
             _('Details'),
-            _('Activity'),
-            (_('Contribution Analytics') if Gitlab.ee?)
+            _('Activity')
           ]
         },
         {
@@ -34,6 +42,7 @@ describe 'Group navbar' do
           nav_item: _('Kubernetes'),
           nav_sub_items: []
         },
+        (analytics_nav_item if Gitlab.ee?),
         {
           nav_item: _('Members'),
           nav_sub_items: []

@@ -44,7 +44,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
             class="d-flex flex-column overflow-hidden"
           >
             <gl-dropdown-header-stub
-              class="text-center"
+              class="monitor-environment-dropdown-header text-center"
             >
               Environment
             </gl-dropdown-header-stub>
