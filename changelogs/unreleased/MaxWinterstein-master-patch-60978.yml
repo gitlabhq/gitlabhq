@@ -1,0 +1,5 @@
+---
+title: Add optional angle brackets in address_regex
+merge_request: 23797
+author: Max Winterstein
+type: fixed

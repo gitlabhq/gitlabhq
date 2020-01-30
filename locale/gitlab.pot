@@ -17368,9 +17368,6 @@ msgstr ""
 msgid "Size settings for static websites"
 msgstr ""
 
-msgid "Skip Trial (Continue with Free Account)"
-msgstr ""
-
 msgid "Skip this for now"
 msgstr ""
 
@@ -20016,6 +20013,18 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
+msgid "Trials|Go back to GitLab"
+msgstr ""
+
+msgid "Trials|Skip Trial (Continue with Free Account)"
+msgstr ""
+
+msgid "Trials|You can always resume this process by selecting your avatar and choosing 'Start a Gold trial'"
+msgstr ""
+
+msgid "Trials|You won't get a free trial right now but you can always resume this process by clicking on your avatar and choosing 'Start a free trial'"
+msgstr ""
+
 msgid "Trigger"
 msgstr ""
 
@@ -21809,9 +21818,6 @@ msgid "You won't be able to pull or push project code via SSH until you %{add_ss
 msgstr ""
 
 msgid "You won't be able to pull or push project code via SSH until you add an SSH key to your profile"
-msgstr ""
-
-msgid "You won't get a free trial right now but you can always resume this process by clicking on your avatar and choosing 'Start a free trial'."
 msgstr ""
 
 msgid "You'll be signed out from your current account automatically."

@@ -96,7 +96,7 @@ A recent [database checkup shows a breakdown of the table sizes on
 GitLab.com](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/8022#master-1022016101-8).
 Since `merge_request_diff_files` contains over 1 TB of data, we will want to
 reduce/eliminate this table first. GitLab has support for [storing diffs in
-object storage](../administration/merge_request_diffs.html), which we [will
+object storage](../administration/merge_request_diffs.md), which we [will
 want to do on
 GitLab.com](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7356).
 

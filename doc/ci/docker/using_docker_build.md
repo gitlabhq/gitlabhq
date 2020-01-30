@@ -152,7 +152,7 @@ This requires GitLab Runner 11.11 or higher.
 The Docker daemon supports connection over TLS and it's done by default
 for Docker 19.03.1 or higher. This is the **suggested** way to use the
 docker-in-docker service and
-[GitLab.com Shared Runners](../../user/gitlab_com/index.html#shared-runners)
+[GitLab.com Shared Runners](../../user/gitlab_com/index.md#shared-runners)
 support this.
 
 1. Install [GitLab Runner](https://docs.gitlab.com/runner/install/).

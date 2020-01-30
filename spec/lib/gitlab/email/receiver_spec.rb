@@ -35,6 +35,12 @@ describe Gitlab::Email::Receiver do
 
       it_behaves_like 'correctly finds the mail key'
     end
+
+    context 'when enclosed with angle brackets in an Envelope-To header' do
+      let(:email_raw) { fixture_file('emails/envelope_to_header_with_angle_brackets.eml') }
+
+      it_behaves_like 'correctly finds the mail key'
+    end
   end
 
   context "when we cannot find a capable handler" do

@@ -282,7 +282,7 @@ Windows Shared Runners:
 ```yaml
 .shared_windows_runners:
   tags:
-  - shared
+  - shared-windows
   - windows
   - windows-1809
 
