@@ -10,6 +10,10 @@ describe Projects::ImportExport::ExportService do
     let(:service) { described_class.new(project, user) }
     let!(:after_export_strategy) { Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy.new }
 
+    before do
+      project.add_maintainer(user)
+    end
+
     it 'saves the version' do
       expect(Gitlab::ImportExport::VersionSaver).to receive(:new).and_call_original
 
@@ -131,6 +135,19 @@ describe Projects::ImportExport::ExportService do
 
       it 'does not call the export strategy' do
         expect(service).not_to receive(:execute_after_export_action)
+      end
+    end
+
+    context 'when user does not have admin_project permission' do
+      let!(:another_user) { create(:user) }
+
+      subject(:service) { described_class.new(project, another_user) }
+
+      it 'fails' do
+        expected_message =
+          "User with ID: %s does not have permission to Project %s with ID: %s." %
+            [another_user.id, project.name, project.id]
+        expect { service.execute }.to raise_error(Gitlab::ImportExport::Error).with_message(expected_message)
       end
     end
   end

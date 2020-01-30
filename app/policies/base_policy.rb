@@ -21,6 +21,14 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:deactivated) { @user&.deactivated? }
 
+  desc "User email is unconfirmed or user account is locked"
+  with_options scope: :user, score: 0
+  condition(:inactive) do
+    Feature.enabled?(:inactive_policy_condition, default_enabled: true) &&
+      @user &&
+      !@user&.active_for_authentication?
+  end
+
   with_options scope: :user, score: 0
   condition(:external_user) { @user.nil? || @user.external? }
 

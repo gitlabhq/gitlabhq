@@ -22,7 +22,7 @@ describe Banzai::ReferenceParser::MentionedUserParser do
         end
 
         it 'returns empty list of users' do
-          expect(subject.gather_references([link])).to eq([])
+          expect_gathered_references(subject.gather_references([link]), [], 0)
         end
       end
     end
@@ -35,7 +35,7 @@ describe Banzai::ReferenceParser::MentionedUserParser do
         end
 
         it 'returns empty list of users' do
-          expect(subject.gather_references([link])).to eq([])
+          expect_gathered_references(subject.gather_references([link]), [], 0)
         end
       end
     end
@@ -44,7 +44,7 @@ describe Banzai::ReferenceParser::MentionedUserParser do
       it 'returns an Array of users' do
         link['data-user'] = user.id.to_s
 
-        expect(subject.referenced_by([link])).to eq([user])
+        expect_gathered_references(subject.gather_references([link]), [user], 0)
       end
     end
   end

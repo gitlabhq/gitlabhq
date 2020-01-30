@@ -256,9 +256,17 @@ module API
     end
 
     def require_gitlab_workhorse!
+      verify_workhorse_api!
+
       unless env['HTTP_GITLAB_WORKHORSE'].present?
         forbidden!('Request should be executed via GitLab Workhorse')
       end
+    end
+
+    def verify_workhorse_api!
+      Gitlab::Workhorse.verify_api_request!(request.headers)
+    rescue
+      forbidden!
     end
 
     def require_pages_enabled!

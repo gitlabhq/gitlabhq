@@ -127,6 +127,7 @@ module API
       get ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS do
         assign_file_vars!
 
+        no_cache_headers
         set_http_headers(blob_data)
 
         send_git_blob @repo, @blob

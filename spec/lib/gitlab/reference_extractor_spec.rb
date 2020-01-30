@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::ReferenceExtractor do
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   before do
     project.add_developer(project.creator)
@@ -291,6 +291,36 @@ describe Gitlab::ReferenceExtractor do
         expected_count = multiple_allowed[prefix] || 1
         expect(referables.count).to eq(expected_count)
       end
+    end
+  end
+
+  describe '#references' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:issue) { create(:issue, project: project) }
+    let(:text) { "Ref. #{issue.to_reference}" }
+
+    subject { described_class.new(project, user) }
+
+    before do
+      subject.analyze(text)
+    end
+
+    context 'when references are visible' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns visible references of given type' do
+        expect(subject.references(:issue)).to eq([issue])
+      end
+
+      it 'does not increase stateful_not_visible_counter' do
+        expect { subject.references(:issue) }.not_to change { subject.stateful_not_visible_counter }
+      end
+    end
+
+    it 'increases stateful_not_visible_counter' do
+      expect { subject.references(:issue) }.to change { subject.stateful_not_visible_counter }.by(1)
     end
   end
 end

@@ -154,7 +154,7 @@ module API
 
         not_found! 'Commit' unless commit
 
-        present commit, with: Entities::CommitDetail, stats: params[:stats]
+        present commit, with: Entities::CommitDetail, stats: params[:stats], current_user: current_user
       end
 
       desc 'Get the diff for a specific commit of a project' do
