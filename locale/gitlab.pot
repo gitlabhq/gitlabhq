@@ -7164,6 +7164,9 @@ msgstr ""
 msgid "Enter new AWS Secret Access Key"
 msgstr ""
 
+msgid "Enter number of issues"
+msgstr ""
+
 msgid "Enter the issue description"
 msgstr ""
 
@@ -11292,9 +11295,6 @@ msgstr ""
 msgid "List"
 msgstr ""
 
-msgid "List Settings"
-msgstr ""
-
 msgid "List Your Gitea Repositories"
 msgstr ""
 
@@ -11302,6 +11302,9 @@ msgid "List available repositories"
 msgstr ""
 
 msgid "List of IPs and CIDRs of allowed secondary nodes. Comma-separated, e.g. \"1.1.1.1, 2.2.2.0/24\""
+msgstr ""
+
+msgid "List settings"
 msgstr ""
 
 msgid "List the merge requests that must be merged before this one."
@@ -12602,6 +12605,9 @@ msgid "No prioritized labels with such name or description"
 msgstr ""
 
 msgid "No public groups"
+msgstr ""
+
+msgid "No related merge requests found."
 msgstr ""
 
 msgid "No repository"
@@ -15605,6 +15611,9 @@ msgid "Remove from epic"
 msgstr ""
 
 msgid "Remove group"
+msgstr ""
+
+msgid "Remove limit"
 msgstr ""
 
 msgid "Remove milestone"
@@ -21436,7 +21445,7 @@ msgstr ""
 msgid "Withdraw Access Request"
 msgstr ""
 
-msgid "Work in Progress Limit"
+msgid "Work in progress Limit"
 msgstr ""
 
 msgid "Workflow Help"

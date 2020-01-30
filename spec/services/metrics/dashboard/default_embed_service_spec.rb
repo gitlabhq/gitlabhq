@@ -13,6 +13,26 @@ describe Metrics::Dashboard::DefaultEmbedService, :use_clean_rails_memory_store_
     project.add_maintainer(user)
   end
 
+  describe '.valid_params?' do
+    let(:params) { { embedded: true } }
+
+    subject { described_class.valid_params?(params) }
+
+    it { is_expected.to be_truthy }
+
+    context 'missing embedded' do
+      let(:params) { {} }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'not embedded' do
+      let(:params) { { embedded: false } }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#get_dashboard' do
     let(:service_params) { [project, user, { environment: environment }] }
     let(:service_call) { described_class.new(*service_params).get_dashboard }

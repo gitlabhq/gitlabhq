@@ -15,6 +15,10 @@ module Metrics
       ].freeze
 
       class << self
+        def valid_params?(params)
+          matching_dashboard?(params[:dashboard_path])
+        end
+
         def matching_dashboard?(filepath)
           filepath == self::DASHBOARD_PATH
         end

@@ -209,6 +209,15 @@ describe Ci::PipelinePresenter do
           "<a class=\"mr-iid\" href=\"#{merge_request_path(mr_2)}\">#{mr_2.to_reference} #{mr_2.title}</a>, " \
           "<a class=\"mr-iid\" href=\"#{merge_request_path(mr_1)}\">#{mr_1.to_reference} #{mr_1.title}</a>")
       }
+
+      context 'with a limit passed' do
+        subject { presenter.all_related_merge_request_text(limit: 1) }
+
+        it {
+          is_expected.to eq("2 related merge requests: " \
+          "<a class=\"mr-iid\" href=\"#{merge_request_path(mr_2)}\">#{mr_2.to_reference} #{mr_2.title}</a>")
+        }
+      end
     end
   end
 
