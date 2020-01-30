@@ -22,15 +22,41 @@ describe AvatarsHelper do
       end
     end
 
-    context 'when providing a project' do
-      it_behaves_like 'resource with a default avatar', 'project' do
-        let(:resource) { create(:project, name: 'foo') }
-        let(:helper_args) { [resource] }
+    shared_examples 'Gitaly exception handling' do
+      before do
+        allow(resource).to receive(:avatar_url).and_raise(error_class)
       end
+
+      it 'handles Gitaly exception gracefully' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          an_instance_of(error_class), source_type: 'Project', source_id: resource.id
+        )
+        expect { project_icon(resource) }.not_to raise_error
+      end
+
+      it_behaves_like 'resource with a default avatar', 'project'
+    end
+
+    context 'when providing a project' do
+      let(:helper_args) { [resource] }
+      let(:resource) { create(:project, name: 'foo') }
+
+      it_behaves_like 'resource with a default avatar', 'project'
 
       it_behaves_like 'resource with a custom avatar', 'project' do
         let(:resource) { create(:project, :public, avatar: File.open(uploaded_image_temp_path)) }
-        let(:helper_args) { [resource] }
+      end
+
+      context 'when Gitaly is unavailable' do
+        let(:error_class) { GRPC::Unavailable }
+
+        include_examples 'Gitaly exception handling'
+      end
+
+      context 'when Gitaly request is taking too long' do
+        let(:error_class) { GRPC::DeadlineExceeded }
+
+        include_examples 'Gitaly exception handling'
       end
     end
 

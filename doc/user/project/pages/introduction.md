@@ -102,7 +102,7 @@ Learn how to set up GitLab CI/CD for specific use cases.
 
 Supposed your repository contained the following files:
 
-```
+```plaintext
 ├── index.html
 ├── css
 │   └── main.css
@@ -144,7 +144,7 @@ orphan branch (let's name it `pages`) that will host your static generator site.
 
 You can create a new empty branch like this:
 
-```bash
+```shell
 git checkout --orphan pages
 ```
 
@@ -155,7 +155,7 @@ commits. Push the source files of your static generator in the `pages` branch.
 Below is a copy of `.gitlab-ci.yml` where the most significant line is the last
 one, specifying to execute everything in the `pages` branch:
 
-```
+```yaml
 image: ruby:2.6
 
 pages:
@@ -188,7 +188,7 @@ compressed files, it will serve that version instead of the uncompressed one.
 To take advantage of this feature, the artifact you upload to the Pages should
 have this structure:
 
-```
+```plaintext
 public/
 ├─┬ index.html
 │ └ index.html.gz
@@ -226,7 +226,7 @@ request for a URL that does not include an extension.
 
 Consider a Pages site deployed with the following files:
 
-```
+```plaintext
 public/
 ├─┬ index.html
 │ ├ data.html

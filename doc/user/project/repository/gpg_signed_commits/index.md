@@ -46,7 +46,7 @@ started:
 1. Generate the private/public key pair with the following command, which will
    spawn a series of questions:
 
-   ```sh
+   ```shell
    gpg --full-gen-key
    ```
 
@@ -57,7 +57,7 @@ started:
 1. The first question is which algorithm can be used.  Select the kind you want
    or press <kbd>Enter</kbd> to choose the default (RSA and RSA):
 
-   ```
+   ```plaintext
    Please select what kind of key you want:
       (1) RSA and RSA (default)
       (2) DSA and Elgamal
@@ -68,7 +68,7 @@ started:
 
 1. The next question is key length. We recommend you choose `4096`:
 
-   ```
+   ```plaintext
    RSA keys may be between 1024 and 4096 bits long.
    What keysize do you want? (2048) 4096
    Requested keysize is 4096 bits
@@ -77,7 +77,7 @@ started:
 1. Specify the validity period of your key. This is something
    subjective, and you can use the default value, which is to never expire:
 
-   ```
+   ```plaintext
    Please specify how long the key should be valid.
             0 = key does not expire
          <n>  = key expires in n days
@@ -90,7 +90,7 @@ started:
 
 1. Confirm that the answers you gave were correct by typing `y`:
 
-   ```
+   ```plaintext
    Is this correct? (y/N) y
    ```
 
@@ -98,7 +98,7 @@ started:
    (should match a verified email address you use in GitLab) and an optional
    comment (press <kbd>Enter</kbd> to skip):
 
-   ```
+   ```plaintext
    GnuPG needs to construct a user ID to identify your key.
 
    Real name: Mr. Robot
@@ -113,7 +113,7 @@ started:
 1. Pick a strong password when asked and type it twice to confirm.
 1. Use the following command to list the private GPG key you just created:
 
-   ```
+   ```shell
    gpg --list-secret-keys --keyid-format LONG <your_email>
    ```
 
@@ -122,7 +122,7 @@ started:
 1. Copy the GPG key ID that starts with `sec`. In the following example, that's
    `30F2B65B9246B6CA`:
 
-   ```
+   ```plaintext
    sec   rsa4096/30F2B65B9246B6CA 2017-08-18 [SC]
          D5E4F29F3275DC0CDA8FFC8730F2B65B9246B6CA
    uid                   [ultimate] Mr. Robot <your_email>
@@ -131,7 +131,7 @@ started:
 
 1. Export the public key of that ID (replace your key ID from the previous step):
 
-   ```
+   ```shell
    gpg --armor --export 30F2B65B9246B6CA
    ```
 
@@ -167,7 +167,7 @@ key to use.
 
 1. Use the following command to list the private GPG key you just created:
 
-   ```sh
+   ```shell
    gpg --list-secret-keys --keyid-format LONG <your_email>
    ```
 
@@ -176,7 +176,7 @@ key to use.
 1. Copy the GPG key ID that starts with `sec`. In the following example, that's
    `30F2B65B9246B6CA`:
 
-   ```
+   ```plaintext
    sec   rsa4096/30F2B65B9246B6CA 2017-08-18 [SC]
          D5E4F29F3275DC0CDA8FFC8730F2B65B9246B6CA
    uid                   [ultimate] Mr. Robot <your_email>
@@ -185,7 +185,7 @@ key to use.
 
 1. Tell Git to use that key to sign the commits:
 
-   ```sh
+   ```shell
    git config --global user.signingkey 30F2B65B9246B6CA
    ```
 
@@ -195,7 +195,7 @@ key to use.
    or `gpg: signing failed: secret key not available`, run the following command to
    change to `gpg2`:
 
-   ```sh
+   ```shell
    git config --global gpg.program gpg2
    ```
 
@@ -207,7 +207,7 @@ commits:
 
 1. Commit like you used to, the only difference is the addition of the `-S` flag:
 
-   ```
+   ```shell
    git commit -S -m "My commit msg"
    ```
 
@@ -217,7 +217,7 @@ commits:
 If you don't want to type the `-S` flag every time you commit, you can tell Git
 to sign your commits automatically:
 
-```
+```shell
 git config --global commit.gpgsign true
 ```
 

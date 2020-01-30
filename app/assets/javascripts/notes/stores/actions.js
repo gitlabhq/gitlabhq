@@ -506,5 +506,8 @@ export const fetchDescriptionVersion = (_, { endpoint, startingVersion }) => {
     });
 };
 
+export const setCurrentDiscussionId = ({ commit }, discussionId) =>
+  commit(types.SET_CURRENT_DISCUSSION_ID, discussionId);
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

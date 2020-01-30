@@ -8,6 +8,7 @@ export default () => ({
     convertedDisscussionIds: [],
     targetNoteHash: null,
     lastFetchedAt: null,
+    currentDiscussionId: null,
 
     // View layer
     isToggleStateButtonLoading: false,
@@ -26,7 +27,6 @@ export default () => ({
     commentsDisabled: false,
     resolvableDiscussionsCount: 0,
     unresolvedDiscussionsCount: 0,
-    hasUnresolvedDiscussions: false,
   },
   actions,
   getters,

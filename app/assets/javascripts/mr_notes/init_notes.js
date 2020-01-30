@@ -69,13 +69,11 @@ export default () => {
       },
     },
     render(createElement) {
-      const isDiffView = this.activeTab === 'diffs';
-
       // NOTE: Even though `discussionKeyboardNavigator` is added to the `notes-app`,
       // it adds a global key listener so it works on the diffs tab as well.
       // If we create a single Vue app for all of the MR tabs, we should move this
       // up the tree, to the root.
-      return createElement(discussionKeyboardNavigator, { props: { isDiffView } }, [
+      return createElement(discussionKeyboardNavigator, [
         createElement('notes-app', {
           props: {
             noteableData: this.noteableData,

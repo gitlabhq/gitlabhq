@@ -60,26 +60,26 @@ removed from the repository.
 
 1. Navigate to your repository:
 
-   ```
+   ```shell
    cd my_repository/
    ```
 
 1. Change to the branch you want to remove the big file from:
 
-   ```
+   ```shell
    git checkout master
    ```
 
 1. Create a commit removing the large file from the branch, if it still exists:
 
-   ```
+   ```shell
    git rm path/to/big_file.mpg
    git commit -m 'Remove unneeded large file'
    ```
 
 1. Rewrite history:
 
-   ```
+   ```shell
    bfg --delete-files path/to/big_file.mpg
    ```
 
@@ -88,7 +88,7 @@ removed from the repository.
 
 1. Force-push the changes to GitLab:
 
-   ```
+   ```shell
    git push --force-with-lease origin master
    ```
 
@@ -116,31 +116,31 @@ purposes!
 
 1. Navigate to your repository:
 
-   ```
+   ```shell
    cd my_repository/
    ```
 
 1. Change to the branch you want to remove the big file from:
 
-   ```
+   ```shell
    git checkout master
    ```
 
 1. Use `filter-branch` to remove the big file:
 
-   ```
+   ```shell
    git filter-branch --force --tree-filter 'rm -f path/to/big_file.mpg' HEAD
    ```
 
 1. Instruct Git to purge the unwanted data:
 
-   ```
+   ```shell
    git reflog expire --expire=now --all && git gc --prune=now --aggressive
    ```
 
 1. Lastly, force push to the repository:
 
-   ```
+   ```shell
    git push --force origin master
    ```
 

@@ -19,7 +19,7 @@ Below are the fingerprints for GitLab.com's SSH host keys.
 Add the following to `.ssh/known_hosts` to skip manual fingerprint
 confirmation in SSH:
 
-```
+```plaintext
 gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf
 gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9
 gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=
@@ -41,7 +41,7 @@ GitLab.com can be reached via a [different SSH port][altssh] for `git+ssh`.
 
 An example `~/.ssh/config` is the following:
 
-```
+```plaintext
 Host gitlab.com
   Hostname altssh.gitlab.com
   User git
@@ -455,7 +455,7 @@ per second per IP address.
 
 The following example headers are included for all API requests:
 
-```
+```plaintext
 RateLimit-Limit: 600
 RateLimit-Observed: 6
 RateLimit-Remaining: 594
@@ -481,7 +481,7 @@ user confirmation, user sign in, and password reset.
 
 This header is included in responses to blocked requests:
 
-```
+```plaintext
 Retry-After: 60
 ```
 

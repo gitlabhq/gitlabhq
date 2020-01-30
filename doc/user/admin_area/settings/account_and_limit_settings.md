@@ -81,7 +81,7 @@ If you wanted to increase the max attachment size to 200m in a GitLab
 [Omnibus](https://docs.gitlab.com/omnibus/) install, for example, you might need to
 add the line below to `/etc/gitlab/gitlab.rb` before increasing the max attachment size:
 
-```
+```ruby
 nginx['client_max_body_size'] = "200m"
 ```
 

@@ -59,7 +59,6 @@ export const getDiscussionLastNote = state => discussion =>
 
 export const unresolvedDiscussionsCount = state => state.unresolvedDiscussionsCount;
 export const resolvableDiscussionsCount = state => state.resolvableDiscussionsCount;
-export const hasUnresolvedDiscussions = state => state.hasUnresolvedDiscussions;
 
 export const showJumpToNextDiscussion = (state, getters) => (mode = 'discussion') => {
   const orderedDiffs =

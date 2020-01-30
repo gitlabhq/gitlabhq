@@ -24,9 +24,9 @@ const JumpToDiscussion = Vue.extend({
   computed: {
     buttonText() {
       if (this.discussionId) {
-        return __('Jump to next unresolved discussion');
+        return __('Jump to next unresolved thread');
       } else {
-        return __('Jump to first unresolved discussion');
+        return __('Jump to first unresolved thread');
       }
     },
     allResolved() {

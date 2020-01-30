@@ -113,13 +113,13 @@ Artifacts for other pipelines can be accessed with direct access to them.
 
 The structure of the URL to download the whole artifacts archive is the following:
 
-```
+```plaintext
 https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/download?job=<job_name>
 ```
 
 To download a single file from the artifacts use the following URL:
 
-```
+```plaintext
 https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/raw/<path_to_file>?job=<job_name>
 ```
 
@@ -127,40 +127,40 @@ For example, to download the latest artifacts of the job named `coverage` of
 the `master` branch of the `gitlab` project that belongs to the `gitlab-org`
 namespace, the URL would be:
 
-```
+```plaintext
 https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/download?job=coverage
 ```
 
 To download the file `coverage/index.html` from the same
 artifacts use the following URL:
 
-```
+```plaintext
 https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/raw/coverage/index.html?job=coverage
 ```
 
 There is also a URL to browse the latest job artifacts:
 
-```
+```plaintext
 https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/browse?job=<job_name>
 ```
 
 For example:
 
-```
+```plaintext
 https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/browse?job=coverage
 ```
 
 There is also a URL to specific files, including html files that
 are shown in [GitLab Pages](../../../administration/pages/index.md):
 
-```
+```plaintext
 https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/file/<path>?job=<job_name>
 ```
 
 For example, when a job `coverage` creates the artifact `htmlcov/index.html`,
 you can access it at:
 
-```
+```plaintext
 https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/file/htmlcov/index.html?job=coverage
 ```
 

@@ -10770,10 +10770,10 @@ msgstr ""
 msgid "July"
 msgstr ""
 
-msgid "Jump to first unresolved discussion"
+msgid "Jump to first unresolved thread"
 msgstr ""
 
-msgid "Jump to next unresolved discussion"
+msgid "Jump to next unresolved thread"
 msgstr ""
 
 msgid "Jun"
@@ -11787,7 +11787,7 @@ msgstr ""
 msgid "MergeRequests|Failed to squash. Should be done manually."
 msgstr ""
 
-msgid "MergeRequests|Jump to next unresolved discussion"
+msgid "MergeRequests|Jump to next unresolved thread"
 msgstr ""
 
 msgid "MergeRequests|Reply..."

@@ -15,15 +15,4 @@ describe('JumpToNextDiscussionButton', () => {
   it('matches the snapshot', () => {
     expect(wrapper.vm.$el).toMatchSnapshot();
   });
-
-  it('emits onClick event on button click', () => {
-    const button = wrapper.find({ ref: 'button' });
-
-    button.trigger('click');
-
-    return wrapper.vm.$nextTick().then(() => {
-      expect(wrapper.emitted().onClick).toBeTruthy();
-      expect(wrapper.emitted().onClick.length).toBe(1);
-    });
-  });
 });

@@ -27,7 +27,7 @@ that the IP address of the pods are routable within the GCP network.
 
 First, we need to declare some environment variables with configuration that will be used throughout this guide:
 
-```sh
+```shell
 export PROJECT_ID=crossplane-playground # the GCP project where all resources reside.
 export NETWORK_NAME=default # the GCP network where your GKE is provisioned.
 export REGION=us-central1 # the GCP region where the GKE cluster is provisioned.
@@ -43,7 +43,7 @@ NOTE: **Note:**
 For a non-GitLab managed cluster, ensure that the service account for the token provided can manage resources in the `database.crossplane.io` API group.
 ​1. Save the following YAML as `crossplane-database-role.yaml`:
 
-```sh
+```shell
 cat > crossplane-database-role.yaml <<EOF
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -69,7 +69,7 @@ EOF
 
 Once the file is created, apply it with the following command in order to create the necessary role:
 
-```sh
+```shell
 kubectl apply -f crossplane-database-role.yaml
 ```
 
@@ -94,7 +94,7 @@ This can done by either:
 [configuring private services access](https://cloud.google.com/vpc/docs/configure-private-services-access).
 Create a GlobalAddress and Connection resources:
 
-```sh
+```shell
 cat > network.yaml <<EOF
 ---
 # gitlab-ad-globaladdress defines the IP range that will be allocated for cloud services connecting to the instances in the given Network.
@@ -133,14 +133,14 @@ EOF
 
 Apply the settings specified in the file with the following command:
 
-```sh
+```shell
 kubectl apply -f network.yaml
 ```
 
 You can verify creation of the network resources with the following commands.
 Verify that the status of both of these resources is ready and is synced.
 
-```sh
+```shell
 kubectl describe connection.servicenetworking.gcp.crossplane.io gitlab-ad-connection
 kubectl describe globaladdress.compute.gcp.crossplane.io gitlab-ad-globaladdress
 ```
@@ -154,7 +154,7 @@ Resource classes are a way of defining a configuration for the required managed 
 1. A default CloudSQLInstanceClass.
 1. A CloudSQLInstanceClass with labels.
 
-```sh
+```shell
 cat > gcp-postgres-standard.yaml <<EOF
 apiVersion: database.gcp.crossplane.io/v1beta1
 kind: CloudSQLInstanceClass
@@ -204,13 +204,13 @@ EOF
 
 Apply the resource class configuration with the following command:
 
-```sh
+```shell
 kubectl apply -f gcp-postgres-standard.yaml
 ```
 
 Verify creation of the Resource class with the following command:
 
-```sh
+```shell
 kubectl get cloudsqlinstanceclasses
 ```
 
@@ -239,13 +239,13 @@ The Auto DevOps pipeline should provision a PostgresqlInstance when it runs succ
 
 Verify creation of the PostgreSQL Instance.
 
-```sh
+```shell
 kubectl get postgresqlinstance
 ```
 
 Sample Output: The `STATUS` field of the PostgresqlInstance transitions to `BOUND` when it is successfully provisioned.
 
-```
+```plaintext
 NAME            STATUS   CLASS-KIND              CLASS-NAME                            RESOURCE-KIND      RESOURCE-NAME                               AGE
 staging-test8   Bound    CloudSQLInstanceClass   cloudsqlinstancepostgresql-standard   CloudSQLInstance   xp-ad-demo-24-staging-staging-test8-jj55c   9m
 ```
@@ -254,13 +254,13 @@ The endpoint of the PostgreSQL instance, and the user credentials, are present i
 
 Verify the secret with the database information is created with the following command:
 
-```sh
+```shell
 kubectl describe secret app-postgres
 ```
 
 Sample Output:
 
-```
+```plaintext
 Name:         app-postgres
 Namespace:    xp-ad-demo-24-staging
 Labels:       <none>

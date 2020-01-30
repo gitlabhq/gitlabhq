@@ -53,13 +53,15 @@ describe('notes/components/discussion_keyboard_navigator', () => {
   });
 
   describe.each`
-    isDiffView | expectedNextId  | expectedPrevId
-    ${true}    | ${NEXT_DIFF_ID} | ${PREV_DIFF_ID}
-    ${false}   | ${NEXT_ID}      | ${PREV_ID}
-  `('when isDiffView is $isDiffView', ({ isDiffView, expectedNextId, expectedPrevId }) => {
+    currentAction | expectedNextId  | expectedPrevId
+    ${'diffs'}    | ${NEXT_DIFF_ID} | ${PREV_DIFF_ID}
+    ${'show'}     | ${NEXT_ID}      | ${PREV_ID}
+  `('when isDiffView is $isDiffView', ({ currentAction, expectedNextId, expectedPrevId }) => {
     beforeEach(() => {
-      createComponent({ propsData: { isDiffView } });
+      window.mrTabs = { currentAction };
+      createComponent();
     });
+    afterEach(() => delete window.mrTabs);
 
     it('calls jumpToNextDiscussion when pressing `n`', () => {
       Mousetrap.trigger('n');

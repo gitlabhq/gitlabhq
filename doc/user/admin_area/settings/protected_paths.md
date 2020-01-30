@@ -6,7 +6,7 @@ type: reference
 
 GitLab protects the following paths with Rack Attack by default:
 
-```
+```plaintext
 '/users/password',
 '/users/sign_in',
 '/api/#{API::API.version}/session.json',
@@ -23,7 +23,7 @@ that exceed 10 requests per minute per IP address.
 
 This header is included in responses to blocked requests:
 
-```
+```plaintext
 Retry-After: 60
 ```
 

@@ -122,6 +122,13 @@ module AvatarsHelper
     else
       source_identicon(source, options)
     end
+
+  rescue GRPC::Unavailable, GRPC::DeadlineExceeded => e
+    # Handle Gitaly connection issues gracefully
+    Gitlab::ErrorTracking
+      .track_exception(e, source_type: source.class.name, source_id: source.id)
+
+    source_identicon(source, options)
   end
 
   def source_identicon(source, options = {})

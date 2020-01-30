@@ -14,7 +14,6 @@ import noteForm from './note_form.vue';
 import diffWithNote from './diff_with_note.vue';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
-import discussionNavigation from '../mixins/discussion_navigation';
 import eventHub from '../event_hub';
 import DiscussionNotes from './discussion_notes.vue';
 import DiscussionActions from './discussion_actions.vue';
@@ -35,7 +34,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [noteable, resolvable, discussionNavigation, diffLineNoteFormMixin],
+  mixins: [noteable, resolvable, diffLineNoteFormMixin],
   props: {
     discussion: {
       type: Object,
@@ -79,12 +78,8 @@ export default {
       'convertedDisscussionIds',
       'getNoteableData',
       'userCanReply',
-      'nextUnresolvedDiscussionId',
-      'unresolvedDiscussionsCount',
-      'hasUnresolvedDiscussions',
       'showJumpToNextDiscussion',
       'getUserData',
-      'getDiscussion',
     ]),
     currentUser() {
       return this.getUserData;
@@ -152,7 +147,6 @@ export default {
       'saveNote',
       'removePlaceholderNotes',
       'toggleResolveNote',
-      'expandDiscussion',
       'removeConvertedDiscussion',
     ]),
     showReplyForm() {
@@ -218,15 +212,6 @@ export default {
           this.$refs.noteForm.note = noteText;
           callback(err);
         });
-    },
-    jumpToNextDiscussion() {
-      const nextId = this.nextUnresolvedDiscussionId(
-        this.discussion.id,
-        this.discussionsByDiffOrder,
-      );
-      const nextDiscussion = this.getDiscussion(nextId);
-
-      this.jumpToDiscussion(nextDiscussion);
     },
     deleteNoteHandler(note) {
       this.$emit('noteDeleted', this.discussion, note);
@@ -294,7 +279,6 @@ export default {
                     :should-show-jump-to-next-discussion="shouldShowJumpToNextDiscussion"
                     @showReplyForm="showReplyForm"
                     @resolve="resolveHandler"
-                    @jumpToNextDiscussion="jumpToNextDiscussion"
                   />
                   <div v-if="isReplying" class="avatar-note-form-holder">
                     <user-avatar-link

@@ -368,16 +368,6 @@ describe 'Merge request > User resolves diff notes and threads', :js do
         end
       end
 
-      it 'shows jump to next discussion button on all discussions' do
-        wait_for_requests
-
-        all_discussion_replies = page.all('.discussion-reply-holder')
-
-        expect(all_discussion_replies.count).to eq(2)
-        expect(all_discussion_replies.first.all('.discussion-next-btn').count).to eq(1)
-        expect(all_discussion_replies.last.all('.discussion-next-btn').count).to eq(1)
-      end
-
       it 'displays next thread even if hidden' do
         page.all('.note-discussion', count: 2).each do |discussion|
           page.within discussion do

@@ -3,10 +3,13 @@
 module QA
   module Resource
     class ProjectMilestone < Base
+      attribute :id
       attribute :title
 
       attribute :project do
-        Project.fabricate!
+        Project.fabricate_via_api! do |resource|
+          resource.name = 'project-with-milestone'
+        end
       end
 
       def initialize

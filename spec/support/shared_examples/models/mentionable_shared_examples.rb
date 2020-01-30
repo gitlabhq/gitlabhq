@@ -263,7 +263,7 @@ RSpec.shared_examples 'mentions in notes' do |mentionable_type|
 
     it 'returns all mentionable mentions' do
       expect(mentionable.user_mentions.count).to eq 1
-      expect(mentionable.referenced_users).to eq [user, user2]
+      expect(mentionable.referenced_users).to match_array([user, user2])
       expect(mentionable.referenced_projects(user)).to eq [mentionable.project].compact # epic.project is nil, and we want empty []
       expect(mentionable.referenced_groups(user)).to eq [group]
     end

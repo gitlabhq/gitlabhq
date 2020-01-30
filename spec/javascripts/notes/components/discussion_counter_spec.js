@@ -7,6 +7,7 @@ import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 describe('DiscussionCounter component', () => {
   let store;
   let vm;
+  const notes = { currentDiscussionId: null };
 
   beforeEach(() => {
     window.mrTabs = {};
@@ -25,7 +26,7 @@ describe('DiscussionCounter component', () => {
   });
 
   describe('methods', () => {
-    describe('jumpToFirstUnresolvedDiscussion', () => {
+    describe('jumpToNextDiscussion', () => {
       it('expands unresolved discussion', () => {
         window.mrTabs.currentAction = 'show';
 
@@ -48,13 +49,14 @@ describe('DiscussionCounter component', () => {
         store.replaceState({
           ...store.state,
           discussions,
+          notes,
         });
-        vm.jumpToFirstUnresolvedDiscussion();
+        vm.jumpToNextDiscussion();
 
         expect(vm.expandDiscussion).toHaveBeenCalledWith({ discussionId: firstDiscussionId });
       });
 
-      it('jumps to first unresolved discussion from diff tab if all diff discussions are resolved', () => {
+      it('jumps to next unresolved discussion from diff tab if all diff discussions are resolved', () => {
         window.mrTabs.currentAction = 'diff';
         spyOn(vm, 'switchToDiscussionsTabAndJumpTo').and.stub();
 
@@ -77,8 +79,9 @@ describe('DiscussionCounter component', () => {
         store.replaceState({
           ...store.state,
           discussions,
+          notes,
         });
-        vm.jumpToFirstUnresolvedDiscussion();
+        vm.jumpToNextDiscussion();
 
         expect(vm.switchToDiscussionsTabAndJumpTo).toHaveBeenCalledWith(unresolvedId);
       });

@@ -73,7 +73,7 @@ export default {
       v-if="discussion.resolvable && shouldShowJumpToNextDiscussion"
       class="btn-group discussion-actions ml-sm-2"
     >
-      <jump-to-next-discussion-button @onClick="$emit('jumpToNextDiscussion')" />
+      <jump-to-next-discussion-button />
     </div>
   </div>
 </template>

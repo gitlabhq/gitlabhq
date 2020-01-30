@@ -213,7 +213,7 @@ An approval will be optional when a license report:
 When including a security job template like [`SAST`](sast/index.md#configuration),
 the following error can be raised, depending on your GitLab CI/CD configuration:
 
-```
+```plaintext
 Found errors in your .gitlab-ci.yml:
 
 * sast job: stage parameter should be unit-tests

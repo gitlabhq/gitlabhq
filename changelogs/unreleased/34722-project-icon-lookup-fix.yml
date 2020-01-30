@@ -1,0 +1,5 @@
+---
+title: Fix 503 errors caused by Gitaly failures during project_icon lookup
+merge_request: 23930
+author:
+type: fixed

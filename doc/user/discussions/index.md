@@ -89,7 +89,7 @@ When a merge request has a large number of comments it can be difficult to track
 what remains unresolved. You can jump between unresolved threads with the
 Jump button next to the Reply field on a thread.
 
-You can also jump to the first unresolved thread from the button next to the
+You can also jump to the next unresolved thread from the button next to the
 resolved threads tracker.
 
 You can also use keyboard shortcuts to navigate among threads:
