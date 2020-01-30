@@ -1,0 +1,5 @@
+---
+title: Add can_create_merge_request_in to /project/:id API response
+merge_request: 23577
+author:
+type: added

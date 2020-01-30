@@ -1,0 +1,76 @@
+---
+# `extends` indicates the Vale extension point being used.
+# Full list of styles: https://errata-ai.github.io/vale/styles/
+extends: substitution
+
+# Substitution rules can display the matched and suggested strings in the 
+# message shown to the user. The first use of %s prints the suggested option,
+# and the second use of %s displays what was found in the text.
+message: Use "%s" instead of "%s" in most cases.
+
+# Should a result be flagged as a suggestion, warning, or error?
+# Results that fall below the MinAlertLevel set in 
+# https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini won't be shown.
+level: suggestion
+
+# Should a match be case-insensitive or case-sensitive?
+# Acceptable values are 'true' or 'false'
+ignorecase: true
+
+# Should this rule be limited to a specific scope? If yes, uncomment the line.
+# Possible scopes: https://errata-ai.github.io/vale/formats/#available-scopes
+# scope: heading
+
+# Should this rule ignore normal word boundaries, such as \b ?
+# Acceptable values are 'true' or 'false'
+nonword: false
+
+# What is the source for this rule?
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+
+# The 'swap' section provides a list of values, one per line, in the form of
+# $bad: $good
+swap:
+
+  # Common contractions are ok
+  it is: it's
+  can not: can't
+  cannot: can't
+  do not: don't
+  have not: haven't
+  that is: that's
+  we are: we're
+  will not: won't
+  would not: wouldn't
+  you are: you're
+  you have: you've
+
+  # Uncommon contractions are not ok
+  aren't: are not
+  couldn't: could not
+  didn't: did not
+  doesn't: does not
+  hasn't: has not
+  how'll: how will
+  how's: how is
+  isn't: is not
+  it'll: it will
+  shouldn't: should not
+  that'll: that will
+  they'll: they will
+  they're: they are
+  wasn't: was not
+  weren't: were not
+  we'll: we will
+  we've: we have
+  what's: what is
+  what'll: what will
+  when's: when is
+  when'll: when will
+  where's: where is
+  where'll: where will
+  who's: who is
+  who'll: who will
+  why's: why is
+  why'll: why will
+

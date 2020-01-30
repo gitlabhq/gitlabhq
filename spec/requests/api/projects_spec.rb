@@ -1340,6 +1340,7 @@ describe API::Projects do
         expect(json_response['path']).to be_present
         expect(json_response['issues_enabled']).to be_present
         expect(json_response['merge_requests_enabled']).to be_present
+        expect(json_response['can_create_merge_request_in']).to be_present
         expect(json_response['wiki_enabled']).to be_present
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
@@ -1390,6 +1391,7 @@ describe API::Projects do
         expect(json_response['path']).to be_present
         expect(json_response['issues_enabled']).to be_present
         expect(json_response['merge_requests_enabled']).to be_present
+        expect(json_response['can_create_merge_request_in']).to be_present
         expect(json_response['wiki_enabled']).to be_present
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present

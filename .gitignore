@@ -88,3 +88,4 @@ jsdoc/
 /qa/.rakeTasks
 webpack-dev-server.json
 /.nvimrc
+.solargraph.yml

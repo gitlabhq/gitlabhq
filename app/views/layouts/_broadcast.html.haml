@@ -1,4 +1,3 @@
 - current_broadcast_banner_messages.each do |message|
   = broadcast_message(message)
-- if Feature.enabled?(:broadcast_notification_type)
-  = broadcast_message(current_broadcast_notification_message)
+= broadcast_message(current_broadcast_notification_message)

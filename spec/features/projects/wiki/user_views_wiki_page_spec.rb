@@ -129,6 +129,18 @@ describe 'User views a wiki page' do
     end
   end
 
+  context 'when a page has XSS in its message' do
+    before do
+      wiki_page.update(message: '<script>alert(true)<script>', content: 'XSS update')
+    end
+
+    it 'safely displays the message' do
+      visit(project_wiki_history_path(project, wiki_page))
+
+      expect(page).to have_content('<script>alert(true)<script>')
+    end
+  end
+
   context 'when page has invalid content encoding' do
     let(:content) { (+'whatever').force_encoding('ISO-8859-1') }
 

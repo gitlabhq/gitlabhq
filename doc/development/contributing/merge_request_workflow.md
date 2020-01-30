@@ -15,8 +15,7 @@ to be marked as `Accepting Merge Requests`. Please include screenshots or
 wireframes of the proposed feature if it will also change the UI.
 
 Merge requests should be submitted to the appropriate project at GitLab.com, for example
-[GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests),
-[GitLab EE](https://gitlab.com/gitlab-org/gitlab/merge_requests),
+[GitLab](https://gitlab.com/gitlab-org/gitlab/merge_requests),
 [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests),
 [GitLab Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests), etc.
 
@@ -227,6 +226,7 @@ requirements.
 1. [Changelog entry added](../changelog.md), if necessary.
 1. Reviewed by relevant (UX/FE/BE/tech writing) reviewers and all concerns are addressed.
 1. Merged by a project maintainer.
+1. Create an issue in the [infrastructure issue tracker](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues) to inform the Infrastructure department when your contribution is changing default settings or introduces a new setting, if relevant.
 1. Confirmed to be working in the [Canary stage](https://about.gitlab.com/handbook/engineering/#canary-testing) or on GitLab.com once the contribution is deployed.
 1. Added to the [release post](https://about.gitlab.com/handbook/marketing/blog/release-posts/),
    if relevant.

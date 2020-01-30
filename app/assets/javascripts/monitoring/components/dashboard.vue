@@ -532,44 +532,41 @@ export default {
         :show-panels="showPanels"
         :collapse-group="collapseGroup(groupData.key)"
       >
-        <div v-if="!groupSingleEmptyState(groupData.key)">
-          <vue-draggable
-            :value="groupData.panels"
-            group="metrics-dashboard"
-            :component-data="{ attrs: { class: 'row mx-0 w-100' } }"
-            :disabled="!isRearrangingPanels"
-            @input="updatePanels(groupData.key, $event)"
+        <vue-draggable
+          v-if="!groupSingleEmptyState(groupData.key)"
+          :value="groupData.panels"
+          group="metrics-dashboard"
+          :component-data="{ attrs: { class: 'row mx-0 w-100' } }"
+          :disabled="!isRearrangingPanels"
+          @input="updatePanels(groupData.key, $event)"
+        >
+          <div
+            v-for="(graphData, graphIndex) in groupData.panels"
+            :key="`panel-type-${graphIndex}`"
+            class="col-12 col-lg-6 px-2 mb-2 draggable"
+            :class="{ 'draggable-enabled': isRearrangingPanels }"
           >
-            <div
-              v-for="(graphData, graphIndex) in groupData.panels"
-              :key="`panel-type-${graphIndex}`"
-              class="col-12 col-lg-6 px-2 mb-2 draggable"
-              :class="{ 'draggable-enabled': isRearrangingPanels }"
-            >
-              <div class="position-relative draggable-panel js-draggable-panel">
-                <div
-                  v-if="isRearrangingPanels"
-                  class="draggable-remove js-draggable-remove p-2 w-100 position-absolute d-flex justify-content-end"
-                  @click="removePanel(groupData.key, groupData.panels, graphIndex)"
-                >
-                  <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')">
-                    <icon name="close" />
-                  </a>
-                </div>
-
-                <panel-type
-                  :clipboard-text="
-                    generateLink(groupData.group, graphData.title, graphData.y_label)
-                  "
-                  :graph-data="graphData"
-                  :alerts-endpoint="alertsEndpoint"
-                  :prometheus-alerts-available="prometheusAlertsAvailable"
-                  :index="`${index}-${graphIndex}`"
-                />
+            <div class="position-relative draggable-panel js-draggable-panel">
+              <div
+                v-if="isRearrangingPanels"
+                class="draggable-remove js-draggable-remove p-2 w-100 position-absolute d-flex justify-content-end"
+                @click="removePanel(groupData.key, groupData.panels, graphIndex)"
+              >
+                <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')">
+                  <icon name="close" />
+                </a>
               </div>
+
+              <panel-type
+                :clipboard-text="generateLink(groupData.group, graphData.title, graphData.y_label)"
+                :graph-data="graphData"
+                :alerts-endpoint="alertsEndpoint"
+                :prometheus-alerts-available="prometheusAlertsAvailable"
+                :index="`${index}-${graphIndex}`"
+              />
             </div>
-          </vue-draggable>
-        </div>
+          </div>
+        </vue-draggable>
         <div v-else class="py-5 col col-sm-10 col-md-8 col-lg-7 col-xl-6">
           <group-empty-state
             ref="empty-group"

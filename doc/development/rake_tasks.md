@@ -54,6 +54,17 @@ By default, this seeds an average of 10 issues per week for the last 52 weeks
 per project. All issues will also be randomly labeled with team, type, severity,
 and priority.
 
+#### Seeding groups with sub-groups
+
+You can seed groups with sub-groups that contain milestones/projects/issues
+with the `gitlab:seed:group_seed` task:
+
+```shell
+bin/rake "gitlab:seed:group_seed[subgroup_depth, username]"
+```
+
+Group are additionally seeded with epics if GitLab instance has epics feature available.
+
 ### Automation
 
 If you're very sure that you want to **wipe the current database** and refill

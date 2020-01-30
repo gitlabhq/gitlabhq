@@ -132,6 +132,10 @@ module API
       expose(:jobs_enabled) { |project, options| project.feature_available?(:builds, options[:current_user]) }
       expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:current_user]) }
 
+      expose(:can_create_merge_request_in) do |project, options|
+        Ability.allowed?(options[:current_user], :create_merge_request_in, project)
+      end
+
       expose(:issues_access_level) { |project, options| project.project_feature.string_access_level(:issues) }
       expose(:repository_access_level) { |project, options| project.project_feature.string_access_level(:repository) }
       expose(:merge_requests_access_level) { |project, options| project.project_feature.string_access_level(:merge_requests) }
