@@ -36,6 +36,13 @@ class GlobalPolicy < BasePolicy
     enable :use_slash_commands
   end
 
+  rule { inactive }.policy do
+    prevent :log_in
+    prevent :access_api
+    prevent :access_git
+    prevent :use_slash_commands
+  end
+
   rule { blocked | internal }.policy do
     prevent :log_in
     prevent :access_api

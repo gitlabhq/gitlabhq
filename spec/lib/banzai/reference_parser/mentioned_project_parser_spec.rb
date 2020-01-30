@@ -19,7 +19,7 @@ describe Banzai::ReferenceParser::MentionedProjectParser do
         it 'returns empty Array' do
           link['data-project'] = project.id.to_s
 
-          expect(subject.gather_references([link])).to eq([])
+          expect_gathered_references(subject.gather_references([link]), [], 1)
         end
       end
 
@@ -30,7 +30,7 @@ describe Banzai::ReferenceParser::MentionedProjectParser do
         end
 
         it 'returns an Array of referenced projects' do
-          expect(subject.gather_references([link])).to eq([project])
+          expect_gathered_references(subject.gather_references([link]), [project], 0)
         end
       end
 
@@ -38,7 +38,7 @@ describe Banzai::ReferenceParser::MentionedProjectParser do
         it 'returns an empty Array' do
           link['data-project'] = 'inexisting-project-id'
 
-          expect(subject.gather_references([link])).to eq([])
+          expect_gathered_references(subject.gather_references([link]), [], 1)
         end
       end
     end

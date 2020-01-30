@@ -164,6 +164,7 @@ describe API::CommitStatuses do
 
               expect(response).to have_gitlab_http_status(201)
               expect(job.status).to eq('pending')
+              expect(job.stage_idx).to eq(GenericCommitStatus::EXTERNAL_STAGE_IDX)
             end
           end
 
@@ -331,6 +332,29 @@ describe API::CommitStatuses do
         end
       end
 
+      context 'when updating a protected ref' do
+        before do
+          create(:protected_branch, project: project, name: 'master')
+          post api(post_url, user), params: { state: 'running', ref: 'master' }
+        end
+
+        context 'with user as developer' do
+          let(:user) { developer }
+
+          it 'does not create commit status' do
+            expect(response).to have_gitlab_http_status(403)
+          end
+        end
+
+        context 'with user as maintainer' do
+          let(:user) { create_user(:maintainer) }
+
+          it 'creates commit status' do
+            expect(response).to have_gitlab_http_status(201)
+          end
+        end
+      end
+
       context 'when commit SHA is invalid' do
         let(:sha) { 'invalid_sha' }
 
@@ -370,6 +394,22 @@ describe API::CommitStatuses do
           expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']['target_url'])
               .to include 'is blocked: Only allowed schemes are http, https'
+        end
+      end
+
+      context 'when trying to update a status of a different type' do
+        let!(:pipeline) { create(:ci_pipeline, project: project, sha: sha, ref: 'ref') }
+        let!(:ci_build) { create(:ci_build, pipeline: pipeline, name: 'test-job') }
+        let(:params) { { state: 'pending', name: 'test-job' } }
+
+        before do
+          post api(post_url, developer), params: params
+        end
+
+        it 'responds with bad request status and validation errors' do
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['message']['name'])
+              .to include 'has already been taken'
         end
       end
     end

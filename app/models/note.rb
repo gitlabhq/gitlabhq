@@ -545,7 +545,8 @@ class Note < ApplicationRecord
       # if they are not equal, then there are private/confidential references as well
       user_visible_reference_count > 0 && user_visible_reference_count == total_reference_count
     else
-      referenced_mentionables(user).any?
+      refs = all_references(user)
+      refs.all.any? && refs.stateful_not_visible_counter == 0
     end
   end
 

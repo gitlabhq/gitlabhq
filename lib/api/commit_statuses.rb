@@ -85,6 +85,8 @@ module API
             protected: user_project.protected_for?(ref))
         end
 
+        authorize! :update_pipeline, pipeline
+
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
           project: user_project,
           pipeline: pipeline,
