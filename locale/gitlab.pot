@@ -21925,6 +21925,9 @@ msgstr ""
 msgid "Your account has been deactivated by your administrator. Please log back in to reactivate your account."
 msgstr ""
 
+msgid "Your account is locked."
+msgstr ""
+
 msgid "Your account uses dedicated credentials for the \"%{group_name}\" group and can only be updated through SSO."
 msgstr ""
 

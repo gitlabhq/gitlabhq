@@ -394,8 +394,7 @@ describe SessionsController do
               end
 
               it 'warns about invalid login' do
-                expect(response).to set_flash.now[:alert]
-                  .to /Invalid Login or password/
+                expect(response).to set_flash.now[:alert].to /Your account is locked./
               end
 
               it 'locks the user' do
@@ -405,8 +404,7 @@ describe SessionsController do
               it 'keeps the user locked on future login attempts' do
                 post(:create, params: { user: { login: user.username, password: user.password } })
 
-                expect(response)
-                  .to set_flash.now[:alert].to /Invalid Login or password/
+                expect(response).to set_flash.now[:alert].to /Your account is locked./
               end
             end
           end

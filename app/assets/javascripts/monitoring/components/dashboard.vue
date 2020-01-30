@@ -363,7 +363,7 @@ export default {
 </script>
 
 <template>
-  <div class="prometheus-graphs">
+  <div class="prometheus-graphs" data-qa-selector="prometheus_graphs">
     <div
       v-if="showHeader"
       ref="prometheusGraphsHeader"

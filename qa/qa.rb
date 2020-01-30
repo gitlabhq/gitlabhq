@@ -289,6 +289,8 @@ module QA
           autoload :AddExisting, 'qa/page/project/operations/kubernetes/add_existing'
           autoload :Show, 'qa/page/project/operations/kubernetes/show'
         end
+
+        autoload :Metrics, 'qa/page/project/operations/metrics'
       end
 
       module Wiki
