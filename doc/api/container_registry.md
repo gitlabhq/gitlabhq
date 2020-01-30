@@ -19,7 +19,7 @@ GET /projects/:id/registry/repositories
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) accessible by the authenticated user. |
 | `tags`      | boolean | no | If the param is included as true, each repository will include an array of `"tags"` in the response. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories"
 ```
 
@@ -59,7 +59,7 @@ GET /groups/:id/registry/repositories
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) accessible by the authenticated user. |
 | `tags`      | boolean | no | If the param is included as true, each repository will include an array of `"tags"` in the response. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/2/registry/repositories?tags=1"
 ```
 
@@ -125,7 +125,7 @@ DELETE /projects/:id/registry/repositories/:repository_id
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
 | `repository_id` | integer | yes | The ID of registry repository. |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2"
 ```
 
@@ -144,7 +144,7 @@ GET /projects/:id/registry/repositories/:repository_id/tags
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) accessible by the authenticated user. |
 | `repository_id` | integer | yes | The ID of registry repository. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
 ```
 
@@ -179,7 +179,7 @@ GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 | `repository_id` | integer | yes | The ID of registry repository. |
 | `tag_name` | string | yes | The name of tag. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
 ```
 
@@ -212,7 +212,7 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 | `repository_id` | integer | yes | The ID of registry repository. |
 | `tag_name` | string | yes | The name of tag. |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
 ```
 
@@ -260,18 +260,18 @@ Examples:
 1. Remove tag names that are matching the regex (Git SHA), keep always at least 5,
    and remove ones that are older than 2 days:
 
-   ```bash
+   ```shell
    curl --request DELETE --data 'name_regex=[0-9a-z]{40}' --data 'keep_n=5' --data 'older_than=2d' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
    ```
 
 1. Remove all tags, but keep always the latest 5:
 
-   ```bash
+   ```shell
    curl --request DELETE --data 'name_regex=.*' --data 'keep_n=5' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
    ```
 
 1. Remove all tags that are older than 1 month:
 
-   ```bash
+   ```shell
    curl --request DELETE --data 'name_regex=.*' --data 'older_than=1month' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
    ```

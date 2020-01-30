@@ -22,7 +22,7 @@
           %span.board-title-main-text.block-truncated{ "v-if": "list.type !== \"label\"",
             ":title" => '((list.label && list.label.description) || list.title || "")',
             data: { container: "body" },
-            ":class": "{ 'has-tooltip': !['backlog', 'closed'].includes(list.type) }" }
+            ":class": "{ 'has-tooltip': !['backlog', 'closed'].includes(list.type), 'd-block': list.type === 'milestone' }" }
             {{ list.title }}
 
           %span.board-title-sub-text.prepend-left-5.has-tooltip{ "v-if": "list.type === \"assignee\"",

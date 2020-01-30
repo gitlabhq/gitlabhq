@@ -24,7 +24,7 @@ without authentication if the repository is publicly accessible.
 GET /projects/:id/repository/files/:file_path
 ```
 
-```bash
+```shell
 curl --request GET --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
 ```
 
@@ -59,7 +59,7 @@ In addition to the `GET` method, you can also use `HEAD` to get just file metada
 HEAD /projects/:id/repository/files/:file_path
 ```
 
-```bash
+```shell
 curl --head --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
 ```
 
@@ -88,7 +88,7 @@ Allows you to receive blame information. Each blame range contains lines and cor
 GET /projects/:id/repository/files/:file_path/blame
 ```
 
-```bash
+```shell
 curl --request GET --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=master'
 ```
 
@@ -128,7 +128,7 @@ Parameters:
 NOTE: **Note:**
 `HEAD` method return just file metadata as in [Get file from repository](repository_files.md#get-file-from-repository).
 
-```bash
+```shell
 curl --head --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=master'
 ```
 
@@ -155,7 +155,7 @@ X-Gitlab-Size: 1476
 GET /projects/:id/repository/files/:file_path/raw
 ```
 
-```bash
+```shell
 curl --request GET --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=master'
 ```
 
@@ -175,7 +175,7 @@ This allows you to create a single file. For creating multiple files with a sing
 POST /projects/:id/repository/files/:file_path
 ```
 
-```bash
+```shell
 curl --request POST --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
   --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
     "content": "some content", "commit_message": "create a new file"}' \
@@ -210,7 +210,7 @@ This allows you to update a single file. For updating multiple files with a sing
 PUT /projects/:id/repository/files/:file_path
 ```
 
-```bash
+```shell
 curl --request PUT --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
   --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
     "content": "some content", "commit_message": "update file"}' \
@@ -256,7 +256,7 @@ This allows you to delete a single file. For deleting multiple files with a sing
 DELETE /projects/:id/repository/files/:file_path
 ```
 
-```bash
+```shell
 curl --request DELETE --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
   --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
     "commit_message": "delete file"}' \

@@ -128,7 +128,7 @@ For more information and a complete `.gitlab-ci.yml` syntax, please read
 Once you've created `.gitlab-ci.yml`, you should add it to your Git repository
 and push it to GitLab.
 
-```bash
+```shell
 git add .gitlab-ci.yml
 git commit -m "Add .gitlab-ci.yml"
 git push origin master

@@ -8,6 +8,7 @@ module Gitlab
         class Epic < ActiveRecord::Base
           include IsolatedMentionable
           include CacheMarkdownField
+          include MentionableMigrationMethods
 
           attr_mentionable :title, pipeline: :single_line
           attr_mentionable :description

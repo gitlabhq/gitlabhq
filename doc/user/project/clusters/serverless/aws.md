@@ -149,7 +149,7 @@ Running the following `curl` command should trigger your function.
 NOTE: **Note:**
   Your url should be the one retrieved from the GitLab deploy stage log.
 
-```sh
+```shell
 curl https://u768nzby1j.execute-api.us-east-1.amazonaws.com/production/hello
 ```
 
@@ -192,7 +192,7 @@ The `serverless-offline` plugin allows to run your code locally. To run your cod
 
 Running the following `curl` command should trigger your function.
 
-```sh
+```shell
 curl http://localhost:3000/hello
 ```
 

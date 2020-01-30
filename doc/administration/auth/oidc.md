@@ -13,13 +13,13 @@ The OpenID Connect will provide you with a client details and secret for you to 
 
    For Omnibus GitLab:
 
-   ```sh
+   ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
    For installations from source:
 
-   ```sh
+   ```shell
    cd /home/git/gitlab
    sudo -u git -H editor config/gitlab.yml
    ```

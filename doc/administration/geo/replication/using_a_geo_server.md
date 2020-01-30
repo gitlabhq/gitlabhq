@@ -8,7 +8,7 @@ Pushing directly to a **secondary** node (for both HTTP, SSH including Git LFS) 
 
 Example of the output you will see when pushing to a **secondary** node:
 
-```bash
+```shell
 $ git push
 remote:
 remote: You're pushing to a Geo secondary. We'll help you by proxying this

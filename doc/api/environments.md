@@ -14,7 +14,7 @@ GET /projects/:id/environments
 | `name`    | string  | no       | Return the environment with this name. Mutually exclusive with `search` |
 | `search`  | string  | no       | Return list of environments matching the search criteria. Mutually exclusive with `name` |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/environments?name=review%2Ffix-foo
 ```
 
@@ -43,7 +43,7 @@ GET /projects/:id/environments/:environment_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `environment_id` | integer | yes | The ID of the environment |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
@@ -155,7 +155,7 @@ POST /projects/:id/environments
 | `name`        | string  | yes      | The name of the environment  |
 | `external_url` | string  | no     | Place to link to for this environment |
 
-```bash
+```shell
 curl --data "name=deploy&external_url=https://deploy.example.gitlab.com" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments"
 ```
 
@@ -188,7 +188,7 @@ PUT /projects/:id/environments/:environments_id
 | `name`          | string  | no                                | The new name of the environment  |
 | `external_url`  | string  | no                                | The new external_url             |
 
-```bash
+```shell
 curl --request PUT --data "name=staging&external_url=https://staging.example.gitlab.com" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
@@ -217,7 +217,7 @@ DELETE /projects/:id/environments/:environment_id
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `environment_id` | integer | yes | The ID of the environment |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
@@ -234,7 +234,7 @@ POST /projects/:id/environments/:environment_id/stop
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `environment_id` | integer | yes | The ID of the environment |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1/stop"
 ```
 

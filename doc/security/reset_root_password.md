@@ -8,7 +8,7 @@ To reset your root password, first log into your server with root privileges.
 
 Start a Ruby on Rails console with this command:
 
-```bash
+```shell
 gitlab-rails console -e production
 ```
 
@@ -16,19 +16,19 @@ Wait until the console has loaded.
 
 There are multiple ways to find your user. You can search for email or username.
 
-```bash
+```shell
 user = User.where(id: 1).first
 ```
 
 or
 
-```bash
+```shell
 user = User.find_by(email: 'admin@example.com')
 ```
 
 Now you can change your password:
 
-```bash
+```shell
 user.password = 'secret_pass'
 user.password_confirmation = 'secret_pass'
 ```
@@ -37,7 +37,7 @@ It's important that you change both password and password_confirmation to make i
 
 Don't forget to save the changes.
 
-```bash
+```shell
 user.save!
 ```
 

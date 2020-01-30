@@ -11,7 +11,7 @@ Creates a new Geo node.
 POST /geo_nodes
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes \
      --request POST \
      -d "name=himynameissomething" \
@@ -72,7 +72,7 @@ Example response:
 GET /geo_nodes
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes
 ```
 
@@ -139,7 +139,7 @@ Example response:
 GET /geo_nodes/:id
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes/1
 ```
 
@@ -286,7 +286,7 @@ Example response:
 GET /geo_nodes/status
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes/status
 ```
 
@@ -445,7 +445,7 @@ In GitLab 12.0, deprecated fields `wikis_count` and `repositories_count` were re
 GET /geo_nodes/:id/status
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes/2/status
 ```
 
@@ -523,7 +523,7 @@ GET /geo_nodes/current/failures
 
 This endpoint uses [Pagination](README.md#pagination).
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/geo_nodes/current/failures
 ```
 

@@ -275,7 +275,7 @@ authenticate to other Kerberos services.
 
 ### HTTP Basic: Access denied when cloning
 
-```sh
+```shell
 remote: HTTP Basic: Access denied
 fatal: Authentication failed for '<KRB5 path>'
 ```

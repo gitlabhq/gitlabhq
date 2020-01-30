@@ -293,7 +293,7 @@ module API
       end
 
       desc 'Get the context commits of a merge request' do
-        success Entities::CommitEntity
+        success Entities::Commit
       end
       get ':id/merge_requests/:merge_request_iid/context_commits' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
@@ -301,8 +301,10 @@ module API
 
         not_found! unless project.context_commits_enabled?
 
-        context_commits = merge_request.context_commits
-        CommitEntity.represent(context_commits, type: :full, request: merge_request)
+        context_commits =
+          paginate(merge_request.merge_request_context_commits).map(&:to_commit)
+
+        present context_commits, with: Entities::Commit
       end
 
       params do

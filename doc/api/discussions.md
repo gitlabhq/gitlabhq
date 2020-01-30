@@ -110,7 +110,7 @@ GET /projects/:id/issues/:issue_iid/discussions
 ]
 ```
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/discussions
 ```
 
@@ -130,7 +130,7 @@ Parameters:
 | `issue_iid`     | integer        | yes      | The IID of an issue |
 | `discussion_id` | integer        | yes      | The ID of a discussion item |
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7
 ```
 
@@ -151,7 +151,7 @@ Parameters:
 | `body`          | string         | yes      | The content of the thread |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/discussions?body=comment
 ```
 
@@ -177,7 +177,7 @@ Parameters:
 | `body`          | string         | yes      | The content of the note/reply |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment
 ```
 
@@ -199,7 +199,7 @@ Parameters:
 | `note_id`       | integer        | yes      | The ID of a thread note |
 | `body`          | string         | yes      | The content of the note/reply |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment
 ```
 
@@ -220,7 +220,7 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a discussion |
 | `note_id`       | integer        | yes      | The ID of a discussion note |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/636
 ```
 
@@ -318,7 +318,7 @@ GET /projects/:id/snippets/:snippet_id/discussions
 ]
 ```
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions
 ```
 
@@ -338,7 +338,7 @@ Parameters:
 | `snippet_id`    | integer        | yes      | The ID of an snippet |
 | `discussion_id` | integer        | yes      | The ID of a discussion item |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7
 ```
 
@@ -360,7 +360,7 @@ Parameters:
 | `body`          | string         | yes      | The content of a discussion |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions?body=comment
 ```
 
@@ -383,7 +383,7 @@ Parameters:
 | `body`          | string         | yes      | The content of the note/reply |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment
 ```
 
@@ -405,7 +405,7 @@ Parameters:
 | `note_id`       | integer        | yes      | The ID of a thread note |
 | `body`          | string         | yes      | The content of the note/reply |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment
 ```
 
@@ -426,7 +426,7 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a discussion |
 | `note_id`       | integer        | yes      | The ID of a discussion note |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/636
 ```
 
@@ -525,7 +525,7 @@ GET /groups/:id/epics/:epic_id/discussions
 ]
 ```
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions
 ```
 
@@ -545,7 +545,7 @@ Parameters:
 | `epic_id`       | integer        | yes      | The ID of an epic |
 | `discussion_id` | integer        | yes      | The ID of a discussion item |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7
 ```
 
@@ -567,7 +567,7 @@ Parameters:
 | `body`          | string         | yes      | The content of the thread |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions?body=comment
 ```
 
@@ -591,7 +591,7 @@ Parameters:
 | `body`          | string         | yes      | The content of the note/reply |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment
 ```
 
@@ -613,7 +613,7 @@ Parameters:
 | `note_id`       | integer        | yes      | The ID of a thread note |
 | `body`          | string         | yes      | The content of note/reply |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment
 ```
 
@@ -634,7 +634,7 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a thread |
 | `note_id`       | integer        | yes      | The ID of a thread note |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/636
 ```
 
@@ -785,7 +785,7 @@ Diff comments contain also position:
 ]
 ```
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions
 ```
 
@@ -805,7 +805,7 @@ Parameters:
 | `merge_request_iid` | integer        | yes      | The IID of a merge request |
 | `discussion_id`     | integer        | yes      | The ID of a discussion item |
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7
 ```
 
@@ -840,7 +840,7 @@ Parameters:
 | `position[x]`             | integer        | no       | X coordinate (for 'image' diff notes) |
 | `position[y]`             | integer        | no       | Y coordinate (for 'image' diff notes) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions?body=comment
 ```
 
@@ -861,7 +861,7 @@ Parameters:
 | `discussion_id`     | integer        | yes      | The ID of a thread |
 | `resolved`          | boolean        | yes      | Resolve/unresolve the discussion |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7?resolved=true
 ```
 
@@ -885,7 +885,7 @@ Parameters:
 | `body`              | string         | yes      | The content of the note/reply |
 | `created_at`        | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment
 ```
 
@@ -908,13 +908,13 @@ Parameters:
 | `body`              | string         | no       | The content of the note/reply (exactly one of `body` or `resolved` must be set |
 | `resolved`          | boolean        | no       | Resolve/unresolve the note (exactly one of `body` or `resolved` must be set |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment
 ```
 
 Resolving a note:
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?resolved=true
 ```
 
@@ -935,7 +935,7 @@ Parameters:
 | `discussion_id`     | integer        | yes      | The ID of a thread |
 | `note_id`           | integer        | yes      | The ID of a thread note |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/636
 ```
 
@@ -1078,7 +1078,7 @@ Diff comments contain also position:
 ]
 ```
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions
 ```
 
@@ -1098,7 +1098,7 @@ Parameters:
 | `commit_id`         | integer        | yes      | The ID of a commit |
 | `discussion_id`     | integer        | yes      | The ID of a discussion item |
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7
 ```
 
@@ -1133,7 +1133,7 @@ Parameters:
 | `position[x]`             | integer        | no       | X coordinate (for 'image' diff notes) |
 | `position[y]`             | integer        | no       | Y coordinate (for 'image' diff notes) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions?body=comment
 ```
 
@@ -1156,7 +1156,7 @@ Parameters:
 | `body`              | string         | yes      | The content of the note/reply |
 | `created_at`        | string         | no       | Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes?body=comment
 ```
 
@@ -1178,13 +1178,13 @@ Parameters:
 | `note_id`           | integer        | yes      | The ID of a thread note |
 | `body`              | string         | no       | The content of a note |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?body=comment
 ```
 
 Resolving a note:
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7/notes/1108?resolved=true
 ```
 
@@ -1205,6 +1205,6 @@ Parameters:
 | `discussion_id`     | integer        | yes      | The ID of a thread |
 | `note_id`           | integer        | yes      | The ID of a thread note |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/commits/11/discussions/636
 ```

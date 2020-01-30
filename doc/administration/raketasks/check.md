@@ -33,13 +33,13 @@ integrity check described previously.
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake gitlab:git:fsck
 ```
 
 **Source Installation**
 
-```bash
+```shell
 sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
 ```
 
@@ -58,7 +58,7 @@ Currently, integrity checks are supported for the following types of file:
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake gitlab:artifacts:check
 sudo gitlab-rake gitlab:lfs:check
 sudo gitlab-rake gitlab:uploads:check
@@ -66,7 +66,7 @@ sudo gitlab-rake gitlab:uploads:check
 
 **Source Installation**
 
-```bash
+```shell
 sudo -u git -H bundle exec rake gitlab:artifacts:check RAILS_ENV=production
 sudo -u git -H bundle exec rake gitlab:lfs:check RAILS_ENV=production
 sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
@@ -82,7 +82,7 @@ Variable  | Type    | Description
 `ID_TO`   | integer | Specifies the ID value to end at, inclusive of the value.
 `VERBOSE` | boolean | Causes failures to be listed individually, rather than being summarized.
 
-```bash
+```shell
 sudo gitlab-rake gitlab:artifacts:check BATCH=100 ID_FROM=50 ID_TO=250
 sudo gitlab-rake gitlab:lfs:check BATCH=100 ID_FROM=50 ID_TO=250
 sudo gitlab-rake gitlab:uploads:check BATCH=100 ID_FROM=50 ID_TO=250
@@ -90,7 +90,7 @@ sudo gitlab-rake gitlab:uploads:check BATCH=100 ID_FROM=50 ID_TO=250
 
 Example output:
 
-```bash
+```shell
 $ sudo gitlab-rake gitlab:uploads:check
 Checking integrity of Uploads
 - 1..1350: Failures: 0
@@ -107,7 +107,7 @@ Done!
 
 Example verbose output:
 
-```bash
+```shell
 $ sudo gitlab-rake gitlab:uploads:check VERBOSE=1
 Checking integrity of Uploads
 - 1..1350: Failures: 0

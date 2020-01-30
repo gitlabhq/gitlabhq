@@ -68,7 +68,7 @@ GET /issues?confidential=true
 | `confidential`      | Boolean          | no         | Filter confidential or public issues.                                                                                                               |
 | `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/issues
 ```
 
@@ -223,7 +223,7 @@ GET /groups/:id/issues?confidential=true
 | `confidential`     | Boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4/issues
 ```
 
@@ -377,7 +377,7 @@ GET /projects/:id/issues?confidential=true
 | `confidential`     | Boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues
 ```
 
@@ -505,7 +505,7 @@ GET /projects/:id/issues/:issue_iid
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues/41
 ```
 
@@ -658,7 +658,7 @@ POST /projects/:id/issues
 | `epic_id` **(ULTIMATE)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
 | `epic_iid` **(ULTIMATE)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in 13.0](https://gitlab.com/gitlab-org/gitlab/issues/35157)) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug
 ```
 
@@ -766,7 +766,7 @@ PUT /projects/:id/issues/:issue_iid
 | `epic_id` **(ULTIMATE)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
 | `epic_iid` **(ULTIMATE)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in 13.0](https://gitlab.com/gitlab-org/gitlab/issues/35157)) |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close
 ```
 
@@ -867,7 +867,7 @@ DELETE /projects/:id/issues/:issue_iid
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues/85
 ```
 
@@ -890,7 +890,7 @@ POST /projects/:id/issues/:issue_iid/move
 | `issue_iid`     | integer | yes      | The internal ID of a project's issue |
 | `to_project_id` | integer | yes      | The ID of the new project            |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" --form to_project_id=5 https://gitlab.example.com/api/v4/projects/4/issues/85/move
 ```
 
@@ -996,7 +996,7 @@ POST /projects/:id/issues/:issue_iid/subscribe
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/subscribe
 ```
 
@@ -1102,7 +1102,7 @@ POST /projects/:id/issues/:issue_iid/unsubscribe
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/unsubscribe
 ```
 
@@ -1173,7 +1173,7 @@ POST /projects/:id/issues/:issue_iid/todo
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/todo
 ```
 
@@ -1288,7 +1288,7 @@ POST /projects/:id/issues/:issue_iid/time_estimate
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
 | `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/time_estimate?duration=3h30m
 ```
 
@@ -1316,7 +1316,7 @@ POST /projects/:id/issues/:issue_iid/reset_time_estimate
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/reset_time_estimate
 ```
 
@@ -1345,7 +1345,7 @@ POST /projects/:id/issues/:issue_iid/add_spent_time
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
 | `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/add_spent_time?duration=1h
 ```
 
@@ -1373,7 +1373,7 @@ POST /projects/:id/issues/:issue_iid/reset_spent_time
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/reset_spent_time
 ```
 
@@ -1399,7 +1399,7 @@ GET /projects/:id/issues/:issue_iid/time_stats
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/time_stats
 ```
 
@@ -1427,7 +1427,7 @@ GET /projects/:id/issues/:issue_id/related_merge_requests
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
-```sh
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/11/related_merge_requests
 ```
 
@@ -1583,7 +1583,7 @@ GET /projects/:id/issues/:issue_iid/closed_by
 | `id`        | integer | yes      | The ID of a project                  |
 | `issue_iid` | integer | yes      | The internal ID of a project issue   |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/11/closed_by
 ```
 
@@ -1656,7 +1656,7 @@ GET /projects/:id/issues/:issue_iid/participants
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/participants
 ```
 
@@ -1700,7 +1700,7 @@ GET /projects/:id/issues/:issue_iid/user_agent_detail
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/user_agent_detail
 ```
 

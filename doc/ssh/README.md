@@ -93,13 +93,13 @@ To create a new SSH key pair:
 1. Open a terminal on Linux or macOS, or Git Bash / WSL on Windows.
 1. Generate a new ED25519 SSH key pair:
 
-   ```bash
+   ```shell
    ssh-keygen -t ed25519 -C "email@example.com"
    ```
 
    Or, if you want to use RSA:
 
-   ```bash
+   ```shell
    ssh-keygen -t rsa -b 4096 -C "email@example.com"
    ```
 
@@ -140,13 +140,13 @@ If you already have an RSA SSH key pair to use with GitLab, consider upgrading i
 to use the more secure password encryption format by using the following command
 on the private key:
 
-```bash
+```shell
 ssh-keygen -o -f ~/.ssh/id_rsa
 ```
 
 Or generate a new RSA key:
 
-```bash
+```shell
 ssh-keygen -o -t rsa -b 4096 -C "email@example.com"
 ```
 
@@ -159,19 +159,19 @@ Now, it's time to add the newly created public key to your GitLab account.
 
    **macOS:**
 
-   ```bash
+   ```shell
    pbcopy < ~/.ssh/id_ed25519.pub
    ```
 
    **WSL / GNU/Linux (requires the xclip package):**
 
-   ```bash
+   ```shell
    xclip -sel clip < ~/.ssh/id_ed25519.pub
    ```
 
    **Git Bash on Windows:**
 
-   ```bash
+   ```shell
    cat ~/.ssh/id_ed25519.pub | clip
    ```
 
@@ -197,7 +197,7 @@ Now, it's time to add the newly created public key to your GitLab account.
 To test whether your SSH key was added correctly, run the following command in
 your terminal (replacing `gitlab.com` with your GitLab's instance domain):
 
-```bash
+```shell
 ssh -T git@gitlab.com
 ```
 
@@ -234,7 +234,7 @@ for connections to GitLab.
 Open a terminal and use the following commands
 (replacing `other_id_rsa` with your private SSH key):
 
-```bash
+```shell
 eval $(ssh-agent -s)
 ssh-add ~/.ssh/other_id_rsa
 ```
@@ -267,7 +267,7 @@ that's why it needs to uniquely map to a single user.
 If you want to use different keys depending on the repository you are working
 on, you can issue the following command while inside your repository:
 
-```sh
+```shell
 git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-filename-for-this-repository -F /dev/null"
 ```
 
@@ -314,13 +314,13 @@ despite giving very little context as to where they point, would also work.
 
 Cloning the `gitlab` repository normally looks like this:
 
-```sh
+```shell
 git clone git@gitlab.com:gitlab-org/gitlab.git
 ```
 
 To clone it for `user_1`, replace `gitlab.com` with the SSH alias `user_1.gitlab.com`:
 
-```sh
+```shell
 git clone git@<user_1.gitlab.com>:gitlab-org/gitlab.git
 ```
 
@@ -328,7 +328,7 @@ Fix a previously cloned repository using the `git remote` command.
 
 The example below assumes the remote repository is aliased as `origin`.
 
-```sh
+```shell
 git remote set-url origin git@<user_1.gitlab.com>:gitlab-org/gitlab.git
 ```
 

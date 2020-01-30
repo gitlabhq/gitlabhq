@@ -98,13 +98,13 @@ most commonly-used RPCs can be enabled via feature flags:
 A convenience Rake task can be used to enable or disable these flags
 all together. To enable:
 
-```sh
+```shell
 bundle exec rake gitlab:features:enable_rugged
 ```
 
 To disable:
 
-```sh
+```shell
 bundle exec rake gitlab:features:disable_rugged
 ```
 
@@ -343,7 +343,7 @@ the integration by using GDK:
       submitting commit, observing history, etc.).
    1. Check that the list of current metrics has the new counter for the feature flag:
 
-      ```sh
+      ```shell
       curl --silent http://localhost:9236/metrics | grep go_find_all_tags
       ```
 
@@ -352,7 +352,7 @@ the integration by using GDK:
    1. Navigate to GDK's root directory.
    1. Start a Rails console:
 
-      ```sh
+      ```shell
       bundle install && bundle exec rails console
       ```
 
@@ -373,6 +373,6 @@ the integration by using GDK:
       your changes (project creation, submitting commit, observing history, etc.).
    1. Verify the feature is on by observing the metrics for it:
 
-      ```sh
+      ```shell
       curl --silent http://localhost:9236/metrics | grep go_find_all_tags
       ```

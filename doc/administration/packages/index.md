@@ -166,12 +166,12 @@ The processing will be done in a background worker and requires **no downtime**.
 
 For Omnibus GitLab:
 
-```sh
+```shell
 sudo gitlab-rake "gitlab:packages:migrate"
 ```
 
 For installations from source:
 
-```bash
+```shell
 RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:packages:migrate
 ```

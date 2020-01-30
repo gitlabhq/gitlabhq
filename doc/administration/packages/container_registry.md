@@ -169,7 +169,7 @@ If your certificate provider provides the CA Bundle certificates, append them to
 Users should now be able to login to the Container Registry with their GitLab
 credentials using:
 
-```bash
+```shell
 docker login gitlab.example.com:4567
 ```
 
@@ -194,7 +194,7 @@ Let's assume that you want the container Registry to be accessible at
    `/etc/gitlab/ssl/registry.gitlab.example.com.key` and make sure they have
    correct permissions:
 
-   ```bash
+   ```shell
    chmod 600 /etc/gitlab/ssl/registry.gitlab.example.com.*
    ```
 
@@ -234,7 +234,7 @@ registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
 Users should now be able to login to the Container Registry using their GitLab
 credentials:
 
-```bash
+```shell
 docker login registry.gitlab.example.com
 ```
 
@@ -793,7 +793,7 @@ After adding the setting, [reconfigure GitLab](../restart_gitlab.md#omnibus-gitl
 
 Use curl to request debug output from the debug server:
 
-```bash
+```shell
 curl localhost:5001/debug/health
 curl localhost:5001/debug/vars
 ```

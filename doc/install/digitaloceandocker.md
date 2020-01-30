@@ -47,13 +47,13 @@ The rest of the steps are identical for macOS and Linux.
 
 1. Set the DO token:
 
-   ```sh
+   ```shell
    export DOTOKEN=<your generated token>
    ```
 
 1. Create the machine:
 
-   ```sh
+   ```shell
    docker-machine create \
      --driver digitalocean \
      --digitalocean-access-token=$DOTOKEN \
@@ -71,7 +71,7 @@ In this example we'll create a GitLab EE 8.10.8 instance.
 
 First connect the docker client to the docker host you created previously.
 
-```sh
+```shell
 eval "$(docker-machine env gitlab-test-env-do)"
 ```
 
@@ -88,7 +88,7 @@ You can add this to your `~/.bash_profile` file to ensure the `docker` client us
 
 #### Set up container settings
 
-```sh
+```shell
 export SSH_PORT=2222
 export HTTP_PORT=8888
 export VERSION=8.10.8-ee.0
@@ -97,7 +97,7 @@ export NAME=gitlab-test-8.10
 
 #### Create container
 
-```sh
+```shell
 docker run --detach \
 --env GITLAB_OMNIBUS_CONFIG="external_url 'http://$(docker-machine ip gitlab-test-env-do):$HTTP_PORT'; gitlab_rails['gitlab_shell_ssh_port'] = $SSH_PORT;" \
 --hostname $(docker-machine ip gitlab-test-env-do) \
@@ -110,7 +110,7 @@ gitlab/gitlab-ee:$VERSION
 
 #### Retrieve the docker host IP
 
-```sh
+```shell
 docker-machine ip gitlab-test-env-do
 # example output: 192.168.151.134
 ```
@@ -119,11 +119,11 @@ Browse to: `http://192.168.151.134:8888/`.
 
 #### Execute interactive shell/edit configuration
 
-```sh
+```shell
 docker exec -it $NAME /bin/bash
 ```
 
-```sh
+```shell
 # example commands
 root@192:/# vi /etc/gitlab/gitlab.rb
 root@192:/# gitlab-ctl reconfigure

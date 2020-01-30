@@ -26,7 +26,7 @@ Parameters:
 | `title`   | string | optional | Return only the milestones having the given `title` |
 | `search`  | string | optional | Return only milestones with a title or description matching the provided string |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/milestones
 ```
 

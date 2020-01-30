@@ -1,8 +1,13 @@
 import { omit } from 'lodash';
-import createGqClient from '~/lib/graphql';
+import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
-export const gqClient = createGqClient();
+export const gqClient = createGqClient(
+  {},
+  {
+    fetchPolicy: fetchPolicies.NO_CACHE,
+  },
+);
 
 export const uniqMetricsId = metric => `${metric.metric_id}_${metric.id}`;
 

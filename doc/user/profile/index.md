@@ -209,7 +209,7 @@ Once this option is enabled, every Git-related action will be performed using th
 To stay fully anonymous, you can also copy this private commit email
 and configure it on your local machine using the following command:
 
-```sh
+```shell
 git config --global user.email <your email address>
 ```
 

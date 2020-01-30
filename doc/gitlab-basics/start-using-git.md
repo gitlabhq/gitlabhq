@@ -21,7 +21,7 @@ Here are some suggestions:
 
 Git is usually preinstalled on Mac and Linux, so run the following command:
 
-```bash
+```shell
 git --version
 ```
 
@@ -39,25 +39,25 @@ commit will use this information to identify you as the author.
 
 In your shell, type the following command to add your username:
 
-```bash
+```shell
 git config --global user.name "YOUR_USERNAME"
 ```
 
 Then verify that you have the correct username:
 
-```bash
+```shell
 git config --global user.name
 ```
 
 To set your email address, type the following command:
 
-```bash
+```shell
 git config --global user.email "your_email_address@example.com"
 ```
 
 To verify that you entered your email correctly, type:
 
-```bash
+```shell
 git config --global user.email
 ```
 
@@ -72,7 +72,7 @@ on how Git manages configurations in the [Git Config](https://git-scm.com/book/e
 
 To view the information that you entered, along with other global options, type:
 
-```bash
+```shell
 git config --global --list
 ```
 
@@ -85,7 +85,7 @@ Start using Git via the command line with the most basic commands as described b
 If you have an existing local directory that you want to *initialize* for version
 control, use the `init` command to instruct Git to begin tracking the directory:
 
-```bash
+```shell
 git init
 ```
 
@@ -123,13 +123,13 @@ repository files into, and run one of the following commands.
 
 Clone via HTTPS:
 
-```bash
+```shell
 git clone https://gitlab.com/gitlab-org/gitlab.git
 ```
 
 Clone via SSH:
 
-```bash
+```shell
 git clone git@gitlab.com:gitlab-org/gitlab.git
 ```
 
@@ -143,7 +143,7 @@ You are always in a branch when working with Git. The main branch is the master
 branch, but you can use the same command to switch to a different branch by
 changing `master` to the branch name.
 
-```bash
+```shell
 git checkout master
 ```
 
@@ -155,7 +155,7 @@ since the last time you cloned or pulled the project. Use `master` for the
 `<name-of-branch>` to get the main branch code, or the branch name of the branch
 you are currently working in.
 
-```bash
+```shell
 git pull <REMOTE> <name-of-branch>
 ```
 
@@ -171,7 +171,7 @@ You can learn more on how Git manages remote repositories in the
 
 To view your remote repositories, type:
 
-```bash
+```shell
 git remote -v
 ```
 
@@ -181,7 +181,7 @@ The `-v` flag stands for verbose.
 
 To add a link to a remote repository:
 
-```bash
+```shell
 git remote add <source-name> <repository-path>
 ```
 
@@ -194,7 +194,7 @@ To create a new branch, to work from without affecting the `master` branch, type
 the following (spaces won't be recognized in the branch name, so you will need to
 use a hyphen or underscore):
 
-```bash
+```shell
 git checkout -b <name-of-branch>
 ```
 
@@ -202,7 +202,7 @@ git checkout -b <name-of-branch>
 
 To switch to an existing branch, so you can work on it:
 
-```bash
+```shell
 git checkout <name-of-branch>
 ```
 
@@ -212,7 +212,7 @@ It's important to be aware of what's happening and the status of your changes. W
 you add, change, or delete files/folders, Git knows about it. To check the status of
 your changes:
 
-```bash
+```shell
 git status
 ```
 
@@ -221,7 +221,7 @@ git status
 To view the differences between your local, unstaged changes and the repository versions
 that you cloned or pulled, type:
 
-```bash
+```shell
 git diff
 ```
 
@@ -232,7 +232,7 @@ be new, modified, or deleted files/folders. Use `git add` to first stage (prepar
 a local file/folder for committing. Then use `git commit` to commit (save) the staged
 files:
 
-```bash
+```shell
 git add <file-name OR folder-name>
 git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
 ```
@@ -241,7 +241,7 @@ git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
 
 To add and commit (save) all local changes quickly:
 
-```bash
+```shell
 git add .
 git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
 ```
@@ -257,13 +257,13 @@ To create a merge request from a fork to an upstream repository, see the
 
 To push all local commits (saved changes) to the remote repository:
 
-```bash
+```shell
 git push <remote> <name-of-branch>
 ```
 
 For example, to push your local commits to the _`master`_ branch of the _`origin`_ remote:
 
-```bash
+```shell
 git push origin master
 ```
 
@@ -272,7 +272,7 @@ git push origin master
 To delete all local changes in the branch that have not been added to the staging
 area, and leave unstaged files/folders, type:
 
-```bash
+```shell
 git checkout .
 ```
 
@@ -282,7 +282,7 @@ Note that this removes *changes* to files, not the files themselves.
 
 To undo the most recently added, but not committed, changes to files/folders:
 
-```bash
+```shell
 git reset .
 ```
 
@@ -290,7 +290,7 @@ git reset .
 
 To undo the most recent commit, type:
 
-```bash
+```shell
 git reset HEAD~1
 ```
 
@@ -306,7 +306,7 @@ the situation altogether by working carefully.
 When you are ready to make all the changes in a branch a permanent addition to
 the master branch, you `merge` the two together:
 
-```bash
+```shell
 git checkout <name-of-branch>
 git merge master
 ```

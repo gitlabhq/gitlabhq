@@ -329,7 +329,7 @@ where a reader must replace text with their own value.
 
 For example:
 
-```sh
+```shell
 cp <your_source_directory> <your_destination_directory>
 ```
 
@@ -1277,7 +1277,7 @@ METHOD /endpoint
 
 Example request:
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/endpoint?parameters'
 ```
 
@@ -1355,7 +1355,7 @@ Below is a set of [cURL](https://curl.haxx.se) examples that you can use in the 
 
 Get the details of a group:
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/gitlab-org
 ```
 
@@ -1363,7 +1363,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Create a new project under the authenticated user's namespace:
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?name=foo"
 ```
 
@@ -1373,7 +1373,7 @@ Instead of using `--request POST` and appending the parameters to the URI, you c
 cURL's `--data` option. The example below will create a new project `foo` under
 the authenticated user's namespace.
 
-```bash
+```shell
 curl --data "name=foo" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
 ```
 
@@ -1382,7 +1382,7 @@ curl --data "name=foo" --header "PRIVATE-TOKEN: <your_access_token>" "https://gi
 > **Note:** In this example we create a new group. Watch carefully the single
 and double quotes.
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v4/groups
 ```
 
@@ -1391,7 +1391,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Cont
 Instead of using JSON or urlencode you can use multipart/form-data which
 properly handles data encoding:
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "title=ssh-key" --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." https://gitlab.example.com/api/v4/users/25/keys
 ```
 
@@ -1405,7 +1405,7 @@ to escape them when possible. In the example below we create a new issue which
 contains spaces in its title. Observe how spaces are escaped using the `%20`
 ASCII code.
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/issues?title=Hello%20Dude"
 ```
 
@@ -1417,7 +1417,7 @@ The GitLab API sometimes accepts arrays of strings or integers. For example, to
 restrict the sign-up e-mail domains of a GitLab instance to `*.example.com` and
 `example.net`, you would do something like this:
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v4/application/settings
 ```
 

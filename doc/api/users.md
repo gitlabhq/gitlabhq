@@ -554,7 +554,7 @@ Get the status of the currently signed in user.
 GET /user/status
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/user/status"
 ```
 
@@ -580,7 +580,7 @@ GET /users/:id_or_username/status
 | ---------------- | ------ | -------- | ----------- |
 | `id_or_username` | string | yes      | The id or username of the user to get a status of |
 
-```bash
+```shell
 curl "https://gitlab.example.com/users/janedoe/status"
 ```
 
@@ -609,7 +609,7 @@ PUT /user/status
 
 When both parameters `emoji` and `message` are empty, the status will be cleared.
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "emoji=coffee" --data "message=I crave coffee" https://gitlab.example.com/api/v4/user/status
 ```
 
@@ -635,7 +635,7 @@ Get the counts (same as in top right menu) of the currently signed in user.
 GET /user_counts
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/user_counts"
 ```
 
@@ -799,7 +799,7 @@ Get a list of currently authenticated user's GPG keys.
 GET /user/gpg_keys
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys
 ```
 
@@ -829,7 +829,7 @@ Parameters:
 | --------- | ------- | -------- | ----------- |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys/1
 ```
 
@@ -857,7 +857,7 @@ Parameters:
 | --------- | ------ | -------- | ----------- |
 | key       | string | yes      | The new GPG key |
 
-```bash
+```shell
 curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys
 ```
 
@@ -887,7 +887,7 @@ Parameters:
 | --------- | ------- | -------- | ----------- |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys/1
 ```
 
@@ -907,7 +907,7 @@ Parameters:
 | --------- | ------- | -------- | ----------- |
 | `id`      | integer | yes      | The ID of the user |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys
 ```
 
@@ -938,7 +938,7 @@ Parameters:
 | `id`      | integer | yes      | The ID of the user |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys/1
 ```
 
@@ -967,7 +967,7 @@ Parameters:
 | `id`      | integer | yes      | The ID of the user |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
-```bash
+```shell
 curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys
 ```
 
@@ -998,7 +998,7 @@ Parameters:
 | `id`      | integer | yes      | The ID of the user |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys/1
 ```
 
@@ -1386,7 +1386,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `from` | string | no | Date string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`. Defaults to 6 months ago. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/activities
 ```
 
@@ -1441,7 +1441,7 @@ Returns:
 - `403 Forbidden` when not requested by an admin.
 - `400 Bad Request` when requested type is not supported.
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/<user_id>/memberships
 ```
 

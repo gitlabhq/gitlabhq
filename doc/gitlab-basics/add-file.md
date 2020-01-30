@@ -22,7 +22,7 @@ Open a [terminal/shell](command-line-commands.md), and change into the folder of
 GitLab project. This usually means running the following command until you get
 to the desired destination:
 
-```sh
+```shell
 cd <destination folder>
 ```
 
@@ -38,7 +38,7 @@ in Windows), put the file into a directory within the GitLab project.
 Check if your file is actually present in the directory (if you are in Windows,
 use `dir` instead):
 
-```sh
+```shell
 ls
 ```
 
@@ -46,33 +46,33 @@ You should see the name of the file in the list shown.
 
 Check the status:
 
-```sh
+```shell
 git status
 ```
 
 Your file's name should appear in red, so `git` took notice of it! Now add it
 to the repository:
 
-```sh
+```shell
 git add <name of file>
 ```
 
 Check the status again, your file's name should have turned green:
 
-```sh
+```shell
 git status
 ```
 
 Commit (save) your file to the repository:
 
-```sh
+```shell
 git commit -m "DESCRIBE COMMIT IN A FEW WORDS"
 ```
 
 Now you can push (send) your changes (in the branch `<branch-name>`) to GitLab
 (the Git remote named 'origin'):
 
-```sh
+```shell
 git push origin <branch-name>
 ```
 

@@ -164,7 +164,7 @@ installation. Once the installation/upgrade is underway, wait for the
 pod to be created. Then run the following to obtain the pods logs as
 they are written:
 
-```bash
+```shell
 kubectl logs <pod_name> --follow -n gitlab-managed-apps
 ```
 

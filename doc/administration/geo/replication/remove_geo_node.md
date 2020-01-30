@@ -10,13 +10,13 @@ Once removed from the Geo admin page, you must stop and uninstall the **secondar
 
 1. On the **secondary** node, stop GitLab:
 
-   ```bash
+   ```shell
    sudo gitlab-ctl stop
    ```
 
 1. On the **secondary** node, uninstall GitLab:
 
-   ```bash
+   ```shell
    # Stop gitlab and remove its supervision process
    sudo gitlab-ctl uninstall
 
@@ -31,7 +31,7 @@ Once GitLab has been uninstalled from the **secondary** node, the replication sl
 
 1. On the **primary** node, start a PostgreSQL console session:
 
-   ```bash
+   ```shell
    sudo gitlab-psql
    ```
 

@@ -43,7 +43,7 @@ end
 
 When run, this spec doesn't do what we might expect:
 
-```sh
+```shell
 1) API::API reproduce sequence issue creates a second label
    Failure/Error: expect(json_response.first['name']).to eq('label1')
 

@@ -65,13 +65,13 @@ See the [Rails guides](https://guides.rubyonrails.org/action_mailer_basics.html#
 
 1. Run this command in the GitLab root directory to launch `mail_room`:
 
-   ```sh
+   ```shell
    bundle exec mail_room -q -c config/mail_room.yml
    ```
 
 1. Verify that everything is configured correctly:
 
-   ```sh
+   ```shell
    bundle exec rake gitlab:incoming_email:check RAILS_ENV=development
    ```
 

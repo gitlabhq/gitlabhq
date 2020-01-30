@@ -26,9 +26,69 @@ describe Projects::Serverless::FunctionsFinder do
     project.add_maintainer(user)
   end
 
-  describe '#installed' do
-    it 'when reactive_caching is still fetching data' do
-      expect(described_class.new(project).knative_installed).to eq 'checking'
+  describe '#knative_installed' do
+    context 'when environment does not exist yet' do
+      shared_examples 'before first deployment' do
+        let(:service) { cluster.platform_kubernetes }
+        let(:deployment) { nil }
+
+        it 'returns true if Knative is installed on cluster' do
+          stub_kubeclient_discover_knative_found(service.api_url)
+          function_finder = described_class.new(project)
+          synchronous_reactive_cache(function_finder)
+
+          expect(function_finder.knative_installed).to be true
+        end
+
+        it 'returns false if Knative is not installed on cluster' do
+          stub_kubeclient_discover_knative_not_found(service.api_url)
+          function_finder = described_class.new(project)
+          synchronous_reactive_cache(function_finder)
+
+          expect(function_finder.knative_installed).to be false
+        end
+      end
+      context 'when project level cluster is present and enabled' do
+        it_behaves_like 'before first deployment' do
+          let(:cluster) { create(:cluster, :project, :provided_by_gcp, enabled: true) }
+          let(:project) { cluster.project }
+        end
+      end
+
+      context 'when group level cluster is present and enabled' do
+        it_behaves_like 'before first deployment' do
+          let(:cluster) { create(:cluster, :group, :provided_by_gcp, enabled: true) }
+          let(:project) { create(:project, group: cluster.groups.first) }
+        end
+      end
+
+      context 'when instance level cluster is present and enabled' do
+        it_behaves_like 'before first deployment' do
+          let(:project) { create(:project) }
+          let(:cluster) { create(:cluster, :instance, :provided_by_gcp, enabled: true) }
+        end
+      end
+
+      context 'when project level cluster is present, but disabled' do
+        let(:cluster) { create(:cluster, :project, :provided_by_gcp, enabled: false) }
+        let(:project) { cluster.project }
+        let(:service) { cluster.platform_kubernetes }
+        let(:deployment) { nil }
+
+        it 'returns false even if Knative is installed on cluster' do
+          stub_kubeclient_discover_knative_found(service.api_url)
+          function_finder = described_class.new(project)
+          synchronous_reactive_cache(function_finder)
+
+          expect(function_finder.knative_installed).to be false
+        end
+      end
+    end
+
+    context 'when reactive_caching is still fetching data' do
+      it 'returns "checking"' do
+        expect(described_class.new(project).knative_installed).to eq 'checking'
+      end
     end
 
     context 'when reactive_caching has finished' do

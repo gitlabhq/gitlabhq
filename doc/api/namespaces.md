@@ -18,7 +18,7 @@ GET /namespaces
 
 Example request:
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/namespaces
 ```
 
@@ -84,7 +84,7 @@ GET /namespaces?search=foobar
 
 Example request:
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/namespaces?search=twitter
 ```
 
@@ -118,7 +118,7 @@ GET /namespaces/:id
 
 Example request:
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/namespaces/2
 ```
 
@@ -138,7 +138,7 @@ Example response:
 
 Example request:
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/namespaces/group1
 ```
 

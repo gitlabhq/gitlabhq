@@ -22,7 +22,7 @@ comments: false
 1. Force push the changes.
 1. Finally continue with the Merge Request.
 
-```sh
+```shell
 git checkout -b conflicts_branch
 
 # vi conflicts.rb
@@ -41,7 +41,7 @@ git push origin master
 
 Create a merge request on the GitLab web UI. You'll see a conflict warning.
 
-```sh
+```shell
 git checkout conflicts_branch
 git fetch
 git rebase master

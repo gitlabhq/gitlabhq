@@ -60,6 +60,12 @@ module KubernetesHelpers
       .to_return(status: [404, "Resource Not Found"])
   end
 
+  def stub_kubeclient_discover_knative_found(api_url)
+    WebMock
+      .stub_request(:get, api_url + '/apis/serving.knative.dev/v1alpha1')
+      .to_return(kube_response(kube_knative_discovery_body))
+  end
+
   def stub_kubeclient_service_pods(response = nil, options = {})
     stub_kubeclient_discover(service.api_url)
 
@@ -285,6 +291,13 @@ module KubernetesHelpers
       "resources" => [
         { "name" => "ingresses", "namespaced" => true, "kind" => "Deployment" }
       ]
+    }
+  end
+
+  def kube_knative_discovery_body
+    {
+      "kind" => "APIResourceList",
+      "resources" => []
     }
   end
 

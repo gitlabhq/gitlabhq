@@ -65,7 +65,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    Create a file `build_status` and insert the script below and run
    `chmod +x build_status` in your terminal to make the script executable.
 
-   ```bash
+   ```shell
    #!/usr/bin/env bash
 
    # Push GitLab CI/CD build status to Bitbucket Cloud

@@ -17,7 +17,7 @@ GET /projects/:id/labels
 | `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. _([Introduced in GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/31543))_ |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/labels?with_counts=true
 ```
 
@@ -112,7 +112,7 @@ GET /projects/:id/labels/:label_id
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/labels/bug
 ```
 
@@ -151,7 +151,7 @@ POST /projects/:id/labels
 | `description` | string  | no       | The description of the label |
 | `priority`    | integer | no       | The priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
 
-```bash
+```shell
 curl --data "name=feature&color=#5843AD" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels"
 ```
 
@@ -187,7 +187,7 @@ DELETE /projects/:id/labels/:label_id
 | `id`            | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels/bug"
 ```
 
@@ -211,7 +211,7 @@ PUT /projects/:id/labels/:label_id
 | `description`   | string  | no                                | The new description of the label |
 | `priority`    | integer | no       | The new priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
 
-```bash
+```shell
 curl --request PUT --data "new_name=docs&color=#8E44AD&description=Documentation" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels/documentation"
 ```
 
@@ -251,7 +251,7 @@ PUT /projects/:id/labels/:label_id/promote
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels/documentation/promote"
 ```
 
@@ -288,7 +288,7 @@ POST /projects/:id/labels/:label_id/subscribe
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `label_id` | integer or string | yes      | The ID or title of a project's label |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/labels/1/subscribe
 ```
 
@@ -326,6 +326,6 @@ POST /projects/:id/labels/:label_id/unsubscribe
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `label_id` | integer or string | yes      | The ID or title of a project's label |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/labels/1/unsubscribe
 ```

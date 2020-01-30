@@ -94,7 +94,7 @@ The rake task will use a sample data and execute each of file hook. The output
 should be enough to determine if the system sees your file hook and if it was
 executed without errors.
 
-```bash
+```shell
 # Omnibus installations
 sudo gitlab-rake file_hooks:validate
 

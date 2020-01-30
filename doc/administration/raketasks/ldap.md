@@ -9,20 +9,20 @@ using the command below.
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake gitlab:ldap:check
 ```
 
 **Source Installation**
 
-```bash
+```shell
 sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
 ```
 
 By default, the task will return a sample of 100 LDAP users. Change this
 limit by passing a number to the check task:
 
-```bash
+```shell
 rake gitlab:ldap:check[50]
 ```
 
@@ -41,13 +41,13 @@ instead.
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake gitlab:ldap:group_sync
 ```
 
 **Source Installation**
 
-```bash
+```shell
 bundle exec rake gitlab:ldap:group_sync
 ```
 
@@ -79,13 +79,13 @@ as the `old_provider` and the correct provider as the `new_provider`.
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake gitlab:ldap:rename_provider[old_provider,new_provider]
 ```
 
 **Source Installation**
 
-```bash
+```shell
 bundle exec rake gitlab:ldap:rename_provider[old_provider,new_provider] RAILS_ENV=production
 ```
 
@@ -95,7 +95,7 @@ Consider beginning with the default server ID `main` (full provider `ldapmain`).
 If we change `main` to `mycompany`, the `new_provider` is `ldapmycompany`.
 To rename all user identities run the following command:
 
-```bash
+```shell
 sudo gitlab-rake gitlab:ldap:rename_provider[ldapmain,ldapmycompany]
 ```
 
@@ -116,13 +116,13 @@ for them:
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake gitlab:ldap:rename_provider
 ```
 
 **Source Installation**
 
-```bash
+```shell
 bundle exec rake gitlab:ldap:rename_provider RAILS_ENV=production
 ```
 
@@ -136,6 +136,6 @@ What is the new provider? Ex. 'ldapcustom': ldapmycompany
 This tasks also accepts the `force` environment variable which will skip the
 confirmation dialog:
 
-```bash
+```shell
 sudo gitlab-rake gitlab:ldap:rename_provider[old_provider,new_provider] force=yes
 ```

@@ -75,7 +75,7 @@ default_projects_features:
 
 Save the file and restart GitLab:
 
-```sh
+```shell
 sudo service gitlab restart
 ```
 
@@ -87,7 +87,7 @@ gitlab_rails['gitlab_default_projects_features_builds'] = false
 
 Save the file and reconfigure GitLab:
 
-```sh
+```shell
 sudo gitlab-ctl reconfigure
 ```
 

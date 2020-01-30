@@ -119,13 +119,13 @@ process should be run on a local workstation.
 Install `svn2git`. On all systems you can install as a Ruby gem if you already
 have Ruby and Git installed.
 
-```bash
+```shell
 sudo gem install svn2git
 ```
 
 On Debian-based Linux distributions you can install the native packages:
 
-```bash
+```shell
 sudo apt-get install git-core git-svn ruby
 ```
 
@@ -138,7 +138,7 @@ repository. If you don't, the conversion will fail and you will have to update
 the author file accordingly. The following command will search through the
 repository and output a list of authors.
 
-```bash
+```shell
 svn log --quiet | grep -E "r[0-9]+ \| .+ \|" | cut -d'|' -f2 | sed 's/ //g' | sort | uniq
 ```
 
@@ -157,7 +157,7 @@ command will checkout the repository and do the conversion in the current
 working directory. Be sure to create a new directory for each repository before
 running the `svn2git` command. The conversion process will take some time.
 
-```bash
+```shell
 svn2git https://svn.example.com/path/to/repo --authors /path/to/authors.txt
 ```
 
@@ -172,7 +172,7 @@ Copy the SSH or HTTP(S) repository URL from the project page. Add the GitLab
 repository as a Git remote and push all the changes. This will push all commits,
 branches and tags.
 
-```bash
+```shell
 git remote add origin git@gitlab.com:<group>/<project>.git
 git push --all origin
 git push --tags origin

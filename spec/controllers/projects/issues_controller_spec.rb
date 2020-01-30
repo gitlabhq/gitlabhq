@@ -422,7 +422,7 @@ describe Projects::IssuesController do
       context 'when Akismet is enabled and the issue is identified as spam' do
         before do
           stub_application_setting(recaptcha_enabled: true)
-          expect_next_instance_of(AkismetService) do |akismet_service|
+          expect_next_instance_of(Spam::AkismetService) do |akismet_service|
             expect(akismet_service).to receive_messages(spam?: true)
           end
         end
@@ -702,7 +702,7 @@ describe Projects::IssuesController do
 
         context 'when an issue is not identified as spam' do
           before do
-            expect_next_instance_of(AkismetService) do |akismet_service|
+            expect_next_instance_of(Spam::AkismetService) do |akismet_service|
               expect(akismet_service).to receive_messages(spam?: false)
             end
           end
@@ -715,7 +715,7 @@ describe Projects::IssuesController do
         context 'when an issue is identified as spam' do
           context 'when captcha is not verified' do
             before do
-              expect_next_instance_of(AkismetService) do |akismet_service|
+              expect_next_instance_of(Spam::AkismetService) do |akismet_service|
                 expect(akismet_service).to receive_messages(spam?: true)
               end
             end
@@ -954,7 +954,7 @@ describe Projects::IssuesController do
         before do
           stub_feature_flags(allow_possible_spam: false)
 
-          expect_next_instance_of(AkismetService) do |akismet_service|
+          expect_next_instance_of(Spam::AkismetService) do |akismet_service|
             expect(akismet_service).to receive_messages(spam?: false)
           end
         end
@@ -971,7 +971,7 @@ describe Projects::IssuesController do
           end
 
           before do
-            expect_next_instance_of(AkismetService) do |akismet_service|
+            expect_next_instance_of(Spam::AkismetService) do |akismet_service|
               expect(akismet_service).to receive_messages(spam?: true)
             end
           end
@@ -1096,7 +1096,7 @@ describe Projects::IssuesController do
   describe 'POST #mark_as_spam' do
     context 'properly submits to Akismet' do
       before do
-        expect_next_instance_of(AkismetService) do |akismet_service|
+        expect_next_instance_of(Spam::AkismetService) do |akismet_service|
           expect(akismet_service).to receive_messages(submit_spam: true)
         end
         expect_next_instance_of(ApplicationSetting) do |setting|

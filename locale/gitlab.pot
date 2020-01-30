@@ -5963,6 +5963,9 @@ msgstr ""
 msgid "Date picker"
 msgstr ""
 
+msgid "Date range cannot exceed %{maxDateRange} days."
+msgstr ""
+
 msgid "DayTitle|F"
 msgstr ""
 
@@ -6450,6 +6453,9 @@ msgstr ""
 msgid "DesignManagement|%{current_design} of %{designs_count}"
 msgstr ""
 
+msgid "DesignManagement|%{filename} did not change."
+msgstr ""
+
 msgid "DesignManagement|Add designs"
 msgstr ""
 
@@ -6514,6 +6520,12 @@ msgid "DesignManagement|The one place for your designs"
 msgstr ""
 
 msgid "DesignManagement|Upload and view the latest designs for this issue. Consistent and easy to find, so everyone is up to date."
+msgstr ""
+
+msgid "DesignManagement|Upload skipped."
+msgstr ""
+
+msgid "DesignManagement|and %{moreCount} more."
 msgstr ""
 
 msgid "Designs"
@@ -17464,6 +17476,9 @@ msgstr ""
 msgid "Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead."
 msgstr ""
 
+msgid "Some of the designs you tried uploading did not change:"
+msgstr ""
+
 msgid "Some of your epics may not be visible. A roadmap is limited to the first 1,000 epics, in your selected sort order."
 msgstr ""
 
@@ -18685,6 +18700,9 @@ msgid "The dependency list details information about the components used within 
 msgstr ""
 
 msgid "The deployment of this job to %{environmentLink} did not succeed."
+msgstr ""
+
+msgid "The designs you tried uploading did not change."
 msgstr ""
 
 msgid "The directory has been successfully created."

@@ -392,7 +392,7 @@ describe API::Issues do
       expect_next_instance_of(Spam::SpamCheckService) do |spam_service|
         expect(spam_service).to receive_messages(check_for_spam?: true)
       end
-      expect_next_instance_of(AkismetService) do |akismet_service|
+      expect_next_instance_of(Spam::AkismetService) do |akismet_service|
         expect(akismet_service).to receive_messages(spam?: true)
       end
     end

@@ -348,7 +348,7 @@ Again, remember that your Azure VM domain name will be the one you
 [set up previously in the tutorial](#set-up-a-domain-name). If you didn't set up a domain name for
 your VM, you can use the IP address in its place in the following command:
 
-```bash
+```shell
 ssh username@your-azure-domain-name.com
 ```
 
@@ -364,7 +364,7 @@ read on [using PuTTY in Windows][Using-SSH-In-Putty].
 Once you've logged in via SSH, enter the following command to update GitLab to the latest
 version:
 
-```bash
+```shell
 sudo apt-get update && sudo apt-get install gitlab-ce
 ```
 

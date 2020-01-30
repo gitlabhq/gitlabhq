@@ -81,7 +81,7 @@ pre-receive hook will reject your changes when you try to push. In the
 following example, a user who has no permissions on the locked `.gitignore`
 file will see the message below:
 
-```bash
+```shell
 Counting objects: 3, done.
 Delta compression using up to 4 threads.
 Compressing objects: 100% (3/3), done.

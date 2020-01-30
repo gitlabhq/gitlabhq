@@ -175,7 +175,7 @@ the following parameters:
 
 Example cURL request:
 
-```sh
+```shell
 echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
 curl --data "@auth.txt" --request POST https://gitlab.example.com/oauth/token
 ```

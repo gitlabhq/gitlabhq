@@ -92,7 +92,7 @@ describe Projects::SnippetsController do
 
     context 'when the snippet is spam' do
       before do
-        allow_next_instance_of(AkismetService) do |instance|
+        allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
       end
@@ -172,7 +172,7 @@ describe Projects::SnippetsController do
 
     context 'when the snippet is spam' do
       before do
-        allow_next_instance_of(AkismetService) do |instance|
+        allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
       end
@@ -282,7 +282,7 @@ describe Projects::SnippetsController do
     let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
 
     before do
-      allow_next_instance_of(AkismetService) do |instance|
+      allow_next_instance_of(Spam::AkismetService) do |instance|
         allow(instance).to receive_messages(submit_spam: true)
       end
       stub_application_setting(akismet_enabled: true)

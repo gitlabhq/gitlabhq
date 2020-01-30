@@ -16,7 +16,7 @@ One of the new trends in Continuous Integration/Deployment is to:
 It's also useful when your application already has the `Dockerfile` that can be
 used to create and test an image:
 
-```bash
+```shell
 docker build -t my-image dockerfiles/
 docker run my-image /script/to/run/tests
 docker tag my-image my-registry:5000/my-image
@@ -48,7 +48,7 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
 
 1. During GitLab Runner installation select `shell` as method of executing job scripts or use command:
 
-   ```bash
+   ```shell
    sudo gitlab-runner register -n \
      --url https://gitlab.com/ \
      --registration-token REGISTRATION_TOKEN \
@@ -63,13 +63,13 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
 
 1. Add `gitlab-runner` user to `docker` group:
 
-   ```bash
+   ```shell
    sudo usermod -aG docker gitlab-runner
    ```
 
 1. Verify that `gitlab-runner` has access to Docker:
 
-   ```bash
+   ```shell
    sudo -u gitlab-runner -H docker info
    ```
 
@@ -160,7 +160,7 @@ support this.
 1. Register GitLab Runner from the command line to use `docker` and `privileged`
    mode:
 
-   ```bash
+   ```shell
    sudo gitlab-runner register -n \
      --url https://gitlab.com/ \
      --registration-token REGISTRATION_TOKEN \
@@ -320,7 +320,7 @@ In order to do that, follow the steps:
 
 1. Register GitLab Runner from the command line to use `docker` and share `/var/run/docker.sock`:
 
-   ```bash
+   ```shell
    sudo gitlab-runner register -n \
      --url https://gitlab.com/ \
      --registration-token REGISTRATION_TOKEN \
@@ -384,7 +384,7 @@ aware of the following implications:
   work as expected since volume mounting is done in the context of the host
   machine, not the build container. For example:
 
-   ```sh
+   ```shell
    docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
    ```
 
@@ -458,13 +458,13 @@ which can be avoided if a different driver is used, for example `overlay2`.
 1. Make sure a recent kernel is used, preferably `>= 4.2`.
 1. Check whether the `overlay` module is loaded:
 
-   ```sh
+   ```shell
    sudo lsmod | grep overlay
    ```
 
    If you see no result, then it isn't loaded. To load it use:
 
-   ```sh
+   ```shell
    sudo modprobe overlay
    ```
 
@@ -542,7 +542,7 @@ For all projects, mostly suitable for public ones:
   your Docker images and has read/write access to the Registry. This is ephemeral,
   so it's only valid for one job. You can use the following example as-is:
 
-  ```sh
+  ```shell
   docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   ```
 
@@ -557,7 +557,7 @@ For private and internal projects:
 
   Replace the `<username>` and `<access_token>` in the following example:
 
-  ```sh
+  ```shell
   docker login -u <username> -p <access_token> $CI_REGISTRY
   ```
 
@@ -567,7 +567,7 @@ For private and internal projects:
   Once created, you can use the special environment variables, and GitLab CI/CD
   will fill them in for you. You can use the following example as-is:
 
-  ```sh
+  ```shell
   docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
   ```
 
@@ -602,7 +602,7 @@ assuming you have it configured with [TLS enabled](#tls-enabled):
 If you forget to set the service alias, the `docker:19.03.1` image won't find the
 `dind` service, and an error like the following is thrown:
 
-```sh
+```shell
 $ docker info
 error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker on 192.168.0.1:53: no such host
 ```

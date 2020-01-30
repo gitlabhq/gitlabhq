@@ -17,7 +17,7 @@ GET /hooks
 
 Example request:
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/hooks
 ```
 
@@ -58,7 +58,7 @@ POST /hooks
 
 Example request:
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/hooks?url=https://gitlab.example.com/hook"
 ```
 
@@ -91,7 +91,7 @@ GET /hooks/:id
 
 Example request:
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/hooks/2
 ```
 
@@ -122,6 +122,6 @@ DELETE /hooks/:id
 
 Example request:
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/hooks/2
 ```

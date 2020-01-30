@@ -11,7 +11,7 @@ To unlock a locked user:
 1. SSH into your GitLab server.
 1. Start a Ruby on Rails console:
 
-   ```sh
+   ```shell
    ## For Omnibus GitLab
    sudo gitlab-rails console production
 

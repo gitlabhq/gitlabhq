@@ -98,7 +98,7 @@ For example, if you move `doc/workflow/lfs/lfs_administration.md` to
    A quick way to find them is to use `git grep`. First go to the root directory
    where you cloned the `gitlab` repository and then do:
 
-   ```sh
+   ```shell
    git grep -n "workflow/lfs/lfs_administration"
    git grep -n "lfs/lfs_administration"
    ```
@@ -435,7 +435,7 @@ This list does not limit what other linters you can add to your local documentat
  documentation in the [`gitlab` project](https://gitlab.com/gitlab-org/gitlab), run the
  following commands from within the `gitlab` project:
 
-```sh
+```shell
 cd doc
 proselint **/*.md
 ```
@@ -480,13 +480,13 @@ run the following commands from within your `gitlab` project root directory, whi
 automatically detect the [`.markdownlint.json`](#markdownlint-configuration) config
 file in the root of the project, and test all files in `/doc` and its subdirectories:
 
-```sh
+```shell
 markdownlint 'doc/**/*.md'
 ```
 
 If you wish to use a different config file, use the `-c` flag:
 
-```sh
+```shell
 markdownlint -c <config-file-name> 'doc/**/*.md'
 ```
 

@@ -66,7 +66,7 @@ The following are important notes about 2FA:
 There may be some special situations where you want to disable 2FA for everyone
 even when forced 2FA is disabled. There is a rake task for that:
 
-```sh
+```shell
 # Omnibus installations
 sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 

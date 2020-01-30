@@ -161,7 +161,7 @@ of the staging tree. You also have an option to discard all changes with
 Lets start the example by editing a file, with your favorite editor, to change the
 content and add it to staging
 
-```sh
+```shell
 vim <file>
 git add <file>
 ```

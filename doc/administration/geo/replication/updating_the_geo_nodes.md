@@ -42,7 +42,7 @@ everything is working correctly:
 
 1. Run the Geo raketask on all nodes, everything should be green:
 
-   ```sh
+   ```shell
    sudo gitlab-rake gitlab:geo:check
    ```
 

@@ -360,14 +360,14 @@ that method from working. Use the following workaround:
 
 1. Append your GitLab server TLS/SSL certficate to `/opt/gitlab/embedded/ssl/certs/cacert.pem` where `gitlab-domain-example.com` is your GitLab application URL
 
-    ```bash
+    ```shell
     printf "\ngitlab-domain-example.com\n===========================\n" | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
     echo -n | openssl s_client -connect gitlab-domain-example.com:443  | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
     ```
 
 1. [Restart](../restart_gitlab.md) the GitLab Pages Daemon. For GitLab Omnibus instances:
 
-    ```bash
+    ```shell
     sudo gitlab-ctl restart gitlab-pages
     ```
 

@@ -133,7 +133,7 @@ After upgrading, the Grafana dashboard will be disabled and the location of your
 
 To prevent the data from being relocated, you can run the following command prior to upgrading:
 
-```sh
+```shell
 echo "0" > /var/opt/gitlab/grafana/CVE_reset_status
 ```
 

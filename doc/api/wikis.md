@@ -17,7 +17,7 @@ GET /projects/:id/wikis
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `with_content`      | boolean    | no      | Include pages' content  |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/wikis?with_content=1
 ```
 
@@ -58,7 +58,7 @@ GET /projects/:id/wikis/:slug
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `slug` | string  | yes       | The slug (a unique string) of the wiki page |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/wikis/home
 ```
 
@@ -88,7 +88,7 @@ POST /projects/:id/wikis
 | `title`        | string  | yes      | The title of the wiki page        |
 | `format` | string  | no       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc` and `org` |
 
-```bash
+```shell
 curl --data "format=rdoc&title=Hello&content=Hello world" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis"
 ```
 
@@ -119,7 +119,7 @@ PUT /projects/:id/wikis/:slug
 | `format` | string  | no       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, `asciidoc` and `org` |
 | `slug` | string  | yes       | The slug (a unique string) of the wiki page |
 
-```bash
+```shell
 curl --request PUT --data "format=rdoc&content=documentation&title=Docs" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
 ```
 
@@ -147,7 +147,7 @@ DELETE /projects/:id/wikis/:slug
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `slug` | string  | yes       | The slug (a unique string) of the wiki page |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
 ```
 
@@ -175,7 +175,7 @@ cURL to post data using the header `Content-Type: multipart/form-data`.
 The `file=` parameter must point to a file on your filesystem and be preceded
 by `@`. For example:
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "file=@dk.png" https://gitlab.example.com/api/v4/projects/1/wikis/attachments
 ```
 

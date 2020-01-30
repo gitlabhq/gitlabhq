@@ -38,14 +38,14 @@ If you're running `git` from the command line, the equivalent command is
 `git blame <filename>`. For example, if you want to find `blame` information
 about a `README.md` file in the local directory, run the following command:
 
-```bash
+```shell
 git blame README.md
 ```
 
 You'll see output similar to the following, which includes the commit time
 in UTC format:
 
-```bash
+```shell
 62e2353a (Achilleas Pipinellis     2019-07-11 14:52:18 +0300   1) [![build status](https://gitlab.com/gitlab-org/gitlab-docs/badges/master/build.svg)](https://gitlab.com/gitlab-com/gitlab-docs/commits/master)
 fb0fc7d6 (Achilleas Pipinellis     2016-11-07 22:21:22 +0100   2)
 ^764ca75 (Connor Shea              2016-10-05 23:40:24 -0600   3) # GitLab Documentation

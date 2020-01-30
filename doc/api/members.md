@@ -28,7 +28,7 @@ GET /projects/:id/members
 | `query`   | string | no     | A query string to search for members |
 | `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members
 ```
@@ -77,7 +77,7 @@ GET /projects/:id/members/all
 | `query`   | string | no     | A query string to search for members |
 | `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/all
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/all
 ```
@@ -133,7 +133,7 @@ GET /projects/:id/members/:user_id
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
 ```
@@ -169,7 +169,7 @@ GET /projects/:id/members/all/:user_id
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/all/:user_id
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/all/:user_id
 ```
@@ -205,7 +205,7 @@ POST /projects/:id/members
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v4/groups/:id/members
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v4/projects/:id/members
 ```
@@ -241,7 +241,7 @@ PUT /projects/:id/members/:user_id
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/:user_id?access_level=40
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/:user_id?access_level=40
 ```
@@ -275,7 +275,7 @@ DELETE /projects/:id/members/:user_id
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
 ```

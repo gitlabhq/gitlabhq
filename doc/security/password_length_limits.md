@@ -21,7 +21,7 @@ To change that for installations from source:
 
 1. Edit `devise_password_length.rb`:
 
-   ```sh
+   ```shell
    cd /home/git/gitlab
    sudo -u git -H cp config/initializers/devise_password_length.rb.example config/initializers/devise_password_length.rb
    sudo -u git -H editor config/initializers/devise_password_length.rb

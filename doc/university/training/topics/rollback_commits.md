@@ -8,25 +8,25 @@ comments: false
 
 - Undo last commit putting everything back into the staging area:
 
-  ```sh
+  ```shell
   git reset --soft HEAD^
   ```
 
 - Add files and change message with:
 
-  ```sh
+  ```shell
   git commit --amend -m "New Message"
   ```
 
 - Undo last and remove changes:
 
-  ```sh
+  ```shell
   git reset --hard HEAD^
   ```
 
 - Same as last one but for two commits back:
 
-  ```sh
+  ```shell
   git reset --hard HEAD^^
   ```
 
@@ -47,7 +47,7 @@ comments: false
 
 ## Commands
 
-```sh
+```shell
 # Change file edit_this_file.rb
 git status
 git commit -am "kjkfjkg"
@@ -66,7 +66,7 @@ git push origin master
 - Reset removes the commit while revert removes the changes but leaves the commit
 - Revert is safer considering we can revert a revert
 
-```sh
+```shell
 # Changed file
 git commit -am "bug introduced"
 git revert HEAD

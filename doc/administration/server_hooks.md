@@ -111,7 +111,7 @@ declined or an error occurs during the Git hook, your script should:
 
 This hook script written in bash will generate the following message in GitLab's UI:
 
-```bash
+```shell
 #!/bin/sh
 echo "GL-HOOK-ERR: My custom error message.";
 exit 1

@@ -23,7 +23,7 @@ on. Contributions are welcome to help add them.
 
 ### Distro Information
 
-```bash
+```shell
 # Debian/Ubuntu
 uname -a
 lsb_release -a
@@ -38,14 +38,14 @@ cat /etc/os-release
 
 ### Shut down or Reboot
 
-```bash
+```shell
 shutdown -h now
 reboot
 ```
 
 ### Permissions
 
-```bash
+```shell
 # change the user:group ownership of a file/dir
 chown root:git <file_or_dir>
 
@@ -55,7 +55,7 @@ chmod u+x <file>
 
 ### Files & Dirs
 
-```bash
+```shell
 # create a new directory and all subdirectories
 mkdir -p dir/dir2/dir3
 
@@ -71,7 +71,7 @@ sed -i 's/original-text/new-text/g' <filename>
 
 ### See all set environment variables
 
-```bash
+```shell
 env
 ```
 
@@ -79,7 +79,7 @@ env
 
 ### File names
 
-```bash
+```shell
 # search for a file in a filesystem
 find . -name 'filename.rb' -print
 
@@ -95,7 +95,7 @@ history
 
 ### File contents
 
-```bash
+```shell
 # -B/A = show 2 lines before/after search_term
 grep -B 2 -A 2 search_term <filename>
 
@@ -114,7 +114,7 @@ fgrep -R string_pattern <filename or directory>
 
 ### CLI
 
-```bash
+```shell
 # View command history
 history
 
@@ -132,7 +132,7 @@ sudo !!
 
 ### Memory, Disk, & CPU usage
 
-```bash
+```shell
 # disk space info.  The '-h' gives the data in human-readable values
 df -h
 
@@ -157,7 +157,7 @@ top -o %CPU
 
 ### Strace
 
-```bash
+```shell
 # strace a process
 strace -tt -T -f -y -s 1024 -p <pid>
 
@@ -200,7 +200,7 @@ can also sort based on total time, # of syscalls made, PID #, and # of child pro
 using the `-S` or `--sort` flag. The number of results defaults to 25 processes, but
 can be changed using the `-c`/`--count` option.  See `--help` for full details.
 
-```sh
+```shell
 $ ./strace-parser strace.txt
 
 Top 25 PIDs
@@ -218,7 +218,7 @@ Based on the summary, you can then view the details of syscalls made by one or m
 procsses using the `-p`/`--pid` for a specific process, or `-s`/`--stats` flags for
 a sorted list. `--stats` takes the same sorting and count options as summary.
 
-```sh
+```shell
 $ ./strace-parse strace.text -p 6423
 
 PID 6423
@@ -274,7 +274,7 @@ small differences should not be considered significant.
 
 ### Ports
 
-```bash
+```shell
 # Find the programs that are listening on ports
 netstat -plnt
 ss -plnt
@@ -283,7 +283,7 @@ lsof -i -P | grep <port>
 
 ### Internet/DNS
 
-```bash
+```shell
 # Show domain IP address
 dig +short example.com
 nslookup example.com
@@ -302,7 +302,7 @@ curl --head --location https://example.com
 
 ## Package Management
 
-```bash
+```shell
 # Debian/Ubuntu
 
 # List packages
@@ -332,7 +332,7 @@ rpm -qa | grep <package>
 
 ## Logs
 
-```bash
+```shell
 # Print last lines in log file where 'n'
 # is the number of lines to print
 tail -n /path/to/log/file

@@ -2,7 +2,7 @@
 
 ## Add user as a developer to all projects
 
-```bash
+```shell
 # omnibus-gitlab
 sudo gitlab-rake gitlab:import:user_to_projects[username@domain.tld]
 
@@ -16,7 +16,7 @@ Notes:
 
 - admin users are added as maintainers
 
-```bash
+```shell
 # omnibus-gitlab
 sudo gitlab-rake gitlab:import:all_users_to_all_projects
 
@@ -26,7 +26,7 @@ bundle exec rake gitlab:import:all_users_to_all_projects RAILS_ENV=production
 
 ## Add user as a developer to all groups
 
-```bash
+```shell
 # omnibus-gitlab
 sudo gitlab-rake gitlab:import:user_to_groups[username@domain.tld]
 
@@ -40,7 +40,7 @@ Notes:
 
 - admin users are added as owners so they can add additional users to the group
 
-```bash
+```shell
 # omnibus-gitlab
 sudo gitlab-rake gitlab:import:all_users_to_all_groups
 
@@ -62,7 +62,7 @@ This task will disable 2FA for all users that have it enabled. This can be
 useful if GitLab's `config/secrets.yml` file has been lost and users are unable
 to login, for example.
 
-```bash
+```shell
 # omnibus-gitlab
 sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 

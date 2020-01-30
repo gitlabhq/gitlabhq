@@ -27,15 +27,7 @@ Parameters:
         "authored_date": "2017-04-11T10:08:59.000Z",
         "committer_name": "Luke \"Jared\" Bennett",
         "committer_email": "lbennett@gitlab.com",
-        "committed_date": "2017-04-11T10:08:59.000Z",
-        "author": null,
-        "author_gravatar_url": "https://www.gravatar.com/avatar/2acf1fb99417a2b3971def5a294abbeb?s=80&d=identicon",
-        "commit_url": "http://127.0.0.1:3000/gitlab-org/gitlab-test/commit/4a24d82dbca5c11c61556f3b35ca472b7463187e",
-        "commit_path": "/gitlab-org/gitlab-test/commit/4a24d82dbca5c11c61556f3b35ca472b7463187e",
-        "description_html": "",
-        "title_html": "Update README.md to include `Usage in testing and development`",
-        "signature_html": null,
-        "pipeline_status_path": null
+        "committed_date": "2017-04-11T10:08:59.000Z"
     }
 ]
 ```

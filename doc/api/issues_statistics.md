@@ -45,7 +45,7 @@ GET /issues_statistics?confidential=true
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                                                   |
 | `confidential`     | Boolean          | no         | Filter confidential or public issues.                                                                                                               |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/issues_statistics
 ```
 
@@ -101,7 +101,7 @@ GET /groups/:id/issues_statistics?confidential=true
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
 | `confidential`     | Boolean          | no         | Filter confidential or public issues.                                                                                         |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4/issues_statistics
 ```
 
@@ -157,7 +157,7 @@ GET /projects/:id/issues_statistics?confidential=true
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
 | `confidential`     | Boolean          | no         | Filter confidential or public issues.                                                                                         |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues_statistics
 ```
 

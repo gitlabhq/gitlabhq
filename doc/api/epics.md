@@ -65,7 +65,7 @@ GET /groups/:id/epics?state=opened
 | `include_ancestor_groups` | boolean    | no         | Include epics from the requested group's ancestors. Default is `false`                                                      |
 | `include_descendant_groups` | boolean  | no         | Include epics from the requested group's descendants. Default is `true`                                                     |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics
 ```
 
@@ -169,7 +169,7 @@ GET /groups/:id/epics/:epic_iid
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
 | `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5
 ```
 
@@ -244,7 +244,7 @@ POST /groups/:id/epics
 | `due_date_fixed`    | string           | no         | The fixed due date of an epic (since 11.3) |
 | `parent_id`         | integer/string   | no         | The id of a parent epic (since 11.11) |
 
-```bash
+```shell
 curl --header POST "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description
 ```
 
@@ -319,7 +319,7 @@ PUT /groups/:id/epics/:epic_iid
 | `due_date_fixed`    | string           | no         | The fixed due date of an epic (since 11.3) |
 | `state_event`       | string           | no         | State event for an epic. Set `close` to close the epic and `reopen` to reopen it (since 11.4) |
 
-```bash
+```shell
 curl --header PUT "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title
 ```
 
@@ -381,7 +381,7 @@ DELETE /groups/:id/epics/:epic_iid
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
 | `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
 
-```bash
+```shell
 curl --header DELETE "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5
 ```
 
@@ -400,7 +400,7 @@ POST /groups/:id/epics/:epic_iid/todo
 | `id`        | integer/string | yes   | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `epic_iid` | integer | yes          | The internal ID of a group's epic |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5/todo
 ```
 

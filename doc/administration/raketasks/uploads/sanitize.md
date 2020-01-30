@@ -7,7 +7,7 @@ You need `exiftool` installed on your system. If you installed GitLab:
 - Using the Omnibus package, you're all set.
 - From source, make sure `exiftool` is installed:
 
-  ```sh
+  ```shell
   # Debian/Ubuntu
   sudo apt-get install libimage-exiftool-perl
 
@@ -22,7 +22,7 @@ Because EXIF data may contain sensitive information (e.g. GPS location), you
 can remove EXIF data also from existing images which were uploaded before
 with the following command:
 
-```bash
+```shell
 sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:sanitize:remove_exif
 ```
 
@@ -46,13 +46,13 @@ each with a separate range of upload IDs (by setting `start_id` and `stop_id`).
 
 To run the command without dry mode and remove EXIF data from all uploads, you can use:
 
-```bash
+```shell
 sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:sanitize:remove_exif[,,false,] 2>&1 | tee exif.log
 ```
 
 To run the command without dry mode on uploads with ID between 100 and 5000 and pause for 0.1 second, you can use:
 
-```bash
+```shell
 sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:sanitize:remove_exif[100,5000,false,0.1] 2>&1 | tee exif.log
 ```
 

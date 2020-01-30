@@ -66,7 +66,7 @@ First install [Docker Engine](https://docs.docker.com/installation/).
 To build this project you also need to have [GitLab Runner](https://docs.gitlab.com/runner/).
 You can use public runners available on `gitlab.com` or register your own:
 
-```sh
+```shell
 gitlab-runner register \
   --non-interactive \
   --url "https://gitlab.com/" \

@@ -571,7 +571,7 @@ As long as the fixtures don't change, `yarn test` is sufficient (and saves you s
 
 While you work on a testsuite, you may want to run these specs in watch mode, so they rerun automatically on every save.
 
-```bash
+```shell
 # Watch and rerun all specs matching the name icon
 yarn jest --watch icon
 
@@ -581,7 +581,7 @@ yarn jest --watch path/to/spec/file.spec.js
 
 You can also run some focused tests without the `--watch` flag
 
-```bash
+```shell
 # Run specific jest file
 yarn jest ./path/to/local_spec.js
 # Run specific jest folder
@@ -609,7 +609,7 @@ remove these directives when you commit your code.
 It is also possible to only run Karma on specific folders or files by filtering
 the run tests via the argument `--filter-spec` or short `-f`:
 
-```bash
+```shell
 # Run all files
 yarn karma-start
 # Run specific spec files
@@ -623,7 +623,7 @@ yarn karma-start -f vue_shared -f vue_mr_widget
 You can also use glob syntax to match files. Remember to put quotes around the
 glob otherwise your shell may split it into multiple arguments:
 
-```bash
+```shell
 # Run all specs named `file_spec` within the IDE subdirectory
 yarn karma -f 'spec/javascripts/ide/**/file_spec.js'
 ```

@@ -30,7 +30,7 @@ Note that to use the script, it will require some preparation if you haven't don
 
 For details how to use `bin/import-project`, run:
 
-```sh
+```shell
 bin/import-project --help
 ```
 
@@ -53,7 +53,7 @@ As part of this script we also disable direct and background upload to avoid sit
 
 We can simply run this script from the terminal:
 
-```sh
+```shell
 bundle exec rake "gitlab:import_export:import[root, root, testingprojectimport, /path/to/file.tar.gz]"
 ```
 
@@ -63,7 +63,7 @@ The last option is to import a project using a Rails console:
 
 1. Start a Ruby on Rails console:
 
-   ```sh
+   ```shell
    # Omnibus GitLab
    gitlab-rails console
 
@@ -126,7 +126,7 @@ You can use this [snippet](https://gitlab.com/gitlab-org/gitlab/snippets/1924954
 
 You can execute the script from the `gdk/gitlab` directory like this:
 
-```sh
+```shell
 bundle exec rails r  /path_to_sript/script.rb project_name /path_to_extracted_project request_store_enabled
 ```
 

@@ -65,7 +65,7 @@ supports everything the **primary** node does **before** scheduling a planned fa
 
 Run the following on both **primary** and **secondary** nodes:
 
-```sh
+```shell
 gitlab-rake gitlab:check
 gitlab-rake gitlab:geo:check
 ```
@@ -79,7 +79,7 @@ The SSH host keys and `/etc/gitlab/gitlab-secrets.json` files should be
 identical on all nodes. Check this by running the following on all nodes and
 comparing the output:
 
-```sh
+```shell
 sudo sha256sum /etc/ssh/ssh_host* /etc/gitlab/gitlab-secrets.json
 ```
 
@@ -136,7 +136,7 @@ access to the **primary** node during the maintenance window.
 
    For instance, you might run the following commands on the server(s) making up your **primary** node:
 
-   ```sh
+   ```shell
    sudo iptables -A INPUT -p tcp -s <secondary_node_ip> --destination-port 22 -j ACCEPT
    sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 22 -j ACCEPT
    sudo iptables -A INPUT --destination-port 22 -j REJECT

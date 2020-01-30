@@ -149,7 +149,7 @@ You can use the [`AdFind`](https://social.technet.microsoft.com/wiki/contents/ar
 
 You can use the filter `objectclass=*` to return all directory objects.
 
-```sh
+```shell
 adfind -h ad.example.org:636 -ssl -u "CN=GitLabSRV,CN=Users,DC=GitLab,DC=org" -up Password1 -b "OU=GitLab INT,DC=GitLab,DC=org" -f (objectClass=*)
 ```
 
@@ -157,7 +157,7 @@ adfind -h ad.example.org:636 -ssl -u "CN=GitLabSRV,CN=Users,DC=GitLab,DC=org" -u
 
 You can also retrieve a single object by **specifying** the object name or full **DN**. In this example we specify the object name only `CN=Leroy Fox`.
 
-```sh
+```shell
 adfind -h ad.example.org:636 -ssl -u "CN=GitLabSRV,CN=Users,DC=GitLab,DC=org" -up Password1 -b "OU=GitLab INT,DC=GitLab,DC=org" -f (&(objectcategory=person)(CN=Leroy Fox))”
 ```
 
@@ -169,7 +169,7 @@ You can use the `ldapsearch` utility (on Unix based systems) to test that your L
 
 You can use the filter `objectclass=*` to return all directory objects.
 
-```sh
+```shell
 ldapsearch -D "CN=GitLabSRV,CN=Users,DC=GitLab,DC=org" \
 -w Password1 -p 636 -h ad.example.org \
 -b "OU=GitLab INT,DC=GitLab,DC=org" -Z \
@@ -180,7 +180,7 @@ ldapsearch -D "CN=GitLabSRV,CN=Users,DC=GitLab,DC=org" \
 
 You can also retrieve a single object by **specifying** the object name or full **DN**. In this example we specify the object name only `CN=Leroy Fox`.
 
-```sh
+```shell
 ldapsearch -D "CN=GitLabSRV,CN=Users,DC=GitLab,DC=org" -w Password1 -p 389 -h ad.example.org -b "OU=GitLab INT,DC=GitLab,DC=org" -Z -s sub "CN=Leroy Fox"
 ```
 

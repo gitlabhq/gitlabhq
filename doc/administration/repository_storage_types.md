@@ -118,7 +118,7 @@ to validate. You can do so by specifying a range with the operation.
 This is an example of how to limit the rollout to Project IDs 50 to 100, running in
 an Omnibus GitLab installation:
 
-```bash
+```shell
 sudo gitlab-rake gitlab:storage:migrate_to_hashed ID_FROM=50 ID_TO=100
 ```
 
@@ -139,7 +139,7 @@ To schedule a complete rollback, see the
 The rollback task also supports specifying a range of Project IDs. Here is an example
 of limiting the rollout to Project IDs 50 to 100, in an Omnibus GitLab installation:
 
-```bash
+```shell
 sudo gitlab-rake gitlab:storage:rollback_to_legacy ID_FROM=50 ID_TO=100
 ```
 

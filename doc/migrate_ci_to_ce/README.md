@@ -34,7 +34,7 @@ upgrade to 8.0 until you finish the migration procedure.
 
 If you have GitLab CI installed using Omnibus GitLab packages but **you don't want to migrate your existing data**:
 
-```bash
+```shell
 mv /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/gitlab-ci/builds.$(date +%s)
 ```
 
@@ -326,13 +326,13 @@ You should also make sure that you can:
 
 ### 2. Check NGINX configuration
 
-```sh
+```shell
 sudo nginx -t
 ```
 
 ### 3. Restart NGINX
 
-```sh
+```shell
 sudo /etc/init.d/nginx restart
 ```
 

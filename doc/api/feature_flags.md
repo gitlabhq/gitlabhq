@@ -24,7 +24,7 @@ GET /projects/:id/feature_flags
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).                                            |
 | `scope`             | string           | no         | The condition of feature flags, one of: `enabled`, `disabled`.                                                              |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags
 ```
 
@@ -159,7 +159,7 @@ POST /projects/:id/feature_flags
 | `scopes:active`            | boolean          | no         | Whether the spec is active. |
 | `scopes:strategies`        | JSON             | no         | The [strategies](../user/project/operations/feature_flags.md#feature-flag-strategies) of the feature flag spec. |
 
-```bash
+```shell
 curl https://gitlab.example.com/api/v4/projects/1/feature_flags \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-type: application/json" \
@@ -228,7 +228,7 @@ GET /projects/:id/feature_flags/:name
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
 | `name`              | string           | yes        | The name of the feature flag.  |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/feature_flags/new_live_trace
 ```
 
@@ -303,6 +303,6 @@ DELETE /projects/:id/feature_flags/:name
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).       |
 | `name`              | string           | yes        | The name of the feature flag.  |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE https://gitlab.example.com/api/v4/projects/1/feature_flags/awesome_feature
 ```

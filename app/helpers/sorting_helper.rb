@@ -207,6 +207,13 @@ module SortingHelper
     }.merge(issuable_sort_option_overrides)
   end
 
+  def audit_logs_sort_order_hash
+    {
+      sort_value_recently_created => sort_title_recently_created,
+      sort_value_oldest_created   => sort_title_oldest_created
+    }
+  end
+
   def issuable_sort_option_title(sort_value)
     sort_value = issuable_sort_option_overrides[sort_value] || sort_value
 

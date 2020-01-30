@@ -100,7 +100,7 @@ Here is the detailed data flow:
 
 The following commands are to be issued in a Rails console:
 
-```sh
+```shell
 # Omnibus GitLab
 gitlab-rails console
 

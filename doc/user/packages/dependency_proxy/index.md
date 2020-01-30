@@ -41,19 +41,19 @@ To get a Docker image into the dependency proxy:
 
    - Manually pulling the Docker image:
 
-     ```bash
+     ```shell
      docker pull gitlab.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 
    - From a `Dockerfile`:
 
-     ```bash
+     ```shell
      FROM gitlab.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 
    - In [`.gitlab-ci.yml`](../../../ci/yaml/README.md#image):
 
-     ```bash
+     ```shell
      image: gitlab.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 

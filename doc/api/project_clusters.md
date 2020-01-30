@@ -21,7 +21,7 @@ Parameters:
 
 Example request:
 
-```bash
+```shell
 curl --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/projects/26/clusters
 ```
 
@@ -77,7 +77,7 @@ Example response:
 
 Gets a single project cluster.
 
-```bash
+```shell
 GET /projects/:id/clusters/:cluster_id
 ```
 
@@ -90,7 +90,7 @@ Parameters:
 
 Example request:
 
-```bash
+```shell
 curl --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/projects/26/clusters/18
 ```
 
@@ -168,7 +168,7 @@ Example response:
 
 Adds an existing Kubernetes cluster to the project.
 
-```bash
+```shell
 POST /projects/:id/clusters/user
 ```
 
@@ -190,7 +190,7 @@ Parameters:
 
 Example request:
 
-```bash
+```shell
 curl --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/projects/26/clusters/user \
 -H "Accept: application/json" \
 -H "Content-Type:application/json" \
@@ -261,7 +261,7 @@ Example response:
 
 Updates an existing project cluster.
 
-```bash
+```shell
 PUT /projects/:id/clusters/:cluster_id
 ```
 
@@ -287,7 +287,7 @@ through the ["Add existing cluster to project"](#add-existing-cluster-to-project
 
 Example request:
 
-```bash
+```shell
 curl --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/projects/26/clusters/24 \
 -H "Content-Type:application/json" \
 -X PUT --data '{"name":"new-cluster-name","domain":"new-domain.com","api_url":"https://new-api-url.com"}'
@@ -381,6 +381,6 @@ Parameters:
 
 Example request:
 
-```bash
+```shell
 curl --request DELETE --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/projects/26/clusters/23
 ```

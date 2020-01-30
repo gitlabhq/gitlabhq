@@ -40,7 +40,7 @@ done.
 Let's create a `ci/docker_install.sh` file in the root directory of our
 repository with the following content:
 
-```bash
+```shell
 #!/bin/bash
 
 # We need to install dependencies only for Docker
@@ -153,7 +153,7 @@ dependencies are installed.
 For example, in a VM running Debian 8 we first update the cache, then we
 install `phpunit` and `php5-mysql`:
 
-```bash
+```shell
 sudo apt-get update -y
 sudo apt-get install -y phpunit php5-mysql
 ```
@@ -198,7 +198,7 @@ some extensions that are not currently present on the build machine.
 
 To install additional extensions simply execute:
 
-```bash
+```shell
 pecl install <extension>
 ```
 
@@ -269,7 +269,7 @@ documentation.
 With GitLab Runner 1.0 you can also test any changes locally. From your
 terminal execute:
 
-```bash
+```shell
 # Check using docker executor
 gitlab-runner exec docker test:app
 

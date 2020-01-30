@@ -134,7 +134,7 @@ ENTITY_TITLE
 
 For example, the following commit will reference the Jira issue with `PROJECT-1` as its ID:
 
-```bash
+```shell
 git commit -m "PROJECT-1 Fix spelling and grammar"
 ```
 

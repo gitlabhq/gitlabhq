@@ -34,13 +34,13 @@ To enable the Twitter OmniAuth provider you must register your application with 
 
    For Omnibus package:
 
-   ```sh
+   ```shell
      sudo editor /etc/gitlab/gitlab.rb
    ```
 
    For installations from source:
 
-   ```sh
+   ```shell
      cd /home/git/gitlab
 
      sudo -u git -H editor config/gitlab.yml

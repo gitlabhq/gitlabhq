@@ -72,7 +72,7 @@ build:
 When trying to push to a Docker registry that uses a certificate that is signed
 by a custom CA, you might get the following error:
 
-```sh
+```shell
 $ /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --no-push
 INFO[0000] Downloading base image registry.gitlab.example.com/group/docker-image
 error building image: getting stage builder for stage 0: Get https://registry.gitlab.example.com/v2/: x509: certificate signed by unknown authority

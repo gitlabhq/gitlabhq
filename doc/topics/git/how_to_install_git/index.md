@@ -46,7 +46,7 @@ for the official Homebrew installation instructions.
 With Homebrew installed you are now ready to install Git.
 Open a Terminal and enter in the following command:
 
-```sh
+```shell
 brew install git
 ```
 
@@ -62,7 +62,7 @@ it is recommended to use the built in package manager to install Git.
 Open a Terminal and enter in the following commands
 to install the latest Git from the official Git maintained package archives:
 
-```sh
+```shell
 sudo apt-add-repository ppa:git-core/ppa
 sudo apt-get update
 sudo apt-get install git

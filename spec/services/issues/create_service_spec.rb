@@ -355,7 +355,7 @@ describe Issues::CreateService do
           opts[:recaptcha_verified] = true
           opts[:spam_log_id]        = spam_logs.last.id
 
-          expect(AkismetService).not_to receive(:new)
+          expect(Spam::AkismetService).not_to receive(:new)
         end
 
         it 'does no mark an issue as a spam ' do
@@ -392,7 +392,7 @@ describe Issues::CreateService do
 
         context 'when akismet detects spam' do
           before do
-            expect_next_instance_of(AkismetService) do |akismet_service|
+            expect_next_instance_of(Spam::AkismetService) do |akismet_service|
               expect(akismet_service).to receive_messages(spam?: true)
             end
           end
@@ -442,7 +442,7 @@ describe Issues::CreateService do
 
         context 'when akismet does not detect spam' do
           before do
-            expect_next_instance_of(AkismetService) do |akismet_service|
+            expect_next_instance_of(Spam::AkismetService) do |akismet_service|
               expect(akismet_service).to receive_messages(spam?: false)
             end
           end

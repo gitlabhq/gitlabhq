@@ -59,7 +59,7 @@ Workshop Time!
 
 - One-time configuration of the Git client:
 
-```bash
+```shell
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
 ```
@@ -68,7 +68,7 @@ git config --global user.email you@example.com
   each project
 - Check settings with:
 
-```bash
+```shell
 git config --global --list
 ```
 
@@ -81,7 +81,7 @@ git config --global --list
 - Create a workspace or development directory
 - This is where we'll be working and adding content
 
-```bash
+```shell
 mkdir ~/development
 cd ~/development
 
@@ -210,7 +210,7 @@ git push origin squash_some_bugs
 
 ### Example 1/2
 
-```sh
+```shell
 git checkout -b conflicts_branch
 
 # vi conflicts.rb
@@ -231,7 +231,7 @@ git push origin master
 
 Create a merge request on the GitLab web UI. You'll see a conflict warning.
 
-```sh
+```shell
 git checkout conflicts_branch
 git fetch
 git rebase master
@@ -261,26 +261,26 @@ git push origin conflicts_branch -f
 
 To remove files from stage use reset HEAD. Where HEAD is the last commit of the current branch:
 
-```sh
+```shell
 git reset HEAD <file>
 ```
 
 This will unstage the file but maintain the modifications. To revert the file back to the state it was in before the changes we can use:
 
-```sh
+```shell
 git checkout -- <file>
 ```
 
 To remove a file from disk and repo use `git rm` and to remove a directory use the `-r` flag:
 
-```sh
+```shell
 git rm '*.txt'
 git rm -r <dirname>
 ```
 
 If we want to remove a file from the repository but keep it on disk, say we forgot to add it to our .gitignore file then use `--cache`:
 
-```sh
+```shell
 git rm <filename> --cache
 ```
 
@@ -288,25 +288,25 @@ git rm <filename> --cache
 
 Undo last commit putting everything back into the staging area:
 
-```sh
+```shell
 git reset --soft HEAD^
 ```
 
 Add files and change message with:
 
-```sh
+```shell
 git commit --amend -m "New Message"
 ```
 
 Undo last and remove changes
 
-```sh
+```shell
 git reset --hard HEAD^
 ```
 
 Same as last one but for two commits back:
 
-```sh
+```shell
 git reset --hard HEAD^^
 ```
 
@@ -325,7 +325,7 @@ Don't reset after pushing
 1. Pull for updates
 1. Push changes
 
-```sh
+```shell
 # Change file edit_this_file.rb
 git status
 git commit -am "kjkfjkg"
@@ -343,7 +343,7 @@ git push origin master
 Reset removes the commit while revert removes the changes but leaves the commit
 Revert is safer considering we can revert a revert
 
-```sh
+```shell
 # Changed file
 git commit -am "bug introduced"
 git revert HEAD

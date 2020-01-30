@@ -6,13 +6,13 @@ This command gathers information about your GitLab installation and the System i
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake gitlab:env:info
 ```
 
 **Source Installation**
 
-```bash
+```shell
 bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
@@ -66,13 +66,13 @@ You may also have a look at our Troubleshooting Guides:
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake gitlab:check
 ```
 
 **Source Installation**
 
-```bash
+```shell
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
@@ -129,13 +129,13 @@ In some case it is necessary to rebuild the `authorized_keys` file.
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake gitlab:shell:setup
 ```
 
 **Source Installation**
 
-```bash
+```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
 ```
@@ -153,13 +153,13 @@ clear Redis' cache.
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake cache:clear
 ```
 
 **Source Installation**
 
-```bash
+```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 ```
@@ -174,7 +174,7 @@ Omnibus packages.
 
 **Source Installation**
 
-```bash
+```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
 ```
@@ -194,13 +194,13 @@ in the GitLab Performance Monitoring database.
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake gitlab:track_deployment
 ```
 
 **Source Installation**
 
-```bash
+```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:track_deployment RAILS_ENV=production
 ```
@@ -213,13 +213,13 @@ is included to help you with this:
 
 **Omnibus Installation**
 
-```bash
+```shell
 sudo gitlab-rake gitlab:tcp_check[example.com,80]
 ```
 
 **Source Installation**
 
-```bash
+```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:tcp_check[example.com,80] RAILS_ENV=production
 ```
@@ -238,13 +238,13 @@ To clear all exclusive leases:
 DANGER: **DANGER**:
 Don't run it while GitLab or Sidekiq is running
 
-```bash
+```shell
 sudo gitlab-rake gitlab:exclusive_lease:clear
 ```
 
 To specify a lease `type` or lease `type + id`, specify a scope:
 
-```bash
+```shell
 # to clear all leases for repository garbage collection:
 sudo gitlab-rake gitlab:exclusive_lease:clear[project_housekeeping:*]
 
@@ -256,14 +256,14 @@ sudo gitlab-rake gitlab:exclusive_lease:clear[project_housekeeping:4]
 
 To check the status of migrations, you can use the following rake task:
 
-```bash
+```shell
 sudo gitlab-rake db:migrate:status
 ```
 
 This will output a table with a `Status` of `up` or `down` for
 each Migration ID.
 
-```bash
+```shell
 database: gitlabhq_production
 
  Status   Migration ID    Migration Name
@@ -279,6 +279,6 @@ This could be as a result of [updating existing metrics](../../development/prome
 
 To re-import the metrics you can run:
 
-```bash
+```shell
 sudo gitlab-rake metrics:setup_common_metrics
 ```

@@ -6,7 +6,7 @@ module AkismetMethods
   end
 
   def akismet
-    @akismet ||= AkismetService.new(
+    @akismet ||= Spam::AkismetService.new(
       spammable_owner.name,
       spammable_owner.email,
       spammable.spammable_text,

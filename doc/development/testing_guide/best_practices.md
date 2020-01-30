@@ -36,7 +36,7 @@ Here are some things to keep in mind regarding test performance:
 
 To run rspec tests:
 
-```sh
+```shell
 # run all tests
 bundle exec rspec
 
@@ -46,7 +46,7 @@ bundle exec rspec spec/[path]/[to]/[spec].rb
 
 Use [guard](https://github.com/guard/guard) to continuously monitor for changes and only run matching tests:
 
-```sh
+```shell
 bundle exec guard
 ```
 

@@ -83,13 +83,13 @@ To fix this problem:
 
 If your GitLab instance is using a self-signed certificate, or the certificate is signed by an internal certificate authority (CA), you might run into the following errors when attempting to perform Git operations:
 
-```bash
+```shell
 $ git clone https://gitlab.domain.tld/group/project.git
 Cloning into 'project'...
 fatal: unable to access 'https://gitlab.domain.tld/group/project.git/': SSL certificate problem: self signed certificate
 ```
 
-```bash
+```shell
 $ git clone https://gitlab.domain.tld/group/project.git
 Cloning into 'project'...
 fatal: unable to access 'https://gitlab.domain.tld/group/project.git/': server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
@@ -107,6 +107,6 @@ To fix this problem:
 
   - Disable SSL verification in your Git client. Note that this intended as a temporary measure as it could be considered a **security risk**.
 
-    ```bash
+    ```shell
     git config --global http.sslVerify false
     ```

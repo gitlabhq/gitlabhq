@@ -75,6 +75,12 @@ of the design, and will replace the previous version.
 Designs cannot be added if the issue has been moved, or its
 [discussion is locked](../../discussions/#lock-discussions).
 
+### Skipped designs
+
+Designs with the same filename as an existing uploaded design _and_ whose content has not changed will be skipped.
+This means that no new version of the design will be created. When designs are skipped, you will be made aware via a warning
+message on the Issue.
+
 ## Viewing designs
 
 Images on the Design Management page can be enlarged by clicking on them.

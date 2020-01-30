@@ -393,7 +393,7 @@ To add a Kubernetes cluster to your project, group, or instance:
 
      Get the API URL by running this command:
 
-     ```sh
+     ```shell
      kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'
      ```
 
@@ -402,7 +402,7 @@ To add a Kubernetes cluster to your project, group, or instance:
       `default-token-xxxxx`. Copy that token name for use below.
      - Get the certificate by running this command:
 
-       ```sh
+       ```shell
 
        kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
 
@@ -444,7 +444,7 @@ To add a Kubernetes cluster to your project, group, or instance:
 
      1. Apply the service account and cluster role binding to your cluster:
 
-        ```bash
+        ```shell
         kubectl apply -f gitlab-admin-service-account.yaml
         ```
 
@@ -453,7 +453,7 @@ To add a Kubernetes cluster to your project, group, or instance:
         you can alternatively enable Basic Authentication and then run the
         `kubectl apply` command as an admin:
 
-        ```bash
+        ```shell
         kubectl apply -f gitlab-admin-service-account.yaml --username=admin --password=<password>
         ```
 
@@ -463,14 +463,14 @@ To add a Kubernetes cluster to your project, group, or instance:
 
         Output:
 
-        ```bash
+        ```shell
         serviceaccount "gitlab-admin" created
         clusterrolebinding "gitlab-admin" created
         ```
 
      1. Retrieve the token for the `gitlab-admin` service account:
 
-        ```bash
+        ```shell
         kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab-admin | awk '{print $1}')
         ```
 
@@ -530,7 +530,7 @@ To add an existing EKS cluster to your project, group, or instance:
          `default-token-xxxxx`. Copy that token name for use below.
       1. Get the certificate with:
 
-         ```sh
+         ```shell
          kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
          ```
 
@@ -582,7 +582,7 @@ To add an existing EKS cluster to your project, group, or instance:
 
       1. Retrieve the token for the `eks-admin` service account:
 
-         ```bash
+         ```shell
          kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep eks-admin | awk '{print $1}')
          ```
 
@@ -643,7 +643,7 @@ or user who can authenticate to the cluster, has full API access. This is a
 
 To effectively disable RBAC, global permissions can be applied granting full access:
 
-```bash
+```shell
 kubectl create clusterrolebinding permissive-binding \
   --clusterrole=cluster-admin \
   --user=admin \

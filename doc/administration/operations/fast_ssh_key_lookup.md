@@ -60,7 +60,7 @@ AuthorizedKeysCommandUser git
 
 Reload OpenSSH:
 
-```bash
+```shell
 # Debian or Ubuntu installations
 sudo service ssh reload
 

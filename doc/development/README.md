@@ -134,7 +134,6 @@ Complementary reads:
 - [Verifying database capabilities](verifying_database_capabilities.md)
 - [Database Debugging and Troubleshooting](database_debugging.md)
 - [Query Count Limits](query_count_limits.md)
-- [Database helper modules](database_helpers.md)
 - [Code comments](code_comments.md)
 - [Creating enums](creating_enums.md)
 - [Renaming features](renaming_features.md)
@@ -190,6 +189,10 @@ Complementary reads:
 ## Shell Scripting guides
 
 - [Shell scripting standards and style guidelines](shell_scripting_guide/index.md)
+
+## Domain-specific guides
+
+- [CI/CD development documentation](cicd/index.md)
 
 ## Other Development guides
 

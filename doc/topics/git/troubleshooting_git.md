@@ -30,7 +30,7 @@ Example of an error during a clone:
 
 Open a terminal and enter:
 
-```sh
+```shell
 git config http.postBuffer 52428800
 ```
 
@@ -78,7 +78,7 @@ ClientAliveCountMax 5
 **If 'pack-objects' type errors are also being displayed**, you can try to
 run a `git repack` before attempting to push to the remote repository again:
 
-```sh
+```shell
 git repack
 git push
 ```
@@ -146,7 +146,7 @@ This can be fixed by increasing the existing `http.postBuffer` value to one grea
 NOTE: **Note:**
 The default value of `http.postBuffer`, 1 MiB, is applied if the setting is not configured.
 
-```sh
+```shell
 git config http.postBuffer 524288000
 ```
 

@@ -101,7 +101,7 @@ these additional steps before proceeding with GitLab installation.
 
 On the first application server, run:
 
-```sh
+```shell
 sudo gitlab-ctl reconfigure
 ```
 

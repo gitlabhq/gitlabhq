@@ -25,7 +25,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/repository/branches
 ```
 
@@ -81,7 +81,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/repository/branches/master
 ```
 
@@ -142,7 +142,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/repository/branches?branch=newbranch&ref=master
 ```
 
@@ -195,7 +195,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/repository/branches/newbranch
 ```
 
@@ -218,6 +218,6 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/repository/merged_branches
 ```

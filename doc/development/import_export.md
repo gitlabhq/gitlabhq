@@ -14,7 +14,7 @@ Project.find_by_full_path('group/project').import_state.slice(:jid, :status, :la
 > {"jid"=>"414dec93f941a593ea1a6894", "status"=>"finished", "last_error"=>nil}
 ```
 
-```bash
+```shell
 # Logs
 grep JID /var/log/gitlab/sidekiq/current
 grep "Import/Export error" /var/log/gitlab/sidekiq/current
@@ -30,7 +30,7 @@ Read through the current performance problems using the Import/Export below.
 
 Out of memory (OOM) errors are normally caused by the [Sidekiq Memory Killer](../administration/operations/sidekiq_memory_killer.md):
 
-```bash
+```shell
 SIDEKIQ_MEMORY_KILLER_MAX_RSS = 2000000
 SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS = 3000000
 SIDEKIQ_MEMORY_KILLER_GRACE_TIME = 900
@@ -38,7 +38,7 @@ SIDEKIQ_MEMORY_KILLER_GRACE_TIME = 900
 
 An import status `started`, and the following Sidekiq logs will signal a memory issue:
 
-```bash
+```shell
 WARN: Work still in progress <struct with JID>
 ```
 
@@ -59,7 +59,7 @@ class StuckImportJobsWorker
     ...
 ```
 
-```bash
+```shell
 Marked stuck import jobs as failed. JIDs: xyz
 ```
 
@@ -219,7 +219,7 @@ We do not need to bump the version up in any of the following cases:
 
 Every time we bump the version, the integration specs will fail and can be fixed with:
 
-```bash
+```shell
 bundle exec rake gitlab:import_export:bump_version
 ```
 

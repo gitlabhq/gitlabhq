@@ -33,7 +33,7 @@ Find here the [source code setting the attribute](https://gitlab.com/gitlab-org/
 The `rake routes` command can be used to list all the routes available in the application, piping the output into `grep`, we can perform a search through the list of available routes.
 The output includes the request types available, route parameters and the relevant controller.
 
-```sh
+```shell
 bundle exec rake routes | grep "issues"
 ```
 

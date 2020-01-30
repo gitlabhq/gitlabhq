@@ -14,7 +14,7 @@ of the GitLab instance.
 GET /application/settings
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings
 ```
 
@@ -94,7 +94,7 @@ Use an API call to modify GitLab instance
 PUT /application/settings
 ```
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
 ```
 

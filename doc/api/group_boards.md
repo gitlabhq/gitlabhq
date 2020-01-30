@@ -17,7 +17,7 @@ GET /groups/:id/boards
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards
 ```
 
@@ -135,7 +135,7 @@ GET /groups/:id/boards/:board_id
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1
 ```
 
@@ -249,7 +249,7 @@ POST /groups/:id/boards
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the new board |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards?name=newboard
 ```
 
@@ -320,7 +320,7 @@ PUT /groups/:id/boards/:board_id
 | `labels`            | string         | no       | Comma-separated list of label names which the board should be scoped to |
 | `weight`            | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1?name=new_name&milestone_id=44&assignee_id=1&labels=GroupLabel&weight=4
 ```
 
@@ -381,7 +381,7 @@ DELETE /groups/:id/boards/:board_id
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1
 ```
 
@@ -399,7 +399,7 @@ GET /groups/:id/boards/:board_id/lists
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1/lists
 ```
 
@@ -451,7 +451,7 @@ GET /groups/:id/boards/:board_id/lists/:list_id
 | `board_id` | integer | yes | The ID of a board |
 | `list_id` | integer | yes | The ID of a board's list |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1
 ```
 
@@ -483,7 +483,7 @@ POST /groups/:id/boards/:board_id/lists
 | `board_id` | integer | yes | The ID of a board |
 | `label_id` | integer | yes | The ID of a label |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1/lists?label_id=5
 ```
 
@@ -516,7 +516,7 @@ PUT /groups/:id/boards/:board_id/lists/:list_id
 | `list_id` | integer | yes | The ID of a board's list |
 | `position` | integer | yes | The position of the list |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/group/5/boards/1/lists/1?position=2
 ```
 
@@ -548,6 +548,6 @@ DELETE /groups/:id/boards/:board_id/lists/:list_id
 | `board_id` | integer | yes | The ID of a board |
 | `list_id` | integer | yes | The ID of a board's list |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1
 ```

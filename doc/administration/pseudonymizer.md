@@ -85,7 +85,7 @@ You can optionally run the pseudonymizer using the following environment variabl
 - `PSEUDONYMIZER_OUTPUT_DIR` - where to store the output CSV files (defaults to `/tmp`)
 - `PSEUDONYMIZER_BATCH` - the batch size when querying the DB (defaults to `100000`)
 
-```bash
+```shell
 ## Omnibus
 sudo gitlab-rake gitlab:db:pseudonymizer
 

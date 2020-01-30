@@ -27,7 +27,7 @@ the node more time before scheduling a planned failover.
 
 Run the following commands in a Rails console on the **primary** node:
 
-```sh
+```shell
 gitlab-rails console
 ```
 
@@ -95,7 +95,7 @@ The automatic background re-verification is enabled by default, but you can
 disable if you need. Run the following commands in a Rails console on the
 **primary** node:
 
-```sh
+```shell
 gitlab-rails console
 ```
 
@@ -120,13 +120,13 @@ to be resynced without the backoff period:
 
 For repositories:
 
-```sh
+```shell
 sudo gitlab-rake geo:verification:repository:reset
 ```
 
 For wikis:
 
-```sh
+```shell
 sudo gitlab-rake geo:verification:wiki:reset
 ```
 
@@ -146,25 +146,25 @@ If the **primary** and **secondary** nodes have a checksum verification mismatch
    (the path is usually `/var/opt/gitlab/git-data/repositories`). Note that if `git_data_dirs`
    is customized, check the directory layout on your server to be sure.
 
-   ```sh
+   ```shell
    cd /var/opt/gitlab/git-data/repositories
    ```
 
 1. Run the following command on the **primary** node, redirecting the output to a file:
 
-   ```sh
+   ```shell
    git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > primary-node-refs
    ```
 
 1. Run the following command on the **secondary** node, redirecting the output to a file:
 
-   ```sh
+   ```shell
    git show-ref --head | grep -E "HEAD|(refs/(heads|tags|keep-around|merge-requests|environments|notes)/)" > secondary-node-refs
    ```
 
 1. Copy the files from the previous steps on the same system, and do a diff between the contents:
 
-   ```sh
+   ```shell
    diff primary-node-refs secondary-node-refs
    ```
 

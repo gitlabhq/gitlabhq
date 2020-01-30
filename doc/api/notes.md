@@ -79,7 +79,7 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
 ]
 ```
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/notes
 ```
 
@@ -97,7 +97,7 @@ Parameters:
 - `issue_iid` (required) - The IID of a project issue
 - `note_id` (required) - The ID of an issue note
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/notes/1
 ```
 
@@ -116,7 +116,7 @@ Parameters:
 - `body` (required) - The content of a note. Limited to 1,000,000 characters.
 - `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights)
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=note
 ```
 
@@ -135,7 +135,7 @@ Parameters:
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note. Limited to 1,000,000 characters.
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=note
 ```
 
@@ -155,7 +155,7 @@ Parameters:
 | `issue_iid` | integer | yes | The IID of an issue |
 | `note_id` | integer | yes | The ID of a note |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/notes/636
 ```
 
@@ -177,7 +177,7 @@ GET /projects/:id/snippets/:snippet_id/notes?sort=asc&order_by=updated_at
 | `sort`              | string           | no         | Return snippet notes sorted in `asc` or `desc` order. Default is `desc`
 | `order_by`          | string           | no         | Return snippet notes ordered by `created_at` or `updated_at` fields. Default is `created_at`
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/notes
 ```
 
@@ -214,7 +214,7 @@ Parameters:
 }
 ```
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/notes/11
 ```
 
@@ -234,7 +234,7 @@ Parameters:
 - `body` (required) - The content of a note. Limited to 1,000,000 characters.
 - `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippet/11/notes?body=note
 ```
 
@@ -253,7 +253,7 @@ Parameters:
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note. Limited to 1,000,000 characters.
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/notes?body=note
 ```
 
@@ -273,7 +273,7 @@ Parameters:
 | `snippet_id` | integer | yes | The ID of a snippet |
 | `note_id` | integer | yes | The ID of a note |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/52/notes/1659
 ```
 
@@ -295,7 +295,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/notes?sort=asc&order_by=upda
 | `sort`              | string           | no         | Return merge request notes sorted in `asc` or `desc` order. Default is `desc`
 | `order_by`          | string           | no         | Return merge request notes ordered by `created_at` or `updated_at` fields. Default is `created_at`
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes
 ```
 
@@ -336,7 +336,7 @@ Parameters:
 }
 ```
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes/1
 ```
 
@@ -372,7 +372,7 @@ Parameters:
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note. Limited to 1,000,000 characters.
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes?body=note
 ```
 
@@ -392,7 +392,7 @@ Parameters:
 | `merge_request_iid` | integer | yes | The IID of a merge request |
 | `note_id` | integer | yes | The ID of a note |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/7/notes/1602
 ```
 
@@ -414,7 +414,7 @@ GET /groups/:id/epics/:epic_id/notes?sort=asc&order_by=updated_at
 | `sort`              | string           | no         | Return epic notes sorted in `asc` or `desc` order. Default is `desc` |
 | `order_by`          | string           | no         | Return epic notes ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/notes
 ```
 
@@ -453,7 +453,7 @@ Parameters:
 }
 ```
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/11/notes/1
 ```
 
@@ -474,7 +474,7 @@ Parameters:
 | `epic_id` | integer | yes  | The ID of an epic |
 | `body`    | string  | yes  | The content of a note. Limited to 1,000,000 characters. |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippet/11/notes?body=note
 ```
 
@@ -495,7 +495,7 @@ Parameters:
 | `note_id` | integer | yes  | The ID of a note |
 | `body`    | string  | yes  | The content of a note. Limited to 1,000,000 characters. |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippet/11/notes?body=note
 ```
 
@@ -515,6 +515,6 @@ Parameters:
 | `epic_id` | integer | yes  | The ID of an epic |
 | `note_id` | integer | yes  | The ID of a note |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/epics/52/notes/1659
 ```

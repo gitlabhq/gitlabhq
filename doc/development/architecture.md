@@ -504,7 +504,7 @@ To summarize here's the [directory structure of the `git` user home directory](.
 
 ### Processes
 
-```sh
+```shell
 ps aux | grep '^git'
 ```
 

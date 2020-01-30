@@ -261,7 +261,7 @@ Once you have set up the [authentication](#authenticating-to-the-gitlab-maven-re
 and [configuration](#configuring-your-project-to-use-the-gitlab-maven-repository-url),
 test to upload a Maven artifact from a project of yours:
 
-```sh
+```shell
 mvn deploy
 ```
 

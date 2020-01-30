@@ -238,7 +238,7 @@ describe API::Snippets do
       end
 
       before do
-        allow_next_instance_of(AkismetService) do |instance|
+        allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
       end
@@ -327,7 +327,7 @@ describe API::Snippets do
       end
 
       before do
-        allow_next_instance_of(AkismetService) do |instance|
+        allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
       end

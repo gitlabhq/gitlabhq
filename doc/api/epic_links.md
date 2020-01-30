@@ -24,7 +24,7 @@ GET /groups/:id/epics/:epic_iid/epics
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `epic_iid` | integer        | yes      | The internal ID of the epic.                                                                                  |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5/epics/
 ```
 
@@ -79,7 +79,7 @@ POST /groups/:id/epics/:epic_iid/epics
 | `epic_iid`      | integer        | yes      | The internal ID of the epic.                                                                                       |
 | `child_epic_id` | integer        | yes      | The global ID of the child epic. Internal ID can't be used because they can conflict with epics from other groups. |
 
-```bash
+```shell
 curl --header POST "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5/epics/6
 ```
 
@@ -132,7 +132,7 @@ POST /groups/:id/epics/:epic_iid/epics
 | `epic_iid`      | integer        | yes      | The internal ID of the (future parent) epic.                                                                                       |
 | `title`         | string         | yes      | The title of a newly created epic. |
 
-```bash
+```shell
 curl --header POST "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5/epics?title=Newpic
 ```
 
@@ -167,7 +167,7 @@ PUT /groups/:id/epics/:epic_iid/epics/:child_epic_id
 | `move_before_id` | integer        | no       | The global ID of a sibling epic that should be placed before the child epic.                                       |
 | `move_after_id`  | integer        | no       | The global ID of a sibling epic that should be placed after the child epic.                                        |
 
-```bash
+```shell
 curl --header PUT "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/4/epics/5
 ```
 
@@ -222,7 +222,7 @@ DELETE /groups/:id/epics/:epic_iid/epics/:child_epic_id
 | `epic_iid`      | integer        | yes      | The internal ID of the epic.                                                                                       |
 | `child_epic_id` | integer        | yes      | The global ID of the child epic. Internal ID can't be used because they can conflict with epics from other groups. |
 
-```bash
+```shell
 curl --header DELETE "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/4/epics/5
 ```
 

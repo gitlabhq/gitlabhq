@@ -38,7 +38,7 @@ from the command line.
 Here is a quick example to cherry-pick a merge commit using the second parent as the
 mainline:
 
-```bash
+```shell
 git cherry-pick -m 2 7a39eb0
 ```
 

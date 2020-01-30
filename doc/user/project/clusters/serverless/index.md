@@ -159,7 +159,7 @@ You must do the following:
 
      Then run the following command:
 
-     ```bash
+     ```shell
      kubectl apply -f knative-serving-only-role.yaml
      ```
 
@@ -362,7 +362,7 @@ Kubernetes cluster. Click on each function to obtain detailed scale and invocati
 
 The function details can be retrieved directly from Knative on the cluster:
 
-```bash
+```shell
 kubectl -n "$KUBE_NAMESPACE" get services.serving.knative.dev
 ```
 
@@ -370,7 +370,7 @@ The sample function can now be triggered from any HTTP client using a simple `PO
 
   1. Using curl (replace the URL on the last line with the URL of your application):
 
-     ```bash
+     ```shell
      curl \
      --header "Content-Type: application/json" \
      --request POST \
@@ -388,7 +388,7 @@ To access your Kubernetes secrets from within your function, the secrets should 
 
 #### CLI example
 
-```bash
+```shell
 kubectl create secret generic my-secrets -n "$KUBE_NAMESPACE" --from-literal MY_SECRET=imverysecure
 ```
 
@@ -491,7 +491,7 @@ Go to the **CI/CD > Pipelines** and click on the pipeline that deployed your app
 
 The output will look like this:
 
-```bash
+```shell
 Running with gitlab-runner 12.1.0-rc1 (6da35412)
   on prm-com-gitlab-org ae3bfce3
 Using Docker executor with image registry.gitlab.com/gitlab-org/gitlabktl:latest ...
@@ -594,7 +594,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
    [`certbot-auto` wrapper script](https://certbot.eff.org/docs/install.html#certbot-auto).
    On the command line of your server, run the following commands:
 
-   ```sh
+   ```shell
    wget https://dl.eff.org/certbot-auto
    sudo mv certbot-auto /usr/local/bin/certbot-auto
    sudo chown root /usr/local/bin/certbot-auto
@@ -604,7 +604,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
 
    To check the integrity of the `certbot-auto` script, run:
 
-   ```sh
+   ```shell
    wget -N https://dl.eff.org/certbot-auto.asc
    gpg2 --keyserver ipv4.pool.sks-keyservers.net --recv-key A2CFB51FA275A7286234E7B24D17C995CD9775F2
    gpg2 --trusted-key 4D17C995CD9775F2 --verify certbot-auto.asc /usr/local/bin/certbot-auto
@@ -612,7 +612,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
 
    The output of the last command should look something like:
 
-   ```sh
+   ```shell
    gpg: Signature made Mon 10 Jun 2019 06:24:40 PM EDT
    gpg:                using RSA key A2CFB51FA275A7286234E7B24D17C995CD9775F2
    gpg: key 4D17C995CD9775F2 marked as ultimately trusted
@@ -626,7 +626,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
 1. Run the following command to use Certbot to request a certificate
    using DNS challenge during authorization:
 
-   ```sh
+   ```shell
    ./certbot-auto certonly --manual --preferred-challenges dns -d '*.<namespace>.example.com'
    ```
 
@@ -640,14 +640,14 @@ The instructions below relate to installing and running Certbot on a Linux serve
    In the above image, the namespace for the project is `node-function-11909507` and the domain is `knative.info`, thus
    certificate request line would look like this:
 
-   ```sh
+   ```shell
    ./certbot-auto certonly --manual --preferred-challenges dns -d '*.node-function-11909507.knative.info'
    ```
 
    The Certbot tool walks you through the steps of validating that you own each domain that you specify by creating TXT records in those domains.
    After this process is complete, the output should look something like this:
 
-   ```sh
+   ```shell
    IMPORTANT NOTES:
    - Congratulations! Your certificate and chain have been saved at:
      /etc/letsencrypt/live/namespace.example.com/fullchain.pem
@@ -671,13 +671,13 @@ The instructions below relate to installing and running Certbot on a Linux serve
 
    Run the following command to see the contents of `fullchain.pem`:
 
-   ```sh
+   ```shell
    sudo cat /etc/letsencrypt/live/node-function-11909507.knative.info/fullchain.pem
    ```
 
    Output should look like this:
 
-   ```sh
+   ```shell
    -----BEGIN CERTIFICATE-----
    2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
    04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
@@ -743,13 +743,13 @@ The instructions below relate to installing and running Certbot on a Linux serve
 
    Once `cert.pem` is created, run the following command to see the contents of `privkey.pem`:
 
-   ```sh
+   ```shell
    sudo cat /etc/letsencrypt/live/namespace.example/privkey.pem
    ```
 
    Output should look like this:
 
-   ```sh
+   ```shell
    -----BEGIN PRIVATE KEY-----
    2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6
    04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df
@@ -792,7 +792,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
    [GKE Cluster Access](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl).
    For other platforms, [install `kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
 
-   ```sh
+   ```shell
    kubectl create --namespace istio-system secret tls istio-ingressgateway-certs \
    --key cert.pk \
    --cert cert.pem
@@ -804,13 +804,13 @@ The instructions below relate to installing and running Certbot on a Linux serve
    connections. Run the
    following command to open the Knative shared `gateway` in edit mode:
 
-   ```sh
+   ```shell
    kubectl edit gateway knative-ingress-gateway --namespace knative-serving
    ```
 
    Update the gateway to include the following tls: section and configuration:
 
-   ```sh
+   ```shell
    tls:
      mode: SIMPLE
      privateKey: /etc/istio/ingressgateway-certs/tls.key
@@ -819,7 +819,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
 
    Example:
 
-   ```sh
+   ```shell
    apiVersion: networking.istio.io/v1alpha3
    kind: Gateway
    metadata:

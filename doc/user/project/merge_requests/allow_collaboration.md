@@ -55,7 +55,7 @@ Here's how the process would look like:
 1. Use the copy button to copy the first command and paste them
    in your terminal:
 
-   ```sh
+   ```shell
    git fetch git@gitlab.com:thedude/awesome-project.git update-docs
    git checkout -b thedude-awesome-project-update-docs FETCH_HEAD
    ```
@@ -66,7 +66,7 @@ Here's how the process would look like:
 1. Make any changes you want and commit.
 1. Push to the forked project:
 
-   ```sh
+   ```shell
    git push git@gitlab.com:thedude/awesome-project.git thedude-awesome-project-update-docs:update-docs
    ```
 

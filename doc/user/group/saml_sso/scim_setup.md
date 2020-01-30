@@ -189,7 +189,7 @@ Alternatively, the [SCIM API](../../../api/scim.md#get-a-list-of-saml-users) can
 
 For example:
 
-```sh
+```shell
 curl 'https://example.gitlab.com/api/scim/v2/groups/GROUP_NAME/Users?startIndex=1"' --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
 ```
 
@@ -207,7 +207,7 @@ The [SCIM API](../../../api/scim.md#update-a-single-saml-user) can be used to ma
 
 It is then possible to issue a manual SCIM#update request, for example:
 
-```sh
+```shell
 curl --verbose --request PATCH 'https://gitlab.com/api/scim/v2/groups/YOUR_GROUP/Users/OLD_EXTERNAL_UID' --data '{ "Operations": [{"op":"Replace","path":"externalId","value":"NEW_EXTERNAL_UID"}] }' --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
 ```
 

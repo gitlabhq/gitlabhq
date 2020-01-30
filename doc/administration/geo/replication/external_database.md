@@ -13,13 +13,13 @@ developed and tested. We aim to be compatible with most external
 
 1. SSH into a GitLab **primary** application server and login as root:
 
-   ```bash
+   ```shell
    sudo -i
    ```
 
 1. Execute the command below to define the node as **primary** node:
 
-   ```bash
+   ```shell
    gitlab-ctl set-geo-primary-node
    ```
 
@@ -100,7 +100,7 @@ To configure the connection to the external read-replica database and enable Log
 
 1. SSH into a GitLab **secondary** application server and login as root:
 
-   ```bash
+   ```shell
    sudo -i
    ```
 
@@ -147,7 +147,7 @@ the tracking database on port 5432.
 
 1. SSH into a GitLab **secondary** server and login as root:
 
-   ```bash
+   ```shell
    sudo -i
    ```
 
@@ -168,7 +168,7 @@ the tracking database on port 5432.
 
 1. Run the tracking database migrations:
 
-   ```bash
+   ```shell
    gitlab-rake geo:db:create
    gitlab-rake geo:db:migrate
    ```
@@ -179,7 +179,7 @@ the tracking database on port 5432.
    Save the script below in a file, ex. `/tmp/geo_fdw.sh` and modify the connection
    params to match your environment. Execute it to set up the FDW connection.
 
-   ```bash
+   ```shell
    #!/bin/bash
 
    # Secondary Database connection params:
@@ -213,6 +213,6 @@ the tracking database on port 5432.
 1. Save the file and [restart GitLab](../../restart_gitlab.md#omnibus-gitlab-restart)
 1. Populate the FDW tables:
 
-   ```bash
+   ```shell
    gitlab-rake geo:db:refresh_foreign_tables
    ```

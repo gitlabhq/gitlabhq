@@ -19,7 +19,7 @@ GET /projects/:id/packages
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/packages
 ```
 
@@ -62,7 +62,7 @@ GET /groups/:id/packages
 | `id`      | integer/string | yes | ID or [URL-encoded path of the group](README.md#namespaced-path-encoding). |
 | `exclude_subgroups` | boolean | false | If the param is included as true, packages from projects from subgroups are not listed. Default is `false`. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=true
 ```
 
@@ -139,7 +139,7 @@ GET /projects/:id/packages/:package_id
 | `id`      | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
 | `package_id`      | integer | yes | ID of a package. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/packages/:package_id
 ```
 
@@ -190,7 +190,7 @@ GET /projects/:id/packages/:package_id/package_files
 | `id`      | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `package_id`      | integer | yes | ID of a package. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/packages/4/package_files
 ```
 
@@ -245,7 +245,7 @@ DELETE /projects/:id/packages/:package_id
 | `id`      | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `package_id`      | integer | yes | ID of a package. |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/packages/:package_id
 ```
 

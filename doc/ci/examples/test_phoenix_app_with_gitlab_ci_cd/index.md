@@ -79,7 +79,7 @@ When we call `mix` command, we'll pass two arguments:
 - And the parameter `phoenix.new` requires, which is the name of the new project. In this case,
   we're calling it `hello_gitlab_ci`, but you're free to set your own name:
 
-```bash
+```shell
 mix phoenix.new hello_gitlab_ci
 ```
 
@@ -108,14 +108,14 @@ changes.
 
 Run the commands below to create our empty database:
 
-```bash
+```shell
 cd hello_gitlab_ci
 mix ecto.create
 ```
 
 We expect to see this output at the end of the command:
 
-```bash
+```shell
 Generated hello_gitlab_ci app
 The database for HelloGitlabCi.Repo has been created
 ```
@@ -130,13 +130,13 @@ permissions and a password of `postgres`. If it's not your case, check
 Now, it's time to see if everything we did until now went well. We'll call `mix` again, this time
 with `phoenix.server` parameter, which will start Phoenix's HTTP Server.
 
-```bash
+```shell
 mix phoenix.server
 ```
 
 This will be the output to this command:
 
-```bash
+```shell
 [info] Running HelloGitlabCi.Endpoint with Cowboy using http://localhost:4000
 23 May 11:44:35 - info: compiling
 23 May 11:44:37 - info: compiled 6 files into 2 files, copied 3 in 9.8 sec
@@ -223,13 +223,13 @@ Let's run a new task with `mix` to run those tests for us. This time, the parame
 
 In your terminal, navigate to the directory `hello_gitlab_ci` and run:
 
-```bash
+```shell
 mix test
 ```
 
 Our expected result is this:
 
-```bash
+```shell
 ....
 
 Finished in 0.7 seconds

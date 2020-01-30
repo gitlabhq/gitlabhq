@@ -211,7 +211,7 @@ Since there are no anchors in the used regular expression, the `git:/tmp/lol` in
 
 When importing, GitLab would execute the following command, passing the `import_url` as an argument:
 
-```sh
+```shell
 git clone file://git:/tmp/lol
 ```
 

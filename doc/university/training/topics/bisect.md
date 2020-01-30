@@ -19,7 +19,7 @@ comments: false
 
 ## Setup
 
-```sh
+```shell
   mkdir bisect-ex
   cd bisect-ex
   touch index.html
@@ -36,7 +36,7 @@ comments: false
   vi index.html
 ```
 
-```sh
+```shell
   # Add all good 3
   git add -A
   git commit -m "fourth commit"
@@ -56,7 +56,7 @@ comments: false
 
 ## Commands
 
-```sh
+```shell
   git bisect start
   # Test your code
   git bisect bad

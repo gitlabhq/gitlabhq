@@ -418,13 +418,13 @@ To find the host or endpoint, naviagate to **Amazon RDS > Databases** and click 
 
 Do not to include the colon and port number:
 
-```sh
+```shell
 sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
 ```
 
 At the psql prompt create the extension and then quit the session:
 
-```sh
+```shell
 psql (10.9)
 Type "help" for help.
 
@@ -474,14 +474,14 @@ gitlab_rails['redis_port'] = 6379
 
 Finally, reconfigure GitLab for the change to take effect:
 
-```sh
+```shell
 sudo gitlab-ctl reconfigure
 ```
 
 You might also find it useful to run a check and a service status to make sure
 everything has been setup correctly:
 
-```sh
+```shell
 sudo gitlab-rake gitlab:check
 sudo gitlab-ctl status
 ```
@@ -507,7 +507,7 @@ The EBS volume will host the Git repositories data:
 
 1. Save the file and reconfigure GitLab:
 
-   ```sh
+   ```shell
    sudo gitlab-ctl reconfigure
    ```
 
@@ -548,7 +548,7 @@ After you SSH into the instance, configure the domain name:
 
 1. Reconfigure GitLab:
 
-   ```sh
+   ```shell
    sudo gitlab-ctl reconfigure
    ```
 
@@ -601,7 +601,7 @@ To back up GitLab:
 1. SSH into your instance.
 1. Take a backup:
 
-   ```sh
+   ```shell
    sudo gitlab-backup create
    ```
 
@@ -622,7 +622,7 @@ released, you can update your GitLab instance:
 1. SSH into your instance
 1. Take a backup:
 
-   ```sh
+   ```shell
    sudo gitlab-backup create
    ```
 
@@ -631,7 +631,7 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 1. Update the repositories and install GitLab:
 
-   ```sh
+   ```shell
    sudo apt update
    sudo apt install gitlab-ee
    ```

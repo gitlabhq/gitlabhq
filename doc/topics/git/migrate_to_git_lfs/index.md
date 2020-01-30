@@ -49,13 +49,13 @@ To follow this tutorial, you'll need:
   (Java 7 or above) installed locally.
 - BFG installed locally:
 
-   ```bash
+   ```shell
    brew install bfg
    ```
 
 - Git LFS installed locally:
 
-   ```bash
+   ```shell
    brew install git-lfs
    ```
 
@@ -80,13 +80,13 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
    (in our example, `test-git-lfs-repo-migration.git`),
    mirroring the upstream project:
 
-   ```bash
+   ```shell
    git clone --mirror git@gitlab.com:gitlab-tests/test-git-lfs-repo-migration.git
    ```
 
 1. Convert the Git history with BFG:
 
-   ```bash
+   ```shell
    bfg --convert-to-git-lfs "*.{png,mp4,jpg,gif}" --no-blob-protection test-git-lfs-repo-migration.git
    ```
 
@@ -95,7 +95,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
 
 1. Clean up the repository:
 
-   ```bash
+   ```shell
    # cd path/to/mirror/repo:
    cd test-git-lfs-repo-migration.git
    # clean up the repo:
@@ -107,7 +107,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
 
 1. Install Git LFS in the mirror repository:
 
-   ```bash
+   ```shell
    git lfs install
    ```
 
@@ -121,13 +121,13 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
 
 1. Force-push to GitLab:
 
-   ```bash
+   ```shell
    git push --force
    ```
 
 1. Track the files you want with LFS:
 
-   ```bash
+   ```shell
    # cd path/to/upstream/repo:
    cd test-git-lfs-repo-migration
    # You may need to reset your local copy with upstream's `master` after force-pushing from the mirror:

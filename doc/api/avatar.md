@@ -28,7 +28,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl https://gitlab.example.com/api/v4/avatar?email=admin@example.com&size=32
 ```
 

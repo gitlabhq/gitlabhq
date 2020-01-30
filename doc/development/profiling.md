@@ -99,7 +99,7 @@ Sherlock is a custom profiling tool built into GitLab. Sherlock is _only_
 available when running GitLab in development mode _and_ when setting the
 environment variable `ENABLE_SHERLOCK` to a non empty value. For example:
 
-```sh
+```shell
 ENABLE_SHERLOCK=1 bundle exec rails s
 ```
 
@@ -112,7 +112,7 @@ Bullet adds quite a bit of logging noise it's disabled by default. To enable
 Bullet, set the environment variable `ENABLE_BULLET` to a non-empty value before
 starting GitLab. For example:
 
-```sh
+```shell
 ENABLE_BULLET=true bundle exec rails s
 ```
 

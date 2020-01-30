@@ -53,7 +53,7 @@ write in the `.gitlab-ci.yml` the script you want to run so
 GitLab Runner will do it for you. It looks more complicated than it
 is. What you need to tell the Runner:
 
-```sh
+```shell
 gem install jekyll
 jekyll build
 ```

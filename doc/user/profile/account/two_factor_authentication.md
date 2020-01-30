@@ -181,14 +181,14 @@ a new set of recovery codes with SSH:
 
 1. Run:
 
-   ```sh
+   ```shell
    ssh git@gitlab.example.com 2fa_recovery_codes
    ```
 
 1. You will then be prompted to confirm that you want to generate new codes.
    Continuing this process invalidates previously saved codes:
 
-   ```sh
+   ```shell
    Are you sure you want to generate new two-factor recovery codes?
    Any existing recovery codes you saved will be invalidated. (yes/no)
 

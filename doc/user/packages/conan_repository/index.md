@@ -33,7 +33,7 @@ Follow the instructions at [conan.io](https://conan.io/downloads.html) to downlo
 
 Once installation is complete, verify you can use Conan in your terminal by running
 
-```sh
+```shell
 conan --version
 ```
 
@@ -48,7 +48,7 @@ Conan version 1.20.5
 When developing with C++ and Conan, you have a wide range of options for compilers. This tutorial walks through using the cmake
 compiler. In your terminal, run the command
 
-```sh
+```shell
 cmake --version
 ```
 
@@ -69,13 +69,13 @@ Clone the repo and it can be used for the rest of the tutorial if you don't have
 In your terminal, navigate to the root folder of your project. Generate a new recipe by running `conan new` and providing it with a
 package name and version:
 
-```sh
+```shell
 conan new Hello/0.1 -t
 ```
 
 Next, you will create a package for that recipe by running `conan create` providing the Conan user and channel:
 
-```sh
+```shell
 conan create . my-org+my-group+my-project/beta
 ```
 
@@ -94,7 +94,7 @@ You are now ready to upload your package to the GitLab registry. To get started,
 
 Add a new remote to your Conan configuration:
 
-```sh
+```shell
 conan remote add gitlab https://gitlab.example.com/api/v4/packages/conan
 ```
 
@@ -102,7 +102,7 @@ Once the remote is set, you can use the remote when running Conan commands by ad
 
 For example:
 
-```sh
+```shell
 conan search Hello* --all --remote=gitlab
 ```
 
@@ -114,7 +114,7 @@ You will need to generate a [personal access token](../../../user/profile/person
 
 Once you have a personal access token and have [set your Conan remote](#adding-the-gitlab-package-registry-as-a-conan-remote), you can associate the token with the remote so you do not have to explicitly add them to each Conan command you run:
 
-```sh
+```shell
 conan user <gitlab-username> -r gitlab -p <personal_access_token>
 ```
 
@@ -129,7 +129,7 @@ The personal access token is not stored locally at any moment. Conan uses JWT, s
 Alternatively, you could explicitly include your credentials in any given command.
 For example:
 
-```sh
+```shell
 CONAN_LOGIN_USERNAME=<gitlab-username> CONAN_PASSWORD=<personal_access_token> conan upload Hello/0.1@my-group+my-project/beta --all --remote=gitlab
 ```
 
@@ -137,7 +137,7 @@ CONAN_LOGIN_USERNAME=<gitlab-username> CONAN_PASSWORD=<personal_access_token> co
 
 If you'd like Conan to always use GitLab as the registry for your package, you can tell Conan to always reference the GitLab remote for a given package recipe:
 
-```sh
+```shell
 conan remote add_ref Hello/0.1@my-group+my-project/beta gitlab
 ```
 
@@ -147,7 +147,7 @@ This functionality is best suited for when you want to consume or install packag
 
 The rest of the example commands in this documentation assume that you have added a Conan user with your credentials to the `gitlab` remote and will not include the explicit credentials or remote option, but be aware that any of the commands could be run without having added a user or default remote:
 
-```sh
+```shell
 `CONAN_LOGIN_USERNAME=<gitlab-username> CONAN_PASSWORD=<personal_access_token> <conan command> --remote=gitlab
 ```
 
@@ -159,7 +159,7 @@ Ensure you have a project created on GitLab and that the personal access token y
 
 You can upload your package to the GitLab Package Registry using the `conan upload` command:
 
-```sh
+```shell
 conan upload Hello/0.1@my-group+my-project/beta --all
 ```
 
@@ -200,13 +200,13 @@ Add the Conan recipe to the `[requires]` section of the file:
 
 Next, from the root of your project, create a build directory and navigate to it:
 
-```sh
+```shell
 mkdir build && cd build
 ```
 
 Now you can install the dependencies listed in `conanfile.txt`:
 
-```sh
+```shell
 conan install ..
 ```
 
@@ -220,7 +220,7 @@ There are two ways to remove a Conan package from the GitLab Package Registry.
 
 - **Using the Conan client in the command line:**
 
-  ```sh
+  ```shell
   conan remove Hello/0.2@user/channel --remote=gitlab
   ```
 
@@ -238,7 +238,7 @@ The `conan search` command can be run searching by full or partial package name,
 
 To search using a partial name, use the wildcard symbol `*`, which should be placed at the end of your search (e.g., `my-packa*`):
 
-```sh
+```shell
 conan search Hello --all --remote=gitlab
 conan search He* --all --remote=gitlab
 conan search Hello/0.1@my-group+my-project/beta --all --remote=gitlab
@@ -250,7 +250,7 @@ The scope of your search will include all projects you have permission to access
 
 The `conan info` command will return info about a given package:
 
-```sh
+```shell
 conan info Hello/0.1@my-group+my-project/beta
 ```
 

@@ -15,7 +15,7 @@ server that will generate the diagrams.
 
 With Docker, you can just run a container like this:
 
-```sh
+```shell
 docker run -d --name plantuml -p 8080:8080 plantuml/plantuml-server:tomcat
 ```
 
@@ -50,7 +50,7 @@ own PlantUML server is easy in Debian/Ubuntu distributions using Tomcat.
 
 First you need to create a `plantuml.war` file from the source code:
 
-```sh
+```shell
 sudo apt-get install graphviz openjdk-8-jdk git-core maven
 git clone https://github.com/plantuml/plantuml-server.git
 cd plantuml-server
@@ -101,7 +101,7 @@ nginx['custom_gitlab_server_config'] = "location /-/plantuml { \n rewrite ^/-/(p
 
 To activate the changes, run the following command:
 
-```sh
+```shell
 sudo gitlab-ctl reconfigure
 ```
 

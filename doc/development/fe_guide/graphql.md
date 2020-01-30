@@ -208,6 +208,21 @@ Now every single time on attempt to fetch a version, our client will fetch `id` 
 
 Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.com/guide/local-state.html#local-state).
 
+### Using with Vuex
+
+When Apollo Client is used within Vuex and fetched data is stored in the Vuex store, there is no need in keeping Apollo Client cache enabled. Otherwise we would have data from the API stored in two places - Vuex store and Apollo Client cache. More to say, with Apollo default settings, a subsequent fetch from the GraphQL API could result in fetching data from Apollo cache (in the case where we have the same query and variables). To prevent this behavior, we need to disable Apollo Client cache passing a valid `fetchPolicy` option to its constructor:
+
+```js
+import fetchPolicies from '~/graphql_shared/fetch_policy_constants';
+
+export const gqClient = createGqClient(
+  {},
+  {
+    fetchPolicy: fetchPolicies.NO_CACHE,
+  },
+);
+```
+
 ### Feature flags in queries
 
 Sometimes it may be useful to have an entity in the GraphQL query behind a feature flag.

@@ -99,7 +99,7 @@ describe Snippets::CreateService do
       end
 
       before do
-        expect_next_instance_of(AkismetService) do |akismet_service|
+        expect_next_instance_of(Spam::AkismetService) do |akismet_service|
           expect(akismet_service).to receive_messages(spam?: true)
         end
       end

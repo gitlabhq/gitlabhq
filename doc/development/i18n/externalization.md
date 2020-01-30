@@ -452,7 +452,7 @@ For more information, see the [`gl-sprintf`](https://gitlab-org.gitlab.io/gitlab
 Now that the new content is marked for translation, we need to update
 `locale/gitlab.pot` files with the following command:
 
-```sh
+```shell
 bin/rake gettext:regenerate
 ```
 
@@ -526,14 +526,14 @@ Let's suppose you want to add translations for a new language, let's say French.
 
 1. Next, you need to add the language:
 
-   ```sh
+   ```shell
    bin/rake gettext:add_language[fr]
    ```
 
    If you want to add a new language for a specific region, the command is similar,
    you just need to separate the region with an underscore (`_`). For example:
 
-   ```sh
+   ```shell
    bin/rake gettext:add_language[en_GB]
    ```
 
@@ -547,7 +547,7 @@ Let's suppose you want to add translations for a new language, let's say French.
    in order to generate the binary MO files and finally update the JSON files
    containing the translations:
 
-   ```sh
+   ```shell
    bin/rake gettext:compile
    ```
 
@@ -557,7 +557,7 @@ Let's suppose you want to add translations for a new language, let's say French.
 1. After checking that the changes are ok, you can proceed to commit the new files.
    For example:
 
-   ```sh
+   ```shell
    git add locale/fr/ app/assets/javascripts/locale/fr/
    git commit -m "Add French translations for Cycle Analytics page"
    ```

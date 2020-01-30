@@ -98,7 +98,7 @@ The Pages daemon doesn't listen to the outside world.
 
 1. Install the Pages daemon:
 
-   ```bash
+   ```shell
    cd /home/git
    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
    cd gitlab-pages
@@ -108,7 +108,7 @@ The Pages daemon doesn't listen to the outside world.
 
 1. Go to the GitLab installation directory:
 
-   ```bash
+   ```shell
    cd /home/git/gitlab
    ```
 
@@ -138,7 +138,7 @@ The Pages daemon doesn't listen to the outside world.
 
 1. Copy the `gitlab-pages` NGINX configuration file:
 
-   ```bash
+   ```shell
    sudo cp lib/support/nginx/gitlab-pages /etc/nginx/sites-available/gitlab-pages.conf
    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages.conf
    ```
@@ -160,7 +160,7 @@ outside world.
 
 1. Install the Pages daemon:
 
-   ```bash
+   ```shell
    cd /home/git
    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
    cd gitlab-pages
@@ -170,7 +170,7 @@ outside world.
 
 1. In `gitlab.yml`, set the port to `443` and https to `true`:
 
-   ```bash
+   ```shell
    ## GitLab Pages
    pages:
      enabled: true
@@ -195,7 +195,7 @@ outside world.
 
 1. Copy the `gitlab-pages-ssl` NGINX configuration file:
 
-   ```bash
+   ```shell
    sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages-ssl.conf
    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
    ```
@@ -225,7 +225,7 @@ world. Custom domains are supported, but no TLS.
 
 1. Install the Pages daemon:
 
-   ```bash
+   ```shell
    cd /home/git
    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
    cd gitlab-pages
@@ -263,7 +263,7 @@ world. Custom domains are supported, but no TLS.
 
 1. Copy the `gitlab-pages-ssl` NGINX configuration file:
 
-   ```bash
+   ```shell
    sudo cp lib/support/nginx/gitlab-pages /etc/nginx/sites-available/gitlab-pages.conf
    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages.conf
    ```
@@ -290,7 +290,7 @@ world. Custom domains and TLS are supported.
 
 1. Install the Pages daemon:
 
-   ```bash
+   ```shell
    cd /home/git
    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
    cd gitlab-pages
@@ -332,7 +332,7 @@ world. Custom domains and TLS are supported.
 
 1. Copy the `gitlab-pages-ssl` NGINX configuration file:
 
-   ```bash
+   ```shell
    sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages-ssl.conf
    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
    ```

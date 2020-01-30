@@ -63,18 +63,18 @@ Use the tools at your disposal when you get stuck.
 
 One-time configuration of the Git client:
 
-```sh
+```shell
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
 ```
 
 ## Configure SSH Key
 
-```sh
+```shell
 ssh-keygen -t rsa -b 4096 -C "you@computer-name"
 ```
 
-```sh
+```shell
 # You will be prompted for the following information. Press enter to accept the defaults. Defaults appear in parentheses.
 Generating public/private rsa key pair.
 Enter file in which to save the key (/Users/you/.ssh/id_rsa):
@@ -88,11 +88,11 @@ The key fingerprint is:
 
 Copy your public key and add it to your GitLab profile:
 
-```sh
+```shell
 cat ~/.ssh/id_rsa.pub
 ```
 
-```sh
+```shell
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQEL17Ufacg8cDhlQMS5NhV8z3GHZdhCrZbl4gz you@example.com
 ```
 
@@ -105,7 +105,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQEL17Ufacg8cDhlQMS5NhV8z3GHZdhCrZbl4gz you@example.
 
 ## Commands (project)
 
-```sh
+```shell
 mkdir ~/development
 cd ~/development
 
@@ -144,7 +144,7 @@ Modified files that have been marked to go in the next commit.
 
 ## Commands (committing)
 
-```sh
+```shell
 # Edit `edit_this_file.rb`
 git status
 git diff
@@ -172,7 +172,7 @@ git log
 
 ## Commands (feature branching)
 
-```sh
+```shell
 git checkout -b squash_some_bugs
 # Edit `bugs.rb`
 git status
@@ -246,7 +246,7 @@ Additional resources: <https://git-scm.com/book/en/v2/Git-Basics-Tagging>.
 
 ## Commands (tags)
 
-```sh
+```shell
 git checkout master
 
 # Lightweight tag
@@ -279,7 +279,7 @@ git push origin --tags
 After creating a merge request you should notice that conflicts exist. Resolve
 the conflicts locally by rebasing.
 
-```sh
+```shell
 git rebase master
 
 # Fix conflicts by editing the files.
@@ -310,7 +310,7 @@ Squash these in to meaningful commits using an interactive rebase.
 
 Squash the commits on the same branch we used for the merge conflicts step.
 
-```sh
+```shell
 git rebase -i master
 ```
 

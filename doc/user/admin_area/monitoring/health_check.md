@@ -51,7 +51,7 @@ GET /-/health
 
 Example request:
 
-```sh
+```shell
 curl 'https://gitlab.example.com/-/health'
 ```
 
@@ -78,7 +78,7 @@ GET /-/readiness?all=1
 
 Example request:
 
-```sh
+```shell
 curl 'https://gitlab.example.com/-/readiness'
 ```
 
@@ -117,7 +117,7 @@ GET /-/liveness
 
 Example request:
 
-```sh
+```shell
 curl 'https://gitlab.example.com/-/liveness'
 ```
 

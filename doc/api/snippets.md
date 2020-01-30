@@ -27,7 +27,7 @@ GET /snippets
 
 Example request:
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets
 ```
 
@@ -94,7 +94,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1
 ```
 
@@ -138,7 +138,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1/raw
 ```
 
@@ -171,7 +171,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl --request POST \
      --data '{"title": "This is a snippet", "content": "Hello world", "description": "Hello World snippet", "file_name": "test.txt", "visibility": "internal" }' \
      --header 'Content-Type: application/json' \
@@ -227,7 +227,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl --request PUT \
      --data '{"title": "foo", "content": "bar"}' \
      --header 'Content-Type: application/json' \
@@ -275,7 +275,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets/1"
 ```
 
@@ -303,7 +303,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/public?per_page=2&page=1
 ```
 
@@ -366,7 +366,7 @@ GET /snippets/:id/user_agent_detail
 
 Example request:
 
-```sh
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1/user_agent_detail
 ```
 

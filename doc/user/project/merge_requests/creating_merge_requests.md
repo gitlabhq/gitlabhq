@@ -106,27 +106,27 @@ Assuming you have your repository cloned into your computer and you'd
 like to start working on changes to files, start by creating and
 checking out a new branch:
 
-```bash
+```shell
 git checkout -b my-new-branch
 ```
 
 Work on your file changes, stage, and commit them:
 
-```bash
+```shell
 git add .
 git commit -m "My commit message"
 ```
 
 Once you're done, [push your branch to GitLab](../../../gitlab-basics/start-using-git.md#send-changes-to-gitlabcom):
 
-```bash
+```shell
 git push origin my-new-branch
 ```
 
 In the output, GitLab will prompt you with a direct link for creating
 a merge request:
 
-```bash
+```shell
 ...
 remote: To create a merge request for docs-new-merge-request, visit:
 remote:   https://gitlab-instance.com/my-group/my-project/merge_requests/new?merge_request%5Bsource_branch%5D=my-new-branch

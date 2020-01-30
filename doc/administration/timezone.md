@@ -31,7 +31,7 @@ gitlab_rails['time_zone'] = 'America/New_York'
 
 After adding the configuration parameter, reconfigure and restart your GitLab instance:
 
-```sh
+```shell
 gitlab-ctl reconfigure
 gitlab-ctl restart
 ```

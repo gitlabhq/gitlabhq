@@ -22,7 +22,7 @@ Parameters:
 | `state` | string | no | The state of the todo. Can be either `pending` or `done` |
 | `type` | string | no | The type of a todo. Can be either `Issue` or `MergeRequest` |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/todos
 ```
 
@@ -194,7 +194,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a todo |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/todos/130/mark_as_done
 ```
 
@@ -284,7 +284,7 @@ Marks all pending todos for the current user as done. It returns the HTTP status
 POST /todos/mark_as_done
 ```
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/todos/mark_as_done
 ```
 

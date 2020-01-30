@@ -57,7 +57,7 @@ In a HA setup, it's recommended to run a PgBouncer node separately for each data
 1. Create a `.pgpass` file so Consul is able to
    reload PgBouncer. Enter the `PGBOUNCER_PASSWORD` twice when asked:
 
-   ```sh
+   ```shell
    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
    ```
 
@@ -65,7 +65,7 @@ In a HA setup, it's recommended to run a PgBouncer node separately for each data
 
 1. Ensure each node is talking to the current master:
 
-   ```sh
+   ```shell
    gitlab-ctl pgb-console # You will be prompted for PGBOUNCER_PASSWORD
    ```
 
@@ -77,7 +77,7 @@ In a HA setup, it's recommended to run a PgBouncer node separately for each data
 
 1. Once the console prompt is available, run the following queries:
 
-   ```sh
+   ```shell
    show databases ; show clients ;
    ```
 

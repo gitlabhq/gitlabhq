@@ -251,7 +251,7 @@ Parameters:
 | `with_custom_attributes` | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only). |
 | `with_projects`          | boolean        | no       | Include details from projects that belong to the specified group (defaults to `true`). |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4
 ```
 
@@ -431,7 +431,7 @@ Additional response parameters:
 
 When adding the parameter `with_projects=false`, projects will not be returned.
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4?with_projects=false
 ```
 
@@ -542,7 +542,7 @@ PUT /groups/:id
 | `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group. |
 | `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group. |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
 
 ```

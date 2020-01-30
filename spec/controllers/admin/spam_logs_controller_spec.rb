@@ -39,7 +39,7 @@ describe Admin::SpamLogsController do
 
   describe '#mark_as_ham' do
     before do
-      allow_next_instance_of(AkismetService) do |instance|
+      allow_next_instance_of(Spam::AkismetService) do |instance|
         allow(instance).to receive(:submit_ham).and_return(true)
       end
     end

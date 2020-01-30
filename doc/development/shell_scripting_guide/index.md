@@ -79,7 +79,7 @@ It's recommended to use the [shfmt](https://github.com/mvdan/sh#shfmt) tool to m
 We format shell scripts according to the [Google Shell Style Guide](https://google.github.io/styleguide/shell.xml),
 so the following `shfmt` invocation should be applied to the project's script files:
 
-```bash
+```shell
 shfmt -i 2 -ci scripts/**/*.sh
 ```
 

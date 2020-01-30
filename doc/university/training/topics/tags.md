@@ -17,7 +17,7 @@ type: reference
 - Create an annotated tag
 - Push the tags to the remote repository
 
-```sh
+```shell
 git checkout master
 
 # Lightweight tag

@@ -56,7 +56,7 @@ To download a repository using a Deploy Token, you just need to:
 1. Take note of your `username` and `token`.
 1. `git clone` the project using the Deploy Token:
 
-   ```sh
+   ```shell
    git clone http://<username>:<deploy_token>@gitlab.example.com/tanuki/awesome_project.git
    ```
 
@@ -70,7 +70,7 @@ To read the container registry images, you'll need to:
 1. Take note of your `username` and `token`.
 1. Log in to GitLab’s Container Registry using the deploy token:
 
-```sh
+```shell
 docker login -u <username> -p <deploy_token> registry.example.com
 ```
 
@@ -90,7 +90,7 @@ automatically exposed to the CI/CD jobs as environment variables: `CI_DEPLOY_USE
 After you create the token, you can login to the Container Registry using
 those variables:
 
-```sh
+```shell
 docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
 ```
 

@@ -76,7 +76,7 @@ Using the example project above, this `gitlab-ci.yml` file will publish
 and publish `MyPackage` anytime changes are made to anywhere _except_ the `Foo`
 directory on the `master` branch.
 
-```sh
+```shell
 stages:
   - build
 

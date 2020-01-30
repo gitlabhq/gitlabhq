@@ -60,7 +60,7 @@ When running specs with the [Spring preloader](rake_tasks.md#speed-up-tests-rake
 the test database can get into a corrupted state. Trying to run the migration or
 dropping/resetting the test database has no effect.
 
-```sh
+```shell
 $ bundle exec spring rspec some_spec.rb
 ...
 Failure/Error: ActiveRecord::Migration.maintain_test_schema!
@@ -78,7 +78,7 @@ ActiveRecord::PendingMigrationError:
 
 To resolve, you can kill the spring server and app that lives between spec runs.
 
-```sh
+```shell
 $ ps aux | grep spring
 eric             87304   1.3  2.9  3080836 482596   ??  Ss   10:12AM   4:08.36 spring app    | gitlab | started 6 hours ago | test mode
 eric             37709   0.0  0.0  2518640   7524 s006  S    Wed11AM   0:00.79 spring server | gitlab | started 29 hours ago
@@ -100,6 +100,6 @@ of GitLab schema later than the `MIN_SCHEMA_VERSION`, and then rolled back the
 to an older migration, from before. In this case, in order to migrate forward again,
 you should set the `SKIP_SCHEMA_VERSION_CHECK` environment variable.
 
-```sh
+```shell
 bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
 ```

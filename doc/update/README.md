@@ -115,7 +115,7 @@ following command:
 
 **For Omnibus installations**
 
-```bash
+```shell
 sudo gitlab-rails runner -e production 'puts Sidekiq::Queue.new("background_migration").size'
 ```
 

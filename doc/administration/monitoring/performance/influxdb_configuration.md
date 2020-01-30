@@ -110,14 +110,14 @@ buffer size is set to the same value, the default value is almost never enough.
 
 To set the OS buffer size to 200 MB, on Linux you can run the following command:
 
-```bash
+```shell
 sysctl -w net.core.rmem_max=209715200
 ```
 
 To make this permanent, add the following to `/etc/sysctl.conf` and restart the
 server:
 
-```bash
+```shell
 net.core.rmem_max=209715200
 ```
 
@@ -154,7 +154,7 @@ and password (`-password <password>`)  you set earlier to the commands below._
 
 Run the following command to create a database named `gitlab`:
 
-```bash
+```shell
 influx -execute 'CREATE DATABASE gitlab'
 ```
 
@@ -162,7 +162,7 @@ The name **must** be `gitlab`, do not use any other name.
 
 Next, make sure that the database was successfully created:
 
-```bash
+```shell
 influx -execute 'SHOW DATABASES'
 ```
 

@@ -46,13 +46,13 @@ Now that the Okta app is configured, it's time to enable it in GitLab.
 
    **For Omnibus GitLab installations**
 
-   ```sh
+   ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
    **For installations from source**
 
-   ```sh
+   ```shell
    cd /home/git/gitlab
    sudo -u git -H editor config/gitlab.yml
    ```

@@ -153,13 +153,13 @@ When a feature gate has been removed from the code base, the feature
 record still exists in the database that the flag was deployed too.
 The record can be deleted once the MR is deployed to each environment:
 
-```sh
+```shell
 /chatops run feature delete some_feature --dev
 /chatops run feature delete some_feature --staging
 ```
 
 Then, you can delete it from production after the MR is deployed to prod:
 
-```sh
+```shell
 /chatops run feature delete some_feature
 ```

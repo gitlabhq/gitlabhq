@@ -32,7 +32,7 @@ use the following branches:
 
 Make a backup just in case something goes wrong:
 
-```sh
+```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
@@ -42,13 +42,13 @@ privileges to the GitLab user on the database version.
 
 ### 1. Stop server
 
-```sh
+```shell
 sudo service gitlab stop
 ```
 
 ### 2. Get the EE code
 
-```sh
+```shell
 cd /home/git/gitlab
 sudo -u git -H git remote add -f ee https://gitlab.com/gitlab-org/gitlab.git
 sudo -u git -H git checkout EE_BRANCH
@@ -56,7 +56,7 @@ sudo -u git -H git checkout EE_BRANCH
 
 ### 3. Install libs, migrations, etc
 
-```sh
+```shell
 cd /home/git/gitlab
 
 sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
@@ -83,7 +83,7 @@ Please follow the [install instruction](../integration/elasticsearch.md#installa
 
 ### 5. Start application
 
-```sh
+```shell
 sudo service gitlab start
 sudo service nginx restart
 ```
@@ -92,13 +92,13 @@ sudo service nginx restart
 
 Check if GitLab and its environment are configured correctly:
 
-```sh
+```shell
 sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
 To make sure you didn't miss anything run a more thorough check with:
 
-```sh
+```shell
 sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
@@ -108,14 +108,14 @@ If all items are green, then congratulations upgrade complete!
 
 ### 1. Revert the code to the previous version
 
-```sh
+```shell
 cd /home/git/gitlab
 sudo -u git -H git checkout CE_BRANCH
 ```
 
 ### 2. Restore from the backup
 
-```sh
+```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
 ```

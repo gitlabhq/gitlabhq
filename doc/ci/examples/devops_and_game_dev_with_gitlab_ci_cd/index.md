@@ -54,7 +54,7 @@ CI/CD from every new push to master. The `master` branch for this game's [reposi
 contains a completed version with all configurations. If you would like to follow along
 with this article, you can clone and work from the `devops-article` branch:
 
-```sh
+```shell
 git clone git@gitlab.com:blitzgren/gitlab-game-demo.git
 git checkout devops-article
 ```
@@ -363,7 +363,7 @@ our repository. If all goes well you'll end up with a green check mark on each j
 You can confirm that the tests passed by clicking on the `test` job to enter the full build logs.
 Scroll to the bottom and observe, in all its passing glory:
 
-```sh
+```shell
 $ gulp run-test
 [18:37:24] Using gulpfile /builds/blitzgren/gitlab-game-demo/gulpfile.js
 [18:37:24] Starting 'run-test'...

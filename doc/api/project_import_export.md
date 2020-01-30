@@ -28,7 +28,7 @@ POST /projects/:id/export
 | `upload[url]`      | string | yes      | The URL to upload the project |
 | `upload[http_method]`      | string | no      | The HTTP method to upload the exported project. Only `PUT` and `POST` methods allowed. Default is `PUT` |
 
-```sh
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/export \
     --data "upload[http_method]=PUT" \
     --data-urlencode "upload[url]=https://example-bucket.s3.eu-west-3.amazonaws.com/backup?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIMBJHN2O62W8IELQ%2F20180312%2Feu-west-3%2Fs3%2Faws4_request&X-Amz-Date=20180312T110328Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=8413facb20ff33a49a147a0b4abcff4c8487cc33ee1f7e450c46e8f695569dbd"
@@ -52,7 +52,7 @@ GET /projects/:id/export
 | --------- | -------------- | -------- | ---------------------------------------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/export
 ```
 
@@ -93,11 +93,11 @@ GET /projects/:id/export/download
 | --------- | -------------- | -------- | ---------------------------------------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name --remote-name https://gitlab.example.com/api/v4/projects/5/export/download
 ```
 
-```sh
+```shell
 ls *export.tar.gz
 2017-12-05_22-11-148_namespace_project_export.tar.gz
 ```
@@ -124,7 +124,7 @@ cURL to post data using the header `Content-Type: multipart/form-data`.
 The `file=` parameter must point to a file on your file system and be preceded
 by `@`. For example:
 
-```sh
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "path=api-project" --form "file=@/path/to/file" https://gitlab.example.com/api/v4/projects/import
 ```
 
@@ -174,7 +174,7 @@ GET /projects/:id/import
 | --------- | -------------- | -------- | ---------------------------------------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/import
 ```
 

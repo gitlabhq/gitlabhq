@@ -51,7 +51,7 @@ POST /internal/allowed
 
 Example request:
 
-```sh
+```shell
 curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" --data "key_id=11&project=gnuwget/wget2&action=git-upload-pack&protocol=ssh" http://localhost:3001/api/v4/internal/allowed
 ```
 
@@ -99,7 +99,7 @@ information for LFS clients when the repository is accessed over SSH.
 
 Example request:
 
-```sh
+```shell
 curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" --data "key_id=11&project=gnuwget/wget2" http://localhost:3001/api/v4/internal/lfs_authenticate
 ```
 
@@ -132,7 +132,7 @@ GET /internal/authorized_keys
 
 Example request:
 
-```sh
+```shell
 curl --request GET --header "Gitlab-Shared-Secret: <Base64 encoded secret>""http://localhost:3001/api/v4/internal/authorized_keys?key=<key as passed by OpenSSH>"
 ```
 
@@ -167,7 +167,7 @@ GET /internal/discover
 
 Example request:
 
-```sh
+```shell
 curl --request GET --header "Gitlab-Shared-Secret: <Base64 encoded secret>" "http://localhost:3001/api/v4/internal/discover?key_id=7"
 ```
 
@@ -196,7 +196,7 @@ GET /internal/check
 
 Example request:
 
-```sh
+```shell
 curl --request GET --header "Gitlab-Shared-Secret: <Base64 encoded secret>" "http://localhost:3001/api/v4/internal/check"
 ```
 
@@ -232,7 +232,7 @@ GET /internal/two_factor_recovery_codes
 
 Example request:
 
-```sh
+```shell
 curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" --data "key_id=7" http://localhost:3001/api/v4/internal/two_factor_recovery_codes
 ```
 
@@ -275,7 +275,7 @@ POST /internal/pre_receive
 
 Example request:
 
-```sh
+```shell
 curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" --data "gl_repository=project-7" http://localhost:3001/api/v4/internal/pre_receive
 ```
 
@@ -307,7 +307,7 @@ POST /internal/post_receive
 
 Example Request:
 
-```sh
+```shell
 curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" --data "gl_repository=project-7" --data "identifier=user-1" --data "changes=0000000000000000000000000000000000000000 fd9e76b9136bdd9fe217061b497745792fe5a5ee gh-pages\n"  http://localhost:3001/api/v4/internal/post_receive
 ```
 

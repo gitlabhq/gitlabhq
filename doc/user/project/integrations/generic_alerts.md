@@ -34,7 +34,7 @@ You can customize the payload by sending the following parameters. All fields ar
 
 Example request:
 
-```sh
+```shell
 curl --request POST \
   --data '{"title": "Incident title"}' \
   --header "Authorization: Bearer <authorization_key>" \

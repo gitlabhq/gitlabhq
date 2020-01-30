@@ -8,31 +8,31 @@ Git log lists commit history. It allows searching and filtering.
 
 - Initiate log:
 
-  ```sh
+  ```shell
   git log
   ```
 
 - Retrieve set number of records:
 
-  ```sh
+  ```shell
   git log -n 2
   ```
 
 - Search commits by author. Allows user name or a regular expression.
 
-  ```sh
+  ```shell
   git log --author="user_name"
   ```
 
 - Search by comment message:
 
-  ```sh
+  ```shell
   git log --grep="<pattern>"
   ```
 
 - Search by date:
 
-  ```sh
+  ```shell
   git log --since=1.month.ago --until=3.weeks.ago
   ```
 
@@ -47,7 +47,7 @@ Git log lists commit history. It allows searching and filtering.
 
 ## Commands
 
-```sh
+```shell
 cd ~/workspace
 git clone git@gitlab.com:gitlab-org/gitlab-runner.git
 cd gitlab-runner

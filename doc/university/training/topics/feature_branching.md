@@ -18,7 +18,7 @@ comments: false
 1. Commit
 1. Push
 
-```sh
+```shell
 git checkout -b squash_some_bugs
 # Edit `bugs.rb`
 git status

@@ -20,13 +20,13 @@ Authenticate to GitLab using the Atlassian Crowd OmniAuth provider.
 
    **Omnibus:**
 
-   ```sh
+   ```shell
      sudo editor /etc/gitlab/gitlab.rb
    ```
 
    **Source:**
 
-   ```sh
+   ```shell
      cd /home/git/gitlab
 
      sudo -u git -H editor config/gitlab.yml

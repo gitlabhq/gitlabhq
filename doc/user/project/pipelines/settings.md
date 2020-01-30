@@ -141,7 +141,7 @@ small one line script that will strip the color codes off.
 
 For example:
 
-```bash
+```shell
 lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'
 ```
 

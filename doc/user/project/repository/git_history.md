@@ -29,14 +29,14 @@ is `git log <filename>`. For example, if you want to find `history`
 information about a `README.md` file in the local directory, run the
 following command:
 
-```bash
+```shell
 git log README.md
 ```
 
 You'll see output similar to the following, which includes the commit
 time in UTC format:
 
-```bash
+```shell
 commit 0e62ed6d9f39fa9bedf7efc6edd628b137fa781a
 Author: Mike Jang <mjang@gitlab.com>
 Date:   Tue Nov 26 21:44:53 2019 +0000

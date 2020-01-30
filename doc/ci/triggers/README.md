@@ -137,7 +137,7 @@ below.
 
 By using cURL you can trigger a pipeline rerun with minimal effort, for example:
 
-```bash
+```shell
 curl --request POST \
      --form token=TOKEN \
      --form ref=master \
@@ -148,7 +148,7 @@ In this case, the project with ID `9` will get rebuilt on `master` branch.
 
 Alternatively, you can pass the `token` and `ref` arguments in the query string:
 
-```bash
+```shell
 curl --request POST \
     "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline?token=TOKEN&ref=master"
 ```
@@ -241,7 +241,7 @@ upload_package:
 You can then trigger a rebuild while you pass the `UPLOAD_TO_S3` variable
 and the script of the `upload_package` job will run:
 
-```bash
+```shell
 curl --request POST \
   --form token=TOKEN \
   --form ref=master \
@@ -259,7 +259,7 @@ Whether you craft a script or just run cURL directly, you can trigger jobs
 in conjunction with cron. The example below triggers a job on the `master`
 branch of project with ID `9` every night at `00:30`:
 
-```bash
+```shell
 30 0 * * * curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
 ```
 

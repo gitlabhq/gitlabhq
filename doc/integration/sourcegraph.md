@@ -35,7 +35,7 @@ by instance administrators.
 
 Use these commands to start the Rails console:
 
-```sh
+```shell
 # Omnibus GitLab
 gitlab-rails console
 

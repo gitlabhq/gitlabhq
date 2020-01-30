@@ -769,7 +769,7 @@ This might be neccessary, for example, when:
 
 For example, to start a Rails console from the application root directory, run:
 
-```sh
+```shell
 /bin/herokuish procfile exec bin/rails c
 ```
 
@@ -1137,7 +1137,7 @@ variables in the container running the application. Following the
 example above, you can see the secret below containing the
 `RAILS_MASTER_KEY` variable.
 
-```sh
+```shell
 $ kubectl get secret production-secret -n minimal-ruby-app-54 -o yaml
 apiVersion: v1
 data:
@@ -1351,7 +1351,7 @@ The banner can be disabled for:
 
   - Through the REST API with an admin access token:
 
-    ```sh
+    ```shell
     curl --data "value=true" --header "PRIVATE-TOKEN: <personal_access_token>" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
     ```
 

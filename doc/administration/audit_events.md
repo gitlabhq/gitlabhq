@@ -144,7 +144,7 @@ the steps bellow.
 
 1. Enter the Rails console:
 
-   ```sh
+   ```shell
    sudo gitlab-rails console
    ```
 

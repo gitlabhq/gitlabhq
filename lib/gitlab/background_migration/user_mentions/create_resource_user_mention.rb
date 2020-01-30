@@ -24,14 +24,11 @@ module Gitlab
               mentions << record.build_mention_values
             end
 
-            no_quote_columns = [:note_id]
-            no_quote_columns << resource_user_mention_model.resource_foreign_key
-
             Gitlab::Database.bulk_insert(
               resource_user_mention_model.table_name,
               mentions,
               return_ids: true,
-              disable_quote: no_quote_columns,
+              disable_quote: resource_model.no_quote_columns,
               on_conflict: :do_nothing
             )
           end

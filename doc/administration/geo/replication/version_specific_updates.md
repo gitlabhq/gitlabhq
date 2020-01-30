@@ -16,7 +16,7 @@ This update will occur even if major PostgreSQL updates are disabled.
 Before [refreshing Foreign Data Wrapper during a Geo HA upgrade](https://docs.gitlab.com/omnibus/update/README.html#run-post-deployment-migrations-and-checks),
 restart the Geo tracking database:
 
-```sh
+```shell
 sudo gitlab-ctl restart geo-postgresql
 ```
 
@@ -31,7 +31,7 @@ for the recommended procedure.
 
 This can be temporarily disabled by running the following before updating:
 
-```sh
+```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
 ```
 
@@ -41,7 +41,7 @@ Before 10.8, broadcast messages would not propagate without flushing
 the cache on the **secondary** nodes. This has been fixed in 10.8, but
 requires one last cache flush on each **secondary** node:
 
-```sh
+```shell
 sudo gitlab-rake cache:clear
 ```
 
@@ -55,7 +55,7 @@ authentication method.
 
 1. **(primary)** Login to your **primary** node and run:
 
-   ```sh
+   ```shell
    gitlab-ctl pg-password-md5 gitlab
    # Enter password: <your_password_here>
    # Confirm password: <your_password_here>
@@ -82,7 +82,7 @@ authentication method.
 
 1. **(primary)** Reconfigure and restart:
 
-   ```sh
+   ```shell
    sudo gitlab-ctl reconfigure
    sudo gitlab-ctl restart
    ```
@@ -113,7 +113,7 @@ authentication method.
 
 1. **(secondary)** Reconfigure and restart:
 
-   ```sh
+   ```shell
    sudo gitlab-ctl reconfigure
    sudo gitlab-ctl restart
    ```
@@ -129,7 +129,7 @@ contents of `/etc/gitlab/gitlab-secrets.json` on each **secondary** node with th
 contents of `/etc/gitlab/gitlab-secrets.json` on the **primary** node, then run the
 following command on each **secondary** node:
 
-```sh
+```shell
 sudo gitlab-ctl reconfigure
 ```
 
@@ -228,7 +228,7 @@ following to clean this up.
 
 On the **secondary** Geo nodes, run as root:
 
-```sh
+```shell
 mv /var/opt/gitlab/gitlab-rails/working /var/opt/gitlab/gitlab-rails/working.old
 mkdir /var/opt/gitlab/gitlab-rails/working
 chmod 700 /var/opt/gitlab/gitlab-rails/working
@@ -240,7 +240,7 @@ You may delete `/var/opt/gitlab/gitlab-rails/working.old` any time.
 Once this is done, we advise restarting GitLab on the **secondary** nodes for the
 new working directory to be used:
 
-```sh
+```shell
 sudo gitlab-ctl restart
 ```
 
@@ -289,7 +289,7 @@ is prepended with the relevant node for better clarity:
 1. **(secondary)** Make a backup of the `recovery.conf` file on **all**
    **secondary** nodes to preserve PostgreSQL's credentials:
 
-   ```sh
+   ```shell
    sudo cp /var/opt/gitlab/postgresql/data/recovery.conf /var/opt/gitlab/
    ```
 
@@ -301,7 +301,7 @@ is prepended with the relevant node for better clarity:
    stop all services except `postgresql` as we will use it to re-initialize the
    **secondary** node's database:
 
-   ```sh
+   ```shell
    sudo gitlab-ctl stop
    sudo gitlab-ctl start postgresql
    ```
@@ -310,19 +310,19 @@ is prepended with the relevant node for better clarity:
 
    1. **(secondary)**  Stop all services:
 
-      ```sh
+      ```shell
       sudo gitlab-ctl stop
       ```
 
    1. **(secondary)** Prevent running database migrations:
 
-      ```sh
+      ```shell
       sudo touch /etc/gitlab/skip-auto-migrations
       ```
 
    1. **(secondary)** Move the old database to another directory:
 
-      ```sh
+      ```shell
       sudo mv /var/opt/gitlab/postgresql{,.bak}
       ```
 
@@ -331,33 +331,33 @@ is prepended with the relevant node for better clarity:
 
    1. **(secondary)** Make sure all services are up:
 
-      ```sh
+      ```shell
       sudo gitlab-ctl start
       ```
 
    1. **(secondary)** Reconfigure GitLab:
 
-      ```sh
+      ```shell
       sudo gitlab-ctl reconfigure
       ```
 
    1. **(secondary)** Run the PostgreSQL upgrade command:
 
-      ```sh
+      ```shell
       sudo gitlab-ctl pg-upgrade
       ```
 
    1. **(secondary)** See the stored credentials for the database that you will
       need to re-initialize the replication:
 
-      ```sh
+      ```shell
       sudo grep -s primary_conninfo /var/opt/gitlab/recovery.conf
       ```
 
    1. **(secondary)** Save the snippet below in a file, let's say `/tmp/replica.sh`. Modify the
       embedded paths if necessary:
 
-      ```bash
+      ```shell
       #!/bin/bash
 
       PORT="5432"
@@ -404,19 +404,19 @@ is prepended with the relevant node for better clarity:
    1. **(secondary)** Run the recovery script using the credentials from the
       previous step:
 
-      ```sh
+      ```shell
       sudo bash /tmp/replica.sh
       ```
 
    1. **(secondary)** Reconfigure GitLab:
 
-      ```sh
+      ```shell
       sudo gitlab-ctl reconfigure
       ```
 
    1. **(secondary)** Start all services:
 
-      ```sh
+      ```shell
       sudo gitlab-ctl start
       ```
 
@@ -425,7 +425,7 @@ is prepended with the relevant node for better clarity:
 1. **(primary)** After all **secondary** nodes are updated, start all services in
    **primary** node:
 
-   ```sh
+   ```shell
    sudo gitlab-ctl start
    ```
 
@@ -437,7 +437,7 @@ and it is required since 10.0.
 
 1. Run database migrations on tracking database:
 
-   ```sh
+   ```shell
    sudo gitlab-rake geo:db:migrate
    ```
 

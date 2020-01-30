@@ -17,7 +17,7 @@ If you have [Visual Studio](https://visualstudio.microsoft.com/vs/), [nuget CLI]
 
 You can confirm that [nuget CLI](https://www.nuget.org/) is properly installed with:
 
-```sh
+```shell
 nuget help
 ```
 
@@ -63,7 +63,7 @@ You can now add a new source to nuget either using [nuget CLI](https://www.nuget
 
 To add the GitLab NuGet Repository as a source with `nuget`:
 
-```sh
+```shell
 nuget source Add -Name <source_name> -Source "https://example.gitlab.com/api/v4/projects/<your_project_id>/packages/nuget/index.json" -UserName <gitlab_username> -Password <gitlab_token>
 ```
 
@@ -77,7 +77,7 @@ Replace:
 
 For example:
 
-```sh
+```shell
 nuget source Add -Name "GitLab" -Source "https//gitlab.example/api/v4/projects/10/packages/nuget/index.json" -UserName carol -Password 12345678asdf
 ```
 

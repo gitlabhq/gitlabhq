@@ -19,7 +19,7 @@ GET /projects/:id/repository/commits
 | `with_stats` | boolean | no | Stats about each commit will be added to the response |
 | `first_parent` | boolean | no | Follow only the first parent commit upon seeing a merge commit |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits"
 ```
 
@@ -94,7 +94,7 @@ POST /projects/:id/repository/commits
 | `last_commit_id` | string | no | Last known file commit id. Will be only considered in update, move and delete actions. |
 | `execute_filemode` | boolean | no | When `true/false` enables/disables the execute flag on the file. Only considered for `chmod` action. |
 
-```bash
+```shell
 PAYLOAD=$(cat << 'JSON'
 {
   "branch": "master",
@@ -161,7 +161,7 @@ Example response:
 
 GitLab supports [form encoding](README.md#encoding-api-parameters-of-array-and-hash-types). The following is an example using Commit API with form encoding:
 
-```bash
+```shell
 curl --request POST \
      --form "branch=master" \
      --form "commit_message=some commit message" \
@@ -201,7 +201,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 | `stats` | boolean | no | Include commit stats. Default is true |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master
 ```
 
@@ -257,7 +257,7 @@ Parameters:
 | `sha` | string | yes | The commit hash  |
 | `type` | string | no | The scope of commits. Possible values `branch`, `tag`, `all`. Default is `all`.  |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/refs?type=all"
 ```
 
@@ -291,7 +291,7 @@ Parameters:
 | `sha` | string | yes | The commit hash  |
 | `branch` | string | yes | The name of the branch  |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "branch=master" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/cherry_pick"
 ```
 
@@ -350,7 +350,7 @@ Parameters:
 | `sha`     | string         | yes      | Commit SHA to revert                                                            |
 | `branch`  | string         | yes      | Target branch name                                                              |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "branch=master" "https://gitlab.example.com/api/v4/projects/5/repository/commits/a738f717824ff53aebad8b090c1b79a14f2bd9e8/revert"
 ```
 
@@ -401,7 +401,7 @@ Parameters:
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/diff"
 ```
 
@@ -437,7 +437,7 @@ Parameters:
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/comments"
 ```
 
@@ -490,7 +490,7 @@ POST /projects/:id/repository/commits/:sha/comments
 | `line`      | integer | no  | The line number where the comment should be placed |
 | `line_type` | string  | no  | The line type. Takes `new` or `old` as arguments |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "note=Nice picture man\!" --form "path=dudeism.md" --form "line=11" --form "line_type=new" https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments
 ```
 
@@ -536,7 +536,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `name`    | string  | no  | Filter by [job name](../ci/yaml/README.md#introduction), e.g., `bundler:audit`
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses
 ```
 
@@ -613,7 +613,7 @@ POST /projects/:id/statuses/:sha
 | `coverage` | float  | no    | The total code coverage
 | `pipeline_id` |  integer  | no  | The ID of the pipeline to set status. Use in case of several pipeline on same SHA.
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
 ```
 
@@ -659,7 +659,7 @@ GET /projects/:id/repository/commits/:sha/merge_requests
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 | `sha`     | string  | yes   | The commit SHA
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/af5b13261899fb2c0db30abdd0af8b07cb44fdc5/merge_requests"
 ```
 
@@ -730,7 +730,7 @@ Parameters:
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/repository/commits/da738facbc19eb2fc2cef57c49be0e6038570352/signature"
 ```
 

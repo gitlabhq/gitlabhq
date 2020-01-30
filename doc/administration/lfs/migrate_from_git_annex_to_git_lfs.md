@@ -48,7 +48,7 @@ Fire up a terminal, navigate to your Git repository and:
 
 1. Disable `git-annex`:
 
-   ```bash
+   ```shell
    git annex sync --content
    git annex direct
    git annex uninit
@@ -85,7 +85,7 @@ if the server also has Git Annex 6 installed. Read more in the
 
 1. Backup your repository
 
-   ```bash
+   ```shell
    cd repository
    git annex sync --content
    cd ..
@@ -97,14 +97,14 @@ if the server also has Git Annex 6 installed. Read more in the
 
 1. Use `annex direct`:
 
-   ```bash
+   ```shell
    cd repository
    git annex direct
    ```
 
    The output should be similar to this:
 
-   ```bash
+   ```shell
    commit
    On branch master
    Your branch is up-to-date with 'origin/master'.
@@ -116,13 +116,13 @@ if the server also has Git Annex 6 installed. Read more in the
 
 1. Disable Git Annex with [`annex uninit`][uninit]:
 
-   ```bash
+   ```shell
    git annex uninit
    ```
 
    The output should be similar to this:
 
-   ```bash
+   ```shell
    unannex debian.iso ok
    Deleted branch git-annex (was 2534d2c).
    ```
@@ -131,13 +131,13 @@ if the server also has Git Annex 6 installed. Read more in the
 
 1. Switch back to `indirect` mode:
 
-   ```bash
+   ```shell
    git annex indirect
    ```
 
    The output should be similar to this:
 
-   ```bash
+   ```shell
    (merging origin/git-annex into git-annex...)
    (recording state in git...)
    commit  (recording state in git...)
@@ -165,7 +165,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
 
 1. First, make sure you have `git-lfs` installed locally:
 
-   ```bash
+   ```shell
    git lfs help
    ```
 
@@ -174,7 +174,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
 
 1. Inside the repo, run the following command to initiate LFS:
 
-   ```bash
+   ```shell
    git lfs install
    ```
 
@@ -182,7 +182,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
    can track specific files, all files containing the same extension, or an
    entire directory:
 
-   ```bash
+   ```shell
    git lfs track images/01.png   # per file
    git lfs track **/*.png        # per extension
    git lfs track images/         # per directory
@@ -194,7 +194,7 @@ GitLab.com), therefore, you don't need to do anything server-side.
 
 1. Add the files, commit and push them to GitLab:
 
-   ```bash
+   ```shell
    git add .
    git commit -m "commit message"
    git push
@@ -217,7 +217,7 @@ branches created by Git Annex: `git-annex`, and all under `synced/`.
 
 You can also do this on the command line with:
 
-```bash
+```shell
 git branch -d synced/master
 git branch -d synced/git-annex
 git push origin :synced/master
@@ -229,7 +229,7 @@ git remote prune origin
 If there are still some Annex objects inside your repository (`.git/annex/`)
 or references inside `.git/config`, run `annex uninit` again:
 
-```bash
+```shell
 git annex uninit
 ```
 

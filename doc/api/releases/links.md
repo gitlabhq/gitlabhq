@@ -20,7 +20,7 @@ GET /projects/:id/releases/:tag_name/assets/links
 
 Example request:
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links"
 ```
 
@@ -59,7 +59,7 @@ GET /projects/:id/releases/:tag_name/assets/links/:link_id
 
 Example request:
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
@@ -91,7 +91,7 @@ POST /projects/:id/releases/:tag_name/assets/links
 
 Example request:
 
-```sh
+```shell
 curl --request POST \
      --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" \
      --data name="awesome-v0.2.dmg" \
@@ -131,7 +131,7 @@ You have to specify at least one of `name` or `url`
 
 Example request:
 
-```sh
+```shell
 curl --request PUT --data name="new name" --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
@@ -162,7 +162,7 @@ DELETE /projects/:id/releases/:tag_name/assets/links/:link_id
 
 Example request:
 
-```sh
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 

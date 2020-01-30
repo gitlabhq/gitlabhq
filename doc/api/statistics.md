@@ -12,7 +12,7 @@ These statistics are approximate.
 GET /application/statistics
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/statistics
 ```
 

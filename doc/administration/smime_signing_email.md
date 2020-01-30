@@ -67,7 +67,7 @@ extensions), which contain the following in a single encrypted file:
 In order to export the required files in PEM encoding from the PKCS#12 file,
 the `openssl` command can be used:
 
-```bash
+```shell
 #-- Extract private key in PEM encoding (no password, unencrypted)
 $ openssl pkcs12 -in gitlab.p12 -nocerts -nodes -out gitlab.key
 

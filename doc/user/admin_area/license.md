@@ -57,7 +57,7 @@ It is also possible to specify a custom location and filename for the license.
 Source installations should set the `GITLAB_LICENSE_FILE` environment
 variable with the path to a valid GitLab Enterprise Edition license.
 
-```sh
+```shell
 export GITLAB_LICENSE_FILE="/path/to/license/file"
 ```
 

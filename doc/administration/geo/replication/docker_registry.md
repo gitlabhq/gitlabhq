@@ -36,7 +36,7 @@ We need to make Docker Registry send notification events to the
 
 1. SSH into your GitLab **primary** server and login as root:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
@@ -70,7 +70,7 @@ We need to make Docker Registry send notification events to the
 
 1. Reconfigure the **primary** node for the change to take effect:
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 
@@ -90,7 +90,7 @@ generate a short-lived JWT that is pull-only-capable to access the
 
 1. SSH into the **secondary** node and login as the `root` user:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
@@ -105,7 +105,7 @@ generate a short-lived JWT that is pull-only-capable to access the
 
 1. Reconfigure the **secondary** node for the change to take effect:
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 

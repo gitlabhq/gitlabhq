@@ -30,7 +30,7 @@ should and, if needed, update the script for the latest version of GitLab.
 If the script you want to run is short, you can use the Rails Runner to avoid
 entering the rails console in the first place. Here's an example of its use:
 
-```bash
+```shell
 gitlab-rails runner "RAILS_COMMAND"
 
 # Example with a 2-line script
@@ -130,19 +130,19 @@ end
 
 ### Check the GitLab version fast
 
-```bash
+```shell
 grep -m 1 gitlab /opt/gitlab/version-manifest.txt
 ```
 
 ### Debugging SSH
 
-```bash
+```shell
 GIT_SSH_COMMAND="ssh -vvv" git clone <repository>
 ```
 
 ### Debugging over HTTPS
 
-```bash
+```shell
 GIT_CURL_VERBOSE=1 GIT_TRACE=1 git clone <repository>
 ```
 
@@ -301,19 +301,19 @@ correctly named empty project using the steps below.
 
 Move the new repository to the empty repository:
 
-```bash
+```shell
 mv /var/opt/gitlab/git-data/repositories/<group>/<new-project> /var/opt/gitlab/git-data/repositories/<group>/<empty-project>
 ```
 
 Make sure the permissions are correct:
 
-```bash
+```shell
 chown -R git:git <path-to-directory>.git
 ```
 
 Clear the cache:
 
-```bash
+```shell
 sudo gitlab-rake cache:clear
 ```
 
@@ -489,7 +489,7 @@ User.active.count
 ::HistoricalData.max_historical_user_count
 ```
 
-```bash
+```shell
 # Using curl and jq (up to a max 100, see pagination docs https://docs.gitlab.com/ee/api/#pagination
 curl --silent --header "Private-Token: ********************" "https://gitlab.example.com/api/v4/users?per_page=100&active" | jq --compact-output '.[] | [.id,.name,.username]'
 ```
@@ -995,13 +995,13 @@ See <https://github.com/mperham/sidekiq/wiki/Signals#ttin>.
 
 ### Connect to Redis (omnibus)
 
-```sh
+```shell
 /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket
 ```
 
 ### Connect to Redis (HA)
 
-```sh
+```shell
 /opt/gitlab/embedded/bin/redis-cli -h <host ip> -a <password>
 ```
 
@@ -1034,7 +1034,7 @@ This script will go through all the encrypted variables and count how many are n
 to be decrypted. Might be helpful to run on multiple nodes to see which `gitlab-secrets.json`
 file is most up to date:
 
-```bash
+```shell
 wget -O /tmp/bad-decrypt.rb https://gitlab.com/snippets/1730735/raw
 gitlab-rails runner /tmp/bad-decrypt.rb
 ```
@@ -1075,7 +1075,7 @@ two-factor authentication.
 This script will search for all encrypted tokens that are causing decryption errors,
 and update or reset as needed:
 
-```bash
+```shell
 wget -O /tmp/encrypted-tokens.rb https://gitlab.com/snippets/1876342/raw
 gitlab-rails runner /tmp/encrypted-tokens.rb
 ```

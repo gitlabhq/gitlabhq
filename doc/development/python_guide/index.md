@@ -15,7 +15,7 @@ Ruby world: [rbenv](https://github.com/rbenv/rbenv).
 
 To install `pyenv` on macOS, you can use [Homebrew](https://brew.sh/) with:
 
-```bash
+```shell
 brew install pyenv
 ```
 
@@ -23,7 +23,7 @@ brew install pyenv
 
 To install `pyenv` on Linux, you can run the command below:
 
-```bash
+```shell
 curl https://pyenv.run | bash
 ```
 
@@ -38,13 +38,13 @@ check for any additional steps required for it.
 
 For Fish, you can install a plugin for [Fisher](https://github.com/jorgebucaran/fisher):
 
-```bash
+```shell
 fisher add fisherman/pyenv
 ```
 
 Or for [Oh My Fish](https://github.com/oh-my-fish/oh-my-fish):
 
-```bash
+```shell
 omf install pyenv
 ```
 
@@ -59,7 +59,7 @@ Recently, an equivalent to the `Gemfile` and the [Bundler](https://bundler.io/) 
 
 You will now find a `Pipfile` with the dependencies in the root folder. To install them, run:
 
-```bash
+```shell
 pipenv install
 ```
 
@@ -70,7 +70,7 @@ Running this command will install both the required Python version as well as re
 To run any Python code under the Pipenv environment, you need to first start a `virtualenv` based on the dependencies
 of the application. With Pipenv, this is a simple as running:
 
-```bash
+```shell
 pipenv shell
 ```
 

@@ -30,7 +30,7 @@ they must be manually replicated to the **secondary** node.
 
 1. SSH into the **primary** node, and execute the command below:
 
-   ```sh
+   ```shell
    sudo cat /etc/gitlab/gitlab-secrets.json
    ```
 
@@ -38,20 +38,20 @@ they must be manually replicated to the **secondary** node.
 
 1. SSH into the **secondary** node and login as the `root` user:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
 1. Make a backup of any existing secrets:
 
-   ```sh
+   ```shell
    mv /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.`date +%F`
    ```
 
 1. Copy `/etc/gitlab/gitlab-secrets.json` from the **primary** node to the **secondary** node, or
    copy-and-paste the file contents between nodes:
 
-   ```sh
+   ```shell
    sudo editor /etc/gitlab/gitlab-secrets.json
 
    # paste the output of the `cat` command you ran on the primary
@@ -60,14 +60,14 @@ they must be manually replicated to the **secondary** node.
 
 1. Ensure the file permissions are correct:
 
-   ```sh
+   ```shell
    chown root:root /etc/gitlab/gitlab-secrets.json
    chmod 0600 /etc/gitlab/gitlab-secrets.json
    ```
 
 1. Reconfigure the **secondary** node for the change to take effect:
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    gitlab-ctl restart
    ```
@@ -88,13 +88,13 @@ keys must be manually replicated to the **secondary** node.
 
 1. SSH into the **secondary** node and login as the `root` user:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
 1. Make a backup of any existing SSH host keys:
 
-   ```sh
+   ```shell
    find /etc/ssh -iname ssh_host_* -exec cp {} {}.backup.`date +%F` \;
    ```
 
@@ -102,14 +102,14 @@ keys must be manually replicated to the **secondary** node.
 
    If you can access your **primary** node using the **root** user:
 
-   ```sh
+   ```shell
    # Run this from the secondary node, change `<primary_node_fqdn>` for the IP or FQDN of the server
    scp root@<primary_node_fqdn>:/etc/ssh/ssh_host_*_key* /etc/ssh
    ```
 
    If you only have access through a user with **sudo** privileges:
 
-   ```sh
+   ```shell
    # Run this from your primary node:
    sudo tar --transform 's/.*\///g' -zcvf ~/geo-host-key.tar.gz /etc/ssh/ssh_host_*_key*
 
@@ -120,20 +120,20 @@ keys must be manually replicated to the **secondary** node.
 
 1. On your **secondary** node, ensure the file permissions are correct:
 
-   ```sh
+   ```shell
    chown root:root /etc/ssh/ssh_host_*_key*
    chmod 0600 /etc/ssh/ssh_host_*_key*
    ```
 
 1. To verify key fingerprint matches, execute the following command on both nodes:
 
-   ```sh
+   ```shell
    for file in /etc/ssh/ssh_host_*_key; do ssh-keygen -lf $file; done
    ```
 
    You should get an output similar to this one and they should be identical on both nodes:
 
-   ```sh
+   ```shell
    1024 SHA256:FEZX2jQa2bcsd/fn/uxBzxhKdx4Imc4raXrHwsbtP0M root@serverhostname (DSA)
    256 SHA256:uw98R35Uf+fYEQ/UnJD9Br4NXUFPv7JAUln5uHlgSeY root@serverhostname (ECDSA)
    256 SHA256:sqOUWcraZQKd89y/QQv/iynPTOGQxcOTIXU/LsoPmnM root@serverhostname (ED25519)
@@ -142,7 +142,7 @@ keys must be manually replicated to the **secondary** node.
 
 1. Verify that you have the correct public keys for the existing private keys:
 
-   ```sh
+   ```shell
    # This will print the fingerprint for private keys:
    for file in /etc/ssh/ssh_host_*_key; do ssh-keygen -lf $file; done
 
@@ -155,7 +155,7 @@ keys must be manually replicated to the **secondary** node.
 
 1. Restart sshd on your **secondary** node:
 
-   ```sh
+   ```shell
    # Debian or Ubuntu installations
    sudo service ssh reload
 
@@ -167,7 +167,7 @@ keys must be manually replicated to the **secondary** node.
 
 1. SSH into your GitLab **secondary** server and login as root:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
@@ -180,7 +180,7 @@ keys must be manually replicated to the **secondary** node.
 
 1. Reconfigure the **secondary** node for the change to take effect:
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 
@@ -201,20 +201,20 @@ keys must be manually replicated to the **secondary** node.
 1. Click the **Add node** button to add the **secondary** node.
 1. SSH into your GitLab **secondary** server and restart the services:
 
-   ```sh
+   ```shell
    gitlab-ctl restart
    ```
 
    Check if there are any common issue with your Geo setup by running:
 
-   ```sh
+   ```shell
    gitlab-rake gitlab:geo:check
    ```
 
 1. SSH into your **primary** server and login as root to verify the
    **secondary** node is reachable or there are any common issue with your Geo setup:
 
-   ```sh
+   ```shell
    gitlab-rake gitlab:geo:check
    ```
 

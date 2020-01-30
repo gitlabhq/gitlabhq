@@ -85,7 +85,7 @@ describe Spam::SpamCheckService do
         before do
           issue.closed_at = Time.zone.now
 
-          allow(AkismetService).to receive(:new).and_return(double(spam?: true))
+          allow(Spam::AkismetService).to receive(:new).and_return(double(spam?: true))
         end
 
         it 'returns false' do
@@ -105,7 +105,7 @@ describe Spam::SpamCheckService do
 
         context 'when indicated as spam by akismet' do
           before do
-            allow(AkismetService).to receive(:new).and_return(double(spam?: true))
+            allow(Spam::AkismetService).to receive(:new).and_return(double(spam?: true))
           end
 
           context 'when allow_possible_spam feature flag is false' do
@@ -135,7 +135,7 @@ describe Spam::SpamCheckService do
 
         context 'when not indicated as spam by akismet' do
           before do
-            allow(AkismetService).to receive(:new).and_return(double(spam?: false))
+            allow(Spam::AkismetService).to receive(:new).and_return(double(spam?: false))
           end
 
           it 'returns false' do

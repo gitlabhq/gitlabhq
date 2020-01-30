@@ -13,7 +13,7 @@
 
 The GitLab Import/Export version can be checked by using:
 
-```bash
+```shell
 # Omnibus installations
 sudo gitlab-rake gitlab:import_export:version
 
@@ -23,7 +23,7 @@ bundle exec rake gitlab:import_export:version RAILS_ENV=production
 
 The current list of DB tables that will get exported can be listed by using:
 
-```bash
+```shell
 # Omnibus installations
 sudo gitlab-rake gitlab:import_export:data
 

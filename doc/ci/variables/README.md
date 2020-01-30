@@ -74,7 +74,7 @@ file path as a command line argument or an environment variable. In the past, th
 common pattern was to read the value of a CI variable, save it in a file, and then
 use the newly created file in your script:
 
-```bash
+```shell
 # Read certificate stored in $KUBE_CA_PEM variable and save it in a new file
 echo "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
 # Pass the newly created file to kubectl
@@ -90,7 +90,7 @@ it directly. For example, let's say we have the following variables:
 
 We can then call them from `.gitlab-ci.yml` like this:
 
-```bash
+```shell
 kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KUBE_CA_PEM"
 ```
 
@@ -259,7 +259,7 @@ job_name:
 
 Example values:
 
-```bash
+```shell
 export CI_JOB_ID="50"
 export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_COMMIT_SHORT_SHA="1ecfd275"
@@ -623,7 +623,7 @@ job_name:
 
 Example truncated output with `CI_DEBUG_TRACE` set to `true`:
 
-```bash
+```shell
 ...
 
 export CI_SERVER_TLS_CA_FILE="/builds/gitlab-examples/ci-debug-trace.tmp/CI_SERVER_TLS_CA_FILE"

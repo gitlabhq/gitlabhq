@@ -41,7 +41,7 @@ Get current notification settings and email address.
 GET /notification_settings
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/notification_settings
 ```
 
@@ -62,7 +62,7 @@ Update current notification settings and email address.
 PUT /notification_settings
 ```
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/notification_settings?level=watch
 ```
 
@@ -104,7 +104,7 @@ GET /groups/:id/notification_settings
 GET /projects/:id/notification_settings
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/notification_settings
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/8/notification_settings
 ```
@@ -130,7 +130,7 @@ PUT /groups/:id/notification_settings
 PUT /projects/:id/notification_settings
 ```
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/notification_settings?level=watch
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/8/notification_settings?level=custom&new_note=true
 ```

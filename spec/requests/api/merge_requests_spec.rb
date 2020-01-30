@@ -1069,10 +1069,16 @@ describe API::MergeRequests do
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/:context_commits' do
     it 'returns a 200 when merge request is valid' do
+      context_commit = merge_request.context_commits.first
+
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/context_commits", user)
+
       expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(merge_request.context_commits.size)
+      expect(json_response.first['id']).to eq(context_commit.id)
+      expect(json_response.first['title']).to eq(context_commit.title)
     end
 
     it 'returns a 404 when merge_request_iid not found' do

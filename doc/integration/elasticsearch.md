@@ -68,7 +68,7 @@ installed before running `make`.
 
 To install on Debian or Ubuntu, run:
 
-```sh
+```shell
 sudo apt install libicu-dev
 ```
 
@@ -76,7 +76,7 @@ sudo apt install libicu-dev
 
 To install on CentOS or RHEL, run:
 
-```sh
+```shell
 sudo yum install libicu-devel
 ```
 
@@ -84,7 +84,7 @@ sudo yum install libicu-devel
 
 To install on macOS, run:
 
-```sh
+```shell
 brew install icu4c
 export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig:$PKG_CONFIG_PATH"
 ```
@@ -93,7 +93,7 @@ export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig:$PKG_CONFIG_PATH"
 
 To build and install the indexer, run:
 
-```sh
+```shell
 indexer_path=/home/git/gitlab-elasticsearch-indexer
 
 # Run the installation task for gitlab-elasticsearch-indexer:
@@ -108,7 +108,7 @@ Please remember to pass the `-E` flag to `sudo` if you do so.
 
 Example:
 
-```sh
+```shell
 PREFIX=/usr sudo -E make install
 ```
 
@@ -184,7 +184,7 @@ To disable the Elasticsearch integration:
 1. Click **Save changes** for the changes to take effect.
 1. (Optional) Delete the existing index by running one of these commands:
 
-   ```sh
+   ```shell
    # Omnibus installations
    sudo gitlab-rake gitlab:elastic:delete_index
 
@@ -206,7 +206,7 @@ To index via the Admin Area:
 1. [Configure your Elasticsearch host and port](#enabling-elasticsearch).
 1. Create empty indexes using one of the following commands:
 
-   ```sh
+   ```shell
    # Omnibus installations
    sudo gitlab-rake gitlab:elastic:create_empty_index
 
@@ -219,7 +219,7 @@ To index via the Admin Area:
 1. Click **Check progress** in the confirmation message to see the status of the background jobs.
 1. Personal snippets need to be indexed manually by running one of these commands:
 
-   ```sh
+   ```shell
    # Omnibus installations
    sudo gitlab-rake gitlab:elastic:index_snippets
 
@@ -241,7 +241,7 @@ If the database size is less than 500 MiB, and the size of all hosted repos is l
 1. [Enable **Elasticsearch indexing** and configure your host and port](#enabling-elasticsearch).
 1. Index your data using one of the following commands:
 
-   ```sh
+   ```shell
    # Omnibus installations
    sudo gitlab-rake gitlab:elastic:index
 
@@ -261,7 +261,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
 1. [Configure your Elasticsearch host and port](#enabling-elasticsearch).
 1. Create empty indexes using one of the following commands:
 
-   ```sh
+   ```shell
    # Omnibus installations
    sudo gitlab-rake gitlab:elastic:create_empty_index
 
@@ -274,7 +274,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    can temporarily disable auto-refreshing and replicating. In our experience, you can expect a 20%
    decrease in indexing time. We'll enable them when indexing is done. This step is optional!
 
-   ```bash
+   ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
        "index" : {
            "refresh_interval" : "-1",
@@ -284,7 +284,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
 
 1. Index projects and their associated data:
 
-   ```sh
+   ```shell
    # Omnibus installations
    sudo gitlab-rake gitlab:elastic:index_projects
 
@@ -296,7 +296,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    You can view the jobs in **Admin Area > Monitoring > Background Jobs > Queues Tab**
    and click `elastic_indexer`, or you can query indexing status using a rake task:
 
-   ```sh
+   ```shell
    # Omnibus installations
    sudo gitlab-rake gitlab:elastic:index_projects_status
 
@@ -309,7 +309,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    If you want to limit the index to a range of projects you can provide the
    `ID_FROM` and `ID_TO` parameters:
 
-   ```sh
+   ```shell
    # Omnibus installations
    sudo gitlab-rake gitlab:elastic:index_projects ID_FROM=1001 ID_TO=2000
 
@@ -331,7 +331,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
    it will check every project repository again to make sure that every commit in
    a repository is indexed, which can be useful in case if your index is outdated:
 
-   ```sh
+   ```shell
    # Omnibus installations
    sudo gitlab-rake gitlab:elastic:index_projects UPDATE_INDEX=true ID_TO=1000
 
@@ -346,7 +346,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
 1. Personal snippets are not associated with a project and need to be indexed separately
    by running one of these commands:
 
-   ```sh
+   ```shell
    # Omnibus installations
    sudo gitlab-rake gitlab:elastic:index_snippets
 
@@ -356,7 +356,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
 
 1. Enable replication and refreshing again after indexing (only if you previously disabled it):
 
-   ```bash
+   ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' ---data '{
        "index" : {
            "number_of_replicas" : 1,
@@ -368,7 +368,7 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
 
    For Elasticsearch 6.x, the index should be in read-only mode before proceeding with the force merge:
 
-   ```bash
+   ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
      "settings": {
        "index.blocks.write": true
@@ -377,13 +377,13 @@ or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq
 
    Then, initiate the force merge:
 
-   ```bash
+   ```shell
    curl --request POST 'localhost:9200/gitlab-production/_forcemerge?max_num_segments=5'
    ```
 
    After this, if your index is in read-only mode, switch back to read-write:
 
-   ```bash
+   ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
      "settings": {
        "index.blocks.write": false
@@ -437,7 +437,7 @@ In addition to the rake tasks, there are some environment variables that can be 
 
 Because the `ID_TO` and `ID_FROM` environment variables use the `or equal to` comparison, you can index only one project by using both these variables with the same project ID number:
 
-```sh
+```shell
 root@git:~# sudo gitlab-rake gitlab:elastic:index_projects ID_TO=5 ID_FROM=5
 Indexing project repositories...I, [2019-03-04T21:27:03.083410 #3384]  INFO -- : Indexing GitLab User / test (ID=33)...
 I, [2019-03-04T21:27:05.215266 #3384]  INFO -- : Indexing GitLab User / test (ID=33) is done!
@@ -471,7 +471,7 @@ However, some larger installations may wish to tune the merge policy settings:
 
 - Consider reducing the `index.merge.policy.max_merged_segment` size from the default 5 GB to maybe 2 GB or 3 GB.  Merging only happens when a segment has at least 50% deletions.  Smaller segment sizes will allow merging to happen more frequently.
 
-  ```bash
+  ```shell
   curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
     "index" : {
       "merge.policy.max_merged_segment": "2gb"
@@ -481,7 +481,7 @@ However, some larger installations may wish to tune the merge policy settings:
 
 - You can also adjust `index.merge.policy.reclaim_deletes_weight`, which controls how aggressively deletions are targeted.  But this can lead to costly merge decisions, so we recommend not changing this unless you understand the tradeoffs.
 
-  ```bash
+  ```shell
   curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' --data '{
     "index" : {
       "merge.policy.reclaim_deletes_weight": "3.0"
@@ -604,7 +604,7 @@ Here are some common pitfalls and how to overcome them:
 
   If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, please make sure you understand the risks outlined in the previous paragraph and then simply run the following query to set the number of replicas to `0`(the cluster will no longer try to create any shard replicas):
 
-  ```bash
+  ```shell
   curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' --data '{
   "index" : {
      "number_of_replicas" : 0
