@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.7.3
+
+### Security (17 changes, 1 of them is from the community)
+
+- Fix xss on frequent groups dropdown. !50
+- Bump rubyzip to 2.0.0. (Utkarsh Gupta)
+- Disable access to last_pipeline in commits API for users without read permissions.
+- Add constraint to group dependency proxy endpoint param.
+- Limit number of AsciiDoc includes per document.
+- Prevent API access for unconfirmed users.
+- Enforce permission check when counting activity events.
+- Prevent gafana integration token from being displayed as a plain text to other project maintainers, by only displaying a masked version of it. GraphQL api deprecate token field in GrafanaIntegration type.
+- Cleanup todos for users from a removed linked group.
+- Fix XSS vulnerability on custom project templates form.
+- Protect internal CI builds from external overrides.
+- ImportExport::ExportService to require admin_project permission.
+- Make sure that only system notes where all references are visible to user are exposed in GraphQL API.
+- Disable caching of repository/files/:file_path/raw API endpoint.
+- Make cross-repository comparisons happen in the source repository.
+- Update excon to 0.71.1 to fix CVE-2019-16779.
+- Add workhorse request verification to package upload endpoints.
+
+
 ## 12.7.1
 
 ### Fixed (6 changes)
@@ -334,6 +357,38 @@ entry.
 - Upgrade octokit and its dependencies. !22946
 - Remove feature flag for import graceful failures.
 - Update the Net-LDAP gem to 0.16.2.
+
+
+## 12.6.6
+
+### Security (1 change)
+
+- Update workhorse to v8.20.0.
+
+
+## 12.6.5
+
+### Security (19 changes, 1 of them is from the community)
+
+- Update rack-cors to 1.0.6.
+- Update rdoc to 6.1.2.
+- Bump rubyzip to 2.0.0. (Utkarsh Gupta)
+- Cleanup todos for users from a removed linked group.
+- Disable access to last_pipeline in commits API for users without read permissions.
+- Add constraint to group dependency proxy endpoint param.
+- Limit number of AsciiDoc includes per document.
+- Prevent API access for unconfirmed users.
+- Enforce permission check when counting activity events.
+- Prevent gafana integration token from being displayed as a plain text to other project maintainers, by only displaying a masked version of it.
+- Fix xss on frequent groups dropdown.
+- Fix XSS vulnerability on custom project templates form.
+- Protect internal CI builds from external overrides.
+- ImportExport::ExportService to require admin_project permission.
+- Make sure that only system notes where all references are visible to user are exposed in GraphQL API.
+- Disable caching of repository/files/:file_path/raw API endpoint.
+- Make cross-repository comparisons happen in the source repository.
+- Update excon to 0.71.1 to fix CVE-2019-16779.
+- Add workhorse request verification to package upload endpoints.
 
 
 ## 12.6.4
@@ -754,6 +809,35 @@ entry.
 - Add mark as spam snippet mutation. !21912
 - Update Workhorse to v8.18.0. !22091
 - Replace Font Awesome bullhorn icon with GitLab bullhorn icon.
+
+
+## 12.5.8
+
+### Security (19 changes, 1 of them is from the community)
+
+- Prevent gafana integration token from being displayed as a plain text to other project maintainers, by only displaying a masked version of it.
+- Update rdoc to 6.1.2.
+- Bump rubyzip to 2.0.0. (Utkarsh Gupta)
+- Cleanup todos for users from a removed linked group.
+- Disable access to last_pipeline in commits API for users without read permissions.
+- Add constraint to group dependency proxy endpoint param.
+- Limit number of AsciiDoc includes per document.
+- Prevent API access for unconfirmed users.
+- Enforce permission check when counting activity events.
+- Update rack-cors to 1.0.6.
+- Fix xss on frequent groups dropdown.
+- Fix XSS vulnerability on custom project templates form.
+- Protect internal CI builds from external overrides.
+- ImportExport::ExportService to require admin_project permission.
+- Make sure that only system notes where all references are visible to user are exposed in GraphQL API.
+- Disable caching of repository/files/:file_path/raw API endpoint.
+- Make cross-repository comparisons happen in the source repository.
+- Update excon to 0.71.1 to fix CVE-2019-16779.
+- Add workhorse request verification to package upload endpoints.
+
+### Changed (1 change, 1 of them is from the community)
+
+- Add template repository usage to the usage ping. !20126 (minghuan lei)
 
 
 ## 12.5.5
