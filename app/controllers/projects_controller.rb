@@ -119,7 +119,7 @@ class ProjectsController < Projects::ApplicationController
       format.html
       format.json do
         load_events
-        pager_json('events/_events', @events.count)
+        pager_json('events/_events', @events.count { |event| event.visible_to_user?(current_user) })
       end
     end
   end
@@ -340,6 +340,7 @@ class ProjectsController < Projects::ApplicationController
     @events = EventCollection
       .new(projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a
+      .map(&:present)
 
     Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end

@@ -23,6 +23,47 @@ describe DashboardController do
     end
   end
 
+  describe "GET activity as JSON" do
+    render_views
+
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public, issues_access_level: ProjectFeature::PRIVATE) }
+
+    before do
+      create(:event, :created, project: project, target: create(:issue))
+
+      sign_in(user)
+
+      request.cookies[:event_filter] = 'all'
+    end
+
+    context 'when user has permission to see the event' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns count' do
+        get :activity, params: { format: :json }
+
+        expect(json_response['count']).to eq(1)
+      end
+    end
+
+    context 'when user has no permission to see the event' do
+      it 'filters out invisible event' do
+        get :activity, params: { format: :json }
+
+        expect(json_response['html']).to include(_('No activities found'))
+      end
+
+      it 'filters out invisible event when calculating the count' do
+        get :activity, params: { format: :json }
+
+        expect(json_response['count']).to eq(0)
+      end
+    end
+  end
+
   it_behaves_like 'authenticates sessionless user', :issues, :atom, author_id: User.first
   it_behaves_like 'authenticates sessionless user', :issues_calendar, :ics
 

@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import bp from '~/breakpoints';
+import sanitize from 'sanitize-html';
 import { FREQUENT_ITEMS, HOUR_IN_MS } from './constants';
 
 export const isMobile = () => {
@@ -47,3 +48,9 @@ export const updateExistingFrequentItem = (frequentItem, item) => {
     lastAccessedOn: accessedOverHourAgo ? Date.now() : frequentItem.lastAccessedOn,
   };
 };
+
+export const sanitizeItem = item => ({
+  ...item,
+  name: sanitize(item.name.toString(), { allowedTags: [] }),
+  namespace: sanitize(item.namespace.toString(), { allowedTags: [] }),
+});

@@ -141,6 +141,34 @@ describe GlobalPolicy do
         it { is_expected.to be_allowed(:access_api) }
       end
     end
+
+    context 'inactive user' do
+      before do
+        current_user.update!(confirmed_at: nil, confirmation_sent_at: 5.days.ago)
+      end
+
+      context 'when within the confirmation grace period' do
+        before do
+          allow(User).to receive(:allow_unconfirmed_access_for).and_return(10.days)
+        end
+
+        it { is_expected.to be_allowed(:access_api) }
+      end
+
+      context 'when confirmation grace period is expired' do
+        before do
+          allow(User).to receive(:allow_unconfirmed_access_for).and_return(2.days)
+        end
+
+        it { is_expected.not_to be_allowed(:access_api) }
+      end
+
+      it 'when `inactive_policy_condition` feature flag is turned off' do
+        stub_feature_flags(inactive_policy_condition: false)
+
+        is_expected.to be_allowed(:access_api)
+      end
+    end
   end
 
   describe 'receive notifications' do
@@ -200,6 +228,20 @@ describe GlobalPolicy do
       end
 
       it { is_expected.not_to be_allowed(:access_git) }
+    end
+
+    describe 'inactive user' do
+      before do
+        current_user.update!(confirmed_at: nil)
+      end
+
+      it { is_expected.not_to be_allowed(:access_git) }
+
+      it 'when `inactive_policy_condition` feature flag is turned off' do
+        stub_feature_flags(inactive_policy_condition: false)
+
+        is_expected.to be_allowed(:access_git)
+      end
     end
 
     context 'when terms are enforced' do
@@ -296,6 +338,20 @@ describe GlobalPolicy do
       end
 
       it { is_expected.not_to be_allowed(:use_slash_commands) }
+    end
+
+    describe 'inactive user' do
+      before do
+        current_user.update!(confirmed_at: nil)
+      end
+
+      it { is_expected.not_to be_allowed(:use_slash_commands) }
+
+      it 'when `inactive_policy_condition` feature flag is turned off' do
+        stub_feature_flags(inactive_policy_condition: false)
+
+        is_expected.to be_allowed(:use_slash_commands)
+      end
     end
 
     context 'when access locked' do

@@ -5,6 +5,11 @@ module ReferenceParserHelpers
     Nokogiri::HTML.fragment('<a></a>').children[0]
   end
 
+  def expect_gathered_references(result, visible, not_visible_count)
+    expect(result[:visible]).to eq(visible)
+    expect(result[:not_visible].count).to eq(not_visible_count)
+  end
+
   shared_examples 'no project N+1 queries' do
     it 'avoids N+1 queries in #nodes_visible_to_user', :request_store do
       context = Banzai::RenderContext.new(project, user)
