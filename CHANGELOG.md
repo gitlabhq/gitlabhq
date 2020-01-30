@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.6.6
+
+### Security (1 change)
+
+- Update workhorse to v8.20.0.
+
+
 ## 12.6.5
 
 ### Security (19 changes, 1 of them is from the community)
