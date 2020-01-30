@@ -359,6 +359,13 @@ entry.
 - Update the Net-LDAP gem to 0.16.2.
 
 
+## 12.6.6
+
+### Security (1 change)
+
+- Update workhorse to v8.20.0.
+
+
 ## 12.6.5
 
 ### Security (19 changes, 1 of them is from the community)
