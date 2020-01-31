@@ -110,6 +110,14 @@ describe Gitlab::SidekiqMiddleware do
     let(:queue) { 'default' }
     let(:redis_pool) { Sidekiq.redis_pool }
     let(:middleware_expected_args) { [worker_class_arg, job, queue, redis_pool] }
+    let(:expected_middlewares) do
+      [
+        Gitlab::SidekiqStatus::ClientMiddleware,
+        Gitlab::SidekiqMiddleware::ClientMetrics,
+        Gitlab::SidekiqMiddleware::WorkerContext::Client,
+        Labkit::Middleware::Sidekiq::Client
+      ]
+    end
 
     before do
       described_class.client_configurator.call(chain)
@@ -120,8 +128,9 @@ describe Gitlab::SidekiqMiddleware do
       # this will prevent the full middleware chain from being executed.
       # This test ensures that this does not happen
       it "invokes the chain" do
-        expect_any_instance_of(Gitlab::SidekiqStatus::ClientMiddleware).to receive(:call).with(*middleware_expected_args).once.and_call_original
-        expect_any_instance_of(Labkit::Middleware::Sidekiq::Client).to receive(:call).with(*middleware_expected_args).once.and_call_original
+        expected_middlewares do |middleware|
+          expect_any_instance_of(middleware).to receive(:call).with(*middleware_expected_args).once.ordered.and_call_original
+        end
 
         expect { |b| chain.invoke(worker_class_arg, job, queue, redis_pool, &b) }.to yield_control.once
       end

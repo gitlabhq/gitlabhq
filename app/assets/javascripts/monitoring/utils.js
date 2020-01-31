@@ -1,3 +1,10 @@
+import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
+import {
+  timeRangeParamNames,
+  timeRangeFromParams,
+  timeRangeToParams,
+} from '~/lib/utils/datetime_range';
+
 /**
  * This method is used to validate if the graph data format for a chart component
  * that needs a time series as a response from a prometheus query (query_range) is
@@ -91,6 +98,37 @@ export const graphDataValidatorForAnomalyValues = graphData => {
     graphData.metrics.length === anomalySeriesCount &&
     graphDataValidatorForValues(false, graphData)
   );
+};
+
+/**
+ * Returns a time range from the current URL params
+ *
+ * @returns {Object} The time range defined by the
+ * current URL, reading from `window.location.search`
+ */
+export const timeRangeFromUrl = (search = window.location.search) => {
+  const params = queryToObject(search);
+  return timeRangeFromParams(params);
+};
+
+/**
+ * Returns a URL with no time range based on the current URL.
+ *
+ * @param {String} New URL
+ */
+export const removeTimeRangeParams = (url = window.location.href) =>
+  removeParams(timeRangeParamNames, url);
+
+/**
+ * Returns a URL for the a different time range based on the
+ * current URL and a time range.
+ *
+ * @param {String} New URL
+ */
+export const timeRangeToUrl = (timeRange, url = window.location.href) => {
+  const toUrl = removeTimeRangeParams(url);
+  const params = timeRangeToParams(timeRange);
+  return mergeUrlParams(params, toUrl);
 };
 
 export default {};

@@ -233,7 +233,7 @@ export default {
           :key="assignee.id"
           :link-href="assigneeUrl(assignee)"
           :img-alt="avatarUrlTitle(assignee)"
-          :img-src="assignee.avatar"
+          :img-src="assignee.avatar || assignee.avatar_url"
           :img-size="24"
           class="js-no-trigger"
           tooltip-placement="bottom"

@@ -29,6 +29,7 @@ module Gitlab
       lambda do |chain|
         chain.add Gitlab::SidekiqStatus::ClientMiddleware
         chain.add Gitlab::SidekiqMiddleware::ClientMetrics
+        chain.add Gitlab::SidekiqMiddleware::WorkerContext::Client # needs to be before the Labkit middleware
         chain.add Labkit::Middleware::Sidekiq::Client
       end
     end

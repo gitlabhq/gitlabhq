@@ -97,6 +97,9 @@ describe('Issue card component', () => {
           issue: {
             ...wrapper.props('issue'),
             assignees: [user],
+            updateData(newData) {
+              Object.assign(this, newData);
+            },
           },
         });
 
@@ -117,6 +120,28 @@ describe('Issue card component', () => {
 
       it('renders avatar', () => {
         expect(wrapper.find('.board-card-assignee img').exists()).toBe(true);
+      });
+
+      it('renders the avatar using avatar_url property', done => {
+        wrapper.props('issue').updateData({
+          ...wrapper.props('issue'),
+          assignees: [
+            {
+              id: '1',
+              name: 'test',
+              state: 'active',
+              username: 'test_name',
+              avatar_url: 'test_image_from_avatar_url',
+            },
+          ],
+        });
+
+        wrapper.vm.$nextTick(() => {
+          expect(wrapper.find('.board-card-assignee img').attributes('src')).toBe(
+            'test_image_from_avatar_url?width=24',
+          );
+          done();
+        });
       });
     });
 

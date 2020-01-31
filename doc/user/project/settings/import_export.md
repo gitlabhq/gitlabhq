@@ -1,39 +1,43 @@
 # Project import/export
 
->**Notes:**
->
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/3050) in GitLab 8.9.
-> - Importing will not be possible if the import instance version differs from
->   that of the exporter.
-> - For GitLab admins, please read through
->   [Project import/export administration](../../../administration/raketasks/project_import_export.md).
-> - For existing installations, the project import option has to be enabled in
->   application settings (`/admin/application_settings`) under 'Import sources'.
->   Ask your administrator if you don't see the **GitLab export** button when
->   creating a new project.
-> - Starting with GitLab 10.0, administrators can disable the project export option
->   on the GitLab instance in application settings (`/admin/application_settings`)
->   under 'Visibility and Access Controls'.
-> - You can find some useful raketasks if you are an administrator in the
->   [import_export](../../../administration/raketasks/project_import_export.md) raketask.
-> - The exports are stored in a temporary [shared directory](../../../development/shared_files.md)
->   and are deleted every 24 hours by a specific worker.
-> - Group members will get exported as project members, as long as the user has
->   maintainer or admin access to the group where the exported project lives. An admin
->   in the import side is required to map the users, based on email or username.
->   Otherwise, a supplementary comment is left to mention the original author and
->   the MRs, notes or issues will be owned by the importer.
-> - Project members with owner access will get imported as maintainers.
-> - Control project Import/Export with the [API](../../../api/project_import_export.md).
-> - If an imported project contains merge requests originated from forks,
->   then new branches associated with such merge requests will be created
->   within a project during the import/export. Thus, the number of branches
->   in the exported project could be bigger than in the original project.
+> - From GitLab 10.0, administrators can disable the project export option on the GitLab instance.
 
-Existing projects running on any GitLab instance or GitLab.com can be exported
-with all their related data and be moved into a new GitLab instance.
+Existing projects running on any GitLab instance or GitLab.com can be exported with all their related
+data and be moved into a new GitLab instance.
+
+See also:
+
+- [Project import/export API](../../../api/project_import_export.md).
+- [Project import/export administration rake tasks](../../../administration/raketasks/project_import_export.md). **(CORE ONLY)**
+
+## Important notes
+
+Note the following:
+
+- Importing is not possible if the import instance version differs from
+  that of the exporter.
+- The project import option must be enabled in
+  application settings (`/admin/application_settings`) under under **Import sources**, which is
+  available under **{admin}** **Admin Area >** **{settings}** **Settings > Visibility and access controls**.
+  Ask your administrator if you don't see the **GitLab export** button when
+  creating a new project.
+- The exports are stored in a temporary [shared directory](../../../development/shared_files.md)
+  and are deleted every 24 hours by a specific worker.
+- Group members are exported as project members, as long as the user has
+  maintainer or admin access to the group where the exported project lives. An admin
+  in the import side is required to map the users, based on email or username.
+  Otherwise, a supplementary comment is left to mention the original author and
+  the MRs, notes, or issues will be owned by the importer.
+- Project members with owner access will be imported as maintainers.
+- If an imported project contains merge requests originating from forks,
+  then new branches associated with such merge requests will be created
+  within a project during the import/export. Thus, the number of branches
+  in the exported project could be bigger than in the original project.
 
 ## Version history
+
+The following table lists updates to Import/Export:
 
 | GitLab version   | Import/Export version |
 | ---------------- | --------------------- |
@@ -52,9 +56,8 @@ with all their related data and be moved into a new GitLab instance.
 | 8.9.5            | 0.1.1                 |
 | 8.9.0            | 0.1.0                 |
 
- > The table reflects what GitLab version we updated the Import/Export version at.
- > For instance, 8.10.3 and 8.11 will have the same Import/Export version (0.1.3)
- > and the exports between them will be compatible.
+For example, 8.10.3 and 8.11 will have the same Import/Export version (0.1.3)
+and the exports between them will be compatible.
 
 ## Exported contents
 
@@ -88,7 +91,7 @@ For more details on the specific data persisted in a project export, see the
 
 1. Go to your project's homepage.
 
-1. Click **Settings** in the sidebar.
+1. Click **{settings}** **Settings** in the sidebar.
 
 1. Scroll down to find the **Export project** button:
 

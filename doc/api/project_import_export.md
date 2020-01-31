@@ -1,20 +1,22 @@
 # Project import/export API
 
-> [Introduced][ce-41899] in GitLab 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41899) in GitLab 10.6.
 
-See also the [project import/export documentation](../user/project/settings/import_export.md).
+See also:
+
+- [Project import/export documentation](../user/project/settings/import_export.md).
+- [Project import/export administration rake tasks](../administration/raketasks/project_import_export.md). **(CORE ONLY)**
 
 ## Schedule an export
 
 Start a new export.
 
-The endpoint also accepts an `upload` param. This param is a hash that contains
+The endpoint also accepts an `upload` parameter. This parameter is a hash that contains
 all the necessary information to upload the exported project to a web server or
 to any S3-compatible platform. At the moment we only support binary
 data file uploads to the final server.
 
-If the `upload` params is present, `upload[url]` param is required.
- (**Note:** This feature was introduced in GitLab 10.7)
+From GitLab 10.7, the `upload[url]` parameter is required if the `upload` parameter is present.
 
 ```text
 POST /projects/:id/export
@@ -56,8 +58,14 @@ GET /projects/:id/export
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/export
 ```
 
-Status can be one of `none`, `started`, `after_export_action` or `finished`. The
-`after_export_action` state represents that the export process has been completed successfully and
+Status can be one of:
+
+- `none`
+- `started`
+- `after_export_action`
+- `finished`
+
+The `after_export_action` state represents that the export process has been completed successfully and
 the platform is performing some actions on the resulted file. For example, sending
 an email notifying the user to download the file, uploading the exported file
 to a web server, etc.
@@ -178,7 +186,13 @@ GET /projects/:id/import
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/import
 ```
 
-Status can be one of `none`, `scheduled`, `failed`, `started`, or `finished`.
+Status can be one of:
+
+- `none`
+- `scheduled`
+- `failed`
+- `started`
+- `finished`
 
 If the status is `failed`, it will include the import error message under `import_error`.
 
@@ -194,5 +208,3 @@ If the status is `failed`, it will include the import error message under `impor
   "import_status": "started"
 }
 ```
-
-[ce-41899]: https://gitlab.com/gitlab-org/gitlab-foss/issues/41899

@@ -4,6 +4,8 @@ module Gitlab
   module SidekiqMiddleware
     module WorkerContext
       class Server
+        include Gitlab::SidekiqMiddleware::WorkerContext
+
         def call(worker, job, _queue, &block)
           worker_class = worker.class
 
@@ -12,14 +14,6 @@ module Gitlab
 
           # Use the context defined on the class level as a base context
           wrap_in_optional_context(worker_class.get_worker_context, &block)
-        end
-
-        private
-
-        def wrap_in_optional_context(context, &block)
-          return yield unless context
-
-          context.use(&block)
         end
       end
     end

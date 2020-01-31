@@ -1,4 +1,5 @@
 import dateformat from 'dateformat';
+import { pick, omit, isEqual, isEmpty } from 'lodash';
 import { secondsToMilliseconds } from './datetime_utility';
 
 const MINIMUM_DATE = new Date(0);
@@ -221,3 +222,99 @@ export function getRangeType(range) {
  */
 export const convertToFixedRange = dateTimeRange =>
   handlers[getRangeType(dateTimeRange)](dateTimeRange);
+
+/**
+ * Returns a copy of the object only with time range
+ * properties relevant to time range calculation.
+ *
+ * Filtered properties are:
+ * - 'start'
+ * - 'end'
+ * - 'anchor'
+ * - 'duration'
+ * - 'direction': if direction is already the default, its removed.
+ *
+ * @param {Object} timeRange - A time range object
+ * @returns Copy of time range
+ */
+const pruneTimeRange = timeRange => {
+  const res = pick(timeRange, ['start', 'end', 'anchor', 'duration', 'direction']);
+  if (res.direction === DEFAULT_DIRECTION) {
+    return omit(res, 'direction');
+  }
+  return res;
+};
+
+/**
+ * Returns true if the time ranges are equal according to
+ * the time range calculation properties
+ *
+ * @param {Object} timeRange - A time range object
+ * @param {Object} other - Time range object to compare with.
+ * @returns true if the time ranges are equal, false otherwise
+ */
+export const isEqualTimeRanges = (timeRange, other) => {
+  const tr1 = pruneTimeRange(timeRange);
+  const tr2 = pruneTimeRange(other);
+  return isEqual(tr1, tr2);
+};
+
+/**
+ * Searches for a time range in a array of time ranges using
+ * only the properies relevant to time ranges calculation.
+ *
+ * @param {Object} timeRange - Time range to search (needle)
+ * @param {Array} timeRanges - Array of time tanges (haystack)
+ */
+export const findTimeRange = (timeRange, timeRanges) =>
+  timeRanges.find(element => isEqualTimeRanges(element, timeRange));
+
+// Time Ranges as URL Parameters Utils
+
+/**
+ * List of possible time ranges parameters
+ */
+export const timeRangeParamNames = ['start', 'end', 'anchor', 'duration_seconds', 'direction'];
+
+/**
+ * Converts a valid time range to a flat key-value pairs object.
+ *
+ * Duration is flatted to avoid having nested objects.
+ *
+ * @param {Object} A time range
+ * @returns key-value pairs object that can be used as parameters in a URL.
+ */
+export const timeRangeToParams = timeRange => {
+  let params = pruneTimeRange(timeRange);
+  if (timeRange.duration) {
+    const durationParms = {};
+    Object.keys(timeRange.duration).forEach(key => {
+      durationParms[`duration_${key}`] = timeRange.duration[key].toString();
+    });
+    params = { ...durationParms, ...params };
+    params = omit(params, 'duration');
+  }
+  return params;
+};
+
+/**
+ * Converts a valid set of flat params to a time range object
+ *
+ * Parameters that are not part of time range object are ignored.
+ *
+ * @param {params} params - key-value pairs object.
+ */
+export const timeRangeFromParams = params => {
+  const timeRangeParams = pick(params, timeRangeParamNames);
+  let range = Object.entries(timeRangeParams).reduce((acc, [key, val]) => {
+    // unflatten duration
+    if (key.startsWith('duration_')) {
+      acc.duration = acc.duration || {};
+      acc.duration[key.slice('duration_'.length)] = parseInt(val, 10);
+      return acc;
+    }
+    return { [key]: val, ...acc };
+  }, {});
+  range = pruneTimeRange(range);
+  return !isEmpty(range) ? range : null;
+};
