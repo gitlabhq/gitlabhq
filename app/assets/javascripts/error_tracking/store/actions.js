@@ -4,16 +4,33 @@ import createFlash from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 
-export function updateStatus({ commit }, { endpoint, redirectUrl, status }) {
-  const type =
-    status === 'resolved' ? types.SET_UPDATING_RESOLVE_STATUS : types.SET_UPDATING_IGNORE_STATUS;
-  commit(type, true);
+export const setStatus = ({ commit }, status) => {
+  commit(types.SET_ERROR_STATUS, status.toLowerCase());
+};
 
-  return service
+export const updateStatus = ({ commit }, { endpoint, redirectUrl, status }) =>
+  service
     .updateErrorStatus(endpoint, status)
-    .then(() => visitUrl(redirectUrl))
-    .catch(() => createFlash(__('Failed to update issue status')))
-    .finally(() => commit(type, false));
-}
+    .then(() => {
+      if (redirectUrl) visitUrl(redirectUrl);
+      commit(types.SET_ERROR_STATUS, status);
+    })
+    .catch(() => createFlash(__('Failed to update issue status')));
+
+export const updateResolveStatus = ({ commit, dispatch }, params) => {
+  commit(types.SET_UPDATING_RESOLVE_STATUS, true);
+
+  return dispatch('updateStatus', params).finally(() => {
+    commit(types.SET_UPDATING_RESOLVE_STATUS, false);
+  });
+};
+
+export const updateIgnoreStatus = ({ commit, dispatch }, params) => {
+  commit(types.SET_UPDATING_IGNORE_STATUS, true);
+
+  return dispatch('updateStatus', params).finally(() => {
+    commit(types.SET_UPDATING_IGNORE_STATUS, false);
+  });
+};
 
 export default () => {};

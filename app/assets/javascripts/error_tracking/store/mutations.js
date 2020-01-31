@@ -7,4 +7,7 @@ export default {
   [types.SET_UPDATING_RESOLVE_STATUS](state, updating) {
     state.updatingResolveStatus = updating;
   },
+  [types.SET_ERROR_STATUS](state, status) {
+    state.errorStatus = status;
+  },
 };

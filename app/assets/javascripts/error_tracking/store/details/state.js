@@ -5,4 +5,5 @@ export default () => ({
   loadingStacktrace: true,
   updatingResolveStatus: false,
   updatingIgnoreStatus: false,
+  errorStatus: '',
 });

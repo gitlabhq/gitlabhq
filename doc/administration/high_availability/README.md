@@ -200,7 +200,7 @@ with the added complexity of many more nodes to configure, manage, and monitor.
 
 ![Fully Distributed architecture diagram](img/fully-distributed.png)
 
-## Reference Architecture Examples
+## Reference Architecture Recommendations
 
 The Support and Quality teams build, performance test, and validate Reference
 Architectures that support large numbers of users. The specifications below are

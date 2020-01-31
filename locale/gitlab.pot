@@ -20259,6 +20259,9 @@ msgstr ""
 msgid "Undo"
 msgstr ""
 
+msgid "Undo ignore"
+msgstr ""
+
 msgid "Unfortunately, your email message to GitLab could not be processed."
 msgstr ""
 
@@ -20308,6 +20311,9 @@ msgid "Unmarked this %{noun} as Work In Progress."
 msgstr ""
 
 msgid "Unmarks this %{noun} as Work In Progress."
+msgstr ""
+
+msgid "Unresolve"
 msgstr ""
 
 msgid "Unresolve discussion"

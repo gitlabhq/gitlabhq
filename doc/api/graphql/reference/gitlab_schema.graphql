@@ -6299,6 +6299,16 @@ type SentryErrorCollection {
   ): SentryDetailedError
 
   """
+  Stack Trace of Sentry Error
+  """
+  errorStackTrace(
+    """
+    ID of the Sentry issue
+    """
+    id: ID!
+  ): SentryErrorStackTrace
+
+  """
   Collection of Sentry Errors
   """
   errors(
@@ -6384,6 +6394,71 @@ type SentryErrorFrequency {
   Time the error frequency stats were recorded
   """
   time: Time!
+}
+
+"""
+An object containing a stack trace entry for a Sentry error.
+"""
+type SentryErrorStackTrace {
+  """
+  Time the stack trace was received by Sentry
+  """
+  dateReceived: String!
+
+  """
+  ID of the Sentry error
+  """
+  issueId: String!
+
+  """
+  Stack trace entries for the Sentry error
+  """
+  stackTraceEntries: [SentryErrorStackTraceEntry!]!
+}
+
+"""
+An object context for a Sentry error stack trace
+"""
+type SentryErrorStackTraceContext {
+  """
+  Code number of the context
+  """
+  code: String!
+
+  """
+  Line number of the context
+  """
+  line: Int!
+}
+
+"""
+An object containing a stack trace entry for a Sentry error.
+"""
+type SentryErrorStackTraceEntry {
+  """
+  Function in which the Sentry error occurred
+  """
+  col: String
+
+  """
+  File in which the Sentry error occurred
+  """
+  fileName: String
+
+  """
+  Function in which the Sentry error occurred
+  """
+  function: String
+
+  """
+  Function in which the Sentry error occurred
+  """
+  line: String
+
+  """
+  Context of the Sentry error
+  """
+  traceContext: [SentryErrorStackTraceContext!]
 }
 
 """

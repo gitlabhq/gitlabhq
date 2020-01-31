@@ -6,6 +6,7 @@ query errorDetails($fullPath: ID!, $errorId: ID!) {
             title
             userCount
             count
+            status
             firstSeen
             lastSeen
             message

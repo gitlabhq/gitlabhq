@@ -13,3 +13,9 @@ export const severityLevelVariant = {
   [severityLevel.INFO]: 'info',
   [severityLevel.DEBUG]: 'light',
 };
+
+export const errorStatus = {
+  IGNORED: 'ignored',
+  RESOLVED: 'resolved',
+  UNRESOLVED: 'unresolved',
+};

@@ -28,6 +28,10 @@ module Types
             null: true,
             description: 'Detailed version of a Sentry error on the project',
             resolver: Resolvers::ErrorTracking::SentryDetailedErrorResolver
+      field :error_stack_trace, Types::ErrorTracking::SentryErrorStackTraceType,
+            null: true,
+            description: 'Stack Trace of Sentry Error',
+            resolver: Resolvers::ErrorTracking::SentryErrorStackTraceResolver
       field :external_url,
             GraphQL::STRING_TYPE,
             null: true,

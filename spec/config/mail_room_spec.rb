@@ -39,39 +39,31 @@ describe 'mail_room.yml' do
     end
   end
 
-  context 'when incoming email is enabled' do
+  context 'when both incoming email and service desk email are enabled' do
     let(:gitlab_config_path) { 'spec/fixtures/config/mail_room_enabled.yml' }
     let(:queues_config_path) { 'spec/fixtures/config/redis_queues_new_format_host.yml' }
-
     let(:gitlab_redis_queues) { Gitlab::Redis::Queues.new(Rails.env) }
 
     it 'contains the intended configuration' do
-      expect(configuration[:mailboxes].length).to eq(1)
-      mailbox = configuration[:mailboxes].first
+      expected_mailbox = {
+        host: 'imap.gmail.com',
+        port: 993,
+        ssl: true,
+        start_tls: false,
+        email: 'gitlab-incoming@gmail.com',
+        password: '[REDACTED]',
+        name: 'inbox',
+        idle_timeout: 60
+      }
+      expected_options = {
+        redis_url: gitlab_redis_queues.url,
+        sentinels: gitlab_redis_queues.sentinels
+      }
 
-      expect(mailbox[:host]).to eq('imap.gmail.com')
-      expect(mailbox[:port]).to eq(993)
-      expect(mailbox[:ssl]).to eq(true)
-      expect(mailbox[:start_tls]).to eq(false)
-      expect(mailbox[:email]).to eq('gitlab-incoming@gmail.com')
-      expect(mailbox[:password]).to eq('[REDACTED]')
-      expect(mailbox[:name]).to eq('inbox')
-      expect(mailbox[:idle_timeout]).to eq(60)
-
-      redis_url = gitlab_redis_queues.url
-      sentinels = gitlab_redis_queues.sentinels
-
-      expect(mailbox[:delivery_options][:redis_url]).to be_present
-      expect(mailbox[:delivery_options][:redis_url]).to eq(redis_url)
-
-      expect(mailbox[:delivery_options][:sentinels]).to be_present
-      expect(mailbox[:delivery_options][:sentinels]).to eq(sentinels)
-
-      expect(mailbox[:arbitration_options][:redis_url]).to be_present
-      expect(mailbox[:arbitration_options][:redis_url]).to eq(redis_url)
-
-      expect(mailbox[:arbitration_options][:sentinels]).to be_present
-      expect(mailbox[:arbitration_options][:sentinels]).to eq(sentinels)
+      expect(configuration[:mailboxes].length).to eq(2)
+      expect(configuration[:mailboxes]).to all(include(expected_mailbox))
+      expect(configuration[:mailboxes].map { |m| m[:delivery_options] }).to all(include(expected_options))
+      expect(configuration[:mailboxes].map { |m| m[:arbitration_options] }).to all(include(expected_options))
     end
   end
 

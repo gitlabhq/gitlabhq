@@ -983,6 +983,7 @@ An object containing a collection of Sentry errors, and a detailed error.
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `detailedError` | SentryDetailedError | Detailed version of a Sentry error on the project |
+| `errorStackTrace` | SentryErrorStackTrace | Stack Trace of Sentry Error |
 | `errors` | SentryErrorConnection | Collection of Sentry Errors |
 | `externalUrl` | String | External URL for Sentry |
 
@@ -992,6 +993,37 @@ An object containing a collection of Sentry errors, and a detailed error.
 | ---   |  ---- | ----------  |
 | `count` | Int! | Count of errors received since the previously recorded time |
 | `time` | Time! | Time the error frequency stats were recorded |
+
+## SentryErrorStackTrace
+
+An object containing a stack trace entry for a Sentry error.
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `dateReceived` | String! | Time the stack trace was received by Sentry |
+| `issueId` | String! | ID of the Sentry error |
+| `stackTraceEntries` | SentryErrorStackTraceEntry! => Array | Stack trace entries for the Sentry error |
+
+## SentryErrorStackTraceContext
+
+An object context for a Sentry error stack trace
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `code` | String! | Code number of the context |
+| `line` | Int! | Line number of the context |
+
+## SentryErrorStackTraceEntry
+
+An object containing a stack trace entry for a Sentry error.
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `col` | String | Function in which the Sentry error occurred |
+| `fileName` | String | File in which the Sentry error occurred |
+| `function` | String | Function in which the Sentry error occurred |
+| `line` | String | Function in which the Sentry error occurred |
+| `traceContext` | SentryErrorStackTraceContext! => Array | Context of the Sentry error |
 
 ## SentryErrorTags
 

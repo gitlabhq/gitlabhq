@@ -184,7 +184,7 @@ GEM
       unicode_utils (~> 1.4)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
-    crass (1.0.5)
+    crass (1.0.6)
     creole (0.5.0)
     css_parser (1.7.0)
       addressable
@@ -526,7 +526,7 @@ GEM
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
-    i18n (1.7.0)
+    i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     i18n_data (0.8.0)
     icalendar (2.4.1)
