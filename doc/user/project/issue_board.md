@@ -423,7 +423,7 @@ something between lists by changing a label.
 
 A typical workflow of using the Issue Board would be:
 
-1. You have [created](labels.md#creating-labels) and [prioritized](labels.md#label-priority)
+1. You have [created](labels.md#label-management) and [prioritized](labels.md#label-priority)
    labels so that you can easily categorize your issues.
 1. You have a bunch of issues (ideally labeled).
 1. You visit the Issue Board and start [creating lists](#creating-a-new-list) to

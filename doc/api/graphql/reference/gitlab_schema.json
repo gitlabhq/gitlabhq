@@ -8712,7 +8712,7 @@
             },
             {
               "name": "designs",
-              "description": "Deprecated. Use `design_collection`",
+              "description": "Deprecated. Use `designCollection`",
               "args": [
 
               ],
@@ -8722,7 +8722,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "use design_collection"
+              "deprecationReason": "Use designCollection"
             },
             {
               "name": "discussionLocked",
@@ -10255,7 +10255,7 @@
             },
             {
               "name": "designs",
-              "description": "Deprecated. Use `design_collection`",
+              "description": "Deprecated. Use `designCollection`",
               "args": [
 
               ],
@@ -10265,7 +10265,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "use design_collection"
+              "deprecationReason": "Use designCollection"
             },
             {
               "name": "discussionLocked",
@@ -13092,7 +13092,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "use pipelines"
+              "deprecationReason": "Use pipelines"
             },
             {
               "name": "message",

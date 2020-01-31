@@ -1,0 +1,5 @@
+---
+title: Replace Net::HTTP with Gitlab::HTTP in rake gitlab:geo:check
+merge_request: 23741
+author: Rajendra Kadam
+type: added

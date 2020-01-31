@@ -33,8 +33,15 @@ Follow these steps to filter the **Issues** and **Merge Requests** list pages wi
 groups:
 
 1. Click in the field **Search or filter results...**.
-1. In the dropdown menu that appears, select the attribute you wish to filter by (for example,
-   author, assignee, milestone, and so on).
+1. In the dropdown menu that appears, select the attribute you wish to filter by:
+   - Author
+   - Assignee
+   - [Milestone](../project/milestones/index.md)
+   - Release
+   - [Label](../project/labels.md)
+   - My-reaction
+   - Confidential
+   - Search for this text
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
    - `=`: Is

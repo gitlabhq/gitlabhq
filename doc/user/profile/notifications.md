@@ -196,9 +196,11 @@ If an open merge request becomes unmergeable due to conflict, its author will be
 If a user has also set the merge request to automatically merge once pipeline succeeds,
 then that user will also be notified.
 
-## Email Headers
+## Filtering email
 
-Notification emails include headers that provide extra content about the notification received:
+Notification email messages include GitLab-specific headers. You can filter the notification emails based on the content of these headers to better manage your notifications. For example, you could filter all emails for a specific project where you are being assigned either a merge request or issue.
+
+The following table lists all GitLab-specific email headers:
 
 | Header                      | Description                                                             |
 |-----------------------------|-------------------------------------------------------------------------|
@@ -209,23 +211,21 @@ Notification emails include headers that provide extra content about the notific
 | X-GitLab-Discussion-ID      | Only in comment emails, the ID of the thread the comment is from    |
 | X-GitLab-Pipeline-Id        | Only in pipeline emails, the ID of the pipeline the notification is for |
 | X-GitLab-Reply-Key          | A unique token to support reply by email                                |
-| X-GitLab-NotificationReason | The reason for being notified. "mentioned", "assigned", etc             |
+| X-GitLab-NotificationReason | The reason for being notified: one of `mentioned`, `assigned`, or `own_activity` |
 | List-Id                     | The path of the project in a RFC 2919 mailing list identifier useful for email organization, for example, with Gmail filters |
 
 ### X-GitLab-NotificationReason
 
-This header holds the reason for the notification to have been sent out,
-where reason can be `mentioned`, `assigned`, `own_activity`, etc.
-Only one reason is sent out according to its priority:
+The `X-GitLab-NotificationReason` header contains the reason for the notification. The value is one of the the following, in order of priority:
 
 - `own_activity`
 - `assigned`
 - `mentioned`
 
-The reason in this header will also be shown in the footer of the notification email. For example an email with the
+The reason for the notification is also included in the footer of the notification email. For example an email with the
 reason `assigned` will have this sentence in the footer:
-`"You are receiving this email because you have been assigned an item on {configured GitLab hostname}"`
+
+- `You are receiving this email because you have been assigned an item on <configured GitLab hostname>.`
 
 NOTE: **Note:**
-Only reasons listed above have been implemented so far.
-Further implementation is [being discussed](https://gitlab.com/gitlab-org/gitlab/issues/20689).
+Notification of other events is being considered for inclusion in the `X-GitLab-NotificationReason` header. For details, see this [related issue](https://gitlab.com/gitlab-org/gitlab/issues/20689).

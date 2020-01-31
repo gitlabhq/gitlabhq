@@ -203,7 +203,7 @@ type Commit {
     Filter pipelines by their status
     """
     status: PipelineStatusEnum
-  ): Pipeline @deprecated(reason: "use pipelines")
+  ): Pipeline @deprecated(reason: "Use pipelines")
 
   """
   Raw commit message
@@ -2172,9 +2172,9 @@ type EpicIssue implements Noteable {
   designCollection: DesignCollection
 
   """
-  Deprecated. Use `design_collection`
+  Deprecated. Use `designCollection`
   """
-  designs: DesignCollection @deprecated(reason: "use design_collection")
+  designs: DesignCollection @deprecated(reason: "Use designCollection")
 
   """
   Indicates discussion is locked on the issue
@@ -3062,9 +3062,9 @@ type Issue implements Noteable {
   designCollection: DesignCollection
 
   """
-  Deprecated. Use `design_collection`
+  Deprecated. Use `designCollection`
   """
-  designs: DesignCollection @deprecated(reason: "use design_collection")
+  designs: DesignCollection @deprecated(reason: "Use designCollection")
 
   """
   Indicates discussion is locked on the issue
