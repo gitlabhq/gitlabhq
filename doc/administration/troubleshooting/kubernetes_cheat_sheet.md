@@ -72,6 +72,16 @@ and they will assist you with any issues you are having.
   This is the principle of Kubernetes, read [Twelve-factor app](https://12factor.net/)
   for details.
 
+- How to get cronjobs configured on a cluster
+
+  ```bash
+  kubectl get cronjobs
+  ```
+  
+  When one configures [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup),
+  you will be able to see the new schedule here. Some details about the schedules can be found
+  in [Running Automated Tasks with a CronJob](https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#creating-a-cron-job)
+  
 ## GitLab-specific Kubernetes information
 
 - Minimal config that can be used to test a Kubernetes Helm chart can be found

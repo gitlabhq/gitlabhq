@@ -1,6 +1,6 @@
 <script>
+import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
-import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import { chartHeight } from '../../constants';
 import { makeDataSeries } from '~/helpers/monitor_helper';
@@ -10,16 +10,14 @@ export default {
   components: {
     GlColumnChart,
   },
-  inheritAttrs: false,
+  directives: {
+    GlResizeObserverDirective,
+  },
   props: {
     graphData: {
       type: Object,
       required: true,
       validator: graphDataValidatorForValues.bind(null, false),
-    },
-    containerWidth: {
-      type: Number,
-      required: true,
     },
   },
   data() {
@@ -27,7 +25,6 @@ export default {
       width: 0,
       height: chartHeight,
       svgs: {},
-      debouncedResizeCallback: {},
     };
   },
   computed: {
@@ -68,15 +65,7 @@ export default {
       };
     },
   },
-  watch: {
-    containerWidth: 'onResize',
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.debouncedResizeCallback);
-  },
   created() {
-    this.debouncedResizeCallback = debounceByAnimationFrame(this.onResize);
-    window.addEventListener('resize', this.debouncedResizeCallback);
     this.setSvg('scroll-handle');
   },
   methods: {
@@ -84,6 +73,7 @@ export default {
       return `${query.label}`;
     },
     onResize() {
+      if (!this.$refs.columnChart) return;
       const { width } = this.$refs.columnChart.$el.getBoundingClientRect();
       this.width = width;
     },
@@ -100,7 +90,7 @@ export default {
 };
 </script>
 <template>
-  <div class="prometheus-graph">
+  <div v-gl-resize-observer-directive="onResize" class="prometheus-graph">
     <div class="prometheus-graph-header">
       <h5 ref="graphTitle" class="prometheus-graph-title">{{ graphData.title }}</h5>
       <div ref="graphWidgets" class="prometheus-graph-widgets"><slot></slot></div>

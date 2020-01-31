@@ -1,15 +1,17 @@
 <script>
+import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlHeatmap } from '@gitlab/ui/dist/charts';
 import dateformat from 'dateformat';
 import PrometheusHeader from '../shared/prometheus_header.vue';
-import ResizableChartContainer from '~/vue_shared/components/resizable_chart/resizable_chart_container.vue';
 import { graphDataValidatorForValues } from '../../utils';
 
 export default {
   components: {
     GlHeatmap,
-    ResizableChartContainer,
     PrometheusHeader,
+  },
+  directives: {
+    GlResizeObserverDirective,
   },
   props: {
     graphData: {
@@ -17,10 +19,11 @@ export default {
       required: true,
       validator: graphDataValidatorForValues.bind(null, false),
     },
-    containerWidth: {
-      type: Number,
-      required: true,
-    },
+  },
+  data() {
+    return {
+      width: 0,
+    };
   },
   computed: {
     chartData() {
@@ -52,22 +55,27 @@ export default {
       return this.graphData.metrics[0];
     },
   },
+  methods: {
+    onResize() {
+      if (this.$refs.heatmapChart) return;
+      const { width } = this.$refs.heatmapChart.$el.getBoundingClientRect();
+      this.width = width;
+    },
+  },
 };
 </script>
 <template>
-  <div class="prometheus-graph col-12 col-lg-6">
+  <div v-gl-resize-observer-directive="onResize" class="prometheus-graph col-12 col-lg-6">
     <prometheus-header :graph-title="graphData.title" />
-    <resizable-chart-container>
-      <gl-heatmap
-        ref="heatmapChart"
-        v-bind="$attrs"
-        :data-series="chartData"
-        :x-axis-name="xAxisName"
-        :y-axis-name="yAxisName"
-        :x-axis-labels="xAxisLabels"
-        :y-axis-labels="yAxisLabels"
-        :width="containerWidth"
-      />
-    </resizable-chart-container>
+    <gl-heatmap
+      ref="heatmapChart"
+      v-bind="$attrs"
+      :data-series="chartData"
+      :x-axis-name="xAxisName"
+      :y-axis-name="yAxisName"
+      :x-axis-labels="xAxisLabels"
+      :y-axis-labels="yAxisLabels"
+      :width="width"
+    />
   </div>
 </template>
