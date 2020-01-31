@@ -4,6 +4,7 @@ entry.
 
 ## 12.7.5
 
+- No changes.
 ### Fixed (4 changes, 1 of them is from the community)
 
 - Add accidentally deleted project config for custom apply suggestions. !23687 (Fabio Huser)
