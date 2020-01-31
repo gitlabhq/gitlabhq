@@ -46,10 +46,12 @@ ee:
     group:
       - epics:
           - :parent
+          - :award_emoji
           - events:
               - :push_event_payload
           - notes:
               - :author
+              - :award_emoji
               - events:
                   - :push_event_payload
       - boards:

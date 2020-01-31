@@ -4,6 +4,13 @@ Check this document if it includes instructions for the version you are updating
 These steps go together with the [general steps](updating_the_geo_nodes.md#general-update-steps)
 for updating Geo nodes.
 
+## Updating to GitLab 12.7
+
+DANGER: **Danger:**
+We found [an initialization order bug](https://gitlab.com/gitlab-org/gitlab/issues/199672) introduced in GitLab 12.7
+that causes Geo Secondaries to not set the correct database connection pool size. A [fix has been merged](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24021)
+and will be available in GitLab 12.8 and the next 12.7.x patch release. Please **do not upgrade to 12.7** until the fix is available.
+
 ## Updating to GitLab 12.2
 
 GitLab 12.2 includes the following minor PostgreSQL updates:

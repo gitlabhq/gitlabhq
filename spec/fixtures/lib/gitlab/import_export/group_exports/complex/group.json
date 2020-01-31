@@ -482,7 +482,18 @@
           "type": null,
           "author": {
             "name": "Administrator"
-          }
+          },
+          "award_emoji": [
+            {
+              "id": 12,
+              "name": "drum",
+              "user_id": 1,
+              "awardable_type": "Note",
+              "awardable_id": 44170,
+              "created_at": "2019-11-05T15:32:21.287Z",
+              "updated_at": "2019-11-05T15:32:21.287Z"
+            }
+          ]
         },
         {
           "id": 44168,
@@ -573,6 +584,17 @@
           "author": {
             "name": "Administrator"
           }
+        }
+      ],
+      "award_emoji": [
+        {
+          "id": 12,
+          "name": "thumbsup",
+          "user_id": 1,
+          "awardable_type": "Epic",
+          "awardable_id": 13622,
+          "created_at": "2019-11-05T15:37:21.287Z",
+          "updated_at": "2019-11-05T15:37:21.287Z"
         }
       ]
     },
