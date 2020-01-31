@@ -1,6 +1,7 @@
 - page_title _('CI / CD Charts')
 
+#js-project-pipelines-charts-app{ data: { counts: @counts, success_ratio: success_ratio(@counts), times_chart: { labels: @charts[:pipeline_times].labels, values: @charts[:pipeline_times].pipeline_times } } }
+
 #charts.ci-charts
-  = render 'projects/pipelines/charts/overall'
   %hr
   = render 'projects/pipelines/charts/pipelines'

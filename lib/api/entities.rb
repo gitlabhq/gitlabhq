@@ -128,51 +128,6 @@ module API
       end
     end
 
-    class DiffRefs < Grape::Entity
-      expose :base_sha, :head_sha, :start_sha
-    end
-
-    class Commit < Grape::Entity
-      expose :id, :short_id, :created_at
-      expose :parent_ids
-      expose :full_title, as: :title
-      expose :safe_message, as: :message
-      expose :author_name, :author_email, :authored_date
-      expose :committer_name, :committer_email, :committed_date
-    end
-
-    class CommitStats < Grape::Entity
-      expose :additions, :deletions, :total
-    end
-
-    class CommitWithStats < Commit
-      expose :stats, using: Entities::CommitStats
-    end
-
-    class CommitDetail < Commit
-      expose :stats, using: Entities::CommitStats, if: :stats
-      expose :status
-      expose :project_id
-
-      expose :last_pipeline do |commit, options|
-        pipeline = commit.last_pipeline if can_read_pipeline?
-        ::API::Entities::PipelineBasic.represent(pipeline, options)
-      end
-
-      private
-
-      def can_read_pipeline?
-        Ability.allowed?(options[:current_user], :read_pipeline, object.last_pipeline)
-      end
-    end
-
-    class CommitSignature < Grape::Entity
-      expose :gpg_key_id
-      expose :gpg_key_primary_keyid, :gpg_key_user_name, :gpg_key_user_email
-      expose :verification_status
-      expose :gpg_key_subkey_id
-    end
-
     class BasicRef < Grape::Entity
       expose :type, :name
     end
@@ -1101,6 +1056,7 @@ module API
         expose :evidence_file_path, expose_nil: false, if: ->(_, _) { can_download_code? }
       end
       expose :_links do
+        expose :self_url, as: :self, expose_nil: false
         expose :merge_requests_url, expose_nil: false
         expose :issues_url, expose_nil: false
         expose :edit_url, expose_nil: false

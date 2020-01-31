@@ -1,4 +1,5 @@
 - page_title _("Snippets")
+- new_project_snippet_link = new_project_snippet_path(@project) if can?(current_user, :create_snippet, @project)
 
 - if @snippets.exists?
   - if current_user
@@ -6,10 +7,10 @@
       - include_private = @project.team.member?(current_user) || current_user.admin?
       = render partial: 'snippets/snippets_scope_menu', locals: { subject: @project, include_private: include_private }
 
-      - if can?(current_user, :create_snippet, @project)
+      - if new_project_snippet_link.present?
         .nav-controls
-          = link_to _("New snippet"), new_project_snippet_path(@project), class: "btn btn-success", title: _("New snippet")
+          = link_to _("New snippet"), new_project_snippet_link, class: "btn btn-success", title: _("New snippet")
 
   = render 'shared/snippets/list'
 - else
-  = render 'shared/empty_states/snippets', button_path: new_namespace_project_snippet_path(@project.namespace, @project)
+  = render 'shared/empty_states/snippets', button_path: new_project_snippet_link

@@ -332,7 +332,6 @@ group :metrics do
 end
 
 group :development do
-  gem 'listen', '~> 3.0'
   gem 'brakeman', '~> 4.2', require: false
   gem 'danger', '~> 6.0', require: false
 
@@ -487,3 +486,5 @@ gem 'liquid', '~> 4.0'
 
 # LRU cache
 gem 'lru_redux'
+
+gem 'erubi', '~> 1.9.0'

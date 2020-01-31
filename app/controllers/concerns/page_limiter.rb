@@ -63,6 +63,6 @@ module PageLimiter
       controller: params[:controller],
       action: params[:action],
       bot: dd.bot?
-    )
+    ).increment
   end
 end

@@ -50,8 +50,4 @@ Rails.application.configure do
 
   # BetterErrors live shell (REPL) on every stack frame
   BetterErrors::Middleware.allow_ip!("127.0.0.1/0")
-
-  # Use an evented file watcher to asynchronously detect changes in source code,
-  # routes, locales, etc. This feature depends on the listen gem.
-  config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 end

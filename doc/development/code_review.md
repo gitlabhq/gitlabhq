@@ -59,12 +59,12 @@ are recommended to get your merge request approved and merged by maintainer(s)
 from teams other than your own.
 
 1. If your merge request includes backend changes [^1], it must be
-   **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_backend)**.
+   **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_backend)**.
 1. If your merge request includes database migrations or changes to expensive queries [^2], it must be
-   **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_database)**.
+   **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_database)**.
    Read the [database review guidelines](database_review.md) for more details.
 1. If your merge request includes frontend changes [^1], it must be
-   **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_frontend)**.
+   **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend)**.
 1. If your merge request includes UX changes [^1], it must be
    **approved by a [UX team member](https://about.gitlab.com/company/team/)**.
 1. If your merge request includes adding a new JavaScript library [^1], it must be

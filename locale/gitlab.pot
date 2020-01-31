@@ -4801,9 +4801,6 @@ msgstr ""
 msgid "Commit deleted"
 msgstr ""
 
-msgid "Commit duration in minutes for last 30 commits"
-msgstr ""
-
 msgid "Commit message"
 msgstr ""
 
@@ -6811,6 +6808,9 @@ msgid "Due date"
 msgstr ""
 
 msgid "Duration"
+msgstr ""
+
+msgid "Duration for the last 30 commits"
 msgstr ""
 
 msgid "During this process, you’ll be asked for URLs from GitLab’s side. Use the URLs shown below."

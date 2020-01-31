@@ -71,25 +71,35 @@ describe PageLimiter do
   describe "#default_page_out_of_bounds_response" do
     subject { instance.send(:default_page_out_of_bounds_response) }
 
-    after do
-      subject
-    end
-
     it "returns a bad_request header" do
       expect(instance).to receive(:head).with(:bad_request)
+
+      subject
     end
   end
 
   describe "#record_page_limit_interception" do
     subject { instance.send(:record_page_limit_interception) }
 
-    it "records a metric counter" do
+    let(:counter) { double("counter", increment: true) }
+
+    before do
+      allow(Gitlab::Metrics).to receive(:counter) { counter }
+    end
+
+    it "creates a metric counter" do
       expect(Gitlab::Metrics).to receive(:counter).with(
         :gitlab_page_out_of_bounds,
         controller: "explore/projects",
         action: "index",
         bot: true
       )
+
+      subject
+    end
+
+    it "increments the counter" do
+      expect(counter).to receive(:increment)
 
       subject
     end

@@ -1,7 +1,9 @@
 import $ from 'jquery';
 import Chart from 'chart.js';
 
-import { barChartOptions, lineChartOptions } from '~/lib/utils/chart_utils';
+import { lineChartOptions } from '~/lib/utils/chart_utils';
+
+import initProjectPipelinesChartsApp from '~/projects/pipelines/charts/index';
 
 const SUCCESS_LINE_COLOR = '#1aaa55';
 
@@ -44,40 +46,13 @@ const buildChart = (chartScope, shouldAdjustFontSize) => {
   });
 };
 
-const buildBarChart = (chartTimesData, shouldAdjustFontSize) => {
-  const data = {
-    labels: chartTimesData.labels,
-    datasets: [
-      {
-        backgroundColor: 'rgba(220,220,220,0.5)',
-        borderColor: 'rgba(220,220,220,1)',
-        borderWidth: 1,
-        barValueSpacing: 1,
-        barDatasetSpacing: 1,
-        data: chartTimesData.values,
-      },
-    ],
-  };
-  return new Chart(
-    $('#build_timesChart')
-      .get(0)
-      .getContext('2d'),
-    {
-      type: 'bar',
-      data,
-      options: barChartOptions(shouldAdjustFontSize),
-    },
-  );
-};
-
 document.addEventListener('DOMContentLoaded', () => {
-  const chartTimesData = JSON.parse(document.getElementById('pipelinesTimesChartsData').innerHTML);
   const chartsData = JSON.parse(document.getElementById('pipelinesChartsData').innerHTML);
 
   // Scale fonts if window width lower than 768px (iPad portrait)
   const shouldAdjustFontSize = window.innerWidth < 768;
 
-  buildBarChart(chartTimesData, shouldAdjustFontSize);
-
   chartsData.forEach(scope => buildChart(scope, shouldAdjustFontSize));
 });
+
+document.addEventListener('DOMContentLoaded', initProjectPipelinesChartsApp);

@@ -19,6 +19,12 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
     project_tag_path(project, release.tag)
   end
 
+  def self_url
+    return unless ::Feature.enabled?(:release_show_page, project)
+
+    project_release_url(project, release)
+  end
+
   def merge_requests_url
     return unless release_mr_issue_urls_available?
 

@@ -645,9 +645,8 @@ To indicate the steps of navigation through the UI:
 - Images should have a specific, non-generic name that will
   differentiate and describe them properly.
 - Always add to the end of the file name the GitLab release version
-  number corresponding to the release milestone the image was added to,
-  or corresponding to the release the screenshot was taken from, using the
-  format `image_name_vX_Y.png`.
+  corresponding to the version the screenshot was taken from, using the format
+  `image_name_vX_Y.png`.
   ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/61027) in GitLab 12.1.)
 - For example, for a screenshot taken from the pipelines page of
   GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're

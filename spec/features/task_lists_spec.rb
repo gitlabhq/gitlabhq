@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'Task Lists' do
   include Warden::Test::Helpers
 
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :public, :repository) }
   let(:user)    { create(:user) }
   let(:user2)   { create(:user) }
 
@@ -122,6 +122,7 @@ describe 'Task Lists' do
 
       it 'provides a summary on Issues#index' do
         visit project_issues_path(project)
+
         expect(page).to have_content("2 of 6 tasks completed")
       end
     end
@@ -191,6 +192,7 @@ describe 'Task Lists' do
 
       it 'is only editable by author', :js do
         visit_issue(project, issue)
+
         expect(page).to have_selector('.js-task-list-container')
 
         gitlab_sign_out
@@ -237,10 +239,7 @@ describe 'Task Lists' do
       visit project_merge_request_path(project, merge)
     end
 
-    describe 'multiple tasks' do
-      let(:project) { create(:project, :repository) }
-      let!(:merge) { create(:merge_request, :simple, description: markdown, author: user, source_project: project) }
-
+    shared_examples 'multiple tasks' do
       it 'renders for description' do
         visit_merge_request(project, merge)
 
@@ -261,21 +260,38 @@ describe 'Task Lists' do
         expect(page).to have_selector('a.btn-close')
       end
 
-      it 'is only editable by author' do
+      it 'is only editable by author', :js do
         visit_merge_request(project, merge)
+
         expect(page).to have_selector('.js-task-list-container')
+        expect(page).to have_selector('li.task-list-item.enabled', count: 6)
 
         logout(:user)
-
         login_as(user2)
         visit current_path
+
         expect(page).not_to have_selector('.js-task-list-container')
+        expect(page).to have_selector('li.task-list-item.enabled', count: 0)
+        expect(page).to have_selector('li.task-list-item input[disabled]', count: 6)
       end
+    end
+
+    context 'when merge request is open' do
+      let!(:merge) { create(:merge_request, :simple, description: markdown, author: user, source_project: project) }
+
+      it_behaves_like 'multiple tasks'
 
       it 'provides a summary on MergeRequests#index' do
         visit project_merge_requests_path(project)
+
         expect(page).to have_content("2 of 6 tasks completed")
       end
+    end
+
+    context 'when merge request is closed' do
+      let!(:merge) { create(:merge_request, :closed, :simple, description: markdown, author: user, source_project: project) }
+
+      it_behaves_like 'multiple tasks'
     end
 
     describe 'single incomplete task' do
@@ -291,6 +307,7 @@ describe 'Task Lists' do
 
       it 'provides a summary on MergeRequests#index' do
         visit project_merge_requests_path(project)
+
         expect(page).to have_content("0 of 1 task completed")
       end
     end

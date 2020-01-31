@@ -90,8 +90,12 @@ describe Explore::ProjectsController do
         end
 
         describe "metrics recording" do
-          after do
-            get endpoint, params: { page: page_limit + 1 }
+          subject { get endpoint, params: { page: page_limit + 1 } }
+
+          let(:counter) { double("counter", increment: true) }
+
+          before do
+            allow(Gitlab::Metrics).to receive(:counter) { counter }
           end
 
           it "records the interception" do
@@ -101,6 +105,8 @@ describe Explore::ProjectsController do
               action: endpoint.to_s,
               bot: false
             )
+
+            subject
           end
         end
       end
