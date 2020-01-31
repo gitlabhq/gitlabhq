@@ -96,7 +96,7 @@ module Suggestions
     end
 
     def suggestion_commit_message(project)
-      project.suggestion_commit_message || DEFAULT_SUGGESTION_COMMIT_MESSAGE
+      project.suggestion_commit_message.presence || DEFAULT_SUGGESTION_COMMIT_MESSAGE
     end
 
     def processed_suggestion_commit_message(suggestion)

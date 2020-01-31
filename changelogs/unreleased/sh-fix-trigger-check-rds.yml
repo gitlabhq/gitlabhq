@@ -1,0 +1,5 @@
+---
+title: Fix database permission check for triggers on Amazon RDS
+merge_request: 24035
+author:
+type: fixed
