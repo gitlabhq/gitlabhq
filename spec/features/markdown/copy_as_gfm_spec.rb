@@ -172,16 +172,34 @@ describe 'Copy as GFM', :js do
         '![Image](https://example.com/image.png)'
       )
 
+      verify_media_with_partial_path(
+        '![Image](/uploads/a123/image.png)',
+
+        project_media_uri(@project, '/uploads/a123/image.png')
+      )
+
       verify(
         'VideoLinkFilter',
 
         '![Video](https://example.com/video.mp4)'
       )
 
+      verify_media_with_partial_path(
+        '![Video](/uploads/a123/video.mp4)',
+
+        project_media_uri(@project, '/uploads/a123/video.mp4')
+      )
+
       verify(
         'AudioLinkFilter',
 
         '![Audio](https://example.com/audio.wav)'
+      )
+
+      verify_media_with_partial_path(
+        '![Audio](/uploads/a123/audio.wav)',
+
+        project_media_uri(@project, '/uploads/a123/audio.wav')
       )
 
       verify(
@@ -645,6 +663,16 @@ describe 'Copy as GFM', :js do
           expect(output_gfm.strip).to eq(gfm.strip)
         end
       end
+    end
+
+    def project_media_uri(project, media_path)
+      "#{project_path(project)}#{media_path}"
+    end
+
+    def verify_media_with_partial_path(gfm, media_uri)
+      html = gfm_to_html(gfm)
+      output_gfm = html_to_gfm(html)
+      expect(output_gfm).to include(media_uri)
     end
 
     # Fake a `current_user` helper

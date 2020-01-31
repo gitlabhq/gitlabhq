@@ -57,10 +57,22 @@ describe Suggestions::ApplyService do
       end
 
       context 'is not specified' do
-        let(:message) { nil }
+        let(:expected_value) { "Apply suggestion to files/ruby/popen.rb" }
 
-        it 'sets default commit message' do
-          expect(project.repository.commit.message).to eq("Apply suggestion to files/ruby/popen.rb")
+        context 'is nil' do
+          let(:message) { nil }
+
+          it 'sets default commit message' do
+            expect(project.repository.commit.message).to eq(expected_value)
+          end
+        end
+
+        context 'is an empty string' do
+          let(:message) { '' }
+
+          it 'sets default commit message' do
+            expect(project.repository.commit.message).to eq(expected_value)
+          end
         end
       end
 

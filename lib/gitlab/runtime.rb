@@ -16,7 +16,7 @@ module Gitlab
         matches << :console if console?
         matches << :sidekiq if sidekiq?
         matches << :rake if rake?
-        matches << :rspec if rspec?
+        matches << :test_suite if test_suite?
 
         if matches.one?
           matches.first
@@ -48,8 +48,8 @@ module Gitlab
         !!(defined?(::Rake) && Rake.application.top_level_tasks.any?)
       end
 
-      def rspec?
-        Rails.env.test? && process_name == 'rspec'
+      def test_suite?
+        Rails.env.test?
       end
 
       def console?
@@ -62,10 +62,6 @@ module Gitlab
 
       def multi_threaded?
         puma? || sidekiq?
-      end
-
-      def process_name
-        File.basename($0)
       end
 
       def max_threads

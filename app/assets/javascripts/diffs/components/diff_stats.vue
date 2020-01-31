@@ -1,6 +1,7 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
 import { n__ } from '~/locale';
+import { isNumber } from 'underscore';
 
 export default {
   components: { Icon },
@@ -16,7 +17,7 @@ export default {
     diffFilesLength: {
       type: Number,
       required: false,
-      default: null,
+      default: 0,
     },
   },
   computed: {
@@ -25,6 +26,9 @@ export default {
     },
     isCompareVersionsHeader() {
       return Boolean(this.diffFilesLength);
+    },
+    hasDiffFiles() {
+      return isNumber(this.diffFilesLength) && this.diffFilesLength >= 0;
     },
   },
 };
@@ -38,7 +42,7 @@ export default {
       'd-inline-flex': !isCompareVersionsHeader,
     }"
   >
-    <div v-if="diffFilesLength !== null" class="diff-stats-group">
+    <div v-if="hasDiffFiles" class="diff-stats-group">
       <icon name="doc-code" class="diff-stats-icon text-secondary" />
       <strong>{{ diffFilesLength }} {{ filesText }}</strong>
     </div>

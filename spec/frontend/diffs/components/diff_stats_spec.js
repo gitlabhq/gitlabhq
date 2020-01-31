@@ -3,11 +3,12 @@ import Icon from '~/vue_shared/components/icon.vue';
 import DiffStats from '~/diffs/components/diff_stats.vue';
 
 describe('diff_stats', () => {
-  it('does not render a group if diffFileLengths is not passed in', () => {
+  it('does not render a group if diffFileLengths is not a number', () => {
     const wrapper = shallowMount(DiffStats, {
       propsData: {
         addedLines: 1,
         removedLines: 2,
+        diffFilesLength: Number.NaN,
       },
     });
     const groups = wrapper.findAll('.diff-stats-group');

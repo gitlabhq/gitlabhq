@@ -56,7 +56,6 @@ class RegistrationsController < Devise::RegistrationsController
     return redirect_to stored_location_or_dashboard_or_almost_there_path(current_user) if current_user.role.present? && !current_user.setup_for_company.nil?
 
     current_user.name = nil if current_user.name == current_user.username
-    render layout: 'devise_experimental_separate_sign_up_flow'
   end
 
   def update_registration
@@ -68,7 +67,7 @@ class RegistrationsController < Devise::RegistrationsController
       set_flash_message! :notice, :signed_up
       redirect_to stored_location_or_dashboard_or_almost_there_path(current_user)
     else
-      render :welcome, layout: 'devise_experimental_separate_sign_up_flow'
+      render :welcome
     end
   end
 

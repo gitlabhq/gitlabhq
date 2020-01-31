@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Gitlab::Runtime do
   before do
     allow(described_class).to receive(:process_name).and_return('ruby')
+    stub_rails_env('production')
   end
 
   context "when unknown" do
@@ -47,7 +48,7 @@ describe Gitlab::Runtime do
       expect(subject.sidekiq?).to be(false)
       expect(subject.console?).to be(false)
       expect(subject.rake?).to be(false)
-      expect(subject.rspec?).to be(false)
+      expect(subject.test_suite?).to be(false)
     end
 
     it "reports its maximum concurrency" do
@@ -74,7 +75,7 @@ describe Gitlab::Runtime do
       expect(subject.sidekiq?).to be(false)
       expect(subject.console?).to be(false)
       expect(subject.rake?).to be(false)
-      expect(subject.rspec?).to be(false)
+      expect(subject.test_suite?).to be(false)
     end
 
     it "reports its maximum concurrency" do
@@ -106,7 +107,7 @@ describe Gitlab::Runtime do
       expect(subject.puma?).to be(false)
       expect(subject.console?).to be(false)
       expect(subject.rake?).to be(false)
-      expect(subject.rspec?).to be(false)
+      expect(subject.test_suite?).to be(false)
     end
 
     it "reports its maximum concurrency" do
@@ -131,7 +132,7 @@ describe Gitlab::Runtime do
       expect(subject.sidekiq?).to be(false)
       expect(subject.puma?).to be(false)
       expect(subject.rake?).to be(false)
-      expect(subject.rspec?).to be(false)
+      expect(subject.test_suite?).to be(false)
     end
 
     it "reports its maximum concurrency" do
@@ -139,14 +140,14 @@ describe Gitlab::Runtime do
     end
   end
 
-  context "rspec" do
+  context "test suite" do
     before do
-      allow(described_class).to receive(:process_name).and_return('rspec')
+      stub_rails_env('test')
     end
 
     it "identifies itself" do
-      expect(subject.identify).to eq(:rspec)
-      expect(subject.rspec?).to be(true)
+      expect(subject.identify).to eq(:test_suite)
+      expect(subject.test_suite?).to be(true)
     end
 
     it "does not identify as others" do

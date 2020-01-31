@@ -1,0 +1,5 @@
+---
+title: Fix applying the suggestions with an empty custom message
+merge_request: 24144
+author:
+type: fixed

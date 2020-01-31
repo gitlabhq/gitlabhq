@@ -75,6 +75,15 @@ describe MembersFinder, '#execute' do
     expect(result).to contain_exactly(member2, member3)
   end
 
+  it 'returns only inherited members of a personal project' do
+    project = create(:project, namespace: user1.namespace)
+    member = project.members.first
+
+    result = described_class.new(project, user1).execute(include_relations: [:inherited])
+
+    expect(result).to contain_exactly(member)
+  end
+
   it 'returns the members.access_level when the user is invited', :nested_groups do
     member_invite = create(:project_member, :invited, project: project, invite_email: create(:user).email)
     member1 = group.add_maintainer(user2)
@@ -94,6 +103,26 @@ describe MembersFinder, '#execute' do
 
     expect(result).to contain_exactly(member1)
     expect(result.first.access_level).to eq(Gitlab::Access::DEVELOPER)
+  end
+
+  it 'returns searched members if requested' do
+    project.add_maintainer(user2)
+    project.add_maintainer(user3)
+    member3 = project.add_maintainer(user4)
+
+    result = described_class.new(project, user2).execute(params: { search: user4.name })
+
+    expect(result).to contain_exactly(member3)
+  end
+
+  it 'returns members sorted by id_desc' do
+    member1 = project.add_maintainer(user2)
+    member2 = project.add_maintainer(user3)
+    member3 = project.add_maintainer(user4)
+
+    result = described_class.new(project, user2).execute(params: { sort: 'id_desc' })
+
+    expect(result).to eq([member3, member2, member1])
   end
 
   context 'when include_invited_groups_members == true' do

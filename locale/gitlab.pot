@@ -10258,6 +10258,9 @@ msgstr ""
 msgid "In order to gather accurate feature usage data, it can take 1 to 2 weeks to see your index."
 msgstr ""
 
+msgid "In order to personalize your experience with GitLab<br>we would like to know a bit more about you."
+msgstr ""
+
 msgid "In order to tailor your experience with GitLab we<br>would like to know a bit more about you."
 msgstr ""
 
@@ -10804,6 +10807,9 @@ msgid "Jun"
 msgstr ""
 
 msgid "June"
+msgstr ""
+
+msgid "Just me"
 msgstr ""
 
 msgid "Key"
@@ -12288,6 +12294,9 @@ msgid "Multiple model types found: %{model_types}"
 msgstr ""
 
 msgid "Multiple uploaders found: %{uploader_types}"
+msgstr ""
+
+msgid "My company or team"
 msgstr ""
 
 msgid "My-Reaction"
@@ -19484,6 +19493,9 @@ msgstr ""
 msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches. Upon creation or when reassigning you can only assign yourself to be the mirror user."
 msgstr ""
 
+msgid "This will help us personalize your onboarding experience."
+msgstr ""
+
 msgid "This will redirect you to an external sign in page."
 msgstr ""
 
@@ -21278,6 +21290,9 @@ msgstr ""
 msgid "Welcome to GitLab, %{first_name}!"
 msgstr ""
 
+msgid "Welcome to GitLab.com<br>@%{name}!"
+msgstr ""
+
 msgid "Welcome to the Guided GitLab Tour"
 msgstr ""
 
@@ -21335,6 +21350,9 @@ msgid "Who can see this group?"
 msgstr ""
 
 msgid "Who will be able to see this group?"
+msgstr ""
+
+msgid "Who will be using this GitLab subscription?"
 msgstr ""
 
 msgid "Wiki"
@@ -22049,6 +22067,9 @@ msgid "Your password isn't required to view this page. If a password or any othe
 msgstr ""
 
 msgid "Your password reset token has expired."
+msgstr ""
+
+msgid "Your profile"
 msgstr ""
 
 msgid "Your project limit is %{limit} projects! Please contact your administrator to increase it"

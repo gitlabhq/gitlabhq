@@ -42,7 +42,7 @@ export default class Playable extends Node {
       },
       {
         tag: `${this.mediaType}[src]`,
-        getAttrs: el => ({ src: el.getAttribute('src'), alt: el.dataset.title }),
+        getAttrs: el => ({ src: el.src, alt: el.dataset.title }),
       },
     ];
 
