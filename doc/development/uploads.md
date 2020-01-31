@@ -174,14 +174,14 @@ sequenceDiagram
     c ->>+w: POST /some/url/upload
 
     w->>+s: save the incoming file on a temporary location
-    s-->>-w:  
+    s-->>-w: request result
 
     w->>+r:  POST /some/url/upload
     Note over w,r: file was replaced with its location<br>and other metadata
 
     opt requires async processing
       r->>+redis: schedule a job
-      redis-->>-r:  
+      redis-->>-r: job is scheduled
     end
 
     r-->>-c: request result
@@ -208,9 +208,11 @@ This is the more advanced acceleration technique we have in place.
 
 Workhorse asks rails for temporary pre-signed object storage URLs and directly uploads to object storage.
 
-In this setup an extra rails route needs to be implemented in order to handle authorization,
-you can see an example of this in [`Projects::LfsStorageController`](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/app/controllers/projects/lfs_storage_controller.rb)
-and [its routes](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/config/routes/git_http.rb#L31-32).
+In this setup, an extra Rails route must be implemented in order to handle authorization. Examples of this can be found in:
+
+- [`Projects::LfsStorageController`](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/app/controllers/projects/lfs_storage_controller.rb)
+  and [its routes](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/config/routes/git_http.rb#L31-32).
+- [API endpoints for uploading packages](packages.md#file-uploads).
 
 **note:** this will fallback to _disk buffered upload_ when `direct_upload` is disabled inside the [object storage setting](../administration/uploads.md#object-storage-settings).
 The answer to the `/authorize` call will only contain a file system path.
@@ -231,17 +233,17 @@ sequenceDiagram
 
     w->>+os: PUT file
     Note over w,os: file is stored on a temporary location. Rails select the destination
-    os-->>-w:  
+    os-->>-w: request result
 
     w->>+r:  POST /some/url/upload
     Note over w,r: file was replaced with its location<br>and other metadata
 
     r->>+os: move object to final destination
-    os-->>-r:  
+    os-->>-r: request result
 
     opt requires async processing
       r->>+redis: schedule a job
-      redis-->>-r:  
+      redis-->>-r: job is scheduled
     end
 
     r-->>-c: request result

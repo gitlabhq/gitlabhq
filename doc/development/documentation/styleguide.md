@@ -1062,17 +1062,36 @@ a helpful link back to how the feature was developed.
   > [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
   ```
 
-### Removing version text
+### Importance of referencing GitLab versions and tiers
 
-Over time, version text will reference a progressively older version of GitLab. In cases where version text
-refers to versions of GitLab four or more major versions back, consider removing the text.
+Mentioning GitLab versions and tiers is important to all users and contributors
+to quickly have access to the issue or merge request that
+introduced the change for reference. Also, they can easily understand what
+features they have in their GitLab instance and version, given that the note has
+some key information.
+
+`[Introduced](link-to-issue) in [GitLab Premium](https://about.gitlab.com/pricing) 12.7`
+links to the issue that introduced the feature, says which GitLab tier it
+belongs to, says the GitLab version that it became available in, and links to
+the pricing page in case the user wants to upgrade to a paid tier
+to use that feature.
+
+For example, if I'm a regular user and I'm looking at the docs for a feature I haven't used before,
+I can immediately see if that feature is available to me or not. Alternatively,
+if I have been using a certain feature for a long time and it changed in some way,
+it's important
+to me to spot when it changed and what's new in that feature.
+
+This is even more important as we don't have a perfect process for shipping docs.
+Unfortunately, we still see features without docs and docs without
+features. So, for now, we cannot rely 100% on the docs site versions.
+
+Over time, version text will reference a progressively older version of GitLab.
+In cases where version text refers to versions of GitLab four or more major
+versions back, you can consider removing the text if it's irrelevant or confusing.
 
 For example, if the current major version is 12.x, version text referencing versions of GitLab 8.x
-and older are candidates for removal.
-
-NOTE: **Note:**
-This guidance applies to any text that mentions a GitLab version, not just "Introduced in... " text.
-Other text includes deprecation notices and version-specific how-to information.
+and older are candidates for removal if necessary for clearer or cleaner docs.
 
 ## Product badges
 
@@ -1102,6 +1121,8 @@ For GitLab.com only tiers (when the feature is not available for self-hosted ins
 The tier should be ideally added to headers, so that the full badge will be displayed.
 However, it can be also mentioned from paragraphs, list items, and table cells. For these cases,
 the tier mention will be represented by an orange question mark that will show the tiers on hover.
+
+Use the lowest tier at the page level, even if higher-level tiers exist on the page. For example, you might have a page that is marked as Starter but a section badged as Premium.
 
 For example:
 

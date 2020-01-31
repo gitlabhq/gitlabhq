@@ -350,7 +350,7 @@ end
 group :development, :test do
   gem 'bullet', '~> 6.0.2', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.5.1', platform: :mri
-  gem 'pry-rails', '~> 0.3.4'
+  gem 'pry-rails', '~> 0.3.9'
 
   gem 'awesome_print', require: false
 

@@ -2,6 +2,7 @@
 import GetSnippetQuery from '../queries/snippet.query.graphql';
 import SnippetHeader from './snippet_header.vue';
 import SnippetTitle from './snippet_title.vue';
+import SnippetBlob from './snippet_blob_view.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
@@ -9,6 +10,7 @@ export default {
     SnippetHeader,
     SnippetTitle,
     GlLoadingIcon,
+    SnippetBlob,
   },
   apollo: {
     snippet: {
@@ -50,6 +52,7 @@ export default {
     <template v-else>
       <snippet-header :snippet="snippet" />
       <snippet-title :snippet="snippet" />
+      <snippet-blob :snippet="snippet" />
     </template>
   </div>
 </template>

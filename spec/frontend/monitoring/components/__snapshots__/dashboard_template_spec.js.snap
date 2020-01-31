@@ -69,9 +69,8 @@ exports[`Dashboard template matches the default snapshot 1`] = `
         label-size="sm"
       >
         <date-time-picker-stub
-          end="2020-01-01T18:57:47.000Z"
-          start="2020-01-01T18:27:47.000Z"
-          timewindows="[object Object]"
+          options="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
+          value="[object Object]"
         />
       </gl-form-group-stub>
        

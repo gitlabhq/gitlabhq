@@ -83,34 +83,36 @@ export const dateFormats = {
   default: 'dd mmm yyyy, h:MMTT',
 };
 
-export const datePickerTimeWindows = {
-  thirtyMinutes: {
+export const timeRanges = [
+  {
     label: __('30 minutes'),
-    seconds: 60 * 30,
+    duration: { seconds: 60 * 30 },
   },
-  threeHours: {
+  {
     label: __('3 hours'),
-    seconds: 60 * 60 * 3,
+    duration: { seconds: 60 * 60 * 3 },
   },
-  eightHours: {
+  {
     label: __('8 hours'),
-    seconds: 60 * 60 * 8,
+    duration: { seconds: 60 * 60 * 8 },
     default: true,
   },
-  oneDay: {
+  {
     label: __('1 day'),
-    seconds: 60 * 60 * 24 * 1,
+    duration: { seconds: 60 * 60 * 24 * 1 },
   },
-  threeDays: {
+  {
     label: __('3 days'),
-    seconds: 60 * 60 * 24 * 3,
+    duration: { seconds: 60 * 60 * 24 * 3 },
   },
-  oneWeek: {
+  {
     label: __('1 week'),
-    seconds: 60 * 60 * 24 * 7 * 1,
+    duration: { seconds: 60 * 60 * 24 * 7 * 1 },
   },
-  twoWeeks: {
+  {
     label: __('2 weeks'),
-    seconds: 60 * 60 * 24 * 7 * 2,
+    duration: { seconds: 60 * 60 * 24 * 7 * 2 },
   },
-};
+];
+
+export const defaultTimeRange = timeRanges.find(tr => tr.default);

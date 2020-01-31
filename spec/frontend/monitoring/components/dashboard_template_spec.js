@@ -5,13 +5,7 @@ import Dashboard from '~/monitoring/components/dashboard.vue';
 import { createStore } from '~/monitoring/stores';
 import { propsData } from '../init_utils';
 
-jest.mock('~/lib/utils/url_utility', () => ({
-  getParameterValues: jest.fn().mockImplementation(param => {
-    if (param === 'start') return ['2020-01-01T18:27:47.000Z'];
-    if (param === 'end') return ['2020-01-01T18:57:47.000Z'];
-    return [];
-  }),
-}));
+jest.mock('~/lib/utils/url_utility');
 
 describe('Dashboard template', () => {
   let wrapper;

@@ -128,4 +128,23 @@ describe Gitlab::Database::WithLockRetries do
       end
     end
   end
+
+  context 'casting durations correctly' do
+    let(:timing_configuration) { [[0.015.seconds, 0.025.seconds], [0.015.seconds, 0.025.seconds]] } # 15ms, 25ms
+
+    it 'executes `SET LOCAL lock_timeout` using the configured timeout value in milliseconds' do
+      expect(ActiveRecord::Base.connection).to receive(:execute).with("SAVEPOINT active_record_1").and_call_original
+      expect(ActiveRecord::Base.connection).to receive(:execute).with("SET LOCAL lock_timeout TO '15ms'").and_call_original
+      expect(ActiveRecord::Base.connection).to receive(:execute).with("RELEASE SAVEPOINT active_record_1").and_call_original
+
+      subject.run { }
+    end
+
+    it 'calls `sleep` after the first iteration fails, using the configured sleep time' do
+      expect(subject).to receive(:run_block_with_transaction).and_raise(ActiveRecord::LockWaitTimeout).twice
+      expect(subject).to receive(:sleep).with(0.025)
+
+      subject.run { }
+    end
+  end
 end

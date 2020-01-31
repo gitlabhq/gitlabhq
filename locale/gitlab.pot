@@ -10431,6 +10431,9 @@ msgstr ""
 msgid "Invalid date format. Please use UTC format as YYYY-MM-DD"
 msgstr ""
 
+msgid "Invalid date range"
+msgstr ""
+
 msgid "Invalid feature"
 msgstr ""
 

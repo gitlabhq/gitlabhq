@@ -1,11 +1,11 @@
 import { mount } from '@vue/test-utils';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
-import { defaultTimeWindows } from '~/vue_shared/components/date_time_picker/date_time_picker_lib';
+import {
+  defaultTimeRanges,
+  defaultTimeRange,
+} from '~/vue_shared/components/date_time_picker/date_time_picker_lib';
 
-const timeWindowsCount = Object.entries(defaultTimeWindows).length;
-const start = '2019-10-10T07:00:00.000Z';
-const end = '2019-10-13T07:00:00.000Z';
-const selectedTimeWindowText = `3 days`;
+const optionsCount = defaultTimeRanges.length;
 
 describe('DateTimePicker', () => {
   let dateTimePicker;
@@ -15,19 +15,10 @@ describe('DateTimePicker', () => {
   const applyButtonElement = () => dateTimePicker.find('button.btn-success').element;
   const findQuickRangeItems = () => dateTimePicker.findAll('.dropdown-item');
   const cancelButtonElement = () => dateTimePicker.find('button.btn-secondary').element;
-  const fillInputAndBlur = (input, val) => {
-    dateTimePicker.find(input).setValue(val);
-    return dateTimePicker.vm.$nextTick().then(() => {
-      dateTimePicker.find(input).trigger('blur');
-      return dateTimePicker.vm.$nextTick();
-    });
-  };
 
   const createComponent = props => {
     dateTimePicker = mount(DateTimePicker, {
       propsData: {
-        start,
-        end,
         ...props,
       },
     });
@@ -40,7 +31,7 @@ describe('DateTimePicker', () => {
   it('renders dropdown toggle button with selected text', done => {
     createComponent();
     dateTimePicker.vm.$nextTick(() => {
-      expect(dropdownToggle().text()).toBe(selectedTimeWindowText);
+      expect(dropdownToggle().text()).toBe(defaultTimeRange.label);
       done();
     });
   });
@@ -54,8 +45,10 @@ describe('DateTimePicker', () => {
 
   it('renders inputs with h/m/s truncated if its all 0s', done => {
     createComponent({
-      start: '2019-10-10T00:00:00.000Z',
-      end: '2019-10-14T00:10:00.000Z',
+      value: {
+        start: '2019-10-10T00:00:00.000Z',
+        end: '2019-10-14T00:10:00.000Z',
+      },
     });
     dateTimePicker.vm.$nextTick(() => {
       expect(dateTimePicker.find('#custom-time-from').element.value).toBe('2019-10-10');
@@ -64,22 +57,21 @@ describe('DateTimePicker', () => {
     });
   });
 
-  it(`renders dropdown with ${timeWindowsCount} (default) items in quick range`, done => {
+  it(`renders dropdown with ${optionsCount} (default) items in quick range`, done => {
     createComponent();
     dropdownToggle().trigger('click');
     dateTimePicker.vm.$nextTick(() => {
-      expect(findQuickRangeItems().length).toBe(timeWindowsCount);
+      expect(findQuickRangeItems().length).toBe(optionsCount);
       done();
     });
   });
 
-  it(`renders dropdown with correct quick range item selected`, done => {
+  it('renders dropdown with a default quick range item selected', done => {
     createComponent();
     dropdownToggle().trigger('click');
     dateTimePicker.vm.$nextTick(() => {
-      expect(dateTimePicker.find('.dropdown-item.active').text()).toBe(selectedTimeWindowText);
-
-      expect(dateTimePicker.find('.dropdown-item.active svg').isVisible()).toBe(true);
+      expect(dateTimePicker.find('.dropdown-item.active').exists()).toBe(true);
+      expect(dateTimePicker.find('.dropdown-item.active').text()).toBe(defaultTimeRange.label);
       done();
     });
   });
@@ -92,99 +84,142 @@ describe('DateTimePicker', () => {
     expect(applyButtonElement().getAttribute('disabled')).toBe('disabled');
   });
 
-  it('displays inline error message if custom time range inputs are invalid', done => {
-    createComponent();
-    fillInputAndBlur('#custom-time-from', '2019-10-01abc')
-      .then(() => fillInputAndBlur('#custom-time-to', '2019-10-10abc'))
-      .then(() => {
-        expect(dateTimePicker.findAll('.invalid-feedback').length).toBe(2);
-        done();
-      })
-      .catch(done);
-  });
+  describe('user input', () => {
+    const fillInputAndBlur = (input, val) => {
+      dateTimePicker.find(input).setValue(val);
+      return dateTimePicker.vm.$nextTick().then(() => {
+        dateTimePicker.find(input).trigger('blur');
+        return dateTimePicker.vm.$nextTick();
+      });
+    };
 
-  it('keeps apply button disabled with invalid custom time range inputs', done => {
-    createComponent();
-    fillInputAndBlur('#custom-time-from', '2019-10-01abc')
-      .then(() => fillInputAndBlur('#custom-time-to', '2019-09-19'))
-      .then(() => {
-        expect(applyButtonElement().getAttribute('disabled')).toBe('disabled');
-        done();
-      })
-      .catch(done);
-  });
+    beforeEach(done => {
+      createComponent();
+      dateTimePicker.vm.$nextTick(done);
+    });
 
-  it('enables apply button with valid custom time range inputs', done => {
-    createComponent();
-    fillInputAndBlur('#custom-time-from', '2019-10-01')
-      .then(() => fillInputAndBlur('#custom-time-to', '2019-10-19'))
-      .then(() => {
-        expect(applyButtonElement().getAttribute('disabled')).toBeNull();
-        done();
-      })
-      .catch(done.fail);
-  });
+    it('displays inline error message if custom time range inputs are invalid', done => {
+      fillInputAndBlur('#custom-time-from', '2019-10-01abc')
+        .then(() => fillInputAndBlur('#custom-time-to', '2019-10-10abc'))
+        .then(() => {
+          expect(dateTimePicker.findAll('.invalid-feedback').length).toBe(2);
+          done();
+        })
+        .catch(done);
+    });
 
-  it('emits dates in an object when apply is clicked', done => {
-    createComponent();
-    fillInputAndBlur('#custom-time-from', '2019-10-01')
-      .then(() => fillInputAndBlur('#custom-time-to', '2019-10-19'))
-      .then(() => {
-        applyButtonElement().click();
+    it('keeps apply button disabled with invalid custom time range inputs', done => {
+      fillInputAndBlur('#custom-time-from', '2019-10-01abc')
+        .then(() => fillInputAndBlur('#custom-time-to', '2019-09-19'))
+        .then(() => {
+          expect(applyButtonElement().getAttribute('disabled')).toBe('disabled');
+          done();
+        })
+        .catch(done);
+    });
 
-        expect(dateTimePicker.emitted().apply).toHaveLength(1);
-        expect(dateTimePicker.emitted().apply[0]).toEqual([
-          {
-            end: '2019-10-19T00:00:00Z',
-            start: '2019-10-01T00:00:00Z',
-          },
-        ]);
-        done();
-      })
-      .catch(done.fail);
-  });
+    it('enables apply button with valid custom time range inputs', done => {
+      fillInputAndBlur('#custom-time-from', '2019-10-01')
+        .then(() => fillInputAndBlur('#custom-time-to', '2019-10-19'))
+        .then(() => {
+          expect(applyButtonElement().getAttribute('disabled')).toBeNull();
+          done();
+        })
+        .catch(done.fail);
+    });
 
-  it('hides the popover with cancel button', done => {
-    createComponent();
-    dropdownToggle().trigger('click');
+    it('emits dates in an object when apply is clicked', done => {
+      fillInputAndBlur('#custom-time-from', '2019-10-01')
+        .then(() => fillInputAndBlur('#custom-time-to', '2019-10-19'))
+        .then(() => {
+          applyButtonElement().click();
 
-    dateTimePicker.vm.$nextTick(() => {
-      cancelButtonElement().click();
+          expect(dateTimePicker.emitted().input).toHaveLength(1);
+          expect(dateTimePicker.emitted().input[0]).toEqual([
+            {
+              end: '2019-10-19T00:00:00Z',
+              start: '2019-10-01T00:00:00Z',
+            },
+          ]);
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('unchecks quick range when text is input is clicked', done => {
+      const findActiveItems = () => findQuickRangeItems().filter(w => w.is('.active'));
+
+      expect(findActiveItems().length).toBe(1);
+
+      fillInputAndBlur('#custom-time-from', '2019-10-01')
+        .then(() => {
+          expect(findActiveItems().length).toBe(0);
+
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('emits dates in an object when a  is clicked', () => {
+      findQuickRangeItems()
+        .at(3) // any item
+        .trigger('click');
+
+      expect(dateTimePicker.emitted().input).toHaveLength(1);
+      expect(dateTimePicker.emitted().input[0][0]).toMatchObject({
+        duration: {
+          seconds: expect.any(Number),
+        },
+      });
+    });
+
+    it('hides the popover with cancel button', done => {
+      dropdownToggle().trigger('click');
 
       dateTimePicker.vm.$nextTick(() => {
-        expect(dropdownMenu().classes('show')).toBe(false);
-        done();
+        cancelButtonElement().click();
+
+        dateTimePicker.vm.$nextTick(() => {
+          expect(dropdownMenu().classes('show')).toBe(false);
+          done();
+        });
       });
     });
   });
 
   describe('when using non-default time windows', () => {
-    const otherTimeWindows = {
-      oneMinute: {
+    const MOCK_NOW = Date.UTC(2020, 0, 23, 20);
+
+    const otherTimeRanges = [
+      {
         label: '1 minute',
-        seconds: 60,
+        duration: { seconds: 60 },
       },
-      twoMinutes: {
+      {
         label: '2 minutes',
-        seconds: 60 * 2,
+        duration: { seconds: 60 * 2 },
         default: true,
       },
-      fiveMinutes: {
+      {
         label: '5 minutes',
-        seconds: 60 * 5,
+        duration: { seconds: 60 * 5 },
       },
-    };
+    ];
+
+    beforeEach(() => {
+      jest.spyOn(Date, 'now').mockImplementation(() => MOCK_NOW);
+    });
 
     it('renders dropdown with a label in the quick range', done => {
       createComponent({
-        // 2 minutes range
-        start: '2020-01-21T15:00:00.000Z',
-        end: '2020-01-21T15:02:00.000Z',
-        timeWindows: otherTimeWindows,
+        value: {
+          duration: { seconds: 60 * 5 },
+        },
+        options: otherTimeRanges,
       });
       dropdownToggle().trigger('click');
       dateTimePicker.vm.$nextTick(() => {
-        expect(dropdownToggle().text()).toBe('2 minutes');
+        expect(dropdownToggle().text()).toBe('5 minutes');
 
         done();
       });
@@ -192,16 +227,16 @@ describe('DateTimePicker', () => {
 
     it('renders dropdown with quick range items', done => {
       createComponent({
-        // 2 minutes range
-        start: '2020-01-21T15:00:00.000Z',
-        end: '2020-01-21T15:02:00.000Z',
-        timeWindows: otherTimeWindows,
+        value: {
+          duration: { seconds: 60 * 2 },
+        },
+        options: otherTimeRanges,
       });
       dropdownToggle().trigger('click');
       dateTimePicker.vm.$nextTick(() => {
         const items = findQuickRangeItems();
 
-        expect(items.length).toBe(Object.keys(otherTimeWindows).length);
+        expect(items.length).toBe(Object.keys(otherTimeRanges).length);
         expect(items.at(0).text()).toBe('1 minute');
         expect(items.at(0).is('.active')).toBe(false);
 
@@ -217,14 +252,13 @@ describe('DateTimePicker', () => {
 
     it('renders dropdown with a label not in the quick range', done => {
       createComponent({
-        // 10 minutes range
-        start: '2020-01-21T15:00:00.000Z',
-        end: '2020-01-21T15:10:00.000Z',
-        timeWindows: otherTimeWindows,
+        value: {
+          duration: { seconds: 60 * 4 },
+        },
       });
       dropdownToggle().trigger('click');
       dateTimePicker.vm.$nextTick(() => {
-        expect(dropdownToggle().text()).toBe('2020-01-21 15:00:00 to 2020-01-21 15:10:00');
+        expect(dropdownToggle().text()).toBe('2020-01-23 19:56:00 to 2020-01-23 20:00:00');
 
         done();
       });

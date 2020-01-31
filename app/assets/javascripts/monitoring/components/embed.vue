@@ -1,9 +1,9 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
-import { getParameterValues, removeParams } from '~/lib/utils/url_utility';
-import { sidebarAnimationDuration } from '../constants';
-import { getTimeRange } from '~/vue_shared/components/date_time_picker/date_time_picker_lib';
+import { convertToFixedRange } from '~/lib/utils/datetime_range';
+import { timeRangeFromUrl, removeTimeRangeParams } from '../utils';
+import { sidebarAnimationDuration, defaultTimeRange } from '../constants';
 
 let sidebarMutationObserver;
 
@@ -18,10 +18,8 @@ export default {
     },
   },
   data() {
-    const defaultRange = getTimeRange();
-    const start = getParameterValues('start', this.dashboardUrl)[0] || defaultRange.start;
-    const end = getParameterValues('end', this.dashboardUrl)[0] || defaultRange.end;
-
+    const timeRange = timeRangeFromUrl(this.dashboardUrl) || defaultTimeRange;
+    const { start, end } = convertToFixedRange(timeRange);
     const params = {
       start,
       end,
@@ -81,7 +79,7 @@ export default {
     },
     setInitialState() {
       this.setEndpoints({
-        dashboardEndpoint: removeParams(['start', 'end'], this.dashboardUrl),
+        dashboardEndpoint: removeTimeRangeParams(this.dashboardUrl),
       });
       this.setShowErrorBanner(false);
     },

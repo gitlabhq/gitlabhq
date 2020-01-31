@@ -147,11 +147,11 @@ module Gitlab
       end
 
       def current_lock_timeout_in_ms
-        timing_configuration[current_iteration - 1][0].in_milliseconds
+        Integer(timing_configuration[current_iteration - 1][0].in_milliseconds)
       end
 
       def current_sleep_time_in_seconds
-        timing_configuration[current_iteration - 1][1].to_i
+        timing_configuration[current_iteration - 1][1].to_f
       end
     end
   end

@@ -1,13 +1,15 @@
 <script>
 import { GlButton, GlDropdown, GlDropdownItem, GlFormGroup } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
+
+import { convertToFixedRange, isEqualTimeRanges, findTimeRange } from '~/lib/utils/datetime_range';
+
 import Icon from '~/vue_shared/components/icon.vue';
 import DateTimePickerInput from './date_time_picker_input.vue';
 import {
-  defaultTimeWindows,
+  defaultTimeRanges,
+  defaultTimeRange,
   isValidDate,
-  getTimeRange,
-  getTimeWindowKey,
   stringToISODate,
   ISODateToString,
   truncateZerosInDateTime,
@@ -15,7 +17,7 @@ import {
 } from './date_time_picker_lib';
 
 const events = {
-  apply: 'apply',
+  input: 'input',
   invalid: 'invalid',
 };
 
@@ -29,24 +31,22 @@ export default {
     GlDropdownItem,
   },
   props: {
-    start: {
-      type: String,
-      required: true,
-    },
-    end: {
-      type: String,
-      required: true,
-    },
-    timeWindows: {
+    value: {
       type: Object,
       required: false,
-      default: () => defaultTimeWindows,
+      default: () => defaultTimeRange,
+    },
+    options: {
+      type: Array,
+      required: false,
+      default: () => defaultTimeRanges,
     },
   },
   data() {
     return {
-      startDate: this.start,
-      endDate: this.end,
+      timeRange: this.value,
+      startDate: '',
+      endDate: '',
     };
   },
   computed: {
@@ -67,6 +67,7 @@ export default {
       set(val) {
         // Attempt to set a formatted date if possible
         this.startDate = isDateTimePickerInputValid(val) ? stringToISODate(val) : val;
+        this.timeRange = null;
       },
     },
     endInput: {
@@ -76,23 +77,48 @@ export default {
       set(val) {
         // Attempt to set a formatted date if possible
         this.endDate = isDateTimePickerInputValid(val) ? stringToISODate(val) : val;
+        this.timeRange = null;
       },
     },
 
     timeWindowText() {
-      const timeWindow = getTimeWindowKey({ start: this.start, end: this.end }, this.timeWindows);
-      if (timeWindow) {
-        return this.timeWindows[timeWindow].label;
-      } else if (isValidDate(this.start) && isValidDate(this.end)) {
-        return sprintf(__('%{start} to %{end}'), {
-          start: this.formatDate(this.start),
-          end: this.formatDate(this.end),
-        });
+      try {
+        const timeRange = findTimeRange(this.value, this.options);
+        if (timeRange) {
+          return timeRange.label;
+        }
+
+        const { start, end } = convertToFixedRange(this.value);
+        if (isValidDate(start) && isValidDate(end)) {
+          return sprintf(__('%{start} to %{end}'), {
+            start: this.formatDate(start),
+            end: this.formatDate(end),
+          });
+        }
+      } catch {
+        return __('Invalid date range');
       }
       return '';
     },
   },
+  watch: {
+    value(newValue) {
+      const { start, end } = convertToFixedRange(newValue);
+      this.timeRange = this.value;
+      this.startDate = start;
+      this.endDate = end;
+    },
+  },
   mounted() {
+    try {
+      const { start, end } = convertToFixedRange(this.timeRange);
+      this.startDate = start;
+      this.endDate = end;
+    } catch {
+      // when dates cannot be parsed, emit error.
+      this.$emit(events.invalid);
+    }
+
     // Validate on mounted, and trigger an update if needed
     if (!this.isValid) {
       this.$emit(events.invalid);
@@ -102,21 +128,22 @@ export default {
     formatDate(date) {
       return truncateZerosInDateTime(ISODateToString(date));
     },
-    setTimeWindow(key) {
-      const { start, end } = getTimeRange(key, this.timeWindows);
-      this.startDate = start;
-      this.endDate = end;
-
-      this.apply();
-    },
     closeDropdown() {
       this.$refs.dropdown.hide();
     },
-    apply() {
-      this.$emit(events.apply, {
+    isOptionActive(option) {
+      return isEqualTimeRanges(option, this.timeRange);
+    },
+    setQuickRange(option) {
+      this.timeRange = option;
+      this.$emit(events.input, this.timeRange);
+    },
+    setFixedRange() {
+      this.timeRange = convertToFixedRange({
         start: this.startDate,
         end: this.endDate,
       });
+      this.$emit(events.input, this.timeRange);
     },
   },
 };
@@ -146,7 +173,7 @@ export default {
         </div>
         <gl-form-group>
           <gl-button @click="closeDropdown">{{ __('Cancel') }}</gl-button>
-          <gl-button variant="success" :disabled="!isValid" @click="apply()">
+          <gl-button variant="success" :disabled="!isValid" @click="setFixedRange()">
             {{ __('Apply') }}
           </gl-button>
         </gl-form-group>
@@ -155,19 +182,20 @@ export default {
         <template #label>
           <span class="gl-pl-5">{{ __('Quick range') }}</span>
         </template>
+
         <gl-dropdown-item
-          v-for="(timeWindow, key) in timeWindows"
-          :key="key"
-          :active="timeWindow.label === timeWindowText"
+          v-for="(option, index) in options"
+          :key="index"
+          :active="isOptionActive(option)"
           active-class="active"
-          @click="setTimeWindow(key)"
+          @click="setQuickRange(option)"
         >
           <icon
             name="mobile-issue-close"
             class="align-bottom"
-            :class="{ invisible: timeWindow.label !== timeWindowText }"
+            :class="{ invisible: !isOptionActive(option) }"
           />
-          {{ timeWindow.label }}
+          {{ option.label }}
         </gl-dropdown-item>
       </gl-form-group>
     </div>

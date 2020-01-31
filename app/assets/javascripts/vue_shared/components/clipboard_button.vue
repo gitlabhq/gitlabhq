@@ -12,8 +12,7 @@
  *    css-class="btn-transparent"
  * />
  */
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import Icon from '../components/icon.vue';
+import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 
 export default {
   name: 'ClipboardButton',
@@ -22,7 +21,7 @@ export default {
   },
   components: {
     GlButton,
-    Icon,
+    GlIcon,
   },
   props: {
     text: {
@@ -72,6 +71,6 @@ export default {
     :title="title"
     :data-clipboard-text="clipboardText"
   >
-    <icon name="duplicate" />
+    <gl-icon name="copy-to-clipboard" />
   </gl-button>
 </template>
