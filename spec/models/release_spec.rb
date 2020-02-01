@@ -53,12 +53,6 @@ RSpec.describe Release do
     end
   end
 
-  describe 'callbacks' do
-    it 'creates a new Evidence object on after_commit', :sidekiq_inline do
-      expect { release }.to change(Evidence, :count).by(1)
-    end
-  end
-
   describe '#assets_count' do
     subject { release.assets_count }
 

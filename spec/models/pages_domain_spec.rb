@@ -180,8 +180,12 @@ describe PagesDomain do
       expect(subject.wildcard).to eq(false)
     end
 
-    it 'defaults domain_type to project' do
-      expect(subject.domain_type).to eq('project')
+    it 'defaults scope to project' do
+      expect(subject.scope).to eq('project')
+    end
+
+    it 'defaults usage to pages' do
+      expect(subject.usage).to eq('pages')
     end
   end
 
@@ -315,11 +319,11 @@ describe PagesDomain do
   end
 
   describe '#update_daemon' do
-    context 'when domain_type is instance' do
-      it 'does nothing' do
+    context 'when usage is serverless' do
+      it 'does not call the UpdatePagesConfigurationService' do
         expect(Projects::UpdatePagesConfigurationService).not_to receive(:new)
 
-        create(:pages_domain, domain_type: :instance)
+        create(:pages_domain, usage: :serverless)
       end
     end
 

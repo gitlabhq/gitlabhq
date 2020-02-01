@@ -38,7 +38,9 @@ If this feature requires changing permissions, this document https://docs.gitlab
 
 ### Availability & Testing
 
-<!-- What risks does this change pose to our availability? How might it affect the quality of the product? What additional test coverage or changes to tests will be needed? Will it require cross-browser testing? 
+<!-- This section needs to be retained and filled in during the workflow planning breakdown phase of this feature proposal, if not earlier.
+
+ What risks does this change pose to our availability? How might it affect the quality of the product? What additional test coverage or changes to tests will be needed? Will it require cross-browser testing?
 
 Please list the test areas (unit, integration and end-to-end) that needs to be added or updated to ensure that this feature will work as intended. Please use the list below as guidance.
 * Unit test changes
@@ -51,7 +53,7 @@ See the test engineering planning process and reach out to your counterpart Soft
 
 <!-- Define both the success metrics and acceptance criteria. Note that success metrics indicate the desired business outcomes, while acceptance criteria indicate when the solution is working correctly. If there is no way to measure success, link to an issue that will implement a way to measure this. -->
 
-### What is the type of buyer? 
+### What is the type of buyer?
 
 <!-- Which leads to: in which enterprise tier should this feature go? See https://about.gitlab.com/handbook/product/pricing/#four-tiers -->
 

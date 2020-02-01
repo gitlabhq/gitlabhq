@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.7.5
+
+### Fixed (1 change)
+
+- Fix DB connection pool size for Geo database. !24021
+
+
 ## 12.7.3
 
 - No changes.

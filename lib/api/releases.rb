@@ -67,6 +67,7 @@ module API
 
         if result[:status] == :success
           log_release_created_audit_event(result[:release])
+          create_evidence!
 
           present result[:release], with: Entities::Release, current_user: current_user
         else
@@ -163,6 +164,16 @@ module API
 
       def log_release_milestones_updated_audit_event
         # This is a separate method so that EE can extend its behaviour
+      end
+
+      def create_evidence!
+        return if release.historical_release?
+
+        if release.upcoming_release?
+          CreateEvidenceWorker.perform_at(release.released_at, release.id)
+        else
+          CreateEvidenceWorker.perform_async(release.id)
+        end
       end
     end
   end

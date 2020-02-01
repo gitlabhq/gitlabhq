@@ -4,7 +4,13 @@ entry.
 
 ## 12.7.5
 
-- No changes.
+### Fixed (4 changes, 1 of them is from the community)
+
+- Add accidentally deleted project config for custom apply suggestions. !23687 (Fabio Huser)
+- Fix database permission check for triggers on Amazon RDS. !24035
+- Fix applying the suggestions with an empty custom message. !24144
+- Remove invalid data from issue_tracker_data table.
+
 
 ## 12.7.3
 

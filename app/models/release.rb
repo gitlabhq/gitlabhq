@@ -34,7 +34,6 @@ class Release < ApplicationRecord
 
   delegate :repository, to: :project
 
-  after_commit :create_evidence!, on: :create, unless: :importing?
   after_commit :notify_new_release, on: :create, unless: :importing?
 
   MAX_NUMBER_TO_DISPLAY = 3
@@ -70,6 +69,10 @@ class Release < ApplicationRecord
     released_at.present? && released_at > Time.zone.now
   end
 
+  def historical_release?
+    released_at.present? && released_at < created_at
+  end
+
   def name
     self.read_attribute(:name) || tag
   end
@@ -96,10 +99,6 @@ class Release < ApplicationRecord
     strong_memoize(:actual_tag) do
       repository.find_tag(tag)
     end
-  end
-
-  def create_evidence!
-    CreateEvidenceWorker.perform_async(self.id)
   end
 
   def notify_new_release
