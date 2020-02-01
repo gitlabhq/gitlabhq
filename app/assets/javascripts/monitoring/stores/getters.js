@@ -62,8 +62,6 @@ export const metricsWithData = state => groupKey => {
  * Filter environments by names.
  *
  * This is used in the environments dropdown with searchable input.
- * Also, this searchable dropdown is behind `searchable_environments_dropdown`
- * feature flag
  *
  * @param {Object} state
  * @returns {Array} List of environments

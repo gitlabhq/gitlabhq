@@ -12,7 +12,7 @@ module Gitlab
               # If there is only one order field, we can assume it
               # does not contain NULLs, and don't need additional
               # conditions
-              unless names.count == 1
+              unless order_list.count == 1
                 conditions << [second_attribute_condition, final_condition]
               end
 
@@ -24,7 +24,7 @@ module Gitlab
             # ex: "(relative_position > 23)"
             def first_attribute_condition
               <<~SQL
-                (#{table_condition(names.first, values.first, operator.first).to_sql})
+                (#{table_condition(order_list.first, values.first, operators.first).to_sql})
               SQL
             end
 
@@ -32,9 +32,9 @@ module Gitlab
             def second_attribute_condition
               condition = <<~SQL
                 OR (
-                  #{table_condition(names.first, values.first, '=').to_sql}
+                  #{table_condition(order_list.first, values.first, '=').to_sql}
                   AND
-                  #{table_condition(names[1], values[1], operator[1]).to_sql}
+                  #{table_condition(order_list[1], values[1], operators[1]).to_sql}
                 )
               SQL
 
@@ -45,7 +45,7 @@ module Gitlab
             def final_condition
               if before_or_after == :after
                 <<~SQL
-                  OR (#{table_condition(names.first, nil, 'is_null').to_sql})
+                  OR (#{table_condition(order_list.first, nil, 'is_null').to_sql})
                 SQL
               end
             end

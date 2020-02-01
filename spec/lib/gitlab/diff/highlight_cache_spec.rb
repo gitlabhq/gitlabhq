@@ -144,4 +144,10 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
       cache.clear
     end
   end
+
+  describe 'metrics' do
+    it 'defines :gitlab_redis_diff_caching_memory_usage_bytes histogram' do
+      expect(described_class).to respond_to(:gitlab_redis_diff_caching_memory_usage_bytes)
+    end
+  end
 end

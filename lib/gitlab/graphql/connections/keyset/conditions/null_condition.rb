@@ -16,9 +16,9 @@ module Gitlab
             def first_attribute_condition
               condition = <<~SQL
                 (
-                  #{table_condition(names.first, nil, 'is_null').to_sql}
+                  #{table_condition(order_list.first, nil, 'is_null').to_sql}
                   AND
-                  #{table_condition(names[1], values[1], operator[1]).to_sql}
+                  #{table_condition(order_list[1], values[1], operators[1]).to_sql}
                 )
               SQL
 
@@ -29,7 +29,7 @@ module Gitlab
             def final_condition
               if before_or_after == :before
                 <<~SQL
-                  OR (#{table_condition(names.first, nil, 'is_not_null').to_sql})
+                  OR (#{table_condition(order_list.first, nil, 'is_not_null').to_sql})
                 SQL
               end
             end

@@ -51,13 +51,22 @@ exports[`Dashboard template matches the default snapshot 1`] = `
              
             <gl-dropdown-divider-stub />
              
-            <!---->
+            <gl-search-box-by-type-stub
+              class="m-2"
+              value=""
+            />
              
             <div
               class="flex-fill overflow-auto"
             />
              
-            <!---->
+            <div
+              class="text-secondary no-matches-message"
+            >
+              
+              No matching results
+            
+            </div>
           </div>
         </gl-dropdown-stub>
       </gl-form-group-stub>

@@ -8,12 +8,12 @@ module Gitlab
           attr_reader :attribute_name, :sort_direction
 
           def initialize(order_value)
-            if order_value.is_a?(String)
-              @attribute_name, @sort_direction = extract_nulls_last_order(order_value)
-            else
-              @attribute_name = order_value.expr.name
-              @sort_direction = order_value.direction
-            end
+            @attribute_name, @sort_direction =
+              if order_value.is_a?(String)
+                extract_nulls_last_order(order_value)
+              else
+                extract_attribute_values(order_value)
+              end
           end
 
           def operator_for(before_or_after)
@@ -70,6 +70,10 @@ module Gitlab
             tokens = order_value.downcase.split
 
             [tokens.first, (tokens[1] == 'asc' ? :asc : :desc)]
+          end
+
+          def extract_attribute_values(order_value)
+            [order_value.expr.name, order_value.direction]
           end
         end
       end

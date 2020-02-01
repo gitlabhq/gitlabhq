@@ -25,6 +25,7 @@ module Types
     mount_mutation Mutations::Todos::MarkDone
     mount_mutation Mutations::Todos::Restore
     mount_mutation Mutations::Todos::MarkAllDone
+    mount_mutation Mutations::Todos::RestoreMany
     mount_mutation Mutations::Snippets::Destroy
     mount_mutation Mutations::Snippets::Update
     mount_mutation Mutations::Snippets::Create

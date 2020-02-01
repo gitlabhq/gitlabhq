@@ -13,6 +13,7 @@ describe Gitlab::Graphql::Connections::Keyset::QueryBuilder do
   describe '#conditions' do
     let(:relation) { Issue.order(relative_position: :desc).order(:id) }
     let(:order_list) { Gitlab::Graphql::Connections::Keyset::OrderInfo.build_order_list(relation) }
+    let(:arel_table) { Issue.arel_table }
     let(:builder) { described_class.new(arel_table, order_list, decoded_cursor, before_or_after) }
     let(:before_or_after) { :after }
 
@@ -100,9 +101,5 @@ describe Gitlab::Graphql::Connections::Keyset::QueryBuilder do
         end
       end
     end
-  end
-
-  def arel_table
-    Issue.arel_table
   end
 end

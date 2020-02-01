@@ -3,6 +3,7 @@
 module Gitlab
   module Diff
     class HighlightCache
+      include Gitlab::Metrics::Methods
       include Gitlab::Utils::StrongMemoize
 
       EXPIRATION = 1.week
@@ -10,6 +11,11 @@ module Gitlab
 
       delegate :diffable,     to: :@diff_collection
       delegate :diff_options, to: :@diff_collection
+
+      define_histogram :gitlab_redis_diff_caching_memory_usage_bytes do
+        docstring 'Redis diff caching memory usage by key'
+        buckets [100, 1000, 10000, 100000, 1000000, 10000000]
+      end
 
       def initialize(diff_collection)
         @diff_collection = diff_collection

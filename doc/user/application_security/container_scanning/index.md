@@ -46,17 +46,31 @@ To enable Container Scanning in your pipeline, you need:
 - Docker `18.09.03` or higher installed on the machine where the Runners are
   running. If you're using the shared Runners on GitLab.com, this is already
   the case.
-- To [build and push](../../../ci/docker/using_docker_build.md#container-registry-examples)
-  your Docker image to your project's [Container Registry](../../packages/container_registry/index.md).
-  The name of the Docker image should match the following scheme:
+- To [build and push](../../packages/container_registry/index.md#container-registry-examples-with-gitlab-cicd)
+  your Docker image to your project's Container Registry.
+  The name of the Docker image should use the following
+  [predefined environment variables](../../../ci/variables/predefined_variables.md)
+  as defined below:
 
   ```text
   $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
   ```
 
-  The variables above can be found in the
-  [predefined environment variables](../../../ci/variables/predefined_variables.md)
-  document.
+  These can be used directly in your `.gitlab-ci.yml` file:
+
+  ```yaml
+  build:
+    image: docker:19.03.1
+    stage: build
+    services:
+      - docker:19.03.1-dind
+    variables:
+      IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_REF_SHA
+    script:
+      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+      - docker build -t $IMAGE_TAG .
+      - docker push $IMAGE_TAG
+  ```
 
 ## Configuration
 

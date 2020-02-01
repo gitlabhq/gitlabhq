@@ -255,9 +255,6 @@ describe('Dashboard', () => {
         {
           attachToDocument: true,
           stubs: ['graph-group', 'panel-type'],
-          provide: {
-            glFeatures: { searchableEnvironmentsDropdown: true },
-          },
         },
       );
 
