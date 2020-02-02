@@ -7,7 +7,7 @@ class DropAnalyticsRepositoryFileEditsTable < ActiveRecord::Migration[5.2]
 
   def up
     # Requires ExclusiveLock on the table. Not in use, no records, no FKs.
-    drop_table :analytics_repository_file_edits
+    drop_table :analytics_repository_file_edits if table_exists?(:analytics_repository_file_edits) # this table might be already dropped on development environment
   end
 
   def down

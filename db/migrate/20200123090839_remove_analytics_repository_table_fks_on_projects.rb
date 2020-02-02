@@ -9,7 +9,7 @@ class RemoveAnalyticsRepositoryTableFksOnProjects < ActiveRecord::Migration[5.2]
     with_lock_retries do
       # Requires ExclusiveLock on all tables. analytics_* tables are empty
       remove_foreign_key :analytics_repository_files, :projects
-      remove_foreign_key :analytics_repository_file_edits, :projects
+      remove_foreign_key :analytics_repository_file_edits, :projects if table_exists?(:analytics_repository_file_edits) # this table might be already dropped on development environment
       remove_foreign_key :analytics_repository_file_commits, :projects
     end
   end

@@ -8,7 +8,7 @@ class RemoveAnalyticsRepositoryFilesFkOnOtherAnalyticsTables < ActiveRecord::Mig
   def up
     with_lock_retries do
       # Requires ExclusiveLock on all tables. analytics_* tables are empty
-      remove_foreign_key :analytics_repository_file_edits, :analytics_repository_files
+      remove_foreign_key :analytics_repository_file_edits, :analytics_repository_files if table_exists?(:analytics_repository_file_edits) # this table might be already dropped on development environment
       remove_foreign_key :analytics_repository_file_commits, :analytics_repository_files
     end
   end
