@@ -128,60 +128,6 @@ module API
       end
     end
 
-    class IssuableEntity < Grape::Entity
-      expose :id, :iid
-      expose(:project_id) { |entity| entity&.project.try(:id) }
-      expose :title, :description
-      expose :state, :created_at, :updated_at
-
-      # Avoids an N+1 query when metadata is included
-      def issuable_metadata(subject, options, method, args = nil)
-        cached_subject = options.dig(:issuable_metadata, subject.id)
-        (cached_subject || subject).public_send(method, *args) # rubocop: disable GitlabSecurity/PublicSend
-      end
-    end
-
-    class IssuableReferences < Grape::Entity
-      expose :short do |issuable|
-        issuable.to_reference
-      end
-
-      expose :relative do |issuable, options|
-        issuable.to_reference(options[:group] || options[:project])
-      end
-
-      expose :full do |issuable|
-        issuable.to_reference(full: true)
-      end
-    end
-
-    class Diff < Grape::Entity
-      expose :old_path, :new_path, :a_mode, :b_mode
-      expose :new_file?, as: :new_file
-      expose :renamed_file?, as: :renamed_file
-      expose :deleted_file?, as: :deleted_file
-      expose :json_safe_diff, as: :diff
-    end
-
-    class ProtectedRefAccess < Grape::Entity
-      expose :access_level
-      expose :access_level_description do |protected_ref_access|
-        protected_ref_access.humanize
-      end
-    end
-
-    class ProtectedBranch < Grape::Entity
-      expose :id
-      expose :name
-      expose :push_access_levels, using: Entities::ProtectedRefAccess
-      expose :merge_access_levels, using: Entities::ProtectedRefAccess
-    end
-
-    class ProtectedTag < Grape::Entity
-      expose :name
-      expose :create_access_levels, using: Entities::ProtectedRefAccess
-    end
-
     class Milestone < Grape::Entity
       expose :id, :iid
       expose :project_id, if: -> (entity, options) { entity&.project_id }
