@@ -83,9 +83,9 @@ class Blob < SimpleDelegator
     new(blob, project)
   end
 
-  def self.lazy(project, commit_id, path)
+  def self.lazy(project, commit_id, path, blob_size_limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
     BatchLoader.for([commit_id, path]).batch(key: project.repository) do |items, loader, args|
-      args[:key].blobs_at(items).each do |blob|
+      args[:key].blobs_at(items, blob_size_limit: blob_size_limit).each do |blob|
         loader.call([blob.commit_id, blob.path], blob) if blob
       end
     end

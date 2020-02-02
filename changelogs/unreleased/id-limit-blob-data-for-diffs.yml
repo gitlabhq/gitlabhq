@@ -1,0 +1,5 @@
+---
+title: Load maximum 1mb blob data for a diff file
+merge_request: 24160
+author:
+type: performance

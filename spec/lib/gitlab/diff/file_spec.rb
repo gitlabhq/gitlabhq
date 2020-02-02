@@ -169,18 +169,18 @@ describe Gitlab::Diff::File do
     end
   end
 
-  describe '#old_blob' do
-    it 'returns blob of commit of base commit' do
+  describe '#old_blob and #new_blob' do
+    it 'returns blob of base commit and the new commit' do
+      items = [
+        [diff_file.new_content_sha, diff_file.new_path], [diff_file.old_content_sha, diff_file.old_path]
+      ]
+
+      expect(project.repository).to receive(:blobs_at).with(items, blob_size_limit: 100 * 1024).and_call_original
+
       old_data = diff_file.old_blob.data
-
-      expect(old_data).to include('raise "System commands must be given as an array of strings"')
-    end
-  end
-
-  describe '#new_blob' do
-    it 'returns blob of new commit' do
       data = diff_file.new_blob.data
 
+      expect(old_data).to include('raise "System commands must be given as an array of strings"')
       expect(data).to include('raise RuntimeError, "System commands must be given as an array of strings"')
     end
   end

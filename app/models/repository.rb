@@ -516,10 +516,12 @@ class Repository
   end
 
   # items is an Array like: [[oid, path], [oid1, path1]]
-  def blobs_at(items)
+  def blobs_at(items, blob_size_limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
     return [] unless exists?
 
-    raw_repository.batch_blobs(items).map { |blob| Blob.decorate(blob, project) }
+    raw_repository.batch_blobs(items, blob_size_limit: blob_size_limit).map do |blob|
+      Blob.decorate(blob, project)
+    end
   end
 
   def root_ref

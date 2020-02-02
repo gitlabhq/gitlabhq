@@ -350,6 +350,16 @@ module Gitlab
 
       private
 
+      def fetch_blob(sha, path)
+        return unless sha
+
+        # Load only patch_hard_limit_bytes number of bytes for the blob
+        # Because otherwise, it is too large to be displayed
+        Blob.lazy(
+          repository.project, sha, path,
+            blob_size_limit: Gitlab::Git::Diff.patch_hard_limit_bytes)
+      end
+
       def total_blob_lines(blob)
         @total_lines ||= begin
           line_count = blob.lines.size
@@ -385,15 +395,11 @@ module Gitlab
       end
 
       def new_blob_lazy
-        return unless new_content_sha
-
-        Blob.lazy(repository.project, new_content_sha, file_path)
+        fetch_blob(new_content_sha, file_path)
       end
 
       def old_blob_lazy
-        return unless old_content_sha
-
-        Blob.lazy(repository.project, old_content_sha, old_path)
+        fetch_blob(old_content_sha, old_path)
       end
 
       def simple_viewer_class

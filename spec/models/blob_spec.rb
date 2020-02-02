@@ -22,6 +22,7 @@ describe Blob do
     let(:same_project) { Project.find(project.id) }
     let(:other_project) { create(:project, :repository) }
     let(:commit_id) { 'e63f41fe459e62e1228fcef60d7189127aeba95a' }
+    let(:blob_size_limit) { 10 * 1024 * 1024 }
 
     it 'does not fetch blobs when none are accessed' do
       expect(project.repository).not_to receive(:blobs_at)
@@ -30,7 +31,9 @@ describe Blob do
     end
 
     it 'fetches all blobs for the same repository when one is accessed' do
-      expect(project.repository).to receive(:blobs_at).with([[commit_id, 'CHANGELOG'], [commit_id, 'CONTRIBUTING.md']]).once.and_call_original
+      expect(project.repository).to receive(:blobs_at)
+        .with([[commit_id, 'CHANGELOG'], [commit_id, 'CONTRIBUTING.md']], blob_size_limit: blob_size_limit)
+        .once.and_call_original
       expect(other_project.repository).not_to receive(:blobs_at)
 
       changelog = described_class.lazy(project, commit_id, 'CHANGELOG')
@@ -53,7 +56,8 @@ describe Blob do
 
       readme = described_class.lazy(project, commit_id, 'README.md')
 
-      expect(project.repository).to receive(:blobs_at).with([[commit_id, 'README.md']]).once.and_call_original
+      expect(project.repository).to receive(:blobs_at)
+        .with([[commit_id, 'README.md']], blob_size_limit: blob_size_limit).once.and_call_original
 
       readme.id
     end
