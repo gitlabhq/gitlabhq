@@ -1,4 +1,4 @@
-/* eslint-disable func-names, prefer-rest-params, consistent-return, no-shadow, no-else-return, no-self-compare, no-unused-expressions, yoda, prefer-spread, camelcase, no-param-reassign */
+/* eslint-disable func-names, prefer-rest-params, consistent-return, no-shadow, no-else-return, no-self-compare, no-unused-expressions, yoda, prefer-spread, babel/camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
 

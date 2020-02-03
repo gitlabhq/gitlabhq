@@ -133,9 +133,9 @@ export const loadBranch = ({ dispatch, getters }, { projectId, branchId }) =>
         ref: branch.commit.id,
       });
     })
-    .catch(() => {
+    .catch(err => {
       dispatch('showBranchNotFoundError', branchId);
-      return Promise.reject();
+      throw err;
     });
 
 export const openBranch = ({ dispatch, state, getters }, { projectId, branchId, basePath }) => {

@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Settings Form renders 1`] = `
-<form>
+exports[`Expiration Policy Form renders 1`] = `
+<form
+  class="lh-2"
+>
   <div
     class="card"
   >
@@ -56,7 +58,6 @@ exports[`Settings Form renders 1`] = `
         <glformselect-stub
           disabled="true"
           id="expiration-policy-interval"
-          value="bar"
         >
           <option
             value="foo"
@@ -85,7 +86,6 @@ exports[`Settings Form renders 1`] = `
         <glformselect-stub
           disabled="true"
           id="expiration-policy-schedule"
-          value="bar"
         >
           <option
             value="foo"
@@ -114,7 +114,6 @@ exports[`Settings Form renders 1`] = `
         <glformselect-stub
           disabled="true"
           id="expiration-policy-latest"
-          value="bar"
         >
           <option
             value="foo"
@@ -159,7 +158,6 @@ exports[`Settings Form renders 1`] = `
       >
         <glbutton-stub
           class="mr-2 d-block"
-          disabled="true"
           size="md"
           type="reset"
           variant="secondary"

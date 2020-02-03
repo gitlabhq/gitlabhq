@@ -25,10 +25,9 @@ class EmailsOnPushService < Service
   end
 
   def initialize_properties
-    if properties.nil?
-      self.properties = {}
-      self.branches_to_be_notified ||= "all"
-    end
+    super
+
+    self.branches_to_be_notified = 'all' if branches_to_be_notified.nil?
   end
 
   def execute(push_data)

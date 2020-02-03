@@ -1,4 +1,4 @@
-/* eslint-disable camelcase, guard-for-in, no-restricted-syntax */
+/* eslint-disable guard-for-in, no-restricted-syntax */
 /* global NoteModel */
 
 import $ from 'jquery';
@@ -40,13 +40,13 @@ class DiscussionModel {
     return true;
   }
 
-  resolveAllNotes(resolved_by) {
+  resolveAllNotes(resolvedBy) {
     for (const noteId in this.notes) {
       const note = this.notes[noteId];
 
       if (!note.resolved) {
         note.resolved = true;
-        note.resolved_by = resolved_by;
+        note.resolved_by = resolvedBy;
       }
     }
   }

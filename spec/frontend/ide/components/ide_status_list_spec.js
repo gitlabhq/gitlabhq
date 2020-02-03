@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import IdeStatusList from '~/ide/components/ide_status_list';
+import IdeStatusList from '~/ide/components/ide_status_list.vue';
 
 const TEST_FILE = {
   name: 'lorem.md',

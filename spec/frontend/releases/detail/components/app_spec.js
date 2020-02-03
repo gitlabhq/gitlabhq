@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { mount } from '@vue/test-utils';
-import ReleaseDetailApp from '~/releases/detail/components/app';
+import ReleaseDetailApp from '~/releases/detail/components/app.vue';
 import { release } from '../../mock_data';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 

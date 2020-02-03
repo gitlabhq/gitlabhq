@@ -3,6 +3,8 @@
 class WebHookLog < ApplicationRecord
   include SafeUrl
   include Presentable
+  include DeleteWithLimit
+  include CreatedAtFilterable
 
   belongs_to :web_hook
 

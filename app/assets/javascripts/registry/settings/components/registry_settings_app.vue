@@ -3,7 +3,7 @@ import { mapActions, mapState } from 'vuex';
 import { GlAlert } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 
-import { FETCH_SETTINGS_ERROR_MESSAGE } from '../constants';
+import { FETCH_SETTINGS_ERROR_MESSAGE } from '../../shared/constants';
 
 import SettingsForm from './settings_form.vue';
 

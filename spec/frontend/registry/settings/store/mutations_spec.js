@@ -1,7 +1,7 @@
 import mutations from '~/registry/settings/store/mutations';
 import * as types from '~/registry/settings/store/mutation_types';
 import createState from '~/registry/settings/store/state';
-import { formOptions, stringifiedFormOptions } from '../mock_data';
+import { formOptions, stringifiedFormOptions } from '../../shared/mock_data';
 
 describe('Mutations Registry Store', () => {
   let mockState;
@@ -28,7 +28,7 @@ describe('Mutations Registry Store', () => {
       mockState.settings = { foo: 'bar' };
       const payload = { foo: 'baz' };
       const expectedState = { ...mockState, settings: payload };
-      mutations[types.UPDATE_SETTINGS](mockState, payload);
+      mutations[types.UPDATE_SETTINGS](mockState, { settings: payload });
       expect(mockState.settings).toEqual(expectedState.settings);
     });
   });

@@ -1,4 +1,4 @@
-/* eslint-disable consistent-return, camelcase, class-methods-use-this */
+/* eslint-disable consistent-return, class-methods-use-this */
 
 // Zen Mode (full screen) textarea
 //
@@ -91,8 +91,8 @@ export default class ZenMode {
     }
   }
 
-  scrollTo(zen_area) {
-    return $.scrollTo(zen_area, 0, {
+  scrollTo(zenArea) {
+    return $.scrollTo(zenArea, 0, {
       offset: -150,
     });
   }

@@ -165,7 +165,7 @@ rspec-ee migration pg9:
 
 rspec-ee unit pg9:
   extends: .rspec-ee-base-pg9
-  parallel: 5
+  parallel: 10
 
 rspec-ee integration pg9:
   extends: .rspec-ee-base-pg9
@@ -186,7 +186,7 @@ rspec-ee unit pg10:
   extends:
     - .rspec-ee-base-pg10
     - .only-master
-  parallel: 5
+  parallel: 10
 
 rspec-ee integration pg10:
   extends:

@@ -4,7 +4,7 @@ import component from '~/registry/settings/components/registry_settings_app.vue'
 import SettingsForm from '~/registry/settings/components/settings_form.vue';
 import { createStore } from '~/registry/settings/store/';
 import { SET_IS_DISABLED } from '~/registry/settings/store/mutation_types';
-import { FETCH_SETTINGS_ERROR_MESSAGE } from '~/registry/settings/constants';
+import { FETCH_SETTINGS_ERROR_MESSAGE } from '~/registry/shared/constants';
 
 describe('Registry Settings App', () => {
   let wrapper;

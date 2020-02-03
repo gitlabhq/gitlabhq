@@ -10,11 +10,14 @@ describe('Actions Registry Store', () => {
     ${'updateSettings'}  | ${types.UPDATE_SETTINGS}   | ${'foo'}
     ${'toggleLoading'}   | ${types.TOGGLE_LOADING}    | ${undefined}
     ${'resetSettings'}   | ${types.RESET_SETTINGS}    | ${undefined}
-  `('%s action invokes %s mutation with payload %s', ({ actionName, mutationName, payload }) => {
-    it('should set the initial state', done => {
-      testAction(actions[actionName], payload, {}, [{ type: mutationName, payload }], [], done);
-    });
-  });
+  `(
+    '$actionName invokes $mutationName with payload $payload',
+    ({ actionName, mutationName, payload }) => {
+      it('should set state', done => {
+        testAction(actions[actionName], payload, {}, [{ type: mutationName, payload }], [], done);
+      });
+    },
+  );
 
   describe('receiveSettingsSuccess', () => {
     it('calls SET_SETTINGS when data is present', () => {

@@ -1,6 +1,6 @@
 import * as getters from '~/registry/settings/store/getters';
-import * as utils from '~/registry/settings/utils';
-import { formOptions } from '../mock_data';
+import * as utils from '~/registry/shared/utils';
+import { formOptions } from '../../shared/mock_data';
 
 describe('Getters registry settings store', () => {
   const settings = {

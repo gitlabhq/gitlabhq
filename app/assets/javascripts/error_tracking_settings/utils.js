@@ -13,6 +13,6 @@ export const transformFrontendSettings = ({ apiHost, enabled, token, selectedPro
   return { api_host: apiHost || null, enabled, token: token || null, project };
 };
 
-export const getDisplayName = project => `${project.organizationName} | ${project.name}`;
+export const getDisplayName = project => `${project.organizationName} | ${project.slug}`;
 
 export default () => {};

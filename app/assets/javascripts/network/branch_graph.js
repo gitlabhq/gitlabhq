@@ -1,4 +1,4 @@
-/* eslint-disable func-names, consistent-return, camelcase */
+/* eslint-disable func-names, consistent-return */
 
 import $ from 'jquery';
 import { __ } from '../locale';
@@ -270,14 +270,14 @@ export default class BranchGraph {
       stroke: 'none',
     });
 
-    const avatar_box_x = this.offsetX + this.unitSpace * this.mspace + 10;
-    const avatar_box_y = y - 10;
+    const avatarBoxX = this.offsetX + this.unitSpace * this.mspace + 10;
+    const avatarBoxY = y - 10;
 
-    r.rect(avatar_box_x, avatar_box_y, 20, 20).attr({
+    r.rect(avatarBoxX, avatarBoxY, 20, 20).attr({
       stroke: this.colors[commit.space],
       'stroke-width': 2,
     });
-    r.image(commit.author.icon, avatar_box_x, avatar_box_y, 20, 20);
+    r.image(commit.author.icon, avatarBoxX, avatarBoxY, 20, 20);
     return r
       .text(this.offsetX + this.unitSpace * this.mspace + 35, y, commit.message.split('\n')[0])
       .attr({

@@ -11,20 +11,9 @@ class PruneWebHookLogsWorker
   # The maximum number of rows to remove in a single job.
   DELETE_LIMIT = 50_000
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform
-    # MySQL doesn't allow "DELETE FROM ... WHERE id IN ( ... )" if the inner
-    # query refers to the same table. To work around this we wrap the IN body in
-    # another sub query.
-    WebHookLog
-      .where(
-        'id IN (SELECT id FROM (?) ids_to_remove)',
-        WebHookLog
-          .select(:id)
-          .where('created_at < ?', 90.days.ago.beginning_of_day)
-          .limit(DELETE_LIMIT)
-      )
-      .delete_all
+    cutoff_date = 90.days.ago.beginning_of_day
+
+    WebHookLog.created_before(cutoff_date).delete_with_limit(DELETE_LIMIT)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

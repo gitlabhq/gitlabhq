@@ -4,6 +4,8 @@ class Event < ApplicationRecord
   include Sortable
   include FromUnion
   include Presentable
+  include DeleteWithLimit
+  include CreatedAtFilterable
 
   default_scope { reorder(nil) }
 
