@@ -29,7 +29,7 @@ requests.
 This is what a Unicorn worker timeout looks like in `unicorn_stderr.log`. The
 master process has PID 56227 below.
 
-```
+```plaintext
 [2015-06-05T10:58:08.660325 #56227] ERROR -- : worker=10 PID:53009 timeout (61s > 60s), killing
 [2015-06-05T10:58:08.699360 #56227] ERROR -- : reaped #<Process::Status: pid 53009 SIGKILL (signal 9)> worker=10
 [2015-06-05T10:58:08.708141 #62538]  INFO -- : worker=10 spawned pid=62538
@@ -79,7 +79,7 @@ threshold is a random value between 200 and 250 MB.  The master process (PID
 117565) then reaps the worker process and spawns a new 'worker 4' with PID
 127549.
 
-```
+```plaintext
 [2015-06-05T12:07:41.828374 #125918]  WARN -- : #<Unicorn::HttpServer:0x00000002734770>: worker (pid: 125918) exceeds memory limit (256413696 bytes > 254802235 bytes)
 [2015-06-05T12:07:41.828472 #125918]  WARN -- : Unicorn::WorkerKiller send SIGQUIT (pid: 125918) alive: 23 sec (trial 1)
 [2015-06-05T12:07:42.025916 #117565]  INFO -- : reaped #<Process::Status: pid 125918 exit 0> worker=4

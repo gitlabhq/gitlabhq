@@ -174,13 +174,13 @@ from the GitLab project.
 To manually verify that you have properly configured the domain verification
 `TXT` DNS entry, you can run the following command in your terminal:
 
-```
+```shell
 dig _gitlab-pages-verification-code.<YOUR-PAGES-DOMAIN> TXT
 ```
 
 Expect the output:
 
-```
+```plaintext
 ;; ANSWER SECTION:
 _gitlab-pages-verification-code.<YOUR-PAGES-DOMAIN>. 300 IN TXT "gitlab-pages-verification-code=<YOUR-VERIFICATION-CODE>"
 ```

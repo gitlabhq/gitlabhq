@@ -193,6 +193,25 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
 
+## Viewing group activity
+
+A group's **Activity** page displays the most recent actions taken in a group, including:
+
+- **Push events**: Recent pushes to branches
+- **Merge events**: Recent merges
+- **Issue events**: Issues opened or closed
+- **Epic events**: Epics opened or closed
+- **Comments**: Comments opened or closed
+- **Team**: Team members who have joined or left the group
+
+The entire activity feed is also available in Atom format by clicking the
+**RSS** icon.
+
+To view a group's **Activity** page:
+
+1. Go to the group's page.
+1. In the left navigation menu, go to **Group Overview** and select **Activity**.
+
 ## Transfer projects into groups
 
 Learn how to [transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).

@@ -1,10 +1,10 @@
 # rubocop:disable Rails/Output
-if defined?(Rails::Console)
+if Gitlab::Runtime.console?
   # note that this will not print out when using `spring`
   justify = 15
 
   puts '-' * 80
-  puts " GitLab:".ljust(justify) + "#{Gitlab::VERSION} (#{Gitlab.revision})"
+  puts " GitLab:".ljust(justify) + "#{Gitlab::VERSION} (#{Gitlab.revision}) #{Gitlab.ee? ? 'EE' : 'FOSS'}"
   puts " GitLab Shell:".ljust(justify) + "#{Gitlab::VersionInfo.parse(Gitlab::Shell.new.version)}"
 
   if Gitlab::Database.exists?

@@ -200,7 +200,7 @@ project is a fork (even a private fork) of the target project.
 
 Add the following alias to your `~/.gitconfig`:
 
-```
+```plaintext
 [alias]
     mr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
 ```
@@ -209,7 +209,7 @@ Now you can check out a particular merge request from any repository and any
 remote. For example, to check out the merge request with ID 5 as shown in GitLab
 from the `origin` remote, do:
 
-```
+```shell
 git mr origin 5
 ```
 
@@ -221,7 +221,7 @@ it out.
 Locate the section for your GitLab remote in the `.git/config` file. It looks
 like this:
 
-```
+```plaintext
 [remote "origin"]
   url = https://gitlab.com/gitlab-org/gitlab-foss.git
   fetch = +refs/heads/*:refs/remotes/origin/*
@@ -229,19 +229,19 @@ like this:
 
 You can open the file with:
 
-```
+```shell
 git config -e
 ```
 
 Now add the following line to the above section:
 
-```
+```plaintext
 fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*
 ```
 
 In the end, it should look like this:
 
-```
+```plaintext
 [remote "origin"]
   url = https://gitlab.com/gitlab-org/gitlab-foss.git
   fetch = +refs/heads/*:refs/remotes/origin/*
@@ -250,7 +250,7 @@ In the end, it should look like this:
 
 Now you can fetch all the merge requests:
 
-```
+```shell
 git fetch origin
 
 ...
@@ -262,7 +262,7 @@ From https://gitlab.com/gitlab-org/gitlab-foss.git
 
 And to check out a particular merge request:
 
-```
+```shell
 git checkout origin/merge-requests/1
 ```
 

@@ -37,7 +37,7 @@ completes.
 The output will vary depending on what version of `fio` installed. The following
 is an example output from `fio` v2.2.10 on a networked solid-state drive (SSD):
 
-```
+```plaintext
 test: (g=0): rw=randrw, bs=4K-4K/4K-4K/4K-4K, ioengine=libaio, iodepth=64
     fio-2.2.10
     Starting 1 process

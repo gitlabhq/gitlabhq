@@ -198,7 +198,7 @@ source code that can match references to:
 
 For example the following commit message:
 
-```
+```plaintext
 Awesome commit message
 
 Fix #20, Fixes #21 and Closes group/otherproject#22.

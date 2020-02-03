@@ -43,14 +43,14 @@ installations from source, the default repository directory will be
 `/home/git/repositories/USER/REPO.git`. For convenience, assign this path to a
 variable:
 
-```
+```shell
 GIT_REPO_PATH=/var/opt/gitlab/git-data/repositories/USER/REPOS.git
 ```
 
 SubGit will keep this repository in sync with a remote SVN project. For
 convenience, assign your remote SVN project URL to a variable:
 
-```
+```shell
 SVN_PROJECT_URL=http://svn.company.com/repos/project
 ```
 
@@ -58,14 +58,14 @@ Next you need to run SubGit to set up a Git/SVN mirror. Make sure the following
 `subgit` command is ran on behalf of the same user that keeps ownership of
 GitLab Git repositories (by default `git`):
 
-```
+```shell
 subgit configure --layout auto $SVN_PROJECT_URL $GIT_REPO_PATH
 ```
 
 Adjust authors and branches mappings, if necessary. Open with your favorite
 text editor:
 
-```
+```shell
 edit $GIT_REPO_PATH/subgit/authors.txt
 edit $GIT_REPO_PATH/subgit/config
 ```
@@ -78,7 +78,7 @@ For more information regarding the SubGit configuration options, refer to
 Now that SubGit has configured the Git/SVN repos, run `subgit` to perform the
 initial translation of existing SVN revisions into the Git repository:
 
-```
+```shell
 subgit install $GIT_REPO_PATH
 ```
 
@@ -90,7 +90,7 @@ works transparently and does not require any special commands.
 If you would prefer to perform one-time cut over migration with `subgit`, use
 the `import` command instead of `install`:
 
-```
+```shell
 subgit import $GIT_REPO_PATH
 ```
 
@@ -145,7 +145,7 @@ svn log --quiet | grep -E "r[0-9]+ \| .+ \|" | cut -d'|' -f2 | sed 's/ //g' | so
 Use the output from the last command to construct the authors file.
 Create a file called `authors.txt` and add one mapping per line.
 
-```
+```plaintext
 janedoe = Jane Doe <janedoe@example.com>
 johndoe = John Doe <johndoe@example.com>
 ```
