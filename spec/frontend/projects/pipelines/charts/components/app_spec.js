@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlColumnChart } from '@gitlab/ui/dist/charts';
-import Component from '~/projects/pipelines/charts/components/app';
-import StatisticsList from '~/projects/pipelines/charts/components/statistics_list';
+import Component from '~/projects/pipelines/charts/components/app.vue';
+import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
 import { counts, timesChartData } from '../mock_data';
 
 describe('ProjectsPipelinesChartsApp', () => {

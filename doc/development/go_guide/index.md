@@ -302,7 +302,7 @@ There are a few guidelines one should follow when using the
   fields in the context of that code path, such as the URI of the request using
   [`WithField`](https://godoc.org/github.com/sirupsen/logrus#WithField) or
   [`WithFields`](https://godoc.org/github.com/sirupsen/logrus#WithFields). For
-  example, `logrus.WithField("file", "/app/go).Info("Opening dir")`. If you
+  example, `logrus.WithField("file", "/app/go").Info("Opening dir")`. If you
   have to log multiple keys, always use `WithFields` instead of calling
   `WithField` more than once.
 

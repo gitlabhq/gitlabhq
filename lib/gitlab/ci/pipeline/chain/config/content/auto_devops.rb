@@ -31,9 +31,7 @@ module Gitlab
               end
 
               def beta_enabled?
-                Feature.enabled?(:auto_devops_beta, project, default_enabled: true) &&
-                  # workflow:rules are required by `Beta/Auto-DevOps.gitlab-ci.yml`
-                  Feature.enabled?(:workflow_rules, project, default_enabled: true)
+                Feature.enabled?(:auto_devops_beta, project, default_enabled: true)
               end
             end
           end

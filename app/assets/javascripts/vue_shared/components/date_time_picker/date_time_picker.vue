@@ -149,7 +149,13 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown :text="timeWindowText" class="date-time-picker" menu-class="date-time-picker-menu">
+  <gl-dropdown
+    :text="timeWindowText"
+    class="date-time-picker"
+    menu-class="date-time-picker-menu"
+    v-bind="$attrs"
+    toggle-class="w-100 text-truncate"
+  >
     <div class="d-flex justify-content-between gl-p-2">
       <gl-form-group
         :label="__('Custom range')"

@@ -208,11 +208,11 @@ RSpec.configure do |config|
     example.run if config.inclusion_filter[:quarantine]
   end
 
-  config.before(:example, :request_store) do
+  config.around(:example, :request_store) do |example|
     RequestStore.begin!
-  end
 
-  config.after(:example, :request_store) do
+    example.run
+
     RequestStore.end!
     RequestStore.clear!
   end

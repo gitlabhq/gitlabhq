@@ -38,7 +38,7 @@ describe Gitlab::SafeRequestStore do
   describe '.clear!' do
     context 'when RequestStore is active', :request_store do
       it 'uses RequestStore' do
-        expect(RequestStore).to receive(:clear!).twice.and_call_original
+        expect(RequestStore).to receive(:clear!).once.and_call_original
 
         described_class.clear!
       end
@@ -56,7 +56,7 @@ describe Gitlab::SafeRequestStore do
   describe '.end!' do
     context 'when RequestStore is active', :request_store do
       it 'uses RequestStore' do
-        expect(RequestStore).to receive(:end!).twice.and_call_original
+        expect(RequestStore).to receive(:end!).once.and_call_original
 
         described_class.end!
       end

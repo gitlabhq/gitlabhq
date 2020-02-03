@@ -545,6 +545,15 @@ why without editing the source and rerun the tests.
 
 This is especially useful whenever it's showing 500 internal server error.
 
+Prefer named HTTP status like `:no_content` over its numeric representation
+`206`. See a list of [supported status codes](https://github.com/rack/rack/blob/f2d2df4016a906beec755b63b4edfcc07b58ee05/lib/rack/utils.rb#L490).
+
+Example:
+
+```ruby
+expect(response).to have_gitlab_http_status(:ok)
+```
+
 ### Shared contexts
 
 Shared contexts only used in one spec file can be declared inline.

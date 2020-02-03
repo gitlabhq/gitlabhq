@@ -1,0 +1,5 @@
+---
+title: Hide label tooltips when dragging board cards
+merge_request: 24239
+author:
+type: fixed

@@ -371,6 +371,54 @@ it('calls mutation on submitting form ', () => {
 });
 ```
 
+## Handling errors
+
+GitLab's GraphQL mutations currently have two distinct error modes: [Top-level](#top-level-errors) and [errors-as-data](#errors-as-data).
+
+When utilising a GraphQL mutation, we must consider handling **both of these error modes** to ensure that the user receives the appropriate feedback when an error occurs.
+
+### Top-level errors
+
+These errors are located at the "top level" of a GraphQL response. These are non-recoverable errors including argument errors and syntax errors, and should not be presented directly to the user.
+
+#### Handling top-level errors
+
+Apollo is aware of top-level errors, so we are able to leverage Apollo's various error-handling mechanisms to handle these errors (e.g. handling Promise rejections after invoking the [`mutate`](https://www.apollographql.com/docs/react/api/apollo-client/#ApolloClient.mutate) method, or handling the `error` event emitted from the [`ApolloMutation`](https://apollo.vuejs.org/api/apollo-mutation.html#events) component).
+
+Because these errors are not intended for users, error messages for top-level errors should be defined client-side.
+
+### Errors-as-data
+
+These errors are nested within the `data` object of a GraphQL response. These are recoverable errors that, ideally, can be presented directly to the user.
+
+#### Handling errors-as-data
+
+First, we must add `errors` to our mutation object:
+
+```diff
+mutation createNoteMutation($input: String!) {
+  createNoteMutation(input: $input) {
+    note {
+      id
++     errors
+    }
+  }
+```
+
+Now, when we commit this mutation and errors occur, the response will include `errors` for us to handle:
+
+```javascript
+{
+  data: {
+    mutationName: {
+      errors: ["Sorry, we were not able to update the note."]
+    }
+  }
+}
+```
+
+When handling errors-as-data, use your best judgement to determine whether to present the error message in the response, or another message defined client-side, to the user.
+
 ## Usage outside of Vue
 
 It is also possible to use GraphQL outside of Vue by directly importing

@@ -18,7 +18,7 @@ to the existing rules, then this is the document for you.
 A subset of the current checks can be run locally with the following rake task:
 
 ```shell
-bundle exec danger_local
+bin/rake danger_local
 ```
 
 ## Operation

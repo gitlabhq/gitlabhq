@@ -649,9 +649,6 @@ msgstr ""
 msgid "1st contribution!"
 msgstr ""
 
-msgid "2 days"
-msgstr ""
-
 msgid "2 weeks"
 msgstr ""
 
@@ -680,9 +677,6 @@ msgid "30 minutes"
 msgstr ""
 
 msgid "30+ contributions"
-msgstr ""
-
-msgid "4 hours"
 msgstr ""
 
 msgid "403|Please contact your GitLab administrator to get permission."
@@ -11991,6 +11985,9 @@ msgstr ""
 msgid "Metrics|For grouping similar metrics"
 msgstr ""
 
+msgid "Metrics|Invalid time range, please verify."
+msgstr ""
+
 msgid "Metrics|Label of the y-axis (usually the unit). The x-axis always represents time."
 msgstr ""
 
@@ -13360,9 +13357,6 @@ msgid "Password was successfully updated. Please login with it"
 msgstr ""
 
 msgid "Past due"
-msgstr ""
-
-msgid "Past week"
 msgstr ""
 
 msgid "Paste a machine public key here. Read more about how to generate it %{link_start}here%{link_end}"
