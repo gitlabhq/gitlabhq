@@ -5,7 +5,6 @@ require 'spec_helper'
 describe ConfirmEmailWarning do
   before do
     stub_feature_flags(soft_email_confirmation: true)
-    allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
   end
 
   controller(ApplicationController) do
@@ -51,15 +50,6 @@ describe ConfirmEmailWarning do
 
       context 'with an unconfirmed user' do
         let(:user) { create(:user, confirmed_at: nil) }
-
-        context 'when executing a peek request' do
-          before do
-            request.path = '/-/peek'
-            get :index
-          end
-
-          it { is_expected.not_to set_confirm_warning_for(user.email) }
-        end
 
         context 'when executing a json request' do
           before do

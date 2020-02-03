@@ -13,7 +13,7 @@
   :feature_category: :continuous_delivery
   :has_external_dependencies: 
   :latency_sensitive: 
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 3
 - :name: chaos:chaos_cpu_spin
   :feature_category: :chaos_engineering

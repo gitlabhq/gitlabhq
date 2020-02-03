@@ -8,7 +8,7 @@ module InvisibleCaptcha
   end
 
   def on_honeypot_spam_callback
-    return unless Feature.enabled?(:invisible_captcha) || experiment_enabled?(:signup_flow)
+    return unless Feature.enabled?(:invisible_captcha)
 
     invisible_captcha_honeypot_counter.increment
     log_request('Invisible_Captcha_Honeypot_Request')
@@ -17,7 +17,7 @@ module InvisibleCaptcha
   end
 
   def on_timestamp_spam_callback
-    return unless Feature.enabled?(:invisible_captcha) || experiment_enabled?(:signup_flow)
+    return unless Feature.enabled?(:invisible_captcha)
 
     invisible_captcha_timestamp_counter.increment
     log_request('Invisible_Captcha_Timestamp_Request')

@@ -58,7 +58,8 @@ class PipelineSerializer < BaseSerializer
         pending_builds: :project,
         project: [:route, { namespace: :route }],
         artifacts: {
-          project: [:route, { namespace: :route }]
+          project: [:route, { namespace: :route }],
+          job_artifacts_archive: []
         }
       },
       { triggered_by_pipeline: [:project, :user] },

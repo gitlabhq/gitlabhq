@@ -29,11 +29,11 @@ module Projects
     private
 
     def import_failure_service
-      @import_failure_service ||= Gitlab::ImportExport::ImportFailureService.new(@project)
+      Gitlab::ImportExport::ImportFailureService.new(@project)
     end
 
     def repository
-      @repository ||= @project.repository
+      @project.repository
     end
   end
 end

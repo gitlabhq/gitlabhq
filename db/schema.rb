@@ -2624,6 +2624,8 @@ ActiveRecord::Schema.define(version: 2020_01_30_161817) do
     t.integer "target_project_id", null: false
     t.text "target_branch", null: false
     t.integer "status", limit: 2, default: 0, null: false
+    t.datetime_with_timezone "merged_at"
+    t.integer "duration"
     t.index ["merge_request_id"], name: "index_merge_trains_on_merge_request_id", unique: true
     t.index ["pipeline_id"], name: "index_merge_trains_on_pipeline_id"
     t.index ["target_project_id", "target_branch", "status"], name: "index_for_status_per_branch_per_project"
