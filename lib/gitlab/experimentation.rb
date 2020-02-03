@@ -22,6 +22,12 @@ module Gitlab
         environment: ::Gitlab.dev_env_or_com?,
         enabled_ratio: 0.25,
         tracking_category: 'Growth::Acquisition::Experiment::PaidSignUpFlow'
+      },
+      suggest_pipeline: {
+        feature_toggle: :suggest_pipeline,
+        environment: ::Gitlab.dev_env_or_com?,
+        enabled_ratio: 0.1,
+        tracking_category: 'Growth::Expansion::Experiment::SuggestPipeline'
       }
     }.freeze
 

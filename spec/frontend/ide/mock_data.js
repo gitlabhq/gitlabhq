@@ -165,7 +165,11 @@ export const mergeRequests = [
     iid: 1,
     title: 'Test merge request',
     project_id: 1,
-    web_url: `${TEST_HOST}/namespace/project-path/merge_requests/1`,
+    web_url: `${TEST_HOST}/namespace/project-path/-/merge_requests/1`,
+    references: {
+      short: '!1',
+      full: 'namespace/project-path!1',
+    },
   },
 ];
 

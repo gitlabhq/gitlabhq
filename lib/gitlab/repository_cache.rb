@@ -33,8 +33,8 @@ module Gitlab
       backend.read(cache_key(key))
     end
 
-    def write(key, value)
-      backend.write(cache_key(key), value)
+    def write(key, value, *args)
+      backend.write(cache_key(key), value, *args)
     end
 
     def fetch_without_caching_false(key, &block)

@@ -25,10 +25,6 @@ $ide-commit-header-height: 48px;
   @include str-truncated(250px);
 }
 
-.editable-mode {
-  display: inline-block;
-}
-
 .ide-view {
   position: relative;
   margin-top: 0;
@@ -332,23 +328,6 @@ $ide-commit-header-height: 48px;
       padding: $gl-padding;
       max-width: 100%;
       max-height: 100%;
-
-      img {
-        max-width: 90%;
-      }
-
-      .isZoomable {
-        cursor: pointer;
-        cursor: zoom-in;
-
-        &.isZoomed {
-          cursor: pointer;
-          cursor: zoom-out;
-          max-width: none;
-          max-height: none;
-          margin-right: $gl-padding;
-        }
-      }
     }
 
     .file-info {
@@ -361,13 +340,9 @@ $ide-commit-header-height: 48px;
 .ide-mode-tabs {
   border-bottom: 1px solid $white-dark;
 
-  .nav-links {
-    border-bottom: 0;
-
-    li a {
-      padding: $gl-padding-8 $gl-padding;
-      line-height: $gl-btn-line-height;
-    }
+  li a {
+    padding: $gl-padding-8 $gl-padding;
+    line-height: $gl-btn-line-height;
   }
 }
 
@@ -564,12 +539,6 @@ $ide-commit-header-height: 48px;
     background: $gray-100;
 
     outline: 0;
-
-    .multi-file-discard-btn {
-      > .btn {
-        display: flex;
-      }
-    }
   }
 
   &:active {
@@ -593,18 +562,6 @@ $ide-commit-header-height: 48px;
 
   &:active {
     text-decoration: none;
-  }
-}
-
-.multi-file-discard-btn {
-  > .btn {
-    display: none;
-    width: $ide-commit-row-height;
-    height: $ide-commit-row-height;
-  }
-
-  svg {
-    top: 0;
   }
 }
 
@@ -1060,8 +1017,6 @@ $ide-commit-header-height: 48px;
 }
 
 .ide-external-link {
-  position: relative;
-
   svg {
     display: none;
     position: absolute;
@@ -1164,20 +1119,10 @@ $ide-commit-header-height: 48px;
       align-items: center;
     }
   }
-
-  .card-body {
-    padding: 0;
-  }
 }
 
 .ide-stage-collapse-icon {
   margin: auto 0 auto auto;
-}
-
-.ide-stage-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .ide-job-header {
@@ -1279,8 +1224,6 @@ $ide-commit-header-height: 48px;
 }
 
 .ide-new-btn {
-  display: none;
-
   .btn {
     padding: 2px 5px;
   }

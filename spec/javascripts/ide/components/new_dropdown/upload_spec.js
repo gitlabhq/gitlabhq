@@ -14,7 +14,7 @@ describe('new dropdown upload', () => {
 
     vm.entryName = 'testing';
 
-    spyOn(vm, '$emit');
+    spyOn(vm, '$emit').and.callThrough();
   });
 
   afterEach(() => {
@@ -61,30 +61,43 @@ describe('new dropdown upload', () => {
     const binaryTarget = {
       result: 'base64,w4I=',
     };
-    const textFile = {
-      name: 'textFile',
-      type: 'text/plain',
-    };
+    const textFile = new File(['plain text'], 'textFile');
+
     const binaryFile = {
       name: 'binaryFile',
       type: 'image/png',
     };
 
-    it('creates file in plain text (without encoding) if the file content is plain text', () => {
+    beforeEach(() => {
+      spyOn(FileReader.prototype, 'readAsText').and.callThrough();
+    });
+
+    it('calls readAsText and creates file in plain text (without encoding) if the file content is plain text', done => {
+      const waitForCreate = new Promise(resolve => vm.$on('create', resolve));
+
       vm.createFile(textTarget, textFile);
 
-      expect(vm.$emit).toHaveBeenCalledWith('create', {
-        name: textFile.name,
-        type: 'blob',
-        content: 'plain text',
-        base64: false,
-        binary: false,
-        rawPath: '',
-      });
+      expect(FileReader.prototype.readAsText).toHaveBeenCalledWith(textFile);
+
+      waitForCreate
+        .then(() => {
+          expect(vm.$emit).toHaveBeenCalledWith('create', {
+            name: textFile.name,
+            type: 'blob',
+            content: 'plain text',
+            base64: false,
+            binary: false,
+            rawPath: '',
+          });
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('splits content on base64 if binary', () => {
       vm.createFile(binaryTarget, binaryFile);
+
+      expect(FileReader.prototype.readAsText).not.toHaveBeenCalledWith(textFile);
 
       expect(vm.$emit).toHaveBeenCalledWith('create', {
         name: binaryFile.name,

@@ -7172,6 +7172,20 @@
               "deprecationReason": null
             },
             {
+              "name": "mode",
+              "description": "Blob mode",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "Blob name",
               "args": [

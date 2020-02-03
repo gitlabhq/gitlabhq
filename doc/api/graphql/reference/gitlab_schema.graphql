@@ -6642,6 +6642,11 @@ type SnippetBlob {
   highlightedData: String
 
   """
+  Blob mode
+  """
+  mode: String
+
+  """
   Blob name
   """
   name: String

@@ -43,21 +43,28 @@ export default {
     },
     createFile(target, file) {
       const { name } = file;
-      let { result } = target;
-      const encodedContent = result.split('base64,')[1];
+      const encodedContent = target.result.split('base64,')[1];
       const rawContent = encodedContent ? atob(encodedContent) : '';
       const isText = this.isText(rawContent, file.type);
 
-      result = isText ? rawContent : encodedContent;
+      const emitCreateEvent = content =>
+        this.$emit('create', {
+          name: `${this.path ? `${this.path}/` : ''}${name}`,
+          type: 'blob',
+          content,
+          base64: !isText,
+          binary: !isText,
+          rawPath: !isText ? target.result : '',
+        });
 
-      this.$emit('create', {
-        name: `${this.path ? `${this.path}/` : ''}${name}`,
-        type: 'blob',
-        content: result,
-        base64: !isText,
-        binary: !isText,
-        rawPath: !isText ? target.result : '',
-      });
+      if (isText) {
+        const reader = new FileReader();
+
+        reader.addEventListener('load', e => emitCreateEvent(e.target.result), { once: true });
+        reader.readAsText(file);
+      } else {
+        emitCreateEvent(encodedContent);
+      }
     },
     readFile(file) {
       const reader = new FileReader();

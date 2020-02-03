@@ -50,6 +50,18 @@ describe Gitlab::RepositoryCache do
     end
   end
 
+  describe '#write' do
+    it 'writes the given key and value to the cache' do
+      cache.write(:test, 'test')
+      expect(backend).to have_received(:write).with("test:#{namespace}", 'test')
+    end
+
+    it 'passes additional options to the backend' do
+      cache.write(:test, 'test', expires_in: 10.minutes)
+      expect(backend).to have_received(:write).with("test:#{namespace}", 'test', expires_in: 10.minutes)
+    end
+  end
+
   describe '#fetch_without_caching_false', :use_clean_rails_memory_store_caching do
     let(:key) { :foo }
     let(:backend) { Rails.cache }

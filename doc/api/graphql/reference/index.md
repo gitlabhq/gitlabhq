@@ -1063,6 +1063,7 @@ Represents the snippet blob
 | ---   |  ---- | ----------  |
 | `binary` | Boolean! | Shows whether the blob is binary |
 | `highlightedData` | String | Blob highlighted data |
+| `mode` | String | Blob mode |
 | `name` | String | Blob name |
 | `path` | String | Blob path |
 | `rawPath` | String! | Blob raw content endpoint path |

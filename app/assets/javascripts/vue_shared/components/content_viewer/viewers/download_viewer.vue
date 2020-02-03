@@ -13,6 +13,11 @@ export default {
       type: String,
       required: true,
     },
+    filePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     fileSize: {
       type: Number,
       required: false,
@@ -24,7 +29,8 @@ export default {
       return numberToHumanSize(this.fileSize);
     },
     fileName() {
-      return this.path.split('/').pop();
+      // path could be a base64 uri too, so check if filePath was passed additionally
+      return (this.filePath || this.path).split('/').pop();
     },
   },
 };
@@ -39,7 +45,13 @@ export default {
           ({{ fileSizeReadable }})
         </template>
       </p>
-      <gl-link :href="path" class="btn btn-default" rel="nofollow" download target="_blank">
+      <gl-link
+        :href="path"
+        class="btn btn-default"
+        rel="nofollow"
+        :download="fileName"
+        target="_blank"
+      >
         <icon :size="16" name="download" class="float-left append-right-8" />
         {{ __('Download') }}
       </gl-link>

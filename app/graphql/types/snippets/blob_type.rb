@@ -40,6 +40,10 @@ module Types
       field :rich_viewer, type: Types::Snippets::BlobViewerType,
             description: 'Blob content rich viewer',
             null: true
+
+      field :mode, type: GraphQL::STRING_TYPE,
+            description: 'Blob mode',
+            null: true
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

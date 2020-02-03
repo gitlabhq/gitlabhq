@@ -14,7 +14,7 @@ exports[`IDE pipeline stage renders stage details & icon 1`] = `
     />
      
     <strong
-      class="prepend-left-8 ide-stage-title"
+      class="prepend-left-8 text-truncate"
       data-container="body"
       data-original-title=""
       title=""
@@ -42,7 +42,7 @@ exports[`IDE pipeline stage renders stage details & icon 1`] = `
   </div>
    
   <div
-    class="card-body"
+    class="card-body p-0"
   >
     <item-stub
       job="[object Object]"

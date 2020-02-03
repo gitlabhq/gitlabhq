@@ -274,7 +274,7 @@ export default {
 <template>
   <div id="ide" class="blob-viewer-container blob-editor-container">
     <div class="ide-mode-tabs clearfix">
-      <ul v-if="!shouldHideEditor && isEditModeActive" class="nav-links float-left">
+      <ul v-if="!shouldHideEditor && isEditModeActive" class="nav-links float-left border-bottom-0">
         <li :class="editTabCSS">
           <a
             href="javascript:void(0);"

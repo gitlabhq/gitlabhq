@@ -62,7 +62,11 @@ export default {
         <ci-icon :status="latestPipeline.details.status" :size="24" />
         <span class="prepend-left-8">
           <strong> {{ __('Pipeline') }} </strong>
-          <a :href="latestPipeline.path" target="_blank" class="ide-external-link">
+          <a
+            :href="latestPipeline.path"
+            target="_blank"
+            class="ide-external-link position-relative"
+          >
             #{{ latestPipeline.id }} <icon :size="12" name="external-link" />
           </a>
         </span>
