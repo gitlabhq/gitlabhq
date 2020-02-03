@@ -13,12 +13,30 @@ describe Groups::GroupLinksController do
 
   describe '#create' do
     let(:shared_with_group_id) { shared_with_group.id }
+    let(:shared_group_access) { GroupGroupLink.default_access }
 
     subject do
       post(:create,
            params: { group_id: shared_group,
                      shared_with_group_id: shared_with_group_id,
-                     shared_group_access: GroupGroupLink.default_access })
+                     shared_group_access: shared_group_access })
+    end
+
+    shared_examples 'creates group group link' do
+      it 'links group with selected group' do
+        expect { subject }.to change { shared_with_group.shared_groups.include?(shared_group) }.from(false).to(true)
+      end
+
+      it 'redirects to group links page' do
+        subject
+
+        expect(response).to(redirect_to(group_group_members_path(shared_group)))
+      end
+
+      it 'allows access for group member' do
+        expect { subject }.to(
+          change { group_member.can?(:read_group, shared_group) }.from(false).to(true))
+      end
     end
 
     context 'when user has correct access to both groups' do
@@ -31,18 +49,19 @@ describe Groups::GroupLinksController do
         shared_with_group.add_developer(group_member)
       end
 
-      it 'links group with selected group' do
-        expect { subject }.to change { shared_with_group.shared_groups.include?(shared_group) }.from(false).to(true)
+      context 'when default access level is requested' do
+        include_examples 'creates group group link'
       end
 
-      it 'redirects to group links page' do
-        subject
+      context 'when owner access is requested' do
+        let(:shared_group_access) { Gitlab::Access::OWNER }
 
-        expect(response).to(redirect_to(group_group_members_path(shared_group)))
-      end
+        include_examples 'creates group group link'
 
-      it 'allows access for group member' do
-        expect { subject }.to change { group_member.can?(:read_group, shared_group) }.from(false).to(true)
+        it 'allows admin access for group member' do
+          expect { subject }.to(
+            change { group_member.can?(:admin_group, shared_group) }.from(false).to(true))
+        end
       end
 
       context 'when shared with group id is not present' do

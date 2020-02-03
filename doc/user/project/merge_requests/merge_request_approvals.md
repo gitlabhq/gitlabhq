@@ -13,7 +13,7 @@ Merge request approvals enable multiple use cases:
 
 - Enforcing review of all code that gets merged into a repository.
 - Specifying reviewers for a given proposed code change, as well as a minimum number
-  of reviewers, through [Approval rules](#approval-rules)
+  of reviewers, through [Approval rules](#approval-rules).
 - Specifying categories of reviewers, such as backend, frontend, quality assurance,
   database, etc., for all proposed code changes.
 - Automatically designating [Code Owners as eligible approvers](#code-owners-as-eligible-approvers),
@@ -24,10 +24,10 @@ Merge request approvals enable multiple use cases:
 ## Approval rules
 
 Approval rules define how many approvals a merge request must receive before it can
-be merged, and optionally which users should do the approving. This can be defined:
+be merged, and optionally which users should do the approving. Approvals can be defined:
 
-- [As project defaults](#adding--editing-a-default-approval-rule)
-- [Per merge request](#editing--overriding-approval-rules-per-merge-request)
+- [As project defaults](#adding--editing-a-default-approval-rule).
+- [Per merge request](#editing--overriding-approval-rules-per-merge-request).
 
 If no approval rules are defined, any user can approve a merge request, though the default
 minimum number of required approvers can still be set in the [project settings for merge request approvals](#merge-request-approvals-project-settings).
@@ -90,7 +90,7 @@ Alternatively, you can **require**
 
 To add or edit the default merge request approval rule:
 
-1. Navigate to your project's **Settings > General** and expand **Merge request approvals**.
+1. Navigate to your project's **{settings}** **Settings > General** and expand **Merge request approvals**.
 
 1. Click **Add approval rule**, or **Edit**.
    - Add or change the **Rule name**.
@@ -99,7 +99,7 @@ To add or edit the default merge request approval rule:
      merge requests and click the **Add** button to add them as approvers. Before typing
      in the search field, approvers will be suggested based on the previous authors of
      the files being changed by the merge request.
-   - (Optional) Click the **"trashcan"** button next to a group or user to delete it from
+   - (Optional) Click the **{remove}** **Remove** button next to a group or user to delete it from
      the rule.
 1. Click **Add approval rule** or **Update approval rule**.
 
@@ -179,7 +179,7 @@ or a [failed CI/CD pipeline](merge_when_pipeline_succeeds.md).
 ## Merge request approvals project settings
 
 The project settings for Merge request approvals are found by going to
-**Settings > General** and expanding **Merge request approvals**.
+**{settings}** **Settings > General** and expanding **Merge request approvals**.
 
 ### Prevent overriding default approvals
 
@@ -188,7 +188,7 @@ the approval rules for all new merge requests will be determined by the
 [default approval rules](#adding--editing-a-default-approval-rule). To disable this feature:
 
 1. Uncheck the **Can override approvers and approvals required per merge request** checkbox.
-1. Click **Save changes**
+1. Click **Save changes**.
 
 ### Resetting approvals on push
 
@@ -198,7 +198,7 @@ even if there are changes added to the merge request. To enable this feature:
 
 1. Check the **Remove all approvals in a merge request when new commits are pushed to its source branch**
    checkbox.
-1. Click **Save changes**
+1. Click **Save changes**.
 
 NOTE: **Note:**
 Approvals do not get reset when [rebasing a merge request](fast_forward_merge.md)

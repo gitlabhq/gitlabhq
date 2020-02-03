@@ -10,11 +10,11 @@ class GroupGroupLink < ApplicationRecord
   validates :shared_group_id, uniqueness: { scope: [:shared_with_group_id],
                                             message: _('The group has already been shared with this group') }
   validates :shared_with_group, presence: true
-  validates :group_access, inclusion: { in: Gitlab::Access.values },
+  validates :group_access, inclusion: { in: Gitlab::Access.all_values },
                            presence: true
 
   def self.access_options
-    Gitlab::Access.options
+    Gitlab::Access.options_with_owner
   end
 
   def self.default_access
