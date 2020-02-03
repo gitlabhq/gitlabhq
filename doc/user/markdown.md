@@ -896,6 +896,11 @@ Reference-style (hover to see title text):
 [logo]: img/markdown_logo.png "Title Text"
 ```
 
+<!--
+DO NOT change the name of markdown_logo.png. This is used for a test
+in spec/controllers/help_controller_spec.rb.
+-->
+
 Inline-style (hover to see title text):
 
 ![alt text](img/markdown_logo.png "Title Text")

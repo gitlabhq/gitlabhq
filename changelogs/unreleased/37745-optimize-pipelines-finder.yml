@@ -1,0 +1,5 @@
+---
+title: Fix query performance in PipelinesFinder
+merge_request: 21092
+author:
+type: performance

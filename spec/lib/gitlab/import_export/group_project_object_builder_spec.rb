@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::GroupProjectObjectBuilder do
-  let(:project) do
+  let!(:group) { create(:group, :private) }
+  let!(:subgroup) { create(:group, :private, parent: group) }
+  let!(:project) do
     create(:project, :repository,
            :builds_disabled,
            :issues_disabled,
            name: 'project',
            path: 'project',
-           group: create(:group))
+           group: subgroup)
   end
 
   let(:lru_cache) { subject.send(:lru_cache) }
@@ -75,6 +77,15 @@ describe Gitlab::ImportExport::GroupProjectObjectBuilder do
                                   'group' => project.group)).to eq(group_label)
     end
 
+    it 'finds the existing group label in root ancestor' do
+      group_label = create(:group_label, name: 'group label', group: group)
+
+      expect(described_class.build(Label,
+                                   'title' => 'group label',
+                                   'project' => project,
+                                   'group' => group)).to eq(group_label)
+    end
+
     it 'creates a new label' do
       label = described_class.build(Label,
                                    'title' => 'group label',
@@ -93,6 +104,15 @@ describe Gitlab::ImportExport::GroupProjectObjectBuilder do
                                   'title' => 'group milestone',
                                   'project' => project,
                                   'group' => project.group)).to eq(milestone)
+    end
+
+    it 'finds the existing group milestone in root ancestor' do
+      milestone = create(:milestone, name: 'group milestone', group: group)
+
+      expect(described_class.build(Milestone,
+                                   'title' => 'group milestone',
+                                   'project' => project,
+                                   'group' => group)).to eq(milestone)
     end
 
     it 'creates a new milestone' do

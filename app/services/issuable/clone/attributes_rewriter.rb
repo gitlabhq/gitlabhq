@@ -12,7 +12,7 @@ module Issuable
       def execute
         update_attributes = { labels: cloneable_labels }
 
-        milestone = cloneable_milestone
+        milestone = matching_milestone(original_entity.milestone&.title)
         update_attributes[:milestone] = milestone if milestone.present?
 
         new_entity.update(update_attributes)
@@ -23,11 +23,8 @@ module Issuable
 
       private
 
-      def cloneable_milestone
-        return unless new_entity.supports_milestone?
-
-        title = original_entity.milestone&.title
-        return unless title
+      def matching_milestone(title)
+        return if title.blank? || !new_entity.supports_milestone?
 
         params = { title: title, project_ids: new_entity.project&.id, group_ids: group&.id }
 
@@ -49,29 +46,32 @@ module Issuable
       end
 
       def copy_resource_label_events
-        original_entity.resource_label_events.find_in_batches do |batch|
-          events = batch.map do |event|
-            entity_key = new_entity.is_a?(Issue) ? 'issue_id' : 'epic_id'
-            event.attributes
-              .except('id', 'reference', 'reference_html')
-              .merge(entity_key => new_entity.id, 'action' => ResourceLabelEvent.actions[event.action])
-          end
+        entity_key = new_entity.class.name.underscore.foreign_key
 
-          Gitlab::Database.bulk_insert(ResourceLabelEvent.table_name, events)
+        copy_events(ResourceLabelEvent.table_name, original_entity.resource_label_events) do |event|
+          event.attributes
+            .except('id', 'reference', 'reference_html')
+            .merge(entity_key => new_entity.id, 'action' => ResourceLabelEvent.actions[event.action])
         end
       end
 
       def copy_resource_weight_events
         return unless original_entity.respond_to?(:resource_weight_events)
 
-        original_entity.resource_weight_events.find_in_batches do |batch|
-          events = batch.map do |event|
-            event.attributes
-              .except('id', 'reference', 'reference_html')
-              .merge('issue_id' => new_entity.id)
-          end
+        copy_events(ResourceWeightEvent.table_name, original_entity.resource_weight_events) do |event|
+          event.attributes
+            .except('id', 'reference', 'reference_html')
+            .merge('issue_id' => new_entity.id)
+        end
+      end
 
-          Gitlab::Database.bulk_insert(ResourceWeightEvent.table_name, events)
+      def copy_events(table_name, events_to_copy)
+        events_to_copy.find_in_batches do |batch|
+          events = batch.map do |event|
+            yield(event)
+          end.compact
+
+          Gitlab::Database.bulk_insert(table_name, events)
         end
       end
 

@@ -4,7 +4,9 @@
 
 You're strongly advised to install
 [Overcommit](https://github.com/sds/overcommit) to automatically check for
-static analysis offenses before committing locally:
+static analysis offenses before committing locally.
+
+In your GitLab source directory run:
 
 ```shell
 cd tooling/overcommit && make && cd -
