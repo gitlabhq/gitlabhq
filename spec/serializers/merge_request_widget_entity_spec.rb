@@ -53,6 +53,94 @@ describe MergeRequestWidgetEntity do
       .to eq("/#{resource.project.full_path}/-/merge_requests/#{resource.iid}.diff")
   end
 
+  describe 'merge_request_add_ci_config_path' do
+    before do
+      project.add_role(user, role)
+    end
+
+    context 'when there are pipelines' do
+      let(:role) { :developer }
+
+      before do
+        create(:ci_empty_pipeline, project: project, sha: resource.all_commit_shas.first, ref: resource.source_branch)
+      end
+
+      it 'no ci config path' do
+        expect(subject[:merge_request_add_ci_config_path]).to be_nil
+      end
+    end
+
+    context 'when there are no pipelines' do
+      context 'when user has permissions' do
+        let(:role) { :developer }
+
+        it 'has add ci config path' do
+          expect(subject[:merge_request_add_ci_config_path])
+            .to eq("/#{resource.project.full_path}/-/new/#{resource.source_branch}?commit_message=Add+.gitlab-ci.yml&file_name=.gitlab-ci.yml")
+        end
+
+        context 'when source project is missing' do
+          before do
+            resource.source_project = nil
+          end
+
+          it 'returns a blank ci config path' do
+            expect(subject[:merge_request_add_ci_config_path]).to be_nil
+          end
+        end
+
+        context 'when there are no commits' do
+          before do
+            allow(resource).to receive(:commits_count).and_return(0)
+          end
+
+          it 'returns a blank ci config path' do
+            expect(subject[:merge_request_add_ci_config_path]).to be_nil
+          end
+        end
+
+        context 'when ci_config_path is customized' do
+          it 'has no path if ci_config_path is not set to our default setting' do
+            project.ci_config_path = 'not_default'
+
+            expect(subject[:merge_request_add_ci_config_path]).to be_nil
+          end
+
+          it 'has a path if ci_config_path unset' do
+            expect(subject[:merge_request_add_ci_config_path]).not_to be_nil
+          end
+
+          it 'has a path if ci_config_path is an empty string' do
+            project.ci_config_path = ''
+
+            expect(subject[:merge_request_add_ci_config_path]).not_to be_nil
+          end
+
+          it 'has a path if ci_config_path is set to our default file' do
+            project.ci_config_path = Gitlab::FileDetector::PATTERNS[:gitlab_ci]
+
+            expect(subject[:merge_request_add_ci_config_path]).not_to be_nil
+          end
+        end
+      end
+
+      context 'when user does not have permissions' do
+        let(:role) { :reporter }
+
+        it 'has add ci config path' do
+          expect(subject[:merge_request_add_ci_config_path]).to be_nil
+        end
+      end
+    end
+  end
+
+  it 'has human access' do
+    project.add_maintainer(user)
+
+    expect(subject[:human_access])
+      .to eq('Maintainer')
+  end
+
   describe 'when source project is deleted' do
     let(:project) { create(:project, :repository) }
     let(:forked_project) { fork_project(project) }

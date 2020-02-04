@@ -2299,6 +2299,10 @@ class Project < ApplicationRecord
     false
   end
 
+  def uses_default_ci_config?
+    ci_config_path.blank? || ci_config_path == Gitlab::FileDetector::PATTERNS[:gitlab_ci]
+  end
+
   private
 
   def closest_namespace_setting(name)
