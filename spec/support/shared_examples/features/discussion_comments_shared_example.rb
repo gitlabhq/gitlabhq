@@ -8,44 +8,40 @@ RSpec.shared_examples 'thread comments' do |resource_name|
   let(:submit_selector) { "#{form_selector} .js-comment-submit-button" }
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
   let(:comments_selector) { '.timeline > .note.timeline-entry' }
+  let(:comment) { 'My comment' }
 
-  it 'clicking "Comment" will post a comment', :quarantine do
+  it 'clicking "Comment" will post a comment' do
     expect(page).to have_selector toggle_selector
 
-    find("#{form_selector} .note-textarea").send_keys('a')
+    find("#{form_selector} .note-textarea").send_keys(comment)
 
-    find(submit_selector).click
+    click_button 'Comment'
 
-    wait_for_requests
+    expect(page).to have_content(comment)
 
-    find(comments_selector, match: :first)
     new_comment = all(comments_selector).last
 
-    expect(new_comment).to have_content 'a'
     expect(new_comment).not_to have_selector '.discussion'
   end
 
   if resource_name == 'issue'
     it "clicking 'Comment & close #{resource_name}' will post a comment and close the #{resource_name}" do
-      find("#{form_selector} .note-textarea").send_keys('a')
+      find("#{form_selector} .note-textarea").send_keys(comment)
 
-      find(close_selector).click
-      wait_for_requests
+      click_button 'Comment & close issue'
 
-      find(comments_selector, match: :first)
-      find("#{comments_selector}.system-note")
-      entries = all(comments_selector)
-      close_note = entries.last
-      new_comment = entries[-2]
+      expect(page).to have_content(comment)
+      expect(page).to have_content "@#{user.username} closed"
 
-      expect(close_note).to have_content 'closed'
+      new_comment = all(comments_selector).last
+
       expect(new_comment).not_to have_selector '.discussion'
     end
   end
 
   describe 'when the toggle is clicked' do
     before do
-      find("#{form_selector} .note-textarea").send_keys('a')
+      find("#{form_selector} .note-textarea").send_keys(comment)
 
       find(toggle_selector).click
     end
@@ -153,10 +149,11 @@ RSpec.shared_examples 'thread comments' do |resource_name|
         end
 
         it 'clicking "Start thread" will post a thread' do
+          expect(page).to have_content(comment)
+
           new_comment = all(comments_selector).last
 
-          expect(new_comment).to have_content 'a'
-          expect(new_comment).to have_selector '.discussion'
+          expect(new_comment).to have_selector('.discussion')
         end
 
         if resource_name =~ /(issue|merge request)/
@@ -208,15 +205,13 @@ RSpec.shared_examples 'thread comments' do |resource_name|
 
       if resource_name == 'issue'
         it "clicking 'Start thread & close #{resource_name}' will post a thread and close the #{resource_name}" do
-          find(close_selector).click
+          click_button 'Start thread & close issue'
 
-          find(comments_selector, match: :first)
-          find("#{comments_selector}.system-note")
-          entries = all(comments_selector)
-          close_note = entries.last
-          new_discussion = entries[-2]
+          expect(page).to have_content(comment)
+          expect(page).to have_content "@#{user.username} closed"
 
-          expect(close_note).to have_content 'closed'
+          new_discussion = all(comments_selector)[-2]
+
           expect(new_discussion).to have_selector '.discussion'
         end
       end

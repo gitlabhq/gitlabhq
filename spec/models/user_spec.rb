@@ -2985,9 +2985,9 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  describe '#can_read_all_resources?', :request_store do
+  describe '#can_read_all_resources?' do
     it 'returns false for regular user' do
-      user = build_stubbed(:user)
+      user = build(:user)
 
       expect(user.can_read_all_resources?).to be_falsy
     end
@@ -2995,7 +2995,7 @@ describe User, :do_not_mock_admin_mode do
     context 'for admin user' do
       include_context 'custom session'
 
-      let(:user) { build_stubbed(:user, :admin) }
+      let(:user) { build(:user, :admin) }
 
       context 'when admin mode is disabled' do
         it 'returns false' do

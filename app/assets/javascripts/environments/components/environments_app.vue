@@ -1,19 +1,23 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import envrionmentsAppMixin from 'ee_else_ce/environments/mixins/environments_app_mixin';
-import Flash from '../../flash';
-import { s__ } from '../../locale';
+import Flash from '~/flash';
+import { s__ } from '~/locale';
 import emptyState from './empty_state.vue';
 import eventHub from '../event_hub';
 import environmentsMixin from '../mixins/environments_mixin';
-import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
+import CIPaginationMixin from '~/vue_shared/mixins/ci_pagination_api_mixin';
+import EnableReviewAppButton from './enable_review_app_button.vue';
 import StopEnvironmentModal from './stop_environment_modal.vue';
 import ConfirmRollbackModal from './confirm_rollback_modal.vue';
 
 export default {
   components: {
-    emptyState,
-    StopEnvironmentModal,
     ConfirmRollbackModal,
+    emptyState,
+    EnableReviewAppButton,
+    GlButton,
+    StopEnvironmentModal,
   },
 
   mixins: [CIPaginationMixin, environmentsMixin, envrionmentsAppMixin],
@@ -96,10 +100,16 @@ export default {
     <div class="top-area">
       <tabs :tabs="tabs" scope="environments" @onChangeTab="onChangeTab" />
 
-      <div v-if="canCreateEnvironment && !isLoading" class="nav-controls">
-        <a :href="newEnvironmentPath" class="btn btn-success">
+      <div class="nav-controls">
+        <enable-review-app-button v-if="state.reviewAppDetails.can_setup_review_app" class="mr-2" />
+        <gl-button
+          v-if="canCreateEnvironment && !isLoading"
+          :href="newEnvironmentPath"
+          category="primary"
+          variant="success"
+        >
           {{ s__('Environments|New environment') }}
-        </a>
+        </gl-button>
       </div>
     </div>
 

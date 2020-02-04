@@ -172,16 +172,23 @@ For example, if 30 days worth of data has been selected (for example, 2019-12-16
 median line will represent the previous 30 days worth of data (2019-11-16 to 2019-12-16)
 as a metric to compare against.
 
-### Enabling chart
+### Disabling chart
 
-By default, this chart is disabled for self-managed instances. To enable it, ask an
-administrator with Rails console access to run the following:
+This chart is enabled by default. If you have a self-managed instance, an
+administrator can open a Rails console and disable it with the following command:
 
 ```ruby
-Feature.enable(:cycle_analytics_scatterplot_enabled)
+Feature.disable(:cycle_analytics_scatterplot_enabled)
 ```
 
-This chart is enabled by default on GitLab.com.
+### Disabling chart median line
+
+This chart median line is enabled by default. If you have a self-managed instance, an
+administrator can open a Rails console and disable it with the following command:
+
+```ruby
+Feature.disable(:cycle_analytics_scatterplot_median_enabled)
+```
 
 ## Permissions
 

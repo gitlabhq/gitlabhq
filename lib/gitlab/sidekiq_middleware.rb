@@ -17,7 +17,6 @@ module Gitlab
         chain.add Gitlab::SidekiqMiddleware::BatchLoader
         chain.add Labkit::Middleware::Sidekiq::Server
         chain.add Gitlab::SidekiqMiddleware::InstrumentationLogger
-        chain.add Gitlab::SidekiqMiddleware::AdminMode::Server
         chain.add Gitlab::SidekiqStatus::ServerMiddleware
         chain.add Gitlab::SidekiqMiddleware::WorkerContext::Server
       end
@@ -32,7 +31,6 @@ module Gitlab
         chain.add Gitlab::SidekiqMiddleware::ClientMetrics
         chain.add Gitlab::SidekiqMiddleware::WorkerContext::Client # needs to be before the Labkit middleware
         chain.add Labkit::Middleware::Sidekiq::Client
-        chain.add Gitlab::SidekiqMiddleware::AdminMode::Client
       end
     end
   end

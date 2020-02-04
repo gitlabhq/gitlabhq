@@ -347,6 +347,12 @@ reviewee.
   of the contributed code. It's usually a good idea to ask another maintainer or
   reviewer before doing it, but have the courage to do it when you believe it is
   important.
+- In the interest of [Iteration](https://about.gitlab.com/handbook/values/#iteration),
+  if, as a reviewer, your suggestions are non-blocking changes or personal preference
+  (not a documented or agreed requirement), consider approving the merge request
+  before passing it back to the author. This allows them to implement your suggestions
+  if they agree, or allows them to pass it onto the
+  maintainer for review straight away. This can help reduce our overall time-to-merge.
 - There is a difference in doing things right and doing things right now.
   Ideally, we should do the former, but in the real world we need the latter as
   well. A good example is a security fix which should be released as soon as

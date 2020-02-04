@@ -55,6 +55,26 @@ describe('Environment', () => {
           "You don't have any environments right now",
         );
       });
+
+      describe('when it is possible to enable a review app', () => {
+        beforeEach(done => {
+          mock
+            .onGet(mockData.endpoint)
+            .reply(200, { environments: [], review_app: { can_setup_review_app: true } });
+
+          component = mountComponent(EnvironmentsComponent, mockData);
+
+          setTimeout(() => {
+            done();
+          }, 0);
+        });
+
+        it('should render the enable review app button', () => {
+          expect(component.$el.querySelector('.js-enable-review-app-button').textContent).toContain(
+            'Enable review app',
+          );
+        });
+      });
     });
 
     describe('with paginated environments', () => {

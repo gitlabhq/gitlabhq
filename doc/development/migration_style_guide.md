@@ -379,10 +379,6 @@ Rails migration example:
 
 ```ruby
 add_column_with_default(:projects, :foo, :integer, default: 10, limit: 8)
-
-# or
-
-add_column(:projects, :foo, :integer, default: 10, limit: 8)
 ```
 
 ## Timestamp column type

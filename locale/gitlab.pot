@@ -7137,6 +7137,21 @@ msgstr ""
 msgid "Enable/disable your service desk. %{link_start}Learn more about service desk%{link_end}."
 msgstr ""
 
+msgid "EnableReviewApp|%{stepStart}Step 1%{stepEnd}. Ensure you have Kubernetes set up and have a base domain for your %{linkStart}cluster%{linkEnd}."
+msgstr ""
+
+msgid "EnableReviewApp|%{stepStart}Step 2%{stepEnd}. Copy the following snippet:"
+msgstr ""
+
+msgid "EnableReviewApp|%{stepStart}Step 3%{stepEnd}. Add it to the project %{linkStart}gitlab-ci.yml%{linkEnd} file."
+msgstr ""
+
+msgid "EnableReviewApp|Close"
+msgstr ""
+
+msgid "EnableReviewApp|Copy snippet text"
+msgstr ""
+
 msgid "Enabled"
 msgstr ""
 
@@ -7309,6 +7324,9 @@ msgid "Environments|Deploy to..."
 msgstr ""
 
 msgid "Environments|Deployment"
+msgstr ""
+
+msgid "Environments|Enable review app"
 msgstr ""
 
 msgid "Environments|Environment"
@@ -11527,6 +11545,9 @@ msgid "Manage project labels"
 msgstr ""
 
 msgid "Manage two-factor authentication"
+msgstr ""
+
+msgid "Manage your license"
 msgstr ""
 
 msgid "Manifest"
@@ -16189,6 +16210,9 @@ msgstr ""
 msgid "Review time is defined as the time it takes from first comment until merged."
 msgstr ""
 
+msgid "ReviewApp|Enable Review App"
+msgstr ""
+
 msgid "Reviewing"
 msgstr ""
 
@@ -19205,6 +19229,9 @@ msgstr ""
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
 msgstr ""
 
+msgid "This GitLab instance is licensed at the %{insufficient_license} tier. Geo is only available for users who have at least a Premium license."
+msgstr ""
+
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
 msgstr ""
 
@@ -21866,9 +21893,6 @@ msgid "You must set up incoming email before it becomes active."
 msgstr ""
 
 msgid "You need a different license to enable FileLocks feature"
-msgstr ""
-
-msgid "You need a different license to use Geo replication."
 msgstr ""
 
 msgid "You need git-lfs version %{min_git_lfs_version} (or greater) to continue. Please visit https://git-lfs.github.com"
