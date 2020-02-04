@@ -18,6 +18,11 @@ RuboCop (and other checks) offenses on every modified file.
 This saves you time as you don't have to wait for the same errors to be detected
 by the CI.
 
+Overcommit relies on a pre-commit hook to prevent commits that violate its ruleset.
+If you wish to override this behavior, it can be done by passing the ENV variable
+`OVERCOMMIT_DISABLE`; i.e. `OVERCOMMIT_DISABLE=1 git rebase master` to rebase while
+disabling the Git hook.
+
 ## Ruby, Rails, RSpec
 
 Our codebase style is defined and enforced by [RuboCop](https://github.com/rubocop-hq/rubocop).

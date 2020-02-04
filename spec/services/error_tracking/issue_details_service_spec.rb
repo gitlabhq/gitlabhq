@@ -5,6 +5,8 @@ require 'spec_helper'
 describe ErrorTracking::IssueDetailsService do
   include_context 'sentry error tracking context'
 
+  subject { described_class.new(project, user, params) }
+
   describe '#execute' do
     context 'with authorized user' do
       context 'when issue_details returns a detailed error' do

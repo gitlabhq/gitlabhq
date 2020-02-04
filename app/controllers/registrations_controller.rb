@@ -139,7 +139,6 @@ class RegistrationsController < Devise::RegistrationsController
     ensure_correct_params!
 
     return unless Feature.enabled?(:registrations_recaptcha, default_enabled: true) # reCAPTCHA on the UI will still display however
-    return if experiment_enabled?(:signup_flow) # when the experimental signup flow is enabled for the current user, disable the reCAPTCHA check
     return unless show_recaptcha_sign_up?
     return unless Gitlab::Recaptcha.load_configurations!
 

@@ -15,7 +15,7 @@ module QA
       disable_optional_jobs(project)
     end
 
-    describe 'Auto DevOps support', :orchestrated, :kubernetes, quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/118481' do
+    describe 'Auto DevOps support', :orchestrated, :kubernetes do
       context 'when rbac is enabled' do
         let(:cluster) { Service::KubernetesCluster.new.create! }
 

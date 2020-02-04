@@ -36,10 +36,7 @@ module MicrosoftTeams
 
       attachments = options[:attachments]
       unless attachments.blank?
-        result['sections'] << {
-          'title' => 'Details',
-          'facts' => [{ 'name' => 'Attachments', 'value' => attachments }]
-        }
+        result['sections'] << { text: attachments }
       end
 
       result.to_json

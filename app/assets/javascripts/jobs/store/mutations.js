@@ -53,17 +53,14 @@ export default {
     state.isTraceComplete = log.complete || state.isTraceComplete;
   },
 
-  /**
-   * Will remove loading animation
-   */
-  [types.STOP_POLLING_TRACE](state) {
-    state.isTraceComplete = true;
+  [types.SET_TRACE_TIMEOUT](state, id) {
+    state.traceTimeout = id;
   },
 
   /**
    * Will remove loading animation
    */
-  [types.RECEIVE_TRACE_ERROR](state) {
+  [types.STOP_POLLING_TRACE](state) {
     state.isTraceComplete = true;
   },
 

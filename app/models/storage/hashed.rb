@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Storage
-  class HashedProject
+  class Hashed
     attr_accessor :project
     delegate :gitlab_shell, :repository_storage, to: :project
 

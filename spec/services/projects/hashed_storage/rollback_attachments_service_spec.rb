@@ -7,7 +7,7 @@ describe Projects::HashedStorage::RollbackAttachmentsService do
 
   let(:project) { create(:project, :repository, skip_disk_validation: true) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
-  let(:hashed_storage) { Storage::HashedProject.new(project) }
+  let(:hashed_storage) { Storage::Hashed.new(project) }
 
   let!(:upload) { Upload.find_by(path: file_uploader.upload_path) }
   let(:file_uploader) { build(:file_uploader, project: project) }

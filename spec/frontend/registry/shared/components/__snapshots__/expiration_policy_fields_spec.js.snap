@@ -1,0 +1,133 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Expiration Policy Form renders 1`] = `
+<div
+  class="lh-2"
+>
+  <glformgroup-stub
+    id="expiration-policy-toggle-group"
+    label="Expiration policy:"
+    label-align="right"
+    label-cols="3"
+    label-for="expiration-policy-toggle"
+  >
+    <div
+      class="d-flex align-items-start"
+    >
+      <gltoggle-stub
+        id="expiration-policy-toggle"
+        labeloff="Toggle Status: OFF"
+        labelon="Toggle Status: ON"
+      />
+       
+      <span
+        class="mb-2 ml-1 lh-2"
+      >
+        Docker tag expiration policy is 
+        <strong>
+          disabled
+        </strong>
+      </span>
+    </div>
+  </glformgroup-stub>
+   
+  <glformgroup-stub
+    id="expiration-policy-interval-group"
+    label="Expiration interval:"
+    label-align="right"
+    label-cols="3"
+    label-for="expiration-policy-interval"
+  >
+    <glformselect-stub
+      disabled="true"
+      id="expiration-policy-interval"
+    >
+      <option
+        value="foo"
+      >
+        
+        Foo
+      
+      </option>
+      <option
+        value="bar"
+      >
+        
+        Bar
+      
+      </option>
+    </glformselect-stub>
+  </glformgroup-stub>
+  <glformgroup-stub
+    id="expiration-policy-schedule-group"
+    label="Expiration schedule:"
+    label-align="right"
+    label-cols="3"
+    label-for="expiration-policy-schedule"
+  >
+    <glformselect-stub
+      disabled="true"
+      id="expiration-policy-schedule"
+    >
+      <option
+        value="foo"
+      >
+        
+        Foo
+      
+      </option>
+      <option
+        value="bar"
+      >
+        
+        Bar
+      
+      </option>
+    </glformselect-stub>
+  </glformgroup-stub>
+  <glformgroup-stub
+    id="expiration-policy-latest-group"
+    label="Number of tags to retain:"
+    label-align="right"
+    label-cols="3"
+    label-for="expiration-policy-latest"
+  >
+    <glformselect-stub
+      disabled="true"
+      id="expiration-policy-latest"
+    >
+      <option
+        value="foo"
+      >
+        
+        Foo
+      
+      </option>
+      <option
+        value="bar"
+      >
+        
+        Bar
+      
+      </option>
+    </glformselect-stub>
+  </glformgroup-stub>
+   
+  <glformgroup-stub
+    id="expiration-policy-name-matching-group"
+    invalid-feedback="The value of this input should be less than 255 characters"
+    label="Docker tags with names matching this regex pattern will expire:"
+    label-align="right"
+    label-cols="3"
+    label-for="expiration-policy-name-matching"
+  >
+    <glformtextarea-stub
+      disabled="true"
+      id="expiration-policy-name-matching"
+      placeholder=".*"
+      trim=""
+      value=""
+    />
+  </glformgroup-stub>
+</div>
+`;

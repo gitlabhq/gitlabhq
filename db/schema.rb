@@ -2977,8 +2977,10 @@ ActiveRecord::Schema.define(version: 2020_01_30_161817) do
     t.string "version"
     t.integer "package_type", limit: 2, null: false
     t.index ["name"], name: "index_packages_packages_on_name_trigram", opclass: :gin_trgm_ops, using: :gin
+    t.index ["project_id", "created_at"], name: "index_packages_packages_on_project_id_and_created_at"
     t.index ["project_id", "name", "version", "package_type"], name: "idx_packages_packages_on_project_id_name_version_package_type"
-    t.index ["project_id"], name: "index_packages_packages_on_project_id"
+    t.index ["project_id", "package_type"], name: "index_packages_packages_on_project_id_and_package_type"
+    t.index ["project_id", "version"], name: "index_packages_packages_on_project_id_and_version"
   end
 
   create_table "packages_tags", force: :cascade do |t|

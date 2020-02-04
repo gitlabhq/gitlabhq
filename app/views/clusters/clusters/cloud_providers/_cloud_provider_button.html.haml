@@ -1,10 +1,12 @@
 - provider = local_assigns.fetch(:provider)
+- is_current_provider = provider == params[:provider]
 - logo_path = local_assigns.fetch(:logo_path)
 - label = local_assigns.fetch(:label)
 - last = local_assigns.fetch(:last, false)
-- classes = ['btn btn-light btn-outline flex-fill d-inline-flex flex-column justify-content-center align-items-center', ('mr-3' unless last)]
+- classes = ["btn btn-light btn-outline flex-fill d-inline-flex flex-column justify-content-center align-items-center w-50 js-create-#{provider}-cluster-button"]
+- conditional_classes = [('mr-3' unless last), ('active' if is_current_provider)]
 
-= link_to clusterable.new_path(provider: provider), class: classes do
+= link_to clusterable.new_path(provider: provider), class: classes + conditional_classes do
   .svg-content.p-2= image_tag logo_path, alt: label, class: 'gl-w-64 gl-h-64'
   %span
     = label

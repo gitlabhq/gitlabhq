@@ -38,6 +38,10 @@ describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
         click_link 'Google GKE'
       end
 
+      it 'highlights Google GKE logo' do
+        expect(page).to have_css('.js-create-gcp-cluster-button.active')
+      end
+
       context 'when user filled form with valid parameters' do
         subject { submit_form }
 

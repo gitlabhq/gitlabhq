@@ -147,6 +147,20 @@ class Issue < ApplicationRecord
     'project_id'
   end
 
+  def self.simple_sorts
+    super.merge(
+      {
+        'closest_future_date' => -> { order_closest_future_date },
+        'closest_future_date_asc' => -> { order_closest_future_date },
+        'due_date' => -> { order_due_date_asc.with_order_id_desc },
+        'due_date_asc' => -> { order_due_date_asc.with_order_id_desc },
+        'due_date_desc' => -> { order_due_date_desc.with_order_id_desc },
+        'relative_position' => -> { order_relative_position_asc.with_order_id_desc },
+        'relative_position_asc' => -> { order_relative_position_asc.with_order_id_desc }
+      }
+    )
+  end
+
   def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
     when 'closest_future_date', 'closest_future_date_asc' then order_closest_future_date

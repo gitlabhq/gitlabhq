@@ -129,7 +129,7 @@ DELETE /projects/:id/registry/repositories/:repository_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2"
 ```
 
-## List repository tags
+## List registry repository tags
 
 ### Within a project
 
@@ -165,7 +165,7 @@ Example response:
 ]
 ```
 
-## Get details of a repository tag
+## Get details of a registry repository tag
 
 Get details of a registry repository tag.
 
@@ -198,7 +198,7 @@ Example response:
 }
 ```
 
-## Delete a repository tag
+## Delete a registry repository tag
 
 Delete a registry repository tag.
 
@@ -219,9 +219,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 This action does not delete blobs. In order to delete them and recycle disk space,
 [run the garbage collection](https://docs.gitlab.com/omnibus/maintenance/README.html#removing-unused-layers-not-referenced-by-manifests).
 
-## Delete repository tags in bulk
+## Delete registry repository tags in bulk
 
-Delete repository tags in bulk based on given criteria.
+Delete registry repository tags in bulk based on given criteria.
 
 ```
 DELETE /projects/:id/registry/repositories/:repository_id/tags
@@ -231,7 +231,7 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
 | `repository_id` | integer | yes | The ID of registry repository. |
-| `name_regex` | string | yes | The regex of the name to delete. To delete all tags specify `.*`. |
+| `name_regex` | string | yes | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to delete. To delete all tags specify `.*`.|
 | `keep_n` | integer | no | The amount of latest tags of given name to keep. |
 | `older_than` | string | no | Tags to delete that are older than the given time, written in human readable form `1h`, `1d`, `1month`. |
 

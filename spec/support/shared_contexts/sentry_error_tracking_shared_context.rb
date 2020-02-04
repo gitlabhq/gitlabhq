@@ -9,8 +9,6 @@ shared_context 'sentry error tracking context' do
   let(:params) { {} }
   let(:result) { subject.execute }
 
-  subject { described_class.new(project, user, params) }
-
   let(:error_tracking_setting) do
     create(:project_error_tracking_setting, api_url: sentry_url, token: token, project: project)
   end

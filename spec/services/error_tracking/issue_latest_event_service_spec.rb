@@ -5,6 +5,8 @@ require 'spec_helper'
 describe ErrorTracking::IssueLatestEventService do
   include_context 'sentry error tracking context'
 
+  subject { described_class.new(project, user) }
+
   describe '#execute' do
     context 'with authorized user' do
       context 'when issue_latest_event returns an error event' do

@@ -1,0 +1,5 @@
+---
+title: Optimize issue search when sorting by due date and position
+merge_request: 24217
+author:
+type: performance

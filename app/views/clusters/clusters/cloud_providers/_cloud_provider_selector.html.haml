@@ -1,8 +1,8 @@
 - gke_label = s_('ClusterIntegration|Google GKE')
 - eks_label = s_('ClusterIntegration|Amazon EKS')
 - create_cluster_label = s_('ClusterIntegration|Create cluster on')
-.d-flex.flex-column
-  %h5.mb-3
+.d-flex.flex-column.p-3
+  %h4.mb-3
     = create_cluster_label
   .d-flex
     = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',

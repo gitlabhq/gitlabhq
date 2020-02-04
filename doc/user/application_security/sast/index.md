@@ -240,7 +240,8 @@ build:
       - target/
 
 spotbugs-sast:
-  dependencies: build
+  dependencies:
+    - build
   script:
     - /analyzer run -compile=false
   variables:

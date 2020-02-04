@@ -7,16 +7,19 @@ describe ErrorTracking::IssueUpdateService do
 
   let(:arguments) { { issue_id: 1234, status: 'resolved' } }
 
-  subject { described_class.new(project, user, arguments) }
+  subject(:update_service) { described_class.new(project, user, arguments) }
 
   shared_examples 'does not perform close issue flow' do
     it 'does not call the close issue service' do
+      update_service.execute
+
       expect(issue_close_service)
-        .not_to receive(:execute)
+        .not_to have_received(:execute)
     end
 
     it 'does not create system note' do
       expect(SystemNoteService).not_to receive(:close_after_error_tracking_resolve)
+      update_service.execute
     end
   end
 
@@ -31,13 +34,13 @@ describe ErrorTracking::IssueUpdateService do
         end
 
         it 'returns the response' do
-          expect(result).to eq(update_issue_response.merge(status: :success, closed_issue_iid: nil))
+          expect(update_service.execute).to eq(update_issue_response.merge(status: :success, closed_issue_iid: nil))
         end
 
         it 'updates any related issue' do
-          expect(subject).to receive(:update_related_issue)
+          expect(update_service).to receive(:update_related_issue)
 
-          result
+          update_service.execute
         end
 
         context 'related issue and resolving' do
@@ -48,39 +51,46 @@ describe ErrorTracking::IssueUpdateService do
           let(:issue_close_service) { spy(:issue_close_service) }
 
           before do
-            allow_any_instance_of(SentryIssueFinder)
-              .to receive(:execute)
-              .and_return(sentry_issue)
+            allow_next_instance_of(SentryIssueFinder) do |finder|
+              allow(finder).to receive(:execute).and_return(sentry_issue)
+            end
 
             allow(Issues::CloseService)
               .to receive(:new)
               .and_return(issue_close_service)
-          end
 
-          after do
-            result
-          end
-
-          it 'closes the issue' do
-            expect(issue_close_service)
+            allow(issue_close_service)
               .to receive(:execute)
-              .with(issue, system_note: false)
               .and_return(issue)
           end
 
-          it 'creates a system note' do
-            expect(SystemNoteService).to receive(:close_after_error_tracking_resolve)
-          end
-
-          it 'returns a response with closed issue' do
-            closed_issue = create(:issue, :closed, project: project)
+          it 'closes the issue' do
+            update_service.execute
 
             expect(issue_close_service)
-              .to receive(:execute)
+              .to have_received(:execute)
               .with(issue, system_note: false)
-              .and_return(closed_issue)
+          end
 
-            expect(result).to eq(status: :success, updated: true, closed_issue_iid: closed_issue.iid)
+          context 'issues gets closed' do
+            let(:closed_issue) { create(:issue, :closed, project: project) }
+
+            before do
+              expect(issue_close_service)
+                .to receive(:execute)
+                .with(issue, system_note: false)
+                .and_return(closed_issue)
+            end
+
+            it 'creates a system note' do
+              expect(SystemNoteService).to receive(:close_after_error_tracking_resolve)
+
+              update_service.execute
+            end
+
+            it 'returns a response with closed issue' do
+              expect(update_service.execute).to eq(status: :success, updated: true, closed_issue_iid: closed_issue.iid)
+            end
           end
 
           context 'issue is already closed' do

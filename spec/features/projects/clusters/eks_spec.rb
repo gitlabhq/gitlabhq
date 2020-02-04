@@ -30,6 +30,10 @@ describe 'AWS EKS Cluster', :js do
       it 'user sees a form to create an EKS cluster' do
         expect(page).to have_content('Create new cluster on EKS')
       end
+
+      it 'highlights Amazon EKS logo' do
+        expect(page).to have_css('.js-create-aws-cluster-button.active')
+      end
     end
   end
 end

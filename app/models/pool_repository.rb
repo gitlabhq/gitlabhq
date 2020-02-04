@@ -110,8 +110,8 @@ class PoolRepository < ApplicationRecord
   end
 
   def storage
-    Storage::HashedProject
-      .new(self, prefix: Storage::HashedProject::POOL_PATH_PREFIX)
+    Storage::Hashed
+      .new(self, prefix: Storage::Hashed::POOL_PATH_PREFIX)
   end
 end
 

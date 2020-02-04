@@ -58,32 +58,4 @@ describe ClustersHelper do
       it { is_expected.to eq('Create new cluster') }
     end
   end
-
-  describe '#render_new_provider_form' do
-    subject { helper.new_cluster_partial(provider: provider) }
-
-    context 'GCP provider' do
-      let(:provider) { 'gcp' }
-
-      it { is_expected.to eq('clusters/clusters/gcp/new') }
-    end
-
-    context 'AWS provider' do
-      let(:provider) { 'aws' }
-
-      it { is_expected.to eq('clusters/clusters/aws/new') }
-    end
-
-    context 'other provider' do
-      let(:provider) { 'other' }
-
-      it { is_expected.to eq('clusters/clusters/cloud_providers/cloud_provider_selector') }
-    end
-
-    context 'no provider' do
-      let(:provider) { nil }
-
-      it { is_expected.to eq('clusters/clusters/cloud_providers/cloud_provider_selector') }
-    end
-  end
 end

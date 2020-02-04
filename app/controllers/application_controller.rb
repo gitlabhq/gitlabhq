@@ -37,6 +37,7 @@ class ApplicationController < ActionController::Base
   around_action :set_current_context
   around_action :set_locale
   around_action :set_session_storage
+  around_action :set_current_admin
 
   after_action :set_page_title_header, if: :json_request?
   after_action :limit_session_time, if: -> { !current_user }
@@ -471,6 +472,13 @@ class ApplicationController < ActionController::Base
   def set_page_title_header
     # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
+  end
+
+  def set_current_admin(&block)
+    return yield unless Feature.enabled?(:user_mode_in_session)
+    return yield unless current_user
+
+    Gitlab::Auth::CurrentUserMode.with_current_admin(current_user, &block)
   end
 
   def html_request?

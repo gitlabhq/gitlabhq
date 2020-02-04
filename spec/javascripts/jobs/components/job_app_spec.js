@@ -6,7 +6,6 @@ import axios from '~/lib/utils/axios_utils';
 import jobApp from '~/jobs/components/job_app.vue';
 import createStore from '~/jobs/store';
 import * as types from '~/jobs/store/mutation_types';
-import { resetStore } from '../store/helpers';
 import job from '../mock_data';
 
 describe('Job App ', () => {
@@ -16,24 +15,29 @@ describe('Job App ', () => {
   let vm;
   let mock;
 
-  const props = {
+  const initSettings = {
     endpoint: `${gl.TEST_HOST}jobs/123.json`,
+    pagePath: `${gl.TEST_HOST}jobs/123`,
+    logState:
+      'eyJvZmZzZXQiOjE3NDUxLCJuX29wZW5fdGFncyI6MCwiZmdfY29sb3IiOm51bGwsImJnX2NvbG9yIjpudWxsLCJzdHlsZV9tYXNrIjowfQ%3D%3D',
+  };
+
+  const props = {
     runnerHelpUrl: 'help/runner',
     deploymentHelpUrl: 'help/deployment',
     runnerSettingsUrl: 'settings/ci-cd/runners',
     variablesSettingsUrl: 'settings/ci-cd/variables',
     terminalPath: 'jobs/123/terminal',
-    pagePath: `${gl.TEST_HOST}jobs/123`,
     projectPath: 'user-name/project-name',
     subscriptionsMoreMinutesUrl: 'https://customers.gitlab.com/buy_pipeline_minutes',
-    logState:
-      'eyJvZmZzZXQiOjE3NDUxLCJuX29wZW5fdGFncyI6MCwiZmdfY29sb3IiOm51bGwsImJnX2NvbG9yIjpudWxsLCJzdHlsZV9tYXNrIjowfQ%3D%3D',
   };
 
   const waitForJobReceived = () => waitForMutation(store, types.RECEIVE_JOB_SUCCESS);
   const setupAndMount = ({ jobData = {}, traceData = {} } = {}) => {
-    mock.onGet(props.endpoint).replyOnce(200, { ...job, ...jobData });
-    mock.onGet(`${props.pagePath}/trace.json`).reply(200, traceData);
+    mock.onGet(initSettings.endpoint).replyOnce(200, { ...job, ...jobData });
+    mock.onGet(`${initSettings.pagePath}/trace.json`).reply(200, traceData);
+
+    store.dispatch('init', initSettings);
 
     vm = mountComponentWithStore(Component, { props, store });
 
@@ -46,7 +50,6 @@ describe('Job App ', () => {
   });
 
   afterEach(() => {
-    resetStore(store);
     vm.$destroy();
     mock.restore();
   });
@@ -384,7 +387,6 @@ describe('Job App ', () => {
           })
           .then(done)
           .catch(done.fail);
-        done();
       });
 
       it('displays remaining time for a delayed job', done => {

@@ -306,9 +306,9 @@ export default {
 </script>
 <template>
   <form name="eks-cluster-configuration-form">
-    <h2>
+    <h4>
       {{ s__('ClusterIntegration|Enter the details for your Amazon EKS Kubernetes cluster') }}
-    </h2>
+    </h4>
     <div class="mb-3" v-html="kubernetesIntegrationHelpText"></div>
     <div class="form-group">
       <label class="label-bold" for="eks-cluster-name">{{

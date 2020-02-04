@@ -83,7 +83,7 @@ export default {
 </script>
 <template>
   <form name="service-credentials-form">
-    <h2>{{ s__('ClusterIntegration|Authenticate with Amazon Web Services') }}</h2>
+    <h4>{{ s__('ClusterIntegration|Authenticate with Amazon Web Services') }}</h4>
     <p>
       {{
         s__(

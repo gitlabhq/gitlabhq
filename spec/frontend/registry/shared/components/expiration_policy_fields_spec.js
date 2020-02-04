@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import stubChildren from 'helpers/stub_children';
-import component from '~/registry/shared/components/expiration_policy_form.vue';
+import component from '~/registry/shared/components/expiration_policy_fields.vue';
 
 import { NAME_REGEX_LENGTH } from '~/registry/shared/constants';
 import { formOptions } from '../mock_data';
@@ -10,22 +10,14 @@ describe('Expiration Policy Form', () => {
 
   const FORM_ELEMENTS_ID_PREFIX = '#expiration-policy';
 
-  const GlLoadingIcon = { name: 'gl-loading-icon-stub', template: '<svg></svg>' };
-
   const findFormGroup = name => wrapper.find(`${FORM_ELEMENTS_ID_PREFIX}-${name}-group`);
   const findFormElements = (name, parent = wrapper) =>
     parent.find(`${FORM_ELEMENTS_ID_PREFIX}-${name}`);
-  const findCancelButton = () => wrapper.find({ ref: 'cancel-button' });
-  const findSaveButton = () => wrapper.find({ ref: 'save-button' });
-  const findForm = () => wrapper.find({ ref: 'form-element' });
-  const findLoadingIcon = (parent = wrapper) => parent.find(GlLoadingIcon);
 
   const mountComponent = props => {
     wrapper = mount(component, {
       stubs: {
         ...stubChildren(component),
-        GlCard: false,
-        GlLoadingIcon,
       },
       propsData: {
         formOptions,
@@ -114,77 +106,20 @@ describe('Expiration Policy Form', () => {
     },
   );
 
-  describe('form actions', () => {
-    describe('cancel button', () => {
-      it('has type reset', () => {
-        mountComponent();
-        expect(findCancelButton().attributes('type')).toBe('reset');
-      });
-
-      it('is disabled when disableCancelButton is true', () => {
-        mountComponent({ disableCancelButton: true });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findCancelButton().attributes('disabled')).toBe('true');
-        });
-      });
-
-      it('is disabled isLoading is true', () => {
-        mountComponent({ isLoading: true });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findCancelButton().attributes('disabled')).toBe('true');
-        });
-      });
-
-      it('is enabled when isLoading and disableCancelButton are false', () => {
-        mountComponent({ disableCancelButton: false, isLoading: false });
-        return wrapper.vm.$nextTick().then(() => {
-          expect(findCancelButton().attributes('disabled')).toBe(undefined);
-        });
-      });
+  describe('when isLoading is true', () => {
+    beforeEach(() => {
+      mountComponent({ isLoading: true });
     });
 
-    describe('form cancel event', () => {
-      it('calls the appropriate function', () => {
-        mountComponent();
-        findForm().trigger('reset');
-        expect(wrapper.emitted('reset')).toBeTruthy();
-      });
-    });
-
-    it('save has type submit', () => {
-      mountComponent();
-      expect(findSaveButton().attributes('type')).toBe('submit');
-    });
-
-    describe('when isLoading is true', () => {
-      beforeEach(() => {
-        mountComponent({ isLoading: true });
-      });
-
-      it.each`
-        elementName
-        ${'toggle'}
-        ${'interval'}
-        ${'schedule'}
-        ${'latest'}
-        ${'name-matching'}
-      `(`${FORM_ELEMENTS_ID_PREFIX}-$elementName is disabled`, ({ elementName }) => {
-        expect(findFormElements(elementName).attributes('disabled')).toBe('true');
-      });
-
-      it('submit button is disabled and shows a spinner', () => {
-        const button = findSaveButton();
-        expect(button.attributes('disabled')).toBeTruthy();
-        expect(findLoadingIcon(button)).toExist();
-      });
-    });
-
-    describe('form submit event ', () => {
-      it('calls the appropriate function', () => {
-        mountComponent();
-        findForm().trigger('submit');
-        expect(wrapper.emitted('submit')).toBeTruthy();
-      });
+    it.each`
+      elementName
+      ${'toggle'}
+      ${'interval'}
+      ${'schedule'}
+      ${'latest'}
+      ${'name-matching'}
+    `(`${FORM_ELEMENTS_ID_PREFIX}-$elementName is disabled`, ({ elementName }) => {
+      expect(findFormElements(elementName).attributes('disabled')).toBe('true');
     });
   });
 
@@ -196,12 +131,12 @@ describe('Expiration Policy Form', () => {
         mountComponent({ value: { name_regex: invalidString } });
       });
 
-      it('save btn is disabled', () => {
-        expect(findSaveButton().attributes('disabled')).toBeTruthy();
-      });
-
       it('nameRegexState is false', () => {
         expect(wrapper.vm.nameRegexState).toBe(false);
+      });
+
+      it('emit the @invalidated event', () => {
+        expect(wrapper.emitted('invalidated')).toBeTruthy();
       });
     });
 
@@ -209,7 +144,7 @@ describe('Expiration Policy Form', () => {
       mountComponent({ value: { name_regex: '' } });
       return wrapper.vm.$nextTick().then(() => {
         expect(wrapper.vm.nameRegexState).toBe(null);
-        expect(findSaveButton().attributes('disabled')).toBeFalsy();
+        expect(wrapper.emitted('validated')).toBeTruthy();
       });
     });
 
