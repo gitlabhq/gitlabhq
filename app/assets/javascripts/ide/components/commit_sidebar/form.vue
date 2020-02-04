@@ -102,7 +102,6 @@ export default {
       this.componentHeight = null;
     },
   },
-  activityBarViews,
 };
 </script>
 

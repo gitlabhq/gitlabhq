@@ -484,20 +484,29 @@ POST /groups/:id/boards/:board_id/lists
 | `label_id` | integer | yes | The ID of a label |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1/lists?label_id=5
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4/boards/12/lists?milestone_id=7
 ```
 
 Example response:
 
 ```json
 {
-  "id" : 1,
-  "label" : {
-    "name" : "Testing",
-    "color" : "#F0AD4E",
-    "description" : null
-  },
-  "position" : 1
+  "id": 9,
+  "label": null,
+  "position": 0,
+  "milestone": {
+    "id": 7,
+    "iid": 3,
+    "group_id": 12,
+    "title": "Milestone with due date",
+    "description": "",
+    "state": "active",
+    "created_at": "2017-09-03T07:16:28.596Z",
+    "updated_at": "2017-09-03T07:16:49.521Z",
+    "due_date": null,
+    "start_date": null,
+    "web_url": "https://gitlab.example.com/groups/issue-reproduce/-/milestones/3"
+  }
 }
 ```
 

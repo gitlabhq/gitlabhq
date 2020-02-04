@@ -35,7 +35,7 @@ class RegistrationsController < Devise::RegistrationsController
     end
 
     # Do not show the signed_up notice message when the signup_flow experiment is enabled.
-    # Instead, show it after succesfully updating the role.
+    # Instead, show it after successfully updating the role.
     flash[:notice] = nil if experiment_enabled?(:signup_flow)
   rescue Gitlab::Access::AccessDeniedError
     redirect_to(new_user_session_path)

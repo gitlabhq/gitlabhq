@@ -71,14 +71,6 @@ describe MergeRequests::RebaseService do
 
     it_behaves_like 'sequence of failure and success'
 
-    context 'with deprecated step rebase feature' do
-      before do
-        stub_feature_flags(two_step_rebase: false)
-      end
-
-      it_behaves_like 'sequence of failure and success'
-    end
-
     context 'when unexpected error occurs' do
       before do
         allow(repository).to receive(:gitaly_operation_client).and_raise('Something went wrong')
@@ -140,21 +132,7 @@ describe MergeRequests::RebaseService do
         end
       end
 
-      context 'when the two_step_rebase feature is enabled' do
-        before do
-          stub_feature_flags(two_step_rebase: true)
-        end
-
-        it_behaves_like 'a service that can execute a successful rebase'
-      end
-
-      context 'when the two_step_rebase feature is disabled' do
-        before do
-          stub_feature_flags(two_step_rebase: false)
-        end
-
-        it_behaves_like 'a service that can execute a successful rebase'
-      end
+      it_behaves_like 'a service that can execute a successful rebase'
 
       context 'when skip_ci flag is set' do
         let(:skip_ci) { true }
