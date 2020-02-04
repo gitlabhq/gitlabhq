@@ -21,11 +21,14 @@ class Commit
   participant :committer
   participant :notes_with_associations
 
-  attr_accessor :project, :author
+  attr_accessor :author
   attr_accessor :redacted_description_html
   attr_accessor :redacted_title_html
   attr_accessor :redacted_full_title_html
-  attr_reader :gpg_commit
+  attr_reader :gpg_commit, :container
+
+  delegate :repository, to: :container
+  delegate :project, to: :repository, allow_nil: true
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
@@ -44,12 +47,12 @@ class Commit
   cache_markdown_field :description, pipeline: :commit_description
 
   class << self
-    def decorate(commits, project)
+    def decorate(commits, container)
       commits.map do |commit|
         if commit.is_a?(Commit)
           commit
         else
-          self.new(commit, project)
+          self.new(commit, container)
         end
       end
     end
@@ -85,24 +88,24 @@ class Commit
       }
     end
 
-    def from_hash(hash, project)
-      raw_commit = Gitlab::Git::Commit.new(project.repository.raw, hash)
-      new(raw_commit, project)
+    def from_hash(hash, container)
+      raw_commit = Gitlab::Git::Commit.new(container.repository.raw, hash)
+      new(raw_commit, container)
     end
 
     def valid_hash?(key)
       !!(EXACT_COMMIT_SHA_PATTERN =~ key)
     end
 
-    def lazy(project, oid)
-      BatchLoader.for({ project: project, oid: oid }).batch(replace_methods: false) do |items, loader|
-        items_by_project = items.group_by { |i| i[:project] }
+    def lazy(container, oid)
+      BatchLoader.for({ container: container, oid: oid }).batch(replace_methods: false) do |items, loader|
+        items_by_container = items.group_by { |i| i[:container] }
 
-        items_by_project.each do |project, commit_ids|
+        items_by_container.each do |container, commit_ids|
           oids = commit_ids.map { |i| i[:oid] }
 
-          project.repository.commits_by(oids: oids).each do |commit|
-            loader.call({ project: commit.project, oid: commit.id }, commit) if commit
+          container.repository.commits_by(oids: oids).each do |commit|
+            loader.call({ container: commit.container, oid: commit.id }, commit) if commit
           end
         end
       end
@@ -115,12 +118,12 @@ class Commit
 
   attr_accessor :raw
 
-  def initialize(raw_commit, project)
+  def initialize(raw_commit, container)
     raise "Nil as raw commit passed" unless raw_commit
 
     @raw = raw_commit
-    @project = project
-    @gpg_commit = Gitlab::Gpg::Commit.new(self) if project
+    @container = container
+    @gpg_commit = Gitlab::Gpg::Commit.new(self) if container
   end
 
   delegate \
@@ -141,7 +144,7 @@ class Commit
   end
 
   def project_id
-    project.id
+    project&.id
   end
 
   def ==(other)
@@ -269,17 +272,17 @@ class Commit
   end
 
   def parents
-    @parents ||= parent_ids.map { |oid| Commit.lazy(project, oid) }
+    @parents ||= parent_ids.map { |oid| Commit.lazy(container, oid) }
   end
 
   def parent
     strong_memoize(:parent) do
-      project.commit_by(oid: self.parent_id) if self.parent_id
+      container.commit_by(oid: self.parent_id) if self.parent_id
     end
   end
 
   def notes
-    project.notes.for_commit_id(self.id)
+    container.notes.for_commit_id(self.id)
   end
 
   def user_mentions
@@ -295,7 +298,7 @@ class Commit
   end
 
   def merge_requests
-    @merge_requests ||= project.merge_requests.by_commit_sha(sha)
+    @merge_requests ||= project&.merge_requests&.by_commit_sha(sha)
   end
 
   def method_missing(method, *args, &block)
@@ -330,7 +333,7 @@ class Commit
   end
 
   def cherry_pick_branch_name
-    project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
+    repository.next_branch("cherry-pick-#{short_id}", mild: true)
   end
 
   def cherry_pick_description(user)
@@ -418,7 +421,7 @@ class Commit
     return unless entry
 
     if entry[:type] == :blob
-      blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]), @project)
+      blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]), container)
       blob.image? || blob.video? || blob.audio? ? :raw : :blob
     else
       entry[:type]
@@ -484,7 +487,7 @@ class Commit
   end
 
   def commit_reference(from, referable_commit_id, full: false)
-    base = project.to_reference_base(from, full: full)
+    base = project&.to_reference_base(from, full: full)
 
     if base.present?
       "#{base}#{self.class.reference_prefix}#{referable_commit_id}"
@@ -510,6 +513,6 @@ class Commit
   end
 
   def merged_merge_request_no_cache(user)
-    MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
+    MergeRequestsFinder.new(user, project_id: project_id).find_by(merge_commit_sha: id) if merge_commit?
   end
 end

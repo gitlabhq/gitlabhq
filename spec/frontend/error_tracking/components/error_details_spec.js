@@ -1,7 +1,7 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { __ } from '~/locale';
-import { GlLoadingIcon, GlLink, GlBadge, GlFormInput } from '@gitlab/ui';
+import { GlLoadingIcon, GlLink, GlBadge, GlFormInput, GlAlert, GlSprintf } from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
@@ -28,7 +28,7 @@ describe('ErrorDetails', () => {
 
   function mountComponent() {
     wrapper = shallowMount(ErrorDetails, {
-      stubs: { LoadingButton },
+      stubs: { LoadingButton, GlSprintf },
       localVue,
       store,
       mocks,
@@ -62,7 +62,7 @@ describe('ErrorDetails', () => {
       startPollingDetails: () => {},
       startPollingStacktrace: () => {},
       updateIgnoreStatus: jest.fn(),
-      updateResolveStatus: jest.fn(),
+      updateResolveStatus: jest.fn().mockResolvedValue({ closed_issue_iid: 1 }),
     };
 
     getters = {
@@ -312,6 +312,20 @@ describe('ErrorDetails', () => {
           expect(actions.updateResolveStatus.mock.calls[0][1]).toEqual(
             expect.objectContaining({ status: errorStatus.UNRESOLVED }),
           );
+        });
+
+        it('should show alert with closed issueId', () => {
+          const findAlert = () => wrapper.find(GlAlert);
+          const closedIssueId = 123;
+          wrapper.setData({
+            isAlertVisible: true,
+            closedIssueId,
+          });
+
+          return wrapper.vm.$nextTick().then(() => {
+            expect(findAlert().exists()).toBe(true);
+            expect(findAlert().text()).toContain(`#${closedIssueId}`);
+          });
         });
       });
     });

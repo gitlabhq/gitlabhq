@@ -10,7 +10,7 @@ describe CronjobQueue do
       end
 
       include ApplicationWorker
-      include CronjobQueue
+      include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
     end
   end
 

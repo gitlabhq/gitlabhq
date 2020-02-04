@@ -146,9 +146,8 @@ export default {
             v-if="commit.description"
             :class="{ 'd-block': showDescription }"
             class="commit-row-description append-bottom-8"
+            >{{ commit.description }}</pre
           >
-            {{ commit.description }}
-          </pre>
         </div>
         <div class="commit-actions flex-row">
           <div v-if="commit.signatureHtml" v-html="commit.signatureHtml"></div>

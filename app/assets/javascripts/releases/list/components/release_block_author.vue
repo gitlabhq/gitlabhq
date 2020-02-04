@@ -27,7 +27,7 @@ export default {
 
 <template>
   <div class="d-flex">
-    <gl-sprintf message="by %{user}">
+    <gl-sprintf :message="__('by %{user}')">
       <template #user>
         <user-avatar-link
           class="prepend-left-4"

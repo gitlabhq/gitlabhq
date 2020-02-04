@@ -8,7 +8,7 @@ module Gitlab
       def initialize(commit)
         @commit = commit
 
-        repo = commit.project.repository.raw_repository
+        repo = commit.container.repository.raw_repository
         @signature_data = Gitlab::Git::Commit.extract_signature_lazily(repo, commit.sha || commit.id)
 
         lazy_signature

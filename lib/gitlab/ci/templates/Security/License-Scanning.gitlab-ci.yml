@@ -1,0 +1,33 @@
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/license_compliance/
+#
+# Configure the scanning tool through the environment variables.
+# List of the variables: https://gitlab.com/gitlab-org/security-products/license-management#settings
+# How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
+
+variables:
+  LICENSE_MANAGEMENT_SETUP_CMD: ''  # If needed, specify a command to setup your environment with a custom package manager.
+
+license_scanning:
+  stage: test
+  image:
+    name: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
+    entrypoint: [""]
+  variables:
+    SETUP_CMD: $LICENSE_MANAGEMENT_SETUP_CMD
+  allow_failure: true
+  script:
+    - /run.sh analyze .
+  after_script:
+    - mv gl-license-management-report.json gl-license-scanning-report.json
+  artifacts:
+    reports:
+      license_scanning: gl-license-scanning-report.json
+  dependencies: []
+  only:
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\blicense_management\b/
+  except:
+    variables:
+      - $LICENSE_MANAGEMENT_DISABLED

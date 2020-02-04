@@ -17,7 +17,7 @@ module Gitlab
     def self.execute_all_async(data)
       args = files.map { |file| [file, data] }
 
-      FileHookWorker.bulk_perform_async(args)
+      FileHookWorker.bulk_perform_async(args) # rubocop:disable Scalability/BulkPerformWithContext
     end
 
     def self.execute(file, data)

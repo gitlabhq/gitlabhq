@@ -2,7 +2,15 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import dateFormat from 'dateformat';
 import createFlash from '~/flash';
-import { GlButton, GlFormInput, GlLink, GlLoadingIcon, GlBadge } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormInput,
+  GlLink,
+  GlLoadingIcon,
+  GlBadge,
+  GlAlert,
+  GlSprintf,
+} from '@gitlab/ui';
 import { __, sprintf, n__ } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -26,6 +34,8 @@ export default {
     Icon,
     Stacktrace,
     GlBadge,
+    GlAlert,
+    GlSprintf,
   },
   directives: {
     TrackEvent: TrackEventDirective,
@@ -85,6 +95,8 @@ export default {
     return {
       GQLerror: null,
       issueCreationInProgress: false,
+      isAlertVisible: false,
+      closedIssueId: null,
     };
   },
   computed: {
@@ -184,7 +196,14 @@ export default {
     onResolveStatusUpdate() {
       const status =
         this.errorStatus === errorStatus.RESOLVED ? errorStatus.UNRESOLVED : errorStatus.RESOLVED;
-      this.updateResolveStatus({ endpoint: this.issueUpdatePath, status });
+
+      // eslint-disable-next-line promise/catch-or-return
+      this.updateResolveStatus({ endpoint: this.issueUpdatePath, status }).then(res => {
+        this.closedIssueId = res.closed_issue_iid;
+        if (this.closedIssueId) {
+          this.isAlertVisible = true;
+        }
+      });
     },
     formatDate(date) {
       return `${this.timeFormatted(date)} (${dateFormat(date, 'UTC:yyyy-mm-dd h:MM:ssTT Z')})`;
@@ -199,6 +218,18 @@ export default {
       <gl-loading-icon :size="3" />
     </div>
     <div v-else-if="showDetails" class="error-details">
+      <gl-alert v-if="isAlertVisible" @dismiss="isAlertVisible = false">
+        <gl-sprintf
+          :message="
+            __('The associated issue #%{issueId} has been closed as the error is now resolved.')
+          "
+        >
+          <template #issueId>
+            <span>{{ closedIssueId }}</span>
+          </template>
+        </gl-sprintf>
+      </gl-alert>
+
       <div class="top-area align-items-center justify-content-between py-3">
         <span v-if="!loadingStacktrace && stacktrace" v-html="reported"></span>
         <div class="d-inline-flex">

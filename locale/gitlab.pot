@@ -340,6 +340,9 @@ msgstr ""
 msgid "%{name}'s avatar"
 msgstr ""
 
+msgid "%{numberOfDays} days"
+msgstr ""
+
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
@@ -535,6 +538,9 @@ msgid "+%{approvers} more approvers"
 msgstr ""
 
 msgid "+%{extraOptionCount} more"
+msgstr ""
+
+msgid "+%{tags} more"
 msgstr ""
 
 msgid ", or "
@@ -2146,6 +2152,9 @@ msgstr ""
 msgid "Are you sure you want to cancel editing this comment?"
 msgstr ""
 
+msgid "Are you sure you want to delete %{name}?"
+msgstr ""
+
 msgid "Are you sure you want to delete these artifacts?"
 msgstr ""
 
@@ -2409,6 +2418,9 @@ msgid "Authentication via U2F device failed."
 msgstr ""
 
 msgid "Author"
+msgstr ""
+
+msgid "Authored %{timeago} by %{author}"
 msgstr ""
 
 msgid "Authorization code:"
@@ -5903,6 +5915,9 @@ msgstr ""
 msgid "CycleAnalytics|Tasks by type"
 msgstr ""
 
+msgid "CycleAnalytics|The given date range is larger than 180 days"
+msgstr ""
+
 msgid "CycleAnalytics|Total days to completion"
 msgstr ""
 
@@ -6916,6 +6931,9 @@ msgid "Edit wiki page"
 msgstr ""
 
 msgid "Edit your most recent comment in a thread (from an empty textarea)"
+msgstr ""
+
+msgid "Edited %{timeago}"
 msgstr ""
 
 msgid "Editing"
@@ -13266,6 +13284,18 @@ msgstr ""
 msgid "PackageRegistry|yarn"
 msgstr ""
 
+msgid "PackageType|Conan"
+msgstr ""
+
+msgid "PackageType|Maven"
+msgstr ""
+
+msgid "PackageType|NPM"
+msgstr ""
+
+msgid "PackageType|NuGet"
+msgstr ""
+
 msgid "Packages"
 msgstr ""
 
@@ -18669,6 +18699,9 @@ msgstr ""
 msgid "The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential."
 msgstr ""
 
+msgid "The associated issue #%{issueId} has been closed as the error is now resolved."
+msgstr ""
+
 msgid "The branch for this project has no active pipeline configuration."
 msgstr ""
 
@@ -22153,6 +22186,9 @@ msgid "branch name"
 msgstr ""
 
 msgid "by"
+msgstr ""
+
+msgid "by %{user}"
 msgstr ""
 
 msgid "cannot be changed if a personal project has container registry tags."

@@ -11,7 +11,7 @@ class UserProjectAccessChangedService
     if blocking
       AuthorizedProjectsWorker.bulk_perform_and_wait(bulk_args)
     else
-      AuthorizedProjectsWorker.bulk_perform_async(bulk_args)
+      AuthorizedProjectsWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
     end
   end
 end

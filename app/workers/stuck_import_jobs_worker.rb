@@ -2,7 +2,7 @@
 
 class StuckImportJobsWorker
   include ApplicationWorker
-  include CronjobQueue
+  include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category :importers
   worker_resource_boundary :cpu

@@ -3,7 +3,7 @@
 module RepositoryCheck
   class DispatchWorker
     include ApplicationWorker
-    include CronjobQueue
+    include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
     include ::EachShardWorker
     include ExclusiveLeaseGuard
 

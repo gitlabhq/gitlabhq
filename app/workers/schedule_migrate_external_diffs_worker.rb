@@ -2,7 +2,7 @@
 
 class ScheduleMigrateExternalDiffsWorker
   include ApplicationWorker
-  include CronjobQueue
+  include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
   include Gitlab::ExclusiveLeaseHelpers
 
   feature_category :source_code_management

@@ -2,7 +2,7 @@
 
 class PagesDomainRemovalCronWorker
   include ApplicationWorker
-  include CronjobQueue
+  include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category :pages
   worker_resource_boundary :cpu

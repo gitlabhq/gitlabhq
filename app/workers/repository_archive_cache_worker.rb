@@ -2,7 +2,7 @@
 
 class RepositoryArchiveCacheWorker
   include ApplicationWorker
-  include CronjobQueue
+  include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category :source_code_management
 

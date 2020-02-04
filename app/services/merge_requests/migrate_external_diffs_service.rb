@@ -9,7 +9,7 @@ module MergeRequests
     def self.enqueue!
       ids = MergeRequestDiff.ids_for_external_storage_migration(limit: MAX_JOBS)
 
-      MigrateExternalDiffsWorker.bulk_perform_async(ids.map { |id| [id] })
+      MigrateExternalDiffsWorker.bulk_perform_async(ids.map { |id| [id] }) # rubocop:disable Scalability/BulkPerformWithContext
     end
 
     def initialize(merge_request_diff)

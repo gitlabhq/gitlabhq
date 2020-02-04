@@ -17,7 +17,7 @@ export default {
     diffFilesLength: {
       type: Number,
       required: false,
-      default: 0,
+      default: null,
     },
   },
   computed: {

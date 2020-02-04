@@ -61,6 +61,7 @@ exports[`self monitor component When the self monitor project has not been creat
     modalid="delete-self-monitor-modal"
     ok-title="Delete project"
     ok-variant="danger"
+    size="md"
     title="Disable self monitoring?"
     titletag="h4"
   >

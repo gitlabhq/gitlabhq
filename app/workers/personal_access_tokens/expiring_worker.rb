@@ -3,7 +3,7 @@
 module PersonalAccessTokens
   class ExpiringWorker
     include ApplicationWorker
-    include CronjobQueue
+    include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     feature_category :authentication_and_authorization
 

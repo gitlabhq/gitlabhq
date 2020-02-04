@@ -165,7 +165,7 @@ export default {
         <gl-icon :name="visibilityLevelIcon" :size="14" />
       </div>
       <div class="creator">
-        <gl-sprintf message="Authored %{timeago} by %{author}">
+        <gl-sprintf :message="__('Authored %{timeago} by %{author}')">
           <template #timeago>
             <time-ago-tooltip
               :time="snippet.createdAt"
@@ -218,7 +218,7 @@ export default {
         errorMessage
       }}</gl-alert>
 
-      <gl-sprintf message="Are you sure you want to delete %{name}?">
+      <gl-sprintf :message="__('Are you sure you want to delete %{name}?')">
         <template #name
           ><strong>{{ snippet.title }}</strong></template
         >

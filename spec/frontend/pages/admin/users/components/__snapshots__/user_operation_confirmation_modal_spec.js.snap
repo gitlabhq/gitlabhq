@@ -6,6 +6,7 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
   modalid="user-operation-modal"
   ok-title="action"
   ok-variant="warning"
+  size="md"
   title="title"
   titletag="h4"
 >

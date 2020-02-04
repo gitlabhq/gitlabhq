@@ -2,7 +2,7 @@
 
 class AdminEmailWorker
   include ApplicationWorker
-  include CronjobQueue
+  include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category_not_owned!
 

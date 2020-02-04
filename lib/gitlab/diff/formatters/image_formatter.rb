@@ -37,7 +37,9 @@ module Gitlab
         def ==(other)
           other.is_a?(self.class) &&
             x == other.x &&
-            y == other.y
+            y == other.y &&
+            width == other.width &&
+            height == other.height
         end
       end
     end
