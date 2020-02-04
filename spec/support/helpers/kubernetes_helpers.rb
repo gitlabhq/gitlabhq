@@ -494,7 +494,7 @@ module KubernetesHelpers
       "metadata" => {
         "name" => name,
         "namespace" => namespace,
-        "generate_name" => "generated-name-with-suffix",
+        "generateName" => "generated-name-with-suffix",
         "creationTimestamp" => "2016-11-25T19:55:19Z",
         "annotations" => {
           "app.gitlab.com/env" => environment_slug,
@@ -520,7 +520,7 @@ module KubernetesHelpers
       "metadata" => {
         "name" => name,
         "namespace" => namespace,
-        "generate_name" => "generated-name-with-suffix",
+        "generateName" => "generated-name-with-suffix",
         "creationTimestamp" => "2016-11-25T19:55:19Z",
         "labels" => {
           "serving.knative.dev/service" => name
@@ -551,10 +551,7 @@ module KubernetesHelpers
       },
       "spec" => { "replicas" => 3 },
       "status" => {
-        "observedGeneration" => 4,
-        "replicas" => 3,
-        "updatedReplicas" => 3,
-        "availableReplicas" => 3
+        "observedGeneration" => 4
       }
     }
   end

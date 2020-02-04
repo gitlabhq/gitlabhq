@@ -5,60 +5,56 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/forking_workflow.html'
 # Project forking workflow
 
 Forking a project to your own namespace is useful if you have no write
-access to the project you want to contribute to. If you do have write
+access to the project you want to contribute to. Even if you do have write
 access or can request it, we recommend working together in the same
 repository since it is simpler. See our [GitLab Flow](../../../topics/gitlab_flow.md)
 document more information about using branches to work together.
 
 ## Creating a fork
 
-Forking a project is in most cases a two-step process.
+Forking a project is, in most cases, a two-step process.
 
-1. Click on the fork button located in between the star and clone buttons on the project's home page.
+1. On the project's home page, in the top right, click the **Fork** button.
 
    ![Fork button](img/forking_workflow_fork_button.png)
 
-1. Once you do that, you'll be presented with a screen where you can choose
-   the namespace to fork to. Only namespaces (groups and your own
-   namespace) where you have write access to, will be shown. Click on the
-   namespace to create your fork there.
+1. Click a namespace to fork to. Only namespaces you have Developer and higher [permissions](../../permissions.md) for are shown.
+
+   NOTE: **Note:**
+   The project path must be unique within the namespace.
 
    ![Choose namespace](img/forking_workflow_choose_namespace.png)
 
-   **Note:**
-   If the namespace you chose to fork the project to has another project with
-   the same path name, you will be presented with a warning that the forking
-   could not be completed. Try to resolve the error before repeating the forking
-   process.
-
-   ![Path taken error](img/forking_workflow_path_taken_error.png)
-
-After the forking is done, you can start working on the newly created
-repository. There, you will have full [Owner](../../permissions.md)
-access, so you can set it up as you please.
+The fork is created. The permissions you have in the namespace are the permissions you will have in the fork.
 
 CAUTION: **CAUTION:**
-From GitLab 12.6 onward, if the [visibility of an upstream project is reduced](../../../public_access/public_access.md#reducing-visibility)
-in any way, the fork relationship with all its forks will be removed.
+In GitLab 12.6 and later, when project owners [reduce a project's visibility](../../../public_access/public_access.md#reducing-visibility),
+it **removes the relationship** between a project and all its forks.
+
+## Repository mirroring
+
+You can use [repository mirroring](repository_mirroring.md) to keep your fork synced with the original repository. You can also use `git remote add upstream` to achieve the same result.
+
+The main difference is that with repository mirroring your remote fork will be automatically kept up-to-date.
+
+Without mirroring, to work locally you'll have to user `git pull` to update your local repo with the fork on GitLab. You'll have to fetch locally and push it back to the remote repo to update it.
 
 CAUTION: **Caution:**
-[Repository mirroring](repository_mirroring.md) will help to keep your fork synced with the original repository.
-Before approving a merge request you'll likely to be asked to sync before getting approval, hence automating it is recommend.
+With mirroring, before approving a merge request you'll likely to be asked to sync, hence automating it is recommend.
+
+Read more about [How to keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/).
 
 ## Merging upstream
 
-Once you are ready to send your code back to the main project, you need
-to create a merge request. Choose your forked project's main branch as
-the source and the original project's main branch as the destination and
-create the [merge request](../merge_requests/index.md).
+When you are ready to send your code back to the upstream project,
+[create a merge request](../merge_requests/creating_merge_requests.md). For **Source branch**,
+choose your forked project's branch. For **Target branch**, choose the original project's branch.
 
 ![Selecting branches](img/forking_workflow_branch_select.png)
 
-You can then assign the merge request to someone to have them review
-your changes. Upon pressing the 'Submit Merge Request' button, your
-changes will be added to the repository and branch you're merging into.
-
-![New merge request](img/forking_workflow_merge_request.png)
+Then you can add labels, a milestone, and assign the merge request to someone who can review
+your changes. Then click **Submit merge request** to conclude the process. When successfully merged, your
+changes are added to the repository and branch you're merging into.
 
 ## Removing a fork relationship
 

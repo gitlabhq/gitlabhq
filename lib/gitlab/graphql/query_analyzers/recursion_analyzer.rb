@@ -6,7 +6,7 @@ module Gitlab
   module Graphql
     module QueryAnalyzers
       class RecursionAnalyzer
-        IGNORED_FIELDS = %w(node edges ofType).freeze
+        IGNORED_FIELDS = %w(node edges nodes ofType).freeze
         RECURSION_THRESHOLD = 2
 
         def initial_value(query)

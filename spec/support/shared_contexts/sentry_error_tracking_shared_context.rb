@@ -6,9 +6,10 @@ shared_context 'sentry error tracking context' do
 
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
   let(:token) { 'test-token' }
+  let(:params) { {} }
   let(:result) { subject.execute }
 
-  subject { described_class.new(project, user) }
+  subject { described_class.new(project, user, params) }
 
   let(:error_tracking_setting) do
     create(:project_error_tracking_setting, api_url: sentry_url, token: token, project: project)

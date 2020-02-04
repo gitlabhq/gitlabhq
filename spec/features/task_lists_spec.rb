@@ -240,28 +240,30 @@ describe 'Task Lists' do
     end
 
     shared_examples 'multiple tasks' do
-      it 'renders for description' do
+      it 'renders for description', :js do
         visit_merge_request(project, merge)
+        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 6)
         expect(page).to have_selector('ul input[checked]', count: 2)
       end
 
-      it 'contains the required selectors' do
+      it 'contains the required selectors', :js do
         visit_merge_request(project, merge)
+        wait_for_requests
 
         container = '.detail-page-description .description.js-task-list-container'
 
         expect(page).to have_selector(container)
         expect(page).to have_selector("#{container} .md .task-list .task-list-item .task-list-item-checkbox")
-        expect(page).to have_selector("#{container} .js-task-list-field")
+        expect(page).to have_selector("#{container} .js-task-list-field", visible: false)
         expect(page).to have_selector('form.js-issuable-update')
-        expect(page).to have_selector('a.btn-close')
       end
 
       it 'is only editable by author', :js do
         visit_merge_request(project, merge)
+        wait_for_requests
 
         expect(page).to have_selector('.js-task-list-container')
         expect(page).to have_selector('li.task-list-item.enabled', count: 6)
@@ -269,6 +271,7 @@ describe 'Task Lists' do
         logout(:user)
         login_as(user2)
         visit current_path
+        wait_for_requests
 
         expect(page).not_to have_selector('.js-task-list-container')
         expect(page).to have_selector('li.task-list-item.enabled', count: 0)
@@ -297,8 +300,9 @@ describe 'Task Lists' do
     describe 'single incomplete task' do
       let!(:merge) { create(:merge_request, :simple, description: singleIncompleteMarkdown, author: user, source_project: project) }
 
-      it 'renders for description' do
+      it 'renders for description', :js do
         visit_merge_request(project, merge)
+        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
@@ -315,8 +319,9 @@ describe 'Task Lists' do
     describe 'single complete task' do
       let!(:merge) { create(:merge_request, :simple, description: singleCompleteMarkdown, author: user, source_project: project) }
 
-      it 'renders for description' do
+      it 'renders for description', :js do
         visit_merge_request(project, merge)
+        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
@@ -325,6 +330,7 @@ describe 'Task Lists' do
 
       it 'provides a summary on MergeRequests#index' do
         visit project_merge_requests_path(project)
+
         expect(page).to have_content("1 of 1 task completed")
       end
     end

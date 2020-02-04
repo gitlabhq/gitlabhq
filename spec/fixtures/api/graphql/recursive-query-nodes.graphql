@@ -1,0 +1,19 @@
+{
+  project(fullPath: "gitlab-org/gitlab") {
+    group {
+      projects {
+        nodes {
+          group {
+            projects {
+              nodes {
+                group {
+                  description
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

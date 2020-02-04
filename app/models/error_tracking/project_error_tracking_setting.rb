@@ -128,10 +128,6 @@ module ErrorTracking
       end
     end
 
-    def expire_issues_cache
-      Rails.cache.delete_matched(expand_cache_key('list_issues'))
-    end
-
     # http://HOST/api/0/projects/ORG/PROJECT
     # ->
     # http://HOST/ORG/PROJECT
@@ -147,12 +143,6 @@ module ErrorTracking
     end
 
     private
-
-    def expand_cache_key(resource_prefix)
-      klass_key = self.class.reactive_cache_key.call(self).join(':')
-
-      "#{klass_key}:#{resource_prefix}*"
-    end
 
     def add_gitlab_issue_details(issue)
       issue.gitlab_commit = match_gitlab_commit(issue.first_release_version)

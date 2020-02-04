@@ -361,8 +361,10 @@ describe Clusters::Platforms::Kubernetes do
 
   describe '#calculate_reactive_cache_for' do
     let(:service) { create(:cluster_platform_kubernetes, :configured) }
-    let(:pod) { kube_pod }
-    let(:namespace) { pod["metadata"]["namespace"] }
+    let(:expected_pod_cached_data) do
+      kube_pod.tap { |kp| kp['metadata'].delete('namespace') }
+    end
+    let(:namespace) { "project-namespace" }
     let(:environment) { instance_double(Environment, deployment_namespace: namespace) }
 
     subject { service.calculate_reactive_cache_for(environment) }
@@ -381,7 +383,7 @@ describe Clusters::Platforms::Kubernetes do
         stub_kubeclient_deployments(namespace)
       end
 
-      it { is_expected.to include(pods: [pod]) }
+      it { is_expected.to include(pods: [expected_pod_cached_data]) }
     end
 
     context 'when kubernetes responds with 500s' do

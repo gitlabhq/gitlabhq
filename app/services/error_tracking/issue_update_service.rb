@@ -2,8 +2,6 @@
 
 module ErrorTracking
   class IssueUpdateService < ErrorTracking::BaseService
-    include ::Gitlab::Utils::StrongMemoize
-
     private
 
     def perform
@@ -14,14 +12,14 @@ module ErrorTracking
 
       compose_response(response) do
         response[:closed_issue_iid] = update_related_issue&.iid
-        project_error_tracking_setting.expire_issues_cache
       end
     end
 
     def update_related_issue
-      return if related_issue.nil?
+      issue = related_issue
+      return unless issue
 
-      close_and_create_note(related_issue)
+      close_and_create_note(issue)
     end
 
     def close_and_create_note(issue)
@@ -45,12 +43,10 @@ module ErrorTracking
     end
 
     def related_issue
-      strong_memoize(:related_issue) do
-        SentryIssueFinder
-          .new(project, current_user: current_user)
-          .execute(params[:issue_id])
-          &.issue
-      end
+      SentryIssueFinder
+        .new(project, current_user: current_user)
+        .execute(params[:issue_id])
+        &.issue
     end
 
     def resolving?

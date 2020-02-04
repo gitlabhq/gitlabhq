@@ -61,9 +61,9 @@ By default, a **Create issue** button is displayed:
 
 ![Error Details without Issue Link](img/error_details_v12_7.png)
 
-If you create a GitLab issue from the error, the **Create issue** button will change to a **View issue** button:
+If you create a GitLab issue from the error, the **Create issue** button will change to a **View issue** button and a link to the GitLab issue will surface within the error detail section:
 
-![Error Details with Issue Link](img/error_details_with_issue_v12_7.png)
+![Error Details with Issue Link](img/error_details_with_issue_v12_8.png)
 
 ## Taking Action on errors
 

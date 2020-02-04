@@ -10,80 +10,80 @@ describe Gitlab::Git::Conflict::Parser do
 
     context 'when the file has valid conflicts' do
       let(:text) do
-        <<CONFLICT
-module Gitlab
-  module Regexp
-    extend self
+        <<~CONFLICT
+            module Gitlab
+              module Regexp
+                extend self
 
-    def username_regexp
-      default_regexp
-    end
+                def username_regexp
+                  default_regexp
+                end
 
-<<<<<<< files/ruby/regex.rb
-    def project_name_regexp
-      /\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z/
-    end
+            <<<<<<< files/ruby/regex.rb
+                def project_name_regexp
+                  /\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z/
+                end
 
-    def name_regexp
-      /\A[a-zA-Z0-9_\-\. ]*\z/
-=======
-    def project_name_regex
-      %r{\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z}
-    end
+                def name_regexp
+                  /\A[a-zA-Z0-9_\-\. ]*\z/
+            =======
+                def project_name_regex
+                  %r{\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z}
+                end
 
-    def name_regex
-      %r{\A[a-zA-Z0-9_\-\. ]*\z}
->>>>>>> files/ruby/regex.rb
-    end
+                def name_regex
+                  %r{\A[a-zA-Z0-9_\-\. ]*\z}
+            >>>>>>> files/ruby/regex.rb
+                end
 
-    def path_regexp
-      default_regexp
-    end
+                def path_regexp
+                  default_regexp
+                end
 
-<<<<<<< files/ruby/regex.rb
-    def archive_formats_regexp
-      /(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/
-=======
-    def archive_formats_regex
-      %r{(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)}
->>>>>>> files/ruby/regex.rb
-    end
+            <<<<<<< files/ruby/regex.rb
+                def archive_formats_regexp
+                  /(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/
+            =======
+                def archive_formats_regex
+                  %r{(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)}
+            >>>>>>> files/ruby/regex.rb
+                end
 
-    def git_reference_regexp
-      # Valid git ref regexp, see:
-      # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
-      %r{
-        (?!
-           (?# doesn't begins with)
-           \/|                    (?# rule #6)
-           (?# doesn't contain)
-           .*(?:
-              [\/.]\.|            (?# rule #1,3)
-              \/\/|               (?# rule #6)
-              @\{|                (?# rule #8)
-              \\                  (?# rule #9)
-           )
-        )
-        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
-        (?# doesn't end with)
-        (?<!\.lock)               (?# rule #1)
-        (?<![\/.])                (?# rule #6-7)
-      }x
-    end
+                def git_reference_regexp
+                  # Valid git ref regexp, see:
+                  # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
+                  %r{
+                    (?!
+                       (?# doesn't begins with)
+                       \/|                    (?# rule #6)
+                       (?# doesn't contain)
+                       .*(?:
+                          [\/.]\.|            (?# rule #1,3)
+                          \/\/|               (?# rule #6)
+                          @\{|                (?# rule #8)
+                          \\                  (?# rule #9)
+                       )
+                    )
+                    [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+                    (?# doesn't end with)
+                    (?<!\.lock)               (?# rule #1)
+                    (?<![\/.])                (?# rule #6-7)
+                  }x
+                end
 
-    protected
+                protected
 
-<<<<<<< files/ruby/regex.rb
-    def default_regexp
-      /\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
-=======
-    def default_regex
-      %r{\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z}
->>>>>>> files/ruby/regex.rb
-    end
-  end
-end
-CONFLICT
+            <<<<<<< files/ruby/regex.rb
+                def default_regexp
+                  /\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
+            =======
+                def default_regex
+                  %r{\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z}
+            >>>>>>> files/ruby/regex.rb
+                end
+              end
+            end
+        CONFLICT
       end
 
       let(:lines) do

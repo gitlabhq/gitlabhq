@@ -40,16 +40,6 @@ describe ErrorTracking::IssueUpdateService do
           result
         end
 
-        it 'clears the reactive cache' do
-          allow(error_tracking_setting)
-            .to receive(:expire_issues_cache)
-
-          result
-
-          expect(error_tracking_setting)
-            .to have_received(:expire_issues_cache)
-        end
-
         context 'related issue and resolving' do
           let(:issue) { create(:issue, project: project) }
           let(:sentry_issue) { create(:sentry_issue, issue: issue) }

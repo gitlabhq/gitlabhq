@@ -107,6 +107,16 @@ For private projects, the number of Releases is displayed to users with Reporter
 [permissions](../../permissions.md#releases-permissions) or higher. For public projects,
 it is displayed to every user regardless of their permission level.
 
+### Upcoming Releases
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/38105) in GitLab 12.1.
+
+A Release may be created ahead of time by specifying a future `released_at` date. Until
+the `released_at` date and time is reached, an **Upcoming Release** badge will appear next to the
+Release tag. Once the `released_at` date and time has passed, the badge is automatically removed.
+
+![An upcoming release](img/upcoming_release_v12_7.png)
+
 ## Editing a release
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26016) in GitLab 12.6.
@@ -244,6 +254,19 @@ NOTE: **Note:**
 Please note that Release Evidence's data is collected regardless of this
 feature flag, which only enables or disables the display of the data on the
 Releases page.
+
+### Scheduled Evidence creation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23697) in GitLab 12.8.
+
+When the `released_at` date and time is not provided, the date and time of Release
+creation is used. The Evidence collection background job is immediately executed.
+
+If a future `released_at` is specified, the Release becomes an **Upcoming Release**. In this
+case, the Evidence is scheduled to be collected at the `released_at` date and time, via a
+background job.
+
+If a past `released_at` is used, no Evidence is collected for the Release.
 
 <!-- ## Troubleshooting
 

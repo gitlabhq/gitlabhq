@@ -153,79 +153,79 @@ describe Gitlab::Conflict::File do
 
     context 'with an example file' do
       let(:raw_conflict_content) do
-        <<FILE
-  # Ensure there is no match line header here
-  def username_regexp
-    default_regexp
-  end
+        <<~FILE
+            # Ensure there is no match line header here
+            def username_regexp
+              default_regexp
+            end
 
-<<<<<<< files/ruby/regex.rb
-def project_name_regexp
-  /\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z/
-end
+          <<<<<<< files/ruby/regex.rb
+          def project_name_regexp
+            /\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z/
+          end
 
-def name_regexp
-  /\A[a-zA-Z0-9_\-\. ]*\z/
-=======
-def project_name_regex
-  %r{\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z}
-end
+          def name_regexp
+            /\A[a-zA-Z0-9_\-\. ]*\z/
+          =======
+          def project_name_regex
+            %r{\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z}
+          end
 
-def name_regex
-  %r{\A[a-zA-Z0-9_\-\. ]*\z}
->>>>>>> files/ruby/regex.rb
-end
+          def name_regex
+            %r{\A[a-zA-Z0-9_\-\. ]*\z}
+          >>>>>>> files/ruby/regex.rb
+          end
 
-# Some extra lines
-# To force a match line
-# To be created
+          # Some extra lines
+          # To force a match line
+          # To be created
 
-def path_regexp
-  default_regexp
-end
+          def path_regexp
+            default_regexp
+          end
 
-<<<<<<< files/ruby/regex.rb
-def archive_formats_regexp
-  /(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/
-=======
-def archive_formats_regex
-  %r{(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)}
->>>>>>> files/ruby/regex.rb
-end
+          <<<<<<< files/ruby/regex.rb
+          def archive_formats_regexp
+            /(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/
+          =======
+          def archive_formats_regex
+            %r{(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)}
+          >>>>>>> files/ruby/regex.rb
+          end
 
-def git_reference_regexp
-  # Valid git ref regexp, see:
-  # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
-  %r{
-    (?!
-       (?# doesn't begins with)
-       \/|                    (?# rule #6)
-       (?# doesn't contain)
-       .*(?:
-          [\/.]\.|            (?# rule #1,3)
-          \/\/|               (?# rule #6)
-          @\{|                (?# rule #8)
-          \\                  (?# rule #9)
-       )
-    )
-    [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
-    (?# doesn't end with)
-    (?<!\.lock)               (?# rule #1)
-    (?<![\/.])                (?# rule #6-7)
-  }x
-end
+          def git_reference_regexp
+            # Valid git ref regexp, see:
+            # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
+            %r{
+              (?!
+                 (?# doesn't begins with)
+                 \/|                    (?# rule #6)
+                 (?# doesn't contain)
+                 .*(?:
+                    [\/.]\.|            (?# rule #1,3)
+                    \/\/|               (?# rule #6)
+                    @\{|                (?# rule #8)
+                    \\                  (?# rule #9)
+                 )
+              )
+              [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+              (?# doesn't end with)
+              (?<!\.lock)               (?# rule #1)
+              (?<![\/.])                (?# rule #6-7)
+            }x
+          end
 
-protected
+          protected
 
-<<<<<<< files/ruby/regex.rb
-def default_regexp
-  /\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
-=======
-def default_regex
-  %r{\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z}
->>>>>>> files/ruby/regex.rb
-end
-FILE
+          <<<<<<< files/ruby/regex.rb
+          def default_regexp
+            /\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
+          =======
+          def default_regex
+            %r{\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z}
+          >>>>>>> files/ruby/regex.rb
+          end
+        FILE
       end
 
       let(:sections) { conflict_file.sections }
