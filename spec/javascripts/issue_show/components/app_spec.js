@@ -7,13 +7,13 @@ import axios from '~/lib/utils/axios_utils';
 import '~/behaviors/markdown/render_gfm';
 import issuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
-import issueShowData from '../mock_data';
+import { initialRequest, secondRequest } from '../mock_data';
 
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');
 }
 
-const REALTIME_REQUEST_STACK = [issueShowData.initialRequest, issueShowData.secondRequest];
+const REALTIME_REQUEST_STACK = [initialRequest, secondRequest];
 
 describe('Issuable output', () => {
   let mock;

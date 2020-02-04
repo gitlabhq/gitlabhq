@@ -111,6 +111,25 @@ module API
         destroy_conditionally!(pipeline_schedule)
       end
 
+      desc 'Play a scheduled pipeline immediately' do
+        detail 'This feature was added in GitLab 12.8'
+      end
+      params do
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
+      end
+      post ':id/pipeline_schedules/:pipeline_schedule_id/play' do
+        authorize! :play_pipeline_schedule, pipeline_schedule
+
+        job_id = RunPipelineScheduleWorker
+          .perform_async(pipeline_schedule.id, current_user.id)
+
+        if job_id
+          created!
+        else
+          render_api_error!('Unable to schedule pipeline run immediately', 500)
+        end
+      end
+
       desc 'Create a new pipeline schedule variable' do
         success Entities::Variable
       end

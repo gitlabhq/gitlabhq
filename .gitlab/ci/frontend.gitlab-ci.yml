@@ -38,7 +38,7 @@
   - "doc/README.md"  # Some RSpec test rely on this file
 
 # Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.code-backstage-patterns-qa: &code-backstage-patterns-qa
+.code-backstage-qa-patterns: &code-backstage-qa-patterns
   - ".gitlab/ci/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
@@ -118,7 +118,7 @@ gitlab:assets:compile pull-push-cache:
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-master-refs
-      changes: *code-backstage-patterns-qa
+      changes: *code-backstage-qa-patterns
       when: on_success
   cache:
     policy: pull-push
@@ -129,7 +129,7 @@ gitlab:assets:compile pull-cache:
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-default-refs
-      changes: *code-backstage-patterns-qa
+      changes: *code-backstage-qa-patterns
       when: on_success
   cache:
     policy: pull
@@ -163,7 +163,7 @@ compile-assets pull-push-cache:
   extends: .compile-assets-metadata
   rules:
     - <<: *if-master-refs
-      changes: *code-backstage-patterns-qa
+      changes: *code-backstage-qa-patterns
       when: on_success
   cache:
     policy: pull-push
@@ -176,7 +176,7 @@ compile-assets pull-push-cache foss:
     - <<: *if-not-ee
       when: never
     - <<: *if-master-refs
-      changes: *code-backstage-patterns-qa
+      changes: *code-backstage-qa-patterns
       when: on_success
   cache:
     policy: pull-push
@@ -186,7 +186,7 @@ compile-assets pull-cache:
   extends: .compile-assets-metadata
   rules:
     - <<: *if-default-refs
-      changes: *code-backstage-patterns-qa
+      changes: *code-backstage-qa-patterns
       when: on_success
   cache:
     policy: pull
@@ -199,26 +199,24 @@ compile-assets pull-cache foss:
     - <<: *if-not-ee
       when: never
     - <<: *if-default-refs
-      changes: *code-backstage-patterns-qa
+      changes: *code-backstage-qa-patterns
       when: on_success
   cache:
     policy: pull
     key: "assets-compile:v8:foss"
 
-.only-code-frontend-job-base:
+.frontend-job-base:
   extends:
     - .default-tags
     - .default-retry
     - .default-cache
-    - .default-only
     - .default-before_script
-    - .only:changes-code-backstage
     - .use-pg9
   stage: test
   needs: ["setup-test-env", "compile-assets pull-cache"]
 
 .karma-base:
-  extends: .only-code-frontend-job-base
+  extends: .frontend-job-base
   variables:
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
@@ -231,6 +229,10 @@ compile-assets pull-cache foss:
 
 karma:
   extends: .karma-base
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
     name: coverage-javascript
@@ -246,10 +248,16 @@ karma:
 karma-foss:
   extends:
     - .karma-base
-    - .only-ee-as-if-foss
+    - .as-if-foss
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
 
 .jest-base:
-  extends: .only-code-frontend-job-base
+  extends: .frontend-job-base
   script:
     - scripts/gitaly-test-spawn
     - date
@@ -264,6 +272,10 @@ karma-foss:
 
 jest:
   extends: .jest-base
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
   artifacts:
     name: coverage-frontend
     expire_in: 31d
@@ -278,7 +290,13 @@ jest:
 jest-foss:
   extends:
     - .jest-base
-    - .only-ee-as-if-foss
+    - .as-if-foss
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
   cache:
     policy: pull
 
