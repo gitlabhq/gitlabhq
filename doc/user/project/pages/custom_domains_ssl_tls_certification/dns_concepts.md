@@ -29,7 +29,7 @@ for the most popular hosting services:
 
 - [Amazon](https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html)
 - [Bluehost](https://my.bluehost.com/cgi/help/559)
-- [CloudFlare](https://support.cloudflare.com/hc/en-us/articles/200169096-How-do-I-add-A-records-)
+- [CloudFlare](https://support.cloudflare.com/hc/en-us/articles/201720164-Creating-a-Cloudflare-account-and-adding-a-website)
 - [cPanel](https://documentation.cpanel.net/display/84Docs/Edit+DNS+Zone)
 - [DreamHost](https://help.dreamhost.com/hc/en-us/articles/215414867-How-do-I-add-custom-DNS-records-)
 - [Go Daddy](https://www.godaddy.com/help/add-an-a-record-19238)

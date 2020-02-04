@@ -126,5 +126,5 @@ the [admin guide](../../../administration/pages/index.md).
 
 ## More information about GitLab Pages
 
-- Announcement (2016-12-24): ["We're bringing GitLab Pages to CE"](https://about.gitlab.com/blog/2016/12/24/were-bringing-gitlab-pages-to-community-edition/)
-- Announcement (2017-03-06): ["We are changing the IP of GitLab Pages on GitLab.com"](https://about.gitlab.com/blog/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/)
+- Announcement (2016-12-24): ["We're bringing GitLab Pages to CE"](https://about.gitlab.com/releases/2016/12/24/were-bringing-gitlab-pages-to-community-edition/)
+- Announcement (2017-03-06): ["We are changing the IP of GitLab Pages on GitLab.com"](https://about.gitlab.com/releases/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/)

@@ -74,7 +74,7 @@ according to the markup language.
 | --------------- | ---------- |
 | Plain text | `txt` |
 | [Markdown](../../markdown.md) | `mdown`, `mkd`, `mkdn`, `md`, `markdown` |
-| [reStructuredText](http://docutils.sourceforge.net/rst.html) | `rst` |
+| [reStructuredText](https://docutils.sourceforge.io/rst.html) | `rst` |
 | [AsciiDoc](../../asciidoc.md) | `adoc`, `ad`, `asciidoc` |
 | [Textile](https://textile-lang.com/) | `textile` |
 | [rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |

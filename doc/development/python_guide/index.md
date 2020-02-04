@@ -1,6 +1,6 @@
 # Python Development Guidelines
 
-GitLab requires Python as a dependency for [reStructuredText](http://docutils.sourceforge.net/rst.html)
+GitLab requires Python as a dependency for [reStructuredText](https://docutils.sourceforge.io/rst.html)
 markup rendering.
 
 As of GitLab 11.10, we require Python 3.
@@ -51,7 +51,7 @@ omf install pyenv
 ## Dependency management
 
 While GitLab doesn't directly contain any Python scripts, because we depend on Python to render
-[reStructuredText](http://docutils.sourceforge.net/rst.html) markup, we need to keep track on dependencies
+[reStructuredText](https://docutils.sourceforge.io/rst.html) markup, we need to keep track on dependencies
 on the main project level, so we can run that on our development machines.
 
 Recently, an equivalent to the `Gemfile` and the [Bundler](https://bundler.io/) project has been introduced to Python:

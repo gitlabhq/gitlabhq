@@ -179,6 +179,5 @@ you can find an issue you would like to work on in
 [gitlab-issues]: https://gitlab.com/gitlab-org/gitlab/issues?label_name[]=QA&label_name[]=test
 [test environment orchestration scenarios]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/lib/gitlab/qa/scenario
 [instance-level scenarios]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features
-[Page objects documentation]: https://gitlab.com/gitlab-org/gitlab/tree/master/qa/qa/page/README.md
 [instance-qa-readme]: https://gitlab.com/gitlab-org/gitlab/tree/master/qa/README.md
 [instance-qa-examples]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa

@@ -55,7 +55,7 @@ This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/m
 
 ## Problems we had in the past at GitLab
 
-- [`rspec-retry` is bitting us when some API specs fail](https://gitlab.com/gitlab-org/gitlab-foss/issues/29242): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9825>
+- [`rspec-retry` is biting us when some API specs fail](https://gitlab.com/gitlab-org/gitlab-foss/issues/29242): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9825>
 - [Sporadic RSpec failures due to `PG::UniqueViolation`](https://gitlab.com/gitlab-org/gitlab-foss/issues/28307#note_24958837): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9846>
   - Follow-up: <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10688>
   - [Capybara.reset_session! should be called before requests are blocked](https://gitlab.com/gitlab-org/gitlab-foss/issues/33779): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12224>

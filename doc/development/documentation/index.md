@@ -520,7 +520,7 @@ also check [the issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64352) t
 tracked the changes required to implement these rules, and details which rules were
 on or off when markdownlint was enabled on the docs.
 
-#### `Vale`
+#### Vale
 
 [Vale](https://errata-ai.github.io/vale/) is a grammar, style, and word usage linter
 for the English language. Vale's configuration is stored in the

@@ -55,7 +55,7 @@ reiterating the importance of HTTPS.
 
 GitLab Pages accepts certificates provided in the [PEM](https://support.quovadisglobal.com/kb/a37/what-is-pem-format.aspx) format, issued by
 [Certificate Authorities](https://en.wikipedia.org/wiki/Certificate_authority) or as
-[self-signed certificates](https://en.wikipedia.org/wiki/Self-signed_certificate). Note that [self-signed certificates are typically not used](https://securingtomorrow.mcafee.com/other-blogs/mcafee-labs/self-signed-certificates-secure-so-why-ban/)
+[self-signed certificates](https://en.wikipedia.org/wiki/Self-signed_certificate). Note that [self-signed certificates are typically not used](https://www.mcafee.com/blogs/other-blogs/mcafee-labs/self-signed-certificates-secure-so-why-ban/)
 for public websites for security reasons and to ensure that browsers trust your site's certificate.
 
 There are various kinds of certificates, each one

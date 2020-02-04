@@ -2,7 +2,8 @@
 
 ## On Microsoft Teams
 
-To enable Microsoft Teams integration you must create an incoming webhook integration on Microsoft Teams by following the steps described in this [document](https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/connectors/connectors-using#setting-up-a-custom-incoming-webhook).
+To enable Microsoft Teams integration you must create an incoming webhook integration on Microsoft
+Teams by following the steps described in [Sending messages to Connectors and Webhooks](https://docs.microsoft.com/microsoftteams/platform/webhooks-and-connectors/how-to/connectors-using).
 
 ## On GitLab
 

@@ -7,9 +7,12 @@ for updating Geo nodes.
 ## Updating to GitLab 12.7
 
 DANGER: **Danger:**
-We found [an initialization order bug](https://gitlab.com/gitlab-org/gitlab/issues/199672) introduced in GitLab 12.7
-that causes Geo Secondaries to not set the correct database connection pool size. A [fix has been merged](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24021)
-and will be available in GitLab 12.8 and the next 12.7.x patch release. Please **do not upgrade to 12.7** until the fix is available.
+Only upgrade to GitLab 12.7.5 or later. Do not upgrade to versions 12.7.0
+through 12.7.4 because there is [an initialization order
+bug](https://gitlab.com/gitlab-org/gitlab/issues/199672) that causes Geo
+**secondaries** to set the incorrect database connection pool size. [The
+fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24021) was
+shipped in 12.7.5.
 
 ## Updating to GitLab 12.2
 

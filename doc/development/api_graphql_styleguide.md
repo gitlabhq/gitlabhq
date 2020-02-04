@@ -226,6 +226,33 @@ end
   policies at once. The fields for these will all have be non-nullable
   booleans with a default description.
 
+## Feature flags
+
+Features controlled by feature flags often provide GraphQL functionality. When a feature
+is enabled or disabled by a feature flag, the related GraphQL functionality should also
+be enabled or disabled.
+
+Fields can be put behind a feature flag so they can conditionally return the value for
+the field depending on if the feature has been enabled or not.
+
+GraphQL feature flags use the common
+[GitLab feature flag](../development/feature_flags.md) system, and can be added to a
+field using the `feature_key` property.
+
+For example:
+
+```ruby
+field :test_field, type: GraphQL::STRING_TYPE,
+      null: false,
+      description: 'Some test field',
+      feature_key: :some_feature_key
+```
+
+In the above example, the `test_field` field will only be returned if
+the `some_feature_key` feature flag is enabled.
+
+If the feature flag is not enabled, an error will be returned saying the field does not exist.
+
 ## Enums
 
 GitLab GraphQL enums are defined in `app/graphql/types`. When defining new enums, the

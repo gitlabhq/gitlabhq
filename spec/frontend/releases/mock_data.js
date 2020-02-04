@@ -108,6 +108,7 @@ export const release = {
     ],
   },
   _links: {
+    self: 'http://0.0.0.0:3001/root/release-test/-/releases/v0.3',
     edit_url: 'http://0.0.0.0:3001/root/release-test/-/releases/v0.3/edit',
   },
 };
