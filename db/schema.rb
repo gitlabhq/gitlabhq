@@ -1665,10 +1665,8 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
     t.bigint "reset_checksum_event_id"
     t.bigint "cache_invalidation_event_id"
     t.bigint "container_repository_updated_event_id"
-    t.integer "geo_event_id"
     t.index ["cache_invalidation_event_id"], name: "index_geo_event_log_on_cache_invalidation_event_id", where: "(cache_invalidation_event_id IS NOT NULL)"
     t.index ["container_repository_updated_event_id"], name: "index_geo_event_log_on_container_repository_updated_event_id"
-    t.index ["geo_event_id"], name: "index_geo_event_log_on_geo_event_id", where: "(geo_event_id IS NOT NULL)"
     t.index ["hashed_storage_attachments_event_id"], name: "index_geo_event_log_on_hashed_storage_attachments_event_id", where: "(hashed_storage_attachments_event_id IS NOT NULL)"
     t.index ["hashed_storage_migrated_event_id"], name: "index_geo_event_log_on_hashed_storage_migrated_event_id", where: "(hashed_storage_migrated_event_id IS NOT NULL)"
     t.index ["job_artifact_deleted_event_id"], name: "index_geo_event_log_on_job_artifact_deleted_event_id", where: "(job_artifact_deleted_event_id IS NOT NULL)"
@@ -1680,13 +1678,6 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
     t.index ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", where: "(repository_updated_event_id IS NOT NULL)"
     t.index ["reset_checksum_event_id"], name: "index_geo_event_log_on_reset_checksum_event_id", where: "(reset_checksum_event_id IS NOT NULL)"
     t.index ["upload_deleted_event_id"], name: "index_geo_event_log_on_upload_deleted_event_id", where: "(upload_deleted_event_id IS NOT NULL)"
-  end
-
-  create_table "geo_events", force: :cascade do |t|
-    t.string "replicable_name", limit: 255, null: false
-    t.string "event_name", limit: 255, null: false
-    t.jsonb "payload", default: {}, null: false
-    t.datetime_with_timezone "created_at", null: false
   end
 
   create_table "geo_hashed_storage_attachments_events", force: :cascade do |t|
@@ -4649,7 +4640,6 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
   add_foreign_key "geo_container_repository_updated_events", "container_repositories", name: "fk_212c89c706", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_cache_invalidation_events", column: "cache_invalidation_event_id", name: "fk_42c3b54bed", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_container_repository_updated_events", column: "container_repository_updated_event_id", name: "fk_6ada82d42a", on_delete: :cascade
-  add_foreign_key "geo_event_log", "geo_events", name: "fk_geo_event_log_on_geo_event_id", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_hashed_storage_migrated_events", column: "hashed_storage_migrated_event_id", name: "fk_27548c6db3", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_job_artifact_deleted_events", column: "job_artifact_deleted_event_id", name: "fk_176d3fbb5d", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_lfs_object_deleted_events", column: "lfs_object_deleted_event_id", name: "fk_d5af95fcd9", on_delete: :cascade

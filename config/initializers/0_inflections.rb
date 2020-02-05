@@ -19,7 +19,6 @@ ActiveSupport::Inflector.inflections do |inflect|
     group_view
     job_artifact_registry
     lfs_object_registry
-    package_file_registry
     project_auto_devops
     project_registry
     project_statistics

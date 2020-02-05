@@ -17,7 +17,18 @@ All administrators at the time of creation of the project and group will be adde
 as maintainers of the group and project, and as an admin, you'll be able to add new
 members to the group in order to give them maintainer access to the project.
 
-This project will be used for self-monitoring your GitLab instance.
+This project will be used for self monitoring your GitLab instance.
+
+## Activating or deactivating the self monitoring project
+
+1. Navigate to **Admin Area > Settings > Metrics and profiling** and expand the **Self monitoring** section.
+1. Toggle on or off the **Create Project** button to create or remove the "GitLab self monitoring" project.
+1. Click **Save changes** for the changes to take effect.
+
+If you activated the monitoring project, it should now be visible in **Projects > Your projects**.
+
+CAUTION: **Warning:**
+If you deactivate the self monitoring project, it will be permanently deleted.
 
 ## Connection to Prometheus
 

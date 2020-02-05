@@ -13,6 +13,20 @@ describe SentryIssue do
     it { is_expected.to validate_presence_of(:issue) }
     it { is_expected.to validate_uniqueness_of(:issue) }
     it { is_expected.to validate_presence_of(:sentry_issue_identifier) }
+
+    it 'allows duplicated sentry_issue_identifier' do
+      duplicate_sentry_issue = build(:sentry_issue, sentry_issue_identifier: sentry_issue.sentry_issue_identifier)
+
+      expect(duplicate_sentry_issue).to be_valid
+    end
+
+    it 'validates uniqueness of sentry_issue_identifier per project' do
+      second_issue = create(:issue, project: sentry_issue.issue.project)
+      duplicate_sentry_issue = build(:sentry_issue, issue: second_issue, sentry_issue_identifier: sentry_issue.sentry_issue_identifier)
+
+      expect(duplicate_sentry_issue).to be_invalid
+      expect(duplicate_sentry_issue.errors.full_messages.first).to include('is already associated')
+    end
   end
 
   describe 'callbacks' do
@@ -28,13 +42,16 @@ describe SentryIssue do
   end
 
   describe '.for_project_and_identifier' do
-    let!(:sentry_issue) { create(:sentry_issue) }
-    let(:project) { sentry_issue.issue.project }
-    let(:identifier) { sentry_issue.sentry_issue_identifier }
-    let!(:second_sentry_issue) { create(:sentry_issue) }
+    it 'finds the most recent per project and sentry_issue_identifier' do
+      sentry_issue = create(:sentry_issue)
+      create(:sentry_issue)
+      project = sentry_issue.issue.project
+      sentry_issue_3 = build(:sentry_issue, issue: create(:issue, project: project), sentry_issue_identifier: sentry_issue.sentry_issue_identifier)
+      sentry_issue_3.save(validate: false)
 
-    subject { described_class.for_project_and_identifier(project, identifier) }
+      result = described_class.for_project_and_identifier(project, sentry_issue.sentry_issue_identifier)
 
-    it { is_expected.to eq(sentry_issue) }
+      expect(result).to eq(sentry_issue_3)
+    end
   end
 end

@@ -22692,6 +22692,9 @@ msgstr ""
 msgid "is"
 msgstr ""
 
+msgid "is already associated to a GitLab Issue. New issue will not be associated."
+msgstr ""
+
 msgid "is an invalid IP address range"
 msgstr ""
 

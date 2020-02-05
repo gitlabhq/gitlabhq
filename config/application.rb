@@ -55,8 +55,6 @@ module Gitlab
         memo << ee_path.to_s
       end
 
-      ee_paths << "ee/app/replicators"
-
       # Eager load should load CE first
       config.eager_load_paths.push(*ee_paths)
       config.helpers_paths.push "#{config.root}/ee/app/helpers"

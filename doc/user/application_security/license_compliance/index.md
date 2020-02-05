@@ -88,7 +88,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  template: License-Scanning.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
 ```
 
 The included template will create a `license_scanning` job in your CI/CD pipeline
@@ -141,7 +141,7 @@ For example:
 
 ```yaml
 include:
-  template: License-Scanning.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
 
 variables:
   LICENSE_MANAGEMENT_SETUP_CMD: sh my-custom-install-script.sh
@@ -158,7 +158,7 @@ after the template inclusion and specify any additional keys under it. For examp
 
 ```yaml
 include:
-  template: License-Scanning.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -173,7 +173,7 @@ Feel free to use it for the customization of Maven execution. For example:
 
 ```yaml
 include:
-  template: License-Scanning.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -201,7 +201,7 @@ by setting the `LM_PYTHON_VERSION` environment variable to `2`.
 
 ```yaml
 include:
-  template: License-Scanning.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
 
 license_scanning:
   variables:
@@ -223,7 +223,7 @@ For example, the following `.gitlab-ci.yml`:
 
 ```yaml
 include:
-  template: License-Management.gitlab-ci.yml
+  - template: License-Management.gitlab-ci.yml
 
 license_management:
   artifacts:
@@ -235,7 +235,7 @@ Should be changed to:
 
 ```yaml
 include:
-  template: License-Scanning.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
 
 license_scanning:
   artifacts:

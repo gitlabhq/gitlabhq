@@ -79,7 +79,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  template: Dependency-Scanning.gitlab-ci.yml
+  - template: Dependency-Scanning.gitlab-ci.yml
 ```
 
 The included template will create a `dependency_scanning` job in your CI/CD
@@ -99,7 +99,7 @@ For example:
 
 ```yaml
 include:
-  template: Dependency-Scanning.gitlab-ci.yml
+  - template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
   DS_PYTHON_VERSION: 2
@@ -116,7 +116,7 @@ after the template inclusion and specify any additional keys under it. For examp
 
 ```yaml
 include:
-  template: Dependency-Scanning.gitlab-ci.yml
+  - template: Dependency-Scanning.gitlab-ci.yml
 
 dependency_scanning:
   variables:
@@ -187,7 +187,7 @@ This does not require running the executor in privileged mode. For example:
 
 ```yaml
 include:
-  template: Dependency-Scanning.gitlab-ci.yml
+  - template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
   DS_DISABLE_DIND: "true"

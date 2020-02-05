@@ -6,6 +6,7 @@ describe('Repository router spec', () => {
   it.each`
     path                           | component    | componentName
     ${'/'}                         | ${IndexPage} | ${'IndexPage'}
+    ${'/tree/master'}              | ${TreePage}  | ${'TreePage'}
     ${'/-/tree/master'}            | ${TreePage}  | ${'TreePage'}
     ${'/-/tree/master/app/assets'} | ${TreePage}  | ${'TreePage'}
     ${'/-/tree/123/app/assets'}    | ${null}      | ${'null'}

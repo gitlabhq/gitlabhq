@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan', :smoke do
+  context 'Plan', :smoke, :reliable do
     describe 'Issue creation' do
       before do
         Flow::Login.sign_in

@@ -71,7 +71,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  template: DAST.gitlab-ci.yml
+  - template: DAST.gitlab-ci.yml
 
 variables:
   DAST_WEBSITE: https://example.com
@@ -111,7 +111,7 @@ It's also possible to authenticate the user before performing the DAST checks:
 
 ```yaml
 include:
-  template: DAST.gitlab-ci.yml
+  - template: DAST.gitlab-ci.yml
 
 variables:
   DAST_WEBSITE: https://example.com
@@ -135,7 +135,7 @@ includes both passive and active scanning against the same target website:
 
 ```yaml
 include:
-  template: DAST.gitlab-ci.yml
+  - template: DAST.gitlab-ci.yml
 
 variables:
   DAST_FULL_SCAN_ENABLED: "true"
@@ -151,7 +151,7 @@ Domain validation is not required by default. It can be required by setting the 
 
 ```yaml
 include:
-  template: DAST.gitlab-ci.yml
+  - template: DAST.gitlab-ci.yml
 
 variables:
   DAST_FULL_SCAN_ENABLED: "true"
@@ -260,7 +260,7 @@ For example:
 
 ```yaml
 include:
-  template: DAST.gitlab-ci.yml
+  - template: DAST.gitlab-ci.yml
 
 variables:
   DAST_WEBSITE: https://example.com
@@ -278,7 +278,7 @@ template inclusion and specify any additional keys under it. For example:
 
 ```yaml
 include:
-  template: DAST.gitlab-ci.yml
+  - template: DAST.gitlab-ci.yml
 
 dast:
   stage: dast # IMPORTANT: don't forget to add this
@@ -447,7 +447,7 @@ for DAST by overwriting the `script` key in the DAST template:
 
 ```yaml
 include:
-  template: DAST.gitlab-ci.yml
+  - template: DAST.gitlab-ci.yml
 
 dast:
   script:

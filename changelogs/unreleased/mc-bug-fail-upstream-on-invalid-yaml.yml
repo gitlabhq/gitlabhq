@@ -1,0 +1,5 @@
+---
+title: Fail upstream bridge on downstream pipeline creation failure.
+merge_request: 24092
+author:
+type: fixed

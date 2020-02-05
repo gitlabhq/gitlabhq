@@ -28,8 +28,8 @@ export default function setupVueRepositoryList() {
     },
   });
 
-  router.afterEach(({ params: { pathMatch } }) => {
-    setTitle(pathMatch, ref, fullName);
+  router.afterEach(({ params: { path } }) => {
+    setTitle(path, ref, fullName);
   });
 
   const breadcrumbEl = document.getElementById('js-repo-breadcrumb');
@@ -48,9 +48,9 @@ export default function setupVueRepositoryList() {
       newDirPath,
     } = breadcrumbEl.dataset;
 
-    router.afterEach(({ params: { pathMatch = '/' } }) => {
-      updateFormAction('.js-upload-blob-form', uploadPath, pathMatch);
-      updateFormAction('.js-create-dir-form', newDirPath, pathMatch);
+    router.afterEach(({ params: { path = '/' } }) => {
+      updateFormAction('.js-upload-blob-form', uploadPath, path);
+      updateFormAction('.js-create-dir-form', newDirPath, path);
     });
 
     // eslint-disable-next-line no-new
@@ -61,7 +61,7 @@ export default function setupVueRepositoryList() {
       render(h) {
         return h(Breadcrumbs, {
           props: {
-            currentPath: this.$route.params.pathMatch,
+            currentPath: this.$route.params.path,
             canCollaborate: parseBoolean(canCollaborate),
             canEditTree: parseBoolean(canEditTree),
             newBranchPath,
@@ -84,7 +84,7 @@ export default function setupVueRepositoryList() {
     render(h) {
       return h(LastCommit, {
         props: {
-          currentPath: this.$route.params.pathMatch,
+          currentPath: this.$route.params.path,
         },
       });
     },
@@ -100,7 +100,7 @@ export default function setupVueRepositoryList() {
     render(h) {
       return h(TreeActionLink, {
         props: {
-          path: historyLink + (this.$route.params.pathMatch || '/'),
+          path: `${historyLink}/${this.$route.params.path || ''}`,
           text: __('History'),
         },
       });
@@ -117,7 +117,7 @@ export default function setupVueRepositoryList() {
       render(h) {
         return h(TreeActionLink, {
           props: {
-            path: webIDEUrl(`/${projectPath}/edit/${ref}/-${this.$route.params.pathMatch || '/'}`),
+            path: webIDEUrl(`/${projectPath}/edit/${ref}/-/${this.$route.params.path || ''}`),
             text: __('Web IDE'),
             cssClass: 'qa-web-ide-button',
           },
@@ -134,7 +134,7 @@ export default function setupVueRepositoryList() {
       el: directoryDownloadLinks,
       router,
       render(h) {
-        const currentPath = this.$route.params.pathMatch || '/';
+        const currentPath = this.$route.params.path || '/';
 
         if (currentPath !== '/') {
           return h(DirectoryDownloadLinks, {

@@ -13,10 +13,10 @@ export default {
     return { projectPath: '', loadingPath: null };
   },
   beforeRouteUpdate(to, from, next) {
-    this.preload(to.params.pathMatch, next);
+    this.preload(to.params.path, next);
   },
   methods: {
-    preload(path, next) {
+    preload(path = '/', next) {
       this.loadingPath = path.replace(/^\//, '');
 
       return this.$apollo

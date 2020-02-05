@@ -27,7 +27,6 @@ module Quality
         policies
         presenters
         rack_servers
-        replicators
         routing
         rubocop
         serializers

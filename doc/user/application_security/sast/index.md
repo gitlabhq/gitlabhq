@@ -225,7 +225,7 @@ stages:
  - test
 
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 variables:
   SAST_DISABLE_DIND: "true"

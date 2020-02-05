@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan' do
+  context 'Plan', :reliable do
     describe 'collapse comments in issue discussions' do
       let(:my_first_reply) { 'My first reply' }
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan' do
+  context 'Plan', :reliable do
     describe 'Close issue' do
       let(:issue) do
         Resource::Issue.fabricate_via_api!
