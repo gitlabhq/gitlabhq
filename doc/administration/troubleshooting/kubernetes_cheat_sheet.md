@@ -199,6 +199,13 @@ and they will assist you with any issues you are having.
     helm upgrade <release name> <chart path> -f gitlab.yaml
     ```
 
+- How to get the manifest for a release. It can be useful because it contains the info about
+all Kubernetes resources and dependent charts:
+
+    ```shell
+    helm get manifest <release name>
+    ```
+
 ## Installation of minimal GitLab config via Minukube on macOS
 
 This section is based on [Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/index.html)

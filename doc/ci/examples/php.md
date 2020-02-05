@@ -179,7 +179,7 @@ user following [the upstream installation guide][phpenv-installation].
 
 Using phpenv also allows to easily configure the PHP environment with:
 
-```
+```shell
 phpenv config-add my_config.ini
 ```
 

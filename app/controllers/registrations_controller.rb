@@ -53,7 +53,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def welcome
     return redirect_to new_user_registration_path unless current_user
-    return redirect_to stored_location_or_dashboard_or_almost_there_path(current_user) if current_user.role.present? && !current_user.setup_for_company.nil?
+    return redirect_to stored_location_or_dashboard(current_user) if current_user.role.present? && !current_user.setup_for_company.nil?
 
     current_user.name = nil if current_user.name == current_user.username
   end
@@ -65,7 +65,7 @@ class RegistrationsController < Devise::RegistrationsController
     if result[:status] == :success
       track_experiment_event(:signup_flow, 'end') # We want this event to be tracked when the user is _in_ the experimental group
       set_flash_message! :notice, :signed_up
-      redirect_to stored_location_or_dashboard_or_almost_there_path(current_user)
+      redirect_to stored_location_or_dashboard(current_user)
     else
       render :welcome
     end
@@ -112,12 +112,12 @@ class RegistrationsController < Devise::RegistrationsController
 
     return users_sign_up_welcome_path if experiment_enabled?(:signup_flow)
 
-    stored_location_or_dashboard_or_almost_there_path(user)
+    stored_location_or_dashboard(user)
   end
 
   def after_inactive_sign_up_path_for(resource)
     Gitlab::AppLogger.info(user_created_message)
-    Feature.enabled?(:soft_email_confirmation) ? dashboard_projects_path : users_almost_there_path
+    dashboard_projects_path
   end
 
   private
@@ -179,16 +179,8 @@ class RegistrationsController < Devise::RegistrationsController
     Gitlab::Utils.to_boolean(params[:terms_opt_in])
   end
 
-  def confirmed_or_unconfirmed_access_allowed(user)
-    user.confirmed? || Feature.enabled?(:soft_email_confirmation) || experiment_enabled?(:signup_flow)
-  end
-
   def stored_location_or_dashboard(user)
     stored_location_for(user) || dashboard_projects_path
-  end
-
-  def stored_location_or_dashboard_or_almost_there_path(user)
-    confirmed_or_unconfirmed_access_allowed(user) ? stored_location_or_dashboard(user) : users_almost_there_path
   end
 
   # Part of an experiment to build a new sign up flow. Will be resolved

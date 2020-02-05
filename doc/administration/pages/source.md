@@ -64,7 +64,7 @@ GitLab Pages expect to run on their own virtual host. In your DNS server/provide
 you need to add a [wildcard DNS A record][wiki-wildcard-dns] pointing to the
 host that GitLab runs. For example, an entry would look like this:
 
-```
+```plaintext
 *.example.io. 1800 IN A 192.0.2.1
 ```
 
@@ -131,7 +131,7 @@ The Pages daemon doesn't listen to the outside world.
    order to enable the pages daemon. In `gitlab_pages_options` the
    `-pages-domain` must match the `host` setting that you set above.
 
-   ```
+   ```ini
    gitlab_pages_enabled=true
    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090"
    ```
@@ -170,7 +170,7 @@ outside world.
 
 1. In `gitlab.yml`, set the port to `443` and https to `true`:
 
-   ```shell
+   ```yaml
    ## GitLab Pages
    pages:
      enabled: true
@@ -188,9 +188,9 @@ outside world.
    The `-root-cert` and `-root-key` settings are the wildcard TLS certificates
    of the `example.io` domain:
 
-   ```
+   ```ini
    gitlab_pages_enabled=true
-   gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -root-cert /path/to/example.io.crt -root-key /path/to/example.io.key
+   gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -root-cert /path/to/example.io.crt -root-key /path/to/example.io.key"
    ```
 
 1. Copy the `gitlab-pages-ssl` NGINX configuration file:
@@ -256,7 +256,7 @@ world. Custom domains are supported, but no TLS.
    `-pages-domain` and `-listen-http` must match the `host` and `external_http`
    settings that you set above respectively:
 
-   ```
+   ```ini
    gitlab_pages_enabled=true
    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 192.0.2.2:80"
    ```
@@ -325,9 +325,9 @@ world. Custom domains and TLS are supported.
    The `-root-cert` and `-root-key` settings are the wildcard TLS certificates
    of the `example.io` domain:
 
-   ```
+   ```ini
    gitlab_pages_enabled=true
-   gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 192.0.2.2:80 -listen-https 192.0.2.2:443 -root-cert /path/to/example.io.crt -root-key /path/to/example.io.key
+   gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 192.0.2.2:80 -listen-https 192.0.2.2:443 -root-cert /path/to/example.io.crt -root-key /path/to/example.io.key"
    ```
 
 1. Copy the `gitlab-pages-ssl` NGINX configuration file:

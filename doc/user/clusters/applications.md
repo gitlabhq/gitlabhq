@@ -695,14 +695,33 @@ Major upgrades might require additional setup steps, please consult
 the official [upgrade guide](https://docs.cilium.io/en/stable/install/upgrade/) for more
 information.
 
-By default, the drop log for traffic is logged out by the
+By default, Cilium will drop all non-whitelisted packets upon policy
+deployment. The audit mode is scheduled for release in
+[Cilium 1.8](https://github.com/cilium/cilium/pull/9970). In the audit
+mode non-whitelisted packets will not be dropped, instead audit
+notifications will be generated. GitLab provides alternative Docker
+images for Cilium with the audit patch included. You can switch to the
+custom build and enable the audit mode by adding the following to
+`.gitlab/managed-apps/cilium/values.yaml`:
+
+```yml
+global:
+  registry: registry.gitlab.com/gitlab-org/defend/cilium
+  policyAuditMode: true
+
+agent:
+  monitor:
+    eventTypes: ["drop", "audit"]
+```
+
+The Cilium monitor log for traffic is logged out by the
 `cilium-monitor` sidecar container. You can check these logs via:
 
 ```shell
 kubectl -n gitlab-managed-apps logs cilium-XXXX cilium-monitor
 ```
 
-Drop logging can be disabled via `.gitlab/managed-apps/cilium/values.yaml`:
+You can disable the monitor log via `.gitlab/managed-apps/cilium/values.yaml`:
 
 ```yml
 agent:

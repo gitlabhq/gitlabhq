@@ -50,4 +50,12 @@ describe ::Serverless::DomainCluster do
   describe 'domain' do
     it { is_expected.to respond_to(:domain) }
   end
+
+  describe 'certificate' do
+    it { is_expected.to respond_to(:certificate) }
+  end
+
+  describe 'key' do
+    it { is_expected.to respond_to(:key) }
+  end
 end

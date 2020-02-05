@@ -163,7 +163,7 @@ sudo nano /etc/nginx/sites-available/default
 
 The configuration should be like this.
 
-```
+```nginx
 server {
     root /var/www/app/current/public;
     server_name example.com;

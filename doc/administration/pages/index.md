@@ -83,7 +83,7 @@ GitLab Pages expect to run on their own virtual host. In your DNS server/provide
 you need to add a [wildcard DNS A record][wiki-wildcard-dns] pointing to the
 host that GitLab runs. For example, an entry would look like this:
 
-```
+```plaintext
 *.example.io. 1800 IN A    192.0.2.1
 *.example.io. 1800 IN AAAA 2001::1
 ```

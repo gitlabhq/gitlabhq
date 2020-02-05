@@ -3786,6 +3786,9 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
     t.bigint "creator_id"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.text "encrypted_key"
+    t.string "encrypted_key_iv", limit: 255
+    t.text "certificate"
     t.index ["clusters_applications_knative_id"], name: "idx_serverless_domain_cluster_on_clusters_applications_knative", unique: true
     t.index ["creator_id"], name: "index_serverless_domain_cluster_on_creator_id"
     t.index ["pages_domain_id"], name: "index_serverless_domain_cluster_on_pages_domain_id"

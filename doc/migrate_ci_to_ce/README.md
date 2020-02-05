@@ -51,7 +51,7 @@ Otherwise it's pretty likely that you will encounter problems described in the [
 
 Make sure that the backup script on both servers can connect to the database.
 
-```
+```shell
 # On your CI server:
 # Omnibus
 sudo chown gitlab-ci:gitlab-ci /var/opt/gitlab/gitlab-ci/builds
@@ -64,7 +64,7 @@ sudo -u gitlab_ci -H bundle exec rake backup:create RAILS_ENV=production
 
 Also check on your GitLab server.
 
-```
+```shell
 # On your GitLab server:
 # Omnibus
 sudo gitlab-backup create SKIP=repositories,uploads
@@ -89,7 +89,7 @@ MySQL and your GitLab server uses PostgreSQL you need to pass a special option
 during the 'Moving data' part. **If your CI server uses PostgreSQL and your
 GitLab server uses MySQL you cannot migrate your CI data to GitLab 8.0.**
 
-```
+```shell
 # On your CI server:
 # Omnibus
 sudo gitlab-ci-rake env:info
@@ -99,7 +99,7 @@ cd /home/gitlab_ci/gitlab-ci
 sudo -u gitlab_ci -H bundle exec rake env:info RAILS_ENV=production
 ```
 
-```
+```shell
 # On your GitLab server:
 # Omnibus
 sudo gitlab-rake gitlab:env:info
@@ -149,7 +149,7 @@ Now upgrade GitLab CI to version 8.0. If you are using Omnibus packages,
 
 Disable GitLab CI after upgrading to 8.0.
 
-```
+```shell
 # On your CI server:
 # Omnibus
 sudo gitlab-ctl stop ci-unicorn
@@ -171,7 +171,7 @@ GitLab server. On Omnibus GitLab servers you will have to add a line to
 `/etc/gitlab/gitlab.rb`. On GitLab servers installed from source you will have
 to replace the contents of `/home/git/gitlab/config/secrets.yml`.
 
-```
+```shell
 # On your CI server:
 # Omnibus
 sudo gitlab-ci-rake backup:show_secrets
@@ -188,7 +188,7 @@ PostgreSQL, add `MYSQL_TO_POSTGRESQL=1` to the end of the rake command. When
 the command finishes it will print the path to your data export archive; you
 will need this file later.
 
-```
+```shell
 # On your CI server:
 # Omnibus
 sudo chown gitlab-ci:gitlab-ci /var/opt/gitlab/gitlab-ci/builds
@@ -209,7 +209,7 @@ this, below we use SSH agent forwarding and 'scp', which will be easy and fast
 for most setups. You can also copy the data archive first from the CI server to
 your laptop and then from your laptop to the GitLab server.
 
-```
+```shell
 # Start from your laptop
 ssh -A ci_admin@ci_server.example
 # Now on the CI server
@@ -221,7 +221,7 @@ scp /path/to/12345_gitlab_ci_backup.tar gitlab_admin@gitlab_server.example:~
 Make the CI data archive discoverable for GitLab. We assume below that you
 store backups in the default path, adjust the command if necessary.
 
-```
+```shell
 # On your GitLab server:
 # Omnibus
 sudo mv /path/to/12345_gitlab_ci_backup.tar /var/opt/gitlab/backups/
@@ -235,7 +235,7 @@ sudo mv /path/to/12345_gitlab_ci_backup.tar /home/git/gitlab/tmp/backups/
 This step will delete any existing CI data on your GitLab server. There should
 be no CI data yet because you turned CI on the GitLab server off earlier.
 
-```
+```shell
 # On your GitLab server:
 # Omnibus
 sudo chown git:git /var/opt/gitlab/gitlab-ci/builds
@@ -248,7 +248,7 @@ sudo -u git -H bundle exec rake ci:migrate RAILS_ENV=production
 
 ### 6. Restart GitLab
 
-```
+```shell
 # On your GitLab server:
 # Omnibus
 sudo gitlab-ctl hup unicorn
@@ -347,7 +347,7 @@ restoration](../raketasks/backup_restore.md) guide.
 
 If you see errors like this:
 
-```
+```plaintext
 Missing `secret_key_base` or `db_key_base` for 'production' environment. The secrets will be generated and stored in `config/secrets.yml`
 rake aborted!
 Errno::EACCES: Permission denied @ rb_sysopen - config/secrets.yml
@@ -360,13 +360,13 @@ The fix for this is to update to Omnibus 7.14 first and then update it to 8.0.
 
 To fix that issue you have to change builds/ folder permission before doing final backup:
 
-```
+```shell
 sudo chown -R gitlab-ci:gitlab-ci /var/opt/gitlab/gitlab-ci/builds
 ```
 
 Then before executing `ci:migrate` you need to fix builds folder permission:
 
-```
+```shell
 sudo chown git:git /var/opt/gitlab/gitlab-ci/builds
 ```
 
@@ -450,7 +450,7 @@ EOF
 
 Source installations:
 
-```
+```shell
 cd /home/gitlab_ci/gitlab-ci
 sudo -u gitlab_ci -H bundle exec rails dbconsole production <<EOF
 ... COPY SQL STATEMENTS FROM ABOVE ...

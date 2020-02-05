@@ -30,6 +30,10 @@ class Projects::SnippetsController < Projects::ApplicationController
   respond_to :html
 
   def index
+    @snippet_counts = Snippets::CountService
+      .new(current_user, project: @project)
+      .execute
+
     @snippets = SnippetsFinder.new(current_user, project: @project, scope: params[:scope])
       .execute
       .page(params[:page])

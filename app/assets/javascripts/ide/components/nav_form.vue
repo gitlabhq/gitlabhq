@@ -19,15 +19,15 @@ export default {
     <tabs stop-propagation>
       <tab active>
         <template slot="title">
-          {{ __('Merge Requests') }}
-        </template>
-        <merge-request-search-list />
-      </tab>
-      <tab>
-        <template slot="title">
           {{ __('Branches') }}
         </template>
         <branches-search-list />
+      </tab>
+      <tab>
+        <template slot="title">
+          {{ __('Merge Requests') }}
+        </template>
+        <merge-request-search-list />
       </tab>
     </tabs>
   </div>

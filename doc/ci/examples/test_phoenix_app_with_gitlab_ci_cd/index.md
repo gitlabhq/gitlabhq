@@ -115,7 +115,7 @@ mix ecto.create
 
 We expect to see this output at the end of the command:
 
-```shell
+```plaintext
 Generated hello_gitlab_ci app
 The database for HelloGitlabCi.Repo has been created
 ```
@@ -136,7 +136,7 @@ mix phoenix.server
 
 This will be the output to this command:
 
-```shell
+```plaintext
 [info] Running HelloGitlabCi.Endpoint with Cowboy using http://localhost:4000
 23 May 11:44:35 - info: compiling
 23 May 11:44:37 - info: compiled 6 files into 2 files, copied 3 in 9.8 sec
@@ -229,7 +229,7 @@ mix test
 
 Our expected result is this:
 
-```shell
+```plaintext
 ....
 
 Finished in 0.7 seconds
@@ -265,20 +265,20 @@ project.
   As we are focusing on testing (not deploying), you can use the [elixir:latest](https://hub.docker.com/_/elixir) docker image, which already has the
   dependencies for running Phoenix tests installed, such as Elixir and Erlang:
 
-  ```yml
+  ```yaml
   image: elixir:latest
   ```
 
 - We'll only use `postgres`, so we can delete the `mysql` and `redis` lines from the `services` section:
 
-  ```yml
+  ```yaml
   services:
     - postgres:latest
   ```
 
 - Now, we'll create a new section called `variables`, before the `before_script` section:
 
-  ```yml
+  ```yaml
   variables:
     POSTGRES_DB: hello_gitlab_ci_test
     POSTGRES_HOST: postgres
@@ -293,7 +293,7 @@ project.
 
 - In the `before_script` section, we'll add some commands to prepare everything for the test:
 
-  ```yml
+  ```yaml
   before_script:
     - mix local.rebar --force
     - mix local.hex --force
@@ -310,7 +310,7 @@ project.
 
 Let's take a look at the updated file after the changes:
 
-```yml
+```yaml
 image: elixir:latest
 
 services:
@@ -353,7 +353,7 @@ actual running build job.
 Click on build's ID to watch the entire process. If everything went as expected, we can wait for the
 **Build succeeded** at the end of the process! :)
 
-```
+```shell
 $ mix test
 ....
 

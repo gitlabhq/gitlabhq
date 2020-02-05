@@ -31,6 +31,16 @@ describe 'Projects > Snippets > User views snippets' do
       it_behaves_like 'paginated snippets'
     end
 
+    context 'filtering by visibility' do
+      before do
+        visit_project_snippets
+      end
+
+      it_behaves_like 'tabs with counts' do
+        let_it_be(:counts) { { all: '1', public: '0', private: '1', internal: '0' } }
+      end
+    end
+
     it 'shows snippets' do
       visit_project_snippets
 

@@ -797,7 +797,6 @@ describe 'Login' do
 
     before do
       stub_application_setting(send_user_confirmation_email: true)
-      stub_feature_flags(soft_email_confirmation: true)
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
     end
 

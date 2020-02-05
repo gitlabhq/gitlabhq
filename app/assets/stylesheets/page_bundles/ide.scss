@@ -1224,6 +1224,8 @@ $ide-commit-header-height: 48px;
 }
 
 .ide-new-btn {
+  display: none;
+
   .btn {
     padding: 2px 5px;
   }

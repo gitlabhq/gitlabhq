@@ -83,7 +83,6 @@ describe Projects::ErrorTrackingHelper do
   describe '#error_details_data' do
     let(:issue_id) { 1234 }
     let(:route_params) { [project.owner, project, issue_id, { format: :json }] }
-    let(:details_path) { details_namespace_project_error_tracking_index_path(*route_params) }
     let(:project_path) { project.full_path }
     let(:stack_trace_path) { stack_trace_namespace_project_error_tracking_index_path(*route_params) }
     let(:issues_path) { project_issues_path(project) }
@@ -96,10 +95,6 @@ describe Projects::ErrorTrackingHelper do
 
     it 'returns the correct project path' do
       expect(result['project-path']).to eq project_path
-    end
-
-    it 'returns the correct details path' do
-      expect(result['issue-details-path']).to eq details_path
     end
 
     it 'returns the correct stack trace path' do

@@ -231,6 +231,12 @@
   :latency_sensitive: 
   :resource_boundary: :unknown
   :weight: 1
+- :name: gcp_cluster:cluster_configure_istio
+  :feature_category: :kubernetes_management
+  :has_external_dependencies: true
+  :latency_sensitive: 
+  :resource_boundary: :unknown
+  :weight: 1
 - :name: gcp_cluster:cluster_install_app
   :feature_category: :kubernetes_management
   :has_external_dependencies: true

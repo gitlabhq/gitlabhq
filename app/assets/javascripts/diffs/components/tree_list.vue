@@ -58,8 +58,8 @@ export default {
       this.search = '';
     },
   },
-  searchPlaceholder: sprintf(s__('MergeRequest|Filter files or search with %{modifier_key}+p'), {
-    modifier_key: /Mac/i.test(navigator.userAgent) ? 'cmd' : 'ctrl',
+  searchPlaceholder: sprintf(s__('MergeRequest|Search files (%{modifier_key}P)'), {
+    modifier_key: /Mac/i.test(navigator.userAgent) ? '⌘' : 'Ctrl+',
   }),
 };
 </script>

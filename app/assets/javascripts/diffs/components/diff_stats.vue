@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     filesText() {
-      return n__('File', 'Files', this.diffFilesLength);
+      return n__('file', 'files', this.diffFilesLength);
     },
     isCompareVersionsHeader() {
       return Boolean(this.diffFilesLength);
@@ -44,13 +44,21 @@ export default {
   >
     <div v-if="hasDiffFiles" class="diff-stats-group">
       <icon name="doc-code" class="diff-stats-icon text-secondary" />
-      <strong>{{ diffFilesLength }} {{ filesText }}</strong>
+      <span class="text-secondary bold">{{ diffFilesLength }} {{ filesText }}</span>
     </div>
-    <div class="diff-stats-group cgreen">
-      <icon name="file-addition" class="diff-stats-icon" /> <strong>{{ addedLines }}</strong>
+    <div
+      class="diff-stats-group cgreen d-flex align-items-center"
+      :class="{ bold: isCompareVersionsHeader }"
+    >
+      <span>+</span>
+      <span class="js-file-addition-line">{{ addedLines }}</span>
     </div>
-    <div class="diff-stats-group cred">
-      <icon name="file-deletion" class="diff-stats-icon" /> <strong>{{ removedLines }}</strong>
+    <div
+      class="diff-stats-group cred d-flex align-items-center"
+      :class="{ bold: isCompareVersionsHeader }"
+    >
+      <span>-</span>
+      <span class="js-file-deletion-line">{{ removedLines }}</span>
     </div>
   </div>
 </template>

@@ -74,7 +74,7 @@ module Clusters
       end
 
       def ingress_service
-        cluster.kubeclient.get_service('istio-ingressgateway', 'istio-system')
+        cluster.kubeclient.get_service('istio-ingressgateway', Clusters::Kubernetes::ISTIO_SYSTEM_NAMESPACE)
       end
 
       def uninstall_command

@@ -110,7 +110,7 @@ The action is irreversible.
 
 To trigger a job you need to send a `POST` request to GitLab's API endpoint:
 
-```
+```plaintext
 POST /projects/:id/trigger/pipeline
 ```
 
@@ -185,7 +185,7 @@ Now, whenever a new tag is pushed on project A, the job will run and the
 To trigger a job from a webhook of another project you need to add the following
 webhook URL for Push and Tag events (change the project ID, ref and token):
 
-```
+```plaintext
 https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=TOKEN
 ```
 
@@ -195,7 +195,7 @@ You can pass any number of arbitrary variables in the trigger API call and they
 will be available in GitLab CI so that they can be used in your `.gitlab-ci.yml`
 file. The parameter is of the form:
 
-```
+```plaintext
 variables[key]=value
 ```
 

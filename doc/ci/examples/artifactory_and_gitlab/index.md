@@ -39,7 +39,7 @@ project:
 1. Create a new project by selecting **Import project from ➔ Repo by URL**
 1. Add the following URL:
 
-   ```
+   ```plaintext
    https://gitlab.com/gitlab-examples/maven/simple-maven-dep.git
    ```
 
@@ -164,7 +164,7 @@ The deployment occurs only if we're pushing or merging to `master` branch, so th
 Done! Now you have all the changes in the GitLab repo, and a pipeline has already been started for this commit. In the **Pipelines** tab you can see what's happening.
 If the deployment has been successful, the deploy job log will output:
 
-```
+```plaintext
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
@@ -188,7 +188,7 @@ We'll use again a Maven app that can be cloned from our example project:
 1. Create a new project by selecting **Import project from ➔ Repo by URL**
 1. Add the following URL:
 
-   ```
+   ```plaintext
    https://gitlab.com/gitlab-examples/maven/simple-maven-app.git
    ```
 

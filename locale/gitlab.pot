@@ -8292,11 +8292,6 @@ msgstr ""
 msgid "Fetching licenses failed. You are not permitted to perform this action."
 msgstr ""
 
-msgid "File"
-msgid_plural "Files"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "File Hooks"
 msgstr ""
 
@@ -11931,10 +11926,10 @@ msgstr ""
 msgid "MergeRequest|Error loading full diff. Please try again."
 msgstr ""
 
-msgid "MergeRequest|Filter files or search with %{modifier_key}+p"
+msgid "MergeRequest|No files found"
 msgstr ""
 
-msgid "MergeRequest|No files found"
+msgid "MergeRequest|Search files (%{modifier_key}P)"
 msgstr ""
 
 msgid "Merged"
@@ -22185,6 +22180,9 @@ msgstr ""
 msgid "among other things"
 msgstr ""
 
+msgid "and"
+msgstr ""
+
 msgid "any-approver for the merge request already exists"
 msgstr ""
 
@@ -22614,6 +22612,11 @@ msgstr ""
 
 msgid "failed to dismiss associated finding(id=%{finding_id}): %{message}"
 msgstr ""
+
+msgid "file"
+msgid_plural "files"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "finding is not found or is already attached to a vulnerability"
 msgstr ""

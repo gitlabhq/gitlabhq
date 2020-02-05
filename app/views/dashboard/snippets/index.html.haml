@@ -5,7 +5,7 @@
 
 = render 'dashboard/snippets_head'
 - if current_user.snippets.exists?
-  = render partial: 'snippets/snippets_scope_menu', locals: { include_private: true }
+  = render partial: 'snippets/snippets_scope_menu', locals: { include_private: true, counts: @snippet_counts }
 
 - if current_user.snippets.exists?
   = render partial: 'shared/snippets/list', locals: { link_project: true }

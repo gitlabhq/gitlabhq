@@ -26,53 +26,6 @@ describe('Sentry error details store actions', () => {
     }
   });
 
-  describe('startPollingDetails', () => {
-    const endpoint = '123/details';
-    it('should commit SET_ERROR with received response', done => {
-      const payload = { error: { id: 1 } };
-      mockedAdapter.onGet().reply(200, payload);
-      testAction(
-        actions.startPollingDetails,
-        { endpoint },
-        {},
-        [
-          { type: types.SET_ERROR, payload: payload.error },
-          { type: types.SET_LOADING, payload: false },
-        ],
-        [],
-        () => {
-          done();
-        },
-      );
-    });
-
-    it('should show flash on API error', done => {
-      mockedAdapter.onGet().reply(400);
-
-      testAction(
-        actions.startPollingDetails,
-        { endpoint },
-        {},
-        [{ type: types.SET_LOADING, payload: false }],
-        [],
-        () => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
-          done();
-        },
-      );
-    });
-
-    it('should not restart polling when receiving an empty 204 response', done => {
-      mockedRestart = jest.spyOn(Poll.prototype, 'restart');
-      mockedAdapter.onGet().reply(204);
-
-      testAction(actions.startPollingDetails, { endpoint }, {}, [], [], () => {
-        expect(mockedRestart).toHaveBeenCalledTimes(0);
-        done();
-      });
-    });
-  });
-
   describe('startPollingStacktrace', () => {
     const endpoint = '123/stacktrace';
     it('should commit SET_ERROR with received response', done => {

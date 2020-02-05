@@ -26,7 +26,6 @@ export default () => {
         issueId,
         projectPath,
         issueUpdatePath,
-        issueDetailsPath,
         issueStackTracePath,
         projectIssuesPath,
       } = domEl.dataset;
@@ -36,7 +35,6 @@ export default () => {
           issueId,
           projectPath,
           issueUpdatePath,
-          issueDetailsPath,
           issueStackTracePath,
           projectIssuesPath,
           csrfToken: csrf.token,

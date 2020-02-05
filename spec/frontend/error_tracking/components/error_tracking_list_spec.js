@@ -239,7 +239,7 @@ describe('ErrorTrackingList', () => {
       expect(actions.updateStatus).toHaveBeenCalledWith(
         expect.anything(),
         {
-          endpoint: '/project/test/-/error_tracking/3.json',
+          endpoint: `/project/test/-/error_tracking/${errorsList[0].id}.json`,
           redirectUrl: '/error_tracking',
           status: 'ignored',
         },
@@ -267,7 +267,7 @@ describe('ErrorTrackingList', () => {
       expect(actions.updateStatus).toHaveBeenCalledWith(
         expect.anything(),
         {
-          endpoint: '/project/test/-/error_tracking/3.json',
+          endpoint: `/project/test/-/error_tracking/${errorsList[0].id}.json`,
           redirectUrl: '/error_tracking',
           status: 'resolved',
         },

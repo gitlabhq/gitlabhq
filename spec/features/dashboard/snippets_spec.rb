@@ -59,6 +59,10 @@ describe 'Dashboard snippets' do
       visit dashboard_snippets_path
     end
 
+    it_behaves_like 'tabs with counts' do
+      let_it_be(:counts) { { all: '3', public: '1', private: '1', internal: '1' } }
+    end
+
     it 'contains all snippets of logged user' do
       expect(page).to have_selector('.snippet-row', count: 3)
 
