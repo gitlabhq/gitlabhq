@@ -30,6 +30,27 @@ module Projects
         settings = params[:error_tracking_setting_attributes]
         return {} if settings.blank?
 
+        if error_tracking_params_partial_updates?(settings)
+          error_tracking_params_for_partial_update(settings)
+        else
+          error_tracking_params_for_update(settings)
+        end
+      end
+
+      def error_tracking_params_partial_updates?(settings)
+        # Help from @splattael :bow:
+        # Make sure we're converting to symbols because
+        # * ActionController::Parameters#keys returns a list of strings
+        # * in specs we're using hashes with symbols as keys
+
+        settings.keys.map(&:to_sym) == %i[enabled]
+      end
+
+      def error_tracking_params_for_partial_update(settings)
+        { error_tracking_setting_attributes: settings }
+      end
+
+      def error_tracking_params_for_update(settings)
         api_url = ::ErrorTracking::ProjectErrorTrackingSetting.build_api_url_from(
           api_host: settings[:api_host],
           project_slug: settings.dig(:project, :slug),

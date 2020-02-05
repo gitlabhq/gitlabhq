@@ -10,9 +10,9 @@ module CycleAnalyticsParams
   end
 
   def cycle_analytics_group_params
-    return {} unless params[:cycle_analytics].present?
+    return {} unless params.present?
 
-    params[:cycle_analytics].permit(:start_date, :created_after, :created_before, project_ids: [])
+    params.permit(:group_id, :start_date, :created_after, :created_before, project_ids: [])
   end
 
   def options(params)

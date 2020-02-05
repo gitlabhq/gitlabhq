@@ -120,6 +120,7 @@ module API
       end
       params do
         use :issues_params
+        optional :non_archived, type: Boolean, desc: 'Return issues from non archived projects', default: true
       end
       get ":id/issues" do
         issues = paginate(find_issues(group_id: user_group.id, include_subgroups: true))

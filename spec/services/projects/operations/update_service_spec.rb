@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Projects::Operations::UpdateService do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be(:project, refind: true) { create(:project) }
 
   let(:result) { subject.execute }
 
@@ -142,6 +142,48 @@ describe Projects::Operations::UpdateService do
           expect(project.error_tracking_setting.token).to eq('token')
           expect(project.error_tracking_setting[:project_name]).to eq('Project')
           expect(project.error_tracking_setting[:organization_name]).to eq('Org')
+        end
+      end
+
+      context 'partial_update' do
+        let(:params) do
+          {
+            error_tracking_setting_attributes: {
+              enabled: true
+            }
+          }
+        end
+
+        context 'with setting' do
+          before do
+            create(:project_error_tracking_setting, :disabled, project: project)
+          end
+
+          it 'service succeeds' do
+            expect(result[:status]).to eq(:success)
+          end
+
+          it 'updates attributes' do
+            expect { result }
+              .to change { project.reload.error_tracking_setting.enabled }
+              .from(false)
+              .to(true)
+          end
+
+          it 'only updates enabled attribute' do
+            result
+
+            expect(project.error_tracking_setting.previous_changes.keys)
+              .to contain_exactly('enabled')
+          end
+        end
+
+        context 'without setting' do
+          it 'does not create a setting' do
+            expect(result[:status]).to eq(:error)
+
+            expect(project.reload.error_tracking_setting).to be_nil
+          end
         end
       end
 

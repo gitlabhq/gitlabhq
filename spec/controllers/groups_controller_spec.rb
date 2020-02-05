@@ -96,7 +96,7 @@ describe GroupsController do
             User.where(id: [admin, owner, maintainer, developer, guest]).update_all(can_create_group: can_create_group_status)
           end
 
-          [:admin, :owner].each do |member_type|
+          [:admin, :owner, :maintainer].each do |member_type|
             context "and logged in as #{member_type.capitalize}" do
               it_behaves_like 'member with ability to create subgroups' do
                 let(:member) { send(member_type) }
@@ -104,7 +104,7 @@ describe GroupsController do
             end
           end
 
-          [:guest, :developer, :maintainer].each do |member_type|
+          [:guest, :developer].each do |member_type|
             context "and logged in as #{member_type.capitalize}" do
               it_behaves_like 'member without ability to create subgroups' do
                 let(:member) { send(member_type) }

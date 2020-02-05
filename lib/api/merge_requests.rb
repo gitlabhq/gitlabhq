@@ -141,6 +141,8 @@ module API
       end
       params do
         use :merge_requests_params
+        optional :non_archived, type: Boolean, desc: 'Return merge requests from non archived projects',
+        default: true
       end
       get ":id/merge_requests" do
         merge_requests = find_merge_requests(group_id: user_group.id, include_subgroups: true)

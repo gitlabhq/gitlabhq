@@ -1,0 +1,5 @@
+---
+title: Add non_archived param to group merge requests API endpoint to filter MRs from non archived projects
+merge_request: 23809
+author:
+type: added

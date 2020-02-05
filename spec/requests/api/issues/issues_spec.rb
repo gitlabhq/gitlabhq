@@ -778,6 +778,32 @@ describe API::Issues do
           expect(json_response["error"]).to include("mutually exclusive")
         end
       end
+
+      context 'filtering by non_archived' do
+        let_it_be(:group1) { create(:group) }
+        let_it_be(:archived_project) { create(:project, :archived, namespace: group1) }
+        let_it_be(:active_project) { create(:project, namespace: group1) }
+        let_it_be(:issue1) { create(:issue, project: active_project) }
+        let_it_be(:issue2) { create(:issue, project: active_project) }
+        let_it_be(:issue3) { create(:issue, project: archived_project) }
+
+        before do
+          archived_project.add_developer(user)
+          active_project.add_developer(user)
+        end
+
+        it 'returns issues from non archived projects only by default' do
+          get api("/groups/#{group1.id}/issues", user), params: { scope: 'all' }
+
+          expect_response_contain_exactly(issue2, issue1)
+        end
+
+        it 'returns issues from archived and non archived projects when non_archived is false' do
+          get api("/groups/#{group1.id}/issues", user), params: { non_archived: false, scope: 'all' }
+
+          expect_response_contain_exactly(issue1, issue2, issue3)
+        end
+      end
     end
 
     context "when returns issue merge_requests_count for different access levels" do
@@ -861,5 +887,10 @@ describe API::Issues do
     let(:issuable) { issue }
 
     include_examples 'time tracking endpoints', 'issue'
+  end
+
+  def expect_response_contain_exactly(*items)
+    expect(json_response.length).to eq(items.size)
+    expect(json_response.map { |element| element['id'] }).to contain_exactly(*items.map(&:id))
   end
 end

@@ -807,6 +807,38 @@ describe API::MergeRequests do
         end
       end
     end
+
+    context 'with archived projects' do
+      let(:project2) { create(:project, :public, :archived, namespace: group) }
+      let!(:merge_request_archived) { create(:merge_request, title: 'archived mr', author: user, source_project: project2, target_project: project2) }
+
+      it 'returns an array excluding merge_requests from archived projects' do
+        get api(endpoint_path, user)
+
+        expect_response_contain_exactly(
+          merge_request_merged,
+          merge_request_locked,
+          merge_request_closed,
+          merge_request
+        )
+      end
+
+      context 'with non_archived param set as false' do
+        it 'returns an array including merge_requests from archived projects' do
+          path = endpoint_path + '?non_archived=false'
+
+          get api(path, user)
+
+          expect_response_contain_exactly(
+            merge_request_merged,
+            merge_request_locked,
+            merge_request_closed,
+            merge_request,
+            merge_request_archived
+          )
+        end
+      end
+    end
   end
 
   describe "GET /projects/:id/merge_requests/:merge_request_iid" do

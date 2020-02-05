@@ -1,18 +1,20 @@
-import Vue from 'vue';
+import Vuex from 'vuex';
+import { mount, createLocalVue } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import { waitForMutation } from 'spec/helpers/vue_test_utils_helper';
+import { getJSONFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
-import jobApp from '~/jobs/components/job_app.vue';
+import JobApp from '~/jobs/components/job_app.vue';
 import createStore from '~/jobs/store';
-import * as types from '~/jobs/store/mutation_types';
 import job from '../mock_data';
 
-describe('Job App ', () => {
+describe('Job App', () => {
+  const localVue = createLocalVue();
+  localVue.use(Vuex);
+
   const delayedJobFixture = getJSONFixture('jobs/delayed.json');
-  const Component = Vue.extend(jobApp);
+
   let store;
-  let vm;
+  let wrapper;
   let mock;
 
   const initSettings = {
@@ -32,16 +34,24 @@ describe('Job App ', () => {
     subscriptionsMoreMinutesUrl: 'https://customers.gitlab.com/buy_pipeline_minutes',
   };
 
-  const waitForJobReceived = () => waitForMutation(store, types.RECEIVE_JOB_SUCCESS);
+  const createComponent = () => {
+    wrapper = mount(JobApp, { propsData: { ...props }, store });
+  };
+
   const setupAndMount = ({ jobData = {}, traceData = {} } = {}) => {
     mock.onGet(initSettings.endpoint).replyOnce(200, { ...job, ...jobData });
     mock.onGet(`${initSettings.pagePath}/trace.json`).reply(200, traceData);
 
-    store.dispatch('init', initSettings);
+    const asyncInit = store.dispatch('init', initSettings);
 
-    vm = mountComponentWithStore(Component, { props, store });
+    createComponent();
 
-    return waitForJobReceived();
+    return asyncInit
+      .then(() => {
+        jest.runOnlyPendingTimers();
+      })
+      .then(() => axios.waitForAll())
+      .then(() => wrapper.vm.$nextTick());
   };
 
   beforeEach(() => {
@@ -50,94 +60,81 @@ describe('Job App ', () => {
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
     mock.restore();
   });
 
   describe('while loading', () => {
     beforeEach(() => {
-      setupAndMount();
+      store.state.isLoading = true;
+      createComponent();
     });
 
     it('renders loading icon', () => {
-      expect(vm.$el.querySelector('.js-job-loading')).not.toBeNull();
-      expect(vm.$el.querySelector('.js-job-sidebar')).toBeNull();
-      expect(vm.$el.querySelector('.js-job-content')).toBeNull();
+      expect(wrapper.find('.js-job-loading').exists()).toBe(true);
+      expect(wrapper.find('.js-job-sidebar').exists()).toBe(false);
+      expect(wrapper.find('.js-job-content').exists()).toBe(false);
     });
   });
 
   describe('with successful request', () => {
     describe('Header section', () => {
       describe('job callout message', () => {
-        it('should not render the reason when reason is absent', done => {
-          setupAndMount()
-            .then(() => {
-              expect(vm.shouldRenderCalloutMessage).toBe(false);
-            })
-            .then(done)
-            .catch(done.fail);
-        });
+        it('should not render the reason when reason is absent', () =>
+          setupAndMount().then(() => {
+            expect(wrapper.vm.shouldRenderCalloutMessage).toBe(false);
+          }));
 
-        it('should render the reason when reason is present', done => {
+        it('should render the reason when reason is present', () =>
           setupAndMount({
             jobData: {
               callout_message: 'There is an unkown failure, please try again',
             },
-          })
-            .then(() => {
-              expect(vm.shouldRenderCalloutMessage).toBe(true);
-            })
-            .then(done)
-            .catch(done.fail);
-        });
+          }).then(() => {
+            expect(wrapper.vm.shouldRenderCalloutMessage).toBe(true);
+          }));
       });
 
       describe('triggered job', () => {
-        beforeEach(done => {
+        beforeEach(() => {
           const aYearAgo = new Date();
           aYearAgo.setFullYear(aYearAgo.getFullYear() - 1);
 
-          setupAndMount({ jobData: { started: aYearAgo.toISOString() } })
-            .then(done)
-            .catch(done.fail);
+          return setupAndMount({ jobData: { started: aYearAgo.toISOString() } });
         });
 
         it('should render provided job information', () => {
           expect(
-            vm.$el
-              .querySelector('.header-main-content')
-              .textContent.replace(/\s+/g, ' ')
+            wrapper
+              .find('.header-main-content')
+              .text()
+              .replace(/\s+/g, ' ')
               .trim(),
           ).toContain('passed Job #4757 triggered 1 year ago by Root');
         });
 
         it('should render new issue link', () => {
-          expect(vm.$el.querySelector('.js-new-issue').getAttribute('href')).toEqual(
-            job.new_issue_path,
-          );
+          expect(wrapper.find('.js-new-issue').attributes('href')).toEqual(job.new_issue_path);
         });
       });
 
       describe('created job', () => {
-        it('should render created key', done => {
-          setupAndMount()
-            .then(() => {
-              expect(
-                vm.$el
-                  .querySelector('.header-main-content')
-                  .textContent.replace(/\s+/g, ' ')
-                  .trim(),
-              ).toContain('passed Job #4757 created 3 weeks ago by Root');
-            })
-            .then(done)
-            .catch(done.fail);
-        });
+        it('should render created key', () =>
+          setupAndMount().then(() => {
+            expect(
+              wrapper
+                .find('.header-main-content')
+                .text()
+                .replace(/\s+/g, ' ')
+                .trim(),
+            ).toContain('passed Job #4757 created 3 weeks ago by Root');
+          }));
       });
     });
 
     describe('stuck block', () => {
       describe('without active runners availabl', () => {
-        it('renders stuck block when there are no runners', done => {
+        it('renders stuck block when there are no runners', () =>
           setupAndMount({
             jobData: {
               status: {
@@ -154,20 +151,14 @@ describe('Job App ', () => {
               },
               tags: [],
             },
-          })
-            .then(() => {
-              expect(vm.$el.querySelector('.js-job-stuck')).not.toBeNull();
-              expect(
-                vm.$el.querySelector('.js-job-stuck .js-stuck-no-active-runner'),
-              ).not.toBeNull();
-            })
-            .then(done)
-            .catch(done.fail);
-        });
+          }).then(() => {
+            expect(wrapper.find('.js-job-stuck').exists()).toBe(true);
+            expect(wrapper.find('.js-job-stuck .js-stuck-no-active-runner').exists()).toBe(true);
+          }));
       });
 
       describe('when available runners can not run specified tag', () => {
-        it('renders tags in stuck block when there are no runners', done => {
+        it('renders tags in stuck block when there are no runners', () =>
           setupAndMount({
             jobData: {
               status: {
@@ -183,18 +174,14 @@ describe('Job App ', () => {
                 online: false,
               },
             },
-          })
-            .then(() => {
-              expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(job.tags[0]);
-              expect(vm.$el.querySelector('.js-job-stuck .js-stuck-with-tags')).not.toBeNull();
-            })
-            .then(done)
-            .catch(done.fail);
-        });
+          }).then(() => {
+            expect(wrapper.find('.js-job-stuck').text()).toContain(job.tags[0]);
+            expect(wrapper.find('.js-job-stuck .js-stuck-with-tags').exists()).toBe(true);
+          }));
       });
 
       describe('when runners are offline and build has tags', () => {
-        it('renders message about job being stuck because of no runners with the specified tags', done => {
+        it('renders message about job being stuck because of no runners with the specified tags', () =>
           setupAndMount({
             jobData: {
               status: {
@@ -210,32 +197,24 @@ describe('Job App ', () => {
                 online: true,
               },
             },
-          })
-            .then(() => {
-              expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(job.tags[0]);
-              expect(vm.$el.querySelector('.js-job-stuck .js-stuck-with-tags')).not.toBeNull();
-            })
-            .then(done)
-            .catch(done.fail);
-        });
+          }).then(() => {
+            expect(wrapper.find('.js-job-stuck').text()).toContain(job.tags[0]);
+            expect(wrapper.find('.js-job-stuck .js-stuck-with-tags').exists()).toBe(true);
+          }));
       });
 
-      it('does not renders stuck block when there are no runners', done => {
+      it('does not renders stuck block when there are no runners', () =>
         setupAndMount({
           jobData: {
             runners: { available: true },
           },
-        })
-          .then(() => {
-            expect(vm.$el.querySelector('.js-job-stuck')).toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+        }).then(() => {
+          expect(wrapper.find('.js-job-stuck').exists()).toBe(false);
+        }));
     });
 
     describe('unmet prerequisites block', () => {
-      it('renders unmet prerequisites block when there is an unmet prerequisites failure', done => {
+      it('renders unmet prerequisites block when there is an unmet prerequisites failure', () =>
         setupAndMount({
           jobData: {
             status: {
@@ -258,17 +237,13 @@ describe('Job App ', () => {
             },
             tags: [],
           },
-        })
-          .then(() => {
-            expect(vm.$el.querySelector('.js-job-failed')).not.toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+        }).then(() => {
+          expect(wrapper.find('.js-job-failed').exists()).toBe(true);
+        }));
     });
 
     describe('environments block', () => {
-      it('renders environment block when job has environment', done => {
+      it('renders environment block when job has environment', () =>
         setupAndMount({
           jobData: {
             deployment_status: {
@@ -278,26 +253,18 @@ describe('Job App ', () => {
               },
             },
           },
-        })
-          .then(() => {
-            expect(vm.$el.querySelector('.js-job-environment')).not.toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+        }).then(() => {
+          expect(wrapper.find('.js-job-environment').exists()).toBe(true);
+        }));
 
-      it('does not render environment block when job has environment', done => {
-        setupAndMount()
-          .then(() => {
-            expect(vm.$el.querySelector('.js-job-environment')).toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+      it('does not render environment block when job has environment', () =>
+        setupAndMount().then(() => {
+          expect(wrapper.find('.js-job-environment').exists()).toBe(false);
+        }));
     });
 
     describe('erased block', () => {
-      it('renders erased block when `erased` is true', done => {
+      it('renders erased block when `erased` is true', () =>
         setupAndMount({
           jobData: {
             erased_by: {
@@ -306,30 +273,22 @@ describe('Job App ', () => {
             },
             erased_at: '2016-11-07T11:11:16.525Z',
           },
-        })
-          .then(() => {
-            expect(vm.$el.querySelector('.js-job-erased-block')).not.toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+        }).then(() => {
+          expect(wrapper.find('.js-job-erased-block').exists()).toBe(true);
+        }));
 
-      it('does not render erased block when `erased` is false', done => {
+      it('does not render erased block when `erased` is false', () =>
         setupAndMount({
           jobData: {
             erased_at: null,
           },
-        })
-          .then(() => {
-            expect(vm.$el.querySelector('.js-job-erased-block')).toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+        }).then(() => {
+          expect(wrapper.find('.js-job-erased-block').exists()).toBe(false);
+        }));
     });
 
     describe('empty states block', () => {
-      it('renders empty state when job does not have trace and is not running', done => {
+      it('renders empty state when job does not have trace and is not running', () =>
         setupAndMount({
           jobData: {
             has_trace: false,
@@ -352,15 +311,11 @@ describe('Job App ', () => {
               },
             },
           },
-        })
-          .then(() => {
-            expect(vm.$el.querySelector('.js-job-empty-state')).not.toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+        }).then(() => {
+          expect(wrapper.find('.js-job-empty-state').exists()).toBe(true);
+        }));
 
-      it('does not render empty state when job does not have trace but it is running', done => {
+      it('does not render empty state when job does not have trace but it is running', () =>
         setupAndMount({
           jobData: {
             has_trace: false,
@@ -372,38 +327,29 @@ describe('Job App ', () => {
               details_path: 'path',
             },
           },
-        })
-          .then(() => {
-            expect(vm.$el.querySelector('.js-job-empty-state')).toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+        }).then(() => {
+          expect(wrapper.find('.js-job-empty-state').exists()).toBe(false);
+        }));
 
-      it('does not render empty state when job has trace but it is not running', done => {
-        setupAndMount({ jobData: { has_trace: true } })
-          .then(() => {
-            expect(vm.$el.querySelector('.js-job-empty-state')).toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+      it('does not render empty state when job has trace but it is not running', () =>
+        setupAndMount({ jobData: { has_trace: true } }).then(() => {
+          expect(wrapper.find('.js-job-empty-state').exists()).toBe(false);
+        }));
 
-      it('displays remaining time for a delayed job', done => {
+      it('displays remaining time for a delayed job', () => {
         const oneHourInMilliseconds = 3600000;
-        spyOn(Date, 'now').and.callFake(
-          () => new Date(delayedJobFixture.scheduled_at).getTime() - oneHourInMilliseconds,
-        );
-        setupAndMount({ jobData: delayedJobFixture })
-          .then(() => {
-            expect(vm.$el.querySelector('.js-job-empty-state')).not.toBeNull();
+        jest
+          .spyOn(Date, 'now')
+          .mockImplementation(
+            () => new Date(delayedJobFixture.scheduled_at).getTime() - oneHourInMilliseconds,
+          );
+        return setupAndMount({ jobData: delayedJobFixture }).then(() => {
+          expect(wrapper.find('.js-job-empty-state').exists()).toBe(true);
 
-            const title = vm.$el.querySelector('.js-job-empty-state-title');
+          const title = wrapper.find('.js-job-empty-state-title').text();
 
-            expect(title).toContainText('01:00:00');
-          })
-          .then(done)
-          .catch(done.fail);
+          expect(title).toEqual('This is a delayed job to run in 01:00:00');
+        });
       });
     });
 
@@ -422,8 +368,11 @@ describe('Job App ', () => {
           },
         })
           .then(() => {
-            vm.$el.querySelectorAll('.blocks-container > *').forEach(block => {
-              expect(block.textContent.trim()).not.toBe('');
+            const blocks = wrapper.findAll('.blocks-container > *').wrappers;
+            expect(blocks.length).toBeGreaterThan(0);
+
+            blocks.forEach(block => {
+              expect(block.text().trim()).not.toBe('');
             });
           })
           .then(done)
@@ -433,32 +382,24 @@ describe('Job App ', () => {
   });
 
   describe('archived job', () => {
-    beforeEach(done => {
-      setupAndMount({ jobData: { archived: true } })
-        .then(done)
-        .catch(done.fail);
-    });
+    beforeEach(() => setupAndMount({ jobData: { archived: true } }));
 
     it('renders warning about job being archived', () => {
-      expect(vm.$el.querySelector('.js-archived-job ')).not.toBeNull();
+      expect(wrapper.find('.js-archived-job ').exists()).toBe(true);
     });
   });
 
   describe('non-archived job', () => {
-    beforeEach(done => {
-      setupAndMount()
-        .then(done)
-        .catch(done.fail);
-    });
+    beforeEach(() => setupAndMount());
 
     it('does not warning about job being archived', () => {
-      expect(vm.$el.querySelector('.js-archived-job ')).toBeNull();
+      expect(wrapper.find('.js-archived-job ').exists()).toBe(false);
     });
   });
 
   describe('trace output', () => {
     describe('with append flag', () => {
-      it('appends the log content to the existing one', done => {
+      it('appends the log content to the existing one', () =>
         setupAndMount({
           traceData: {
             html: '<span>More<span>',
@@ -469,20 +410,22 @@ describe('Job App ', () => {
           },
         })
           .then(() => {
-            vm.$store.state.trace = 'Update';
+            store.state.trace = 'Update';
 
-            return vm.$nextTick();
+            return wrapper.vm.$nextTick();
           })
           .then(() => {
-            expect(vm.$el.querySelector('.js-build-trace').textContent.trim()).toContain('Update');
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+            expect(
+              wrapper
+                .find('.js-build-trace')
+                .text()
+                .trim(),
+            ).toEqual('Update');
+          }));
     });
 
     describe('without append flag', () => {
-      it('replaces the trace', done => {
+      it('replaces the trace', () =>
         setupAndMount({
           traceData: {
             html: '<span>Different<span>',
@@ -490,24 +433,19 @@ describe('Job App ', () => {
             append: false,
             complete: true,
           },
-        })
-          .then(() => {
-            expect(vm.$el.querySelector('.js-build-trace').textContent.trim()).not.toContain(
-              'Update',
-            );
-
-            expect(vm.$el.querySelector('.js-build-trace').textContent.trim()).toContain(
-              'Different',
-            );
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+        }).then(() => {
+          expect(
+            wrapper
+              .find('.js-build-trace')
+              .text()
+              .trim(),
+          ).toEqual('Different');
+        }));
     });
 
     describe('truncated information', () => {
       describe('when size is less than total', () => {
-        it('shows information about truncated log', done => {
+        it('shows information about truncated log', () => {
           mock.onGet(`${props.pagePath}/trace.json`).reply(200, {
             html: '<span>Update</span>',
             status: 'success',
@@ -517,7 +455,7 @@ describe('Job App ', () => {
             complete: true,
           });
 
-          setupAndMount({
+          return setupAndMount({
             traceData: {
               html: '<span>Update</span>',
               status: 'success',
@@ -526,19 +464,19 @@ describe('Job App ', () => {
               total: 100,
               complete: true,
             },
-          })
-            .then(() => {
-              expect(vm.$el.querySelector('.js-truncated-info').textContent.trim()).toContain(
-                '50 bytes',
-              );
-            })
-            .then(done)
-            .catch(done.fail);
+          }).then(() => {
+            expect(
+              wrapper
+                .find('.js-truncated-info')
+                .text()
+                .trim(),
+            ).toContain('Showing last 50 bytes');
+          });
         });
       });
 
       describe('when size is equal than total', () => {
-        it('does not show the truncated information', done => {
+        it('does not show the truncated information', () =>
           setupAndMount({
             traceData: {
               html: '<span>Update</span>',
@@ -548,20 +486,19 @@ describe('Job App ', () => {
               total: 100,
               complete: true,
             },
-          })
-            .then(() => {
-              expect(vm.$el.querySelector('.js-truncated-info').textContent.trim()).not.toContain(
-                '50 bytes',
-              );
-            })
-            .then(done)
-            .catch(done.fail);
-        });
+          }).then(() => {
+            expect(
+              wrapper
+                .find('.js-truncated-info')
+                .text()
+                .trim(),
+            ).toEqual('');
+          }));
       });
     });
 
     describe('trace controls', () => {
-      beforeEach(done => {
+      beforeEach(() =>
         setupAndMount({
           traceData: {
             html: '<span>Update</span>',
@@ -571,22 +508,20 @@ describe('Job App ', () => {
             total: 100,
             complete: true,
           },
-        })
-          .then(done)
-          .catch(done.fail);
-      });
+        }),
+      );
 
       it('should render scroll buttons', () => {
-        expect(vm.$el.querySelector('.js-scroll-top')).not.toBeNull();
-        expect(vm.$el.querySelector('.js-scroll-bottom')).not.toBeNull();
+        expect(wrapper.find('.js-scroll-top').exists()).toBe(true);
+        expect(wrapper.find('.js-scroll-bottom').exists()).toBe(true);
       });
 
       it('should render link to raw ouput', () => {
-        expect(vm.$el.querySelector('.js-raw-link-controller')).not.toBeNull();
+        expect(wrapper.find('.js-raw-link-controller').exists()).toBe(true);
       });
 
       it('should render link to erase job', () => {
-        expect(vm.$el.querySelector('.js-erase-link')).not.toBeNull();
+        expect(wrapper.find('.js-erase-link').exists()).toBe(true);
       });
     });
   });

@@ -8,5 +8,9 @@ FactoryBot.define do
     token { 'access_token_123' }
     project_name { 'Sentry Project' }
     organization_name { 'Sentry Org' }
+
+    trait :disabled do
+      enabled { false }
+    end
   end
 end

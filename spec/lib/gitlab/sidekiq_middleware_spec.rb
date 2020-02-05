@@ -45,7 +45,8 @@ describe Gitlab::SidekiqMiddleware do
        Gitlab::SidekiqMiddleware::ArgumentsLogger,
        Gitlab::SidekiqMiddleware::MemoryKiller,
        Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
-       Gitlab::SidekiqMiddleware::WorkerContext::Server
+       Gitlab::SidekiqMiddleware::WorkerContext::Server,
+       Gitlab::SidekiqMiddleware::AdminMode::Server
       ]
     end
     let(:enabled_sidekiq_middlewares) { all_sidekiq_middlewares - disabled_sidekiq_middlewares }
@@ -115,7 +116,8 @@ describe Gitlab::SidekiqMiddleware do
         Gitlab::SidekiqStatus::ClientMiddleware,
         Gitlab::SidekiqMiddleware::ClientMetrics,
         Gitlab::SidekiqMiddleware::WorkerContext::Client,
-        Labkit::Middleware::Sidekiq::Client
+        Labkit::Middleware::Sidekiq::Client,
+        Gitlab::SidekiqMiddleware::AdminMode::Client
       ]
     end
 

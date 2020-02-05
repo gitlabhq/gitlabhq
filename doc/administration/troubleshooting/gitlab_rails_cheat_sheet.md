@@ -941,7 +941,7 @@ projects.each do |p|
 
    container_repositories.each do |c|
        c.tags.each do |t|
-          project_total_size = project_total_size + t.total_size
+          project_total_size = project_total_size + t.total_size unless t.total_size.nil?
        end
    end
 

@@ -1,0 +1,5 @@
+---
+title: Add non_archived param to issues API endpoint to filter issues from archived projects
+merge_request: 23785
+author:
+type: added
