@@ -51,7 +51,7 @@ describe Projects::Serverless::FunctionsController do
         expect(json_response).to eq expected_json
       end
 
-      it { expect(response).to have_gitlab_http_status(200) }
+      it { expect(response).to have_gitlab_http_status(:ok) }
     end
 
     context 'when cache is ready' do
@@ -83,7 +83,7 @@ describe Projects::Serverless::FunctionsController do
           expect(json_response).to eq expected_json
         end
 
-        it { expect(response).to have_gitlab_http_status(200) }
+        it { expect(response).to have_gitlab_http_status(:ok) }
       end
 
       context 'when functions were found' do
@@ -98,7 +98,7 @@ describe Projects::Serverless::FunctionsController do
           expect(json_response["functions"]).not_to be_empty
         end
 
-        it { expect(response).to have_gitlab_http_status(200) }
+        it { expect(response).to have_gitlab_http_status(:ok) }
       end
     end
   end
@@ -107,7 +107,7 @@ describe Projects::Serverless::FunctionsController do
     context 'invalid data' do
       it 'has a bad function name' do
         get :show, params: params({ format: :json, environment_id: "*", id: "foo" })
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -115,7 +115,7 @@ describe Projects::Serverless::FunctionsController do
       shared_examples 'GET #show with valid data' do
         it 'has a valid function name' do
           get :show, params: params({ format: :json, environment_id: "*", id: cluster.project.name })
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
 
           expect(json_response).to include(
             'name' => project.name,
@@ -164,7 +164,7 @@ describe Projects::Serverless::FunctionsController do
     context 'invalid data' do
       it 'has a bad function name' do
         get :metrics, params: params({ format: :json, environment_id: "*", id: "foo" })
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end
     end
   end
@@ -174,7 +174,7 @@ describe Projects::Serverless::FunctionsController do
       it 'has data' do
         get :index, params: params({ format: :json })
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response).to match({
                                          'knative_installed' => 'checking',
@@ -191,7 +191,7 @@ describe Projects::Serverless::FunctionsController do
       it 'has data in html' do
         get :index, params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 

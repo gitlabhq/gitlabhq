@@ -62,7 +62,7 @@ describe Projects::MergeRequests::CreationsController do
           expect(assigns(:commits)).to be_an Array
           expect(total).to be > 0
           expect(assigns(:hidden_commit_count)).to be > 0
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to match %r(<span class="commits-count">2 commits</span>)
         end
       end
@@ -76,7 +76,7 @@ describe Projects::MergeRequests::CreationsController do
         expect(assigns(:commits)).to be_an CommitCollection
         expect(total).to be > 0
         expect(assigns(:hidden_commit_count)).to eq(0)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to match %r(<span class="commits-count">#{total} commits</span>)
       end
     end
@@ -173,7 +173,7 @@ describe Projects::MergeRequests::CreationsController do
         end
 
         it 'returns a 404' do
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -196,7 +196,7 @@ describe Projects::MergeRequests::CreationsController do
           }
 
       expect(assigns(:commit)).not_to be_nil
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'does not load the commit when the user cannot read the project' do
@@ -211,7 +211,7 @@ describe Projects::MergeRequests::CreationsController do
           }
 
       expect(assigns(:commit)).to be_nil
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 

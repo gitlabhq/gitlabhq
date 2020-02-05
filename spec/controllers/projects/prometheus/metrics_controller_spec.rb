@@ -28,7 +28,7 @@ describe Projects::Prometheus::MetricsController do
           it 'returns no content response' do
             get :active_common, params: project_params(format: :json)
 
-            expect(response).to have_gitlab_http_status(204)
+            expect(response).to have_gitlab_http_status(:no_content)
           end
         end
 
@@ -42,7 +42,7 @@ describe Projects::Prometheus::MetricsController do
           it 'returns no content response' do
             get :active_common, params: project_params(format: :json)
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to eq(sample_response.deep_stringify_keys)
           end
         end
@@ -51,7 +51,7 @@ describe Projects::Prometheus::MetricsController do
           it 'returns not found response' do
             get :active_common, params: project_params
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -66,7 +66,7 @@ describe Projects::Prometheus::MetricsController do
 
         get :active_common, params: project_params(format: :json)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -74,7 +74,7 @@ describe Projects::Prometheus::MetricsController do
       it 'renders 404' do
         get :active_common, params: project_params(format: :json)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

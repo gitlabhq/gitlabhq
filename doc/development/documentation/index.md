@@ -531,7 +531,14 @@ Vale supports creating [custom tests](https://errata-ai.github.io/vale/styles/),
 stored in the `doc/.linting/vale/styles/gitlab` directory, that extend any of
 several types of checks.
 
-To view linting suggestions locally, you must install Vale on your own machine, and
+To view linting suggestions locally, you must install Vale on your own machine,
+and from GitLab's root directory (where `.vale.ini` is located), run:
+
+```shell
+vale --glob='*.{md}' doc
+```
+
+You can also
 [configure the text editor of your choice](https://errata-ai.github.io/vale/#local-use-by-a-single-writer)
 to display the results.
 

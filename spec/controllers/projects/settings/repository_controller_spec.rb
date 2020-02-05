@@ -15,7 +15,7 @@ describe Projects::Settings::RepositoryController do
     it 'renders show with 200 status code' do
       get :show, params: { namespace_id: project.namespace, project_id: project }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:show)
     end
   end
@@ -48,7 +48,7 @@ describe Projects::Settings::RepositoryController do
     it 'creates deploy token' do
       expect { create_deploy_token }.to change { DeployToken.active.count }.by(1)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:show)
     end
   end

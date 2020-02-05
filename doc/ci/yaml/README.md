@@ -2521,6 +2521,12 @@ Possible values for `when` are:
 - `runner_system_failure`: Retry if there was a runner system failure (e.g. setting up the job failed).
 - `missing_dependency_failure`: Retry if a dependency was missing.
 - `runner_unsupported`: Retry if the runner was unsupported.
+- `stale_schedule`: Retry if a delayed job could not be executed.
+- `job_execution_timeout`: Retry if the script exceeded the maximum execution time set for the job.
+- `archived_failure`: Retry if the job is archived and cannot be run.
+- `unmet_prerequisites`: Retry if the job failed to complete prerequisite tasks.
+- `scheduler_failure`: Retry if the scheduler failed to assign the job to a runner.
+- `data_integrity_failure`: Retry if there was a structural integrity problem detected.
 
 ### `timeout`
 

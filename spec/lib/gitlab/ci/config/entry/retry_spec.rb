@@ -95,14 +95,20 @@ describe Gitlab::Ci::Config::Entry::Retry do
         # values are valid. If they are not it means the documentation and this
         # array must be updated.
         RETRY_WHEN_IN_DOCUMENTATION = %w[
-            always
-            unknown_failure
-            script_failure
-            api_failure
-            stuck_or_timeout_failure
-            runner_system_failure
-            missing_dependency_failure
-            runner_unsupported
+          always
+          unknown_failure
+          script_failure
+          api_failure
+          stuck_or_timeout_failure
+          runner_system_failure
+          missing_dependency_failure
+          runner_unsupported
+          stale_schedule
+          job_execution_timeout
+          archived_failure
+          unmet_prerequisites
+          scheduler_failure
+          data_integrity_failure
         ].freeze
 
         RETRY_WHEN_IN_DOCUMENTATION.each do |reason|

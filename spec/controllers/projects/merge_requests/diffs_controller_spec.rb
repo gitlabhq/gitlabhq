@@ -13,7 +13,7 @@ describe Projects::MergeRequests::DiffsController do
         go(diff_id: unexistent_diff_id)
 
         expect(MergeRequestDiff.find_by(id: unexistent_diff_id)).to be_nil
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -76,7 +76,7 @@ describe Projects::MergeRequests::DiffsController do
       end
 
       it 'returns a 404' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -162,7 +162,7 @@ describe Projects::MergeRequests::DiffsController do
       it 'returns 404 when not a member' do
         go
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'returns 404 when visibility level is not enough' do
@@ -170,7 +170,7 @@ describe Projects::MergeRequests::DiffsController do
 
         go
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -178,7 +178,7 @@ describe Projects::MergeRequests::DiffsController do
       it 'returns success' do
         go(diff_id: merge_request.merge_request_diff.id)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'serializes diffs metadata with expected arguments' do
@@ -207,7 +207,7 @@ describe Projects::MergeRequests::DiffsController do
       it 'returns success' do
         go
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'serializes diffs metadata with expected arguments' do
@@ -236,7 +236,7 @@ describe Projects::MergeRequests::DiffsController do
       it 'returns success' do
         go(commit_id: merge_request.diff_head_sha)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'serializes diffs metadata with expected arguments' do
@@ -305,7 +305,7 @@ describe Projects::MergeRequests::DiffsController do
         end
 
         it 'returns a 404' do
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -316,7 +316,7 @@ describe Projects::MergeRequests::DiffsController do
       end
 
       it 'returns a 404' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -329,7 +329,7 @@ describe Projects::MergeRequests::DiffsController do
       end
 
       it 'returns a 404' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -351,7 +351,7 @@ describe Projects::MergeRequests::DiffsController do
       it 'returns success' do
         subject
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -390,7 +390,7 @@ describe Projects::MergeRequests::DiffsController do
       it 'returns 404' do
         go
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -404,7 +404,7 @@ describe Projects::MergeRequests::DiffsController do
       it 'returns 404' do
         go
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

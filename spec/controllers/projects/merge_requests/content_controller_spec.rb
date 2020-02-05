@@ -69,7 +69,7 @@ describe Projects::MergeRequests::ContentController do
       it 'returns 404' do
         do_request
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -77,7 +77,7 @@ describe Projects::MergeRequests::ContentController do
       it 'returns 404' do
         do_request(:widget)
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
