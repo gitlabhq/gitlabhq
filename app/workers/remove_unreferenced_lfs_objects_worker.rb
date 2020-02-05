@@ -4,7 +4,7 @@ class RemoveUnreferencedLfsObjectsWorker
   include ApplicationWorker
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
-  feature_category :source_code_management
+  feature_category :git_lfs
 
   def perform
     LfsObject.destroy_unreferenced

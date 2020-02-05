@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, :migration, schema: 20190924152703 do
+describe Gitlab::BackgroundMigration::MigrateIssueTrackersSensitiveData, :migration, schema: 20200130145430 do
   let(:services) { table(:services) }
 
   # we need to define the classes due to encryption

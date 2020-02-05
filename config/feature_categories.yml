@@ -21,6 +21,7 @@
 - cloud_native_installation
 - cluster_cost_optimization
 - cluster_monitoring
+- code_analytics
 - code_quality
 - code_review
 - collection
@@ -31,8 +32,8 @@
 - container_scanning
 - continuous_delivery
 - continuous_integration
-- data_loss_prevention
 - ddos_protection
+- dependency_firewall
 - dependency_proxy
 - dependency_scanning
 - design_management
@@ -42,8 +43,11 @@
 - epics
 - error_tracking
 - feature_flags
+- frontend_foundation
 - fuzzing
+- gdk
 - geo_replication
+- git_lfs
 - gitaly
 - gitlab_handbook
 - gitter
@@ -52,11 +56,11 @@
 - incident_management
 - incremental_rollout
 - infrastructure_as_code
-- integration_testing
 - integrations
 - interactive_application_security_testing
 - internationalization
 - issue_tracking
+- jupyter_notebooks
 - kanban_boards
 - kubernetes_management
 - language_specific
@@ -65,6 +69,7 @@
 - load_testing
 - logging
 - malware_scanning
+- merge_trains
 - metrics
 - omnibus_package
 - package_registry
@@ -93,6 +98,7 @@
 - subgroups
 - synthetic_monitoring
 - system_testing
+- teams
 - templates
 - threat_detection
 - time_tracking
@@ -107,3 +113,4 @@
 - web_ide
 - web_performance
 - wiki
+- workspaces

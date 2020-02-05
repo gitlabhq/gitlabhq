@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_03_025821) do
+ActiveRecord::Schema.define(version: 2020_02_04_131054) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -564,7 +564,7 @@ ActiveRecord::Schema.define(version: 2020_02_03_025821) do
     t.integer "cached_markdown_version"
     t.string "target_path", limit: 255
     t.integer "broadcast_type", limit: 2, default: 1, null: false
-    t.index ["starts_at", "ends_at", "id"], name: "index_broadcast_messages_on_starts_at_and_ends_at_and_id"
+    t.index ["ends_at", "broadcast_type", "id"], name: "index_broadcast_message_on_ends_at_and_broadcast_type_and_id"
   end
 
   create_table "chat_names", id: :serial, force: :cascade do |t|
@@ -3680,6 +3680,23 @@ ActiveRecord::Schema.define(version: 2020_02_03_025821) do
     t.index ["user_id"], name: "index_resource_label_events_on_user_id"
   end
 
+  create_table "resource_milestone_events", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "issue_id"
+    t.bigint "merge_request_id"
+    t.bigint "milestone_id"
+    t.integer "action", limit: 2, null: false
+    t.integer "state", limit: 2, null: false
+    t.integer "cached_markdown_version"
+    t.text "reference"
+    t.text "reference_html"
+    t.datetime_with_timezone "created_at", null: false
+    t.index ["issue_id"], name: "index_resource_milestone_events_on_issue_id"
+    t.index ["merge_request_id"], name: "index_resource_milestone_events_on_merge_request_id"
+    t.index ["milestone_id"], name: "index_resource_milestone_events_on_milestone_id"
+    t.index ["user_id"], name: "index_resource_milestone_events_on_user_id"
+  end
+
   create_table "resource_weight_events", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "issue_id", null: false
@@ -4842,6 +4859,10 @@ ActiveRecord::Schema.define(version: 2020_02_03_025821) do
   add_foreign_key "resource_label_events", "labels", on_delete: :nullify
   add_foreign_key "resource_label_events", "merge_requests", on_delete: :cascade
   add_foreign_key "resource_label_events", "users", on_delete: :nullify
+  add_foreign_key "resource_milestone_events", "issues", on_delete: :cascade
+  add_foreign_key "resource_milestone_events", "merge_requests", on_delete: :cascade
+  add_foreign_key "resource_milestone_events", "milestones", on_delete: :cascade
+  add_foreign_key "resource_milestone_events", "users", on_delete: :nullify
   add_foreign_key "resource_weight_events", "issues", on_delete: :cascade
   add_foreign_key "resource_weight_events", "users", on_delete: :nullify
   add_foreign_key "reviews", "merge_requests", on_delete: :cascade

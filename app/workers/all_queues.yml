@@ -160,7 +160,7 @@
   :resource_boundary: :cpu
   :weight: 1
 - :name: cronjob:remove_unreferenced_lfs_objects
-  :feature_category: :source_code_management
+  :feature_category: :git_lfs
   :has_external_dependencies: 
   :latency_sensitive: 
   :resource_boundary: :unknown

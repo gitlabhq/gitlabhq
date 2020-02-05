@@ -66,7 +66,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @total_user_projects_count = ProjectsFinder.new(params: { non_public: true }, current_user: current_user).execute
     @total_starred_projects_count = ProjectsFinder.new(params: { starred: true }, current_user: current_user).execute
 
-    finder_params[:use_cte] = Feature.enabled?(:use_cte_for_projects_finder, default_enabled: true)
+    finder_params[:use_cte] = true if use_cte_for_finder?
 
     projects = ProjectsFinder
                 .new(params: finder_params, current_user: current_user)
@@ -78,6 +78,11 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     prepare_projects_for_rendering(projects)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def use_cte_for_finder?
+    # The starred action loads public projects, which causes the CTE to be less efficient
+    action_name == 'index' && Feature.enabled?(:use_cte_for_projects_finder, default_enabled: true)
+  end
 
   def load_events
     projects = load_projects(params.merge(non_public: true))
