@@ -64,6 +64,7 @@ module API
       expose(:snippets_access_level) { |project, options| project.project_feature.string_access_level(:snippets) }
       expose(:pages_access_level) { |project, options| project.project_feature.string_access_level(:pages) }
 
+      expose :emails_disabled
       expose :shared_runners_enabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id

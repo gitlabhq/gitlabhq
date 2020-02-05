@@ -544,7 +544,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   end
 
   describe '#applications' do
-    set(:cluster) { create(:cluster) }
+    let_it_be(:cluster, reload: true) { create(:cluster) }
 
     subject { cluster.applications }
 

@@ -15,6 +15,7 @@ import MonitorAnomalyChart from './charts/anomaly.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
 import MonitorHeatmapChart from './charts/heatmap.vue';
 import MonitorColumnChart from './charts/column.vue';
+import MonitorStackedColumnChart from './charts/stacked_column.vue';
 import MonitorEmptyChart from './charts/empty_chart.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { downloadCSVOptions, generateLinkToChartOptions } from '../utils';
@@ -24,6 +25,7 @@ export default {
     MonitorSingleStatChart,
     MonitorColumnChart,
     MonitorHeatmapChart,
+    MonitorStackedColumnChart,
     MonitorEmptyChart,
     Icon,
     GlDropdown,
@@ -119,6 +121,10 @@ export default {
   />
   <monitor-column-chart
     v-else-if="isPanelType('column') && graphDataHasMetrics"
+    :graph-data="graphData"
+  />
+  <monitor-stacked-column-chart
+    v-else-if="isPanelType('stacked-column') && graphDataHasMetrics"
     :graph-data="graphData"
   />
   <component

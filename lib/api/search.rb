@@ -32,10 +32,6 @@ module API
 
         results = SearchService.new(current_user, search_params).search_objects
 
-        process_results(results)
-      end
-
-      def process_results(results)
         paginate(results)
       end
 

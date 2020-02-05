@@ -336,6 +336,18 @@ error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker
 It is possible to create a per-project expiration policy, so that you can make sure that
 older tags and images are regularly removed from the Container Registry.
 
+The expiration policy algorithm starts by collecting all the tags for a given repository in a list,
+then goes through a process of excluding tags from it until only the ones to be deleted remain:
+
+1. Collect all the tags for a given repository in a list.
+1. Excludes the tag named `latest` from the list.
+1. Evaluates the `name_regex`, excluding non-matching names from the list.
+1. Excludes any tags that do not have a manifest (not part of the options).
+1. Orders the remaining tags by `created_date`.
+1. Excludes from the list the N tags based on the `keep_n` value (Expiration latest).
+1. Excludes from the list the tags older than the `older_than` value (Expiration interval).
+1. Finally, the remaining tags in the list are deleted from the Container Registry.
+
 ### Managing project expiration policy through the API
 
 You can set, update, and disable the expiration policies using the GitLab API.

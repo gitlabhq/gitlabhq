@@ -705,10 +705,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@gitlab/eslint-config@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-config/-/eslint-config-2.1.1.tgz#64fcc8135f1a6055181fd64b991e33eb43913153"
-  integrity sha512-+rQA+gIcZbkaQ7GIjDjfMnYz41fFtsEaF0cRmk0KSqXWTKmOi4gcYZppIPdRvJWKhNPRS735Y5Of3gdIObINYQ==
+"@gitlab/eslint-config@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-config/-/eslint-config-2.1.2.tgz#9f4011d3bf15f3e2668a1faa754f0b9804f23f8f"
+  integrity sha512-+9yd5PKyipUVngEtKOdBxq7C6tXsUNdaGVD+SLBDqX0VaCNxQVWJvmQ2FPxb9gOLZsSAnP5Yl2Rj7dY0fJV4Gw==
   dependencies:
     "@gitlab/eslint-plugin-i18n" "^1.1.0"
     "@gitlab/eslint-plugin-vue-i18n" "^1.2.0"
@@ -718,7 +718,6 @@
     eslint-plugin-babel "^5.3.0"
     eslint-plugin-filenames "^1.3.2"
     eslint-plugin-import "^2.20.0"
-    eslint-plugin-no-jquery "^2.3.1"
     eslint-plugin-promise "^4.2.1"
     eslint-plugin-vue "^5.2.3"
 
@@ -4350,7 +4349,7 @@ eslint-plugin-jest@^22.3.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-22.3.0.tgz#a10f10dedfc92def774ec9bb5bfbd2fb8e1c96d2"
   integrity sha512-P1mYVRNlOEoO5T9yTqOfucjOYf1ktmJ26NjwjH8sxpCFQa6IhBGr5TpKl3hcAAT29hOsRJVuMWmTsHoUVo9FoA==
 
-eslint-plugin-no-jquery@^2.3.0, eslint-plugin-no-jquery@^2.3.1:
+eslint-plugin-no-jquery@^2.3.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-no-jquery/-/eslint-plugin-no-jquery-2.3.1.tgz#1c364cb863a38cc1570c8020155b6004cca62178"
   integrity sha512-/fiQUBSOMUETnfBuiK5ewvtRbek1IRTy5ov/6RZ6nlybvZ337vyGaNPWM1KgaIoIeN7dairNrPfq0h7A0tpT3A==

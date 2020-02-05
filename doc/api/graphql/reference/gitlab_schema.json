@@ -3151,6 +3151,26 @@
               "description": "Find a single epic",
               "args": [
                 {
+                  "name": "startDate",
+                  "description": "List items within a time frame where items.start_date is between startDate and endDate parameters (endDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "endDate",
+                  "description": "List items within a time frame where items.end_date is between startDate and endDate parameters (startDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "iid",
                   "description": "IID of the epic, e.g., \"1\"",
                   "type": {
@@ -3233,26 +3253,6 @@
                         "ofType": null
                       }
                     }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "startDate",
-                  "description": "List epics within a time frame where epics.start_date is between start_date and end_date parameters (end_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "endDate",
-                  "description": "List epics within a time frame where epics.end_date is between start_date and end_date parameters (start_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
                   },
                   "defaultValue": null
                 }
@@ -3270,6 +3270,26 @@
               "description": "Find epics",
               "args": [
                 {
+                  "name": "startDate",
+                  "description": "List items within a time frame where items.start_date is between startDate and endDate parameters (endDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "endDate",
+                  "description": "List items within a time frame where items.end_date is between startDate and endDate parameters (startDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "iid",
                   "description": "IID of the epic, e.g., \"1\"",
                   "type": {
@@ -3352,26 +3372,6 @@
                         "ofType": null
                       }
                     }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "startDate",
-                  "description": "List epics within a time frame where epics.start_date is between start_date and end_date parameters (end_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "endDate",
-                  "description": "List epics within a time frame where epics.end_date is between start_date and end_date parameters (start_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
                   },
                   "defaultValue": null
                 },
@@ -3529,6 +3529,89 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "milestones",
+              "description": "Find milestones",
+              "args": [
+                {
+                  "name": "startDate",
+                  "description": "List items within a time frame where items.start_date is between startDate and endDate parameters (endDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "endDate",
+                  "description": "List items within a time frame where items.end_date is between startDate and endDate parameters (startDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "state",
+                  "description": "Filter milestones by state",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MilestoneStateEnum",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MilestoneConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -3925,6 +4008,304 @@
         },
         {
           "kind": "OBJECT",
+          "name": "MilestoneConnection",
+          "description": "The connection type for Milestone.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "MilestoneEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Milestone",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MilestoneEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Milestone",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Milestone",
+          "description": "Represents a milestone.",
+          "fields": [
+            {
+              "name": "createdAt",
+              "description": "Timestamp of milestone creation",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "Description of the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "dueDate",
+              "description": "Timestamp of the milestone due date",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "ID of the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "startDate",
+              "description": "Timestamp of the milestone start date",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "state",
+              "description": "State of the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "MilestoneStateEnum",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "title",
+              "description": "Title of the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updatedAt",
+              "description": "Timestamp of last milestone update",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webPath",
+              "description": "Web path of the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "MilestoneStateEnum",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "active",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "closed",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "Epic",
           "description": "Represents an epic.",
           "fields": [
@@ -3950,6 +4331,26 @@
               "name": "children",
               "description": "Children (sub-epics) of the epic",
               "args": [
+                {
+                  "name": "startDate",
+                  "description": "List items within a time frame where items.start_date is between startDate and endDate parameters (endDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "endDate",
+                  "description": "List items within a time frame where items.end_date is between startDate and endDate parameters (startDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
                 {
                   "name": "iid",
                   "description": "IID of the epic, e.g., \"1\"",
@@ -4033,26 +4434,6 @@
                         "ofType": null
                       }
                     }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "startDate",
-                  "description": "List epics within a time frame where epics.start_date is between start_date and end_date parameters (end_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "endDate",
-                  "description": "List epics within a time frame where epics.end_date is between start_date and end_date parameters (start_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
                   },
                   "defaultValue": null
                 },
@@ -9581,151 +9962,6 @@
               "deprecationReason": null
             }
           ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "Milestone",
-          "description": null,
-          "fields": [
-            {
-              "name": "createdAt",
-              "description": "Timestamp of milestone creation",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Time",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "description",
-              "description": "Description of the milestone",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "dueDate",
-              "description": "Timestamp of the milestone due date",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Time",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "ID of the milestone",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "startDate",
-              "description": "Timestamp of the milestone start date",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Time",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "state",
-              "description": "State of the milestone",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "title",
-              "description": "Title of the milestone",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "updatedAt",
-              "description": "Timestamp of last milestone update",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Time",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-
-          ],
-          "enumValues": null,
           "possibleTypes": null
         },
         {

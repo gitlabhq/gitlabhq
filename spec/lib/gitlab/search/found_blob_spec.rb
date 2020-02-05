@@ -156,4 +156,14 @@ describe Gitlab::Search::FoundBlob do
       end
     end
   end
+
+  describe 'policy' do
+    let(:project) { build(:project, :repository) }
+
+    subject { described_class.new(project: project) }
+
+    it 'works with policy' do
+      expect(Ability.allowed?(project.creator, :read_blob, subject)).to be_truthy
+    end
+  end
 end

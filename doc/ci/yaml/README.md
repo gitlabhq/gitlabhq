@@ -2150,6 +2150,11 @@ dashboards. It is not available for download through the web interface.
 
 ##### `artifacts:reports:license_management` **(ULTIMATE)**
 
+CAUTION: **Warning:**
+This artifact is still valid but was **deprecated** in favor of the
+[artifacts:reports:license_scanning](#artifactsreportslicense_scanning-ultimate)
+introduced in GitLab 12.8.
+
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
 The `license_management` report collects [Licenses](../../user/application_security/license_compliance/index.md)
@@ -2158,6 +2163,17 @@ as artifacts.
 The collected License Compliance report will be uploaded to GitLab as an artifact and will
 be summarized in the merge requests and pipeline view. It is also used to provide data for security
 dashboards. It is not available for download through the web interface.
+
+##### `artifacts:reports:license_scanning` **(ULTIMATE)**
+
+> Introduced in GitLab 12.8. Requires GitLab Runner 11.5 and above.
+
+The `license_scanning` report collects [Licenses](../../user/application_security/license_compliance/index.md)
+as artifacts.
+
+The License Compliance report will be uploaded to GitLab as an artifact and will
+be automatically shown in merge requests, pipeline view and provide data for security
+dashboards.
 
 ##### `artifacts:reports:performance` **(PREMIUM)**
 

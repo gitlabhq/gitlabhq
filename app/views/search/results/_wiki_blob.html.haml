@@ -1,5 +1,4 @@
-- project = find_project_for_result_blob(projects, wiki_blob)
-- wiki_blob = parse_search_result(wiki_blob)
+- project = wiki_blob.project
 - wiki_blob_link = project_wiki_path(project, wiki_blob.basename)
 
 = render partial: 'search/results/blob_data', locals: { blob: wiki_blob, project: project, path: wiki_blob.path, blob_link: wiki_blob_link }

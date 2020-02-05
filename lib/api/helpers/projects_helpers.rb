@@ -29,6 +29,7 @@ module API
         optional :snippets_access_level, type: String, values: %w(disabled private enabled), desc: 'Snippets access level. One of `disabled`, `private` or `enabled`'
         optional :pages_access_level, type: String, values: %w(disabled private enabled public), desc: 'Pages access level. One of `disabled`, `private`, `enabled` or `public`'
 
+        optional :emails_disabled, type: Boolean, desc: 'Disable email notifications'
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
         optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diffs discussions on lines changed with a push'
         optional :remove_source_branch_after_merge, type: Boolean, desc: 'Remove the source branch by default after merge'
@@ -87,6 +88,7 @@ module API
 
       def self.update_params_at_least_one_of
         [
+          :autoclose_referenced_issues,
           :auto_devops_enabled,
           :auto_devops_deploy_strategy,
           :auto_cancel_pending_pipelines,
@@ -100,7 +102,7 @@ module API
           :container_expiration_policy_attributes,
           :default_branch,
           :description,
-          :autoclose_referenced_issues,
+          :emails_disabled,
           :issues_access_level,
           :lfs_enabled,
           :merge_requests_access_level,

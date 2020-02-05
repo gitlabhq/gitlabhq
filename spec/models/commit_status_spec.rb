@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe CommitStatus do
-  set(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
 
-  set(:pipeline) do
+  let_it_be(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id)
   end
 

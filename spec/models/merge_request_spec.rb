@@ -1091,8 +1091,8 @@ describe MergeRequest do
   end
 
   describe '#can_remove_source_branch?' do
-    set(:user) { create(:user) }
-    set(:merge_request) { create(:merge_request, :simple) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:merge_request, reload: true) { create(:merge_request, :simple) }
 
     subject { merge_request }
 

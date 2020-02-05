@@ -45,8 +45,8 @@ describe AwardEmoji do
   end
 
   describe 'scopes' do
-    set(:thumbsup) { create(:award_emoji, name: 'thumbsup') }
-    set(:thumbsdown) { create(:award_emoji, name: 'thumbsdown') }
+    let_it_be(:thumbsup) { create(:award_emoji, name: 'thumbsup') }
+    let_it_be(:thumbsdown) { create(:award_emoji, name: 'thumbsdown') }
 
     describe '.upvotes' do
       it { expect(described_class.upvotes).to contain_exactly(thumbsup) }

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Ci::ArtifactBlob do
-  set(:project) { create(:project, :public) }
-  set(:build) { create(:ci_build, :artifacts, project: project) }
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:build) { create(:ci_build, :artifacts, project: project) }
   let(:entry) { build.artifacts_metadata_entry('other_artifacts_0.1.2/another-subdirectory/banana_sample.gif') }
 
   subject { described_class.new(entry) }

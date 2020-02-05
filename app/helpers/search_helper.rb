@@ -86,19 +86,6 @@ module SearchHelper
     }).html_safe
   end
 
-  def find_project_for_result_blob(projects, result)
-    @project
-  end
-
-  # Used in EE
-  def blob_projects(results)
-    nil
-  end
-
-  def parse_search_result(result)
-    result
-  end
-
   # Overriden in EE
   def search_blob_title(project, path)
     path

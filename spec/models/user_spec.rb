@@ -2196,7 +2196,7 @@ describe User, :do_not_mock_admin_mode do
 
   describe '.find_by_private_commit_email' do
     context 'with email' do
-      set(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       it 'returns user through private commit email' do
         expect(described_class.find_by_private_commit_email(user.private_commit_email)).to eq(user)

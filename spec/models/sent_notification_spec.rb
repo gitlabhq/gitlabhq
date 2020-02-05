@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe SentNotification do
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
 
   describe 'validation' do
     describe 'note validity' do

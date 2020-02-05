@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe LfsFileLock do
-  set(:lfs_file_lock) { create(:lfs_file_lock) }
+  let_it_be(:lfs_file_lock, reload: true) { create(:lfs_file_lock) }
   subject { lfs_file_lock }
 
   it { is_expected.to belong_to(:project) }

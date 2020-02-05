@@ -1735,8 +1735,8 @@ type Epic implements Noteable {
     before: String
 
     """
-    List epics within a time frame where epics.end_date is between start_date
-    and end_date parameters (start_date parameter must be present)
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
     """
     endDate: Time
 
@@ -1776,8 +1776,8 @@ type Epic implements Noteable {
     sort: EpicSort
 
     """
-    List epics within a time frame where epics.start_date is between start_date
-    and end_date parameters (end_date parameter must be present)
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
     """
     startDate: Time
 
@@ -2704,8 +2704,8 @@ type Group {
     authorUsername: String
 
     """
-    List epics within a time frame where epics.end_date is between start_date
-    and end_date parameters (start_date parameter must be present)
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
     """
     endDate: Time
 
@@ -2735,8 +2735,8 @@ type Group {
     sort: EpicSort
 
     """
-    List epics within a time frame where epics.start_date is between start_date
-    and end_date parameters (end_date parameter must be present)
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
     """
     startDate: Time
 
@@ -2766,8 +2766,8 @@ type Group {
     before: String
 
     """
-    List epics within a time frame where epics.end_date is between start_date
-    and end_date parameters (start_date parameter must be present)
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
     """
     endDate: Time
 
@@ -2807,8 +2807,8 @@ type Group {
     sort: EpicSort
 
     """
-    List epics within a time frame where epics.start_date is between start_date
-    and end_date parameters (end_date parameter must be present)
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
     """
     startDate: Time
 
@@ -2852,6 +2852,48 @@ type Group {
   Indicates if a group is disabled from getting mentioned
   """
   mentionsDisabled: Boolean
+
+  """
+  Find milestones
+  """
+  milestones(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
+    """
+    endDate: Time
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
+    """
+    startDate: Time
+
+    """
+    Filter milestones by state
+    """
+    state: MilestoneStateEnum
+  ): MilestoneConnection
 
   """
   Name of the namespace
@@ -4457,6 +4499,9 @@ type Metadata {
   version: String!
 }
 
+"""
+Represents a milestone.
+"""
 type Milestone {
   """
   Timestamp of milestone creation
@@ -4486,7 +4531,7 @@ type Milestone {
   """
   State of the milestone
   """
-  state: String!
+  state: MilestoneStateEnum!
 
   """
   Title of the milestone
@@ -4497,6 +4542,51 @@ type Milestone {
   Timestamp of last milestone update
   """
   updatedAt: Time!
+
+  """
+  Web path of the milestone
+  """
+  webPath: String!
+}
+
+"""
+The connection type for Milestone.
+"""
+type MilestoneConnection {
+  """
+  A list of edges.
+  """
+  edges: [MilestoneEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Milestone]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type MilestoneEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Milestone
+}
+
+enum MilestoneStateEnum {
+  active
+  closed
 }
 
 """

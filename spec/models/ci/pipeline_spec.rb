@@ -7,7 +7,7 @@ describe Ci::Pipeline, :mailer do
   include StubRequests
 
   let(:user) { create(:user) }
-  set(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
@@ -231,7 +231,7 @@ describe Ci::Pipeline, :mailer do
   describe '#legacy_detached_merge_request_pipeline?' do
     subject { pipeline.legacy_detached_merge_request_pipeline? }
 
-    set(:merge_request) { create(:merge_request) }
+    let_it_be(:merge_request) { create(:merge_request) }
     let(:ref) { 'feature' }
     let(:target_sha) { nil }
 

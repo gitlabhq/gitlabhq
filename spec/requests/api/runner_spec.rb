@@ -1607,7 +1607,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 it_behaves_like 'successful artifacts upload'
               end
 
-              context 'for file stored remotelly' do
+              context 'for file stored remotely' do
                 let!(:fog_connection) do
                   stub_artifacts_object_storage(direct_upload: true)
                 end
@@ -1890,6 +1890,46 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 expect(response).to have_gitlab_http_status(400)
                 expect(job.reload.job_artifacts_network_referee).to be_nil
               end
+            end
+          end
+        end
+
+        context 'when artifacts already exist for the job' do
+          let(:params) do
+            {
+              artifact_type: :archive,
+              artifact_format: :zip,
+              'file.sha256' => uploaded_sha256
+            }
+          end
+
+          let(:existing_sha256) { '0' * 64 }
+
+          let!(:existing_artifact) do
+            create(:ci_job_artifact, :archive, file_sha256: existing_sha256, job: job)
+          end
+
+          context 'when sha256 is the same of the existing artifact' do
+            let(:uploaded_sha256) { existing_sha256 }
+
+            it 'ignores the new artifact' do
+              upload_artifacts(file_upload, headers_with_token, params)
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(job.reload.job_artifacts_archive).to eq(existing_artifact)
+            end
+          end
+
+          context 'when sha256 is different than the existing artifact' do
+            let(:uploaded_sha256) { '1' * 64 }
+
+            it 'logs and returns an error' do
+              expect(Gitlab::ErrorTracking).to receive(:track_exception)
+
+              upload_artifacts(file_upload, headers_with_token, params)
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(job.reload.job_artifacts_archive).to eq(existing_artifact)
             end
           end
         end

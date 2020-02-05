@@ -54,20 +54,20 @@ describe MergeRequestDiff do
   end
 
   describe '.ids_for_external_storage_migration' do
-    set(:merge_request) { create(:merge_request) }
-    set(:outdated) { merge_request.merge_request_diff }
-    set(:latest) { merge_request.create_merge_request_diff }
+    let_it_be(:merge_request) { create(:merge_request) }
+    let_it_be(:outdated) { merge_request.merge_request_diff }
+    let_it_be(:latest) { merge_request.create_merge_request_diff }
 
-    set(:closed_mr) { create(:merge_request, :closed_last_month) }
+    let_it_be(:closed_mr) { create(:merge_request, :closed_last_month) }
     let(:closed) { closed_mr.merge_request_diff }
 
-    set(:merged_mr) { create(:merge_request, :merged_last_month) }
+    let_it_be(:merged_mr) { create(:merge_request, :merged_last_month) }
     let(:merged) { merged_mr.merge_request_diff }
 
-    set(:recently_closed_mr) { create(:merge_request, :closed) }
+    let_it_be(:recently_closed_mr) { create(:merge_request, :closed) }
     let(:closed_recently) { recently_closed_mr.merge_request_diff }
 
-    set(:recently_merged_mr) { create(:merge_request, :merged) }
+    let_it_be(:recently_merged_mr) { create(:merge_request, :merged) }
     let(:merged_recently) { recently_merged_mr.merge_request_diff }
 
     before do

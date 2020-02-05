@@ -26,7 +26,7 @@ licenses in your project's settings.
 NOTE: **Note:**
 If the license compliance report doesn't have anything to compare to, no information
 will be displayed in the merge request area. That is the case when you add the
-`license_management` job in your `.gitlab-ci.yml` for the first time.
+`license_scanning` job in your `.gitlab-ci.yml` for the first time.
 Consecutive merge requests will have something to compare to and the license
 compliance report will be shown properly.
 
@@ -70,25 +70,38 @@ To run a License Compliance scanning job, you need GitLab Runner with the
 
 ## Configuration
 
-For GitLab 11.9 and later, to enable License Compliance, you must
+For GitLab 12.8 and later, to enable License Compliance, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml)
+[`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml)
 that's provided as a part of your GitLab installation.
+For older versions of GitLab from 11.9 to 12.7, you must
+[include](../../../ci/yaml/README.md#includetemplate) the
+[`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml).
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
+
+NOTE: **Note:**
+In GitLab 13.0, the `License-Management.gitlab-ci.yml` template is scheduled to be removed.
+Use `License-Scanning.gitlab-ci.yml` instead.
 
 Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  template: License-Management.gitlab-ci.yml
+  template: License-Scanning.gitlab-ci.yml
 ```
 
-The included template will create a `license_management` job in your CI/CD pipeline
+The included template will create a `license_scanning` job in your CI/CD pipeline
 and scan your dependencies to find their licenses.
 
+NOTE: **Note:**
+Before GitLab 12.8, the `license_scanning` job was named `license_management`.
+In GitLab 13.0, the `license_management` job is scheduled to be removed completely,
+so you're advised to migrate to the `license_scanning` job and used the new
+`License-Scanning.gitlab-ci.yml` template.
+
 The results will be saved as a
-[License Compliance report artifact](../../../ci/yaml/README.md#artifactsreportslicense_management-ultimate)
+[License Compliance report artifact](../../../ci/yaml/README.md#artifactsreportslicense_scanning-ultimate)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest License Compliance artifact available. Behind the scenes, the
 [GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
@@ -128,7 +141,7 @@ For example:
 
 ```yaml
 include:
-  template: License-Management.gitlab-ci.yml
+  template: License-Scanning.gitlab-ci.yml
 
 variables:
   LICENSE_MANAGEMENT_SETUP_CMD: sh my-custom-install-script.sh
@@ -140,14 +153,14 @@ directory of your project.
 ### Overriding the template
 
 If you want to override the job definition (for example, change properties like
-`variables` or `dependencies`), you need to declare a `license_management` job
+`variables` or `dependencies`), you need to declare a `license_scanning` job
 after the template inclusion and specify any additional keys under it. For example:
 
 ```yaml
 include:
-  template: License-Management.gitlab-ci.yml
+  template: License-Scanning.gitlab-ci.yml
 
-license_management:
+license_scanning:
   variables:
     CI_DEBUG_TRACE: "true"
 ```
@@ -160,9 +173,9 @@ Feel free to use it for the customization of Maven execution. For example:
 
 ```yaml
 include:
-  template: License-Management.gitlab-ci.yml
+  template: License-Scanning.gitlab-ci.yml
 
-license_management:
+license_scanning:
   variables:
     MAVEN_CLI_OPTS: --debug
 ```
@@ -188,11 +201,46 @@ by setting the `LM_PYTHON_VERSION` environment variable to `2`.
 
 ```yaml
 include:
+  template: License-Scanning.gitlab-ci.yml
+
+license_scanning:
+  variables:
+    LM_PYTHON_VERSION: 2
+```
+
+### Migration from `license_management` to `license_scanning`
+
+In GitLab 12.8 a new name for `license_management` job was introduced. This change was made to improve clarity around the purpose of the scan, which is to scan and collect the types of licenses present in a projects dependencies.
+The support of `license_management` is scheduled to be dropped in GitLab 13.0.
+If you're using a custom setup for License Compliance, you're required
+to update your CI config accordingly:
+
+1. Change the CI template to `License-Scanning.gitlab-ci.yml`.
+1. Change the job name to `license_management` (if you mention it in `.gitlab-ci.yml`).
+1. Change the artifact name to `gl-license-scanning-report.json` (if you mention it in `.gitlab-ci.yml`).
+
+For example, the following `.gitlab-ci.yml`:
+
+```yaml
+include:
   template: License-Management.gitlab-ci.yml
 
 license_management:
-  variables:
-    LM_PYTHON_VERSION: 2
+  artifacts:
+    reports:
+      license_management: gl-license-management-report.json
+```
+
+Should be changed to:
+
+```yaml
+include:
+  template: License-Scanning.gitlab-ci.yml
+
+license_scanning:
+  artifacts:
+    reports:
+      license_scanning: gl-license-scanning-report.json
 ```
 
 ## Project policies for License Compliance

@@ -52,17 +52,18 @@ graph TB
   Geo[GitLab Geo Node] -- TCP 22, 80, 443 --> NGINX
 
   GitLabShell --TCP 8080 -->Unicorn["Unicorn (GitLab Rails)"]
-  GitLabShell --> Gitaly
+  GitLabShell --> Praefect
   GitLabShell --> Redis
   Unicorn --> PgBouncer[PgBouncer]
   Unicorn --> Redis
-  Unicorn --> Gitaly
+  Unicorn --> Praefect
   Sidekiq --> Redis
   Sidekiq --> PgBouncer
-  Sidekiq --> Gitaly
+  Sidekiq --> Praefect
   GitLabWorkhorse[GitLab Workhorse] --> Unicorn
   GitLabWorkhorse --> Redis
-  GitLabWorkhorse --> Gitaly
+  GitLabWorkhorse --> Praefect
+  Praefect --> Gitaly
   NGINX --> GitLabWorkhorse
   NGINX -- TCP 8090 --> GitLabPages[GitLab Pages]
   NGINX --> Grafana[Grafana]
@@ -128,6 +129,7 @@ Component statuses are linked to configuration documentation for each component.
 | [Unicorn (GitLab Rails)](#unicorn) | Handles requests for the web interface and API | [✅][unicorn-omnibus] | [✅][unicorn-charts] | [✅][unicorn-charts] | [✅](../user/gitlab_com/index.md#unicorn) | [⚙][unicorn-source] | [✅][gitlab-yml] | CE & EE |
 | [Sidekiq](#sidekiq) | Background jobs processor | [✅][sidekiq-omnibus] | [✅][sidekiq-charts] | [✅](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html) | [✅](../user/gitlab_com/index.md#sidekiq) | [✅][gitlab-yml] | [✅][gitlab-yml] | CE & EE |
 | [Gitaly](#gitaly) | Git RPC service for handling all Git calls made by GitLab | [✅][gitaly-omnibus] | [✅][gitaly-charts] | [✅][gitaly-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][gitaly-source] | ✅ | CE & EE |
+| [Praefect](#praefect) | A transparant proxy between any Git client and Gitaly storage nodes. | [✅][gitaly-omnibus] | [❌][gitaly-charts] | [❌][gitaly-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][praefect-source] | ✅ | CE & EE |
 | [GitLab Workhorse](#gitlab-workhorse) | Smart reverse proxy, handles large HTTP requests | [✅][workhorse-omnibus] | [✅][workhorse-charts] | [✅][workhorse-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][workhorse-source] | ✅ | CE & EE |
 | [GitLab Shell](#gitlab-shell) | Handles `git` over SSH sessions | [✅][shell-omnibus] | [✅][shell-charts] | [✅][shell-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][shell-source] | [✅][gitlab-yml] | CE & EE |
 | [GitLab Pages](#gitlab-pages) | Hosts static websites | [⚙][pages-omnibus] | [❌][pages-charts] | [❌][pages-charts] | [✅](../user/gitlab_com/index.md#gitlab-pages) | [⚙][pages-source] | [⚙][pages-gdk] | CE & EE  |
@@ -219,6 +221,16 @@ Elasticsearch is a distributed RESTful search engine built for the cloud.
 - Process: `gitaly`
 
 Gitaly is a service designed by GitLab to remove our need for NFS for Git storage in distributed deployments of GitLab (think GitLab.com or High Availability Deployments). As of 11.3.0, this service handles all Git level access in GitLab. You can read more about the project [in the project's readme](https://gitlab.com/gitlab-org/gitaly).
+
+#### Praefect
+
+- [Project page](https://gitlab.com/gitlab-org/gitaly/blob/master/README.md)
+- Configuration: [Omnibus][gitaly-omnibus], [Source][praefect-source]
+- Layer: Core Service (Data)
+- Process: `praefect`
+
+Praefect is a transparent proxy between each Git client and the Gitaly coordinating the replication of
+repository updates to secondairy nodes.
 
 #### GitLab Geo
 
@@ -641,6 +653,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [gitaly-omnibus]: ../administration/gitaly/index.md
 [gitaly-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitaly/
 [gitaly-source]: ../install/installation.md#install-gitaly
+[praefect-source]: ../install/installation.md#install-gitaly
 [workhorse-omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
 [workhorse-charts]: https://docs.gitlab.com/charts/charts/gitlab/unicorn/
 [workhorse-source]: ../install/installation.md#install-gitlab-workhorse

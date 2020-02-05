@@ -160,6 +160,11 @@ $ide-commit-header-height: 48px;
   height: 0;
 }
 
+// stylelint-disable selector-class-pattern
+// stylelint-disable selector-max-compound-selectors
+// stylelint-disable stylelint-gitlab/duplicate-selectors
+// stylelint-disable stylelint-gitlab/utility-classes
+
 .blob-editor-container {
   flex: 1;
   height: 0;
@@ -300,6 +305,11 @@ $ide-commit-header-height: 48px;
     }
   }
 }
+
+// stylelint-enable selector-class-pattern
+// stylelint-enable selector-max-compound-selectors
+// stylelint-enable stylelint-gitlab/duplicate-selectors
+// stylelint-enable stylelint-gitlab/utility-classes
 
 .preview-container {
   flex-grow: 1;

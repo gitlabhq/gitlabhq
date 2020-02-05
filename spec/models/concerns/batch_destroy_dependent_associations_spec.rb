@@ -15,7 +15,7 @@ describe BatchDestroyDependentAssociations do
   end
 
   describe '#dependent_associations_to_destroy' do
-    set(:project) { TestProject.new }
+    let_it_be(:project) { TestProject.new }
 
     it 'returns the right associations' do
       expect(project.dependent_associations_to_destroy.map(&:name)).to match_array([:builds])
@@ -23,9 +23,9 @@ describe BatchDestroyDependentAssociations do
   end
 
   describe '#destroy_dependent_associations_in_batches' do
-    set(:project) { create(:project) }
-    set(:build) { create(:ci_build, project: project) }
-    set(:notification_setting) { create(:notification_setting, project: project) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:build) { create(:ci_build, project: project) }
+    let_it_be(:notification_setting) { create(:notification_setting, project: project) }
     let!(:todos) { create(:todo, project: project) }
 
     it 'destroys multiple builds' do

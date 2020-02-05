@@ -59,6 +59,12 @@ class Milestone < ApplicationRecord
     where(project_id: projects).or(where(group_id: groups))
   end
 
+  scope :within_timeframe, -> (start_date, end_date) do
+    where('start_date is not NULL or due_date is not NULL')
+      .where('start_date is NULL or start_date <= ?', end_date)
+      .where('due_date is NULL or due_date >= ?', start_date)
+  end
+
   scope :order_by_name_asc, -> { order(Arel::Nodes::Ascending.new(arel_table[:title].lower)) }
   scope :reorder_by_due_date_asc, -> { reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC')) }
 
