@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180420010616_cleanup_build_stage_migration.rb')
 
-describe CleanupBuildStageMigration, :migration, :sidekiq, :redis do
+describe CleanupBuildStageMigration, :migration, :redis do
   let(:migration) { spy('migration') }
 
   before do

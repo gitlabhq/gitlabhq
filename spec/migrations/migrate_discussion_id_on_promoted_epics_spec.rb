@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190715193142_migrate_discussion_id_on_promoted_epics.rb')
 
-describe MigrateDiscussionIdOnPromotedEpics, :migration, :sidekiq do
+describe MigrateDiscussionIdOnPromotedEpics, :migration do
   let(:migration_class) { described_class::MIGRATION }
   let(:migration_name)  { migration_class.to_s.demodulize }
 

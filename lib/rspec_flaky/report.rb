@@ -10,7 +10,7 @@ module RspecFlaky
   # This class is responsible for loading/saving JSON reports, and pruning
   # outdated examples.
   class Report < SimpleDelegator
-    OUTDATED_DAYS_THRESHOLD = 30
+    OUTDATED_DAYS_THRESHOLD = 7
 
     attr_reader :flaky_examples
 

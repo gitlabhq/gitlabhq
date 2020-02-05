@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage', :orchestrated, :mattermost do
+  context 'Manage', :orchestrated, :mattermost, quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/202069' do
     describe 'Mattermost login' do
       it 'user logs into Mattermost using GitLab OAuth' do
         Flow::Login.sign_in

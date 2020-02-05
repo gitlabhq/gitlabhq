@@ -421,7 +421,7 @@ describe JiraService do
             GlobalID: 'GitLab',
             relationship: 'mentioned on',
             object: {
-              url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{commit_id}",
+              url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/-/commit/#{commit_id}",
               title: "Solved by commit #{commit_id}.",
               icon: { title: 'GitLab', url16x16: favicon_path },
               status: { resolved: true }
@@ -464,7 +464,7 @@ describe JiraService do
         @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
         expect(WebMock).to have_requested(:post, @comment_url).with(
-          body: %r{#{custom_base_url}/#{project.full_path}/commit/#{commit_id}}
+          body: %r{#{custom_base_url}/#{project.full_path}/-/commit/#{commit_id}}
         ).once
       end
 
@@ -479,7 +479,7 @@ describe JiraService do
         @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
         expect(WebMock).to have_requested(:post, @comment_url).with(
-          body: %r{#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{commit_id}}
+          body: %r{#{Gitlab.config.gitlab.url}/#{project.full_path}/-/commit/#{commit_id}}
         ).once
       end
 

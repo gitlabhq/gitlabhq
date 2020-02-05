@@ -311,11 +311,33 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
   end
 
   describe '/api/v4/jobs' do
+    shared_examples 'application context metadata' do |api_route|
+      it 'contains correct context metadata' do
+        # Avoids popping the context from the thread so we can
+        # check its content after the request.
+        allow(Labkit::Context).to receive(:pop)
+
+        send_request
+
+        Labkit::Context.with_context do |context|
+          expected_context = {
+            'meta.caller_id' => api_route,
+            'meta.user' => job.user.username,
+            'meta.project' => job.project.full_path,
+            'meta.root_namespace' => job.project.full_path_components.first
+          }
+
+          expect(context.to_h).to include(expected_context)
+        end
+      end
+    end
+
     let(:root_namespace) { create(:namespace) }
     let(:namespace) { create(:namespace, parent: root_namespace) }
     let(:project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
+    let(:user) { create(:user) }
     let(:job) do
       create(:ci_build, :artifacts, :extended_options,
              pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
@@ -984,10 +1006,16 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
     end
 
     describe 'PUT /api/v4/jobs/:id' do
-      let(:job) { create(:ci_build, :pending, :trace_live, pipeline: pipeline, runner_id: runner.id) }
+      let(:job) do
+        create(:ci_build, :pending, :trace_live, pipeline: pipeline, project: project, user: user, runner_id: runner.id)
+      end
 
       before do
         job.run!
+      end
+
+      it_behaves_like 'application context metadata', '/api/:version/jobs/:id' do
+        let(:send_request) { update_job(state: 'success') }
       end
 
       context 'when status is given' do
@@ -1139,13 +1167,20 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
     end
 
     describe 'PATCH /api/v4/jobs/:id/trace' do
-      let(:job) { create(:ci_build, :running, :trace_live, runner_id: runner.id, pipeline: pipeline) }
+      let(:job) do
+        create(:ci_build, :running, :trace_live,
+               project: project, user: user, runner_id: runner.id, pipeline: pipeline)
+      end
       let(:headers) { { API::Helpers::Runner::JOB_TOKEN_HEADER => job.token, 'Content-Type' => 'text/plain' } }
       let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
       let(:update_interval) { 10.seconds.to_i }
 
       before do
         initial_patch_the_trace
+      end
+
+      it_behaves_like 'application context metadata', '/api/:version/jobs/:id/trace' do
+        let(:send_request) { patch_the_trace }
       end
 
       context 'when request is valid' do
@@ -1399,7 +1434,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
     end
 
     describe 'artifacts' do
-      let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner_id: runner.id) }
+      let(:job) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
       let(:jwt_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
       let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt_token } }
       let(:headers_with_token) { headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.token) }
@@ -1416,6 +1451,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           context 'posting artifacts to running job' do
             subject do
               authorize_artifacts_with_token_in_params
+            end
+
+            it_behaves_like 'application context metadata', '/api/:version/jobs/:id/artifacts/authorize' do
+              let(:send_request) { subject }
             end
 
             shared_examples 'authorizes local file' do
@@ -1571,6 +1610,12 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       end
 
       describe 'POST /api/v4/jobs/:id/artifacts' do
+        it_behaves_like 'application context metadata', '/api/:version/jobs/:id/artifacts' do
+          let(:send_request) do
+            upload_artifacts(file_upload, headers_with_token)
+          end
+        end
+
         context 'when artifacts are being stored inside of tmp path' do
           before do
             # by configuring this path we allow to pass temp file from any path
@@ -1970,6 +2015,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       describe 'GET /api/v4/jobs/:id/artifacts' do
         let(:token) { job.token }
+
+        it_behaves_like 'application context metadata', '/api/:version/jobs/:id/artifacts' do
+          let(:send_request) { download_artifact }
+        end
 
         context 'when job has artifacts' do
           let(:job) { create(:ci_build) }

@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'gitlab:import_export:import rake task', :sidekiq do
+describe 'gitlab:import_export:import rake task' do
   let(:username) { 'root' }
   let(:namespace_path) { username }
   let!(:user) { create(:user, username: username) }

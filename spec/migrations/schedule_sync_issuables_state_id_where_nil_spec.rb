@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190506135400_schedule_sync_issuables_state_id_where_nil')
 
-describe ScheduleSyncIssuablesStateIdWhereNil, :migration, :sidekiq do
+describe ScheduleSyncIssuablesStateIdWhereNil, :migration do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:merge_requests) { table(:merge_requests) }

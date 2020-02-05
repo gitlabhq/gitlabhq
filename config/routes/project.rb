@@ -301,17 +301,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           defaults: { format: 'json' },
           constraints: { template_type: %r{issue|merge_request}, format: 'json' }
 
-      resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
-        member do
-          get :branches
-          get :pipelines
-          post :revert
-          post :cherry_pick
-          get :diff_for_path
-          get :merge_requests
-        end
-      end
-
       resource :pages, only: [:show, :update, :destroy] do
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
           member do

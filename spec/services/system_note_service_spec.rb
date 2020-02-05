@@ -322,7 +322,7 @@ describe SystemNoteService do
       links = []
       if link_exists
         url = if type == 'commit'
-                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/commit/#{commit.id}"
+                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/-/commit/#{commit.id}"
               else
                 "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/-/merge_requests/#{merge_request.iid}"
               end
@@ -462,7 +462,7 @@ describe SystemNoteService do
     describe "existing reference" do
       before do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
-        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.full_path}|http://localhost/#{project.full_path}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
+        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.full_path}|http://localhost/#{project.full_path}/-/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
         allow_next_instance_of(JIRA::Resource::Issue) do |instance|
           allow(instance).to receive(:comments).and_return([OpenStruct.new(body: message)])
         end

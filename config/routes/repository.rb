@@ -10,6 +10,17 @@ resource :repository, only: [:create] do
   end
 end
 
+resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
+  member do
+    get :branches
+    get :pipelines
+    post :revert
+    post :cherry_pick
+    get :diff_for_path
+    get :merge_requests
+  end
+end
+
 # Don't use format parameter as file extension (old 3.0.x behavior)
 # See http://guides.rubyonrails.org/routing.html#route-globbing-and-wildcard-segments
 scope format: false do

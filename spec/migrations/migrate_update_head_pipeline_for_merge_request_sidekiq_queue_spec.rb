@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180307012445_migrate_update_head_pipeline_for_merge_request_sidekiq_queue.rb')
 
-describe MigrateUpdateHeadPipelineForMergeRequestSidekiqQueue, :sidekiq, :redis do
+describe MigrateUpdateHeadPipelineForMergeRequestSidekiqQueue, :redis do
   include Gitlab::Database::MigrationHelpers
   include StubWorker
 

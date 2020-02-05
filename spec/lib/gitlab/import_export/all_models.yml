@@ -215,6 +215,7 @@ ci_pipelines:
 - vulnerabilities_occurrence_pipelines
 - vulnerability_findings
 - pipeline_config
+- security_scans
 pipeline_variables:
 - pipeline
 stages:

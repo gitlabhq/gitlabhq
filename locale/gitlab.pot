@@ -4070,7 +4070,7 @@ msgstr ""
 msgid "ClusterIntegration|Elastic Stack"
 msgstr ""
 
-msgid "ClusterIntegration|Enable Cloud Run on GKE (beta)"
+msgid "ClusterIntegration|Enable Cloud Run for Anthos"
 msgstr ""
 
 msgid "ClusterIntegration|Enable Web Application Firewall"
@@ -8974,9 +8974,6 @@ msgid "Geo|Shards to synchronize"
 msgstr ""
 
 msgid "Geo|Status"
-msgstr ""
-
-msgid "Geo|Sync"
 msgstr ""
 
 msgid "Geo|Synced"

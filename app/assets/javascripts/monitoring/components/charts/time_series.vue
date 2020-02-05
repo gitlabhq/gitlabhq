@@ -209,7 +209,7 @@ export default {
             id,
             createdAt: created_at,
             sha,
-            commitUrl: `${this.projectPath}/commit/${sha}`,
+            commitUrl: `${this.projectPath}/-/commit/${sha}`,
             tag,
             tagUrl: tag ? `${this.tagsPath}/${ref.name}` : null,
             ref: ref.name,

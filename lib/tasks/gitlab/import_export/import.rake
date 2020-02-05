@@ -76,14 +76,23 @@ class GitlabProjectImport
   # synchronously as part of that process.
   # This ensures that all expensive operations do not escape
   # to general Sidekiq clusters/nodes.
-  def run_isolated_sidekiq_job
+  def with_isolated_sidekiq_job
     Sidekiq::Testing.fake! do
       with_request_store do
-        @project = create_project
-
-        execute_sidekiq_job
+        ::Gitlab::GitalyClient.allow_n_plus_1_calls do
+          yield
+        end
       end
+
       true
+    end
+  end
+
+  def run_isolated_sidekiq_job
+    with_isolated_sidekiq_job do
+      @project = create_project
+
+      execute_sidekiq_job
     end
   end
 

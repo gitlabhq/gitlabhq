@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import 'at.js';
 import _ from 'underscore';
+import SidebarMediator from '~/sidebar/sidebar_mediator';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
@@ -53,8 +54,8 @@ export const defaultAutocompleteConfig = {
 };
 
 class GfmAutoComplete {
-  constructor(dataSources) {
-    this.dataSources = dataSources || {};
+  constructor(dataSources = {}) {
+    this.dataSources = dataSources;
     this.cachedData = {};
     this.isLoadingData = {};
   }
@@ -199,6 +200,16 @@ class GfmAutoComplete {
   }
 
   setupMembers($input) {
+    const fetchData = this.fetchData.bind(this);
+    const MEMBER_COMMAND = {
+      ASSIGN: '/assign',
+      UNASSIGN: '/unassign',
+      REASSIGN: '/reassign',
+      CC: '/cc',
+    };
+    let assignees = [];
+    let command = '';
+
     // Team Members
     $input.atwho({
       at: '@',
@@ -225,6 +236,48 @@ class GfmAutoComplete {
       callbacks: {
         ...this.getDefaultCallbacks(),
         beforeSave: membersBeforeSave,
+        matcher(flag, subtext) {
+          const subtextNodes = subtext
+            .split(/\n+/g)
+            .pop()
+            .split(GfmAutoComplete.regexSubtext);
+
+          // Check if @ is followed by '/assign', '/reassign', '/unassign' or '/cc' commands.
+          command = subtextNodes.find(node => {
+            if (Object.values(MEMBER_COMMAND).includes(node)) {
+              return node;
+            }
+            return null;
+          });
+
+          // Cache assignees list for easier filtering later
+          assignees = SidebarMediator.singleton?.store?.assignees?.map(
+            assignee => `${assignee.username} ${assignee.name}`,
+          );
+
+          const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
+          return match && match.length ? match[1] : null;
+        },
+        filter(query, data, searchKey) {
+          if (GfmAutoComplete.isLoading(data)) {
+            fetchData(this.$inputor, this.at);
+            return data;
+          }
+
+          if (data === GfmAutoComplete.defaultLoadingData) {
+            return $.fn.atwho.default.callbacks.filter(query, data, searchKey);
+          }
+
+          if (command === MEMBER_COMMAND.ASSIGN) {
+            // Only include members which are not assigned to Issuable currently
+            return data.filter(member => !assignees.includes(member.search));
+          } else if (command === MEMBER_COMMAND.UNASSIGN) {
+            // Only include members which are assigned to Issuable currently
+            return data.filter(member => assignees.includes(member.search));
+          }
+
+          return data;
+        },
       },
     });
   }

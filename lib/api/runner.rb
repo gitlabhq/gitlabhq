@@ -75,6 +75,13 @@ module API
     end
 
     resource :jobs do
+      before do
+        Gitlab::ApplicationContext.push(
+          user: -> { current_job&.user },
+          project: -> { current_job&.project }
+        )
+      end
+
       desc 'Request a job' do
         success Entities::JobRequest::Response
         http_codes [[201, 'Job was scheduled'],

@@ -1,5 +1,5 @@
 # Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-canonical-gitlab-schedule: &if-canonical-gitlab-schedule
+.if-canonical-dot-com-gitlab-org-group-schedule: &if-canonical-dot-com-gitlab-org-group-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
 # Make sure to update all the similar conditions in other CI config files if you modify these conditions
@@ -86,7 +86,7 @@ package-and-qa:
     - <<: *if-canonical-gitlab-merge-request
       changes: *code-patterns
       when: manual
-    - <<: *if-canonical-gitlab-schedule
+    - <<: *if-canonical-dot-com-gitlab-org-group-schedule
       when: on_success
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   allow_failure: true

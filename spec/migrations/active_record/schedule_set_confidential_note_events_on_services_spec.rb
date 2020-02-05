@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180122154930_schedule_set_confidential_note_events_on_services.rb')
 
-describe ScheduleSetConfidentialNoteEventsOnServices, :migration, :sidekiq do
+describe ScheduleSetConfidentialNoteEventsOnServices, :migration do
   let(:services_table) { table(:services) }
   let(:migration_class) { Gitlab::BackgroundMigration::SetConfidentialNoteEventsOnServices }
   let(:migration_name)  { migration_class.to_s.demodulize }

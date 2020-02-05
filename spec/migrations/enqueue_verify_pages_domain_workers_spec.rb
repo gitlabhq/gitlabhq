@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180216121030_enqueue_verify_pages_domain_workers')
 
-describe EnqueueVerifyPagesDomainWorkers, :sidekiq, :migration do
+describe EnqueueVerifyPagesDomainWorkers, :migration do
   around do |example|
     Sidekiq::Testing.fake! do
       example.run

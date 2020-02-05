@@ -267,7 +267,7 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
         end
 
         it { expect(result[:issue].gitlab_commit).to eq(commit_id) }
-        it { expect(result[:issue].gitlab_commit_path).to eq("/#{project.namespace.path}/#{project.path}/commit/#{commit_id}") }
+        it { expect(result[:issue].gitlab_commit_path).to eq("/#{project.namespace.path}/#{project.path}/-/commit/#{commit_id}") }
       end
     end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180913142237_schedule_digest_personal_access_tokens.rb')
 
-describe ScheduleDigestPersonalAccessTokens, :migration, :sidekiq do
+describe ScheduleDigestPersonalAccessTokens, :migration do
   let(:personal_access_tokens) { table(:personal_access_tokens) }
   let(:users) { table(:users) }
 

@@ -22,7 +22,8 @@ module WorkerAttributes
 
     # EE-specific
     epics: 2,
-    incident_management: 2
+    incident_management: 2,
+    security_scans: 2
   }.stringify_keys.freeze
 
   class_methods do

@@ -1,5 +1,3 @@
-import 'core-js/es/map';
-import 'core-js/es/set';
 import { Sortable } from 'sortablejs';
 import simulateDrag from './simulate_drag';
 import simulateInput from './simulate_input';

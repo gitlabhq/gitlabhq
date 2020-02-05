@@ -61,9 +61,9 @@ describe API::Releases do
       it 'returns rendered helper paths' do
         get api("/projects/#{project.id}/releases", maintainer)
 
-        expect(json_response.first['commit_path']).to eq("/#{release_2.project.full_path}/commit/#{release_2.commit.id}")
+        expect(json_response.first['commit_path']).to eq("/#{release_2.project.full_path}/-/commit/#{release_2.commit.id}")
         expect(json_response.first['tag_path']).to eq("/#{release_2.project.full_path}/-/tags/#{release_2.tag}")
-        expect(json_response.second['commit_path']).to eq("/#{release_1.project.full_path}/commit/#{release_1.commit.id}")
+        expect(json_response.second['commit_path']).to eq("/#{release_1.project.full_path}/-/commit/#{release_1.commit.id}")
         expect(json_response.second['tag_path']).to eq("/#{release_1.project.full_path}/-/tags/#{release_1.tag}")
       end
 
@@ -164,7 +164,7 @@ describe API::Releases do
 
           expect(response).to match_response_schema('public_api/v4/releases')
           expect(json_response.first['assets']['count']).to eq(release.links.count + release.sources.count)
-          expect(json_response.first['commit_path']).to eq("/#{release.project.full_path}/commit/#{release.commit.id}")
+          expect(json_response.first['commit_path']).to eq("/#{release.project.full_path}/-/commit/#{release.commit.id}")
           expect(json_response.first['tag_path']).to eq("/#{release.project.full_path}/-/tags/#{release.tag}")
         end
       end
@@ -214,7 +214,7 @@ describe API::Releases do
         expect(json_response['author']['name']).to eq(maintainer.name)
         expect(json_response['commit']['id']).to eq(commit.id)
         expect(json_response['assets']['count']).to eq(4)
-        expect(json_response['commit_path']).to eq("/#{release.project.full_path}/commit/#{release.commit.id}")
+        expect(json_response['commit_path']).to eq("/#{release.project.full_path}/-/commit/#{release.commit.id}")
         expect(json_response['tag_path']).to eq("/#{release.project.full_path}/-/tags/#{release.tag}")
       end
 

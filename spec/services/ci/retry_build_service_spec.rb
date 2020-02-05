@@ -46,7 +46,7 @@ describe Ci::RetryBuildService do
        sourced_pipelines artifacts_file_store artifacts_metadata_store
        metadata runner_session trace_chunks upstream_pipeline_id
        artifacts_file artifacts_metadata artifacts_size commands
-       resource resource_group_id processed].freeze
+       resource resource_group_id processed security_scans].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }

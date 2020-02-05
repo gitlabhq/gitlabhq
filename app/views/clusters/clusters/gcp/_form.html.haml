@@ -66,7 +66,7 @@
 
     - if Feature.enabled?(:create_cloud_run_clusters, clusterable, default_enabled: true)
       .form-group
-        = provider_gcp_field.check_box :cloud_run, { label: s_('ClusterIntegration|Enable Cloud Run on GKE (beta)'),
+        = provider_gcp_field.check_box :cloud_run, { label: s_('ClusterIntegration|Enable Cloud Run for Anthos'),
           label_class: 'label-bold' }
         .form-text.text-muted
           = s_('ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster.')

@@ -38,13 +38,13 @@ To run rspec tests:
 
 ```shell
 # run all tests
-bundle exec rspec
+bin/rspec
 
 # run test for path
-bundle exec rspec spec/[path]/[to]/[spec].rb
+bin/rspec spec/[path]/[to]/[spec].rb
 ```
 
-Use [guard](https://github.com/guard/guard) to continuously monitor for changes and only run matching tests:
+Use [Guard](https://github.com/guard/guard) to continuously monitor for changes and only run matching tests:
 
 ```shell
 bundle exec guard
@@ -130,7 +130,7 @@ Note: `live_debug` only works on JavaScript enabled specs.
 Run the spec with `CHROME_HEADLESS=0`, e.g.:
 
 ```
-CHROME_HEADLESS=0 bundle exec rspec some_spec.rb
+CHROME_HEADLESS=0 bin/rspec some_spec.rb
 ```
 
 The test will go by quickly, but this will give you an idea of what's happening.
@@ -382,8 +382,8 @@ this trait should be either fixed to not rely on Sidekiq processing jobs, or the
 the processing of background jobs is needed/expected.
 
 NOTE: **Note:**
-The usage of `perform_enqueued_jobs` is currently useless since our
-workers aren't inheriting from `ApplicationJob` / `ActiveJob::Base`.
+The usage of `perform_enqueued_jobs` is only useful for testing delayed mail
+deliveries since our Sidekiq workers aren't inheriting from `ApplicationJob` / `ActiveJob::Base`.
 
 #### DNS
 

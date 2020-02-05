@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20181121111200_schedule_runners_token_encryption')
 
-describe ScheduleRunnersTokenEncryption, :migration, :sidekiq do
+describe ScheduleRunnersTokenEncryption, :migration do
   let(:settings) { table(:application_settings) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

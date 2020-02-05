@@ -3854,6 +3854,10 @@ describe Ci::Build do
     set(:build) { create(:ci_build, project: project) }
     let(:path) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }
 
+    around do |example|
+      Timecop.freeze { example.run }
+    end
+
     before do
       stub_artifacts_object_storage
     end

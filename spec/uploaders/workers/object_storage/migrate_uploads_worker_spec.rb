@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
+describe ObjectStorage::MigrateUploadsWorker do
   shared_context 'sanity_check! fails' do
     before do
       expect(described_class).to receive(:sanity_check!).and_raise(described_class::SanityCheckError)

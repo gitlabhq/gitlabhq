@@ -76,7 +76,7 @@ describe Gitlab::BackgroundMigration do
       end
     end
 
-    context 'when there are scheduled jobs present', :sidekiq, :redis do
+    context 'when there are scheduled jobs present', :redis do
       it 'steals all jobs from the scheduled sets' do
         Sidekiq::Testing.disable! do
           BackgroundMigrationWorker.perform_in(10.minutes, 'Object')
@@ -91,7 +91,7 @@ describe Gitlab::BackgroundMigration do
       end
     end
 
-    context 'when there are enqueued and scheduled jobs present', :sidekiq, :redis do
+    context 'when there are enqueued and scheduled jobs present', :redis do
       it 'steals from the scheduled sets queue first' do
         Sidekiq::Testing.disable! do
           expect(described_class).to receive(:perform)
@@ -107,7 +107,7 @@ describe Gitlab::BackgroundMigration do
       end
     end
 
-    context 'when retry_dead_jobs is true', :sidekiq, :redis do
+    context 'when retry_dead_jobs is true', :redis do
       let(:retry_queue) do
         [double(args: ['Object', [3]], queue: described_class.queue, delete: true)]
       end
@@ -186,7 +186,7 @@ describe Gitlab::BackgroundMigration do
       end
     end
 
-    context 'when there are scheduled jobs present', :sidekiq, :redis do
+    context 'when there are scheduled jobs present', :redis do
       before do
         Sidekiq::Testing.disable! do
           BackgroundMigrationWorker.perform_in(10.minutes, 'Foo')

@@ -3737,6 +3737,15 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
     t.index ["group_id", "token_encrypted"], name: "index_scim_oauth_access_tokens_on_group_id_and_token_encrypted", unique: true
   end
 
+  create_table "security_scans", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.bigint "build_id", null: false
+    t.integer "scan_type", limit: 2, null: false
+    t.index ["build_id", "scan_type"], name: "idx_security_scans_on_build_and_scan_type", unique: true
+    t.index ["scan_type"], name: "idx_security_scans_on_scan_type"
+  end
+
   create_table "self_managed_prometheus_alert_events", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.bigint "environment_id"
@@ -4863,6 +4872,7 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
   add_foreign_key "reviews", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "saml_providers", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "scim_oauth_access_tokens", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "security_scans", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "self_managed_prometheus_alert_events", "environments", on_delete: :cascade
   add_foreign_key "self_managed_prometheus_alert_events", "projects", on_delete: :cascade
   add_foreign_key "sentry_issues", "issues", on_delete: :cascade

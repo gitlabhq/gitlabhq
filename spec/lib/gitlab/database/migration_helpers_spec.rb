@@ -1158,7 +1158,7 @@ describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe 'sidekiq migration helpers', :sidekiq, :redis do
+  describe 'sidekiq migration helpers', :redis do
     let(:worker) do
       Class.new do
         include Sidekiq::Worker
@@ -1221,7 +1221,7 @@ describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe '#bulk_queue_background_migration_jobs_by_range', :sidekiq do
+  describe '#bulk_queue_background_migration_jobs_by_range' do
     context 'when the model has an ID column' do
       let!(:id1) { create(:user).id }
       let!(:id2) { create(:user).id }
@@ -1293,7 +1293,7 @@ describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe '#queue_background_migration_jobs_by_range_at_intervals', :sidekiq do
+  describe '#queue_background_migration_jobs_by_range_at_intervals' do
     context 'when the model has an ID column' do
       let!(:id1) { create(:user).id }
       let!(:id2) { create(:user).id }

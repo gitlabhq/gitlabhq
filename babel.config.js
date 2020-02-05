@@ -6,6 +6,8 @@ const presets = [
   [
     '@babel/preset-env',
     {
+      useBuiltIns: 'usage',
+      corejs: { version: 3, proposals: true },
       modules: false,
       targets: {
         ie: '11',
@@ -51,4 +53,4 @@ if (isJest) {
   plugins.push('babel-plugin-dynamic-import-node');
 }
 
-module.exports = { presets, plugins };
+module.exports = { presets, plugins, sourceType: 'unambiguous' };

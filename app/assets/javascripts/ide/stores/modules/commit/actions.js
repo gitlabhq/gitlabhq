@@ -44,7 +44,7 @@ export const setLastCommitMessage = ({ commit, rootGetters }, data) => {
   const commitMsg = sprintf(
     __('Your changes have been committed. Commit %{commitId} %{commitStats}'),
     {
-      commitId: `<a href="${currentProject.web_url}/commit/${data.short_id}" class="commit-sha">${data.short_id}</a>`,
+      commitId: `<a href="${currentProject.web_url}/-/commit/${data.short_id}" class="commit-sha">${data.short_id}</a>`,
       commitStats,
     },
     false,
@@ -56,7 +56,7 @@ export const setLastCommitMessage = ({ commit, rootGetters }, data) => {
 export const updateFilesAfterCommit = ({ commit, dispatch, rootState, rootGetters }, { data }) => {
   const selectedProject = rootGetters.currentProject;
   const lastCommit = {
-    commit_path: `${selectedProject.web_url}/commit/${data.id}`,
+    commit_path: `${selectedProject.web_url}/-/commit/${data.id}`,
     commit: {
       id: data.id,
       message: data.message,

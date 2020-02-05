@@ -10,7 +10,7 @@ describe Gitlab::UrlBuilder do
 
         url = described_class.build(commit)
 
-        expect(url).to eq "#{Settings.gitlab['url']}/#{commit.project.full_path}/commit/#{commit.id}"
+        expect(url).to eq "#{Settings.gitlab['url']}/#{commit.project.full_path}/-/commit/#{commit.id}"
       end
     end
 
@@ -86,7 +86,7 @@ describe Gitlab::UrlBuilder do
 
           url = described_class.build(note)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{note.project.full_path}/commit/#{note.commit_id}#note_#{note.id}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}"
         end
       end
 
@@ -96,7 +96,7 @@ describe Gitlab::UrlBuilder do
 
           url = described_class.build(note)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{note.project.full_path}/commit/#{note.commit_id}#note_#{note.id}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}"
         end
       end
 

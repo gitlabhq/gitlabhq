@@ -50,6 +50,9 @@ is detected in any other branch (`flaky-examples-check` job). In the future, the
 
 This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/13021>.
 
+If you want to enable retries locally, you can use the `RETRIES` env variable.
+For instance `RETRIES=1 bin/rspec ...` would retry the failing examples once.
+
 [rspec-retry]: https://github.com/NoRedInk/rspec-retry
 [`spec/spec_helper.rb`]: https://gitlab.com/gitlab-org/gitlab/blob/master/spec/spec_helper.rb
 

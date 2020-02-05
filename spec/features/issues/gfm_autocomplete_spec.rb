@@ -282,6 +282,32 @@ describe 'GFM autocomplete', :js do
     end
   end
 
+  context 'assignees' do
+    let(:issue_assignee) { create(:issue, project: project) }
+
+    before do
+      issue_assignee.update(assignees: [user])
+
+      visit project_issue_path(project, issue_assignee)
+
+      wait_for_requests
+    end
+
+    it 'lists users who are currently not assigned to the issue when using /assign' do
+      note = find('#note-body')
+      page.within '.timeline-content-form' do
+        note.native.send_keys('/as')
+      end
+
+      find('.atwho-view li', text: '/assign')
+      note.native.send_keys(:tab)
+
+      wait_for_requests
+
+      expect(find('#at-view-users .atwho-view-ul')).not_to have_content(user.username)
+    end
+  end
+
   context 'labels' do
     it 'opens autocomplete menu for Labels when field starts with text with item escaping HTML characters' do
       create(:label, project: project, title: label_xss_title)

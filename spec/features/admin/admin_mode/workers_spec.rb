@@ -37,7 +37,7 @@ describe 'Admin mode for workers', :do_not_mock_admin_mode, :request_store, :cle
         gitlab_enable_admin_mode_sign_in(user)
       end
 
-      it 'can delete user', :sidekiq, :js do
+      it 'can delete user', :js do
         visit admin_user_path(user_to_delete)
         click_button 'Delete user'
 

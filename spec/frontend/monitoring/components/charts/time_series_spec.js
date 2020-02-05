@@ -385,7 +385,7 @@ describe('Time series component', () => {
 
         describe('when tooltip is showing deployment data', () => {
           const mockSha = 'mockSha';
-          const commitUrl = `${mockProjectDir}/commit/${mockSha}`;
+          const commitUrl = `${mockProjectDir}/-/commit/${mockSha}`;
 
           beforeEach(done => {
             timeSeriesAreaChart.vm.tooltip.isDeployment = true;

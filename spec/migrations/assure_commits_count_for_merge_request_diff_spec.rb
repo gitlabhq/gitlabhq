@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180425131009_assure_commits_count_for_merge_request_diff.rb')
 
-describe AssureCommitsCountForMergeRequestDiff, :migration, :sidekiq, :redis do
+describe AssureCommitsCountForMergeRequestDiff, :migration, :redis do
   let(:migration) { spy('migration') }
 
   before do

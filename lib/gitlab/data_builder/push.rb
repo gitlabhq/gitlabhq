@@ -37,7 +37,7 @@ module Gitlab
               id: "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
               message: "Add simple search to projects in public area",
               timestamp: "2013-05-13T18:18:08+00:00",
-              url: "https://test.example.com/gitlab/gitlab/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+              url: "https://test.example.com/gitlab/gitlab/-/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
               author: {
                 name: "Test User",
                 email: "test@example.com"

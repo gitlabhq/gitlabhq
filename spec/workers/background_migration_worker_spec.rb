@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe BackgroundMigrationWorker, :sidekiq, :clean_gitlab_redis_shared_state do
+describe BackgroundMigrationWorker, :clean_gitlab_redis_shared_state do
   let(:worker) { described_class.new }
 
   describe '.minimum_interval' do

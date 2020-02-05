@@ -98,7 +98,7 @@ describe EventsHelper do
     it 'returns a commit note url' do
       event.target = create(:note_on_commit, note: '+1 from me')
 
-      expect(subject).to eq("#{project_base_url}/commit/#{event.target.commit_id}#note_#{event.target.id}")
+      expect(subject).to eq("#{project_base_url}/-/commit/#{event.target.commit_id}#note_#{event.target.id}")
     end
 
     it 'returns a project snippet note url' do

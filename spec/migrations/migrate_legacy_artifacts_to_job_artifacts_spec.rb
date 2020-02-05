@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180816161409_migrate_legacy_artifacts_to_job_artifacts.rb')
 
-describe MigrateLegacyArtifactsToJobArtifacts, :migration, :sidekiq do
+describe MigrateLegacyArtifactsToJobArtifacts, :migration do
   let(:migration_class) { Gitlab::BackgroundMigration::MigrateLegacyArtifacts }
   let(:migration_name)  { migration_class.to_s.demodulize }
 

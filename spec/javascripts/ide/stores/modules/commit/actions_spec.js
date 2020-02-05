@@ -131,7 +131,7 @@ describe('IDE commit module actions', () => {
         .dispatch('commit/setLastCommitMessage', { short_id: '123' })
         .then(() => {
           expect(store.state.lastCommitMsg).toContain(
-            'Your changes have been committed. Commit <a href="http://testing/commit/123" class="commit-sha">123</a>',
+            'Your changes have been committed. Commit <a href="http://testing/-/commit/123" class="commit-sha">123</a>',
           );
         })
         .then(done)
@@ -149,7 +149,7 @@ describe('IDE commit module actions', () => {
         })
         .then(() => {
           expect(store.state.lastCommitMsg).toBe(
-            'Your changes have been committed. Commit <a href="http://testing/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
+            'Your changes have been committed. Commit <a href="http://testing/-/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
           );
         })
         .then(done)
@@ -407,7 +407,7 @@ describe('IDE commit module actions', () => {
           .dispatch('commit/commitChanges')
           .then(() => {
             expect(store.state.lastCommitMsg).toBe(
-              'Your changes have been committed. Commit <a href="webUrl/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
+              'Your changes have been committed. Commit <a href="webUrl/-/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
             );
 
             done();
