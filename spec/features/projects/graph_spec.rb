@@ -60,7 +60,7 @@ describe 'Project Graph', :js do
     let(:branch_name) { '<h1>evil</h1>' }
 
     before do
-      project.repository.create_branch(branch_name, 'master')
+      project.repository.create_branch(branch_name)
 
       visit charts_project_graph_path(project, branch_name)
     end

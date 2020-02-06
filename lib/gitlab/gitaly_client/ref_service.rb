@@ -151,40 +151,6 @@ module Gitlab
         Gitlab::Git::Branch.new(@repository, encode!(branch.name.dup), branch.target_commit.id, target_commit)
       end
 
-      def create_branch(ref, start_point)
-        request = Gitaly::CreateBranchRequest.new(
-          repository: @gitaly_repo,
-          name: encode_binary(ref),
-          start_point: encode_binary(start_point)
-        )
-
-        response = GitalyClient.call(@repository.storage, :ref_service, :create_branch, request, timeout: GitalyClient.medium_timeout)
-
-        case response.status
-        when :OK
-          branch = response.branch
-          target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
-          Gitlab::Git::Branch.new(@repository, branch.name, branch.target_commit.id, target_commit)
-        when :ERR_INVALID
-          invalid_ref!("Invalid ref name")
-        when :ERR_EXISTS
-          invalid_ref!("Branch #{ref} already exists")
-        when :ERR_INVALID_START_POINT
-          invalid_ref!("Invalid reference #{start_point}")
-        else
-          raise "Unknown response status: #{response.status}"
-        end
-      end
-
-      def delete_branch(branch_name)
-        request = Gitaly::DeleteBranchRequest.new(
-          repository: @gitaly_repo,
-          name: encode_binary(branch_name)
-        )
-
-        GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request, timeout: GitalyClient.medium_timeout)
-      end
-
       def delete_refs(refs: [], except_with_prefixes: [])
         request = Gitaly::DeleteRefsRequest.new(
           repository: @gitaly_repo,

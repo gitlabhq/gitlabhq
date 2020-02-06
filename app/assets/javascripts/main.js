@@ -36,6 +36,7 @@ import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
+import PersistentUserCallout from './persistent_user_callout';
 import { initUserTracking } from './tracking';
 import { __ } from './locale';
 
@@ -107,6 +108,9 @@ function deferredInitialisation() {
   initUserPopovers();
   initUserTracking();
   initBroadcastNotifications();
+
+  const recoverySettingsCallout = document.querySelector('.js-recovery-settings-callout');
+  PersistentUserCallout.factory(recoverySettingsCallout);
 
   if (document.querySelector('.search')) initSearchAutocomplete();
 

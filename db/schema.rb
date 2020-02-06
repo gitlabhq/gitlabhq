@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_04_131054) do
+ActiveRecord::Schema.define(version: 2020_02_05_143231) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -4101,6 +4101,7 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
   create_table "user_callouts", id: :serial, force: :cascade do |t|
     t.integer "feature_name", null: false
     t.integer "user_id", null: false
+    t.datetime_with_timezone "dismissed_at"
     t.index ["user_id", "feature_name"], name: "index_user_callouts_on_user_id_and_feature_name", unique: true
     t.index ["user_id"], name: "index_user_callouts_on_user_id"
   end

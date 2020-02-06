@@ -867,6 +867,7 @@ Information about pagination in a connection.
 | `readCommitStatus` | Boolean! | Indicates the user can perform `read_commit_status` on this resource |
 | `readCycleAnalytics` | Boolean! | Indicates the user can perform `read_cycle_analytics` on this resource |
 | `readDesign` | Boolean! | Indicates the user can perform `read_design` on this resource |
+| `readMergeRequest` | Boolean! | Indicates the user can perform `read_merge_request` on this resource |
 | `readPagesContent` | Boolean! | Indicates the user can perform `read_pages_content` on this resource |
 | `readProject` | Boolean! | Indicates the user can perform `read_project` on this resource |
 | `readProjectMember` | Boolean! | Indicates the user can perform `read_project_member` on this resource |

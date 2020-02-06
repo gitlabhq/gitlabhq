@@ -8,15 +8,19 @@ module Gitlab
     AmbiguousProcessError = Class.new(IdentificationError)
     UnknownProcessError = Class.new(IdentificationError)
 
+    AVAILABLE_RUNTIMES = [
+      :console,
+      :geo_log_cursor,
+      :puma,
+      :rake,
+      :sidekiq,
+      :test_suite,
+      :unicorn
+    ].freeze
+
     class << self
       def identify
-        matches = []
-        matches << :puma if puma?
-        matches << :unicorn if unicorn?
-        matches << :console if console?
-        matches << :sidekiq if sidekiq?
-        matches << :rake if rake?
-        matches << :test_suite if test_suite?
+        matches = AVAILABLE_RUNTIMES.select { |runtime| public_send("#{runtime}?") } # rubocop:disable GitlabSecurity/PublicSend
 
         if matches.one?
           matches.first
@@ -54,6 +58,10 @@ module Gitlab
 
       def console?
         !!defined?(::Rails::Console)
+      end
+
+      def geo_log_cursor?
+        !!defined?(::GeoLogCursorOptionParser)
       end
 
       def web_server?

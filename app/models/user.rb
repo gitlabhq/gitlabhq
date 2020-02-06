@@ -1644,6 +1644,13 @@ class User < ApplicationRecord
   end
   # End of signup_flow experiment methods
 
+  def dismissed_callout?(feature_name:, ignore_dismissal_earlier_than: nil)
+    callouts = self.callouts.with_feature_name(feature_name)
+    callouts = callouts.with_dismissed_after(ignore_dismissal_earlier_than) if ignore_dismissal_earlier_than
+
+    callouts.any?
+  end
+
   # @deprecated
   alias_method :owned_or_masters_groups, :owned_or_maintainers_groups
 

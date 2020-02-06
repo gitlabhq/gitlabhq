@@ -334,17 +334,15 @@ RSpec/UnspecifiedException:
 # Work in progress. See https://gitlab.com/gitlab-org/gitlab/issues/196163
 RSpec/HaveGitlabHttpStatus:
   Enabled: true
+  Exclude:
+    - 'spec/support/matchers/have_gitlab_http_status.rb'
   Include:
-    - 'spec/support/shared_examples/**/*'
-    - 'ee/spec/support/shared_examples/**/*'
+    - 'spec/support/**/*'
+    - 'ee/spec/support/**/*'
     - 'spec/features/**/*'
     - 'ee/spec/features/**/*'
-    - 'spec/controllers/*.rb'
-    - 'ee/spec/controllers/*.rb'
-    - 'spec/controllers/projects/**/*.rb'
-    - 'ee/spec/controllers/projects/**/*.rb'
-    - 'spec/controllers/groups/**/*.rb'
-    - 'ee/spec/controllers/groups/**/*.rb'
+    - 'spec/controllers/**/*'
+    - 'ee/spec/controllers/**/*'
     - 'spec/requests/*.rb'
     - 'ee/spec/requests/*.rb'
 

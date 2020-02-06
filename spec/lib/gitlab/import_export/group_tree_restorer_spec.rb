@@ -10,9 +10,9 @@ describe Gitlab::ImportExport::GroupTreeRestorer do
   describe 'restore group tree' do
     before(:context) do
       # Using an admin for import, so we can check assignment of existing members
-      user = create(:admin, username: 'root')
-      create(:user, username: 'adriene.mcclure')
-      create(:user, username: 'gwendolyn_robel')
+      user = create(:admin, email: 'root@gitlabexample.com')
+      create(:user, email: 'adriene.mcclure@gitlabexample.com')
+      create(:user, email: 'gwendolyn_robel@gitlabexample.com')
 
       RSpec::Mocks.with_temporary_scope do
         @group = create(:group, name: 'group', path: 'group')
@@ -56,7 +56,7 @@ describe Gitlab::ImportExport::GroupTreeRestorer do
       end
 
       it 'has group members' do
-        expect(@group.members.map(&:user).map(&:username)).to contain_exactly('root', 'adriene.mcclure', 'gwendolyn_robel')
+        expect(@group.members.map(&:user).map(&:email)).to contain_exactly('root@gitlabexample.com', 'adriene.mcclure@gitlabexample.com', 'gwendolyn_robel@gitlabexample.com')
       end
     end
   end

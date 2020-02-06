@@ -1,0 +1,6 @@
+.gl-alert.gl-alert-warning.js-recovery-settings-callout{ role: 'alert', data: { feature_id: "account_recovery_regular_check", dismiss_endpoint: user_callouts_path, defer_links: "true" } }
+  %button.js-close.gl-alert-dismiss.gl-cursor-pointer{ type: 'button', 'aria-label' => _('Dismiss') }
+    = sprite_icon('close', size: 16, css_class: 'gl-icon')
+  .gl-alert-body
+    - account_link_start = '<a class="deferred-link" href="%{url}">'.html_safe % { url: profile_account_path }
+    = _("Please ensure your account's %{account_link_start}recovery settings%{account_link_end} are up to date.").html_safe % { account_link_start: account_link_start, account_link_end: '</a>'.html_safe }

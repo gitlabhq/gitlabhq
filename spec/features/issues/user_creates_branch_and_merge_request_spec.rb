@@ -187,7 +187,7 @@ describe 'User creates branch and merge request on issue page', :js do
       let(:branch_name) { "#{issue.iid}-foo" }
 
       before do
-        project.repository.create_branch(branch_name, 'master')
+        project.repository.create_branch(branch_name)
 
         visit project_issue_path(project, issue)
       end

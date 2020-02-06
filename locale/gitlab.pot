@@ -3974,6 +3974,9 @@ msgstr ""
 msgid "ClusterIntegration|Cloud Run"
 msgstr ""
 
+msgid "ClusterIntegration|Cluster being created"
+msgstr ""
+
 msgid "ClusterIntegration|Cluster health"
 msgstr ""
 
@@ -13856,6 +13859,9 @@ msgid "Please create a username with only alphanumeric characters."
 msgstr ""
 
 msgid "Please enable and migrate to hashed storage to avoid security issues and ensure data integrity. %{migrate_link}"
+msgstr ""
+
+msgid "Please ensure your account's %{account_link_start}recovery settings%{account_link_end} are up to date."
 msgstr ""
 
 msgid "Please enter a non-negative number"

@@ -74,7 +74,7 @@ describe PushEvent do
       create(:push_event_payload, event: event4, ref: 'baz', action: :removed)
       create(:push_event_payload, event: event5, ref: 'baz', ref_type: :tag)
 
-      project.repository.create_branch('bar', 'master')
+      project.repository.create_branch('bar')
 
       create(
         :merge_request,
@@ -83,7 +83,7 @@ describe PushEvent do
         source_branch: 'bar'
       )
 
-      project.repository.create_branch('qux', 'master')
+      project.repository.create_branch('qux')
 
       create(
         :merge_request,

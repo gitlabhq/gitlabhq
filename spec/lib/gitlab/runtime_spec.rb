@@ -3,6 +3,23 @@
 require 'spec_helper'
 
 describe Gitlab::Runtime do
+  shared_examples "valid runtime" do |runtime, max_threads|
+    it "identifies itself" do
+      expect(subject.identify).to eq(runtime)
+      expect(subject.public_send("#{runtime}?")).to be(true)
+    end
+
+    it "does not identify as others" do
+      (described_class::AVAILABLE_RUNTIMES - [runtime]).each do |runtime|
+        expect(subject.public_send("#{runtime}?")).to eq(false)
+      end
+    end
+
+    it "reports its maximum concurrency" do
+      expect(subject.max_threads).to eq(max_threads)
+    end
+  end
+
   before do
     allow(described_class).to receive(:process_name).and_return('ruby')
     stub_rails_env('production')
@@ -27,117 +44,42 @@ describe Gitlab::Runtime do
 
   context "puma" do
     let(:puma_type) { double('::Puma') }
-    let(:options) do
-      {
-        max_threads: 2
-      }
-    end
 
     before do
       stub_const('::Puma', puma_type)
-      allow(puma_type).to receive_message_chain(:cli_config, :options).and_return(options)
+      allow(puma_type).to receive_message_chain(:cli_config, :options).and_return(max_threads: 2)
     end
 
-    it "identifies itself" do
-      expect(subject.identify).to eq(:puma)
-      expect(subject.puma?).to be(true)
-    end
-
-    it "does not identify as others" do
-      expect(subject.unicorn?).to be(false)
-      expect(subject.sidekiq?).to be(false)
-      expect(subject.console?).to be(false)
-      expect(subject.rake?).to be(false)
-      expect(subject.test_suite?).to be(false)
-    end
-
-    it "reports its maximum concurrency" do
-      expect(subject.max_threads).to eq(2)
-    end
+    it_behaves_like "valid runtime", :puma, 2
   end
 
   context "unicorn" do
-    let(:unicorn_type) { Module.new }
-    let(:unicorn_server_type) { Class.new }
-
     before do
-      stub_const('::Unicorn', unicorn_type)
-      stub_const('::Unicorn::HttpServer', unicorn_server_type)
+      stub_const('::Unicorn', Module.new)
+      stub_const('::Unicorn::HttpServer', Class.new)
     end
 
-    it "identifies itself" do
-      expect(subject.identify).to eq(:unicorn)
-      expect(subject.unicorn?).to be(true)
-    end
-
-    it "does not identify as others" do
-      expect(subject.puma?).to be(false)
-      expect(subject.sidekiq?).to be(false)
-      expect(subject.console?).to be(false)
-      expect(subject.rake?).to be(false)
-      expect(subject.test_suite?).to be(false)
-    end
-
-    it "reports its maximum concurrency" do
-      expect(subject.max_threads).to eq(1)
-    end
+    it_behaves_like "valid runtime", :unicorn, 1
   end
 
   context "sidekiq" do
     let(:sidekiq_type) { double('::Sidekiq') }
-    let(:options) do
-      {
-        concurrency: 2
-      }
-    end
 
     before do
       stub_const('::Sidekiq', sidekiq_type)
       allow(sidekiq_type).to receive(:server?).and_return(true)
-      allow(sidekiq_type).to receive(:options).and_return(options)
+      allow(sidekiq_type).to receive(:options).and_return(concurrency: 2)
     end
 
-    it "identifies itself" do
-      expect(subject.identify).to eq(:sidekiq)
-      expect(subject.sidekiq?).to be(true)
-    end
-
-    it "does not identify as others" do
-      expect(subject.unicorn?).to be(false)
-      expect(subject.puma?).to be(false)
-      expect(subject.console?).to be(false)
-      expect(subject.rake?).to be(false)
-      expect(subject.test_suite?).to be(false)
-    end
-
-    it "reports its maximum concurrency" do
-      expect(subject.max_threads).to eq(2)
-    end
+    it_behaves_like "valid runtime", :sidekiq, 2
   end
 
   context "console" do
-    let(:console_type) { double('::Rails::Console') }
-
     before do
-      stub_const('::Rails::Console', console_type)
+      stub_const('::Rails::Console', double('::Rails::Console'))
     end
 
-    it "identifies itself" do
-      expect(subject.identify).to eq(:console)
-      expect(subject.console?).to be(true)
-    end
-
-    it "does not identify as others" do
-      expect(subject.unicorn?).to be(false)
-      expect(subject.sidekiq?).to be(false)
-      expect(subject.puma?).to be(false)
-      expect(subject.rake?).to be(false)
-      expect(subject.test_suite?).to be(false)
-    end
-
-    it "reports its maximum concurrency" do
-      expect(subject.max_threads).to eq(1)
-    end
+    it_behaves_like "valid runtime", :console, 1
   end
 
   context "test suite" do
@@ -145,20 +87,14 @@ describe Gitlab::Runtime do
       stub_rails_env('test')
     end
 
-    it "identifies itself" do
-      expect(subject.identify).to eq(:test_suite)
-      expect(subject.test_suite?).to be(true)
+    it_behaves_like "valid runtime", :test_suite, 1
+  end
+
+  context "geo log cursor" do
+    before do
+      stub_const('::GeoLogCursorOptionParser', double('::GeoLogCursorOptionParser'))
     end
 
-    it "does not identify as others" do
-      expect(subject.unicorn?).to be(false)
-      expect(subject.sidekiq?).to be(false)
-      expect(subject.rake?).to be(false)
-      expect(subject.puma?).to be(false)
-    end
-
-    it "reports its maximum concurrency" do
-      expect(subject.max_threads).to eq(1)
-    end
+    it_behaves_like "valid runtime", :geo_log_cursor, 1
   end
 end

@@ -2254,6 +2254,24 @@
               "deprecationReason": null
             },
             {
+              "name": "readMergeRequest",
+              "description": "Indicates the user can perform `read_merge_request` on this resource",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "readPagesContent",
               "description": "Indicates the user can perform `read_pages_content` on this resource",
               "args": [

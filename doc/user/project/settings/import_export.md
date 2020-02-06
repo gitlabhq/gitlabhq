@@ -26,7 +26,7 @@ Note the following:
   and are deleted every 24 hours by a specific worker.
 - Group members are exported as project members, as long as the user has
   maintainer or admin access to the group where the exported project lives. An admin
-  in the import side is required to map the users, based on email or username.
+  in the import side is required to map the users, based on email.
   Otherwise, a supplementary comment is left to mention the original author and
   the MRs, notes, or issues will be owned by the importer.
 - Project members with owner access will be imported as maintainers.

@@ -82,7 +82,7 @@ module Gitlab
       end
 
       def find_user_query(member)
-        user_arel[:email].eq(member['user']['email']).or(user_arel[:username].eq(member['user']['username']))
+        user_arel[:email].eq(member['user']['email'])
       end
 
       def user_arel

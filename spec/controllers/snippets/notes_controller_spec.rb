@@ -22,7 +22,7 @@ describe Snippets::NotesController do
       end
 
       it "returns status 200" do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it "returns not empty array of notes" do
@@ -39,7 +39,7 @@ describe Snippets::NotesController do
         it "returns status 404" do
           get :index, params: { snippet_id: internal_snippet }
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -51,7 +51,7 @@ describe Snippets::NotesController do
         it "returns status 200" do
           get :index, params: { snippet_id: internal_snippet }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -65,7 +65,7 @@ describe Snippets::NotesController do
         it "returns status 404" do
           get :index, params: { snippet_id: private_snippet }
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -77,7 +77,7 @@ describe Snippets::NotesController do
         it "returns status 404" do
           get :index, params: { snippet_id: private_snippet }
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -91,7 +91,7 @@ describe Snippets::NotesController do
         it "returns status 200" do
           get :index, params: { snippet_id: private_snippet }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it "returns 1 note" do
@@ -135,7 +135,7 @@ describe Snippets::NotesController do
       it 'returns status 302' do
         post :create, params: request_params
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
 
       it 'creates the note' do
@@ -158,7 +158,7 @@ describe Snippets::NotesController do
       it 'returns status 302' do
         post :create, params: request_params
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
 
       it 'creates the note' do
@@ -186,7 +186,7 @@ describe Snippets::NotesController do
         it 'returns status 404' do
           post :create, params: request_params
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
 
         it 'does not create the note' do
@@ -204,7 +204,7 @@ describe Snippets::NotesController do
           it 'returns status 302' do
             post :create, params: request_params
 
-            expect(response).to have_gitlab_http_status(302)
+            expect(response).to have_gitlab_http_status(:found)
           end
 
           it 'creates the note on the public snippet' do
@@ -222,7 +222,7 @@ describe Snippets::NotesController do
         it 'returns status 302' do
           post :create, params: request_params
 
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
 
         it 'creates the note' do
@@ -249,7 +249,7 @@ describe Snippets::NotesController do
       it "returns status 200" do
         delete :destroy, params: request_params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it "deletes the note" do
@@ -277,7 +277,7 @@ describe Snippets::NotesController do
       it "returns status 404" do
         delete :destroy, params: request_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it "does not update the note" do
@@ -299,7 +299,7 @@ describe Snippets::NotesController do
     it "toggles the award emoji" do
       expect { subject }.to change { note.award_emoji.count }.by(1)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it "removes the already awarded emoji when it exists" do
@@ -307,7 +307,7 @@ describe Snippets::NotesController do
 
       expect { subject }.to change { AwardEmoji.count }.by(-1)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 end

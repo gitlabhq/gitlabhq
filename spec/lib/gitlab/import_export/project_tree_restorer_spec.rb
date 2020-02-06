@@ -13,8 +13,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       # Using an admin for import, so we can check assignment of existing members
       @user = create(:admin)
       @existing_members = [
-        create(:user, username: 'bernard_willms'),
-        create(:user, username: 'saul_will')
+        create(:user, email: 'bernard_willms@gitlabexample.com'),
+        create(:user, email: 'saul_will@gitlabexample.com')
       ]
 
       RSpec::Mocks.with_temporary_scope do

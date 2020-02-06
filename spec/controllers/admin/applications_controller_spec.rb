@@ -16,7 +16,7 @@ describe Admin::ApplicationsController do
     it 'renders the application form' do
       get :index
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 

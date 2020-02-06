@@ -47,7 +47,7 @@ describe Admin::UsersController do
     it 'deletes user and ghosts their contributions' do
       delete :destroy, params: { id: user.username }, format: :json
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(User.exists?(user.id)).to be_falsy
       expect(issue.reload.author).to be_ghost
     end
@@ -55,7 +55,7 @@ describe Admin::UsersController do
     it 'deletes the user and their contributions when hard delete is specified' do
       delete :destroy, params: { id: user.username, hard_delete: true }, format: :json
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(User.exists?(user.id)).to be_falsy
       expect(Issue.exists?(issue.id)).to be_falsy
     end
@@ -399,7 +399,7 @@ describe Admin::UsersController do
       it "shows error page" do
         post :impersonate, params: { id: user.username }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

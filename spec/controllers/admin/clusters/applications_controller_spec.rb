@@ -36,7 +36,7 @@ describe Admin::Clusters::ApplicationsController do
         expect(ClusterInstallAppWorker).to receive(:perform_async).with(application, anything).once
 
         expect { subject }.to change { current_application.count }
-        expect(response).to have_http_status(:no_content)
+        expect(response).to have_gitlab_http_status(:no_content)
         expect(cluster.application_helm).to be_scheduled
       end
 
@@ -47,7 +47,7 @@ describe Admin::Clusters::ApplicationsController do
 
         it 'return 404' do
           expect { subject }.not_to change { current_application.count }
-          expect(response).to have_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -55,7 +55,7 @@ describe Admin::Clusters::ApplicationsController do
         let(:application) { 'unkwnown-app' }
 
         it 'return 404' do
-          is_expected.to have_http_status(:not_found)
+          is_expected.to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -65,7 +65,7 @@ describe Admin::Clusters::ApplicationsController do
         end
 
         it 'returns 400' do
-          is_expected.to have_http_status(:bad_request)
+          is_expected.to have_gitlab_http_status(:bad_request)
         end
       end
     end
@@ -99,7 +99,7 @@ describe Admin::Clusters::ApplicationsController do
         it "schedules an application update" do
           expect(ClusterPatchAppWorker).to receive(:perform_async).with(application.name, anything).once
 
-          is_expected.to have_http_status(:no_content)
+          is_expected.to have_gitlab_http_status(:no_content)
 
           expect(cluster.application_cert_manager).to be_scheduled
         end
@@ -110,13 +110,13 @@ describe Admin::Clusters::ApplicationsController do
           cluster.destroy!
         end
 
-        it { is_expected.to have_http_status(:not_found) }
+        it { is_expected.to have_gitlab_http_status(:not_found) }
       end
 
       context 'when application is unknown' do
         let(:application_name) { 'unkwnown-app' }
 
-        it { is_expected.to have_http_status(:not_found) }
+        it { is_expected.to have_gitlab_http_status(:not_found) }
       end
 
       context 'when application is already scheduled' do
@@ -124,7 +124,7 @@ describe Admin::Clusters::ApplicationsController do
           application.make_scheduled!
         end
 
-        it { is_expected.to have_http_status(:bad_request) }
+        it { is_expected.to have_gitlab_http_status(:bad_request) }
       end
     end
 

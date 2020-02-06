@@ -24,7 +24,7 @@ describe Admin::ImpersonationsController do
         it "responds with status 404" do
           delete :destroy
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
 
         it "doesn't sign us in" do
@@ -48,7 +48,7 @@ describe Admin::ImpersonationsController do
           it "responds with status 404" do
             delete :destroy
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
 
           it "doesn't sign us in as the impersonator" do
@@ -67,7 +67,7 @@ describe Admin::ImpersonationsController do
             it "responds with status 404" do
               delete :destroy
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
 
             it "doesn't sign us in as the impersonator" do

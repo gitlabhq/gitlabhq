@@ -403,7 +403,7 @@ describe MarkupHelper do
         it 'logs the error' do
           expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
             instance_of(StandardError),
-            project_id: project.id, file_name: 'foo.md', context: context
+            project_id: project.id, file_name: 'foo.md'
           )
 
           subject

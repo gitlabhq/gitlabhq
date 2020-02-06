@@ -6,6 +6,14 @@
 .if-canonical-gitlab-merge-request: &if-canonical-gitlab-merge-request
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
 
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-not-ee: &if-not-ee
+  if: '$CI_PROJECT_NAME !~ /^gitlab(-ee)?$/'
+
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-default-refs: &if-default-refs
+  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG'
+
 # Make sure to update all the similar patterns in other CI config files if you modify these patterns
 .code-patterns: &code-patterns
   - ".gitlab/ci/**/*"
@@ -27,12 +35,43 @@
   - ".dockerignore"
   - "qa/**/*"
 
+# Make sure to update all the similar patterns in other CI config files if you modify these patterns
+.code-qa-patterns: &code-qa-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
+  # QA changes
+  - ".dockerignore"
+  - "qa/**/*"
+
+.qa:rules:ee-and-foss:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-qa-patterns
+      when: on_success
+
+.qa:rules:ee-only:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-qa-patterns
+      when: on_success
+
 .qa-job-base:
   extends:
     - .default-tags
     - .default-retry
-    - .default-only
-    - .only:changes-code-qa
   stage: test
   dependencies: []
   cache:
@@ -46,26 +85,32 @@
     - bundle check
 
 qa:internal:
-  extends: .qa-job-base
+  extends:
+    - .qa-job-base
+    - .qa:rules:ee-and-foss
   script:
     - bundle exec rspec
 
 qa:internal-foss:
   extends:
     - .qa-job-base
-    - .only-ee-as-if-foss
+    - .qa:rules:ee-only
+    - .as-if-foss
   script:
     - bundle exec rspec
 
 qa:selectors:
-  extends: .qa-job-base
+  extends:
+    - .qa-job-base
+    - .qa:rules:ee-and-foss
   script:
     - bundle exec bin/qa Test::Sanity::Selectors
 
 qa:selectors-foss:
   extends:
     - qa:selectors
-    - .only-ee-as-if-foss
+    - .qa:rules:ee-only
+    - .as-if-foss
 
 .package-and-qa-base:
   image: ruby:2.6-alpine

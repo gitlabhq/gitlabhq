@@ -36,7 +36,7 @@ describe Admin::RequestsProfilesController do
       it 'renders the data' do
         subject
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to eq(sample_data)
       end
     end
@@ -54,7 +54,7 @@ describe Admin::RequestsProfilesController do
       it 'renders the data' do
         subject
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to eq(sample_data)
       end
     end

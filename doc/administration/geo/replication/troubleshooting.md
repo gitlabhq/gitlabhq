@@ -727,7 +727,7 @@ For example:
 Geo database has an outdated FDW remote schema. It contains 229 of 236 expected tables. Please refer to Geo Troubleshooting.
 ```
 
-To resolve this, run the following command:
+To resolve this, run the following command on the **secondary**:
 
 ```shell
 sudo gitlab-rake geo:db:refresh_foreign_tables

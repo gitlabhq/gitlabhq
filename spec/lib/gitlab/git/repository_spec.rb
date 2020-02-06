@@ -310,8 +310,8 @@ describe Gitlab::Git::Repository, :seed_helper do
 
       with_them do
         before do
-          repository.create_branch('left-branch', 'master')
-          repository.create_branch('right-branch', 'master')
+          repository.create_branch('left-branch')
+          repository.create_branch('right-branch')
 
           left.times do
             new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'left-branch', 'some more content for a', 'some stuff')
@@ -350,8 +350,8 @@ describe Gitlab::Git::Repository, :seed_helper do
 
       with_them do
         before do
-          repository.create_branch('left-branch', 'master')
-          repository.create_branch('right-branch', 'master')
+          repository.create_branch('left-branch')
+          repository.create_branch('right-branch')
 
           left.times do
             new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'left-branch', 'some more content for a', 'some stuff')
@@ -420,55 +420,6 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
-  describe "#delete_branch" do
-    let(:repository) { mutable_repository }
-
-    after do
-      ensure_seeds
-    end
-
-    it "removes the branch from the repo" do
-      branch_name = "to-be-deleted-soon"
-
-      repository.create_branch(branch_name)
-      expect(repository_rugged.branches[branch_name]).not_to be_nil
-
-      repository.delete_branch(branch_name)
-      expect(repository_rugged.branches[branch_name]).to be_nil
-    end
-
-    context "when branch does not exist" do
-      it "raises a DeleteBranchError exception" do
-        expect { repository.delete_branch("this-branch-does-not-exist") }.to raise_error(Gitlab::Git::Repository::DeleteBranchError)
-      end
-    end
-  end
-
-  describe "#create_branch" do
-    let(:repository) { mutable_repository }
-
-    after do
-      ensure_seeds
-    end
-
-    it "creates a new branch" do
-      expect(repository.create_branch('new_branch', 'master')).not_to be_nil
-    end
-
-    it "creates a new branch with the right name" do
-      expect(repository.create_branch('another_branch', 'master').name).to eq('another_branch')
-    end
-
-    it "fails if we create an existing branch" do
-      repository.create_branch('duplicated_branch', 'master')
-      expect {repository.create_branch('duplicated_branch', 'master')}.to raise_error("Branch duplicated_branch already exists")
-    end
-
-    it "fails if we create a branch from a non existing ref" do
-      expect {repository.create_branch('branch_based_in_wrong_ref', 'master_2_the_revenge')}.to raise_error("Invalid reference master_2_the_revenge")
-    end
-  end
-
   describe '#delete_refs' do
     let(:repository) { mutable_repository }
 
@@ -506,8 +457,8 @@ describe Gitlab::Git::Repository, :seed_helper do
     let(:utf8_branch) { 'branch-é' }
 
     before do
-      repository.create_branch(new_branch, 'master')
-      repository.create_branch(utf8_branch, 'master')
+      repository.create_branch(new_branch)
+      repository.create_branch(utf8_branch)
     end
 
     after do
@@ -609,32 +560,30 @@ describe Gitlab::Git::Repository, :seed_helper do
   describe '#search_files_by_content' do
     let(:repository) { mutable_repository }
     let(:repository_rugged) { mutable_repository_rugged }
+    let(:ref) { 'search-files-by-content-branch' }
+    let(:content) { 'foobarbazmepmep' }
 
     before do
-      repository.create_branch('search-files-by-content-branch', 'master')
-      new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'search-files-by-content-branch', 'committing something', 'search-files-by-content change')
-      new_commit_edit_new_file_on_branch(repository_rugged, 'anotherfile', 'search-files-by-content-branch', 'committing something', 'search-files-by-content change')
+      repository.create_branch(ref)
+      new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', ref, 'committing something', content)
+      new_commit_edit_new_file_on_branch(repository_rugged, 'anotherfile', ref, 'committing something', content)
     end
 
     after do
       ensure_seeds
     end
 
-    shared_examples 'search files by content' do
-      it 'has 2 items' do
-        expect(search_results.size).to eq(2)
-      end
-
-      it 'has the correct matching line' do
-        expect(search_results).to contain_exactly("search-files-by-content-branch:encoding/CHANGELOG\u00001\u0000search-files-by-content change\n",
-                                                  "search-files-by-content-branch:anotherfile\u00001\u0000search-files-by-content change\n")
-      end
+    subject do
+      repository.search_files_by_content(content, ref)
     end
 
-    it_should_behave_like 'search files by content' do
-      let(:search_results) do
-        repository.search_files_by_content('search-files-by-content', 'search-files-by-content-branch')
-      end
+    it 'has 2 items' do
+      expect(subject.size).to eq(2)
+    end
+
+    it 'has the correct matching line' do
+      expect(subject).to contain_exactly("#{ref}:encoding/CHANGELOG\u00001\u0000#{content}\n",
+                                         "#{ref}:anotherfile\u00001\u0000#{content}\n")
     end
   end
 
@@ -1116,7 +1065,7 @@ describe Gitlab::Git::Repository, :seed_helper do
 
       before do
         create_remote_branch('joe', 'remote_branch', 'master')
-        repository.create_branch('local_branch', 'master')
+        repository.create_branch('local_branch')
       end
 
       after do
@@ -1142,7 +1091,7 @@ describe Gitlab::Git::Repository, :seed_helper do
 
       before do
         create_remote_branch('joe', 'remote_branch', 'master')
-        repository.create_branch('local_branch', 'master')
+        repository.create_branch('local_branch')
       end
 
       after do
@@ -1192,7 +1141,7 @@ describe Gitlab::Git::Repository, :seed_helper do
 
     context 'when no branch names are specified' do
       before do
-        repository.create_branch('identical', 'master')
+        repository.create_branch('identical')
       end
 
       after do
@@ -1303,7 +1252,7 @@ describe Gitlab::Git::Repository, :seed_helper do
       let(:branch_name) { "ʕ•ᴥ•ʔ" }
 
       before do
-        repository.create_branch(branch_name, "master")
+        repository.create_branch(branch_name)
       end
 
       after do
@@ -1447,7 +1396,7 @@ describe Gitlab::Git::Repository, :seed_helper do
 
     before do
       create_remote_branch('joe', 'remote_branch', 'master')
-      repository.create_branch('local_branch', 'master')
+      repository.create_branch('local_branch')
     end
 
     after do

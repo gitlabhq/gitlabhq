@@ -14,7 +14,7 @@ describe Oauth::ApplicationsController do
       it 'shows list of applications' do
         get :index
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'redirects back to profile page if OAuth applications are disabled' do
@@ -22,7 +22,7 @@ describe Oauth::ApplicationsController do
 
         get :index
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -30,7 +30,7 @@ describe Oauth::ApplicationsController do
       it 'creates an application' do
         post :create, params: oauth_params
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(oauth_application_path(Doorkeeper::Application.last))
       end
 
@@ -39,7 +39,7 @@ describe Oauth::ApplicationsController do
 
         post :create, params: oauth_params
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(profile_path)
       end
 

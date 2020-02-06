@@ -4157,6 +4157,40 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
+  describe '#dismissed_callout?' do
+    subject(:user) { create(:user) }
+
+    let(:feature_name) { UserCallout.feature_names.keys.first }
+
+    context 'when no callout dismissal record exists' do
+      it 'returns false when no ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout?(feature_name: feature_name)).to eq false
+      end
+
+      it 'returns false when ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
+      end
+    end
+
+    context 'when dismissed callout exists' do
+      before do
+        create(:user_callout, user: user, feature_name: feature_name, dismissed_at: 4.months.ago)
+      end
+
+      it 'returns true when no ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout?(feature_name: feature_name)).to eq true
+      end
+
+      it 'returns true when ignore_dismissal_earlier_than is earlier than dismissed_at' do
+        expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 6.months.ago)).to eq true
+      end
+
+      it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
+        expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
+      end
+    end
+  end
+
   describe 'bots & humans' do
     it 'returns corresponding users' do
       human = create(:user)

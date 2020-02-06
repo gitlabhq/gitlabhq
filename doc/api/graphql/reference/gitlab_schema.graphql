@@ -5832,6 +5832,11 @@ type ProjectPermissions {
   readDesign: Boolean!
 
   """
+  Indicates the user can perform `read_merge_request` on this resource
+  """
+  readMergeRequest: Boolean!
+
+  """
   Indicates the user can perform `read_pages_content` on this resource
   """
   readPagesContent: Boolean!

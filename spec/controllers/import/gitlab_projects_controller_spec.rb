@@ -17,14 +17,14 @@ describe Import::GitlabProjectsController do
         post :create, params: { namespace_id: namespace.id, path: '/test', file: file }
 
         expect(flash[:alert]).to start_with('Project could not be imported')
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
 
       it 'redirects with an error when a relative path is used' do
         post :create, params: { namespace_id: namespace.id, path: '../test', file: file }
 
         expect(flash[:alert]).to start_with('Project could not be imported')
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
 
@@ -33,7 +33,7 @@ describe Import::GitlabProjectsController do
         post :create, params: { namespace_id: namespace.id, path: 'test', file: file }
 
         expect(flash[:notice]).to include('is being imported')
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
 
