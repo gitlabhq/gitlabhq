@@ -27,6 +27,8 @@ class NotificationSetting < ApplicationRecord
       .where.not(projects: { pending_delete: true })
   end
 
+  scope :preload_source_route, -> { preload(source: [:route]) }
+
   EMAIL_EVENTS = [
     :new_release,
     :new_note,

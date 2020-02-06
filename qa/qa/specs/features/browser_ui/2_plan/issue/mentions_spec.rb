@@ -8,9 +8,9 @@ module QA
 
         @user = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
 
-        project = Resource::Project.fabricate_via_api! do |resource|
-          resource.name = 'project-to-test-mention'
-          resource.visibility = 'private'
+        project = Resource::Project.fabricate_via_api! do |project|
+          project.name = 'project-to-test-mention'
+          project.visibility = 'private'
         end
 
         project.add_member(@user)

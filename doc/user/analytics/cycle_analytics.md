@@ -183,7 +183,7 @@ Feature.disable(:cycle_analytics_scatterplot_enabled)
 
 ### Disabling chart median line
 
-This chart median line is enabled by default. If you have a self-managed instance, an
+This chart's median line is enabled by default. If you have a self-managed instance, an
 administrator can open a Rails console and disable it with the following command:
 
 ```ruby

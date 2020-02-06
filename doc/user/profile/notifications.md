@@ -68,7 +68,7 @@ Notification scope is applied in order of precedence (highest to lowest):
 
 You can select a notification level for each project. This can be useful if you need to closely monitor activity in select projects.
 
-![notification settings](img/notification_project_settings.png)
+![notification settings](img/notification_project_settings_v12_8.png)
 
 To select a notification level for a project, use either of these methods:
 
@@ -87,7 +87,7 @@ Or:
 
 You can select a notification level and email address for each group.
 
-![notification settings](img/notification_group_settings.png)
+![notification settings](img/notification_group_settings_v12_8.png)
 
 ##### Group notification level
 

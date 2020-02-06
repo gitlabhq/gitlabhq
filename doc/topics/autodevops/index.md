@@ -171,6 +171,16 @@ To make full use of Auto DevOps, you will need:
   To get response metrics (in addition to system metrics), you need to
   [configure Prometheus to monitor NGINX](../../user/project/integrations/prometheus_library/nginx_ingress.md#configuring-nginx-ingress-monitoring).
 
+- **cert-manager** (optional, for TLS/HTTPS)
+
+  To enable HTTPS endpoints for your application, you need to install cert-manager,
+  a native Kubernetes certificate management controller that helps with issuing certificates.
+  Installing cert-manager on your cluster will issue a certificate by
+  [Let’s Encrypt](https://letsencrypt.org/) and ensure that certificates are valid and up-to-date.
+  If you have configured GitLab's Kubernetes integration, you can deploy it to
+  your cluster by installing the
+  [GitLab-managed app for cert-manager](../../user/clusters/applications.md#cert-manager).
+  
 If you do not have Kubernetes or Prometheus installed, then Auto Review Apps,
 Auto Deploy, and Auto Monitoring will be silently skipped.
 

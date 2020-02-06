@@ -228,3 +228,6 @@ who are aware of the risks.
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/ch-testing-with-openssl.html)
   - [Strace zine](https://wizardzines.com/zines/strace/)
+- GitLab.com-specific resources:
+  - [Group SAML/SCIM setup](troubleshooting/group_saml_scim.md)
+  

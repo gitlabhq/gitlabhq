@@ -265,6 +265,10 @@ Specific attention should be paid to:
 - The presence of a `X509Certificate`, which we require to verify the response signature.
 - The `SubjectConfirmation` and `Conditions`, which can cause errors if misconfigured.
 
+### Verifying configuration
+
+For convenience, we've included some [example resources](../../../administration/troubleshooting/group_saml_scim.md) used by our Support Team. While they may help you verify the SAML app configuration, they are not guaranteed to reflect the current state of third-party products.
+
 ### Verifying NameID
 
 In troubleshooting the Group SAML setup, any authenticated user can use the API to verify the NameID GitLab already has linked to the user by visiting [https://gitlab.com/api/v4/user](https://gitlab.com/api/v4/user) and checking the `extern_uid` under identities.

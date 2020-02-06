@@ -21,8 +21,8 @@ module QA
 
         Flow::Login.sign_in
 
-        project = Resource::Project.fabricate_via_api! do |resource|
-          resource.name = 'xss-test-for-mentions-project'
+        project = Resource::Project.fabricate_via_api! do |project|
+          project.name = 'xss-test-for-mentions-project'
         end
 
         Flow::Project.add_member(project: project, username: user.username)

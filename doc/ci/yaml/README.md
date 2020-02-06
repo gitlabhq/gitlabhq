@@ -172,6 +172,8 @@ job:
   script: "bundle exec rspec"
 ```
 
+[YAML anchors for scripts](#yaml-anchors-for-script) are available.
+
 This parameter can also contain several commands using an array:
 
 ```yaml
@@ -197,25 +199,6 @@ job:
   script:
     - false && true; exit_code=$?
     - if [ $exit_code -ne 0 ]; then echo "Previous command failed"; fi;
-```
-
-#### YAML anchors for `script`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/23005) in GitLab 12.5.
-
-You can use [YAML anchors](#anchors) with scripts, which makes it possible to
-include a predefined list of commands in multiple jobs.
-
-For example:
-
-```yaml
-.something: &something
-- echo 'something'
-
-job_name:
-  script:
-    - *something
-    - echo 'this is the script'
 ```
 
 ### `image`
@@ -317,32 +300,7 @@ job:
     - execute this after my script
 ```
 
-#### YAML anchors for `before_script` and `after_script`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/23005) in GitLab 12.5.
-
-You can use [YAML anchors](#anchors) with `before_script` and `after_script`,
-which makes it possible to include a predefined list of commands in multiple
-jobs.
-
-Example:
-
-```yaml
-.something_before: &something_before
-- echo 'something before'
-
-.something_after: &something_after
-- echo 'something after'
-
-
-job_name:
-  before_script:
-    - *something_before
-  script:
-    - echo 'this is the script'
-  after_script:
-    - *something_after
-```
+[YAML anchors for `before_script` and `after_script`](#yaml-anchors-for-before_script-and-after_script) are available.
 
 ### `stages`
 
@@ -3378,30 +3336,9 @@ you can set in `.gitlab-ci.yml`, there are also the so called
 [Variables](../variables/README.md#gitlab-cicd-environment-variables)
 which can be set in GitLab's UI.
 
+[YAML anchors for variables](#yaml-anchors-for-variables) are available.
+
 Learn more about [variables and their priority][variables].
-
-#### YAML anchors for variables
-
-[YAML anchors](#anchors) can be used with `variables`, to easily repeat assignment
-of variables across multiple jobs. It can also enable more flexibility when a job
-requires a specific `variables` block that would otherwise override the global variables.
-
-In the example below, we will override the `GIT_STRATEGY` variable without affecting
-the use of the `SAMPLE_VARIABLE` variable:
-
-```yaml
-# global variables
-variables: &global-variables
-  SAMPLE_VARIABLE: sample_variable_value
-
-# a job that needs to set the GIT_STRATEGY variable, yet depend on global variables
-job_no_git_strategy:
-  stage: cleanup
-  variables:
-    <<: *global-variables
-    GIT_STRATEGY: none
-  script: echo $SAMPLE_VARIABLE
-```
 
 #### Git strategy
 
@@ -3879,6 +3816,75 @@ You can see that the hidden keys are conveniently used as templates.
 NOTE: **Note:**
 You can't use YAML anchors across multiple files when leveraging the [`include`](#include)
 feature. Anchors are only valid within the file they were defined in.
+
+#### YAML anchors for `before_script` and `after_script`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/23005) in GitLab 12.5.
+
+You can use [YAML anchors](#anchors) with `before_script` and `after_script`,
+which makes it possible to include a predefined list of commands in multiple
+jobs.
+
+Example:
+
+```yaml
+.something_before: &something_before
+- echo 'something before'
+
+.something_after: &something_after
+- echo 'something after'
+
+
+job_name:
+  before_script:
+    - *something_before
+  script:
+    - echo 'this is the script'
+  after_script:
+    - *something_after
+```
+
+#### YAML anchors for `script`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/23005) in GitLab 12.5.
+
+You can use [YAML anchors](#anchors) with scripts, which makes it possible to
+include a predefined list of commands in multiple jobs.
+
+For example:
+
+```yaml
+.something: &something
+- echo 'something'
+
+job_name:
+  script:
+    - *something
+    - echo 'this is the script'
+```
+
+#### YAML anchors for variables
+
+[YAML anchors](#anchors) can be used with `variables`, to easily repeat assignment
+of variables across multiple jobs. It can also enable more flexibility when a job
+requires a specific `variables` block that would otherwise override the global variables.
+
+In the example below, we will override the `GIT_STRATEGY` variable without affecting
+the use of the `SAMPLE_VARIABLE` variable:
+
+```yaml
+# global variables
+variables: &global-variables
+  SAMPLE_VARIABLE: sample_variable_value
+
+# a job that needs to set the GIT_STRATEGY variable, yet depend on global variables
+job_no_git_strategy:
+  stage: cleanup
+  variables:
+    <<: *global-variables
+    GIT_STRATEGY: none
+  script: echo $SAMPLE_VARIABLE
+```
 
 ## Triggers
 
