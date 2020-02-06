@@ -13,6 +13,10 @@ describe 'File blob', :js do
     wait_for_requests
   end
 
+  before do
+    stub_feature_flags(code_navigation: false)
+  end
+
   context 'Ruby file' do
     before do
       visit_blob('files/ruby/popen.rb')

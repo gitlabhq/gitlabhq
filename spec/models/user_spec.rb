@@ -20,6 +20,9 @@ describe User, :do_not_mock_admin_mode do
 
   describe 'delegations' do
     it { is_expected.to delegate_method(:path).to(:namespace).with_prefix }
+
+    it { is_expected.to delegate_method(:tab_width).to(:user_preference) }
+    it { is_expected.to delegate_method(:tab_width=).to(:user_preference).with_arguments(5) }
   end
 
   describe 'associations' do
@@ -4124,6 +4127,43 @@ describe User, :do_not_mock_admin_mode do
       it 'is false for any attribute' do
         expect(subject.read_only_attribute?(:email)).to be_falsey
       end
+    end
+  end
+
+  describe 'internal methods' do
+    let_it_be(:user) { create(:user) }
+    let!(:ghost) { described_class.ghost }
+    let!(:alert_bot) { described_class.alert_bot }
+    let!(:non_internal) { [user] }
+    let!(:internal) { [ghost, alert_bot] }
+
+    it 'returns non internal users' do
+      expect(described_class.internal).to eq(internal)
+      expect(internal.all?(&:internal?)).to eq(true)
+    end
+
+    it 'returns internal users' do
+      expect(described_class.non_internal).to eq(non_internal)
+      expect(non_internal.all?(&:internal?)).to eq(false)
+    end
+
+    describe '#bot?' do
+      it 'marks bot users' do
+        expect(user.bot?).to eq(false)
+        expect(ghost.bot?).to eq(false)
+
+        expect(alert_bot.bot?).to eq(true)
+      end
+    end
+  end
+
+  describe 'bots & humans' do
+    it 'returns corresponding users' do
+      human = create(:user)
+      bot = create(:user, :bot)
+
+      expect(described_class.humans).to match_array([human])
+      expect(described_class.bots).to match_array([bot])
     end
   end
 end

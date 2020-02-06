@@ -515,6 +515,8 @@ class ProjectPolicy < BasePolicy
   end
 
   def lookup_access_level!
+    return ::Gitlab::Access::REPORTER if alert_bot?
+
     # NOTE: max_member_access has its own cache
     project.team.max_member_access(@user.id)
   end

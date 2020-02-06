@@ -4,6 +4,7 @@ module QA
   context 'Verify', :docker do
     describe 'Pipeline creation and processing' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
+      let(:max_wait) { 30 }
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -68,11 +69,11 @@ module QA
         Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
 
         Page::Project::Pipeline::Show.perform do |pipeline|
-          expect(pipeline).to be_running(wait: 30)
-          expect(pipeline).to have_build('test-success', status: :success)
-          expect(pipeline).to have_build('test-failure', status: :failed)
-          expect(pipeline).to have_build('test-tags', status: :pending)
-          expect(pipeline).to have_build('test-artifacts', status: :success)
+          expect(pipeline).to be_running(wait: max_wait)
+          expect(pipeline).to have_build('test-success', status: :success, wait: max_wait)
+          expect(pipeline).to have_build('test-failure', status: :failed, wait: max_wait)
+          expect(pipeline).to have_build('test-tags', status: :pending, wait: max_wait)
+          expect(pipeline).to have_build('test-artifacts', status: :success, wait: max_wait)
         end
       end
     end

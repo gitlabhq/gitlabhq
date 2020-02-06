@@ -69,6 +69,15 @@
       = f.check_box :show_whitespace_in_diffs, class: 'form-check-input'
       = f.label :show_whitespace_in_diffs, class: 'form-check-label' do
         = s_('Preferences|Show whitespace changes in diffs')
+    .form-group
+      = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
+      = f.number_field :tab_width,
+                       class: 'form-control',
+                       min: Gitlab::TabWidth::MIN,
+                       max: Gitlab::TabWidth::MAX,
+                       required: true
+      .form-text.text-muted
+        = s_('Preferences|Must be a number between %{min} and %{max}') % { min: Gitlab::TabWidth::MIN, max: Gitlab::TabWidth::MAX }
 
   .col-sm-12
     %hr

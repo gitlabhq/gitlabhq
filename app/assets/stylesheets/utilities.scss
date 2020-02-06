@@ -28,6 +28,13 @@
   }
 }
 
+@for $i from 1 through 12 {
+  #{'.tab-width-#{$i}'} {
+    -moz-tab-size: $i;
+    tab-size: $i;
+  }
+}
+
 .border-width-1px { border-width: 1px; }
 .border-bottom-width-1px { border-bottom-width: 1px; }
 .border-style-dashed { border-style: dashed; }

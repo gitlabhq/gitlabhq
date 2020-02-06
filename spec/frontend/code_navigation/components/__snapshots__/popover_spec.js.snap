@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Code navigation popover component renders popover 1`] = `
+<div
+  class="popover code-navigation-popover popover-font-size-normal gl-popover bs-popover-bottom show"
+  style="left: 0px; top: 0px;"
+>
+  <div
+    class="arrow"
+    style="left: 0px;"
+  />
+   
+  <div
+    class="border-bottom"
+  >
+    <pre
+      class="border-0 bg-transparent m-0 code highlight"
+    >
+      console.log
+    </pre>
+  </div>
+   
+  <div
+    class="popover-body"
+  >
+    <gl-button-stub
+      class="w-100"
+      href="http://test.com"
+      size="md"
+      target="_blank"
+      variant="default"
+    >
+      
+      Go to definition
+    
+    </gl-button-stub>
+  </div>
+</div>
+`;

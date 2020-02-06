@@ -706,6 +706,10 @@ module ProjectsHelper
     Feature.enabled?(:vue_file_list, @project)
   end
 
+  def native_code_navigation_enabled?(project)
+    Feature.enabled?(:code_navigation, project)
+  end
+
   def show_visibility_confirm_modal?(project)
     project.unlink_forks_upon_visibility_decrease_enabled? && project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
   end

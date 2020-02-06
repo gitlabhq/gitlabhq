@@ -5,7 +5,7 @@
 The Dependency list allows you to see your project's dependencies, and key
 details about them, including their known vulnerabilities. To see it,
 navigate to **Security & Compliance > Dependency List** in your project's
-sidebar.
+sidebar. This information is sometimes referred to as a Software Bill of Materials or SBoM / BOM.
 
 ## Requirements
 

@@ -465,7 +465,7 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["created_at", "author_id"], name: "analytics_index_audit_events_on_created_at_and_author_id"
-    t.index ["entity_id", "entity_type"], name: "index_audit_events_on_entity_id_and_entity_type"
+    t.index ["entity_id", "entity_type", "id"], name: "index_audit_events_on_entity_id_and_entity_type_and_id_desc", order: { id: :desc }
   end
 
   create_table "award_emoji", id: :serial, force: :cascade do |t|
@@ -1977,6 +1977,15 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
     t.date "marked_for_deletion_on", null: false
     t.index ["marked_for_deletion_on"], name: "index_group_deletion_schedules_on_marked_for_deletion_on"
     t.index ["user_id"], name: "index_group_deletion_schedules_on_user_id"
+  end
+
+  create_table "group_deploy_tokens", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.bigint "group_id", null: false
+    t.bigint "deploy_token_id", null: false
+    t.index ["deploy_token_id"], name: "index_group_deploy_tokens_on_deploy_token_id"
+    t.index ["group_id", "deploy_token_id"], name: "index_group_deploy_tokens_on_group_and_deploy_token_ids", unique: true
   end
 
   create_table "group_group_links", force: :cascade do |t|
@@ -3735,6 +3744,7 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
     t.string "sso_url", null: false
     t.boolean "enforced_sso", default: false, null: false
     t.boolean "enforced_group_managed_accounts", default: false, null: false
+    t.boolean "prohibited_outer_forks", default: false, null: false
     t.index ["group_id"], name: "index_saml_providers_on_group_id"
   end
 
@@ -4133,6 +4143,7 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
     t.boolean "sourcegraph_enabled"
     t.boolean "setup_for_company"
     t.boolean "render_whitespace_in_code"
+    t.integer "tab_width", limit: 2
     t.index ["user_id"], name: "index_user_preferences_on_user_id", unique: true
   end
 
@@ -4691,6 +4702,8 @@ ActiveRecord::Schema.define(version: 2020_02_04_131054) do
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "group_deletion_schedules", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "group_deletion_schedules", "users", name: "fk_11e3ebfcdd", on_delete: :cascade
+  add_foreign_key "group_deploy_tokens", "deploy_tokens", on_delete: :cascade
+  add_foreign_key "group_deploy_tokens", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "group_group_links", "namespaces", column: "shared_group_id", on_delete: :cascade
   add_foreign_key "group_group_links", "namespaces", column: "shared_with_group_id", on_delete: :cascade
   add_foreign_key "identities", "saml_providers", name: "fk_aade90f0fc", on_delete: :cascade

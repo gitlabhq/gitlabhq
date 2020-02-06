@@ -54,11 +54,17 @@ const populateUserInfo = user => {
   );
 };
 
+const initializedPopovers = new Map();
+
 export default (elements = document.querySelectorAll('.js-user-link')) => {
   const userLinks = Array.from(elements);
+  const UserPopoverComponent = Vue.extend(UserPopover);
 
   return userLinks.map(el => {
-    const UserPopoverComponent = Vue.extend(UserPopover);
+    if (initializedPopovers.has(el)) {
+      return initializedPopovers.get(el);
+    }
+
     const user = {
       location: null,
       bio: null,
@@ -72,6 +78,8 @@ export default (elements = document.querySelectorAll('.js-user-link')) => {
         user,
       },
     });
+
+    initializedPopovers.set(el, renderedPopover);
 
     renderedPopover.$mount();
 

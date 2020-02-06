@@ -1,0 +1,5 @@
+---
+title: Update deploy token architecture to introduce group-level deploy tokens.
+merge_request: 23460
+author:
+type: added

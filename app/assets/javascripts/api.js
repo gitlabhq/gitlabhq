@@ -45,6 +45,7 @@ const Api = {
   mergeRequestsPipeline: '/api/:version/projects/:id/merge_requests/:merge_request_iid/pipelines',
   adminStatisticsPath: '/api/:version/application/statistics',
   pipelineSinglePath: '/api/:version/projects/:id/pipelines/:pipeline_id',
+  lsifPath: '/api/:version/projects/:id/commits/:commit_id/lsif/info',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -455,6 +456,14 @@ const Api = {
       .replace(':pipeline_id', encodeURIComponent(pipelineId));
 
     return axios.get(url);
+  },
+
+  lsifData(projectPath, commitId, path) {
+    const url = Api.buildUrl(this.lsifPath)
+      .replace(':id', encodeURIComponent(projectPath))
+      .replace(':commit_id', commitId);
+
+    return axios.get(url, { params: { path } });
   },
 
   buildUrl(url) {

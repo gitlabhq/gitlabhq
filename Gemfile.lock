@@ -1283,6 +1283,7 @@ DEPENDENCIES
   lograge (~> 0.5)
   loofah (~> 2.2)
   lru_redux
+  mail (= 2.7.1)
   mail_room (~> 0.10.0)
   marginalia (~> 1.8.0)
   memory_profiler (~> 0.9)

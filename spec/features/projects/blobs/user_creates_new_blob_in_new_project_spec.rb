@@ -8,6 +8,7 @@ describe 'User creates blob in new project', :js do
 
   shared_examples 'creating a file' do
     before do
+      stub_feature_flags(code_navigation: false)
       sign_in(user)
       visit project_path(project)
     end

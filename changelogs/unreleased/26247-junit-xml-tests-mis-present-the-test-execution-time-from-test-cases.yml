@@ -1,0 +1,5 @@
+---
+title: Label MR test modal execution time as seconds
+merge_request: 24019
+author:
+type: fixed

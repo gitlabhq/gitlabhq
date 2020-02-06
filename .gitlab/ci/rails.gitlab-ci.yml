@@ -68,6 +68,7 @@ setup-test-env:
       - rspec_profiling/
       - tmp/capybara/
       - tmp/memory_test/
+      - junit_rspec.xml
     reports:
       junit: junit_rspec.xml
 

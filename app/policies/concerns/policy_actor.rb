@@ -33,6 +33,10 @@ module PolicyActor
   def can_create_group
     false
   end
+
+  def alert_bot?
+    false
+  end
 end
 
 PolicyActor.prepend_if_ee('EE::PolicyActor')

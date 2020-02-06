@@ -38,6 +38,13 @@ describe('User Popovers', () => {
     expect(document.querySelectorAll(selector).length).toBe(popovers.length);
   });
 
+  it('does not initialize the user popovers twice for the same element', () => {
+    const newPopovers = initUserPopovers(document.querySelectorAll(selector));
+    const samePopovers = popovers.every((popover, index) => newPopovers[index] === popover);
+
+    expect(samePopovers).toBe(true);
+  });
+
   describe('when user link emits mouseenter event', () => {
     let userLink;
 

@@ -1,0 +1,5 @@
+---
+title: Fix quoted-printable encoding for unicode and newlines in mails
+merge_request: 24153
+author: Diego Louzán
+type: fixed

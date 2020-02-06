@@ -11,6 +11,7 @@ module Gitlab
               cert: certificate.cert,
               key: certificate.key,
               data: message.encoded)
+
             signed_email = Mail.new(signed_message)
 
             overwrite_body(message, signed_email)

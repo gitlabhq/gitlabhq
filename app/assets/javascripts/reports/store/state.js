@@ -48,7 +48,7 @@ export default () => ({
       execution_time: {
         value: null,
         text: s__('Reports|Execution time'),
-        type: fieldTypes.miliseconds,
+        type: fieldTypes.seconds,
       },
       failure: {
         value: null,

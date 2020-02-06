@@ -454,6 +454,12 @@ CI/CD configuration file to turn it on. Results are available in the SAST report
 
 GitLab currently includes [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) checks.
 
+NOTE: **Note:**
+The secrets analyzer will ignore "Password in URL" vulnerabilities if the password begins
+with a dollar sign (`$`) as this likely indicates the password being used is an environment
+variable. For example, `https://username:$password@example.com/path/to/repo` will not be
+detected, whereas `https://username:password@example.com/path/to/repo` would be detected.
+
 ## Security Dashboard
 
 The Security Dashboard is a good place to get an overview of all the security

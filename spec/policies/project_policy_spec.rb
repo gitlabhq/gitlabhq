@@ -559,4 +559,18 @@ describe ProjectPolicy do
       end
     end
   end
+
+  context 'alert bot' do
+    let(:current_user) { User.alert_bot }
+
+    subject { described_class.new(current_user, project) }
+
+    it { is_expected.to be_allowed(:reporter_access) }
+
+    context 'within a private project' do
+      let(:project) { create(:project, :private) }
+
+      it { is_expected.to be_allowed(:admin_issue) }
+    end
+  end
 end

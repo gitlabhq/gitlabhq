@@ -484,7 +484,7 @@ msgstr ""
 msgid "%{username}'s avatar"
 msgstr ""
 
-msgid "%{value} ms"
+msgid "%{value} s"
 msgstr ""
 
 msgid "%{verb} %{time_spent_value} spent time."
@@ -1668,6 +1668,9 @@ msgid "An error occurred fetching the approvers for the new rule."
 msgstr ""
 
 msgid "An error occurred fetching the dropdown data."
+msgstr ""
+
+msgid "An error occurred loading code navigation"
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -9297,6 +9300,9 @@ msgstr ""
 msgid "Go to commits"
 msgstr ""
 
+msgid "Go to definition"
+msgstr ""
+
 msgid "Go to environments"
 msgstr ""
 
@@ -13963,6 +13969,9 @@ msgstr ""
 msgid "Preferences|Layout width"
 msgstr ""
 
+msgid "Preferences|Must be a number between %{min} and %{max}"
+msgstr ""
+
 msgid "Preferences|Navigation theme"
 msgstr ""
 
@@ -13979,6 +13988,9 @@ msgid "Preferences|Sourcegraph"
 msgstr ""
 
 msgid "Preferences|Syntax highlighting theme"
+msgstr ""
+
+msgid "Preferences|Tab width"
 msgstr ""
 
 msgid "Preferences|These settings will update how dates and times are displayed for you."
@@ -19225,6 +19237,9 @@ msgid "This GitLab instance does not provide any shared Runners yet. Instance ad
 msgstr ""
 
 msgid "This GitLab instance is licensed at the %{insufficient_license} tier. Geo is only available for users who have at least a Premium license."
+msgstr ""
+
+msgid "This Project is currently archived and read-only. Please unarchive the project first if you want to resume Pull mirroring"
 msgstr ""
 
 msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."

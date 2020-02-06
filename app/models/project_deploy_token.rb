@@ -7,4 +7,8 @@ class ProjectDeployToken < ApplicationRecord
   validates :deploy_token, presence: true
   validates :project, presence: true
   validates :deploy_token_id, uniqueness: { scope: [:project_id] }
+
+  def has_access_to?(requested_project)
+    requested_project == project
+  end
 end
