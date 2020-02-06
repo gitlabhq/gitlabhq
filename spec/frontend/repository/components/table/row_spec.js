@@ -95,6 +95,22 @@ describe('Repository table row component', () => {
     });
   });
 
+  it('pushes new route for directory with hash', () => {
+    factory({
+      id: '1',
+      sha: '123',
+      path: 'test#',
+      type: 'tree',
+      currentPath: '/',
+    });
+
+    return vm.vm.$nextTick().then(() => {
+      vm.trigger('click');
+
+      expect($router.push).toHaveBeenCalledWith({ path: '/-/tree/master/test%23' });
+    });
+  });
+
   it.each`
     type        | pushes
     ${'tree'}   | ${true}

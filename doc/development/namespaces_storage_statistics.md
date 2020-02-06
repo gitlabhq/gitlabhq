@@ -131,7 +131,7 @@ WHERE namespace_id IN (
 
 Even though this approach would make aggregating much easier, it has some major downsides:
 
-- We'd have to migrate **all namespaces** by adding and filling a new column. Because of the size of the table, dealing with time/cost will not be great. The background migration will take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/29772>.
+- We'd have to migrate **all namespaces** by adding and filling a new column. Because of the size of the table, dealing with time/cost will not be great. The background migration will take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29772>.
 - Background migration has to be shipped one release before, delaying the functionality by another milestone.
 
 ### Attempt E (final): Update the namespace storage statistics in async way
@@ -172,7 +172,7 @@ performant approach of aggregating the root namespaces.
 All the details regarding this use case can be found on:
 
 - <https://gitlab.com/gitlab-org/gitlab-foss/issues/62214>
-- Merge Request with the implementation: <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/28996>
+- Merge Request with the implementation: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28996>
 
 Performance of the namespace storage statistics were measured in staging and production (GitLab.com). All results were posted
 on <https://gitlab.com/gitlab-org/gitlab-foss/issues/64092>: No problem has been reported so far.

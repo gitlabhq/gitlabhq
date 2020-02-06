@@ -301,7 +301,7 @@ end
 ## Descriptions
 
 All fields and arguments
-[must have descriptions](https://gitlab.com/gitlab-org/gitlab/merge_requests/16438).
+[must have descriptions](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16438).
 
 A description of a field or argument is given using the `description:`
 keyword. For example:

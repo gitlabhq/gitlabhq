@@ -6,8 +6,8 @@ type: index, reference
 
 # GitLab Pages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/80) in GitLab Enterprise Edition 8.3.
-> - Custom CNAMEs with TLS support were [introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/173) in GitLab Enterprise Edition 8.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80) in GitLab Enterprise Edition 8.3.
+> - Custom CNAMEs with TLS support were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173) in GitLab Enterprise Edition 8.5.
 > - [Ported](https://gitlab.com/gitlab-org/gitlab-foss/issues/14605) to GitLab Community Edition in GitLab 8.17.
 > - Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30548) in GitLab 11.8.
 > - Bundled project templates were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/47857) in GitLab 11.8.

@@ -77,7 +77,7 @@ _The artifacts are stored by default in
 
 ### Using object storage
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/1762) in
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1762) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
 > - Since version 9.5, artifacts are [browsable](../user/project/pipelines/job_artifacts.md#browsing-artifacts),
 >   when object storage is enabled. 9.4 lacks this feature.

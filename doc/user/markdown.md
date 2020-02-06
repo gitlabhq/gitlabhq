@@ -40,7 +40,7 @@ repositories are also processed with CommonMark. As of 11.8, the [Redcarpet Ruby
 has been removed and all issues and comments, including those from pre-11.1, are now processed
 using the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker).
 
-The documentation website had its [Markdown engine migrated from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/108)
+The documentation website had its [Markdown engine migrated from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/108)
 in October 2018.
 
 You may have older issues, merge requests, or Markdown documents in your
@@ -158,7 +158,7 @@ It is possible to generate diagrams and flowcharts from text in GitLab using [Me
 
 #### Mermaid
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15107) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15107) in
 GitLab 10.3.
 
 Visit the [official page](https://mermaidjs.github.io/) for more details. If you are new to using Mermaid or need help identifying issues in your Mermaid code, the [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/) is a helpful tool for creating and resolving issues within Mermaid diagrams.
@@ -262,7 +262,7 @@ this font installed by default.
 
 ### Front matter
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23331) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23331) in GitLab 11.6.
 
 Front matter is metadata included at the beginning of a Markdown document, preceding
 its content. This data can be used by static site generators such as [Jekyll](https://jekyllrb.com/docs/front-matter/),

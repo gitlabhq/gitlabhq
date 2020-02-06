@@ -180,7 +180,7 @@ There are two different ways to add a new project to a group:
 
 > - [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
 > - Brought to [GitLab Starter][ee] in 10.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
 
 By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group.
 
@@ -522,7 +522,7 @@ To enable this feature:
 
 #### Storage usage quota **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/13294) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/13294) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
 
 A group owner can check the aggregated storage usage for all the projects in a group, sub-groups included, in the **Storage** tab of the **Usage Quotas** page available to the group page settings list.
 

@@ -13207,6 +13207,9 @@ msgstr ""
 msgid "PackageRegistry|Add Conan Remote"
 msgstr ""
 
+msgid "PackageRegistry|Add NuGet Source"
+msgstr ""
+
 msgid "PackageRegistry|Conan Command"
 msgstr ""
 
@@ -13223,6 +13226,12 @@ msgid "PackageRegistry|Copy Maven command"
 msgstr ""
 
 msgid "PackageRegistry|Copy Maven registry XML"
+msgstr ""
+
+msgid "PackageRegistry|Copy NuGet Command"
+msgstr ""
+
+msgid "PackageRegistry|Copy NuGet Setup Command"
 msgstr ""
 
 msgid "PackageRegistry|Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block."
@@ -13252,6 +13261,9 @@ msgstr ""
 msgid "PackageRegistry|For more information on the Maven registry, %{linkStart}see the documentation%{linkEnd}."
 msgstr ""
 
+msgid "PackageRegistry|For more information on the NuGet registry, %{linkStart}see the documentation%{linkEnd}."
+msgstr ""
+
 msgid "PackageRegistry|If you haven't already done so, you will need to add the below to your %{codeStart}pom.xml%{codeEnd} file."
 msgstr ""
 
@@ -13265,6 +13277,9 @@ msgid "PackageRegistry|Maven Command"
 msgstr ""
 
 msgid "PackageRegistry|Maven XML"
+msgstr ""
+
+msgid "PackageRegistry|NuGet Command"
 msgstr ""
 
 msgid "PackageRegistry|Package installation"
@@ -14570,6 +14585,9 @@ msgid "Project overview"
 msgstr ""
 
 msgid "Project path"
+msgstr ""
+
+msgid "Project scanning help page"
 msgstr ""
 
 msgid "Project security status"
@@ -20387,6 +20405,21 @@ msgid "Unresolve discussion"
 msgstr ""
 
 msgid "Unresolve thread"
+msgstr ""
+
+msgid "UnscannedProjects|Default branch scanning by project"
+msgstr ""
+
+msgid "UnscannedProjects|Out of date"
+msgstr ""
+
+msgid "UnscannedProjects|Project scanning"
+msgstr ""
+
+msgid "UnscannedProjects|Untested"
+msgstr ""
+
+msgid "UnscannedProjects|Your projects are up do date! Nice job!"
 msgstr ""
 
 msgid "Unschedule job"

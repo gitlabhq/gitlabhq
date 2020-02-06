@@ -390,7 +390,7 @@ To disable Gitaly on a client node:
 
 ## TLS support
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22602) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22602) in GitLab 11.8.
 
 Gitaly supports TLS encryption. To be able to communicate
 with a Gitaly instance that listens for secure connections you will need to use `tls://` URL

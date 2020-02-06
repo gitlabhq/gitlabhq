@@ -10,9 +10,6 @@ globals:
   localStorage: false
   IS_EE: false
 plugins:
-  - import
-  - "@gitlab/i18n"
-  - "@gitlab/vue-i18n"
   - no-jquery
 settings:
   import/resolver:

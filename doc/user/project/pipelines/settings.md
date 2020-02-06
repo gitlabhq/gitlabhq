@@ -30,7 +30,7 @@ in `.gitlab-ci.yml`.
 
 ## Git shallow clone
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/28919) in GitLab 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28919) in GitLab 12.0.
 
 NOTE: **Note**:
 As of GitLab 12.0, newly created projects will automatically have a default
@@ -55,7 +55,7 @@ if the job surpasses the threshold, it is marked as failed.
 
 ### Timeout overriding on Runner level
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17221) in GitLab 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17221) in GitLab 10.7.
 
 Project defined timeout (either specific timeout set by user or the default
 60 minutes timeout) may be [overridden on Runner level](../../../ci/runners/README.md#setting-maximum-job-timeout-for-a-runner).
@@ -67,7 +67,7 @@ For information about setting a maximum artifact size for a project, see
 
 ## Custom CI configuration path
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12509) in GitLab 9.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12509) in GitLab 9.4.
 > - [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/issues/14376) introduced in GitLab 12.6.
 
 By default we look for the `.gitlab-ci.yml` file in the project's root
@@ -180,7 +180,7 @@ If **Public pipelines** is disabled:
 
 ## Auto-cancel pending pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9362) in GitLab 9.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9362) in GitLab 9.1.
 
 If you want to auto-cancel all pending non-HEAD pipelines on branch, when
 new pipeline will be created (after your Git push or manually from UI),

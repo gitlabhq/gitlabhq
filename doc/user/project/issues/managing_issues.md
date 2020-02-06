@@ -232,7 +232,7 @@ of your installation.
 
 ## Deleting Issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/2982) in GitLab 8.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2982) in GitLab 8.6
 
 Users with [project owner permission](../../permissions.md) can delete an issue by
 editing it and clicking on the delete button.

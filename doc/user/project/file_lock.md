@@ -1,6 +1,6 @@
 # File Locking **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/440) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/440) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.9.
 
 File Locking helps you avoid merge conflicts and better manage your binary files.
 Lock any file or directory, make your changes, and then unlock it so another

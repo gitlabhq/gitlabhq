@@ -1,7 +1,7 @@
 # Review Apps
 
 Review Apps are automatically deployed by [the
-pipeline](https://gitlab.com/gitlab-org/gitlab/merge_requests/6665).
+pipeline](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6665).
 
 ## How does it work?
 

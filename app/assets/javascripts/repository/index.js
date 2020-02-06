@@ -100,7 +100,7 @@ export default function setupVueRepositoryList() {
     render(h) {
       return h(TreeActionLink, {
         props: {
-          path: `${historyLink}/${this.$route.params.path || ''}`,
+          path: `${historyLink}/${this.$route.params.path ? escape(this.$route.params.path) : ''}`,
           text: __('History'),
         },
       });

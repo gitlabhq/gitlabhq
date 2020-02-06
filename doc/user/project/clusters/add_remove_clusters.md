@@ -201,7 +201,7 @@ Note the following:
 - Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/55902), all GKE clusters
   created by GitLab are RBAC-enabled. Take a look at the [RBAC section](#rbac-cluster-resources) for
   more information.
-- Starting from [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/merge_requests/18341), the
+- Starting from [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18341), the
   cluster's pod address IP range will be set to /16 instead of the regular /14. /16 is a CIDR
   notation.
 - GitLab requires basic authentication enabled and a client certificate issued for the cluster to
@@ -243,7 +243,7 @@ to install some [pre-defined applications](index.md#installing-applications).
 
 #### Cloud Run for Anthos
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16566) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16566) in GitLab 12.4.
 
 You can choose to use Cloud Run for Anthos in place of installing Knative and Istio
 separately after the cluster has been created. This means that Cloud Run

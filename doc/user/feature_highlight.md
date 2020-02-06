@@ -12,4 +12,4 @@ after it has been dismissed.
 
 ![Clusters feature highlight](img/feature_highlight_example.png)
 
-[ce-16379]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/16379
+[ce-16379]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/16379

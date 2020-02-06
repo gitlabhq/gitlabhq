@@ -28,7 +28,7 @@ build.
 
 ## Resolve conflicts: interactive mode
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5479) in GitLab 8.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5479) in GitLab 8.11.
 
 Clicking this will show a list of files with conflicts, with conflict sections
 highlighted:
@@ -43,7 +43,7 @@ this is similar to performing `git checkout feature; git merge master` locally.
 
 ## Resolve conflicts: inline editor
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/6374) in GitLab 8.13.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6374) in GitLab 8.13.
 
 The merge conflict resolution editor allows for more complex merge conflicts,
 which require the user to manually modify a file in order to resolve a conflict,

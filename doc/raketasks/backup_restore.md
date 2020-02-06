@@ -185,7 +185,7 @@ The command line tool GitLab provides to backup your instance can take more opti
 
 ### Backup strategy option
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/8728) in GitLab 8.17.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8728) in GitLab 8.17.
 
 The default backup strategy is to essentially stream data from the respective
 data locations to the backup using the Linux command `tar` and `gzip`. This works

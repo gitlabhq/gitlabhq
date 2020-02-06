@@ -518,7 +518,7 @@ namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
 Since GitLab 11.4, a [local
-Tiller](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22036) is
+Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
@@ -610,7 +610,7 @@ namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
 Since GitLab 11.4, a [local
-Tiller](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22036) is
+Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
@@ -675,7 +675,7 @@ to run background tasks like sending emails.
 
 The [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app)
 used in Auto Deploy [has support for running worker
-processes](https://gitlab.com/gitlab-org/charts/auto-deploy-app/merge_requests/9).
+processes](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/9).
 
 In order to run a worker, you'll need to ensure that it is able to respond to
 the standard health checks, which expect a successful HTTP response on port
@@ -714,7 +714,7 @@ workers:
 
 #### Network Policy
 
-> [Introduced](https://gitlab.com/gitlab-org/charts/auto-deploy-app/merge_requests/30) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/30) in GitLab 12.7.
 
 By default, all Kubernetes pods are
 [non-isolated](https://kubernetes.io/docs/concepts/services-networking/network-policies/#isolated-and-non-isolated-pods)
@@ -1265,7 +1265,7 @@ service:
 
 #### Deploy policy for staging and production environments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/160)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/-/merge_requests/160)
 in GitLab 10.8.
 
 TIP: **Tip:**
@@ -1284,7 +1284,7 @@ you when you're ready to manually deploy to production.
 
 #### Deploy policy for canary environments **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/171)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/-/merge_requests/171)
 in GitLab 11.0.
 
 A [canary environment](../../user/project/canary_deployments.md) can be used
@@ -1477,8 +1477,8 @@ spec:
 [postgresql]: https://www.postgresql.org/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [ee]: https://about.gitlab.com/pricing/
-[ce-21955]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21955
-[ce-19507]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19507
+[ce-21955]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21955
+[ce-19507]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19507
 
 ## Development guides
 

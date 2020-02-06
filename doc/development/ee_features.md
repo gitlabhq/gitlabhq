@@ -922,7 +922,7 @@ import mixin from 'ee_else_ce/path/mixin';
 - Computed Properties/methods and getters only used in the child import still need a counterpart in CE
 
 - For store modules, we will need a CE counterpart too.
-- You can see an MR with an example [here](https://gitlab.com/gitlab-org/gitlab/merge_requests/9762)
+- You can see an MR with an example [here](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9762)
 
 #### `template` tag
 

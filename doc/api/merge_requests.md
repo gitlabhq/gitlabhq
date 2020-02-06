@@ -4,7 +4,7 @@ Every API call to merge requests must be authenticated.
 
 CAUTION: **Deprecation**
 > `reference` attribute in response is deprecated in favour of `references`.
-> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/merge_requests/20354)
+> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)
 
 NOTE: **Note**
 > `references.relative` is relative to the group / project that the merge request is being requested. When merge request is fetched from its project
@@ -45,7 +45,7 @@ Parameters:
 | `milestone`                     | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`                          | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                              |
 | `labels`                        | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
-| `with_labels_details`           | Boolean        | no       | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413) |
+| `with_labels_details`           | Boolean        | no       | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
 | `created_after`                 | datetime       | no       | Return merge requests created on or after the given time                                                               |
 | `created_before`                | datetime       | no       | Return merge requests created on or before the given time                                                              |
 | `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time                                                               |
@@ -221,7 +221,7 @@ Parameters:
 | `milestone`                     | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`                          | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
 | `labels`                        | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
-| `with_labels_details`           | Boolean        | no       | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413) |
+| `with_labels_details`           | Boolean        | no       | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
 | `created_after`                 | datetime       | no       | Return merge requests created on or after the given time                                                                       |
 | `created_before`                | datetime       | no       | Return merge requests created on or before the given time                                                                      |
 | `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
@@ -383,7 +383,7 @@ Parameters:
 | `milestone`                     | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`                          | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
 | `labels`                        | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
-| `with_labels_details`           | Boolean        | no       | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413)|
+| `with_labels_details`           | Boolean        | no       | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413)|
 | `created_after`                 | datetime       | no       | Return merge requests created on or after the given time                                                                       |
 | `created_before`                | datetime       | no       | Return merge requests created on or before the given time                                                                      |
 | `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
@@ -886,7 +886,7 @@ Parameters:
 
 ## Create MR Pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/31722) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31722) in GitLab 12.3.
 
 Create a new [pipeline for a merge request](../ci/merge_request_pipelines/index.md). A pipeline created via this endpoint will not run a regular branch/tag pipeline, it requires `.gitlab-ci.yml` to be configured with `only: [merge_requests]` to create jobs.
 
@@ -2424,10 +2424,10 @@ Example response:
 }
 ```
 
-[ce-13060]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/13060
-[ce-14016]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14016
-[ce-15454]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15454
-[ce-18935]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18935
+[ce-13060]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060
+[ce-14016]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016
+[ce-15454]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15454
+[ce-18935]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935
 
 ## Approvals **(STARTER)**
 

@@ -310,7 +310,7 @@ container so that Docker is available in the context of that image.
 
 NOTE: **Note:**
 If you bind the Docker socket [when using GitLab Runner 11.11 or
-newer](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1261),
+newer](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1261),
 you can no longer use `docker:19.03.1-dind` as a service because volume bindings
 are done to the services as well, making these incompatible.
 

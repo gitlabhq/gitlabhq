@@ -575,7 +575,7 @@ Below you can find supported syntax reference:
    Pattern matching is case-sensitive by default. Use `i` flag modifier, like
    `/pattern/i` to make a pattern case-insensitive.
 
-1. Conjunction / Disjunction ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/27925) in GitLab 12.0)
+1. Conjunction / Disjunction ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27925) in GitLab 12.0)
 
    Examples:
 

@@ -548,8 +548,8 @@ class Project < ApplicationRecord
       )
   end
 
-  def self.wrap_authorized_projects_with_cte(collection)
-    cte = Gitlab::SQL::CTE.new(:authorized_projects, collection)
+  def self.wrap_with_cte(collection)
+    cte = Gitlab::SQL::CTE.new(:projects_cte, collection)
     Project.with(cte.to_arel).from(cte.alias_to(Project.arel_table))
   end
 

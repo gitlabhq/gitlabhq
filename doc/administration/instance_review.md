@@ -12,5 +12,5 @@ Once you submit the data to GitLab Inc. you can see the initial report.
 
 Additionally you will be contacted by our team for further review which should help you to improve your usage of GitLab.
 
-[6995]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/6995
+[6995]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6995
 [ee]: https://about.gitlab.com/pricing/

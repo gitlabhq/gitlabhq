@@ -27,7 +27,7 @@ You can access them in two ways.
 
 ### From the project sidebar
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 12.5.
 
 Go to **Operations > Pod logs** on the sidebar menu.
 
@@ -49,7 +49,7 @@ The logs view will contain the last 500 lines for a pod, and has control to filt
 
 - Pods.
 - [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/5769), environments.
-- [From GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21656), [full text search](#full-text-search).
+- [From GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656), [full text search](#full-text-search).
 
 Support for pods with multiple containers is coming [in a future release](https://gitlab.com/gitlab-org/gitlab/issues/13404).
 
@@ -57,7 +57,7 @@ Support for historical data is coming [in a future release](https://gitlab.com/g
 
 ### Full text search
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/21656) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656) in GitLab 12.7.
 
 When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster,
 you can search the content of your logs via a search bar.

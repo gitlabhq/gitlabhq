@@ -218,7 +218,7 @@ project's ID can be used for uploading.
 
 ### Group level Maven endpoint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/8798) in GitLab Premium 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8798) in GitLab Premium 11.7.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the group level endpoint for
@@ -270,7 +270,7 @@ For retrieving artifacts, you can use either the
 
 ### Instance level Maven endpoint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/8274) in GitLab Premium 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8274) in GitLab Premium 11.7.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the instance level endpoint for

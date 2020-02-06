@@ -1,7 +1,7 @@
 # GraphQL API
 
 > - [Introduced][ce-19008] in GitLab 11.0 (enabled by feature flag `graphql`).
-> - [Always enabled](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/30444)
+> - [Always enabled](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30444)
   in GitLab 12.1.
 
 ## Getting Started
@@ -88,5 +88,5 @@ Machine-readable versions are also available:
 - [JSON format](reference/gitlab_schema.json)
 - [IDL format](reference/gitlab_schema.graphql)
 
-[ce-19008]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19008
+[ce-19008]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19008
 [features-api]: ../features.md

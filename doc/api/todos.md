@@ -98,7 +98,7 @@ Example Response:
       "subscribed": true,
       "user_notes_count": 7
     },
-    "target_url": "https://gitlab.example.com/gitlab-org/gitlab-foss/merge_requests/7",
+    "target_url": "https://gitlab.example.com/gitlab-org/gitlab-foss/-/merge_requests/7",
     "body": "Dolores in voluptatem tenetur praesentium omnis repellendus voluptatem quaerat.",
     "state": "pending",
     "created_at": "2016-06-17T07:52:35.225Z"
@@ -171,7 +171,7 @@ Example Response:
       "subscribed": true,
       "user_notes_count": 7
     },
-    "target_url": "https://gitlab.example.com/gitlab-org/gitlab-foss/merge_requests/7",
+    "target_url": "https://gitlab.example.com/gitlab-org/gitlab-foss/-/merge_requests/7",
     "body": "Dolores in voluptatem tenetur praesentium omnis repellendus voluptatem quaerat.",
     "state": "pending",
     "created_at": "2016-06-17T07:49:24.624Z"
@@ -269,7 +269,7 @@ Example Response:
       "subscribed": true,
       "user_notes_count": 7
     },
-    "target_url": "https://gitlab.example.com/gitlab-org/gitlab-foss/merge_requests/7",
+    "target_url": "https://gitlab.example.com/gitlab-org/gitlab-foss/-/merge_requests/7",
     "body": "Dolores in voluptatem tenetur praesentium omnis repellendus voluptatem quaerat.",
     "state": "done",
     "created_at": "2016-06-17T07:52:35.225Z"
@@ -288,4 +288,4 @@ POST /todos/mark_as_done
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/todos/mark_as_done
 ```
 
-[ce-3188]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/3188
+[ce-3188]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3188

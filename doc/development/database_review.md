@@ -64,7 +64,7 @@ A database **maintainer**'s role is to:
 ### Distributing review workload
 
 Review workload is distributed using [reviewer roulette](code_review.md#reviewer-roulette)
-([example](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25181#note_147551725)).
+([example](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25181#note_147551725)).
 The MR author should then co-assign the suggested database
 **reviewer**. When they give their sign-off, they will hand over to
 the suggested database **maintainer**.

@@ -474,6 +474,6 @@ A few things to remember:
   by default. If you have more than 20 issues start scrolling down and the next
   20 will appear.
 
-[ce-5554]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5554
+[ce-5554]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5554
 [scrum]: https://en.wikipedia.org/wiki/Scrum_(software_development)
 [kanban]: https://en.wikipedia.org/wiki/Kanban_(development)

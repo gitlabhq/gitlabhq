@@ -1,7 +1,7 @@
 # PostgreSQL Server Exporter
 
 >**Note:**
-Available since [Omnibus GitLab 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1131).
+Available since [Omnibus GitLab 8.17](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1131).
 For installations from source you will have to install and configure it yourself.
 
 The [PostgreSQL Server Exporter](https://github.com/wrouesnel/postgres_exporter) allows you to export various PostgreSQL metrics.

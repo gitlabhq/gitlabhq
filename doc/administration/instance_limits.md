@@ -37,7 +37,7 @@ Activity history for projects and individuals' profiles was limited to one year 
 
 ## Number of project webhooks
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20730) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20730) in GitLab 12.6.
 
 A maximum number of project webhooks applies to each GitLab.com tier. Check the
 [Maximum number of webhooks (per tier)](../user/project/integrations/webhooks.md#maximum-number-of-webhooks-per-tier)

@@ -48,7 +48,7 @@ _The uploads are stored by default in
 > **Notes:**
 >
 > - [Introduced][ee-3867] in [GitLab Premium][eep] 10.5.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17358) in [GitLab Core](https://about.gitlab.com/pricing/) 10.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17358) in [GitLab Core](https://about.gitlab.com/pricing/) 10.7.
 > - Since version 11.1, we support direct_upload to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
@@ -229,4 +229,4 @@ _The uploads are stored by default in
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [eep]: https://about.gitlab.com/pricing/ "GitLab Premium"
-[ee-3867]: https://gitlab.com/gitlab-org/gitlab/merge_requests/3867
+[ee-3867]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3867

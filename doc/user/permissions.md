@@ -328,7 +328,7 @@ free guest user.
 
 ## Auditor users **(PREMIUM ONLY)**
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/998) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.17.
+>[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/998) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.17.
 
 Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.

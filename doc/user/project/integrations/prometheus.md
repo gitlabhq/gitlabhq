@@ -112,7 +112,7 @@ You can view the performance dashboard for an environment by [clicking on the mo
 
 ### Adding additional metrics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/3799) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3799) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
 
 Custom metrics can be monitored by adding them on the monitoring dashboard page. Once saved, they will be displayed on the environment performance dashboard provided that either:
 
@@ -140,7 +140,7 @@ GitLab supports a limited set of [CI variables](../../../ci/variables/README.md)
 
 There are 2 methods to specify a variable in a query or dashboard:
 
-1. Variables can be specified using the [Liquid template format](https://help.shopify.com/en/themes/liquid/basics), for example `{{ci_environment_slug}}` ([added](https://gitlab.com/gitlab-org/gitlab/merge_requests/20793) in GitLab 12.6).
+1. Variables can be specified using the [Liquid template format](https://help.shopify.com/en/themes/liquid/basics), for example `{{ci_environment_slug}}` ([added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20793) in GitLab 12.6).
 1. You can also enclose it in quotation marks with curly braces with a leading percent, for example `"%{ci_environment_slug}"`. This method is deprecated  though and support will be [removed in the next major release](https://gitlab.com/gitlab-org/gitlab/issues/37990).
 
 ### Defining custom dashboards per project
@@ -289,7 +289,7 @@ Note the following properties:
 
 ##### Anomaly chart
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16530) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16530) in GitLab 12.5.
 
 To add an anomaly chart panel type to a dashboard, add add a panel with *exactly* 3 metrics.
 
@@ -429,7 +429,7 @@ Data from Prometheus charts on the metrics dashboard can be downloaded as CSV.
 
 #### Managed Prometheus instances
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](#adding-additional-metrics-premium), and 11.3 for [library metrics](prometheus_library/metrics.md).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](#adding-additional-metrics-premium), and 11.3 for [library metrics](prometheus_library/metrics.md).
 
 For managed Prometheus instances using auto configuration, alerts for metrics [can be configured](#adding-additional-metrics-premium) directly in the performance dashboard.
 
@@ -641,7 +641,7 @@ If the "No data found" screen continues to appear, it could be due to:
 [prometheus-yml]:samples/prometheus.yml
 [gitlab.com-ip-range]: https://gitlab.com/gitlab-com/infrastructure/issues/434
 [ci-environment-slug]: ../../../ci/variables/#predefined-environment-variables
-[ce-8935]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/8935
-[ce-10408]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10408
-[ce-29691]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/29691
+[ce-8935]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8935
+[ce-10408]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10408
+[ce-29691]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29691
 [promgldocs]: ../../../administration/monitoring/prometheus/index.md

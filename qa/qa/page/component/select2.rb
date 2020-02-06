@@ -34,6 +34,10 @@ module QA
           has_css?('.select2-active', wait: 1)
           has_no_css?('.select2-active', wait: 30)
         end
+
+        def dropdown_open?
+          has_css?('.select2-input')
+        end
       end
     end
   end

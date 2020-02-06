@@ -175,7 +175,7 @@ The table below shows what kind of documentation goes where.
 | `doc/update/`         | Contains instructions for updating GitLab. |
 | `doc/topics/`         | Indexes per topic (`doc/topics/topic-name/index.md`): all resources for that topic. |
 
-### Working with directories and files
+### Work with directories and files
 
 1. When you create a new directory, always start with an `index.md` file.
    Do not use another file name and **do not** create `README.md` files.
@@ -530,6 +530,16 @@ For other punctuation rules, please refer to the
   document. For example, `## Examples` is a bad heading; `## GitLab Pages examples`
   is a better one. It's not an exact science, but please consider this carefully.
 
+### Heading titles
+
+Keep heading titles clear and direct. Make every word count. To accommodate search engine optimization (SEO), use the imperative, where possible.
+
+| Do   | Don't   |
+|:-----|:--------|
+| Configure GDK | Configuring GDK |
+| GitLab Release and Maintenance Policy | This section covers GitLab's Release and Maintenance Policy |
+| Backport to older releases | Backporting to older releases |
+
 ### Anchor links
 
 Headings generate anchor links automatically when rendered. `## This is an example`
@@ -707,7 +717,7 @@ You can link any up-to-date video that is useful to the GitLab user.
 
 ### Embed videos
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/472) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/472) in GitLab 12.1.
 
 The [GitLab Docs site](https://docs.gitlab.com) supports embedded videos.
 
@@ -828,7 +838,7 @@ Usage examples:
   [Bootstrap utility class](https://getbootstrap.com/docs/4.4/utilities/float/):
   `**{tanuki, 32, float-right}**` renders as: **{tanuki, 32, float-right}**
 
-### Using GitLab SVGs to describe UI elements
+### Use GitLab SVGs to describe UI elements
 
 When using GitLab SVGs to describe screen elements, also include the name or tooltip of the element as text.
 
@@ -1003,7 +1013,7 @@ Examples:
 - "Open a merge request to fix a broken link".
 - "After you open a merge request (MR), submit your MR for review and approval".
 
-### Describing UI elements
+### Describe UI elements
 
 The following are styles to follow when describing UI elements on a screen:
 
@@ -1134,7 +1144,7 @@ GitLab.com Free, and all higher tiers.
 
 ### How it works
 
-Introduced by [!244](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/244),
+Introduced by [!244](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/244),
 the special markup `**(STARTER)**` will generate a `span` element to trigger the
 badges and tooltips (`<span class="badge-trigger starter">`). When the keyword
 "only" is added, the corresponding GitLab.com badge will not be displayed.

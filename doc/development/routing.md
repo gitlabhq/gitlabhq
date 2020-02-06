@@ -70,4 +70,4 @@ you can help us migrate more of them! To migrate project routes:
 1. Add redirects for legacy routes by using `Gitlab::Routing.redirect_legacy_paths`.
 1. Create a technical debt issue to remove deprecated routes in later releases.
 
-To get started, see an [example merge request](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/28435).
+To get started, see an [example merge request](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28435).

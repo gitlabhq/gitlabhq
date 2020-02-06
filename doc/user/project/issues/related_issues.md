@@ -1,6 +1,6 @@
 # Related issues **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/1797) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1797) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.4.
 
 Related issues are a bi-directional relationship between any two issues
 and appear in a block below the issue description. Issues can be across groups

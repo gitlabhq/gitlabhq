@@ -3691,7 +3691,7 @@ describe Project do
     end
   end
 
-  describe '.wrap_authorized_projects_with_cte' do
+  describe '.wrap_with_cte' do
     let!(:user) { create(:user) }
 
     let!(:private_project) do
@@ -3702,10 +3702,10 @@ describe Project do
 
     let(:projects) { described_class.all.public_or_visible_to_user(user) }
 
-    subject { described_class.wrap_authorized_projects_with_cte(projects) }
+    subject { described_class.wrap_with_cte(projects) }
 
     it 'wrapped query matches original' do
-      expect(subject.to_sql).to match(/^WITH "authorized_projects" AS/)
+      expect(subject.to_sql).to match(/^WITH "projects_cte" AS/)
       expect(subject).to match_array(projects)
     end
   end

@@ -155,7 +155,7 @@ Example response:
 
 ## Get a member of a group or project, including inherited members
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/17744) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17744) in GitLab 12.4.
 
 Gets a member of a group or project, including members inherited through ancestor groups. See the corresponding [endpoint to list all inherited members](#list-all-members-of-a-group-or-project-including-inherited-members) for details.
 

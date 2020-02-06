@@ -1,6 +1,6 @@
 # Pseudonymizer **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/5532) in [GitLab Ultimate][ee] 11.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5532) in [GitLab Ultimate][ee] 11.1.
 
 As GitLab's database hosts sensitive information, using it unfiltered for analytics
 implies high security requirements. To help alleviate this constraint, the Pseudonymizer

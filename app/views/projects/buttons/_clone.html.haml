@@ -5,7 +5,7 @@
   %a#clone-dropdown.btn.btn-primary.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
     %span.append-right-4.js-clone-dropdown-label
       = _('Clone')
-    = sprite_icon("arrow-down", css_class: "icon")
+    = sprite_icon("chevron-down", css_class: "icon")
   %ul.p-3.dropdown-menu.dropdown-menu-large.dropdown-menu-selectable.clone-options-dropdown.qa-clone-options{ class: dropdown_class }
     - if ssh_enabled?
       %li

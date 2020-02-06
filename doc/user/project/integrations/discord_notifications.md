@@ -1,6 +1,6 @@
 # Discord Notifications service
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22684) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22684) in GitLab 11.6.
 
 The Discord Notifications service sends event notifications from GitLab to the channel for which the webhook was created.
 

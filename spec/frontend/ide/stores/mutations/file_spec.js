@@ -356,6 +356,14 @@ describe('IDE store file mutations', () => {
 
       expect(localState.changedFiles.length).toBe(1);
     });
+
+    it('bursts unused seal', () => {
+      expect(localState.unusedSeal).toBe(true);
+
+      mutations.ADD_FILE_TO_CHANGED(localState, localFile.path);
+
+      expect(localState.unusedSeal).toBe(false);
+    });
   });
 
   describe('REMOVE_FILE_FROM_CHANGED', () => {
@@ -365,6 +373,14 @@ describe('IDE store file mutations', () => {
       mutations.REMOVE_FILE_FROM_CHANGED(localState, localFile.path);
 
       expect(localState.changedFiles.length).toBe(0);
+    });
+
+    it('bursts unused seal', () => {
+      expect(localState.unusedSeal).toBe(true);
+
+      mutations.REMOVE_FILE_FROM_CHANGED(localState, localFile.path);
+
+      expect(localState.unusedSeal).toBe(false);
     });
   });
 
@@ -516,6 +532,19 @@ describe('IDE store file mutations', () => {
       });
     },
   );
+
+  describe('STAGE_CHANGE', () => {
+    it('bursts unused seal', () => {
+      expect(localState.unusedSeal).toBe(true);
+
+      mutations.STAGE_CHANGE(localState, {
+        path: localFile.path,
+        diffInfo: localStore.getters.getDiffInfo(localFile.path),
+      });
+
+      expect(localState.unusedSeal).toBe(false);
+    });
+  });
 
   describe('TOGGLE_FILE_CHANGED', () => {
     it('updates file changed status', () => {

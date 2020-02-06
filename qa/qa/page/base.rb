@@ -255,12 +255,6 @@ module QA
         click_link text
       end
 
-      def click_body
-        wait_for_requests
-
-        find('body').click
-      end
-
       def visit_link_in_element(name)
         visit find_element(name)['href']
       end

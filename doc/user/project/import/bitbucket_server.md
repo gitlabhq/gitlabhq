@@ -1,6 +1,6 @@
 # Import your project from Bitbucket Server to GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20164)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20164)
 in GitLab 11.2.
 
 NOTE: **Note:**

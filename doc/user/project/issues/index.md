@@ -146,7 +146,7 @@ message in the Activity stream about the reference, with a link to the other iss
 
 ### Similar issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22866) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22866) in GitLab 11.6.
 
 To prevent duplication of issues for the same topic, GitLab searches for similar issues
 when new issues are being created.

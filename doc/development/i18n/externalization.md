@@ -1,6 +1,6 @@
 # Internationalization for GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10669) in GitLab 9.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10669) in GitLab 9.2.
 
 For working with internationalization (i18n),
 [GNU gettext](https://www.gnu.org/software/gettext/) is used given it's the most

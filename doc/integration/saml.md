@@ -414,7 +414,7 @@ args: {
 
 ### `uid_attribute`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17734) in GitLab 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17734) in GitLab 10.7.
 
 By default, the `uid` is set as the `name_id` in the SAML response. If you'd like to designate a unique attribute for the `uid`, you can set the `uid_attribute`. In the example below, the value of `uid` attribute in the SAML response is set as the `uid_attribute`.
 

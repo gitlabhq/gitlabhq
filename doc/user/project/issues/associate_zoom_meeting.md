@@ -1,6 +1,6 @@
 # Associate a Zoom meeting with an issue
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16609) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16609) in GitLab 12.4.
 
 In order to communicate synchronously for incidents management,
 GitLab allows to associate a Zoom meeting with an issue.

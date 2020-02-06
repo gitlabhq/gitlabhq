@@ -570,7 +570,7 @@ GitLab Shell application startup time can be greatly reduced by disabling RubyGe
 
 - Export `RUBYOPT=--disable-gems` environment variable for the processes.
 - Compile Ruby with `configure --disable-rubygems` to disable RubyGems by default. Not recommended for system-wide Ruby.
-- Omnibus GitLab [replaces the *shebang* line of the `gitlab-shell/bin/*` scripts](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1707).
+- Omnibus GitLab [replaces the *shebang* line of the `gitlab-shell/bin/*` scripts](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1707).
 
 ### Install GitLab Workhorse
 

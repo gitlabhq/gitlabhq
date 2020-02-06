@@ -1,6 +1,6 @@
 # Credentials inventory **(ULTIMATE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20912) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20912) in GitLab 12.6.
 
 ## Overview
 

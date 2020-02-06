@@ -155,7 +155,7 @@ A few notes:
 
 ## Days to completion chart
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/21631) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.
 
 This chart visually depicts the total number of days it takes for cycles to be completed.
 

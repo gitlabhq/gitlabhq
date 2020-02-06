@@ -321,7 +321,7 @@ Some analyzers can be customized with environment variables.
 
 #### Custom environment variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18193) in GitLab Ultimate 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18193) in GitLab Ultimate 12.5.
 
 In addition to the aforementioned SAST configuration variables,
 all [custom environment variables](../../../ci/variables/README.md#creating-a-custom-environment-variable) are propagated

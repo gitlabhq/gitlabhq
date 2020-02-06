@@ -4,7 +4,7 @@ type: reference
 
 # Code Owners **(STARTER)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/6916)
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6916)
 in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
 > - [Support for group namespaces](https://gitlab.com/gitlab-org/gitlab-foss/issues/53182) added in GitLab Starter 12.1.
 > - Code Owners for Merge Request approvals was [introduced](https://gitlab.com/gitlab-org/gitlab/issues/4418) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.9.

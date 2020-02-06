@@ -152,7 +152,7 @@ from CI/CD jobs, even if _Only SSH_ was selected.
 
 ## Custom Git clone URL for HTTP(S)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18422) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18422) in GitLab 12.4.
 
 You can customize project Git clone URLs for HTTP(S). This will affect the clone
 panel:

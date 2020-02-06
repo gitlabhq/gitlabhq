@@ -16,7 +16,7 @@ limits](https://about.gitlab.com/handbook/product/#introducing-application-limit
 ## Development
 
 The merge request to [configure maximum number of webhooks per
-project](https://gitlab.com/gitlab-org/gitlab/merge_requests/20730/diffs) is a
+project](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20730/diffs) is a
 good example about configuring application limits.
 
 ### Insert database plan limits

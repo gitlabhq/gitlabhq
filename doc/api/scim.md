@@ -1,6 +1,6 @@
 # SCIM API **(SILVER ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/9388) in [GitLab Silver](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in [GitLab Silver](https://about.gitlab.com/pricing/) 11.10.
 
 The SCIM API implements the [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644).
 

@@ -49,7 +49,7 @@ Navigate to the webhooks page by going to your project's
 
 ## Maximum number of webhooks (per tier)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20730) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20730) in GitLab 12.6.
 
 A maximum number of project webhooks applies to each [GitLab.com
 tier](https://about.gitlab.com/pricing/), as shown in the following table:

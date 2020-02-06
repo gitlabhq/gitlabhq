@@ -376,7 +376,7 @@ Some GitLab Omnibus upgrades will revert this workaround and you'll need to appl
 
 ## Activate verbose logging for daemon
 
-Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2533) in
+Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2533) in
 Omnibus GitLab 11.1.
 
 Follow the steps below to configure verbose logging of GitLab Pages daemon.
@@ -408,7 +408,7 @@ are stored.
 
 ## Configure listener for reverse proxy requests
 
-Follow the steps below to configure the proxy listener of GitLab Pages. [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2533) in
+Follow the steps below to configure the proxy listener of GitLab Pages. [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2533) in
 Omnibus GitLab 11.1.
 
 1. By default the listener is configured to listen for requests on `localhost:8090`.
@@ -568,8 +568,8 @@ than GitLab to prevent XSS attacks.
 
 [backup]: ../../raketasks/backup_restore.md
 [ce-14605]: https://gitlab.com/gitlab-org/gitlab-foss/issues/14605
-[ee-80]: https://gitlab.com/gitlab-org/gitlab/merge_requests/80
-[ee-173]: https://gitlab.com/gitlab-org/gitlab/merge_requests/173
+[ee-80]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80
+[ee-173]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173
 [gitlab pages daemon]: https://gitlab.com/gitlab-org/gitlab-pages
 [NGINX configs]: https://gitlab.com/gitlab-org/gitlab/tree/8-5-stable-ee/lib/support/nginx
 [pages-readme]: https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md

@@ -55,7 +55,7 @@ to monitor itself.
 ### Adding a new metric
 
 This section describes how to add new metrics for self-monitoring
-([example](https://gitlab.com/gitlab-org/gitlab/merge_requests/15440)).
+([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15440)).
 
 1. Select the [type of metric](https://gitlab.com/gitlab-org/prometheus-client-mmap#metrics):
 

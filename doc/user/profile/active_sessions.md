@@ -4,7 +4,7 @@ type: howto
 
 # Active sessions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17867) in GitLab 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17867) in GitLab 10.8.
 
 GitLab lists all devices that have logged into your account. This allows you to
 review the sessions, and revoke any you don't recognize.

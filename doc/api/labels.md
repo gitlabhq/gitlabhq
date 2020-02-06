@@ -1,7 +1,7 @@
 # Labels API
 
 NOTE: **Note:**
-The `description_html` - was added to response JSON in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413).
+The `description_html` - was added to response JSON in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413).
 
 ## List labels
 
@@ -14,7 +14,7 @@ GET /projects/:id/labels
 | Attribute     | Type           | Required | Description                                                                                                                                                                  |
 | ---------     | -------        | -------- | ---------------------                                                                                                                                                        |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                                                              |
-| `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. _([Introduced in GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/31543))_ |
+| `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. _([Introduced in GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31543))_ |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 
 ```shell
@@ -238,7 +238,7 @@ NOTE: **Note:** An older endpoint `PUT /projects/:id/labels` with `name` or `lab
 
 ## Promote a project label to a group label
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25218) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25218) in GitLab 12.3.
 
 Promotes a project label to a group label.
 

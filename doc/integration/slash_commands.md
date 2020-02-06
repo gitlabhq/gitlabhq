@@ -1,6 +1,6 @@
 # Slash Commands
 
-> The `run` command was [introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/4466) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6. [Moved](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24780) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
+> The `run` command was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4466) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6. [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24780) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
 
 Slash commands in Mattermost and Slack allow you to control GitLab and view GitLab content right inside your chat client, without having to leave it. For Slack, this requires a [project service configuration](../user/project/integrations/slack_slash_commands.md). Simply type the command as a message in your chat client to activate it.
 

@@ -1,0 +1,5 @@
+---
+title: Move security routes under - scope
+merge_request: 24287
+author:
+type: changed

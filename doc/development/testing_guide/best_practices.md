@@ -375,7 +375,7 @@ If a test enqueues Sidekiq jobs and need them to be processed, the
 `:sidekiq_inline` trait can be used.
 
 The `:sidekiq_might_not_need_inline` trait was added when [Sidekiq inline mode was
-changed to fake mode](https://gitlab.com/gitlab-org/gitlab/merge_requests/15479)
+changed to fake mode](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15479)
 to all the tests that needed Sidekiq to actually process jobs. Tests with
 this trait should be either fixed to not rely on Sidekiq processing jobs, or their
 `:sidekiq_might_not_need_inline` trait should be updated to `:sidekiq_inline` if

@@ -184,7 +184,7 @@ been necessary. These are:
 - [Remove
   `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/issues/4073).
 - [Remove Linux distributions that reach
-  EOL](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1130).
+  EOL](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1130).
 - [Update command line API for helper
   images](https://gitlab.com/gitlab-org/gitlab-runner/issues/4013).
 - [Remove old `git clean`

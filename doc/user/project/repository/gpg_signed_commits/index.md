@@ -4,7 +4,7 @@ type: concepts, howto
 
 # Signing commits with GPG
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9546) in GitLab 9.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9546) in GitLab 9.5.
 > - Subkeys support was added in GitLab 10.1.
 
 You can use a GPG key to sign Git commits made in a GitLab repository. Signed

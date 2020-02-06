@@ -45,7 +45,7 @@ class ProjectsFinder < UnionFinder
       end
 
     use_cte = params.delete(:use_cte)
-    collection = Project.wrap_authorized_projects_with_cte(collection) if use_cte
+    collection = Project.wrap_with_cte(collection) if use_cte
     collection = filter_projects(collection)
     sort(collection)
   end

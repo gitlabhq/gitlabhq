@@ -33,6 +33,17 @@ describe('Repository breadcrumbs component', () => {
     expect(vm.findAll(RouterLinkStub).length).toEqual(linkCount);
   });
 
+  it('escapes hash in directory path', () => {
+    factory('app/assets/javascripts#');
+
+    expect(
+      vm
+        .findAll(RouterLinkStub)
+        .at(3)
+        .props('to'),
+    ).toEqual('/-/tree//app/assets/javascripts%23');
+  });
+
   it('renders last link as active', () => {
     factory('app/assets');
 

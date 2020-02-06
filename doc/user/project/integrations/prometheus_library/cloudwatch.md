@@ -1,6 +1,6 @@
 # Monitoring AWS Resources
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12621) in GitLab 9.4
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12621) in GitLab 9.4
 
 GitLab has support for automatically detecting and monitoring AWS resources, starting with the [Elastic Load Balancer](https://aws.amazon.com/elasticloadbalancing/). This is provided by leveraging the official [Cloudwatch exporter](https://github.com/prometheus/cloudwatch_exporter), which translates [Cloudwatch metrics](https://aws.amazon.com/cloudwatch/) into a Prometheus readable form.
 

@@ -454,7 +454,7 @@ user.skip_reconfirmation!
 ### Get an admin token
 
 ```ruby
-# Get the first admin's first access token (no longer works on 11.9+. see: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22743)
+# Get the first admin's first access token (no longer works on 11.9+. see: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22743)
 User.where(admin:true).first.personal_access_tokens.first.token
 
 # Get the first admin's private token (no longer works on 10.2+)

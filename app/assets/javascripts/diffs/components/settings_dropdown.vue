@@ -31,7 +31,7 @@ export default {
       data-toggle="dropdown"
       data-display="static"
     >
-      <icon name="settings" /> <icon name="arrow-down" />
+      <icon name="settings" /> <icon name="chevron-down" />
     </button>
     <div class="dropdown-menu dropdown-menu-right p-2 pt-3 pb-3">
       <div>

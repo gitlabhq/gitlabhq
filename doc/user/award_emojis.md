@@ -1,7 +1,7 @@
 # Award emoji
 
-> - First [introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/1825) in GitLab 8.2.
-> - GitLab 9.0 [introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9570) the usage of native emoji if the platform
+> - First [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1825) in GitLab 8.2.
+> - GitLab 9.0 [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9570) the usage of native emoji if the platform
 >  supports them and falls back to images or CSS sprites. This change greatly
 >  improved award emoji performance overall.
 
@@ -18,7 +18,7 @@ For information on the relevant API, see [Award Emoji API](../api/award_emoji.md
 
 ## Sort issues and merge requests on vote count
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/2781) in GitLab 8.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2781) in GitLab 8.5.
 
 You can quickly sort issues and merge requests by the number of votes they
 have received. The sort options can be found in the dropdown menu as "Most
@@ -32,7 +32,7 @@ downvotes.
 
 ## Award emoji for comments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4291) in GitLab 8.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4291) in GitLab 8.9.
 
 Award emoji can also be applied to individual comments when you want to
 celebrate an accomplishment or agree with an opinion.

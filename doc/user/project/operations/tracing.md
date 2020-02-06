@@ -1,6 +1,6 @@
 # Tracing **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/7903) in GitLab Ultimate 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7903) in GitLab Ultimate 11.5.
 
 Tracing provides insight into the performance and health of a deployed application,
 tracking each function or microservice which handles a given request.

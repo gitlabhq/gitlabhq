@@ -183,7 +183,7 @@ or contacts to continue working._
 
 ### Adding patches when creating a merge request via e-mail
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22723) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22723) in GitLab 11.5.
 
 You can add commits to the merge request being created by adding
 patches as attachments to the email. All attachments with a filename

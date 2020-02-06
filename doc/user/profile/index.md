@@ -173,7 +173,7 @@ You can also set your current status [using the API](../../api/users.md#user-sta
 
 ## Commit email
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21598) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21598) in GitLab 11.4.
 
 A commit email is an email address displayed in every Git-related action carried out through the GitLab interface.
 
@@ -190,7 +190,7 @@ To change your commit email:
 
 ### Private commit email
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22560) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22560) in GitLab 11.5.
 
 GitLab provides the user with an automatically generated private commit email option,
 which allows the user to keep their email information private.

@@ -32,8 +32,7 @@ module QA
 
         def choose_namespace(namespace)
           retry_on_exception do
-            click_body
-            click_element :project_namespace_select
+            click_element :project_namespace_select unless dropdown_open?
             search_and_select(namespace)
           end
         end

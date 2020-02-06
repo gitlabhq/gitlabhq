@@ -1,6 +1,6 @@
 # Snippets API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/6373) in GitLab 8.15.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6373) in GitLab 8.15.
 
 Snippets API operates on [snippets](../user/snippets.md).
 
@@ -351,7 +351,7 @@ Example response:
 
 ## Get user agent details
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12655) in GitLab 9.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12655) in GitLab 9.4.
 
 NOTE: **Note:**
 Available only for administrators.

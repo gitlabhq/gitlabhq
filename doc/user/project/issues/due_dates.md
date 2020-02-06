@@ -1,6 +1,6 @@
 # Due dates
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/3614) in GitLab 8.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3614) in GitLab 8.7.
 
 Please read through the [GitLab Issue Documentation](index.md) for an overview on GitLab Issues.
 

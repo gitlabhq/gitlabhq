@@ -1,6 +1,6 @@
 # Registry exporter
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2884) in GitLab 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2884) in GitLab 11.9.
 
 The Registry exporter allows you to measure various Registry metrics.
 To enable it:

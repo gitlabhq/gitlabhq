@@ -43,7 +43,7 @@ if [ ${FIND_READMES} -ne $NUMBER_READMES ]
 then
   echo
   echo '  ✖ ERROR: New README.md file(s) detected, prefer index.md over README.md.' >&2
-  echo '  https://docs.gitlab.com/ee/development/documentation/styleguide.html#working-with-directories-and-files'
+  echo '  https://docs.gitlab.com/ee/development/documentation/styleguide.html#work-with-directories-and-files'
   echo
   exit 1
 fi

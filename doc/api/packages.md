@@ -6,7 +6,7 @@ This is the API docs of [GitLab Packages](../administration/packages/index.md).
 
 ### Within a project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/9259) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9259) in GitLab 11.8.
 
 Get a list of project packages. Both Maven and NPM packages are included in results.
 When accessed without authentication, only packages of public projects are returned.
@@ -48,7 +48,7 @@ By default, the `GET` request will return 20 results, since the API is [paginate
 
 ### Within a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18871) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18871) in GitLab 12.5.
 
 Get a list of project packages at the group level.
 When accessed without authentication, only packages of public projects are returned.
@@ -126,7 +126,7 @@ The `_links` object contains the following properties:
 
 ## Get a project package
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/9667) in GitLab 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9667) in GitLab 11.9.
 
 Get a single project package.
 
@@ -177,7 +177,7 @@ The `_links` object contains the following properties:
 
 ## List package files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/9305) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9305) in GitLab 11.8.
 
 Get a list of package files of a single package.
 
@@ -232,7 +232,7 @@ By default, the `GET` request will return 20 results, since the API is [paginate
 
 ## Delete a project package
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/9623) in GitLab 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9623) in GitLab 11.9.
 
 Deletes a project package.
 

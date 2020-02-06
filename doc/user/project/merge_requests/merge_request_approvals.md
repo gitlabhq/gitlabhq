@@ -64,7 +64,7 @@ were not explicitly listed in the approval rules.
 
 #### Code Owners as eligible approvers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/7933) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7933) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.5.
 
 If you add [Code Owners](../code_owners.md) to your repository, the owners to the
 corresponding files will become eligible approvers, together with members with Developer

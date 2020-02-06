@@ -181,7 +181,7 @@ If you'd prefer _not_ to use your primary email address for commits created
 through the web editor, you can choose to use another of your linked email
 addresses from the **User Settings > Edit Profile** page.
 
-[ce-2808]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/2808
+[ce-2808]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2808
 
 <!-- ## Troubleshooting
 

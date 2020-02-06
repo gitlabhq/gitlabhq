@@ -157,7 +157,7 @@ to determine the external endpoint and it should be available within a few minut
 
 #### Determining the external endpoint automatically
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17052) in GitLab 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17052) in GitLab 10.6.
 
 After you install Ingress, the external endpoint should be available within a few minutes.
 
@@ -253,7 +253,7 @@ use an A record. If your external endpoint is a hostname, use a CNAME record.
 
 #### Web Application Firewall (ModSecurity)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/21966) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21966) in GitLab 12.7.
 
 Out of the box, GitLab provides you real-time security monitoring with
 [ModSecurity](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#modsecurity).
@@ -320,8 +320,8 @@ file.
 
 #### Jupyter Git Integration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/28783) in GitLab 12.0 for project-level clusters.
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/32512) in GitLab 12.3 for group and instance-level clusters.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28783) in GitLab 12.0 for project-level clusters.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/32512) in GitLab 12.3 for group and instance-level clusters.
 
 When installing JupyterHub onto your Kubernetes cluster, [JupyterLab's Git extension](https://github.com/jupyterlab/jupyterlab-git)
 is automatically provisioned and configured using the authenticated user's:
@@ -454,7 +454,7 @@ which makes it incompatible with clusters of `f1-micro` and `g1-small` instance 
 
 ## Install using GitLab CI (alpha)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20822) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20822) in GitLab 12.6.
 
 CAUTION: **Warning:**
 This is an _alpha_ feature, and it is subject to change at any time without
@@ -735,7 +735,7 @@ agent:
 
 ## Upgrading applications
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24789) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24789) in GitLab 11.8.
 
 The applications below can be upgraded.
 

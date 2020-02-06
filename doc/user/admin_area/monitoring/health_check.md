@@ -164,8 +164,8 @@ Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
-[ce-10416]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10416
-[ce-3888]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/3888
+[ce-10416]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10416
+[ce-3888]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3888
 [pingdom]: https://www.pingdom.com
 [nagios-health]: https://nagios-plugins.org/doc/man/check_http.html
 [newrelic-health]: https://docs.newrelic.com/docs/alerts/alert-policies/downtime-alerts/availability-monitoring

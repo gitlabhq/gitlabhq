@@ -28,7 +28,7 @@ rake gitlab:ldap:check[50]
 
 ## Run a Group Sync
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/14735) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
 The following task will run a [group sync](../auth/ldap-ee.md#group-sync) immediately. This is valuable
 when you'd like to update all configured group memberships against LDAP without

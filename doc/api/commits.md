@@ -755,8 +755,8 @@ Example response if commit is unsigned:
 }
 ```
 
-[ce-6096]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/6096 "Multi-file commit"
-[ce-8047]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/8047
-[ce-15026]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15026
-[ce-18004]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18004
-[ce-22919]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22919
+[ce-6096]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6096 "Multi-file commit"
+[ce-8047]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8047
+[ce-15026]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15026
+[ce-18004]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18004
+[ce-22919]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22919

@@ -124,7 +124,7 @@ module QA
               end
             end
 
-            click_body
+            click_element(:edit_link_labels)
 
             labels.each do |label|
               has_element?(:labels_block, text: label)

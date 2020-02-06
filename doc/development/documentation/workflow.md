@@ -382,7 +382,7 @@ Ensure the following if skipping an initial Technical Writer review:
 - Specific [user permissions](../../user/permissions.md) are documented.
 - That new documents are linked from higher-level indexes, for discoverability.
 - Style guide is followed:
-  - For [directories and files](styleguide.md#working-with-directories-and-files).
+  - For [directories and files](styleguide.md#work-with-directories-and-files).
   - For [images](styleguide.md#images).
 
 NOTE: **Note:**

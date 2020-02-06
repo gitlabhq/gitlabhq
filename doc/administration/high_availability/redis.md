@@ -1018,7 +1018,7 @@ Read more on High Availability:
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)
 
-[ce-1877]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/1877
+[ce-1877]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1877
 [restart]: ../restart_gitlab.md#installations-from-source
 [reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
 [gh-531]: https://github.com/redis/redis-rb/issues/531

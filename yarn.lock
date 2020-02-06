@@ -735,15 +735,15 @@
   dependencies:
     vue-eslint-parser "^6.0.4"
 
-"@gitlab/svgs@^1.94.0":
-  version "1.94.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.94.0.tgz#d6a39f982811f82d942692a91bf2678961752eba"
-  integrity sha512-lB7HTVsNPBLUEgNUXLLC4V/XJsWg7aSO7RBp6cuuL3n6fUS9VGfELH9aBnuPJglTHddktcnElkZ3S54XI8kYHw==
+"@gitlab/svgs@^1.95.0":
+  version "1.95.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.95.0.tgz#105311b8eae530dbe586232925690ca3e947a89b"
+  integrity sha512-sGvtkf5XgDhMA9vPJu2YLHiEk4tbF6W9AAxAl3lMfwaFdF4mwfOwVtAWLJaM+9ubL91t+jVsOtHGsAzATufnlg==
 
-"@gitlab/ui@^9.3.0":
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-9.3.0.tgz#851b4246c2e661a5a343184f74e0448c597ce28c"
-  integrity sha512-DB9Q8XDLfn3Ui6EfYTVnmHVYPwbukocYTWL+uD6zN3leiamYQqaoYGmtcrXk9oSiAyuJYwaJlCzlblG1GPwnfw==
+"@gitlab/ui@^9.4.0":
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-9.4.0.tgz#ffe3ca7845801cdefd42a9a7cc423a320d7ffdc2"
+  integrity sha512-dsr+IZPjfe+UHVLlhVHF4kXd2daRUGzplC9WA5Odf1q9kHugGn1yK7glT5VCRQa2vtiTVvqGwXB7ENfHoz23Kg==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -989,10 +989,10 @@
     "@sentry/types" "5.10.0"
     tslib "^1.9.3"
 
-"@sourcegraph/code-host-integration@0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.21.tgz#d536ccb3d9fda6d0c9d611ed6b80813265d8cb2f"
-  integrity sha512-HRBb6FO5+kc0JM6mAzhBGrDCuMdkGBjgdnKGnkW8B/FFKEtZEB6HI4ghGfY0eH01tFRis7snkZ4b3NSLjAbHew==
+"@sourcegraph/code-host-integration@0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.29.tgz#71b4392ad9bd4527f5baddc32bb90fda5c00a9c7"
+  integrity sha512-YtCZSuiBTUzlk2ku9xIHPbEIBYfwNtdZQCVaEL1AvMG0Ds0tEDBiiRdW/ZpdYjskOGwslv2wkKC2sGE/zUUrIQ==
 
 "@types/anymatch@*":
   version "1.3.0"

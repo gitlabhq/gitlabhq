@@ -26,4 +26,4 @@ Response example:
 { "html": "<p dir=\"auto\">Hello world! <gl-emoji title=\"party popper\" data-name=\"tada\" data-unicode-version=\"6.0\">🎉</gl-emoji></p>" }
 ```
 
-[ce-18926]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18926
+[ce-18926]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18926

@@ -1,6 +1,6 @@
 # User lookup via OpenSSH's AuthorizedPrincipalsCommand
 
-> [Available in](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19911) GitLab
+> [Available in](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19911) GitLab
 > Community Edition 11.2.
 
 GitLab's default SSH authentication requires users to upload their SSH

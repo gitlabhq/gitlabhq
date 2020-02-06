@@ -30,7 +30,7 @@
               .btn-group.new-project-subgroup.droplab-dropdown.home-panel-action-button.prepend-top-default.js-new-project-subgroup.qa-new-project-or-subgroup-dropdown{ data: { project_path: new_project_path(namespace_id: @group.id), subgroup_path: new_group_path(parent_id: @group.id) } }
                 %input.btn.btn-success.dropdown-primary.js-new-group-child.qa-new-in-group-button{ type: "button", value: new_project_label, data: { action: "new-project" } }
                 %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle.qa-new-project-or-subgroup-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#new-project-or-subgroup-dropdown", 'display' => 'static' } }
-                  = sprite_icon("arrow-down", css_class: "icon dropdown-btn-icon")
+                  = sprite_icon("chevron-down", css_class: "icon dropdown-btn-icon")
                 %ul#new-project-or-subgroup-dropdown.dropdown-menu.dropdown-menu-right{ data: { dropdown: true } }
                   %li.droplab-item-selected.qa-new-project-option{ role: "button", data: { value: "new-project", text: new_project_label } }
                     .menu-item

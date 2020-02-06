@@ -140,7 +140,7 @@ Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
-[ee-557]: https://gitlab.com/gitlab-org/gitlab/merge_requests/557
-[ee-735]: https://gitlab.com/gitlab-org/gitlab/merge_requests/735
+[ee-557]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/557
+[ee-735]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/735
 [ce-23361]: https://gitlab.com/gitlab-org/gitlab-foss/issues/23361
-[ee-6602]: https://gitlab.com/gitlab-org/gitlab/merge_requests/6602
+[ee-6602]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6602

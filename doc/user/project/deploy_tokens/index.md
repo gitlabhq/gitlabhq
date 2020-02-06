@@ -41,7 +41,7 @@ the following table.
 
 ## Deploy token custom username
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/29639) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29639) in GitLab 12.1.
 
 The default username format is `gitlab+deploy-token-#{n}`. Some tools or platforms may not support this format,
 in such case you can specify custom username to be used when creating the deploy token.
@@ -94,7 +94,7 @@ those variables:
 docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
 ```
 
-[ce-17894]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17894
-[ce-11845]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/11845
-[ce-18414]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18414
+[ce-17894]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17894
+[ce-11845]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11845
+[ce-18414]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18414
 [container registry]: ../../packages/container_registry/index.md

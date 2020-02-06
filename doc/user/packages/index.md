@@ -19,7 +19,7 @@ The Packages feature allows GitLab to act as a repository for the following:
 
 Consider contributing to GitLab. This [development documentation](../../development/packages.md) will
 guide you through the process. Or check out how other members of the community
-are adding support for [PHP](https://gitlab.com/gitlab-org/gitlab/merge_requests/17417) or [Terraform](https://gitlab.com/gitlab-org/gitlab/merge_requests/18834).
+are adding support for [PHP](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17417) or [Terraform](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834).
 
 | Format | Use case |
 | ------ | ------ |

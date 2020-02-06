@@ -512,4 +512,4 @@ DELETE /projects/:id/boards/:board_id/lists/:list_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1
 ```
 
-[ee-5954]: https://gitlab.com/gitlab-org/gitlab/merge_requests/5954
+[ee-5954]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5954

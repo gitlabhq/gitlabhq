@@ -356,7 +356,7 @@ over `password`. In addition, `reset_password` and
 `force_random_password` can be used together.
 
 NOTE: **Note:**
-From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/29888/), `private_profile` will default to `false`.
+From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29888/), `private_profile` will default to `false`.
 
 ```
 POST /users
@@ -1416,7 +1416,7 @@ Please note that `last_activity_at` is deprecated, please use `last_activity_on`
 
 ## User memberships (admin only)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/22518) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22518) in GitLab 12.8.
 
 Lists all projects and groups a user is a member of. This endpoint is available for admins only.
 It returns the `source_id`, `source_name`, `source_type` and `access_level` of a membership.

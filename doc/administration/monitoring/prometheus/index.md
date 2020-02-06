@@ -325,5 +325,5 @@ To disable the monitoring of Kubernetes:
 [prometheus]: https://prometheus.io
 [prom-grafana]: https://prometheus.io/docs/visualization/grafana/
 [reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure
-[1261]: https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1261
+[1261]: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1261
 [prometheus integration]: ../../../user/project/integrations/prometheus.md

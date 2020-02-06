@@ -99,7 +99,7 @@ first script exiting with a non-zero value.
 
 ## Custom error messages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5073) in GitLab 8.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5073) in GitLab 8.10.
 
 To have custom error messages appear in GitLab's UI when the commit is
 declined or an error occurs during the Git hook, your script should:

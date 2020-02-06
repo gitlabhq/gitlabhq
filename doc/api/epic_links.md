@@ -1,7 +1,7 @@
 # Epic Links API **(ULTIMATE)**
 
 >**Note:**
-> This endpoint was [introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/9188) in GitLab 11.8.
+> This endpoint was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9188) in GitLab 11.8.
 
 Manages parent-child [epic relationships](../user/group/epics/index.md#multi-level-child-epics).
 

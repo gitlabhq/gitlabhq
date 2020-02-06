@@ -29,7 +29,7 @@ There is a limit of 5,000 comments for every object, for example: issue, epic, a
 
 ## Resolvable comments and threads
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5022) in GitLab 8.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5022) in GitLab 8.11.
 > - Resolvable threads can be added only to merge request diffs.
 
 Thread resolution helps keep track of progress during planning or code review.
@@ -292,7 +292,7 @@ Additionally, locked issues and merge requests can not be reopened.
 
 ## Merge Request Reviews **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/4213) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab 11.4.
 
 When looking at a Merge Request diff, you are able to start a review.
 This allows you to create comments inside a Merge Request that are **only visible to you** until published,
@@ -501,13 +501,13 @@ to the original comment, so a note about when it was last edited will appear und
 This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff threads are
 not supported yet.
 
-[ce-7125]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7125
-[ce-7527]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7527
-[ce-7180]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7180
-[ce-8266]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/8266
-[ce-14053]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14053
-[ce-14061]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14061
-[ce-14531]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14531
+[ce-7125]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7125
+[ce-7527]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7527
+[ce-7180]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7180
+[ce-8266]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8266
+[ce-14053]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14053
+[ce-14061]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14061
+[ce-14531]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14531
 [ce-31847]: https://gitlab.com/gitlab-org/gitlab-foss/issues/31847
 [resolve-discussion-button]: img/resolve_discussion_button.png
 [resolve-comment-button]: img/resolve_comment_button.png

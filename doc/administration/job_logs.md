@@ -66,7 +66,7 @@ job output in the UI will be empty.
 
 ## New incremental logging architecture
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18169) in GitLab 10.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18169) in GitLab 10.4.
 > - [Announced as generally available](https://gitlab.com/gitlab-org/gitlab-foss/issues/46097) in GitLab 11.0.
 
 NOTE: **Note:**

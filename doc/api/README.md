@@ -389,7 +389,7 @@ Additional pagination headers are also sent back.
 
 CAUTION: **Caution:**
 For performance reasons since
-[GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23931)
+[GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23931)
 and **behind the `api_kaminari_count_with_limit`
 [feature flag](../development/feature_flags.md)**, if the number of resources is
 more than 10,000, the `X-Total` and `X-Total-Pages` headers as well as the
@@ -627,7 +627,7 @@ specifically used by GitLab.com, see
 [GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
 
 [lib-api-url]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/api/api.rb
-[ce-3749]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/3749
-[ce-5951]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5951
-[ce-9099]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9099
+[ce-3749]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3749
+[ce-5951]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5951
+[ce-9099]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9099
 [pat]: ../user/profile/personal_access_tokens.md

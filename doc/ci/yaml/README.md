@@ -818,7 +818,7 @@ This could result in some unexpected behavior, including:
 
 ### `rules`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/29011) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29011) in GitLab 12.3.
 
 `rules` allows for a list of individual rule objects to be evaluated
 *in order*, until one matches and dynamically provides attributes to the job.
@@ -905,7 +905,7 @@ In this example, a job either set to:
 
 #### `rules:exists`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16574) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16574) in GitLab 12.4.
 
 `exists` accepts an array of paths and will match if any of these paths exist
 as files in the repository.
@@ -1248,7 +1248,7 @@ stages by triggering the blocking manual job.
 
 #### `when:delayed`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21767) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21767) in GitLab 11.4.
 
 Delayed job are for executing scripts after a certain period.
 This is useful if you want to avoid jobs entering `pending` state immediately.
@@ -2002,7 +2002,7 @@ job:
 
 #### `artifacts:reports`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20390) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20390) in
 GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
 The `reports` keyword is used for collecting test reports from jobs and
@@ -2020,7 +2020,7 @@ If you also want the ability to browse the report output files, include the
 
 ##### `artifacts:reports:junit`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20390) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20390) in
 GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
 The `junit` report collects [JUnit XML files](https://www.ibm.com/support/knowledgecenter/en/SSQ2R2_14.1.0/com.ibm.rsar.analysis.codereview.cobol.doc/topics/cac_useresults_junit.html)
@@ -2426,7 +2426,7 @@ job1:
 ### `retry`
 
 > - [Introduced][ce-12909] in GitLab 9.5.
-> - [Behaviour expanded](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21758) in GitLab 11.5 to control on which failures to retry.
+> - [Behaviour expanded](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21758) in GitLab 11.5 to control on which failures to retry.
 
 `retry` allows you to configure how many times a job is going to be retried in
 case of a failure.
@@ -2524,7 +2524,7 @@ exceed the Runner-specific timeout.
 
 ### `parallel`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22631) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22631) in GitLab 11.5.
 
 `parallel` allows you to configure how many instances of a job to run in
 parallel. This value has to be greater than or equal to two (2) and less than or equal to 50.
@@ -2684,7 +2684,7 @@ starting, at the cost of reduced parallelization.
 
 ### `interruptible`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23464) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23464) in GitLab 12.3.
 
 `interruptible` is used to indicate that a job should be canceled if made redundant by a newer pipeline run. Defaults to `false`.
 This value will only be used if the [automatic cancellation of redundant pipelines feature](../../user/project/pipelines/settings.md#auto-cancel-pending-pipelines)
@@ -2771,7 +2771,7 @@ one can be deployed to, but there can be only one deployment per device at any g
 
 > - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
 > - Available for Starter, Premium and Ultimate since 10.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21603) to GitLab Core in 11.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21603) to GitLab Core in 11.4.
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 `include` requires the external YAML file to have the extensions `.yml` or `.yaml`,
@@ -3575,7 +3575,7 @@ default:
 
 ## Custom build directories
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1267) in GitLab Runner 11.10
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1267) in GitLab Runner 11.10
 
 NOTE: **Note:**
 This can only be used when `custom_build_dir` is enabled in the [Runner's
@@ -3924,11 +3924,11 @@ Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
-[ce-6323]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/6323
-[ce-6669]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/6669
-[ce-7983]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7983
-[ce-7447]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7447
-[ce-12909]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12909
+[ce-6323]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6323
+[ce-6669]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6669
+[ce-7983]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7983
+[ce-7447]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7447
+[ce-12909]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12909
 [ce-19232]: https://gitlab.com/gitlab-org/gitlab-foss/issues/19232
 [environment]: ../environments.md "CI/CD environments"
 [schedules]: ../../user/project/pipelines/schedules.md "Pipelines schedules"

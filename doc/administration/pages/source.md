@@ -447,8 +447,8 @@ You should strongly consider running GitLab Pages under a different hostname
 than GitLab to prevent XSS attacks.
 
 [backup]: ../../raketasks/backup_restore.md
-[ee-80]: https://gitlab.com/gitlab-org/gitlab/merge_requests/80
-[ee-173]: https://gitlab.com/gitlab-org/gitlab/merge_requests/173
+[ee-80]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80
+[ee-173]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173
 [gitlab pages daemon]: https://gitlab.com/gitlab-org/gitlab-pages
 [NGINX configs]: https://gitlab.com/gitlab-org/gitlab/tree/8-5-stable-ee/lib/support/nginx
 [pages-readme]: https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md

@@ -52,7 +52,7 @@ export default {
       >
         <icon name="doc-code" class="align-top append-right-4" />
         {{ __('Source code') }}
-        <icon name="arrow-down" />
+        <icon name="chevron-down" />
       </button>
 
       <div class="js-sources-dropdown dropdown-menu">

@@ -59,7 +59,7 @@ Using this permission structure in our example allows only UK staff access to se
 
 ### Updating user permissions - new feature
 
-Since GitLab [v8.15](https://gitlab.com/gitlab-org/gitlab/merge_requests/822) LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions visit the groups **Members** page and select **Edit permissions**.
+Since GitLab [v8.15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/822) LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions visit the groups **Members** page and select **Edit permissions**.
 
 ![Setting manual permissions](img/manual_permissions.gif)
 

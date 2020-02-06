@@ -156,7 +156,7 @@ An admin can enable/disable a specific Runner for projects:
 
 ## Protected Runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/13194) in GitLab 10.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13194) in GitLab 10.0.
 
 You can protect Runners from revealing sensitive information.
 Whenever a Runner is protected, the Runner picks only jobs created on
@@ -386,7 +386,7 @@ value of the new token.
 
 ## Determining the IP address of a Runner
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17286) in GitLab 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17286) in GitLab 10.6.
 
 It may be useful to know the IP address of a Runner so you can troubleshoot
 issues with that Runner. GitLab stores and displays the IP address by viewing

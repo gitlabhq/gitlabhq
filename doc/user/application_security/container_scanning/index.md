@@ -4,7 +4,7 @@ type: reference, howto
 
 # Container Scanning **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/3672)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3672)
 in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
 ## Overview

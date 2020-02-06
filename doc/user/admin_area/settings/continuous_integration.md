@@ -86,7 +86,7 @@ artifacts, as described in the [troubleshooting documentation](../../../administ
 
 ## Shared Runners pipeline minutes quota **(STARTER ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/1078)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1078)
 in GitLab Starter 8.16.
 
 If you have enabled shared Runners for your GitLab instance, you can limit their
@@ -143,7 +143,7 @@ for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
 
 ## Default CI configuration path
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18073) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18073) in GitLab 12.5.
 
 The default CI configuration file path for new projects can be set in the Admin
 Area of your GitLab instance (`.gitlab-ci.yml` if not set):

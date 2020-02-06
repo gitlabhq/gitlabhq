@@ -4,9 +4,9 @@ type: reference
 
 # Burndown Charts **(STARTER)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/1540) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.1 for project milestones.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/5354) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.8 for group milestones.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/merge_requests/6495) to [GitLab Starter](https://about.gitlab.com/pricing/) 11.2 for group milestones.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1540) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.1 for project milestones.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5354) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.8 for group milestones.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6495) to [GitLab Starter](https://about.gitlab.com/pricing/) 11.2 for group milestones.
 > - Closed or reopened issues prior to GitLab 9.1 won't have a `closed_at`
 >   value, so the burndown chart considers them as closed on the milestone
 >  `start_date`. In that case, a warning will be displayed.

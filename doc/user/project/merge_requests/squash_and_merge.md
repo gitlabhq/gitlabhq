@@ -4,8 +4,8 @@ type: reference, concepts
 
 # Squash and merge
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/1024) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.17.
-> - [Ported](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18956) to GitLab Core 11.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1024) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.17.
+> - [Ported](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18956) to GitLab Core 11.0.
 
 With squash and merge you can combine all your merge request's commits into one
 and retain a clean history.

@@ -1,6 +1,6 @@
 # GitLab Container Registry
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4040) in GitLab 8.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4040) in GitLab 8.8.
 > - Docker Registry manifest `v1` support was added in GitLab 8.9 to support Docker
 >   versions earlier than 1.10.
 > - Starting from GitLab 8.12, if you have 2FA enabled in your account, you need

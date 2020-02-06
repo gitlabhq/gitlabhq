@@ -66,7 +66,7 @@ The **Productivity Analytics** dashboard can be accessed only:
 
 Productivity Analytics is:
 
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/merge_requests/18754) from GitLab 12.4,
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18754) from GitLab 12.4,
   but can be disabled using the following feature flags:
   - `productivity_analytics`.
   - `productivity_analytics_scatterplot_enabled`.
