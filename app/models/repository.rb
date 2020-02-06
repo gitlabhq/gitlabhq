@@ -1069,24 +1069,6 @@ class Repository
     raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end
 
-  # DEPRECATED: https://gitlab.com/gitlab-org/gitaly/issues/1628
-  def rebase_deprecated(user, merge_request)
-    rebase_sha = raw.rebase_deprecated(
-      user,
-      merge_request.id,
-      branch: merge_request.source_branch,
-      branch_sha: merge_request.source_branch_sha,
-      remote_repository: merge_request.target_project.repository.raw,
-      remote_branch: merge_request.target_branch
-    )
-
-    # To support the full deprecated behaviour, set the
-    # `rebase_commit_sha` for the merge_request here and return the value
-    merge_request.update(rebase_commit_sha: rebase_sha, merge_error: nil)
-
-    rebase_sha
-  end
-
   def rebase(user, merge_request, skip_ci: false)
     push_options = []
     push_options << Gitlab::PushOptions::CI_SKIP if skip_ci

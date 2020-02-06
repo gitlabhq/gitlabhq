@@ -50,6 +50,7 @@
     - <<: *if-canonical-dot-com-gitlab-org-groups-merge-request
       changes: *code-docs-patterns
       when: manual
+  allow_failure: true
   image: ruby:2.6-alpine
   stage: review
   dependencies: []

@@ -61,7 +61,7 @@ export default {
       eventHub.$emit('EnablePolling');
     },
     updateTimer() {
-      this.timer -= 1;
+      this.timer = this.timer - 1;
 
       if (this.timer === 0) {
         this.refresh();

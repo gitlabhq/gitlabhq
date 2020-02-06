@@ -18,7 +18,7 @@ describe('IssueAssigneesComponent', () => {
         ...props,
       },
     });
-    vm = wrapper.vm;
+    vm = wrapper.vm; // eslint-disable-line
   };
 
   const findTooltipText = () => wrapper.find('.js-assignee-tooltip').text();

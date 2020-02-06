@@ -97,6 +97,7 @@ not found in standard Markdown:
 - [Math equations and symbols written in LaTeX](#math)
 - [Special GitLab references](#special-gitlab-references)
 - [Task Lists](#task-lists)
+- [Table of Contents](#table-of-contents)
 - [Wiki specific Markdown](#wiki-specific-markdown)
 
 It also has [extended Markdown features](#standard-markdown-and-extensions-in-gitlab), without
@@ -455,6 +456,17 @@ unordered or ordered lists:
 1. [ ] Incomplete task
    1. [ ] Sub-task 1
    1. [x] Sub-task 2
+
+### Table of Contents
+
+A table of contents can be added to a Markdown file, issue or merge request
+description, or a wiki page, by adding the tag `[[_TOC_]]` on its own line.
+It will be replaced with an unordered list that links to the various
+headers.
+
+```markdown
+[[_TOC_]]
+```
 
 ### Wiki-specific Markdown
 

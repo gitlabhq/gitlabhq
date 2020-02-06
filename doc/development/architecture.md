@@ -6,9 +6,9 @@ There are two software distributions of GitLab: the open source [Community Editi
 
 New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
 
-For information, see the [GitLab Release Process](https://gitlab.com/gitlab-org/release/docs/tree/master#gitlab-release-process).
+For information, see the [GitLab Release Process](https://gitlab.com/gitlab-org/release/docs/-/tree/master#gitlab-release-process).
 
-Both EE and CE require some add-on components called GitLab Shell and Gitaly. These components are available from the [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell/tree/master) and [Gitaly](https://gitlab.com/gitlab-org/gitaly/tree/master) repositories respectively. New versions are usually tags but staying on the master branch will give you the latest stable version. New releases are generally around the same time as GitLab CE releases with exception for informal security updates deemed critical.
+Both EE and CE require some add-on components called GitLab Shell and Gitaly. These components are available from the [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/master) and [Gitaly](https://gitlab.com/gitlab-org/gitaly/-/tree/master) repositories respectively. New versions are usually tags but staying on the master branch will give you the latest stable version. New releases are generally around the same time as GitLab CE releases with exception for informal security updates deemed critical.
 
 ## Components
 
@@ -24,7 +24,7 @@ The add-on component GitLab Shell serves repositories over SSH. It manages the S
 
 Gitaly executes Git operations from GitLab Shell and the GitLab web app, and provides an API to the GitLab web app to get attributes from Git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files).
 
-You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/).
+You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/).
 
 ### Simplified Component Overview
 
