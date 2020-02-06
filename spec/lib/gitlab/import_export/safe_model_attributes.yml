@@ -783,6 +783,7 @@ ZoomMeeting:
 ServiceDeskSetting:
 - project_id
 - issue_template_key
+- project_key
 ContainerExpirationPolicy:
 - created_at
 - updated_at

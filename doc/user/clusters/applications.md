@@ -9,6 +9,10 @@ and [deployments](../../ci/environments.md) when using [Auto DevOps](../../topic
 You can install them after you
 [create a cluster](../project/clusters/add_remove_clusters.md).
 
+Interested in contributing a new GitLab managed app? Visit the
+[development guidelines page](../../development/kubernetes.md#gitlab-managed-apps)
+to get started.
+
 ## Installing applications
 
 Applications managed by GitLab will be installed onto the `gitlab-managed-apps` namespace.

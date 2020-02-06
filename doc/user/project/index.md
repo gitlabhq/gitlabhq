@@ -114,15 +114,37 @@ Learn how to [create a new project](../../gitlab-basics/create-project.md) in Gi
 
 ### Fork a project
 
-You can [fork a project](../../gitlab-basics/fork-project.md) in order to:
+You can [fork a project](repository/forking_workflow.md) in order to:
 
 - Collaborate on code by forking a project and creating a merge request
   from your fork to the upstream project
 - Fork a sample project to work on the top of that
 
+### Star a project
+
+You can star a project to make it easier to find projects you frequently use.
+The number of stars a project has can indicate its popularity.
+
+To star a project:
+
+1. Go to the home page of the project you want to star.
+1. In the upper right corner of the page, click **Star**.
+
+To view your starred projects:
+
+1. Click **Projects** in the navigation bar.
+1. Click **Starred Projects**.
+1. GitLab displays information about your starred projects, including:
+
+   - Project description, including name, description, and icon
+   - Number of times this project has been starred
+   - Number of times this project has been forked
+   - Number of open merge requests
+   - Number of open issues
+
 ## Project settings
 
-Set the project's visibility level and  the access levels to its various pages
+Set the project's visibility level and the access levels to its various pages
 and perform actions like archiving, renaming or transferring a project.
 
 Read through the documentation on [project settings](settings/index.md).

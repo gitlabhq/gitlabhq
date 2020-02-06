@@ -1,4 +1,4 @@
-/* eslint-disable  one-var, consistent-return */
+/* eslint-disable max-classes-per-file, one-var, consistent-return */
 
 import $ from 'jquery';
 import _ from 'underscore';
