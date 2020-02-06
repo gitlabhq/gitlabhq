@@ -689,7 +689,7 @@ describe API::Issues do
       end
     end
 
-    context "#to_reference" do
+    describe "#to_reference" do
       it 'exposes reference path in context of group' do
         get api(base_url, user)
 

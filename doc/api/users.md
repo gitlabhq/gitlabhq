@@ -385,7 +385,7 @@ Parameters:
 - `skip_confirmation` (optional) - Skip confirmation - true or false (default)
 - `external` (optional)          - Flags the user as external - true or false (default)
 - `avatar` (optional)            - Image file for user's avatar
-- `private_profile` (optional)   - User's profile is private - true or false (default)
+- `private_profile` (optional)   - User's profile is private - true, false (default), or null (will be converted to false)
 - `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **(STARTER)**
 - `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **(STARTER)**
 
@@ -423,7 +423,7 @@ Parameters:
 - `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
 - `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user
 - `avatar` (optional)              - Image file for user's avatar
-- `private_profile` (optional)     - User's profile is private - true or false (default)
+- `private_profile` (optional)     - User's profile is private - true, false (default), or null (will be converted to false)
 - `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **(STARTER)**
 - `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **(STARTER)**
 - `note` (optional)                - Admin notes for this user **(STARTER)**

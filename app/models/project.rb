@@ -2304,6 +2304,10 @@ class Project < ApplicationRecord
     ci_config_path.blank? || ci_config_path == Gitlab::FileDetector::PATTERNS[:gitlab_ci]
   end
 
+  def limited_protected_branches(limit)
+    protected_branches.limit(limit)
+  end
+
   private
 
   def closest_namespace_setting(name)

@@ -1,0 +1,5 @@
+---
+title: 'Add CI variables to configure bundler-audit advisory database (Dependency Scanning)'
+merge_request: 23717
+author:
+type: added

@@ -152,7 +152,7 @@ describe JiraService do
         end
       end
 
-      context '#update' do
+      describe '#update' do
         context 'basic update' do
           let(:new_username) { 'new_username' }
           let(:new_url) { 'http://jira-new.example.com' }

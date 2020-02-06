@@ -51,7 +51,7 @@ describe Ci::ArtifactBlob do
       allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
     end
 
-    context '.gif extension' do
+    describe '.gif extension' do
       it 'returns nil' do
         expect(subject.external_url(build.project, build)).to be_nil
       end

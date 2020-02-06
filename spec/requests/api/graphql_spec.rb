@@ -46,7 +46,7 @@ describe 'GraphQL' do
       end
 
       it 'logs the exception in Sentry and continues with the request' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(1).times
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once)
         expect(Gitlab::GraphqlLogger).to receive(:info)
 
         post_graphql(query, variables: {})

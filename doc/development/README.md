@@ -83,6 +83,7 @@ Complementary reads:
 - [Cycle Analytics development guide](cycle_analytics.md)
 - [Issue types vs first-class types](issue_types.md)
 - [Application limits](application_limits.md)
+- [Redis guidelines](redis.md)
 
 ## Performance guides
 

@@ -681,7 +681,7 @@ describe User, :do_not_mock_admin_mode do
   end
 
   describe 'before save hook' do
-    context '#default_private_profile_to_false' do
+    describe '#default_private_profile_to_false' do
       let(:user) { create(:user, private_profile: true) }
 
       it 'converts nil to false' do
@@ -3161,7 +3161,7 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  context '.active' do
+  describe '.active' do
     before do
       described_class.ghost
       create(:user, name: 'user', state: 'active')
@@ -3181,7 +3181,7 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  context '#invalidate_issue_cache_counts' do
+  describe '#invalidate_issue_cache_counts' do
     let(:user) { build_stubbed(:user) }
 
     it 'invalidates cache for issue counter' do
@@ -3195,7 +3195,7 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  context '#invalidate_merge_request_cache_counts' do
+  describe '#invalidate_merge_request_cache_counts' do
     let(:user) { build_stubbed(:user) }
 
     it 'invalidates cache for Merge Request counter' do
@@ -3209,7 +3209,7 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  context '#invalidate_personal_projects_count' do
+  describe '#invalidate_personal_projects_count' do
     let(:user) { build_stubbed(:user) }
 
     it 'invalidates cache for personal projects counter' do

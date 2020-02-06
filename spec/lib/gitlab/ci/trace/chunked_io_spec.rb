@@ -12,7 +12,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     stub_feature_flags(ci_enable_live_trace: true)
   end
 
-  context "#initialize" do
+  describe "#initialize" do
     context 'when a chunk exists' do
       before do
         build.trace.set('ABC')
@@ -35,7 +35,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     end
   end
 
-  context "#seek" do
+  describe "#seek" do
     subject { chunked_io.seek(pos, where) }
 
     before do
@@ -66,7 +66,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     end
   end
 
-  context "#eof?" do
+  describe "#eof?" do
     subject { chunked_io.eof? }
 
     before do
@@ -90,7 +90,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     end
   end
 
-  context "#each_line" do
+  describe "#each_line" do
     let(:string_io) { StringIO.new(sample_trace_raw) }
 
     context 'when buffer size is smaller than file size' do
@@ -134,7 +134,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     end
   end
 
-  context "#read" do
+  describe "#read" do
     subject { chunked_io.read(length) }
 
     context 'when read the whole size' do
@@ -254,7 +254,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     end
   end
 
-  context "#readline" do
+  describe "#readline" do
     subject { chunked_io.readline }
 
     let(:string_io) { StringIO.new(sample_trace_raw) }
@@ -334,7 +334,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     end
   end
 
-  context "#write" do
+  describe "#write" do
     subject { chunked_io.write(data) }
 
     let(:data) { sample_trace_raw }
@@ -399,7 +399,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     end
   end
 
-  context "#truncate" do
+  describe "#truncate" do
     let(:offset) { 10 }
 
     context 'when data does not exist' do
@@ -432,7 +432,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     end
   end
 
-  context "#destroy!" do
+  describe "#destroy!" do
     subject { chunked_io.destroy! }
 
     before do

@@ -87,7 +87,7 @@ describe DeploymentMetrics do
         expect(prometheus_adapter).to receive(:query).with(:deployment, deployment).and_return(simple_metrics)
       end
 
-      it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.created_at.to_i })) }
+      it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.finished_at.to_i })) }
     end
   end
 

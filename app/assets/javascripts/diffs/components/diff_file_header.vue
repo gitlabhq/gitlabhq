@@ -285,7 +285,7 @@ export default {
           ref="viewButton"
           v-gl-tooltip.hover
           :href="diffFile.view_path"
-          target="blank"
+          target="_blank"
           class="view-file"
           data-track-event="click_toggle_view_sha_button"
           data-track-label="diff_toggle_view_sha_button"

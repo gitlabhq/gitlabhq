@@ -14,7 +14,7 @@ describe ContainerRegistry::Registry do
 
   it { expect(subject).not_to be_nil }
 
-  context '#path' do
+  describe '#path' do
     subject { registry.path }
 
     context 'path from URL' do

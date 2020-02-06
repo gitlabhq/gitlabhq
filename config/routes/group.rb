@@ -76,7 +76,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       end
     end
 
-    resources :container_registries, only: [:index], controller: 'registry/repositories'
+    resources :container_registries, only: [:index, :show], controller: 'registry/repositories'
   end
 
   scope(path: '*id',

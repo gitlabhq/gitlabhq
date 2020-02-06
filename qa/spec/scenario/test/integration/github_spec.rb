@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe QA::Scenario::Test::Integration::Github do
-  context '#perform' do
+  describe '#perform' do
     let(:env) { spy('Runtime::Env') }
 
     before do

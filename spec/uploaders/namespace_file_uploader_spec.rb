@@ -37,7 +37,7 @@ describe NamespaceFileUploader do
     end
   end
 
-  context '.base_dir' do
+  describe '.base_dir' do
     it 'returns local storage base_dir without store param' do
       expect(described_class.base_dir(group)).to eq("uploads/-/system/namespace/#{group.id}")
     end

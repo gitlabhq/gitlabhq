@@ -4966,7 +4966,7 @@ describe Project do
     end
   end
 
-  context '#members_among' do
+  describe '#members_among' do
     let(:users) { create_list(:user, 3) }
 
     set(:group) { create(:group) }
@@ -5504,6 +5504,18 @@ describe Project do
 
       expect(described_class.with_issues_or_mrs_available_for_user(user))
         .to contain_exactly(project1, project3, project4)
+    end
+  end
+
+  describe '#limited_protected_branches' do
+    let(:project) { create(:project) }
+    let!(:protected_branch) { create(:protected_branch, project: project) }
+    let!(:another_protected_branch) { create(:protected_branch, project: project) }
+
+    subject { project.limited_protected_branches(1) }
+
+    it 'returns limited number of protected branches based on specified limit' do
+      expect(subject).to eq([another_protected_branch])
     end
   end
 

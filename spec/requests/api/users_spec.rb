@@ -778,6 +778,12 @@ describe API::Users do
       expect(user.reload.external?).to be_truthy
     end
 
+    it "private profile is false by default" do
+      put api("/users/#{user.id}", admin), params: {}
+
+      expect(user.reload.private_profile).to eq(false)
+    end
+
     it "updates private profile" do
       put api("/users/#{user.id}", admin), params: { private_profile: true }
 
@@ -785,12 +791,22 @@ describe API::Users do
       expect(user.reload.private_profile).to eq(true)
     end
 
-    it "updates private profile when nil is given to false" do
-      admin.update(private_profile: true)
+    it "updates private profile to false when nil is given" do
+      user.update(private_profile: true)
 
       put api("/users/#{user.id}", admin), params: { private_profile: nil }
 
+      expect(response).to have_gitlab_http_status(200)
       expect(user.reload.private_profile).to eq(false)
+    end
+
+    it "does not modify private profile when field is not provided" do
+      user.update(private_profile: true)
+
+      put api("/users/#{user.id}", admin), params: {}
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(user.reload.private_profile).to eq(true)
     end
 
     it "does not update admin status" do

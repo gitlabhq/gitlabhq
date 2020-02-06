@@ -258,7 +258,7 @@ describe DiffHelper do
     end
   end
 
-  context '#render_overflow_warning?' do
+  describe '#render_overflow_warning?' do
     let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::MergeRequestDiff, raw_diff_files: diff_files) }
     let(:diff_files) { Gitlab::Git::DiffCollection.new(files) }
     let(:safe_file) { { too_large: false, diff: '' } }
@@ -303,7 +303,7 @@ describe DiffHelper do
     end
   end
 
-  context '#diff_file_path_text' do
+  describe '#diff_file_path_text' do
     it 'returns full path by default' do
       expect(diff_file_path_text(diff_file)).to eq(diff_file.new_path)
     end

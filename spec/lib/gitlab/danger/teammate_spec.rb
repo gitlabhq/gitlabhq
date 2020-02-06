@@ -176,7 +176,7 @@ describe Gitlab::Danger::Teammate do
 
     it 'returns true if request fails' do
       expect(Gitlab::Danger::RequestHelper).to receive(:http_get_json)
-                                                   .exactly(2).times
+                                                   .twice
                                                    .and_raise(Gitlab::Danger::RequestHelper::HTTPError.new)
 
       expect(subject.available?).to be true

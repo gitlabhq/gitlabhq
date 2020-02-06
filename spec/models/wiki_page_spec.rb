@@ -44,7 +44,7 @@ describe WikiPage do
         WikiDirectory.new('dir_2', pages)
       end
 
-      context "#list_pages" do
+      describe "#list_pages" do
         context 'sort by title' do
           let(:grouped_entries) { described_class.group_by_directory(wiki.list_pages) }
           let(:expected_grouped_entries) { [dir_1_1, dir_1, page_dir_2, dir_2, page_1, page_6] }

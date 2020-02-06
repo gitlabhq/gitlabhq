@@ -9,7 +9,7 @@ RSpec.shared_examples 'issues list service' do
     described_class.new(parent, user, params).execute
   end
 
-  context '#metadata' do
+  describe '#metadata' do
     it 'returns issues count for list' do
       params = { board_id: board.id, id: list1.id }
 

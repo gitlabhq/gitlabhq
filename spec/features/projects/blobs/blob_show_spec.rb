@@ -453,7 +453,7 @@ describe 'File blob', :js do
     end
   end
 
-  context '.gitlab-ci.yml' do
+  describe '.gitlab-ci.yml' do
     before do
       project.add_maintainer(project.creator)
 
@@ -481,7 +481,7 @@ describe 'File blob', :js do
     end
   end
 
-  context '.gitlab/route-map.yml' do
+  describe '.gitlab/route-map.yml' do
     before do
       project.add_maintainer(project.creator)
 

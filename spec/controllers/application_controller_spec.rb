@@ -896,7 +896,7 @@ describe ApplicationController do
     end
   end
 
-  context '#set_current_context' do
+  describe '#set_current_context' do
     controller(described_class) do
       def index
         Labkit::Context.with_context do |context|

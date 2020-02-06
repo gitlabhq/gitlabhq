@@ -17,7 +17,7 @@ module QA
         end
       end
 
-      it 'user collapses and expands reply for comments in an issue' do
+      it 'collapses and expands reply for comments in an issue' do
         Page::Project::Issue::Show.perform do |show|
           one_reply = "1 reply"
 

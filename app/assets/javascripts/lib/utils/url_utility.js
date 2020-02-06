@@ -166,7 +166,7 @@ export const setUrlFragment = (url, fragment) => {
 
 export function visitUrl(url, external = false) {
   if (external) {
-    // Simulate `target="blank" rel="noopener noreferrer"`
+    // Simulate `target="_blank" rel="noopener noreferrer"`
     // See https://mathiasbynens.github.io/rel-noopener/
     const otherWindow = window.open();
     otherWindow.opener = null;

@@ -34,7 +34,7 @@ describe SourcegraphHelper do
     end
   end
 
-  context '#sourcegraph_experimental_message' do
+  describe '#sourcegraph_experimental_message' do
     let(:feature_conditional) { false }
     let(:public_only) { false }
 

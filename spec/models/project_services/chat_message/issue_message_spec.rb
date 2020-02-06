@@ -31,7 +31,7 @@ describe ChatMessage::IssueMessage do
   context 'without markdown' do
     let(:color) { '#C95823' }
 
-    context '#initialize' do
+    describe '#initialize' do
       before do
         args[:object_attributes][:description] = nil
       end

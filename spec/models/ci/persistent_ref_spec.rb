@@ -11,7 +11,7 @@ describe Ci::PersistentRef do
     pipeline.succeed!
   end
 
-  context '#exist?' do
+  describe '#exist?' do
     subject { pipeline.persistent_ref.exist? }
 
     let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
@@ -31,7 +31,7 @@ describe Ci::PersistentRef do
     end
   end
 
-  context '#create' do
+  describe '#create' do
     subject { pipeline.persistent_ref.create }
 
     let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
@@ -81,7 +81,7 @@ describe Ci::PersistentRef do
     end
   end
 
-  context '#delete' do
+  describe '#delete' do
     subject { pipeline.persistent_ref.delete }
 
     let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }

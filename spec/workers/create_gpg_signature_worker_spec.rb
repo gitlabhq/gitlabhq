@@ -31,7 +31,7 @@ describe CreateGpgSignatureWorker do
       allow(Gitlab::Gpg::Commit).to receive(:new).and_return(gpg_commit)
       allow(Gitlab::Gpg::Commit).to receive(:new).with(commits.first).and_raise(StandardError)
 
-      expect(gpg_commit).to receive(:signature).exactly(2).times
+      expect(gpg_commit).to receive(:signature).twice
 
       subject
     end

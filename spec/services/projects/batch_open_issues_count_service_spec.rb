@@ -8,7 +8,7 @@ describe Projects::BatchOpenIssuesCountService do
 
   let(:subject) { described_class.new([project_1, project_2]) }
 
-  context '#refresh_cache', :use_clean_rails_memory_store_caching do
+  describe '#refresh_cache', :use_clean_rails_memory_store_caching do
     before do
       create(:issue, project: project_1)
       create(:issue, project: project_1, confidential: true)

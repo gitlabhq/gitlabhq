@@ -245,7 +245,7 @@ describe Projects::MilestonesController do
     end
   end
 
-  context '#participants' do
+  describe '#participants' do
     render_views
 
     context "when guest user" do

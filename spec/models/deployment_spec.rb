@@ -495,7 +495,7 @@ describe Deployment do
     end
   end
 
-  context '#update_status' do
+  describe '#update_status' do
     let(:deploy) { create(:deployment, status: :running) }
 
     it 'changes the status' do

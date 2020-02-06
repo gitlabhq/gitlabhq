@@ -31,7 +31,7 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
     Gitlab::GitalyClient.instance_variable_set(:@can_use_disk, {})
   end
 
-  context '#execute_rugged_call', :request_store do
+  describe '#execute_rugged_call', :request_store do
     let(:args) { ['refs/heads/master', 1] }
 
     before do

@@ -2264,7 +2264,7 @@ describe NotificationService, :mailer do
     end
 
     it 'filters out guests when new note is created' do
-      expect(SentNotification).to receive(:record).with(merge_request, any_args).exactly(1).times
+      expect(SentNotification).to receive(:record).with(merge_request, any_args).once
 
       notification.new_note(note)
 

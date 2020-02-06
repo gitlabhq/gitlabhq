@@ -106,13 +106,13 @@ describe NavHelper, :do_not_mock_admin_mode do
     end
   end
 
-  context '.admin_monitoring_nav_links' do
+  describe '.admin_monitoring_nav_links' do
     subject { helper.admin_monitoring_nav_links }
 
     it { is_expected.to all(be_a(String)) }
   end
 
-  context '.group_issues_sub_menu_items' do
+  describe '.group_issues_sub_menu_items' do
     subject { helper.group_issues_sub_menu_items }
 
     it { is_expected.to all(be_a(String)) }

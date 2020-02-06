@@ -371,7 +371,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :container_registry, only: [:index, :destroy],
+      resources :container_registry, only: [:index, :destroy, :show],
                                      controller: 'registry/repositories'
 
       namespace :registry do

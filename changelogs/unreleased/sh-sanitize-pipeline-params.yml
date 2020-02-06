@@ -1,0 +1,5 @@
+---
+title: Redact push options from error logs
+merge_request: 24540
+author:
+type: fixed

@@ -781,7 +781,7 @@ describe API::MergeRequests do
       it_behaves_like 'merge requests list'
     end
 
-    context "#to_reference" do
+    describe "#to_reference" do
       it 'exposes reference path in context of group' do
         get api("/groups/#{group.id}/merge_requests", user)
 

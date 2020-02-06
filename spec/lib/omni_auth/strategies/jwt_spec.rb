@@ -6,7 +6,7 @@ describe OmniAuth::Strategies::Jwt do
   include Rack::Test::Methods
   include DeviseHelpers
 
-  context '#decoded' do
+  describe '#decoded' do
     subject { described_class.new({}) }
 
     let(:timestamp) { Time.now.to_i }

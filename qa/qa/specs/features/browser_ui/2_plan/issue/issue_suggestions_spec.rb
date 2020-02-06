@@ -13,7 +13,7 @@ module QA
         end.project.visit!
       end
 
-      it 'user sees issue suggestions when creating a new issue' do
+      it 'shows issue suggestions when creating a new issue' do
         Page::Project::Show.perform(&:go_to_new_issue)
         Page::Project::Issue::New.perform do |new_page|
           new_page.add_title("issue")

@@ -85,7 +85,7 @@ describe Clusters::Cleanup::AppService do
 
         it 'logs application uninstalls and next execution' do
           expect(logger).to receive(:info)
-            .with(log_meta.merge(event: :uninstalling_app, application: kind_of(String))).exactly(2).times
+            .with(log_meta.merge(event: :uninstalling_app, application: kind_of(String))).twice
           expect(logger).to receive(:info)
             .with(log_meta.merge(event: :scheduling_execution, next_execution: 1))
 

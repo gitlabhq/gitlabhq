@@ -25,7 +25,7 @@ describe Ci::Runner do
       end
     end
 
-    context '#exactly_one_group' do
+    describe '#exactly_one_group' do
       let(:group) { create(:group) }
       let(:runner) { create(:ci_runner, :group, groups: [group]) }
 

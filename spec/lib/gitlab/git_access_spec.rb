@@ -757,7 +757,7 @@ describe Gitlab::GitAccess do
         allow(project).to receive(:lfs_enabled?).and_return(true)
 
         expect_next_instance_of(Gitlab::Checks::LfsIntegrity) do |instance|
-          expect(instance).to receive(:objects_missing?).exactly(1).times
+          expect(instance).to receive(:objects_missing?).once
         end
 
         push_access_check

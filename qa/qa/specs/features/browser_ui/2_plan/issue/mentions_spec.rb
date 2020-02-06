@@ -20,7 +20,7 @@ module QA
         end.visit!
       end
 
-      it 'user mentions another user in an issue' do
+      it 'mentions another user in an issue' do
         Page::Project::Issue::Show.perform do |show|
           at_username = "@#{@user.username}"
 

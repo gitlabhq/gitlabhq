@@ -4477,6 +4477,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_143231) do
     t.string "encrypted_token_iv"
     t.string "encrypted_url"
     t.string "encrypted_url_iv"
+    t.index ["group_id"], name: "index_web_hooks_on_group_id", where: "((type)::text = 'GroupHook'::text)"
     t.index ["project_id"], name: "index_web_hooks_on_project_id"
     t.index ["type"], name: "index_web_hooks_on_type"
   end

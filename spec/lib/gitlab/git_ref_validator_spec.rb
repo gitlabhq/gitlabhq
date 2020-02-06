@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Gitlab::GitRefValidator do
   using RSpec::Parameterized::TableSyntax
 
-  context '.validate' do
+  describe '.validate' do
     it { expect(described_class.validate('feature/new')).to be true }
     it { expect(described_class.validate('implement_@all')).to be true }
     it { expect(described_class.validate('my_new_feature')).to be true }
@@ -37,7 +37,7 @@ describe Gitlab::GitRefValidator do
     it { expect(described_class.validate("\xA0\u0000\xB0")).to be false }
   end
 
-  context '.validate_merge_request_branch' do
+  describe '.validate_merge_request_branch' do
     it { expect(described_class.validate_merge_request_branch('HEAD')).to be true }
     it { expect(described_class.validate_merge_request_branch('feature/new')).to be true }
     it { expect(described_class.validate_merge_request_branch('implement_@all')).to be true }

@@ -1884,7 +1884,7 @@ describe QuickActions::InterpretService do
       end
     end
 
-    context "#commands_executed_count" do
+    describe "#commands_executed_count" do
       it 'counts commands executed' do
         content = "/close and \n/assign me and \n/title new title"
 

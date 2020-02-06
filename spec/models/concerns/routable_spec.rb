@@ -58,7 +58,7 @@ describe Group, 'Routable' do
     end
   end
 
-  context '.find_by_full_path' do
+  describe '.find_by_full_path' do
     let!(:nested_group) { create(:group, parent: group) }
 
     context 'without any redirect routes' do

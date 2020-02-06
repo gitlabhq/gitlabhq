@@ -120,7 +120,7 @@ describe QA::Resource::ApiFabricator do
         end
       end
 
-      context '#transform_api_resource' do
+      describe '#transform_api_resource' do
         let(:resource) do
           Class.new do
             def self.name

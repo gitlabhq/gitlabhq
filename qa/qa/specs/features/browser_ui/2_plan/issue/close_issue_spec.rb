@@ -18,7 +18,7 @@ module QA
         push_commit('Initial commit')
       end
 
-      it 'user closes an issue by pushing commit' do
+      it 'closes an issue by pushing a commit' do
         push_commit("Closes ##{issue_id}", false)
 
         issue.visit!

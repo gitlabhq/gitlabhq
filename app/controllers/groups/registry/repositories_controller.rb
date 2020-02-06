@@ -14,11 +14,22 @@ module Groups
 
             track_event(:list_repositories)
 
-            render json: ContainerRepositoriesSerializer
+            serializer = ContainerRepositoriesSerializer
               .new(current_user: current_user)
-              .represent_read_only(@images)
+
+            if Feature.enabled?(:vue_container_registry_explorer)
+              render json: serializer.with_pagination(request, response)
+                .represent_read_only(@images)
+            else
+              render json: serializer.represent_read_only(@images)
+            end
           end
         end
+      end
+
+      # The show action renders index to allow frontend routing to work on page refresh
+      def show
+        render :index
       end
 
       private

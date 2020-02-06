@@ -10,7 +10,7 @@ describe Gitlab::Database::Count do
 
   let(:models) { [Project, Identity] }
 
-  context '.approximate_counts' do
+  describe '.approximate_counts' do
     context 'fallbacks' do
       subject { described_class.approximate_counts(models, strategies: strategies) }
 

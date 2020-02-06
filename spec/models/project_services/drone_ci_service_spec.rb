@@ -86,7 +86,7 @@ describe DroneCiService, :use_clean_rails_memory_store_caching do
   describe '#calculate_reactive_cache' do
     include_context :drone_ci_service
 
-    context '#commit_status' do
+    describe '#commit_status' do
       subject { drone.calculate_reactive_cache(sha, branch)[:commit_status] }
 
       it 'sets commit status to :error when status is 500' do

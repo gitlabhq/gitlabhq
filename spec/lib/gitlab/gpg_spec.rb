@@ -215,8 +215,8 @@ describe Gitlab::Gpg do
       end
 
       it 'tries at least 2 times to remove the tmp dir before raising', :aggregate_failures do
-        expect(Retriable).to receive(:sleep).at_least(2).times
-        expect(FileUtils).to receive(:remove_entry).with(tmp_dir).at_least(2).times.and_raise('Deletion failed')
+        expect(Retriable).to receive(:sleep).at_least(:twice)
+        expect(FileUtils).to receive(:remove_entry).with(tmp_dir).at_least(:twice).and_raise('Deletion failed')
 
         expect { described_class.using_tmp_keychain { } }.to raise_error(described_class::CleanupError)
       end

@@ -75,7 +75,7 @@ describe Projects::HousekeepingService do
 
         # At push 200
         expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :gc, :the_lease_key, :the_uuid)
-          .exactly(1).times
+          .once
         # At push 50, 100, 150
         expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :full_repack, :the_lease_key, :the_uuid)
           .exactly(3).times

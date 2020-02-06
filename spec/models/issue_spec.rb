@@ -359,7 +359,7 @@ describe Issue do
       allow(subject.project).to receive(:repository).and_return(repository)
     end
 
-    context '#to_branch_name does not exists' do
+    describe '#to_branch_name does not exists' do
       before do
         allow(repository).to receive(:branch_exists?).and_return(false)
       end
@@ -369,7 +369,7 @@ describe Issue do
       end
     end
 
-    context '#to_branch_name exists not ending with -index' do
+    describe '#to_branch_name exists not ending with -index' do
       before do
         allow(repository).to receive(:branch_exists?).and_return(true)
         allow(repository).to receive(:branch_exists?).with(/#{subject.to_branch_name}-\d/).and_return(false)
@@ -380,7 +380,7 @@ describe Issue do
       end
     end
 
-    context '#to_branch_name exists ending with -index' do
+    describe '#to_branch_name exists ending with -index' do
       before do
         allow(repository).to receive(:branch_exists?).and_return(true)
         allow(repository).to receive(:branch_exists?).with("#{subject.to_branch_name}-3").and_return(false)
