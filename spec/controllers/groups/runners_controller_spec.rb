@@ -21,7 +21,7 @@ describe Groups::RunnersController do
       it 'renders show with 200 status code' do
         get :show, params: { group_id: group, id: runner }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:show)
       end
     end
@@ -34,7 +34,7 @@ describe Groups::RunnersController do
       it 'renders a 404' do
         get :show, params: { group_id: group, id: runner }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -48,7 +48,7 @@ describe Groups::RunnersController do
       it 'renders show with 200 status code' do
         get :edit, params: { group_id: group, id: runner }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:edit)
       end
     end
@@ -61,7 +61,7 @@ describe Groups::RunnersController do
       it 'renders a 404' do
         get :edit, params: { group_id: group, id: runner }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -79,7 +79,7 @@ describe Groups::RunnersController do
           post :update, params: params.merge(runner: { description: new_desc } )
         end.to change { runner.ensure_runner_queue_value }
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(runner.reload.description).to eq(new_desc)
       end
     end
@@ -96,7 +96,7 @@ describe Groups::RunnersController do
           post :update, params: params.merge(runner: { description: old_desc.swapcase } )
         end.not_to change { runner.ensure_runner_queue_value }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
         expect(runner.reload.description).to eq(old_desc)
       end
     end
@@ -111,7 +111,7 @@ describe Groups::RunnersController do
       it 'destroys the runner and redirects' do
         delete :destroy, params: params
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(Ci::Runner.find_by(id: runner.id)).to be_nil
       end
     end
@@ -124,7 +124,7 @@ describe Groups::RunnersController do
       it 'responds 404 and does not destroy the runner' do
         delete :destroy, params: params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
         expect(Ci::Runner.find_by(id: runner.id)).to be_present
       end
     end
@@ -143,7 +143,7 @@ describe Groups::RunnersController do
           post :resume, params: params
         end.to change { runner.ensure_runner_queue_value }
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(runner.reload.active).to eq(true)
       end
     end
@@ -160,7 +160,7 @@ describe Groups::RunnersController do
           post :resume, params: params
         end.not_to change { runner.ensure_runner_queue_value }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
         expect(runner.reload.active).to eq(false)
       end
     end
@@ -179,7 +179,7 @@ describe Groups::RunnersController do
           post :pause, params: params
         end.to change { runner.ensure_runner_queue_value }
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(runner.reload.active).to eq(false)
       end
     end
@@ -196,7 +196,7 @@ describe Groups::RunnersController do
           post :pause, params: params
         end.not_to change { runner.ensure_runner_queue_value }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
         expect(runner.reload.active).to eq(true)
       end
     end

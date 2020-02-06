@@ -15,6 +15,7 @@ module Gitlab
             :create_group,
             :create_project,
             :save_project_id,
+            :create_environment,
             :add_prometheus_manual_configuration,
             :track_event
 
@@ -77,6 +78,17 @@ module Gitlab
             else
               log_error("Could not save instance administration project ID, errors: %{errors}" % { errors: application_settings.errors.full_messages })
               error(_('Could not save project ID'))
+            end
+          end
+
+          def create_environment(result)
+            environment = ::Environment.new(project_id: result[:project].id, name: 'production')
+
+            if environment.save
+              success(result)
+            else
+              log_error("Could not create environment for the Self monitoring project. Errors: %{errors}" % { errors: environment.errors.full_messages })
+              error(_('Could not create environment'))
             end
           end
 

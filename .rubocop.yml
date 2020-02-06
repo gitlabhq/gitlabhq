@@ -343,6 +343,8 @@ RSpec/HaveGitlabHttpStatus:
     - 'ee/spec/controllers/*.rb'
     - 'spec/controllers/projects/**/*.rb'
     - 'ee/spec/controllers/projects/**/*.rb'
+    - 'spec/controllers/groups/**/*.rb'
+    - 'ee/spec/controllers/groups/**/*.rb'
     - 'spec/requests/*.rb'
     - 'ee/spec/requests/*.rb'
 

@@ -42,7 +42,7 @@ describe Groups::MilestonesController do
 
         get :index, params: { group_id: group.to_param }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to include(milestone.title)
       end
 
@@ -74,7 +74,7 @@ describe Groups::MilestonesController do
 
           get :index, params: { group_id: group.to_param }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to include(milestone.title)
         end
       end
@@ -84,7 +84,7 @@ describe Groups::MilestonesController do
           it 'does not return milestone' do
             get :index, params: { group_id: public_group.to_param }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response.body).not_to include(private_milestone.title)
           end
         end
@@ -125,7 +125,7 @@ describe Groups::MilestonesController do
           it 'returns the milestone' do
             get :index, params: { group_id: public_group.to_param }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response.body).to include(private_milestone.title)
           end
         end
@@ -141,7 +141,7 @@ describe Groups::MilestonesController do
         it 'shows subgroup milestones that user has access to' do
           get :index, params: { group_id: group.to_param }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to include(group_milestone.title)
           expect(response.body).to include(sub_project_milestone.title)
           expect(response.body).to include(subgroup_milestone.title)
@@ -157,7 +157,7 @@ describe Groups::MilestonesController do
           it 'does not show subgroup milestones' do
             get :index, params: { group_id: group.to_param }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response.body).to include(group_milestone.title)
             expect(response.body).not_to include(sub_project_milestone.title)
             expect(response.body).not_to include(subgroup_milestone.title)
@@ -179,7 +179,7 @@ describe Groups::MilestonesController do
         expect(milestones.count).to eq(2)
         expect(milestones.first["title"]).to eq("group milestone")
         expect(milestones.second["title"]).to eq("legacy")
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type).to eq 'application/json'
       end
 
@@ -330,7 +330,7 @@ describe Groups::MilestonesController do
             it 'does not redirect' do
               get :index, params: { group_id: group.to_param }
 
-              expect(response).not_to have_gitlab_http_status(301)
+              expect(response).not_to have_gitlab_http_status(:moved_permanently)
             end
           end
 
@@ -349,7 +349,7 @@ describe Groups::MilestonesController do
             it 'does not redirect' do
               get :show, params: { group_id: group.to_param, id: title }
 
-              expect(response).not_to have_gitlab_http_status(301)
+              expect(response).not_to have_gitlab_http_status(:moved_permanently)
             end
           end
 
@@ -439,7 +439,7 @@ describe Groups::MilestonesController do
                milestone: { title: title }
              }
 
-        expect(response).not_to have_gitlab_http_status(404)
+        expect(response).not_to have_gitlab_http_status(:not_found)
       end
 
       it 'does not redirect to the correct casing' do
@@ -449,7 +449,7 @@ describe Groups::MilestonesController do
                milestone: { title: title }
              }
 
-        expect(response).not_to have_gitlab_http_status(301)
+        expect(response).not_to have_gitlab_http_status(:moved_permanently)
       end
     end
 
@@ -463,7 +463,7 @@ describe Groups::MilestonesController do
                milestone: { title: title }
              }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

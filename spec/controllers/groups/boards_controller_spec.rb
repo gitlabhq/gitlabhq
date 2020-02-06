@@ -33,7 +33,7 @@ describe Groups::BoardsController do
         it 'returns a not found 404 response' do
           list_boards
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
           expect(response.content_type).to eq 'text/html'
         end
       end
@@ -76,7 +76,7 @@ describe Groups::BoardsController do
         it 'returns a not found 404 response' do
           list_boards format: :json
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
           expect(response.content_type).to eq 'application/json'
         end
       end
@@ -111,7 +111,7 @@ describe Groups::BoardsController do
         it 'returns a not found 404 response' do
           read_board board: board
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
           expect(response.content_type).to eq 'text/html'
         end
       end
@@ -148,7 +148,7 @@ describe Groups::BoardsController do
         it 'returns a not found 404 response' do
           read_board board: board, format: :json
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
           expect(response.content_type).to eq 'application/json'
         end
       end
@@ -160,7 +160,7 @@ describe Groups::BoardsController do
 
         read_board board: another_board
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

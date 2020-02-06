@@ -21,7 +21,7 @@ describe Groups::Settings::CiCdController do
       it 'renders show with 200 status code' do
         get :show, params: { group_id: group }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:show)
       end
     end
@@ -34,7 +34,7 @@ describe Groups::Settings::CiCdController do
       it 'renders a 404' do
         get :show, params: { group_id: group }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -47,7 +47,7 @@ describe Groups::Settings::CiCdController do
       it 'renders show with 200 status code' do
         get :show, params: { group_id: group }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
@@ -79,7 +79,7 @@ describe Groups::Settings::CiCdController do
       it 'renders a 404' do
         subject
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -99,7 +99,7 @@ describe Groups::Settings::CiCdController do
         group.add_maintainer(user)
       end
 
-      it { is_expected.to have_gitlab_http_status(404) }
+      it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
     context 'when user has enough privileges' do
@@ -170,7 +170,7 @@ describe Groups::Settings::CiCdController do
         group.add_owner(user)
       end
 
-      it { is_expected.to have_gitlab_http_status(404) }
+      it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
     context 'when user is an admin' do

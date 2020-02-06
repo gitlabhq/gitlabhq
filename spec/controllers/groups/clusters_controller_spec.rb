@@ -654,7 +654,7 @@ describe Groups::ClustersController do
             go(format: :json)
 
             cluster.reload
-            expect(response).to have_http_status(:no_content)
+            expect(response).to have_gitlab_http_status(:no_content)
             expect(cluster.enabled).to be_falsey
             expect(cluster.name).to eq('my-new-cluster-name')
             expect(cluster).not_to be_managed
@@ -674,7 +674,7 @@ describe Groups::ClustersController do
           it 'rejects changes' do
             go(format: :json)
 
-            expect(response).to have_http_status(:bad_request)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
       end

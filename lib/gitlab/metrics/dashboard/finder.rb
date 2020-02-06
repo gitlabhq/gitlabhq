@@ -34,6 +34,8 @@ module Gitlab
           #         cluster, one of [:admin, :project, :group]
           # @param options - grafana_url [String] URL pointing
           #         to a grafana dashboard panel
+          # @param options - prometheus_alert_id [Integer] ID of
+          #         a PrometheusAlert. For dashboard embeds.
           # @return [Hash]
           def find(project, user, options = {})
             service_for(options)

@@ -1,7 +1,5 @@
 import $ from 'jquery';
 import Chart from 'chart.js';
-import _ from 'underscore';
-
 import { barChartOptions, pieChartOptions } from '~/lib/utils/chart_utils';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -40,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         backgroundColor: 'rgba(220,220,220,0.5)',
         borderColor: 'rgba(220,220,220,1)',
         borderWidth: 1,
-        data: _.values(data),
+        data: Object.values(data),
       },
     ],
   });

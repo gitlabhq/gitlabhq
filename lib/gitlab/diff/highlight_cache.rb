@@ -93,18 +93,12 @@ module Gitlab
             #
             redis.expire(key, EXPIRATION)
           end
-
-          record_metrics(redis.memory("USAGE", key))
         end
 
         # Subsequent read_file calls would need the latest cache.
         #
         clear_memoization(:cached_content)
         clear_memoization(:cacheable_files)
-      end
-
-      def record_metrics(memory_usage)
-        self.class.gitlab_redis_diff_caching_memory_usage_bytes.observe({}, memory_usage)
       end
 
       def file_paths

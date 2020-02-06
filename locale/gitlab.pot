@@ -5379,6 +5379,9 @@ msgstr ""
 msgid "Could not create Wiki Repository at this time. Please try again later."
 msgstr ""
 
+msgid "Could not create environment"
+msgstr ""
+
 msgid "Could not create group"
 msgstr ""
 

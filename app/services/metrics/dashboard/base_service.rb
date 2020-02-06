@@ -46,8 +46,12 @@ module Metrics
       # Returns a new dashboard Hash, supplemented with DB info
       def process_dashboard
         ::Gitlab::Metrics::Dashboard::Processor
-          .new(project, raw_dashboard, sequence, params)
+          .new(project, raw_dashboard, sequence, process_params)
           .process
+      end
+
+      def process_params
+        params
       end
 
       # @return [String] Relative filepath of the dashboard yml

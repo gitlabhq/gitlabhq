@@ -1084,12 +1084,6 @@ describe Projects::IssuesController do
       it 'creates a sentry issue' do
         expect { subject }.to change(SentryIssue, :count)
       end
-
-      it 'with existing issue it will not create an issue' do
-        post_new_issue(sentry_issue_attributes: { sentry_issue_identifier: 1234567 })
-
-        expect { subject }.not_to change(Issue, :count)
-      end
     end
   end
 
