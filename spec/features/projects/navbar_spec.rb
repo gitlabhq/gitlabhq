@@ -67,8 +67,8 @@ describe 'Project navbar' do
           nav_sub_items: [
             _('CI / CD Analytics'),
             (_('Code Review') if Gitlab.ee?),
-            _('Cycle Analytics'),
-            _('Repository Analytics')
+            _('Repository Analytics'),
+            _('Value Stream Analytics')
           ]
         },
         {

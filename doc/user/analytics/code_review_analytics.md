@@ -36,7 +36,7 @@ identify improvements that might substantially accelerate your development cycle
 Code Review Analytics can be used when:
 
 - Your team agrees that code review is moving too slow.
-- The [Cycle Analytics feature](cycle_analytics.md) shows that reviews are your team's most time-consuming step.
+- The [Value Stream Analytics feature](value_stream_analytics.md) shows that reviews are your team's most time-consuming step.
 
 You can use Code Review Analytics to see the types of work that are currently moving the slowest, and analyze the patterns
 and trends between them. For example:

@@ -1,10 +1,10 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import tooltip from '~/vue_shared/directives/tooltip';
+import { GlTooltipDirective } from '@gitlab/ui';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     value: {
@@ -53,8 +53,7 @@ export default {
 <template>
   <fieldset>
     <label
-      v-tooltip
-      :title="tooltipTitle"
+      v-gl-tooltip="tooltipTitle"
       :class="{
         'is-disabled': disabled,
       }"

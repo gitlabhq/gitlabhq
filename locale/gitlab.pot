@@ -5802,15 +5802,6 @@ msgstr ""
 msgid "Customize your pipeline configuration."
 msgstr ""
 
-msgid "Cycle Analytics"
-msgstr ""
-
-msgid "Cycle Analytics can help you determine your team’s velocity"
-msgstr ""
-
-msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
-msgstr ""
-
 msgid "CycleAnalyticsEvent|Issue closed"
 msgstr ""
 
@@ -6714,13 +6705,13 @@ msgstr ""
 msgid "Dismiss"
 msgstr ""
 
-msgid "Dismiss Cycle Analytics introduction box"
-msgstr ""
-
 msgid "Dismiss DevOps Score introduction"
 msgstr ""
 
 msgid "Dismiss Merge Request promotion"
+msgstr ""
+
+msgid "Dismiss Value Stream Analytics introduction box"
 msgstr ""
 
 msgid "Dismiss trial promotion"
@@ -10064,6 +10055,9 @@ msgstr ""
 msgid "IDE|Commit"
 msgstr ""
 
+msgid "IDE|Commit to %{branchName} branch"
+msgstr ""
+
 msgid "IDE|Edit"
 msgstr ""
 
@@ -10089,6 +10083,9 @@ msgid "IDE|Review"
 msgstr ""
 
 msgid "IDE|Successful commit"
+msgstr ""
+
+msgid "IDE|This option is disabled because you don't have write permissions for the current branch."
 msgstr ""
 
 msgid "IP Address"
@@ -10459,7 +10456,7 @@ msgstr ""
 msgid "Interval Pattern"
 msgstr ""
 
-msgid "Introducing Cycle Analytics"
+msgid "Introducing Value Stream Analytics"
 msgstr ""
 
 msgid "Introducing Your DevOps Score"
@@ -11944,6 +11941,9 @@ msgstr ""
 msgid "MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{linkEnd}"
 msgstr ""
 
+msgid "MergeRequest|Compare %{source} and %{target}"
+msgstr ""
+
 msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
 msgstr ""
 
@@ -13042,7 +13042,7 @@ msgstr ""
 msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less."
 msgstr ""
 
-msgid "Only 'Reporter' roles and above on tiers Premium / Silver and above can see Cycle Analytics."
+msgid "Only 'Reporter' roles and above on tiers Premium / Silver and above can see Value Stream Analytics."
 msgstr ""
 
 msgid "Only Project Members"
@@ -19182,9 +19182,6 @@ msgstr ""
 msgid "There was an error fetching configuration for charts"
 msgstr ""
 
-msgid "There was an error fetching cycle analytics stages."
-msgstr ""
-
 msgid "There was an error fetching data for the selected stage"
 msgstr ""
 
@@ -19198,6 +19195,9 @@ msgid "There was an error fetching median data for stages"
 msgstr ""
 
 msgid "There was an error fetching the Designs"
+msgstr ""
+
+msgid "There was an error fetching value stream analytics stages."
 msgstr ""
 
 msgid "There was an error gathering the chart data"
@@ -19242,16 +19242,16 @@ msgstr ""
 msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
-msgid "There was an error while fetching cycle analytics data."
+msgid "There was an error while fetching value stream analytics data."
 msgstr ""
 
-msgid "There was an error while fetching cycle analytics duration data."
+msgid "There was an error while fetching value stream analytics duration data."
 msgstr ""
 
-msgid "There was an error while fetching cycle analytics duration median data."
+msgid "There was an error while fetching value stream analytics duration median data."
 msgstr ""
 
-msgid "There was an error while fetching cycle analytics summary data."
+msgid "There was an error while fetching value stream analytics summary data."
 msgstr ""
 
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
@@ -19522,9 +19522,6 @@ msgid "This merge request is locked."
 msgstr ""
 
 msgid "This namespace has already been taken! Please choose another one."
-msgstr ""
-
-msgid "This option is disabled as you don't have write permissions for the current branch"
 msgstr ""
 
 msgid "This option is only available on GitLab.com"
@@ -21100,6 +21097,15 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
+msgid "Value Stream Analytics"
+msgstr ""
+
+msgid "Value Stream Analytics can help you determine your team’s velocity"
+msgstr ""
+
+msgid "Value Stream Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr ""
+
 msgid "Variables"
 msgstr ""
 
@@ -21899,10 +21905,10 @@ msgstr ""
 msgid "You don't have sufficient permission to perform this action."
 msgstr ""
 
-msgid "You don’t have access to Cycle Analytics for this group"
+msgid "You don’t have access to Productivity Analytics in this group"
 msgstr ""
 
-msgid "You don’t have access to Productivity Analytics in this group"
+msgid "You don’t have access to Value Stream Analytics for this group"
 msgstr ""
 
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
@@ -22259,9 +22265,6 @@ msgid "already shared with this group"
 msgstr ""
 
 msgid "among other things"
-msgstr ""
-
-msgid "and"
 msgstr ""
 
 msgid "any-approver for the merge request already exists"

@@ -608,7 +608,7 @@ describe Projects::PipelinesController do
 
   describe 'GET test_report.json' do
     subject(:get_test_report_json) do
-      post :test_report, params: {
+      get :test_report, params: {
         namespace_id: project.namespace,
         project_id: project,
         id: pipeline.id

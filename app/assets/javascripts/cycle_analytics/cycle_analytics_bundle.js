@@ -71,7 +71,7 @@ export default () => {
     },
     created() {
       // Conditional check placed here to prevent this method from being called on the
-      // new Cycle Analytics page (i.e. the new page will be initialized blank and only
+      // new Value Stream Analytics page (i.e. the new page will be initialized blank and only
       // after a group is selected the cycle analyitcs data will be fetched). Once the
       // old (current) page has been removed this entire created method as well as the
       // variable itself can be completely removed.
@@ -81,7 +81,7 @@ export default () => {
     methods: {
       handleError() {
         this.store.setErrorState(true);
-        return new Flash(__('There was an error while fetching cycle analytics data.'));
+        return new Flash(__('There was an error while fetching value stream analytics data.'));
       },
       initDropdown() {
         const $dropdown = $('.js-ca-dropdown');

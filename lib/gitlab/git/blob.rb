@@ -13,6 +13,11 @@ module Gitlab
       # use load_all_data!.
       MAX_DATA_DISPLAY_SIZE = 10.megabytes
 
+      # The number of blobs loaded in a single Gitaly call
+      # When a large number of blobs requested, we'd want to fetch them in
+      # multiple Gitaly calls
+      BATCH_SIZE = 250
+
       # These limits are used as a heuristic to ignore files which can't be LFS
       # pointers. The format of these is described in
       # https://github.com/git-lfs/git-lfs/blob/master/docs/spec.md#the-pointer
@@ -67,7 +72,13 @@ module Gitlab
         # to the caller to limit the number of blobs and blob_size_limit.
         #
         def batch(repository, blob_references, blob_size_limit: MAX_DATA_DISPLAY_SIZE)
-          repository.gitaly_blob_client.get_blobs(blob_references, blob_size_limit).to_a
+          if Feature.enabled?(:blobs_fetch_in_batches, default_enabled: true)
+            blob_references.each_slice(BATCH_SIZE).flat_map do |refs|
+              repository.gitaly_blob_client.get_blobs(refs, blob_size_limit).to_a
+            end
+          else
+            repository.gitaly_blob_client.get_blobs(blob_references, blob_size_limit).to_a
+          end
         end
 
         # Returns an array of Blob instances just with the metadata, that means

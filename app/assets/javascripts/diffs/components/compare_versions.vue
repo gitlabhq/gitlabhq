@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlButton, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -15,6 +15,7 @@ export default {
     Icon,
     GlLink,
     GlButton,
+    GlSprintf,
     SettingsDropdown,
     DiffStats,
   },
@@ -106,23 +107,29 @@ export default {
       >
         <icon name="file-tree" />
       </button>
-      <div v-if="showDropdowns" class="d-flex align-items-center compare-versions-container">
-        {{ __('Compare') }}
-        <compare-versions-dropdown
-          :other-versions="mergeRequestDiffs"
-          :merge-request-version="mergeRequestDiff"
-          :show-commit-count="true"
-          class="mr-version-dropdown"
-        />
-        {{ __('and') }}
-        <compare-versions-dropdown
-          :other-versions="comparableDiffs"
-          :base-version-path="baseVersionPath"
-          :start-version="startVersion"
-          :target-branch="targetBranch"
-          class="mr-version-compare-dropdown"
-        />
-      </div>
+      <gl-sprintf
+        v-if="showDropdowns"
+        class="d-flex align-items-center compare-versions-container"
+        :message="s__('MergeRequest|Compare %{source} and %{target}')"
+      >
+        <template #source>
+          <compare-versions-dropdown
+            :other-versions="mergeRequestDiffs"
+            :merge-request-version="mergeRequestDiff"
+            :show-commit-count="true"
+            class="mr-version-dropdown"
+          />
+        </template>
+        <template #target>
+          <compare-versions-dropdown
+            :other-versions="comparableDiffs"
+            :base-version-path="baseVersionPath"
+            :start-version="startVersion"
+            :target-branch="targetBranch"
+            class="mr-version-compare-dropdown"
+          />
+        </template>
+      </gl-sprintf>
       <div v-else-if="commit">
         {{ __('Viewing commit') }}
         <gl-link :href="commit.commit_url" class="monospace">{{ commit.short_id }}</gl-link>

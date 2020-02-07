@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# This module represents the default Cycle Analytics stages that are currently provided by CE
+# This module represents the default Value Stream Analytics stages that are currently provided by CE
 # Each method returns a hash that can be used to build a new stage object.
 #
 # Example:

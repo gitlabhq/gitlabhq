@@ -139,10 +139,12 @@ file. Customizing installation by modifying this file is not supported.
 > - Introduced in GitLab 10.2 for project-level clusters.
 > - Introduced in GitLab 11.6 for group-level clusters.
 
-[Ingress](https://kubernetes.github.io/ingress-nginx/) can provide load
-balancing, SSL termination, and name-based virtual hosting. It acts as a
-web proxy for your applications and is useful if you want to use [Auto
-DevOps](../../topics/autodevops/index.md) or deploy your own web apps.
+[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) provides load balancing, SSL termination, and name-based virtual hosting
+out of the box. It acts as a web proxy for your applications and is useful
+if you want to use [Auto DevOps](../../topics/autodevops/index.md) or deploy your own web apps.
+
+The Ingress Controller installed is [Ingress-NGINX](https://kubernetes.io/docs/concepts/services-networking/ingress/),
+which is supported by the Kubernetes community.
 
 NOTE: **Note:**
 With the following procedure, a load balancer must be installed in your cluster
@@ -255,12 +257,20 @@ use an A record. If your external endpoint is a hostname, use a CNAME record.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21966) in GitLab 12.7.
 
-Out of the box, GitLab provides you real-time security monitoring with
-[ModSecurity](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#modsecurity).
+A Web Application Firewall (WAF) is able to examine traffic being sent/received
+and can block malicious traffic before it reaches your application. The benefits
+of a WAF are:
 
-Modsecurity is a toolkit for real-time web application monitoring, logging,
-and access control. With GitLab's offering, the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/), which provides generic attack detection capabilities,
-is automatically applied.
+- Real-time security monitoring for your application
+- Logging of all your HTTP traffic to the application
+- Access control for your application
+- Highly configurable logging and blocking rules
+
+Out of the box, GitLab provides you with a WAF known as [`ModSecurity`](https://www.modsecurity.org/)
+
+ModSecurity is a toolkit for real-time web application monitoring, logging,
+and access control. With GitLab's offering, the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/),
+which provides generic attack detection capabilities, is automatically applied.
 
 This feature:
 
@@ -274,6 +284,12 @@ This feature:
 
 To enable ModSecurity, check the **Enable Web Application Firewall** checkbox
 when installing your [Ingress application](#ingress).
+
+If this is your first time using GitLab's WAF, we recommend you follow the
+[quick start guide](../../topics/web_application_firewall/quick_start_guide.md).
+
+There is a small performance overhead by enabling ModSecurity. However,
+if this is considered significant for your application, you can disable it.
 
 There is a small performance overhead by enabling ModSecurity. If this is
 considered significant for your application, you can disable ModSecurity's

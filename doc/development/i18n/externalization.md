@@ -559,5 +559,5 @@ Let's suppose you want to add translations for a new language, let's say French.
 
    ```shell
    git add locale/fr/ app/assets/javascripts/locale/fr/
-   git commit -m "Add French translations for Cycle Analytics page"
+   git commit -m "Add French translations for Value Stream Analytics page"
    ```

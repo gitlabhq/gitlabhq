@@ -80,7 +80,7 @@ Complementary reads:
 - [File uploads](uploads.md)
 - [Auto DevOps development guide](auto_devops.md)
 - [Mass Inserting Models](mass_insert.md)
-- [Cycle Analytics development guide](cycle_analytics.md)
+- [Value Stream Analytics development guide](value_stream_analytics.md)
 - [Issue types vs first-class types](issue_types.md)
 - [Application limits](application_limits.md)
 - [Redis guidelines](redis.md)

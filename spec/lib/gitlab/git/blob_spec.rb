@@ -244,6 +244,61 @@ describe Gitlab::Git::Blob, :seed_helper do
         end
       end
     end
+
+    context 'when large number of blobs requested' do
+      let(:first_batch) do
+        [
+          [SeedRepo::Commit::ID, 'files/ruby/popen.rb'],
+          [SeedRepo::Commit::ID, 'six']
+        ]
+      end
+
+      let(:second_batch) do
+        [
+          [SeedRepo::Commit::ID, 'some'],
+          [SeedRepo::Commit::ID, 'other']
+        ]
+      end
+
+      let(:third_batch) do
+        [
+          [SeedRepo::Commit::ID, 'files']
+        ]
+      end
+
+      let(:blob_references) do
+        first_batch + second_batch + third_batch
+      end
+
+      let(:client) { repository.gitaly_blob_client }
+      let(:limit) { 10.megabytes }
+
+      before do
+        stub_const('Gitlab::Git::Blob::BATCH_SIZE', 2)
+      end
+
+      context 'blobs_fetch_in_batches is enabled' do
+        it 'fetches the blobs in batches' do
+          expect(client).to receive(:get_blobs).with(first_batch, limit).ordered
+          expect(client).to receive(:get_blobs).with(second_batch, limit).ordered
+          expect(client).to receive(:get_blobs).with(third_batch, limit).ordered
+
+          subject
+        end
+      end
+
+      context 'blobs_fetch_in_batches is disabled' do
+        before do
+          stub_feature_flags(blobs_fetch_in_batches: false)
+        end
+
+        it 'fetches the blobs in a single batch' do
+          expect(client).to receive(:get_blobs).with(blob_references, limit)
+
+          subject
+        end
+      end
+    end
   end
 
   describe '.batch_metadata' do

@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { flattenDeep } from 'lodash';
 import * as constants from '../constants';
 import { collapseSystemNotes } from './collapse_utils';
 
@@ -50,7 +50,7 @@ const isLastNote = (note, state) =>
   !note.system && state.userData && note.author && note.author.id === state.userData.id;
 
 export const getCurrentUserLastNote = state =>
-  _.flatten(reverseNotes(state.discussions).map(note => reverseNotes(note.notes))).find(el =>
+  flattenDeep(reverseNotes(state.discussions).map(note => reverseNotes(note.notes))).find(el =>
     isLastNote(el, state),
   );
 

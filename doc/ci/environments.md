@@ -220,7 +220,7 @@ deployment will be recorded as a new environment named `production`.
 
 NOTE: **Note:**
 If your environment's name is `production` (all lowercase),
-it will get recorded in [Cycle Analytics](../user/project/cycle_analytics.md).
+it will get recorded in [Value Stream Analytics](../user/project/cycle_analytics.md).
 
 ### Configuring dynamic environments
 

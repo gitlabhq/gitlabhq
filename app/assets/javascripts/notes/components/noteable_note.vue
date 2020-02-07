@@ -1,7 +1,7 @@
 <script>
 import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
-import { escape } from 'underscore';
+import { escape } from 'lodash';
 import draftMixin from 'ee_else_ce/notes/mixins/draft';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';

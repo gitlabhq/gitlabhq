@@ -139,10 +139,10 @@ The following table depicts the various user permission levels in a project.
 | Force push to protected branches (*4*)            |         |            |             |          |        |
 | Remove protected branches (*4*)                   |         |            |             |          |        |
 
-\* Owner permission is only available at the group or personal namespace level (and for instance admins) and is inherited by its projects.  
-(*1*): Guest users are able to perform this action on public and internal projects, but not private projects.  
-(*2*): Guest users can only view the confidential issues they created themselves.  
-(*3*): If **Public pipelines** is enabled in **Project Settings > CI/CD**.  
+\* Owner permission is only available at the group or personal namespace level (and for instance admins) and is inherited by its projects.
+(*1*): Guest users are able to perform this action on public and internal projects, but not private projects.
+(*2*): Guest users can only view the confidential issues they created themselves.
+(*3*): If **Public pipelines** is enabled in **Project Settings > CI/CD**.
 (*4*): Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [Protected Branches](./project/protected_branches.md).
 (*5*): If the [branch is protected](./project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings), this depends on the access Developers and Maintainers are given.
 
@@ -166,10 +166,10 @@ Maintainers and Developers from pushing to a protected branch. Read through the 
 [Allowed to Merge and Allowed to Push settings](project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings)
 to learn more.
 
-### Cycle Analytics permissions
+### Value Stream Analytics permissions
 
-Find the current permissions on the Cycle Analytics dashboard on
-the [documentation on Cycle Analytics permissions](analytics/cycle_analytics.md#permissions).
+Find the current permissions on the Value Stream Analytics dashboard, as described in
+[related documentation](analytics/value_stream_analytics.md#permissions).
 
 ### Issue Board permissions
 

@@ -7,7 +7,7 @@ Track development velocity with Productivity Analytics.
 For many companies, the development cycle is a blackbox and getting an estimate of how
 long, on average, it takes to deliver features is an enormous endeavor.
 
-While [Cycle Analytics](../project/cycle_analytics.md) focuses on the entire
+While [Value Stream Analytics](../project/cycle_analytics.md) focuses on the entire
 Software Development Life Cycle (SDLC) process, Productivity Analytics provides a way for Engineering Management to drill down in a systematic way to uncover patterns and causes for success or failure at an individual, project or group level.
 
 Productivity can slow down for many reasons ranging from degrading code base to quickly growing teams. In order to investigate, department or team leaders can start by visualizing the time it takes for merge requests to be merged.

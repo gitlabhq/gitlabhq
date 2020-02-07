@@ -3846,7 +3846,6 @@ ActiveRecord::Schema.define(version: 2020_02_06_111847) do
     t.boolean "instance", default: false
     t.index ["instance"], name: "index_services_on_instance"
     t.index ["project_id"], name: "index_services_on_project_id"
-    t.index ["project_id"], name: "tmp_index_on_project_id_partial_with_prometheus_services", where: "((type)::text = 'PrometheusService'::text)"
     t.index ["type"], name: "index_services_on_type"
   end
 

@@ -1,7 +1,7 @@
 <script>
 import _ from 'underscore';
 import { mapState, mapGetters, createNamespacedHelpers } from 'vuex';
-import { sprintf, __ } from '~/locale';
+import { sprintf, s__ } from '~/locale';
 import consts from '../../stores/modules/commit/constants';
 import RadioGroup from './radio_group.vue';
 import NewMergeRequestOption from './new_merge_request_option.vue';
@@ -21,7 +21,7 @@ export default {
     ...mapGetters(['currentBranch']),
     commitToCurrentBranchText() {
       return sprintf(
-        __('Commit to %{branchName} branch'),
+        s__('IDE|Commit to %{branchName} branch'),
         { branchName: `<strong class="monospace">${_.escape(this.currentBranchId)}</strong>` },
         false,
       );
@@ -56,8 +56,8 @@ export default {
   },
   commitToCurrentBranch: consts.COMMIT_TO_CURRENT_BRANCH,
   commitToNewBranch: consts.COMMIT_TO_NEW_BRANCH,
-  currentBranchPermissionsTooltip: __(
-    "This option is disabled as you don't have write permissions for the current branch",
+  currentBranchPermissionsTooltip: s__(
+    "IDE|This option is disabled because you don't have write permissions for the current branch.",
   ),
 };
 </script>

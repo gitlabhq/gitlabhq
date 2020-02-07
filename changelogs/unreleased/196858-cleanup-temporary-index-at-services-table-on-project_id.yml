@@ -1,0 +1,5 @@
+---
+title: Remove temporary index at services on project_id
+merge_request: 24263
+author:
+type: removed

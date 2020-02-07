@@ -572,6 +572,27 @@ Example:
 expect(response).to have_gitlab_http_status(:ok)
 ```
 
+### Testing query performance
+
+Testing query performance allows us to:
+
+- Assert that N+1 problems do not exist within a block of code.
+- Ensure that the number of queries within a block of code does not increase unnoticed.
+
+#### QueryRecorder
+
+`QueryRecorder` allows profiling and testing of the number of database queries
+performed within a given block of code.
+
+See the [`QueryRecorder`](../query_recorder.md) section for more details.
+
+#### GitalyClient
+
+`Gitlab::GitalyClient.get_request_count` allows tests of the number of Gitaly queries
+made by a given block of code:
+
+See the [`Gitaly Request Counts`](../gitaly.md#request-counts) section for more details.
+
 ### Shared contexts
 
 Shared contexts only used in one spec file can be declared inline.

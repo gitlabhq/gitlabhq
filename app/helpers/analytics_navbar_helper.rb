@@ -35,7 +35,7 @@ module AnalyticsNavbarHelper
     return unless project_nav_tab?(:cycle_analytics)
 
     navbar_sub_item(
-      title: _('Cycle Analytics'),
+      title: _('Value Stream Analytics'),
       path: 'cycle_analytics#show',
       link: project_cycle_analytics_path(project),
       link_to_options: { class: 'shortcuts-project-cycle-analytics' }

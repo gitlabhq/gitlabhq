@@ -195,9 +195,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resource :cycle_analytics, only: [:show]
-
-        namespace :cycle_analytics do
+        resource :cycle_analytics, only: :show, path: 'value_stream_analytics'
+        scope module: :cycle_analytics, as: 'cycle_analytics', path: 'value_stream_analytics' do
           scope :events, controller: 'events' do
             get :issue
             get :plan
@@ -208,6 +207,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :production
           end
         end
+        get '/cycle_analytics', to: redirect('%{namespace_id}/%{project_id}/-/value_stream_analytics')
 
         concerns :clusterable
 

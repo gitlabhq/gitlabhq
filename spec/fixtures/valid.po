@@ -267,11 +267,11 @@ msgstr "Eventos de notificaciones personalizadas"
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
 msgstr "Los niveles de notificación personalizados son los mismos que los niveles participantes. Con los niveles de notificación personalizados, también recibirá notificaciones para eventos seleccionados. Para obtener más información, consulte %{notification_link}."
 
-msgid "Cycle Analytics"
-msgstr "Cycle Analytics"
+msgid "Value Stream Analytics"
+msgstr "Value Stream Analytics"
 
-msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
-msgstr "Cycle Analytics ofrece una visión general de cuánto tiempo tarda en pasar de idea a producción en su proyecto."
+msgid "Value Stream Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr "Value Stream Analytics ofrece una visión general de cuánto tiempo tarda en pasar de idea a producción en su proyecto."
 
 msgid "CycleAnalyticsStage|Code"
 msgstr "Código"
@@ -412,8 +412,8 @@ msgstr "Importar repositorio"
 msgid "Interval Pattern"
 msgstr "Patrón de intervalo"
 
-msgid "Introducing Cycle Analytics"
-msgstr "Introducción a Cycle Analytics"
+msgid "Introducing Value Stream Analytics"
+msgstr "Introducción a Value Stream Analytics"
 
 msgid "Jobs for last month"
 msgstr "Trabajos del mes pasado"
