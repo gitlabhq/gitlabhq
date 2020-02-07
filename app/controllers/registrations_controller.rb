@@ -13,6 +13,7 @@ class RegistrationsController < Devise::RegistrationsController
   before_action :whitelist_query_limiting, only: [:destroy]
   before_action :ensure_terms_accepted,
     if: -> { action_name == 'create' && Gitlab::CurrentSettings.current_application_settings.enforce_terms? }
+  before_action :load_recaptcha, only: :new
 
   def new
     if experiment_enabled?(:signup_flow)
@@ -181,6 +182,10 @@ class RegistrationsController < Devise::RegistrationsController
 
   def stored_location_or_dashboard(user)
     stored_location_for(user) || dashboard_projects_path
+  end
+
+  def load_recaptcha
+    Gitlab::Recaptcha.load_configurations!
   end
 
   # Part of an experiment to build a new sign up flow. Will be resolved

@@ -108,6 +108,11 @@ You can use `%{ISSUE_ID}` placeholder which will be replaced by an issue iid
 in the email, `%{ISSUE_PATH}` placeholder which will be replaced by
  project path and the issue iid and `%{NOTE_TEXT}` placeholder which will be replaced by the note text.
 
+### Using custom email display name
+
+You can customize the email display name. Emails sent from Service Desk will have
+this name in the `From` header. The default display name is `GitLab Support Bot`.
+
 ## Using Service Desk
 
 ### As an end user (issue creator)
