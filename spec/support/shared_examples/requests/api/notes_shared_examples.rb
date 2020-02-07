@@ -239,7 +239,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       end
     end
 
-    context 'when the user is posting an award emoji on his/her own noteable' do
+    context 'when the user is posting an award emoji on their own noteable' do
       it 'creates a new note' do
         post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: { body: ':+1:' }
 

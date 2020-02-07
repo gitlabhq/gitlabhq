@@ -24,7 +24,7 @@ function update_tests_metadata() {
 
   scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH}" rspec_flaky/all_*.json
 
-  export FLAKY_RSPEC_GENERATE_REPORT="1"
+  export FLAKY_RSPEC_GENERATE_REPORT="true"
   scripts/flaky_examples/prune-old-flaky-examples "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
 
   if [[ -n ${TESTS_METADATA_S3_BUCKET} ]]; then

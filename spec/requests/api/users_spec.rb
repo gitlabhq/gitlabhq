@@ -749,7 +749,7 @@ describe API::Users do
       expect(user.email).to eq('new@email.com')
     end
 
-    it 'updates user with his own username' do
+    it 'updates user with their own username' do
       put api("/users/#{user.id}", admin), params: { username: user.username }
 
       expect(response).to have_gitlab_http_status(200)

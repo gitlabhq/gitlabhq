@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Projects > Members > Member cannot request access to his project' do
+describe 'Projects > Members > Member cannot request access to their project' do
   let(:member) { create(:user) }
   let(:project) { create(:project) }
 

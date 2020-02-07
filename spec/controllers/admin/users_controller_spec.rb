@@ -270,7 +270,7 @@ describe Admin::UsersController do
         post :update, params: params
       end
 
-      context 'when the admin changes his own password' do
+      context 'when the admin changes their own password' do
         it 'updates the password' do
           expect { update_password(admin, 'AValidPassword1') }
             .to change { admin.reload.encrypted_password }

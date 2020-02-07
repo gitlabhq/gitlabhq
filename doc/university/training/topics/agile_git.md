@@ -20,7 +20,7 @@ Branching in an Agile environment usually happens around user stories with one
 or more developers working on it.
 
 If more than one developer then another branch for each developer is also used
-with his/her initials, and US id.
+with their initials, and US id.
 
 After its tested merge into master and remove the branch.
 

@@ -4799,6 +4799,9 @@ msgstr ""
 msgid "Comment & unresolve thread"
 msgstr ""
 
+msgid "Comment '%{label}' position"
+msgstr ""
+
 msgid "Comment form position"
 msgstr ""
 

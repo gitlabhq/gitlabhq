@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe 'Contributions Calendar', :js do
+  include MobileHelpers
+
   let(:user) { create(:user) }
   let(:contributed_project) { create(:project, :public, :repository) }
   let(:issue_note) { create(:note, project: contributed_project) }
@@ -122,15 +124,15 @@ describe 'Contributions Calendar', :js do
     end
   end
 
-  describe 'calendar daily activities' do
-    shared_context 'visit user page' do
-      before do
-        visit user.username
-        page.find('.js-overview-tab a').click
-        wait_for_requests
-      end
+  shared_context 'visit user page' do
+    before do
+      visit user.username
+      page.find('.js-overview-tab a').click
+      wait_for_requests
     end
+  end
 
+  describe 'calendar daily activities' do
     shared_examples 'a day with activity' do |contribution_count:|
       include_context 'visit user page'
 
@@ -197,6 +199,24 @@ describe 'Contributions Calendar', :js do
         today = Date.today.strftime(date_format)
         expect(find('#js-overview')).to have_selector(get_cell_date_selector(1, today), count: 1)
       end
+    end
+  end
+
+  describe 'on smaller screens' do
+    shared_examples 'hidden activity calendar' do
+      include_context 'visit user page'
+
+      it 'hides the activity calender' do
+        expect(find('#js-overview')).not_to have_css('.js-contrib-calendar')
+      end
+    end
+
+    context 'size xs' do
+      before do
+        resize_screen_xs
+      end
+
+      it_behaves_like 'hidden activity calendar'
     end
   end
 end

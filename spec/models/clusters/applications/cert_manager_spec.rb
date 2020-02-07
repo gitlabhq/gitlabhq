@@ -65,7 +65,7 @@ describe Clusters::Applications::CertManager do
         cert_manager.email = cert_email
       end
 
-      it 'uses his/her email to register issuer with certificate provider' do
+      it 'uses their email to register issuer with certificate provider' do
         expect(subject.files).to eq(cert_manager.files.merge(cluster_issuer_file))
       end
     end

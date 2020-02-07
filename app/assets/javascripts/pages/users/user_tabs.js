@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import axios from '~/lib/utils/axios_utils';
 import Activities from '~/activities';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
@@ -209,7 +210,7 @@ export default class UserTabs {
 
   loadActivityCalendar() {
     const $calendarWrap = this.$parentEl.find('.tab-pane.active .user-calendar');
-    if (!$calendarWrap.length) return;
+    if (!$calendarWrap.length || bp.getBreakpointSize() === 'xs') return;
 
     const calendarPath = $calendarWrap.data('calendarPath');
 

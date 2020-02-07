@@ -169,7 +169,7 @@ describe 'Invites' do
         end
       end
 
-      it "doesn't accept invitations until the user confirms his email" do
+      it "doesn't accept invitations until the user confirms their email" do
         fill_in_sign_up_form(new_user)
         sign_in(owner)
 
