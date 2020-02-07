@@ -134,7 +134,7 @@ module Projects
 
         if @project.save
           unless @project.gitlab_project_import?
-            create_services_from_active_templates(@project)
+            create_services_from_active_instance_level_services(@project)
             @project.create_labels
           end
 
@@ -160,9 +160,9 @@ module Projects
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def create_services_from_active_templates(project)
-      Service.where(template: true, active: true).each do |template|
-        service = Service.build_from_template(project.id, template)
+    def create_services_from_active_instance_level_services(project)
+      Service.where(instance: true, active: true).each do |template|
+        service = Service.build_from_instance(project.id, template)
         service.save!
       end
     end

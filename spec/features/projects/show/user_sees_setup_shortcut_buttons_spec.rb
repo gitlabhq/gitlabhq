@@ -33,7 +33,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
           expect(page).not_to have_link('Enable Auto DevOps')
           expect(page).not_to have_link('Auto DevOps enabled')
           expect(page).not_to have_link('Add Kubernetes cluster')
-          expect(page).not_to have_link('Kubernetes configured')
+          expect(page).not_to have_link('Kubernetes')
         end
       end
     end
@@ -100,7 +100,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
         it 'no Kubernetes cluster button if can not manage clusters' do
           page.within('.project-buttons') do
             expect(page).not_to have_link('Add Kubernetes cluster')
-            expect(page).not_to have_link('Kubernetes configured')
+            expect(page).not_to have_link('Kubernetes')
           end
         end
       end
@@ -308,7 +308,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
           visit project_path(project)
 
           page.within('.project-buttons') do
-            expect(page).to have_link('Kubernetes configured', href: project_cluster_path(project, cluster))
+            expect(page).to have_link('Kubernetes', href: project_cluster_path(project, cluster))
           end
         end
       end

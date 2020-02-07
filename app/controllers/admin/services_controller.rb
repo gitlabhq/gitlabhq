@@ -7,7 +7,7 @@ class Admin::ServicesController < Admin::ApplicationController
   before_action :service, only: [:edit, :update]
 
   def index
-    @services = services_templates
+    @services = instance_level_services
   end
 
   def edit
@@ -19,7 +19,7 @@ class Admin::ServicesController < Admin::ApplicationController
 
   def update
     if service.update(service_params[:service])
-      PropagateServiceTemplateWorker.perform_async(service.id) if service.active?
+      PropagateInstanceLevelServiceWorker.perform_async(service.id) if service.active?
 
       redirect_to admin_application_settings_services_path,
         notice: 'Application settings saved successfully'
@@ -31,17 +31,17 @@ class Admin::ServicesController < Admin::ApplicationController
   private
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def services_templates
+  def instance_level_services
     Service.available_services_names.map do |service_name|
-      service_template = "#{service_name}_service".camelize.constantize
-      service_template.where(template: true).first_or_create
+      service = "#{service_name}_service".camelize.constantize
+      service.where(instance: true).first_or_create
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def service
-    @service ||= Service.where(id: params[:id], template: true).first
+    @service ||= Service.where(id: params[:id], instance: true).first
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -1193,8 +1193,8 @@ describe 'Git LFS API and storage' do
 
             it_behaves_like 'LFS http 200 response'
 
-            it 'LFS object is linked to the source project' do
-              expect(lfs_object.projects.pluck(:id)).to include(upstream_project.id)
+            it 'LFS object is linked to the forked project' do
+              expect(lfs_object.projects.pluck(:id)).to include(project.id)
             end
           end
         end

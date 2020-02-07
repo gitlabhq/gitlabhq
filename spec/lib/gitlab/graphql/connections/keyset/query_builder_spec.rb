@@ -101,5 +101,35 @@ describe Gitlab::Graphql::Connections::Keyset::QueryBuilder do
         end
       end
     end
+
+    context 'when sorting using LOWER' do
+      let(:relation) { Project.order(Arel::Table.new(:projects)['name'].lower.asc).order(:id) }
+      let(:arel_table) { Project.arel_table }
+      let(:decoded_cursor) { { 'name' => 'Test', 'id' => 100 } }
+
+      context 'when no values are nil' do
+        context 'when :after' do
+          it 'generates the correct condition' do
+            conditions = builder.conditions
+
+            expect(conditions).to include '(LOWER("projects"."name") > \'test\')'
+            expect(conditions).to include '"projects"."id" > 100'
+            expect(conditions).to include 'OR (LOWER("projects"."name") IS NULL)'
+          end
+        end
+
+        context 'when :before' do
+          let(:before_or_after) { :before }
+
+          it 'generates the correct condition' do
+            conditions = builder.conditions
+
+            expect(conditions).to include '(LOWER("projects"."name") < \'test\')'
+            expect(conditions).to include '"projects"."id" < 100'
+            expect(conditions).to include 'LOWER("projects"."name") = \'test\''
+          end
+        end
+      end
+    end
   end
 end

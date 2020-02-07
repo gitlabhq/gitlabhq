@@ -39,9 +39,9 @@ module Projects
       def download_lfs_file!
         with_tmp_file do |tmp_file|
           download_and_save_file!(tmp_file)
-          project.all_lfs_objects << LfsObject.new(oid: lfs_oid,
-                                                   size: lfs_size,
-                                                   file: tmp_file)
+          project.lfs_objects << LfsObject.new(oid: lfs_oid,
+                                               size: lfs_size,
+                                               file: tmp_file)
 
           success
         end

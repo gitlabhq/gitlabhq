@@ -1,6 +1,7 @@
 <script>
 import { mapState } from 'vuex';
 import { pickBy } from 'lodash';
+import invalidUrl from '~/lib/utils/invalid_url';
 import {
   GlDropdown,
   GlDropdownItem,
@@ -18,7 +19,7 @@ import MonitorColumnChart from './charts/column.vue';
 import MonitorStackedColumnChart from './charts/stacked_column.vue';
 import MonitorEmptyChart from './charts/empty_chart.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import { downloadCSVOptions, generateLinkToChartOptions } from '../utils';
+import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
 
 export default {
   components: {
@@ -58,8 +59,13 @@ export default {
       default: 'panel-type-chart',
     },
   },
+  data() {
+    return {
+      zoomedTimeRange: null,
+    };
+  },
   computed: {
-    ...mapState('monitoringDashboard', ['deploymentData', 'projectPath']),
+    ...mapState('monitoringDashboard', ['deploymentData', 'projectPath', 'logsPath', 'timeRange']),
     alertWidgetAvailable() {
       return IS_EE && this.prometheusAlertsAvailable && this.alertsEndpoint && this.graphData;
     },
@@ -69,6 +75,14 @@ export default {
         this.graphData.metrics[0].result &&
         this.graphData.metrics[0].result.length > 0
       );
+    },
+    logsPathWithTimeRange() {
+      const timeRange = this.zoomedTimeRange || this.timeRange;
+
+      if (this.logsPath && this.logsPath !== invalidUrl && timeRange) {
+        return timeRangeToUrl(timeRange, this.logsPath);
+      }
+      return null;
     },
     csvText() {
       const chartData = this.graphData.metrics[0].result[0].values;
@@ -107,6 +121,10 @@ export default {
     },
     downloadCSVOptions,
     generateLinkToChartOptions,
+
+    onDatazoom({ start, end }) {
+      this.zoomedTimeRange = { start, end };
+    },
   },
 };
 </script>
@@ -130,11 +148,13 @@ export default {
   <component
     :is="monitorChartComponent"
     v-else-if="graphDataHasMetrics"
+    ref="timeChart"
     :graph-data="graphData"
     :deployment-data="deploymentData"
     :project-path="projectPath"
     :thresholds="getGraphAlertValues(graphData.metrics)"
     :group-id="groupId"
+    @datazoom="onDatazoom"
   >
     <div class="d-flex align-items-center">
       <alert-widget
@@ -157,6 +177,15 @@ export default {
         <template slot="button-content">
           <icon name="ellipsis_v" class="text-secondary" />
         </template>
+
+        <gl-dropdown-item
+          v-if="logsPathWithTimeRange"
+          ref="viewLogsLink"
+          :href="logsPathWithTimeRange"
+        >
+          {{ s__('Metrics|View logs') }}
+        </gl-dropdown-item>
+
         <gl-dropdown-item
           v-track-event="downloadCSVOptions(graphData.title)"
           :href="downloadCsv"

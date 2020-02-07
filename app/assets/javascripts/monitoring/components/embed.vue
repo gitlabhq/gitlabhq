@@ -19,14 +19,8 @@ export default {
   },
   data() {
     const timeRange = timeRangeFromUrl(this.dashboardUrl) || defaultTimeRange;
-    const { start, end } = convertToFixedRange(timeRange);
-    const params = {
-      start,
-      end,
-    };
-
     return {
-      params,
+      timeRange: convertToFixedRange(timeRange),
       elWidth: 0,
     };
   },
@@ -49,7 +43,9 @@ export default {
   },
   mounted() {
     this.setInitialState();
-    this.fetchMetricsData(this.params);
+    this.setTimeRange(this.timeRange);
+    this.fetchDashboard();
+
     sidebarMutationObserver = new MutationObserver(this.onSidebarMutation);
     sidebarMutationObserver.observe(document.querySelector('.layout-page'), {
       attributes: true,
@@ -64,7 +60,8 @@ export default {
   },
   methods: {
     ...mapActions('monitoringDashboard', [
-      'fetchMetricsData',
+      'setTimeRange',
+      'fetchDashboard',
       'setEndpoints',
       'setFeatureFlags',
       'setShowErrorBanner',

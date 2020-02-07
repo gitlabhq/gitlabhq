@@ -5,10 +5,10 @@ module Gitlab
     module Connections
       module Keyset
         class OrderInfo
-          attr_reader :attribute_name, :sort_direction
+          attr_reader :attribute_name, :sort_direction, :named_function
 
           def initialize(order_value)
-            @attribute_name, @sort_direction =
+            @attribute_name, @sort_direction, @named_function =
               if order_value.is_a?(String)
                 extract_nulls_last_order(order_value)
               else
@@ -69,11 +69,24 @@ module Gitlab
           def extract_nulls_last_order(order_value)
             tokens = order_value.downcase.split
 
-            [tokens.first, (tokens[1] == 'asc' ? :asc : :desc)]
+            [tokens.first, (tokens[1] == 'asc' ? :asc : :desc), nil]
           end
 
           def extract_attribute_values(order_value)
-            [order_value.expr.name, order_value.direction]
+            named = nil
+            name  = if ordering_by_lower?(order_value)
+                      named = order_value.expr
+                      named.expressions[0].name.to_s
+                    else
+                      order_value.expr.name
+                    end
+
+            [name, order_value.direction, named]
+          end
+
+          # determine if ordering using LOWER, eg. "ORDER BY LOWER(boards.name)"
+          def ordering_by_lower?(order_value)
+            order_value.expr.is_a?(Arel::Nodes::NamedFunction) && order_value.expr&.name&.downcase == 'lower'
           end
         end
       end

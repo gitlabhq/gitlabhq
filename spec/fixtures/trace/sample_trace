@@ -2736,7 +2736,7 @@ Service
       when repository is empty
         test runs execute
   Template
-    .build_from_template
+    .build_from_instance
       when template is invalid
         sets service template to inactive when template is invalid
     for pushover service

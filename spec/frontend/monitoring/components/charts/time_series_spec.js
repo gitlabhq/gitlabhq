@@ -18,6 +18,15 @@ import * as iconUtils from '~/lib/utils/icon_utils';
 const mockWidgets = 'mockWidgets';
 
 const mockSvgPathContent = 'mockSvgPathContent';
+
+jest.mock('lodash/throttle', () =>
+  // this throttle mock executes immediately
+  jest.fn(func => {
+    // eslint-disable-next-line no-param-reassign
+    func.cancel = jest.fn();
+    return func;
+  }),
+);
 jest.mock('~/lib/utils/icon_utils', () => ({
   getSvgIconPathContent: jest.fn().mockImplementation(() => Promise.resolve(mockSvgPathContent)),
 }));
@@ -91,6 +100,56 @@ describe('Time series component', () => {
 
       return timeSeriesChart.vm.$nextTick().then(() => {
         expect(timeSeriesChart.props().legendAverageText).toBe('averageText');
+      });
+    });
+
+    describe('events', () => {
+      describe('datazoom', () => {
+        let eChartMock;
+        let startValue;
+        let endValue;
+
+        const findChart = () => timeSeriesChart.find({ ref: 'chart' });
+
+        beforeEach(done => {
+          eChartMock = {
+            handlers: {},
+            getOption: () => ({
+              dataZoom: [
+                {
+                  startValue,
+                  endValue,
+                },
+              ],
+            }),
+            off: jest.fn(eChartEvent => {
+              delete eChartMock.handlers[eChartEvent];
+            }),
+            on: jest.fn((eChartEvent, fn) => {
+              eChartMock.handlers[eChartEvent] = fn;
+            }),
+          };
+
+          timeSeriesChart = makeTimeSeriesChart(mockGraphData);
+          timeSeriesChart.vm.$nextTick(() => {
+            findChart().vm.$emit('created', eChartMock);
+            done();
+          });
+        });
+
+        it('handles datazoom event from chart', () => {
+          startValue = 1577836800000; // 2020-01-01T00:00:00.000Z
+          endValue = 1577840400000; // 2020-01-01T01:00:00.000Z
+          eChartMock.handlers.datazoom();
+
+          expect(timeSeriesChart.emitted('datazoom')).toHaveLength(1);
+          expect(timeSeriesChart.emitted('datazoom')[0]).toEqual([
+            {
+              start: new Date(startValue).toISOString(),
+              end: new Date(endValue).toISOString(),
+            },
+          ]);
+        });
       });
     });
 

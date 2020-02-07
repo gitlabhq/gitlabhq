@@ -1,6 +1,7 @@
 import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
+import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { gqClient, parseEnvironmentsResponse, removeLeadingSlash } from './utils';
 import trackDashboardLoad from '../monitoring_tracking_helper';
 import getEnvironments from '../queries/getEnvironments.query.graphql';
@@ -30,6 +31,10 @@ export const setGettingStartedEmptyState = ({ commit }) => {
 
 export const setEndpoints = ({ commit }, endpoints) => {
   commit(types.SET_ENDPOINTS, endpoints);
+};
+
+export const setTimeRange = ({ commit }, timeRange) => {
+  commit(types.SET_TIME_RANGE, timeRange);
 };
 
 export const filterEnvironments = ({ commit, dispatch }, searchTerm) => {
@@ -63,19 +68,24 @@ export const receiveEnvironmentsDataSuccess = ({ commit }, data) =>
 export const receiveEnvironmentsDataFailure = ({ commit }) =>
   commit(types.RECEIVE_ENVIRONMENTS_DATA_FAILURE);
 
-export const fetchData = ({ dispatch }, params) => {
-  dispatch('fetchMetricsData', params);
+export const fetchData = ({ dispatch }) => {
+  dispatch('fetchDashboard');
   dispatch('fetchDeploymentsData');
   dispatch('fetchEnvironmentsData');
 };
 
-export const fetchMetricsData = ({ dispatch }, params) => dispatch('fetchDashboard', params);
-
-export const fetchDashboard = ({ state, dispatch }, params) => {
+export const fetchDashboard = ({ state, dispatch }) => {
   dispatch('requestMetricsDashboard');
 
+  const params = {};
+
+  if (state.timeRange) {
+    const { start, end } = convertToFixedRange(state.timeRange);
+    params.start = start;
+    params.end = end;
+  }
+
   if (state.currentDashboard) {
-    // eslint-disable-next-line no-param-reassign
     params.dashboard = state.currentDashboard;
   }
 

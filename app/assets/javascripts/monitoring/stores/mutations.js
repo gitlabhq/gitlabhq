@@ -182,6 +182,10 @@ export default {
     state.dashboardsEndpoint = endpoints.dashboardsEndpoint;
     state.currentDashboard = endpoints.currentDashboard;
     state.projectPath = endpoints.projectPath;
+    state.logsPath = endpoints.logsPath || state.logsPath;
+  },
+  [types.SET_TIME_RANGE](state, timeRange) {
+    state.timeRange = timeRange;
   },
   [types.SET_GETTING_STARTED_EMPTY_STATE](state) {
     state.emptyState = 'gettingStarted';

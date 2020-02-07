@@ -21,7 +21,6 @@ import createFlash from '~/flash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
-import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import Icon from '~/vue_shared/components/icon.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 
@@ -101,6 +100,11 @@ export default {
     projectPath: {
       type: String,
       required: true,
+    },
+    logsPath: {
+      type: String,
+      required: false,
+      default: invalidUrl,
     },
     defaultBranch: {
       type: String,
@@ -247,22 +251,20 @@ export default {
       dashboardsEndpoint: this.dashboardsEndpoint,
       currentDashboard: this.currentDashboard,
       projectPath: this.projectPath,
+      logsPath: this.logsPath,
     });
   },
   mounted() {
     if (!this.hasMetrics) {
       this.setGettingStartedEmptyState();
     } else {
-      const { start, end } = convertToFixedRange(this.selectedTimeRange);
-
-      this.fetchData({
-        start,
-        end,
-      });
+      this.setTimeRange(this.selectedTimeRange);
+      this.fetchData();
     }
   },
   methods: {
     ...mapActions('monitoringDashboard', [
+      'setTimeRange',
       'fetchData',
       'setGettingStartedEmptyState',
       'setEndpoints',

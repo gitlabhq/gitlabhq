@@ -16,7 +16,7 @@ module Projects
     private
 
     def move_lfs_objects_projects
-      non_existent_lfs_objects_projects.update_all(project_id: @project.lfs_storage_project.id)
+      non_existent_lfs_objects_projects.update_all(project_id: @project.id)
     end
 
     def remove_remaining_lfs_objects_project

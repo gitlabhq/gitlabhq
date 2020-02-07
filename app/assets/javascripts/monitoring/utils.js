@@ -103,8 +103,9 @@ export const graphDataValidatorForAnomalyValues = graphData => {
 /**
  * Returns a time range from the current URL params
  *
- * @returns {Object} The time range defined by the
- * current URL, reading from `window.location.search`
+ * @returns {Object|null} The time range defined by the
+ * current URL, reading from search query or `window.location.search`.
+ * Returns `null` if no parameters form a time range.
  */
 export const timeRangeFromUrl = (search = window.location.search) => {
   const params = queryToObject(search);

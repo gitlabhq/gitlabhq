@@ -52,6 +52,10 @@ module Projects
       Projects::ForksCountService.new(project).refresh_cache
     end
 
+    # TODO: Remove this method once all LfsObjectsProject records are backfilled
+    # for forks.
+    #
+    # See https://gitlab.com/gitlab-org/gitlab/issues/122002 for more info.
     def save_lfs_objects
       return unless @project.forked?
 

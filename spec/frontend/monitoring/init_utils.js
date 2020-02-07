@@ -15,6 +15,7 @@ export const propsData = {
   clustersPath: '/path/to/clusters',
   tagsPath: '/path/to/tags',
   projectPath: '/path/to/project',
+  logsPath: '/path/to/logs',
   defaultBranch: 'master',
   metricsEndpoint: mockApiEndpoint,
   deploymentsEndpoint: null,

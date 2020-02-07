@@ -1,5 +1,5 @@
 <script>
-import { omit } from 'lodash';
+import { omit, throttle } from 'lodash';
 import { GlLink, GlButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
@@ -17,6 +17,13 @@ import {
 } from '../../constants';
 import { makeDataSeries } from '~/helpers/monitor_helper';
 import { graphDataValidatorForValues } from '../../utils';
+
+const THROTTLED_DATAZOOM_WAIT = 1000; // miliseconds
+const timestampToISODate = timestamp => new Date(timestamp).toISOString();
+
+const events = {
+  datazoom: 'datazoom',
+};
 
 export default {
   components: {
@@ -98,6 +105,7 @@ export default {
       height: chartHeight,
       svgs: {},
       primaryColor: null,
+      throttledDatazoom: null,
     };
   },
   computed: {
@@ -245,6 +253,11 @@ export default {
     this.setSvg('rocket');
     this.setSvg('scroll-handle');
   },
+  destroyed() {
+    if (this.throttledDatazoom) {
+      this.throttledDatazoom.cancel();
+    }
+  },
   methods: {
     formatLegendLabel(query) {
       return `${query.label}`;
@@ -287,8 +300,39 @@ export default {
           console.error('SVG could not be rendered correctly: ', e);
         });
     },
-    onChartUpdated(chart) {
-      [this.primaryColor] = chart.getOption().color;
+    onChartUpdated(eChart) {
+      [this.primaryColor] = eChart.getOption().color;
+    },
+
+    onChartCreated(eChart) {
+      // Emit a datazoom event that corresponds to the eChart
+      // `datazoom` event.
+
+      if (this.throttledDatazoom) {
+        // Chart can be created multiple times in this component's
+        // lifetime, remove previous handlers every time
+        // chart is created.
+        this.throttledDatazoom.cancel();
+      }
+
+      // Emitting is throttled to avoid flurries of calls when
+      // the user changes or scrolls the zoom bar.
+      this.throttledDatazoom = throttle(
+        () => {
+          const { startValue, endValue } = eChart.getOption().dataZoom[0];
+          this.$emit(events.datazoom, {
+            start: timestampToISODate(startValue),
+            end: timestampToISODate(endValue),
+          });
+        },
+        THROTTLED_DATAZOOM_WAIT,
+        {
+          leading: false,
+        },
+      );
+
+      eChart.off('datazoom');
+      eChart.on('datazoom', this.throttledDatazoom);
     },
     onResize() {
       if (!this.$refs.chart) return;
@@ -331,6 +375,7 @@ export default {
       :height="height"
       :average-text="legendAverageText"
       :max-text="legendMaxText"
+      @created="onChartCreated"
       @updated="onChartUpdated"
     >
       <template v-if="tooltip.isDeployment">

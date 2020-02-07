@@ -358,6 +358,8 @@ class Project < ApplicationRecord
     project_path: true,
     length: { maximum: 255 }
 
+  validates :project_feature, presence: true
+
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
   validates :import_url, public_url: { schemes: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
@@ -395,11 +397,11 @@ class Project < ApplicationRecord
 
   # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
   scope :sorted_by_activity, -> { reorder(Arel.sql("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC")) }
-  scope :sorted_by_stars_desc, -> { reorder(star_count: :desc) }
-  scope :sorted_by_stars_asc, -> { reorder(star_count: :asc) }
+  scope :sorted_by_stars_desc, -> { reorder(self.arel_table['star_count'].desc) }
+  scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
   scope :sorted_by_name_asc_limited, ->(limit) { reorder(name: :asc).limit(limit) }
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
-  scope :projects_order_id_desc, -> { reorder("#{table_name}.id DESC") }
+  scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
 
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
@@ -595,9 +597,9 @@ class Project < ApplicationRecord
         # pass a string to avoid AR adding the table name
         reorder('project_statistics.storage_size DESC, projects.id DESC')
       when 'latest_activity_desc'
-        reorder(last_activity_at: :desc)
+        reorder(self.arel_table['last_activity_at'].desc)
       when 'latest_activity_asc'
-        reorder(last_activity_at: :asc)
+        reorder(self.arel_table['last_activity_at'].asc)
       when 'stars_desc'
         sorted_by_stars_desc
       when 'stars_asc'
@@ -1219,13 +1221,13 @@ class Project < ApplicationRecord
     service = find_service(services, name)
     return service if service
 
-    # We should check if template for the service exists
-    template = find_service(services_templates, name)
+    # We should check if an instance-level service exists
+    instance_level_service = find_service(instance_level_services, name)
 
-    if template
-      Service.build_from_template(id, template)
+    if instance_level_service
+      Service.build_from_instance(id, instance_level_service)
     else
-      # If no template, we should create an instance. Ex `build_gitlab_ci_service`
+      # If no instance-level service exists, we should create a new service. Ex `build_gitlab_ci_service`
       public_send("build_#{name}_service") # rubocop:disable GitlabSecurity/PublicSend
     end
   end
@@ -1357,6 +1359,10 @@ class Project < ApplicationRecord
     forked_from_project || fork_network&.root_project
   end
 
+  # TODO: Remove this method once all LfsObjectsProject records are backfilled
+  # for forks.
+  #
+  # See https://gitlab.com/gitlab-org/gitlab/issues/122002 for more info.
   def lfs_storage_project
     @lfs_storage_project ||= begin
       result = self
@@ -1369,14 +1375,27 @@ class Project < ApplicationRecord
     end
   end
 
-  # This will return all `lfs_objects` that are accessible to the project.
-  # So this might be `self.lfs_objects` if the project is not part of a fork
-  # network, or it is the base of the fork network.
+  # This will return all `lfs_objects` that are accessible to the project and
+  # the fork source. This is needed since older forks won't have access to some
+  # LFS objects directly and have to get it from the fork source.
   #
-  # TODO: refactor this to get the correct lfs objects when implementing
-  #       https://gitlab.com/gitlab-org/gitlab-foss/issues/39769
+  # TODO: Remove this method once all LfsObjectsProject records are backfilled
+  # for forks. At that point, projects can look at their own `lfs_objects`.
+  #
+  # See https://gitlab.com/gitlab-org/gitlab/issues/122002 for more info.
   def all_lfs_objects
-    lfs_storage_project.lfs_objects
+    LfsObject
+      .distinct
+      .joins(:lfs_objects_projects)
+      .where(lfs_objects_projects: { project_id: [self, lfs_storage_project] })
+  end
+
+  # TODO: Call `#lfs_objects` instead once all LfsObjectsProject records are
+  # backfilled. At that point, projects can look at their own `lfs_objects`.
+  #
+  # See https://gitlab.com/gitlab-org/gitlab/issues/122002 for more info.
+  def lfs_objects_oids
+    all_lfs_objects.pluck(:oid)
   end
 
   def personal?
@@ -2438,8 +2457,8 @@ class Project < ApplicationRecord
     end
   end
 
-  def services_templates
-    @services_templates ||= Service.where(template: true)
+  def instance_level_services
+    @instance_level_services ||= Service.where(instance: true)
   end
 
   def ensure_pages_metadatum

@@ -10,8 +10,8 @@
     %p.inline
       = s_("MattermostService|See list of available commands in Mattermost after setting up this service, by entering")
     %kbd.inline /&lt;trigger&gt; help
-    - unless enabled || @service.template?
+    - unless enabled || @service.instance?
       = render 'projects/services/mattermost_slash_commands/detailed_help', subject: @service
 
-- if enabled && !@service.template?
+- if enabled && !@service.instance?
   = render 'projects/services/mattermost_slash_commands/installation_info', subject: @service

@@ -73,11 +73,19 @@ describe('Dashboard', () => {
 
   describe('no metrics are available yet', () => {
     beforeEach(() => {
+      jest.spyOn(store, 'dispatch');
       createShallowWrapper();
     });
 
     it('shows the environment selector', () => {
       expect(findEnvironmentsDropdown().exists()).toBe(true);
+    });
+
+    it('sets endpoints: logs path', () => {
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'monitoringDashboard/setEndpoints',
+        expect.objectContaining({ logsPath: propsData.logsPath }),
+      );
     });
   });
 
@@ -94,6 +102,21 @@ describe('Dashboard', () => {
   });
 
   describe('request information to the server', () => {
+    it('calls to set time range and fetch data', () => {
+      jest.spyOn(store, 'dispatch');
+
+      createShallowWrapper({ hasMetrics: true }, { methods: {} });
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(store.dispatch).toHaveBeenCalledWith(
+          'monitoringDashboard/setTimeRange',
+          expect.any(Object),
+        );
+
+        expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
+      });
+    });
+
     it('shows up a loading state', done => {
       createShallowWrapper({ hasMetrics: true }, { methods: {} });
 
@@ -126,7 +149,7 @@ describe('Dashboard', () => {
         .catch(done.fail);
     });
 
-    it('fetches the metrics data with proper time window', done => {
+    it('fetches the metrics data with proper time window', () => {
       jest.spyOn(store, 'dispatch');
 
       createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
@@ -136,14 +159,9 @@ describe('Dashboard', () => {
         environmentData,
       );
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(store.dispatch).toHaveBeenCalled();
-
-          done();
-        })
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(store.dispatch).toHaveBeenCalled();
+      });
     });
   });
 
@@ -261,10 +279,6 @@ describe('Dashboard', () => {
       setupComponentStore(wrapper);
 
       return wrapper.vm.$nextTick();
-    });
-
-    afterEach(() => {
-      wrapper.destroy();
     });
 
     it('renders a search input', () => {

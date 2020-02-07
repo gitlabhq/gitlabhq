@@ -154,12 +154,12 @@ describe Projects::ServicesController do
         end
       end
 
-      context 'when activating Jira service from a template' do
+      context 'when activating Jira service from instance level service' do
         let(:service) do
-          create(:jira_service, project: project, template: true)
+          create(:jira_service, project: project, instance: true)
         end
 
-        it 'activate Jira service from template' do
+        it 'activate Jira service from instance level service' do
           expect(flash[:notice]).to eq 'Jira activated.'
         end
       end

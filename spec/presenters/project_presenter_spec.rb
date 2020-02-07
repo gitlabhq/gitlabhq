@@ -467,7 +467,7 @@ describe ProjectPresenter do
 
           expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(
             is_link: false,
-            label: a_string_including('Kubernetes configured'),
+            label: a_string_including('Kubernetes'),
             link: presenter.project_cluster_path(project, cluster)
           )
         end
@@ -480,7 +480,7 @@ describe ProjectPresenter do
 
           expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(
             is_link: false,
-            label: a_string_including('Kubernetes configured'),
+            label: a_string_including('Kubernetes'),
             link: presenter.project_clusters_path(project)
           )
         end

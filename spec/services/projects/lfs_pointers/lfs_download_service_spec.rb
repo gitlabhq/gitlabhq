@@ -48,10 +48,11 @@ describe Projects::LfsPointers::LfsDownloadService do
   end
 
   shared_examples 'lfs object is created' do
-    it do
+    it 'creates and associate the LFS object to project' do
       expect(subject).to receive(:download_and_save_file!).and_call_original
 
       expect { subject.execute }.to change { LfsObject.count }.by(1)
+      expect(LfsObject.first.projects).to include(project)
     end
 
     it 'returns success result' do

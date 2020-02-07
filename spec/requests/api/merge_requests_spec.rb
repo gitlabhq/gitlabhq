@@ -1492,7 +1492,7 @@ describe API::MergeRequests do
       end
     end
 
-    context 'forked projects' do
+    context 'forked projects', :sidekiq_might_not_need_inline do
       let!(:user2) { create(:user) }
       let(:project) { create(:project, :public, :repository) }
       let!(:forked_project) { fork_project(project, user2, repository: true) }

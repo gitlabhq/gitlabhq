@@ -80,12 +80,13 @@ module Repositories
       LfsObject.create!(oid: oid, size: size, file: uploaded_file)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def link_to_project!(object)
-      if object && !object.projects.exists?(storage_project.id)
-        object.lfs_objects_projects.create!(project: storage_project)
-      end
+      return unless object
+
+      LfsObjectsProject.safe_find_or_create_by!(
+        project: project,
+        lfs_object: object
+      )
     end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

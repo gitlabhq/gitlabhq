@@ -10903,9 +10903,6 @@ msgstr ""
 msgid "Kubernetes cluster was successfully updated."
 msgstr ""
 
-msgid "Kubernetes configured"
-msgstr ""
-
 msgid "Kubernetes deployment not found"
 msgstr ""
 
@@ -12119,6 +12116,9 @@ msgid "Metrics|Used if the query returns a single series. If it returns multiple
 msgstr ""
 
 msgid "Metrics|Validating query"
+msgstr ""
+
+msgid "Metrics|View logs"
 msgstr ""
 
 msgid "Metrics|Y-axis label"

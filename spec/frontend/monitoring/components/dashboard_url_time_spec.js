@@ -7,6 +7,7 @@ import { mockProjectDir } from '../mock_data';
 
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import { createStore } from '~/monitoring/stores';
+import { defaultTimeRange } from '~/monitoring/constants';
 import { propsData } from '../init_utils';
 
 jest.mock('~/flash');
@@ -17,16 +18,11 @@ describe('dashboard invalid url parameters', () => {
   let wrapper;
   let mock;
 
-  const fetchDataMock = jest.fn();
-
   const createMountedWrapper = (props = { hasMetrics: true }, options = {}) => {
     wrapper = mount(Dashboard, {
       propsData: { ...propsData, ...props },
       store,
       stubs: ['graph-group', 'panel-type'],
-      methods: {
-        fetchData: fetchDataMock,
-      },
       ...options,
     });
   };
@@ -35,6 +31,8 @@ describe('dashboard invalid url parameters', () => {
 
   beforeEach(() => {
     store = createStore();
+    jest.spyOn(store, 'dispatch');
+
     mock = new MockAdapter(axios);
   });
 
@@ -43,7 +41,6 @@ describe('dashboard invalid url parameters', () => {
       wrapper.destroy();
     }
     mock.restore();
-    fetchDataMock.mockReset();
     queryToObject.mockReset();
   });
 
@@ -53,15 +50,13 @@ describe('dashboard invalid url parameters', () => {
     createMountedWrapper();
 
     return wrapper.vm.$nextTick().then(() => {
-      expect(findDateTimePicker().props('value')).toMatchObject({
-        duration: { seconds: 28800 },
-      });
+      expect(findDateTimePicker().props('value')).toEqual(defaultTimeRange);
 
-      expect(fetchDataMock).toHaveBeenCalledTimes(1);
-      expect(fetchDataMock).toHaveBeenCalledWith({
-        start: expect.any(String),
-        end: expect.any(String),
-      });
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'monitoringDashboard/setTimeRange',
+        expect.any(Object),
+      );
+      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
     });
   });
 
@@ -78,8 +73,8 @@ describe('dashboard invalid url parameters', () => {
     return wrapper.vm.$nextTick().then(() => {
       expect(findDateTimePicker().props('value')).toEqual(params);
 
-      expect(fetchDataMock).toHaveBeenCalledTimes(1);
-      expect(fetchDataMock).toHaveBeenCalledWith(params);
+      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/setTimeRange', params);
+      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
     });
   });
 
@@ -91,15 +86,17 @@ describe('dashboard invalid url parameters', () => {
     createMountedWrapper();
 
     return wrapper.vm.$nextTick().then(() => {
-      expect(findDateTimePicker().props('value')).toMatchObject({
+      const expectedTimeRange = {
         duration: { seconds: 60 * 2 },
-      });
+      };
 
-      expect(fetchDataMock).toHaveBeenCalledTimes(1);
-      expect(fetchDataMock).toHaveBeenCalledWith({
-        start: expect.any(String),
-        end: expect.any(String),
-      });
+      expect(findDateTimePicker().props('value')).toMatchObject(expectedTimeRange);
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'monitoringDashboard/setTimeRange',
+        expectedTimeRange,
+      );
+      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
     });
   });
 
@@ -114,15 +111,13 @@ describe('dashboard invalid url parameters', () => {
     return wrapper.vm.$nextTick().then(() => {
       expect(createFlash).toHaveBeenCalled();
 
-      expect(findDateTimePicker().props('value')).toMatchObject({
-        duration: { seconds: 28800 },
-      });
+      expect(findDateTimePicker().props('value')).toEqual(defaultTimeRange);
 
-      expect(fetchDataMock).toHaveBeenCalledTimes(1);
-      expect(fetchDataMock).toHaveBeenCalledWith({
-        start: expect.any(String),
-        end: expect.any(String),
-      });
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'monitoringDashboard/setTimeRange',
+        defaultTimeRange,
+      );
+      expect(store.dispatch).toHaveBeenCalledWith('monitoringDashboard/fetchData', undefined);
     });
   });
 
@@ -137,7 +132,7 @@ describe('dashboard invalid url parameters', () => {
         duration: { seconds: 120 },
       });
 
-      // redirect to plus + new parameters
+      // redirect to with new parameters
       expect(mergeUrlParams).toHaveBeenCalledWith({ duration_seconds: '120' }, toUrl);
       expect(redirectTo).toHaveBeenCalledTimes(1);
     });

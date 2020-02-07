@@ -1,0 +1,5 @@
+---
+title: Create LfsObjectsProject record for forks as well
+merge_request: 22418
+author:
+type: fixed

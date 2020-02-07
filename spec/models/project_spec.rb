@@ -279,6 +279,12 @@ describe Project do
       end
     end
 
+    it 'validates presence of project_feature' do
+      project = build(:project, project_feature: nil)
+
+      expect(project).not_to be_valid
+    end
+
     describe 'import_url' do
       it 'does not allow an invalid URI as import_url' do
         project = build(:project, import_url: 'invalid://')
@@ -2694,16 +2700,44 @@ describe Project do
     describe '#all_lfs_objects' do
       let(:lfs_object) { create(:lfs_object) }
 
-      before do
-        project.lfs_objects << lfs_object
+      context 'when LFS object is only associated to the source' do
+        before do
+          project.lfs_objects << lfs_object
+        end
+
+        it 'returns the lfs object for a project' do
+          expect(project.all_lfs_objects).to contain_exactly(lfs_object)
+        end
+
+        it 'returns the lfs object for a fork' do
+          expect(forked_project.all_lfs_objects).to contain_exactly(lfs_object)
+        end
       end
 
-      it 'returns the lfs object for a project' do
-        expect(project.all_lfs_objects).to contain_exactly(lfs_object)
+      context 'when LFS object is only associated to the fork' do
+        before do
+          forked_project.lfs_objects << lfs_object
+        end
+
+        it 'returns nothing' do
+          expect(project.all_lfs_objects).to be_empty
+        end
+
+        it 'returns the lfs object for a fork' do
+          expect(forked_project.all_lfs_objects).to contain_exactly(lfs_object)
+        end
       end
 
-      it 'returns the lfs object for a fork' do
-        expect(forked_project.all_lfs_objects).to contain_exactly(lfs_object)
+      context 'when LFS object is associated to both source and fork' do
+        before do
+          project.lfs_objects << lfs_object
+          forked_project.lfs_objects << lfs_object
+        end
+
+        it 'returns the lfs object for the source and fork' do
+          expect(project.all_lfs_objects).to contain_exactly(lfs_object)
+          expect(forked_project.all_lfs_objects).to contain_exactly(lfs_object)
+        end
       end
     end
   end
@@ -5516,6 +5550,31 @@ describe Project do
 
     it 'returns limited number of protected branches based on specified limit' do
       expect(subject).to eq([another_protected_branch])
+    end
+  end
+
+  describe '#lfs_objects_oids' do
+    let(:project) { create(:project) }
+    let(:lfs_object) { create(:lfs_object) }
+    let(:another_lfs_object) { create(:lfs_object) }
+
+    subject { project.lfs_objects_oids }
+
+    context 'when project has associated LFS objects' do
+      before do
+        create(:lfs_objects_project, lfs_object: lfs_object, project: project)
+        create(:lfs_objects_project, lfs_object: another_lfs_object, project: project)
+      end
+
+      it 'returns OIDs of LFS objects' do
+        expect(subject).to match_array([lfs_object.oid, another_lfs_object.oid])
+      end
+    end
+
+    context 'when project has no associated LFS objects' do
+      it 'returns empty array' do
+        expect(subject).to be_empty
+      end
     end
   end
 

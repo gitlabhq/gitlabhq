@@ -951,7 +951,7 @@
   :latency_sensitive: 
   :resource_boundary: :unknown
   :weight: 1
-- :name: propagate_service_template
+- :name: propagate_instance_level_service
   :feature_category: :source_code_management
   :has_external_dependencies: 
   :latency_sensitive: 
