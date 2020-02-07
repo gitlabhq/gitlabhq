@@ -77,6 +77,10 @@ module Gitlab
       end
     end
 
+    def self.valid_ids
+      THEMES.map(&:id)
+    end
+
     private
 
     def default_id

@@ -361,6 +361,12 @@ msgstr ""
 msgid "%{percent}%{percentSymbol} complete"
 msgstr ""
 
+msgid "%{placeholder} is not a valid color scheme"
+msgstr ""
+
+msgid "%{placeholder} is not a valid theme"
+msgstr ""
+
 msgid "%{primary} (%{secondary})"
 msgstr ""
 
@@ -618,6 +624,9 @@ msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 month"
+msgstr ""
+
 msgid "1 open issue"
 msgid_plural "%{issues} open issues"
 msgstr[0] ""
@@ -653,9 +662,6 @@ msgid "10-19 contributions"
 msgstr ""
 
 msgid "1st contribution!"
-msgstr ""
-
-msgid "2 weeks"
 msgstr ""
 
 msgid "20-29 contributions"
@@ -3186,6 +3192,12 @@ msgid "Certificate"
 msgstr ""
 
 msgid "Certificate (PEM)"
+msgstr ""
+
+msgid "Certificate Issuer"
+msgstr ""
+
+msgid "Certificate Subject"
 msgstr ""
 
 msgid "Change assignee"
@@ -11124,6 +11136,9 @@ msgstr ""
 msgid "Learn more about the dependency list"
 msgstr ""
 
+msgid "Learn more about x509 signed commits"
+msgstr ""
+
 msgid "Learn more in the"
 msgstr ""
 
@@ -18165,6 +18180,9 @@ msgid "Subgroups"
 msgstr ""
 
 msgid "Subgroups and projects"
+msgstr ""
+
+msgid "Subject Key Identifier:"
 msgstr ""
 
 msgid "Subkeys"

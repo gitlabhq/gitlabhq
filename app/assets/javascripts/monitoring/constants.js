@@ -110,8 +110,8 @@ export const timeRanges = [
     duration: { seconds: 60 * 60 * 24 * 7 * 1 },
   },
   {
-    label: __('2 weeks'),
-    duration: { seconds: 60 * 60 * 24 * 7 * 2 },
+    label: __('1 month'),
+    duration: { seconds: 60 * 60 * 24 * 30 },
   },
 ];
 

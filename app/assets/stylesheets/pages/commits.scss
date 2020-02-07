@@ -321,6 +321,16 @@
   }
 }
 
+.gpg-popover-certificate-details {
+  ul {
+    padding-left: $gl-padding;
+  }
+
+  li.unstyled {
+    list-style-type: none;
+  }
+}
+
 .gpg-popover-status {
   display: flex;
   align-items: center;

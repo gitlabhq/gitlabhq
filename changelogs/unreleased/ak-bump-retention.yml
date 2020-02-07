@@ -1,0 +1,5 @@
+---
+title: Extend logs retention to period from 15 to 30 days
+merge_request: 24466
+author:
+type: changed

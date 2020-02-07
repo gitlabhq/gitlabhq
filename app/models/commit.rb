@@ -25,7 +25,7 @@ class Commit
   attr_accessor :redacted_description_html
   attr_accessor :redacted_title_html
   attr_accessor :redacted_full_title_html
-  attr_reader :gpg_commit, :container
+  attr_reader :container
 
   delegate :repository, to: :container
   delegate :project, to: :repository, allow_nil: true
@@ -123,7 +123,6 @@ class Commit
 
     @raw = raw_commit
     @container = container
-    @gpg_commit = Gitlab::Gpg::Commit.new(self) if container
   end
 
   delegate \
@@ -320,13 +319,34 @@ class Commit
     )
   end
 
-  def signature
-    return @signature if defined?(@signature)
-
-    @signature = gpg_commit.signature
+  def has_signature?
+    signature_type && signature_type != :NONE
   end
 
-  delegate :has_signature?, to: :gpg_commit
+  def raw_signature_type
+    strong_memoize(:raw_signature_type) do
+      next unless @raw.instance_of?(Gitlab::Git::Commit)
+
+      @raw.raw_commit.signature_type if defined? @raw.raw_commit.signature_type
+    end
+  end
+
+  def signature_type
+    @signature_type ||= raw_signature_type || :NONE
+  end
+
+  def signature
+    strong_memoize(:signature) do
+      case signature_type
+      when :PGP
+        Gitlab::Gpg::Commit.new(self).signature
+      when :X509
+        Gitlab::X509::Commit.new(self).signature
+      else
+        nil
+      end
+    end
+  end
 
   def revert_branch_name
     "revert-#{short_id}"

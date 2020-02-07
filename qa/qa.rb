@@ -16,6 +16,8 @@ module QA
   module Flow
     autoload :Login, 'qa/flow/login'
     autoload :Project, 'qa/flow/project'
+    autoload :Saml, 'qa/flow/saml'
+    autoload :User, 'qa/flow/user'
   end
 
   ##
@@ -431,6 +433,7 @@ module QA
       autoload :NodeJs, 'qa/service/docker_run/node_js'
       autoload :GitlabRunner, 'qa/service/docker_run/gitlab_runner'
       autoload :MailHog, 'qa/service/docker_run/mail_hog'
+      autoload :SamlIdp, 'qa/service/docker_run/saml_idp'
     end
   end
 

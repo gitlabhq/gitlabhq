@@ -38,6 +38,7 @@
 - dependency_scanning
 - design_management
 - devops_score
+- digital_experience_management
 - disaster_recovery
 - dynamic_application_security_testing
 - epics
@@ -96,7 +97,6 @@
 - static_site_editor
 - status_page
 - subgroups
-- synthetic_monitoring
 - system_testing
 - teams
 - templates

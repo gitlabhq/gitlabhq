@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_05_143231) do
+ActiveRecord::Schema.define(version: 2020_02_06_091544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -4482,6 +4482,40 @@ ActiveRecord::Schema.define(version: 2020_02_05_143231) do
     t.index ["type"], name: "index_web_hooks_on_type"
   end
 
+  create_table "x509_certificates", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "subject_key_identifier", limit: 255, null: false
+    t.string "subject", limit: 255, null: false
+    t.string "email", limit: 255, null: false
+    t.binary "serial_number", null: false
+    t.integer "certificate_status", limit: 2, default: 0, null: false
+    t.bigint "x509_issuer_id", null: false
+    t.index ["subject_key_identifier"], name: "index_x509_certificates_on_subject_key_identifier"
+    t.index ["x509_issuer_id"], name: "index_x509_certificates_on_x509_issuer_id"
+  end
+
+  create_table "x509_commit_signatures", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.bigint "project_id", null: false
+    t.bigint "x509_certificate_id", null: false
+    t.binary "commit_sha", null: false
+    t.integer "verification_status", limit: 2, default: 0, null: false
+    t.index ["commit_sha"], name: "index_x509_commit_signatures_on_commit_sha"
+    t.index ["project_id"], name: "index_x509_commit_signatures_on_project_id"
+    t.index ["x509_certificate_id"], name: "index_x509_commit_signatures_on_x509_certificate_id"
+  end
+
+  create_table "x509_issuers", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "subject_key_identifier", limit: 255, null: false
+    t.string "subject", limit: 255, null: false
+    t.string "crl_url", limit: 255, null: false
+    t.index ["subject_key_identifier"], name: "index_x509_issuers_on_subject_key_identifier"
+  end
+
   create_table "zoom_meetings", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.bigint "issue_id", null: false
@@ -4973,6 +5007,9 @@ ActiveRecord::Schema.define(version: 2020_02_05_143231) do
   add_foreign_key "vulnerability_scanners", "projects", on_delete: :cascade
   add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade
   add_foreign_key "web_hooks", "projects", name: "fk_0c8ca6d9d1", on_delete: :cascade
+  add_foreign_key "x509_certificates", "x509_issuers", on_delete: :cascade
+  add_foreign_key "x509_commit_signatures", "projects", on_delete: :cascade
+  add_foreign_key "x509_commit_signatures", "x509_certificates", on_delete: :cascade
   add_foreign_key "zoom_meetings", "issues", on_delete: :cascade
   add_foreign_key "zoom_meetings", "projects", on_delete: :cascade
 end

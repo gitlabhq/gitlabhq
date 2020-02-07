@@ -48,7 +48,7 @@ elasticsearch-curator:
         1:
           action: delete_indices
           description: >-
-            Delete indices older than 15 days (based on index name), for filebeat-
+            Delete indices older than 30 days (based on index name), for filebeat-
             prefixed indices. Ignore the error if the filter does not result in an
             actionable list of indices (ignore_empty_list) and exit cleanly.
           options:
@@ -62,7 +62,7 @@ elasticsearch-curator:
             direction: older
             timestring: '%Y.%m.%d'
             unit: days
-            unit_count: 15
+            unit_count: 30
 
 elasticsearch-exporter:
   enabled: false

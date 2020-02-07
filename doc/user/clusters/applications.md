@@ -437,7 +437,7 @@ Filebeat will run as a DaemonSet on each node in your cluster, and it will ship 
 GitLab will then connect to Elasticsearch for logs instead of the Kubernetes API,
 and you will have access to more advanced querying capabilities.
 
-Log data is automatically deleted after 15 days using [Curator](https://www.elastic.co/guide/en/elasticsearch/client/curator/5.5/about.html).
+Log data is automatically deleted after 30 days using [Curator](https://www.elastic.co/guide/en/elasticsearch/client/curator/5.5/about.html).
 
 To enable log shipping, install Elastic Stack into the cluster with the **Install** button.
 

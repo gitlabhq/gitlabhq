@@ -6,7 +6,7 @@ module Git
       execute_branch_hooks
 
       super.tap do
-        enqueue_update_gpg_signatures
+        enqueue_update_signatures
       end
     end
 
@@ -103,14 +103,22 @@ module Git
       end
     end
 
-    def enqueue_update_gpg_signatures
-      unsigned = GpgSignature.unsigned_commit_shas(limited_commits.map(&:sha))
+    def unsigned_x509_shas(commits)
+      X509CommitSignature.unsigned_commit_shas(commits.map(&:sha))
+    end
+
+    def unsigned_gpg_shas(commits)
+      GpgSignature.unsigned_commit_shas(commits.map(&:sha))
+    end
+
+    def enqueue_update_signatures
+      unsigned = unsigned_x509_shas(commits) & unsigned_gpg_shas(commits)
       return if unsigned.empty?
 
       signable = Gitlab::Git::Commit.shas_with_signatures(project.repository, unsigned)
       return if signable.empty?
 
-      CreateGpgSignatureWorker.perform_async(signable, project.id)
+      CreateCommitSignatureWorker.perform_async(signable, project.id)
     end
 
     # It's not sufficient to just check for a blank SHA as it's possible for the

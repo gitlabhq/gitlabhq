@@ -699,14 +699,14 @@
   :latency_sensitive: true
   :resource_boundary: :unknown
   :weight: 2
-- :name: create_evidence
-  :feature_category: :release_governance
+- :name: create_commit_signature
+  :feature_category: :source_code_management
   :has_external_dependencies: 
   :latency_sensitive: 
   :resource_boundary: :unknown
   :weight: 2
-- :name: create_gpg_signature
-  :feature_category: :source_code_management
+- :name: create_evidence
+  :feature_category: :release_governance
   :has_external_dependencies: 
   :latency_sensitive: 
   :resource_boundary: :unknown

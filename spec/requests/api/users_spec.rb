@@ -461,7 +461,7 @@ describe API::Users do
     end
 
     it "creates user with optional attributes" do
-      optional_attributes = { confirm: true }
+      optional_attributes = { confirm: true, theme_id: 2, color_scheme_id: 4 }
       attributes = attributes_for(:user).merge(optional_attributes)
 
       post api('/users', admin), params: attributes
@@ -573,6 +573,15 @@ describe API::Users do
 
     it 'returns 400 error if username not given' do
       post api('/users', admin), params: attributes_for(:user).except(:username)
+      expect(response).to have_gitlab_http_status(400)
+    end
+
+    it "doesn't create user with invalid optional attributes" do
+      optional_attributes = { theme_id: 50, color_scheme_id: 50 }
+      attributes = attributes_for(:user).merge(optional_attributes)
+
+      post api('/users', admin), params: attributes
+
       expect(response).to have_gitlab_http_status(400)
     end
 
@@ -822,6 +831,34 @@ describe API::Users do
 
       expect(response).to have_gitlab_http_status(400)
       expect(user.reload.email).not_to eq('invalid email')
+    end
+
+    it "updates theme id" do
+      put api("/users/#{user.id}", admin), params: { theme_id: 5 }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(user.reload.theme_id).to eq(5)
+    end
+
+    it "does not update invalid theme id" do
+      put api("/users/#{user.id}", admin), params: { theme_id: 50 }
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(user.reload.theme_id).not_to eq(50)
+    end
+
+    it "updates color scheme id" do
+      put api("/users/#{user.id}", admin), params: { color_scheme_id: 5 }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(user.reload.color_scheme_id).to eq(5)
+    end
+
+    it "does not update invalid color scheme id" do
+      put api("/users/#{user.id}", admin), params: { color_scheme_id: 50 }
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(user.reload.color_scheme_id).not_to eq(50)
     end
 
     context 'when the current user is not an admin' do

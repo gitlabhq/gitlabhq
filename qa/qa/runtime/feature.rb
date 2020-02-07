@@ -38,6 +38,8 @@ module QA
           end
 
           raise SetFeatureError, "#{key} was not enabled!" unless is_enabled
+
+          QA::Runtime::Logger.info("Successfully enabled and verified feature flag: #{key}")
         end
       end
 

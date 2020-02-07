@@ -281,7 +281,7 @@ describe Projects::CompareController do
       context 'when the user has access to the project' do
         render_views
 
-        let(:signature_commit) { build(:commit, project: project, safe_message: "message", sha: 'signature_commit') }
+        let(:signature_commit) { project.commit_by(oid: '0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
         let(:non_signature_commit) { build(:commit, project: project, safe_message: "message", sha: 'non_signature_commit') }
 
         before do

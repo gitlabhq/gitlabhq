@@ -190,6 +190,12 @@ class User < ApplicationRecord
   validate :owns_commit_email, if: :commit_email_changed?
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
 
+  validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
+    message: _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } }
+
+  validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
+    message: _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } }
+
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: :new_record?
   before_validation :set_public_email, if: :public_email_changed?

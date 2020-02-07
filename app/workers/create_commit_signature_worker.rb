@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateGpgSignatureWorker
+class CreateCommitSignatureWorker
   include ApplicationWorker
 
   feature_category :source_code_management
@@ -23,7 +23,12 @@ class CreateGpgSignatureWorker
 
     # This calculates and caches the signature in the database
     commits.each do |commit|
-      Gitlab::Gpg::Commit.new(commit).signature
+      case commit.signature_type
+      when :PGP
+        Gitlab::Gpg::Commit.new(commit).signature
+      when :X509
+        Gitlab::X509::Commit.new(commit).signature
+      end
     rescue => e
       Rails.logger.error("Failed to create signature for commit #{commit.id}. Error: #{e.message}") # rubocop:disable Gitlab/RailsLogger
     end
