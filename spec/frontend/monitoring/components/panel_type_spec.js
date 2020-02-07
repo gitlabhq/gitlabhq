@@ -3,22 +3,29 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { setTestTimeout } from 'helpers/timeout';
 import invalidUrl from '~/lib/utils/invalid_url';
 import axios from '~/lib/utils/axios_utils';
+
 import PanelType from '~/monitoring/components/panel_type.vue';
 import EmptyChart from '~/monitoring/components/charts/empty_chart.vue';
 import TimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
 import AnomalyChart from '~/monitoring/components/charts/anomaly.vue';
-import { graphDataPrometheusQueryRange } from '../../javascripts/monitoring/mock_data';
-import { anomalyMockGraphData } from '../../frontend/monitoring/mock_data';
+import { anomalyMockGraphData, graphDataPrometheusQueryRange } from 'jest/monitoring/mock_data';
 import { createStore } from '~/monitoring/stores';
 
 global.IS_EE = true;
 global.URL.createObjectURL = jest.fn();
+
+const mocks = {
+  $toast: {
+    show: jest.fn(),
+  },
+};
 
 describe('Panel Type component', () => {
   let axiosMock;
   let store;
   let state;
   let wrapper;
+
   const exampleText = 'example_text';
 
   const createWrapper = props => {
@@ -27,6 +34,7 @@ describe('Panel Type component', () => {
         ...props,
       },
       store,
+      mocks,
     });
   };
 
@@ -88,7 +96,7 @@ describe('Panel Type component', () => {
     });
 
     it('sets no clipboard copy link on dropdown by default', () => {
-      const link = () => wrapper.find('.js-chart-link');
+      const link = () => wrapper.find({ ref: 'copyChartLink' });
       expect(link().exists()).toBe(false);
     });
 
@@ -196,6 +204,7 @@ describe('Panel Type component', () => {
   });
 
   describe('when cliboard data is available', () => {
+    const link = () => wrapper.find({ ref: 'copyChartLink' });
     const clipboardText = 'A value to copy.';
 
     beforeEach(() => {
@@ -210,10 +219,18 @@ describe('Panel Type component', () => {
     });
 
     it('sets clipboard text on the dropdown', () => {
-      const link = () => wrapper.find('.js-chart-link');
-
       expect(link().exists()).toBe(true);
       expect(link().element.dataset.clipboardText).toBe(clipboardText);
+    });
+
+    it('adds a copy button to the dropdown', () => {
+      expect(link().text()).toContain('Generate link to chart');
+    });
+
+    it('opens a toast on click', () => {
+      link().vm.$emit('click');
+
+      expect(wrapper.vm.$toast.show).toHaveBeenCalled();
     });
   });
 

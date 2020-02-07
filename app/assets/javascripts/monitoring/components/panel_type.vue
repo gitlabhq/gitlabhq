@@ -195,8 +195,8 @@ export default {
         </gl-dropdown-item>
         <gl-dropdown-item
           v-if="clipboardText"
+          ref="copyChartLink"
           v-track-event="generateLinkToChartOptions(clipboardText)"
-          class="js-chart-link"
           :data-clipboard-text="clipboardText"
           @click="showToast(clipboardText)"
         >

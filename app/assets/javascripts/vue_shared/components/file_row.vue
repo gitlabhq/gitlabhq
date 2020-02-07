@@ -62,9 +62,6 @@ export default {
         'is-open': this.file.opened,
       };
     },
-    childFilesLevel() {
-      return this.file.isHeader ? 0 : this.level + 1;
-    },
   },
   watch: {
     'file.active': function fileActiveWatch(active) {
@@ -131,53 +128,38 @@ export default {
 </script>
 
 <template>
-  <div>
-    <file-header v-if="file.isHeader" :path="file.path" />
-    <div
-      v-else
-      :class="fileClass"
-      :title="file.name"
-      class="file-row"
-      role="button"
-      @click="clickFile"
-      @mouseleave="toggleDropdown(false)"
-    >
-      <div class="file-row-name-container">
-        <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">
-          <file-icon
-            v-if="!showChangedIcon || file.type === 'tree'"
-            class="file-row-icon"
-            :file-name="file.name"
-            :loading="file.loading"
-            :folder="isTree"
-            :opened="file.opened"
-            :size="16"
-          />
-          <changed-file-icon v-else :file="file" :size="16" class="append-right-5" />
-          {{ file.name }}
-        </span>
-        <component
-          :is="extraComponent"
-          v-if="extraComponent && !(hideExtraOnTree && file.type === 'tree')"
-          :file="file"
-          :dropdown-open="dropdownOpen"
-          @toggle="toggleDropdown($event)"
+  <file-header v-if="file.isHeader" :path="file.path" />
+  <div
+    v-else
+    :class="fileClass"
+    :title="file.name"
+    class="file-row"
+    role="button"
+    @click="clickFile"
+    @mouseleave="toggleDropdown(false)"
+  >
+    <div class="file-row-name-container">
+      <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">
+        <file-icon
+          v-if="!showChangedIcon || file.type === 'tree'"
+          class="file-row-icon"
+          :file-name="file.name"
+          :loading="file.loading"
+          :folder="isTree"
+          :opened="file.opened"
+          :size="16"
         />
-      </div>
-    </div>
-    <template v-if="file.opened || file.isHeader">
-      <file-row
-        v-for="childFile in file.tree"
-        :key="childFile.key"
-        :file="childFile"
-        :level="childFilesLevel"
-        :hide-extra-on-tree="hideExtraOnTree"
-        :extra-component="extraComponent"
-        :show-changed-icon="showChangedIcon"
-        @toggleTreeOpen="toggleTreeOpen"
-        @clickFile="clickedFile"
+        <changed-file-icon v-else :file="file" :size="16" class="append-right-5" />
+        {{ file.name }}
+      </span>
+      <component
+        :is="extraComponent"
+        v-if="extraComponent && !(hideExtraOnTree && file.type === 'tree')"
+        :file="file"
+        :dropdown-open="dropdownOpen"
+        @toggle="toggleDropdown($event)"
       />
-    </template>
+    </div>
   </div>
 </template>
 

@@ -288,9 +288,12 @@ For source installations, edit the `gitlab.yml` and set the Sidekiq
 
 ## `gitlab-shell.log`
 
-This file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log` for
-Omnibus GitLab packages or in `/home/git/gitlab-shell/gitlab-shell.log` for
+This file lives in `/var/log/gitlab/gitaly/gitlab-shell.log` for
+Omnibus GitLab packages or in `/home/git/gitaly/gitlab-shell.log` for
 installations from source.
+
+NOTE: **Note**
+For GitLab 12.5 and earlier the file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log`.
 
 GitLab Shell is used by GitLab for executing Git commands and provide
 SSH access to Git repositories. For example:

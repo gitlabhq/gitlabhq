@@ -19,10 +19,6 @@ module Gitlab
           belongs_to :noteable, polymorphic: true
           belongs_to :project
 
-          def user_mention_model
-            "#{CreateResourceUserMention::ISOLATION_MODULE}::#{noteable.class}".constantize.user_mention_model
-          end
-
           def for_personal_snippet?
             noteable.class.name == 'PersonalSnippet'
           end

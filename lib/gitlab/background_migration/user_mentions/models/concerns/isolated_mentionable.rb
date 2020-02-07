@@ -65,11 +65,11 @@ module Gitlab
             false
           end
 
-          def build_mention_values
+          def build_mention_values(resource_foreign_key)
             refs = all_references(author)
 
             {
-              "#{self.user_mention_model.resource_foreign_key}": user_mention_resource_id,
+              "#{resource_foreign_key}": user_mention_resource_id,
               note_id: user_mention_note_id,
               mentioned_users_ids: array_to_sql(refs.mentioned_users.pluck(:id)),
               mentioned_projects_ids: array_to_sql(refs.mentioned_projects.pluck(:id)),

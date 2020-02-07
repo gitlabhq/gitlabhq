@@ -14,7 +14,7 @@ class MigrateEpicNotesMentionsToDb < ActiveRecord::Migration[5.2]
   INDEX_NAME = 'epic_mentions_temp_index'
   INDEX_CONDITION = "note LIKE '%@%'::text AND notes.noteable_type = 'Epic'"
   QUERY_CONDITIONS = "#{INDEX_CONDITION} AND epic_user_mentions.epic_id IS NULL"
-  JOIN = 'LEFT JOIN epic_user_mentions ON notes.id = epic_user_mentions.note_id'
+  JOIN = 'INNER JOIN epics ON epics.id = notes.noteable_id LEFT JOIN epic_user_mentions ON notes.id = epic_user_mentions.note_id'
 
   class Note < ActiveRecord::Base
     include EachBatch

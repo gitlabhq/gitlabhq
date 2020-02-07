@@ -3,7 +3,8 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import FileRow from '~/vue_shared/components/file_row.vue';
+import FileTree from '~/vue_shared/components/file_tree.vue';
+import DiffFileRow from './diff_file_row.vue';
 import FileRowStats from './file_row_stats.vue';
 
 export default {
@@ -12,7 +13,7 @@ export default {
   },
   components: {
     Icon,
-    FileRow,
+    FileTree,
   },
   props: {
     hideFileStats: {
@@ -61,6 +62,7 @@ export default {
   searchPlaceholder: sprintf(s__('MergeRequest|Search files (%{modifier_key}P)'), {
     modifier_key: /Mac/i.test(navigator.userAgent) ? '⌘' : 'Ctrl+',
   }),
+  DiffFileRow,
 };
 </script>
 
@@ -91,7 +93,7 @@ export default {
     </div>
     <div :class="{ 'pt-0 tree-list-blobs': !renderTreeList }" class="tree-list-scroll">
       <template v-if="filteredTreeList.length">
-        <file-row
+        <file-tree
           v-for="file in filteredTreeList"
           :key="file.key"
           :file="file"
@@ -99,6 +101,7 @@ export default {
           :hide-extra-on-tree="true"
           :extra-component="fileRowExtraComponent"
           :show-changed-icon="true"
+          :file-row-component="$options.DiffFileRow"
           @toggleTreeOpen="toggleTreeOpen"
           @clickFile="scrollToFile"
         />

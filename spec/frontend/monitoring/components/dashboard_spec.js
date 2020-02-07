@@ -1,5 +1,5 @@
 import { shallowMount, createLocalVue, mount } from '@vue/test-utils';
-import { GlDropdownItem, GlButton, GlToast } from '@gitlab/ui';
+import { GlDropdownItem, GlButton } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -10,6 +10,7 @@ import Dashboard from '~/monitoring/components/dashboard.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
 import GroupEmptyState from '~/monitoring/components/group_empty_state.vue';
+import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import { setupComponentStore, propsData } from '../init_utils';
@@ -540,37 +541,36 @@ describe('Dashboard', () => {
     });
   });
 
-  // https://gitlab.com/gitlab-org/gitlab-ce/issues/66922
-  // eslint-disable-next-line jest/no-disabled-tests
-  describe.skip('link to chart', () => {
+  describe('Clipboard text in panels', () => {
     const currentDashboard = 'TEST_DASHBOARD';
-    localVue.use(GlToast);
-    const link = () => wrapper.find('.js-chart-link');
-    const clipboardText = () => link().element.dataset.clipboardText;
+
+    const getClipboardTextAt = i =>
+      wrapper
+        .findAll(PanelType)
+        .at(i)
+        .props('clipboardText');
 
     beforeEach(done => {
       createShallowWrapper({ hasMetrics: true, currentDashboard });
 
-      setTimeout(done);
-    });
+      setupComponentStore(wrapper);
 
-    it('adds a copy button to the dropdown', () => {
-      expect(link().text()).toContain('Generate link to chart');
+      wrapper.vm.$nextTick(done);
     });
 
     it('contains a link to the dashboard', () => {
-      expect(clipboardText()).toContain(`dashboard=${currentDashboard}`);
-      expect(clipboardText()).toContain(`group=`);
-      expect(clipboardText()).toContain(`title=`);
-      expect(clipboardText()).toContain(`y_label=`);
+      expect(getClipboardTextAt(0)).toContain(`dashboard=${currentDashboard}`);
+      expect(getClipboardTextAt(0)).toContain(`group=`);
+      expect(getClipboardTextAt(0)).toContain(`title=`);
+      expect(getClipboardTextAt(0)).toContain(`y_label=`);
     });
 
-    it('undefined parameter is stripped', done => {
+    it('strips the undefined parameter', done => {
       wrapper.setProps({ currentDashboard: undefined });
 
       wrapper.vm.$nextTick(() => {
-        expect(clipboardText()).not.toContain(`dashboard=`);
-        expect(clipboardText()).toContain(`y_label=`);
+        expect(getClipboardTextAt(0)).not.toContain(`dashboard=`);
+        expect(getClipboardTextAt(0)).toContain(`y_label=`);
         done();
       });
     });
@@ -579,18 +579,10 @@ describe('Dashboard', () => {
       wrapper.setProps({ currentDashboard: null });
 
       wrapper.vm.$nextTick(() => {
-        expect(clipboardText()).not.toContain(`dashboard=`);
-        expect(clipboardText()).toContain(`y_label=`);
+        expect(getClipboardTextAt(0)).not.toContain(`dashboard=`);
+        expect(getClipboardTextAt(0)).toContain(`y_label=`);
         done();
       });
-    });
-
-    it('creates a toast when clicked', () => {
-      jest.spyOn(wrapper.vm.$toast, 'show').and.stub();
-
-      link().vm.$emit('click');
-
-      expect(wrapper.vm.$toast.show).toHaveBeenCalled();
     });
   });
 });

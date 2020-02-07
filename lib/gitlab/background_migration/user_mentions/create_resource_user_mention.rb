@@ -13,7 +13,7 @@ module Gitlab
 
         def perform(resource_model, join, conditions, with_notes, start_id, end_id)
           resource_model = "#{ISOLATION_MODULE}::#{resource_model}".constantize if resource_model.is_a?(String)
-          model = with_notes ? "#{ISOLATION_MODULE}::Note".constantize : resource_model
+          model = with_notes ? Gitlab::BackgroundMigration::UserMentions::Models::Note : resource_model
           resource_user_mention_model = resource_model.user_mention_model
 
           records = model.joins(join).where(conditions).where(id: start_id..end_id)
@@ -21,7 +21,7 @@ module Gitlab
           records.in_groups_of(BULK_INSERT_SIZE, false).each do |records|
             mentions = []
             records.each do |record|
-              mentions << record.build_mention_values
+              mentions << record.build_mention_values(resource_user_mention_model.resource_foreign_key)
             end
 
             Gitlab::Database.bulk_insert(

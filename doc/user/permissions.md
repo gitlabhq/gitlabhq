@@ -95,7 +95,7 @@ The following table depicts the various user permission levels in a project.
 | Stop environments                                 |         |            | ✓           | ✓        | ✓      |
 | Add tags                                          |         |            | ✓           | ✓        | ✓      |
 | Cancel and retry jobs                             |         |            | ✓           | ✓        | ✓      |
-| Create or update commit status                    |         |            | ✓           | ✓        | ✓      |
+| Create or update commit status                    |         |            | ✓ (*5*)     | ✓        | ✓      |
 | Update a container registry                       |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image                 |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete project milestones             |         |            | ✓           | ✓        | ✓      |
@@ -144,6 +144,7 @@ The following table depicts the various user permission levels in a project.
 (*2*): Guest users can only view the confidential issues they created themselves.  
 (*3*): If **Public pipelines** is enabled in **Project Settings > CI/CD**.  
 (*4*): Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [Protected Branches](./project/protected_branches.md).
+(*5*): If the [branch is protected](./project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings), this depends on the access Developers and Maintainers are given.
 
 ## Project features permissions
 
