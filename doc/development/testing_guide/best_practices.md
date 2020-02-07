@@ -72,6 +72,24 @@ When using spring and guard together, use `SPRING=1 bundle exec guard` instead t
 - Use [`:aggregate_failures`](https://relishapp.com/rspec/rspec-core/docs/expectation-framework-integration/aggregating-failures) when there is more than one expectation in a test.
 - For [empty test description blocks](https://github.com/rubocop-hq/rspec-style-guide#it-and-specify), use `specify` rather than `it do` if the test is self-explanatory.
 
+### Coverage
+
+[`simplecov`](https://github.com/colszowka/simplecov) is used to generate code test coverage reports.
+These are generated automatically on the CI, but not when running tests locally. To generate partial reports
+when you run a spec file on your machine, set the `SIMPLECOV` environment variable:
+
+```shell
+SIMPLECOV=1 bundle exec rspec spec/models/repository_spec.rb
+```
+
+Coverage reports are generated into the `coverage` folder in the app root, and you can open these in your browser, for example:
+
+```shell
+firefox coverage/index.html
+```
+
+Use the coverage reports to ensure your tests cover 100% of your code.
+
 ### System / Feature tests
 
 NOTE: **Note:** Before writing a new system test, [please consider **not**

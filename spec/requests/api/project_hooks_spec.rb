@@ -215,7 +215,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       expect(response).to have_gitlab_http_status(404)
     end
 
-    it "returns a 404 if a user attempts to delete project hooks he/she does not own" do
+    it "returns a 404 if a user attempts to delete project hooks they do not own" do
       test_user = create(:user)
       other_project = create(:project)
       other_project.add_maintainer(test_user)

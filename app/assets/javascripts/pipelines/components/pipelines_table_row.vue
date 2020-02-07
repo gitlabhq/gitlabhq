@@ -75,9 +75,9 @@ export default {
      * This field needs a lot of verification, because of different possible cases:
      *
      * 1. person who is an author of a commit might be a GitLab user
-     * 2. if person who is an author of a commit is a GitLab user he/she can have a GitLab avatar
-     * 3. If GitLab user does not have avatar he/she might have a Gravatar
-     * 4. If committer is not a GitLab User he/she can have a Gravatar
+     * 2. if person who is an author of a commit is a GitLab user, they can have a GitLab avatar
+     * 3. If GitLab user does not have avatar they might have a Gravatar
+     * 4. If committer is not a GitLab User they can have a Gravatar
      * 5. We do not have consistent API object in this case
      * 6. We should improve API and the code
      *
@@ -93,17 +93,17 @@ export default {
       // 1. person who is an author of a commit might be a GitLab user
       if (this.pipeline.commit.author) {
         // 2. if person who is an author of a commit is a GitLab user
-        // he/she can have a GitLab avatar
+        // they can have a GitLab avatar
         if (this.pipeline.commit.author.avatar_url) {
           commitAuthorInformation = this.pipeline.commit.author;
 
-          // 3. If GitLab user does not have avatar he/she might have a Gravatar
+          // 3. If GitLab user does not have avatar, they might have a Gravatar
         } else if (this.pipeline.commit.author_gravatar_url) {
           commitAuthorInformation = Object.assign({}, this.pipeline.commit.author, {
             avatar_url: this.pipeline.commit.author_gravatar_url,
           });
         }
-        // 4. If committer is not a GitLab User he/she can have a Gravatar
+        // 4. If committer is not a GitLab User, they can have a Gravatar
       } else {
         commitAuthorInformation = {
           avatar_url: this.pipeline.commit.author_gravatar_url,

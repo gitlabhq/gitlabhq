@@ -61,7 +61,7 @@ module Projects
     def add_source_project_to_fork_network(source_project)
       return unless @project.fork_network
 
-      # Because he have moved all references in the fork network from the source_project
+      # Because they have moved all references in the fork network from the source_project
       # we won't be able to query the database (only through its cached data),
       # for its former relationships. That's why we're adding it to the network
       # as a fork of the target project

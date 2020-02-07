@@ -57,7 +57,7 @@ Support for historical data is coming [in a future release](https://gitlab.com/g
 
 ### Full text search
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656) in GitLab 12.8.
 
 When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster,
 you can search the content of your logs via a search bar.

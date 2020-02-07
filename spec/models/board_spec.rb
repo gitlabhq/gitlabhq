@@ -16,26 +16,29 @@ describe Board do
   end
 
   describe '#order_by_name_asc' do
-    let!(:second_board) { create(:board, name: 'Secondary board', project: project) }
-    let!(:first_board)  { create(:board, name: 'First board', project: project) }
+    let!(:board_B) { create(:board, project: project, name: 'B') }
+    let!(:board_C) { create(:board, project: project, name: 'C') }
+    let!(:board_a) { create(:board, project: project, name: 'a') }
+    let!(:board_A) { create(:board, project: project, name: 'A') }
 
-    it 'returns in alphabetical order' do
-      expect(project.boards.order_by_name_asc).to eq [first_board, second_board]
+    it 'returns in case-insensitive alphabetical order and then by ascending id' do
+      expect(project.boards.order_by_name_asc).to eq [board_a, board_A, board_B, board_C]
     end
   end
 
   describe '#first_board' do
-    let!(:other_board)  { create(:board, name: 'Other board', project: other_project) }
-    let!(:second_board) { create(:board, name: 'Secondary board', project: project) }
-    let!(:first_board)  { create(:board, name: 'First board', project: project) }
+    let!(:board_B) { create(:board, project: project, name: 'B') }
+    let!(:board_C) { create(:board, project: project, name: 'C') }
+    let!(:board_a) { create(:board, project: project, name: 'a') }
+    let!(:board_A) { create(:board, project: project, name: 'A') }
 
-    it 'return the first alphabetical board as a relation' do
-      expect(project.boards.first_board).to eq [first_board]
+    it 'return the first case-insensitive alphabetical board as a relation' do
+      expect(project.boards.first_board).to eq [board_a]
     end
 
     # BoardsActions#board expects this behavior
     it 'raises an error when find is done on a non-existent record' do
-      expect { project.boards.first_board.find(second_board.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { project.boards.first_board.find(board_A.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end

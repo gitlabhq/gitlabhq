@@ -168,7 +168,7 @@ user_input = '../other-repo.git/other-file'
 repo_path = 'repositories/user-repo.git'
 
 # The intention of the code below is to open a file under repo_path, but
-# because the user used '..' she can 'break out' into
+# because the user used '..' they can 'break out' into
 # 'repositories/other-repo.git'
 full_path = File.join(repo_path, user_input)
 File.open(full_path) do # Oops!

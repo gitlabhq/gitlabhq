@@ -988,7 +988,7 @@ describe NotificationService, :mailer do
         expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
       end
 
-      it 'emails previous assignee even if he has the "on mention" notif level' do
+      it 'emails previous assignee even if they have the "on mention" notif level' do
         issue.assignees = [@u_mentioned]
         notification.reassigned_issue(issue, @u_disabled, [@u_watcher])
 
@@ -1005,7 +1005,7 @@ describe NotificationService, :mailer do
         should_not_email(@u_lazy_participant)
       end
 
-      it 'emails new assignee even if he has the "on mention" notif level' do
+      it 'emails new assignee even if they have the "on mention" notif level' do
         issue.assignees = [@u_mentioned]
         notification.reassigned_issue(issue, @u_disabled, [@u_mentioned])
 

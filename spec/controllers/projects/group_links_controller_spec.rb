@@ -37,7 +37,7 @@ describe Projects::GroupLinksController do
       end
     end
 
-    context 'when user has access to group he want to link project to' do
+    context 'when user has access to group they want to link project to' do
       before do
         group.add_developer(user)
       end
@@ -55,7 +55,7 @@ describe Projects::GroupLinksController do
       end
     end
 
-    context 'when user doers not have access to group he want to link to' do
+    context 'when user doers not have access to group they want to link to' do
       include_context 'link project to group'
 
       it 'renders 404' do

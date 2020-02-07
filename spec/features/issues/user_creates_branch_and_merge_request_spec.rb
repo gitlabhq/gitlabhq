@@ -287,7 +287,7 @@ describe 'User creates branch and merge request on issue page', :js do
     expect(source_message).to have_text('Source is not available')
 
     # JavaScript gets refs started with `mas` (entered above) and places the first match.
-    # User sees `mas` in black color (the part he entered) and the `ter` in gray color (a hint).
+    # User sees `mas` in black color (the part they entered) and the `ter` in gray color (a hint).
     # Since hinting is implemented via text selection and rspec/capybara doesn't have matchers for it,
     # we just checking the whole source name.
     expect(input_source.value).to eq(project.default_branch)

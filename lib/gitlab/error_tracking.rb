@@ -97,6 +97,8 @@ module Gitlab
           extra = extra.merge(data) if data.is_a?(Hash)
         end
 
+        extra = sanitize_request_parameters(extra)
+
         if sentry && Raven.configuration.server
           Raven.capture_exception(exception, tags: default_tags, extra: extra)
         end
@@ -115,6 +117,11 @@ module Gitlab
 
           Gitlab::ErrorTracking::Logger.error(log_hash)
         end
+      end
+
+      def sanitize_request_parameters(parameters)
+        filter = ActiveSupport::ParameterFilter.new(::Rails.application.config.filter_parameters)
+        filter.filter(parameters)
       end
 
       def sentry_dsn

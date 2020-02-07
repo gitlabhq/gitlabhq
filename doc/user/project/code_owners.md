@@ -45,7 +45,8 @@ Once set, Code Owners are displayed in merge requests widgets:
 Files can be specified using the same kind of patterns you would use
 in the `.gitignore` file followed by the `@username` or email of one
 or more users or by the `@name` of one or more groups that should
-be owners of the file.
+be owners of the file. Groups must be added as [members of the project](members/index.md),
+or they will be ignored.
 
 The order in which the paths are defined is significant: the last
 pattern that matches a given path will be used to find the code

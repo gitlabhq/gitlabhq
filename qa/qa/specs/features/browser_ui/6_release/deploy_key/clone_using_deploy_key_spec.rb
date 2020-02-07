@@ -10,8 +10,8 @@ module QA
 
         @runner_name = "qa-runner-#{Time.now.to_i}"
 
-        @project = Resource::Project.fabricate_via_api! do |resource|
-          resource.name = 'deploy-key-clone-project'
+        @project = Resource::Project.fabricate_via_api! do |project|
+          project.name = 'deploy-key-clone-project'
         end
 
         @repository_location = @project.repository_ssh_location

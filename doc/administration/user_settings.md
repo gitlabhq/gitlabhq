@@ -31,5 +31,5 @@ gitlab_rails['gitlab_username_changing_enabled'] = false
 For source installations, uncomment the following line in `config/gitlab.yml`:
 
 ```yaml
-# username_changing_enabled: false # default: true - User can change her username/namespace
+# username_changing_enabled: false # default: true - User can change their username/namespace
 ```

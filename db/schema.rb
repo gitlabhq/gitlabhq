@@ -2945,7 +2945,7 @@ ActiveRecord::Schema.define(version: 2020_02_06_111847) do
     t.datetime_with_timezone "updated_at", null: false
     t.string "package_username", limit: 255, null: false
     t.string "package_channel", limit: 255, null: false
-    t.index ["package_id", "package_username", "package_channel"], name: "index_packages_conan_metadata_on_package_id_username_channel", unique: true
+    t.index ["package_id"], name: "index_packages_conan_metadata_on_package_id", unique: true
   end
 
   create_table "packages_dependencies", force: :cascade do |t|

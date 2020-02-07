@@ -21291,6 +21291,9 @@ msgstr ""
 msgid "Vulnerabilities over time"
 msgstr ""
 
+msgid "Vulnerability List"
+msgstr ""
+
 msgid "Vulnerability-Check"
 msgstr ""
 
@@ -21334,6 +21337,9 @@ msgid "Vulnerability|Report Type"
 msgstr ""
 
 msgid "Vulnerability|Severity"
+msgstr ""
+
+msgid "Vulnerability|Status"
 msgstr ""
 
 msgid "WIP"
