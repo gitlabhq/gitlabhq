@@ -12,7 +12,7 @@ shared_context 'sentry error tracking context feature' do
   let(:sentry_api_urls) { Sentry::ApiUrls.new(project_error_tracking_settings.api_url) }
   let(:issue_id) { issue_response['id'] }
   let(:issue_seen) { 1.year.ago.utc }
-  let(:formatted_issue_seen) { issue_seen.strftime("%Y-%m-%d %I:%M:%S%p %Z") }
+  let(:formatted_issue_seen) { issue_seen.strftime("%Y-%m-%d %-l:%M:%S%p %Z") }
   let(:date_received) { 1.month.ago.utc }
 
   before do
