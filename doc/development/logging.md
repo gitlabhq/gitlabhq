@@ -9,7 +9,7 @@ Currently `Rails.logger` calls all get saved into `production.log`, which contai
 a mix of Rails' logs and other calls developers have inserted in the code base.
 For example:
 
-```
+```plaintext
 Started GET "/gitlabhq/yaml_db/tree/master" for 168.111.56.1 at 2015-02-12 19:34:53 +0200
 Processing by Projects::TreeController#show as HTML
   Parameters: {"project_id"=>"gitlabhq/yaml_db", "id"=>"master"}

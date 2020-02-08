@@ -38,7 +38,7 @@ endpoints like:
 Since the packages belong to a project, it's expected to have project-level endpoint (remote)
 for uploading and downloading them. For example:
 
-```
+```plaintext
 GET https://gitlab.com/api/v4/projects/<your_project_id>/packages/npm/
 PUT https://gitlab.com/api/v4/projects/<your_project_id>/packages/npm/
 ```

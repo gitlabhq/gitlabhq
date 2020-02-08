@@ -15,6 +15,7 @@ preload_app true
 check_client_connection false
 
 require_relative "/home/git/gitlab/lib/gitlab/cluster/lifecycle_events"
+require_relative "/home/git/gitlab/lib/gitlab/log_timestamp_formatter.rb"
 
 before_exec do |server|
   # Signal application hooks that we're about to restart
@@ -70,3 +71,7 @@ after_fork do |server, worker|
   # addr = "127.0.0.1:#{9293 + worker.nr}"
   # server.listen(addr, :tries => -1, :delay => 5, :tcp_nopush => true)
 end
+
+# Configure the default logger to use a custom formatter that formats the
+# timestamps to be in UTC and in ISO8601.3 format
+Configurator::DEFAULTS[:logger].formatter = Gitlab::LogTimestampFormatter.new

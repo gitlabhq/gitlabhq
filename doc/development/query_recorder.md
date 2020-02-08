@@ -28,7 +28,7 @@ By default, QueryRecorder will ignore cached queries in the count. However, it m
 all queries to avoid introducing an N+1 query that may be masked by the statement cache. To do this,
 pass the `skip_cached` variable to `QueryRecorder` and use the `exceed_all_query_limit` matcher:
 
-```
+```ruby
 it "avoids N+1 database queries" do
   control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }.count
   create_list(:issue, 5)
@@ -48,13 +48,13 @@ This could lead to false successes where subsequent "requests" could have querie
 It may be useful to identify the source of the queries by looking at the call backtrace.
 To enable this, run the specs with the `QUERY_RECORDER_DEBUG` environment variable set. For example:
 
-```
+```shell
 QUERY_RECORDER_DEBUG=1 bundle exec rspec spec/requests/api/projects_spec.rb
 ```
 
 This will log calls to QueryRecorder into the `test.log`. For example:
 
-```
+```plaintext
 QueryRecorder SQL: SELECT COUNT(*) FROM "issues" WHERE "issues"."deleted_at" IS NULL AND "issues"."project_id" = $1 AND ("issues"."state" IN ('opened')) AND "issues"."confidential" = $2
    --> /home/user/gitlab/gdk/gitlab/spec/support/query_recorder.rb:19:in `callback'
    --> /home/user/.rbenv/versions/2.3.5/lib/ruby/gems/2.3.0/gems/activesupport-4.2.8/lib/active_support/notifications/fanout.rb:127:in `finish'

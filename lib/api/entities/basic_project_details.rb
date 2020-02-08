@@ -2,7 +2,7 @@
 
 module API
   module Entities
-    class BasicProjectDetails < ProjectIdentity
+    class BasicProjectDetails < Entities::ProjectIdentity
       include ::API::ProjectsRelationBuilder
 
       expose :default_branch, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }

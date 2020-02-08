@@ -129,63 +129,6 @@ module API
       end
     end
 
-    class SSHKey < Grape::Entity
-      expose :id, :title, :key, :created_at
-    end
-
-    class SSHKeyWithUser < SSHKey
-      expose :user, using: Entities::UserPublic
-    end
-
-    class DeployKeyWithUser < SSHKeyWithUser
-      expose :deploy_keys_projects
-    end
-
-    class DeployKeysProject < Grape::Entity
-      expose :deploy_key, merge: true, using: Entities::SSHKey
-      expose :can_push
-    end
-
-    class GPGKey < Grape::Entity
-      expose :id, :key, :created_at
-    end
-
-    class DiffPosition < Grape::Entity
-      expose :base_sha, :start_sha, :head_sha, :old_path, :new_path,
-        :position_type
-    end
-
-    class Note < Grape::Entity
-      # Only Issue and MergeRequest have iid
-      NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
-
-      expose :id
-      expose :type
-      expose :note, as: :body
-      expose :attachment_identifier, as: :attachment
-      expose :author, using: Entities::UserBasic
-      expose :created_at, :updated_at
-      expose :system?, as: :system
-      expose :noteable_id, :noteable_type
-
-      expose :position, if: ->(note, options) { note.is_a?(DiffNote) } do |note|
-        note.position.to_h
-      end
-
-      expose :resolvable?, as: :resolvable
-      expose :resolved?, as: :resolved, if: ->(note, options) { note.resolvable? }
-      expose :resolved_by, using: Entities::UserBasic, if: ->(note, options) { note.resolvable? }
-
-      # Avoid N+1 queries as much as possible
-      expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }
-    end
-
-    class Discussion < Grape::Entity
-      expose :id
-      expose :individual_note?, as: :individual_note
-      expose :notes, using: Entities::Note
-    end
-
     class Avatar < Grape::Entity
       expose :avatar_url do |avatarable, options|
         avatarable.avatar_url(only_path: false, size: options[:size])
@@ -733,9 +676,9 @@ module API
       expose :id, :status, :stage, :name, :ref, :tag, :coverage, :allow_failure
       expose :created_at, :started_at, :finished_at
       expose :duration
-      expose :user, with: User
-      expose :commit, with: Commit
-      expose :pipeline, with: PipelineBasic
+      expose :user, with: Entities::User
+      expose :commit, with: Entities::Commit
+      expose :pipeline, with: Entities::PipelineBasic
 
       expose :web_url do |job, _options|
         Gitlab::Routing.url_helpers.project_job_url(job.project, job)
@@ -751,7 +694,7 @@ module API
     end
 
     class JobBasicWithProject < JobBasic
-      expose :project, with: ProjectIdentity
+      expose :project, with: Entities::ProjectIdentity
     end
 
     class Trigger < Grape::Entity
