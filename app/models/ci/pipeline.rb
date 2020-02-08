@@ -16,6 +16,8 @@ module Ci
     include FromUnion
     include UpdatedAtFilterable
 
+    BridgeStatusError = Class.new(StandardError)
+
     sha_attribute :source_sha
     sha_attribute :target_sha
 
@@ -64,6 +66,7 @@ module Ci
     has_one :triggered_by_pipeline, through: :source_pipeline, source: :source_pipeline
     has_one :parent_pipeline, -> { merge(Ci::Sources::Pipeline.same_project) }, through: :source_pipeline, source: :source_pipeline
     has_one :source_job, through: :source_pipeline, source: :source_job
+    has_one :source_bridge, through: :source_pipeline, source: :source_bridge
 
     has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
 
@@ -202,6 +205,22 @@ module Ci
             self.class.auto_devops_pipelines_completed_total.increment(status: pipeline.status)
           end
         end
+      end
+
+      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+        next unless pipeline.bridge_triggered?
+        next unless pipeline.bridge_waiting?
+
+        pipeline.run_after_commit do
+          ::Ci::PipelineBridgeStatusWorker.perform_async(pipeline.id)
+        end
+      end
+
+      after_transition created: :pending do |pipeline|
+        next unless pipeline.bridge_triggered?
+        next if pipeline.bridge_waiting?
+
+        pipeline.update_bridge_status!
       end
 
       after_transition any => [:success, :failed] do |pipeline|
@@ -720,6 +739,21 @@ module Ci
       else
         [self.id]
       end
+    end
+
+    def update_bridge_status!
+      raise ArgumentError unless bridge_triggered?
+      raise BridgeStatusError unless source_bridge.active?
+
+      source_bridge.success!
+    end
+
+    def bridge_triggered?
+      source_bridge.present?
+    end
+
+    def bridge_waiting?
+      source_bridge&.dependent?
     end
 
     def child?

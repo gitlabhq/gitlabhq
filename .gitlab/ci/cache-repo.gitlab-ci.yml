@@ -34,6 +34,7 @@ cache-repo:
     - git clone --progress $CI_REPOSITORY_URL $CI_PROJECT_NAME
     - cd $CI_PROJECT_NAME
     - gcloud auth activate-service-account --key-file=$CI_REPO_CACHE_CREDENTIALS
+    - git remote rm origin
     - tar cf $TAR_FILENAME .
     - gzip $TAR_FILENAME
     - gsutil cp $TAR_FILENAME.gz gs://gitlab-ci-git-repo-cache/project-$CI_PROJECT_ID/gitlab-master.tar.gz
