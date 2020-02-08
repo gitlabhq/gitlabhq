@@ -144,6 +144,13 @@ The union of A, B, and C is (1, 4) and (6, 7). Therefore, the total running time
 (4 - 1) + (7 - 6) => 4
 ```
 
+### How pipeline quotas are used
+
+Each user has a personal pipeline quota that tracks the usage of shared runners in all personal projects.
+Each group has a [usage quota](../subscriptions/index.md#ci-pipeline-minutes) that tracks the usage of shared runners for all projects created within the group.
+
+When a pipeline is triggered, regardless of who triggered it, the pipeline quota for the project owner's [namespace](../user/group/index.md#namespaces) is used. In this case, the namespace can be the user or group that owns the project.
+
 ### Expanding and collapsing job log sections
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/14664) in GitLab
