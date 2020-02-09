@@ -92,6 +92,16 @@ describe Gitlab::Kubernetes::KubeClient do
 
       it_behaves_like 'local address'
     end
+
+    it 'falls back to default options, but allows overriding' do
+      client = Gitlab::Kubernetes::KubeClient.new(api_url, {})
+      defaults = Gitlab::Kubernetes::KubeClient::DEFAULT_KUBECLIENT_OPTIONS
+      expect(client.kubeclient_options[:timeouts]).to eq(defaults[:timeouts])
+
+      client = Gitlab::Kubernetes::KubeClient.new(api_url, timeouts: { read: 7 })
+      expect(client.kubeclient_options[:timeouts][:read]).to eq(7)
+      expect(client.kubeclient_options[:timeouts][:open]).to eq(defaults[:timeouts][:open])
+    end
   end
 
   describe '#core_client' do

@@ -90,12 +90,21 @@ module Gitlab
 
       attr_reader :api_prefix, :kubeclient_options
 
+      DEFAULT_KUBECLIENT_OPTIONS = {
+        timeouts: {
+          open: 10,
+          read: 30
+        }
+      }.freeze
+
       # We disable redirects through 'http_max_redirects: 0',
       # so that KubeClient does not follow redirects and
       # expose internal services.
       def initialize(api_prefix, **kubeclient_options)
         @api_prefix = api_prefix
-        @kubeclient_options = kubeclient_options.merge(http_max_redirects: 0)
+        @kubeclient_options = DEFAULT_KUBECLIENT_OPTIONS
+          .deep_merge(kubeclient_options)
+          .merge(http_max_redirects: 0)
 
         validate_url!
       end
