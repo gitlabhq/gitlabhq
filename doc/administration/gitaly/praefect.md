@@ -209,7 +209,11 @@ praefect['database_dbname'] = 'praefect_production'
 Replace `POSTGRESQL_SERVER_ADDRESS`, `PRAEFECT_EXTERNAL_TOKEN`, `PRAEFECT_INTERNAL_TOKEN`,
 and `PRAEFECT_SQL_PASSWORD` with their respective values.
 
-Save the file and [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+Save the file and reconfigure Praefect:
+
+```shell
+sudo gitlab-ctl reconfigure
+```
 
 After you reconfigure, verify that Praefect can reach PostgreSQL:
 
@@ -328,7 +332,11 @@ with their respective values.
 Note that the storage name used is the same as the `praefect['virtual_storage_name']` set
 on the Praefect node.
 
-Save your changes and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+Save your changes and reconfigure GitLab:
+
+```shell
+sudo gitlab-ctl reconfigure
+```
 
 Run `sudo gitlab-rake gitlab:gitaly:check` to confirm that GitLab can reach Praefect.
 

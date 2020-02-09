@@ -989,10 +989,10 @@
     "@sentry/types" "5.10.0"
     tslib "^1.9.3"
 
-"@sourcegraph/code-host-integration@0.0.29":
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.29.tgz#71b4392ad9bd4527f5baddc32bb90fda5c00a9c7"
-  integrity sha512-YtCZSuiBTUzlk2ku9xIHPbEIBYfwNtdZQCVaEL1AvMG0Ds0tEDBiiRdW/ZpdYjskOGwslv2wkKC2sGE/zUUrIQ==
+"@sourcegraph/code-host-integration@0.0.30":
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.30.tgz#85f52eca0f8fd5efb1526a7ec6a09d261ab43bda"
+  integrity sha512-5zBN0/oa1c0lY0+MPb2kEs9NqefvOg0NevDQXqQpLHDOx+TtMzC2uEOQiBnyHm2bWcCl/RFatjvNlEV+reGgnA==
 
 "@types/anymatch@*":
   version "1.3.0"

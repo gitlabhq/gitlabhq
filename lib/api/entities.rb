@@ -129,40 +129,6 @@ module API
       end
     end
 
-    class Avatar < Grape::Entity
-      expose :avatar_url do |avatarable, options|
-        avatarable.avatar_url(only_path: false, size: options[:size])
-      end
-    end
-
-    class AwardEmoji < Grape::Entity
-      expose :id
-      expose :name
-      expose :user, using: Entities::UserBasic
-      expose :created_at, :updated_at
-      expose :awardable_id, :awardable_type
-    end
-
-    class MRNote < Grape::Entity
-      expose :note
-      expose :author, using: Entities::UserBasic
-    end
-
-    class CommitNote < Grape::Entity
-      expose :note
-      expose(:path) { |note| note.diff_file.try(:file_path) if note.diff_note? }
-      expose(:line) { |note| note.diff_line.try(:new_line) if note.diff_note? }
-      expose(:line_type) { |note| note.diff_line.try(:type) if note.diff_note? }
-      expose :author, using: Entities::UserBasic
-      expose :created_at
-    end
-
-    class CommitStatus < Grape::Entity
-      expose :id, :sha, :ref, :status, :name, :target_url, :description,
-             :created_at, :started_at, :finished_at, :allow_failure, :coverage
-      expose :author, using: Entities::UserBasic
-    end
-
     class PushEventPayload < Grape::Entity
       expose :commit_count, :action, :ref_type, :commit_from, :commit_to, :ref,
              :commit_title, :ref_count
