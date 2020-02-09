@@ -3,7 +3,7 @@
 module PersonalAccessTokens
   class ExpiringWorker
     include ApplicationWorker
-    include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
+    include CronjobQueue
 
     feature_category :authentication_and_authorization
 
@@ -12,11 +12,13 @@ module PersonalAccessTokens
       limit_date = PersonalAccessToken::DAYS_TO_EXPIRE.days.from_now.to_date
 
       User.with_expiring_and_not_notified_personal_access_tokens(limit_date).find_each do |user|
-        notification_service.access_token_about_to_expire(user)
+        with_context(user: user) do
+          notification_service.access_token_about_to_expire(user)
 
-        Rails.logger.info "#{self.class}: Notifying User #{user.id} about expiring tokens" # rubocop:disable Gitlab/RailsLogger
+          Rails.logger.info "#{self.class}: Notifying User #{user.id} about expiring tokens" # rubocop:disable Gitlab/RailsLogger
 
-        user.personal_access_tokens.expiring_and_not_notified(limit_date).update_all(expire_notification_delivered: true)
+          user.personal_access_tokens.expiring_and_not_notified(limit_date).update_all(expire_notification_delivered: true)
+        end
       end
     end
   end
