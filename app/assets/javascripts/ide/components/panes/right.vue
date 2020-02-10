@@ -3,7 +3,6 @@ import { mapGetters, mapState } from 'vuex';
 import { __ } from '~/locale';
 import CollapsibleSidebar from './collapsible_sidebar.vue';
 import { rightSidebarViews } from '../../constants';
-import MergeRequestInfo from '../merge_requests/info.vue';
 import PipelinesList from '../pipelines/list.vue';
 import JobsDetail from '../jobs/detail.vue';
 import Clientside from '../preview/clientside.vue';
@@ -28,12 +27,6 @@ export default {
     },
     rightExtensionTabs() {
       return [
-        {
-          show: Boolean(this.currentMergeRequestId),
-          title: __('Merge Request'),
-          views: [{ component: MergeRequestInfo, ...rightSidebarViews.mergeRequestInfo }],
-          icon: 'text-description',
-        },
         {
           show: true,
           title: __('Pipelines'),

@@ -2,7 +2,7 @@
 
 class StuckCiJobsWorker
   include ApplicationWorker
-  include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
+  include CronjobQueue
 
   feature_category :continuous_integration
   worker_resource_boundary :cpu
@@ -56,13 +56,13 @@ class StuckCiJobsWorker
     loop do
       jobs = Ci::Build.where(status: status)
         .where(condition, timeout.ago)
-        .includes(:tags, :runner, project: :namespace)
+        .includes(:tags, :runner, project: [:namespace, :route])
         .limit(100)
         .to_a
       break if jobs.empty?
 
       jobs.each do |job|
-        yield(job)
+        with_context(project: job.project) { yield(job) }
       end
     end
   end

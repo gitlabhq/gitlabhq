@@ -11,10 +11,14 @@ class IssuableBaseService < BaseService
     @skip_milestone_email = @params.delete(:skip_milestone_email)
   end
 
-  def filter_params(issuable)
+  def can_admin_issuable?(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 
-    unless can?(current_user, ability_name, issuable)
+    can?(current_user, ability_name, issuable)
+  end
+
+  def filter_params(issuable)
+    unless can_admin_issuable?(issuable)
       params.delete(:milestone_id)
       params.delete(:labels)
       params.delete(:add_label_ids)

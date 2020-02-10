@@ -15,11 +15,12 @@ describe 'User activates Prometheus' do
     click_link('Prometheus')
   end
 
-  it 'activates service' do
+  it 'does not activate service and informs about deprecation' do
     check('Active')
     fill_in('API URL', with: 'http://prometheus.example.com')
     click_button('Save changes')
 
-    expect(page).to have_content('Prometheus activated.')
+    expect(page).not_to have_content('Prometheus activated.')
+    expect(page).to have_content('Fields on this page has been deprecated.')
   end
 end

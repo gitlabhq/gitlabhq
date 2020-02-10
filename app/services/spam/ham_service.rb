@@ -2,10 +2,17 @@
 
 module Spam
   class HamService
-    attr_accessor :spam_log
+    include AkismetMethods
+
+    attr_accessor :spam_log, :options
 
     def initialize(spam_log)
       @spam_log = spam_log
+      @user = spam_log.user
+      @options = {
+          ip_address: spam_log.source_ip,
+          user_agent: spam_log.user_agent
+      }
     end
 
     def execute
@@ -16,17 +23,6 @@ module Spam
       end
     end
 
-    private
-
-    def akismet
-      user = spam_log.user
-      @akismet ||= AkismetService.new(
-        user.name,
-        user.email,
-        spam_log.text,
-        ip_address: spam_log.source_ip,
-        user_agent: spam_log.user_agent
-      )
-    end
+    alias_method :spammable, :spam_log
   end
 end

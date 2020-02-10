@@ -381,8 +381,6 @@ group :development, :test do
 
   gem 'knapsack', '~> 1.17'
 
-  gem 'stackprof', '~> 0.2.13', require: false
-
   gem 'simple_po_parser', '~> 1.1.2', require: false
 
   gem 'timecop', '~> 0.8.0'
@@ -427,6 +425,7 @@ gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
 gem 'ruby-prof', '~> 1.0.0'
+gem 'stackprof', '~> 0.2.15', require: false
 gem 'rbtrace', '~> 0.4', require: false
 gem 'memory_profiler', '~> 0.9', require: false
 gem 'benchmark-memory', '~> 0.1', require: false

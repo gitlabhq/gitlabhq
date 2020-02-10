@@ -24,7 +24,7 @@ module Gitlab
 
           sum += method.self_time
 
-          @output << "%6.2f  %9.3f %9.3f %9.3f %9.3f %8d  %s%s\n" % [
+          @output << "%6.2f  %9.3f %9.3f %9.3f %9.3f %8d  %s%-30s %s\n" % [
             method.self_time / total_time * 100, # %self
             method.total_time,                   # total
             method.self_time,                    # self
@@ -32,7 +32,8 @@ module Gitlab
             method.children_time,                # children
             method.called,                       # calls
             method.recursive? ? "*" : " ",       # cycle
-            method_name(method)                  # name
+            method.full_name,                    # method_name
+            method_location(method)              # location
           ]
         end
       end

@@ -10,7 +10,7 @@ describe 'Admin browses logs' do
   it 'shows available log files' do
     visit admin_logs_path
 
-    expect(page).to have_link 'application.log'
+    expect(page).to have_link 'application_json.log'
     expect(page).to have_link 'git_json.log'
     expect(page).to have_link 'test.log'
     expect(page).to have_link 'sidekiq.log'

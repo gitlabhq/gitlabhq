@@ -9,7 +9,7 @@ module AkismetMethods
     @akismet ||= Spam::AkismetService.new(
       spammable_owner.name,
       spammable_owner.email,
-      spammable.spammable_text,
+      spammable.try(:spammable_text) || spammable&.text,
       options
     )
   end

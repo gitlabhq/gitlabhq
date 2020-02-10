@@ -8,6 +8,8 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action :ensure_service_enabled
   before_action :service
   before_action :web_hook_logs, only: [:edit, :update]
+  before_action :set_deprecation_notice_for_prometheus_service, only: [:edit, :update]
+  before_action :redirect_deprecated_prometheus_service, only: [:update]
 
   respond_to :html
 
@@ -92,5 +94,17 @@ class Projects::ServicesController < Projects::ApplicationController
     @service
       .as_json(only: @service.json_fields)
       .merge(errors: @service.errors.as_json)
+  end
+
+  def redirect_deprecated_prometheus_service
+    redirect_to edit_project_service_path(project, @service) if @service.is_a?(::PrometheusService) && Feature.enabled?(:settings_operations_prometheus_service, project)
+  end
+
+  def set_deprecation_notice_for_prometheus_service
+    return if !@service.is_a?(::PrometheusService) || !Feature.enabled?(:settings_operations_prometheus_service, project)
+
+    operations_link_start = "<a href=\"#{project_settings_operations_path(project)}\">"
+    message = s_('PrometheusService|You can now manage your Prometheus settings on the %{operations_link_start}Operations%{operations_link_end} page. Fields on this page has been deprecated.') % { operations_link_start: operations_link_start, operations_link_end: "</a>" }
+    flash.now[:alert] = message.html_safe
   end
 end

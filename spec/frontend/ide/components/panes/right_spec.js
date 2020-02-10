@@ -75,28 +75,6 @@ describe('ide/components/panes/right.vue', () => {
     });
   });
 
-  describe('merge request tab', () => {
-    it('is shown if there is a currentMergeRequestId', () => {
-      store.state.currentMergeRequestId = 1;
-
-      createComponent();
-
-      expect(wrapper.find(CollapsibleSidebar).props('extensionTabs')).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            show: true,
-            title: 'Merge Request',
-            views: expect.arrayContaining([
-              expect.objectContaining({
-                name: rightSidebarViews.mergeRequestInfo.name,
-              }),
-            ]),
-          }),
-        ]),
-      );
-    });
-  });
-
   describe('clientside live preview tab', () => {
     it('is shown if there is a packageJson and clientsidePreviewEnabled', () => {
       Vue.set(store.state.entries, 'package.json', {

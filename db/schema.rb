@@ -1554,6 +1554,7 @@ ActiveRecord::Schema.define(version: 2020_02_07_151640) do
     t.integer "state_id", limit: 2, default: 1, null: false
     t.integer "start_date_sourcing_epic_id"
     t.integer "due_date_sourcing_epic_id"
+    t.integer "health_status", limit: 2
     t.index ["assignee_id"], name: "index_epics_on_assignee_id"
     t.index ["author_id"], name: "index_epics_on_author_id"
     t.index ["closed_by_id"], name: "index_epics_on_closed_by_id"
@@ -2181,6 +2182,7 @@ ActiveRecord::Schema.define(version: 2020_02_07_151640) do
     t.integer "state_id", limit: 2, default: 1, null: false
     t.integer "duplicated_to_id"
     t.integer "promoted_to_epic_id"
+    t.integer "health_status", limit: 2
     t.index ["author_id"], name: "index_issues_on_author_id"
     t.index ["closed_by_id"], name: "index_issues_on_closed_by_id"
     t.index ["confidential"], name: "index_issues_on_confidential"

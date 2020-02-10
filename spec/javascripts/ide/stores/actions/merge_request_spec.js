@@ -137,9 +137,7 @@ describe('IDE store merge request actions', () => {
         store
           .dispatch('getMergeRequestData', { projectId: TEST_PROJECT, mergeRequestId: 1 })
           .then(() => {
-            expect(service.getProjectMergeRequestData).toHaveBeenCalledWith(TEST_PROJECT, 1, {
-              render_html: true,
-            });
+            expect(service.getProjectMergeRequestData).toHaveBeenCalledWith(TEST_PROJECT, 1);
 
             done();
           })

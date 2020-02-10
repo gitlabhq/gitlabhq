@@ -30,6 +30,7 @@ Issue:
 - last_edited_at
 - last_edited_by_id
 - discussion_locked
+- health_status
 Event:
 - id
 - target_type
@@ -824,3 +825,4 @@ Epic:
   - state_id
   - start_date_sourcing_epic_id
   - due_date_sourcing_epic_id
+  - health_status
