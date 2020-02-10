@@ -73,7 +73,7 @@ Now test the hook to check whether it is functioning properly.
 
 ## Chained hooks support
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-shell/merge_requests/93) in GitLab Shell 4.1.0 and GitLab 8.15.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-shell/-/merge_requests/93) in GitLab Shell 4.1.0 and GitLab 8.15.
 
 Hooks can be also global or be set per project directories and support a chained
 execution of the hooks.

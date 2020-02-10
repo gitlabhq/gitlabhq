@@ -114,7 +114,7 @@ For more details, see [Exporting a project and its data](../../../user/project/s
 
 ## Enabled Git access protocols
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4696) in GitLab 8.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4696) in GitLab 8.10.
 
 With GitLab's access restrictions, you can select with which protocols users can communicate with
 GitLab.
@@ -146,7 +146,7 @@ On top of these UI restrictions, GitLab will deny all Git actions on the protoco
 not selected.
 
 CAUTION: **Important:**
-Starting with [GitLab 10.7](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18021),
+Starting with [GitLab 10.7](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021),
 HTTP(S) protocol will be allowed for Git clone or fetch requests done by GitLab Runner
 from CI/CD jobs, even if _Only SSH_ was selected.
 
@@ -190,7 +190,7 @@ For more details, see [SSH key restrictions](../../../security/ssh_keys_restrict
 
 ## Allow mirrors to be set up for projects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3586) in GitLab 10.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3586) in GitLab 10.3.
 
 This option is enabled by default. By disabling it, both [pull and push mirroring](../../project/repository/repository_mirroring.md) will no longer
 work in every repository and can only be re-enabled by an admin on a per-project basis.

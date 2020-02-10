@@ -92,7 +92,7 @@ and file location rather than the file itself. An overview of this process can b
 
 In terms of code, this means a route will need to be added to the
 [GitLab Workhorse project](https://gitlab.com/gitlab-org/gitlab-workhorse) for each level of remote being added
-(instance, group, project). [This merge request](https://gitlab.com/gitlab-org/gitlab-workhorse/merge_requests/412/diffs)
+(instance, group, project). [This merge request](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/412/diffs)
 demonstrates adding an instance-level endpoint for Conan to workhorse. You can also see the Maven project level endpoint
 implemented in the same file.
 

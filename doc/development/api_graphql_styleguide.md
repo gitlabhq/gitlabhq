@@ -1,5 +1,7 @@
 # GraphQL API
 
+This document outlines the styleguide for GitLab's [GraphQL API](../api/graphql/index.md).
+
 ## How GitLab implements GraphQL
 
 We use the [graphql-ruby gem](https://graphql-ruby.org/) written by [Robert Mosolgo](https://github.com/rmosolgo/).

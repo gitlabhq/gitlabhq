@@ -191,9 +191,9 @@ If you still need to run tests during `mvn install`, add `-DskipTests=false` to
 
 ### Selecting the version of Python
 
-> - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 > - In [GitLab 12.2](https://gitlab.com/gitlab-org/gitlab/issues/12032), Python 3.5 became the default.
-> - In [GitLab 12.7](https://gitlab.com/gitlab-org/security-products/license-management/merge_requests/101), Python 3.8 became the default.
+> - In [GitLab 12.7](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/101), Python 3.8 became the default.
 
 License Compliance uses Python 3.8 and pip 19.1 by default.
 If your project requires Python 2, you can switch to Python 2.7 and pip 10.0
@@ -305,7 +305,7 @@ but commented out to help encourage others to add to it in the future. -->
 
 ## License list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/13582) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13582) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.7.
 
 The License list allows you to see your project's licenses and key
 details about them.

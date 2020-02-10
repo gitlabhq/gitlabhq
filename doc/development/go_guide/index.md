@@ -385,7 +385,7 @@ are:
    updating the `GO_VERSION` in `ci_files/variables.yml`.
 - Create a merge request in the [`gitlab-omnibus-builder` project](https://gitlab.com/gitlab-org/gitlab-omnibus-builder),
    updating every file in the `docker/` directory so the `GO_VERSION` is set
-   appropriately. [Here's an example](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/merge_requests/125/diffs).
+   appropriately. [Here's an example](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/125/diffs).
 - Tag a new release of `gitlab-omnibus-builder` containing the change.
 - [Create a merge request in the `gitlab-omnibus` project](https://gitlab.com/gitlab-org/omnibus-gitlab/edit/master/.gitlab-ci.yml?branch_name=update-gitlab-omnibus-builder-version),
    updating the `BUILDER_IMAGE_REVISION` to match the newly-created tag.

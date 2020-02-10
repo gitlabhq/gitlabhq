@@ -1,6 +1,6 @@
 # GitLab Conan Repository **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8248) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8248) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.6.
 
 With the GitLab Conan Repository, every
 project can have its own space to store Conan packages.

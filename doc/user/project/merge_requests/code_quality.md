@@ -139,7 +139,7 @@ code_quality:
 ```
 
 In GitLab 12.6, Code Quality switched to the
-[new versioning scheme](https://gitlab.com/gitlab-org/security-products/codequality/merge_requests/38).
+[new versioning scheme](https://gitlab.com/gitlab-org/security-products/codequality/-/merge_requests/38).
 It is highly recommended to include the Code Quality template as shown in the
 [example configuration](#example-configuration), which uses the new versioning scheme.
 If not using the template, the `SP_VERSION` variable can be hardcoded to use the
