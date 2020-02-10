@@ -11,6 +11,7 @@ class Feature
         inforef_uploadpack_cache
         commit_without_batch_check
         use_core_delta_islands
+        use_git_protocol_v2
       ].freeze
 
     DEFAULT_ON_FLAGS = Set.new([]).freeze

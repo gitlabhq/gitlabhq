@@ -59,4 +59,7 @@ export default {
   [types.SET_ENDPOINT](state, endpoint) {
     state.endpoint = endpoint;
   },
+  [types.REMOVE_IGNORED_RESOLVED_ERRORS](state, error) {
+    state.errors = state.errors.filter(err => err.id !== error);
+  },
 };

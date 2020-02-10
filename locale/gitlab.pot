@@ -6732,6 +6732,12 @@ msgstr ""
 msgid "Display name"
 msgstr ""
 
+msgid "Display rendered file"
+msgstr ""
+
+msgid "Display source"
+msgstr ""
+
 msgid "Displays dependencies and known vulnerabilities, based on the %{linkStart}latest pipeline%{linkEnd} scan"
 msgstr ""
 

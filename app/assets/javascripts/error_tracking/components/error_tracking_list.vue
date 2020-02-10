@@ -168,6 +168,7 @@ export default {
       'setIndexPath',
       'fetchPaginatedResults',
       'updateStatus',
+      'removeIgnoredResolvedErrors',
     ]),
     setSearchText(text) {
       this.errorSearchQuery = text;
@@ -196,9 +197,9 @@ export default {
     updateIssueStatus(errorId, status) {
       this.updateStatus({
         endpoint: this.getIssueUpdatePath(errorId),
-        redirectUrl: this.listPath,
         status,
       });
+      this.removeIgnoredResolvedErrors(errorId);
     },
   },
 };
@@ -235,7 +236,6 @@ export default {
             </gl-dropdown>
             <div class="filtered-search-input-container flex-fill">
               <gl-form-input
-                v-model="errorSearchQuery"
                 class="pl-2 filtered-search"
                 :disabled="loading"
                 :placeholder="__('Search or filter results…')"

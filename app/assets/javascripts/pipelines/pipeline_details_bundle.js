@@ -10,6 +10,7 @@ import pipelineHeader from './components/header_component.vue';
 import eventHub from './event_hub';
 import TestReports from './components/test_reports/test_reports.vue';
 import testReportsStore from './stores/test_reports';
+import axios from '~/lib/utils/axios_utils';
 
 Vue.use(Translate);
 
@@ -111,5 +112,12 @@ export default () => {
         return createElement('test-reports');
       },
     });
+
+    axios
+      .get(dataset.testReportEndpoint)
+      .then(({ data }) => {
+        document.querySelector('.js-test-report-badge-counter').innerHTML = data.total_count;
+      })
+      .catch(() => {});
   }
 };

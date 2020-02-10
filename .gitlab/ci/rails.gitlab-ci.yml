@@ -75,16 +75,18 @@
       changes: *code-backstage-qa-patterns
       when: on_success
 
-.rails:rules:master-refs:
+.rails:rules:master-refs-code-backstage-qa:
   rules:
     - <<: *if-master-refs
+      changes: *code-backstage-qa-patterns
       when: on_success
 
-.rails:rules:master-refs-ee-only:
+.rails:rules:master-refs-code-backstage-qa-ee-only:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-master-refs
+      changes: *code-backstage-qa-patterns
       when: on_success
 
 .rails:rules:ee-only:
@@ -330,12 +332,12 @@ coverage:
 rspec quarantine pg9:
   extends:
     - .rspec-base-quarantine
-    - .rails:rules:master-refs
+    - .rails:rules:master-refs-code-backstage-qa
 
 .rspec-base-pg10:
   extends:
     - .rspec-base
-    - .rails:rules:master-refs
+    - .rails:rules:master-refs-code-backstage-qa
     - .use-pg10
 
 rspec unit pg10:
@@ -357,7 +359,7 @@ rspec system pg10:
 rspec-ee quarantine pg9:
   extends:
     - .rspec-base-quarantine
-    - .rails:rules:master-refs-ee-only
+    - .rails:rules:master-refs-code-backstage-qa-ee-only
   variables:
     RSPEC_OPTS: "--tag quarantine -- ee/spec/"
 
@@ -365,25 +367,25 @@ rspec-ee migration pg10:
   extends:
     - .rspec-ee-base-pg10
     - .rspec-base-migration
-    - .rails:rules:master-refs
+    - .rails:rules:master-refs-code-backstage-qa
   parallel: 2
 
 rspec-ee unit pg10:
   extends:
     - .rspec-ee-base-pg10
-    - .rails:rules:master-refs
+    - .rails:rules:master-refs-code-backstage-qa
   parallel: 10
 
 rspec-ee integration pg10:
   extends:
     - .rspec-ee-base-pg10
-    - .rails:rules:master-refs
+    - .rails:rules:master-refs-code-backstage-qa
   parallel: 3
 
 rspec-ee system pg10:
   extends:
     - .rspec-ee-base-pg10
-    - .rails:rules:master-refs
+    - .rails:rules:master-refs-code-backstage-qa
   parallel: 5
 # ee + master-only jobs #
 #########################

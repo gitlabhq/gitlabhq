@@ -5,6 +5,7 @@ import * as types from '~/error_tracking/store/list/mutation_types';
 const ADD_RECENT_SEARCH = mutations[types.ADD_RECENT_SEARCH];
 const CLEAR_RECENT_SEARCHES = mutations[types.CLEAR_RECENT_SEARCHES];
 const LOAD_RECENT_SEARCHES = mutations[types.LOAD_RECENT_SEARCHES];
+const REMOVE_IGNORED_RESOLVED_ERRORS = mutations[types.REMOVE_IGNORED_RESOLVED_ERRORS];
 
 describe('Error tracking mutations', () => {
   describe('SET_ERRORS', () => {
@@ -112,6 +113,30 @@ describe('Error tracking mutations', () => {
 
         expect(state.recentSearches).toEqual(['first', 'second']);
         expect(localStorage.getItem).toHaveBeenCalledWith('recent-searches/project/errors.json');
+      });
+    });
+
+    describe('REMOVE_IGNORED_RESOLVED_ERRORS', () => {
+      it('removes ignored or resolved errors from list', () => {
+        state.errors = [
+          {
+            id: 1,
+            status: 'unresolved',
+          },
+          {
+            id: 2,
+            status: 'ignored',
+          },
+          {
+            id: 3,
+            status: 'unresolved',
+          },
+        ];
+        const ignoredError = state.errors[2].id;
+
+        REMOVE_IGNORED_RESOLVED_ERRORS(state, ignoredError);
+
+        expect(state.errors).not.toContain(ignoredError);
       });
     });
   });

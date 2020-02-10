@@ -8,16 +8,13 @@ class KeysFinder
     'md5' => 'fingerprint'
   }.freeze
 
-  def initialize(current_user, params)
-    @current_user = current_user
+  def initialize(params)
     @params = params
   end
 
   def execute
-    raise GitLabAccessDeniedError unless current_user.admin?
-
     keys = by_key_type
-    keys = by_user(keys)
+    keys = by_users(keys)
     keys = sort(keys)
 
     by_fingerprint(keys)
@@ -25,7 +22,7 @@ class KeysFinder
 
   private
 
-  attr_reader :current_user, :params
+  attr_reader :params
 
   def by_key_type
     if params[:key_type] == 'ssh'
@@ -39,10 +36,10 @@ class KeysFinder
     keys.order_last_used_at_desc
   end
 
-  def by_user(keys)
-    return keys unless params[:user]
+  def by_users(keys)
+    return keys unless params[:users]
 
-    keys.for_user(params[:user])
+    keys.for_user(params[:users])
   end
 
   def by_fingerprint(keys)

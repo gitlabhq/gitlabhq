@@ -81,6 +81,20 @@ Since use of the group-managed account requires the use of SSO, users of group-m
 - The user will be unable to access the group (their credentials will no longer work on the identity provider when prompted to SSO).
 - Contributions in the group (e.g. issues, merge requests) will remain intact.
 
+##### Credentials inventory for Group-managed accounts **(ULTIMATE)**
+
+> [Introduced in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/38133)
+
+Owners who manage user accounts in a group can view the following details of personal access tokens and SSH keys:
+
+- Owners
+- Scopes
+- Usage patterns
+
+To access the Credentials inventory of a group, navigate to **{shield}** **Security & Compliance > Credentials** in your group's sidebar.
+
+This feature is similar to the [Credentials inventory for self-managed instances](../../admin_area/credentials_inventory.md).
+
 #### Assertions
 
 When using group-managed accounts, the following user details need to be passed to GitLab as SAML

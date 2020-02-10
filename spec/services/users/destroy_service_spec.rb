@@ -121,10 +121,17 @@ describe Users::DestroyService do
 
       before do
         solo_owned.group_members = [member]
-        service.execute(user)
+      end
+
+      it 'returns the user with attached errors' do
+        expect(service.execute(user)).to be(user)
+        expect(user.errors.full_messages).to eq([
+          'You must transfer ownership or delete groups before you can remove user'
+        ])
       end
 
       it 'does not delete the user' do
+        service.execute(user)
         expect(User.find(user.id)).to eq user
       end
     end

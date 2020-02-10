@@ -100,19 +100,4 @@ describe Banzai::Filter::GollumTagsFilter do
       expect(doc.at_css('code').text).to eq '[[link-in-backticks]]'
     end
   end
-
-  context 'table of contents' do
-    it 'replaces [[<em>TOC</em>]] with ToC result' do
-      doc = described_class.call("<p>[[<em>TOC</em>]]</p>", { project_wiki: project_wiki }, { toc: "FOO" })
-
-      expect(doc.to_html).to eq("FOO")
-    end
-
-    it 'handles an empty ToC result' do
-      input = "<p>[[<em>TOC</em>]]</p>"
-      doc = described_class.call(input, project_wiki: project_wiki)
-
-      expect(doc.to_html).to eq ''
-    end
-  end
 end

@@ -62,6 +62,7 @@ describe('ErrorTrackingList', () => {
       sortByField: jest.fn(),
       fetchPaginatedResults: jest.fn(),
       updateStatus: jest.fn(),
+      removeIgnoredResolvedErrors: jest.fn(),
     };
 
     const state = {
@@ -221,6 +222,8 @@ describe('ErrorTrackingList', () => {
   });
 
   describe('When the ignore button on an error is clicked', () => {
+    const ignoreErrorButton = () => wrapper.find({ ref: 'ignoreError' });
+
     beforeEach(() => {
       store.state.list.loading = false;
       store.state.list.errors = errorsList;
@@ -235,20 +238,30 @@ describe('ErrorTrackingList', () => {
     });
 
     it('sends the "ignored" status and error ID', () => {
-      wrapper.find({ ref: 'ignoreError' }).trigger('click');
+      ignoreErrorButton().trigger('click');
       expect(actions.updateStatus).toHaveBeenCalledWith(
         expect.anything(),
         {
           endpoint: `/project/test/-/error_tracking/${errorsList[0].id}.json`,
-          redirectUrl: '/error_tracking',
           status: 'ignored',
         },
+        undefined,
+      );
+    });
+
+    it('calls an action to remove the item from the list', () => {
+      ignoreErrorButton().trigger('click');
+      expect(actions.removeIgnoredResolvedErrors).toHaveBeenCalledWith(
+        expect.anything(),
+        '1',
         undefined,
       );
     });
   });
 
   describe('When the resolve button on an error is clicked', () => {
+    const resolveErrorButton = () => wrapper.find({ ref: 'resolveError' });
+
     beforeEach(() => {
       store.state.list.loading = false;
       store.state.list.errors = errorsList;
@@ -263,14 +276,22 @@ describe('ErrorTrackingList', () => {
     });
 
     it('sends "resolved" status and error ID', () => {
-      wrapper.find({ ref: 'resolveError' }).trigger('click');
+      resolveErrorButton().trigger('click');
       expect(actions.updateStatus).toHaveBeenCalledWith(
         expect.anything(),
         {
           endpoint: `/project/test/-/error_tracking/${errorsList[0].id}.json`,
-          redirectUrl: '/error_tracking',
           status: 'resolved',
         },
+        undefined,
+      );
+    });
+
+    it('calls an action to remove the item from the list', () => {
+      resolveErrorButton().trigger('click');
+      expect(actions.removeIgnoredResolvedErrors).toHaveBeenCalledWith(
+        expect.anything(),
+        '1',
         undefined,
       );
     });

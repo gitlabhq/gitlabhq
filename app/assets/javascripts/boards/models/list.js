@@ -161,50 +161,7 @@ class List {
   }
 
   addMultipleIssues(issues, listFrom, newIndex) {
-    let moveBeforeId = null;
-    let moveAfterId = null;
-
-    const listHasIssues = issues.every(issue => this.findIssue(issue.id));
-
-    if (!listHasIssues) {
-      if (newIndex !== undefined) {
-        if (this.issues[newIndex - 1]) {
-          moveBeforeId = this.issues[newIndex - 1].id;
-        }
-
-        if (this.issues[newIndex]) {
-          moveAfterId = this.issues[newIndex].id;
-        }
-
-        this.issues.splice(newIndex, 0, ...issues);
-      } else {
-        this.issues.push(...issues);
-      }
-
-      if (this.label) {
-        issues.forEach(issue => issue.addLabel(this.label));
-      }
-
-      if (this.assignee) {
-        if (listFrom && listFrom.type === 'assignee') {
-          issues.forEach(issue => issue.removeAssignee(listFrom.assignee));
-        }
-        issues.forEach(issue => issue.addAssignee(this.assignee));
-      }
-
-      if (IS_EE && this.milestone) {
-        if (listFrom && listFrom.type === 'milestone') {
-          issues.forEach(issue => issue.removeMilestone(listFrom.milestone));
-        }
-        issues.forEach(issue => issue.addMilestone(this.milestone));
-      }
-
-      if (listFrom) {
-        this.issuesSize += issues.length;
-
-        this.updateMultipleIssues(issues, listFrom, moveBeforeId, moveAfterId);
-      }
-    }
+    boardsStore.addMultipleListIssues(this, issues, listFrom, newIndex);
   }
 
   addIssue(issue, listFrom, newIndex) {

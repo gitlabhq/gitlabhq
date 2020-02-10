@@ -1,5 +1,3 @@
-import 'core-js/stable';
-
 // Browser polyfills
 import 'formdata-polyfill';
 import './polyfills/custom_event';

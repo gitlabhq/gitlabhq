@@ -15,7 +15,7 @@ module FilterSpecHelper
   # context - Hash context for the filter. (default: {project: project})
   #
   # Returns a Nokogiri::XML::DocumentFragment
-  def filter(html, context = {})
+  def filter(html, context = {}, result = nil)
     if defined?(project)
       context.reverse_merge!(project: project)
     end
@@ -25,7 +25,7 @@ module FilterSpecHelper
 
     context = context.merge(render_context: render_context)
 
-    described_class.call(html, context)
+    described_class.call(html, context, result)
   end
 
   # Get an instance of the Filter class

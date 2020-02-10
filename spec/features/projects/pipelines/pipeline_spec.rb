@@ -356,6 +356,18 @@ describe 'Pipeline', :js do
       end
     end
 
+    context 'test tabs' do
+      let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
+
+      it 'shows badge counter in Tests tab' do
+        visit_pipeline
+        wait_for_requests
+
+        expect(pipeline.test_reports.total_count).to eq(4)
+        expect(page.find('.js-test-report-badge-counter').text).to eq(pipeline.test_reports.total_count.to_s)
+      end
+    end
+
     context 'retrying jobs' do
       before do
         visit_pipeline
