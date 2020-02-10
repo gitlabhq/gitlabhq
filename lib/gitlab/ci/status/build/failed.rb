@@ -18,7 +18,12 @@ module Gitlab
             archived_failure: 'archived failure',
             unmet_prerequisites: 'unmet prerequisites',
             scheduler_failure: 'scheduler failure',
-            data_integrity_failure: 'data integrity failure'
+            data_integrity_failure: 'data integrity failure',
+            invalid_bridge_trigger: 'downstream pipeline trigger definition is invalid',
+            downstream_bridge_project_not_found: 'downstream project could not be found',
+            insufficient_bridge_permissions: 'no permissions to trigger downstream pipeline',
+            bridge_pipeline_is_child_pipeline: 'creation of child pipeline not allowed from another child pipeline',
+            downstream_pipeline_creation_failed: 'downstream pipeline can not be created'
           }.freeze
 
           private_constant :REASONS

@@ -13,7 +13,12 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     archived_failure: 'The job is archived and cannot be run',
     unmet_prerequisites: 'The job failed to complete prerequisite tasks',
     scheduler_failure: 'The scheduler failed to assign job to the runner, please try again or contact system administrator',
-    data_integrity_failure: 'There has been a structural integrity problem detected, please contact system administrator'
+    data_integrity_failure: 'There has been a structural integrity problem detected, please contact system administrator',
+    invalid_bridge_trigger: 'This job could not be executed because downstream pipeline trigger definition is invalid',
+    downstream_bridge_project_not_found: 'This job could not be executed because downstream bridge project could not be found',
+    insufficient_bridge_permissions: 'This job could not be executed because of insufficient permissions to create a downstream pipeline',
+    bridge_pipeline_is_child_pipeline: 'This job belongs to a child pipeline and cannot create further child pipelines',
+    downstream_pipeline_creation_failed: 'The downstream pipeline could not be created'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES

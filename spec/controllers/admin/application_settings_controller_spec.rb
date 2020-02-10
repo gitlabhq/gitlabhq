@@ -56,49 +56,49 @@ describe Admin::ApplicationSettingsController do
     it 'updates the password_authentication_enabled_for_git setting' do
       put :update, params: { application_setting: { password_authentication_enabled_for_git: "0" } }
 
-      expect(response).to redirect_to(admin_application_settings_path)
+      expect(response).to redirect_to(general_admin_application_settings_path)
       expect(ApplicationSetting.current.password_authentication_enabled_for_git).to eq(false)
     end
 
     it 'updates the default_project_visibility for string value' do
       put :update, params: { application_setting: { default_project_visibility: "20" } }
 
-      expect(response).to redirect_to(admin_application_settings_path)
+      expect(response).to redirect_to(general_admin_application_settings_path)
       expect(ApplicationSetting.current.default_project_visibility).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
     it 'update the restricted levels for string values' do
       put :update, params: { application_setting: { restricted_visibility_levels: %w[10 20] } }
 
-      expect(response).to redirect_to(admin_application_settings_path)
+      expect(response).to redirect_to(general_admin_application_settings_path)
       expect(ApplicationSetting.current.restricted_visibility_levels).to eq([10, 20])
     end
 
     it 'updates the restricted_visibility_levels when empty array is passed' do
       put :update, params: { application_setting: { restricted_visibility_levels: [""] } }
 
-      expect(response).to redirect_to(admin_application_settings_path)
+      expect(response).to redirect_to(general_admin_application_settings_path)
       expect(ApplicationSetting.current.restricted_visibility_levels).to be_empty
     end
 
     it 'updates the receive_max_input_size setting' do
       put :update, params: { application_setting: { receive_max_input_size: "1024" } }
 
-      expect(response).to redirect_to(admin_application_settings_path)
+      expect(response).to redirect_to(general_admin_application_settings_path)
       expect(ApplicationSetting.current.receive_max_input_size).to eq(1024)
     end
 
     it 'updates the default_project_creation for string value' do
       put :update, params: { application_setting: { default_project_creation: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS } }
 
-      expect(response).to redirect_to(admin_application_settings_path)
+      expect(response).to redirect_to(general_admin_application_settings_path)
       expect(ApplicationSetting.current.default_project_creation).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
     end
 
     it 'updates minimum_password_length setting' do
       put :update, params: { application_setting: { minimum_password_length: 10 } }
 
-      expect(response).to redirect_to(admin_application_settings_path)
+      expect(response).to redirect_to(general_admin_application_settings_path)
       expect(ApplicationSetting.current.minimum_password_length).to eq(10)
     end
 

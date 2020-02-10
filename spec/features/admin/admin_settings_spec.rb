@@ -458,11 +458,11 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
       sign_in(admin)
-      visit admin_application_settings_path
+      visit general_admin_application_settings_path
     end
 
     it 'loads admin settings page without redirect for reauthentication' do
-      expect(current_path).to eq admin_application_settings_path
+      expect(current_path).to eq general_admin_application_settings_path
     end
   end
 

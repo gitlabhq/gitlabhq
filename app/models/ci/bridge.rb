@@ -25,6 +25,14 @@ module Ci
     # rubocop:enable Cop/ActiveRecordSerialize
 
     state_machine :status do
+      after_transition created: :pending do |bridge|
+        next unless bridge.downstream_project
+
+        bridge.run_after_commit do
+          bridge.schedule_downstream_pipeline!
+        end
+      end
+
       event :manual do
         transition all => :manual
       end
@@ -36,6 +44,12 @@ module Ci
 
     def self.retry(bridge, current_user)
       raise NotImplementedError
+    end
+
+    def schedule_downstream_pipeline!
+      raise InvalidBridgeTypeError unless downstream_project
+
+      ::Ci::CreateCrossProjectPipelineWorker.perform_async(self.id)
     end
 
     def inherit_status_from_downstream!(pipeline)

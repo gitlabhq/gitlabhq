@@ -17,7 +17,9 @@
       .tree-controls {
         text-align: right;
 
-        .btn {
+        > .btn,
+        .project-action-button > .btn,
+        .git-clone-holder > .btn {
           margin-left: 8px;
         }
 

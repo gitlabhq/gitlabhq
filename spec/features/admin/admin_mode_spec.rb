@@ -37,7 +37,7 @@ describe 'Admin mode', :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode
       end
 
       it 'is necessary to provide credentials again before opening pages in admin scope' do
-        visit admin_application_settings_path # admin logged out because not in admin_mode
+        visit general_admin_application_settings_path # admin logged out because not in admin_mode
 
         expect(page).to have_current_path(new_admin_session_path)
       end

@@ -21,6 +21,9 @@ const MAX_CHAR_LIMIT = 5000;
 export default function renderMermaid($els) {
   if (!$els.length) return;
 
+  // A diagram may have been truncated in search results which will cause errors, so abort the render.
+  if (document.querySelector('body').dataset.page === 'search:show') return;
+
   import(/* webpackChunkName: 'mermaid' */ 'mermaid')
     .then(mermaid => {
       mermaid.initialize({

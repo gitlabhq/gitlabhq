@@ -18,7 +18,7 @@ const firstDayOfWeekChoices = Object.freeze({
 
 const LOADING_HTML = `
   <div class="text-center">
-    <i class="fa fa-spinner fa-spin user-calendar-activities-loading"></i>
+    <div class="spinner spinner-md"></div>
   </div>
 `;
 

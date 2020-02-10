@@ -531,6 +531,12 @@
   :latency_sensitive: 
   :resource_boundary: :unknown
   :weight: 3
+- :name: pipeline_default:ci_create_cross_project_pipeline
+  :feature_category: :continuous_integration
+  :has_external_dependencies: 
+  :latency_sensitive: 
+  :resource_boundary: :cpu
+  :weight: 3
 - :name: pipeline_default:ci_pipeline_bridge_status
   :feature_category: :continuous_integration
   :has_external_dependencies: 

@@ -2,7 +2,7 @@
 
 These API calls allow you to read and modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
-as appear in `/admin/application_settings`. You have to be an
+as appear in `/admin/application_settings/general`. You have to be an
 administrator in order to perform this action.
 
 ## Get current application settings

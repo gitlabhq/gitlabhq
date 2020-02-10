@@ -37,10 +37,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     define_method(action) { perform_update if submitted? }
   end
 
-  def show
-    render :general
-  end
-
   def update
     perform_update
   end
@@ -73,7 +69,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     RepositoryCheck::ClearWorker.perform_async
 
     redirect_to(
-      admin_application_settings_path,
+      general_admin_application_settings_path,
       notice: _('Started asynchronous removal of all repository check states.')
     )
   end
@@ -256,7 +252,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       session[:ask_for_usage_stats_consent] = current_user.requires_usage_stats_consent?
     end
 
-    redirect_path = referer_path(request) || admin_application_settings_path
+    redirect_path = referer_path(request) || general_admin_application_settings_path
 
     respond_to do |format|
       if successful

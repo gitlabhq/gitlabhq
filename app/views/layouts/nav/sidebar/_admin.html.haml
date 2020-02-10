@@ -221,7 +221,7 @@
                 = _('Appearance')
 
       = nav_link(controller: :application_settings) do
-        = link_to admin_application_settings_path do
+        = link_to general_admin_application_settings_path do
           .nav-icon-container
             = sprite_icon('settings')
           %span.nav-item-name.qa-admin-settings-item
@@ -229,11 +229,11 @@
 
         %ul.sidebar-sub-level-items.qa-admin-sidebar-settings-submenu
           = nav_link(controller: :application_settings, html_options: { class: "fly-out-top-item" } ) do
-            = link_to admin_application_settings_path do
+            = link_to general_admin_application_settings_path do
               %strong.fly-out-top-item-name
                 = _('Settings')
             %li.divider.fly-out-top-item
-            = nav_link(path: 'application_settings#show') do
+            = nav_link(path: 'application_settings#general') do
               = link_to general_admin_application_settings_path, title: _('General'), class: 'qa-admin-settings-general-item' do
                 %span
                   = _('General')

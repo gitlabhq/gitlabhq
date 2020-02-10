@@ -201,7 +201,7 @@ The table below shows what kind of documentation goes where.
       describing what can be achieved by accessing GitLab's admin interface
       (_not to be confused with `doc/administration` where server access is
       required_).
-      1. Every category under `/admin/application_settings` should have its
+      1. Every category under `/admin/application_settings/` should have its
          own document located at `doc/user/admin_area/settings/`. For example,
          the **Visibility and Access Controls** category should have a document
          located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.

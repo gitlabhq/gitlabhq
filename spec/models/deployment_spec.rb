@@ -10,6 +10,7 @@ describe Deployment do
   it { is_expected.to belong_to(:cluster).class_name('Clusters::Cluster') }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:deployable) }
+  it { is_expected.to have_one(:deployment_cluster) }
   it { is_expected.to have_many(:deployment_merge_requests) }
   it { is_expected.to have_many(:merge_requests).through(:deployment_merge_requests) }
 

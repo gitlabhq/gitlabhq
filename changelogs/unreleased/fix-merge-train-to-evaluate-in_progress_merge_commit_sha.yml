@@ -1,0 +1,5 @@
+---
+title: Fix merge train unnecessarily retries pipeline by a race condition
+merge_request: 24566
+author:
+type: fixed

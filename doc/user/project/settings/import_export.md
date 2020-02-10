@@ -17,8 +17,8 @@ Note the following:
 
 - Importing is not possible if the import instance version differs from
   that of the exporter.
-- The project import option must be enabled in
-  application settings (`/admin/application_settings`) under under **Import sources**, which is
+- The project import option must be enabled in application settings
+  (`/admin/application_settings/general`) under **Import sources**, which is
   available under **{admin}** **Admin Area >** **{settings}** **Settings > Visibility and access controls**.
   Ask your administrator if you don't see the **GitLab export** button when
   creating a new project.

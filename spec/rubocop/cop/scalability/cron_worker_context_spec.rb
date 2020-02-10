@@ -58,7 +58,9 @@ describe RuboCop::Cop::Scalability::CronWorkerContext do
         include CronjobQueue
 
         def perform
-          SomeOtherWorker.bulk_perform_async_with_contexts(contexts_for_arguments)
+          SomeOtherWorker.bulk_perform_async_with_contexts(things,
+                                                           arguments_proc: -> (thing) { thing.id },
+                                                           context_proc: -> (thing) { { project: thing.project } })
         end
       end
     CODE
@@ -70,7 +72,9 @@ describe RuboCop::Cop::Scalability::CronWorkerContext do
         include CronjobQueue
 
         def perform
-          SomeOtherWorker.bulk_perform_in_with_contexts(contexts_for_arguments)
+          SomeOtherWorker.bulk_perform_in_with_contexts(10.minutes, things,
+                                                        arguments_proc: -> (thing) { thing.id },
+                                                        context_proc: -> (thing) { { project: thing.project } })
         end
       end
     CODE

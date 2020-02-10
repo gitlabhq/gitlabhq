@@ -249,7 +249,7 @@ on the **secondary** node.
 
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
 method to be enabled. Navigate to **Admin Area > Settings**
-(`/admin/application_settings`) on the **primary** node, and set
+(`/admin/application_settings/general`) on the **primary** node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
 
 ### Step 7. Verify proper functioning of the **secondary** node

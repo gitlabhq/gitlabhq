@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_06_111847) do
+ActiveRecord::Schema.define(version: 2020_02_07_151640) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1339,6 +1339,13 @@ ActiveRecord::Schema.define(version: 2020_02_06_111847) do
     t.index ["token", "expires_at", "id"], name: "index_deploy_tokens_on_token_and_expires_at_and_id", where: "(revoked IS FALSE)"
     t.index ["token"], name: "index_deploy_tokens_on_token", unique: true
     t.index ["token_encrypted"], name: "index_deploy_tokens_on_token_encrypted", unique: true
+  end
+
+  create_table "deployment_clusters", primary_key: "deployment_id", id: :integer, default: nil, force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.string "kubernetes_namespace", limit: 255
+    t.index ["cluster_id", "deployment_id"], name: "index_deployment_clusters_on_cluster_id_and_deployment_id", unique: true
+    t.index ["cluster_id", "kubernetes_namespace"], name: "idx_deployment_clusters_on_cluster_id_and_kubernetes_namespace"
   end
 
   create_table "deployment_merge_requests", id: false, force: :cascade do |t|
@@ -3296,6 +3303,11 @@ ActiveRecord::Schema.define(version: 2020_02_06_111847) do
     t.index ["project_id"], name: "index_project_repository_states_on_project_id", unique: true
   end
 
+  create_table "project_settings", primary_key: "project_id", id: :integer, default: nil, force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
   create_table "project_statistics", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "namespace_id", null: false
@@ -3745,7 +3757,7 @@ ActiveRecord::Schema.define(version: 2020_02_06_111847) do
     t.string "sso_url", null: false
     t.boolean "enforced_sso", default: false, null: false
     t.boolean "enforced_group_managed_accounts", default: false, null: false
-    t.boolean "prohibited_outer_forks", default: false, null: false
+    t.boolean "prohibited_outer_forks", default: false
     t.index ["group_id"], name: "index_saml_providers_on_group_id"
   end
 
@@ -4659,6 +4671,8 @@ ActiveRecord::Schema.define(version: 2020_02_06_111847) do
   add_foreign_key "dependency_proxy_blobs", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "dependency_proxy_group_settings", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
+  add_foreign_key "deployment_clusters", "clusters", on_delete: :cascade
+  add_foreign_key "deployment_clusters", "deployments", on_delete: :cascade
   add_foreign_key "deployment_merge_requests", "deployments", on_delete: :cascade
   add_foreign_key "deployment_merge_requests", "merge_requests", on_delete: :cascade
   add_foreign_key "deployments", "clusters", name: "fk_289bba3222", on_delete: :nullify
@@ -4881,6 +4895,7 @@ ActiveRecord::Schema.define(version: 2020_02_06_111847) do
   add_foreign_key "project_repositories", "projects", on_delete: :cascade
   add_foreign_key "project_repositories", "shards", on_delete: :restrict
   add_foreign_key "project_repository_states", "projects", on_delete: :cascade
+  add_foreign_key "project_settings", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "project_tracing_settings", "projects", on_delete: :cascade
   add_foreign_key "projects", "pool_repositories", name: "fk_6e5c14658a", on_delete: :nullify

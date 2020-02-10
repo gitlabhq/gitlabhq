@@ -276,6 +276,18 @@ class SomeCrossCuttingConcernWorker
 end
 ```
 
+## Job weights
+
+Some jobs have a weight declared. This is only used when running Sidekiq
+in the default execution mode - using
+[`sidekiq-cluster`](../administration/operations/extra_sidekiq_processes.md)
+does not account for weights.
+
+As we are [moving towards using `sidekiq-cluster` in
+Core](https://gitlab.com/gitlab-org/gitlab/issues/34396), newly-added
+workers do not need to have weights specified. They can simply use the
+default weight, which is 1.
+
 ## Worker context
 
 To have some more information about workers in the logs, we add

@@ -75,7 +75,7 @@
                     = link_to new_project_tag_path(@project) do
                       #{ _('New tag') }
 
-.tree-controls<
+.tree-controls{ class: ("gl-font-size-0" if vue_file_list_enabled?) }<
   = render_if_exists 'projects/tree/lock_link'
   - if vue_file_list_enabled?
     #js-tree-history-link.d-inline-block{ data: { history_link: project_commits_path(@project, @ref) } }

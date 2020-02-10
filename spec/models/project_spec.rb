@@ -69,6 +69,7 @@ describe Project do
     it { is_expected.to have_one(:forked_from_project).through(:fork_network_member) }
     it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
     it { is_expected.to have_one(:error_tracking_setting).class_name('ErrorTracking::ProjectErrorTrackingSetting') }
+    it { is_expected.to have_one(:project_setting) }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:builds) }
@@ -154,6 +155,11 @@ describe Project do
       it 'automatically creates a Pages metadata row' do
         expect(project.pages_metadatum).to be_an_instance_of(ProjectPagesMetadatum)
         expect(project.pages_metadatum).to be_persisted
+      end
+
+      it 'automatically creates a project setting row' do
+        expect(project.project_setting).to be_an_instance_of(ProjectSetting)
+        expect(project.project_setting).to be_persisted
       end
     end
 

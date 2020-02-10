@@ -23,7 +23,7 @@ module RuboCop
         PATTERN
 
         def_node_search :schedules_with_batch_context?, <<~PATTERN
-          (send (...) {:bulk_perform_async_with_contexts :bulk_perform_in_with_contexts} (...))
+          (send (...) {:bulk_perform_async_with_contexts :bulk_perform_in_with_contexts} _*)
         PATTERN
 
         def on_send(node)

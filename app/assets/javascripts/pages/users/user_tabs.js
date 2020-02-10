@@ -57,10 +57,8 @@ import UserOverviewBlock from './user_overview_block';
  *   </div>
  * </div>
  *
- * <div class="loading-status">
- *   <div class="loading">
- *     Loading Animation
- *   </div>
+ * <div class="loading">
+ *   Loading Animation
  * </div>
  */
 
@@ -242,7 +240,7 @@ export default class UserTabs {
   }
 
   toggleLoading(status) {
-    return this.$parentEl.find('.loading-status .loading').toggleClass('hide', !status);
+    return this.$parentEl.find('.loading').toggleClass('hide', !status);
   }
 
   setCurrentAction(source) {
