@@ -19239,6 +19239,9 @@ msgstr ""
 msgid "There was an error gathering the chart data"
 msgstr ""
 
+msgid "There was an error getting the epic participants."
+msgstr ""
+
 msgid "There was an error loading users activity calendar."
 msgstr ""
 

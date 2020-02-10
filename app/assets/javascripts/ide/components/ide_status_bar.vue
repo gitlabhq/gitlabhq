@@ -81,7 +81,7 @@ export default {
       <span v-if="latestPipeline && latestPipeline.details" class="ide-status-pipeline">
         <button
           type="button"
-          class="p-0 border-0 h-50"
+          class="p-0 border-0 bg-transparent"
           @click="openRightPane($options.rightSidebarViews.pipelines)"
         >
           <ci-icon
