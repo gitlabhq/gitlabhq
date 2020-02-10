@@ -150,6 +150,7 @@ The following Elasticsearch settings are available:
 | `AWS Region`                                          | The AWS region your Elasticsearch service is located in. |
 | `AWS Access Key`                                      | The AWS access key. |
 | `AWS Secret Access Key`                               | The AWS secret access key. |
+| `Maximum field length`                                | See [the explanation in instance limits.](../administration/instance_limits.md#maximum-field-length). |
 
 ### Limiting namespaces and projects
 
