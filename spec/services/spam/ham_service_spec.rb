@@ -13,18 +13,18 @@ describe Spam::HamService do
     allow(Spam::AkismetService).to receive(:new).and_return fake_akismet_service
   end
 
-  describe '#mark_as_ham!' do
+  describe '#execute' do
     context 'AkismetService returns false (Akismet cannot be reached, etc)' do
       before do
         allow(fake_akismet_service).to receive(:submit_ham).and_return false
       end
 
       it 'returns false' do
-        expect(subject.mark_as_ham!).to be_falsey
+        expect(subject.execute).to be_falsey
       end
 
       it 'does not update the record' do
-        expect { subject.mark_as_ham! }.not_to change { spam_log.submitted_as_ham }
+        expect { subject.execute }.not_to change { spam_log.submitted_as_ham }
       end
 
       context 'if spam log record has already been marked as spam' do
@@ -33,7 +33,7 @@ describe Spam::HamService do
         end
 
         it 'does not update the record' do
-          expect { subject.mark_as_ham! }.not_to change { spam_log.submitted_as_ham }
+          expect { subject.execute }.not_to change { spam_log.submitted_as_ham }
         end
       end
     end
@@ -45,11 +45,11 @@ describe Spam::HamService do
       end
 
       it 'returns true' do
-        expect(subject.mark_as_ham!).to be_truthy
+        expect(subject.execute).to be_truthy
       end
 
       it 'updates the record' do
-        expect { subject.mark_as_ham! }.to change { spam_log.submitted_as_ham }.from(false).to(true)
+        expect { subject.execute }.to change { spam_log.submitted_as_ham }.from(false).to(true)
       end
     end
   end

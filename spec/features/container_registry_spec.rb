@@ -15,6 +15,7 @@ describe 'Container Registry', :js do
     project.add_developer(user)
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
+    stub_feature_flags(vue_container_registry_explorer: false)
   end
 
   it 'has a page title set' do

@@ -75,18 +75,18 @@
       changes: *code-backstage-qa-patterns
       when: on_success
 
-.rails:rules:master-refs-code-backstage-qa:
+.rails:rules:master-refs-code-backstage:
   rules:
     - <<: *if-master-refs
-      changes: *code-backstage-qa-patterns
+      changes: *code-backstage-patterns
       when: on_success
 
-.rails:rules:master-refs-code-backstage-qa-ee-only:
+.rails:rules:master-refs-code-backstage-ee-only:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-master-refs
-      changes: *code-backstage-qa-patterns
+      changes: *code-backstage-patterns
       when: on_success
 
 .rails:rules:ee-only:
@@ -332,12 +332,12 @@ coverage:
 rspec quarantine pg9:
   extends:
     - .rspec-base-quarantine
-    - .rails:rules:master-refs-code-backstage-qa
+    - .rails:rules:master-refs-code-backstage
 
 .rspec-base-pg10:
   extends:
     - .rspec-base
-    - .rails:rules:master-refs-code-backstage-qa
+    - .rails:rules:master-refs-code-backstage
     - .use-pg10
 
 rspec unit pg10:
@@ -359,7 +359,7 @@ rspec system pg10:
 rspec-ee quarantine pg9:
   extends:
     - .rspec-base-quarantine
-    - .rails:rules:master-refs-code-backstage-qa-ee-only
+    - .rails:rules:master-refs-code-backstage-ee-only
   variables:
     RSPEC_OPTS: "--tag quarantine -- ee/spec/"
 
@@ -367,25 +367,25 @@ rspec-ee migration pg10:
   extends:
     - .rspec-ee-base-pg10
     - .rspec-base-migration
-    - .rails:rules:master-refs-code-backstage-qa
+    - .rails:rules:master-refs-code-backstage
   parallel: 2
 
 rspec-ee unit pg10:
   extends:
     - .rspec-ee-base-pg10
-    - .rails:rules:master-refs-code-backstage-qa
+    - .rails:rules:master-refs-code-backstage
   parallel: 10
 
 rspec-ee integration pg10:
   extends:
     - .rspec-ee-base-pg10
-    - .rails:rules:master-refs-code-backstage-qa
+    - .rails:rules:master-refs-code-backstage
   parallel: 3
 
 rspec-ee system pg10:
   extends:
     - .rspec-ee-base-pg10
-    - .rails:rules:master-refs-code-backstage-qa
+    - .rails:rules:master-refs-code-backstage
   parallel: 5
 # ee + master-only jobs #
 #########################

@@ -10169,6 +10169,12 @@ msgstr ""
 msgid "Image %{imageName} was scheduled for deletion from the registry."
 msgstr ""
 
+msgid "Image ID"
+msgstr ""
+
+msgid "Image deleted successfully"
+msgstr ""
+
 msgid "Image: %{image}"
 msgstr ""
 
@@ -11017,6 +11023,9 @@ msgid "Last Pipeline"
 msgstr ""
 
 msgid "Last Seen"
+msgstr ""
+
+msgid "Last Updated"
 msgstr ""
 
 msgid "Last accessed on"
@@ -17642,10 +17651,19 @@ msgstr ""
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
+msgid "Something went wrong while deleting the image."
+msgstr ""
+
 msgid "Something went wrong while deleting the package."
 msgstr ""
 
 msgid "Something went wrong while deleting the source branch. Please try again."
+msgstr ""
+
+msgid "Something went wrong while deleting the tag."
+msgstr ""
+
+msgid "Something went wrong while deleting the tags."
 msgstr ""
 
 msgid "Something went wrong while deleting your note. Please try again."
@@ -17688,6 +17706,9 @@ msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching the registry list."
+msgstr ""
+
+msgid "Something went wrong while fetching the tags list."
 msgstr ""
 
 msgid "Something went wrong while initializing the OpenAPI viewer"
@@ -18503,6 +18524,9 @@ msgstr ""
 msgid "Tag"
 msgstr ""
 
+msgid "Tag deleted successfully"
+msgstr ""
+
 msgid "Tag list:"
 msgstr ""
 
@@ -18519,6 +18543,9 @@ msgid "Tagged this commit to %{tag_name}."
 msgstr ""
 
 msgid "Tags"
+msgstr ""
+
+msgid "Tags deleted successfully"
 msgstr ""
 
 msgid "Tags feed"

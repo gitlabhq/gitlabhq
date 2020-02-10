@@ -8,7 +8,7 @@ module Spam
       @spam_log = spam_log
     end
 
-    def mark_as_ham!
+    def execute
       if akismet.submit_ham
         spam_log.update_attribute(:submitted_as_ham, true)
       else

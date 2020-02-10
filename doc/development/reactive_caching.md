@@ -48,6 +48,12 @@ of the cache by the `reactive_cache_lifetime` value.
 Once the lifetime has expired, no more background jobs will be enqueued and calling
 `#with_reactive_cache` will again return `nil` - starting the process all over again.
 
+### 1 MB hard limit
+
+`ReactiveCaching` has a 1 megabyte default limit. [This value is configurable](#selfreactive_cache_worker_finder).
+
+If the data we're trying to cache has over 1 megabyte, it will not be cached and a handled `ReactiveCaching::ExceededReactiveCacheLimit` will be notified on Sentry.
+
 ## When to use
 
 - If we need to make a request to an external API (for example, requests to the k8s API).
@@ -226,6 +232,16 @@ be reset to `reactive_cache_lifetime`.
 
 ```ruby
 self.reactive_cache_lifetime = 10.minutes
+```
+
+#### `self.reactive_cache_hard_limit`
+
+- This is the maximum data size that `ReactiveCaching` allows to be cached.
+- The default is 1 megabyte. Data that goes over this value will not be cached
+and will silently raise `ReactiveCaching::ExceededReactiveCacheLimit` on Sentry.
+
+```ruby
+self.reactive_cache_hard_limit = 5.megabytes
 ```
 
 #### `self.reactive_cache_worker_finder`

@@ -24,6 +24,7 @@ class MergeRequest < ApplicationRecord
   self.reactive_cache_key = ->(model) { [model.project.id, model.iid] }
   self.reactive_cache_refresh_interval = 10.minutes
   self.reactive_cache_lifetime = 10.minutes
+  self.reactive_cache_hard_limit = 20.megabytes
 
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 

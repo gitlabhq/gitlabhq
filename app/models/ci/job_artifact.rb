@@ -28,7 +28,7 @@ module Ci
       license_scanning: 'gl-license-scanning-report.json',
       performance: 'performance.json',
       metrics: 'metrics.txt',
-      lsif: 'lsif.sqlite3'
+      lsif: 'lsif.json'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -74,6 +74,7 @@ module Ci
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
     scope :with_files_stored_remotely, -> { where(file_store: ::JobArtifactUploader::Store::REMOTE) }
+    scope :for_sha, ->(sha) { joins(job: :pipeline).where(ci_pipelines: { sha: sha }) }
 
     scope :with_file_types, -> (file_types) do
       types = self.file_types.select { |file_type| file_types.include?(file_type) }.values
@@ -117,7 +118,7 @@ module Ci
       metrics: 12, ## EE-specific
       metrics_referee: 13, ## runner referees
       network_referee: 14, ## runner referees
-      lsif: 15 # LSIF dump for code navigation
+      lsif: 15 # LSIF data for code navigation
     }
 
     enum file_format: {

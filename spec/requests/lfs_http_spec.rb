@@ -907,7 +907,7 @@ describe 'Git LFS API and storage' do
               it_behaves_like 'LFS http 200 response'
 
               it 'uses the gitlab-workhorse content type' do
-                expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+                expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
               end
             end
 

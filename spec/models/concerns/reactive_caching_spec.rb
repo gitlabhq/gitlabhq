@@ -165,10 +165,24 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
   describe '#exclusively_update_reactive_cache!' do
     subject(:go!) { instance.exclusively_update_reactive_cache! }
 
+    shared_examples 'successful cache' do
+      it 'caches the result of #calculate_reactive_cache' do
+        go!
+
+        expect(read_reactive_cache(instance)).to eq(calculation.call)
+      end
+
+      it 'does not raise the exception' do
+        expect { go! }.not_to raise_exception(ReactiveCaching::ExceededReactiveCacheLimit)
+      end
+    end
+
     context 'when the lease is free and lifetime is not exceeded' do
       before do
-        stub_reactive_cache(instance, "preexisting")
+        stub_reactive_cache(instance, 'preexisting')
       end
+
+      it_behaves_like 'successful cache'
 
       it 'takes and releases the lease' do
         expect_to_obtain_exclusive_lease(cache_key, 'uuid')
@@ -177,19 +191,13 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
         go!
       end
 
-      it 'caches the result of #calculate_reactive_cache' do
-        go!
-
-        expect(read_reactive_cache(instance)).to eq(calculation.call)
-      end
-
-      it "enqueues a repeat worker" do
+      it 'enqueues a repeat worker' do
         expect_reactive_cache_update_queued(instance)
 
         go!
       end
 
-      it "calls a reactive_cache_updated only once if content did not change on subsequent update" do
+      it 'calls a reactive_cache_updated only once if content did not change on subsequent update' do
         expect(instance).to receive(:calculate_reactive_cache).twice
         expect(instance).to receive(:reactive_cache_updated).once
 
@@ -200,6 +208,43 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
         expect(Rails.cache).to receive(:delete).with(cache_key).never
 
         go!
+      end
+
+      context 'when calculated object size exceeds default reactive_cache_hard_limit' do
+        let(:calculation) { -> { 'a' * 2 * 1.megabyte } }
+
+        shared_examples 'ExceededReactiveCacheLimit' do
+          it 'raises ExceededReactiveCacheLimit exception and does not cache new data' do
+            expect { go! }.to raise_exception(ReactiveCaching::ExceededReactiveCacheLimit)
+
+            expect(read_reactive_cache(instance)).not_to eq(calculation.call)
+          end
+        end
+
+        context 'when reactive_cache_hard_limit feature flag is enabled' do
+          it_behaves_like 'ExceededReactiveCacheLimit'
+
+          context 'when reactive_cache_hard_limit is overridden' do
+            let(:test_class) { Class.new(CacheTest) { self.reactive_cache_hard_limit = 3.megabytes } }
+            let(:instance) { test_class.new(666, &calculation) }
+
+            it_behaves_like 'successful cache'
+
+            context 'when cache size is over the overridden limit' do
+              let(:calculation) { -> { 'a' * 4 * 1.megabyte } }
+
+              it_behaves_like 'ExceededReactiveCacheLimit'
+            end
+          end
+        end
+
+        context 'when reactive_cache_limit feature flag is disabled' do
+          before do
+            stub_feature_flags(reactive_cache_limit: false)
+          end
+
+          it_behaves_like 'successful cache'
+        end
       end
 
       context 'and #calculate_reactive_cache raises an exception' do
@@ -256,8 +301,8 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     it { expect(subject.reactive_cache_lease_timeout).to be_a(ActiveSupport::Duration) }
     it { expect(subject.reactive_cache_refresh_interval).to be_a(ActiveSupport::Duration) }
     it { expect(subject.reactive_cache_lifetime).to be_a(ActiveSupport::Duration) }
-
     it { expect(subject.reactive_cache_key).to respond_to(:call) }
+    it { expect(subject.reactive_cache_hard_limit).to be_a(Integer) }
     it { expect(subject.reactive_cache_worker_finder).to respond_to(:call) }
   end
 end
