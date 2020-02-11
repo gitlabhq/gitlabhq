@@ -53,8 +53,18 @@ As part of this script we also disable direct and background upload to avoid sit
 
 We can simply run this script from the terminal:
 
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `username`      | string | yes | User name |
+| `namespace_path` | string | yes | Namespace path |
+| `project_path` | string | yes | Project name |
+| `archive_path` | string | yes | Path to the exported project tarball you want to import |
+| `measurement_enabled` | boolean | no | Measure execution time, number of SQL calls and GC count |
+
 ```shell
-bundle exec rake "gitlab:import_export:import[root, root, testingprojectimport, /path/to/file.tar.gz]"
+bundle exec rake "gitlab:import_export:import[root, root, testingprojectimport, /path/to/file.tar.gz, true]"
 ```
 
 ### Importing via the Rails console

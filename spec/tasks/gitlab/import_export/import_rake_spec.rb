@@ -6,7 +6,8 @@ describe 'gitlab:import_export:import rake task' do
   let(:username) { 'root' }
   let(:namespace_path) { username }
   let!(:user) { create(:user, username: username) }
-  let(:task_params) { [username, namespace_path, project_name, archive_path] }
+  let(:measurement_enabled) { false }
+  let(:task_params) { [username, namespace_path, project_name, archive_path, measurement_enabled] }
   let(:project) { Project.find_by_full_path("#{namespace_path}/#{project_name}") }
 
   before do
@@ -68,6 +69,8 @@ describe 'gitlab:import_export:import rake task' do
 
       subject
     end
+
+    it_behaves_like 'import measurement'
   end
 
   context 'when project import is invalid' do

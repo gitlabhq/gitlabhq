@@ -36,7 +36,7 @@ module Gitlab
             end
           end
 
-          TYPES = [Entry::Hidden, Entry::Job].freeze
+          TYPES = [Entry::Hidden, Entry::Job, Entry::Bridge].freeze
 
           private_constant :TYPES
 
@@ -77,5 +77,3 @@ module Gitlab
     end
   end
 end
-
-::Gitlab::Ci::Config::Entry::Jobs.prepend_if_ee('::EE::Gitlab::Ci::Config::Entry::Jobs')

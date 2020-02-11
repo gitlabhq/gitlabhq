@@ -168,6 +168,9 @@ let's say you want to output `HELLO WORLD` for a `TEST` variable.
 You can either set the variable directly in the `.gitlab-ci.yml`
 file or through the UI.
 
+NOTE: **Note:**
+It is possible to [specify variables when running manual jobs](../pipelines.md#specifying-variables-when-running-manual-jobs).
+
 #### Via `.gitlab-ci.yml`
 
 To create a new custom `env_var` variable via [`.gitlab-ci.yml`](../yaml/README.md#variables), define their variable/value pair under

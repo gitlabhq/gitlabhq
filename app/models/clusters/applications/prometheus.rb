@@ -99,6 +99,8 @@ module Clusters
 
       def configured?
         kube_client.present? && available?
+      rescue Gitlab::UrlBlocker::BlockedUrlError
+        false
       end
 
       private

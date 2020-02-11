@@ -5,27 +5,31 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Entry::Jobs do
   let(:entry) { described_class.new(config) }
 
+  let(:config) do
+    {
+      '.hidden_job'.to_sym => { script: 'something' },
+      '.hidden_bridge'.to_sym => { trigger: 'my/project' },
+      regular_job: { script: 'something' },
+      my_trigger: { trigger: 'my/project' }
+    }
+  end
+
   describe '.all_types' do
     subject { described_class.all_types }
 
     it { is_expected.to include(::Gitlab::Ci::Config::Entry::Hidden) }
     it { is_expected.to include(::Gitlab::Ci::Config::Entry::Job) }
+    it { is_expected.to include(::Gitlab::Ci::Config::Entry::Bridge) }
   end
 
   describe '.find_type' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:config) do
-      {
-        '.hidden_job'.to_sym => { script: 'something' },
-        regular_job: { script: 'something' },
-        invalid_job: 'text'
-      }
-    end
-
     where(:name, :type) do
       :'.hidden_job'    | ::Gitlab::Ci::Config::Entry::Hidden
+      :'.hidden_bridge' | ::Gitlab::Ci::Config::Entry::Hidden
       :regular_job      | ::Gitlab::Ci::Config::Entry::Job
+      :my_trigger       | ::Gitlab::Ci::Config::Entry::Bridge
       :invalid_job      | nil
     end
 
@@ -42,8 +46,6 @@ describe Gitlab::Ci::Config::Entry::Jobs do
     end
 
     context 'when entry config value is correct' do
-      let(:config) { { rspec: { script: 'rspec' } } }
-
       describe '#valid?' do
         it 'is valid' do
           expect(entry).to be_valid
@@ -88,43 +90,41 @@ describe Gitlab::Ci::Config::Entry::Jobs do
         entry.compose!
       end
 
-      let(:config) do
-        { rspec: { script: 'rspec' },
-          spinach: { script: 'spinach' },
-          '.hidden'.to_sym => {} }
-      end
-
       describe '#value' do
         it 'returns key value' do
           expect(entry.value).to eq(
-            rspec: { name: :rspec,
-                    script: %w[rspec],
-                    ignore: false,
-                    stage: 'test',
-                    only: { refs: %w[branches tags] },
-                    variables: {} },
-            spinach: { name: :spinach,
-                      script: %w[spinach],
-                      ignore: false,
-                      stage: 'test',
-                      only: { refs: %w[branches tags] },
-                      variables: {} })
+            my_trigger: {
+              ignore: false,
+              name: :my_trigger,
+              only: { refs: %w[branches tags] },
+              stage: 'test',
+              trigger: { project: 'my/project' }
+            },
+            regular_job: {
+              ignore: false,
+              name: :regular_job,
+              only: { refs: %w[branches tags] },
+              script: ['something'],
+              stage: 'test',
+              variables: {}
+            })
         end
       end
 
       describe '#descendants' do
         it 'creates valid descendant nodes' do
-          expect(entry.descendants.count).to eq 3
-          expect(entry.descendants.first(2))
-            .to all(be_an_instance_of(Gitlab::Ci::Config::Entry::Job))
-          expect(entry.descendants.last)
-            .to be_an_instance_of(Gitlab::Ci::Config::Entry::Hidden)
+          expect(entry.descendants.map(&:class)).to eq [
+            Gitlab::Ci::Config::Entry::Hidden,
+            Gitlab::Ci::Config::Entry::Hidden,
+            Gitlab::Ci::Config::Entry::Job,
+            Gitlab::Ci::Config::Entry::Bridge
+          ]
         end
       end
 
       describe '#value' do
         it 'returns value of visible jobs only' do
-          expect(entry.value.keys).to eq [:rspec, :spinach]
+          expect(entry.value.keys).to eq [:regular_job, :my_trigger]
         end
       end
     end

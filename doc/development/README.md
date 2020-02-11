@@ -147,6 +147,7 @@ Complementary reads:
 ## Integration guides
 
 - [Jira Connect app](integrations/jira_connect.md)
+- [Security Scanners](integrations/secure.md)
 
 ## Testing guides
 

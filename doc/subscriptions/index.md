@@ -225,13 +225,21 @@ The following table describes details of your subscription for groups:
 
 #### CI pipeline minutes
 
-CI pipeline minutes are the execution time for your [pipelines](../ci/pipelines.md) on our shared runners. Each [GitLab.com tier](https://about.gitlab.com/pricing/) includes a monthly quota of CI pipeline minutes. The quota is applied per group, shared across all members of that group, its subgroups and nested projects. To view the usage, navigate to the group's page, then **Settings > Usage Quotas**.
+CI pipeline minutes are the execution time for your [pipelines](../ci/pipelines.md) on GitLab's shared runners. Each [GitLab.com tier](https://about.gitlab.com/pricing/) includes a monthly quota of CI pipeline minutes.
 
-Only pipeline minutes for our shared runners are restricted. If you have a specific runner setup for your projects, there is no limit to your build time on GitLab.com.
+Quotas apply to:
 
-The minutes limit only applies to private projects. The available quota is reset on the first of each calendar month at midnight UTC.
+- Groups, where the minutes are shared across all members of the group, its subgroups, and nested projects. To view the group's usage, navigate to the group's page, then **Settings > Usage Quotas**.
 
-If you reach your limit, you can [purchase additional CI minutes](#extra-shared-runners-pipeline-minutes), or upgrade your account to [Silver or Gold](https://about.gitlab.com/pricing/). Note, your own runners can still be used even if you reach your limits.
+- Your personal account, where the minutes are available for your personal projects. To view and buy personal minutes, click your avatar, then **Settings > Pipeline quota**.
+
+Only pipeline minutes for GitLab shared runners are restricted. If you have a specific runner set up for your projects, there is no limit to your build time on GitLab.com.
+
+The minutes limit does not apply to public projects.
+
+The available quota is reset on the first of each calendar month at midnight UTC.
+
+If you reach your limit, you can [purchase additional CI minutes](#extra-shared-runners-pipeline-minutes), or upgrade your account to [Silver or Gold](https://about.gitlab.com/pricing/). Your own runners can still be used even if you reach your limits.
 
 ##### How pipeline quota usage is calculated
 
@@ -285,14 +293,16 @@ For example:
 
 ##### Purchasing additional minutes
 
-In order to purchase additional minutes, you should follow these steps:
+To purchase additional minutes, follow these steps.
 
-1. Go to **Group > Settings > Pipelines quota**. Once you are on that page, click on **Buy additional minutes**.
+1. For group minutes, go to **Group > Settings > Pipelines quota**.
 
-   ![Buy additional minutes](img/buy_btn.png)
+   For personal project minutes, click your avatar, then **Settings > Pipeline quota**.
+
+1. Click **Buy additional minutes**.
 
 1. Locate the subscription card that is linked to your group on GitLab.com,
-   click on **Buy more CI minutes**, and complete the details about the transaction.
+   click **Buy more CI minutes**, and complete the details about the transaction.
 
    ![Buy additional minutes](img/buy_minutes_card.png)
 

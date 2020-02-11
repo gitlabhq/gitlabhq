@@ -342,9 +342,7 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
       let(:service) { described_class.new(upstream_project, upstream_project.owner) }
 
       context 'that include the bridge job' do
-        # TODO: this is skipped because `trigger` keyword does not exist yet.
-        # enabling it in the next MR: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24393
-        xit 'creates the downstream pipeline' do
+        it 'creates the downstream pipeline' do
           expect { service.execute(bridge) }
             .to change(downstream_project.ci_pipelines, :count).by(1)
         end

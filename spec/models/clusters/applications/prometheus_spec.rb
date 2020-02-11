@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Clusters::Applications::Prometheus do
   include KubernetesHelpers
+  include StubRequests
 
   include_examples 'cluster application core specs', :clusters_applications_prometheus
   include_examples 'cluster application status specs', :clusters_applications_prometheus
@@ -317,6 +318,16 @@ describe Clusters::Applications::Prometheus do
 
       context 'when it is not availalble' do
         let(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the kubernetes URL is blocked' do
+        before do
+          blocked_ip = '127.0.0.1' # localhost addresses are blocked by default
+
+          stub_all_dns(cluster.platform.api_url, ip_address: blocked_ip)
+        end
 
         it { is_expected.to be_falsey }
       end

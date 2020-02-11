@@ -45,7 +45,7 @@ the child pipeline configuration.
 
 ## Examples
 
-The simplest case is [triggering a child pipeline](yaml/README.md#trigger-premium) using a
+The simplest case is [triggering a child pipeline](yaml/README.md#trigger) using a
 local YAML file to define the pipeline configuration. In this case, the parent pipeline will
 trigger the child pipeline, and continue without waiting:
 

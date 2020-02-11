@@ -63,6 +63,26 @@ describe Ci::Bridge do
     end
   end
 
+  describe 'state machine transitions' do
+    context 'when bridge points towards downstream' do
+      it 'schedules downstream pipeline creation' do
+        expect(bridge).to receive(:schedule_downstream_pipeline!)
+
+        bridge.enqueue!
+      end
+    end
+  end
+
+  describe 'state machine transitions' do
+    context 'when bridge points towards downstream' do
+      it 'schedules downstream pipeline creation' do
+        expect(bridge).to receive(:schedule_downstream_pipeline!)
+
+        bridge.enqueue!
+      end
+    end
+  end
+
   describe '#inherit_status_from_downstream!' do
     let(:downstream_pipeline) { build(:ci_pipeline, status: downstream_status) }
 

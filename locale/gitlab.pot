@@ -16773,6 +16773,9 @@ msgstr ""
 msgid "Security Reports|Oops, something doesn't seem right."
 msgstr ""
 
+msgid "Security Reports|Security reports can only be accessed by authorized users."
+msgstr ""
+
 msgid "Security Reports|There was an error adding the comment."
 msgstr ""
 
@@ -16795,6 +16798,12 @@ msgid "Security Reports|There was an error reverting this dismissal."
 msgstr ""
 
 msgid "Security Reports|Undo dismiss"
+msgstr ""
+
+msgid "Security Reports|You do not have sufficient permissions to access this report"
+msgstr ""
+
+msgid "Security Reports|You must sign in as an authorized user to see this report"
 msgstr ""
 
 msgid "Security configuration help link"
