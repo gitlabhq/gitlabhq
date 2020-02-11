@@ -1,4 +1,4 @@
-# Application settings API
+# Application settings API **(CORE ONLY)**
 
 These API calls allow you to read and modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)

@@ -2781,6 +2781,45 @@ describe Repository do
     end
   end
 
+  describe '#create_from_bundle' do
+    let(:project) { create(:project) }
+    let(:repository) { project.repository }
+    let(:valid_bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+    let(:raw_repository) { repository.raw }
+
+    before do
+      allow(raw_repository).to receive(:create_from_bundle).and_return({})
+    end
+
+    after do
+      FileUtils.rm_rf(valid_bundle_path)
+    end
+
+    it 'calls out to the raw_repository to create a repo from bundle' do
+      expect(raw_repository).to receive(:create_from_bundle)
+
+      repository.create_from_bundle(valid_bundle_path)
+    end
+
+    it 'calls after_create' do
+      expect(repository).to receive(:after_create)
+
+      repository.create_from_bundle(valid_bundle_path)
+    end
+
+    context 'when exception is raised' do
+      before do
+        allow(raw_repository).to receive(:create_from_bundle).and_raise(::Gitlab::Git::BundleFile::InvalidBundleError)
+      end
+
+      it 'after_create is not executed' do
+        expect(repository).not_to receive(:after_create)
+
+        expect {repository.create_from_bundle(valid_bundle_path)}.to raise_error(::Gitlab::Git::BundleFile::InvalidBundleError)
+      end
+    end
+  end
+
   describe "#blobs_metadata" do
     let_it_be(:project) { create(:project, :repository) }
     let(:repository) { project.repository }

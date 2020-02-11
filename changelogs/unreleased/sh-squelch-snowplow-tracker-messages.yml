@@ -1,0 +1,5 @@
+---
+title: Squelch Snowplow tracker log messages
+merge_request: 24809
+author:
+type: fixed
