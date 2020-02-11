@@ -128,7 +128,7 @@ module Gitlab
       def load_all_data!(repository)
         return if @data == '' # don't mess with submodule blobs
 
-        # Even if we return early, recalculate wether this blob is binary in
+        # Even if we return early, recalculate whether this blob is binary in
         # case a blob was initialized as text but the full data isn't
         @binary = nil
 

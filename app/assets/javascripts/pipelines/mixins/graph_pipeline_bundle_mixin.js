@@ -59,7 +59,7 @@ export default {
     },
     requestRefreshPipelineGraph() {
       // When an action is clicked
-      // (wether in the dropdown or in the main nodes, we refresh the big graph)
+      // (whether in the dropdown or in the main nodes, we refresh the big graph)
       this.mediator
         .refreshPipeline()
         .catch(() => flash(__('An error occurred while making the request.')));

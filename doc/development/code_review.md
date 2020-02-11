@@ -107,7 +107,7 @@ confidence in their solution will not have been reached.
 
 Before the review, the author is requested to submit comments on the merge
 request diff alerting the reviewer to anything important as well as for anything
-that demands further explanation or attention.  Examples of content that may
+that demands further explanation or attention. Examples of content that may
 warrant a comment could be:
 
 - The addition of a linting rule (Rubocop, JS etc)
@@ -181,8 +181,8 @@ vulnerabilities must be either empty or containing:
 Maintainers should **never** dismiss vulnerabilities to "empty" the list,
 without duly verifying them.
 
-Note that certain Merge Requests may target a stable branch.  These are rare
-events.  These types of Merge Requests cannot be merged by the Maintainer.
+Note that certain Merge Requests may target a stable branch. These are rare
+events. These types of Merge Requests cannot be merged by the Maintainer.
 Instead these should be sent to the [Release Manager](https://about.gitlab.com/community/release-managers/).
 
 ## Best practices

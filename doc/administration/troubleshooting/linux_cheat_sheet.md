@@ -133,7 +133,7 @@ sudo !!
 ### Memory, Disk, & CPU usage
 
 ```shell
-# disk space info.  The '-h' gives the data in human-readable values
+# disk space info. The '-h' gives the data in human-readable values
 df -h
 
 # size of each file/dir and its contents in the current dir
@@ -186,7 +186,7 @@ Be aware that strace can have major impacts to system performance when it is run
 ### The Strace Parser tool
 
 Our [strace-parser tool](https://gitlab.com/wchandler/strace-parser) can be used to
-provide a high level summary of the `strace` output.  It is similar to `strace -C`,
+provide a high level summary of the `strace` output. It is similar to `strace -C`,
 but provides much more detailed statistics.
 
 MacOS and Linux binaries [are available](https://gitlab.com/gitlab-com/support/toolbox/strace-parser/-/tags),
@@ -198,7 +198,7 @@ First run the tool with no arguments other than the strace output file name to g
 a summary of the top processes sorted by time spent actively performing tasks. You
 can also sort based on total time, # of syscalls made, PID #, and # of child processes
 using the `-S` or `--sort` flag. The number of results defaults to 25 processes, but
-can be changed using the `-c`/`--count` option.  See `--help` for full details.
+can be changed using the `-c`/`--count` option. See `--help` for full details.
 
 ```shell
 $ ./strace-parser strace.txt

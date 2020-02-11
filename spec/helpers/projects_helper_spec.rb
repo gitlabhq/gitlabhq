@@ -194,7 +194,7 @@ describe ProjectsHelper do
       expect(helper.project_list_cache_key(project).last).to start_with('v')
     end
 
-    it 'includes wether or not the user can read cross project' do
+    it 'includes whether or not the user can read cross project' do
       expect(helper.project_list_cache_key(project)).to include('cross-project:true')
     end
 

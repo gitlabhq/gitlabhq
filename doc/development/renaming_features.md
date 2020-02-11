@@ -21,4 +21,4 @@ The more of the following that are true, the more likely you should choose the f
 
 ## Consider a façade-first approach
 
-The façade approach is not necessarily a final step.  It can (and possibly *should*) be treated as the first step, where later iterations will accomplish the complete rename.
+The façade approach is not necessarily a final step. It can (and possibly *should*) be treated as the first step, where later iterations will accomplish the complete rename.

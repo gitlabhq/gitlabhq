@@ -536,7 +536,7 @@ reset before each example, add the `:prometheus` tag to the Rspec test.
 ### Matchers
 
 Custom matchers should be created to clarify the intent and/or hide the
-complexity of RSpec expectations.They should be placed under
+complexity of RSpec expectations. They should be placed under
 `spec/support/matchers/`. Matchers can be placed in subfolder if they apply to
 a certain type of specs only (e.g. features, requests etc.) but shouldn't be if
 they apply to multiple type of specs.

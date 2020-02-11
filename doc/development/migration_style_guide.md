@@ -267,7 +267,7 @@ end
 
 Here the call to `disable_statement_timeout` will use the connection local to
 the `with_multiple_threads` block, instead of re-using the global connection
-pool.  This ensures each thread has its own connection object, and won't time
+pool. This ensures each thread has its own connection object, and won't time
 out when trying to obtain one.
 
 **NOTE:** PostgreSQL has a maximum amount of connections that it allows. This

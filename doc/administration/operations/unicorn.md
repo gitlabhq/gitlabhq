@@ -75,7 +75,7 @@ Otherwise, you can set the `GITLAB_UNICORN_MEMORY_MIN` and `GITLAB_UNICORN_MEMOR
 This is what a Unicorn worker memory restart looks like in unicorn_stderr.log.
 You see that worker 4 (PID 125918) is inspecting itself and decides to exit.
 The threshold memory value was 254802235 bytes, about 250MB. With GitLab this
-threshold is a random value between 200 and 250 MB.  The master process (PID
+threshold is a random value between 200 and 250 MB. The master process (PID
 117565) then reaps the worker process and spawns a new 'worker 4' with PID
 127549.
 

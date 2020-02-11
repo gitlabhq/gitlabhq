@@ -26,7 +26,7 @@ by [`Namespaces#with_statistics`](https://gitlab.com/gitlab-org/gitlab/blob/4ab5
 Additionally, the pattern that is currently used to update the project statistics
 (the callback) doesn't scale adequately. It is currently one of the largest
 [database queries transactions on production](https://gitlab.com/gitlab-org/gitlab-foss/issues/62488)
-that takes the most time overall.  We can't add one more query to it as
+that takes the most time overall. We can't add one more query to it as
 it will increase the transaction's length.
 
 Because of all of the above, we can't apply the same pattern to store

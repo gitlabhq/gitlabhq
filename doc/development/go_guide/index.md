@@ -188,9 +188,9 @@ code readability and test output.
 ### Better output in tests
 
 When comparing expected and actual values in tests, use
-[testify/require.Equal](https://godoc.org/github.com/stretchr/testify/require#Equal),
-[testify/require.EqualError](https://godoc.org/github.com/stretchr/testify/require#EqualError),
-[testify/require.EqualValues](https://godoc.org/github.com/stretchr/testify/require#EqualValues),
+[`testify/require.Equal`](https://godoc.org/github.com/stretchr/testify/require#Equal),
+[`testify/require.EqualError`](https://godoc.org/github.com/stretchr/testify/require#EqualError),
+[`testify/require.EqualValues`](https://godoc.org/github.com/stretchr/testify/require#EqualValues),
 and others to improve readability when comparing structs, errors,
 large portions of text, or JSON documents:
 

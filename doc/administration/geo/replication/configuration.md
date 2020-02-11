@@ -171,7 +171,7 @@ keys must be manually replicated to the **secondary** node.
    sudo -i
    ```
 
-1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your node.  You will need this in the next steps:
+1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your node. You will need this in the next steps:
 
    ```ruby
    # The unique identifier for the Geo node.

@@ -227,7 +227,7 @@ remember to run `sudo gitlab-ctl reconfigure` again before trying the
 
 #### Gitaly
 
-Next we will configure each Gitaly server assigned to Praefect.  Configuration for these
+Next we will configure each Gitaly server assigned to Praefect. Configuration for these
 is the same as a normal standalone Gitaly server, except that we use storage names and
 auth tokens from Praefect instead of GitLab.
 

@@ -340,7 +340,7 @@ start_gitlab() {
 
   # Wait for the pids to be planted
   wait_for_pids
-  # Finally check the status to tell wether or not GitLab is running
+  # Finally check the status to tell whether or not GitLab is running
   print_status
 }
 

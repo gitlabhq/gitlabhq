@@ -16,9 +16,9 @@ source and the target.**
 ## Target directory is empty: use a tar pipe
 
 If the target directory `/mnt/gitlab/repositories` is empty the
-simplest thing to do is to use a tar pipe.  This method has low
+simplest thing to do is to use a tar pipe. This method has low
 overhead and tar is almost always already installed on your system.
-However, it is not possible to resume an interrupted tar pipe:  if
+However, it is not possible to resume an interrupted tar pipe: if
 that happens then all data must be copied again.
 
 ```shell
@@ -82,7 +82,7 @@ repository at a time.
 In addition to rsync we will use [GNU
 Parallel](http://www.gnu.org/software/parallel/). This utility is
 not included in GitLab so you need to install it yourself with apt
-or yum.  Also note that the GitLab scripts we used below were added
+or yum. Also note that the GitLab scripts we used below were added
 in GitLab 8.1.
 
 ** This process does not clean up repositories at the target location that no

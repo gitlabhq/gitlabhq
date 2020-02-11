@@ -193,7 +193,7 @@ You might get an error such as
 
 This is because you've exceeded the disk space threshold - it thinks you don't have enough disk space left, based on the default 95% threshold.
 
-In addition, the `read_only_allow_delete` setting will be set to `true`.  It will block indexing, `forcemerge`, etc
+In addition, the `read_only_allow_delete` setting will be set to `true`. It will block indexing, `forcemerge`, etc
 
 ```
 curl "http://localhost:9200/gitlab-development/_settings?pretty"

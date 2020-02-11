@@ -126,7 +126,7 @@ Note that unlike `Gitlab::Popen.popen`, `IO.popen` does not capture standard err
 ## Avoid user input at the start of path strings
 
 Various methods for opening and reading files in Ruby can be used to read the
-standard output of a process instead of a file.  The following two commands do
+standard output of a process instead of a file. The following two commands do
 roughly the same:
 
 ```ruby
@@ -138,7 +138,7 @@ The key is to open a 'file' whose name starts with a `|`.
 Affected methods include Kernel#open, File::read, File::open, IO::open and IO::read.
 
 You can protect against this behavior of 'open' and 'read' by ensuring that an
-attacker cannot control the start of the filename string you are opening.  For
+attacker cannot control the start of the filename string you are opening. For
 instance, the following is sufficient to protect against accidentally starting
 a shell command with `|`:
 

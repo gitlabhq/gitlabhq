@@ -129,7 +129,7 @@ importer progresses. Here's what to do:
 
 ## Multi-destination Logging
 
-GitLab is transitioning from unstructured/plaintext logs to structured/JSON logs.  During this transition period some logs will be recorded in multiple formats through multi-destination logging.
+GitLab is transitioning from unstructured/plaintext logs to structured/JSON logs. During this transition period some logs will be recorded in multiple formats through multi-destination logging.
 
 ### How to use multi-destination logging
 

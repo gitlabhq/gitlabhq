@@ -3,7 +3,7 @@
 > This doc refers to <https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/reactive_caching.rb>.
 
 The `ReactiveCaching` concern is used for fetching some data in the background and store it
-in the Rails cache, keeping it up-to-date for as long as it is being requested.  If the
+in the Rails cache, keeping it up-to-date for as long as it is being requested. If the
 data hasn't been requested for `reactive_cache_lifetime`, it will stop being refreshed,
 and then be removed.
 
