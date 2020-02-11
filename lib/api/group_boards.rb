@@ -28,6 +28,7 @@ module API
           success ::API::Entities::Board
         end
         get '/:board_id' do
+          authorize!(:read_board, user_group)
           present board, with: ::API::Entities::Board
         end
 
@@ -39,6 +40,7 @@ module API
           use :pagination
         end
         get '/' do
+          authorize!(:read_board, user_group)
           present paginate(board_parent.boards.with_associations), with: Entities::Board
         end
       end
@@ -55,6 +57,7 @@ module API
           use :pagination
         end
         get '/lists' do
+          authorize!(:read_board, user_group)
           present paginate(board_lists), with: Entities::List
         end
 
@@ -66,6 +69,7 @@ module API
           requires :list_id, type: Integer, desc: 'The ID of a list'
         end
         get '/lists/:list_id' do
+          authorize!(:read_board, user_group)
           present board_lists.find(params[:list_id]), with: Entities::List
         end
 

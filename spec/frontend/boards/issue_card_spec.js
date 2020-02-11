@@ -66,7 +66,11 @@ describe('Issue card component', () => {
   });
 
   it('does not render confidential icon', () => {
-    expect(wrapper.find('.fa-eye-flash').exists()).toBe(false);
+    expect(wrapper.find('.confidential-icon').exists()).toBe(false);
+  });
+
+  it('does not render blocked icon', () => {
+    expect(wrapper.find('.issue-blocked-icon').exists()).toBe(false);
   });
 
   it('renders confidential icon', done => {
@@ -322,6 +326,22 @@ describe('Issue card component', () => {
           done();
         })
         .catch(done.fail);
+    });
+  });
+
+  describe('blocked', () => {
+    beforeEach(done => {
+      wrapper.setProps({
+        issue: {
+          ...wrapper.props('issue'),
+          blocked: true,
+        },
+      });
+      wrapper.vm.$nextTick(done);
+    });
+
+    it('renders blocked icon if issue is blocked', () => {
+      expect(wrapper.find('.issue-blocked-icon').exists()).toBe(true);
     });
   });
 });

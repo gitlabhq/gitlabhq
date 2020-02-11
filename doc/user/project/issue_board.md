@@ -303,6 +303,14 @@ Different issue board features are available in different [GitLab tiers](https:/
 | Premium / Silver | Multiple                       | Multiple                     | Yes                       | Yes            |
 | Ultimate / Gold | Multiple                       | Multiple                     | Yes                       | Yes            |
 
+## Blocked issues
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34723) in GitLab 12.8.
+
+If an issue is blocked by another issue, an icon will display next to its title to differentiate it from unblocked issues.
+
+![Blocked issues](img/issue_boards_blocked_icon_v12_8.png)
+
 ## Actions you can take on an Issue Board
 
 - [Create a new list](#creating-a-new-list).

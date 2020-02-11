@@ -2768,6 +2768,9 @@ msgstr ""
 msgid "Blocked"
 msgstr ""
 
+msgid "Blocked issue"
+msgstr ""
+
 msgid "Blocks"
 msgstr ""
 

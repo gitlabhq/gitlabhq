@@ -5013,11 +5013,11 @@
             },
             {
               "name": "reference",
-              "description": null,
+              "description": "Internal reference of the epic. Returned in shortened format by default",
               "args": [
                 {
                   "name": "full",
-                  "description": null,
+                  "description": "Indicates if the reference should be returned in full",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -5040,7 +5040,7 @@
             },
             {
               "name": "relationPath",
-              "description": null,
+              "description": "URI path of the epic-issue relationship",
               "args": [
 
               ],
@@ -5224,7 +5224,7 @@
             },
             {
               "name": "webPath",
-              "description": null,
+              "description": "Web path of the epic",
               "args": [
 
               ],
@@ -5242,7 +5242,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL of the epic",
               "args": [
 
               ],

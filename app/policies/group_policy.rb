@@ -67,6 +67,7 @@ class GroupPolicy < BasePolicy
     enable :read_milestone
     enable :read_list
     enable :read_label
+    enable :read_board
   end
 
   rule { has_access }.enable :read_namespace

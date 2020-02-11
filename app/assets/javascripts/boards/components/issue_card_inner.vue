@@ -162,6 +162,14 @@ export default {
     <div class="d-flex board-card-header" dir="auto">
       <h4 class="board-card-title append-bottom-0 prepend-top-0">
         <icon
+          v-if="issue.blocked"
+          v-gl-tooltip
+          name="issue-block"
+          :title="__('Blocked issue')"
+          class="issue-blocked-icon append-right-4"
+          :aria-label="__('Blocked issue')"
+        />
+        <icon
           v-if="issue.confidential"
           v-gl-tooltip
           name="eye-slash"

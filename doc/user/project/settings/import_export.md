@@ -6,28 +6,30 @@
 Existing projects running on any GitLab instance or GitLab.com can be exported with all their related
 data and be moved into a new GitLab instance.
 
+The **GitLab import/export** button is displayed if the project import option is enabled.
+
 See also:
 
-- [Project import/export API](../../../api/project_import_export.md).
-- [Project import/export administration rake tasks](../../../administration/raketasks/project_import_export.md). **(CORE ONLY)**
+- [Project import/export API](../../../api/project_import_export.md)
+- [Project import/export administration rake tasks](../../../administration/raketasks/project_import_export.md) **(CORE ONLY)**
+
+To set up a project import/export:
+
+  1. Navigate to **{admin}** **Admin Area >** **{settings}** **Settings > Visibility and access controls**.
+  1. Scroll to **Import sources**
+  1. Enable desired **Import sources**
 
 ## Important notes
 
 Note the following:
 
-- Importing is not possible if the import instance version differs from
-  that of the exporter.
-- The project import option must be enabled in application settings
-  (`/admin/application_settings/general`) under **Import sources**, which is
-  available under **{admin}** **Admin Area >** **{settings}** **Settings > Visibility and access controls**.
-  Ask your administrator if you don't see the **GitLab export** button when
-  creating a new project.
-- The exports are stored in a temporary [shared directory](../../../development/shared_files.md)
+- Imports will fail unless the import and export GitLab instances are
+  compatible as described in the [Version history](#version-history).
+- Exports are stored in a temporary [shared directory](../../../development/shared_files.md)
   and are deleted every 24 hours by a specific worker.
 - Group members are exported as project members, as long as the user has
-  maintainer or admin access to the group where the exported project lives. An admin
-  in the import side is required to map the users, based on email.
-  Otherwise, a supplementary comment is left to mention the original author and
+  maintainer or admin access to the group where the exported project lives. Import admins should map users by email address.
+  Otherwise, a supplementary comment is left to mention that the original author and
   the MRs, notes, or issues will be owned by the importer.
 - Project members with owner access will be imported as maintainers.
 - If an imported project contains merge requests originating from forks,
@@ -39,7 +41,7 @@ Note the following:
 
 The following table lists updates to Import/Export:
 
-| GitLab version   | Import/Export version |
+| GitLab version   | Import/Export schema version |
 | ---------------- | --------------------- |
 | 11.1 to current  | 0.2.4                 |
 | 10.8             | 0.2.3                 |
@@ -56,7 +58,9 @@ The following table lists updates to Import/Export:
 | 8.9.5            | 0.1.1                 |
 | 8.9.0            | 0.1.0                 |
 
-For example, 8.10.3 and 8.11 will have the same Import/Export version (0.1.3)
+Projects can be exported and imported only between versions of GitLab with matching Import/Export versions.
+
+For example, 8.10.3 and 8.11 have the same Import/Export version (0.1.3)
 and the exports between them will be compatible.
 
 ## Exported contents

@@ -438,7 +438,7 @@ describe GroupPolicy do
     end
   end
 
-  context "create_projects" do
+  context 'create_projects' do
     context 'when group has no project creation level set' do
       before_all do
         group.update(project_creation_level: nil)
@@ -560,7 +560,7 @@ describe GroupPolicy do
     end
   end
 
-  context "create_subgroup" do
+  context 'create_subgroup' do
     context 'when group has subgroup creation level set to owner' do
       before_all do
         group.update(subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)

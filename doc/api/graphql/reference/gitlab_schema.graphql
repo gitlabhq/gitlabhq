@@ -1986,7 +1986,20 @@ type Epic implements Noteable {
     """
     last: Int
   ): UserConnection
-  reference(full: Boolean = false): String!
+
+  """
+  Internal reference of the epic. Returned in shortened format by default
+  """
+  reference(
+    """
+    Indicates if the reference should be returned in full
+    """
+    full: Boolean = false
+  ): String!
+
+  """
+  URI path of the epic-issue relationship
+  """
   relationPath: String
 
   """
@@ -2043,7 +2056,15 @@ type Epic implements Noteable {
   Permissions for the current user on the resource
   """
   userPermissions: EpicPermissions!
+
+  """
+  Web path of the epic
+  """
   webPath: String!
+
+  """
+  Web URL of the epic
+  """
   webUrl: String!
 }
 

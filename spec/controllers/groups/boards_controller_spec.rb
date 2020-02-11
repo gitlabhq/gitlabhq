@@ -27,7 +27,8 @@ describe Groups::BoardsController do
       context 'with unauthorized user' do
         before do
           allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(true)
-          allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(false)
+          allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(true)
+          allow(Ability).to receive(:allowed?).with(user, :read_board, group).and_return(false)
         end
 
         it 'returns a not found 404 response' do
@@ -70,7 +71,8 @@ describe Groups::BoardsController do
       context 'with unauthorized user' do
         before do
           allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(true)
-          allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(false)
+          allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(true)
+          allow(Ability).to receive(:allowed?).with(user, :read_board, group).and_return(false)
         end
 
         it 'returns a not found 404 response' do
@@ -105,7 +107,8 @@ describe Groups::BoardsController do
       context 'with unauthorized user' do
         before do
           allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(true)
-          allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(false)
+          allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(true)
+          allow(Ability).to receive(:allowed?).with(user, :read_board, group).and_return(false)
         end
 
         it 'returns a not found 404 response' do
@@ -142,6 +145,7 @@ describe Groups::BoardsController do
       context 'with unauthorized user' do
         before do
           allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(true)
+          allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(true)
           allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(false)
         end
 

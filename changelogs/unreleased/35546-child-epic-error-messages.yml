@@ -1,0 +1,5 @@
+---
+title: Improve error messages when adding a child epic
+merge_request: 22688
+author:
+type: fixed

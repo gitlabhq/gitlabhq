@@ -295,8 +295,8 @@ Represents an epic.
 | `id` | ID! | ID of the epic |
 | `iid` | ID! | Internal ID of the epic |
 | `parent` | Epic | Parent epic of the epic |
-| `reference` | String! |  |
-| `relationPath` | String |  |
+| `reference` | String! | Internal reference of the epic. Returned in shortened format by default |
+| `relationPath` | String | URI path of the epic-issue relationship |
 | `relativePosition` | Int | The relative position of the epic in the epic tree |
 | `startDate` | Time | Start date of the epic |
 | `startDateFixed` | Time | Fixed start date of the epic |
@@ -308,8 +308,8 @@ Represents an epic.
 | `updatedAt` | Time | Timestamp of the epic's last activity |
 | `upvotes` | Int! | Number of upvotes the epic has received |
 | `userPermissions` | EpicPermissions! | Permissions for the current user on the resource |
-| `webPath` | String! |  |
-| `webUrl` | String! |  |
+| `webPath` | String! | Web path of the epic |
+| `webUrl` | String! | Web URL of the epic |
 
 ## EpicDescendantCount
 
