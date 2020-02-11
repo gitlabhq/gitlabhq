@@ -106,5 +106,15 @@ describe WorkerContext do
         expect(Labkit::Context.current.to_h).to include('meta.user' => 'jane-doe')
       end
     end
+
+    it 'yields the arguments to the block' do
+      a_user = build_stubbed(:user)
+      a_project = build_stubbed(:project)
+
+      worker.new.with_context(user: a_user, project: a_project) do |user:, project:|
+        expect(user).to eq(a_user)
+        expect(project).to eq(a_project)
+      end
+    end
   end
 end

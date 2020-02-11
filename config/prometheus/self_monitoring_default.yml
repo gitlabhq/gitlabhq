@@ -1,0 +1,39 @@
+dashboard: 'Default dashboard'
+priority: 1
+panel_groups:
+- group: Web Service
+  panels:
+    - title: Web Service - Error Ratio
+      type: line-chart
+      y_label: "Unhandled Exceptions (%)"
+      metrics:
+        - id: wser_web_service
+          query_range: 'max(max_over_time(gitlab_service_errors:ratio{environment="{{ci_environment_slug}}", type="web", stage="main"}[1m])) by (type) * 100'
+          unit: "%"
+          label: "Error Ratio"
+        - id: wser_degradation_slo
+          query_range: 'avg(slo:max:gitlab_service_errors:ratio{environment="{{ci_environment_slug}}", type="web", stage="main"}) or avg(slo:max:gitlab_service_errors:ratio{type="web"}) * 100'
+          unit: "%"
+          label: "Degradation SLO"
+        - id: wser_outage_slo
+          query_range: '2 * (avg(slo:max:gitlab_service_errors:ratio{environment="{{ci_environment_slug}}", type="web", stage="main"}) or avg(slo:max:gitlab_service_errors:ratio{type="web"})) * 100'
+          unit: "%"
+          label: "Outage SLO"
+- group: API Service
+  panels:
+    - title: API Service - Error Ratio
+      type: line-chart
+      y_label: "Unhandled Exceptions (%)"
+      metrics:
+        - id: aser_web_service
+          query_range: 'max(max_over_time(gitlab_service_errors:ratio{environment="{{ci_environment_slug}}", type="api", stage="main"}[1m])) by (type) * 100'
+          unit: "%"
+          label: "Error Ratio"
+        - id: aser_degradation_slo
+          query_range: 'avg(slo:max:gitlab_service_errors:ratio{environment="{{ci_environment_slug}}", type="api", stage="main"}) or avg(slo:max:gitlab_service_errors:ratio{type="web"}) * 100'
+          unit: "%"
+          label: "Degradation SLO"
+        - id: aser_outage_slo
+          query_range: '2 * (avg(slo:max:gitlab_service_errors:ratio{environment="{{ci_environment_slug}}", type="api", stage="main"}) or avg(slo:max:gitlab_service_errors:ratio{type="web"})) * 100'
+          unit: "%"
+          label: "Outage SLO"

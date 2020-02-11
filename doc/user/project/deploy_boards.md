@@ -27,7 +27,7 @@ deploy rolling out. The percentage is the percent of the pods that are updated
 to the latest release.
 
 Since Deploy Boards are tightly coupled with Kubernetes, there is some required
-knowledge. In particular you should be familiar with:
+knowledge. In particular, you should be familiar with:
 
 - [Kubernetes pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
 - [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
@@ -37,7 +37,7 @@ knowledge. In particular you should be familiar with:
 ## Use cases
 
 Since the Deploy Board is a visual representation of the Kubernetes pods for a
-specific environment, there are lot of uses cases. To name a few:
+specific environment, there are a lot of use cases. To name a few:
 
 - You want to promote what's running in staging, to production. You go to the
   environments list, verify that what's running in staging is what you think is
@@ -65,7 +65,7 @@ To display the Deploy Boards for a specific [environment] you should:
 
    NOTE: **Running on OpenShift:**
    If you are using OpenShift, ensure that you're using the `Deployment` resource
-   instead of `DeploymentConfiguration`, otherwise the Deploy Boards won't render
+   instead of `DeploymentConfiguration`. Otherwise, the Deploy Boards won't render
    correctly. For more information, read the
    [OpenShift docs](https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/kubernetes_deployments.html#kubernetes-deployments-vs-deployment-configurations)
    and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/issues/4584).

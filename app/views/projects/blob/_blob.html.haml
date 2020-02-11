@@ -10,7 +10,7 @@
 
 #blob-content-holder.blob-content-holder
   - if native_code_navigation_enabled?(@project)
-    #js-code-navigation{ data: { commit_id: blob.commit_id, path: blob.path, project_path: @project.full_path } }
+    #js-code-navigation{ data: { commit_id: blob.commit_id, blob_path: blob.path, project_path: @project.full_path } }
   %article.file-holder
     = render 'projects/blob/header', blob: blob
     = render 'projects/blob/content', blob: blob

@@ -49,9 +49,9 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
     it 'preloads the associations' do
       subject
 
-      query = ActiveRecord::QueryRecorder.new { subject.each(&:project) }
+      query = ActiveRecord::QueryRecorder.new { subject.map(&:project).map(&:full_path) }
 
-      expect(query.count).to eq(2)
+      expect(query.count).to eq(3)
     end
   end
 

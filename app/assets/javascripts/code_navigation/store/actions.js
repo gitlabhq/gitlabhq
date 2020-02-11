@@ -16,7 +16,7 @@ export default {
     commit(types.REQUEST_DATA);
 
     api
-      .lsifData(state.projectPath, state.commitId, state.path)
+      .lsifData(state.projectPath, state.commitId, state.blobPath)
       .then(({ data }) => {
         const normalizedData = data.reduce((acc, d) => {
           if (d.hover) {

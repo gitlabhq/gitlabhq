@@ -60,6 +60,6 @@ module WorkerContext
   end
 
   def with_context(context, &block)
-    Gitlab::ApplicationContext.new(context).use(&block)
+    Gitlab::ApplicationContext.new(context).use { yield(**context) }
   end
 end
