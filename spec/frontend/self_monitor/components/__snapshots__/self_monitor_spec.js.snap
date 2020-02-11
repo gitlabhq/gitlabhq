@@ -49,6 +49,7 @@ exports[`self monitor component When the self monitor project has not been creat
         <gl-toggle-stub
           labeloff="Toggle Status: OFF"
           labelon="Toggle Status: ON"
+          labelposition="hidden"
           name="self-monitor-toggle"
         />
       </gl-form-group-stub>

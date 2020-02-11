@@ -1,0 +1,6 @@
+fragment BlobViewer on SnippetBlobViewer {
+  collapsed
+  loadingPartialName
+  renderError
+  tooLarge
+}

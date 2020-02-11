@@ -1,0 +1,5 @@
+---
+title: Fix upstream bridge stuck when downstream pipeline is not pending
+merge_request: 24665
+author:
+type: fixed

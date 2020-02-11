@@ -22,6 +22,7 @@ exports[`Contributors charts should render charts when loading completed and the
         legendmaxtext="Max"
         option="[object Object]"
         thresholds=""
+        width="0"
       />
     </div>
      
@@ -29,7 +30,7 @@ exports[`Contributors charts should render charts when loading completed and the
       class="row"
     >
       <div
-        class="col-6"
+        class="col-lg-6 col-12"
       >
         <h4>
           John
@@ -39,15 +40,18 @@ exports[`Contributors charts should render charts when loading completed and the
           2 commits (jawnnypoo@gmail.com)
         </p>
          
-        <glareachart-stub
-          data="[object Object]"
-          height="216"
-          includelegendavgmax="true"
-          legendaveragetext="Avg"
-          legendmaxtext="Max"
-          option="[object Object]"
-          thresholds=""
-        />
+        <div>
+          <glareachart-stub
+            data="[object Object]"
+            height="216"
+            includelegendavgmax="true"
+            legendaveragetext="Avg"
+            legendmaxtext="Max"
+            option="[object Object]"
+            thresholds=""
+            width="0"
+          />
+        </div>
       </div>
     </div>
   </div>

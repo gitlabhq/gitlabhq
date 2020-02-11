@@ -48,6 +48,12 @@ module QA
         feature && feature["state"] == "on"
       end
 
+      def get_features
+        request = Runtime::API::Request.new(api_client, "/features")
+        response = get(request.url)
+        response.body
+      end
+
       private
 
       def api_client
@@ -75,12 +81,6 @@ module QA
         unless response.code == QA::Support::Api::HTTP_STATUS_CREATED
           raise SetFeatureError, "Setting feature flag #{key} to #{value} failed with `#{response}`."
         end
-      end
-
-      def get_features
-        request = Runtime::API::Request.new(api_client, "/features")
-        response = get(request.url)
-        response.body
       end
     end
   end

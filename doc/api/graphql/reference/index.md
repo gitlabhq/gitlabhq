@@ -54,6 +54,7 @@ An emoji awarded by a user.
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `author` | User | Author of the commit |
+| `authorGravatar` | String | Commit authors gravatar |
 | `authorName` | String | Commit authors name |
 | `authoredDate` | Time | Timestamp of when the commit was authored |
 | `description` | String | Description of the commit message |

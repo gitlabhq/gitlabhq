@@ -38,7 +38,9 @@ module QA
 
       def visit_saml_sso_settings(group, direct: false)
         if direct
-          page.visit "#{group.web_url}/-/saml"
+          url = "#{group.web_url}/-/saml"
+          Runtime::Logger.debug("Visiting url \"#{url}\" directly")
+          page.visit url
         else
           group.visit!
 

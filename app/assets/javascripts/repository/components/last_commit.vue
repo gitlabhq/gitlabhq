@@ -108,7 +108,12 @@ export default {
         class="avatar-cell"
       />
       <span v-else class="avatar-cell user-avatar-link">
-        <img :src="$options.defaultAvatarUrl" width="40" height="40" class="avatar s40" />
+        <img
+          :src="commit.authorGravatar || $options.defaultAvatarUrl"
+          width="40"
+          height="40"
+          class="avatar s40"
+        />
       </span>
       <div class="commit-detail flex-list">
         <div class="commit-content qa-commit-content">

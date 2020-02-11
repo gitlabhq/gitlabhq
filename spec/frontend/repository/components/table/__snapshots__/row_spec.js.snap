@@ -48,3 +48,52 @@ exports[`Repository table row component renders table row 1`] = `
   </td>
 </tr>
 `;
+
+exports[`Repository table row component renders table row for path with special character 1`] = `
+<tr
+  class="tree-item file_1"
+>
+  <td
+    class="tree-item-file-name"
+  >
+    <i
+      aria-label="file"
+      class="fa fa-fw fa-file-text-o"
+      role="img"
+    />
+     
+    <a
+      class="str-truncated"
+      href="https://test.com"
+    >
+      
+      test
+    
+    </a>
+     
+    <!---->
+     
+    <!---->
+     
+    <!---->
+  </td>
+   
+  <td
+    class="d-none d-sm-table-cell tree-commit"
+  >
+    <gl-skeleton-loading-stub
+      class="h-auto"
+      lines="1"
+    />
+  </td>
+   
+  <td
+    class="tree-time-ago text-right"
+  >
+    <gl-skeleton-loading-stub
+      class="ml-auto h-auto w-50"
+      lines="1"
+    />
+  </td>
+</tr>
+`;

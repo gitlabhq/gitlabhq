@@ -26,6 +26,11 @@ module Types
           description: 'Rendered HTML of the commit signature'
     field :author_name, type: GraphQL::STRING_TYPE, null: true,
           description: 'Commit authors name'
+    field :author_gravatar, type: GraphQL::STRING_TYPE, null: true,
+          description: 'Commit authors gravatar',
+          resolve: -> (commit, args, context) do
+            GravatarService.new.execute(commit.author_email, 40)
+          end
 
     # models/commit lazy loads the author by email
     field :author, type: Types::UserType, null: true,

@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PipelinesAreaChart matches the snapshot 1`] = `
+<div
+  class="prepend-top-default"
+>
+  <p>
+    Some title
+  </p>
+   
+  <div>
+    <glareachart-stub
+      data="[object Object],[object Object]"
+      height="300"
+      legendaveragetext="Avg"
+      legendmaxtext="Max"
+      option="[object Object]"
+      thresholds=""
+      width="0"
+    />
+  </div>
+</div>
+`;

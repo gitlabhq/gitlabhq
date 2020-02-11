@@ -18,6 +18,7 @@ exports[`Expiration Policy Form renders 1`] = `
         id="expiration-policy-toggle"
         labeloff="Toggle Status: OFF"
         labelon="Toggle Status: ON"
+        labelposition="hidden"
       />
        
       <span

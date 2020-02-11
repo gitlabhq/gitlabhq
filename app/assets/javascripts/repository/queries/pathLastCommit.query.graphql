@@ -10,6 +10,7 @@ query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
           webUrl
           authoredDate
           authorName
+          authorGravatar
           author {
             name
             avatarUrl

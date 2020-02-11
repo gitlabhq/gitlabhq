@@ -11419,6 +11419,9 @@ msgstr ""
 msgid "Live preview"
 msgstr ""
 
+msgid "Loading blob"
+msgstr ""
+
 msgid "Loading contribution stats for group members"
 msgstr ""
 
@@ -13672,10 +13675,10 @@ msgstr ""
 msgid "Pipelines emails"
 msgstr ""
 
-msgid "Pipelines for last month"
+msgid "Pipelines for last month (%{oneMonthAgo} - %{today})"
 msgstr ""
 
-msgid "Pipelines for last week"
+msgid "Pipelines for last week (%{oneWeekAgo} - %{today})"
 msgstr ""
 
 msgid "Pipelines for last year"
@@ -13759,6 +13762,9 @@ msgstr ""
 msgid "Pipeline|Coverage"
 msgstr ""
 
+msgid "Pipeline|Date"
+msgstr ""
+
 msgid "Pipeline|Detached merge request pipeline"
 msgstr ""
 
@@ -13778,6 +13784,9 @@ msgid "Pipeline|Merged result pipeline"
 msgstr ""
 
 msgid "Pipeline|Pipeline"
+msgstr ""
+
+msgid "Pipeline|Pipelines"
 msgstr ""
 
 msgid "Pipeline|Run Pipeline"
@@ -13816,16 +13825,10 @@ msgstr ""
 msgid "Pipeline|You’re about to stop pipeline %{pipelineId}."
 msgstr ""
 
-msgid "Pipeline|all"
-msgstr ""
-
 msgid "Pipeline|for"
 msgstr ""
 
 msgid "Pipeline|on"
-msgstr ""
-
-msgid "Pipeline|success"
 msgstr ""
 
 msgid "Pipeline|with stage"

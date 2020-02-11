@@ -51,6 +51,20 @@ describe('Repository table row component', () => {
     });
   });
 
+  it('renders table row for path with special character', () => {
+    factory({
+      id: '1',
+      sha: '123',
+      path: 'test$/test',
+      type: 'file',
+      currentPath: 'test$',
+    });
+
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.element).toMatchSnapshot();
+    });
+  });
+
   it.each`
     type        | component         | componentName
     ${'tree'}   | ${RouterLinkStub} | ${'RouterLink'}

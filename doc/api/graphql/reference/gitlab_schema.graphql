@@ -166,6 +166,11 @@ type Commit {
   author: User
 
   """
+  Commit authors gravatar
+  """
+  authorGravatar: String
+
+  """
   Commit authors name
   """
   authorName: String
