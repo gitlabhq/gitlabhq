@@ -341,6 +341,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :failures
           get :status
           get :test_report
+          get :test_reports_count
         end
 
         member do

@@ -1,0 +1,5 @@
+---
+title: Fix signature badge popover on Firefox
+merge_request: 24756
+author:
+type: fixed

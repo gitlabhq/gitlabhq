@@ -2678,6 +2678,40 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#test_reports_count', :use_clean_rails_memory_store_caching do
+    subject { pipeline.test_reports }
+
+    context 'when pipeline has multiple builds with test reports' do
+      let!(:build_rspec) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline, project: project) }
+      let!(:build_java) { create(:ci_build, :success, name: 'java', pipeline: pipeline, project: project) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: build_rspec, project: project)
+        create(:ci_job_artifact, :junit_with_ant, job: build_java, project: project)
+      end
+
+      it 'returns test report count equal to test reports total_count' do
+        expect(subject.total_count).to eq(7)
+        expect(subject.total_count).to eq(pipeline.test_reports_count)
+      end
+
+      it 'reads from cache when records are cached' do
+        expect(Rails.cache.fetch(['project', project.id, 'pipeline', pipeline.id, 'test_reports_count'], force: false)).to be_nil
+
+        pipeline.test_reports_count
+
+        expect(ActiveRecord::QueryRecorder.new { pipeline.test_reports_count }.count).to eq(0)
+      end
+    end
+
+    context 'when pipeline does not have any builds with test reports' do
+      it 'returns empty test report count' do
+        expect(subject.total_count).to eq(0)
+        expect(subject.total_count).to eq(pipeline.test_reports_count)
+      end
+    end
+  end
+
   describe '#total_size' do
     let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
     let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }

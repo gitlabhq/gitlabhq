@@ -875,3 +875,7 @@ And to switch pages add:
 ## Group badges
 
 Read more in the [Group Badges](group_badges.md) documentation.
+
+## Group Import/Export
+
+Read more in the [Group Import/Export](group_import_export.md) documentation.

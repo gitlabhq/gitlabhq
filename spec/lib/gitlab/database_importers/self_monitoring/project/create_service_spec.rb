@@ -125,6 +125,11 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
         expect(application_setting.self_monitoring_project_id).to eq(project.id)
       end
 
+      it 'expires application_setting cache' do
+        expect(Gitlab::CurrentSettings).to receive(:expire_current_application_settings)
+        expect(result[:status]).to eq(:success)
+      end
+
       it 'creates an environment for the project' do
         expect(project.default_environment.name).to eq('production')
       end

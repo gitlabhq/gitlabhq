@@ -1,20 +1,19 @@
 - button_path = local_assigns.fetch(:button_path, false)
 
-.row.empty-state
+.row.empty-state.mt-0
   .col-12
     .svg-content
       = image_tag 'illustrations/snippets_empty.svg'
-    .text-content
+    .text-content.text-center.pt-0
       - if current_user
         %h4
-          = s_('SnippetsEmptyState|Snippets are small pieces of code or notes that you want to keep.')
-        %p
-          = s_('SnippetsEmptyState|They can be either public or private.')
-        .text-center
+          = s_('SnippetsEmptyState|Code snippets')
+        %p.mb-0
+          = s_('SnippetsEmptyState|Store, share, and embed small pieces of code and text.')
+        .mt-2<
           - if button_path
             = link_to s_('SnippetsEmptyState|New snippet'), button_path, class: 'btn btn-success', title: s_('SnippetsEmptyState|New snippet'), id: 'new_snippet_link'
-          - unless current_page?(dashboard_snippets_path)
-            = link_to s_('SnippetsEmptyState|Explore public snippets'), explore_snippets_path, class: 'btn btn-default', title: s_('SnippetsEmptyState|Explore public snippets')
+          = link_to s_('SnippetsEmptyState|Documentation'), help_page_path('user/snippets.md'), class: 'btn btn-default', title: s_('SnippetsEmptyState|Documentation')
       - else
         %h4.text-center= s_('SnippetsEmptyState|There are no snippets to show.')
 

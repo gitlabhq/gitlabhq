@@ -789,6 +789,12 @@ module Ci
       end
     end
 
+    def test_reports_count
+      Rails.cache.fetch(['project', project.id, 'pipeline', id, 'test_reports_count'], force: false) do
+        test_reports.total_count
+      end
+    end
+
     def has_exposed_artifacts?
       complete? && builds.latest.with_exposed_artifacts.exists?
     end

@@ -32,13 +32,18 @@ describe 'Dashboard snippets' do
     it 'shows the empty state when there are no snippets' do
       element = page.find('.row.empty-state')
 
-      expect(element).to have_content("Snippets are small pieces of code or notes that you want to keep.")
+      expect(element).to have_content("Code snippets")
       expect(element.find('.svg-content img')['src']).to have_content('illustrations/snippets_empty')
     end
 
     it 'shows new snippet button in main content area' do
       parent_element = page.find('.row.empty-state')
       expect(parent_element).to have_link('New snippet')
+    end
+
+    it 'shows documentation button in main comment area' do
+      parent_element = page.find('.row.empty-state')
+      expect(parent_element).to have_link('Documentation', href: help_page_path('user/snippets.md'))
     end
   end
 

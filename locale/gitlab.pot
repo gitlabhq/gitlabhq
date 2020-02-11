@@ -17597,7 +17597,10 @@ msgstr ""
 msgid "Snippets"
 msgstr ""
 
-msgid "SnippetsEmptyState|Explore public snippets"
+msgid "SnippetsEmptyState|Code snippets"
+msgstr ""
+
+msgid "SnippetsEmptyState|Documentation"
 msgstr ""
 
 msgid "SnippetsEmptyState|New snippet"
@@ -17606,13 +17609,10 @@ msgstr ""
 msgid "SnippetsEmptyState|No snippets found"
 msgstr ""
 
-msgid "SnippetsEmptyState|Snippets are small pieces of code or notes that you want to keep."
+msgid "SnippetsEmptyState|Store, share, and embed small pieces of code and text."
 msgstr ""
 
 msgid "SnippetsEmptyState|There are no snippets to show."
-msgstr ""
-
-msgid "SnippetsEmptyState|They can be either public or private."
 msgstr ""
 
 msgid "Snowplow"

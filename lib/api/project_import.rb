@@ -5,18 +5,11 @@ module API
     include PaginationParams
 
     helpers Helpers::ProjectsHelpers
+    helpers Helpers::FileUploadHelpers
 
     helpers do
       def import_params
         declared_params(include_missing: false)
-      end
-
-      def file_is_valid?
-        import_params[:file] && import_params[:file]['tempfile'].respond_to?(:read)
-      end
-
-      def validate_file!
-        render_api_error!('The file is invalid', 400) unless file_is_valid?
       end
 
       def throttled?(key, scope)

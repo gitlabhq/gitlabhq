@@ -30,5 +30,5 @@
 
     = link_to(_('Learn more about signing commits'), help_page_path('user/project/repository/gpg_signed_commits/index.md'), class: 'gpg-popover-help-link')
 
-%button{ tabindex: 0, class: css_classes, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
+%a{ role: 'button', tabindex: 0, class: css_classes, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
   = label
