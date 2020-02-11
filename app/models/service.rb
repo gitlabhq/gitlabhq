@@ -32,7 +32,7 @@ class Service < ApplicationRecord
   belongs_to :project, inverse_of: :services
   has_one :service_hook
 
-  validates :project_id, presence: true, unless: proc { |service| service.instance? }
+  validates :project_id, presence: true, unless: proc { |service| service.template? }
   validates :type, presence: true
 
   scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
@@ -70,8 +70,8 @@ class Service < ApplicationRecord
     true
   end
 
-  def instance?
-    instance
+  def template?
+    template
   end
 
   def category
@@ -299,15 +299,15 @@ class Service < ApplicationRecord
     service_names.sort_by(&:downcase)
   end
 
-  def self.build_from_instance(project_id, instance_level_service)
-    service = instance_level_service.dup
+  def self.build_from_template(project_id, template)
+    service = template.dup
 
-    if instance_level_service.supports_data_fields?
-      data_fields = instance_level_service.data_fields.dup
+    if template.supports_data_fields?
+      data_fields = template.data_fields.dup
       data_fields.service = service
     end
 
-    service.instance = false
+    service.template = false
     service.project_id = project_id
     service.active = false if service.active? && !service.valid?
     service
@@ -319,6 +319,10 @@ class Service < ApplicationRecord
 
   def deprecation_message
     nil
+  end
+
+  def self.find_by_template
+    find_by(template: true)
   end
 
   # override if needed

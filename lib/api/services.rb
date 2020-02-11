@@ -132,7 +132,7 @@ module API
       helpers do
         # rubocop: disable CodeReuse/ActiveRecord
         def slash_command_service(project, service_slug, params)
-          project.services.active.where(instance: false).find do |service|
+          project.services.active.where(template: false).find do |service|
             service.try(:token) == params[:token] && service.to_param == service_slug.underscore
           end
         end

@@ -91,10 +91,10 @@ describe('Dashboard', () => {
   });
 
   describe('no data found', () => {
-    beforeEach(done => {
+    beforeEach(() => {
       createShallowWrapper();
 
-      wrapper.vm.$nextTick(done);
+      return wrapper.vm.$nextTick();
     });
 
     it('shows the environment selector dropdown', () => {
@@ -118,20 +118,15 @@ describe('Dashboard', () => {
       });
     });
 
-    it('shows up a loading state', done => {
+    it('shows up a loading state', () => {
       createShallowWrapper({ hasMetrics: true }, { methods: {} });
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(wrapper.vm.emptyState).toEqual('loading');
-
-          done();
-        })
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.vm.emptyState).toEqual('loading');
+      });
     });
 
-    it('hides the group panels when showPanels is false', done => {
+    it('hides the group panels when showPanels is false', () => {
       createMountedWrapper(
         { hasMetrics: true, showPanels: false },
         { stubs: ['graph-group', 'panel-type'] },
@@ -139,15 +134,10 @@ describe('Dashboard', () => {
 
       setupComponentStore(wrapper);
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(wrapper.vm.showEmptyState).toEqual(false);
-          expect(wrapper.findAll('.prometheus-panel')).toHaveLength(0);
-
-          done();
-        })
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.vm.showEmptyState).toEqual(false);
+        expect(wrapper.findAll('.prometheus-panel')).toHaveLength(0);
+      });
     });
 
     it('fetches the metrics data with proper time window', () => {
@@ -171,43 +161,32 @@ describe('Dashboard', () => {
       createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
       setupComponentStore(wrapper);
+
+      return wrapper.vm.$nextTick();
     });
 
-    it('renders the environments dropdown with a number of environments', done => {
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(findAllEnvironmentsDropdownItems().length).toEqual(environmentData.length);
+    it('renders the environments dropdown with a number of environments', () => {
+      expect(findAllEnvironmentsDropdownItems().length).toEqual(environmentData.length);
 
-          findAllEnvironmentsDropdownItems().wrappers.forEach((itemWrapper, index) => {
-            const anchorEl = itemWrapper.find('a');
-            if (anchorEl.exists() && environmentData[index].metrics_path) {
-              const href = anchorEl.attributes('href');
-              expect(href).toBe(environmentData[index].metrics_path);
-            }
-          });
-
-          done();
-        })
-        .catch(done.fail);
+      findAllEnvironmentsDropdownItems().wrappers.forEach((itemWrapper, index) => {
+        const anchorEl = itemWrapper.find('a');
+        if (anchorEl.exists() && environmentData[index].metrics_path) {
+          const href = anchorEl.attributes('href');
+          expect(href).toBe(environmentData[index].metrics_path);
+        }
+      });
     });
 
-    it('renders the environments dropdown with a single active element', done => {
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          const activeItem = findAllEnvironmentsDropdownItems().wrappers.filter(itemWrapper =>
-            itemWrapper.find('.active').exists(),
-          );
+    it('renders the environments dropdown with a single active element', () => {
+      const activeItem = findAllEnvironmentsDropdownItems().wrappers.filter(itemWrapper =>
+        itemWrapper.find('.active').exists(),
+      );
 
-          expect(activeItem.length).toBe(1);
-          done();
-        })
-        .catch(done.fail);
+      expect(activeItem.length).toBe(1);
     });
   });
 
-  it('hides the environments dropdown list when there is no environments', done => {
+  it('hides the environments dropdown list when there is no environments', () => {
     createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
     wrapper.vm.$store.commit(
@@ -219,35 +198,27 @@ describe('Dashboard', () => {
       mockedQueryResultPayload,
     );
 
-    wrapper.vm
-      .$nextTick()
-      .then(() => {
-        expect(findAllEnvironmentsDropdownItems()).toHaveLength(0);
-        done();
-      })
-      .catch(done.fail);
+    return wrapper.vm.$nextTick().then(() => {
+      expect(findAllEnvironmentsDropdownItems()).toHaveLength(0);
+    });
   });
 
-  it('renders the datetimepicker dropdown', done => {
+  it('renders the datetimepicker dropdown', () => {
     createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
 
     setupComponentStore(wrapper);
 
-    wrapper.vm
-      .$nextTick()
-      .then(() => {
-        expect(wrapper.find(DateTimePicker).exists()).toBe(true);
-        done();
-      })
-      .catch(done.fail);
+    return wrapper.vm.$nextTick().then(() => {
+      expect(wrapper.find(DateTimePicker).exists()).toBe(true);
+    });
   });
 
   describe('when one of the metrics is missing', () => {
-    beforeEach(done => {
+    beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
       setupComponentStore(wrapper);
 
-      wrapper.vm.$nextTick(done);
+      return wrapper.vm.$nextTick();
     });
 
     it('shows a group empty area', () => {
@@ -300,7 +271,7 @@ describe('Dashboard', () => {
       const resultEnvs = environmentData.filter(({ name }) => name.indexOf(searchTerm) !== -1);
       setSearchTerm(searchTerm);
 
-      return wrapper.vm.$nextTick(() => {
+      return wrapper.vm.$nextTick().then(() => {
         expect(findAllEnvironmentsDropdownItems().length).toEqual(resultEnvs.length);
       });
     });
@@ -349,12 +320,12 @@ describe('Dashboard', () => {
     const findDraggablePanels = () => wrapper.findAll('.js-draggable-panel');
     const findRearrangeButton = () => wrapper.find('.js-rearrange-button');
 
-    beforeEach(done => {
+    beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
 
       setupComponentStore(wrapper);
 
-      wrapper.vm.$nextTick(done);
+      return wrapper.vm.$nextTick();
     });
 
     it('wraps vuedraggable', () => {
@@ -368,9 +339,9 @@ describe('Dashboard', () => {
     });
 
     describe('when rearrange is enabled', () => {
-      beforeEach(done => {
+      beforeEach(() => {
         wrapper.setProps({ rearrangePanelsAvailable: true });
-        wrapper.vm.$nextTick(done);
+        return wrapper.vm.$nextTick();
       });
 
       it('displays rearrange button', () => {
@@ -383,9 +354,9 @@ describe('Dashboard', () => {
             .at(0)
             .find('.js-draggable-remove');
 
-        beforeEach(done => {
+        beforeEach(() => {
           findRearrangeButton().vm.$emit('click');
-          wrapper.vm.$nextTick(done);
+          return wrapper.vm.$nextTick();
         });
 
         it('it enables draggables', () => {
@@ -393,7 +364,7 @@ describe('Dashboard', () => {
           expect(findEnabledDraggables()).toEqual(findDraggables());
         });
 
-        it('metrics can be swapped', done => {
+        it('metrics can be swapped', () => {
           const firstDraggable = findDraggables().at(0);
           const mockMetrics = [...metricsDashboardPayload.panel_groups[1].panels];
 
@@ -404,33 +375,30 @@ describe('Dashboard', () => {
           [mockMetrics[0], mockMetrics[1]] = [mockMetrics[1], mockMetrics[0]];
           firstDraggable.vm.$emit('input', mockMetrics);
 
-          wrapper.vm.$nextTick(() => {
+          return wrapper.vm.$nextTick(() => {
             const { panels } = wrapper.vm.dashboard.panel_groups[1];
 
             expect(panels[1].title).toEqual(firstTitle);
             expect(panels[0].title).toEqual(secondTitle);
-            done();
           });
         });
 
-        it('shows a remove button, which removes a panel', done => {
+        it('shows a remove button, which removes a panel', () => {
           expect(findFirstDraggableRemoveButton().isEmpty()).toBe(false);
 
           expect(findDraggablePanels().length).toEqual(expectedPanelCount);
           findFirstDraggableRemoveButton().trigger('click');
 
-          wrapper.vm.$nextTick(() => {
+          return wrapper.vm.$nextTick(() => {
             expect(findDraggablePanels().length).toEqual(expectedPanelCount - 1);
-            done();
           });
         });
 
-        it('it disables draggables when clicked again', done => {
+        it('it disables draggables when clicked again', () => {
           findRearrangeButton().vm.$emit('click');
-          wrapper.vm.$nextTick(() => {
+          return wrapper.vm.$nextTick(() => {
             expect(findRearrangeButton().attributes('pressed')).toBeFalsy();
             expect(findEnabledDraggables().length).toBe(0);
-            done();
           });
         });
       });
@@ -438,13 +406,13 @@ describe('Dashboard', () => {
   });
 
   describe('cluster health', () => {
-    beforeEach(done => {
+    beforeEach(() => {
       mock.onGet(propsData.metricsEndpoint).reply(statusCodes.OK, JSON.stringify({}));
       createShallowWrapper({ hasMetrics: true, showHeader: false });
 
       // all_dashboards is not defined in health dashboards
       wrapper.vm.$store.commit(`monitoringDashboard/${types.SET_ALL_DASHBOARDS}`, undefined);
-      wrapper.vm.$nextTick(done);
+      return wrapper.vm.$nextTick();
     });
 
     it('hides dashboard header by default', () => {
@@ -460,33 +428,29 @@ describe('Dashboard', () => {
   describe('dashboard edit link', () => {
     const findEditLink = () => wrapper.find('.js-edit-link');
 
-    beforeEach(done => {
+    beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });
 
       wrapper.vm.$store.commit(
         `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,
         dashboardGitResponse,
       );
-      wrapper.vm.$nextTick(done);
+      return wrapper.vm.$nextTick();
     });
 
     it('is not present for the default dashboard', () => {
       expect(findEditLink().exists()).toBe(false);
     });
 
-    it('is present for a custom dashboard, and links to its edit_path', done => {
+    it('is present for a custom dashboard, and links to its edit_path', () => {
       const dashboard = dashboardGitResponse[1]; // non-default dashboard
       const currentDashboard = dashboard.path;
 
       wrapper.setProps({ currentDashboard });
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(findEditLink().exists()).toBe(true);
-          expect(findEditLink().attributes('href')).toBe(dashboard.project_blob_path);
-          done();
-        })
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(findEditLink().exists()).toBe(true);
+        expect(findEditLink().attributes('href')).toBe(dashboard.project_blob_path);
+      });
     });
   });
 
@@ -498,18 +462,14 @@ describe('Dashboard', () => {
         `monitoringDashboard/${types.SET_ALL_DASHBOARDS}`,
         dashboardGitResponse,
       );
+
+      return wrapper.vm.$nextTick();
     });
 
-    it('shows the dashboard dropdown', done => {
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          const dashboardDropdown = wrapper.find(DashboardsDropdown);
+    it('shows the dashboard dropdown', () => {
+      const dashboardDropdown = wrapper.find(DashboardsDropdown);
 
-          expect(dashboardDropdown.exists()).toBe(true);
-          done();
-        })
-        .catch(done.fail);
+      expect(dashboardDropdown.exists()).toBe(true);
     });
   });
 
@@ -524,20 +484,16 @@ describe('Dashboard', () => {
         },
         { stubs: ['graph-group', 'panel-type'] },
       );
+
+      return wrapper.vm.$nextTick();
     });
 
-    it('shows the link', done => {
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          const externalDashboardButton = wrapper.find('.js-external-dashboard-link');
+    it('shows the link', () => {
+      const externalDashboardButton = wrapper.find('.js-external-dashboard-link');
 
-          expect(externalDashboardButton.exists()).toBe(true);
-          expect(externalDashboardButton.is(GlButton)).toBe(true);
-          expect(externalDashboardButton.text()).toContain('View full dashboard');
-          done();
-        })
-        .catch(done.fail);
+      expect(externalDashboardButton.exists()).toBe(true);
+      expect(externalDashboardButton.is(GlButton)).toBe(true);
+      expect(externalDashboardButton.text()).toContain('View full dashboard');
     });
   });
 
@@ -550,12 +506,12 @@ describe('Dashboard', () => {
         .at(i)
         .props('clipboardText');
 
-    beforeEach(done => {
+    beforeEach(() => {
       createShallowWrapper({ hasMetrics: true, currentDashboard });
 
       setupComponentStore(wrapper);
 
-      wrapper.vm.$nextTick(done);
+      return wrapper.vm.$nextTick();
     });
 
     it('contains a link to the dashboard', () => {
@@ -565,23 +521,21 @@ describe('Dashboard', () => {
       expect(getClipboardTextAt(0)).toContain(`y_label=`);
     });
 
-    it('strips the undefined parameter', done => {
+    it('strips the undefined parameter', () => {
       wrapper.setProps({ currentDashboard: undefined });
 
-      wrapper.vm.$nextTick(() => {
+      return wrapper.vm.$nextTick(() => {
         expect(getClipboardTextAt(0)).not.toContain(`dashboard=`);
         expect(getClipboardTextAt(0)).toContain(`y_label=`);
-        done();
       });
     });
 
-    it('null parameter is stripped', done => {
+    it('null parameter is stripped', () => {
       wrapper.setProps({ currentDashboard: null });
 
-      wrapper.vm.$nextTick(() => {
+      return wrapper.vm.$nextTick(() => {
         expect(getClipboardTextAt(0)).not.toContain(`dashboard=`);
         expect(getClipboardTextAt(0)).toContain(`y_label=`);
-        done();
       });
     });
   });

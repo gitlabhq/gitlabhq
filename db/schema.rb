@@ -3858,9 +3858,9 @@ ActiveRecord::Schema.define(version: 2020_02_07_151640) do
     t.boolean "deployment_events", default: false, null: false
     t.string "description", limit: 500
     t.boolean "comment_on_event_enabled", default: true, null: false
-    t.boolean "instance", default: false
-    t.index ["instance"], name: "index_services_on_instance"
+    t.boolean "template", default: false
     t.index ["project_id"], name: "index_services_on_project_id"
+    t.index ["template"], name: "index_services_on_template"
     t.index ["type"], name: "index_services_on_type"
   end
 

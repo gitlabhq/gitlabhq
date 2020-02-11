@@ -8,11 +8,15 @@ module Projects
       def index
         respond_to do |format|
           format.json do
-            functions = finder.execute
+            functions = finder.execute.select do |function|
+              can?(@current_user, :read_cluster, function.cluster)
+            end
+
+            serialized_functions = serialize_function(functions)
 
             render json: {
               knative_installed: finder.knative_installed,
-              functions: serialize_function(functions)
+              functions: serialized_functions
             }.to_json
           end
 
@@ -23,10 +27,13 @@ module Projects
       end
 
       def show
-        @service = serialize_function(finder.service(params[:environment_id], params[:id]))
-        @prometheus = finder.has_prometheus?(params[:environment_id])
+        function = finder.service(params[:environment_id], params[:id])
+        return not_found unless function && can?(@current_user, :read_cluster, function.cluster)
 
+        @service = serialize_function(function)
         return not_found if @service.nil?
+
+        @prometheus = finder.has_prometheus?(params[:environment_id])
 
         respond_to do |format|
           format.json do

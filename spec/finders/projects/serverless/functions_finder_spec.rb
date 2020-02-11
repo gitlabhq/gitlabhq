@@ -153,8 +153,8 @@ describe Projects::Serverless::FunctionsFinder do
           *knative_services_finder.cache_args)
 
         result = finder.service(cluster.environment_scope, cluster.project.name)
-        expect(result).not_to be_empty
-        expect(result["metadata"]["name"]).to be_eql(cluster.project.name)
+        expect(result).to be_present
+        expect(result.name).to be_eql(cluster.project.name)
       end
 
       it 'has metrics', :use_clean_rails_memory_store_caching do

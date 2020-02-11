@@ -23,10 +23,6 @@ class RemoveEmptyGithubServiceTemplates < ActiveRecord::Migration[5.2]
   private
 
   def relationship
-    # The column `template` was renamed to `instance`. Column information needs
-    # to be resetted to avoid cache problems after migrating down.
-    RemoveEmptyGithubServiceTemplates::Service.reset_column_information
-
     RemoveEmptyGithubServiceTemplates::Service.where(template: true, type: 'GithubService')
   end
 end

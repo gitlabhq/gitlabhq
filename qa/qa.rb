@@ -469,6 +469,7 @@ module QA
         autoload :Configure, 'qa/vendor/jenkins/page/configure'
         autoload :NewCredentials, 'qa/vendor/jenkins/page/new_credentials'
         autoload :NewJob, 'qa/vendor/jenkins/page/new_job'
+        autoload :Job, 'qa/vendor/jenkins/page/job'
         autoload :ConfigureJob, 'qa/vendor/jenkins/page/configure_job'
       end
     end

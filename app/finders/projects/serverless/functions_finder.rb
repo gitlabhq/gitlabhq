@@ -93,24 +93,32 @@ module Projects
             .services
             .select { |svc| svc["metadata"]["name"] == name }
 
-          add_metadata(finder, services).first unless services.nil?
+          attributes = add_metadata(finder, services).first
+          next unless attributes
+
+          Gitlab::Serverless::Service.new(attributes)
         end
       end
 
       def knative_services
         services_finders.map do |finder|
-          services = finder.services
+          attributes = add_metadata(finder, finder.services)
 
-          add_metadata(finder, services) unless services.nil?
+          attributes&.map do |attributes|
+            Gitlab::Serverless::Service.new(attributes)
+          end
         end
       end
 
       def add_metadata(finder, services)
+        return if services.nil?
+
         add_pod_count = services.one?
 
         services.each do |s|
           s["environment_scope"] = finder.cluster.environment_scope
-          s["cluster_id"] = finder.cluster.id
+          s["environment"] = finder.environment
+          s["cluster"] = finder.cluster
 
           if add_pod_count
             s["podcount"] = finder

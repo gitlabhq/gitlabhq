@@ -4,11 +4,13 @@ class SnippetBlobPresenter < BlobPresenter
   def highlighted_data
     return if blob.binary?
 
-    if blob.rich_viewer&.partial_name == 'markup'
-      blob.rendered_markup
-    else
-      highlight
-    end
+    highlight(plain: false)
+  end
+
+  def plain_highlighted_data
+    return if blob.binary?
+
+    highlight(plain: true)
   end
 
   def raw_path

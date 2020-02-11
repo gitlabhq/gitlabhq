@@ -97,23 +97,23 @@ describe Service do
     end
   end
 
-  describe "Instance" do
+  describe "Template" do
     let(:project) { create(:project) }
 
-    describe '.build_from_instance' do
-      context 'when instance level integration is invalid' do
-        it 'sets instance level integration to inactive when instance is invalid' do
-          instance = build(:prometheus_service, instance: true, active: true, properties: {})
-          instance.save(validate: false)
+    describe '.build_from_template' do
+      context 'when template is invalid' do
+        it 'sets service template to inactive when template is invalid' do
+          template = build(:prometheus_service, template: true, active: true, properties: {})
+          template.save(validate: false)
 
-          service = described_class.build_from_instance(project.id, instance)
+          service = described_class.build_from_template(project.id, template)
 
           expect(service).to be_valid
           expect(service.active).to be false
         end
       end
 
-      describe 'build issue tracker from a instance level integration' do
+      describe 'build issue tracker from a template' do
         let(:title) { 'custom title' }
         let(:description) { 'custom description' }
         let(:url) { 'http://jira.example.com' }
@@ -127,9 +127,9 @@ describe Service do
           }
         end
 
-        shared_examples 'integration creation from instance level' do
+        shared_examples 'service creation from a template' do
           it 'creates a correct service' do
-            service = described_class.build_from_instance(project.id, instance_level_integration)
+            service = described_class.build_from_template(project.id, template)
 
             expect(service).to be_active
             expect(service.title).to eq(title)
@@ -144,38 +144,38 @@ describe Service do
         # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
         context 'when data are stored in properties' do
           let(:properties) { data_params.merge(title: title, description: description) }
-          let!(:instance_level_integration) do
-            create(:jira_service, :without_properties_callback, instance: true, properties: properties.merge(additional: 'something'))
+          let!(:template) do
+            create(:jira_service, :without_properties_callback, template: true, properties: properties.merge(additional: 'something'))
           end
 
-          it_behaves_like 'integration creation from instance level'
+          it_behaves_like 'service creation from a template'
         end
 
         context 'when data are stored in separated fields' do
-          let(:instance_level_integration) do
-            create(:jira_service, data_params.merge(properties: {}, title: title, description: description, instance: true))
+          let(:template) do
+            create(:jira_service, data_params.merge(properties: {}, title: title, description: description, template: true))
           end
 
-          it_behaves_like 'integration creation from instance level'
+          it_behaves_like 'service creation from a template'
         end
 
         context 'when data are stored in both properties and separated fields' do
           let(:properties) { data_params.merge(title: title, description: description) }
-          let(:instance_level_integration) do
-            create(:jira_service, :without_properties_callback, active: true, instance: true, properties: properties).tap do |service|
+          let(:template) do
+            create(:jira_service, :without_properties_callback, active: true, template: true, properties: properties).tap do |service|
               create(:jira_tracker_data, data_params.merge(service: service))
             end
           end
 
-          it_behaves_like 'integration creation from instance level'
+          it_behaves_like 'service creation from a template'
         end
       end
     end
 
     describe "for pushover service" do
-      let!(:instance_level_integration) do
+      let!(:service_template) do
         PushoverService.create(
-          instance: true,
+          template: true,
           properties: {
             device: 'MyDevice',
             sound: 'mic',
@@ -188,7 +188,7 @@ describe Service do
         it "has all fields prefilled" do
           service = project.find_or_initialize_service('pushover')
 
-          expect(service.instance).to eq(false)
+          expect(service.template).to eq(false)
           expect(service.device).to eq('MyDevice')
           expect(service.sound).to eq('mic')
           expect(service.priority).to eq(4)
@@ -388,6 +388,14 @@ describe Service do
     it 'is empty by default' do
       service = create(:service, project: project)
       expect(service.deprecation_message).to be_nil
+    end
+  end
+
+  describe '.find_by_template' do
+    let!(:service) { create(:service, template: true) }
+
+    it 'returns service template' do
+      expect(described_class.find_by_template).to eq(service)
     end
   end
 

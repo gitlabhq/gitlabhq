@@ -18,7 +18,7 @@ describe Gitlab::UsageData do
       create(:service, project: projects[1], type: 'SlackService', active: true)
       create(:service, project: projects[2], type: 'SlackService', active: true)
       create(:service, project: projects[2], type: 'MattermostService', active: false)
-      create(:service, project: projects[2], type: 'MattermostService', active: true, instance: true)
+      create(:service, project: projects[2], type: 'MattermostService', active: true, template: true)
       create(:service, project: projects[2], type: 'CustomIssueTrackerService', active: true)
       create(:project_error_tracking_setting, project: projects[0])
       create(:project_error_tracking_setting, project: projects[1], enabled: false)

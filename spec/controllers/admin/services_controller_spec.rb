@@ -15,11 +15,11 @@ describe Admin::ServicesController do
     Service.available_services_names.each do |service_name|
       context "#{service_name}" do
         let!(:service) do
-          service_instance = "#{service_name}_service".camelize.constantize
-          service_instance.where(instance: true).first_or_create
+          service_template = "#{service_name}_service".camelize.constantize
+          service_template.where(template: true).first_or_create
         end
 
-        it 'successfully displays the service' do
+        it 'successfully displays the template' do
           get :edit, params: { id: service.id }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -34,7 +34,7 @@ describe Admin::ServicesController do
       RedmineService.create(
         project: project,
         active: false,
-        instance: true,
+        template: true,
         properties: {
           project_url: 'http://abc',
           issues_url: 'http://abc',
@@ -44,7 +44,7 @@ describe Admin::ServicesController do
     end
 
     it 'calls the propagation worker when service is active' do
-      expect(PropagateInstanceLevelServiceWorker).to receive(:perform_async).with(service.id)
+      expect(PropagateServiceTemplateWorker).to receive(:perform_async).with(service.id)
 
       put :update, params: { id: service.id, service: { active: true } }
 
@@ -52,7 +52,7 @@ describe Admin::ServicesController do
     end
 
     it 'does not call the propagation worker when service is not active' do
-      expect(PropagateInstanceLevelServiceWorker).not_to receive(:perform_async)
+      expect(PropagateServiceTemplateWorker).not_to receive(:perform_async)
 
       put :update, params: { id: service.id, service: { properties: {} } }
 

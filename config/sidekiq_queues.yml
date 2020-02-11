@@ -194,7 +194,7 @@
   - 1
 - - project_update_repository_storage
   - 1
-- - propagate_instance_level_service
+- - propagate_service_template
   - 1
 - - reactive_caching
   - 1

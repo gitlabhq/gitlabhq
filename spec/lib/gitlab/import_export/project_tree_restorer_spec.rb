@@ -652,10 +652,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         setup_import_export_config('light')
       end
 
-      it 'does not import any instance-level services' do
+      it 'does not import any templated services' do
         expect(restored_project_json).to eq(true)
 
-        expect(project.services.where(instance: true).count).to eq(0)
+        expect(project.services.where(template: true).count).to eq(0)
       end
 
       it 'imports labels' do

@@ -15,7 +15,7 @@ describe Projects::CreateService, '#execute' do
     }
   end
 
-  it 'creates labels on Project creation if there are instance level services' do
+  it 'creates labels on Project creation if there are templates' do
     Label.create(title: "bug", template: true)
     project = create_project(user, opts)
 
@@ -96,7 +96,7 @@ describe Projects::CreateService, '#execute' do
     end
 
     it 'sets invalid service as inactive' do
-      create(:service, type: 'JiraService', project: nil, instance: true, active: true)
+      create(:service, type: 'JiraService', project: nil, template: true, active: true)
 
       project = create_project(user, opts)
       service = project.services.first
@@ -342,22 +342,22 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
-  context 'when there is an active instance level service' do
+  context 'when there is an active service template' do
     before do
-      create(:service, project: nil, instance: true, active: true)
+      create(:service, project: nil, template: true, active: true)
     end
 
-    it 'creates a service from instance level service' do
+    it 'creates a service from this template' do
       project = create_project(user, opts)
 
       expect(project.services.count).to eq 1
     end
   end
 
-  context 'when a bad instance level service is created' do
+  context 'when a bad service template is created' do
     it 'sets service to be inactive' do
       opts[:import_url] = 'http://www.gitlab.com/gitlab-org/gitlab-foss'
-      create(:service, type: 'DroneCiService', project: nil, instance: true, active: true)
+      create(:service, type: 'DroneCiService', project: nil, template: true, active: true)
 
       project = create_project(user, opts)
       service = project.services.first

@@ -6778,6 +6778,11 @@ type SnippetBlob {
   path: String
 
   """
+  Blob plain highlighted data
+  """
+  plainHighlightedData: String
+
+  """
   Blob raw content endpoint path
   """
   rawPath: String!

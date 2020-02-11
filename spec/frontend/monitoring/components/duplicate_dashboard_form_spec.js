@@ -44,30 +44,27 @@ describe('DuplicateDashboardForm', () => {
   describe('validates the file name', () => {
     const findInvalidFeedback = () => findByRef('fileNameFormGroup').find('.invalid-feedback');
 
-    it('when is empty', done => {
+    it('when is empty', () => {
       setValue('fileName', '');
-      wrapper.vm.$nextTick(() => {
+      return wrapper.vm.$nextTick(() => {
         expect(findByRef('fileNameFormGroup').is('.is-valid')).toBe(true);
         expect(findInvalidFeedback().exists()).toBe(false);
-        done();
       });
     });
 
-    it('when is valid', done => {
+    it('when is valid', () => {
       setValue('fileName', 'my_dashboard.yml');
-      wrapper.vm.$nextTick(() => {
+      return wrapper.vm.$nextTick(() => {
         expect(findByRef('fileNameFormGroup').is('.is-valid')).toBe(true);
         expect(findInvalidFeedback().exists()).toBe(false);
-        done();
       });
     });
 
-    it('when is not valid', done => {
+    it('when is not valid', () => {
       setValue('fileName', 'my_dashboard.exe');
-      wrapper.vm.$nextTick(() => {
+      return wrapper.vm.$nextTick(() => {
         expect(findByRef('fileNameFormGroup').is('.is-invalid')).toBe(true);
         expect(findInvalidFeedback().text()).toBeTruthy();
-        done();
       });
     });
   });
@@ -124,30 +121,26 @@ describe('DuplicateDashboardForm', () => {
       });
     });
 
-    it('when a `default` branch option is set, branch input is invisible and ignored', done => {
+    it('when a `default` branch option is set, branch input is invisible and ignored', () => {
       setChecked(wrapper.vm.$options.radioVals.DEFAULT);
       setValue('branchName', 'a-new-branch');
 
       expect(lastChange()).resolves.toMatchObject({
         branch: defaultBranch,
       });
-      wrapper.vm.$nextTick(() => {
+
+      return wrapper.vm.$nextTick(() => {
         expect(findByRef('branchName').isVisible()).toBe(false);
-        done();
       });
     });
 
-    it('when `new` branch option is chosen, focuses on the branch name input', done => {
+    it('when `new` branch option is chosen, focuses on the branch name input', () => {
       setChecked(wrapper.vm.$options.radioVals.NEW);
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          wrapper.find('form').trigger('change');
-          expect(findByRef('branchName').is(':focus')).toBe(true);
-        })
-        .then(done)
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        wrapper.find('form').trigger('change');
+        expect(findByRef('branchName').is(':focus')).toBe(true);
+      });
     });
   });
 });

@@ -12,6 +12,10 @@ module Types
             description: 'Blob highlighted data',
             null: true
 
+      field :plain_highlighted_data, GraphQL::STRING_TYPE,
+            description: 'Blob plain highlighted data',
+            null: true
+
       field :raw_path, GraphQL::STRING_TYPE,
             description: 'Blob raw content endpoint path',
             null: false

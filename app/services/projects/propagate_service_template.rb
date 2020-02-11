@@ -1,38 +1,38 @@
 # frozen_string_literal: true
 
 module Projects
-  class PropagateInstanceLevelService
+  class PropagateServiceTemplate
     BATCH_SIZE = 100
 
     def self.propagate(*args)
       new(*args).propagate
     end
 
-    def initialize(instance_level_service)
-      @instance_level_service = instance_level_service
+    def initialize(template)
+      @template = template
     end
 
     def propagate
-      return unless @instance_level_service.active?
+      return unless @template.active?
 
-      Rails.logger.info("Propagating services for instance_level_service #{@instance_level_service.id}") # rubocop:disable Gitlab/RailsLogger
+      Rails.logger.info("Propagating services for template #{@template.id}") # rubocop:disable Gitlab/RailsLogger
 
-      propagate_projects_with_instance_level_service
+      propagate_projects_with_template
     end
 
     private
 
-    def propagate_projects_with_instance_level_service
+    def propagate_projects_with_template
       loop do
         batch = Project.uncached { project_ids_batch }
 
-        bulk_create_from_instance_level_service(batch) unless batch.empty?
+        bulk_create_from_template(batch) unless batch.empty?
 
         break if batch.size < BATCH_SIZE
       end
     end
 
-    def bulk_create_from_instance_level_service(batch)
+    def bulk_create_from_template(batch)
       service_list = batch.map do |project_id|
         service_hash.values << project_id
       end
@@ -52,7 +52,7 @@ module Projects
             SELECT true
             FROM services
             WHERE services.project_id = projects.id
-            AND services.type = '#{@instance_level_service.type}'
+            AND services.type = '#{@template.type}'
           )
           AND projects.pending_delete = false
           AND projects.archived = false
@@ -73,9 +73,9 @@ module Projects
     def service_hash
       @service_hash ||=
         begin
-          instance_hash = @instance_level_service.as_json(methods: :type).except('id', 'instance', 'project_id')
+          template_hash = @template.as_json(methods: :type).except('id', 'template', 'project_id')
 
-          instance_hash.each_with_object({}) do |(key, value), service_hash|
+          template_hash.each_with_object({}) do |(key, value), service_hash|
             value = value.is_a?(Hash) ? value.to_json : value
 
             service_hash[ActiveRecord::Base.connection.quote_column_name(key)] =
@@ -97,11 +97,11 @@ module Projects
     # rubocop: enable CodeReuse/ActiveRecord
 
     def active_external_issue_tracker?
-      @instance_level_service.issue_tracker? && !@instance_level_service.default
+      @template.issue_tracker? && !@template.default
     end
 
     def active_external_wiki?
-      @instance_level_service.type == 'ExternalWikiService'
+      @template.type == 'ExternalWikiService'
     end
   end
 end

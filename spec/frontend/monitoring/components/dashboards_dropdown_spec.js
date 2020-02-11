@@ -131,20 +131,17 @@ describe('DashboardsDropdown', () => {
         expect(findModal().contains(DuplicateDashboardForm)).toBe(true);
       });
 
-      it('saves a new dashboard', done => {
+      it('saves a new dashboard', () => {
         findModal().vm.$emit('ok', okEvent);
 
-        waitForPromises()
-          .then(() => {
-            expect(okEvent.preventDefault).toHaveBeenCalled();
+        return waitForPromises().then(() => {
+          expect(okEvent.preventDefault).toHaveBeenCalled();
 
-            expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-            expect(wrapper.vm.$refs.duplicateDashboardModal.hide).toHaveBeenCalled();
-            expect(wrapper.emitted().selectDashboard).toBeTruthy();
-            expect(findAlert().exists()).toBe(false);
-            done();
-          })
-          .catch(done.fail);
+          expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+          expect(wrapper.vm.$refs.duplicateDashboardModal.hide).toHaveBeenCalled();
+          expect(wrapper.emitted().selectDashboard).toBeTruthy();
+          expect(findAlert().exists()).toBe(false);
+        });
       });
 
       describe('when a new dashboard is saved succesfully', () => {
@@ -167,52 +164,42 @@ describe('DashboardsDropdown', () => {
           findModal().vm.$emit('ok', okEvent);
         };
 
-        it('to the default branch, redirects to the new dashboard', done => {
+        it('to the default branch, redirects to the new dashboard', () => {
           submitForm({
             branch: defaultBranch,
           });
 
-          waitForPromises()
-            .then(() => {
-              expect(wrapper.emitted().selectDashboard[0][0]).toEqual(newDashboard);
-              done();
-            })
-            .catch(done.fail);
+          return waitForPromises().then(() => {
+            expect(wrapper.emitted().selectDashboard[0][0]).toEqual(newDashboard);
+          });
         });
 
-        it('to a new branch refreshes in the current dashboard', done => {
+        it('to a new branch refreshes in the current dashboard', () => {
           submitForm({
             branch: 'another-branch',
           });
 
-          waitForPromises()
-            .then(() => {
-              expect(wrapper.emitted().selectDashboard[0][0]).toEqual(dashboardGitResponse[0]);
-              done();
-            })
-            .catch(done.fail);
+          return waitForPromises().then(() => {
+            expect(wrapper.emitted().selectDashboard[0][0]).toEqual(dashboardGitResponse[0]);
+          });
         });
       });
 
-      it('handles error when a new dashboard is not saved', done => {
+      it('handles error when a new dashboard is not saved', () => {
         const errMsg = 'An error occurred';
 
         duplicateDashboardAction.mockRejectedValueOnce(errMsg);
         findModal().vm.$emit('ok', okEvent);
 
-        waitForPromises()
-          .then(() => {
-            expect(okEvent.preventDefault).toHaveBeenCalled();
+        return waitForPromises().then(() => {
+          expect(okEvent.preventDefault).toHaveBeenCalled();
 
-            expect(findAlert().exists()).toBe(true);
-            expect(findAlert().text()).toBe(errMsg);
+          expect(findAlert().exists()).toBe(true);
+          expect(findAlert().text()).toBe(errMsg);
 
-            expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-            expect(wrapper.vm.$refs.duplicateDashboardModal.hide).not.toHaveBeenCalled();
-
-            done();
-          })
-          .catch(done.fail);
+          expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+          expect(wrapper.vm.$refs.duplicateDashboardModal.hide).not.toHaveBeenCalled();
+        });
       });
 
       it('id is correct, as the value of modal directive binding matches modal id', () => {

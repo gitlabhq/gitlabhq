@@ -1071,6 +1071,7 @@ Represents the snippet blob
 | `mode` | String | Blob mode |
 | `name` | String | Blob name |
 | `path` | String | Blob path |
+| `plainHighlightedData` | String | Blob plain highlighted data |
 | `rawPath` | String! | Blob raw content endpoint path |
 | `richViewer` | SnippetBlobViewer | Blob content rich viewer |
 | `simpleViewer` | SnippetBlobViewer! | Blob content simple viewer |

@@ -62,6 +62,8 @@ class PagesDomain < ApplicationRecord
 
   scope :for_removal, -> { where("remove_at < ?", Time.now) }
 
+  scope :with_logging_info, -> { includes(project: [:namespace, :route]) }
+
   def verified?
     !!verified_at
   end
@@ -285,3 +287,5 @@ class PagesDomain < ApplicationRecord
     !auto_ssl_enabled? && project&.pages_https_only?
   end
 end
+
+PagesDomain.prepend_if_ee('::EE::PagesDomain')

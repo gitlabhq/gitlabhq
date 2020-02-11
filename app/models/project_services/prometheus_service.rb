@@ -85,7 +85,7 @@ class PrometheusService < MonitoringService
   end
 
   def prometheus_available?
-    return false if instance?
+    return false if template?
     return false unless project
 
     project.all_clusters.enabled.any? { |cluster| cluster.application_prometheus_available? }

@@ -380,5 +380,9 @@ x6zG6WoibsbsJMj70nwseUnPTBQNDP+j61RJjC/r
       scope { :instance }
       usage { :serverless }
     end
+
+    trait :with_project do
+      association :project
+    end
   end
 end
