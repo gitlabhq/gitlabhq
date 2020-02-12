@@ -65,8 +65,6 @@ class Repository
     xcode_config: :xcode_project?
   }.freeze
 
-  MERGED_BRANCH_NAMES_CACHE_DURATION = 10.minutes
-
   def initialize(full_path, container, disk_path: nil, repo_type: Gitlab::GlRepository::PROJECT)
     @full_path = full_path
     @disk_path = disk_path || full_path
@@ -914,38 +912,28 @@ class Repository
     @root_ref_sha ||= commit(root_ref).sha
   end
 
+  # If this method is not provided a set of branch names to check merge status,
+  # it fetches all branches.
   def merged_branch_names(branch_names = [])
     # Currently we should skip caching if requesting all branch names
     # This is only used in a few places, notably app/services/branches/delete_merged_service.rb,
     # and it could potentially result in a very large cache/performance issues with the current
     # implementation.
-    skip_cache = branch_names.empty? || Feature.disabled?(:merged_branch_names_redis_caching)
+    skip_cache = branch_names.empty? || Feature.disabled?(:merged_branch_names_redis_caching, default_enabled: true)
     return raw_repository.merged_branch_names(branch_names) if skip_cache
 
-    cached_branch_names = cache.read(:merged_branch_names)
-    merged_branch_names_hash = cached_branch_names || {}
-    missing_branch_names = branch_names.select { |bn| !merged_branch_names_hash.key?(bn) }
+    cache = redis_hash_cache
 
-    # Track some metrics here whilst feature flag is enabled
-    if cached_branch_names.present?
-      counter = Gitlab::Metrics.counter(
-        :gitlab_repository_merged_branch_names_cache_hit,
-        "Count of cache hits for Repository#merged_branch_names"
-      )
-      counter.increment(full_hit: missing_branch_names.empty?)
-    end
-
-    if missing_branch_names.any?
+    merged_branch_names_hash = cache.fetch_and_add_missing(:merged_branch_names, branch_names) do |missing_branch_names, hash|
       merged = raw_repository.merged_branch_names(missing_branch_names)
 
       missing_branch_names.each do |bn|
-        merged_branch_names_hash[bn] = merged.include?(bn)
+        # Redis only stores strings in hset keys, use a fancy encoder
+        hash[bn] = Gitlab::Redis::Boolean.new(merged.include?(bn))
       end
-
-      cache.write(:merged_branch_names, merged_branch_names_hash, expires_in: MERGED_BRANCH_NAMES_CACHE_DURATION)
     end
 
-    Set.new(merged_branch_names_hash.select { |_, v| v }.keys)
+    Set.new(merged_branch_names_hash.select { |_, v| Gitlab::Redis::Boolean.true?(v) }.keys)
   end
 
   def merge_base(*commits_or_ids)
@@ -1166,6 +1154,10 @@ class Repository
 
   def redis_set_cache
     @redis_set_cache ||= Gitlab::RepositorySetCache.new(self)
+  end
+
+  def redis_hash_cache
+    @redis_hash_cache ||= Gitlab::RepositoryHashCache.new(self)
   end
 
   def request_store_cache

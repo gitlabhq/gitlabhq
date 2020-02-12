@@ -52,10 +52,10 @@ gitlab:
     resources:
       requests:
         cpu: 650m
-        memory: 970M
+        memory: 1018M
       limits:
         cpu: 975m
-        memory: 1450M
+        memory: 1527M
     hpa:
       targetAverageValue: 650m
   task-runner:
@@ -69,11 +69,11 @@ gitlab:
   unicorn:
     resources:
       requests:
-        cpu: 500m
-        memory: 1630M
+        cpu: 525m
+        memory: 1711M
       limits:
-        cpu: 750m
-        memory: 2450M
+        cpu: 787m
+        memory: 2566M
     deployment:
       readinessProbe:
         initialDelaySeconds: 5  # Default is 0

@@ -67,7 +67,8 @@ describe 'Creating a Snippet' do
       it 'returns the created Snippet' do
         post_graphql_mutation(mutation, current_user: current_user)
 
-        expect(mutation_response['snippet']['blob']['highlightedData']).to match(content)
+        expect(mutation_response['snippet']['blob']['richData']).to match(content)
+        expect(mutation_response['snippet']['blob']['plainData']).to match(content)
         expect(mutation_response['snippet']['title']).to eq(title)
         expect(mutation_response['snippet']['description']).to eq(description)
         expect(mutation_response['snippet']['fileName']).to eq(file_name)
@@ -92,7 +93,8 @@ describe 'Creating a Snippet' do
       it 'returns the created Snippet' do
         post_graphql_mutation(mutation, current_user: current_user)
 
-        expect(mutation_response['snippet']['blob']['highlightedData']).to match(content)
+        expect(mutation_response['snippet']['blob']['richData']).to match(content)
+        expect(mutation_response['snippet']['blob']['plainData']).to match(content)
         expect(mutation_response['snippet']['title']).to eq(title)
         expect(mutation_response['snippet']['description']).to eq(description)
         expect(mutation_response['snippet']['fileName']).to eq(file_name)

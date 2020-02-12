@@ -7557,20 +7557,6 @@
               "deprecationReason": null
             },
             {
-              "name": "highlightedData",
-              "description": "Blob highlighted data",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "mode",
               "description": "Blob mode",
               "args": [
@@ -7613,7 +7599,7 @@
               "deprecationReason": null
             },
             {
-              "name": "plainHighlightedData",
+              "name": "plainData",
               "description": "Blob plain highlighted data",
               "args": [
 
@@ -7640,6 +7626,20 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "richData",
+              "description": "Blob highlighted data",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

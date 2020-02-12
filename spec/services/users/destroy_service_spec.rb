@@ -26,16 +26,6 @@ describe Users::DestroyService do
         service.execute(user)
       end
 
-      context 'when :destroy_user_associations_in_batches flag is disabled' do
-        it 'does not delete user associations in batches' do
-          stub_feature_flags(destroy_user_associations_in_batches: false)
-
-          expect(user).not_to receive(:destroy_dependent_associations_in_batches)
-
-          service.execute(user)
-        end
-      end
-
       it 'will delete the project' do
         expect_next_instance_of(Projects::DestroyService) do |destroy_service|
           expect(destroy_service).to receive(:execute).once.and_return(true)

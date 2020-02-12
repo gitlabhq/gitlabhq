@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe GitlabSchema.types['SnippetBlob'] do
   it 'has the correct fields' do
-    expected_fields = [:highlighted_data, :plain_highlighted_data,
+    expected_fields = [:rich_data, :plain_data,
                        :raw_path, :size, :binary, :name, :path,
                        :simple_viewer, :rich_viewer, :mode]
 

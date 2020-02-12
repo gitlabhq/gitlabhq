@@ -958,7 +958,7 @@
   :resource_boundary: :unknown
   :weight: 1
 - :name: project_export
-  :feature_category: :source_code_management
+  :feature_category: :importers
   :has_external_dependencies: 
   :latency_sensitive: 
   :resource_boundary: :memory

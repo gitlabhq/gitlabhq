@@ -8,11 +8,11 @@ module Types
       description 'Represents the snippet blob'
       present_using SnippetBlobPresenter
 
-      field :highlighted_data, GraphQL::STRING_TYPE,
+      field :rich_data, GraphQL::STRING_TYPE,
             description: 'Blob highlighted data',
             null: true
 
-      field :plain_highlighted_data, GraphQL::STRING_TYPE,
+      field :plain_data, GraphQL::STRING_TYPE,
             description: 'Blob plain highlighted data',
             null: true
 

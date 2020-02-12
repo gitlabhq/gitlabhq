@@ -1,0 +1,5 @@
+---
+title: Improvement to merged_branch_names cache
+merge_request: 24504
+author:
+type: performance

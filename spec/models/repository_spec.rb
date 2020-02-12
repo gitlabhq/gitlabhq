@@ -500,45 +500,62 @@ describe Repository do
     let(:branch_names) { %w(test beep boop definitely_merged) }
     let(:already_merged) { Set.new(["definitely_merged"]) }
 
-    let(:merge_state_hash) do
+    let(:write_hash) do
       {
-        "test" => false,
-        "beep" => false,
-        "boop" => false,
-        "definitely_merged" => true
+        "test" => Gitlab::Redis::Boolean.new(false).to_s,
+        "beep" => Gitlab::Redis::Boolean.new(false).to_s,
+        "boop" => Gitlab::Redis::Boolean.new(false).to_s,
+        "definitely_merged" => Gitlab::Redis::Boolean.new(true).to_s
       }
     end
 
-    let_it_be(:cache) do
-      caching_config_hash = Gitlab::Redis::Cache.params
-      ActiveSupport::Cache.lookup_store(:redis_cache_store, caching_config_hash)
+    let(:read_hash) do
+      {
+        "test" => Gitlab::Redis::Boolean.new(false).to_s,
+        "beep" => Gitlab::Redis::Boolean.new(false).to_s,
+        "boop" => Gitlab::Redis::Boolean.new(false).to_s,
+        "definitely_merged" => Gitlab::Redis::Boolean.new(true).to_s
+      }
     end
 
-    let(:repository_cache) do
-      Gitlab::RepositoryCache.new(repository, backend: Rails.cache)
-    end
-
-    let(:cache_key) { repository_cache.cache_key(:merged_branch_names) }
+    let(:cache) { repository.send(:redis_hash_cache) }
+    let(:cache_key) { cache.cache_key(:merged_branch_names) }
 
     before do
-      allow(Rails).to receive(:cache) { cache }
-      allow(repository).to receive(:cache) { repository_cache }
       allow(repository.raw_repository).to receive(:merged_branch_names).with(branch_names).and_return(already_merged)
     end
 
     it { is_expected.to eq(already_merged) }
     it { is_expected.to be_a(Set) }
 
+    describe "cache expiry" do
+      before do
+        allow(cache).to receive(:delete).with(anything)
+      end
+
+      it "is expired when the branches caches are expired" do
+        expect(cache).to receive(:delete).with(:merged_branch_names).at_least(:once)
+
+        repository.send(:expire_branches_cache)
+      end
+
+      it "is expired when the repository caches are expired" do
+        expect(cache).to receive(:delete).with(:merged_branch_names).at_least(:once)
+
+        repository.send(:expire_all_method_caches)
+      end
+    end
+
     context "cache is empty" do
       before do
-        cache.delete(cache_key)
+        cache.delete(:merged_branch_names)
       end
 
       it { is_expected.to eq(already_merged) }
 
       describe "cache values" do
         it "writes the values to redis" do
-          expect(cache).to receive(:write).with(cache_key, merge_state_hash, expires_in: Repository::MERGED_BRANCH_NAMES_CACHE_DURATION)
+          expect(cache).to receive(:write).with(:merged_branch_names, write_hash)
 
           subject
         end
@@ -546,14 +563,14 @@ describe Repository do
         it "matches the supplied hash" do
           subject
 
-          expect(cache.read(cache_key)).to eq(merge_state_hash)
+          expect(cache.read_members(:merged_branch_names, branch_names)).to eq(read_hash)
         end
       end
     end
 
     context "cache is not empty" do
       before do
-        cache.write(cache_key, merge_state_hash)
+        cache.write(:merged_branch_names, write_hash)
       end
 
       it { is_expected.to eq(already_merged) }
@@ -568,8 +585,8 @@ describe Repository do
     context "cache is partially complete" do
       before do
         allow(repository.raw_repository).to receive(:merged_branch_names).with(["boop"]).and_return([])
-        hash = merge_state_hash.except("boop")
-        cache.write(cache_key, hash)
+        hash = write_hash.except("boop")
+        cache.write(:merged_branch_names, hash)
       end
 
       it { is_expected.to eq(already_merged) }

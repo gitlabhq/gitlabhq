@@ -380,13 +380,13 @@ rspec-ee integration pg10:
   extends:
     - .rspec-ee-base-pg10
     - .rails:rules:master-refs-code-backstage
-  parallel: 3
+  parallel: 4
 
 rspec-ee system pg10:
   extends:
     - .rspec-ee-base-pg10
     - .rails:rules:master-refs-code-backstage
-  parallel: 5
+  parallel: 6
 # ee + master-only jobs #
 #########################
 

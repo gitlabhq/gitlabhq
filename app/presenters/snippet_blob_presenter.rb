@@ -1,16 +1,20 @@
 # frozen_string_literal: true
 
 class SnippetBlobPresenter < BlobPresenter
-  def highlighted_data
+  def rich_data
     return if blob.binary?
 
-    highlight(plain: false)
+    if markup?
+      blob.rendered_markup
+    else
+      highlight(plain: false)
+    end
   end
 
-  def plain_highlighted_data
+  def plain_data
     return if blob.binary?
 
-    highlight(plain: true)
+    highlight(plain: !markup?)
   end
 
   def raw_path
@@ -22,6 +26,10 @@ class SnippetBlobPresenter < BlobPresenter
   end
 
   private
+
+  def markup?
+    blob.rich_viewer&.partial_name == 'markup'
+  end
 
   def snippet
     blob.snippet

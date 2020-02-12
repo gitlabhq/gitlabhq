@@ -3578,6 +3578,9 @@ msgstr ""
 msgid "Choose which repositories you want to connect and run CI/CD pipelines."
 msgstr ""
 
+msgid "Choose which shards you wish to synchronize to this secondary node"
+msgstr ""
+
 msgid "Choose which shards you wish to synchronize to this secondary node."
 msgstr ""
 
@@ -12902,6 +12905,9 @@ msgstr ""
 msgid "Notes|This comment has changed since you started editing, please review the %{open_link}updated comment%{close_link} to ensure information is not lost"
 msgstr ""
 
+msgid "Nothing found…"
+msgstr ""
+
 msgid "Nothing to preview."
 msgstr ""
 
@@ -17025,6 +17031,9 @@ msgstr ""
 msgid "Select projects you want to import."
 msgstr ""
 
+msgid "Select shards to replicate"
+msgstr ""
+
 msgid "Select source branch"
 msgstr ""
 
@@ -17053,6 +17062,9 @@ msgid "Selected levels cannot be used by non-admin users for groups, projects or
 msgstr ""
 
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
+msgstr ""
+
+msgid "Selective synchronization"
 msgstr ""
 
 msgid "Self monitoring project does not exist"
@@ -17383,6 +17395,12 @@ msgid "Settings"
 msgstr ""
 
 msgid "Severity: %{severity}"
+msgstr ""
+
+msgid "Shards selected: %{count}"
+msgstr ""
+
+msgid "Shards to synchronize"
 msgstr ""
 
 msgid "Share"

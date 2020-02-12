@@ -6758,11 +6758,6 @@ type SnippetBlob {
   binary: Boolean!
 
   """
-  Blob highlighted data
-  """
-  highlightedData: String
-
-  """
   Blob mode
   """
   mode: String
@@ -6780,12 +6775,17 @@ type SnippetBlob {
   """
   Blob plain highlighted data
   """
-  plainHighlightedData: String
+  plainData: String
 
   """
   Blob raw content endpoint path
   """
   rawPath: String!
+
+  """
+  Blob highlighted data
+  """
+  richData: String
 
   """
   Blob content rich viewer

@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe SnippetBlobPresenter do
-  describe '#highlighted_data' do
+  describe '#rich_data' do
     let(:snippet) { build(:personal_snippet) }
 
-    subject { described_class.new(snippet.blob).highlighted_data }
+    subject { described_class.new(snippet.blob).rich_data }
 
     it 'returns nil when the snippet blob is binary' do
       allow(snippet.blob).to receive(:binary?).and_return(true)
@@ -18,7 +18,7 @@ describe SnippetBlobPresenter do
       snippet.file_name = 'test.md'
       snippet.content = '*foo*'
 
-      expect(subject).to eq '<span id="LC1" class="line" lang="markdown"><span class="ge">*foo*</span></span>'
+      expect(subject).to eq '<p data-sourcepos="1:1-1:5" dir="auto"><em>foo</em></p>'
     end
 
     it 'returns syntax highlighted content' do
@@ -37,10 +37,10 @@ describe SnippetBlobPresenter do
     end
   end
 
-  describe '#plain_highlighted_data' do
+  describe '#plain_data' do
     let(:snippet) { build(:personal_snippet) }
 
-    subject { described_class.new(snippet.blob).plain_highlighted_data }
+    subject { described_class.new(snippet.blob).plain_data }
 
     it 'returns nil when the snippet blob is binary' do
       allow(snippet.blob).to receive(:binary?).and_return(true)
@@ -52,7 +52,7 @@ describe SnippetBlobPresenter do
       snippet.file_name = 'test.md'
       snippet.content = '*foo*'
 
-      expect(subject).to eq '<span id="LC1" class="line" lang="">*foo*</span>'
+      expect(subject).to eq '<span id="LC1" class="line" lang="markdown"><span class="ge">*foo*</span></span>'
     end
 
     it 'returns plain syntax content' do

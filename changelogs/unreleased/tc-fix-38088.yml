@@ -1,0 +1,5 @@
+---
+title: Ensure a valid mount_point is used by the AvatarUploader
+merge_request: 24800
+author:
+type: fixed

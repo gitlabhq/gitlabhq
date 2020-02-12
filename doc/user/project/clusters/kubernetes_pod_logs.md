@@ -65,13 +65,13 @@ you can search the content of your logs via a search bar.
 The search is passed on to Elasticsearch using the [simple_query_string](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html)
 Elasticsearch function, which supports the following operators:
 
-```
-+ signifies AND operation
-| signifies OR operation
-- negates a single token
-" wraps a number of tokens to signify a phrase for searching
-* at the end of a term signifies a prefix query
-( and ) signify precedence
-~N after a word signifies edit distance (fuzziness)
-~N after a phrase signifies slop amount
-```
+| Operator                   | Description                                                |
+|----------------------------|------------------------------------------------------------|
+|  `\|`                      | An OR operation.                                            |
+| `-`                        | Negates a single token.                                     |
+| `+`                        | An AND operation.                                           |
+| `"`                        | Wraps a number of tokens to signify a phrase for searching. |
+| `*` (at the end of a term) | A prefix query.                                             |
+| `(` and `)`                | Precedence.                                                 |
+| `~N` (after a word)        | Edit distance (fuzziness).                                  |
+| `~N` (after a phrase)      | Slop amount.                                                |

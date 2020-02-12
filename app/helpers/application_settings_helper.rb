@@ -119,6 +119,17 @@ module ApplicationSettingsHelper
     options_for_select(options, selected)
   end
 
+  def repository_storages_options_json
+    options = Gitlab.config.repositories.storages.map do |name, storage|
+      {
+        label: "#{name} - #{storage['gitaly_address']}",
+        value: name
+      }
+    end
+
+    options.to_json
+  end
+
   def external_authorization_description
     _("If enabled, access to projects will be validated on an external service"\
         " using their classification label.")

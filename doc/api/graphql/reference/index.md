@@ -1067,12 +1067,12 @@ Represents the snippet blob
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `binary` | Boolean! | Shows whether the blob is binary |
-| `highlightedData` | String | Blob highlighted data |
 | `mode` | String | Blob mode |
 | `name` | String | Blob name |
 | `path` | String | Blob path |
-| `plainHighlightedData` | String | Blob plain highlighted data |
+| `plainData` | String | Blob plain highlighted data |
 | `rawPath` | String! | Blob raw content endpoint path |
+| `richData` | String | Blob highlighted data |
 | `richViewer` | SnippetBlobViewer | Blob content rich viewer |
 | `simpleViewer` | SnippetBlobViewer! | Blob content simple viewer |
 | `size` | Int! | Blob size |

@@ -33,6 +33,7 @@ module Quality
         serializers
         services
         sidekiq
+        support_specs
         tasks
         uploaders
         validators
