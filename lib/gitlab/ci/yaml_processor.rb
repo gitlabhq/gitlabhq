@@ -65,6 +65,7 @@ module Gitlab
           rules: job[:rules],
           cache: job[:cache],
           resource_group_key: job[:resource_group],
+          scheduling_type: job[:scheduling_type],
           options: {
             image: job[:image],
             services: job[:services],

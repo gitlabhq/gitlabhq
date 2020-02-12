@@ -10,7 +10,6 @@ module Ci
     include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
-    include Gitlab::Utils::StrongMemoize
     include HasRef
     include IgnorableColumns
 

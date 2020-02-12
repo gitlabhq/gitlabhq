@@ -851,7 +851,7 @@ In this example, if the first rule:
 - Matches, the job will be given the `when:always` attribute.
 - Does not match, the second and third rules will be evaluated sequentially
   until a match is found. That is, the job will be given either the:
-  - `when: manual` attribute if the second rule matches.
+  - `when: manual` attribute if the second rule matches. **The stage will not complete until this manual job is triggered and completes successfully.**
   - `when: on_success` attribute if the second rule does not match. The third
     rule will always match when reached because it has no conditional clauses.
 
@@ -937,6 +937,25 @@ NOTE: **Note:**
 For performance reasons, using `exists` with patterns is limited to 10000
 checks. After the 10000th check, rules with patterned globs will always match.
 
+#### `rules:allow_failure`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30235) in GitLab 12.8.
+
+You can use [`allow_failure: true`](#allow_failure) within `rules:` to allow a job to fail, or a manual job to
+wait for action, without stopping the pipeline itself. All jobs using `rules:` default to `allow_failure: false`
+if `allow_failure:` is not defined.
+
+```yaml
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+      when: manual
+      allow_failure: true
+```
+
+In this example, if the first rule matches, then the job will have `when: manual` and `allow_failure: true`.
+
 #### Complex rule clauses
 
 To conjoin `if`, `changes`, and `exists` clauses with an AND, use them in the
@@ -976,6 +995,7 @@ The only job attributes currently set by `rules` are:
 
 - `when`.
 - `start_in`, if `when` is set to `delayed`.
+- `allow_failure`.
 
 A job will be included in a pipeline if `when` is evaluated to any value
 except `never`.

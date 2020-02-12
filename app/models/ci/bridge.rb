@@ -8,7 +8,6 @@ module Ci
     include Importable
     include AfterCommitQueue
     include HasRef
-    include Gitlab::Utils::StrongMemoize
 
     InvalidBridgeTypeError = Class.new(StandardError)
 

@@ -130,7 +130,8 @@ describe Gitlab::Ci::Config::Entry::Root do
                        variables: {},
                        ignore: false,
                        after_script: ['make clean'],
-                       only: { refs: %w[branches tags] } }
+                       only: { refs: %w[branches tags] },
+                       scheduling_type: :stage }
             )
             expect(root.jobs_value[:spinach]).to eq(
               { name: :spinach,
@@ -143,7 +144,8 @@ describe Gitlab::Ci::Config::Entry::Root do
                          variables: {},
                          ignore: false,
                          after_script: ['make clean'],
-                         only: { refs: %w[branches tags] } }
+                         only: { refs: %w[branches tags] },
+                         scheduling_type: :stage }
             )
             expect(root.jobs_value[:release]).to eq(
               { name: :release,
@@ -157,7 +159,8 @@ describe Gitlab::Ci::Config::Entry::Root do
                          only: { refs: %w(branches tags) },
                          variables: {},
                          after_script: [],
-                         ignore: false }
+                         ignore: false,
+                         scheduling_type: :stage }
             )
           end
         end
@@ -203,7 +206,8 @@ describe Gitlab::Ci::Config::Entry::Root do
                        variables: {},
                        ignore: false,
                        after_script: ['make clean'],
-                       only: { refs: %w[branches tags] } },
+                       only: { refs: %w[branches tags] },
+                       scheduling_type: :stage },
               spinach: { name: :spinach,
                          before_script: [],
                          script: %w[spinach],
@@ -214,7 +218,8 @@ describe Gitlab::Ci::Config::Entry::Root do
                          variables: { 'VAR' => 'AA' },
                          ignore: false,
                          after_script: ['make clean'],
-                         only: { refs: %w[branches tags] } }
+                         only: { refs: %w[branches tags] },
+                         scheduling_type: :stage }
             )
           end
         end

@@ -6,11 +6,12 @@ module Gitlab
       class Rules
         include ::Gitlab::Utils::StrongMemoize
 
-        Result = Struct.new(:when, :start_in) do
+        Result = Struct.new(:when, :start_in, :allow_failure) do
           def build_attributes
             {
               when: self.when,
-              options: { start_in: start_in }.compact
+              options: { start_in: start_in }.compact,
+              allow_failure: allow_failure
             }.compact
           end
 
@@ -30,7 +31,8 @@ module Gitlab
           elsif matched_rule = match_rule(pipeline, context)
             Result.new(
               matched_rule.attributes[:when] || @default_when,
-              matched_rule.attributes[:start_in]
+              matched_rule.attributes[:start_in],
+              matched_rule.attributes[:allow_failure]
             )
           else
             Result.new('never')

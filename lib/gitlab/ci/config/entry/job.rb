@@ -258,7 +258,8 @@ module Gitlab
               after_script: after_script_value,
               ignore: ignored?,
               needs: needs_defined? ? needs_value : nil,
-              resource_group: resource_group }
+              resource_group: resource_group,
+              scheduling_type: needs_defined? ? :dag : :stage }
           end
         end
       end

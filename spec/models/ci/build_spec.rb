@@ -3007,7 +3007,8 @@ describe Ci::Build do
           stage: 'test',
           ref: 'feature',
           project: project,
-          pipeline: pipeline
+          pipeline: pipeline,
+          scheduling_type: :stage
         )
       end
 

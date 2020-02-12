@@ -8,7 +8,7 @@ elasticsearch:
   client:
     replicas: 1
   data:
-    replicas: 1
+    replicas: 2
 
 kibana:
   enabled: false

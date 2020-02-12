@@ -131,6 +131,10 @@ describe Ci::CreatePipelineService do
             )
         end
       end
+
+      it "sets scheduling_type as 'dag'" do
+        expect(test_a_build.scheduling_type).to eq('dag')
+      end
     end
 
     context 'with an invalid config' do

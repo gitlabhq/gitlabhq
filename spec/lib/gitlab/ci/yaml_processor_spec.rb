@@ -36,7 +36,8 @@ module Gitlab
               interruptible: true,
               allow_failure: false,
               when: "on_success",
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             })
           end
         end
@@ -66,7 +67,8 @@ module Gitlab
               ],
               allow_failure: false,
               when: 'on_success',
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             })
           end
         end
@@ -126,7 +128,8 @@ module Gitlab
               interruptible: true,
               allow_failure: false,
               when: "on_success",
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             })
           end
         end
@@ -282,6 +285,7 @@ module Gitlab
                   allow_failure: false,
                   when: "on_success",
                   yaml_variables: [],
+                  scheduling_type: :stage,
                   options: { script: ["rspec"] },
                   only: { refs: ["branches"] } }] },
            { name: "deploy",
@@ -293,6 +297,7 @@ module Gitlab
                   allow_failure: false,
                   when: "on_success",
                   yaml_variables: [],
+                  scheduling_type: :stage,
                   options: { script: ["cap prod"] },
                   only: { refs: ["tags"] } }] },
            { name: ".post",
@@ -642,7 +647,8 @@ module Gitlab
               },
               allow_failure: false,
               when: "on_success",
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             })
           end
 
@@ -674,7 +680,8 @@ module Gitlab
               },
               allow_failure: false,
               when: "on_success",
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             })
           end
         end
@@ -702,7 +709,8 @@ module Gitlab
               },
               allow_failure: false,
               when: "on_success",
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             })
           end
 
@@ -728,7 +736,8 @@ module Gitlab
               },
               allow_failure: false,
               when: "on_success",
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             })
           end
         end
@@ -1250,7 +1259,8 @@ module Gitlab
             },
             when: "on_success",
             allow_failure: false,
-            yaml_variables: []
+            yaml_variables: [],
+            scheduling_type: :stage
           })
         end
 
@@ -1604,7 +1614,8 @@ module Gitlab
               },
               when: "on_success",
               allow_failure: false,
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             )
             expect(subject.builds[4]).to eq(
               stage: "test",
@@ -1618,7 +1629,8 @@ module Gitlab
               ],
               when: "on_success",
               allow_failure: false,
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :dag
             )
           end
         end
@@ -1644,7 +1656,8 @@ module Gitlab
               },
               when: "on_success",
               allow_failure: false,
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             )
             expect(subject.builds[4]).to eq(
               stage: "test",
@@ -1660,7 +1673,8 @@ module Gitlab
               ],
               when: "on_success",
               allow_failure: false,
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :dag
             )
           end
         end
@@ -1682,7 +1696,8 @@ module Gitlab
               ],
               when: "on_success",
               allow_failure: false,
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :dag
             )
           end
         end
@@ -1712,7 +1727,8 @@ module Gitlab
               ],
               when: "on_success",
               allow_failure: false,
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :dag
             )
           end
         end
@@ -1849,7 +1865,8 @@ module Gitlab
               },
               when: "on_success",
               allow_failure: false,
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             })
           end
         end
@@ -1895,7 +1912,8 @@ module Gitlab
               },
               when: "on_success",
               allow_failure: false,
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             })
             expect(subject.second).to eq({
               stage: "build",
@@ -1907,7 +1925,8 @@ module Gitlab
               },
               when: "on_success",
               allow_failure: false,
-              yaml_variables: []
+              yaml_variables: [],
+              scheduling_type: :stage
             })
           end
         end

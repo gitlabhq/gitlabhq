@@ -1,5 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import { LINE_POSITION_RIGHT } from '../constants';
@@ -98,7 +99,8 @@ export default {
       return this.showCommentButton && this.hasDiscussions;
     },
     shouldRenderCommentButton() {
-      return this.isLoggedIn && this.showCommentButton;
+      const isDiffHead = parseBoolean(getParameterByName('diff_head'));
+      return !isDiffHead && this.isLoggedIn && this.showCommentButton;
     },
   },
   methods: {
@@ -130,6 +132,7 @@ export default {
     </button>
     <a
       v-if="lineNumber"
+      ref="lineNumberRef"
       :data-linenumber="lineNumber"
       :href="lineHref"
       @click="setHighlightedRow(lineCode)"

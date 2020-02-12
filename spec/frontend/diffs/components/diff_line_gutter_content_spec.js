@@ -1,105 +1,195 @@
-import Vue from 'vue';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import Vuex from 'vuex';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import DiffLineGutterContent from '~/diffs/components/diff_line_gutter_content.vue';
+import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
+import { LINE_POSITION_RIGHT } from '~/diffs/constants';
 import { createStore } from '~/mr_notes/stores';
+import { TEST_HOST } from 'helpers/test_constants';
 import discussionsMockData from '../mock_data/diff_discussions';
 import diffFileMockData from '../mock_data/diff_file';
 
+const localVue = createLocalVue();
+localVue.use(Vuex);
+
+const TEST_USER_ID = 'abc123';
+const TEST_USER = { id: TEST_USER_ID };
+const TEST_LINE_NUMBER = 1;
+const TEST_LINE_CODE = 'LC_42';
+const TEST_FILE_HASH = diffFileMockData.file_hash;
+
 describe('DiffLineGutterContent', () => {
-  const getDiffFileMock = () => Object.assign({}, diffFileMockData);
-  const createComponent = (options = {}) => {
-    const cmp = Vue.extend(DiffLineGutterContent);
-    const props = Object.assign({}, options);
-    props.line = {
-      line_code: 'LC_42',
+  let wrapper;
+  let line;
+  let store;
+
+  beforeEach(() => {
+    store = createStore();
+    store.state.notes.userData = TEST_USER;
+
+    line = {
+      line_code: TEST_LINE_CODE,
       type: 'new',
       old_line: null,
       new_line: 1,
       discussions: [{ ...discussionsMockData }],
+      discussionsExpanded: true,
       text: '+<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
       rich_text: '+<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
       meta_data: null,
     };
-    props.fileHash = getDiffFileMock().file_hash;
-    props.contextLinesPath = '/context/lines/path';
+  });
 
-    return createComponentWithStore(cmp, createStore(), props).$mount();
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  const setWindowLocation = value => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value,
+    });
   };
+  const createComponent = (props = {}) => {
+    wrapper = shallowMount(DiffLineGutterContent, {
+      localVue,
+      store,
+      propsData: {
+        line,
+        fileHash: TEST_FILE_HASH,
+        contextLinesPath: '/context/lines/path',
+        ...props,
+      },
+    });
+  };
+  const findNoteButton = () => wrapper.find('.js-add-diff-note-button');
+  const findLineNumber = () => wrapper.find({ ref: 'lineNumberRef' });
+  const findAvatars = () => wrapper.find(DiffGutterAvatars);
 
-  describe('computed', () => {
-    describe('lineHref', () => {
-      it('should prepend # to lineCode', () => {
-        const lineCode = 'LC_42';
-        const component = createComponent();
+  describe('comment button', () => {
+    it.each`
+      showCommentButton | userData     | query                | expectation
+      ${true}           | ${TEST_USER} | ${'diff_head=false'} | ${true}
+      ${true}           | ${TEST_USER} | ${'diff_head=true'}  | ${false}
+      ${false}          | ${TEST_USER} | ${'bogus'}           | ${false}
+      ${true}           | ${null}      | ${''}                | ${false}
+    `(
+      'exists is $expectation - with showCommentButton ($showCommentButton) userData ($userData) query ($query)',
+      ({ showCommentButton, userData, query, expectation }) => {
+        store.state.notes.userData = userData;
+        setWindowLocation({ href: `${TEST_HOST}?${query}` });
+        createComponent({ showCommentButton });
 
-        expect(component.lineHref).toEqual(`#${lineCode}`);
-      });
+        expect(findNoteButton().exists()).toBe(expectation);
+      },
+    );
 
-      it('should return # if there is no lineCode', () => {
-        const component = createComponent();
-        component.line.line_code = '';
+    it.each`
+      isHover  | otherProps                 | discussions | expectation
+      ${true}  | ${{}}                      | ${[]}       | ${true}
+      ${false} | ${{}}                      | ${[]}       | ${false}
+      ${true}  | ${{ isMatchLine: true }}   | ${[]}       | ${false}
+      ${true}  | ${{ isContextLine: true }} | ${[]}       | ${false}
+      ${true}  | ${{ isMetaLine: true }}    | ${[]}       | ${false}
+      ${true}  | ${{}}                      | ${[{}]}     | ${false}
+    `(
+      'visible is $expectation - with isHover ($isHover), discussions ($discussions), otherProps ($otherProps)',
+      ({ isHover, otherProps, discussions, expectation }) => {
+        line.discussions = discussions;
+        createComponent({
+          showCommentButton: true,
+          isHover,
+          ...otherProps,
+        });
 
-        expect(component.lineHref).toEqual('#');
+        expect(findNoteButton().isVisible()).toBe(expectation);
+      },
+    );
+  });
+
+  describe('line number', () => {
+    describe('without lineNumber prop', () => {
+      it('does not render', () => {
+        createComponent();
+
+        expect(findLineNumber().exists()).toBe(false);
       });
     });
 
-    describe('discussions, hasDiscussions, shouldShowAvatarsOnGutter', () => {
-      it('should return empty array when there is no discussion', () => {
-        const component = createComponent();
-        component.line.discussions = [];
+    describe('with lineNumber prop', () => {
+      describe.each`
+        lineProps                                                         | expectedHref            | expectedClickArg
+        ${{ line_code: TEST_LINE_CODE }}                                  | ${`#${TEST_LINE_CODE}`} | ${TEST_LINE_CODE}
+        ${{ line_code: undefined }}                                       | ${'#'}                  | ${undefined}
+        ${{ line_code: undefined, left: { line_code: TEST_LINE_CODE } }}  | ${'#'}                  | ${TEST_LINE_CODE}
+        ${{ line_code: undefined, right: { line_code: TEST_LINE_CODE } }} | ${'#'}                  | ${TEST_LINE_CODE}
+      `('with line ($lineProps)', ({ lineProps, expectedHref, expectedClickArg }) => {
+        beforeEach(() => {
+          jest.spyOn(store, 'dispatch').mockImplementation();
+          Object.assign(line, lineProps);
+          createComponent({ lineNumber: TEST_LINE_NUMBER });
+        });
 
-        expect(component.hasDiscussions).toEqual(false);
-        expect(component.shouldShowAvatarsOnGutter).toEqual(false);
-      });
+        it('renders', () => {
+          expect(findLineNumber().exists()).toBe(true);
+          expect(findLineNumber().attributes()).toEqual({
+            href: expectedHref,
+            'data-linenumber': TEST_LINE_NUMBER.toString(),
+          });
+        });
 
-      it('should return discussions for the given lineCode', () => {
-        const cmp = Vue.extend(DiffLineGutterContent);
-        const props = {
-          line: getDiffFileMock().highlighted_diff_lines[1],
-          fileHash: getDiffFileMock().file_hash,
-          showCommentButton: true,
-          contextLinesPath: '/context/lines/path',
-        };
-        props.line.discussions = [Object.assign({}, discussionsMockData)];
-        const component = createComponentWithStore(cmp, createStore(), props).$mount();
+        it('on click, dispatches setHighlightedRow', () => {
+          expect(store.dispatch).not.toHaveBeenCalled();
 
-        expect(component.hasDiscussions).toEqual(true);
-        expect(component.shouldShowAvatarsOnGutter).toEqual(true);
+          findLineNumber().trigger('click');
+
+          expect(store.dispatch).toHaveBeenCalledWith('diffs/setHighlightedRow', expectedClickArg);
+        });
       });
     });
   });
 
-  describe('template', () => {
-    it('should render comment button', () => {
-      const component = createComponent({
-        showCommentButton: true,
-      });
-      Object.defineProperty(component, 'isLoggedIn', {
-        get() {
-          return true;
-        },
+  describe('diff-gutter-avatars', () => {
+    describe('with showCommentButton', () => {
+      beforeEach(() => {
+        jest.spyOn(store, 'dispatch').mockImplementation();
+
+        createComponent({ showCommentButton: true });
       });
 
-      expect(component.$el.querySelector('.js-add-diff-note-button')).toBeDefined();
-    });
-
-    it('should render line link', () => {
-      const lineNumber = 42;
-      const lineCode = `LC_${lineNumber}`;
-      const component = createComponent({ lineNumber, lineCode });
-      const link = component.$el.querySelector('a');
-
-      expect(link.href.indexOf(`#${lineCode}`)).toBeGreaterThan(-1);
-      expect(link.dataset.linenumber).toEqual(lineNumber.toString());
-    });
-
-    it('should render user avatars', () => {
-      const component = createComponent({
-        showCommentButton: true,
-        lineCode: getDiffFileMock().highlighted_diff_lines[1].line_code,
+      it('renders', () => {
+        expect(findAvatars().props()).toEqual({
+          discussions: line.discussions,
+          discussionsExpanded: line.discussionsExpanded,
+        });
       });
 
-      expect(component.$el.querySelector('.diff-comment-avatar-holders')).not.toBe(null);
+      it('toggles line discussion', () => {
+        expect(store.dispatch).not.toHaveBeenCalled();
+
+        findAvatars().vm.$emit('toggleLineDiscussions');
+
+        expect(store.dispatch).toHaveBeenCalledWith('diffs/toggleLineDiscussions', {
+          lineCode: TEST_LINE_CODE,
+          fileHash: TEST_FILE_HASH,
+          expanded: !line.discussionsExpanded,
+        });
+      });
     });
+
+    it.each`
+      props                                                             | lineProps              | expectation
+      ${{ showCommentButton: true }}                                    | ${{}}                  | ${true}
+      ${{ showCommentButton: false }}                                   | ${{}}                  | ${false}
+      ${{ showCommentButton: true, linePosition: LINE_POSITION_RIGHT }} | ${{ type: null }}      | ${false}
+      ${{ showCommentButton: true }}                                    | ${{ discussions: [] }} | ${false}
+    `(
+      'exists is $expectation - with props ($props), line ($lineProps)',
+      ({ props, lineProps, expectation }) => {
+        Object.assign(line, lineProps);
+        createComponent(props);
+
+        expect(findAvatars().exists()).toBe(expectation);
+      },
+    );
   });
 });

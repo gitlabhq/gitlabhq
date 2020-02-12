@@ -9,6 +9,7 @@ FactoryBot.define do
     tag { false }
     created_at { 'Di 29. Okt 09:50:00 CET 2013' }
     status { :created }
+    scheduling_type { 'stage' }
 
     pipeline factory: :ci_pipeline
 

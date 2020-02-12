@@ -132,7 +132,8 @@ module Gitlab
               variables: (variables_value if variables_defined?),
               rules: (rules_value if has_rules?),
               only: only_value,
-              except: except_value }.compact
+              except: except_value,
+              scheduling_type: needs_defined? && !bridge_needs ? :dag : :stage }.compact
           end
 
           def bridge_needs

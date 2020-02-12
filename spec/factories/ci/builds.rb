@@ -11,6 +11,7 @@ FactoryBot.define do
     tag { false }
     add_attribute(:protected) { false }
     created_at { 'Di 29. Okt 09:50:00 CET 2013' }
+    scheduling_type { 'stage' }
     pending
 
     options do

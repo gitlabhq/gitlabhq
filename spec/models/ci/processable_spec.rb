@@ -52,4 +52,72 @@ describe Ci::Processable do
       end
     end
   end
+
+  describe 'validate presence of scheduling_type' do
+    context 'on create' do
+      let(:processable) do
+        build(
+          :ci_build, :created, project: project, pipeline: pipeline,
+          importing: importing, scheduling_type: nil
+        )
+      end
+
+      context 'when importing' do
+        let(:importing) { true }
+
+        context 'when validate_scheduling_type_of_processables is true' do
+          before do
+            stub_feature_flags(validate_scheduling_type_of_processables: true)
+          end
+
+          it 'does not validate' do
+            expect(processable).to be_valid
+          end
+        end
+
+        context 'when validate_scheduling_type_of_processables is false' do
+          before do
+            stub_feature_flags(validate_scheduling_type_of_processables: false)
+          end
+
+          it 'does not validate' do
+            expect(processable).to be_valid
+          end
+        end
+      end
+
+      context 'when not importing' do
+        let(:importing) { false }
+
+        context 'when validate_scheduling_type_of_processables is true' do
+          before do
+            stub_feature_flags(validate_scheduling_type_of_processables: true)
+          end
+
+          it 'validates' do
+            expect(processable).not_to be_valid
+          end
+        end
+
+        context 'when validate_scheduling_type_of_processables is false' do
+          before do
+            stub_feature_flags(validate_scheduling_type_of_processables: false)
+          end
+
+          it 'does not validate' do
+            expect(processable).to be_valid
+          end
+        end
+      end
+    end
+
+    context 'on update' do
+      let(:processable) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+
+      it 'does not validate' do
+        processable.scheduling_type = nil
+        expect(processable).to be_valid
+      end
+    end
+  end
 end

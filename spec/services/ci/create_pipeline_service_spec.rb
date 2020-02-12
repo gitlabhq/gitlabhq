@@ -1750,9 +1750,9 @@ describe Ci::CreatePipelineService do
       let(:ref_name)    { 'refs/heads/master' }
       let(:pipeline)    { execute_service }
       let(:build_names) { pipeline.builds.pluck(:name) }
-      let(:regular_job) { pipeline.builds.find_by(name: 'regular-job') }
-      let(:rules_job)   { pipeline.builds.find_by(name: 'rules-job') }
-      let(:delayed_job) { pipeline.builds.find_by(name: 'delayed-job') }
+      let(:regular_job) { find_job('regular-job') }
+      let(:rules_job)   { find_job('rules-job') }
+      let(:delayed_job) { find_job('delayed-job') }
 
       shared_examples 'rules jobs are excluded' do
         it 'only persists the job without rules' do
@@ -1761,6 +1761,10 @@ describe Ci::CreatePipelineService do
           expect(rules_job).to be_nil
           expect(delayed_job).to be_nil
         end
+      end
+
+      def find_job(name)
+        pipeline.builds.find_by(name: name)
       end
 
       before do
@@ -1782,6 +1786,12 @@ describe Ci::CreatePipelineService do
                 - if: $CI_COMMIT_REF_NAME =~ /master/
                   when: manual
 
+            negligible-job:
+              script: "exit 1"
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  allow_failure: true
+
             delayed-job:
               script: "echo See you later, World!"
               rules:
@@ -1800,11 +1810,23 @@ describe Ci::CreatePipelineService do
         context 'with matches' do
           it 'creates a pipeline with the vanilla and manual jobs' do
             expect(pipeline).to be_persisted
-            expect(build_names).to contain_exactly('regular-job', 'delayed-job', 'master-job')
+            expect(build_names).to contain_exactly(
+              'regular-job', 'delayed-job', 'master-job', 'negligible-job'
+            )
           end
 
           it 'assigns job:when values to the builds' do
-            expect(pipeline.builds.pluck(:when)).to contain_exactly('on_success', 'delayed', 'manual')
+            expect(find_job('regular-job').when).to eq('on_success')
+            expect(find_job('master-job').when).to eq('manual')
+            expect(find_job('negligible-job').when).to eq('on_success')
+            expect(find_job('delayed-job').when).to eq('delayed')
+          end
+
+          it 'assigns job:allow_failure values to the builds' do
+            expect(find_job('regular-job').allow_failure).to eq(false)
+            expect(find_job('master-job').allow_failure).to eq(false)
+            expect(find_job('negligible-job').allow_failure).to eq(true)
+            expect(find_job('delayed-job').allow_failure).to eq(false)
           end
 
           it 'assigns start_in for delayed jobs' do
@@ -1827,6 +1849,7 @@ describe Ci::CreatePipelineService do
               rules:
                 - if: $VAR == 'present' && $OTHER || $CI_COMMIT_REF_NAME
                   when: manual
+                  allow_failure: true
           EOY
         end
 
@@ -1834,6 +1857,7 @@ describe Ci::CreatePipelineService do
           expect(pipeline).to be_persisted
           expect(build_names).to contain_exactly('regular-job')
           expect(regular_job.when).to eq('manual')
+          expect(regular_job.allow_failure).to eq(true)
         end
       end
 
@@ -1860,6 +1884,13 @@ describe Ci::CreatePipelineService do
                   - README.md
                   when: delayed
                   start_in: 4 hours
+
+            negligible-job:
+              script: "can be failed sometimes"
+              rules:
+                - changes:
+                  - README.md
+                  allow_failure: true
           EOY
         end
 
@@ -1872,7 +1903,7 @@ describe Ci::CreatePipelineService do
           it 'creates two jobs' do
             expect(pipeline).to be_persisted
             expect(build_names)
-              .to contain_exactly('regular-job', 'rules-job', 'delayed-job')
+              .to contain_exactly('regular-job', 'rules-job', 'delayed-job', 'negligible-job')
           end
 
           it 'sets when: for all jobs' do
@@ -1880,6 +1911,10 @@ describe Ci::CreatePipelineService do
             expect(rules_job.when).to eq('manual')
             expect(delayed_job.when).to eq('delayed')
             expect(delayed_job.options[:start_in]).to eq('4 hours')
+          end
+
+          it 'sets allow_failure: for negligible job' do
+            expect(find_job('negligible-job').allow_failure).to eq(true)
           end
         end
 
@@ -1922,12 +1957,14 @@ describe Ci::CreatePipelineService do
 
             rules-job:
               script: "echo hello world, $CI_COMMIT_REF_NAME"
+              allow_failure: true
               rules:
                 - changes:
                   - README.md
                   when: manual
                 - if: $CI_COMMIT_REF_NAME == "master"
                   when: on_success
+                  allow_failure: false
 
             delayed-job:
               script: "echo See you later, World!"
@@ -1936,6 +1973,7 @@ describe Ci::CreatePipelineService do
                   - README.md
                   when: delayed
                   start_in: 4 hours
+                  allow_failure: true
                 - if: $CI_COMMIT_REF_NAME == "master"
                   when: delayed
                   start_in: 1 hour
@@ -1959,6 +1997,12 @@ describe Ci::CreatePipelineService do
             expect(rules_job.when).to eq('manual')
             expect(delayed_job.when).to eq('delayed')
             expect(delayed_job.options[:start_in]).to eq('4 hours')
+          end
+
+          it 'sets allow_failure: for all jobs' do
+            expect(regular_job.allow_failure).to eq(false)
+            expect(rules_job.allow_failure).to eq(true)
+            expect(delayed_job.allow_failure).to eq(true)
           end
         end
 
@@ -1999,6 +2043,7 @@ describe Ci::CreatePipelineService do
                 - if: $CI_COMMIT_REF_NAME =~ /master/
                   changes: [README.md]
                   when: on_success
+                  allow_failure: true
                 - if: $CI_COMMIT_REF_NAME =~ /master/
                   changes: [app.rb]
                   when: manual
@@ -2016,6 +2061,7 @@ describe Ci::CreatePipelineService do
             expect(regular_job).to be_persisted
             expect(rules_job).to be_persisted
             expect(rules_job.when).to eq('manual')
+            expect(rules_job.allow_failure).to eq(false)
           end
         end
 
@@ -2038,6 +2084,150 @@ describe Ci::CreatePipelineService do
           let(:ref_name) { 'refs/heads/feature' }
 
           it_behaves_like 'rules jobs are excluded'
+        end
+      end
+
+      context 'with complex if: allow_failure usages' do
+        let(:config) do
+          <<-EOY
+            job-1:
+              script: "exit 1"
+              allow_failure: true
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  allow_failure: false
+
+            job-2:
+              script: "exit 1"
+              allow_failure: true
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /nonexistant-branch/
+                  allow_failure: false
+
+            job-3:
+              script: "exit 1"
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /nonexistant-branch/
+                  allow_failure: true
+
+            job-4:
+              script: "exit 1"
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  allow_failure: false
+
+            job-5:
+              script: "exit 1"
+              allow_failure: false
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  allow_failure: true
+
+            job-6:
+              script: "exit 1"
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /nonexistant-branch/
+                  allow_failure: false
+                - allow_failure: true
+          EOY
+        end
+
+        it 'creates a pipeline' do
+          expect(pipeline).to be_persisted
+          expect(build_names).to contain_exactly('job-1', 'job-4', 'job-5', 'job-6')
+        end
+
+        it 'assigns job:allow_failure values to the builds' do
+          expect(find_job('job-1').allow_failure).to eq(false)
+          expect(find_job('job-4').allow_failure).to eq(false)
+          expect(find_job('job-5').allow_failure).to eq(true)
+          expect(find_job('job-6').allow_failure).to eq(true)
+        end
+      end
+
+      context 'with complex if: allow_failure & when usages' do
+        let(:config) do
+          <<-EOY
+            job-1:
+              script: "exit 1"
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  when: manual
+
+            job-2:
+              script: "exit 1"
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  when: manual
+                  allow_failure: true
+
+            job-3:
+              script: "exit 1"
+              allow_failure: true
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  when: manual
+
+            job-4:
+              script: "exit 1"
+              allow_failure: true
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  when: manual
+                  allow_failure: false
+
+            job-5:
+              script: "exit 1"
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /nonexistant-branch/
+                  when: manual
+                  allow_failure: false
+                - when: always
+                  allow_failure: true
+
+            job-6:
+              script: "exit 1"
+              allow_failure: false
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  when: manual
+
+            job-7:
+              script: "exit 1"
+              allow_failure: false
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /nonexistant-branch/
+                  when: manual
+                - when: :on_failure
+                  allow_failure: true
+          EOY
+        end
+
+        it 'creates a pipeline' do
+          expect(pipeline).to be_persisted
+          expect(build_names).to contain_exactly(
+            'job-1', 'job-2', 'job-3', 'job-4', 'job-5', 'job-6', 'job-7'
+          )
+        end
+
+        it 'assigns job:allow_failure values to the builds' do
+          expect(find_job('job-1').allow_failure).to eq(false)
+          expect(find_job('job-2').allow_failure).to eq(true)
+          expect(find_job('job-3').allow_failure).to eq(true)
+          expect(find_job('job-4').allow_failure).to eq(false)
+          expect(find_job('job-5').allow_failure).to eq(true)
+          expect(find_job('job-6').allow_failure).to eq(false)
+          expect(find_job('job-7').allow_failure).to eq(true)
+        end
+
+        it 'assigns job:when values to the builds' do
+          expect(find_job('job-1').when).to eq('manual')
+          expect(find_job('job-2').when).to eq('manual')
+          expect(find_job('job-3').when).to eq('manual')
+          expect(find_job('job-4').when).to eq('manual')
+          expect(find_job('job-5').when).to eq('always')
+          expect(find_job('job-6').when).to eq('manual')
+          expect(find_job('job-7').when).to eq('on_failure')
         end
       end
     end

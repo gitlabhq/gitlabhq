@@ -360,6 +360,7 @@ CommitStatus:
 - upstream_pipeline_id
 - interruptible
 - processed
+- scheduling_type
 Ci::Variable:
 - id
 - project_id

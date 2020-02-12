@@ -105,7 +105,8 @@ describe Gitlab::Ci::Config::Entry::Bridge do
                                       trigger: { project: 'some/project' },
                                       ignore: false,
                                       stage: 'test',
-                                      only: { refs: %w[branches tags] })
+                                      only: { refs: %w[branches tags] },
+                                      scheduling_type: :stage)
         end
       end
     end
@@ -126,7 +127,8 @@ describe Gitlab::Ci::Config::Entry::Bridge do
                                                  branch: 'feature' },
                                       ignore: false,
                                       stage: 'test',
-                                      only: { refs: %w[branches tags] })
+                                      only: { refs: %w[branches tags] },
+                                      scheduling_type: :stage)
         end
       end
     end

@@ -241,9 +241,10 @@ and give all group members access to the project at once.
 
 Alternatively, you can [lock the sharing with group feature](#share-with-group-lock).
 
-## Sharing a group with another group
+## Sharing a group with another group **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18328) in GitLab 12.7.
+> This feature has been [disabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/issues/1635).
 
 Similarly to [sharing a project with a group](#sharing-a-project-with-a-group),
 you can share a group with another group to give direct group members access

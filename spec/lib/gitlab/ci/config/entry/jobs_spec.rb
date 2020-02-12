@@ -98,7 +98,8 @@ describe Gitlab::Ci::Config::Entry::Jobs do
               name: :my_trigger,
               only: { refs: %w[branches tags] },
               stage: 'test',
-              trigger: { project: 'my/project' }
+              trigger: { project: 'my/project' },
+              scheduling_type: :stage
             },
             regular_job: {
               ignore: false,
@@ -106,7 +107,8 @@ describe Gitlab::Ci::Config::Entry::Jobs do
               only: { refs: %w[branches tags] },
               script: ['something'],
               stage: 'test',
-              variables: {}
+              variables: {},
+              scheduling_type: :stage
             })
         end
       end
