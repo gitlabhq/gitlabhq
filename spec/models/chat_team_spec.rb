@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe ChatTeam do
-  set(:chat_team) { create(:chat_team) }
+  let_it_be(:chat_team) { create(:chat_team) }
   subject { chat_team }
 
   # Associations

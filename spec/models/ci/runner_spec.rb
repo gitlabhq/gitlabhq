@@ -38,8 +38,8 @@ describe Ci::Runner do
     end
 
     context 'runner_type validations' do
-      set(:group) { create(:group) }
-      set(:project) { create(:project) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project) }
       let(:group_runner) { create(:ci_runner, :group, groups: [group]) }
       let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
       let(:instance_runner) { create(:ci_runner, :instance) }
@@ -322,7 +322,7 @@ describe Ci::Runner do
   end
 
   describe '#can_pick?' do
-    set(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:pipeline) { create(:ci_pipeline) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
     let(:runner_project) { build.project }
     let(:runner) { create(:ci_runner, :project, projects: [runner_project], tag_list: tag_list, run_untagged: run_untagged) }

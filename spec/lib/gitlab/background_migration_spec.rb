@@ -165,6 +165,32 @@ describe Gitlab::BackgroundMigration do
     end
   end
 
+  describe '.remaining', :redis do
+    context 'when there are jobs remaining' do
+      let(:queue) { Array.new(12) }
+
+      before do
+        allow(Sidekiq::Queue).to receive(:new)
+          .with(described_class.queue)
+          .and_return(Array.new(12))
+
+        Sidekiq::Testing.disable! do
+          BackgroundMigrationWorker.perform_in(10.minutes, 'Foo')
+        end
+      end
+
+      it 'returns the enqueued jobs plus the scheduled jobs' do
+        expect(described_class.remaining).to eq(13)
+      end
+    end
+
+    context 'when there are no jobs remaining' do
+      it 'returns zero' do
+        expect(described_class.remaining).to be_zero
+      end
+    end
+  end
+
   describe '.exists?' do
     context 'when there are enqueued jobs present' do
       let(:queue) do

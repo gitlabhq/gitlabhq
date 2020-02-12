@@ -244,8 +244,8 @@ describe BlobHelper do
     it 'escapes special characters' do
       Rails.application.routes.default_url_options[:script_name] = nil
 
-      expect(helper.ide_edit_path(project, "testing/#hashes", "readme.md#test")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/testing/#hashes/-/readme.md%23test")
-      expect(helper.ide_edit_path(project, "testing/#hashes", "src#/readme.md#test")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/testing/#hashes/-/src%23/readme.md%23test")
+      expect(helper.ide_edit_path(project, "testing/#hashes", "readme.md#test")).to eq("/-/ide/project/#{project.full_path}/edit/testing/%23hashes/-/readme.md%23test")
+      expect(helper.ide_edit_path(project, "testing/#hashes", "src#/readme.md#test")).to eq("/-/ide/project/#{project.full_path}/edit/testing/%23hashes/-/src%23/readme.md%23test")
     end
 
     it 'does not escape "/" character' do

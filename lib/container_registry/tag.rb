@@ -118,7 +118,7 @@ module ContainerRegistry
     def unsafe_delete
       return unless digest
 
-      client.delete_repository_tag(repository.path, digest)
+      client.delete_repository_tag_by_digest(repository.path, digest)
     end
   end
 end

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Ci::Bridge do
-  set(:project) { create(:project) }
-  set(:target_project) { create(:project, name: 'project', namespace: create(:namespace, name: 'my')) }
-  set(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:target_project) { create(:project, name: 'project', namespace: create(:namespace, name: 'my')) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:bridge) do
     create(:ci_bridge, :variables, status: :created,

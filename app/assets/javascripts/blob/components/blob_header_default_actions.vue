@@ -7,7 +7,6 @@ import {
   RICH_BLOB_VIEWER,
   SIMPLE_BLOB_VIEWER,
 } from './constants';
-import eventHub from '../event_hub';
 
 export default {
   components: {
@@ -19,8 +18,8 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    blob: {
-      type: Object,
+    rawPath: {
+      type: String,
       required: true,
     },
     activeViewer: {
@@ -30,11 +29,8 @@ export default {
     },
   },
   computed: {
-    rawUrl() {
-      return this.blob.rawPath;
-    },
     downloadUrl() {
-      return `${this.blob.rawPath}?inline=false`;
+      return `${this.rawPath}?inline=false`;
     },
     copyDisabled() {
       return this.activeViewer === RICH_BLOB_VIEWER;
@@ -42,7 +38,7 @@ export default {
   },
   methods: {
     requestCopyContents() {
-      eventHub.$emit('copy');
+      this.$emit('copy');
     },
   },
   BTN_COPY_CONTENTS_TITLE,
@@ -65,7 +61,7 @@ export default {
       v-gl-tooltip.hover
       :aria-label="$options.BTN_RAW_TITLE"
       :title="$options.BTN_RAW_TITLE"
-      :href="rawUrl"
+      :href="rawPath"
       target="_blank"
     >
       <gl-icon name="doc-code" :size="14" />

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe ChatName do
-  set(:chat_name) { create(:chat_name) }
+  let_it_be(:chat_name) { create(:chat_name) }
   subject { chat_name }
 
   it { is_expected.to belong_to(:service) }

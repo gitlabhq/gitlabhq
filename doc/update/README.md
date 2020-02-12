@@ -116,14 +116,14 @@ following command:
 **For Omnibus installations**
 
 ```shell
-sudo gitlab-rails runner -e production 'puts Sidekiq::Queue.new("background_migration").size'
+sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
 
 **For installations from source**
 
 ```
 cd /home/git/gitlab
-sudo -u git -H bundle exec rails runner -e production 'puts Sidekiq::Queue.new("background_migration").size'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
 
 ## Upgrading to a new major version

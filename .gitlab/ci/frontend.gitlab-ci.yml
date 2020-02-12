@@ -93,7 +93,7 @@
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
   cache:
-    key: "assets-compile:production:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:tmp_cache_webpack:v7"
+    key: "assets-compile:production:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:tmp_cache_webpack:v9"
   artifacts:
     name: webpack-report
     expire_in: 31d
@@ -152,7 +152,7 @@ gitlab:assets:compile pull-cache:
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   cache:
-    key: "assets-compile:v8"
+    key: "assets-compile:v9"
   artifacts:
     expire_in: 7d
     paths:
@@ -180,7 +180,7 @@ compile-assets pull-push-cache foss:
       when: on_success
   cache:
     policy: pull-push
-    key: "assets-compile:v8:foss"
+    key: "assets-compile:v9:foss"
 
 compile-assets pull-cache:
   extends: .compile-assets-metadata
@@ -203,7 +203,7 @@ compile-assets pull-cache foss:
       when: on_success
   cache:
     policy: pull
-    key: "assets-compile:v8:foss"
+    key: "assets-compile:v9:foss"
 
 .frontend-job-base:
   extends:

@@ -14,12 +14,25 @@ module Projects
 
       private
 
+      # Delete tags by name with a single DELETE request. This is only supported
+      # by the GitLab Container Registry fork. See
+      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23325 for details.
+      def fast_delete(container_repository, tag_names)
+        deleted_tags = tag_names.select do |name|
+          container_repository.delete_tag_by_name(name)
+        end
+
+        deleted_tags.any? ? success(deleted: deleted_tags) : error('could not delete tags')
+      end
+
       # Replace a tag on the registry with a dummy tag.
       # This is a hack as the registry doesn't support deleting individual
       # tags. This code effectively pushes a dummy image and assigns the tag to it.
       # This way when the tag is deleted only the dummy image is affected.
+      # This is used to preverse compatibility with third-party registries that
+      # don't support fast delete.
       # See https://gitlab.com/gitlab-org/gitlab/issues/15737 for a discussion
-      def smart_delete(container_repository, tag_names)
+      def slow_delete(container_repository, tag_names)
         # generates the blobs for the dummy image
         dummy_manifest = container_repository.client.generate_empty_manifest(container_repository.path)
         return error('could not generate manifest') if dummy_manifest.nil?
@@ -33,6 +46,15 @@ module Projects
           success(deleted: deleted_tags.keys)
         else
           error('could not delete tags')
+        end
+      end
+
+      def smart_delete(container_repository, tag_names)
+        fast_delete_enabled = Feature.enabled?(:container_registry_fast_tag_delete, default_enabled: true)
+        if fast_delete_enabled && container_repository.client.supports_tag_delete?
+          fast_delete(container_repository, tag_names)
+        else
+          slow_delete(container_repository, tag_names)
         end
       end
 

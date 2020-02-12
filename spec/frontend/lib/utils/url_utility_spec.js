@@ -28,6 +28,12 @@ describe('URL utility', () => {
       gon.relative_url_root = '';
     });
 
+    it('escapes special characters', () => {
+      expect(urlUtils.webIDEUrl('/gitlab-org/gitlab-#-foss/merge_requests/1')).toBe(
+        '/-/ide/project/gitlab-org/gitlab-%23-foss/merge_requests/1',
+      );
+    });
+
     describe('without relative_url_root', () => {
       it('returns IDE path with route', () => {
         expect(urlUtils.webIDEUrl('/gitlab-org/gitlab-foss/merge_requests/1')).toBe(

@@ -22,20 +22,12 @@ describe 'Project Graph', :js do
     end
   end
 
-  shared_examples 'page should have languages graphs' do
-    it 'renders languages' do
-      expect(page).to have_content(/Ruby 66.* %/)
-      expect(page).to have_content(/JavaScript 22.* %/)
-    end
-  end
-
   context 'commits graph' do
     before do
       visit commits_project_graph_path(project, 'master')
     end
 
     it_behaves_like 'page should have commits graphs'
-    it_behaves_like 'page should have languages graphs'
   end
 
   context 'languages graph' do
@@ -44,7 +36,6 @@ describe 'Project Graph', :js do
     end
 
     it_behaves_like 'page should have commits graphs'
-    it_behaves_like 'page should have languages graphs'
   end
 
   context 'charts graph' do
@@ -53,7 +44,6 @@ describe 'Project Graph', :js do
     end
 
     it_behaves_like 'page should have commits graphs'
-    it_behaves_like 'page should have languages graphs'
   end
 
   context 'chart graph with HTML escaped branch name' do

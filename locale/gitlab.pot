@@ -5996,6 +5996,9 @@ msgstr ""
 msgid "Date range cannot exceed %{maxDateRange} days."
 msgstr ""
 
+msgid "Day of month"
+msgstr ""
+
 msgid "DayTitle|F"
 msgstr ""
 
@@ -10004,6 +10007,9 @@ msgstr ""
 msgid "Hook was successfully updated."
 msgstr ""
 
+msgid "Hour (UTC)"
+msgstr ""
+
 msgid "Housekeeping"
 msgstr ""
 
@@ -12803,6 +12809,9 @@ msgstr ""
 msgid "No, not interested right now"
 msgstr ""
 
+msgid "No. of commits"
+msgstr ""
+
 msgid "Nobody has starred this repository yet"
 msgstr ""
 
@@ -13529,6 +13538,9 @@ msgid "People without permission will never get a notification and won't be able
 msgstr ""
 
 msgid "People without permission will never get a notification."
+msgstr ""
+
+msgid "Percentage"
 msgstr ""
 
 msgid "Perform advanced options such as changing path, transferring, or removing the group."
@@ -20797,6 +20809,9 @@ msgstr ""
 msgid "Used by members to sign in to your group in GitLab"
 msgstr ""
 
+msgid "Used programming language"
+msgstr ""
+
 msgid "Used to help configure your identity provider"
 msgstr ""
 
@@ -21484,6 +21499,9 @@ msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed o
 msgstr ""
 
 msgid "Wednesday"
+msgstr ""
+
+msgid "Weekday"
 msgstr ""
 
 msgid "Weeks"

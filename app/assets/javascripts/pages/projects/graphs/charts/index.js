@@ -1,47 +1,15 @@
-import $ from 'jquery';
-import Chart from 'chart.js';
-import { barChartOptions, pieChartOptions } from '~/lib/utils/chart_utils';
+import Vue from 'vue';
+import { __ } from '~/locale';
+import { GlColumnChart } from '@gitlab/ui/dist/charts';
+import SeriesDataMixin from './series_data_mixin';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const projectChartData = JSON.parse(document.getElementById('projectChartData').innerHTML);
+  const languagesContainer = document.getElementById('js-languages-chart');
+  const monthContainer = document.getElementById('js-month-chart');
+  const weekdayContainer = document.getElementById('js-weekday-chart');
+  const hourContainer = document.getElementById('js-hour-chart');
 
-  const barChart = (selector, data) => {
-    // get selector by context
-    const ctx = selector.get(0).getContext('2d');
-    // pointing parent container to make chart.js inherit its width
-    const container = $(selector).parent();
-    selector.attr('width', $(container).width());
-
-    // Scale fonts if window width lower than 768px (iPad portrait)
-    const shouldAdjustFontSize = window.innerWidth < 768;
-    return new Chart(ctx, {
-      type: 'bar',
-      data,
-      options: barChartOptions(shouldAdjustFontSize),
-    });
-  };
-
-  const pieChart = (context, data) => {
-    const options = pieChartOptions();
-
-    return new Chart(context, {
-      type: 'pie',
-      data,
-      options,
-    });
-  };
-
-  const chartData = data => ({
-    labels: Object.keys(data),
-    datasets: [
-      {
-        backgroundColor: 'rgba(220,220,220,0.5)',
-        borderColor: 'rgba(220,220,220,1)',
-        borderWidth: 1,
-        data: Object.values(data),
-      },
-    ],
-  });
+  const LANGUAGE_CHART_HEIGHT = 300;
 
   const reorderWeekDays = (weekDays, firstDayOfWeek = 0) => {
     if (firstDayOfWeek === 0) {
@@ -58,28 +26,115 @@ document.addEventListener('DOMContentLoaded', () => {
     }, {});
   };
 
-  const hourData = chartData(projectChartData.hour);
-  barChart($('#hour-chart'), hourData);
-
-  const weekDays = reorderWeekDays(projectChartData.weekDays, gon.first_day_of_week);
-  const dayData = chartData(weekDays);
-  barChart($('#weekday-chart'), dayData);
-
-  const monthData = chartData(projectChartData.month);
-  barChart($('#month-chart'), monthData);
-
-  const data = {
-    datasets: [
-      {
-        data: projectChartData.languages.map(x => x.value),
-        backgroundColor: projectChartData.languages.map(x => x.color),
-        hoverBackgroundColor: projectChartData.languages.map(x => x.highlight),
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: languagesContainer,
+    components: {
+      GlColumnChart,
+    },
+    data() {
+      return {
+        chartData: JSON.parse(languagesContainer.dataset.chartData),
+      };
+    },
+    computed: {
+      seriesData() {
+        return { full: this.chartData.map(d => [d.label, d.value]) };
       },
-    ],
-    labels: projectChartData.languages.map(x => x.label),
-  };
-  const ctx = $('#languages-chart')
-    .get(0)
-    .getContext('2d');
-  pieChart(ctx, data);
+    },
+    render(h) {
+      return h(GlColumnChart, {
+        props: {
+          data: this.seriesData,
+          xAxisTitle: __('Used programming language'),
+          yAxisTitle: __('Percentage'),
+          xAxisType: 'category',
+        },
+        attrs: {
+          height: LANGUAGE_CHART_HEIGHT,
+        },
+      });
+    },
+  });
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: monthContainer,
+    components: {
+      GlColumnChart,
+    },
+    mixins: [SeriesDataMixin],
+    data() {
+      return {
+        chartData: JSON.parse(monthContainer.dataset.chartData),
+      };
+    },
+    render(h) {
+      return h(GlColumnChart, {
+        props: {
+          data: this.seriesData,
+          xAxisTitle: __('Day of month'),
+          yAxisTitle: __('No. of commits'),
+          xAxisType: 'category',
+        },
+      });
+    },
+  });
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: weekdayContainer,
+    components: {
+      GlColumnChart,
+    },
+    data() {
+      return {
+        chartData: JSON.parse(weekdayContainer.dataset.chartData),
+      };
+    },
+    computed: {
+      seriesData() {
+        const weekDays = reorderWeekDays(this.chartData, gon.first_day_of_week);
+        const data = Object.keys(weekDays).reduce((acc, key) => {
+          acc.push([key, weekDays[key]]);
+          return acc;
+        }, []);
+        return { full: data };
+      },
+    },
+    render(h) {
+      return h(GlColumnChart, {
+        props: {
+          data: this.seriesData,
+          xAxisTitle: __('Weekday'),
+          yAxisTitle: __('No. of commits'),
+          xAxisType: 'category',
+        },
+      });
+    },
+  });
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: hourContainer,
+    components: {
+      GlColumnChart,
+    },
+    mixins: [SeriesDataMixin],
+    data() {
+      return {
+        chartData: JSON.parse(hourContainer.dataset.chartData),
+      };
+    },
+    render(h) {
+      return h(GlColumnChart, {
+        props: {
+          data: this.seriesData,
+          xAxisTitle: __('Hour (UTC)'),
+          yAxisTitle: __('No. of commits'),
+          xAxisType: 'category',
+        },
+      });
+    },
+  });
 });

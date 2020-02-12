@@ -60,7 +60,8 @@ describe API::LsifData do
             'end_char' => 18,
             'end_line' => 8,
             'start_char' => 13,
-            'start_line' => 8
+            'start_line' => 8,
+            'definition_url' => project_blob_path(project, "#{commit.id}/morestrings/reverse.go", anchor: 'L5')
           })
         end
 

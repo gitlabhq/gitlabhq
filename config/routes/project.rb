@@ -323,6 +323,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      post 'alerts/notify', to: 'alerting/notifications#create'
+
       resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
         collection do
           resource :pipelines_settings, path: 'settings', only: [:show, :update]

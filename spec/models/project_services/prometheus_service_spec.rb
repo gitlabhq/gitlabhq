@@ -169,7 +169,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       end
 
       context 'cluster belongs to projects group' do
-        set(:group) { create(:group) }
+        let_it_be(:group) { create(:group) }
         let(:project) { create(:prometheus_project, group: group) }
         let(:cluster) { create(:cluster_for_group, :with_installed_helm, groups: [group]) }
 

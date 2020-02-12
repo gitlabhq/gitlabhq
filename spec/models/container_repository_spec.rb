@@ -85,7 +85,7 @@ describe ContainerRepository do
     context 'when action succeeds' do
       it 'returns status that indicates success' do
         expect(repository.client)
-          .to receive(:delete_repository_tag)
+          .to receive(:delete_repository_tag_by_digest)
           .twice
           .and_return(true)
 
@@ -96,11 +96,41 @@ describe ContainerRepository do
     context 'when action fails' do
       it 'returns status that indicates failure' do
         expect(repository.client)
-          .to receive(:delete_repository_tag)
+          .to receive(:delete_repository_tag_by_digest)
           .twice
           .and_return(false)
 
         expect(repository.delete_tags!).to be_falsey
+      end
+    end
+  end
+
+  describe '#delete_tag_by_name' do
+    let(:repository) do
+      create(:container_repository, name: 'my_image',
+                                    tags: { latest: '123', rc1: '234' },
+                                    project: project)
+    end
+
+    context 'when action succeeds' do
+      it 'returns status that indicates success' do
+        expect(repository.client)
+          .to receive(:delete_repository_tag_by_name)
+          .with(repository.path, "latest")
+          .and_return(true)
+
+        expect(repository.delete_tag_by_name('latest')).to be_truthy
+      end
+    end
+
+    context 'when action fails' do
+      it 'returns status that indicates failure' do
+        expect(repository.client)
+          .to receive(:delete_repository_tag_by_name)
+          .with(repository.path, "latest")
+          .and_return(false)
+
+        expect(repository.delete_tag_by_name('latest')).to be_falsey
       end
     end
   end

@@ -1,11 +1,11 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router';
+import IdeRouter from '~/ide/ide_router_extension';
 import { joinPaths } from '~/lib/utils/url_utility';
 import flash from '~/flash';
 import store from './stores';
 import { __ } from '~/locale';
 
-Vue.use(VueRouter);
+Vue.use(IdeRouter);
 
 /**
  * Routes below /-/ide/:
@@ -33,7 +33,7 @@ const EmptyRouterComponent = {
   },
 };
 
-const router = new VueRouter({
+const router = new IdeRouter({
   mode: 'history',
   base: joinPaths(gon.relative_url_root || '', '/-/ide/'),
   routes: [

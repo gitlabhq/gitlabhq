@@ -12,13 +12,12 @@ exports[`Blob Header Default Actions rendering matches the snapshot 1`] = `
     class="file-actions d-none d-sm-block"
   >
     <viewer-switcher-stub
-      activeviewer="rich"
-      blob="[object Object]"
+      value="simple"
     />
       
     <default-actions-stub
-      activeviewer="rich"
-      blob="[object Object]"
+      activeviewer="simple"
+      rawpath="/flightjs/flight/snippets/51/raw"
     />
   </div>
 </div>

@@ -352,9 +352,9 @@ describe PagesDomain do
     end
 
     context 'configuration updates when attributes change' do
-      set(:project1) { create(:project) }
-      set(:project2) { create(:project) }
-      set(:domain) { create(:pages_domain) }
+      let_it_be(:project1) { create(:project) }
+      let_it_be(:project2) { create(:project) }
+      let_it_be(:domain) { create(:pages_domain) }
 
       where(:attribute, :old_value, :new_value, :update_expected) do
         now = Time.now
@@ -402,8 +402,8 @@ describe PagesDomain do
       end
 
       context 'TLS configuration' do
-        set(:domain_without_tls) { create(:pages_domain, :without_certificate, :without_key) }
-        set(:domain) { create(:pages_domain) }
+        let_it_be(:domain_without_tls) { create(:pages_domain, :without_certificate, :without_key) }
+        let_it_be(:domain) { create(:pages_domain) }
 
         let(:cert1) { domain.certificate }
         let(:cert2) { cert1 + ' ' }

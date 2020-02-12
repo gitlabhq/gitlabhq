@@ -41,7 +41,7 @@ describe Projects::ContainerRepository::CleanupTagsService do
       let(:params) { {} }
 
       it 'does not remove anything' do
-        expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag)
+        expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag_by_digest)
 
         is_expected.to include(status: :success, deleted: [])
       end
@@ -156,7 +156,7 @@ describe Projects::ContainerRepository::CleanupTagsService do
 
   def expect_delete(digest)
     expect_any_instance_of(ContainerRegistry::Client)
-      .to receive(:delete_repository_tag)
+      .to receive(:delete_repository_tag_by_digest)
       .with(repository.path, digest) { true }
   end
 end

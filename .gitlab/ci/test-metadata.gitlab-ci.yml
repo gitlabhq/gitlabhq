@@ -1,7 +1,57 @@
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-default-refs: &if-default-refs
+  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG'
+
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-merge-request: &if-merge-request
+  if: '$CI_MERGE_REQUEST_IID'
+
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-canonical-dot-com-gitlab-schedule: &if-canonical-dot-com-gitlab-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule"'
+
+# Make sure to update all the similar patterns in other CI config files if you modify these patterns
+.code-backstage-patterns: &code-backstage-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
+  # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "{,ee/}fixtures/**/*"
+  - "{,ee/}rubocop/**/*"
+  - "{,ee/}spec/**/*"
+  - "doc/README.md"  # Some RSpec test rely on this file
+
+.test-metadata:rules:retrieve-tests-metadata:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.test-metadata:rules:update-tests-metadata:
+  rules:
+    - <<: *if-canonical-dot-com-gitlab-schedule
+      changes: *code-backstage-patterns
+      when: on_success
+
+.test-metadata:rules:flaky-examples-check:
+  rules:
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
+      when: on_success
+
 .tests-metadata-state:
-  extends:
-    - .default-only
-    - .only:changes-code-backstage
   variables:
     TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
   before_script:
@@ -19,7 +69,9 @@
       - rspec_profiling/
 
 retrieve-tests-metadata:
-  extends: .tests-metadata-state
+  extends:
+    - .tests-metadata-state
+    - .test-metadata:rules:retrieve-tests-metadata
   stage: prepare
   cache:
     policy: pull
@@ -28,7 +80,9 @@ retrieve-tests-metadata:
     - retrieve_tests_metadata
 
 update-tests-metadata:
-  extends: .tests-metadata-state
+  extends:
+    - .tests-metadata-state
+    - .test-metadata:rules:update-tests-metadata
   stage: post-test
   cache:
     policy: push
@@ -36,27 +90,17 @@ update-tests-metadata:
     - retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document
     - source scripts/rspec_helpers.sh
     - update_tests_metadata
-  only:
-    refs:
-      - schedules
-    variables:
-      # Only update the Knapsack metadata on GitLab.com/gitlab-org/gitlab
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab"
 
 flaky-examples-check:
   extends:
     - .default-tags
     - .default-retry
-    - .default-only
-    - .only:changes-code-backstage
+    - .test-metadata:rules:flaky-examples-check
   image: ruby:2.6-alpine
   stage: post-test
   variables:
     NEW_FLAKY_SPECS_REPORT: rspec_flaky/report-new.json
   allow_failure: true
-  only:
-    refs:
-      - merge_requests
   artifacts:
     expire_in: 30d
     paths:

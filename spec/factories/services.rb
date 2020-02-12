@@ -44,6 +44,16 @@ FactoryBot.define do
     end
   end
 
+  factory :alerts_service do
+    project
+    type { 'AlertsService' }
+    active { true }
+
+    trait :inactive do
+      active { false }
+    end
+  end
+
   factory :drone_ci_service do
     project
     active { true }

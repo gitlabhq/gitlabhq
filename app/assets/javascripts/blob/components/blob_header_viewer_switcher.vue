@@ -6,7 +6,6 @@ import {
   SIMPLE_BLOB_VIEWER,
   SIMPLE_BLOB_VIEWER_TITLE,
 } from './constants';
-import eventHub from '../event_hub';
 
 export default {
   components: {
@@ -18,11 +17,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    blob: {
-      type: Object,
-      required: true,
-    },
-    activeViewer: {
+    value: {
       type: String,
       default: SIMPLE_BLOB_VIEWER,
       required: false,
@@ -30,16 +25,16 @@ export default {
   },
   computed: {
     isSimpleViewer() {
-      return this.activeViewer === SIMPLE_BLOB_VIEWER;
+      return this.value === SIMPLE_BLOB_VIEWER;
     },
     isRichViewer() {
-      return this.activeViewer === RICH_BLOB_VIEWER;
+      return this.value === RICH_BLOB_VIEWER;
     },
   },
   methods: {
     switchToViewer(viewer) {
-      if (viewer !== this.activeViewer) {
-        eventHub.$emit('switch-viewer', viewer);
+      if (viewer !== this.value) {
+        this.$emit('input', viewer);
       }
     },
   },

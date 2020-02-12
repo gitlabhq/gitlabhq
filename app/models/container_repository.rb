@@ -77,7 +77,11 @@ class ContainerRepository < ApplicationRecord
   end
 
   def delete_tag_by_digest(digest)
-    client.delete_repository_tag(self.path, digest)
+    client.delete_repository_tag_by_digest(self.path, digest)
+  end
+
+  def delete_tag_by_name(name)
+    client.delete_repository_tag_by_name(self.path, name)
   end
 
   def self.build_from_path(path)

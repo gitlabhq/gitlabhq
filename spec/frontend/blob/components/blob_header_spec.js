@@ -3,7 +3,6 @@ import BlobHeader from '~/blob/components/blob_header.vue';
 import ViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
 import DefaultActions from '~/blob/components/blob_header_default_actions.vue';
 import BlobFilepath from '~/blob/components/blob_header_filepath.vue';
-import eventHub from '~/blob/event_hub';
 
 import { Blob } from './mock_data';
 
@@ -20,10 +19,6 @@ describe('Blob Header Default Actions', () => {
       ...options,
     });
   }
-
-  beforeEach(() => {
-    createComponent();
-  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -96,37 +91,48 @@ describe('Blob Header Default Actions', () => {
 
   describe('functionality', () => {
     const newViewer = 'Foo Bar';
+    const activeViewerType = 'Alpha Beta';
 
-    it('listens to "switch-view" event when viewer switcher is shown and updates activeViewer', () => {
-      expect(wrapper.vm.showViewerSwitcher).toBe(true);
-      eventHub.$emit('switch-viewer', newViewer);
+    const factory = (hideViewerSwitcher = false) => {
+      createComponent(
+        {},
+        {},
+        {
+          activeViewerType,
+          hideViewerSwitcher,
+        },
+      );
+    };
+
+    it('by default sets viewer data based on activeViewerType', () => {
+      factory();
+      expect(wrapper.vm.viewer).toBe(activeViewerType);
+    });
+
+    it('sets viewer to null if the viewer switcher should be hidden', () => {
+      factory(true);
+      expect(wrapper.vm.viewer).toBe(null);
+    });
+
+    it('watches the changes in viewer data and emits event when the change is registered', () => {
+      factory();
+      jest.spyOn(wrapper.vm, '$emit');
+      wrapper.vm.viewer = newViewer;
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.activeViewer).toBe(newViewer);
+        expect(wrapper.vm.$emit).toHaveBeenCalledWith('viewer-changed', newViewer);
       });
     });
 
-    it('does not update active viewer if the switcher is not shown', () => {
-      const activeViewer = 'Alpha Beta';
-      createComponent(
-        {},
-        {
-          data() {
-            return {
-              activeViewer,
-            };
-          },
-        },
-        {
-          hideViewerSwitcher: true,
-        },
-      );
+    it('does not emit event if the switcher is not rendered', () => {
+      factory(true);
 
       expect(wrapper.vm.showViewerSwitcher).toBe(false);
-      eventHub.$emit('switch-viewer', newViewer);
+      jest.spyOn(wrapper.vm, '$emit');
+      wrapper.vm.viewer = newViewer;
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.vm.activeViewer).toBe(activeViewer);
+        expect(wrapper.vm.$emit).not.toHaveBeenCalled();
       });
     });
   });

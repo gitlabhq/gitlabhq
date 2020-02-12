@@ -23,43 +23,51 @@ describe Projects::LsifDataService do
     end
 
     context 'for main.go' do
+      let(:path_prefix) { "/#{project.full_path}/-/blob/#{commit_id}" }
+
       it 'returns lsif ranges for the file' do
         expect(service.execute).to eq([
           {
             end_char: 9,
             end_line: 6,
             start_char: 5,
-            start_line: 6
+            start_line: 6,
+            definition_url: "#{path_prefix}/main.go#L7"
           },
           {
             end_char: 36,
             end_line: 3,
             start_char: 1,
-            start_line: 3
+            start_line: 3,
+            definition_url: "#{path_prefix}/main.go#L4"
           },
           {
             end_char: 12,
             end_line: 7,
             start_char: 1,
-            start_line: 7
+            start_line: 7,
+            definition_url: "#{path_prefix}/main.go#L4"
           },
           {
             end_char: 20,
             end_line: 7,
             start_char: 13,
-            start_line: 7
+            start_line: 7,
+            definition_url: "#{path_prefix}/morestrings/reverse.go#L11"
           },
           {
             end_char: 12,
             end_line: 8,
             start_char: 1,
-            start_line: 8
+            start_line: 8,
+            definition_url: "#{path_prefix}/main.go#L4"
           },
           {
             end_char: 18,
             end_line: 8,
             start_char: 13,
-            start_line: 8
+            start_line: 8,
+            definition_url: "#{path_prefix}/morestrings/reverse.go#L5"
           }
         ])
       end
@@ -73,7 +81,8 @@ describe Projects::LsifDataService do
           end_char: 2,
           end_line: 11,
           start_char: 1,
-          start_line: 11
+          start_line: 11,
+          definition_url: "/#{project.full_path}/-/blob/#{commit_id}/morestrings/reverse.go#L12"
         })
       end
     end
@@ -87,7 +96,7 @@ describe Projects::LsifDataService do
     end
   end
 
-  describe '#doc_id_from' do
+  describe '#doc_id' do
     context 'when the passed path matches multiple files' do
       let(:path) { 'check/main.go' }
       let(:docs) do
@@ -100,7 +109,9 @@ describe Projects::LsifDataService do
       end
 
       it 'fetches the document with the shortest absolute path' do
-        expect(service.__send__(:doc_id_from, docs)).to eq(3)
+        service.instance_variable_set(:@docs, docs)
+
+        expect(service.__send__(:doc_id)).to eq(3)
       end
     end
   end

@@ -146,4 +146,57 @@ describe ContainerRegistry::Client do
       expect(subject).to eq 'sha256:123'
     end
   end
+
+  describe '#delete_repository_tag_by_name' do
+    subject { client.delete_repository_tag_by_name('group/test', 'a') }
+
+    context 'when the tag exists' do
+      before do
+        stub_request(:delete, "http://container-registry/v2/group/test/tags/reference/a")
+          .to_return(status: 200, body: "")
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when the tag does not exist' do
+      before do
+        stub_request(:delete, "http://container-registry/v2/group/test/tags/reference/a")
+          .to_return(status: 404, body: "")
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when an error occurs' do
+      before do
+        stub_request(:delete, "http://container-registry/v2/group/test/tags/reference/a")
+          .to_return(status: 500, body: "")
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#supports_tag_delete?' do
+    subject { client.supports_tag_delete? }
+
+    context 'when the server supports tag deletion' do
+      before do
+        stub_request(:options, "http://container-registry/v2/name/tags/reference/tag")
+          .to_return(status: 200, body: "", headers: { 'Allow' => 'DELETE' })
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when the server does not support tag deletion' do
+      before do
+        stub_request(:options, "http://container-registry/v2/name/tags/reference/tag")
+          .to_return(status: 404, body: "")
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

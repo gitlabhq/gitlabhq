@@ -27,7 +27,7 @@ module BlobHelper
         "#{current_user.namespace.full_path}/#{project.path}"
       end
 
-    segments = [ide_path, 'project', project_path, 'edit', ref]
+    segments = [ide_path, 'project', project_path, 'edit', encode_ide_path(ref)]
     segments.concat(['-', encode_ide_path(path)]) if path.present?
     File.join(segments)
   end

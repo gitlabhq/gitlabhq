@@ -4,10 +4,10 @@ require 'spec_helper'
 
 describe EventCollection do
   describe '#to_a' do
-    set(:group) { create(:group) }
-    set(:project) { create(:project_empty_repo, group: group) }
-    set(:projects) { Project.where(id: project.id) }
-    set(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project_empty_repo, group: group) }
+    let_it_be(:projects) { Project.where(id: project.id) }
+    let_it_be(:user) { create(:user) }
 
     context 'with project events' do
       before do

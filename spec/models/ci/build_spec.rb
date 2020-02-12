@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 describe Ci::Build do
-  set(:user) { create(:user) }
-  set(:group) { create(:group) }
-  set(:project) { create(:project, :repository, group: group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group, reload: true) { create(:group) }
+  let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
 
-  set(:pipeline) do
+  let_it_be(:pipeline, reload: true) do
     create(:ci_pipeline, project: project,
                          sha: project.commit.id,
                          ref: project.default_branch,
@@ -3612,7 +3612,7 @@ describe Ci::Build do
   end
 
   describe '.matches_tag_ids' do
-    set(:build) { create(:ci_build, project: project, user: user) }
+    let_it_be(:build, reload: true) { create(:ci_build, project: project, user: user) }
     let(:tag_ids) { ::ActsAsTaggableOn::Tag.named_any(tag_list).ids }
 
     subject { described_class.where(id: build).matches_tag_ids(tag_ids) }
@@ -3659,7 +3659,7 @@ describe Ci::Build do
   end
 
   describe '.matches_tags' do
-    set(:build) { create(:ci_build, project: project, user: user) }
+    let_it_be(:build, reload: true) { create(:ci_build, project: project, user: user) }
 
     subject { described_class.where(id: build).with_any_tags }
 
@@ -3685,7 +3685,7 @@ describe Ci::Build do
   end
 
   describe 'pages deployments' do
-    set(:build) { create(:ci_build, project: project, user: user) }
+    let_it_be(:build, reload: true) { create(:ci_build, project: project, user: user) }
 
     context 'when job is "pages"' do
       before do
@@ -3852,7 +3852,7 @@ describe Ci::Build do
   end
 
   describe '#artifacts_metadata_entry' do
-    set(:build) { create(:ci_build, project: project) }
+    let_it_be(:build) { create(:ci_build, project: project) }
     let(:path) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }
 
     around do |example|
@@ -3952,7 +3952,7 @@ describe Ci::Build do
   end
 
   describe '#supported_runner?' do
-    set(:build) { create(:ci_build) }
+    let_it_be(:build) { create(:ci_build) }
 
     subject { build.supported_runner?(runner_features) }
 

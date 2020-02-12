@@ -25,7 +25,7 @@
 # Jobs that only need to pull cache
 .default-cache:
   cache:
-    key: "debian-stretch-ruby-2.6.5-node-12.x"
+    key: "debian-stretch-ruby-2.6.5-pg9.6-node-12.x"
     paths:
       - .go/pkg/mod
       - vendor/ruby

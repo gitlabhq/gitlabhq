@@ -7,20 +7,7 @@
   %p
     = _("Measured in bytes of code. Excludes generated and vendored code.")
 
-  .row
-    .col-md-4
-      %ul.bordered-list
-        - @languages.each do |language|
-          %li
-            %span{ style: "color: #{language[:color]}" }
-              = icon('circle')
-            &nbsp;
-            = language[:label]
-            .float-right
-              = language[:value]
-              \%
-    .col-md-8
-      %canvas#languages-chart{ height: 400 }
+  #js-languages-chart{ data: { chart_data: @languages.to_json.html_safe } }
 
 .repo-charts
   .sub-header-block.border-top
@@ -60,27 +47,18 @@
       %p.slead
         = _("Commits per day of month")
       %div
-        %canvas#month-chart
+        #js-month-chart{ data: { chart_data: @commits_per_month.to_json.html_safe } }
   .row
     .col-md-6
     .col-md-6
       %p.slead
         = _("Commits per weekday")
       %div
-        %canvas#weekday-chart
+        #js-weekday-chart{ data: { chart_data: @commits_per_week_days.to_json.html_safe } }
   .row
     .col-md-6
     .col-md-6
       %p.slead
         = _("Commits per day hour (UTC)")
       %div
-        %canvas#hour-chart
-
--# haml-lint:disable InlineJavaScript
-%script#projectChartData{ type: "application/json" }
-  - projectChartData = {};
-  - projectChartData['hour'] = @commits_per_time
-  - projectChartData['weekDays'] = @commits_per_week_days
-  - projectChartData['month'] = @commits_per_month
-  - projectChartData['languages'] = @languages
-  = projectChartData.to_json.html_safe
+        #js-hour-chart{ data: { chart_data: @commits_per_time.to_json.html_safe } }

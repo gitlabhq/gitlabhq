@@ -2,8 +2,7 @@
 import ViewerSwitcher from './blob_header_viewer_switcher.vue';
 import DefaultActions from './blob_header_default_actions.vue';
 import BlobFilepath from './blob_header_filepath.vue';
-import eventHub from '../event_hub';
-import { RICH_BLOB_VIEWER, SIMPLE_BLOB_VIEWER } from './constants';
+import { SIMPLE_BLOB_VIEWER } from './constants';
 
 export default {
   components: {
@@ -26,10 +25,15 @@ export default {
       required: false,
       default: false,
     },
+    activeViewerType: {
+      type: String,
+      required: false,
+      default: SIMPLE_BLOB_VIEWER,
+    },
   },
   data() {
     return {
-      activeViewer: this.blob.richViewer ? RICH_BLOB_VIEWER : SIMPLE_BLOB_VIEWER,
+      viewer: this.hideViewerSwitcher ? null : this.activeViewerType,
     };
   },
   computed: {
@@ -40,19 +44,16 @@ export default {
       return !this.hideDefaultActions;
     },
   },
-  created() {
-    if (this.showViewerSwitcher) {
-      eventHub.$on('switch-viewer', this.setActiveViewer);
-    }
-  },
-  beforeDestroy() {
-    if (this.showViewerSwitcher) {
-      eventHub.$off('switch-viewer', this.setActiveViewer);
-    }
+  watch: {
+    viewer(newVal, oldVal) {
+      if (!this.hideViewerSwitcher && newVal !== oldVal) {
+        this.$emit('viewer-changed', newVal);
+      }
+    },
   },
   methods: {
-    setActiveViewer(viewer) {
-      this.activeViewer = viewer;
+    proxyCopyRequest() {
+      this.$emit('copy');
     },
   },
 };
@@ -66,11 +67,16 @@ export default {
     </blob-filepath>
 
     <div class="file-actions d-none d-sm-block">
-      <viewer-switcher v-if="showViewerSwitcher" :blob="blob" :active-viewer="activeViewer" />
+      <viewer-switcher v-if="showViewerSwitcher" v-model="viewer" />
 
       <slot name="actions"></slot>
 
-      <default-actions v-if="showDefaultActions" :blob="blob" :active-viewer="activeViewer" />
+      <default-actions
+        v-if="showDefaultActions"
+        :raw-path="blob.rawPath"
+        :active-viewer="viewer"
+        @copy="proxyCopyRequest"
+      />
     </div>
   </div>
 </template>

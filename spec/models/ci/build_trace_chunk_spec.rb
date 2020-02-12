@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
-  set(:build) { create(:ci_build, :running) }
+  let_it_be(:build) { create(:ci_build, :running) }
   let(:chunk_index) { 0 }
   let(:data_store) { :redis }
   let(:raw_data) { nil }
@@ -24,7 +24,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   context 'FastDestroyAll' do
     let(:parent) { create(:project) }
     let(:pipeline) { create(:ci_pipeline, project: parent) }
-    let(:build) { create(:ci_build, :running, :trace_live, pipeline: pipeline, project: parent) }
+    let!(:build) { create(:ci_build, :running, :trace_live, pipeline: pipeline, project: parent) }
     let(:subjects) { build.trace_chunks }
 
     describe 'Forbid #destroy and #destroy_all' do

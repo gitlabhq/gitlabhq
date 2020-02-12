@@ -138,6 +138,7 @@ class Project < ApplicationRecord
   has_many :boards
 
   # Project services
+  has_one :alerts_service
   has_one :campfire_service
   has_one :discord_service
   has_one :drone_ci_service
@@ -2328,6 +2329,10 @@ class Project < ApplicationRecord
 
   def limited_protected_branches(limit)
     protected_branches.limit(limit)
+  end
+
+  def alerts_service_activated?
+    false
   end
 
   private
