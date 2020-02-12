@@ -203,36 +203,6 @@ module Gitlab
                                    start_repository: start_repository)
       end
 
-      # DEPRECATED: https://gitlab.com/gitlab-org/gitaly/issues/1628
-      def user_rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
-        request = Gitaly::UserRebaseRequest.new(
-          repository: @gitaly_repo,
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
-          rebase_id: rebase_id.to_s,
-          branch: encode_binary(branch),
-          branch_sha: branch_sha,
-          remote_repository: remote_repository.gitaly_repository,
-          remote_branch: encode_binary(remote_branch)
-        )
-
-        response = GitalyClient.call(
-          @repository.storage,
-          :operation_service,
-          :user_rebase,
-          request,
-          timeout: GitalyClient.long_timeout,
-          remote_storage: remote_repository.storage
-        )
-
-        if response.pre_receive_error.presence
-          raise Gitlab::Git::PreReceiveError, response.pre_receive_error
-        elsif response.git_error.presence
-          raise Gitlab::Git::Repository::GitError, response.git_error
-        else
-          response.rebase_sha
-        end
-      end
-
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:, push_options: [])
         request_enum = QueueEnumerator.new
         rebase_sha = nil

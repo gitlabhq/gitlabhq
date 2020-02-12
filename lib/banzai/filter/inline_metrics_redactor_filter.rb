@@ -59,7 +59,7 @@ module Banzai
             embed = Embed.new
             url = node.attribute('data-dashboard-url').to_s
 
-            set_path_and_permission(embed, url, URL.regex, :read_environment)
+            set_path_and_permission(embed, url, URL.metrics_regex, :read_environment)
             set_path_and_permission(embed, url, URL.grafana_regex, :read_project) unless embed.permission
 
             embeds[node] = embed if embed.permission

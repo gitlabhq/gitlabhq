@@ -24,9 +24,6 @@ variables:
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"
 
-after_script:
-  - date
-
 include:
   - local: .gitlab/ci/cache-repo.gitlab-ci.yml
   - local: .gitlab/ci/cng.gitlab-ci.yml

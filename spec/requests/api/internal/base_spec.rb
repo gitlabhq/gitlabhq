@@ -313,6 +313,10 @@ describe API::Internal::Base do
       end
 
       context "git pull" do
+        before do
+          allow(Feature).to receive(:persisted_names).and_return(%w[gitaly_mep_mep])
+        end
+
         it "has the correct payload" do
           pull(key, project)
 
@@ -326,7 +330,7 @@ describe API::Internal::Base do
           expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
           expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
           expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-          expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-inforef-uploadpack-cache' => 'true', 'gitaly-feature-cache-invalidator' => 'true', 'gitaly-feature-commit-without-batch-check' => 'true', 'gitaly-feature-use-core-delta-islands' => 'true', 'gitaly-feature-use-git-protocol-v2' => 'true')
+          expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-mep-mep' => 'true')
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
@@ -346,7 +350,6 @@ describe API::Internal::Base do
             expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
             expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
             expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-            expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-inforef-uploadpack-cache' => 'true', 'gitaly-feature-cache-invalidator' => 'true', 'gitaly-feature-commit-without-batch-check' => 'true', 'gitaly-feature-use-core-delta-islands' => 'true', 'gitaly-feature-use-git-protocol-v2' => 'true')
             expect(user.reload.last_activity_on).to be_nil
           end
         end
@@ -594,7 +597,6 @@ describe API::Internal::Base do
           expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
           expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
           expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-          expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-inforef-uploadpack-cache' => 'true', 'gitaly-feature-cache-invalidator' => 'true', 'gitaly-feature-commit-without-batch-check' => 'true', 'gitaly-feature-use-core-delta-islands' => 'true', 'gitaly-feature-use-git-protocol-v2' => 'true')
         end
       end
 

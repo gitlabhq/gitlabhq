@@ -32,6 +32,8 @@ class Feature
     end
 
     def persisted_names
+      return [] unless Gitlab::Database.exists?
+
       Gitlab::SafeRequestStore[:flipper_persisted_names] ||=
         begin
           # We saw on GitLab.com, this database request was called 2300

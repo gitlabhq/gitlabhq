@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Verify', :docker, quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/202149' do
+  context 'Verify', :docker, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/202149', type: :flaky } do
     describe 'Pipeline creation and processing' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:max_wait) { 30 }

@@ -1622,7 +1622,6 @@ describe Repository do
 
     it 'executes the new Gitaly RPC' do
       expect_any_instance_of(Gitlab::GitalyClient::OperationService).to receive(:rebase)
-      expect_any_instance_of(Gitlab::GitalyClient::OperationService).not_to receive(:user_rebase)
 
       repository.rebase(user, merge_request)
     end

@@ -1,34 +1,25 @@
 # frozen_string_literal: true
 
-require 'set'
-
 class Feature
   class Gitaly
-    # Server feature flags should use '_' to separate words.
-    SERVER_FEATURE_FLAGS =
-      %w[
-        cache_invalidator
-        inforef_uploadpack_cache
-        commit_without_batch_check
-        use_core_delta_islands
-        use_git_protocol_v2
-      ].freeze
-
-    DEFAULT_ON_FLAGS = Set.new([]).freeze
+    PREFIX = "gitaly_"
 
     class << self
       def enabled?(feature_flag)
         return false unless Feature::FlipperFeature.table_exists?
 
-        default_on = DEFAULT_ON_FLAGS.include?(feature_flag)
-        Feature.enabled?("gitaly_#{feature_flag}", default_enabled: default_on)
+        Feature.enabled?("#{PREFIX}#{feature_flag}")
       rescue ActiveRecord::NoDatabaseError, PG::ConnectionBad
         false
       end
 
       def server_feature_flags
-        SERVER_FEATURE_FLAGS.map do |f|
-          ["gitaly-feature-#{f.tr('_', '-')}", enabled?(f).to_s]
+        Feature.persisted_names
+          .select { |f| f.start_with?(PREFIX) }
+          .map do |f|
+          flag = f.delete_prefix(PREFIX)
+
+          ["gitaly-feature-#{flag.tr('_', '-')}", enabled?(flag).to_s]
         end.to_h
       end
     end
