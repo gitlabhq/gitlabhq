@@ -51,7 +51,7 @@ easier to measure the impact of both separately.
 GitLab's feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the [Feature
 Flags process](process.md) guide) supports rolling out changes to a percentage of
-users. This in turn can be controlled using [GitLab Chatops](../../ci/chatops/README.md).
+time to users. This in turn can be controlled using [GitLab Chatops](../../ci/chatops/README.md).
 
 For an up to date list of feature flag commands please see [the source
 code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
@@ -136,8 +136,13 @@ you run these 2 commands:
 /chatops run feature set some_feature 25
 ```
 
-Then `some_feature` will be enabled for 25% of the users interacting with
-`gitlab-org/gitlab`, and no one else.
+Then `some_feature` will be enabled for 25% of the time the users are interacting with
+`gitlab-org/gitlab`. Note that the the feature is not enabled to 25%
+of the users, rather a simple randomization is made each time the `enabled?` is checked.
+
+NOTE: **Note:**
+**Percentage of time** rollout is not a good idea if what you want is to make sure a feature
+is always on or off to the users.
 
 ## Cleaning up
 

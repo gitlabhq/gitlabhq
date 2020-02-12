@@ -6,6 +6,8 @@ describe MergeRequestDiffCommit do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
 
+  it_behaves_like 'a BulkInsertSafe model', MergeRequestDiffCommit
+
   describe '#to_hash' do
     subject { merge_request.commits.first }
 

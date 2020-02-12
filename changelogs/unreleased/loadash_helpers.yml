@@ -1,0 +1,5 @@
+---
+title: Replace underscore with lodash in /app/assets/javascripts/helpers
+merge_request: 25014
+author: rkpattnaik780
+type: changed

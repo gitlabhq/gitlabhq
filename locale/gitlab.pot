@@ -7773,6 +7773,9 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
+msgid "Events in %{project_path}"
+msgstr ""
+
 msgid "Every %{action} attempt has failed: %{job_error_message}. Please try again."
 msgstr ""
 
@@ -14591,6 +14594,9 @@ msgid "Project '%{project_name}' was successfully updated."
 msgstr ""
 
 msgid "Project '%{project_name}' will be deleted on %{date}"
+msgstr ""
+
+msgid "Project Audit Events"
 msgstr ""
 
 msgid "Project Badges"

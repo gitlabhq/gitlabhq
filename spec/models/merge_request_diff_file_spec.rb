@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe MergeRequestDiffFile do
+  it_behaves_like 'a BulkInsertSafe model', MergeRequestDiffFile
+
   describe '#diff' do
     context 'when diff is not stored' do
       let(:unpacked) { 'unpacked' }

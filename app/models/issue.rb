@@ -172,8 +172,10 @@ class Issue < ApplicationRecord
     end
   end
 
-  def self.order_by_position_and_priority
-    order_labels_priority
+  # `with_cte` argument allows sorting when using CTE queries and prevents
+  # errors in postgres when using CTE search optimisation
+  def self.order_by_position_and_priority(with_cte: false)
+    order_labels_priority(with_cte: with_cte)
       .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
               Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
               "id DESC")
