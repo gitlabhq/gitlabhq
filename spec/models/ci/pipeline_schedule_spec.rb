@@ -80,9 +80,9 @@ describe Ci::PipelineSchedule do
     it 'preloads the associations' do
       subject
 
-      query = ActiveRecord::QueryRecorder.new { subject.each(&:project) }
+      query = ActiveRecord::QueryRecorder.new { subject.map(&:project).each(&:route) }
 
-      expect(query.count).to eq(2)
+      expect(query.count).to eq(3)
     end
   end
 

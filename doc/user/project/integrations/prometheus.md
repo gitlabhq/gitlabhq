@@ -356,6 +356,44 @@ Note the following properties:
 
 ![anomaly panel type](img/prometheus_dashboard_column_panel_type.png)
 
+##### Stacked column
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30583) in GitLab 12.8.
+
+To add a stacked column panel type to a dashboard, look at the following sample dashboard file:
+
+```yaml
+dashboard: 'Dashboard title'
+priority: 1
+panel_groups:
+- group: 'Group Title'
+  priority: 5
+  panels:
+  - type: 'stacked-column'
+    title: "Stacked column"
+    y_label: "y label"
+    x_label: 'x label'
+    metrics:
+      - id: memory_1
+        query_range: 'memory_query'
+        label: "memory query 1"
+        unit: "count"
+        series_name: 'group 1'
+      - id: memory_2
+        query_range: 'memory_query_2'
+        label: "memory query 2"
+        unit: "count"
+        series_name: 'group 2'
+
+```
+
+![stacked column panel type](img/prometheus_dashboard_stacked_column_panel_type_v12_8.png)
+
+| Property | Type | Required | Description |
+| ------ | ------ | ------ | ------ |
+| `type` | string | yes | Type of panel to be rendered. For stacked column panel types, set to `stacked-column` |
+| `query_range` | yes | yes | For stacked column panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
+
 ##### Single Stat
 
 To add a single stat panel type to a dashboard, look at the following sample dashboard file:

@@ -2999,6 +2999,9 @@ msgstr ""
 msgid "Built-in"
 msgstr ""
 
+msgid "Bulk request concurrency"
+msgstr ""
+
 msgid "Burndown chart"
 msgstr ""
 
@@ -11728,7 +11731,13 @@ msgstr ""
 msgid "Maximum attachment size (MB)"
 msgstr ""
 
+msgid "Maximum bulk request size (MiB)"
+msgstr ""
+
 msgid "Maximum capacity"
+msgstr ""
+
+msgid "Maximum concurrency of Elasticsearch bulk requests per indexing operation."
 msgstr ""
 
 msgid "Maximum delay (Minutes)"
@@ -11771,6 +11780,9 @@ msgid "Maximum size limit for a single commit."
 msgstr ""
 
 msgid "Maximum size limit for each repository."
+msgstr ""
+
+msgid "Maximum size of Elasticsearch bulk indexing requests."
 msgstr ""
 
 msgid "Maximum size of individual attachments in comments."
@@ -19576,6 +19588,9 @@ msgid "This merge request is locked."
 msgstr ""
 
 msgid "This namespace has already been taken! Please choose another one."
+msgstr ""
+
+msgid "This only applies to repository indexing operations."
 msgstr ""
 
 msgid "This option is only available on GitLab.com"

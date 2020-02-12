@@ -344,6 +344,8 @@ ActiveRecord::Schema.define(version: 2020_02_11_152410) do
     t.boolean "updating_name_disabled_for_users", default: false, null: false
     t.integer "instance_administrators_group_id"
     t.integer "elasticsearch_indexed_field_length_limit", default: 0, null: false
+    t.integer "elasticsearch_max_bulk_size_mb", limit: 2, default: 10, null: false
+    t.integer "elasticsearch_max_bulk_concurrency", limit: 2, default: 10, null: false
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"

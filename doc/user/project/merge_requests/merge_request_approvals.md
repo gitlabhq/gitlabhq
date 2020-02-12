@@ -147,6 +147,22 @@ reduce the number of approvals left for all rules that the approver belongs to.
 
 ![Approvals premium merge request widget](img/approvals_premium_mr_widget_v12_7.png)
 
+### Scoped to Protected Branch **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/460) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
+
+Approval rules are often only relevant to specific branches, like `master`.
+When configuring [**Default Approval Rules**](#adding--editing-a-default-approval-rule)
+these can be scoped to all the protected branches at once by navigating to your project's
+**Settings**, expanding **Merge request approvals**, and selecting **Any branch** from
+the **Target branch** dropdown.
+
+Alternatively, you can select a very specific protected branch from the **Target branch** dropdown:
+
+![Scoped to Protected Branch](img/scoped_to_protected_branch_v12_8.png)
+
+To enable this configuration, see [Code Owner’s approvals for protected branches](../protected_branches.md#protected-branches-approval-by-code-owners-premium).
+
 ## Adding or removing an approval
 
 When an [eligible approver](#eligible-approvers) visits an open merge request,
