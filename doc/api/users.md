@@ -1168,7 +1168,7 @@ Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22257) in GitLab 12.4.
 
-Deactivates the specified user.  Available only for admin.
+Deactivates the specified user. Available only for admin.
 
 ```
 POST /users/:id/deactivate
@@ -1190,7 +1190,7 @@ Returns:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22257) in GitLab 12.4.
 
-Activates the specified user.  Available only for admin.
+Activates the specified user. Available only for admin.
 
 ```
 POST /users/:id/activate

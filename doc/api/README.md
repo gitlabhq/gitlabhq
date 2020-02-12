@@ -449,7 +449,7 @@ GET /api/v4/projects/diaspora%2Fdiaspora
 ```
 
 NOTE: **Note:**
-A project's **path** is not necessarily the same as its **name**.  A
+A project's **path** is not necessarily the same as its **name**. A
 project's path can be found in the project's URL or in the project's settings
 under **General > Advanced > Change path**.
 

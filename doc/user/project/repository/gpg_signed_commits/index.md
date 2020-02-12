@@ -54,7 +54,7 @@ started:
    In some cases like Gpg4win on Windows and other macOS versions, the command
    here may be `gpg --gen-key`.
 
-1. The first question is which algorithm can be used.  Select the kind you want
+1. The first question is which algorithm can be used. Select the kind you want
    or press <kbd>Enter</kbd> to choose the default (RSA and RSA):
 
    ```plaintext

@@ -964,7 +964,7 @@ Here's a sample audio clip:
 You can also use raw HTML in your Markdown, and it'll usually work pretty well.
 
 See the documentation for HTML::Pipeline's [SanitizationFilter](https://www.rubydoc.info/gems/html-pipeline/1.11.0/HTML/Pipeline/SanitizationFilter#WHITELIST-constant)
-class for the list of allowed HTML tags and attributes.  In addition to the default
+class for the list of allowed HTML tags and attributes. In addition to the default
 `SanitizationFilter` whitelist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
 
 ```html

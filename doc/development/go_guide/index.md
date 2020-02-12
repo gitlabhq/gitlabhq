@@ -40,7 +40,7 @@ of possible security breaches in our code:
 - SQL injections
 
 Remember to run
-[SAST](../../user/application_security/sast/index.md)
+[SAST](../../user/application_security/sast/index.md) and [Dependency Scanning](../../user/application_security/dependency_scanning/index.md)
 **(ULTIMATE)** on your project (or at least the [gosec
 analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
 and to follow our [Security

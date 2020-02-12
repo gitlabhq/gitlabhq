@@ -13,7 +13,7 @@ members.
 
 The primary mechanism to give a group of users, say 'Engineering', access to a project,
 say 'Project Acme', in GitLab is to make the 'Engineering' group the owner of 'Project
-Acme'.  But what if 'Project Acme' already belongs to another group, say 'Open Source'?
+Acme'. But what if 'Project Acme' already belongs to another group, say 'Open Source'?
 This is where the group sharing feature can be of use.
 
 To share 'Project Acme' with the 'Engineering' group:

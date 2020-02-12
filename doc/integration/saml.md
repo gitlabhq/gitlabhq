@@ -243,7 +243,7 @@ considered `admin groups`.
 >**Note:**
 This setting is only available on GitLab 11.4 EE and above.
 
-This setting also follows the requirements documented for the `External Groups` setting.  GitLab uses the Group information provided by your IdP to determine if a user should be assigned the `auditor` role.
+This setting also follows the requirements documented for the `External Groups` setting. GitLab uses the Group information provided by your IdP to determine if a user should be assigned the `auditor` role.
 
 ```yaml
 { name: 'saml',
@@ -374,7 +374,7 @@ in the OmniAuth [info hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-
 
 For example, if your SAMLResponse contains an Attribute called 'EmailAddress',
 specify `{ email: ['EmailAddress'] }` to map the Attribute to the
-corresponding key in the info hash.  URI-named Attributes are also supported, e.g.
+corresponding key in the info hash. URI-named Attributes are also supported, e.g.
 `{ email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] }`.
 
 This setting allows you tell GitLab where to look for certain attributes required

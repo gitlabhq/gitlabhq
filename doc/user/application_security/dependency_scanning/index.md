@@ -64,7 +64,7 @@ The following languages and dependency managers are supported.
 | Python ([poetry](https://poetry.eustace.io/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/7006 "Support Poetry in Dependency Scanning")) | not available |
 | Ruby ([gem](https://rubygems.org/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
 | Scala ([sbt](https://www.scala-sbt.org/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| Go ([Golang](https://golang.org/)) | yes ([alpha](https://gitlab.com/gitlab-org/gitlab/issues/7132)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
+| Go ([Go Modules](https://github.com/golang/go/wiki/Modules)) | yes ([alpha](https://gitlab.com/gitlab-org/gitlab/issues/7132)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 
 ## Configuration
 

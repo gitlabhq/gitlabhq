@@ -218,8 +218,11 @@ You can follow our work towards this goal in the
 
 The full contents of our `config.toml` are:
 
+NOTE: **Note:**
+Settings that are not public are shown as `X`.
+
 ```toml
-concurrent = 10
+concurrent = X
 check_interval = 3
 
 [[runners]]
@@ -291,8 +294,8 @@ stages:
   - test
 
 before_script:
- - date +"%H"
- - echo ${HOUR}
+ - Set-Variable -Name "time" -Value (date -Format "%H:%m")
+ - echo ${time}
  - echo "started by ${GITLAB_USER_NAME}"
 
 build:

@@ -7,7 +7,7 @@ when the `external_url` configuration option is changed - causing links
 in the cached text to refer to the old URL.
 
 To avoid this problem, the administrator can invalidate the existing cache by
-increasing the `local_markdown_version` setting in application settings.  This can
+increasing the `local_markdown_version` setting in application settings. This can
 be done by [changing the application settings through
 the API](../api/settings.md#change-application-settings):
 

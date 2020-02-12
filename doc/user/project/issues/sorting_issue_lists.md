@@ -19,7 +19,7 @@ order with respect to the other issues in the list. When you drag-and-drop reord
 an issue, its relative order value changes accordingly.
 
 In addition, any time that issue appears in a manually sorted list,
-the updated relative order value will be used for the ordering.  This means that
+the updated relative order value will be used for the ordering. This means that
 if issue `A` is drag-and-drop reordered to be above issue `B` by any user in
 a given list inside your GitLab instance, any time those two issues are subsequently
 loaded in any list in the same instance (could be a different project issue list or a

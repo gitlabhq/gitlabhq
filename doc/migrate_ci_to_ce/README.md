@@ -129,7 +129,7 @@ First upgrade your GitLab server to version 8.0:
 
 ### 2. Disable CI on the GitLab server during the migration
 
-After you update, go to the admin panel and temporarily disable CI.  As
+After you update, go to the admin panel and temporarily disable CI. As
   an administrator, go to **Admin Area** -> **Settings**, and under
 **Continuous Integration** uncheck **Disable to prevent CI usage until rake
 ci:migrate is run (8.0 only)**.

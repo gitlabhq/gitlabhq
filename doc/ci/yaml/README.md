@@ -1523,7 +1523,7 @@ globally and all jobs will use that definition.
 Use the `paths` directive to choose which files or directories will be cached. Paths
 are relative to the project directory (`$CI_PROJECT_DIR`) and cannot directly link outside it.
 Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
+patterns and [`filepath.Match`](https://golang.org/pkg/path/filepath/#Match).
 
 Cache all files in `binaries` that end in `.apk` and the `.config` file:
 
@@ -1755,7 +1755,7 @@ be available for download in the GitLab UI.
 
 Paths are relative to the project directory (`$CI_PROJECT_DIR`) and cannot directly
 link outside it. Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
+patterns and [`filepath.Match`](https://golang.org/pkg/path/filepath/#Match).
 
 To restrict which jobs a specific job will fetch artifacts from, see [dependencies](#dependencies).
 
@@ -3212,9 +3212,9 @@ spinach:
 ```
 
 In GitLab 12.0 and later, it's also possible to use multiple parents for
-`extends`.  The algorithm used for merge is "closest scope wins", so
+`extends`. The algorithm used for merge is "closest scope wins", so
 keys from the last member will always shadow anything defined on other
-levels.  For example:
+levels. For example:
 
 ```yaml
 .only-important:

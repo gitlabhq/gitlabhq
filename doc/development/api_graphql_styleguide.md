@@ -180,8 +180,8 @@ query($project_path: ID!) {
 ```
 
 To ensure that we get consistent ordering, we will append an ordering on the primary
-key, in descending order.  This is usually `id`, so basically we will add `order(id: :desc)`
-to the end of the relation.  A primary key _must_ be available on the underlying table.
+key, in descending order. This is usually `id`, so basically we will add `order(id: :desc)`
+to the end of the relation. A primary key _must_ be available on the underlying table.
 
 ### Exposing permissions for a type
 

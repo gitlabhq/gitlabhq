@@ -37,7 +37,7 @@ the [next section](#authenticating-to-the-gitlab-npm-registry).
 
 ### Installing NPM
 
-Follow the instructions at [npmjs.com](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) to download and install Node.JS and
+Follow the instructions at [npmjs.com](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) to download and install Node.js and
 NPM to your local development environment.
 
 Once installation is complete, verify you can use NPM in your terminal by

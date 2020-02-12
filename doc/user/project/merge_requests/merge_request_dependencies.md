@@ -4,13 +4,9 @@ type: reference, concepts
 
 # Merge Request dependencies **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9688) in
-[GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17291) from
-"Cross-project dependencies" to "Merge Requests dependencies" in
-[GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
-> - Intra-project MR dependencies were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16799)
-in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9688) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17291) from "Cross-project dependencies" to "Merge Requests dependencies" in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
+> - Intra-project MR dependencies were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16799) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
 
 Merge request dependencies allows a required order of merging
 between merge requests to be expressed. If a merge request "depends on" another,
@@ -129,7 +125,7 @@ graph LR;
     herfriend/another-lib!1-->mycorp/awesome-project!100;
 ```
 
-What is **not** supported is a "deep", or "nested" graph of dependencies, e.g.:
+What is **not** supported is a "deep", or "nested" graph of dependencies. For example:
 
 ```mermaid
 graph LR;

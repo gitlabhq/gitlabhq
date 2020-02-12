@@ -1364,7 +1364,7 @@ server.start
 ```
 
 Pick an unused port (e.g. 8000) and start the script: `ruby print_http_body.rb
-8000`.  Then add your server as a webhook receiver in GitLab as
+8000`. Then add your server as a webhook receiver in GitLab as
 `http://my.host:8000/`.
 
 When you press 'Test' in GitLab, you should see something like this in the

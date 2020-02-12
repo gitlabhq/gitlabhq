@@ -368,7 +368,7 @@ be configured on any repository in the entire GitLab installation.
 This is really useful for integrating repositories to secured, shared Continuous
 Integration (CI) services or other shared services.
 GitLab administrators can set up the Global Shared Deploy key in GitLab and
-add the private key to any shared systems.  Individual repositories opt into
+add the private key to any shared systems. Individual repositories opt into
 exposing their repository using these keys when a project maintainers (or higher)
 authorizes a Global Shared Deploy key to be used with their project.
 

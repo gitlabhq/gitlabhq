@@ -118,7 +118,7 @@ Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates. The following scanners are supported:
 
 - [Dependency Scanning](dependency_scanning/index.md):
-  Automatic Patch creation is only available for Node.JS projects managed with
+  Automatic Patch creation is only available for Node.js projects managed with
   `yarn`.
 
 #### Manually applying the suggested patch

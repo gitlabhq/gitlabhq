@@ -112,7 +112,7 @@ Read more on how to [interact with the vulnerabilities](../index.md#interacting-
 
 ## Instance Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6953) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6953) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.
 
 At the instance level, the Security Dashboard displays the vulnerabilities
 present in all of the projects that you have added to it.

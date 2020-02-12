@@ -30,7 +30,7 @@ This information is used, among other things, to identify to which versions
 patches will need to be backported, making sure active GitLab instances remain
 secure.
 
-If you disable version check, this information will not be collected.  Enable or
+If you disable version check, this information will not be collected. Enable or
 disable the version check in **Admin Area > Settings > Metrics and profiling > Usage statistics**.
 
 ### Request flow example

@@ -349,7 +349,7 @@ The optional `runtime` parameter can refer to one of the following runtime alias
 
 After the `gitlab-ci.yml` template has been added and the `serverless.yml` file
 has been created, pushing a commit to your project will result in a CI pipeline
-being executed which will deploy each function as a Knative service.  Once the
+being executed which will deploy each function as a Knative service. Once the
 deploy stage has finished, additional details for the function will appear
 under **Operations > Serverless**.
 

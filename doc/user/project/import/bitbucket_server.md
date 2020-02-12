@@ -48,7 +48,7 @@ The Bitbucket Server importer works as follows:
 
 When issues/pull requests are being imported, the Bitbucket importer tries to
 find the author's e-mail address with a confirmed e-mail address in the GitLab
-user database.  If no such user is available, the project creator is set as
+user database. If no such user is available, the project creator is set as
 the author. The importer will append a note in the comment to mark the original
 creator.
 

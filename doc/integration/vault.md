@@ -65,7 +65,7 @@ The following assumes you already have Vault installed and running.
 
 1. **Write the OIDC Role Config:**
 
-    Now that Vault has a GitLab application ID and secret, it needs to know the [**Redirect URIs**](https://www.vaultproject.io/docs/auth/jwt.html#redirect-uris) and scopes given to GitLab during the application creation process. The redirect URIs need to match where your Vault instance is running. The `oidc_scopes` field needs to include the `openid`.  Similarly to the previous step, replace `your_application_id` with the generated application ID from GitLab:
+    Now that Vault has a GitLab application ID and secret, it needs to know the [**Redirect URIs**](https://www.vaultproject.io/docs/auth/jwt.html#redirect-uris) and scopes given to GitLab during the application creation process. The redirect URIs need to match where your Vault instance is running. The `oidc_scopes` field needs to include the `openid`. Similarly to the previous step, replace `your_application_id` with the generated application ID from GitLab:
 
     This configuration is saved under the name of the role you are creating. In this case, we are creating a `demo` role. Later, we'll show how you can access this role through the Vault CLI.
 

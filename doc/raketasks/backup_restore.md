@@ -728,7 +728,7 @@ This procedure assumes that:
 - You have installed the **exact same version and type (CE/EE)** of GitLab
   Omnibus with which the backup was created.
 - You have run `sudo gitlab-ctl reconfigure` at least once.
-- GitLab is running.  If not, start it using `sudo gitlab-ctl start`.
+- GitLab is running. If not, start it using `sudo gitlab-ctl start`.
 
 First make sure your backup tar file is in the backup directory described in the
 `gitlab.rb` configuration `gitlab_rails['backup_path']`. The default is
@@ -739,7 +739,7 @@ sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backu
 sudo chown git.git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
 ```
 
-Stop the processes that are connected to the database.  Leave the rest of GitLab
+Stop the processes that are connected to the database. Leave the rest of GitLab
 running:
 
 ```shell

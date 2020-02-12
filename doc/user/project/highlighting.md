@@ -10,7 +10,7 @@ If GitLab is guessing wrong, you can override its choice of language using the `
 
 When you check in and push that change, all `*.pl` files in your project will be highlighted as Prolog.
 
-The paths here are simply Git's built-in [`.gitattributes` interface](https://git-scm.com/docs/gitattributes).  So, if you were to invent a file format called a `Nicefile` at the root of your project that used ruby syntax, all you need is:
+The paths here are simply Git's built-in [`.gitattributes` interface](https://git-scm.com/docs/gitattributes). So, if you were to invent a file format called a `Nicefile` at the root of your project that used ruby syntax, all you need is:
 
 ``` conf
 /Nicefile gitlab-language=ruby
