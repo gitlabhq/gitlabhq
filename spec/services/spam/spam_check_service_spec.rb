@@ -22,12 +22,12 @@ describe Spam::SpamCheckService do
   end
 
   describe '#initialize' do
-    subject { described_class.new(spammable: issue, request: request) }
+    subject { described_class.new(target: issue, request: request) }
 
     context 'when the request is nil' do
       let(:request) { nil }
 
-      it 'assembles the options with information from the spammable' do
+      it 'assembles the options with information from the target' do
         aggregate_failures do
           expect(subject.options[:ip_address]).to eq(issue.ip_address)
           expect(subject.options[:user_agent]).to eq(issue.user_agent)
@@ -39,7 +39,7 @@ describe Spam::SpamCheckService do
     context 'when the request is present' do
       let(:request) { double(:request, env: env) }
 
-      it 'assembles the options with information from the spammable' do
+      it 'assembles the options with information from the target' do
         aggregate_failures do
           expect(subject.options[:ip_address]).to eq(fake_ip)
           expect(subject.options[:user_agent]).to eq(fake_user_agent)
@@ -55,7 +55,7 @@ describe Spam::SpamCheckService do
     let_it_be(:existing_spam_log) { create(:spam_log, user: user, recaptcha_verified: false) }
 
     subject do
-      described_service = described_class.new(spammable: issue, request: request)
+      described_service = described_class.new(target: issue, request: request)
       described_service.execute(user_id: user.id, api: nil, recaptcha_verified: recaptcha_verified, spam_log_id: existing_spam_log.id)
     end
 
@@ -81,7 +81,7 @@ describe Spam::SpamCheckService do
     context 'when recaptcha was not verified' do
       let(:recaptcha_verified) { false }
 
-      context 'when spammable attributes have not changed' do
+      context 'when target attributes have not changed' do
         before do
           issue.closed_at = Time.zone.now
 
@@ -98,7 +98,7 @@ describe Spam::SpamCheckService do
         end
       end
 
-      context 'when spammable attributes have changed' do
+      context 'when target attributes have changed' do
         before do
           issue.description = 'SPAM!'
         end

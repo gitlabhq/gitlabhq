@@ -2,7 +2,7 @@
 
 # SpamCheckMethods
 #
-# Provide helper methods for checking if a given spammable object has
+# Provide helper methods for checking if a given target spammable object has
 # potential spam data.
 #
 # Dependencies:
@@ -18,13 +18,13 @@ module SpamCheckMethods
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
-  # In order to be proceed to the spam check process, @spammable has to be
+  # In order to be proceed to the spam check process, @target has to be
   # a dirty instance, which means it should be already assigned with the new
   # attribute values.
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def spam_check(spammable, user)
     Spam::SpamCheckService.new(
-      spammable: spammable,
+      target: spammable,
       request: @request
     ).execute(
       api: @api,

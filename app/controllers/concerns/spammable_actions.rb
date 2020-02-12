@@ -11,7 +11,7 @@ module SpammableActions
   end
 
   def mark_as_spam
-    if Spam::MarkAsSpamService.new(spammable: spammable).execute
+    if Spam::MarkAsSpamService.new(target: spammable).execute
       redirect_to spammable_path, notice: _("%{spammable_titlecase} was submitted to Akismet successfully.") % { spammable_titlecase: spammable.spammable_entity_type.titlecase }
     else
       redirect_to spammable_path, alert: _('Error with Akismet. Please check the logs for more info.')
@@ -42,7 +42,7 @@ module SpammableActions
         end
 
         format.json do
-          locals = { spammable: spammable, script: false, has_submit: false }
+          locals = { target: spammable, script: false, has_submit: false }
           recaptcha_html = render_to_string(partial: 'shared/recaptcha_form', formats: :html, locals: locals)
 
           render json: { recaptcha_html: recaptcha_html }

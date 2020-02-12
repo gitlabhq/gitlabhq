@@ -2,7 +2,7 @@
 
 shared_examples 'akismet spam' do
   context 'when request is missing' do
-    subject { described_class.new(spammable: issue, request: nil) }
+    subject { described_class.new(target: issue, request: nil) }
 
     it "doesn't check as spam" do
       subject

@@ -89,9 +89,9 @@ def lint_commits(commits)
   end
 
   if squash_mr?
-    multi_line_commit_linter = commit_linters.detect { |commit_linter| commit_linter.multi_line? }
+    multi_line_commit_linter = commit_linters.detect { |commit_linter| !commit_linter.merge? && commit_linter.multi_line? }
 
-    if multi_line_commit_linter && multi_line_commit_linter.lint.failed?
+    if multi_line_commit_linter && multi_line_commit_linter.failed?
       warn_or_fail_commits(multi_line_commit_linter)
       fail_message('The commit message that will be used in the squash commit does not meet our Git commit message standards.')
     else
