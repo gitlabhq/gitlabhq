@@ -1,0 +1,5 @@
+---
+title: Fix ProjectAuthorization calculation for shared groups
+merge_request:
+author:
+type: security
