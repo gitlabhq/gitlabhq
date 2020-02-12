@@ -22,6 +22,42 @@ describe Users::RefreshAuthorizedProjectsService do
 
       service.execute
     end
+
+    context 'callbacks' do
+      let(:callback) { double('callback') }
+
+      context 'incorrect_auth_found_callback callback' do
+        let(:user) { create(:user) }
+        let(:service) do
+          described_class.new(user,
+                              incorrect_auth_found_callback: callback)
+        end
+
+        it 'is called' do
+          access_level = Gitlab::Access::DEVELOPER
+          create(:project_authorization, user: user, project: project, access_level: access_level)
+
+          expect(callback).to receive(:call).with(project.id, access_level).once
+
+          service.execute
+        end
+      end
+
+      context 'missing_auth_found_callback callback' do
+        let(:service) do
+          described_class.new(user,
+                              missing_auth_found_callback: callback)
+        end
+
+        it 'is called' do
+          ProjectAuthorization.delete_all
+
+          expect(callback).to receive(:call).with(project.id, Gitlab::Access::MAINTAINER).once
+
+          service.execute
+        end
+      end
+    end
   end
 
   describe '#execute_without_lease' do
