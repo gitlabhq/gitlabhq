@@ -4,7 +4,10 @@ entry.
 
 ## 12.5.10
 
-- No changes.
+### Security (1 change)
+
+- Fix ProjectAuthorization calculation for shared groups.
+
 
 ## 12.5.9
 
