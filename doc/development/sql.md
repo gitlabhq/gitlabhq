@@ -82,7 +82,7 @@ on the amount of data indexed).
 To keep naming of these indexes consistent please use the following naming
 pattern:
 
-```
+```plaintext
 index_TABLE_on_COLUMN_trigram
 ```
 

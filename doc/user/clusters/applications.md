@@ -487,6 +487,7 @@ Supported applications:
 - [Sentry](#install-sentry-using-gitlab-ci)
 - [GitLab Runner](#install-gitlab-runner-using-gitlab-ci)
 - [Cilium](#install-cilium-using-gitlab-ci)
+- [JupyterHub](#install-jupyterhub-using-gitlab-ci)
 
 ### Usage
 
@@ -748,6 +749,47 @@ agent:
   monitor:
     enabled: false
 ```
+
+### Install JupyterHub using GitLab CI
+
+> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/40) in GitLab 12.8.
+
+Enable JupyterHub in the `.gitlab/managed-apps/config.yaml` file to install it:
+
+```yaml
+jupyterhub:
+  installed: true
+  gitlabProjectIdWhitelist: []
+  gitlabGroupWhitelist: []
+```
+
+`gitlabProjectIdWhitelist` restricts GitLab authentication to only members of the specified projects. `gitlabGroupWhitelist` restricts GitLab authentication to only members of the specified groups. Specifying an empty array for both will allow any user on the GitLab instance to log in.
+
+JupyterHub is installed into the `gitlab-managed-apps` namespace of your
+cluster.
+
+In order for JupyterHub to function, you must setup an [OAuth Application](../../integration/oauth_provider.md). Using the following values:
+
+- "Redirect URI" to `http://<JupyterHub Host>/hub/oauth_callback`
+- "Scope" to `api read_repository write_repository`
+
+In addition the following variables must be specified using [CI variables](../../ci/variables/README.md):
+
+- `JUPYTERHUB_PROXY_SECRET_TOKEN` will set [`proxy.secretToken`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#proxy-secrettoken). Generate this using `openssl rand -hex 32`.
+- `JUPYTERHUB_COOKIE_SECRET` will set [`hub.cookieSecret`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#hub-cookiesecret). Generate this using `openssl rand -hex 32`.
+- `JUPYTERHUB_HOST` is the hostname used for the installation (e.g., `jupyter.example.gitlab.com`).
+- `JUPYTERHUB_GITLAB_HOST` is the hostname of the GitLab instance used for authentication (e.g., `example.gitlab.com`).
+- `JUPYTERHUB_AUTH_CRYPTO_KEY` will set [`auth.state.cryptoKey`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#auth-state-cryptokey). Generate this using `openssl rand -hex 32`.
+- `JUPYTERHUB_AUTH_GITLAB_CLIENT_ID` the "Application ID" for the OAuth Application.
+- `JUPYTERHUB_AUTH_GITLAB_CLIENT_SECRET` the "Secret" for the OAuth Application.
+
+By default JupyterHub will be installed using a
+[default values file](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/blob/master/src/default-data/jupyterhub/values.yaml.gotmpl).
+You can customize the installation of JupyterHub by defining
+`.gitlab/managed-apps/jupyterhub/values.yaml` file in your cluster management
+project. Refer to the
+[chart reference](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html)
+for the available configuration options.
 
 ## Upgrading applications
 

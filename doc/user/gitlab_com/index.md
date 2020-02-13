@@ -131,6 +131,9 @@ Below are the shared Runners settings.
 
 The full contents of our `config.toml` are:
 
+NOTE: **Note:**
+Settings that are not public are shown as `X`.
+
 **Google Cloud Platform**
 
 ```toml

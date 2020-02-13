@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a BulkInsertSafe model' do |target_class|
+RSpec.shared_examples 'a BulkInsertSafe model' do |klass|
+  # Call `.dup` on the class passed in, as a test in this set of examples
+  # calls `belongs_to` on the class, thereby adding a new belongs_to
+  # relationship to the model that can break remaining specs in the test suite.
+  let(:target_class) { klass.dup }
+
   # We consider all callbacks unsafe for bulk insertions unless we have explicitly
   # whitelisted them (esp. anything related to :save, :create, :commit etc.)
   let(:callback_method_blacklist) do

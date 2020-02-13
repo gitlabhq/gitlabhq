@@ -55,8 +55,6 @@ class RegistrationsController < Devise::RegistrationsController
   def welcome
     return redirect_to new_user_registration_path unless current_user
     return redirect_to stored_location_or_dashboard(current_user) if current_user.role.present? && !current_user.setup_for_company.nil?
-
-    current_user.name = nil if current_user.name == current_user.username
   end
 
   def update_registration
