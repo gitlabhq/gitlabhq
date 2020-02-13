@@ -105,8 +105,8 @@ recorded:
 - Ask for password reset
 - Grant OAuth access
 - Started/stopped user impersonation
-- Changed username
-- User was deleted
+- Changed username ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/7797) in GitLab 12.8)
+- User was deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
 
 It is possible to filter particular actions by choosing an audit data type from
 the filter dropdown box. You can further filter by specific group, project or user

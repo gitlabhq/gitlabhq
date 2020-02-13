@@ -2663,6 +2663,8 @@ upstream_bridge:
 
 #### `trigger` syntax for child pipeline
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/16094) in GitLab 12.7.
+
 To create a [child pipeline](../parent_child_pipelines.md), specify the path to the
 YAML file containing the CI config of the child pipeline:
 

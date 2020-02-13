@@ -1,7 +1,16 @@
 - page_title "Sign up"
 - if experiment_enabled?(:signup_flow)
-  = render 'devise/shared/experimental_separate_sign_up_flow_box'
+  .row
+    .col-lg-7
+      %h1.mb-3.font-weight-bold.text-6.mt-0
+        = _("Speed up your DevOps<br>with GitLab").html_safe
+      %p.text-3
+        = _("GitLab is a single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security.")
+    .col-lg-5.order-12
+      .text-center.mb-3
+        %h2.font-weight-bold.gl-font-size-20= _('Register for GitLab')
+      = render 'devise/shared/experimental_separate_sign_up_flow_box'
+      = render 'devise/shared/sign_in_link'
 - else
   = render 'devise/shared/signup_box'
-
-= render 'devise/shared/sign_in_link'
+  = render 'devise/shared/sign_in_link'

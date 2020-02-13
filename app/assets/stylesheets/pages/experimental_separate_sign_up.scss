@@ -3,33 +3,8 @@
     background-color: $gray-light;
   }
 
-  .gitlab-logo {
-    width: 80px;
-    height: 80px;
-  }
-
   .signup-box-container {
-    max-width: 900px;
-
-    &.navless-container {
-      padding: 35px $gl-padding;
-      // overriding .devise-layout-html.navless-container to support the sticky footer
-      // without having a header on size xs
-      @include media-breakpoint-down(xs) {
-        padding: 65px $gl-padding; // height of footer
-        padding-top: $gl-padding;
-      }
-    }
-  }
-
-  .signup-heading h2 {
-    font-weight: $gl-font-weight-bold;
-    padding: 0 $gl-padding;
-    font-size: $gl-font-size-28;
-
-    @include media-breakpoint-down(md) {
-      font-size: $gl-font-size-large;
-    }
+    max-width: 960px;
   }
 
   .signup-box {

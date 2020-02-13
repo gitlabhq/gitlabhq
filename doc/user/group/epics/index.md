@@ -2,9 +2,10 @@
 type: reference, howto
 ---
 
-# Epics **(ULTIMATE)**
+# Epics **(PREMIUM)**
 
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
+> In [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/37081), single-level Epics were moved to **(PREMIUM)**.
 
 Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
@@ -15,7 +16,7 @@ milestones.
 The possible relationships between epics and issues are:
 
 - An epic is the parent of one or more issues.
-- An epic is the parent of one or more child epics. For details see [Multi-level child epics](#multi-level-child-epics).
+- An epic is the parent of one or more child epics. For details see [Multi-level child epics](#multi-level-child-epics-ultimate). **(ULTIMATE)**
 
 ```mermaid
 graph TD
@@ -100,7 +101,7 @@ To remove an issue from an epic:
 1. Click on the <kbd>x</kbd> button in the epic's issue list.
 1. Click **Remove** in the **Remove issue** warning message.
 
-## Multi-level child epics
+## Multi-level child epics **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8333) in GitLab Ultimate 11.7.
 
@@ -175,7 +176,7 @@ then the parent epic's start date will reflect the change and this will propagat
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7327) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.10.
 
-If your epic contains one or more [child epics](#multi-level-child-epics) which
+If your epic contains one or more [child epics](#multi-level-child-epics-ultimate) which
 have a [start or due date](#start-date-and-due-date), a
 [roadmap](../roadmap/index.md) view of the child epics is listed under the parent epic.
 

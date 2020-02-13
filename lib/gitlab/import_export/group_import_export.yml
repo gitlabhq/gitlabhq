@@ -8,10 +8,14 @@ tree:
     - :milestones
     - :badges
     - labels:
-        - :priorities
-    - :boards
+      - :priorities
+    - boards:
+      - lists:
+        - label:
+          - :priorities
+        - :board
     - members:
-        - :user
+      - :user
 
 included_attributes:
   user:
@@ -30,12 +34,16 @@ excluded_attributes:
 methods:
   labels:
     - :type
+  label:
+    - :type
   badges:
     - :type
   notes:
     - :type
   events:
     - :action
+  lists:
+    - :list_type
 
 preloads:
 
@@ -45,16 +53,20 @@ ee:
   tree:
     group:
       - epics:
-          - :parent
+        - :parent
+        - :award_emoji
+        - events:
+          - :push_event_payload
+        - notes:
+          - :author
           - :award_emoji
           - events:
-              - :push_event_payload
-          - notes:
-              - :author
-              - :award_emoji
-              - events:
-                  - :push_event_payload
+            - :push_event_payload
       - boards:
-          - :board_assignee
-          - labels:
-              - :priorities
+        - :board_assignee
+        - labels:
+          - :priorities
+        - lists:
+          - milestone:
+            - events:
+              - :push_event_payload

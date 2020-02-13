@@ -359,12 +359,26 @@ describe 'Pipeline', :js do
     context 'test tabs' do
       let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
 
-      it 'shows badge counter in Tests tab' do
+      before do
         visit_pipeline
         wait_for_requests
+      end
 
+      it 'shows badge counter in Tests tab' do
         expect(pipeline.test_reports.total_count).to eq(4)
         expect(page.find('.js-test-report-badge-counter').text).to eq(pipeline.test_reports.total_count.to_s)
+      end
+
+      it 'does not call test_report.json endpoint by default', :js do
+        expect(page).to have_selector('.js-no-tests-to-show', visible: :all)
+      end
+
+      it 'does call test_report.json endpoint when tab is selected', :js do
+        find('.js-tests-tab-link').click
+        wait_for_requests
+
+        expect(page).to have_content('Test suites')
+        expect(page).to have_selector('.js-tests-detail', visible: :all)
       end
     end
 

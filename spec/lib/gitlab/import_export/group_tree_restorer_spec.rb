@@ -39,8 +39,18 @@ describe Gitlab::ImportExport::GroupTreeRestorer do
         expect(@group.labels.count).to eq(10)
       end
 
-      it 'has issue boards' do
-        expect(@group.boards.count).to eq(2)
+      context 'issue boards' do
+        it 'has issue boards' do
+          expect(@group.boards.count).to eq(1)
+        end
+
+        it 'has board label lists' do
+          lists = @group.boards.find_by(name: 'first board').lists
+
+          expect(lists.count).to eq(3)
+          expect(lists.first.label.title).to eq('TSL')
+          expect(lists.second.label.title).to eq('Sosync')
+        end
       end
 
       it 'has badges' do

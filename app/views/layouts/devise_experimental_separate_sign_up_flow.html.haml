@@ -1,22 +1,15 @@
 !!! 5
 %html.devise-layout-html.navless{ class: system_message_class }
   = render "layouts/head"
-  %body.ui-indigo.signup-page.application.navless{ class: "#{client_class_list}", data: { page: body_data_page, qa_selector: 'signup_page' } }
-    = header_message
+  %body.ui-indigo.signup-page{ class: "#{client_class_list}", data: { page: body_data_page, qa_selector: 'signup_page' } }
+    = render "layouts/header/logo_with_title"
     = render "layouts/init_client_detection_flags"
     .page-wrap
-      .container.signup-box-container.navless-container.mt-0
+      .container.signup-box-container.navless-container
         = render "layouts/broadcast"
         .content
           = render "layouts/flash"
-          .row.mb-6
-            .col-sm-8.offset-sm-2.col-md-6.offset-md-3.new-session-forms-container
-              = render_if_exists 'layouts/devise_help_text'
-              .text-center.signup-heading.mb-3
-                = image_tag(image_url('logo.svg'), class: 'gitlab-logo', alt: 'GitLab Logo')
-                - if content_for?(:page_title)
-                  %h2= yield :page_title
-              = yield
+          = yield
       %hr.footer-fixed
       .footer-container
         .container

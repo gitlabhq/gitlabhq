@@ -95,6 +95,10 @@ describe Gitlab::ImportExport::GroupTreeSaver do
         expect(saved_group_json['boards']).not_to be_empty
       end
 
+      it 'has board label list' do
+        expect(saved_group_json['boards'].first['lists']).not_to be_empty
+      end
+
       it 'has group members' do
         expect(saved_group_json['members']).not_to be_empty
       end
@@ -168,7 +172,8 @@ describe Gitlab::ImportExport::GroupTreeSaver do
     create(:group_badge, group: group)
     group_label = create(:group_label, group: group)
     create(:label_priority, label: group_label, priority: 1)
-    create(:board, group: group)
+    board = create(:board, group: group)
+    create(:list, board: board, label: group_label)
     create(:group_badge, group: group)
 
     group
