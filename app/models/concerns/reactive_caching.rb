@@ -9,6 +9,8 @@ module ReactiveCaching
   ExceededReactiveCacheLimit = Class.new(StandardError)
 
   included do
+    extend ActiveModel::Naming
+
     class_attribute :reactive_cache_key
     class_attribute :reactive_cache_lease_timeout
     class_attribute :reactive_cache_refresh_interval

@@ -88,7 +88,8 @@
         show_whitespace_default: @show_whitespace_default.to_s }
 
     .mr-loading-status
-      = spinner
+      .loading.hide
+        .spinner.spinner-md
 
 = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees
 

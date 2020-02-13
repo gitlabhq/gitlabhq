@@ -11,7 +11,7 @@ module Ci
     extend ActiveSupport::Concern
 
     included do
-      delegate :merge_request_event?,
+      delegate :merge_request?,
                :merge_request_ref?,
                :legacy_detached_merge_request_pipeline?,
                :merge_train_pipeline?, to: :pipeline

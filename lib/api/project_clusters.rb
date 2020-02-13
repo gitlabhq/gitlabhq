@@ -62,7 +62,7 @@ module API
           requires :token, type: String, desc: 'Token to authenticate against Kubernetes'
           optional :ca_cert, type: String, desc: 'TLS certificate (needed if API is using a self-signed TLS certificate)'
           optional :namespace, type: String, desc: 'Unique namespace related to Project'
-          optional :authorization_type, type: String, values: Clusters::Platforms::Kubernetes.authorization_types.keys, default: 'rbac', desc: 'Cluster authorization type, defaults to RBAC'
+          optional :authorization_type, type: String, values: ::Clusters::Platforms::Kubernetes.authorization_types.keys, default: 'rbac', desc: 'Cluster authorization type, defaults to RBAC'
         end
         use :create_params_ee
       end
@@ -100,7 +100,7 @@ module API
       put ':id/clusters/:cluster_id' do
         authorize! :update_cluster, cluster
 
-        update_service = Clusters::UpdateService.new(current_user, update_cluster_params)
+        update_service = ::Clusters::UpdateService.new(current_user, update_cluster_params)
 
         if update_service.execute(cluster)
           present cluster, with: Entities::ClusterProject

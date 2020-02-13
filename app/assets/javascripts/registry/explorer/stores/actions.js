@@ -45,11 +45,11 @@ export const requestImagesList = ({ commit, dispatch, state }, pagination = {}) 
 
 export const requestTagsList = ({ commit, dispatch }, { pagination = {}, id }) => {
   commit(types.SET_MAIN_LOADING, true);
-  const url = window.atob(id);
+  const { tags_path } = JSON.parse(window.atob(id));
 
   const { page = DEFAULT_PAGE, perPage = DEFAULT_PAGE_SIZE } = pagination;
   return axios
-    .get(url, { params: { page, per_page: perPage } })
+    .get(tags_path, { params: { page, per_page: perPage } })
     .then(({ data, headers }) => {
       dispatch('receiveTagsListSuccess', { data, headers });
     })

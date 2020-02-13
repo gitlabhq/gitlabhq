@@ -77,9 +77,7 @@ module Ci
 
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
-    validates :merge_request, presence: { if: :merge_request_event? }
-    validates :merge_request, absence: { unless: :merge_request_event? }
-    validates :tag, inclusion: { in: [false], if: :merge_request_event? }
+    validates :tag, inclusion: { in: [false], if: :merge_request? }
 
     validates :external_pull_request, presence: { if: :external_pull_request_event? }
     validates :external_pull_request, absence: { unless: :external_pull_request_event? }
@@ -662,7 +660,7 @@ module Ci
 
         variables.concat(predefined_commit_variables)
 
-        if merge_request_event? && merge_request
+        if merge_request?
           variables.append(key: 'CI_MERGE_REQUEST_EVENT_TYPE', value: merge_request_event_type.to_s)
           variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)
           variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_SHA', value: target_sha.to_s)
@@ -720,7 +718,7 @@ module Ci
     # All the merge requests for which the current pipeline runs/ran against
     def all_merge_requests
       @all_merge_requests ||=
-        if merge_request_event?
+        if merge_request?
           MergeRequest.where(id: merge_request_id)
         else
           MergeRequest.where(source_project_id: project_id, source_branch: ref)
@@ -812,7 +810,7 @@ module Ci
     # * nil: Modified path can not be evaluated
     def modified_paths
       strong_memoize(:modified_paths) do
-        if merge_request_event?
+        if merge_request?
           merge_request.modified_paths
         elsif branch_updated?
           push_details.modified_paths
@@ -836,12 +834,12 @@ module Ci
       ref == project.default_branch
     end
 
-    def triggered_by_merge_request?
-      merge_request_event? && merge_request_id.present?
+    def merge_request?
+      merge_request_id.present?
     end
 
     def detached_merge_request_pipeline?
-      triggered_by_merge_request? && target_sha.nil?
+      merge_request? && target_sha.nil?
     end
 
     def legacy_detached_merge_request_pipeline?
@@ -849,7 +847,7 @@ module Ci
     end
 
     def merge_request_pipeline?
-      triggered_by_merge_request? && target_sha.present?
+      merge_request? && target_sha.present?
     end
 
     def merge_request_ref?
@@ -865,7 +863,7 @@ module Ci
     end
 
     def source_ref
-      if triggered_by_merge_request?
+      if merge_request?
         merge_request.source_branch
       else
         ref
@@ -885,7 +883,7 @@ module Ci
     end
 
     def merge_request_event_type
-      return unless merge_request_event?
+      return unless merge_request?
 
       strong_memoize(:merge_request_event_type) do
         if merge_request_pipeline?
@@ -918,7 +916,7 @@ module Ci
 
     def git_ref
       strong_memoize(:git_ref) do
-        if merge_request_event?
+        if merge_request?
           ##
           # In the future, we're going to change this ref to
           # merge request's merged reference, such as "refs/merge-requests/:iid/merge".

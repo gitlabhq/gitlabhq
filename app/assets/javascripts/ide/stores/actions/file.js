@@ -158,9 +158,7 @@ export const changeFileContent = ({ commit, state, getters }, { path, content })
   const indexOfChangedFile = state.changedFiles.findIndex(f => f.path === path);
 
   if (file.changed && indexOfChangedFile === -1) {
-    if (gon.features?.stageAllByDefault)
-      commit(types.STAGE_CHANGE, { path, diffInfo: getters.getDiffInfo(path) });
-    else commit(types.ADD_FILE_TO_CHANGED, path);
+    commit(types.STAGE_CHANGE, { path, diffInfo: getters.getDiffInfo(path) });
   } else if (!file.changed && !file.tempFile && indexOfChangedFile !== -1) {
     commit(types.REMOVE_FILE_FROM_CHANGED, path);
   }

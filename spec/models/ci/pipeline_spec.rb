@@ -162,6 +162,23 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#merge_request?' do
+    let(:pipeline) { create(:ci_pipeline, merge_request: merge_request) }
+    let(:merge_request) { create(:merge_request) }
+
+    it 'returns true' do
+      expect(pipeline).to be_merge_request
+    end
+
+    context 'when merge request is nil' do
+      let(:merge_request) { nil }
+
+      it 'returns false' do
+        expect(pipeline).not_to be_merge_request
+      end
+    end
+  end
+
   describe '#detached_merge_request_pipeline?' do
     subject { pipeline.detached_merge_request_pipeline? }
 
@@ -363,48 +380,6 @@ describe Ci::Pipeline, :mailer do
 
       it 'returns empty array' do
         expect(subject).to be_empty
-      end
-    end
-  end
-
-  describe 'Validations for merge request pipelines' do
-    let(:pipeline) do
-      build(:ci_pipeline, source: source, merge_request: merge_request)
-    end
-
-    let(:merge_request) do
-      create(:merge_request,
-        source_project: project,
-        source_branch:  'feature',
-        target_project: project,
-        target_branch:  'master')
-    end
-
-    context 'when source is merge request' do
-      let(:source) { :merge_request_event }
-
-      context 'when merge request is specified' do
-        it { expect(pipeline).to be_valid }
-      end
-
-      context 'when merge request is empty' do
-        let(:merge_request) { nil }
-
-        it { expect(pipeline).not_to be_valid }
-      end
-    end
-
-    context 'when source is web' do
-      let(:source) { :web }
-
-      context 'when merge request is specified' do
-        it { expect(pipeline).not_to be_valid }
-      end
-
-      context 'when merge request is empty' do
-        let(:merge_request) { nil }
-
-        it { expect(pipeline).to be_valid }
       end
     end
   end
@@ -612,9 +587,9 @@ describe Ci::Pipeline, :mailer do
       ]
     end
 
-    context 'when source is merge request' do
+    context 'when pipeline is merge request' do
       let(:pipeline) do
-        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
+        create(:ci_pipeline, merge_request: merge_request)
       end
 
       let(:merge_request) do
@@ -651,7 +626,7 @@ describe Ci::Pipeline, :mailer do
             'CI_MERGE_REQUEST_TITLE' => merge_request.title,
             'CI_MERGE_REQUEST_ASSIGNEES' => merge_request.assignee_username_list,
             'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
-            'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).join(','),
+            'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).sort.join(','),
             'CI_MERGE_REQUEST_EVENT_TYPE' => pipeline.merge_request_event_type.to_s)
       end
 
@@ -1263,9 +1238,9 @@ describe Ci::Pipeline, :mailer do
         is_expected.to be_truthy
       end
 
-      context 'when source is merge request' do
+      context 'when pipeline is merge request' do
         let(:pipeline) do
-          create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
+          create(:ci_pipeline, merge_request: merge_request)
         end
 
         let(:merge_request) do

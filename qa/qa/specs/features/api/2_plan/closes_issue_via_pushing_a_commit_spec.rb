@@ -2,34 +2,33 @@
 
 module QA
   context 'Plan' do
-    describe 'Close issue' do
+    include Support::Api
+
+    describe 'Issue' do
       let(:issue) do
         Resource::Issue.fabricate_via_api!
       end
 
       let(:issue_id) { issue.api_response[:iid] }
 
-      before do
-        Flow::Login.sign_in
+      let(:api_client) { Runtime::API::Client.new(:gitlab) }
 
+      before do
         # Initial commit should be pushed because
         # the very first commit to the project doesn't close the issue
         # https://gitlab.com/gitlab-org/gitlab-foss/issues/38965
         push_commit('Initial commit')
       end
 
-      it 'closes an issue by pushing a commit' do
+      it 'closes via pushing a commit' do
         push_commit("Closes ##{issue_id}", false)
 
-        issue.visit!
-
-        Page::Project::Issue::Show.perform do |show|
-          reopen_issue_button_visible = show.wait_until(reload: true) do
-            show.has_element?(:reopen_issue_button, wait: 1.0)
-          end
-          expect(reopen_issue_button_visible).to be_truthy
+        Support::Retrier.retry_until(max_duration: 10, sleep_interval: 1) do
+          issue_closed?
         end
       end
+
+      private
 
       def push_commit(commit_message, new_branch = true)
         Resource::Repository::ProjectPush.fabricate! do |push|
@@ -38,6 +37,11 @@ module QA
           push.file_content = commit_message
           push.project = issue.project
         end
+      end
+
+      def issue_closed?
+        response = get Runtime::API::Request.new(api_client, "/projects/#{issue.project.id}/issues/#{issue_id}").url
+        parse_body(response)[:state] == 'closed'
       end
     end
   end

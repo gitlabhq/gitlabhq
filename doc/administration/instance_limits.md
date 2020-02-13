@@ -119,3 +119,7 @@ This limit can be configured for self hosted installations when [enabling
 Elasticsearch](../integration/elasticsearch.md#enabling-elasticsearch).
 
 NOTE: **Note:** Set the limit to `0` to disable it.
+
+## Wiki limits
+
+- [Length restrictions for file and directory names](../user/project/wiki/index.md#length-restrictions-for-file-and-directory-names).

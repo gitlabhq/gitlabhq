@@ -30,7 +30,8 @@
               = dropdown_content
               = dropdown_loading
         .card-footer
-          .text-center= icon('spinner spin', class: 'js-source-loading')
+          .text-center
+            .js-source-loading.mt-1.spinner.spinner-sm
           %ul.list-unstyled.mr_source_commit
 
     .col-lg-6
@@ -58,7 +59,8 @@
               = dropdown_content
               = dropdown_loading
         .card-footer
-          .text-center= icon('spinner spin', class: "js-target-loading")
+          .text-center
+            .js-target-loading.mt-1.spinner.spinner-sm
           %ul.list-unstyled.mr_target_commit
 
   - if @merge_request.errors.any?

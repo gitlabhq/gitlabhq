@@ -1,11 +1,9 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import actions from '~/code_navigation/store/actions';
-import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { setCurrentHoverElement, addInteractionClass } from '~/code_navigation/utils';
 
-jest.mock('~/flash');
 jest.mock('~/code_navigation/utils');
 
 describe('Code navigation actions', () => {
@@ -25,13 +23,6 @@ describe('Code navigation actions', () => {
   describe('requestDataError', () => {
     it('commits REQUEST_DATA_ERROR', () =>
       testAction(actions.requestDataError, null, {}, [{ type: 'REQUEST_DATA_ERROR' }], []));
-
-    it('creates a flash message', () =>
-      testAction(actions.requestDataError, null, {}, [{ type: 'REQUEST_DATA_ERROR' }], []).then(
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-        },
-      ));
   });
 
   describe('fetchData', () => {

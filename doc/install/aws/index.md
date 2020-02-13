@@ -38,7 +38,7 @@ In addition to having a basic familiarity with [AWS](https://docs.aws.amazon.com
 
 Below is a diagram of the recommended architecture.
 
-![AWS architecture diagram](img/aws_diagram.png)
+![AWS architecture diagram](img/aws_ha_architecture_diagram.png)
 
 ## AWS costs
 
@@ -519,11 +519,34 @@ read the [repository storage paths docs](../../administration/repository_storage
 
 ### Setting up Gitaly
 
-Gitaly is a service that provides high-level RPC access to Git repositories.
-It should be enabled and configured in a separate EC2 instance on the
-[private VPC](#subnets) we configured previously.
+CAUTION: **Caution:** In this architecture, having a single Gitaly server creates a single point of failure. This limitation will be removed once [Gitaly HA](https://gitlab.com/groups/gitlab-org/-/epics/842) is released.  
 
-Follow the [documentation to set up Gitaly](../../administration/gitaly/index.md).
+Gitaly is a service that provides high-level RPC access to Git repositories.
+It should be enabled and configured on a separate EC2 instance in one of the
+[private subnets](#subnets) we configured previously.
+
+Let's create an EC2 instance where we'll install Gitaly:
+
+1. From the EC2 dashboard, click **Launch instance**.
+1. Choose an AMI. In this example, we'll select the **Ubuntu Server 18.04 LTS (HVM), SSD Volume Type**.
+1. Choose an instance type. We'll pick a **c5.xlarge**.
+1. Click **Configure Instance Details**.
+   1. In the **Network** dropdown, select `gitlab-vpc`, the VPC we created earlier.
+   1. In the **Subnet** dropdown, select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.
+   1. Double check that **Auto-assign Public IP** is set to `Use subnet setting (Disable)`.
+   1. Click **Add Storage**.
+1. Increase the Root volume size to `20 GiB` and change the **Volume Type** to `Provisoned IOPS SSD (io1)`. (This is an arbitrary size. Create a volume big enough for your repository storage requirements.)
+   1. For **IOPS** set `1000` (20 GiB x 50 IOPS). You can provision up to 50 IOPS per GiB. If you select a larger volume, increase the IOPS accordingly. Workloads where many small files are written in a serialized manner, like `git`, requires performant storage, hence the choice of `Provisoned IOPS SSD (io1)`.
+1. Click on **Add Tags** and add your tags. In our case, we'll only set `Key: Name` and `Value: Gitaly`.
+1. Click on **Configure Security Group** and let's **Create a new security group**.
+   1. Give your security group a name and description. We'll use `gitlab-gitaly-sec-group` for both.
+   1. Create a **Custom TCP** rule and add port `8075` to the **Port Range**. For the **Source**, select the `gitlab-loadbalancer-sec-group`.
+1. Click **Review and launch** followed by **Launch** if you're happy with your settings.
+1. Finally, acknowledge that you have access to the selected private key file or create a new one. Click **Launch Instances**.
+
+  > **Optional:** Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above.
+
+Now that we have our EC2 instance ready, follow the [documentation to install GitLab and set up Gitaly on its own server](../../administration/gitaly/index.md#running-gitaly-on-its-own-server).
 
 ### Using Amazon S3 object storage
 

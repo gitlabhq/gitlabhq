@@ -11,7 +11,7 @@
 #conflicts{ "v-cloak" => "true", data: { conflicts_path: conflicts_project_merge_request_path(@merge_request.project, @merge_request, format: :json),
     resolve_conflicts_path: resolve_conflicts_project_merge_request_path(@merge_request.project, @merge_request) } }
   .loading{ "v-if" => "isLoading" }
-    %i.fa.fa-spinner.fa-spin
+    .spinner.spinner-md
 
   .nothing-here-block{ "v-if" => "hasError" }
     {{conflictsData.errorMessage}}

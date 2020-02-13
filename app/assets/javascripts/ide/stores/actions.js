@@ -79,10 +79,7 @@ export const createTempEntry = (
 
   if (type === 'blob') {
     commit(types.TOGGLE_FILE_OPEN, file.path);
-
-    if (gon.features?.stageAllByDefault)
-      commit(types.STAGE_CHANGE, { path: file.path, diffInfo: getters.getDiffInfo(file.path) });
-    else commit(types.ADD_FILE_TO_CHANGED, file.path);
+    commit(types.STAGE_CHANGE, { path: file.path, diffInfo: getters.getDiffInfo(file.path) });
 
     dispatch('setFileActive', file.path);
     dispatch('triggerFilesChange');
@@ -250,9 +247,7 @@ export const renameEntry = ({ dispatch, commit, state, getters }, { path, name, 
     if (isReset) {
       commit(types.REMOVE_FILE_FROM_STAGED_AND_CHANGED, newEntry);
     } else if (!isInChanges) {
-      if (gon.features?.stageAllByDefault)
-        commit(types.STAGE_CHANGE, { path: newPath, diffInfo: getters.getDiffInfo(newPath) });
-      else commit(types.ADD_FILE_TO_CHANGED, newPath);
+      commit(types.STAGE_CHANGE, { path: newPath, diffInfo: getters.getDiffInfo(newPath) });
     }
 
     if (!newEntry.tempFile) {

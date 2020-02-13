@@ -1473,15 +1473,6 @@ describe Ci::CreatePipelineService do
               end
             end
           end
-
-          context 'when merge request is not specified' do
-            let(:merge_request) { nil }
-
-            it 'does not create a detached merge request pipeline' do
-              expect(pipeline).not_to be_persisted
-              expect(pipeline.errors[:merge_request]).to eq(["can't be blank"])
-            end
-          end
         end
 
         context "when config does not have merge_requests keywords" do
@@ -1510,17 +1501,6 @@ describe Ci::CreatePipelineService do
                 target_project: project,
                 target_branch: 'master')
             end
-
-            it 'does not create a detached merge request pipeline' do
-              expect(pipeline).not_to be_persisted
-
-              expect(pipeline.errors[:base])
-                .to eq(['No stages / jobs for this pipeline.'])
-            end
-          end
-
-          context 'when merge request is not specified' do
-            let(:merge_request) { nil }
 
             it 'does not create a detached merge request pipeline' do
               expect(pipeline).not_to be_persisted
@@ -1623,6 +1603,7 @@ describe Ci::CreatePipelineService do
 
       context 'when source is web' do
         let(:source) { :web }
+        let(:merge_request) { nil }
 
         context "when config has merge_requests keywords" do
           let(:config) do
@@ -1644,30 +1625,11 @@ describe Ci::CreatePipelineService do
             }
           end
 
-          context 'when merge request is specified' do
-            let(:merge_request) do
-              create(:merge_request,
-                source_project: project,
-                source_branch: Gitlab::Git.ref_name(ref_name),
-                target_project: project,
-                target_branch: 'master')
-            end
-
-            it 'does not create a merge request pipeline' do
-              expect(pipeline).not_to be_persisted
-              expect(pipeline.errors[:merge_request]).to eq(["must be blank"])
-            end
-          end
-
-          context 'when merge request is not specified' do
-            let(:merge_request) { nil }
-
-            it 'creates a branch pipeline' do
-              expect(pipeline).to be_persisted
-              expect(pipeline).to be_web
-              expect(pipeline.merge_request).to be_nil
-              expect(pipeline.builds.order(:stage_id).pluck(:name)).to eq(%w[build pages])
-            end
+          it 'creates a branch pipeline' do
+            expect(pipeline).to be_persisted
+            expect(pipeline).to be_web
+            expect(pipeline.merge_request).to be_nil
+            expect(pipeline.builds.order(:stage_id).pluck(:name)).to eq(%w[build pages])
           end
         end
       end

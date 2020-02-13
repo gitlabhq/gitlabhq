@@ -5,6 +5,7 @@ export default {
   [types.SET_INITIAL_STATE](state, config) {
     state.config = {
       ...config,
+      isGroupPage: config.isGroupPage !== undefined,
     };
   },
 

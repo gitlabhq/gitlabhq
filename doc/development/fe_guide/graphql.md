@@ -425,10 +425,12 @@ It is also possible to use GraphQL outside of Vue by directly importing
 and using the default client with queries.
 
 ```javascript
-import defaultClient from '~/lib/graphql';
+import createDefaultClient from '~/lib/graphql';
 import query from './query.graphql';
 
-defaultClient.query(query)
+const defaultClient = createDefaultClient();
+
+defaultClient.query({ query })
   .then(result => console.log(result));
 ```
 

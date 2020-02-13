@@ -63,7 +63,7 @@ describe('IDE extra file row component', () => {
       stagedFilesCount = 1;
       unstagedFilesCount = 1;
 
-      expect(vm.folderChangesTooltip).toBe('1 unstaged and 1 staged changes');
+      expect(vm.folderChangesTooltip).toBe('1 staged and 1 unstaged changes');
     });
   });
 

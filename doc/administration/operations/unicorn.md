@@ -65,9 +65,12 @@ maximum memory threshold (in bytes) for the Unicorn worker killer by
 setting the following values `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-unicorn['worker_memory_limit_min'] = "400 * 1 << 20"
-unicorn['worker_memory_limit_max'] = "650 * 1 << 20"
+unicorn['worker_memory_limit_min'] = "1024 * 1 << 20"
+unicorn['worker_memory_limit_max'] = "1280 * 1 << 20"
 ```
+
+NOTE: **Note:**
+These values apply to GitLab 12.7.0 or newer versions. For older GitLab versions please consult [previous worker memory limits](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/12.6.0+ee.0/files/gitlab-cookbooks/gitlab/attributes/default.rb#L422-423).
 
 Otherwise, you can set the `GITLAB_UNICORN_MEMORY_MIN` and `GITLAB_UNICORN_MEMORY_MAX`
 [environment variables](../environment_variables.md).

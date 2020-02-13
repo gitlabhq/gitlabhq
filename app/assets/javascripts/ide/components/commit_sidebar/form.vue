@@ -6,7 +6,6 @@ import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
 import { activityBarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -15,7 +14,6 @@ export default {
     CommitMessageField,
     SuccessMessage,
   },
-  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       isCompact: true,
@@ -29,13 +27,9 @@ export default {
     ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     overviewText() {
       return sprintf(
-        this.glFeatures.stageAllByDefault
-          ? __(
-              '<strong>%{stagedFilesLength} staged</strong> and <strong>%{changedFilesLength} unstaged</strong> changes',
-            )
-          : __(
-              '<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes',
-            ),
+        __(
+          '<strong>%{stagedFilesLength} staged</strong> and <strong>%{changedFilesLength} unstaged</strong> changes',
+        ),
         {
           stagedFilesLength: this.stagedFiles.length,
           changedFilesLength: this.changedFiles.length,

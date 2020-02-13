@@ -186,7 +186,8 @@ module Ci
         },
         execute_params: {
           ignore_skip_ci: true,
-          bridge: self
+          bridge: self,
+          merge_request: parent_pipeline.merge_request
         }
       }
     end

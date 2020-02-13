@@ -1163,7 +1163,7 @@ class MergeRequest < ApplicationRecord
   # Since deployments run on a merge request ref (e.g. `refs/merge-requests/:iid/head`),
   # we cannot look up environments with source branch name.
   def environments
-    return Environment.none unless actual_head_pipeline&.triggered_by_merge_request?
+    return Environment.none unless actual_head_pipeline&.merge_request?
 
     actual_head_pipeline.environments
   end

@@ -33,7 +33,7 @@ describe Ci::Build do
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
 
-  it { is_expected.to delegate_method(:merge_request_event?).to(:pipeline) }
+  it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 

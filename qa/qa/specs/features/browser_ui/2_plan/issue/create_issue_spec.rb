@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan', :smoke, :reliable do
+  context 'Plan', :smoke do
     describe 'Issue creation' do
       before do
         Flow::Login.sign_in
       end
 
-      it 'creates an issue' do
+      it 'creates an issue', :reliable do
         issue = Resource::Issue.fabricate_via_browser_ui!
 
         Page::Project::Menu.perform(&:click_issues)

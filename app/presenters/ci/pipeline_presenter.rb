@@ -116,7 +116,7 @@ module Ci
 
     def merge_request_presenter
       strong_memoize(:merge_request_presenter) do
-        if pipeline.triggered_by_merge_request?
+        if pipeline.merge_request?
           pipeline.merge_request.present(current_user: current_user)
         end
       end

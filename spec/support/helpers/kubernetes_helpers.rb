@@ -101,7 +101,7 @@ module KubernetesHelpers
     end
 
     logs_url = service.api_url + "/api/v1/namespaces/#{namespace}/pods/#{pod_name}" \
-    "/log?#{container_query_param}tailLines=#{Clusters::Platforms::Kubernetes::LOGS_LIMIT}&timestamps=true"
+    "/log?#{container_query_param}tailLines=#{::PodLogs::KubernetesService::LOGS_LIMIT}&timestamps=true"
 
     if status
       response = { status: status }

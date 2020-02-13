@@ -11,7 +11,7 @@ const FLASH_TYPES = {
 const hideFlash = (flashEl, fadeTransition = true) => {
   if (fadeTransition) {
     Object.assign(flashEl.style, {
-      transition: 'opacity .3s',
+      transition: 'opacity 0.15s',
       opacity: '0',
     });
   }

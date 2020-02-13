@@ -354,7 +354,7 @@ export default {
 
 <template>
   <div v-show="shouldShow">
-    <div v-if="isLoading" class="loading"><gl-loading-icon /></div>
+    <div v-if="isLoading" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <compare-versions
         :merge-request-diffs="mergeRequestDiffs"

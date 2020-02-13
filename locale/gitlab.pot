@@ -472,9 +472,6 @@ msgstr ""
 msgid "%{total} open issues"
 msgstr ""
 
-msgid "%{unstaged} unstaged and %{staged} staged changes"
-msgstr ""
-
 msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
 msgstr ""
 
@@ -731,9 +728,6 @@ msgid "<no name set>"
 msgstr ""
 
 msgid "<no scopes selected>"
-msgstr ""
-
-msgid "<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes"
 msgstr ""
 
 msgid "<strong>%{group_name}</strong> group members"
@@ -1674,9 +1668,6 @@ msgid "An error occurred fetching the approvers for the new rule."
 msgstr ""
 
 msgid "An error occurred fetching the dropdown data."
-msgstr ""
-
-msgid "An error occurred loading code navigation"
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -5071,6 +5062,9 @@ msgstr ""
 msgid "Container Scanning"
 msgstr ""
 
+msgid "Container does not exist"
+msgstr ""
+
 msgid "Container registry images"
 msgstr ""
 
@@ -5078,6 +5072,9 @@ msgid "Container registry is not enabled on this GitLab instance. Ask an adminis
 msgstr ""
 
 msgid "Container repositories sync capacity"
+msgstr ""
+
+msgid "ContainerRegistry|%{imageName} tags"
 msgstr ""
 
 msgid "ContainerRegistry|Automatically remove extra images that aren't designed to be kept."
@@ -5129,6 +5126,9 @@ msgid "ContainerRegistry|Keep and protect the images that matter most."
 msgstr ""
 
 msgid "ContainerRegistry|Last Updated"
+msgstr ""
+
+msgid "ContainerRegistry|Missing or insufficient permission, delete button disabled"
 msgstr ""
 
 msgid "ContainerRegistry|Number of tags to retain:"
@@ -5196,10 +5196,19 @@ msgstr ""
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
 msgstr ""
 
+msgid "ContainerRegistry|You are about to remove %{item} tags. Are you sure?"
+msgstr ""
+
+msgid "ContainerRegistry|You are about to remove %{item}. Are you sure?"
+msgstr ""
+
 msgid "ContainerRegistry|You are about to remove <b>%{count}</b> tags. Are you sure?"
 msgstr ""
 
 msgid "ContainerRegistry|You are about to remove <b>%{title}</b>. Are you sure?"
+msgstr ""
+
+msgid "ContainerRegistry|You are about to remove repository %{title}. Once you confirm, this repository will be permanently deleted."
 msgstr ""
 
 msgid "ContainerRegistry|You are about to remove repository <b>%{title}</b>. Once you confirm, this repository will be permanently deleted."
@@ -12674,6 +12683,9 @@ msgstr ""
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
 msgstr ""
 
+msgid "No containers available"
+msgstr ""
+
 msgid "No contributions"
 msgstr ""
 
@@ -14018,6 +14030,9 @@ msgid "Please wait while we connect to your repository. Refresh at will."
 msgstr ""
 
 msgid "Please wait while we import the repository for you. Refresh at will."
+msgstr ""
+
+msgid "Pod does not exist"
 msgstr ""
 
 msgid "Pod logs"
@@ -20425,6 +20440,9 @@ msgstr ""
 msgid "Unable to collect memory info"
 msgstr ""
 
+msgid "Unable to connect to Elasticsearch"
+msgstr ""
+
 msgid "Unable to connect to Prometheus server"
 msgstr ""
 
@@ -20492,6 +20510,9 @@ msgid "Unknown"
 msgstr ""
 
 msgid "Unknown Error"
+msgstr ""
+
+msgid "Unknown cache key"
 msgstr ""
 
 msgid "Unknown encryption strategy: %{encrypted_strategy}!"
@@ -22764,6 +22785,12 @@ msgid "error code:"
 msgstr ""
 
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
+msgstr ""
+
+msgid "exceeds the limit of %{bytes} bytes for directory names"
+msgstr ""
+
+msgid "exceeds the limit of %{bytes} bytes for page titles"
 msgstr ""
 
 msgid "expired on %{milestone_due_date}"

@@ -148,6 +148,12 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
       end
 
       context 'when "include" is provided' do
+        let(:file_content) do
+          YAML.dump(
+            rspec: { script: 'rspec' },
+            echo: { script: 'echo' })
+        end
+
         shared_examples 'creates a child pipeline' do
           it 'creates only one new pipeline' do
             expect { service.execute(bridge) }
@@ -189,9 +195,6 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
         end
 
         before do
-          file_content = YAML.dump(
-            rspec: { script: 'rspec' },
-            echo: { script: 'echo' })
           upstream_project.repository.create_file(
             user, 'child-pipeline.yml', file_content, message: 'message', branch_name: 'master')
 
@@ -216,6 +219,29 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
 
           # it does not auto-cancel pipelines from the same family
           it_behaves_like 'creates a child pipeline'
+        end
+
+        context 'when the parent is a merge request pipeline' do
+          let(:merge_request) { create(:merge_request, source_project: bridge.project, target_project: bridge.project) }
+          let(:file_content) do
+            YAML.dump(
+              workflow: { rules: [{ if: '$CI_MERGE_REQUEST_ID' }] },
+              rspec: { script: 'rspec' },
+              echo: { script: 'echo' })
+          end
+
+          before do
+            bridge.pipeline.update!(source: :merge_request_event, merge_request: merge_request)
+          end
+
+          it_behaves_like 'creates a child pipeline'
+
+          it 'propagates the merge request to the child pipeline' do
+            pipeline = service.execute(bridge)
+
+            expect(pipeline.merge_request).to eq(merge_request)
+            expect(pipeline).to be_merge_request
+          end
         end
 
         context 'when upstream pipeline is a child pipeline' do

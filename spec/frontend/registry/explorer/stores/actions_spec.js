@@ -120,14 +120,15 @@ describe('Actions RegistryExplorer Store', () => {
   });
 
   describe('fetch tags list', () => {
-    const url = window.btoa(`${endpoint}/1}`);
+    const url = `${endpoint}/1}`;
+    const path = window.btoa(JSON.stringify({ tags_path: `${endpoint}/1}` }));
 
     it('sets the tagsList', done => {
-      mock.onGet(window.atob(url)).replyOnce(200, registryServerResponse, {});
+      mock.onGet(url).replyOnce(200, registryServerResponse, {});
 
       testAction(
         actions.requestTagsList,
-        { id: url },
+        { id: path },
         {},
         [
           { type: types.SET_MAIN_LOADING, payload: true },
@@ -146,7 +147,7 @@ describe('Actions RegistryExplorer Store', () => {
     it('should create flash on error', done => {
       testAction(
         actions.requestTagsList,
-        { id: url },
+        { id: path },
         {},
         [
           { type: types.SET_MAIN_LOADING, payload: true },

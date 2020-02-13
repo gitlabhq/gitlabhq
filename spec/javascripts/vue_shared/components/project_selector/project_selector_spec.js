@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import _ from 'underscore';
+import { head } from 'lodash';
 
 import { GlSearchBoxByType, GlInfiniteScroll } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
@@ -99,9 +99,9 @@ describe('ProjectSelector component', () => {
 
   it(`triggers a "projectClicked" event when a project is clicked`, () => {
     spyOn(vm, '$emit');
-    wrapper.find(ProjectListItem).vm.$emit('click', _.first(searchResults));
+    wrapper.find(ProjectListItem).vm.$emit('click', head(searchResults));
 
-    expect(vm.$emit).toHaveBeenCalledWith('projectClicked', _.first(searchResults));
+    expect(vm.$emit).toHaveBeenCalledWith('projectClicked', head(searchResults));
   });
 
   it(`shows a "no results" message if showNoResultsMessage === true`, () => {
