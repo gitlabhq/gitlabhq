@@ -257,6 +257,7 @@ export default class ClusterStore {
       name: environment.name,
       project: environment.project,
       environmentPath: environment.environment_path,
+      logsPath: environment.logs_path,
       lastDeployment: environment.last_deployment,
       rolloutStatus: {
         status: environment.rollout_status ? environment.rollout_status.status : null,

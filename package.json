@@ -201,6 +201,7 @@
     "yarn-deduplicate": "^1.1.1"
   },
   "resolutions": {
+    "at.js": "https://gitlab.com/gitlab-org/frontend/At.js.git#121ce9a557b51c33f5693ac8df52d2bda1e53cbe",
     "vue-jest/ts-jest": "24.0.0",
     "monaco-editor": "0.18.1"
   },

@@ -13,9 +13,17 @@ describe 'User creates snippet', :js do
     visit new_snippet_path
   end
 
+  def description_field
+    find('.js-description-input input,textarea')
+  end
+
   def fill_form
     fill_in 'personal_snippet_title', with: 'My Snippet Title'
+
+    # Click placeholder first to expand full description field
+    description_field.click
     fill_in 'personal_snippet_description', with: 'My Snippet **Description**'
+
     page.within('.file-editor') do
       find('.ace_text-input', visible: false).send_keys 'Hello World!'
     end
@@ -36,6 +44,8 @@ describe 'User creates snippet', :js do
   end
 
   it 'previews a snippet with file' do
+    # Click placeholder first to expand full description field
+    description_field.click
     fill_in 'personal_snippet_description', with: 'My Snippet'
     dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
     find('.js-md-preview-button').click

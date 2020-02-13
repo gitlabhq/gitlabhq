@@ -1,6 +1,6 @@
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import DiffLineGutterContent from '~/diffs/components/diff_line_gutter_content.vue';
+import DiffTableCell from '~/diffs/components/diff_table_cell.vue';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
 import { LINE_POSITION_RIGHT } from '~/diffs/constants';
 import { createStore } from '~/mr_notes/stores';
@@ -17,7 +17,7 @@ const TEST_LINE_NUMBER = 1;
 const TEST_LINE_CODE = 'LC_42';
 const TEST_FILE_HASH = diffFileMockData.file_hash;
 
-describe('DiffLineGutterContent', () => {
+describe('DiffTableCell', () => {
   let wrapper;
   let line;
   let store;
@@ -49,21 +49,39 @@ describe('DiffLineGutterContent', () => {
       value,
     });
   };
+
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(DiffLineGutterContent, {
+    wrapper = shallowMount(DiffTableCell, {
       localVue,
       store,
       propsData: {
         line,
         fileHash: TEST_FILE_HASH,
         contextLinesPath: '/context/lines/path',
+        isHighlighted: false,
         ...props,
       },
     });
   };
-  const findNoteButton = () => wrapper.find('.js-add-diff-note-button');
+
+  const findTd = () => wrapper.find({ ref: 'td' });
+  const findNoteButton = () => wrapper.find({ ref: 'addDiffNoteButton' });
   const findLineNumber = () => wrapper.find({ ref: 'lineNumberRef' });
   const findAvatars = () => wrapper.find(DiffGutterAvatars);
+
+  describe('td', () => {
+    it('highlights when isHighlighted true', () => {
+      createComponent({ isHighlighted: true });
+
+      expect(findTd().classes()).toContain('hll');
+    });
+
+    it('does not highlight when isHighlighted false', () => {
+      createComponent({ isHighlighted: false });
+
+      expect(findTd().classes()).not.toContain('hll');
+    });
+  });
 
   describe('comment button', () => {
     it.each`
@@ -84,13 +102,13 @@ describe('DiffLineGutterContent', () => {
     );
 
     it.each`
-      isHover  | otherProps                 | discussions | expectation
-      ${true}  | ${{}}                      | ${[]}       | ${true}
-      ${false} | ${{}}                      | ${[]}       | ${false}
-      ${true}  | ${{ isMatchLine: true }}   | ${[]}       | ${false}
-      ${true}  | ${{ isContextLine: true }} | ${[]}       | ${false}
-      ${true}  | ${{ isMetaLine: true }}    | ${[]}       | ${false}
-      ${true}  | ${{}}                      | ${[{}]}     | ${false}
+      isHover  | otherProps                                      | discussions | expectation
+      ${true}  | ${{}}                                           | ${[]}       | ${true}
+      ${false} | ${{}}                                           | ${[]}       | ${false}
+      ${true}  | ${{ line: { ...line, type: 'match' } }}         | ${[]}       | ${false}
+      ${true}  | ${{ line: { ...line, type: 'context' } }}       | ${[]}       | ${false}
+      ${true}  | ${{ line: { ...line, type: 'old-nonewline' } }} | ${[]}       | ${false}
+      ${true}  | ${{}}                                           | ${[{}]}     | ${false}
     `(
       'visible is $expectation - with isHover ($isHover), discussions ($discussions), otherProps ($otherProps)',
       ({ isHover, otherProps, discussions, expectation }) => {
@@ -109,7 +127,7 @@ describe('DiffLineGutterContent', () => {
   describe('line number', () => {
     describe('without lineNumber prop', () => {
       it('does not render', () => {
-        createComponent();
+        createComponent({ lineType: 'old' });
 
         expect(findLineNumber().exists()).toBe(false);
       });

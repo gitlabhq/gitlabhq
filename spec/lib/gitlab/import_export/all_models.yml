@@ -91,6 +91,7 @@ snippets:
 - award_emoji
 - user_agent_detail
 - user_mentions
+- snippet_repository
 releases:
 - author
 - project

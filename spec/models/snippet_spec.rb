@@ -19,6 +19,7 @@ describe Snippet do
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:user_mentions).class_name("SnippetUserMention") }
+    it { is_expected.to have_one(:snippet_repository) }
   end
 
   describe 'validation' do
@@ -523,6 +524,111 @@ describe Snippet do
 
     def to_json(params = {})
       snippet.to_json(params)
+    end
+  end
+
+  describe '#storage' do
+    let(:snippet) { create(:snippet) }
+
+    it "stores snippet in #{Storage::Hashed::SNIPPET_REPOSITORY_PATH_PREFIX} dir" do
+      expect(snippet.storage.disk_path).to start_with Storage::Hashed::SNIPPET_REPOSITORY_PATH_PREFIX
+    end
+  end
+
+  describe '#track_snippet_repository' do
+    let(:snippet) { create(:snippet, :repository) }
+
+    context 'when a snippet repository entry does not exist' do
+      it 'creates a new entry' do
+        expect { snippet.track_snippet_repository }.to change(snippet, :snippet_repository)
+      end
+
+      it 'tracks the snippet storage location' do
+        snippet.track_snippet_repository
+
+        expect(snippet.snippet_repository).to have_attributes(
+          disk_path: snippet.disk_path,
+          shard_name: snippet.repository_storage
+        )
+      end
+    end
+
+    context 'when a tracking entry exists' do
+      let!(:snippet_repository) { create(:snippet_repository, snippet: snippet) }
+      let!(:shard) { create(:shard, name: 'foo') }
+
+      it 'does not create a new entry in the database' do
+        expect { snippet.track_snippet_repository }.not_to change(snippet, :snippet_repository)
+      end
+
+      it 'updates the snippet storage location' do
+        allow(snippet).to receive(:disk_path).and_return('fancy/new/path')
+        allow(snippet).to receive(:repository_storage).and_return('foo')
+
+        snippet.track_snippet_repository
+
+        expect(snippet.snippet_repository).to have_attributes(
+          disk_path: 'fancy/new/path',
+          shard_name: 'foo'
+        )
+      end
+    end
+  end
+
+  describe '#create_repository' do
+    let(:snippet) { create(:snippet) }
+
+    it 'creates the repository' do
+      expect(snippet.repository).to receive(:after_create).and_call_original
+
+      expect(snippet.create_repository).to be_truthy
+      expect(snippet.repository.exists?).to be_truthy
+    end
+
+    it 'tracks snippet repository' do
+      expect do
+        snippet.create_repository
+      end.to change(SnippetRepository, :count).by(1)
+    end
+
+    context 'when repository exists' do
+      let(:snippet) { create(:snippet, :repository) }
+
+      it 'does not try to create repository' do
+        expect(snippet.repository).not_to receive(:after_create)
+
+        expect(snippet.create_repository).to be_nil
+      end
+
+      it 'does not track snippet repository' do
+        expect do
+          snippet.create_repository
+        end.not_to change(SnippetRepository, :count)
+      end
+    end
+  end
+
+  describe '#repository_storage' do
+    let(:snippet) { create(:snippet) }
+
+    it 'returns default repository storage' do
+      expect(Gitlab::CurrentSettings).to receive(:pick_repository_storage)
+
+      snippet.repository_storage
+    end
+
+    context 'when snippet_project is already created' do
+      let!(:snippet_repository) { create(:snippet_repository, snippet: snippet) }
+
+      before do
+        allow(snippet_repository).to receive(:shard_name).and_return('foo')
+      end
+
+      it 'returns repository_storage from snippet_project' do
+        expect(Gitlab::CurrentSettings).not_to receive(:pick_repository_storage)
+
+        expect(snippet.repository_storage).to eq 'foo'
+      end
     end
   end
 end

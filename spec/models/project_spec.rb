@@ -113,6 +113,7 @@ describe Project do
       let(:expected_full_path) { "#{container.namespace.full_path}/somewhere" }
       let(:expected_repository_klass) { Repository }
       let(:expected_storage_klass) { Storage::Hashed }
+      let(:expected_web_url_path) { "#{container.namespace.full_path}/somewhere" }
     end
 
     it 'has an inverse relationship with merge requests' do
@@ -5590,6 +5591,24 @@ describe Project do
     subject { project.alerts_service_activated? }
 
     it { is_expected.to be_falsey }
+  end
+
+  describe '#self_monitoring?' do
+    let_it_be(:project) { create(:project) }
+
+    subject { project.self_monitoring? }
+
+    context 'when the project is instance self monitoring' do
+      before do
+        stub_application_setting(self_monitoring_project_id: project.id)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when the project is not self monitoring' do
+      it { is_expected.to be false }
+    end
   end
 
   def rugged_config

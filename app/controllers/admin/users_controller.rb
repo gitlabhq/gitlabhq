@@ -75,7 +75,9 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def block
-    if update_user { |user| user.block }
+    result = Users::BlockService.new(current_user).execute(user)
+
+    if result[:status] = :success
       redirect_back_or_admin_user(notice: _("Successfully blocked"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not blocked"))

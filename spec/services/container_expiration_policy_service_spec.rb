@@ -17,7 +17,7 @@ describe ContainerExpirationPolicyService do
 
     it 'kicks off a cleanup worker for the container repository' do
       expect(CleanupContainerRepositoryWorker).to receive(:perform_async)
-        .with(user.id, container_repository.id, anything)
+        .with(nil, container_repository.id, hash_including(container_expiration_policy: true))
 
       subject
     end

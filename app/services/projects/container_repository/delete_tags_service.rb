@@ -42,7 +42,7 @@ module Projects
         # Deletes the dummy image
         # All created tag digests are the same since they all have the same dummy image.
         # a single delete is sufficient to remove all tags with it
-        if deleted_tags.any? && container_repository.delete_tag_by_digest(deleted_tags.values.first)
+        if deleted_tags.any? && container_repository.delete_tag_by_digest(deleted_tags.each_value.first)
           success(deleted: deleted_tags.keys)
         else
           error('could not delete tags')

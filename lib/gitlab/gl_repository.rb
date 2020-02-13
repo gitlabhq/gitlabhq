@@ -15,10 +15,17 @@ module Gitlab
       repository_resolver: -> (project) { project.wiki.repository },
       suffix: :wiki
     ).freeze
+    SNIPPET = RepoType.new(
+      name: :snippet,
+      access_checker_class: Gitlab::GitAccessSnippet,
+      repository_resolver: -> (snippet) { snippet.repository },
+      container_resolver: -> (id) { Snippet.find_by_id(id) }
+    ).freeze
 
     TYPES = {
       PROJECT.name.to_s => PROJECT,
-      WIKI.name.to_s => WIKI
+      WIKI.name.to_s => WIKI,
+      SNIPPET.name.to_s => SNIPPET
     }.freeze
 
     def self.types

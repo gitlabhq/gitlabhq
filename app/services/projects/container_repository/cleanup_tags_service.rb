@@ -5,7 +5,7 @@ module Projects
     class CleanupTagsService < BaseService
       def execute(container_repository)
         return error('feature disabled') unless can_use?
-        return error('access denied') unless can_admin?
+        return error('access denied') unless can_destroy?
 
         tags = container_repository.tags
         tags_by_digest = group_by_digest(tags)
@@ -82,8 +82,10 @@ module Projects
         end
       end
 
-      def can_admin?
-        can?(current_user, :admin_container_image, project)
+      def can_destroy?
+        return true if params['container_expiration_policy']
+
+        can?(current_user, :destroy_container_image, project)
       end
 
       def can_use?

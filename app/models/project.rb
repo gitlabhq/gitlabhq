@@ -9,7 +9,6 @@ class Project < ApplicationRecord
   include AccessRequestable
   include Avatarable
   include CacheMarkdownField
-  include Referable
   include Sortable
   include AfterCommitQueue
   include CaseSensitivity
@@ -2334,6 +2333,10 @@ class Project < ApplicationRecord
 
   def alerts_service_activated?
     false
+  end
+
+  def self_monitoring?
+    Gitlab::CurrentSettings.self_monitoring_project_id == id
   end
 
   private

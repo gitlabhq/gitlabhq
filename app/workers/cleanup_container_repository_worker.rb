@@ -11,6 +11,7 @@ class CleanupContainerRepositoryWorker
   def perform(current_user_id, container_repository_id, params)
     @current_user = User.find_by_id(current_user_id)
     @container_repository = ContainerRepository.find_by_id(container_repository_id)
+    @params = params
 
     return unless valid?
 
@@ -22,7 +23,13 @@ class CleanupContainerRepositoryWorker
   private
 
   def valid?
+    return true if run_by_container_expiration_policy?
+
     current_user && container_repository && project
+  end
+
+  def run_by_container_expiration_policy?
+    @params['container_expiration_policy'] && container_repository && project
   end
 
   def project

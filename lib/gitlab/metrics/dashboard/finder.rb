@@ -65,7 +65,7 @@ module Gitlab
           def find_all_paths_from_source(project)
             Gitlab::Metrics::Dashboard::Cache.delete_all!
 
-            system_service.all_dashboard_paths(project)
+            default_dashboard_path(project)
             .+ project_service.all_dashboard_paths(project)
           end
 
@@ -77,6 +77,18 @@ module Gitlab
 
           def project_service
             ::Metrics::Dashboard::ProjectDashboardService
+          end
+
+          def self_monitoring_service
+            ::Metrics::Dashboard::SelfMonitoringDashboardService
+          end
+
+          def default_dashboard_path(project)
+            if project.self_monitoring?
+              self_monitoring_service.all_dashboard_paths(project)
+            else
+              system_service.all_dashboard_paths(project)
+            end
           end
 
           def service_for(options)

@@ -80,7 +80,7 @@ module API
         render_api_error!(message, 400) unless obtain_new_cleanup_container_lease
 
         CleanupContainerRepositoryWorker.perform_async(current_user.id, repository.id,
-          declared_params.except(:repository_id))
+          declared_params.except(:repository_id).merge(container_expiration_policy: false))
 
         track_event('delete_tag_bulk')
 

@@ -2,14 +2,15 @@
 
 module Storage
   class Hashed
-    attr_accessor :project
-    delegate :gitlab_shell, :repository_storage, to: :project
+    attr_accessor :container
+    delegate :gitlab_shell, :repository_storage, to: :container
 
     REPOSITORY_PATH_PREFIX = '@hashed'
+    SNIPPET_REPOSITORY_PATH_PREFIX = '@snippets'
     POOL_PATH_PREFIX = '@pools'
 
-    def initialize(project, prefix: REPOSITORY_PATH_PREFIX)
-      @project = project
+    def initialize(container, prefix: REPOSITORY_PATH_PREFIX)
+      @container = container
       @prefix = prefix
     end
 
@@ -20,9 +21,10 @@ module Storage
       "#{@prefix}/#{disk_hash[0..1]}/#{disk_hash[2..3]}" if disk_hash
     end
 
-    # Disk path is used to build repository and project's wiki path on disk
+    # Disk path is used to build repository path on disk
     #
-    # @return [String] combination of base_dir and the repository own name without `.git` or `.wiki.git` extensions
+    # @return [String] combination of base_dir and the repository own name
+    # without `.git`, `.wiki.git`, or any other extension
     def disk_path
       "#{base_dir}/#{disk_hash}" if disk_hash
     end
@@ -33,10 +35,10 @@ module Storage
 
     private
 
-    # Generates the hash for the project path and name on disk
+    # Generates the hash for the repository path and name on disk
     # If you need to refer to the repository on disk, use the `#disk_path`
     def disk_hash
-      @disk_hash ||= Digest::SHA2.hexdigest(project.id.to_s) if project.id
+      @disk_hash ||= Digest::SHA2.hexdigest(container.id.to_s) if container.id
     end
   end
 end

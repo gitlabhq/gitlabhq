@@ -1,5 +1,120 @@
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-canonical-gitlab-merge-request: &if-canonical-gitlab-merge-request
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
+
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-canonical-dot-com-gitlab-org-group-schedule: &if-canonical-dot-com-gitlab-org-group-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
+
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-master-refs: &if-master-refs
+  if: '$CI_COMMIT_REF_NAME == "master"'
+
+# Make sure to update all the similar conditions in other CI config files if you modify these conditions
+.if-default-refs: &if-default-refs
+  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG'
+
+# Make sure to update all the similar patterns in other CI config files if you modify these patterns
+.code-backstage-patterns: &code-backstage-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
+  # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "{,ee/}fixtures/**/*"
+  - "{,ee/}rubocop/**/*"
+  - "{,ee/}spec/**/*"
+  - "doc/README.md"  # Some RSpec test rely on this file
+
+# Make sure to update all the similar patterns in other CI config files if you modify these patterns
+.code-qa-patterns: &code-qa-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
+  # QA changes
+  - ".dockerignore"
+  - "qa/**/*"
+
+# Make sure to update all the similar patterns in other CI config files if you modify these patterns
+.code-backstage-qa-patterns: &code-backstage-qa-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
+  # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "{,ee/}fixtures/**/*"
+  - "{,ee/}rubocop/**/*"
+  - "{,ee/}spec/**/*"
+  - "doc/README.md"  # Some RSpec test rely on this file
+  # QA changes
+  - ".dockerignore"
+  - "qa/**/*"
+
+.reports:rules:code_quality:
+  rules:
+    - if: '$CODE_QUALITY_DISABLED'
+      when: never
+    # - <<: *if-master-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+
+.reports:rules:sast:
+  rules:
+    - if: '$SAST_DISABLED || $GITLAB_FEATURES !~ /\bsast\b/'
+      when: never
+    # - <<: *if-master-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+
+.reports:rules:dependency_scanning:
+  rules:
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/'
+      when: never
+    # - <<: *if-master-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+
+.reports:rules:dast:
+  rules:
+    - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
+      when: never
+    - <<: *if-canonical-gitlab-merge-request
+      changes: *code-qa-patterns
+
 # include:
-#   - template: Code-Quality.gitlab-ci.yml
+#   - template: Jobs/Code-Quality.gitlab-ci.yml
 #   - template: Security/SAST.gitlab-ci.yml
 #   - template: Security/Dependency-Scanning.gitlab-ci.yml
 #   - template: Security/DAST.gitlab-ci.yml
@@ -10,8 +125,7 @@
 code_quality:
   extends:
     - .default-retry
-    - .default-only
-    - .only:changes-code-backstage
+    - .reports:rules:code_quality
   stage: test
   image: docker:stable
   allow_failure: true
@@ -38,12 +152,9 @@ code_quality:
     reports:
       codequality: gl-code-quality-report.json
     paths:
-      - gl-code-quality-report.json
-    expire_in: 1 week
+      - gl-code-quality-report.json  # GitLab-specific
+    expire_in: 1 week  # GitLab-specific
   dependencies: []
-  except:
-    variables:
-      - $CODE_QUALITY_DISABLED
 
 # We need to duplicate this job's definition because it seems it's impossible to
 # override an included `only.refs`.
@@ -53,16 +164,22 @@ code_quality:
 sast:
   extends:
     - .default-retry
-    - .default-only
-    - .only:changes-code-backstage-qa
+    - .reports:rules:sast
   stage: test
+  allow_failure: true
+  dependencies: []  # GitLab-specific
+  artifacts:
+    paths:
+      - gl-sast-report.json  # GitLab-specific
+    reports:
+      sast: gl-sast-report.json
+    expire_in: 1 week  # GitLab-specific
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
-    SAST_BRAKEMAN_LEVEL: 2
-    SAST_EXCLUDED_PATHS: qa,spec,doc,ee/spec
-  allow_failure: true
+    SAST_BRAKEMAN_LEVEL: 2  # GitLab-specific
+    SAST_EXCLUDED_PATHS: qa,spec,doc,ee/spec  # GitLab-specific
   services:
     - docker:stable-dind
   script:
@@ -73,61 +190,12 @@ sast:
           export DOCKER_HOST='tcp://localhost:2375'
         fi
       fi
-    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
-      function propagate_env_vars() {
-        CURRENT_ENV=$(printenv)
-
-        for VAR_NAME; do
-          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
-        done
-      }
     - |
-      docker run \
-        $(propagate_env_vars \
-          SAST_BANDIT_EXCLUDED_PATHS \
-          SAST_ANALYZER_IMAGES \
-          SAST_ANALYZER_IMAGE_PREFIX \
-          SAST_ANALYZER_IMAGE_TAG \
-          SAST_DEFAULT_ANALYZERS \
-          SAST_PULL_ANALYZER_IMAGES \
-          SAST_BRAKEMAN_LEVEL \
-          SAST_FLAWFINDER_LEVEL \
-          SAST_GITLEAKS_ENTROPY_LEVEL \
-          SAST_GOSEC_LEVEL \
-          SAST_EXCLUDED_PATHS \
-          SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
-          SAST_PULL_ANALYZER_IMAGE_TIMEOUT \
-          SAST_RUN_ANALYZER_TIMEOUT \
-          SAST_JAVA_VERSION \
-          ANT_HOME \
-          ANT_PATH \
-          GRADLE_PATH \
-          JAVA_OPTS \
-          JAVA_PATH \
-          JAVA_8_VERSION \
-          JAVA_11_VERSION \
-          MAVEN_CLI_OPTS \
-          MAVEN_PATH \
-          MAVEN_REPO_PATH \
-          SBT_PATH \
-          FAIL_NEVER \
-        ) \
+      ENVS=`printenv | grep -vE '^(DOCKER_|CI|GITLAB_|FF_|HOME|PWD|OLDPWD|PATH|SHLVL|HOSTNAME)' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
+      docker run "$ENVS" \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
-  artifacts:
-    expire_in: 7 days
-    paths:
-      - gl-sast-report.json
-    reports:
-      sast: gl-sast-report.json
-  dependencies: []
-  only:
-    variables:
-      - $GITLAB_FEATURES =~ /\bsast\b/
-  except:
-    variables:
-      - $SAST_DISABLED
 
 # We need to duplicate this job's definition because it seems it's impossible to
 # override an included `only.refs`.
@@ -135,14 +203,13 @@ sast:
 dependency_scanning:
   extends:
     - .default-retry
-    - .default-only
-    - .only:changes-code-backstage-qa
+    - .reports:rules:dependency_scanning
   stage: test
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
-    DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports,spec,ee/spec"
+    DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports,spec,ee/spec"  # GitLab-specific
   allow_failure: true
   services:
     - docker:stable-dind
@@ -174,23 +241,29 @@ dependency_scanning:
           DS_PULL_ANALYZER_IMAGE_TIMEOUT \
           DS_RUN_ANALYZER_TIMEOUT \
           DS_PYTHON_VERSION \
+          DS_PIP_VERSION \
           DS_PIP_DEPENDENCY_PATH \
+          GEMNASIUM_DB_LOCAL_PATH \
+          GEMNASIUM_DB_REMOTE_URL \
+          GEMNASIUM_DB_REF_NAME \
           PIP_INDEX_URL \
           PIP_EXTRA_INDEX_URL \
+          PIP_REQUIREMENTS_FILE \
+          MAVEN_CLI_OPTS \
+          BUNDLER_AUDIT_UPDATE_DISABLED \
+          BUNDLER_AUDIT_ADVISORY_DB_URL \
+          BUNDLER_AUDIT_ADVISORY_DB_REF_NAME \
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_VERSION" /code
   artifacts:
+    paths:
+      - gl-dependency-scanning-report.json  # GitLab-specific
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
+    expire_in: 1 week  # GitLab-specific
   dependencies: []
-  only:
-    variables:
-      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/
-  except:
-    variables:
-      - $DEPENDENCY_SCANNING_DISABLED
 
 # We need to duplicate this job's definition because it seems it's impossible to
 # override an included `only.refs`.
@@ -198,40 +271,38 @@ dependency_scanning:
 dast:
   extends:
     - .default-retry
-    - .default-only
-    - .only:changes-code-qa
-    - .only-review
-  stage: qa
-  needs: ["review-deploy"]
-  dependencies: ["review-deploy"]
-  before_script:
-    - export DAST_WEBSITE="$(cat review_app_url.txt)"
+    - .reports:rules:dast
+  needs:
+    - job: review-deploy
+      artifacts: true
+  stage: qa  # GitLab-specific
   image:
-    name: "registry.gitlab.com/gitlab-org/security-products/dast:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
+    name: "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION"
   variables:
-  # URL to scan:
-  # DAST_WEBSITE: https://example.com/
-  #
-  # Time limit for target availability (scan is attempted even when timeout):
-  # DAST_TARGET_AVAILABILITY_TIMEOUT: 60
-  #
-  # Set these variables to scan with an authenticated user:
-  # DAST_AUTH_URL: https://example.com/sign-in
-  # DAST_USERNAME: john.doe@example.com
-  # DAST_PASSWORD: john-doe-password
-  # DAST_USERNAME_FIELD: session[user] # the name of username field at the sign-in HTML form
-  # DAST_PASSWORD_FIELD: session[password] # the name of password field at the sign-in HTML form
-  # DAST_AUTH_EXCLUDE_URLS: http://example.com/sign-out,http://example.com/sign-out-2 # optional: URLs to skip during the authenticated scan; comma-separated, no spaces in between
-  #
-  # Perform ZAP Full Scan, which includes both passive and active scanning:
-  # DAST_FULL_SCAN_ENABLED: "true"
+    # To be done in a later iteration
+    # DAST_USERNAME: "root"
+    # DAST_USERNAME_FIELD: "user[login]"
+    # DAST_PASSWORD_FIELD: "user[passowrd]"
   allow_failure: true
   script:
-    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
+    - 'export DAST_WEBSITE="${DAST_WEBSITE:-$(cat environment_url.txt)}"'
+    # To be done in a later iteration
+    # - 'export DAST_AUTH_URL="${DAST_WEBSITE}/users/sign_in"'
+    # - 'export DAST_PASSWORD="${REVIEW_APPS_ROOT_PASSWORD}"'
     - /analyze -t $DAST_WEBSITE
   artifacts:
-    expire_in: 7 days
     paths:
-      - gl-dast-report.json
+      - gl-dast-report.json  # GitLab-specific
     reports:
       dast: gl-dast-report.json
+    expire_in: 1 week  # GitLab-specific
+
+# To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+# schedule:dast:
+#   extends: dast
+#   rules:
+#     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
+#       when: never
+#     - <<: *if-canonical-dot-com-gitlab-org-group-schedule
+#   variables:
+#     DAST_FULL_SCAN_ENABLED: "true"

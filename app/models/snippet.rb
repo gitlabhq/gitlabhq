@@ -6,7 +6,6 @@ class Snippet < ApplicationRecord
   include CacheMarkdownField
   include Noteable
   include Participable
-  include Referable
   include Sortable
   include Awardable
   include Mentionable
@@ -15,10 +14,11 @@ class Snippet < ApplicationRecord
   include Gitlab::SQL::Pattern
   include FromUnion
   include IgnorableColumns
-
+  include HasRepository
   extend ::Gitlab::Utils::Override
 
   ignore_column :storage_version, remove_with: '12.9', remove_after: '2020-03-22'
+  ignore_column :repository_storage, remove_with: '12.10', remove_after: '2020-04-22'
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
@@ -42,6 +42,7 @@ class Snippet < ApplicationRecord
 
   has_many :notes, as: :noteable, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :user_mentions, class_name: "SnippetUserMention"
+  has_one :snippet_repository, inverse_of: :snippet
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
@@ -252,6 +253,47 @@ class Snippet < ApplicationRecord
     options[:except] << :secret_token
 
     super
+  end
+
+  def repository
+    @repository ||= Repository.new(full_path, self, disk_path: disk_path, repo_type: Gitlab::GlRepository::SNIPPET)
+  end
+
+  def storage
+    @storage ||= Storage::Hashed.new(self, prefix: Storage::Hashed::SNIPPET_REPOSITORY_PATH_PREFIX)
+  end
+
+  # This is the full_path used to identify the
+  # the snippet repository. It will be used mostly
+  # for logging purposes.
+  def full_path
+    return unless persisted?
+
+    @full_path ||= begin
+      components = []
+      components << project.full_path if project_id?
+      components << '@snippets'
+      components << self.id
+      components.join('/')
+    end
+  end
+
+  def repository_storage
+    snippet_repository&.shard_name ||
+      Gitlab::CurrentSettings.pick_repository_storage
+  end
+
+  def create_repository
+    return if repository_exists?
+
+    repository.create_if_not_exists
+
+    track_snippet_repository if repository_exists?
+  end
+
+  def track_snippet_repository
+    repository = snippet_repository || build_snippet_repository
+    repository.update!(shard_name: repository_storage, disk_path: disk_path)
   end
 
   class << self

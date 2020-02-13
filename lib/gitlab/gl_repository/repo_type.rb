@@ -47,6 +47,10 @@ module Gitlab
         self == PROJECT
       end
 
+      def snippet?
+        self == SNIPPET
+      end
+
       def path_suffix
         suffix ? ".#{suffix}" : ''
       end

@@ -4160,7 +4160,7 @@ describe User, :do_not_mock_admin_mode do
   describe '#dismissed_callout?' do
     subject(:user) { create(:user) }
 
-    let(:feature_name) { UserCallout.feature_names.keys.first }
+    let(:feature_name) { UserCallout.feature_names.each_key.first }
 
     context 'when no callout dismissal record exists' do
       it 'returns false when no ignore_dismissal_earlier_than provided' do

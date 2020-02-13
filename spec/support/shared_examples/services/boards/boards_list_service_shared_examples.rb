@@ -50,5 +50,20 @@ RSpec.shared_examples 'multiple boards list service' do
     it 'returns boards ordered by name' do
       expect(service.execute).to eq [board_a, board_B, board_c]
     end
+
+    context 'when wanting a specific board' do
+      it 'returns board specified by id' do
+        service = described_class.new(parent, double, board_id: board_c.id)
+
+        expect(service.execute).to eq [board_c]
+      end
+
+      it 'raises exception when board is not found' do
+        outside_board = create(:board, resource_parent: create(:project), name: 'outside board')
+        service = described_class.new(parent, double, board_id: outside_board.id)
+
+        expect { service.execute }.to raise_exception(ActiveRecord::RecordNotFound)
+      end
+    end
   end
 end

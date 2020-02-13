@@ -28,7 +28,7 @@ describe RedisCacheable do
   end
 
   describe '#cached_attribute' do
-    subject { instance.cached_attribute(payload.keys.first) }
+    subject { instance.cached_attribute(payload.each_key.first) }
 
     it 'gets the cache attribute' do
       Gitlab::Redis::SharedState.with do |redis|
@@ -36,7 +36,7 @@ describe RedisCacheable do
           .and_return(payload.to_json)
       end
 
-      expect(subject).to eq(payload.values.first)
+      expect(subject).to eq(payload.each_value.first)
     end
   end
 

@@ -18,6 +18,17 @@ import {
 import { makeDataSeries } from '~/helpers/monitor_helper';
 import { graphDataValidatorForValues } from '../../utils';
 
+/**
+ * A "virtual" coordinates system for the deployment icons.
+ * Deployment icons are displayed along the [min, max]
+ * range at height `pos`.
+ */
+const deploymentYAxisCoords = {
+  min: 0,
+  pos: 3, // 3% height of chart's grid
+  max: 100,
+};
+
 const THROTTLED_DATAZOOM_WAIT = 1000; // miliseconds
 const timestampToISODate = timestamp => new Date(timestamp).toISOString();
 
@@ -145,10 +156,33 @@ export default {
       }, []);
     },
     chartOptionSeries() {
-      return (this.option.series || []).concat(this.scatterSeries ? [this.scatterSeries] : []);
+      return (this.option.series || []).concat(
+        this.deploymentSeries ? [this.deploymentSeries] : [],
+      );
     },
     chartOptions() {
       const option = omit(this.option, 'series');
+
+      const dataYAxis = {
+        name: this.yAxisLabel,
+        nameGap: 50, // same as gitlab-ui's default
+        nameLocation: 'center', // same as gitlab-ui's default
+        boundaryGap: [0.1, 0.1],
+        scale: true,
+        axisLabel: {
+          formatter: num => roundOffFloat(num, 3).toString(),
+        },
+      };
+      const deploymentsYAxis = {
+        show: false,
+        min: deploymentYAxisCoords.min,
+        max: deploymentYAxisCoords.max,
+        axisLabel: {
+          // formatter fn required to trigger tooltip re-positioning
+          formatter: () => {},
+        },
+      };
+
       return {
         series: this.chartOptionSeries,
         xAxis: {
@@ -161,12 +195,7 @@ export default {
             snap: true,
           },
         },
-        yAxis: {
-          name: this.yAxisLabel,
-          axisLabel: {
-            formatter: num => roundOffFloat(num, 3).toString(),
-          },
-        },
+        yAxis: [dataYAxis, deploymentsYAxis],
         dataZoom: [this.dataZoomConfig],
         ...option,
       };
@@ -228,10 +257,16 @@ export default {
         return acc;
       }, []);
     },
-    scatterSeries() {
+    deploymentSeries() {
       return {
         type: graphTypes.deploymentData,
-        data: this.recentDeployments.map(deployment => [deployment.createdAt, 0]),
+
+        yAxisIndex: 1, // deploymentsYAxis index
+        data: this.recentDeployments.map(deployment => [
+          deployment.createdAt,
+          deploymentYAxisCoords.pos,
+        ]),
+
         symbol: this.svgs.rocket,
         symbolSize: symbolSizes.default,
         itemStyle: {
@@ -265,6 +300,7 @@ export default {
     formatTooltipText(params) {
       this.tooltip.title = dateFormat(params.value, dateFormats.default);
       this.tooltip.content = [];
+
       params.seriesData.forEach(dataPoint => {
         if (dataPoint.value) {
           const [xVal, yVal] = dataPoint.value;

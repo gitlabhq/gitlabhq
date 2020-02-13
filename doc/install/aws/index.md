@@ -357,15 +357,7 @@ In this step we'll configure some details:
 
 ### Add storage
 
-The root volume is 8GB by default and should be enough given that we won't store
-any data there. Let's create a new EBS volume that will host the Git data. Its
-size depends on your needs and you can always migrate to a bigger volume later.
-You will be able to [set up that volume](#setting-up-the-ebs-volume)
-after the instance is created.
-
-CAUTION: **Caution:**
-We **do not** recommend using the AWS Elastic File System (EFS), as it can result
-in [significantly degraded performance](../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs).
+The root volume is 8GB by default and should be enough given that we won't store any data there.
 
 ### Configure security group
 
@@ -489,33 +481,6 @@ sudo gitlab-ctl status
 ```
 
 If everything looks good, you should be able to reach GitLab in your browser.
-
-### Setting up the EBS volume
-
-The EBS volume will host the Git repositories data:
-
-1. First, format the `/dev/xvdb` volume and then mount it under the directory
-   where the data will be stored. For example, `/mnt/gitlab-data/`.
-1. Tell GitLab to store its data in the new directory by editing
-   `/etc/gitlab/gitlab.rb` with your editor:
-
-   ```ruby
-   git_data_dirs({
-     "default" => { "path" => "/mnt/gitlab-data" }
-   })
-   ```
-
-   where `/mnt/gitlab-data` the location where you will store the Git data.
-
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-TIP: **Tip:**
-If you wish to add more than one data volumes to store the Git repositories,
-read the [repository storage paths docs](../../administration/repository_storage_paths.md).
 
 ### Setting up Gitaly
 

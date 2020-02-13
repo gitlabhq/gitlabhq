@@ -3,7 +3,7 @@
 module API
   module Entities
     class BroadcastMessage < Grape::Entity
-      expose :id, :message, :starts_at, :ends_at, :color, :font
+      expose :id, :message, :starts_at, :ends_at, :color, :font, :target_path, :broadcast_type
       expose :active?, as: :active
     end
   end

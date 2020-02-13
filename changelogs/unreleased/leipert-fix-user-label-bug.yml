@@ -1,0 +1,5 @@
+---
+title: Fix autocomplete limitation bug
+merge_request: 25127
+author:
+type: fixed

@@ -37,6 +37,8 @@ module FakeBlobHelpers
   end
 
   def fake_blob(**kwargs)
-    Blob.decorate(FakeBlob.new(**kwargs), project)
+    container = kwargs.delete(:container) || project
+
+    Blob.decorate(FakeBlob.new(**kwargs), container)
   end
 end

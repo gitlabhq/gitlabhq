@@ -18,6 +18,7 @@ module Gitlab
             ::Metrics::Dashboard::DefaultEmbedService,
             ::Metrics::Dashboard::SystemDashboardService,
             ::Metrics::Dashboard::PodDashboardService,
+            ::Metrics::Dashboard::SelfMonitoringDashboardService,
             ::Metrics::Dashboard::ProjectDashboardService
           ].freeze
 

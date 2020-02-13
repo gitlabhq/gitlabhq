@@ -1,9 +1,17 @@
 # frozen_string_literal: true
 
+# This concern is created to handle repository actions.
+# It should be include inside any object capable
+# of directly having a repository, like project or snippet.
+#
+# It also includes `Referable`, therefore the method
+# `to_reference` should be overriden in case the object
+# needs any special behavior.
 module HasRepository
   extend ActiveSupport::Concern
   include Gitlab::ShellAdapter
   include AfterCommitQueue
+  include Referable
   include Gitlab::Utils::StrongMemoize
 
   delegate :base_dir, :disk_path, to: :storage

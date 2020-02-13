@@ -372,7 +372,7 @@ describe Repository do
 
     context 'when some commits are not found ' do
       let(:oids) do
-        ['deadbeef'] + TestEnv::BRANCH_SHA.values.first(10)
+        ['deadbeef'] + TestEnv::BRANCH_SHA.each_value.first(10)
       end
 
       it 'returns only found commits' do

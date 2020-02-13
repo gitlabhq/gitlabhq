@@ -18,7 +18,7 @@ RSpec.shared_examples 'model with repository' do
         let(:only_path) { false }
 
         it 'returns the full web URL for this repo' do
-          expect(subject).to eq("#{Gitlab.config.gitlab.url}/#{expected_full_path}")
+          expect(subject).to eq("#{Gitlab.config.gitlab.url}/#{expected_web_url_path}")
         end
       end
 
@@ -26,7 +26,7 @@ RSpec.shared_examples 'model with repository' do
         let(:only_path) { true }
 
         it 'returns the relative web URL for this repo' do
-          expect(subject).to eq("/#{expected_full_path}")
+          expect(subject).to eq("/#{expected_web_url_path}")
         end
       end
 
@@ -34,14 +34,14 @@ RSpec.shared_examples 'model with repository' do
         let(:only_path) { nil }
 
         it 'returns the full web URL for this repo' do
-          expect(subject).to eq("#{Gitlab.config.gitlab.url}/#{expected_full_path}")
+          expect(subject).to eq("#{Gitlab.config.gitlab.url}/#{expected_web_url_path}")
         end
       end
     end
 
     context 'when not given the only_path option' do
       it 'returns the full web URL for this repo' do
-        expect(container.web_url).to eq("#{Gitlab.config.gitlab.url}/#{expected_full_path}")
+        expect(container.web_url).to eq("#{Gitlab.config.gitlab.url}/#{expected_web_url_path}")
       end
     end
   end
@@ -72,7 +72,7 @@ RSpec.shared_examples 'model with repository' do
           let(:custom_http_clone_url_root) { 'https://git.example.com:51234/mygitlab/' }
 
           it 'returns the url to the repo, with the root replaced with the custom one' do
-            expect(subject).to eq("#{custom_http_clone_url_root}#{expected_full_path}.git")
+            expect(subject).to eq("#{custom_http_clone_url_root}#{expected_web_url_path}.git")
           end
         end
 
@@ -80,7 +80,7 @@ RSpec.shared_examples 'model with repository' do
           let(:custom_http_clone_url_root) { 'https://git.example.com:51234/mygitlab' }
 
           it 'returns the url to the repo, with the root replaced with the custom one' do
-            expect(subject).to eq("#{custom_http_clone_url_root}/#{expected_full_path}.git")
+            expect(subject).to eq("#{custom_http_clone_url_root}/#{expected_web_url_path}.git")
           end
         end
       end
@@ -90,7 +90,7 @@ RSpec.shared_examples 'model with repository' do
           let(:custom_http_clone_url_root) { 'https://git.example.com:51234/' }
 
           it 'returns the url to the repo, with the root replaced with the custom one' do
-            expect(subject).to eq("#{custom_http_clone_url_root}#{expected_full_path}.git")
+            expect(subject).to eq("#{custom_http_clone_url_root}#{expected_web_url_path}.git")
           end
         end
 
@@ -98,7 +98,7 @@ RSpec.shared_examples 'model with repository' do
           let(:custom_http_clone_url_root) { 'https://git.example.com:51234' }
 
           it 'returns the url to the repo, with the root replaced with the custom one' do
-            expect(subject).to eq("#{custom_http_clone_url_root}/#{expected_full_path}.git")
+            expect(subject).to eq("#{custom_http_clone_url_root}/#{expected_web_url_path}.git")
           end
         end
       end

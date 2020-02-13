@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 describe Commit do
-  let(:project) { create(:project, :public, :repository) }
-  let(:commit)  { project.commit }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:personal_snippet) { create(:personal_snippet, :repository) }
+  let_it_be(:project_snippet) { create(:project_snippet, :repository) }
+  let(:commit) { project.commit }
 
   describe 'modules' do
     subject { described_class }
@@ -17,49 +19,67 @@ describe Commit do
   end
 
   describe '.lazy' do
-    let_it_be(:project) { create(:project, :repository) }
+    shared_examples '.lazy checks' do
+      context 'when the commits are found' do
+        let(:oids) do
+          %w(
+            498214de67004b1da3d820901307bed2a68a8ef6
+            c642fe9b8b9f28f9225d7ea953fe14e74748d53b
+            6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+            048721d90c449b244b7b4c53a9186b04330174ec
+            281d3a76f31c812dbf48abce82ccf6860adedd81
+          )
+        end
 
-    context 'when the commits are found' do
-      let(:oids) do
-        %w(
-          498214de67004b1da3d820901307bed2a68a8ef6
-          c642fe9b8b9f28f9225d7ea953fe14e74748d53b
-          6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
-          048721d90c449b244b7b4c53a9186b04330174ec
-          281d3a76f31c812dbf48abce82ccf6860adedd81
-        )
-      end
+        subject { oids.map { |oid| described_class.lazy(container, oid) } }
 
-      subject { oids.map { |oid| described_class.lazy(project, oid) } }
+        it 'batches requests for commits' do
+          expect(container.repository).to receive(:commits_by).once.and_call_original
 
-      it 'batches requests for commits' do
-        expect(project.repository).to receive(:commits_by).once.and_call_original
+          subject.first.title
+          subject.last.title
+        end
 
-        subject.first.title
-        subject.last.title
-      end
+        it 'maintains ordering' do
+          subject.each_with_index do |commit, i|
+            expect(commit.id).to eq(oids[i])
+          end
+        end
 
-      it 'maintains ordering' do
-        subject.each_with_index do |commit, i|
-          expect(commit.id).to eq(oids[i])
+        it 'does not attempt to replace methods via BatchLoader' do
+          subject.each do |commit|
+            expect(commit).to receive(:method_missing).and_call_original
+
+            commit.id
+          end
         end
       end
 
-      it 'does not attempt to replace methods via BatchLoader' do
-        subject.each do |commit|
-          expect(commit).to receive(:method_missing).and_call_original
+      context 'when not found' do
+        it 'returns nil as commit' do
+          commit = described_class.lazy(container, 'deadbeef').__sync
 
-          commit.id
+          expect(commit).to be_nil
         end
       end
     end
 
-    context 'when not found' do
-      it 'returns nil as commit' do
-        commit = described_class.lazy(project, 'deadbeef').__sync
+    context 'with project' do
+      let(:container) { project }
 
-        expect(commit).to be_nil
-      end
+      it_behaves_like '.lazy checks'
+    end
+
+    context 'with personal snippet' do
+      let(:container) { personal_snippet }
+
+      it_behaves_like '.lazy checks'
+    end
+
+    context 'with project snippet' do
+      let(:container) { project_snippet }
+
+      it_behaves_like '.lazy checks'
     end
   end
 
@@ -231,15 +251,43 @@ describe Commit do
   end
 
   describe '#to_reference' do
-    let(:project) { create(:project, :repository, path: 'sample-project') }
+    context 'with project' do
+      let(:project) { create(:project, :repository, path: 'sample-project') }
 
-    it 'returns a String reference to the object' do
-      expect(commit.to_reference).to eq commit.id
+      it 'returns a String reference to the object' do
+        expect(commit.to_reference).to eq commit.id
+      end
+
+      it 'supports a cross-project reference' do
+        another_project = build(:project, :repository, name: 'another-project', namespace: project.namespace)
+        expect(commit.to_reference(another_project)).to eq "sample-project@#{commit.id}"
+      end
     end
 
-    it 'supports a cross-project reference' do
-      another_project = build(:project, :repository, name: 'another-project', namespace: project.namespace)
-      expect(commit.to_reference(another_project)).to eq "sample-project@#{commit.id}"
+    context 'with personal snippet' do
+      let(:commit) { personal_snippet.commit }
+
+      it 'returns a String reference to the object' do
+        expect(commit.to_reference).to eq "$#{personal_snippet.id}@#{commit.id}"
+      end
+
+      it 'supports a cross-snippet reference' do
+        another_snippet = build(:personal_snippet)
+        expect(commit.to_reference(another_snippet)).to eq "$#{personal_snippet.id}@#{commit.id}"
+      end
+    end
+
+    context 'with project snippet' do
+      let(:commit) { project_snippet.commit }
+
+      it 'returns a String reference to the object' do
+        expect(commit.to_reference).to eq "$#{project_snippet.id}@#{commit.id}"
+      end
+
+      it 'supports a cross-snippet project reference' do
+        another_snippet = build(:personal_snippet)
+        expect(commit.to_reference(another_snippet)).to eq "#{project_snippet.project.path}$#{project_snippet.id}@#{commit.id}"
+      end
     end
   end
 
@@ -264,13 +312,41 @@ describe Commit do
   describe '#reference_link_text' do
     let(:project) { create(:project, :repository, path: 'sample-project') }
 
-    it 'returns a String reference to the object' do
-      expect(commit.reference_link_text).to eq commit.short_id
+    context 'with project' do
+      it 'returns a String reference to the object' do
+        expect(commit.reference_link_text).to eq commit.short_id
+      end
+
+      it 'supports a cross-project reference' do
+        another_project = build(:project, :repository, name: 'another-project', namespace: project.namespace)
+        expect(commit.reference_link_text(another_project)).to eq "sample-project@#{commit.short_id}"
+      end
     end
 
-    it 'supports a cross-project reference' do
-      another_project = build(:project, :repository, name: 'another-project', namespace: project.namespace)
-      expect(commit.reference_link_text(another_project)).to eq "sample-project@#{commit.short_id}"
+    context 'with personal snippet' do
+      let(:commit) { personal_snippet.commit }
+
+      it 'returns a String reference to the object' do
+        expect(commit.reference_link_text).to eq "$#{personal_snippet.id}@#{commit.short_id}"
+      end
+
+      it 'supports a cross-snippet reference' do
+        another_snippet = build(:personal_snippet, :repository)
+        expect(commit.reference_link_text(another_snippet)).to eq "$#{personal_snippet.id}@#{commit.short_id}"
+      end
+    end
+
+    context 'with project snippet' do
+      let(:commit) { project_snippet.commit }
+
+      it 'returns a String reference to the object' do
+        expect(commit.reference_link_text).to eq "$#{project_snippet.id}@#{commit.short_id}"
+      end
+
+      it 'supports a cross-snippet project reference' do
+        another_snippet = build(:project_snippet, :repository)
+        expect(commit.reference_link_text(another_snippet)).to eq "#{project_snippet.project.path}$#{project_snippet.id}@#{commit.short_id}"
+      end
     end
   end
 
@@ -400,6 +476,26 @@ eos
       )
 
       expect(commit.closes_issues).to be_empty
+    end
+
+    context 'with personal snippet' do
+      let(:commit) { personal_snippet.commit }
+
+      it 'does not call Gitlab::ClosingIssueExtractor' do
+        expect(Gitlab::ClosingIssueExtractor).not_to receive(:new)
+
+        commit.closes_issues
+      end
+    end
+
+    context 'with project snippet' do
+      let(:commit) { project_snippet.commit }
+
+      it 'does not call Gitlab::ClosingIssueExtractor' do
+        expect(Gitlab::ClosingIssueExtractor).not_to receive(:new)
+
+        commit.closes_issues
+      end
     end
   end
 
@@ -597,19 +693,39 @@ eos
   end
 
   describe '.from_hash' do
-    let(:new_commit) { described_class.from_hash(commit.to_hash, project) }
+    subject { described_class.from_hash(commit.to_hash, container) }
 
-    it 'returns a Commit' do
-      expect(new_commit).to be_an_instance_of(described_class)
+    shared_examples 'returns Commit' do
+      it 'returns a Commit' do
+        expect(subject).to be_an_instance_of(described_class)
+      end
+
+      it 'wraps a Gitlab::Git::Commit' do
+        expect(subject.raw).to be_an_instance_of(Gitlab::Git::Commit)
+      end
+
+      it 'stores the correct commit fields' do
+        expect(subject.id).to eq(commit.id)
+        expect(subject.message).to eq(commit.message)
+      end
     end
 
-    it 'wraps a Gitlab::Git::Commit' do
-      expect(new_commit.raw).to be_an_instance_of(Gitlab::Git::Commit)
+    context 'with project' do
+      let(:container) { project }
+
+      it_behaves_like 'returns Commit'
     end
 
-    it 'stores the correct commit fields' do
-      expect(new_commit.id).to eq(commit.id)
-      expect(new_commit.message).to eq(commit.message)
+    context 'with personal snippet' do
+      let(:container) { personal_snippet }
+
+      it_behaves_like 'returns Commit'
+    end
+
+    context 'with project snippet' do
+      let(:container) { project_snippet }
+
+      it_behaves_like 'returns Commit'
     end
   end
 
@@ -669,6 +785,19 @@ eos
     it 'returns merge_requests that introduced that commit' do
       expect(commit1.merge_requests).to contain_exactly(merge_request1, merge_request2)
       expect(commit2.merge_requests).to contain_exactly(merge_request1)
+    end
+
+    context 'with personal snippet' do
+      it 'returns empty relation' do
+        expect(personal_snippet.repository.commit.merge_requests).to eq MergeRequest.none
+      end
+    end
+
+    context 'with project snippet' do
+      it 'returns empty relation' do
+        expect(project_snippet.project).not_to receive(:merge_requests)
+        expect(project_snippet.repository.commit.merge_requests).to eq MergeRequest.none
+      end
     end
   end
 

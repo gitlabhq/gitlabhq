@@ -142,7 +142,8 @@ describe API::ProjectContainerRepositories do
         let(:worker_params) do
           { name_regex: 'v10.*',
             keep_n: 100,
-            older_than: '1 day' }
+            older_than: '1 day',
+            container_expiration_policy: false }
         end
 
         let(:lease_key) { "container_repository:cleanup_tags:#{root_repository.id}" }

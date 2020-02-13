@@ -3892,6 +3892,13 @@ ActiveRecord::Schema.define(version: 2020_02_12_052620) do
     t.index ["user_id"], name: "index_smartcard_identities_on_user_id"
   end
 
+  create_table "snippet_repositories", primary_key: "snippet_id", id: :bigint, default: nil, force: :cascade do |t|
+    t.bigint "shard_id", null: false
+    t.string "disk_path", limit: 80, null: false
+    t.index ["disk_path"], name: "index_snippet_repositories_on_disk_path", unique: true
+    t.index ["shard_id"], name: "index_snippet_repositories_on_shard_id"
+  end
+
   create_table "snippet_user_mentions", force: :cascade do |t|
     t.integer "snippet_id", null: false
     t.integer "note_id"
@@ -4963,6 +4970,8 @@ ActiveRecord::Schema.define(version: 2020_02_12_052620) do
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "slack_integrations", "services", on_delete: :cascade
   add_foreign_key "smartcard_identities", "users", on_delete: :cascade
+  add_foreign_key "snippet_repositories", "shards", on_delete: :restrict
+  add_foreign_key "snippet_repositories", "snippets", on_delete: :cascade
   add_foreign_key "snippet_user_mentions", "notes", on_delete: :cascade
   add_foreign_key "snippet_user_mentions", "snippets", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade

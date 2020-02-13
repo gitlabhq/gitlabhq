@@ -55,7 +55,7 @@ module QA
           element :diffs_tab
         end
 
-        view 'app/assets/javascripts/diffs/components/diff_line_gutter_content.vue' do
+        view 'app/assets/javascripts/diffs/components/diff_table_cell.vue' do
           element :diff_comment
         end
 
