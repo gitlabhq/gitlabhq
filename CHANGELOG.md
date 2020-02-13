@@ -369,6 +369,13 @@ entry.
 - Update the Net-LDAP gem to 0.16.2.
 
 
+## 12.6.7
+
+### Security (1 change)
+
+- Fix ProjectAuthorization calculation for shared groups.
+
+
 ## 12.6.6
 
 ### Security (1 change)
