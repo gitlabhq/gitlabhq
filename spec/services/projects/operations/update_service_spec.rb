@@ -304,7 +304,6 @@ describe Projects::Operations::UpdateService do
             "title" => nil,
             "active" => true,
             "properties" => { "api_url" => "http://example.prometheus.com", "manual_configuration" => "0" },
-            "instance" => false,
             "push_events" => true,
             "issues_events" => true,
             "merge_requests_events" => true,
@@ -320,7 +319,8 @@ describe Projects::Operations::UpdateService do
             "confidential_note_events" => true,
             "deployment_events" => false,
             "description" => nil,
-            "comment_on_event_enabled" => true
+            "comment_on_event_enabled" => true,
+            "template" => false
           }
         end
         let(:params) do

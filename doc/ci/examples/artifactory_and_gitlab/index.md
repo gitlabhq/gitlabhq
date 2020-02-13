@@ -12,7 +12,7 @@ date: 2017-08-15
 
 ## Introduction
 
-In this article, we will show how you can leverage the power of [GitLab CI/CD](https://about.gitlab.com/product/continuous-integration/)
+In this article, we show how you can leverage the power of [GitLab CI/CD](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/)
 to build a [Maven](https://maven.apache.org/) project, deploy it to [Artifactory](https://jfrog.com/artifactory/), and then use it from another Maven application as a dependency.
 
 You'll create two different projects:

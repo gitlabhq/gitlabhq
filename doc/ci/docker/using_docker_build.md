@@ -519,4 +519,4 @@ If:
 - This is the first time setting it up, carefully read
   [using Docker in Docker workflow](#use-docker-in-docker-workflow-with-docker-executor).
 - You are upgrading from v18.09 or earlier, read our
-  [upgrade guide](https://about.gitlab.com/blog/2019/07/31/docker-in-docker-with-docker-19-dot-03/).
+  [upgrade guide](https://about.gitlab.com/releases/2019/07/31/docker-in-docker-with-docker-19-dot-03/).

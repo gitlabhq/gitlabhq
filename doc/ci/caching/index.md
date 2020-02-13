@@ -207,7 +207,7 @@ templates](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/t
 ### Caching Nodejs dependencies
 
 Assuming your project is using [npm](https://www.npmjs.com/) or
-[Yarn](https://yarnpkg.com/en/) to install the Nodejs dependencies, the
+[Yarn](https://classic.yarnpkg.com/en/) to install the Nodejs dependencies, the
 following example defines `cache` globally so that all jobs inherit it.
 Nodejs modules are installed in `node_modules/` and are cached per-branch:
 

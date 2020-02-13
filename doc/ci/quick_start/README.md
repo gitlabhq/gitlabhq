@@ -5,7 +5,7 @@ type: reference
 # Getting started with GitLab CI/CD
 
 NOTE: **Note:**
-Starting from version 8.0, GitLab [Continuous Integration](https://about.gitlab.com/product/continuous-integration/) (CI)
+Starting from version 8.0, GitLab [Continuous Integration](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/) (CI)
 is fully integrated into GitLab itself and is [enabled] by default on all
 projects.
 
@@ -17,7 +17,7 @@ NOTE: **Note:**
 Coming over to GitLab from Jenkins? Check out our [reference](../jenkins/index.md)
 for converting your pre-existing pipelines over to our format.
 
-GitLab offers a [continuous integration](https://about.gitlab.com/product/continuous-integration/) service. For each commit or push to trigger your CI
+GitLab offers a [continuous integration](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/) service. For each commit or push to trigger your CI
 [pipeline](../pipelines.md), you must:
 
 - Add a [`.gitlab-ci.yml` file](#creating-a-gitlab-ciyml-file) to your repository's root directory.

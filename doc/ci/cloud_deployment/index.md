@@ -55,7 +55,7 @@ Some credentials are required to be able to run `aws` commands:
 
 Instead of referencing an image hosted on the GitLab Registry, you are free to
 reference any other image hosted on any third-party registry, such as
-[Amazon Elastic Container Registry (ECR)](https://aws.amazon.com/ecr).
+[Amazon Elastic Container Registry (ECR)](https://aws.amazon.com/ecr/).
 
 To do so, please make sure to [push your image into your ECR
 repository](https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html)

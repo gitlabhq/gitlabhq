@@ -5,7 +5,7 @@ type: reference
 # Multi-project pipelines **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2121) in
-[GitLab Premium 9.3](https://about.gitlab.com/blog/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
+[GitLab Premium 9.3](https://about.gitlab.com/releases/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
 
 When you set up [GitLab CI/CD](README.md) across multiple projects, you can visualize
 the entire pipeline, including all cross-project inter-dependencies.

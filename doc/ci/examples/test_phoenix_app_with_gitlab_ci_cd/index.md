@@ -10,7 +10,7 @@ last_updated: 2019-03-06
 
 # Testing a Phoenix application with GitLab CI/CD
 
-[Phoenix](https://phoenixframework.org) is a web development framework written in [Elixir](https://elixir-lang.org), which is a
+[Phoenix](https://www.phoenixframework.org/) is a web development framework written in [Elixir](https://elixir-lang.org), which is a
 functional language designed for productivity and maintainability that runs on the
 [Erlang VM](https://www.erlang.org). Erlang VM is really really fast and can handle very large numbers of
 simultaneous users.
@@ -27,7 +27,7 @@ and the GitLab UI.
 
 ### What is Phoenix?
 
-[Phoenix](https://phoenixframework.org) is a web development framework written in [Elixir](https://elixir-lang.org) it's very useful
+[Phoenix](https://www.phoenixframework.org/) is a web development framework written in [Elixir](https://elixir-lang.org). It's useful
  for building fast, reliable, and high-performance applications, as it uses [Erlang VM](https://www.erlang.org).
 
 Many components and concepts are similar to Ruby on Rails or Python's Django. High developer
@@ -395,7 +395,7 @@ using GitLab CI/CD. The benefits to our teams will be huge!
 
 ## References
 
-- [GitLab CI/CD introductory guide](https://about.gitlab.com/blog/2015/12/14/getting-started-with-gitlab-and-gitlab-ci)
+- [GitLab CI/CD introductory guide](https://about.gitlab.com/blog/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/)
 - [GitLab CI/CD full Documentation](../../README.md)
 - [GitLab Runners documentation](../../runners/README.md)
 - [Using Docker images documentation](../../docker/using_docker_images.md)
