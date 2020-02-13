@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.7.6
+
+### Security (1 change)
+
+- Fix ProjectAuthorization calculation for shared groups.
+
+
 ## 12.7.5
 
 ### Fixed (4 changes, 1 of them is from the community)
