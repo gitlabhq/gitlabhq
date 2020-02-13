@@ -13,7 +13,7 @@ Everything you need to build, test, deploy, and run your app at scale.
 
 [Kubernetes](https://kubernetes.io) pod logs can be viewed directly within GitLab.
 
-![Pod logs](img/kubernetes_pod_logs_v12_5.png)
+![Pod logs](img/kubernetes_pod_logs_v12_8.png)
 
 ## Requirements
 
@@ -50,14 +50,23 @@ The logs view will contain the last 500 lines for a pod, and has control to filt
 - Pods.
 - [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/5769), environments.
 - [From GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656), [full text search](#full-text-search).
+- [From GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/197879), dates.
 
 Support for pods with multiple containers is coming [in a future release](https://gitlab.com/gitlab-org/gitlab/issues/13404).
 
 Support for historical data is coming [in a future release](https://gitlab.com/gitlab-org/gitlab/issues/196191).
 
+### Filter by date
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/197879) in GitLab 12.8.
+
+When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster, you can filter by date.
+
+Click on "Show last" to see the available options.
+
 ### Full text search
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656) in GitLab 12.7.
 
 When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster,
 you can search the content of your logs via a search bar.

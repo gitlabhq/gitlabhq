@@ -68,12 +68,20 @@ module QA
         Page::Project::Menu.perform(&:click_ci_cd_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
 
-        Page::Project::Pipeline::Show.perform do |pipeline|
-          expect(pipeline).to be_running(wait: max_wait)
-          expect(pipeline).to have_build('test-success', status: :success, wait: max_wait)
-          expect(pipeline).to have_build('test-failure', status: :failed, wait: max_wait)
-          expect(pipeline).to have_build('test-tags', status: :pending, wait: max_wait)
-          expect(pipeline).to have_build('test-artifacts', status: :success, wait: max_wait)
+        {
+          'test-success': :passed,
+          'test-failure': :failed,
+          'test-tags': :pending,
+          'test-artifacts': :passed
+        }.each do |job, status|
+          Page::Project::Pipeline::Show.perform do |pipeline|
+            pipeline.click_job(job)
+          end
+
+          Page::Project::Job::Show.perform do |show|
+            expect(show).to public_send("be_#{status}")
+            show.click_element(:pipeline_path, Page::Project::Pipeline::Show)
+          end
         end
       end
     end

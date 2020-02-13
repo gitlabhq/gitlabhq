@@ -1117,6 +1117,10 @@ describe Ci::Pipeline, :mailer do
     end
 
     describe 'pipeline caching' do
+      before do
+        pipeline.config_source = 'repository_source'
+      end
+
       it 'performs ExpirePipelinesCacheWorker' do
         expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
 

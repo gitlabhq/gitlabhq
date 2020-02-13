@@ -498,6 +498,9 @@ Gitlab.ee do
   Settings.cron_jobs['geo_repository_sync_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_repository_sync_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['geo_repository_sync_worker']['job_class'] ||= 'Geo::RepositorySyncWorker'
+  Settings.cron_jobs['geo_secondary_registry_consistency_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['geo_secondary_registry_consistency_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['geo_secondary_registry_consistency_worker']['job_class'] ||= 'Geo::Secondary::RegistryConsistencyWorker'
   Settings.cron_jobs['geo_repository_verification_primary_batch_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_repository_verification_primary_batch_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['geo_repository_verification_primary_batch_worker']['job_class'] ||= 'Geo::RepositoryVerification::Primary::BatchWorker'

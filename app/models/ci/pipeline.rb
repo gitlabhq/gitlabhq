@@ -185,7 +185,7 @@ module Ci
 
         pipeline.run_after_commit do
           PipelineHooksWorker.perform_async(pipeline.id)
-          ExpirePipelineCacheWorker.perform_async(pipeline.id)
+          ExpirePipelineCacheWorker.perform_async(pipeline.id) if pipeline.cacheable?
         end
       end
 
@@ -900,6 +900,10 @@ module Ci
 
     def find_successful_build_ids_by_names(names)
       statuses.latest.success.where(name: names).pluck(:id)
+    end
+
+    def cacheable?
+      Ci::PipelineEnums.ci_config_sources.key?(config_source.to_sym)
     end
 
     private

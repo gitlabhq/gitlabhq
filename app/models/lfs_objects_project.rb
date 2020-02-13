@@ -16,6 +16,8 @@ class LfsObjectsProject < ApplicationRecord
     design: 2 ## EE-specific
   }
 
+  scope :project_id_in, ->(ids) { where(project_id: ids) }
+
   private
 
   def update_project_statistics

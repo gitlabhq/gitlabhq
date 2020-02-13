@@ -202,6 +202,25 @@ For example, it's better to use the generated markup to trigger a button click a
 
 Following you'll find some general common practices you will find as part of our testsuite. Should you stumble over something not following this guide, ideally fix it right away. 🎉
 
+### How to query DOM elements
+
+When it comes to querying DOM elements in your tests, it is best to uniquely target the element, without adding additional attributes specifically for testing purposes. Sometimes this cannot be done feasibly. In these cases, adding test attributes to simplify the selectors might be the best option.
+
+Preferentially, in component testing with `@vue/test-utils`, you should query for child components using the component itself. Otherwise, try to use an existing attribute like `name` or a Vue `ref` (if using `@vue/test-utils`):
+
+```javascript
+it('exists', () => {
+    wrapper.find(FooComponent);
+    wrapper.find('input[name=foo]');
+    wrapper.find({ ref: 'foo'});
+    wrapper.find('.js-foo');
+});
+```
+
+It is not recommended that you add `.js-*` classes just for testing purposes. Only do this if there are no other feasible options available.
+
+Do not use a `.qa-*` class or `data-qa-selector` attribute for any tests other than QA end-to-end testing.
+
 ### Naming unit tests
 
 When writing describe test blocks to test specific functions/methods,
