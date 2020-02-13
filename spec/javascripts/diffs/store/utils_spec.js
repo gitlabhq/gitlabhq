@@ -333,10 +333,10 @@ describe('DiffsStoreUtils', () => {
         diff_files: [Object.assign({}, mock, { highlighted_diff_lines: undefined })],
       };
 
-      utils.prepareDiffData(preparedDiff);
-      utils.prepareDiffData(splitInlineDiff);
-      utils.prepareDiffData(splitParallelDiff);
-      utils.prepareDiffData(completedDiff, [mock]);
+      preparedDiff.diff_files = utils.prepareDiffData(preparedDiff);
+      splitInlineDiff.diff_files = utils.prepareDiffData(splitInlineDiff);
+      splitParallelDiff.diff_files = utils.prepareDiffData(splitParallelDiff);
+      completedDiff.diff_files = utils.prepareDiffData(completedDiff, [mock]);
     });
 
     it('sets the renderIt and collapsed attribute on files', () => {
@@ -389,6 +389,37 @@ describe('DiffsStoreUtils', () => {
       expect(completedDiff.diff_files.length).toEqual(1);
       expect(completedDiff.diff_files[0].parallel_diff_lines.length).toBeGreaterThan(0);
       expect(completedDiff.diff_files[0].highlighted_diff_lines.length).toBeGreaterThan(0);
+    });
+
+    it('leaves files in the existing state', () => {
+      const priorFiles = [mock];
+      const fakeNewFile = {
+        ...mock,
+        content_sha: 'ABC',
+        file_hash: 'DEF',
+      };
+      const updatedFilesList = utils.prepareDiffData({ diff_files: [fakeNewFile] }, priorFiles);
+
+      expect(updatedFilesList).toEqual([mock, fakeNewFile]);
+    });
+
+    it('completes an existing split diff without overwriting existing diffs', () => {
+      // The current state has a file that has only loaded inline lines
+      const priorFiles = [{ ...mock, parallel_diff_lines: [] }];
+      // The next (batch) load loads two files: the other half of that file, and a new file
+      const fakeBatch = [
+        { ...mock, highlighted_diff_lines: undefined },
+        { ...mock, highlighted_diff_lines: undefined, content_sha: 'ABC', file_hash: 'DEF' },
+      ];
+      const updatedFilesList = utils.prepareDiffData({ diff_files: fakeBatch }, priorFiles);
+
+      expect(updatedFilesList).toEqual([
+        mock,
+        jasmine.objectContaining({
+          content_sha: 'ABC',
+          file_hash: 'DEF',
+        }),
+      ]);
     });
   });
 

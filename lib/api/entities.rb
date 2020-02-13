@@ -163,42 +163,6 @@ module API
       end
     end
 
-    class LabelBasic < Grape::Entity
-      expose :id, :name, :color, :description, :description_html, :text_color
-    end
-
-    class Label < LabelBasic
-      with_options if: lambda { |_, options| options[:with_counts] } do
-        expose :open_issues_count do |label, options|
-          label.open_issues_count(options[:current_user])
-        end
-
-        expose :closed_issues_count do |label, options|
-          label.closed_issues_count(options[:current_user])
-        end
-
-        expose :open_merge_requests_count do |label, options|
-          label.open_merge_requests_count(options[:current_user])
-        end
-      end
-
-      expose :subscribed do |label, options|
-        label.subscribed?(options[:current_user], options[:parent])
-      end
-    end
-
-    class GroupLabel < Label
-    end
-
-    class ProjectLabel < Label
-      expose :priority do |label, options|
-        label.priority(options[:parent])
-      end
-      expose :is_project_label do |label, options|
-        label.is_a?(::ProjectLabel)
-      end
-    end
-
     class List < Grape::Entity
       expose :id
       expose :label, using: Entities::LabelBasic
@@ -240,130 +204,6 @@ module API
 
     class BroadcastMessage < Grape::Entity
       expose :message, :starts_at, :ends_at, :color, :font, :target_path, :broadcast_type
-    end
-
-    class ApplicationStatistics < Grape::Entity
-      include ActionView::Helpers::NumberHelper
-      include CountHelper
-
-      expose :forks do |counts|
-        approximate_fork_count_with_delimiters(counts)
-      end
-
-      expose :issues do |counts|
-        approximate_count_with_delimiters(counts, ::Issue)
-      end
-
-      expose :merge_requests do |counts|
-        approximate_count_with_delimiters(counts, ::MergeRequest)
-      end
-
-      expose :notes do |counts|
-        approximate_count_with_delimiters(counts, ::Note)
-      end
-
-      expose :snippets do |counts|
-        approximate_count_with_delimiters(counts, ::Snippet)
-      end
-
-      expose :ssh_keys do |counts|
-        approximate_count_with_delimiters(counts, ::Key)
-      end
-
-      expose :milestones do |counts|
-        approximate_count_with_delimiters(counts, ::Milestone)
-      end
-
-      expose :users do |counts|
-        approximate_count_with_delimiters(counts, ::User)
-      end
-
-      expose :projects do |counts|
-        approximate_count_with_delimiters(counts, ::Project)
-      end
-
-      expose :groups do |counts|
-        approximate_count_with_delimiters(counts, ::Group)
-      end
-
-      expose :active_users do |_|
-        number_with_delimiter(::User.active.count)
-      end
-    end
-
-    class ApplicationSetting < Grape::Entity
-      def self.exposed_attributes
-        attributes = ::ApplicationSettingsHelper.visible_attributes
-        attributes.delete(:performance_bar_allowed_group_path)
-        attributes.delete(:performance_bar_enabled)
-        attributes.delete(:allow_local_requests_from_hooks_and_services)
-
-        # let's not expose the secret key in a response
-        attributes.delete(:asset_proxy_secret_key)
-        attributes.delete(:eks_secret_access_key)
-
-        attributes
-      end
-
-      expose :id, :performance_bar_allowed_group_id
-      expose(*exposed_attributes)
-      expose(:restricted_visibility_levels) do |setting, _options|
-        setting.restricted_visibility_levels.map { |level| Gitlab::VisibilityLevel.string_level(level) }
-      end
-      expose(:default_project_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_project_visibility) }
-      expose(:default_snippet_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_snippet_visibility) }
-      expose(:default_group_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_group_visibility) }
-
-      expose(*::ApplicationSettingsHelper.external_authorization_service_attributes)
-
-      # support legacy names, can be removed in v5
-      expose :password_authentication_enabled_for_web, as: :password_authentication_enabled
-      expose :password_authentication_enabled_for_web, as: :signin_enabled
-      expose :allow_local_requests_from_web_hooks_and_services, as: :allow_local_requests_from_hooks_and_services
-    end
-
-    class Appearance < Grape::Entity
-      expose :title
-      expose :description
-
-      expose :logo do |appearance, options|
-        appearance.logo.url
-      end
-
-      expose :header_logo do |appearance, options|
-        appearance.header_logo.url
-      end
-
-      expose :favicon do |appearance, options|
-        appearance.favicon.url
-      end
-
-      expose :new_project_guidelines
-      expose :header_message
-      expose :footer_message
-      expose :message_background_color
-      expose :message_font_color
-      expose :email_header_and_footer_enabled
-    end
-
-    # deprecated old Release representation
-    class TagRelease < Grape::Entity
-      expose :tag, as: :tag_name
-      expose :description
-    end
-
-    module Releases
-      class Link < Grape::Entity
-        expose :id
-        expose :name
-        expose :url
-        expose :external?, as: :external
-      end
-
-      class Source < Grape::Entity
-        expose :format
-        expose :url
-      end
     end
 
     class Release < Grape::Entity
@@ -477,40 +317,6 @@ module API
       expose :id, :token
     end
 
-    class JobArtifactFile < Grape::Entity
-      expose :filename
-      expose :cached_size, as: :size
-    end
-
-    class JobArtifact < Grape::Entity
-      expose :file_type, :size, :filename, :file_format
-    end
-
-    class JobBasic < Grape::Entity
-      expose :id, :status, :stage, :name, :ref, :tag, :coverage, :allow_failure
-      expose :created_at, :started_at, :finished_at
-      expose :duration
-      expose :user, with: Entities::User
-      expose :commit, with: Entities::Commit
-      expose :pipeline, with: Entities::PipelineBasic
-
-      expose :web_url do |job, _options|
-        Gitlab::Routing.url_helpers.project_job_url(job.project, job)
-      end
-    end
-
-    class Job < JobBasic
-      # artifacts_file is included in job_artifacts, but kept for backward compatibility (remove in api/v5)
-      expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
-      expose :job_artifacts, as: :artifacts, using: JobArtifact
-      expose :runner, with: Runner
-      expose :artifacts_expire_at
-    end
-
-    class JobBasicWithProject < JobBasic
-      expose :project, with: Entities::ProjectIdentity
-    end
-
     class Trigger < Grape::Entity
       include ::API::Helpers::Presentable
 
@@ -583,32 +389,6 @@ module API
       expose(:permissions) { |license| license.meta['permissions'] }
       expose(:limitations) { |license| license.meta['limitations'] }
       expose :content
-    end
-
-    class TemplatesList < Grape::Entity
-      expose :key
-      expose :name
-    end
-
-    class Template < Grape::Entity
-      expose :name, :content
-    end
-
-    class BroadcastMessage < Grape::Entity
-      expose :id, :message, :starts_at, :ends_at, :color, :font
-      expose :active?, as: :active
-    end
-
-    class PersonalAccessToken < Grape::Entity
-      expose :id, :name, :revoked, :created_at, :scopes
-      expose :active?, as: :active
-      expose :expires_at do |personal_access_token|
-        personal_access_token.expires_at ? personal_access_token.expires_at.strftime("%Y-%m-%d") : nil
-      end
-    end
-
-    class PersonalAccessTokenWithToken < PersonalAccessToken
-      expose :token
     end
 
     class ImpersonationToken < PersonalAccessToken

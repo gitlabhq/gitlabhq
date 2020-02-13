@@ -497,6 +497,63 @@ describe Projects::UpdateService do
         update_project(project, user, { name: 'New name' })
       end
     end
+
+    context 'when updating nested attributes for prometheus service' do
+      context 'prometheus service exists' do
+        let(:prometheus_service_attributes) do
+          attributes_for(:prometheus_service,
+                         project: project,
+                         properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
+          )
+        end
+
+        let!(:prometheus_service) do
+          create(:prometheus_service,
+                 project: project,
+                 properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
+          )
+        end
+
+        it 'updates existing record' do
+          expect { update_project(project, user, prometheus_service_attributes: prometheus_service_attributes) }
+            .to change { prometheus_service.reload.api_url }
+            .from("http://old.prometheus.com")
+            .to("http://new.prometheus.com")
+        end
+      end
+
+      context 'prometheus service does not exist' do
+        context 'valid parameters' do
+          let(:prometheus_service_attributes) do
+            attributes_for(:prometheus_service,
+                           project: project,
+                           properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
+            )
+          end
+
+          it 'creates new record' do
+            expect { update_project(project, user, prometheus_service_attributes: prometheus_service_attributes) }
+              .to change { ::PrometheusService.where(project: project).count }
+              .from(0)
+              .to(1)
+          end
+        end
+
+        context 'invalid parameters' do
+          let(:prometheus_service_attributes) do
+            attributes_for(:prometheus_service,
+                           project: project,
+                           properties: { api_url: nil, manual_configuration: "1" }
+            )
+          end
+
+          it 'does not create new record' do
+            expect { update_project(project, user, prometheus_service_attributes: prometheus_service_attributes) }
+              .not_to change { ::PrometheusService.where(project: project).count }
+          end
+        end
+      end
+    end
   end
 
   describe '#run_auto_devops_pipeline?' do

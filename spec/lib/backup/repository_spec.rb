@@ -86,6 +86,22 @@ describe Backup::Repository do
         expect(pool_repository.object_pool.exists?).to be(true)
       end
     end
+
+    it 'cleans existing repositories' do
+      wiki_repository_spy = spy(:wiki)
+
+      allow_next_instance_of(ProjectWiki) do |project_wiki|
+        allow(project_wiki).to receive(:repository).and_return(wiki_repository_spy)
+      end
+
+      expect_next_instance_of(Repository) do |repo|
+        expect(repo).to receive(:remove)
+      end
+
+      subject.restore
+
+      expect(wiki_repository_spy).to have_received(:remove)
+    end
   end
 
   describe '#empty_repo?' do

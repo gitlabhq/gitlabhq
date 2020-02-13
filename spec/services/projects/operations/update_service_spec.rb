@@ -289,5 +289,86 @@ describe Projects::Operations::UpdateService do
         end
       end
     end
+
+    context 'prometheus integration' do
+      context 'prometheus params were passed into service' do
+        let(:prometheus_service) do
+          build_stubbed(:prometheus_service, project: project, properties: {
+            api_url: "http://example.prometheus.com",
+            manual_configuration: "0"
+          })
+        end
+        let(:prometheus_params) do
+          {
+            "type" => "PrometheusService",
+            "title" => nil,
+            "active" => true,
+            "properties" => { "api_url" => "http://example.prometheus.com", "manual_configuration" => "0" },
+            "instance" => false,
+            "push_events" => true,
+            "issues_events" => true,
+            "merge_requests_events" => true,
+            "tag_push_events" => true,
+            "note_events" => true,
+            "category" => "monitoring",
+            "default" => false,
+            "wiki_page_events" => true,
+            "pipeline_events" => true,
+            "confidential_issues_events" => true,
+            "commit_events" => true,
+            "job_events" => true,
+            "confidential_note_events" => true,
+            "deployment_events" => false,
+            "description" => nil,
+            "comment_on_event_enabled" => true
+          }
+        end
+        let(:params) do
+          {
+            prometheus_integration_attributes: {
+              api_url: 'http://new.prometheus.com',
+              manual_configuration: '1'
+            }
+          }
+        end
+
+        it 'uses Project#find_or_initialize_service to include instance defined defaults and pass them to Projects::UpdateService', :aggregate_failures do
+          project_update_service = double(Projects::UpdateService)
+          prometheus_update_params = prometheus_params.merge('properties' => {
+            'api_url' => 'http://new.prometheus.com',
+            'manual_configuration' => '1'
+          })
+
+          expect(project)
+            .to receive(:find_or_initialize_service)
+            .with('prometheus')
+            .and_return(prometheus_service)
+          expect(Projects::UpdateService)
+            .to receive(:new)
+            .with(project, user, { prometheus_service_attributes: prometheus_update_params })
+            .and_return(project_update_service)
+          expect(project_update_service).to receive(:execute)
+
+          subject.execute
+        end
+      end
+
+      context 'prometheus params were not passed into service' do
+        let(:params) { { something: :else } }
+
+        it 'does not pass any prometheus params into Projects::UpdateService', :aggregate_failures do
+          project_update_service = double(Projects::UpdateService)
+
+          expect(project).not_to receive(:find_or_initialize_service)
+          expect(Projects::UpdateService)
+            .to receive(:new)
+            .with(project, user, {})
+            .and_return(project_update_service)
+          expect(project_update_service).to receive(:execute)
+
+          subject.execute
+        end
+      end
+    end
   end
 end

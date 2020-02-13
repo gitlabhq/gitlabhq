@@ -60,7 +60,7 @@ module Projects
 
       # overridden in EE
       def permitted_project_params
-        {
+        project_params = {
           metrics_setting_attributes: [:external_dashboard_url],
 
           error_tracking_setting_attributes: [
@@ -72,6 +72,12 @@ module Projects
 
           grafana_integration_attributes: [:token, :grafana_url, :enabled]
         }
+
+        if Feature.enabled?(:settings_operations_prometheus_service, project)
+          project_params[:prometheus_integration_attributes] = [:manual_configuration, :api_url]
+        end
+
+        project_params
       end
     end
   end

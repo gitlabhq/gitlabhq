@@ -143,6 +143,11 @@ their node under pressure.
 
 ## How to
 
+### Get access to the GCP Review Apps cluster
+
+You need to [open an access request (internal link)](https://gitlab.com/gitlab-com/access-requests/issues/new)
+for the `gcp-review-apps-sg` GCP group.
+
 ### Log into my Review App
 
 The default username is `root` and its password can be found in the 1Password
@@ -163,6 +168,7 @@ secure note named `gitlab-{ce,ee} Review App's root password`.
 
 ### Run a Rails console
 
+1. Make sure you [have access to the cluster](#get-access-to-the-gcp-review-apps-cluster) first.
 1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps),
    e.g. `review-qa-raise-e-12chm0`.
 1. Find and open the `task-runner` Deployment, e.g. `review-qa-raise-e-12chm0-task-runner`.
@@ -178,6 +184,7 @@ secure note named `gitlab-{ce,ee} Review App's root password`.
 
 ### Dig into a Pod's logs
 
+1. Make sure you [have access to the cluster](#get-access-to-the-gcp-review-apps-cluster) first.
 1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps),
    e.g. `review-qa-raise-e-12chm0`.
 1. Find and open the `migrations` Deployment, e.g.

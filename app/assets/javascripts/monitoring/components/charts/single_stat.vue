@@ -19,8 +19,21 @@ export default {
     queryInfo() {
       return this.graphData.metrics[0];
     },
-    engineeringNotation() {
-      return `${roundOffFloat(this.queryInfo.result[0].value[1], 1)}${this.queryInfo.unit}`;
+    queryResult() {
+      return this.queryInfo.result[0]?.value[1];
+    },
+    /**
+     * This method formats the query result from a promQL expression
+     * allowing a user to format the data in percentile values
+     * by using the `max_value` inner property from the graphData prop
+     * @returns {(String)}
+     */
+    statValue() {
+      const chartValue = this.graphData?.max_value
+        ? (this.queryResult / Number(this.graphData.max_value)) * 100
+        : this.queryResult;
+
+      return `${roundOffFloat(chartValue, 1)}${this.queryInfo.unit}`;
     },
     graphTitle() {
       return this.queryInfo.label;
@@ -33,6 +46,6 @@ export default {
     <div class="prometheus-graph-header">
       <h5 ref="graphTitle" class="prometheus-graph-title">{{ graphTitle }}</h5>
     </div>
-    <gl-single-stat :value="engineeringNotation" :title="graphTitle" variant="success" />
+    <gl-single-stat :value="statValue" :title="graphTitle" variant="success" />
   </div>
 </template>

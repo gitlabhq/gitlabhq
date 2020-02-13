@@ -96,6 +96,7 @@ module Backup
         end
 
         wiki = ProjectWiki.new(project)
+        wiki.repository.remove rescue nil
         path_to_wiki_bundle = path_to_bundle(wiki)
 
         if File.exist?(path_to_wiki_bundle)
