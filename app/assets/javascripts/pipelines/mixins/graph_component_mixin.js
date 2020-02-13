@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { escape } from 'lodash';
 
 export default {
   props: {
@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     capitalizeStageName(name) {
-      const escapedName = _.escape(name);
+      const escapedName = escape(name);
       return escapedName.charAt(0).toUpperCase() + escapedName.slice(1);
     },
     isFirstColumn(index) {

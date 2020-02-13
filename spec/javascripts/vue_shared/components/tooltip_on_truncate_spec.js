@@ -1,149 +1,160 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 
-const TEST_TITLE = 'lorem-ipsum-dolar-sit-amit-consectur-adipiscing-elit-sed-do';
-const STYLE_TRUNCATED = 'display: inline-block; max-width: 20px;';
-const STYLE_NORMAL = 'display: inline-block; max-width: 1000px;';
+const TEXT_SHORT = 'lorem';
+const TEXT_LONG = 'lorem-ipsum-dolar-sit-amit-consectur-adipiscing-elit-sed-do';
 
-const localVue = createLocalVue();
+const TEXT_TRUNCATE = 'white-space: nowrap; overflow:hidden;';
+const STYLE_NORMAL = `${TEXT_TRUNCATE} display: inline-block; max-width: 1000px;`; // does not overflows
+const STYLE_OVERFLOWED = `${TEXT_TRUNCATE} display: inline-block; max-width: 50px;`; // overflowed when text is long
 
 const createElementWithStyle = (style, content) => `<a href="#" style="${style}">${content}</a>`;
 
 describe('TooltipOnTruncate component', () => {
   let wrapper;
+  let parent;
 
   const createComponent = ({ propsData, ...options } = {}) => {
-    wrapper = shallowMount(localVue.extend(TooltipOnTruncate), {
-      localVue,
+    wrapper = shallowMount(TooltipOnTruncate, {
       attachToDocument: true,
       propsData: {
-        title: TEST_TITLE,
         ...propsData,
+      },
+      attrs: {
+        style: STYLE_OVERFLOWED,
       },
       ...options,
     });
   };
 
+  const createWrappedComponent = ({ propsData, ...options }) => {
+    // set a parent around the tested component
+    parent = mount(
+      {
+        props: {
+          title: { default: '' },
+        },
+        template: `
+        <TooltipOnTruncate :title="title" truncate-target="child" style="${STYLE_OVERFLOWED}">
+          <div>{{title}}</div>
+        </TooltipOnTruncate>
+        `,
+        components: {
+          TooltipOnTruncate,
+        },
+      },
+      {
+        propsData: { ...propsData },
+        attachToDocument: true,
+        ...options,
+      },
+    );
+
+    wrapper = parent.find(TooltipOnTruncate);
+  };
+
+  const hasTooltip = () => wrapper.classes('js-show-tooltip');
+
   afterEach(() => {
     wrapper.destroy();
   });
 
-  const hasTooltip = () => wrapper.classes('js-show-tooltip');
-
   describe('with default target', () => {
-    it('renders tooltip if truncated', done => {
+    it('renders tooltip if truncated', () => {
       createComponent({
-        attrs: {
-          style: STYLE_TRUNCATED,
+        propsData: {
+          title: TEXT_LONG,
         },
         slots: {
-          default: [TEST_TITLE],
+          default: [TEXT_LONG],
         },
       });
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(hasTooltip()).toBe(true);
-          expect(wrapper.attributes('data-original-title')).toEqual(TEST_TITLE);
-          expect(wrapper.attributes('data-placement')).toEqual('top');
-        })
-        .then(done)
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(hasTooltip()).toBe(true);
+        expect(wrapper.attributes('data-original-title')).toEqual(TEXT_LONG);
+        expect(wrapper.attributes('data-placement')).toEqual('top');
+      });
     });
 
-    it('does not render tooltip if normal', done => {
+    it('does not render tooltip if normal', () => {
       createComponent({
-        attrs: {
-          style: STYLE_NORMAL,
+        propsData: {
+          title: TEXT_SHORT,
         },
         slots: {
-          default: [TEST_TITLE],
+          default: [TEXT_SHORT],
         },
       });
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(hasTooltip()).toBe(false);
-        })
-        .then(done)
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(hasTooltip()).toBe(false);
+      });
     });
   });
 
   describe('with child target', () => {
-    it('renders tooltip if truncated', done => {
+    it('renders tooltip if truncated', () => {
       createComponent({
         attrs: {
           style: STYLE_NORMAL,
         },
         propsData: {
+          title: TEXT_LONG,
           truncateTarget: 'child',
         },
         slots: {
-          default: createElementWithStyle(STYLE_TRUNCATED, TEST_TITLE),
+          default: createElementWithStyle(STYLE_OVERFLOWED, TEXT_LONG),
         },
       });
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(hasTooltip()).toBe(true);
-        })
-        .then(done)
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(hasTooltip()).toBe(true);
+      });
     });
 
-    it('does not render tooltip if normal', done => {
+    it('does not render tooltip if normal', () => {
       createComponent({
         propsData: {
           truncateTarget: 'child',
         },
         slots: {
-          default: createElementWithStyle(STYLE_NORMAL, TEST_TITLE),
+          default: createElementWithStyle(STYLE_NORMAL, TEXT_LONG),
         },
       });
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(hasTooltip()).toBe(false);
-        })
-        .then(done)
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(hasTooltip()).toBe(false);
+      });
     });
   });
 
   describe('with fn target', () => {
-    it('renders tooltip if truncated', done => {
+    it('renders tooltip if truncated', () => {
       createComponent({
         attrs: {
           style: STYLE_NORMAL,
         },
         propsData: {
+          title: TEXT_LONG,
           truncateTarget: el => el.childNodes[1],
         },
         slots: {
           default: [
-            createElementWithStyle('', TEST_TITLE),
-            createElementWithStyle(STYLE_TRUNCATED, TEST_TITLE),
+            createElementWithStyle('', TEXT_LONG),
+            createElementWithStyle(STYLE_OVERFLOWED, TEXT_LONG),
           ],
         },
       });
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(hasTooltip()).toBe(true);
-        })
-        .then(done)
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(hasTooltip()).toBe(true);
+      });
     });
   });
 
   describe('placement', () => {
-    it('sets data-placement when tooltip is rendered', done => {
+    it('sets data-placement when tooltip is rendered', () => {
       const placement = 'bottom';
 
       createComponent({
@@ -151,21 +162,75 @@ describe('TooltipOnTruncate component', () => {
           placement,
         },
         attrs: {
-          style: STYLE_TRUNCATED,
+          style: STYLE_OVERFLOWED,
         },
         slots: {
-          default: TEST_TITLE,
+          default: TEXT_LONG,
         },
       });
 
-      wrapper.vm
-        .$nextTick()
-        .then(() => {
-          expect(hasTooltip()).toBe(true);
-          expect(wrapper.attributes('data-placement')).toEqual(placement);
-        })
-        .then(done)
-        .catch(done.fail);
+      return wrapper.vm.$nextTick().then(() => {
+        expect(hasTooltip()).toBe(true);
+        expect(wrapper.attributes('data-placement')).toEqual(placement);
+      });
+    });
+  });
+
+  describe('updates when title and slot content changes', () => {
+    describe('is initialized with a long text', () => {
+      beforeEach(() => {
+        createWrappedComponent({
+          propsData: { title: TEXT_LONG },
+        });
+        return parent.vm.$nextTick();
+      });
+
+      it('renders tooltip', () => {
+        expect(hasTooltip()).toBe(true);
+        expect(wrapper.attributes('data-original-title')).toEqual(TEXT_LONG);
+        expect(wrapper.attributes('data-placement')).toEqual('top');
+      });
+
+      it('does not render tooltip after updated to a short text', () => {
+        parent.setProps({
+          title: TEXT_SHORT,
+        });
+
+        return wrapper.vm
+          .$nextTick()
+          .then(() => wrapper.vm.$nextTick()) // wait 2 times to get an updated slot
+          .then(() => {
+            expect(hasTooltip()).toBe(false);
+          });
+      });
+    });
+
+    describe('is initialized with a short text', () => {
+      beforeEach(() => {
+        createWrappedComponent({
+          propsData: { title: TEXT_SHORT },
+        });
+        return wrapper.vm.$nextTick();
+      });
+
+      it('does not render tooltip', () => {
+        expect(hasTooltip()).toBe(false);
+      });
+
+      it('renders tooltip after updated to a long text', () => {
+        parent.setProps({
+          title: TEXT_LONG,
+        });
+
+        return wrapper.vm
+          .$nextTick()
+          .then(() => wrapper.vm.$nextTick()) // wait 2 times to get an updated slot
+          .then(() => {
+            expect(hasTooltip()).toBe(true);
+            expect(wrapper.attributes('data-original-title')).toEqual(TEXT_LONG);
+            expect(wrapper.attributes('data-placement')).toEqual('top');
+          });
+      });
     });
   });
 });

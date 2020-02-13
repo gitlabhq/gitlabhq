@@ -1980,6 +1980,23 @@ describe Project do
 
       expect(project.reload.import_url).to eq('http://test.com')
     end
+
+    it 'saves the url credentials percent decoded' do
+      url = 'http://user:pass%21%3F%40@github.com/t.git'
+      project = build(:project, import_url: url)
+
+      # When the credentials are not decoded this expectation fails
+      expect(project.import_url).to eq(url)
+      expect(project.import_data.credentials).to eq(user: 'user', password: 'pass!?@')
+    end
+
+    it 'saves url with no credentials' do
+      url = 'http://github.com/t.git'
+      project = build(:project, import_url: url)
+
+      expect(project.import_url).to eq(url)
+      expect(project.import_data.credentials).to eq(user: nil, password: nil)
+    end
   end
 
   describe '#container_registry_url' do

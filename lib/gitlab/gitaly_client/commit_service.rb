@@ -324,6 +324,7 @@ module Gitlab
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
         request.before   = GitalyClient.timestamp(options[:before]) if options[:before]
         request.revision = encode_binary(options[:ref]) if options[:ref]
+        request.order = options[:order].upcase if options[:order].present?
 
         request.paths = encode_repeated(Array(options[:path])) if options[:path].present?
 

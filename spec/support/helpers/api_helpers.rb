@@ -40,6 +40,17 @@ module ApiHelpers
     end
   end
 
+  def expect_empty_array_response
+    expect_successful_response_with_paginated_array
+    expect(json_response.length).to eq(0)
+  end
+
+  def expect_successful_response_with_paginated_array
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(response).to include_pagination_headers
+    expect(json_response).to be_an Array
+  end
+
   def expect_paginated_array_response(items)
     expect(response).to have_gitlab_http_status(:ok)
     expect(response).to include_pagination_headers

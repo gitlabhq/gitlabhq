@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isString } from 'lodash';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import Url from './url.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -20,7 +20,7 @@ export default {
       return this.func.name;
     },
     description() {
-      if (!_.isString(this.func.description)) {
+      if (!isString(this.func.description)) {
         return '';
       }
 

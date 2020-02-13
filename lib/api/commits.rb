@@ -38,6 +38,7 @@ module API
         optional :all, type: Boolean, desc: 'Every commit will be returned'
         optional :with_stats, type: Boolean, desc: 'Stats about each commit will be added to the response'
         optional :first_parent, type: Boolean, desc: 'Only include the first parent of merges'
+        optional :order, type: String, desc: 'List commits in order', values: %w[topo]
         use :pagination
       end
       get ':id/repository/commits' do
@@ -49,6 +50,7 @@ module API
         all = params[:all]
         with_stats = params[:with_stats]
         first_parent = params[:first_parent]
+        order = params[:order]
 
         commits = user_project.repository.commits(ref,
                                                   path: path,
@@ -57,7 +59,8 @@ module API
                                                   before: before,
                                                   after: after,
                                                   all: all,
-                                                  first_parent: first_parent)
+                                                  first_parent: first_parent,
+                                                  order: order)
 
         commit_count =
           if all || path || before || after || first_parent

@@ -1774,9 +1774,10 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha1-x57Zf380y48robyXkLzDZkdLS3k=
 
-at.js@^1.5.4, "at.js@https://gitlab.com/gitlab-org/frontend/At.js.git#121ce9a557b51c33f5693ac8df52d2bda1e53cbe":
+at.js@^1.5.4:
   version "1.5.4"
-  resolved "https://gitlab.com/gitlab-org/frontend/At.js.git#121ce9a557b51c33f5693ac8df52d2bda1e53cbe"
+  resolved "https://registry.yarnpkg.com/at.js/-/at.js-1.5.4.tgz#8fc60cc80eadbe4874449b166a818e7ae1d784c1"
+  integrity sha512-G8mgUb/PqShPoH8AyjuxsTGvIr1o716BtQUKDM44C8qN2W615y7KGJ68MlTGamd0J0D/m28emUkzagaHTdrGZw==
 
 atob@^2.1.1:
   version "2.1.2"

@@ -901,7 +901,9 @@ class Project < ApplicationRecord
     if Gitlab::UrlSanitizer.valid?(value)
       import_url = Gitlab::UrlSanitizer.new(value)
       super(import_url.sanitized_url)
-      create_or_update_import_data(credentials: import_url.credentials)
+
+      credentials = import_url.credentials.to_h.transform_values { |value| CGI.unescape(value.to_s) }
+      create_or_update_import_data(credentials: credentials)
     else
       super(value)
     end

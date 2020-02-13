@@ -795,13 +795,13 @@ describe API::Issues do
         it 'returns issues from non archived projects only by default' do
           get api("/groups/#{group1.id}/issues", user), params: { scope: 'all' }
 
-          expect_response_contain_exactly(issue2, issue1)
+          expect_paginated_array_response([issue2.id, issue1.id])
         end
 
         it 'returns issues from archived and non archived projects when non_archived is false' do
           get api("/groups/#{group1.id}/issues", user), params: { non_archived: false, scope: 'all' }
 
-          expect_response_contain_exactly(issue1, issue2, issue3)
+          expect_paginated_array_response([issue3.id, issue2.id, issue1.id])
         end
       end
     end
@@ -887,10 +887,5 @@ describe API::Issues do
     let(:issuable) { issue }
 
     include_examples 'time tracking endpoints', 'issue'
-  end
-
-  def expect_response_contain_exactly(*items)
-    expect(json_response.length).to eq(items.size)
-    expect(json_response.map { |element| element['id'] }).to contain_exactly(*items.map(&:id))
   end
 end

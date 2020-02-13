@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isFunction } from 'lodash';
 import tooltip from '../directives/tooltip';
 
 export default {
@@ -28,22 +28,28 @@ export default {
       showTooltip: false,
     };
   },
+  watch: {
+    title() {
+      // Wait on $nextTick in case of slot width changes
+      this.$nextTick(this.updateTooltip);
+    },
+  },
   mounted() {
-    const target = this.selectTarget();
-
-    if (target && target.scrollWidth > target.offsetWidth) {
-      this.showTooltip = true;
-    }
+    this.updateTooltip();
   },
   methods: {
     selectTarget() {
-      if (_.isFunction(this.truncateTarget)) {
+      if (isFunction(this.truncateTarget)) {
         return this.truncateTarget(this.$el);
       } else if (this.truncateTarget === 'child') {
         return this.$el.childNodes[0];
       }
 
       return this.$el;
+    },
+    updateTooltip() {
+      const target = this.selectTarget();
+      this.showTooltip = Boolean(target && target.scrollWidth > target.offsetWidth);
     },
   },
 };

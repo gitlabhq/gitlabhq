@@ -1,0 +1,5 @@
+---
+title: Fix Web IDE alert message look and feel
+merge_request: 23300
+author: Sean Nichols
+type: fixed

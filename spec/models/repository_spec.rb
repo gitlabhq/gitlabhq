@@ -325,6 +325,14 @@ describe Repository do
         expect(repository.commits(nil, all: true, limit: 60).size).to eq(60)
       end
     end
+
+    context "when 'order' flag is set" do
+      it 'passes order option to perform the query' do
+        expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(order: 'topo')).and_call_original
+
+        repository.commits('master', limit: 1, order: 'topo')
+      end
+    end
   end
 
   describe '#new_commits' do

@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import _ from 'underscore';
 
 export default class PipelineStore {
   constructor() {
@@ -61,7 +60,7 @@ export default class PipelineStore {
     Vue.set(newPipeline, 'isLoading', false);
 
     if (newPipeline.triggered_by) {
-      if (!_.isArray(newPipeline.triggered_by)) {
+      if (!Array.isArray(newPipeline.triggered_by)) {
         Object.assign(newPipeline, { triggered_by: [newPipeline.triggered_by] });
       }
       this.parseTriggeredByPipelines(oldPipeline, newPipeline.triggered_by[0]);

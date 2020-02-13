@@ -279,4 +279,19 @@ describe Gitlab::GitalyClient::CommitService do
       expect(subject.deletions).to eq(15)
     end
   end
+
+  describe '#find_commits' do
+    it 'sends an RPC request' do
+      request = Gitaly::FindCommitsRequest.new(
+        repository: repository_message,
+        disable_walk: true,
+        order: 'TOPO'
+      )
+
+      expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commits)
+        .with(request, kind_of(Hash)).and_return([])
+
+      client.find_commits(order: 'topo')
+    end
+  end
 end

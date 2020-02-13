@@ -129,40 +129,6 @@ module API
       end
     end
 
-    class Namespace < NamespaceBasic
-      expose :members_count_with_descendants, if: -> (namespace, opts) { expose_members_count_with_descendants?(namespace, opts) } do |namespace, _|
-        namespace.users_with_descendants.count
-      end
-
-      def expose_members_count_with_descendants?(namespace, opts)
-        namespace.kind == 'group' && Ability.allowed?(opts[:current_user], :admin_group, namespace)
-      end
-    end
-
-    class MemberAccess < Grape::Entity
-      expose :access_level
-      expose :notification_level do |member, options|
-        if member.notification_setting
-          ::NotificationSetting.levels[member.notification_setting.level]
-        end
-      end
-    end
-
-    class ProjectAccess < MemberAccess
-    end
-
-    class GroupAccess < MemberAccess
-    end
-
-    class NotificationSetting < Grape::Entity
-      expose :level
-      expose :events, if: ->(notification_setting, _) { notification_setting.custom? } do
-        ::NotificationSetting.email_events.each do |event|
-          expose event
-        end
-      end
-    end
-
     class Trigger < Grape::Entity
       include ::API::Helpers::Presentable
 
@@ -204,39 +170,6 @@ module API
       expose :variables, using: Entities::Variable
     end
 
-    class EnvironmentBasic < Grape::Entity
-      expose :id, :name, :slug, :external_url
-    end
-
-    class Deployment < Grape::Entity
-      expose :id, :iid, :ref, :sha, :created_at, :updated_at
-      expose :user,        using: Entities::UserBasic
-      expose :environment, using: Entities::EnvironmentBasic
-      expose :deployable,  using: Entities::Job
-      expose :status
-    end
-
-    class Environment < EnvironmentBasic
-      expose :project, using: Entities::BasicProjectDetails
-      expose :last_deployment, using: Entities::Deployment, if: { last_deployment: true }
-      expose :state
-    end
-
-    class LicenseBasic < Grape::Entity
-      expose :key, :name, :nickname
-      expose :url, as: :html_url
-      expose(:source_url) { |license| license.meta['source'] }
-    end
-
-    class License < LicenseBasic
-      expose :popular?, as: :popular
-      expose(:description) { |license| license.meta['description'] }
-      expose(:conditions) { |license| license.meta['conditions'] }
-      expose(:permissions) { |license| license.meta['permissions'] }
-      expose(:limitations) { |license| license.meta['limitations'] }
-      expose :content
-    end
-
     class ImpersonationToken < PersonalAccessToken
       expose :impersonation
     end
@@ -267,93 +200,6 @@ module API
       end
     end
 
-    module JobRequest
-      class JobInfo < Grape::Entity
-        expose :name, :stage
-        expose :project_id, :project_name
-      end
-
-      class GitInfo < Grape::Entity
-        expose :repo_url, :ref, :sha, :before_sha
-        expose :ref_type
-        expose :refspecs
-        expose :git_depth, as: :depth
-      end
-
-      class RunnerInfo < Grape::Entity
-        expose :metadata_timeout, as: :timeout
-        expose :runner_session_url
-      end
-
-      class Step < Grape::Entity
-        expose :name, :script, :timeout, :when, :allow_failure
-      end
-
-      class Port < Grape::Entity
-        expose :number, :protocol, :name
-      end
-
-      class Image < Grape::Entity
-        expose :name, :entrypoint
-        expose :ports, using: JobRequest::Port
-      end
-
-      class Service < Image
-        expose :alias, :command
-      end
-
-      class Artifacts < Grape::Entity
-        expose :name
-        expose :untracked
-        expose :paths
-        expose :when
-        expose :expire_in
-        expose :artifact_type
-        expose :artifact_format
-      end
-
-      class Cache < Grape::Entity
-        expose :key, :untracked, :paths, :policy
-      end
-
-      class Credentials < Grape::Entity
-        expose :type, :url, :username, :password
-      end
-
-      class Dependency < Grape::Entity
-        expose :id, :name, :token
-        expose :artifacts_file, using: JobArtifactFile, if: ->(job, _) { job.artifacts? }
-      end
-
-      class Response < Grape::Entity
-        expose :id
-        expose :token
-        expose :allow_git_fetch
-
-        expose :job_info, using: JobInfo do |model|
-          model
-        end
-
-        expose :git_info, using: GitInfo do |model|
-          model
-        end
-
-        expose :runner_info, using: RunnerInfo do |model|
-          model
-        end
-
-        expose :variables
-        expose :steps, using: Step
-        expose :image, using: Image
-        expose :services, using: Service
-        expose :artifacts, using: Artifacts
-        expose :cache, using: Cache
-        expose :credentials, using: Credentials
-        expose :all_dependencies, as: :dependencies, using: Dependency
-        expose :features
-      end
-    end
-
     class UserAgentDetail < Grape::Entity
       expose :user_agent
       expose :ip_address
@@ -368,45 +214,6 @@ module API
     class PagesDomainCertificateExpiration < Grape::Entity
       expose :expired?, as: :expired
       expose :expiration
-    end
-
-    class PagesDomainCertificate < Grape::Entity
-      expose :subject
-      expose :expired?, as: :expired
-      expose :certificate
-      expose :certificate_text
-    end
-
-    class PagesDomainBasic < Grape::Entity
-      expose :domain
-      expose :url
-      expose :project_id
-      expose :verified?, as: :verified
-      expose :verification_code, as: :verification_code
-      expose :enabled_until
-      expose :auto_ssl_enabled
-
-      expose :certificate,
-        as: :certificate_expiration,
-        if: ->(pages_domain, _) { pages_domain.certificate? },
-        using: PagesDomainCertificateExpiration do |pages_domain|
-        pages_domain
-      end
-    end
-
-    class PagesDomain < Grape::Entity
-      expose :domain
-      expose :url
-      expose :verified?, as: :verified
-      expose :verification_code, as: :verification_code
-      expose :enabled_until
-      expose :auto_ssl_enabled
-
-      expose :certificate,
-        if: ->(pages_domain, _) { pages_domain.certificate? },
-        using: PagesDomainCertificate do |pages_domain|
-        pages_domain
-      end
     end
 
     class Application < Grape::Entity
@@ -437,49 +244,6 @@ module API
       expose :project_id
     end
 
-    class BasicBadgeDetails < Grape::Entity
-      expose :name
-      expose :link_url
-      expose :image_url
-      expose :rendered_link_url do |badge, options|
-        badge.rendered_link_url(options.fetch(:project, nil))
-      end
-      expose :rendered_image_url do |badge, options|
-        badge.rendered_image_url(options.fetch(:project, nil))
-      end
-    end
-
-    class Badge < BasicBadgeDetails
-      expose :id
-      expose :kind do |badge|
-        badge.type == 'ProjectBadge' ? 'project' : 'group'
-      end
-    end
-
-    class ResourceLabelEvent < Grape::Entity
-      expose :id
-      expose :user, using: Entities::UserBasic
-      expose :created_at
-      expose :resource_type do |event, options|
-        event.issuable.class.name
-      end
-      expose :resource_id do |event, options|
-        event.issuable.id
-      end
-      expose :label, using: Entities::LabelBasic
-      expose :action
-    end
-
-    class Suggestion < Grape::Entity
-      expose :id
-      expose :from_line
-      expose :to_line
-      expose :appliable?, as: :appliable
-      expose :applied
-      expose :from_content
-      expose :to_content
-    end
-
     module Platform
       class Kubernetes < Grape::Entity
         expose :api_url
@@ -499,23 +263,6 @@ module API
         expose :num_nodes
         expose :endpoint
       end
-    end
-
-    class Cluster < Grape::Entity
-      expose :id, :name, :created_at, :domain
-      expose :provider_type, :platform_type, :environment_scope, :cluster_type
-      expose :user, using: Entities::UserBasic
-      expose :platform_kubernetes, using: Entities::Platform::Kubernetes
-      expose :provider_gcp, using: Entities::Provider::Gcp
-      expose :management_project, using: Entities::ProjectIdentity
-    end
-
-    class ClusterProject < Cluster
-      expose :project, using: Entities::BasicProjectDetails
-    end
-
-    class ClusterGroup < Cluster
-      expose :group, using: Entities::BasicGroupDetails
     end
 
     module InternalPostReceive

@@ -353,11 +353,7 @@ module Gitlab
       def fetch_blob(sha, path)
         return unless sha
 
-        # Load only patch_hard_limit_bytes number of bytes for the blob
-        # Because otherwise, it is too large to be displayed
-        Blob.lazy(
-          repository.project, sha, path,
-            blob_size_limit: Gitlab::Git::Diff.patch_hard_limit_bytes)
+        Blob.lazy(repository.project, sha, path)
       end
 
       def total_blob_lines(blob)

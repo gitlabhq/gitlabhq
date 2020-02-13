@@ -175,7 +175,7 @@ describe Gitlab::Diff::File do
         [diff_file.new_content_sha, diff_file.new_path], [diff_file.old_content_sha, diff_file.old_path]
       ]
 
-      expect(project.repository).to receive(:blobs_at).with(items, blob_size_limit: 100 * 1024).and_call_original
+      expect(project.repository).to receive(:blobs_at).with(items, blob_size_limit: 10.megabytes).and_call_original
 
       old_data = diff_file.old_blob.data
       data = diff_file.new_blob.data

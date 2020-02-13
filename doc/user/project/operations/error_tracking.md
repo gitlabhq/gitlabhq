@@ -84,5 +84,6 @@ Ignoring an error will prevent it from appearing in the [Error Tracking List](#e
 From within the [Error Details](#error-details) page you can resolve a Sentry error by
 clicking the **Resolve** button near the top of the page.
 
-Marking an error as resolved indicates that the error has stopped firing events. If another event
-occurs, the error reverts to unresolved.
+Marking an error as resolved indicates that the error has stopped firing events. If a GitLab issue is linked to the error, then the issue will be closed.
+
+If another event occurs, the error reverts to unresolved.

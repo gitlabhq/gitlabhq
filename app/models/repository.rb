@@ -134,15 +134,6 @@ class Repository
     end
   end
 
-  # the opts are:
-  #  - :path
-  #  - :limit
-  #  - :offset
-  #  - :skip_merges
-  #  - :after
-  #  - :before
-  #  - :all
-  #  - :first_parent
   def commits(ref = nil, opts = {})
     options = {
       repo: raw_repository,
@@ -155,7 +146,8 @@ class Repository
       after: opts[:after],
       before: opts[:before],
       all: !!opts[:all],
-      first_parent: !!opts[:first_parent]
+      first_parent: !!opts[:first_parent],
+      order: opts[:order]
     }
 
     commits = Gitlab::Git::Commit.where(options)

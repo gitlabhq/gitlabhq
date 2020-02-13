@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isString } from 'lodash';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import PodBox from './pod_box.vue';
 import Url from './url.vue';
@@ -42,7 +42,7 @@ export default {
       return this.func.name;
     },
     description() {
-      return _.isString(this.func.description) ? this.func.description : '';
+      return isString(this.func.description) ? this.func.description : '';
     },
     funcUrl() {
       return this.func.url;

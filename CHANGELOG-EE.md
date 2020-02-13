@@ -106,6 +106,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove "creations" in gitlab_subscription_histories on gitlab.com. !22278
 
 
+## 12.6.7
+
+- No changes.
+
 ## 12.6.6
 
 - No changes.
