@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.7.6
+
+- No changes.
+
 ## 12.7.5
 
 ### Fixed (1 change)
