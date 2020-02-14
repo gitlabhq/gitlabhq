@@ -1,4 +1,4 @@
-- should_display_analytics_pages_in_sidebar = Feature.enabled?(:analytics_pages_under_group_analytics_sidebar, @group)
+- should_display_analytics_pages_in_sidebar = Feature.enabled?(:analytics_pages_under_group_analytics_sidebar, @group, default_enabled: true)
 - issues_count = group_issues_count(state: 'opened')
 - merge_requests_count = group_merge_requests_count(state: 'opened')
 

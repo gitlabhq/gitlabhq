@@ -27,7 +27,7 @@ module API
         detail 'This feature was introduced in GitLab 12.5.'
       end
       post ':id/export' do
-        GroupExportWorker.perform_async(current_user.id, user_group.id, params)
+        GroupExportWorker.perform_async(current_user.id, user_group.id, params) # rubocop:disable CodeReuse/Worker
 
         accepted!
       end

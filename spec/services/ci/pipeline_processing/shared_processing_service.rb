@@ -880,6 +880,31 @@ shared_examples 'Pipeline Processing Service' do
     end
   end
 
+  context 'when a needed job is skipped', :sidekiq_inline do
+    let!(:linux_build) { create_build('linux:build', stage: 'build', stage_idx: 0) }
+    let!(:linux_rspec) { create_build('linux:rspec', stage: 'test', stage_idx: 1) }
+    let!(:deploy) do
+      create_build('deploy', stage: 'deploy', stage_idx: 2, scheduling_type: :dag, needs: [
+        create(:ci_build_need, name: 'linux:rspec')
+      ])
+    end
+
+    it 'skips the jobs depending on it' do
+      expect(process_pipeline).to be_truthy
+
+      expect(stages).to eq(%w(pending created created))
+      expect(all_builds.pending).to contain_exactly(linux_build)
+
+      linux_build.reset.drop!
+
+      expect(stages).to eq(%w(failed skipped skipped))
+      expect(all_builds.failed).to contain_exactly(linux_build)
+      expect(all_builds.skipped).to contain_exactly(linux_rspec, deploy)
+    end
+  end
+
+  private
+
   def all_builds
     pipeline.builds.order(:stage_idx, :id)
   end

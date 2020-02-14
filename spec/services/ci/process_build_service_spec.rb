@@ -22,6 +22,14 @@ describe Ci::ProcessBuildService, '#execute' do
       end
     end
 
+    context 'when current status is skipped' do
+      let(:current_status) { 'skipped' }
+
+      it 'changes the build status' do
+        expect { subject }.to change { build.status }.to('pending')
+      end
+    end
+
     context 'when current status is failed' do
       let(:current_status) { 'failed' }
 
@@ -110,6 +118,29 @@ describe Ci::ProcessBuildService, '#execute' do
       let(:current_status) { 'failed' }
 
       it 'does not change the build status' do
+        expect { subject }.to change { build.status }.to('skipped')
+      end
+    end
+  end
+
+  context 'when build is scheduled with DAG' do
+    let(:pipeline) { create(:ci_pipeline, ref: 'master', project: project) }
+    let!(:build) { create(:ci_build, :created, when: :on_success, pipeline: pipeline, scheduling_type: :dag) }
+    let!(:other_build) { create(:ci_build, :created, when: :on_success, pipeline: pipeline) }
+    let!(:build_on_other_build) { create(:ci_build_need, build: build, name: other_build.name) }
+
+    context 'when current status is success' do
+      let(:current_status) { 'success' }
+
+      it 'enqueues the build' do
+        expect { subject }.to change { build.status }.to('pending')
+      end
+    end
+
+    context 'when current status is skipped' do
+      let(:current_status) { 'skipped' }
+
+      it 'skips the build' do
         expect { subject }.to change { build.status }.to('skipped')
       end
     end

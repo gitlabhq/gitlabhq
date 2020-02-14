@@ -6,7 +6,7 @@ import { gqClient, parseEnvironmentsResponse, removeLeadingSlash } from './utils
 import trackDashboardLoad from '../monitoring_tracking_helper';
 import getEnvironments from '../queries/getEnvironments.query.graphql';
 import statusCodes from '../../lib/utils/http_status';
-import { backOff } from '../../lib/utils/common_utils';
+import { backOff, convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
 
 import { PROMETHEUS_TIMEOUT } from '../constants';
@@ -52,6 +52,8 @@ export const requestMetricsDashboard = ({ commit }) => {
 export const receiveMetricsDashboardSuccess = ({ commit, dispatch }, { response, params }) => {
   commit(types.SET_ALL_DASHBOARDS, response.all_dashboards);
   commit(types.RECEIVE_METRICS_DATA_SUCCESS, response.dashboard);
+  commit(types.SET_ENDPOINTS, convertObjectPropsToCamelCase(response.metrics_data));
+
   return dispatch('fetchPrometheusMetrics', params);
 };
 export const receiveMetricsDashboardFailure = ({ commit }, error) => {

@@ -1,0 +1,5 @@
+---
+title: Prevent DAG builds to run after skipped need build
+merge_request: 23405
+author:
+type: fixed

@@ -91,16 +91,37 @@ describe('Monitoring mutations', () => {
       expect(stateCopy.projectPath).toEqual('/gitlab-org/gitlab-foss');
     });
 
-    it('should not remove default value of logsPath', () => {
+    it('should not remove previously set properties', () => {
       const defaultLogsPath = stateCopy.logsPath;
 
       mutations[types.SET_ENDPOINTS](stateCopy, {
+        logsPath: defaultLogsPath,
+      });
+      mutations[types.SET_ENDPOINTS](stateCopy, {
         dashboardEndpoint: 'dashboard.json',
       });
+      mutations[types.SET_ENDPOINTS](stateCopy, {
+        projectPath: '/gitlab-org/gitlab-foss',
+      });
 
-      expect(stateCopy.logsPath).toBe(defaultLogsPath);
+      expect(stateCopy).toMatchObject({
+        logsPath: defaultLogsPath,
+        dashboardEndpoint: 'dashboard.json',
+        projectPath: '/gitlab-org/gitlab-foss',
+      });
+    });
+
+    it('should not update unknown properties', () => {
+      mutations[types.SET_ENDPOINTS](stateCopy, {
+        dashboardEndpoint: 'dashboard.json',
+        someOtherProperty: 'some invalid value', // someOtherProperty is not allowed
+      });
+
+      expect(stateCopy.dashboardEndpoint).toBe('dashboard.json');
+      expect(stateCopy.someOtherProperty).toBeUndefined();
     });
   });
+
   describe('Individual panel/metric results', () => {
     const metricId = '12_system_metrics_kubernetes_container_memory_total';
     const result = [

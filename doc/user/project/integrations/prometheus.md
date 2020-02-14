@@ -285,7 +285,9 @@ Note the following properties:
 | type | string | no | Type of panel to be rendered. Optional for area panel types |
 | query_range | string | required | For area panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
 
-![area panel type](img/prometheus_dashboard_area_panel_type.png)
+![area panel chart](img/prometheus_dashboard_area_panel_type_v12_8.png)
+
+Starting in [version 12.8](https://gitlab.com/gitlab-org/gitlab/issues/202696), the y-axis values will automatically scale according to the data. Previously, it always started from 0.
 
 ##### Anomaly chart
 
@@ -329,7 +331,7 @@ Note the following properties:
 
 ![anomaly panel type](img/prometheus_dashboard_anomaly_panel_type.png)
 
-#### Column
+##### Column chart
 
 To add a column panel type to a dashboard, look at the following sample dashboard file:
 

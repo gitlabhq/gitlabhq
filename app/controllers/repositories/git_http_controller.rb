@@ -80,7 +80,7 @@ module Repositories
       return unless repo_type.project?
       return unless project&.daily_statistics_enabled?
 
-      ProjectDailyStatisticsWorker.perform_async(project.id)
+      ProjectDailyStatisticsWorker.perform_async(project.id) # rubocop:disable CodeReuse/Worker
     end
 
     def access

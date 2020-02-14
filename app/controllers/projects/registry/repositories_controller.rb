@@ -32,7 +32,7 @@ module Projects
       end
 
       def destroy
-        DeleteContainerRepositoryWorker.perform_async(current_user.id, image.id)
+        DeleteContainerRepositoryWorker.perform_async(current_user.id, image.id) # rubocop:disable CodeReuse/Worker
         track_event(:delete_repository)
 
         respond_to do |format|

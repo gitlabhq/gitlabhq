@@ -76,7 +76,7 @@ module API
         group = ::Groups::CreateService.new(current_user, group_params).execute
 
         if group.persisted?
-          GroupImportWorker.perform_async(current_user.id, group.id)
+          GroupImportWorker.perform_async(current_user.id, group.id) # rubocop:disable CodeReuse/Worker
 
           accepted!
         else

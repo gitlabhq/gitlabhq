@@ -577,7 +577,7 @@ describe 'project routing' do
     end
   end
 
-  # project_blob GET    /:project_id/blob/:id(.:format) blob#show {id: /[^\0]+/, project_id: /[^\/]+/}
+  # project_blob GET    /:project_id/-/blob/:id(.:format) blob#show {id: /[^\0]+/, project_id: /[^\/]+/}
   describe Projects::BlobController, 'routing' do
     it 'to #show' do
       expect(get('/gitlab/gitlabhq/-/blob/master/app/models/project.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
@@ -600,7 +600,7 @@ describe 'project routing' do
     end
   end
 
-  # project_tree GET    /:project_id/tree/:id(.:format) tree#show {id: /[^\0]+/, project_id: /[^\/]+/}
+  # project_tree GET    /:project_id/-/tree/:id(.:format) tree#show {id: /[^\0]+/, project_id: /[^\/]+/}
   describe Projects::TreeController, 'routing' do
     it 'to #show' do
       expect(get('/gitlab/gitlabhq/-/tree/master/app/models/project.rb')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
@@ -621,8 +621,8 @@ describe 'project routing' do
     end
   end
 
-  # project_find_file GET /:namespace_id/:project_id/find_file/*id(.:format)  projects/find_file#show {:id=>/[^\0]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/html/}
-  # project_files     GET /:namespace_id/:project_id/files/*id(.:format)      projects/find_file#list {:id=>/(?:[^.]|\.(?!json$))+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/json/}
+  # project_find_file GET /:namespace_id/:project_id/-/find_file/*id(.:format)  projects/find_file#show {:id=>/[^\0]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/html/}
+  # project_files     GET /:namespace_id/:project_id/-/files/*id(.:format)      projects/find_file#list {:id=>/(?:[^.]|\.(?!json$))+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/json/}
   describe Projects::FindFileController, 'routing' do
     it 'to #show' do
       expect(get('/gitlab/gitlabhq/-/find_file/master')).to route_to('projects/find_file#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
@@ -677,7 +677,7 @@ describe 'project routing' do
     end
   end
 
-  # project_raw GET    /:project_id/raw/:id(.:format) raw#show {id: /[^\0]+/, project_id: /[^\/]+/}
+  # project_raw GET    /:project_id/-/raw/:id(.:format) raw#show {id: /[^\0]+/, project_id: /[^\/]+/}
   describe Projects::RawController, 'routing' do
     it 'to #show' do
       newline_file = "new\n\nline.txt"
@@ -694,9 +694,9 @@ describe 'project routing' do
     end
   end
 
-  # project_compare_index GET    /:project_id/compare(.:format)             compare#index {id: /[^\/]+/, project_id: /[^\/]+/}
-  #                       POST   /:project_id/compare(.:format)             compare#create {id: /[^\/]+/, project_id: /[^\/]+/}
-  #       project_compare        /:project_id/compare/:from...:to(.:format) compare#show {from: /.+/, to: /.+/, id: /[^\/]+/, project_id: /[^\/]+/}
+  # project_compare_index GET    /:project_id/-/compare(.:format)             compare#index {id: /[^\/]+/, project_id: /[^\/]+/}
+  #                       POST   /:project_id/-/compare(.:format)             compare#create {id: /[^\/]+/, project_id: /[^\/]+/}
+  #       project_compare        /:project_id/-/compare/:from...:to(.:format) compare#show {from: /.+/, to: /.+/, id: /[^\/]+/, project_id: /[^\/]+/}
   describe Projects::CompareController, 'routing' do
     it 'to #index' do
       expect(get('/gitlab/gitlabhq/-/compare')).to route_to('projects/compare#index', namespace_id: 'gitlab', project_id: 'gitlabhq')

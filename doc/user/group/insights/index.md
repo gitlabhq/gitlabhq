@@ -14,10 +14,10 @@ requests to be merged and much more.
 
 ## View your group's Insights
 
-You can access your group's Insights by clicking the **Overview > Insights**
+You can access your group's Insights by clicking the **Analytics > Insights**
 link in the left sidebar:
 
-![Insights sidebar link](img/insights_sidebar_link.png)
+![Insights sidebar link](img/insights_sidebar_link_v12_8.png)
 
 ## Configure your Insights
 

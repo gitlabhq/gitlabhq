@@ -52,7 +52,7 @@ relatively quickly to work, and they will take you to another page in the projec
 | <kbd>t</kbd>                | Go to the project file search page. (**Repository > Files**, click **Find Files**). |
 | <kbd>g</kbd> + <kbd>c</kbd> | Go to the project commits list (**Repository > Commits**). |
 | <kbd>g</kbd> + <kbd>n</kbd> | Go to the [repository graph](#repository-graph) page (**Repository > Graph**). |
-| <kbd>g</kbd> + <kbd>d</kbd> | Go to repository charts (**Repository > Charts**). |
+| <kbd>g</kbd> + <kbd>d</kbd> | Go to repository charts (**Analytics > Repository Analytics**). |
 | <kbd>g</kbd> + <kbd>i</kbd> | Go to the project issues list (**Issues > List**). |
 | <kbd>i</kbd>                | Go to the New Issue page (**Issues**, click **New Issue** ). |
 | <kbd>g</kbd> + <kbd>b</kbd> | Go to the project issue boards list (**Issues > Boards**). |

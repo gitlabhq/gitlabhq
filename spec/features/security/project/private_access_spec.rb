@@ -29,7 +29,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/tree/master" do
+  describe "GET /:project_path/-/tree/master" do
     subject { project_tree_path(project, project.repository.root_ref) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -43,7 +43,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/commits/master" do
+  describe "GET /:project_path/-/commits/master" do
     subject { project_commits_path(project, project.repository.root_ref, limit: 1) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -57,7 +57,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/commit/:sha" do
+  describe "GET /:project_path/-/commit/:sha" do
     subject { project_commit_path(project, project.repository.commit) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -71,7 +71,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/compare" do
+  describe "GET /:project_path/-/compare" do
     subject { project_compare_index_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -127,7 +127,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/blob" do
+  describe "GET /:project_path/-/blob" do
     let(:commit) { project.repository.commit }
 
     subject { project_blob_path(project, File.join(commit.id, '.gitignore')) }
@@ -215,7 +215,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/merge_requests" do
+  describe "GET /:project_path/-/merge_requests" do
     subject { project_merge_requests_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
@@ -229,7 +229,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/branches" do
+  describe "GET /:project_path/-/branches" do
     subject { project_branches_path(project) }
 
     before do
@@ -250,7 +250,7 @@ describe "Private Project Access" do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
-  describe "GET /:project_path/tags" do
+  describe "GET /:project_path/-/tags" do
     subject { project_tags_path(project) }
 
     before do

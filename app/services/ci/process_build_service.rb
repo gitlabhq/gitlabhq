@@ -3,7 +3,7 @@
 module Ci
   class ProcessBuildService < BaseService
     def execute(build, current_status)
-      if valid_statuses_for_when(build.when).include?(current_status)
+      if valid_statuses_for_build(build).include?(current_status)
         if build.schedulable?
           build.schedule
         elsif build.action?
@@ -25,10 +25,10 @@ module Ci
       build.enqueue
     end
 
-    def valid_statuses_for_when(value)
-      case value
+    def valid_statuses_for_build(build)
+      case build.when
       when 'on_success'
-        %w[success skipped]
+        build.scheduling_type_dag? ? %w[success] : %w[success skipped]
       when 'on_failure'
         %w[failed]
       when 'always'

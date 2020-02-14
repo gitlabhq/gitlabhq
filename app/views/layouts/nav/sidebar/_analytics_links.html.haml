@@ -6,10 +6,10 @@
     = link_to navbar_links.first.link do
       .nav-icon-container
         = sprite_icon('chart')
-      %span.nav-item-name
+      %span.nav-item-name{ data: { qa_selector: 'analytics_link' } }
         = _('Analytics')
 
-    %ul.sidebar-sub-level-items
+    %ul.sidebar-sub-level-items{ data: { qa_selector: 'analytics_sidebar_submenu' } }
       - navbar_links.each do |menu_item|
         = nav_link(path: menu_item.path) do
           = link_to(menu_item.link, menu_item.link_to_options) do

@@ -120,7 +120,7 @@ module API
       post ':id/pipeline_schedules/:pipeline_schedule_id/play' do
         authorize! :play_pipeline_schedule, pipeline_schedule
 
-        job_id = RunPipelineScheduleWorker
+        job_id = RunPipelineScheduleWorker # rubocop:disable CodeReuse/Worker
           .perform_async(pipeline_schedule.id, current_user.id)
 
         if job_id

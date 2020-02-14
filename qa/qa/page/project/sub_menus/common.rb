@@ -5,20 +5,12 @@ module QA
     module Project
       module SubMenus
         module Common
-          def within_sidebar
-            within('.sidebar-top-level-items') do
-              yield
-            end
-          end
+          include QA::Page::SubMenus::Common
 
-          def within_submenu
-            if has_css?('.fly-out-list')
-              within('.fly-out-list') do
-                yield
-              end
-            else
-              yield
-            end
+          private
+
+          def sidebar_element
+            :project_sidebar
           end
         end
       end

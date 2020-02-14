@@ -159,6 +159,10 @@ module QA
     autoload :Validator, 'qa/page/validator'
     autoload :Validatable, 'qa/page/validatable'
 
+    module SubMenus
+      autoload :Common, 'qa/page/sub_menus/common'
+    end
+
     module Main
       autoload :Login, 'qa/page/main/login'
       autoload :Menu, 'qa/page/main/menu'

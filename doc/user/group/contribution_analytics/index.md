@@ -16,7 +16,7 @@ group:
 - Merge requests
 - Push events
 
-To view the Contribution Analytics, go to your group's **Overview > Contribution Analytics**
+To view the Contribution Analytics, go to your group's **Analytics > Contribution Analytics**
 page.
 
 ## Use cases

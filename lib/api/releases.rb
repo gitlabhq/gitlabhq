@@ -170,9 +170,9 @@ module API
         return if release.historical_release?
 
         if release.upcoming_release?
-          CreateEvidenceWorker.perform_at(release.released_at, release.id)
+          CreateEvidenceWorker.perform_at(release.released_at, release.id) # rubocop:disable CodeReuse/Worker
         else
-          CreateEvidenceWorker.perform_async(release.id)
+          CreateEvidenceWorker.perform_async(release.id) # rubocop:disable CodeReuse/Worker
         end
       end
     end
