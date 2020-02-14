@@ -1,0 +1,5 @@
+---
+title: Add GET endpoint to LDAP group link API
+merge_request: 24216
+author:
+type: added

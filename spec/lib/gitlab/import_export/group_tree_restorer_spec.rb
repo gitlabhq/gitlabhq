@@ -71,6 +71,44 @@ describe Gitlab::ImportExport::GroupTreeRestorer do
     end
   end
 
+  context 'excluded attributes' do
+    let!(:source_user) { create(:user, id: 123) }
+    let!(:importer_user) { create(:user) }
+    let(:group) { create(:group) }
+    let(:shared) { Gitlab::ImportExport::Shared.new(group) }
+    let(:group_tree_restorer) { described_class.new(user: importer_user, shared: shared, group: group, group_hash: nil) }
+    let(:group_json) { ActiveSupport::JSON.decode(IO.read(File.join(shared.export_path, 'group.json'))) }
+
+    shared_examples 'excluded attributes' do
+      excluded_attributes = %w[
+        id
+        name
+        path
+        owner_id
+        parent_id
+        created_at
+        updated_at
+        runners_token
+        runners_token_encrypted
+        saml_discovery_token
+      ]
+
+      before do
+        group.add_owner(importer_user)
+
+        setup_import_export_config('group_exports/complex')
+      end
+
+      excluded_attributes.each do |excluded_attribute|
+        it 'does not allow override of excluded attributes' do
+          expect(group_json[excluded_attribute]).not_to eq(group.public_send(excluded_attribute))
+        end
+      end
+    end
+
+    include_examples 'excluded attributes'
+  end
+
   context 'group.json file access check' do
     let(:user) { create(:user) }
     let!(:group) { create(:group, name: 'group2', path: 'group2') }

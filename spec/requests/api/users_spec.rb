@@ -949,6 +949,45 @@ describe API::Users do
     end
   end
 
+  describe "DELETE /users/:id/identities/:provider" do
+    let(:test_user) { create(:omniauth_user, provider: 'ldapmain') }
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        delete api("/users/#{test_user.id}/identities/ldapmain")
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when authenticated' do
+      it 'deletes identity of given provider' do
+        expect do
+          delete api("/users/#{test_user.id}/identities/ldapmain", admin)
+        end.to change { test_user.identities.count }.by(-1)
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/users/#{test_user.id}/identities/ldapmain", admin) }
+      end
+
+      it 'returns 404 error if user not found' do
+        delete api("/users/0/identities/ldapmain", admin)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+
+      it 'returns 404 error if identity not found' do
+        delete api("/users/#{test_user.id}/identities/saml", admin)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Identity Not Found')
+      end
+    end
+  end
+
   describe "POST /users/:id/keys" do
     before do
       admin

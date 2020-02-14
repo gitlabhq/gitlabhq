@@ -11,11 +11,13 @@ module Gitlab
           include ::Gitlab::Config::Entry::Validatable
 
           validations do
-            validates :config, presence: true
-
             validate do
               unless config.is_a?(Hash) || config.is_a?(Array)
                 errors.add(:config, 'can only be a Hash or an Array')
+              end
+
+              if config.is_a?(Hash) && config.empty?
+                errors.add(:config, 'can not be an empty Hash')
               end
             end
 

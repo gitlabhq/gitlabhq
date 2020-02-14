@@ -9,4 +9,10 @@ describe Ci::PipelineProcessing::AtomicProcessingService do
   end
 
   it_behaves_like 'Pipeline Processing Service'
+
+  private
+
+  def process_pipeline(initial_process: false)
+    described_class.new(pipeline).execute
+  end
 end

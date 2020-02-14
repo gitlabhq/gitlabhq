@@ -27,6 +27,6 @@
             - if build.has_trace?
               %td{ colspan: "2", style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; padding: 0 0 16px;" }
                 %pre{ style: "font-family: Monaco,'Lucida Console','Courier New',Courier,monospace; background-color: #fafafa; border-radius: 4px; overflow: hidden; white-space: pre-wrap; word-break: break-all; font-size:13px; line-height: 1.4; padding: 16px 8px; color: #333333; margin: 0;" }
-                  = build.trace.html(last_lines: 10).html_safe
+                  = build.trace.html(last_lines: 30).html_safe
             - else
               %td{ colspan: "2" }

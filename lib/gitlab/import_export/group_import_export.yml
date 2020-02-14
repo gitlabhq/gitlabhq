@@ -28,8 +28,15 @@ included_attributes:
 excluded_attributes:
   group:
     - :id
+    - :name
+    - :path
+    - :owner_id
+    - :parent_id
+    - :created_at
+    - :updated_at
     - :runners_token
     - :runners_token_encrypted
+    - :saml_discovery_token
 
 methods:
   labels:

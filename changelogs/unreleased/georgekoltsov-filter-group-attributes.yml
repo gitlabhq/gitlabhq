@@ -1,0 +1,5 @@
+---
+title: Extend the list of excluded_attributes for group on Group Import
+merge_request: 25031
+author:
+type: fixed

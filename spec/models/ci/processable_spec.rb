@@ -120,4 +120,29 @@ describe Ci::Processable do
       end
     end
   end
+
+  describe '.populate_scheduling_type!' do
+    let!(:build_without_needs) { create(:ci_build, project: project, pipeline: pipeline) }
+    let!(:build_with_needs) { create(:ci_build, project: project, pipeline: pipeline) }
+    let!(:needs_relation) { create(:ci_build_need, build: build_with_needs) }
+    let!(:another_build) { create(:ci_build, project: project) }
+
+    before do
+      Ci::Processable.update_all(scheduling_type: nil)
+    end
+
+    it 'populates scheduling_type of processables' do
+      expect do
+        pipeline.processables.populate_scheduling_type!
+      end.to change(pipeline.processables.where(scheduling_type: nil), :count).from(2).to(0)
+
+      expect(build_without_needs.reload.scheduling_type).to eq('stage')
+      expect(build_with_needs.reload.scheduling_type).to eq('dag')
+    end
+
+    it 'does not affect processables from other pipelines' do
+      pipeline.processables.populate_scheduling_type!
+      expect(another_build.reload.scheduling_type).to be_nil
+    end
+  end
 end

@@ -93,9 +93,9 @@ module Ci
       end
 
       def processable_status(processable)
-        if needs_names = processable.aggregated_needs_names
+        if Feature.enabled?(:ci_dag_support, project, default_enabled: true) && processable.scheduling_type_dag?
           # Processable uses DAG, get status of all dependent needs
-          @collection.status_for_names(needs_names)
+          @collection.status_for_names(processable.aggregated_needs_names.to_a)
         else
           # Processable uses Stages, get status of prior stage
           @collection.status_for_prior_stage_position(processable.stage_idx.to_i)

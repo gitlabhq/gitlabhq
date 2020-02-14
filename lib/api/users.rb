@@ -225,6 +225,27 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc "Delete a user's identity. Available only for admins" do
+        success Entities::UserWithAdmin
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :provider, type: String, desc: 'The external provider'
+      end
+      # rubocop: disable CodeReuse/ActiveRecord
+      delete ":id/identities/:provider" do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        identity = user.identities.find_by(provider: params[:provider])
+        not_found!('Identity') unless identity
+
+        destroy_conditionally!(identity)
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
       desc 'Add an SSH key to a specified user. Available only for admins.' do
         success Entities::SSHKey
       end

@@ -437,6 +437,19 @@ Note, at the moment this method does only return a `404` error,
 even in cases where a `409` (Conflict) would be more appropriate,
 e.g. when renaming the email address to some existing one.
 
+## Delete authentication identity from user
+
+Deletes a user's authentication identity using the provider name associated with that identity. Available only for administrators.
+
+```
+DELETE /users/:id/identities/:provider
+```
+
+Parameters:
+
+- `id` (required) - The ID of the user
+- `provider` (required) - External provider name
+
 ## User deletion
 
 Deletes a user. Available only for administrators.

@@ -2248,6 +2248,7 @@ and bring back the old behavior.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/47063) in GitLab 12.2.
 > - In GitLab 12.3, maximum number of jobs in `needs` array raised from five to 50.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30631) in GitLab 12.8, `needs: []` lets jobs start immediately.
 
 The `needs:` keyword enables executing jobs out-of-order, allowing you to implement
 a [directed acyclic graph](../directed_acyclic_graph/index.md) in your `.gitlab-ci.yml`.
@@ -2263,6 +2264,10 @@ linux:build:
 
 mac:build:
   stage: build
+
+lint:
+  stage: test
+  needs: []
 
 linux:rspec:
   stage: test
@@ -2284,7 +2289,9 @@ production:
   stage: deploy
 ```
 
-This example creates three paths of execution:
+This example creates four paths of execution:
+
+- Linter: the `lint` job will run immediately without waiting for the `build` stage to complete because it has no needs (`needs: []`).
 
 - Linux path: the `linux:rspec` and `linux:rubocop` jobs will be run as soon
   as the `linux:build` job finishes without waiting for `mac:build` to finish.
@@ -2308,9 +2315,6 @@ This example creates three paths of execution:
   - For self-managed instances, the limit is:
     - 10, if the `ci_dag_limit_needs` feature flag is enabled (default).
     - 50, if the `ci_dag_limit_needs` feature flag is disabled.
-- It is impossible for now to have `needs: []` (empty needs), the job always needs to
-  depend on something, unless this is the job in the first stage. However, support for
-  an empty needs array [is planned](https://gitlab.com/gitlab-org/gitlab/issues/30631).
 - If `needs:` refers to a job that is marked as `parallel:`.
   the current job will depend on all parallel jobs created.
 - `needs:` is similar to `dependencies:` in that it needs to use jobs from prior stages,

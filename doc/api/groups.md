@@ -798,7 +798,7 @@ DELETE /groups/:id/hooks/:hook_id
 
 Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events-starter)
 
-## Sync group with LDAP **(CORE ONLY)**
+## Sync group with LDAP **(STARTER)**
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
 
@@ -814,7 +814,23 @@ Parameters:
 
 Please consult the [Group Members](members.md) documentation.
 
-### Add LDAP group link **(CORE ONLY)**
+## LDAP Group Links
+
+List, add, and delete LDAP group links.
+
+### List LDAP group links **(STARTER)**
+
+Lists LDAP group links.
+
+```
+GET /groups/:id/ldap_group_links
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+
+### Add LDAP group link **(STARTER)**
 
 Adds an LDAP group link.
 
@@ -829,7 +845,7 @@ Parameters:
 - `group_access` (required) - Minimum access level for members of the LDAP group
 - `provider` (required) - LDAP provider for the LDAP group
 
-### Delete LDAP group link **(CORE ONLY)**
+### Delete LDAP group link **(STARTER)**
 
 Deletes an LDAP group link.
 

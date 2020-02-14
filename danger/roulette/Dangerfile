@@ -68,11 +68,9 @@ categories = changes.keys - [:unknown]
 # Ensure to spin for database reviewer/maintainer when ~database is applied (e.g. to review SQL queries)
 categories << :database if gitlab.mr_labels.include?('database') && !categories.include?(:database)
 
-# Single codebase MRs are reviewed using a slightly different process, so we
-# disable the review roulette for such MRs.
 # CSS Clean up MRs are reviewed using a slightly different process, so we
 # disable the review roulette for such MRs.
-if changes.any? && !gitlab.mr_labels.include?('single codebase') && !gitlab.mr_labels.include?('CSS cleanup')
+if changes.any? && !gitlab.mr_labels.include?('CSS cleanup')
   # Strip leading and trailing CE/EE markers
   canonical_branch_name =
     roulette.canonical_branch_name(gitlab.mr_json['source_branch'])

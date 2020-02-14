@@ -11,12 +11,13 @@ module Ci
         @pipeline = pipeline
       end
 
-      def execute(trigger_build_ids = nil)
-        success = process_stages_without_needs
+      def execute(trigger_build_ids = nil, initial_process: false)
+        success = process_stages_for_stage_scheduling
 
         # we evaluate dependent needs,
         # only when the another job has finished
-        success = process_builds_with_needs(trigger_build_ids) || success
+        success = process_dag_builds_without_needs || success if initial_process
+        success = process_dag_builds_with_needs(trigger_build_ids) || success
 
         @pipeline.update_legacy_status
 
@@ -25,23 +26,31 @@ module Ci
 
       private
 
-      def process_stages_without_needs
-        stage_indexes_of_created_processables_without_needs.flat_map do |index|
-          process_stage_without_needs(index)
+      def process_stages_for_stage_scheduling
+        stage_indexes_of_created_stage_scheduled_processables.flat_map do |index|
+          process_stage_for_stage_scheduling(index)
         end.any?
       end
 
-      def process_stage_without_needs(index)
+      def process_stage_for_stage_scheduling(index)
         current_status = status_for_prior_stages(index)
 
         return unless HasStatus::COMPLETED_STATUSES.include?(current_status)
 
-        created_processables_in_stage_without_needs(index).find_each.select do |build|
+        created_stage_scheduled_processables_in_stage(index).find_each.select do |build|
           process_build(build, current_status)
         end.any?
       end
 
-      def process_builds_with_needs(trigger_build_ids)
+      def process_dag_builds_without_needs
+        return false unless Feature.enabled?(:ci_dag_support, project, default_enabled: true)
+
+        created_processables.scheduling_type_dag.without_needs.each do |build|
+          process_build(build, 'success')
+        end
+      end
+
+      def process_dag_builds_with_needs(trigger_build_ids)
         return false unless trigger_build_ids.present?
         return false unless Feature.enabled?(:ci_dag_support, project, default_enabled: true)
 
@@ -56,14 +65,15 @@ module Ci
 
         # Each found processable is guaranteed here to have completed status
         created_processables
+          .scheduling_type_dag
           .with_needs(trigger_build_names)
           .without_needs(incomplete_build_names)
           .find_each
-          .map(&method(:process_build_with_needs))
+          .map(&method(:process_dag_build_with_needs))
           .any?
       end
 
-      def process_build_with_needs(build)
+      def process_dag_build_with_needs(build)
         current_status = status_for_build_needs(build.needs.map(&:name))
 
         return unless HasStatus::COMPLETED_STATUSES.include?(current_status)
@@ -87,23 +97,23 @@ module Ci
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def stage_indexes_of_created_processables_without_needs
-        created_processables_without_needs.order(:stage_idx)
+      def stage_indexes_of_created_stage_scheduled_processables
+        created_stage_scheduled_processables.order(:stage_idx)
           .pluck(Arel.sql('DISTINCT stage_idx'))
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      def created_processables_in_stage_without_needs(index)
-        created_processables_without_needs
+      def created_stage_scheduled_processables_in_stage(index)
+        created_stage_scheduled_processables
           .with_preloads
           .for_stage(index)
       end
 
-      def created_processables_without_needs
+      def created_stage_scheduled_processables
         if Feature.enabled?(:ci_dag_support, project, default_enabled: true)
-          pipeline.processables.created.without_needs
+          created_processables.scheduling_type_stage
         else
-          pipeline.processables.created
+          created_processables
         end
       end
 

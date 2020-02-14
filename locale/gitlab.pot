@@ -11917,6 +11917,9 @@ msgstr ""
 msgid "Merge requests"
 msgstr ""
 
+msgid "Merge requests approvals"
+msgstr ""
+
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
 
@@ -14161,6 +14164,9 @@ msgstr ""
 msgid "Prevent users from changing their profile name"
 msgstr ""
 
+msgid "Prevent users from modifing merge request approvers list"
+msgstr ""
+
 msgid "Preview"
 msgstr ""
 
@@ -16385,6 +16391,9 @@ msgstr ""
 msgid "Rook"
 msgstr ""
 
+msgid "Rules that define what git pushes are accepted for a project. All newly created projects will use these settings."
+msgstr ""
+
 msgid "Run CI/CD pipelines for external repositories"
 msgstr ""
 
@@ -17425,6 +17434,9 @@ msgid "Sets weight to %{weight}."
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid "Settings to prevent self-approval across all projects in the instance. Only an administrator can modify these settings."
 msgstr ""
 
 msgid "Severity: %{severity}"

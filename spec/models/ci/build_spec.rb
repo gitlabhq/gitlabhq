@@ -762,8 +762,10 @@ describe Ci::Build do
       let(:needs) { }
 
       let!(:final) do
+        scheduling_type = needs.present? ? :dag : :stage
+
         create(:ci_build,
-          pipeline: pipeline, name: 'final',
+          pipeline: pipeline, name: 'final', scheduling_type: scheduling_type,
           stage_idx: 3, stage: 'deploy', options: {
             dependencies: dependencies
           }
