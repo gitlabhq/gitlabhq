@@ -61,7 +61,7 @@ and uploads it as a SAST report:
 
 ```yaml
 mysec_dependency_scanning:
-  image: regitry.gitlab.com/secure/mysec
+  image: registry.gitlab.com/secure/mysec
   artifacts:
     reports:
       sast: gl-sast-report.json

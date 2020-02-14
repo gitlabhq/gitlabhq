@@ -115,7 +115,8 @@ Read more on how to [interact with the vulnerabilities](../index.md#interacting-
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6953) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8.
 
 At the instance level, the Security Dashboard displays the vulnerabilities
-present in all of the projects that you have added to it.
+present in all of the projects that you have added to it. It includes all
+of the features of the [group security dashboard](#group-security-dashboard).
 
 You can access the Instance Security Dashboard from the menu
 bar at the top of the page. Under **More**, select **Security**.
@@ -133,7 +134,7 @@ To add projects to the dashboard:
 Once added, the dashboard will display the vulnerabilities found in your chosen
 projects.
 
-![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v12_7.png)
+![Instance Security Dashboard with projects](img/instance_security_dashboard_with_projects_v12_8.png)
 
 ## Keeping the dashboards up to date
 

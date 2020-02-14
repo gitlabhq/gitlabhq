@@ -38,9 +38,6 @@ class MergeRequest < ApplicationRecord
   has_many :merge_request_context_commits
   has_many :merge_request_context_commit_diff_files, through: :merge_request_context_commits, source: :diff_files
 
-  has_many :merge_request_milestones
-  has_many :milestones, through: :merge_request_milestones
-
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
 

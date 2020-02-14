@@ -107,6 +107,7 @@ recorded:
 - Started/stopped user impersonation
 - Changed username ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/7797) in GitLab 12.8)
 - User was deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
+- User was added ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
 - User was blocked via Admin Area ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
 
 It is possible to filter particular actions by choosing an audit data type from

@@ -6,8 +6,6 @@ issues:
 - assignees
 - updated_by
 - milestone
-- issue_milestones
-- milestones
 - notes
 - resource_label_events
 - resource_weight_events
@@ -82,8 +80,6 @@ milestone:
 - boards
 - milestone_releases
 - releases
-- issue_milestones
-- merge_request_milestones
 snippets:
 - author
 - project
@@ -113,8 +109,6 @@ merge_requests:
 - assignee
 - updated_by
 - milestone
-- merge_request_milestones
-- milestones
 - notes
 - resource_label_events
 - label_links
@@ -157,12 +151,6 @@ merge_requests:
 - deployment_merge_requests
 - deployments
 - user_mentions
-issue_milestones:
-- milestone
-- issue
-merge_request_milestones:
-- milestone
-- merge_request
 external_pull_requests:
 - project
 merge_request_diff:

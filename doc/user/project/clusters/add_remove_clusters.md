@@ -360,6 +360,11 @@ To create and add a new Kubernetes cluster to your project, group, or instance:
 After about 10 minutes, your cluster will be ready to go. You can now proceed
 to install some [pre-defined applications](index.md#installing-applications).
 
+NOTE: **Note:**
+You will need to add your AWS external ID to the
+[IAM Role in the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html#cli-configure-role-xaccount)
+to manage your cluster using `kubectl`.
+
 ## Add existing cluster
 
 If you have an existing Kubernetes cluster, you can add it to a project, group, or instance.
