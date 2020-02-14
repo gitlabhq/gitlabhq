@@ -4,11 +4,11 @@ require 'spec_helper'
 
 describe TrendingProject do
   let(:user) { create(:user) }
-  let(:public_project1) { create(:project, :public) }
-  let(:public_project2) { create(:project, :public) }
-  let(:public_project3) { create(:project, :public) }
-  let(:private_project) { create(:project, :private) }
-  let(:internal_project) { create(:project, :internal) }
+  let(:public_project1) { create(:project, :public, :repository) }
+  let(:public_project2) { create(:project, :public, :repository) }
+  let(:public_project3) { create(:project, :public, :repository) }
+  let(:private_project) { create(:project, :private, :repository) }
+  let(:internal_project) { create(:project, :internal, :repository) }
 
   before do
     create_list(:note_on_commit, 3, project: public_project1)

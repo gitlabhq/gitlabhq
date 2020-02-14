@@ -171,6 +171,31 @@ describe Issues::CreateService do
 
         described_class.new(project, user, opts).execute
       end
+
+      context 'after_save callback to store_mentions' do
+        context 'when mentionable attributes change' do
+          let(:opts) { { title: 'Title', description: "Description with #{user.to_reference}" } }
+
+          it 'saves mentions' do
+            expect_next_instance_of(Issue) do |instance|
+              expect(instance).to receive(:store_mentions!).and_call_original
+            end
+            expect(issue.user_mentions.count).to eq 1
+          end
+        end
+
+        context 'when save fails' do
+          let(:opts) { { title: '', label_ids: labels.map(&:id), milestone_id: milestone.id } }
+
+          it 'does not call store_mentions' do
+            expect_next_instance_of(Issue) do |instance|
+              expect(instance).not_to receive(:store_mentions!).and_call_original
+            end
+            expect(issue.valid?).to be false
+            expect(issue.user_mentions.count).to eq 0
+          end
+        end
+      end
     end
 
     context 'issue create service' do

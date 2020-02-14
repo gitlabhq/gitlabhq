@@ -18,7 +18,7 @@ module Gitlab
       private
 
       def raw_diff
-        "#{diff_header}\n#{from_content_as_diff}#{to_content_as_diff}"
+        "#{diff_header}\n#{from_content_as_diff}\n#{to_content_as_diff}"
       end
 
       def diff_header
@@ -26,7 +26,7 @@ module Gitlab
       end
 
       def from_content_as_diff
-        from_content.lines.map { |line| line.prepend('-') }.join
+        from_content.lines.map { |line| line.prepend('-') }.join.delete_suffix("\n")
       end
 
       def to_content_as_diff

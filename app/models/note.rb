@@ -157,6 +157,7 @@ class Note < ApplicationRecord
   after_save :expire_etag_cache, unless: :importing?
   after_save :touch_noteable, unless: :importing?
   after_destroy :expire_etag_cache
+  after_save :store_mentions!, if: :any_mentionable_attributes_changed?
 
   class << self
     def model_name
@@ -498,6 +499,8 @@ class Note < ApplicationRecord
   end
 
   def user_mentions
+    return Note.none unless noteable.present?
+
     noteable.user_mentions.where(note: self)
   end
 
@@ -506,6 +509,8 @@ class Note < ApplicationRecord
   # Using this method followed by a call to `save` may result in ActiveRecord::RecordNotUnique exception
   # in a multithreaded environment. Make sure to use it within a `safe_ensure_unique` block.
   def model_user_mention
+    return if user_mentions.is_a?(ActiveRecord::NullRelation)
+
     user_mentions.first_or_initialize
   end
 

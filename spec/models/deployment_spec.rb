@@ -51,6 +51,22 @@ describe Deployment do
     end
   end
 
+  describe '.stoppable' do
+    subject { described_class.stoppable }
+
+    context 'when deployment is stoppable' do
+      let!(:deployment) { create(:deployment, :success, on_stop: 'stop-review') }
+
+      it { is_expected.to eq([deployment]) }
+    end
+
+    context 'when deployment is not stoppable' do
+      let!(:deployment) { create(:deployment, :failed) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe '.success' do
     subject { described_class.success }
 

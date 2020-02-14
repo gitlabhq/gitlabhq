@@ -168,7 +168,7 @@ class IssuableBaseService < BaseService
     before_create(issuable)
 
     issuable_saved = issuable.with_transaction_returning_status do
-      issuable.save && issuable.store_mentions!
+      issuable.save
     end
 
     if issuable_saved
@@ -233,7 +233,7 @@ class IssuableBaseService < BaseService
       ensure_milestone_available(issuable)
 
       issuable_saved = issuable.with_transaction_returning_status do
-        issuable.save(touch: should_touch) && issuable.store_mentions!
+        issuable.save(touch: should_touch)
       end
 
       if issuable_saved

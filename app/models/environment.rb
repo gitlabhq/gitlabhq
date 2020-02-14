@@ -61,6 +61,7 @@ class Environment < ApplicationRecord
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
   scope :preload_cluster, -> { preload(last_deployment: :cluster) }
+  scope :auto_stoppable, -> (limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
 
   ##
   # Search environments which have names like the given query.
@@ -105,6 +106,44 @@ class Environment < ApplicationRecord
 
   def self.find_or_create_by_name(name)
     find_or_create_by(name: name)
+  end
+
+  class << self
+    ##
+    # This method returns stop actions (jobs) for multiple environments within one
+    # query. It's useful to avoid N+1 problem.
+    #
+    # NOTE: The count of environments should be small~medium (e.g. < 5000)
+    def stop_actions
+      cte = cte_for_deployments_with_stop_action
+      ci_builds = Ci::Build.arel_table
+
+      inner_join_stop_actions = ci_builds.join(cte.table).on(
+        ci_builds[:project_id].eq(cte.table[:project_id])
+          .and(ci_builds[:ref].eq(cte.table[:ref]))
+          .and(ci_builds[:name].eq(cte.table[:on_stop]))
+      ).join_sources
+
+      pipeline_ids = ci_builds.join(cte.table).on(
+        ci_builds[:id].eq(cte.table[:deployable_id])
+      ).project(:commit_id)
+
+      Ci::Build.joins(inner_join_stop_actions)
+               .with(cte.to_arel)
+               .where(ci_builds[:commit_id].in(pipeline_ids))
+               .where(status: HasStatus::BLOCKED_STATUS)
+               .preload_project_and_pipeline_project
+               .preload(:user, :metadata, :deployment)
+    end
+
+    private
+
+    def cte_for_deployments_with_stop_action
+      Gitlab::SQL::CTE.new(:deployments_with_stop_action,
+        Deployment.where(environment_id: select(:id))
+          .distinct_on_environment
+          .stoppable)
+    end
   end
 
   def clear_prometheus_reactive_cache!(query_name)

@@ -20,7 +20,7 @@ module Gitlab
       paid_signup_flow: {
         feature_toggle: :paid_signup_flow,
         environment: ::Gitlab.dev_env_or_com?,
-        enabled_ratio: 0.25,
+        enabled_ratio: 0.5,
         tracking_category: 'Growth::Acquisition::Experiment::PaidSignUpFlow'
       },
       suggest_pipeline: {

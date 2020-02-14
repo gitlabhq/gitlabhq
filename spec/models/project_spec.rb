@@ -1299,8 +1299,8 @@ describe Project do
 
   describe '.trending' do
     let(:group)    { create(:group, :public) }
-    let(:project1) { create(:project, :public, group: group) }
-    let(:project2) { create(:project, :public, group: group) }
+    let(:project1) { create(:project, :public, :repository, group: group) }
+    let(:project2) { create(:project, :public, :repository, group: group) }
 
     before do
       create_list(:note_on_commit, 2, project: project1)

@@ -93,10 +93,20 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
     # Ensure we identify urls with the appropriate host.
     # Configure host to include port in app:
     Gitlab.config.gitlab[:url] = root_url.chomp('/')
+
+    clear_host_from_memoized_variables
   end
 
   def restore_host
     default_url_options[:host] = @original_default_host
     Gitlab.config.gitlab[:url] = @original_gitlab_url
+
+    clear_host_from_memoized_variables
+  end
+
+  def clear_host_from_memoized_variables
+    [:metrics_regex, :grafana_regex].each do |method_name|
+      Gitlab::Metrics::Dashboard::Url.clear_memoization(method_name)
+    end
   end
 end

@@ -291,6 +291,46 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
 
         expect { service.execute }.to change { counter.read(:create) }.by(1)
       end
+
+      context 'after_save callback to store_mentions' do
+        let(:labels) { create_pair(:label, project: project) }
+        let(:milestone) { create(:milestone, project: project) }
+        let(:req_opts) { { source_branch: 'feature', target_branch: 'master' } }
+
+        context 'when mentionable attributes change' do
+          let(:opts) { { title: 'Title', description: "Description with #{user.to_reference}" }.merge(req_opts) }
+
+          it 'saves mentions' do
+            expect_next_instance_of(MergeRequest) do |instance|
+              expect(instance).to receive(:store_mentions!).and_call_original
+            end
+            expect(merge_request.user_mentions.count).to eq 1
+          end
+        end
+
+        context 'when mentionable attributes do not change' do
+          let(:opts) { { label_ids: labels.map(&:id), milestone_id: milestone.id }.merge(req_opts) }
+
+          it 'does not call store_mentions' do
+            expect_next_instance_of(MergeRequest) do |instance|
+              expect(instance).not_to receive(:store_mentions!).and_call_original
+            end
+            expect(merge_request.valid?).to be false
+            expect(merge_request.user_mentions.count).to eq 0
+          end
+        end
+
+        context 'when save fails' do
+          let(:opts) { { label_ids: labels.map(&:id), milestone_id: milestone.id } }
+
+          it 'does not call store_mentions' do
+            expect_next_instance_of(MergeRequest) do |instance|
+              expect(instance).not_to receive(:store_mentions!).and_call_original
+            end
+            expect(merge_request.valid?).to be false
+          end
+        end
+      end
     end
 
     it_behaves_like 'new issuable record that supports quick actions' do

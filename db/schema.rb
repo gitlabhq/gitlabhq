@@ -1494,10 +1494,12 @@ ActiveRecord::Schema.define(version: 2020_02_12_052620) do
     t.string "state", default: "available", null: false
     t.string "slug", null: false
     t.datetime_with_timezone "auto_stop_at"
+    t.index ["auto_stop_at"], name: "index_environments_on_auto_stop_at", where: "(auto_stop_at IS NOT NULL)"
     t.index ["name"], name: "index_environments_on_name_varchar_pattern_ops", opclass: :varchar_pattern_ops
     t.index ["project_id", "name"], name: "index_environments_on_project_id_and_name", unique: true
     t.index ["project_id", "slug"], name: "index_environments_on_project_id_and_slug", unique: true
     t.index ["project_id", "state", "environment_type"], name: "index_environments_on_project_id_state_environment_type"
+    t.index ["state", "auto_stop_at"], name: "index_environments_on_state_and_auto_stop_at", where: "((auto_stop_at IS NOT NULL) AND ((state)::text = 'available'::text))"
   end
 
   create_table "epic_issues", id: :serial, force: :cascade do |t|
@@ -2934,6 +2936,19 @@ ActiveRecord::Schema.define(version: 2020_02_12_052620) do
     t.index ["project_id", "token_encrypted"], name: "index_feature_flags_clients_on_project_id_and_token_encrypted", unique: true
   end
 
+  create_table "operations_scopes", force: :cascade do |t|
+    t.bigint "strategy_id", null: false
+    t.string "environment_scope", limit: 255, null: false
+    t.index ["strategy_id", "environment_scope"], name: "index_operations_scopes_on_strategy_id_and_environment_scope", unique: true
+  end
+
+  create_table "operations_strategies", force: :cascade do |t|
+    t.bigint "feature_flag_id", null: false
+    t.string "name", limit: 255, null: false
+    t.jsonb "parameters", default: {}, null: false
+    t.index ["feature_flag_id"], name: "index_operations_strategies_on_feature_flag_id"
+  end
+
   create_table "packages_build_infos", force: :cascade do |t|
     t.integer "package_id", null: false
     t.integer "pipeline_id"
@@ -4169,6 +4184,7 @@ ActiveRecord::Schema.define(version: 2020_02_12_052620) do
     t.boolean "setup_for_company"
     t.boolean "render_whitespace_in_code"
     t.integer "tab_width", limit: 2
+    t.bigint "feature_filter_type"
     t.index ["user_id"], name: "index_user_preferences_on_user_id", unique: true
   end
 
@@ -4867,6 +4883,8 @@ ActiveRecord::Schema.define(version: 2020_02_12_052620) do
   add_foreign_key "operations_feature_flag_scopes", "operations_feature_flags", column: "feature_flag_id", on_delete: :cascade
   add_foreign_key "operations_feature_flags", "projects", on_delete: :cascade
   add_foreign_key "operations_feature_flags_clients", "projects", on_delete: :cascade
+  add_foreign_key "operations_scopes", "operations_strategies", column: "strategy_id", on_delete: :cascade
+  add_foreign_key "operations_strategies", "operations_feature_flags", column: "feature_flag_id", on_delete: :cascade
   add_foreign_key "packages_build_infos", "ci_pipelines", column: "pipeline_id", on_delete: :nullify
   add_foreign_key "packages_build_infos", "packages_packages", column: "package_id", on_delete: :cascade
   add_foreign_key "packages_conan_file_metadata", "packages_package_files", column: "package_file_id", on_delete: :cascade

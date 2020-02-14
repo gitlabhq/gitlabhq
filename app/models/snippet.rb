@@ -41,7 +41,7 @@ class Snippet < ApplicationRecord
   belongs_to :project
 
   has_many :notes, as: :noteable, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :user_mentions, class_name: "SnippetUserMention"
+  has_many :user_mentions, class_name: "SnippetUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_one :snippet_repository, inverse_of: :snippet
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
@@ -65,6 +65,8 @@ class Snippet < ApplicationRecord
             if: :content_changed?
 
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
+
+  after_save :store_mentions!, if: :any_mentionable_attributes_changed?
 
   # Scopes
   scope :are_internal, -> { where(visibility_level: Snippet::INTERNAL) }

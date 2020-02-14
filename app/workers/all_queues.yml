@@ -75,6 +75,12 @@
   :latency_sensitive: 
   :resource_boundary: :unknown
   :weight: 1
+- :name: cronjob:environments_auto_stop_cron
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: 
+  :latency_sensitive: 
+  :resource_boundary: :unknown
+  :weight: 1
 - :name: cronjob:expire_build_artifacts
   :feature_category: :continuous_integration
   :has_external_dependencies: 

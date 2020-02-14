@@ -39,6 +39,7 @@ class Deployment < ApplicationRecord
   scope :for_status, -> (status) { where(status: status) }
 
   scope :visible, -> { where(status: %i[running success failed canceled]) }
+  scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
 
   state_machine :status, initial: :created do
     event :run do

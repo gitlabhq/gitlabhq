@@ -204,7 +204,7 @@ You can save a copy of a GitLab defined dashboard that can be customized and ada
 
 1. Click on the "Duplicate dashboard" in the dashboard dropdown.
 
-   NOTE:**Note:**
+   NOTE: **Note:**
    Only GitLab-defined dashboards can be duplicated.
 
 1. Input the file name and other information, such as a new commit message, and click on "Duplicate".

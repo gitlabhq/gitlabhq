@@ -51,5 +51,20 @@ describe Gitlab::Diff::SuggestionDiff do
         expect(diff_lines[index].to_hash).to include(expected_line)
       end
     end
+
+    describe 'when the suggestion is for the last line of a file' do
+      it 'returns a correct value if there is no newline at the end of the file' do
+        from_content = "One line test"
+        to_content = "Successful test!"
+        suggestion = instance_double(Suggestion, from_line: 1,
+                                                 from_content: from_content,
+                                                 to_content: to_content)
+
+        diff_lines = described_class.new(suggestion).diff_lines
+
+        expect(diff_lines.first.text).to eq("-One line test")
+        expect(diff_lines.last.text).to eq("+Successful test!")
+      end
+    end
   end
 end

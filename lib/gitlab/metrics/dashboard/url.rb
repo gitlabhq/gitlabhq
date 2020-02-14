@@ -7,6 +7,7 @@ module Gitlab
       class Url
         class << self
           include Gitlab::Utils::StrongMemoize
+
           # Matches urls for a metrics dashboard. This could be
           # either the /metrics endpoint or the /metrics_dashboard
           # endpoint.

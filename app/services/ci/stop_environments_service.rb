@@ -16,6 +16,22 @@ module Ci
       merge_request.environments.each { |environment| stop(environment) }
     end
 
+    ##
+    # This method is for stopping multiple environments in a batch style.
+    # The maximum acceptable count of environments is roughly 5000. Please
+    # apply acceptable `LIMIT` clause to the `environments` relation.
+    def self.execute_in_batch(environments)
+      stop_actions = environments.stop_actions.load
+
+      environments.update_all(auto_stop_at: nil, state: 'stopped')
+
+      stop_actions.each do |stop_action|
+        stop_action.play(stop_action.user)
+      rescue => e
+        Gitlab::ErrorTracking.track_error(e, deployable_id: stop_action.id)
+      end
+    end
+
     private
 
     def environments

@@ -24,7 +24,7 @@ module Snippets
       spam_check(snippet, current_user)
 
       snippet_saved = snippet.with_transaction_returning_status do
-        snippet.save && snippet.store_mentions!
+        snippet.save
       end
 
       if snippet_saved

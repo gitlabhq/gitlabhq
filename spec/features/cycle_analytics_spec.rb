@@ -40,9 +40,6 @@ describe 'Value Stream Analytics', :js do
 
     context "when there's value stream analytics data" do
       before do
-        allow_next_instance_of(Gitlab::ReferenceExtractor) do |instance|
-          allow(instance).to receive(:issues).and_return([issue])
-        end
         project.add_maintainer(user)
 
         @build = create_cycle(user, project, issue, mr, milestone, pipeline)
@@ -101,9 +98,6 @@ describe 'Value Stream Analytics', :js do
       project.add_developer(user)
       project.add_guest(guest)
 
-      allow_next_instance_of(Gitlab::ReferenceExtractor) do |instance|
-        allow(instance).to receive(:issues).and_return([issue])
-      end
       create_cycle(user, project, issue, mr, milestone, pipeline)
       deploy_master(user, project)
 

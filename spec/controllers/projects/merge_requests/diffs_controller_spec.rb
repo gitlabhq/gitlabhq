@@ -203,6 +203,41 @@ describe Projects::MergeRequests::DiffsController do
       end
     end
 
+    context 'with diff_head param passed' do
+      before do
+        allow(merge_request).to receive(:diffable_merge_ref?)
+          .and_return(diffable_merge_ref)
+      end
+
+      context 'the merge request can be compared with head' do
+        let(:diffable_merge_ref) { true }
+
+        it 'compares diffs with the head' do
+          MergeRequests::MergeToRefService.new(project, merge_request.author).execute(merge_request)
+
+          expect(CompareService).to receive(:new).with(
+            project, merge_request.merge_ref_head.sha
+          ).and_call_original
+
+          go(diff_head: true)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'the merge request cannot be compared with head' do
+        let(:diffable_merge_ref) { false }
+
+        it 'compares diffs with the base' do
+          expect(CompareService).not_to receive(:new)
+
+          go(diff_head: true)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
     context 'with MR regular diff params' do
       it 'returns success' do
         go

@@ -77,7 +77,7 @@ class MergeRequest < ApplicationRecord
 
   has_many :merge_request_assignees
   has_many :assignees, class_name: "User", through: :merge_request_assignees
-  has_many :user_mentions, class_name: "MergeRequestUserMention"
+  has_many :user_mentions, class_name: "MergeRequestUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :deployment_merge_requests
 
@@ -839,6 +839,10 @@ class MergeRequest < ApplicationRecord
     end
   end
   # rubocop: enable CodeReuse/ServiceClass
+
+  def diffable_merge_ref?
+    Feature.enabled?(:diff_compare_with_head, target_project) && can_be_merged? && merge_ref_head.present?
+  end
 
   # Returns boolean indicating the merge_status should be rechecked in order to
   # switch to either can_be_merged or cannot_be_merged.

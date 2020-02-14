@@ -91,6 +91,7 @@ module Issuable
     validate :description_max_length_for_new_records_is_valid, on: :update
 
     before_validation :truncate_description_on_import!
+    after_save :store_mentions!, if: :any_mentionable_attributes_changed?
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :recent, -> { reorder(id: :desc) }

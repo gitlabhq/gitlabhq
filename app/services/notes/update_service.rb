@@ -10,7 +10,7 @@ module Notes
       note.assign_attributes(params.merge(updated_by: current_user))
 
       note.with_transaction_returning_status do
-        note.save && note.store_mentions!
+        note.save
       end
 
       only_commands = false

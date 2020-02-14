@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::Dashboard::Url do
-  describe '#regex' do
+  describe '#metrics_regex' do
     let(:url) do
       Gitlab::Routing.url_helpers.metrics_namespace_project_environment_url(
         'foo',

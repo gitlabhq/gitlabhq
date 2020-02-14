@@ -86,7 +86,7 @@ RSpec.shared_examples 'a mentionable' do
     end
 
     it 'sends in cached markdown fields when appropriate' do
-      if subject.is_a?(CacheMarkdownField)
+      if subject.is_a?(CacheMarkdownField) && subject.extractors[author].blank?
         expect_next_instance_of(Gitlab::ReferenceExtractor) do |ext|
           attrs = subject.class.mentionable_attrs.collect(&:first) & subject.cached_markdown_fields.markdown_fields
           attrs.each do |field|
@@ -136,7 +136,7 @@ RSpec.shared_examples 'an editable mentionable' do
 
       set_mentionable_text.call('This is a text')
 
-      if subject.is_a?(CacheMarkdownField)
+      if subject.is_a?(CacheMarkdownField) && subject.extractors[author].blank?
         expect_next_instance_of(Gitlab::ReferenceExtractor) do |ext|
           subject.cached_markdown_fields.markdown_fields.each do |field|
             expect(ext).to receive(:analyze).with(subject.send(field), hash_including(rendered: anything))
