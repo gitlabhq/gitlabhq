@@ -1,0 +1,6 @@
+---
+title: Use closest allowed visibility level on group creation when importing groups
+  using Group Import/Export
+merge_request: 25026
+author:
+type: fixed

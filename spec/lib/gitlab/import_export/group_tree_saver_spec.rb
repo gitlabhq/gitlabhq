@@ -80,7 +80,7 @@ describe Gitlab::ImportExport::GroupTreeSaver do
       end
 
       it 'saves the correct json' do
-        expect(saved_group_json).to include({ 'description' => 'description', 'visibility_level' => 20 })
+        expect(saved_group_json).to include({ 'description' => 'description' })
       end
 
       it 'has milestones' do

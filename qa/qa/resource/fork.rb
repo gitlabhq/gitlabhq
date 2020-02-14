@@ -3,19 +3,24 @@
 module QA
   module Resource
     class Fork < Base
+      attribute :name do
+        upstream.name
+      end
+
       attribute :project do
-        Resource::Project.fabricate! do |resource|
-          resource.name = upstream.project.name
-          resource.path_with_namespace = "#{user.name}/#{upstream.project.name}"
+        Resource::Project.fabricate_via_api! do |resource|
+          resource.add_name_uuid = false
+          resource.name = name
+          resource.path_with_namespace = "#{user.username}/#{name}"
         end
       end
 
       attribute :upstream do
-        Repository::ProjectPush.fabricate!
+        Repository::ProjectPush.fabricate!.project
       end
 
       attribute :user do
-        User.fabricate! do |resource|
+        User.fabricate_via_api! do |resource|
           if Runtime::Env.forker?
             resource.username = Runtime::Env.forker_username
             resource.password = Runtime::Env.forker_password
@@ -33,7 +38,7 @@ module QA
           login.sign_in_using_credentials(user: user)
         end
 
-        upstream.project.visit!
+        upstream.visit!
 
         Page::Project::Show.perform(&:fork_project)
 
@@ -46,6 +51,41 @@ module QA
         end
 
         populate(:project)
+      end
+
+      def fabricate_via_api!
+        populate(:upstream, :user)
+
+        Runtime::Logger.debug("Forking project #{upstream.name} to namespace #{user.username}...")
+        super
+        wait_until_forked
+
+        populate(:project)
+      end
+
+      def api_get_path
+        "/projects/#{CGI.escape(path_with_namespace)}"
+      end
+
+      def api_post_path
+        "/projects/#{upstream.id}/fork"
+      end
+
+      def api_post_body
+        {
+          namespace: user.username,
+          name: name,
+          path: name
+        }
+      end
+
+      def wait_until_forked
+        Runtime::Logger.debug("Waiting for the fork process to complete...")
+        forked = wait_until do
+          project.import_status == "finished"
+        end
+
+        raise "Timed out while waiting for the fork process to complete." unless forked
       end
     end
   end

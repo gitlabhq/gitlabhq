@@ -10130,6 +10130,9 @@ msgstr ""
 msgid "IDE|Successful commit"
 msgstr ""
 
+msgid "IDE|This option is disabled because you are not allowed to create merge requests in this project."
+msgstr ""
+
 msgid "IDE|This option is disabled because you don't have write permissions for the current branch."
 msgstr ""
 
@@ -17110,9 +17113,6 @@ msgid "Selective synchronization"
 msgstr ""
 
 msgid "Self monitoring project does not exist"
-msgstr ""
-
-msgid "Self-monitoring is not enabled on this GitLab server, contact your administrator."
 msgstr ""
 
 msgid "Self-monitoring project does not exist. Please check logs for any error messages"

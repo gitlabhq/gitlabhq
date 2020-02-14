@@ -58,6 +58,13 @@ module ApiHelpers
     expect(json_response.map { |item| item['id'] }).to eq(Array(items))
   end
 
+  def expect_response_contain_exactly(*items)
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to be_an Array
+    expect(json_response.length).to eq(items.size)
+    expect(json_response.map { |item| item['id'] }).to contain_exactly(*items)
+  end
+
   def stub_last_activity_update
     allow_any_instance_of(Users::ActivityService).to receive(:execute)
   end

@@ -1,0 +1,8 @@
+query getUserPermissions($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    userPermissions {
+      createMergeRequestIn,
+      readMergeRequest
+    }
+  }
+}

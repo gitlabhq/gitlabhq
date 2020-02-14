@@ -1,6 +1,18 @@
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import Api from '~/api';
+import getUserPermissions from '../queries/getUserPermissions.query.graphql';
+import gqClient from './gql';
+
+const fetchApiProjectData = projectPath => Api.project(projectPath).then(({ data }) => data);
+
+const fetchGqlProjectData = projectPath =>
+  gqClient
+    .query({
+      query: getUserPermissions,
+      variables: { projectPath },
+    })
+    .then(({ data }) => data.project);
 
 export default {
   getFileData(endpoint) {
@@ -47,7 +59,16 @@ export default {
       .then(({ data }) => data);
   },
   getProjectData(namespace, project) {
-    return Api.project(`${namespace}/${project}`);
+    const projectPath = `${namespace}/${project}`;
+
+    return Promise.all([fetchApiProjectData(projectPath), fetchGqlProjectData(projectPath)]).then(
+      ([apiProjectData, gqlProjectData]) => ({
+        data: {
+          ...apiProjectData,
+          ...gqlProjectData,
+        },
+      }),
+    );
   },
   getProjectMergeRequests(projectId, params = {}) {
     return Api.projectMergeRequests(projectId, params);

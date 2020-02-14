@@ -70,7 +70,7 @@ export default {
       :title="$options.currentBranchPermissionsTooltip"
     >
       <span
-        class="ide-radio-label"
+        class="ide-option-label"
         data-qa-selector="commit_to_current_branch_radio"
         v-html="commitToCurrentBranchText"
       ></span>

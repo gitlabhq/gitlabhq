@@ -1,0 +1,5 @@
+---
+title: When a namespace GitLab Subscription expires, disable SSO enforcement
+merge_request: 21135
+author:
+type: fixed

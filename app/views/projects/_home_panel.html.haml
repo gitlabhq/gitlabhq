@@ -10,7 +10,7 @@
         = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s64', width: 64, height: 64)
       .d-flex.flex-column.flex-wrap.align-items-baseline
         .d-inline-flex.align-items-baseline
-          %h1.home-panel-title.prepend-top-8.append-bottom-5.qa-project-name
+          %h1.home-panel-title.prepend-top-8.append-bottom-5{ data: { qa_selector: 'project_name_content' } }
             = @project.name
             %span.visibility-icon.text-secondary.prepend-left-4.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
               = visibility_level_icon(@project.visibility_level, fw: false, options: {class: 'icon'})
@@ -70,7 +70,7 @@
         - source = visible_fork_source(@project)
         - if source
           #{ s_('ForkedFromProjectPath|Forked from') }
-          = link_to source.full_name, project_path(source)
+          = link_to source.full_name, project_path(source), data: { qa_selector: 'forked_from_link' }
         - else
           = s_('ForkedFromProjectPath|Forked from an inaccessible project')
 

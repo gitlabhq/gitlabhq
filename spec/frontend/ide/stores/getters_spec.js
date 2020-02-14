@@ -2,6 +2,8 @@ import * as getters from '~/ide/stores/getters';
 import { createStore } from '~/ide/stores';
 import { file } from '../helpers';
 
+const TEST_PROJECT_ID = 'test_project';
+
 describe('IDE store getters', () => {
   let localState;
   let localStore;
@@ -397,5 +399,39 @@ describe('IDE store getters', () => {
         expect(localStore.getters.getDiffInfo(entry.path)).toEqual(expect.objectContaining(output));
       },
     );
+  });
+
+  describe('findProjectPermissions', () => {
+    it('returns false if project not found', () => {
+      expect(localStore.getters.findProjectPermissions(TEST_PROJECT_ID)).toEqual({});
+    });
+
+    it('finds permission in given project', () => {
+      const userPermissions = {
+        readMergeRequest: true,
+        createMergeRequestsIn: false,
+      };
+
+      localState.projects[TEST_PROJECT_ID] = { userPermissions };
+
+      expect(localStore.getters.findProjectPermissions(TEST_PROJECT_ID)).toBe(userPermissions);
+    });
+  });
+
+  describe.each`
+    getterName                  | permissionKey
+    ${'canReadMergeRequests'}   | ${'readMergeRequest'}
+    ${'canCreateMergeRequests'} | ${'createMergeRequestIn'}
+  `('$getterName', ({ getterName, permissionKey }) => {
+    it.each([true, false])('finds permission for current project (%s)', val => {
+      localState.projects[TEST_PROJECT_ID] = {
+        userPermissions: {
+          [permissionKey]: val,
+        },
+      };
+      localState.currentProjectId = TEST_PROJECT_ID;
+
+      expect(localStore.getters[getterName]).toBe(val);
+    });
   });
 });

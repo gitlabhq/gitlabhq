@@ -5,13 +5,23 @@ module API
     MAXIMUM_FILE_SIZE = 50.megabytes.freeze
 
     helpers do
-      def authorize_create_group!
-        parent_group = find_group!(params[:parent_id]) if params[:parent_id].present?
+      def parent_group
+        find_group!(params[:parent_id]) if params[:parent_id].present?
+      end
 
+      def authorize_create_group!
         if parent_group
           authorize! :create_subgroup, parent_group
         else
           authorize! :create_group
+        end
+      end
+
+      def closest_allowed_visibility_level
+        if parent_group
+          Gitlab::VisibilityLevel.closest_allowed_level(parent_group.visibility_level)
+        else
+          Gitlab::VisibilityLevel::PRIVATE
         end
       end
     end
@@ -59,6 +69,7 @@ module API
           path: params[:path],
           name: params[:name],
           parent_id: params[:parent_id],
+          visibility_level: closest_allowed_visibility_level,
           import_export_upload: ImportExportUpload.new(import_file: uploaded_file)
         }
 

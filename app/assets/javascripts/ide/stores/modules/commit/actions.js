@@ -158,7 +158,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
             commit(rootTypes.SET_LAST_COMMIT_MSG, '', { root: true });
           }, 5000);
 
-          if (state.shouldCreateMR) {
+          if (getters.shouldCreateMR) {
             const { currentProject } = rootGetters;
             const targetBranch = getters.isCreatingNewBranch
               ? rootState.currentBranchId

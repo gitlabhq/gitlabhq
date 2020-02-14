@@ -45,6 +45,14 @@ describe API::GroupImport do
           expect(response).to have_gitlab_http_status(202)
         end
 
+        it 'creates private group' do
+          expect { subject }.to change { Group.count }.by(1)
+
+          group = Group.find_by(name: 'test-import-group')
+
+          expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+        end
+
         context 'when importing to a parent group' do
           before do
             group.add_owner(user)
@@ -57,6 +65,34 @@ describe API::GroupImport do
 
             expect(response).to have_gitlab_http_status(202)
             expect(group.children.count).to eq(1)
+          end
+
+          context 'when parent group is private or internal' do
+            let(:public_parent_group) { create(:group, :public) }
+            let(:internal_parent_group) { create(:group, :internal) }
+
+            before do
+              public_parent_group.add_owner(user)
+              internal_parent_group.add_owner(user)
+            end
+
+            it 'imports public group' do
+              params[:parent_id] = public_parent_group.id
+
+              subject
+
+              expect(response).to have_gitlab_http_status(202)
+              expect(public_parent_group.children.first.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+            end
+
+            it 'imports internal group' do
+              params[:parent_id] = internal_parent_group.id
+
+              subject
+
+              expect(response).to have_gitlab_http_status(202)
+              expect(internal_parent_group.children.first.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+            end
           end
 
           context 'when parent group is invalid' do

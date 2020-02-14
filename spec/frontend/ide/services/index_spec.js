@@ -2,11 +2,17 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import services from '~/ide/services';
 import Api from '~/api';
+import gqClient from '~/ide/services/gql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
+import getUserPermissions from '~/ide/queries/getUserPermissions.query.graphql';
+import { projectData } from '../mock_data';
 
 jest.mock('~/api');
+jest.mock('~/ide/services/gql');
 
-const TEST_PROJECT_ID = 'alice/wonderland';
+const TEST_NAMESPACE = 'alice';
+const TEST_PROJECT = 'wonderland';
+const TEST_PROJECT_ID = `${TEST_NAMESPACE}/${TEST_PROJECT}`;
 const TEST_BRANCH = 'master-patch-123';
 const TEST_COMMIT_SHA = '123456789';
 const TEST_FILE_PATH = 'README2.md';
@@ -110,5 +116,28 @@ describe('IDE services', () => {
           }));
       },
     );
+  });
+
+  describe('getProjectData', () => {
+    it('combines gql and API requests', () => {
+      const gqlProjectData = {
+        userPermissions: {
+          bogus: true,
+        },
+      };
+      Api.project.mockReturnValue(Promise.resolve({ data: { ...projectData } }));
+      gqClient.query.mockReturnValue(Promise.resolve({ data: { project: gqlProjectData } }));
+
+      return services.getProjectData(TEST_NAMESPACE, TEST_PROJECT).then(response => {
+        expect(response).toEqual({ data: { ...projectData, ...gqlProjectData } });
+        expect(Api.project).toHaveBeenCalledWith(TEST_PROJECT_ID);
+        expect(gqClient.query).toHaveBeenCalledWith({
+          query: getUserPermissions,
+          variables: {
+            projectPath: TEST_PROJECT_ID,
+          },
+        });
+      });
+    });
   });
 });

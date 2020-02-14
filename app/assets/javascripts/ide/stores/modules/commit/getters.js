@@ -54,5 +54,11 @@ export const shouldHideNewMrOption = (_state, getters, _rootState, rootGetters) 
     (!rootGetters.hasMergeRequest && rootGetters.isOnDefaultBranch)) &&
   rootGetters.canPushToBranch;
 
+export const shouldDisableNewMrOption = (state, getters, rootState, rootGetters) =>
+  !rootGetters.canCreateMergeRequests;
+
+export const shouldCreateMR = (state, getters) =>
+  state.shouldCreateMR && !getters.shouldDisableNewMrOption;
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

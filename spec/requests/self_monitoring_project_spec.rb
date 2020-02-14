@@ -17,11 +17,7 @@ describe 'Self-Monitoring project requests' do
         login_as(admin)
       end
 
-      context 'with feature flag disabled' do
-        it_behaves_like 'not accessible if feature flag is disabled'
-      end
-
-      context 'with feature flag enabled' do
+      context 'when the self monitoring project is created' do
         let(:status_api) { status_create_self_monitoring_project_admin_application_settings_path }
 
         it_behaves_like 'triggers async worker, returns sidekiq job_id with response accepted'
@@ -45,11 +41,7 @@ describe 'Self-Monitoring project requests' do
         login_as(admin)
       end
 
-      context 'with feature flag disabled' do
-        it_behaves_like 'not accessible if feature flag is disabled'
-      end
-
-      context 'with feature flag enabled' do
+      context 'when the self monitoring project is being created' do
         it_behaves_like 'handles invalid job_id'
 
         context 'when job is in progress' do
@@ -129,11 +121,7 @@ describe 'Self-Monitoring project requests' do
         login_as(admin)
       end
 
-      context 'with feature flag disabled' do
-        it_behaves_like 'not accessible if feature flag is disabled'
-      end
-
-      context 'with feature flag enabled' do
+      context 'when the self monitoring project is deleted' do
         let(:status_api) { status_delete_self_monitoring_project_admin_application_settings_path }
 
         it_behaves_like 'triggers async worker, returns sidekiq job_id with response accepted'
@@ -157,11 +145,7 @@ describe 'Self-Monitoring project requests' do
         login_as(admin)
       end
 
-      context 'with feature flag disabled' do
-        it_behaves_like 'not accessible if feature flag is disabled'
-      end
-
-      context 'with feature flag enabled' do
+      context 'when the self monitoring project is being deleted' do
         it_behaves_like 'handles invalid job_id'
 
         context 'when job is in progress' do

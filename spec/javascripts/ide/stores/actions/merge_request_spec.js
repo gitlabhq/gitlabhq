@@ -8,7 +8,7 @@ import actions, {
   openMergeRequest,
 } from '~/ide/stores/actions/merge_request';
 import service from '~/ide/services';
-import { activityBarViews } from '~/ide/constants';
+import { activityBarViews, PERMISSION_READ_MR } from '~/ide/constants';
 import { resetStore } from '../../helpers';
 
 const TEST_PROJECT = 'abcproject';
@@ -23,6 +23,9 @@ describe('IDE store merge request actions', () => {
     store.state.projects[TEST_PROJECT] = {
       id: TEST_PROJECT_ID,
       mergeRequests: {},
+      userPermissions: {
+        [PERMISSION_READ_MR]: true,
+      },
     };
   });
 
@@ -77,6 +80,19 @@ describe('IDE store merge request actions', () => {
               expect(store.state.currentMergeRequestId).toEqual('2');
               done();
             })
+            .catch(done.fail);
+        });
+
+        it('does nothing if user cannot read MRs', done => {
+          store.state.projects[TEST_PROJECT].userPermissions[PERMISSION_READ_MR] = false;
+
+          store
+            .dispatch('getMergeRequestsForBranch', { projectId: TEST_PROJECT, branchId: 'bar' })
+            .then(() => {
+              expect(service.getProjectMergeRequests).not.toHaveBeenCalled();
+              expect(store.state.currentMergeRequestId).toBe('');
+            })
+            .then(done)
             .catch(done.fail);
         });
       });

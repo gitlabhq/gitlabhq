@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import { mapGetters } from 'vuex';
 import NavForm from './nav_form.vue';
 import NavDropdownButton from './nav_dropdown_button.vue';
 
@@ -12,6 +13,9 @@ export default {
     return {
       isVisibleDropdown: false,
     };
+  },
+  computed: {
+    ...mapGetters(['canReadMergeRequests']),
   },
   mounted() {
     this.addDropdownListeners();
@@ -42,7 +46,9 @@ export default {
 
 <template>
   <div ref="dropdown" class="btn-group ide-nav-dropdown dropdown">
-    <nav-dropdown-button />
-    <div class="dropdown-menu dropdown-menu-left p-0"><nav-form v-if="isVisibleDropdown" /></div>
+    <nav-dropdown-button :show-merge-requests="canReadMergeRequests" />
+    <div class="dropdown-menu dropdown-menu-left p-0">
+      <nav-form v-if="isVisibleDropdown" :show-merge-requests="canReadMergeRequests" />
+    </div>
   </div>
 </template>

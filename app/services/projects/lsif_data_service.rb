@@ -3,7 +3,7 @@
 module Projects
   class LsifDataService
     attr_reader :file, :project, :path, :commit_id,
-      :docs, :doc_ranges, :ranges, :def_refs
+      :docs, :doc_ranges, :ranges, :def_refs, :hover_refs
 
     CACHE_EXPIRE_IN = 1.hour
 
@@ -26,7 +26,8 @@ module Projects
           end_line: line_data.last,
           start_char: column_data.first,
           end_char: column_data.last,
-          definition_url: definition_url_for(def_refs[ref_id])
+          definition_url: definition_url_for(def_refs[ref_id]),
+          hover: highlighted_hover(hover_refs[ref_id])
         }
       end
     end
@@ -54,6 +55,7 @@ module Projects
       @doc_ranges = data['doc_ranges']
       @ranges = data['ranges']
       @def_refs = data['def_refs']
+      @hover_refs = data['hover_refs']
     end
 
     def doc_id
@@ -85,6 +87,17 @@ module Projects
       definition_ref_path = [commit_id, localized_doc_url].join('/')
 
       Gitlab::Routing.url_helpers.project_blob_path(project, definition_ref_path, anchor: line_anchor)
+    end
+
+    def highlighted_hover(hovers)
+      hovers&.map do |hover|
+        # Documentation for a method which is added as comments on top of the method
+        # is stored as a raw string value in LSIF file
+        next { value: hover } unless hover.is_a?(Hash)
+
+        value = Gitlab::Highlight.highlight(nil, hover['value'], language: hover['language'])
+        { language: hover['language'], value: value }
+      end
     end
   end
 end

@@ -11,16 +11,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   before_action :set_application_setting
 
   before_action :whitelist_query_limiting, only: [:usage_data]
-  before_action :validate_self_monitoring_feature_flag_enabled, only: [
-    :create_self_monitoring_project,
-    :status_create_self_monitoring_project,
-    :delete_self_monitoring_project,
-    :status_delete_self_monitoring_project
-  ]
-
-  before_action do
-    push_frontend_feature_flag(:self_monitoring_project)
-  end
 
   VALID_SETTING_PANELS = %w(general integrations repository
                             ci_cd reporting metrics_and_profiling
@@ -163,25 +153,11 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   private
 
-  def validate_self_monitoring_feature_flag_enabled
-    self_monitoring_project_not_implemented unless Feature.enabled?(:self_monitoring_project)
-  end
-
   def self_monitoring_data
     {
       project_id: @application_setting.self_monitoring_project_id,
       project_full_path: @application_setting.self_monitoring_project&.full_path
     }
-  end
-
-  def self_monitoring_project_not_implemented
-    render(
-      status: :not_implemented,
-      json: {
-        message: _('Self-monitoring is not enabled on this GitLab server, contact your administrator.'),
-        documentation_url: help_page_path('administration/monitoring/gitlab_self_monitoring_project/index')
-      }
-    )
   end
 
   def set_application_setting

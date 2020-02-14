@@ -8,7 +8,7 @@ module QA
       attr_accessor :fork_branch
 
       attribute :fork do
-        Fork.fabricate!
+        Fork.fabricate_via_browser_ui!
       end
 
       attribute :push do

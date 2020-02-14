@@ -37,6 +37,7 @@ excluded_attributes:
     - :runners_token
     - :runners_token_encrypted
     - :saml_discovery_token
+    - :visibility_level
 
 methods:
   labels:

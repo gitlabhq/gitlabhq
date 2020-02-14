@@ -7,6 +7,14 @@ module QA
         include Page::Component::ClonePanel
         include Page::Project::SubMenus::Settings
 
+        view 'app/assets/javascripts/repository/components/table/row.vue' do
+          element :file_name_link
+        end
+
+        view 'app/assets/javascripts/repository/components/table/index.vue' do
+          element :file_tree_table
+        end
+
         view 'app/views/layouts/header/_new_dropdown.haml' do
           element :new_menu_toggle
           element :new_issue_link, "link_to _('New issue'), new_project_issue_path(@project)" # rubocop:disable QA/ElementWithPattern
@@ -17,7 +25,8 @@ module QA
         end
 
         view 'app/views/projects/_home_panel.html.haml' do
-          element :project_name
+          element :forked_from_link
+          element :project_name_content
         end
 
         view 'app/views/projects/_files.html.haml' do
@@ -35,10 +44,6 @@ module QA
 
         view 'app/views/projects/empty.html.haml' do
           element :quick_actions
-        end
-
-        view 'app/views/projects/tree/_tree_content.html.haml' do
-          element :file_tree
         end
 
         view 'app/views/projects/tree/_tree_header.html.haml' do
@@ -79,14 +84,18 @@ module QA
           click_on 'Fork'
         end
 
+        def forked_from?(parent_project_name)
+          has_element?(:forked_from_link, text: parent_project_name)
+        end
+
         def click_file(filename)
-          within_element(:file_tree) do
+          within_element(:file_tree_table) do
             click_on filename
           end
         end
 
         def click_commit(commit_msg)
-          within_element(:file_tree) do
+          within_element(:file_tree_table) do
             click_on commit_msg
           end
         end
@@ -94,6 +103,16 @@ module QA
         def go_to_new_issue
           click_element :new_menu_toggle
           click_link 'New issue'
+        end
+
+        def has_file?(name)
+          within_element(:file_tree_table) do
+            has_element?(:file_name_link, text: name)
+          end
+        end
+
+        def has_name?(name)
+          has_element?(:project_name_content, text: name)
         end
 
         def last_commit_content
@@ -113,7 +132,7 @@ module QA
         end
 
         def project_name
-          find('.qa-project-name').text
+          find_element(:project_name_content).text
         end
 
         def switch_to_branch(branch_name)

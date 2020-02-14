@@ -67,7 +67,7 @@ export default {
         @change="updateCommitAction($event.target.value)"
       />
       <span class="prepend-left-10">
-        <span v-if="label" class="ide-radio-label"> {{ label }} </span> <slot v-else></slot>
+        <span v-if="label" class="ide-option-label"> {{ label }} </span> <slot v-else></slot>
       </span>
     </label>
     <div v-if="commitAction === value && showInput" class="ide-commit-new-branch">

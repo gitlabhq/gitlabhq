@@ -139,7 +139,13 @@ export default {
         class="d-inline-block align-text-bottom fa-fw"
       />
       <i v-else :aria-label="type" role="img" :class="iconName" class="fa fa-fw"></i>
-      <component :is="linkComponent" :to="routerLinkTo" :href="url" class="str-truncated">
+      <component
+        :is="linkComponent"
+        :to="routerLinkTo"
+        :href="url"
+        class="str-truncated"
+        data-qa-selector="file_name_link"
+      >
         {{ fullPath }}
       </component>
       <!-- eslint-disable-next-line @gitlab/vue-i18n/no-bare-strings -->

@@ -8,10 +8,12 @@ module QA
     module ApiFabricator
       include Capybara::DSL
 
-      ResourceNotFoundError = Class.new(RuntimeError)
       ResourceFabricationFailedError = Class.new(RuntimeError)
-      ResourceURLMissingError = Class.new(RuntimeError)
       ResourceNotDeletedError = Class.new(RuntimeError)
+      ResourceNotFoundError = Class.new(RuntimeError)
+      ResourceQueryError = Class.new(RuntimeError)
+      ResourceUpdateFailedError = Class.new(RuntimeError)
+      ResourceURLMissingError = Class.new(RuntimeError)
 
       attr_reader :api_resource, :api_response
       attr_writer :api_client

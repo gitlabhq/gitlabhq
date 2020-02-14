@@ -267,8 +267,7 @@ describe API::MergeRequests do
         it 'returns an array of merge requests with any label when filtering by any label' do
           get api(endpoint_path, user), params: { labels: [" #{label.title} ", " #{label2.title} "] }
 
-          expect_successful_response_with_paginated_array
-          expect(json_response.length).to eq(1)
+          expect_paginated_array_response([merge_request.id])
           expect(json_response.first['labels']).to eq([label2.title, label.title])
           expect(json_response.first['id']).to eq(merge_request.id)
         end
@@ -276,8 +275,7 @@ describe API::MergeRequests do
         it 'returns an array of merge requests with any label when filtering by any label' do
           get api(endpoint_path, user), params: { labels: ["#{label.title} , #{label2.title}"] }
 
-          expect_successful_response_with_paginated_array
-          expect(json_response.length).to eq(1)
+          expect_paginated_array_response([merge_request.id])
           expect(json_response.first['labels']).to eq([label2.title, label.title])
           expect(json_response.first['id']).to eq(merge_request.id)
         end
@@ -285,17 +283,16 @@ describe API::MergeRequests do
         it 'returns an array of merge requests with any label when filtering by any label' do
           get api(endpoint_path, user), params: { labels: IssuesFinder::FILTER_ANY }
 
-          expect_successful_response_with_paginated_array
-          expect(json_response.length).to eq(1)
+          expect_paginated_array_response([merge_request.id])
           expect(json_response.first['id']).to eq(merge_request.id)
         end
 
         it 'returns an array of merge requests without a label when filtering by no label' do
           get api(endpoint_path, user), params: { labels: IssuesFinder::FILTER_NONE }
 
-          expect_paginated_array_response([
+          expect_response_contain_exactly(
             merge_request_merged.id, merge_request_locked.id, merge_request_closed.id
-          ])
+          )
         end
       end
 
@@ -315,7 +312,7 @@ describe API::MergeRequests do
 
         get api(path, user)
 
-        expect_paginated_array_response([mr2.id])
+        expect_response_contain_exactly(mr2.id)
       end
 
       context 'with ordering' do
@@ -413,9 +410,9 @@ describe API::MergeRequests do
         it 'returns merge requests with the given source branch' do
           get api(endpoint_path, user), params: { source_branch: merge_request_closed.source_branch, state: 'all' }
 
-          expect_paginated_array_response([
+          expect_response_contain_exactly(
             merge_request_merged.id, merge_request_locked.id, merge_request_closed.id
-          ])
+          )
         end
       end
 
@@ -423,9 +420,9 @@ describe API::MergeRequests do
         it 'returns merge requests with the given target branch' do
           get api(endpoint_path, user), params: { target_branch: merge_request_closed.target_branch, state: 'all' }
 
-          expect_paginated_array_response([
+          expect_response_contain_exactly(
             merge_request_merged.id, merge_request_locked.id, merge_request_closed.id
-          ])
+          )
         end
       end
     end
@@ -448,10 +445,10 @@ describe API::MergeRequests do
       it 'returns an array of all merge requests' do
         get api('/merge_requests', user), params: { scope: 'all' }
 
-        expect_paginated_array_response([
+        expect_response_contain_exactly(
           merge_request_merged.id, merge_request_locked.id,
           merge_request_closed.id, merge_request.id
-        ])
+        )
       end
 
       it "returns authentication error without any scope" do
@@ -487,9 +484,10 @@ describe API::MergeRequests do
       it 'returns an array of all merge requests except unauthorized ones' do
         get api('/merge_requests', user), params: { scope: :all }
 
-        expect_paginated_array_response([
-          merge_request_merged.id, merge_request2.id, merge_request_locked.id, merge_request_closed.id, merge_request.id
-        ])
+        expect_response_contain_exactly(
+          merge_request_merged.id, merge_request2.id, merge_request_locked.id,
+          merge_request_closed.id, merge_request.id
+        )
       end
 
       it "returns an array of no merge_requests when wip=yes" do
@@ -501,9 +499,10 @@ describe API::MergeRequests do
       it "returns an array of no merge_requests when wip=no" do
         get api("/merge_requests", user), params: { wip: 'no' }
 
-        expect_paginated_array_response([
-          merge_request_merged.id, merge_request2.id, merge_request_locked.id, merge_request_closed.id, merge_request.id
-        ])
+        expect_response_contain_exactly(
+          merge_request_merged.id, merge_request2.id, merge_request_locked.id,
+          merge_request_closed.id, merge_request.id
+        )
       end
 
       it 'does not return unauthorized merge requests' do
@@ -512,9 +511,10 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user), params: { scope: :all }
 
-        expect_paginated_array_response([
-          merge_request_merged.id, merge_request2.id, merge_request_locked.id, merge_request_closed.id, merge_request.id
-        ])
+        expect_response_contain_exactly(
+          merge_request_merged.id, merge_request2.id, merge_request_locked.id,
+          merge_request_closed.id, merge_request.id
+        )
         expect(json_response.map { |mr| mr['id'] }).not_to include(merge_request3.id)
       end
 
@@ -523,7 +523,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user2)
 
-        expect_paginated_array_response([merge_request3.id])
+        expect_response_contain_exactly(merge_request3.id)
       end
 
       it 'returns an array of merge requests authored by the given user' do
@@ -531,7 +531,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user), params: { author_id: user2.id, scope: :all }
 
-        expect_paginated_array_response([merge_request3.id])
+        expect_response_contain_exactly(merge_request3.id)
       end
 
       it 'returns an array of merge requests assigned to the given user' do
@@ -539,7 +539,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user), params: { assignee_id: user2.id, scope: :all }
 
-        expect_paginated_array_response([merge_request3.id])
+        expect_response_contain_exactly(merge_request3.id)
       end
 
       it 'returns an array of merge requests with no assignee' do
@@ -547,7 +547,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user), params: { assignee_id: 'None', scope: :all }
 
-        expect_paginated_array_response([merge_request3.id])
+        expect_response_contain_exactly(merge_request3.id)
       end
 
       it 'returns an array of merge requests with any assignee' do
@@ -556,10 +556,10 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user), params: { assignee_id: 'Any', scope: :all }
 
-        expect_paginated_array_response([
+        expect_response_contain_exactly(
           merge_request_merged.id, merge_request2.id, merge_request_locked.id,
           merge_request_closed.id, merge_request.id
-        ])
+        )
       end
 
       it 'returns an array of merge requests assigned to me' do
@@ -567,7 +567,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user2), params: { scope: 'assigned_to_me' }
 
-        expect_paginated_array_response([merge_request3.id])
+        expect_response_contain_exactly(merge_request3.id)
       end
 
       it 'returns an array of merge requests assigned to me (kebab-case)' do
@@ -575,7 +575,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user2), params: { scope: 'assigned-to-me' }
 
-        expect_paginated_array_response([merge_request3.id])
+        expect_response_contain_exactly(merge_request3.id)
       end
 
       it 'returns an array of merge requests created by me' do
@@ -583,7 +583,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user2), params: { scope: 'created_by_me' }
 
-        expect_paginated_array_response([merge_request3.id])
+        expect_response_contain_exactly(merge_request3.id)
       end
 
       it 'returns an array of merge requests created by me (kebab-case)' do
@@ -591,7 +591,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user2), params: { scope: 'created-by-me' }
 
-        expect_paginated_array_response([merge_request3.id])
+        expect_response_contain_exactly(merge_request3.id)
       end
 
       it 'returns merge requests reacted by the authenticated user by the given emoji' do
@@ -600,16 +600,16 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user2), params: { my_reaction_emoji: award_emoji.name, scope: 'all' }
 
-        expect_paginated_array_response([merge_request3.id])
+        expect_response_contain_exactly(merge_request3.id)
       end
 
       context 'source_branch param' do
         it 'returns merge requests with the given source branch' do
           get api('/merge_requests', user), params: { source_branch: merge_request_closed.source_branch, state: 'all' }
 
-          expect_paginated_array_response([
+          expect_response_contain_exactly(
             merge_request_merged.id, merge_request_locked.id, merge_request_closed.id
-          ])
+          )
         end
       end
 
@@ -617,9 +617,9 @@ describe API::MergeRequests do
         it 'returns merge requests with the given target branch' do
           get api('/merge_requests', user), params: { target_branch: merge_request_closed.target_branch, state: 'all' }
 
-          expect_paginated_array_response([
+          expect_response_contain_exactly(
             merge_request_merged.id, merge_request_locked.id, merge_request_closed.id
-          ])
+          )
         end
       end
 
@@ -628,7 +628,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests?created_before=2000-01-02T00:00:00.060Z', user)
 
-        expect_paginated_array_response([merge_request2.id])
+        expect_response_contain_exactly(merge_request2.id)
       end
 
       it 'returns merge requests created after a specific date' do
@@ -636,7 +636,7 @@ describe API::MergeRequests do
 
         get api("/merge_requests?created_after=#{merge_request2.created_at}", user)
 
-        expect_paginated_array_response([merge_request2.id])
+        expect_response_contain_exactly(merge_request2.id)
       end
 
       it 'returns merge requests updated before a specific date' do
@@ -644,7 +644,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests?updated_before=2000-01-02T00:00:00.060Z', user)
 
-        expect_paginated_array_response([merge_request2.id])
+        expect_response_contain_exactly(merge_request2.id)
       end
 
       it 'returns merge requests updated after a specific date' do
@@ -652,7 +652,7 @@ describe API::MergeRequests do
 
         get api("/merge_requests?updated_after=#{merge_request2.updated_at}", user)
 
-        expect_paginated_array_response([merge_request2.id])
+        expect_response_contain_exactly(merge_request2.id)
       end
 
       context 'search params' do
@@ -663,13 +663,13 @@ describe API::MergeRequests do
         it 'returns merge requests matching given search string for title' do
           get api("/merge_requests", user), params: { search: merge_request.title }
 
-          expect_paginated_array_response([merge_request.id])
+          expect_response_contain_exactly(merge_request.id)
         end
 
         it 'returns merge requests matching given search string for title and scoped in title' do
           get api("/merge_requests", user), params: { search: merge_request.title, in: 'title' }
 
-          expect_paginated_array_response([merge_request.id])
+          expect_response_contain_exactly(merge_request.id)
         end
 
         it 'returns an empty array if no merge request matches given search string for description and scoped in title' do
@@ -681,7 +681,7 @@ describe API::MergeRequests do
         it 'returns merge requests for project matching given search string for description' do
           get api("/merge_requests", user), params: { project_id: project.id, search: merge_request.description }
 
-          expect_paginated_array_response([merge_request.id])
+          expect_response_contain_exactly(merge_request.id)
         end
       end
 
@@ -689,7 +689,7 @@ describe API::MergeRequests do
         it 'returns merge requests with the given state' do
           get api('/merge_requests', user), params: { state: 'locked' }
 
-          expect_paginated_array_response([merge_request_locked.id])
+          expect_response_contain_exactly(merge_request_locked.id)
         end
       end
     end
@@ -792,10 +792,10 @@ describe API::MergeRequests do
       it 'returns an array excluding merge_requests from archived projects' do
         get api(endpoint_path, user)
 
-        expect_paginated_array_response([
+        expect_response_contain_exactly(
           merge_request_merged.id, merge_request_locked.id,
           merge_request_closed.id, merge_request.id
-        ])
+        )
       end
 
       context 'with non_archived param set as false' do
@@ -804,10 +804,10 @@ describe API::MergeRequests do
 
           get api(path, user)
 
-          expect_paginated_array_response([
+          expect_response_contain_exactly(
             merge_request_merged.id, merge_request_archived.id, merge_request_locked.id,
             merge_request_closed.id, merge_request.id
-          ])
+          )
         end
       end
     end

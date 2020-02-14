@@ -199,50 +199,6 @@ module API
         end.compact
       end
     end
-
-    class UserAgentDetail < Grape::Entity
-      expose :user_agent
-      expose :ip_address
-      expose :submitted, as: :akismet_submitted
-    end
-
-    class CustomAttribute < Grape::Entity
-      expose :key
-      expose :value
-    end
-
-    class PagesDomainCertificateExpiration < Grape::Entity
-      expose :expired?, as: :expired
-      expose :expiration
-    end
-
-    class Application < Grape::Entity
-      expose :id
-      expose :uid, as: :application_id
-      expose :name, as: :application_name
-      expose :redirect_uri, as: :callback_url
-      expose :confidential
-    end
-
-    # Use with care, this exposes the secret
-    class ApplicationWithSecret < Application
-      expose :secret
-    end
-
-    class Blob < Grape::Entity
-      expose :basename
-      expose :data
-      expose :path
-      # TODO: :filename was renamed to :path but both still return the full path,
-      # in the future we can only return the filename here without the leading
-      # directory path.
-      # https://gitlab.com/gitlab-org/gitlab/issues/34521
-      expose :filename, &:path
-      expose :id
-      expose :ref
-      expose :startline
-      expose :project_id
-    end
   end
 end
 

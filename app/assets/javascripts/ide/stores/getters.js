@@ -1,5 +1,10 @@
 import { getChangesCountForFiles, filePathMatches } from './utils';
-import { activityBarViews, packageJsonPath } from '../constants';
+import {
+  activityBarViews,
+  packageJsonPath,
+  PERMISSION_READ_MR,
+  PERMISSION_CREATE_MR,
+} from '../constants';
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
@@ -140,6 +145,15 @@ export const getDiffInfo = (state, getters) => path => {
     tempFile,
   };
 };
+
+export const findProjectPermissions = (state, getters) => projectId =>
+  getters.findProject(projectId)?.userPermissions || {};
+
+export const canReadMergeRequests = (state, getters) =>
+  Boolean(getters.findProjectPermissions(state.currentProjectId)[PERMISSION_READ_MR]);
+
+export const canCreateMergeRequests = (state, getters) =>
+  Boolean(getters.findProjectPermissions(state.currentProjectId)[PERMISSION_CREATE_MR]);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

@@ -8,6 +8,9 @@ export const MAX_BODY_LENGTH = 72;
 export const FILE_VIEW_MODE_EDITOR = 'editor';
 export const FILE_VIEW_MODE_PREVIEW = 'preview';
 
+export const PERMISSION_CREATE_MR = 'createMergeRequestIn';
+export const PERMISSION_READ_MR = 'readMergeRequest';
+
 export const activityBarViews = {
   edit: 'ide-tree',
   commit: 'commit-section',

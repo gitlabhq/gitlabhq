@@ -72,6 +72,7 @@ projects:
   effects if the package is included multiple times.
 - Use `go fmt` before committing ([Gofmt](https://golang.org/cmd/gofmt/) is a
   tool that automatically formats Go source code).
+- Place private methods below the first caller method in the source file.
 
 ### Automatic linting
 

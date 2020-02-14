@@ -125,4 +125,31 @@ describe Gitlab::ImportExport::GroupTreeRestorer do
       end
     end
   end
+
+  context 'group visibility levels' do
+    let(:user) { create(:user) }
+    let(:shared) { Gitlab::ImportExport::Shared.new(group) }
+    let(:group_tree_restorer) { described_class.new(user: user, shared: shared, group: group, group_hash: nil) }
+
+    before do
+      setup_import_export_config(filepath)
+
+      group_tree_restorer.restore
+    end
+
+    shared_examples 'with visibility level' do |visibility_level, expected_visibilities|
+      context "when visibility level is #{visibility_level}" do
+        let(:group) { create(:group, visibility_level) }
+        let(:filepath) { "group_exports/visibility_levels/#{visibility_level}" }
+
+        it "imports all subgroups as #{visibility_level}" do
+          expect(group.children.map(&:visibility_level)).to eq(expected_visibilities)
+        end
+      end
+    end
+
+    include_examples 'with visibility level', :public, [20, 10, 0]
+    include_examples 'with visibility level', :private, [0, 0, 0]
+    include_examples 'with visibility level', :internal, [10, 10, 0]
+  end
 end

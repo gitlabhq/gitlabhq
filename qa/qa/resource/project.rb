@@ -94,6 +94,10 @@ module QA
         "#{api_get_path}/runners"
       end
 
+      def api_put_path
+        "/projects/#{id}"
+      end
+
       def api_post_path
         '/projects'
       end
@@ -113,6 +117,35 @@ module QA
         end
 
         post_body
+      end
+
+      def change_repository_storage(new_storage)
+        put_body = { repository_storage: new_storage }
+        response = put Runtime::API::Request.new(api_client, api_put_path).url, put_body
+
+        unless response.code == HTTP_STATUS_OK
+          raise ResourceUpdateFailedError, "Could not change repository storage to #{new_storage}. Request returned (#{response.code}): `#{response}`."
+        end
+
+        wait_until do
+          reload!
+
+          api_response[:repository_storage] == new_storage
+        end
+      end
+
+      def import_status
+        response = get Runtime::API::Request.new(api_client, "/projects/#{id}/import").url
+
+        unless response.code == HTTP_STATUS_OK
+          raise ResourceQueryError, "Could not get import status. Request returned (#{response.code}): `#{response}`."
+        end
+
+        result = parse_body(response)
+
+        Runtime::Logger.error("Import failed: #{result[:import_error]}") if result[:import_status] == "failed"
+
+        result[:import_status]
       end
 
       def runners(tag_list: nil)

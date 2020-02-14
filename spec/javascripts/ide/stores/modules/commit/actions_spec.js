@@ -7,7 +7,7 @@ import eventHub from '~/ide/eventhub';
 import consts from '~/ide/stores/modules/commit/constants';
 import * as mutationTypes from '~/ide/stores/modules/commit/mutation_types';
 import * as actions from '~/ide/stores/modules/commit/actions';
-import { commitActionTypes } from '~/ide/constants';
+import { commitActionTypes, PERMISSION_CREATE_MR } from '~/ide/constants';
 import testAction from '../../../../helpers/vuex_action_helper';
 
 const TEST_COMMIT_SHA = '123456789';
@@ -312,6 +312,9 @@ describe('IDE commit module actions', () => {
                   id: TEST_COMMIT_SHA,
                 },
               },
+            },
+            userPermissions: {
+              [PERMISSION_CREATE_MR]: true,
             },
           },
         },

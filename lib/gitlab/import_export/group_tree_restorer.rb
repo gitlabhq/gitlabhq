@@ -74,10 +74,21 @@ module Gitlab
         group_params = {
           name:      group_hash['name'],
           path:      group_hash['path'],
-          parent_id: parent_group&.id
+          parent_id: parent_group&.id,
+          visibility_level: sub_group_visibility_level(group_hash, parent_group)
         }
 
         ::Groups::CreateService.new(@user, group_params).execute
+      end
+
+      def sub_group_visibility_level(group_hash, parent_group)
+        original_visibility_level = group_hash['visibility_level'] || Gitlab::VisibilityLevel::PRIVATE
+
+        if parent_group && parent_group.visibility_level < original_visibility_level
+          Gitlab::VisibilityLevel.closest_allowed_level(parent_group.visibility_level)
+        else
+          original_visibility_level
+        end
       end
 
       def members_mapper

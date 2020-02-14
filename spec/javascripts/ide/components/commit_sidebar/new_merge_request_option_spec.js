@@ -1,18 +1,24 @@
 import Vue from 'vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { projectData, branches } from 'spec/ide/mock_data';
-import { resetStore } from 'spec/ide/helpers';
 import NewMergeRequestOption from '~/ide/components/commit_sidebar/new_merge_request_option.vue';
-import store from '~/ide/stores';
-import consts from '../../../../../app/assets/javascripts/ide/stores/modules/commit/constants';
+import { createStore } from '~/ide/stores';
+import { PERMISSION_CREATE_MR } from '~/ide/constants';
+import consts from '~/ide/stores/modules/commit/constants';
 
 describe('create new MR checkbox', () => {
+  let store;
   let vm;
+
   const setMR = () => {
     vm.$store.state.currentMergeRequestId = '1';
     vm.$store.state.projects[store.state.currentProjectId].mergeRequests[
       store.state.currentMergeRequestId
     ] = { foo: 'bar' };
+  };
+
+  const setPermissions = permissions => {
+    store.state.projects[store.state.currentProjectId].userPermissions = permissions;
   };
 
   const createComponent = ({ currentBranchId = 'master', createNewBranch = false } = {}) => {
@@ -25,20 +31,29 @@ describe('create new MR checkbox', () => {
       : consts.COMMIT_TO_CURRENT_BRANCH;
 
     vm.$store.state.currentBranchId = currentBranchId;
-    vm.$store.state.currentProjectId = 'abcproject';
 
-    const proj = JSON.parse(JSON.stringify(projectData));
-    proj.branches[currentBranchId] = branches.find(branch => branch.name === currentBranchId);
-
-    Vue.set(vm.$store.state.projects, 'abcproject', proj);
+    store.state.projects.abcproject.branches[currentBranchId] = branches.find(
+      branch => branch.name === currentBranchId,
+    );
 
     return vm.$mount();
   };
 
+  const findInput = () => vm.$el.querySelector('input[type="checkbox"]');
+  const findLabel = () => vm.$el.querySelector('.js-ide-commit-new-mr');
+
+  beforeEach(() => {
+    store = createStore();
+
+    store.state.currentProjectId = 'abcproject';
+
+    const proj = JSON.parse(JSON.stringify(projectData));
+    proj.userPermissions[PERMISSION_CREATE_MR] = true;
+    Vue.set(store.state.projects, 'abcproject', proj);
+  });
+
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   describe('for default branch', () => {
@@ -159,6 +174,24 @@ describe('create new MR checkbox', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+
+    it('shows enablded checkbox', () => {
+      expect(findLabel().classList.contains('is-disabled')).toBe(false);
+      expect(findInput().disabled).toBe(false);
+    });
+  });
+
+  describe('when user cannot create MR', () => {
+    beforeEach(() => {
+      setPermissions({ [PERMISSION_CREATE_MR]: false });
+
+      createComponent({ currentBranchId: 'regular' });
+    });
+
+    it('disabled checkbox', () => {
+      expect(findLabel().classList.contains('is-disabled')).toBe(true);
+      expect(findInput().disabled).toBe(true);
     });
   });
 

@@ -71,7 +71,12 @@ export default {
 <template>
   <div class="tree-content-holder">
     <div class="table-holder bordered-box">
-      <table :aria-label="tableCaption" class="table tree-table qa-file-tree" aria-live="polite">
+      <table
+        :aria-label="tableCaption"
+        class="table tree-table"
+        aria-live="polite"
+        data-qa-selector="file_tree_table"
+      >
         <table-header v-once />
         <tbody>
           <parent-row

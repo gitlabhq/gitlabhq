@@ -61,7 +61,11 @@ describe API::LsifData do
             'end_line' => 8,
             'start_char' => 13,
             'start_line' => 8,
-            'definition_url' => project_blob_path(project, "#{commit.id}/morestrings/reverse.go", anchor: 'L5')
+            'definition_url' => project_blob_path(project, "#{commit.id}/morestrings/reverse.go", anchor: 'L5'),
+            'hover' => [{
+              'language' => 'go',
+              'value' => Gitlab::Highlight.highlight(nil, 'func Func2(i int) string', language: 'go')
+            }]
           })
         end
 
