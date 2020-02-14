@@ -29,7 +29,7 @@ module.exports = {
       'vuex',
       'pikaday',
       'vue/dist/vue.esm.js',
-      'at.js',
+      '@gitlab/at.js',
       'jed',
       'mermaid',
       'katex',

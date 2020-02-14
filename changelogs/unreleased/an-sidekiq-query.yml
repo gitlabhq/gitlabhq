@@ -1,0 +1,5 @@
+---
+title: Add experimental --queue-selector option to sidekiq-cluster
+merge_request: 18877
+author:
+type: changed

@@ -82,6 +82,93 @@ you list:
    sudo gitlab-ctl reconfigure
    ```
 
+## Queue selector (experimental)
+
+> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/issues/45) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.8.
+
+CAUTION: **Caution:**
+As this is marked as **experimental**, it is subject to change at any
+time, including **breaking backwards compatibility**. This is so that we
+can react to changes we need for our GitLab.com deployment. We have a
+tracking issue open to [remove the experimental
+designation](https://gitlab.com/gitlab-com/gl-infra/scalability/issues/147)
+from this feature; please comment there if you are interested in using
+this in your own deployment.
+
+In addition to selecting queues by name, as above, the
+`experimental_queue_selector` option allows queue groups to be selected
+in a more general way using the following components:
+
+- Attributes that can be selected.
+- Operators used to construct a query.
+
+### Available attributes
+
+From the [list of all available
+attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/all_queues.yml),
+`experimental_queue_selector` allows selecting of queues by the
+following attributes:
+
+- `feature_category` - the [GitLab feature
+  category](https://about.gitlab.com/direction/maturity/#category-maturity) the
+  queue belongs to. For example, the `merge` queue belongs to the
+  `source_code_management` category.
+- `has_external_dependencies` - whether or not the queue connects to external
+  services. For example, all importers have this set to `true`.
+- `latency_sensitive` - whether or not the queue is particularly sensitive to
+  latency, which also means that its jobs should run quickly. For example, the
+  `authorized_projects` queue is used to refresh user permissions, and is
+  latency sensitive.
+- `name` - the queue name. The other attributes are typically more useful as
+  they are more general, but this is available in case a particular queue needs
+  to be selected.
+- `resource_boundary` - if the worker is bound by `cpu`, `memory`, or
+  `unknown`. For example, the `project_export` queue is memory bound as it has
+  to load data in memory before saving it for export.
+
+Both `has_external_dependencies` and `latency_sensitive` are boolean attributes:
+only the exact string `true` is considered true, and everything else is
+considered false.
+
+### Available operators
+
+`experimental_queue_selector` supports the following operators, listed
+from highest to lowest precedence:
+
+- `|` - the logical OR operator. For example, `query_a|query_b` (where `query_a`
+  and `query_b` are queries made up of the other operators here) will include
+  queues that match either query.
+- `&` - the logical AND operator. For example, `query_a&query_b` (where
+  `query_a` and `query_b` are queries made up of the other operators here) will
+  only include queues that match both queries.
+- `!=` - the NOT IN operator. For example, `feature_category!=issue_tracking`
+  excludes all queues from the `issue_tracking` feature category.
+- `=` - the IN operator. For example, `resource_boundary=cpu` includes all
+  queues that are CPU bound.
+- `,` - the concatenate set operator. For example,
+  `feature_category=continuous_integration,pages` includes all queues from
+  either the `continuous_integration` category or the `pages` category. This
+  example is also possible using the OR operator, but allows greater brevity, as
+  well as being lower precedence.
+
+The operator precedence for this syntax is fixed: it's not possible to make AND
+have higher precedence than OR.
+
+### Example queries
+
+In `/etc/gitlab/gitlab.rb`:
+
+```ruby
+sidekiq_cluster['enable'] = true
+sidekiq_cluster['experimental_queue_selector'] = true
+sidekiq_cluster['queue_groups'] = [
+  # Run all non-CPU-bound queues that are latency sensitive
+  'resource_boundary!=cpu&latency_sensitive=true',
+  # Run all continuous integration and pages queues that are not latency sensitive
+  'feature_category=continuous_integration,pages&latency_sensitive=false'
+]
+```
+
 ## Ignore all GitHub import queues
 
 When [importing from GitHub](../../user/project/import/github.md), Sidekiq might

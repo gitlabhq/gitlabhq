@@ -243,39 +243,6 @@ module API
       expose :startline
       expose :project_id
     end
-
-    module Platform
-      class Kubernetes < Grape::Entity
-        expose :api_url
-        expose :namespace
-        expose :authorization_type
-        expose :ca_cert
-      end
-    end
-
-    module Provider
-      class Gcp < Grape::Entity
-        expose :cluster_id
-        expose :status_name
-        expose :gcp_project_id
-        expose :zone
-        expose :machine_type
-        expose :num_nodes
-        expose :endpoint
-      end
-    end
-
-    module InternalPostReceive
-      class Message < Grape::Entity
-        expose :message
-        expose :type
-      end
-
-      class Response < Grape::Entity
-        expose :messages, using: Message
-        expose :reference_counter_decreased
-      end
-    end
   end
 end
 

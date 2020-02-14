@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { debounce, uniq } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
@@ -120,7 +120,7 @@ export default {
       return this.xAxisRange[this.xAxisRange.length - 1];
     },
     charts() {
-      return _.uniq(this.individualCharts);
+      return uniq(this.individualCharts);
     },
   },
   mounted() {
@@ -171,7 +171,7 @@ export default {
           });
         })
         .catch(() => {});
-      this.masterChart.on('datazoom', _.debounce(this.setIndividualChartsZoom, 200));
+      this.masterChart.on('datazoom', debounce(this.setIndividualChartsZoom, 200));
     },
     onIndividualChartCreated(chart) {
       this.individualCharts.push(chart);

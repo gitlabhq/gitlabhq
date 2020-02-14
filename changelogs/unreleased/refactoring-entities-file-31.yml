@@ -1,0 +1,5 @@
+---
+title: Separate provider, platform and post receive entities into own class files
+merge_request: 25119
+author: Rajendra Kadam
+type: added

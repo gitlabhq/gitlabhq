@@ -98,10 +98,6 @@
         human_time_estimate: @milestone.human_total_issue_time_estimate,
         human_time_spent: @milestone.human_total_issue_time_spent,
         limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s } }
-        // Fallback while content is loading
-        .title.hide-collapsed
-          = _('Time tracking')
-          = icon('spinner spin')
 
     = render_if_exists 'shared/milestones/weight', milestone: milestone
 

@@ -24,6 +24,7 @@ const Api = {
   projectMergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
   projectMergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
   projectRunnersPath: '/api/:version/projects/:id/runners',
+  projectProtectedBranchesPath: '/api/:version/projects/:id/protected_branches',
   mergeRequestsPath: '/api/:version/merge_requests',
   groupLabelsPath: '/groups/:namespace_path/-/labels',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
@@ -218,6 +219,22 @@ const Api = {
     );
 
     return axios.get(url, config);
+  },
+
+  projectProtectedBranches(id, query = '') {
+    const url = Api.buildUrl(Api.projectProtectedBranchesPath).replace(
+      ':id',
+      encodeURIComponent(id),
+    );
+
+    return axios
+      .get(url, {
+        params: {
+          search: query,
+          per_page: DEFAULT_PER_PAGE,
+        },
+      })
+      .then(({ data }) => data);
   },
 
   mergeRequests(params = {}) {

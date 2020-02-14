@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import 'at.js';
+import '@gitlab/at.js';
 import _ from 'underscore';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import glRegexp from './lib/utils/regexp';

@@ -15,6 +15,12 @@
     "terminal_path": { "type": "string" },
     "trigger": { "$ref": "trigger.json" },
     "deployment_status": { "$ref": "deployment_status.json" },
+    "deployment_cluster": {
+      "oneOf": [
+        { "$ref": "../deployment_cluster.json" },
+        { "type": "null" }
+      ]
+    },
     "runner": { "$ref": "runner.json" },
     "runners": { "$ref": "runners.json" },
     "has_trace": { "type": "boolean" },

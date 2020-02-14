@@ -130,7 +130,7 @@ Once selected, click the **Delete selected** button to confirm the deletion:
 
 ![Delete multiple designs](img/delete_multiple_designs_v12_4.png)
 
-NOTE: **Note:**
+**Note:**
 Only the latest version of the designs can be deleted.
 Deleted designs are not permanently lost; they can be
 viewed by browsing previous versions.
@@ -143,6 +143,9 @@ A badge is added to the image identifying the annotation, from
 which you can start a new discussion:
 
 ![Starting a new discussion on design](img/adding_note_to_design_1.png)
+
+From GitLab 12.8 on, when you are starting a new discussion, you can adjust the badge's position by
+dragging it around the image.
 
 Different discussions have different badge numbers:
 

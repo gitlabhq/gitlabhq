@@ -12,6 +12,11 @@ export default {
       type: Object,
       required: true,
     },
+    deploymentCluster: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     iconStatus: {
       type: Object,
       required: true,
@@ -61,14 +66,14 @@ export default {
         : '';
     },
     hasCluster() {
-      return this.hasLastDeployment && this.lastDeployment.cluster;
+      return Boolean(this.deploymentCluster) && Boolean(this.deploymentCluster.name);
     },
     clusterNameOrLink() {
       if (!this.hasCluster) {
         return '';
       }
 
-      const { name, path } = this.lastDeployment.cluster;
+      const { name, path } = this.deploymentCluster;
       const escapedName = _.escape(name);
       const escapedPath = _.escape(path);
 
@@ -85,6 +90,9 @@ export default {
         },
         false,
       );
+    },
+    kubernetesNamespace() {
+      return this.hasCluster ? this.deploymentCluster.kubernetes_namespace : null;
     },
   },
   methods: {
@@ -109,75 +117,153 @@ export default {
       );
     },
     lastEnvironmentMessage() {
-      const { environmentLink, clusterNameOrLink, hasCluster } = this;
-
-      const message = hasCluster
-        ? __('This job is deployed to %{environmentLink} using cluster %{clusterNameOrLink}.')
-        : __('This job is deployed to %{environmentLink}.');
-
-      return sprintf(message, { environmentLink, clusterNameOrLink }, false);
-    },
-    outOfDateEnvironmentMessage() {
-      const { hasLastDeployment, hasCluster, environmentLink, clusterNameOrLink } = this;
-
-      if (hasLastDeployment) {
-        const message = hasCluster
-          ? __(
-              'This job is an out-of-date deployment to %{environmentLink} using cluster %{clusterNameOrLink}. View the %{deploymentLink}.',
-            )
-          : __(
-              'This job is an out-of-date deployment to %{environmentLink}. View the %{deploymentLink}.',
-            );
-
+      const { environmentLink, clusterNameOrLink, hasCluster, kubernetesNamespace } = this;
+      if (hasCluster) {
+        if (kubernetesNamespace) {
+          return sprintf(
+            __(
+              'This job is deployed to %{environmentLink} using cluster %{clusterNameOrLink} and namespace %{kubernetesNamespace}.',
+            ),
+            { environmentLink, clusterNameOrLink, kubernetesNamespace },
+            false,
+          );
+        }
+        // we know the cluster but not the namespace
         return sprintf(
-          message,
-          {
-            environmentLink,
-            clusterNameOrLink,
-            deploymentLink: this.deploymentLink(__('most recent deployment')),
-          },
+          __('This job is deployed to %{environmentLink} using cluster %{clusterNameOrLink}.'),
+          { environmentLink, clusterNameOrLink },
           false,
         );
       }
+      // not a cluster deployment
+      return sprintf(__('This job is deployed to %{environmentLink}.'), { environmentLink }, false);
+    },
+    outOfDateEnvironmentMessage() {
+      const {
+        hasLastDeployment,
+        hasCluster,
+        environmentLink,
+        clusterNameOrLink,
+        kubernetesNamespace,
+      } = this;
 
-      const message = hasCluster
-        ? __(
+      if (hasLastDeployment) {
+        const deploymentLink = this.deploymentLink(__('most recent deployment'));
+        if (hasCluster) {
+          if (kubernetesNamespace) {
+            return sprintf(
+              __(
+                'This job is an out-of-date deployment to %{environmentLink} using cluster %{clusterNameOrLink} and namespace %{kubernetesNamespace}. View the %{deploymentLink}.',
+              ),
+              { environmentLink, clusterNameOrLink, kubernetesNamespace, deploymentLink },
+              false,
+            );
+          }
+          // we know the cluster but not the namespace
+          return sprintf(
+            __(
+              'This job is an out-of-date deployment to %{environmentLink} using cluster %{clusterNameOrLink}. View the %{deploymentLink}.',
+            ),
+            { environmentLink, clusterNameOrLink, deploymentLink },
+            false,
+          );
+        }
+        // not a cluster deployment
+        return sprintf(
+          __(
+            'This job is an out-of-date deployment to %{environmentLink}. View the %{deploymentLink}.',
+          ),
+          { environmentLink, deploymentLink },
+          false,
+        );
+      }
+      // no last deployment, i.e. this is the first deployment
+      if (hasCluster) {
+        if (kubernetesNamespace) {
+          return sprintf(
+            __(
+              'This job is an out-of-date deployment to %{environmentLink} using cluster %{clusterNameOrLink} and namespace %{kubernetesNamespace}.',
+            ),
+            { environmentLink, clusterNameOrLink, kubernetesNamespace },
+            false,
+          );
+        }
+        // we know the cluster but not the namespace
+        return sprintf(
+          __(
             'This job is an out-of-date deployment to %{environmentLink} using cluster %{clusterNameOrLink}.',
-          )
-        : __('This job is an out-of-date deployment to %{environmentLink}.');
-
+          ),
+          { environmentLink, clusterNameOrLink },
+          false,
+        );
+      }
+      // not a cluster deployment
       return sprintf(
-        message,
-        {
-          environmentLink,
-          clusterNameOrLink,
-        },
+        __('This job is an out-of-date deployment to %{environmentLink}.'),
+        { environmentLink },
         false,
       );
     },
     creatingEnvironmentMessage() {
-      const { hasLastDeployment, hasCluster, environmentLink, clusterNameOrLink } = this;
+      const {
+        hasLastDeployment,
+        hasCluster,
+        environmentLink,
+        clusterNameOrLink,
+        kubernetesNamespace,
+      } = this;
 
       if (hasLastDeployment) {
-        const message = hasCluster
-          ? __(
-              'This job is creating a deployment to %{environmentLink} using cluster %{clusterNameOrLink}. This will overwrite the %{deploymentLink}.',
-            )
-          : __(
-              'This job is creating a deployment to %{environmentLink}. This will overwrite the %{deploymentLink}.',
+        const deploymentLink = this.deploymentLink(__('latest deployment'));
+        if (hasCluster) {
+          if (kubernetesNamespace) {
+            return sprintf(
+              __(
+                'This job is creating a deployment to %{environmentLink} using cluster %{clusterNameOrLink} and namespace %{kubernetesNamespace}. This will overwrite the %{deploymentLink}.',
+              ),
+              { environmentLink, clusterNameOrLink, kubernetesNamespace, deploymentLink },
+              false,
             );
-
+          }
+          // we know the cluster but not the namespace
+          return sprintf(
+            __(
+              'This job is creating a deployment to %{environmentLink} using cluster %{clusterNameOrLink}. This will overwrite the %{deploymentLink}.',
+            ),
+            { environmentLink, clusterNameOrLink, deploymentLink },
+            false,
+          );
+        }
+        // not a cluster deployment
         return sprintf(
-          message,
-          {
-            environmentLink,
-            clusterNameOrLink,
-            deploymentLink: this.deploymentLink(__('latest deployment')),
-          },
+          __(
+            'This job is creating a deployment to %{environmentLink}. This will overwrite the %{deploymentLink}.',
+          ),
+          { environmentLink, deploymentLink },
           false,
         );
       }
-
+      // no last deployment, i.e. this is the first deployment
+      if (hasCluster) {
+        if (kubernetesNamespace) {
+          return sprintf(
+            __(
+              'This job is creating a deployment to %{environmentLink} using cluster %{clusterNameOrLink} and namespace %{kubernetesNamespace}.',
+            ),
+            { environmentLink, clusterNameOrLink, kubernetesNamespace },
+            false,
+          );
+        }
+        // we know the cluster but not the namespace
+        return sprintf(
+          __(
+            'This job is creating a deployment to %{environmentLink} using cluster %{clusterNameOrLink}.',
+          ),
+          { environmentLink, clusterNameOrLink },
+          false,
+        );
+      }
+      // not a cluster deployment
       return sprintf(
         __('This job is creating a deployment to %{environmentLink}.'),
         { environmentLink },

@@ -30,6 +30,7 @@ class Deployment < ApplicationRecord
   validate :valid_ref, on: :create
 
   delegate :name, to: :environment, prefix: true
+  delegate :kubernetes_namespace, to: :deployment_cluster, allow_nil: true
 
   scope :for_environment, -> (environment) { where(environment_id: environment) }
   scope :for_environment_name, -> (name) do

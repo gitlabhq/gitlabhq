@@ -1,9 +1,9 @@
-import _ from 'underscore';
+import { uniqueId } from 'lodash';
 import { DUMMY_IMAGE_URL, TEST_HOST } from 'spec/test_constants';
 import { PROJECT_BADGE } from '~/badges/constants';
 
 export const createDummyBadge = () => {
-  const id = _.uniqueId();
+  const id = uniqueId();
   return {
     id,
     name: 'TestBadge',

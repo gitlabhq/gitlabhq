@@ -15,7 +15,7 @@ import { escape, uniqueId } from 'lodash';
 import Cookies from 'js-cookie';
 import Autosize from 'autosize';
 import 'jquery.caret'; // required by at.js
-import 'at.js';
+import '@gitlab/at.js';
 import Vue from 'vue';
 import { GlSkeletonLoading } from '@gitlab/ui';
 import AjaxCache from '~/lib/utils/ajax_cache';

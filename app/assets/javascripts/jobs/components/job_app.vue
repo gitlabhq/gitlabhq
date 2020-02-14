@@ -256,6 +256,7 @@ export default {
           v-if="hasEnvironment"
           class="js-job-environment"
           :deployment-status="job.deployment_status"
+          :deployment-cluster="job.deployment_cluster"
           :icon-status="job.status"
         />
 
