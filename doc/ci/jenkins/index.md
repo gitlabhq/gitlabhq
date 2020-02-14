@@ -102,7 +102,7 @@ and is meant to be a mapping of concepts there to concepts in GitLab.
 
 The agent section is used to define how a pipeline will be executed. For GitLab, we use the [GitLab Runner](../runners/README.md)
 to provide this capability. You can configure your own runners in Kubernetes or on any host, or take advantage
-of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users.) The link above will bring you to the documenation which will describe how to get
+of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users.) The link above will bring you to the documentation which will describe how to get
 up and running quickly. We also support using [tags](../runners/README.md#using-tags) to direct different jobs
 to different Runners (execution agents).
 

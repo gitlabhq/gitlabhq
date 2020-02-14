@@ -805,7 +805,7 @@ commands to be wrapped as follows:
 /bin/herokuish procfile exec $COMMAND
 ```
 
-This might be neccessary, for example, when:
+This might be necessary, for example, when:
 
 - Attaching using `kubectl exec`.
 - Using GitLab's [Web Terminal](../../ci/environments.md#web-terminals).

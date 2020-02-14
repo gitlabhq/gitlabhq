@@ -178,7 +178,7 @@ talking to the primary can mitigate this.
 
 In the second case, existing connections to the newly-demoted replica
 may execute a write query, which would fail. During a failover, it may
-be advantegeous to shut down the PgBouncer talking to the primary to
+be advantageous to shut down the PgBouncer talking to the primary to
 ensure no more traffic arrives for it. The alternative would be to make
 the application aware of the failover event and terminate its
 connections gracefully.

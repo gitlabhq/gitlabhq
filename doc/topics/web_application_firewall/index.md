@@ -55,7 +55,7 @@ you can configure a cluster on GKE. Once this is set up, you can follow the step
 
 NOTE: **Note**
 This guide shows how the WAF can be deployed using Auto DevOps. The WAF
-is avaliable by default to all applications no matter how they are deployed,
+is available by default to all applications no matter how they are deployed,
 as long as they are using Ingress.
 
 ## Network firewall vs. Web Application Firewall

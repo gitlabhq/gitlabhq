@@ -74,7 +74,7 @@ gitlab-runner register \
   --description "ruby:2.6" \
   --executor "docker" \
   --docker-image ruby:2.6 \
-  --docker-postgres latest
+  --docker-services latest
 ```
 
 With the command above, you create a Runner that uses the [ruby:2.6](https://hub.docker.com/_/ruby) image and uses a [postgres](https://hub.docker.com/_/postgres) database.

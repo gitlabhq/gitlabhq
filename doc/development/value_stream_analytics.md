@@ -235,7 +235,7 @@ SELECT (START_EVENT_TIME-END_EVENT_TIME) as duration, END_EVENT.timestamp
 - Services (`Analytics::CycleAnalytics` module): All `Stage` related actions will be delegated to respective service objects.
 - Models (`Analytics::CycleAnalytics` module): Models are used to persist the `Stage` objects `ProjectStage` and `GroupStage`.
 - Feature classes (`Gitlab::Analytics::CycleAnalytics` module):
-  - Responsible for composing queries and define feature specific busines logic.
+  - Responsible for composing queries and define feature specific business logic.
   - `DataCollector`, `Event`, `StageEvents`, etc.
 
 ## Testing

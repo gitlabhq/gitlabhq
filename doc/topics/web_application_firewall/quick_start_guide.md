@@ -12,7 +12,7 @@ need to ensure your own [Runners are configured](../../ci/runners/README.md) and
 [Google OAuth is enabled](../../integration/google.md).
 
 **Note**: GitLab's Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#Ingress),
-so it will be avaliable to your applications no matter how you deploy them to Kubernetes.
+so it will be available to your applications no matter how you deploy them to Kubernetes.
 
 ## Enable or disable ModSecurity
 

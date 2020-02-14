@@ -207,7 +207,7 @@ the default by adding the following to your service:
 - `ReactiveCaching` uses `Gitlab::ExclusiveLease` to ensure that the cache calculation
 is never run concurrently by multiple workers.
 - This attribute is the timeout for the `Gitlab::ExclusiveLease`.
-- It defaults to 2 minutes, but can be overriden if a different timeout is required.
+- It defaults to 2 minutes, but can be overridden if a different timeout is required.
 
 ```ruby
 self.reactive_cache_lease_timeout = 2.minutes

@@ -1641,7 +1641,7 @@ cache:
     - node_modules
 ```
 
-In this example we are creating a cache for Ruby and Nodejs dependencies that
+In this example we are creating a cache for Ruby and Node.js dependencies that
 is tied to current versions of the `Gemfile.lock` and `package.json` files. Whenever one of
 these files changes, a new cache key is computed and a new cache is created. Any future
 job runs using the same `Gemfile.lock` and `package.json`  with `cache:key:files` will

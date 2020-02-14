@@ -37,7 +37,7 @@ For instance, it is common practice to use `before_script` to install system lib
 a particular project needs before performing SAST or Dependency Scanning.
 
 Similarly, [`after_script`](../../ci/yaml/README.md#before_script-and-after_script)
-should not not be used in the job definition, because it may be overriden by users.
+should not not be used in the job definition, because it may be overridden by users.
 
 ### Stage
 

@@ -159,7 +159,7 @@ the issue should be relabelled as ~"group::access" while keeping the original
 ~"devops::create" unchanged.
 
 We also use stage and group labels to help quantify our [throughput](https://about.gitlab.com/handbook/engineering/management/throughput/).
-Please read [Stage and Group labels in Throughtput](https://about.gitlab.com/handbook/engineering/management/throughput/#stage-and-group-labels-in-throughput) for more information on how the labels are used in this context.
+Please read [Stage and Group labels in Throughput](https://about.gitlab.com/handbook/engineering/management/throughput/#stage-and-group-labels-in-throughput) for more information on how the labels are used in this context.
 
 ### Category labels
 
