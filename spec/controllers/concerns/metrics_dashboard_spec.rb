@@ -45,6 +45,7 @@ describe MetricsDashboard do
       it 'returns the specified dashboard' do
         expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
         expect(json_response).not_to have_key('all_dashboards')
+        expect(json_response).not_to have_key('metrics_data')
       end
 
       context 'when the params are in an alternate format' do
@@ -53,6 +54,25 @@ describe MetricsDashboard do
         it 'returns the specified dashboard' do
           expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
           expect(json_response).not_to have_key('all_dashboards')
+          expect(json_response).not_to have_key('metrics_data')
+        end
+      end
+
+      context 'when environment for dashboard is available' do
+        let(:params) { { environment: environment } }
+
+        before do
+          allow(controller).to receive(:project).and_return(project)
+          allow(controller).to receive(:environment).and_return(environment)
+          allow(controller)
+            .to receive(:metrics_dashboard_params)
+                  .and_return(params)
+        end
+
+        it 'returns the specified dashboard' do
+          expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
+          expect(json_response).not_to have_key('all_dashboards')
+          expect(json_response).to have_key('metrics_data')
         end
       end
 

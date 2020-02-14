@@ -489,7 +489,7 @@ describe Projects::EnvironmentsController do
     end
 
     shared_examples_for '200 response' do
-      let(:expected_keys) { %w(dashboard status) }
+      let(:expected_keys) { %w(dashboard status metrics_data) }
 
       it_behaves_like 'correctly formatted response', :ok
     end

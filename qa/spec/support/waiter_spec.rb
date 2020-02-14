@@ -34,6 +34,11 @@ describe QA::Support::Waiter do
       end
     end
 
+    it 'allows logs to be silenced' do
+      expect { subject.wait_until(max_duration: 0, raise_on_failure: false, log: false) { false } }
+        .not_to output.to_stdout_from_any_process
+    end
+
     it 'sets max_duration to 60 by default' do
       expect(subject).to receive(:repeat_until).with(hash_including(max_duration: 60))
 

@@ -20,7 +20,7 @@ describe EnvironmentsHelper do
       expect(metrics_data).to include(
         'settings-path' => edit_project_service_path(project, 'prometheus'),
         'clusters-path' => project_clusters_path(project),
-        'current-environment-name': environment.name,
+        'current-environment-name' => environment.name,
         'documentation-path' => help_page_path('administration/monitoring/prometheus/index.md'),
         'empty-getting-started-svg-path' => match_asset_path('/assets/illustrations/monitoring/getting_started.svg'),
         'empty-loading-svg-path' => match_asset_path('/assets/illustrations/monitoring/loading.svg'),

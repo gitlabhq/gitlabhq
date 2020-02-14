@@ -36,11 +36,6 @@ export default {
       return this.activeViewer === RICH_BLOB_VIEWER;
     },
   },
-  methods: {
-    requestCopyContents() {
-      this.$emit('copy');
-    },
-  },
   BTN_COPY_CONTENTS_TITLE,
   BTN_DOWNLOAD_TITLE,
   BTN_RAW_TITLE,
@@ -53,7 +48,7 @@ export default {
       :aria-label="$options.BTN_COPY_CONTENTS_TITLE"
       :title="$options.BTN_COPY_CONTENTS_TITLE"
       :disabled="copyDisabled"
-      @click="requestCopyContents"
+      data-clipboard-target="#blob-code-content"
     >
       <gl-icon name="copy-to-clipboard" :size="14" />
     </gl-button>

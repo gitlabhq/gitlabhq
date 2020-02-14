@@ -67,13 +67,4 @@ describe('Blob Header Default Actions', () => {
       expect(buttons.at(0).attributes('disabled')).toBeTruthy();
     });
   });
-
-  describe('functionally', () => {
-    it('emits an event when a Copy Contents button is clicked', () => {
-      jest.spyOn(wrapper.vm, '$emit');
-      buttons.at(0).vm.$emit('click');
-
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('copy');
-    });
-  });
 });

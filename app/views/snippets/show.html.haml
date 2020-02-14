@@ -13,7 +13,7 @@
     %article.file-holder.snippet-file-content
       = render 'shared/snippets/blob'
 
-    .row-content-block.top-block.content-component-block
-      = render 'award_emoji/awards_block', awardable: @snippet, inline: true
+.row-content-block.top-block.content-component-block
+  = render 'award_emoji/awards_block', awardable: @snippet, inline: true
 
-    #notes.limited-width-notes= render "shared/notes/notes_with_form", :autocomplete => false
+#notes.limited-width-notes= render "shared/notes/notes_with_form", :autocomplete => false

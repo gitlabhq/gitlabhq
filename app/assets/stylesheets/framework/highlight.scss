@@ -30,7 +30,6 @@
       .line {
         display: block;
         width: 100%;
-        min-height: 1.5em;
         padding-left: 10px;
         padding-right: 10px;
         white-space: pre;
@@ -48,10 +47,10 @@
       font-family: $monospace-font;
       display: block;
       font-size: $code-font-size !important;
-      min-height: 1.5em;
       white-space: nowrap;
 
-      i {
+      i,
+      svg {
         float: left;
         margin-top: 3px;
         margin-right: 5px;
@@ -62,11 +61,19 @@
       &:focus {
         outline: none;
 
-        i {
+        i,
+        svg {
           visibility: visible;
         }
       }
     }
+  }
+
+  pre .line,
+  .line-numbers a {
+    font-size: 0.8125rem;
+    line-height: 1.1875rem;
+    min-height: 1.1875rem;
   }
 }
 

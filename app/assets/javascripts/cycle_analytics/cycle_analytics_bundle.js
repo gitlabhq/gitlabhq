@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
-import { GlEmptyState } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import filterMixins from 'ee_else_ce/analytics/cycle_analytics/mixins/filter_mixins';
 import Flash from '../flash';
 import { __ } from '~/locale';
@@ -28,6 +28,7 @@ export default () => {
     name: 'CycleAnalytics',
     components: {
       GlEmptyState,
+      GlLoadingIcon,
       banner,
       'stage-issue-component': stageComponent,
       'stage-plan-component': stageComponent,

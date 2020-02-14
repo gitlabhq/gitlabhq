@@ -93,6 +93,7 @@ The following table depicts the various user permission levels in a project.
 | Manage/Accept merge requests                      |         |            | ✓           | ✓        | ✓      |
 | Create new environments                           |         |            | ✓           | ✓        | ✓      |
 | Stop environments                                 |         |            | ✓           | ✓        | ✓      |
+| Enable Review Apps                                |         |            | ✓           | ✓        | ✓      |
 | Add tags                                          |         |            | ✓           | ✓        | ✓      |
 | Cancel and retry jobs                             |         |            | ✓           | ✓        | ✓      |
 | Create or update commit status                    |         |            | ✓ (*5*)     | ✓        | ✓      |
