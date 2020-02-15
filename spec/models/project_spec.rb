@@ -5607,7 +5607,21 @@ describe Project do
 
     subject { project.alerts_service_activated? }
 
-    it { is_expected.to be_falsey }
+    context 'when project has an activated alerts service' do
+      before do
+        create(:alerts_service, project: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when project has an inactive alerts service' do
+      before do
+        create(:alerts_service, :inactive, project: project)
+      end
+
+      it { is_expected.to be_falsey }
+    end
   end
 
   describe '#self_monitoring?' do

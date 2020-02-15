@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 describe API::ErrorTracking do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:setting) { create(:project_error_tracking_setting) }
   let(:project) { setting.project }
 
   shared_examples 'returns project settings' do
     it 'returns correct project settings' do
-      subject
+      make_request
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to eq(
@@ -23,7 +23,7 @@ describe API::ErrorTracking do
 
   shared_examples 'returns 404' do
     it 'returns correct project settings' do
-      subject
+      make_request
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message'])
@@ -32,7 +32,9 @@ describe API::ErrorTracking do
   end
 
   describe "PATCH /projects/:id/error_tracking/settings" do
-    def make_patch_request(**params)
+    let(:params) { { active: false } }
+
+    def make_request
       patch api("/projects/#{project.id}/error_tracking/settings", user), params: params
     end
 
@@ -42,26 +44,39 @@ describe API::ErrorTracking do
       end
 
       context 'patch settings' do
-        subject do
-          make_patch_request(active: false)
-        end
-
         it_behaves_like 'returns project settings'
 
-        it 'returns active is invalid if non boolean' do
-          make_patch_request(active: "randomstring")
+        it 'updates enabled flag' do
+          expect(setting).to be_enabled
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['error'])
-            .to eq('active is invalid')
+          make_request
+
+          expect(json_response).to include('active' => false)
+          expect(setting.reload).not_to be_enabled
         end
 
-        it 'returns 400 if active is empty' do
-          make_patch_request(active: '')
+        context 'active is invalid' do
+          let(:params) { { active: "randomstring" } }
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['error'])
-            .to eq('active is empty')
+          it 'returns active is invalid if non boolean' do
+            make_request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error'])
+              .to eq('active is invalid')
+          end
+        end
+
+        context 'active is empty' do
+          let(:params) { { active: '' } }
+
+          it 'returns 400' do
+            make_request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error'])
+              .to eq('active is empty')
+          end
         end
       end
 
@@ -73,10 +88,6 @@ describe API::ErrorTracking do
         end
 
         context 'patch settings' do
-          subject do
-            make_patch_request(active: true)
-          end
-
           it_behaves_like 'returns 404'
         end
       end
@@ -87,10 +98,12 @@ describe API::ErrorTracking do
         project.add_reporter(user)
       end
 
-      it 'returns 403 for update request' do
-        make_patch_request(active: true)
+      context 'patch request' do
+        it 'returns 403' do
+          make_request
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
     end
 
@@ -99,28 +112,34 @@ describe API::ErrorTracking do
         project.add_developer(user)
       end
 
-      it 'returns 403 for update request' do
-        make_patch_request(active: true)
+      context 'patch request' do
+        it 'returns 403' do
+          make_request
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
     end
 
     context 'when authenticated as non-member' do
-      it 'returns 404 for update request' do
-        make_patch_request(active: false)
+      context 'patch request' do
+        it 'returns 404' do
+          make_request
 
-        expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
     context 'when unauthenticated' do
       let(:user) { nil }
 
-      it 'returns 401 for update request' do
-        make_patch_request(active: true)
+      context 'patch request' do
+        it 'returns 401 for update request' do
+          make_request
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
       end
     end
   end
@@ -136,10 +155,6 @@ describe API::ErrorTracking do
       end
 
       context 'get settings' do
-        subject do
-          make_request
-        end
-
         it_behaves_like 'returns project settings'
       end
     end
@@ -152,10 +167,6 @@ describe API::ErrorTracking do
       end
 
       context 'get settings' do
-        subject do
-          make_request
-        end
-
         it_behaves_like 'returns 404'
       end
     end

@@ -1,5 +1,5 @@
 import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
-import gitlabTheme from '~/ide/lib/themes/gl_theme';
+import whiteTheme from '~/ide/lib/themes/white';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import { clearDomElement } from './utils';
 
@@ -19,8 +19,8 @@ export default class Editor {
   }
 
   static setupMonacoTheme() {
-    monacoEditor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
-    monacoEditor.setTheme('gitlab');
+    monacoEditor.defineTheme('white', whiteTheme);
+    monacoEditor.setTheme('white');
   }
 
   createInstance({ el = undefined, blobPath = '', blobContent = '' } = {}) {

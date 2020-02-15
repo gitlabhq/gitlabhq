@@ -6,13 +6,14 @@ import DirtyDiffController from './diff/controller';
 import Disposable from './common/disposable';
 import ModelManager from './common/model_manager';
 import editorOptions, { defaultEditorOptions } from './editor_options';
-import gitlabTheme from './themes/gl_theme';
+import { themes } from './themes';
 import keymap from './keymap.json';
 import { clearDomElement } from '~/editor/utils';
 
-function setupMonacoTheme() {
-  monacoEditor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
-  monacoEditor.setTheme('gitlab');
+function setupThemes() {
+  themes.forEach(theme => {
+    monacoEditor.defineTheme(theme.name, theme.data);
+  });
 }
 
 export default class Editor {
@@ -35,7 +36,7 @@ export default class Editor {
       ...options,
     };
 
-    setupMonacoTheme();
+    setupThemes();
 
     this.debouncedUpdate = _.debounce(() => {
       this.updateDimensions();

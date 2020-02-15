@@ -1,0 +1,5 @@
+---
+title: Makes the generic alerts endpoint available with the free tier
+merge_request: 23339
+author:
+type: changed

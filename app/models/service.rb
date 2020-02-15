@@ -260,6 +260,7 @@ class Service < ApplicationRecord
 
   def self.available_services_names
     service_names = %w[
+      alerts
       asana
       assembla
       bamboo

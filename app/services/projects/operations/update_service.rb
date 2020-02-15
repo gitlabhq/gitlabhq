@@ -16,6 +16,7 @@ module Projects
           .merge(metrics_setting_params)
           .merge(grafana_integration_params)
           .merge(prometheus_integration_params)
+          .merge(incident_management_setting_params)
       end
 
       def metrics_setting_params
@@ -86,6 +87,10 @@ module Projects
         service.assign_attributes(attrs)
 
         { prometheus_service_attributes: service.attributes.except(*%w(id project_id created_at updated_at)) }
+      end
+
+      def incident_management_setting_params
+        params.slice(:incident_management_setting_attributes)
       end
     end
   end

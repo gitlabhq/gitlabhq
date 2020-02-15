@@ -8,6 +8,10 @@ module Gitlab
         class << self
           include Gitlab::Utils::StrongMemoize
 
+          QUERY_PATTERN = '(?<query>\?[a-zA-Z0-9%.()+_=-]+(&[a-zA-Z0-9%.()+_=-]+)*)?'
+          ANCHOR_PATTERN = '(?<anchor>\#[a-z0-9_-]+)?'
+          OPTIONAL_DASH_PATTERN = '(?:/-)?'
+
           # Matches urls for a metrics dashboard. This could be
           # either the /metrics endpoint or the /metrics_dashboard
           # endpoint.
@@ -63,10 +67,10 @@ module Gitlab
               (?<url>
                 #{gitlab_host_pattern}
                 #{project_path_pattern}
-                (?:/-)?
+                #{OPTIONAL_DASH_PATTERN}
                 #{path_suffix_pattern}
-                #{query_pattern}
-                #{anchor_pattern}
+                #{QUERY_PATTERN}
+                #{ANCHOR_PATTERN}
               )
             }x
           end
@@ -77,14 +81,6 @@ module Gitlab
 
           def project_path_pattern
             "\/#{Project.reference_pattern}"
-          end
-
-          def query_pattern
-            '(?<query>\?[a-zA-Z0-9%.()+_=-]+(&[a-zA-Z0-9%.()+_=-]+)*)?'
-          end
-
-          def anchor_pattern
-            '(?<anchor>\#[a-z0-9_-]+)?'
           end
         end
       end

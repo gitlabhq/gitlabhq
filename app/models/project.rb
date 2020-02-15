@@ -2334,7 +2334,7 @@ class Project < ApplicationRecord
   end
 
   def alerts_service_activated?
-    false
+    alerts_service&.active?
   end
 
   def self_monitoring?

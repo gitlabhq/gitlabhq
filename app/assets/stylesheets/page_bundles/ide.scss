@@ -296,8 +296,8 @@ $ide-commit-header-height: 48px;
   height: 100%;
   min-height: 0; // firefox fix
 
-  &.is-readonly,
-  .editor.original {
+  &.is-readonly .vs,
+  .vs .editor.original {
     .monaco-editor,
     .monaco-editor-background,
     .monaco-editor .inputarea.ime-input {

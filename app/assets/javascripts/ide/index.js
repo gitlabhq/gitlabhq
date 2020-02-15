@@ -7,6 +7,7 @@ import store from './stores';
 import router from './ide_router';
 import { parseBoolean } from '../lib/utils/common_utils';
 import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
+import { DEFAULT_THEME } from './lib/themes';
 
 Vue.use(Translate);
 
@@ -51,6 +52,7 @@ export function initIde(el, options = {}) {
       this.setInitialData({
         clientsidePreviewEnabled: parseBoolean(el.dataset.clientsidePreviewEnabled),
         renderWhitespaceInCode: parseBoolean(el.dataset.renderWhitespaceInCode),
+        editorTheme: window.gon?.user_color_scheme || DEFAULT_THEME,
       });
     },
     methods: {

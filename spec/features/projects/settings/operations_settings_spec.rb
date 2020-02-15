@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe 'Projects > Settings > For a forked project', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :repository, create_templates: :issue) }
   let(:role) { :maintainer }
 
   before do
@@ -22,6 +22,54 @@ describe 'Projects > Settings > For a forked project', :js do
   end
 
   describe 'Settings > Operations' do
+    describe 'Incidents' do
+      let(:create_issue) { 'Create an issue. Issues are created for each alert triggered.' }
+      let(:send_email) { 'Send a separate email notification to Developers.' }
+
+      before do
+        create(:project_incident_management_setting, send_email: true, project: project)
+        visit project_settings_operations_path(project)
+
+        wait_for_requests
+        click_expand_incident_management_button
+      end
+
+      it 'renders form for incident management' do
+        expect(page).to have_selector('h4', text: 'Incidents')
+      end
+
+      it 'sets correct default values' do
+        expect(find_field(create_issue)).not_to be_checked
+        expect(find_field(send_email)).to be_checked
+      end
+
+      it 'updates form values' do
+        check(create_issue)
+        template_select = find_field('Issue template')
+        template_select.find(:xpath, 'option[2]').select_option
+        uncheck(send_email)
+
+        save_form
+        click_expand_incident_management_button
+
+        expect(find_field(create_issue)).to be_checked
+        expect(page).to have_select('Issue template', selected: 'bug')
+        expect(find_field(send_email)).not_to be_checked
+      end
+
+      def click_expand_incident_management_button
+        within '.js-incident-management-settings' do
+          click_button('Expand')
+        end
+      end
+
+      def save_form
+        page.within "#edit_project_#{project.id}" do
+          click_on 'Save changes'
+        end
+      end
+    end
+
     context 'error tracking settings form' do
       let(:sentry_list_projects_url) { 'http://sentry.example.com/api/0/projects/' }
 

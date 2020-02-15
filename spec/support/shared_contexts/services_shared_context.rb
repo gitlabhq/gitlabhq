@@ -32,8 +32,7 @@ Service.available_services_names.each do |service|
       {
         'github' => :github_project_service_integration,
         'jenkins' => :jenkins_integration,
-        'jenkins_deprecated' => :jenkins_integration,
-        'alerts' => :incident_management
+        'jenkins_deprecated' => :jenkins_integration
       }
     end
 

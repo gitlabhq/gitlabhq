@@ -19,6 +19,19 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
     it { is_expected.to allow_value("http://gitlab.com/api/0/projects/project1/something").for(:api_url) }
     it { is_expected.not_to allow_values("http://gitlab.com/api/0/projects/project1/something€").for(:api_url) }
 
+    it 'disallows non-booleans in enabled column' do
+      is_expected.not_to allow_value(
+        nil
+      ).for(:enabled)
+    end
+
+    it 'allows booleans in enabled column' do
+      is_expected.to allow_value(
+        true,
+        false
+      ).for(:enabled)
+    end
+
     it 'rejects invalid api_urls' do
       is_expected.not_to allow_values(
         "https://replaceme.com/'><script>alert(document.cookie)</script>", # unsafe

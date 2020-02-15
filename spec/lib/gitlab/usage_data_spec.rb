@@ -22,6 +22,10 @@ describe Gitlab::UsageData do
       create(:service, project: projects[2], type: 'CustomIssueTrackerService', active: true)
       create(:project_error_tracking_setting, project: projects[0])
       create(:project_error_tracking_setting, project: projects[1], enabled: false)
+      create(:alerts_service, project: projects[0])
+      create(:alerts_service, :inactive, project: projects[1])
+      create_list(:issue, 2, project: projects[0], author: User.alert_bot)
+      create_list(:issue, 2, project: projects[1], author: User.alert_bot)
       create_list(:issue, 4, project: projects[0])
       create(:zoom_meeting, project: projects[0], issue: projects[0].issues[0], issue_status: :added)
       create_list(:zoom_meeting, 2, project: projects[0], issue: projects[0].issues[1], issue_status: :removed)
@@ -159,6 +163,7 @@ describe Gitlab::UsageData do
         issues_with_associated_zoom_link
         issues_using_zoom_quick_actions
         issues_with_embedded_grafana_charts_approx
+        incident_issues
         keys
         label_lists
         labels
@@ -183,6 +188,7 @@ describe Gitlab::UsageData do
         projects_prometheus_active
         projects_with_repositories_enabled
         projects_with_error_tracking_enabled
+        projects_with_alerts_service_enabled
         pages_domains
         protected_branches
         releases
@@ -220,10 +226,12 @@ describe Gitlab::UsageData do
       expect(count_data[:projects_mattermost_active]).to eq(0)
       expect(count_data[:projects_with_repositories_enabled]).to eq(3)
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
+      expect(count_data[:projects_with_alerts_service_enabled]).to eq(1)
       expect(count_data[:issues_created_from_gitlab_error_tracking_ui]).to eq(1)
       expect(count_data[:issues_with_associated_zoom_link]).to eq(2)
       expect(count_data[:issues_using_zoom_quick_actions]).to eq(3)
       expect(count_data[:issues_with_embedded_grafana_charts_approx]).to eq(2)
+      expect(count_data[:incident_issues]).to eq(4)
 
       expect(count_data[:clusters_enabled]).to eq(4)
       expect(count_data[:project_clusters_enabled]).to eq(3)

@@ -38,6 +38,7 @@ export default {
       'panelResizing',
       'currentActivityView',
       'renderWhitespaceInCode',
+      'editorTheme',
     ]),
     ...mapGetters([
       'currentMergeRequest',
@@ -85,6 +86,7 @@ export default {
     editorOptions() {
       return {
         renderWhitespace: this.renderWhitespaceInCode ? 'all' : 'none',
+        theme: this.editorTheme,
       };
     },
   },

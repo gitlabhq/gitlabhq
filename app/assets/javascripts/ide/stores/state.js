@@ -1,4 +1,5 @@
 import { activityBarViews, viewerTypes } from '../constants';
+import { DEFAULT_THEME } from '../lib/themes';
 
 export default () => ({
   currentProjectId: '',
@@ -32,4 +33,5 @@ export default () => ({
   },
   clientsidePreviewEnabled: false,
   renderWhitespaceInCode: false,
+  editorTheme: DEFAULT_THEME,
 });
