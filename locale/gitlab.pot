@@ -9678,6 +9678,12 @@ msgstr ""
 msgid "GroupSAML|NameID Format"
 msgstr ""
 
+msgid "GroupSAML|Prohibit outer forks"
+msgstr ""
+
+msgid "GroupSAML|Prohibit outer forks for this group."
+msgstr ""
+
 msgid "GroupSAML|SAML Response Output"
 msgstr ""
 
@@ -9708,6 +9714,9 @@ msgstr ""
 msgid "GroupSAML|To be able to enable group managed accounts, you first need to enable enforced SSO."
 msgstr ""
 
+msgid "GroupSAML|To be able to prohibit outer forks, you first need to enforce dedicate group managed accounts."
+msgstr ""
+
 msgid "GroupSAML|Toggle SAML authentication"
 msgstr ""
 
@@ -9715,6 +9724,9 @@ msgid "GroupSAML|Valid SAML Response"
 msgstr ""
 
 msgid "GroupSAML|With group managed accounts enabled, all the users without a group managed account will be excluded from the group."
+msgstr ""
+
+msgid "GroupSAML|With prohibit outer forks flag enabled group members will be able to fork project only inside your group."
 msgstr ""
 
 msgid "GroupSAML|Your SCIM token"
