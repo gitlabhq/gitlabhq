@@ -1,0 +1,5 @@
+---
+title: Separate token entities into own class files
+merge_request: 24974
+author: Rajendra Kadam
+type: added

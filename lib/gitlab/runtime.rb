@@ -12,6 +12,7 @@ module Gitlab
       :console,
       :geo_log_cursor,
       :puma,
+      :rails_runner,
       :rake,
       :sidekiq,
       :test_suite,
@@ -62,6 +63,10 @@ module Gitlab
 
       def geo_log_cursor?
         !!defined?(::GeoLogCursorOptionParser)
+      end
+
+      def rails_runner?
+        !!defined?(::Rails::Command::RunnerCommand)
       end
 
       def web_server?

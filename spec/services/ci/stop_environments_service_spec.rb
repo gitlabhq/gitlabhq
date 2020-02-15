@@ -217,17 +217,19 @@ describe Ci::StopEnvironmentsService do
 
     context 'when user does not have a permission to play the stop action' do
       before do
-        Ci::Build.find_by_ref('review/feature-2').update_column(:user_id, nil)
+        project.team.truncate
       end
 
       it 'tracks the exception' do
-        deployable = Ci::Build.find_by_ref('review/feature-2')
-
         expect(Gitlab::ErrorTracking)
           .to receive(:track_error)
-          .with(Gitlab::Access::AccessDeniedError, deployable_id: deployable.id).once
+          .with(Gitlab::Access::AccessDeniedError, anything).twice
 
         subject
+      end
+
+      after do
+        project.add_developer(user)
       end
     end
   end

@@ -97,4 +97,12 @@ describe Gitlab::Runtime do
 
     it_behaves_like "valid runtime", :geo_log_cursor, 1
   end
+
+  context "rails runner" do
+    before do
+      stub_const('::Rails::Command::RunnerCommand', double('::Rails::Command::RunnerCommand'))
+    end
+
+    it_behaves_like "valid runtime", :rails_runner, 1
+  end
 end
