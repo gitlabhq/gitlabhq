@@ -128,47 +128,6 @@ module API
         projects_relation + projects_relation.map(&:forked_from_project).compact
       end
     end
-
-    class Trigger < Grape::Entity
-      include ::API::Helpers::Presentable
-
-      expose :id
-      expose :token
-      expose :description
-      expose :created_at, :updated_at, :last_used
-      expose :owner, using: Entities::UserBasic
-    end
-
-    class Variable < Grape::Entity
-      expose :variable_type, :key, :value
-      expose :protected?, as: :protected, if: -> (entity, _) { entity.respond_to?(:protected?) }
-      expose :masked?, as: :masked, if: -> (entity, _) { entity.respond_to?(:masked?) }
-      expose :environment_scope, if: -> (entity, _) { entity.respond_to?(:environment_scope) }
-    end
-
-    class Pipeline < PipelineBasic
-      expose :before_sha, :tag, :yaml_errors
-
-      expose :user, with: Entities::UserBasic
-      expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
-      expose :duration
-      expose :coverage
-      expose :detailed_status, using: DetailedStatusEntity do |pipeline, options|
-        pipeline.detailed_status(options[:current_user])
-      end
-    end
-
-    class PipelineSchedule < Grape::Entity
-      expose :id
-      expose :description, :ref, :cron, :cron_timezone, :next_run_at, :active
-      expose :created_at, :updated_at
-      expose :owner, using: Entities::UserBasic
-    end
-
-    class PipelineScheduleDetails < PipelineSchedule
-      expose :last_pipeline, using: Entities::PipelineBasic
-      expose :variables, using: Entities::Variable
-    end
   end
 end
 
