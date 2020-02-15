@@ -4,7 +4,8 @@ require 'spec_helper'
 
 describe Gitlab::DataBuilder::Build do
   let(:runner) { create(:ci_runner, :instance) }
-  let(:build) { create(:ci_build, :running, runner: runner) }
+  let(:user) { create(:user) }
+  let(:build) { create(:ci_build, :running, runner: runner, user: user) }
 
   describe '.build' do
     let(:data) do
@@ -22,6 +23,15 @@ describe Gitlab::DataBuilder::Build do
     it { expect(data[:project_id]).to eq(build.project.id) }
     it { expect(data[:project_name]).to eq(build.project.full_name) }
     it { expect(data[:pipeline_id]).to eq(build.pipeline.id) }
+    it {
+      expect(data[:user]).to eq(
+        {
+            name: user.name,
+            username: user.username,
+            avatar_url: user.avatar_url(only_path: false),
+            email: user.email
+            })
+    }
     it { expect(data[:commit][:id]).to eq(build.pipeline.id) }
     it { expect(data[:runner][:id]).to eq(build.runner.id) }
     it { expect(data[:runner][:description]).to eq(build.runner.description) }

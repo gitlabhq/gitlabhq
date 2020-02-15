@@ -1226,7 +1226,8 @@ class User < ApplicationRecord
     {
       name: name,
       username: username,
-      avatar_url: avatar_url(only_path: false)
+      avatar_url: avatar_url(only_path: false),
+      email: email
     }
   end
 

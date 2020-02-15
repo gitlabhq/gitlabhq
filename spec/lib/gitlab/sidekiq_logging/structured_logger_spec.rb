@@ -99,13 +99,8 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
       context 'when the job args are bigger than the maximum allowed' do
         it 'keeps args from the front until they exceed the limit' do
           Timecop.freeze(timestamp) do
-            job['args'] = [
-              1,
-              2,
-              'a' * (described_class::MAXIMUM_JOB_ARGUMENTS_LENGTH / 2),
-              'b' * (described_class::MAXIMUM_JOB_ARGUMENTS_LENGTH / 2),
-              3
-            ]
+            half_limit = Gitlab::Utils::LogLimitedArray::MAXIMUM_ARRAY_LENGTH / 2
+            job['args'] = [1, 2, 'a' * half_limit, 'b' * half_limit, 3]
 
             expected_args = job['args'].take(3) + ['...']
 

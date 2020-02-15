@@ -158,6 +158,27 @@
   }
 }
 
+// Temporary hack until `gitlab-ui` issue is fixed.
+// https://gitlab.com/gitlab-org/gitlab-ui/issues/164
+.gl-dropdown .dropdown-menu-toggle {
+  .gl-dropdown-caret {
+    position: absolute;
+    right: $gl-padding-8;
+    top: $gl-padding-8;
+  }
+
+  // Add some child to the button so that the default height kicks in
+  // when there's no text (since the caret is now aboslute)
+  &::after {
+    border: 0;
+    content: ' ';
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+}
+
 @mixin dropdown-item-hover {
   background-color: $gray-darker;
   color: $gl-text-color;

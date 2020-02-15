@@ -11,7 +11,8 @@ describe Gitlab::DataBuilder::Pipeline do
           project: project,
           status: 'success',
           sha: project.commit.sha,
-          ref: project.default_branch)
+          ref: project.default_branch,
+          user: user)
   end
 
   let!(:build) { create(:ci_build, pipeline: pipeline) }
@@ -37,6 +38,12 @@ describe Gitlab::DataBuilder::Pipeline do
       expect(build_data[:allow_failure]).to eq(build.allow_failure)
       expect(project_data).to eq(project.hook_attrs(backward: false))
       expect(data[:merge_request]).to be_nil
+      expect(data[:user]).to eq({
+        name: user.name,
+        username: user.username,
+        avatar_url: user.avatar_url(only_path: false),
+        email: user.email
+        })
     end
 
     context 'pipeline without variables' do

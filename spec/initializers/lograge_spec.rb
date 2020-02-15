@@ -5,16 +5,37 @@ require 'spec_helper'
 describe 'lograge', type: :request do
   let(:headers) { { 'X-Request-ID' => 'new-correlation-id' } }
 
-  context 'for API requests' do
-    subject { get("/api/v4/endpoint", params: {}, headers: headers) }
+  let(:large_params) do
+    half_limit = Gitlab::Utils::LogLimitedArray::MAXIMUM_ARRAY_LENGTH / 2
 
+    {
+      a: 'a',
+      b: 'b' * half_limit,
+      c: 'c' * half_limit,
+      d: 'd'
+    }
+  end
+
+  let(:limited_params) do
+    large_params.slice(:a, :b).map { |k, v| { key: k.to_s, value: v } } + ['...']
+  end
+
+  context 'for API requests' do
     it 'logs to api_json log' do
       # we assert receiving parameters by grape logger
       expect_any_instance_of(Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp).to receive(:call)
         .with(anything, anything, anything, a_hash_including("correlation_id" => "new-correlation-id"))
         .and_call_original
 
-      subject
+      get("/api/v4/endpoint", params: {}, headers: headers)
+    end
+
+    it 'limits param size' do
+      expect(Lograge.formatter).to receive(:call)
+        .with(a_hash_including(params: limited_params))
+        .and_call_original
+
+      get("/api/v4/endpoint", params: large_params, headers: headers)
     end
   end
 
@@ -66,6 +87,14 @@ describe 'lograge', type: :request do
         .and_call_original
 
       subject
+    end
+
+    it 'limits param size' do
+      expect(Lograge.formatter).to receive(:call)
+        .with(a_hash_including(params: limited_params))
+        .and_call_original
+
+      get("/", params: large_params, headers: headers)
     end
   end
 

@@ -59,7 +59,7 @@ describe Projects::DeploymentsController do
           end
         end
 
-        it 'returns a empty response 204 resposne' do
+        it 'returns an empty 204 response' do
           get :metrics, params: deployment_params(id: deployment.to_param)
           expect(response).to have_gitlab_http_status(:no_content)
           expect(response.body).to eq('')

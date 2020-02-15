@@ -28,7 +28,7 @@ unless Gitlab::Runtime.sidekiq?
 
       payload = {
         time: Time.now.utc.iso8601(3),
-        params: params,
+        params: Gitlab::Utils::LogLimitedArray.log_limited_array(params),
         remote_ip: event.payload[:remote_ip],
         user_id: event.payload[:user_id],
         username: event.payload[:username],

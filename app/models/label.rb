@@ -42,6 +42,22 @@ class Label < ApplicationRecord
   scope :order_name_desc, -> { reorder(title: :desc) }
   scope :subscribed_by, ->(user_id) { joins(:subscriptions).where(subscriptions: { user_id: user_id, subscribed: true }) }
 
+  scope :top_labels_by_target, -> (target_relation) {
+    label_id_column = arel_table[:id]
+
+    # Window aggregation to count labels
+    count_by_id = Arel::Nodes::Over.new(
+      Arel::Nodes::NamedFunction.new('count', [label_id_column]),
+      Arel::Nodes::Window.new.partition(label_id_column)
+    ).as('count_by_id')
+
+    select(arel_table[Arel.star], count_by_id)
+      .joins(:label_links)
+      .merge(LabelLink.where(target: target_relation))
+      .reorder(count_by_id: :desc)
+      .distinct
+  }
+
   def self.prioritized(project)
     joins(:priorities)
       .where(label_priorities: { project_id: project })

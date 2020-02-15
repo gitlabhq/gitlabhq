@@ -25,9 +25,12 @@ module Gitlab
         def process_params(data)
           return [] unless data.has_key?(:params)
 
-          data[:params]
-            .each_pair
-            .map { |k, v| { key: k, value: utf8_encode_values(v) } }
+          params_array =
+            data[:params]
+              .each_pair
+              .map { |k, v| { key: k, value: utf8_encode_values(v) } }
+
+          Gitlab::Utils::LogLimitedArray.log_limited_array(params_array)
         end
 
         def utf8_encode_values(data)

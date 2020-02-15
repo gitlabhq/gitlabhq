@@ -4200,4 +4200,17 @@ describe User, :do_not_mock_admin_mode do
       expect(described_class.bots).to match_array([bot])
     end
   end
+
+  describe '#hook_attrs' do
+    it 'includes name, username, avatar_url, and email' do
+      user = create(:user)
+      user_attributes = {
+        name: user.name,
+        username: user.username,
+        avatar_url: user.avatar_url(only_path: false),
+        email: user.email
+      }
+      expect(user.hook_attrs).to eq(user_attributes)
+    end
+  end
 end

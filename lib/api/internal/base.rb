@@ -212,40 +212,7 @@ module API
         post '/post_receive' do
           status 200
 
-          response = Gitlab::InternalPostReceive::Response.new
-
-          # Try to load the project and users so we have the application context
-          # available for logging before we schedule any jobs.
-          user = actor.user
-          project
-
-          push_options = Gitlab::PushOptions.new(params[:push_options])
-
-          response.reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
-
-          PostReceive.perform_async(params[:gl_repository], params[:identifier],
-                                    params[:changes], push_options.as_json)
-
-          mr_options = push_options.get(:merge_request)
-          if mr_options.present?
-            message = process_mr_push_options(mr_options, project, user, params[:changes])
-            response.add_alert_message(message)
-          end
-
-          broadcast_message = BroadcastMessage.current&.last&.message
-          response.add_alert_message(broadcast_message)
-
-          response.add_merge_request_urls(merge_request_urls)
-
-          # Neither User nor Project are guaranteed to be returned; an orphaned write deploy
-          # key could be used
-          if user && project
-            redirect_message = Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)
-            project_created_message = Gitlab::Checks::ProjectCreated.fetch_message(user.id, project.id)
-
-            response.add_basic_message(redirect_message)
-            response.add_basic_message(project_created_message)
-          end
+          response = PostReceiveService.new(actor.user, project, params).execute
 
           ee_post_receive_response_hook(response)
 
