@@ -2932,30 +2932,6 @@ describe Ci::Pipeline, :mailer do
           create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)
         end
 
-        context 'when downstream pipeline status transitions to pending' do
-          it 'updates bridge status ' do
-            expect(pipeline).to receive(:update_bridge_status!).once
-
-            pipeline.run!
-          end
-        end
-
-        context 'when the status of downstream pipeline transitions to waiting_for_resource' do
-          it 'updates bridge status ' do
-            expect(pipeline).to receive(:update_bridge_status!).once
-
-            pipeline.request_resource!
-          end
-        end
-
-        context 'when the status of downstream pipeline transitions to failed' do
-          it 'does not update bridge status ' do
-            expect(pipeline).not_to receive(:update_bridge_status!)
-
-            pipeline.drop!
-          end
-        end
-
         describe '#bridge_triggered?' do
           it 'is a pipeline triggered by a bridge' do
             expect(pipeline).to be_bridge_triggered

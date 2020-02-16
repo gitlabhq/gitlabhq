@@ -214,7 +214,7 @@ module Ci
         end
       end
 
-      after_transition created: any - [:failed] do |pipeline|
+      after_transition created: :pending do |pipeline|
         next unless pipeline.bridge_triggered?
         next if pipeline.bridge_waiting?
 

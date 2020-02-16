@@ -267,34 +267,6 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
       end
     end
 
-    context 'when downstream pipeline creation errors out' do
-      let(:stub_config) { false }
-
-      before do
-        stub_ci_pipeline_yaml_file(YAML.dump(invalid: { yaml: 'error' }))
-      end
-
-      it 'creates only one new pipeline' do
-        expect { service.execute(bridge) }
-          .to change { Ci::Pipeline.count }.by(1)
-      end
-
-      it 'creates a new pipeline in the downstream project' do
-        pipeline = service.execute(bridge)
-
-        expect(pipeline.user).to eq bridge.user
-        expect(pipeline.project).to eq downstream_project
-      end
-
-      it 'drops the bridge' do
-        pipeline = service.execute(bridge)
-
-        expect(pipeline.reload).to be_failed
-        expect(bridge.reload).to be_failed
-        expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
-      end
-    end
-
     context 'when bridge job has YAML variables defined' do
       before do
         bridge.yaml_variables = [{ key: 'BRIDGE', value: 'var', public: true }]

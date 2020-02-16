@@ -1,5 +1,0 @@
----
-title: Drop bridge on any downstream pipeline errors
-merge_request: 24735
-author:
-type: fixed
