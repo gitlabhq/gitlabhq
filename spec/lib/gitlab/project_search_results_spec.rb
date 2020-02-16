@@ -31,7 +31,7 @@ describe Gitlab::ProjectSearchResults do
     let(:results) { described_class.new(user, project, query) }
 
     where(:scope, :count_method, :expected) do
-      'blobs'      | :blobs_count            | '1234'
+      'blobs'      | :limited_blobs_count    | max_limited_count
       'notes'      | :limited_notes_count    | max_limited_count
       'wiki_blobs' | :wiki_blobs_count       | '1234'
       'commits'    | :commits_count          | '1234'
@@ -141,9 +141,9 @@ describe Gitlab::ProjectSearchResults do
 
   describe 'blob search' do
     let(:project) { create(:project, :public, :repository) }
+    let(:blob_type) { 'blobs' }
 
     it_behaves_like 'general blob search', 'repository', 'blobs' do
-      let(:blob_type) { 'blobs' }
       let(:disabled_project) { create(:project, :public, :repository, :repository_disabled) }
       let(:private_project) { create(:project, :public, :repository, :repository_private) }
       let(:expected_file_by_path) { 'files/images/wm.svg' }
@@ -151,8 +151,35 @@ describe Gitlab::ProjectSearchResults do
     end
 
     it_behaves_like 'blob search repository ref', 'project' do
-      let(:blob_type) { 'blobs' }
       let(:entity) { project }
+    end
+
+    context 'pagination' do
+      let(:per_page) { 20 }
+      let(:count_limit) { described_class::COUNT_LIMIT }
+      let(:file_finder) { instance_double('Gitlab::FileFinder') }
+      let(:results) { described_class.new(user, project, query, per_page: per_page) }
+      let(:repository_ref) { 'master' }
+
+      before do
+        allow(file_finder).to receive(:find).and_return([])
+        expect(Gitlab::FileFinder).to receive(:new).with(project, repository_ref).and_return(file_finder)
+      end
+
+      it 'limits search results based on the first page' do
+        expect(file_finder).to receive(:find).with(query, content_match_cutoff: count_limit)
+        results.objects(blob_type, 1)
+      end
+
+      it 'limits search results based on the second page' do
+        expect(file_finder).to receive(:find).with(query, content_match_cutoff: count_limit + per_page)
+        results.objects(blob_type, 2)
+      end
+
+      it 'limits search results based on the third page' do
+        expect(file_finder).to receive(:find).with(query, content_match_cutoff: count_limit + per_page * 2)
+        results.objects(blob_type, 3)
+      end
     end
   end
 

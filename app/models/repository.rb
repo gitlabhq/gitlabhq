@@ -993,10 +993,10 @@ class Repository
     raw_repository.ls_files(actual_ref)
   end
 
-  def search_files_by_content(query, ref)
+  def search_files_by_content(query, ref, options = {})
     return [] if empty? || query.blank?
 
-    raw_repository.search_files_by_content(query, ref)
+    raw_repository.search_files_by_content(query, ref, options)
   end
 
   def search_files_by_name(query, ref)

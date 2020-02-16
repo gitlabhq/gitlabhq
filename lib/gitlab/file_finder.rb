@@ -13,14 +13,15 @@ module Gitlab
       @ref = ref
     end
 
-    def find(query)
+    def find(query, content_match_cutoff: nil)
       query = Gitlab::Search::Query.new(query, encode_binary: true) do
         filter :filename, matcher: ->(filter, blob) { blob.binary_path =~ /#{filter[:regex_value]}$/i }
         filter :path, matcher: ->(filter, blob) { blob.binary_path =~ /#{filter[:regex_value]}/i }
         filter :extension, matcher: ->(filter, blob) { blob.binary_path =~ /\.#{filter[:regex_value]}$/i }
       end
 
-      files = find_by_path(query.term) + find_by_content(query.term)
+      content_match_cutoff = nil if query.filters.any?
+      files = find_by_path(query.term) + find_by_content(query.term, { limit: content_match_cutoff })
 
       files = query.filter_results(files) if query.filters.any?
 
@@ -29,8 +30,8 @@ module Gitlab
 
     private
 
-    def find_by_content(query)
-      repository.search_files_by_content(query, ref).map do |result|
+    def find_by_content(query, options)
+      repository.search_files_by_content(query, ref, options).map do |result|
         Gitlab::Search::FoundBlob.new(content_match: result, project: project, ref: ref, repository: repository)
       end
     end

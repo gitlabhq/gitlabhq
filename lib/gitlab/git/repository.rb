@@ -956,13 +956,13 @@ module Gitlab
         gitaly_ref_client.tag_names_contains_sha(sha)
       end
 
-      def search_files_by_content(query, ref)
+      def search_files_by_content(query, ref, options = {})
         return [] if empty? || query.blank?
 
         safe_query = Regexp.escape(query)
         ref ||= root_ref
 
-        gitaly_repository_client.search_files_by_content(ref, safe_query)
+        gitaly_repository_client.search_files_by_content(ref, safe_query, options)
       end
 
       def can_be_merged?(source_sha, target_branch)

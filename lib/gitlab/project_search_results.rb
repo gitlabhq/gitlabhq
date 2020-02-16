@@ -2,7 +2,7 @@
 
 module Gitlab
   class ProjectSearchResults < SearchResults
-    attr_reader :project, :repository_ref
+    attr_reader :project, :repository_ref, :per_page
 
     def initialize(current_user, project, query, repository_ref = nil, per_page: 20)
       @current_user = current_user
@@ -17,7 +17,7 @@ module Gitlab
       when 'notes'
         notes.page(page).per(per_page)
       when 'blobs'
-        paginated_blobs(blobs, page)
+        paginated_blobs(blobs(page), page)
       when 'wiki_blobs'
         paginated_blobs(wiki_blobs, page)
       when 'commits'
@@ -32,7 +32,7 @@ module Gitlab
     def formatted_count(scope)
       case scope
       when 'blobs'
-        blobs_count.to_s
+        formatted_limited_count(limited_blobs_count)
       when 'notes'
         formatted_limited_count(limited_notes_count)
       when 'wiki_blobs'
@@ -48,8 +48,8 @@ module Gitlab
       super.where(id: @project.team.members) # rubocop:disable CodeReuse/ActiveRecord
     end
 
-    def blobs_count
-      @blobs_count ||= blobs.count
+    def limited_blobs_count
+      @limited_blobs_count ||= blobs.count
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -81,7 +81,7 @@ module Gitlab
 
       counts = %i(limited_milestones_count limited_notes_count
                   limited_merge_requests_count limited_issues_count
-                  blobs_count wiki_blobs_count)
+                  limited_blobs_count wiki_blobs_count)
       counts.all? { |count_method| public_send(count_method).zero? } # rubocop:disable GitlabSecurity/PublicSend
     end
 
@@ -95,10 +95,16 @@ module Gitlab
       results
     end
 
-    def blobs
+    def limit_up_to_page(page)
+      current_page = page&.to_i || 1
+      offset = per_page * (current_page - 1)
+      count_limit + offset
+    end
+
+    def blobs(page = 1)
       return [] unless Ability.allowed?(@current_user, :download_code, @project)
 
-      @blobs ||= Gitlab::FileFinder.new(project, repository_project_ref).find(query)
+      @blobs ||= Gitlab::FileFinder.new(project, repository_project_ref).find(query, content_match_cutoff: limit_up_to_page(page))
     end
 
     def wiki_blobs
