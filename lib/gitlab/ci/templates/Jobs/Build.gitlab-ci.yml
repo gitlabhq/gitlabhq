@@ -4,7 +4,8 @@ build:
   variables:
     DOCKER_TLS_CERTDIR: ""
   services:
-    - docker:stable-dind
+    # pin to a known working version until https://gitlab.com/gitlab-org/gitlab-runner/issues/6697 is fixed
+    - docker:19.03.5-dind
   script:
     - |
       if [[ -z "$CI_COMMIT_TAG" ]]; then

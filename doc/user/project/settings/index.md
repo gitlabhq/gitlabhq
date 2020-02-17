@@ -110,13 +110,10 @@ Here you can run housekeeping, archive, rename, transfer, [remove a fork relatio
 
 #### Archiving a project
 
-NOTE: **Note:**
-Only project Owners and Admin users have the [permissions](../../permissions.md#project-members-permissions)
-to archive a project.
-
-Archiving a project makes it read-only for all users and indicates that it is
+Archiving a project makes it read-only for all users and indicates that it's
 no longer actively maintained. Projects that have been archived can also be
-unarchived.
+unarchived. Only project Owners and Admin users have the
+[permissions](../../permissions.md#project-members-permissions) to archive a project.
 
 When a project is archived, the repository, issues, merge requests and all
 other features are read-only. Archived projects are also hidden
@@ -124,8 +121,33 @@ in project listings.
 
 To archive a project:
 
-1. Navigate to your project's **Settings > General > Advanced settings**.
-1. In the Archive project section, click the **Archive project** button.
+1. Navigate to your project's **{settings}** **Settings > General**.
+1. Under **Advanced**, click **Expand**.
+1. In the **Archive project** section, click the **Archive project** button.
+1. Confirm the action when asked to.
+
+#### Unarchiving a project
+
+Unarchiving a project removes the read-only restriction on a project, and makes it
+available in project listings. Only project Owners and Admin users have the
+[permissions](../../permissions.md#project-members-permissions) to unarchive a project.
+
+To find an archived project:
+
+1. Sign in to GitLab as a user with project Owner or Admin permissions.
+1. If you:
+   - Have the project's URL, open the project's page in your browser.
+   - Don't have the project's URL:
+   1. Click **Projects > Explore projects**.
+   1. In the **Sort projects** dropdown box, select **Show archived projects**.
+   1. In the **Filter by name** field, provide the project's name.
+   1. Click the link to the project to open its **Details** page.
+
+Next, to unarchive the project:
+
+1. Navigate to your project's **{settings}** **Settings > General**.
+1. Under **Advanced**, click **Expand**.
+1. In the **Unarchive project** section, click the **Unarchive project** button.
 1. Confirm the action when asked to.
 
 #### Renaming a repository
@@ -140,12 +162,13 @@ project via a browser) and its place on the file disk where GitLab is installed.
 
 To rename a repository:
 
-1. Navigate to your project's **Settings > General > Advanced settings**.
+1. Navigate to your project's **{settings}** **Settings > General**.
+1. Under **Advanced**, click **Expand**.
 1. Under "Rename repository", change the "Path" to your liking.
 1. Hit **Rename project**.
 
 Remember that this can have unintended side effects since everyone with the
-old URL will not be able to push or pull. Read more about what happens with the
+old URL won't be able to push or pull. Read more about what happens with the
 [redirects when renaming repositories](../index.md#redirects-when-changing-repository-paths).
 
 #### Transferring an existing project into another namespace
@@ -158,13 +181,14 @@ You can transfer an existing project into a [group](../../group/index.md) if:
 
 1. You have at least **Maintainer** [permissions](../../permissions.md#project-members-permissions) to that group.
 1. The project is in a subgroup you own.
-1. You are at least a **Maintainer** of the project under your personal namespace.
-   Similarly, if you are an owner of a group, you can transfer any of its projects
+1. You're at least a **Maintainer** of the project under your personal namespace.
+   Similarly, if you're an owner of a group, you can transfer any of its projects
    under your own user.
 
 To transfer a project:
 
-1. Navigate to your project's **Settings > General > Advanced settings**.
+1. Navigate to your project's **{settings}** **Settings > General**.
+1. Under **Advanced**, click **Expand**.
 1. Under "Transfer project", choose the namespace you want to transfer the
    project to.
 1. Confirm the transfer by typing the project's path as instructed.
@@ -197,7 +221,7 @@ This action either:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32935) in GitLab 12.6.
 
-To restore a project that is marked for deletion:
+To restore a project marked for deletion:
 
 1. Navigate to your project, and select **{settings}** **Settings > General > Advanced**.
 1. In the Restore project section, click the **Restore project** button.
@@ -205,8 +229,8 @@ To restore a project that is marked for deletion:
 #### Removing a fork relationship
 
 Forking is a great way to [contribute to a project](../repository/forking_workflow.md)
-of which you are not a member.
-If you want to use the fork for yourself and do not need to send
+of which you're not a member.
+If you want to use the fork for yourself and don't need to send
 [merge requests](../merge_requests.md) to the upstream project,
 you can safely remove the fork relationship.
 
