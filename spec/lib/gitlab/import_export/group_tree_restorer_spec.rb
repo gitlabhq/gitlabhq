@@ -82,8 +82,6 @@ describe Gitlab::ImportExport::GroupTreeRestorer do
     shared_examples 'excluded attributes' do
       excluded_attributes = %w[
         id
-        name
-        path
         owner_id
         parent_id
         created_at

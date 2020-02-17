@@ -253,7 +253,6 @@ graph RL;
   E[review-build-cng];
   F[build-qa-image];
   G[review-deploy];
-  G2["schedule:review-deploy<br/>(master only)"];
   I["karma, jest, webpack-dev-server, static-analysis"];
   I2["karma-foss, jest-foss<br/>(EE default refs only)"];
   J["compile-assets pull-push-cache<br/>(master only)"];
@@ -297,19 +296,16 @@ subgraph "`post-test` stage"
 
 subgraph "`review-prepare` stage"
     E -.-> |needs| C;
-    E2["schedule:review-build-cng<br/>(master schedule only)"] -.-> |needs| C;
     end
 
 subgraph "`review` stage"
-    G --> |happens after| E
-    G2 --> |happens after| E2
+    G -.-> |needs| E
     end
 
 subgraph "`qa` stage"
     Q -.-> |needs| C;
     Q -.-> |needs| F;
-    QA1["review-qa-smoke, review-qa-all, review-performance, dast"] -.-> |needs and depends on| G;
-    QA2["schedule:review-performance<br/>(master only)"] -.-> |needs and depends on| G2;
+    QA1["review-qa-smoke, review-qa-all, review-performance, dast"] -.-> |needs| G;
     end
 
 subgraph "`post-qa` stage"

@@ -7806,6 +7806,9 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
+msgid "Events in %{group_name}"
+msgstr ""
+
 msgid "Events in %{project_path}"
 msgstr ""
 
@@ -9523,6 +9526,9 @@ msgid "Group %{group_name} was scheduled for deletion."
 msgstr ""
 
 msgid "Group %{group_name} was successfully created."
+msgstr ""
+
+msgid "Group Audit Events"
 msgstr ""
 
 msgid "Group CI/CD settings"
@@ -23121,6 +23127,9 @@ msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisSta
 msgstr ""
 
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
+msgstr ""
+
+msgid "mrWidget|%{prefixToLinkStart}No pipeline%{prefixToLinkEnd} %{addPipelineLinkStart}Add the .gitlab-ci.yml file%{addPipelineLinkEnd} to create one."
 msgstr ""
 
 msgid "mrWidget|Added to the merge train by"

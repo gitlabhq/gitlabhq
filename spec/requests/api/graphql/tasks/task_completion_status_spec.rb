@@ -9,8 +9,8 @@ describe 'getting task completion status information' do
   DESCRIPTION_1_DONE = '- [x] task 1\n- [ ] task 2'
   DESCRIPTION_2_DONE = '- [x] task 1\n- [x] task 2'
 
-  set(:user1) { create(:user) }
-  set(:project) { create(:project, :repository, :public) }
+  let_it_be(:user1) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, :public) }
 
   let(:fields) do
     <<~QUERY

@@ -5,7 +5,6 @@ import { s__, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileTree from '~/vue_shared/components/file_tree.vue';
 import DiffFileRow from './diff_file_row.vue';
-import FileRowStats from './file_row_stats.vue';
 
 export default {
   directives: {
@@ -48,9 +47,6 @@ export default {
 
         return acc;
       }, []);
-    },
-    fileRowExtraComponent() {
-      return this.hideFileStats ? null : FileRowStats;
     },
   },
   methods: {
@@ -98,8 +94,8 @@ export default {
           :key="file.key"
           :file="file"
           :level="0"
+          :hide-file-stats="hideFileStats"
           :hide-extra-on-tree="true"
-          :extra-component="fileRowExtraComponent"
           :show-changed-icon="true"
           :file-row-component="$options.DiffFileRow"
           @toggleTreeOpen="toggleTreeOpen"

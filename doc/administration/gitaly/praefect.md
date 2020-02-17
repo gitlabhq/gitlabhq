@@ -261,7 +261,10 @@ gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
 # Configure the gitlab-shell API callback URL. Without this, `git push` will
 # fail. This can be your 'front door' GitLab URL or an internal load
 # balancer.
-gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
+# Possible values could be: 'http://10.23.101.53', 'https://gitlab.example.com',
+# etc. Please replace GITLAB_SERVER_ADDRESS with proper value and change schema
+# to 'https' in case you use encrypted connection.
+gitlab_rails['internal_api_url'] = 'http://GITLAB_SERVER_ADDRESS'
 
 # Replace PRAEFECT_INTERNAL_TOKEN below with a real secret.
 gitaly['auth_token'] = 'PRAEFECT_INTERNAL_TOKEN'
@@ -324,6 +327,12 @@ git_data_dirs({
 
 # Replace GITLAB_SHELL_SECRET_TOKEN below with real secret
 gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
+
+# Possible values could be: 'http://10.23.101.53', 'https://gitlab.example.com',
+# etc. Please replace GITLAB_SERVER_ADDRESS with proper value and change schema
+# to 'https' in case you use encrypted connection. For more info please refer
+# to https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab
+external_url "http://<GITLAB_SERVER_ADDRESS>"
 ```
 
 Replace `GITLAB_SHELL_SECRET_TOKEN` and `PRAEFECT_EXTERNAL_TOKEN`

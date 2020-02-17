@@ -3,18 +3,18 @@
 require 'spec_helper'
 
 describe API::Issues do
-  set(:user) { create(:user) }
-  set(:project) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace) }
-  set(:private_mrs_project) do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace) }
+  let_it_be(:private_mrs_project) do
     create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE)
   end
 
-  let(:user2)       { create(:user) }
-  let(:non_member)  { create(:user) }
-  set(:guest)       { create(:user) }
-  set(:author)      { create(:author) }
-  set(:assignee)    { create(:assignee) }
-  let(:admin)       { create(:user, :admin) }
+  let(:user2)             { create(:user) }
+  let(:non_member)        { create(:user) }
+  let_it_be(:guest)       { create(:user) }
+  let_it_be(:author)      { create(:author) }
+  let_it_be(:assignee)    { create(:assignee) }
+  let(:admin)             { create(:user, :admin) }
   let(:issue_title)       { 'foo' }
   let(:issue_description) { 'closed' }
   let!(:closed_issue) do
@@ -48,12 +48,12 @@ describe API::Issues do
       title: issue_title,
       description: issue_description
   end
-  set(:label) do
+  let_it_be(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
   let!(:label_link) { create(:label_link, label: label, target: issue) }
   let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
-  set(:empty_milestone) do
+  let_it_be(:empty_milestone) do
     create(:milestone, title: '2.0.0', project: project)
   end
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }

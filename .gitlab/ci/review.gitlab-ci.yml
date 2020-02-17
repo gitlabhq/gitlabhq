@@ -126,7 +126,6 @@ review-build-cng:
     - .default-tags
     - .default-retry
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  dependencies: []
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
@@ -142,6 +141,9 @@ review-deploy:
     - .review-workflow-base
     - .review:rules:mr-and-schedule
   stage: review
+  needs:
+    - job: review-build-cng
+      artifacts: false
   allow_failure: true
   before_script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
@@ -169,6 +171,7 @@ review-deploy:
   extends: .review-workflow-base
   environment:
     action: stop
+  dependencies: []
   variables:
     # We're cloning the repo instead of downloading the script for now
     # because some repos are private and CI_JOB_TOKEN cannot access files.

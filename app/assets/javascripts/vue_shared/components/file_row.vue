@@ -1,5 +1,4 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
@@ -9,7 +8,6 @@ export default {
   components: {
     FileHeader,
     FileIcon,
-    Icon,
     ChangedFileIcon,
   },
   props: {
@@ -21,26 +19,11 @@ export default {
       type: Number,
       required: true,
     },
-    extraComponent: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-    hideExtraOnTree: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     showChangedIcon: {
       type: Boolean,
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      dropdownOpen: false,
-    };
   },
   computed: {
     isTree() {
@@ -120,9 +103,6 @@ export default {
 
       return this.$router.currentRoute.path === `/project${this.file.url}`;
     },
-    toggleDropdown(val) {
-      this.dropdownOpen = val;
-    },
   },
 };
 </script>
@@ -136,7 +116,7 @@ export default {
     class="file-row"
     role="button"
     @click="clickFile"
-    @mouseleave="toggleDropdown(false)"
+    @mouseleave="$emit('mouseleave', $event)"
   >
     <div class="file-row-name-container">
       <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">
@@ -152,13 +132,7 @@ export default {
         <changed-file-icon v-else :file="file" :size="16" class="append-right-5" />
         {{ file.name }}
       </span>
-      <component
-        :is="extraComponent"
-        v-if="extraComponent && !(hideExtraOnTree && file.type === 'tree')"
-        :file="file"
-        :dropdown-open="dropdownOpen"
-        @toggle="toggleDropdown($event)"
-      />
+      <slot></slot>
     </div>
   </div>
 </template>

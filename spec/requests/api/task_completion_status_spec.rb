@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe 'task completion status response' do
-  set(:user) { create(:user) }
-  set(:project) do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) do
     create(:project, :public, creator_id: user.id, namespace: user.namespace)
   end
 

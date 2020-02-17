@@ -9,6 +9,7 @@ import SmartInterval from '~/smart_interval';
 import createFlash from '../flash';
 import Loading from './components/loading.vue';
 import WidgetHeader from './components/mr_widget_header.vue';
+import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
 import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
 import Deployment from './components/deployment/deployment.vue';
@@ -46,6 +47,7 @@ export default {
   components: {
     Loading,
     'mr-widget-header': WidgetHeader,
+    'mr-widget-suggest-pipeline': WidgetSuggestPipeline,
     'mr-widget-merge-help': WidgetMergeHelp,
     MrWidgetPipelineContainer,
     Deployment,
@@ -98,6 +100,9 @@ export default {
     },
     shouldRenderPipelines() {
       return this.mr.hasCI;
+    },
+    shouldSuggestPipelines() {
+      return gon.features?.suggestPipeline && !this.mr.hasCI && this.mr.mergeRequestAddCiConfigPath;
     },
     shouldRenderRelatedLinks() {
       return Boolean(this.mr.relatedLinks) && !this.mr.isNothingToMergeState;
@@ -353,6 +358,11 @@ export default {
 <template>
   <div v-if="mr" class="mr-state-widget prepend-top-default">
     <mr-widget-header :mr="mr" />
+    <mr-widget-suggest-pipeline
+      v-if="shouldSuggestPipelines"
+      class="mr-widget-workflow"
+      :pipeline-path="mr.mergeRequestAddCiConfigPath"
+    />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"
       class="mr-widget-workflow"

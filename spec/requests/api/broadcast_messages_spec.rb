@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe API::BroadcastMessages do
-  set(:user)  { create(:user) }
-  set(:admin) { create(:admin) }
-  set(:message) { create(:broadcast_message) }
+  let_it_be(:user)  { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:message) { create(:broadcast_message) }
 
   describe 'GET /broadcast_messages' do
     it 'returns an Array of BroadcastMessages' do

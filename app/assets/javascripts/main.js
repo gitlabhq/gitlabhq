@@ -201,9 +201,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   if (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs') {
-    const $rightSidebar = $('aside.right-sidebar, .layout-page');
+    const $rightSidebar = $('aside.right-sidebar');
+    const $layoutPage = $('.layout-page');
 
-    $rightSidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+    if ($rightSidebar.length > 0) {
+      $rightSidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+      $layoutPage.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+    } else {
+      $layoutPage.removeClass('right-sidebar-expanded right-sidebar-collapsed');
+    }
   }
 
   // prevent default action for disabled buttons

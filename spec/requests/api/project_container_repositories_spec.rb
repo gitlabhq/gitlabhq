@@ -5,12 +5,11 @@ require 'spec_helper'
 describe API::ProjectContainerRepositories do
   include ExclusiveLeaseHelpers
 
-  set(:project) { create(:project, :private) }
-  set(:maintainer) { create(:user) }
-  set(:developer) { create(:user) }
-  set(:reporter) { create(:user) }
-  set(:guest) { create(:user) }
-
+  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:guest) { create(:user) }
   let(:root_repository) { create(:container_repository, :root, project: project) }
   let(:test_repository) { create(:container_repository, project: project) }
 

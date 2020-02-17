@@ -6,9 +6,9 @@ describe API::MergeRequests do
   include ProjectForksHelper
 
   let(:base_time)   { Time.now }
-  set(:user)        { create(:user) }
-  set(:user2)       { create(:user) }
-  set(:admin)       { create(:user, :admin) }
+  let_it_be(:user)  { create(:user) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:admin) { create(:user, :admin) }
   let(:project)     { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
   let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
   let(:milestone1)  { create(:milestone, title: '0.9', project: project) }

@@ -28,8 +28,6 @@ included_attributes:
 excluded_attributes:
   group:
     - :id
-    - :name
-    - :path
     - :owner_id
     - :parent_id
     - :created_at

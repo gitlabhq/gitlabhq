@@ -16,6 +16,7 @@ export default {
   updated_at: '2017-04-07T15:39:25.852Z',
   time_estimate: 0,
   total_time_spent: 0,
+  human_access: 'Maintainer',
   human_time_estimate: null,
   human_total_time_spent: null,
   in_progress_merge_commit_sha: null,
@@ -34,6 +35,7 @@ export default {
   target_branch: 'master',
   target_project_id: 19,
   target_project_full_path: '/group2/project2',
+  merge_request_add_ci_config_path: '/group2/project2/new/pipeline',
   metrics: {
     merged_by: {
       name: 'Administrator',

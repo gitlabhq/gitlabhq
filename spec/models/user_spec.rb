@@ -303,6 +303,20 @@ describe User, :do_not_mock_admin_mode do
         end
       end
 
+      context 'bad regex' do
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['([a-zA-Z0-9]+)+\.com'])
+        end
+
+        it 'does not hang on evil input' do
+          user = build(:user, email: 'user@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!.com')
+
+          expect do
+            Timeout.timeout(2.seconds) { user.valid? }
+          end.not_to raise_error
+        end
+      end
+
       context 'when a signup domain is whitelisted and subdomains are allowed' do
         before do
           allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['example.com', '*.example.com'])
@@ -354,6 +368,20 @@ describe User, :do_not_mock_admin_mode do
         before do
           allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist_enabled?).and_return(true)
           allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['example.com'])
+        end
+
+        context 'bad regex' do
+          before do
+            allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['([a-zA-Z0-9]+)+\.com'])
+          end
+
+          it 'does not hang on evil input' do
+            user = build(:user, email: 'user@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!.com')
+
+            expect do
+              Timeout.timeout(2.seconds) { user.valid? }
+            end.not_to raise_error
+          end
         end
 
         context 'when a signup domain is blacklisted' do

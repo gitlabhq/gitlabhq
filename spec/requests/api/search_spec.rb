@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe API::Search do
-  set(:user) { create(:user) }
-  set(:group) { create(:group) }
-  set(:project) { create(:project, :wiki_repo, :public, name: 'awesome project', group: group) }
-  set(:repo_project) { create(:project, :public, :repository, group: group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project, reload: true) { create(:project, :wiki_repo, :public, name: 'awesome project', group: group) }
+  let_it_be(:repo_project) { create(:project, :public, :repository, group: group) }
 
   shared_examples 'response is correct' do |schema:, size: 1|
     it { expect(response).to have_gitlab_http_status(200) }

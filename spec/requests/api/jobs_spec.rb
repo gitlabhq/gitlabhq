@@ -31,11 +31,11 @@ describe API::Jobs do
     end
   end
 
-  set(:project) do
+  let_it_be(:project, reload: true) do
     create(:project, :repository, public_builds: false)
   end
 
-  set(:pipeline) do
+  let_it_be(:pipeline, reload: true) do
     create(:ci_empty_pipeline, project: project,
                                sha: project.commit.id,
                                ref: project.default_branch)

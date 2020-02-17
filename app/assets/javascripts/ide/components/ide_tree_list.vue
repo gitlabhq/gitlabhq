@@ -4,7 +4,6 @@ import { GlSkeletonLoading } from '@gitlab/ui';
 import FileTree from '~/vue_shared/components/file_tree.vue';
 import IdeFileRow from './ide_file_row.vue';
 import NavDropdown from './nav_dropdown.vue';
-import FileRowExtra from './file_row_extra.vue';
 
 export default {
   components: {
@@ -36,7 +35,6 @@ export default {
   methods: {
     ...mapActions(['updateViewer', 'toggleTreeOpen']),
   },
-  FileRowExtra,
   IdeFileRow,
 };
 </script>
@@ -60,7 +58,6 @@ export default {
             :key="file.key"
             :file="file"
             :level="0"
-            :extra-component="$options.FileRowExtra"
             :file-row-component="$options.IdeFileRow"
             @toggleTreeOpen="toggleTreeOpen"
           />

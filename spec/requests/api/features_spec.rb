@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe API::Features do
-  set(:user)  { create(:user) }
-  set(:admin) { create(:admin) }
+  let_it_be(:user)  { create(:user) }
+  let_it_be(:admin) { create(:admin) }
 
   before do
     Flipper.unregister_groups

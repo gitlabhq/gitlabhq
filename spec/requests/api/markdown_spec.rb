@@ -52,8 +52,8 @@ describe API::Markdown do
     end
 
     context "when arguments are valid" do
-      set(:project) { create(:project) }
-      set(:issue) { create(:issue, project: project) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:issue) { create(:issue, project: project) }
       let(:text) { ":tada: Hello world! :100: #{issue.to_reference}" }
 
       context "when not using gfm" do

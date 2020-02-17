@@ -1,0 +1,5 @@
+---
+title: Remove name & path from list of excluded attributes during Group Import
+merge_request: 25342
+author:
+type: fixed

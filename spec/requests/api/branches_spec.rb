@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe API::Branches do
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
   let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
   let(:branch_name) { 'feature' }

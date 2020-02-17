@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe API::Triggers do
-  set(:user) { create(:user) }
-  set(:user2) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:user2) { create(:user) }
 
   let!(:trigger_token) { 'secure_token' }
   let!(:trigger_token_2) { 'secure_token_2' }

@@ -3,18 +3,16 @@
 require 'spec_helper'
 
 describe API::Issues do
-  set(:user) { create(:user) }
-  let(:user2)       { create(:user) }
-  let(:non_member)  { create(:user) }
-  set(:guest)       { create(:user) }
-  set(:author)      { create(:author) }
-  set(:assignee)    { create(:assignee) }
-  let(:admin)       { create(:user, :admin) }
-
-  let(:issue_title)       { 'foo' }
-  let(:issue_description) { 'closed' }
-
-  let(:no_milestone_title) { 'None' }
+  let_it_be(:user)          { create(:user) }
+  let(:user2)               { create(:user) }
+  let(:non_member)          { create(:user) }
+  let_it_be(:guest)         { create(:user) }
+  let_it_be(:author)        { create(:author) }
+  let_it_be(:assignee)      { create(:assignee) }
+  let(:admin)               { create(:user, :admin) }
+  let(:issue_title)         { 'foo' }
+  let(:issue_description)   { 'closed' }
+  let(:no_milestone_title)  { 'None' }
   let(:any_milestone_title) { 'Any' }
 
   before do
