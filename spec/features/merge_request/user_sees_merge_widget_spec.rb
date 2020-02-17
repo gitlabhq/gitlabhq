@@ -699,6 +699,137 @@ describe 'Merge request > User sees merge widget', :js do
         end
       end
 
+      context 'when a new error exists' do
+        let(:base_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+            reports.get_suite('junit').add_test_case(create_test_case_java_success)
+          end
+        end
+
+        let(:head_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+            reports.get_suite('junit').add_test_case(create_test_case_java_error)
+          end
+        end
+
+        it 'shows test reports summary which includes the new error' do
+          within(".js-reports-container") do
+            click_button 'Expand'
+
+            expect(page).to have_content('Test summary contained 1 failed/error test result out of 2 total tests')
+            within(".js-report-section-container") do
+              expect(page).to have_content('rspec found no changed test results out of 1 total test')
+              expect(page).to have_content('junit found 1 failed/error test result out of 1 total test')
+              expect(page).to have_content('New')
+              expect(page).to have_content('addTest')
+            end
+          end
+        end
+
+        context 'when user clicks the new error' do
+          it 'shows the test report detail' do
+            within(".js-reports-container") do
+              click_button 'Expand'
+
+              within(".js-report-section-container") do
+                click_button 'addTest'
+
+                expect(page).to have_content('8.88')
+              end
+            end
+          end
+        end
+      end
+
+      context 'when an existing error exists' do
+        let(:base_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_error)
+            reports.get_suite('junit').add_test_case(create_test_case_java_success)
+          end
+        end
+
+        let(:head_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_error)
+            reports.get_suite('junit').add_test_case(create_test_case_java_success)
+          end
+        end
+
+        it 'shows test reports summary which includes the existing error' do
+          within(".js-reports-container") do
+            click_button 'Expand'
+
+            expect(page).to have_content('Test summary contained 1 failed/error test result out of 2 total tests')
+            within(".js-report-section-container") do
+              expect(page).to have_content('rspec found 1 failed/error test result out of 1 total test')
+              expect(page).to have_content('junit found no changed test results out of 1 total test')
+              expect(page).not_to have_content('New')
+              expect(page).to have_content('Test#sum when a is 4 and b is 4 returns summary')
+            end
+          end
+        end
+
+        context 'when user clicks the existing error' do
+          it 'shows test report detail of it' do
+            within(".js-reports-container") do
+              click_button 'Expand'
+
+              within(".js-report-section-container") do
+                click_button 'Test#sum when a is 4 and b is 4 returns summary'
+
+                expect(page).to have_content('4.44')
+              end
+            end
+          end
+        end
+      end
+
+      context 'when a resolved error exists' do
+        let(:base_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+            reports.get_suite('junit').add_test_case(create_test_case_java_error)
+          end
+        end
+
+        let(:head_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+            reports.get_suite('junit').add_test_case(create_test_case_java_success)
+          end
+        end
+
+        it 'shows test reports summary which includes the resolved error' do
+          within(".js-reports-container") do
+            click_button 'Expand'
+
+            expect(page).to have_content('Test summary contained 1 fixed test result out of 2 total tests')
+            within(".js-report-section-container") do
+              expect(page).to have_content('rspec found no changed test results out of 1 total test')
+              expect(page).to have_content('junit found 1 fixed test result out of 1 total test')
+              expect(page).to have_content('addTest')
+            end
+          end
+        end
+
+        context 'when user clicks the resolved error' do
+          it 'shows test report detail of it' do
+            within(".js-reports-container") do
+              click_button 'Expand'
+
+              within(".js-report-section-container") do
+                click_button 'addTest'
+
+                expect(page).to have_content('5.55')
+              end
+            end
+          end
+        end
+      end
+
       context 'properly truncates the report' do
         let(:base_reports) do
           Gitlab::Ci::Reports::TestReports.new.tap do |reports|

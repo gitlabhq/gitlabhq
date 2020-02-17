@@ -92,3 +92,5 @@ module API
     end
   end
 end
+
+API::Entities::MergeRequestBasic.prepend_if_ee('EE::API::Entities::MergeRequestBasic', with_descendants: true)

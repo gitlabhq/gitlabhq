@@ -153,6 +153,16 @@ describe Project do
         expect(project.container_expiration_policy).to be_persisted
       end
 
+      it 'does not create another container expiration policy if there is already one' do
+        project = build(:project)
+
+        expect do
+          container_expiration_policy = create(:container_expiration_policy, project: project)
+
+          expect(project.container_expiration_policy).to eq(container_expiration_policy)
+        end.to change { ContainerExpirationPolicy.count }.by(1)
+      end
+
       it 'automatically creates a Pages metadata row' do
         expect(project.pages_metadatum).to be_an_instance_of(ProjectPagesMetadatum)
         expect(project.pages_metadatum).to be_persisted

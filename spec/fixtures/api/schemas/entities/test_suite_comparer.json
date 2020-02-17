@@ -16,17 +16,17 @@
       "properties": {
         "total": { "type": "integer" },
         "resolved": { "type": "integer" },
+        "errored": { "type": "integer" },
         "failed": { "type": "integer" }
       },
-      "required": [
-        "total",
-        "resolved",
-        "failed"
-      ]
+      "required": ["total", "resolved", "errored", "failed"]
     },
     "new_failures": { "type": "array", "items": { "$ref": "test_case.json" } },
     "resolved_failures": { "type": "array", "items": { "$ref": "test_case.json" } },
-    "existing_failures": { "type": "array", "items": { "$ref": "test_case.json" } }
+    "existing_failures": { "type": "array", "items": { "$ref": "test_case.json" } },
+    "new_errors": { "type": "array", "items": { "$ref": "test_case.json" } },
+    "resolved_errors": { "type": "array", "items": { "$ref": "test_case.json" } },
+    "existing_errors": { "type": "array", "items": { "$ref": "test_case.json" } }
   },
   "additionalProperties": false
 }

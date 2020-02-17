@@ -112,6 +112,7 @@ automatically generates. The following scanners are supported:
 - [Dependency Scanning](dependency_scanning/index.md):
   Automatic Patch creation is only available for Node.js projects managed with
   `yarn`.
+- [Container Scanning](container_scanning/index.md)
 
 #### Manually applying the suggested patch
 

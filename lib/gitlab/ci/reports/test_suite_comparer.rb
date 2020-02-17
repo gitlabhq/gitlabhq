@@ -38,6 +38,30 @@ module Gitlab
           end
         end
 
+        def new_errors
+          strong_memoize(:new_errors) do
+            head_suite.error.reject do |key, _|
+              base_suite.error.include?(key)
+            end.values
+          end
+        end
+
+        def existing_errors
+          strong_memoize(:existing_errors) do
+            head_suite.error.select do |key, _|
+              base_suite.error.include?(key)
+            end.values
+          end
+        end
+
+        def resolved_errors
+          strong_memoize(:resolved_errors) do
+            head_suite.success.select do |key, _|
+              base_suite.error.include?(key)
+            end.values
+          end
+        end
+
         def total_count
           head_suite.total_count
         end
@@ -47,11 +71,15 @@ module Gitlab
         end
 
         def resolved_count
-          resolved_failures.count
+          resolved_failures.count + resolved_errors.count
         end
 
         def failed_count
           new_failures.count + existing_failures.count
+        end
+
+        def error_count
+          new_errors.count + existing_errors.count
         end
       end
     end

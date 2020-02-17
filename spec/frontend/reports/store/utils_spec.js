@@ -35,6 +35,16 @@ describe('Reports store utils', () => {
       );
     });
 
+    it('should render text for multiple errored results', () => {
+      const name = 'Test summary';
+      const data = { errored: 7, total: 10 };
+      const result = utils.summaryTextBuilder(name, data);
+
+      expect(result).toBe(
+        'Test summary contained 7 failed/error test results out of 10 total tests',
+      );
+    });
+
     it('should render text for multiple fixed results', () => {
       const name = 'Test summary';
       const data = { resolved: 4, total: 10 };
@@ -60,6 +70,27 @@ describe('Reports store utils', () => {
 
       expect(result).toBe(
         'Test summary contained 1 failed/error test result and 1 fixed test result out of 10 total tests',
+      );
+    });
+
+    it('should render text for singular failed, errored, and fixed results', () => {
+      // these will be singular when the copy is updated
+      const name = 'Test summary';
+      const data = { failed: 1, errored: 1, resolved: 1, total: 10 };
+      const result = utils.summaryTextBuilder(name, data);
+
+      expect(result).toBe(
+        'Test summary contained 2 failed/error test results and 1 fixed test result out of 10 total tests',
+      );
+    });
+
+    it('should render text for multiple failed, errored, and fixed results', () => {
+      const name = 'Test summary';
+      const data = { failed: 2, errored: 3, resolved: 4, total: 10 };
+      const result = utils.summaryTextBuilder(name, data);
+
+      expect(result).toBe(
+        'Test summary contained 5 failed/error test results and 4 fixed test results out of 10 total tests',
       );
     });
   });
@@ -89,6 +120,14 @@ describe('Reports store utils', () => {
       expect(result).toBe('Rspec found 3 failed/error test results out of 10 total tests');
     });
 
+    it('should render text for multiple errored results', () => {
+      const name = 'Rspec';
+      const data = { errored: 7, total: 10 };
+      const result = utils.reportTextBuilder(name, data);
+
+      expect(result).toBe('Rspec found 7 failed/error test results out of 10 total tests');
+    });
+
     it('should render text for multiple fixed results', () => {
       const name = 'Rspec';
       const data = { resolved: 4, total: 10 };
@@ -114,6 +153,27 @@ describe('Reports store utils', () => {
 
       expect(result).toBe(
         'Rspec found 1 failed/error test result and 1 fixed test result out of 10 total tests',
+      );
+    });
+
+    it('should render text for singular failed, errored, and fixed results', () => {
+      // these will be singular when the copy is updated
+      const name = 'Rspec';
+      const data = { failed: 1, errored: 1, resolved: 1, total: 10 };
+      const result = utils.reportTextBuilder(name, data);
+
+      expect(result).toBe(
+        'Rspec found 2 failed/error test results and 1 fixed test result out of 10 total tests',
+      );
+    });
+
+    it('should render text for multiple failed, errored, and fixed results', () => {
+      const name = 'Rspec';
+      const data = { failed: 2, errored: 3, resolved: 4, total: 10 };
+      const result = utils.reportTextBuilder(name, data);
+
+      expect(result).toBe(
+        'Rspec found 5 failed/error test results and 4 fixed test results out of 10 total tests',
       );
     });
   });

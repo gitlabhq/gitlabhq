@@ -13,3 +13,5 @@ module API
     end
   end
 end
+
+API::Entities::Namespace.prepend_if_ee('EE::API::Entities::Namespace')

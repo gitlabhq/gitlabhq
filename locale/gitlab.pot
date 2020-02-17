@@ -502,6 +502,9 @@ msgstr ""
 msgid "'%{level}' is not a valid visibility level"
 msgstr ""
 
+msgid "'%{name}' stage already exists"
+msgstr ""
+
 msgid "'%{source}' is not a import source"
 msgstr ""
 
@@ -6535,6 +6538,9 @@ msgid "DesignManagement|Could not add a new comment. Please try again."
 msgstr ""
 
 msgid "DesignManagement|Could not create new discussion. Please try again."
+msgstr ""
+
+msgid "DesignManagement|Could not update discussion. Please try again."
 msgstr ""
 
 msgid "DesignManagement|Delete"
@@ -19338,6 +19344,9 @@ msgstr ""
 msgid "There was a problem communicating with your device."
 msgstr ""
 
+msgid "There was a problem refreshing the data, please try again"
+msgstr ""
+
 msgid "There was a problem saving your custom stage, please try again"
 msgstr ""
 
@@ -22392,6 +22401,9 @@ msgid "Your comment could not be submitted! Please check your network connection
 msgstr ""
 
 msgid "Your comment could not be updated! Please check your network connection and try again."
+msgstr ""
+
+msgid "Your custom stage '%{title}' was created"
 msgstr ""
 
 msgid "Your dashboard has been copied. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."

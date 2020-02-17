@@ -13,6 +13,7 @@ export default () => ({
     total: 0,
     resolved: 0,
     failed: 0,
+    errored: 0,
   },
 
   /**
@@ -23,10 +24,14 @@ export default () => ({
    *     total: {Number},
    *     resolved: {Number},
    *     failed: {Number},
+   *     errored: {Number},
    *   },
    *   new_failures: {Array.<Object>},
    *   resolved_failures: {Array.<Object>},
    *   existing_failures: {Array.<Object>},
+   *   new_errors: {Array.<Object>},
+   *   resolved_errors: {Array.<Object>},
+   *   existing_errors: {Array.<Object>},
    * }
    */
   reports: [],

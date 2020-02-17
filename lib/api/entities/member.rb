@@ -9,3 +9,5 @@ module API
     end
   end
 end
+
+API::Entities::Member.prepend_if_ee('EE::API::Entities::Member', with_descendants: true)

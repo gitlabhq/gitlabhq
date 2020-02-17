@@ -17,3 +17,5 @@ module API
     end
   end
 end
+
+API::Entities::UserPublic.prepend_if_ee('EE::API::Entities::UserPublic', with_descendants: true)

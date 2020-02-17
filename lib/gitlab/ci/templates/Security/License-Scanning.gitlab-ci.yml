@@ -27,7 +27,7 @@ license_scanning:
     refs:
       - branches
     variables:
-      - $GITLAB_FEATURES =~ /\blicense_management\b/
+      - $GITLAB_FEATURES =~ /\blicense_scanning\b/
   except:
     variables:
       - $LICENSE_MANAGEMENT_DISABLED

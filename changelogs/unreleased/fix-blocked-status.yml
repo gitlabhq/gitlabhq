@@ -1,0 +1,5 @@
+---
+title: Show blocked status for all blocked issues on issue boards
+merge_request: 24631
+author:
+type: fixed

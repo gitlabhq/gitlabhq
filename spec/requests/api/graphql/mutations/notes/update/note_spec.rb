@@ -22,7 +22,7 @@ describe 'Updating a Note' do
   end
 
   context 'when the user does not have permission' do
-    let(:current_user) { create(:user) }
+    let_it_be(:current_user) { create(:user) }
 
     it_behaves_like 'a mutation that returns top-level errors',
                     errors: ['The resource that you are attempting to access does not exist or you don\'t have permission to perform this action']
@@ -66,6 +66,19 @@ describe 'Updating a Note' do
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(mutation_response['note']['body']).to eq(original_body)
+      end
+    end
+
+    context 'when body only contains quick actions' do
+      let(:updated_body) { '/close' }
+
+      it 'returns a nil note and empty errors' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(mutation_response).to include(
+          'errors' => [],
+          'note' => nil
+        )
       end
     end
   end

@@ -10,3 +10,5 @@ module API
     end
   end
 end
+
+API::Entities::ProtectedRefAccess.prepend_if_ee('EE::API::Entities::ProtectedRefAccess')

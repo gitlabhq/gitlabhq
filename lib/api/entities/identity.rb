@@ -7,3 +7,5 @@ module API
     end
   end
 end
+
+API::Entities::Identity.prepend_if_ee('EE::API::Entities::Identity')

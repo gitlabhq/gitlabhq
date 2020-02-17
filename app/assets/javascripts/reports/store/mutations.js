@@ -16,6 +16,7 @@ export default {
     state.summary.total = response.summary.total;
     state.summary.resolved = response.summary.resolved;
     state.summary.failed = response.summary.failed;
+    state.summary.errored = response.summary.errored;
 
     state.status = response.status;
     state.reports = response.suites;
@@ -29,6 +30,7 @@ export default {
       total: 0,
       resolved: 0,
       failed: 0,
+      errored: 0,
     };
     state.status = null;
   },

@@ -3012,6 +3012,7 @@ ActiveRecord::Schema.define(version: 2020_02_13_204737) do
     t.index ["name"], name: "index_packages_packages_on_name_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["project_id", "created_at"], name: "index_packages_packages_on_project_id_and_created_at"
     t.index ["project_id", "name", "version", "package_type"], name: "idx_packages_packages_on_project_id_name_version_package_type"
+    t.index ["project_id", "name"], name: "index_packages_project_id_name_partial_for_nuget", where: "(((name)::text <> 'NuGet.Temporary.Package'::text) AND (version IS NOT NULL) AND (package_type = 4))"
     t.index ["project_id", "package_type"], name: "index_packages_packages_on_project_id_and_package_type"
     t.index ["project_id", "version"], name: "index_packages_packages_on_project_id_and_version"
   end

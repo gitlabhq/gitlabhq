@@ -41,3 +41,5 @@ module API
     end
   end
 end
+
+API::Entities::IssueBasic.prepend_if_ee('EE::API::Entities::IssueBasic', with_descendants: true)

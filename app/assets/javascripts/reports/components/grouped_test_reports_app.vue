@@ -62,8 +62,20 @@ export default {
       return (
         report.existing_failures.length > 0 ||
         report.new_failures.length > 0 ||
-        report.resolved_failures.length > 0
+        report.resolved_failures.length > 0 ||
+        report.existing_errors.length > 0 ||
+        report.new_errors.length > 0 ||
+        report.resolved_errors.length > 0
       );
+    },
+    unresolvedIssues(report) {
+      return report.existing_failures.concat(report.existing_errors);
+    },
+    newIssues(report) {
+      return report.new_failures.concat(report.new_errors);
+    },
+    resolvedIssues(report) {
+      return report.resolved_failures.concat(report.resolved_errors);
     },
   },
 };
@@ -87,9 +99,9 @@ export default {
         <issues-list
           v-if="shouldRenderIssuesList(report)"
           :key="`issues-list-${i}`"
-          :unresolved-issues="report.existing_failures"
-          :new-issues="report.new_failures"
-          :resolved-issues="report.resolved_failures"
+          :unresolved-issues="unresolvedIssues(report)"
+          :new-issues="newIssues(report)"
+          :resolved-issues="resolvedIssues(report)"
           :component="$options.componentNames.TestIssueBody"
           class="report-block-group-list"
         />

@@ -144,8 +144,10 @@ which you can start a new discussion:
 
 ![Starting a new discussion on design](img/adding_note_to_design_1.png)
 
-From GitLab 12.8 on, when you are starting a new discussion, you can adjust the badge's position by
-dragging it around the image.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8,
+you can adjust the badge's position by dragging it around the image. This is useful
+for when your design layout has changed between revisions, or if you need to move an
+existing badge to add a new one in its place.
 
 Different discussions have different badge numbers:
 

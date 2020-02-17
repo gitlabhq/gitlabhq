@@ -46,3 +46,5 @@ module API
     end
   end
 end
+
+API::Entities::Issue.prepend_if_ee('EE::API::Entities::Issue')

@@ -8,10 +8,11 @@ import {
 } from '../constants';
 
 const textBuilder = results => {
-  const { failed, resolved, total } = results;
+  const { failed, errored, resolved, total } = results;
 
-  const failedString = failed
-    ? n__('%d failed/error test result', '%d failed/error test results', failed)
+  const failedOrErrored = (failed || 0) + (errored || 0);
+  const failedString = failedOrErrored
+    ? n__('%d failed/error test result', '%d failed/error test results', failedOrErrored)
     : null;
   const resolvedString = resolved
     ? n__('%d fixed test result', '%d fixed test results', resolved)
@@ -20,7 +21,7 @@ const textBuilder = results => {
 
   let resultsString = s__('Reports|no changed test results');
 
-  if (failed) {
+  if (failedOrErrored) {
     if (resolved) {
       resultsString = sprintf(s__('Reports|%{failedString} and %{resolvedString}'), {
         failedString,

@@ -12,11 +12,13 @@
       "properties": {
         "total": { "type": "integer" },
         "resolved": { "type": "integer" },
+        "errored": { "type": "integer" },
         "failed": { "type": "integer" }
       },
       "required": [
         "total",
         "resolved",
+        "errored",
         "failed"
       ]
     },

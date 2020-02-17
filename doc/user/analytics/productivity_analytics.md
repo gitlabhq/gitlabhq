@@ -25,10 +25,7 @@ Productivity Analytics allows GitLab users to:
 
 ## Accessing metrics and visualizations
 
-To access the **Productivity Analytics** page:
-
-1. Go to **Analytics** from the top navigation bar.
-1. Select **Productivity Analytics** from the menu.
+To access the chart, navigate to a group's sidebar and select **Analytics > Productivity Analytics**.
 
 The following metrics and visualizations are available on a project or group level - currently only covering **merged** merge requests:
 

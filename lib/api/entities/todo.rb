@@ -44,3 +44,5 @@ module API
     end
   end
 end
+
+API::Entities::Todo.prepend_if_ee('EE::API::Entities::Todo')

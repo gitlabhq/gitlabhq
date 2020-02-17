@@ -12,3 +12,5 @@ module API
     end
   end
 end
+
+API::Entities::Board.prepend_if_ee('EE::API::Entities::Board')

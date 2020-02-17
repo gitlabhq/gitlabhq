@@ -27,7 +27,9 @@
   .form-group.row
     .col-sm-12= f.label :format, class: 'control-label-full-width'
     .col-sm-12
-      = f.select :format, options_for_select(ProjectWiki::MARKUPS, {selected: @page.format}), {}, class: 'form-control'
+      .select-wrapper
+        = f.select :format, options_for_select(ProjectWiki::MARKUPS, {selected: @page.format}), {}, class: 'form-control select-control'
+        = icon('chevron-down')
 
   .form-group.row
     .col-sm-12= f.label :content, class: 'control-label-full-width'

@@ -78,12 +78,16 @@ module Gitlab
       end
 
       def max_threads
+        main_thread = 1
+
         if puma?
-          Puma.cli_config.options[:max_threads]
+          Puma.cli_config.options[:max_threads] + main_thread
         elsif sidekiq?
-          Sidekiq.options[:concurrency]
+          # An extra thread for the poller in Sidekiq Cron:
+          # https://github.com/ondrejbartas/sidekiq-cron#under-the-hood
+          Sidekiq.options[:concurrency] + main_thread + 1
         else
-          1
+          main_thread
         end
       end
     end

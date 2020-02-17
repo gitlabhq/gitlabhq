@@ -123,7 +123,7 @@ RSpec.shared_examples 'cycle analytics label based stage' do
         })
 
         expect(stage).to be_invalid
-        expect(stage.errors[:start_event_label]).to include("can't be blank")
+        expect(stage.errors[:start_event_label_id]).to include("can't be blank")
       end
 
       it 'returns validation error when `end_event_label_id` is missing' do
@@ -135,7 +135,7 @@ RSpec.shared_examples 'cycle analytics label based stage' do
         })
 
         expect(stage).to be_invalid
-        expect(stage.errors[:end_event_label]).to include("can't be blank")
+        expect(stage.errors[:end_event_label_id]).to include("can't be blank")
       end
     end
 
@@ -145,7 +145,7 @@ RSpec.shared_examples 'cycle analytics label based stage' do
           name: 'My Stage',
           parent: parent,
           start_event_identifier: :issue_label_added,
-          start_event_label: group_label,
+          start_event_label_id: group_label.id,
           end_event_identifier: :issue_closed
         })
 
@@ -159,7 +159,7 @@ RSpec.shared_examples 'cycle analytics label based stage' do
           name: 'My Stage',
           parent: parent_in_subgroup,
           start_event_identifier: :issue_label_added,
-          start_event_label: group_label,
+          start_event_label_id: group_label.id,
           end_event_identifier: :issue_closed
         })
 
@@ -170,30 +170,30 @@ RSpec.shared_examples 'cycle analytics label based stage' do
     context 'when label is defined for a different group' do
       let(:error_message) { s_('CycleAnalyticsStage|is not available for the selected group') }
 
-      it 'returns validation for `start_event_label`' do
+      it 'returns validation for `start_event_label_id`' do
         stage = described_class.new({
           name: 'My Stage',
           parent: parent_outside_of_group_label_scope,
           start_event_identifier: :issue_label_added,
-          start_event_label: group_label,
+          start_event_label_id: group_label.id,
           end_event_identifier: :issue_closed
         })
 
         expect(stage).to be_invalid
-        expect(stage.errors[:start_event_label]).to include(error_message)
+        expect(stage.errors[:start_event_label_id]).to include(error_message)
       end
 
-      it 'returns validation for `end_event_label`' do
+      it 'returns validation for `end_event_label_id`' do
         stage = described_class.new({
           name: 'My Stage',
           parent: parent_outside_of_group_label_scope,
           start_event_identifier: :issue_closed,
           end_event_identifier: :issue_label_added,
-          end_event_label: group_label
+          end_event_label_id: group_label.id
         })
 
         expect(stage).to be_invalid
-        expect(stage.errors[:end_event_label]).to include(error_message)
+        expect(stage.errors[:end_event_label_id]).to include(error_message)
       end
     end
 
