@@ -17,11 +17,12 @@
  *   />
  */
 import $ from 'jquery';
-import { mapGetters, mapActions } from 'vuex';
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { mapGetters, mapActions, mapState } from 'vuex';
+import { GlButton, GlSkeletonLoading, GlTooltipDirective } from '@gitlab/ui';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import noteHeader from '~/notes/components/note_header.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import TimelineEntryItem from './timeline_entry_item.vue';
 import { spriteIcon } from '../../../lib/utils/common_utils';
 import initMRPopovers from '~/mr_popover/';
@@ -34,9 +35,13 @@ export default {
     Icon,
     noteHeader,
     TimelineEntryItem,
+    GlButton,
     GlSkeletonLoading,
   },
-  mixins: [descriptionVersionHistoryMixin],
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  mixins: [descriptionVersionHistoryMixin, glFeatureFlagsMixin()],
   props: {
     note: {
       type: Object,
@@ -50,6 +55,7 @@ export default {
   },
   computed: {
     ...mapGetters(['targetNoteHash']),
+    ...mapState(['descriptionVersion', 'isLoadingDescriptionVersion']),
     noteAnchorId() {
       return `note_${this.note.id}`;
     },
@@ -80,7 +86,7 @@ export default {
     initMRPopovers(this.$el.querySelectorAll('.gfm-merge_request'));
   },
   methods: {
-    ...mapActions(['fetchDescriptionVersion']),
+    ...mapActions(['fetchDescriptionVersion', 'softDeleteDescriptionVersion']),
   },
 };
 </script>
@@ -122,6 +128,16 @@ export default {
             <gl-skeleton-loading />
           </pre>
           <pre v-else class="wrapper mt-2" v-html="descriptionVersion"></pre>
+          <gl-button
+            v-if="canDeleteDescriptionVersion"
+            ref="deleteDescriptionVersionButton"
+            v-gl-tooltip
+            :title="__('Remove description history')"
+            class="btn-transparent delete-description-history"
+            @click="deleteDescriptionVersion"
+          >
+            <icon name="remove" />
+          </gl-button>
         </div>
       </div>
     </div>

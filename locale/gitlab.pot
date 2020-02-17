@@ -375,6 +375,12 @@ msgid_plural "%{releases} releases"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{screenreaderOnlyStart}Keyboard shorcuts%{screenreaderOnlyEnd} Disabled"
+msgstr ""
+
+msgid "%{screenreaderOnlyStart}Keyboard shorcuts%{screenreaderOnlyEnd} Enabled"
+msgstr ""
+
 msgid "%{service_title} activated."
 msgstr ""
 
@@ -7155,6 +7161,9 @@ msgstr ""
 msgid "Enable mirror configuration"
 msgstr ""
 
+msgid "Enable or disable keyboard shortcuts"
+msgstr ""
+
 msgid "Enable or disable the Pseudonymizer data collection."
 msgstr ""
 
@@ -10943,6 +10952,9 @@ msgid "Key: %{key}"
 msgstr ""
 
 msgid "Keyboard Shortcuts"
+msgstr ""
+
+msgid "Keyboard shortcuts"
 msgstr ""
 
 msgid "Kubernetes"
@@ -15857,6 +15869,9 @@ msgstr ""
 msgid "Remove child epic from an epic"
 msgstr ""
 
+msgid "Remove description history"
+msgstr ""
+
 msgid "Remove due date"
 msgstr ""
 
@@ -17778,6 +17793,9 @@ msgid "Something went wrong while applying the suggestion. Please try again."
 msgstr ""
 
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
+msgstr ""
+
+msgid "Something went wrong while deleting description changes. Please try again."
 msgstr ""
 
 msgid "Something went wrong while deleting the image."

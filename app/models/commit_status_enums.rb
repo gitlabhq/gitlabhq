@@ -18,6 +18,7 @@ module CommitStatusEnums
       unmet_prerequisites: 10,
       scheduler_failure: 11,
       data_integrity_failure: 12,
+      forward_deployment_failure: 13,
       insufficient_bridge_permissions: 1_001,
       downstream_bridge_project_not_found: 1_002,
       invalid_bridge_trigger: 1_003,

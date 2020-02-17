@@ -1,4 +1,4 @@
-import { DESCRIPTION_TYPE } from '../constants';
+import { DESCRIPTION_TYPE, TIME_DIFFERENCE_VALUE } from '../constants';
 
 /**
  * Checks the time difference between two notes from their 'created_at' dates
@@ -45,7 +45,11 @@ export const collapseSystemNotes = notes => {
         const timeDifferenceMinutes = getTimeDifferenceMinutes(lastDescriptionSystemNote, note);
 
         // are they less than 10 minutes apart from the same user?
-        if (timeDifferenceMinutes > 10 || note.author.id !== lastDescriptionSystemNote.author.id) {
+        if (
+          timeDifferenceMinutes > TIME_DIFFERENCE_VALUE ||
+          note.author.id !== lastDescriptionSystemNote.author.id ||
+          lastDescriptionSystemNote.description_version_deleted
+        ) {
           // update the previous system note
           lastDescriptionSystemNote = note;
           lastDescriptionSystemNoteIndex = acc.length;

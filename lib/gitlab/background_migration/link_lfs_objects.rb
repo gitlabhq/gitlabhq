@@ -24,24 +24,7 @@ module Gitlab
       end
 
       def perform(start_id, end_id)
-        select_query =
-          ForkNetworkMember
-            .select('lop.lfs_object_id, fork_network_members.project_id')
-            .with_non_existing_lfs_objects
-            .where(project_id: start_id..end_id)
-
-        return if select_query.empty?
-
-        execute <<-SQL
-          INSERT INTO lfs_objects_projects (lfs_object_id, project_id)
-          #{select_query.to_sql}
-        SQL
-      end
-
-      private
-
-      def execute(sql)
-        ::ActiveRecord::Base.connection.execute(sql)
+        # no-op as some queries times out
       end
     end
   end

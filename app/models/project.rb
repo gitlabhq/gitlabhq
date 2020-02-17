@@ -343,6 +343,7 @@ class Project < ApplicationRecord
   delegate :last_pipeline, to: :commit, allow_nil: true
   delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
   delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings, prefix: :ci
+  delegate :forward_deployment_enabled, :forward_deployment_enabled=, :forward_deployment_enabled?, to: :ci_cd_settings
 
   # Validations
   validates :creator, presence: true, on: :create

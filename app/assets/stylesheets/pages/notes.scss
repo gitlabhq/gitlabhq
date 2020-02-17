@@ -311,13 +311,18 @@ $note-form-margin-left: 72px;
       overflow: hidden;
 
       .description-version {
+        position: relative;
+
+        .btn.delete-description-history {
+          position: absolute;
+          top: 18px;
+          right: 0;
+        }
+
         pre {
           max-height: $dropdown-max-height-lg;
           white-space: pre-wrap;
-
-          &.loading-state {
-            height: 94px;
-          }
+          padding-right: 30px;
         }
       }
 

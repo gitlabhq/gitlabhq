@@ -75,6 +75,7 @@ class Member < ApplicationRecord
   scope :reporters, -> { active.where(access_level: REPORTER) }
   scope :developers, -> { active.where(access_level: DEVELOPER) }
   scope :maintainers, -> { active.where(access_level: MAINTAINER) }
+  scope :non_guests, -> { where('members.access_level > ?', GUEST) }
   scope :masters, -> { maintainers } # @deprecated
   scope :owners,  -> { active.where(access_level: OWNER) }
   scope :owners_and_maintainers, -> { active.where(access_level: [OWNER, MAINTAINER]) }

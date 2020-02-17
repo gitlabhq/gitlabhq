@@ -12,6 +12,7 @@ class Environment < ApplicationRecord
 
   has_many :deployments, -> { visible }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :successful_deployments, -> { success }, class_name: 'Deployment'
+  has_many :active_deployments, -> { active }, class_name: 'Deployment'
   has_many :prometheus_alerts, inverse_of: :environment
 
   has_one :last_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment'

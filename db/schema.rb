@@ -3166,6 +3166,7 @@ ActiveRecord::Schema.define(version: 2020_02_13_204737) do
     t.boolean "group_runners_enabled", default: true, null: false
     t.boolean "merge_pipelines_enabled"
     t.integer "default_git_depth"
+    t.boolean "forward_deployment_enabled"
     t.index ["project_id"], name: "index_project_ci_cd_settings_on_project_id", unique: true
   end
 

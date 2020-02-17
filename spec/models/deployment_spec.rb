@@ -281,6 +281,45 @@ describe Deployment do
         expect(last_deployments).to match_array(deployments.last(2))
       end
     end
+
+    describe 'active' do
+      subject { described_class.active }
+
+      it 'retrieves the active deployments' do
+        deployment1 = create(:deployment, status: :created )
+        deployment2 = create(:deployment, status: :running )
+        create(:deployment, status: :failed )
+        create(:deployment, status: :canceled )
+
+        is_expected.to contain_exactly(deployment1, deployment2)
+      end
+    end
+
+    describe 'older_than' do
+      let(:deployment) { create(:deployment) }
+
+      subject { described_class.older_than(deployment) }
+
+      it 'retrives the correct older deployments' do
+        older_deployment1 = create(:deployment)
+        older_deployment2 = create(:deployment)
+        deployment
+        create(:deployment)
+
+        is_expected.to contain_exactly(older_deployment1, older_deployment2)
+      end
+    end
+
+    describe 'with_deployable' do
+      subject { described_class.with_deployable }
+
+      it 'retrieves deployments with deployable builds' do
+        with_deployable = create(:deployment)
+        create(:deployment, deployable: nil)
+
+        is_expected.to contain_exactly(with_deployable)
+      end
+    end
   end
 
   describe '#includes_commit?' do

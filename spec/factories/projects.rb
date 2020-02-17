@@ -37,6 +37,7 @@ FactoryBot.define do
       group_runners_enabled { nil }
       import_status { nil }
       import_jid { nil }
+      forward_deployment_enabled { nil }
     end
 
     after(:create) do |project, evaluator|

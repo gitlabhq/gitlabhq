@@ -1,4 +1,5 @@
 import flash from '~/flash';
+import $ from 'jquery';
 import { sprintf, __ } from '../../locale';
 
 // Renders diagrams and flowcharts from text using Mermaid in any element with the
@@ -18,7 +19,7 @@ import { sprintf, __ } from '../../locale';
 // This is an arbitrary number; Can be iterated upon when suitable.
 const MAX_CHAR_LIMIT = 5000;
 
-export default function renderMermaid($els) {
+function renderMermaids($els) {
   if (!$els.length) return;
 
   // A diagram may have been truncated in search results which will cause errors, so abort the render.
@@ -94,4 +95,20 @@ export default function renderMermaid($els) {
     .catch(err => {
       flash(`Can't load mermaid module: ${err}`);
     });
+}
+
+export default function renderMermaid($els) {
+  if (!$els.length) return;
+
+  const visibleMermaids = $els.filter(function filter() {
+    return $(this).closest('details').length === 0;
+  });
+
+  renderMermaids(visibleMermaids);
+
+  $els.closest('details').one('toggle', function toggle() {
+    if (this.open) {
+      renderMermaids($(this).find('.js-render-mermaid'));
+    }
+  });
 }

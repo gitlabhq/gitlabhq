@@ -491,23 +491,66 @@ export const convertToDiscussion = ({ commit }, noteId) =>
 export const removeConvertedDiscussion = ({ commit }, noteId) =>
   commit(types.REMOVE_CONVERTED_DISCUSSION, noteId);
 
-export const fetchDescriptionVersion = (_, { endpoint, startingVersion }) => {
+export const setCurrentDiscussionId = ({ commit }, discussionId) =>
+  commit(types.SET_CURRENT_DISCUSSION_ID, discussionId);
+
+export const fetchDescriptionVersion = ({ dispatch }, { endpoint, startingVersion }) => {
   let requestUrl = endpoint;
 
   if (startingVersion) {
     requestUrl = mergeUrlParams({ start_version_id: startingVersion }, requestUrl);
   }
+  dispatch('requestDescriptionVersion');
 
   return axios
     .get(requestUrl)
-    .then(res => res.data)
-    .catch(() => {
+    .then(res => {
+      dispatch('receiveDescriptionVersion', res.data);
+    })
+    .catch(error => {
+      dispatch('receiveDescriptionVersionError', error);
       Flash(__('Something went wrong while fetching description changes. Please try again.'));
     });
 };
 
-export const setCurrentDiscussionId = ({ commit }, discussionId) =>
-  commit(types.SET_CURRENT_DISCUSSION_ID, discussionId);
+export const requestDescriptionVersion = ({ commit }) => {
+  commit(types.REQUEST_DESCRIPTION_VERSION);
+};
+export const receiveDescriptionVersion = ({ commit }, descriptionVersion) => {
+  commit(types.RECEIVE_DESCRIPTION_VERSION, descriptionVersion);
+};
+export const receiveDescriptionVersionError = ({ commit }, error) => {
+  commit(types.RECEIVE_DESCRIPTION_VERSION_ERROR, error);
+};
+
+export const softDeleteDescriptionVersion = ({ dispatch }, { endpoint, startingVersion }) => {
+  let requestUrl = endpoint;
+
+  if (startingVersion) {
+    requestUrl = mergeUrlParams({ start_version_id: startingVersion }, requestUrl);
+  }
+  dispatch('requestDeleteDescriptionVersion');
+
+  return axios
+    .delete(requestUrl)
+    .then(() => {
+      dispatch('receiveDeleteDescriptionVersion');
+    })
+    .catch(error => {
+      dispatch('receiveDeleteDescriptionVersionError', error);
+      Flash(__('Something went wrong while deleting description changes. Please try again.'));
+    });
+};
+
+export const requestDeleteDescriptionVersion = ({ commit }) => {
+  commit(types.REQUEST_DELETE_DESCRIPTION_VERSION);
+};
+export const receiveDeleteDescriptionVersion = ({ commit }) => {
+  commit(types.RECEIVE_DELETE_DESCRIPTION_VERSION, __('Deleted'));
+};
+export const receiveDeleteDescriptionVersionError = ({ commit }, error) => {
+  commit(types.RECEIVE_DELETE_DESCRIPTION_VERSION_ERROR, error);
+};
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

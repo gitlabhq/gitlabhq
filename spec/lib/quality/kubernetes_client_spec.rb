@@ -102,7 +102,7 @@ RSpec.describe Quality::KubernetesClient do
     it 'calls kubectl to retrieve the resource names' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
         .with(["kubectl get #{described_class::RESOURCE_LIST} " +
-          %(--namespace "#{namespace}" -o custom-columns=NAME:.metadata.name)])
+          %(--namespace "#{namespace}" -o name)])
         .and_return(Gitlab::Popen::Result.new([], raw_resource_names_str, '', double(success?: true)))
 
       expect(subject.__send__(:raw_resource_names)).to eq(raw_resource_names)

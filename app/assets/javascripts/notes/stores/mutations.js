@@ -284,4 +284,25 @@ export default {
   [types.SET_CURRENT_DISCUSSION_ID](state, discussionId) {
     state.currentDiscussionId = discussionId;
   },
+
+  [types.REQUEST_DESCRIPTION_VERSION](state) {
+    state.isLoadingDescriptionVersion = true;
+  },
+  [types.RECEIVE_DESCRIPTION_VERSION](state, descriptionVersion) {
+    state.isLoadingDescriptionVersion = false;
+    state.descriptionVersion = descriptionVersion;
+  },
+  [types.RECEIVE_DESCRIPTION_VERSION_ERROR](state) {
+    state.isLoadingDescriptionVersion = false;
+  },
+  [types.REQUEST_DELETE_DESCRIPTION_VERSION](state) {
+    state.isLoadingDescriptionVersion = true;
+  },
+  [types.RECEIVE_DELETE_DESCRIPTION_VERSION](state, descriptionVersion) {
+    state.isLoadingDescriptionVersion = false;
+    state.descriptionVersion = descriptionVersion;
+  },
+  [types.RECEIVE_DELETE_DESCRIPTION_VERSION_ERROR](state) {
+    state.isLoadingDescriptionVersion = false;
+  },
 };

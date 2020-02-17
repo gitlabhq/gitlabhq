@@ -6,7 +6,10 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/shortcuts.html'
 # GitLab keyboard shortcuts
 
 GitLab has many useful keyboard shortcuts to make it easier to access different features.
-You can see the quick reference sheet within GitLab itself with <kbd>Shift</kbd> + <kbd>?</kbd>.
+You can see a modal listing keyboard shortcuts within GitLab itself by pressing <kbd>?</kbd>,
+or clicking **Keyboard shortcuts** in the Help menu at the top right.
+From [GitLab 12.8 onwards](https://gitlab.com/gitlab-org/gitlab/issues/22113),
+keyboard shortcuts can be disabled using the **Enable**/**Disable** toggle in this modal window.
 
 The [Global Shortcuts](#global-shortcuts) work from any area of GitLab, but you must
 be in specific pages for the other shortcuts to be available, as explained in each

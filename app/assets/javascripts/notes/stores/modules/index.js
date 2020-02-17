@@ -14,6 +14,7 @@ export default () => ({
     isToggleStateButtonLoading: false,
     isNotesFetched: false,
     isLoading: true,
+    isLoadingDescriptionVersion: false,
 
     // holds endpoints and permissions provided through haml
     notesData: {
@@ -27,6 +28,7 @@ export default () => ({
     commentsDisabled: false,
     resolvableDiscussionsCount: 0,
     unresolvedDiscussionsCount: 0,
+    descriptionVersion: null,
   },
   actions,
   getters,

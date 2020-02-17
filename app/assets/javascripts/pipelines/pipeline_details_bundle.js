@@ -132,7 +132,7 @@ export default () => {
     });
 
     axios
-      .get(dataset.testReportEndpoint)
+      .get(dataset.testReportsCountEndpoint)
       .then(({ data }) => {
         document.querySelector('.js-test-report-badge-counter').innerHTML = data.total_count;
       })

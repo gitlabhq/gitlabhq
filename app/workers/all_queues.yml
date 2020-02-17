@@ -225,6 +225,12 @@
   :latency_sensitive: 
   :resource_boundary: :cpu
   :weight: 3
+- :name: deployment:deployments_forward_deployment
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: 
+  :latency_sensitive: 
+  :resource_boundary: :unknown
+  :weight: 3
 - :name: deployment:deployments_success
   :feature_category: :continuous_delivery
   :has_external_dependencies: 

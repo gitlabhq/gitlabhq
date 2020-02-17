@@ -18,6 +18,8 @@ class ProjectCiCdSetting < ApplicationRecord
     },
     allow_nil: true
 
+  default_value_for :forward_deployment_enabled, true
+
   def self.available?
     @available ||=
       ActiveRecord::Migrator.current_version >= MINIMUM_SCHEMA_VERSION
@@ -26,6 +28,10 @@ class ProjectCiCdSetting < ApplicationRecord
   def self.reset_column_information
     @available = nil
     super
+  end
+
+  def forward_deployment_enabled?
+    super && ::Feature.enabled?(:forward_deployment_enabled, project)
   end
 
   private

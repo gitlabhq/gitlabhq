@@ -41,6 +41,9 @@ class Deployment < ApplicationRecord
 
   scope :visible, -> { where(status: %i[running success failed canceled]) }
   scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
+  scope :active, -> { where(status: %i[created running]) }
+  scope :older_than, -> (deployment) { where('id < ?', deployment.id) }
+  scope :with_deployable, -> { includes(:deployable).where('deployable_id IS NOT NULL') }
 
   state_machine :status, initial: :created do
     event :run do
@@ -72,6 +75,14 @@ class Deployment < ApplicationRecord
     after_transition any => [:success, :failed, :canceled] do |deployment|
       deployment.run_after_commit do
         Deployments::FinishedWorker.perform_async(id)
+      end
+    end
+
+    after_transition any => :running do |deployment|
+      next unless deployment.project.forward_deployment_enabled?
+
+      deployment.run_after_commit do
+        Deployments::ForwardDeploymentWorker.perform_async(id)
       end
     end
   end

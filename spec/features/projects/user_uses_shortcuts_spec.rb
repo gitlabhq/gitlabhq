@@ -17,6 +17,59 @@ describe 'User uses shortcuts', :js do
     wait_for_requests
   end
 
+  context 'disabling shortcuts' do
+    before do
+      page.evaluate_script("localStorage.removeItem('shortcutsDisabled')")
+    end
+
+    it 'can disable shortcuts from help menu' do
+      open_modal_shortcut_keys
+      click_toggle_button
+      close_modal
+
+      open_modal_shortcut_keys
+
+      # modal-shortcuts still in the DOM, but hidden
+      expect(find('#modal-shortcuts', visible: false)).not_to be_visible
+
+      page.refresh
+      open_modal_shortcut_keys
+
+      # after reload, shortcuts modal doesn't exist at all until we add it
+      expect(page).not_to have_selector('#modal-shortcuts')
+    end
+
+    it 're-enables shortcuts' do
+      open_modal_shortcut_keys
+      click_toggle_button
+      close_modal
+
+      open_modal_from_help_menu
+      click_toggle_button
+      close_modal
+
+      open_modal_shortcut_keys
+      expect(find('#modal-shortcuts')).to be_visible
+    end
+
+    def open_modal_shortcut_keys
+      find('body').native.send_key('?')
+    end
+
+    def open_modal_from_help_menu
+      find('.header-help-dropdown-toggle').click
+      find('button', text: 'Keyboard shortcuts').click
+    end
+
+    def click_toggle_button
+      find('.js-toggle-shortcuts .gl-toggle').click
+    end
+
+    def close_modal
+      find('.modal button[aria-label="Close"]').click
+    end
+  end
+
   context 'when navigating to the Project pages' do
     it 'redirects to the details page' do
       visit project_issues_path(project)
