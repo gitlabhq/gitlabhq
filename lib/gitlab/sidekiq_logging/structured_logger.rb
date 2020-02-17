@@ -77,7 +77,9 @@ module Gitlab
       end
 
       def parse_job(job)
-        job = job.dup
+        # Error information from the previous try is in the payload for
+        # displaying in the Sidekiq UI, but is very confusing in logs!
+        job = job.except('error_backtrace', 'error_class', 'error_message')
 
         # Add process id params
         job['pid'] = ::Process.pid

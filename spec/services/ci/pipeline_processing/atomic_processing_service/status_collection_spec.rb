@@ -5,12 +5,12 @@ require 'spec_helper'
 describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection do
   using RSpec::Parameterized::TableSyntax
 
-  set(:pipeline) { create(:ci_pipeline) }
-  set(:build_a) { create(:ci_build, :success, name: 'build-a', stage: 'build', stage_idx: 0, pipeline: pipeline) }
-  set(:build_b) { create(:ci_build, :failed, name: 'build-b', stage: 'build', stage_idx: 0, pipeline: pipeline) }
-  set(:test_a) { create(:ci_build, :running, name: 'test-a', stage: 'test', stage_idx: 1, pipeline: pipeline) }
-  set(:test_b) { create(:ci_build, :pending, name: 'test-b', stage: 'test', stage_idx: 1, pipeline: pipeline) }
-  set(:deploy) { create(:ci_build, :created, name: 'deploy', stage: 'deploy', stage_idx: 2, pipeline: pipeline) }
+  let_it_be(:pipeline) { create(:ci_pipeline) }
+  let_it_be(:build_a) { create(:ci_build, :success, name: 'build-a', stage: 'build', stage_idx: 0, pipeline: pipeline) }
+  let_it_be(:build_b) { create(:ci_build, :failed, name: 'build-b', stage: 'build', stage_idx: 0, pipeline: pipeline) }
+  let_it_be(:test_a) { create(:ci_build, :running, name: 'test-a', stage: 'test', stage_idx: 1, pipeline: pipeline) }
+  let_it_be(:test_b) { create(:ci_build, :pending, name: 'test-b', stage: 'test', stage_idx: 1, pipeline: pipeline) }
+  let_it_be(:deploy) { create(:ci_build, :created, name: 'deploy', stage: 'deploy', stage_idx: 2, pipeline: pipeline) }
 
   let(:collection) { described_class.new(pipeline) }
 

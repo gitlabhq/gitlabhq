@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 describe AwardEmojisFinder do
-  set(:issue_1) { create(:issue) }
-  set(:issue_1_thumbsup) { create(:award_emoji, name: 'thumbsup', awardable: issue_1) }
-  set(:issue_1_thumbsdown) { create(:award_emoji, name: 'thumbsdown', awardable: issue_1) }
+  let_it_be(:issue_1) { create(:issue) }
+  let_it_be(:issue_1_thumbsup) { create(:award_emoji, name: 'thumbsup', awardable: issue_1) }
+  let_it_be(:issue_1_thumbsdown) { create(:award_emoji, name: 'thumbsdown', awardable: issue_1) }
   # Create a matching set of emoji for a second issue.
   # These should never appear in our finder results
-  set(:issue_2) { create(:issue) }
-  set(:issue_2_thumbsup) { create(:award_emoji, name: 'thumbsup', awardable: issue_2) }
-  set(:issue_2_thumbsdown) { create(:award_emoji, name: 'thumbsdown', awardable: issue_2) }
+  let_it_be(:issue_2) { create(:issue) }
+  let_it_be(:issue_2_thumbsup) { create(:award_emoji, name: 'thumbsup', awardable: issue_2) }
+  let_it_be(:issue_2_thumbsdown) { create(:award_emoji, name: 'thumbsdown', awardable: issue_2) }
 
   describe 'param validation' do
     it 'raises an error if `name` is invalid' do

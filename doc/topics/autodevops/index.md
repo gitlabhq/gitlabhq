@@ -109,6 +109,7 @@ To make full use of Auto DevOps, you will need:
 
   1. A [Kubernetes 1.12+ cluster](../../user/project/clusters/index.md) for the project. The easiest
      way is to add a [new cluster using the GitLab UI](../../user/project/clusters/add_remove_clusters.md#add-new-cluster).
+     For Kubernetes 1.16+ clusters, there is some additional configuration for [Auto Deploy for Kubernetes 1.16+](#kubernetes-116).
   1. NGINX Ingress. You can deploy it to your Kubernetes cluster by installing
      the [GitLab-managed app for Ingress](../../user/clusters/applications.md#ingress),
      once you have configured GitLab's Kubernetes integration in the previous step.
@@ -634,6 +635,30 @@ container image during deployment but in cases where the image needs to
 be pulled again, e.g. after pod eviction, Kubernetes will fail to do so
 as it will be attempting to fetch the image using
 `CI_REGISTRY_PASSWORD`.
+
+#### Kubernetes 1.16+
+
+> [Introduced](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/51) in GitLab 12.8.
+
+CAUTION: **Deprecation**
+The default value of `extensions/v1beta1` for the `deploymentApiVersion` setting is
+deprecated, and is scheduled to be changed to a new default of `apps/v1` in
+[GitLab 13.0](https://gitlab.com/gitlab-org/charts/auto-deploy-app/issues/47).
+
+In Kubernetes 1.16 onwards, a number of [APIs were removed](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/),
+including support for `Deployment` in the `extensions/v1beta1` version.
+
+To use Auto Deploy on a Kubernetes 1.16+ cluster, you must:
+
+1. Set the following in the [`.gitlab/auto-deploy-values.yaml` file](#customize-values-for-helm-chart):
+
+   ```yml
+   deploymentApiVersion: apps/v1
+   ```
+
+1. Set the `POSTGRES_ENABLED` variable to `false`. This will disable Auto Deploy's deployment of PostgreSQL.
+Support for enabling Auto Deploy's deployment of PostgreSQL in a Kubernetes 1.16+ cluster
+is [planned](https://gitlab.com/gitlab-org/charts/auto-deploy-app/issues/28).
 
 #### Migrations
 

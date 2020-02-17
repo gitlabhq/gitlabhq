@@ -18,7 +18,10 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         "jid" => "da883554ee4fe414012f5f42",
         "created_at" => created_at.to_f,
         "enqueued_at" => created_at.to_f,
-        "correlation_id" => 'cid'
+        "correlation_id" => 'cid',
+        "error_message" => "wrong number of arguments (2 for 3)",
+        "error_class" => "ArgumentError",
+        "error_backtrace" => []
       }
     end
 
@@ -26,7 +29,7 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
     let(:clock_thread_cputime_start) { 0.222222299 }
     let(:clock_thread_cputime_end) { 1.333333799 }
     let(:start_payload) do
-      job.merge(
+      job.except('error_backtrace', 'error_class', 'error_message').merge(
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: start',
         'job_status' => 'start',
         'pid' => Process.pid,

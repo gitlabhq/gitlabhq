@@ -22,8 +22,9 @@ describe Profiles::NotificationsController do
     end
 
     context 'with groups that do not have notification preferences' do
-      set(:group) { create(:group) }
-      set(:subgroup) { create(:group, parent: group) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
+
       before do
         group.add_developer(user)
       end

@@ -5,11 +5,11 @@ require 'spec_helper'
 describe EventPresenter do
   include Gitlab::Routing.url_helpers
 
-  set(:group) { create(:group) }
-  set(:project) { create(:project, group: group) }
-  set(:target) { create(:milestone, project: project) }
-  set(:group_event) { create(:event, :created, project: nil, group: group, target: target) }
-  set(:project_event) { create(:event, :created, project: project, target: target) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:target) { create(:milestone, project: project) }
+  let_it_be(:group_event) { create(:event, :created, project: nil, group: group, target: target) }
+  let_it_be(:project_event) { create(:event, :created, project: project, target: target) }
 
   describe '#resource_parent_name' do
     context 'with group event' do

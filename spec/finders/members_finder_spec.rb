@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 describe MembersFinder, '#execute' do
-  set(:group)        { create(:group) }
-  set(:nested_group) { create(:group, parent: group) }
-  set(:project)      { create(:project, namespace: nested_group) }
-  set(:user1)        { create(:user) }
-  set(:user2)        { create(:user) }
-  set(:user3)        { create(:user) }
-  set(:user4)        { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:nested_group) { create(:group, parent: group) }
+  let_it_be(:project, reload: true) { create(:project, namespace: nested_group) }
+  let_it_be(:user1) { create(:user) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:user3) { create(:user) }
+  let_it_be(:user4) { create(:user) }
 
   it 'returns members for project and parent groups' do
     nested_group.request_access(user1)
@@ -128,10 +128,10 @@ describe MembersFinder, '#execute' do
   context 'when include_invited_groups_members == true' do
     subject { described_class.new(project, user2).execute(include_relations: [:inherited, :direct, :invited_groups_members]) }
 
-    set(:linked_group) { create(:group, :public) }
-    set(:nested_linked_group) { create(:group, parent: linked_group) }
-    set(:linked_group_member) { linked_group.add_guest(user1) }
-    set(:nested_linked_group_member) { nested_linked_group.add_guest(user2) }
+    let_it_be(:linked_group) { create(:group, :public) }
+    let_it_be(:nested_linked_group) { create(:group, parent: linked_group) }
+    let_it_be(:linked_group_member) { linked_group.add_guest(user1) }
+    let_it_be(:nested_linked_group_member) { nested_linked_group.add_guest(user2) }
 
     it 'includes all the invited_groups members including members inherited from ancestor groups' do
       create(:project_group_link, project: project, group: nested_linked_group)

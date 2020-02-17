@@ -7,9 +7,9 @@ describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_stor
 
   STAGES = ::Gitlab::Metrics::Dashboard::Stages
 
-  set(:user) { create(:user) }
-  set(:project) { create(:project, :repository) }
-  set(:environment) { create(:environment, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:environment) { create(:environment, project: project) }
 
   describe '#execute' do
     subject(:service_call) { described_class.new(project, user, params).execute }

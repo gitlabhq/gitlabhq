@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Ci::BridgePresenter do
-  set(:project) { create(:project) }
-  set(:pipeline) { create(:ci_pipeline, project: project) }
-  set(:bridge) { create(:ci_bridge, pipeline: pipeline, status: :failed) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline, status: :failed) }
 
   subject(:presenter) do
     described_class.new(bridge)

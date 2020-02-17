@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
+const { YarnCheck } = require('yarn-check-webpack-plugin');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
 
@@ -59,6 +60,11 @@ module.exports = {
     new webpack.DllPlugin({
       path: path.join(dllCachePath, '[name].dll.manifest.json'),
       name: '[name]_[hash]',
+    }),
+    new YarnCheck({
+      rootDirectory: ROOT_PATH,
+      exclude: /ts-jest/,
+      forceKill: true,
     }),
   ],
 

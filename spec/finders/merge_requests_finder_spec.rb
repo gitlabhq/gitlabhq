@@ -214,13 +214,13 @@ describe MergeRequestsFinder do
             merge_request3.assignees = [user2, user3]
           end
 
-          set(:user3) { create(:user) }
+          let_it_be(:user3) { create(:user) }
           let(:params) { { assignee_username: [user2.username, user3.username] } }
           let(:expected_issuables) { [merge_request3] }
         end
 
         it_behaves_like 'no assignee filter' do
-          set(:user3) { create(:user) }
+          let_it_be(:user3) { create(:user) }
           let(:expected_issuables) { [merge_request4, merge_request5] }
         end
 
