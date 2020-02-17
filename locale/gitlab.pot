@@ -11256,19 +11256,31 @@ msgstr ""
 msgid "LicenseCompliance|Add licenses manually to approve or blacklist"
 msgstr ""
 
-msgid "LicenseCompliance|Allow"
+msgid "LicenseCompliance|Approve"
 msgstr ""
 
-msgid "LicenseCompliance|Allowed"
+msgid "LicenseCompliance|Approve license"
+msgstr ""
+
+msgid "LicenseCompliance|Approve license?"
+msgstr ""
+
+msgid "LicenseCompliance|Approved"
+msgstr ""
+
+msgid "LicenseCompliance|Blacklist"
+msgstr ""
+
+msgid "LicenseCompliance|Blacklist license"
+msgstr ""
+
+msgid "LicenseCompliance|Blacklist license?"
+msgstr ""
+
+msgid "LicenseCompliance|Blacklisted"
 msgstr ""
 
 msgid "LicenseCompliance|Cancel"
-msgstr ""
-
-msgid "LicenseCompliance|Denied"
-msgstr ""
-
-msgid "LicenseCompliance|Deny"
 msgstr ""
 
 msgid "LicenseCompliance|Here you can approve or blacklist licenses for this project. Using %{ci} or %{license} will allow you to see if there are any unmanaged licenses and approve or blacklist them in merge request."
@@ -11310,9 +11322,6 @@ msgid "LicenseCompliance|License details"
 msgstr ""
 
 msgid "LicenseCompliance|License name"
-msgstr ""
-
-msgid "LicenseCompliance|License review"
 msgstr ""
 
 msgid "LicenseCompliance|Packages"
@@ -11360,9 +11369,6 @@ msgstr ""
 msgid "Licenses|Components"
 msgstr ""
 
-msgid "Licenses|Detected in Project"
-msgstr ""
-
 msgid "Licenses|Displays licenses detected in the project, based on the %{linkStart}latest pipeline%{linkEnd} scan"
 msgstr ""
 
@@ -11376,15 +11382,6 @@ msgid "Licenses|License Compliance"
 msgstr ""
 
 msgid "Licenses|Name"
-msgstr ""
-
-msgid "Licenses|Policies"
-msgstr ""
-
-msgid "Licenses|Policy"
-msgstr ""
-
-msgid "Licenses|Specified policies in this project"
 msgstr ""
 
 msgid "Licenses|The license list details information about the licenses used within your project."
