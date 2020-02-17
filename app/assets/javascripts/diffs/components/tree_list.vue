@@ -95,8 +95,6 @@ export default {
           :file="file"
           :level="0"
           :hide-file-stats="hideFileStats"
-          :hide-extra-on-tree="true"
-          :show-changed-icon="true"
           :file-row-component="$options.DiffFileRow"
           @toggleTreeOpen="toggleTreeOpen"
           @clickFile="scrollToFile"

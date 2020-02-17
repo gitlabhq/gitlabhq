@@ -60,43 +60,45 @@ export default (elements = document.querySelectorAll('.js-user-link')) => {
   const userLinks = Array.from(elements);
   const UserPopoverComponent = Vue.extend(UserPopover);
 
-  return userLinks.map(el => {
-    if (initializedPopovers.has(el)) {
-      return initializedPopovers.get(el);
-    }
-
-    const user = {
-      location: null,
-      bio: null,
-      organization: null,
-      status: null,
-      loaded: false,
-    };
-    const renderedPopover = new UserPopoverComponent({
-      propsData: {
-        target: el,
-        user,
-      },
-    });
-
-    initializedPopovers.set(el, renderedPopover);
-
-    renderedPopover.$mount();
-
-    el.addEventListener('mouseenter', ({ target }) => {
-      removeTitle(target);
-      const preloadedUserInfo = getPreloadedUserInfo(target.dataset);
-
-      Object.assign(user, preloadedUserInfo);
-
-      if (preloadedUserInfo.userId) {
-        populateUserInfo(user);
+  return userLinks
+    .filter(({ dataset }) => dataset.user || dataset.userId)
+    .map(el => {
+      if (initializedPopovers.has(el)) {
+        return initializedPopovers.get(el);
       }
-    });
-    el.addEventListener('mouseleave', ({ target }) => {
-      target.removeAttribute('aria-describedby');
-    });
 
-    return renderedPopover;
-  });
+      const user = {
+        location: null,
+        bio: null,
+        organization: null,
+        status: null,
+        loaded: false,
+      };
+      const renderedPopover = new UserPopoverComponent({
+        propsData: {
+          target: el,
+          user,
+        },
+      });
+
+      initializedPopovers.set(el, renderedPopover);
+
+      renderedPopover.$mount();
+
+      el.addEventListener('mouseenter', ({ target }) => {
+        removeTitle(target);
+        const preloadedUserInfo = getPreloadedUserInfo(target.dataset);
+
+        Object.assign(user, preloadedUserInfo);
+
+        if (preloadedUserInfo.userId) {
+          populateUserInfo(user);
+        }
+      });
+      el.addEventListener('mouseleave', ({ target }) => {
+        target.removeAttribute('aria-describedby');
+      });
+
+      return renderedPopover;
+    });
 };

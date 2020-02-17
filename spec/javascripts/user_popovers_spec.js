@@ -2,10 +2,10 @@ import initUserPopovers from '~/user_popovers';
 import UsersCache from '~/lib/utils/users_cache';
 
 describe('User Popovers', () => {
-  const fixtureTemplate = 'merge_requests/diff_comment.html';
+  const fixtureTemplate = 'merge_requests/merge_request_with_mentions.html';
   preloadFixtures(fixtureTemplate);
 
-  const selector = '.js-user-link';
+  const selector = '.js-user-link, .gfm-project_member';
 
   const dummyUser = { name: 'root' };
   const dummyUserStatus = { message: 'active' };
@@ -34,8 +34,12 @@ describe('User Popovers', () => {
     popovers = initUserPopovers(document.querySelectorAll(selector));
   });
 
-  it('initializes a popover for each js-user-link element found in the document', () => {
-    expect(document.querySelectorAll(selector).length).toBe(popovers.length);
+  it('initializes a popover for each user link with a user id', () => {
+    const linksWithUsers = Array.from(document.querySelectorAll(selector)).filter(
+      ({ dataset }) => dataset.user || dataset.userId,
+    );
+
+    expect(linksWithUsers.length).toBe(popovers.length);
   });
 
   it('does not initialize the user popovers twice for the same element', () => {

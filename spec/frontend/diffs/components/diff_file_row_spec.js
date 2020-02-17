@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import DiffFileRow from '~/diffs/components/diff_file_row.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileRowStats from '~/diffs/components/file_row_stats.vue';
+import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 
 describe('Diff File Row component', () => {
   let wrapper;
@@ -34,6 +35,21 @@ describe('Diff File Row component', () => {
     expect(wrapper.find(FileRow).props()).toEqual(
       expect.objectContaining({
         ...sharedProps,
+      }),
+    );
+  });
+
+  it('renders ChangedFileIcon component', () => {
+    createComponent({
+      level: 4,
+      file: {},
+      hideFileStats: false,
+    });
+
+    expect(wrapper.find(ChangedFileIcon).props()).toEqual(
+      expect.objectContaining({
+        file: {},
+        size: 16,
       }),
     );
   });

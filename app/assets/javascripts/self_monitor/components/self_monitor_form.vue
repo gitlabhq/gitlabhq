@@ -106,7 +106,7 @@ export default {
     saveChangesSelfMonitorProject() {
       if (this.projectCreated && !this.projectEnabled) {
         this.showSelfMonitorModal();
-      } else {
+      } else if (!this.projectCreated && !this.loading) {
         this.createProject();
       }
     },

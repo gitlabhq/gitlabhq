@@ -10,20 +10,24 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
   let(:project) { create(:project, :repository, namespace: namespace, path: 'merge-requests-project') }
 
   # rubocop: disable Layout/TrailingWhitespace
+  let(:description) do
+    <<~MARKDOWN.strip_heredoc
+    - [ ] Task List Item
+    - [ ]   
+    - [ ] Task List Item 2
+    MARKDOWN
+  end
+  # rubocop: enable Layout/TrailingWhitespace
+
   let(:merge_request) do
     create(
       :merge_request,
       :with_diffs,
       source_project: project,
       target_project: project,
-      description: <<~MARKDOWN.strip_heredoc
-      - [ ] Task List Item
-      - [ ]   
-      - [ ] Task List Item 2
-      MARKDOWN
+      description: description
     )
   end
-  # rubocop: enable Layout/TrailingWhitespace
 
   let(:merged_merge_request) { create(:merge_request, :merged, source_project: project, target_project: project) }
   let(:pipeline) do
@@ -119,6 +123,15 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     it 'merge_requests/image_diff_discussion.json' do
       create(:diff_note_on_merge_request, project: project, noteable: merge_request2, position: image_position)
       render_discussions_json(merge_request2)
+    end
+  end
+
+  context 'with mentions' do
+    let(:group) { create(:group) }
+    let(:description) { "@#{group.full_path} @all @#{admin.username}" }
+
+    it 'merge_requests/merge_request_with_mentions.html' do
+      render_merge_request(merge_request)
     end
   end
 

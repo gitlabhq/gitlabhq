@@ -1,14 +1,12 @@
 <script>
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 
 export default {
   name: 'FileRow',
   components: {
     FileHeader,
     FileIcon,
-    ChangedFileIcon,
   },
   props: {
     file: {
@@ -18,11 +16,6 @@ export default {
     level: {
       type: Number,
       required: true,
-    },
-    showChangedIcon: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   computed: {
@@ -121,15 +114,14 @@ export default {
     <div class="file-row-name-container">
       <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">
         <file-icon
-          v-if="!showChangedIcon || file.type === 'tree'"
           class="file-row-icon"
+          :class="{ 'text-secondary': file.type === 'tree' }"
           :file-name="file.name"
           :loading="file.loading"
           :folder="isTree"
           :opened="file.opened"
           :size="16"
         />
-        <changed-file-icon v-else :file="file" :size="16" class="append-right-5" />
         {{ file.name }}
       </span>
       <slot></slot>
