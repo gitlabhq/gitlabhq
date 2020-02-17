@@ -22,7 +22,7 @@ describe API::Internal::Pages do
       it 'responds with 404 Not Found' do
         query_host('pages.gitlab.io')
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -31,7 +31,7 @@ describe API::Internal::Pages do
         it 'responds with 401 Unauthorized' do
           query_host('pages.gitlab.io')
 
-          expect(response).to have_gitlab_http_status(401)
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
       end
 
@@ -51,7 +51,7 @@ describe API::Internal::Pages do
           it 'responds with 204 no content' do
             query_host('pages.gitlab.io')
 
-            expect(response).to have_gitlab_http_status(204)
+            expect(response).to have_gitlab_http_status(:no_content)
             expect(response.body).to be_empty
           end
         end
@@ -65,7 +65,7 @@ describe API::Internal::Pages do
             it 'responds with 204 No Content' do
               query_host('pages.gitlab.io')
 
-              expect(response).to have_gitlab_http_status(204)
+              expect(response).to have_gitlab_http_status(:no_content)
             end
           end
 
@@ -75,7 +75,7 @@ describe API::Internal::Pages do
 
               query_host('pages.gitlab.io')
 
-              expect(response).to have_gitlab_http_status(200)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('internal/pages/virtual_domain')
 
               expect(json_response['certificate']).to eq(pages_domain.certificate)
@@ -114,7 +114,7 @@ describe API::Internal::Pages do
 
               query_host('mygroup.gitlab-pages.io')
 
-              expect(response).to have_gitlab_http_status(200)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('internal/pages/virtual_domain')
 
               expect(json_response['lookup_paths']).to eq(
@@ -141,7 +141,7 @@ describe API::Internal::Pages do
 
               query_host('mygroup.gitlab-pages.io')
 
-              expect(response).to have_gitlab_http_status(200)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('internal/pages/virtual_domain')
 
               expect(json_response['lookup_paths']).to eq(

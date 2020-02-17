@@ -23,7 +23,7 @@ module Gitlab
         end
 
         def complete?
-          x && y && width && height
+          [x, y, width, height].all?(&:present?)
         end
 
         def to_h

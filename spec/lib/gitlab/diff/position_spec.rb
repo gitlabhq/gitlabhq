@@ -35,6 +35,32 @@ describe Gitlab::Diff::Position do
     }
   end
 
+  describe 'factory' do
+    it 'produces a complete text position' do
+      position = build(:text_diff_position)
+
+      expect(position).to be_complete
+      expect(position).to have_attributes(position_type: 'text')
+    end
+
+    it 'produces a complete image position' do
+      position = build(:image_diff_position)
+
+      expect(position).to be_complete
+      expect(position).to have_attributes(position_type: 'image')
+    end
+
+    it 'allows the diff_refs to be passed as a single object' do
+      head_sha  = Digest::SHA1.hexdigest(SecureRandom.hex)
+      base_sha  = Digest::SHA1.hexdigest(SecureRandom.hex)
+      start_sha = Digest::SHA1.hexdigest(SecureRandom.hex)
+
+      refs = ::Gitlab::Diff::DiffRefs.new(base_sha: base_sha, start_sha: start_sha, head_sha: head_sha)
+
+      expect(build(:diff_position, diff_refs: refs).diff_refs).to eq(refs)
+    end
+  end
+
   describe "position for an added text file" do
     let(:commit) { project.commit("2ea1f3dec713d940208fb5ce4a38765ecb5d3f73") }
 

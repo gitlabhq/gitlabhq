@@ -10,13 +10,9 @@ describe 'Merge request > User resolves diff notes and threads', :js do
   let!(:note)         { create(:diff_note_on_merge_request, project: project, noteable: merge_request, note: "| Markdown | Table |\n|-------|---------|\n| first | second |") }
   let(:path)          { "files/ruby/popen.rb" }
   let(:position) do
-    Gitlab::Diff::Position.new(
-      old_path: path,
-      new_path: path,
-      old_line: nil,
-      new_line: 9,
-      diff_refs: merge_request.diff_refs
-    )
+    build(:text_diff_position,
+          file: path, old_line: nil, new_line: 9,
+          diff_refs: merge_request.diff_refs)
   end
 
   before do

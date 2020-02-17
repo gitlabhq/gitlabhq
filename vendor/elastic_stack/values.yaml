@@ -23,6 +23,29 @@ filebeat:
     output.elasticsearch:
       enabled: true
       hosts: ["http://elastic-stack-elasticsearch-client:9200"]
+    filebeat.prospectors:
+    - type: log
+      enabled: true
+      paths:
+        - /var/log/*.log
+        - /var/log/messages
+        - /var/log/syslog
+    - type: docker
+      containers.ids:
+      - "*"
+      json.keys_under_root: true
+      json.ignore_decoding_error: true
+      processors:
+        - add_kubernetes_metadata:
+        - drop_event:
+            when:
+              equals:
+                kubernetes.container.name: "filebeat"
+        - decode_json_fields:
+            fields: ["message"]
+            when:
+              equals:
+                kubernetes.container.name: "modsecurity-log"
 
 fluentd:
   enabled: false

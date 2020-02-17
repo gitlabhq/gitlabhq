@@ -161,7 +161,7 @@ class DiffNote < Note
   def positions_complete
     return if self.original_position.complete? && self.position.complete?
 
-    errors.add(:position, "is invalid")
+    errors.add(:position, "is incomplete")
   end
 
   def keep_around_commits

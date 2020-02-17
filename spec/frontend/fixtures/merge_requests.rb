@@ -36,10 +36,8 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
   end
   let(:path) { "files/ruby/popen.rb" }
   let(:position) do
-    Gitlab::Diff::Position.new(
-      old_path: path,
-      new_path: path,
-      old_line: nil,
+    build(:text_diff_position, :added,
+      file: path,
       new_line: 14,
       diff_refs: merge_request.diff_refs
     )
@@ -112,14 +110,8 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     let(:merge_request2) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, title: "Added images") }
     let(:image_path) { "files/images/ee_repo_logo.png" }
     let(:image_position) do
-      Gitlab::Diff::Position.new(
-        old_path: image_path,
-        new_path: image_path,
-        width: 100,
-        height: 100,
-        x: 1,
-        y: 1,
-        position_type: "image",
+      build(:image_diff_position,
+        file: image_path,
         diff_refs: merge_request2.diff_refs
       )
     end

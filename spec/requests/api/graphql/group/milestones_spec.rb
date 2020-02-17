@@ -29,7 +29,7 @@ describe 'Milestones through GroupQuery' do
       it_behaves_like 'a working graphql query'
 
       it 'returns milestones successfully' do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(graphql_errors).to be_nil
         expect_array_response(milestone_1.to_global_id.to_s, milestone_2.to_global_id.to_s, milestone_3.to_global_id.to_s, milestone_4.to_global_id.to_s)
       end

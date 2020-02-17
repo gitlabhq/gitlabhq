@@ -32,7 +32,7 @@ describe API::Pages do
         it 'returns 204' do
           delete api("/projects/#{project.id}/pages", admin)
 
-          expect(response).to have_gitlab_http_status(204)
+          expect(response).to have_gitlab_http_status(:no_content)
         end
 
         it 'removes the pages' do
@@ -53,7 +53,7 @@ describe API::Pages do
         it 'returns 204' do
           delete api("/projects/#{project.id}/pages", admin)
 
-          expect(response).to have_gitlab_http_status(204)
+          expect(response).to have_gitlab_http_status(:no_content)
         end
       end
 
@@ -63,7 +63,7 @@ describe API::Pages do
 
           delete api("/projects/#{id}/pages", admin)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

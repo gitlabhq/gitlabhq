@@ -76,6 +76,7 @@ describe SubmitUsagePingService do
 
   context 'when usage ping is enabled' do
     before do
+      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
       stub_application_setting(usage_ping_enabled: true)
     end
 

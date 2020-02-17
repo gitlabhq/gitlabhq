@@ -4,7 +4,7 @@ exports[`Expiration Policy Form renders 1`] = `
 <div
   class="lh-2"
 >
-  <glformgroup-stub
+  <gl-form-group-stub
     id="expiration-policy-toggle-group"
     label="Expiration policy:"
     label-align="right"
@@ -14,7 +14,7 @@ exports[`Expiration Policy Form renders 1`] = `
     <div
       class="d-flex align-items-start"
     >
-      <gltoggle-stub
+      <gl-toggle-stub
         id="expiration-policy-toggle"
         labeloff="Toggle Status: OFF"
         labelon="Toggle Status: ON"
@@ -30,16 +30,16 @@ exports[`Expiration Policy Form renders 1`] = `
         </strong>
       </span>
     </div>
-  </glformgroup-stub>
+  </gl-form-group-stub>
    
-  <glformgroup-stub
+  <gl-form-group-stub
     id="expiration-policy-interval-group"
     label="Expiration interval:"
     label-align="right"
     label-cols="3"
     label-for="expiration-policy-interval"
   >
-    <glformselect-stub
+    <gl-form-select-stub
       disabled="true"
       id="expiration-policy-interval"
     >
@@ -57,16 +57,16 @@ exports[`Expiration Policy Form renders 1`] = `
         Bar
       
       </option>
-    </glformselect-stub>
-  </glformgroup-stub>
-  <glformgroup-stub
+    </gl-form-select-stub>
+  </gl-form-group-stub>
+  <gl-form-group-stub
     id="expiration-policy-schedule-group"
     label="Expiration schedule:"
     label-align="right"
     label-cols="3"
     label-for="expiration-policy-schedule"
   >
-    <glformselect-stub
+    <gl-form-select-stub
       disabled="true"
       id="expiration-policy-schedule"
     >
@@ -84,16 +84,16 @@ exports[`Expiration Policy Form renders 1`] = `
         Bar
       
       </option>
-    </glformselect-stub>
-  </glformgroup-stub>
-  <glformgroup-stub
+    </gl-form-select-stub>
+  </gl-form-group-stub>
+  <gl-form-group-stub
     id="expiration-policy-latest-group"
     label="Number of tags to retain:"
     label-align="right"
     label-cols="3"
     label-for="expiration-policy-latest"
   >
-    <glformselect-stub
+    <gl-form-select-stub
       disabled="true"
       id="expiration-policy-latest"
     >
@@ -111,10 +111,10 @@ exports[`Expiration Policy Form renders 1`] = `
         Bar
       
       </option>
-    </glformselect-stub>
-  </glformgroup-stub>
+    </gl-form-select-stub>
+  </gl-form-group-stub>
    
-  <glformgroup-stub
+  <gl-form-group-stub
     id="expiration-policy-name-matching-group"
     invalid-feedback="The value of this input should be less than 255 characters"
     label="Docker tags with names matching this regex pattern will expire:"
@@ -122,13 +122,13 @@ exports[`Expiration Policy Form renders 1`] = `
     label-cols="3"
     label-for="expiration-policy-name-matching"
   >
-    <glformtextarea-stub
+    <gl-form-textarea-stub
       disabled="true"
       id="expiration-policy-name-matching"
       placeholder=".*"
       trim=""
       value=""
     />
-  </glformgroup-stub>
+  </gl-form-group-stub>
 </div>
 `;

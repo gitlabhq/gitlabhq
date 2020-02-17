@@ -86,10 +86,8 @@ describe 'Merge request > User sees versions', :js do
     it 'shows comments that were last relevant at that version' do
       expect(page).to have_content '5 files'
 
-      position = Gitlab::Diff::Position.new(
-        old_path: ".gitmodules",
-        new_path: ".gitmodules",
-        old_line: nil,
+      position = build(:text_diff_position, :added,
+        file: ".gitmodules",
         new_line: 4,
         diff_refs: merge_request_diff1.diff_refs
       )
@@ -136,9 +134,8 @@ describe 'Merge request > User sees versions', :js do
       expect(additions_content).to eq '15'
       expect(deletions_content).to eq '6'
 
-      position = Gitlab::Diff::Position.new(
-        old_path: ".gitmodules",
-        new_path: ".gitmodules",
+      position = build(:text_diff_position,
+        file: ".gitmodules",
         old_line: 4,
         new_line: 4,
         diff_refs: merge_request_diff3.compare_with(merge_request_diff1.head_commit_sha).diff_refs

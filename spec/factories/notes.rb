@@ -58,24 +58,20 @@ FactoryBot.define do
       end
 
       position do
-        Gitlab::Diff::Position.new(
-          old_path: "files/ruby/popen.rb",
-          new_path: "files/ruby/popen.rb",
-          old_line: nil,
-          new_line: line_number,
-          diff_refs: diff_refs
-        )
+        build(:text_diff_position,
+              file: "files/ruby/popen.rb",
+              old_line: nil,
+              new_line: line_number,
+              diff_refs: diff_refs)
       end
 
       trait :folded_position do
         position do
-          Gitlab::Diff::Position.new(
-            old_path: "files/ruby/popen.rb",
-            new_path: "files/ruby/popen.rb",
-            old_line: 1,
-            new_line: 1,
-            diff_refs: diff_refs
-          )
+          build(:text_diff_position,
+                file: "files/ruby/popen.rb",
+                old_line: 1,
+                new_line: 1,
+                diff_refs: diff_refs)
         end
       end
 
@@ -86,16 +82,9 @@ FactoryBot.define do
 
       factory :image_diff_note_on_merge_request do
         position do
-          Gitlab::Diff::Position.new(
-            old_path: "files/images/any_image.png",
-            new_path: "files/images/any_image.png",
-            width: 10,
-            height: 10,
-            x: 1,
-            y: 1,
-            diff_refs: diff_refs,
-            position_type: "image"
-          )
+          build(:image_diff_position,
+                file: "files/images/any_image.png",
+                diff_refs: diff_refs)
         end
       end
     end
@@ -109,9 +98,8 @@ FactoryBot.define do
       end
 
       position do
-        Gitlab::Diff::Position.new(
-          old_path: "files/ruby/popen.rb",
-          new_path: "files/ruby/popen.rb",
+        build(:text_diff_position,
+          file: "files/ruby/popen.rb",
           old_line: nil,
           new_line: line_number,
           diff_refs: diff_refs

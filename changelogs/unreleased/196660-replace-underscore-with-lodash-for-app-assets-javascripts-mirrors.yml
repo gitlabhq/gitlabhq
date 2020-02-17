@@ -1,0 +1,5 @@
+---
+title: Replace underscore with lodash for ./app/assets/javascripts/mirrors
+merge_request: 24967
+author: Jacopo Beschi @jacopo-beschi
+type: changed

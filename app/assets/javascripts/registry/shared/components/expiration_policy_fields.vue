@@ -1,7 +1,7 @@
 <script>
 import { uniqueId } from 'lodash';
-import { GlFormGroup, GlToggle, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
-import { s__, __, sprintf } from '~/locale';
+import { GlFormGroup, GlToggle, GlFormSelect, GlFormTextarea, GlSprintf } from '@gitlab/ui';
+import { s__, __ } from '~/locale';
 import { NAME_REGEX_LENGTH } from '../constants';
 import { mapComputedToEvent } from '../utils';
 
@@ -11,6 +11,7 @@ export default {
     GlToggle,
     GlFormSelect,
     GlFormTextarea,
+    GlSprintf,
   },
   props: {
     formOptions: {
@@ -70,27 +71,6 @@ export default {
     policyEnabledText() {
       return this.enabled ? __('enabled') : __('disabled');
     },
-    toggleDescriptionText() {
-      return sprintf(
-        s__('ContainerRegistry|Docker tag expiration policy is %{toggleStatus}'),
-        {
-          toggleStatus: `<strong>${this.policyEnabledText}</strong>`,
-        },
-        false,
-      );
-    },
-    regexHelpText() {
-      return sprintf(
-        s__(
-          'ContainerRegistry|Wildcards such as %{codeStart}.*-stable%{codeEnd} or %{codeStart}production/.*%{codeEnd} are supported.  To select all tags, use %{codeStart}.*%{codeEnd}',
-        ),
-        {
-          codeStart: '<code>',
-          codeEnd: '</code>',
-        },
-        false,
-      );
-    },
     nameRegexState() {
       return this.name_regex ? this.name_regex.length <= NAME_REGEX_LENGTH : null;
     },
@@ -139,7 +119,15 @@ export default {
           v-model="enabled"
           :disabled="isLoading"
         />
-        <span class="mb-2 ml-1 lh-2" v-html="toggleDescriptionText"></span>
+        <span class="mb-2 ml-1 lh-2">
+          <gl-sprintf
+            :message="s__('ContainerRegistry|Docker tag expiration policy is %{toggleStatus}')"
+          >
+            <template #toggleStatus>
+              <strong>{{ policyEnabledText }}</strong>
+            </template>
+          </gl-sprintf>
+        </span>
       </div>
     </gl-form-group>
 
@@ -190,7 +178,19 @@ export default {
         trim
       />
       <template #description>
-        <span ref="regex-description" v-html="regexHelpText"></span>
+        <span ref="regex-description">
+          <gl-sprintf
+            :message="
+              s__(
+                'ContainerRegistry|Wildcards such as %{codeStart}.*-stable%{codeEnd} or %{codeStart}production/.*%{codeEnd} are supported.  To select all tags, use %{codeStart}.*%{codeEnd}',
+              )
+            "
+          >
+            <template #code="{content}">
+              <code>{{ content }}</code>
+            </template>
+          </gl-sprintf>
+        </span>
       </template>
     </gl-form-group>
   </div>

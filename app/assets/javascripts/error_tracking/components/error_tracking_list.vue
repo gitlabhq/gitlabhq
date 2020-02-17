@@ -19,7 +19,7 @@ import AccessorUtils from '~/lib/utils/accessor';
 import Icon from '~/vue_shared/components/icon.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 
 export const tableDataClass = 'table-col d-flex d-sm-table-cell align-items-center';
 
@@ -139,7 +139,7 @@ export default {
       'cursor',
     ]),
     paginationRequired() {
-      return !_.isEmpty(this.pagination);
+      return !isEmpty(this.pagination);
     },
   },
   watch: {

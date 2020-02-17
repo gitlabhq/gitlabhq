@@ -33,7 +33,7 @@ describe 'getting task completion status information' do
     it 'returns the expected task completion status' do
       post_graphql(create_task_completion_status_query_for(type, item.iid), current_user: user1)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
 
       task_completion_status = graphql_data.dig('project', type, 'taskCompletionStatus')
       expect(task_completion_status).not_to be_nil

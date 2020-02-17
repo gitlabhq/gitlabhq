@@ -345,6 +345,8 @@ RSpec/HaveGitlabHttpStatus:
     - 'ee/spec/controllers/**/*'
     - 'spec/requests/*.rb'
     - 'ee/spec/requests/*.rb'
+    - 'spec/requests/api/*/**/*.rb'
+    - 'ee/spec/requests/api/*/**/*.rb'
 
 Style/MultilineWhenThen:
   Enabled: false

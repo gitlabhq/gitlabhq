@@ -58,7 +58,7 @@ describe 'Projects > Settings > For a forked project', :js do
       end
 
       def click_expand_incident_management_button
-        within '.js-incident-management-settings' do
+        within '.qa-incident-management-settings' do
           click_button('Expand')
         end
       end

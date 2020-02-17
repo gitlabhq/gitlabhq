@@ -1,5 +1,5 @@
-import { mount } from '@vue/test-utils';
-import stubChildren from 'helpers/stub_children';
+import { shallowMount } from '@vue/test-utils';
+import { GlSprintf } from '@gitlab/ui';
 import component from '~/registry/shared/components/expiration_policy_fields.vue';
 
 import { NAME_REGEX_LENGTH } from '~/registry/shared/constants';
@@ -15,9 +15,9 @@ describe('Expiration Policy Form', () => {
     parent.find(`${FORM_ELEMENTS_ID_PREFIX}-${name}`);
 
   const mountComponent = props => {
-    wrapper = mount(component, {
+    wrapper = shallowMount(component, {
       stubs: {
-        ...stubChildren(component),
+        GlSprintf,
       },
       propsData: {
         formOptions,
