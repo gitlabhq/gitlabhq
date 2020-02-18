@@ -187,6 +187,8 @@ shared_examples "installing applications on a cluster" do
         page.within('.js-cluster-application-row-elastic_stack') do
           click_button 'Install'
         end
+
+        wait_for_requests
       end
 
       it 'shows status transition' do

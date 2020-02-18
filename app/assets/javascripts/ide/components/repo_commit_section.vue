@@ -5,7 +5,7 @@ import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
 import consts from '../stores/modules/commit/constants';
-import { activityBarViews, stageKeys } from '../constants';
+import { leftSidebarViews, stageKeys } from '../constants';
 
 export default {
   components: {
@@ -37,7 +37,7 @@ export default {
   watch: {
     hasChanges() {
       if (!this.hasChanges) {
-        this.updateActivityBarView(activityBarViews.edit);
+        this.updateActivityBarView(leftSidebarViews.edit.name);
       }
     },
   },

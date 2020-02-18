@@ -152,61 +152,6 @@ describe 'Dashboard Projects' do
     end
   end
 
-  describe 'with a pipeline', :clean_gitlab_redis_shared_state do
-    let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha, ref: project.default_branch) }
-
-    before do
-      # Since the cache isn't updated when a new pipeline is created
-      # we need the pipeline to advance in the pipeline since the cache was created
-      # by visiting the login page.
-      pipeline.succeed
-    end
-
-    it 'shows that the last pipeline passed' do
-      visit dashboard_projects_path
-
-      page.within('.controls') do
-        expect(page).to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
-        expect(page).to have_css('.ci-status-link')
-        expect(page).to have_css('.ci-status-icon-success')
-        expect(page).to have_link('Pipeline: passed')
-      end
-    end
-
-    shared_examples 'hidden pipeline status' do
-      it 'does not show the pipeline status' do
-        visit dashboard_projects_path
-
-        page.within('.controls') do
-          expect(page).not_to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
-          expect(page).not_to have_css('.ci-status-link')
-          expect(page).not_to have_css('.ci-status-icon-success')
-          expect(page).not_to have_link('Pipeline: passed')
-        end
-      end
-    end
-
-    context 'guest user of project and project has private pipelines' do
-      let(:guest_user) { create(:user) }
-
-      before do
-        project.update(public_builds: false)
-        project.add_guest(guest_user)
-        sign_in(guest_user)
-      end
-
-      it_behaves_like 'hidden pipeline status'
-    end
-
-    context 'when dashboard_pipeline_status is disabled' do
-      before do
-        stub_feature_flags(dashboard_pipeline_status: false)
-      end
-
-      it_behaves_like 'hidden pipeline status'
-    end
-  end
-
   context 'last push widget', :use_clean_rails_memory_store_caching do
     before do
       event = create(:push_event, project: project, author: user)

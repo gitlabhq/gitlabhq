@@ -4,19 +4,19 @@ import { GlSkeletonLoading } from '@gitlab/ui';
 import IdeTree from './ide_tree.vue';
 import ResizablePanel from './resizable_panel.vue';
 import ActivityBar from './activity_bar.vue';
-import CommitSection from './repo_commit_section.vue';
+import RepoCommitSection from './repo_commit_section.vue';
 import CommitForm from './commit_sidebar/form.vue';
 import IdeReview from './ide_review.vue';
 import SuccessMessage from './commit_sidebar/success_message.vue';
 import IdeProjectHeader from './ide_project_header.vue';
-import { activityBarViews } from '../constants';
+import { leftSidebarViews } from '../constants';
 
 export default {
   components: {
     GlSkeletonLoading,
     ResizablePanel,
     ActivityBar,
-    CommitSection,
+    RepoCommitSection,
     IdeTree,
     CommitForm,
     IdeReview,
@@ -28,7 +28,7 @@ export default {
     ...mapGetters(['currentProject', 'someUncommittedChanges']),
     showSuccessMessage() {
       return (
-        this.currentActivityView === activityBarViews.edit &&
+        this.currentActivityView === leftSidebarViews.edit.name &&
         (this.lastCommitMsg && !this.someUncommittedChanges)
       );
     },

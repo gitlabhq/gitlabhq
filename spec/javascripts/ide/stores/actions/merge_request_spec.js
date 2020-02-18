@@ -8,7 +8,7 @@ import actions, {
   openMergeRequest,
 } from '~/ide/stores/actions/merge_request';
 import service from '~/ide/services';
-import { activityBarViews, PERMISSION_READ_MR } from '~/ide/constants';
+import { leftSidebarViews, PERMISSION_READ_MR } from '~/ide/constants';
 import { resetStore } from '../../helpers';
 
 const TEST_PROJECT = 'abcproject';
@@ -470,7 +470,7 @@ describe('IDE store merge request actions', () => {
         .then(() => {
           expect(store.dispatch).toHaveBeenCalledWith(
             'updateActivityBarView',
-            activityBarViews.review,
+            leftSidebarViews.review.name,
           );
 
           testMergeRequestChanges.changes.forEach((change, i) => {

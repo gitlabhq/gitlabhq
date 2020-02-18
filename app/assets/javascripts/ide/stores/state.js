@@ -1,4 +1,4 @@
-import { activityBarViews, viewerTypes } from '../constants';
+import { leftSidebarViews, viewerTypes } from '../constants';
 import { DEFAULT_THEME } from '../lib/themes';
 
 export default () => ({
@@ -21,7 +21,7 @@ export default () => ({
   entries: {},
   viewer: viewerTypes.edit,
   delayViewerUpdated: false,
-  currentActivityView: activityBarViews.edit,
+  currentActivityView: leftSidebarViews.edit.name,
   unusedSeal: true,
   fileFindVisible: false,
   links: {},

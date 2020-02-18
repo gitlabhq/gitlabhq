@@ -114,6 +114,7 @@ module Ci
     end
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
+    scope :eager_load_job_artifacts_archive, -> { includes(:job_artifacts_archive) }
 
     scope :eager_load_everything, -> do
       includes(

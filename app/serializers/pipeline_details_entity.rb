@@ -8,7 +8,12 @@ class PipelineDetailsEntity < PipelineEntity
   end
 
   expose :details do
-    expose :artifacts, using: BuildArtifactEntity
+    expose :artifacts do |pipeline, options|
+      rel = pipeline.artifacts
+      rel = rel.eager_load_job_artifacts_archive if options.fetch(:preload_job_artifacts_archive, true)
+
+      BuildArtifactEntity.represent(rel, options)
+    end
     expose :manual_actions, using: BuildActionEntity
     expose :scheduled_actions, using: BuildActionEntity
   end

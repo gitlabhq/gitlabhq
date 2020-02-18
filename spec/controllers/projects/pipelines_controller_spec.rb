@@ -171,7 +171,17 @@ describe Projects::PipelinesController do
 
     def create_build(pipeline, stage, stage_idx, name, user = nil)
       status = %w[created running pending success failed canceled].sample
-      create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, status: status, user: user)
+      create(
+        :ci_build,
+        :artifacts,
+        artifacts_expire_at: 2.days.from_now,
+        pipeline: pipeline,
+        stage: stage,
+        stage_idx: stage_idx,
+        name: name,
+        status: status,
+        user: user
+      )
     end
   end
 

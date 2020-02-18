@@ -5,7 +5,7 @@ import flash from '~/flash';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import {
-  activityBarViews,
+  leftSidebarViews,
   viewerTypes,
   FILE_VIEW_MODE_EDITOR,
   FILE_VIEW_MODE_PREVIEW,
@@ -100,7 +100,7 @@ export default {
       if (oldVal.key !== this.file.key) {
         this.initEditor();
 
-        if (this.currentActivityView !== activityBarViews.edit) {
+        if (this.currentActivityView !== leftSidebarViews.edit.name) {
           this.setFileViewMode({
             file: this.file,
             viewMode: FILE_VIEW_MODE_EDITOR,
@@ -109,7 +109,7 @@ export default {
       }
     },
     currentActivityView() {
-      if (this.currentActivityView !== activityBarViews.edit) {
+      if (this.currentActivityView !== leftSidebarViews.edit.name) {
         this.setFileViewMode({
           file: this.file,
           viewMode: FILE_VIEW_MODE_EDITOR,

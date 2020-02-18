@@ -5,7 +5,7 @@ import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
-import { activityBarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
+import { leftSidebarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
 
 export default {
   components: {
@@ -41,7 +41,7 @@ export default {
     },
 
     currentViewIsCommitView() {
-      return this.currentActivityView === activityBarViews.commit;
+      return this.currentActivityView === leftSidebarViews.commit.name;
     },
   },
   watch: {
@@ -57,7 +57,7 @@ export default {
 
     lastCommitMsg() {
       this.isCompact =
-        this.currentActivityView !== activityBarViews.commit && this.lastCommitMsg === '';
+        this.currentActivityView !== leftSidebarViews.commit.name && this.lastCommitMsg === '';
     },
   },
   methods: {
@@ -67,7 +67,7 @@ export default {
       if (this.currentViewIsCommitView) {
         this.isCompact = !this.isCompact;
       } else {
-        this.updateActivityBarView(activityBarViews.commit)
+        this.updateActivityBarView(leftSidebarViews.commit.name)
           .then(() => {
             this.isCompact = false;
           })

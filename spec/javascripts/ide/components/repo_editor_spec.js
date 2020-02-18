@@ -5,7 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
 import repoEditor from '~/ide/components/repo_editor.vue';
 import Editor from '~/ide/lib/editor';
-import { activityBarViews, FILE_VIEW_MODE_EDITOR, FILE_VIEW_MODE_PREVIEW } from '~/ide/constants';
+import { leftSidebarViews, FILE_VIEW_MODE_EDITOR, FILE_VIEW_MODE_PREVIEW } from '~/ide/constants';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 import { file, resetStore } from '../helpers';
@@ -359,7 +359,7 @@ describe('RepoEditor', () => {
     });
 
     it('hides tabs in review mode', done => {
-      vm.$store.state.currentActivityView = activityBarViews.review;
+      vm.$store.state.currentActivityView = leftSidebarViews.review.name;
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelector('.nav-links')).toBe(null);
@@ -369,7 +369,7 @@ describe('RepoEditor', () => {
     });
 
     it('hides tabs in commit mode', done => {
-      vm.$store.state.currentActivityView = activityBarViews.commit;
+      vm.$store.state.currentActivityView = leftSidebarViews.commit.name;
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelector('.nav-links')).toBe(null);
