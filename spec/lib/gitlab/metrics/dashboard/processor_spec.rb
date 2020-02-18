@@ -12,6 +12,7 @@ describe Gitlab::Metrics::Dashboard::Processor do
       [
         Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
         Gitlab::Metrics::Dashboard::Stages::ProjectMetricsInserter,
+        Gitlab::Metrics::Dashboard::Stages::ProjectMetricsDetailsInserter,
         Gitlab::Metrics::Dashboard::Stages::EndpointInserter,
         Gitlab::Metrics::Dashboard::Stages::Sorter
       ]
@@ -23,6 +24,10 @@ describe Gitlab::Metrics::Dashboard::Processor do
       expect(all_metrics).to satisfy_all do |metric|
         metric[:prometheus_endpoint_path] == prometheus_path(metric[:query_range])
       end
+    end
+
+    it 'includes boolean to indicate if panel group has custom metrics' do
+      expect(dashboard[:panel_groups]).to all(include( { has_custom_metrics: boolean } ))
     end
 
     context 'when the dashboard is not present' do
@@ -145,7 +150,8 @@ describe Gitlab::Metrics::Dashboard::Processor do
       unit: metric.unit,
       label: metric.legend,
       metric_id: metric.id,
-      prometheus_endpoint_path: prometheus_path(metric.query)
+      prometheus_endpoint_path: prometheus_path(metric.query),
+      edit_path: edit_metric_path(metric)
     }
   end
 
@@ -163,6 +169,13 @@ describe Gitlab::Metrics::Dashboard::Processor do
       project,
       environment,
       identifier: metric
+    )
+  end
+
+  def edit_metric_path(metric)
+    Gitlab::Routing.url_helpers.edit_project_prometheus_metric_path(
+      project,
+      metric.id
     )
   end
 end

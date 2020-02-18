@@ -19,7 +19,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
   before_action only: [:show] do
-    push_frontend_feature_flag(:diffs_batch_load, @project)
+    push_frontend_feature_flag(:diffs_batch_load, @project, default_enabled: true)
     push_frontend_feature_flag(:single_mr_diff_view, @project)
     push_frontend_feature_flag(:suggest_pipeline) if experiment_enabled?(:suggest_pipeline)
   end

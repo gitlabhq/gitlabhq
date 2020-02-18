@@ -80,6 +80,11 @@ you can copy and paste into `.gitlab-ci.yml` as a starting point. To do so:
 
 1. Feel free to tune this template to your own needs.
 
+## Review Apps auto-stop
+
+See how to [configure Review Apps environments to expire and auto-stop](../environments.md#environments-auto-stop)
+after a given period of time.
+
 ## Review Apps examples
 
 The following are example projects that demonstrate Review App configuration:

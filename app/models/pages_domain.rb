@@ -14,6 +14,7 @@ class PagesDomain < ApplicationRecord
 
   validates :domain, hostname: { allow_numeric_hostname: true }
   validates :domain, uniqueness: { case_sensitive: false }
+  validates :certificate, :key, presence: true, if: :usage_serverless?
   validates :certificate, presence: { message: 'must be present if HTTPS-only is enabled' },
             if: :certificate_should_be_present?
   validates :certificate, certificate: true, if: ->(domain) { domain.certificate.present? }
@@ -63,6 +64,8 @@ class PagesDomain < ApplicationRecord
   scope :for_removal, -> { where("remove_at < ?", Time.now) }
 
   scope :with_logging_info, -> { includes(project: [:namespace, :route]) }
+
+  scope :instance_serverless, -> { where(wildcard: true, scope: :instance, usage: :serverless) }
 
   def verified?
     !!verified_at

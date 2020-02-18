@@ -584,6 +584,7 @@ a few things that you need to do:
 1. Configure [object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
 1. Configure [object storage for packages](../packages/index.md#using-object-storage) (optional feature).
 1. Configure [object storage for dependency proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature).
+1. Configure [object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
 
 NOTE: **Note:**
 One current feature of GitLab that still requires a shared directory (NFS) is

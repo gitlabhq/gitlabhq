@@ -266,8 +266,30 @@ describe API::Commits do
           end
         end
 
-        context 'set to blank' do
-          let(:order) { '' }
+        context 'set to default' do
+          let(:order) { 'default' }
+
+          # git log --graph -n 6 --pretty=format:"%h" --date-order 0031876
+          # *   0031876
+          # |\
+          # * | bf6e164
+          # | * 48ca272
+          # * | 9d526f8
+          # | * 335bc94
+          # |/
+          # * 1039376
+          it 'returns project commits ordered by default order' do
+            commits = project.repository.commits("0031876", limit: 6, order: 'default')
+
+            get api(route, current_user)
+
+            expect(json_response.size).to eq(6)
+            expect(json_response.map { |entry| entry["id"] }).to eq(commits.map(&:id))
+          end
+        end
+
+        context 'set to an invalid parameter' do
+          let(:order) { 'invalid' }
 
           it_behaves_like '400 response' do
             let(:request) { get api(route, current_user) }

@@ -11,6 +11,7 @@ module Metrics
       SEQUENCE = [
         STAGES::CommonMetricsInserter,
         STAGES::ProjectMetricsInserter,
+        STAGES::ProjectMetricsDetailsInserter,
         STAGES::EndpointInserter,
         STAGES::Sorter
       ].freeze

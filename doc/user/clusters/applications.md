@@ -488,6 +488,7 @@ Supported applications:
 - [GitLab Runner](#install-gitlab-runner-using-gitlab-ci)
 - [Cilium](#install-cilium-using-gitlab-ci)
 - [JupyterHub](#install-jupyterhub-using-gitlab-ci)
+- [Elastic Stack](#install-elastic-stack-using-gitlab-ci)
 
 ### Usage
 
@@ -790,6 +791,33 @@ You can customize the installation of JupyterHub by defining
 project. Refer to the
 [chart reference](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html)
 for the available configuration options.
+
+### Install Elastic Stack using GitLab CI
+
+> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/45) in GitLab 12.8.
+
+Elastic Stack is installed using GitLab CI by defining configuration in
+`.gitlab/managed-apps/config.yaml`.
+
+The following configuration is required to install Elastic Stack using GitLab CI:
+
+```yaml
+elasticStack:
+  installed: true
+```
+
+Elastic Stack is installed into the `gitlab-managed-apps` namespace of your cluster.
+
+You can check the default [values.yaml](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/elastic_stack/values.yaml) we set for this chart.
+
+You can customize the installation of Elastic Stack by defining
+`.gitlab/managed-apps/elastic-stack/values.yaml` file in your cluster
+management project. Refer to the
+[chart](https://github.com/helm/charts/blob/master/stable/elastic-stack/values.yaml) for the
+available configuration options.
+
+NOTE: **Note:**
+In this alpha implementation of installing Elastic Stack through CI, reading the environment pod logs through Elasticsearch is unsupported. This is supported if [installed via the UI](#elastic-stack).
 
 ## Upgrading applications
 

@@ -1,0 +1,25 @@
+- breadcrumb_title _("Operations")
+- page_title _("Operations")
+- @content_class = "limit-container-width" unless fluid_layout
+
+-# normally expanded_by_default? is used here, but since this is the only panel
+-# in this settings page, let's leave it always open by default
+- expanded = true
+
+%section.settings.as-serverless-domain.no-animate#js-serverless-domain-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Serverless domain')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Set an instance-wide domain that will be available to all clusters when installing Knative.')
+  .settings-content
+    - if Gitlab.config.pages.enabled
+      = render 'form'
+    - else
+      .card
+        .card-header
+          = s_('GitLabPages|Domains')
+        .nothing-here-block
+          = s_("GitLabPages|Support for domains and certificates is disabled.  Ask your system's administrator to enable it.")

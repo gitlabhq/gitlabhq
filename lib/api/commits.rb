@@ -38,7 +38,7 @@ module API
         optional :all, type: Boolean, desc: 'Every commit will be returned'
         optional :with_stats, type: Boolean, desc: 'Stats about each commit will be added to the response'
         optional :first_parent, type: Boolean, desc: 'Only include the first parent of merges'
-        optional :order, type: String, desc: 'List commits in order', values: %w[topo]
+        optional :order, type: String, desc: 'List commits in order', default: 'default', values: %w[default topo]
         use :pagination
       end
       get ':id/repository/commits' do

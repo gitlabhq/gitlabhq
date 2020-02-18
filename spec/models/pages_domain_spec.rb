@@ -104,6 +104,14 @@ describe PagesDomain do
   describe 'validate certificate' do
     subject { domain }
 
+    context 'serverless domain' do
+      it 'requires certificate and key to be present' do
+        expect(build(:pages_domain, :without_certificate, :without_key, usage: :serverless)).not_to be_valid
+        expect(build(:pages_domain, :without_certificate, usage: :serverless)).not_to be_valid
+        expect(build(:pages_domain, :without_key, usage: :serverless)).not_to be_valid
+      end
+    end
+
     context 'with matching key' do
       let(:domain) { build(:pages_domain) }
 
@@ -551,6 +559,28 @@ describe PagesDomain do
 
       it 'does not return domain' do
         is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '.instance_serverless' do
+    subject { described_class.instance_serverless }
+
+    before do
+      create(:pages_domain, wildcard: true)
+      create(:pages_domain, :instance_serverless)
+      create(:pages_domain, scope: :instance)
+      create(:pages_domain, :instance_serverless)
+      create(:pages_domain, usage: :serverless)
+    end
+
+    it 'returns domains that are wildcard, instance-level, and serverless' do
+      expect(subject.length).to eq(2)
+
+      subject.each do |domain|
+        expect(domain.wildcard).to eq(true)
+        expect(domain.usage).to eq('serverless')
+        expect(domain.scope).to eq('instance')
       end
     end
   end

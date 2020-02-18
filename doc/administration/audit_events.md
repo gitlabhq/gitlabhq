@@ -1,7 +1,3 @@
----
-last_updated: 2019-09-16
----
-
 # Audit Events **(STARTER)**
 
 GitLab offers a way to view the changes made within the GitLab server for owners and administrators on a [paid plan][ee].

@@ -164,7 +164,9 @@ describe Snippets::CreateService do
         it 'does not create snippet repository' do
           stub_feature_flags(version_snippets: false)
 
-          subject
+          expect do
+            subject
+          end.to change(Snippet, :count).by(1)
 
           expect(snippet.repository_exists?).to be_falsey
         end

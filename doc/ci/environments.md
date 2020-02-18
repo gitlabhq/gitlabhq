@@ -624,6 +624,73 @@ to automatically stop.
 
 You can read more in the [`.gitlab-ci.yml` reference](yaml/README.md#environmenton_stop).
 
+#### Environments auto-stop
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/20956) in GitLab 12.8.
+
+You can set a expiry time to environments and stop them automatically after a certain period.
+
+For example, consider the use of this feature with Review Apps environments.
+When you set up Review Apps, sometimes they keep running for a long time
+because some merge requests are left as open. An example for this situation is when the author of the merge
+request is not actively working on it, due to priority changes or a different approach was decided on, and the merge requests was simply forgotten.
+Idle environments waste resources, therefore they
+should be terminated as soon as possible.
+
+To address this problem, you can specify an optional expiration date for
+Review Apps environments. When the expiry time is reached, GitLab will automatically trigger a job
+to stop the environment, eliminating the need of manually doing so. In case an environment is updated, the expiration is renewed
+ensuring that only active merge requests keep running Review Apps.
+
+To enable this feature, you need to specify the [`environment:auto_stop_in`](yaml/README.md#environmentauto_stop_in) keyword in `.gitlab-ci.yml`.
+You can specify a human-friendly date as the value, such as `1 hour and 30 minutes` or `1 day`.
+`auto_stop_in` uses the same format of [`artifacts:expire_in` docs](yaml/README.md#artifactsexpire_in).
+
+##### Auto-stop example
+
+In the following example, there is a basic review app setup that creates a new environment
+per merge request. The `review_app` job is triggered by every push and
+creates or updates an environment named `review/your-branch-name`.
+The environment keeps running until `stop_review_app` is executed:
+
+```yaml
+review_app:
+  script: deploy-review-app
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    on_stop: stop_review_app
+    auto_stop_in: 1 week
+
+stop_review_app:
+  script: stop-review-app
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  when: manual
+```
+
+As long as a merge request is active and keeps getting new commits,
+the review app will not stop, so developers don't need to worry about
+re-initiating review app.
+
+On the other hand, since `stop_review_app` is set to `auto_stop_in: 1 week`,
+if a merge request becomes inactive for more than a week,
+GitLab automatically triggers the `stop_review_app` job to stop the environment.
+
+You can also check the expiration date of environments through the GitLab UI. To do so,
+go to **Operations > Environments > Environment**. You can see the auto-stop period
+at the left-top section and a pin-mark button at the right-top section. This pin-mark
+button can be used to prevent auto-stopping the environment. By clicking this button, the `auto_stop_in` setting is over-written
+and the environment will be active until it's stopped manually.
+
+![Environment auto stop](img/environment_auto_stop_v12_8.png)
+
+NOTE: **NOTE**
+Due to the resource limitation, a background worker for stopping environments only
+runs once every hour. This means environments will not be stopped at the exact
+timestamp as the specified period, but will be stopped when the hourly cron worker
+detects expired environments.
+
 ### Grouping similar environments
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7015) in GitLab 8.14.

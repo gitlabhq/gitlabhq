@@ -2811,6 +2811,7 @@ ActiveRecord::Schema.define(version: 2020_02_13_220211) do
     t.index ["id"], name: "epic_mentions_temp_index", where: "((note ~~ '%@%'::text) AND ((noteable_type)::text = 'Epic'::text))"
     t.index ["line_code"], name: "index_notes_on_line_code"
     t.index ["note"], name: "index_notes_on_note_trigram", opclass: :gin_trgm_ops, using: :gin
+    t.index ["note"], name: "tmp_idx_on_promoted_notes", where: "(((noteable_type)::text = 'Issue'::text) AND (system IS TRUE) AND (note ~~ 'promoted to epic%'::text))"
     t.index ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type"
     t.index ["project_id", "id"], name: "index_notes_on_project_id_and_id_and_system_false", where: "(NOT system)"
     t.index ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type"

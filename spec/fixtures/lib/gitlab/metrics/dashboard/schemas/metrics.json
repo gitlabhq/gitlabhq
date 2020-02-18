@@ -16,7 +16,8 @@
     "label": { "type": "string" },
     "track": { "type": "string" },
     "prometheus_endpoint_path": { "type": "string" },
-    "metric_id": { "type": "number" }
+    "metric_id": { "type": "number" },
+    "edit_path": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

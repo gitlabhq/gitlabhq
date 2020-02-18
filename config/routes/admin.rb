@@ -32,6 +32,14 @@ namespace :admin do
   resources :abuse_reports, only: [:index, :destroy]
   resources :gitaly_servers, only: [:index]
 
+  namespace :serverless do
+    resources :domains, only: [:index, :create, :update] do
+      member do
+        post '/verify', to: 'domains#verify'
+      end
+    end
+  end
+
   resources :spam_logs, only: [:index, :destroy] do
     member do
       post :mark_as_ham

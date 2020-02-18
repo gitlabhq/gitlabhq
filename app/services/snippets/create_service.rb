@@ -24,8 +24,8 @@ module Snippets
       spam_check(snippet, current_user)
 
       snippet_saved = snippet.with_transaction_returning_status do
-        if snippet.save && snippet.store_mentions!
-          create_repository_for(snippet, current_user)
+        (snippet.save && snippet.store_mentions!).tap do |saved|
+          create_repository_for(snippet, current_user) if saved
         end
       end
 

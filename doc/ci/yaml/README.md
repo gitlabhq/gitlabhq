@@ -105,7 +105,7 @@ The following table lists available parameters for jobs:
 | [`tags`](#tags)                                    | List of tags which are used to select Runner.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [`allow_failure`](#allow_failure)                  | Allow job to fail. Failed job doesn't contribute to commit status.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | [`when`](#when)                                    | When to run job. Also available: `when:manual` and `when:delayed`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| [`environment`](#environment)                      | Name of an environment to which the job deploys. Also available: `environment:name`, `environment:url`, `environment:on_stop`, and `environment:action`.                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [`environment`](#environment)                      | Name of an environment to which the job deploys. Also available: `environment:name`, `environment:url`, `environment:on_stop`, `environment:auto_stop_in` and `environment:action`.                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [`cache`](#cache)                                  | List of files that should be cached between subsequent runs. Also available: `cache:paths`, `cache:key`, `cache:untracked`, and `cache:policy`.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | [`artifacts`](#artifacts)                          | List of files and directories to attach to a job on success. Also available: `artifacts:paths`, `artifacts:expose_as`, `artifacts:name`, `artifacts:untracked`, `artifacts:when`, `artifacts:expire_in`, `artifacts:reports`, and `artifacts:reports:junit`.<br><br>In GitLab [Enterprise Edition](https://about.gitlab.com/pricing/), these are available: `artifacts:reports:codequality`, `artifacts:reports:sast`, `artifacts:reports:dependency_scanning`, `artifacts:reports:container_scanning`, `artifacts:reports:dast`, `artifacts:reports:license_management`, `artifacts:reports:performance` and `artifacts:reports:metrics`. |
 | [`dependencies`](#dependencies)                    | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
@@ -1452,6 +1452,29 @@ The `stop_review_app` job is **required** to have the following keywords defined
 - `environment:action`
 - `stage` should be the same as the `review_app` in order for the environment
   to stop automatically when the branch is deleted
+
+#### `environment:auto_stop_in`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/20956) in GitLab 12.8.
+
+The `auto_stop_in` keyword is for specifying life period of the environment,
+that when expired, GitLab GitLab automatically stops them.
+
+For example,
+
+```yaml
+review_app:
+  script: deploy-review-app
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    auto_stop_in: 1 day
+```
+
+When `review_app` job is executed and a review app is created, a life period of
+the environment is set to `1 day`.
+
+For more information, see
+[the environments auto-stop documentation](../environments.md#environments-auto-stop)
 
 #### `environment:kubernetes`
 

@@ -707,7 +707,7 @@ For more information about the available options, run:
 
 ### `#database-lab`
 
-Another tool GitLab employees can use is a chatbot powered by [Joe](https://gitlab.com/postgres-ai/joe), available in the [`#database-lab`](https://gitlab.slack.com/archives/CLJMDRD8C) channel on Slack.
+Another tool GitLab employees can use is a chatbot powered by [Joe](https://gitlab.com/postgres-ai/joe) which uses [Database Lab](https://gitlab.com/postgres-ai/database-lab) to instantly provide developers with their own clone of the production database. Joe is available in the [`#database-lab`](https://gitlab.slack.com/archives/CLJMDRD8C) channel on Slack.
 Unlike chatops, it gives you a way to execute DDL statements (like creating indexes and tables) and get query plan not only for `SELECT` but also `UPDATE` and `DELETE`.
 
 For example, in order to test new index you can do the following:
@@ -740,6 +740,20 @@ For more information about the available options, run:
 
 ```sql
 help
+```
+
+#### Tips & Tricks
+
+The database connection is now maintained during your whole session, so you can use `exec set ...` for any session variables (such as `enable_seqscan` or `work_mem`). These settings will be applied to all subsequent commands until you reset them.
+
+It is also possible to use transactions. This may be useful when you are working on statements that modify the data, for example INSERT, UPDATE, and DELETE. The `explain` command will perform `EXPLAIN ANALYZE`, which executes the statement. In order to run each `explain` starting from a clean state you can wrap it in a transaction, for example:
+
+```sql
+exec BEGIN
+
+explain UPDATE some_table SET some_column = TRUE
+
+exec ROLLBACK
 ```
 
 ## Further reading

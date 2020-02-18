@@ -1107,6 +1107,9 @@ msgstr ""
 msgid "Add comment now"
 msgstr ""
 
+msgid "Add domain"
+msgstr ""
+
 msgid "Add email address"
 msgstr ""
 
@@ -1917,6 +1920,9 @@ msgid "An error occurred while validating username"
 msgstr ""
 
 msgid "An error occurred. Please try again."
+msgstr ""
+
+msgid "An instance-level serverless domain already exists."
 msgstr ""
 
 msgid "An issue can be a bug, a todo or a feature request that needs to be discussed in a project. Besides, issues are searchable and filterable."
@@ -6807,6 +6813,12 @@ msgstr ""
 msgid "Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled"
 msgstr ""
 
+msgid "Domain was successfully created."
+msgstr ""
+
+msgid "Domain was successfully updated."
+msgstr ""
+
 msgid "Don't have an account yet?"
 msgstr ""
 
@@ -8182,6 +8194,9 @@ msgid "Failed to upgrade."
 msgstr ""
 
 msgid "Failed to upload object map file"
+msgstr ""
+
+msgid "Failed to verify domain ownership"
 msgstr ""
 
 msgid "Failure"
@@ -17229,6 +17244,9 @@ msgstr ""
 msgid "Serverless"
 msgstr ""
 
+msgid "Serverless domain"
+msgstr ""
+
 msgid "ServerlessDetails|Function invocation metrics require Prometheus to be installed first."
 msgstr ""
 
@@ -17332,6 +17350,9 @@ msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 
 msgid "Set a template repository for projects in this group"
+msgstr ""
+
+msgid "Set an instance-wide domain that will be available to all clusters when installing Knative."
 msgstr ""
 
 msgid "Set default and restrict visibility levels. Configure import sources and git access protocol."
@@ -18546,6 +18567,9 @@ msgid "Successfully unblocked"
 msgstr ""
 
 msgid "Successfully unlocked"
+msgstr ""
+
+msgid "Successfully verified domain ownership"
 msgstr ""
 
 msgid "Suggest code changes which can be immediately applied in one click. Try it out!"

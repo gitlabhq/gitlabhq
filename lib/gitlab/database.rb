@@ -233,7 +233,7 @@ module Gitlab
     end
 
     def self.cached_table_exists?(table_name)
-      connection.schema_cache.data_source_exists?(table_name)
+      exists? && connection.schema_cache.data_source_exists?(table_name)
     end
 
     def self.database_version

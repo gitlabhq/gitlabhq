@@ -254,6 +254,11 @@
               = link_to ci_cd_admin_application_settings_path, title: _('CI/CD') do
                 %span
                   = _('CI/CD')
+            - if Feature.enabled?(:serverless_domain)
+              = nav_link(path: 'application_settings#operations') do
+                = link_to admin_serverless_domains_path, title: _('Operations') do
+                  %span
+                    = _('Operations')
             = nav_link(path: 'application_settings#reporting') do
               = link_to reporting_admin_application_settings_path, title: _('Reporting') do
                 %span

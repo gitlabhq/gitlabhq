@@ -18,7 +18,7 @@ GET /projects/:id/repository/commits
 | `all` | boolean | no | Retrieve every commit from the repository |
 | `with_stats` | boolean | no | Stats about each commit will be added to the response |
 | `first_parent` | boolean | no | Follow only the first parent commit upon seeing a merge commit |
-| `order` | string | no | List commits in order. Possible value: [`topo`](https://git-scm.com/docs/git-log#Documentation/git-log.txt---topo-order). |
+| `order` | string | no | List commits in order. Possible values: `default`, [`topo`](https://git-scm.com/docs/git-log#Documentation/git-log.txt---topo-order). Defaults to `default`, the commits are shown in reverse chronological order. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits"
