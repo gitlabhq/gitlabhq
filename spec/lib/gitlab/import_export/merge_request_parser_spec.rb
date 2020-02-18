@@ -52,10 +52,10 @@ describe Gitlab::ImportExport::MergeRequestParser do
     context 'when the diff is invalid' do
       let(:merge_request_diff) { build(:merge_request_diff, merge_request: merge_request, base_commit_sha: 'foobar') }
 
-      it 'sets the diff to nil' do
+      it 'sets the diff to empty diff' do
         expect(merge_request_diff).to be_invalid
         expect(merge_request_diff.merge_request).to eq merge_request
-        expect(parsed_merge_request.merge_request_diff).to be_nil
+        expect(parsed_merge_request.merge_request_diff).to be_empty
       end
     end
   end

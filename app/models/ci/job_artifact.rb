@@ -42,6 +42,7 @@ module Ci
       metrics: :gzip,
       metrics_referee: :gzip,
       network_referee: :gzip,
+      lsif: :gzip,
 
       # All these file formats use `raw` as we need to store them uncompressed
       # for Frontend to fetch the files and do analysis
@@ -53,8 +54,7 @@ module Ci
       dast: :raw,
       license_management: :raw,
       license_scanning: :raw,
-      performance: :raw,
-      lsif: :raw
+      performance: :raw
     }.freeze
 
     TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze

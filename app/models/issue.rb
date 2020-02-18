@@ -128,12 +128,12 @@ class Issue < ApplicationRecord
   def self.reference_pattern
     @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}(?<issue>\d+)
+      #{Regexp.escape(reference_prefix)}#{Gitlab::Regex.issue}
     }x
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("issues", /(?<issue>\d+)/)
+    @link_reference_pattern ||= super("issues", Gitlab::Regex.issue)
   end
 
   def self.reference_valid?(reference)

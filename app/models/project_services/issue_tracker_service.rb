@@ -19,9 +19,9 @@ class IssueTrackerService < Service
   # overridden patterns. See ReferenceRegexes.external_pattern
   def self.reference_pattern(only_long: false)
     if only_long
-      /(\b[A-Z][A-Z0-9_]*-)(?<issue>\d+)/
+      /(\b[A-Z][A-Z0-9_]*-)#{Gitlab::Regex.issue}/
     else
-      /(\b[A-Z][A-Z0-9_]*-|#{Issue.reference_prefix})(?<issue>\d+)/
+      /(\b[A-Z][A-Z0-9_]*-|#{Issue.reference_prefix})#{Gitlab::Regex.issue}/
     end
   end
 

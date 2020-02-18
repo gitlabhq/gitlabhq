@@ -38,8 +38,8 @@ describe YoutrackService do
       expect(described_class.reference_pattern.match('YT-123')[:issue]).to eq('YT-123')
     end
 
-    it 'does not allow issue number to be followed by a letter' do
-      expect(described_class.reference_pattern.match('YT-123A')).to eq(nil)
+    it 'allows lowercase project key on the reference' do
+      expect(described_class.reference_pattern.match('yt-123')[:issue]).to eq('yt-123')
     end
   end
 

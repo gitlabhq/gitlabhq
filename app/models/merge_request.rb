@@ -48,6 +48,7 @@ class MergeRequest < ApplicationRecord
   # 1. There are arguments - in which case we might be trying to force-reload.
   # 2. This association is already loaded.
   # 3. The latest diff does not exist.
+  # 4. It doesn't have any merge_request_diffs - it returns an empty MergeRequestDiff
   #
   # The second one in particular is important - MergeRequestDiff#merge_request
   # is the inverse of MergeRequest#merge_request_diff, which means it may not be
@@ -56,7 +57,7 @@ class MergeRequest < ApplicationRecord
   def merge_request_diff
     fallback = latest_merge_request_diff unless association(:merge_request_diff).loaded?
 
-    fallback || super
+    fallback || super || MergeRequestDiff.new(merge_request_id: id)
   end
 
   belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
@@ -404,7 +405,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def commits(limit: nil)
-    return merge_request_diff.commits(limit: limit) if persisted?
+    return merge_request_diff.commits(limit: limit) if merge_request_diff.persisted?
 
     commits_arr = if compare_commits
                     reversed_commits = compare_commits.reverse
@@ -421,7 +422,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def commits_count
-    if persisted?
+    if merge_request_diff.persisted?
       merge_request_diff.commits_count
     elsif compare_commits
       compare_commits.size
@@ -431,7 +432,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def commit_shas(limit: nil)
-    return merge_request_diff.commit_shas(limit: limit) if persisted?
+    return merge_request_diff.commit_shas(limit: limit) if merge_request_diff.persisted?
 
     shas =
       if compare_commits
@@ -492,11 +493,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def first_commit
-    merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
+    compare_commits.present? ? compare_commits.first : merge_request_diff.first_commit
   end
 
   def raw_diffs(*args)
-    merge_request_diff ? merge_request_diff.raw_diffs(*args) : compare.raw_diffs(*args)
+    compare.present? ? compare.raw_diffs(*args) : merge_request_diff.raw_diffs(*args)
   end
 
   def diffs(diff_options = {})
@@ -557,7 +558,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def diff_base_commit
-    if persisted?
+    if merge_request_diff.persisted?
       merge_request_diff.base_commit
     else
       branch_merge_base_commit
@@ -565,7 +566,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def diff_start_commit
-    if persisted?
+    if merge_request_diff.persisted?
       merge_request_diff.start_commit
     else
       target_branch_head
@@ -573,7 +574,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def diff_head_commit
-    if persisted?
+    if merge_request_diff.persisted?
       merge_request_diff.head_commit
     else
       source_branch_head
@@ -581,7 +582,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def diff_start_sha
-    if persisted?
+    if merge_request_diff.persisted?
       merge_request_diff.start_commit_sha
     else
       target_branch_head.try(:sha)
@@ -589,7 +590,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def diff_base_sha
-    if persisted?
+    if merge_request_diff.persisted?
       merge_request_diff.base_commit_sha
     else
       branch_merge_base_commit.try(:sha)
@@ -597,7 +598,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def diff_head_sha
-    if persisted?
+    if merge_request_diff.persisted?
       merge_request_diff.head_commit_sha
     else
       source_branch_head.try(:sha)
@@ -758,7 +759,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def ensure_merge_request_diff
-    merge_request_diff || create_merge_request_diff
+    merge_request_diff.persisted? || create_merge_request_diff
   end
 
   def create_merge_request_diff
@@ -1005,7 +1006,7 @@ class MergeRequest < ApplicationRecord
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
       messages = [title, description]
-      messages.concat(commits.map(&:safe_message)) if merge_request_diff
+      messages.concat(commits.map(&:safe_message)) if merge_request_diff.persisted?
 
       Gitlab::ClosingIssueExtractor.new(project, current_user)
         .closed_by_message(messages.join("\n"))
@@ -1421,7 +1422,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_commits?
-    merge_request_diff && commits_count.to_i > 0
+    merge_request_diff.persisted? && commits_count.to_i > 0
   end
 
   def has_no_commits?

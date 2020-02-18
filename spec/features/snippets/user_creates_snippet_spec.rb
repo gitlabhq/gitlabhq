@@ -53,7 +53,7 @@ describe 'User creates snippet', :js do
     page.within('#new_personal_snippet .md-preview-holder') do
       expect(page).to have_content('My Snippet')
 
-      link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
+      link = find('a.no-attachment-icon img.js-lazy-loaded[alt="banana_sample"]')['src']
       expect(link).to match(%r{/uploads/-/system/user/#{user.id}/\h{32}/banana_sample\.gif\z})
 
       # Adds a cache buster for checking if the image exists as Selenium is now handling the cached regquests
@@ -73,7 +73,7 @@ describe 'User creates snippet', :js do
     click_button('Create snippet')
     wait_for_requests
 
-    link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
+    link = find('a.no-attachment-icon img.js-lazy-loaded[alt="banana_sample"]')['src']
     expect(link).to match(%r{/uploads/-/system/personal_snippet/#{Snippet.last.id}/\h{32}/banana_sample\.gif\z})
 
     reqs = inspect_requests { visit("#{link}?ran=#{SecureRandom.base64(20)}") }
@@ -98,7 +98,7 @@ describe 'User creates snippet', :js do
       expect(page).to have_selector('strong')
     end
     expect(page).to have_content('Hello World!')
-    link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
+    link = find('a.no-attachment-icon img.js-lazy-loaded[alt="banana_sample"]')['src']
     expect(link).to match(%r{/uploads/-/system/personal_snippet/#{Snippet.last.id}/\h{32}/banana_sample\.gif\z})
 
     reqs = inspect_requests { visit("#{link}?ran=#{SecureRandom.base64(20)}") }

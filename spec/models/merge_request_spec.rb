@@ -662,13 +662,12 @@ describe MergeRequest do
   end
 
   describe '#raw_diffs' do
-    let(:merge_request) { build(:merge_request) }
     let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
 
     context 'when there are MR diffs' do
-      it 'delegates to the MR diffs' do
-        merge_request.merge_request_diff = MergeRequestDiff.new
+      let(:merge_request) { create(:merge_request, :with_diffs) }
 
+      it 'delegates to the MR diffs' do
         expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(options)
 
         merge_request.raw_diffs(options)
@@ -676,6 +675,8 @@ describe MergeRequest do
     end
 
     context 'when there are no MR diffs' do
+      let(:merge_request) { build(:merge_request) }
+
       it 'delegates to the compare object' do
         merge_request.compare = double(:compare)
 

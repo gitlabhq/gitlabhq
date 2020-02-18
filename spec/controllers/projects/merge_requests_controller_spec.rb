@@ -77,6 +77,18 @@ describe Projects::MergeRequestsController do
         end
       end
 
+      context 'when diff is missing' do
+        render_views
+
+        it 'renders merge request page' do
+          merge_request.merge_request_diff.destroy
+
+          go(format: :html)
+
+          expect(response).to be_successful
+        end
+      end
+
       it "renders merge request page" do
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
 
