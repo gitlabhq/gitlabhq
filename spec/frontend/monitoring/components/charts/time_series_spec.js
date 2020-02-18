@@ -3,6 +3,7 @@ import { setTestTimeout } from 'helpers/timeout';
 import { GlLink } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
+import { chartColorValues } from '~/monitoring/constants';
 import { createStore } from '~/monitoring/stores';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import * as types from '~/monitoring/stores/mutation_types';
@@ -314,6 +315,10 @@ describe('Time series component', () => {
 
         it('formats line width correctly', () => {
           expect(chartData[0].lineStyle.width).toBe(2);
+        });
+
+        it('formats line color correctly', () => {
+          expect(chartData[0].lineStyle.color).toBe(chartColorValues[0]);
         });
       });
 

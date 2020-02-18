@@ -59,7 +59,7 @@ GET /applications
 Example request:
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/applications
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/applications
 ```
 
 Example response:

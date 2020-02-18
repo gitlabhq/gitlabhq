@@ -177,7 +177,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request GET https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id/raw \
+curl https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id/raw \
      --header "PRIVATE-TOKEN: <your_access_token>"
 ```
 
@@ -199,7 +199,7 @@ GET /projects/:id/snippets/:snippet_id/user_agent_detail
 Example request:
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/snippets/2/user_agent_detail
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/snippets/2/user_agent_detail
 ```
 
 Example response:

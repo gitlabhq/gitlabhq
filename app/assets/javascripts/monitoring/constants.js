@@ -70,6 +70,13 @@ export const colorValues = {
   anomalyAreaColor: '#1f78d1',
 };
 
+export const chartColorValues = [
+  '#1f78d1', // $blue-500 (see variables.scss)
+  '#1aaa55', // $green-500
+  '#fc9403', // $orange-500
+  '#6d49cb', // $purple
+];
+
 export const lineTypes = {
   default: 'solid',
 };

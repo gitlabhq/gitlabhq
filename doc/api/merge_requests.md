@@ -1632,7 +1632,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 | `skip_ci`           | boolean | no       | Set to `true` to skip creating a CI pipeline |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase
 ```
 
 This is an asynchronous request. The API will return a `202 Accepted` response
@@ -2410,7 +2410,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/time_stats
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats
 ```
 
 Example response:

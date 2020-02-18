@@ -65,7 +65,7 @@ GET /projects/:id/issues/:issue_iid/resource_label_events
 ```
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events
 ```
 
 ### Get single issue label event
@@ -85,7 +85,7 @@ Parameters:
 | `resource_label_event_id` | integer        | yes      | The ID of a label event |
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events/1
 ```
 
 ## Epics **(ULTIMATE)**
@@ -151,7 +151,7 @@ GET /groups/:id/epics/:epic_id/resource_label_events
 ```
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/11/resource_label_events
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/11/resource_label_events
 ```
 
 ### Get single epic label event
@@ -237,7 +237,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/resource_label_events
 ```
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/resource_label_events
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/resource_label_events
 ```
 
 ### Get single merge request label event

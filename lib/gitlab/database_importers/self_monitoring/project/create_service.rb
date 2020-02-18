@@ -91,6 +91,8 @@ module Gitlab
           end
 
           def create_environment(result)
+            return success(result) if result[:project].environments.exists?
+
             environment = ::Environment.new(project_id: result[:project].id, name: 'production')
 
             if environment.save

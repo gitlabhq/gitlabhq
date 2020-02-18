@@ -1401,7 +1401,7 @@ GET /projects/:id/issues/:issue_iid/time_stats
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/time_stats
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/time_stats
 ```
 
 Example response:
@@ -1429,7 +1429,7 @@ GET /projects/:id/issues/:issue_id/related_merge_requests
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/11/related_merge_requests
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/11/related_merge_requests
 ```
 
 Example response:
@@ -1658,7 +1658,7 @@ GET /projects/:id/issues/:issue_iid/participants
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/participants
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/participants
 ```
 
 Example response:
@@ -1702,7 +1702,7 @@ GET /projects/:id/issues/:issue_iid/user_agent_detail
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/user_agent_detail
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/93/user_agent_detail
 ```
 
 Example response:
