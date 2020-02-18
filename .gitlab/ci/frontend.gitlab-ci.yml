@@ -6,6 +6,7 @@
       - tmp/cache/assets/sprockets
       - tmp/cache/babel-loader
       - tmp/cache/vue-loader
+      - tmp/cache/webpack-dlls
 
 .gitlab:assets:compile-metadata:
   extends:
@@ -78,6 +79,7 @@ gitlab:assets:compile pull-cache:
     SETUP_DB: "false"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
+    WEBPACK_VENDOR_DLL: "true"
   cache:
     key: "assets-compile:v9"
   artifacts:

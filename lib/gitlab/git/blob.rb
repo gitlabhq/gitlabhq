@@ -35,6 +35,11 @@ module Gitlab
         docstring 'blob.truncated? == false'
       end
 
+      define_histogram :gitlab_blob_size do
+        docstring 'Gitlab::Git::Blob size'
+        buckets [1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000]
+      end
+
       class << self
         def find(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
           tree_entry(repository, sha, path, limit)

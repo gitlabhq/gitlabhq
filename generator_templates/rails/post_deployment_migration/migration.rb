@@ -4,7 +4,8 @@
 # for more information on how to write migrations for GitLab.
 
 class <%= migration_class_name %> < ActiveRecord::Migration[<%= ActiveRecord::Migration.current_version %>]
-  include Gitlab::Database::MigrationHelpers
+  # Uncomment the following include if you require helper functions:
+  # include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
 
