@@ -127,7 +127,6 @@ export default {
         });
 
       const yAxisWithOffset = {
-        name: this.yAxisLabel,
         axisLabel: {
           formatter: num => roundOffFloat(num - this.yOffset, 3).toString(),
         },
@@ -162,6 +161,7 @@ export default {
           }),
         );
       }
+
       return { yAxis: yAxisWithOffset, series: boundarySeries };
     },
   },

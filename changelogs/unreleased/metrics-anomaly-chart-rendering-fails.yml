@@ -1,0 +1,5 @@
+---
+title: Time series extends axis options correctly
+merge_request: 25399
+author:
+type: fixed

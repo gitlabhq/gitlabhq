@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { throttle, isEmpty } from 'lodash';
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
@@ -125,7 +125,7 @@ export default {
     // Once the job log is loaded,
     // fetch the stages for the dropdown on the sidebar
     job(newVal, oldVal) {
-      if (_.isEmpty(oldVal) && !_.isEmpty(newVal.pipeline)) {
+      if (isEmpty(oldVal) && !isEmpty(newVal.pipeline)) {
         const stages = this.job.pipeline.details.stages || [];
 
         const defaultStage = stages.find(stage => stage && stage.name === this.selectedStage);
@@ -145,7 +145,7 @@ export default {
     },
   },
   created() {
-    this.throttled = _.throttle(this.toggleScrollButtons, 100);
+    this.throttled = throttle(this.toggleScrollButtons, 100);
 
     window.addEventListener('resize', this.onResize);
     window.addEventListener('scroll', this.updateScroll);

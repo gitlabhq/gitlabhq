@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { escape as esc, isEmpty } from 'lodash';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { sprintf, __ } from '../../locale';
 
@@ -43,7 +43,7 @@ export default {
           '%{startLink}%{name}%{endLink}',
           {
             startLink: `<a href="${this.deploymentStatus.environment.environment_path}" class="js-environment-link">`,
-            name: _.escape(this.deploymentStatus.environment.name),
+            name: esc(this.deploymentStatus.environment.name),
             endLink: '</a>',
           },
           false,
@@ -58,10 +58,10 @@ export default {
       return this.hasLastDeployment ? this.deploymentStatus.environment.last_deployment : {};
     },
     hasEnvironment() {
-      return !_.isEmpty(this.deploymentStatus.environment);
+      return !isEmpty(this.deploymentStatus.environment);
     },
     lastDeploymentPath() {
-      return !_.isEmpty(this.lastDeployment.deployable)
+      return !isEmpty(this.lastDeployment.deployable)
         ? this.lastDeployment.deployable.build_path
         : '';
     },
@@ -74,8 +74,8 @@ export default {
       }
 
       const { name, path } = this.deploymentCluster;
-      const escapedName = _.escape(name);
-      const escapedPath = _.escape(path);
+      const escapedName = esc(name);
+      const escapedPath = esc(path);
 
       if (!escapedPath) {
         return escapedName;

@@ -588,4 +588,14 @@ describe Gitlab::Git::Blob, :seed_helper do
       end
     end
   end
+
+  describe 'metrics' do
+    it 'defines :gitlab_blob_truncated_true counter' do
+      expect(described_class).to respond_to(:gitlab_blob_truncated_true)
+    end
+
+    it 'defines :gitlab_blob_truncated_false counter' do
+      expect(described_class).to respond_to(:gitlab_blob_truncated_false)
+    end
+  end
 end

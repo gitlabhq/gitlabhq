@@ -11,6 +11,7 @@ module Types
     mount_mutation Mutations::AwardEmojis::Toggle
     mount_mutation Mutations::Issues::SetConfidential
     mount_mutation Mutations::Issues::SetDueDate
+    mount_mutation Mutations::Issues::Update
     mount_mutation Mutations::MergeRequests::SetLabels
     mount_mutation Mutations::MergeRequests::SetLocked
     mount_mutation Mutations::MergeRequests::SetMilestone

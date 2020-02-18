@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import { mapActions, mapState } from 'vuex';
 import { GlLink, GlButton } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
@@ -84,10 +84,10 @@ export default {
       );
     },
     hasArtifact() {
-      return !_.isEmpty(this.job.artifact);
+      return !isEmpty(this.job.artifact);
     },
     hasTriggers() {
-      return !_.isEmpty(this.job.trigger);
+      return !isEmpty(this.job.trigger);
     },
     hasStages() {
       return (

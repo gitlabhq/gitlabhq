@@ -6,6 +6,12 @@ plugins:
 extends:
   - 'plugin:jest/recommended'
 settings:
+  # We have to teach eslint-plugin-import what node modules we use
+  # otherwise there is an error when it tries to resolve them
+  import/core-modules:
+    - events
+    - fs
+    - path
   import/resolver:
     jest:
       jestConfigFile: 'jest.config.js'

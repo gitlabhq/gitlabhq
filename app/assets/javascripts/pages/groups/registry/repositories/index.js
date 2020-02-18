@@ -3,5 +3,7 @@ import registryExplorer from '~/registry/explorer/index';
 
 document.addEventListener('DOMContentLoaded', () => {
   initRegistryImages();
-  registryExplorer();
+  const { attachMainComponent, attachBreadcrumb } = registryExplorer();
+  attachBreadcrumb();
+  attachMainComponent();
 });

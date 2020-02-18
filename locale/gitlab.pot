@@ -1538,6 +1538,9 @@ msgstr ""
 msgid "All changes are committed"
 msgstr ""
 
+msgid "All default stages are currently visible"
+msgstr ""
+
 msgid "All email addresses will be used to identify your commits."
 msgstr ""
 
@@ -6108,6 +6111,9 @@ msgid "Default project deletion protection"
 msgstr ""
 
 msgid "Default projects limit"
+msgstr ""
+
+msgid "Default stages"
 msgstr ""
 
 msgid "Default: Directly import the Google Code email address or username"
@@ -15727,6 +15733,9 @@ msgstr ""
 msgid "Recipe"
 msgstr ""
 
+msgid "Recover hidden stage"
+msgstr ""
+
 msgid "Recovery Codes"
 msgstr ""
 
@@ -21559,6 +21568,30 @@ msgid "VulnerabilityChart|%{formattedStartDate} to today"
 msgstr ""
 
 msgid "VulnerabilityChart|Severity"
+msgstr ""
+
+msgid "VulnerabilityManagement|A true-positive and will fix"
+msgstr ""
+
+msgid "VulnerabilityManagement|Change status"
+msgstr ""
+
+msgid "VulnerabilityManagement|Confirm"
+msgstr ""
+
+msgid "VulnerabilityManagement|Dismiss"
+msgstr ""
+
+msgid "VulnerabilityManagement|Resolved"
+msgstr ""
+
+msgid "VulnerabilityManagement|Something went wrong, could not update vulnerability state."
+msgstr ""
+
+msgid "VulnerabilityManagement|Verified as fixed or mitigated"
+msgstr ""
+
+msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr ""
 
 msgid "Vulnerability|Class"

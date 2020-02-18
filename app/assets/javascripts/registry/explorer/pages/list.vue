@@ -70,7 +70,7 @@ export default {
       this.itemToDelete = {};
     },
     encodeListItem(item) {
-      const params = JSON.stringify({ name: item.path, tags_path: item.tags_path });
+      const params = JSON.stringify({ name: item.path, tags_path: item.tags_path, id: item.id });
       return window.btoa(params);
     },
   },

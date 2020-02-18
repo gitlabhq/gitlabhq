@@ -162,7 +162,8 @@ export default {
       );
     },
     chartOptions() {
-      const option = omit(this.option, 'series');
+      const { yAxis, xAxis } = this.option;
+      const option = omit(this.option, ['series', 'yAxis', 'xAxis']);
 
       const dataYAxis = {
         name: this.yAxisLabel,
@@ -173,7 +174,9 @@ export default {
         axisLabel: {
           formatter: num => roundOffFloat(num, 3).toString(),
         },
+        ...yAxis,
       };
+
       const deploymentsYAxis = {
         show: false,
         min: deploymentYAxisCoords.min,
@@ -184,18 +187,21 @@ export default {
         },
       };
 
+      const timeXAxis = {
+        name: __('Time'),
+        type: 'time',
+        axisLabel: {
+          formatter: date => dateFormat(date, dateFormats.timeOfDay),
+        },
+        axisPointer: {
+          snap: true,
+        },
+        ...xAxis,
+      };
+
       return {
         series: this.chartOptionSeries,
-        xAxis: {
-          name: __('Time'),
-          type: 'time',
-          axisLabel: {
-            formatter: date => dateFormat(date, dateFormats.timeOfDay),
-          },
-          axisPointer: {
-            snap: true,
-          },
-        },
+        xAxis: timeXAxis,
         yAxis: [dataYAxis, deploymentsYAxis],
         dataZoom: [this.dataZoomConfig],
         ...option,

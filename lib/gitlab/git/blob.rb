@@ -5,6 +5,7 @@ module Gitlab
     class Blob
       include Gitlab::BlobHelper
       include Gitlab::EncodingHelper
+      include Gitlab::Metrics::Methods
       extend Gitlab::Git::WrapsGitalyErrors
 
       # This number is the maximum amount of data that we want to display to
@@ -25,6 +26,14 @@ module Gitlab
       LFS_POINTER_MAX_SIZE = 200.bytes
 
       attr_accessor :name, :path, :size, :data, :mode, :id, :commit_id, :loaded_size, :binary
+
+      define_counter :gitlab_blob_truncated_true do
+        docstring 'blob.truncated? == true'
+      end
+
+      define_counter :gitlab_blob_truncated_false do
+        docstring 'blob.truncated? == false'
+      end
 
       class << self
         def find(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)

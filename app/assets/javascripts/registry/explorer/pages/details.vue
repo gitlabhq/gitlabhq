@@ -19,6 +19,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import Tracking from '~/tracking';
+import { decodeAndParse } from '../utils';
 import {
   LIST_KEY_TAG,
   LIST_KEY_IMAGE_ID,
@@ -62,7 +63,7 @@ export default {
   computed: {
     ...mapState(['tags', 'tagsPagination', 'isLoading', 'config']),
     imageName() {
-      const { name } = JSON.parse(window.atob(this.$route.params.id));
+      const { name } = decodeAndParse(this.$route.params.id);
       return name;
     },
     fields() {
@@ -169,7 +170,7 @@ export default {
     },
     handleSingleDelete(itemToDelete) {
       this.itemsToBeDeleted = [];
-      this.requestDeleteTag({ tag: itemToDelete, imageId: this.$route.params.id });
+      this.requestDeleteTag({ tag: itemToDelete, params: this.$route.params.id });
     },
     handleMultipleDelete() {
       const { itemsToBeDeleted } = this;
@@ -178,7 +179,7 @@ export default {
 
       this.requestDeleteTags({
         ids: itemsToBeDeleted.map(x => this.tags[x].name),
-        imageId: this.$route.params.id,
+        params: this.$route.params.id,
       });
     },
     onDeletionConfirmed() {

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
 import RegistryExplorer from './pages/index.vue';
+import RegistryBreadcrumb from './components/registry_breadcrumb.vue';
 import { createStore } from './stores';
 import createRouter from './router';
 
@@ -19,15 +20,39 @@ export default () => {
   const router = createRouter(endpoint, store);
   store.dispatch('setInitialState', el.dataset);
 
-  return new Vue({
-    el,
-    store,
-    router,
-    components: {
-      RegistryExplorer,
-    },
-    render(createElement) {
-      return createElement('registry-explorer');
-    },
-  });
+  const attachMainComponent = () =>
+    new Vue({
+      el,
+      store,
+      router,
+      components: {
+        RegistryExplorer,
+      },
+      render(createElement) {
+        return createElement('registry-explorer');
+      },
+    });
+
+  const attachBreadcrumb = () => {
+    const breadCrumbEl = document.querySelector('nav .js-breadcrumbs-list');
+    const crumbs = [...document.querySelectorAll('.js-breadcrumbs-list li')];
+    return new Vue({
+      el: breadCrumbEl,
+      store,
+      router,
+      components: {
+        RegistryBreadcrumb,
+      },
+      render(createElement) {
+        return createElement('registry-breadcrumb', {
+          class: breadCrumbEl.className,
+          props: {
+            crumbs,
+          },
+        });
+      },
+    });
+  };
+
+  return { attachBreadcrumb, attachMainComponent };
 };

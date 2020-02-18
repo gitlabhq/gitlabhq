@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { isEmpty, isString } from 'lodash';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 
 export const headerTime = state => (state.job.started ? state.job.started : state.job.created_at);
@@ -7,15 +7,15 @@ export const hasUnmetPrerequisitesFailure = state =>
   state.job && state.job.failure_reason && state.job.failure_reason === 'unmet_prerequisites';
 
 export const shouldRenderCalloutMessage = state =>
-  !_.isEmpty(state.job.status) && !_.isEmpty(state.job.callout_message);
+  !isEmpty(state.job.status) && !isEmpty(state.job.callout_message);
 
 /**
  * When job has not started the key will be null
  * When job started the key will be a string with a date.
  */
-export const shouldRenderTriggeredLabel = state => _.isString(state.job.started);
+export const shouldRenderTriggeredLabel = state => isString(state.job.started);
 
-export const hasEnvironment = state => !_.isEmpty(state.job.deployment_status);
+export const hasEnvironment = state => !isEmpty(state.job.deployment_status);
 
 /**
  * Checks if it the job has trace.
@@ -23,7 +23,7 @@ export const hasEnvironment = state => !_.isEmpty(state.job.deployment_status);
  * @returns {Boolean}
  */
 export const hasTrace = state =>
-  state.job.has_trace || (!_.isEmpty(state.job.status) && state.job.status.group === 'running');
+  state.job.has_trace || (!isEmpty(state.job.status) && state.job.status.group === 'running');
 
 export const emptyStateIllustration = state =>
   (state.job && state.job.status && state.job.status.illustration) || {};
@@ -38,8 +38,8 @@ export const emptyStateAction = state =>
  * @returns {Boolean}
  */
 export const shouldRenderSharedRunnerLimitWarning = state =>
-  !_.isEmpty(state.job.runners) &&
-  !_.isEmpty(state.job.runners.quota) &&
+  !isEmpty(state.job.runners) &&
+  !isEmpty(state.job.runners.quota) &&
   state.job.runners.quota.used >= state.job.runners.quota.limit;
 
 export const isScrollingDown = state => isScrolledToBottom() && !state.isTraceComplete;

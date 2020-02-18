@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { uniqueId } from 'lodash';
 import { mapActions } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
@@ -19,7 +19,9 @@ export default {
       validator(value) {
         return (
           value === null ||
-          (_.has(value, 'path') && _.has(value, 'method') && _.has(value, 'button_title'))
+          (Object.prototype.hasOwnProperty.call(value, 'path') &&
+            Object.prototype.hasOwnProperty.call(value, 'method') &&
+            Object.prototype.hasOwnProperty.call(value, 'button_title'))
         );
       },
     },
@@ -78,7 +80,7 @@ export default {
       const newVariable = {
         key: this.key,
         secret_value: this.secretValue,
-        id: _.uniqueId(),
+        id: uniqueId(),
       };
 
       this.variables.push(newVariable);

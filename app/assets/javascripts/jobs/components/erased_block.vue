@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import { GlLink } from '@gitlab/ui';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     isErasedByUser() {
-      return !_.isEmpty(this.user);
+      return !isEmpty(this.user);
     },
   },
 };

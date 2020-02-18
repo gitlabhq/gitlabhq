@@ -13,6 +13,7 @@ import {
   DELETE_IMAGE_ERROR_MESSAGE,
   DELETE_IMAGE_SUCCESS_MESSAGE,
 } from '../constants';
+import { decodeAndParse } from '../utils';
 
 export const setInitialState = ({ commit }, data) => commit(types.SET_INITIAL_STATE, data);
 
@@ -43,9 +44,9 @@ export const requestImagesList = ({ commit, dispatch, state }, pagination = {}) 
     });
 };
 
-export const requestTagsList = ({ commit, dispatch }, { pagination = {}, id }) => {
+export const requestTagsList = ({ commit, dispatch }, { pagination = {}, params }) => {
   commit(types.SET_MAIN_LOADING, true);
-  const { tags_path } = JSON.parse(window.atob(id));
+  const { tags_path } = decodeAndParse(params);
 
   const { page = DEFAULT_PAGE, perPage = DEFAULT_PAGE_SIZE } = pagination;
   return axios
@@ -61,13 +62,13 @@ export const requestTagsList = ({ commit, dispatch }, { pagination = {}, id }) =
     });
 };
 
-export const requestDeleteTag = ({ commit, dispatch, state }, { tag, imageId }) => {
+export const requestDeleteTag = ({ commit, dispatch, state }, { tag, params }) => {
   commit(types.SET_MAIN_LOADING, true);
   return axios
     .delete(tag.destroy_path)
     .then(() => {
       createFlash(DELETE_TAG_SUCCESS_MESSAGE, 'success');
-      dispatch('requestTagsList', { pagination: state.tagsPagination, id: imageId });
+      dispatch('requestTagsList', { pagination: state.tagsPagination, params });
     })
     .catch(() => {
       createFlash(DELETE_TAG_ERROR_MESSAGE);
@@ -77,15 +78,16 @@ export const requestDeleteTag = ({ commit, dispatch, state }, { tag, imageId }) 
     });
 };
 
-export const requestDeleteTags = ({ commit, dispatch, state }, { ids, imageId }) => {
+export const requestDeleteTags = ({ commit, dispatch, state }, { ids, params }) => {
   commit(types.SET_MAIN_LOADING, true);
-  const url = `/${state.config.projectPath}/registry/repository/${imageId}/tags/bulk_destroy`;
+  const { id } = decodeAndParse(params);
+  const url = `/${state.config.projectPath}/registry/repository/${id}/tags/bulk_destroy`;
 
   return axios
     .delete(url, { params: { ids } })
     .then(() => {
       createFlash(DELETE_TAGS_SUCCESS_MESSAGE, 'success');
-      dispatch('requestTagsList', { pagination: state.tagsPagination, id: imageId });
+      dispatch('requestTagsList', { pagination: state.tagsPagination, params });
     })
     .catch(() => {
       createFlash(DELETE_TAGS_ERROR_MESSAGE);

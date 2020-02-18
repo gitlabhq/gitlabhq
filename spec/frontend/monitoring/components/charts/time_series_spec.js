@@ -358,6 +358,45 @@ describe('Time series component', () => {
               expect(optionSeries[0].name).toEqual(mockSeriesName);
             });
           });
+
+          it('additional y axis data', () => {
+            const mockCustomYAxisOption = {
+              name: 'Custom y axis label',
+              axisLabel: {
+                formatter: jest.fn(),
+              },
+            };
+
+            timeSeriesChart.setProps({
+              option: {
+                yAxis: mockCustomYAxisOption,
+              },
+            });
+
+            return timeSeriesChart.vm.$nextTick().then(() => {
+              const { yAxis } = getChartOptions();
+
+              expect(yAxis[0]).toMatchObject(mockCustomYAxisOption);
+            });
+          });
+
+          it('additional x axis data', () => {
+            const mockCustomXAxisOption = {
+              name: 'Custom x axis label',
+            };
+
+            timeSeriesChart.setProps({
+              option: {
+                xAxis: mockCustomXAxisOption,
+              },
+            });
+
+            return timeSeriesChart.vm.$nextTick().then(() => {
+              const { xAxis } = getChartOptions();
+
+              expect(xAxis).toMatchObject(mockCustomXAxisOption);
+            });
+          });
         });
 
         describe('yAxis formatter', () => {

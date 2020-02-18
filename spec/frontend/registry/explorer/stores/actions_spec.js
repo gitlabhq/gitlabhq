@@ -121,14 +121,14 @@ describe('Actions RegistryExplorer Store', () => {
 
   describe('fetch tags list', () => {
     const url = `${endpoint}/1}`;
-    const path = window.btoa(JSON.stringify({ tags_path: `${endpoint}/1}` }));
+    const params = window.btoa(JSON.stringify({ tags_path: `${endpoint}/1}` }));
 
     it('sets the tagsList', done => {
       mock.onGet(url).replyOnce(200, registryServerResponse, {});
 
       testAction(
         actions.requestTagsList,
-        { id: path },
+        { params },
         {},
         [
           { type: types.SET_MAIN_LOADING, payload: true },
@@ -147,7 +147,7 @@ describe('Actions RegistryExplorer Store', () => {
     it('should create flash on error', done => {
       testAction(
         actions.requestTagsList,
-        { id: path },
+        { params },
         {},
         [
           { type: types.SET_MAIN_LOADING, payload: true },
@@ -165,7 +165,7 @@ describe('Actions RegistryExplorer Store', () => {
   describe('request delete single tag', () => {
     it('successfully performs the delete request', done => {
       const deletePath = 'delete/path';
-      const url = window.btoa(`${endpoint}/1}`);
+      const params = window.btoa(JSON.stringify({ tags_path: `${endpoint}/1}`, id: 1 }));
 
       mock.onDelete(deletePath).replyOnce(200);
 
@@ -175,7 +175,7 @@ describe('Actions RegistryExplorer Store', () => {
           tag: {
             destroy_path: deletePath,
           },
-          imageId: url,
+          params,
         },
         {
           tagsPagination: {},
@@ -187,7 +187,7 @@ describe('Actions RegistryExplorer Store', () => {
         [
           {
             type: 'requestTagsList',
-            payload: { pagination: {}, id: url },
+            payload: { pagination: {}, params },
           },
         ],
         () => {
@@ -220,9 +220,10 @@ describe('Actions RegistryExplorer Store', () => {
   });
 
   describe('request delete multiple tags', () => {
-    const imageId = 1;
+    const id = 1;
+    const params = window.btoa(JSON.stringify({ id }));
     const projectPath = 'project-path';
-    const url = `${projectPath}/registry/repository/${imageId}/tags/bulk_destroy`;
+    const url = `${projectPath}/registry/repository/${id}/tags/bulk_destroy`;
 
     it('successfully performs the delete request', done => {
       mock.onDelete(url).replyOnce(200);
@@ -231,7 +232,7 @@ describe('Actions RegistryExplorer Store', () => {
         actions.requestDeleteTags,
         {
           ids: [1, 2],
-          imageId,
+          params,
         },
         {
           config: {
@@ -246,7 +247,7 @@ describe('Actions RegistryExplorer Store', () => {
         [
           {
             type: 'requestTagsList',
-            payload: { pagination: {}, id: 1 },
+            payload: { pagination: {}, params },
           },
         ],
         () => {
@@ -263,7 +264,7 @@ describe('Actions RegistryExplorer Store', () => {
         actions.requestDeleteTags,
         {
           ids: [1, 2],
-          imageId,
+          params,
         },
         {
           config: {

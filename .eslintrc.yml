@@ -48,8 +48,10 @@ rules:
   no-jquery/no-serialize: error
   promise/always-return: off
   promise/no-callback-in-promise: off
+  # Make update to eslint@6 smoother:
+  prefer-object-spread: off
 overrides:
-  files:
-    - '**/spec/**/*'
-  rules:
-    "@gitlab/i18n/no-non-i18n-strings": off
+  - files:
+      - '**/spec/**/*'
+    rules:
+      "@gitlab/i18n/no-non-i18n-strings": off

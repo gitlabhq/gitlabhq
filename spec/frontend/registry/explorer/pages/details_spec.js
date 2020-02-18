@@ -254,7 +254,7 @@ describe('Details Page', () => {
         return wrapper.vm.$nextTick().then(() => {
           expect(store.dispatch).toHaveBeenCalledWith('requestDeleteTag', {
             tag: store.state.tags[0],
-            imageId: wrapper.vm.$route.params.id,
+            params: wrapper.vm.$route.params.id,
           });
           // itemsToBeDeleted is not represented in the DOM, is used as parking variable between selected and deleted items
           expect(wrapper.vm.itemsToBeDeleted).toEqual([]);
@@ -271,7 +271,7 @@ describe('Details Page', () => {
         return wrapper.vm.$nextTick().then(() => {
           expect(store.dispatch).toHaveBeenCalledWith('requestDeleteTags', {
             ids: store.state.tags.map(t => t.name),
-            imageId: wrapper.vm.$route.params.id,
+            params: wrapper.vm.$route.params.id,
           });
           // itemsToBeDeleted is not represented in the DOM, is used as parking variable between selected and deleted items
           expect(wrapper.vm.itemsToBeDeleted).toEqual([]);
