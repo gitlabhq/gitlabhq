@@ -918,12 +918,12 @@ instead of the default `ruby:latest`:
 1. Set `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS` to `--build-arg=RUBY_VERSION=alpine`.
 1. Add the following to a custom `Dockerfile`:
 
-    ```docker
-    ARG RUBY_VERSION=latest
-    FROM ruby:$RUBY_VERSION
+   ```dockerfile
+   ARG RUBY_VERSION=latest
+   FROM ruby:$RUBY_VERSION
 
-    # ... put your stuff here
-    ```
+   # ... put your stuff here
+   ```
 
 NOTE: **Note:**
 Passing in complex values (newlines and spaces, for example) will likely
@@ -955,14 +955,14 @@ In projects:
   1. Activate the experimental `Dockerfile` syntax by adding the following
      to the top of the file:
 
-     ```docker
+     ```dockerfile
      # syntax = docker/dockerfile:experimental
      ```
 
   1. To make secrets available in any `RUN $COMMAND` in the `Dockerfile`, mount
      the secret file and source it prior to running `$COMMAND`:
 
-     ```docker
+     ```dockerfile
      RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets && $COMMAND
      ```
 

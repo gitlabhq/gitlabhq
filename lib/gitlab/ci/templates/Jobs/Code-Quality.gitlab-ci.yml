@@ -1,10 +1,8 @@
 code_quality:
   stage: test
-  # pin to a version matching the dind service, just to be safe
   image: docker:19.03.5
   allow_failure: true
   services:
-    # pin to a known working version until https://gitlab.com/gitlab-org/gitlab-runner/issues/6697 is fixed
     - docker:19.03.5-dind
   variables:
     DOCKER_DRIVER: overlay2

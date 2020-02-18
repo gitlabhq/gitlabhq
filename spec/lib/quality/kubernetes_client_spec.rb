@@ -38,7 +38,7 @@ RSpec.describe Quality::KubernetesClient do
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(kubectl delete --namespace "#{namespace}" #{pod_for_release})])
+        .with([%(kubectl delete --namespace "#{namespace}" --ignore-not-found #{pod_for_release})])
         .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
       # We're not verifying the output here, just silencing it
@@ -64,7 +64,7 @@ RSpec.describe Quality::KubernetesClient do
           .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
         expect(Gitlab::Popen).to receive(:popen_with_detail)
-         .with([%(kubectl delete --namespace "#{namespace}" #{pod_for_release})])
+         .with([%(kubectl delete --namespace "#{namespace}" --ignore-not-found #{pod_for_release})])
          .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
         # We're not verifying the output here, just silencing it
@@ -89,7 +89,7 @@ RSpec.describe Quality::KubernetesClient do
           .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
         expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with([%(kubectl delete --namespace "#{namespace}" #{pod_for_release})])
+          .with([%(kubectl delete --namespace "#{namespace}" --ignore-not-found #{pod_for_release})])
           .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
         # We're not verifying the output here, just silencing it

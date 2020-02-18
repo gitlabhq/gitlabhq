@@ -74,7 +74,7 @@ and they will assist you with any issues you are having.
 
 - How to get cronjobs configured on a cluster
 
-  ```bash
+  ```shell
   kubectl get cronjobs
   ```
   

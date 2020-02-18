@@ -4,7 +4,6 @@ build:
   variables:
     DOCKER_TLS_CERTDIR: ""
   services:
-    # pin to a known working version until https://gitlab.com/gitlab-org/gitlab-runner/issues/6697 is fixed
     - docker:19.03.5-dind
   script:
     - |

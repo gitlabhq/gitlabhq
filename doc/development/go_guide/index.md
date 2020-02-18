@@ -195,7 +195,7 @@ When comparing expected and actual values in tests, use
 and others to improve readability when comparing structs, errors,
 large portions of text, or JSON documents:
 
-```go
+```golang
 type TestData struct {
     // ...
 }

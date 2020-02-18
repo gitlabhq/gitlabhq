@@ -1,12 +1,10 @@
 performance:
   stage: performance
-  # pin to a version matching the dind service, just to be safe
   image: docker:19.03.5
   allow_failure: true
   variables:
     DOCKER_TLS_CERTDIR: ""
   services:
-    # pin to a known working version until https://gitlab.com/gitlab-org/gitlab-runner/issues/6697 is fixed
     - docker:19.03.5-dind
   script:
     - |

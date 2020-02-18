@@ -17,12 +17,12 @@ First, in your `.gitlab-ci.yml` add:
 
 ```yaml
 services:
-  - postgres:latest
+  - postgres:12.2-alpine
 
 variables:
   POSTGRES_DB: nice_marmot
   POSTGRES_USER: runner
-  POSTGRES_PASSWORD: ""
+  POSTGRES_PASSWORD: "runner-password"
 ```
 
 NOTE: **Note:**
@@ -37,7 +37,7 @@ And then configure your application to use the database, for example:
 ```yaml
 Host: postgres
 User: runner
-Password:
+Password: runner-password
 Database: nice_marmot
 ```
 

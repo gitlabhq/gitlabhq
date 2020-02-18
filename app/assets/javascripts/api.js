@@ -47,6 +47,7 @@ const Api = {
   adminStatisticsPath: '/api/:version/application/statistics',
   pipelineSinglePath: '/api/:version/projects/:id/pipelines/:pipeline_id',
   lsifPath: '/api/:version/projects/:id/commits/:commit_id/lsif/info',
+  environmentsPath: '/api/:version/projects/:id/environments',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -481,6 +482,11 @@ const Api = {
       .replace(':commit_id', commitId);
 
     return axios.get(url, { params: { path } });
+  },
+
+  environments(id) {
+    const url = Api.buildUrl(this.environmentsPath).replace(':id', encodeURIComponent(id));
+    return axios.get(url);
   },
 
   buildUrl(url) {

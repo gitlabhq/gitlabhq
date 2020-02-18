@@ -534,6 +534,9 @@ msgstr ""
 msgid "(removed)"
 msgstr ""
 
+msgid "*"
+msgstr ""
+
 msgid "+ %{amount} more"
 msgstr ""
 
@@ -1542,6 +1545,9 @@ msgid "All default stages are currently visible"
 msgstr ""
 
 msgid "All email addresses will be used to identify your commits."
+msgstr ""
+
+msgid "All environments"
 msgstr ""
 
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
@@ -8383,6 +8389,9 @@ msgid "Fetching licenses failed. The request endpoint was not found."
 msgstr ""
 
 msgid "Fetching licenses failed. You are not permitted to perform this action."
+msgstr ""
+
+msgid "File"
 msgstr ""
 
 msgid "File Hooks"
@@ -19425,6 +19434,12 @@ msgstr ""
 msgid "There was an error fetching the Designs"
 msgstr ""
 
+msgid "There was an error fetching the environments information."
+msgstr ""
+
+msgid "There was an error fetching the variables."
+msgstr ""
+
 msgid "There was an error fetching value stream analytics stages."
 msgstr ""
 
@@ -21365,6 +21380,9 @@ msgid "Value Stream Analytics can help you determine your team’s velocity"
 msgstr ""
 
 msgid "Value Stream Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr ""
+
+msgid "Variable"
 msgstr ""
 
 msgid "Variables"

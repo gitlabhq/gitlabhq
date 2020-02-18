@@ -17,6 +17,11 @@ NOTE: **Note:**
 Coming over to GitLab from Jenkins? Check out our [reference](../jenkins/index.md)
 for converting your pre-existing pipelines over to our format.
 
+NOTE: **Note:**
+There are a few different [basic pipeline architectures](../pipelines/pipeline_architectures.md)
+that you can consider for use in your project. You may want to familiarize
+yourself with these prior to getting started.
+
 GitLab offers a [continuous integration](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/) service. For each commit or push to trigger your CI
 [pipeline](../pipelines.md), you must:
 

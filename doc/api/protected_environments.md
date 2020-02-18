@@ -17,7 +17,7 @@ Currently, these levels are recognized:
 
 Gets a list of protected environments from a project:
 
-```bash
+```shell
 GET /projects/:id/protected_environments
 ```
 
@@ -25,7 +25,7 @@ GET /projects/:id/protected_environments
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/5/protected_environments/'
 ```
 
@@ -51,7 +51,7 @@ Example response:
 
 Gets a single protected environment:
 
-```bash
+```shell
 GET /projects/:id/protected_environments/:name
 ```
 
@@ -60,7 +60,7 @@ GET /projects/:id/protected_environments/:name
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the protected environment |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/5/protected_environments/production'
 ```
 
@@ -84,11 +84,11 @@ Example response:
 
 Protects a single environment:
 
-```bash
+```shell
 POST /projects/:id/protected_environments
 ```
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/5/protected_environments?name=staging&deploy_access_levels%5B%5D%5Buser_id%5D=1'
 ```
 
@@ -122,11 +122,11 @@ Example response:
 
 Unprotects the given protected environment:
 
-```bash
+```shell
 DELETE /projects/:id/protected_environments/:name
 ```
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/5/protected_environments/staging'
 ```
 

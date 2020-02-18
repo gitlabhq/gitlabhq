@@ -7,7 +7,7 @@ class AdminEmailWorker
   include CronjobQueue
   # rubocop:enable Scalability/CronWorkerContext
 
-  feature_category_not_owned!
+  feature_category :source_code_management
 
   def perform
     send_repository_check_mail if Gitlab::CurrentSettings.repository_checks_enabled

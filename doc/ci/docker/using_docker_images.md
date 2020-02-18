@@ -397,7 +397,7 @@ Before the new extended Docker configuration options, you would need to create
 your own image based on the `super/sql:latest` image, add the default command,
 and then use it in job's configuration, like:
 
-```Dockerfile
+```dockerfile
 # my-super-sql:latest image's Dockerfile
 
 FROM super/sql:latest

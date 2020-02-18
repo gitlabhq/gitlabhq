@@ -58,7 +58,7 @@
   :resource_boundary: :unknown
   :weight: 1
 - :name: cronjob:admin_email
-  :feature_category: :not_owned
+  :feature_category: :source_code_management
   :has_external_dependencies: 
   :latency_sensitive: 
   :resource_boundary: :unknown
@@ -88,7 +88,7 @@
   :resource_boundary: :unknown
   :weight: 1
 - :name: cronjob:gitlab_usage_ping
-  :feature_category: :not_owned
+  :feature_category: :collection
   :has_external_dependencies: 
   :latency_sensitive: 
   :resource_boundary: :unknown
@@ -142,7 +142,7 @@
   :resource_boundary: :cpu
   :weight: 1
 - :name: cronjob:prune_old_events
-  :feature_category: :not_owned
+  :feature_category: :users
   :has_external_dependencies: 
   :latency_sensitive: 
   :resource_boundary: :unknown

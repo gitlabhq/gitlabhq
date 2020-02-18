@@ -619,7 +619,7 @@ provided by `gitlab-ctl`.
 
 Consider the following example, where you first build the image:
 
-```bash
+```shell
 # This builds a image with content of sha256:111111
 docker build -t my.registry.com/my.group/my.project:latest .
 docker push my.registry.com/my.group/my.project:latest
@@ -627,7 +627,7 @@ docker push my.registry.com/my.group/my.project:latest
 
 Now, you do overwrite `:latest` with a new version:
 
-```bash
+```shell
 # This builds a image with content of sha256:222222
 docker build -t my.registry.com/my.group/my.project:latest .
 docker push my.registry.com/my.group/my.project:latest
@@ -774,7 +774,7 @@ once a week.
 
 Create a file under `/etc/cron.d/registry-garbage-collect`:
 
-```bash
+```shell
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 

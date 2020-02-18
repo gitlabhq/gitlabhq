@@ -9,7 +9,7 @@ class GitlabUsagePingWorker
   include CronjobQueue
   # rubocop:enable Scalability/CronWorkerContext
 
-  feature_category_not_owned!
+  feature_category :collection
 
   # Retry for up to approximately three hours then give up.
   sidekiq_options retry: 10, dead: false
