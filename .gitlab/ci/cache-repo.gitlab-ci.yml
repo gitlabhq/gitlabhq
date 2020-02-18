@@ -1,7 +1,3 @@
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-cache-credentials-schedule: &if-cache-credentials-schedule
-  if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
-
 # Builds a cached .tar.gz of the master branch with full history and
 # uploads it to Google Cloud Storage. This archive is downloaded by a
 # script defined by a CI/CD variable named CI_PRE_CLONE_SCRIPT. This has
@@ -22,6 +18,7 @@
 # runner, or network egress charges will apply:
 # https://cloud.google.com/storage/pricing
 cache-repo:
+  extends: .cache-repo:rules
   image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
   stage: sync
   allow_failure: true
@@ -38,6 +35,3 @@ cache-repo:
     - tar cf $TAR_FILENAME .
     - gzip $TAR_FILENAME
     - gsutil cp $TAR_FILENAME.gz gs://gitlab-ci-git-repo-cache/project-$CI_PROJECT_ID/gitlab-master.tar.gz
-  rules:
-    - <<: *if-cache-credentials-schedule
-      when: on_success

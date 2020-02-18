@@ -1,102 +1,3 @@
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-not-ee: &if-not-ee
-  if: '$CI_PROJECT_NAME !~ /^gitlab(-ee)?$/'
-
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-master-refs: &if-master-refs
-  if: '$CI_COMMIT_REF_NAME == "master"'
-
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-default-refs: &if-default-refs
-  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG'
-
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-merge-request: &if-merge-request
-  if: '$CI_MERGE_REQUEST_IID'
-
-# Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.code-backstage-patterns: &code-backstage-patterns
-  - ".gitlab/ci/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
-  - ".csscomb.json"
-  - "Dockerfile.assets"
-  - "*_VERSION"
-  - "Gemfile{,.lock}"
-  - "Rakefile"
-  - "{babel.config,jest.config}.js"
-  - "config.ru"
-  - "{package.json,yarn.lock}"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
-  # Backstage changes
-  - "Dangerfile"
-  - "danger/**/*"
-  - "{,ee/}fixtures/**/*"
-  - "{,ee/}rubocop/**/*"
-  - "{,ee/}spec/**/*"
-  - "doc/README.md"  # Some RSpec test rely on this file
-
-# Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.code-backstage-qa-patterns: &code-backstage-qa-patterns
-  - ".gitlab/ci/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
-  - ".csscomb.json"
-  - "Dockerfile.assets"
-  - "*_VERSION"
-  - "Gemfile{,.lock}"
-  - "Rakefile"
-  - "{babel.config,jest.config}.js"
-  - "config.ru"
-  - "{package.json,yarn.lock}"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
-  # Backstage changes
-  - "Dangerfile"
-  - "danger/**/*"
-  - "{,ee/}fixtures/**/*"
-  - "{,ee/}rubocop/**/*"
-  - "{,ee/}spec/**/*"
-  - "doc/README.md"  # Some RSpec test rely on this file
-  # QA changes
-  - ".dockerignore"
-  - "qa/**/*"
-
-.rails:rules:ee-and-foss:
-  rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
-      when: on_success
-
-.rails:rules:default-refs-code-backstage-qa:
-  rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
-
-.rails:rules:master-refs-code-backstage:
-  rules:
-    - <<: *if-master-refs
-      changes: *code-backstage-patterns
-      when: on_success
-
-.rails:rules:master-refs-code-backstage-ee-only:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-master-refs
-      changes: *code-backstage-patterns
-      when: on_success
-
-.rails:rules:ee-only:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
-      when: on_success
-
 .rails:needs:setup-and-assets:
   needs:
     - job: setup-test-env
@@ -153,11 +54,8 @@ downtime_check:
   extends:
     - .rails-job-base
     - .rails:needs:setup-and-assets
+    - .rails:rules:downtime_check
   stage: test
-  rules:
-    - <<: *if-merge-request
-      changes: *code-backstage-patterns
-      when: on_success
   variables:
     SETUP_DB: "false"
   script:
@@ -407,7 +305,7 @@ rspec-ee system pg10:
       artifacts: true
     - job: retrieve-tests-metadata
       artifacts: true
-    - job: compile-assets pull-cache foss
+    - job: compile-assets pull-cache as-if-foss
       artifacts: true
 
 .rspec-ee-base-pg9:

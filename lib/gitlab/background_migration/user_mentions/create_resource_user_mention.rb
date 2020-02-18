@@ -21,7 +21,8 @@ module Gitlab
           records.in_groups_of(BULK_INSERT_SIZE, false).each do |records|
             mentions = []
             records.each do |record|
-              mentions << record.build_mention_values(resource_user_mention_model.resource_foreign_key)
+              mention_record = record.build_mention_values(resource_user_mention_model.resource_foreign_key)
+              mentions << mention_record unless mention_record.blank?
             end
 
             Gitlab::Database.bulk_insert(

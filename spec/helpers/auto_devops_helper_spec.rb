@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe AutoDevopsHelper do
-  set(:project) { create(:project) }
-  set(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be(:user) { create(:user) }
 
   describe '.show_auto_devops_callout?' do
     let(:allowed) { true }

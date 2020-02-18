@@ -329,6 +329,6 @@ for more details.
    or ask someone to measure on production).
 
 [migrations-readme]: https://gitlab.com/gitlab-org/gitlab/blob/master/spec/migrations/README.md
-[issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab-foss/issues/35351
+[issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab/issues/18839
 [reliable-sidekiq]: https://gitlab.com/gitlab-org/gitlab-foss/issues/36791
 [import-export]: ../user/project/settings/import_export.md

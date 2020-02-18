@@ -1,42 +1,9 @@
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-canonical-dot-com-gitlab-org-group-master-refs: &if-canonical-dot-com-gitlab-org-group-master-refs
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == "master"'
-
-# Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.code-backstage-qa-patterns: &code-backstage-qa-patterns
-  - ".gitlab/ci/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
-  - ".csscomb.json"
-  - "Dockerfile.assets"
-  - "*_VERSION"
-  - "Gemfile{,.lock}"
-  - "Rakefile"
-  - "{babel.config,jest.config}.js"
-  - "config.ru"
-  - "{package.json,yarn.lock}"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
-  # Backstage changes
-  - "Dangerfile"
-  - "danger/**/*"
-  - "{,ee/}fixtures/**/*"
-  - "{,ee/}rubocop/**/*"
-  - "{,ee/}spec/**/*"
-  - "doc/README.md"  # Some RSpec test rely on this file
-  # QA changes
-  - ".dockerignore"
-  - "qa/**/*"
-
 pages:
   extends:
     - .default-tags
     - .default-retry
     - .default-cache
-  rules:
-    - <<: *if-canonical-dot-com-gitlab-org-group-master-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
+    - .pages:rules
   stage: pages
   dependencies: ["coverage", "karma", "gitlab:assets:compile pull-cache"]
   script:

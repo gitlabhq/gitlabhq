@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe EnvironmentsHelper do
-  set(:user) { create(:user) }
-  set(:project) { create(:project, :repository) }
-  set(:environment) { create(:environment, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project, :repository) }
+  let_it_be(:environment) { create(:environment, project: project) }
 
   describe '#metrics_data' do
     before do

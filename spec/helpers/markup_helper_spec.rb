@@ -3,15 +3,15 @@
 require 'spec_helper'
 
 describe MarkupHelper do
-  set(:project) { create(:project, :repository) }
-  set(:user) do
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) do
     user = create(:user, username: 'gfm')
     project.add_maintainer(user)
     user
   end
-  set(:issue) { create(:issue, project: project) }
-  set(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-  set(:snippet) { create(:project_snippet, project: project) }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be(:snippet) { create(:project_snippet, project: project) }
   let(:commit) { project.commit }
 
   before do
@@ -45,8 +45,8 @@ describe MarkupHelper do
     describe "override default project" do
       let(:actual) { issue.to_reference }
 
-      set(:second_project) { create(:project, :public) }
-      set(:second_issue) { create(:issue, project: second_project) }
+      let_it_be(:second_project) { create(:project, :public) }
+      let_it_be(:second_issue) { create(:issue, project: second_project) }
 
       it 'links to the issue' do
         expected = urls.project_issue_path(second_project, second_issue)
@@ -57,7 +57,7 @@ describe MarkupHelper do
     describe 'uploads' do
       let(:text) { "![ImageTest](/uploads/test.png)" }
 
-      set(:group) { create(:group) }
+      let_it_be(:group) { create(:group) }
 
       subject { helper.markdown(text) }
 
@@ -79,7 +79,7 @@ describe MarkupHelper do
       end
 
       describe "with a group in the context" do
-        set(:project_in_group) { create(:project, group: group) }
+        let_it_be(:project_in_group) { create(:project, group: group) }
 
         before do
           helper.instance_variable_set(:@group, group)

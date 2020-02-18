@@ -1,73 +1,3 @@
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-canonical-dot-com-gitlab-org-group-schedule: &if-canonical-dot-com-gitlab-org-group-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
-
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-canonical-gitlab-merge-request: &if-canonical-gitlab-merge-request
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
-
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-not-ee: &if-not-ee
-  if: '$CI_PROJECT_NAME !~ /^gitlab(-ee)?$/'
-
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-default-refs: &if-default-refs
-  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG'
-
-# Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.code-patterns: &code-patterns
-  - ".gitlab/ci/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
-  - ".csscomb.json"
-  - "Dockerfile.assets"
-  - "*_VERSION"
-  - "Gemfile{,.lock}"
-  - "Rakefile"
-  - "{babel.config,jest.config}.js"
-  - "config.ru"
-  - "{package.json,yarn.lock}"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
-
-# Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.qa-patterns: &qa-patterns
-  - ".dockerignore"
-  - "qa/**/*"
-
-# Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.code-qa-patterns: &code-qa-patterns
-  - ".gitlab/ci/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
-  - ".csscomb.json"
-  - "Dockerfile.assets"
-  - "*_VERSION"
-  - "Gemfile{,.lock}"
-  - "Rakefile"
-  - "{babel.config,jest.config}.js"
-  - "config.ru"
-  - "{package.json,yarn.lock}"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
-  # QA changes
-  - ".dockerignore"
-  - "qa/**/*"
-
-.qa:rules:ee-and-foss:
-  rules:
-    - <<: *if-default-refs
-      changes: *code-qa-patterns
-      when: on_success
-
-.qa:rules:ee-only:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-default-refs
-      changes: *code-qa-patterns
-      when: on_success
-
 .qa-job-base:
   extends:
     - .default-tags
@@ -91,7 +21,7 @@ qa:internal:
   script:
     - bundle exec rspec
 
-qa:internal-foss:
+qa:internal-as-if-foss:
   extends:
     - .qa-job-base
     - .qa:rules:ee-only
@@ -106,7 +36,7 @@ qa:selectors:
   script:
     - bundle exec bin/qa Test::Sanity::Selectors
 
-qa:selectors-foss:
+qa:selectors-as-if-foss:
   extends:
     - qa:selectors
     - .qa:rules:ee-only
@@ -123,15 +53,8 @@ qa:selectors-foss:
     - ./scripts/trigger-build omnibus
 
 package-and-qa:
-  extends: .package-and-qa-base
-  rules:
-    - <<: *if-canonical-gitlab-merge-request
-      changes: *qa-patterns
-      when: on_success
-    - <<: *if-canonical-gitlab-merge-request
-      changes: *code-patterns
-      when: manual
-    - <<: *if-canonical-dot-com-gitlab-org-group-schedule
-      when: on_success
+  extends:
+    - .package-and-qa-base
+    - .qa:rules:package-and-qa
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   allow_failure: true

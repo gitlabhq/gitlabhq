@@ -5,8 +5,8 @@ require 'spec_helper'
 describe Projects::ErrorTrackingHelper do
   include Gitlab::Routing.url_helpers
 
-  set(:project) { create(:project) }
-  set(:current_user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be(:current_user) { create(:user) }
 
   describe '#error_tracking_data' do
     let(:can_enable_error_tracking) { true }

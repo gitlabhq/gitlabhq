@@ -8,11 +8,11 @@ describe Resolvers::IssuesResolver do
   let(:current_user) { create(:user) }
 
   context "with a project" do
-    set(:project) { create(:project) }
-    set(:issue1) { create(:issue, project: project, state: :opened, created_at: 3.hours.ago, updated_at: 3.hours.ago) }
-    set(:issue2) { create(:issue, project: project, state: :closed, title: 'foo', created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at: 1.hour.ago) }
-    set(:label1) { create(:label, project: project) }
-    set(:label2) { create(:label, project: project) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:issue1) { create(:issue, project: project, state: :opened, created_at: 3.hours.ago, updated_at: 3.hours.ago) }
+    let_it_be(:issue2) { create(:issue, project: project, state: :closed, title: 'foo', created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at: 1.hour.ago) }
+    let_it_be(:label1) { create(:label, project: project) }
+    let_it_be(:label2) { create(:label, project: project) }
 
     before do
       project.add_developer(current_user)

@@ -1,0 +1,500 @@
+##############
+# Conditions #
+##############
+.if-not-canonical-namespace: &if-not-canonical-namespace
+  if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/'
+
+.if-not-ee: &if-not-ee
+  if: '$CI_PROJECT_NAME !~ /^gitlab(-ee)?$/'
+
+.if-not-foss: &if-not-foss
+  if: '$CI_PROJECT_NAME != "gitlab-foss" && $CI_PROJECT_NAME != "gitlab-ce" && $CI_PROJECT_NAME != "gitlabhq"'
+
+.if-default-refs: &if-default-refs
+  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG'
+
+.if-master-refs: &if-master-refs
+  if: '$CI_COMMIT_REF_NAME == "master"'
+
+.if-master-or-tag: &if-master-or-tag
+  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG'
+
+.if-merge-request: &if-merge-request
+  if: '$CI_MERGE_REQUEST_IID'
+
+.if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
+
+.if-dot-com-gitlab-org-master: &if-dot-com-gitlab-org-master
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == "master"'
+
+.if-dot-com-gitlab-org-merge-request: &if-dot-com-gitlab-org-merge-request
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
+
+.if-dot-com-gitlab-org-and-security-merge-request: &if-dot-com-gitlab-org-and-security-merge-request
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID'
+
+.if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
+
+.if-dot-com-ee-schedule: &if-dot-com-ee-schedule
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule"'
+
+.if-cache-credentials-schedule: &if-cache-credentials-schedule
+  if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
+
+####################
+# Changes patterns #
+####################
+.yaml-patterns: &yaml-patterns
+  - "**/*.yml"
+
+.docs-patterns: &docs-patterns
+  - ".gitlab/route-map.yml"
+  - "doc/**/*"
+  - ".markdownlint.json"
+
+.backstage-patterns: &backstage-patterns
+  - "Dangerfile"
+  - "danger/**/*"
+  - "{,ee/}fixtures/**/*"
+  - "{,ee/}rubocop/**/*"
+  - "{,ee/}spec/**/*"
+  - "doc/README.md"  # Some RSpec test rely on this file
+
+.code-patterns: &code-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+
+.qa-patterns: &qa-patterns
+  - ".dockerignore"
+  - "qa/**/*"
+
+.code-backstage-patterns: &code-backstage-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "{,ee/}fixtures/**/*"
+  - "{,ee/}rubocop/**/*"
+  - "{,ee/}spec/**/*"
+  - "doc/README.md"  # Some RSpec test rely on this file
+
+.code-qa-patterns: &code-qa-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  # QA changes
+  - ".dockerignore"
+  - "qa/**/*"
+
+.code-backstage-qa-patterns: &code-backstage-qa-patterns
+  - ".gitlab/ci/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "*_VERSION"
+  - "Gemfile{,.lock}"
+  - "Rakefile"
+  - "{babel.config,jest.config}.js"
+  - "config.ru"
+  - "{package.json,yarn.lock}"
+  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "{,ee/}fixtures/**/*"
+  - "{,ee/}rubocop/**/*"
+  - "{,ee/}spec/**/*"
+  - "doc/README.md"  # Some RSpec test rely on this file
+  # QA changes
+  - ".dockerignore"
+  - "qa/**/*"
+
+####################
+# Cache repo rules #
+####################
+.cache-repo:rules:
+  rules:
+    - <<: *if-cache-credentials-schedule
+      when: on_success
+
+#############
+# CNG rules #
+#############
+.cng:rules:
+  rules:
+    - <<: *if-dot-com-gitlab-org-and-security-tag
+      when: manual
+
+######################
+# Dev fixtures rules #
+######################
+.dev-fixtures:rules:ee-and-foss:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.dev-fixtures:rules:ee-only:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+##############
+# Docs rules #
+##############
+.docs:rules:review-docs:
+  rules:
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *docs-patterns
+      when: manual
+
+.docs:rules:docs-lint:
+  rules:
+    - <<: *if-default-refs
+      changes: *docs-patterns
+      when: on_success
+
+.docs:rules:graphql-reference-verify:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+      when: on_success
+
+##################
+# Frontend rules #
+##################
+.frontend:rules:gitlab-assets-compile-pull-push-cache:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-master-refs
+      changes: *code-backstage-qa-patterns
+      when: on_success
+
+.frontend:rules:gitlab-assets-compile-pull-cache:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+      when: on_success
+
+.frontend:rules:compile-assets-pull-push-cache:
+  rules:
+    - <<: *if-master-refs
+      changes: *code-backstage-qa-patterns
+      when: on_success
+
+.frontend:rules:compile-assets-pull-push-cache-as-if-foss:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-master-refs
+      changes: *code-backstage-qa-patterns
+      when: on_success
+
+.frontend:rules:compile-assets-pull-cache:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+      when: on_success
+
+.frontend:rules:compile-assets-pull-cache-as-if-foss:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+      when: on_success
+
+.frontend:rules:default-frontend-jobs:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.frontend:rules:default-frontend-jobs-as-if-foss:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.frontend:rules:qa-frontend-node:
+  rules:
+    - <<: *if-master-refs
+      when: on_success
+
+################
+# Memory rules #
+################
+.memory:rules:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-patterns
+      when: on_success
+
+###############
+# Pages rules #
+###############
+.pages:rules:
+  rules:
+    - <<: *if-dot-com-gitlab-org-master
+      changes: *code-backstage-qa-patterns
+      when: on_success
+
+############
+# QA rules #
+############
+.qa:rules:ee-and-foss:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-qa-patterns
+      when: on_success
+
+.qa:rules:ee-only:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-qa-patterns
+      when: on_success
+
+.qa:rules:package-and-qa:
+  rules:
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *qa-patterns
+      when: on_success
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-patterns
+      when: manual
+    - <<: *if-dot-com-gitlab-org-schedule
+      when: on_success
+
+###############
+# Rails rules #
+###############
+.rails:rules:ee-and-foss:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.rails:rules:default-refs-code-backstage-qa:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+      when: on_success
+
+.rails:rules:master-refs-code-backstage:
+  rules:
+    - <<: *if-master-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.rails:rules:master-refs-code-backstage-ee-only:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-master-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.rails:rules:ee-only:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.rails:rules:downtime_check:
+  rules:
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
+      when: on_success
+
+##################
+# Releases rules #
+##################
+.releases:rules:canonical-dot-com-gitlab-stable-branch-only:
+  rules:
+    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAME == "gitlab-org/gitlab" && $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable-ee$/'
+
+.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only:
+  rules:
+    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAME == "gitlab-org/security/gitlab" && $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable-ee$/'
+
+#################
+# Reports rules #
+#################
+.reports:rules:code_quality:
+  rules:
+    - if: '$CODE_QUALITY_DISABLED'
+      when: never
+    # - <<: *if-master-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+
+.reports:rules:sast:
+  rules:
+    - if: '$SAST_DISABLED || $GITLAB_FEATURES !~ /\bsast\b/'
+      when: never
+    # - <<: *if-master-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+
+.reports:rules:dependency_scanning:
+  rules:
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/'
+      when: never
+    # - <<: *if-master-refs  # To be done in a later iteration: https://gitlab.com/gitlab-org/gitlab/issues/31160#note_278188255
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+
+.reports:rules:dast:
+  rules:
+    - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
+      when: never
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+
+.reports:schedule-dast:
+  rules:
+    - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
+      when: never
+    - <<: *if-dot-com-gitlab-org-schedule
+
+################
+# Review rules #
+################
+.review:rules:mr-and-schedule:
+  rules:
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+      when: on_success
+    - <<: *if-dot-com-gitlab-org-schedule
+      when: on_success
+
+.review:rules:mr-only-auto:
+  rules:
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+      when: on_success
+
+.review:rules:mr-only-manual:
+  rules:
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+      when: manual
+
+.review:rules:review-cleanup:
+  rules:
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-qa-patterns
+      when: manual
+    - <<: *if-dot-com-gitlab-org-schedule
+      when: on_success
+
+.review:rules:danger:
+  rules:
+    - if: '$DANGER_GITLAB_API_TOKEN && $CI_MERGE_REQUEST_IID'
+      when: on_success
+
+###############
+# Setup rules #
+###############
+.setup:rules:cache-gems:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-master-or-tag
+      changes: *code-backstage-qa-patterns
+      when: on_success
+
+.setup:rules:gitlab_git_test:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.setup:rules:no_ee_check:
+  rules:
+    - <<: *if-not-foss
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+#######################
+# Test metadata rules #
+#######################
+.test-metadata:rules:retrieve-tests-metadata:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.test-metadata:rules:update-tests-metadata:
+  rules:
+    - <<: *if-dot-com-ee-schedule
+      changes: *code-backstage-patterns
+      when: on_success
+
+.test-metadata:rules:flaky-examples-check:
+  rules:
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
+      when: on_success
+
+
+##############
+# YAML rules #
+##############
+.yaml:rules:
+  rules:
+    - <<: *if-default-refs
+      changes: *yaml-patterns

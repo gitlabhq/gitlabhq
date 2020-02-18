@@ -17,8 +17,15 @@ module Gitlab
           {
             'General' => '',
             'Pages' => 'Pages',
+            'Verify' => 'Verify',
             'Auto deploy' => 'autodeploy'
           }
+        end
+
+        def disabled_templates
+          %w[
+            Verify/Browser-Performance
+          ]
         end
 
         def base_dir
@@ -26,7 +33,9 @@ module Gitlab
         end
 
         def finder(project = nil)
-          Gitlab::Template::Finders::GlobalTemplateFinder.new(self.base_dir, self.extension, self.categories)
+          Gitlab::Template::Finders::GlobalTemplateFinder.new(
+            self.base_dir, self.extension, self.categories, exclusions: self.disabled_templates
+          )
         end
       end
     end

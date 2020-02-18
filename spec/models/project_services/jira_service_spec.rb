@@ -489,7 +489,14 @@ describe JiraService do
 
         @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
-        expect(@jira_service).to have_received(:log_error).with("Issue transition failed", error: "Bad Request", client_url: "http://jira.example.com")
+        expect(@jira_service).to have_received(:log_error).with(
+          "Issue transition failed",
+          error: hash_including(
+            exception_class: 'StandardError',
+            exception_message: "Bad Request"
+          ),
+          client_url: "http://jira.example.com"
+        )
       end
 
       it 'calls the api with jira_issue_transition_id' do

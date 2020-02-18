@@ -5,8 +5,7 @@ require 'spec_helper'
 describe 'Gitlab::Graphql::Authorization' do
   include GraphqlHelpers
 
-  set(:user) { create(:user) }
-
+  let_it_be(:user) { create(:user) }
   let(:permission_single) { :foo }
   let(:permission_collection) { [:foo, :bar] }
   let(:test_object) { double(name: 'My name') }

@@ -26,16 +26,18 @@ shared_examples 'resource notes mentions migration' do |migration_class, resourc
     note1.becomes(Note).save!
     note2.becomes(Note).save!
     note3.becomes(Note).save!
-    # note4.becomes(Note).save(validate: false)
+    note4.becomes(Note).save!
+    note5.becomes(Note).save(validate: false)
   end
 
   it 'migrates mentions from note' do
     join = migration_class::JOIN
     conditions = migration_class::QUERY_CONDITIONS
 
-    # there are 4 notes for each noteable_type, but one does not have mentions and
+    # there are 5 notes for each noteable_type, but two do not have mentions and
     # another one's noteable_id points to an inexistent resource
-    expect(notes.where(noteable_type: resource_class.to_s).count).to eq 4
+    expect(notes.where(noteable_type: resource_class.to_s).count).to eq 5
+    expect(user_mentions.count).to eq 0
 
     expect do
       subject.perform(resource_class.name, join, conditions, true, Note.minimum(:id), Note.maximum(:id))

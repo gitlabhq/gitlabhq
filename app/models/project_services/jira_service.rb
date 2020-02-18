@@ -229,7 +229,15 @@ class JiraService < IssueTrackerService
     jira_issue_transition_id.scan(Gitlab::Regex.jira_transition_id_regex).each do |transition_id|
       issue.transitions.build.save!(transition: { id: transition_id })
     rescue => error
-      log_error("Issue transition failed", error: error.message, client_url: client_url)
+      log_error(
+        "Issue transition failed",
+          error: {
+            exception_class: error.class.name,
+            exception_message: error.message,
+            exception_backtrace: Gitlab::BacktraceCleaner.clean_backtrace(error.backtrace)
+          },
+         client_url: client_url
+      )
       return false
     end
   end
@@ -354,7 +362,7 @@ class JiraService < IssueTrackerService
       error: {
         exception_class: error.class.name,
         exception_message: error.message,
-        exception_backtrace: error.backtrace.join("\n")
+        exception_backtrace: Gitlab::BacktraceCleaner.clean_backtrace(error.backtrace)
       }
     )
     nil

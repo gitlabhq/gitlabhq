@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe BoardsHelper do
-  set(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   describe '#build_issue_link_base' do
     context 'project board' do

@@ -1,0 +1,27 @@
+# Read more about the feature here: https://docs.gitlab.com/ee/user/project/merge_requests/accessibility_testing.html
+
+stages:
+  - build
+  - test
+  - deploy
+  - accessibility
+
+a11y:
+  stage: accessibility
+  image: node
+  script:
+    - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    - echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list && \
+    - apt-get update && \
+    - apt-get install -y google-chrome-stable && \
+    - rm -rf /var/lib/apt/lists/*
+    - npm install pa11y@5.3.0 pa11y-reporter-html@1.0.0
+    - 'echo { \"chromeLaunchConfig\": { \"args\": [\"--no-sandbox\"] }, \"includeWarnings\": true, \"reporter\": \"html\" } > pa11y.json'
+    - './node_modules/.bin/pa11y $a11y_urls > accessibility.html'
+  allow_failure: true
+  artifacts:
+    when: always
+    expose_as: 'accessibility'
+    paths: ['accessibility.html']
+  rules:
+    - if: $a11y_urls
