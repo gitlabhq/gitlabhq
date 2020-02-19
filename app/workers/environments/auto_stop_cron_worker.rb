@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Environments
-  class AutoStopCronWorker
+  class AutoStopCronWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 

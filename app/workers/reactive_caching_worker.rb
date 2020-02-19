@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ReactiveCachingWorker
+class ReactiveCachingWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category_not_owned!

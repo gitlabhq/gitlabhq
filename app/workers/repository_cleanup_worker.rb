@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RepositoryCleanupWorker
+class RepositoryCleanupWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   sidekiq_options retry: 3

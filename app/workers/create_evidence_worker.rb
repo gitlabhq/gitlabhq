@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateEvidenceWorker
+class CreateEvidenceWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :release_governance

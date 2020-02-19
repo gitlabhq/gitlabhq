@@ -119,6 +119,7 @@ RSpec.configure do |config|
   config.include PolicyHelpers, type: :policy
   config.include MemoryUsageHelper
   config.include ExpectRequestWithStatus, type: :request
+  config.include IdempotentWorkerHelper, type: :worker
   config.include RailsHelpers
 
   if ENV['CI'] || ENV['RETRIES']

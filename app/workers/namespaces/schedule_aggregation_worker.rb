@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Namespaces
-  class ScheduleAggregationWorker
+  class ScheduleAggregationWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
     queue_namespace :update_namespace_statistics

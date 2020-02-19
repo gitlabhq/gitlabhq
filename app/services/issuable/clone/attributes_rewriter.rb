@@ -19,6 +19,7 @@ module Issuable
 
         copy_resource_label_events
         copy_resource_weight_events
+        copy_resource_milestone_events
       end
 
       private
@@ -62,6 +63,23 @@ module Issuable
           event.attributes
             .except('id', 'reference', 'reference_html')
             .merge('issue_id' => new_entity.id)
+        end
+      end
+
+      def copy_resource_milestone_events
+        entity_key = new_entity.class.name.underscore.foreign_key
+
+        copy_events(ResourceMilestoneEvent.table_name, original_entity.resource_milestone_events) do |event|
+          matching_destination_milestone = matching_milestone(event.milestone.title)
+
+          if matching_destination_milestone.present?
+            event.attributes
+              .except('id', 'reference', 'reference_html')
+              .merge(entity_key => new_entity.id,
+                     'milestone_id' => matching_destination_milestone.id,
+                     'action' => ResourceMilestoneEvent.actions[event.action],
+                     'state' => ResourceMilestoneEvent.states[event.state])
+          end
         end
       end
 

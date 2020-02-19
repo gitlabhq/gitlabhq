@@ -3,7 +3,7 @@
 require 'active_job/arguments'
 
 module MailScheduler
-  class NotificationServiceWorker
+  class NotificationServiceWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include MailSchedulerQueue
 

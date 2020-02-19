@@ -12,7 +12,8 @@ describe Gitlab::SidekiqConfig::Worker do
       get_weight: attributes[:weight],
       get_worker_resource_boundary: attributes[:resource_boundary],
       latency_sensitive_worker?: attributes[:latency_sensitive],
-      worker_has_external_dependencies?: attributes[:has_external_dependencies]
+      worker_has_external_dependencies?: attributes[:has_external_dependencies],
+      idempotent?: attributes[:idempotent]
     )
 
     described_class.new(inner_worker, ee: false)
@@ -89,7 +90,8 @@ describe Gitlab::SidekiqConfig::Worker do
         has_external_dependencies: false,
         latency_sensitive: false,
         resource_boundary: :memory,
-        weight: 2
+        weight: 2,
+        idempotent: true
       }
 
       attributes_b = {
@@ -97,7 +99,8 @@ describe Gitlab::SidekiqConfig::Worker do
         has_external_dependencies: true,
         latency_sensitive: true,
         resource_boundary: :unknown,
-        weight: 1
+        weight: 3,
+        idempotent: false
       }
 
       worker_a = create_worker(queue: 'a', **attributes_a)

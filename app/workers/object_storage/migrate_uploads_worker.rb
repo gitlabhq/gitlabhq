@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Scalability/IdempotentWorker
 module ObjectStorage
   class MigrateUploadsWorker
     include ApplicationWorker
@@ -137,3 +138,4 @@ module ObjectStorage
     end
   end
 end
+# rubocop:enable Scalability/IdempotentWorker

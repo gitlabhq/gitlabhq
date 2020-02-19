@@ -6,7 +6,7 @@ module Gitlab
     # number of jobs to complete, without blocking a thread. Once all jobs have
     # been completed this worker will advance the import process to the next
     # stage.
-    class AdvanceStageWorker
+    class AdvanceStageWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
 
       sidekiq_options dead: false

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class BuildScheduleWorker
+  class BuildScheduleWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include PipelineQueue
 

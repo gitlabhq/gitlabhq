@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StageUpdateWorker
+class StageUpdateWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include PipelineQueue
 

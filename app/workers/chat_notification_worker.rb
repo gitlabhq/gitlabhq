@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ChatNotificationWorker
+class ChatNotificationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   TimeoutExceeded = Class.new(StandardError)

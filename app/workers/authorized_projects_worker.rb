@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AuthorizedProjectsWorker
+class AuthorizedProjectsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   prepend WaitableWorker
 

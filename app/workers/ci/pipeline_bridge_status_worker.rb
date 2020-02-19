@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class PipelineBridgeStatusWorker
+  class PipelineBridgeStatusWorker # rubocop:disable Scalability/IdempotentWorker
     include ::ApplicationWorker
     include ::PipelineQueue
 

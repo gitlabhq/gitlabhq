@@ -2,7 +2,7 @@
 
 module Clusters
   module Cleanup
-    class AppWorker
+    class AppWorker # rubocop:disable Scalability/IdempotentWorker
       include ClusterCleanupMethods
 
       def perform(cluster_id, execution_count = 0)

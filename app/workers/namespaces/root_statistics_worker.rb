@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Namespaces
-  class RootStatisticsWorker
+  class RootStatisticsWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
     queue_namespace :update_namespace_statistics

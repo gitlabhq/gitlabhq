@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Chaos
-  class KillWorker
+  class KillWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include ChaosQueue
 

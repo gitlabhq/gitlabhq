@@ -18,7 +18,7 @@
 # - It marks the import as finished when all remaining jobs are done
 module Gitlab
   module PhabricatorImport
-    class BaseWorker
+    class BaseWorker # rubocop:disable Scalability/IdempotentWorker
       include WorkerAttributes
       include Gitlab::ExclusiveLeaseHelpers
 

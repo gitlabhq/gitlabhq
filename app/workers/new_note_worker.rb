@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class NewNoteWorker
+class NewNoteWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :issue_tracking

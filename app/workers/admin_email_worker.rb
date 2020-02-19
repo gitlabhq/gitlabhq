@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AdminEmailWorker
+class AdminEmailWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   # rubocop:disable Scalability/CronWorkerContext
   # This worker does not perform work scoped to a context

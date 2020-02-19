@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DeleteContainerRepositoryWorker
+class DeleteContainerRepositoryWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ExclusiveLeaseGuard
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GitlabUsagePingWorker
+class GitlabUsagePingWorker # rubocop:disable Scalability/IdempotentWorker
   LEASE_TIMEOUT = 86400
 
   include ApplicationWorker

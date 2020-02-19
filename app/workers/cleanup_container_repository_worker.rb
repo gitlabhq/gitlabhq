@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CleanupContainerRepositoryWorker
+class CleanupContainerRepositoryWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   queue_namespace :container_repository

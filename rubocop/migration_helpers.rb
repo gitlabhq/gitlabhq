@@ -10,6 +10,10 @@ module RuboCop
       dirname(node).end_with?('db/post_migrate', 'db/geo/post_migrate')
     end
 
+    def version(node)
+      File.basename(node.location.expression.source_buffer.name).split('_').first.to_i
+    end
+
     private
 
     def dirname(node)

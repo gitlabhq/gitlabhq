@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Deployments
-  class FinishedWorker
+  class FinishedWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
     queue_namespace :deployment

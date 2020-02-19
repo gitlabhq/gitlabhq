@@ -2,7 +2,7 @@
 
 module Ci
   module ResourceGroups
-    class AssignResourceFromResourceGroupWorker
+    class AssignResourceFromResourceGroupWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
       include PipelineQueue
 

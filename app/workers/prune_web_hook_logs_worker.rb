@@ -2,7 +2,7 @@
 
 # Worker that deletes a fixed number of outdated rows from the "web_hook_logs"
 # table.
-class PruneWebHookLogsWorker
+class PruneWebHookLogsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   # rubocop:disable Scalability/CronWorkerContext
   # This worker does not perform work scoped to a context

@@ -4,20 +4,17 @@ class ResourceLabelEvent < ApplicationRecord
   include Importable
   include Gitlab::Utils::StrongMemoize
   include CacheMarkdownField
+  include ResourceEventTools
 
   cache_markdown_field :reference
 
-  belongs_to :user
   belongs_to :issue
   belongs_to :merge_request
   belongs_to :label
 
-  scope :created_after, ->(time) { where('created_at > ?', time) }
   scope :inc_relations, -> { includes(:label, :user) }
 
-  validates :user, presence: { unless: :importing? }, on: :create
   validates :label, presence: { unless: :importing? }, on: :create
-  validate :exactly_one_issuable
 
   after_save :expire_etag_cache
   after_destroy :expire_etag_cache
@@ -92,22 +89,6 @@ class ResourceLabelEvent < ApplicationRecord
     else
       label.to_reference(resource_parent, format: :id)
     end
-  end
-
-  def exactly_one_issuable
-    issuable_count = self.class.issuable_attrs.count { |attr| self["#{attr}_id"] }
-
-    return true if issuable_count == 1
-
-    # if none of issuable IDs is set, check explicitly if nested issuable
-    # object is set, this is used during project import
-    if issuable_count == 0 && importing?
-      issuable_count = self.class.issuable_attrs.count { |attr| self.public_send(attr) } # rubocop:disable GitlabSecurity/PublicSend
-
-      return true if issuable_count == 1
-    end
-
-    errors.add(:base, "Exactly one of #{self.class.issuable_attrs.join(', ')} is required")
   end
 
   def expire_etag_cache

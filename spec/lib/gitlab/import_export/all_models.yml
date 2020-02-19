@@ -9,6 +9,7 @@ issues:
 - notes
 - resource_label_events
 - resource_weight_events
+- resource_milestone_events
 - sentry_issue
 - label_links
 - labels
@@ -109,6 +110,7 @@ merge_requests:
 - milestone
 - notes
 - resource_label_events
+- resource_milestone_events
 - label_links
 - labels
 - last_edited_by

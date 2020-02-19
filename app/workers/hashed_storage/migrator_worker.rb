@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module HashedStorage
-  class MigratorWorker
+  class MigratorWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
     queue_namespace :hashed_storage

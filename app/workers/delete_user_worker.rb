@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DeleteUserWorker
+class DeleteUserWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :authentication_and_authorization

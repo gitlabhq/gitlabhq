@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class EmailsOnPushWorker
+class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   attr_reader :email, :skip_premailer

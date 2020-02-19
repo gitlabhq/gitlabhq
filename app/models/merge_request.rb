@@ -18,6 +18,7 @@ class MergeRequest < ApplicationRecord
   include DeprecatedAssignee
   include ShaAttribute
   include IgnorableColumns
+  include MilestoneEventable
 
   sha_attribute :squash_commit_sha
 

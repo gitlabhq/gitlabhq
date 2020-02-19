@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RepositoryUpdateRemoteMirrorWorker
+class RepositoryUpdateRemoteMirrorWorker # rubocop:disable Scalability/IdempotentWorker
   UpdateError = Class.new(StandardError)
 
   include ApplicationWorker

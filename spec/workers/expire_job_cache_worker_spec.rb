@@ -6,20 +6,32 @@ describe ExpireJobCacheWorker do
   set(:pipeline) { create(:ci_empty_pipeline) }
   let(:project) { pipeline.project }
 
-  subject { described_class.new }
-
   describe '#perform' do
     context 'with a job in the pipeline' do
       let(:job) { create(:ci_build, pipeline: pipeline) }
+      let(:job_args) { job.id }
 
-      it 'invalidates Etag caching for the job path' do
-        pipeline_path = "/#{project.full_path}/pipelines/#{pipeline.id}.json"
-        job_path = "/#{project.full_path}/builds/#{job.id}.json"
+      include_examples 'an idempotent worker' do
+        it 'invalidates Etag caching for the job path' do
+          pipeline_path = "/#{project.full_path}/pipelines/#{pipeline.id}.json"
+          job_path = "/#{project.full_path}/builds/#{job.id}.json"
 
-        expect_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch).with(pipeline_path)
-        expect_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch).with(job_path)
+          spy_store = Gitlab::EtagCaching::Store.new
 
-        subject.perform(job.id)
+          allow(Gitlab::EtagCaching::Store).to receive(:new) { spy_store }
+
+          expect(spy_store).to receive(:touch)
+            .exactly(IdempotentWorkerHelper::WORKER_EXEC_TIMES).times
+            .with(pipeline_path)
+            .and_call_original
+
+          expect(spy_store).to receive(:touch)
+            .exactly(IdempotentWorkerHelper::WORKER_EXEC_TIMES).times
+            .with(job_path)
+            .and_call_original
+
+          subject
+        end
       end
     end
 
@@ -27,7 +39,7 @@ describe ExpireJobCacheWorker do
       it 'does not change the etag store' do
         expect(Gitlab::EtagCaching::Store).not_to receive(:new)
 
-        subject.perform(9999)
+        perform_multiple(9999)
       end
     end
   end

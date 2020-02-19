@@ -688,7 +688,7 @@ module Gitlab
           start_id, end_id = batch.pluck('MIN(id), MAX(id)').first
           max_index = index
 
-          BackgroundMigrationWorker.perform_in(
+          migrate_in(
             index * interval,
             'CopyColumn',
             [table, column, temp_column, start_id, end_id]
@@ -697,7 +697,7 @@ module Gitlab
 
         # Schedule the renaming of the column to happen (initially) 1 hour after
         # the last batch finished.
-        BackgroundMigrationWorker.perform_in(
+        migrate_in(
           (max_index * interval) + 1.hour,
           'CleanupConcurrentTypeChange',
           [table, column, temp_column]
@@ -779,7 +779,7 @@ module Gitlab
           start_id, end_id = batch.pluck('MIN(id), MAX(id)').first
           max_index = index
 
-          BackgroundMigrationWorker.perform_in(
+          migrate_in(
             index * interval,
             'CopyColumn',
             [table, old_column, new_column, start_id, end_id]
@@ -788,7 +788,7 @@ module Gitlab
 
         # Schedule the renaming of the column to happen (initially) 1 hour after
         # the last batch finished.
-        BackgroundMigrationWorker.perform_in(
+        migrate_in(
           (max_index * interval) + 1.hour,
           'CleanupConcurrentRename',
           [table, old_column, new_column]
@@ -1024,14 +1024,14 @@ into similar problems in the future (e.g. when new tables are created).
             # We push multiple jobs at a time to reduce the time spent in
             # Sidekiq/Redis operations. We're using this buffer based approach so we
             # don't need to run additional queries for every range.
-            BackgroundMigrationWorker.bulk_perform_async(jobs)
+            bulk_migrate_async(jobs)
             jobs.clear
           end
 
           jobs << [job_class_name, [start_id, end_id]]
         end
 
-        BackgroundMigrationWorker.bulk_perform_async(jobs) unless jobs.empty?
+        bulk_migrate_async(jobs) unless jobs.empty?
       end
 
       # Queues background migration jobs for an entire table, batched by ID range.
@@ -1074,7 +1074,7 @@ into similar problems in the future (e.g. when new tables are created).
           # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
           # the same time, which is not helpful in most cases where we wish to
           # spread the work over time.
-          BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id])
+          migrate_in(delay_interval * index, job_class_name, [start_id, end_id])
         end
       end
 
@@ -1131,6 +1131,30 @@ into similar problems in the future (e.g. when new tables are created).
         END
 
         execute(sql)
+      end
+
+      def migrate_async(*args)
+        with_migration_context do
+          BackgroundMigrationWorker.perform_async(*args)
+        end
+      end
+
+      def migrate_in(*args)
+        with_migration_context do
+          BackgroundMigrationWorker.perform_in(*args)
+        end
+      end
+
+      def bulk_migrate_in(*args)
+        with_migration_context do
+          BackgroundMigrationWorker.bulk_perform_in(*args)
+        end
+      end
+
+      def bulk_migrate_async(*args)
+        with_migration_context do
+          BackgroundMigrationWorker.bulk_perform_async(*args)
+        end
       end
 
       private
@@ -1190,6 +1214,10 @@ into similar problems in the future (e.g. when new tables are created).
           You can disable transactions by calling `disable_ddl_transaction!` in the body of
           your migration class
         ERROR
+      end
+
+      def with_migration_context(&block)
+        Gitlab::ApplicationContext.with_context(caller_id: self.class.to_s, &block)
       end
     end
   end

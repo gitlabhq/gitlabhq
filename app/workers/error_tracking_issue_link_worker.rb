@@ -5,7 +5,7 @@
 # If a link to a different GitLab issue exists, a new link
 #   will still be created, but will not be visible in Sentry
 #   until the prior link is deleted.
-class ErrorTrackingIssueLinkWorker
+class ErrorTrackingIssueLinkWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ExclusiveLeaseGuard
   include Gitlab::Utils::StrongMemoize

@@ -6,6 +6,7 @@ class ExpireJobCacheWorker
 
   queue_namespace :pipeline_cache
   latency_sensitive_worker!
+  idempotent!
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(job_id)

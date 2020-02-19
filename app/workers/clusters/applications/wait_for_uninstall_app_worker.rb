@@ -2,7 +2,7 @@
 
 module Clusters
   module Applications
-    class WaitForUninstallAppWorker
+    class WaitForUninstallAppWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
       include ClusterQueue
       include ClusterApplications

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GitlabShellWorker
+class GitlabShellWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include Gitlab::ShellAdapter
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RepositoryCheck
-  class SingleRepositoryWorker
+  class SingleRepositoryWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include RepositoryCheckQueue
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RepositoryRemoveRemoteWorker
+class RepositoryRemoveRemoteWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ExclusiveLeaseGuard
 

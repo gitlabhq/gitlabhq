@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ContainerExpirationPolicyWorker
+class ContainerExpirationPolicyWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include CronjobQueue
 

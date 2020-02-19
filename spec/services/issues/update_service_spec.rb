@@ -385,6 +385,10 @@ describe Issues::UpdateService, :mailer do
       end
 
       context 'when the milestone is removed' do
+        before do
+          stub_feature_flags(track_resource_milestone_change_events: false)
+        end
+
         let!(:non_subscriber) { create(:user) }
 
         let!(:subscriber) do
@@ -411,6 +415,10 @@ describe Issues::UpdateService, :mailer do
       end
 
       context 'when the milestone is changed' do
+        before do
+          stub_feature_flags(track_resource_milestone_change_events: false)
+        end
+
         let!(:non_subscriber) { create(:user) }
 
         let!(:subscriber) do

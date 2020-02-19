@@ -1893,4 +1893,60 @@ describe Gitlab::Database::MigrationHelpers do
       end
     end
   end
+
+  describe '#migrate_async' do
+    it 'calls BackgroundMigrationWorker.perform_async' do
+      expect(BackgroundMigrationWorker).to receive(:perform_async).with("Class", "hello", "world")
+
+      model.migrate_async("Class", "hello", "world")
+    end
+
+    it 'pushes a context with the current class name as caller_id' do
+      expect(Gitlab::ApplicationContext).to receive(:with_context).with(caller_id: model.class.to_s)
+
+      model.migrate_async('Class', 'hello', 'world')
+    end
+  end
+
+  describe '#migrate_in' do
+    it 'calls BackgroundMigrationWorker.perform_in' do
+      expect(BackgroundMigrationWorker).to receive(:perform_in).with(10.minutes, 'Class', 'Hello', 'World')
+
+      model.migrate_in(10.minutes, 'Class', 'Hello', 'World')
+    end
+
+    it 'pushes a context with the current class name as caller_id' do
+      expect(Gitlab::ApplicationContext).to receive(:with_context).with(caller_id: model.class.to_s)
+
+      model.migrate_in(10.minutes, 'Class', 'Hello', 'World')
+    end
+  end
+
+  describe '#bulk_migrate_async' do
+    it 'calls BackgroundMigrationWorker.bulk_perform_async' do
+      expect(BackgroundMigrationWorker).to receive(:bulk_perform_async).with([%w(Class hello world)])
+
+      model.bulk_migrate_async([%w(Class hello world)])
+    end
+
+    it 'pushes a context with the current class name as caller_id' do
+      expect(Gitlab::ApplicationContext).to receive(:with_context).with(caller_id: model.class.to_s)
+
+      model.bulk_migrate_async([%w(Class hello world)])
+    end
+  end
+
+  describe '#bulk_migrate_in' do
+    it 'calls BackgroundMigrationWorker.bulk_perform_in_' do
+      expect(BackgroundMigrationWorker).to receive(:bulk_perform_in).with(10.minutes, [%w(Class hello world)])
+
+      model.bulk_migrate_in(10.minutes, [%w(Class hello world)])
+    end
+
+    it 'pushes a context with the current class name as caller_id' do
+      expect(Gitlab::ApplicationContext).to receive(:with_context).with(caller_id: model.class.to_s)
+
+      model.bulk_migrate_in(10.minutes, [%w(Class hello world)])
+    end
+  end
 end

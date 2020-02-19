@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectServiceWorker
+class ProjectServiceWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   sidekiq_options dead: false

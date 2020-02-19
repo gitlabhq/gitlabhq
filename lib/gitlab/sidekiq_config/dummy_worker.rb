@@ -11,6 +11,7 @@ module Gitlab
         has_external_dependencies: :worker_has_external_dependencies?,
         latency_sensitive: :latency_sensitive_worker?,
         resource_boundary: :get_worker_resource_boundary,
+        idempotent: :idempotent?,
         weight: :get_weight
       }.freeze
 

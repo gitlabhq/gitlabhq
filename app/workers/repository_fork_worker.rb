@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RepositoryForkWorker
+class RepositoryForkWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include Gitlab::ShellAdapter
   include ProjectStartImport

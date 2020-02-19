@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class BuildTraceSectionsWorker
+class BuildTraceSectionsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include PipelineQueue
 

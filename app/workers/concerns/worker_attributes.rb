@@ -89,6 +89,14 @@ module WorkerAttributes
       worker_attributes[:resource_boundary] || :unknown
     end
 
+    def idempotent!
+      worker_attributes[:idempotent] = true
+    end
+
+    def idempotent?
+      worker_attributes[:idempotent]
+    end
+
     def weight(value)
       worker_attributes[:weight] = value
     end

@@ -30,7 +30,6 @@ const boardsStore = {
       labels: [],
     },
     currentPage: '',
-    reload: false,
     endpoints: {},
   },
   detail: {
@@ -61,7 +60,6 @@ const boardsStore = {
     };
   },
   showPage(page) {
-    this.state.reload = false;
     this.state.currentPage = page;
   },
   addList(listObj, defaultAvatar) {

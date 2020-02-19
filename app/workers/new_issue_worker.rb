@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class NewIssueWorker
+class NewIssueWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include NewIssuable
 

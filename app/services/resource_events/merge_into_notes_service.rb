@@ -9,6 +9,11 @@ module ResourceEvents
   class MergeIntoNotesService
     include Gitlab::Utils::StrongMemoize
 
+    SYNTHETIC_NOTE_BUILDER_SERVICES = [
+      SyntheticLabelNotesBuilderService,
+      SyntheticMilestoneNotesBuilderService
+    ].freeze
+
     attr_reader :resource, :current_user, :params
 
     def initialize(resource, current_user, params = {})
@@ -24,7 +29,9 @@ module ResourceEvents
     private
 
     def synthetic_notes
-      SyntheticLabelNotesBuilderService.new(resource, current_user, params).execute
+      SYNTHETIC_NOTE_BUILDER_SERVICES.flat_map do |service|
+        service.new(resource, current_user, params).execute
+      end
     end
   end
 end

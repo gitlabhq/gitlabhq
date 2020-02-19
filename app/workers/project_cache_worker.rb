@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Worker for updating any project specific caches.
-class ProjectCacheWorker
+class ProjectCacheWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   latency_sensitive_worker!

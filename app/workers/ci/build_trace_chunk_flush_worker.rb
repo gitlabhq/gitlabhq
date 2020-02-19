@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class BuildTraceChunkFlushWorker
+  class BuildTraceChunkFlushWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include PipelineBackgroundQueue
 

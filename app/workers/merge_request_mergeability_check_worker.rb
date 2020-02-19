@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MergeRequestMergeabilityCheckWorker
+class MergeRequestMergeabilityCheckWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :source_code_management

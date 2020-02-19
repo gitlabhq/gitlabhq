@@ -72,20 +72,21 @@ migration classes must be defined in the namespace
 
 ## Scheduling
 
-Scheduling a background migration should be done in a post-deployment migration.
+Scheduling a background migration should be done in a post-deployment
+migration that includes `Gitlab::Database::MigrationHelpers`
 To do so, simply use the following code while
 replacing the class name and arguments with whatever values are necessary for
 your migration:
 
 ```ruby
-BackgroundMigrationWorker.perform_async('BackgroundMigrationClassName', [arg1, arg2, ...])
+migrate_async('BackgroundMigrationClassName', [arg1, arg2, ...])
 ```
 
 Usually it's better to enqueue jobs in bulk, for this you can use
-`BackgroundMigrationWorker.bulk_perform_async`:
+`bulk_migrate_async`:
 
 ```ruby
-BackgroundMigrationWorker.bulk_perform_async(
+bulk_migrate_async(
   [['BackgroundMigrationClassName', [1]],
    ['BackgroundMigrationClassName', [2]]]
 )
@@ -105,7 +106,7 @@ If you would like to schedule jobs in bulk with a delay, you can use
 jobs = [['BackgroundMigrationClassName', [1]],
         ['BackgroundMigrationClassName', [2]]]
 
-BackgroundMigrationWorker.bulk_perform_in(5.minutes, jobs)
+bulk_migrate_in(5.minutes, jobs)
 ```
 
 ### Rescheduling background migrations
