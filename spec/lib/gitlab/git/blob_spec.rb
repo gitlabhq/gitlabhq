@@ -12,9 +12,17 @@ describe Gitlab::Git::Blob, :seed_helper do
     let(:blob) { Gitlab::Git::Blob.new(name: 'test') }
 
     it 'handles nil data' do
+      expect(described_class).not_to receive(:gitlab_blob_size)
+
       expect(blob.name).to eq('test')
       expect(blob.size).to eq(nil)
       expect(blob.loaded_size).to eq(nil)
+    end
+
+    it 'records blob size' do
+      expect(described_class).to receive(:gitlab_blob_size).and_call_original
+
+      Gitlab::Git::Blob.new(name: 'test', size: 1234)
     end
   end
 

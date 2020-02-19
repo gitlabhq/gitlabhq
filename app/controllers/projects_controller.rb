@@ -50,7 +50,7 @@ class ProjectsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def edit
-    @badge_api_endpoint = expose_url(api_v4_projects_badges_path(id: @project.id))
+    @badge_api_endpoint = expose_path(api_v4_projects_badges_path(id: @project.id))
     render_edit
   end
 

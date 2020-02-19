@@ -4310,7 +4310,7 @@ msgstr ""
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about %{startLink}ModSecurity%{endLink}"
+msgid "ClusterIntegration|Learn more about %{linkStart}ModSecurity%{linkEnd}"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{startLink}Regions %{externalLinkIcon}%{endLink}."
@@ -4593,6 +4593,9 @@ msgid "ClusterIntegration|Something went wrong while uninstalling %{title}"
 msgstr ""
 
 msgid "ClusterIntegration|Something went wrong while updating Knative domain name."
+msgstr ""
+
+msgid "ClusterIntegration|Something went wrong while updating the Web Application Firewall."
 msgstr ""
 
 msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured matching the domain."

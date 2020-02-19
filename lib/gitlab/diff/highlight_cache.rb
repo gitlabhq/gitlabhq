@@ -17,6 +17,14 @@ module Gitlab
         buckets [100, 1000, 10000, 100000, 1000000, 10000000]
       end
 
+      define_counter :gitlab_redis_diff_caching_hit do
+        docstring 'Redis diff caching hits'
+      end
+
+      define_counter :gitlab_redis_diff_caching_miss do
+        docstring 'Redis diff caching misses'
+      end
+
       def initialize(diff_collection)
         @diff_collection = diff_collection
       end

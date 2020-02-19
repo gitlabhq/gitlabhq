@@ -21,6 +21,7 @@ import KnativeDomainEditor from './knative_domain_editor.vue';
 import { CLUSTER_TYPE, PROVIDER_TYPE, APPLICATION_STATUS, INGRESS } from '../constants';
 import eventHub from '~/clusters/event_hub';
 import CrossplaneProviderStack from './crossplane_provider_stack.vue';
+import IngressModsecuritySettings from './ingress_modsecurity_settings.vue';
 
 export default {
   components: {
@@ -29,6 +30,7 @@ export default {
     GlLoadingIcon,
     KnativeDomainEditor,
     CrossplaneProviderStack,
+    IngressModsecuritySettings,
   },
   props: {
     type: {
@@ -128,18 +130,6 @@ export default {
     },
     crossplaneInstalled() {
       return this.applications.crossplane.status === APPLICATION_STATUS.INSTALLED;
-    },
-    ingressModSecurityDescription() {
-      const escapedUrl = _.escape(this.ingressModSecurityHelpPath);
-
-      return sprintf(
-        s__('ClusterIntegration|Learn more about %{startLink}ModSecurity%{endLink}'),
-        {
-          startLink: `<a href="${escapedUrl}" target="_blank" rel="noopener noreferrer">`,
-          endLink: '</a>',
-        },
-        false,
-      );
     },
     ingressDescription() {
       return sprintf(
@@ -241,6 +231,9 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
       }
       return null;
     },
+    ingress() {
+      return this.applications.ingress;
+    },
   },
   created() {
     this.helmInstallIllustration = helmInstallIllustration;
@@ -329,6 +322,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         :uninstall-successful="applications.ingress.uninstallSuccessful"
         :uninstall-failed="applications.ingress.uninstallFailed"
         :disabled="!helmInstalled"
+        :updateable="false"
         title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
       >
         <div slot="description">
@@ -340,25 +334,10 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
             }}
           </p>
 
-          <template>
-            <div class="form-group">
-              <div class="form-check form-check-inline">
-                <input
-                  v-model="applications.ingress.modsecurity_enabled"
-                  :disabled="ingressInstalled"
-                  type="checkbox"
-                  autocomplete="off"
-                  class="form-check-input"
-                />
-                <label class="form-check-label label-bold" for="ingress-enable-modsecurity">
-                  {{ s__('ClusterIntegration|Enable Web Application Firewall') }}
-                </label>
-              </div>
-              <p class="form-text text-muted">
-                <strong v-html="ingressModSecurityDescription"></strong>
-              </p>
-            </div>
-          </template>
+          <ingress-modsecurity-settings
+            :ingress="ingress"
+            :ingress-mod-security-help-path="ingressModSecurityHelpPath"
+          />
 
           <template v-if="ingressInstalled">
             <div class="form-group">
