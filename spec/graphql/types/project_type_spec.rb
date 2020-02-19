@@ -24,6 +24,7 @@ describe GitlabSchema.types['Project'] do
       namespace group statistics repository merge_requests merge_request issues
       issue pipelines removeSourceBranchAfterMerge sentryDetailedError snippets
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
+      boards
     ]
 
     is_expected.to include_graphql_fields(*expected_fields)
@@ -76,5 +77,11 @@ describe GitlabSchema.types['Project'] do
 
     it { is_expected.to have_graphql_type(Types::EnvironmentType.connection_type) }
     it { is_expected.to have_graphql_resolver(Resolvers::EnvironmentsResolver) }
+  end
+
+  describe 'boards field' do
+    subject { described_class.fields['boards'] }
+
+    it { is_expected.to have_graphql_type(Types::BoardType.connection_type) }
   end
 end

@@ -9,8 +9,8 @@ module Banzai
 
       METRICS_CSS_CLASS = '.js-render-metrics'
       EMBED_LIMIT = 100
-      URL = Gitlab::Metrics::Dashboard::Url
 
+      Route = Struct.new(:regex, :permission)
       Embed = Struct.new(:project_path, :permission)
 
       # Finds all embeds based on the css class the FE
@@ -59,12 +59,26 @@ module Banzai
             embed = Embed.new
             url = node.attribute('data-dashboard-url').to_s
 
-            set_path_and_permission(embed, url, URL.metrics_regex, :read_environment)
-            set_path_and_permission(embed, url, URL.grafana_regex, :read_project) unless embed.permission
+            permissions_by_route.each do |route|
+              set_path_and_permission(embed, url, route.regex, route.permission) unless embed.permission
+            end
 
             embeds[node] = embed if embed.permission
           end
         end
+      end
+
+      def permissions_by_route
+        [
+          Route.new(
+            ::Gitlab::Metrics::Dashboard::Url.metrics_regex,
+            :read_environment
+          ),
+          Route.new(
+            ::Gitlab::Metrics::Dashboard::Url.grafana_regex,
+            :read_project
+          )
+        ]
       end
 
       # Attempts to determine the path and permission attributes

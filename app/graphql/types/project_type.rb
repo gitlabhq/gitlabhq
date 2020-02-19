@@ -179,6 +179,12 @@ module Types
           null: true,
           description: 'Paginated collection of Sentry errors on the project',
           resolver: Resolvers::ErrorTracking::SentryErrorCollectionResolver
+
+    field :boards,
+          Types::BoardType.connection_type,
+          null: true,
+          description: 'Boards of the project',
+          resolver: Resolvers::BoardsResolver
   end
 end
 

@@ -15,7 +15,7 @@ own advantages. These methods can be mixed and matched if needed:
 - [Child/Parent Pipelines](#child--parent-pipelines): Good for monorepos and projects with lots of independently defined components.
 
 For more details about
-any of the keywords used below, check out our [CI YAML reference](../yaml/) for details.
+any of the keywords used below, check out our [CI YAML reference](../yaml/README.md) for details.
 
 ## Basic Pipelines
 

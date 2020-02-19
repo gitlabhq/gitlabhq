@@ -159,6 +159,61 @@ enum BlobViewersType {
   simple
 }
 
+"""
+Represents a project or group board
+"""
+type Board {
+  """
+  ID (global ID) of the board
+  """
+  id: ID!
+
+  """
+  Name of the board
+  """
+  name: String
+
+  """
+  Weight of the board
+  """
+  weight: Int
+}
+
+"""
+The connection type for Board.
+"""
+type BoardConnection {
+  """
+  A list of edges.
+  """
+  edges: [BoardEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Board]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type BoardEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Board
+}
+
 type Commit {
   """
   Author of the commit
@@ -2716,6 +2771,31 @@ type Group {
   avatarUrl: String
 
   """
+  Boards of the group
+  """
+  boards(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): BoardConnection
+
+  """
   Description of the namespace
   """
   description: String
@@ -5173,6 +5253,31 @@ type Project {
   URL to avatar image file of the project
   """
   avatarUrl: String
+
+  """
+  Boards of the project
+  """
+  boards(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): BoardConnection
 
   """
   Indicates if the project stores Docker container images in a container registry

@@ -49,6 +49,16 @@ An emoji awarded by a user.
 | `type` | EntryType! | Type of tree entry |
 | `webUrl` | String | Web URL of the blob |
 
+## Board
+
+Represents a project or group board
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `id` | ID! | ID (global ID) of the board |
+| `name` | String | Name of the board |
+| `weight` | Int | Weight of the board |
+
 ## Commit
 
 | Name  | Type  | Description |

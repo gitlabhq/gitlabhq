@@ -7,7 +7,7 @@ export default () => {
   const el = document.getElementById('js-edit-release-page');
 
   const store = createStore({ detail: detailModule });
-  store.dispatch('setInitialState', el.dataset);
+  store.dispatch('detail/setInitialState', el.dataset);
 
   return new Vue({
     el,
