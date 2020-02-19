@@ -24,7 +24,7 @@ describe Groups::MilestonesController do
       end
 
       expect { get "/groups/#{public_group.to_param}/-/milestones.json" }.not_to exceed_all_query_limit(control_count)
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       milestones = json_response
 
       expect(milestones.count).to eq(3)

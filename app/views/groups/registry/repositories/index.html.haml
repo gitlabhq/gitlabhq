@@ -4,7 +4,7 @@
 %section
   .row.registry-placeholder.prepend-bottom-10
     .col-12
-      - if Feature.enabled?(:vue_container_registry_explorer)
+      - if Feature.enabled?(:vue_container_registry_explorer, @group)
         #js-container-registry{ data: { endpoint: group_container_registries_path(@group),
           "help_page_path" => help_page_path('user/packages/container_registry/index'),
           "two_factor_auth_help_link" => help_page_path('user/profile/account/two_factor_authentication'),

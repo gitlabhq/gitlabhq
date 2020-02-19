@@ -18,12 +18,26 @@ describe Gitlab::Utils::LogLimitedArray do
       end
 
       context 'when the array exceeds the limit' do
-        it 'replaces arguments after the limit with an ellipsis string' do
+        let(:long_array) do
           half_limit = described_class::MAXIMUM_ARRAY_LENGTH / 2
-          long_array = ['a' * half_limit, 'b' * half_limit, 'c']
 
-          expect(described_class.log_limited_array(long_array))
-            .to eq(long_array.take(1) + ['...'])
+          ['a' * half_limit, 'b' * half_limit, 'c']
+        end
+
+        context 'when no sentinel value is passed' do
+          it 'replaces arguments after the limit with an ellipsis string' do
+            expect(described_class.log_limited_array(long_array))
+              .to eq(long_array.take(1) + ['...'])
+          end
+        end
+
+        context 'when a sentinel value is passed' do
+          it 'replaces arguments after the limit with the sentinel' do
+            sentinel = { truncated: true }
+
+            expect(described_class.log_limited_array(long_array, sentinel: sentinel))
+              .to eq(long_array.take(1) + [sentinel])
+          end
         end
       end
 

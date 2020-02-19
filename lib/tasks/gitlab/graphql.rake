@@ -8,13 +8,24 @@ namespace :gitlab do
   OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference")
   TEMPLATES_DIR = 'lib/gitlab/graphql/docs/templates/'
 
+  # Consider all feature flags disabled
+  # to avoid pipeline failures in case developer
+  # dumps schema with flags enabled locally before pushing
+  task disable_feature_flags: :environment do
+    class Feature
+      def self.enabled?(*args)
+        false
+      end
+    end
+  end
+
   # Defines tasks for dumping the GraphQL schema:
   # - gitlab:graphql:schema:dump
   # - gitlab:graphql:schema:idl
   # - gitlab:graphql:schema:json
   GraphQL::RakeTask.new(
     schema_name: 'GitlabSchema',
-    dependencies: [:environment],
+    dependencies: [:environment, :disable_feature_flags],
     directory: OUTPUT_DIR,
     idl_outfile: "gitlab_schema.graphql",
     json_outfile: "gitlab_schema.json"

@@ -4,7 +4,7 @@
 %section
   .row.registry-placeholder.prepend-bottom-10
     .col-12
-      - if Feature.enabled?(:vue_container_registry_explorer)
+      - if Feature.enabled?(:vue_container_registry_explorer, @project)
         #js-container-registry{ data: { endpoint: project_container_registry_index_path(@project),
           project_path: @project.full_path,
           "help_page_path" => help_page_path('user/packages/container_registry/index'),
