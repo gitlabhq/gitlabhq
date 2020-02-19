@@ -204,7 +204,7 @@ namespace if needed.
 #### Remove a project
 
 NOTE: **Note:**
-Only project owners and admins have [permissions]((../../permissions.md#project-members-permissions) to remove a project.
+Only project owners and admins have [permissions](../../permissions.md#project-members-permissions) to remove a project.
 
 To remove a project:
 

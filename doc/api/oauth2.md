@@ -215,21 +215,24 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api
 
 ## Retrieving the Token Info
 
-To verify the details of a token you can call the `token/info` endpoint. This is provided from the doorkeeper gem (see [`/oauth/token/info`](https://github.com/doorkeeper-gem/doorkeeper/wiki/API-endpoint-descriptions-and-examples#get----oauthtokeninfo)).
+To verify the details of a token, use the `token/info` endpoint provided by the Doorkeeper gem.
+For more information, see [`/oauth/token/info`](https://github.com/doorkeeper-gem/doorkeeper/wiki/API-endpoint-descriptions-and-examples#get----oauthtokeninfo).
 
-You will need to supply the access token, either as a parameter
+You must supply the access token, either:
 
-```
-GET https://gitlab.example.com/oauth/token/info?access_token=OAUTH-TOKEN
-```
+- As a parameter:
 
-Or in the Authorization header:
+   ```
+   GET https://gitlab.example.com/oauth/token/info?access_token=<OAUTH-TOKEN>
+   ```
 
-```
-curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/oauth/token/info
-```
+- In the Authorization header:
 
-You will receive the following in response:
+   ```shell
+   curl --header "Authorization: Bearer <OAUTH-TOKEN>" https://gitlab.example.com/oauth/token/info
+   ```
+
+The following is an example response:
 
 ```json
 {
@@ -241,5 +244,11 @@ You will receive the following in response:
 }
 ```
 
-CAUTION: **Deprecated fields:**
-The fields `scopes` and `expires_in_seconds` are also included in the response. They are aliases for `scope` and `expires_in` respectively and have been included to prevent breaking changes introduced in [doorkeeper 5.0.2](https://github.com/doorkeeper-gem/doorkeeper/wiki/Migration-from-old-versions#from-4x-to-5x). Please don't rely on these fields as they will be removed in a later release.
+### Deprecated fields
+
+The fields `scopes` and `expires_in_seconds` are included in the response.
+
+These are aliases for `scope` and `expires_in` respectively, and have been included to
+prevent breaking changes introduced in [doorkeeper 5.0.2](https://github.com/doorkeeper-gem/doorkeeper/wiki/Migration-from-old-versions#from-4x-to-5x).
+
+Don't rely on these fields as they will be removed in a later release.
