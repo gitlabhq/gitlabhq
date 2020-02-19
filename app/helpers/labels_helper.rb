@@ -2,7 +2,6 @@
 
 module LabelsHelper
   extend self
-  include ActionView::Helpers::TagHelper
 
   def show_label_issuables_link?(label, issuables_type, current_user: nil)
     return true unless label.project_label?
@@ -64,8 +63,8 @@ module LabelsHelper
     # by LabelReferenceFilter
     span = %(<span class="badge color-label #{"has-tooltip" if tooltip}" ) +
       %(data-html="true" style="background-color: #{label.color}; color: #{text_color}" ) +
-      %(title="#{escape_once(title)}" data-container="body">) +
-      %(#{escape_once(label.name)}#{label_suffix}</span>)
+      %(title="#{ERB::Util.html_escape_once(title)}" data-container="body">) +
+      %(#{ERB::Util.html_escape_once(label.name)}#{label_suffix}</span>)
 
     span.html_safe
   end
@@ -247,9 +246,6 @@ module LabelsHelper
   def issuable_types
     ['issues', 'merge requests']
   end
-
-  # Required for Banzai::Filter::LabelReferenceFilter
-  module_function :render_colored_label, :text_color_for_bg, :escape_once, :label_tooltip_title
 end
 
 LabelsHelper.prepend_if_ee('EE::LabelsHelper')

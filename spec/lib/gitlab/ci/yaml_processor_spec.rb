@@ -101,6 +101,7 @@ module Gitlab
               name: "rspec",
               only: { refs: %w[branches tags] },
               options: { script: ["rspec"] },
+              scheduling_type: :stage,
               tag_list: %w[A B],
               allow_failure: false,
               when: "on_success",
