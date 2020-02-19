@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sidekiq/web'
 
 def enable_reliable_fetch?
@@ -70,6 +72,8 @@ Sidekiq.configure_server do |config|
     config.options[:semi_reliable_fetch] = enable_semi_reliable_fetch_mode?
     Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
   end
+
+  Gitlab.config.load_dynamic_cron_schedules!
 
   # Sidekiq-cron: load recurring jobs from gitlab.yml
   # UGLY Hack to get nested hash from settingslogic

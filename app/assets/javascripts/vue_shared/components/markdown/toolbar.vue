@@ -1,10 +1,11 @@
 <script>
 /* eslint-disable @gitlab/vue-i18n/no-bare-strings */
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: {
     GlLink,
+    GlLoadingIcon,
   },
   props: {
     markdownDocsPath: {
@@ -54,9 +55,7 @@ export default {
         <i class="fa fa-file-image-o toolbar-button-icon" aria-hidden="true"></i>
         <span class="attaching-file-message"></span>
         <span class="uploading-progress">0%</span>
-        <span class="uploading-spinner">
-          <i class="fa fa-spinner fa-spin toolbar-button-icon" aria-hidden="true"></i>
-        </span>
+        <gl-loading-icon inline class="align-text-bottom" />
       </span>
       <span class="uploading-error-container hide">
         <span class="uploading-error-icon">
