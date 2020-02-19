@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
@@ -94,11 +95,14 @@ export const fetchDashboard = ({ state, dispatch }) => {
   return backOffRequest(() => axios.get(state.dashboardEndpoint, { params }))
     .then(resp => resp.data)
     .then(response => dispatch('receiveMetricsDashboardSuccess', { response, params }))
-    .catch(e => {
-      dispatch('receiveMetricsDashboardFailure', e);
+    .catch(error => {
+      Sentry.captureException(error);
+
+      dispatch('receiveMetricsDashboardFailure', error);
+
       if (state.showErrorBanner) {
-        if (e.response.data && e.response.data.message) {
-          const { message } = e.response.data;
+        if (error.response.data && error.response.data.message) {
+          const { message } = error.response.data;
           createFlash(
             sprintf(
               s__('Metrics|There was an error while retrieving metrics. %{message}'),
@@ -152,6 +156,8 @@ export const fetchPrometheusMetric = ({ commit }, { metric, params }) => {
       commit(types.RECEIVE_METRIC_RESULT_SUCCESS, { metricId: metric.metric_id, result });
     })
     .catch(error => {
+      Sentry.captureException(error);
+
       commit(types.RECEIVE_METRIC_RESULT_FAILURE, { metricId: metric.metric_id, error });
       // Continue to throw error so the dashboard can notify using createFlash
       throw error;
@@ -197,7 +203,8 @@ export const fetchDeploymentsData = ({ state, dispatch }) => {
 
       dispatch('receiveDeploymentsDataSuccess', response.deployments);
     })
-    .catch(() => {
+    .catch(error => {
+      Sentry.captureException(error);
       dispatch('receiveDeploymentsDataFailure');
       createFlash(s__('Metrics|There was an error getting deployment information.'));
     });
@@ -225,7 +232,8 @@ export const fetchEnvironmentsData = ({ state, dispatch }) => {
 
       dispatch('receiveEnvironmentsDataSuccess', environments);
     })
-    .catch(() => {
+    .catch(err => {
+      Sentry.captureException(err);
       dispatch('receiveEnvironmentsDataFailure');
       createFlash(s__('Metrics|There was an error getting environments information.'));
     });
@@ -254,7 +262,10 @@ export const duplicateSystemDashboard = ({ state }, payload) => {
     .then(response => response.data)
     .then(data => data.dashboard)
     .catch(error => {
+      Sentry.captureException(error);
+
       const { response } = error;
+
       if (response && response.data && response.data.error) {
         throw sprintf(s__('Metrics|There was an error creating the dashboard. %{error}'), {
           error: response.data.error,

@@ -92,12 +92,14 @@ describe Gitlab::Kubernetes::Namespace do
       it 'logs the error' do
         expect(subject.send(:logger)).to receive(:error).with(
           hash_including(
-            exception: 'Kubeclient::HttpError',
+            exception: {
+              class: 'Kubeclient::HttpError',
+              message: 'system failure'
+            },
             status_code: 500,
             namespace: 'a_namespace',
             class_name: 'Gitlab::Kubernetes::Namespace',
-            event: :failed_to_create_namespace,
-            message: 'system failure'
+            event: :failed_to_create_namespace
           )
         )
 
