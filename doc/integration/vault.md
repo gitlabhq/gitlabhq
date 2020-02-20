@@ -30,13 +30,13 @@ The following assumes you already have Vault installed and running.
 
     Open a terminal session and run the following command to enable the OpenID Connect authentication provider in Vault:
 
-    ```bash
+    ```shell
     vault auth enable oidc
     ```
 
     You should see the following output in the terminal:
 
-    ```bash
+    ```shell
     Success! Enabled oidc auth method at: oidc/
     ```
 
@@ -48,7 +48,7 @@ The following assumes you already have Vault installed and running.
 
     Replace `your_application_id` and `your_secret` in the example below with the application ID and secret generated for your app:
 
-    ```bash
+    ```shell
     $ vault write auth/oidc/config \
         oidc_discovery_url="https://gitlab.com" \
         oidc_client_id="your_application_id" \
@@ -59,17 +59,17 @@ The following assumes you already have Vault installed and running.
 
     You should see the following output in the terminal:
 
-    ```bash
+    ```shell
     Success! Data written to: auth/oidc/config
     ```
 
 1. **Write the OIDC Role Config:**
 
-    Now that Vault has a GitLab application ID and secret, it needs to know the [**Redirect URIs**](https://www.vaultproject.io/docs/auth/jwt.html#redirect-uris) and scopes given to GitLab during the application creation process. The redirect URIs need to match where your Vault instance is running. The `oidc_scopes` field needs to include the `openid`.  Similarly to the previous step, replace `your_application_id` with the generated application ID from GitLab:
+    Now that Vault has a GitLab application ID and secret, it needs to know the [**Redirect URIs**](https://www.vaultproject.io/docs/auth/jwt.html#redirect-uris) and scopes given to GitLab during the application creation process. The redirect URIs need to match where your Vault instance is running. The `oidc_scopes` field needs to include the `openid`. Similarly to the previous step, replace `your_application_id` with the generated application ID from GitLab:
 
     This configuration is saved under the name of the role you are creating. In this case, we are creating a `demo` role. Later, we'll show how you can access this role through the Vault CLI.
 
-    ```bash
+    ```shell
     vault write auth/oidc/role/demo \
           user_claim="sub" \
           allowed_redirect_uris="http://localhost:8250/oidc/callback,http://127.0.0.1:8200/ui/vault/auth/oidc/oidc/callback" \
@@ -96,7 +96,7 @@ The following assumes you already have Vault installed and running.
 
     After writing the same configurations from above, you can run the command below in your terminal to sign in with the role configuration created in step 4 above:
 
-    ```bash
+    ```shell
     vault login -method=oidc port=8250 role=demo
     ```
 

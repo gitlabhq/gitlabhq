@@ -124,7 +124,7 @@ describe Admin::SessionsController, :do_not_mock_admin_mode do
       it 'shows error page' do
         post :destroy
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
         expect(controller.current_user_mode.admin_mode?).to be(false)
       end
     end

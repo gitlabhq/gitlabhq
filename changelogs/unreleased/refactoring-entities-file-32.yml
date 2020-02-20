@@ -1,0 +1,5 @@
+---
+title: Separate cluster entities into own class files
+merge_request: 25121
+author: Rajendra Kadam
+type: added

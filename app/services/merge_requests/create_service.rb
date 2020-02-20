@@ -27,6 +27,7 @@ module MergeRequests
       create_pipeline_for(issuable, current_user)
       issuable.update_head_pipeline
       Gitlab::UsageDataCounters::MergeRequestCounter.count(:create)
+      link_lfs_objects(issuable)
 
       super
     end
@@ -63,6 +64,10 @@ module MergeRequests
 
         raise Gitlab::Access::AccessDeniedError
       end
+    end
+
+    def link_lfs_objects(issuable)
+      LinkLfsObjectsService.new(issuable.target_project).execute(issuable)
     end
   end
 end

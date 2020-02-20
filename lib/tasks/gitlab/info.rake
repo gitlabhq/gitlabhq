@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :env do
-    desc "GitLab | Show information about GitLab and its environment"
+    desc 'GitLab | Env | Show information about GitLab and its environment'
     task info: :gitlab_environment do
       # check if there is an RVM environment
       rvm_version = run_and_match(%w(rvm --version), /[\d\.]+/).try(:to_s)

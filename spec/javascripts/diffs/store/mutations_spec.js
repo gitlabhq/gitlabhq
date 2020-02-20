@@ -55,8 +55,8 @@ describe('DiffsStoreMutations', () => {
       const state = {
         diffFiles: [
           {
-            content_sha: diffFileMockData.content_sha,
-            file_hash: diffFileMockData.file_hash,
+            ...diffFileMockData,
+            parallel_diff_lines: [],
           },
         ],
       };

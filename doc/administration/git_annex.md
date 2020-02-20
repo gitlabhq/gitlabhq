@@ -96,7 +96,7 @@ one is located in `config.yml` of GitLab Shell.
 Here is an example workflow of uploading a very large file and then checking it
 into your Git repository:
 
-```bash
+```shell
 git clone git@example.com:group/project.git
 
 git annex init 'My Laptop'       # initialize the annex project and give an optional description
@@ -165,7 +165,7 @@ repository.
 
 Downloading a single large file is also very simple:
 
-```bash
+```shell
 git clone git@gitlab.example.com:group/project.git
 
 git annex sync             # sync Git branches but not the large file
@@ -174,7 +174,7 @@ git annex get debian.iso   # download the large file
 
 To download all files:
 
-```bash
+```shell
 git clone git@gitlab.example.com:group/project.git
 
 git annex sync --content  # sync Git branches and download all the large files

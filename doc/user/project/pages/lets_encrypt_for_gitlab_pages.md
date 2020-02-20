@@ -43,27 +43,27 @@ operating systems the steps might be slightly different. Follow the
 1. On your computer, open a terminal and navigate to your repository's
    root directory:
 
-   ```bash
+   ```shell
    cd path/to/dir
    ```
 
 1. Install CertBot (the tool Let's Encrypt uses to issue certificates):
 
-   ```bash
+   ```shell
    brew install certbot
    ```
 
 1. Request a certificate for your domain (`example.com`) and
    provide an email account (`your@email.com`) to receive notifications:
 
-   ```bash
+   ```shell
    sudo certbot certonly -a manual -d example.com --email your@email.com
    ```
 
    Alternatively, you can register without adding an e-mail account,
    but you won't be notified about the certificate expiration's date:
 
-   ```bash
+   ```shell
    sudo certbot certonly -a manual -d example.com --register-unsafely-without-email
    ```
 
@@ -76,7 +76,7 @@ operating systems the steps might be slightly different. Follow the
 
    CertBot will then prompt you with the following message:
 
-   ```bash
+   ```shell
    Create a file containing just this data:
 
    Rxnv6WKo95hsuLVX3osmT6LgmzsJKSaK9htlPToohOP.HUGNKk82jlsmOOfphlt8Jy69iuglsn095nxOMH9j3Yb
@@ -95,7 +95,7 @@ operating systems the steps might be slightly different. Follow the
    and add to the last folder an `index.html` file containing the content
    referred on the previous prompt message:
 
-   ```bash
+   ```shell
    Rxnv6WKo95hsuLVX3osmT6LgmzsJKSaK9htlPToohOP.HUGNKk82jlsmOOfphlt8Jy69iuglsn095nxOMH9j3Yb
    ```
 
@@ -109,7 +109,7 @@ operating systems the steps might be slightly different. Follow the
    passes, press **Enter** on your terminal to continue issuing your
    certificate. CertBot will then prompt you with the following message:
 
-   ```bash
+   ```shell
    Waiting for verification...
    Cleaning up challenges
 
@@ -137,13 +137,13 @@ Now that your certificate has been issued, let's add it to your Pages site:
 1. From your terminal, copy and paste the certificate into the first field
    **Certificate (PEM)**:
 
-   ```bash
+   ```shell
    sudo cat /etc/letsencrypt/live/example.com/fullchain.pem | pbcopy
    ```
 
 1. Copy and paste the private key into the second field **Key (PEM)**:
 
-   ```bash
+   ```shell
    sudo cat /etc/letsencrypt/live/example.com/privkey.pem | pbcopy
    ```
 
@@ -160,6 +160,6 @@ valid certificates)**.
 Let's Encrypt certificates expire every 90 days and you'll have to
 renew them periodically. To renew all your certificates at once, run:
 
-```bash
+```shell
 sudo certbot renew
 ```

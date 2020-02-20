@@ -42,8 +42,8 @@ describe('Grouped Test Reports Modal', () => {
     );
   });
 
-  it('renders miliseconds', () => {
-    expect(vm.$el.textContent).toContain(`${modalDataStructure.execution_time.value} ms`);
+  it('renders seconds', () => {
+    expect(vm.$el.textContent).toContain(`${modalDataStructure.execution_time.value} s`);
   });
 
   it('render title', () => {

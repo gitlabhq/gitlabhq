@@ -176,7 +176,6 @@ describe Notes::QuickActionsService do
   context 'CE restriction for issue assignees' do
     describe '/assign' do
       let(:project) { create(:project) }
-      let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
       let(:assignee) { create(:user) }
       let(:maintainer) { create(:user) }
       let(:service) { described_class.new(project, maintainer) }

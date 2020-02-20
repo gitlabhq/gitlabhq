@@ -59,7 +59,7 @@ describe Gitlab::EtagCaching::Router do
 
   it 'matches commit pipelines endpoint' do
     result = described_class.match(
-      '/my-group/my-project/commit/aa8260d253a53f73f6c26c734c72fdd600f6e6d4/pipelines.json'
+      '/my-group/my-project/-/commit/aa8260d253a53f73f6c26c734c72fdd600f6e6d4/pipelines.json'
     )
 
     expect(result).to be_present
@@ -68,7 +68,7 @@ describe Gitlab::EtagCaching::Router do
 
   it 'matches new merge request pipelines endpoint' do
     result = described_class.match(
-      '/my-group/my-project/merge_requests/new.json'
+      '/my-group/my-project/-/merge_requests/new.json'
     )
 
     expect(result).to be_present
@@ -77,7 +77,7 @@ describe Gitlab::EtagCaching::Router do
 
   it 'matches merge request pipelines endpoint' do
     result = described_class.match(
-      '/my-group/my-project/merge_requests/234/pipelines.json'
+      '/my-group/my-project/-/merge_requests/234/pipelines.json'
     )
 
     expect(result).to be_present

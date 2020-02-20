@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe 'Gitlab::Graphql::Authorization' do
+  include GraphqlHelpers
+
   set(:user) { create(:user) }
 
   let(:permission_single) { :foo }
@@ -299,38 +301,5 @@ describe 'Gitlab::Graphql::Authorization' do
     permissions.each do |permission|
       allow(Ability).to receive(:allowed?).with(user, permission, test_object).and_return(true)
     end
-  end
-
-  def type_factory
-    Class.new(Types::BaseObject) do
-      graphql_name 'TestType'
-
-      field :name, GraphQL::STRING_TYPE, null: true
-
-      yield(self) if block_given?
-    end
-  end
-
-  def query_factory
-    Class.new(Types::BaseObject) do
-      graphql_name 'TestQuery'
-
-      yield(self) if block_given?
-    end
-  end
-
-  def execute_query(query_type)
-    schema = Class.new(GraphQL::Schema) do
-      use Gitlab::Graphql::Authorize
-      use Gitlab::Graphql::Connections
-
-      query(query_type)
-    end
-
-    schema.execute(
-      query_string,
-      context: { current_user: user },
-      variables: {}
-    )
   end
 end

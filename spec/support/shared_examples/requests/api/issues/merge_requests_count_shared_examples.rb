@@ -4,7 +4,7 @@ def get_issue
   json_response.is_a?(Array) ? json_response.detect {|issue| issue['id'] == target_issue.id} : json_response
 end
 
-shared_examples 'accessible merge requests count' do
+RSpec.shared_examples 'accessible merge requests count' do
   it 'returns anonymous accessible merge requests count' do
     get api(api_url), params: { scope: 'all' }
 

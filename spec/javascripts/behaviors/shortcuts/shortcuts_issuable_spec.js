@@ -52,6 +52,7 @@ describe('ShortcutsIssuable', function() {
         return documentFragment;
       });
     };
+
     describe('with empty selection', () => {
       it('does not return an error', () => {
         ShortcutsIssuable.replyWithSelectedText(true);
@@ -293,6 +294,19 @@ describe('ShortcutsIssuable', function() {
 
         setTimeout(() => {
           expect(spy).toHaveBeenCalled();
+          done();
+        });
+      });
+    });
+
+    describe('with a valid selection with no text content', () => {
+      it('returns the proper markdown', done => {
+        stubSelection('<img src="foo" alt="image" />');
+        ShortcutsIssuable.replyWithSelectedText(true);
+
+        setTimeout(() => {
+          expect($(FORM_SELECTOR).val()).toBe('> ![image](http://localhost:9876/foo)\n\n');
+
           done();
         });
       });

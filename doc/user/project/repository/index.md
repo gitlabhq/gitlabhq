@@ -74,7 +74,7 @@ according to the markup language.
 | --------------- | ---------- |
 | Plain text | `txt` |
 | [Markdown](../../markdown.md) | `mdown`, `mkd`, `mkdn`, `md`, `markdown` |
-| [reStructuredText](http://docutils.sourceforge.net/rst.html) | `rst` |
+| [reStructuredText](https://docutils.sourceforge.io/rst.html) | `rst` |
 | [AsciiDoc](../../asciidoc.md) | `adoc`, `ad`, `asciidoc` |
 | [Textile](https://textile-lang.com/) | `textile` |
 | [rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
@@ -102,19 +102,11 @@ Some things to note about precedence:
 
 ### Jupyter Notebook files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2508) in GitLab 9.1
-
-[Jupyter](https://jupyter.org) Notebook (previously IPython Notebook) files are used for
+[Jupyter](https://jupyter.org/) Notebook (previously IPython Notebook) files are used for
 interactive computing in many fields and contain a complete record of the
 user's sessions and include code, narrative text, equations and rich output.
 
-When added to a repository, Jupyter Notebooks with a `.ipynb` extension will be
-rendered to HTML when viewed.
-
-![Jupyter Notebook Rich Output](img/jupyter_notebook.png)
-
-Interactive features, including JavaScript plots, will not work when viewed in
-GitLab.
+[Read how to use Jupyter notebooks with GitLab.](jupyter_notebooks/index.md)
 
 ### OpenAPI viewer
 

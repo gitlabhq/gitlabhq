@@ -804,7 +804,7 @@ describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'empty command' do
+    it_behaves_like 'empty command', "Failed to assign a user because no user was found." do
       let(:content) { '/assign' }
       let(:issuable) { issue }
     end
@@ -1319,11 +1319,6 @@ describe QuickActions::InterpretService do
 
       it_behaves_like 'empty command' do
         let(:content) { '/confidential' }
-        let(:issuable) { issue }
-      end
-
-      it_behaves_like 'empty command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
-        let(:content) { '/duplicate #{issue.to_reference}' }
         let(:issuable) { issue }
       end
 
@@ -1889,7 +1884,7 @@ describe QuickActions::InterpretService do
       end
     end
 
-    context "#commands_executed_count" do
+    describe "#commands_executed_count" do
       it 'counts commands executed' do
         content = "/close and \n/assign me and \n/title new title"
 

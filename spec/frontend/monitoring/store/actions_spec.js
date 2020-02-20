@@ -17,15 +17,18 @@ import {
   fetchPrometheusMetrics,
   fetchPrometheusMetric,
   setEndpoints,
+  filterEnvironments,
   setGettingStartedEmptyState,
   duplicateSystemDashboard,
 } from '~/monitoring/stores/actions';
+import { gqClient, parseEnvironmentsResponse } from '~/monitoring/stores/utils';
+import getEnvironments from '~/monitoring/queries/getEnvironments.query.graphql';
 import storeState from '~/monitoring/stores/state';
 import {
   deploymentData,
   environmentData,
   metricsDashboardResponse,
-  metricsGroupsAPIResponse,
+  metricsDashboardPayload,
   dashboardGitResponse,
 } from '../mock_data';
 
@@ -104,40 +107,105 @@ describe('Monitoring store actions', () => {
         .catch(done.fail);
     });
   });
+
   describe('fetchEnvironmentsData', () => {
-    it('commits RECEIVE_ENVIRONMENTS_DATA_SUCCESS on error', done => {
-      const dispatch = jest.fn();
-      const { state } = store;
-      state.environmentsEndpoint = '/success';
-      mock.onGet(state.environmentsEndpoint).reply(200, {
-        environments: environmentData,
-      });
-      fetchEnvironmentsData({
-        state,
-        dispatch,
-      })
-        .then(() => {
-          expect(dispatch).toHaveBeenCalledWith('receiveEnvironmentsDataSuccess', environmentData);
-          done();
-        })
-        .catch(done.fail);
+    const dispatch = jest.fn();
+    const { state } = store;
+    state.projectPath = 'gitlab-org/gitlab-test';
+
+    afterEach(() => {
+      resetStore(store);
+      jest.restoreAllMocks();
     });
-    it('commits RECEIVE_ENVIRONMENTS_DATA_FAILURE on error', done => {
-      const dispatch = jest.fn();
-      const { state } = store;
-      state.environmentsEndpoint = '/error';
-      mock.onGet(state.environmentsEndpoint).reply(500);
-      fetchEnvironmentsData({
+
+    it('setting SET_ENVIRONMENTS_FILTER should dispatch fetchEnvironmentsData', () => {
+      jest.spyOn(gqClient, 'mutate').mockReturnValue(
+        Promise.resolve({
+          data: {
+            project: {
+              data: {
+                environments: [],
+              },
+            },
+          },
+        }),
+      );
+
+      return testAction(
+        filterEnvironments,
+        {},
+        state,
+        [
+          {
+            type: 'SET_ENVIRONMENTS_FILTER',
+            payload: {},
+          },
+        ],
+        [
+          {
+            type: 'fetchEnvironmentsData',
+          },
+        ],
+      );
+    });
+
+    it('fetch environments data call takes in search param', () => {
+      const mockMutate = jest.spyOn(gqClient, 'mutate');
+      const searchTerm = 'Something';
+      const mutationVariables = {
+        mutation: getEnvironments,
+        variables: {
+          projectPath: state.projectPath,
+          search: searchTerm,
+        },
+      };
+      state.environmentsSearchTerm = searchTerm;
+      mockMutate.mockReturnValue(Promise.resolve());
+
+      return fetchEnvironmentsData({
         state,
         dispatch,
-      })
-        .then(() => {
-          expect(dispatch).toHaveBeenCalledWith('receiveEnvironmentsDataFailure');
-          done();
-        })
-        .catch(done.fail);
+      }).then(() => {
+        expect(mockMutate).toHaveBeenCalledWith(mutationVariables);
+      });
+    });
+
+    it('commits RECEIVE_ENVIRONMENTS_DATA_SUCCESS on success', () => {
+      jest.spyOn(gqClient, 'mutate').mockReturnValue(
+        Promise.resolve({
+          data: {
+            project: {
+              data: {
+                environments: environmentData,
+              },
+            },
+          },
+        }),
+      );
+
+      return fetchEnvironmentsData({
+        state,
+        dispatch,
+      }).then(() => {
+        expect(dispatch).toHaveBeenCalledWith(
+          'receiveEnvironmentsDataSuccess',
+          parseEnvironmentsResponse(environmentData, state.projectPath),
+        );
+      });
+    });
+
+    it('commits RECEIVE_ENVIRONMENTS_DATA_FAILURE on error', () => {
+      jest.spyOn(gqClient, 'mutate').mockReturnValue(Promise.reject());
+
+      return fetchEnvironmentsData({
+        state,
+        dispatch,
+      }).then(() => {
+        expect(dispatch).toHaveBeenCalledWith('receiveEnvironmentsDataFailure');
+      });
     });
   });
+
   describe('Set endpoints', () => {
     let mockedState;
     beforeEach(() => {
@@ -149,7 +217,6 @@ describe('Monitoring store actions', () => {
         {
           metricsEndpoint: 'additional_metrics.json',
           deploymentsEndpoint: 'deployments.json',
-          environmentsEndpoint: 'deployments.json',
         },
         mockedState,
         [
@@ -158,7 +225,6 @@ describe('Monitoring store actions', () => {
             payload: {
               metricsEndpoint: 'additional_metrics.json',
               deploymentsEndpoint: 'deployments.json',
-              environmentsEndpoint: 'deployments.json',
             },
           },
         ],
@@ -442,7 +508,7 @@ describe('Monitoring store actions', () => {
     beforeEach(() => {
       state = storeState();
       [metric] = metricsDashboardResponse.dashboard.panel_groups[0].panels[0].metrics;
-      [data] = metricsGroupsAPIResponse.panel_groups[0].panels[0].metrics;
+      [data] = metricsDashboardPayload.panel_groups[0].panels[0].metrics;
     });
 
     it('commits result', done => {

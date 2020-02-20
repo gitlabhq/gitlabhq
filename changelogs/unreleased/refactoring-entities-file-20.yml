@@ -1,0 +1,5 @@
+---
+title: Separate tag and release entities into own class files
+merge_request: 24943
+author: Rajendra Kadam
+type: added

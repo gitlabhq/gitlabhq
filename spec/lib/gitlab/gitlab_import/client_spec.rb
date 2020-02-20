@@ -13,9 +13,7 @@ describe Gitlab::GitlabImport::Client do
   end
 
   it 'all OAuth2 client options are symbols' do
-    client.client.options.keys.each do |key|
-      expect(key).to be_kind_of(Symbol)
-    end
+    expect(client.client.options.keys).to all(be_kind_of(Symbol))
   end
 
   it 'uses membership and simple flags' do

@@ -43,7 +43,7 @@ that the `master` branch is protected by default.
 
 ## Using the Allowed to merge and Allowed to push settings
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5081) in GitLab 8.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5081) in GitLab 8.11.
 
 Since GitLab 8.11, we added another layer of branch protection which provides
 more granular management of protected branches. The "Developers can push"
@@ -73,7 +73,7 @@ they are set to "Maintainers" by default.
 
 ## Restricting push and merge access to certain users **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5081) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5081) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.11.
 
 With GitLab Enterprise Edition you can restrict access to protected branches
 by choosing a role (Maintainers, Developers) as well as certain users. From the
@@ -88,7 +88,7 @@ Click **Protect** and the branch will appear in the "Protected branch" list.
 
 ## Wildcard protected branches
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4665) in GitLab 8.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4665) in GitLab 8.10.
 
 You can specify a wildcard protected branch, which will protect all branches
 matching the wildcard. For example:
@@ -202,12 +202,12 @@ for details about the pipelines security model.
 
 **8.11**
 
-- Allow creating protected branches that can't be pushed to ([merge request !5081](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5081)).
+- Allow creating protected branches that can't be pushed to ([merge request !5081](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5081)).
 
 **8.10**
 
-- Allow developers without push access to merge into a protected branch ([merge request !4892](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4892)).
-- Allow specifying protected branches using wildcards ([merge request !4665](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4665)).
+- Allow developers without push access to merge into a protected branch ([merge request !4892](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4892)).
+- Allow specifying protected branches using wildcards ([merge request !4665](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4665)).
 
 <!-- ## Troubleshooting
 

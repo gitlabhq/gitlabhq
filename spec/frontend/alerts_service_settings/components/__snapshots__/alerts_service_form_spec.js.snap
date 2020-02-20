@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AlertsServiceForm with default values renders "authorization-key" input 1`] = `"<gl-form-input-stub id=\\"authorization-key\\" readonly=\\"true\\" value=\\"abcedfg123\\"></gl-form-input-stub>"`;
+
+exports[`AlertsServiceForm with default values renders "url" input 1`] = `"<gl-form-input-stub id=\\"url\\" readonly=\\"true\\" value=\\"https://gitlab.com/endpoint-url\\"></gl-form-input-stub>"`;
+
+exports[`AlertsServiceForm with default values renders toggle button 1`] = `"<toggle-button-stub id=\\"activated\\"></toggle-button-stub>"`;
+
+exports[`AlertsServiceForm with default values shows description and "Learn More" link 1`] = `"Each alert source must be authorized using the following URL and authorization key. <a href=\\"https://docs.gitlab.com/ee/user/project/integrations/generic_alerts.md\\" target=\\"_blank\\" rel=\\"noopener noreferrer\\">Learn more</a> about configuring this endpoint to receive alerts."`;

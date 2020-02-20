@@ -25,7 +25,10 @@ GET /projects/:id/approvals
 {
   "approvals_before_merge": 2,
   "reset_approvals_on_push": true,
-  "disable_overriding_approvers_per_merge_request": false
+  "disable_overriding_approvers_per_merge_request": false,
+  "merge_requests_author_approval": true,
+  "merge_requests_disable_committers_approval": false,
+  "require_password_to_approve": true
 }
 ```
 
@@ -50,6 +53,7 @@ POST /projects/:id/approvals
 | `disable_overriding_approvers_per_merge_request` | boolean | no       | Allow/Disallow overriding approvers per MR                                                          |
 | `merge_requests_author_approval`                 | boolean | no       | Allow/Disallow authors from self approving merge requests; `true` means authors cannot self approve |
 | `merge_requests_disable_committers_approval`     | boolean | no       | Allow/Disallow committers from self approving merge requests                                        |
+| `require_password_to_approve`                    | boolean | no       | Require approver to enter a password in order to authenticate before adding the approval         |
 
 ```json
 {
@@ -57,7 +61,8 @@ POST /projects/:id/approvals
   "reset_approvals_on_push": true,
   "disable_overriding_approvers_per_merge_request": false,
   "merge_requests_author_approval": false,
-  "merge_requests_disable_committers_approval": false
+  "merge_requests_disable_committers_approval": false,
+  "require_password_to_approve": true
 }
 ```
 
@@ -441,7 +446,10 @@ PUT /projects/:id/approvers
   ],
   "approvals_before_merge": 2,
   "reset_approvals_on_push": true,
-  "disable_overriding_approvers_per_merge_request": false
+  "disable_overriding_approvers_per_merge_request": false,
+  "merge_requests_author_approval": true,
+  "merge_requests_disable_committers_approval": false,
+  "require_password_to_approve": true
 }
 ```
 
@@ -956,7 +964,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 | `id`                | integer | yes      | The ID of a project     |
 | `merge_request_iid` | integer | yes      | The IID of MR           |
 | `sha`               | string  | no       | The HEAD of the MR      |
-| `approval_password` **(STARTER)** | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/merge_request_approvals.md#require-authentication-when-approving-a-merge-request-starter) is enabled in the project settings. |
+| `approval_password` **(STARTER)** | string  | no      | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/merge_request_approvals.md#require-authentication-when-approving-a-merge-request) is enabled in the project settings. |
 
 The `sha` parameter works in the same way as
 when [accepting a merge request](merge_requests.md#accept-mr): if it is passed, then it must

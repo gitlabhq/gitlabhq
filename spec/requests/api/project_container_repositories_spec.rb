@@ -5,12 +5,11 @@ require 'spec_helper'
 describe API::ProjectContainerRepositories do
   include ExclusiveLeaseHelpers
 
-  set(:project) { create(:project, :private) }
-  set(:maintainer) { create(:user) }
-  set(:developer) { create(:user) }
-  set(:reporter) { create(:user) }
-  set(:guest) { create(:user) }
-
+  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:guest) { create(:user) }
   let(:root_repository) { create(:container_repository, :root, project: project) }
   let(:test_repository) { create(:container_repository, project: project) }
 
@@ -142,12 +141,14 @@ describe API::ProjectContainerRepositories do
         let(:worker_params) do
           { name_regex: 'v10.*',
             keep_n: 100,
-            older_than: '1 day' }
+            older_than: '1 day',
+            container_expiration_policy: false }
         end
 
         let(:lease_key) { "container_repository:cleanup_tags:#{root_repository.id}" }
 
         it 'schedules cleanup of tags repository' do
+          stub_last_activity_update
           stub_exclusive_lease(lease_key, timeout: 1.hour)
           expect(CleanupContainerRepositoryWorker).to receive(:perform_async)
             .with(maintainer.id, root_repository.id, worker_params)

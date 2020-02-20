@@ -69,4 +69,11 @@
     .icon-container
       = sprite_icon("git-merge")
     %span.related-merge-requests
-      = @pipeline.all_related_merge_request_text
+      %span.js-truncated-mr-list
+        = @pipeline.all_related_merge_request_text(limit: 1)
+      - if @pipeline.has_many_merge_requests?
+        = link_to("#", class: "js-toggle-mr-list") do
+          %span.text-expander
+            = sprite_icon('ellipsis_h', size: 12)
+        %span.js-full-mr-list.hide
+          = @pipeline.all_related_merge_request_text

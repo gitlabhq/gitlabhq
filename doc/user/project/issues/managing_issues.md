@@ -178,7 +178,7 @@ Closes #4, #6, and https://gitlab.com/<username>/<projectname>/issues/<xxx>
 
 When not specified, the default issue closing pattern as shown below will be used:
 
-```bash
+```shell
 ((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)
 ```
 
@@ -198,7 +198,7 @@ source code that can match references to:
 
 For example the following commit message:
 
-```
+```plaintext
 Awesome commit message
 
 Fix #20, Fixes #21 and Closes group/otherproject#22.
@@ -232,7 +232,7 @@ of your installation.
 
 ## Deleting Issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/2982) in GitLab 8.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2982) in GitLab 8.6
 
 Users with [project owner permission](../../permissions.md) can delete an issue by
 editing it and clicking on the delete button.

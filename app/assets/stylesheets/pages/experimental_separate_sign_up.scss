@@ -3,31 +3,8 @@
     background-color: $gray-light;
   }
 
-  .gitlab-logo {
-    width: 80px;
-    height: 80px;
-  }
-
   .signup-box-container {
-    max-width: 900px;
-
-    &.navless-container {
-      // overriding .devise-layout-html.navless-container to support the sticky footer
-      // without having a header on size xs
-      @include media-breakpoint-down(xs) {
-        padding: 65px $gl-padding; // height of footer
-        padding-top: $gl-padding;
-      }
-    }
-  }
-
-  .signup-heading h2 {
-    font-weight: $gl-font-weight-bold;
-    padding: 0 $gl-padding;
-
-    @include media-breakpoint-down(md) {
-      font-size: $gl-font-size-large;
-    }
+    max-width: 960px;
   }
 
   .signup-box {
@@ -47,6 +24,37 @@
     h2 {
       font-size: $gl-font-size;
       color: $red-700;
+    }
+  }
+
+  .omniauth-divider {
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid $gray-dark;
+      margin: $gl-padding-24 0;
+    }
+
+    &::before {
+      margin-right: $gl-padding;
+    }
+
+    &::after {
+      margin-left: $gl-padding;
+    }
+  }
+
+  .omniauth-btn {
+    width: 48%;
+
+    @include media-breakpoint-down(md) {
+      width: 100%;
+    }
+
+    img {
+      width: $default-icon-size;
+      height: $default-icon-size;
     }
   }
 }

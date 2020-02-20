@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'having unique enum values' do
+RSpec.shared_examples 'having unique enum values' do
   described_class.defined_enums.each do |name, enum|
     it "has unique values in #{name.inspect}" do
       duplicated = enum.group_by(&:last).select { |key, value| value.size > 1 }

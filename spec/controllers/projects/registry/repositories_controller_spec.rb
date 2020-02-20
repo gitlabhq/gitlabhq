@@ -16,7 +16,7 @@ describe Projects::Registry::RepositoriesController do
       project.add_developer(user)
     end
 
-    describe 'GET index' do
+    shared_examples 'renders a list of repositories' do
       context 'when root container repository exists' do
         before do
           create(:container_repository, :root, project: project)
@@ -35,6 +35,8 @@ describe Projects::Registry::RepositoriesController do
           end
 
           it 'successfully renders container repositories' do
+            expect(Gitlab::Tracking).not_to receive(:event)
+
             go_to_index
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -43,7 +45,7 @@ describe Projects::Registry::RepositoriesController do
           it 'tracks the event' do
             expect(Gitlab::Tracking).to receive(:event).with(anything, 'list_repositories', {})
 
-            go_to_index
+            go_to_index(format: :json)
           end
 
           it 'creates a root container repository' do
@@ -56,6 +58,7 @@ describe Projects::Registry::RepositoriesController do
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('registry/repositories')
+            expect(response).to include_pagination_headers
           end
         end
 
@@ -82,9 +85,33 @@ describe Projects::Registry::RepositoriesController do
           end
         end
       end
+
+      context 'with :vue_container_registry_explorer feature flag disabled' do
+        before do
+          stub_feature_flags(vue_container_registry_explorer: false)
+          stub_container_registry_tags(repository: project.full_path,
+                                       tags: %w[rc1 latest])
+        end
+
+        it 'json has a list of projects' do
+          go_to_index(format: :json)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('registry/repositories')
+          expect(response).not_to include_pagination_headers
+        end
+      end
     end
 
-    describe 'DELETE destroy' do
+    describe 'GET #index' do
+      it_behaves_like 'renders a list of repositories'
+    end
+
+    describe 'GET #show' do
+      it_behaves_like 'renders a list of repositories'
+    end
+
+    describe 'DELETE #destroy' do
       context 'when root container repository exists' do
         let!(:repository) do
           create(:container_repository, :root, project: project)
@@ -113,7 +140,7 @@ describe Projects::Registry::RepositoriesController do
   end
 
   context 'when user does not have access to registry' do
-    describe 'GET index' do
+    describe 'GET #index' do
       it 'responds with 404' do
         go_to_index
 

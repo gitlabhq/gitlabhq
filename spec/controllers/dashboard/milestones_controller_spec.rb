@@ -40,7 +40,7 @@ describe Dashboard::MilestonesController do
     it 'shows milestone page' do
       view_milestone
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
@@ -55,7 +55,7 @@ describe Dashboard::MilestonesController do
     it 'returns group and project milestones to which the user belongs' do
       get :index, format: :json
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.size).to eq(2)
       expect(json_response.map { |i| i["name"] }).to match_array([group_milestone.name, project_milestone.name])
       expect(json_response.map { |i| i["group_name"] }.compact).to match_array(group.name)
@@ -64,7 +64,7 @@ describe Dashboard::MilestonesController do
     it 'returns closed group and project milestones to which the user belongs' do
       get :index, params: { state: 'closed' }, format: :json
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.size).to eq(2)
       expect(json_response.map { |i| i["name"] }).to match_array([closed_group_milestone.name, closed_project_milestone.name])
       expect(json_response.map { |i| i["group_name"] }.compact).to match_array(group.name)

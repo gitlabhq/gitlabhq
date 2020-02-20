@@ -1,7 +1,7 @@
 export const fieldTypes = {
   codeBock: 'codeBlock',
   link: 'link',
-  miliseconds: 'miliseconds',
+  seconds: 'seconds',
   text: 'text',
 };
 

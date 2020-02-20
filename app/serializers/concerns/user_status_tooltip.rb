@@ -3,7 +3,7 @@
 module UserStatusTooltip
   extend ActiveSupport::Concern
   include ActionView::Helpers::TagHelper
-  include ::Gitlab::ActionViewOutput::Context
+  include ActionView::Context
   include EmojiHelper
   include UsersHelper
 

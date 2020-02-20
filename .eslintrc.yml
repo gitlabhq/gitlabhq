@@ -10,9 +10,6 @@ globals:
   localStorage: false
   IS_EE: false
 plugins:
-  - import
-  - "@gitlab/i18n"
-  - "@gitlab/vue-i18n"
   - no-jquery
 settings:
   import/resolver:
@@ -51,8 +48,10 @@ rules:
   no-jquery/no-serialize: error
   promise/always-return: off
   promise/no-callback-in-promise: off
+  # Make update to eslint@6 smoother:
+  prefer-object-spread: off
 overrides:
-  files:
-    - '**/spec/**/*'
-  rules:
-    "@gitlab/i18n/no-non-i18n-strings": off
+  - files:
+      - '**/spec/**/*'
+    rules:
+      "@gitlab/i18n/no-non-i18n-strings": off

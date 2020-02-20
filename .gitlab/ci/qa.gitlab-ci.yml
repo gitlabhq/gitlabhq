@@ -1,38 +1,7 @@
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-canonical-gitlab-schedule: &if-canonical-gitlab-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
-
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-canonical-gitlab-merge-request: &if-canonical-gitlab-merge-request
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
-
-# Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.code-patterns: &code-patterns
-  - ".gitlab/ci/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
-  - ".csscomb.json"
-  - "Dockerfile.assets"
-  - "*_VERSION"
-  - "Gemfile{,.lock}"
-  - "Rakefile"
-  - "{babel.config,jest.config}.js"
-  - "config.ru"
-  - "{package.json,yarn.lock}"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
-
-# Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.qa-patterns: &qa-patterns
-  - ".dockerignore"
-  - "qa/**/*"
-
 .qa-job-base:
   extends:
     - .default-tags
     - .default-retry
-    - .default-only
-    - .only:changes-code-qa
   stage: test
   dependencies: []
   cache:
@@ -40,24 +9,38 @@
     paths:
       - vendor/ruby
   before_script:
+    - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
     - cd qa/
     - bundle install --clean --jobs=$(nproc) --path=vendor --retry=3 --quiet
     - bundle check
 
 qa:internal:
-  extends: .qa-job-base
+  extends:
+    - .qa-job-base
+    - .qa:rules:ee-and-foss
+  script:
+    - bundle exec rspec
+
+qa:internal-as-if-foss:
+  extends:
+    - .qa-job-base
+    - .qa:rules:ee-only
+    - .as-if-foss
   script:
     - bundle exec rspec
 
 qa:selectors:
-  extends: .qa-job-base
+  extends:
+    - .qa-job-base
+    - .qa:rules:ee-and-foss
   script:
     - bundle exec bin/qa Test::Sanity::Selectors
 
-qa:selectors-foss:
+qa:selectors-as-if-foss:
   extends:
     - qa:selectors
-    - .only-ee-as-if-foss
+    - .qa:rules:ee-only
+    - .as-if-foss
 
 .package-and-qa-base:
   image: ruby:2.6-alpine
@@ -70,15 +53,8 @@ qa:selectors-foss:
     - ./scripts/trigger-build omnibus
 
 package-and-qa:
-  extends: .package-and-qa-base
-  rules:
-    - <<: *if-canonical-gitlab-merge-request
-      changes: *qa-patterns
-      when: on_success
-    - <<: *if-canonical-gitlab-merge-request
-      changes: *code-patterns
-      when: manual
-    - <<: *if-canonical-gitlab-schedule
-      when: on_success
+  extends:
+    - .package-and-qa-base
+    - .qa:rules:package-and-qa
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   allow_failure: true

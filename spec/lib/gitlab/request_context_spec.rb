@@ -24,18 +24,6 @@ describe Gitlab::RequestContext, :request_store do
 
       expect(subject.request_deadline).to be_nil
     end
-
-    it 'only checks the feature once per request-instance' do
-      expect(Feature).to receive(:enabled?).with(:request_deadline).once
-
-      2.times { subject.request_deadline }
-    end
-
-    it 'returns nil when the feature is disabled' do
-      stub_feature_flags(request_deadline: false)
-
-      expect(subject.request_deadline).to be_nil
-    end
   end
 
   describe '#ensure_request_deadline_not_exceeded!' do

@@ -1,0 +1,5 @@
+---
+title: Limit size of diffs returned by /projects/:id/repository/compare API endpoint
+merge_request: 22658
+author:
+type: fixed

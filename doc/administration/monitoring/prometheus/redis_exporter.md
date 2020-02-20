@@ -25,7 +25,7 @@ the Redis exporter exposed under `localhost:9121`.
 
 [← Back to the main Prometheus page](index.md)
 
-[1118]: https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1118
+[1118]: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1118
 [redis]: https://redis.io
 [redis exporter]: https://github.com/oliver006/redis_exporter
 [redis-exp]: https://github.com/oliver006/redis_exporter/blob/master/README.md#whats-exported

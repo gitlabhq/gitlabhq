@@ -636,10 +636,9 @@ module Gitlab
       end
 
       # Delete the specified branch from the repository
+      # Note: No Git hooks are executed for this action
       def delete_branch(branch_name)
-        wrapped_gitaly_errors do
-          gitaly_ref_client.delete_branch(branch_name)
-        end
+        write_ref(branch_name, Gitlab::Git::BLANK_SHA)
       rescue CommandError => e
         raise DeleteBranchError, e
       end
@@ -651,14 +650,13 @@ module Gitlab
       end
 
       # Create a new branch named **ref+ based on **stat_point+, HEAD by default
+      # Note: No Git hooks are executed for this action
       #
       # Examples:
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
-        wrapped_gitaly_errors do
-          gitaly_ref_client.create_branch(ref, start_point)
-        end
+        write_ref(ref, start_point)
       end
 
       # If `mirror_refmap` is present the remote is set as mirror with that mapping
@@ -822,17 +820,6 @@ module Gitlab
         gitaly_repository_client.create_from_snapshot(url, auth)
       end
 
-      # DEPRECATED: https://gitlab.com/gitlab-org/gitaly/issues/1628
-      def rebase_deprecated(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
-        wrapped_gitaly_errors do
-          gitaly_operation_client.user_rebase(user, rebase_id,
-                                            branch: branch,
-                                            branch_sha: branch_sha,
-                                            remote_repository: remote_repository,
-                                            remote_branch: remote_branch)
-        end
-      end
-
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:, push_options: [], &block)
         wrapped_gitaly_errors do
           gitaly_operation_client.rebase(
@@ -969,13 +956,13 @@ module Gitlab
         gitaly_ref_client.tag_names_contains_sha(sha)
       end
 
-      def search_files_by_content(query, ref)
+      def search_files_by_content(query, ref, options = {})
         return [] if empty? || query.blank?
 
         safe_query = Regexp.escape(query)
         ref ||= root_ref
 
-        gitaly_repository_client.search_files_by_content(ref, safe_query)
+        gitaly_repository_client.search_files_by_content(ref, safe_query, options)
       end
 
       def can_be_merged?(source_sha, target_branch)

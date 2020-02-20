@@ -33,7 +33,7 @@ describe Projects::BlobController do
 
         it 'redirects' do
           expect(subject)
-              .to redirect_to("/#{project.full_path}/tree/master")
+              .to redirect_to("/#{project.full_path}/-/tree/master")
         end
       end
 
@@ -115,7 +115,7 @@ describe Projects::BlobController do
 
         it 'redirects' do
           expect(subject)
-            .to redirect_to("/#{project.full_path}/tree/markdown/doc")
+            .to redirect_to("/#{project.full_path}/-/tree/markdown/doc")
         end
       end
     end
@@ -232,7 +232,7 @@ describe Projects::BlobController do
       end
 
       it 'redirects to blob show' do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -246,7 +246,7 @@ describe Projects::BlobController do
       end
 
       it 'redirects to blob show' do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

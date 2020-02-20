@@ -13,7 +13,7 @@ describe Identity do
   end
 
   describe 'validations' do
-    set(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     context 'with existing user and provider' do
       before do

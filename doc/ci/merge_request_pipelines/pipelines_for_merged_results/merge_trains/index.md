@@ -30,6 +30,7 @@ Pipelines invalidated through failures are immediately canceled and requeued.
 
 Merge trains have the following requirements and limitations:
 
+- GitLab 12.0 and later requires [Redis](https://redis.io/) 3.2 or higher to run Merge Trains.
 - This feature requires that
   [pipelines for merged results](../index.md#pipelines-for-merged-results-premium) are
   **configured properly**.

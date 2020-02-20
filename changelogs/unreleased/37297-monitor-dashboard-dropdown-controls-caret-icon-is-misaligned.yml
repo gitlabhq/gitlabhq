@@ -1,0 +1,5 @@
+---
+title: Fix dropdown caret not being positioned correctly
+merge_request: 24273
+author:
+type: fixed

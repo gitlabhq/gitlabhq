@@ -1,0 +1,6 @@
+---
+title: Test reports in the pipeline details page will now load when clicking the tests
+  tab.
+merge_request: 24577
+author:
+type: changed

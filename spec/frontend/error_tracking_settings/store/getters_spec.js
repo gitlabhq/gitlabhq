@@ -47,7 +47,7 @@ describe('Error Tracking Settings - Getters', () => {
     it('should display correctly when a project is selected', () => {
       [state.selectedProject] = projectList;
 
-      expect(getters.dropdownLabel(state, mockGetters)).toEqual('organizationName | name');
+      expect(getters.dropdownLabel(state, mockGetters)).toEqual('organizationName | slug');
     });
 
     it('should display correctly when no project is selected', () => {

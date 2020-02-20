@@ -710,10 +710,10 @@ shared_examples 'Pipeline Processing Service' do
   context 'when pipeline with needs is created', :sidekiq_inline do
     let!(:linux_build) { create_build('linux:build', stage: 'build', stage_idx: 0) }
     let!(:mac_build) { create_build('mac:build', stage: 'build', stage_idx: 0) }
-    let!(:linux_rspec) { create_build('linux:rspec', stage: 'test', stage_idx: 1) }
-    let!(:linux_rubocop) { create_build('linux:rubocop', stage: 'test', stage_idx: 1) }
-    let!(:mac_rspec) { create_build('mac:rspec', stage: 'test', stage_idx: 1) }
-    let!(:mac_rubocop) { create_build('mac:rubocop', stage: 'test', stage_idx: 1) }
+    let!(:linux_rspec) { create_build('linux:rspec', stage: 'test', stage_idx: 1, scheduling_type: :dag) }
+    let!(:linux_rubocop) { create_build('linux:rubocop', stage: 'test', stage_idx: 1, scheduling_type: :dag) }
+    let!(:mac_rspec) { create_build('mac:rspec', stage: 'test', stage_idx: 1, scheduling_type: :dag) }
+    let!(:mac_rubocop) { create_build('mac:rubocop', stage: 'test', stage_idx: 1, scheduling_type: :dag) }
     let!(:deploy) { create_build('deploy', stage: 'deploy', stage_idx: 2) }
 
     let!(:linux_rspec_on_build) { create(:ci_build_need, build: linux_rspec, name: 'linux:build') }
@@ -795,7 +795,7 @@ shared_examples 'Pipeline Processing Service' do
     end
 
     context 'when one of the jobs is run on a failure' do
-      let!(:linux_notify) { create_build('linux:notify', stage: 'deploy', stage_idx: 2, when: 'on_failure') }
+      let!(:linux_notify) { create_build('linux:notify', stage: 'deploy', stage_idx: 2, when: 'on_failure', scheduling_type: :dag) }
 
       let!(:linux_notify_on_build) { create(:ci_build_need, build: linux_notify, name: 'linux:build') }
 
@@ -837,11 +837,73 @@ shared_examples 'Pipeline Processing Service' do
         end
       end
     end
+
+    context 'when there is a job scheduled with dag but no need (needs: [])' do
+      let!(:deploy_pages) { create_build('deploy_pages', stage: 'deploy', stage_idx: 2, scheduling_type: :dag) }
+
+      it 'runs deploy_pages without waiting prior stages' do
+        # Ci::PipelineProcessing::LegacyProcessingService requires :initial_process parameter
+        expect(process_pipeline(initial_process: true)).to be_truthy
+
+        expect(stages).to eq(%w(pending created pending))
+        expect(builds.pending).to contain_exactly(linux_build, mac_build, deploy_pages)
+
+        linux_build.reset.success!
+        deploy_pages.reset.success!
+
+        expect(stages).to eq(%w(running pending running))
+        expect(builds.success).to contain_exactly(linux_build, deploy_pages)
+        expect(builds.pending).to contain_exactly(mac_build, linux_rspec, linux_rubocop)
+
+        linux_rspec.reset.success!
+        linux_rubocop.reset.success!
+        mac_build.reset.success!
+        mac_rspec.reset.success!
+        mac_rubocop.reset.success!
+
+        expect(stages).to eq(%w(success success running))
+        expect(builds.pending).to contain_exactly(deploy)
+      end
+
+      context 'when ci_dag_support is disabled' do
+        before do
+          stub_feature_flags(ci_dag_support: false)
+        end
+
+        it 'does run deploy_pages at the start' do
+          expect(process_pipeline).to be_truthy
+
+          expect(stages).to eq(%w(pending created created))
+          expect(builds.pending).to contain_exactly(linux_build, mac_build)
+        end
+      end
+    end
   end
 
-  def process_pipeline
-    described_class.new(pipeline).execute
+  context 'when a needed job is skipped', :sidekiq_inline do
+    let!(:linux_build) { create_build('linux:build', stage: 'build', stage_idx: 0) }
+    let!(:linux_rspec) { create_build('linux:rspec', stage: 'test', stage_idx: 1) }
+    let!(:deploy) do
+      create_build('deploy', stage: 'deploy', stage_idx: 2, scheduling_type: :dag, needs: [
+        create(:ci_build_need, name: 'linux:rspec')
+      ])
+    end
+
+    it 'skips the jobs depending on it' do
+      expect(process_pipeline).to be_truthy
+
+      expect(stages).to eq(%w(pending created created))
+      expect(all_builds.pending).to contain_exactly(linux_build)
+
+      linux_build.reset.drop!
+
+      expect(stages).to eq(%w(failed skipped skipped))
+      expect(all_builds.failed).to contain_exactly(linux_build)
+      expect(all_builds.skipped).to contain_exactly(linux_rspec, deploy)
+    end
   end
+
+  private
 
   def all_builds
     pipeline.builds.order(:stage_idx, :id)

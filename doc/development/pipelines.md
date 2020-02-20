@@ -19,9 +19,6 @@ The current stages are:
   <https://gitlab.com/gitlab-org/gitlab-foss>.
 - `prepare`: This stage includes jobs that prepare artifacts that are needed by
   jobs in subsequent stages.
-- `quick-test`: This stage includes test jobs that should run first and fail the
-  pipeline early (currently used to run Geo tests when the branch name starts
-  with `geo-`, `geo/`, or ends with `-geo`).
 - `test`: This stage includes most of the tests, DB/migration jobs, and static analysis jobs.
 - `post-test`: This stage includes jobs that build reports or gather data from
   the `test` stage's jobs (e.g. coverage, Knapsack metadata etc.).
@@ -42,9 +39,9 @@ The current stages are:
 ## Default image
 
 The default image is currently
-`registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.12-git-2.24-lfs-2.9-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
+`registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.12-git-2.24-lfs-2.9-chrome-73.0-node-12.x-yarn-1.21-postgresql-9.6-graphicsmagick-1.3.34`.
 
-It includes Ruby 2.6.5, Go 1.12, Git 2.24, Git LFS 2.9, Chrome 73, Node 12, Yarn 1.16,
+It includes Ruby 2.6.5, Go 1.12, Git 2.24, Git LFS 2.9, Chrome 73, Node 12, Yarn 1.21,
 PostgreSQL 9.6, and Graphics Magick 1.3.33.
 
 The images used in our pipelines are configured in the
@@ -71,8 +68,8 @@ These common definitions are:
 
 - `.default-tags`: Ensures a job has the `gitlab-org` tag to ensure it's using
   our dedicated runners.
-- `.default-retry`: Allows a job to retry upon `unknown_failure`, `api_failure`,
-  `runner_system_failure`.
+- `.default-retry`: Allows a job to [retry](../ci/yaml/README.md#retry) upon `unknown_failure`, `api_failure`,
+  `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`.
 - `.default-before_script`: Allows a job to use a default `before_script` definition
   suitable for Ruby/Rails tasks that may need a database running (e.g. tests).
 - `.default-cache`: Allows a job to use a default `cache` definition suitable for
@@ -138,54 +135,109 @@ duplicating the `if` conditions and `changes` patterns lists since they cannot b
 **If you update an `if` condition or `changes`
 patterns list, make sure to mass-update those across all the CI config files (i.e. `.gitlab/ci/*.yml`).**
 
-### Canonical commits only
+### Canonical/security namespace merge requests only
 
-This condition limits jobs creation to commits under the `gitlab-org/` top-level group
-on GitLab.com only. This is similar to the `.only:variables-canonical-dot-com` CI definition:
+This condition limits jobs creation to merge requests under the `gitlab-org/` top-level group
+on GitLab.com only (i.e. this won't run for `master`, stable or auto-deploy branches).
+This is similar to the `.only:variables-canonical-dot-com` + `only:refs: [merge_requests]`
+CI definitions.
 
-```yaml
-.if-canonical-gitlab: &if-canonical-gitlab
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/'
-```
+The definition for `if-canonical-dot-com-gitlab-org-groups-merge-request` can be
+seen in <https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/docs.gitlab-ci.yml>.
 
-### Canonical merge requests only
+### Canonical/security namespace tags only
 
-Same as the "Canonical commits only" condition above but further limits jobs creation
-to merge requests only (i.e. this won't run for `master`, stable or auto-deploy branches).
-This is similar to the `.only:variables-canonical-dot-com` + `.except:refs-master-tags-stable-deploy`
-CI definitions:
+This condition limits jobs creation to tags under the `gitlab-org/` top-level group
+on GitLab.com only.
+This is similar to the `.only:variables-canonical-dot-com` + `only:refs: [tags]` CI definition:
 
-```yaml
-.if-canonical-gitlab-merge-request: &if-canonical-gitlab-merge-request
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/ && $CI_MERGE_REQUEST_IID'
-```
+The definition for `if-canonical-dot-com-gitlab-org-groups-tag` can be seen in
+<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/cng.gitlab-ci.yml>.
+
+### Canonical namespace `master` only
+
+This condition limits jobs creation to `master` pipelines for the `gitlab-org` top-level group
+on GitLab.com only.
+This is similar to the `.only:variables-canonical-dot-com` + `only:refs: [master]` CI definition:
+
+The definition for `if-canonical-dot-com-gitlab-org-group-master-refs` can be
+seen in <https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/pages.gitlab-ci.yml>.
+
+### Canonical namespace schedules only
+
+This condition limits jobs creation to scheduled pipelines for the `gitlab-org` top-level group
+on GitLab.com only.
+This is similar to the `.only:variables-canonical-dot-com` + `only:refs: [schedules]` CI definition:
+
+The definition for `if-canonical-dot-com-gitlab-org-group-schedule` can be seen
+in <https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/qa.gitlab-ci.yml>.
+
+### Not canonical/security namespace
+
+This condition matches if the project isn't in the canonical/security namespace.
+Useful to **not** create a job if the project is a fork, or in other words, when
+a job should only run in the canonical projects.
+
+The definition for `if-not-canonical-namespace` can be seen in
+<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml>.
+
+### Not EE
+
+This condition matches if the project isn't EE. Useful to **not** create a job if
+the project is GitLab, or in other words, when a job should only run in the GitLab
+FOSS project.
+
+The definition for `if-not-ee` can be seen in
+<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml>.
+
+### Default refs only
+
+This condition is the equivalent of `.default-only`.
+
+The definition for `if-default-refs` can be seen in
+<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml>.
+
+### `master` refs only
+
+This condition is the equivalent of `only:refs: [master]`.
+
+The definition for `if-master-refs` can be seen in
+<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml>.
 
 ### Code changes patterns
 
 Similar patterns as for `.only:changes-code`:
 
-```yaml
-.code-patterns: &code-patterns
-  - ...
-```
+The definition for `code-patterns` can be seen in
+<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/qa.gitlab-ci.yml>.
 
 ### QA changes patterns
 
 Similar patterns as for `.only:changes-qa`:
 
-```yaml
-.qa-patterns: &qa-patterns
-  - ...
-```
+The definition for `qa-patterns` can be seen in
+<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/qa.gitlab-ci.yml>.
+
+### Docs changes patterns
+
+Similar patterns as for `.only:changes-docs`:
+
+The definition for `docs-patterns` can be seen in
+<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/docs.gitlab-ci.yml>.
 
 ### Code and QA changes patterns
 
 Similar patterns as for `.only:changes-code-qa`:
 
-```yaml
-.code-qa-patterns: &code-qa-patterns
-  - ...
-```
+The definition for `code-qa-patterns` can be seen in
+<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/review.gitlab-ci.yml>.
+
+### Code, backstage and QA changes patterns
+
+Similar patterns as for `.only:changes-code-backstage-qa`:
+
+The definition for `code-backstage-qa-patterns` can be seen in
+<https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml>.
 
 ## Directed acyclic graph
 
@@ -195,21 +247,20 @@ execute jobs out of order for the following jobs:
 ```mermaid
 graph RL;
   A[setup-test-env];
-  B["gitlab:assets:compile pull-push-cache<br/>(master only)"];
-  C[gitlab:assets:compile pull-cache];
+  B["gitlab:assets:compile pull-push-cache<br/>(canonical master only)"];
+  C["gitlab:assets:compile pull-cache<br/>(canonical default refs only)"];
   D["cache gems<br/>(master and tags only)"];
   E[review-build-cng];
   F[build-qa-image];
   G[review-deploy];
-  G2["schedule:review-deploy<br/>(master only)"];
-  H[karma];
-  I[jest];
+  I["karma, jest, webpack-dev-server, static-analysis"];
+  I2["karma-foss, jest-foss<br/>(EE default refs only)"];
   J["compile-assets pull-push-cache<br/>(master only)"];
+  J2["compile-assets pull-push-cache foss<br/>(EE master only)"];
   K[compile-assets pull-cache];
-  L[webpack-dev-server];
+  K2["compile-assets pull-cache foss<br/>(EE default refs only)"];
   M[coverage];
-  N[pages];
-  O[static-analysis];
+  N["pages (master only)"];
   Q[package-and-qa];
   S["RSpec<br/>(e.g. rspec unit pg9)"]
   T[retrieve-tests-metadata];
@@ -220,58 +271,52 @@ subgraph "`prepare` stage"
     C
     F
     K
+    K2
     J
+    J2
     T
     end
 
 subgraph "`test` stage"
-    D --> |needs| A;
-    H -.-> |needs and depends on| A;
-    H -.-> |needs and depends on| K;
+    D -.-> |needs| A;
     I -.-> |needs and depends on| A;
     I -.-> |needs and depends on| K;
+    I2 -.-> |needs and depends on| A;
+    I2 -.-> |needs and depends on| K;
     L -.-> |needs and depends on| A;
-    L -.-> |needs and depends on| K;
-    O -.-> |needs and depends on| A;
-    O -.-> |needs and depends on| K;
     S -.-> |needs and depends on| A;
     S -.-> |needs and depends on| K;
     S -.-> |needs and depends on| T;
-    downtime_check --> |needs and depends on| A;
-    db:* --> |needs| A;
-    gitlab:setup --> |needs| A;
-    downtime_check --> |needs and depends on| A;
-    graphql-docs-verify --> |needs| A;
-    end
-
-subgraph "`review-prepare` stage"
-    E --> |needs| C;
-    X["schedule:review-build-cng<br/>(master schedule only)"] --> |needs| C;
-    end
-
-subgraph "`review` stage"
-    G
-    G2
-    end
-
-subgraph "`qa` stage"
-    Q --> |needs| C;
-    Q --> |needs| F;
-    review-qa-smoke -.-> |needs and depends on| G;
-    review-qa-all -.-> |needs and depends on| G;
-    review-performance -.-> |needs and depends on| G;
-    X2["schedule:review-performance<br/>(master only)"] -.-> |needs and depends on| G2;
-    dast -.-> |needs and depends on| G;
+    L["db:*, gitlab:setup, graphql-docs-verify, downtime_check"] -.-> |needs| A;
     end
 
 subgraph "`post-test` stage"
-    M
+    M --> |happens after| S
     end
+
+subgraph "`review-prepare` stage"
+    E -.-> |needs| C;
+    end
+
+subgraph "`review` stage"
+    G -.-> |needs| E
+    end
+
+subgraph "`qa` stage"
+    Q -.-> |needs| C;
+    Q -.-> |needs| F;
+    QA1["review-qa-smoke, review-qa-all, review-performance, dast"] -.-> |needs| G;
+    end
+
+subgraph "`post-qa` stage"
+  PQA1["parallel-spec-reports"] -.-> |depends on `review-qa-all`| QA1;
+  end
 
 subgraph "`pages` stage"
     N -.-> |depends on| C;
-    N -.-> |depends on| H;
+    N -.-> |depends on karma| I;
     N -.-> |depends on| M;
+    N --> |happens after| PQA1
     end
 ```
 

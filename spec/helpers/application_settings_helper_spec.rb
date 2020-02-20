@@ -107,7 +107,7 @@ describe ApplicationSettingsHelper do
       let(:project) { build(:project) }
 
       before do
-        stub_application_setting(instance_administration_project: project)
+        stub_application_setting(self_monitoring_project: project)
       end
 
       it 'returns self_monitoring_project_exists true' do

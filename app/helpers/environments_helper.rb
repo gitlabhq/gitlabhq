@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module EnvironmentsHelper
+  include ActionView::Helpers::AssetUrlHelper
   prepend_if_ee('::EE::EnvironmentsHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
   def environments_list_data
@@ -21,7 +22,7 @@ module EnvironmentsHelper
     {
       "settings-path" => edit_project_service_path(project, 'prometheus'),
       "clusters-path" => project_clusters_path(project),
-      "current-environment-name": environment.name,
+      "current-environment-name" => environment.name,
       "documentation-path" => help_page_path('administration/monitoring/prometheus/index.md'),
       "empty-getting-started-svg-path" => image_path('illustrations/monitoring/getting_started.svg'),
       "empty-loading-svg-path" => image_path('illustrations/monitoring/loading.svg'),
@@ -33,7 +34,6 @@ module EnvironmentsHelper
       "dashboard-endpoint" => metrics_dashboard_project_environment_path(project, environment, format: :json),
       "deployments-endpoint" => project_environment_deployments_path(project, environment, format: :json),
       "default-branch" => project.default_branch,
-      "environments-endpoint": project_environments_path(project, format: :json),
       "project-path" => project_path(project),
       "tags-path" => project_tags_path(project),
       "has-metrics" => "#{environment.has_metrics?}",

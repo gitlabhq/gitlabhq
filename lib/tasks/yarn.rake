@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 namespace :yarn do
   desc 'Ensure Yarn is installed'

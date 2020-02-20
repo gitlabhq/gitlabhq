@@ -80,7 +80,7 @@ describe NotificationRecipient do
     end
   end
 
-  context '#notification_setting' do
+  describe '#notification_setting' do
     context 'for child groups' do
       let!(:moved_group) { create(:group) }
       let(:group) { create(:group) }

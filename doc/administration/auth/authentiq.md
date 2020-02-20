@@ -14,13 +14,13 @@ Authentiq will generate a Client ID and the accompanying Client Secret for you t
 
    For omnibus installation
 
-   ```sh
+   ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
    For installations from source:
 
-   ```sh
+   ```shell
    sudo -u git -H editor /home/git/gitlab/config/gitlab.yml
    ```
 

@@ -101,7 +101,7 @@ POST /license
 | --------- | ---- | -------- | ----------- |
 | `license` | string | yes | The license string |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/license?license=eyJkYXRhIjoiMHM5Q...S01Udz09XG4ifQ=="
 ```
 
@@ -145,7 +145,7 @@ DELETE /license/:id
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | ID of the GitLab license. |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/license/:id"
 ```
 

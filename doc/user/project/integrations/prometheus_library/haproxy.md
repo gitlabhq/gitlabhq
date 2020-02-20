@@ -1,6 +1,6 @@
 # Monitoring HAProxy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12621) in GitLab 9.4
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12621) in GitLab 9.4
 
 GitLab has support for automatically detecting and monitoring HAProxy. This is provided by leveraging the [HAProxy Exporter](https://github.com/prometheus/haproxy_exporter), which translates HAProxy statistics into a Prometheus readable form.
 

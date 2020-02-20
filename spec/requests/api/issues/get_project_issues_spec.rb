@@ -3,18 +3,18 @@
 require 'spec_helper'
 
 describe API::Issues do
-  set(:user) { create(:user) }
-  set(:project) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace) }
-  set(:private_mrs_project) do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project, reload: true) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace) }
+  let_it_be(:private_mrs_project) do
     create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE)
   end
 
-  let(:user2)       { create(:user) }
-  let(:non_member)  { create(:user) }
-  set(:guest)       { create(:user) }
-  set(:author)      { create(:author) }
-  set(:assignee)    { create(:assignee) }
-  let(:admin)       { create(:user, :admin) }
+  let(:user2)             { create(:user) }
+  let(:non_member)        { create(:user) }
+  let_it_be(:guest)       { create(:user) }
+  let_it_be(:author)      { create(:author) }
+  let_it_be(:assignee)    { create(:assignee) }
+  let(:admin)             { create(:user, :admin) }
   let(:issue_title)       { 'foo' }
   let(:issue_description) { 'closed' }
   let!(:closed_issue) do
@@ -48,12 +48,12 @@ describe API::Issues do
       title: issue_title,
       description: issue_description
   end
-  set(:label) do
+  let_it_be(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
   let!(:label_link) { create(:label_link, label: label, target: issue) }
   let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
-  set(:empty_milestone) do
+  let_it_be(:empty_milestone) do
     create(:milestone, title: '2.0.0', project: project)
   end
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
@@ -93,7 +93,7 @@ describe API::Issues do
     it 'returns project issues statistics' do
       get api("/issues_statistics", user), params: params
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['statistics']).not_to be_nil
       expect(json_response['statistics']['counts']['all']).to eq counts[:all]
       expect(json_response['statistics']['counts']['closed']).to eq counts[:closed]
@@ -196,7 +196,7 @@ describe API::Issues do
 
       get api("/projects/#{max_project_id + 1}/issues", non_member)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns 404 on private projects for other users' do
@@ -205,7 +205,7 @@ describe API::Issues do
 
       get api("/projects/#{private_project.id}/issues", non_member)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns no issues when user has access to project but not issues' do
@@ -472,7 +472,7 @@ describe API::Issues do
     it 'exposes known attributes' do
       get api("#{base_url}/issues", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.last.keys).to include(*%w(id iid project_id title description))
       expect(json_response.last).not_to have_key('subscribed')
     end
@@ -565,14 +565,14 @@ describe API::Issues do
       it 'returns error when multiple assignees are passed' do
         get api("/issues", user), params: { assignee_username: [assignee.username, another_assignee.username], scope: 'all' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response["error"]).to include("allows one value, but found 2")
       end
 
       it 'returns error when assignee_username and assignee_id are passed together' do
         get api("/issues", user), params: { assignee_username: [assignee.username], assignee_id: another_assignee.id, scope: 'all' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response["error"]).to include("mutually exclusive")
       end
     end
@@ -583,14 +583,14 @@ describe API::Issues do
       it 'returns public issues' do
         get api("/projects/#{project.id}/issues/#{issue.iid}")
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
     it 'exposes known attributes' do
       get api("/projects/#{project.id}/issues/#{issue.iid}", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['id']).to eq(issue.id)
       expect(json_response['iid']).to eq(issue.iid)
       expect(json_response['project_id']).to eq(issue.project.id)
@@ -630,7 +630,7 @@ describe API::Issues do
     it 'exposes the closed_at attribute' do
       get api("/projects/#{project.id}/issues/#{closed_issue.iid}", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['closed_at']).to be_present
     end
 
@@ -650,39 +650,39 @@ describe API::Issues do
     it 'returns a project issue by internal id' do
       get api("/projects/#{project.id}/issues/#{issue.iid}", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['title']).to eq(issue.title)
       expect(json_response['iid']).to eq(issue.iid)
     end
 
     it 'returns 404 if issue id not found' do
       get api("/projects/#{project.id}/issues/54321", user)
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns 404 if the issue ID is used' do
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     context 'confidential issues' do
       it 'returns 404 for non project members' do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", non_member)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'returns 404 for project members with guest role' do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", guest)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'returns confidential issue for project members' do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -690,7 +690,7 @@ describe API::Issues do
       it 'returns confidential issue for author' do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", author)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -698,7 +698,7 @@ describe API::Issues do
       it 'returns confidential issue for assignee' do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", assignee)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -706,7 +706,7 @@ describe API::Issues do
       it 'returns confidential issue for admin' do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", admin)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -744,7 +744,7 @@ describe API::Issues do
     it "returns 404 when issue doesn't exists" do
       get api("/projects/#{project.id}/issues/0/closed_by", user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -774,7 +774,7 @@ describe API::Issues do
         get_related_merge_requests(project.id, issue.iid)
 
         expect_paginated_array_response(related_mr.id)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.last).not_to have_key('subscribed')
       end
 
@@ -785,7 +785,7 @@ describe API::Issues do
 
         get_related_merge_requests(private_project.id, private_issue.iid)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -824,7 +824,7 @@ describe API::Issues do
     it "returns 404 when issue doesn't exists" do
       get_related_merge_requests(project.id, 0, user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -835,14 +835,14 @@ describe API::Issues do
       it 'returns unauthorized' do
         get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
     it 'exposes known attributes' do
       get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", admin)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
       expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
       expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
@@ -851,7 +851,7 @@ describe API::Issues do
     it 'returns unauthorized for non-admin users' do
       get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", user)
 
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
   end
 
@@ -863,7 +863,7 @@ describe API::Issues do
     it 'returns 404 if the issue is confidential' do
       post api("/projects/#{project.id}/issues/#{confidential_issue.iid}/participants", non_member)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 end

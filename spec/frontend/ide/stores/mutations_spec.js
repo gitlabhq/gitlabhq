@@ -196,16 +196,6 @@ describe('Multi-file store mutations', () => {
     });
   });
 
-  describe('BURST_UNUSED_SEAL', () => {
-    it('updates unusedSeal', () => {
-      expect(localState.unusedSeal).toBe(true);
-
-      mutations.BURST_UNUSED_SEAL(localState);
-
-      expect(localState.unusedSeal).toBe(false);
-    });
-  });
-
   describe('SET_ERROR_MESSAGE', () => {
     it('updates error message', () => {
       mutations.SET_ERROR_MESSAGE(localState, 'error');
@@ -296,6 +286,16 @@ describe('Multi-file store mutations', () => {
       mutations.DELETE_ENTRY(localState, 'filePath');
 
       expect(localState.changedFiles).toEqual([]);
+    });
+
+    it('bursts unused seal', () => {
+      localState.entries.test = file('test');
+
+      expect(localState.unusedSeal).toBe(true);
+
+      mutations.DELETE_ENTRY(localState, 'test');
+
+      expect(localState.unusedSeal).toBe(false);
     });
   });
 

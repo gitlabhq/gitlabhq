@@ -1,0 +1,5 @@
+---
+title: Separate badge entities into own class files
+merge_request: 25116
+author: Rajendra Kadam
+type: added

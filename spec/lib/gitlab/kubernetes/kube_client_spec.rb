@@ -92,6 +92,16 @@ describe Gitlab::Kubernetes::KubeClient do
 
       it_behaves_like 'local address'
     end
+
+    it 'falls back to default options, but allows overriding' do
+      client = Gitlab::Kubernetes::KubeClient.new(api_url, {})
+      defaults = Gitlab::Kubernetes::KubeClient::DEFAULT_KUBECLIENT_OPTIONS
+      expect(client.kubeclient_options[:timeouts]).to eq(defaults[:timeouts])
+
+      client = Gitlab::Kubernetes::KubeClient.new(api_url, timeouts: { read: 7 })
+      expect(client.kubeclient_options[:timeouts][:read]).to eq(7)
+      expect(client.kubeclient_options[:timeouts][:open]).to eq(defaults[:timeouts][:open])
+    end
   end
 
   describe '#core_client' do
@@ -229,20 +239,30 @@ describe Gitlab::Kubernetes::KubeClient do
     end
   end
 
-  describe 'extensions API group' do
-    let(:api_groups) { ['apis/extensions'] }
+  describe '#get_deployments' do
     let(:extensions_client) { client.extensions_client }
+    let(:apps_client) { client.apps_client }
 
-    describe '#get_deployments' do
-      include_examples 'redirection not allowed', 'get_deployments'
-      include_examples 'dns rebinding not allowed', 'get_deployments'
+    include_examples 'redirection not allowed', 'get_deployments'
+    include_examples 'dns rebinding not allowed', 'get_deployments'
 
-      it 'delegates to the extensions client' do
-        expect(client).to delegate_method(:get_deployments).to(:extensions_client)
+    it 'delegates to the extensions client' do
+      expect(extensions_client).to receive(:get_deployments)
+
+      client.get_deployments
+    end
+
+    context 'extensions does not have deployments for Kubernetes 1.16+ clusters' do
+      before do
+        WebMock
+          .stub_request(:get, api_url + '/apis/extensions/v1beta1')
+          .to_return(kube_response(kube_1_16_extensions_v1beta1_discovery_body))
       end
 
-      it 'responds to the method' do
-        expect(client).to respond_to :get_deployments
+      it 'delegates to the apps client' do
+        expect(apps_client).to receive(:get_deployments)
+
+        client.get_deployments
       end
     end
   end

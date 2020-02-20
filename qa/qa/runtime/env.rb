@@ -22,6 +22,10 @@ module QA
         SUPPORTED_FEATURES
       end
 
+      def additional_repository_storage
+        ENV['QA_ADDITIONAL_REPOSITORY_STORAGE']
+      end
+
       def admin_password
         ENV['GITLAB_ADMIN_PASSWORD']
       end

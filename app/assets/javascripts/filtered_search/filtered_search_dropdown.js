@@ -12,7 +12,7 @@ export default class FilteredSearchDropdown {
     this.filter = filter;
     this.dropdown = dropdown;
     this.loadingTemplate = `<div class="filter-dropdown-loading">
-      <i class="fa fa-spinner fa-spin"></i>
+      <span class="spinner"></span>
     </div>`;
     this.bindEvents();
   }

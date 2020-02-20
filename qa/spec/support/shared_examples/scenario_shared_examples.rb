@@ -31,6 +31,12 @@ shared_examples 'a QA scenario class' do
     expect(attributes).to have_received(:define).with(:gitlab_address, 'http://gitlab_address').at_least(:once)
   end
 
+  it 'performs before hooks only once' do
+    subject.perform(args)
+
+    expect(release).to have_received(:perform_before_hooks).once
+  end
+
   it 'sets tags on runner' do
     subject.perform(args)
 

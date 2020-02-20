@@ -630,4 +630,17 @@ describe ::SystemNotes::IssuablesService do
       end
     end
   end
+
+  describe '#close_after_error_tracking_resolve' do
+    subject { service.close_after_error_tracking_resolve }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'closed' }
+    end
+
+    it 'creates the expected system note' do
+      expect(subject.note)
+          .to eq('resolved the corresponding error and closed the issue.')
+    end
+  end
 end

@@ -1,30 +1,30 @@
 # frozen_string_literal: true
 
-shared_examples 'assignee ID filter' do
+RSpec.shared_examples 'assignee ID filter' do
   it 'returns issuables assigned to that user' do
     expect(issuables).to contain_exactly(*expected_issuables)
   end
 end
 
-shared_examples 'assignee NOT ID filter' do
+RSpec.shared_examples 'assignee NOT ID filter' do
   it 'returns issuables not assigned to that user' do
     expect(issuables).to contain_exactly(*expected_issuables)
   end
 end
 
-shared_examples 'assignee username filter' do
+RSpec.shared_examples 'assignee username filter' do
   it 'returns issuables assigned to those users' do
     expect(issuables).to contain_exactly(*expected_issuables)
   end
 end
 
-shared_examples 'assignee NOT username filter' do
+RSpec.shared_examples 'assignee NOT username filter' do
   it 'returns issuables not assigned to those users' do
     expect(issuables).to contain_exactly(*expected_issuables)
   end
 end
 
-shared_examples 'no assignee filter' do
+RSpec.shared_examples 'no assignee filter' do
   let(:params) { { assignee_id: 'None' } }
 
   it 'returns issuables not assigned to any assignee' do
@@ -38,7 +38,7 @@ shared_examples 'no assignee filter' do
   end
 end
 
-shared_examples 'any assignee filter' do
+RSpec.shared_examples 'any assignee filter' do
   context '' do
     let(:params) { { assignee_id: 'Any' } }
 

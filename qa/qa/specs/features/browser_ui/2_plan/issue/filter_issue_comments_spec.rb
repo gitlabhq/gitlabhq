@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan' do
+  context 'Plan', :reliable do
     describe 'filter issue comments activities' do
       before do
         Flow::Login.sign_in
@@ -9,7 +9,7 @@ module QA
         Resource::Issue.fabricate_via_api!.visit!
       end
 
-      it 'user filters comments and activities in an issue' do
+      it 'filters comments and activities in an issue' do
         Page::Project::Issue::Show.perform do |show|
           my_own_comment = "My own comment"
           made_the_issue_confidential = "made the issue confidential"

@@ -1,6 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
-import _ from 'underscore';
+import { escape } from 'lodash';
 
 import { s__, __, sprintf } from '~/locale';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -45,7 +45,7 @@ export default {
       return this.notes.length > 1 ? this.lastNote.created_at : null;
     },
     headerText() {
-      const linkStart = `<a href="${_.escape(this.discussion.discussion_path)}">`;
+      const linkStart = `<a href="${escape(this.discussion.discussion_path)}">`;
       const linkEnd = '</a>';
 
       const { commit_id: commitId } = this.discussion;

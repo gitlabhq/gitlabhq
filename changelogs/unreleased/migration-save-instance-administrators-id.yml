@@ -1,0 +1,5 @@
+---
+title: Add migration to save Instance Administrators group ID in application_settings table
+merge_request: 24796
+author:
+type: changed

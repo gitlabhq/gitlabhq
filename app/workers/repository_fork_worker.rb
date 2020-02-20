@@ -29,7 +29,15 @@ class RepositoryForkWorker
 
     result = gitlab_shell.fork_repository(source_project, target_project)
 
-    raise "Unable to fork project #{target_project.id} for repository #{source_project.disk_path} -> #{target_project.disk_path}" unless result
+    if result
+      link_lfs_objects(source_project, target_project)
+    else
+      raise_fork_failure(
+        source_project,
+        target_project,
+        'Failed to create fork repository'
+      )
+    end
 
     target_project.after_import
   end
@@ -39,5 +47,21 @@ class RepositoryForkWorker
 
     Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while forking.") # rubocop:disable Gitlab/RailsLogger
     false
+  end
+
+  def link_lfs_objects(source_project, target_project)
+    Projects::LfsPointers::LfsLinkService
+        .new(target_project)
+        .execute(source_project.lfs_objects_oids)
+  rescue Projects::LfsPointers::LfsLinkService::TooManyOidsError
+    raise_fork_failure(
+      source_project,
+      target_project,
+      'Source project has too many LFS objects'
+    )
+  end
+
+  def raise_fork_failure(source_project, target_project, reason)
+    raise "Unable to fork project #{target_project.id} for repository #{source_project.disk_path} -> #{target_project.disk_path}: #{reason}"
   end
 end

@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/gitlab/issues/36817
-  # BUG_IN_CODE
-  context 'Create', :quarantine do
+  context 'Create', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/36817', type: :bug } do
     describe 'Merge request rebasing' do
       it 'user rebases source branch of merge request' do
         Flow::Login.sign_in

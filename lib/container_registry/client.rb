@@ -6,6 +6,8 @@ require 'digest'
 
 module ContainerRegistry
   class Client
+    include Gitlab::Utils::StrongMemoize
+
     attr_accessor :uri
 
     DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE = 'application/vnd.docker.distribution.manifest.v2+json'
@@ -35,10 +37,25 @@ module ContainerRegistry
       response.headers['docker-content-digest'] if response.success?
     end
 
-    def delete_repository_tag(name, reference)
-      result = faraday.delete("/v2/#{name}/manifests/#{reference}")
+    def delete_repository_tag_by_digest(name, reference)
+      delete_if_exists("/v2/#{name}/manifests/#{reference}")
+    end
 
-      result.success? || result.status == 404
+    def delete_repository_tag_by_name(name, reference)
+      delete_if_exists("/v2/#{name}/tags/reference/#{reference}")
+    end
+
+    # Check if the registry supports tag deletion. This is only supported by the
+    # GitLab registry fork. The fastest and safest way to check this is to send
+    # an OPTIONS request to /v2/<name>/tags/reference/<tag>, using a random
+    # repository name and tag (the registry won't check if they exist).
+    # Registries that support tag deletion will reply with a 200 OK and include
+    # the DELETE method in the Allow header. Others reply with an 404 Not Found.
+    def supports_tag_delete?
+      strong_memoize(:supports_tag_delete) do
+        response = faraday.run_request(:options, '/v2/name/tags/reference/tag', '', {})
+        response.success? && response.headers['allow']&.include?('DELETE')
+      end
     end
 
     def upload_raw_blob(path, blob)
@@ -86,9 +103,7 @@ module ContainerRegistry
     end
 
     def delete_blob(name, digest)
-      result = faraday.delete("/v2/#{name}/blobs/#{digest}")
-
-      result.success? || result.status == 404
+      delete_if_exists("/v2/#{name}/blobs/#{digest}")
     end
 
     def put_tag(name, reference, manifest)
@@ -162,6 +177,12 @@ module ContainerRegistry
         conn.request :json
         conn.adapter :net_http
       end
+    end
+
+    def delete_if_exists(path)
+      result = faraday.delete(path)
+
+      result.success? || result.status == 404
     end
   end
 end

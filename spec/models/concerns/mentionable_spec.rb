@@ -26,6 +26,42 @@ describe Mentionable do
       expect(mentionable.referenced_mentionables).to be_empty
     end
   end
+
+  describe '#any_mentionable_attributes_changed?' do
+    Message = Struct.new(:text)
+
+    let(:mentionable) { Example.new }
+    let(:changes) do
+      msg = Message.new('test')
+
+      changes = {}
+      changes[msg] = ['', 'some message']
+      changes[:random_sym_key] = ['', 'some message']
+      changes["random_string_key"] = ['', 'some message']
+      changes
+    end
+
+    it 'returns true with key string' do
+      changes["message"] = ['', 'some message']
+
+      allow(mentionable).to receive(:saved_changes).and_return(changes)
+
+      expect(mentionable.send(:any_mentionable_attributes_changed?)).to be true
+    end
+
+    it 'returns false with key symbol' do
+      changes[:message] = ['', 'some message']
+      allow(mentionable).to receive(:saved_changes).and_return(changes)
+
+      expect(mentionable.send(:any_mentionable_attributes_changed?)).to be false
+    end
+
+    it 'returns false when no attr_mentionable keys' do
+      allow(mentionable).to receive(:saved_changes).and_return(changes)
+
+      expect(mentionable.send(:any_mentionable_attributes_changed?)).to be false
+    end
+  end
 end
 
 describe Issue, "Mentionable" do

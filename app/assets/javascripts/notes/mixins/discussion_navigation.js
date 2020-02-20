@@ -1,8 +1,21 @@
+import { mapGetters, mapActions, mapState } from 'vuex';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import eventHub from '../../notes/event_hub';
 
 export default {
+  computed: {
+    ...mapGetters([
+      'nextUnresolvedDiscussionId',
+      'previousUnresolvedDiscussionId',
+      'getDiscussion',
+    ]),
+    ...mapState({
+      currentDiscussionId: state => state.notes.currentDiscussionId,
+    }),
+  },
   methods: {
+    ...mapActions(['expandDiscussion', 'setCurrentDiscussionId']),
+
     diffsJump(id) {
       const selector = `ul.notes[data-discussion-id="${id}"]`;
 
@@ -57,6 +70,22 @@ export default {
           this.switchToDiscussionsTabAndJumpTo(id);
         }
       }
+    },
+
+    jumpToNextDiscussion() {
+      this.handleDiscussionJump(this.nextUnresolvedDiscussionId);
+    },
+
+    jumpToPreviousDiscussion() {
+      this.handleDiscussionJump(this.previousUnresolvedDiscussionId);
+    },
+
+    handleDiscussionJump(fn) {
+      const isDiffView = window.mrTabs.currentAction === 'diffs';
+      const targetId = fn(this.currentDiscussionId, isDiffView);
+      const discussion = this.getDiscussion(targetId);
+      this.jumpToDiscussion(discussion);
+      this.setCurrentDiscussionId(targetId);
     },
   },
 };

@@ -8,30 +8,30 @@ Adds content to the index or staging area.
 
 - Adds a list of file:
 
-  ```bash
+  ```shell
   git add <files>
   ```
 
 - Adds all files including deleted ones:
 
-  ```bash
+  ```shell
   git add -A
   ```
 
 - Add all text files in current dir:
 
-  ```bash
+  ```shell
   git add *.txt
   ```
 
 - Add all text file in the project:
 
-  ```bash
+  ```shell
   git add "*.txt*"
   ```
 
 - Adds all files in directory:
 
-  ```bash
+  ```shell
   git add views/layouts/
   ```

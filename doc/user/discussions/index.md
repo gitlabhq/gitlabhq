@@ -29,7 +29,7 @@ There is a limit of 5,000 comments for every object, for example: issue, epic, a
 
 ## Resolvable comments and threads
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5022) in GitLab 8.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5022) in GitLab 8.11.
 > - Resolvable threads can be added only to merge request diffs.
 
 Thread resolution helps keep track of progress during planning or code review.
@@ -89,7 +89,7 @@ When a merge request has a large number of comments it can be difficult to track
 what remains unresolved. You can jump between unresolved threads with the
 Jump button next to the Reply field on a thread.
 
-You can also jump to the first unresolved thread from the button next to the
+You can also jump to the next unresolved thread from the button next to the
 resolved threads tracker.
 
 You can also use keyboard shortcuts to navigate among threads:
@@ -292,7 +292,7 @@ Additionally, locked issues and merge requests can not be reopened.
 
 ## Merge Request Reviews **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/4213) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab 11.4.
 
 When looking at a Merge Request diff, you are able to start a review.
 This allows you to create comments inside a Merge Request that are **only visible to you** until published,
@@ -439,6 +439,16 @@ Suggestions covering multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line, allowing up to 200 changed lines per
 suggestion.
 
+### Code block nested in Suggestions
+
+If you need to make a suggestion that involves a
+[fenced code block](../markdown.md#code-spans-and-blocks), wrap your suggestion in four backticks
+instead of the usual three.
+
+![A comment editor with a suggestion with a fenced code block](img/suggestion_code_block_editor_v12_8.png)
+
+![Ouput of a comment with a suggestion with a fenced code block](img/suggestion_code_block_output_v12_8.png)
+
 ### Configure the commit message for applied Suggestions
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13086) in GitLab 12.7.
@@ -491,13 +501,13 @@ to the original comment, so a note about when it was last edited will appear und
 This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff threads are
 not supported yet.
 
-[ce-7125]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7125
-[ce-7527]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7527
-[ce-7180]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7180
-[ce-8266]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/8266
-[ce-14053]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14053
-[ce-14061]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14061
-[ce-14531]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14531
+[ce-7125]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7125
+[ce-7527]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7527
+[ce-7180]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7180
+[ce-8266]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8266
+[ce-14053]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14053
+[ce-14061]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14061
+[ce-14531]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14531
 [ce-31847]: https://gitlab.com/gitlab-org/gitlab-foss/issues/31847
 [resolve-discussion-button]: img/resolve_discussion_button.png
 [resolve-comment-button]: img/resolve_comment_button.png

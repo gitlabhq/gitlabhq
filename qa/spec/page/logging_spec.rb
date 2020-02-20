@@ -27,24 +27,6 @@ describe QA::Support::Page::Logging do
       .to output(%r{refreshing http://current-url}).to_stdout_from_any_process
   end
 
-  it 'logs wait' do
-    expect { subject.wait_until(max_duration: 0) {} }
-      .to output(/next wait uses reload: true/).to_stdout_from_any_process
-    expect { subject.wait_until(max_duration: 0) {} }
-      .to output(/with wait_until/).to_stdout_from_any_process
-    expect { subject.wait_until(max_duration: 0) {} }
-      .to output(/ended wait_until$/).to_stdout_from_any_process
-  end
-
-  it 'logs wait with reload false' do
-    expect { subject.wait_until(max_duration: 0, reload: false) {} }
-      .to output(/next wait uses reload: false/).to_stdout_from_any_process
-    expect { subject.wait_until(max_duration: 0, reload: false) {} }
-      .to output(/with wait_until/).to_stdout_from_any_process
-    expect { subject.wait_until(max_duration: 0, reload: false) {} }
-      .to output(/ended wait_until$/).to_stdout_from_any_process
-  end
-
   it 'logs scroll_to' do
     expect { subject.scroll_to(:element) }
       .to output(/scrolling to :element/).to_stdout_from_any_process

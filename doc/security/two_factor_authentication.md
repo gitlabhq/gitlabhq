@@ -25,7 +25,8 @@ won't be able to leave the 2FA configuration area at `/profile/two_factor_auth`.
 
 To enable 2FA for all users:
 
-1. Navigate to **Admin Area > Settings > General** (`/admin/application_settings`).
+1. Navigate to **Admin Area > Settings > General**
+   (`/admin/application_settings/general`).
 1. Expand the **Sign-in restrictions** section, where you can configure both.
 
 If you want 2FA enforcement to take effect on next login, change the grace
@@ -40,7 +41,7 @@ If you want to enforce 2FA only for certain groups, you can:
 
 To change this setting, you need to be administrator or owner of the group.
 
-> [From](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24965) GitLab 12.0, 2FA settings for a group are also applied to subgroups.
+> [From](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24965) GitLab 12.0, 2FA settings for a group are also applied to subgroups.
 
 If you want to enforce 2FA only for certain groups, you can enable it in the
 group settings and specify a grace period as above. To change this setting you
@@ -66,7 +67,7 @@ The following are important notes about 2FA:
 There may be some special situations where you want to disable 2FA for everyone
 even when forced 2FA is disabled. There is a rake task for that:
 
-```sh
+```shell
 # Omnibus installations
 sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 

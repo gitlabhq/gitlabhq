@@ -1,9 +1,9 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import SuggestionDiffComponent from '~/vue_shared/components/markdown/suggestion_diff.vue';
-import { selectDiffLines } from '~/vue_shared/components/lib/utils/diff_utils';
+import SuggestionDiffHeader from '~/vue_shared/components/markdown/suggestion_diff_header.vue';
+import SuggestionDiffRow from '~/vue_shared/components/markdown/suggestion_diff_row.vue';
 
 const MOCK_DATA = {
-  canApply: true,
   suggestion: {
     id: 1,
     diff_lines: [
@@ -42,60 +42,45 @@ const MOCK_DATA = {
   helpPagePath: 'path_to_docs',
 };
 
-const lines = selectDiffLines(MOCK_DATA.suggestion.diff_lines);
-const newLines = lines.filter(line => line.type === 'new');
-
 describe('Suggestion Diff component', () => {
-  let vm;
+  let wrapper;
 
-  beforeEach(done => {
-    const Component = Vue.extend(SuggestionDiffComponent);
+  const createComponent = () => {
+    wrapper = shallowMount(SuggestionDiffComponent, {
+      propsData: {
+        ...MOCK_DATA,
+      },
+    });
+  };
 
-    vm = new Component({
-      propsData: MOCK_DATA,
-    }).$mount();
-
-    Vue.nextTick(done);
+  beforeEach(() => {
+    createComponent();
   });
 
-  describe('init', () => {
-    it('renders a suggestion header', () => {
-      expect(vm.$el.querySelector('.js-suggestion-diff-header')).not.toBeNull();
-    });
-
-    it('renders a diff table with syntax highlighting', () => {
-      expect(vm.$el.querySelector('.md-suggestion-diff.js-syntax-highlight.code')).not.toBeNull();
-    });
-
-    it('renders the oldLineNumber', () => {
-      const fromLine = vm.$el.querySelector('.old_line').innerHTML;
-
-      expect(parseInt(fromLine, 10)).toBe(lines[0].old_line);
-    });
-
-    it('renders the oldLineContent', () => {
-      const fromContent = vm.$el.querySelector('.line_content.old').innerHTML;
-
-      expect(fromContent.includes(lines[0].text)).toBe(true);
-    });
-
-    it('renders new lines', () => {
-      const newLinesElements = vm.$el.querySelectorAll('.line_holder.new');
-
-      newLinesElements.forEach((line, i) => {
-        expect(newLinesElements[i].innerHTML.includes(newLines[i].new_line)).toBe(true);
-        expect(newLinesElements[i].innerHTML.includes(newLines[i].text)).toBe(true);
-      });
-    });
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  describe('applySuggestion', () => {
-    it('emits apply event when applySuggestion is called', () => {
-      const callback = () => {};
-      jest.spyOn(vm, '$emit').mockImplementation(() => {});
-      vm.applySuggestion(callback);
+  it('matches snapshot', () => {
+    expect(wrapper.element).toMatchSnapshot();
+  });
 
-      expect(vm.$emit).toHaveBeenCalledWith('apply', { suggestionId: vm.suggestion.id, callback });
-    });
+  it('renders a correct amount of suggestion diff rows', () => {
+    expect(wrapper.findAll(SuggestionDiffRow)).toHaveLength(3);
+  });
+
+  it('emits apply event on sugestion diff header apply', () => {
+    wrapper.find(SuggestionDiffHeader).vm.$emit('apply', 'test-event');
+
+    expect(wrapper.emitted('apply')).toBeDefined();
+    expect(wrapper.emitted('apply')).toEqual([
+      [
+        {
+          callback: 'test-event',
+          suggestionId: 1,
+        },
+      ],
+    ]);
   });
 });

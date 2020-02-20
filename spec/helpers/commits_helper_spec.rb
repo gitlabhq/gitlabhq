@@ -69,4 +69,17 @@ describe CommitsHelper do
       expect(node[:href]).to eq('http://example.com/file.html')
     end
   end
+
+  describe '#commit_to_html' do
+    let(:project) { create(:project, :repository) }
+    let(:ref) { 'master' }
+    let(:commit) { project.commit(ref) }
+
+    it 'renders HTML representation of a commit' do
+      assign(:project, project)
+      allow(helper).to receive(:current_user).and_return(project.owner)
+
+      expect(helper.commit_to_html(commit, ref, project)).to include('<div class="commit-content')
+    end
+  end
 end

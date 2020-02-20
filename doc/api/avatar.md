@@ -1,6 +1,6 @@
 # Avatar API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19121) in GitLab 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19121) in GitLab 11.0.
 
 ## Get a single avatar URL
 
@@ -28,7 +28,7 @@ Parameters:
 
 Example request:
 
-```sh
+```shell
 curl https://gitlab.example.com/api/v4/avatar?email=admin@example.com&size=32
 ```
 

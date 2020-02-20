@@ -36,7 +36,7 @@ class FileUploader < GitlabUploader
 
   def self.base_dir(model, store = Store::LOCAL)
     decorated_model = model
-    decorated_model = Storage::HashedProject.new(model) if store == Store::REMOTE
+    decorated_model = Storage::Hashed.new(model) if store == Store::REMOTE
 
     model_path_segment(decorated_model)
   end
@@ -57,7 +57,7 @@ class FileUploader < GitlabUploader
   # Returns a String without a trailing slash
   def self.model_path_segment(model)
     case model
-    when Storage::HashedProject then model.disk_path
+    when Storage::Hashed then model.disk_path
     else
       model.hashed_storage?(:attachments) ? model.disk_path : model.full_path
     end

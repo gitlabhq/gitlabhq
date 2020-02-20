@@ -23,7 +23,7 @@ describe GoogleApi::AuthorizationsController do
         subject
 
         expect(session[GoogleApi::CloudPlatform::Client.session_key_for_token]).to be_nil
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

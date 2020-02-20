@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Blob Header Default Actions rendering matches the snapshot 1`] = `
+<div
+  class="js-file-title file-title-flex-parent"
+>
+  <blob-filepath-stub
+    blob="[object Object]"
+  />
+   
+  <div
+    class="file-actions d-none d-sm-block"
+  >
+    <viewer-switcher-stub
+      value="simple"
+    />
+      
+    <default-actions-stub
+      activeviewer="simple"
+      rawpath="/flightjs/flight/snippets/51/raw"
+    />
+  </div>
+</div>
+`;

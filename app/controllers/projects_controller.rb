@@ -296,7 +296,7 @@ class ProjectsController < Projects::ApplicationController
   private
 
   def show_blob_ids?
-    repo_exists? && project_view_files? && Feature.disabled?(:vue_file_list, @project)
+    repo_exists? && project_view_files? && Feature.disabled?(:vue_file_list, @project, default_enabled: true)
   end
 
   # Render project landing depending of which features are available

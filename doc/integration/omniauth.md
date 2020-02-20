@@ -73,7 +73,7 @@ To change these settings:
 
   Open the configuration file:
 
-  ```sh
+  ```shell
   sudo editor /etc/gitlab/gitlab.rb
   ```
 
@@ -96,7 +96,7 @@ To change these settings:
 
   Open the configuration file:
 
-  ```sh
+  ```shell
   cd /home/git/gitlab
 
   sudo -u git -H editor config/gitlab.yml
@@ -188,19 +188,19 @@ from the OmniAuth provider's documentation.
 
 - Stop GitLab:
 
-  ```sh
+  ```shell
   sudo service gitlab stop
   ```
 
 - Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab/blob/master/Gemfile):
 
-  ```sh
+  ```shell
   gem "omniauth-your-auth-provider"
   ```
 
 - Install the new OmniAuth provider gem by running the following command:
 
-  ```sh
+  ```shell
   sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
   ```
 
@@ -208,7 +208,7 @@ from the OmniAuth provider's documentation.
 
 - Start GitLab:
 
-  ```sh
+  ```shell
   sudo service gitlab start
   ```
 
@@ -266,8 +266,8 @@ You can enable profile syncing from selected OmniAuth providers and for all or f
 When authenticating using LDAP, the user's name and email are always synced.
 
 ```ruby
-gitlab_rails['sync_profile_from_provider'] = ['twitter', 'google_oauth2']
-gitlab_rails['sync_profile_attributes'] = ['name', 'email', 'location']
+gitlab_rails['omniauth_sync_profile_from_provider'] = ['twitter', 'google_oauth2']
+gitlab_rails['omniauth_sync_profile_attributes'] = ['name', 'email', 'location']
 ```
 
 **For installations from source**

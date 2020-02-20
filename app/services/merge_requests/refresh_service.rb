@@ -21,6 +21,7 @@ module MergeRequests
       # empty diff during a manual merge
       close_upon_missing_source_branch_ref
       post_merge_manually_merged
+      link_forks_lfs_objects
       reload_merge_requests
       outdate_suggestions
       refresh_pipelines_on_merge_requests
@@ -91,17 +92,25 @@ module MergeRequests
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    # Link LFS objects that exists in forks but does not exists in merge requests
+    # target project
+    def link_forks_lfs_objects
+      return unless @push.branch_updated?
+
+      merge_requests_for_forks.find_each do |mr|
+        LinkLfsObjectsService
+          .new(mr.target_project)
+          .execute(mr, oldrev: @push.oldrev, newrev: @push.newrev)
+      end
+    end
+
     # Refresh merge request diff if we push to source or target branch of merge request
     # Note: we should update merge requests from forks too
-    # rubocop: disable CodeReuse/ActiveRecord
     def reload_merge_requests
       merge_requests = @project.merge_requests.opened
         .by_source_or_target_branch(@push.branch_name).to_a
 
-      # Fork merge requests
-      merge_requests += MergeRequest.opened
-        .where(source_branch: @push.branch_name, source_project: @project)
-        .where.not(target_project: @project).to_a
+      merge_requests += merge_requests_for_forks.to_a
 
       filter_merge_requests(merge_requests).each do |merge_request|
         if branch_and_project_match?(merge_request) || @push.force_push?
@@ -117,7 +126,6 @@ module MergeRequests
       # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
       merge_requests_for_source_branch(reload: true)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def push_commit_ids
       @push_commit_ids ||= @commits.map(&:id)
@@ -282,6 +290,15 @@ module MergeRequests
       @source_merge_requests = nil if reload
       @source_merge_requests ||= merge_requests_for(@push.branch_name)
     end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def merge_requests_for_forks
+      @merge_requests_for_forks ||=
+        MergeRequest.opened
+          .where(source_branch: @push.branch_name, source_project: @project)
+          .where.not(target_project: @project)
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end
 

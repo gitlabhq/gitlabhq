@@ -51,6 +51,167 @@ records should use stubs/doubles as much as possible.
 | `rubocop/` | `spec/rubocop/` | RSpec | |
 | `spec/factories` | `spec/factories_spec.rb` | RSpec | |
 
+### Frontend unit tests
+
+Unit tests are on the lowest abstraction level and typically test functionality
+that is not directly perceivable by a user.
+
+```mermaid
+graph RL
+    plain[Plain JavaScript];
+    Vue[Vue Components];
+    feature-flags[Feature Flags];
+    license-checks[License Checks];
+
+    plain---Vuex;
+    plain---GraphQL;
+    Vue---plain;
+    Vue---Vuex;
+    Vue---GraphQL;
+    browser---plain;
+    browser---Vue;
+    plain---backend;
+    Vuex---backend;
+    GraphQL---backend;
+    Vue---backend;
+    backend---database;
+    backend---feature-flags;
+    backend---license-checks;
+
+    class plain tested;
+    class Vuex tested;
+
+    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef label stroke-width:0;
+    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    subgraph " "
+    tested;
+    mocked;
+    class tested tested;
+    end
+```
+
+#### When to use unit tests
+
+- **Exported functions and classes**:
+  Anything exported can be reused at various places in ways you have no control over.
+  You should document the expected behavior of the public interface with tests.
+- **Vuex actions**:
+  Any Vuex action must work in a consistent way, independent of the component it is triggered from.
+- **Vuex mutations**:
+  For complex Vuex mutations, you should separate the tests from other parts of the Vuex store to simplify problem-solving.
+
+#### When *not* to use unit tests
+  
+- **Non-exported functions or classes**:
+  Anything not exported from a module can be considered private or an implementation detail, and doesn't need to be tested.
+- **Constants**:
+  Testing the value of a constant means copying it, resulting in extra effort without additional confidence that the value is correct.
+- **Vue components**:
+  Computed properties, methods, and lifecycle hooks can be considered an implementation detail of components, are implicitly covered by component tests, and don't need to be tested.
+  For more information, see the [official Vue guidelines](https://vue-test-utils.vuejs.org/guides/#getting-started).
+
+#### What to mock in unit tests
+
+- **State of the class under test**:
+  Modifying the state of the class under test directly rather than using methods of the class avoids side effects in test setup.
+- **Other exported classes**:
+  Every class must be tested in isolation to prevent test scenarios from growing exponentially.
+- **Single DOM elements if passed as parameters**:
+  For tests only operating on single DOM elements, rather than a whole page, creating these elements is cheaper than loading an entire HTML fixture.
+- **All server requests**:
+  When running frontend unit tests, the backend may not be reachable, so all outgoing requests need to be mocked.
+- **Asynchronous background operations**:
+  Background operations cannot be stopped or waited on, so they will continue running in the following tests and cause side effects.
+
+#### What *not* to mock in unit tests
+
+- **Non-exported functions or classes**:
+  Everything that is not exported can be considered private to the module, and will be implicitly tested through the exported classes and functions.
+- **Methods of the class under test**:
+  By mocking methods of the class under test, the mocks will be tested and not the real methods.
+- **Utility functions (pure functions, or those that only modify parameters)**:
+ If a function has no side effects because it has no state, it is safe to not mock it in tests.
+- **Full HTML pages**:
+  Avoid loading the HTML of a full page in unit tests, as it slows down tests.
+
+### Frontend component tests
+
+Component tests cover the state of a single component that is perceivable by a user depending on external signals such as user input, events fired from other components, or application state.
+
+```mermaid
+graph RL
+    plain[Plain JavaScript];
+    Vue[Vue Components];
+    feature-flags[Feature Flags];
+    license-checks[License Checks];
+
+    plain---Vuex;
+    plain---GraphQL;
+    Vue---plain;
+    Vue---Vuex;
+    Vue---GraphQL;
+    browser---plain;
+    browser---Vue;
+    plain---backend;
+    Vuex---backend;
+    GraphQL---backend;
+    Vue---backend;
+    backend---database;
+    backend---feature-flags;
+    backend---license-checks;
+
+    class Vue tested;
+
+    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef label stroke-width:0;
+    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    subgraph " "
+    tested;
+    mocked;
+    class tested tested;
+    end
+```
+
+#### When to use component tests
+
+- **Vue components**
+
+#### When *not* to use component tests
+
+- **Vue applications**:
+  Vue applications may contain many components.
+  Testing them on a component level requires too much effort.
+  Therefore they are tested on frontend integration level.
+- **HAML templates**:
+  HAML templates contain only Markup and no frontend-side logic.
+  Therefore they are not complete components.
+
+#### What to mock in component tests
+
+- **DOM**:
+  Operating on the real DOM is significantly slower than on the virtual DOM.
+- **Properties and state of the component under test**:
+  Similar to testing classes, modifying the properties directly (rather than relying on methods of the component) avoids side effects.
+- **Vuex store**:
+  To avoid side effects and keep component tests simple, Vuex stores are replaced with mocks.
+- **All server requests**:
+  Similar to unit tests, when running component tests, the backend may not be reachable, so all outgoing requests need to be mocked.
+- **Asynchronous background operations**:
+  Similar to unit tests, background operations cannot be stopped or waited on, so they will continue running in the following tests and cause side effects.
+- **Child components**:
+  Every component is tested individually, so child components are mocked.
+  See also [`shallowMount()`](https://vue-test-utils.vuejs.org/api/#shallowmount)
+
+#### What *not* to mock in component tests
+
+- **Methods or computed properties of the component under test**:
+  By mocking part of the component under test, the mocks will be tested and not the real component.
+- **Functions and classes independent from Vue**:
+  All plain JavaScript code is already covered by unit tests and needs not to be mocked in component tests.
+
 ## Integration tests
 
 Formal definition: <https://en.wikipedia.org/wiki/Integration_testing>
@@ -66,14 +227,86 @@ They're useful to test permissions, redirections, what view is rendered etc.
 | `app/controllers/` | `spec/controllers/` | RSpec | For N+1 tests, use [request specs](../query_recorder.md#use-request-specs-instead-of-controller-specs) |
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
-| `app/assets/javascripts/` | `spec/javascripts/`, `spec/frontend/` | Karma & Jest | More details in the [Frontend Testing guide](frontend_testing.md) section. |
+| `app/assets/javascripts/` | `spec/javascripts/`, `spec/frontend/` | Karma & Jest | [More details below](#frontend-integration-tests) |
+
+### Frontend integration tests
+
+Integration tests cover the interaction between all components on a single page.
+Their abstraction level is comparable to how a user would interact with the UI.
+
+```mermaid
+graph RL
+    plain[Plain JavaScript];
+    Vue[Vue Components];
+    feature-flags[Feature Flags];
+    license-checks[License Checks];
+
+    plain---Vuex;
+    plain---GraphQL;
+    Vue---plain;
+    Vue---Vuex;
+    Vue---GraphQL;
+    browser---plain;
+    browser---Vue;
+    plain---backend;
+    Vuex---backend;
+    GraphQL---backend;
+    Vue---backend;
+    backend---database;
+    backend---feature-flags;
+    backend---license-checks;
+
+    class plain tested;
+    class Vue tested;
+    class Vuex tested;
+    class GraphQL tested;
+    class browser tested;
+    linkStyle 0,1,2,3,4,5,6 stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef label stroke-width:0;
+    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    subgraph " "
+    tested;
+    mocked;
+    class tested tested;
+    end
+```
+
+#### When to use integration tests
+
+- **Page bundles (`index.js` files in `app/assets/javascripts/pages/`)**:
+  Testing the page bundles ensures the corresponding frontend components integrate well.
+- **Vue applications outside of page bundles**:
+  Testing Vue applications as a whole ensures the corresponding frontend components integrate well.
+
+#### What to mock in integration tests
+
+- **HAML views (use fixtures instead)**:
+  Rendering HAML views requires a Rails environment including a running database, which you cannot rely on in frontend tests.
+- **All server requests**:
+  Similar to unit and component tests, when running component tests, the backend may not be reachable, so all outgoing requests must be mocked.
+- **Asynchronous background operations that are not perceivable on the page**:
+  Background operations that affect the page must be tested on this level.
+  All other background operations cannot be stopped or waited on, so they will continue running in the following tests and cause side effects.
+
+#### What *not* to mock in integration tests
+
+- **DOM**:
+  Testing on the real DOM ensures your components work in the intended environment.
+  Part of DOM testing is delegated to [cross-browser testing](https://gitlab.com/gitlab-org/quality/team-tasks/issues/45).
+- **Properties or state of components**:
+  On this level, all tests can only perform actions a user would do.
+  For example: to change the state of a component, a click event would be fired.
+- **Vuex stores**:
+  When testing the frontend code of a page as a whole, the interaction between Vue components and Vuex stores is covered as well.
 
 ### About controller tests
 
 In an ideal world, controllers should be thin. However, when this is not the
-case, it's acceptable to write a system/feature test without JavaScript instead
-of a controller test. The reason is that testing a fat controller usually
-involves a lot of stubbing, things like:
+case, it's acceptable to write a system or feature test without JavaScript instead
+of a controller test. Testing a fat controller usually involves a lot of stubbing, such as:
 
 ```ruby
 controller.instance_variable_set(:@user, user)
@@ -85,8 +318,7 @@ and use methods which are deprecated in Rails 5 ([#23768]).
 
 ### About Karma
 
-As you may have noticed, Karma is both in the Unit tests and the Integration
-tests category. That's because Karma is a tool that provides an environment to
+Karma is both in the Unit tests and the Integration tests category. Karma provides an environment to
 run JavaScript tests, so you can either run unit tests (e.g. test a single
 JavaScript method), or integration tests (e.g. test a component that is composed
 of multiple components).
@@ -98,7 +330,7 @@ Formal definitions:
 - <https://en.wikipedia.org/wiki/System_testing>
 - <https://en.wikipedia.org/wiki/White-box_testing>
 
-These kind of tests ensure the GitLab *Rails* application (i.e.
+These kind of tests ensure the GitLab *Rails* application (for example,
 `gitlab-foss`/`gitlab`) works as expected from a *browser* point of view.
 
 Note that:
@@ -118,13 +350,93 @@ makes sense since it's a small component, which cannot be tested at the unit or
 controller level.
 
 Only test the happy path, but make sure to add a test case for any regression
-that couldn't have been caught at lower levels with better tests (i.e. if a
-regression is found, regression tests should be added at the lowest-level
+that couldn't have been caught at lower levels with better tests (for example, if a
+regression is found, regression tests should be added at the lowest level
 possible).
 
 | Tests path | Testing engine | Notes |
 | ---------- | -------------- | ----- |
 | `spec/features/` | [Capybara] + [RSpec] | If your test has the `:js` metadata, the browser driver will be [Poltergeist], otherwise it's using [RackTest]. |
+
+### Frontend feature tests
+
+In contrast to [frontend integration tests](#frontend-integration-tests), feature
+tests make requests against the real backend instead of using fixtures.
+This also implies that database queries are executed which makes this category significantly slower.
+
+See also:
+
+- The [RSpec testing guidelines](../testing_guide/best_practices.md#rspec).
+- System / Feature tests in the [Testing Best Practices](best_practices.md#system--feature-tests).
+- [Issue #26159](https://gitlab.com/gitlab-org/gitlab/issues/26159) which aims at combining those guidelines with this page.
+
+```mermaid
+graph RL
+    plain[Plain JavaScript];
+    Vue[Vue Components];
+    feature-flags[Feature Flags];
+    license-checks[License Checks];
+
+    plain---Vuex;
+    plain---GraphQL;
+    Vue---plain;
+    Vue---Vuex;
+    Vue---GraphQL;
+    browser---plain;
+    browser---Vue;
+    plain---backend;
+    Vuex---backend;
+    GraphQL---backend;
+    Vue---backend;
+    backend---database;
+    backend---feature-flags;
+    backend---license-checks;
+
+    class backend tested;
+    class plain tested;
+    class Vue tested;
+    class Vuex tested;
+    class GraphQL tested;
+    class browser tested;
+    linkStyle 0,1,2,3,4,5,6,7,8,9,10 stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef label stroke-width:0;
+    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    subgraph " "
+    tested;
+    mocked;
+    class tested tested;
+    end
+```
+
+#### When to use feature tests
+
+- Use cases that require a backend, and cannot be tested using fixtures.
+- Behavior that is not part of a page bundle, but defined globally.
+
+#### Relevant notes
+
+A `:js` flag is added to the test to make sure the full environment is loaded:
+
+```ruby
+scenario 'successfully', :js do
+  sign_in(create(:admin))
+end
+```
+
+The steps of each test are written using ([capybara methods](https://www.rubydoc.info/gems/capybara)).
+
+XHR (XMLHttpRequest) calls might require you to use `wait_for_requests` in between steps, such as:
+
+```ruby
+find('.form-control').native.send_keys(:enter)
+
+wait_for_requests
+
+expect(page).not_to have_selector('.card')
+```
 
 ### Consider **not** writing a system test
 

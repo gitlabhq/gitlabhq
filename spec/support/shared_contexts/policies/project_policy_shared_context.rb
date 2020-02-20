@@ -13,7 +13,7 @@ RSpec.shared_context 'ProjectPolicy context' do
     %i[
       read_project read_board read_list read_wiki read_issue
       read_project_for_iids read_issue_iid read_label
-      read_milestone read_project_snippet read_project_member read_note
+      read_milestone read_snippet read_project_member read_note
       create_project create_issue create_note upload_file create_merge_request_in
       award_emoji
     ]
@@ -21,7 +21,7 @@ RSpec.shared_context 'ProjectPolicy context' do
 
   let(:base_reporter_permissions) do
     %i[
-      download_code fork_project create_project_snippet update_issue
+      download_code fork_project create_snippet update_issue
       admin_issue admin_label admin_list read_commit_status read_build
       read_container_image read_pipeline read_environment read_deployment
       read_merge_request download_wiki_code read_sentry_issue read_prometheus
@@ -45,8 +45,8 @@ RSpec.shared_context 'ProjectPolicy context' do
 
   let(:base_maintainer_permissions) do
     %i[
-      push_to_delete_protected_branch update_project_snippet
-      admin_project_snippet admin_project_member admin_note admin_wiki admin_project
+      push_to_delete_protected_branch update_snippet
+      admin_snippet admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
       admin_pipeline admin_environment admin_deployment destroy_release add_cluster
       daily_statistics

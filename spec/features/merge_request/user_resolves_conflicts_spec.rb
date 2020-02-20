@@ -169,8 +169,8 @@ describe 'Merge request > User resolves conflicts', :js do
 
     context "with malicious branch name" do
       let(:bad_branch_name) { "malicious-branch-{{toString.constructor('alert(/xss/)')()}}" }
-      let(:branch) { project.repository.create_branch(bad_branch_name, 'conflict-resolvable') }
-      let(:merge_request) { create_merge_request(branch.name) }
+      let!(:branch) { project.repository.create_branch(bad_branch_name, 'conflict-resolvable') }
+      let(:merge_request) { create_merge_request(bad_branch_name) }
 
       before do
         visit project_merge_request_path(project, merge_request)

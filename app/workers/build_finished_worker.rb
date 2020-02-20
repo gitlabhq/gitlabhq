@@ -32,7 +32,7 @@ class BuildFinishedWorker
     # We execute these async as these are independent operations.
     BuildHooksWorker.perform_async(build.id)
     ArchiveTraceWorker.perform_async(build.id)
-    ExpirePipelineCacheWorker.perform_async(build.pipeline_id)
+    ExpirePipelineCacheWorker.perform_async(build.pipeline_id) if build.pipeline.cacheable?
     ChatNotificationWorker.perform_async(build.id) if build.pipeline.chat?
   end
 end

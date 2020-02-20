@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-describe 'rake gitlab:storage:*', :sidekiq do
+describe 'rake gitlab:storage:*' do
   before do
     Rake.application.rake_require 'tasks/gitlab/storage'
 

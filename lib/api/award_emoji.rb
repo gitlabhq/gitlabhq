@@ -127,6 +127,8 @@ module API
         case awardable
         when Note
           read_ability(awardable.noteable)
+        when Snippet, ProjectSnippet
+          :read_snippet
         else
           :"read_#{awardable.class.to_s.underscore}"
         end

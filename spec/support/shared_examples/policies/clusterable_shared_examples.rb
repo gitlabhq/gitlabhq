@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-shared_examples 'clusterable policies' do
+RSpec.shared_examples 'clusterable policies' do
   describe '#add_cluster?' do
     let(:current_user) { create(:user) }
 

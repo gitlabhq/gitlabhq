@@ -12,6 +12,8 @@
 if Gitlab::Runtime.puma? && !Rails.env.test?
   require 'rack/timeout/base'
 
+  Rack::Timeout::Logger.level = Logger::ERROR
+
   Gitlab::Application.configure do |config|
     config.middleware.insert_before(Rack::Runtime, Rack::Timeout,
                                     service_timeout: ENV.fetch('GITLAB_RAILS_RACK_TIMEOUT', 60).to_i,

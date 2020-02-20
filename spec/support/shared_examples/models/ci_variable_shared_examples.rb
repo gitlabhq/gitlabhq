@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples_for 'CI variable' do
+RSpec.shared_examples 'CI variable' do
   it { is_expected.to include_module(HasVariable) }
 
   describe "variable type" do

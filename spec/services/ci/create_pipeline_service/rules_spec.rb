@@ -100,17 +100,6 @@ describe Ci::CreatePipelineService do
       stub_ci_pipeline_yaml_file(config)
     end
 
-    shared_examples 'workflow:rules feature disabled' do
-      before do
-        stub_feature_flags(workflow_rules: false)
-      end
-
-      it 'presents a message that rules are disabled' do
-        expect(pipeline.errors[:base]).to include('Workflow rules are disabled')
-        expect(pipeline).to be_persisted
-      end
-    end
-
     context 'with a single regex-matching if: clause' do
       let(:config) do
         <<-EOY
@@ -241,8 +230,6 @@ describe Ci::CreatePipelineService do
           expect(pipeline.errors[:base]).to include('No stages / jobs for this pipeline.')
           expect(pipeline).not_to be_persisted
         end
-
-        it_behaves_like 'workflow:rules feature disabled'
       end
 
       context 'where workflow passes and the job passes' do
@@ -252,8 +239,6 @@ describe Ci::CreatePipelineService do
           expect(pipeline).to be_pending
           expect(pipeline).to be_persisted
         end
-
-        it_behaves_like 'workflow:rules feature disabled'
       end
 
       context 'where workflow fails and the job fails' do
@@ -263,8 +248,6 @@ describe Ci::CreatePipelineService do
           expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
           expect(pipeline).not_to be_persisted
         end
-
-        it_behaves_like 'workflow:rules feature disabled'
       end
 
       context 'where workflow fails and the job passes' do
@@ -274,8 +257,6 @@ describe Ci::CreatePipelineService do
           expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
           expect(pipeline).not_to be_persisted
         end
-
-        it_behaves_like 'workflow:rules feature disabled'
       end
     end
   end

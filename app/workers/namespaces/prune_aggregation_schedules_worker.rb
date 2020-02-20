@@ -3,7 +3,7 @@
 module Namespaces
   class PruneAggregationSchedulesWorker
     include ApplicationWorker
-    include CronjobQueue
+    include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     feature_category :source_code_management
     worker_resource_boundary :cpu

@@ -13,20 +13,16 @@ describe 'Merge request > User resolves outdated diff discussions', :js do
   let(:current_diff_refs) { merge_request.diff_refs }
 
   let(:outdated_position) do
-    Gitlab::Diff::Position.new(
-      old_path: 'files/csv/Book1.csv',
-      new_path: 'files/csv/Book1.csv',
-      old_line: nil,
+    build(:text_diff_position, :added,
+      file: 'files/csv/Book1.csv',
       new_line: 9,
       diff_refs: outdated_diff_refs
     )
   end
 
   let(:current_position) do
-    Gitlab::Diff::Position.new(
-      old_path: 'files/csv/Book1.csv',
-      new_path: 'files/csv/Book1.csv',
-      old_line: nil,
+    build(:text_diff_position, :added,
+      file: 'files/csv/Book1.csv',
       new_line: 1,
       diff_refs: current_diff_refs
     )

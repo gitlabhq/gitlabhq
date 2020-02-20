@@ -1,4 +1,4 @@
-/* eslint-disable camelcase, no-restricted-syntax, guard-for-in */
+/* eslint-disable no-restricted-syntax, guard-for-in */
 /* global DiscussionModel */
 
 import Vue from 'vue';
@@ -26,11 +26,11 @@ window.CommentsStore = {
 
     discussion.createNote(noteObj);
   },
-  update(discussionId, noteId, resolved, resolved_by) {
+  update(discussionId, noteId, resolved, resolvedBy) {
     const discussion = this.state[discussionId];
     const note = discussion.getNote(noteId);
     note.resolved = resolved;
-    note.resolved_by = resolved_by;
+    note.resolved_by = resolvedBy;
   },
   delete(discussionId, noteId) {
     const discussion = this.state[discussionId];

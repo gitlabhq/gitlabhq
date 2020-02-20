@@ -1,13 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop: disable Cop/PutProjectRoutesUnderScope
-resources :projects, only: [:index, :new, :create]
-
-draw :git_http
-
-get '/projects/:id' => 'projects#resolve'
-# rubocop: enable Cop/PutProjectRoutesUnderScope
-
 constraints(::Constraints::ProjectUrlConstrainer.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
   # the segment is potentially followed by _another_ wildcard segment, and
@@ -174,7 +166,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :releases, only: [:index, :edit], param: :tag, constraints: { tag: %r{[^/]+} } do
+        resources :releases, only: [:index, :show, :edit], param: :tag, constraints: { tag: %r{[^/]+} } do
           member do
             get :evidence
           end
@@ -203,9 +195,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resource :cycle_analytics, only: [:show]
-
-        namespace :cycle_analytics do
+        resource :cycle_analytics, only: :show, path: 'value_stream_analytics'
+        scope module: :cycle_analytics, as: 'cycle_analytics', path: 'value_stream_analytics' do
           scope :events, controller: 'events' do
             get :issue
             get :plan
@@ -216,6 +207,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :production
           end
         end
+        get '/cycle_analytics', to: redirect('%{namespace_id}/%{project_id}/-/value_stream_analytics')
 
         concerns :clusterable
 
@@ -281,9 +273,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        draw :merge_requests
+
         # The wiki and repository routing contains wildcard characters so
         # its preferable to keep it below all other project routes
         draw :repository_scoped
+        draw :repository
         draw :wiki
       end
       # End of the /-/ scope.
@@ -305,17 +300,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           as: :template_names,
           defaults: { format: 'json' },
           constraints: { template_type: %r{issue|merge_request}, format: 'json' }
-
-      resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
-        member do
-          get :branches
-          get :pipelines
-          post :revert
-          post :cherry_pick
-          get :diff_for_path
-          get :merge_requests
-        end
-      end
 
       resource :pages, only: [:show, :update, :destroy] do
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
@@ -339,16 +323,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      # Unscoped route. It will be replaced with redirect to /-/merge_requests/
-      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      draw :merge_requests
-
-      # To ensure an old unscoped routing is used for the UI we need to
-      # add prefix 'as' to the scope routing and place it below original MR routing.
-      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      scope '-', as: 'scoped' do
-        draw :merge_requests
-      end
+      post 'alerts/notify', to: 'alerting/notifications#create'
 
       resources :pipelines, only: [:index, :new, :create, :show, :destroy] do
         collection do
@@ -368,6 +343,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :failures
           get :status
           get :test_report
+          get :test_reports_count
         end
 
         member do
@@ -398,7 +374,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :container_registry, only: [:index, :destroy],
+      resources :container_registry, only: [:index, :destroy, :show],
                                      controller: 'registry/repositories'
 
       namespace :registry do
@@ -417,25 +393,15 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      get :issues, to: 'issues#calendar', constraints: lambda { |req| req.format == :ics }
+      # Unscoped route. It will be replaced with redirect to /-/issues/
+      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
+      draw :issues
 
-      resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
-        member do
-          post :toggle_subscription
-          post :mark_as_spam
-          post :move
-          put :reorder
-          get :related_branches
-          get :can_create_branch
-          get :realtime_changes
-          post :create_merge_request
-          get :discussions, format: :json
-        end
-
-        collection do
-          post :bulk_update
-          post :import_csv
-        end
+      # To ensure an old unscoped routing is used for the UI we need to
+      # add prefix 'as' to the scope routing and place it below original routing.
+      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
+      scope '-', as: 'scoped' do
+        draw :issues
       end
 
       resources :notes, only: [:create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
@@ -485,14 +451,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         post :web_ide_clientside_preview
       end
 
-      # The repository routing contains wildcard characters so
-      # its preferable to keep it below all other project routes
-      draw :repository
-
-      # To ensure an old unscoped routing is used for the UI we need to
-      # add prefix 'as' to the scope routing and place it below original routing.
+      # Deprecated unscoped routing.
       # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      scope '-', as: 'scoped' do
+      scope as: 'deprecated' do
         draw :repository
       end
 
@@ -510,7 +471,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :forks, :group_links, :import, :avatar, :mirror,
                                             :cycle_analytics, :mattermost, :variables, :triggers,
                                             :environments, :protected_environments, :error_tracking,
-                                            :serverless, :clusters, :audit_events, :wikis)
+                                            :serverless, :clusters, :audit_events, :wikis, :merge_requests,
+                                            :vulnerability_feedback, :security, :dependencies)
     end
 
     # rubocop: disable Cop/PutProjectRoutesUnderScope

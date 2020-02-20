@@ -18,7 +18,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   end
 
   def diffs_batch
-    return render_404 unless Feature.enabled?(:diffs_batch_load, @merge_request.project)
+    return render_404 unless Feature.enabled?(:diffs_batch_load, @merge_request.project, default_enabled: true)
 
     diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options)
     positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user)
@@ -64,6 +64,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     options = additional_attributes.merge(diff_view: diff_view)
 
+    if @merge_request.project.context_commits_enabled?
+      options[:context_commits] = @merge_request.context_commits
+    end
+
     render json: DiffsSerializer.new(request).represent(diffs, options)
   end
 
@@ -105,6 +109,11 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
         @start_sha = @merge_request_diff.head_commit_sha
         @start_version = @merge_request_diff
       end
+    end
+
+    if Gitlab::Utils.to_boolean(params[:diff_head]) && @merge_request.diffable_merge_ref?
+      return CompareService.new(@project, @merge_request.merge_ref_head.sha)
+        .execute(@project, @merge_request.target_branch)
     end
 
     if @start_sha

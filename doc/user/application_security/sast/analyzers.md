@@ -49,7 +49,7 @@ In `.gitlab-ci.yml` define:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 variables:
   SAST_ANALYZER_IMAGE_PREFIX: my-docker-registry/gl-images
@@ -66,7 +66,7 @@ In `.gitlab-ci.yml` define:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 variables:
   SAST_DEFAULT_ANALYZERS: "bandit,flawfinder"
@@ -82,7 +82,7 @@ default analyzers. In `.gitlab-ci.yml` define:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 variables:
   SAST_DEFAULT_ANALYZERS: ""
@@ -98,7 +98,7 @@ In `.gitlab-ci.yml` define:
 
 ```yaml
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 variables:
   SAST_ANALYZER_IMAGES: "my-docker-registry/analyzers/csharp,amy-docker-registry/analyzers/perl"

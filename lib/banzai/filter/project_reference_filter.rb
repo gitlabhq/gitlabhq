@@ -104,7 +104,7 @@ module Banzai
       def link_to_project(project, link_content: nil)
         url = urls.project_url(project, only_path: context[:only_path])
         data = data_attribute(project: project.id)
-        content = link_content || project.to_reference_with_postfix
+        content = link_content || project.to_reference
 
         link_tag(url, data, content, project.name)
       end

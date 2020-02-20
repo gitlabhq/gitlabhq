@@ -10,10 +10,8 @@ describe 'Merge request > User sees avatars on diff notes', :js do
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: 'Bug NS-04') }
   let(:path)          { 'files/ruby/popen.rb' }
   let(:position) do
-    Gitlab::Diff::Position.new(
-      old_path: path,
-      new_path: path,
-      old_line: nil,
+    build(:text_diff_position, :added,
+      file: path,
       new_line: 9,
       diff_refs: merge_request.diff_refs
     )

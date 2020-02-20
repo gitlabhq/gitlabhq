@@ -52,6 +52,7 @@ export default {
         this.store.storeAvailableCount(resp.data.available_count);
         this.store.storeStoppedCount(resp.data.stopped_count);
         this.store.storeEnvironments(resp.data.environments);
+        this.store.setReviewAppDetails(resp.data.review_app);
         this.store.setPagination(resp.headers);
       }
     },

@@ -17,7 +17,7 @@ or through the GitLab UI.
 
 This document describes the several ways to create a merge request.
 
-When you start a new merge request, regarless of the method,
+When you start a new merge request, regardless of the method,
 you'll be taken to the [**New Merge Request** page](#new-merge-request-page)
 to fill it with information about the merge request.
 
@@ -29,9 +29,9 @@ button and start a merge request from there.
 
 On the **New Merge Request** page, start by filling in the title
 and description for the merge request. If there are are already
-commits on the branch, the title will be pre-filled with the first
+commits on the branch, the title will be prefilled with the first
 line of the first commit message, and the description will be
-pre-filled with any additional lines in the commit message.
+prefilled with any additional lines in the commit message.
 The title is the only field that is mandatory in all cases.
 
 From there, you can fill it with information (title, description,
@@ -106,27 +106,27 @@ Assuming you have your repository cloned into your computer and you'd
 like to start working on changes to files, start by creating and
 checking out a new branch:
 
-```bash
+```shell
 git checkout -b my-new-branch
 ```
 
 Work on your file changes, stage, and commit them:
 
-```bash
+```shell
 git add .
 git commit -m "My commit message"
 ```
 
 Once you're done, [push your branch to GitLab](../../../gitlab-basics/start-using-git.md#send-changes-to-gitlabcom):
 
-```bash
+```shell
 git push origin my-new-branch
 ```
 
 In the output, GitLab will prompt you with a direct link for creating
 a merge request:
 
-```bash
+```shell
 ...
 remote: To create a merge request for docs-new-merge-request, visit:
 remote:   https://gitlab-instance.com/my-group/my-project/merge_requests/new?merge_request%5Bsource_branch%5D=my-new-branch
@@ -183,7 +183,7 @@ or contacts to continue working._
 
 ### Adding patches when creating a merge request via e-mail
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22723) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22723) in GitLab 11.5.
 
 You can add commits to the merge request being created by adding
 patches as attachments to the email. All attachments with a filename

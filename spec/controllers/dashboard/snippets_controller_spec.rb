@@ -17,5 +17,14 @@ describe Dashboard::SnippetsController do
         create(:personal_snippet, :public, author: user)
       end
     end
+
+    it 'fetches snippet counts via the snippet count service' do
+      service = double(:count_service, execute: {})
+      expect(Snippets::CountService)
+        .to receive(:new).with(user, author: user)
+        .and_return(service)
+
+      get :index
+    end
   end
 end

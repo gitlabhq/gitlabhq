@@ -7,12 +7,12 @@
 #   2. Performs Sidekiq job synchronously
 #
 # @example
-#   bundle exec rake "gitlab:import_export:import[root, root, imported_project, /path/to/file.tar.gz]"
+#   bundle exec rake "gitlab:import_export:import[root, root, imported_project, /path/to/file.tar.gz, true]"
 #
 namespace :gitlab do
   namespace :import_export do
-    desc 'EXPERIMENTAL | Import large project archives'
-    task :import, [:username, :namespace_path, :project_path, :archive_path] => :gitlab_environment do |_t, args|
+    desc 'GitLab | Import/Export | EXPERIMENTAL | Import large project archives'
+    task :import, [:username, :namespace_path, :project_path, :archive_path, :measurement_enabled] => :gitlab_environment do |_t, args|
       # Load it here to avoid polluting Rake tasks with Sidekiq test warnings
       require 'sidekiq/testing'
 
@@ -26,7 +26,8 @@ namespace :gitlab do
         namespace_path: args.namespace_path,
         project_path:   args.project_path,
         username:       args.username,
-        file_path:      args.archive_path
+        file_path:      args.archive_path,
+        measurement_enabled: args.measurement_enabled == 'true'
       ).import
     end
   end
@@ -38,6 +39,7 @@ class GitlabProjectImport
     @file_path    = opts.fetch(:file_path)
     @namespace    = Namespace.find_by_full_path(opts.fetch(:namespace_path))
     @current_user = User.find_by_username(opts.fetch(:username))
+    @measurement_enabled = opts.fetch(:measurement_enabled)
   end
 
   def import
@@ -72,18 +74,80 @@ class GitlabProjectImport
     RequestStore.clear!
   end
 
+  def with_count_queries(&block)
+    count = 0
+
+    counter_f = ->(name, started, finished, unique_id, payload) {
+      unless payload[:name].in? %w[CACHE SCHEMA]
+        count += 1
+      end
+    }
+
+    ActiveSupport::Notifications.subscribed(counter_f, "sql.active_record", &block)
+
+    puts "Number of sql calls: #{count}"
+  end
+
+  def with_gc_counter
+    gc_counts_before = GC.stat.select { |k, v| k =~ /count/ }
+    yield
+    gc_counts_after = GC.stat.select { |k, v| k =~ /count/ }
+    stats = gc_counts_before.merge(gc_counts_after) { |k, vb, va| va - vb }
+    puts "Total GC count: #{stats[:count]}"
+    puts "Minor GC count: #{stats[:minor_gc_count]}"
+    puts "Major GC count: #{stats[:major_gc_count]}"
+  end
+
+  def with_measure_time
+    timing = Benchmark.realtime do
+      yield
+    end
+
+    time = Time.at(timing).utc.strftime("%H:%M:%S")
+    puts "Time to finish: #{time}"
+  end
+
+  def with_measuring
+    puts "Measuring enabled..."
+    with_gc_counter do
+      with_count_queries do
+        with_measure_time do
+          yield
+        end
+      end
+    end
+  end
+
+  def measurement_enabled?
+    @measurement_enabled != false
+  end
+
   # We want to ensure that all Sidekiq jobs are executed
   # synchronously as part of that process.
   # This ensures that all expensive operations do not escape
   # to general Sidekiq clusters/nodes.
-  def run_isolated_sidekiq_job
+  def with_isolated_sidekiq_job
     Sidekiq::Testing.fake! do
       with_request_store do
-        @project = create_project
-
-        execute_sidekiq_job
+        # If you are attempting to import a large project into a development environment,
+        # you may see Gitaly throw an error about too many calls or invocations.
+        # This is due to a n+1 calls limit being set for development setups (not enforced in production)
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24475#note_283090635
+        # For development setups, this code-path will be excluded from n+1 detection.
+        ::Gitlab::GitalyClient.allow_n_plus_1_calls do
+          measurement_enabled? ? with_measuring { yield } : yield
+        end
       end
+
       true
+    end
+  end
+
+  def run_isolated_sidekiq_job
+    with_isolated_sidekiq_job do
+      @project = create_project
+
+      execute_sidekiq_job
     end
   end
 

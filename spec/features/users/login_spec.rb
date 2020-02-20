@@ -152,7 +152,7 @@ describe 'Login' do
     end
   end
 
-  describe 'with two-factor authentication' do
+  describe 'with two-factor authentication', :js do
     def enter_code(code)
       fill_in 'user_otp_attempt', with: code
       click_button 'Verify code'
@@ -797,7 +797,6 @@ describe 'Login' do
 
     before do
       stub_application_setting(send_user_confirmation_email: true)
-      stub_feature_flags(soft_email_confirmation: true)
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
     end
 

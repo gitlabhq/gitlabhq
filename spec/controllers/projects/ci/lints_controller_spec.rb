@@ -39,7 +39,7 @@ describe Projects::Ci::LintsController do
       end
 
       it 'responds with 404' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -115,7 +115,7 @@ describe Projects::Ci::LintsController do
       end
 
       it 'responds with 404' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

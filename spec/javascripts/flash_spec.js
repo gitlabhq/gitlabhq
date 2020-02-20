@@ -40,7 +40,7 @@ describe('Flash', () => {
 
       expect(el.style['transition-property']).toBe('opacity');
 
-      expect(el.style['transition-duration']).toBe('0.3s');
+      expect(el.style['transition-duration']).toBe('0.15s');
     });
 
     it('sets opacity style', () => {

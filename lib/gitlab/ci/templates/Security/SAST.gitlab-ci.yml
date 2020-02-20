@@ -37,11 +37,8 @@ sast:
         fi
       fi
     - |
-      printenv | grep -E '^(DOCKER_|CI|GITLAB_|FF_|HOME|PWD|OLDPWD|PATH|SHLVL|HOSTNAME)' | cut -d'=' -f1 | \
-        (while IFS='\\n' read -r VAR; do unset -v "$VAR"; done; /bin/printenv > .env)
-    - |
-      docker run \
-        --env-file .env \
+      ENVS=`printenv | grep -vE '^(DOCKER_|CI|GITLAB_|FF_|HOME|PWD|OLDPWD|PATH|SHLVL|HOSTNAME)' | sed -n '/^[^\t]/s/=.*//p' | sed '/^$/d' | sed 's/^/-e /g' | tr '\n' ' '`
+      docker run "$ENVS" \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code

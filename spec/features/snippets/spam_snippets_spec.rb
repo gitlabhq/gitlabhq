@@ -5,6 +5,10 @@ require 'spec_helper'
 describe 'User creates snippet', :js do
   let(:user) { create(:user) }
 
+  def description_field
+    find('.js-description-input input,textarea')
+  end
+
   before do
     stub_feature_flags(allow_possible_spam: false)
     stub_feature_flags(snippets_vue: false)
@@ -22,7 +26,11 @@ describe 'User creates snippet', :js do
     visit new_snippet_path
 
     fill_in 'personal_snippet_title', with: 'My Snippet Title'
+
+    # Click placeholder first to expand full description field
+    description_field.click
     fill_in 'personal_snippet_description', with: 'My Snippet **Description**'
+
     find('#personal_snippet_visibility_level_20').set(true)
     page.within('.file-editor') do
       find('.ace_text-input', visible: false).send_keys 'Hello World!'

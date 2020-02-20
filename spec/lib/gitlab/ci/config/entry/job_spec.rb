@@ -110,6 +110,10 @@ describe Gitlab::Ci::Config::Entry::Job do
 
         it { expect(entry).to be_valid }
 
+        it "returns scheduling_type as :dag" do
+          expect(entry.value[:scheduling_type]).to eq(:dag)
+        end
+
         context 'when has dependencies' do
           let(:config) do
             {
@@ -598,7 +602,8 @@ describe Gitlab::Ci::Config::Entry::Job do
                    ignore: false,
                    after_script: %w[cleanup],
                    only: { refs: %w[branches tags] },
-                   variables: {})
+                   variables: {},
+                   scheduling_type: :stage)
         end
       end
     end

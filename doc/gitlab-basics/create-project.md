@@ -119,7 +119,7 @@ set to Private by default (you can later change it in the [project's settings](.
 
 This can be done by using either SSH or HTTPS:
 
-```sh
+```shell
 ## Git push using SSH
 git push --set-upstream git@gitlab.example.com:namespace/nonexistent-project.git master
 

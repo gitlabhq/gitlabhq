@@ -30,9 +30,9 @@ describe 'Environment > Metrics' do
       click_link('See metrics')
 
       expect(page).to have_metrics_path(environment)
-      expect(page).to have_css('div.js-environments-dropdown')
+      expect(page).to have_css('[data-qa-selector="environments_dropdown"]')
 
-      within('div.js-environments-dropdown') do
+      within('[data-qa-selector="environments_dropdown"]') do
         # Click on the dropdown
         click_on(environment.name)
 

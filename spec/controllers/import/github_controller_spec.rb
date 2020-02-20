@@ -22,7 +22,7 @@ describe Import::GithubController do
 
       get :new
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
     end
 
     it "prompts for an access token if GitHub not configured" do
@@ -31,7 +31,7 @@ describe Import::GithubController do
 
       get :new
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     context 'when importing a CI/CD project' do
@@ -71,6 +71,8 @@ describe Import::GithubController do
 
   describe "POST create" do
     it_behaves_like 'a GitHub-ish import controller: POST create'
+
+    it_behaves_like 'project import rate limiter'
   end
 
   describe "GET realtime_changes" do

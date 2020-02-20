@@ -44,6 +44,8 @@ class AuditEventService
   end
 
   def log_security_event_to_database
+    return if Gitlab::Database.read_only?
+
     SecurityEvent.create(base_payload.merge(details: @details))
   end
 end

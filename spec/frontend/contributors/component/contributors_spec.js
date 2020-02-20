@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { createStore } from '~/contributors/stores';
 import axios from '~/lib/utils/axios_utils';
@@ -22,7 +22,7 @@ function factory() {
   mock.onGet().reply(200, chartData);
   store = createStore();
 
-  wrapper = shallowMount(Component, {
+  wrapper = mount(Component, {
     propsData: {
       endpoint,
       branch,

@@ -17,11 +17,7 @@ describe 'Self-Monitoring project requests' do
         login_as(admin)
       end
 
-      context 'with feature flag disabled' do
-        it_behaves_like 'not accessible if feature flag is disabled'
-      end
-
-      context 'with feature flag enabled' do
+      context 'when the self monitoring project is created' do
         let(:status_api) { status_create_self_monitoring_project_admin_application_settings_path }
 
         it_behaves_like 'triggers async worker, returns sidekiq job_id with response accepted'
@@ -45,11 +41,7 @@ describe 'Self-Monitoring project requests' do
         login_as(admin)
       end
 
-      context 'with feature flag disabled' do
-        it_behaves_like 'not accessible if feature flag is disabled'
-      end
-
-      context 'with feature flag enabled' do
+      context 'when the self monitoring project is being created' do
         it_behaves_like 'handles invalid job_id'
 
         context 'when job is in progress' do
@@ -68,6 +60,8 @@ describe 'Self-Monitoring project requests' do
           let(:job_id) { nil }
 
           it 'returns bad_request' do
+            create(:application_setting)
+
             subject
 
             aggregate_failures do
@@ -81,11 +75,10 @@ describe 'Self-Monitoring project requests' do
         end
 
         context 'when self-monitoring project exists' do
-          let(:project) { build(:project) }
+          let(:project) { create(:project) }
 
           before do
-            stub_application_setting(instance_administration_project_id: 1)
-            stub_application_setting(instance_administration_project: project)
+            create(:application_setting, self_monitoring_project_id: project.id)
           end
 
           it 'does not need job_id' do
@@ -94,7 +87,7 @@ describe 'Self-Monitoring project requests' do
             aggregate_failures do
               expect(response).to have_gitlab_http_status(:success)
               expect(json_response).to eq(
-                'project_id' => 1,
+                'project_id' => project.id,
                 'project_full_path' => project.full_path
               )
             end
@@ -106,7 +99,7 @@ describe 'Self-Monitoring project requests' do
             aggregate_failures do
               expect(response).to have_gitlab_http_status(:success)
               expect(json_response).to eq(
-                'project_id' => 1,
+                'project_id' => project.id,
                 'project_full_path' => project.full_path
               )
             end
@@ -128,11 +121,7 @@ describe 'Self-Monitoring project requests' do
         login_as(admin)
       end
 
-      context 'with feature flag disabled' do
-        it_behaves_like 'not accessible if feature flag is disabled'
-      end
-
-      context 'with feature flag enabled' do
+      context 'when the self monitoring project is deleted' do
         let(:status_api) { status_delete_self_monitoring_project_admin_application_settings_path }
 
         it_behaves_like 'triggers async worker, returns sidekiq job_id with response accepted'
@@ -156,11 +145,7 @@ describe 'Self-Monitoring project requests' do
         login_as(admin)
       end
 
-      context 'with feature flag disabled' do
-        it_behaves_like 'not accessible if feature flag is disabled'
-      end
-
-      context 'with feature flag enabled' do
+      context 'when the self monitoring project is being deleted' do
         it_behaves_like 'handles invalid job_id'
 
         context 'when job is in progress' do
@@ -169,7 +154,7 @@ describe 'Self-Monitoring project requests' do
               .with(job_id)
               .and_return(true)
 
-            stub_application_setting(instance_administration_project_id: 1)
+            stub_application_setting(self_monitoring_project_id: 1)
           end
 
           it_behaves_like 'sets polling header and returns accepted' do
@@ -179,7 +164,7 @@ describe 'Self-Monitoring project requests' do
 
         context 'when self-monitoring project exists and job does not exist' do
           before do
-            stub_application_setting(instance_administration_project_id: 1)
+            create(:application_setting, self_monitoring_project_id: create(:project).id)
           end
 
           it 'returns bad_request' do
@@ -196,6 +181,10 @@ describe 'Self-Monitoring project requests' do
         end
 
         context 'when self-monitoring project does not exist' do
+          before do
+            create(:application_setting)
+          end
+
           it 'does not need job_id' do
             get status_delete_self_monitoring_project_admin_application_settings_path
 

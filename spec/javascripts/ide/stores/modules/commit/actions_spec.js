@@ -7,7 +7,7 @@ import eventHub from '~/ide/eventhub';
 import consts from '~/ide/stores/modules/commit/constants';
 import * as mutationTypes from '~/ide/stores/modules/commit/mutation_types';
 import * as actions from '~/ide/stores/modules/commit/actions';
-import { commitActionTypes } from '~/ide/constants';
+import { commitActionTypes, PERMISSION_CREATE_MR } from '~/ide/constants';
 import testAction from '../../../../helpers/vuex_action_helper';
 
 const TEST_COMMIT_SHA = '123456789';
@@ -131,7 +131,7 @@ describe('IDE commit module actions', () => {
         .dispatch('commit/setLastCommitMessage', { short_id: '123' })
         .then(() => {
           expect(store.state.lastCommitMsg).toContain(
-            'Your changes have been committed. Commit <a href="http://testing/commit/123" class="commit-sha">123</a>',
+            'Your changes have been committed. Commit <a href="http://testing/-/commit/123" class="commit-sha">123</a>',
           );
         })
         .then(done)
@@ -149,7 +149,7 @@ describe('IDE commit module actions', () => {
         })
         .then(() => {
           expect(store.state.lastCommitMsg).toBe(
-            'Your changes have been committed. Commit <a href="http://testing/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
+            'Your changes have been committed. Commit <a href="http://testing/-/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
           );
         })
         .then(done)
@@ -313,6 +313,9 @@ describe('IDE commit module actions', () => {
                 },
               },
             },
+            userPermissions: {
+              [PERMISSION_CREATE_MR]: true,
+            },
           },
         },
       });
@@ -407,7 +410,7 @@ describe('IDE commit module actions', () => {
           .dispatch('commit/commitChanges')
           .then(() => {
             expect(store.state.lastCommitMsg).toBe(
-              'Your changes have been committed. Commit <a href="webUrl/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
+              'Your changes have been committed. Commit <a href="webUrl/-/commit/123" class="commit-sha">123</a> with 1 additions, 2 deletions.',
             );
 
             done();
@@ -461,7 +464,7 @@ describe('IDE commit module actions', () => {
             .dispatch('commit/commitChanges')
             .then(() => {
               expect(visitUrl).toHaveBeenCalledWith(
-                `webUrl/merge_requests/new?merge_request[source_branch]=${
+                `webUrl/-/merge_requests/new?merge_request[source_branch]=${
                   store.getters['commit/placeholderBranchName']
                 }&merge_request[target_branch]=master&nav_source=webide`,
               );

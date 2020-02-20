@@ -1,0 +1,5 @@
+---
+title: Enable recaptcha check on sign up
+merge_request: 24274
+author:
+type: fixed

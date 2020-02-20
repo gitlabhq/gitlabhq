@@ -212,14 +212,7 @@ describe Gitlab::Diff::LinesUnfolder do
 
   context 'position requires a middle expansion and new match lines' do
     let(:position) do
-      Gitlab::Diff::Position.new(base_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 start_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 head_sha: "1487062132228de836236c522fe52fed4980a46c",
-                                 old_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 new_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 position_type:  "text",
-                                 old_line: 43,
-                                 new_line: 40)
+      build(:text_diff_position, old_line: 43, new_line: 40)
     end
 
     context 'blob lines' do
@@ -321,14 +314,7 @@ describe Gitlab::Diff::LinesUnfolder do
 
   context 'position requires a middle expansion and no top match line' do
     let(:position) do
-      Gitlab::Diff::Position.new(base_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 start_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 head_sha: "1487062132228de836236c522fe52fed4980a46c",
-                                 old_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 new_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 position_type:  "text",
-                                 old_line: 16,
-                                 new_line: 17)
+      build(:text_diff_position, old_line: 16, new_line: 17)
     end
 
     context 'blob lines' do
@@ -422,14 +408,7 @@ describe Gitlab::Diff::LinesUnfolder do
 
   context 'position requires a middle expansion and no bottom match line' do
     let(:position) do
-      Gitlab::Diff::Position.new(base_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 start_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 head_sha: "1487062132228de836236c522fe52fed4980a46c",
-                                 old_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 new_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 position_type:  "text",
-                                 old_line: 82,
-                                 new_line: 79)
+      build(:text_diff_position, old_line: 82, new_line: 79)
     end
 
     context 'blob lines' do
@@ -523,14 +502,7 @@ describe Gitlab::Diff::LinesUnfolder do
 
   context 'position requires a short top expansion' do
     let(:position) do
-      Gitlab::Diff::Position.new(base_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 start_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 head_sha: "1487062132228de836236c522fe52fed4980a46c",
-                                 old_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 new_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 position_type: "text",
-                                 old_line: 6,
-                                 new_line: 6)
+      build(:text_diff_position, old_line: 6, new_line: 6)
     end
 
     context 'blob lines' do
@@ -621,14 +593,7 @@ describe Gitlab::Diff::LinesUnfolder do
 
   context 'position sits between two match lines (no expasion needed)' do
     let(:position) do
-      Gitlab::Diff::Position.new(base_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 start_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 head_sha: "1487062132228de836236c522fe52fed4980a46c",
-                                 old_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 new_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 position_type: "text",
-                                 old_line: 64,
-                                 new_line: 61)
+      build(:text_diff_position, old_line: 64, new_line: 61)
     end
 
     context 'diff lines' do
@@ -640,14 +605,7 @@ describe Gitlab::Diff::LinesUnfolder do
 
   context 'position requires bottom expansion and new match lines' do
     let(:position) do
-      Gitlab::Diff::Position.new(base_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 start_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                 head_sha: "1487062132228de836236c522fe52fed4980a46c",
-                                 old_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 new_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                 position_type: "text",
-                                 old_line: 107,
-                                 new_line: 99)
+      build(:text_diff_position, old_line: 107, new_line: 99)
     end
 
     context 'blob lines' do
@@ -744,14 +702,7 @@ describe Gitlab::Diff::LinesUnfolder do
 
     context 'position requires bottom expansion and no new match line' do
       let(:position) do
-        Gitlab::Diff::Position.new(base_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                   start_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
-                                   head_sha: "1487062132228de836236c522fe52fed4980a46c",
-                                   old_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                   new_path: "build-aux/flatpak/org.gnome.Nautilus.json",
-                                   position_type: "text",
-                                   old_line: 95,
-                                   new_line: 87)
+        build(:text_diff_position, old_line: 95, new_line: 87)
       end
 
       context 'blob lines' do
@@ -844,16 +795,7 @@ describe Gitlab::Diff::LinesUnfolder do
   end
 
   context 'positioned on an image' do
-    let(:position) do
-      Gitlab::Diff::Position.new(
-        base_sha: '1c59dfa64afbea8c721bb09a06a9d326c952ea19',
-        start_sha: '1c59dfa64afbea8c721bb09a06a9d326c952ea19',
-        head_sha: '1487062132228de836236c522fe52fed4980a46c',
-        old_path: 'image.jpg',
-        new_path: 'image.jpg',
-        position_type: 'image'
-      )
-    end
+    let(:position) { build(:image_diff_position) }
 
     before do
       allow(old_blob).to receive(:binary?).and_return(binary?)

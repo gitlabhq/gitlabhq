@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'create_merge_request quick action' do
+RSpec.shared_examples 'create_merge_request quick action' do
   context 'create a merge request starting from an issue' do
     def expect_mr_quickaction(success, branch_name = nil)
       command_message = if branch_name

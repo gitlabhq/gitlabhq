@@ -14,7 +14,7 @@ describe 'getting merge request information nested in a project' do
     graphql_query_for(
       'project',
       { 'fullPath' => project.full_path },
-      query_graphql_field('mergeRequest', iid: merge_request.iid)
+      query_graphql_field('mergeRequest', iid: merge_request.iid.to_s)
     )
   end
 

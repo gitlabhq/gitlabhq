@@ -138,5 +138,5 @@ There are four kinds of filters you can use on your To-Do List.
 
 You can also filter by more than one of these at the same time. The possible Actions are `Any Action`, `Assigned`, `Mentioned`, `Added`, `Pipelines`, and `Directly Addressed`, [as described above](#what-triggers-a-to-do).
 
-[ce-2817]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/2817
-[ce-7926]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7926
+[ce-2817]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2817
+[ce-7926]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7926

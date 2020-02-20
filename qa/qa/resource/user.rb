@@ -35,14 +35,17 @@ module QA
       end
 
       def email
-        @email ||= "#{username}@example.com"
+        @email ||= begin
+          api_email = api_resource&.dig(:email)
+          api_email && !api_email.empty? ? api_email : "#{username}@example.com"
+        end
       end
 
       def public_email
         @public_email ||= begin
           api_public_email = api_resource&.dig(:public_email)
 
-          api_public_email && api_public_email != '' ? api_public_email : Runtime::User.default_email
+          api_public_email && !api_public_email.empty? ? api_public_email : Runtime::User.default_email
         end
       end
 
@@ -87,6 +90,8 @@ module QA
       end
 
       def api_get_path
+        return "/user" if fetching_own_data?
+
         "/users/#{fetch_id(username)}"
       end
 
@@ -135,6 +140,10 @@ module QA
         end
 
         users.first[:id]
+      end
+
+      def fetching_own_data?
+        user&.username == username || Runtime::User.username == username
       end
     end
   end

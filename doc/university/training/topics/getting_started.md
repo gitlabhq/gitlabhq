@@ -8,13 +8,13 @@ comments: false
 
 - Create a new repository by instantiating it through:
 
-  ```bash
+  ```shell
   git init
   ```
 
 - Copy an existing project by cloning the repository through:
 
-  ```bash
+  ```shell
   git clone <url>
   ```
 
@@ -24,7 +24,7 @@ comments: false
 - Bare repositories don't allow file editing or committing changes.
 - Create a bare repo with:
 
-  ```bash
+  ```shell
   git init --bare project-name.git
   ```
 
@@ -35,7 +35,7 @@ comments: false
 1. Create a '`Workspace`' directory in your home directory.
 1. Clone the '`training-examples`' project.
 
-```sh
+```shell
 mkdir ~/workspace
 cd ~/workspace
 
@@ -67,7 +67,7 @@ Modified files that have been marked to go in the next commit.
 1. Push the commit to the remote
 1. View the Git log
 
-```sh
+```shell
 # Edit `edit_this_file.rb`
 git status
 git diff

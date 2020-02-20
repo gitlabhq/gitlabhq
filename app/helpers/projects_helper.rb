@@ -3,6 +3,11 @@
 module ProjectsHelper
   prepend_if_ee('::EE::ProjectsHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
+  def project_incident_management_setting
+    @project_incident_management_setting ||= @project.incident_management_setting ||
+      @project.build_incident_management_setting
+  end
+
   def link_to_project(project)
     link_to namespace_project_path(namespace_id: project.namespace, id: project), title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
@@ -403,6 +408,10 @@ module ProjectsHelper
       nav_tabs << :operations
     end
 
+    if can?(current_user, :read_cycle_analytics, project)
+      nav_tabs << :cycle_analytics
+    end
+
     tab_ability_map.each do |tab, ability|
       if can?(current_user, ability, project)
         nav_tabs << tab
@@ -425,7 +434,7 @@ module ProjectsHelper
     {
       environments:     :read_environment,
       milestones:       :read_milestone,
-      snippets:         :read_project_snippet,
+      snippets:         :read_snippet,
       settings:         :admin_project,
       builds:           :read_build,
       clusters:         :read_cluster,
@@ -443,7 +452,7 @@ module ProjectsHelper
       blobs:          :download_code,
       commits:        :download_code,
       merge_requests: :read_merge_request,
-      notes:          [:read_merge_request, :download_code, :read_issue, :read_project_snippet],
+      notes:          [:read_merge_request, :download_code, :read_issue, :read_snippet],
       members:        :read_project_member
     )
   end
@@ -643,7 +652,6 @@ module ProjectsHelper
       projects#show
       projects#activity
       releases#index
-      cycle_analytics#show
     ]
   end
 
@@ -700,10 +708,19 @@ module ProjectsHelper
   end
 
   def vue_file_list_enabled?
-    Feature.enabled?(:vue_file_list, @project)
+    Feature.enabled?(:vue_file_list, @project, default_enabled: true)
+  end
+
+  def native_code_navigation_enabled?(project)
+    Feature.enabled?(:code_navigation, project)
   end
 
   def show_visibility_confirm_modal?(project)
     project.unlink_forks_upon_visibility_decrease_enabled? && project.visibility_level > Gitlab::VisibilityLevel::PRIVATE && project.forks_count > 0
+  end
+
+  def settings_container_registry_expiration_policy_available?(project)
+    Gitlab.config.registry.enabled &&
+      can?(current_user, :destroy_container_image, project)
   end
 end

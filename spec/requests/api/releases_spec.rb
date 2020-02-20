@@ -9,6 +9,7 @@ describe API::Releases do
   let(:guest) { create(:user) }
   let(:non_project_member) { create(:user) }
   let(:commit) { create(:commit, project: project) }
+  let(:last_release) { project.releases.last }
 
   before do
     project.add_maintainer(maintainer)
@@ -60,9 +61,9 @@ describe API::Releases do
       it 'returns rendered helper paths' do
         get api("/projects/#{project.id}/releases", maintainer)
 
-        expect(json_response.first['commit_path']).to eq("/#{release_2.project.full_path}/commit/#{release_2.commit.id}")
+        expect(json_response.first['commit_path']).to eq("/#{release_2.project.full_path}/-/commit/#{release_2.commit.id}")
         expect(json_response.first['tag_path']).to eq("/#{release_2.project.full_path}/-/tags/#{release_2.tag}")
-        expect(json_response.second['commit_path']).to eq("/#{release_1.project.full_path}/commit/#{release_1.commit.id}")
+        expect(json_response.second['commit_path']).to eq("/#{release_1.project.full_path}/-/commit/#{release_1.commit.id}")
         expect(json_response.second['tag_path']).to eq("/#{release_1.project.full_path}/-/tags/#{release_1.tag}")
       end
 
@@ -76,7 +77,7 @@ describe API::Releases do
         mr_uri = URI.parse(links['merge_requests_url'])
         issue_uri = URI.parse(links['issues_url'])
 
-        expect(mr_uri.path).to eq("#{path_base}/merge_requests")
+        expect(mr_uri.path).to eq("#{path_base}/-/merge_requests")
         expect(issue_uri.path).to eq("#{path_base}/issues")
         expect(mr_uri.query).to eq(expected_query)
         expect(issue_uri.query).to eq(expected_query)
@@ -163,7 +164,7 @@ describe API::Releases do
 
           expect(response).to match_response_schema('public_api/v4/releases')
           expect(json_response.first['assets']['count']).to eq(release.links.count + release.sources.count)
-          expect(json_response.first['commit_path']).to eq("/#{release.project.full_path}/commit/#{release.commit.id}")
+          expect(json_response.first['commit_path']).to eq("/#{release.project.full_path}/-/commit/#{release.commit.id}")
           expect(json_response.first['tag_path']).to eq("/#{release.project.full_path}/-/tags/#{release.tag}")
         end
       end
@@ -213,7 +214,7 @@ describe API::Releases do
         expect(json_response['author']['name']).to eq(maintainer.name)
         expect(json_response['commit']['id']).to eq(commit.id)
         expect(json_response['assets']['count']).to eq(4)
-        expect(json_response['commit_path']).to eq("/#{release.project.full_path}/commit/#{release.commit.id}")
+        expect(json_response['commit_path']).to eq("/#{release.project.full_path}/-/commit/#{release.commit.id}")
         expect(json_response['tag_path']).to eq("/#{release.project.full_path}/-/tags/#{release.tag}")
       end
 
@@ -707,6 +708,109 @@ describe API::Releases do
         post api("/projects/#{project.id}/releases", maintainer), params: params
 
         expect(response).to have_gitlab_http_status(:conflict)
+      end
+    end
+
+    context 'Evidence collection' do
+      let(:params) do
+        {
+          name: 'New release',
+          tag_name: 'v0.1',
+          description: 'Super nice release',
+          released_at: released_at
+        }.compact
+      end
+
+      around do |example|
+        Timecop.freeze { example.run }
+      end
+
+      subject do
+        post api("/projects/#{project.id}/releases", maintainer), params: params
+      end
+
+      context 'historical release' do
+        let(:released_at) { 3.weeks.ago }
+
+        it 'does not execute CreateEvidenceWorker' do
+          expect { subject }.not_to change(CreateEvidenceWorker.jobs, :size)
+        end
+
+        it 'does not create an Evidence object', :sidekiq_inline do
+          expect { subject }.not_to change(Evidence, :count)
+        end
+
+        it 'is a historical release' do
+          subject
+
+          expect(last_release.historical_release?).to be_truthy
+        end
+
+        it 'is not an upcoming release' do
+          subject
+
+          expect(last_release.upcoming_release?).to be_falsy
+        end
+      end
+
+      context 'immediate release' do
+        let(:released_at) { nil }
+
+        it 'sets `released_at` to the current dttm' do
+          subject
+
+          expect(last_release.updated_at).to be_like_time(Time.now)
+        end
+
+        it 'queues CreateEvidenceWorker' do
+          expect { subject }.to change(CreateEvidenceWorker.jobs, :size).by(1)
+        end
+
+        it 'creates Evidence', :sidekiq_inline do
+          expect { subject }.to change(Evidence, :count).by(1)
+        end
+
+        it 'is not a historical release' do
+          subject
+
+          expect(last_release.historical_release?).to be_falsy
+        end
+
+        it 'is not an upcoming release' do
+          subject
+
+          expect(last_release.upcoming_release?).to be_falsy
+        end
+      end
+
+      context 'upcoming release' do
+        let(:released_at) { 1.day.from_now }
+
+        it 'queues CreateEvidenceWorker' do
+          expect { subject }.to change(CreateEvidenceWorker.jobs, :size).by(1)
+        end
+
+        it 'queues CreateEvidenceWorker at the released_at timestamp' do
+          subject
+
+          expect(CreateEvidenceWorker.jobs.last['at']).to eq(released_at.to_i)
+        end
+
+        it 'creates Evidence', :sidekiq_inline do
+          expect { subject }.to change(Evidence, :count).by(1)
+        end
+
+        it 'is not a historical release' do
+          subject
+
+          expect(last_release.historical_release?).to be_falsy
+        end
+
+        it 'is an upcoming release' do
+          subject
+
+          expect(last_release.upcoming_release?).to be_truthy
+        end
       end
     end
   end

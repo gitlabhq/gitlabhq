@@ -15,7 +15,7 @@ class BuildArtifactEntity < Grape::Entity
     fast_download_project_job_artifacts_path(project, job)
   end
 
-  expose :keep_path, if: -> (*) { job.has_expiring_artifacts? } do |job|
+  expose :keep_path, if: -> (*) { job.has_expiring_archive_artifacts? } do |job|
     fast_keep_project_job_artifacts_path(project, job)
   end
 

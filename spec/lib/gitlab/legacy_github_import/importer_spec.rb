@@ -205,7 +205,7 @@ describe Gitlab::LegacyGithubImport::Importer do
         let(:gh_pull_request) { Gitlab::LegacyGithubImport::PullRequestFormatter.new(project, closed_pull_request) }
 
         it 'does remove branches' do
-          expect(subject).to receive(:remove_branch).at_least(2).times
+          expect(subject).to receive(:remove_branch).at_least(:twice)
           subject.send(:clean_up_restored_branches, gh_pull_request)
         end
       end

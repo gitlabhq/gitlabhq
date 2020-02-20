@@ -9,7 +9,7 @@ authenticated users.
 GET /version
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/version
 ```
 

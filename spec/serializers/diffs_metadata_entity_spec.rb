@@ -29,6 +29,7 @@ describe DiffsMetadataEntity do
         :added_lines, :removed_lines, :render_overflow_warning,
         :email_patch_path, :plain_diff_path,
         :merge_request_diffs,
+        :context_commits,
         # Attributes
         :diff_files
       )

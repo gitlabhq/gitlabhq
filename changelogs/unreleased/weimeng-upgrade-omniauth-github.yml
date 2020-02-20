@@ -1,0 +1,5 @@
+---
+title: Upgrade omniauth-github gem to fix GitHub API deprecation notice
+merge_request: 24928
+author:
+type: fixed

@@ -6,6 +6,7 @@ class GitlabShellWorker
 
   feature_category :source_code_management
   latency_sensitive_worker!
+  weight 2
 
   def perform(action, *arg)
     Gitlab::GitalyClient::NamespaceService.allow do

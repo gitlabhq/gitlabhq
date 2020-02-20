@@ -76,7 +76,7 @@ describe 'Merge request > User sees diff', :js do
     end
 
     context 'as user who needs to fork' do
-      it 'shows fork/cancel confirmation', :sidekiq_might_not_need_inline do
+      it 'shows fork/cancel confirmation', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/196749' do
         sign_in(user)
         visit diffs_project_merge_request_path(project, merge_request)
 

@@ -4,7 +4,7 @@
 #
 # Requires an API request:
 #   let(:request) { get api("/projects/#{project.id}/repository/branches", user) }
-shared_examples_for '400 response' do
+RSpec.shared_examples '400 response' do
   let(:message) { nil }
 
   before do
@@ -13,7 +13,7 @@ shared_examples_for '400 response' do
   end
 
   it 'returns 400' do
-    expect(response).to have_gitlab_http_status(400)
+    expect(response).to have_gitlab_http_status(:bad_request)
 
     if message.present?
       expect(json_response['message']).to eq(message)
@@ -21,18 +21,18 @@ shared_examples_for '400 response' do
   end
 end
 
-shared_examples_for '403 response' do
+RSpec.shared_examples '403 response' do
   before do
     # Fires the request
     request
   end
 
   it 'returns 403' do
-    expect(response).to have_gitlab_http_status(403)
+    expect(response).to have_gitlab_http_status(:forbidden)
   end
 end
 
-shared_examples_for '404 response' do
+RSpec.shared_examples '404 response' do
   let(:message) { nil }
 
   before do
@@ -41,7 +41,7 @@ shared_examples_for '404 response' do
   end
 
   it 'returns 404' do
-    expect(response).to have_gitlab_http_status(404)
+    expect(response).to have_gitlab_http_status(:not_found)
     expect(json_response).to be_an Object
 
     if message.present?
@@ -50,7 +50,7 @@ shared_examples_for '404 response' do
   end
 end
 
-shared_examples_for '412 response' do
+RSpec.shared_examples '412 response' do
   let(:params) { nil }
   let(:success_status) { 204 }
 
@@ -60,7 +60,7 @@ shared_examples_for '412 response' do
     end
 
     it 'returns 412 with a JSON error' do
-      expect(response).to have_gitlab_http_status(412)
+      expect(response).to have_gitlab_http_status(:precondition_failed)
       expect(json_response).to eq('message' => '412 Precondition Failed')
     end
   end

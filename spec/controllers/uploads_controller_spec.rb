@@ -46,7 +46,7 @@ describe UploadsController do
         it "returns 401 when the user is not logged in" do
           post :create, params: { model: model, id: snippet.id }, format: :json
 
-          expect(response).to have_gitlab_http_status(401)
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
 
         it "returns 404 when user can't comment on a snippet" do
@@ -55,7 +55,7 @@ describe UploadsController do
           sign_in(user)
           post :create, params: { model: model, id: private_snippet.id }, format: :json
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -67,7 +67,7 @@ describe UploadsController do
         it "returns an error without file" do
           post :create, params: { model: model, id: snippet.id }, format: :json
 
-          expect(response).to have_gitlab_http_status(422)
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
         end
 
         it "returns an error with invalid model" do
@@ -78,7 +78,7 @@ describe UploadsController do
         it "returns 404 status when object not found" do
           post :create, params: { model: model, id: 9999 }, format: :json
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
 
         context 'with valid image' do
@@ -129,7 +129,7 @@ describe UploadsController do
       it 'returns 401 when the user has no access' do
         post :create, params: { model: 'user', id: user.id }, format: :json
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
       context 'when user is logged in' do
@@ -188,7 +188,7 @@ describe UploadsController do
 
           post :create, params: { model: model, id: another_user.id, file: txt }, format: :json
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -246,7 +246,7 @@ describe UploadsController do
           it "responds with status 401" do
             get :show, params: { model: "user", mounted_as: "avatar", id: user.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(401)
+            expect(response).to have_gitlab_http_status(:unauthorized)
           end
         end
 
@@ -254,7 +254,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, params: { model: "user", mounted_as: "avatar", id: user.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it_behaves_like 'content publicly cached' do
@@ -271,7 +271,7 @@ describe UploadsController do
         it "responds with status 200" do
           get :show, params: { model: "user", mounted_as: "avatar", id: user.id, filename: "dk.png" }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it_behaves_like 'content publicly cached' do
@@ -296,7 +296,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, params: { model: "project", mounted_as: "avatar", id: project.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it_behaves_like 'content 5 min private cached with revalidation' do
@@ -316,7 +316,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, params: { model: "project", mounted_as: "avatar", id: project.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it_behaves_like 'content 5 min private cached with revalidation' do
@@ -338,7 +338,7 @@ describe UploadsController do
           it "responds with status 401" do
             get :show, params: { model: "project", mounted_as: "avatar", id: project.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(401)
+            expect(response).to have_gitlab_http_status(:unauthorized)
           end
         end
 
@@ -361,7 +361,7 @@ describe UploadsController do
               it "responds with status 401" do
                 get :show, params: { model: "project", mounted_as: "avatar", id: project.id, filename: "dk.png" }
 
-                expect(response).to have_gitlab_http_status(401)
+                expect(response).to have_gitlab_http_status(:unauthorized)
               end
             end
 
@@ -369,7 +369,7 @@ describe UploadsController do
               it "responds with status 200" do
                 get :show, params: { model: "project", mounted_as: "avatar", id: project.id, filename: "dk.png" }
 
-                expect(response).to have_gitlab_http_status(200)
+                expect(response).to have_gitlab_http_status(:ok)
               end
 
               it_behaves_like 'content 5 min private cached with revalidation' do
@@ -386,7 +386,7 @@ describe UploadsController do
             it "responds with status 404" do
               get :show, params: { model: "project", mounted_as: "avatar", id: project.id, filename: "dk.png" }
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
         end
@@ -401,7 +401,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, params: { model: "group", mounted_as: "avatar", id: group.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it_behaves_like 'content 5 min private cached with revalidation' do
@@ -421,7 +421,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, params: { model: "group", mounted_as: "avatar", id: group.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it_behaves_like 'content 5 min private cached with revalidation' do
@@ -457,7 +457,7 @@ describe UploadsController do
               it "responds with status 401" do
                 get :show, params: { model: "group", mounted_as: "avatar", id: group.id, filename: "dk.png" }
 
-                expect(response).to have_gitlab_http_status(401)
+                expect(response).to have_gitlab_http_status(:unauthorized)
               end
             end
 
@@ -465,7 +465,7 @@ describe UploadsController do
               it "responds with status 200" do
                 get :show, params: { model: "group", mounted_as: "avatar", id: group.id, filename: "dk.png" }
 
-                expect(response).to have_gitlab_http_status(200)
+                expect(response).to have_gitlab_http_status(:ok)
               end
 
               it_behaves_like 'content 5 min private cached with revalidation' do
@@ -482,7 +482,7 @@ describe UploadsController do
             it "responds with status 404" do
               get :show, params: { model: "group", mounted_as: "avatar", id: group.id, filename: "dk.png" }
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
         end
@@ -502,7 +502,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it_behaves_like 'content not cached' do
@@ -522,7 +522,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it_behaves_like 'content not cached' do
@@ -544,7 +544,7 @@ describe UploadsController do
           it "responds with status 401" do
             get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
 
-            expect(response).to have_gitlab_http_status(401)
+            expect(response).to have_gitlab_http_status(:unauthorized)
           end
         end
 
@@ -567,7 +567,7 @@ describe UploadsController do
               it "responds with status 401" do
                 get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
 
-                expect(response).to have_gitlab_http_status(401)
+                expect(response).to have_gitlab_http_status(:unauthorized)
               end
             end
 
@@ -575,7 +575,7 @@ describe UploadsController do
               it "responds with status 200" do
                 get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
 
-                expect(response).to have_gitlab_http_status(200)
+                expect(response).to have_gitlab_http_status(:ok)
               end
 
               it_behaves_like 'content not cached' do
@@ -592,7 +592,7 @@ describe UploadsController do
             it "responds with status 404" do
               get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
         end
@@ -607,7 +607,7 @@ describe UploadsController do
           it 'responds with status 200' do
             get :show, params: { model: 'appearance', mounted_as: 'header_logo', id: appearance.id, filename: 'dk.png' }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it_behaves_like 'content publicly cached' do
@@ -627,7 +627,7 @@ describe UploadsController do
           it 'responds with status 200' do
             get :show, params: { model: 'appearance', mounted_as: 'logo', id: appearance.id, filename: 'dk.png' }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it_behaves_like 'content publicly cached' do
@@ -648,8 +648,8 @@ describe UploadsController do
         it 'successfully returns the file' do
           get :show, params: { model: 'appearance', mounted_as: 'favicon', id: appearance.id, filename: 'dk.png' }
 
-          expect(response).to have_gitlab_http_status(200)
-          expect(response.header['Content-Disposition']).to end_with 'filename="dk.png"'
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.header['Content-Disposition']).to include('filename="dk.png"')
         end
       end
 
@@ -657,7 +657,7 @@ describe UploadsController do
         it 'returns a 404' do
           get :show, params: { model: 'appearance', mounted_as: 'favicon', id: appearance.id, filename: 'bogus.png' }
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

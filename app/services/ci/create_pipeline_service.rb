@@ -61,7 +61,7 @@ module Ci
 
           Ci::ProcessPipelineService
             .new(pipeline)
-            .execute
+            .execute(nil, initial_process: true)
         end
       end
 

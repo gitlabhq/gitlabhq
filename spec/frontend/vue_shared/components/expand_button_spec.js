@@ -71,7 +71,7 @@ describe('Expand button', () => {
     it('renders button before text', () => {
       expect(expanderPrependEl().isVisible()).toBe(true);
       expect(expanderAppendEl().isVisible()).toBe(false);
-      expect(wrapper.find(ExpandButton).html()).toMatchSnapshot();
+      expect(wrapper.find(ExpandButton).element).toMatchSnapshot();
     });
   });
 
@@ -119,7 +119,7 @@ describe('Expand button', () => {
       it('renders button after text', () => {
         expect(expanderPrependEl().isVisible()).toBe(false);
         expect(expanderAppendEl().isVisible()).toBe(true);
-        expect(wrapper.find(ExpandButton).html()).toMatchSnapshot();
+        expect(wrapper.find(ExpandButton).element).toMatchSnapshot();
       });
     });
   });

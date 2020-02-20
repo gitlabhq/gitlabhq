@@ -8,7 +8,7 @@ describe Gitlab::PrivateCommitEmail do
   let(:valid_email) { "#{id}-foo@#{hostname}" }
   let(:invalid_email) { "#{id}-foo@users.noreply.bar.com" }
 
-  context '.regex' do
+  describe '.regex' do
     subject { described_class.regex }
 
     it { is_expected.to match("1-foo@#{hostname}") }
@@ -18,7 +18,7 @@ describe Gitlab::PrivateCommitEmail do
     it { is_expected.not_to match('foobar@gitlab.com') }
   end
 
-  context '.user_id_for_email' do
+  describe '.user_id_for_email' do
     it 'parses user id from email' do
       expect(described_class.user_id_for_email(valid_email)).to eq(id)
     end
@@ -28,7 +28,7 @@ describe Gitlab::PrivateCommitEmail do
     end
   end
 
-  context '.user_ids_for_email' do
+  describe '.user_ids_for_email' do
     it 'returns deduplicated user IDs for each valid email' do
       result = described_class.user_ids_for_emails([valid_email, valid_email, invalid_email])
 
@@ -41,7 +41,7 @@ describe Gitlab::PrivateCommitEmail do
     end
   end
 
-  context '.for_user' do
+  describe '.for_user' do
     it 'returns email in the format id-username@hostname' do
       user = create(:user)
 

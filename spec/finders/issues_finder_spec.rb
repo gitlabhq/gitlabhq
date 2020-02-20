@@ -29,26 +29,31 @@ describe IssuesFinder do
         end
 
         context 'filter by username' do
-          set(:user3) { create(:user) }
+          let_it_be(:user3) { create(:user) }
 
           before do
             project2.add_developer(user3)
-            issue3.assignees = [user2, user3]
+            issue2.assignees = [user2]
+            issue3.assignees = [user3]
           end
 
           it_behaves_like 'assignee username filter' do
-            let(:params) { { assignee_username: [user2.username, user3.username] } }
-            let(:expected_issuables) { [issue3] }
+            let(:params) { { assignee_username: [user2.username] } }
+            let(:expected_issuables) { [issue2] }
           end
 
           it_behaves_like 'assignee NOT username filter' do
-            let(:params) { { not: { assignee_username: [user2.username, user3.username] } } }
-            let(:expected_issuables) { [issue1, issue2, issue4] }
+            before do
+              issue2.assignees = [user2]
+            end
+
+            let(:params) { { not: { assignee_username: [user.username, user2.username] } } }
+            let(:expected_issuables) { [issue3, issue4] }
           end
         end
 
         it_behaves_like 'no assignee filter' do
-          set(:user3) { create(:user) }
+          let_it_be(:user3) { create(:user) }
           let(:expected_issuables) { [issue4] }
         end
 
@@ -395,8 +400,8 @@ describe IssuesFinder do
         context 'using NOT' do
           let(:params) { { not: { label_name: [label.title, label2.title].join(',') } } }
 
-          it 'returns issues that do not have ALL labels provided' do
-            expect(issues).to contain_exactly(issue1, issue3, issue4)
+          it 'returns issues that do not have any of the labels provided' do
+            expect(issues).to contain_exactly(issue1, issue4)
           end
         end
       end
@@ -417,8 +422,8 @@ describe IssuesFinder do
         context 'using NOT' do
           let(:params) { { not: { label_name: [label.title, label2.title].join(',') } } }
 
-          it 'returns issues that do not have ALL labels provided' do
-            expect(issues).to contain_exactly(issue1, issue3, issue4)
+          it 'returns issues that do not have ANY ONE of the labels provided' do
+            expect(issues).to contain_exactly(issue1, issue4)
           end
         end
       end
@@ -674,7 +679,7 @@ describe IssuesFinder do
       end
 
       context 'filtering by confidential' do
-        set(:confidential_issue) { create(:issue, project: project1, confidential: true) }
+        let_it_be(:confidential_issue) { create(:issue, project: project1, confidential: true) }
 
         context 'no filtering' do
           it 'returns all issues' do
@@ -772,7 +777,7 @@ describe IssuesFinder do
     it 'returns the number of rows for the default state' do
       finder = described_class.new(user)
 
-      expect(finder.row_count).to eq(5)
+      expect(finder.row_count).to eq(4)
     end
 
     it 'returns the number of rows for a given state' do
@@ -785,10 +790,10 @@ describe IssuesFinder do
   describe '#with_confidentiality_access_check' do
     let(:guest) { create(:user) }
 
-    set(:authorized_user) { create(:user) }
-    set(:project) { create(:project, namespace: authorized_user.namespace) }
-    set(:public_issue) { create(:issue, project: project) }
-    set(:confidential_issue) { create(:issue, project: project, confidential: true) }
+    let_it_be(:authorized_user) { create(:user) }
+    let_it_be(:project) { create(:project, namespace: authorized_user.namespace) }
+    let_it_be(:public_issue) { create(:issue, project: project) }
+    let_it_be(:confidential_issue) { create(:issue, project: project, confidential: true) }
 
     context 'when no project filter is given' do
       let(:params) { {} }

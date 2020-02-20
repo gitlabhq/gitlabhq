@@ -350,6 +350,12 @@ module Gitlab
 
       private
 
+      def fetch_blob(sha, path)
+        return unless sha
+
+        Blob.lazy(repository.project, sha, path)
+      end
+
       def total_blob_lines(blob)
         @total_lines ||= begin
           line_count = blob.lines.size
@@ -385,15 +391,11 @@ module Gitlab
       end
 
       def new_blob_lazy
-        return unless new_content_sha
-
-        Blob.lazy(repository.project, new_content_sha, file_path)
+        fetch_blob(new_content_sha, file_path)
       end
 
       def old_blob_lazy
-        return unless old_content_sha
-
-        Blob.lazy(repository.project, old_content_sha, old_path)
+        fetch_blob(old_content_sha, old_path)
       end
 
       def simple_viewer_class

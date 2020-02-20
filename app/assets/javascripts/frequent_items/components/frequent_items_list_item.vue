@@ -54,8 +54,8 @@ export default {
 <template>
   <li class="frequent-items-list-item-container">
     <a :href="webUrl" class="clearfix">
-      <div class="frequent-items-item-avatar-container">
-        <img v-if="hasAvatar" :src="avatarUrl" class="avatar rect-avatar s32" />
+      <div class="frequent-items-item-avatar-container avatar-container rect-avatar s32">
+        <img v-if="hasAvatar" :src="avatarUrl" class="avatar s32" />
         <identicon
           v-else
           :entity-id="itemId"

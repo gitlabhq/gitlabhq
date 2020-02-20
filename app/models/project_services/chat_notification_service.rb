@@ -157,7 +157,7 @@ class ChatNotificationService < Service
   end
 
   def project_name
-    project.full_name.gsub(/\s/, '')
+    project.full_name
   end
 
   def project_url

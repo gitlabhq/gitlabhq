@@ -21,13 +21,19 @@ describe Gitlab::SidekiqMiddleware::ClientMetrics do
 
         describe '#call' do
           it 'yields block' do
-            expect { |b| subject.call(worker, job, :test, double, &b) }.to yield_control.once
+            expect { |b| subject.call(worker_class, job, :test, double, &b) }.to yield_control.once
           end
 
-          it 'increments enqueued jobs metric' do
+          it 'increments enqueued jobs metric with correct labels when worker is a string of the class' do
             expect(enqueued_jobs_metric).to receive(:increment).with(labels, 1)
 
-            subject.call(worker, job, :test, double) { nil }
+            subject.call(worker_class.to_s, job, :test, double) { nil }
+          end
+
+          it 'increments enqueued jobs metric with correct labels' do
+            expect(enqueued_jobs_metric).to receive(:increment).with(labels, 1)
+
+            subject.call(worker_class, job, :test, double) { nil }
           end
         end
       end
@@ -46,7 +52,7 @@ describe Gitlab::SidekiqMiddleware::ClientMetrics do
 
     context "when workers are attributed" do
       def create_attributed_worker_class(latency_sensitive, external_dependencies, resource_boundary, category)
-        Class.new do
+        klass = Class.new do
           include Sidekiq::Worker
           include WorkerAttributes
 
@@ -55,6 +61,7 @@ describe Gitlab::SidekiqMiddleware::ClientMetrics do
           worker_resource_boundary resource_boundary unless resource_boundary == :unknown
           feature_category category unless category.nil?
         end
+        stub_const("TestAttributedWorker", klass)
       end
 
       let(:latency_sensitive) { false }

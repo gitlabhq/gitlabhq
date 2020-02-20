@@ -237,8 +237,7 @@ module RelativePositioning
 
     relation
       .pluck(self.class.relative_positioning_parent_column, Arel.sql("#{calculation}(relative_position) AS position"))
-      .first&.
-      last
+      .first&.last
   end
 
   def scoped_items

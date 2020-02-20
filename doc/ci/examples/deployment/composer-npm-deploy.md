@@ -6,7 +6,7 @@ type: tutorial
 
 This guide covers the building of dependencies of a PHP project while compiling assets via an NPM script using [GitLab CI/CD](../../README.md).
 
-While it is possible to create your own image with custom PHP and Node JS versions, for brevity, we will use an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) that contains both PHP and NodeJS installed.
+While it is possible to create your own image with custom PHP and Node.js versions, for brevity, we will use an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) that contains both PHP and Node.js installed.
 
 ```yaml
 image: tetraweb/php
@@ -23,7 +23,7 @@ before_script:
   - php -r "unlink('composer-setup.php');"
 ```
 
-This will make sure we have all requirements ready. Next, we want to run `composer install` to fetch all PHP dependencies  and `npm install` to load node packages, then run the `npm` script. We need to append them  into `before_script` section:
+This will make sure we have all requirements ready. Next, we want to run `composer install` to fetch all PHP dependencies  and `npm install` to load Node.js packages, then run the `npm` script. We need to append them  into `before_script` section:
 
 ```yaml
 before_script:

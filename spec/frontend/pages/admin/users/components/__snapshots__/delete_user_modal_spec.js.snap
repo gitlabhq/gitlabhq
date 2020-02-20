@@ -39,6 +39,7 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
   </form>
    
   <gl-button-stub
+    size="md"
     variant="secondary"
   >
     Cancel
@@ -46,6 +47,7 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
    
   <gl-button-stub
     disabled="true"
+    size="md"
     variant="warning"
   >
     
@@ -55,6 +57,7 @@ exports[`User Operation confirmation modal renders modal with form included 1`] 
    
   <gl-button-stub
     disabled="true"
+    size="md"
     variant="danger"
   >
     action

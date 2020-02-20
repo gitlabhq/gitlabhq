@@ -173,6 +173,7 @@ describe Event do
     end
 
     context 'commit note event' do
+      let(:project) { create(:project, :public, :repository) }
       let(:target) { note_on_commit }
 
       it do
@@ -185,7 +186,7 @@ describe Event do
       end
 
       context 'private project' do
-        let(:project) { create(:project, :private) }
+        let(:project) { create(:project, :private, :repository) }
 
         it do
           aggregate_failures do

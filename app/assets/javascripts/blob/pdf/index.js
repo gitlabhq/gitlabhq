@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import pdfLab from '../../pdf/index.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default () => {
   const el = document.getElementById('js-pdf-viewer');
@@ -8,6 +9,7 @@ export default () => {
     el,
     components: {
       pdfLab,
+      GlLoadingIcon,
     },
     data() {
       return {
@@ -32,11 +34,7 @@ export default () => {
         <div
           class="text-center loading"
           v-if="loading && !error">
-          <i
-            class="fa fa-spinner fa-spin"
-            aria-hidden="true"
-            aria-label="PDF loading">
-          </i>
+          <gl-loading-icon class="mt-5" size="lg"/>
         </div>
         <pdf-lab
           v-if="!loadError"
@@ -47,10 +45,10 @@ export default () => {
           class="text-center"
           v-if="error">
           <span v-if="loadError">
-            An error occurred whilst loading the file. Please try again later.
+            An error occurred while loading the file. Please try again later.
           </span>
           <span v-else>
-            An error occurred whilst decoding the file.
+            An error occurred while decoding the file.
           </span>
         </p>
       </div>

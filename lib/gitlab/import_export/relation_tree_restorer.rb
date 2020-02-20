@@ -73,13 +73,17 @@ module Gitlab
 
         relation_object.assign_attributes(importable_class_sym => @importable)
 
-        import_failure_service.with_retry(relation_key, relation_index) do
+        import_failure_service.with_retry(action: 'relation_object.save!', relation_key: relation_key, relation_index: relation_index) do
           relation_object.save!
         end
 
         save_id_mapping(relation_key, data_hash, relation_object)
       rescue => e
-        import_failure_service.log_import_failure(relation_key, relation_index, e)
+        import_failure_service.log_import_failure(
+          source: 'process_relation_item!',
+          relation_key: relation_key,
+          relation_index: relation_index,
+          exception: e)
       end
 
       def import_failure_service
@@ -155,7 +159,7 @@ module Gitlab
       def build_relation(relation_key, relation_definition, data_hash)
         # TODO: This is hack to not create relation for the author
         # Rather make `RelationFactory#set_note_author` to take care of that
-        return data_hash if relation_key == 'author'
+        return data_hash if relation_key == 'author' || already_restored?(data_hash)
 
         # create relation objects recursively for all sub-objects
         relation_definition.each do |sub_relation_key, sub_relation_definition|
@@ -163,6 +167,13 @@ module Gitlab
         end
 
         @relation_factory.create(relation_factory_params(relation_key, data_hash))
+      end
+
+      # Since we update the data hash in place as we restore relation items,
+      # and since we also de-duplicate items, we might encounter items that
+      # have already been restored in a previous iteration.
+      def already_restored?(relation_item)
+        !relation_item.is_a?(Hash)
       end
 
       def transform_sub_relations!(data_hash, sub_relation_key, sub_relation_definition)

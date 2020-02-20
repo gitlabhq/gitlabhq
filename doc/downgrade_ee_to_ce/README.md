@@ -47,13 +47,13 @@ to avoid getting this error, you need to remove all instances of the
 
 **Omnibus Installation**
 
-```sh
+```shell
 sudo gitlab-rails runner "Service.where(type: ['JenkinsService', 'JenkinsDeprecatedService', 'GithubService']).delete_all"
 ```
 
 **Source Installation**
 
-```sh
+```shell
 bundle exec rails runner "Service.where(type: ['JenkinsService', 'JenkinsDeprecatedService', 'GithubService']).delete_all" production
 ```
 
@@ -89,7 +89,7 @@ To downgrade a source installation, you need to replace the current remote of
 your GitLab installation with the Community Edition's remote, fetch the latest
 changes, and checkout the latest stable branch:
 
-```sh
+```shell
 git remote set-url origin git@gitlab.com:gitlab-org/gitlab-foss.git
 git fetch --all
 git checkout 8-x-stable

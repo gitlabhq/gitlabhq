@@ -50,7 +50,7 @@ communicating with itself. The former is less likely since Slack's security cert
 should _hopefully_ always be trusted. We can establish which we're dealing with by using
 the below rails console script.
 
-```sh
+```shell
 # start a rails console:
 sudo gitlab-rails console production
 

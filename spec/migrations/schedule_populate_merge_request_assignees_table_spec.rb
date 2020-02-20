@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190322132835_schedule_populate_merge_request_assignees_table.rb')
 
-describe SchedulePopulateMergeRequestAssigneesTable, :migration, :sidekiq do
+describe SchedulePopulateMergeRequestAssigneesTable, :migration do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:namespace) { namespaces.create(name: 'gitlab', path: 'gitlab-org') }

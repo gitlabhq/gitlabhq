@@ -564,7 +564,7 @@ This example uses `ldapsearch` and assumes you are using ActiveDirectory. The
 following query returns the login names of the users that will be allowed to
 log in to GitLab if you configure your own user_filter.
 
-```sh
+```shell
 ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$base" "$user_filter" sAMAccountName
 ```
 
@@ -583,7 +583,7 @@ ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$ba
 - Run the following check command to make sure that the LDAP settings are
   correct and GitLab can see your users:
 
-  ```bash
+  ```shell
   # For Omnibus installations
   sudo gitlab-rake gitlab:ldap:check
 
@@ -609,3 +609,16 @@ Could not authenticate you from Ldapmain because "Connection timed out - user sp
 If your configured LDAP provider and/or endpoint is offline or otherwise unreachable by GitLab, no LDAP user will be able to authenticate and log in. GitLab does not cache or store credentials for LDAP users to provide authentication during an LDAP outage.
 
 Contact your LDAP provider or administrator if you are seeing this error.
+
+### No file specified as Settingslogic source
+
+If `sudo gitlab-ctl reconfigure` fails with the following error, or you are seeing it in
+the logs, you may have malformed YAML in `/etc/gitlab/gitlab.rb`:
+
+```plaintext
+Errno::ENOENT: No such file or directory - No file specified as Settingslogic source
+```
+
+This issue is frequently due to the spacing in your YAML file. To fix the problem,
+verify the syntax with **spacing** against the
+[documentation for the configuration of LDAP](#configuration).

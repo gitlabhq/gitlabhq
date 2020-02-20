@@ -50,7 +50,7 @@
     "cluster": {
       "oneOf": [
         { "type": "null" },
-        { "$ref": "cluster_basic.json" }
+        { "$ref": "deployment_cluster.json" }
       ]
     },
     "manual_actions": {

@@ -14,7 +14,7 @@ latency.
 GET /sidekiq/queue_metrics
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/sidekiq/queue_metrics
 ```
 
@@ -39,7 +39,7 @@ List information about all the Sidekiq workers registered to process your queues
 GET /sidekiq/process_metrics
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/sidekiq/process_metrics
 ```
 
@@ -81,7 +81,7 @@ List information about the jobs that Sidekiq has performed.
 GET /sidekiq/job_stats
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/sidekiq/job_stats
 ```
 
@@ -106,7 +106,7 @@ List all the currently available information about Sidekiq.
 GET /sidekiq/compound_metrics
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/sidekiq/compound_metrics
 ```
 

@@ -24,7 +24,7 @@ function MergeRequest(opts) {
   this.initCommitMessageListeners();
   this.closeReopenReportToggle = IssuablesHelper.initCloseReopenReport();
 
-  if ($('a.btn-close').length) {
+  if ($('.description.js-task-list-container').length) {
     this.taskList = new TaskList({
       dataType: 'merge_request',
       fieldName: 'description',

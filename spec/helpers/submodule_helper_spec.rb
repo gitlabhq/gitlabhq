@@ -8,6 +8,11 @@ describe SubmoduleHelper do
   let(:submodule_item) { double(id: 'hash', path: 'rack') }
   let(:config) { Gitlab.config.gitlab }
   let(:repo) { double }
+  let(:submodules) { Gitlab::SubmoduleLinks.new(repo) }
+
+  before do
+    allow(repo).to receive(:submodule_links).and_return(submodules)
+  end
 
   shared_examples 'submodule_links' do
     context 'submodule on self' do
@@ -95,34 +100,34 @@ describe SubmoduleHelper do
         allow(repo).to receive(:project).and_return(project)
 
         stub_url('./')
-        expect(subject).to eq(["/master-project/#{project.path}", "/master-project/#{project.path}/tree/hash"])
+        expect(subject).to eq(["/master-project/#{project.path}", "/master-project/#{project.path}/-/tree/hash"])
       end
     end
 
     context 'submodule on gitlab.com' do
       it 'detects ssh' do
         stub_url('git@gitlab.com:gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
       end
 
       it 'detects http' do
         stub_url('http://gitlab.com/gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
       end
 
       it 'detects https' do
         stub_url('https://gitlab.com/gitlab-org/gitlab-foss.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
       end
 
       it 'handles urls with no .git on the end' do
         stub_url('http://gitlab.com/gitlab-org/gitlab-foss')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
       end
 
       it 'handles urls with trailing whitespace' do
         stub_url('http://gitlab.com/gitlab-org/gitlab-foss.git  ')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/-/tree/hash'])
       end
 
       it 'returns original with non-standard url' do
@@ -163,10 +168,10 @@ describe SubmoduleHelper do
       let(:repo) { double(:repo, project: project) }
 
       def expect_relative_link_to_resolve_to(relative_path, expected_path)
-        allow(repo).to receive(:submodule_url_for).and_return(relative_path)
+        stub_url(relative_path)
         result = subject
 
-        expect(result).to eq([expected_path, "#{expected_path}/tree/#{submodule_item.id}"])
+        expect(result).to eq([expected_path, "#{expected_path}/-/tree/#{submodule_item.id}"])
       end
 
       it 'handles project under same group' do
@@ -183,7 +188,7 @@ describe SubmoduleHelper do
 
       context 'repo path resolves to be located at root (namespace absent)' do
         it 'returns nil' do
-          allow(repo).to receive(:submodule_url_for).and_return('../../test.git')
+          stub_url('../../test.git')
 
           result = subject
 
@@ -193,7 +198,7 @@ describe SubmoduleHelper do
 
       context 'repo path resolves to be located underneath current project path' do
         it 'returns nil because it is not possible to have repo nested under another repo' do
-          allow(repo).to receive(:submodule_url_for).and_return('./test.git')
+          stub_url('./test.git')
 
           result = subject
 
@@ -263,6 +268,7 @@ describe SubmoduleHelper do
   end
 
   def stub_url(url)
+    allow(submodules).to receive(:submodule_url_for).and_return(url)
     allow(repo).to receive(:submodule_url_for).and_return(url)
   end
 end

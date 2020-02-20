@@ -1,9 +1,10 @@
 <script>
 import { mapActions } from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: {
+    GlAlert,
     GlLoadingIcon,
   },
   props: {
@@ -17,9 +18,14 @@ export default {
       isLoading: false,
     };
   },
+  computed: {
+    canDismiss() {
+      return !this.message.action;
+    },
+  },
   methods: {
     ...mapActions(['setErrorMessage']),
-    clickAction() {
+    doAction() {
       if (this.isLoading) return;
 
       this.isLoading = true;
@@ -33,28 +39,23 @@ export default {
           this.isLoading = false;
         });
     },
-    clickFlash() {
-      if (!this.message.action) {
-        this.setErrorMessage(null);
-      }
+    dismiss() {
+      this.setErrorMessage(null);
     },
   },
 };
 </script>
 
 <template>
-  <div class="flash-container flash-container-page" @click="clickFlash">
-    <div class="flash-alert" data-qa-selector="flash_alert">
-      <span v-html="message.text"> </span>
-      <button
-        v-if="message.action"
-        type="button"
-        class="flash-action text-white p-0 border-top-0 border-right-0 border-left-0 bg-transparent"
-        @click.stop.prevent="clickAction"
-      >
-        {{ message.actionText }}
-        <gl-loading-icon v-show="isLoading" inline />
-      </button>
-    </div>
-  </div>
+  <gl-alert
+    data-qa-selector="flash_alert"
+    variant="danger"
+    :dismissible="canDismiss"
+    :primary-button-text="message.actionText"
+    @dismiss="dismiss"
+    @primaryAction="doAction"
+  >
+    <span v-html="message.text"></span>
+    <gl-loading-icon v-show="isLoading" inline class="vertical-align-middle ml-1" />
+  </gl-alert>
 </template>

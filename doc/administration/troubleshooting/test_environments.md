@@ -37,7 +37,7 @@ you change a few things:
 
 For example, when the `docker-machine` host we want to use is `do-docker`:
 
-```sh
+```shell
 docker run --detach --name gitlab \
 --env GITLAB_OMNIBUS_CONFIG="external_url 'http://$(docker-machine ip do-docker)'; gitlab_rails['gitlab_shell_ssh_port'] = 2222;" \
 --hostname $(docker-machine ip do-docker) \
@@ -52,7 +52,7 @@ gitlab/gitlab-ee:11.5.3-ee.0
 We can use the [`test-saml-idp` Docker image](https://hub.docker.com/r/jamedjo/test-saml-idp)
 to do the work for us:
 
-```sh
+```shell
 docker run --name gitlab_saml -p 8080:8080 -p 8443:8443 \
 -e SIMPLESAMLPHP_SP_ENTITY_ID=<GITLAB_IP_OR_DOMAIN> \
 -e SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=<GITLAB_IP_OR_DOMAIN>/users/auth/saml/callback \
@@ -93,7 +93,7 @@ See [the GDK SAML documentation](https://gitlab.com/gitlab-org/gitlab-developmen
 
 ### Elasticsearch
 
-```sh
+```shell
 docker run -d --name elasticsearch \
 -p 9200:9200 -p 9300:9300 \
 -e "discovery.type=single-node" \
@@ -110,7 +110,7 @@ on running PlantUML in Docker.
 
 ### Jira
 
-```sh
+```shell
 docker run -d -p 8081:8080 cptactionhank/atlassian-jira:latest
 ```
 
@@ -119,7 +119,7 @@ Jira license.
 
 ### Grafana
 
-```sh
+```shell
 docker run -d --name grafana -e "GF_SECURITY_ADMIN_PASSWORD=gitlab" -p 3000:3000 grafana/grafana
 ```
 

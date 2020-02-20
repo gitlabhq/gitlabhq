@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { uniqBy } from 'lodash';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -27,7 +27,7 @@ export default {
     uniqueAuthors() {
       const authors = this.replies.map(reply => reply.author || {});
 
-      return _.uniq(authors, author => author.username);
+      return uniqBy(authors, author => author.username);
     },
     className() {
       return this.collapsed ? 'collapsed' : 'expanded';

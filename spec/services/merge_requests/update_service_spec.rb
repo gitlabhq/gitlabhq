@@ -162,6 +162,52 @@ describe MergeRequests::UpdateService, :mailer do
       end
     end
 
+    context 'after_save callback to store_mentions' do
+      let(:merge_request) { create(:merge_request, title: 'Old title', description: "simple description", source_branch: 'test', source_project: project, author: user) }
+      let(:labels) { create_pair(:label, project: project) }
+      let(:milestone) { create(:milestone, project: project) }
+      let(:req_opts) { { source_branch: 'feature', target_branch: 'master' } }
+
+      subject { MergeRequests::UpdateService.new(project, user, opts).execute(merge_request) }
+
+      context 'when mentionable attributes change' do
+        let(:opts) { { description: "Description with #{user.to_reference}" }.merge(req_opts) }
+
+        it 'saves mentions' do
+          expect(merge_request).to receive(:store_mentions!).and_call_original
+
+          expect { subject }.to change { MergeRequestUserMention.count }.by(1)
+
+          expect(merge_request.referenced_users).to match_array([user])
+        end
+      end
+
+      context 'when mentionable attributes do not change' do
+        let(:opts) { { label_ids: [label.id, label2.id], milestone_id: milestone.id }.merge(req_opts) }
+
+        it 'does not call store_mentions' do
+          expect(merge_request).not_to receive(:store_mentions!).and_call_original
+
+          expect { subject }.not_to change { MergeRequestUserMention.count }
+
+          expect(merge_request.referenced_users).to be_empty
+        end
+      end
+
+      context 'when save fails' do
+        let(:opts) { { title: '', label_ids: labels.map(&:id), milestone_id: milestone.id } }
+
+        it 'does not call store_mentions' do
+          expect(merge_request).not_to receive(:store_mentions!).and_call_original
+
+          expect { subject }.not_to change { MergeRequestUserMention.count }
+
+          expect(merge_request.referenced_users).to be_empty
+          expect(merge_request.valid?).to be false
+        end
+      end
+    end
+
     context 'merge' do
       let(:opts) do
         {

@@ -59,12 +59,12 @@ are recommended to get your merge request approved and merged by maintainer(s)
 from teams other than your own.
 
 1. If your merge request includes backend changes [^1], it must be
-   **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_backend)**.
+   **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_backend)**.
 1. If your merge request includes database migrations or changes to expensive queries [^2], it must be
-   **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_database)**.
+   **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_database)**.
    Read the [database review guidelines](database_review.md) for more details.
 1. If your merge request includes frontend changes [^1], it must be
-   **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_frontend)**.
+   **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend)**.
 1. If your merge request includes UX changes [^1], it must be
    **approved by a [UX team member](https://about.gitlab.com/company/team/)**.
 1. If your merge request includes adding a new JavaScript library [^1], it must be
@@ -107,7 +107,7 @@ confidence in their solution will not have been reached.
 
 Before the review, the author is requested to submit comments on the merge
 request diff alerting the reviewer to anything important as well as for anything
-that demands further explanation or attention.  Examples of content that may
+that demands further explanation or attention. Examples of content that may
 warrant a comment could be:
 
 - The addition of a linting rule (Rubocop, JS etc)
@@ -181,8 +181,8 @@ vulnerabilities must be either empty or containing:
 Maintainers should **never** dismiss vulnerabilities to "empty" the list,
 without duly verifying them.
 
-Note that certain Merge Requests may target a stable branch.  These are rare
-events.  These types of Merge Requests cannot be merged by the Maintainer.
+Note that certain Merge Requests may target a stable branch. These are rare
+events. These types of Merge Requests cannot be merged by the Maintainer.
 Instead these should be sent to the [Release Manager](https://about.gitlab.com/community/release-managers/).
 
 ## Best practices
@@ -347,6 +347,12 @@ reviewee.
   of the contributed code. It's usually a good idea to ask another maintainer or
   reviewer before doing it, but have the courage to do it when you believe it is
   important.
+- In the interest of [Iteration](https://about.gitlab.com/handbook/values/#iteration),
+  if, as a reviewer, your suggestions are non-blocking changes or personal preference
+  (not a documented or agreed requirement), consider approving the merge request
+  before passing it back to the author. This allows them to implement your suggestions
+  if they agree, or allows them to pass it onto the
+  maintainer for review straight away. This can help reduce our overall time-to-merge.
 - There is a difference in doing things right and doing things right now.
   Ideally, we should do the former, but in the real world we need the latter as
   well. A good example is a security fix which should be released as soon as
@@ -409,25 +415,25 @@ Enterprise Edition instance. This has some implications:
 
 How code reviews are conducted can surprise new contributors. Here are some examples of code reviews that should help to orient you as to what to expect.
 
-**["Modify `DiffNote` to reuse it for Designs"](https://gitlab.com/gitlab-org/gitlab/merge_requests/13703):**
+**["Modify `DiffNote` to reuse it for Designs"](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/13703):**
 It contained everything from nitpicks around newlines to reasoning
 about what versions for designs are, how we should compare them
 if there was no previous version of a certain file (parent vs.
 blank `sha` vs empty tree).
 
-**["Support multi-line suggestions"](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25211)**:
+**["Support multi-line suggestions"](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25211)**:
 The MR itself consists of a collaboration between FE and BE,
 and documenting comments from the author for the reviewer.
 There's some nitpicks, some questions for information, and
 towards the end, a security vulnerability.
 
-**["Allow multiple repositories per project"](https://gitlab.com/gitlab-org/gitlab/merge_requests/10251)**:
+**["Allow multiple repositories per project"](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10251)**:
 ZJ referred to the other projects (workhorse) this might impact,
 suggested some improvements for consistency. And James' comments
 helped us with overall code quality (using delegation, `&.` those
 types of things), and making the code more robust.
 
-**["Support multiple assignees for merge requests"](https://gitlab.com/gitlab-org/gitlab/merge_requests/10161)**:
+**["Support multiple assignees for merge requests"](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10161)**:
 A  good example of collaboration on an MR touching multiple parts of the codebase. Nick pointed out interesting edge cases, James Lopes also joined in raising concerns on import/export feature.
 
 ### Credits

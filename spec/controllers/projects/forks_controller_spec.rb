@@ -23,7 +23,7 @@ describe Projects::ForksController do
     it 'returns with 404' do
       subject
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -167,7 +167,7 @@ describe Projects::ForksController do
 
         subject
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -205,7 +205,7 @@ describe Projects::ForksController do
       it 'responds with status 302' do
         subject
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(namespace_project_import_path(user.namespace, project))
       end
 
@@ -228,7 +228,7 @@ describe Projects::ForksController do
         it 'passes continue params to the redirect' do
           subject
 
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(namespace_project_import_path(user.namespace, project, continue: continue_params))
         end
       end

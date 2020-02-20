@@ -6,7 +6,7 @@ type: reference
 
 GitLab protects the following paths with Rack Attack by default:
 
-```
+```plaintext
 '/users/password',
 '/users/sign_in',
 '/api/#{API::API.version}/session.json',
@@ -23,7 +23,7 @@ that exceed 10 requests per minute per IP address.
 
 This header is included in responses to blocked requests:
 
-```
+```plaintext
 Retry-After: 60
 ```
 
@@ -38,7 +38,7 @@ try again.
 
 ## Configure using GitLab UI
 
-> Introduced in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31246).
+> Introduced in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31246).
 
 Throttling of protected paths is enabled by default and can be disabled or
 customized on **Admin > Network > Protected Paths**, along with these options:

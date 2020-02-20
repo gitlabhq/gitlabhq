@@ -5,6 +5,9 @@ class WikiPage
   PageChangedError = Class.new(StandardError)
   PageRenameError = Class.new(StandardError)
 
+  MAX_TITLE_BYTES = 245
+  MAX_DIRECTORY_BYTES = 255
+
   include ActiveModel::Validations
   include ActiveModel::Conversion
   include StaticModel
@@ -51,6 +54,7 @@ class WikiPage
 
   validates :title, presence: true
   validates :content, presence: true
+  validate :validate_path_limits, if: :title_changed?
 
   # The GitLab ProjectWiki instance.
   attr_reader :wiki
@@ -262,7 +266,7 @@ class WikiPage
   end
 
   def title_changed?
-    title.present? && self.class.unhyphenize(@page.url_path) != title
+    title.present? && (@page.nil? || self.class.unhyphenize(@page.url_path) != title)
   end
 
   # Updates the current @attributes hash by merging a hash of params
@@ -323,5 +327,17 @@ class WikiPage
 
     set_attributes
     @persisted = errors.blank?
+  end
+
+  def validate_path_limits
+    *dirnames, title = @attributes[:title].split('/')
+
+    if title.bytesize > MAX_TITLE_BYTES
+      errors.add(:title, _("exceeds the limit of %{bytes} bytes for page titles") % { bytes: MAX_TITLE_BYTES })
+    end
+
+    if dirnames.any? { |d| d.bytesize > MAX_DIRECTORY_BYTES }
+      errors.add(:title, _("exceeds the limit of %{bytes} bytes for directory names") % { bytes: MAX_DIRECTORY_BYTES })
+    end
   end
 end

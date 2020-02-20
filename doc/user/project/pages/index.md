@@ -6,8 +6,8 @@ type: index, reference
 
 # GitLab Pages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/80) in GitLab Enterprise Edition 8.3.
-> - Custom CNAMEs with TLS support were [introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/173) in GitLab Enterprise Edition 8.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80) in GitLab Enterprise Edition 8.3.
+> - Custom CNAMEs with TLS support were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173) in GitLab Enterprise Edition 8.5.
 > - [Ported](https://gitlab.com/gitlab-org/gitlab-foss/issues/14605) to GitLab Community Edition in GitLab 8.17.
 > - Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30548) in GitLab 11.8.
 > - Bundled project templates were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/47857) in GitLab 11.8.
@@ -126,5 +126,5 @@ the [admin guide](../../../administration/pages/index.md).
 
 ## More information about GitLab Pages
 
-- Announcement (2016-12-24): ["We're bringing GitLab Pages to CE"](https://about.gitlab.com/blog/2016/12/24/were-bringing-gitlab-pages-to-community-edition/)
-- Announcement (2017-03-06): ["We are changing the IP of GitLab Pages on GitLab.com"](https://about.gitlab.com/blog/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/)
+- Announcement (2016-12-24): ["We're bringing GitLab Pages to CE"](https://about.gitlab.com/releases/2016/12/24/were-bringing-gitlab-pages-to-community-edition/)
+- Announcement (2017-03-06): ["We are changing the IP of GitLab Pages on GitLab.com"](https://about.gitlab.com/releases/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/)

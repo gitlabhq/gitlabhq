@@ -32,7 +32,7 @@ describe 'issue move to another project' do
     let(:new_project) { create(:project) }
     let(:new_project_search) { create(:project) }
     let(:text) { "Text with #{mr.to_reference}" }
-    let(:cross_reference) { old_project.to_reference(new_project) }
+    let(:cross_reference) { old_project.to_reference_base(new_project) }
 
     before do
       old_project.add_reporter(user)

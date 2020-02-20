@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context :email_shared_context do
+RSpec.shared_context :email_shared_context do
   let(:mail_key) { "59d8df8370b7e95c5a49fbf86aeb2c93" }
   let(:receiver) { Gitlab::Email::Receiver.new(email_raw) }
   let(:markdown) { "![image](uploads/image.png)" }
@@ -18,7 +18,7 @@ shared_context :email_shared_context do
   end
 end
 
-shared_examples :reply_processing_shared_examples do
+RSpec.shared_examples :reply_processing_shared_examples do
   context "when the user could not be found" do
     before do
       user.destroy

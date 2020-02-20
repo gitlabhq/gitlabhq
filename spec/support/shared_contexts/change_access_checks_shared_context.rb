@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_context 'change access checks context' do
+RSpec.shared_context 'change access checks context' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:user_access) { Gitlab::UserAccess.new(user, project: project) }

@@ -8,7 +8,7 @@
 # * requests_per_period
 # * period_in_seconds
 # * period
-shared_examples_for 'rate-limited token-authenticated requests' do
+RSpec.shared_examples 'rate-limited token-authenticated requests' do
   let(:throttle_types) do
     {
       "throttle_protected_paths" => "throttle_authenticated_protected_paths_api",
@@ -33,7 +33,7 @@ shared_examples_for 'rate-limited token-authenticated requests' do
       # At first, allow requests under the rate limit.
       requests_per_period.times do
         make_request(request_args)
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
       # the last straw
@@ -43,7 +43,7 @@ shared_examples_for 'rate-limited token-authenticated requests' do
     it 'allows requests after throttling and then waiting for the next period' do
       requests_per_period.times do
         make_request(request_args)
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
       expect_rejection { make_request(request_args) }
@@ -51,7 +51,7 @@ shared_examples_for 'rate-limited token-authenticated requests' do
       Timecop.travel(period.from_now) do
         requests_per_period.times do
           make_request(request_args)
-          expect(response).not_to have_http_status 429
+          expect(response).not_to have_gitlab_http_status(:too_many_requests)
         end
 
         expect_rejection { make_request(request_args) }
@@ -61,18 +61,18 @@ shared_examples_for 'rate-limited token-authenticated requests' do
     it 'counts requests from different users separately, even from the same IP' do
       requests_per_period.times do
         make_request(request_args)
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
       # would be over the limit if this wasn't a different user
       make_request(other_user_request_args)
-      expect(response).not_to have_http_status 429
+      expect(response).not_to have_gitlab_http_status(:too_many_requests)
     end
 
     it 'counts all requests from the same user, even via different IPs' do
       requests_per_period.times do
         make_request(request_args)
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
       expect_any_instance_of(Rack::Attack::Request).to receive(:ip).at_least(:once).and_return('1.2.3.4')
@@ -83,7 +83,7 @@ shared_examples_for 'rate-limited token-authenticated requests' do
     it 'logs RackAttack info into structured logs' do
       requests_per_period.times do
         make_request(request_args)
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
       arguments = {
@@ -112,7 +112,7 @@ shared_examples_for 'rate-limited token-authenticated requests' do
     it 'allows requests over the rate limit' do
       (1 + requests_per_period).times do
         make_request(request_args)
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
     end
   end
@@ -134,7 +134,7 @@ end
 # * requests_per_period
 # * period_in_seconds
 # * period
-shared_examples_for 'rate-limited web authenticated requests' do
+RSpec.shared_examples 'rate-limited web authenticated requests' do
   let(:throttle_types) do
     {
       "throttle_protected_paths" => "throttle_authenticated_protected_paths_web",
@@ -160,7 +160,7 @@ shared_examples_for 'rate-limited web authenticated requests' do
       # At first, allow requests under the rate limit.
       requests_per_period.times do
         request_authenticated_web_url
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
       # the last straw
@@ -170,7 +170,7 @@ shared_examples_for 'rate-limited web authenticated requests' do
     it 'allows requests after throttling and then waiting for the next period' do
       requests_per_period.times do
         request_authenticated_web_url
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
       expect_rejection { request_authenticated_web_url }
@@ -178,7 +178,7 @@ shared_examples_for 'rate-limited web authenticated requests' do
       Timecop.travel(period.from_now) do
         requests_per_period.times do
           request_authenticated_web_url
-          expect(response).not_to have_http_status 429
+          expect(response).not_to have_gitlab_http_status(:too_many_requests)
         end
 
         expect_rejection { request_authenticated_web_url }
@@ -188,20 +188,20 @@ shared_examples_for 'rate-limited web authenticated requests' do
     it 'counts requests from different users separately, even from the same IP' do
       requests_per_period.times do
         request_authenticated_web_url
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
       # would be over the limit if this wasn't a different user
       login_as(create(:user))
 
       request_authenticated_web_url
-      expect(response).not_to have_http_status 429
+      expect(response).not_to have_gitlab_http_status(:too_many_requests)
     end
 
     it 'counts all requests from the same user, even via different IPs' do
       requests_per_period.times do
         request_authenticated_web_url
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
       expect_any_instance_of(Rack::Attack::Request).to receive(:ip).at_least(:once).and_return('1.2.3.4')
@@ -212,7 +212,7 @@ shared_examples_for 'rate-limited web authenticated requests' do
     it 'logs RackAttack info into structured logs' do
       requests_per_period.times do
         request_authenticated_web_url
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
 
       arguments = {
@@ -241,7 +241,7 @@ shared_examples_for 'rate-limited web authenticated requests' do
     it 'allows requests over the rate limit' do
       (1 + requests_per_period).times do
         request_authenticated_web_url
-        expect(response).not_to have_http_status 429
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
       end
     end
   end

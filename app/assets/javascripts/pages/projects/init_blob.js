@@ -11,7 +11,7 @@ export default () => {
   // eslint-disable-next-line no-new
   new BlobLinePermalinkUpdater(
     document.querySelector('#blob-content-holder'),
-    '.diff-line-num[data-line-number]',
+    '.diff-line-num[data-line-number], .diff-line-num[data-line-number] *',
     document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
   );
 
@@ -25,6 +25,7 @@ export default () => {
   new ShortcutsBlob({
     skipResetBindings: true,
     fileBlobPermalinkUrl,
+    fileBlobPermalinkUrlElement,
   });
 
   new BlobForkSuggestion({

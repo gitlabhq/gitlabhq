@@ -251,7 +251,7 @@ describe('IDE store file actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/7297abc/${localFile.path}`).replyOnce(
+        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/-/7297abc/${localFile.path}`).replyOnce(
           200,
           {
             blame_path: 'blame_path',
@@ -273,7 +273,7 @@ describe('IDE store file actions', () => {
           .dispatch('getFileData', { path: localFile.path })
           .then(() => {
             expect(service.getFileData).toHaveBeenCalledWith(
-              `${RELATIVE_URL_ROOT}/test/test/7297abc/${localFile.path}`,
+              `${RELATIVE_URL_ROOT}/test/test/-/7297abc/${localFile.path}`,
             );
 
             done();
@@ -345,7 +345,7 @@ describe('IDE store file actions', () => {
         localFile.path = 'new-shiny-file';
         store.state.entries[localFile.path] = localFile;
 
-        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/7297abc/old-dull-file`).replyOnce(
+        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/-/7297abc/old-dull-file`).replyOnce(
           200,
           {
             blame_path: 'blame_path',
@@ -376,7 +376,7 @@ describe('IDE store file actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/7297abc/${localFile.path}`).networkError();
+        mock.onGet(`${RELATIVE_URL_ROOT}/test/test/-/7297abc/${localFile.path}`).networkError();
       });
 
       it('dispatches error action', () => {
@@ -389,7 +389,7 @@ describe('IDE store file actions', () => {
           )
           .then(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occurred whilst loading the file.',
+              text: 'An error occurred while loading the file.',
               action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: {
@@ -500,7 +500,7 @@ describe('IDE store file actions', () => {
           )
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occurred whilst loading the file content.',
+              text: 'An error occurred while loading the file content.',
               action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: {
@@ -534,27 +534,21 @@ describe('IDE store file actions', () => {
         .catch(done.fail);
     });
 
-    it('adds a newline to the end of the file if it doesnt already exist', done => {
-      callAction('content')
+    it('adds file into stagedFiles array', done => {
+      store
+        .dispatch('changeFileContent', {
+          path: tmpFile.path,
+          content: 'content',
+        })
         .then(() => {
-          expect(tmpFile.content).toBe('content\n');
+          expect(store.state.stagedFiles.length).toBe(1);
 
           done();
         })
         .catch(done.fail);
     });
 
-    it('adds file into changedFiles array', done => {
-      callAction()
-        .then(() => {
-          expect(store.state.changedFiles.length).toBe(1);
-
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('adds file not more than once into changedFiles array', done => {
+    it('adds file not more than once into stagedFiles array', done => {
       store
         .dispatch('changeFileContent', {
           path: tmpFile.path,
@@ -567,7 +561,7 @@ describe('IDE store file actions', () => {
           }),
         )
         .then(() => {
-          expect(store.state.changedFiles.length).toBe(1);
+          expect(store.state.stagedFiles.length).toBe(1);
 
           done();
         })
@@ -592,52 +586,6 @@ describe('IDE store file actions', () => {
           done();
         })
         .catch(done.fail);
-    });
-
-    describe('when `gon.feature.stageAllByDefault` is true', () => {
-      const originalGonFeatures = Object.assign({}, gon.features);
-
-      beforeAll(() => {
-        gon.features = { stageAllByDefault: true };
-      });
-
-      afterAll(() => {
-        gon.features = originalGonFeatures;
-      });
-
-      it('adds file into stagedFiles array', done => {
-        store
-          .dispatch('changeFileContent', {
-            path: tmpFile.path,
-            content: 'content',
-          })
-          .then(() => {
-            expect(store.state.stagedFiles.length).toBe(1);
-
-            done();
-          })
-          .catch(done.fail);
-      });
-
-      it('adds file not more than once into stagedFiles array', done => {
-        store
-          .dispatch('changeFileContent', {
-            path: tmpFile.path,
-            content: 'content',
-          })
-          .then(() =>
-            store.dispatch('changeFileContent', {
-              path: tmpFile.path,
-              content: 'content 123',
-            }),
-          )
-          .then(() => {
-            expect(store.state.stagedFiles.length).toBe(1);
-
-            done();
-          })
-          .catch(done.fail);
-      });
     });
 
     it('bursts unused seal', done => {

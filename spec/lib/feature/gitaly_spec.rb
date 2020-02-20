@@ -5,10 +5,6 @@ require 'spec_helper'
 describe Feature::Gitaly do
   let(:feature_flag) { "mep_mep" }
 
-  before do
-    stub_const("#{described_class}::SERVER_FEATURE_FLAGS", [feature_flag])
-  end
-
   describe ".enabled?" do
     context 'when the gate is closed' do
       before do
@@ -28,15 +24,13 @@ describe Feature::Gitaly do
   end
 
   describe ".server_feature_flags" do
-    context 'when one flag is disabled' do
-      before do
-        stub_feature_flags(gitaly_mep_mep: false)
-      end
-
-      subject { described_class.server_feature_flags }
-
-      it { is_expected.to be_a(Hash) }
-      it { is_expected.to eq("gitaly-feature-mep-mep" => "false") }
+    before do
+      allow(Feature).to receive(:persisted_names).and_return(%w[gitaly_mep_mep foo])
     end
+
+    subject { described_class.server_feature_flags }
+
+    it { is_expected.to be_a(Hash) }
+    it { is_expected.to eq("gitaly-feature-mep-mep" => "true") }
   end
 end

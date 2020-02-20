@@ -26,16 +26,6 @@ describe Users::DestroyService do
         service.execute(user)
       end
 
-      context 'when :destroy_user_associations_in_batches flag is disabled' do
-        it 'does not delete user associations in batches' do
-          stub_feature_flags(destroy_user_associations_in_batches: false)
-
-          expect(user).not_to receive(:destroy_dependent_associations_in_batches)
-
-          service.execute(user)
-        end
-      end
-
       it 'will delete the project' do
         expect_next_instance_of(Projects::DestroyService) do |destroy_service|
           expect(destroy_service).to receive(:execute).once.and_return(true)
@@ -121,10 +111,17 @@ describe Users::DestroyService do
 
       before do
         solo_owned.group_members = [member]
-        service.execute(user)
+      end
+
+      it 'returns the user with attached errors' do
+        expect(service.execute(user)).to be(user)
+        expect(user.errors.full_messages).to eq([
+          'You must transfer ownership or delete groups before you can remove user'
+        ])
       end
 
       it 'does not delete the user' do
+        service.execute(user)
         expect(User.find(user.id)).to eq user
       end
     end

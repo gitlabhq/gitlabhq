@@ -1,6 +1,7 @@
 <script>
 import { mapState } from 'vuex';
-import _ from 'underscore';
+import { pickBy } from 'lodash';
+import invalidUrl from '~/lib/utils/invalid_url';
 import {
   GlDropdown,
   GlDropdownItem,
@@ -14,14 +15,18 @@ import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorAnomalyChart from './charts/anomaly.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
 import MonitorHeatmapChart from './charts/heatmap.vue';
+import MonitorColumnChart from './charts/column.vue';
+import MonitorStackedColumnChart from './charts/stacked_column.vue';
 import MonitorEmptyChart from './charts/empty_chart.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import { downloadCSVOptions, generateLinkToChartOptions } from '../utils';
+import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
 
 export default {
   components: {
     MonitorSingleStatChart,
+    MonitorColumnChart,
     MonitorHeatmapChart,
+    MonitorStackedColumnChart,
     MonitorEmptyChart,
     Icon,
     GlDropdown,
@@ -54,8 +59,13 @@ export default {
       default: 'panel-type-chart',
     },
   },
+  data() {
+    return {
+      zoomedTimeRange: null,
+    };
+  },
   computed: {
-    ...mapState('monitoringDashboard', ['deploymentData', 'projectPath']),
+    ...mapState('monitoringDashboard', ['deploymentData', 'projectPath', 'logsPath', 'timeRange']),
     alertWidgetAvailable() {
       return IS_EE && this.prometheusAlertsAvailable && this.alertsEndpoint && this.graphData;
     },
@@ -65,6 +75,14 @@ export default {
         this.graphData.metrics[0].result &&
         this.graphData.metrics[0].result.length > 0
       );
+    },
+    logsPathWithTimeRange() {
+      const timeRange = this.zoomedTimeRange || this.timeRange;
+
+      if (this.logsPath && this.logsPath !== invalidUrl && timeRange) {
+        return timeRangeToUrl(timeRange, this.logsPath);
+      }
+      return null;
     },
     csvText() {
       const chartData = this.graphData.metrics[0].result[0].values;
@@ -90,7 +108,7 @@ export default {
     getGraphAlerts(queries) {
       if (!this.allAlerts) return {};
       const metricIdsForChart = queries.map(q => q.metricId);
-      return _.pick(this.allAlerts, alert => metricIdsForChart.includes(alert.metricId));
+      return pickBy(this.allAlerts, alert => metricIdsForChart.includes(alert.metricId));
     },
     getGraphAlertValues(queries) {
       return Object.values(this.getGraphAlerts(queries));
@@ -103,6 +121,10 @@ export default {
     },
     downloadCSVOptions,
     generateLinkToChartOptions,
+
+    onDatazoom({ start, end }) {
+      this.zoomedTimeRange = { start, end };
+    },
   },
 };
 </script>
@@ -114,16 +136,25 @@ export default {
   <monitor-heatmap-chart
     v-else-if="isPanelType('heatmap') && graphDataHasMetrics"
     :graph-data="graphData"
-    :container-width="dashboardWidth"
+  />
+  <monitor-column-chart
+    v-else-if="isPanelType('column') && graphDataHasMetrics"
+    :graph-data="graphData"
+  />
+  <monitor-stacked-column-chart
+    v-else-if="isPanelType('stacked-column') && graphDataHasMetrics"
+    :graph-data="graphData"
   />
   <component
     :is="monitorChartComponent"
     v-else-if="graphDataHasMetrics"
+    ref="timeChart"
     :graph-data="graphData"
     :deployment-data="deploymentData"
     :project-path="projectPath"
     :thresholds="getGraphAlertValues(graphData.metrics)"
     :group-id="groupId"
+    @datazoom="onDatazoom"
   >
     <div class="d-flex align-items-center">
       <alert-widget
@@ -138,6 +169,7 @@ export default {
         v-gl-tooltip
         class="ml-auto mx-3"
         toggle-class="btn btn-transparent border-0"
+        data-qa-selector="prometheus_widgets_dropdown"
         :right="true"
         :no-caret="true"
         :title="__('More actions')"
@@ -145,6 +177,15 @@ export default {
         <template slot="button-content">
           <icon name="ellipsis_v" class="text-secondary" />
         </template>
+
+        <gl-dropdown-item
+          v-if="logsPathWithTimeRange"
+          ref="viewLogsLink"
+          :href="logsPathWithTimeRange"
+        >
+          {{ s__('Metrics|View logs') }}
+        </gl-dropdown-item>
+
         <gl-dropdown-item
           v-track-event="downloadCSVOptions(graphData.title)"
           :href="downloadCsv"
@@ -154,14 +195,18 @@ export default {
         </gl-dropdown-item>
         <gl-dropdown-item
           v-if="clipboardText"
+          ref="copyChartLink"
           v-track-event="generateLinkToChartOptions(clipboardText)"
-          class="js-chart-link"
           :data-clipboard-text="clipboardText"
           @click="showToast(clipboardText)"
         >
           {{ __('Generate link to chart') }}
         </gl-dropdown-item>
-        <gl-dropdown-item v-if="alertWidgetAvailable" v-gl-modal="`alert-modal-${index}`">
+        <gl-dropdown-item
+          v-if="alertWidgetAvailable"
+          v-gl-modal="`alert-modal-${index}`"
+          data-qa-selector="alert_widget_menu_item"
+        >
           {{ __('Alerts') }}
         </gl-dropdown-item>
       </gl-dropdown>

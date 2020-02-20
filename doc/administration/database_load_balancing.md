@@ -272,12 +272,12 @@ production:
 ```
 
 [hot-standby]: https://www.postgresql.org/docs/9.6/hot-standby.html
-[ee-1283]: https://gitlab.com/gitlab-org/gitlab/merge_requests/1283
+[ee-1283]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1283
 [eep]: https://about.gitlab.com/pricing/
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [wikipedia]: https://en.wikipedia.org/wiki/Load_balancing_(computing)
 [db-req]: ../install/requirements.md#database
-[ee-3526]: https://gitlab.com/gitlab-org/gitlab/merge_requests/3526
-[ee-5883]: https://gitlab.com/gitlab-org/gitlab/merge_requests/5883
+[ee-3526]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3526
+[ee-5883]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5883
 [consul-udp]: https://www.consul.io/docs/agent/dns.html#udp-based-dns-queries

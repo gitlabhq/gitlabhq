@@ -208,6 +208,21 @@ Now every single time on attempt to fetch a version, our client will fetch `id` 
 
 Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.com/guide/local-state.html#local-state).
 
+### Using with Vuex
+
+When Apollo Client is used within Vuex and fetched data is stored in the Vuex store, there is no need in keeping Apollo Client cache enabled. Otherwise we would have data from the API stored in two places - Vuex store and Apollo Client cache. More to say, with Apollo default settings, a subsequent fetch from the GraphQL API could result in fetching data from Apollo cache (in the case where we have the same query and variables). To prevent this behavior, we need to disable Apollo Client cache passing a valid `fetchPolicy` option to its constructor:
+
+```js
+import fetchPolicies from '~/graphql_shared/fetch_policy_constants';
+
+export const gqClient = createGqClient(
+  {},
+  {
+    fetchPolicy: fetchPolicies.NO_CACHE,
+  },
+);
+```
+
 ### Feature flags in queries
 
 Sometimes it may be useful to have an entity in the GraphQL query behind a feature flag.
@@ -312,7 +327,7 @@ function createComponent(props = {}) {
 `ApolloMutation` component exposes `mutate` method via scoped slot. If we want to test this method, we need to add it to mocks:
 
 ```javascript
-const mutate = jest.fn(() => Promise.resolve());
+const mutate = jest.fn().mockResolvedValue();
 const $apollo = {
   mutate,
 };
@@ -356,16 +371,66 @@ it('calls mutation on submitting form ', () => {
 });
 ```
 
+## Handling errors
+
+GitLab's GraphQL mutations currently have two distinct error modes: [Top-level](#top-level-errors) and [errors-as-data](#errors-as-data).
+
+When utilising a GraphQL mutation, we must consider handling **both of these error modes** to ensure that the user receives the appropriate feedback when an error occurs.
+
+### Top-level errors
+
+These errors are located at the "top level" of a GraphQL response. These are non-recoverable errors including argument errors and syntax errors, and should not be presented directly to the user.
+
+#### Handling top-level errors
+
+Apollo is aware of top-level errors, so we are able to leverage Apollo's various error-handling mechanisms to handle these errors (e.g. handling Promise rejections after invoking the [`mutate`](https://www.apollographql.com/docs/react/api/apollo-client/#ApolloClient.mutate) method, or handling the `error` event emitted from the [`ApolloMutation`](https://apollo.vuejs.org/api/apollo-mutation.html#events) component).
+
+Because these errors are not intended for users, error messages for top-level errors should be defined client-side.
+
+### Errors-as-data
+
+These errors are nested within the `data` object of a GraphQL response. These are recoverable errors that, ideally, can be presented directly to the user.
+
+#### Handling errors-as-data
+
+First, we must add `errors` to our mutation object:
+
+```diff
+mutation createNoteMutation($input: String!) {
+  createNoteMutation(input: $input) {
+    note {
+      id
++     errors
+    }
+  }
+```
+
+Now, when we commit this mutation and errors occur, the response will include `errors` for us to handle:
+
+```javascript
+{
+  data: {
+    mutationName: {
+      errors: ["Sorry, we were not able to update the note."]
+    }
+  }
+}
+```
+
+When handling errors-as-data, use your best judgement to determine whether to present the error message in the response, or another message defined client-side, to the user.
+
 ## Usage outside of Vue
 
 It is also possible to use GraphQL outside of Vue by directly importing
 and using the default client with queries.
 
 ```javascript
-import defaultClient from '~/lib/graphql';
+import createDefaultClient from '~/lib/graphql';
 import query from './query.graphql';
 
-defaultClient.query(query)
+const defaultClient = createDefaultClient();
+
+defaultClient.query({ query })
   .then(result => console.log(result));
 ```
 

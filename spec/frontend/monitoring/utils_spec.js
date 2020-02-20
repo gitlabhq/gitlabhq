@@ -1,14 +1,35 @@
 import * as monitoringUtils from '~/monitoring/utils';
-import { timeWindows, timeWindowsKeyNames } from '~/monitoring/constants';
+import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
 import {
+  mockHost,
+  mockProjectDir,
   graphDataPrometheusQuery,
   graphDataPrometheusQueryRange,
   anomalyMockGraphData,
 } from './mock_data';
 
+jest.mock('~/lib/utils/url_utility');
+
+const mockPath = `${mockHost}${mockProjectDir}/-/environments/29/metrics`;
+
+const generatedLink = 'http://chart.link.com';
+
+const chartTitle = 'Some metric chart';
+
+const range = {
+  start: '2019-01-01T00:00:00.000Z',
+  end: '2019-01-10T00:00:00.000Z',
+};
+
+const rollingRange = {
+  duration: { seconds: 120 },
+};
+
 describe('monitoring/utils', () => {
-  const generatedLink = 'http://chart.link.com';
-  const chartTitle = 'Some metric chart';
+  afterEach(() => {
+    mergeUrlParams.mockReset();
+    queryToObject.mockReset();
+  });
 
   describe('trackGenerateLinkToChartEventOptions', () => {
     it('should return Cluster Monitoring options if located on Cluster Health Dashboard', () => {
@@ -58,92 +79,6 @@ describe('monitoring/utils', () => {
     });
   });
 
-  describe('getTimeDiff', () => {
-    function secondsBetween({ start, end }) {
-      return (new Date(end) - new Date(start)) / 1000;
-    }
-
-    function minutesBetween(timeRange) {
-      return secondsBetween(timeRange) / 60;
-    }
-
-    function hoursBetween(timeRange) {
-      return minutesBetween(timeRange) / 60;
-    }
-
-    it('defaults to an 8 hour (28800s) difference', () => {
-      const params = monitoringUtils.getTimeDiff();
-
-      expect(hoursBetween(params)).toEqual(8);
-    });
-
-    it('accepts time window as an argument', () => {
-      const params = monitoringUtils.getTimeDiff('thirtyMinutes');
-
-      expect(minutesBetween(params)).toEqual(30);
-    });
-
-    it('returns a value for every defined time window', () => {
-      const nonDefaultWindows = Object.keys(timeWindows).filter(window => window !== 'eightHours');
-
-      nonDefaultWindows.forEach(timeWindow => {
-        const params = monitoringUtils.getTimeDiff(timeWindow);
-
-        // Ensure we're not returning the default
-        expect(hoursBetween(params)).not.toEqual(8);
-      });
-    });
-  });
-
-  describe('getTimeWindow', () => {
-    [
-      {
-        args: [
-          {
-            start: '2019-10-01T18:27:47.000Z',
-            end: '2019-10-01T21:27:47.000Z',
-          },
-        ],
-        expected: timeWindowsKeyNames.threeHours,
-      },
-      {
-        args: [
-          {
-            start: '2019-10-01T28:27:47.000Z',
-            end: '2019-10-01T21:27:47.000Z',
-          },
-        ],
-        expected: null,
-      },
-      {
-        args: [
-          {
-            start: '',
-            end: '',
-          },
-        ],
-        expected: null,
-      },
-      {
-        args: [
-          {
-            start: null,
-            end: null,
-          },
-        ],
-        expected: null,
-      },
-      {
-        args: [{}],
-        expected: null,
-      },
-    ].forEach(({ args, expected }) => {
-      it(`returns "${expected}" with args=${JSON.stringify(args)}`, () => {
-        expect(monitoringUtils.getTimeWindow(...args)).toEqual(expected);
-      });
-    });
-  });
-
   describe('graphDataValidatorForValues', () => {
     /*
      * When dealing with a metric using the query format, e.g.
@@ -171,193 +106,6 @@ describe('monitoring/utils', () => {
       );
 
       expect(validGraphData).toBe(true);
-    });
-  });
-
-  describe('stringToISODate', () => {
-    ['', 'null', undefined, 'abc'].forEach(input => {
-      it(`throws error for invalid input like ${input}`, done => {
-        try {
-          monitoringUtils.stringToISODate(input);
-        } catch (e) {
-          expect(e).toBeDefined();
-          done();
-        }
-      });
-    });
-    [
-      {
-        input: '2019-09-09 01:01:01',
-        output: '2019-09-09T01:01:01Z',
-      },
-      {
-        input: '2019-09-09 00:00:00',
-        output: '2019-09-09T00:00:00Z',
-      },
-      {
-        input: '2019-09-09 23:59:59',
-        output: '2019-09-09T23:59:59Z',
-      },
-      {
-        input: '2019-09-09',
-        output: '2019-09-09T00:00:00Z',
-      },
-    ].forEach(({ input, output }) => {
-      it(`returns ${output} from ${input}`, () => {
-        expect(monitoringUtils.stringToISODate(input)).toBe(output);
-      });
-    });
-  });
-
-  describe('ISODateToString', () => {
-    [
-      {
-        input: new Date('2019-09-09T00:00:00.000Z'),
-        output: '2019-09-09 00:00:00',
-      },
-      {
-        input: new Date('2019-09-09T07:00:00.000Z'),
-        output: '2019-09-09 07:00:00',
-      },
-    ].forEach(({ input, output }) => {
-      it(`ISODateToString return ${output} for ${input}`, () => {
-        expect(monitoringUtils.ISODateToString(input)).toBe(output);
-      });
-    });
-  });
-
-  describe('truncateZerosInDateTime', () => {
-    [
-      {
-        input: '',
-        output: '',
-      },
-      {
-        input: '2019-10-10',
-        output: '2019-10-10',
-      },
-      {
-        input: '2019-10-10 00:00:01',
-        output: '2019-10-10 00:00:01',
-      },
-      {
-        input: '2019-10-10 00:00:00',
-        output: '2019-10-10',
-      },
-    ].forEach(({ input, output }) => {
-      it(`truncateZerosInDateTime return ${output} for ${input}`, () => {
-        expect(monitoringUtils.truncateZerosInDateTime(input)).toBe(output);
-      });
-    });
-  });
-
-  describe('isValidDate', () => {
-    [
-      {
-        input: '2019-09-09T00:00:00.000Z',
-        output: true,
-      },
-      {
-        input: '2019-09-09T000:00.000Z',
-        output: false,
-      },
-      {
-        input: 'a2019-09-09T000:00.000Z',
-        output: false,
-      },
-      {
-        input: '2019-09-09T',
-        output: false,
-      },
-      {
-        input: '2019-09-09',
-        output: true,
-      },
-      {
-        input: '2019-9-9',
-        output: true,
-      },
-      {
-        input: '2019-9-',
-        output: true,
-      },
-      {
-        input: '2019--',
-        output: false,
-      },
-      {
-        input: '2019',
-        output: true,
-      },
-      {
-        input: '',
-        output: false,
-      },
-      {
-        input: null,
-        output: false,
-      },
-    ].forEach(({ input, output }) => {
-      it(`isValidDate return ${output} for ${input}`, () => {
-        expect(monitoringUtils.isValidDate(input)).toBe(output);
-      });
-    });
-  });
-
-  describe('isDateTimePickerInputValid', () => {
-    [
-      {
-        input: null,
-        output: false,
-      },
-      {
-        input: '',
-        output: false,
-      },
-      {
-        input: 'xxxx-xx-xx',
-        output: false,
-      },
-      {
-        input: '9999-99-19',
-        output: false,
-      },
-      {
-        input: '2019-19-23',
-        output: false,
-      },
-      {
-        input: '2019-09-23',
-        output: true,
-      },
-      {
-        input: '2019-09-23 x',
-        output: false,
-      },
-      {
-        input: '2019-09-29 0:0:0',
-        output: false,
-      },
-      {
-        input: '2019-09-29 00:00:00',
-        output: true,
-      },
-      {
-        input: '2019-09-29 24:24:24',
-        output: false,
-      },
-      {
-        input: '2019-09-29 23:24:24',
-        output: true,
-      },
-      {
-        input: '2019-09-29 23:24:24 ',
-        output: false,
-      },
-    ].forEach(({ input, output }) => {
-      it(`returns ${output} for ${input}`, () => {
-        expect(monitoringUtils.isDateTimePickerInputValid(input)).toBe(output);
-      });
     });
   });
 
@@ -389,6 +137,77 @@ describe('monitoring/utils', () => {
 
     it('validation fails for wrong format, more than 3 metrics', () => {
       expect(monitoringUtils.graphDataValidatorForAnomalyValues(fourMetrics)).toBe(false);
+    });
+  });
+
+  describe('timeRangeFromUrl', () => {
+    const { timeRangeFromUrl } = monitoringUtils;
+
+    it('returns a fixed range when query contains `start` and `end` paramters are given', () => {
+      queryToObject.mockReturnValueOnce(range);
+
+      expect(timeRangeFromUrl()).toEqual(range);
+    });
+
+    it('returns a rolling range when query contains `duration_seconds` paramters are given', () => {
+      const { seconds } = rollingRange.duration;
+
+      queryToObject.mockReturnValueOnce({
+        dashboard: '.gitlab/dashboard/my_dashboard.yml',
+        duration_seconds: `${seconds}`,
+      });
+
+      expect(timeRangeFromUrl()).toEqual(rollingRange);
+    });
+
+    it('returns null when no time range paramters are given', () => {
+      const params = {
+        dashboard: '.gitlab/dashboards/custom_dashboard.yml',
+        param1: 'value1',
+        param2: 'value2',
+      };
+
+      expect(timeRangeFromUrl(params, mockPath)).toBe(null);
+    });
+  });
+
+  describe('removeTimeRangeParams', () => {
+    const { removeTimeRangeParams } = monitoringUtils;
+
+    it('returns when query contains `start` and `end` paramters are given', () => {
+      removeParams.mockReturnValueOnce(mockPath);
+
+      expect(removeTimeRangeParams(`${mockPath}?start=${range.start}&end=${range.end}`)).toEqual(
+        mockPath,
+      );
+    });
+  });
+
+  describe('timeRangeToUrl', () => {
+    const { timeRangeToUrl } = monitoringUtils;
+
+    it('returns a fixed range when query contains `start` and `end` paramters are given', () => {
+      const toUrl = `${mockPath}?start=${range.start}&end=${range.end}`;
+      const fromUrl = mockPath;
+
+      removeParams.mockReturnValueOnce(fromUrl);
+      mergeUrlParams.mockReturnValueOnce(toUrl);
+
+      expect(timeRangeToUrl(range)).toEqual(toUrl);
+      expect(mergeUrlParams).toHaveBeenCalledWith(range, fromUrl);
+    });
+
+    it('returns a rolling range when query contains `duration_seconds` paramters are given', () => {
+      const { seconds } = rollingRange.duration;
+
+      const toUrl = `${mockPath}?duration_seconds=${seconds}`;
+      const fromUrl = mockPath;
+
+      removeParams.mockReturnValueOnce(fromUrl);
+      mergeUrlParams.mockReturnValueOnce(toUrl);
+
+      expect(timeRangeToUrl(rollingRange)).toEqual(toUrl);
+      expect(mergeUrlParams).toHaveBeenCalledWith({ duration_seconds: `${seconds}` }, fromUrl);
     });
   });
 });

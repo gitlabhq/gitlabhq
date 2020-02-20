@@ -12,7 +12,7 @@ Get a list of all pages domains. The user must have admin permissions.
 GET /pages/domains
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/pages/domains
 ```
 
@@ -43,7 +43,7 @@ GET /projects/:id/pages/domains
 | --------- | -------------- | -------- | ---------------------------------------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains
 ```
 
@@ -80,7 +80,7 @@ GET /projects/:id/pages/domains/:domain
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains/www.domain.example
 ```
 
@@ -91,7 +91,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 }
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```
 
@@ -125,15 +125,15 @@ POST /projects/:id/pages/domains
 | `certificate`      | file/string    | no       | The certificate in PEM format with intermediates following in most specific to least specific order.|
 | `key`              | file/string    | no       | The certificate key in PEM format.       |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains
 ```
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains
 ```
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "auto_ssl_enabled=true" https://gitlab.example.com/api/v4/projects/5/pages/domains
 ```
 
@@ -169,11 +169,11 @@ PUT /projects/:id/pages/domains/:domain
 
 ### Adding certificate
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```
 
@@ -193,7 +193,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certifi
 
 ### Enabling Let's Encrypt integration for Pages custom domains
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "auto_ssl_enabled=true" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```
 
@@ -209,7 +209,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "auto_ss
 
 To remove the SSL certificate attached to the Pages domain, run:
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=" --form "key=" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```
 
@@ -234,6 +234,6 @@ DELETE /projects/:id/pages/domains/:domain
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```

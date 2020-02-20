@@ -75,7 +75,7 @@ describe 'OpenID Connect requests' do
     it 'userinfo response is unauthorized' do
       request_user_info!
 
-      expect(response).to have_gitlab_http_status 403
+      expect(response).to have_gitlab_http_status(:forbidden)
       expect(response.body).to be_blank
     end
   end
@@ -177,7 +177,7 @@ describe 'OpenID Connect requests' do
     it 'correctly returns the configuration' do
       get '/.well-known/openid-configuration'
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['issuer']).to eq('http://localhost')
       expect(json_response['jwks_uri']).to eq('http://www.example.com/oauth/discovery/keys')
       expect(json_response['scopes_supported']).to eq(%w[api read_user read_repository write_repository sudo openid profile email])

@@ -1,7 +1,7 @@
 {
   "name": "ymg09t5704clnxnqfgaj2h098gz4r7gyx4wc3fzmlqj1en24zf",
   "path": "ymg09t5704clnxnqfgaj2h098gz4r7gyx4wc3fzmlqj1en24zf",
-  "owner_id": null,
+  "owner_id": 123,
   "created_at": "2019-11-20 17:01:53 UTC",
   "updated_at": "2019-11-20 17:05:44 UTC",
   "description": "Group Description",
@@ -18,7 +18,7 @@
   "ldap_sync_last_successful_update_at": null,
   "ldap_sync_last_sync_at": null,
   "lfs_enabled": null,
-  "parent_id": null,
+  "parent_id": 7,
   "shared_runners_minutes_limit": null,
   "repository_size_limit": null,
   "require_two_factor_authentication": false,
@@ -33,6 +33,8 @@
   "extra_shared_runners_minutes_limit": null,
   "last_ci_minutes_notification_at": null,
   "last_ci_minutes_usage_notification_level": null,
+  "runners_token": "token",
+  "runners_token_encrypted": "encrypted",
   "subgroup_creation_level": 1,
   "emails_disabled": null,
   "max_pages_size": null,
@@ -260,25 +262,101 @@
   ],
   "boards": [
     {
-      "id": 56,
+      "id": 173,
       "project_id": null,
-      "created_at": "2019-11-20T17:27:16.808Z",
-      "updated_at": "2019-11-20T17:27:16.808Z",
-      "name": "Development",
+      "created_at": "2020-02-11T14:35:51.561Z",
+      "updated_at": "2020-02-11T14:35:51.561Z",
+      "name": "first board",
       "milestone_id": null,
       "group_id": 4351,
       "weight": null,
-      "labels": []
-    },
-    {
-      "id": 57,
-      "project_id": null,
-      "created_at": "2019-11-20T17:27:41.118Z",
-      "updated_at": "2019-11-20T17:27:41.118Z",
-      "name": "Board!",
-      "milestone_id": 7638,
-      "group_id": 4351,
-      "weight": null,
+      "lists": [
+        {
+          "id": 189,
+          "board_id": 173,
+          "label_id": 271,
+          "list_type": "label",
+          "position": 0,
+          "created_at": "2020-02-11T14:35:57.131Z",
+          "updated_at": "2020-02-11T14:35:57.131Z",
+          "user_id": null,
+          "milestone_id": null,
+          "max_issue_count": 0,
+          "max_issue_weight": 0,
+          "label": {
+            "id": 271,
+            "title": "TSL",
+            "color": "#58796f",
+            "project_id": null,
+            "created_at": "2019-11-20T17:02:20.541Z",
+            "updated_at": "2020-02-06T15:44:52.048Z",
+            "template": false,
+            "description": null,
+            "group_id": 4351,
+            "type": "GroupLabel",
+            "priorities": []
+          },
+          "board": {
+            "id": 173,
+            "project_id": null,
+            "created_at": "2020-02-11T14:35:51.561Z",
+            "updated_at": "2020-02-11T14:35:51.561Z",
+            "name": "hi",
+            "milestone_id": null,
+            "group_id": 4351,
+            "weight": null
+          }
+        },
+        {
+          "id": 190,
+          "board_id": 173,
+          "label_id": 272,
+          "list_type": "label",
+          "position": 1,
+          "created_at": "2020-02-11T14:35:57.868Z",
+          "updated_at": "2020-02-11T14:35:57.868Z",
+          "user_id": null,
+          "milestone_id": null,
+          "max_issue_count": 0,
+          "max_issue_weight": 0,
+          "label": {
+            "id": 272,
+            "title": "Sosync",
+            "color": "#110320",
+            "project_id": null,
+            "created_at": "2019-11-20T17:02:20.532Z",
+            "updated_at": "2020-02-06T15:44:52.057Z",
+            "template": false,
+            "description": null,
+            "group_id": 4351,
+            "type": "GroupLabel",
+            "priorities": []
+          },
+          "board": {
+            "id": 173,
+            "project_id": null,
+            "created_at": "2020-02-11T14:35:51.561Z",
+            "updated_at": "2020-02-11T14:35:51.561Z",
+            "name": "hi",
+            "milestone_id": null,
+            "group_id": 4351,
+            "weight": null
+          }
+        },
+        {
+          "id": 188,
+          "board_id": 173,
+          "label_id": null,
+          "list_type": "closed",
+          "position": null,
+          "created_at": "2020-02-11T14:35:51.593Z",
+          "updated_at": "2020-02-11T14:35:51.593Z",
+          "user_id": null,
+          "milestone_id": null,
+          "max_issue_count": 0,
+          "max_issue_weight": 0
+        }
+      ],
       "labels": []
     }
   ],
@@ -348,7 +426,7 @@
       "override": false,
       "user": {
         "id": 206,
-        "email": "margaret.bergnaum@reynolds.us",
+        "email": "gwendolyn_robel@gitlabexample.com",
         "username": "gwendolyn_robel"
       }
     },
@@ -394,7 +472,7 @@
       "override": false,
       "user": {
         "id": 1624,
-        "email": "nakesha.herzog@powlowski.com",
+        "email": "adriene.mcclure@gitlabexample.com",
         "username": "adriene.mcclure"
       }
     },
@@ -482,7 +560,18 @@
           "type": null,
           "author": {
             "name": "Administrator"
-          }
+          },
+          "award_emoji": [
+            {
+              "id": 12,
+              "name": "drum",
+              "user_id": 1,
+              "awardable_type": "Note",
+              "awardable_id": 44170,
+              "created_at": "2019-11-05T15:32:21.287Z",
+              "updated_at": "2019-11-05T15:32:21.287Z"
+            }
+          ]
         },
         {
           "id": 44168,
@@ -573,6 +662,17 @@
           "author": {
             "name": "Administrator"
           }
+        }
+      ],
+      "award_emoji": [
+        {
+          "id": 12,
+          "name": "thumbsup",
+          "user_id": 1,
+          "awardable_type": "Epic",
+          "awardable_id": 13622,
+          "created_at": "2019-11-05T15:37:21.287Z",
+          "updated_at": "2019-11-05T15:37:21.287Z"
         }
       ]
     },

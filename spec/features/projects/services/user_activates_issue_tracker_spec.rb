@@ -8,16 +8,15 @@ describe 'User activates issue tracker', :js do
 
   let(:url) { 'http://tracker.example.com' }
 
-  def fill_short_form(active = true)
-    check 'Active' if active
+  def fill_short_form(disabled: false)
+    uncheck 'Active' if disabled
 
     fill_in 'service_project_url', with: url
     fill_in 'service_issues_url', with: "#{url}/:id"
   end
 
-  def fill_full_form(active = true)
-    fill_short_form(active)
-    check 'Active' if active
+  def fill_full_form(disabled: false)
+    fill_short_form(disabled: disabled)
 
     fill_in 'service_new_issue_url', with: url
   end
@@ -86,14 +85,14 @@ describe 'User activates issue tracker', :js do
       end
     end
 
-    describe 'user sets the service but keeps it disabled' do
+    describe 'user disables the service' do
       before do
         click_link(tracker)
 
         if skip_new_issue_url
-          fill_short_form(false)
+          fill_short_form(disabled: true)
         else
-          fill_full_form(false)
+          fill_full_form(disabled: true)
         end
 
         click_button('Save changes')

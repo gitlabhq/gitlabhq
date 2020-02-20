@@ -121,14 +121,14 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `sha` (optional) - The commit SHA to download. A tag, branch reference, or SHA can be used. This defaults to the tip of the default branch if not specified. For example:
 
-```sh
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.com/api/v4/projects/<project_id>/repository/archive?sha=<commit_sha>
 ```
 
 ## Compare branches, tags or commits
 
 This endpoint can be accessed without authentication if the repository is
-publicly accessible.
+publicly accessible. Note that diffs could have an empty diff string if [diff limits](../development/diffs.md#diff-limits) are reached.
 
 ```
 GET /projects/:id/repository/compare
@@ -227,7 +227,7 @@ GET /projects/:id/repository/merge_base
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `refs` | array | yes | The refs to find the common ancestor of, multiple refs can be passed |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/merge_base?refs[]=304d257dcb821665ab5110318fc58a007bd104ed&refs[]=0031876facac3f2b2702a0e53a26e89939a42209"
 ```
 

@@ -7,6 +7,7 @@ describe Gitlab::RepositoryCacheAdapter do
   let(:repository) { project.repository }
   let(:cache) { repository.send(:cache) }
   let(:redis_set_cache) { repository.send(:redis_set_cache) }
+  let(:redis_hash_cache) { repository.send(:redis_hash_cache) }
 
   describe '#cache_method_output', :use_clean_rails_memory_store_caching do
     let(:fallback) { 10 }
@@ -212,6 +213,8 @@ describe Gitlab::RepositoryCacheAdapter do
       expect(cache).to receive(:expire).with(:branch_names)
       expect(redis_set_cache).to receive(:expire).with(:rendered_readme)
       expect(redis_set_cache).to receive(:expire).with(:branch_names)
+      expect(redis_hash_cache).to receive(:delete).with(:rendered_readme)
+      expect(redis_hash_cache).to receive(:delete).with(:branch_names)
 
       repository.expire_method_caches(%i(rendered_readme branch_names))
     end

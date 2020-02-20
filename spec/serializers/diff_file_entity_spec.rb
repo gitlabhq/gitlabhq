@@ -49,7 +49,7 @@ describe DiffFileEntity do
     end
   end
 
-  context '#parallel_diff_lines' do
+  describe '#parallel_diff_lines' do
     let(:options) { { diff_view: :parallel } }
 
     it 'exposes parallel diff lines correctly' do

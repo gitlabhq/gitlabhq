@@ -59,11 +59,9 @@ describe SendFileUpload do
       let(:params) { { disposition: 'inline', attachment: filename } }
 
       it 'sends a file with inline disposition' do
-        # Notice the filename= is omitted from the disposition; this is because
-        # Rails 5 will append this header in send_file
         expected_params = {
           filename: 'test.png',
-          disposition: "inline; filename*=UTF-8''test.png"
+          disposition: 'inline'
         }
         expect(controller).to receive(:send_file).with(uploader.path, expected_params)
 
@@ -76,32 +74,14 @@ describe SendFileUpload do
       let(:params) { { attachment: filename } }
 
       it 'sends a file with content-type of text/plain' do
-        # Notice the filename= is omitted from the disposition; this is because
-        # Rails 5 will append this header in send_file
         expected_params = {
           content_type: 'text/plain',
           filename: 'test.js',
-          disposition: "attachment; filename*=UTF-8''test.js"
+          disposition: 'attachment'
         }
         expect(controller).to receive(:send_file).with(uploader.path, expected_params)
 
         subject
-      end
-
-      context 'with non-ASCII encoded filename' do
-        let(:filename) { 'テスト.txt' }
-
-        # Notice the filename= is omitted from the disposition; this is because
-        # Rails 5 will append this header in send_file
-        it 'sends content-disposition for non-ASCII encoded filenames' do
-          expected_params = {
-            filename: filename,
-            disposition: "attachment; filename*=UTF-8''%E3%83%86%E3%82%B9%E3%83%88.txt"
-          }
-          expect(controller).to receive(:send_file).with(uploader.path, expected_params)
-
-          subject
-        end
       end
 
       context 'with a proxied file in object storage' do

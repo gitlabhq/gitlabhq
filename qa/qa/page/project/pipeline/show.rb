@@ -30,9 +30,9 @@ module QA::Page
         element :pipeline_badges
       end
 
-      def running?
+      def running?(wait: 0)
         within('.ci-header-container') do
-          page.has_content?('running')
+          page.has_content?('running', wait: wait)
         end
       end
 

@@ -501,7 +501,6 @@ describe('Notes Store mutations', () => {
         expect.objectContaining({
           resolvableDiscussionsCount: 1,
           unresolvedDiscussionsCount: 1,
-          hasUnresolvedDiscussions: false,
         }),
       );
     });
@@ -538,7 +537,6 @@ describe('Notes Store mutations', () => {
         expect.objectContaining({
           resolvableDiscussionsCount: 4,
           unresolvedDiscussionsCount: 2,
-          hasUnresolvedDiscussions: true,
         }),
       );
     });

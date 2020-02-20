@@ -29,7 +29,7 @@ describe Projects::PipelinesController do
         stub_feature_flags(ci_pipeline_persisted_stages: true)
       end
 
-      it 'returns serialized pipelines', :request_store do
+      it 'returns serialized pipelines' do
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
 
         get_pipelines_index_json
@@ -60,7 +60,6 @@ describe Projects::PipelinesController do
 
         # There appears to be one extra query for Pipelines#has_warnings? for some reason
         expect { get_pipelines_index_json }.not_to exceed_query_limit(control_count + 1)
-
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['pipelines'].count).to eq 10
       end
@@ -90,11 +89,18 @@ describe Projects::PipelinesController do
       end
 
       it 'does not execute N+1 queries' do
-        queries = ActiveRecord::QueryRecorder.new do
-          get_pipelines_index_json
-        end
+        get_pipelines_index_json
 
-        expect(queries.count).to be <= 36
+        control_count = ActiveRecord::QueryRecorder.new do
+          get_pipelines_index_json
+        end.count
+
+        create_all_pipeline_types
+
+        # There appears to be one extra query for Pipelines#has_warnings? for some reason
+        expect { get_pipelines_index_json }.not_to exceed_query_limit(control_count + 1)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['pipelines'].count).to eq 10
       end
     end
 
@@ -165,7 +171,17 @@ describe Projects::PipelinesController do
 
     def create_build(pipeline, stage, stage_idx, name, user = nil)
       status = %w[created running pending success failed canceled].sample
-      create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, status: status, user: user)
+      create(
+        :ci_build,
+        :artifacts,
+        artifacts_expire_at: 2.days.from_now,
+        pipeline: pipeline,
+        stage: stage,
+        stage_idx: stage_idx,
+        name: name,
+        status: status,
+        user: user
+      )
     end
   end
 
@@ -608,7 +624,7 @@ describe Projects::PipelinesController do
 
   describe 'GET test_report.json' do
     subject(:get_test_report_json) do
-      post :test_report, params: {
+      get :test_report, params: {
         namespace_id: project.namespace,
         project_id: project,
         id: pipeline.id
@@ -676,6 +692,76 @@ describe Projects::PipelinesController do
     end
   end
 
+  describe 'GET test_report_count.json' do
+    subject(:test_reports_count_json) do
+      get :test_reports_count, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: pipeline.id
+      },
+      format: :json
+    end
+
+    context 'when feature is enabled' do
+      before do
+        stub_feature_flags(junit_pipeline_view: true)
+      end
+
+      context 'when pipeline does not have a test report' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+
+        it 'renders an empty badge counter' do
+          test_reports_count_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['total_count']).to eq(0)
+        end
+      end
+
+      context 'when pipeline has a test report' do
+        let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
+
+        it 'renders the badge counter value' do
+          test_reports_count_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['total_count']).to eq(4)
+        end
+      end
+
+      context 'when pipeline has corrupt test reports' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+
+        before do
+          job = create(:ci_build, pipeline: pipeline)
+          create(:ci_job_artifact, :junit_with_corrupted_data, job: job, project: project)
+        end
+
+        it 'renders 0' do
+          test_reports_count_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['total_count']).to eq(0)
+        end
+      end
+    end
+
+    context 'when feature is disabled' do
+      let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+      before do
+        stub_feature_flags(junit_pipeline_view: false)
+      end
+
+      it 'renders empty response' do
+        test_reports_count_json
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(response.body).to be_empty
+      end
+    end
+  end
+
   describe 'GET latest' do
     let(:branch_main) { project.repository.branches[0] }
     let(:branch_secondary) { project.repository.branches[1] }
@@ -703,7 +789,7 @@ describe Projects::PipelinesController do
       it 'shows latest pipeline for the default project branch' do
         get :show, params: { namespace_id: project.namespace, project_id: project, latest: true, ref: nil }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:pipeline)).to have_attributes(id: pipeline_master.id)
       end
     end
@@ -716,7 +802,7 @@ describe Projects::PipelinesController do
       it 'shows the latest pipeline for the provided ref' do
         get :show, params: { namespace_id: project.namespace, project_id: project, latest: true, ref: branch_secondary.name }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:pipeline)).to have_attributes(id: pipeline_secondary.id)
       end
 
@@ -728,7 +814,7 @@ describe Projects::PipelinesController do
         it 'shows the provided ref with the last sha/pipeline combo' do
           get :show, params: { namespace_id: project.namespace, project_id: project, latest: true, ref: branch_secondary.name }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(assigns(:pipeline)).to have_attributes(id: pipeline_secondary.id)
         end
       end
@@ -737,7 +823,7 @@ describe Projects::PipelinesController do
     it 'renders a 404 if no pipeline is found for the ref' do
       get :show, params: { namespace_id: project.namespace, project_id: project, ref: 'no-branch' }
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -754,7 +840,7 @@ describe Projects::PipelinesController do
       it 'deletes pipeline and redirects' do
         delete_pipeline
 
-        expect(response).to have_gitlab_http_status(303)
+        expect(response).to have_gitlab_http_status(:see_other)
 
         expect(Ci::Build.exists?(build.id)).to be_falsy
         expect(Ci::Pipeline.exists?(pipeline.id)).to be_falsy
@@ -766,7 +852,7 @@ describe Projects::PipelinesController do
         it 'fails to delete pipeline' do
           delete_pipeline
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -775,7 +861,7 @@ describe Projects::PipelinesController do
       it 'fails to delete pipeline' do
         delete_pipeline
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 

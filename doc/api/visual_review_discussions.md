@@ -1,6 +1,6 @@
 # Visual Review discussions API **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18710) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18710) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.5.
 
 Visual Review discussions are notes on Merge Requests sent as
 feedback from [Visual Reviews](../ci/review_apps/index.md#visual-reviews-starter).
@@ -35,6 +35,6 @@ Parameters:
 | `position[x]`             | integer        | no       | X coordinate (Only stored for `image` diff notes) |
 | `position[y]`             | integer        | no       | Y coordinate (Only stored for `image` diff notes) |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/visual_review_discussions?body=comment
 ```

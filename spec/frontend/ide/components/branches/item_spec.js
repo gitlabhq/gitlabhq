@@ -1,8 +1,8 @@
-import Vue from 'vue';
-import mountCompontent from 'helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
 import router from '~/ide/ide_router';
 import Item from '~/ide/components/branches/item.vue';
-import { getTimeago } from '~/lib/utils/datetime_utility';
+import Icon from '~/vue_shared/components/icon.vue';
+import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import { projectData } from '../../mock_data';
 
 const TEST_BRANCH = {
@@ -12,45 +12,45 @@ const TEST_BRANCH = {
 const TEST_PROJECT_ID = projectData.name_with_namespace;
 
 describe('IDE branch item', () => {
-  const Component = Vue.extend(Item);
-  let vm;
+  let wrapper;
 
-  beforeEach(() => {
-    vm = mountCompontent(Component, {
-      item: { ...TEST_BRANCH },
-      projectId: TEST_PROJECT_ID,
-      isActive: false,
+  function createComponent(props = {}) {
+    wrapper = shallowMount(Item, {
+      propsData: {
+        item: { ...TEST_BRANCH },
+        projectId: TEST_PROJECT_ID,
+        isActive: false,
+        ...props,
+      },
+    });
+  }
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  describe('if not active', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+    it('renders branch name and timeago', () => {
+      expect(wrapper.text()).toContain(TEST_BRANCH.name);
+      expect(wrapper.find(Timeago).props('time')).toBe(TEST_BRANCH.committedDate);
+      expect(wrapper.find(Icon).exists()).toBe(false);
+    });
+
+    it('renders link to branch', () => {
+      const expectedHref = router.resolve(`/project/${TEST_PROJECT_ID}/edit/${TEST_BRANCH.name}`)
+        .href;
+
+      expect(wrapper.text()).toMatch('a');
+      expect(wrapper.attributes('href')).toBe(expectedHref);
     });
   });
 
-  afterEach(() => {
-    vm.$destroy();
-  });
+  it('renders icon if is not active', () => {
+    createComponent({ isActive: true });
 
-  it('renders branch name and timeago', () => {
-    const timeText = getTimeago().format(TEST_BRANCH.committedDate);
-
-    expect(vm.$el.textContent).toContain(TEST_BRANCH.name);
-    expect(vm.$el.querySelector('time')).toHaveText(timeText);
-    expect(vm.$el.querySelector('.ic-mobile-issue-close')).toBe(null);
-  });
-
-  it('renders link to branch', () => {
-    const expectedHref = router.resolve(`/project/${TEST_PROJECT_ID}/edit/${TEST_BRANCH.name}`)
-      .href;
-
-    expect(vm.$el.textContent).toMatch('a');
-    expect(vm.$el).toHaveAttr('href', expectedHref);
-  });
-
-  it('renders icon if isActive', done => {
-    vm.isActive = true;
-
-    vm.$nextTick()
-      .then(() => {
-        expect(vm.$el.querySelector('.ic-mobile-issue-close')).not.toBe(null);
-      })
-      .then(done)
-      .catch(done.fail);
+    expect(wrapper.find(Icon).exists()).toBe(true);
   });
 });

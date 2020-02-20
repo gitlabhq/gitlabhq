@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isString } from 'lodash';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import Url from './url.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -20,7 +20,7 @@ export default {
       return this.func.name;
     },
     description() {
-      if (!_.isString(this.func.description)) {
+      if (!isString(this.func.description)) {
         return '';
       }
 
@@ -63,7 +63,7 @@ export default {
 
 <template>
   <li :id="name" class="group-row">
-    <div class="group-row-contents" role="button" @click="openDetails">
+    <div class="group-row-contents py-2" role="button" @click="openDetails">
       <p class="float-right text-right">
         <span>{{ image }}</span
         ><br />

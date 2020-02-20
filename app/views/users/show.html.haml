@@ -130,7 +130,8 @@
             %h4.prepend-top-20
               = s_('UserProfile|Most Recent Activity')
             .content_list{ data: { href: user_path } }
-            = spinner
+            .loading
+              .spinner.spinner-md
 
       - if profile_tab?(:groups)
         #groups.tab-pane
@@ -152,8 +153,8 @@
         #snippets.tab-pane
           -# This tab is always loaded via AJAX
 
-    .loading-status
-      = spinner
+    .loading.hide
+      .spinner.spinner-md
 
   - if profile_tabs.empty?
     .row

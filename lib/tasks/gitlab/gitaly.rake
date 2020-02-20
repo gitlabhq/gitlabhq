@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :gitaly do
-    desc "GitLab | Install or upgrade gitaly"
+    desc 'GitLab | Gitaly | Install or upgrade gitaly'
     task :install, [:dir, :storage_path, :repo] => :gitlab_environment do |t, args|
       warn_user_is_not_gitlab
 

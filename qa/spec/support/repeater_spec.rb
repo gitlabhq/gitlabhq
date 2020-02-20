@@ -381,5 +381,35 @@ describe QA::Support::Repeater do
         end
       end
     end
+
+    it 'logs attempts' do
+      attempted = false
+
+      expect do
+        subject.repeat_until(max_attempts: 1) do
+          unless attempted
+            attempted = true
+            break false
+          end
+
+          true
+        end
+      end.to output(/Attempt number/).to_stdout_from_any_process
+    end
+
+    it 'allows logging to be silenced' do
+      attempted = false
+
+      expect do
+        subject.repeat_until(max_attempts: 1, log: false) do
+          unless attempted
+            attempted = true
+            break false
+          end
+
+          true
+        end
+      end.not_to output.to_stdout_from_any_process
+    end
   end
 end

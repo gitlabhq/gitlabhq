@@ -1,6 +1,6 @@
 # User lookup via OpenSSH's AuthorizedPrincipalsCommand
 
-> [Available in](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19911) GitLab
+> [Available in](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19911) GitLab
 > Community Edition 11.2.
 
 GitLab's default SSH authentication requires users to upload their SSH
@@ -54,8 +54,9 @@ The SSH certificates being issued by that CA **MUST** have a "key id"
 corresponding to that user's username on GitLab, e.g. (some output
 omitted for brevity):
 
-```
+```shell
 $ ssh-add -L | grep cert | ssh-keygen -L -f -
+
 (stdin):1:
         Type: ssh-rsa-cert-v01@openssh.com user certificate
         Public key: RSA-CERT SHA256:[...]

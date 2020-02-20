@@ -41,7 +41,7 @@ describe Projects::ContainerRepository::CleanupTagsService do
       let(:params) { {} }
 
       it 'does not remove anything' do
-        expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag)
+        expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag_by_digest)
 
         is_expected.to include(status: :success, deleted: [])
       end
@@ -130,6 +130,38 @@ describe Projects::ContainerRepository::CleanupTagsService do
         is_expected.to include(status: :success, deleted: %w(Bb Ba C))
       end
     end
+
+    context 'when running a container_expiration_policy' do
+      let(:user) { nil }
+
+      context 'with valid container_expiration_policy param' do
+        let(:params) do
+          { 'name_regex' => '.*',
+            'keep_n' => 1,
+            'older_than' => '1 day',
+            'container_expiration_policy' => true }
+        end
+
+        it 'succeeds without a user' do
+          expect_delete('sha256:configB').twice
+          expect_delete('sha256:configC')
+
+          is_expected.to include(status: :success, deleted: %w(Bb Ba C))
+        end
+      end
+
+      context 'without container_expiration_policy param' do
+        let(:params) do
+          { 'name_regex' => '.*',
+            'keep_n' => 1,
+            'older_than' => '1 day' }
+        end
+
+        it 'fails' do
+          is_expected.to include(status: :error, message: 'access denied')
+        end
+      end
+    end
   end
 
   private
@@ -156,7 +188,7 @@ describe Projects::ContainerRepository::CleanupTagsService do
 
   def expect_delete(digest)
     expect_any_instance_of(ContainerRegistry::Client)
-      .to receive(:delete_repository_tag)
+      .to receive(:delete_repository_tag_by_digest)
       .with(repository.path, digest) { true }
   end
 end

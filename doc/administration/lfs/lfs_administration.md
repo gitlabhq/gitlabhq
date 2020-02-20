@@ -138,13 +138,13 @@ There are two ways to manually do the same thing as automatic uploading (describ
 
 **Option 1: rake task**
 
-```sh
+```shell
 rake gitlab:lfs:migrate
 ```
 
 **Option 2: rails console**
 
-```sh
+```shell
 $ sudo gitlab-rails console            # Login to rails console
 
 > # Upload LFS files manually
@@ -178,7 +178,7 @@ On Omnibus installations, the settings are prefixed by `lfs_object_store_`:
 1. Save the file and [reconfigure GitLab]s for the changes to take effect.
 1. Migrate any existing local LFS objects to the object storage:
 
-   ```bash
+   ```shell
    gitlab-rake gitlab:lfs:migrate
    ```
 
@@ -214,7 +214,7 @@ For source installations the settings are nested under `lfs:` and then
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Migrate any existing local LFS objects to the object storage:
 
-   ```bash
+   ```shell
    sudo -u git -H bundle exec rake gitlab:lfs:migrate RAILS_ENV=production
    ```
 
@@ -257,7 +257,7 @@ $ sudo gitlab-rails console            # Login to rails console
 > end
 ```
 
-See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19581)
+See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19581)
 
 ## Known limitations
 
@@ -270,4 +270,4 @@ See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/merge
 [reconfigure gitlab]: ../restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: ../restart_gitlab.md#installations-from-source "How to restart GitLab"
 [eep]: https://about.gitlab.com/pricing/ "GitLab Premium"
-[ee-2760]: https://gitlab.com/gitlab-org/gitlab/merge_requests/2760
+[ee-2760]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2760

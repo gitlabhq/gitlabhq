@@ -4,7 +4,7 @@
 #
 # Requires a reference:
 #   let(:reference) { '#42' }
-shared_examples 'a reference containing an element node' do
+RSpec.shared_examples 'a reference containing an element node' do
   let(:inner_html) { 'element <code>node</code> inside' }
   let(:reference_with_element) { %{<a href="#{reference}">#{inner_html}</a>} }
 
@@ -18,7 +18,7 @@ end
 #   subject { create(:user) }
 #   let(:reference) { subject.to_reference }
 #   let(:subject_name) { 'user' }
-shared_examples 'user reference or project reference' do
+RSpec.shared_examples 'user reference or project reference' do
   shared_examples 'it contains a data- attribute' do
     it 'includes a data- attribute' do
       doc = reference_filter("Hey #{reference}")

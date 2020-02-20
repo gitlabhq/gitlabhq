@@ -6,8 +6,16 @@ module Gitlab
       module Keyset
         module Conditions
           class BaseCondition
-            def initialize(arel_table, names, values, operator, before_or_after)
-              @arel_table, @names, @values, @operator, @before_or_after = arel_table, names, values, operator, before_or_after
+            # @param [Arel::Table] arel_table for the relation being ordered
+            # @param [Array<OrderInfo>] order_list of extracted orderings
+            # @param [Array] values from the decoded cursor
+            # @param [Array<String>] operators determining sort comparison
+            # @param [Symbol] before_or_after indicates whether we want
+            #        items :before the cursor or :after the cursor
+            def initialize(arel_table, order_list, values, operators, before_or_after)
+              @arel_table, @order_list, @values, @operators, @before_or_after = arel_table, order_list, values, operators, before_or_after
+
+              @before_or_after = :after unless [:after, :before].include?(@before_or_after)
             end
 
             def build
@@ -16,20 +24,27 @@ module Gitlab
 
             private
 
-            attr_reader :arel_table, :names, :values, :operator, :before_or_after
+            attr_reader :arel_table, :order_list, :values, :operators, :before_or_after
 
-            def table_condition(attribute, value, operator)
+            def table_condition(order_info, value, operator)
+              if order_info.named_function
+                target = order_info.named_function
+                value  = value&.downcase if target&.name&.downcase == 'lower'
+              else
+                target = arel_table[order_info.attribute_name]
+              end
+
               case operator
               when '>'
-                arel_table[attribute].gt(value)
+                target.gt(value)
               when '<'
-                arel_table[attribute].lt(value)
+                target.lt(value)
               when '='
-                arel_table[attribute].eq(value)
+                target.eq(value)
               when 'is_null'
-                arel_table[attribute].eq(nil)
+                target.eq(nil)
               when 'is_not_null'
-                arel_table[attribute].not_eq(nil)
+                target.not_eq(nil)
               end
             end
           end

@@ -57,6 +57,17 @@ describe Gitlab::Ci::Reports::TestReportsComparer do
         is_expected.to eq(Gitlab::Ci::Reports::TestCase::STATUS_FAILED)
       end
     end
+
+    context 'when there is an error test case in head suites' do
+      before do
+        head_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+        head_reports.get_suite('junit').add_test_case(create_test_case_java_error)
+      end
+
+      it 'returns the total status in head suite' do
+        is_expected.to eq(Gitlab::Ci::Reports::TestCase::STATUS_FAILED)
+      end
+    end
   end
 
   describe '#total_count' do
@@ -75,10 +86,23 @@ describe Gitlab::Ci::Reports::TestReportsComparer do
   describe '#resolved_count' do
     subject { comparer.resolved_count }
 
-    context 'when there is a resolved test case in head suites' do
+    context 'when there is a resolved failure test case in head suites' do
       before do
         base_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
         base_reports.get_suite('junit').add_test_case(create_test_case_java_failed)
+        head_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+        head_reports.get_suite('junit').add_test_case(create_test_case_java_success)
+      end
+
+      it 'returns the correct count' do
+        is_expected.to eq(1)
+      end
+    end
+
+    context 'when there is a resolved error test case in head suites' do
+      before do
+        base_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+        base_reports.get_suite('junit').add_test_case(create_test_case_java_error)
         head_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
         head_reports.get_suite('junit').add_test_case(create_test_case_java_success)
       end
@@ -117,6 +141,32 @@ describe Gitlab::Ci::Reports::TestReportsComparer do
     end
 
     context 'when there are no failed test cases in head suites' do
+      before do
+        head_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+        head_reports.get_suite('junit').add_test_case(create_test_case_rspec_success)
+      end
+
+      it 'returns the correct count' do
+        is_expected.to eq(0)
+      end
+    end
+  end
+
+  describe '#error_count' do
+    subject { comparer.error_count }
+
+    context 'when there is an error test case in head suites' do
+      before do
+        head_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+        head_reports.get_suite('junit').add_test_case(create_test_case_java_error)
+      end
+
+      it 'returns the correct count' do
+        is_expected.to eq(1)
+      end
+    end
+
+    context 'when there are no error test cases in head suites' do
       before do
         head_reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
         head_reports.get_suite('junit').add_test_case(create_test_case_rspec_success)

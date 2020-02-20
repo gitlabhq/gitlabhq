@@ -84,6 +84,16 @@ describe Issue do
     end
   end
 
+  describe '.simple_sorts' do
+    it 'includes all keys' do
+      expect(described_class.simple_sorts.keys).to include(
+        *%w(created_asc created_at_asc created_date created_desc created_at_desc
+            closest_future_date closest_future_date_asc due_date due_date_asc due_date_desc
+            id_asc id_desc relative_position relative_position_asc
+            updated_desc updated_asc updated_at_asc updated_at_desc))
+    end
+  end
+
   describe '#order_by_position_and_priority' do
     let(:project) { create :project }
     let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
@@ -349,7 +359,7 @@ describe Issue do
       allow(subject.project).to receive(:repository).and_return(repository)
     end
 
-    context '#to_branch_name does not exists' do
+    describe '#to_branch_name does not exists' do
       before do
         allow(repository).to receive(:branch_exists?).and_return(false)
       end
@@ -359,7 +369,7 @@ describe Issue do
       end
     end
 
-    context '#to_branch_name exists not ending with -index' do
+    describe '#to_branch_name exists not ending with -index' do
       before do
         allow(repository).to receive(:branch_exists?).and_return(true)
         allow(repository).to receive(:branch_exists?).with(/#{subject.to_branch_name}-\d/).and_return(false)
@@ -370,7 +380,7 @@ describe Issue do
       end
     end
 
-    context '#to_branch_name exists ending with -index' do
+    describe '#to_branch_name exists ending with -index' do
       before do
         allow(repository).to receive(:branch_exists?).and_return(true)
         allow(repository).to receive(:branch_exists?).with("#{subject.to_branch_name}-3").and_return(false)

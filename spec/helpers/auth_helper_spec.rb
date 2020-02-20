@@ -73,12 +73,17 @@ describe AuthHelper do
 
   describe 'enabled_button_based_providers' do
     before do
-      allow(helper).to receive(:auth_providers) { [:twitter, :github] }
+      allow(helper).to receive(:auth_providers) { [:twitter, :github, :google_oauth2] }
     end
 
     context 'all providers are enabled to sign in' do
       it 'returns all the enabled providers from settings' do
-        expect(helper.enabled_button_based_providers).to include('twitter', 'github')
+        expect(helper.enabled_button_based_providers).to include('twitter', 'github', 'google_oauth2')
+      end
+
+      it 'puts google and github in the beginning' do
+        expect(helper.enabled_button_based_providers.first).to eq('google_oauth2')
+        expect(helper.enabled_button_based_providers.second).to eq('github')
       end
     end
 

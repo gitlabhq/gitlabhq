@@ -51,6 +51,20 @@ describe('Repository table row component', () => {
     });
   });
 
+  it('renders table row for path with special character', () => {
+    factory({
+      id: '1',
+      sha: '123',
+      path: 'test$/test',
+      type: 'file',
+      currentPath: 'test$',
+    });
+
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.element).toMatchSnapshot();
+    });
+  });
+
   it.each`
     type        | component         | componentName
     ${'tree'}   | ${RouterLinkStub} | ${'RouterLink'}
@@ -88,10 +102,26 @@ describe('Repository table row component', () => {
       vm.trigger('click');
 
       if (pushes) {
-        expect($router.push).toHaveBeenCalledWith({ path: '/tree/master/test' });
+        expect($router.push).toHaveBeenCalledWith({ path: '/-/tree/master/test' });
       } else {
         expect($router.push).not.toHaveBeenCalled();
       }
+    });
+  });
+
+  it('pushes new route for directory with hash', () => {
+    factory({
+      id: '1',
+      sha: '123',
+      path: 'test#',
+      type: 'tree',
+      currentPath: '/',
+    });
+
+    return vm.vm.$nextTick().then(() => {
+      vm.trigger('click');
+
+      expect($router.push).toHaveBeenCalledWith({ path: '/-/tree/master/test%23' });
     });
   });
 

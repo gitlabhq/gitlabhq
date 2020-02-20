@@ -9,8 +9,8 @@ describe Gitlab::InternalPostReceive::Response do
     context 'when there are urls_data' do
       it 'adds a message for each merge request URL' do
         urls_data = [
-          { new_merge_request: false, branch_name: 'foo', url: 'http://example.com/foo/bar/merge_requests/1' },
-          { new_merge_request: true, branch_name: 'bar', url: 'http://example.com/foo/bar/merge_requests/new?merge_request%5Bsource_branch%5D=bar' }
+          { new_merge_request: false, branch_name: 'foo', url: 'http://example.com/foo/bar/-/merge_requests/1' },
+          { new_merge_request: true, branch_name: 'bar', url: 'http://example.com/foo/bar/-/merge_requests/new?merge_request%5Bsource_branch%5D=bar' }
         ]
 
         subject.add_merge_request_urls(urls_data)
@@ -24,13 +24,13 @@ describe Gitlab::InternalPostReceive::Response do
   describe '#add_merge_request_url' do
     context 'when :new_merge_request is false' do
       it 'adds a basic message to view the existing merge request' do
-        url_data = { new_merge_request: false, branch_name: 'foo', url: 'http://example.com/foo/bar/merge_requests/1' }
+        url_data = { new_merge_request: false, branch_name: 'foo', url: 'http://example.com/foo/bar/-/merge_requests/1' }
 
         subject.add_merge_request_url(url_data)
 
         message = <<~MESSAGE.strip
           View merge request for foo:
-            http://example.com/foo/bar/merge_requests/1
+            http://example.com/foo/bar/-/merge_requests/1
         MESSAGE
 
         expect(subject.messages.first.message).to eq(message)
@@ -40,13 +40,13 @@ describe Gitlab::InternalPostReceive::Response do
 
     context 'when :new_merge_request is true' do
       it 'adds a basic message to create a new merge request' do
-        url_data = { new_merge_request: true, branch_name: 'bar', url: 'http://example.com/foo/bar/merge_requests/new?merge_request%5Bsource_branch%5D=bar' }
+        url_data = { new_merge_request: true, branch_name: 'bar', url: 'http://example.com/foo/bar/-/merge_requests/new?merge_request%5Bsource_branch%5D=bar' }
 
         subject.add_merge_request_url(url_data)
 
         message = <<~MESSAGE.strip
           To create a merge request for bar, visit:
-            http://example.com/foo/bar/merge_requests/new?merge_request%5Bsource_branch%5D=bar
+            http://example.com/foo/bar/-/merge_requests/new?merge_request%5Bsource_branch%5D=bar
         MESSAGE
 
         expect(subject.messages.first.message).to eq(message)

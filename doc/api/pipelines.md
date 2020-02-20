@@ -274,7 +274,7 @@ Response:
 
 ## Delete a pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22988) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22988) in GitLab 11.6.
 
 ```
 DELETE /projects/:id/pipelines/:pipeline_id
@@ -289,5 +289,5 @@ DELETE /projects/:id/pipelines/:pipeline_id
 curl --header "PRIVATE-TOKEN: <your_access_token>" --request "DELETE" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
-[ce-5837]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5837
-[ce-7209]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7209
+[ce-5837]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5837
+[ce-7209]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7209

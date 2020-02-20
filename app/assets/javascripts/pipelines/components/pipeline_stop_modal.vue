@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import { GlLink } from '@gitlab/ui';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
@@ -43,7 +43,7 @@ export default {
       );
     },
     hasRef() {
-      return !_.isEmpty(this.pipeline.ref);
+      return !isEmpty(this.pipeline.ref);
     },
   },
   methods: {

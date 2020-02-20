@@ -197,19 +197,19 @@ For more fine tuning, read also about the
 
 The most common use case of cache is to preserve contents between subsequent
 runs of jobs for things like dependencies and commonly used libraries
-(Nodejs packages, PHP packages, rubygems, Python libraries, etc.),
+(Node.js packages, PHP packages, rubygems, Python libraries, etc.),
 so they don't have to be re-fetched from the public internet.
 
 NOTE: **Note:**
 For more examples, check out our [GitLab CI/CD
 templates](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates).
 
-### Caching Nodejs dependencies
+### Caching Node.js dependencies
 
 Assuming your project is using [npm](https://www.npmjs.com/) or
-[Yarn](https://yarnpkg.com/en/) to install the Nodejs dependencies, the
+[Yarn](https://classic.yarnpkg.com/en/) to install the Node.js dependencies, the
 following example defines `cache` globally so that all jobs inherit it.
-Nodejs modules are installed in `node_modules/` and are cached per-branch:
+Node.js modules are installed in `node_modules/` and are cached per-branch:
 
 ```yaml
 #
@@ -320,8 +320,8 @@ cache:
     - vendor/ruby
 
 before_script:
-  - ruby -v                                   # Print out ruby version for debugging
-  - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
+  - ruby -v                                        # Print out ruby version for debugging
+  - bundle install -j $(nproc) --path vendor/ruby  # Install dependencies into ./vendor/ruby
 
 rspec:
   script:

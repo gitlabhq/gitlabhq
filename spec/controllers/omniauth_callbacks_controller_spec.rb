@@ -172,7 +172,7 @@ describe OmniauthCallbacksController, type: :controller, do_not_mock_admin_mode:
             it 'returns 403' do
               post provider
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end

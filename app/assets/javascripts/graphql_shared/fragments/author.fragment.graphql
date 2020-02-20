@@ -1,0 +1,6 @@
+fragment Author on User {
+  avatarUrl
+  name
+  username
+  webUrl
+}

@@ -6,7 +6,7 @@ type: tutorial
 
 > **Notes**:
 >
-> - [Introduced](https://about.gitlab.com/blog/2015/08/22/gitlab-7-14-released/) in GitLab 7.14.
+> - [Introduced](https://about.gitlab.com/releases/2015/08/22/gitlab-7-14-released/) in GitLab 7.14.
 > - GitLab 8.12 has a completely redesigned job permissions system. Read all
 >   about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#pipeline-triggers).
 
@@ -110,7 +110,7 @@ The action is irreversible.
 
 To trigger a job you need to send a `POST` request to GitLab's API endpoint:
 
-```
+```plaintext
 POST /projects/:id/trigger/pipeline
 ```
 
@@ -137,7 +137,7 @@ below.
 
 By using cURL you can trigger a pipeline rerun with minimal effort, for example:
 
-```bash
+```shell
 curl --request POST \
      --form token=TOKEN \
      --form ref=master \
@@ -148,7 +148,7 @@ In this case, the project with ID `9` will get rebuilt on `master` branch.
 
 Alternatively, you can pass the `token` and `ref` arguments in the query string:
 
-```bash
+```shell
 curl --request POST \
     "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline?token=TOKEN&ref=master"
 ```
@@ -185,7 +185,7 @@ Now, whenever a new tag is pushed on project A, the job will run and the
 To trigger a job from a webhook of another project you need to add the following
 webhook URL for Push and Tag events (change the project ID, ref and token):
 
-```
+```plaintext
 https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=TOKEN
 ```
 
@@ -195,7 +195,7 @@ You can pass any number of arbitrary variables in the trigger API call and they
 will be available in GitLab CI so that they can be used in your `.gitlab-ci.yml`
 file. The parameter is of the form:
 
-```
+```plaintext
 variables[key]=value
 ```
 
@@ -241,13 +241,16 @@ upload_package:
 You can then trigger a rebuild while you pass the `UPLOAD_TO_S3` variable
 and the script of the `upload_package` job will run:
 
-```bash
+```shell
 curl --request POST \
   --form token=TOKEN \
   --form ref=master \
   --form "variables[UPLOAD_TO_S3]=true" \
   https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
 ```
+
+Trigger variables have the [highest priority](../variables/README.md#priority-of-environment-variables)
+of all types of variables.
 
 ## Using cron to trigger nightly pipelines
 
@@ -259,7 +262,7 @@ Whether you craft a script or just run cURL directly, you can trigger jobs
 in conjunction with cron. The example below triggers a job on the `master`
 branch of project with ID `9` every night at `00:30`:
 
-```bash
+```shell
 30 0 * * * curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
 ```
 
@@ -271,8 +274,8 @@ Triggers with the legacy label do not have an associated user and only have
 access to the current project. They are considered deprecated and will be
 removed with one of the future versions of GitLab.
 
-[ee-2017]: https://gitlab.com/gitlab-org/gitlab/merge_requests/2017
-[ee-2346]: https://gitlab.com/gitlab-org/gitlab/merge_requests/2346
+[ee-2017]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2017
+[ee-2346]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346
 [ee]: https://about.gitlab.com/pricing/
 [variables]: ../variables/README.md
 [predef]: ../variables/README.md#predefined-environment-variables

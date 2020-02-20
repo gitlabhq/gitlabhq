@@ -16,10 +16,10 @@ describe 'gitlab:cleanup rake tasks' do
     let!(:logger) { double(:logger) }
 
     before do
-      expect(main_object).to receive(:logger).and_return(logger).at_least(1).times
+      expect(main_object).to receive(:logger).and_return(logger).at_least(:once)
 
-      allow(logger).to receive(:info).at_least(1).times
-      allow(logger).to receive(:debug).at_least(1).times
+      allow(logger).to receive(:info).at_least(:once)
+      allow(logger).to receive(:debug).at_least(:once)
     end
 
     context 'with a fixable orphaned project upload file' do

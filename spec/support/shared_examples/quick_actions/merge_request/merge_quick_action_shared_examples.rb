@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'merge quick action' do
+RSpec.shared_examples 'merge quick action' do
   context 'when the current user can merge the MR' do
     before do
       sign_in(user)

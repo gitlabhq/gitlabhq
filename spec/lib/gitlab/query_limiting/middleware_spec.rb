@@ -26,7 +26,7 @@ describe Gitlab::QueryLimiting::Middleware do
             :controller,
             action_name: 'show',
             class: double(:class, name: 'UsersController'),
-            content_type: 'text/html'
+            media_type: 'text/html'
           )
         }
 
@@ -39,7 +39,7 @@ describe Gitlab::QueryLimiting::Middleware do
             :controller,
             action_name: 'show',
             class: double(:class, name: 'UsersController'),
-            content_type: 'application/json'
+            media_type: 'application/json'
           )
         }
 

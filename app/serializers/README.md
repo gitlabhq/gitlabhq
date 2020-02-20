@@ -64,7 +64,7 @@ A new serializer should inherit from a `BaseSerializer` class. It is necessary
 to specify which serialization entity will be used to serialize a resource.
 
 ```ruby
-class MyResourceSerializer < BaseSerialize
+class MyResourceSerializer < BaseSerializer
   entity MyResourceEntity
 end
 ```

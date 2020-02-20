@@ -382,8 +382,6 @@ table.pipeline-project-metrics tr td {
   }
 
   .group-row-contents {
-    padding: $gl-padding;
-
     &:hover {
       border-color: $blue-200;
       background-color: $blue-50;
@@ -410,13 +408,7 @@ table.pipeline-project-metrics tr td {
 
     .title {
       margin-top: -$gl-padding-8; // negative margin required for flex-wrap
-      font-size: $gl-font-size-large;
-    }
-
-    @include media-breakpoint-down(md) {
-      .title {
-        font-size: $gl-font-size;
-      }
+      font-size: $gl-font-size;
     }
 
     &.has-more-items {
@@ -483,7 +475,6 @@ table.pipeline-project-metrics tr td {
 
     .last-updated {
       position: relative;
-      right: 12px;
       min-width: 250px;
       text-align: right;
       color: $gl-text-color-secondary;

@@ -21,7 +21,7 @@ To bring the former **primary** node up to date:
 1. SSH into the former **primary** node that has fallen behind.
 1. Make sure all the services are up:
 
-   ```sh
+   ```shell
    sudo gitlab-ctl start
    ```
 

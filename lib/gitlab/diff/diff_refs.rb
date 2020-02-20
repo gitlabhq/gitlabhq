@@ -37,7 +37,7 @@ module Gitlab
       # We have `base_sha` directly available on `DiffRefs` because it's faster#
       # than having to look it up in the repo every time.
       def complete?
-        start_sha && head_sha
+        start_sha.present? && head_sha.present?
       end
 
       def compare_in(project)

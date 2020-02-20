@@ -1,0 +1,5 @@
+---
+title: Add migration to create resource milestone events table
+merge_request: 23965
+author:
+type: added

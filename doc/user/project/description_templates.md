@@ -134,8 +134,8 @@ Possible fixes
 /assign @qa-tester
 ```
 
-[ce-4981]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4981
+[ce-4981]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/4981
 [gitlab-templates]: https://gitlab.com/gitlab-org/gitlab/tree/master/.gitlab
-[ee-28]: https://gitlab.com/gitlab-org/gitlab/merge_requests/28 "Merge Request for adding issues template"
+[ee-28]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28 "Merge Request for adding issues template"
 [ee-7478ece]: https://gitlab.com/gitlab-org/gitlab/commit/7478ece8b48e80782b5465b96c79f85cc91d391b "Commit that introduced merge requests templates"
 [products]: https://about.gitlab.com/pricing/

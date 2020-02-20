@@ -20,11 +20,18 @@ describe('updateElementsVisibility', () => {
 });
 
 describe('updateFormAction', () => {
-  it('updates form action', () => {
+  it.each`
+    path
+    ${'/test'}
+    ${'test'}
+    ${'/'}
+  `('updates form action for $path', ({ path }) => {
     setHTMLFixture('<form class="js-test" action="/"></form>');
 
-    updateFormAction('.js-test', '/gitlab/create', '/test');
+    updateFormAction('.js-test', '/gitlab/create', path);
 
-    expect(document.querySelector('.js-test').action).toBe('http://localhost/gitlab/create/test');
+    expect(document.querySelector('.js-test').action).toBe(
+      `http://localhost/gitlab/create/${path.replace(/^\//, '')}`,
+    );
   });
 });

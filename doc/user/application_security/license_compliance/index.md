@@ -26,7 +26,7 @@ licenses in your project's settings.
 NOTE: **Note:**
 If the license compliance report doesn't have anything to compare to, no information
 will be displayed in the merge request area. That is the case when you add the
-`license_management` job in your `.gitlab-ci.yml` for the first time.
+`license_scanning` job in your `.gitlab-ci.yml` for the first time.
 Consecutive merge requests will have something to compare to and the license
 compliance report will be shown properly.
 
@@ -52,7 +52,7 @@ The following languages and package managers are supported.
 | JavaScript | [Bower](https://bower.io/), [npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/) ([experimental support](https://github.com/pivotal/LicenseFinder#experimental-project-types)) |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Go         | [Godep](https://github.com/tools/godep), go get ([experimental support](https://github.com/pivotal/LicenseFinder#experimental-project-types)), gvt ([experimental support](https://github.com/pivotal/LicenseFinder#experimental-project-types)), glide ([experimental support](https://github.com/pivotal/LicenseFinder#experimental-project-types)), dep ([experimental support](https://github.com/pivotal/LicenseFinder#experimental-project-types)), trash ([experimental support](https://github.com/pivotal/LicenseFinder#experimental-project-types))  and govendor ([experimental support](https://github.com/pivotal/LicenseFinder#experimental-project-types)), [go mod](https://github.com/golang/go/wiki/Modules) ([experimental support](https://github.com/pivotal/LicenseFinder#experimental-project-types))   |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Java       | [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) |[License Finder](https://github.com/pivotal/LicenseFinder)|
-| .NET       | [Nuget](https://www.nuget.org/)                                   |[License Finder](https://github.com/pivotal/LicenseFinder)|
+| .NET      | [Nuget](https://www.nuget.org/) (.NET Framework is supported via the [mono project](https://www.mono-project.com/). Windows specific dependencies are not supported at this time.)  |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Python     | [pip](https://pip.pypa.io/en/stable/)                             |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Ruby       | [gem](https://rubygems.org/)                                      |[License Finder](https://github.com/pivotal/LicenseFinder)|
 | Erlang     | [rebar](https://www.rebar3.org/) ([experimental support](https://github.com/pivotal/LicenseFinder#experimental-project-types))|[License Finder](https://github.com/pivotal/LicenseFinder)|
@@ -70,25 +70,38 @@ To run a License Compliance scanning job, you need GitLab Runner with the
 
 ## Configuration
 
-For GitLab 11.9 and later, to enable License Compliance, you must
+For GitLab 12.8 and later, to enable License Compliance, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml)
+[`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml)
 that's provided as a part of your GitLab installation.
+For older versions of GitLab from 11.9 to 12.7, you must
+[include](../../../ci/yaml/README.md#includetemplate) the
+[`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml).
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
+
+NOTE: **Note:**
+In GitLab 13.0, the `License-Management.gitlab-ci.yml` template is scheduled to be removed.
+Use `License-Scanning.gitlab-ci.yml` instead.
 
 Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  template: License-Management.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
 ```
 
-The included template will create a `license_management` job in your CI/CD pipeline
+The included template will create a `license_scanning` job in your CI/CD pipeline
 and scan your dependencies to find their licenses.
 
+NOTE: **Note:**
+Before GitLab 12.8, the `license_scanning` job was named `license_management`.
+In GitLab 13.0, the `license_management` job is scheduled to be removed completely,
+so you're advised to migrate to the `license_scanning` job and used the new
+`License-Scanning.gitlab-ci.yml` template.
+
 The results will be saved as a
-[License Compliance report artifact](../../../ci/yaml/README.md#artifactsreportslicense_management-ultimate)
+[License Compliance report artifact](../../../ci/yaml/README.md#artifactsreportslicense_scanning-ultimate)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest License Compliance artifact available. Behind the scenes, the
 [GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
@@ -128,7 +141,7 @@ For example:
 
 ```yaml
 include:
-  template: License-Management.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
 
 variables:
   LICENSE_MANAGEMENT_SETUP_CMD: sh my-custom-install-script.sh
@@ -140,14 +153,14 @@ directory of your project.
 ### Overriding the template
 
 If you want to override the job definition (for example, change properties like
-`variables` or `dependencies`), you need to declare a `license_management` job
+`variables` or `dependencies`), you need to declare a `license_scanning` job
 after the template inclusion and specify any additional keys under it. For example:
 
 ```yaml
 include:
-  template: License-Management.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
 
-license_management:
+license_scanning:
   variables:
     CI_DEBUG_TRACE: "true"
 ```
@@ -160,9 +173,9 @@ Feel free to use it for the customization of Maven execution. For example:
 
 ```yaml
 include:
-  template: License-Management.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
 
-license_management:
+license_scanning:
   variables:
     MAVEN_CLI_OPTS: --debug
 ```
@@ -178,20 +191,56 @@ If you still need to run tests during `mvn install`, add `-DskipTests=false` to
 
 ### Selecting the version of Python
 
-> - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
-> - In GitLab 12.2, Python 3.5 became the default.
+> - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> - In [GitLab 12.2](https://gitlab.com/gitlab-org/gitlab/issues/12032), Python 3.5 became the default.
+> - In [GitLab 12.7](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/101), Python 3.8 became the default.
 
-License Compliance uses Python 3.5 and pip 19.1 by default.
+License Compliance uses Python 3.8 and pip 19.1 by default.
 If your project requires Python 2, you can switch to Python 2.7 and pip 10.0
 by setting the `LM_PYTHON_VERSION` environment variable to `2`.
 
 ```yaml
 include:
-  template: License-Management.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
 
-license_management:
+license_scanning:
   variables:
     LM_PYTHON_VERSION: 2
+```
+
+### Migration from `license_management` to `license_scanning`
+
+In GitLab 12.8 a new name for `license_management` job was introduced. This change was made to improve clarity around the purpose of the scan, which is to scan and collect the types of licenses present in a projects dependencies.
+The support of `license_management` is scheduled to be dropped in GitLab 13.0.
+If you're using a custom setup for License Compliance, you're required
+to update your CI config accordingly:
+
+1. Change the CI template to `License-Scanning.gitlab-ci.yml`.
+1. Change the job name to `license_management` (if you mention it in `.gitlab-ci.yml`).
+1. Change the artifact name to `gl-license-scanning-report.json` (if you mention it in `.gitlab-ci.yml`).
+
+For example, the following `.gitlab-ci.yml`:
+
+```yaml
+include:
+  - template: License-Management.gitlab-ci.yml
+
+license_management:
+  artifacts:
+    reports:
+      license_management: gl-license-management-report.json
+```
+
+Should be changed to:
+
+```yaml
+include:
+  - template: License-Scanning.gitlab-ci.yml
+
+license_scanning:
+  artifacts:
+    reports:
+      license_scanning: gl-license-scanning-report.json
 ```
 
 ## Project policies for License Compliance
@@ -256,7 +305,7 @@ but commented out to help encourage others to add to it in the future. -->
 
 ## License list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/13582) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13582) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.7.
 
 The License list allows you to see your project's licenses and key
 details about them.

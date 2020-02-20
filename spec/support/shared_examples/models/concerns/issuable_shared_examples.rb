@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples_for 'matches_cross_reference_regex? fails fast' do
+RSpec.shared_examples 'matches_cross_reference_regex? fails fast' do
   it 'fails fast for long strings' do
     # took well under 1 second in CI https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/3267#note_172823
     expect do
@@ -9,7 +9,7 @@ shared_examples_for 'matches_cross_reference_regex? fails fast' do
   end
 end
 
-shared_examples_for 'validates description length with custom validation' do
+RSpec.shared_examples 'validates description length with custom validation' do
   let(:issuable) { build(:issue, description: 'x' * (::Issuable::DESCRIPTION_LENGTH_MAX + 1)) }
   let(:context) { :update }
 
@@ -48,7 +48,7 @@ shared_examples_for 'validates description length with custom validation' do
   end
 end
 
-shared_examples_for 'truncates the description to its allowed maximum length on import' do
+RSpec.shared_examples 'truncates the description to its allowed maximum length on import' do
   before do
     allow(issuable).to receive(:importing?).and_return(true)
   end

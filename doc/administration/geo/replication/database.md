@@ -49,7 +49,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 1. SSH into your GitLab **primary** server and login as root:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
@@ -62,13 +62,13 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 1. Reconfigure the **primary** node for the change to take effect:
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 
 1. Execute the command below to define the node as **primary** node:
 
-   ```sh
+   ```shell
    gitlab-ctl set-geo-primary-node
    ```
 
@@ -78,7 +78,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    Generate a MD5 hash of the desired password:
 
-   ```sh
+   ```shell
    gitlab-ctl pg-password-md5 gitlab
    # Enter password: <your_password_here>
    # Confirm password: <your_password_here>
@@ -101,7 +101,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    called `gitlab_replicator`. You must set the password for this user manually.
    You will be prompted to enter a password:
 
-   ```sh
+   ```shell
    gitlab-ctl set-replication-password
    ```
 
@@ -134,7 +134,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    To lookup the address of a Geo node, SSH in to the Geo node and execute:
 
-   ```sh
+   ```shell
    ##
    ## Private address
    ##
@@ -219,13 +219,13 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 1. Save the file and reconfigure GitLab for the database listen changes and
    the replication slot changes to be applied:
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 
    Restart PostgreSQL for its changes to take effect:
 
-   ```sh
+   ```shell
    gitlab-ctl restart postgresql
    ```
 
@@ -240,7 +240,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    Save the file and reconfigure GitLab:
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 
@@ -254,7 +254,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    the **secondary** node needs a copy of the certificate. Make a copy of the PostgreSQL
    `server.crt` file on the **primary** node by running this command:
 
-   ```sh
+   ```shell
    cat ~gitlab-psql/data/server.crt
    ```
 
@@ -266,13 +266,13 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 1. SSH into your GitLab **secondary** server and login as root:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
 1. Stop application server and Sidekiq
 
-   ```sh
+   ```shell
    gitlab-ctl stop unicorn
    gitlab-ctl stop sidekiq
    ```
@@ -282,7 +282,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 1. [Check TCP connectivity][rake-maintenance] to the **primary** node's PostgreSQL server:
 
-   ```sh
+   ```shell
    gitlab-rake gitlab:tcp_check[<primary_node_ip>,5432]
    ```
 
@@ -295,7 +295,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 1. Create a file `server.crt` in the **secondary** server, with the content you got on the last step of the **primary** node's setup:
 
-   ```sh
+   ```shell
    editor server.crt
    ```
 
@@ -303,7 +303,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    Install the `server.crt` file:
 
-   ```sh
+   ```shell
    install \
       -D \
       -o gitlab-psql \
@@ -319,7 +319,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 1. Test that the `gitlab-psql` user can connect to the **primary** node's database
    (the default Omnibus database name is gitlabhq_production):
 
-   ```sh
+   ```shell
    sudo \
       -u gitlab-psql /opt/gitlab/embedded/bin/psql \
       --list \
@@ -377,13 +377,13 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 1. Reconfigure GitLab for the changes to take effect:
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 
 1. Restart PostgreSQL for the IP change to take effect and reconfigure again:
 
-   ```sh
+   ```shell
    gitlab-ctl restart postgresql
    gitlab-ctl reconfigure
    ```
@@ -405,7 +405,7 @@ data before running `pg_basebackup`.
 
 1. SSH into your GitLab **secondary** server and login as root:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
@@ -419,7 +419,7 @@ data before running `pg_basebackup`.
    CAUTION: **Warning:** Each Geo **secondary** node must have its own unique replication slot name.
    Using the same slot name between two secondaries will break PostgreSQL replication.
 
-   ```sh
+   ```shell
    gitlab-ctl replicate-geo-database \
       --slot-name=<secondary_node_name> \
       --host=<primary_node_ip>
@@ -471,7 +471,7 @@ work:
    admin user. If you are using an Omnibus-managed database, log onto the **primary**
    node that is running the PostgreSQL database (the default Omnibus database name is gitlabhq_production):
 
-   ```sh
+   ```shell
     sudo \
        -u gitlab-psql /opt/gitlab/embedded/bin/psql \
        -h /var/opt/gitlab/postgresql gitlabhq_production
@@ -501,7 +501,7 @@ work:
 
 1. Save the file and reconfigure GitLab for the changes to be applied:
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 

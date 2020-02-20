@@ -7,14 +7,14 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
 
   let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
-  let(:hashed_storage) { Storage::HashedProject.new(project) }
+  let(:hashed_storage) { Storage::Hashed.new(project) }
 
   let!(:upload) { Upload.find_by(path: file_uploader.upload_path) }
   let(:file_uploader) { build(:file_uploader, project: project) }
   let(:old_disk_path) { File.join(base_path(legacy_storage), upload.path) }
   let(:new_disk_path) { File.join(base_path(hashed_storage), upload.path) }
 
-  context '#execute' do
+  describe '#execute' do
     context 'when succeeds' do
       it 'moves attachments to hashed storage layout' do
         expect(File.file?(old_disk_path)).to be_truthy
@@ -102,13 +102,13 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
     end
   end
 
-  context '#old_disk_path' do
+  describe '#old_disk_path' do
     it 'returns old disk_path for project' do
       expect(service.old_disk_path).to eq(project.full_path)
     end
   end
 
-  context '#new_disk_path' do
+  describe '#new_disk_path' do
     it 'returns new disk_path for project' do
       service.execute
 
@@ -116,7 +116,7 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
     end
   end
 
-  context '#target_path_discardable?' do
+  describe '#target_path_discardable?' do
     it 'returns true when it include only items on the discardable list' do
       hashed_attachments_path = File.join(base_path(hashed_storage))
       Projects::HashedStorage::MigrateAttachmentsService::DISCARDABLE_PATHS.each do |path_fragment|

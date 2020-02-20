@@ -128,7 +128,7 @@ the **primary** database. Use the following as a guide.
 
    Note that the username (`gitlab` by default) is incorporated into the hash.
 
-   ```sh
+   ```shell
    gitlab-ctl pg-password-md5 gitlab
    # Enter password: <your_password_here>
    # Confirm password: <your_password_here>
@@ -187,7 +187,7 @@ Configure the tracking database.
    Note that the username (`gitlab_geo` by default) is incorporated into the
    hash.
 
-   ```sh
+   ```shell
    gitlab-ctl pg-password-md5 gitlab_geo
    # Enter password: <your_password_here>
    # Confirm password: <your_password_here>

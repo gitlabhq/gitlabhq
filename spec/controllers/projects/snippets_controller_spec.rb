@@ -27,6 +27,15 @@ describe Projects::SnippetsController do
       end
     end
 
+    it 'fetches snippet counts via the snippet count service' do
+      service = double(:count_service, execute: {})
+      expect(Snippets::CountService)
+        .to receive(:new).with(nil, project: project)
+        .and_return(service)
+
+      get :index, params: { namespace_id: project.namespace, project_id: project }
+    end
+
     context 'when the project snippet is private' do
       let!(:project_snippet) { create(:project_snippet, :private, project: project, author: user) }
 
@@ -35,7 +44,7 @@ describe Projects::SnippetsController do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
           expect(assigns(:snippets)).not_to include(project_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -48,7 +57,7 @@ describe Projects::SnippetsController do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
           expect(assigns(:snippets)).to include(project_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -61,7 +70,7 @@ describe Projects::SnippetsController do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
           expect(assigns(:snippets)).to include(project_snippet)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -92,7 +101,7 @@ describe Projects::SnippetsController do
 
     context 'when the snippet is spam' do
       before do
-        allow_next_instance_of(AkismetService) do |instance|
+        allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
       end
@@ -172,7 +181,7 @@ describe Projects::SnippetsController do
 
     context 'when the snippet is spam' do
       before do
-        allow_next_instance_of(AkismetService) do |instance|
+        allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
       end
@@ -282,7 +291,7 @@ describe Projects::SnippetsController do
     let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
 
     before do
-      allow_next_instance_of(AkismetService) do |instance|
+      allow_next_instance_of(Spam::AkismetService) do |instance|
         allow(instance).to receive_messages(submit_spam: true)
       end
       stub_application_setting(akismet_enabled: true)
@@ -318,7 +327,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param }
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
@@ -331,7 +340,7 @@ describe Projects::SnippetsController do
             get action, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param }
 
             expect(assigns(:snippet)).to eq(project_snippet)
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
 
@@ -344,7 +353,7 @@ describe Projects::SnippetsController do
             get action, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param }
 
             expect(assigns(:snippet)).to eq(project_snippet)
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -354,7 +363,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, params: { namespace_id: project.namespace, project_id: project, id: 42 }
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
@@ -366,7 +375,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, params: { namespace_id: project.namespace, project_id: project, id: 42 }
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -386,7 +395,7 @@ describe Projects::SnippetsController do
       let(:snippet_permission) { :private }
 
       it 'responds with status 404' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -395,7 +404,7 @@ describe Projects::SnippetsController do
 
       it 'responds with status 200' do
         expect(assigns(:snippet)).to eq(project_snippet)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -407,7 +416,7 @@ describe Projects::SnippetsController do
 
         it 'responds with status 404' do
           expect(assigns(:snippet)).to eq(project_snippet)
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -501,7 +510,7 @@ describe Projects::SnippetsController do
       it 'responds with status 404' do
         delete :destroy, params: params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

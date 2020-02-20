@@ -1,4 +1,5 @@
 <script>
+import { escapeRegExp } from 'lodash';
 import { GlBadge, GlLink, GlSkeletonLoading, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -90,7 +91,7 @@ export default {
   },
   computed: {
     routerLinkTo() {
-      return this.isFolder ? { path: `/tree/${this.ref}/${this.path}` } : null;
+      return this.isFolder ? { path: `/-/tree/${escape(this.ref)}/${escape(this.path)}` } : null;
     },
     iconName() {
       return `fa-${getIconName(this.type, this.path)}`;
@@ -105,7 +106,7 @@ export default {
       return this.isFolder ? 'router-link' : 'a';
     },
     fullPath() {
-      return this.path.replace(new RegExp(`^${this.currentPath}/`), '');
+      return this.path.replace(new RegExp(`^${escapeRegExp(this.currentPath)}/`), '');
     },
     shortSha() {
       return this.sha.slice(0, 8);
@@ -138,7 +139,13 @@ export default {
         class="d-inline-block align-text-bottom fa-fw"
       />
       <i v-else :aria-label="type" role="img" :class="iconName" class="fa fa-fw"></i>
-      <component :is="linkComponent" :to="routerLinkTo" :href="url" class="str-truncated">
+      <component
+        :is="linkComponent"
+        :to="routerLinkTo"
+        :href="url"
+        class="str-truncated"
+        data-qa-selector="file_name_link"
+      >
         {{ fullPath }}
       </component>
       <!-- eslint-disable-next-line @gitlab/vue-i18n/no-bare-strings -->

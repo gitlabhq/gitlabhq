@@ -40,7 +40,7 @@ repositories are also processed with CommonMark. As of 11.8, the [Redcarpet Ruby
 has been removed and all issues and comments, including those from pre-11.1, are now processed
 using the [CommonMark Ruby Library](https://github.com/gjtorikian/commonmarker).
 
-The documentation website had its [Markdown engine migrated from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/108)
+The documentation website had its [Markdown engine migrated from Redcarpet to Kramdown](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/108)
 in October 2018.
 
 You may have older issues, merge requests, or Markdown documents in your
@@ -97,6 +97,7 @@ not found in standard Markdown:
 - [Math equations and symbols written in LaTeX](#math)
 - [Special GitLab references](#special-gitlab-references)
 - [Task Lists](#task-lists)
+- [Table of Contents](#table-of-contents)
 - [Wiki specific Markdown](#wiki-specific-markdown)
 
 It also has [extended Markdown features](#standard-markdown-and-extensions-in-gitlab), without
@@ -157,7 +158,7 @@ It is possible to generate diagrams and flowcharts from text in GitLab using [Me
 
 #### Mermaid
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15107) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15107) in
 GitLab 10.3.
 
 Visit the [official page](https://mermaidjs.github.io/) for more details. If you are new to using Mermaid or need help identifying issues in your Mermaid code, the [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/) is a helpful tool for creating and resolving issues within Mermaid diagrams.
@@ -261,7 +262,7 @@ this font installed by default.
 
 ### Front matter
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23331) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23331) in GitLab 11.6.
 
 Front matter is metadata included at the beginning of a Markdown document, preceding
 its content. This data can be used by static site generators such as [Jekyll](https://jekyllrb.com/docs/front-matter/),
@@ -455,6 +456,17 @@ unordered or ordered lists:
 1. [ ] Incomplete task
    1. [ ] Sub-task 1
    1. [x] Sub-task 2
+
+### Table of Contents
+
+A table of contents can be added to a Markdown file, issue or merge request
+description, or a wiki page, by adding the tag `[[_TOC_]]` on its own line.
+It will be replaced with an unordered list that links to the various
+headers.
+
+```markdown
+[[_TOC_]]
+```
 
 ### Wiki-specific Markdown
 
@@ -896,6 +908,11 @@ Reference-style (hover to see title text):
 [logo]: img/markdown_logo.png "Title Text"
 ```
 
+<!--
+DO NOT change the name of markdown_logo.png. This is used for a test
+in spec/controllers/help_controller_spec.rb.
+-->
+
 Inline-style (hover to see title text):
 
 ![alt text](img/markdown_logo.png "Title Text")
@@ -947,7 +964,7 @@ Here's a sample audio clip:
 You can also use raw HTML in your Markdown, and it'll usually work pretty well.
 
 See the documentation for HTML::Pipeline's [SanitizationFilter](https://www.rubydoc.info/gems/html-pipeline/1.11.0/HTML/Pipeline/SanitizationFilter#WHITELIST-constant)
-class for the list of allowed HTML tags and attributes.  In addition to the default
+class for the list of allowed HTML tags and attributes. In addition to the default
 `SanitizationFilter` whitelist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
 
 ```html

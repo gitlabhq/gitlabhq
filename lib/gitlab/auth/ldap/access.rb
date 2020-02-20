@@ -49,7 +49,7 @@ module Gitlab
               return true
             end
 
-            # Block user in GitLab if he/she was blocked in AD
+            # Block user in GitLab if they were blocked in AD
             if Gitlab::Auth::LDAP::Person.disabled_via_active_directory?(ldap_identity.extern_uid, adapter)
               block_user(user, 'is disabled in Active Directory')
               false

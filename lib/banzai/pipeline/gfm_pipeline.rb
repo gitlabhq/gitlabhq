@@ -32,6 +32,7 @@ module Banzai
           Filter::InlineMetricsFilter,
           Filter::InlineGrafanaMetricsFilter,
           Filter::TableOfContentsFilter,
+          Filter::TableOfContentsTagFilter,
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
           Filter::SuggestionFilter,

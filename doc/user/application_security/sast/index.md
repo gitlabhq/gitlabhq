@@ -54,6 +54,8 @@ this is enabled by default.
 Privileged mode is not necessary if you've [disabled Docker in Docker
 for SAST](#disabling-docker-in-docker-for-sast)
 
+CAUTION: **Caution:** Our SAST jobs currently expect a Linux container type. Windows containers are not yet supported.
+
 CAUTION: **Caution:**
 If you use your own Runners, make sure that the Docker version you have installed
 is **not** `19.03.00`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
@@ -207,7 +209,8 @@ variables:
 
 If your project requires custom build configurations, it can be preferable to avoid
 compilation during your SAST execution and instead pass all job artifacts from an
-earlier stage within the pipeline.
+earlier stage within the pipeline. This is the current strategy when requiring
+a `before_script` execution to prepare your scan job.
 
 To pass your project's dependencies as artifacts, the dependencies must be included
 in the project's working directory and specified using the `artifacts:path` configuration.
@@ -222,7 +225,7 @@ stages:
  - test
 
 include:
-  template: SAST.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
 
 variables:
   SAST_DISABLE_DIND: "true"
@@ -237,7 +240,8 @@ build:
       - target/
 
 spotbugs-sast:
-  dependencies: build
+  dependencies:
+    - build
   script:
     - /analyzer run -compile=false
   variables:
@@ -317,7 +321,7 @@ Some analyzers can be customized with environment variables.
 
 #### Custom environment variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18193) in GitLab Ultimate 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18193) in GitLab Ultimate 12.5.
 
 In addition to the aforementioned SAST configuration variables,
 all [custom environment variables](../../../ci/variables/README.md#creating-a-custom-environment-variable) are propagated
@@ -449,6 +453,12 @@ language of your app, and you don't need to change anything to your
 CI/CD configuration file to turn it on. Results are available in the SAST report.
 
 GitLab currently includes [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) checks.
+
+NOTE: **Note:**
+The secrets analyzer will ignore "Password in URL" vulnerabilities if the password begins
+with a dollar sign (`$`) as this likely indicates the password being used is an environment
+variable. For example, `https://username:$password@example.com/path/to/repo` will not be
+detected, whereas `https://username:password@example.com/path/to/repo` would be detected.
 
 ## Security Dashboard
 

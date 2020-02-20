@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Projects::Settings::OperationsController do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, reload: true) { create(:project) }
 
   before do
     sign_in(user)
@@ -121,6 +121,74 @@ describe Projects::Settings::OperationsController do
     end
   end
 
+  context 'incident management' do
+    describe 'GET #show' do
+      context 'with existing setting' do
+        let!(:incident_management_setting) do
+          create(:project_incident_management_setting, project: project)
+        end
+
+        it 'loads existing setting' do
+          get :show, params: project_params(project)
+
+          expect(controller.helpers.project_incident_management_setting)
+            .to eq(incident_management_setting)
+        end
+      end
+
+      context 'without an existing setting' do
+        it 'builds a new setting' do
+          get :show, params: project_params(project)
+
+          expect(controller.helpers.project_incident_management_setting).to be_new_record
+        end
+      end
+    end
+
+    describe 'PATCH #update' do
+      let(:params) do
+        {
+          incident_management_setting_attributes: {
+            create_issue: 'false',
+            send_email: 'false',
+            issue_template_key: 'some-other-template'
+          }
+        }
+      end
+
+      it_behaves_like 'PATCHable'
+
+      context 'updating each incident management setting' do
+        let(:project) { create(:project) }
+        let(:new_incident_management_settings) { {} }
+
+        before do
+          project.add_maintainer(user)
+        end
+
+        shared_examples 'a gitlab tracking event' do |params, event_key|
+          it "creates a gitlab tracking event #{event_key}" do
+            new_incident_management_settings = params
+
+            expect(Gitlab::Tracking).to receive(:event)
+              .with('IncidentManagement::Settings', event_key, kind_of(Hash))
+
+            patch :update, params: project_params(project, incident_management_setting_attributes: new_incident_management_settings)
+
+            project.reload
+          end
+        end
+
+        it_behaves_like 'a gitlab tracking event', { create_issue: '1' }, 'enabled_issue_auto_creation_on_alerts'
+        it_behaves_like 'a gitlab tracking event', { create_issue: '0' }, 'disabled_issue_auto_creation_on_alerts'
+        it_behaves_like 'a gitlab tracking event', { issue_template_key: 'template' }, 'enabled_issue_template_on_alerts'
+        it_behaves_like 'a gitlab tracking event', { issue_template_key: nil }, 'disabled_issue_template_on_alerts'
+        it_behaves_like 'a gitlab tracking event', { send_email: '1' }, 'enabled_sending_emails'
+        it_behaves_like 'a gitlab tracking event', { send_email: '0' }, 'disabled_sending_emails'
+      end
+    end
+  end
+
   context 'error tracking' do
     describe 'GET #show' do
       context 'with existing setting' do
@@ -193,6 +261,39 @@ describe Projects::Settings::OperationsController do
       end
 
       it_behaves_like 'PATCHable'
+    end
+  end
+
+  context 'prometheus integration' do
+    describe 'PATCH #update' do
+      let(:params) do
+        {
+          prometheus_integration_attributes: {
+            manual_configuration: '0',
+            api_url: 'https://gitlab.prometheus.rocks'
+          }
+        }
+      end
+
+      context 'feature flag :settings_operations_prometheus_service is enabled' do
+        before do
+          stub_feature_flags(settings_operations_prometheus_service: true)
+        end
+
+        it_behaves_like 'PATCHable'
+      end
+
+      context 'feature flag :settings_operations_prometheus_service is disabled' do
+        before do
+          stub_feature_flags(settings_operations_prometheus_service: false)
+        end
+
+        it_behaves_like 'PATCHable' do
+          let(:permitted_params) do
+            ActionController::Parameters.new(params.except(:prometheus_integration_attributes)).permit!
+          end
+        end
+      end
     end
   end
 

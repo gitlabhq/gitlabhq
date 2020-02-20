@@ -1,9 +1,12 @@
 import * as types from './mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
+import { convertToFixedRange } from '~/lib/utils/datetime_range';
+import { gqClient, parseEnvironmentsResponse, removeLeadingSlash } from './utils';
 import trackDashboardLoad from '../monitoring_tracking_helper';
+import getEnvironments from '../queries/getEnvironments.query.graphql';
 import statusCodes from '../../lib/utils/http_status';
-import { backOff } from '../../lib/utils/common_utils';
+import { backOff, convertObjectPropsToCamelCase } from '../../lib/utils/common_utils';
 import { s__, sprintf } from '../../locale';
 
 import { PROMETHEUS_TIMEOUT } from '../constants';
@@ -30,6 +33,15 @@ export const setEndpoints = ({ commit }, endpoints) => {
   commit(types.SET_ENDPOINTS, endpoints);
 };
 
+export const setTimeRange = ({ commit }, timeRange) => {
+  commit(types.SET_TIME_RANGE, timeRange);
+};
+
+export const filterEnvironments = ({ commit, dispatch }, searchTerm) => {
+  commit(types.SET_ENVIRONMENTS_FILTER, searchTerm);
+  dispatch('fetchEnvironmentsData');
+};
+
 export const setShowErrorBanner = ({ commit }, enabled) => {
   commit(types.SET_SHOW_ERROR_BANNER, enabled);
 };
@@ -40,6 +52,8 @@ export const requestMetricsDashboard = ({ commit }) => {
 export const receiveMetricsDashboardSuccess = ({ commit, dispatch }, { response, params }) => {
   commit(types.SET_ALL_DASHBOARDS, response.all_dashboards);
   commit(types.RECEIVE_METRICS_DATA_SUCCESS, response.dashboard);
+  commit(types.SET_ENDPOINTS, convertObjectPropsToCamelCase(response.metrics_data));
+
   return dispatch('fetchPrometheusMetrics', params);
 };
 export const receiveMetricsDashboardFailure = ({ commit }, error) => {
@@ -50,24 +64,30 @@ export const receiveDeploymentsDataSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS, data);
 export const receiveDeploymentsDataFailure = ({ commit }) =>
   commit(types.RECEIVE_DEPLOYMENTS_DATA_FAILURE);
+export const requestEnvironmentsData = ({ commit }) => commit(types.REQUEST_ENVIRONMENTS_DATA);
 export const receiveEnvironmentsDataSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS, data);
 export const receiveEnvironmentsDataFailure = ({ commit }) =>
   commit(types.RECEIVE_ENVIRONMENTS_DATA_FAILURE);
 
-export const fetchData = ({ dispatch }, params) => {
-  dispatch('fetchMetricsData', params);
+export const fetchData = ({ dispatch }) => {
+  dispatch('fetchDashboard');
   dispatch('fetchDeploymentsData');
   dispatch('fetchEnvironmentsData');
 };
 
-export const fetchMetricsData = ({ dispatch }, params) => dispatch('fetchDashboard', params);
-
-export const fetchDashboard = ({ state, dispatch }, params) => {
+export const fetchDashboard = ({ state, dispatch }) => {
   dispatch('requestMetricsDashboard');
 
+  const params = {};
+
+  if (state.timeRange) {
+    const { start, end } = convertToFixedRange(state.timeRange);
+    params.start = start;
+    params.end = end;
+  }
+
   if (state.currentDashboard) {
-    // eslint-disable-next-line no-param-reassign
     params.dashboard = state.currentDashboard;
   }
 
@@ -184,19 +204,26 @@ export const fetchDeploymentsData = ({ state, dispatch }) => {
 };
 
 export const fetchEnvironmentsData = ({ state, dispatch }) => {
-  if (!state.environmentsEndpoint) {
-    return Promise.resolve([]);
-  }
-  return axios
-    .get(state.environmentsEndpoint)
-    .then(resp => resp.data)
-    .then(response => {
-      if (!response || !response.environments) {
+  dispatch('requestEnvironmentsData');
+  return gqClient
+    .mutate({
+      mutation: getEnvironments,
+      variables: {
+        projectPath: removeLeadingSlash(state.projectPath),
+        search: state.environmentsSearchTerm,
+      },
+    })
+    .then(resp =>
+      parseEnvironmentsResponse(resp.data?.project?.data?.environments, state.projectPath),
+    )
+    .then(environments => {
+      if (!environments) {
         createFlash(
           s__('Metrics|There was an error fetching the environments data, please try again'),
         );
       }
-      dispatch('receiveEnvironmentsDataSuccess', response.environments);
+
+      dispatch('receiveEnvironmentsDataSuccess', environments);
     })
     .catch(() => {
       dispatch('receiveEnvironmentsDataFailure');

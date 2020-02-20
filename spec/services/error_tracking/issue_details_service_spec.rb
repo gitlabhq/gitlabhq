@@ -3,29 +3,15 @@
 require 'spec_helper'
 
 describe ErrorTracking::IssueDetailsService do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  include_context 'sentry error tracking context'
 
-  let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
-  let(:token) { 'test-token' }
-  let(:result) { subject.execute }
-
-  let(:error_tracking_setting) do
-    create(:project_error_tracking_setting, api_url: sentry_url, token: token, project: project)
-  end
-
-  subject { described_class.new(project, user) }
-
-  before do
-    expect(project).to receive(:error_tracking_setting).at_least(:once).and_return(error_tracking_setting)
-
-    project.add_reporter(user)
-  end
+  subject { described_class.new(project, user, params) }
 
   describe '#execute' do
     context 'with authorized user' do
       context 'when issue_details returns a detailed error' do
         let(:detailed_error) { build(:detailed_error_tracking_error) }
+        let(:params) { { issue_id: detailed_error.id } }
 
         before do
           expect(error_tracking_setting)
@@ -34,6 +20,19 @@ describe ErrorTracking::IssueDetailsService do
 
         it 'returns the detailed error' do
           expect(result).to eq(status: :success, issue: detailed_error)
+        end
+
+        it 'returns the gitlab_issue when the error has a sentry_issue' do
+          gitlab_issue = create(:issue, project: project)
+          create(:sentry_issue, issue: gitlab_issue, sentry_issue_identifier: detailed_error.id)
+
+          expect(result[:issue].gitlab_issue).to include(
+            "http", "/#{project.full_path}/issues/#{gitlab_issue.iid}"
+          )
+        end
+
+        it 'returns the gitlab_issue path from sentry when the error has no sentry_issue' do
+          expect(result[:issue].gitlab_issue).to eq(detailed_error.gitlab_issue)
         end
       end
 

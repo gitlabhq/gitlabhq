@@ -6,7 +6,7 @@ import eventHub from '~/boards/eventhub';
 import { listObj, listObjDuplicate } from './mock_data';
 
 import ListIssue from '~/boards/models/issue';
-import '~/boards/models/list';
+import List from '~/boards/models/list';
 
 jest.mock('js-cookie');
 
@@ -187,6 +187,30 @@ describe('boardsStore', () => {
         .then(() => {
           expect(requestSpy).toHaveBeenCalled();
         });
+    });
+  });
+
+  describe('saveList', () => {
+    let list;
+
+    beforeEach(() => {
+      list = new List(listObj);
+      setupDefaultResponses();
+    });
+
+    it('makes a request to save a list', () => {
+      const expectedResponse = expect.objectContaining({ issues: [createTestIssue()] });
+      const expectedListValue = {
+        id: listObj.id,
+        position: listObj.position,
+        type: listObj.list_type,
+        label: listObj.label,
+      };
+      expect(list.id).toBe(listObj.id);
+      expect(list.position).toBe(listObj.position);
+      expect(list).toMatchObject(expectedListValue);
+
+      return expect(boardsStore.saveList(list)).resolves.toEqual(expectedResponse);
     });
   });
 

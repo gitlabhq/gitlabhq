@@ -26,7 +26,7 @@ A secret token can be set through the `GITLAB_CHAOS_SECRET` environment variable
 For example, when using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit)
 this can be done with the following command:
 
-```bash
+```shell
 GITLAB_CHAOS_SECRET=secret gdk run
 ```
 
@@ -60,7 +60,7 @@ GET /-/chaos/leakmem?memory_mb=1024&duration_s=50&async=true
 | `duration_s` | integer | no       | Minimum duration_s, in seconds, that the memory should be retained. Defaults to 30s. |
 | `async`      | boolean | no       | Set to true to leak memory in a Sidekiq background worker process                    |
 
-```bash
+```shell
 curl http://localhost:3000/-/chaos/leakmem?memory_mb=1024&duration_s=10 --header 'X-Chaos-Secret: secret'
 curl http://localhost:3000/-/chaos/leakmem?memory_mb=1024&duration_s=10&token=secret
 ```
@@ -83,7 +83,7 @@ GET /-/chaos/cpu_spin?duration_s=50&async=true
 | `duration_s` | integer | no       | Duration, in seconds, that the core will be utilized. Defaults to 30s |
 | `async`      | boolean | no       | Set to true to consume CPU in a Sidekiq background worker process     |
 
-```bash
+```shell
 curl http://localhost:3000/-/chaos/cpu_spin?duration_s=60 --header 'X-Chaos-Secret: secret'
 curl http://localhost:3000/-/chaos/cpu_spin?duration_s=60&token=secret
 ```
@@ -108,7 +108,7 @@ GET /-/chaos/db_spin?duration_s=50&async=true
 | `duration_s` | integer | no       | Duration, in seconds, that the core will be utilized. Defaults to 30s       |
 | `async`      | boolean | no       | Set to true to perform the operation in a Sidekiq background worker process |
 
-```bash
+```shell
 curl http://localhost:3000/-/chaos/db_spin?interval_s=1&duration_s=60 --header 'X-Chaos-Secret: secret'
 curl http://localhost:3000/-/chaos/db_spin?interval_s=1&duration_s=60&token=secret
 ```
@@ -130,7 +130,7 @@ GET /-/chaos/sleep?duration_s=50&async=true
 | `duration_s` | integer | no       | Duration, in seconds, that the request will sleep for. Defaults to 30s |
 | `async`      | boolean | no       | Set to true to sleep in a Sidekiq background worker process            |
 
-```bash
+```shell
 curl http://localhost:3000/-/chaos/sleep?duration_s=60 --header 'X-Chaos-Secret: secret'
 curl http://localhost:3000/-/chaos/sleep?duration_s=60&token=secret
 ```
@@ -151,7 +151,7 @@ GET /-/chaos/kill?async=true
 | ------------ | ------- | -------- | ---------------------------------------------------------------------- |
 | `async`      | boolean | no       | Set to true to kill a Sidekiq background worker process                |
 
-```bash
+```shell
 curl http://localhost:3000/-/chaos/kill --header 'X-Chaos-Secret: secret'
 curl http://localhost:3000/-/chaos/kill?token=secret
 ```

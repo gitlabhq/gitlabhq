@@ -37,6 +37,20 @@ describe Gitlab::Graphql::Connections::Keyset::OrderInfo do
         expect(order_list.count).to eq 1
       end
     end
+
+    context 'when order contains LOWER' do
+      let(:relation) { Project.order(Arel::Table.new(:projects)['name'].lower.asc).order(:id) }
+
+      it 'does not ignore the SQL order' do
+        expect(order_list.count).to eq 2
+        expect(order_list.first.attribute_name).to eq 'name'
+        expect(order_list.first.named_function).to be_kind_of(Arel::Nodes::NamedFunction)
+        expect(order_list.first.named_function.to_sql).to eq 'LOWER("projects"."name")'
+        expect(order_list.first.operator_for(:after)).to eq '>'
+        expect(order_list.last.attribute_name).to eq 'id'
+        expect(order_list.last.operator_for(:after)).to eq '>'
+      end
+    end
   end
 
   describe '#validate_ordering' do

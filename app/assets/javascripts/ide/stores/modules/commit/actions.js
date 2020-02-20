@@ -7,7 +7,7 @@ import router from '../../../ide_router';
 import service from '../../../services';
 import * as types from './mutation_types';
 import consts from './constants';
-import { activityBarViews } from '../../../constants';
+import { leftSidebarViews } from '../../../constants';
 import eventHub from '../../../eventhub';
 
 export const updateCommitMessage = ({ commit }, message) => {
@@ -44,7 +44,7 @@ export const setLastCommitMessage = ({ commit, rootGetters }, data) => {
   const commitMsg = sprintf(
     __('Your changes have been committed. Commit %{commitId} %{commitStats}'),
     {
-      commitId: `<a href="${currentProject.web_url}/commit/${data.short_id}" class="commit-sha">${data.short_id}</a>`,
+      commitId: `<a href="${currentProject.web_url}/-/commit/${data.short_id}" class="commit-sha">${data.short_id}</a>`,
       commitStats,
     },
     false,
@@ -56,7 +56,7 @@ export const setLastCommitMessage = ({ commit, rootGetters }, data) => {
 export const updateFilesAfterCommit = ({ commit, dispatch, rootState, rootGetters }, { data }) => {
   const selectedProject = rootGetters.currentProject;
   const lastCommit = {
-    commit_path: `${selectedProject.web_url}/commit/${data.id}`,
+    commit_path: `${selectedProject.web_url}/-/commit/${data.id}`,
     commit: {
       id: data.id,
       message: data.message,
@@ -158,7 +158,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
             commit(rootTypes.SET_LAST_COMMIT_MSG, '', { root: true });
           }, 5000);
 
-          if (state.shouldCreateMR) {
+          if (getters.shouldCreateMR) {
             const { currentProject } = rootGetters;
             const targetBranch = getters.isCreatingNewBranch
               ? rootState.currentBranchId
@@ -189,7 +189,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
                 throw e;
               });
           } else {
-            dispatch('updateActivityBarView', activityBarViews.edit, { root: true });
+            dispatch('updateActivityBarView', leftSidebarViews.edit.name, { root: true });
             dispatch('updateViewer', 'editor', { root: true });
 
             if (rootGetters.activeFile) {
@@ -218,7 +218,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
         dispatch(
           'setErrorMessage',
           {
-            text: __('An error occurred whilst committing your changes.'),
+            text: __('An error occurred while committing your changes.'),
             action: () =>
               dispatch('commitChanges').then(() =>
                 dispatch('setErrorMessage', null, { root: true }),

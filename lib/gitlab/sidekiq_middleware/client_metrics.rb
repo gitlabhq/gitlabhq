@@ -9,8 +9,10 @@ module Gitlab
         @metrics = init_metrics
       end
 
-      def call(worker, _job, queue, _redis_pool)
-        labels = create_labels(worker.class, queue)
+      def call(worker_class, _job, queue, _redis_pool)
+        # worker_class can either be the string or class of the worker being enqueued.
+        worker_class = worker_class.safe_constantize if worker_class.respond_to?(:safe_constantize)
+        labels = create_labels(worker_class, queue)
 
         @metrics.fetch(ENQUEUED).increment(labels, 1)
 

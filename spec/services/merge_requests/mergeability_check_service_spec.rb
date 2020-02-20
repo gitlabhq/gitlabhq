@@ -53,9 +53,42 @@ describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shared_sta
     end
   end
 
+  let(:project) { create(:project, :repository) }
+  let(:merge_request) { create(:merge_request, merge_status: :unchecked, source_project: project, target_project: project) }
+
+  describe '#async_execute' do
+    shared_examples_for 'no job is enqueued' do
+      it 'does not enqueue MergeRequestMergeabilityCheckWorker' do
+        expect(MergeRequestMergeabilityCheckWorker).not_to receive(:perform_async)
+
+        described_class.new(merge_request).async_execute
+      end
+    end
+
+    it 'enqueues MergeRequestMergeabilityCheckWorker' do
+      expect(MergeRequestMergeabilityCheckWorker).to receive(:perform_async)
+
+      described_class.new(merge_request).async_execute
+    end
+
+    context 'when read only DB' do
+      before do
+        allow(Gitlab::Database).to receive(:read_only?) { true }
+      end
+
+      it_behaves_like 'no job is enqueued'
+    end
+
+    context 'when merge_status is already checking' do
+      before do
+        merge_request.mark_as_checking
+      end
+
+      it_behaves_like 'no job is enqueued'
+    end
+  end
+
   describe '#execute' do
-    let(:project) { create(:project, :repository) }
-    let(:merge_request) { create(:merge_request, merge_status: :unchecked, source_project: project, target_project: project) }
     let(:repo) { project.repository }
 
     subject { described_class.new(merge_request).execute }

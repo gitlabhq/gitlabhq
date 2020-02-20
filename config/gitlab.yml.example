@@ -111,7 +111,7 @@ production: &base
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
     # default_can_create_group: false  # default: true
-    # username_changing_enabled: false # default: true - User can change her username/namespace
+    # username_changing_enabled: false # default: true - User can change their username/namespace
     ## Default theme ID
     ##   1 - Indigo
     ##   2 - Dark
@@ -144,6 +144,12 @@ production: &base
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
     # webhook_timeout: 10
+
+    ### GraphQL Settings
+    # Tells the rails application how long it has to complete a GraphQL request.
+    # We suggest this value to be higher than the database timeout value
+    # and lower than the worker timeout set in unicorn/puma. (default: 30)
+    # graphql_timeout: 30
 
     ## Repository downloads directory
     # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
@@ -367,6 +373,9 @@ production: &base
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
+    # Stop expired environments
+    environments_auto_stop_cron_worker:
+      cron: "24 * * * *"
     # Periodically run 'git fsck' on all repositories. If started more than
     # once per hour you will have concurrent 'git fsck' jobs.
     repository_check_worker:
@@ -425,6 +434,11 @@ production: &base
     # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
     geo_repository_sync_worker:
       cron: "*/1 * * * *"
+
+    # GitLab Geo registry backfill worker
+    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
+    geo_secondary_registry_consistency_worker:
+      cron: "* * * * *"
 
     # GitLab Geo file download dispatch worker
     # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
@@ -916,7 +930,7 @@ production: &base
   # Gitaly settings
   gitaly:
     # Path to the directory containing Gitaly client executables.
-    client_path: /home/git/gitaly/bin
+    client_path: /home/git/gitaly
     # Default Gitaly authentication token. Can be overridden per storage. Can
     # be left blank when Gitaly is running locally on a Unix socket, which
     # is the normal way to deploy Gitaly.
@@ -959,9 +973,9 @@ production: &base
     #   # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
     #   # encryption: 'AES256'
     #   # Turns on AWS Server-Side Encryption with Amazon Customer-Provided Encryption Keys for backups, this is optional
-    #   #   This should be set to the 256-bit, base64-encoded encryption key for Amazon S3 to use to encrypt or decrypt your data.
+    #   #   This should be set to the 256-bit encryption key for Amazon S3 to use to encrypt or decrypt your data.
     #   #   'encryption' must also be set in order for this to have any effect.
-    #   # encryption_key: '<base64 key>'
+    #   # encryption_key: '<key>'
     #   # Specifies Amazon S3 storage class to use for backups, this is optional
     #   # storage_class: 'STANDARD'
 

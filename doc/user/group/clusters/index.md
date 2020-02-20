@@ -53,8 +53,8 @@ differentiate the new cluster from the rest.
 
 ## GitLab-managed clusters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 11.5.
-> - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26565) in GitLab 11.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 11.5.
+> - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26565) in GitLab 11.11.
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster is
 managed by GitLab, resources for your projects will be automatically created. See the
@@ -92,7 +92,7 @@ To clear the cache:
 
 ## Base domain
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24580) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
 
 Domains at the cluster level permit support for multiple domains
 per [multiple Kubernetes clusters](#multiple-kubernetes-clusters-premium). When specifying a domain,

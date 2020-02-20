@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import axios from '~/lib/utils/axios_utils';
 import Activities from '~/activities';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
@@ -56,10 +57,8 @@ import UserOverviewBlock from './user_overview_block';
  *   </div>
  * </div>
  *
- * <div class="loading-status">
- *   <div class="loading">
- *     Loading Animation
- *   </div>
+ * <div class="loading">
+ *   Loading Animation
  * </div>
  */
 
@@ -209,7 +208,7 @@ export default class UserTabs {
 
   loadActivityCalendar() {
     const $calendarWrap = this.$parentEl.find('.tab-pane.active .user-calendar');
-    if (!$calendarWrap.length) return;
+    if (!$calendarWrap.length || bp.getBreakpointSize() === 'xs') return;
 
     const calendarPath = $calendarWrap.data('calendarPath');
 
@@ -241,7 +240,7 @@ export default class UserTabs {
   }
 
   toggleLoading(status) {
-    return this.$parentEl.find('.loading-status .loading').toggleClass('hide', !status);
+    return this.$parentEl.find('.loading').toggleClass('hide', !status);
   }
 
   setCurrentAction(source) {

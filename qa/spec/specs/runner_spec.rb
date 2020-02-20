@@ -11,7 +11,7 @@ describe QA::Specs::Runner do
     end
   end
 
-  context '#perform' do
+  describe '#perform' do
     before do
       allow(QA::Runtime::Browser).to receive(:configure!)
     end

@@ -1,167 +1,177 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
+import { GlLoadingIcon } from '@gitlab/ui';
 import ClientsideNavigator from '~/ide/components/preview/navigator.vue';
+import { listen } from 'codesandbox-api';
+
+jest.mock('codesandbox-api', () => ({
+  listen: jest.fn().mockReturnValue(jest.fn()),
+}));
 
 describe('IDE clientside preview navigator', () => {
-  let vm;
-  let Component;
+  let wrapper;
   let manager;
+  let listenHandler;
 
-  beforeAll(() => {
-    Component = Vue.extend(ClientsideNavigator);
-  });
+  const findBackButton = () => wrapper.findAll('button').at(0);
+  const findForwardButton = () => wrapper.findAll('button').at(1);
+  const findRefreshButton = () => wrapper.findAll('button').at(2);
 
   beforeEach(() => {
+    listen.mockClear();
     manager = { bundlerURL: TEST_HOST, iframe: { src: '' } };
 
-    vm = mountComponent(Component, { manager });
+    wrapper = shallowMount(ClientsideNavigator, { propsData: { manager } });
+    [[listenHandler]] = listen.mock.calls;
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders readonly URL bar', () => {
-    expect(vm.$el.querySelector('input[readonly]').value).toBe('/');
-  });
-
-  it('disables back button when navigationStack is empty', () => {
-    expect(vm.$el.querySelector('.ide-navigator-btn')).toHaveAttr('disabled');
-    expect(vm.$el.querySelector('.ide-navigator-btn').classList).toContain('disabled-content');
-  });
-
-  it('disables forward button when forwardNavigationStack is empty', () => {
-    vm.forwardNavigationStack = [];
-
-    expect(vm.$el.querySelectorAll('.ide-navigator-btn')[1]).toHaveAttr('disabled');
-    expect(vm.$el.querySelectorAll('.ide-navigator-btn')[1].classList).toContain(
-      'disabled-content',
-    );
-  });
-
-  it('calls back method when clicking back button', done => {
-    vm.navigationStack.push('/test');
-    vm.navigationStack.push('/test2');
-    jest.spyOn(vm, 'back').mockReturnValue();
-
-    vm.$nextTick(() => {
-      vm.$el.querySelector('.ide-navigator-btn').click();
-
-      expect(vm.back).toHaveBeenCalled();
-
-      done();
+    listenHandler({ type: 'urlchange', url: manager.bundlerURL });
+    return wrapper.vm.$nextTick(() => {
+      expect(wrapper.find('input[readonly]').element.value).toBe('/');
     });
   });
 
-  it('calls forward method when clicking forward button', done => {
-    vm.forwardNavigationStack.push('/test');
-    jest.spyOn(vm, 'forward').mockReturnValue();
+  it('renders loading icon by default', () => {
+    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+  });
 
-    vm.$nextTick(() => {
-      vm.$el.querySelectorAll('.ide-navigator-btn')[1].click();
-
-      expect(vm.forward).toHaveBeenCalled();
-
-      done();
+  it('removes loading icon when done event is fired', () => {
+    listenHandler({ type: 'done' });
+    return wrapper.vm.$nextTick(() => {
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
     });
   });
 
-  describe('onUrlChange', () => {
-    it('updates the path', () => {
-      vm.onUrlChange({ url: `${TEST_HOST}/url` });
-
-      expect(vm.path).toBe('/url');
-    });
-
-    it('sets currentBrowsingIndex 0 if not already set', () => {
-      vm.onUrlChange({ url: `${TEST_HOST}/url` });
-
-      expect(vm.currentBrowsingIndex).toBe(0);
-    });
-
-    it('increases currentBrowsingIndex if path doesnt match', () => {
-      vm.onUrlChange({ url: `${TEST_HOST}/url` });
-
-      vm.onUrlChange({ url: `${TEST_HOST}/url2` });
-
-      expect(vm.currentBrowsingIndex).toBe(1);
-    });
-
-    it('does not increase currentBrowsingIndex if path matches', () => {
-      vm.onUrlChange({ url: `${TEST_HOST}/url` });
-
-      vm.onUrlChange({ url: `${TEST_HOST}/url` });
-
-      expect(vm.currentBrowsingIndex).toBe(0);
-    });
-
-    it('pushes path into navigation stack', () => {
-      vm.onUrlChange({ url: `${TEST_HOST}/url` });
-
-      expect(vm.navigationStack).toEqual(['/url']);
+  it('does not count visiting same url multiple times', () => {
+    listenHandler({ type: 'done' });
+    listenHandler({ type: 'done', url: `${TEST_HOST}/url1` });
+    listenHandler({ type: 'done', url: `${TEST_HOST}/url1` });
+    return wrapper.vm.$nextTick().then(() => {
+      expect(findBackButton().attributes('disabled')).toBe('disabled');
     });
   });
 
-  describe('back', () => {
+  it('unsubscribes from listen on destroy', () => {
+    const unsubscribeFn = listen();
+
+    wrapper.destroy();
+    expect(unsubscribeFn).toHaveBeenCalled();
+  });
+
+  describe('back button', () => {
     beforeEach(() => {
-      vm.path = '/test2';
-      vm.currentBrowsingIndex = 1;
-      vm.navigationStack.push('/test');
-      vm.navigationStack.push('/test2');
-
-      jest.spyOn(vm, 'visitPath').mockReturnValue();
-
-      vm.back();
+      listenHandler({ type: 'done' });
+      listenHandler({ type: 'urlchange', url: TEST_HOST });
+      return wrapper.vm.$nextTick();
     });
 
-    it('visits the last entry in navigationStack', () => {
-      expect(vm.visitPath).toHaveBeenCalledWith('/test');
+    it('is disabled by default', () => {
+      expect(findBackButton().attributes('disabled')).toBe('disabled');
     });
 
-    it('adds last entry to forwardNavigationStack', () => {
-      expect(vm.forwardNavigationStack).toEqual(['/test2']);
+    it('is enabled when there is previous entry', () => {
+      listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
+      return wrapper.vm.$nextTick().then(() => {
+        findBackButton().trigger('click');
+        expect(findBackButton().attributes('disabled')).toBeFalsy();
+      });
     });
 
-    it('clears navigation stack if currentBrowsingIndex is 1', () => {
-      expect(vm.navigationStack).toEqual([]);
+    it('is disabled when there is no previous entry', () => {
+      listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          findBackButton().trigger('click');
+
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
+          expect(findBackButton().attributes('disabled')).toBe('disabled');
+        });
     });
 
-    it('sets currentBrowsingIndex to null is currentBrowsingIndex is 1', () => {
-      expect(vm.currentBrowsingIndex).toBe(null);
+    it('updates manager iframe src', () => {
+      listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
+      listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url2` });
+      return wrapper.vm.$nextTick().then(() => {
+        findBackButton().trigger('click');
+
+        expect(manager.iframe.src).toBe(`${TEST_HOST}/url1`);
+      });
     });
   });
 
-  describe('forward', () => {
-    it('calls visitPath with first entry in forwardNavigationStack', () => {
-      jest.spyOn(vm, 'visitPath').mockReturnValue();
+  describe('forward button', () => {
+    beforeEach(() => {
+      listenHandler({ type: 'done' });
+      listenHandler({ type: 'urlchange', url: TEST_HOST });
+      return wrapper.vm.$nextTick();
+    });
 
-      vm.forwardNavigationStack.push('/test');
-      vm.forwardNavigationStack.push('/test2');
+    it('is disabled by default', () => {
+      expect(findForwardButton().attributes('disabled')).toBe('disabled');
+    });
 
-      vm.forward();
+    it('is enabled when there is next entry', () => {
+      listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          findBackButton().trigger('click');
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
+          expect(findForwardButton().attributes('disabled')).toBeFalsy();
+        });
+    });
 
-      expect(vm.visitPath).toHaveBeenCalledWith('/test');
+    it('is disabled when there is no next entry', () => {
+      listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
+      return wrapper.vm
+        .$nextTick()
+        .then(() => {
+          findBackButton().trigger('click');
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
+          findForwardButton().trigger('click');
+          return wrapper.vm.$nextTick();
+        })
+        .then(() => {
+          expect(findForwardButton().attributes('disabled')).toBe('disabled');
+        });
+    });
+
+    it('updates manager iframe src', () => {
+      listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url1` });
+      listenHandler({ type: 'urlchange', url: `${TEST_HOST}/url2` });
+      return wrapper.vm.$nextTick().then(() => {
+        findBackButton().trigger('click');
+
+        expect(manager.iframe.src).toBe(`${TEST_HOST}/url1`);
+      });
     });
   });
 
-  describe('refresh', () => {
+  describe('refresh button', () => {
+    const url = `${TEST_HOST}/some_url`;
+    beforeEach(() => {
+      listenHandler({ type: 'done' });
+      listenHandler({ type: 'urlchange', url });
+      return wrapper.vm.$nextTick();
+    });
+
     it('calls refresh with current path', () => {
-      jest.spyOn(vm, 'visitPath').mockReturnValue();
+      manager.iframe.src = 'something-other';
+      findRefreshButton().trigger('click');
 
-      vm.path = '/test';
-
-      vm.refresh();
-
-      expect(vm.visitPath).toHaveBeenCalledWith('/test');
-    });
-  });
-
-  describe('visitPath', () => {
-    it('updates iframe src with passed in path', () => {
-      vm.visitPath('/testpath');
-
-      expect(manager.iframe.src).toBe(`${TEST_HOST}/testpath`);
+      expect(manager.iframe.src).toBe(url);
     });
   });
 });

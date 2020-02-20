@@ -4,7 +4,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/issue_weight.html'
 
 # Issue weight **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/76) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76) in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
 
 When you have a lot of issues, it can be hard to get an overview.
 By adding a weight to each issue, you can get a better idea of how much time,

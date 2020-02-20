@@ -16,7 +16,7 @@ describe Projects::Settings::CiCdController do
     it 'renders show with 200 status code' do
       get :show, params: { namespace_id: project.namespace, project_id: project }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:show)
     end
 
@@ -106,7 +106,7 @@ describe Projects::Settings::CiCdController do
     it 'redirects to the settings page' do
       subject
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(flash[:toast]).to eq("Pipelines settings for '#{project.name}' were successfully updated.")
     end
 

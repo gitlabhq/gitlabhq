@@ -116,6 +116,124 @@ In case you need to insert, update, or delete a significant amount of data, you:
 - Must disable the single transaction with `disable_ddl_transaction!`.
 - Should consider doing it in a [Background Migration](background_migrations.md).
 
+## Retry mechanism when acquiring database locks
+
+When changing the database schema, we use helper methods to invoke DDL (Data Definition
+Language) statements. In some cases, these DDL statements require a specific database lock.
+
+Example:
+
+```ruby
+def change
+  remove_column :users, :full_name, :string
+end
+```
+
+Executing this migration requires an exclusive lock on the `users` table. When the table
+is concurrently accessed and modified by other processes, acquiring the lock may take
+a while. The lock request is waiting in a queue and it may also block other queries
+on the `users` table once it has been enqueued.
+
+More information about PostgresSQL locks: [Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)
+
+For stability reasons, GitLab.com has a specific [`statement_timeout`](../user/gitlab_com/index.md#postgresql)
+set. When the migration is invoked, any database query will have
+a fixed time to execute. In a worst-case scenario, the request will sit in the
+lock queue, blocking other queries for the duration of the configured statement timeout,
+then failing with `canceling statement due to statement timeout` error.
+
+This problem could cause failed application upgrade processes and even application
+stability issues, since the table may be inaccessible for a short period of time.
+
+To increase the reliability and stability of database migrations, the GitLab codebase
+offers a helper method to retry the operations with different `lock_timeout` settings
+and wait time between the attempts. Multiple smaller attempts to acquire the necessary
+lock allow the database to process other statements.
+
+### Examples
+
+Removing a column:
+
+```ruby
+include Gitlab::Database::MigrationHelpers
+
+def change
+  with_lock_retries do
+    remove_column :users, :full_name, :string
+  end
+end
+```
+
+Removing a foreign key:
+
+```ruby
+include Gitlab::Database::MigrationHelpers
+
+def change
+  with_lock_retries do
+    remove_foreign_key :issues, :projects
+  end
+end
+```
+
+Changing default value for a column:
+
+```ruby
+include Gitlab::Database::MigrationHelpers
+
+def change
+  with_lock_retries do
+    change_column_default :merge_requests, :lock_version, from: nil, to: 0
+  end
+end
+```
+
+### When to use the helper method
+
+The `with_lock_retries` helper method can be used when you normally use
+standard Rails migration helper methods. Calling more than one migration
+helper is not a problem if they're executed on the same table.
+
+Using the `with_lock_retries` helper method is advised when a database
+migration involves one of the high-traffic tables:
+
+- `users`
+- `projects`
+- `namespaces`
+- `ci_pipelines`
+- `ci_builds`
+- `notes`
+
+Example changes:
+
+- `add_foreign_key` / `remove_foreign_key`
+- `add_column` / `remove_column`
+- `change_column_default`
+
+**Note:** `with_lock_retries` method **cannot** be used with `disable_ddl_transaction!`.
+
+### How the helper method works
+
+1. Iterate 50 times.
+1. For each iteration, set a pre-configured `lock_timeout`.
+1. Try to execute the given block. (`remove_column`).
+1. If `LockWaitTimeout` error is raised, sleep for the pre-configured `sleep_time`
+and retry the block.
+1. If no error is raised, the current iteration has successfully executed the block.
+
+For more information check the [`Gitlab::Database::WithLockRetries`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/with_lock_retries.rb) class. The `with_lock_retries` helper method is implemented in the [`Gitlab::Database::MigrationHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/migration_helpers.rb) module.
+
+In a worst-case scenario, the method:
+
+- Executes the block for a maximum of 50 times over 40 minutes.
+  - Most of the time is spent in a pre-configured sleep period after each iteration.
+- After the 50th retry, the block will be executed without `lock_timeout`, just
+like a standard migration invocation.
+- If a lock cannot be acquired, the migration will fail with `statement timeout` error.
+
+The migration might fail if there is a very long running transaction (40+ minutes)
+accessing the `users` table.
+
 ## Multi-Threading
 
 Sometimes a migration might need to use multiple Ruby threads to speed up a
@@ -149,7 +267,7 @@ end
 
 Here the call to `disable_statement_timeout` will use the connection local to
 the `with_multiple_threads` block, instead of re-using the global connection
-pool.  This ensures each thread has its own connection object, and won't time
+pool. This ensures each thread has its own connection object, and won't time
 out when trying to obtain one.
 
 **NOTE:** PostgreSQL has a maximum amount of connections that it allows. This
@@ -364,6 +482,86 @@ to run on a large table, as long as it is only updating a small subset of the
 rows in the table, but do not ignore that without validating on the GitLab.com
 staging environment - or asking someone else to do so for you - beforehand.
 
+## Dropping a database table
+
+Dropping a database table is uncommon, and the `drop_table` method
+provided by Rails is generally considered safe. Before dropping the table,
+please consider the following:
+
+If your table has foreign keys on a high-traffic table (like `projects`), then
+the `DROP TABLE` statement might fail with **statement timeout** error. Determining
+what tables are high traffic can be difficult. Self-managed instances might
+use different features of GitLab with different usage patterns, thus making
+assumptions based on GitLab.com is not enough.
+
+Table **has no records** (feature was never in use) and **no foreign
+keys**:
+
+- Simply use the `drop_table` method in your migration.
+
+```ruby
+def change
+  drop_table :my_table
+end
+```
+
+Table **has records** but **no foreign keys**:
+
+- First release: Remove the application code related to the table, such as models,
+controllers and services.
+- Second release: Use the `drop_table` method in your migration.
+
+```ruby
+def up
+  drop_table :my_table
+end
+
+def down
+  # create_table ...
+end
+```
+
+Table **has foreign keys**:
+
+- First release: Remove the application code related to the table, such as models,
+controllers, and services.
+- Second release: Remove the foreign keys using the `with_lock_retries`
+helper method. Use `drop_table` in another migration file.
+
+**Migrations for the second release:**
+
+Removing the foreign key on the `projects` table:
+
+```ruby
+# first migration file
+
+def up
+  with_lock_retries do
+    remove_foreign_key :my_table, :projects
+  end
+end
+
+def down
+  with_lock_retries do
+    add_foreign_key :my_table, :projects
+  end
+end
+```
+
+Dropping the table:
+
+```ruby
+# second migration file
+
+def up
+  drop_table :my_table
+end
+
+def down
+  # create_table ...
+end
+```
+
 ## Integer column type
 
 By default, an integer column can hold up to a 4-byte (32-bit) number. That is
@@ -379,10 +577,6 @@ Rails migration example:
 
 ```ruby
 add_column_with_default(:projects, :foo, :integer, default: 10, limit: 8)
-
-# or
-
-add_column(:projects, :foo, :integer, default: 10, limit: 8)
 ```
 
 ## Timestamp column type

@@ -50,7 +50,7 @@ module Gitlab
       def where_clause_base
         [].tap do |clauses|
           clauses << table[:project_id].eq(project.id) if project
-          clauses << table[:group_id].eq(group.id) if group
+          clauses << table[:group_id].in(group.self_and_ancestors_ids) if group
         end.reduce(:or)
       end
 
@@ -60,7 +60,9 @@ module Gitlab
       end
 
       def prepare_attributes
-        attributes.except('group').tap do |atts|
+        attributes.dup.tap do |atts|
+          atts.delete('group') unless epic?
+
           if label?
             atts['type'] = 'ProjectLabel' # Always create project labels
           elsif milestone?

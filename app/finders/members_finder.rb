@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class MembersFinder
-  attr_reader :project, :current_user, :group
+  # Params can be any of the following:
+  #   sort:       string
+  #   search:     string
 
   def initialize(project, current_user)
     @project = project
@@ -9,21 +11,10 @@ class MembersFinder
     @group = project.group
   end
 
-  def execute(include_relations: [:inherited, :direct])
-    project_members = project.project_members
-    project_members = project_members.non_invite unless can?(current_user, :admin_project, project)
+  def execute(include_relations: [:inherited, :direct], params: {})
+    members = find_members(include_relations, params)
 
-    return project_members if include_relations == [:direct]
-
-    union_members = group_union_members(include_relations)
-
-    union_members << project_members if include_relations.include?(:direct)
-
-    if union_members.any?
-      distinct_union_of_members(union_members)
-    else
-      project_members
-    end
+    filter_members(members, params)
   end
 
   def can?(*args)
@@ -31,6 +22,28 @@ class MembersFinder
   end
 
   private
+
+  attr_reader :project, :current_user, :group
+
+  def find_members(include_relations, params)
+    project_members = project.project_members
+    project_members = project_members.non_invite unless can?(current_user, :admin_project, project)
+
+    return project_members if include_relations == [:direct]
+
+    union_members = group_union_members(include_relations)
+    union_members << project_members if include_relations.include?(:direct)
+
+    return project_members unless union_members.any?
+
+    distinct_union_of_members(union_members)
+  end
+
+  def filter_members(members, params)
+    members = members.search(params[:search]) if params[:search].present?
+    members = members.sort_by_attribute(params[:sort]) if params[:sort].present?
+    members
+  end
 
   def group_union_members(include_relations)
     [].tap do |members|

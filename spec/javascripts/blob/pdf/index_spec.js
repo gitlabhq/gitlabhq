@@ -65,7 +65,7 @@ describe('PDF renderer', () => {
 
     it('shows error message', () => {
       expect(document.querySelector('.md').textContent.trim()).toBe(
-        'An error occurred whilst loading the file. Please try again later.',
+        'An error occurred while loading the file. Please try again later.',
       );
     });
   });

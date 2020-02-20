@@ -4,7 +4,7 @@ import $ from 'jquery';
 import GfmAutoComplete, { membersBeforeSave } from 'ee_else_ce/gfm_auto_complete';
 
 import 'jquery.caret';
-import 'at.js';
+import '@gitlab/at.js';
 
 import { TEST_HOST } from 'helpers/test_constants';
 import { getJSONFixture } from 'helpers/fixtures';

@@ -118,7 +118,7 @@ Parameters:
 | ------------------------ | ----------------- | -------- | ----------- |
 | `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) of the parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
-| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have preceden |
+| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have precedence |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`               | string            | no       | Order groups by `name`, `path` or `id`. Default is `name` |
 | `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
@@ -251,7 +251,7 @@ Parameters:
 | `with_custom_attributes` | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only). |
 | `with_projects`          | boolean        | no       | Include details from projects that belong to the specified group (defaults to `true`). |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4
 ```
 
@@ -431,7 +431,7 @@ Additional response parameters:
 
 When adding the parameter `with_projects=false`, projects will not be returned.
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4?with_projects=false
 ```
 
@@ -487,7 +487,7 @@ Parameters:
 | `two_factor_grace_period`            | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `project_creation_level`             | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (Maintainers), or `developer` (Developers + Maintainers). |
 | `auto_devops_enabled`                | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `subgroup_creation_level`            | integer | no       | Allowed to create subgroups. Can be `owner` (Owners), or `maintainer` (Maintainers). |
+| `subgroup_creation_level`            | string  | no       | Allowed to create subgroups. Can be `owner` (Owners), or `maintainer` (Maintainers). |
 | `emails_disabled`                    | boolean | no       | Disable email notifications |
 | `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned |
 | `lfs_enabled`                        | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
@@ -533,7 +533,7 @@ PUT /groups/:id
 | `two_factor_grace_period`            | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `project_creation_level`             | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (Maintainers), or `developer` (Developers + Maintainers). |
 | `auto_devops_enabled`                | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `subgroup_creation_level`            | integer | no       | Allowed to create subgroups. Can be `owner` (Owners), or `maintainer` (Maintainers). |
+| `subgroup_creation_level`            | string  | no       | Allowed to create subgroups. Can be `owner` (Owners), or `maintainer` (Maintainers). |
 | `emails_disabled`                    | boolean | no       | Disable email notifications |
 | `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned |
 | `lfs_enabled` (optional)             | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
@@ -542,7 +542,7 @@ PUT /groups/:id
 | `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group. |
 | `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group. |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
 
 ```
@@ -628,7 +628,12 @@ Feature.disable(:limit_projects_in_groups_api)
 
 ## Remove group
 
-Removes group with all projects inside. Only available to group owners and administrators.
+Only available to group owners and administrators.
+
+This endpoint either:
+
+- Removes group, and queues a background job to delete all projects in the group as well.
+- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
 
 ```
 DELETE /groups/:id
@@ -636,10 +641,27 @@ DELETE /groups/:id
 
 Parameters:
 
-- `id` (required) - The ID or path of a user group
+| Attribute       | Type           | Required | Description |
+| --------------- | -------------- | -------- | ----------- |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 
-This will queue a background job to delete all projects in the group. The
-response will be a 202 Accepted if the user has authorization.
+The response will be `202 Accepted` if the user has authorization.
+
+## Restore group marked for deletion **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/33257) in GitLab 12.8.
+
+Restores a group marked for deletion.
+
+```plaintext
+POST /groups/:id/restore
+```
+
+Parameters:
+
+| Attribute       | Type           | Required | Description |
+| --------------- | -------------- | -------- | ----------- |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 
 ## Search for group
 
@@ -660,11 +682,123 @@ GET /groups?search=foobar
 ]
 ```
 
+## Hooks
+
+Also called Group Hooks and Webhooks.
+These are different from [System Hooks](system_hooks.md) that are system wide and [Project Hooks](projects.md#hooks) that are limited to one project.
+
+### List group hooks
+
+Get a list of group hooks
+
+```
+GET /groups/:id/hooks
+```
+
+| Attribute | Type            | Required | Description |
+| --------- | --------------- | -------- | ----------- |
+| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+
+### Get group hook
+
+Get a specific hook for a group.
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `hook_id` | integer        | yes      | The ID of a group hook |
+
+```
+GET /groups/:id/hooks/:hook_id
+```
+
+```json
+{
+  "id": 1,
+  "url": "http://example.com/hook",
+  "group_id": 3,
+  "push_events": true,
+  "issues_events": true,
+  "confidential_issues_events": true,
+  "merge_requests_events": true,
+  "tag_push_events": true,
+  "note_events": true,
+  "job_events": true,
+  "pipeline_events": true,
+  "wiki_page_events": true,
+  "enable_ssl_verification": true,
+  "created_at": "2012-10-12T17:04:47Z"
+}
+```
+
+### Add group hook
+
+Adds a hook to a specified group.
+
+```
+POST /groups/:id/hooks
+```
+
+| Attribute                    | Type           | Required | Description |
+| -----------------------------| -------------- | ---------| ----------- |
+| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `url`                        | string         | yes      | The hook URL |
+| `push_events`                | boolean        | no       | Trigger hook on push events |
+| `issues_events`              | boolean        | no       | Trigger hook on issues events |
+| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events |
+| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
+| `tag_push_events`            | boolean        | no       | Trigger hook on tag push events |
+| `note_events`                | boolean        | no       | Trigger hook on note events |
+| `job_events`                 | boolean        | no       | Trigger hook on job events |
+| `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
+| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki events |
+| `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
+| `token`                      | string         | no       | Secret token to validate received payloads; this will not be returned in the response |
+
+### Edit group hook
+
+Edits a hook for a specified group.
+
+```
+PUT /groups/:id/hooks/:hook_id
+```
+
+| Attribute                    | Type           | Required | Description |
+| ---------------------------- | -------------- | -------- | ----------- |
+| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `hook_id`                    | integer        | yes      | The ID of the group hook |
+| `url`                        | string         | yes      | The hook URL |
+| `push_events`                | boolean        | no       | Trigger hook on push events |
+| `issues_events`              | boolean        | no       | Trigger hook on issues events |
+| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events |
+| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
+| `tag_push_events`            | boolean        | no       | Trigger hook on tag push events |
+| `note_events`                | boolean        | no       | Trigger hook on note events |
+| `job_events`                 | boolean        | no       | Trigger hook on job events |
+| `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
+| `wiki_events`                | boolean        | no       | Trigger hook on wiki events |
+| `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
+| `token`                      | string         | no       | Secret token to validate received payloads; this will not be returned in the response |
+
+### Delete group hook
+
+Removes a hook from a group. This is an idempotent method and can be called multiple times.
+Either the hook is available or not.
+
+```
+DELETE /groups/:id/hooks/:hook_id
+```
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
+| `hook_id` | integer        | yes      | The ID of the group hook. |
+
 ## Group Audit Events **(STARTER)**
 
 Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events-starter)
 
-## Sync group with LDAP **(CORE ONLY)**
+## Sync group with LDAP **(STARTER)**
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
 
@@ -680,7 +814,23 @@ Parameters:
 
 Please consult the [Group Members](members.md) documentation.
 
-### Add LDAP group link **(CORE ONLY)**
+## LDAP Group Links
+
+List, add, and delete LDAP group links.
+
+### List LDAP group links **(STARTER)**
+
+Lists LDAP group links.
+
+```
+GET /groups/:id/ldap_group_links
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+
+### Add LDAP group link **(STARTER)**
 
 Adds an LDAP group link.
 
@@ -695,7 +845,7 @@ Parameters:
 - `group_access` (required) - Minimum access level for members of the LDAP group
 - `provider` (required) - LDAP provider for the LDAP group
 
-### Delete LDAP group link **(CORE ONLY)**
+### Delete LDAP group link **(STARTER)**
 
 Deletes an LDAP group link.
 
@@ -736,8 +886,12 @@ And to switch pages add:
 /groups?per_page=100&page=2
 ```
 
-[ce-15142]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15142
+[ce-15142]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15142
 
 ## Group badges
 
 Read more in the [Group Badges](group_badges.md) documentation.
+
+## Group Import/Export
+
+Read more in the [Group Import/Export](group_import_export.md) documentation.

@@ -67,8 +67,8 @@ module Gitlab
             clusters_disabled: count(::Clusters::Cluster.disabled),
             project_clusters_disabled: count(::Clusters::Cluster.disabled.project_type),
             group_clusters_disabled: count(::Clusters::Cluster.disabled.group_type),
-            clusters_platforms_eks: count(::Clusters::Cluster.aws_installed.enabled),
-            clusters_platforms_gke: count(::Clusters::Cluster.gcp_installed.enabled),
+            clusters_platforms_eks: count(::Clusters::Cluster.aws_installed.enabled, batch: false),
+            clusters_platforms_gke: count(::Clusters::Cluster.gcp_installed.enabled, batch: false),
             clusters_platforms_user: count(::Clusters::Cluster.user_provided.enabled),
             clusters_applications_helm: count(::Clusters::Applications::Helm.available),
             clusters_applications_ingress: count(::Clusters::Applications::Ingress.available),
@@ -78,14 +78,16 @@ module Gitlab
             clusters_applications_runner: count(::Clusters::Applications::Runner.available),
             clusters_applications_knative: count(::Clusters::Applications::Knative.available),
             clusters_applications_elastic_stack: count(::Clusters::Applications::ElasticStack.available),
+            clusters_applications_jupyter: count(::Clusters::Applications::Jupyter.available),
             in_review_folder: count(::Environment.in_review_folder),
             grafana_integrated_projects: count(GrafanaIntegration.enabled),
             groups: count(Group),
             issues: count(Issue),
             issues_created_from_gitlab_error_tracking_ui: count(SentryIssue),
             issues_with_associated_zoom_link: count(ZoomMeeting.added_to_issue),
-            issues_using_zoom_quick_actions: count(ZoomMeeting.select(:issue_id).distinct),
+            issues_using_zoom_quick_actions: count(ZoomMeeting.select(:issue_id).distinct, batch: false),
             issues_with_embedded_grafana_charts_approx: ::Gitlab::GrafanaEmbedUsageData.issue_count,
+            incident_issues: count(::Issue.authored(::User.alert_bot)),
             keys: count(Key),
             label_lists: count(List.label),
             lfs_objects: count(LfsObject),
@@ -97,6 +99,7 @@ module Gitlab
             projects_imported_from_github: count(Project.where(import_type: 'github')),
             projects_with_repositories_enabled: count(ProjectFeature.where('repository_access_level > ?', ProjectFeature::DISABLED)),
             projects_with_error_tracking_enabled: count(::ErrorTracking::ProjectErrorTrackingSetting.where(enabled: true)),
+            projects_with_alerts_service_enabled: count(AlertsService.active, batch: false),
             protected_branches: count(ProtectedBranch),
             releases: count(Release),
             remote_mirrors: count(RemoteMirror),
@@ -178,7 +181,7 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def services_usage
-        service_counts = count(Service.active.where(template: false).where.not(type: 'JiraService').group(:type), fallback: Hash.new(-1))
+        service_counts = count(Service.active.where(template: false).where.not(type: 'JiraService').group(:type), fallback: Hash.new(-1), batch: false)
 
         results = Service.available_services_names.each_with_object({}) do |service_name, response|
           response["projects_#{service_name}_active".to_sym] = service_counts["#{service_name}_service".camelize] || 0
@@ -214,9 +217,9 @@ module Gitlab
           results[:projects_jira_server_active] += counts[:server].count if counts[:server]
           results[:projects_jira_cloud_active] += counts[:cloud].count if counts[:cloud]
           if results[:projects_jira_active] == -1
-            results[:projects_jira_active] = count(services)
+            results[:projects_jira_active] = count(services, batch: false)
           else
-            results[:projects_jira_active] += count(services)
+            results[:projects_jira_active] += count(services, batch: false)
           end
         end
 
@@ -228,8 +231,22 @@ module Gitlab
         {} # augmented in EE
       end
 
-      def count(relation, fallback: -1)
-        relation.count
+      def count(relation, column = nil, fallback: -1, batch: true)
+        if batch && Feature.enabled?(:usage_ping_batch_counter)
+          Gitlab::Database::BatchCount.batch_count(relation, column)
+        else
+          relation.count
+        end
+      rescue ActiveRecord::StatementInvalid
+        fallback
+      end
+
+      def distinct_count(relation, column = nil, fallback: -1, batch: true)
+        if batch && Feature.enabled?(:usage_ping_batch_counter)
+          Gitlab::Database::BatchCount.batch_distinct_count(relation, column)
+        else
+          relation.distinct_count_by(column)
+        end
       rescue ActiveRecord::StatementInvalid
         fallback
       end

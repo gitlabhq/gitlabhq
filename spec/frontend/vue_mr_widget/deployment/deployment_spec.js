@@ -56,27 +56,27 @@ describe('Deployment component', () => {
     const deployGroup = [DeploymentViewButton, DeploymentStopButton];
 
     describe.each`
-      status      | previous | deploymentDetails | text                        | actionButtons
-      ${CREATED}  | ${true}  | ${deployDetail}   | ${'Can deploy manually to'} | ${deployGroup}
-      ${CREATED}  | ${true}  | ${noDetails}      | ${'Will deploy to'}         | ${deployGroup}
-      ${CREATED}  | ${false} | ${deployDetail}   | ${'Can deploy manually to'} | ${noActions}
-      ${CREATED}  | ${false} | ${noDetails}      | ${'Will deploy to'}         | ${noActions}
-      ${RUNNING}  | ${true}  | ${deployDetail}   | ${'Deploying to'}           | ${deployGroup}
-      ${RUNNING}  | ${true}  | ${noDetails}      | ${'Deploying to'}           | ${deployGroup}
-      ${RUNNING}  | ${false} | ${deployDetail}   | ${'Deploying to'}           | ${noActions}
-      ${RUNNING}  | ${false} | ${noDetails}      | ${'Deploying to'}           | ${noActions}
-      ${SUCCESS}  | ${true}  | ${deployDetail}   | ${'Deployed to'}            | ${deployGroup}
-      ${SUCCESS}  | ${true}  | ${noDetails}      | ${'Deployed to'}            | ${deployGroup}
-      ${SUCCESS}  | ${false} | ${deployDetail}   | ${'Deployed to'}            | ${deployGroup}
-      ${SUCCESS}  | ${false} | ${noDetails}      | ${'Deployed to'}            | ${deployGroup}
-      ${FAILED}   | ${true}  | ${deployDetail}   | ${'Failed to deploy to'}    | ${deployGroup}
-      ${FAILED}   | ${true}  | ${noDetails}      | ${'Failed to deploy to'}    | ${deployGroup}
-      ${FAILED}   | ${false} | ${deployDetail}   | ${'Failed to deploy to'}    | ${noActions}
-      ${FAILED}   | ${false} | ${noDetails}      | ${'Failed to deploy to'}    | ${noActions}
-      ${CANCELED} | ${true}  | ${deployDetail}   | ${'Canceled deploy to'}     | ${deployGroup}
-      ${CANCELED} | ${true}  | ${noDetails}      | ${'Canceled deploy to'}     | ${deployGroup}
-      ${CANCELED} | ${false} | ${deployDetail}   | ${'Canceled deploy to'}     | ${noActions}
-      ${CANCELED} | ${false} | ${noDetails}      | ${'Canceled deploy to'}     | ${noActions}
+      status      | previous | deploymentDetails | text                             | actionButtons
+      ${CREATED}  | ${true}  | ${deployDetail}   | ${'Can be manually deployed to'} | ${deployGroup}
+      ${CREATED}  | ${true}  | ${noDetails}      | ${'Will deploy to'}              | ${deployGroup}
+      ${CREATED}  | ${false} | ${deployDetail}   | ${'Can be manually deployed to'} | ${noActions}
+      ${CREATED}  | ${false} | ${noDetails}      | ${'Will deploy to'}              | ${noActions}
+      ${RUNNING}  | ${true}  | ${deployDetail}   | ${'Deploying to'}                | ${deployGroup}
+      ${RUNNING}  | ${true}  | ${noDetails}      | ${'Deploying to'}                | ${deployGroup}
+      ${RUNNING}  | ${false} | ${deployDetail}   | ${'Deploying to'}                | ${noActions}
+      ${RUNNING}  | ${false} | ${noDetails}      | ${'Deploying to'}                | ${noActions}
+      ${SUCCESS}  | ${true}  | ${deployDetail}   | ${'Deployed to'}                 | ${deployGroup}
+      ${SUCCESS}  | ${true}  | ${noDetails}      | ${'Deployed to'}                 | ${deployGroup}
+      ${SUCCESS}  | ${false} | ${deployDetail}   | ${'Deployed to'}                 | ${deployGroup}
+      ${SUCCESS}  | ${false} | ${noDetails}      | ${'Deployed to'}                 | ${deployGroup}
+      ${FAILED}   | ${true}  | ${deployDetail}   | ${'Failed to deploy to'}         | ${deployGroup}
+      ${FAILED}   | ${true}  | ${noDetails}      | ${'Failed to deploy to'}         | ${deployGroup}
+      ${FAILED}   | ${false} | ${deployDetail}   | ${'Failed to deploy to'}         | ${noActions}
+      ${FAILED}   | ${false} | ${noDetails}      | ${'Failed to deploy to'}         | ${noActions}
+      ${CANCELED} | ${true}  | ${deployDetail}   | ${'Canceled deployment to'}      | ${deployGroup}
+      ${CANCELED} | ${true}  | ${noDetails}      | ${'Canceled deployment to'}      | ${deployGroup}
+      ${CANCELED} | ${false} | ${deployDetail}   | ${'Canceled deployment to'}      | ${noActions}
+      ${CANCELED} | ${false} | ${noDetails}      | ${'Canceled deployment to'}      | ${noActions}
     `(
       '$status + previous: $previous + manual: $deploymentDetails.isManual',
       ({ status, previous, deploymentDetails, text, actionButtons }) => {

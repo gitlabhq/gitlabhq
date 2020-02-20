@@ -16,7 +16,7 @@ module Gitlab
         if fork_merge_request? && @diff_head_sha
           @merge_request.source_project_id = @relation_hash['project_id']
 
-          fetch_ref unless branch_exists?(@merge_request.source_branch)
+          create_source_branch unless branch_exists?(@merge_request.source_branch)
           create_target_branch unless branch_exists?(@merge_request.target_branch)
         end
 
@@ -34,17 +34,18 @@ module Gitlab
         @merge_request
       end
 
-      def create_target_branch
-        @project.repository.create_branch(@merge_request.target_branch, @merge_request.target_branch_sha)
+      # When the exported MR was in a fork, the source branch does not exist in
+      # the imported bundle - although the commits usually do - so it must be
+      # created manually. Ignore failures so we get the merge request itself if
+      # the commits are missing.
+      def create_source_branch
+        @project.repository.create_branch(@merge_request.source_branch, @diff_head_sha)
+      rescue => err
+        Rails.logger.warn("Import/Export warning: Failed to create source branch #{@merge_request.source_branch} => #{@diff_head_sha} for MR #{@merge_request.iid}: #{err}") # rubocop:disable Gitlab/RailsLogger
       end
 
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1295
-      def fetch_ref
-        target_ref = Gitlab::Git::BRANCH_REF_PREFIX + @merge_request.source_branch
-
-        unless @project.repository.fetch_source_branch!(@project.repository, @diff_head_sha, target_ref)
-          Rails.logger.warn("Import/Export warning: Failed to create #{target_ref} for MR: #{@merge_request.iid}") # rubocop:disable Gitlab/RailsLogger
-        end
+      def create_target_branch
+        @project.repository.create_branch(@merge_request.target_branch, @merge_request.target_branch_sha)
       end
 
       def branch_exists?(branch_name)

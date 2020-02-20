@@ -67,6 +67,7 @@ describe PrometheusMetric do
     it_behaves_like 'group_title', :business, 'Business metrics (Custom)'
     it_behaves_like 'group_title', :response, 'Response metrics (Custom)'
     it_behaves_like 'group_title', :system, 'System metrics (Custom)'
+    it_behaves_like 'group_title', :cluster_health, 'Cluster Health'
   end
 
   describe '#priority' do
@@ -82,6 +83,7 @@ describe PrometheusMetric do
       :business          | 0
       :response          | -5
       :system            | -10
+      :cluster_health    | 10
     end
 
     with_them do
@@ -106,6 +108,7 @@ describe PrometheusMetric do
       :business          | %w()
       :response          | %w()
       :system            | %w()
+      :cluster_health    | %w(container_memory_usage_bytes container_cpu_usage_seconds_total)
     end
 
     with_them do

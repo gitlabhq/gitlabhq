@@ -79,6 +79,8 @@ module MergeRequests
       end
 
       merge_request.update!(merge_commit_sha: commit_id)
+    ensure
+      merge_request.update_column(:in_progress_merge_commit_sha, nil)
     end
 
     def try_merge
@@ -89,8 +91,6 @@ module MergeRequests
     rescue => e
       handle_merge_error(log_message: e.message)
       raise_error('Something went wrong during merge')
-    ensure
-      merge_request.update!(in_progress_merge_commit_sha: nil)
     end
 
     def after_merge

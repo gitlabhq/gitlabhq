@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import { GlLink } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     hasRef() {
-      return !_.isEmpty(this.pipeline.ref);
+      return !isEmpty(this.pipeline.ref);
     },
     isTriggeredByMergeRequest() {
       return Boolean(this.pipeline.merge_request);

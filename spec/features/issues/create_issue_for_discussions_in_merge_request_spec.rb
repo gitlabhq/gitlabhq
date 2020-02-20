@@ -11,7 +11,7 @@ describe 'Resolving all open threads in a merge request from an issue', :js do
   def resolve_all_discussions_link_selector
     text = "Resolve all threads in new issue"
     url = new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
-    %Q{a[data-original-title="#{text}"][href="#{url}"]}
+    %Q{a[title="#{text}"][href="#{url}"]}
   end
 
   describe 'as a user with access to the project' do

@@ -1,6 +1,7 @@
 - breadcrumb_title _('Kubernetes')
 - page_title _('Kubernetes Cluster')
 - active_tab = local_assigns.fetch(:active_tab, 'create')
+- provider = params[:provider]
 = javascript_include_tag 'https://apis.google.com/js/api.js'
 
 = render_gcp_signup_offer
@@ -19,8 +20,12 @@
           %span Add existing cluster
 
     .tab-content.gitlab-tab-content
-      .tab-pane{ id: 'create-cluster-pane', class: active_when(active_tab == 'create'), role: 'tabpanel' }
-        = render new_cluster_partial(provider: params[:provider])
+      .tab-pane.p-0{ id: 'create-cluster-pane', class: active_when(active_tab == 'create'), role: 'tabpanel' }
+        = render 'clusters/clusters/cloud_providers/cloud_provider_selector'
+
+        - if ['aws', 'gcp'].include?(provider)
+          .p-3.border-top
+            = render "clusters/clusters/#{provider}/new"
 
       .tab-pane{ id: 'add-cluster-pane', class: active_when(active_tab == 'add'), role: 'tabpanel' }
         = render 'clusters/clusters/user/header'

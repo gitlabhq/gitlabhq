@@ -80,7 +80,7 @@ describe Gitlab::ImportExport::GroupTreeSaver do
       end
 
       it 'saves the correct json' do
-        expect(saved_group_json).to include({ 'description' => 'description', 'visibility_level' => 20 })
+        expect(saved_group_json).to include({ 'description' => 'description' })
       end
 
       it 'has milestones' do
@@ -93,6 +93,10 @@ describe Gitlab::ImportExport::GroupTreeSaver do
 
       it 'has boards' do
         expect(saved_group_json['boards']).not_to be_empty
+      end
+
+      it 'has board label list' do
+        expect(saved_group_json['boards'].first['lists']).not_to be_empty
       end
 
       it 'has group members' do
@@ -153,9 +157,26 @@ describe Gitlab::ImportExport::GroupTreeSaver do
       end
 
       context 'group attributes' do
-        it 'does not contain the runners token' do
-          expect(saved_group_json).not_to include("runners_token" => 'token')
+        shared_examples 'excluded attributes' do
+          excluded_attributes = %w[
+            id
+            owner_id
+            parent_id
+            created_at
+            updated_at
+            runners_token
+            runners_token_encrypted
+            saml_discovery_token
+          ]
+
+          excluded_attributes.each do |excluded_attribute|
+            it 'does not contain excluded attribute' do
+              expect(saved_group_json).not_to include(excluded_attribute => group.public_send(excluded_attribute))
+            end
+          end
         end
+
+        include_examples 'excluded attributes'
       end
     end
   end
@@ -168,7 +189,8 @@ describe Gitlab::ImportExport::GroupTreeSaver do
     create(:group_badge, group: group)
     group_label = create(:group_label, group: group)
     create(:label_priority, label: group_label, priority: 1)
-    create(:board, group: group)
+    board = create(:board, group: group)
+    create(:list, board: board, label: group_label)
     create(:group_badge, group: group)
 
     group

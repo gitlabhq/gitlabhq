@@ -69,6 +69,7 @@ describe Git::BranchHooksService do
               Gitlab.config.gitlab.url,
               project.namespace.to_param,
               project.to_param,
+              '-',
               'commit',
               commit.id
             ].join('/')
@@ -213,23 +214,23 @@ describe Git::BranchHooksService do
     end
   end
 
-  describe 'GPG signatures' do
+  describe 'signatures' do
     context 'when the commit has a signature' do
       context 'when the signature is already cached' do
         before do
           create(:gpg_signature, commit_sha: commit.id)
         end
 
-        it 'does not queue a CreateGpgSignatureWorker' do
-          expect(CreateGpgSignatureWorker).not_to receive(:perform_async)
+        it 'does not queue a CreateCommitSignatureWorker' do
+          expect(CreateCommitSignatureWorker).not_to receive(:perform_async)
 
           service.execute
         end
       end
 
       context 'when the signature is not yet cached' do
-        it 'queues a CreateGpgSignatureWorker' do
-          expect(CreateGpgSignatureWorker).to receive(:perform_async).with([commit.id], project.id)
+        it 'queues a CreateCommitSignatureWorker' do
+          expect(CreateCommitSignatureWorker).to receive(:perform_async).with([commit.id], project.id)
 
           service.execute
         end
@@ -239,7 +240,7 @@ describe Git::BranchHooksService do
             .to receive(:shas_with_signatures)
             .and_return([sample_commit.id, another_sample_commit.id])
 
-          expect(CreateGpgSignatureWorker)
+          expect(CreateCommitSignatureWorker)
             .to receive(:perform_async)
             .with([sample_commit.id, another_sample_commit.id], project.id)
 
@@ -256,8 +257,8 @@ describe Git::BranchHooksService do
           .and_return([])
       end
 
-      it 'does not queue a CreateGpgSignatureWorker' do
-        expect(CreateGpgSignatureWorker)
+      it 'does not queue a CreateCommitSignatureWorker' do
+        expect(CreateCommitSignatureWorker)
           .not_to receive(:perform_async)
           .with(sample_commit.id, project.id)
 

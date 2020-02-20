@@ -59,6 +59,10 @@ module Gitlab
           end
 
           self.loaded = true
+        rescue GRPC::Unavailable, GRPC::DeadlineExceeded => e
+          # Handle Gitaly connection issues gracefully
+          Gitlab::ErrorTracking
+            .track_exception(e, project_id: project.id)
         end
 
         def load_from_project

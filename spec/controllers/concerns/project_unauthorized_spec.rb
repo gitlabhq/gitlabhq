@@ -30,7 +30,7 @@ describe ProjectUnauthorized do
 
       get :show, params: { namespace_id: project.namespace.to_param, id: project.to_param }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'renders a 403 when the service denies access to the project' do
@@ -38,7 +38,7 @@ describe ProjectUnauthorized do
 
       get :show, params: { namespace_id: project.namespace.to_param, id: project.to_param }
 
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
       expect(response.body).to match("External authorization denied access to this project")
     end
 
@@ -47,7 +47,7 @@ describe ProjectUnauthorized do
 
       get :show, params: { namespace_id: other_project.namespace.to_param, id: other_project.to_param }
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 end

@@ -10,6 +10,13 @@ export default {
     Icon,
     DropdownButton,
   },
+  props: {
+    showMergeRequests: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
   computed: {
     ...mapState(['currentBranchId', 'currentMergeRequestId']),
     mergeRequestLabel() {
@@ -25,10 +32,10 @@ export default {
 <template>
   <dropdown-button>
     <span class="row">
-      <span class="col-7 text-truncate">
+      <span class="col-auto text-truncate" :class="{ 'col-7': showMergeRequests }">
         <icon :size="16" :aria-label="__('Current Branch')" name="branch" /> {{ branchLabel }}
       </span>
-      <span class="col-5 pl-0 text-truncate">
+      <span v-if="showMergeRequests" class="col-5 pl-0 text-truncate">
         <icon :size="16" :aria-label="__('Merge Request')" name="merge-request" />
         {{ mergeRequestLabel }}
       </span>

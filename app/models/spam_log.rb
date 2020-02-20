@@ -12,4 +12,8 @@ class SpamLog < ApplicationRecord
   def text
     [title, description].join("\n")
   end
+
+  def self.verify_recaptcha!(id:, user_id:)
+    find_by(id: id, user_id: user_id)&.update!(recaptcha_verified: true)
+  end
 end

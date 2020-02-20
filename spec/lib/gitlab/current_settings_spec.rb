@@ -120,17 +120,13 @@ describe Gitlab::CurrentSettings do
         end
 
         context 'with pending migrations' do
+          let(:current_settings) { described_class.current_application_settings }
+
           before do
-            expect_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(true)
+            allow(Gitlab::Runtime).to receive(:rake?).and_return(false)
           end
 
           shared_examples 'a non-persisted ApplicationSetting object' do
-            let(:current_settings) { described_class.current_application_settings }
-
-            it 'returns a FakeApplicationSettings object' do
-              expect(current_settings).to be_a(Gitlab::FakeApplicationSettings)
-            end
-
             it 'uses the default value from ApplicationSetting.defaults' do
               expect(current_settings.signup_enabled).to eq(ApplicationSetting.defaults[:signup_enabled])
             end
@@ -144,18 +140,16 @@ describe Gitlab::CurrentSettings do
             end
           end
 
-          context 'with no ApplicationSetting DB record' do
-            it_behaves_like 'a non-persisted ApplicationSetting object'
-          end
-
-          context 'with an existing ApplicationSetting DB record' do
-            let!(:db_settings) { ApplicationSetting.build_from_defaults(home_page_url: 'http://mydomain.com').save! && ApplicationSetting.last }
-            let(:current_settings) { described_class.current_application_settings }
+          context 'in a Rake task' do
+            before do
+              allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
+              expect_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(true)
+            end
 
             it_behaves_like 'a non-persisted ApplicationSetting object'
 
-            it 'uses the value from the DB attribute if present and not overridden by an accessor' do
-              expect(current_settings.home_page_url).to eq(db_settings.home_page_url)
+            it 'returns a FakeApplicationSettings object' do
+              expect(current_settings).to be_a(Gitlab::FakeApplicationSettings)
             end
 
             context 'when a new column is used before being migrated' do
@@ -166,6 +160,20 @@ describe Gitlab::CurrentSettings do
               it 'uses the default value if present' do
                 expect(current_settings.foo).to eq('bar')
               end
+            end
+          end
+
+          context 'with no ApplicationSetting DB record' do
+            it_behaves_like 'a non-persisted ApplicationSetting object'
+          end
+
+          context 'with an existing ApplicationSetting DB record' do
+            let!(:db_settings) { ApplicationSetting.build_from_defaults(home_page_url: 'http://mydomain.com').save! && ApplicationSetting.last }
+
+            it_behaves_like 'a non-persisted ApplicationSetting object'
+
+            it 'uses the value from the DB attribute if present and not overridden by an accessor' do
+              expect(current_settings.home_page_url).to eq(db_settings.home_page_url)
             end
           end
         end

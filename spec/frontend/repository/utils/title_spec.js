@@ -1,4 +1,4 @@
-import { setTitle } from '~/repository/utils/title';
+import { setTitle, updateRefPortionOfTitle } from '~/repository/utils/title';
 
 describe('setTitle', () => {
   it.each`
@@ -11,5 +11,28 @@ describe('setTitle', () => {
     setTitle(path, 'master', 'GitLab Org / GitLab');
 
     expect(document.title).toEqual(`${title} · master · GitLab Org / GitLab · GitLab`);
+  });
+});
+
+describe('updateRefPortionOfTitle', () => {
+  const sha = 'abc';
+  const testCases = [
+    [
+      'updates the title with the SHA',
+      { title: 'part 1 · part 2 · part 3' },
+      'part 1 · abc · part 3',
+    ],
+    ["makes no change if there's no title", { foo: null }, undefined],
+    [
+      "makes no change if the title doesn't split predictably",
+      { title: 'part 1 - part 2 - part 3' },
+      'part 1 - part 2 - part 3',
+    ],
+  ];
+
+  it.each(testCases)('%s', (desc, doc, title) => {
+    updateRefPortionOfTitle(sha, doc);
+
+    expect(doc.title).toEqual(title);
   });
 });

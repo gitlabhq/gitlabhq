@@ -1,0 +1,5 @@
+---
+title: Changed color of allowed to fail badge from danger to warning
+merge_request: !23437
+author:
+type: changed

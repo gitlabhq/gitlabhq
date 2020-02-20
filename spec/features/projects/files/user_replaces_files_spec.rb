@@ -16,6 +16,8 @@ describe 'Projects > Files > User replaces files', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(code_navigation: false)
+
     sign_in(user)
   end
 

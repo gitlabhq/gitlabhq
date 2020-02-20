@@ -267,7 +267,6 @@ export default {
         discussion.resolvable &&
         discussion.notes.some(note => note.resolvable && !note.resolved),
     ).length;
-    state.hasUnresolvedDiscussions = state.unresolvedDiscussionsCount > 1;
   },
 
   [types.CONVERT_TO_DISCUSSION](state, discussionId) {
@@ -280,5 +279,30 @@ export default {
 
     convertedDisscussionIds.splice(convertedDisscussionIds.indexOf(discussionId), 1);
     Object.assign(state, { convertedDisscussionIds });
+  },
+
+  [types.SET_CURRENT_DISCUSSION_ID](state, discussionId) {
+    state.currentDiscussionId = discussionId;
+  },
+
+  [types.REQUEST_DESCRIPTION_VERSION](state) {
+    state.isLoadingDescriptionVersion = true;
+  },
+  [types.RECEIVE_DESCRIPTION_VERSION](state, descriptionVersion) {
+    state.isLoadingDescriptionVersion = false;
+    state.descriptionVersion = descriptionVersion;
+  },
+  [types.RECEIVE_DESCRIPTION_VERSION_ERROR](state) {
+    state.isLoadingDescriptionVersion = false;
+  },
+  [types.REQUEST_DELETE_DESCRIPTION_VERSION](state) {
+    state.isLoadingDescriptionVersion = true;
+  },
+  [types.RECEIVE_DELETE_DESCRIPTION_VERSION](state, descriptionVersion) {
+    state.isLoadingDescriptionVersion = false;
+    state.descriptionVersion = descriptionVersion;
+  },
+  [types.RECEIVE_DELETE_DESCRIPTION_VERSION_ERROR](state) {
+    state.isLoadingDescriptionVersion = false;
   },
 };

@@ -31,3 +31,5 @@ module Banzai
     end
   end
 end
+
+Banzai::Filter::IssueReferenceFilter.prepend_if_ee('EE::Banzai::Filter::IssueReferenceFilter')

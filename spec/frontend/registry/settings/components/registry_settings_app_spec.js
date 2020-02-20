@@ -1,55 +1,74 @@
-import Vuex from 'vuex';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { GlAlert } from '@gitlab/ui';
 import component from '~/registry/settings/components/registry_settings_app.vue';
+import SettingsForm from '~/registry/settings/components/settings_form.vue';
 import { createStore } from '~/registry/settings/store/';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import { SET_IS_DISABLED } from '~/registry/settings/store/mutation_types';
+import { FETCH_SETTINGS_ERROR_MESSAGE } from '~/registry/shared/constants';
 
 describe('Registry Settings App', () => {
   let wrapper;
   let store;
-  let fetchSpy;
 
-  const findSettingsComponent = () => wrapper.find({ ref: 'settings-form' });
-  const findLoadingComponent = () => wrapper.find({ ref: 'loading-icon' });
+  const findSettingsComponent = () => wrapper.find(SettingsForm);
+  const findAlert = () => wrapper.find(GlAlert);
 
-  const mountComponent = (options = {}) => {
-    fetchSpy = jest.fn();
+  const mountComponent = ({ dispatchMock = 'mockResolvedValue', isDisabled = false } = {}) => {
+    store = createStore();
+    store.commit(SET_IS_DISABLED, isDisabled);
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    if (dispatchMock) {
+      dispatchSpy[dispatchMock]();
+    }
     wrapper = shallowMount(component, {
-      store,
-      methods: {
-        fetchSettings: fetchSpy,
+      mocks: {
+        $toast: {
+          show: jest.fn(),
+        },
       },
-      ...options,
+      store,
     });
   };
-
-  beforeEach(() => {
-    store = createStore();
-    mountComponent();
-  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   it('renders', () => {
+    mountComponent();
     expect(wrapper.element).toMatchSnapshot();
   });
 
   it('call the store function to load the data on mount', () => {
-    expect(fetchSpy).toHaveBeenCalled();
+    mountComponent();
+    expect(store.dispatch).toHaveBeenCalledWith('fetchSettings');
   });
 
-  it('renders a loader if isLoading is true', () => {
-    store.dispatch('toggleLoading');
-    return wrapper.vm.$nextTick().then(() => {
-      expect(findLoadingComponent().exists()).toBe(true);
+  it('show a toast if fetchSettings fails', () => {
+    mountComponent({ dispatchMock: 'mockRejectedValue' });
+    return wrapper.vm.$nextTick().then(() =>
+      expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(FETCH_SETTINGS_ERROR_MESSAGE, {
+        type: 'error',
+      }),
+    );
+  });
+
+  it('renders the setting form', () => {
+    mountComponent();
+    expect(findSettingsComponent().exists()).toBe(true);
+  });
+
+  describe('isDisabled', () => {
+    beforeEach(() => {
+      mountComponent({ isDisabled: true });
+    });
+
+    it('the form is hidden', () => {
       expect(findSettingsComponent().exists()).toBe(false);
     });
-  });
-  it('renders the setting form', () => {
-    expect(findSettingsComponent().exists()).toBe(true);
+
+    it('shows an alert', () => {
+      expect(findAlert().exists()).toBe(true);
+    });
   });
 });

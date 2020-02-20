@@ -1,0 +1,5 @@
+---
+title: Allow a grace period for new users to confirm their email
+merge_request: 24371
+author:
+type: added

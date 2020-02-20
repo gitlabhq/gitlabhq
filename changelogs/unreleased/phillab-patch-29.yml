@@ -1,0 +1,5 @@
+---
+title: Increase pipeline email notification from 10 to 30 lines
+merge_request: 21728
+author: Philipp Hasper
+type: changed

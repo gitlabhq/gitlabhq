@@ -21,7 +21,7 @@ If you installed GitLab:
 - Using the Omnibus package, you're all set.
 - From source, make sure `rsync` is installed:
 
-  ```sh
+  ```shell
   # Debian/Ubuntu
   sudo apt-get install rsync
 
@@ -35,7 +35,7 @@ Backup and restore tasks use `tar` under the hood to create and extract
 archives. Ensure you have version 1.30 or above of `tar` available in your
 system. To check the version, run:
 
-```sh
+```shell
 tar --version
 ```
 
@@ -76,7 +76,7 @@ You are highly advised to [read about storing configuration files](#storing-conf
 
 Use this command if you've installed GitLab with the Omnibus package:
 
-```sh
+```shell
 sudo gitlab-backup create
 ```
 
@@ -85,13 +85,13 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 Use this if you've installed GitLab from source:
 
-```sh
+```shell
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
 If you are running GitLab within a Docker container, you can run the backup from the host:
 
-```sh
+```shell
 docker exec -t <container name> gitlab-backup create
 ```
 
@@ -102,7 +102,7 @@ If you are using the [GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gi
 Kubernetes cluster, you can run the backup task using `backup-utility` script on
 the GitLab task runner pod via `kubectl`. Refer to [backing up a GitLab installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/backup.md#backing-up-a-gitlab-installation) for more details:
 
-```sh
+```shell
 kubectl exec -it <gitlab task-runner pod> backup-utility
 ```
 
@@ -185,7 +185,7 @@ The command line tool GitLab provides to backup your instance can take more opti
 
 ### Backup strategy option
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/8728) in GitLab 8.17.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8728) in GitLab 8.17.
 
 The default backup strategy is to essentially stream data from the respective
 data locations to the backup using the Linux command `tar` and `gzip`. This works
@@ -204,7 +204,7 @@ installations. This is why the `copy` strategy is not the default in 8.17.
 To use the `copy` strategy instead of the default streaming strategy, specify
 `STRATEGY=copy` in the Rake task command. For example:
 
-```sh
+```shell
 sudo gitlab-backup create STRATEGY=copy
 ```
 
@@ -215,7 +215,7 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 By default a backup file is created according to the specification in [the Backup timestamp](#backup-timestamp) section above. You can however override the `[TIMESTAMP]` part of the filename by setting the `BACKUP` environment variable. For example:
 
-```sh
+```shell
 sudo gitlab-backup create BACKUP=dump
 ```
 
@@ -230,7 +230,7 @@ To make sure the generated archive is intelligently transferable by rsync, the `
 
 Note that the `--rsyncable` option in `gzip` is not guaranteed to be available on all distributions. To verify that it is available in your distribution you can run `gzip --help` or consult the man pages.
 
-```sh
+```shell
 sudo gitlab-backup create BACKUP=dump GZIP_RSYNCABLE=yes
 ```
 
@@ -258,7 +258,7 @@ will be skipped during a backup.
 
 For Omnibus GitLab packages:
 
-```sh
+```shell
 sudo gitlab-backup create SKIP=db,uploads
 ```
 
@@ -267,7 +267,7 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 For installations from source:
 
-```sh
+```shell
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=production
 ```
 
@@ -355,10 +355,10 @@ For installations from source:
          # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
          # encryption: 'AES256'
          # Turns on AWS Server-Side Encryption with Amazon Customer-Provided Encryption Keys for backups, this is optional
-         #   This should be set to the base64-encoded encryption key for Amazon S3 to use to encrypt or decrypt your data.
+         #   This should be set to the encryption key for Amazon S3 to use to encrypt or decrypt your data.
          #   'encryption' must also be set in order for this to have any effect.
          #   To avoid storing the key on disk, the key can also be specified via the `GITLAB_BACKUP_ENCRYPTION_KEY` environment variable.
-         # encryption_key: '<base64 key>'
+         # encryption_key: '<key>'
          # Specifies Amazon S3 storage class to use for backups, this is optional
          # storage_class: 'STANDARD'
    ```
@@ -579,7 +579,7 @@ policy as described here](https://stackoverflow.com/questions/37553070/gitlab-om
 
 To schedule a cron job that backs up your repositories and GitLab metadata, use the root user:
 
-```sh
+```shell
 sudo su -
 crontab -e
 ```
@@ -608,7 +608,7 @@ For installations from source:
 
 1. [Restart GitLab] for the changes to take effect.
 
-```sh
+```shell
 sudo -u git crontab -e # Edit the crontab for the git user
 ```
 
@@ -633,6 +633,10 @@ before attempting to perform it in a production environment.
 
 You can only restore a backup to **exactly the same version and type (CE/EE)** of
 GitLab that you created it on, for example CE 9.1.0.
+
+If your backup is a different version than the current installation, you will
+need to [downgrade your GitLab installation](https://docs.gitlab.com/omnibus/update/README.html#downgrading)
+before restoring the backup.
 
 ### Restore prerequisites
 
@@ -724,7 +728,7 @@ This procedure assumes that:
 - You have installed the **exact same version and type (CE/EE)** of GitLab
   Omnibus with which the backup was created.
 - You have run `sudo gitlab-ctl reconfigure` at least once.
-- GitLab is running.  If not, start it using `sudo gitlab-ctl start`.
+- GitLab is running. If not, start it using `sudo gitlab-ctl start`.
 
 First make sure your backup tar file is in the backup directory described in the
 `gitlab.rb` configuration `gitlab_rails['backup_path']`. The default is
@@ -735,11 +739,12 @@ sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backu
 sudo chown git.git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
 ```
 
-Stop the processes that are connected to the database.  Leave the rest of GitLab
+Stop the processes that are connected to the database. Leave the rest of GitLab
 running:
 
 ```shell
 sudo gitlab-ctl stop unicorn
+sudo gitlab-ctl stop puma
 sudo gitlab-ctl stop sidekiq
 # Verify
 sudo gitlab-ctl status
@@ -791,7 +796,7 @@ backup location (default location is `/var/opt/gitlab/backups`).
 
 For docker installations, the restore task can be run from host:
 
-```sh
+```shell
 docker exec -it <name of container> gitlab-backup restore
 ```
 
@@ -901,13 +906,13 @@ backup beforehand.
 
    For Omnibus GitLab packages:
 
-   ```sh
+   ```shell
    sudo gitlab-rails dbconsole
    ```
 
    For installations from source:
 
-   ```sh
+   ```shell
    sudo -u git -H bundle exec rails dbconsole RAILS_ENV=production
    ```
 
@@ -936,13 +941,13 @@ backup beforehand.
 
    For Omnibus GitLab packages:
 
-   ```sh
+   ```shell
    sudo gitlab-rails dbconsole
    ```
 
    For installations from source:
 
-   ```sh
+   ```shell
    sudo -u git -H bundle exec rails dbconsole RAILS_ENV=production
    ```
 
@@ -969,13 +974,13 @@ backup beforehand.
 
    For Omnibus GitLab packages:
 
-   ```sh
+   ```shell
    sudo gitlab-rails dbconsole
    ```
 
    For installations from source:
 
-   ```sh
+   ```shell
    sudo -u git -H bundle exec rails dbconsole RAILS_ENV=production
    ```
 
@@ -1012,7 +1017,7 @@ unable to assign the correct ownership to the registry files during the restore
 
 To get your registry working again:
 
-```bash
+```shell
 sudo chown -R registry:registry /var/opt/gitlab/gitlab-rails/shared/registry/docker
 ```
 
@@ -1028,7 +1033,7 @@ want to run the `chown` against your custom location instead of
 
 While running the backup, you may receive a gzip error:
 
-```sh
+```shell
 sudo /opt/gitlab/bin/gitlab-backup create
 ...
 Dumping ...

@@ -78,7 +78,7 @@ That's not possible if a test leaves the browser logged in when it finishes. Nor
 
 For an example see: <https://gitlab.com/gitlab-org/gitlab/issues/34736>
 
-Ideally, any actions peformed in an `after(:context)` (or [`before(:context)`](#limit-the-use-of-beforeall-and-after-hooks)) block would be performed via the API. But if it's necessary to do so via the UI (e.g., if API functionality doesn't exist), make sure to log out at the end of the block.
+Ideally, any actions performed in an `after(:context)` (or [`before(:context)`](#limit-the-use-of-beforeall-and-after-hooks)) block would be performed via the API. But if it's necessary to do so via the UI (e.g., if API functionality doesn't exist), make sure to log out at the end of the block.
 
 ```ruby
 after(:all) do

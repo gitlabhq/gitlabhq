@@ -26,6 +26,9 @@ export const simpleIssue = {
   web_url: 'http://localhost:3001/h5bp/html5-boilerplate/issues/31',
   has_tasks: false,
   weight: null,
+  references: {
+    relative: 'html-boilerplate#45',
+  },
 };
 
 export const testLabels = [

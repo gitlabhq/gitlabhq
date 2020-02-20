@@ -160,4 +160,31 @@ describe 'layouts/nav/sidebar/_project' do
       end
     end
   end
+
+  describe 'value stream analytics entry' do
+    let(:read_cycle_analytics) { true }
+
+    before do
+      allow(view).to receive(:can?).with(nil, :read_cycle_analytics, project).and_return(read_cycle_analytics)
+      stub_feature_flags(analytics_pages_under_project_analytics_sidebar: { enabled: false, thing: project })
+    end
+
+    describe 'when value stream analytics is enabled' do
+      it 'shows the value stream analytics entry' do
+        render
+
+        expect(rendered).to have_link('Value Stream Analytics', href: project_cycle_analytics_path(project))
+      end
+    end
+
+    describe 'when value stream analytics is disabled' do
+      let(:read_cycle_analytics) { false }
+
+      it 'does not show the value stream analytics entry' do
+        render
+
+        expect(rendered).not_to have_link('Value Stream Analytics', href: project_cycle_analytics_path(project))
+      end
+    end
+  end
 end

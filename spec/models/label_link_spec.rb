@@ -7,4 +7,6 @@ describe LabelLink do
 
   it { is_expected.to belong_to(:label) }
   it { is_expected.to belong_to(:target) }
+
+  it_behaves_like 'a BulkInsertSafe model', LabelLink
 end

@@ -97,7 +97,8 @@ In case your development workflow dictates to have an issue for every merge
 request, you can quickly create a branch right on the issue page which will be
 tied with the issue itself. You can see a **Create merge request** dropdown
 below the issue description unless there is already a branch with the same
-name or a referenced merge request.
+name or a referenced merge request or your project (still) has an active
+[fork relationship](../settings/index.md#advanced-settings).
 
 ![Create Button](img/web_editor_new_branch_from_issue_create_button_v12_6.png)
 
@@ -180,7 +181,7 @@ If you'd prefer _not_ to use your primary email address for commits created
 through the web editor, you can choose to use another of your linked email
 addresses from the **User Settings > Edit Profile** page.
 
-[ce-2808]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/2808
+[ce-2808]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2808
 
 <!-- ## Troubleshooting
 

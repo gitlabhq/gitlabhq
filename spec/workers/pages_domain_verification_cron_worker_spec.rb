@@ -5,9 +5,9 @@ require 'spec_helper'
 describe PagesDomainVerificationCronWorker do
   subject(:worker) { described_class.new }
 
-  describe '#perform' do
+  describe '#perform', :sidekiq do
     let!(:verified) { create(:pages_domain) }
-    let!(:reverify) { create(:pages_domain, :reverify) }
+    let!(:reverify) { create(:pages_domain, :reverify, :with_project) }
     let!(:disabled) { create(:pages_domain, :disabled) }
 
     it 'does nothing if the database is read-only' do
@@ -25,6 +25,10 @@ describe PagesDomainVerificationCronWorker do
       expect(PagesDomainVerificationWorker).not_to receive(:perform_async).with(verified.id)
 
       worker.perform
+    end
+
+    it_behaves_like 'a pages cronjob scheduling jobs with context', PagesDomainVerificationWorker do
+      let(:extra_domain) { create(:pages_domain, :reverify, :with_project) }
     end
   end
 end

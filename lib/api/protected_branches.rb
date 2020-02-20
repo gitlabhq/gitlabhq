@@ -19,10 +19,15 @@ module API
       end
       params do
         use :pagination
+        optional :search, type: String, desc: 'Search for a protected branch by name'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/protected_branches' do
-        protected_branches = user_project.protected_branches.preload(:push_access_levels, :merge_access_levels)
+        protected_branches =
+          ProtectedBranchesFinder
+            .new(user_project, params)
+            .execute
+            .preload(:push_access_levels, :merge_access_levels)
 
         present paginate(protected_branches), with: Entities::ProtectedBranch, project: user_project
       end

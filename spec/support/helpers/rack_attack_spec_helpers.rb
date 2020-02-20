@@ -28,6 +28,6 @@ module RackAttackSpecHelpers
   def expect_rejection(&block)
     yield
 
-    expect(response).to have_http_status(429)
+    expect(response).to have_gitlab_http_status(:too_many_requests)
   end
 end

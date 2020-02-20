@@ -96,8 +96,10 @@ Link each one to an appropriate place for more information.
 This is the part of the document where you can include one or more sets of instructions, each to accomplish a specific task.
 Headers should describe the task the reader will achieve by following the instructions within, typically starting with a verb.
 Larger instruction sets may have subsections covering specific phases of the process.
+Where appropriate, provide examples of code or configuration files to better clarify intended usage.
 
 - Write a step-by-step guide, with no gaps between the steps.
+- Include example code or configurations as part of the relevant step. Use appropriate markdown to [wrap code blocks with syntax highlighting](../../user/markdown.html#colored-code-and-syntax-highlighting).
 - Start with an h2 (`##`), break complex steps into small steps using
 subheadings h3 > h4 > h5 > h6. _Never skip a hierarchy level, such
 as h2 > h4_, as it will break the TOC and may affect the breadcrumbs.
@@ -127,7 +129,7 @@ Notes:
 
 ## Help and feedback section
 
-The "help and feedback" section (introduced by [!319](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/319)) displayed at the end of each document
+The "help and feedback" section (introduced by [!319](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/319)) displayed at the end of each document
 can be omitted from the doc by adding a key into the its frontmatter:
 
 ```yaml
@@ -142,7 +144,7 @@ you must check with a technical writer before doing so.
 ### Disqus
 
 We also have integrated the docs site with Disqus (introduced by
-[!151](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/151)),
+[!151](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/151)),
 allowing our users to post comments.
 
 To omit only the comments from the feedback section, use the following

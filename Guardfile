@@ -2,7 +2,7 @@
 
 # More info at https://github.com/guard/guard#readme
 
-cmd = ENV['SPRING'] ? 'spring rspec' : 'bundle exec rspec'
+cmd = ENV['GUARD_CMD'] || (ENV['SPRING'] ? 'spring rspec' : 'bundle exec rspec')
 
 guard :rspec, cmd: cmd do
   require "guard/rspec/dsl"

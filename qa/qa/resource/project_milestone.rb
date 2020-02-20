@@ -3,33 +3,17 @@
 module QA
   module Resource
     class ProjectMilestone < Base
-      attr_reader :title
-      attr_accessor :description
+      attribute :id
+      attribute :title
 
       attribute :project do
-        Project.fabricate!
+        Project.fabricate_via_api! do |resource|
+          resource.name = 'project-with-milestone'
+        end
       end
 
-      def title=(title)
-        @title = "#{title}-#{SecureRandom.hex(4)}"
-        @description = 'A milestone'
-      end
-
-      def fabricate!
-        project.visit!
-
-        Page::Project::Menu.perform do |menu|
-          menu.click_issues
-          menu.click_milestones
-        end
-
-        Page::Project::Milestone::Index.perform(&:click_new_milestone)
-
-        Page::Project::Milestone::New.perform do |milestone_new|
-          milestone_new.set_title(@title)
-          milestone_new.set_description(@description)
-          milestone_new.click_milestone_create_button
-        end
+      def initialize
+        @title = "project-milestone-#{SecureRandom.hex(4)}"
       end
 
       def api_get_path
@@ -42,8 +26,7 @@ module QA
 
       def api_post_body
         {
-          description: @description,
-          title: @title
+          title: title
         }
       end
     end

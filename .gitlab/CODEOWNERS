@@ -1,10 +1,13 @@
+# When adding a group as a code owner, make sure to invite the group to the
+# project here: https://gitlab.com/gitlab-org/gitlab/-/project_members
+# As described in https://docs.gitlab.com/ee/user/project/code_owners.html
+
 # Backend Maintainers are the default for all ruby files
 *.rb @gitlab-org/maintainers/rails-backend
 *.rake @gitlab-org/maintainers/rails-backend
 
-# Technical writing team are the default reviewers for everything in `doc/`
+# Technical writing team are the default reviewers for all markdown docs
 *.md @gl-docsteam
-doc/ @gl-docsteam
 
 # Frontend maintainers should see everything in `app/assets/`
 app/assets/ @gitlab-org/maintainers/frontend
@@ -29,10 +32,17 @@ lib/gitlab/github_import/ @gitlab-org/maintainers/database
 /ee/app/models/project_alias.rb @patrickbajao
 /ee/lib/api/project_aliases.rb @patrickbajao
 
+# Quality owned files
+/qa/ @gl-quality
+
 # Engineering Productivity owned files
 /.gitlab-ci.yml @gl-quality/eng-prod
 /.gitlab/ci/ @gl-quality/eng-prod
+/.gitlab/CODEOWNERS @gl-quality/eng-prod
 Dangerfile @gl-quality/eng-prod
 /danger/ @gl-quality/eng-prod
 /lib/gitlab/danger/ @gl-quality/eng-prod
 /scripts/ @gl-quality/eng-prod
+
+# Delivery owner files
+/.gitlab/ci/releases.gitlab-ci.yml @gitlab-org/delivery

@@ -79,7 +79,7 @@ It's recommended to use the [shfmt](https://github.com/mvdan/sh#shfmt) tool to m
 We format shell scripts according to the [Google Shell Style Guide](https://google.github.io/styleguide/shell.xml),
 so the following `shfmt` invocation should be applied to the project's script files:
 
-```bash
+```shell
 shfmt -i 2 -ci scripts/**/*.sh
 ```
 
@@ -99,7 +99,7 @@ NOTE: **Note:**
 This is a work in progress.
 
 It is an [ongoing effort](https://gitlab.com/gitlab-org/gitlab-foss/issues/64016) to evaluate different tools for the
-automated testing of shell scripts (like [BATS](https://github.com/sstephenson/bats)).
+automated testing of shell scripts (like [BATS](https://github.com/bats-core/bats-core)).
 
 ## Code Review
 

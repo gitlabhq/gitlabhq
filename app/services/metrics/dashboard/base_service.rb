@@ -38,20 +38,20 @@ module Metrics
       # Determines whether users should be able to view
       # dashboards at all.
       def allowed?
-        if params[:environment]
-          Ability.allowed?(current_user, :read_environment, project)
-        elsif params[:cluster]
-          true # Authorization handled at controller level
-        else
-          false
-        end
+        return false unless params[:environment]
+
+        Ability.allowed?(current_user, :read_environment, project)
       end
 
       # Returns a new dashboard Hash, supplemented with DB info
       def process_dashboard
         ::Gitlab::Metrics::Dashboard::Processor
-          .new(project, raw_dashboard, sequence, params)
+          .new(project, raw_dashboard, sequence, process_params)
           .process
+      end
+
+      def process_params
+        params
       end
 
       # @return [String] Relative filepath of the dashboard yml

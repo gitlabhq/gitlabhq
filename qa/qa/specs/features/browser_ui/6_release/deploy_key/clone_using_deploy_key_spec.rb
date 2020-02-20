@@ -3,15 +3,15 @@
 require 'digest/sha1'
 
 module QA
-  context 'Release', :docker, quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/196047' do
+  context 'Release', :docker do
     describe 'Git clone using a deploy key' do
       before do
         Flow::Login.sign_in
 
         @runner_name = "qa-runner-#{Time.now.to_i}"
 
-        @project = Resource::Project.fabricate_via_api! do |resource|
-          resource.name = 'deploy-key-clone-project'
+        @project = Resource::Project.fabricate_via_api! do |project|
+          project.name = 'deploy-key-clone-project'
         end
 
         @repository_location = @project.repository_ssh_location
@@ -46,12 +46,7 @@ module QA
 
           deploy_key_name = "DEPLOY_KEY_#{key.name}_#{key.bits}"
 
-          Resource::CiVariable.fabricate_via_browser_ui! do |resource|
-            resource.project = @project
-            resource.key = deploy_key_name
-            resource.value = key.private_key
-            resource.masked = false
-          end
+          make_ci_variable(deploy_key_name, key)
 
           gitlab_ci = <<~YAML
           cat-config:
@@ -88,6 +83,17 @@ module QA
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful
             expect(job.output).to include(sha1sum)
+          end
+        end
+
+        private
+
+        def make_ci_variable(key_name, key)
+          Resource::CiVariable.fabricate_via_api! do |resource|
+            resource.project = @project
+            resource.key = key_name
+            resource.value = key.private_key
+            resource.masked = false
           end
         end
       end

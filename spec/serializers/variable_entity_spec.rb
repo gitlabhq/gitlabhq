@@ -10,7 +10,7 @@ describe VariableEntity do
     subject { entity.as_json }
 
     it 'contains required fields' do
-      expect(subject).to include(:id, :key, :value, :protected, :environment_scope)
+      expect(subject).to include(:id, :key, :value, :protected, :environment_scope, :variable_type)
     end
   end
 end

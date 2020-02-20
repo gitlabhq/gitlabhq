@@ -48,7 +48,7 @@ describe Import::BitbucketServerController do
 
       post :create, params: { project: project_key, repository: repo_slug }, format: :json
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     context 'with project key with tildes' do
@@ -61,20 +61,20 @@ describe Import::BitbucketServerController do
 
         post :create, params: { project: project_key, repository: repo_slug, format: :json }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
     it 'returns an error when an invalid project key is used' do
       post :create, params: { project: 'some&project' }
 
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
     it 'returns an error when an invalid repository slug is used' do
       post :create, params: { project: 'some-project', repository: 'try*this' }
 
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
     it 'returns an error when the project cannot be found' do
@@ -82,7 +82,7 @@ describe Import::BitbucketServerController do
 
       post :create, params: { project: project_key, repository: repo_slug }, format: :json
 
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
     it 'returns an error when the project cannot be saved' do
@@ -92,7 +92,7 @@ describe Import::BitbucketServerController do
 
       post :create, params: { project: project_key, repository: repo_slug }, format: :json
 
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
     it "returns an error when the server can't be contacted" do
@@ -100,8 +100,10 @@ describe Import::BitbucketServerController do
 
       post :create, params: { project: project_key, repository: repo_slug }, format: :json
 
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
+
+    it_behaves_like 'project import rate limiter'
   end
 
   describe 'POST configure' do
@@ -116,7 +118,7 @@ describe Import::BitbucketServerController do
       expect(session[:bitbucket_server_username]).to be_nil
       expect(session[:bitbucket_server_personal_access_token]).to be_nil
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(response).to redirect_to(status_import_bitbucket_server_path)
     end
 
@@ -126,7 +128,7 @@ describe Import::BitbucketServerController do
       expect(session[:bitbucket_server_url]).to eq(url)
       expect(session[:bitbucket_server_username]).to eq(username)
       expect(session[:bitbucket_server_personal_access_token]).to eq(token)
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(response).to redirect_to(status_import_bitbucket_server_path)
     end
   end

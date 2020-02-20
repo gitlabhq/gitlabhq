@@ -5,8 +5,7 @@ import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
-import { activityBarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { leftSidebarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
 
 export default {
   components: {
@@ -15,7 +14,6 @@ export default {
     CommitMessageField,
     SuccessMessage,
   },
-  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       isCompact: true,
@@ -29,13 +27,9 @@ export default {
     ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     overviewText() {
       return sprintf(
-        this.glFeatures.stageAllByDefault
-          ? __(
-              '<strong>%{stagedFilesLength} staged</strong> and <strong>%{changedFilesLength} unstaged</strong> changes',
-            )
-          : __(
-              '<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes',
-            ),
+        __(
+          '<strong>%{stagedFilesLength} staged</strong> and <strong>%{changedFilesLength} unstaged</strong> changes',
+        ),
         {
           stagedFilesLength: this.stagedFiles.length,
           changedFilesLength: this.changedFiles.length,
@@ -47,7 +41,7 @@ export default {
     },
 
     currentViewIsCommitView() {
-      return this.currentActivityView === activityBarViews.commit;
+      return this.currentActivityView === leftSidebarViews.commit.name;
     },
   },
   watch: {
@@ -63,7 +57,7 @@ export default {
 
     lastCommitMsg() {
       this.isCompact =
-        this.currentActivityView !== activityBarViews.commit && this.lastCommitMsg === '';
+        this.currentActivityView !== leftSidebarViews.commit.name && this.lastCommitMsg === '';
     },
   },
   methods: {
@@ -73,7 +67,7 @@ export default {
       if (this.currentViewIsCommitView) {
         this.isCompact = !this.isCompact;
       } else {
-        this.updateActivityBarView(activityBarViews.commit)
+        this.updateActivityBarView(leftSidebarViews.commit.name)
           .then(() => {
             this.isCompact = false;
           })
@@ -102,7 +96,6 @@ export default {
       this.componentHeight = null;
     },
   },
-  activityBarViews,
 };
 </script>
 

@@ -52,7 +52,7 @@ describe Gitlab::GitalyClient do
   end
 
   describe '.filesystem_id' do
-    it 'returns an empty string when the storage is not found in the response' do
+    it 'returns an empty string when the relevant storage status is not found in the response' do
       response = double("response")
       allow(response).to receive(:storage_statuses).and_return([])
       allow_next_instance_of(Gitlab::GitalyClient::ServerService) do |instance|
@@ -60,6 +60,63 @@ describe Gitlab::GitalyClient do
       end
 
       expect(described_class.filesystem_id('default')).to eq(nil)
+    end
+  end
+
+  context 'when the relevant storage status is not found' do
+    before do
+      response = double('response')
+      allow(response).to receive(:storage_statuses).and_return([])
+      allow_next_instance_of(Gitlab::GitalyClient::ServerService) do |instance|
+        allow(instance).to receive(:disk_statistics).and_return(response)
+        expect(instance).to receive(:storage_disk_statistics)
+      end
+    end
+
+    describe '.filesystem_disk_available' do
+      it 'returns nil when the relevant storage status is not found in the response' do
+        expect(described_class.filesystem_disk_available('default')).to eq(nil)
+      end
+    end
+
+    describe '.filesystem_disk_used' do
+      it 'returns nil when the relevant storage status is not found in the response' do
+        expect(described_class.filesystem_disk_used('default')).to eq(nil)
+      end
+    end
+  end
+
+  context 'when the relevant storage status is found' do
+    let(:disk_available) { 42 }
+    let(:disk_used) { 42 }
+    let(:storage_status) { double('storage_status') }
+
+    before do
+      allow(storage_status).to receive(:storage_name).and_return('default')
+      allow(storage_status).to receive(:used).and_return(disk_used)
+      allow(storage_status).to receive(:available).and_return(disk_available)
+      response = double('response')
+      allow(response).to receive(:storage_statuses).and_return([storage_status])
+      allow_next_instance_of(Gitlab::GitalyClient::ServerService) do |instance|
+        allow(instance).to receive(:disk_statistics).and_return(response)
+      end
+      expect_next_instance_of(Gitlab::GitalyClient::ServerService) do |instance|
+        expect(instance).to receive(:storage_disk_statistics).and_return(storage_status)
+      end
+    end
+
+    describe '.filesystem_disk_available' do
+      it 'returns disk available when the relevant storage status is found in the response' do
+        expect(storage_status).to receive(:available)
+        expect(described_class.filesystem_disk_available('default')).to eq(disk_available)
+      end
+    end
+
+    describe '.filesystem_disk_used' do
+      it 'returns disk used when the relevant storage status is found in the response' do
+        expect(storage_status).to receive(:used)
+        expect(described_class.filesystem_disk_used('default')).to eq(disk_used)
+      end
     end
   end
 

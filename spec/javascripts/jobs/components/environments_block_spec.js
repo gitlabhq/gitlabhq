@@ -4,6 +4,7 @@ import mountComponent from '../../helpers/vue_mount_component_helper';
 
 const TEST_CLUSTER_NAME = 'test_cluster';
 const TEST_CLUSTER_PATH = 'path/to/test_cluster';
+const TEST_KUBERNETES_NAMESPACE = 'this-is-a-kubernetes-namespace';
 
 describe('Environments block', () => {
   const Component = Vue.extend(component);
@@ -28,17 +29,18 @@ describe('Environments block', () => {
     last_deployment: { ...lastDeployment },
   });
 
-  const createEnvironmentWithCluster = () => ({
-    ...environment,
-    last_deployment: {
-      ...lastDeployment,
-      cluster: { name: TEST_CLUSTER_NAME, path: TEST_CLUSTER_PATH },
-    },
+  const createDeploymentWithCluster = () => ({ name: TEST_CLUSTER_NAME, path: TEST_CLUSTER_PATH });
+
+  const createDeploymentWithClusterAndKubernetesNamespace = () => ({
+    name: TEST_CLUSTER_NAME,
+    path: TEST_CLUSTER_PATH,
+    kubernetes_namespace: TEST_KUBERNETES_NAMESPACE,
   });
 
-  const createComponent = (deploymentStatus = {}) => {
+  const createComponent = (deploymentStatus = {}, deploymentCluster = {}) => {
     vm = mountComponent(Component, {
       deploymentStatus,
+      deploymentCluster,
       iconStatus: status,
     });
   };
@@ -62,15 +64,36 @@ describe('Environments block', () => {
       expect(findText()).toEqual('This job is deployed to environment.');
     });
 
-    it('renders info with cluster', () => {
-      createComponent({
-        status: 'last',
-        environment: createEnvironmentWithCluster(),
+    describe('when there is a cluster', () => {
+      it('renders info with cluster', () => {
+        createComponent(
+          {
+            status: 'last',
+            environment: createEnvironmentWithLastDeployment(),
+          },
+          createDeploymentWithCluster(),
+        );
+
+        expect(findText()).toEqual(
+          `This job is deployed to environment using cluster ${TEST_CLUSTER_NAME}.`,
+        );
       });
 
-      expect(findText()).toEqual(
-        `This job is deployed to environment using cluster ${TEST_CLUSTER_NAME}.`,
-      );
+      describe('when there is a kubernetes namespace', () => {
+        it('renders info with cluster', () => {
+          createComponent(
+            {
+              status: 'last',
+              environment: createEnvironmentWithLastDeployment(),
+            },
+            createDeploymentWithClusterAndKubernetesNamespace(),
+          );
+
+          expect(findText()).toEqual(
+            `This job is deployed to environment using cluster ${TEST_CLUSTER_NAME} and namespace ${TEST_KUBERNETES_NAMESPACE}.`,
+          );
+        });
+      });
     });
   });
 
@@ -89,15 +112,36 @@ describe('Environments block', () => {
         expect(findJobDeploymentLink().getAttribute('href')).toEqual('bar');
       });
 
-      it('renders info with cluster', () => {
-        createComponent({
-          status: 'out_of_date',
-          environment: createEnvironmentWithCluster(),
+      describe('when there is a cluster', () => {
+        it('renders info with cluster', () => {
+          createComponent(
+            {
+              status: 'out_of_date',
+              environment: createEnvironmentWithLastDeployment(),
+            },
+            createDeploymentWithCluster(),
+          );
+
+          expect(findText()).toEqual(
+            `This job is an out-of-date deployment to environment using cluster ${TEST_CLUSTER_NAME}. View the most recent deployment.`,
+          );
         });
 
-        expect(findText()).toEqual(
-          `This job is an out-of-date deployment to environment using cluster ${TEST_CLUSTER_NAME}. View the most recent deployment.`,
-        );
+        describe('when there is a kubernetes namespace', () => {
+          it('renders info with cluster', () => {
+            createComponent(
+              {
+                status: 'out_of_date',
+                environment: createEnvironmentWithLastDeployment(),
+              },
+              createDeploymentWithClusterAndKubernetesNamespace(),
+            );
+
+            expect(findText()).toEqual(
+              `This job is an out-of-date deployment to environment using cluster ${TEST_CLUSTER_NAME} and namespace ${TEST_KUBERNETES_NAMESPACE}. View the most recent deployment.`,
+            );
+          });
+        });
       });
     });
 
@@ -143,13 +187,29 @@ describe('Environments block', () => {
     });
 
     describe('without last deployment', () => {
-      it('renders info about failed deployment', () => {
+      it('renders info about deployment being created', () => {
         createComponent({
           status: 'creating',
           environment,
         });
 
         expect(findText()).toEqual('This job is creating a deployment to environment.');
+      });
+
+      describe('when there is a cluster', () => {
+        it('inclues information about the cluster', () => {
+          createComponent(
+            {
+              status: 'creating',
+              environment,
+            },
+            createDeploymentWithCluster(),
+          );
+
+          expect(findText()).toEqual(
+            `This job is creating a deployment to environment using cluster ${TEST_CLUSTER_NAME}.`,
+          );
+        });
       });
     });
 
@@ -167,10 +227,13 @@ describe('Environments block', () => {
 
   describe('with a cluster', () => {
     it('renders the cluster link', () => {
-      createComponent({
-        status: 'last',
-        environment: createEnvironmentWithCluster(),
-      });
+      createComponent(
+        {
+          status: 'last',
+          environment: createEnvironmentWithLastDeployment(),
+        },
+        createDeploymentWithCluster(),
+      );
 
       expect(findText()).toEqual(
         `This job is deployed to environment using cluster ${TEST_CLUSTER_NAME}.`,
@@ -181,18 +244,13 @@ describe('Environments block', () => {
 
     describe('when the cluster is missing the path', () => {
       it('renders the name without a link', () => {
-        const cluster = {
-          name: 'the-cluster',
-        };
-        createComponent({
-          status: 'last',
-          environment: Object.assign({}, environment, {
-            last_deployment: {
-              ...lastDeployment,
-              cluster,
-            },
-          }),
-        });
+        createComponent(
+          {
+            status: 'last',
+            environment: createEnvironmentWithLastDeployment(),
+          },
+          { name: 'the-cluster' },
+        );
 
         expect(findText()).toContain('using cluster the-cluster.');
 

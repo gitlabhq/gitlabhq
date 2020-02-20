@@ -15,27 +15,15 @@ In June 2019, Mario de la Ossa hosted a [Deep Dive] on GitLab's [Elasticsearch i
 [Google Slides]: https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit
 [PDF]: https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf
 
-## Initial installation on OS X
+## Supported Versions
 
-It is recommended to use the Docker image. After installing docker you can immediately spin up an instance with
+See [Version Requirements](../integration/elasticsearch.md#version-requirements).
 
-```
-docker run --name elastic56 -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:5.6.12
-```
+Developers making significant changes to Elasticsearch queries should test their features against all our supported versions.
 
-and use `docker stop elastic56` and `docker start elastic56` to stop/start it.
+## Setting up development environment
 
-### Installing on the host
-
-We currently only support Elasticsearch [5.6 to 6.x](../integration/elasticsearch.md#version-requirements)
-
-Version 5.6 is available on homebrew and is the recommended version to use in order to test compatibility.
-
-```
-brew install elasticsearch@5.6
-```
-
-There is no need to install any plugins
+See the [Elasticsearch GDK setup instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/elasticsearch.md)
 
 ## Helpful rake tasks
 
@@ -205,7 +193,7 @@ You might get an error such as
 
 This is because you've exceeded the disk space threshold - it thinks you don't have enough disk space left, based on the default 95% threshold.
 
-In addition, the `read_only_allow_delete` setting will be set to `true`.  It will block indexing, `forcemerge`, etc
+In addition, the `read_only_allow_delete` setting will be set to `true`. It will block indexing, `forcemerge`, etc
 
 ```
 curl "http://localhost:9200/gitlab-development/_settings?pretty"

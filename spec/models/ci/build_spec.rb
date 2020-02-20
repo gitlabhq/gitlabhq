@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 describe Ci::Build do
-  set(:user) { create(:user) }
-  set(:group) { create(:group) }
-  set(:project) { create(:project, :repository, group: group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group, reload: true) { create(:group) }
+  let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
 
-  set(:pipeline) do
+  let_it_be(:pipeline, reload: true) do
     create(:ci_pipeline, project: project,
                          sha: project.commit.id,
                          ref: project.default_branch,
@@ -33,7 +33,7 @@ describe Ci::Build do
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
 
-  it { is_expected.to delegate_method(:merge_request_event?).to(:pipeline) }
+  it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
@@ -762,8 +762,10 @@ describe Ci::Build do
       let(:needs) { }
 
       let!(:final) do
+        scheduling_type = needs.present? ? :dag : :stage
+
         create(:ci_build,
-          pipeline: pipeline, name: 'final',
+          pipeline: pipeline, name: 'final', scheduling_type: scheduling_type,
           stage_idx: 3, stage: 'deploy', options: {
             dependencies: dependencies
           }
@@ -2338,14 +2340,24 @@ describe Ci::Build do
     end
   end
 
-  describe '#has_expiring_artifacts?' do
+  describe '#has_expiring_archive_artifacts?' do
     context 'when artifacts have expiration date set' do
       before do
         build.update(artifacts_expire_at: 1.day.from_now)
       end
 
-      it 'has expiring artifacts' do
-        expect(build).to have_expiring_artifacts
+      context 'and job artifacts archive record exists' do
+        let!(:archive) { create(:ci_job_artifact, :archive, job: build) }
+
+        it 'has expiring artifacts' do
+          expect(build).to have_expiring_archive_artifacts
+        end
+      end
+
+      context 'and job artifacts archive record does not exist' do
+        it 'does not have expiring artifacts' do
+          expect(build).not_to have_expiring_archive_artifacts
+        end
       end
     end
 
@@ -2355,7 +2367,7 @@ describe Ci::Build do
       end
 
       it 'does not have expiring artifacts' do
-        expect(build).not_to have_expiring_artifacts
+        expect(build).not_to have_expiring_archive_artifacts
       end
     end
   end
@@ -2391,6 +2403,8 @@ describe Ci::Build do
           { key: 'GITLAB_CI', value: 'true', public: true, masked: false },
           { key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url, public: true, masked: false },
           { key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host, public: true, masked: false },
+          { key: 'CI_SERVER_PORT', value: Gitlab.config.gitlab.port.to_s, public: true, masked: false },
+          { key: 'CI_SERVER_PROTOCOL', value: Gitlab.config.gitlab.protocol, public: true, masked: false },
           { key: 'CI_SERVER_NAME', value: 'GitLab', public: true, masked: false },
           { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true, masked: false },
           { key: 'CI_SERVER_VERSION_MAJOR', value: Gitlab.version_info.major.to_s, public: true, masked: false },
@@ -2995,7 +3009,8 @@ describe Ci::Build do
           stage: 'test',
           ref: 'feature',
           project: project,
-          pipeline: pipeline
+          pipeline: pipeline,
+          scheduling_type: :stage
         )
       end
 
@@ -3599,7 +3614,7 @@ describe Ci::Build do
   end
 
   describe '.matches_tag_ids' do
-    set(:build) { create(:ci_build, project: project, user: user) }
+    let_it_be(:build, reload: true) { create(:ci_build, project: project, user: user) }
     let(:tag_ids) { ::ActsAsTaggableOn::Tag.named_any(tag_list).ids }
 
     subject { described_class.where(id: build).matches_tag_ids(tag_ids) }
@@ -3646,7 +3661,7 @@ describe Ci::Build do
   end
 
   describe '.matches_tags' do
-    set(:build) { create(:ci_build, project: project, user: user) }
+    let_it_be(:build, reload: true) { create(:ci_build, project: project, user: user) }
 
     subject { described_class.where(id: build).with_any_tags }
 
@@ -3672,7 +3687,7 @@ describe Ci::Build do
   end
 
   describe 'pages deployments' do
-    set(:build) { create(:ci_build, project: project, user: user) }
+    let_it_be(:build, reload: true) { create(:ci_build, project: project, user: user) }
 
     context 'when job is "pages"' do
       before do
@@ -3839,8 +3854,12 @@ describe Ci::Build do
   end
 
   describe '#artifacts_metadata_entry' do
-    set(:build) { create(:ci_build, project: project) }
+    let_it_be(:build) { create(:ci_build, project: project) }
     let(:path) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }
+
+    around do |example|
+      Timecop.freeze { example.run }
+    end
 
     before do
       stub_artifacts_object_storage
@@ -3935,7 +3954,7 @@ describe Ci::Build do
   end
 
   describe '#supported_runner?' do
-    set(:build) { create(:ci_build) }
+    let_it_be(:build) { create(:ci_build) }
 
     subject { build.supported_runner?(runner_features) }
 

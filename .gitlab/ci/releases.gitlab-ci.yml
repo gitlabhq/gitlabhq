@@ -1,5 +1,3 @@
----
-
 # Syncs any changes pushed to a stable branch to the corresponding
 # gitlab-foss/CE stable branch. We run this prior to any tests so that random
 # failures don't prevent a sync.
@@ -10,27 +8,21 @@
   stage: sync
   before_script:
     - apk add --no-cache --update curl bash jq
-  after_script: []
   script:
     - bash scripts/sync-stable-branch.sh
-  only:
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com"
 
 sync-stable-branch:
-  extends: .merge-train-sync
+  extends:
+    - .releases:rules:canonical-dot-com-gitlab-stable-branch-only
+    - .merge-train-sync
   variables:
     SOURCE_PROJECT: gitlab-org/gitlab
     TARGET_PROJECT: gitlab-org/gitlab-foss
-  only:
-    refs:
-      - /^[\d-]+-stable-ee$/@gitlab-org/gitlab
 
 sync-security-branch:
-  extends: .merge-train-sync
+  extends:
+    - .releases:rules:canonical-dot-com-security-gitlab-stable-branch-only
+    - .merge-train-sync
   variables:
     SOURCE_PROJECT: gitlab-org/security/gitlab
     TARGET_PROJECT: gitlab-org/security/gitlab-foss
-  only:
-    refs:
-      - /^[\d-]+-stable-ee$/@gitlab-org/security/gitlab

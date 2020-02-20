@@ -36,6 +36,12 @@
       %td
         = @application.trusted? ? 'Y' : 'N'
 
+    %tr
+      %td
+        Confidential
+      %td
+        = @application.confidential? ? 'Y' : 'N'
+
     = render "shared/tokens/scopes_list", token: @application
 
 .form-actions

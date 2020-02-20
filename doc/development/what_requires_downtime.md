@@ -213,7 +213,7 @@ class ChangeUsersUsernameStringToTextCleanup < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    cleanup_concurrent_column_type_change :users
+    cleanup_concurrent_column_type_change :users, :username
   end
 
   def down
@@ -376,6 +376,11 @@ This operation is safe as there's no code using the table just yet.
 
 Dropping tables can be done safely using a post-deployment migration, but only
 if the application no longer uses the table.
+
+## Renaming Tables
+
+Renaming tables requires downtime as an application may continue
+using the old table name during/after a database migration.
 
 ## Adding Foreign Keys
 

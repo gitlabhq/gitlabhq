@@ -18,7 +18,7 @@ GET /templates/gitlab_ci_ymls
 
 Example request:
 
-```bash
+```shell
 curl https://gitlab.example.com/api/v4/templates/gitlab_ci_ymls
 ```
 
@@ -123,7 +123,7 @@ GET /templates/gitlab_ci_ymls/:key
 
 Example request:
 
-```bash
+```shell
 curl https://gitlab.example.com/api/v4/templates/gitlab_ci_ymls/Ruby
 ```
 

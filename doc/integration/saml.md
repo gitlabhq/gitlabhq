@@ -19,13 +19,13 @@ in your SAML IdP:
 
    For Omnibus package:
 
-   ```sh
+   ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
    For installations from source:
 
-   ```sh
+   ```shell
    cd /home/git/gitlab
 
    sudo -u git -H editor config/gitlab.yml
@@ -243,7 +243,7 @@ considered `admin groups`.
 >**Note:**
 This setting is only available on GitLab 11.4 EE and above.
 
-This setting also follows the requirements documented for the `External Groups` setting.  GitLab uses the Group information provided by your IdP to determine if a user should be assigned the `auditor` role.
+This setting also follows the requirements documented for the `External Groups` setting. GitLab uses the Group information provided by your IdP to determine if a user should be assigned the `auditor` role.
 
 ```yaml
 { name: 'saml',
@@ -374,7 +374,7 @@ in the OmniAuth [info hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-
 
 For example, if your SAMLResponse contains an Attribute called 'EmailAddress',
 specify `{ email: ['EmailAddress'] }` to map the Attribute to the
-corresponding key in the info hash.  URI-named Attributes are also supported, e.g.
+corresponding key in the info hash. URI-named Attributes are also supported, e.g.
 `{ email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] }`.
 
 This setting allows you tell GitLab where to look for certain attributes required
@@ -414,7 +414,7 @@ args: {
 
 ### `uid_attribute`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17734) in GitLab 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17734) in GitLab 10.7.
 
 By default, the `uid` is set as the `name_id` in the SAML response. If you'd like to designate a unique attribute for the `uid`, you can set the `uid_attribute`. In the example below, the value of `uid` attribute in the SAML response is set as the `uid_attribute`.
 
@@ -544,6 +544,12 @@ args: {
 GitLab will sign the request with the provided private key. GitLab will include the configured public x500 certificate in the metadata for your Identity Provider to validate the signature of the received request with. For more information on this option, see the [Ruby SAML gem documentation](https://github.com/onelogin/ruby-saml/tree/v1.7.0). The Ruby SAML gem is used by the [OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml) to implement the client side of the SAML authentication.
 
 ## Troubleshooting
+
+### GitLab+SAML Testing Environments
+
+If you need to troubleshoot, [a complete GitLab+SAML testing environment using Docker compose](https://gitlab.com/gitlab-com/support/toolbox/replication/tree/master/compose_files) is available.
+
+If you only need a SAML provider for testing, a [quick start guide to start a Docker container](../administration/troubleshooting/test_environments.md#saml) with a plug and play SAML 2.0 Identity Provider (IdP) is available.
 
 ### 500 error after login
 

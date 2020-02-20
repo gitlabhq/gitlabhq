@@ -148,7 +148,7 @@ describe BambooService, :use_clean_rails_memory_store_caching do
   end
 
   shared_examples 'reactive cache calculation' do
-    context '#build_page' do
+    describe '#build_page' do
       subject { service.calculate_reactive_cache('123', 'unused')[:build_page] }
 
       it 'returns a specific URL when status is 500' do
@@ -180,7 +180,7 @@ describe BambooService, :use_clean_rails_memory_store_caching do
       end
     end
 
-    context '#commit_status' do
+    describe '#commit_status' do
       subject { service.calculate_reactive_cache('123', 'unused')[:commit_status] }
 
       it 'sets commit status to :error when status is 500' do

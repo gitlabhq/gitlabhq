@@ -25,11 +25,78 @@ You should then be able to see the **Packages** section on the left sidebar.
 Next, you must configure your project to authorize with the GitLab Maven
 repository.
 
-## Authenticating to the GitLab Maven Repository
+## Getting Started
 
-If a project is private or you want to upload Maven artifacts to GitLab,
-credentials will need to be provided for authorization. Support is available for
-[personal access tokens](#authenticating-with-a-personal-access-token) and
+This section will cover installing Maven and building a package. This is a
+quickstart to help if you're new to building Maven packages. If you're already
+using Maven and understand how to build your own packages, move onto the
+[next section](#adding-the-gitlab-package-registry-as-a-maven-remote).
+
+### Installing Maven
+
+Follow the instructions at [maven.apache.org](https://maven.apache.org/install.html)
+to download and install Maven for your local development environment. Once
+installation is complete, verify you can use Maven in your terminal by running:
+
+```shell
+mvn --version
+```
+
+You should see something similar to the below printed in the output:
+
+```shell
+Apache Maven 3.6.1 (d66c9c0b3152b2e69ee9bac180bb8fcc8e6af555; 2019-04-04T20:00:29+01:00)
+Maven home: /Users/<your_user>/apache-maven-3.6.1
+Java version: 12.0.2, vendor: Oracle Corporation, runtime: /Library/Java/JavaVirtualMachines/jdk-12.0.2.jdk/Contents/Home
+Default locale: en_GB, platform encoding: UTF-8
+OS name: "mac os x", version: "10.15.2", arch: "x86_64", family: "mac"
+```
+
+### Creating a project
+
+Understanding how to create a full Java project is outside the scope of this
+guide but you can follow the steps below to create a new project that can be
+published to the GitLab Package Registry.
+
+Start by opening your terminal and creating a directory where you would like to
+store the project in your environment. From inside the directory, you can run
+the following Maven command to initalize a new package:
+
+```shell
+mvn archetype:generate -DgroupId=com.mycompany.mydepartment -DartifactId=my-project -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+```
+
+The arguments are as follows:
+
+- `DgroupId`: A unique string that identifies your package. You should follow
+the [Maven naming conventions](https://maven.apache.org/guides/mini/guide-naming-conventions.html).
+- `DartifactId`: The name of the JAR, appended to the end of the `DgroupId`.
+- `DarchetypeArtifactId`: The archetype used to create the intial structure of
+the project.
+- `DinteractiveMode`: Create the project using batch mode (optional).
+
+After running the command, you should see the following message, indicating that
+your project has been set up successfully:
+
+```shell
+...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.429 s
+[INFO] Finished at: 2020-01-28T11:47:04Z
+[INFO] ------------------------------------------------------------------------
+```
+
+You should see a new directory where you ran this command matching your
+`DartifactId` parameter (in this case it should be `my-project`).
+
+## Adding the GitLab Package Registry as a Maven remote
+
+The next step is to add the GitLab Package Registry as a Maven remote. If a
+project is private or you want to upload Maven artifacts to GitLab,
+credentials will need to be provided for authorization too. Support is available
+for [personal access tokens](#authenticating-with-a-personal-access-token) and
 [CI job tokens](#authenticating-with-a-ci-job-token) only.
 [Deploy tokens](../../project/deploy_tokens/index.md) and regular username/password
 credentials do not work.
@@ -92,7 +159,9 @@ You can read more on
 ## Configuring your project to use the GitLab Maven repository URL
 
 To download and upload packages from GitLab, you need a `repository` and
-`distributionManagement` section in your `pom.xml` file.
+`distributionManagement` section in your `pom.xml` file. If you're following the
+steps from above, then you'll need to add the following information to your
+`my-project/pom.xml` file.
 
 Depending on your workflow and the amount of Maven packages you have, there are
 3 ways you can configure your project to use the GitLab endpoint for Maven packages:
@@ -133,7 +202,7 @@ would look like:
 ```
 
 The `id` must be the same with what you
-[defined in `settings.xml`](#authenticating-to-the-gitlab-maven-repository).
+[defined in `settings.xml`](#adding-the-gitlab-package-registry-as-a-maven-remote).
 
 Replace `PROJECT_ID` with your project ID which can be found on the home page
 of your project.
@@ -149,7 +218,7 @@ project's ID can be used for uploading.
 
 ### Group level Maven endpoint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/8798) in GitLab Premium 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8798) in GitLab Premium 11.7.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the group level endpoint for
@@ -186,7 +255,7 @@ the `distributionManagement` section:
 ```
 
 The `id` must be the same with what you
-[defined in `settings.xml`](#authenticating-to-the-gitlab-maven-repository).
+[defined in `settings.xml`](#adding-the-gitlab-package-registry-as-a-maven-remote).
 
 Replace `my-group` with your group name and `PROJECT_ID` with your project ID
 which can be found on the home page of your project.
@@ -201,7 +270,7 @@ For retrieving artifacts, you can use either the
 
 ### Instance level Maven endpoint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/8274) in GitLab Premium 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8274) in GitLab Premium 11.7.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the instance level endpoint for
@@ -241,7 +310,7 @@ the `distributionManagement` section:
 ```
 
 The `id` must be the same with what you
-[defined in `settings.xml`](#authenticating-to-the-gitlab-maven-repository).
+[defined in `settings.xml`](#adding-the-gitlab-package-registry-as-a-maven-remote).
 
 Replace `PROJECT_ID` with your project ID which can be found on the home page
 of your project.
@@ -257,16 +326,84 @@ project's ID can be used for uploading.
 
 ## Uploading packages
 
-Once you have set up the [authentication](#authenticating-to-the-gitlab-maven-repository)
-and [configuration](#configuring-your-project-to-use-the-gitlab-maven-repository-url),
+Once you have set up the [remote and authentication](#adding-the-gitlab-package-registry-as-a-maven-remote)
+and [configured your project](#configuring-your-project-to-use-the-gitlab-maven-repository-url),
 test to upload a Maven artifact from a project of yours:
 
-```sh
+```shell
 mvn deploy
+```
+
+If the deploy is successful, you should see the build success message again:
+
+```shell
+...
+[INFO] BUILD SUCCESS
+...
+```
+
+You should also see that the upload was uploaded to the correct registry:
+
+```shell
+Uploading to gitlab-maven: https://gitlab.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.jar
 ```
 
 You can then navigate to your project's **Packages** page and see the uploaded
 artifacts or even delete them.
+
+## Installing a package
+
+Installing a package from the GitLab Package Registry requires that you set up
+the [remote and authentication](#adding-the-gitlab-package-registry-as-a-maven-remote)
+as above. Once this is completed, there are two ways for installaing a package.
+
+### Install with `mvn install`
+
+Add the dependency manually to your project `pom.xml` file. To add the example
+created above, the XML would look like:
+
+```xml
+<dependency>
+  <groupId>com.mycompany.mydepartment</groupId>
+  <artifactId>my-project</artifactId>
+  <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+
+Then, inside your project, run the following:
+
+```shell
+mvn install
+```
+
+Provided everything is set up correctly, you should see the dependency
+downloaded from the GitLab Package Registry:
+
+```shell
+Downloading from gitlab-maven: http://gitlab.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.pom
+```
+
+### Install with `mvn dependency:get`
+
+The second way to install packages is to use the Maven commands directly.
+Inside your project directory, run:
+
+```shell
+mvn dependency:get -Dartifact=com.nickkipling.app:nick-test-app:1.1-SNAPSHOT
+```
+
+You should see the same downloading message confirming that the project was
+retrieved from the GitLab Package Registry.
+
+TIP: **Tip:**
+Both the XML block and Maven command are readily copy and pastable from the
+Package details page, allowing for quick and easy installation.
+
+## Removing a package
+
+In the packages view of your project page, you can delete packages by clicking
+the red trash icons or by clicking the **Delete** button on the package details
+page.
 
 ## Creating Maven packages with GitLab CI/CD
 
@@ -338,3 +475,53 @@ The next time the `deploy` job runs, it will copy `ci_settings.xml` to the
 user's home location (in this case the user is `root` since it runs in a
 Docker container), and Maven will utilize the configured CI
 [environment variables](../../../ci/variables/README.md#predefined-environment-variables).
+
+## Troubleshooting
+
+### Useful Maven command line options
+
+There's some [maven command line options](https://maven.apache.org/ref/current/maven-embedder/cli.html)
+which maybe useful when doing tasks with GitLab CI.
+
+- File transfer progress can make the CI logs hard to read.
+  Option `-ntp,--no-transfer-progress` was added in
+  [3.6.1](https://maven.apache.org/docs/3.6.1/release-notes.html#User_visible_Changes).
+  Alternatively, look at `-B,--batch-mode`
+  [or lower level logging changes.](https://stackoverflow.com/questions/21638697/disable-maven-download-progress-indication)
+
+- Specify where to find the POM file (`-f,--file`):
+
+   ```yaml
+   package:
+     script:
+       - 'mvn --no-transfer-progress -f helloworld/pom.xml package'
+   ```
+
+- Specify where to find the user settings (`-s,--settings`) instead of
+  [the default location](https://maven.apache.org/settings.html). There's also a `-gs,--global-settings` option:
+
+   ```yaml
+   package:
+     script:
+       - 'mvn -s settings/ci.xml package'
+   ```
+
+### Verifying your Maven settings
+
+If you encounter issues within CI that relate to the `settings.xml` file, it might be useful
+to add an additional script task or job to
+[verify the effective settings](https://maven.apache.org/plugins/maven-help-plugin/effective-settings-mojo.html).
+
+The help plugin can also provide
+[system properties](https://maven.apache.org/plugins/maven-help-plugin/system-mojo.html), including environment variables:
+
+```yaml
+mvn-settings:
+  script:
+    - 'mvn help:effective-settings'
+
+package:
+  script:
+    - 'mvn help:system'
+    - 'mvn package'
+```

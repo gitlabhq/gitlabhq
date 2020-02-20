@@ -99,6 +99,10 @@ module SystemNoteService
     ::SystemNotes::TimeTrackingService.new(noteable: noteable, project: project, author: author).change_time_spent
   end
 
+  def close_after_error_tracking_resolve(issue, project, author)
+    ::SystemNotes::IssuablesService.new(noteable: issue, project: project, author: author).close_after_error_tracking_resolve
+  end
+
   def change_status(noteable, project, author, status, source = nil)
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_status(status, source)
   end
@@ -236,23 +240,6 @@ module SystemNoteService
 
   def zoom_link_removed(issue, project, author)
     ::SystemNotes::ZoomService.new(noteable: issue, project: project, author: author).zoom_link_removed
-  end
-
-  private
-
-  def create_note(note_summary)
-    note = Note.create(note_summary.note.merge(system: true))
-    note.system_note_metadata = SystemNoteMetadata.new(note_summary.metadata) if note_summary.metadata?
-
-    note
-  end
-
-  def url_helpers
-    @url_helpers ||= Gitlab::Routing.url_helpers
-  end
-
-  def content_tag(*args)
-    ActionController::Base.helpers.content_tag(*args)
   end
 end
 

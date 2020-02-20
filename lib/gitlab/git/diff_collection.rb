@@ -102,7 +102,7 @@ module Gitlab
       def populate!
         return if @populated
 
-        each { nil } # force a loop through all diffs
+        each {} # force a loop through all diffs
         nil
       end
 

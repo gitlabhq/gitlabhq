@@ -1158,7 +1158,7 @@ describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe 'sidekiq migration helpers', :sidekiq, :redis do
+  describe 'sidekiq migration helpers', :redis do
     let(:worker) do
       Class.new do
         include Sidekiq::Worker
@@ -1221,7 +1221,7 @@ describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe '#bulk_queue_background_migration_jobs_by_range', :sidekiq do
+  describe '#bulk_queue_background_migration_jobs_by_range' do
     context 'when the model has an ID column' do
       let!(:id1) { create(:user).id }
       let!(:id2) { create(:user).id }
@@ -1293,7 +1293,7 @@ describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe '#queue_background_migration_jobs_by_range_at_intervals', :sidekiq do
+  describe '#queue_background_migration_jobs_by_range_at_intervals' do
     context 'when the model has an ID column' do
       let!(:id1) { create(:user).id }
       let!(:id2) { create(:user).id }
@@ -1516,6 +1516,381 @@ describe Gitlab::Database::MigrationHelpers do
       SQL
 
       model.create_or_update_plan_limit('project_hooks', 'free', 10)
+    end
+  end
+
+  describe '#with_lock_retries' do
+    let(:buffer) { StringIO.new }
+    let(:in_memory_logger) { Gitlab::JsonLogger.new(buffer) }
+    let(:env) { { 'DISABLE_LOCK_RETRIES' => 'true' } }
+
+    it 'sets the migration class name in the logs' do
+      model.with_lock_retries(env: env, logger: in_memory_logger) { }
+
+      buffer.rewind
+      expect(buffer.read).to include("\"class\":\"#{model.class}\"")
+    end
+  end
+
+  describe '#backfill_iids' do
+    include MigrationsHelpers
+
+    class self::Issue < ActiveRecord::Base
+      include AtomicInternalId
+
+      self.table_name = 'issues'
+      self.inheritance_column = :_type_disabled
+
+      belongs_to :project, class_name: "::Project"
+
+      has_internal_id :iid,
+        scope: :project,
+        init: ->(s) { s&.project&.issues&.maximum(:iid) },
+        backfill: true,
+        presence: false
+    end
+
+    let(:namespaces)     { table(:namespaces) }
+    let(:projects)       { table(:projects) }
+    let(:issues)         { table(:issues) }
+
+    def setup
+      namespace = namespaces.create!(name: 'foo', path: 'foo')
+      project = projects.create!(namespace_id: namespace.id)
+
+      project
+    end
+
+    it 'generates iids properly for models created after the migration' do
+      project = setup
+
+      model.backfill_iids('issues')
+
+      issue = self.class::Issue.create!(project_id: project.id)
+
+      expect(issue.iid).to eq(1)
+    end
+
+    it 'generates iids properly for models created after the migration when iids are backfilled' do
+      project = setup
+      issue_a = issues.create!(project_id: project.id)
+
+      model.backfill_iids('issues')
+
+      issue_b = self.class::Issue.create!(project_id: project.id)
+
+      expect(issue_a.reload.iid).to eq(1)
+      expect(issue_b.iid).to eq(2)
+    end
+
+    it 'generates iids properly for models created after the migration across multiple projects' do
+      project_a = setup
+      project_b = setup
+      issues.create!(project_id: project_a.id)
+      issues.create!(project_id: project_b.id)
+      issues.create!(project_id: project_b.id)
+
+      model.backfill_iids('issues')
+
+      issue_a = self.class::Issue.create!(project_id: project_a.id)
+      issue_b = self.class::Issue.create!(project_id: project_b.id)
+
+      expect(issue_a.iid).to eq(2)
+      expect(issue_b.iid).to eq(3)
+    end
+
+    context 'when the new code creates a row post deploy but before the migration runs' do
+      it 'does not change the row iid' do
+        project = setup
+        issue = self.class::Issue.create!(project_id: project.id)
+
+        model.backfill_iids('issues')
+
+        expect(issue.reload.iid).to eq(1)
+      end
+
+      it 'backfills iids for rows already in the database' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = issues.create!(project_id: project.id)
+        issue_c = self.class::Issue.create!(project_id: project.id)
+
+        model.backfill_iids('issues')
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+        expect(issue_c.reload.iid).to eq(3)
+      end
+
+      it 'backfills iids across multiple projects' do
+        project_a = setup
+        project_b = setup
+        issue_a = issues.create!(project_id: project_a.id)
+        issue_b = issues.create!(project_id: project_b.id)
+        issue_c = self.class::Issue.create!(project_id: project_a.id)
+        issue_d = self.class::Issue.create!(project_id: project_b.id)
+
+        model.backfill_iids('issues')
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(1)
+        expect(issue_c.reload.iid).to eq(2)
+        expect(issue_d.reload.iid).to eq(2)
+      end
+
+      it 'generates iids properly for models created after the migration' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = issues.create!(project_id: project.id)
+        issue_c = self.class::Issue.create!(project_id: project.id)
+
+        model.backfill_iids('issues')
+
+        issue_d = self.class::Issue.create!(project_id: project.id)
+        issue_e = self.class::Issue.create!(project_id: project.id)
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+        expect(issue_c.reload.iid).to eq(3)
+        expect(issue_d.iid).to eq(4)
+        expect(issue_e.iid).to eq(5)
+      end
+
+      it 'backfills iids and properly generates iids for new models across multiple projects' do
+        project_a = setup
+        project_b = setup
+        issue_a = issues.create!(project_id: project_a.id)
+        issue_b = issues.create!(project_id: project_b.id)
+        issue_c = self.class::Issue.create!(project_id: project_a.id)
+        issue_d = self.class::Issue.create!(project_id: project_b.id)
+
+        model.backfill_iids('issues')
+
+        issue_e = self.class::Issue.create!(project_id: project_a.id)
+        issue_f = self.class::Issue.create!(project_id: project_b.id)
+        issue_g = self.class::Issue.create!(project_id: project_a.id)
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(1)
+        expect(issue_c.reload.iid).to eq(2)
+        expect(issue_d.reload.iid).to eq(2)
+        expect(issue_e.iid).to eq(3)
+        expect(issue_f.iid).to eq(3)
+        expect(issue_g.iid).to eq(4)
+      end
+    end
+
+    context 'when the new code creates a model and then old code creates a model post deploy but before the migration runs' do
+      it 'backfills iids' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = self.class::Issue.create!(project_id: project.id)
+        issue_c = issues.create!(project_id: project.id)
+
+        model.backfill_iids('issues')
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+        expect(issue_c.reload.iid).to eq(3)
+      end
+
+      it 'generates an iid for a new model after the migration' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = issues.create!(project_id: project.id)
+        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_d = issues.create!(project_id: project.id)
+
+        model.backfill_iids('issues')
+
+        issue_e = self.class::Issue.create!(project_id: project.id)
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+        expect(issue_c.reload.iid).to eq(3)
+        expect(issue_d.reload.iid).to eq(4)
+        expect(issue_e.iid).to eq(5)
+      end
+    end
+
+    context 'when the new code and old code alternate creating models post deploy but before the migration runs' do
+      it 'backfills iids' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = self.class::Issue.create!(project_id: project.id)
+        issue_c = issues.create!(project_id: project.id)
+        issue_d = self.class::Issue.create!(project_id: project.id)
+
+        model.backfill_iids('issues')
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+        expect(issue_c.reload.iid).to eq(3)
+        expect(issue_d.reload.iid).to eq(4)
+      end
+
+      it 'generates an iid for a new model after the migration' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = issues.create!(project_id: project.id)
+        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_d = issues.create!(project_id: project.id)
+        issue_e = self.class::Issue.create!(project_id: project.id)
+
+        model.backfill_iids('issues')
+
+        issue_f = self.class::Issue.create!(project_id: project.id)
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+        expect(issue_c.reload.iid).to eq(3)
+        expect(issue_d.reload.iid).to eq(4)
+        expect(issue_e.reload.iid).to eq(5)
+        expect(issue_f.iid).to eq(6)
+      end
+    end
+
+    context 'when the new code creates and deletes a model post deploy but before the migration runs' do
+      it 'backfills iids for rows already in the database' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = issues.create!(project_id: project.id)
+        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c.delete
+
+        model.backfill_iids('issues')
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+      end
+
+      it 'successfully creates a new model after the migration' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = issues.create!(project_id: project.id)
+        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c.delete
+
+        model.backfill_iids('issues')
+
+        issue_d = self.class::Issue.create!(project_id: project.id)
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+        expect(issue_d.iid).to eq(3)
+      end
+    end
+
+    context 'when the new code creates and deletes a model and old code creates a model post deploy but before the migration runs' do
+      it 'backfills iids' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = issues.create!(project_id: project.id)
+        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c.delete
+        issue_d = issues.create!(project_id: project.id)
+
+        model.backfill_iids('issues')
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+        expect(issue_d.reload.iid).to eq(3)
+      end
+
+      it 'successfully creates a new model after the migration' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = issues.create!(project_id: project.id)
+        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c.delete
+        issue_d = issues.create!(project_id: project.id)
+
+        model.backfill_iids('issues')
+
+        issue_e = self.class::Issue.create!(project_id: project.id)
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+        expect(issue_d.reload.iid).to eq(3)
+        expect(issue_e.iid).to eq(4)
+      end
+    end
+
+    context 'when the new code creates and deletes a model and then creates another model post deploy but before the migration runs' do
+      it 'successfully generates an iid for a new model after the migration' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = issues.create!(project_id: project.id)
+        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c.delete
+        issue_d = self.class::Issue.create!(project_id: project.id)
+
+        model.backfill_iids('issues')
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+        expect(issue_d.reload.iid).to eq(3)
+      end
+
+      it 'successfully generates an iid for a new model after the migration' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id)
+        issue_b = issues.create!(project_id: project.id)
+        issue_c = self.class::Issue.create!(project_id: project.id)
+        issue_c.delete
+        issue_d = self.class::Issue.create!(project_id: project.id)
+
+        model.backfill_iids('issues')
+
+        issue_e = self.class::Issue.create!(project_id: project.id)
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+        expect(issue_d.reload.iid).to eq(3)
+        expect(issue_e.iid).to eq(4)
+      end
+    end
+
+    context 'when the first model is created for a project after the migration' do
+      it 'generates an iid' do
+        project_a = setup
+        project_b = setup
+        issue_a = issues.create!(project_id: project_a.id)
+
+        model.backfill_iids('issues')
+
+        issue_b = self.class::Issue.create!(project_id: project_b.id)
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(1)
+      end
+    end
+
+    context 'when a row already has an iid set in the database' do
+      it 'backfills iids' do
+        project = setup
+        issue_a = issues.create!(project_id: project.id, iid: 1)
+        issue_b = issues.create!(project_id: project.id, iid: 2)
+
+        model.backfill_iids('issues')
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(2)
+      end
+
+      it 'backfills for multiple projects' do
+        project_a = setup
+        project_b = setup
+        issue_a = issues.create!(project_id: project_a.id, iid: 1)
+        issue_b = issues.create!(project_id: project_b.id, iid: 1)
+        issue_c = issues.create!(project_id: project_a.id, iid: 2)
+
+        model.backfill_iids('issues')
+
+        expect(issue_a.reload.iid).to eq(1)
+        expect(issue_b.reload.iid).to eq(1)
+        expect(issue_c.reload.iid).to eq(2)
+      end
     end
   end
 end

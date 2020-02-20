@@ -7,6 +7,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers
   include StubENV
+  include CreateEnvironmentsHelpers
 
   let(:project) { create(:project, :repository) }
 
@@ -111,6 +112,72 @@ describe Environment, :use_clean_rails_memory_store_caching do
       it 'prevents wildcard injection' do
         is_expected.to be_empty
       end
+    end
+  end
+
+  describe '.auto_stoppable' do
+    subject { described_class.auto_stoppable(limit) }
+
+    let(:limit) { 100 }
+
+    context 'when environment is auto-stoppable' do
+      let!(:environment) { create(:environment, :auto_stoppable) }
+
+      it { is_expected.to eq([environment]) }
+    end
+
+    context 'when environment is not auto-stoppable' do
+      let!(:environment) { create(:environment) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe '.stop_actions' do
+    subject { environments.stop_actions }
+
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user) }
+    let(:environments) { Environment.all }
+
+    before_all do
+      project.add_developer(user)
+      project.repository.add_branch(user, 'review/feature-1', 'master')
+      project.repository.add_branch(user, 'review/feature-2', 'master')
+    end
+
+    shared_examples_for 'correct filtering' do
+      it 'returns stop actions for available environments only' do
+        expect(subject.count).to eq(1)
+        expect(subject.first.name).to eq('stop_review_app')
+        expect(subject.first.ref).to eq('review/feature-1')
+      end
+    end
+
+    before do
+      create_review_app(user, project, 'review/feature-1')
+      create_review_app(user, project, 'review/feature-2')
+    end
+
+    it 'returns stop actions for environments' do
+      expect(subject.count).to eq(2)
+      expect(subject).to match_array(Ci::Build.where(name: 'stop_review_app'))
+    end
+
+    context 'when one of the stop actions has already been executed' do
+      before do
+        Ci::Build.where(ref: 'review/feature-2').find_by_name('stop_review_app').enqueue!
+      end
+
+      it_behaves_like 'correct filtering'
+    end
+
+    context 'when one of the deployments does not have stop action' do
+      before do
+        Deployment.where(ref: 'review/feature-2').update_all(on_stop: nil)
+      end
+
+      it_behaves_like 'correct filtering'
     end
   end
 
@@ -449,7 +516,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
   describe '#reset_auto_stop' do
     subject { environment.reset_auto_stop }
 
-    let(:environment) { create(:environment, :auto_stopped) }
+    let(:environment) { create(:environment, :auto_stoppable) }
 
     it 'nullifies the auto_stop_at' do
       expect { subject }.to change(environment, :auto_stop_at).from(Time).to(nil)

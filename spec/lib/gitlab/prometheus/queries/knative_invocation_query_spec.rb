@@ -6,7 +6,7 @@ describe Gitlab::Prometheus::Queries::KnativeInvocationQuery do
   include PrometheusHelpers
 
   let(:project) { create(:project) }
-  let(:serverless_func) { Serverless::Function.new(project, 'test-name', 'test-ns') }
+  let(:serverless_func) { ::Serverless::Function.new(project, 'test-name', 'test-ns') }
   let(:client) { double('prometheus_client') }
 
   subject { described_class.new(client) }

@@ -30,13 +30,13 @@ describe ProjectBadge do
     let(:badge) { build(:project_badge, link_url: placeholder_url, image_url: placeholder_url) }
     let!(:project) { badge.project }
 
-    context '#rendered_link_url' do
+    describe '#rendered_link_url' do
       let(:method) { :link_url }
 
       it_behaves_like 'rendered_links'
     end
 
-    context '#rendered_image_url' do
+    describe '#rendered_image_url' do
       let(:method) { :image_url }
 
       it_behaves_like 'rendered_links'

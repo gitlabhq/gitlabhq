@@ -41,7 +41,7 @@ module API
       delete ':id/registry/repositories/:repository_id', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_admin_container_image!
 
-        DeleteContainerRepositoryWorker.perform_async(current_user.id, repository.id)
+        DeleteContainerRepositoryWorker.perform_async(current_user.id, repository.id) # rubocop:disable CodeReuse/Worker
         track_event('delete_repository')
 
         status :accepted
@@ -79,8 +79,10 @@ module API
         message = 'This request has already been made. You can run this at most once an hour for a given container repository'
         render_api_error!(message, 400) unless obtain_new_cleanup_container_lease
 
+        # rubocop:disable CodeReuse/Worker
         CleanupContainerRepositoryWorker.perform_async(current_user.id, repository.id,
-          declared_params.except(:repository_id))
+          declared_params.except(:repository_id).merge(container_expiration_policy: false))
+        # rubocop:enable CodeReuse/Worker
 
         track_event('delete_tag_bulk')
 

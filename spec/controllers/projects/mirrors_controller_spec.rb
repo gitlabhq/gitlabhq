@@ -103,7 +103,7 @@ describe Projects::MirrorsController do
         it "returns an error with a 400 response for URL #{url.inspect}" do
           do_get(project, url)
 
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response).to eq('message' => 'Invalid URL')
         end
       end
@@ -115,7 +115,7 @@ describe Projects::MirrorsController do
 
         do_get(project)
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end
     end
 
@@ -125,7 +125,7 @@ describe Projects::MirrorsController do
 
         do_get(project)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to eq('message' => 'An error')
       end
     end
@@ -139,7 +139,7 @@ describe Projects::MirrorsController do
 
         do_get(project)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq('known_hosts' => ssh_key, 'fingerprints' => [ssh_fp.stringify_keys], 'host_keys_changed' => true)
       end
     end

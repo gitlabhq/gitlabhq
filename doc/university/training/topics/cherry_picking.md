@@ -17,7 +17,7 @@ comments: false
 1. Check out the 'stable' branch
 1. Cherry pick the commit using the SHA obtained earlier
 
-```bash
+```shell
 git checkout master
 git checkout -b stable
 git checkout master

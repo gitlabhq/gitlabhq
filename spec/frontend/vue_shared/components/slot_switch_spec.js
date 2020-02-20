@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
-import SlotSwitch from '~/vue_shared/components/slot_switch';
+import SlotSwitch from '~/vue_shared/components/slot_switch.vue';
 
 describe('SlotSwitch', () => {
   const slots = {

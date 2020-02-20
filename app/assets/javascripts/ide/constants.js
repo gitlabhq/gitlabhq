@@ -8,11 +8,8 @@ export const MAX_BODY_LENGTH = 72;
 export const FILE_VIEW_MODE_EDITOR = 'editor';
 export const FILE_VIEW_MODE_PREVIEW = 'preview';
 
-export const activityBarViews = {
-  edit: 'ide-tree',
-  commit: 'commit-section',
-  review: 'ide-review',
-};
+export const PERMISSION_CREATE_MR = 'createMergeRequestIn';
+export const PERMISSION_READ_MR = 'readMergeRequest';
 
 export const viewerTypes = {
   mr: 'mrdiff',
@@ -43,6 +40,12 @@ export const diffViewerErrors = Object.freeze({
   too_large: 'too_large',
   stored_externally: 'server_side_but_stored_externally',
 });
+
+export const leftSidebarViews = {
+  edit: { name: 'ide-tree', keepAlive: false },
+  review: { name: 'ide-review', keepAlive: false },
+  commit: { name: 'repo-commit-section', keepAlive: false },
+};
 
 export const rightSidebarViews = {
   pipelines: { name: 'pipelines-list', keepAlive: true },

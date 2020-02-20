@@ -5,6 +5,7 @@
 module MetricsDashboard
   include RenderServiceResults
   include ChecksCollaboration
+  include EnvironmentsHelper
 
   extend ActiveSupport::Concern
 
@@ -15,8 +16,9 @@ module MetricsDashboard
       metrics_dashboard_params.to_h.symbolize_keys
     )
 
-    if include_all_dashboards? && result
-      result[:all_dashboards] = all_dashboards
+    if result
+      result[:all_dashboards] = all_dashboards if include_all_dashboards?
+      result[:metrics_data] = metrics_data(project_for_dashboard, environment_for_dashboard) if project_for_dashboard && environment_for_dashboard
     end
 
     respond_to do |format|
@@ -76,10 +78,14 @@ module MetricsDashboard
     defined?(project) ? project : nil
   end
 
+  def environment_for_dashboard
+    defined?(environment) ? environment : nil
+  end
+
   def dashboard_success_response(result)
     {
       status: :ok,
-      json: result.slice(:all_dashboards, :dashboard, :status)
+      json: result.slice(:all_dashboards, :dashboard, :status, :metrics_data)
     }
   end
 

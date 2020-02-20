@@ -22,7 +22,7 @@ describe Admin::ServicesController do
         it 'successfully displays the template' do
           get :edit, params: { id: service.id }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -48,7 +48,7 @@ describe Admin::ServicesController do
 
       put :update, params: { id: service.id, service: { active: true } }
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
     end
 
     it 'does not call the propagation worker when service is not active' do
@@ -56,7 +56,7 @@ describe Admin::ServicesController do
 
       put :update, params: { id: service.id, service: { properties: {} } }
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
     end
   end
 end

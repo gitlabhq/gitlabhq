@@ -45,7 +45,7 @@ AcceptEnv GIT_PROTOCOL
 
 Once configured, restart the SSH daemon. In Ubuntu, run:
 
-```sh
+```shell
 sudo service ssh restart
 ```
 
@@ -54,7 +54,7 @@ sudo service ssh restart
 In order to use the new protocol, clients need to either pass the configuration
 `-c protocol.version=2` to the Git command, or set it globally:
 
-```sh
+```shell
 git config --global protocol.version 2
 ```
 
@@ -62,7 +62,7 @@ git config --global protocol.version 2
 
 Verify Git v2 is used by the client:
 
-```sh
+```shell
 GIT_TRACE_CURL=1 git -c protocol.version=2 ls-remote https://your-gitlab-instance.com/group/repo.git 2>&1 | grep Git-Protocol
 ```
 
@@ -74,13 +74,13 @@ You should see that the `Git-Protocol` header is sent:
 
 Verify Git v2 is used by the server:
 
-```sh
+```shell
 GIT_TRACE_PACKET=1 git -c protocol.version=2 ls-remote https://your-gitlab-instance.com/group/repo.git 2>&1 | head
 ```
 
 Example response using Git protocol v2:
 
-```sh
+```shell
 $ GIT_TRACE_PACKET=1 git -c protocol.version=2 ls-remote https://your-gitlab-instance.com/group/repo.git 2>&1 | head
 10:42:50.574485 pkt-line.c:80           packet:          git< # service=git-upload-pack
 10:42:50.574653 pkt-line.c:80           packet:          git< 0000
@@ -98,7 +98,7 @@ $ GIT_TRACE_PACKET=1 git -c protocol.version=2 ls-remote https://your-gitlab-ins
 
 Verify Git v2 is used by the client:
 
-```sh
+```shell
 GIT_SSH_COMMAND="ssh -v" git -c protocol.version=2 ls-remote ssh://your-gitlab-instance.com:group/repo.git 2>&1 |grep GIT_PROTOCOL
 ```
 

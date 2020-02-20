@@ -6,6 +6,8 @@ describe MergeRequestDiffCommit do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
 
+  it_behaves_like 'a BulkInsertSafe model', MergeRequestDiffCommit
+
   describe '#to_hash' do
     subject { merge_request.commits.first }
 
@@ -18,7 +20,6 @@ describe MergeRequestDiffCommit do
   end
 
   describe '.create_bulk' do
-    let(:sha_attribute) { Gitlab::Database::ShaAttribute.new }
     let(:merge_request_diff_id) { merge_request.merge_request_diff.id }
     let(:commits) do
       [
@@ -38,7 +39,7 @@ describe MergeRequestDiffCommit do
           "committer_email": "dmitriy.zaporozhets@gmail.com",
           "merge_request_diff_id": merge_request_diff_id,
           "relative_order": 0,
-          "sha": sha_attribute.serialize("5937ac0a7beb003549fc5fd26fc247adbce4a52e")
+          "sha": Gitlab::Database::ShaAttribute.serialize("5937ac0a7beb003549fc5fd26fc247adbce4a52e")
         },
         {
           "message": "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
@@ -50,7 +51,7 @@ describe MergeRequestDiffCommit do
           "committer_email": "dmitriy.zaporozhets@gmail.com",
           "merge_request_diff_id": merge_request_diff_id,
           "relative_order": 1,
-          "sha": sha_attribute.serialize("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
+          "sha": Gitlab::Database::ShaAttribute.serialize("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
         }
       ]
     end
@@ -81,7 +82,7 @@ describe MergeRequestDiffCommit do
           "committer_email": "alejorro70@gmail.com",
           "merge_request_diff_id": merge_request_diff_id,
           "relative_order": 0,
-          "sha": sha_attribute.serialize("ba3343bc4fa403a8dfbfcab7fc1a8c29ee34bd69")
+          "sha": Gitlab::Database::ShaAttribute.serialize("ba3343bc4fa403a8dfbfcab7fc1a8c29ee34bd69")
         }]
       end
 

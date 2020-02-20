@@ -164,13 +164,13 @@ installation. Once the installation/upgrade is underway, wait for the
 pod to be created. Then run the following to obtain the pods logs as
 they are written:
 
-```bash
+```shell
 kubectl logs <pod_name> --follow -n gitlab-managed-apps
 ```
 
 ## GitLab Managed Apps
 
-GitLab provides [GitLab Managed Apps](../user/clusters/applications.html), a one-click install for various applications which can be added directly to your configured cluster.
+GitLab provides [GitLab Managed Apps](../user/clusters/applications.md), a one-click install for various applications which can be added directly to your configured cluster.
 
 **<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of how to add a new GitLab-mananged app, see [How to add GitLab-managed-apps to Kubernetes integration](https://youtu.be/mKm-jkranEk).**
+For an overview of how to add a new GitLab-managed app, see [How to add GitLab-managed-apps to Kubernetes integration](https://youtu.be/mKm-jkranEk).**

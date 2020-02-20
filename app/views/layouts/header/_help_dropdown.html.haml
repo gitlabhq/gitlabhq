@@ -4,6 +4,10 @@
       = link_to _("Help"), help_path
     %li
       = link_to _("Support"), support_url
+    %li
+      %button.js-shortcuts-modal-trigger{ type: "button" }
+        = _("Keyboard shortcuts")
+        %span.text-secondary.float-right{ "aria-hidden": true }= '?'.html_safe
     = render_if_exists "shared/learn_gitlab_menu_item"
     %li.divider
   %li

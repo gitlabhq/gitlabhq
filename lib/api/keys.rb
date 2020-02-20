@@ -26,7 +26,7 @@ module API
       get do
         authenticated_with_can_read_all_resources!
 
-        key = KeysFinder.new(current_user, params).execute
+        key = KeysFinder.new(params).execute
 
         not_found!('Key') unless key
 

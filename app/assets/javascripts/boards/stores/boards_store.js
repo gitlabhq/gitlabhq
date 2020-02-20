@@ -1,4 +1,4 @@
-/* eslint-disable no-shadow */
+/* eslint-disable no-shadow, no-param-reassign */
 /* global List */
 
 import $ from 'jquery';
@@ -129,6 +129,53 @@ const boardsStore = {
       list.position = i;
     });
     listFrom.update();
+  },
+
+  addMultipleListIssues(list, issues, listFrom, newIndex) {
+    let moveBeforeId = null;
+    let moveAfterId = null;
+
+    const listHasIssues = issues.every(issue => list.findIssue(issue.id));
+
+    if (!listHasIssues) {
+      if (newIndex !== undefined) {
+        if (list.issues[newIndex - 1]) {
+          moveBeforeId = list.issues[newIndex - 1].id;
+        }
+
+        if (list.issues[newIndex]) {
+          moveAfterId = list.issues[newIndex].id;
+        }
+
+        list.issues.splice(newIndex, 0, ...issues);
+      } else {
+        list.issues.push(...issues);
+      }
+
+      if (list.label) {
+        issues.forEach(issue => issue.addLabel(list.label));
+      }
+
+      if (list.assignee) {
+        if (listFrom && listFrom.type === 'assignee') {
+          issues.forEach(issue => issue.removeAssignee(listFrom.assignee));
+        }
+        issues.forEach(issue => issue.addAssignee(list.assignee));
+      }
+
+      if (IS_EE && list.milestone) {
+        if (listFrom && listFrom.type === 'milestone') {
+          issues.forEach(issue => issue.removeMilestone(listFrom.milestone));
+        }
+        issues.forEach(issue => issue.addMilestone(list.milestone));
+      }
+
+      if (listFrom) {
+        list.issuesSize += issues.length;
+
+        list.updateMultipleIssues(issues, listFrom, moveBeforeId, moveAfterId);
+      }
+    }
   },
 
   startMoving(list, issue) {
@@ -406,6 +453,29 @@ const boardsStore = {
 
   destroyList(id) {
     return axios.delete(`${this.state.endpoints.listsEndpoint}/${id}`);
+  },
+
+  saveList(list) {
+    const entity = list.label || list.assignee || list.milestone;
+    let entityType = '';
+    if (list.label) {
+      entityType = 'label_id';
+    } else if (list.assignee) {
+      entityType = 'assignee_id';
+    } else if (IS_EE && list.milestone) {
+      entityType = 'milestone_id';
+    }
+
+    return this.createList(entity.id, entityType)
+      .then(res => res.data)
+      .then(data => {
+        list.id = data.id;
+        list.type = data.list_type;
+        list.position = data.position;
+        list.label = data.label;
+
+        return list.getIssues();
+      });
   },
 
   getIssuesForList(id, filter = {}) {

@@ -432,10 +432,7 @@ module Gitlab
     end
 
     def self.filesystem_id(storage)
-      response = Gitlab::GitalyClient::ServerService.new(storage).info
-      storage_status = response.storage_statuses.find { |status| status.storage_name == storage }
-
-      storage_status&.filesystem_id
+      Gitlab::GitalyClient::ServerService.new(storage).storage_info&.filesystem_id
     end
 
     def self.filesystem_id_from_disk(storage)
@@ -444,6 +441,14 @@ module Gitlab
       metadata_hash['gitaly_filesystem_id']
     rescue Errno::ENOENT, Errno::EACCES, JSON::ParserError
       nil
+    end
+
+    def self.filesystem_disk_available(storage)
+      Gitlab::GitalyClient::ServerService.new(storage).storage_disk_statistics&.available
+    end
+
+    def self.filesystem_disk_used(storage)
+      Gitlab::GitalyClient::ServerService.new(storage).storage_disk_statistics&.used
     end
 
     def self.timeout(timeout_name)

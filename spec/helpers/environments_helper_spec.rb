@@ -20,7 +20,7 @@ describe EnvironmentsHelper do
       expect(metrics_data).to include(
         'settings-path' => edit_project_service_path(project, 'prometheus'),
         'clusters-path' => project_clusters_path(project),
-        'current-environment-name': environment.name,
+        'current-environment-name' => environment.name,
         'documentation-path' => help_page_path('administration/monitoring/prometheus/index.md'),
         'empty-getting-started-svg-path' => match_asset_path('/assets/illustrations/monitoring/getting_started.svg'),
         'empty-loading-svg-path' => match_asset_path('/assets/illustrations/monitoring/loading.svg'),
@@ -29,7 +29,6 @@ describe EnvironmentsHelper do
         'metrics-endpoint' => additional_metrics_project_environment_path(project, environment, format: :json),
         'deployments-endpoint' => project_environment_deployments_path(project, environment, format: :json),
         'default-branch' => 'master',
-        'environments-endpoint': project_environments_path(project, format: :json),
         'project-path' => project_path(project),
         'tags-path' => project_tags_path(project),
         'has-metrics' => "#{environment.has_metrics?}",

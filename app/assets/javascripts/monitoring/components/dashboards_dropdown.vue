@@ -4,11 +4,14 @@ import {
   GlAlert,
   GlDropdown,
   GlDropdownItem,
+  GlDropdownHeader,
   GlDropdownDivider,
+  GlSearchBoxByType,
   GlModal,
   GlLoadingIcon,
   GlModalDirective,
 } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import DuplicateDashboardForm from './duplicate_dashboard_form.vue';
 
 const events = {
@@ -20,7 +23,9 @@ export default {
     GlAlert,
     GlDropdown,
     GlDropdownItem,
+    GlDropdownHeader,
     GlDropdownDivider,
+    GlSearchBoxByType,
     GlModal,
     GlLoadingIcon,
     DuplicateDashboardForm,
@@ -44,6 +49,7 @@ export default {
       alert: null,
       loading: false,
       form: {},
+      searchTerm: '',
     };
   },
   computed: {
@@ -53,6 +59,17 @@ export default {
     },
     selectedDashboardText() {
       return this.selectedDashboard.display_name;
+    },
+    filteredDashboards() {
+      return this.allDashboards.filter(({ display_name }) =>
+        display_name.toLowerCase().includes(this.searchTerm.toLowerCase()),
+      );
+    },
+    shouldShowNoMsgContainer() {
+      return this.filteredDashboards.length === 0;
+    },
+    okButtonText() {
+      return this.loading ? s__('Metrics|Duplicating...') : s__('Metrics|Duplicate');
     },
   },
   methods: {
@@ -95,45 +112,70 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown toggle-class="dropdown-menu-toggle" :text="selectedDashboardText">
-    <gl-dropdown-item
-      v-for="dashboard in allDashboards"
-      :key="dashboard.path"
-      :active="dashboard.path === selectedDashboard.path"
-      active-class="is-active"
-      @click="selectDashboard(dashboard)"
-    >
-      {{ dashboard.display_name || dashboard.path }}
-    </gl-dropdown-item>
-
-    <template v-if="isSystemDashboard">
+  <gl-dropdown
+    toggle-class="dropdown-menu-toggle"
+    menu-class="monitor-dashboard-dropdown-menu"
+    :text="selectedDashboardText"
+  >
+    <div class="d-flex flex-column overflow-hidden">
+      <gl-dropdown-header class="monitor-dashboard-dropdown-header text-center">{{
+        __('Dashboard')
+      }}</gl-dropdown-header>
       <gl-dropdown-divider />
+      <gl-search-box-by-type
+        ref="monitorDashboardsDropdownSearch"
+        v-model="searchTerm"
+        class="m-2"
+      />
+      <div class="flex-fill overflow-auto">
+        <gl-dropdown-item
+          v-for="dashboard in filteredDashboards"
+          :key="dashboard.path"
+          :active="dashboard.path === selectedDashboard.path"
+          active-class="is-active"
+          @click="selectDashboard(dashboard)"
+        >
+          {{ dashboard.display_name || dashboard.path }}
+        </gl-dropdown-item>
+      </div>
 
-      <gl-modal
-        ref="duplicateDashboardModal"
-        modal-id="duplicateDashboardModal"
-        :title="s__('Metrics|Duplicate dashboard')"
-        ok-variant="success"
-        @ok="ok"
-        @hide="hide"
+      <div
+        v-show="shouldShowNoMsgContainer"
+        ref="monitorDashboardsDropdownMsg"
+        class="text-secondary no-matches-message"
       >
-        <gl-alert v-if="alert" class="mb-3" variant="danger" @dismiss="alert = null">
-          {{ alert }}
-        </gl-alert>
-        <duplicate-dashboard-form
-          :dashboard="selectedDashboard"
-          :default-branch="defaultBranch"
-          @change="formChange"
-        />
-        <template #modal-ok>
-          <gl-loading-icon v-if="loading" inline color="light" />
-          {{ loading ? s__('Metrics|Duplicating...') : s__('Metrics|Duplicate') }}
-        </template>
-      </gl-modal>
+        {{ __('No matching results') }}
+      </div>
 
-      <gl-dropdown-item ref="duplicateDashboardItem" v-gl-modal="'duplicateDashboardModal'">
-        {{ s__('Metrics|Duplicate dashboard') }}
-      </gl-dropdown-item>
-    </template>
+      <template v-if="isSystemDashboard">
+        <gl-dropdown-divider />
+
+        <gl-modal
+          ref="duplicateDashboardModal"
+          modal-id="duplicateDashboardModal"
+          :title="s__('Metrics|Duplicate dashboard')"
+          ok-variant="success"
+          @ok="ok"
+          @hide="hide"
+        >
+          <gl-alert v-if="alert" class="mb-3" variant="danger" @dismiss="alert = null">
+            {{ alert }}
+          </gl-alert>
+          <duplicate-dashboard-form
+            :dashboard="selectedDashboard"
+            :default-branch="defaultBranch"
+            @change="formChange"
+          />
+          <template #modal-ok>
+            <gl-loading-icon v-if="loading" inline color="light" />
+            {{ okButtonText }}
+          </template>
+        </gl-modal>
+
+        <gl-dropdown-item ref="duplicateDashboardItem" v-gl-modal="'duplicateDashboardModal'">
+          {{ s__('Metrics|Duplicate dashboard') }}
+        </gl-dropdown-item>
+      </template>
+    </div>
   </gl-dropdown>
 </template>

@@ -16,6 +16,8 @@ module Ci
     include FromUnion
     include UpdatedAtFilterable
 
+    BridgeStatusError = Class.new(StandardError)
+
     sha_attribute :source_sha
     sha_attribute :target_sha
 
@@ -64,6 +66,7 @@ module Ci
     has_one :triggered_by_pipeline, through: :source_pipeline, source: :source_pipeline
     has_one :parent_pipeline, -> { merge(Ci::Sources::Pipeline.same_project) }, through: :source_pipeline, source: :source_pipeline
     has_one :source_job, through: :source_pipeline, source: :source_job
+    has_one :source_bridge, through: :source_pipeline, source: :source_bridge
 
     has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
 
@@ -74,9 +77,7 @@ module Ci
 
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
-    validates :merge_request, presence: { if: :merge_request_event? }
-    validates :merge_request, absence: { unless: :merge_request_event? }
-    validates :tag, inclusion: { in: [false], if: :merge_request_event? }
+    validates :tag, inclusion: { in: [false], if: :merge_request? }
 
     validates :external_pull_request, presence: { if: :external_pull_request_event? }
     validates :external_pull_request, absence: { unless: :external_pull_request_event? }
@@ -184,7 +185,7 @@ module Ci
 
         pipeline.run_after_commit do
           PipelineHooksWorker.perform_async(pipeline.id)
-          ExpirePipelineCacheWorker.perform_async(pipeline.id)
+          ExpirePipelineCacheWorker.perform_async(pipeline.id) if pipeline.cacheable?
         end
       end
 
@@ -202,6 +203,22 @@ module Ci
             self.class.auto_devops_pipelines_completed_total.increment(status: pipeline.status)
           end
         end
+      end
+
+      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+        next unless pipeline.bridge_triggered?
+        next unless pipeline.bridge_waiting?
+
+        pipeline.run_after_commit do
+          ::Ci::PipelineBridgeStatusWorker.perform_async(pipeline.id)
+        end
+      end
+
+      after_transition created: :pending do |pipeline|
+        next unless pipeline.bridge_triggered?
+        next if pipeline.bridge_waiting?
+
+        pipeline.update_bridge_status!
       end
 
       after_transition any => [:success, :failed] do |pipeline|
@@ -578,7 +595,7 @@ module Ci
     # Manually set the notes for a Ci::Pipeline
     # There is no ActiveRecord relation between Ci::Pipeline and notes
     # as they are related to a commit sha. This method helps importing
-    # them using the +Gitlab::ImportExport::RelationFactory+ class.
+    # them using the +Gitlab::ImportExport::ProjectRelationFactory+ class.
     def notes=(notes)
       notes.each do |note|
         note[:id] = nil
@@ -643,7 +660,7 @@ module Ci
 
         variables.concat(predefined_commit_variables)
 
-        if merge_request_event? && merge_request
+        if merge_request?
           variables.append(key: 'CI_MERGE_REQUEST_EVENT_TYPE', value: merge_request_event_type.to_s)
           variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)
           variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_SHA', value: target_sha.to_s)
@@ -701,7 +718,7 @@ module Ci
     # All the merge requests for which the current pipeline runs/ran against
     def all_merge_requests
       @all_merge_requests ||=
-        if merge_request_event?
+        if merge_request?
           MergeRequest.where(id: merge_request_id)
         else
           MergeRequest.where(source_project_id: project_id, source_branch: ref)
@@ -720,6 +737,21 @@ module Ci
       else
         [self.id]
       end
+    end
+
+    def update_bridge_status!
+      raise ArgumentError unless bridge_triggered?
+      raise BridgeStatusError unless source_bridge.active?
+
+      source_bridge.success!
+    end
+
+    def bridge_triggered?
+      source_bridge.present?
+    end
+
+    def bridge_waiting?
+      source_bridge&.dependent?
     end
 
     def child?
@@ -755,6 +787,12 @@ module Ci
       end
     end
 
+    def test_reports_count
+      Rails.cache.fetch(['project', project.id, 'pipeline', id, 'test_reports_count'], force: false) do
+        test_reports.total_count
+      end
+    end
+
     def has_exposed_artifacts?
       complete? && builds.latest.with_exposed_artifacts.exists?
     end
@@ -772,7 +810,7 @@ module Ci
     # * nil: Modified path can not be evaluated
     def modified_paths
       strong_memoize(:modified_paths) do
-        if merge_request_event?
+        if merge_request?
           merge_request.modified_paths
         elsif branch_updated?
           push_details.modified_paths
@@ -796,12 +834,12 @@ module Ci
       ref == project.default_branch
     end
 
-    def triggered_by_merge_request?
-      merge_request_event? && merge_request_id.present?
+    def merge_request?
+      merge_request_id.present?
     end
 
     def detached_merge_request_pipeline?
-      triggered_by_merge_request? && target_sha.nil?
+      merge_request? && target_sha.nil?
     end
 
     def legacy_detached_merge_request_pipeline?
@@ -809,7 +847,7 @@ module Ci
     end
 
     def merge_request_pipeline?
-      triggered_by_merge_request? && target_sha.present?
+      merge_request? && target_sha.present?
     end
 
     def merge_request_ref?
@@ -825,7 +863,7 @@ module Ci
     end
 
     def source_ref
-      if triggered_by_merge_request?
+      if merge_request?
         merge_request.source_branch
       else
         ref
@@ -845,7 +883,7 @@ module Ci
     end
 
     def merge_request_event_type
-      return unless merge_request_event?
+      return unless merge_request?
 
       strong_memoize(:merge_request_event_type) do
         if merge_request_pipeline?
@@ -864,6 +902,10 @@ module Ci
       statuses.latest.success.where(name: names).pluck(:id)
     end
 
+    def cacheable?
+      Ci::PipelineEnums.ci_config_sources.key?(config_source.to_sym)
+    end
+
     private
 
     def pipeline_data
@@ -878,7 +920,7 @@ module Ci
 
     def git_ref
       strong_memoize(:git_ref) do
-        if merge_request_event?
+        if merge_request?
           ##
           # In the future, we're going to change this ref to
           # merge request's merged reference, such as "refs/merge-requests/:iid/merge".

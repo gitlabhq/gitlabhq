@@ -66,11 +66,11 @@
 
     - if Feature.enabled?(:create_cloud_run_clusters, clusterable, default_enabled: true)
       .form-group
-        = provider_gcp_field.check_box :cloud_run, { label: s_('ClusterIntegration|Enable Cloud Run on GKE (beta)'),
+        = provider_gcp_field.check_box :cloud_run, { label: s_('ClusterIntegration|Enable Cloud Run for Anthos'),
           label_class: 'label-bold' }
         .form-text.text-muted
           = s_('ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster.')
-          = link_to _('More information'), help_page_path('user/project/clusters/index.md', anchor: 'cloud-run-on-gke'), target: '_blank'
+          = link_to _('More information'), help_page_path('user/project/clusters/add_remove_clusters.md', anchor: 'cloud-run-for-anthos'), target: '_blank'
 
   .form-group
     = field.check_box :managed, { label: s_('ClusterIntegration|GitLab-managed cluster'),
@@ -79,6 +79,6 @@
       = s_('ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster.')
       = link_to _('More information'), help_page_path('user/project/clusters/index.md', anchor: 'gitlab-managed-clusters'), target: '_blank'
 
-  .form-group
+  .form-group.js-gke-cluster-creation-submit-container
     = field.submit s_('ClusterIntegration|Create Kubernetes cluster'),
       class: 'js-gke-cluster-creation-submit btn btn-success', disabled: true

@@ -8,6 +8,7 @@ describe('Pipeline details header', () => {
   let props;
 
   beforeEach(() => {
+    spyOn(eventHub, '$emit');
     HeaderComponent = Vue.extend(headerComponent);
 
     const threeWeeksAgo = new Date();
@@ -33,8 +34,9 @@ describe('Pipeline details header', () => {
           email: 'foo@bar.com',
           avatar_url: 'link',
         },
-        retry_path: 'path',
-        delete_path: 'path',
+        retry_path: 'retry',
+        cancel_path: 'cancel',
+        delete_path: 'delete',
       },
       isLoading: false,
     };
@@ -43,8 +45,13 @@ describe('Pipeline details header', () => {
   });
 
   afterEach(() => {
+    eventHub.$off();
     vm.$destroy();
   });
+
+  const findDeleteModal = () => document.getElementById(headerComponent.DELETE_MODAL_ID);
+  const findDeleteModalSubmit = () =>
+    [...findDeleteModal().querySelectorAll('.btn')].find(x => x.textContent === 'Delete pipeline');
 
   it('should render provided pipeline info', () => {
     expect(
@@ -56,22 +63,46 @@ describe('Pipeline details header', () => {
   });
 
   describe('action buttons', () => {
-    it('should call postAction when retry button action is clicked', done => {
-      eventHub.$on('headerPostAction', action => {
-        expect(action.path).toEqual('path');
-        done();
-      });
-
-      vm.$el.querySelector('.js-retry-button').click();
+    it('should not trigger eventHub when nothing happens', () => {
+      expect(eventHub.$emit).not.toHaveBeenCalled();
     });
 
-    it('should fire modal event when delete button action is clicked', done => {
-      vm.$root.$on('bv::modal::show', action => {
-        expect(action.componentId).toEqual('pipeline-delete-modal');
-        done();
+    it('should call postAction when retry button action is clicked', () => {
+      vm.$el.querySelector('.js-retry-button').click();
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('headerPostAction', 'retry');
+    });
+
+    it('should call postAction when cancel button action is clicked', () => {
+      vm.$el.querySelector('.js-btn-cancel-pipeline').click();
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('headerPostAction', 'cancel');
+    });
+
+    it('does not show delete modal', () => {
+      expect(findDeleteModal()).not.toBeVisible();
+    });
+
+    describe('when delete button action is clicked', () => {
+      beforeEach(done => {
+        vm.$el.querySelector('.js-btn-delete-pipeline').click();
+
+        // Modal needs two ticks to show
+        vm.$nextTick()
+          .then(() => vm.$nextTick())
+          .then(done)
+          .catch(done.fail);
       });
 
-      vm.$el.querySelector('.js-btn-delete-pipeline').click();
+      it('should show delete modal', () => {
+        expect(findDeleteModal()).toBeVisible();
+      });
+
+      it('should call delete when modal is submitted', () => {
+        findDeleteModalSubmit().click();
+
+        expect(eventHub.$emit).toHaveBeenCalledWith('headerDeleteAction', 'delete');
+      });
     });
   });
 });

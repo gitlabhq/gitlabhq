@@ -26,7 +26,7 @@ Parameters:
 | `title`   | string | optional | Return only the milestones having the given `title` |
 | `search`  | string | optional | Return only milestones with a title or description matching the provided string |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/milestones
 ```
 
@@ -135,7 +135,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user
 - `milestone_id` (required) - The ID of a group milestone
 
-[ce-12819]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12819
+[ce-12819]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12819
 
 ## Get all burndown chart events for a single milestone **(STARTER)**
 

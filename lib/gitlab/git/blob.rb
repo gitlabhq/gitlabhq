@@ -5,6 +5,7 @@ module Gitlab
     class Blob
       include Gitlab::BlobHelper
       include Gitlab::EncodingHelper
+      include Gitlab::Metrics::Methods
       extend Gitlab::Git::WrapsGitalyErrors
 
       # This number is the maximum amount of data that we want to display to
@@ -13,6 +14,11 @@ module Gitlab
       # use load_all_data!.
       MAX_DATA_DISPLAY_SIZE = 10.megabytes
 
+      # The number of blobs loaded in a single Gitaly call
+      # When a large number of blobs requested, we'd want to fetch them in
+      # multiple Gitaly calls
+      BATCH_SIZE = 250
+
       # These limits are used as a heuristic to ignore files which can't be LFS
       # pointers. The format of these is described in
       # https://github.com/git-lfs/git-lfs/blob/master/docs/spec.md#the-pointer
@@ -20,6 +26,14 @@ module Gitlab
       LFS_POINTER_MAX_SIZE = 200.bytes
 
       attr_accessor :name, :path, :size, :data, :mode, :id, :commit_id, :loaded_size, :binary
+
+      define_counter :gitlab_blob_truncated_true do
+        docstring 'blob.truncated? == true'
+      end
+
+      define_counter :gitlab_blob_truncated_false do
+        docstring 'blob.truncated? == false'
+      end
 
       class << self
         def find(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
@@ -67,7 +81,13 @@ module Gitlab
         # to the caller to limit the number of blobs and blob_size_limit.
         #
         def batch(repository, blob_references, blob_size_limit: MAX_DATA_DISPLAY_SIZE)
-          repository.gitaly_blob_client.get_blobs(blob_references, blob_size_limit).to_a
+          if Feature.enabled?(:blobs_fetch_in_batches, default_enabled: true)
+            blob_references.each_slice(BATCH_SIZE).flat_map do |refs|
+              repository.gitaly_blob_client.get_blobs(refs, blob_size_limit).to_a
+            end
+          else
+            repository.gitaly_blob_client.get_blobs(blob_references, blob_size_limit).to_a
+          end
         end
 
         # Returns an array of Blob instances just with the metadata, that means
@@ -117,7 +137,7 @@ module Gitlab
       def load_all_data!(repository)
         return if @data == '' # don't mess with submodule blobs
 
-        # Even if we return early, recalculate wether this blob is binary in
+        # Even if we return early, recalculate whether this blob is binary in
         # case a blob was initialized as text but the full data isn't
         @binary = nil
 

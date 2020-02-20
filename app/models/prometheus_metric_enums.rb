@@ -9,7 +9,8 @@ module PrometheusMetricEnums
       aws_elb: -3,
       nginx: -4,
       kubernetes: -5,
-      nginx_ingress: -6
+      nginx_ingress: -6,
+      cluster_health: -100
     }.merge(custom_groups).freeze
   end
 
@@ -54,6 +55,11 @@ module PrometheusMetricEnums
         group_title: _('System metrics (Kubernetes)'),
         required_metrics: %w(container_memory_usage_bytes container_cpu_usage_seconds_total),
         priority: 5
+      }.freeze,
+      cluster_health: {
+        group_title: _('Cluster Health'),
+        required_metrics: %w(container_memory_usage_bytes container_cpu_usage_seconds_total),
+        priority: 10
       }.freeze
     }.merge(custom_group_details).freeze
   end
@@ -76,5 +82,3 @@ module PrometheusMetricEnums
     }.freeze
   end
 end
-
-PrometheusMetricEnums.prepend_if_ee('EE::PrometheusMetricEnums')

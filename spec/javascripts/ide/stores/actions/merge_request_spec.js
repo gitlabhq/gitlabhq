@@ -8,7 +8,7 @@ import actions, {
   openMergeRequest,
 } from '~/ide/stores/actions/merge_request';
 import service from '~/ide/services';
-import { activityBarViews } from '~/ide/constants';
+import { leftSidebarViews, PERMISSION_READ_MR } from '~/ide/constants';
 import { resetStore } from '../../helpers';
 
 const TEST_PROJECT = 'abcproject';
@@ -23,6 +23,9 @@ describe('IDE store merge request actions', () => {
     store.state.projects[TEST_PROJECT] = {
       id: TEST_PROJECT_ID,
       mergeRequests: {},
+      userPermissions: {
+        [PERMISSION_READ_MR]: true,
+      },
     };
   });
 
@@ -77,6 +80,19 @@ describe('IDE store merge request actions', () => {
               expect(store.state.currentMergeRequestId).toEqual('2');
               done();
             })
+            .catch(done.fail);
+        });
+
+        it('does nothing if user cannot read MRs', done => {
+          store.state.projects[TEST_PROJECT].userPermissions[PERMISSION_READ_MR] = false;
+
+          store
+            .dispatch('getMergeRequestsForBranch', { projectId: TEST_PROJECT, branchId: 'bar' })
+            .then(() => {
+              expect(service.getProjectMergeRequests).not.toHaveBeenCalled();
+              expect(store.state.currentMergeRequestId).toBe('');
+            })
+            .then(done)
             .catch(done.fail);
         });
       });
@@ -137,9 +153,7 @@ describe('IDE store merge request actions', () => {
         store
           .dispatch('getMergeRequestData', { projectId: TEST_PROJECT, mergeRequestId: 1 })
           .then(() => {
-            expect(service.getProjectMergeRequestData).toHaveBeenCalledWith(TEST_PROJECT, 1, {
-              render_html: true,
-            });
+            expect(service.getProjectMergeRequestData).toHaveBeenCalledWith(TEST_PROJECT, 1);
 
             done();
           })
@@ -180,7 +194,7 @@ describe('IDE store merge request actions', () => {
           .then(done.fail)
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occurred whilst loading the merge request.',
+              text: 'An error occurred while loading the merge request.',
               action: jasmine.any(Function),
               actionText: 'Please try again',
               actionPayload: {
@@ -253,7 +267,7 @@ describe('IDE store merge request actions', () => {
           .then(done.fail)
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occurred whilst loading the merge request changes.',
+              text: 'An error occurred while loading the merge request changes.',
               action: jasmine.any(Function),
               actionText: 'Please try again',
               actionPayload: {
@@ -323,7 +337,7 @@ describe('IDE store merge request actions', () => {
           .then(done.fail)
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occurred whilst loading the merge request version data.',
+              text: 'An error occurred while loading the merge request version data.',
               action: jasmine.any(Function),
               actionText: 'Please try again',
               actionPayload: {
@@ -456,7 +470,7 @@ describe('IDE store merge request actions', () => {
         .then(() => {
           expect(store.dispatch).toHaveBeenCalledWith(
             'updateActivityBarView',
-            activityBarViews.review,
+            leftSidebarViews.review.name,
           );
 
           testMergeRequestChanges.changes.forEach((change, i) => {

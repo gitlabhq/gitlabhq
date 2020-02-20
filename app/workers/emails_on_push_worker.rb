@@ -8,6 +8,7 @@ class EmailsOnPushWorker
   feature_category :source_code_management
   latency_sensitive_worker!
   worker_resource_boundary :cpu
+  weight 2
 
   def perform(project_id, recipients, push_data, options = {})
     options.symbolize_keys!

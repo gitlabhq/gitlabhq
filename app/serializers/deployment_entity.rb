@@ -41,7 +41,11 @@ class DeploymentEntity < Grape::Entity
     JobEntity.represent(deployment.playable_build, options.merge(only: [:play_path, :retry_path]))
   end
 
-  expose :cluster, using: ClusterBasicEntity
+  expose :cluster do |deployment, options|
+    # Until data is copied over from deployments.cluster_id, this entity must represent Deployment instead of DeploymentCluster
+    # https://gitlab.com/gitlab-org/gitlab/issues/202628
+    DeploymentClusterEntity.represent(deployment, options) unless deployment.cluster.nil?
+  end
 
   private
 

@@ -6,6 +6,7 @@ class PostReceive
   feature_category :source_code_management
   latency_sensitive_worker!
   worker_resource_boundary :cpu
+  weight 5
 
   def perform(gl_repository, identifier, changes, push_options = {})
     project, repo_type = Gitlab::GlRepository.parse(gl_repository)

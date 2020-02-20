@@ -397,7 +397,7 @@ describe Gitlab::Shell do
   describe 'namespace actions' do
     subject { described_class.new }
 
-    let(:storage) { Gitlab.config.repositories.storages.keys.first }
+    let(:storage) { Gitlab.config.repositories.storages.each_key.first }
 
     describe '#add_namespace' do
       it 'creates a namespace' do

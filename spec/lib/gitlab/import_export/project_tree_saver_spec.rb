@@ -334,8 +334,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
   end
 
   def setup_project
-    issue = create(:issue, assignees: [user])
-    snippet = create(:project_snippet)
     release = create(:release)
     group = create(:group)
 
@@ -346,12 +344,14 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
                      :wiki_enabled,
                      :builds_private,
                      description: 'description',
-                     issues: [issue],
-                     snippets: [snippet],
                      releases: [release],
                      group: group,
                      approvals_before_merge: 1
                     )
+    allow(project).to receive(:commit).and_return(Commit.new(RepoHelpers.sample_commit, project))
+
+    issue = create(:issue, assignees: [user], project: project)
+    snippet = create(:project_snippet, project: project)
     project_label = create(:label, project: project)
     group_label = create(:group_label, group: group)
     create(:label_link, label: project_label, target: issue)

@@ -120,14 +120,5 @@ describe('DiscussionActions', () => {
         .trigger('click');
       expect(wrapper.vm.$emit).toHaveBeenCalledWith('resolve');
     });
-
-    it('emits jumpToNextDiscussion event when clicking on jump to next discussion button', () => {
-      jest.spyOn(wrapper.vm, '$emit');
-      wrapper
-        .find(JumpToNextDiscussionButton)
-        .find('button')
-        .trigger('click');
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('jumpToNextDiscussion');
-    });
   });
 });

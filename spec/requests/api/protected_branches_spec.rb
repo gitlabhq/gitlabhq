@@ -12,18 +12,18 @@ describe API::ProtectedBranches do
   end
 
   describe "GET /projects/:id/protected_branches" do
+    let(:params) { {} }
     let(:route) { "/projects/#{project.id}/protected_branches" }
 
     shared_examples_for 'protected branches' do
       it 'returns the protected branches' do
-        get api(route, user), params: { per_page: 100 }
+        get api(route, user), params: params.merge(per_page: 100)
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
 
         protected_branch_names = json_response.map { |x| x['name'] }
-        expected_branch_names = project.protected_branches.map { |x| x['name'] }
         expect(protected_branch_names).to match_array(expected_branch_names)
       end
     end
@@ -33,7 +33,19 @@ describe API::ProtectedBranches do
         project.add_maintainer(user)
       end
 
-      it_behaves_like 'protected branches'
+      context 'when search param is not present' do
+        it_behaves_like 'protected branches' do
+          let(:expected_branch_names) { project.protected_branches.map { |x| x['name'] } }
+        end
+      end
+
+      context 'when search param is present' do
+        it_behaves_like 'protected branches' do
+          let(:another_protected_branch) { create(:protected_branch, project: project, name: 'stable') }
+          let(:params) { { search: another_protected_branch.name } }
+          let(:expected_branch_names) { [another_protected_branch.name] }
+        end
+      end
     end
 
     context 'when authenticated as a guest' do

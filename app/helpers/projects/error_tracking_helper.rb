@@ -22,8 +22,6 @@ module Projects::ErrorTrackingHelper
     {
       'issue-id' => issue_id,
       'project-path' => project.full_path,
-      'list-path' => project_error_tracking_index_path(project),
-      'issue-details-path' => details_project_error_tracking_index_path(*opts),
       'issue-update-path' => update_project_error_tracking_index_path(*opts),
       'project-issues-path' => project_issues_path(project),
       'issue-stack-trace-path' => stack_trace_project_error_tracking_index_path(*opts)

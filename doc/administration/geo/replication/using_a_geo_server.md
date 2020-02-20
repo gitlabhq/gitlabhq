@@ -4,11 +4,11 @@
 
 After you set up the [database replication and configure the Geo nodes][req], use your closest GitLab node as you would a normal standalone GitLab instance.
 
-Pushing directly to a **secondary** node (for both HTTP, SSH including Git LFS) was [introduced](https://about.gitlab.com/blog/2018/09/22/gitlab-11-3-released/) in [GitLab Premium](https://about.gitlab.com/pricing/#self-managed) 11.3.
+Pushing directly to a **secondary** node (for both HTTP, SSH including Git LFS) was [introduced](https://about.gitlab.com/releases/2018/09/22/gitlab-11-3-released/) in [GitLab Premium](https://about.gitlab.com/pricing/#self-managed) 11.3.
 
 Example of the output you will see when pushing to a **secondary** node:
 
-```bash
+```shell
 $ git push
 remote:
 remote: You're pushing to a Geo secondary. We'll help you by proxying this

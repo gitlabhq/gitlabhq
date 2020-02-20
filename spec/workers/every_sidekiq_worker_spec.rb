@@ -3,8 +3,12 @@
 require 'spec_helper'
 
 describe 'Every Sidekiq worker' do
+  let(:workers_without_defaults) do
+    Gitlab::SidekiqConfig.workers - Gitlab::SidekiqConfig::DEFAULT_WORKERS
+  end
+
   it 'does not use the default queue' do
-    expect(Gitlab::SidekiqConfig.workers.map(&:queue)).not_to include('default')
+    expect(workers_without_defaults.map(&:queue)).not_to include('default')
   end
 
   it 'uses the cronjob queue when the worker runs as a cronjob' do
@@ -45,7 +49,7 @@ describe 'Every Sidekiq worker' do
     # or explicitly be excluded with the `feature_category_not_owned!` annotation.
     # Please see doc/development/sidekiq_style_guide.md#Feature-Categorization for more details.
     it 'has a feature_category or feature_category_not_owned! attribute', :aggregate_failures do
-      Gitlab::SidekiqConfig.workers.each do |worker|
+      workers_without_defaults.each do |worker|
         expect(worker.get_feature_category).to be_a(Symbol), "expected #{worker.inspect} to declare a feature_category or feature_category_not_owned!"
       end
     end
@@ -54,7 +58,7 @@ describe 'Every Sidekiq worker' do
     # The category should match a value in `config/feature_categories.yml`.
     # Please see doc/development/sidekiq_style_guide.md#Feature-Categorization for more details.
     it 'has a feature_category that maps to a value in feature_categories.yml', :aggregate_failures do
-      workers_with_feature_categories = Gitlab::SidekiqConfig.workers
+      workers_with_feature_categories = workers_without_defaults
                   .select(&:get_feature_category)
                   .reject(&:feature_category_not_owned?)
 
@@ -69,7 +73,7 @@ describe 'Every Sidekiq worker' do
     # rather than scaling the hardware to meet the SLO. For this reason, memory-bound,
     # latency-sensitive jobs are explicitly discouraged and disabled.
     it 'is (exclusively) memory-bound or latency-sentitive, not both', :aggregate_failures do
-      latency_sensitive_workers = Gitlab::SidekiqConfig.workers
+      latency_sensitive_workers = workers_without_defaults
                   .select(&:latency_sensitive_worker?)
 
       latency_sensitive_workers.each do |worker|
@@ -86,7 +90,7 @@ describe 'Every Sidekiq worker' do
     # Please see doc/development/sidekiq_style_guide.md#Jobs-with-External-Dependencies for more
     # details.
     it 'has (exclusively) external dependencies or is latency-sentitive, not both', :aggregate_failures do
-      latency_sensitive_workers = Gitlab::SidekiqConfig.workers
+      latency_sensitive_workers = workers_without_defaults
                   .select(&:latency_sensitive_worker?)
 
       latency_sensitive_workers.each do |worker|

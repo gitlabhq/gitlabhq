@@ -24,7 +24,7 @@ are paginated.
 
 Read more on [pagination](README.md#pagination).
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/audit_events
 ```
 
@@ -91,7 +91,7 @@ Example response:
 GET /audit_events/:id
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/audit_events/1
 ```
 
@@ -120,7 +120,7 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34078) in GitLab 12.5.
 
-The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.html#group-events-starter).
+The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events-starter).
 
 To retrieve group audit events using the API, you must [authenticate yourself](README.html#authentication) as an Administrator or an owner of the group.
 
@@ -141,7 +141,7 @@ are paginated.
 
 Read more on [pagination](README.md#pagination).
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/groups/60/audit_events
 ```
 
@@ -197,7 +197,7 @@ GET /groups/:id/audit_events/:audit_event_id
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `audit_event_id` | integer | yes | ID of the audit event |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://primary.example.com/api/v4/groups/60/audit_events/2
 ```
 

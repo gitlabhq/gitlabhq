@@ -44,6 +44,21 @@ describe Projects::MergeRequestsController do
       get :show, params: params.merge(extra_params)
     end
 
+    context 'when merge request is unchecked' do
+      before do
+        merge_request.mark_as_unchecked!
+      end
+
+      it 'checks mergeability asynchronously' do
+        expect_next_instance_of(MergeRequests::MergeabilityCheckService) do |service|
+          expect(service).not_to receive(:execute)
+          expect(service).to receive(:async_execute)
+        end
+
+        go
+      end
+    end
+
     describe 'as html' do
       context 'when diff files were cleaned' do
         render_views
@@ -98,7 +113,7 @@ describe Projects::MergeRequestsController do
               }
 
           expect(response).to redirect_to(project_merge_request_path(new_project, merge_request))
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
 
         it 'redirects from an old merge request commits correctly' do
@@ -110,7 +125,7 @@ describe Projects::MergeRequestsController do
               }
 
           expect(response).to redirect_to(commits_project_merge_request_path(new_project, merge_request))
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
       end
     end
@@ -214,7 +229,7 @@ describe Projects::MergeRequestsController do
         get_merge_requests(last_page)
 
         expect(assigns(:merge_requests).current_page).to eq(last_page)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'does not redirect to external sites when provided a host field' do
@@ -291,7 +306,7 @@ describe Projects::MergeRequestsController do
       it 'responds with 404' do
         update_merge_request(title: 'New title')
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -366,7 +381,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'returns 404' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -600,7 +615,7 @@ describe Projects::MergeRequestsController do
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     context "when the user is owner" do
@@ -615,7 +630,7 @@ describe Projects::MergeRequestsController do
       it "deletes the merge request" do
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid, destroy_confirm: true }
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./)
       end
 
@@ -624,7 +639,7 @@ describe Projects::MergeRequestsController do
 
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(controller).to set_flash[:notice].to('Destroy confirmation not provided for merge request')
       end
 
@@ -633,7 +648,7 @@ describe Projects::MergeRequestsController do
 
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid, format: 'json' }
 
-        expect(response).to have_gitlab_http_status(422)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response).to eq({ 'errors' => 'Destroy confirmation not provided for merge request' })
       end
 
@@ -776,6 +791,21 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'GET context commits' do
+    it 'returns the commits for context commits' do
+      get :context_commits,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid
+        },
+        format: 'json'
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response).to be_an Array
+    end
+  end
+
   describe 'GET exposed_artifacts' do
     let(:merge_request) do
       create(:merge_request,
@@ -827,7 +857,7 @@ describe Projects::MergeRequestsController do
         it 'responds with a 404' do
           subject
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
           expect(response.body).to be_blank
         end
       end
@@ -840,7 +870,7 @@ describe Projects::MergeRequestsController do
         it 'responds with a 404' do
           subject
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
           expect(response.body).to be_blank
         end
       end
@@ -883,7 +913,7 @@ describe Projects::MergeRequestsController do
         it 'returns exposed artifacts' do
           subject
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['status']).to eq('parsed')
           expect(json_response['data']).to eq([{
             'job_name' => 'test',
@@ -936,7 +966,7 @@ describe Projects::MergeRequestsController do
       it 'returns no content' do
         subject
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
         expect(response.body).to be_empty
       end
     end
@@ -983,7 +1013,7 @@ describe Projects::MergeRequestsController do
         it 'responds with a 404' do
           subject
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
           expect(response.body).to be_blank
         end
       end
@@ -996,7 +1026,7 @@ describe Projects::MergeRequestsController do
         it 'responds with a 404' do
           subject
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
           expect(response.body).to be_blank
         end
       end

@@ -23,7 +23,7 @@ requiring a single keyword to enable the feature for any job.
 
 Consider a monorepo as follows:
 
-```
+```plaintext
 ./service_a
 ./service_b
 ./service_c

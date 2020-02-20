@@ -40,7 +40,7 @@ of possible security breaches in our code:
 - SQL injections
 
 Remember to run
-[SAST](../../user/application_security/sast/index.md)
+[SAST](../../user/application_security/sast/index.md) and [Dependency Scanning](../../user/application_security/dependency_scanning/index.md)
 **(ULTIMATE)** on your project (or at least the [gosec
 analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
 and to follow our [Security
@@ -52,9 +52,9 @@ Web servers can take advantages of middlewares like [Secure](https://github.com/
 
 Many of our projects are too small to have full-time maintainers. That's why we
 have a shared pool of Go reviewers at GitLab. To find a reviewer, use the
-[Engineering Projects](https://about.gitlab.com/handbook/engineering/projects/)
-page in the handbook. "GitLab Community Edition (CE)" and "GitLab Community
-Edition (EE)" both have a "Go" section with its list of reviewers.
+["Go" section](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_go)
+of the "GitLab" project on the Engineering Projects
+page in the handbook.
 
 To add yourself to this list, add the following to your profile in the
 [team.yml](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/team.yml)
@@ -72,6 +72,7 @@ projects:
   effects if the package is included multiple times.
 - Use `go fmt` before committing ([Gofmt](https://golang.org/cmd/gofmt/) is a
   tool that automatically formats Go source code).
+- Place private methods below the first caller method in the source file.
 
 ### Automatic linting
 
@@ -188,9 +189,9 @@ code readability and test output.
 ### Better output in tests
 
 When comparing expected and actual values in tests, use
-[testify/require.Equal](https://godoc.org/github.com/stretchr/testify/require#Equal),
-[testify/require.EqualError](https://godoc.org/github.com/stretchr/testify/require#EqualError),
-[testify/require.EqualValues](https://godoc.org/github.com/stretchr/testify/require#EqualValues),
+[`testify/require.Equal`](https://godoc.org/github.com/stretchr/testify/require#Equal),
+[`testify/require.EqualError`](https://godoc.org/github.com/stretchr/testify/require#EqualError),
+[`testify/require.EqualValues`](https://godoc.org/github.com/stretchr/testify/require#EqualValues),
 and others to improve readability when comparing structs, errors,
 large portions of text, or JSON documents:
 
@@ -302,7 +303,7 @@ There are a few guidelines one should follow when using the
   fields in the context of that code path, such as the URI of the request using
   [`WithField`](https://godoc.org/github.com/sirupsen/logrus#WithField) or
   [`WithFields`](https://godoc.org/github.com/sirupsen/logrus#WithFields). For
-  example, `logrus.WithField("file", "/app/go).Info("Opening dir")`. If you
+  example, `logrus.WithField("file", "/app/go").Info("Opening dir")`. If you
   have to log multiple keys, always use `WithFields` instead of calling
   `WithField` more than once.
 
@@ -385,7 +386,7 @@ are:
    updating the `GO_VERSION` in `ci_files/variables.yml`.
 - Create a merge request in the [`gitlab-omnibus-builder` project](https://gitlab.com/gitlab-org/gitlab-omnibus-builder),
    updating every file in the `docker/` directory so the `GO_VERSION` is set
-   appropriately. [Here's an example](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/merge_requests/125/diffs).
+   appropriately. [Here's an example](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/125/diffs).
 - Tag a new release of `gitlab-omnibus-builder` containing the change.
 - [Create a merge request in the `gitlab-omnibus` project](https://gitlab.com/gitlab-org/omnibus-gitlab/edit/master/.gitlab-ci.yml?branch_name=update-gitlab-omnibus-builder-version),
    updating the `BUILDER_IMAGE_REVISION` to match the newly-created tag.

@@ -9,7 +9,7 @@ describe Gitlab::ImportExport::HashUtil do
   describe '.deep_symbolize_array!' do
     it 'symbolizes keys' do
       expect { described_class.deep_symbolize_array!(stringified_array) }.to change {
-        stringified_array.first.keys.first
+        stringified_array.first.each_key.first
       }.from('test').to(:test)
     end
   end
@@ -17,13 +17,13 @@ describe Gitlab::ImportExport::HashUtil do
   describe '.deep_symbolize_array_with_date!' do
     it 'symbolizes keys' do
       expect { described_class.deep_symbolize_array_with_date!(stringified_array_with_date) }.to change {
-        stringified_array_with_date.first.keys.first
+        stringified_array_with_date.first.each_key.first
       }.from('test_date').to(:test_date)
     end
 
     it 'transforms date strings into Time objects' do
       expect { described_class.deep_symbolize_array_with_date!(stringified_array_with_date) }.to change {
-        stringified_array_with_date.first.values.first.class
+        stringified_array_with_date.first.each_value.first.class
       }.from(String).to(ActiveSupport::TimeWithZone)
     end
   end

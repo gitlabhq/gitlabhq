@@ -20,19 +20,19 @@ Debian/Ubuntu:
 
 1. Search for the version:
 
-   ```bash
+   ```shell
    apt-cache madison pgloader
    ```
 
 1. If the version is 3.4.1+, install it with:
 
-   ```bash
+   ```shell
    sudo apt-get install pgloader
    ```
 
    If your distribution's version is too old, use PostgreSQL's repository:
 
-   ```bash
+   ```shell
    # Add repository
    sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 
@@ -72,7 +72,7 @@ need to enable the bundled PostgreSQL:
 
 1. Stop GitLab:
 
-   ```bash
+   ```shell
    sudo gitlab-ctl stop
    ```
 
@@ -91,20 +91,20 @@ need to enable the bundled PostgreSQL:
    for the changes to take effect.
 1. Start Unicorn and PostgreSQL so that we can prepare the schema:
 
-   ```bash
+   ```shell
    sudo gitlab-ctl start unicorn
    sudo gitlab-ctl start postgresql
    ```
 
 1. Run the following commands to prepare the schema:
 
-   ```bash
+   ```shell
    sudo gitlab-rake db:create db:migrate
    ```
 
 1. Stop Unicorn to prevent other database access from interfering with the loading of data:
 
-   ```bash
+   ```shell
    sudo gitlab-ctl stop unicorn
    ```
 
@@ -136,7 +136,7 @@ new PostgreSQL one:
 
 1. Start the migration:
 
-   ```bash
+   ```shell
    sudo -u gitlab-psql pgloader commands.load
    ```
 
@@ -168,7 +168,7 @@ new PostgreSQL one:
 
 1. Start GitLab:
 
-   ```bash
+   ```shell
    sudo gitlab-ctl start
    ```
 
@@ -183,13 +183,13 @@ After the database is created, go on with the following steps:
 
 1. Stop GitLab:
 
-   ```bash
+   ```shell
    sudo service gitlab stop
    ```
 
 1. Switch database from MySQL to PostgreSQL
 
-   ```bash
+   ```shell
    cd /home/git/gitlab
    sudo -u git mv config/database.yml config/database.yml.bak
    sudo -u git cp config/database.yml.postgresql config/database.yml
@@ -198,14 +198,14 @@ After the database is created, go on with the following steps:
 
 1. Install Gems related to PostgreSQL
 
-   ```bash
+   ```shell
    sudo -u git -H rm .bundle/config
    sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
    ```
 
 1. Run the following commands to prepare the schema:
 
-   ```bash
+   ```shell
    sudo -u git -H bundle exec rake db:create db:migrate RAILS_ENV=production
    ```
 
@@ -237,7 +237,7 @@ new PostgreSQL one:
 
 1. Start the migration:
 
-   ```bash
+   ```shell
    sudo -u postgres pgloader commands.load
    ```
 
@@ -269,7 +269,7 @@ new PostgreSQL one:
 
 1. Start GitLab:
 
-   ```bash
+   ```shell
    sudo service gitlab start
    ```
 
@@ -297,7 +297,7 @@ debugger invoked on a CL-POSTGRES-ERROR:INSUFFICIENT-PRIVILEGE in thread
 
 If you experience 500 errors after the migration, try to clear the cache:
 
-```bash
+```shell
 # Omnibus GitLab
 sudo gitlab-rake cache:clear
 

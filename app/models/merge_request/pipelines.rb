@@ -61,6 +61,8 @@ class MergeRequest::Pipelines
     pipelines.joins(shas_table)
   end
 
+  # NOTE: this method returns only parent merge request pipelines.
+  # Child merge request pipelines have a different source.
   def triggered_by_merge_request
     source_project.ci_pipelines
       .where(source: :merge_request_event, merge_request: merge_request)

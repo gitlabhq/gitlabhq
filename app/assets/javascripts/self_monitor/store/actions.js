@@ -52,7 +52,7 @@ export const requestCreateProjectStatus = ({ dispatch, state }, jobId) => {
     });
 };
 
-export const requestCreateProjectSuccess = ({ commit }, selfMonitorData) => {
+export const requestCreateProjectSuccess = ({ commit, dispatch }, selfMonitorData) => {
   commit(types.SET_LOADING, false);
   commit(types.SET_PROJECT_URL, selfMonitorData.project_full_path);
   commit(types.SET_ALERT_CONTENT, {
@@ -62,6 +62,7 @@ export const requestCreateProjectSuccess = ({ commit }, selfMonitorData) => {
   });
   commit(types.SET_SHOW_ALERT, true);
   commit(types.SET_PROJECT_CREATED, true);
+  dispatch('setSelfMonitor', true);
 };
 
 export const requestCreateProjectError = ({ commit }, error) => {

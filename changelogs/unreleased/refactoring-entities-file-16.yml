@@ -1,0 +1,5 @@
+---
+title: Separate service entities into own class files
+merge_request: 24936
+author: Rajendra Kadam
+type: added

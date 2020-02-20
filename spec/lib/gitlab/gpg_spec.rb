@@ -208,15 +208,15 @@ describe Gitlab::Gpg do
         allow(FileUtils).to receive(:remove_entry).with(any_args).and_call_original
       end
 
-      it "tries for #{seconds}" do
-        expect(Retriable).to receive(:retriable).with(a_hash_including(max_elapsed_time: seconds))
+      it "tries for #{seconds} or 15 times" do
+        expect(Retriable).to receive(:retriable).with(a_hash_including(max_elapsed_time: seconds, tries: 15))
 
         described_class.using_tmp_keychain {}
       end
 
       it 'tries at least 2 times to remove the tmp dir before raising', :aggregate_failures do
-        expect(Retriable).to receive(:sleep).at_least(2).times
-        expect(FileUtils).to receive(:remove_entry).with(tmp_dir).at_least(2).times.and_raise('Deletion failed')
+        expect(Retriable).to receive(:sleep).at_least(:twice)
+        expect(FileUtils).to receive(:remove_entry).with(tmp_dir).at_least(:twice).and_raise('Deletion failed')
 
         expect { described_class.using_tmp_keychain { } }.to raise_error(described_class::CleanupError)
       end

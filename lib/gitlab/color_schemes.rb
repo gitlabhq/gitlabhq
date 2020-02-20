@@ -66,5 +66,9 @@ module Gitlab
         default
       end
     end
+
+    def self.valid_ids
+      SCHEMES.map(&:id)
+    end
   end
 end

@@ -4,7 +4,7 @@ import ConfidentialIssueSidebar from '~/sidebar/components/confidential/confiden
 import EditForm from '~/sidebar/components/confidential/edit_form.vue';
 import SidebarService from '~/sidebar/services/sidebar_service';
 import createFlash from '~/flash';
-import RecaptchaModal from '~/vue_shared/components/recaptcha_modal';
+import RecaptchaModal from '~/vue_shared/components/recaptcha_modal.vue';
 
 jest.mock('~/flash');
 jest.mock('~/sidebar/services/sidebar_service');

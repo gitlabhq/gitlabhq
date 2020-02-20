@@ -44,7 +44,7 @@ export default {
       :action="action"
     />
     <li v-if="hasMoreChildren" class="group-row">
-      <a :href="parentGroup.relativePath" class="group-row-contents has-more-items">
+      <a :href="parentGroup.relativePath" class="group-row-contents has-more-items py-2">
         <i class="fa fa-external-link" aria-hidden="true"> </i> {{ moreChildrenStats }}
       </a>
     </li>

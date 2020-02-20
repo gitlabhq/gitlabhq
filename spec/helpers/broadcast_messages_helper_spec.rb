@@ -3,6 +3,29 @@
 require 'spec_helper'
 
 describe BroadcastMessagesHelper do
+  describe 'current_broadcast_notification_message' do
+    subject { helper.current_broadcast_notification_message }
+
+    context 'with available broadcast notification messages' do
+      let!(:broadcast_message_1) { create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now - 1.day) }
+      let!(:broadcast_message_2) { create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now) }
+
+      it { is_expected.to eq broadcast_message_2 }
+
+      context 'when last broadcast message is hidden' do
+        before do
+          helper.request.cookies["hide_broadcast_notification_message_#{broadcast_message_2.id}"] = 'true'
+        end
+
+        it { is_expected.to eq broadcast_message_1 }
+      end
+    end
+
+    context 'without broadcast notification messages' do
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe 'broadcast_message' do
     let(:current_broadcast_message) { BroadcastMessage.new(message: 'Current Message') }
 

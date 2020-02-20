@@ -163,6 +163,24 @@ If you change your mind before your request is approved, just click the
 
 ![Withdraw access request button](img/withdraw_access_request_button.png)
 
+## Changing the owner of a group
+
+Ownership of a group means at least one of its members has
+[Owner permission](../permissions.md#group-members-permissions). Groups must have at
+least one owner.
+
+Changing the owner of a group with only one owner is possible. To change the sole owner
+of a group:
+
+- As an administrator:
+  1. Go to the group's **{users}** **Members** tab.
+  1. Give a different member **Owner** permissions.
+  1. Refresh the page. You can now remove **Owner** permissions from the original owner.
+- As the current group's owner:
+  1. Go to the group's **{users}** **Members** tab.
+  1. Give a different member **Owner** permissions.
+  1. Have the new owner sign in and remove **Owner** permissions from you.
+
 ## Add projects to a group
 
 There are two different ways to add a new project to a group:
@@ -180,7 +198,7 @@ There are two different ways to add a new project to a group:
 
 > - [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
 > - Brought to [GitLab Starter][ee] in 10.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
 
 By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group.
 
@@ -193,6 +211,25 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
 
+## Viewing group activity
+
+A group's **Activity** page displays the most recent actions taken in a group, including:
+
+- **Push events**: Recent pushes to branches
+- **Merge events**: Recent merges
+- **Issue events**: Issues opened or closed
+- **Epic events**: Epics opened or closed
+- **Comments**: Comments opened or closed
+- **Team**: Team members who have joined or left the group
+
+The entire activity feed is also available in Atom format by clicking the
+**RSS** icon.
+
+To view a group's **Activity** page:
+
+1. Go to the group's page.
+1. In the left navigation menu, go to **Group Overview** and select **Activity**.
+
 ## Transfer projects into groups
 
 Learn how to [transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).
@@ -204,9 +241,10 @@ and give all group members access to the project at once.
 
 Alternatively, you can [lock the sharing with group feature](#share-with-group-lock).
 
-## Sharing a group with another group
+## Sharing a group with another group **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18328) in GitLab 12.7.
+> This feature has been [disabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/issues/1635).
 
 Similarly to [sharing a project with a group](#sharing-a-project-with-a-group),
 you can share a group with another group to give direct group members access
@@ -313,6 +351,30 @@ TIP: **TIP:**
 If you want to retain ownership over the original namespace and
 protect the URL redirects, then instead of changing a group's path or renaming a
 username, you can create a new group and transfer projects to it.
+
+### Remove a group
+
+To remove a group and its contents:
+
+1. Navigate to your group's **{settings}** **Settings > General** page.
+1. Expand the **Path, transfer, remove** section.
+1. In the Remove group section, click the **Remove group** button.
+1. Confirm the action when asked to.
+
+This action either:
+
+- Removes the group, and also queues a background job to delete all projects in that group.
+- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/premium/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+
+### Restore a group **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/33257) in GitLab 12.8.
+
+To restore a group that is marked for deletion:
+
+1. Navigate to your group's **{settings}** **Settings > General** page.
+1. Expand the **Path, transfer, remove** section.
+1. In the Restore group section, click the **Restore group** button.
 
 #### Enforce 2FA to group members
 
@@ -479,7 +541,7 @@ To enable this feature:
 
 #### Storage usage quota **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/13294) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/13294) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
 
 A group owner can check the aggregated storage usage for all the projects in a group, sub-groups included, in the **Storage** tab of the **Usage Quotas** page available to the group page settings list.
 

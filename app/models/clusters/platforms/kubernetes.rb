@@ -92,7 +92,10 @@ module Clusters
       def calculate_reactive_cache_for(environment)
         return unless enabled?
 
-        { pods: read_pods(environment.deployment_namespace) }
+        pods = read_pods(environment.deployment_namespace)
+
+        # extract_relevant_pod_data avoids uploading all the pod info into ReactiveCaching
+        { pods: extract_relevant_pod_data(pods) }
       end
 
       def terminals(environment, data)
@@ -202,6 +205,21 @@ module Clusters
 
       def nullify_blank_namespace
         self.namespace = nil if namespace.blank?
+      end
+
+      def extract_relevant_pod_data(pods)
+        pods.map do |pod|
+          {
+            'metadata' => pod.fetch('metadata', {})
+                             .slice('name', 'generateName', 'labels', 'annotations', 'creationTimestamp'),
+            'status' => pod.fetch('status', {}).slice('phase'),
+            'spec' => {
+              'containers' => pod.fetch('spec', {})
+                                 .fetch('containers', [])
+                                 .map { |c| c.slice('name') }
+            }
+          }
+        end
       end
     end
   end

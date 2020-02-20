@@ -1,4 +1,4 @@
-# Epics API **(ULTIMATE)**
+# Epics API **(PREMIUM)**
 
 Every API call to epic must be authenticated.
 
@@ -31,7 +31,7 @@ Read more on [pagination](README.md#pagination).
 
 CAUTION: **Deprecation**
 > `reference` attribute in response is deprecated in favour of `references`.
-> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/merge_requests/20354)
+> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)
 
 NOTE: **Note**
 > `references.relative` is relative to the group that the epic is being requested. When epic is fetched from its origin group
@@ -53,7 +53,7 @@ GET /groups/:id/epics?state=opened
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user               |
 | `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                 |
 | `labels`            | string           | no         | Return epics matching a comma separated list of labels names. Label names from the epic group or a parent group can be used |
-| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413)|
+| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413)|
 | `order_by`          | string           | no         | Return epics ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
 | `sort`              | string           | no         | Return epics sorted in `asc` or `desc` order. Default is `desc`                                                             |
 | `search`            | string           | no         | Search epics against their `title` and `description`                                                                        |
@@ -65,7 +65,7 @@ GET /groups/:id/epics?state=opened
 | `include_ancestor_groups` | boolean    | no         | Include epics from the requested group's ancestors. Default is `false`                                                      |
 | `include_descendant_groups` | boolean  | no         | Include epics from the requested group's descendants. Default is `true`                                                     |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics
 ```
 
@@ -169,7 +169,7 @@ GET /groups/:id/epics/:epic_iid
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
 | `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5
 ```
 
@@ -244,7 +244,7 @@ POST /groups/:id/epics
 | `due_date_fixed`    | string           | no         | The fixed due date of an epic (since 11.3) |
 | `parent_id`         | integer/string   | no         | The id of a parent epic (since 11.11) |
 
-```bash
+```shell
 curl --header POST "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics?title=Epic&description=Epic%20description
 ```
 
@@ -319,7 +319,7 @@ PUT /groups/:id/epics/:epic_iid
 | `due_date_fixed`    | string           | no         | The fixed due date of an epic (since 11.3) |
 | `state_event`       | string           | no         | State event for an epic. Set `close` to close the epic and `reopen` to reopen it (since 11.4) |
 
-```bash
+```shell
 curl --header PUT "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title
 ```
 
@@ -381,7 +381,7 @@ DELETE /groups/:id/epics/:epic_iid
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
 | `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
 
-```bash
+```shell
 curl --header DELETE "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5
 ```
 
@@ -400,7 +400,7 @@ POST /groups/:id/epics/:epic_iid/todo
 | `id`        | integer/string | yes   | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `epic_iid` | integer | yes          | The internal ID of a group's epic |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5/todo
 ```
 
@@ -461,4 +461,4 @@ Example response:
 }
 ```
 
-[ee-6448]: https://gitlab.com/gitlab-org/gitlab/merge_requests/6448
+[ee-6448]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448

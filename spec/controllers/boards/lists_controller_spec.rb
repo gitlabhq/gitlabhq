@@ -21,7 +21,7 @@ describe Boards::ListsController do
     it 'returns a successful 200 response' do
       read_board_list user: user, board: board
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response.content_type).to eq 'application/json'
     end
 
@@ -50,7 +50,7 @@ describe Boards::ListsController do
       it 'returns a forbidden 403 response' do
         read_board_list user: unauth_user, board: board
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -73,7 +73,7 @@ describe Boards::ListsController do
       it 'returns a successful 200 response' do
         create_board_list user: user, board: board, label_id: label.id
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'returns the created list' do
@@ -88,7 +88,7 @@ describe Boards::ListsController do
         it 'returns a not found 404 response' do
           create_board_list user: user, board: board, label_id: nil
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -98,7 +98,7 @@ describe Boards::ListsController do
 
           create_board_list user: user, board: board, label_id: label.id
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -109,7 +109,7 @@ describe Boards::ListsController do
 
         create_board_list user: guest, board: board, label_id: label.id
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -134,7 +134,7 @@ describe Boards::ListsController do
       it 'returns a successful 200 response' do
         move user: user, board: board, list: planning, position: 1
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'moves the list to the desired position' do
@@ -148,7 +148,7 @@ describe Boards::ListsController do
       it 'returns an unprocessable entity 422 response' do
         move user: user, board: board, list: planning, position: 6
 
-        expect(response).to have_gitlab_http_status(422)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
 
@@ -156,7 +156,7 @@ describe Boards::ListsController do
       it 'returns a not found 404 response' do
         move user: user, board: board, list: 999, position: 1
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -164,7 +164,7 @@ describe Boards::ListsController do
       it 'returns a 422 unprocessable entity response' do
         move user: guest, board: board, list: planning, position: 6
 
-        expect(response).to have_gitlab_http_status(422)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
 
@@ -173,14 +173,14 @@ describe Boards::ListsController do
         save_setting user: user, board: board, list: planning, setting: { collapsed: true }
 
         expect(planning.preferences_for(user).collapsed).to eq(true)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'saves not collapsed preference for user' do
         save_setting user: user, board: board, list: planning, setting: { collapsed: false }
 
         expect(planning.preferences_for(user).collapsed).to eq(false)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -191,14 +191,14 @@ describe Boards::ListsController do
         save_setting user: user, board: board, list: closed, setting: { collapsed: true }
 
         expect(closed.preferences_for(user).collapsed).to eq(true)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'saves not collapsed preference for user' do
         save_setting user: user, board: board, list: closed, setting: { collapsed: false }
 
         expect(closed.preferences_for(user).collapsed).to eq(false)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -236,7 +236,7 @@ describe Boards::ListsController do
       it 'returns a successful 200 response' do
         remove_board_list user: user, board: board, list: planning
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'removes list from board' do
@@ -248,7 +248,7 @@ describe Boards::ListsController do
       it 'returns a not found 404 response' do
         remove_board_list user: user, board: board, list: 999
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -256,7 +256,7 @@ describe Boards::ListsController do
       it 'returns a forbidden 403 response' do
         remove_board_list user: guest, board: board, list: planning
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -278,7 +278,7 @@ describe Boards::ListsController do
       it 'returns a successful 200 response' do
         generate_default_lists user: user, board: board
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'returns the defaults lists' do
@@ -294,7 +294,7 @@ describe Boards::ListsController do
 
         generate_default_lists user: user, board: board
 
-        expect(response).to have_gitlab_http_status(422)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
 
@@ -302,7 +302,7 @@ describe Boards::ListsController do
       it 'returns a forbidden 403 response' do
         generate_default_lists user: guest, board: board
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 

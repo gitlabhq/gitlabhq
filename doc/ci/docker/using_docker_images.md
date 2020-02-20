@@ -28,7 +28,7 @@ to use the `docker` executor.
 
 A one-line example can be seen below:
 
-```bash
+```shell
 sudo gitlab-runner register \
   --url "https://gitlab.example.com/" \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
@@ -345,6 +345,9 @@ For example, the following two definitions are equal:
 | `command`    | no       | 9.4 |Command or script that should be used as the container's command. It will be translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`][cmd] directive, where each shell token is a separate string in the array. |
 | `alias`      | no       | 9.4 |Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
 
+NOTE: **Note:**
+Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.
+
 ### Starting multiple services from the same image
 
 > Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended
@@ -559,7 +562,7 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
 
 - **First way -** Do a `docker login` on your local machine:
 
-  ```bash
+  ```shell
   docker login registry.example.com:5000 --username my_username --password my_password
   ```
 
@@ -568,7 +571,7 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
   If you don't need access to the registry from your computer, you
   can do a `docker logout`:
 
-  ```bash
+  ```shell
   docker logout registry.example.com:5000
   ```
 
@@ -579,7 +582,7 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
   `${username}:${password}` and create the Docker configuration JSON manually.
   Open a terminal and execute the following command:
 
-  ```bash
+  ```shell
   echo -n "my_username:my_password" | base64
 
   # Example output to copy
@@ -639,7 +642,7 @@ Specifying only `registry.example.com` will not work.
 ### Configuring a Runner
 
 If you have many pipelines that access the same registry, it'll
-probably be better to setup registry access at the runner level.  This
+probably be better to setup registry access at the runner level. This
 allows pipeline authors to have access to a private registry just by
 running a job on the appropriate runner. It also makes registry
 changes and credential rotations much simpler.
@@ -790,7 +793,7 @@ able to run Docker with your regular user account.
 
 First start with creating a file named `build_script`:
 
-```bash
+```shell
 cat <<EOF > build_script
 git clone https://gitlab.com/gitlab-org/gitlab-runner.git /builds/gitlab-org/gitlab-runner
 cd /builds/gitlab-org/gitlab-runner
@@ -805,7 +808,7 @@ is specific to your project.
 
 Then create some service containers:
 
-```sh
+```shell
 docker run -d --name service-mysql mysql:latest
 docker run -d --name service-postgres postgres:latest
 ```
@@ -817,7 +820,7 @@ respectively. They will both run in the background (`-d`).
 Finally, create a build container by executing the `build_script` file we
 created earlier:
 
-```sh
+```shell
 docker run --name build -i --link=service-mysql:mysql --link=service-postgres:postgres ruby:2.6 /bin/bash < build_script
 ```
 
@@ -829,7 +832,7 @@ piped using STDIN to the bash interpreter which in turn executes the
 When you finish testing and no longer need the containers, you can remove them
 with:
 
-```sh
+```shell
 docker rm -f -v build service-mysql service-postgres
 ```
 

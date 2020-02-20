@@ -86,7 +86,7 @@ describe Snippets::CreateService do
 
         it 'creates a new spam_log' do
           expect { snippet }
-            .to log_spam(title: snippet.title, noteable_type: snippet.class.name)
+            .to have_spam_log(title: snippet.title, noteable_type: snippet.class.name)
         end
 
         it 'assigns a spam_log to an issue' do
@@ -99,7 +99,7 @@ describe Snippets::CreateService do
       end
 
       before do
-        expect_next_instance_of(AkismetService) do |akismet_service|
+        expect_next_instance_of(Spam::AkismetService) do |akismet_service|
           expect(akismet_service).to receive_messages(spam?: true)
         end
       end
@@ -143,6 +143,36 @@ describe Snippets::CreateService do
       end
     end
 
+    shared_examples 'creates repository' do
+      it do
+        subject
+
+        expect(snippet.repository_exists?).to be_truthy
+      end
+
+      context 'when snippet creation fails' do
+        let(:extra_opts) { { content: nil } }
+
+        it 'does not create repository' do
+          subject
+
+          expect(snippet.repository_exists?).to be_falsey
+        end
+      end
+
+      context 'when feature flag :version_snippets is disabled' do
+        it 'does not create snippet repository' do
+          stub_feature_flags(version_snippets: false)
+
+          expect do
+            subject
+          end.to change(Snippet, :count).by(1)
+
+          expect(snippet.repository_exists?).to be_falsey
+        end
+      end
+    end
+
     context 'when Project Snippet' do
       let_it_be(:project) { create(:project) }
 
@@ -155,6 +185,7 @@ describe Snippets::CreateService do
       it_behaves_like 'spam check is performed'
       it_behaves_like 'snippet create data is tracked'
       it_behaves_like 'an error service response when save fails'
+      it_behaves_like 'creates repository'
     end
 
     context 'when PersonalSnippet' do
@@ -165,6 +196,7 @@ describe Snippets::CreateService do
       it_behaves_like 'spam check is performed'
       it_behaves_like 'snippet create data is tracked'
       it_behaves_like 'an error service response when save fails'
+      it_behaves_like 'creates repository'
     end
   end
 end

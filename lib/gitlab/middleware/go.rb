@@ -60,7 +60,7 @@ module Gitlab
                          end
 
         meta_import_tag = tag :meta, name: 'go-import', content: "#{import_prefix} git #{repository_url}"
-        meta_source_tag = tag :meta, name: 'go-source', content: "#{import_prefix} #{project_url} #{project_url}/tree/#{branch}{/dir} #{project_url}/blob/#{branch}{/dir}/{file}#L{line}"
+        meta_source_tag = tag :meta, name: 'go-source', content: "#{import_prefix} #{project_url} #{project_url}/-/tree/#{branch}{/dir} #{project_url}/-/blob/#{branch}{/dir}/{file}#L{line}"
         head_tag = content_tag :head, meta_import_tag + meta_source_tag
         html_tag = content_tag :html, head_tag + body_tag
         [html_tag, 200]

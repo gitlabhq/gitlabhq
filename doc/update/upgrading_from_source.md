@@ -44,7 +44,7 @@ specific guidelines (should there be any) are covered separately.
 
 NOTE: If you installed GitLab from source, make sure `rsync` is installed.
 
-```bash
+```shell
 cd /home/git/gitlab
 
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
@@ -52,7 +52,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 
 ### 2. Stop server
 
-```bash
+```shell
 sudo service gitlab stop
 ```
 
@@ -65,7 +65,7 @@ You can check which version you are running with `ruby -v`.
 
 Download Ruby and compile it:
 
-```bash
+```shell
 mkdir /tmp/ruby && cd /tmp/ruby
 curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.5.tar.gz
 echo '1416ce288fb8bfeae07a12b608540318c9cace71  ruby-2.6.5.tar.gz' | shasum -c - && tar xzf ruby-2.6.5.tar.gz
@@ -78,7 +78,7 @@ sudo make install
 
 Install Bundler:
 
-```bash
+```shell
 sudo gem install bundler --no-document --version '< 2'
 ```
 
@@ -91,7 +91,7 @@ dependencies.
 
 In Debian or Ubuntu:
 
-```bash
+```shell
 curl --silent --show-error https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 sudo apt-get update
@@ -108,7 +108,7 @@ You can check which version you are running with `go version`.
 
 Download and install Go (for Linux, 64-bit):
 
-```bash
+```shell
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
@@ -126,7 +126,7 @@ NOTE: To check the minimum required Git version, see [Git versions](../install/r
 
 In Debian or Ubuntu:
 
-```bash
+```shell
 # Make sure Git is version 2.21.0 or higher
 git --version
 
@@ -161,7 +161,7 @@ sudo make prefix=/usr/local install
 
 ### 7. Get latest code
 
-```bash
+```shell
 cd /home/git/gitlab
 
 sudo -u git -H git fetch --all --prune
@@ -171,7 +171,7 @@ sudo -u git -H git checkout -- locale
 
 For GitLab Community Edition:
 
-```bash
+```shell
 cd /home/git/gitlab
 
 sudo -u git -H git checkout BRANCH
@@ -181,7 +181,7 @@ OR
 
 For GitLab Enterprise Edition:
 
-```bash
+```shell
 cd /home/git/gitlab
 
 sudo -u git -H git checkout BRANCH-ee
@@ -189,7 +189,7 @@ sudo -u git -H git checkout BRANCH-ee
 
 ### 8. Update GitLab Shell
 
-```bash
+```shell
 cd /home/git/gitlab-shell
 
 sudo -u git -H git fetch --all --tags --prune
@@ -204,7 +204,7 @@ Install and compile GitLab Workhorse. GitLab Workhorse uses
 If you are not using Linux you may have to run `gmake` instead of
 `make` below.
 
-```bash
+```shell
 cd /home/git/gitlab-workhorse
 
 sudo -u git -H git fetch --all --tags --prune
@@ -232,7 +232,7 @@ Install and compile GitLab Pages. GitLab Pages uses
 If you are not using Linux you may have to run `gmake` instead of
 `make` below.
 
-```bash
+```shell
 cd /home/git/gitlab-pages
 
 sudo -u git -H git fetch --all --tags --prune
@@ -247,7 +247,7 @@ sudo -u git -H make
 There might be configuration options available for [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)).
 View them with the command below and apply them manually to your current `gitlab.yml`:
 
-```sh
+```shell
 cd /home/git/gitlab
 
 git diff origin/PREVIOUS_BRANCH:config/gitlab.yml.example origin/BRANCH:config/gitlab.yml.example
@@ -257,7 +257,7 @@ git diff origin/PREVIOUS_BRANCH:config/gitlab.yml.example origin/BRANCH:config/g
 
 Ensure you're still up-to-date with the latest NGINX configuration changes:
 
-```sh
+```shell
 cd /home/git/gitlab
 
 # For HTTPS configurations
@@ -293,7 +293,7 @@ There might be new configuration options available for
 [`gitlab.default.example`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab.default.example).
 View them with the command below and apply them manually to your current `/etc/default/gitlab`:
 
-```sh
+```shell
 cd /home/git/gitlab
 
 git diff origin/PREVIOUS_BRANCH:lib/support/init.d/gitlab.default.example origin/BRANCH:lib/support/init.d/gitlab.default.example
@@ -301,7 +301,7 @@ git diff origin/PREVIOUS_BRANCH:lib/support/init.d/gitlab.default.example origin
 
 Ensure you're still up-to-date with the latest init script changes:
 
-```bash
+```shell
 cd /home/git/gitlab
 
 sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
@@ -309,13 +309,13 @@ sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
 
 For Ubuntu 16.04.1 LTS:
 
-```bash
+```shell
 sudo systemctl daemon-reload
 ```
 
 ### 13. Install libs, migrations, etc
 
-```bash
+```shell
 cd /home/git/gitlab
 
 sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
@@ -339,7 +339,7 @@ sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 
 ### 14. Start application
 
-```bash
+```shell
 sudo service gitlab start
 sudo service nginx restart
 ```
@@ -348,7 +348,7 @@ sudo service nginx restart
 
 Check if GitLab and its environment are configured correctly:
 
-```bash
+```shell
 cd /home/git/gitlab
 
 sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
@@ -356,7 +356,7 @@ sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
 To make sure you didn't miss anything run a more thorough check:
 
-```bash
+```shell
 cd /home/git/gitlab
 
 sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
@@ -394,7 +394,7 @@ backup has already been migrated to the previous version.
 
 ### 2. Restore from the backup
 
-```bash
+```shell
 cd /home/git/gitlab
 
 sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production

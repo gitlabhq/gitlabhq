@@ -17,7 +17,7 @@ GitLab monitors its own internal service metrics, and makes them available at th
 `/-/metrics` endpoint. Unlike other [Prometheus](https://prometheus.io) exporters, in order to access
 it, the client IP needs to be [included in a whitelist](../ip_whitelist.md).
 
-For Omnibus and Chart installations, these metrics are automatically enabled and collected as of [GitLab 9.4](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1702). For source installations or earlier versions, these metrics will need to be enabled manually and collected by a Prometheus server.
+For Omnibus and Chart installations, these metrics are automatically enabled and collected as of [GitLab 9.4](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1702). For source installations or earlier versions, these metrics will need to be enabled manually and collected by a Prometheus server.
 
 ## Metrics available
 
@@ -32,6 +32,7 @@ The following metrics are available:
 | `gitlab_cache_operations_total`                                | Counter   |                   12.2 | Cache operations by controller/action                                                               | controller, action, operation                       |
 | `gitlab_database_transaction_seconds`                          | Histogram |                   12.1 | Time spent in database transactions, in seconds                                                     |                                                     |
 | `gitlab_method_call_duration_seconds`                          | Histogram |                   10.2 | Method calls real duration                                                                          | controller, action, module, method                  |
+| `gitlab_page_out_of_bounds`                                    | Counter   |                   12.8 | Counter for the PageLimiter pagination limit being hit                                              | controller, action, bot                             |
 | `gitlab_rails_queue_duration_seconds`                          | Histogram |                    9.4 | Measures latency between GitLab Workhorse forwarding a request to Rails                             |                                                     |
 | `gitlab_sql_duration_seconds`                                  | Histogram |                   10.2 | SQL execution time, excluding SCHEMA operations and BEGIN / COMMIT                                  |                                                     |
 | `gitlab_transaction_allocated_memory_bytes`                    | Histogram |                   10.2 | Allocated memory for all transactions (gitlab_transaction_* metrics)                                |                                                     |
@@ -82,6 +83,14 @@ The following metrics are available:
 | `upload_file_does_not_exist`                                   | Counter   | 10.7 in EE, 11.5 in CE | Number of times an upload record could not find its file                                            |                                                     |
 | `failed_login_captcha_total`                                   | Gauge     |                   11.0 | Counter of failed CAPTCHA attempts during login                                                     |                                                     |
 | `successful_login_captcha_total`                               | Gauge     |                   11.0 | Counter of successful CAPTCHA attempts during login                                                 |                                                     |
+| `auto_devops_pipelines_completed_total`                        | Counter   |                   12.7 | Counter of completed Auto DevOps pipelines, labeled by status                                       |                                                     |
+| `sidekiq_jobs_cpu_seconds`                                     | Histogram |                   12.4 | Seconds of cpu time to run Sidekiq job                                                              |                                                     |
+| `sidekiq_jobs_completion_seconds`                              | Histogram |                   12.2 | Seconds to complete Sidekiq job                                                                     |                                                     |
+| `sidekiq_jobs_queue_duration_seconds`                          | Histogram |                   12.5 | Duration in seconds that a Sidekiq job was queued before being executed                             |                                                     |
+| `sidekiq_jobs_failed_total`                                    | Counter   |                   12.2 | Sidekiq jobs failed                                                                                 |                                                     |
+| `sidekiq_jobs_retried_total`                                   | Counter   |                   12.2 | Sidekiq jobs retried                                                                                |                                                     |
+| `sidekiq_running_jobs`                                         | Gauge     |                   12.2 | Number of Sidekiq jobs running                                                                      |                                                     |
+| `sidekiq_concurrency`                                          | Gauge     |                   12.5 | Maximum number of Sidekiq jobs                                                                      |                                                     |
 
 ## Metrics controlled by a feature flag
 

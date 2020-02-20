@@ -208,7 +208,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       AnchorData.new(false,
                      statistic_icon + _('New file'),
                      project_new_blob_path(project, default_branch || 'master'),
-                     'success')
+                     'missing')
     end
   end
 
@@ -302,7 +302,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         cluster_link = clusters.count == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
 
         AnchorData.new(false,
-                       _('Kubernetes configured'),
+                       _('Kubernetes'),
                        cluster_link,
                       'default')
       end

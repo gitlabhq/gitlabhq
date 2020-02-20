@@ -10,13 +10,13 @@ module QA
       RetriesExceededError = Class.new(RuntimeError)
       WaitExceededError = Class.new(RuntimeError)
 
-      def repeat_until(max_attempts: nil, max_duration: nil, reload_page: nil, sleep_interval: 0, raise_on_failure: true, retry_on_exception: false)
+      def repeat_until(max_attempts: nil, max_duration: nil, reload_page: nil, sleep_interval: 0, raise_on_failure: true, retry_on_exception: false, log: true)
         attempts = 0
         start = Time.now
 
         begin
           while remaining_attempts?(attempts, max_attempts) && remaining_time?(start, max_duration)
-            QA::Runtime::Logger.debug("Attempt number #{attempts + 1}") if max_attempts
+            QA::Runtime::Logger.debug("Attempt number #{attempts + 1}") if max_attempts && log
 
             result = yield
             return result if result

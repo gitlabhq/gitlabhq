@@ -2,8 +2,8 @@
 
 The following security review of the Geo feature set focuses on security aspects of
 the feature as they apply to customers running their own GitLab instances. The review
-questions are based in part on the [OWASP Application Security Verification Standard Project](https://www.owasp.org/index.php/Category:OWASP_Application_Security_Verification_Standard_Project)
-from [owasp.org](https://www.owasp.org/index.php/Main_Page).
+questions are based in part on the [OWASP Application Security Verification Standard Project](https://owasp.org/www-project-application-security-verification-standard/)
+from [owasp.org](https://www.owasp.org/).
 
 ## Business Model
 

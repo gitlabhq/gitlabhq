@@ -9,7 +9,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     Gitlab::Highlight.highlight(
       blob.path,
       limited_blob_data(to: to),
-      language: blob.language_from_gitattributes,
+      language: language,
       plain: plain
     )
   end
@@ -36,5 +36,9 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
   def all_lines
     @all_lines ||= blob.data.lines
+  end
+
+  def language
+    blob.language_from_gitattributes
   end
 end

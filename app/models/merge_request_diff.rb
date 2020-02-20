@@ -560,6 +560,10 @@ class MergeRequestDiff < ApplicationRecord
     opening_external_diff do
       collection = merge_request_diff_files
 
+      if options[:include_context_commits]
+        collection += merge_request.merge_request_context_commit_diff_files
+      end
+
       if paths = options[:paths]
         collection = collection.where('old_path IN (?) OR new_path IN (?)', paths, paths)
       end

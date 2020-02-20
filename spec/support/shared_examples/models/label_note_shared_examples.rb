@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'label note created from events' do
+RSpec.shared_examples 'label note created from events' do
   def create_event(params = {})
     event_params = { action: :add, label: label, user: user }
     resource_key = resource.class.name.underscore.to_s

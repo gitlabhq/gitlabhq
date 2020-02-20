@@ -4,10 +4,7 @@ lint-ci-gitlab:
   extends:
     - .default-tags
     - .default-retry
-    - .default-only
-  only:
-    changes:
-      - "**/*.yml"
+    - .yaml:rules
   image: sdesbure/yamllint:latest
   dependencies: []
   variables:

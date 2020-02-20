@@ -80,6 +80,6 @@ if your project is located at `https://gitlab.com/foo/bar/my-proj`, then you can
 using `conan create . foo+bar+my-proj/channel`, where `channel` is your package channel (`stable`, `beta`, etc.). Once your package
 is created, you are ready to [upload your package](../conan_repository/index.md#uploading-a-package) depending on your final package recipe. For example:
 
-```sh
+```shell
 CONAN_LOGIN_USERNAME=<gitlab-username> CONAN_PASSWORD=<personal_access_token> conan upload MyPackage/1.0.0@foo+bar+my-proj/channel --all --remote=gitlab
 ```

@@ -58,6 +58,14 @@ module Gitlab
       migration_class_for(class_name).new.perform(*arguments)
     end
 
+    def self.remaining
+      scheduled = Sidekiq::ScheduledSet.new.count do |job|
+        job.queue == self.queue
+      end
+
+      scheduled + Sidekiq::Queue.new(self.queue).size
+    end
+
     def self.exists?(migration_class, additional_queues = [])
       enqueued = Sidekiq::Queue.new(self.queue)
       scheduled = Sidekiq::ScheduledSet.new

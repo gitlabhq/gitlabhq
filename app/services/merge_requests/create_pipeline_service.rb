@@ -24,7 +24,7 @@ module MergeRequests
       ##
       # UpdateMergeRequestsWorker could be retried by an exception.
       # pipelines for merge request should not be recreated in such case.
-      return false if !allow_duplicate && merge_request.find_actual_head_pipeline&.triggered_by_merge_request?
+      return false if !allow_duplicate && merge_request.find_actual_head_pipeline&.merge_request?
       return false if merge_request.has_no_commits?
 
       true

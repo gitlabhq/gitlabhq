@@ -196,6 +196,19 @@ describe API::ProjectImport do
       end
     end
 
+    context 'when request exceeds the rate limit' do
+      before do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+      end
+
+      it 'prevents users from importing projects' do
+        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.id }
+
+        expect(response).to have_gitlab_http_status(429)
+        expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
+      end
+    end
+
     def stub_import(namespace)
       expect_any_instance_of(ProjectImportState).to receive(:schedule)
       expect(::Projects::CreateService).to receive(:new).with(user, hash_including(namespace_id: namespace.id)).and_call_original

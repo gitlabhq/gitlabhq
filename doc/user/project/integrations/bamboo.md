@@ -55,7 +55,7 @@ service in GitLab.
 ## Troubleshooting
 
 If builds are not triggered, ensure you entered the right GitLab IP address in
-Bamboo under 'Trigger IP addresses'.
+Bamboo under 'Trigger IP addresses'. Also check [service hook logs](project_services.md#troubleshooting-project-services) for request failures.
 
 NOTE: **Note:**
 Starting with GitLab 8.14.0, builds are triggered on push events.

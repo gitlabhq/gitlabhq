@@ -17,7 +17,9 @@ module Gitlab
             # custom groups
             business: 0,
             response: 1,
-            system: 2
+            system: 2,
+
+            cluster_health: -100
           }
         end
 
@@ -31,12 +33,11 @@ module Gitlab
             ha_proxy: _('Response metrics (HA Proxy)'),
             aws_elb: _('Response metrics (AWS ELB)'),
             nginx: _('Response metrics (NGINX)'),
-            kubernetes: _('System metrics (Kubernetes)')
+            kubernetes: _('System metrics (Kubernetes)'),
+            cluster_health: _('Cluster Health')
           }
         end
       end
     end
   end
 end
-
-::Gitlab::DatabaseImporters::CommonMetrics::PrometheusMetricEnums.prepend_if_ee('EE::Gitlab::DatabaseImporters::CommonMetrics::PrometheusMetricEnums')

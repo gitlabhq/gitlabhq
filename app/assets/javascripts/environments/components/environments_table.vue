@@ -162,15 +162,14 @@ export default {
             :is-loading="model.isLoadingDeployBoard"
             :is-empty="model.isEmptyDeployBoard"
             :has-legacy-app-label="model.hasLegacyAppLabel"
-            :project-path="model.project_path"
-            :environment-name="model.name"
+            :logs-path="model.logs_path"
           />
         </div>
       </div>
 
       <template v-if="shouldRenderFolderContent(model)">
         <div v-if="model.isLoadingFolderContent" :key="`loading-item-${i}`">
-          <gl-loading-icon :size="2" class="prepend-top-16" />
+          <gl-loading-icon size="md" class="prepend-top-16" />
         </div>
 
         <template v-else>

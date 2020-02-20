@@ -117,11 +117,7 @@ export default class FileTemplateMediator {
         selector.hide();
       }
     });
-
-    if (this.editor.getValue() !== '') {
-      this.setTypeSelectorToggleText(item.name);
-    }
-
+    this.setTypeSelectorToggleText(item.name);
     this.cacheToggleText();
   }
 

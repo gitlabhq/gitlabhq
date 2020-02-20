@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :import do
-    desc "GitLab | Add all users to all projects (admin users are added as maintainers)"
+    desc "GitLab | Import | Add all users to all projects (admin users are added as maintainers)"
     task all_users_to_all_projects: :environment  do |t, args|
       user_ids = User.where(admin: false).pluck(:id)
       admin_ids = User.where(admin: true).pluck(:id)
@@ -13,7 +13,7 @@ namespace :gitlab do
       ProjectMember.add_users_to_projects(project_ids, admin_ids, ProjectMember::MAINTAINER)
     end
 
-    desc "GitLab | Add a specific user to all projects (as a developer)"
+    desc "GitLab | Import | Add a specific user to all projects (as a developer)"
     task :user_to_projects, [:email] => :environment do |t, args|
       user = User.find_by(email: args.email)
       project_ids = Project.pluck(:id)
@@ -21,7 +21,7 @@ namespace :gitlab do
       ProjectMember.add_users_to_projects(project_ids, Array.wrap(user.id), ProjectMember::DEVELOPER)
     end
 
-    desc "GitLab | Add all users to all groups (admin users are added as owners)"
+    desc "GitLab | Import | Add all users to all groups (admin users are added as owners)"
     task all_users_to_all_groups: :environment do |t, args|
       user_ids = User.where(admin: false).pluck(:id)
       admin_ids = User.where(admin: true).pluck(:id)
@@ -35,7 +35,7 @@ namespace :gitlab do
       end
     end
 
-    desc "GitLab | Add a specific user to all groups (as a developer)"
+    desc "GitLab | Import | Add a specific user to all groups (as a developer)"
     task :user_to_groups, [:email] => :environment do |t, args|
       user = User.find_by_email args.email
       groups = Group.all

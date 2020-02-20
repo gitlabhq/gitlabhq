@@ -9,12 +9,13 @@ module Gitlab
           include SelfMonitoring::Helpers
 
           VISIBILITY_LEVEL = Gitlab::VisibilityLevel::INTERNAL
-          PROJECT_NAME = 'GitLab Instance Administration'
+          PROJECT_NAME = 'GitLab self monitoring'
 
           steps :validate_application_settings,
             :create_group,
             :create_project,
             :save_project_id,
+            :create_environment,
             :add_prometheus_manual_configuration,
             :track_event
 
@@ -69,14 +70,36 @@ module Gitlab
             return success(result) if project_created?
 
             response = application_settings.update(
-              instance_administration_project_id: result[:project].id
+              self_monitoring_project_id: result[:project].id
             )
 
             if response
+              # In the add_prometheus_manual_configuration method, the Prometheus
+              # listen_address config is saved as an api_url in the PrometheusService
+              # model. There are validates hooks in the PrometheusService model that
+              # check if the project associated with the PrometheusService is the
+              # self_monitoring project. It checks
+              # Gitlab::CurrentSettings.self_monitoring_project_id, which is why the
+              # Gitlab::CurrentSettings cache needs to be expired here, so that
+              # PrometheusService sees the latest self_monitoring_project_id.
+              Gitlab::CurrentSettings.expire_current_application_settings
               success(result)
             else
               log_error("Could not save instance administration project ID, errors: %{errors}" % { errors: application_settings.errors.full_messages })
               error(_('Could not save project ID'))
+            end
+          end
+
+          def create_environment(result)
+            return success(result) if result[:project].environments.exists?
+
+            environment = ::Environment.new(project_id: result[:project].id, name: 'production')
+
+            if environment.save
+              success(result)
+            else
+              log_error("Could not create environment for the Self monitoring project. Errors: %{errors}" % { errors: environment.errors.full_messages })
+              error(_('Could not create environment'))
             end
           end
 
@@ -115,7 +138,7 @@ module Gitlab
 
           def docs_path
             Rails.application.routes.url_helpers.help_page_path(
-              'administration/monitoring/gitlab_instance_administration_project/index'
+              'administration/monitoring/gitlab_self_monitoring_project/index'
             )
           end
 

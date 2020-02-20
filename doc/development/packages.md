@@ -7,35 +7,12 @@ See already supported package types in [Packages documentation](../administratio
 Since GitLab packages' UI is pretty generic, it is possible to add basic new
 package system support with solely backend changes. This guide is superficial and does
 not cover the way the code should be written. However, you can find a good example
-by looking at existing merge requests with Maven and NPM support:
+by looking at merge requests with Maven and NPM support:
 
-- [NPM registry support](https://gitlab.com/gitlab-org/gitlab/merge_requests/8673).
+- [NPM registry support](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8673).
 - [Conan repository](https://gitlab.com/gitlab-org/gitlab/issues/8248).
-- [Maven repository](https://gitlab.com/gitlab-org/gitlab/merge_requests/6607).
-- [Instance level endpoint for Maven repository](https://gitlab.com/gitlab-org/gitlab/merge_requests/8757)
-
-## Suggested contributions
-
-The goal of the Package group is to build a set of features that, within three years, will allow ninety percent of our customers to store all of their packages in GitLab. To do that we need to ensure that we support the below package manager formats.
-
-| Format | Use case |
-| ------ | ------ |
-| [Bower](https://gitlab.com/gitlab-org/gitlab/issues/36888) | Boost your front end development by hosting your own Bower components.  |
-| [Cargo](https://gitlab.com/gitlab-org/gitlab/issues/33060) | Cargo is the Rust package manager. Build, publish and share Rust packages  |
-| [Chef](https://gitlab.com/gitlab-org/gitlab/issues/36889) | Configuration management with Chef using all the benefits of a repository manager. |
-| [CocoaPods](https://gitlab.com/gitlab-org/gitlab/issues/36890) | Speed up development with Xcode and CocoaPods. |
-| [Conda](https://gitlab.com/gitlab-org/gitlab/issues/36891) | Secure and private local Conda repositories. |
-| [CRAN](https://gitlab.com/gitlab-org/gitlab/issues/36892) | Deploy and resolve CRAN packages for the R language. |
-| [Debian](https://gitlab.com/gitlab-org/gitlab/issues/5835) | Host and provision Debian packages. |
-| [Go](https://gitlab.com/gitlab-org/gitlab/issues/9773) | Resolve Go dependencies from and publish your Go packages to GitLab.  |
-| [Opkg](https://gitlab.com/gitlab-org/gitlab/issues/36894) | Optimize your work with OpenWrt using Opkg repositories. |
-| [P2](https://gitlab.com/gitlab-org/gitlab/issues/36895) | Host all your Eclipse plugins in your own GitLab P2 repository. |
-| [Puppet](https://gitlab.com/gitlab-org/gitlab/issues/36897) | Configuration management meets repository management with Puppet repositories. |
-| [PyPi](https://gitlab.com/gitlab-org/gitlab/issues/10483) | Host PyPi distributions. |
-| [RPM](https://gitlab.com/gitlab-org/gitlab/issues/5932) | Distribute RPMs directly from GitLab. |
-| [RubyGems](https://gitlab.com/gitlab-org/gitlab/issues/803) | Use GitLab to host your own gems. |
-| [SBT](https://gitlab.com/gitlab-org/gitlab/issues/36898) | Resolve dependencies from and deploy build output to SBT repositories when running SBT builds. |
-| [Vagrant](https://gitlab.com/gitlab-org/gitlab/issues/36899) | Securely host your Vagrant boxes in local repositories. |
+- [Maven repository](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6607).
+- [Instance level endpoint for Maven repository](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8757)
 
 ## General information
 
@@ -61,7 +38,7 @@ endpoints like:
 Since the packages belong to a project, it's expected to have project-level endpoint (remote)
 for uploading and downloading them. For example:
 
-```
+```plaintext
 GET https://gitlab.com/api/v4/projects/<your_project_id>/packages/npm/
 PUT https://gitlab.com/api/v4/projects/<your_project_id>/packages/npm/
 ```
@@ -115,7 +92,7 @@ and file location rather than the file itself. An overview of this process can b
 
 In terms of code, this means a route will need to be added to the
 [GitLab Workhorse project](https://gitlab.com/gitlab-org/gitlab-workhorse) for each level of remote being added
-(instance, group, project). [This merge request](https://gitlab.com/gitlab-org/gitlab-workhorse/merge_requests/412/diffs)
+(instance, group, project). [This merge request](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/412/diffs)
 demonstrates adding an instance-level endpoint for Conan to workhorse. You can also see the Maven project level endpoint
 implemented in the same file.
 

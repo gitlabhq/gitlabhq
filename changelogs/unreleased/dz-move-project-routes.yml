@@ -1,0 +1,5 @@
+---
+title: Move merge request routes under /-/ scope
+merge_request: 21126
+author:
+type: deprecated

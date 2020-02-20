@@ -60,7 +60,7 @@ describe MergeRequestPollWidgetEntity do
         project.add_developer(user)
 
         expect(subject[:new_blob_path])
-          .to eq("/#{resource.project.full_path}/new/#{resource.source_branch}")
+          .to eq("/#{resource.project.full_path}/-/new/#{resource.source_branch}")
       end
     end
 

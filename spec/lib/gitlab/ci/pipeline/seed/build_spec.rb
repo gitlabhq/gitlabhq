@@ -6,7 +6,7 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
   let(:project) { create(:project, :repository) }
   let(:head_sha) { project.repository.head_commit.id }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: head_sha) }
-  let(:attributes) { { name: 'rspec', ref: 'master' } }
+  let(:attributes) { { name: 'rspec', ref: 'master', scheduling_type: :stage } }
   let(:previous_stages) { [] }
 
   let(:seed_build) { described_class.new(pipeline, attributes, previous_stages) }
@@ -244,7 +244,9 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
     context 'when job is a bridge' do
       let(:attributes) do
-        { name: 'rspec', ref: 'master', options: { trigger: 'my/project' } }
+        {
+          name: 'rspec', ref: 'master', options: { trigger: 'my/project' }, scheduling_type: :stage
+        }
       end
 
       it { is_expected.to be_a(::Ci::Bridge) }

@@ -62,8 +62,8 @@ describe SnippetPresenter do
     context 'with PersonalSnippet' do
       let(:snippet) { personal_snippet }
 
-      it 'checks read_personal_snippet' do
-        expect(presenter).to receive(:can?).with(user, :read_personal_snippet, snippet)
+      it 'checks read_snippet' do
+        expect(presenter).to receive(:can?).with(user, :read_snippet, snippet)
 
         subject
       end
@@ -72,8 +72,8 @@ describe SnippetPresenter do
     context 'with ProjectSnippet' do
       let(:snippet) { project_snippet }
 
-      it 'checks read_project_snippet ' do
-        expect(presenter).to receive(:can?).with(user, :read_project_snippet, snippet)
+      it 'checks read_snippet ' do
+        expect(presenter).to receive(:can?).with(user, :read_snippet, snippet)
 
         subject
       end
@@ -86,8 +86,8 @@ describe SnippetPresenter do
     context 'with PersonalSnippet' do
       let(:snippet) { personal_snippet }
 
-      it 'checks update_personal_snippet' do
-        expect(presenter).to receive(:can?).with(user, :update_personal_snippet, snippet)
+      it 'checks update_snippet' do
+        expect(presenter).to receive(:can?).with(user, :update_snippet, snippet)
 
         subject
       end
@@ -96,8 +96,8 @@ describe SnippetPresenter do
     context 'with ProjectSnippet' do
       let(:snippet) { project_snippet }
 
-      it 'checks update_project_snippet ' do
-        expect(presenter).to receive(:can?).with(user, :update_project_snippet, snippet)
+      it 'checks update_snippet ' do
+        expect(presenter).to receive(:can?).with(user, :update_snippet, snippet)
 
         subject
       end
@@ -110,8 +110,8 @@ describe SnippetPresenter do
     context 'with PersonalSnippet' do
       let(:snippet) { personal_snippet }
 
-      it 'checks admin_personal_snippet' do
-        expect(presenter).to receive(:can?).with(user, :admin_personal_snippet, snippet)
+      it 'checks admin_snippet' do
+        expect(presenter).to receive(:can?).with(user, :admin_snippet, snippet)
 
         subject
       end
@@ -120,8 +120,8 @@ describe SnippetPresenter do
     context 'with ProjectSnippet' do
       let(:snippet) { project_snippet }
 
-      it 'checks admin_project_snippet ' do
-        expect(presenter).to receive(:can?).with(user, :admin_project_snippet, snippet)
+      it 'checks admin_snippet ' do
+        expect(presenter).to receive(:can?).with(user, :admin_snippet, snippet)
 
         subject
       end

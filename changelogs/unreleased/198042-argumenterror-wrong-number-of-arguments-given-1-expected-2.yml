@@ -1,0 +1,6 @@
+---
+title: Fixes AutoMergeProcessWorker failing when merge train service is not available
+  for a merge request
+merge_request: 23407
+author:
+type: fixed

@@ -14,7 +14,7 @@ import placeholderSystemNote from '../../vue_shared/components/notes/placeholder
 import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import { __ } from '~/locale';
-import initUserPopovers from '../../user_popovers';
+import initUserPopovers from '~/user_popovers';
 
 export default {
   name: 'NotesApp',

@@ -57,7 +57,7 @@ gitaly_log="$app_root/log/gitaly.log"
 # Read configuration variable file if it is present
 test -f /etc/default/gitlab && . /etc/default/gitlab
 
-# Switch to the app_user if it is not he/she who is running the script.
+# Switch to the app_user if it is not they who are running the script.
 if [ `whoami` != "$app_user" ]; then
   eval su - "$app_user" -c $(echo \")$shell_path -l -c \'$0 "$@"\'$(echo \"); exit;
 fi
@@ -340,7 +340,7 @@ start_gitlab() {
 
   # Wait for the pids to be planted
   wait_for_pids
-  # Finally check the status to tell wether or not GitLab is running
+  # Finally check the status to tell whether or not GitLab is running
   print_status
 }
 

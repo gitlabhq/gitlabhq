@@ -173,6 +173,12 @@ module Types
           null: true,
           description: 'Snippets of the project',
           resolver: Resolvers::Projects::SnippetsResolver
+
+    field :sentry_errors,
+          Types::ErrorTracking::SentryErrorCollectionType,
+          null: true,
+          description: 'Paginated collection of Sentry errors on the project',
+          resolver: Resolvers::ErrorTracking::SentryErrorCollectionResolver
   end
 end
 

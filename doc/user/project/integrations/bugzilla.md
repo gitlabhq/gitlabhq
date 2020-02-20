@@ -26,3 +26,7 @@ We suggest using the longer format if you have both internal and external issue 
 
 Please note that `<PROJECT>` part is ignored and links always point to the
 address specified in `issues_url`.
+
+## Troubleshooting
+
+To see recent service hook deliveries, check [service hook logs](project_services.md#troubleshooting-project-services).

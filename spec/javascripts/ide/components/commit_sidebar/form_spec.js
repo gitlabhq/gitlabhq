@@ -4,7 +4,7 @@ import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 import { projectData } from 'spec/ide/mock_data';
 import store from '~/ide/stores';
 import CommitForm from '~/ide/components/commit_sidebar/form.vue';
-import { activityBarViews } from '~/ide/constants';
+import { leftSidebarViews } from '~/ide/constants';
 import { resetStore } from '../../helpers';
 
 describe('IDE commit form', () => {
@@ -52,7 +52,7 @@ describe('IDE commit form', () => {
       vm.$store.state.stagedFiles.push('test');
 
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('p').textContent).toContain('1 unstaged and 1 staged changes');
+        expect(vm.$el.querySelector('p').textContent).toContain('1 staged and 1 unstaged changes');
         done();
       });
     });
@@ -71,7 +71,7 @@ describe('IDE commit form', () => {
       vm.$el.querySelector('.btn-primary').click();
 
       vm.$nextTick(() => {
-        expect(store.state.currentActivityView).toBe(activityBarViews.commit);
+        expect(store.state.currentActivityView).toBe(leftSidebarViews.commit.name);
 
         done();
       });
@@ -79,7 +79,7 @@ describe('IDE commit form', () => {
 
     it('collapses if lastCommitMsg is set to empty and current view is not commit view', done => {
       store.state.lastCommitMsg = 'abc';
-      store.state.currentActivityView = activityBarViews.edit;
+      store.state.currentActivityView = leftSidebarViews.edit.name;
 
       vm.$nextTick(() => {
         // if commit message is set, form is uncollapsed
@@ -133,7 +133,7 @@ describe('IDE commit form', () => {
       vm.$el.querySelector('.btn-primary').click();
 
       vm.$nextTick(() => {
-        expect(store.state.currentActivityView).toBe(activityBarViews.commit);
+        expect(store.state.currentActivityView).toBe(leftSidebarViews.commit.name);
         expect(vm.isCompact).toBe(false);
 
         done();

@@ -126,7 +126,7 @@ Note that unlike `Gitlab::Popen.popen`, `IO.popen` does not capture standard err
 ## Avoid user input at the start of path strings
 
 Various methods for opening and reading files in Ruby can be used to read the
-standard output of a process instead of a file.  The following two commands do
+standard output of a process instead of a file. The following two commands do
 roughly the same:
 
 ```ruby
@@ -138,7 +138,7 @@ The key is to open a 'file' whose name starts with a `|`.
 Affected methods include Kernel#open, File::read, File::open, IO::open and IO::read.
 
 You can protect against this behavior of 'open' and 'read' by ensuring that an
-attacker cannot control the start of the filename string you are opening.  For
+attacker cannot control the start of the filename string you are opening. For
 instance, the following is sufficient to protect against accidentally starting
 a shell command with `|`:
 
@@ -168,7 +168,7 @@ user_input = '../other-repo.git/other-file'
 repo_path = 'repositories/user-repo.git'
 
 # The intention of the code below is to open a file under repo_path, but
-# because the user used '..' she can 'break out' into
+# because the user used '..' they can 'break out' into
 # 'repositories/other-repo.git'
 full_path = File.join(repo_path, user_input)
 File.open(full_path) do # Oops!
@@ -211,7 +211,7 @@ Since there are no anchors in the used regular expression, the `git:/tmp/lol` in
 
 When importing, GitLab would execute the following command, passing the `import_url` as an argument:
 
-```sh
+```shell
 git clone file://git:/tmp/lol
 ```
 

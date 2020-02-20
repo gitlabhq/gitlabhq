@@ -1,6 +1,6 @@
 /* global ListAssignee, ListLabel, ListIssue */
 import { mount } from '@vue/test-utils';
-import _ from 'underscore';
+import { range } from 'lodash';
 import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/issue';
@@ -66,7 +66,11 @@ describe('Issue card component', () => {
   });
 
   it('does not render confidential icon', () => {
-    expect(wrapper.find('.fa-eye-flash').exists()).toBe(false);
+    expect(wrapper.find('.confidential-icon').exists()).toBe(false);
+  });
+
+  it('does not render blocked icon', () => {
+    expect(wrapper.find('.issue-blocked-icon').exists()).toBe(false);
   });
 
   it('renders confidential icon', done => {
@@ -97,6 +101,9 @@ describe('Issue card component', () => {
           issue: {
             ...wrapper.props('issue'),
             assignees: [user],
+            updateData(newData) {
+              Object.assign(this, newData);
+            },
           },
         });
 
@@ -117,6 +124,28 @@ describe('Issue card component', () => {
 
       it('renders avatar', () => {
         expect(wrapper.find('.board-card-assignee img').exists()).toBe(true);
+      });
+
+      it('renders the avatar using avatar_url property', done => {
+        wrapper.props('issue').updateData({
+          ...wrapper.props('issue'),
+          assignees: [
+            {
+              id: '1',
+              name: 'test',
+              state: 'active',
+              username: 'test_name',
+              avatar_url: 'test_image_from_avatar_url',
+            },
+          ],
+        });
+
+        wrapper.vm.$nextTick(() => {
+          expect(wrapper.find('.board-card-assignee img').attributes('src')).toBe(
+            'test_image_from_avatar_url?width=24',
+          );
+          done();
+        });
       });
     });
 
@@ -222,7 +251,7 @@ describe('Issue card component', () => {
       it('renders 99+ avatar counter', done => {
         const assignees = [
           ...wrapper.props('issue').assignees,
-          ..._.range(5, 103).map(
+          ...range(5, 103).map(
             i =>
               new ListAssignee({
                 id: i,
@@ -297,6 +326,22 @@ describe('Issue card component', () => {
           done();
         })
         .catch(done.fail);
+    });
+  });
+
+  describe('blocked', () => {
+    beforeEach(done => {
+      wrapper.setProps({
+        issue: {
+          ...wrapper.props('issue'),
+          blocked: true,
+        },
+      });
+      wrapper.vm.$nextTick(done);
+    });
+
+    it('renders blocked icon if issue is blocked', () => {
+      expect(wrapper.find('.issue-blocked-icon').exists()).toBe(true);
     });
   });
 });

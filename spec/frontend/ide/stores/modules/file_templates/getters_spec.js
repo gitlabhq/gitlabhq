@@ -1,5 +1,5 @@
 import createState from '~/ide/stores/state';
-import { activityBarViews } from '~/ide/constants';
+import { leftSidebarViews } from '~/ide/constants';
 import * as getters from '~/ide/stores/modules/file_templates/getters';
 
 describe('IDE file templates getters', () => {
@@ -17,7 +17,7 @@ describe('IDE file templates getters', () => {
     });
 
     it('returns true if template is found and currentActivityView is edit', () => {
-      rootState.currentActivityView = activityBarViews.edit;
+      rootState.currentActivityView = leftSidebarViews.edit.name;
 
       expect(
         getters.showFileTemplatesBar(
@@ -31,7 +31,7 @@ describe('IDE file templates getters', () => {
     });
 
     it('returns false if template is found and currentActivityView is not edit', () => {
-      rootState.currentActivityView = activityBarViews.commit;
+      rootState.currentActivityView = leftSidebarViews.commit.name;
 
       expect(
         getters.showFileTemplatesBar(

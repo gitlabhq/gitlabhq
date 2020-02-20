@@ -121,9 +121,12 @@ RSpec.configure do |config|
   config.include ExpectRequestWithStatus, type: :request
   config.include RailsHelpers
 
-  if ENV['CI']
+  if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.
-    config.default_retry_count = 4
+    config.default_retry_count = ENV.fetch('RETRIES', 3).to_i + 1
+  end
+
+  if ENV['FLAKY_RSPEC_GENERATE_REPORT']
     config.reporter.register_listener(
       RspecFlaky::Listener.new,
       :example_passed,
@@ -137,6 +140,16 @@ RSpec.configure do |config|
 
   config.after(:all) do
     TestEnv.clean_test_path
+  end
+
+  # We can't use an `around` hook here because the wrapping transaction
+  # is not yet opened at the time that is triggered
+  config.prepend_before do
+    Gitlab::Database.set_open_transactions_baseline
+  end
+
+  config.append_after do
+    Gitlab::Database.reset_open_transactions_baseline
   end
 
   config.before do |example|
@@ -176,12 +189,12 @@ RSpec.configure do |config|
     # Stub these calls due to being expensive operations
     # It can be reenabled for specific tests via:
     #
-    # allow(DetectRepositoryLanguagesWorker).to receive(:perform_async).and_call_original
-    # allow(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
-    allow(DetectRepositoryLanguagesWorker).to receive(:perform_async).and_return(true)
+    # expect(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
     allow(Gitlab::Git::KeepAround).to receive(:execute)
 
+    # Clear thread cache and Sidekiq queues
     Gitlab::ThreadMemoryCache.cache_backend.clear
+    Sidekiq::Worker.clear_all
 
     # Temporary patch to force admin mode to be active by default in tests when
     # using the feature flag :user_mode_in_session, since this will require
@@ -208,20 +221,23 @@ RSpec.configure do |config|
     example.run if config.inclusion_filter[:quarantine]
   end
 
-  config.before(:example, :request_store) do
+  config.around(:example, :request_store) do |example|
     RequestStore.begin!
-  end
 
-  config.after(:example, :request_store) do
+    example.run
+
     RequestStore.end!
     RequestStore.clear!
   end
 
-  config.after do
-    Fog.unmock! if Fog.mock?
+  config.around do |example|
+    # Wrap each example in it's own context to make sure the contexts don't
+    # leak
+    Labkit::Context.with_context { example.run }
   end
 
   config.after do
+    Fog.unmock! if Fog.mock?
     Gitlab::CurrentSettings.clear_in_memory_application_settings!
   end
 
@@ -236,90 +252,6 @@ RSpec.configure do |config|
     Gitlab::Metrics.reset_registry!
   end
 
-  config.around(:each, :use_clean_rails_memory_store_caching) do |example|
-    caching_store = Rails.cache
-    Rails.cache = ActiveSupport::Cache::MemoryStore.new
-
-    example.run
-
-    Rails.cache = caching_store
-  end
-
-  config.around do |example|
-    # Wrap each example in it's own context to make sure the contexts don't
-    # leak
-    Labkit::Context.with_context { example.run }
-  end
-
-  config.around(:each, :clean_gitlab_redis_cache) do |example|
-    redis_cache_cleanup!
-
-    example.run
-
-    redis_cache_cleanup!
-  end
-
-  config.around(:each, :clean_gitlab_redis_shared_state) do |example|
-    redis_shared_state_cleanup!
-
-    example.run
-
-    redis_shared_state_cleanup!
-  end
-
-  config.around(:each, :clean_gitlab_redis_queues) do |example|
-    redis_queues_cleanup!
-
-    example.run
-
-    redis_queues_cleanup!
-  end
-
-  config.around(:each, :use_clean_rails_memory_store_fragment_caching) do |example|
-    caching_store = ActionController::Base.cache_store
-    ActionController::Base.cache_store = ActiveSupport::Cache::MemoryStore.new
-    ActionController::Base.perform_caching = true
-
-    example.run
-
-    ActionController::Base.perform_caching = false
-    ActionController::Base.cache_store = caching_store
-  end
-
-  config.around(:each, :use_sql_query_cache) do |example|
-    ActiveRecord::Base.cache do
-      example.run
-    end
-  end
-
-  # The :each scope runs "inside" the example, so this hook ensures the DB is in the
-  # correct state before any examples' before hooks are called. This prevents a
-  # problem where `ScheduleIssuesClosedAtTypeChange` (or any migration that depends
-  # on background migrations being run inline during test setup) can be broken by
-  # altering Sidekiq behavior in an unrelated spec like so:
-  #
-  # around do |example|
-  #   Sidekiq::Testing.fake! do
-  #     example.run
-  #   end
-  # end
-  config.before(:context, :migration) do
-    schema_migrate_down!
-  end
-
-  # Each example may call `migrate!`, so we must ensure we are migrated down every time
-  config.before(:each, :migration) do
-    use_fake_application_settings
-
-    schema_migrate_down!
-  end
-
-  config.after(:context, :migration) do
-    schema_migrate_up!
-
-    Gitlab::CurrentSettings.clear_in_memory_application_settings!
-  end
-
   # This makes sure the `ApplicationController#can?` method is stubbed with the
   # original implementation for all view specs.
   config.before(:each, type: :view) do
@@ -327,59 +259,7 @@ RSpec.configure do |config|
       Ability.allowed?(*args)
     end
   end
-
-  config.before(:each, :http_pages_enabled) do |_|
-    allow(Gitlab.config.pages).to receive(:external_http).and_return(['1.1.1.1:80'])
-  end
-
-  config.before(:each, :https_pages_enabled) do |_|
-    allow(Gitlab.config.pages).to receive(:external_https).and_return(['1.1.1.1:443'])
-  end
-
-  config.before(:each, :http_pages_disabled) do |_|
-    allow(Gitlab.config.pages).to receive(:external_http).and_return(false)
-  end
-
-  config.before(:each, :https_pages_disabled) do |_|
-    allow(Gitlab.config.pages).to receive(:external_https).and_return(false)
-  end
-
-  # We can't use an `around` hook here because the wrapping transaction
-  # is not yet opened at the time that is triggered
-  config.prepend_before do
-    Gitlab::Database.set_open_transactions_baseline
-  end
-
-  config.append_after do
-    Gitlab::Database.reset_open_transactions_baseline
-  end
 end
-
-# add simpler way to match asset paths containing digest strings
-RSpec::Matchers.define :match_asset_path do |expected|
-  match do |actual|
-    path = Regexp.escape(expected)
-    extname = Regexp.escape(File.extname(expected))
-    digest_regex = Regexp.new(path.sub(extname, "(?:-\\h+)?#{extname}") << '$')
-    digest_regex =~ actual
-  end
-
-  failure_message do |actual|
-    "expected that #{actual} would include an asset path for #{expected}"
-  end
-
-  failure_message_when_negated do |actual|
-    "expected that #{actual} would not include an asset path for  #{expected}"
-  end
-end
-
-FactoryBot::SyntaxRunner.class_eval do
-  include RSpec::Mocks::ExampleMethods
-end
-
-# Use FactoryBot 4.x behavior:
-# https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#associations
-FactoryBot.use_parent_strategy = false
 
 ActiveRecord::Migration.maintain_test_schema!
 

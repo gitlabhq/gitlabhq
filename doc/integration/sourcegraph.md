@@ -4,7 +4,7 @@ type: reference, how-to
 
 # Sourcegraph integration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16556) in GitLab 12.5. Please note that this integration is in BETA and [behind a feature flag](#enable-the-sourcegraph-feature-flag).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16556) in GitLab 12.5. Please note that this integration is in BETA and [behind a feature flag](#enable-the-sourcegraph-feature-flag).
 
 [Sourcegraph](https://sourcegraph.com) provides code intelligence features, natively integrated into the GitLab UI.
 
@@ -35,7 +35,7 @@ by instance administrators.
 
 Use these commands to start the Rails console:
 
-```sh
+```shell
 # Omnibus GitLab
 gitlab-rails console
 

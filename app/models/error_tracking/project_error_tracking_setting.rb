@@ -27,6 +27,8 @@ module ErrorTracking
 
     validates :api_url, length: { maximum: 255 }, public_url: { enforce_sanitization: true, ascii_only: true }, allow_nil: true
 
+    validates :enabled, inclusion: { in: [true, false] }
+
     validates :api_url, presence: { message: 'is a required field' }, if: :enabled
 
     validate :validate_api_url_path, if: :enabled
@@ -73,7 +75,9 @@ module ErrorTracking
     end
 
     def sentry_client
-      Sentry::Client.new(api_url, token)
+      strong_memoize(:sentry_client) do
+        Sentry::Client.new(api_url, token)
+      end
     end
 
     def sentry_external_url
@@ -87,7 +91,9 @@ module ErrorTracking
     end
 
     def list_sentry_projects
-      { projects: sentry_client.projects }
+      handle_exceptions do
+        { projects: sentry_client.projects }
+      end
     end
 
     def issue_details(opts = {})

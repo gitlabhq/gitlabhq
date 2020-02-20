@@ -43,7 +43,7 @@ their email address before they are allowed to sign in.
 
 ## Minimum password length limit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20661) in GitLab 12.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20661) in GitLab 12.6
 
 You can [change](../../../security/password_length_limits.md#modify-minimum-password-length-using-gitlab-ui)
 the minimum number of characters a user must have in their password using the GitLab UI.
@@ -95,5 +95,5 @@ Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
-[ce-5259]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5259
-[ce-598]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/598
+[ce-5259]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5259
+[ce-598]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/598

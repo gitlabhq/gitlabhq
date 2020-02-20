@@ -1,0 +1,5 @@
+---
+title: Require other stages than .pre and .post
+merge_request: 23629
+author:
+type: fixed

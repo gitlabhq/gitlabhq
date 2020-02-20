@@ -15,6 +15,10 @@ unless Gitlab::Runtime.sidekiq?
       data
     end
 
+    # This isn't a user-reachable controller; we use it to check for a
+    # valid CSRF token in the API
+    config.lograge.ignore_actions = ['Gitlab::RequestForgeryProtection::Controller#index']
+
     # Add request parameters to log output
     config.lograge.custom_options = lambda do |event|
       params = event.payload[:params]
@@ -24,7 +28,7 @@ unless Gitlab::Runtime.sidekiq?
 
       payload = {
         time: Time.now.utc.iso8601(3),
-        params: params,
+        params: Gitlab::Utils::LogLimitedArray.log_limited_array(params),
         remote_ip: event.payload[:remote_ip],
         user_id: event.payload[:user_id],
         username: event.payload[:username],
@@ -35,6 +39,7 @@ unless Gitlab::Runtime.sidekiq?
       ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
 
       payload[:response] = event.payload[:response] if event.payload[:response]
+      payload[:etag_route] = event.payload[:etag_route] if event.payload[:etag_route]
       payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
 
       if cpu_s = Gitlab::Metrics::System.thread_cpu_duration(::Gitlab::RequestContext.instance.start_thread_cpu_time)

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import '../commons/bootstrap';
 
 // Requires Input behavior
@@ -23,10 +23,10 @@ $.fn.requiresInput = function requiresInput() {
 
   function requireInput() {
     // Collect the input values of *all* required fields
-    const values = _.map($(fieldSelector, $form), field => field.value);
+    const values = Array.from($(fieldSelector, $form)).map(field => field.value);
 
     // Disable the button if any required fields are empty
-    if (values.length && _.some(values, _.isEmpty)) {
+    if (values.length && values.some(isEmpty)) {
       $button.disable();
     } else {
       $button.enable();

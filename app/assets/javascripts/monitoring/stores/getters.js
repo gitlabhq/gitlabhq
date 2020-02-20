@@ -58,5 +58,18 @@ export const metricsWithData = state => groupKey => {
   return res;
 };
 
+/**
+ * Filter environments by names.
+ *
+ * This is used in the environments dropdown with searchable input.
+ *
+ * @param {Object} state
+ * @returns {Array} List of environments
+ */
+export const filteredEnvironments = state =>
+  state.environments.filter(env =>
+    env.name.toLowerCase().includes((state.environmentsSearchTerm || '').trim().toLowerCase()),
+  );
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

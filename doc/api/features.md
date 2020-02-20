@@ -13,7 +13,7 @@ Get a list of all persisted features, with its gate values.
 GET /features
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features
 ```
 
@@ -66,7 +66,7 @@ POST /features/:name
 Note that you can enable or disable a feature for a `feature_group`, a `user`,
 a `group`, and a `project` in a single API call.
 
-```bash
+```shell
 curl --data "value=30" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features/new_library
 ```
 

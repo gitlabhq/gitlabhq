@@ -68,7 +68,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `tag_name` | string | yes | The name of the tag |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/repository/tags/v1.0.0
 ```
 
@@ -116,7 +116,7 @@ Parameters:
 - `message` (optional) - Creates annotated tag.
 - `release_description` (optional) - Add release notes to the Git tag and store it in the GitLab database.
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/tags?tag_name=test&ref=master"
 ```
 

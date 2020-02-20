@@ -9,7 +9,7 @@ const startVersion = { version_index: 4 };
 const mergeRequestVersion = {
   version_path: '123',
 };
-const baseVersionPath = '/gnuwget/wget2/merge_requests/6/diffs?diff_id=37';
+const baseVersionPath = '/gnuwget/wget2/-/merge_requests/6/diffs?diff_id=37';
 
 describe('CompareVersionsDropdown', () => {
   let wrapper;

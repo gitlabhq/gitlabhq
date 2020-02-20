@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RepositoryCheckMailer < BaseMailer
+class RepositoryCheckMailer < ApplicationMailer
   # rubocop: disable CodeReuse/ActiveRecord
   layout 'empty_mailer'
 

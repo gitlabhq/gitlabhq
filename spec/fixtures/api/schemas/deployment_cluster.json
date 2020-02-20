@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": { "type": "string" },
+    "path": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string" }
+      ]
+    },
+    "kubernetes_namespace": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string" }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

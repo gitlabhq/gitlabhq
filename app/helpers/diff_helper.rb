@@ -29,6 +29,8 @@ module DiffHelper
     if action_name == 'diff_for_path'
       options[:expanded] = true
       options[:paths] = params.values_at(:old_path, :new_path)
+    elsif action_name == 'show'
+      options[:include_context_commits] = true unless @project.context_commits_enabled?
     end
 
     options

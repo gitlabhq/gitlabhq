@@ -82,7 +82,7 @@ class Import::BitbucketServerController < Import::BaseController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def filter_added_projects(import_type, import_sources)
-    current_user.created_projects.where(import_type: import_type, import_source: import_sources).includes(:import_state)
+    current_user.created_projects.where(import_type: import_type, import_source: import_sources).with_import_state
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

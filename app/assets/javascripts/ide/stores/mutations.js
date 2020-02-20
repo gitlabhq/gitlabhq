@@ -180,11 +180,6 @@ export default {
       });
     }
   },
-  [types.BURST_UNUSED_SEAL](state) {
-    Object.assign(state, {
-      unusedSeal: false,
-    });
-  },
   [types.SET_LINKS](state, links) {
     Object.assign(state, { links });
   },
@@ -226,6 +221,8 @@ export default {
         state.changedFiles = state.changedFiles.concat(entry);
       }
     }
+
+    state.unusedSeal = false;
   },
   [types.RENAME_ENTRY](state, { path, name, parentPath }) {
     const oldEntry = state.entries[path];

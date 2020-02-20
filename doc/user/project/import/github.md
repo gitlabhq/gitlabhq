@@ -42,7 +42,7 @@ assignees in the database of the GitLab instance (note that pull requests are ca
 
 For this association to succeed, prior to the import, each GitHub author and assignee in the repository must
 have either previously logged in to a GitLab account using the GitHub icon **or** have a GitHub account with
-a [public email address](https://help.github.com/en/articles/setting-your-commit-email-address) that
+a [primary email address](https://help.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address) that
 matches their GitLab account's email address.
 
 If a user referenced in the project is not found in GitLab's database, the project creator (typically the user

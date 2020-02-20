@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import Icon from '~/vue_shared/components/icon.vue';
 
 describe('clipboard button', () => {
   let wrapper;
@@ -29,7 +28,7 @@ describe('clipboard button', () => {
     it('renders a button for clipboard', () => {
       expect(wrapper.find(GlButton).exists()).toBe(true);
       expect(wrapper.attributes('data-clipboard-text')).toBe('copy me');
-      expect(wrapper.find(Icon).props('name')).toBe('duplicate');
+      expect(wrapper.find(GlIcon).props('name')).toBe('copy-to-clipboard');
     });
 
     it('should have a tooltip with default values', () => {

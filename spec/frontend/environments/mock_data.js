@@ -1,3 +1,31 @@
+const devProps = {
+  id: 7,
+  name: 'DEV',
+  state: 'available',
+  external_url: null,
+  environment_type: null,
+  last_deployment: null,
+  has_stop_action: false,
+  environment_path: '/root/review-app/environments/7',
+  stop_path: '/root/review-app/environments/7/stop',
+  created_at: '2017-01-31T10:53:46.894Z',
+  updated_at: '2017-01-31T10:53:46.894Z',
+};
+
+const buildProps = {
+  id: 12,
+  name: 'build/update-README',
+  state: 'available',
+  external_url: null,
+  environment_type: 'build',
+  last_deployment: null,
+  has_stop_action: false,
+  environment_path: '/root/review-app/environments/12',
+  stop_path: '/root/review-app/environments/12/stop',
+  created_at: '2017-02-01T19:42:18.400Z',
+  updated_at: '2017-02-01T19:42:18.400Z',
+};
+
 const environment = {
   name: 'production',
   size: 1,
@@ -66,6 +94,18 @@ const environment = {
   auto_stop_at: null,
 };
 
+const environmentsList = [
+  {
+    size: 1,
+    ...devProps,
+  },
+  {
+    folderName: 'build',
+    size: 5,
+    ...buildProps,
+  },
+];
+
 const folder = {
   name: 'review',
   folderName: 'review',
@@ -77,6 +117,23 @@ const folder = {
     environment_path: 'url',
   },
 };
+
+const serverData = [
+  {
+    name: 'DEV',
+    size: 1,
+    latest: {
+      ...devProps,
+    },
+  },
+  {
+    name: 'build',
+    size: 5,
+    latest: {
+      ...buildProps,
+    },
+  },
+];
 
 const tableData = {
   name: {
@@ -108,4 +165,4 @@ const tableData = {
   },
 };
 
-export { environment, folder, tableData };
+export { environment, environmentsList, folder, serverData, tableData };

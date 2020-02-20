@@ -48,14 +48,14 @@ describe Avatarable do
       end
 
       it 'calls local_url twice for path and URLs' do
-        expect(project.avatar).to receive(:local_url).exactly(2).times.and_call_original
+        expect(project.avatar).to receive(:local_url).twice.and_call_original
 
         expect(project.avatar_path(only_path: true)).to eq(avatar_path)
         expect(project.avatar_path(only_path: false)).to eq(avatar_url)
       end
 
       it 'calls local_url twice for different sizes' do
-        expect(project.avatar).to receive(:local_url).exactly(2).times.and_call_original
+        expect(project.avatar).to receive(:local_url).twice.and_call_original
 
         expect(project.avatar_path).to eq(avatar_path)
         expect(project.avatar_path(size: 40)).to eq(avatar_path + "?width=40")
@@ -64,7 +64,7 @@ describe Avatarable do
       it 'handles unpersisted objects' do
         new_project = build(:project, :with_avatar)
         path = [relative_url_root, new_project.avatar.local_url].join
-        expect(new_project.avatar).to receive(:local_url).exactly(2).times.and_call_original
+        expect(new_project.avatar).to receive(:local_url).twice.and_call_original
 
         2.times do
           expect(new_project.avatar_path).to eq(path)

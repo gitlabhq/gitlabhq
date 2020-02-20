@@ -36,7 +36,7 @@ module Ci
 
       Ci::ProcessPipelineService
         .new(pipeline)
-        .execute(completed_build_ids)
+        .execute(completed_build_ids, initial_process: true)
     end
   end
 end

@@ -56,6 +56,7 @@ The following API resources are available in the project context:
 | [Project milestones](milestones.md)                                 | `/projects/:id/milestones`                                                                                                                                                                            |
 | [Project snippets](project_snippets.md)                             | `/projects/:id/snippets`                                                                                                                                                                              |
 | [Project templates](project_templates.md)                           | `/projects/:id/templates`                                                                                                                                                                             |
+| [Protected_environments](protected_environments.md)                 | `/projects/:id/protected_environments`                                                                                                                                                                |
 | [Protected branches](protected_branches.md)                         | `/projects/:id/protected_branches`                                                                                                                                                                    |
 | [Protected tags](protected_tags.md)                                 | `/projects/:id/protected_tags`                                                                                                                                                                        |
 | [Releases](releases/index.md)                                       | `/projects/:id/releases`                                                                                                                                                                              |
@@ -130,7 +131,7 @@ The following API resources are available outside of project and group contexts 
 | [Projects](projects.md)                           | `/users/:id/projects` (also available for projects)                     |
 | [Runners](runners.md)                             | `/runners` (also available for projects)                                |
 | [Search](search.md)                               | `/search` (also available for groups and projects)                      |
-| [Settings](settings.md)                           | `/application/settings`                                                 |
+| [Settings](settings.md) **(CORE ONLY)**           | `/application/settings`                                                 |
 | [Statistics](statistics.md)                       | `/application/statistics`                                               |
 | [Sidekiq metrics](sidekiq_metrics.md)             | `/sidekiq`                                                              |
 | [Suggestions](suggestions.md)                     | `/suggestions`                                                          |

@@ -1,0 +1,6 @@
+---
+title: Clean backgroud_migration queue from ActivatePrometheusServicesForSharedCluster
+  jobs.
+merge_request: 24135
+author:
+type: fixed

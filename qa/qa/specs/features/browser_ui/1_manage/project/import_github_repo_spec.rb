@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # https://gitlab.com/gitlab-org/gitlab/issues/26952
-  # BUG_IN_CODE
-  context 'Manage', :github, :quarantine do
+  context 'Manage', :github, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/26952', type: :bug } do
     describe 'Project import from GitHub' do
       let(:imported_project) do
         Resource::ProjectImportedFromGithub.fabricate! do |project|

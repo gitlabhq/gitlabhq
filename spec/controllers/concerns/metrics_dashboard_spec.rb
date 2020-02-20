@@ -23,7 +23,7 @@ describe MetricsDashboard do
       routes.draw { get "metrics_dashboard" => "anonymous#metrics_dashboard" }
       response = get :metrics_dashboard, format: :json
 
-      JSON.parse(response.parsed_body)
+      response.parsed_body
     end
 
     context 'when no parameters are provided' do
@@ -45,6 +45,7 @@ describe MetricsDashboard do
       it 'returns the specified dashboard' do
         expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
         expect(json_response).not_to have_key('all_dashboards')
+        expect(json_response).not_to have_key('metrics_data')
       end
 
       context 'when the params are in an alternate format' do
@@ -53,6 +54,25 @@ describe MetricsDashboard do
         it 'returns the specified dashboard' do
           expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
           expect(json_response).not_to have_key('all_dashboards')
+          expect(json_response).not_to have_key('metrics_data')
+        end
+      end
+
+      context 'when environment for dashboard is available' do
+        let(:params) { { environment: environment } }
+
+        before do
+          allow(controller).to receive(:project).and_return(project)
+          allow(controller).to receive(:environment).and_return(environment)
+          allow(controller)
+            .to receive(:metrics_dashboard_params)
+                  .and_return(params)
+        end
+
+        it 'returns the specified dashboard' do
+          expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
+          expect(json_response).not_to have_key('all_dashboards')
+          expect(json_response).to have_key('metrics_data')
         end
       end
 
@@ -72,7 +92,7 @@ describe MetricsDashboard do
 
           it 'includes project_blob_path only for project dashboards' do
             expect(system_dashboard['project_blob_path']).to be_nil
-            expect(project_dashboard['project_blob_path']).to eq("/#{project.namespace.path}/#{project.name}/blob/master/.gitlab/dashboards/test.yml")
+            expect(project_dashboard['project_blob_path']).to eq("/#{project.namespace.path}/#{project.name}/-/blob/master/.gitlab/dashboards/test.yml")
           end
 
           describe 'project permissions' do

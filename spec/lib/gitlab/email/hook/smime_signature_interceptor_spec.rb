@@ -20,8 +20,14 @@ describe Gitlab::Email::Hook::SmimeSignatureInterceptor do
     Gitlab::Email::Smime::Certificate.new(@cert[:key], @cert[:cert])
   end
 
+  let(:mail_body) { "signed hello with Unicode €áø and\r\n newlines\r\n" }
+
   let(:mail) do
-    ActionMailer::Base.mail(to: 'test@example.com', from: 'info@example.com', body: 'signed hello')
+    ActionMailer::Base.mail(to: 'test@example.com',
+                            from: 'info@example.com',
+                            content_transfer_encoding: 'quoted-printable',
+                            content_type: 'text/plain; charset=UTF-8',
+                            body: mail_body)
   end
 
   before do
@@ -46,9 +52,16 @@ describe Gitlab::Email::Hook::SmimeSignatureInterceptor do
       ca_cert: root_certificate.cert,
       signed_data: mail.encoded)
 
+    # re-verify signature from a new Mail object content
+    # See https://gitlab.com/gitlab-org/gitlab/issues/197386
+    Gitlab::Email::Smime::Signer.verify_signature(
+      cert: certificate.cert,
+      ca_cert: root_certificate.cert,
+      signed_data: Mail.new(mail).encoded)
+
     # envelope in a Mail object and obtain the body
     decoded_mail = Mail.new(p7enc.data)
 
-    expect(decoded_mail.body.encoded).to eq('signed hello')
+    expect(decoded_mail.body.decoded.dup.force_encoding(decoded_mail.charset)).to eq(mail_body)
   end
 end

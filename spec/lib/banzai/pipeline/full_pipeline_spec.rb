@@ -99,4 +99,35 @@ describe Banzai::Pipeline::FullPipeline do
       end
     end
   end
+
+  describe 'table of contents' do
+    let(:project) { create(:project, :public) }
+    let(:markdown) do
+      <<-MARKDOWN.strip_heredoc
+          [[_TOC_]]
+
+          # Header
+      MARKDOWN
+    end
+    let(:invalid_markdown) do
+      <<-MARKDOWN.strip_heredoc
+          test [[_TOC_]]
+
+          # Header
+      MARKDOWN
+    end
+
+    it 'inserts a table of contents' do
+      output = described_class.to_html(markdown, project: project)
+
+      expect(output).to include("<ul class=\"section-nav\">")
+      expect(output).to include("<li><a href=\"#header\">Header</a></li>")
+    end
+
+    it 'does not insert a table of contents' do
+      output = described_class.to_html(invalid_markdown, project: project)
+
+      expect(output).to include("test [[<em>TOC</em>]]")
+    end
+  end
 end

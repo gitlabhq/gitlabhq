@@ -229,10 +229,10 @@ describe Banzai::Filter::CommitRangeReferenceFilter do
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
-      exp = act = "Fixed #{project2.to_reference}@#{commit1.id.reverse}...#{commit2.id}"
+      exp = act = "Fixed #{project2.to_reference_base}@#{commit1.id.reverse}...#{commit2.id}"
       expect(reference_filter(act).to_html).to eq exp
 
-      exp = act = "Fixed #{project2.to_reference}@#{commit1.id}...#{commit2.id.reverse}"
+      exp = act = "Fixed #{project2.to_reference_base}@#{commit1.id}...#{commit2.id.reverse}"
       expect(reference_filter(act).to_html).to eq exp
     end
   end

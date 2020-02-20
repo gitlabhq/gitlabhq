@@ -1,6 +1,6 @@
 # Prometheus Metrics library
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/8935) in GitLab 9.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8935) in GitLab 9.0.
 
 GitLab offers automatic detection of select [Prometheus exporters](https://prometheus.io/docs/instrumenting/exporters/).
 

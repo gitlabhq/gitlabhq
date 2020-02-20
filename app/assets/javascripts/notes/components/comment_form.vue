@@ -1,7 +1,7 @@
 <script>
 import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import Autosize from 'autosize';
 import { __, sprintf } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -161,7 +161,7 @@ export default {
       'toggleStateButtonLoading',
     ]),
     setIsSubmitButtonDisabled(note, isSubmitting) {
-      if (!_.isEmpty(note) && !isSubmitting) {
+      if (!isEmpty(note) && !isSubmitting) {
         this.isSubmitButtonDisabled = false;
       } else {
         this.isSubmitButtonDisabled = true;

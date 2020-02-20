@@ -4,94 +4,49 @@ require 'pathname'
 
 module QA
   context 'Configure' do
-    def disable_optional_jobs(project)
-      # Disable code_quality check in Auto DevOps pipeline as it takes
-      # too long and times out the test
-      Resource::CiVariable.fabricate_via_api! do |resource|
-        resource.project = project
-        resource.key = 'CODE_QUALITY_DISABLED'
-        resource.value = '1'
-        resource.masked = false
-      end
-
-      Resource::CiVariable.fabricate_via_api! do |resource|
-        resource.project = project
-        resource.key = 'LICENSE_MANAGEMENT_DISABLED'
-        resource.value = '1'
-        resource.masked = false
-      end
-
-      Resource::CiVariable.fabricate_via_api! do |resource|
-        resource.project = project
-        resource.key = 'SAST_DISABLED'
-        resource.value = '1'
-        resource.masked = false
-      end
-
-      Resource::CiVariable.fabricate_via_api! do |resource|
-        resource.project = project
-        resource.key = 'DEPENDENCY_SCANNING_DISABLED'
-        resource.value = '1'
-        resource.masked = false
-      end
-
-      Resource::CiVariable.fabricate_via_api! do |resource|
-        resource.project = project
-        resource.key = 'CONTAINER_SCANNING_DISABLED'
-        resource.value = '1'
-        resource.masked = false
-      end
-
-      Resource::CiVariable.fabricate_via_api! do |resource|
-        resource.project = project
-        resource.key = 'DAST_DISABLED'
-        resource.value = '1'
-        resource.masked = false
+    let(:project) do
+      Resource::Project.fabricate_via_api! do |project|
+        project.name = Runtime::Env.auto_devops_project_name || 'autodevops-project'
+        project.auto_devops_enabled = true
       end
     end
 
-    # Failure issue: https://gitlab.com/gitlab-org/gitlab/issues/118481
-    describe 'Auto DevOps support', :orchestrated, :kubernetes, :quarantine do
-      context 'when rbac is enabled' do
-        before(:all) do
-          @cluster = Service::KubernetesCluster.new.create!
-        end
+    before do
+      disable_optional_jobs(project)
+    end
 
-        after(:all) do
-          @cluster&.remove!
+    describe 'Auto DevOps support', :orchestrated, :kubernetes do
+      context 'when rbac is enabled' do
+        let(:cluster) { Service::KubernetesCluster.new.create! }
+
+        after do
+          cluster&.remove!
         end
 
         it 'runs auto devops' do
           Flow::Login.sign_in
 
-          @project = Resource::Project.fabricate! do |p|
-            p.name = Runtime::Env.auto_devops_project_name || 'project-with-autodevops'
-            p.description = 'Project with Auto DevOps'
-          end
-
-          disable_optional_jobs(@project)
-
           # Set an application secret CI variable (prefixed with K8S_SECRET_)
           Resource::CiVariable.fabricate! do |resource|
-            resource.project = @project
+            resource.project = project
             resource.key = 'K8S_SECRET_OPTIONAL_MESSAGE'
             resource.value = 'you_can_see_this_variable'
             resource.masked = false
           end
 
           # Connect K8s cluster
-          Resource::KubernetesCluster.fabricate! do |cluster|
-            cluster.project = @project
-            cluster.cluster = @cluster
-            cluster.install_helm_tiller = true
-            cluster.install_ingress = true
-            cluster.install_prometheus = true
-            cluster.install_runner = true
+          Resource::KubernetesCluster.fabricate! do |k8s_cluster|
+            k8s_cluster.project = project
+            k8s_cluster.cluster = cluster
+            k8s_cluster.install_helm_tiller = true
+            k8s_cluster.install_ingress = true
+            k8s_cluster.install_prometheus = true
+            k8s_cluster.install_runner = true
           end
 
           # Create Auto DevOps compatible repo
           Resource::Repository::ProjectPush.fabricate! do |push|
-            push.project = @project
+            push.project = project
             push.directory = Pathname
               .new(__dir__)
               .join('../../../../../fixtures/auto_devops_rack')
@@ -146,20 +101,15 @@ module QA
       before do
         Flow::Login.sign_in
 
-        @project = Resource::Project.fabricate_via_browser_ui! do |p|
-          p.name = "project-with-autodevops-#{SecureRandom.hex(8)}"
-          p.description = 'Project with AutoDevOps'
-        end
+        project.visit!
 
         Page::Project::Menu.perform(&:go_to_ci_cd_settings)
         Page::Project::Settings::CICD.perform(&:expand_auto_devops)
         Page::Project::Settings::AutoDevops.perform(&:enable_autodevops)
 
-        @project.visit!
-
         # Create AutoDevOps repo
         Resource::Repository::ProjectPush.fabricate! do |push|
-          push.project = @project
+          push.project = project
           push.directory = Pathname
             .new(__dir__)
             .join('../../../../../fixtures/auto_devops_rack')
@@ -173,6 +123,23 @@ module QA
 
         Page::Project::Pipeline::Show.perform do |pipeline|
           expect(pipeline).to have_tag('Auto DevOps')
+        end
+      end
+    end
+
+    private
+
+    def disable_optional_jobs(project)
+      %w[
+        CODE_QUALITY_DISABLED LICENSE_MANAGEMENT_DISABLED
+        SAST_DISABLED DAST_DISABLED DEPENDENCY_SCANNING_DISABLED
+        CONTAINER_SCANNING_DISABLED
+      ].each do |key|
+        Resource::CiVariable.fabricate_via_api! do |resource|
+          resource.project = project
+          resource.key = key
+          resource.value = '1'
+          resource.masked = false
         end
       end
     end

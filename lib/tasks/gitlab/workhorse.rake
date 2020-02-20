@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :workhorse do
-    desc "GitLab | Install or upgrade gitlab-workhorse"
+    desc "GitLab | Workhorse | Install or upgrade gitlab-workhorse"
     task :install, [:dir, :repo] => :gitlab_environment do |t, args|
       warn_user_is_not_gitlab
 

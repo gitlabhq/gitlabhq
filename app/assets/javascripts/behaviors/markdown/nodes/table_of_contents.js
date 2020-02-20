@@ -2,6 +2,7 @@
 
 import { Node } from 'tiptap';
 import { __ } from '~/locale';
+import { HIGHER_PARSE_RULE_PRIORITY } from '../constants';
 
 // Transforms generated HTML back to GFM for Banzai::Filter::TableOfContentsFilter
 export default class TableOfContents extends Node {
@@ -16,11 +17,11 @@ export default class TableOfContents extends Node {
       parseDOM: [
         {
           tag: 'ul.section-nav',
-          priority: 51,
+          priority: HIGHER_PARSE_RULE_PRIORITY,
         },
         {
           tag: 'p.table-of-contents',
-          priority: 51,
+          priority: HIGHER_PARSE_RULE_PRIORITY,
         },
       ],
       toDOM: () => ['p', { class: 'table-of-contents' }, __('Table of Contents')],

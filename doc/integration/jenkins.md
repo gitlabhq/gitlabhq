@@ -138,7 +138,7 @@ configured or there was an error reporting the status via the API.
 
 ### Merge Request event does not trigger a Jenkins Pipeline
 
-Check the `/var/log/gitlab/gitlab-rails/production.log` file for messages like:
+Check [service hook logs](../user/project/integrations/project_services.md#troubleshooting-project-services) for request failures or check the `/var/log/gitlab/gitlab-rails/production.log` file for messages like:
 
 ```plaintext
 WebHook Error => Net::ReadTimeout

@@ -64,7 +64,7 @@ export default {
         class="rounded border-0 d-flex ide-entry-dropdown-toggle"
         @click.stop="openDropdown()"
       >
-        <icon name="ellipsis_v" /> <icon name="arrow-down" />
+        <icon name="ellipsis_v" /> <icon name="chevron-down" />
       </button>
       <ul ref="dropdownMenu" class="dropdown-menu dropdown-menu-right">
         <template v-if="type === 'tree'">
@@ -91,7 +91,7 @@ export default {
         </template>
         <li>
           <item-button
-            :label="__('Rename')"
+            :label="__('Rename/Move')"
             class="d-flex"
             icon="pencil"
             icon-classes="mr-2"

@@ -3,6 +3,8 @@
 module API
   class GroupExport < Grape::API
     before do
+      not_found! unless Feature.enabled?(:group_import_export, user_group, default_enabled: true)
+
       authorize! :admin_group, user_group
     end
 
@@ -25,7 +27,7 @@ module API
         detail 'This feature was introduced in GitLab 12.5.'
       end
       post ':id/export' do
-        GroupExportWorker.perform_async(current_user.id, user_group.id, params)
+        GroupExportWorker.perform_async(current_user.id, user_group.id, params) # rubocop:disable CodeReuse/Worker
 
         accepted!
       end

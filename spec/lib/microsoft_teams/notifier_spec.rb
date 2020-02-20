@@ -17,7 +17,7 @@ describe MicrosoftTeams::Notifier do
         text: '[#1 Awesome issue](http://localhost/namespace2/gitlabhq/issues/1)',
         image: 'http://someimage.com'
       },
-      attachments: 'please fix'
+      attachments: "[GitLab](https://gitlab.com)\n\n- _Ruby_\n- **Go**\n"
     }
   end
 
@@ -31,13 +31,7 @@ describe MicrosoftTeams::Notifier do
           'activityImage' => 'http://someimage.com'
         },
         {
-          'title' => 'Details',
-          'facts' => [
-            {
-              'name' => 'Attachments',
-              'value' => 'please fix'
-            }
-          ]
+          text: "[GitLab](https://gitlab.com)\n\n- _Ruby_\n- **Go**\n"
         }
       ],
       'title' => 'JohnDoe4/project2',
@@ -52,6 +46,16 @@ describe MicrosoftTeams::Notifier do
 
     it 'expects to receive successful answer' do
       expect(subject.ping(options)).to be true
+    end
+  end
+
+  describe '#body' do
+    it 'returns Markdown-based body when HTML was passed' do
+      expect(subject.send(:body, options)).to eq(body.to_json)
+    end
+
+    it 'fails when empty Hash was passed' do
+      expect { subject.send(:body, {}) }.to raise_error(ArgumentError)
     end
   end
 end

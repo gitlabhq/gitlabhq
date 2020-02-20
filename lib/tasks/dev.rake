@@ -1,7 +1,7 @@
 task dev: ["dev:setup"]
 
 namespace :dev do
-  desc "GitLab | Setup developer environment (db, fixtures)"
+  desc "GitLab | Dev | Setup developer environment (db, fixtures)"
   task setup: :environment do
     ENV['force'] = 'yes'
     Rake::Task["gitlab:setup"].invoke
@@ -12,7 +12,7 @@ namespace :dev do
     Rake::Task["gitlab:shell:setup"].invoke
   end
 
-  desc "GitLab | Eager load application"
+  desc "GitLab | Dev | Eager load application"
   task load: :environment do
     Rails.configuration.eager_load = true
     Rails.application.eager_load!

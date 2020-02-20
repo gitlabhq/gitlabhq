@@ -23,16 +23,18 @@ describe 'Issue Detail', :js do
   context 'when issue description has xss snippet' do
     before do
       issue.update!(description: '![xss" onload=alert(1);//](a)')
+
       sign_in(user)
       visit project_issue_path(project, issue)
-      wait_for_requests
     end
 
     it 'encodes the description to prevent xss issues' do
       page.within('.issuable-details .detail-page-description') do
+        image = find('img.js-lazy-loaded')
+
         expect(page).to have_selector('img', count: 1)
-        expect(find('img')['onerror']).to be_nil
-        expect(find('img')['src']).to end_with('/a')
+        expect(image['onerror']).to be_nil
+        expect(image['src']).to end_with('/a')
       end
     end
   end

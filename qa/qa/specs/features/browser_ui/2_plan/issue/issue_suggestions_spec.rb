@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan' do
+  context 'Plan', :reliable do
     describe 'issue suggestions' do
       let(:issue_title) { 'Issue Lists are awesome' }
 
@@ -13,7 +13,7 @@ module QA
         end.project.visit!
       end
 
-      it 'user sees issue suggestions when creating a new issue' do
+      it 'shows issue suggestions when creating a new issue' do
         Page::Project::Show.perform(&:go_to_new_issue)
         Page::Project::Issue::New.perform do |new_page|
           new_page.add_title("issue")

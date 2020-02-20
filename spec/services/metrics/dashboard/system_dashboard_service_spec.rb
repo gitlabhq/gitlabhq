@@ -13,7 +13,7 @@ describe Metrics::Dashboard::SystemDashboardService, :use_clean_rails_memory_sto
     project.add_maintainer(user)
   end
 
-  describe 'get_dashboard' do
+  describe '#get_dashboard' do
     let(:dashboard_path) { described_class::DASHBOARD_PATH }
     let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
     let(:service_call) { described_class.new(*service_params).get_dashboard }
@@ -30,7 +30,7 @@ describe Metrics::Dashboard::SystemDashboardService, :use_clean_rails_memory_sto
     end
   end
 
-  describe '::all_dashboard_paths' do
+  describe '.all_dashboard_paths' do
     it 'returns the dashboard attributes' do
       all_dashboards = described_class.all_dashboard_paths(project)
 
@@ -42,6 +42,26 @@ describe Metrics::Dashboard::SystemDashboardService, :use_clean_rails_memory_sto
           system_dashboard: true
         }]
       )
+    end
+  end
+
+  describe '.valid_params?' do
+    let(:params) { { dashboard_path: described_class::DASHBOARD_PATH } }
+
+    subject { described_class.valid_params?(params) }
+
+    it { is_expected.to be_truthy }
+
+    context 'missing dashboard_path' do
+      let(:params) { {} }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'non-matching dashboard_path' do
+      let(:params) { { dashboard_path: 'path/to/bunk.yml' } }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

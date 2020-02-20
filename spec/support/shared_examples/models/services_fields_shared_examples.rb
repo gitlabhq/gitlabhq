@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'issue tracker fields' do
+RSpec.shared_examples 'issue tracker fields' do
   let(:title) { 'custom title' }
   let(:description) { 'custom description' }
   let(:url) { 'http://issue_tracker.example.com' }

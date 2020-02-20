@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20190104182041_cleanup_legacy_artifact_migration.rb')
 
-describe CleanupLegacyArtifactMigration, :migration, :sidekiq, :redis do
+describe CleanupLegacyArtifactMigration, :migration, :redis do
   let(:migration) { spy('migration') }
 
   context 'when still legacy artifacts exist' do

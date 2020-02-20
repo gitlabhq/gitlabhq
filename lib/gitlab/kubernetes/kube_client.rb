@@ -16,6 +16,7 @@ module Gitlab
       SUPPORTED_API_GROUPS = {
         core: { group: 'api', version: 'v1' },
         rbac: { group: 'apis/rbac.authorization.k8s.io', version: 'v1' },
+        apps: { group: 'apis/apps', version: 'v1' },
         extensions: { group: 'apis/extensions', version: 'v1beta1' },
         istio: { group: 'apis/networking.istio.io', version: 'v1alpha3' },
         knative: { group: 'apis/serving.knative.dev', version: 'v1alpha1' }
@@ -74,10 +75,6 @@ module Gitlab
         :update_role_binding,
         to: :rbac_client
 
-      # Deployments resource is currently on the apis/extensions api group
-      delegate :get_deployments,
-        to: :extensions_client
-
       # non-entity methods that can only work with the core client
       # as it uses the pods/log resource
       delegate :get_pod_log,
@@ -93,14 +90,38 @@ module Gitlab
 
       attr_reader :api_prefix, :kubeclient_options
 
+      DEFAULT_KUBECLIENT_OPTIONS = {
+        timeouts: {
+          open: 10,
+          read: 30
+        }
+      }.freeze
+
       # We disable redirects through 'http_max_redirects: 0',
       # so that KubeClient does not follow redirects and
       # expose internal services.
       def initialize(api_prefix, **kubeclient_options)
         @api_prefix = api_prefix
-        @kubeclient_options = kubeclient_options.merge(http_max_redirects: 0)
+        @kubeclient_options = DEFAULT_KUBECLIENT_OPTIONS
+          .deep_merge(kubeclient_options)
+          .merge(http_max_redirects: 0)
 
         validate_url!
+      end
+
+      # Deployments resource is currently on the apis/extensions api group
+      # until Kubernetes 1.15. Kubernetest 1.16+ has deployments resources in
+      # the apis/apps api group.
+      #
+      # As we still support Kubernetes 1.12+, we will need to support both.
+      def get_deployments(**args)
+        extensions_client.discover unless extensions_client.discovered
+
+        if extensions_client.respond_to?(:get_deployments)
+          extensions_client.get_deployments(**args)
+        else
+          apps_client.get_deployments(**args)
+        end
       end
 
       def create_or_update_cluster_role_binding(resource)

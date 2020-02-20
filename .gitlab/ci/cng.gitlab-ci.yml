@@ -1,15 +1,11 @@
 cloud-native-image:
-  extends: .only:variables-canonical-dot-com
+  extends: .cng:rules
   image: ruby:2.6-alpine
   dependencies: []
   stage: post-test
   allow_failure: true
   variables:
     GIT_DEPTH: "1"
-  when: manual
   script:
     - install_gitlab_gem
     - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng
-  only:
-    refs:
-      - tags

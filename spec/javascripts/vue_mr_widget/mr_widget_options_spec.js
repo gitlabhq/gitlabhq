@@ -94,6 +94,61 @@ describe('mrWidgetOptions', () => {
       });
     });
 
+    describe('shouldSuggestPipelines', () => {
+      describe('given suggestPipeline feature flag is enabled', () => {
+        beforeEach(() => {
+          gon.features = { suggestPipeline: true };
+          vm = mountComponent(MrWidgetOptions, {
+            mrData: { ...mockData },
+          });
+        });
+
+        afterEach(() => {
+          gon.features = {};
+        });
+
+        it('should suggest pipelines when none exist', () => {
+          vm.mr.mergeRequestAddCiConfigPath = 'some/path';
+          vm.mr.hasCI = false;
+
+          expect(vm.shouldSuggestPipelines).toBeTruthy();
+        });
+
+        it('should not suggest pipelines when they exist', () => {
+          vm.mr.mergeRequestAddCiConfigPath = null;
+          vm.mr.hasCI = false;
+
+          expect(vm.shouldSuggestPipelines).toBeFalsy();
+        });
+
+        it('should not suggest pipelines hasCI is true', () => {
+          vm.mr.mergeRequestAddCiConfigPath = 'some/path';
+          vm.mr.hasCI = true;
+
+          expect(vm.shouldSuggestPipelines).toBeFalsy();
+        });
+      });
+
+      describe('given suggestPipeline feature flag is not enabled', () => {
+        beforeEach(() => {
+          gon.features = { suggestPipeline: false };
+          vm = mountComponent(MrWidgetOptions, {
+            mrData: { ...mockData },
+          });
+        });
+
+        afterEach(() => {
+          gon.features = {};
+        });
+
+        it('should not suggest pipelines', () => {
+          vm.mr.mergeRequestAddCiConfigPath = null;
+
+          expect(vm.shouldSuggestPipelines).toBeFalsy();
+        });
+      });
+    });
+
     describe('shouldRenderRelatedLinks', () => {
       it('should return false for the initial data', () => {
         expect(vm.shouldRenderRelatedLinks).toBeFalsy();

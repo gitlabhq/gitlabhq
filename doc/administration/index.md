@@ -166,7 +166,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Git configuration options
 
-- [Custom Git hooks](custom_hooks.md): Custom Git hooks (on the filesystem) for when webhooks aren't enough.
+- [Server hooks](server_hooks.md): Server hooks (on the filesystem) for when webhooks aren't enough.
 - [Git LFS configuration](lfs/lfs_administration.md): Learn how to configure LFS for GitLab.
 - [Housekeeping](housekeeping.md): Keep your Git repositories tidy and fast.
 - [Configuring Git Protocol v2](git_protocol.md): Git protocol version 2 support.
@@ -222,8 +222,12 @@ who are aware of the risks.
 - [Troubleshooting PostgreSQL](troubleshooting/postgresql.md)
 - [Guide to test environments](troubleshooting/test_environments.md) (for Support Engineers)
 - [GitLab Rails console commands](troubleshooting/gitlab_rails_cheat_sheet.md) (for Support Engineers)
+- [Troubleshooting SSL](troubleshooting/ssl.md)
 - Useful links:
   - [GitLab Developer Docs](../development/README.md)
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/ch-testing-with-openssl.html)
   - [Strace zine](https://wizardzines.com/zines/strace/)
+- GitLab.com-specific resources:
+  - [Group SAML/SCIM setup](troubleshooting/group_saml_scim.md)
+  

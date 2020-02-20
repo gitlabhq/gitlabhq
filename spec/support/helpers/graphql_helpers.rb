@@ -16,6 +16,20 @@ module GraphqlHelpers
     resolver_class.new(object: obj, context: ctx).resolve(args)
   end
 
+  # Eagerly run a loader's named resolver
+  # (syncs any lazy values returned by resolve)
+  def eager_resolve(resolver_class, **opts)
+    sync(resolve(resolver_class, **opts))
+  end
+
+  def sync(value)
+    if GitlabSchema.lazy?(value)
+      GitlabSchema.sync_lazy(value)
+    else
+      value
+    end
+  end
+
   # Runs a block inside a BatchLoader::Executor wrapper
   def batch(max_queries: nil, &blk)
     wrapper = proc do
@@ -39,7 +53,7 @@ module GraphqlHelpers
   def batch_sync(max_queries: nil, &blk)
     wrapper = proc do
       lazy_vals = yield
-      lazy_vals.is_a?(Array) ? lazy_vals.map(&:sync) : lazy_vals&.sync
+      lazy_vals.is_a?(Array) ? lazy_vals.map { |val| sync(val) } : sync(lazy_vals)
     end
 
     batch(max_queries: max_queries, &wrapper)
@@ -136,6 +150,7 @@ module GraphqlHelpers
     allow_unlimited_graphql_complexity
     allow_unlimited_graphql_depth
     allow_high_graphql_recursion
+    allow_high_graphql_transaction_threshold
 
     type = GitlabSchema.types[class_name.to_s]
     return "" unless type
@@ -163,14 +178,25 @@ module GraphqlHelpers
 
   def attributes_to_graphql(attributes)
     attributes.map do |name, value|
-      value_str = if value.is_a?(Array)
-                    '["' + value.join('","') + '"]'
-                  else
-                    "\"#{value}\""
-                  end
+      value_str = as_graphql_literal(value)
 
       "#{GraphqlHelpers.fieldnamerize(name.to_s)}: #{value_str}"
     end.join(", ")
+  end
+
+  # Fairly dumb Ruby => GraphQL rendering function. Only suitable for testing.
+  # Use symbol for Enum values
+  def as_graphql_literal(value)
+    case value
+    when Array then "[#{value.map { |v| as_graphql_literal(v) }.join(',')}]"
+    when Integer, Float then value.to_s
+    when String then "\"#{value.gsub(/"/, '\\"')}\""
+    when Symbol then value
+    when nil then 'null'
+    when true then 'true'
+    when false then 'false'
+    else raise ArgumentError, "Cannot represent #{value} as GraphQL literal"
+    end
   end
 
   def post_multiplex(queries, current_user: nil, headers: {})
@@ -213,6 +239,11 @@ module GraphqlHelpers
   # Raises an error if no data is found
   def graphql_data
     json_response['data'] || (raise NoData, graphql_errors)
+  end
+
+  def graphql_data_at(*path)
+    keys = path.map { |segment| GraphqlHelpers.fieldnamerize(segment) }
+    graphql_data.dig(*keys)
   end
 
   def graphql_errors
@@ -295,6 +326,10 @@ module GraphqlHelpers
     allow_any_instance_of(Gitlab::Graphql::QueryAnalyzers::RecursionAnalyzer).to receive(:recursion_threshold).and_return 1000
   end
 
+  def allow_high_graphql_transaction_threshold
+    stub_const("Gitlab::QueryLimiting::Transaction::THRESHOLD", 1000)
+  end
+
   def node_array(data, extract_attribute = nil)
     data.map do |item|
       extract_attribute ? item['node'][extract_attribute] : item['node']
@@ -314,6 +349,39 @@ module GraphqlHelpers
 
   def custom_graphql_error(path, msg)
     a_hash_including('path' => path, 'message' => msg)
+  end
+
+  def type_factory
+    Class.new(Types::BaseObject) do
+      graphql_name 'TestType'
+
+      field :name, GraphQL::STRING_TYPE, null: true
+
+      yield(self) if block_given?
+    end
+  end
+
+  def query_factory
+    Class.new(Types::BaseObject) do
+      graphql_name 'TestQuery'
+
+      yield(self) if block_given?
+    end
+  end
+
+  def execute_query(query_type)
+    schema = Class.new(GraphQL::Schema) do
+      use Gitlab::Graphql::Authorize
+      use Gitlab::Graphql::Connections
+
+      query(query_type)
+    end
+
+    schema.execute(
+      query_string,
+      context: { current_user: user },
+      variables: {}
+    )
   end
 end
 

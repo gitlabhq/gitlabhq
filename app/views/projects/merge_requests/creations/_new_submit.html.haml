@@ -47,4 +47,5 @@
           = render 'projects/merge_requests/pipelines', endpoint: url_for(safe_params.merge(action: 'pipelines', format: :json)), disable_initialization: true
 
   .mr-loading-status
-    = spinner
+    .loading.hide
+      .spinner.spinner-md

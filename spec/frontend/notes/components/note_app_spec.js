@@ -12,6 +12,8 @@ import '~/behaviors/markdown/render_gfm';
 import * as mockData from '../../notes/mock_data';
 import * as urlUtility from '~/lib/utils/url_utility';
 
+jest.mock('~/user_popovers', () => jest.fn());
+
 setTestTimeout(1000);
 
 describe('note_app', () => {

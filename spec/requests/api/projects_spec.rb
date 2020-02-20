@@ -6,8 +6,6 @@ shared_examples 'languages and percentages JSON response' do
   let(:expected_languages) { project.repository.languages.map { |language| language.values_at(:label, :value)}.to_h }
 
   before do
-    allow(DetectRepositoryLanguagesWorker).to receive(:perform_async).and_call_original
-
     allow(project.repository).to receive(:languages).and_return(
       [{ value: 66.69, label: "Ruby", color: "#701516", highlight: "#701516" },
        { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
@@ -812,7 +810,7 @@ describe API::Projects do
 
       post api('/projects', user), params: project
 
-      expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/somewhere/blob/master/README.md")
+      expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/somewhere/-/blob/master/README.md")
     end
 
     it 'sets tag list to a project' do
@@ -1340,6 +1338,7 @@ describe API::Projects do
         expect(json_response['path']).to be_present
         expect(json_response['issues_enabled']).to be_present
         expect(json_response['merge_requests_enabled']).to be_present
+        expect(json_response['can_create_merge_request_in']).to be_present
         expect(json_response['wiki_enabled']).to be_present
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
@@ -1390,15 +1389,18 @@ describe API::Projects do
         expect(json_response['path']).to be_present
         expect(json_response['issues_enabled']).to be_present
         expect(json_response['merge_requests_enabled']).to be_present
+        expect(json_response['can_create_merge_request_in']).to be_present
         expect(json_response['wiki_enabled']).to be_present
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
         expect(json_response['snippets_access_level']).to be_present
+        expect(json_response['pages_access_level']).to be_present
         expect(json_response['repository_access_level']).to be_present
         expect(json_response['issues_access_level']).to be_present
         expect(json_response['merge_requests_access_level']).to be_present
         expect(json_response['wiki_access_level']).to be_present
         expect(json_response['builds_access_level']).to be_present
+        expect(json_response).to have_key('emails_disabled')
         expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['remove_source_branch_after_merge']).to be_truthy
         expect(json_response['container_registry_enabled']).to be_present
@@ -1409,18 +1411,18 @@ describe API::Projects do
         expect(json_response['namespace']).to be_present
         expect(json_response['import_status']).to be_present
         expect(json_response).to include("import_error")
-        expect(json_response['avatar_url']).to be_nil
+        expect(json_response).to have_key('avatar_url')
         expect(json_response['star_count']).to be_present
         expect(json_response['forks_count']).to be_present
         expect(json_response['public_jobs']).to be_present
-        expect(json_response['ci_config_path']).to be_nil
+        expect(json_response).to have_key('ci_config_path')
         expect(json_response['shared_with_groups']).to be_an Array
         expect(json_response['shared_with_groups'].length).to eq(1)
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
         expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
         expect(json_response['shared_with_groups'][0]['group_full_path']).to eq(group.full_path)
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
-        expect(json_response['shared_with_groups'][0]['expires_at']).to be_nil
+        expect(json_response['shared_with_groups'][0]).to have_key('expires_at')
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['ci_default_git_depth']).to eq(project.ci_default_git_depth)
@@ -2228,6 +2230,26 @@ describe API::Projects do
         expect(response).to have_gitlab_http_status(200)
 
         expect(json_response['builds_access_level']).to eq('private')
+      end
+
+      it 'updates pages_access_level' do
+        project_param = { pages_access_level: 'private' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['pages_access_level']).to eq('private')
+      end
+
+      it 'updates emails_disabled' do
+        project_param = { emails_disabled: true }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response['emails_disabled']).to eq(true)
       end
 
       it 'updates build_git_strategy' do

@@ -11,24 +11,32 @@ export default {
     BranchesSearchList,
     MergeRequestSearchList,
   },
+  props: {
+    showMergeRequests: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
 };
 </script>
 
 <template>
   <div class="ide-nav-form p-0">
-    <tabs stop-propagation>
+    <tabs v-if="showMergeRequests" stop-propagation>
       <tab active>
-        <template slot="title">
-          {{ __('Merge Requests') }}
-        </template>
-        <merge-request-search-list />
-      </tab>
-      <tab>
         <template slot="title">
           {{ __('Branches') }}
         </template>
         <branches-search-list />
       </tab>
+      <tab>
+        <template slot="title">
+          {{ __('Merge Requests') }}
+        </template>
+        <merge-request-search-list />
+      </tab>
     </tabs>
+    <branches-search-list v-else />
   </div>
 </template>

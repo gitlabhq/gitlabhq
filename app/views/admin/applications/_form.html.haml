@@ -30,6 +30,14 @@
       %span.form-text.text-muted
         Trusted applications are automatically authorized on GitLab OAuth flow.
 
+  = content_tag :div, class: 'form-group row' do
+    .col-sm-2.col-form-label.pt-0
+      = f.label :confidential
+    .col-sm-10
+      = f.check_box :confidential
+      %span.form-text.text-muted
+        = _('The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.')
+
   .form-group.row
     .col-sm-2.col-form-label.pt-0
       = f.label :scopes

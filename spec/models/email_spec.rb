@@ -15,11 +15,6 @@ describe Email do
   end
 
   describe '#update_invalid_gpg_signatures' do
-    let(:user) do
-      create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
-        user.skip_reconfirmation!
-      end
-    end
     let(:user) { create(:user) }
 
     it 'synchronizes the gpg keys when the email is updated' do

@@ -36,9 +36,7 @@ module Snippets
     attr_reader :snippet
 
     def user_can_delete_snippet?
-      return can?(current_user, :admin_project_snippet, snippet) if project
-
-      can?(current_user, :admin_personal_snippet, snippet)
+      can?(current_user, :admin_snippet, snippet)
     end
 
     def service_response_error(message, http_status)

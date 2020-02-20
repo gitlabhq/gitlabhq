@@ -2,7 +2,7 @@
 
 class RemoveExpiredMembersWorker
   include ApplicationWorker
-  include CronjobQueue
+  include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
   feature_category :authentication_and_authorization
   worker_resource_boundary :cpu

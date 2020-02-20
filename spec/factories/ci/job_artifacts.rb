@@ -139,6 +139,16 @@ FactoryBot.define do
       end
     end
 
+    trait :lsif do
+      file_type { :lsif }
+      file_format { :raw }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/lsif.json.gz'), 'application/octet-stream')
+      end
+    end
+
     trait :correct_checksum do
       after(:build) do |artifact, evaluator|
         artifact.file_sha256 = Digest::SHA256.file(artifact.file.path).hexdigest

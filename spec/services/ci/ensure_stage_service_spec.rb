@@ -44,7 +44,7 @@ describe Ci::EnsureStageService, '#execute' do
     it 'retries up to two times' do
       job.assign_attributes(stage_id: nil)
 
-      expect(service).to receive(:find_stage).exactly(2).times
+      expect(service).to receive(:find_stage).twice
 
       expect { service.execute(job) }
         .to raise_error(Ci::EnsureStageService::EnsureStageError)

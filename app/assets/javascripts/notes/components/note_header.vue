@@ -63,13 +63,13 @@ export default {
 
 <template>
   <div class="note-header-info">
-    <div v-if="includeToggle" class="discussion-actions">
+    <div v-if="includeToggle" ref="discussionActions" class="discussion-actions">
       <button
         class="note-action-button discussion-toggle-button js-vue-toggle-button"
         type="button"
         @click="handleToggle"
       >
-        <i :class="toggleChevronClass" class="fa" aria-hidden="true"></i>
+        <i ref="chevronIcon" :class="toggleChevronClass" class="fa" aria-hidden="true"></i>
         {{ __('Toggle thread') }}
       </button>
     </div>
@@ -90,10 +90,11 @@ export default {
     <span class="note-headline-light note-headline-meta">
       <span class="system-note-message"> <slot></slot> </span>
       <template v-if="createdAt">
-        <span class="system-note-separator">
+        <span ref="actionText" class="system-note-separator">
           <template v-if="actionText">{{ actionText }}</template>
         </span>
         <a
+          ref="noteTimestamp"
           :href="noteTimestampLink"
           class="note-timestamp system-note-separator"
           @click="updateTargetNoteHash"

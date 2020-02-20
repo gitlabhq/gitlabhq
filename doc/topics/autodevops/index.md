@@ -109,6 +109,7 @@ To make full use of Auto DevOps, you will need:
 
   1. A [Kubernetes 1.12+ cluster](../../user/project/clusters/index.md) for the project. The easiest
      way is to add a [new cluster using the GitLab UI](../../user/project/clusters/add_remove_clusters.md#add-new-cluster).
+     For Kubernetes 1.16+ clusters, there is some additional configuration for [Auto Deploy for Kubernetes 1.16+](#kubernetes-116).
   1. NGINX Ingress. You can deploy it to your Kubernetes cluster by installing
      the [GitLab-managed app for Ingress](../../user/clusters/applications.md#ingress),
      once you have configured GitLab's Kubernetes integration in the previous step.
@@ -171,6 +172,16 @@ To make full use of Auto DevOps, you will need:
   To get response metrics (in addition to system metrics), you need to
   [configure Prometheus to monitor NGINX](../../user/project/integrations/prometheus_library/nginx_ingress.md#configuring-nginx-ingress-monitoring).
 
+- **cert-manager** (optional, for TLS/HTTPS)
+
+  To enable HTTPS endpoints for your application, you need to install cert-manager,
+  a native Kubernetes certificate management controller that helps with issuing certificates.
+  Installing cert-manager on your cluster will issue a certificate by
+  [Let’s Encrypt](https://letsencrypt.org/) and ensure that certificates are valid and up-to-date.
+  If you have configured GitLab's Kubernetes integration, you can deploy it to
+  your cluster by installing the
+  [GitLab-managed app for cert-manager](../../user/clusters/applications.md#cert-manager).
+  
 If you do not have Kubernetes or Prometheus installed, then Auto Review Apps,
 Auto Deploy, and Auto Monitoring will be silently skipped.
 
@@ -508,7 +519,7 @@ namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
 Since GitLab 11.4, a [local
-Tiller](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22036) is
+Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
@@ -600,7 +611,7 @@ namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
 Since GitLab 11.4, a [local
-Tiller](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22036) is
+Tiller](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22036) is
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
@@ -624,6 +635,30 @@ container image during deployment but in cases where the image needs to
 be pulled again, e.g. after pod eviction, Kubernetes will fail to do so
 as it will be attempting to fetch the image using
 `CI_REGISTRY_PASSWORD`.
+
+#### Kubernetes 1.16+
+
+> [Introduced](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/51) in GitLab 12.8.
+
+CAUTION: **Deprecation**
+The default value of `extensions/v1beta1` for the `deploymentApiVersion` setting is
+deprecated, and is scheduled to be changed to a new default of `apps/v1` in
+[GitLab 13.0](https://gitlab.com/gitlab-org/charts/auto-deploy-app/issues/47).
+
+In Kubernetes 1.16 onwards, a number of [APIs were removed](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/),
+including support for `Deployment` in the `extensions/v1beta1` version.
+
+To use Auto Deploy on a Kubernetes 1.16+ cluster, you must:
+
+1. Set the following in the [`.gitlab/auto-deploy-values.yaml` file](#customize-values-for-helm-chart):
+
+   ```yml
+   deploymentApiVersion: apps/v1
+   ```
+
+1. Set the `POSTGRES_ENABLED` variable to `false`. This will disable Auto Deploy's deployment of PostgreSQL.
+Support for enabling Auto Deploy's deployment of PostgreSQL in a Kubernetes 1.16+ cluster
+is [planned](https://gitlab.com/gitlab-org/charts/auto-deploy-app/issues/28).
 
 #### Migrations
 
@@ -659,15 +694,13 @@ procfile exec` to replicate the environment where your application will run.
 
 #### Workers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30628) in GitLab 12.6, `.gitlab/auto-deploy-values.yaml` will be used by default for Helm upgrades.
-
 Some web applications need to run extra deployments for "worker processes". For
 example, it is common in a Rails application to have a separate worker process
 to run background tasks like sending emails.
 
 The [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app)
 used in Auto Deploy [has support for running worker
-processes](https://gitlab.com/gitlab-org/charts/auto-deploy-app/merge_requests/9).
+processes](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/9).
 
 In order to run a worker, you'll need to ensure that it is able to respond to
 the standard health checks, which expect a successful HTTP response on port
@@ -683,17 +716,8 @@ need to:
   ensure it's passed into your deployments.
 
 Once you have configured your worker to respond to health checks, run a Sidekiq
-worker for your Rails application. For:
-
-- GitLab 12.6 and later, either:
-  - Add a file named `.gitlab/auto-deploy-values.yaml` to your repository. It will
-    be automatically used if found.
-  - Add a file with a different name or path to the repository, and override the value of the
-    `HELM_UPGRADE_VALUES_FILE` variable with the path and name.
-- GitLab 12.5 and earlier, run the worker with the `--values` parameter that specifies
-  a file in the repository.
-
-In any case, the file must contain the following:
+worker for your Rails application. You can enable workers by setting the
+following in the [`.gitlab/auto-deploy-values.yaml` file](#customize-values-for-helm-chart):
 
 ```yml
 workers:
@@ -713,6 +737,89 @@ workers:
     terminationGracePeriodSeconds: 60
 ```
 
+#### Network Policy
+
+> [Introduced](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/30) in GitLab 12.7.
+
+By default, all Kubernetes pods are
+[non-isolated](https://kubernetes.io/docs/concepts/services-networking/network-policies/#isolated-and-non-isolated-pods)
+and accept traffic from any source. You can use
+[NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+to restrict connections to selected pods or namespaces.
+
+NOTE: **Note:**
+You must use a Kubernetes network plugin that implements support for
+`NetworkPolicy`, the default network plugin for Kubernetes (`kubenet`)
+[doesn't implement](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/#kubenet)
+support for it. The [Cilium](https://cilium.io/) network plugin can be
+installed as a [cluster application](../../user/clusters/applications.md#install-cilium-using-gitlab-ci)
+to enable support for network policies.
+
+You can enable deployment of a network policy by setting the following
+in the `.gitlab/auto-deploy-values.yaml` file:
+
+```yml
+networkPolicy:
+  enabled: true
+```
+
+The default policy deployed by the auto deploy pipeline will allow
+traffic within a local namespace and from the `gitlab-managed-apps`
+namespace, all other inbound connection will be blocked. Outbound
+traffic is not affected by the default policy.
+
+You can also provide a custom [policy specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.16/#networkpolicyspec-v1-networking-k8s-io)
+via the `.gitlab/auto-deploy-values.yaml` file, for example:
+
+```yml
+networkPolicy:
+  enabled: true
+  spec:
+    podSelector:
+      matchLabels:
+        app.gitlab.com/env: staging
+    ingress:
+    - from:
+      - podSelector:
+          matchLabels: {}
+      - namespaceSelector:
+          matchLabels:
+            app.gitlab.com/managed_by: gitlab
+```
+
+#### Web Application Firewall (ModSecurity) customization
+
+> [Introduced](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/44) in GitLab 12.8.
+
+Customization on an [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) or on a deployment base is available for clusters with [ModSecurity installed](../../user/clusters/applications.md#web-application-firewall-modsecurity).
+
+To enable ModSecurity with Auto Deploy, you need to create a `.gitlab/auto-deploy-values.yaml` file in your project with the following attributes.
+
+|Attribute | Description | Default |
+-----------|-------------|---------|
+|`enabled` | Enables custom configuration for modsecurity, defaulting to the [Core Rule Set](https://coreruleset.org/) | `false` |
+|`secRuleEngine` | Configures the [rules engine](https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-(v2.x)#secruleengine) | `DetectionOnly` |
+|`secRules` | Creates one or more additional [rule](https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-(v2.x)#SecRule) | `nil` |
+
+In the following `auto-deploy-values.yaml` example, some custom settings
+are enabled for ModSecurity. Those include setting its engine to
+process rules instead of only logging them, while adding two specific
+rules which are header-based:
+
+```yaml
+ingress:
+  modSecurity:
+    enabled: true
+    secRuleEngine: "On"
+    secRules:
+      - variable: "REQUEST_HEADERS:User-Agent"
+        operator: "printer"
+        action: "log,deny,id:'2010',status:403,msg:'printer is an invalid agent'"
+      - variable: "REQUEST_HEADERS:Content-Type"
+        operator: "text/plain"
+        action: "log,deny,id:'2011',status:403,msg:'Text is not supported as content type'"
+```
+
 #### Running commands in the container
 
 Applications built with [Auto Build](#auto-build) using Herokuish, the default
@@ -723,14 +830,14 @@ commands to be wrapped as follows:
 /bin/herokuish procfile exec $COMMAND
 ```
 
-This might be neccessary, for example, when:
+This might be necessary, for example, when:
 
 - Attaching using `kubectl exec`.
 - Using GitLab's [Web Terminal](../../ci/environments.md#web-terminals).
 
 For example, to start a Rails console from the application root directory, run:
 
-```sh
+```shell
 /bin/herokuish procfile exec bin/rails c
 ```
 
@@ -877,8 +984,21 @@ repo or by specifying a project variable:
 - **Project variable** - Create a [project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart to use or create two project variables `AUTO_DEVOPS_CHART_REPOSITORY` with the URL of a custom chart repository and `AUTO_DEVOPS_CHART` with the path to the chart.
 
-You can also make use of the `HELM_UPGRADE_EXTRA_ARGS` environment variable to override the default values in the `values.yaml` file in the [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app).
-To apply your own `values.yaml` file to all Helm upgrade commands in Auto Deploy set `HELM_UPGRADE_EXTRA_ARGS` to `--values my-values.yaml`.
+### Customize values for Helm Chart
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/30628) in GitLab 12.6, `.gitlab/auto-deploy-values.yaml` will be used by default for Helm upgrades.
+
+You can override the default values in the `values.yaml` file in the [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app).
+This can be achieved by either:
+
+- Adding a file named `.gitlab/auto-deploy-values.yaml` to your repository. It will
+  be automatically used if found.
+- Adding a file with a different name or path to the repository, and set the
+  `HELM_UPGRADE_VALUES_FILE` [environment variable](#environment-variables) with the path and name.
+
+NOTE: **Note:**
+For GitLab 12.5 and earlier, the `HELM_UPGRADE_EXTRA_ARGS` environment variable can be used to override the default chart values.
+To do so, set `HELM_UPGRADE_EXTRA_ARGS` to `--values my-values.yaml`.
 
 ### Custom Helm chart per environment
 
@@ -1024,6 +1144,7 @@ Auto DevOps can undo your changes.
 The following table lists variables related to the database.
 
 | **Variable**                            | **Description**                    |
+|-----------------------------------------|------------------------------------|
 | `DB_INITIALIZE`                         | From GitLab 11.4, used to specify the command to run to initialize the application's PostgreSQL database. Runs inside the application pod. |
 | `DB_MIGRATE`                            | From GitLab 11.4, used to specify the command to run to migrate the application's PostgreSQL database. Runs inside the application pod. |
 | `POSTGRES_ENABLED`                      | Whether PostgreSQL is enabled. Defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL. |
@@ -1037,6 +1158,7 @@ The following table lists variables related to the database.
 The following table lists variables related to security tools.
 
 | **Variable**                            | **Description**                    |
+|-----------------------------------------|------------------------------------|
 | `SAST_CONFIDENCE_LEVEL`                 | Minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High. Defaults to `3`. |
 
 #### Disable jobs
@@ -1044,6 +1166,7 @@ The following table lists variables related to security tools.
 The following table lists variables used to disable jobs.
 
 | **Variable**                            | **Description**                    |
+|-----------------------------------------|------------------------------------|
 | `CODE_QUALITY_DISABLED`                 | From GitLab 11.0, used to disable the `codequality` job. If the variable is present, the job will not be created. |
 | `CONTAINER_SCANNING_DISABLED`           | From GitLab 11.0, used to disable the `sast:container` job. If the variable is present, the job will not be created. |
 | `DAST_DISABLED`                         | From GitLab 11.0, used to disable the `dast` job. If the variable is present, the job will not be created. |
@@ -1082,7 +1205,7 @@ variables in the container running the application. Following the
 example above, you can see the secret below containing the
 `RAILS_MASTER_KEY` variable.
 
-```sh
+```shell
 $ kubectl get secret production-secret -n minimal-ruby-app-54 -o yaml
 apiVersion: v1
 data:
@@ -1167,7 +1290,7 @@ service:
 
 #### Deploy policy for staging and production environments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/160)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/-/merge_requests/160)
 in GitLab 10.8.
 
 TIP: **Tip:**
@@ -1186,7 +1309,7 @@ you when you're ready to manually deploy to production.
 
 #### Deploy policy for canary environments **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/171)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/-/merge_requests/171)
 in GitLab 11.0.
 
 A [canary environment](../../user/project/canary_deployments.md) can be used
@@ -1296,7 +1419,7 @@ The banner can be disabled for:
 
   - Through the REST API with an admin access token:
 
-    ```sh
+    ```shell
     curl --data "value=true" --header "PRIVATE-TOKEN: <personal_access_token>" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
     ```
 
@@ -1379,8 +1502,8 @@ spec:
 [postgresql]: https://www.postgresql.org/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [ee]: https://about.gitlab.com/pricing/
-[ce-21955]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21955
-[ce-19507]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19507
+[ce-21955]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21955
+[ce-19507]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19507
 
 ## Development guides
 

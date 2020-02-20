@@ -277,6 +277,7 @@ describe MergeRequest do
 
   describe 'respond to' do
     it { is_expected.to respond_to(:unchecked?) }
+    it { is_expected.to respond_to(:checking?) }
     it { is_expected.to respond_to(:can_be_merged?) }
     it { is_expected.to respond_to(:cannot_be_merged?) }
     it { is_expected.to respond_to(:merge_params) }
@@ -301,7 +302,11 @@ describe MergeRequest do
 
       it 'returns empty requests' do
         latest_merge_request_diff = merge_request.merge_request_diffs.create
-        latest_merge_request_diff.merge_request_diff_commits.where(sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0').delete_all
+
+        MergeRequestDiffCommit.where(
+          merge_request_diff_id: latest_merge_request_diff,
+          sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+        ).delete_all
 
         expect(by_commit_sha).to be_empty
       end
@@ -323,6 +328,16 @@ describe MergeRequest do
       create(:merge_request, :merged, merge_commit_sha: '123def')
 
       expect(described_class.by_merge_commit_sha('123abc')).to eq([mr])
+    end
+  end
+
+  describe '.by_cherry_pick_sha' do
+    it 'returns merge requests that match the given merge commit' do
+      note = create(:track_mr_picking_note, commit_id: '456abc')
+
+      create(:track_mr_picking_note, commit_id: '456def')
+
+      expect(described_class.by_cherry_pick_sha('456abc')).to eq([note.noteable])
     end
   end
 
@@ -1076,8 +1091,8 @@ describe MergeRequest do
   end
 
   describe '#can_remove_source_branch?' do
-    set(:user) { create(:user) }
-    set(:merge_request) { create(:merge_request, :simple) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:merge_request, reload: true) { create(:merge_request, :simple) }
 
     subject { merge_request }
 
@@ -2084,43 +2099,65 @@ describe MergeRequest do
   describe '#check_mergeability' do
     let(:mergeability_service) { double }
 
+    subject { create(:merge_request, merge_status: 'unchecked') }
+
     before do
       allow(MergeRequests::MergeabilityCheckService).to receive(:new) do
         mergeability_service
       end
     end
 
-    context 'if the merge status is unchecked' do
-      before do
-        subject.mark_as_unchecked!
-      end
-
+    shared_examples_for 'method that executes MergeabilityCheckService' do
       it 'executes MergeabilityCheckService' do
         expect(mergeability_service).to receive(:execute)
 
         subject.check_mergeability
       end
+
+      context 'when async is true' do
+        context 'and async_merge_request_check_mergeability feature flag is enabled' do
+          it 'executes MergeabilityCheckService asynchronously' do
+            expect(mergeability_service).to receive(:async_execute)
+
+            subject.check_mergeability(async: true)
+          end
+        end
+
+        context 'and async_merge_request_check_mergeability feature flag is disabled' do
+          before do
+            stub_feature_flags(async_merge_request_check_mergeability: false)
+          end
+
+          it 'executes MergeabilityCheckService' do
+            expect(mergeability_service).to receive(:execute)
+
+            subject.check_mergeability(async: true)
+          end
+        end
+      end
+    end
+
+    context 'if the merge status is unchecked' do
+      it_behaves_like 'method that executes MergeabilityCheckService'
+    end
+
+    context 'if the merge status is checking' do
+      before do
+        subject.mark_as_checking!
+      end
+
+      it_behaves_like 'method that executes MergeabilityCheckService'
     end
 
     context 'if the merge status is checked' do
-      context 'and feature flag is enabled' do
-        it 'executes MergeabilityCheckService' do
-          expect(mergeability_service).not_to receive(:execute)
-
-          subject.check_mergeability
-        end
+      before do
+        subject.mark_as_mergeable!
       end
 
-      context 'and feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_requests_conditional_mergeability_check: false)
-        end
+      it 'does not call MergeabilityCheckService' do
+        expect(MergeRequests::MergeabilityCheckService).not_to receive(:new)
 
-        it 'does not execute MergeabilityCheckService' do
-          expect(mergeability_service).to receive(:execute)
-
-          subject.check_mergeability
-        end
+        subject.check_mergeability
       end
     end
   end
@@ -3145,7 +3182,7 @@ describe MergeRequest do
     describe 'check_state?' do
       it 'indicates whether MR is still checking for mergeability' do
         state_machine = described_class.state_machines[:merge_status]
-        check_states = [:unchecked, :cannot_be_merged_recheck]
+        check_states = [:unchecked, :cannot_be_merged_recheck, :checking]
 
         check_states.each do |merge_status|
           expect(state_machine.check_state?(merge_status)).to be true
@@ -3537,6 +3574,46 @@ describe MergeRequest do
       end
 
       expect(merge_request.recent_visible_deployments.count).to eq(10)
+    end
+  end
+
+  describe '#diffable_merge_ref?' do
+    context 'diff_compare_with_head enabled' do
+      context 'merge request can be merged' do
+        context 'merge_to_ref is not calculated' do
+          it 'returns true' do
+            expect(subject.diffable_merge_ref?).to eq(false)
+          end
+        end
+
+        context 'merge_to_ref is calculated' do
+          before do
+            MergeRequests::MergeToRefService.new(subject.project, subject.author).execute(subject)
+          end
+
+          it 'returns true' do
+            expect(subject.diffable_merge_ref?).to eq(true)
+          end
+        end
+      end
+
+      context 'merge request cannot be merged' do
+        it 'returns false' do
+          subject.mark_as_unchecked!
+
+          expect(subject.diffable_merge_ref?).to eq(false)
+        end
+      end
+    end
+
+    context 'diff_compare_with_head disabled' do
+      before do
+        stub_feature_flags(diff_compare_with_head: { enabled: false, thing: subject.target_project })
+      end
+
+      it 'returns false' do
+        expect(subject.diffable_merge_ref?).to eq(false)
+      end
     end
   end
 end

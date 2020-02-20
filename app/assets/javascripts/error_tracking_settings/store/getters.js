@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { isMatch } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
 import { getDisplayName } from '../utils';
 
@@ -7,7 +7,7 @@ export const hasProjects = state => Boolean(state.projects) && state.projects.le
 export const isProjectInvalid = (state, getters) =>
   Boolean(state.selectedProject) &&
   getters.hasProjects &&
-  !state.projects.some(project => _.isMatch(state.selectedProject, project));
+  !state.projects.some(project => isMatch(state.selectedProject, project));
 
 export const dropdownLabel = (state, getters) => {
   if (state.selectedProject !== null) {

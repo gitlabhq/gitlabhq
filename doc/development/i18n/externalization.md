@@ -1,6 +1,6 @@
 # Internationalization for GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10669) in GitLab 9.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10669) in GitLab 9.2.
 
 For working with internationalization (i18n),
 [GNU gettext](https://www.gnu.org/software/gettext/) is used given it's the most
@@ -77,6 +77,24 @@ Or:
 hello = _("Hello world!")
 ```
 
+Be careful when translating strings at the class or module level since these would only be
+evaluated once at class load time.
+
+For example:
+
+```ruby
+validates :group_id, uniqueness: { scope: [:project_id], message: _("already shared with this group") }
+```
+
+This would be translated when the class is loaded and result in the error message
+always being in the default locale.
+
+Active Record's `:message` option accepts a `Proc`, so we can do this instead:
+
+```ruby
+validates :group_id, uniqueness: { scope: [:project_id], message: -> (object, data) { _("already shared with this group") } }
+```
+
 NOTE: **Note:** Messages in the API (`lib/api/` or `app/graphql`) do
 not need to be externalised.
 
@@ -143,7 +161,11 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
   _("Hello %{name}") % { name: 'Joe' } => 'Hello Joe'
   ```
 
-- In JavaScript:
+- In Vue:
+
+  See the section on [Vue component interpolation](#vue-components-interpolation).
+
+- In JavaScript (when Vue cannot be used):
 
   ```js
   import { __, sprintf } from '~/locale';
@@ -151,14 +173,30 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
   sprintf(__('Hello %{username}'), { username: 'Joe' }); // => 'Hello Joe'
   ```
 
-  By default, `sprintf` escapes the placeholder values.
-  If you want to take care of that yourself, you can pass `false` as third argument.
+  If you want to use markup within the translation and are using Vue, you
+  **must** use the [`gl-sprintf`](#vue-components-interpolation) component. If
+  for some reason you cannot use Vue, use `sprintf` and stop it from escaping
+  placeholder values by passing `false` as its third argument. You **must**
+  escape any interpolated dynamic values yourself, for instance using
+  `escape` from `lodash`.
 
   ```js
+  import { escape } from 'lodash';
   import { __, sprintf } from '~/locale';
 
-  sprintf(__('This is %{value}'), { value: '<strong>bold</strong>' }); // => 'This is &lt;strong&gt;bold&lt;/strong&gt;'
-  sprintf(__('This is %{value}'), { value: '<strong>bold</strong>' }, false); // => 'This is <strong>bold</strong>'
+  let someDynamicValue = '<script>alert("evil")</script>';
+
+  // Dangerous:
+  sprintf(__('This is %{value}'), { value: `<strong>${someDynamicValue}</strong>`, false);
+  // => 'This is <strong><script>alert('evil')</script></strong>'
+
+  // Incorrect:
+  sprintf(__('This is %{value}'), { value: `<strong>${someDynamicValue}</strong>` });
+  // => 'This is &lt;strong&gt;&lt;script&gt;alert(&#x27;evil&#x27;)&lt;/script&gt;&lt;/strong&gt;'
+
+  // OK:
+  sprintf(__('This is %{value}'), { value: `<strong>${escape(someDynamicValue)}</strong>`, false);
+  // => 'This is <strong>&lt;script&gt;alert(&#x27;evil&#x27;)&lt;/script&gt;</strong>'
   ```
 
 ### Plurals
@@ -194,6 +232,31 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make s
   // => When x == 1: 'Last day'
   // => When x == 2: 'Last 2 days'
   ```
+
+The `n_` method should only be used to fetch pluralized translations of the same
+string, not to control the logic of showing different strings for different
+quantities. Some languages have different quantities of target plural forms -
+Chinese (simplified), for example, has only one target plural form in our
+translation tool. This means the translator would have to choose to translate
+only one of the strings and the translation would not behave as intended in the
+other case.
+
+For example, prefer to use:
+
+```ruby
+if selected_projects.one?
+  selected_projects.first.name
+else
+  n__("Project selected", "%d projects selected", selected_projects.count)
+end
+```
+
+rather than:
+
+```ruby
+# incorrect usage example
+n_("%{project_name}", "%d projects selected", count) % { project_name: 'GitLab' }
+```
 
 ### Namespaces
 
@@ -283,7 +346,41 @@ This also applies when using links in between translated sentences, otherwise th
   = s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}').html_safe % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
   ```
 
-- In JavaScript, instead of:
+- In Vue, instead of:
+
+  ```html
+  <template>
+    <div>
+      <gl-sprintf :message="s__('ClusterIntegration|Learn more about %{link}')">
+        <template #link>
+          <gl-link
+            href="https://cloud.google.com/compute/docs/regions-zones/regions-zones"
+            target="_blank"
+          >zones</gl-link>
+        </template>
+      </gl-sprintf>
+    </div>
+  </template>
+  ```
+
+  Set the link starting and ending HTML fragments as placeholders like so:
+
+  ```html
+  <template>
+    <div>
+      <gl-sprintf :message="s__('ClusterIntegration|Learn more about %{linkStart}zones%{linkEnd}')">
+        <template #link="{ content }">
+          <gl-link
+            href="https://cloud.google.com/compute/docs/regions-zones/regions-zones"
+            target="_blank"
+          >{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </div>
+  </template>
+  ```
+
+- In JavaScript (when Vue cannot be used), instead of:
 
   ```js
   {{
@@ -293,12 +390,12 @@ This also applies when using links in between translated sentences, otherwise th
   }}
   ```
 
-  Set the link starting and ending HTML fragments as variables like so:
+  Set the link starting and ending HTML fragments as placeholders like so:
 
   ```js
   {{
       sprintf(s__("ClusterIntegration|Learn more about %{linkStart}zones%{linkEnd}"), {
-          linkStart: '<a href="https://cloud.google.com/compute/docs/regions-zones/regions-zones" target="_blank" rel="noopener noreferrer">'
+          linkStart: '<a href="https://cloud.google.com/compute/docs/regions-zones/regions-zones" target="_blank" rel="noopener noreferrer">',
           linkEnd: '</a>',
       })
   }}
@@ -355,7 +452,7 @@ For more information, see the [`gl-sprintf`](https://gitlab-org.gitlab.io/gitlab
 Now that the new content is marked for translation, we need to update
 `locale/gitlab.pot` files with the following command:
 
-```sh
+```shell
 bin/rake gettext:regenerate
 ```
 
@@ -429,14 +526,14 @@ Let's suppose you want to add translations for a new language, let's say French.
 
 1. Next, you need to add the language:
 
-   ```sh
+   ```shell
    bin/rake gettext:add_language[fr]
    ```
 
    If you want to add a new language for a specific region, the command is similar,
    you just need to separate the region with an underscore (`_`). For example:
 
-   ```sh
+   ```shell
    bin/rake gettext:add_language[en_GB]
    ```
 
@@ -450,7 +547,7 @@ Let's suppose you want to add translations for a new language, let's say French.
    in order to generate the binary MO files and finally update the JSON files
    containing the translations:
 
-   ```sh
+   ```shell
    bin/rake gettext:compile
    ```
 
@@ -460,7 +557,7 @@ Let's suppose you want to add translations for a new language, let's say French.
 1. After checking that the changes are ok, you can proceed to commit the new files.
    For example:
 
-   ```sh
+   ```shell
    git add locale/fr/ app/assets/javascripts/locale/fr/
-   git commit -m "Add French translations for Cycle Analytics page"
+   git commit -m "Add French translations for Value Stream Analytics page"
    ```

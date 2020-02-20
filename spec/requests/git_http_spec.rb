@@ -92,7 +92,7 @@ describe 'Git HTTP requests' do
     it 'allows pulls' do
       download(path, env) do |response|
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+        expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
       end
     end
   end
@@ -101,14 +101,14 @@ describe 'Git HTTP requests' do
     it 'allows pushes', :sidekiq_might_not_need_inline do
       upload(path, env) do |response|
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+        expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
       end
     end
   end
 
   shared_examples_for 'project path without .git suffix' do
     context "GET info/refs" do
-      let(:path) { "/#{project_path}/info/refs" }
+      let(:path) { "/#{repository_path}/info/refs" }
 
       context "when no params are added" do
         before do
@@ -116,7 +116,7 @@ describe 'Git HTTP requests' do
         end
 
         it "redirects to the .git suffix version" do
-          expect(response).to redirect_to("/#{project_path}.git/info/refs")
+          expect(response).to redirect_to("/#{repository_path}.git/info/refs")
         end
       end
 
@@ -128,7 +128,7 @@ describe 'Git HTTP requests' do
         end
 
         it "redirects to the .git suffix version" do
-          expect(response).to redirect_to("/#{project_path}.git/info/refs?service=#{params[:service]}")
+          expect(response).to redirect_to("/#{repository_path}.git/info/refs?service=#{params[:service]}")
         end
       end
 
@@ -140,7 +140,7 @@ describe 'Git HTTP requests' do
         end
 
         it "redirects to the .git suffix version" do
-          expect(response).to redirect_to("/#{project_path}.git/info/refs?service=#{params[:service]}")
+          expect(response).to redirect_to("/#{repository_path}.git/info/refs?service=#{params[:service]}")
         end
       end
 
@@ -159,13 +159,13 @@ describe 'Git HTTP requests' do
 
     context "POST git-upload-pack" do
       it "fails to find a route" do
-        expect { clone_post(project_path) }.to raise_error(ActionController::RoutingError)
+        expect { clone_post(repository_path) }.to raise_error(ActionController::RoutingError)
       end
     end
 
     context "POST git-receive-pack" do
       it "fails to find a route" do
-        expect { push_post(project_path) }.to raise_error(ActionController::RoutingError)
+        expect { push_post(repository_path) }.to raise_error(ActionController::RoutingError)
       end
     end
   end
@@ -211,7 +211,7 @@ describe 'Git HTTP requests' do
         end
 
         it_behaves_like 'project path without .git suffix' do
-          let(:project_path) { "#{user.namespace.path}/project.git-project" }
+          let(:repository_path) { "#{user.namespace.path}/project.git-project" }
         end
       end
     end
@@ -509,7 +509,7 @@ describe 'Git HTTP requests' do
 
                   download(path, env) do
                     expect(response).to have_gitlab_http_status(:ok)
-                    expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+                    expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                   end
                 end
 
@@ -518,7 +518,7 @@ describe 'Git HTTP requests' do
 
                   upload(path, env) do
                     expect(response).to have_gitlab_http_status(:ok)
-                    expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+                    expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                   end
                 end
 
@@ -820,7 +820,7 @@ describe 'Git HTTP requests' do
       end
 
       it_behaves_like 'project path without .git suffix' do
-        let(:project_path) { create(:project, :repository, :public, path: 'project.git-project').full_path }
+        let(:repository_path) { create(:project, :repository, :public, path: 'project.git-project').full_path }
       end
 
       context "retrieving an info/refs file" do
@@ -834,7 +834,7 @@ describe 'Git HTTP requests' do
               Blob.decorate(Gitlab::Git::Blob.find(project.repository, 'master', 'bar/branch-test.txt'), project)
             end
 
-            get "/#{project.full_path}/blob/master/info/refs"
+            get "/#{project.full_path}/-/blob/master/info/refs"
           end
 
           it "returns the file" do
@@ -844,11 +844,11 @@ describe 'Git HTTP requests' do
 
         context "when the file does not exist" do
           before do
-            get "/#{project.full_path}/blob/master/info/refs"
+            get "/#{project.full_path}/-/blob/master/info/refs"
           end
 
           it "redirects" do
-            expect(response).to have_gitlab_http_status(302)
+            expect(response).to have_gitlab_http_status(:found)
           end
         end
       end
@@ -890,7 +890,7 @@ describe 'Git HTTP requests' do
 
           it "responds with status 200" do
             clone_get(path, env) do |response|
-              expect(response).to have_gitlab_http_status(200)
+              expect(response).to have_gitlab_http_status(:ok)
             end
           end
 

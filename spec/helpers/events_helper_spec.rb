@@ -98,7 +98,7 @@ describe EventsHelper do
     it 'returns a commit note url' do
       event.target = create(:note_on_commit, note: '+1 from me')
 
-      expect(subject).to eq("#{project_base_url}/commit/#{event.target.commit_id}#note_#{event.target.id}")
+      expect(subject).to eq("#{project_base_url}/-/commit/#{event.target.commit_id}#note_#{event.target.id}")
     end
 
     it 'returns a project snippet note url' do
@@ -116,7 +116,7 @@ describe EventsHelper do
     it 'returns a merge request url' do
       event.target = create(:note_on_merge_request, note: 'LGTM!')
 
-      expect(subject).to eq("#{project_base_url}/merge_requests/#{event.note_target.iid}#note_#{event.target.id}")
+      expect(subject).to eq("#{project_base_url}/-/merge_requests/#{event.note_target.iid}#note_#{event.target.id}")
     end
   end
 end

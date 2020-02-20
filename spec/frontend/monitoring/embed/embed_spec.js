@@ -26,10 +26,11 @@ describe('Embed', () => {
 
   beforeEach(() => {
     actions = {
-      setFeatureFlags: () => {},
-      setShowErrorBanner: () => {},
-      setEndpoints: () => {},
-      fetchMetricsData: () => {},
+      setFeatureFlags: jest.fn(),
+      setShowErrorBanner: jest.fn(),
+      setEndpoints: jest.fn(),
+      setTimeRange: jest.fn(),
+      fetchDashboard: jest.fn(),
     };
 
     metricsWithDataGetter = jest.fn();
@@ -74,6 +75,18 @@ describe('Embed', () => {
       metricsWithDataGetter.mockReturnValue(metricsWithData);
 
       mountComponent();
+    });
+
+    it('calls actions to fetch data', () => {
+      const expectedTimeRangePayload = expect.objectContaining({
+        start: expect.any(String),
+        end: expect.any(String),
+      });
+
+      expect(actions.setTimeRange).toHaveBeenCalledTimes(1);
+      expect(actions.setTimeRange.mock.calls[0][1]).toEqual(expectedTimeRangePayload);
+
+      expect(actions.fetchDashboard).toHaveBeenCalled();
     });
 
     it('shows a chart when metrics are present', () => {

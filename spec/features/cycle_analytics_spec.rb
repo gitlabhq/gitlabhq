@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Cycle Analytics', :js do
+describe 'Value Stream Analytics', :js do
   let(:user) { create(:user) }
   let(:guest) { create(:user) }
   let(:project) { create(:project, :repository) }
@@ -23,7 +23,7 @@ describe 'Cycle Analytics', :js do
       end
 
       it 'shows introductory message' do
-        expect(page).to have_content('Introducing Cycle Analytics')
+        expect(page).to have_content('Introducing Value Stream Analytics')
       end
 
       it 'shows pipeline summary' do
@@ -38,11 +38,8 @@ describe 'Cycle Analytics', :js do
       end
     end
 
-    context "when there's cycle analytics data" do
+    context "when there's value stream analytics data" do
       before do
-        allow_next_instance_of(Gitlab::ReferenceExtractor) do |instance|
-          allow(instance).to receive(:issues).and_return([issue])
-        end
         project.add_maintainer(user)
 
         @build = create_cycle(user, project, issue, mr, milestone, pipeline)
@@ -101,9 +98,6 @@ describe 'Cycle Analytics', :js do
       project.add_developer(user)
       project.add_guest(guest)
 
-      allow_next_instance_of(Gitlab::ReferenceExtractor) do |instance|
-        allow(instance).to receive(:issues).and_return([issue])
-      end
       create_cycle(user, project, issue, mr, milestone, pipeline)
       deploy_master(user, project)
 

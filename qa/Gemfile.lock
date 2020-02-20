@@ -94,7 +94,7 @@ GEM
       rspec-core (>= 2, < 4, != 2.12.0)
     ruby-debug-ide (0.7.0)
       rake (>= 0.8.1)
-    rubyzip (1.2.2)
+    rubyzip (1.3.0)
     selenium-webdriver (3.142.6)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)

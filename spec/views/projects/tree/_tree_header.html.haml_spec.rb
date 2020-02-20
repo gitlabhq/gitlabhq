@@ -19,12 +19,12 @@ describe 'projects/tree/_tree_header' do
     allow(view).to receive(:can_collaborate_with_project?) { true }
   end
 
-  it 'does not render the WebIDE button when user cannot create fork or cannot open MR' do
+  it 'renders the WebIDE button when user can collaborate but not create fork or MR' do
     allow(view).to receive(:can?) { false }
 
     render
 
-    expect(rendered).not_to have_link('Web IDE')
+    expect(rendered).to have_link('Web IDE')
   end
 
   it 'renders the WebIDE button when user can create fork and can open MR in project' do
@@ -42,5 +42,14 @@ describe 'projects/tree/_tree_header' do
     render
 
     expect(rendered).to have_link('Web IDE', href: '#modal-confirm-fork')
+  end
+
+  it 'does not render the WebIDE button when user cannot collaborate or create mr' do
+    allow(view).to receive(:can?) { false }
+    allow(view).to receive(:can_collaborate_with_project?) { false }
+
+    render
+
+    expect(rendered).not_to have_link('Web IDE')
   end
 end

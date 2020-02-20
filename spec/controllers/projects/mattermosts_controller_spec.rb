@@ -25,7 +25,7 @@ describe Projects::MattermostsController do
             project_id: project
           })
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 

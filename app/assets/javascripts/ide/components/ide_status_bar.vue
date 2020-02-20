@@ -2,6 +2,7 @@
 /* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import { mapActions, mapState, mapGetters } from 'vuex';
 import IdeStatusList from 'ee_else_ce/ide/components/ide_status_list.vue';
+import IdeStatusMr from './ide_status_mr.vue';
 import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import timeAgoMixin from '~/vue_shared/mixins/timeago';
@@ -15,6 +16,7 @@ export default {
     userAvatarImage,
     CiIcon,
     IdeStatusList,
+    IdeStatusMr,
   },
   directives: {
     tooltip,
@@ -27,7 +29,7 @@ export default {
   },
   computed: {
     ...mapState(['currentBranchId', 'currentProjectId']),
-    ...mapGetters(['currentProject', 'lastCommit']),
+    ...mapGetters(['currentProject', 'lastCommit', 'currentMergeRequest']),
     ...mapState('pipelines', ['latestPipeline']),
   },
   watch: {
@@ -79,7 +81,7 @@ export default {
       <span v-if="latestPipeline && latestPipeline.details" class="ide-status-pipeline">
         <button
           type="button"
-          class="p-0 border-0 h-50"
+          class="p-0 border-0 bg-transparent"
           @click="openRightPane($options.rightSidebarViews.pipelines)"
         >
           <ci-icon
@@ -121,6 +123,12 @@ export default {
         >{{ lastCommitFormattedAge }}</time
       >
     </div>
+    <ide-status-mr
+      v-if="currentMergeRequest"
+      class="mx-3"
+      :url="currentMergeRequest.web_url"
+      :text="currentMergeRequest.references.short"
+    />
     <ide-status-list class="ml-auto" />
   </footer>
 </template>

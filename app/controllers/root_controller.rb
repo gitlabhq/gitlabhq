@@ -52,7 +52,7 @@ class RootController < Dashboard::ProjectsController
   end
 
   def redirect_to_home_page_url?
-    # If user is not signed-in and tries to access root_path - redirect him to landing page
+    # If user is not signed-in and tries to access root_path - redirect them to landing page
     # Don't redirect to the default URL to prevent endless redirections
     return false unless Gitlab::CurrentSettings.home_page_url.present?
 

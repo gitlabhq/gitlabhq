@@ -3,13 +3,14 @@
 require 'spec_helper'
 
 describe MilestonesFinder do
+  let(:now) { Time.now }
   let(:group) { create(:group) }
   let(:project_1) { create(:project, namespace: group) }
   let(:project_2) { create(:project, namespace: group) }
-  let!(:milestone_1) { create(:milestone, group: group, title: 'one test', due_date: Date.today) }
-  let!(:milestone_2) { create(:milestone, group: group) }
-  let!(:milestone_3) { create(:milestone, project: project_1, state: 'active', due_date: Date.tomorrow) }
-  let!(:milestone_4) { create(:milestone, project: project_2, state: 'active') }
+  let!(:milestone_1) { create(:milestone, group: group, title: 'one test', start_date: now - 1.day, due_date: now) }
+  let!(:milestone_2) { create(:milestone, group: group, start_date: now + 1.day, due_date: now + 2.days) }
+  let!(:milestone_3) { create(:milestone, project: project_1, state: 'active', start_date: now + 2.days, due_date: now + 3.days) }
+  let!(:milestone_4) { create(:milestone, project: project_2, state: 'active', start_date: now + 4.days, due_date: now + 5.days) }
 
   it 'returns milestones for projects' do
     result = described_class.new(project_ids: [project_1.id, project_2.id], state: 'all').execute
@@ -33,8 +34,11 @@ describe MilestonesFinder do
     end
 
     it 'orders milestones by due date' do
-      expect(result.first).to eq(milestone_1)
-      expect(result.second).to eq(milestone_3)
+      milestone = create(:milestone, group: group, due_date: now - 2.days)
+
+      expect(result.first).to eq(milestone)
+      expect(result.second).to eq(milestone_1)
+      expect(result.third).to eq(milestone_2)
     end
   end
 
@@ -76,6 +80,34 @@ describe MilestonesFinder do
       result = described_class.new(params.merge(search_title: 'one t')).execute
 
       expect(result.to_a).to contain_exactly(milestone_1)
+    end
+
+    context 'by timeframe' do
+      it 'returns milestones with start_date and due_date between timeframe' do
+        params.merge!(start_date: now - 1.day, end_date: now + 3.days)
+
+        milestones = described_class.new(params).execute
+
+        expect(milestones).to match_array([milestone_1, milestone_2, milestone_3])
+      end
+
+      it 'returns milestones which starts before the timeframe' do
+        milestone = create(:milestone, project: project_2, start_date: now - 5.days)
+        params.merge!(start_date: now - 3.days, end_date: now - 2.days)
+
+        milestones = described_class.new(params).execute
+
+        expect(milestones).to match_array([milestone])
+      end
+
+      it 'returns milestones which ends after the timeframe' do
+        milestone = create(:milestone, project: project_2, due_date: now + 6.days)
+        params.merge!(start_date: now + 6.days, end_date: now + 7.days)
+
+        milestones = described_class.new(params).execute
+
+        expect(milestones).to match_array([milestone])
+      end
     end
   end
 

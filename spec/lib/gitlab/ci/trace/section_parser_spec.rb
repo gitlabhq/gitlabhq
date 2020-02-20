@@ -74,7 +74,7 @@ describe Gitlab::Ci::Trace::SectionParser do
       let(:lines) { build_lines(trace) }
 
       it 'must handle correctly byte positioning' do
-        expect(subject).to receive(:find_next_marker).exactly(2).times.and_call_original
+        expect(subject).to receive(:find_next_marker).twice.and_call_original
 
         subject.parse!
 

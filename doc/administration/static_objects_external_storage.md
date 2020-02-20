@@ -1,6 +1,6 @@
 # Static objects external storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/31025) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31025) in GitLab 12.3.
 
 GitLab can be configured to serve repository static objects (for example, archives) from an external
 storage, such as a CDN.

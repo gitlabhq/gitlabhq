@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import $ from 'jquery';
 import Pikaday from 'pikaday';
 import dateFormat from 'dateformat';

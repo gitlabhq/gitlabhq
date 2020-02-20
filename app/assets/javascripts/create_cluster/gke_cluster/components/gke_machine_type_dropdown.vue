@@ -16,9 +16,6 @@ export default {
     ]),
     ...mapState({ items: 'machineTypes' }),
     ...mapGetters(['hasZone', 'hasMachineType']),
-    allDropdownsSelected() {
-      return this.projectHasBillingEnabled && this.hasZone && this.hasMachineType;
-    },
     isDisabled() {
       return (
         this.isLoading ||
@@ -65,22 +62,10 @@ export default {
           .catch(this.fetchFailureHandler);
       }
     },
-    selectedMachineType() {
-      this.enableSubmit();
-    },
   },
   methods: {
     ...mapActions(['fetchMachineTypes']),
     ...mapActions({ setItem: 'setMachineType' }),
-    enableSubmit() {
-      if (this.allDropdownsSelected) {
-        const submitButtonEl = document.querySelector('.js-gke-cluster-creation-submit');
-
-        if (submitButtonEl) {
-          submitButtonEl.removeAttribute('disabled');
-        }
-      }
-    },
   },
 };
 </script>

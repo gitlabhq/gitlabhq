@@ -63,7 +63,8 @@
       display: block;
     }
 
-    .select2-choices {
+    .select2-choices,
+    .select2-choice {
       border-color: $red-500;
     }
   }

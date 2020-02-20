@@ -4,7 +4,7 @@ For guidance on UX implementation at GitLab, please refer to our [Design System]
 
 The UX team uses labels to manage their workflow.
 
-The  ~"UX" label on an issue is a signal to the UX team that it will need UX attention.
+The ~"UX" label on an issue is a signal to the UX team that it will need UX attention.
 To better understand the priority by which UX tackles issues, see the [UX section](https://about.gitlab.com/handbook/engineering/ux/) of the handbook.
 
 Once an issue has been worked on and is ready for development, a UXer removes the ~"UX" label and applies the ~"UX ready" label to that issue.

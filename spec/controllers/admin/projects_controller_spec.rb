@@ -29,7 +29,7 @@ describe Admin::ProjectsController do
 
       get :index
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response.body).not_to match(pending_delete_project.name)
       expect(response.body).to match(project.name)
     end
@@ -61,7 +61,7 @@ describe Admin::ProjectsController do
     it 'renders show page' do
       get :show, params: { namespace_id: project.namespace.path, id: project.path }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response.body).to match(project.name)
     end
   end

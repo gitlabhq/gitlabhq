@@ -12,9 +12,6 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy, :clear_cache]
   before_action :update_applications_status, only: [:cluster_status]
-  before_action only: [:show] do
-    push_frontend_feature_flag(:enable_cluster_application_elastic_stack)
-  end
 
   helper_method :token_in_session
 

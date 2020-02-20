@@ -40,7 +40,7 @@ health check manually to get this information as well as a few more details.
 This rake task can be run on an app node in the **primary** or **secondary**
 Geo nodes:
 
-```sh
+```shell
 sudo gitlab-rake gitlab:geo:check
 ```
 
@@ -73,7 +73,7 @@ Checking Geo ... Finished
 Current sync information can be found manually by running this rake task on any
 **secondary** app node:
 
-```sh
+```shell
 sudo gitlab-rake geo:status
 ```
 
@@ -127,7 +127,7 @@ This name is used to look up the node with the same **Name** in
 To check if the current machine has a node name that matches a node in the
 database, run the check task:
 
-```sh
+```shell
 sudo gitlab-rake gitlab:geo:check
 ```
 
@@ -151,7 +151,7 @@ This machine's Geo node name matches a database record ... no
 
 When running this rake task, you may see errors if the nodes are not properly configured:
 
-```sh
+```shell
 sudo gitlab-rake gitlab:geo:check
 ```
 
@@ -242,7 +242,7 @@ sudo gitlab-rake gitlab:geo:check
     Checking Geo ... Finished
     ```
 
-    When performing a Postgres major version (9 > 10) update this is expected.  Follow:
+    When performing a Postgres major version (9 > 10) update this is expected. Follow:
 
     - [initiate-the-replication-process](https://docs.gitlab.com/ee/administration/geo/replication/database.html#step-3-initiate-the-replication-process)
     - [Geo database has an outdated FDW remote schema](https://docs.gitlab.com/ee/administration/geo/replication/troubleshooting.html#geo-database-has-an-outdated-fdw-remote-schema-error)
@@ -279,7 +279,7 @@ and indicates that your initial dataset is too large to be replicated in the def
 Re-run `gitlab-ctl replicate-geo-database`, but include a larger value for
 `--backup-timeout`:
 
-```sh
+```shell
 sudo gitlab-ctl \
    replicate-geo-database \
    --host=<primary_node_hostname> \
@@ -297,7 +297,7 @@ log data to build up in `pg_xlog`. Removing the unused slots can reduce the amou
 
 1. Start a PostgreSQL console session:
 
-   ```sh
+   ```shell
    sudo gitlab-psql
    ```
 
@@ -348,7 +348,7 @@ postgresql['hot_standby_feedback'] = 'on'
 
 Then reconfigure GitLab:
 
-```sh
+```shell
 sudo gitlab-ctl reconfigure
 ```
 
@@ -370,7 +370,7 @@ gitlab_rails['gitlab_shell_git_timeout'] = 10800
 
 Then reconfigure GitLab:
 
-```sh
+```shell
 sudo gitlab-ctl reconfigure
 ```
 
@@ -390,7 +390,7 @@ to start again from scratch, there are a few steps that can help you:
    You need to send a **SIGTSTP** kill signal for the first phase and them a **SIGTERM**
    when all jobs have finished. Otherwise just use the `gitlab-ctl stop` commands.
 
-   ```sh
+   ```shell
    gitlab-ctl status sidekiq
    # run: sidekiq: (pid 10180) <- this is the PID you will use
    kill -TSTP 10180 # change to the correct PID
@@ -401,13 +401,13 @@ to start again from scratch, there are a few steps that can help you:
 
    You can watch Sidekiq logs to know when Sidekiq jobs processing have finished:
 
-   ```sh
+   ```shell
    gitlab-ctl tail sidekiq
    ```
 
 1. Rename repository storage folders and create new ones. If you are not concerned about possible orphaned directories and files, then you can simply skip this step.
 
-   ```sh
+   ```shell
    mv /var/opt/gitlab/git-data/repositories /var/opt/gitlab/git-data/repositories.old
    mkdir -p /var/opt/gitlab/git-data/repositories
    chown git:git /var/opt/gitlab/git-data/repositories
@@ -432,7 +432,7 @@ to start again from scratch, there are a few steps that can help you:
 
    To rename all of them:
 
-   ```sh
+   ```shell
    gitlab-ctl stop
 
    mv /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-rails/shared.old
@@ -447,13 +447,13 @@ to start again from scratch, there are a few steps that can help you:
    Reconfigure in order to recreate the folders and make sure permissions and ownership
    are correctly
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 
 1. Reset the Tracking Database
 
-   ```sh
+   ```shell
    gitlab-rake geo:db:drop
    gitlab-ctl reconfigure
    gitlab-rake geo:db:setup
@@ -461,9 +461,50 @@ to start again from scratch, there are a few steps that can help you:
 
 1. Restart previously stopped services
 
-   ```sh
+   ```shell
    gitlab-ctl start
    ```
+
+## Fixing errors during a failover or when promoting a secondary to a primary node
+
+The following are possible errors that might be encountered during failover or
+when promoting a secondary to a primary node with strategies to resolve them.
+
+### Message: ActiveRecord::RecordInvalid: Validation failed: Name has already been taken
+
+When [promoting a **secondary** node](../disaster_recovery/index.md#step-3-promoting-a-secondary-node),
+you might encounter the following error:
+
+```text
+Running gitlab-rake geo:set_secondary_as_primary...
+
+rake aborted!
+ActiveRecord::RecordInvalid: Validation failed: Name has already been taken
+/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/geo.rake:236:in `block (3 levels) in <top (required)>'
+/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/geo.rake:221:in `block (2 levels) in <top (required)>'
+/opt/gitlab/embedded/bin/bundle:23:in `load'
+/opt/gitlab/embedded/bin/bundle:23:in `<main>'
+Tasks: TOP => geo:set_secondary_as_primary
+(See full trace by running task with --trace)
+
+You successfully promoted this node!
+```
+
+If you encounter this message when running `gitlab-rake geo:set_secondary_as_primary`
+or `gitlab-ctl promote-to-primary-node`, either:
+
+- Enter a Rails console and run:
+  
+  ```ruby
+  Rails.application.load_tasks; nil
+  Gitlab::Geo.expire_cache_keys!([:primary_node, :current_node])
+  Rake::Task['geo:set_secondary_as_primary'].invoke
+  ```
+
+- Upgrade to GitLab 12.6.3 or newer if it is safe to do so. For example,
+  if the failover was just a test. A [caching-related
+  bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was
+  fixed.
 
 ## Fixing Foreign Data Wrapper errors
 
@@ -496,7 +537,7 @@ To check the configuration:
 
 1. SSH into an app node in the **secondary**:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
@@ -511,14 +552,14 @@ To check the configuration:
 
    If the tracking database is running on the same node:
 
-   ```sh
+   ```shell
    gitlab-geo-psql
    ```
 
    Or, if the tracking database is running on a different node, you must specify
    the user and host when entering the database console:
 
-   ```sh
+   ```shell
    gitlab-geo-psql -U gitlab_geo -h <IP of tracking database>
    ```
 
@@ -605,7 +646,7 @@ To check the configuration:
 
    Make sure the password is correct. You can test that logins work by running `psql`:
 
-   ```sh
+   ```shell
    # Connect to the tracking database as the `gitlab_geo` user
    sudo \
       -u git /opt/gitlab/embedded/bin/psql \
@@ -644,7 +685,7 @@ reload of the FDW schema. To manually reload the FDW schema:
 1. On the node running the Geo tracking database, enter the PostgreSQL console via
    the `gitlab_geo` user:
 
-   ```sh
+   ```shell
    sudo \
       -u git /opt/gitlab/embedded/bin/psql \
       -h /var/opt/gitlab/geo-postgresql \
@@ -686,9 +727,9 @@ For example:
 Geo database has an outdated FDW remote schema. It contains 229 of 236 expected tables. Please refer to Geo Troubleshooting.
 ```
 
-To resolve this, run the following command:
+To resolve this, run the following command on the **secondary**:
 
-```sh
+```shell
 sudo gitlab-rake geo:db:refresh_foreign_tables
 ```
 

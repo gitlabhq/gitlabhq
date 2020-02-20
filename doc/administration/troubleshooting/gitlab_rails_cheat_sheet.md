@@ -30,7 +30,7 @@ should and, if needed, update the script for the latest version of GitLab.
 If the script you want to run is short, you can use the Rails Runner to avoid
 entering the rails console in the first place. Here's an example of its use:
 
-```bash
+```shell
 gitlab-rails runner "RAILS_COMMAND"
 
 # Example with a 2-line script
@@ -126,23 +126,35 @@ Benchmark.bm do |x|
 end
 ```
 
+## Feature flags
+
+### Show all feature flags that are enabled
+
+```ruby
+# Regular output
+Feature.all
+
+# Nice output
+Feature.all.map {|f| [f.name, f.state]}
+```
+
 ## Command Line
 
 ### Check the GitLab version fast
 
-```bash
+```shell
 grep -m 1 gitlab /opt/gitlab/version-manifest.txt
 ```
 
 ### Debugging SSH
 
-```bash
+```shell
 GIT_SSH_COMMAND="ssh -vvv" git clone <repository>
 ```
 
 ### Debugging over HTTPS
 
-```bash
+```shell
 GIT_CURL_VERBOSE=1 GIT_TRACE=1 git clone <repository>
 ```
 
@@ -154,7 +166,7 @@ GIT_CURL_VERBOSE=1 GIT_TRACE=1 git clone <repository>
 # A single project
 project = Project.find_by_full_path('PROJECT_PATH')
 
-# All projects in a particular namespace.  Can be a username, a group
+# All projects in a particular namespace. Can be a username, a group
 # ('gitlab-org'), or even include subgroups ('gitlab-org/distribution')
 namespace = Namespace.find_by_full_path('NAMESPACE_PATH')
 projects = namespace.all_projects
@@ -301,19 +313,19 @@ correctly named empty project using the steps below.
 
 Move the new repository to the empty repository:
 
-```bash
+```shell
 mv /var/opt/gitlab/git-data/repositories/<group>/<new-project> /var/opt/gitlab/git-data/repositories/<group>/<empty-project>
 ```
 
 Make sure the permissions are correct:
 
-```bash
+```shell
 chown -R git:git <path-to-directory>.git
 ```
 
 Clear the cache:
 
-```bash
+```shell
 sudo gitlab-rake cache:clear
 ```
 
@@ -442,7 +454,7 @@ user.skip_reconfirmation!
 ### Get an admin token
 
 ```ruby
-# Get the first admin's first access token (no longer works on 11.9+. see: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22743)
+# Get the first admin's first access token (no longer works on 11.9+. see: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22743)
 User.where(admin:true).first.personal_access_tokens.first.token
 
 # Get the first admin's private token (no longer works on 10.2+)
@@ -489,7 +501,7 @@ User.active.count
 ::HistoricalData.max_historical_user_count
 ```
 
-```bash
+```shell
 # Using curl and jq (up to a max 100, see pagination docs https://docs.gitlab.com/ee/api/#pagination
 curl --silent --header "Private-Token: ********************" "https://gitlab.example.com/api/v4/users?per_page=100&active" | jq --compact-output '.[] | [.id,.name,.username]'
 ```
@@ -540,6 +552,20 @@ user.max_member_access_for_project project.id
 user = User.find_by_username 'username'
 group = Group.find_by_full_path 'group'
 user.max_member_access_for_group group.id
+```
+
+### Change user password
+
+```ruby
+password = "your password"
+user = User.find_by_username('your username')
+password_attributes = {
+  password: password,
+  password_confirmation: password,
+  password_automatically_set: false
+}
+
+result = Users::UpdateService.new(user, password_attributes.merge(user: user)).execute
 ```
 
 ## Groups
@@ -895,6 +921,42 @@ loop do
 end
 ```
 
+## Registry
+
+### Registry Disk Space Usage by Project
+
+As a GitLab administrator, you may need to reduce disk space consumption.
+A common culprit is Docker Registry images that are no longer in use. To find
+the storage broken down by each project, run the following in the
+GitLab Rails console:
+
+```ruby
+projects_and_size = []
+# a list of projects you want to look at, can get these however
+projects = Project.last(100)
+
+projects.each do |p|
+   project_total_size = 0
+   container_repositories = p.container_repositories
+
+   container_repositories.each do |c|
+       c.tags.each do |t|
+          project_total_size = project_total_size + t.total_size unless t.total_size.nil?
+       end
+   end
+
+   if project_total_size > 0
+      projects_and_size << [p.full_path,project_total_size]
+   end
+end
+
+# projects_and_size is filled out now
+# maybe print it as comma separated output?
+projects_and_size.each do |ps|
+   puts "%s,%s" % ps
+end
+```
+
 ## Sidekiq
 
 ### Size of a queue
@@ -935,7 +997,7 @@ gitlab_rails['env'] = {
 }
 ```
 
-Then `gitlab-ctl reconfigure; gitlab-ctl restart sidekiq`.  The Sidekiq logs will now include additional data for troubleshooting.
+Then `gitlab-ctl reconfigure; gitlab-ctl restart sidekiq`. The Sidekiq logs will now include additional data for troubleshooting.
 
 ### Sidekiq kill signals
 
@@ -945,13 +1007,13 @@ See <https://github.com/mperham/sidekiq/wiki/Signals#ttin>.
 
 ### Connect to Redis (omnibus)
 
-```sh
+```shell
 /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket
 ```
 
 ### Connect to Redis (HA)
 
-```sh
+```shell
 /opt/gitlab/embedded/bin/redis-cli -h <host ip> -a <password>
 ```
 
@@ -984,7 +1046,7 @@ This script will go through all the encrypted variables and count how many are n
 to be decrypted. Might be helpful to run on multiple nodes to see which `gitlab-secrets.json`
 file is most up to date:
 
-```bash
+```shell
 wget -O /tmp/bad-decrypt.rb https://gitlab.com/snippets/1730735/raw
 gitlab-rails runner /tmp/bad-decrypt.rb
 ```
@@ -1025,7 +1087,7 @@ two-factor authentication.
 This script will search for all encrypted tokens that are causing decryption errors,
 and update or reset as needed:
 
-```bash
+```shell
 wget -O /tmp/encrypted-tokens.rb https://gitlab.com/snippets/1876342/raw
 gitlab-rails runner /tmp/encrypted-tokens.rb
 ```

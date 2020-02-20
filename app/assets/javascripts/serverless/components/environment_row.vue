@@ -47,7 +47,7 @@ export default {
 <template>
   <li :id="envId" :class="isOpenClass" class="group-row has-children">
     <div
-      class="group-row-contents d-flex justify-content-end align-items-center"
+      class="group-row-contents d-flex justify-content-end align-items-center py-2"
       role="button"
       @click.stop="toggleOpen"
     >

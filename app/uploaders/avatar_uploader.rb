@@ -25,6 +25,10 @@ class AvatarUploader < GitlabUploader
     self.class.absolute_path(upload)
   end
 
+  def mounted_as
+    super || 'avatar'
+  end
+
   private
 
   def dynamic_segment

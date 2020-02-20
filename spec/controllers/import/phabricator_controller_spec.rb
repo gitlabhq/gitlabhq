@@ -18,7 +18,7 @@ describe Import::PhabricatorController do
         stub_application_setting(import_sources: [])
       end
 
-      it { is_expected.to have_gitlab_http_status(404) }
+      it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
     context 'when the feature is disabled' do
@@ -27,7 +27,7 @@ describe Import::PhabricatorController do
         stub_application_setting(import_sources: ['phabricator'])
       end
 
-      it { is_expected.to have_gitlab_http_status(404) }
+      it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
     context 'when the import is available' do
@@ -36,7 +36,7 @@ describe Import::PhabricatorController do
         stub_application_setting(import_sources: ['phabricator'])
       end
 
-      it { is_expected.to have_gitlab_http_status(200) }
+      it { is_expected.to have_gitlab_http_status(:ok) }
     end
   end
 
@@ -88,5 +88,7 @@ describe Import::PhabricatorController do
         expect { post_create }.not_to change { current_user.namespace.projects.reload.size }
       end
     end
+
+    it_behaves_like 'project import rate limiter'
   end
 end

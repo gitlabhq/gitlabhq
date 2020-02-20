@@ -21,21 +21,28 @@ module AuthenticatesWithTwoFactor
     # Set @user for Devise views
     @user = user # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-    return locked_user_redirect(user) unless user.can?(:log_in)
+    return handle_locked_user(user) unless user.can?(:log_in)
 
     session[:otp_user_id] = user.id
     setup_u2f_authentication(user)
     render 'devise/sessions/two_factor'
   end
 
+  def handle_locked_user(user)
+    clear_two_factor_attempt!
+
+    locked_user_redirect(user)
+  end
+
   def locked_user_redirect(user)
-    flash.now[:alert] = _('Invalid Login or password')
+    flash.now[:alert] = locked_user_redirect_alert(user)
+
     render 'devise/sessions/new'
   end
 
   def authenticate_with_two_factor
     user = self.resource = find_user
-    return locked_user_redirect(user) unless user.can?(:log_in)
+    return handle_locked_user(user) unless user.can?(:log_in)
 
     if user_params[:otp_attempt].present? && session[:otp_user_id]
       authenticate_with_two_factor_via_otp(user)
@@ -47,6 +54,14 @@ module AuthenticatesWithTwoFactor
   end
 
   private
+
+  def locked_user_redirect_alert(user)
+    user.access_locked? ? _('Your account is locked.') : _('Invalid Login or password')
+  end
+
+  def clear_two_factor_attempt!
+    session.delete(:otp_user_id)
+  end
 
   def authenticate_with_two_factor_via_otp(user)
     if valid_otp_attempt?(user)

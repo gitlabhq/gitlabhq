@@ -30,7 +30,7 @@ describe RegistrationsController do
 
       it 'renders new template and sets the resource variable' do
         expect(subject).to render_template(:new)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:resource)).to be_a(User)
       end
     end
@@ -48,7 +48,7 @@ describe RegistrationsController do
 
       it 'renders new template and sets the resource variable' do
         subject
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(new_user_session_path(anchor: 'register-pane'))
       end
     end
@@ -79,31 +79,29 @@ describe RegistrationsController do
           stub_application_setting(send_user_confirmation_email: true)
         end
 
-        context 'when soft email confirmation is not enabled' do
+        context 'when a grace period is active for confirming the email address' do
           before do
-            stub_feature_flags(soft_email_confirmation: false)
-            allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
-          end
-
-          it 'does not authenticate the user and sends a confirmation email' do
-            post(:create, params: user_params)
-
-            expect(ActionMailer::Base.deliveries.last.to.first).to eq(user_params[:user][:email])
-            expect(subject.current_user).to be_nil
-          end
-        end
-
-        context 'when soft email confirmation is enabled' do
-          before do
-            stub_feature_flags(soft_email_confirmation: true)
             allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
           end
 
-          it 'authenticates the user and sends a confirmation email' do
+          it 'sends a confirmation email and redirects to the dashboard' do
             post(:create, params: user_params)
 
             expect(ActionMailer::Base.deliveries.last.to.first).to eq(user_params[:user][:email])
             expect(response).to redirect_to(dashboard_projects_path)
+          end
+        end
+
+        context 'when no grace period is active for confirming the email address' do
+          before do
+            allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
+          end
+
+          it 'sends a confirmation email and redirects to the almost there page' do
+            post(:create, params: user_params)
+
+            expect(ActionMailer::Base.deliveries.last.to.first).to eq(user_params[:user][:email])
+            expect(response).to redirect_to(users_almost_there_path)
           end
         end
       end
@@ -200,7 +198,7 @@ describe RegistrationsController do
               .and_call_original
             expect(Gitlab::AuthLogger).to receive(:error).with(auth_log_attributes).once
             expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response.body).to be_empty
           end
         end
@@ -413,6 +411,38 @@ describe RegistrationsController do
         property: 'experimental_group'
       )
       patch :update_registration, params: { user: { role: 'software_developer', setup_for_company: 'false' } }
+    end
+  end
+
+  describe '#welcome' do
+    subject { get :welcome }
+
+    before do
+      sign_in(create(:user))
+    end
+
+    context 'signup_flow experiment enabled' do
+      before do
+        stub_experiment_for_user(signup_flow: true)
+      end
+
+      it 'renders the devise_experimental_separate_sign_up_flow layout' do
+        expected_layout = Gitlab.ee? ? :checkout : :devise_experimental_separate_sign_up_flow
+
+        expect(subject).to render_template(expected_layout)
+      end
+    end
+
+    context 'signup_flow experiment disabled' do
+      before do
+        stub_experiment_for_user(signup_flow: false)
+      end
+
+      it 'renders the devise layout' do
+        expected_layout = Gitlab.ee? ? :checkout : :devise
+
+        expect(subject).to render_template(expected_layout)
+      end
     end
   end
 end

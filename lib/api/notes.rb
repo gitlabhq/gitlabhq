@@ -30,7 +30,7 @@ module API
         end
         # rubocop: disable CodeReuse/ActiveRecord
         get ":id/#{noteables_str}/:noteable_id/notes" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
 
           # We exclude notes that are cross-references and that cannot be viewed
           # by the current user. By doing this exclusion at this level and not
@@ -58,7 +58,7 @@ module API
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
         end
         get ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
           get_note(noteable, params[:note_id])
         end
 
@@ -71,7 +71,7 @@ module API
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
         post ":id/#{noteables_str}/:noteable_id/notes" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
 
           opts = {
             note: params[:body],
@@ -98,7 +98,7 @@ module API
           requires :body, type: String, desc: 'The content of a note'
         end
         put ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
 
           update_note(noteable, params[:note_id])
         end
@@ -111,7 +111,7 @@ module API
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
         delete ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
-          noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id])
 
           delete_note(noteable, params[:note_id])
         end

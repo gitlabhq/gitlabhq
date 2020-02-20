@@ -45,7 +45,7 @@ FactoryBot.define do
       self.when { 'manual' }
     end
 
-    trait :auto_stopped do
+    trait :auto_stoppable do
       auto_stop_at { 1.day.ago }
     end
 

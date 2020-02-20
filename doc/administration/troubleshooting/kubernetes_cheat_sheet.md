@@ -20,13 +20,13 @@ and they will assist you with any issues you are having.
 - How to authorize to your GCP project (can be especially useful if you have projects
   under different GCP accounts):
 
-  ```bash
+  ```shell
   gcloud auth login
   ```
 
 - How to access Kubernetes dashboard:
 
-  ```bash
+  ```shell
   # for minikube:
   minikube dashboard —url
   # for non-local installations if access via Kubectl is configured:
@@ -42,7 +42,7 @@ and they will assist you with any issues you are having.
 
 - How to copy a file from local machine to a pod:
 
-  ```bash
+  ```shell
   kubectl cp file-name pod-name:./destination-path
   ```
 
@@ -51,19 +51,19 @@ and they will assist you with any issues you are having.
   - Check logs via Kubernetes dashboard.
   - Check logs via Kubectl:
 
-    ```bash
+    ```shell
     kubectl logs <unicorn pod> -c dependencies
     ```
 
 - How to tail all Kubernetes cluster events in real time:
 
-  ```bash
+  ```shell
   kubectl get events -w --all-namespaces
   ```
 
 - How to get logs of the previously terminated pod instance:
 
-  ```bash
+  ```shell
   kubectl logs <pod-name> --previous
   ```
 
@@ -72,6 +72,16 @@ and they will assist you with any issues you are having.
   This is the principle of Kubernetes, read [Twelve-factor app](https://12factor.net/)
   for details.
 
+- How to get cronjobs configured on a cluster
+
+  ```bash
+  kubectl get cronjobs
+  ```
+  
+  When one configures [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup),
+  you will be able to see the new schedule here. Some details about the schedules can be found
+  in [Running Automated Tasks with a CronJob](https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#creating-a-cron-job)
+  
 ## GitLab-specific Kubernetes information
 
 - Minimal config that can be used to test a Kubernetes Helm chart can be found
@@ -79,13 +89,13 @@ and they will assist you with any issues you are having.
 
 - Tailing logs of a separate pod. An example for a Unicorn pod:
 
-  ```bash
+  ```shell
   kubectl logs gitlab-unicorn-7656fdd6bf-jqzfs -c unicorn
   ```
 
 - Tail and follow all pods that share a label (in this case, `unicorn`):
 
-  ```bash
+  ```shell
   # all containers in the unicorn pods
   kubectl logs -f -l app=unicorn --all-containers=true --max-log-requests=50
 
@@ -96,21 +106,21 @@ and they will assist you with any issues you are having.
 - One can stream logs from all containers at once, similar to the Omnibus
   command `gitlab-ctl tail`:
 
-  ```bash
+  ```shell
   kubectl logs -f -l release=gitlab --all-containers=true --max-log-requests=100
   ```
 
 - Check all events in the `gitlab` namespace (the namespace name can be different if you
   specified a different one when deploying the Helm chart):
 
-  ```bash
+  ```shell
   kubectl get events -w --namespace=gitlab
   ```
 
 - Most of the useful GitLab tools (console, rake tasks, etc) are found in the task-runner
   pod. You may enter it and run commands inside or run them from the outside:
 
-  ```bash
+  ```shell
   # find the pod
   kubectl get pods | grep task-runner
 
@@ -145,7 +155,7 @@ and they will assist you with any issues you are having.
 
 - How to get your initial admin password <https://docs.gitlab.com/charts/installation/deployment.html#initial-login>:
 
-  ```bash
+  ```shell
   # find the name of the secret containing the password
   kubectl get secrets | grep initial-root
   # decode it
@@ -154,19 +164,19 @@ and they will assist you with any issues you are having.
 
 - How to connect to a GitLab Postgres database:
 
-  ```bash
+  ```shell
   kubectl exec -it <task-runner-pod-name> -- /srv/gitlab/bin/rails dbconsole -p
   ```
   
 - How to get info about Helm installation status:
 
-  ```bash
+  ```shell
   helm status name-of-installation
   ```
 
 - How to update GitLab installed using Helm Chart:
 
-  ```bash
+  ```shell
   helm repo upgrade
 
   # get current values and redirect them to yaml file (analogue of gitlab.rb values)
@@ -185,8 +195,15 @@ and they will assist you with any issues you are having.
   - Modify the `gitlab.yaml` file.
   - Run the following command to apply changes:
 
-    ```bash
+    ```shell
     helm upgrade <release name> <chart path> -f gitlab.yaml
+    ```
+
+- How to get the manifest for a release. It can be useful because it contains the info about
+all Kubernetes resources and dependent charts:
+
+    ```shell
+    helm get manifest <release name>
     ```
 
 ## Installation of minimal GitLab config via Minukube on macOS
@@ -197,20 +214,20 @@ to those documents for details.
 
 - Install Kubectl via Homebrew:
 
-  ```bash
+  ```shell
   brew install kubernetes-cli
   ```
 
 - Install Minikube via Homebrew:
 
-  ```bash
+  ```shell
   brew cask install minikube
   ```
 
 - Start Minikube and configure it. If Minikube cannot start, try running `minikube delete && minikube start`
   and repeat the steps:
 
-  ```bash
+  ```shell
   minikube start --cpus 3 --memory 8192 # minimum amount for GitLab to work
   minikube addons enable ingress
   minikube addons enable kube-dns
@@ -218,7 +235,7 @@ to those documents for details.
 
 - Install Helm via Homebrew and initialize it:
 
-  ```bash
+  ```shell
   brew install kubernetes-helm
   helm init --service-account tiller
   ```
@@ -231,7 +248,7 @@ to those documents for details.
 
 - Install the GitLab Helm Chart:
 
-  ```bash
+  ```shell
   helm repo add gitlab https://charts.gitlab.io
   helm install --name gitlab -f <path-to-yaml-file> gitlab/gitlab
   ```

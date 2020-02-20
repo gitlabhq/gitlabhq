@@ -305,8 +305,8 @@ describe PipelinesEmailService, :mailer do
     end
 
     context 'with recipients list separating with newlines' do
-      let(:recipients) { "\ntest@gitlab.com,  \r\nexample@gitlab.com" }
-      let(:receivers) { %w[test@gitlab.com example@gitlab.com] }
+      let(:recipients) { "\ntest@gitlab.com,  \r\nexample@gitlab.com\rother@gitlab.com" }
+      let(:receivers) { %w[test@gitlab.com example@gitlab.com other@gitlab.com] }
 
       context 'with failed pipeline' do
         before do

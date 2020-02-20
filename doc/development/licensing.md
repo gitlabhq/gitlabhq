@@ -16,25 +16,25 @@ There are a few basic commands License Finder provides that you'll need in order
 
 To verify that the checks are passing, and/or to see what dependencies are causing the checks to fail:
 
-```
+```shell
 bundle exec license_finder
 ```
 
 To whitelist a new license:
 
-```
+```shell
 license_finder whitelist add MIT
 ```
 
 To blacklist a new license:
 
-```
+```shell
 license_finder blacklist add GPLv2
 ```
 
 To tell License Finder about a dependency's license if it isn't auto-detected:
 
-```
+```shell
 license_finder licenses add my_unknown_dependency MIT
 ```
 

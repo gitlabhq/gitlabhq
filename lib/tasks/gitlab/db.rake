@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :db do
-    desc 'GitLab | Manually insert schema migration version'
+    desc 'GitLab | DB | Manually insert schema migration version'
     task :mark_migration_complete, [:version] => :environment do |_, args|
       unless args[:version]
         puts "Must specify a migration version as an argument".color(:red)
@@ -22,7 +22,7 @@ namespace :gitlab do
       end
     end
 
-    desc 'Drop all tables'
+    desc 'GitLab | DB | Drop all tables'
     task drop_tables: :environment do
       connection = ActiveRecord::Base.connection
 
@@ -41,7 +41,7 @@ namespace :gitlab do
       tables.each { |t| connection.execute("DROP TABLE IF EXISTS #{connection.quote_table_name(t)} CASCADE") }
     end
 
-    desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'
+    desc 'GitLab | DB | Configures the database by running migrate, or by loading the schema and seeding if needed'
     task configure: :environment do
       # Check if we have existing db tables
       # The schema_migrations table will still exist if drop_tables was called
@@ -55,7 +55,7 @@ namespace :gitlab do
       end
     end
 
-    desc 'Checks if migrations require downtime or not'
+    desc 'GitLab | DB | Checks if migrations require downtime or not'
     task :downtime_check, [:ref] => :environment do |_, args|
       abort 'You must specify a Git reference to compare with' unless args[:ref]
 
@@ -71,7 +71,7 @@ namespace :gitlab do
       Gitlab::DowntimeCheck.new.check_and_print(migrations)
     end
 
-    desc 'Sets up EE specific database functionality'
+    desc 'GitLab | DB | Sets up EE specific database functionality'
 
     if Gitlab.ee?
       task setup_ee: %w[geo:db:drop geo:db:create geo:db:schema:load geo:db:migrate]

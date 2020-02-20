@@ -221,7 +221,10 @@ with failed showing at the top, skipped next and successful cases last.
 
 ### Enabling the feature
 
-This feature comes with the `:junit_pipeline_view` feature flag disabled by default.
+This feature comes with the `:junit_pipeline_view` feature flag disabled by default. This
+feature is disabled due to some performance issues with very large data sets.
+When [the performance issue](https://gitlab.com/gitlab-org/gitlab/issues/37725) is resolved, the feature will be enabled by default.
+
 To enable this feature, ask a GitLab administrator with Rails console access to run the
 following command:
 

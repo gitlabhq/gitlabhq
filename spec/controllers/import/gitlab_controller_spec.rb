@@ -86,7 +86,7 @@ describe Import::GitlabController do
 
       post :create, format: :json
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'returns 422 response when the project could not be imported' do
@@ -96,7 +96,7 @@ describe Import::GitlabController do
 
       post :create, format: :json
 
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
     context "when the repository owner is the GitLab.com user" do
@@ -279,9 +279,11 @@ describe Import::GitlabController do
 
           post :create, params: { target_namespace: other_namespace.name }, format: :json
 
-          expect(response).to have_gitlab_http_status(422)
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
         end
       end
+
+      it_behaves_like 'project import rate limiter'
     end
   end
 end

@@ -16,37 +16,27 @@ Set the title to: `Security Release: 12.2.X, 12.1.X, and 12.0.X`
 * 12.1.X: {release task link}
 * 12.0.X: {release task link}
 
-## Security Issues:
+## Issues in GitLab Security
 
-* {https://gitlab.com/gitlab-org/gitlab/issues link}
-
-## Security Issues in dev.gitlab.org:
-
-### CE
-
-- {https://dev.gitlab.org/gitlab/gitlabhq/issues link}
+* {https://gitlab.com/gitlab-org/security/gitlab/issues/ link}
 
 | Version | MR |
 |---------|----|
-| 12.2 | {https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/ link} |
-| 12.1 | {https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/ link} |
-| 12.0 | {https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/ link} |
-| master | {https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/ link} |
+| 12.2 | {https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests link} |
+| 12.1 | {https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests link} |
+| 12.0 | {https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests link} |
+| master | {https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests link} |
 
+## Issues in Omnibus-GitLab
 
-
-### EE
-
-* {https://dev.gitlab.org/gitlab/gitlabhq/issues/ link}
-
+* {https://gitlab.com/gitlab-org/security/gitlab/issues/ link}
 
 | Version | MR |
 |---------|----|
-| 12.2 | {https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/ link} |
-| 12.1 | {https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/ link} |
-| 12.0 | {https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/ link} |
-| master | {https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/ link} |
-
+| 12.2 | {https://dev.gitlab.org/gitlab/omnibus-gitlab/merge_requests/ link} |
+| 12.1 | {https://dev.gitlab.org/gitlab/omnibus-gitlab/merge_requests/ link} |
+| 12.0 | {https://dev.gitlab.org/gitlab/omnibus-gitlab/merge_requests/ link} |
+| master | {https://dev.gitlab.org/gitlab/omnibus-gitlab/merge_requests/ link} |
 
 ## QA
 {QA issue link}
@@ -54,7 +44,7 @@ Set the title to: `Security Release: 12.2.X, 12.1.X, and 12.0.X`
 ## Blog post
 
 Dev: {https://dev.gitlab.org/gitlab/www-gitlab-com/merge_requests/ link}<br/>
-gitlab.com: {https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/ link}
+GitLab.com: {https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/ link}
 
 ## Email notification
 {https://gitlab.com/gitlab-com/marketing/general/issues/ link}

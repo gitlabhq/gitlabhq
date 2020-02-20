@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties" : {
+    "source_id": { "type": "integer" },
+    "source_name": { "type": "string" },
+    "source_type": { "type": "string" },
+    "access_level": { "type": "integer" }
+  },
+  "additionalProperties": false
+}

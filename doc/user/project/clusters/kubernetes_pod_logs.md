@@ -13,7 +13,7 @@ Everything you need to build, test, deploy, and run your app at scale.
 
 [Kubernetes](https://kubernetes.io) pod logs can be viewed directly within GitLab.
 
-![Pod logs](img/kubernetes_pod_logs_v12_5.png)
+![Pod logs](img/kubernetes_pod_logs_v12_8.png)
 
 ## Requirements
 
@@ -27,7 +27,7 @@ You can access them in two ways.
 
 ### From the project sidebar
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 12.5.
 
 Go to **Operations > Pod logs** on the sidebar menu.
 
@@ -49,15 +49,24 @@ The logs view will contain the last 500 lines for a pod, and has control to filt
 
 - Pods.
 - [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/5769), environments.
-- [From GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21656), [full text search](#full-text-search).
+- [From GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656), [full text search](#full-text-search).
+- [From GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/197879), dates.
 
 Support for pods with multiple containers is coming [in a future release](https://gitlab.com/gitlab-org/gitlab/issues/13404).
 
 Support for historical data is coming [in a future release](https://gitlab.com/gitlab-org/gitlab/issues/196191).
 
+### Filter by date
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/197879) in GitLab 12.8.
+
+When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster, you can filter by date.
+
+Click on "Show last" to see the available options.
+
 ### Full text search
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/21656) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656) in GitLab 12.7.
 
 When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster,
 you can search the content of your logs via a search bar.
@@ -65,13 +74,13 @@ you can search the content of your logs via a search bar.
 The search is passed on to Elasticsearch using the [simple_query_string](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html)
 Elasticsearch function, which supports the following operators:
 
-```
-+ signifies AND operation
-| signifies OR operation
-- negates a single token
-" wraps a number of tokens to signify a phrase for searching
-* at the end of a term signifies a prefix query
-( and ) signify precedence
-~N after a word signifies edit distance (fuzziness)
-~N after a phrase signifies slop amount
-```
+| Operator                   | Description                                                |
+|----------------------------|------------------------------------------------------------|
+|  `\|`                      | An OR operation.                                            |
+| `-`                        | Negates a single token.                                     |
+| `+`                        | An AND operation.                                           |
+| `"`                        | Wraps a number of tokens to signify a phrase for searching. |
+| `*` (at the end of a term) | A prefix query.                                             |
+| `(` and `)`                | Precedence.                                                 |
+| `~N` (after a word)        | Edit distance (fuzziness).                                  |
+| `~N` (after a phrase)      | Slop amount.                                                |

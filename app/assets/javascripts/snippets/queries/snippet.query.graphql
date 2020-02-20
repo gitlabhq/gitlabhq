@@ -1,6 +1,6 @@
 #import '../fragments/snippetBase.fragment.graphql'
 #import '../fragments/project.fragment.graphql'
-#import '../fragments/author.fragment.graphql'
+#import "~/graphql_shared/fragments/author.fragment.graphql"
 
 query GetSnippetQuery($ids: [ID!]) {
   snippets(ids: $ids) {
@@ -8,7 +8,9 @@ query GetSnippetQuery($ids: [ID!]) {
       node {
         ...SnippetBase
         ...Project
-        ...Author
+        author {
+          ...Author
+        }
       }
     }
   }

@@ -46,6 +46,13 @@ describe 'Multi-file editor new directory', :js do
 
     find('.js-ide-commit-mode').click
 
+    # Compact mode depends on the size of window. If it is shorter than MAX_WINDOW_HEIGHT_COMPACT,
+    # (as it is with CHROME_HEADLESS=0), this initial commit button will exist. Otherwise, if it is
+    # taller (as it is by default with chrome headless) then the button will not exist.
+    if page.has_css?('.qa-begin-commit-button')
+      find('.qa-begin-commit-button').click
+    end
+
     fill_in('commit-message', with: 'commit message ide')
 
     find(:css, ".js-ide-commit-new-mr input").set(false)

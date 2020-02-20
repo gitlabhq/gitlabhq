@@ -99,18 +99,23 @@ module Mentionable
     # threw the `ActiveRecord::RecordNotUnique` exception in first place.
     self.class.safe_ensure_unique(retries: 1) do
       user_mention = model_user_mention
+
+      # this may happen due to notes polymorphism, so noteable_id may point to a record that no longer exists
+      # as we cannot have FK on noteable_id
+      break if user_mention.blank?
+
       user_mention.mentioned_users_ids = references[:mentioned_users_ids]
       user_mention.mentioned_groups_ids = references[:mentioned_groups_ids]
       user_mention.mentioned_projects_ids = references[:mentioned_projects_ids]
 
       if user_mention.has_mentions?
         user_mention.save!
-      elsif user_mention.persisted?
+      else
         user_mention.destroy!
       end
-
-      true
     end
+
+    true
   end
 
   def referenced_users
@@ -216,6 +221,12 @@ module Mentionable
 
     # Only include changed fields that are mentionable
     source.select { |key, val| mentionable.include?(key) }
+  end
+
+  def any_mentionable_attributes_changed?
+    self.class.mentionable_attrs.any? do |attr|
+      saved_changes.key?(attr.first)
+    end
   end
 
   # Determine whether or not a cross-reference Note has already been created between this Mentionable and

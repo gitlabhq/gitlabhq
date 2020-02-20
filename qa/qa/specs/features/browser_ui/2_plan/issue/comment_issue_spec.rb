@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan' do
+  context 'Plan', :reliable do
     describe 'Issue comments' do
       before do
         Flow::Login.sign_in
@@ -9,7 +9,7 @@ module QA
         Resource::Issue.fabricate_via_api!.visit!
       end
 
-      it 'user comments on an issue and edits the comment' do
+      it 'comments on an issue and edits the comment' do
         Page::Project::Issue::Show.perform do |show|
           first_version_of_comment = 'First version of the comment'
           second_version_of_comment = 'Second version of the comment'

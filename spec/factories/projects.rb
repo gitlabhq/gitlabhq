@@ -37,6 +37,7 @@ FactoryBot.define do
       group_runners_enabled { nil }
       import_status { nil }
       import_jid { nil }
+      forward_deployment_enabled { nil }
     end
 
     after(:create) do |project, evaluator|
@@ -136,12 +137,6 @@ FactoryBot.define do
     trait :broken_storage do
       after(:create) do |project|
         project.update_column(:repository_storage, 'broken')
-      end
-    end
-
-    trait :without_container_expiration_policy do
-      after(:build) do |project|
-        project.class.skip_callback(:create, :after, :create_container_expiration_policy, raise: false)
       end
     end
 

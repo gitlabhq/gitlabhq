@@ -1,0 +1,21 @@
+- @hide_top_links = true
+- page_title    _("Projects")
+- header_title  _("Projects"), dashboard_projects_path
+
+= render_dashboard_gold_trial(current_user)
+
+- if current_user
+  = render 'dashboard/projects_head', project_tab_filter: :explore
+- else
+  = render 'explore/head'
+
+= render 'explore/projects/nav' unless Feature.enabled?(:project_list_filter_bar) && current_user
+
+.nothing-here-block
+  .svg-content
+    = image_tag 'illustrations/profile-page/personal-project.svg', size: '75'
+    .text-content
+      %h5= _("Maximum page reached")
+      %p= _("Sorry, you have exceeded the maximum browsable page number. Please use the API to explore further.")
+
+      = link_to _("Back to page %{number}") % { number: @max_page_number }, request.params.merge(page: @max_page_number), class: 'btn btn-inverted'

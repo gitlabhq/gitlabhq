@@ -33,13 +33,18 @@ describe Gitlab::Ci::Pipeline::Seed::Deployment do
         expect(subject.iid).to be_present
         expect(subject.environment.name).to eq('production')
         expect(subject.cluster).to be_nil
+        expect(subject.deployment_cluster).to be_nil
       end
 
       context 'when environment has deployment platform' do
         let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
-        it 'returns a deployment with cluster id' do
-          expect(subject.cluster).to eq(cluster)
+        it 'sets the cluster and deployment_cluster' do
+          expect(subject.cluster).to eq(cluster) # until we stop double writing in 12.9: https://gitlab.com/gitlab-org/gitlab/issues/202628
+          expect(subject.deployment_cluster).to have_attributes(
+            cluster_id: cluster.id,
+            kubernetes_namespace: subject.environment.deployment_namespace
+          )
         end
       end
 

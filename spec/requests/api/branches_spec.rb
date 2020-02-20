@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe API::Branches do
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
   let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
   let(:branch_name) { 'feature' }
@@ -608,7 +608,7 @@ describe API::Branches do
       expect(json_response['message']).to eq('Branch name is invalid')
     end
 
-    it 'returns 400 if branch already exists' do
+    it 'returns 400 if branch already exists', :clean_gitlab_redis_cache do
       post api(route, user), params: { branch: 'new_design1', ref: branch_sha }
 
       expect(response).to have_gitlab_http_status(201)

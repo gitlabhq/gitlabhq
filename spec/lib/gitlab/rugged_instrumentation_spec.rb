@@ -15,7 +15,7 @@ describe Gitlab::RuggedInstrumentation, :request_store do
     end
   end
 
-  context '.increment_query_count' do
+  describe '.increment_query_count' do
     it 'tracks query counts' do
       expect(subject.query_count).to eq(0)
 

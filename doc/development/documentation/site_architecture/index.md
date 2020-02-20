@@ -55,7 +55,7 @@ product, and all together are pulled to generate the docs website:
 - [GitLab Chart](https://gitlab.com/charts/gitlab/tree/master/doc)
 
 NOTE: **Note:**
-In September 2019, we [moved towards a single codebase](https://gitlab.com/gitlab-org/gitlab-ee/issues/2952),
+In September 2019, we [moved towards a single codebase](https://gitlab.com/gitlab-org/gitlab/issues/2952),
 as such the docs for CE and EE are now identical. For historical reasons and
 in order not to break any existing links throughout the internet, we still
 maintain the CE docs (`https://docs.gitlab.com/ce/`), although it is hidden

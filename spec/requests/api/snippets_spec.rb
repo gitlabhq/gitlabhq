@@ -89,8 +89,8 @@ describe API::Snippets do
   end
 
   describe 'GET /snippets/:id/raw' do
-    set(:author) { create(:user) }
-    set(:snippet) { create(:personal_snippet, :private, author: author) }
+    let_it_be(:author) { create(:user) }
+    let_it_be(:snippet) { create(:personal_snippet, :private, author: author) }
 
     it 'requires authentication' do
       get api("/snippets/#{snippet.id}", nil)
@@ -137,10 +137,10 @@ describe API::Snippets do
   end
 
   describe 'GET /snippets/:id' do
-    set(:admin) { create(:user, :admin) }
-    set(:author) { create(:user) }
-    set(:private_snippet) { create(:personal_snippet, :private, author: author) }
-    set(:internal_snippet) { create(:personal_snippet, :internal, author: author) }
+    let_it_be(:admin) { create(:user, :admin) }
+    let_it_be(:author) { create(:user) }
+    let_it_be(:private_snippet) { create(:personal_snippet, :private, author: author) }
+    let_it_be(:internal_snippet) { create(:personal_snippet, :internal, author: author) }
 
     it 'requires authentication' do
       get api("/snippets/#{private_snippet.id}", nil)
@@ -238,7 +238,7 @@ describe API::Snippets do
       end
 
       before do
-        allow_next_instance_of(AkismetService) do |instance|
+        allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
       end
@@ -327,7 +327,7 @@ describe API::Snippets do
       end
 
       before do
-        allow_next_instance_of(AkismetService) do |instance|
+        allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
         end
       end

@@ -15,6 +15,7 @@ import {
   scrollBottom,
   requestTrace,
   fetchTrace,
+  startPollingTrace,
   stopPollingTrace,
   receiveTraceSuccess,
   receiveTraceError,
@@ -241,6 +242,50 @@ describe('Job State actions', () => {
           done,
         );
       });
+
+      describe('when job is incomplete', () => {
+        let tracePayload;
+
+        beforeEach(() => {
+          tracePayload = {
+            html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
+            complete: false,
+          };
+
+          mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(200, tracePayload);
+        });
+
+        it('dispatches startPollingTrace', done => {
+          testAction(
+            fetchTrace,
+            null,
+            mockedState,
+            [],
+            [
+              { type: 'toggleScrollisInBottom', payload: true },
+              { type: 'receiveTraceSuccess', payload: tracePayload },
+              { type: 'startPollingTrace' },
+            ],
+            done,
+          );
+        });
+
+        it('does not dispatch startPollingTrace when timeout is non-empty', done => {
+          mockedState.traceTimeout = 1;
+
+          testAction(
+            fetchTrace,
+            null,
+            mockedState,
+            [],
+            [
+              { type: 'toggleScrollisInBottom', payload: true },
+              { type: 'receiveTraceSuccess', payload: tracePayload },
+            ],
+            done,
+          );
+        });
+      });
     });
 
     describe('error', () => {
@@ -265,16 +310,69 @@ describe('Job State actions', () => {
     });
   });
 
+  describe('startPollingTrace', () => {
+    let dispatch;
+    let commit;
+
+    beforeEach(() => {
+      jasmine.clock().install();
+
+      dispatch = jasmine.createSpy();
+      commit = jasmine.createSpy();
+
+      startPollingTrace({ dispatch, commit });
+    });
+
+    afterEach(() => {
+      jasmine.clock().uninstall();
+    });
+
+    it('should save the timeout id but not call fetchTrace', () => {
+      expect(commit).toHaveBeenCalledWith(types.SET_TRACE_TIMEOUT, 1);
+      expect(dispatch).not.toHaveBeenCalledWith('fetchTrace');
+    });
+
+    describe('after timeout has passed', () => {
+      beforeEach(() => {
+        jasmine.clock().tick(4000);
+      });
+
+      it('should clear the timeout id and fetchTrace', () => {
+        expect(commit).toHaveBeenCalledWith(types.SET_TRACE_TIMEOUT, 0);
+        expect(dispatch).toHaveBeenCalledWith('fetchTrace');
+      });
+    });
+  });
+
   describe('stopPollingTrace', () => {
+    let origTimeout;
+
+    beforeEach(() => {
+      // Can't use spyOn(window, 'clearTimeout') because this caused unrelated specs to timeout
+      // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23838#note_280277727
+      origTimeout = window.clearTimeout;
+      window.clearTimeout = jasmine.createSpy();
+    });
+
+    afterEach(() => {
+      window.clearTimeout = origTimeout;
+    });
+
     it('should commit STOP_POLLING_TRACE mutation ', done => {
+      const traceTimeout = 7;
+
       testAction(
         stopPollingTrace,
         null,
-        mockedState,
-        [{ type: types.STOP_POLLING_TRACE }],
+        { ...mockedState, traceTimeout },
+        [{ type: types.SET_TRACE_TIMEOUT, payload: 0 }, { type: types.STOP_POLLING_TRACE }],
         [],
-        done,
-      );
+      )
+        .then(() => {
+          expect(window.clearTimeout).toHaveBeenCalledWith(traceTimeout);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 
@@ -292,15 +390,8 @@ describe('Job State actions', () => {
   });
 
   describe('receiveTraceError', () => {
-    it('should commit RECEIVE_TRACE_ERROR mutation ', done => {
-      testAction(
-        receiveTraceError,
-        null,
-        mockedState,
-        [{ type: types.RECEIVE_TRACE_ERROR }],
-        [],
-        done,
-      );
+    it('should commit stop polling trace', done => {
+      testAction(receiveTraceError, null, mockedState, [], [{ type: 'stopPollingTrace' }], done);
     });
   });
 

@@ -1,6 +1,18 @@
 import Pipelines from '~/pipelines';
 
 export default () => {
+  const mergeRequestListToggle = document.querySelector('.js-toggle-mr-list');
+  const truncatedMergeRequestList = document.querySelector('.js-truncated-mr-list');
+  const fullMergeRequestList = document.querySelector('.js-full-mr-list');
+
+  if (mergeRequestListToggle) {
+    mergeRequestListToggle.addEventListener('click', e => {
+      e.preventDefault();
+      truncatedMergeRequestList.classList.toggle('hide');
+      fullMergeRequestList.classList.toggle('hide');
+    });
+  }
+
   const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
   const pipelineStatusUrl = `${document
     .querySelector('.js-pipeline-tab-link a')

@@ -69,7 +69,9 @@ module Projects
           return
         end
 
+        # rubocop:disable CodeReuse/Worker
         CreatePipelineWorker.perform_async(project.id, current_user.id, project.default_branch, :web, ignore_skip_ci: true, save_on_errors: false)
+        # rubocop:enable CodeReuse/Worker
 
         pipelines_link_start = '<a href="%{url}">'.html_safe % { url: project_pipelines_path(@project) }
         flash[:toast] = _("A new Auto DevOps pipeline has been created, go to %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details") % { pipelines_link_start: pipelines_link_start, pipelines_link_end: "</a>".html_safe }

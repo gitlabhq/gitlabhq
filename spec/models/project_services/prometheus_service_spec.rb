@@ -70,7 +70,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
         before do
           service.api_url = 'http://localhost:9090'
 
-          stub_application_setting(instance_administration_project_id: project.id)
+          stub_application_setting(self_monitoring_project_id: project.id)
           stub_config(prometheus: { enable: true, listen_address: 'localhost:9090' })
         end
 
@@ -169,7 +169,7 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
       end
 
       context 'cluster belongs to projects group' do
-        set(:group) { create(:group) }
+        let_it_be(:group) { create(:group) }
         let(:project) { create(:prometheus_project, group: group) }
         let(:cluster) { create(:cluster_for_group, :with_installed_helm, groups: [group]) }
 

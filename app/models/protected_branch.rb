@@ -2,6 +2,7 @@
 
 class ProtectedBranch < ApplicationRecord
   include ProtectedRef
+  include Gitlab::SQL::Pattern
 
   scope :requiring_code_owner_approval,
         -> { where(code_owner_approval_required: true) }
@@ -44,6 +45,12 @@ class ProtectedBranch < ApplicationRecord
   def self.branch_requires_code_owner_approval?(project, branch_name)
     # NOOP
     #
+  end
+
+  def self.by_name(query)
+    return none if query.blank?
+
+    where(fuzzy_arel_match(:name, query.downcase))
   end
 end
 

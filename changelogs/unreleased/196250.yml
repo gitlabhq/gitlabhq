@@ -1,0 +1,5 @@
+---
+title: Remove N+1 query for profile notifications
+merge_request: 22845
+author: Ohad Dahan
+type: performance

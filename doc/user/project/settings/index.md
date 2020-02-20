@@ -1,8 +1,8 @@
 # Project settings
 
 NOTE: **Note:**
-Only project Maintainers and Admin users have the [permissions] to access a project
-settings.
+Only project Maintainers and Admin users have the [permissions](../../permissions.md#project-members-permissions)
+to access a project settings.
 
 You can adjust your [project](../index.md) settings by navigating
 to your project's homepage and clicking **Settings**.
@@ -86,7 +86,7 @@ related to the project by selecting the **Disable email notifications** checkbox
 
 Set up your project's merge request settings:
 
-- Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.html)).
+- Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.md)).
 - Add merge request [description templates](../description_templates.md#description-templates).
 - Enable [merge request approvals](../merge_requests/merge_request_approvals.md). **(STARTER)**
 - Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
@@ -106,16 +106,14 @@ Learn how to [export a project](import_export.md#importing-the-project) in GitLa
 
 ### Advanced settings
 
-Here you can run housekeeping, archive, rename, transfer, or remove a project.
+Here you can run housekeeping, archive, rename, transfer, [remove a fork relationship](#removing-a-fork-relationship), or remove a project.
 
 #### Archiving a project
 
-NOTE: **Note:**
-Only project Owners and Admin users have the [permissions] to archive a project.
-
-Archiving a project makes it read-only for all users and indicates that it is
+Archiving a project makes it read-only for all users and indicates that it's
 no longer actively maintained. Projects that have been archived can also be
-unarchived.
+unarchived. Only project Owners and Admin users have the
+[permissions](../../permissions.md#project-members-permissions) to archive a project.
 
 When a project is archived, the repository, issues, merge requests and all
 other features are read-only. Archived projects are also hidden
@@ -123,14 +121,39 @@ in project listings.
 
 To archive a project:
 
-1. Navigate to your project's **Settings > General > Advanced settings**.
-1. In the Archive project section, click the **Archive project** button.
+1. Navigate to your project's **{settings}** **Settings > General**.
+1. Under **Advanced**, click **Expand**.
+1. In the **Archive project** section, click the **Archive project** button.
+1. Confirm the action when asked to.
+
+#### Unarchiving a project
+
+Unarchiving a project removes the read-only restriction on a project, and makes it
+available in project listings. Only project Owners and Admin users have the
+[permissions](../../permissions.md#project-members-permissions) to unarchive a project.
+
+To find an archived project:
+
+1. Sign in to GitLab as a user with project Owner or Admin permissions.
+1. If you:
+   - Have the project's URL, open the project's page in your browser.
+   - Don't have the project's URL:
+   1. Click **Projects > Explore projects**.
+   1. In the **Sort projects** dropdown box, select **Show archived projects**.
+   1. In the **Filter by name** field, provide the project's name.
+   1. Click the link to the project to open its **Details** page.
+
+Next, to unarchive the project:
+
+1. Navigate to your project's **{settings}** **Settings > General**.
+1. Under **Advanced**, click **Expand**.
+1. In the **Unarchive project** section, click the **Unarchive project** button.
 1. Confirm the action when asked to.
 
 #### Renaming a repository
 
 NOTE: **Note:**
-Only project Maintainers and Admin users have the [permissions] to rename a
+Only project Maintainers and Admin users have the [permissions](../../permissions.md#project-members-permissions) to rename a
 repository. Not to be confused with a project's name where it can also be
 changed from the [general project settings](#general-project-settings).
 
@@ -139,30 +162,33 @@ project via a browser) and its place on the file disk where GitLab is installed.
 
 To rename a repository:
 
-1. Navigate to your project's **Settings > General > Advanced settings**.
+1. Navigate to your project's **{settings}** **Settings > General**.
+1. Under **Advanced**, click **Expand**.
 1. Under "Rename repository", change the "Path" to your liking.
 1. Hit **Rename project**.
 
 Remember that this can have unintended side effects since everyone with the
-old URL will not be able to push or pull. Read more about what happens with the
+old URL won't be able to push or pull. Read more about what happens with the
 [redirects when renaming repositories](../index.md#redirects-when-changing-repository-paths).
 
 #### Transferring an existing project into another namespace
 
 NOTE: **Note:**
-Only project Owners and Admin users have the [permissions] to transfer a project.
+Only project Owners and Admin users have the [permissions](../../permissions.md#project-members-permissions)
+to transfer a project.
 
 You can transfer an existing project into a [group](../../group/index.md) if:
 
-1. You have at least **Maintainer** [permissions] to that group.
+1. You have at least **Maintainer** [permissions](../../permissions.md#project-members-permissions) to that group.
 1. The project is in a subgroup you own.
-1. You are at least a **Maintainer** of the project under your personal namespace.
-   Similarly, if you are an owner of a group, you can transfer any of its projects
+1. You're at least a **Maintainer** of the project under your personal namespace.
+   Similarly, if you're an owner of a group, you can transfer any of its projects
    under your own user.
 
 To transfer a project:
 
-1. Navigate to your project's **Settings > General > Advanced settings**.
+1. Navigate to your project's **{settings}** **Settings > General**.
+1. Under **Advanced**, click **Expand**.
 1. Under "Transfer project", choose the namespace you want to transfer the
    project to.
 1. Confirm the transfer by typing the project's path as instructed.
@@ -175,7 +201,48 @@ NOTE: **Note:**
 GitLab administrators can use the admin interface to move any project to any
 namespace if needed.
 
-[permissions]: ../../permissions.md#project-members-permissions
+#### Remove a project
+
+NOTE: **Note:**
+Only project owners and admins have [permissions]((../../permissions.md#project-members-permissions) to remove a project.
+
+To remove a project:
+
+1. Navigate to your project, and select **{settings}** **Settings > General > Advanced**.
+1. In the Remove project section, click the **Remove project** button.
+1. Confirm the action when asked to.
+
+This action either:
+
+- Removes a project including all associated resources (issues, merge requests etc).
+- Since [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/32935), on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a project for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+
+### Restore a project **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32935) in GitLab 12.6.
+
+To restore a project marked for deletion:
+
+1. Navigate to your project, and select **{settings}** **Settings > General > Advanced**.
+1. In the Restore project section, click the **Restore project** button.
+
+#### Removing a fork relationship
+
+Forking is a great way to [contribute to a project](../repository/forking_workflow.md)
+of which you're not a member.
+If you want to use the fork for yourself and don't need to send
+[merge requests](../merge_requests.md) to the upstream project,
+you can safely remove the fork relationship.
+
+To do so:
+
+1. Navigate to your project's **Settings > General > Advanced**.
+1. Under **Remove fork relationship**, click the likewise-labeled button.
+1. Confirm the action by typing the project's path as instructed.
+
+NOTE: **Note:**
+Only project maintainers have the [permissions](../../permissions.md#project-members-permissions)
+to remove a fork relationship.
 
 ## Operations settings
 

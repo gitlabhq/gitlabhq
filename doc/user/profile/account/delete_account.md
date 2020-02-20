@@ -35,13 +35,13 @@ As an administrator, you can delete a user account by:
 ## Associated Records
 
 > - Introduced for issues in
->   [GitLab 9.0](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7393).
+>   [GitLab 9.0](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7393).
 > - Introduced for merge requests, award emoji, notes, and abuse reports in
->   [GitLab 9.1](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10467).
+>   [GitLab 9.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10467).
 > - Hard deletion from abuse reports and spam logs was introduced in
->   [GitLab 9.1](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10273),
+>   [GitLab 9.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10273),
 >   and from the API in
->   [GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/11853).
+>   [GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11853).
 
 When a user account is deleted, not all associated records are deleted with it.
 Here's a list of things that will **not** be deleted:

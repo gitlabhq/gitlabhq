@@ -18,10 +18,8 @@ describe 'Merge request > User sees threads', :js do
     let!(:outdated_discussion) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: outdated_position).to_discussion }
     let!(:active_discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
     let(:outdated_position) do
-      Gitlab::Diff::Position.new(
-        old_path: "files/ruby/popen.rb",
-        new_path: "files/ruby/popen.rb",
-        old_line: nil,
+      build(:text_diff_position, :added,
+        file: "files/ruby/popen.rb",
         new_line: 9,
         diff_refs: outdated_diff_refs
       )

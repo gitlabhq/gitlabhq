@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 describe API::Issues do
-  set(:user) { create(:user) }
-  set(:project) do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project, reload: true) do
     create(:project, :public, creator_id: user.id, namespace: user.namespace)
   end
 
-  let(:user2)       { create(:user) }
-  let(:non_member)  { create(:user) }
-  set(:guest)       { create(:user) }
-  set(:author)      { create(:author) }
-  set(:assignee)    { create(:assignee) }
-  let(:admin)       { create(:user, :admin) }
+  let(:user2)             { create(:user) }
+  let(:non_member)        { create(:user) }
+  let_it_be(:guest)       { create(:user) }
+  let_it_be(:author)      { create(:author) }
+  let_it_be(:assignee)    { create(:assignee) }
+  let(:admin)             { create(:user, :admin) }
   let(:issue_title)       { 'foo' }
   let(:issue_description) { 'closed' }
   let!(:closed_issue) do
@@ -47,12 +47,12 @@ describe API::Issues do
       title: issue_title,
       description: issue_description
   end
-  set(:label) do
+  let_it_be(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
   let!(:label_link) { create(:label_link, label: label, target: issue) }
   let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
-  set(:empty_milestone) do
+  let_it_be(:empty_milestone) do
     create(:milestone, title: '2.0.0', project: project)
   end
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
@@ -73,7 +73,7 @@ describe API::Issues do
     it 'updates a project issue' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         params: { title: 'updated title' }
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
 
       expect(json_response['title']).to eq('updated title')
     end
@@ -81,13 +81,13 @@ describe API::Issues do
     it 'returns 404 error if issue iid not found' do
       put api("/projects/#{project.id}/issues/44444", user),
         params: { title: 'updated title' }
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns 404 error if issue id is used instead of the iid' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
         params: { title: 'updated title' }
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'allows special label names' do
@@ -124,33 +124,33 @@ describe API::Issues do
       it 'returns 403 for non project members' do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", non_member),
           params: { title: 'updated title' }
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
 
       it 'returns 403 for project members with guest role' do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", guest),
           params: { title: 'updated title' }
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
 
       it 'updates a confidential issue for project members' do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", user),
           params: { title: 'updated title' }
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq('updated title')
       end
 
       it 'updates a confidential issue for author' do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", author),
           params: { title: 'updated title' }
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq('updated title')
       end
 
       it 'updates a confidential issue for admin' do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", admin),
           params: { title: 'updated title' }
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq('updated title')
       end
 
@@ -158,7 +158,7 @@ describe API::Issues do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           params: { confidential: true }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['confidential']).to be_truthy
       end
 
@@ -166,7 +166,7 @@ describe API::Issues do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", user),
           params: { confidential: false }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['confidential']).to be_falsy
       end
 
@@ -174,7 +174,7 @@ describe API::Issues do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", user),
           params: { confidential: 'foo' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('confidential is invalid')
       end
     end
@@ -194,10 +194,10 @@ describe API::Issues do
     end
 
     before do
-      expect_next_instance_of(SpamService) do |spam_service|
+      expect_next_instance_of(Spam::SpamCheckService) do |spam_service|
         expect(spam_service).to receive_messages(check_for_spam?: true)
       end
-      expect_next_instance_of(AkismetService) do |akismet_service|
+      expect_next_instance_of(Spam::AkismetService) do |akismet_service|
         expect(akismet_service).to receive_messages(spam?: true)
       end
     end
@@ -214,7 +214,7 @@ describe API::Issues do
       it 'returns correct status and message' do
         update_issue
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to include('message' => { 'error' => 'Spam detected' })
       end
 
@@ -232,7 +232,7 @@ describe API::Issues do
       it 'returns correct status and message' do
         update_issue
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'creates a new spam log entry' do
@@ -248,7 +248,7 @@ describe API::Issues do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           params: { assignee_id: 0 }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response['assignee']).to be_nil
       end
@@ -257,7 +257,7 @@ describe API::Issues do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           params: { assignee_id: user2.id }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response['assignee']['name']).to eq(user2.name)
       end
@@ -267,7 +267,7 @@ describe API::Issues do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         params: { assignee_ids: [0] }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
 
       expect(json_response['assignees']).to be_empty
     end
@@ -276,7 +276,7 @@ describe API::Issues do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         params: { assignee_ids: [user2.id] }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
 
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
@@ -286,7 +286,7 @@ describe API::Issues do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           params: { assignee_ids: [user2.id, guest.id] }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response['assignees'].size).to eq(1)
       end
@@ -300,7 +300,7 @@ describe API::Issues do
     it 'does not update labels if not present' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         params: { title: 'updated title' }
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to eq([label.title])
     end
 
@@ -309,7 +309,7 @@ describe API::Issues do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user), params: { labels: '' }
       end
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to eq([])
       expect(json_response['updated_at']).to be > Time.now
     end
@@ -319,7 +319,7 @@ describe API::Issues do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user), params: { labels: [''] }
       end
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to eq([])
       expect(json_response['updated_at']).to be > Time.now
     end
@@ -329,7 +329,7 @@ describe API::Issues do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           params: { labels: 'foo,bar' }
       end
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to include 'foo'
       expect(json_response['labels']).to include 'bar'
       expect(json_response['updated_at']).to be > Time.now
@@ -340,7 +340,7 @@ describe API::Issues do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           params: { labels: %w(foo bar) }
       end
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to include 'foo'
       expect(json_response['labels']).to include 'bar'
       expect(json_response['updated_at']).to be > Time.now
@@ -377,7 +377,7 @@ describe API::Issues do
     it 'returns 400 if title is too long' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         params: { title: 'g' * 256 }
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['message']['title']).to eq([
         'is too long (maximum is 255 characters)'
       ])
@@ -388,7 +388,7 @@ describe API::Issues do
     it 'updates a project issue' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         params: { labels: 'label2', state_event: 'close' }
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
 
       expect(json_response['labels']).to include 'label2'
       expect(json_response['state']).to eq 'closed'
@@ -397,7 +397,7 @@ describe API::Issues do
     it 'reopens a project isssue' do
       put api("/projects/#{project.id}/issues/#{closed_issue.iid}", user), params: { state_event: 'reopen' }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['state']).to eq 'opened'
     end
 
@@ -407,7 +407,7 @@ describe API::Issues do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           params: { labels: 'label3', state_event: 'close', updated_at: update_time }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['labels']).to include 'label3'
         expect(Time.parse(json_response['updated_at'])).to be_like_time(update_time)
       end
@@ -420,7 +420,7 @@ describe API::Issues do
 
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), params: { due_date: due_date }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['due_date']).to eq(due_date)
     end
   end

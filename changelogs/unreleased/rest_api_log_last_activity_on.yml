@@ -1,0 +1,5 @@
+---
+title: Log user last activity on REST API
+merge_request: 21725
+author:
+type: fixed

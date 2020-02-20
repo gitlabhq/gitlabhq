@@ -6,16 +6,15 @@ describe "Private Project Pages Access" do
   using RSpec::Parameterized::TableSyntax
   include AccessMatchers
 
-  set(:group) { create(:group) }
-  set(:project) { create(:project, :private, pages_access_level: ProjectFeature::ENABLED, namespace: group) }
-
-  set(:admin) { create(:admin) }
-  set(:owner) { create(:user) }
-  set(:master) { create(:user) }
-  set(:developer) { create(:user) }
-  set(:reporter) { create(:user) }
-  set(:guest) { create(:user) }
-  set(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project, reload: true) { create(:project, :private, pages_access_level: ProjectFeature::ENABLED, namespace: group) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:owner) { create(:user) }
+  let_it_be(:master) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     allow(Gitlab.config.pages).to receive(:access_control).and_return(true)

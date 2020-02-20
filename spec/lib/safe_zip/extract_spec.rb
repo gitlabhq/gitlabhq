@@ -12,7 +12,7 @@ describe SafeZip::Extract do
     FileUtils.remove_entry_secure(target_path)
   end
 
-  context '#extract' do
+  describe '#extract' do
     subject { object.extract(directories: directories, to: target_path) }
 
     shared_examples 'extracts archive' do |param|

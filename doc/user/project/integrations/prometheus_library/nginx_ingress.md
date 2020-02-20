@@ -1,6 +1,6 @@
 # Monitoring NGINX Ingress Controller
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22133) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22133) in GitLab 11.7.
 
 NOTE: **Note:** NGINX Ingress versions prior to 0.16.0 offer an included [VTS Prometheus metrics exporter](nginx_ingress_vts.md), which exports metrics different than the built-in metrics.
 

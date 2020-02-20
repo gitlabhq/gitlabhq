@@ -99,7 +99,7 @@ describe Gitlab::Ci::Parsers::Test::Junit do
           let(:testcase_content) { '<error>Some error</error>' }
 
           it_behaves_like '<testcase> XML parser',
-            ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED,
+            ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR,
             'Some error'
         end
 

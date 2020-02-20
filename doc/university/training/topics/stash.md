@@ -9,7 +9,7 @@ and we need to change to a different branch.
 
 - Stash:
 
-  ```sh
+  ```shell
   git stash save
   # or
   git stash
@@ -19,7 +19,7 @@ and we need to change to a different branch.
 
 - Apply stash to keep working on it:
 
-  ```sh
+  ```shell
   git stash apply
   # or apply a specific one from out stack
   git stash apply stash@{3}
@@ -28,7 +28,7 @@ and we need to change to a different branch.
 - Every time we save a stash it gets stacked so by using `list` we can see all our
   stashes.
 
-  ```sh
+  ```shell
   git stash list
   # or for more information (log methods)
   git stash list --stat
@@ -36,7 +36,7 @@ and we need to change to a different branch.
 
 - To clean our stack we need to manually remove them:
 
-  ```sh
+  ```shell
   # drop top stash
   git stash drop
   # or
@@ -47,7 +47,7 @@ and we need to change to a different branch.
 
 - Apply and drop on one command:
 
-  ```sh
+  ```shell
   git stash pop
   ```
 
@@ -64,7 +64,7 @@ and we need to change to a different branch.
 1. Apply with pop
 1. View list to confirm changes
 
-```sh
+```shell
 # Modify edit_this_file.rb file
 git add .
 

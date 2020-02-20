@@ -6,6 +6,7 @@ class UpdateMergeRequestsWorker
   feature_category :source_code_management
   latency_sensitive_worker!
   worker_resource_boundary :cpu
+  weight 3
 
   LOG_TIME_THRESHOLD = 90 # seconds
 

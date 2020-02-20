@@ -27,7 +27,7 @@ Runtime::Browser.visit(:gitlab, Some::Page)
 
 ### Clicks
 
-When we perform a click within our tests, we expect something to occur.  That something could be a component to now
+When we perform a click within our tests, we expect something to occur. That something could be a component to now
 appear on the webpage, or the test to navigate away from the page entirely.
 
 Dynamic element validation is instituted when using
@@ -57,7 +57,7 @@ Simply put, a required element is a visible HTML element that appears on a UI co
 
 #### Application
 
-Requiring elements is very easy.  By adding `required: true` as a parameter to an `element`, you've now made it
+Requiring elements is very easy. By adding `required: true` as a parameter to an `element`, you've now made it
 a requirement that the element appear on the page upon navigation.
 
 ## Examples

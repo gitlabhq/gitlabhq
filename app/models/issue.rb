@@ -33,9 +33,6 @@ class Issue < ApplicationRecord
 
   has_internal_id :iid, scope: :project, track_if: -> { !importing? }, init: ->(s) { s&.project&.issues&.maximum(:iid) }
 
-  has_many :issue_milestones
-  has_many :milestones, through: :issue_milestones
-
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :merge_requests_closing_issues,
@@ -45,7 +42,7 @@ class Issue < ApplicationRecord
   has_many :issue_assignees
   has_many :assignees, class_name: "User", through: :issue_assignees
   has_many :zoom_meetings
-  has_many :user_mentions, class_name: "IssueUserMention"
+  has_many :user_mentions, class_name: "IssueUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_one :sentry_issue
 
   accepts_nested_attributes_for :sentry_issue
@@ -147,6 +144,20 @@ class Issue < ApplicationRecord
     'project_id'
   end
 
+  def self.simple_sorts
+    super.merge(
+      {
+        'closest_future_date' => -> { order_closest_future_date },
+        'closest_future_date_asc' => -> { order_closest_future_date },
+        'due_date' => -> { order_due_date_asc.with_order_id_desc },
+        'due_date_asc' => -> { order_due_date_asc.with_order_id_desc },
+        'due_date_desc' => -> { order_due_date_desc.with_order_id_desc },
+        'relative_position' => -> { order_relative_position_asc.with_order_id_desc },
+        'relative_position_asc' => -> { order_relative_position_asc.with_order_id_desc }
+      }
+    )
+  end
+
   def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
     when 'closest_future_date', 'closest_future_date_asc' then order_closest_future_date
@@ -158,8 +169,10 @@ class Issue < ApplicationRecord
     end
   end
 
-  def self.order_by_position_and_priority
-    order_labels_priority
+  # `with_cte` argument allows sorting when using CTE queries and prevents
+  # errors in postgres when using CTE search optimisation
+  def self.order_by_position_and_priority(with_cte: false)
+    order_labels_priority(with_cte: with_cte)
       .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
               Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
               "id DESC")
@@ -173,7 +186,7 @@ class Issue < ApplicationRecord
   def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    "#{project.to_reference(from, full: full)}#{reference}"
+    "#{project.to_reference_base(from, full: full)}#{reference}"
   end
 
   def suggested_branch_name

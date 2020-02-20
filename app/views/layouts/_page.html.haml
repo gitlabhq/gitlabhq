@@ -11,6 +11,7 @@
       = render "layouts/nav/classification_level_banner"
       = yield :flash_message
       = render "shared/ping_consent"
+      = render_account_recovery_regular_check
       - unless @hide_breadcrumbs
         = render "layouts/nav/breadcrumbs"
       .d-flex

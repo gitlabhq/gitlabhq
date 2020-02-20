@@ -135,16 +135,6 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
       expect { cache.send(:write_to_redis_hash, diff_hash) }
         .to change { Gitlab::Redis::Cache.with { |r| r.hgetall(cache_key) } }
     end
-
-    # Note that this spec and the code it confirms can be removed when
-    #   :hset_redis_diff_caching is fully launched.
-    #
-    it 'attempts to clear deprecated cache entries' do
-      expect_any_instance_of(Gitlab::Diff::DeprecatedHighlightCache)
-        .to receive(:clear).and_call_original
-
-      cache.send(:write_to_redis_hash, diff_hash)
-    end
   end
 
   describe '#clear' do
@@ -152,6 +142,12 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
       expect_any_instance_of(Redis).to receive(:del).with(cache_key)
 
       cache.clear
+    end
+  end
+
+  describe 'metrics' do
+    it 'defines :gitlab_redis_diff_caching_memory_usage_bytes histogram' do
+      expect(described_class).to respond_to(:gitlab_redis_diff_caching_memory_usage_bytes)
     end
   end
 end

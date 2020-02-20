@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, camelcase, no-nested-ternary, no-continue */
+/* eslint-disable no-param-reassign, babel/camelcase, no-nested-ternary, no-continue */
 
 import $ from 'jquery';
 import Vue from 'vue';

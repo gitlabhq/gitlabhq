@@ -1,20 +1,29 @@
 query errorDetails($fullPath: ID!, $errorId: ID!) {
     project(fullPath: $fullPath) {
-        sentryDetailedError(id: $errorId) {
-            id
-            sentryId
-            title
-            userCount
-            count
-            firstSeen
-            lastSeen
-            message
-            culprit
-            externalUrl
-            firstReleaseShortVersion
-            lastReleaseShortVersion
-            gitlabCommit
-            gitlabCommitPath
+        sentryErrors {
+            detailedError(id: $errorId) {
+                id
+                sentryId
+                title
+                userCount
+                count
+                status
+                firstSeen
+                lastSeen
+                message
+                culprit
+                tags {
+                    level
+                    logger
+                }
+                externalUrl
+                externalBaseUrl
+                firstReleaseShortVersion
+                lastReleaseShortVersion
+                gitlabCommit
+                gitlabCommitPath
+                gitlabIssuePath
+            }
         }
     }
 }

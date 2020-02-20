@@ -47,14 +47,14 @@ describe RoutableActions do
           it 'allows access' do
             get_routable(routable)
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
 
         it 'prevents access when not authorized' do
           get_routable(routable)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -75,14 +75,14 @@ describe RoutableActions do
           it 'allows access' do
             get_routable(routable)
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
 
         it 'prevents access when not authorized' do
           get_routable(routable)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -92,7 +92,7 @@ describe RoutableActions do
         it 'allows access when authorized' do
           get_routable(routable)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'prevents access when unauthorized' do
@@ -100,7 +100,7 @@ describe RoutableActions do
 
           get_routable(user)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -111,7 +111,7 @@ describe RoutableActions do
 
         get_routable(routable)
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(response.location).to end_with('/users/sign_in')
       end
     end

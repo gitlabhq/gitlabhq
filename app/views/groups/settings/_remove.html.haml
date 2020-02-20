@@ -1,0 +1,5 @@
+- if group.adjourned_deletion?
+  = render_if_exists 'groups/settings/adjourned_deletion', group: group
+- else
+  = render 'groups/settings/permanent_deletion', group: group
+

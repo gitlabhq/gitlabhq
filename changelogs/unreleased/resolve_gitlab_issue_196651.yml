@@ -1,0 +1,5 @@
+---
+title: Replace underscore with lodash for ./app/assets/javascripts/serverless
+merge_request: 25011
+author: Tobias Spagert
+type: other

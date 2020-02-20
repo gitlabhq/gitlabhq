@@ -1,7 +1,3 @@
----
-last_updated: 2019-09-16
----
-
 # Audit Events **(STARTER)**
 
 GitLab offers a way to view the changes made within the GitLab server for owners and administrators on a [paid plan][ee].
@@ -105,6 +101,10 @@ recorded:
 - Ask for password reset
 - Grant OAuth access
 - Started/stopped user impersonation
+- Changed username ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/7797) in GitLab 12.8)
+- User was deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
+- User was added ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
+- User was blocked via Admin Area ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
 
 It is possible to filter particular actions by choosing an audit data type from
 the filter dropdown box. You can further filter by specific group, project or user
@@ -143,7 +143,7 @@ the steps bellow.
 
 1. Enter the Rails console:
 
-   ```sh
+   ```shell
    sudo gitlab-rails console
    ```
 

@@ -95,7 +95,7 @@ describe Ci::RetryPipelineService, '#execute' do
       before do
         create_build('build', :success, 0)
         create_build('build2', :success, 0)
-        test_build = create_build('test', :failed, 1)
+        test_build = create_build('test', :failed, 1, scheduling_type: :dag)
         create(:ci_build_need, build: test_build, name: 'build')
         create(:ci_build_need, build: test_build, name: 'build2')
       end
@@ -107,6 +107,21 @@ describe Ci::RetryPipelineService, '#execute' do
         expect(build('build2')).to be_success
         expect(build('test')).to be_pending
         expect(build('test').needs.map(&:name)).to match_array(%w(build build2))
+      end
+
+      context 'when there is a failed DAG test without needs' do
+        before do
+          create_build('deploy', :failed, 2, scheduling_type: :dag)
+        end
+
+        it 'retries the test' do
+          service.execute(pipeline)
+
+          expect(build('build')).to be_success
+          expect(build('build2')).to be_success
+          expect(build('test')).to be_pending
+          expect(build('deploy')).to be_pending
+        end
       end
     end
 

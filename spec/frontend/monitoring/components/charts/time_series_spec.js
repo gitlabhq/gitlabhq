@@ -3,12 +3,13 @@ import { setTestTimeout } from 'helpers/timeout';
 import { GlLink } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { shallowWrapperContainsSlotText } from 'helpers/vue_test_utils_helper';
+import { chartColorValues } from '~/monitoring/constants';
 import { createStore } from '~/monitoring/stores';
 import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import * as types from '~/monitoring/stores/mutation_types';
 import {
   deploymentData,
-  metricsGroupsAPIResponse,
+  metricsDashboardPayload,
   mockedQueryResultPayload,
   mockProjectDir,
   mockHost,
@@ -18,6 +19,15 @@ import * as iconUtils from '~/lib/utils/icon_utils';
 const mockWidgets = 'mockWidgets';
 
 const mockSvgPathContent = 'mockSvgPathContent';
+
+jest.mock('lodash/throttle', () =>
+  // this throttle mock executes immediately
+  jest.fn(func => {
+    // eslint-disable-next-line no-param-reassign
+    func.cancel = jest.fn();
+    return func;
+  }),
+);
 jest.mock('~/lib/utils/icon_utils', () => ({
   getSvgIconPathContent: jest.fn().mockImplementation(() => Promise.resolve(mockSvgPathContent)),
 }));
@@ -34,7 +44,7 @@ describe('Time series component', () => {
 
     store.commit(
       `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
-      metricsGroupsAPIResponse,
+      metricsDashboardPayload,
     );
 
     store.commit(`monitoringDashboard/${types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS}`, deploymentData);
@@ -65,6 +75,8 @@ describe('Time series component', () => {
   describe('general functions', () => {
     let timeSeriesChart;
 
+    const findChart = () => timeSeriesChart.find({ ref: 'chart' });
+
     beforeEach(done => {
       timeSeriesChart = makeTimeSeriesChart(mockGraphData, 'area-chart');
       timeSeriesChart.vm.$nextTick(done);
@@ -91,6 +103,54 @@ describe('Time series component', () => {
 
       return timeSeriesChart.vm.$nextTick().then(() => {
         expect(timeSeriesChart.props().legendAverageText).toBe('averageText');
+      });
+    });
+
+    describe('events', () => {
+      describe('datazoom', () => {
+        let eChartMock;
+        let startValue;
+        let endValue;
+
+        beforeEach(done => {
+          eChartMock = {
+            handlers: {},
+            getOption: () => ({
+              dataZoom: [
+                {
+                  startValue,
+                  endValue,
+                },
+              ],
+            }),
+            off: jest.fn(eChartEvent => {
+              delete eChartMock.handlers[eChartEvent];
+            }),
+            on: jest.fn((eChartEvent, fn) => {
+              eChartMock.handlers[eChartEvent] = fn;
+            }),
+          };
+
+          timeSeriesChart = makeTimeSeriesChart(mockGraphData);
+          timeSeriesChart.vm.$nextTick(() => {
+            findChart().vm.$emit('created', eChartMock);
+            done();
+          });
+        });
+
+        it('handles datazoom event from chart', () => {
+          startValue = 1577836800000; // 2020-01-01T00:00:00.000Z
+          endValue = 1577840400000; // 2020-01-01T01:00:00.000Z
+          eChartMock.handlers.datazoom();
+
+          expect(timeSeriesChart.emitted('datazoom')).toHaveLength(1);
+          expect(timeSeriesChart.emitted('datazoom')[0]).toEqual([
+            {
+              start: new Date(startValue).toISOString(),
+              end: new Date(endValue).toISOString(),
+            },
+          ]);
+        });
       });
     });
 
@@ -226,6 +286,8 @@ describe('Time series component', () => {
     });
 
     describe('computed', () => {
+      const getChartOptions = () => findChart().props('option');
+
       describe('chartData', () => {
         let chartData;
         const seriesData = () => chartData[0];
@@ -254,6 +316,10 @@ describe('Time series component', () => {
         it('formats line width correctly', () => {
           expect(chartData[0].lineStyle.width).toBe(2);
         });
+
+        it('formats line color correctly', () => {
+          expect(chartData[0].lineStyle.color).toBe(chartColorValues[0]);
+        });
       });
 
       describe('chartOptions', () => {
@@ -270,7 +336,7 @@ describe('Time series component', () => {
             });
 
             return timeSeriesChart.vm.$nextTick().then(() => {
-              expect(timeSeriesChart.vm.chartOptions).toEqual(expect.objectContaining(mockOption));
+              expect(getChartOptions()).toEqual(expect.objectContaining(mockOption));
             });
           });
 
@@ -286,42 +352,106 @@ describe('Time series component', () => {
             });
 
             return timeSeriesChart.vm.$nextTick().then(() => {
-              const optionSeries = timeSeriesChart.vm.chartOptions.series;
+              const optionSeries = getChartOptions().series;
 
               expect(optionSeries.length).toEqual(2);
               expect(optionSeries[0].name).toEqual(mockSeriesName);
             });
           });
+
+          it('additional y axis data', () => {
+            const mockCustomYAxisOption = {
+              name: 'Custom y axis label',
+              axisLabel: {
+                formatter: jest.fn(),
+              },
+            };
+
+            timeSeriesChart.setProps({
+              option: {
+                yAxis: mockCustomYAxisOption,
+              },
+            });
+
+            return timeSeriesChart.vm.$nextTick().then(() => {
+              const { yAxis } = getChartOptions();
+
+              expect(yAxis[0]).toMatchObject(mockCustomYAxisOption);
+            });
+          });
+
+          it('additional x axis data', () => {
+            const mockCustomXAxisOption = {
+              name: 'Custom x axis label',
+            };
+
+            timeSeriesChart.setProps({
+              option: {
+                xAxis: mockCustomXAxisOption,
+              },
+            });
+
+            return timeSeriesChart.vm.$nextTick().then(() => {
+              const { xAxis } = getChartOptions();
+
+              expect(xAxis).toMatchObject(mockCustomXAxisOption);
+            });
+          });
         });
 
         describe('yAxis formatter', () => {
-          let format;
+          let dataFormatter;
+          let deploymentFormatter;
 
           beforeEach(() => {
-            format = timeSeriesChart.vm.chartOptions.yAxis.axisLabel.formatter;
+            dataFormatter = getChartOptions().yAxis[0].axisLabel.formatter;
+            deploymentFormatter = getChartOptions().yAxis[1].axisLabel.formatter;
           });
 
           it('rounds to 3 decimal places', () => {
-            expect(format(0.88888)).toBe('0.889');
+            expect(dataFormatter(0.88888)).toBe('0.889');
+          });
+
+          it('deployment formatter is set as is required to display a tooltip', () => {
+            expect(deploymentFormatter).toEqual(expect.any(Function));
           });
         });
       });
 
-      describe('scatterSeries', () => {
+      describe('deploymentSeries', () => {
         it('utilizes deployment data', () => {
-          expect(timeSeriesChart.vm.scatterSeries.data).toEqual([
-            ['2019-07-16T10:14:25.589Z', 0],
-            ['2019-07-16T11:14:25.589Z', 0],
-            ['2019-07-16T12:14:25.589Z', 0],
+          expect(timeSeriesChart.vm.deploymentSeries.yAxisIndex).toBe(1); // same as deployment y axis
+          expect(timeSeriesChart.vm.deploymentSeries.data).toEqual([
+            ['2019-07-16T10:14:25.589Z', expect.any(Number)],
+            ['2019-07-16T11:14:25.589Z', expect.any(Number)],
+            ['2019-07-16T12:14:25.589Z', expect.any(Number)],
           ]);
 
-          expect(timeSeriesChart.vm.scatterSeries.symbolSize).toBe(14);
+          expect(timeSeriesChart.vm.deploymentSeries.symbolSize).toBe(14);
         });
       });
 
       describe('yAxisLabel', () => {
+        it('y axis is configured correctly', () => {
+          const { yAxis } = getChartOptions();
+
+          expect(yAxis).toHaveLength(2);
+
+          const [dataAxis, deploymentAxis] = yAxis;
+
+          expect(dataAxis.boundaryGap).toHaveLength(2);
+          expect(dataAxis.scale).toBe(true);
+
+          expect(deploymentAxis.show).toBe(false);
+          expect(deploymentAxis.min).toEqual(expect.any(Number));
+          expect(deploymentAxis.max).toEqual(expect.any(Number));
+          expect(deploymentAxis.min).toBeLessThan(deploymentAxis.max);
+        });
+
         it('constructs a label for the chart y-axis', () => {
-          expect(timeSeriesChart.vm.yAxisLabel).toBe('Memory Used per Pod');
+          const { yAxis } = getChartOptions();
+
+          expect(yAxis[0].name).toBe('Memory Used per Pod');
         });
       });
     });
@@ -346,7 +476,7 @@ describe('Time series component', () => {
     glChartComponents.forEach(dynamicComponent => {
       describe(`GitLab UI: ${dynamicComponent.chartType}`, () => {
         let timeSeriesAreaChart;
-        const findChart = () => timeSeriesAreaChart.find(dynamicComponent.component);
+        const findChartComponent = () => timeSeriesAreaChart.find(dynamicComponent.component);
 
         beforeEach(done => {
           timeSeriesAreaChart = makeTimeSeriesChart(mockGraphData, dynamicComponent.chartType);
@@ -358,12 +488,12 @@ describe('Time series component', () => {
         });
 
         it('is a Vue instance', () => {
-          expect(findChart().exists()).toBe(true);
-          expect(findChart().isVueInstance()).toBe(true);
+          expect(findChartComponent().exists()).toBe(true);
+          expect(findChartComponent().isVueInstance()).toBe(true);
         });
 
         it('receives data properties needed for proper chart render', () => {
-          const props = findChart().props();
+          const props = findChartComponent().props();
 
           expect(props.data).toBe(timeSeriesAreaChart.vm.chartData);
           expect(props.option).toBe(timeSeriesAreaChart.vm.chartOptions);
@@ -376,16 +506,16 @@ describe('Time series component', () => {
           timeSeriesAreaChart.vm.tooltip.title = mockTitle;
 
           timeSeriesAreaChart.vm.$nextTick(() => {
-            expect(shallowWrapperContainsSlotText(findChart(), 'tooltipTitle', mockTitle)).toBe(
-              true,
-            );
+            expect(
+              shallowWrapperContainsSlotText(findChartComponent(), 'tooltipTitle', mockTitle),
+            ).toBe(true);
             done();
           });
         });
 
         describe('when tooltip is showing deployment data', () => {
           const mockSha = 'mockSha';
-          const commitUrl = `${mockProjectDir}/commit/${mockSha}`;
+          const commitUrl = `${mockProjectDir}/-/commit/${mockSha}`;
 
           beforeEach(done => {
             timeSeriesAreaChart.vm.tooltip.isDeployment = true;
@@ -393,9 +523,9 @@ describe('Time series component', () => {
           });
 
           it('uses deployment title', () => {
-            expect(shallowWrapperContainsSlotText(findChart(), 'tooltipTitle', 'Deployed')).toBe(
-              true,
-            );
+            expect(
+              shallowWrapperContainsSlotText(findChartComponent(), 'tooltipTitle', 'Deployed'),
+            ).toBe(true);
           });
 
           it('renders clickable commit sha in tooltip content', done => {

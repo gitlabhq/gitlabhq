@@ -5,7 +5,7 @@ import * as types from '~/monitoring/stores/mutation_types';
 import state from '~/monitoring/stores/state';
 import { metricStates } from '~/monitoring/constants';
 import {
-  metricsGroupsAPIResponse,
+  metricsDashboardPayload,
   deploymentData,
   metricsDashboardResponse,
   dashboardGitResponse,
@@ -23,7 +23,7 @@ describe('Monitoring mutations', () => {
 
     beforeEach(() => {
       stateCopy.dashboard.panel_groups = [];
-      payload = metricsGroupsAPIResponse;
+      payload = metricsDashboardPayload;
     });
     it('adds a key to the group', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
@@ -81,18 +81,47 @@ describe('Monitoring mutations', () => {
     it('should set all the endpoints', () => {
       mutations[types.SET_ENDPOINTS](stateCopy, {
         metricsEndpoint: 'additional_metrics.json',
-        environmentsEndpoint: 'environments.json',
         deploymentsEndpoint: 'deployments.json',
         dashboardEndpoint: 'dashboard.json',
         projectPath: '/gitlab-org/gitlab-foss',
       });
       expect(stateCopy.metricsEndpoint).toEqual('additional_metrics.json');
-      expect(stateCopy.environmentsEndpoint).toEqual('environments.json');
       expect(stateCopy.deploymentsEndpoint).toEqual('deployments.json');
       expect(stateCopy.dashboardEndpoint).toEqual('dashboard.json');
       expect(stateCopy.projectPath).toEqual('/gitlab-org/gitlab-foss');
     });
+
+    it('should not remove previously set properties', () => {
+      const defaultLogsPath = stateCopy.logsPath;
+
+      mutations[types.SET_ENDPOINTS](stateCopy, {
+        logsPath: defaultLogsPath,
+      });
+      mutations[types.SET_ENDPOINTS](stateCopy, {
+        dashboardEndpoint: 'dashboard.json',
+      });
+      mutations[types.SET_ENDPOINTS](stateCopy, {
+        projectPath: '/gitlab-org/gitlab-foss',
+      });
+
+      expect(stateCopy).toMatchObject({
+        logsPath: defaultLogsPath,
+        dashboardEndpoint: 'dashboard.json',
+        projectPath: '/gitlab-org/gitlab-foss',
+      });
+    });
+
+    it('should not update unknown properties', () => {
+      mutations[types.SET_ENDPOINTS](stateCopy, {
+        dashboardEndpoint: 'dashboard.json',
+        someOtherProperty: 'some invalid value', // someOtherProperty is not allowed
+      });
+
+      expect(stateCopy.dashboardEndpoint).toBe('dashboard.json');
+      expect(stateCopy.someOtherProperty).toBeUndefined();
+    });
   });
+
   describe('Individual panel/metric results', () => {
     const metricId = '12_system_metrics_kubernetes_container_memory_total';
     const result = [

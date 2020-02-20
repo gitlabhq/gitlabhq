@@ -6,19 +6,16 @@ module BroadcastMessagesHelper
   end
 
   def current_broadcast_notification_message
-    BroadcastMessage.current_notification_messages(request.path).last
+    not_hidden_messages = BroadcastMessage.current_notification_messages(request.path).select do |message|
+      cookies["hide_broadcast_notification_message_#{message.id}"].blank?
+    end
+    not_hidden_messages.last
   end
 
   def broadcast_message(message, opts = {})
     return unless message.present?
 
-    classes = "broadcast-#{message.broadcast_type}-message #{opts[:preview] && 'preview'}"
-
-    content_tag :div, dir: 'auto', class: classes, style: broadcast_message_style(message) do
-      concat sprite_icon('bullhorn', size: 16, css_class: 'vertical-align-text-top')
-      concat ' '
-      concat render_broadcast_message(message)
-    end
+    render "shared/broadcast_message", { message: message, opts: opts }
   end
 
   def broadcast_message_style(broadcast_message)

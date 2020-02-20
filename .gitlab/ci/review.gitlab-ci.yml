@@ -1,35 +1,8 @@
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-canonical-gitlab-schedule: &if-canonical-gitlab-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
-
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-canonical-gitlab-merge-request: &if-canonical-gitlab-merge-request
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_MERGE_REQUEST_IID'
-
-# Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.code-qa-patterns: &code-qa-patterns
-  - ".gitlab/ci/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
-  - ".csscomb.json"
-  - "Dockerfile.assets"
-  - "*_VERSION"
-  - "Gemfile{,.lock}"
-  - "Rakefile"
-  - "{babel.config,jest.config}.js"
-  - "config.ru"
-  - "{package.json,yarn.lock}"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
-  # QA changes
-  - ".dockerignore"
-  - "qa/**/*"
-
 .review-docker:
   extends:
     - .default-tags
     - .default-retry
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.6
   services:
     - docker:19.03.0-dind
   tags:
@@ -41,14 +14,10 @@
     GITLAB_EDITION: "ce"
 
 build-qa-image:
-  extends: .review-docker
+  extends:
+    - .review-docker
+    - .review:rules:mr-and-schedule
   stage: prepare
-  rules:
-    - <<: *if-canonical-gitlab-merge-request
-      changes: *code-qa-patterns
-      when: on_success
-    - <<: *if-canonical-gitlab-schedule
-      when: on_success
   script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
     - export QA_MASTER_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/gitlab-${GITLAB_EDITION}-qa:master"
@@ -58,11 +27,11 @@ build-qa-image:
     - time docker build --cache-from "${QA_MASTER_IMAGE}" --tag ${QA_IMAGE} --file ./qa/Dockerfile ./
     - time docker push ${QA_IMAGE}
 
-.base-review-cleanup:
+review-cleanup:
   extends:
     - .default-tags
     - .default-retry
-    - .default-only
+    - .review:rules:review-cleanup
   stage: prepare
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   allow_failure: true
@@ -75,51 +44,28 @@ build-qa-image:
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
 
-schedule:review-cleanup:
-  extends:
-    - .base-review-cleanup
-    - .only-review-schedules
-
-manual:review-cleanup:
-  extends:
-    - .base-review-cleanup
-    - .only:changes-code-qa
-  when: manual
-
-.review-build-cng-base:
+review-build-cng:
   extends:
     - .default-tags
     - .default-retry
-    - .default-only
+    - .review:rules:mr-and-schedule
   image: ruby:2.6-alpine
   stage: review-prepare
   before_script:
     - source scripts/utils.sh
     - install_api_client_dependencies_with_apk
     - install_gitlab_gem
-  dependencies: []
+  needs:
+    - job: gitlab:assets:compile pull-cache
+      artifacts: false
   script:
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
-
-review-build-cng:
-  extends:
-    - .review-build-cng-base
-    - .only-review
-    - .only:changes-code-qa
-  needs: ["gitlab:assets:compile pull-cache"]
-
-schedule:review-build-cng:
-  extends:
-    - .review-build-cng-base
-    - .only-review-schedules
-  needs: ["gitlab:assets:compile pull-cache"]
 
 .review-workflow-base:
   extends:
     - .default-tags
     - .default-retry
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  dependencies: []
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
@@ -130,17 +76,22 @@ schedule:review-build-cng:
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
     on_stop: review-stop
 
-.review-deploy-base:
-  extends: .review-workflow-base
+review-deploy:
+  extends:
+    - .review-workflow-base
+    - .review:rules:mr-and-schedule
   stage: review
+  needs:
+    - job: review-build-cng
+      artifacts: false
   allow_failure: true
   before_script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
-    - echo "${CI_ENVIRONMENT_URL}" > review_app_url.txt
-    - source scripts/utils.sh
+    - echo "${CI_ENVIRONMENT_URL}" > environment_url.txt
+    - source ./scripts/utils.sh
     - install_api_client_dependencies_with_apk
     - source scripts/review_apps/review-apps.sh
   script:
@@ -152,26 +103,15 @@ schedule:review-build-cng:
     - date
     - deploy || (display_deployment_debug && exit 1)
   artifacts:
-    paths: [review_app_url.txt]
+    paths: [environment_url.txt]
     expire_in: 2 days
     when: always
 
-review-deploy:
-  extends: .review-deploy-base
-  rules:
-    - <<: *if-canonical-gitlab-merge-request
-      changes: *code-qa-patterns
-      when: on_success
-
-schedule:review-deploy:
-  extends:
-    - .review-deploy-base
-    - .only-review-schedules
-
-.base-review-stop:
+.review-stop-base:
   extends: .review-workflow-base
   environment:
     action: stop
+  dependencies: []
   variables:
     # We're cloning the repo instead of downloading the script for now
     # because some repos are private and CI_JOB_TOKEN cannot access files.
@@ -183,22 +123,18 @@ schedule:review-deploy:
     - source ./scripts/review_apps/review-apps.sh
 
 review-stop-failed-deployment:
-  extends: .base-review-stop
+  extends:
+    - .review-stop-base
+    - .review:rules:mr-only-auto
   stage: prepare
-  rules:
-    - <<: *if-canonical-gitlab-merge-request
-      changes: *code-qa-patterns
-      when: on_success
   script:
     - delete_failed_release
 
 review-stop:
-  extends: .base-review-stop
+  extends:
+    - .review-stop-base
+    - .review:rules:mr-only-manual
   stage: review
-  rules:
-    - <<: *if-canonical-gitlab-merge-request
-      changes: *code-qa-patterns
-      when: manual
   allow_failure: true
   script:
     - delete_release
@@ -206,8 +142,9 @@ review-stop:
 .review-qa-base:
   extends: .review-docker
   stage: qa
-  needs: ["review-deploy"]
-  dependencies: ["review-deploy"]
+  needs:
+    - job: review-deploy
+      artifacts: true
   allow_failure: true
   variables:
     QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
@@ -222,7 +159,7 @@ review-stop:
   before_script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
     - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/gitlab-${GITLAB_EDITION}-qa:${CI_COMMIT_REF_SLUG}"
-    - export CI_ENVIRONMENT_URL="$(cat review_app_url.txt)"
+    - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
     - echo "${QA_IMAGE}"
     - source scripts/utils.sh
@@ -235,32 +172,33 @@ review-stop:
     when: always
 
 review-qa-smoke:
-  extends: .review-qa-base
-  rules:
-    - <<: *if-canonical-gitlab-merge-request
-      changes: *code-qa-patterns
-      when: on_success
+  extends:
+    - .review-qa-base
+    - .review:rules:mr-only-auto
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
 review-qa-all:
-  extends: .review-qa-base
-  rules:
-    - <<: *if-canonical-gitlab-merge-request
-      changes: *code-qa-patterns
-      when: manual
+  extends:
+    - .review-qa-base
+    - .review:rules:mr-only-manual
   parallel: 5
   script:
     - export KNAPSACK_REPORT_PATH=knapsack/master_report.json
     - export KNAPSACK_TEST_FILE_PATTERN=qa/specs/features/**/*_spec.rb
     - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}" -- --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec.htm --color --format documentation
 
-.review-performance-base:
-  extends: .review-docker
+review-performance:
+  extends:
+    - .review-docker
+    - .review:rules:mr-and-schedule
   stage: qa
+  needs:
+    - job: review-deploy
+      artifacts: true
   allow_failure: true
   before_script:
-    - export CI_ENVIRONMENT_URL="$(cat review_app_url.txt)"
+    - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
     - mkdir -p gitlab-exporter
     - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
@@ -274,59 +212,18 @@ review-qa-all:
       - sitespeed-results/
     reports:
       performance: performance.json
-
-review-performance:
-  extends: .review-performance-base
-  rules:
-    - <<: *if-canonical-gitlab-merge-request
-      changes: *code-qa-patterns
-      when: on_success
-  needs: ["review-deploy"]
-  dependencies: ["review-deploy"]
-  before_script:
-    - export CI_ENVIRONMENT_URL="$(cat review_app_url.txt)"
-    - echo "${CI_ENVIRONMENT_URL}"
-    - mkdir -p gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
-    - mkdir -p sitespeed-results
-  script:
-    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "${CI_ENVIRONMENT_URL}"
-  after_script:
-    - mv sitespeed-results/data/performance.json performance.json
-  artifacts:
-    paths:
-      - sitespeed-results/
-    reports:
-      performance: performance.json
-
-schedule:review-performance:
-  extends:
-    - .review-performance-base
-    - .only-review-schedules
-  needs: ["schedule:review-deploy"]
-  dependencies: ["schedule:review-deploy"]
 
 parallel-spec-reports:
   extends:
     - .default-tags
-    - .default-only
-    - .only-review
-    - .only:changes-code-qa
+    - .review:rules:mr-only-manual
   image: ruby:2.6-alpine
   stage: post-qa
   dependencies: ["review-qa-all"]
+  allow_failure: true
   variables:
     NEW_PARALLEL_SPECS_REPORT: qa/report-new.html
     BASE_ARTIFACT_URL: "${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/qa/"
-  allow_failure: true
-  when: manual
-  artifacts:
-    when: always
-    paths:
-      - qa/report-new.html
-      - qa/gitlab-qa-run-*
-    reports:
-      junit: qa/gitlab-qa-run-*/**/rspec-*.xml
   script:
     - apk add --update build-base libxml2-dev libxslt-dev && rm -rf /var/cache/apk/*
     - gem install nokogiri --no-document
@@ -335,20 +232,23 @@ parallel-spec-reports:
     - cd -
     - '[[ -f $NEW_PARALLEL_SPECS_REPORT ]] || echo "{}" > ${NEW_PARALLEL_SPECS_REPORT}'
     - scripts/merge-html-reports ${NEW_PARALLEL_SPECS_REPORT} ${BASE_ARTIFACT_URL}${ARTIFACT_DIRS} qa/gitlab-qa-run-*/**/rspec.htm
+  artifacts:
+    when: always
+    paths:
+      - qa/report-new.html
+      - qa/gitlab-qa-run-*
+    reports:
+      junit: qa/gitlab-qa-run-*/**/rspec-*.xml
 
 danger-review:
   extends:
     - .default-tags
     - .default-retry
     - .default-cache
-    - .default-only
-    - .except:refs-master-tags-stable-deploy
+    - .review:rules:danger
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   dependencies: []
-  only:
-    variables:
-      - $DANGER_GITLAB_API_TOKEN
   script:
     - git version
     - node --version

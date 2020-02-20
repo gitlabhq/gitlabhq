@@ -19,7 +19,7 @@ describe 'Loading a user avatar' do
     it 'only performs three SQL queries' do
       get user.avatar_url # Skip queries on first application load
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect { get user.avatar_url }.not_to exceed_query_limit(3)
     end
   end
@@ -29,7 +29,7 @@ describe 'Loading a user avatar' do
     it 'only performs two SQL queries' do
       get user.avatar_url # Skip queries on first application load
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect { get user.avatar_url }.not_to exceed_query_limit(2)
     end
   end

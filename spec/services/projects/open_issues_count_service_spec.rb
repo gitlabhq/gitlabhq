@@ -57,7 +57,7 @@ describe Projects::OpenIssuesCountService, :use_clean_rails_memory_store_caching
       end
     end
 
-    context '#refresh_cache' do
+    describe '#refresh_cache' do
       before do
         create(:issue, :opened, project: project)
         create(:issue, :opened, project: project)

@@ -30,6 +30,7 @@ Issue:
 - last_edited_at
 - last_edited_by_id
 - discussion_locked
+- health_status
 Event:
 - id
 - target_type
@@ -225,6 +226,31 @@ MergeRequestDiffFile:
 - b_mode
 - too_large
 - binary
+MergeRequestContextCommit:
+- id
+- authored_date
+- committed_date
+- relative_order
+- sha
+- author_name
+- author_email
+- committer_name
+- committer_email
+- message
+- merge_request_id
+MergeRequestContextCommitDiffFile:
+- sha
+- relative_order
+- new_file
+- renamed_file
+- deleted_file
+- new_path
+- old_path
+- a_mode
+- b_mode
+- too_large
+- binary
+- text
 MergeRequest::Metrics:
 - id
 - created_at
@@ -334,6 +360,7 @@ CommitStatus:
 - upstream_pipeline_id
 - interruptible
 - processed
+- scheduling_type
 Ci::Variable:
 - id
 - project_id
@@ -758,6 +785,7 @@ ZoomMeeting:
 ServiceDeskSetting:
 - project_id
 - issue_template_key
+- project_key
 ContainerExpirationPolicy:
 - created_at
 - updated_at
@@ -798,3 +826,4 @@ Epic:
   - state_id
   - start_date_sourcing_epic_id
   - due_date_sourcing_epic_id
+  - health_status

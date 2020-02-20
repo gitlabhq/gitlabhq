@@ -12,7 +12,8 @@ describe Types::PermissionTypes::Project do
       :read_commit_status, :request_access, :create_pipeline, :create_pipeline_schedule,
       :create_merge_request_from, :create_wiki, :push_code, :create_deployment, :push_to_delete_protected_branch,
       :admin_wiki, :admin_project, :update_pages, :admin_remote_mirror, :create_label,
-      :update_wiki, :destroy_wiki, :create_pages, :destroy_pages, :read_pages_content
+      :update_wiki, :destroy_wiki, :create_pages, :destroy_pages, :read_pages_content,
+      :read_merge_request
     ]
 
     expected_permissions.each do |permission|

@@ -2,6 +2,7 @@
 
 module SystemNoteHelper
   ICON_NAMES_BY_ACTION = {
+    'cherry_pick' => 'link',
     'commit' => 'commit',
     'description' => 'pencil-square',
     'merge' => 'git-merge',

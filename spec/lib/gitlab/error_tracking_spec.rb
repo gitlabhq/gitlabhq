@@ -145,6 +145,17 @@ describe Gitlab::ErrorTracking do
       )
     end
 
+    context 'with filterable parameters' do
+      let(:extra) { { test: 1, my_token: 'test' } }
+
+      it 'filters parameters' do
+        expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(
+          hash_including({ 'extra.test' => 1, 'extra.my_token' => '[FILTERED]' }))
+
+        described_class.track_exception(exception, extra)
+      end
+    end
+
     context 'the exception implements :sentry_extra_data' do
       let(:extra_info) { { event: 'explosion', size: :massive } }
       let(:exception) { double(message: 'bang!', sentry_extra_data: extra_info, backtrace: caller) }

@@ -74,7 +74,7 @@ export default {
 </script>
 
 <template>
-  <section id="serverless-functions">
+  <section id="serverless-functions" class="flex-grow">
     <gl-loading-icon
       v-if="checkingInstalled"
       :size="2"

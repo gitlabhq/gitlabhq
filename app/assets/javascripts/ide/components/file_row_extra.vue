@@ -6,7 +6,6 @@ import Icon from '~/vue_shared/components/icon.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 import NewDropdown from './new_dropdown/index.vue';
 import MrFileIcon from './mr_file_icon.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'FileRowExtra',
@@ -19,7 +18,6 @@ export default {
     ChangedFileIcon,
     MrFileIcon,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     file: {
       type: Object,
@@ -57,15 +55,10 @@ export default {
         return n__('%d staged change', '%d staged changes', this.folderStagedCount);
       }
 
-      return sprintf(
-        this.glFeatures.stageAllByDefault
-          ? __('%{staged} staged and %{unstaged} unstaged changes')
-          : __('%{unstaged} unstaged and %{staged} staged changes'),
-        {
-          unstaged: this.folderUnstagedCount,
-          staged: this.folderStagedCount,
-        },
-      );
+      return sprintf(__('%{staged} staged and %{unstaged} unstaged changes'), {
+        unstaged: this.folderUnstagedCount,
+        staged: this.folderStagedCount,
+      });
     },
     showTreeChangesCount() {
       return this.isTree && this.changesCount > 0 && !this.file.opened;

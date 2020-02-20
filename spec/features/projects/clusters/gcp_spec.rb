@@ -14,6 +14,11 @@ describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
     allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
   end
 
+  def submit_form
+    execute_script('document.querySelector(".js-gke-cluster-creation-submit").removeAttribute("disabled")')
+    execute_script('document.querySelector(".js-gke-cluster-creation-submit").click()')
+  end
+
   context 'when user has signed with Google' do
     let(:project_id) { 'test-project-1234' }
 
@@ -33,8 +38,12 @@ describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
         click_link 'Google GKE'
       end
 
+      it 'highlights Google GKE logo' do
+        expect(page).to have_css('.js-create-gcp-cluster-button.active')
+      end
+
       context 'when user filled form with valid parameters' do
-        subject { click_button 'Create Kubernetes cluster' }
+        subject { submit_form }
 
         before do
           allow_any_instance_of(GoogleApi::CloudPlatform::Client)
@@ -47,8 +56,8 @@ describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
 
           allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
 
-          execute_script('document.querySelector(".js-gke-cluster-creation-submit").removeAttribute("disabled")')
-          sleep 2 # wait for ajax
+          expect(page).to have_css('.js-gcp-project-id-dropdown')
+
           execute_script('document.querySelector(".js-gcp-project-id-dropdown input").setAttribute("type", "text")')
           execute_script('document.querySelector(".js-gcp-zone-dropdown input").setAttribute("type", "text")')
           execute_script('document.querySelector(".js-gcp-machine-type-dropdown input").setAttribute("type", "text")')
@@ -86,8 +95,7 @@ describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
 
       context 'when user filled form with invalid parameters' do
         before do
-          execute_script('document.querySelector(".js-gke-cluster-creation-submit").removeAttribute("disabled")')
-          click_button 'Create Kubernetes cluster'
+          submit_form
         end
 
         it 'user sees a validation error' do

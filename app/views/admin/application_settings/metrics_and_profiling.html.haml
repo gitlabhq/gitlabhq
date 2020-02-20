@@ -47,8 +47,7 @@
   .settings-content
     = render 'performance_bar'
 
-- if Feature.enabled?(:self_monitoring_project)
-  .js-self-monitoring-settings{ data: self_monitoring_project_data }
+.js-self-monitoring-settings{ data: self_monitoring_project_data }
 
 %section.settings.as-usage.no-animate#js-usage-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header#usage-statistics

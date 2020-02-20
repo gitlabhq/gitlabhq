@@ -1,6 +1,6 @@
 # Confidential issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/3282) in GitLab 8.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3282) in GitLab 8.6.
 
 Confidential issues are issues visible only to members of a project with
 [sufficient permissions](#permissions-and-access-to-confidential-issues).

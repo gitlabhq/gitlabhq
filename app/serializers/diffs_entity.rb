@@ -24,6 +24,10 @@ class DiffsEntity < Grape::Entity
     )
   end
 
+  expose :context_commits, using: API::Entities::Commit, if: -> (diffs, options) { merge_request&.project&.context_commits_enabled? } do |diffs|
+    options[:context_commits]
+  end
+
   expose :merge_request_diff, using: MergeRequestDiffEntity do |diffs|
     options[:merge_request_diff]
   end

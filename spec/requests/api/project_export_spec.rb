@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 describe API::ProjectExport, :clean_gitlab_redis_cache do
-  set(:project) { create(:project) }
-  set(:project_none) { create(:project) }
-  set(:project_started) { create(:project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:project_none) { create(:project) }
+  let_it_be(:project_started) { create(:project) }
   let(:project_finished) { create(:project, :with_export) }
   let(:project_after_export) { create(:project, :with_export) }
-  set(:user) { create(:user) }
-  set(:admin) { create(:admin) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
 
   let(:path) { "/projects/#{project.id}/export" }
   let(:path_none) { "/projects/#{project_none.id}/export" }

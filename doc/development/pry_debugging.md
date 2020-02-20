@@ -103,7 +103,7 @@ You also can move around in the callstack with these commands:
 ## Short commands
 
 When you use `binding.pry` instead of `byebug`, the short commands
-like `s`, `n`, `f`, and `c` do not work.  To reinstall them, add this
+like `s`, `n`, `f`, and `c` do not work. To reinstall them, add this
 to `~/.pryrc`:
 
 ```ruby

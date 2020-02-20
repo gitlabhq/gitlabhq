@@ -1,0 +1,5 @@
+---
+title: Support the bypass 2FA function with ADFS SAML
+merge_request: 23615
+author:
+type: fixed

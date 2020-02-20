@@ -19,7 +19,7 @@ class Admin::ServicesController < Admin::ApplicationController
 
   def update
     if service.update(service_params[:service])
-      PropagateServiceTemplateWorker.perform_async(service.id) if service.active?
+      PropagateServiceTemplateWorker.perform_async(service.id) if service.active? # rubocop:disable CodeReuse/Worker
 
       redirect_to admin_application_settings_services_path,
         notice: 'Application settings saved successfully'

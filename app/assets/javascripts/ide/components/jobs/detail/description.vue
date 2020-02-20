@@ -26,7 +26,7 @@ export default {
     <ci-icon :status="job.status" :borderless="true" :size="24" class="d-flex" />
     <span class="prepend-left-8">
       {{ job.name }}
-      <a :href="job.path" target="_blank" class="ide-external-link">
+      <a :href="job.path" target="_blank" class="ide-external-link position-relative">
         {{ jobId }} <icon :size="12" name="external-link" />
       </a>
     </span>

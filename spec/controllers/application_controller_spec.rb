@@ -156,7 +156,7 @@ describe ApplicationController do
       it 'returns 200 response' do
         get :index, format: requested_format
 
-        expect(response).to have_gitlab_http_status 200
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -164,7 +164,7 @@ describe ApplicationController do
       it 'returns 404 response' do
         get :index
 
-        expect(response).to have_gitlab_http_status 404
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -181,7 +181,7 @@ describe ApplicationController do
 
       get :index
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'redirects to login page if not authenticated' do
@@ -202,7 +202,7 @@ describe ApplicationController do
 
         get :index, format: 'unknown'
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end
@@ -489,7 +489,7 @@ describe ApplicationController do
       it 'redirects if the user did not accept the terms' do
         get :index
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
 
       it 'does not redirect when the user accepted terms' do
@@ -497,7 +497,7 @@ describe ApplicationController do
 
         get :index
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
@@ -581,21 +581,21 @@ describe ApplicationController do
     it 'renders a 404 without a message' do
       get :index
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(response).to render_template('errors/not_found')
     end
 
     it 'renders a 403 when a message is passed to access denied' do
       get :index, params: { message: 'None shall pass' }
 
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
       expect(response).to render_template('errors/access_denied')
     end
 
     it 'renders a status passed to access denied' do
       get :index, params: { status: 401 }
 
-      expect(response).to have_gitlab_http_status(401)
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
   end
 
@@ -896,7 +896,7 @@ describe ApplicationController do
     end
   end
 
-  context '#set_current_context' do
+  describe '#set_current_context' do
     controller(described_class) do
       def index
         Labkit::Context.with_context do |context|
@@ -924,7 +924,7 @@ describe ApplicationController do
     end
 
     it 'sets the group if it was available' do
-      group = build_stubbed(:group)
+      group = build(:group)
       controller.instance_variable_set(:@group, group)
 
       get :index, format: :json
@@ -933,12 +933,18 @@ describe ApplicationController do
     end
 
     it 'sets the project if one was available' do
-      project = build_stubbed(:project)
+      project = build(:project)
       controller.instance_variable_set(:@project, project)
 
       get :index, format: :json
 
       expect(json_response['meta.project']).to eq(project.full_path)
+    end
+
+    it 'sets the caller_id as controller#action' do
+      get :index, format: :json
+
+      expect(json_response['meta.caller_id']).to eq('AnonymousController#index')
     end
   end
 end

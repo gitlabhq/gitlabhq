@@ -91,6 +91,7 @@ module Issuable
     validate :description_max_length_for_new_records_is_valid, on: :update
 
     before_validation :truncate_description_on_import!
+    after_save :store_mentions!, if: :any_mentionable_attributes_changed?
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :recent, -> { reorder(id: :desc) }
@@ -108,7 +109,9 @@ module Issuable
       where("NOT EXISTS (SELECT TRUE FROM #{to_ability_name}_assignees WHERE #{to_ability_name}_id = #{to_ability_name}s.id)")
     end
     scope :assigned_to, ->(u) do
-      where("EXISTS (SELECT TRUE FROM #{to_ability_name}_assignees WHERE user_id = ? AND #{to_ability_name}_id = #{to_ability_name}s.id)", u.id)
+      assignees_table = Arel::Table.new("#{to_ability_name}_assignees")
+      sql = assignees_table.project('true').where(assignees_table[:user_id].in(u)).where(Arel::Nodes::SqlLiteral.new("#{to_ability_name}_id = #{to_ability_name}s.id"))
+      where("EXISTS (#{sql.to_sql})")
     end
     # rubocop:enable GitlabSecurity/SqlInjection
 
@@ -127,6 +130,10 @@ module Issuable
     participant :assignees
 
     strip_attributes :title
+
+    def self.locking_enabled?
+      false
+    end
 
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
@@ -243,7 +250,7 @@ module Issuable
                 Gitlab::Database.nulls_last_order('highest_priority', direction))
     end
 
-    def order_labels_priority(direction = 'ASC', excluded_labels: [], extra_select_columns: [])
+    def order_labels_priority(direction = 'ASC', excluded_labels: [], extra_select_columns: [], with_cte: false)
       params = {
         target_type: name,
         target_column: "#{table_name}.id",
@@ -259,12 +266,13 @@ module Issuable
       ] + extra_select_columns
 
       select(select_columns.join(', '))
-        .group(arel_table[:id])
+        .group(issue_grouping_columns(use_cte: with_cte))
         .reorder(Gitlab::Database.nulls_last_order('highest_priority', direction))
     end
 
-    def with_label(title, sort = nil)
-      if title.is_a?(Array) && title.size > 1
+    def with_label(title, sort = nil, not_query: false)
+      multiple_labels = title.is_a?(Array) && title.size > 1
+      if multiple_labels && !not_query
         joins(:labels).where(labels: { title: title }).group(*grouping_columns(sort)).having("COUNT(DISTINCT labels.title) = #{title.size}")
       else
         joins(:labels).where(labels: { title: title })
@@ -285,6 +293,18 @@ module Issuable
       end
 
       grouping_columns
+    end
+
+    # Includes all table keys in group by clause when sorting
+    # preventing errors in postgres when using CTE search optimisation
+    #
+    # Returns an array of arel columns
+    def issue_grouping_columns(use_cte: false)
+      if use_cte
+        [arel_table[:state]] + attribute_names.map { |attr| arel_table[attr.to_sym] }
+      else
+        arel_table[:id]
+      end
     end
 
     def to_ability_name

@@ -3,20 +3,20 @@
 require 'spec_helper'
 
 describe LabelNote do
-  set(:project) { create(:project, :repository) }
-  set(:user) { create(:user) }
-  set(:label) { create(:label, project: project) }
-  set(:label2) { create(:label, project: project) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:label) { create(:label, project: project) }
+  let_it_be(:label2) { create(:label, project: project) }
   let(:resource_parent) { project }
 
   context 'when resource is issue' do
-    set(:resource) { create(:issue, project: project) }
+    let_it_be(:resource) { create(:issue, project: project) }
 
     it_behaves_like 'label note created from events'
   end
 
   context 'when resource is merge request' do
-    set(:resource) { create(:merge_request, source_project: project, target_project: project) }
+    let_it_be(:resource) { create(:merge_request, source_project: project, target_project: project) }
 
     it_behaves_like 'label note created from events'
   end

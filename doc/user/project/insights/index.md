@@ -13,10 +13,10 @@ This feature is [also available at the group level](../../group/insights/index.m
 
 ## View your project's Insights
 
-You can access your project's Insights by clicking the **Project > Insights**
+You can access your project's Insights by clicking the **Analytics > Insights**
 link in the left sidebar:
 
-![Insights sidebar link](img/insights_sidebar_link.png)
+![Insights sidebar link](img/insights_sidebar_link_v12_8.png)
 
 ## Configure your Insights
 
@@ -96,7 +96,7 @@ The following table lists available parameters for charts:
 | Keyword                                            | Description |
 |:---------------------------------------------------|:------------|
 | [`title`](#title)                                  | The title of the chart. This will displayed on the Insights page. |
-| [`type`](#type)                                    | The type of chart: `bar`, `line`, `stacked-bar`, `pie` etc. |
+| [`type`](#type)                                    | The type of chart: `bar`, `line` or `stacked-bar`. |
 | [`query`](#query)                                  | A hash that defines the conditions for issues / merge requests to be part of the chart. |
 
 ## Parameter details
@@ -132,7 +132,6 @@ Supported values are:
 | ----- | ------- |
 | `bar` | ![Insights example bar chart](img/insights_example_bar_chart.png) |
 | `bar` (time series, i.e. when `group_by` is used) | ![Insights example bar time series chart](img/insights_example_bar_time_series_chart.png) |
-| `pie` | ![Insights example pie chart](img/insights_example_pie_chart.png) |
 | `line` | ![Insights example stacked bar chart](img/insights_example_line_chart.png) |
 | `stacked-bar` | ![Insights example stacked bar chart](img/insights_example_stacked_bar_chart.png) |
 

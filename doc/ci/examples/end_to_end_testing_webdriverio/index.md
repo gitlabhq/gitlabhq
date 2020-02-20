@@ -44,12 +44,12 @@ infrastructure is up and running, and that your units of code work well together
 
 ## Selenium and WebdriverIO
 
-[Selenium](http://www.seleniumhq.org/) is a piece of software that can control web browsers, e.g., to make them
+[Selenium](https://selenium.dev/) is a piece of software that can control web browsers, e.g., to make them
 visit a specific URL or interact with elements on the page. It can be programmatically controlled
 from a variety of programming languages. In this article we're going to be using the
 [WebdriverIO](https://webdriver.io/) JavaScript bindings, but the general concept should carry over
 pretty well to
-[other programming languages supported by Selenium](http://docs.seleniumhq.org/about/platforms.jsp#programming-languages).
+[other programming languages supported by Selenium](https://selenium.dev/about/platforms.jsp#programming-languages).
 
 ## Writing tests
 
@@ -147,7 +147,7 @@ need to do for this:
 
 For the scope of this article, we've defined an additional [CI/CD stage](../../yaml/README.md#stages)
 `confidence-check` that is executed _after_ the stage that deploys the review app. It uses the `node:latest` [Docker
-image](../../docker/using_docker_images.html). However, WebdriverIO fires up actual browsers
+image](../../docker/using_docker_images.md). However, WebdriverIO fires up actual browsers
 to interact with your application, so we need to install and run them.
 Furthermore, WebdriverIO uses Selenium as a common interface to control different browsers,
 so we need to install and run Selenium as well. Luckily, the Selenium project provides the Docker images
@@ -187,7 +187,7 @@ option as an argument to `npm run confidence-check` on the command line.
 However, we still need to tell WebdriverIO which browser is available for it to use.
 
 [GitLab CI/CD makes
-a number of variables available](../../variables/README.html#predefined-environment-variables)
+a number of variables available](../../variables/README.md#predefined-environment-variables)
 with information about the current CI job. We can use this information to dynamically set
 up our WebdriverIO configuration according to the job that is running. More specifically, we can
 tell WebdriverIO what browser to execute the test on depending on the name of the currently running

@@ -327,7 +327,10 @@ export const getSelectedFragment = restrictToNode => {
       documentFragment.originalNodes.push(range.commonAncestorContainer);
     }
   }
-  if (documentFragment.textContent.length === 0) return null;
+
+  if (documentFragment.textContent.length === 0 && documentFragment.children.length === 0) {
+    return null;
+  }
 
   return documentFragment;
 };

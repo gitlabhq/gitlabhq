@@ -1,0 +1,5 @@
+---
+title: Add styles for board list labels when text is too long
+merge_request: 24627
+author:
+type: fixed

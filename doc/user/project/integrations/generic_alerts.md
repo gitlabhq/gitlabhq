@@ -1,6 +1,7 @@
-# Generic alerts integration **(ULTIMATE)**
+# Generic alerts integration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13203) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13203) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/issues/42640) to [GitLab Core](https://about.gitlab.com/pricing/) in 12.8.
 
 GitLab can accept alerts from any source via a generic webhook receiver.
 When you set up the generic alerts integration, a unique endpoint will
@@ -34,7 +35,7 @@ You can customize the payload by sending the following parameters. All fields ar
 
 Example request:
 
-```sh
+```shell
 curl --request POST \
   --data '{"title": "Incident title"}' \
   --header "Authorization: Bearer <authorization_key>" \

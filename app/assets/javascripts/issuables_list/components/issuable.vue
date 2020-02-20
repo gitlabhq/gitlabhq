@@ -3,7 +3,7 @@
  * This is tightly coupled to projects/issues/_issue.html.haml,
  * any changes done to the haml need to be reflected here.
  */
-import { escape, isNumber } from 'underscore';
+import { escape, isNumber } from 'lodash';
 import { GlLink, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import {
   dateInWords,
@@ -18,8 +18,6 @@ import initUserPopovers from '~/user_popovers';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
-
-const ISSUE_TOKEN = '#';
 
 export default {
   components: {
@@ -119,8 +117,7 @@ export default {
       );
     },
     referencePath() {
-      // TODO: The API should return the reference path (it doesn't now) https://gitlab.com/gitlab-org/gitlab/issues/31301
-      return `${ISSUE_TOKEN}${this.issuable.iid}`;
+      return this.issuable.references.relative;
     },
     updatedDateString() {
       return formatDate(new Date(this.issuable.updated_at), 'mmm d, yyyy h:MMtt');
@@ -230,7 +227,7 @@ export default {
         </div>
 
         <div class="issuable-info">
-          <span>{{ referencePath }}</span>
+          <span class="js-ref-path">{{ referencePath }}</span>
 
           <span class="d-none d-sm-inline-block mr-1">
             &middot;

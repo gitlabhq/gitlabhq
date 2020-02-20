@@ -17,7 +17,7 @@ module Gitlab
             #
             pipeline.stages = @command.stage_seeds.map(&:to_resource)
 
-            if pipeline.stages.none?
+            if stage_names.empty?
               return error('No stages / jobs for this pipeline.')
             end
 
@@ -30,6 +30,15 @@ module Gitlab
 
           def break?
             pipeline.errors.any?
+          end
+
+          private
+
+          def stage_names
+            # We filter out `.pre/.post` stages, as they alone are not considered
+            # a complete pipeline:
+            # https://gitlab.com/gitlab-org/gitlab/issues/198518
+            pipeline.stages.map(&:name) - ::Gitlab::Ci::Config::EdgeStagesInjector::EDGES
           end
         end
       end

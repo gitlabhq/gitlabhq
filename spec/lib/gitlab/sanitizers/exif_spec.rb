@@ -30,7 +30,7 @@ describe Gitlab::Sanitizers::Exif do
       end
 
       it 'processes only uploads created since specified date' do
-        expect(sanitizer).to receive(:clean).exactly(2).times
+        expect(sanitizer).to receive(:clean).twice
 
         sanitizer.batch_clean(since: 2.days.ago)
       end

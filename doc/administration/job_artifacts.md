@@ -77,7 +77,7 @@ _The artifacts are stored by default in
 
 ### Using object storage
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/1762) in
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1762) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
 > - Since version 9.5, artifacts are [browsable](../user/project/pipelines/job_artifacts.md#browsing-artifacts),
 >   when object storage is enabled. 9.4 lacks this feature.
@@ -156,7 +156,7 @@ _The artifacts are stored by default in
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 1. Migrate any existing local artifacts to the object storage:
 
-   ```bash
+   ```shell
    gitlab-rake gitlab:artifacts:migrate
    ```
 
@@ -184,7 +184,7 @@ _The artifacts are stored by default in
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Migrate any existing local artifacts to the object storage:
 
-   ```bash
+   ```shell
    sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
    ```
 
@@ -239,7 +239,7 @@ you can flip the feature flag from a Rails console.
 
 1. Enter the Rails console:
 
-   ```sh
+   ```shell
    sudo gitlab-rails console
    ```
 
@@ -253,7 +253,7 @@ you can flip the feature flag from a Rails console.
 
 1. Enter the Rails console:
 
-   ```sh
+   ```shell
    cd /home/git/gitlab
    RAILS_ENV=production sudo -u git -H bundle exec rails console
    ```
@@ -369,7 +369,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
    NOTE: **NOTE:**
    This step will also erase artifacts that users have chosen to
-   ["keep"](../user/project/pipelines/job_artifacts.html#browsing-artifacts).
+   ["keep"](../user/project/pipelines/job_artifacts.md#browsing-artifacts).
 
    ```ruby
    builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
@@ -403,13 +403,13 @@ If you need to manually remove ALL job artifacts associated with multiple jobs,
 
    ```ruby
    project = Project.find_by_full_path('path/to/project')
-   builds_with_artifacts =  project.builds.with_existing_job_artifacts
+   builds_with_artifacts =  project.builds.with_existing_job_artifacts(Ci::JobArtifact.trace)
    ```
 
    To select jobs with artifacts across the entire GitLab instance:
 
    ```ruby
-   builds_with_artifacts = Ci::Build.with_existing_job_artifacts
+   builds_with_artifacts = Ci::Build.with_existing_job_artifacts(Ci::JobArtifact.trace)
    ```
 
 1. Select the user which will be mentioned in the web UI as erasing the job:

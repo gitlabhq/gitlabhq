@@ -287,6 +287,10 @@
     cursor: help;
   }
 
+  .issue-blocked-icon {
+    color: $red-500;
+  }
+
   @include media-breakpoint-down(md) {
     padding: $gl-padding-8;
   }

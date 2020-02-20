@@ -10,14 +10,14 @@ module Gitlab
       end
 
       def match(content)
-        content.match %r{^/#{all_names.join('|')} ?(.*)$}
+        content.match %r{^/#{all_names.join('|')}(?![\S]) ?(.*)$}
       end
 
       def perform_substitution(context, content)
         return unless content
 
         all_names.each do |a_name|
-          content = content.gsub(%r{/#{a_name} ?(.*)$}i, execute_block(action_block, context, '\1'))
+          content = content.gsub(%r{/#{a_name}(?![\S]) ?(.*)$}i, execute_block(action_block, context, '\1'))
         end
 
         content

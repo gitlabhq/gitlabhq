@@ -1,8 +1,5 @@
-# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/license_management/
-#
-# Configure the scanning tool through the environment variables.
-# List of the variables: https://gitlab.com/gitlab-org/security-products/license-management#settings
-# How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
+# Deprecated: https://gitlab.com/gitlab-org/gitlab/issues/14624
+# Please, use License-Scanning.gitlab-ci.yml template instead
 
 variables:
   LICENSE_MANAGEMENT_SETUP_CMD: ''  # If needed, specify a command to setup your environment with a custom package manager.
@@ -16,6 +13,7 @@ license_management:
     SETUP_CMD: $LICENSE_MANAGEMENT_SETUP_CMD
   allow_failure: true
   script:
+    - echo "This template is deprecated, please use License-Scanning.gitlab-ci.yml template instead."
     - /run.sh analyze .
   artifacts:
     reports:

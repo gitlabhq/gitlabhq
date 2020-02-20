@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'issuable time tracker' do |issuable_type|
+RSpec.shared_examples 'issuable time tracker' do |issuable_type|
   before do
     project.add_maintainer(maintainer)
     gitlab_sign_in(maintainer)

@@ -3,9 +3,8 @@
     - .default-tags
     - .default-retry
     - .default-cache
-    - .default-only
     - .default-before_script
-    - .only:changes-code
+    - .memory:rules
 
 memory-static:
   extends: .only-code-memory-job-base

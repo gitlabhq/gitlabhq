@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import pick from 'lodash/pick';
 import { slugify } from '~/lib/utils/text_utility';
 import * as types from './mutation_types';
 import { normalizeMetric, normalizeQueryResult } from './utils';
@@ -123,10 +124,15 @@ export default {
   [types.RECEIVE_DEPLOYMENTS_DATA_FAILURE](state) {
     state.deploymentData = [];
   },
+  [types.REQUEST_ENVIRONMENTS_DATA](state) {
+    state.environmentsLoading = true;
+  },
   [types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS](state, environments) {
+    state.environmentsLoading = false;
     state.environments = environments;
   },
   [types.RECEIVE_ENVIRONMENTS_DATA_FAILURE](state) {
+    state.environmentsLoading = false;
     state.environments = [];
   },
 
@@ -169,15 +175,22 @@ export default {
       state: emptyStateFromError(error),
     });
   },
-
-  [types.SET_ENDPOINTS](state, endpoints) {
-    state.metricsEndpoint = endpoints.metricsEndpoint;
-    state.environmentsEndpoint = endpoints.environmentsEndpoint;
-    state.deploymentsEndpoint = endpoints.deploymentsEndpoint;
-    state.dashboardEndpoint = endpoints.dashboardEndpoint;
-    state.dashboardsEndpoint = endpoints.dashboardsEndpoint;
-    state.currentDashboard = endpoints.currentDashboard;
-    state.projectPath = endpoints.projectPath;
+  [types.SET_ENDPOINTS](state, endpoints = {}) {
+    const endpointKeys = [
+      'metricsEndpoint',
+      'deploymentsEndpoint',
+      'dashboardEndpoint',
+      'dashboardsEndpoint',
+      'currentDashboard',
+      'projectPath',
+      'logsPath',
+    ];
+    Object.entries(pick(endpoints, endpointKeys)).forEach(([key, value]) => {
+      state[key] = value;
+    });
+  },
+  [types.SET_TIME_RANGE](state, timeRange) {
+    state.timeRange = timeRange;
   },
   [types.SET_GETTING_STARTED_EMPTY_STATE](state) {
     state.emptyState = 'gettingStarted';
@@ -195,5 +208,8 @@ export default {
   [types.SET_PANEL_GROUP_METRICS](state, payload) {
     const panelGroup = state.dashboard.panel_groups.find(pg => payload.key === pg.key);
     panelGroup.panels = payload.panels;
+  },
+  [types.SET_ENVIRONMENTS_FILTER](state, searchTerm) {
+    state.environmentsSearchTerm = searchTerm;
   },
 };

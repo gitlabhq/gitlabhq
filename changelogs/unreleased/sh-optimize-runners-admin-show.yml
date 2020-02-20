@@ -1,0 +1,5 @@
+---
+title: Optimize page loading of Admin::RunnersController#show
+merge_request: 23309
+author:
+type: performance

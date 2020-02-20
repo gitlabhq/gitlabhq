@@ -40,13 +40,13 @@ Runner with the Shell executor.
 
 In your build machine install the Redis server:
 
-```bash
+```shell
 sudo apt-get install redis-server
 ```
 
 Verify that you can connect to the server with the `gitlab-runner` user:
 
-```bash
+```shell
 # Try connecting the Redis server
 sudo -u gitlab-runner -H redis-cli
 

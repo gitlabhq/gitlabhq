@@ -8,7 +8,7 @@ describe Gitlab::BackgroundMigration::BackfillProjectFullpathInRepoConfig, :migr
   let(:group) { namespaces.create!(name: 'foo', path: 'foo') }
   let(:subgroup) { namespaces.create!(name: 'bar', path: 'bar', parent_id: group.id) }
 
-  describe described_class::Storage::HashedProject do
+  describe described_class::Storage::Hashed do
     let(:project) { double(id: 555) }
 
     subject(:project_storage) { described_class.new(project) }

@@ -2,9 +2,7 @@
 
 module QA
   # Git protocol v2 is temporarily disabled
-  # https://gitlab.com/gitlab-org/gitlab/issues/27828
-  # BUG_IN_CODE
-  context 'Create', :quarantine do
+  context 'Create', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/27828', type: :bug } do
     describe 'Push over HTTP using Git protocol version 2', :requires_git_protocol_v2 do
       it 'user pushes to the repository' do
         Flow::Login.sign_in

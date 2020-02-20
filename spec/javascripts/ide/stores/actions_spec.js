@@ -225,35 +225,6 @@ describe('Multi-file store actions', () => {
           .catch(done.fail);
       });
 
-      describe('when `gon.feature.stageAllByDefault` is true', () => {
-        const originalGonFeatures = Object.assign({}, gon.features);
-
-        beforeAll(() => {
-          gon.features = { stageAllByDefault: true };
-        });
-
-        afterAll(() => {
-          gon.features = originalGonFeatures;
-        });
-
-        it('adds tmp file to staged files', done => {
-          const name = 'test';
-
-          store
-            .dispatch('createTempEntry', {
-              name,
-              branchId: 'mybranch',
-              type: 'blob',
-            })
-            .then(() => {
-              expect(store.state.stagedFiles).toEqual([jasmine.objectContaining({ name })]);
-
-              done();
-            })
-            .catch(done.fail);
-        });
-      });
-
       it('adds tmp file to open files', done => {
         const name = 'test';
 
@@ -274,7 +245,7 @@ describe('Multi-file store actions', () => {
           .catch(done.fail);
       });
 
-      it('adds tmp file to changed files', done => {
+      it('adds tmp file to staged files', done => {
         const name = 'test';
 
         store
@@ -284,9 +255,7 @@ describe('Multi-file store actions', () => {
             type: 'blob',
           })
           .then(() => {
-            expect(store.state.changedFiles).toEqual([
-              jasmine.objectContaining({ name, tempFile: true }),
-            ]);
+            expect(store.state.stagedFiles).toEqual([jasmine.objectContaining({ name })]);
 
             done();
           })
@@ -294,15 +263,9 @@ describe('Multi-file store actions', () => {
       });
 
       it('sets tmp file as active', () => {
-        const dispatch = jasmine.createSpy();
-        const commit = jasmine.createSpy();
+        createTempEntry(store, { name: 'test', branchId: 'mybranch', type: 'blob' });
 
-        createTempEntry(
-          { state: store.state, getters: store.getters, dispatch, commit },
-          { name: 'test', branchId: 'mybranch', type: 'blob' },
-        );
-
-        expect(dispatch).toHaveBeenCalledWith('setFileActive', 'test');
+        expect(store.dispatch).toHaveBeenCalledWith('setFileActive', 'test');
       });
 
       it('creates flash message if file already exists', done => {
@@ -591,11 +554,7 @@ describe('Multi-file store actions', () => {
         'path',
         store.state,
         [{ type: types.DELETE_ENTRY, payload: 'path' }],
-        [
-          { type: 'burstUnusedSeal' },
-          { type: 'stageChange', payload: 'path' },
-          { type: 'triggerFilesChange' },
-        ],
+        [{ type: 'stageChange', payload: 'path' }, { type: 'triggerFilesChange' }],
         done,
       );
     });
@@ -623,7 +582,6 @@ describe('Multi-file store actions', () => {
         store.state,
         [{ type: types.DELETE_ENTRY, payload: 'testFolder/entry-to-delete' }],
         [
-          { type: 'burstUnusedSeal' },
           { type: 'stageChange', payload: 'testFolder/entry-to-delete' },
           { type: 'triggerFilesChange' },
         ],
@@ -688,11 +646,7 @@ describe('Multi-file store actions', () => {
             testEntry.path,
             store.state,
             [{ type: types.DELETE_ENTRY, payload: testEntry.path }],
-            [
-              { type: 'burstUnusedSeal' },
-              { type: 'stageChange', payload: testEntry.path },
-              { type: 'triggerFilesChange' },
-            ],
+            [{ type: 'stageChange', payload: testEntry.path }, { type: 'triggerFilesChange' }],
             done,
           );
         });
@@ -813,55 +767,19 @@ describe('Multi-file store actions', () => {
         });
       });
 
-      describe('when `gon.feature.stageAllByDefault` is true', () => {
-        const originalGonFeatures = Object.assign({}, gon.features);
+      it('by default renames an entry and stages it', () => {
+        const dispatch = jasmine.createSpy();
+        const commit = jasmine.createSpy();
 
-        beforeAll(() => {
-          gon.features = { stageAllByDefault: true };
-        });
-
-        afterAll(() => {
-          gon.features = originalGonFeatures;
-        });
-
-        it('by default renames an entry and stages it', () => {
-          const dispatch = jasmine.createSpy();
-          const commit = jasmine.createSpy();
-
-          renameEntry(
-            { dispatch, commit, state: store.state, getters: store.getters },
-            { path: 'orig', name: 'renamed' },
-          );
-
-          expect(commit.calls.allArgs()).toEqual([
-            [types.RENAME_ENTRY, { path: 'orig', name: 'renamed', parentPath: undefined }],
-            [types.STAGE_CHANGE, jasmine.objectContaining({ path: 'renamed' })],
-          ]);
-        });
-      });
-
-      it('by default renames an entry and adds to changed', done => {
-        testAction(
-          renameEntry,
+        renameEntry(
+          { dispatch, commit, state: store.state, getters: store.getters },
           { path: 'orig', name: 'renamed' },
-          store.state,
-          [
-            {
-              type: types.RENAME_ENTRY,
-              payload: {
-                path: 'orig',
-                name: 'renamed',
-                parentPath: undefined,
-              },
-            },
-            {
-              type: types.ADD_FILE_TO_CHANGED,
-              payload: 'renamed',
-            },
-          ],
-          jasmine.any(Object),
-          done,
         );
+
+        expect(commit.calls.allArgs()).toEqual([
+          [types.RENAME_ENTRY, { path: 'orig', name: 'renamed', parentPath: undefined }],
+          [types.STAGE_CHANGE, jasmine.objectContaining({ path: 'renamed' })],
+        ]);
       });
 
       it('if not changed, completely unstages and discards entry if renamed to original', done => {

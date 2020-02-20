@@ -78,7 +78,7 @@ service: gitlab-example
 provider:
   name: aws
   runtime: nodejs10.x
-  
+
 functions:
   hello:
     handler: src/handler.hello
@@ -149,7 +149,7 @@ Running the following `curl` command should trigger your function.
 NOTE: **Note:**
   Your url should be the one retrieved from the GitLab deploy stage log.
 
-```sh
+```shell
 curl https://u768nzby1j.execute-api.us-east-1.amazonaws.com/production/hello
 ```
 
@@ -192,7 +192,7 @@ The `serverless-offline` plugin allows to run your code locally. To run your cod
 
 Running the following `curl` command should trigger your function.
 
-```sh
+```shell
 curl http://localhost:3000/hello
 ```
 
@@ -222,7 +222,7 @@ From there, you can reference them in your functions as well.
 Remember to add `A_VARIABLE` to your GitLab CI variables under **Settings > CI/CD > Variables**, and it will get picked up and deployed with your function.
 
 NOTE: **Note:**
-Anyone with access to the AWS environemnt may be able to see the values of those
+Anyone with access to the AWS environment may be able to see the values of those
 variables persisted in the lambda definition.
 
 ### Setting up CORS

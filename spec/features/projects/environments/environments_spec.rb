@@ -13,7 +13,7 @@ describe 'Environments page', :js do
   end
 
   def stop_button_selector
-    %q{button[data-original-title="Stop environment"]}
+    %q{button[title="Stop environment"]}
   end
 
   describe 'page tabs' do

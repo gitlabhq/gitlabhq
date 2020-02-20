@@ -25,7 +25,7 @@ export default {
     </div>
 
     <small v-if="snippet.updatedAt !== snippet.createdAt" class="edited-text">
-      <gl-sprintf message="Edited %{timeago}">
+      <gl-sprintf :message="__('Edited %{timeago}')">
         <template #timeago>
           <time-ago-tooltip :time="snippet.updatedAt" tooltip-placement="bottom" />
         </template>

@@ -20,6 +20,9 @@ module Boards
     skip_before_action :authenticate_user!, only: [:index]
     before_action :validate_id_list, only: [:bulk_move]
     before_action :can_move_issues?, only: [:bulk_move]
+    before_action do
+      push_frontend_feature_flag(:board_search_optimization, board.group)
+    end
 
     # rubocop: disable CodeReuse/ActiveRecord
     def index
@@ -83,8 +86,12 @@ module Boards
       head(:forbidden) unless can?(current_user, :admin_issue, board)
     end
 
+    def serializer_options(issues)
+      {}
+    end
+
     def render_issues(issues, metadata)
-      data = { issues: serialize_as_json(issues) }
+      data = { issues: serialize_as_json(issues, opts: serializer_options(issues)) }
       data.merge!(metadata)
 
       render json: data
@@ -130,8 +137,10 @@ module Boards
       IssueSerializer.new(current_user: current_user)
     end
 
-    def serialize_as_json(resource)
-      serializer.represent(resource, serializer: 'board', include_full_project_path: board.group_board?)
+    def serialize_as_json(resource, opts: {})
+      opts.merge!(include_full_project_path: board.group_board?, serializer: 'board')
+
+      serializer.represent(resource, opts)
     end
 
     def whitelist_query_limiting

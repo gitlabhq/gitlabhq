@@ -33,7 +33,7 @@ module Gitlab
             def template_name
               return unless template_name_valid?
 
-              location.first(-SUFFIX.length)
+              location.delete_suffix(SUFFIX)
             end
 
             def template_name_valid?

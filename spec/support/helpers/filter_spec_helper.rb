@@ -15,7 +15,7 @@ module FilterSpecHelper
   # context - Hash context for the filter. (default: {project: project})
   #
   # Returns a Nokogiri::XML::DocumentFragment
-  def filter(html, context = {})
+  def filter(html, context = {}, result = nil)
     if defined?(project)
       context.reverse_merge!(project: project)
     end
@@ -25,7 +25,7 @@ module FilterSpecHelper
 
     context = context.merge(render_context: render_context)
 
-    described_class.call(html, context)
+    described_class.call(html, context, result)
   end
 
   # Get an instance of the Filter class
@@ -33,10 +33,13 @@ module FilterSpecHelper
   # Use this for testing instance methods, but remember to test the result of
   # the full pipeline by calling #call using the other methods in this helper.
   def filter_instance
-    render_context = Banzai::RenderContext.new(project, current_user)
     context = { project: project, current_user: current_user, render_context: render_context }
 
     described_class.new(input_text, context)
+  end
+
+  def render_context
+    Banzai::RenderContext.new(project, current_user)
   end
 
   # Run text through HTML::Pipeline with the current filter and return the
@@ -55,11 +58,15 @@ module FilterSpecHelper
 
   def reference_pipeline(context = {})
     context.reverse_merge!(project: project) if defined?(project)
+    context.reverse_merge!(current_user: current_user) if defined?(current_user)
 
     filters = [
       Banzai::Filter::AutolinkFilter,
       described_class
     ]
+
+    redact = context.delete(:redact)
+    filters.push(Banzai::Filter::ReferenceRedactorFilter) if redact
 
     HTML::Pipeline.new(filters, context)
   end

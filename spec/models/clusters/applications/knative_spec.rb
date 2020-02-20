@@ -17,7 +17,7 @@ describe Clusters::Applications::Knative do
   end
 
   describe 'associations' do
-    it { is_expected.to have_one(:serverless_domain_cluster).class_name('Serverless::DomainCluster').with_foreign_key('clusters_applications_knative_id').inverse_of(:knative) }
+    it { is_expected.to have_one(:serverless_domain_cluster).class_name('::Serverless::DomainCluster').with_foreign_key('clusters_applications_knative_id').inverse_of(:knative) }
   end
 
   describe 'when cloud run is enabled' do

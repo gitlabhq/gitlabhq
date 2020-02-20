@@ -45,13 +45,17 @@ module API
       end
 
       def authenticate_job!
-        job = Ci::Build.find_by_id(params[:id])
+        job = current_job
 
         validate_job!(job) do
           forbidden! unless job_token_valid?(job)
         end
 
         job
+      end
+
+      def current_job
+        @current_job ||= Ci::Build.find_by_id(params[:id])
       end
 
       def job_token_valid?(job)

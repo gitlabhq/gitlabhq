@@ -59,7 +59,7 @@ project = table(:projects).create!(id: 1, name: 'gitlab1', path: 'gitlab1')
 
 #### `migrate!`
 
-Use the `migrate!` helper to run the migration that is under test.  It will not only
+Use the `migrate!` helper to run the migration that is under test. It will not only
 run the migration, but will also bump the schema version in the `schema_migrations`
 table. It is necessary because in the `after` hook we trigger the rest of
 the migrations, and we need to know where to start. Example:

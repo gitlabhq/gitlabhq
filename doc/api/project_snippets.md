@@ -83,7 +83,7 @@ Parameters:
 
 Example request:
 
-```bash
+```shell
 curl --request POST https://gitlab.com/api/v4/projects/:id/snippets \
      --header "PRIVATE-TOKEN: <your access token>" \
      --header "Content-Type: application/json" \
@@ -122,7 +122,7 @@ Parameters:
 
 Example request:
 
-```bash
+```shell
 curl --request PUT https://gitlab.com/api/v4/projects/:id/snippets \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
@@ -156,7 +156,7 @@ Parameters:
 
 Example request:
 
-```bash
+```shell
 curl --request DELETE https://gitlab.com/api/v4/projects/:id/snippets \
      --header "PRIVATE-TOKEN: <your_access_token>"
 ```
@@ -176,8 +176,8 @@ Parameters:
 
 Example request:
 
-```bash
-curl --request GET https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id/raw \
+```shell
+curl https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id/raw \
      --header "PRIVATE-TOKEN: <your_access_token>"
 ```
 
@@ -198,8 +198,8 @@ GET /projects/:id/snippets/:snippet_id/user_agent_detail
 
 Example request:
 
-```bash
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/snippets/2/user_agent_detail
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/snippets/2/user_agent_detail
 ```
 
 Example response:

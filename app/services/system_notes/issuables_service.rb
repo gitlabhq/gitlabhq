@@ -282,6 +282,12 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: action))
     end
 
+    def close_after_error_tracking_resolve
+      body = _('resolved the corresponding error and closed the issue.')
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'closed'))
+    end
+
     private
 
     def cross_reference_note_content(gfm_reference)

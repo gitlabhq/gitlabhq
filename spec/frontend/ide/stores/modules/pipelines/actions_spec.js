@@ -78,7 +78,7 @@ describe('IDE pipelines actions', () => {
           {
             type: 'setErrorMessage',
             payload: {
-              text: 'An error occurred whilst fetching the latest pipeline.',
+              text: 'An error occurred while fetching the latest pipeline.',
               action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: null,
@@ -207,7 +207,7 @@ describe('IDE pipelines actions', () => {
           {
             type: 'setErrorMessage',
             payload: {
-              text: 'An error occurred whilst loading the pipelines jobs.',
+              text: 'An error occurred while loading the pipelines jobs.',
               action: expect.anything(),
               actionText: 'Please try again',
               actionPayload: { id: 1 },
@@ -341,7 +341,7 @@ describe('IDE pipelines actions', () => {
           {
             type: 'setErrorMessage',
             payload: {
-              text: 'An error occurred whilst fetching the job trace.',
+              text: 'An error occurred while fetching the job trace.',
               action: expect.any(Function),
               actionText: 'Please try again',
               actionPayload: null,

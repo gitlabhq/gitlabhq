@@ -46,8 +46,8 @@ export default {
             </a>
           </template>
 
-          <template v-else-if="field.type === $options.fieldTypes.miliseconds">{{
-            sprintf(__('%{value} ms'), { value: field.value })
+          <template v-else-if="field.type === $options.fieldTypes.seconds">{{
+            sprintf(__('%{value} s'), { value: field.value })
           }}</template>
 
           <template v-else-if="field.type === $options.fieldTypes.text">

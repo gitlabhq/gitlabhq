@@ -52,6 +52,14 @@ module QA
             end
           end
 
+          def remove_variable(location: :first)
+            within('.ci-variable-row-body', match: location) do
+              find('button.ci-variable-row-remove-button').click
+            end
+
+            save_variables
+          end
+
           private
 
           def toggle_masked(masked_node, masked)

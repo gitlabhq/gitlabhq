@@ -6,19 +6,19 @@ class PersonalSnippetPolicy < BasePolicy
   condition(:internal_snippet, scope: :subject) { @subject.internal? }
 
   rule { public_snippet }.policy do
-    enable :read_personal_snippet
+    enable :read_snippet
     enable :create_note
   end
 
   rule { is_author | admin }.policy do
-    enable :read_personal_snippet
-    enable :update_personal_snippet
-    enable :admin_personal_snippet
+    enable :read_snippet
+    enable :update_snippet
+    enable :admin_snippet
     enable :create_note
   end
 
   rule { internal_snippet & ~external_user }.policy do
-    enable :read_personal_snippet
+    enable :read_snippet
     enable :create_note
   end
 
@@ -26,8 +26,5 @@ class PersonalSnippetPolicy < BasePolicy
 
   rule { can?(:create_note) }.enable :award_emoji
 
-  rule { can?(:read_all_resources) }.enable :read_personal_snippet
-
-  # Aliasing the ability to ease GraphQL permissions check
-  rule { can?(:read_personal_snippet) }.enable :read_snippet
+  rule { can?(:read_all_resources) }.enable :read_snippet
 end

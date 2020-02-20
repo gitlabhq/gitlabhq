@@ -1,21 +1,24 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import DiffLineGutterContent from './diff_line_gutter_content.vue';
+import { GlIcon } from '@gitlab/ui';
+import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
+import DiffGutterAvatars from './diff_gutter_avatars.vue';
 import {
   MATCH_LINE_TYPE,
   CONTEXT_LINE_TYPE,
+  LINE_POSITION_RIGHT,
   EMPTY_CELL_TYPE,
   OLD_LINE_TYPE,
   OLD_NO_NEW_LINE_TYPE,
   NEW_NO_NEW_LINE_TYPE,
   LINE_HOVER_CLASS_NAME,
   LINE_UNFOLD_CLASS_NAME,
-  INLINE_DIFF_VIEW_TYPE,
 } from '../constants';
 
 export default {
   components: {
-    DiffLineGutterContent,
+    DiffGutterAvatars,
+    GlIcon,
   },
   props: {
     line: {
@@ -33,12 +36,6 @@ export default {
     isHighlighted: {
       type: Boolean,
       required: true,
-      default: false,
-    },
-    diffViewType: {
-      type: String,
-      required: false,
-      default: INLINE_DIFF_VIEW_TYPE,
     },
     showCommentButton: {
       type: Boolean,
@@ -73,6 +70,38 @@ export default {
   },
   computed: {
     ...mapGetters(['isLoggedIn']),
+    lineCode() {
+      return (
+        this.line.line_code ||
+        (this.line.left && this.line.left.line_code) ||
+        (this.line.right && this.line.right.line_code)
+      );
+    },
+    lineHref() {
+      return `#${this.line.line_code || ''}`;
+    },
+    shouldShowCommentButton() {
+      return (
+        this.isHover &&
+        !this.isMatchLine &&
+        !this.isContextLine &&
+        !this.isMetaLine &&
+        !this.hasDiscussions
+      );
+    },
+    hasDiscussions() {
+      return this.line.discussions && this.line.discussions.length > 0;
+    },
+    shouldShowAvatarsOnGutter() {
+      if (!this.line.type && this.linePosition === LINE_POSITION_RIGHT) {
+        return false;
+      }
+      return this.showCommentButton && this.hasDiscussions;
+    },
+    shouldRenderCommentButton() {
+      const isDiffHead = parseBoolean(getParameterByName('diff_head'));
+      return !isDiffHead && this.isLoggedIn && this.showCommentButton;
+    },
     isMatchLine() {
       return this.line.type === MATCH_LINE_TYPE;
     },
@@ -107,24 +136,45 @@ export default {
       return this.lineType === OLD_LINE_TYPE ? this.line.old_line : this.line.new_line;
     },
   },
-  methods: mapActions('diffs', ['setHighlightedRow']),
+  methods: {
+    ...mapActions('diffs', ['showCommentForm', 'setHighlightedRow', 'toggleLineDiscussions']),
+    handleCommentButton() {
+      this.showCommentForm({ lineCode: this.line.line_code, fileHash: this.fileHash });
+    },
+  },
 };
 </script>
 
 <template>
-  <td :class="classNameMap">
-    <diff-line-gutter-content
-      :line="line"
-      :file-hash="fileHash"
-      :context-lines-path="contextLinesPath"
-      :line-position="linePosition"
-      :line-number="lineNumber"
-      :show-comment-button="showCommentButton"
-      :is-hover="isHover"
-      :is-bottom="isBottom"
-      :is-match-line="isMatchLine"
-      :is-context-line="isContentLine"
-      :is-meta-line="isMetaLine"
-    />
+  <td ref="td" :class="classNameMap">
+    <div>
+      <button
+        v-if="shouldRenderCommentButton"
+        v-show="shouldShowCommentButton"
+        ref="addDiffNoteButton"
+        type="button"
+        class="add-diff-note js-add-diff-note-button qa-diff-comment"
+        title="Add a comment to this line"
+        @click="handleCommentButton"
+      >
+        <gl-icon :size="12" name="comment" />
+      </button>
+      <a
+        v-if="lineNumber"
+        ref="lineNumberRef"
+        :data-linenumber="lineNumber"
+        :href="lineHref"
+        @click="setHighlightedRow(lineCode)"
+      >
+      </a>
+      <diff-gutter-avatars
+        v-if="shouldShowAvatarsOnGutter"
+        :discussions="line.discussions"
+        :discussions-expanded="line.discussionsExpanded"
+        @toggleLineDiscussions="
+          toggleLineDiscussions({ lineCode, fileHash, expanded: !line.discussionsExpanded })
+        "
+      />
+    </div>
   </td>
 </template>

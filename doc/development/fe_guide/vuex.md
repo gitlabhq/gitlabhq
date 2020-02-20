@@ -396,3 +396,93 @@ export default () => {};
 ```
 
 [vuex-docs]: https://vuex.vuejs.org
+
+### Two way data binding
+
+When storing form data in Vuex, it is sometimes necessary to update the value stored. The store should never be mutated directly, and an action should be used instead.
+In order to still use `v-model` in our code, we need to create computed properties in this form:
+
+```javascript
+export default {
+  computed: {
+    someValue: {
+      get() {
+        return this.$store.state.someValue;
+      },
+      set(value) {
+        this.$store.dispatch("setSomeValue", value);
+      }
+    }
+  }
+};
+```
+
+An alternative is to use `mapState` and `mapActions`:
+
+```javascript
+export default {
+  computed: {
+    ...mapState(['someValue']),
+    localSomeValue: {
+      get() {
+        return this.someValue;
+      },
+      set(value) {
+        this.setSomeValue(value)
+      }
+    }
+  },
+  methods: {
+    ...mapActions(['setSomeValue'])
+  }
+};
+```
+
+Adding a few of these properties becomes cumbersome, and makes the code more repetitive with more tests to write. To simplify this there is a helper in `~/vuex_shared/bindings.js`
+
+The helper can be used like so:
+
+```javascript
+// this store is non-functional and only used to give context to the example
+export default {
+  state: {
+    baz: '',
+    bar: '',
+    foo: ''
+  },
+  actions: {
+    updateBar() {...}
+    updateAll() {...}
+  },
+  getters: {
+    getFoo() {...}
+  }
+}
+```
+
+```javascript
+import { mapComputed } from '~/vuex_shared/bindings'
+export default {
+  computed: {
+    /**
+     * @param {(string[]|Object[])} list - list of string matching state keys or list objects
+     * @param {string} list[].key - the key matching the key present in the vuex state
+     * @param {string} list[].getter - the name of the getter, leave it empty to not use a getter
+     * @param {string} list[].updateFn - the name of the action, leave it empty to use the default action
+     * @param {string} defaultUpdateFn - the default function to dispatch
+     * @param {string} root - optional key of the state where to search fo they keys described in list
+     * @returns {Object} a dictionary with all the computed properties generated
+    */
+    ...mapComputed(
+      [
+        'baz',
+        { key: 'bar', updateFn: 'updateBar' }
+        { key: 'foo', getter: 'getFoo' },
+      ],
+      'updateAll',
+    ),
+  }
+}
+```
+
+`mapComputed` will then generate the appropriate computed properties that get the data from the store and dispatch the correct action when updated.

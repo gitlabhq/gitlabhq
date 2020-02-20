@@ -25,7 +25,7 @@ export default {
 </script>
 
 <template>
-  <div class="issue-count">
+  <div class="issue-count text-nowrap">
     <span class="js-issue-size" :class="{ 'text-danger': issuesExceedMax }">
       {{ issuesSize }}
     </span>

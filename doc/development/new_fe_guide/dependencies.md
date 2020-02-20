@@ -17,13 +17,13 @@ production assets post-compile.
 
 To add or upgrade a dependency, run:
 
-```sh
+```shell
 yarn add <your dependency here>
 ```
 
 This may introduce duplicate dependencies. To de-duplicate `yarn.lock`, run:
 
-```sh
+```shell
 node_modules/.bin/yarn-deduplicate --list --strategy fewer yarn.lock && yarn install
 ```
 

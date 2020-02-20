@@ -12,7 +12,7 @@ describe PagesDomainSslRenewalCronWorker do
   end
 
   describe '#perform' do
-    let(:project) { create :project }
+    let_it_be(:project) { create :project }
     let!(:domain) { create(:pages_domain, project: project, auto_ssl_enabled: false) }
     let!(:domain_with_enabled_auto_ssl) { create(:pages_domain, project: project, auto_ssl_enabled: true) }
     let!(:domain_with_obtained_letsencrypt) do
@@ -35,10 +35,14 @@ describe PagesDomainSslRenewalCronWorker do
 
       [domain,
        domain_with_obtained_letsencrypt].each do |domain|
-        expect(PagesDomainVerificationWorker).not_to receive(:perform_async).with(domain.id)
+        expect(PagesDomainSslRenewalWorker).not_to receive(:perform_async).with(domain.id)
       end
 
       worker.perform
+    end
+
+    it_behaves_like 'a pages cronjob scheduling jobs with context', PagesDomainSslRenewalWorker do
+      let(:extra_domain) { create(:pages_domain, :with_project, auto_ssl_enabled: true) }
     end
 
     shared_examples 'does nothing' do

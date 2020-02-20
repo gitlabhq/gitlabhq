@@ -96,7 +96,7 @@ describe GroupsController do
             User.where(id: [admin, owner, maintainer, developer, guest]).update_all(can_create_group: can_create_group_status)
           end
 
-          [:admin, :owner].each do |member_type|
+          [:admin, :owner, :maintainer].each do |member_type|
             context "and logged in as #{member_type.capitalize}" do
               it_behaves_like 'member with ability to create subgroups' do
                 let(:member) { send(member_type) }
@@ -104,7 +104,7 @@ describe GroupsController do
             end
           end
 
-          [:guest, :developer, :maintainer].each do |member_type|
+          [:guest, :developer].each do |member_type|
             context "and logged in as #{member_type.capitalize}" do
               it_behaves_like 'member without ability to create subgroups' do
                 let(:member) { send(member_type) }
@@ -136,7 +136,7 @@ describe GroupsController do
 
         get :activity, params: { id: group.to_param }, format: :json
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['count']).to eq(3)
         expect(assigns(:projects).limit_value).to be_nil
       end
@@ -176,7 +176,7 @@ describe GroupsController do
         post :create, params: { group: { name: 'new_group', path: "new_group" } }
       end.to change { Group.count }.by(1)
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
     end
 
     context 'authorization' do
@@ -187,7 +187,7 @@ describe GroupsController do
           post :create, params: { group: { name: 'new_group', path: "new_group" } }
         end.to change { Group.count }.by(1)
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
       end
     end
 
@@ -392,7 +392,7 @@ describe GroupsController do
     it 'updates the path successfully' do
       post :update, params: { id: group.to_param, group: { path: 'new_path' } }
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(controller).to set_flash[:notice]
     end
 
@@ -407,7 +407,7 @@ describe GroupsController do
     it 'updates the project_creation_level successfully' do
       post :update, params: { id: group.to_param, group: { project_creation_level: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS } }
 
-      expect(response).to have_gitlab_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(group.reload.project_creation_level).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
     end
 
@@ -422,7 +422,7 @@ describe GroupsController do
         post :update, params: { id: group.to_param, group: { name: 'new_name' } }
 
         expect(controller).to set_flash[:notice]
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(group.reload.name).to eq('new_name')
       end
 
@@ -430,7 +430,7 @@ describe GroupsController do
         post :update, params: { id: group.to_param, group: { path: 'new_path' } }
 
         expect(assigns(:group).errors[:base].first).to match(/Docker images in their Container Registry/)
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
@@ -493,7 +493,7 @@ describe GroupsController do
               it 'does not redirect' do
                 get :issues, params: { id: group.to_param }
 
-                expect(response).not_to have_gitlab_http_status(301)
+                expect(response).not_to have_gitlab_http_status(:moved_permanently)
               end
             end
 
@@ -512,7 +512,7 @@ describe GroupsController do
               it 'does not redirect' do
                 get :show, params: { id: group.to_param }
 
-                expect(response).not_to have_gitlab_http_status(301)
+                expect(response).not_to have_gitlab_http_status(:moved_permanently)
               end
             end
 
@@ -579,13 +579,13 @@ describe GroupsController do
           it 'does not 404' do
             post :update, params: { id: group.to_param.upcase, group: { path: 'new_path' } }
 
-            expect(response).not_to have_gitlab_http_status(404)
+            expect(response).not_to have_gitlab_http_status(:not_found)
           end
 
           it 'does not redirect to the correct casing' do
             post :update, params: { id: group.to_param.upcase, group: { path: 'new_path' } }
 
-            expect(response).not_to have_gitlab_http_status(301)
+            expect(response).not_to have_gitlab_http_status(:moved_permanently)
           end
         end
 
@@ -595,7 +595,7 @@ describe GroupsController do
           it 'returns not found' do
             post :update, params: { id: redirect_route.path, group: { path: 'new_path' } }
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -605,13 +605,13 @@ describe GroupsController do
           it 'does not 404' do
             delete :destroy, params: { id: group.to_param.upcase }
 
-            expect(response).not_to have_gitlab_http_status(404)
+            expect(response).not_to have_gitlab_http_status(:not_found)
           end
 
           it 'does not redirect to the correct casing' do
             delete :destroy, params: { id: group.to_param.upcase }
 
-            expect(response).not_to have_gitlab_http_status(301)
+            expect(response).not_to have_gitlab_http_status(:moved_permanently)
           end
         end
 
@@ -621,7 +621,7 @@ describe GroupsController do
           it 'returns not found' do
             delete :destroy, params: { id: redirect_route.path }
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -718,7 +718,7 @@ describe GroupsController do
       end
 
       it 'is denied' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -780,13 +780,13 @@ describe GroupsController do
         it 'is successful' do
           get :show, params: { id: group.to_param }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'does not allow other formats' do
           get :show, params: { id: group.to_param }, format: :atom
 
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
@@ -794,7 +794,7 @@ describe GroupsController do
         it 'is successful' do
           get :edit, params: { id: group.to_param }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -802,7 +802,7 @@ describe GroupsController do
         it 'is successful' do
           get :new
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -811,7 +811,7 @@ describe GroupsController do
           get :index
 
           # Redirects to the dashboard
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
       end
 
@@ -835,7 +835,7 @@ describe GroupsController do
         it 'deletes the group' do
           delete :destroy, params: { id: group.to_param }
 
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
       end
     end

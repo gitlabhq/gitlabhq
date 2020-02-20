@@ -4,6 +4,8 @@
       .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Kubernetes cluster")
       .table-mobile-content
         = cluster.item_link(clusterable, html_options: { data: { qa_selector: 'cluster', qa_cluster_name: cluster.name } })
+        - if cluster.status_name == :creating
+          .spinner.ml-2.align-middle.has-tooltip{ title: s_("ClusterIntegration|Cluster being created") }
         - unless cluster.enabled?
           %span.badge.badge-danger Connection disabled
     .table-section.section-25

@@ -30,4 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   GpgBadges.fetch();
+
+  if (gon.features?.codeNavigation) {
+    // eslint-disable-next-line promise/catch-or-return
+    import('~/code_navigation').then(m => m.default());
+  }
 });

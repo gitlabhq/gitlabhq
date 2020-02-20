@@ -21,7 +21,7 @@ namespace :gitlab do
   )
 
   namespace :graphql do
-    desc 'GitLab | Generate GraphQL docs'
+    desc 'GitLab | GraphQL | Generate GraphQL docs'
     task compile_docs: :environment do
       renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema.graphql_definition, render_options)
 
@@ -30,7 +30,7 @@ namespace :gitlab do
       puts "Documentation compiled."
     end
 
-    desc 'GitLab | Check if GraphQL docs are up to date'
+    desc 'GitLab | GraphQL | Check if GraphQL docs are up to date'
     task check_docs: :environment do
       renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema.graphql_definition, render_options)
 
@@ -44,7 +44,7 @@ namespace :gitlab do
       end
     end
 
-    desc 'GitLab | Check if GraphQL schemas are up to date'
+    desc 'GitLab | GraphQL | Check if GraphQL schemas are up to date'
     task check_schema: :environment do
       idl_doc = File.read(Rails.root.join(OUTPUT_DIR, 'gitlab_schema.graphql'))
       json_doc = File.read(Rails.root.join(OUTPUT_DIR, 'gitlab_schema.json'))

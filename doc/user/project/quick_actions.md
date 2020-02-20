@@ -10,7 +10,7 @@ You can enter these commands while creating a new issue or merge request, or
 in comments of issues, epics, merge requests, and commits. Each command should be
 on a separate line in order to be properly detected and executed.
 
-> From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26672), once an action is executed, an alert is displayed when a quick action is successfully applied.
+> From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26672), once an action is executed, an alert is displayed when a quick action is successfully applied.
 
 ## Quick Actions for issues, merge requests and epics
 
@@ -64,8 +64,8 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/create_merge_request <branch name>` | ✓     |               |      | Create a new merge request starting from the current issue |
 | `/relate #issue1 #issue2`             | ✓     |               |      | Mark issues as related **(STARTER)** |
 | `/move <path/to/project>`             | ✓     |               |      | Move this issue to another project |
-| `/zoom <Zoom URL>`                    | ✓     |               |      | Add Zoom meeting to this issue. ([Introduced in GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/merge_requests/16609)) |
-| `/remove_zoom`                        | ✓     |               |      | Remove Zoom meeting from this issue. ([Introduced in GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/merge_requests/16609)) |
+| `/zoom <Zoom URL>`                    | ✓     |               |      | Add Zoom meeting to this issue. ([Introduced in GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16609)) |
+| `/remove_zoom`                        | ✓     |               |      | Remove Zoom meeting from this issue. ([Introduced in GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16609)) |
 | `/target_branch <local branch name>`  |       | ✓             |      | Set target branch |
 | `/wip`                                |       | ✓             |      | Toggle the Work In Progress status |
 | `/approve`                            |       | ✓             |      | Approve the merge request **(STARTER)** |

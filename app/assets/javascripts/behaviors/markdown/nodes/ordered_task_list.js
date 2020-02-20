@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { Node } from 'tiptap';
+import { HIGHER_PARSE_RULE_PRIORITY } from '../constants';
 
 // Transforms generated HTML back to GFM for Banzai::Filter::TaskListFilter
 export default class OrderedTaskList extends Node {
@@ -14,7 +15,7 @@ export default class OrderedTaskList extends Node {
       content: '(task_list_item|list_item)+',
       parseDOM: [
         {
-          priority: 51,
+          priority: HIGHER_PARSE_RULE_PRIORITY,
           tag: 'ol.task-list',
         },
       ],

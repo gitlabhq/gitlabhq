@@ -307,7 +307,7 @@ export default {
           <a
             v-if="titleLink"
             :href="titleLink"
-            target="blank"
+            target="_blank"
             rel="noopener noreferrer"
             class="js-cluster-application-title"
             >{{ title }}</a

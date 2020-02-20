@@ -14,9 +14,10 @@ export default {
       iid: mergeRequest.iid,
       title: mergeRequest.title,
       projectId: mergeRequest.project_id,
-      projectPathWithNamespace: mergeRequest.web_url
-        .replace(`${gon.gitlab_url}/`, '')
-        .replace(`/merge_requests/${mergeRequest.iid}`, ''),
+      projectPathWithNamespace: mergeRequest.references.full.replace(
+        mergeRequest.references.short,
+        '',
+      ),
     }));
   },
   [types.RESET_MERGE_REQUESTS](state) {

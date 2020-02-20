@@ -208,7 +208,7 @@ code reviewer have ensured:
 
 ### When documentation is required
 
-Documentation [is required](../contributing/merge_request_workflow.html#definition-of-done) for a
+Documentation [is required](../contributing/merge_request_workflow.md#definition-of-done) for a
 milestone when:
 
 - A new or enhanced feature is shipped that impacts the user or administrator experience.
@@ -382,7 +382,7 @@ Ensure the following if skipping an initial Technical Writer review:
 - Specific [user permissions](../../user/permissions.md) are documented.
 - That new documents are linked from higher-level indexes, for discoverability.
 - Style guide is followed:
-  - For [directories and files](styleguide.md#working-with-directories-and-files).
+  - For [directories and files](styleguide.md#work-with-directories-and-files).
   - For [images](styleguide.md#images).
 
 NOTE: **Note:**

@@ -58,7 +58,7 @@ describe('ImportProjectsTable', () => {
     vm.$destroy();
   });
 
-  it('renders a loading icon whilst repos are loading', () =>
+  it('renders a loading icon while repos are loading', () =>
     vm.$nextTick().then(() => {
       expect(vm.$el.querySelector('.js-loading-button-icon')).not.toBeNull();
     }));

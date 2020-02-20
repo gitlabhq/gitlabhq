@@ -3,7 +3,7 @@
 module QA
   module Resource
     module Events
-      MAX_WAIT = 10
+      MAX_WAIT = 60
       RAISE_ON_FAILURE = true
 
       EventNotFoundError = Class.new(RuntimeError)

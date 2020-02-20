@@ -111,6 +111,18 @@ describe Ci::JobArtifact do
     end
   end
 
+  describe '.for_sha' do
+    it 'returns job artifacts for a given pipeline sha' do
+      first_pipeline = create(:ci_pipeline)
+      second_pipeline = create(:ci_pipeline, sha: Digest::SHA1.hexdigest(SecureRandom.hex))
+      first_artifact = create(:ci_job_artifact, job: create(:ci_build, pipeline: first_pipeline))
+      second_artifact = create(:ci_job_artifact, job: create(:ci_build, pipeline: second_pipeline))
+
+      expect(described_class.for_sha(first_pipeline.sha)).to eq([first_artifact])
+      expect(described_class.for_sha(second_pipeline.sha)).to eq([second_artifact])
+    end
+  end
+
   describe 'callbacks' do
     subject { create(:ci_job_artifact, :archive) }
 

@@ -96,8 +96,12 @@ to the first container in the first pod of your environment.
 
 ## Adding and removing clusters
 
-See [Adding and removing Kubernetes clusters](add_remove_clusters.md) for details on how to
-set up integrations with Google Cloud Platform (GCP) and Amazon Elastic Kubernetes Service (EKS).
+See [Adding and removing Kubernetes clusters](add_remove_clusters.md) for details on how
+to:
+
+- Create a cluster in Google Cloud Platform (GCP) or Amazon Elastic Kubernetes Service
+  (EKS) using GitLab's UI.
+- Add an integration to an existing cluster from any Kubernetes platform.
 
 ## Cluster configuration
 
@@ -117,8 +121,8 @@ applications running on the cluster.
 
 ### GitLab-managed clusters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 11.5.
-> - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26565) in GitLab 11.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 11.5.
+> - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26565) in GitLab 11.11.
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster is
 managed by GitLab, resources for your projects will be automatically created. See the
@@ -158,7 +162,7 @@ To clear the cache:
 
 ### Base domain
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24580) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
 
 NOTE: **Note:**
 You do not need to specify a base domain on cluster settings when using GitLab Serverless. The domain in that case
@@ -326,7 +330,7 @@ namespaces and service accounts yourself.
 
 ## Monitoring your Kubernetes cluster **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/4701) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4701) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
 
 When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
 

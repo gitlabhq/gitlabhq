@@ -27,7 +27,7 @@ Using EFS may negatively impact performance. Please review the [relevant documen
 
 Installing the nfs-kernel-server package allows you to share directories with the clients running the GitLab application.
 
-```sh
+```shell
 apt-get update
 apt-get install nfs-kernel-server
 ```
@@ -47,7 +47,7 @@ In this setup we will share the home directory on the host with the client. Edit
 Restart the NFS server after making changes to the `exports` file for the changes
 to take effect.
 
-```sh
+```shell
 systemctl restart nfs-kernel-server
 ```
 
@@ -64,7 +64,7 @@ inside your HA environment to the NFS server configured above.
 The nfs-common provides NFS functionality without installing server components which
 we don't need running on the application nodes.
 
-```sh
+```shell
 apt-get update
 apt-get install nfs-common
 ```
@@ -76,14 +76,14 @@ Please note that if your mount point directory contains any files they will be h
 once the remote shares are mounted. An empty/new directory on the client is recommended
 for this purpose.
 
-```sh
+```shell
 mkdir -p /nfs/home
 ```
 
 Confirm that the mount point works by mounting it on the client and checking that
 it is mounted with the command below:
 
-```sh
+```shell
 mount <host_ip_address>:/home
 df -h
 ```
@@ -134,7 +134,7 @@ Check that NFS traffic from the client is allowed by the firewall on the host by
 the command: `sudo ufw status`. If it's being blocked, then you can allow traffic from a specific
 client with the command below.
 
-```sh
+```shell
 sudo ufw allow from <client-ip-address> to any port nfs
 ```
 

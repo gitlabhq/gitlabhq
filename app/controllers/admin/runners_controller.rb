@@ -66,7 +66,7 @@ class Admin::RunnersController < Admin::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def assign_builds_and_projects
-    @builds = runner.builds.order('id DESC').first(30)
+    @builds = runner.builds.order('id DESC').preload_project_and_pipeline_project.first(30)
     @projects =
       if params[:search].present?
         ::Project.search(params[:search])
@@ -75,7 +75,8 @@ class Admin::RunnersController < Admin::ApplicationController
       end
 
     @projects = @projects.where.not(id: runner.projects.select(:id)) if runner.projects.any?
-    @projects = @projects.page(params[:page]).per(30)
+    @projects = @projects.inc_routes
+    @projects = @projects.page(params[:page]).per(30).without_count
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

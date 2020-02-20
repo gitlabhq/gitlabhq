@@ -56,7 +56,7 @@ GitLab Runner with the Shell executor.
 
 First install the MySQL server:
 
-```bash
+```shell
 sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 ```
 
@@ -68,7 +68,7 @@ the root user.*
 
 The next step is to create a user, so login to MySQL as root:
 
-```bash
+```shell
 mysql -u root -p
 ```
 
@@ -77,38 +77,38 @@ application. Change `$password` in the command below to a real strong password.
 
 *Note: Do not type `mysql>`, this is part of the MySQL prompt.*
 
-```bash
+```shell
 mysql> CREATE USER 'runner'@'localhost' IDENTIFIED BY '$password';
 ```
 
 Create the database:
 
-```bash
+```shell
 mysql> CREATE DATABASE IF NOT EXISTS `<your_mysql_database>` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 ```
 
 Grant the necessary permissions on the database:
 
-```bash
+```shell
 mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER, LOCK TABLES ON `<your_mysql_database>`.* TO 'runner'@'localhost';
 ```
 
 If all went well you can now quit the database session:
 
-```bash
+```shell
 mysql> \q
 ```
 
 Now, try to connect to the newly created database to check that everything is
 in place:
 
-```bash
+```shell
 mysql -u runner -p -D <your_mysql_database>
 ```
 
 As a final step, configure your application to use the database, for example:
 
-```bash
+```shell
 Host: localhost
 User: runner
 Password: $password

@@ -9,6 +9,10 @@ module Metrics
       DASHBOARD_ROOT = ".gitlab/dashboards"
 
       class << self
+        def valid_params?(params)
+          params[:dashboard_path].present?
+        end
+
         def all_dashboard_paths(project)
           file_finder(project)
             .list_files_for(DASHBOARD_ROOT)

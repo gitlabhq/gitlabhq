@@ -6,7 +6,7 @@ module QA
       module_function
 
       def wait_for_requests
-        Waiter.wait_until do
+        Waiter.wait_until(log: false) do
           finished_all_ajax_requests? && finished_all_axios_requests?
         end
       end

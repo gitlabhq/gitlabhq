@@ -194,7 +194,7 @@ class JiraService < IssueTrackerService
   def test(_)
     result = test_settings
     success = result.present?
-    result = @error if @error && !success
+    result = @error&.message unless success
 
     { success: success, result: result }
   end
@@ -205,14 +205,14 @@ class JiraService < IssueTrackerService
     nil
   end
 
+  private
+
   def test_settings
     return unless client_url.present?
 
     # Test settings by getting the project
     jira_request { client.ServerInfo.all.attrs }
   end
-
-  private
 
   def can_cross_reference?(noteable)
     case noteable
@@ -346,9 +346,17 @@ class JiraService < IssueTrackerService
   # Handle errors when doing Jira API calls
   def jira_request
     yield
-  rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => e
-    @error = e.message
-    log_error("Error sending message", client_url: client_url, error: @error)
+  rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => error
+    @error = error
+    log_error(
+      "Error sending message",
+      client_url: client_url,
+      error: {
+        exception_class: error.class.name,
+        exception_message: error.message,
+        exception_backtrace: error.backtrace.join("\n")
+      }
+    )
     nil
   end
 

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent, { mountComponentWithSlots } from 'spec/helpers/vue_mount_component_helper';
 import headerCi from '~/vue_shared/components/header_ci_component.vue';
 
 describe('Header CI Component', () => {
@@ -27,14 +27,6 @@ describe('Header CI Component', () => {
         email: 'foo@bar.com',
         avatar_url: 'link',
       },
-      actions: [
-        {
-          label: 'Retry',
-          path: 'path',
-          cssClass: 'btn',
-          isLoading: false,
-        },
-      ],
       hasSidebarButton: true,
     };
   });
@@ -42,6 +34,8 @@ describe('Header CI Component', () => {
   afterEach(() => {
     vm.$destroy();
   });
+
+  const findActionButtons = () => vm.$el.querySelector('.header-action-buttons');
 
   describe('render', () => {
     beforeEach(() => {
@@ -68,24 +62,23 @@ describe('Header CI Component', () => {
       expect(vm.$el.querySelector('.js-user-link').innerText.trim()).toContain(props.user.name);
     });
 
-    it('should render provided actions', () => {
-      const btn = vm.$el.querySelector('.btn');
-
-      expect(btn.tagName).toEqual('BUTTON');
-      expect(btn.textContent.trim()).toEqual(props.actions[0].label);
-    });
-
-    it('should show loading icon', done => {
-      vm.actions[0].isLoading = true;
-
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.btn .gl-spinner').getAttribute('style')).toBeFalsy();
-        done();
-      });
-    });
-
     it('should render sidebar toggle button', () => {
       expect(vm.$el.querySelector('.js-sidebar-build-toggle')).not.toBeNull();
+    });
+
+    it('should not render header action buttons when empty', () => {
+      expect(findActionButtons()).toBeNull();
+    });
+  });
+
+  describe('slot', () => {
+    it('should render header action buttons', () => {
+      vm = mountComponentWithSlots(HeaderCi, { props, slots: { default: 'Test Actions' } });
+
+      const buttons = findActionButtons();
+
+      expect(buttons).not.toBeNull();
+      expect(buttons.textContent).toEqual('Test Actions');
     });
   });
 

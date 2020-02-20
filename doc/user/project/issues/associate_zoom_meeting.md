@@ -1,6 +1,6 @@
 # Associate a Zoom meeting with an issue
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16609) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16609) in GitLab 12.4.
 
 In order to communicate synchronously for incidents management,
 GitLab allows to associate a Zoom meeting with an issue.
@@ -15,7 +15,7 @@ To associate a zoom meeting with an issue, you can use GitLab's
 
 In an issue, leave a comment using the `/zoom` quick action followed by a valid Zoom link:
 
-```sh
+```shell
 /zoom https://zoom.us/j/123456789
 ```
 
@@ -34,7 +34,7 @@ need to [remove it](#removing-an-existing-zoom-meeting-from-an-issue) first.
 
 Similarly to adding a zoom meeting, you can remove it with a quick action:
 
-```sh
+```shell
 /remove_zoom
 ```
 

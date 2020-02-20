@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'error tracking service data not ready' do |service_call|
+RSpec.shared_examples 'error tracking service data not ready' do |service_call|
   context "when #{service_call} returns nil" do
     before do
       expect(error_tracking_setting)
@@ -14,7 +14,7 @@ shared_examples 'error tracking service data not ready' do |service_call|
   end
 end
 
-shared_examples 'error tracking service sentry error handling' do |service_call|
+RSpec.shared_examples 'error tracking service sentry error handling' do |service_call|
   context "when #{service_call} returns error" do
     before do
       allow(error_tracking_setting)
@@ -35,7 +35,7 @@ shared_examples 'error tracking service sentry error handling' do |service_call|
   end
 end
 
-shared_examples 'error tracking service http status handling' do |service_call|
+RSpec.shared_examples 'error tracking service http status handling' do |service_call|
   context "when #{service_call} returns error with http_status" do
     before do
       allow(error_tracking_setting)
@@ -56,7 +56,7 @@ shared_examples 'error tracking service http status handling' do |service_call|
   end
 end
 
-shared_examples 'error tracking service unauthorized user' do
+RSpec.shared_examples 'error tracking service unauthorized user' do
   context 'with unauthorized user' do
     let(:unauthorized_user) { create(:user) }
 
@@ -74,7 +74,7 @@ shared_examples 'error tracking service unauthorized user' do
   end
 end
 
-shared_examples 'error tracking service disabled' do
+RSpec.shared_examples 'error tracking service disabled' do
   context 'with error tracking disabled' do
     before do
       error_tracking_setting.enabled = false

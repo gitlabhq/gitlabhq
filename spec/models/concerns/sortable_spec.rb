@@ -4,17 +4,18 @@ require 'spec_helper'
 
 describe Sortable do
   describe '.order_by' do
+    let(:arel_table) { Group.arel_table }
     let(:relation) { Group.all }
 
     describe 'ordering by id' do
       it 'ascending' do
-        expect(relation).to receive(:reorder).with(id: :asc)
+        expect(relation).to receive(:reorder).with(arel_table['id'].asc)
 
         relation.order_by('id_asc')
       end
 
       it 'descending' do
-        expect(relation).to receive(:reorder).with(id: :desc)
+        expect(relation).to receive(:reorder).with(arel_table['id'].desc)
 
         relation.order_by('id_desc')
       end
@@ -22,19 +23,19 @@ describe Sortable do
 
     describe 'ordering by created day' do
       it 'ascending' do
-        expect(relation).to receive(:reorder).with(created_at: :asc)
+        expect(relation).to receive(:reorder).with(arel_table['created_at'].asc)
 
         relation.order_by('created_asc')
       end
 
       it 'descending' do
-        expect(relation).to receive(:reorder).with(created_at: :desc)
+        expect(relation).to receive(:reorder).with(arel_table['created_at'].desc)
 
         relation.order_by('created_desc')
       end
 
       it 'order by "date"' do
-        expect(relation).to receive(:reorder).with(created_at: :desc)
+        expect(relation).to receive(:reorder).with(arel_table['created_at'].desc)
 
         relation.order_by('created_date')
       end
@@ -66,13 +67,13 @@ describe Sortable do
 
     describe 'ordering by Updated Time' do
       it 'ascending' do
-        expect(relation).to receive(:reorder).with(updated_at: :asc)
+        expect(relation).to receive(:reorder).with(arel_table['updated_at'].asc)
 
         relation.order_by('updated_asc')
       end
 
       it 'descending' do
-        expect(relation).to receive(:reorder).with(updated_at: :desc)
+        expect(relation).to receive(:reorder).with(arel_table['updated_at'].desc)
 
         relation.order_by('updated_desc')
       end

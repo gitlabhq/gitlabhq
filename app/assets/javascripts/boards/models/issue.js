@@ -37,6 +37,7 @@ class ListIssue {
     this.project_id = obj.project_id;
     this.timeEstimate = obj.time_estimate;
     this.assignableLabelsEndpoint = obj.assignable_labels_endpoint;
+    this.blocked = obj.blocked;
 
     if (obj.project) {
       this.project = new IssueProject(obj.project);

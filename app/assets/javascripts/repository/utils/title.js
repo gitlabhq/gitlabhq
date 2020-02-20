@@ -1,5 +1,5 @@
 const DEFAULT_TITLE = '· GitLab';
-// eslint-disable-next-line import/prefer-default-export
+
 export const setTitle = (pathMatch, ref, project) => {
   if (!pathMatch) {
     document.title = `${project} ${DEFAULT_TITLE}`;
@@ -12,3 +12,15 @@ export const setTitle = (pathMatch, ref, project) => {
   /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
   document.title = `${isEmpty ? 'Files' : path} · ${ref} · ${project} ${DEFAULT_TITLE}`;
 };
+
+export function updateRefPortionOfTitle(sha, doc = document) {
+  const { title = '' } = doc;
+  const titleParts = title.split(' · ');
+
+  if (titleParts.length > 1) {
+    titleParts[1] = sha;
+
+    /* eslint-disable-next-line no-param-reassign */
+    doc.title = titleParts.join(' · ');
+  }
+}

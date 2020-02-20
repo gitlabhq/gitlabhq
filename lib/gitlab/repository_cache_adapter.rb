@@ -132,6 +132,11 @@ module Gitlab
       raise NotImplementedError
     end
 
+    # RepositoryHashCache to be used. Should be overridden by the including class
+    def redis_hash_cache
+      raise NotImplementedError
+    end
+
     # List of cached methods. Should be overridden by the including class
     def cached_methods
       raise NotImplementedError
@@ -215,6 +220,7 @@ module Gitlab
       end
 
       expire_redis_set_method_caches(methods)
+      expire_redis_hash_method_caches(methods)
       expire_request_store_method_caches(methods)
     end
 
@@ -232,6 +238,10 @@ module Gitlab
 
     def expire_redis_set_method_caches(methods)
       methods.each { |name| redis_set_cache.expire(name) }
+    end
+
+    def expire_redis_hash_method_caches(methods)
+      methods.each { |name| redis_hash_cache.delete(name) }
     end
 
     # All cached repository methods depend on the existence of a Git repository,

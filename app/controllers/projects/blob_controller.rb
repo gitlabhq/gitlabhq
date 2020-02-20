@@ -29,6 +29,10 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :validate_diff_params, only: :diff
   before_action :set_last_commit_sha, only: [:edit, :update]
 
+  before_action only: :show do
+    push_frontend_feature_flag(:code_navigation, @project)
+  end
+
   def new
     commit unless @repository.empty?
   end

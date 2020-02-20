@@ -50,6 +50,8 @@ When you're ready, click the **Create page** and the new page will be created.
 
 ![New page](img/wiki_create_new_page.png)
 
+### Attachment storage
+
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/33475) in GitLab 11.3.
 
 Starting with GitLab 11.3, any file that is uploaded to the wiki via GitLab's
@@ -57,6 +59,22 @@ interface will be stored in the wiki Git repository, and it will be available
 if you clone the wiki repository locally. All uploaded files prior to GitLab
 11.3 are stored in GitLab itself. If you want them to be part of the wiki's Git
 repository, you will have to upload them again.
+
+### Length restrictions for file and directory names
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24364) in GitLab 12.8.
+
+Many common file systems have a [limit of 255 bytes for file and directory names](https://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits), and while Git and GitLab both support paths exceeding those limits, the presence of them makes it impossible for users on those file systems to checkout a wiki repository locally.
+
+To avoid this situation, these limits are enforced when editing pages through the GitLab web interface and API:
+
+- 245 bytes for page titles (reserving 10 bytes for the file extension).
+- 255 bytes for directory names.
+
+Please note that:
+
+- Non-ASCII characters take up more than one byte.
+- It's still possible to create files and directories exceeding those limits locally through Git, but this might break on other people's machines.
 
 ## Editing a wiki page
 

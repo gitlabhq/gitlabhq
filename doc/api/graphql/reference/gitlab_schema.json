@@ -49,6 +49,24 @@
               "deprecationReason": null
             },
             {
+              "name": "designManagement",
+              "description": "Fields related to design management",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DesignManagement",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "echo",
               "description": "Text to echo back",
               "args": [
@@ -1416,6 +1434,20 @@
               "deprecationReason": null
             },
             {
+              "name": "sentryErrors",
+              "description": "Paginated collection of Sentry errors on the project",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SentryErrorCollection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "serviceDeskAddress",
               "description": "E-mail address of the service desk.",
               "args": [
@@ -2206,6 +2238,24 @@
             {
               "name": "readDesign",
               "description": "Indicates the user can perform `read_design` on this resource",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "readMergeRequest",
+              "description": "Indicates the user can perform `read_merge_request` on this resource",
               "args": [
 
               ],
@@ -3045,6 +3095,20 @@
           "description": null,
           "fields": [
             {
+              "name": "autoDevopsEnabled",
+              "description": "Indicates whether Auto DevOps is enabled for all projects within this group",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "avatarUrl",
               "description": "Avatar URL of the group",
               "args": [
@@ -3087,9 +3151,43 @@
               "deprecationReason": null
             },
             {
+              "name": "emailsDisabled",
+              "description": "Indicates if a group has email notifications disabled",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "epic",
               "description": "Find a single epic",
               "args": [
+                {
+                  "name": "startDate",
+                  "description": "List items within a time frame where items.start_date is between startDate and endDate parameters (endDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "endDate",
+                  "description": "List items within a time frame where items.end_date is between startDate and endDate parameters (startDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
                 {
                   "name": "iid",
                   "description": "IID of the epic, e.g., \"1\"",
@@ -3173,26 +3271,6 @@
                         "ofType": null
                       }
                     }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "startDate",
-                  "description": "List epics within a time frame where epics.start_date is between start_date and end_date parameters (end_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "endDate",
-                  "description": "List epics within a time frame where epics.end_date is between start_date and end_date parameters (start_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
                   },
                   "defaultValue": null
                 }
@@ -3210,6 +3288,26 @@
               "description": "Find epics",
               "args": [
                 {
+                  "name": "startDate",
+                  "description": "List items within a time frame where items.start_date is between startDate and endDate parameters (endDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "endDate",
+                  "description": "List items within a time frame where items.end_date is between startDate and endDate parameters (startDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "iid",
                   "description": "IID of the epic, e.g., \"1\"",
                   "type": {
@@ -3292,26 +3390,6 @@
                         "ofType": null
                       }
                     }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "startDate",
-                  "description": "List epics within a time frame where epics.start_date is between start_date and end_date parameters (end_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "endDate",
-                  "description": "List epics within a time frame where epics.end_date is between start_date and end_date parameters (start_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
                   },
                   "defaultValue": null
                 },
@@ -3475,6 +3553,89 @@
               "deprecationReason": null
             },
             {
+              "name": "milestones",
+              "description": "Find milestones",
+              "args": [
+                {
+                  "name": "startDate",
+                  "description": "List items within a time frame where items.start_date is between startDate and endDate parameters (endDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "endDate",
+                  "description": "List items within a time frame where items.end_date is between startDate and endDate parameters (startDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "state",
+                  "description": "Filter milestones by state",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MilestoneStateEnum",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MilestoneConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "Name of the namespace",
               "args": [
@@ -3520,6 +3681,20 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "projectCreationLevel",
+              "description": "The permission level required to create projects in the group",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -3606,6 +3781,20 @@
               "deprecationReason": null
             },
             {
+              "name": "requireTwoFactorAuthentication",
+              "description": "Indicates if all users in this group are required to set up two-factor authentication",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "rootStorageStatistics",
               "description": "Aggregated storage statistics of the namespace. Only available for root namespaces",
               "args": [
@@ -3614,6 +3803,34 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "RootStorageStatistics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shareWithGroupLock",
+              "description": "Indicates if sharing a project with another group within this group is prevented",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "subgroupCreationLevel",
+              "description": "The permission level required to create subgroups within the group",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -3700,6 +3917,20 @@
                   "name": "TimelogConnection",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "twoFactorGracePeriod",
+              "description": "Time before two-factor authentication is enforced",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -3795,6 +4026,304 @@
         },
         {
           "kind": "OBJECT",
+          "name": "MilestoneConnection",
+          "description": "The connection type for Milestone.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "MilestoneEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Milestone",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MilestoneEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Milestone",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "Milestone",
+          "description": "Represents a milestone.",
+          "fields": [
+            {
+              "name": "createdAt",
+              "description": "Timestamp of milestone creation",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "Description of the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "dueDate",
+              "description": "Timestamp of the milestone due date",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "ID of the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "startDate",
+              "description": "Timestamp of the milestone start date",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "state",
+              "description": "State of the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "MilestoneStateEnum",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "title",
+              "description": "Title of the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updatedAt",
+              "description": "Timestamp of last milestone update",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webPath",
+              "description": "Web path of the milestone",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "MilestoneStateEnum",
+          "description": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "active",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "closed",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "Epic",
           "description": "Represents an epic.",
           "fields": [
@@ -3820,6 +4349,26 @@
               "name": "children",
               "description": "Children (sub-epics) of the epic",
               "args": [
+                {
+                  "name": "startDate",
+                  "description": "List items within a time frame where items.start_date is between startDate and endDate parameters (endDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "endDate",
+                  "description": "List items within a time frame where items.end_date is between startDate and endDate parameters (startDate parameter must be present)",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
                 {
                   "name": "iid",
                   "description": "IID of the epic, e.g., \"1\"",
@@ -3903,26 +4452,6 @@
                         "ofType": null
                       }
                     }
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "startDate",
-                  "description": "List epics within a time frame where epics.start_date is between start_date and end_date parameters (end_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "endDate",
-                  "description": "List epics within a time frame where epics.end_date is between start_date and end_date parameters (start_date parameter must be present)",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Time",
-                    "ofType": null
                   },
                   "defaultValue": null
                 },
@@ -4484,11 +5013,11 @@
             },
             {
               "name": "reference",
-              "description": null,
+              "description": "Internal reference of the epic. Returned in shortened format by default",
               "args": [
                 {
                   "name": "full",
-                  "description": null,
+                  "description": "Indicates if the reference should be returned in full",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -4511,7 +5040,7 @@
             },
             {
               "name": "relationPath",
-              "description": null,
+              "description": "URI path of the epic-issue relationship",
               "args": [
 
               ],
@@ -4695,7 +5224,7 @@
             },
             {
               "name": "webPath",
-              "description": null,
+              "description": "Web path of the epic",
               "args": [
 
               ],
@@ -4713,7 +5242,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL of the epic",
               "args": [
 
               ],
@@ -6275,8 +6804,8 @@
               "deprecationReason": null
             },
             {
-              "name": "content",
-              "description": "Content of the snippet",
+              "name": "blob",
+              "description": "Snippet blob",
               "args": [
 
               ],
@@ -6284,8 +6813,8 @@
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
+                  "kind": "OBJECT",
+                  "name": "SnippetBlob",
                   "ofType": null
                 }
               },
@@ -7005,6 +7534,339 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "SnippetBlob",
+          "description": "Represents the snippet blob",
+          "fields": [
+            {
+              "name": "binary",
+              "description": "Shows whether the blob is binary",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mode",
+              "description": "Blob mode",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Blob name",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "path",
+              "description": "Blob path",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "plainData",
+              "description": "Blob plain highlighted data",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "rawPath",
+              "description": "Blob raw content endpoint path",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "richData",
+              "description": "Blob highlighted data",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "richViewer",
+              "description": "Blob content rich viewer",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SnippetBlobViewer",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "simpleViewer",
+              "description": "Blob content simple viewer",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SnippetBlobViewer",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "size",
+              "description": "Blob size",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SnippetBlobViewer",
+          "description": "Represents how the blob content should be displayed",
+          "fields": [
+            {
+              "name": "collapsed",
+              "description": "Shows whether the blob should be displayed collapsed",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "fileType",
+              "description": "Content file type",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "loadAsync",
+              "description": "Shows whether the blob content is loaded async",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "loadingPartialName",
+              "description": "Loading partial name",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "renderError",
+              "description": "Error rendering the blob content",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "tooLarge",
+              "description": "Shows whether the blob too large to be displayed",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Type of blob viewer",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "BlobViewersType",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "BlobViewersType",
+          "description": "Types of blob viewers",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "rich",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "simple",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "auxiliary",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "ENUM",
           "name": "VisibilityScopesEnum",
           "description": null,
@@ -7201,7 +8063,7 @@
             },
             {
               "name": "x",
-              "description": "X position on which the comment was made",
+              "description": "X position of the note",
               "args": [
 
               ],
@@ -7215,7 +8077,7 @@
             },
             {
               "name": "y",
-              "description": "Y position on which the comment was made",
+              "description": "Y position of the note",
               "args": [
 
               ],
@@ -8277,7 +9139,7 @@
             },
             {
               "name": "designs",
-              "description": "Deprecated. Use `design_collection`",
+              "description": "Deprecated. Use `designCollection`",
               "args": [
 
               ],
@@ -8287,7 +9149,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "use design_collection"
+              "deprecationReason": "Use designCollection"
             },
             {
               "name": "discussionLocked",
@@ -9136,151 +9998,6 @@
         },
         {
           "kind": "OBJECT",
-          "name": "Milestone",
-          "description": null,
-          "fields": [
-            {
-              "name": "createdAt",
-              "description": "Timestamp of milestone creation",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Time",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "description",
-              "description": "Description of the milestone",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "dueDate",
-              "description": "Timestamp of the milestone due date",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Time",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "id",
-              "description": "ID of the milestone",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "startDate",
-              "description": "Timestamp of the milestone start date",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Time",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "state",
-              "description": "State of the milestone",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "title",
-              "description": "Title of the milestone",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "updatedAt",
-              "description": "Timestamp of last milestone update",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Time",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
           "name": "TaskCompletionStatus",
           "description": "Completion status of tasks",
           "fields": [
@@ -9333,6 +10050,66 @@
           "name": "DesignCollection",
           "description": "A collection of designs.",
           "fields": [
+            {
+              "name": "design",
+              "description": "Find a specific design",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "Find a design by its ID",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "filename",
+                  "description": "Find a design by its filename",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Design",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "designAtVersion",
+              "description": "Find a design as of a version",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "The Global ID of the design at this version",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DesignAtVersion",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "designs",
               "description": "All designs for the design collection",
@@ -9473,9 +10250,62 @@
               "deprecationReason": null
             },
             {
+              "name": "version",
+              "description": "A specific version",
+              "args": [
+                {
+                  "name": "sha",
+                  "description": "The SHA256 of a specific version",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "id",
+                  "description": "The Global ID of the version",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DesignVersion",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "versions",
               "description": "All versions related to all designs, ordered newest first",
               "args": [
+                {
+                  "name": "earlierOrEqualToSha",
+                  "description": "The SHA256 of the most recent acceptable version",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "earlierOrEqualToId",
+                  "description": "The Global ID of the most recent acceptable version",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
                 {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
@@ -9707,7 +10537,7 @@
             },
             {
               "name": "designs",
-              "description": "Deprecated. Use `design_collection`",
+              "description": "Deprecated. Use `designCollection`",
               "args": [
 
               ],
@@ -9717,7 +10547,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "use design_collection"
+              "deprecationReason": "Use designCollection"
             },
             {
               "name": "discussionLocked",
@@ -10333,6 +11163,35 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "HealthStatus",
+          "description": "Health status of an issue or epic",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "onTrack",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "needsAttention",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "atRisk",
+              "description": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "DesignConnection",
           "description": "The connection type for Design.",
@@ -10730,6 +11589,26 @@
               "description": "All versions related to this design ordered newest first",
               "args": [
                 {
+                  "name": "earlierOrEqualToSha",
+                  "description": "The SHA256 of the most recent acceptable version",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "earlierOrEqualToId",
+                  "description": "The Global ID of the most recent acceptable version",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -10975,6 +11854,11 @@
               "kind": "OBJECT",
               "name": "Design",
               "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "DesignAtVersion",
+              "ofType": null
             }
           ]
         },
@@ -11128,8 +12012,55 @@
         {
           "kind": "OBJECT",
           "name": "DesignVersion",
-          "description": null,
+          "description": "A specific version in which designs were added, modified or deleted",
           "fields": [
+            {
+              "name": "designAtVersion",
+              "description": "A particular design as of this version, provided it is visible at this version",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "The ID of the DesignAtVersion",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "designId",
+                  "description": "The ID of a specific design",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "filename",
+                  "description": "The filename of a specific design",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DesignAtVersion",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "designs",
               "description": "All designs that were changed in the version",
@@ -11188,6 +12119,99 @@
               "deprecationReason": null
             },
             {
+              "name": "designsAtVersion",
+              "description": "All designs that are visible at this version, as of this version",
+              "args": [
+                {
+                  "name": "ids",
+                  "description": "Filters designs by their ID",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "filenames",
+                  "description": "Filters designs by their filename",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DesignAtVersionConnection",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "ID of the design version",
               "args": [
@@ -11227,6 +12251,333 @@
           "inputFields": null,
           "interfaces": [
 
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DesignAtVersionConnection",
+          "description": "The connection type for DesignAtVersion.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DesignAtVersionEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DesignAtVersion",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DesignAtVersionEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DesignAtVersion",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DesignAtVersion",
+          "description": "A design pinned to a specific version. The image field reflects the design as of the associated version.",
+          "fields": [
+            {
+              "name": "design",
+              "description": "The underlying design.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Design",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "diffRefs",
+              "description": "The diff refs for this design",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DiffRefs",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "event",
+              "description": "How this design was changed in the current version",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "DesignVersionEvent",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "filename",
+              "description": "The filename of the design",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "fullPath",
+              "description": "The full path to the design file",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "The ID of this design",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "image",
+              "description": "The URL of the image",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "issue",
+              "description": "The issue the design belongs to",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Issue",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "notesCount",
+              "description": "The total count of user-created notes for this design",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "project",
+              "description": "The project the design belongs to",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Project",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "version",
+              "description": "The version this design-at-versions is pinned to",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DesignVersion",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "DesignFields",
+              "ofType": null
+            }
           ],
           "enumValues": null,
           "possibleTypes": null
@@ -11952,6 +13303,20 @@
               "deprecationReason": null
             },
             {
+              "name": "authorGravatar",
+              "description": "Commit authors gravatar",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "authorName",
               "description": "Commit authors name",
               "args": [
@@ -12052,7 +13417,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "use pipelines"
+              "deprecationReason": "Use pipelines"
             },
             {
               "name": "message",
@@ -15682,7 +17047,7 @@
         {
           "kind": "OBJECT",
           "name": "SentryDetailedError",
-          "description": null,
+          "description": "A Sentry error.",
           "fields": [
             {
               "name": "count",
@@ -15705,6 +17070,24 @@
             {
               "name": "culprit",
               "description": "Culprit of the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "externalBaseUrl",
+              "description": "External Base URL of the Sentry Instance",
               "args": [
 
               ],
@@ -15839,6 +17222,20 @@
               "deprecationReason": null
             },
             {
+              "name": "gitlabIssuePath",
+              "description": "URL of GitLab Issue",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "ID (global ID) of the error",
               "args": [
@@ -15880,6 +17277,859 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "lastSeen",
+              "description": "Timestamp when the error was last seen",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "message",
+              "description": "Sentry metadata message of the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sentryId",
+              "description": "ID (Sentry ID) of the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sentryProjectId",
+              "description": "ID of the project (Sentry project)",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sentryProjectName",
+              "description": "Name of the project affected by the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sentryProjectSlug",
+              "description": "Slug of the project affected by the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shortId",
+              "description": "Short ID (Sentry ID) of the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "status",
+              "description": "Status of the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SentryErrorStatus",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "tags",
+              "description": "Tags associated with the Sentry Error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SentryErrorTags",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "title",
+              "description": "Title of the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Type of the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "userCount",
+              "description": "Count of users affected by the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "SentryErrorStatus",
+          "description": "State of a Sentry error",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "RESOLVED",
+              "description": "Error has been resolved",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RESOLVED_IN_NEXT_RELEASE",
+              "description": "Error has been ignored until next release",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UNRESOLVED",
+              "description": "Error is unresolved",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "IGNORED",
+              "description": "Error has been ignored",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SentryErrorFrequency",
+          "description": null,
+          "fields": [
+            {
+              "name": "count",
+              "description": "Count of errors received since the previously recorded time",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "time",
+              "description": "Time the error frequency stats were recorded",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SentryErrorTags",
+          "description": "State of a Sentry error",
+          "fields": [
+            {
+              "name": "level",
+              "description": "Severity level of the Sentry Error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "logger",
+              "description": "Logger of the Sentry Error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "GrafanaIntegration",
+          "description": null,
+          "fields": [
+            {
+              "name": "createdAt",
+              "description": "Timestamp of the issue's creation",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "enabled",
+              "description": "Indicates whether Grafana integration is enabled",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "grafanaUrl",
+              "description": "Url for the Grafana host for the Grafana integration",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "Internal ID of the Grafana integration",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "token",
+              "description": "API token for the Grafana integration. Field is permanently masked.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Plain text token has been masked for security reasons"
+            },
+            {
+              "name": "updatedAt",
+              "description": "Timestamp of the issue's last activity",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SentryErrorCollection",
+          "description": "An object containing a collection of Sentry errors, and a detailed error.",
+          "fields": [
+            {
+              "name": "detailedError",
+              "description": "Detailed version of a Sentry error on the project",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "ID of the Sentry issue",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SentryDetailedError",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errorStackTrace",
+              "description": "Stack Trace of Sentry Error",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "ID of the Sentry issue",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SentryErrorStackTrace",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Collection of Sentry Errors",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "searchTerm",
+                  "description": "Search term for the Sentry error.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "sort",
+                  "description": "Attribute to sort on. Options are frequency, first_seen, last_seen. last_seen is default.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SentryErrorConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "externalUrl",
+              "description": "External URL for Sentry",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SentryErrorConnection",
+          "description": "The connection type for SentryError.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SentryErrorEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SentryError",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SentryErrorEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SentryError",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SentryError",
+          "description": "A Sentry error. A simplified version of SentryDetailedError.",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Count of occurrences",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "culprit",
+              "description": "Culprit of the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "externalUrl",
+              "description": "External URL of the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "firstSeen",
+              "description": "Timestamp when the error was first seen",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "frequency",
+              "description": "Last 24hr stats of the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "SentryErrorFrequency",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "ID (global ID) of the error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -16087,48 +18337,13 @@
           "possibleTypes": null
         },
         {
-          "kind": "ENUM",
-          "name": "SentryErrorStatus",
-          "description": "State of a Sentry error",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "RESOLVED",
-              "description": "Error has been resolved",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "RESOLVED_IN_NEXT_RELEASE",
-              "description": "Error has been ignored until next release",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "UNRESOLVED",
-              "description": "Error is unresolved",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "IGNORED",
-              "description": "Error has been ignored",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
           "kind": "OBJECT",
-          "name": "SentryErrorFrequency",
-          "description": null,
+          "name": "SentryErrorStackTrace",
+          "description": "An object containing a stack trace entry for a Sentry error.",
           "fields": [
             {
-              "name": "count",
-              "description": "Count of errors received since the previously recorded time",
+              "name": "dateReceived",
+              "description": "Time the stack trace was received by Sentry",
               "args": [
 
               ],
@@ -16137,7 +18352,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "Int",
+                  "name": "String",
                   "ofType": null
                 }
               },
@@ -16145,8 +18360,8 @@
               "deprecationReason": null
             },
             {
-              "name": "time",
-              "description": "Time the error frequency stats were recorded",
+              "name": "issueId",
+              "description": "ID of the Sentry error",
               "args": [
 
               ],
@@ -16155,8 +18370,34 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "Time",
+                  "name": "String",
                   "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "stackTraceEntries",
+              "description": "Stack trace entries for the Sentry error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "SentryErrorStackTraceEntry",
+                      "ofType": null
+                    }
+                  }
                 }
               },
               "isDeprecated": false,
@@ -16172,48 +18413,103 @@
         },
         {
           "kind": "OBJECT",
-          "name": "GrafanaIntegration",
-          "description": null,
+          "name": "SentryErrorStackTraceEntry",
+          "description": "An object containing a stack trace entry for a Sentry error.",
           "fields": [
             {
-              "name": "createdAt",
-              "description": "Timestamp of the issue's creation",
+              "name": "col",
+              "description": "Function in which the Sentry error occurred",
               "args": [
 
               ],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Time",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "enabled",
-              "description": "Indicates whether Grafana integration is enabled",
+              "name": "fileName",
+              "description": "File in which the Sentry error occurred",
               "args": [
 
               ],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "grafanaUrl",
-              "description": "Url for the Grafana host for the Grafana integration",
+              "name": "function",
+              "description": "Function in which the Sentry error occurred",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "line",
+              "description": "Function in which the Sentry error occurred",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "traceContext",
+              "description": "Context of the Sentry error",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "SentryErrorStackTraceContext",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SentryErrorStackTraceContext",
+          "description": "An object context for a Sentry error stack trace",
+          "fields": [
+            {
+              "name": "code",
+              "description": "Code number of the context",
               "args": [
 
               ],
@@ -16230,8 +18526,8 @@
               "deprecationReason": null
             },
             {
-              "name": "id",
-              "description": "Internal ID of the Grafana integration",
+              "name": "line",
+              "description": "Line number of the context",
               "args": [
 
               ],
@@ -16240,43 +18536,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "token",
-              "description": "API token for the Grafana integration. Field is permanently masked.",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Plain text token has been masked for security reasons"
-            },
-            {
-              "name": "updatedAt",
-              "description": "Timestamp of the issue's last activity",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Time",
+                  "name": "Int",
                   "ofType": null
                 }
               },
@@ -16328,6 +18588,73 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DesignManagement",
+          "description": null,
+          "fields": [
+            {
+              "name": "designAtVersion",
+              "description": "Find a design as of a version",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "The Global ID of the design at this version",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DesignAtVersion",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "version",
+              "description": "Find a version",
+              "args": [
+                {
+                  "name": "id",
+                  "description": "The Global ID of the version",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DesignVersion",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -17021,6 +19348,33 @@
               "deprecationReason": null
             },
             {
+              "name": "todoRestoreMany",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": null,
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "TodoRestoreManyInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TodoRestoreManyPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "todosMarkAllDone",
               "description": null,
               "args": [
@@ -17102,8 +19456,62 @@
               "deprecationReason": null
             },
             {
-              "name": "updateNote",
+              "name": "updateImageDiffNote",
+              "description": "Updates a DiffNote on an image (a `Note` where the `position.positionType` is `\"image\"`). If the body of the Note contains only quick actions, the Note will be destroyed during the update, and no Note will be returned",
+              "args": [
+                {
+                  "name": "input",
+                  "description": null,
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "UpdateImageDiffNoteInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UpdateImageDiffNotePayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updateIssue",
               "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": null,
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "UpdateIssueInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UpdateIssuePayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updateNote",
+              "description": "Updates a Note. If the body of the Note contains only quick actions, the Note will be destroyed during the update, and no Note will be returned",
               "args": [
                 {
                   "name": "input",
@@ -17892,6 +20300,132 @@
                   "name": "Time",
                   "ofType": null
                 }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UpdateIssuePayload",
+          "description": "Autogenerated return type of UpdateIssue",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Reasons why the mutation failed.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "issue",
+              "description": "The issue after mutation",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Issue",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "UpdateIssueInput",
+          "description": "Autogenerated input type of UpdateIssue",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "projectPath",
+              "description": "The project the issue to mutate is in",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "iid",
+              "description": "The iid of the issue to mutate",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "healthStatus",
+              "description": "The desired health status",
+              "type": {
+                "kind": "ENUM",
+                "name": "HealthStatus",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -19315,7 +21849,7 @@
             },
             {
               "name": "x",
-              "description": "X position on which the comment was made",
+              "description": "X position of the note",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -19329,7 +21863,7 @@
             },
             {
               "name": "y",
-              "description": "Y position on which the comment was made",
+              "description": "Y position of the note",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -19481,6 +22015,179 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UpdateImageDiffNotePayload",
+          "description": "Autogenerated return type of UpdateImageDiffNote",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Reasons why the mutation failed.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "note",
+              "description": "The note after mutation",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Note",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "UpdateImageDiffNoteInput",
+          "description": "Autogenerated input type of UpdateImageDiffNote",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "id",
+              "description": "The global id of the note to update",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "body",
+              "description": "Content of the note",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "position",
+              "description": "The position of this note on a diff",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "UpdateDiffImagePositionInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "UpdateDiffImagePositionInput",
+          "description": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "x",
+              "description": "X position of the note",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "y",
+              "description": "Y position of the note",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "width",
+              "description": "Total width of the image",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "height",
+              "description": "Total height of the image",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
               },
               "defaultValue": null
@@ -19889,6 +22596,128 @@
           "description": "Autogenerated input type of TodosMarkAllDone",
           "fields": null,
           "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "TodoRestoreManyPayload",
+          "description": "Autogenerated return type of TodoRestoreMany",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Reasons why the mutation failed.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updatedIds",
+              "description": "The ids of the updated todo items",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "TodoRestoreManyInput",
+          "description": "Autogenerated input type of TodoRestoreMany",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "ids",
+              "description": "The global ids of the todos to restore (a maximum of 50 is supported at once)",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null
+            },
             {
               "name": "clientMutationId",
               "description": "A unique identifier for the client performing the mutation.",
@@ -21255,6 +24084,16 @@
               "type": {
                 "kind": "ENUM",
                 "name": "EpicStateEvent",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "healthStatus",
+              "description": "The desired health status",
+              "type": {
+                "kind": "ENUM",
+                "name": "HealthStatus",
                 "ofType": null
               },
               "defaultValue": null

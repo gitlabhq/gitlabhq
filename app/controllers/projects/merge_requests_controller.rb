@@ -19,13 +19,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
   before_action only: [:show] do
-    push_frontend_feature_flag(:diffs_batch_load, @project)
+    push_frontend_feature_flag(:diffs_batch_load, @project, default_enabled: true)
     push_frontend_feature_flag(:single_mr_diff_view, @project)
+    push_frontend_feature_flag(:suggest_pipeline) if experiment_enabled?(:suggest_pipeline)
   end
 
   before_action do
     push_frontend_feature_flag(:vue_issuable_sidebar, @project.group)
-    push_frontend_feature_flag(:async_mr_widget, @project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
@@ -45,7 +45,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def show
     close_merge_request_if_no_source_project
-    @merge_request.check_mergeability
+    @merge_request.check_mergeability(async: true)
 
     respond_to do |format|
       format.html do
@@ -115,6 +115,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         all: @pipelines.count
       }
     }
+  end
+
+  def context_commits
+    return render_404 unless project.context_commits_enabled?
+
+    # Get commits from repository
+    # or from cache if already merged
+    commits = ContextCommitsFinder.new(project, @merge_request, { search: params[:search], limit: params[:limit], offset: params[:offset] }).execute
+    render json: CommitEntity.represent(commits, { type: :full, request: merge_request })
   end
 
   def test_reports

@@ -83,7 +83,7 @@ describe BuildkiteService, :use_clean_rails_memory_store_caching do
     end
 
     describe '#calculate_reactive_cache' do
-      context '#commit_status' do
+      describe '#commit_status' do
         subject { service.calculate_reactive_cache('123', 'unused')[:commit_status] }
 
         it 'sets commit status to :error when status is 500' do

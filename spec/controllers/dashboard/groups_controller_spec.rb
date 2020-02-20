@@ -40,7 +40,7 @@ describe Dashboard::GroupsController do
       it 'renders only groups the user is a member of when searching hierarchy correctly' do
         get :index, params: { filter: 'chef' }, format: :json
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         all_groups = [top_level_result, top_level_a, sub_level_result_a]
         expect(assigns(:groups)).to contain_exactly(*all_groups)
       end
@@ -51,7 +51,7 @@ describe Dashboard::GroupsController do
 
       get :index
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 end

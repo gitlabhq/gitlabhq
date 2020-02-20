@@ -5,6 +5,7 @@ class NewReleaseWorker
 
   queue_namespace :notifications
   feature_category :release_orchestration
+  weight 2
 
   def perform(release_id)
     release = Release.preloaded.find_by_id(release_id)

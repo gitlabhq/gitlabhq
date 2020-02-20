@@ -13,6 +13,7 @@ class RegistrationsController < Devise::RegistrationsController
   before_action :whitelist_query_limiting, only: [:destroy]
   before_action :ensure_terms_accepted,
     if: -> { action_name == 'create' && Gitlab::CurrentSettings.current_application_settings.enforce_terms? }
+  before_action :load_recaptcha, only: :new
 
   def new
     if experiment_enabled?(:signup_flow)
@@ -35,7 +36,7 @@ class RegistrationsController < Devise::RegistrationsController
     end
 
     # Do not show the signed_up notice message when the signup_flow experiment is enabled.
-    # Instead, show it after succesfully updating the role.
+    # Instead, show it after successfully updating the role.
     flash[:notice] = nil if experiment_enabled?(:signup_flow)
   rescue Gitlab::Access::AccessDeniedError
     redirect_to(new_user_session_path)
@@ -53,10 +54,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def welcome
     return redirect_to new_user_registration_path unless current_user
-    return redirect_to stored_location_or_dashboard_or_almost_there_path(current_user) if current_user.role.present? && !current_user.setup_for_company.nil?
-
-    current_user.name = nil if current_user.name == current_user.username
-    render layout: 'devise_experimental_separate_sign_up_flow'
+    return redirect_to stored_location_or_dashboard(current_user) if current_user.role.present? && !current_user.setup_for_company.nil?
   end
 
   def update_registration
@@ -66,9 +64,9 @@ class RegistrationsController < Devise::RegistrationsController
     if result[:status] == :success
       track_experiment_event(:signup_flow, 'end') # We want this event to be tracked when the user is _in_ the experimental group
       set_flash_message! :notice, :signed_up
-      redirect_to stored_location_or_dashboard_or_almost_there_path(current_user)
+      redirect_to stored_location_or_dashboard(current_user)
     else
-      render :welcome, layout: 'devise_experimental_separate_sign_up_flow'
+      render :welcome
     end
   end
 
@@ -113,12 +111,14 @@ class RegistrationsController < Devise::RegistrationsController
 
     return users_sign_up_welcome_path if experiment_enabled?(:signup_flow)
 
-    stored_location_or_dashboard_or_almost_there_path(user)
+    stored_location_or_dashboard(user)
   end
 
   def after_inactive_sign_up_path_for(resource)
+    # With the current `allow_unconfirmed_access_for` Devise setting in config/initializers/8_devise.rb,
+    # this method is never called. Leaving this here in case that value is set to 0.
     Gitlab::AppLogger.info(user_created_message)
-    Feature.enabled?(:soft_email_confirmation) ? dashboard_projects_path : users_almost_there_path
+    users_almost_there_path
   end
 
   private
@@ -140,7 +140,6 @@ class RegistrationsController < Devise::RegistrationsController
     ensure_correct_params!
 
     return unless Feature.enabled?(:registrations_recaptcha, default_enabled: true) # reCAPTCHA on the UI will still display however
-    return if experiment_enabled?(:signup_flow) # when the experimental signup flow is enabled for the current user, disable the reCAPTCHA check
     return unless show_recaptcha_sign_up?
     return unless Gitlab::Recaptcha.load_configurations!
 
@@ -181,16 +180,12 @@ class RegistrationsController < Devise::RegistrationsController
     Gitlab::Utils.to_boolean(params[:terms_opt_in])
   end
 
-  def confirmed_or_unconfirmed_access_allowed(user)
-    user.confirmed? || Feature.enabled?(:soft_email_confirmation) || experiment_enabled?(:signup_flow)
-  end
-
   def stored_location_or_dashboard(user)
     stored_location_for(user) || dashboard_projects_path
   end
 
-  def stored_location_or_dashboard_or_almost_there_path(user)
-    confirmed_or_unconfirmed_access_allowed(user) ? stored_location_or_dashboard(user) : users_almost_there_path
+  def load_recaptcha
+    Gitlab::Recaptcha.load_configurations!
   end
 
   # Part of an experiment to build a new sign up flow. Will be resolved

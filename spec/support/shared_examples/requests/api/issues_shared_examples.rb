@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'labeled issues with labels and label_name params' do
+RSpec.shared_examples 'labeled issues with labels and label_name params' do
   shared_examples 'returns label names' do
     it 'returns label names' do
       expect_paginated_array_response(issue.id)

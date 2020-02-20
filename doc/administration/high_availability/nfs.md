@@ -55,7 +55,7 @@ NOTE: **Note:** From GitLab 12.1, it will automatically be detected if Rugged ca
 
 If you previously enabled Rugged using the feature flag, you will need to unset the feature flag by using:
 
-```sh
+```shell
 sudo gitlab-rake gitlab:features:unset_rugged
 ```
 
@@ -82,7 +82,7 @@ on an Linux NFS server, do the following:
 
 1. On the NFS server, run:
 
-   ```sh
+   ```shell
    echo 0 > /proc/sys/fs/leases-enable
    sysctl -w fs.leases-enable=0
    ```
@@ -186,7 +186,7 @@ single NFS mount point as you normally would in `/etc/fstab`. Let's assume your
 NFS mount point is `/gitlab-nfs`. Then, add the following bind mounts in
 `/etc/fstab`:
 
-```bash
+```shell
 /gitlab-nfs/gitlab-data/git-data /var/opt/gitlab/git-data none bind 0 0
 /gitlab-nfs/gitlab-data/.ssh /var/opt/gitlab/.ssh none bind 0 0
 /gitlab-nfs/gitlab-data/uploads /var/opt/gitlab/gitlab-rails/uploads none bind 0 0

@@ -75,6 +75,13 @@ module API
     end
 
     resource :jobs do
+      before do
+        Gitlab::ApplicationContext.push(
+          user: -> { current_job&.user },
+          project: -> { current_job&.project }
+        )
+      end
+
       desc 'Request a job' do
         success Entities::JobRequest::Response
         http_codes [[201, 'Job was scheduled'],
@@ -276,29 +283,8 @@ module API
         bad_request!('Missing artifacts file!') unless artifacts
         file_too_large! unless artifacts.size < max_artifacts_size(job)
 
-        expire_in = params['expire_in'] ||
-          Gitlab::CurrentSettings.current_application_settings.default_artifacts_expire_in
-
-        job.job_artifacts.build(
-          project: job.project,
-          file: artifacts,
-          file_type: params['artifact_type'],
-          file_format: params['artifact_format'],
-          file_sha256: artifacts.sha256,
-          expire_in: expire_in)
-
-        if metadata
-          job.job_artifacts.build(
-            project: job.project,
-            file: metadata,
-            file_type: :metadata,
-            file_format: :gzip,
-            file_sha256: metadata.sha256,
-            expire_in: expire_in)
-        end
-
-        if job.update(artifacts_expire_in: expire_in)
-          present Ci::BuildRunnerPresenter.new(job), with: Entities::JobRequest::Response
+        if Ci::CreateJobArtifactsService.new.execute(job, artifacts, params, metadata_file: metadata)
+          status :created
         else
           render_validation_error!(job)
         end

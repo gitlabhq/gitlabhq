@@ -33,6 +33,7 @@ module DeclarativePolicy
     attr_reader :steps
     def initialize(steps)
       @steps = steps
+      @state = nil
     end
 
     # We make sure only to run any given Runner once,

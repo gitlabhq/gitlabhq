@@ -122,6 +122,10 @@ describe('Issuable component', () => {
       expect(finder().exists()).toBe(false);
     });
 
+    it('show relative reference path', () => {
+      expect(wrapper.find('.js-ref-path').text()).toBe(issuable.references.relative);
+    });
+
     it('does not have closed text', () => {
       expect(wrapper.text()).not.toContain(TEXT_CLOSED);
     });

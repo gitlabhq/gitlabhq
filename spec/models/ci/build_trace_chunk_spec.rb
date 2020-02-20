@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
-  set(:build) { create(:ci_build, :running) }
+  let_it_be(:build) { create(:ci_build, :running) }
   let(:chunk_index) { 0 }
   let(:data_store) { :redis }
   let(:raw_data) { nil }
@@ -24,10 +24,45 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   context 'FastDestroyAll' do
     let(:parent) { create(:project) }
     let(:pipeline) { create(:ci_pipeline, project: parent) }
-    let(:build) { create(:ci_build, :running, :trace_live, pipeline: pipeline, project: parent) }
+    let!(:build) { create(:ci_build, :running, :trace_live, pipeline: pipeline, project: parent) }
     let(:subjects) { build.trace_chunks }
 
-    it_behaves_like 'fast destroyable'
+    describe 'Forbid #destroy and #destroy_all' do
+      it 'does not delete database rows and associted external data' do
+        expect(external_data_counter).to be > 0
+        expect(subjects.count).to be > 0
+
+        expect { subjects.first.destroy }.to raise_error('`destroy` and `destroy_all` are forbidden. Please use `fast_destroy_all`')
+        expect { subjects.destroy_all }.to raise_error('`destroy` and `destroy_all` are forbidden. Please use `fast_destroy_all`') # rubocop: disable DestroyAll
+
+        expect(subjects.count).to be > 0
+        expect(external_data_counter).to be > 0
+      end
+    end
+
+    describe '.fast_destroy_all' do
+      it 'deletes database rows and associted external data' do
+        expect(external_data_counter).to be > 0
+        expect(subjects.count).to be > 0
+
+        expect { subjects.fast_destroy_all }.not_to raise_error
+
+        expect(subjects.count).to eq(0)
+        expect(external_data_counter).to eq(0)
+      end
+    end
+
+    describe '.use_fast_destroy' do
+      it 'performs cascading delete with fast_destroy_all' do
+        expect(external_data_counter).to be > 0
+        expect(subjects.count).to be > 0
+
+        expect { parent.destroy }.not_to raise_error
+
+        expect(subjects.count).to eq(0)
+        expect(external_data_counter).to eq(0)
+      end
+    end
 
     def external_data_counter
       Gitlab::Redis::SharedState.with do |redis|

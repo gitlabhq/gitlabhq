@@ -4,8 +4,8 @@ module QA
   context 'Non-devops' do
     describe 'Performance bar display', :requires_admin do
       context 'when logged in as an admin user' do
-        # 4 metrics: pg, gitaly, redis, total
-        let(:metrics_count) { 4 }
+        # performance metrics: pg, gitaly, redis, rugged (feature flagged), total (not always provided)
+        let(:minimum_metrics_count) { 3 }
 
         before do
           Flow::Login.sign_in_as_admin
@@ -28,7 +28,7 @@ module QA
 
           Page::Layout::PerformanceBar.perform do |bar_component|
             expect(bar_component).to have_performance_bar
-            expect(bar_component).to have_detailed_metrics(metrics_count)
+            expect(bar_component).to have_detailed_metrics(minimum_metrics_count)
             expect(bar_component).to have_request_for('realtime_changes') # Always requested on issue pages
           end
         end

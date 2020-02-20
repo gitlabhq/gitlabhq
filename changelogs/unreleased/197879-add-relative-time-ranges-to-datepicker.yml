@@ -1,0 +1,5 @@
+---
+title: Allow for relative time ranges in metrics dashboard URLs
+merge_request: 23765
+author:
+type: added

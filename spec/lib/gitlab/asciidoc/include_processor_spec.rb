@@ -35,6 +35,12 @@ describe Gitlab::Asciidoc::IncludeProcessor do
       expect(processor.send(:include_allowed?, 'foo.adoc', reader)).to be_truthy
     end
 
+    it 'allows the Nth + 1 include' do
+      (max_includes - 1).times { processor.send(:read_blob, ref, 'a.adoc') }
+
+      expect(processor.send(:include_allowed?, 'foo.adoc', reader)).to be_truthy
+    end
+
     it 'disallows the Nth + 1 include' do
       max_includes.times { processor.send(:read_blob, ref, 'a.adoc') }
 

@@ -13,7 +13,7 @@ module MergeRequests
 
       diffs.each_batch(of: BATCH_SIZE) do |relation, index|
         ids = relation.pluck_primary_key.map { |id| [id] }
-        DeleteDiffFilesWorker.bulk_perform_in(index * 5.minutes, ids)
+        DeleteDiffFilesWorker.bulk_perform_in(index * 5.minutes, ids) # rubocop:disable Scalability/BulkPerformWithContext
       end
     end
   end

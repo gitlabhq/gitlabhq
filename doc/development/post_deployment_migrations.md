@@ -9,13 +9,13 @@ when running `rake db:migrate`.
 For example, this would run all migrations including any post deployment
 migrations:
 
-```bash
+```shell
 bundle exec rake db:migrate
 ```
 
 This however will skip post deployment migrations:
 
-```bash
+```shell
 SKIP_POST_DEPLOYMENT_MIGRATIONS=true bundle exec rake db:migrate
 ```
 
@@ -26,7 +26,7 @@ post deployment migrations after deploying a new version. Let's assume you
 normally use the command `chef-client` to do so. To make use of this feature
 you'd have to run this command as follows:
 
-```bash
+```shell
 SKIP_POST_DEPLOYMENT_MIGRATIONS=true sudo chef-client
 ```
 
@@ -41,7 +41,7 @@ server but with the variable _unset_.
 
 To create a post deployment migration you can use the following Rails generator:
 
-```bash
+```shell
 bundle exec rails g post_deployment_migration migration_name_here
 ```
 

@@ -39,7 +39,7 @@ describe EnforcesAdminAuthentication, :do_not_mock_admin_mode do
           it 'renders ok' do
             get :index
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -48,7 +48,7 @@ describe EnforcesAdminAuthentication, :do_not_mock_admin_mode do
         it 'renders a 404' do
           get :index
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
 
         it 'does not set admin mode' do
@@ -75,7 +75,7 @@ describe EnforcesAdminAuthentication, :do_not_mock_admin_mode do
         let(:user) { create(:admin) }
 
         it 'allows direct access to page' do
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'does not set admin mode' do
@@ -85,7 +85,7 @@ describe EnforcesAdminAuthentication, :do_not_mock_admin_mode do
 
       context 'as a user' do
         it 'renders a 404' do
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
 
         it 'does not set admin mode' do

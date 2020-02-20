@@ -4,7 +4,7 @@ require "spec_helper"
 
 describe "User deletes branch", :js do
   set(:user) { create(:user) }
-  set(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.add_developer(user)
@@ -19,6 +19,8 @@ describe "User deletes branch", :js do
     page.within(".js-branch-improve\\/awesome") do
       accept_alert { find(".btn-remove").click }
     end
+
+    wait_for_requests
 
     expect(page).to have_css(".js-branch-improve\\/awesome", visible: :hidden)
   end

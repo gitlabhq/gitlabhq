@@ -35,41 +35,6 @@ describe Milestoneable do
 
           it { is_expected.to be_invalid }
         end
-
-        context 'when valid and saving' do
-          it 'copies the value to the new milestones relationship' do
-            subject.save!
-
-            expect(subject.milestones).to match_array([milestone])
-          end
-
-          context 'with old values in milestones relationship' do
-            let(:old_milestone) { create(:milestone, project: project) }
-
-            before do
-              subject.milestone = old_milestone
-              subject.save!
-            end
-
-            it 'replaces old values' do
-              expect(subject.milestones).to match_array([old_milestone])
-
-              subject.milestone = milestone
-              subject.save!
-
-              expect(subject.milestones).to match_array([milestone])
-            end
-
-            it 'can nullify the milestone' do
-              expect(subject.milestones).to match_array([old_milestone])
-
-              subject.milestone = nil
-              subject.save!
-
-              expect(subject.milestones).to match_array([])
-            end
-          end
-        end
       end
     end
 

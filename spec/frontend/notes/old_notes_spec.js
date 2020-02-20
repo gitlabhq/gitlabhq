@@ -1,7 +1,6 @@
 /* eslint-disable import/no-commonjs, no-new */
 
 import $ from 'jquery';
-import _ from 'underscore';
 import MockAdapter from 'axios-mock-adapter';
 import '~/behaviors/markdown/render_gfm';
 import { createSpyObj } from 'helpers/jest_helpers';
@@ -792,14 +791,11 @@ describe('Old Notes (~/notes.js)', () => {
     });
 
     it('should return form metadata with sanitized formContent from form reference', () => {
-      jest.spyOn(_, 'escape');
-
       sampleComment = '<script>alert("Boom!");</script>';
       $form.find('textarea.js-note-text').val(sampleComment);
 
       const { formContent } = notes.getFormData($form);
 
-      expect(_.escape).toHaveBeenCalledWith(sampleComment);
       expect(formContent).toEqual('&lt;script&gt;alert(&quot;Boom!&quot;);&lt;/script&gt;');
     });
   });
@@ -990,7 +986,6 @@ describe('Old Notes (~/notes.js)', () => {
 
     beforeEach(() => {
       notes = new Notes('', []);
-      jest.spyOn(_, 'escape');
     });
 
     it('should return constructed placeholder element for system note based on form contents', () => {

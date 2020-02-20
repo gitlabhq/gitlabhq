@@ -11,7 +11,14 @@ describe Dashboard::ProjectsController do
     end
 
     context 'user logged in' do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:project2) { create(:project) }
+
+      before_all do
+        project.add_developer(user)
+        project2.add_developer(user)
+      end
 
       before do
         sign_in(user)
@@ -23,17 +30,12 @@ describe Dashboard::ProjectsController do
 
           get :index
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
       it 'orders the projects by last activity by default' do
-        project = create(:project)
-        project.add_developer(user)
         project.update!(last_repository_updated_at: 3.days.ago, last_activity_at: 3.days.ago)
-
-        project2 = create(:project)
-        project2.add_developer(user)
         project2.update!(last_repository_updated_at: 10.days.ago, last_activity_at: 10.days.ago)
 
         get :index
@@ -42,10 +44,25 @@ describe Dashboard::ProjectsController do
       end
 
       context 'project sorting' do
-        let(:project) { create(:project) }
-
         it_behaves_like 'set sort order from user preference' do
           let(:sorting_param) { 'created_asc' }
+        end
+      end
+
+      context 'with search and sort parameters' do
+        render_views
+
+        shared_examples 'search and sort parameters' do |sort|
+          it 'returns a single project with no ambiguous column errors' do
+            get :index, params: { name: project2.name, sort: sort }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(assigns(:projects)).to eq([project2])
+          end
+        end
+
+        %w[latest_activity_desc latest_activity_asc stars_desc stars_asc created_desc].each do |sort|
+          it_behaves_like 'search and sort parameters', sort
         end
       end
     end

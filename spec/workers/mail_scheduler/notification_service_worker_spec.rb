@@ -49,7 +49,7 @@ describe MailScheduler::NotificationServiceWorker do
     end
   end
 
-  describe '.perform_async', :sidekiq do
+  describe '.perform_async' do
     around do |example|
       Sidekiq::Testing.fake! { example.run }
     end

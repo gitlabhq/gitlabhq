@@ -46,13 +46,18 @@ module Ci
       }
     end
 
-    def self.ci_config_sources_values
-      config_sources.values_at(
+    def self.ci_config_sources
+      config_sources.slice(
         :unknown_source,
         :repository_source,
         :auto_devops_source,
         :remote_source,
-        :external_project_source)
+        :external_project_source
+      )
+    end
+
+    def self.ci_config_sources_values
+      ci_config_sources.values
     end
   end
 end

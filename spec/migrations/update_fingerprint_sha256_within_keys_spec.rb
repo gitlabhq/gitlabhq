@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require Rails.root.join('db', 'post_migrate', '20200106071113_update_fingerprint_sha256_within_keys.rb')
 
-describe UpdateFingerprintSha256WithinKeys, :sidekiq, :migration do
+describe UpdateFingerprintSha256WithinKeys, :migration do
   let(:key_table) { table(:keys) }
 
   describe '#up' do

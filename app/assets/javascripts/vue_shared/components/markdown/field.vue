@@ -79,6 +79,12 @@ export default {
       required: false,
       default: false,
     },
+    // This prop is used as a fallback in case if textarea.elm is undefined
+    textareaValue: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -183,7 +189,7 @@ export default {
           Can't use `$refs` as the component is technically in the parent component
           so we access the VNode & then get the element
         */
-      const text = this.$slots.textarea[0].elm.value;
+      const text = this.$slots.textarea[0]?.elm?.value || this.textareaValue;
 
       if (text) {
         this.markdownPreviewLoading = true;

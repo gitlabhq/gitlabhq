@@ -31,12 +31,7 @@ module Projects
       end
 
       def bulk_destroy
-        unless params[:ids].present?
-          head :bad_request
-          return
-        end
-
-        tag_names = params[:ids] || []
+        tag_names = params.require(:ids) || []
         if tag_names.size > LIMIT
           head :bad_request
           return

@@ -2,6 +2,7 @@
 
 class PrometheusMetric < ApplicationRecord
   belongs_to :project, validate: true, inverse_of: :prometheus_metrics
+  has_many :prometheus_alerts, inverse_of: :prometheus_metric
 
   enum group: PrometheusMetricEnums.groups
 
@@ -73,5 +74,3 @@ class PrometheusMetric < ApplicationRecord
     PrometheusMetricEnums.group_details.fetch(group.to_sym)
   end
 end
-
-PrometheusMetric.prepend_if_ee('EE::PrometheusMetric')

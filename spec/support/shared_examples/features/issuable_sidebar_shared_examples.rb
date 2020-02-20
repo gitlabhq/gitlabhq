@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'issue sidebar stays collapsed on mobile' do
+RSpec.shared_examples 'issue sidebar stays collapsed on mobile' do
   before do
     resize_screen_xs
   end

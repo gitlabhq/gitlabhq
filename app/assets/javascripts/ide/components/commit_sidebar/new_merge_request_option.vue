@@ -1,16 +1,27 @@
 <script>
 import { createNamespacedHelpers } from 'vuex';
+import { GlTooltipDirective } from '@gitlab/ui';
+import { s__ } from '~/locale';
 
-const {
-  mapState: mapCommitState,
-  mapActions: mapCommitActions,
-  mapGetters: mapCommitGetters,
-} = createNamespacedHelpers('commit');
+const { mapActions: mapCommitActions, mapGetters: mapCommitGetters } = createNamespacedHelpers(
+  'commit',
+);
 
 export default {
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   computed: {
-    ...mapCommitState(['shouldCreateMR']),
-    ...mapCommitGetters(['shouldHideNewMrOption']),
+    ...mapCommitGetters(['shouldHideNewMrOption', 'shouldDisableNewMrOption', 'shouldCreateMR']),
+    tooltipText() {
+      if (this.shouldDisableNewMrOption) {
+        return s__(
+          'IDE|This option is disabled because you are not allowed to create merge requests in this project.',
+        );
+      }
+
+      return '';
+    },
   },
   methods: {
     ...mapCommitActions(['toggleShouldCreateMR']),
@@ -21,14 +32,19 @@ export default {
 <template>
   <fieldset v-if="!shouldHideNewMrOption">
     <hr class="my-2" />
-    <label class="mb-0 js-ide-commit-new-mr">
+    <label
+      v-gl-tooltip="tooltipText"
+      class="mb-0 js-ide-commit-new-mr"
+      :class="{ 'is-disabled': shouldDisableNewMrOption }"
+    >
       <input
+        :disabled="shouldDisableNewMrOption"
         :checked="shouldCreateMR"
         type="checkbox"
         data-qa-selector="start_new_mr_checkbox"
         @change="toggleShouldCreateMR"
       />
-      <span class="prepend-left-10">
+      <span class="prepend-left-10 ide-option-label">
         {{ __('Start a new merge request') }}
       </span>
     </label>

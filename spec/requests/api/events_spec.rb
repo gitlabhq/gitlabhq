@@ -171,6 +171,18 @@ describe API::Events do
           expect(json_response[0]['target_id']).to eq(closed_issue.id)
         end
       end
+
+      context 'when scope is passed' do
+        context 'when unauthenticated' do
+          it 'returns no user events' do
+            get api("/users/#{user.username}/events?scope=all")
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response).to be_an Array
+            expect(json_response.size).to eq(0)
+          end
+        end
+      end
     end
 
     it 'returns a 404 error if not found' do

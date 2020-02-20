@@ -21,13 +21,13 @@ describe SearchController do
     it 'blocks access without a project_id' do
       get action, params: params
 
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     it 'allows access with a project_id' do
       get action, params: params.merge(project_id: create(:project, :public).id)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
@@ -42,13 +42,13 @@ describe SearchController do
     it 'renders a 403 when no project is given' do
       get action, params: params
 
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     it 'renders a 200 when a project was set' do
       get action, params: params.merge(project_id: project.id)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
@@ -57,7 +57,7 @@ describe SearchController do
       it 'still allows accessing the search page' do
         get :show
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -195,7 +195,7 @@ describe SearchController do
 
       get :count, params: { search: 'hello', scope: 'projects' }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to eq({ 'count' => '1' })
     end
 

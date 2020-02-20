@@ -15,6 +15,12 @@
       %span.form-text.text-muted
         = _('Use <code>%{native_redirect_uri}</code> for local tests').html_safe % { native_redirect_uri: Doorkeeper.configuration.native_redirect_uri }
 
+  .form-group.form-check
+    = f.check_box :confidential, class: 'form-check-input'
+    = f.label :confidential, class: 'label-bold form-check-label'
+    %span.form-text.text-muted
+      = _('The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.')
+
   .form-group
     = f.label :scopes, class: 'label-bold'
     = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes

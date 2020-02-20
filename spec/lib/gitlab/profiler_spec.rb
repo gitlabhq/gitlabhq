@@ -192,4 +192,43 @@ describe Gitlab::Profiler do
       expect(described_class.log_load_times_by_model(null_logger)).to be_nil
     end
   end
+
+  describe '.print_by_total_time' do
+    let(:stdout) { StringIO.new }
+
+    let(:output) do
+      stdout.rewind
+      stdout.read
+    end
+
+    let_it_be(:result) do
+      RubyProf.profile do
+        sleep 0.1
+        1.to_s
+      end
+    end
+
+    before do
+      stub_const('STDOUT', stdout)
+    end
+
+    it 'prints a profile result sorted by total time' do
+      described_class.print_by_total_time(result)
+
+      total_times =
+        output
+          .scan(/^\s+\d+\.\d+\s+(\d+\.\d+)/)
+          .map { |(total)| total.to_f }
+
+      expect(output).to include('Kernel#sleep')
+      expect(total_times).to eq(total_times.sort.reverse)
+      expect(total_times).not_to eq(total_times.uniq)
+    end
+
+    it 'accepts a max_percent option' do
+      described_class.print_by_total_time(result, max_percent: 50)
+
+      expect(output).not_to include('Kernel#sleep')
+    end
+  end
 end

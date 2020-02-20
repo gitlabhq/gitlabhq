@@ -92,6 +92,7 @@ const alias = {
   vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
   vue$: 'vue/dist/vue.esm.js',
   spec: path.join(ROOT_PATH, 'spec/javascripts'),
+  jest: path.join(ROOT_PATH, 'spec/frontend'),
 
   // the following resolves files which are different between CE and EE
   ee_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
@@ -111,6 +112,7 @@ if (IS_EE) {
     ee_icons: path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
     ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
     ee_spec: path.join(ROOT_PATH, 'ee/spec/javascripts'),
+    ee_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),
     ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
   });
 }

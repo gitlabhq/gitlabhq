@@ -11,6 +11,7 @@
 
 class MilestonesFinder
   include FinderMethods
+  include TimeFrameFilter
 
   attr_reader :params
 
@@ -24,6 +25,7 @@ class MilestonesFinder
     items = by_title(items)
     items = by_search_title(items)
     items = by_state(items)
+    items = by_timeframe(items)
 
     order(items)
   end

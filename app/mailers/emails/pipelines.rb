@@ -15,7 +15,13 @@ module Emails
     def pipeline_mail(pipeline, recipients, status)
       @project = pipeline.project
       @pipeline = pipeline
-      @merge_request = pipeline.all_merge_requests.first
+
+      @merge_request = if pipeline.merge_request?
+                         pipeline.merge_request
+                       else
+                         pipeline.merge_requests_as_head_pipeline.first
+                       end
+
       add_headers
 
       # We use bcc here because we don't want to generate these emails for a

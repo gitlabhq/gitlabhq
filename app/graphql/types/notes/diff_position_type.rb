@@ -29,10 +29,10 @@ module Types
 
       # Fields for image positions
       field :x, GraphQL::INT_TYPE, null: true,
-            description: 'X position on which the comment was made',
+            description: 'X position of the note',
             resolve: -> (position, _args, _ctx) { position.x if position.on_image? }
       field :y, GraphQL::INT_TYPE, null: true,
-            description: 'Y position on which the comment was made',
+            description: 'Y position of the note',
             resolve: -> (position, _args, _ctx) { position.y if position.on_image? }
       field :width, GraphQL::INT_TYPE, null: true,
             description: 'Total width of the image',

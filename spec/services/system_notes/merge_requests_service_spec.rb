@@ -240,4 +240,25 @@ describe ::SystemNotes::MergeRequestsService do
       expect(subject.note).to eq("created merge request #{merge_request.to_reference(project)} to address this issue")
     end
   end
+
+  describe '.picked_into_branch' do
+    let(:branch_name) { 'a-branch' }
+    let(:commit_sha) { project.commit.sha }
+    let(:merge_request) { noteable }
+
+    subject { service.picked_into_branch(branch_name, commit_sha) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'cherry_pick' }
+    end
+
+    it "posts the 'picked merge request' system note" do
+      expect(subject.note).to eq("picked this merge request into branch [`#{branch_name}`](/#{project.full_path}/-/tree/#{branch_name}) with commit #{commit_sha}")
+    end
+
+    it 'links the merge request and the cherry-pick commit' do
+      expect(subject.noteable).to eq(merge_request)
+      expect(subject.commit_id).to eq(commit_sha)
+    end
+  end
 end

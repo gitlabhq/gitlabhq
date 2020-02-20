@@ -335,7 +335,7 @@ resources you can pass the following parameters:
 
 In the example below, we list 50 [namespaces](namespaces.md) per page.
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50"
 ```
 
@@ -349,7 +349,7 @@ In the cURL example below, we limit the output to 3 items per page (`per_page=3`
 and we request the second page (`page=2`) of [comments](notes.md) of the issue
 with ID `8` which belongs to the project with ID `8`:
 
-```bash
+```shell
 curl --head --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/8/issues/8/notes?per_page=3&page=2
 ```
 
@@ -389,7 +389,7 @@ Additional pagination headers are also sent back.
 
 CAUTION: **Caution:**
 For performance reasons since
-[GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23931)
+[GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23931)
 and **behind the `api_kaminari_count_with_limit`
 [feature flag](../development/feature_flags.md)**, if the number of resources is
 more than 10,000, the `X-Total` and `X-Total-Pages` headers as well as the
@@ -409,7 +409,7 @@ This method is controlled by the following parameters:
 
 In the example below, we list 50 [projects](projects.md) per page, ordered by `id` ascending.
 
-```bash
+```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc"
 ```
 
@@ -449,7 +449,7 @@ GET /api/v4/projects/diaspora%2Fdiaspora
 ```
 
 NOTE: **Note:**
-A project's **path** is not necessarily the same as its **name**.  A
+A project's **path** is not necessarily the same as its **name**. A
 project's path can be found in the project's URL or in the project's settings
 under **General > Advanced > Change path**.
 
@@ -472,7 +472,7 @@ We can call the API with `array` and `hash` types parameters as shown below:
 
 `import_sources` is a parameter of type `array`:
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 -d "import_sources[]=github" \
 -d "import_sources[]=bitbucket" \
@@ -483,7 +483,7 @@ https://gitlab.example.com/api/v4/some_endpoint
 
 `override_params` is a parameter of type `hash`:
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 --form "namespace=email" \
 --form "path=impapi" \
@@ -497,7 +497,7 @@ https://gitlab.example.com/api/v4/projects/import
 
 `variables` is a parameter of type `array` containing hash key/value pairs `[{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }]`:
 
-```bash
+```shell
 curl --globoff --request POST --header "PRIVATE-TOKEN: ********************" \
 "https://gitlab.example.com/api/v4/projects/169/pipeline?ref=master&variables[][key]=VAR1&variables[][value]=hello&variables[][key]=VAR2&variables[][value]=world"
 
@@ -627,7 +627,7 @@ specifically used by GitLab.com, see
 [GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
 
 [lib-api-url]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/api/api.rb
-[ce-3749]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/3749
-[ce-5951]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5951
-[ce-9099]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9099
+[ce-3749]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3749
+[ce-5951]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5951
+[ce-9099]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9099
 [pat]: ../user/profile/personal_access_tokens.md

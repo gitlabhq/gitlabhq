@@ -31,9 +31,10 @@ describe('Repository parent row component', () => {
   });
 
   it.each`
-    path            | to
-    ${'app'}        | ${'/tree/master/'}
-    ${'app/assets'} | ${'/tree/master/app'}
+    path                  | to
+    ${'app'}              | ${'/-/tree/master/'}
+    ${'app/assets'}       | ${'/-/tree/master/app'}
+    ${'app/assets#/test'} | ${'/-/tree/master/app/assets%23'}
   `('renders link in $path to $to', ({ path, to }) => {
     factory(path);
 
@@ -48,7 +49,7 @@ describe('Repository parent row component', () => {
     vm.find('td').trigger('click');
 
     expect($router.push).toHaveBeenCalledWith({
-      path: '/tree/master/app',
+      path: '/-/tree/master/app',
     });
   });
 
@@ -60,7 +61,7 @@ describe('Repository parent row component', () => {
     vm.find('a').trigger('click');
 
     expect($router.push).not.toHaveBeenCalledWith({
-      path: '/tree/master/app',
+      path: '/-/tree/master/app',
     });
   });
 

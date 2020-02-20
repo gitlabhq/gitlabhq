@@ -12,7 +12,7 @@
     .form-group.row
       = form.label :active, "Active", class: "col-form-label col-sm-2"
       .col-sm-10
-        = form.check_box :active, disabled: disable_fields_service?(@service), data: { qa_selector: 'active_checkbox' }
+        = form.check_box :active, checked: @service.active || @service.new_record?, disabled: disable_fields_service?(@service)
 
   - if @service.configurable_events.present?
     .form-group.row

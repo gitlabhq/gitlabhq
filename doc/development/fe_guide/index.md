@@ -85,7 +85,7 @@ changes.
 - [HTML](style/html.md). Guidelines for writing HTML code consistent with the rest of the codebase.
 - [Vue](style/vue.md). Guidelines and conventions for Vue code may be found here.
 
-## Tooling
+## [Tooling](tooling.md)
 
 Our code is automatically formatted with [Prettier](https://prettier.io) to follow our guidelines. Read our [Tooling guide](tooling.md) for more detail.
 

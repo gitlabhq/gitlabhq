@@ -114,11 +114,11 @@ SSH key.
 You can generate the SSH key from the machine that GitLab Runner is installed
 on, and use that key for all projects that are run on this machine.
 
-1. First, you need to login to the server that runs your jobs.
+1. First, log in to the server that runs your jobs.
 
-1. Then from the terminal login as the `gitlab-runner` user:
+1. Then, from the terminal, log in as the `gitlab-runner` user:
 
-   ```
+   ```shell
    sudo su - gitlab-runner
    ```
 
@@ -132,9 +132,9 @@ on, and use that key for all projects that are run on this machine.
    If you are accessing a private GitLab repository you need to add it as a
    [deploy key](../../ssh/README.md#deploy-keys).
 
-Once done, try to login to the remote server in order to accept the fingerprint:
+Once done, try to log in to the remote server in order to accept the fingerprint:
 
-```bash
+```shell
 ssh example.com
 ```
 
@@ -150,7 +150,7 @@ connection would fail if the public keys would not match).
 To find out the host keys of your server, run the `ssh-keyscan` command from a
 trusted network (ideally, from the private server itself):
 
-```sh
+```shell
 ## Use the domain name
 ssh-keyscan example.com
 

@@ -686,7 +686,7 @@ describe Notify do
       let(:project_snippet) { create(:project_snippet, project: project) }
       let(:project_snippet_note) { create(:note_on_project_snippet, project: project, noteable: project_snippet) }
 
-      subject { described_class.note_project_snippet_email(project_snippet_note.author_id, project_snippet_note.id) }
+      subject { described_class.note_snippet_email(project_snippet_note.author_id, project_snippet_note.id) }
 
       it_behaves_like 'appearance header and footer enabled'
       it_behaves_like 'appearance header and footer not enabled'
@@ -696,9 +696,19 @@ describe Notify do
       end
       it_behaves_like 'a user cannot unsubscribe through footer link'
 
-      it 'has the correct subject and body' do
+      it 'has the correct subject' do
         is_expected.to have_referable_subject(project_snippet, reply: true)
+      end
+
+      it 'has the correct body' do
         is_expected.to have_body_text project_snippet_note.note
+      end
+
+      it 'links to the project snippet' do
+        target_url = project_snippet_url(project,
+                                         project_snippet_note.noteable,
+                                         { anchor: "note_#{project_snippet_note.id}" })
+        is_expected.to have_body_text target_url
       end
     end
 
@@ -1650,15 +1660,23 @@ describe Notify do
     let(:personal_snippet) { create(:personal_snippet) }
     let(:personal_snippet_note) { create(:note_on_personal_snippet, noteable: personal_snippet) }
 
-    subject { described_class.note_personal_snippet_email(personal_snippet_note.author_id, personal_snippet_note.id) }
+    subject { described_class.note_snippet_email(personal_snippet_note.author_id, personal_snippet_note.id) }
 
     it_behaves_like 'a user cannot unsubscribe through footer link'
     it_behaves_like 'appearance header and footer enabled'
     it_behaves_like 'appearance header and footer not enabled'
 
-    it 'has the correct subject and body' do
+    it 'has the correct subject' do
       is_expected.to have_referable_subject(personal_snippet, reply: true)
+    end
+
+    it 'has the correct body' do
       is_expected.to have_body_text personal_snippet_note.note
+    end
+
+    it 'links to the personal snippet' do
+      target_url = gitlab_snippet_url(personal_snippet_note.noteable)
+      is_expected.to have_body_text target_url
     end
   end
 end

@@ -192,7 +192,7 @@ describe 'Filter issues', :js do
       end
 
       it 'filters issues by label containing special characters' do
-        special_label = create(:label, project: project, title: '!@#{$%^&*()-+[]<>?/:{}|\}')
+        special_label = create(:label, project: project, title: '!@#$%^&*()-+[]<>?/:{}|\\')
         special_issue = create(:issue, title: "Issue with special character label", project: project)
         special_issue.labels << special_label
 
@@ -204,7 +204,7 @@ describe 'Filter issues', :js do
       end
 
       it 'filters issues by label not containing special characters' do
-        special_label = create(:label, project: project, title: '!@#{$%^&*()-+[]<>?/:{}|\}')
+        special_label = create(:label, project: project, title: '!@#$%^&*()-+[]<>?/:{}|\\')
         special_issue = create(:issue, title: "Issue with special character label", project: project)
         special_issue.labels << special_label
 

@@ -1,0 +1,5 @@
+---
+title: NPM dist tags will now be displayed on the package details page.
+merge_request: 23061
+author:
+type: added

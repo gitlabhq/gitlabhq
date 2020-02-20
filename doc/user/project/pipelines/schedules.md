@@ -4,8 +4,8 @@ type: reference, howto
 
 # Pipeline schedules
 
-> - Introduced in GitLab 9.1 as [Trigger Schedule](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10533).
-> - [Renamed to Pipeline Schedule](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10853) in GitLab 9.2.
+> - Introduced in GitLab 9.1 as [Trigger Schedule](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10533).
+> - [Renamed to Pipeline Schedule](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10853) in GitLab 9.2.
 
 NOTE: **Note:**
 Cron notation is parsed by [Fugit](https://github.com/floraison/fugit).
@@ -42,7 +42,7 @@ is installed on.
 
 ### Using variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12328) in GitLab 9.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12328) in GitLab 9.4.
 
 You can pass any number of arbitrary variables and they will be available in
 GitLab CI so that they can be used in your [`.gitlab-ci.yml` file](../../../ci/yaml/README.md).
@@ -94,7 +94,7 @@ Once configured, GitLab supports many functions for working with scheduled pipel
 
 ### Running manually
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15700) in GitLab 10.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15700) in GitLab 10.4.
 
 To trigger a pipeline schedule manually, click the "Play" button:
 

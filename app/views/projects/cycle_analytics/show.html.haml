@@ -1,11 +1,11 @@
-- page_title "Cycle Analytics"
+- page_title "Value Stream Analytics"
 
 #cycle-analytics{ "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
   - if @cycle_analytics_no_data
     %banner{ "v-if" => "!isOverviewDialogDismissed",
-      "documentation-link": help_page_path('user/analytics/cycle_analytics.md'),
+      "documentation-link": help_page_path('user/analytics/value_stream_analytics.md'),
       "v-on:dismiss-overview-dialog" => "dismissOverviewDialog()" }
-  = icon("spinner spin", "v-show" => "isLoading")
+  %gl-loading-icon{ "v-show" => "isLoading", "size" => "lg" }
   .wrapper{ "v-show" => "!isLoading && !hasError" }
     .card
       .card-header
@@ -57,8 +57,7 @@
             %ul
               %stage-nav-item{ "v-for" => "stage in state.stages", ":key" => '`ca-stage-title-${stage.title}`', '@select' => 'selectStage(stage)', ":title" => "stage.title", ":is-user-allowed" => "stage.isUserAllowed", ":value" => "stage.value", ":is-active" => "stage.active" }
           .section.stage-events
-            %template{ "v-if" => "isLoadingStage" }
-              = icon("spinner spin")
+            %gl-loading-icon{ "v-show" => "isLoadingStage", "size" => "lg" }
             %template{ "v-if" => "currentStage && !currentStage.isUserAllowed" }
               = render partial: "no_access"
             %template{ "v-else" => true }

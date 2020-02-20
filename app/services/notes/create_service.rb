@@ -2,7 +2,6 @@
 
 module Notes
   class CreateService < ::Notes::BaseService
-    # rubocop:disable Metrics/CyclomaticComplexity
     def execute
       note = Notes::BuildService.new(project, current_user, params.except(:merge_request_diff_head_sha)).execute
 
@@ -34,7 +33,7 @@ module Notes
       end
 
       note_saved = note.with_transaction_returning_status do
-        !only_commands && note.save && note.store_mentions!
+        !only_commands && note.save
       end
 
       if note_saved
@@ -67,7 +66,6 @@ module Notes
 
       note
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
 
     private
 

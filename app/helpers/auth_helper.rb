@@ -89,7 +89,17 @@ module AuthHelper
   def enabled_button_based_providers
     disabled_providers = Gitlab::CurrentSettings.disabled_oauth_sign_in_sources || []
 
-    button_based_providers.map(&:to_s) - disabled_providers
+    providers = button_based_providers.map(&:to_s) - disabled_providers
+    providers.sort_by do |provider|
+      case provider
+      when 'google_oauth2'
+        0
+      when 'github'
+        1
+      else
+        2
+      end
+    end
   end
 
   def button_based_providers_enabled?

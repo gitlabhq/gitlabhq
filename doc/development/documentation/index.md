@@ -98,7 +98,7 @@ For example, if you move `doc/workflow/lfs/lfs_administration.md` to
    A quick way to find them is to use `git grep`. First go to the root directory
    where you cloned the `gitlab` repository and then do:
 
-   ```sh
+   ```shell
    git grep -n "workflow/lfs/lfs_administration"
    git grep -n "lfs/lfs_administration"
    ```
@@ -196,13 +196,12 @@ Every GitLab instance includes the documentation, which is available at `/help`
 There are [plans](https://gitlab.com/groups/gitlab-org/-/epics/693) to end this
 practice and instead link out from the GitLab application to <https://docs.gitlab.com> URLs.
 
-The documentation available online on <https://docs.gitlab.com> is continuously
-deployed every hour from the `master` branch of GitLab, Omnibus, and Runner. Therefore,
-once a merge request gets merged, it will be available online on the same day.
-However, they will be shipped (and available on `/help`) within the milestone assigned
+The documentation available online on <https://docs.gitlab.com> is deployed every four hours from the `master` branch of GitLab, Omnibus, and Runner. Therefore,
+after a merge request gets merged, it will be available online on the same day.
+However, it will be shipped (and available on `/help`) within the milestone assigned
 to the MR.
 
-For instance, let's say your merge request has a milestone set to 11.3, which
+For example, let's say your merge request has a milestone set to 11.3, which
 will be released on 2018-09-22. If it gets merged on 2018-09-15, it will be
 available online on 2018-09-15, but, as the feature freeze date has passed, if
 the MR does not have a "pick into 11.3" label, the milestone has to be changed
@@ -421,6 +420,7 @@ The following are some suggested linters you can install locally and sample conf
 
 - [`proselint`](#proselint)
 - [markdownlint](#markdownlint), which is the same as the test run in [`docs-lint`](#testing)
+- [Vale](#vale), for English language grammar and syntax suggestions
 
 NOTE: **Note:**
 This list does not limit what other linters you can add to your local documentation writing toolchain.
@@ -435,7 +435,7 @@ This list does not limit what other linters you can add to your local documentat
  documentation in the [`gitlab` project](https://gitlab.com/gitlab-org/gitlab), run the
  following commands from within the `gitlab` project:
 
-```sh
+```shell
 cd doc
 proselint **/*.md
 ```
@@ -480,13 +480,13 @@ run the following commands from within your `gitlab` project root directory, whi
 automatically detect the [`.markdownlint.json`](#markdownlint-configuration) config
 file in the root of the project, and test all files in `/doc` and its subdirectories:
 
-```sh
+```shell
 markdownlint 'doc/**/*.md'
 ```
 
 If you wish to use a different config file, use the `-c` flag:
 
-```sh
+```shell
 markdownlint -c <config-file-name> 'doc/**/*.md'
 ```
 
@@ -519,6 +519,30 @@ rules, and also to configure optional parameters for enabled rules as needed. Yo
 also check [the issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64352) that
 tracked the changes required to implement these rules, and details which rules were
 on or off when markdownlint was enabled on the docs.
+
+#### Vale
+
+[Vale](https://errata-ai.github.io/vale/) is a grammar, style, and word usage linter
+for the English language. Vale's configuration is stored in the
+[`.vale.ini`](https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini) file
+located in the root directory of the [GitLab repository](https://gitlab.com/gitlab-org/gitlab).
+
+Vale supports creating [custom tests](https://errata-ai.github.io/vale/styles/),
+stored in the `doc/.linting/vale/styles/gitlab` directory, that extend any of
+several types of checks.
+
+To view linting suggestions locally, you must install Vale on your own machine,
+and from GitLab's root directory (where `.vale.ini` is located), run:
+
+```shell
+vale --glob='*.{md}' doc
+```
+
+You can also
+[configure the text editor of your choice](https://errata-ai.github.io/vale/#local-use-by-a-single-writer)
+to display the results.
+
+Vale's test results are not currently displayed in CI, but may be displayed in the future.
 
 ## Danger Bot
 

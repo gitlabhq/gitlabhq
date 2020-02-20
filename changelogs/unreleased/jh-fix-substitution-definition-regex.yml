@@ -1,0 +1,5 @@
+---
+title: Fix false matches of substitution-based quick actions in text
+merge_request: 24699
+author:
+type: fixed

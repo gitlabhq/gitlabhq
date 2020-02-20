@@ -1,0 +1,5 @@
+---
+title: Stop NoMethodError happening for 1.16+ Kubernetes clusters
+merge_request: 23149
+author:
+type: fixed

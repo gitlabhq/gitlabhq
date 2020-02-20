@@ -1,0 +1,5 @@
+---
+title: Fix Markdown not rendering on releases page
+merge_request: 23370
+author:
+type: fixed

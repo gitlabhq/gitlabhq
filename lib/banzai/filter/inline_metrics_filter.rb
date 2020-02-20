@@ -25,7 +25,7 @@ module Banzai
 
       # Regular expression matching metrics urls
       def link_pattern
-        Gitlab::Metrics::Dashboard::Url.regex
+        Gitlab::Metrics::Dashboard::Url.metrics_regex
       end
 
       private

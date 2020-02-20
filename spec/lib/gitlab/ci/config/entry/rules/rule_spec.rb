@@ -27,8 +27,14 @@ describe Gitlab::Ci::Config::Entry::Rules::Rule do
       it { is_expected.to be_valid }
     end
 
+    context 'with an allow_failure: value but no clauses' do
+      let(:config) { { allow_failure: true } }
+
+      it { is_expected.to be_valid }
+    end
+
     context 'when specifying an if: clause' do
-      let(:config) { { if: '$THIS || $THAT', when: 'manual' } }
+      let(:config) { { if: '$THIS || $THAT', when: 'manual', allow_failure: true } }
 
       it { is_expected.to be_valid }
 
@@ -36,6 +42,12 @@ describe Gitlab::Ci::Config::Entry::Rules::Rule do
         subject { entry.when }
 
         it { is_expected.to eq('manual') }
+      end
+
+      describe '#allow_failure' do
+        subject { entry.allow_failure }
+
+        it { is_expected.to eq(true) }
       end
     end
 
@@ -328,16 +340,43 @@ describe Gitlab::Ci::Config::Entry::Rules::Rule do
         end
       end
     end
+
+    context 'allow_failure: validation' do
+      context 'with an invalid string allow_failure:' do
+        let(:config) do
+          { if: '$THIS == "that"', allow_failure: 'always' }
+        end
+
+        it { is_expected.to be_a(described_class) }
+        it { is_expected.not_to be_valid }
+
+        it 'returns an error about invalid allow_failure:' do
+          expect(subject.errors).to include(/rule allow failure should be a boolean value/)
+        end
+
+        context 'when composed' do
+          before do
+            subject.compose!
+          end
+
+          it { is_expected.not_to be_valid }
+
+          it 'returns an error about invalid allow_failure:' do
+            expect(subject.errors).to include(/rule allow failure should be a boolean value/)
+          end
+        end
+      end
+    end
   end
 
   describe '#value' do
     subject { entry.value }
 
     context 'when specifying an if: clause' do
-      let(:config) { { if: '$THIS || $THAT', when: 'manual' } }
+      let(:config) { { if: '$THIS || $THAT', when: 'manual', allow_failure: true } }
 
       it 'stores the expression as "if"' do
-        expect(subject).to eq(if: '$THIS || $THAT', when: 'manual')
+        expect(subject).to eq(if: '$THIS || $THAT', when: 'manual', allow_failure: true)
       end
     end
 

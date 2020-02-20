@@ -1,7 +1,4 @@
 .tests-metadata-state:
-  extends:
-    - .default-only
-    - .only:changes-code-backstage
   variables:
     TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
   before_script:
@@ -19,7 +16,9 @@
       - rspec_profiling/
 
 retrieve-tests-metadata:
-  extends: .tests-metadata-state
+  extends:
+    - .tests-metadata-state
+    - .test-metadata:rules:retrieve-tests-metadata
   stage: prepare
   cache:
     policy: pull
@@ -28,7 +27,9 @@ retrieve-tests-metadata:
     - retrieve_tests_metadata
 
 update-tests-metadata:
-  extends: .tests-metadata-state
+  extends:
+    - .tests-metadata-state
+    - .test-metadata:rules:update-tests-metadata
   stage: post-test
   cache:
     policy: push
@@ -36,27 +37,17 @@ update-tests-metadata:
     - retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document
     - source scripts/rspec_helpers.sh
     - update_tests_metadata
-  only:
-    refs:
-      - schedules
-    variables:
-      # Only update the Knapsack metadata on GitLab.com/gitlab-org/gitlab
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab"
 
 flaky-examples-check:
   extends:
     - .default-tags
     - .default-retry
-    - .default-only
-    - .only:changes-code-backstage
+    - .test-metadata:rules:flaky-examples-check
   image: ruby:2.6-alpine
   stage: post-test
   variables:
     NEW_FLAKY_SPECS_REPORT: rspec_flaky/report-new.json
   allow_failure: true
-  only:
-    refs:
-      - merge_requests
   artifacts:
     expire_in: 30d
     paths:
@@ -64,4 +55,4 @@ flaky-examples-check:
   script:
     - '[[ -f $NEW_FLAKY_SPECS_REPORT ]] || echo "{}" > ${NEW_FLAKY_SPECS_REPORT}'
     - scripts/merge-reports ${NEW_FLAKY_SPECS_REPORT} rspec_flaky/new_*_*.json
-    - scripts/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT
+    - scripts/flaky_examples/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT

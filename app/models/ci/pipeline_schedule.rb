@@ -23,7 +23,7 @@ module Ci
 
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where(active: false) }
-    scope :preloaded, -> { preload(:owner, :project) }
+    scope :preloaded, -> { preload(:owner, project: [:route]) }
 
     accepts_nested_attributes_for :variables, allow_destroy: true
 

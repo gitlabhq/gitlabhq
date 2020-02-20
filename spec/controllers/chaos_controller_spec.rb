@@ -9,7 +9,7 @@ describe ChaosController do
 
       get :leakmem
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'call synchronously with params' do
@@ -17,7 +17,7 @@ describe ChaosController do
 
       get :leakmem, params: { memory_mb: 1, duration_s: 2 }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'calls asynchronously' do
@@ -25,7 +25,7 @@ describe ChaosController do
 
       get :leakmem, params: { async: 1 }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
@@ -35,7 +35,7 @@ describe ChaosController do
 
       get :cpu_spin
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'calls synchronously with params' do
@@ -43,7 +43,7 @@ describe ChaosController do
 
       get :cpu_spin, params: { duration_s: 3 }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'calls asynchronously' do
@@ -51,7 +51,7 @@ describe ChaosController do
 
       get :cpu_spin, params: { async: 1 }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
@@ -61,7 +61,7 @@ describe ChaosController do
 
       get :db_spin
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'calls synchronously with params' do
@@ -69,7 +69,7 @@ describe ChaosController do
 
       get :db_spin, params: { duration_s: 4, interval_s: 5 }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'calls asynchronously' do
@@ -77,7 +77,7 @@ describe ChaosController do
 
       get :db_spin, params: { async: 1 }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
@@ -87,7 +87,7 @@ describe ChaosController do
 
       get :sleep
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'calls synchronously with params' do
@@ -95,7 +95,7 @@ describe ChaosController do
 
       get :sleep, params: { duration_s: 5 }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'calls asynchronously' do
@@ -103,7 +103,7 @@ describe ChaosController do
 
       get :sleep, params: { async: 1 }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
@@ -113,7 +113,7 @@ describe ChaosController do
 
       get :kill
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'calls asynchronously' do
@@ -121,7 +121,7 @@ describe ChaosController do
 
       get :kill, params: { async: 1 }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 end

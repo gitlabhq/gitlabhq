@@ -1,0 +1,5 @@
+---
+title: Fix GraphiQL when GitLab is installed under a relative URL
+merge_request: 23143
+author: Mathieu Parent
+type: fixed

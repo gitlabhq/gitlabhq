@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 describe API::AccessRequests do
-  set(:maintainer) { create(:user) }
-  set(:developer) { create(:user) }
-  set(:access_requester) { create(:user) }
-  set(:stranger) { create(:user) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:access_requester) { create(:user) }
+  let_it_be(:stranger) { create(:user) }
 
-  set(:project) do
+  let_it_be(:project) do
     create(:project, :public, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
       project.add_developer(developer)
       project.add_maintainer(maintainer)
@@ -16,7 +16,7 @@ describe API::AccessRequests do
     end
   end
 
-  set(:group) do
+  let_it_be(:group) do
     create(:group, :public) do |group|
       group.add_developer(developer)
       group.add_owner(maintainer)

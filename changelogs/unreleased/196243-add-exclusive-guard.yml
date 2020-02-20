@@ -1,0 +1,5 @@
+---
+title: Fix race condition bug in Prometheus managed app update process
+merge_request: 24228
+author:
+type: fixed

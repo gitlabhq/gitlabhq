@@ -15,7 +15,7 @@ describe 'notify/pipeline_failed_email.html.haml' do
            user: user,
            ref: project.default_branch,
            sha: project.commit.sha,
-           status: :success)
+           status: :failed)
   end
 
   before do
@@ -24,35 +24,51 @@ describe 'notify/pipeline_failed_email.html.haml' do
     assign(:merge_request, merge_request)
   end
 
-  context 'pipeline with user' do
-    it 'renders the email correctly' do
-      render
+  shared_examples_for 'renders the pipeline failed email correctly' do
+    context 'pipeline with user' do
+      it 'renders the email correctly' do
+        render
 
-      expect(rendered).to have_content "Your pipeline has failed"
-      expect(rendered).to have_content pipeline.project.name
-      expect(rendered).to have_content pipeline.git_commit_message.truncate(50).gsub(/\s+/, ' ')
-      expect(rendered).to have_content pipeline.commit.author_name
-      expect(rendered).to have_content "##{pipeline.id}"
-      expect(rendered).to have_content pipeline.user.name
+        expect(rendered).to have_content "Your pipeline has failed"
+        expect(rendered).to have_content pipeline.project.name
+        expect(rendered).to have_content pipeline.git_commit_message.truncate(50).gsub(/\s+/, ' ')
+        expect(rendered).to have_content pipeline.commit.author_name
+        expect(rendered).to have_content "##{pipeline.id}"
+        expect(rendered).to have_content pipeline.user.name
+        expect(rendered).to have_content build.name
+      end
+
+      it_behaves_like 'correct pipeline information for pipelines for merge requests'
     end
 
-    it_behaves_like 'correct pipeline information for pipelines for merge requests'
+    context 'pipeline without user' do
+      before do
+        pipeline.update_attribute(:user, nil)
+      end
+
+      it 'renders the email correctly' do
+        render
+
+        expect(rendered).to have_content "Your pipeline has failed"
+        expect(rendered).to have_content pipeline.project.name
+        expect(rendered).to have_content pipeline.git_commit_message.truncate(50).gsub(/\s+/, ' ')
+        expect(rendered).to have_content pipeline.commit.author_name
+        expect(rendered).to have_content "##{pipeline.id}"
+        expect(rendered).to have_content "by API"
+        expect(rendered).to have_content build.name
+      end
+    end
   end
 
-  context 'pipeline without user' do
-    before do
-      pipeline.update_attribute(:user, nil)
-    end
+  context 'when the pipeline contains a failed job' do
+    let!(:build) { create(:ci_build, :failed, pipeline: pipeline, project: pipeline.project) }
 
-    it 'renders the email correctly' do
-      render
+    it_behaves_like 'renders the pipeline failed email correctly'
+  end
 
-      expect(rendered).to have_content "Your pipeline has failed"
-      expect(rendered).to have_content pipeline.project.name
-      expect(rendered).to have_content pipeline.git_commit_message.truncate(50).gsub(/\s+/, ' ')
-      expect(rendered).to have_content pipeline.commit.author_name
-      expect(rendered).to have_content "##{pipeline.id}"
-      expect(rendered).to have_content "by API"
-    end
+  context 'when the latest failed job is a bridge job' do
+    let!(:build) { create(:ci_bridge, status: :failed, pipeline: pipeline, project: pipeline.project) }
+
+    it_behaves_like 'renders the pipeline failed email correctly'
   end
 end

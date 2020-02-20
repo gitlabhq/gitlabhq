@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-shared_examples 'disabled when using an external authorization service' do
+RSpec.shared_examples 'disabled when using an external authorization service' do
   include ExternalAuthorizationServiceHelpers
 
   it 'works when the feature is not enabled' do
@@ -16,11 +14,11 @@ shared_examples 'disabled when using an external authorization service' do
 
     subject
 
-    expect(response).to have_gitlab_http_status(403)
+    expect(response).to have_gitlab_http_status(:forbidden)
   end
 end
 
-shared_examples 'unauthorized when external service denies access' do
+RSpec.shared_examples 'unauthorized when external service denies access' do
   include ExternalAuthorizationServiceHelpers
 
   it 'allows access when the authorization service allows it' do
@@ -37,6 +35,6 @@ shared_examples 'unauthorized when external service denies access' do
 
     subject
 
-    expect(response).to have_gitlab_http_status(403)
+    expect(response).to have_gitlab_http_status(:forbidden)
   end
 end

@@ -24,7 +24,7 @@ module Gitlab
 
         attrs = {
           GL_ID: Gitlab::GlId.gl_id(user),
-          GL_REPOSITORY: repo_type.identifier_for_subject(repository.project),
+          GL_REPOSITORY: repo_type.identifier_for_container(repository.project),
           GL_USERNAME: user&.username,
           ShowAllRefs: show_all_refs,
           Repository: repository.gitaly_repository.to_h,

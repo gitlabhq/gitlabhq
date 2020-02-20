@@ -2,12 +2,14 @@
 
 class WebHookService
   class InternalErrorResponse
+    ERROR_MESSAGE = 'internal error'
+
     attr_reader :body, :headers, :code
 
     def initialize
       @headers = Gitlab::HTTP::Response::Headers.new({})
       @body = ''
-      @code = 'internal error'
+      @code = ERROR_MESSAGE
     end
   end
 

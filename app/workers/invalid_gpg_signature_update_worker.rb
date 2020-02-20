@@ -4,6 +4,7 @@ class InvalidGpgSignatureUpdateWorker
   include ApplicationWorker
 
   feature_category :source_code_management
+  weight 2
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(gpg_key_id)

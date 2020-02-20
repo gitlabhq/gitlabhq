@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'manual playable stage' do |stage_type|
+RSpec.shared_examples 'manual playable stage' do |stage_type|
   let(:stage) { build(stage_type, status: status) }
 
   describe '#manual_playable?' do

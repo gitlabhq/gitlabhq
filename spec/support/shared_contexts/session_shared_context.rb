@@ -4,7 +4,7 @@
 # let(:session) variable
 # we do not use a parameter such as |session| because it does not play nice
 # with let variables
-shared_context 'custom session' do
+RSpec.shared_context 'custom session' do
   let!(:session) { {} }
 
   around do |example|

@@ -29,4 +29,8 @@ module MetricsDashboardHelpers
   def business_metric_title
     PrometheusMetricEnums.group_details[:business][:group_title]
   end
+
+  def self_monitoring_dashboard_path
+    Metrics::Dashboard::SelfMonitoringDashboardService::DASHBOARD_PATH
+  end
 end

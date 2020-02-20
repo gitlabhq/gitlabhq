@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import store from '~/ide/stores';
 import ideSidebar from '~/ide/components/ide_side_bar.vue';
-import { activityBarViews } from '~/ide/constants';
+import { leftSidebarViews } from '~/ide/constants';
 import { resetStore } from '../helpers';
 import { projectData } from '../mock_data';
 
@@ -45,7 +45,7 @@ describe('IdeSidebar', () => {
     });
 
     it('renders commit component', done => {
-      vm.$store.state.currentActivityView = activityBarViews.commit;
+      vm.$store.state.currentActivityView = leftSidebarViews.commit.name;
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelector('.multi-file-commit-panel-section')).not.toBeNull();

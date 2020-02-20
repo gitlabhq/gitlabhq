@@ -21,9 +21,9 @@ module MembershipActions
     member = Members::UpdateService
       .new(current_user, update_params)
       .execute(member)
-      .present(current_user: current_user)
 
-    present_members([member])
+    member = present_members([member]).first
+
     respond_to do |format|
       format.js { render 'shared/members/update', locals: { member: member } }
     end

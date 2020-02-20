@@ -1,6 +1,6 @@
 # Monitoring Kubernetes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/8935) in GitLab 9.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8935) in GitLab 9.0.
 
 GitLab has support for automatically detecting and monitoring Kubernetes metrics.
 
@@ -38,7 +38,7 @@ Instead, the [Deployment](https://kubernetes.io/docs/concepts/workloads/controll
 
 ## Displaying Canary metrics **(PREMIUM)**
 
-> Introduced in [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15201).
+> Introduced in [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15201).
 
 GitLab also gathers Kubernetes metrics for [canary deployments](../../canary_deployments.md), allowing easy comparison between the current deployed version and the canary.
 

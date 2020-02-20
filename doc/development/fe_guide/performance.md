@@ -85,15 +85,15 @@ browser's developer console while on any page within GitLab.
 #### Important Considerations
 
 - **Keep Entry Points Lite:**
-  Page-specific JavaScript entry points should be as lite as possible.  These
+  Page-specific JavaScript entry points should be as lite as possible. These
   files are exempt from unit tests, and should be used primarily for
   instantiation and dependency injection of classes and methods that live in
-  modules outside of the entry point script.  Just import, read the DOM,
+  modules outside of the entry point script. Just import, read the DOM,
   instantiate, and nothing else.
 
 - **Entry Points May Be Asynchronous:**
   _DO NOT ASSUME_ that the DOM has been fully loaded and available when an
-  entry point script is run.  If you require that some code be run after the
+  entry point script is run. If you require that some code be run after the
   DOM has loaded, you should attach an event handler to the `DOMContentLoaded`
   event with:
 
@@ -113,7 +113,7 @@ browser's developer console while on any page within GitLab.
     with a relative path (e.g. `import initMyWidget from './my_widget';`).
   - If a class or module is _used by multiple routes_, place it within a
     shared directory at the closest common parent directory for the entry
-    points that import it.  For example, if `my_widget.js` is imported within
+    points that import it. For example, if `my_widget.js` is imported within
     both `pages/widget/show/index.js` and `pages/widget/run/index.js`, then
     place the module at `pages/widget/shared/my_widget.js` and import it with
     a relative path if possible (e.g. `../shared/my_widget`).
@@ -122,7 +122,7 @@ browser's developer console while on any page within GitLab.
   For GitLab Enterprise Edition, page-specific entry points will override their
   Community Edition counterparts with the same name, so if
   `ee/app/assets/javascripts/pages/foo/bar/index.js` exists, it will take
-  precedence over `app/assets/javascripts/pages/foo/bar/index.js`.  If you want
+  precedence over `app/assets/javascripts/pages/foo/bar/index.js`. If you want
   to minimize duplicate code, you can import one entry point from the other.
   This is not done automatically to allow for flexibility in overriding
   functionality.
@@ -131,7 +131,7 @@ browser's developer console while on any page within GitLab.
 
 For any code that does not need to be run immediately upon page load, (e.g.
 modals, dropdowns, and other behaviors that can be lazy-loaded), you can split
-your module into asynchronous chunks with dynamic import statements.  These
+your module into asynchronous chunks with dynamic import statements. These
 imports return a Promise which will be resolved once the script has loaded:
 
 ```javascript

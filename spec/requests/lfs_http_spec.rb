@@ -227,7 +227,7 @@ describe 'Git LFS API and storage' do
                 end
 
                 it 'responds with redirect' do
-                  expect(response).to have_gitlab_http_status(302)
+                  expect(response).to have_gitlab_http_status(:found)
                 end
 
                 it 'responds with the file location' do
@@ -907,7 +907,7 @@ describe 'Git LFS API and storage' do
               it_behaves_like 'LFS http 200 response'
 
               it 'uses the gitlab-workhorse content type' do
-                expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+                expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
               end
             end
 
@@ -1011,7 +1011,7 @@ describe 'Git LFS API and storage' do
                     it 'responds with status 403' do
                       subject
 
-                      expect(response).to have_gitlab_http_status(403)
+                      expect(response).to have_gitlab_http_status(:forbidden)
                     end
                   end
                 end
@@ -1027,7 +1027,7 @@ describe 'Git LFS API and storage' do
                   it 'responds with status 200' do
                     subject
 
-                    expect(response).to have_gitlab_http_status(200)
+                    expect(response).to have_gitlab_http_status(:ok)
 
                     object = LfsObject.find_by_oid(sample_oid)
                     expect(object).to be_present
@@ -1070,7 +1070,7 @@ describe 'Git LFS API and storage' do
 
             it 'rejects slashes in the tempfile name (path traversal)' do
               put_finalize('../bar', with_tempfile: true)
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -1193,8 +1193,8 @@ describe 'Git LFS API and storage' do
 
             it_behaves_like 'LFS http 200 response'
 
-            it 'LFS object is linked to the source project' do
-              expect(lfs_object.projects.pluck(:id)).to include(upstream_project.id)
+            it 'LFS object is linked to the forked project' do
+              expect(lfs_object.projects.pluck(:id)).to include(project.id)
             end
           end
         end

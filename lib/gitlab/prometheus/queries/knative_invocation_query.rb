@@ -20,7 +20,7 @@ module Gitlab
         protected
 
         def context(function_id)
-          function = Serverless::Function.find_by_id(function_id)
+          function = ::Serverless::Function.find_by_id(function_id)
           {
             function_name: function.name,
             kube_namespace: function.namespace

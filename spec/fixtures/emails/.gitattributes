@@ -1,0 +1,2 @@
+# Do not mangle line endings or signature will be invalid
+valid_reply_signed_smime.eml eol=crlf

@@ -79,14 +79,10 @@ export const createTempEntry = (
 
   if (type === 'blob') {
     commit(types.TOGGLE_FILE_OPEN, file.path);
-
-    if (gon.features?.stageAllByDefault)
-      commit(types.STAGE_CHANGE, { path: file.path, diffInfo: getters.getDiffInfo(file.path) });
-    else commit(types.ADD_FILE_TO_CHANGED, file.path);
+    commit(types.STAGE_CHANGE, { path: file.path, diffInfo: getters.getDiffInfo(file.path) });
 
     dispatch('setFileActive', file.path);
     dispatch('triggerFilesChange');
-    dispatch('burstUnusedSeal');
   }
 
   if (parentPath && !state.entries[parentPath].opened) {
@@ -175,12 +171,6 @@ export const updateTempFlagForEntry = ({ commit, dispatch, state }, { file, temp
 export const toggleFileFinder = ({ commit }, fileFindVisible) =>
   commit(types.TOGGLE_FILE_FINDER, fileFindVisible);
 
-export const burstUnusedSeal = ({ state, commit }) => {
-  if (state.unusedSeal) {
-    commit(types.BURST_UNUSED_SEAL);
-  }
-};
-
 export const setLinks = ({ commit }, links) => commit(types.SET_LINKS, links);
 
 export const setErrorMessage = ({ commit }, errorMessage) =>
@@ -208,8 +198,6 @@ export const deleteEntry = ({ commit, dispatch, state }, path) => {
     dispatch('deleteEntry', prevPath);
     return;
   }
-
-  dispatch('burstUnusedSeal');
 
   if (entry.opened) dispatch('closeFile', entry);
 
@@ -259,11 +247,7 @@ export const renameEntry = ({ dispatch, commit, state, getters }, { path, name, 
     if (isReset) {
       commit(types.REMOVE_FILE_FROM_STAGED_AND_CHANGED, newEntry);
     } else if (!isInChanges) {
-      if (gon.features?.stageAllByDefault)
-        commit(types.STAGE_CHANGE, { path: newPath, diffInfo: getters.getDiffInfo(newPath) });
-      else commit(types.ADD_FILE_TO_CHANGED, newPath);
-
-      dispatch('burstUnusedSeal');
+      commit(types.STAGE_CHANGE, { path: newPath, diffInfo: getters.getDiffInfo(newPath) });
     }
 
     if (!newEntry.tempFile) {

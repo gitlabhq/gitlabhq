@@ -8,11 +8,13 @@ export default () => ({
     convertedDisscussionIds: [],
     targetNoteHash: null,
     lastFetchedAt: null,
+    currentDiscussionId: null,
 
     // View layer
     isToggleStateButtonLoading: false,
     isNotesFetched: false,
     isLoading: true,
+    isLoadingDescriptionVersion: false,
 
     // holds endpoints and permissions provided through haml
     notesData: {
@@ -26,7 +28,7 @@ export default () => ({
     commentsDisabled: false,
     resolvableDiscussionsCount: 0,
     unresolvedDiscussionsCount: 0,
-    hasUnresolvedDiscussions: false,
+    descriptionVersion: null,
   },
   actions,
   getters,

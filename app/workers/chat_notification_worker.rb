@@ -8,6 +8,8 @@ class ChatNotificationWorker
   sidekiq_options retry: false
   feature_category :chatops
   latency_sensitive_worker!
+  weight 2
+
   # TODO: break this into multiple jobs
   # as the `responder` uses external dependencies
   # See https://gitlab.com/gitlab-com/gl-infra/scalability/issues/34

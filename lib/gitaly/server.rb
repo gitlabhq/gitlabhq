@@ -53,6 +53,20 @@ module Gitaly
       storage_status&.fs_type
     end
 
+    def disk_used
+      disk_statistics_storage_status&.used
+    end
+
+    def disk_available
+      disk_statistics_storage_status&.available
+    end
+
+    # Simple convenience method for when obtaining both used and available
+    # statistics at once is preferred.
+    def disk_stats
+      disk_statistics_storage_status
+    end
+
     def address
       Gitlab::GitalyClient.address(@storage)
     rescue RuntimeError => e
@@ -63,6 +77,10 @@ module Gitaly
 
     def storage_status
       @storage_status ||= info.storage_statuses.find { |s| s.storage_name == storage }
+    end
+
+    def disk_statistics_storage_status
+      @disk_statistics_storage_status ||= disk_statistics.storage_statuses.find { |s| s.storage_name == storage }
     end
 
     def matches_sha?
@@ -76,7 +94,19 @@ module Gitaly
       @info ||=
         begin
           Gitlab::GitalyClient::ServerService.new(@storage).info
-        rescue GRPC::Unavailable, GRPC::DeadlineExceeded
+        rescue GRPC::Unavailable, GRPC::DeadlineExceeded => ex
+          Gitlab::ErrorTracking.track_exception(ex)
+          # This will show the server as being out of date
+          Gitaly::ServerInfoResponse.new(git_version: '', server_version: '', storage_statuses: [])
+        end
+    end
+
+    def disk_statistics
+      @disk_statistics ||=
+        begin
+          Gitlab::GitalyClient::ServerService.new(@storage).disk_statistics
+        rescue GRPC::Unavailable, GRPC::DeadlineExceeded => ex
+          Gitlab::ErrorTracking.track_exception(ex)
           # This will show the server as being out of date
           Gitaly::ServerInfoResponse.new(git_version: '', server_version: '', storage_statuses: [])
         end

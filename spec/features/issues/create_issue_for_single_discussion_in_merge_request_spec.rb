@@ -11,7 +11,7 @@ describe 'Resolve an open thread in a merge request by creating an issue', :js d
   def resolve_discussion_selector
     title = 'Resolve this thread in a new issue'
     url = new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid)
-    "a[data-original-title=\"#{title}\"][href=\"#{url}\"]"
+    "a[title=\"#{title}\"][href=\"#{url}\"]"
   end
 
   describe 'As a user with access to the project' do

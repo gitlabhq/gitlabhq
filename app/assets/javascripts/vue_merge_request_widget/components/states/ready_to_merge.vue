@@ -146,8 +146,14 @@ export default {
         auto_merge_strategy: useAutoMerge ? this.mr.preferredAutoMergeStrategy : undefined,
         should_remove_source_branch: this.removeSourceBranch === true,
         squash: this.squashBeforeMerge,
-        squash_commit_message: this.squashCommitMessage,
       };
+
+      // If users can't alter the squash message (e.g. for 1-commit merge requests),
+      // we shouldn't send the commit message because that would make the backend
+      // do unnecessary work.
+      if (this.shouldShowSquashBeforeMerge) {
+        options.squash_commit_message = this.squashCommitMessage;
+      }
 
       this.isMakingRequest = true;
       this.service

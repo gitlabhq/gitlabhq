@@ -1,125 +1,141 @@
-import Vue from 'vue';
-import noteHeader from '~/notes/components/note_header.vue';
-import createStore from '~/notes/stores';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
+import NoteHeader from '~/notes/components/note_header.vue';
 
-describe('note_header component', () => {
-  let store;
-  let vm;
-  let Component;
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
-  beforeEach(() => {
-    Component = Vue.extend(noteHeader);
-    store = createStore();
-  });
+const actions = {
+  setTargetNoteHash: jest.fn(),
+};
+
+describe('NoteHeader component', () => {
+  let wrapper;
+
+  const findActionsWrapper = () => wrapper.find({ ref: 'discussionActions' });
+  const findChevronIcon = () => wrapper.find({ ref: 'chevronIcon' });
+  const findActionText = () => wrapper.find({ ref: 'actionText' });
+  const findTimestamp = () => wrapper.find({ ref: 'noteTimestamp' });
+
+  const createComponent = props => {
+    wrapper = shallowMount(NoteHeader, {
+      localVue,
+      store: new Vuex.Store({
+        actions,
+      }),
+      propsData: {
+        ...props,
+        actionTextHtml: '',
+        noteId: '1394',
+      },
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
+    wrapper = null;
   });
 
-  describe('individual note', () => {
-    beforeEach(() => {
-      vm = new Component({
-        store,
-        propsData: {
-          actionText: 'commented',
-          actionTextHtml: '',
-          author: {
-            avatar_url: null,
-            id: 1,
-            name: 'Root',
-            path: '/root',
-            state: 'active',
-            username: 'root',
-          },
-          createdAt: '2017-08-02T10:51:58.559Z',
-          includeToggle: false,
-          noteId: '1394',
-          expanded: true,
-        },
-      }).$mount();
+  it('does not render discussion actions when includeToggle is false', () => {
+    createComponent({
+      includeToggle: false,
     });
 
-    it('should render user information', () => {
-      expect(vm.$el.querySelector('.note-header-author-name').textContent.trim()).toEqual('Root');
-      expect(vm.$el.querySelector('.note-header-info a').getAttribute('href')).toEqual('/root');
-      expect(vm.$el.querySelector('.note-header-info a').dataset.userId).toEqual('1');
-      expect(vm.$el.querySelector('.note-header-info a').dataset.username).toEqual('root');
-      expect(vm.$el.querySelector('.note-header-info a').classList).toContain('js-user-link');
+    expect(findActionsWrapper().exists()).toBe(false);
+  });
+
+  describe('when includes a toggle', () => {
+    it('renders discussion actions', () => {
+      createComponent({
+        includeToggle: true,
+      });
+
+      expect(findActionsWrapper().exists()).toBe(true);
     });
 
-    it('should render timestamp link', () => {
-      expect(vm.$el.querySelector('a[href="#note_1394"]')).toBeDefined();
+    it('emits toggleHandler event on button click', () => {
+      createComponent({
+        includeToggle: true,
+      });
+
+      wrapper.find('.note-action-button').trigger('click');
+      expect(wrapper.emitted('toggleHandler')).toBeDefined();
+      expect(wrapper.emitted('toggleHandler')).toHaveLength(1);
     });
 
-    it('should not render user information when prop `author` is empty object', done => {
-      vm.author = {};
-      Vue.nextTick()
-        .then(() => {
-          expect(vm.$el.querySelector('.note-header-author-name')).toBeNull();
-        })
-        .then(done)
-        .catch(done.fail);
+    it('has chevron-up icon if expanded prop is true', () => {
+      createComponent({
+        includeToggle: true,
+        expanded: true,
+      });
+
+      expect(findChevronIcon().classes()).toContain('fa-chevron-up');
+    });
+
+    it('has chevron-down icon if expanded prop is false', () => {
+      createComponent({
+        includeToggle: true,
+        expanded: false,
+      });
+
+      expect(findChevronIcon().classes()).toContain('fa-chevron-down');
     });
   });
 
-  describe('discussion', () => {
-    beforeEach(() => {
-      vm = new Component({
-        store,
-        propsData: {
-          actionText: 'started a discussion',
-          actionTextHtml: '',
-          author: {
-            avatar_url: null,
-            id: 1,
-            name: 'Root',
-            path: '/root',
-            state: 'active',
-            username: 'root',
-          },
-          createdAt: '2017-08-02T10:51:58.559Z',
-          includeToggle: true,
-          noteId: '1395',
-          expanded: true,
-        },
-      }).$mount();
+  it('renders an author link if author is passed to props', () => {
+    createComponent({
+      author: {
+        avatar_url: null,
+        id: 1,
+        name: 'Root',
+        path: '/root',
+        state: 'active',
+        username: 'root',
+      },
     });
 
-    it('should render toggle button', () => {
-      expect(vm.$el.querySelector('.js-vue-toggle-button')).toBeDefined();
-    });
+    expect(wrapper.find('.js-user-link').exists()).toBe(true);
+  });
 
-    it('emits toggle event on click', done => {
-      jest.spyOn(vm, '$emit').mockImplementation(() => {});
+  it('renders deleted user text if author is not passed as a prop', () => {
+    createComponent();
 
-      vm.$el.querySelector('.js-vue-toggle-button').click();
+    expect(wrapper.text()).toContain('A deleted user');
+  });
 
-      Vue.nextTick(() => {
-        expect(vm.$emit).toHaveBeenCalledWith('toggleHandler');
-        done();
+  it('does not render created at information if createdAt is not passed as a prop', () => {
+    createComponent();
+
+    expect(findActionText().exists()).toBe(false);
+    expect(findTimestamp().exists()).toBe(false);
+  });
+
+  describe('when createdAt is passed as a prop', () => {
+    it('renders action text and a timestamp', () => {
+      createComponent({
+        createdAt: '2017-08-02T10:51:58.559Z',
       });
+
+      expect(findActionText().exists()).toBe(true);
+      expect(findTimestamp().exists()).toBe(true);
     });
 
-    it('renders up arrow when open', done => {
-      vm.expanded = true;
-
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.js-vue-toggle-button i').classList).toContain(
-          'fa-chevron-up',
-        );
-        done();
+    it('renders correct actionText if passed', () => {
+      createComponent({
+        createdAt: '2017-08-02T10:51:58.559Z',
+        actionText: 'Test action text',
       });
+
+      expect(findActionText().text()).toBe('Test action text');
     });
 
-    it('renders down arrow when closed', done => {
-      vm.expanded = false;
-
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.js-vue-toggle-button i').classList).toContain(
-          'fa-chevron-down',
-        );
-        done();
+    it('calls an action when timestamp is clicked', () => {
+      createComponent({
+        createdAt: '2017-08-02T10:51:58.559Z',
       });
+      findTimestamp().trigger('click');
+
+      expect(actions.setTargetNoteHash).toHaveBeenCalled();
     });
   });
 });

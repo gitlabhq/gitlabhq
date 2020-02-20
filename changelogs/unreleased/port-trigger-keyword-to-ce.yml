@@ -1,0 +1,5 @@
+---
+title: Port `trigger` keyword in CI config to Core
+merge_request: 24191
+author:
+type: fixed

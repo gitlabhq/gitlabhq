@@ -1,0 +1,5 @@
+---
+title: Fix k8s logs alert display state
+merge_request: 24802
+author:
+type: fixed

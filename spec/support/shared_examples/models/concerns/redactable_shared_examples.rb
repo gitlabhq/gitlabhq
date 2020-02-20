@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'model with redactable field' do
+RSpec.shared_examples 'model with redactable field' do
   it 'redacts unsubscribe token' do
     model[field] = 'some text /sent_notifications/00000000000000000000000000000000/unsubscribe more text'
 

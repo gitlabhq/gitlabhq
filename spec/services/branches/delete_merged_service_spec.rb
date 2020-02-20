@@ -9,7 +9,7 @@ describe Branches::DeleteMergedService do
 
   let(:project) { create(:project, :repository) }
 
-  context '#execute' do
+  describe '#execute' do
     it 'deletes a branch that was merged' do
       service.execute
 
@@ -74,7 +74,7 @@ describe Branches::DeleteMergedService do
     end
   end
 
-  context '#async_execute' do
+  describe '#async_execute' do
     it 'calls DeleteMergedBranchesWorker async' do
       expect(DeleteMergedBranchesWorker).to receive(:perform_async)
 

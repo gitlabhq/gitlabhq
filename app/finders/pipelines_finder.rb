@@ -39,7 +39,7 @@ class PipelinesFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def from_ids(ids)
-    pipelines.unscoped.where(id: ids)
+    pipelines.unscoped.where(project_id: project.id, id: ids)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

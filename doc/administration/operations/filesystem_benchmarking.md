@@ -25,7 +25,7 @@ To install:
 
 Then run the following:
 
-```sh
+```shell
 fio --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=test --filename=/path/to/git-data/testfile --bs=4k --iodepth=64 --size=4G --readwrite=randrw --rwmixread=75
 ```
 
@@ -37,7 +37,7 @@ completes.
 The output will vary depending on what version of `fio` installed. The following
 is an example output from `fio` v2.2.10 on a networked solid-state drive (SSD):
 
-```
+```plaintext
 test: (g=0): rw=randrw, bs=4K-4K/4K-4K/4K-4K, ioengine=libaio, iodepth=64
     fio-2.2.10
     Starting 1 process
@@ -78,32 +78,32 @@ executed, and then read the same 1,000 files.
    [repository storage path](../repository_storage_paths.md).
 1. Create a temporary directory for the test so it's easy to remove the files later:
 
-   ```sh
+   ```shell
    mkdir test; cd test
    ```
 
 1. Run the command:
 
-   ```sh
+   ```shell
    time for i in {0..1000}; do echo 'test' > "test${i}.txt"; done
    ```
 
 1. To benchmark read performance, run the command:
 
-   ```sh
+   ```shell
    time for i in {0..1000}; do cat "test${i}.txt" > /dev/null; done
    ```
 
 1. Remove the test files:
 
-  ```sh
+  ```shell
   cd ../; rm -rf test
   ```
 
 The output of the `time for ...` commands will look similar to the following. The
 important metric is the `real` time.
 
-```sh
+```shell
 $ time for i in {0..1000}; do echo 'test' > "test${i}.txt"; done
 
 real    0m0.116s

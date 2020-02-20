@@ -394,6 +394,12 @@ describe Gitlab::Database do
         expect(described_class.cached_table_exists?(:bogus_table_name)).to be_falsey
       end
     end
+
+    it 'returns false when database does not exist' do
+      expect(ActiveRecord::Base).to receive(:connection) { raise ActiveRecord::NoDatabaseError, 'broken' }
+
+      expect(described_class.cached_table_exists?(:projects)).to be(false)
+    end
   end
 
   describe '.exists?' do

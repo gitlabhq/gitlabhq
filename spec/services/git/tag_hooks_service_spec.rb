@@ -107,6 +107,7 @@ describe Git::TagHooksService, :service do
                Gitlab.config.gitlab.url,
                project.namespace.to_param,
                project.to_param,
+               '-',
                'commit',
                commit.id
               ].join('/')

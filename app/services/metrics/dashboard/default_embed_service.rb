@@ -20,6 +20,12 @@ module Metrics
         system_metrics_kubernetes_container_cores_total
       ).freeze
 
+      class << self
+        def valid_params?(params)
+          params[:embedded].present?
+        end
+      end
+
       # Returns a new dashboard with only the matching
       # metrics from the system dashboard, stripped of groups.
       # @return [Hash]

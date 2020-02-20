@@ -39,12 +39,5 @@
       %li= s_("GroupSettings|If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.")
     = f.submit s_('GroupSettings|Transfer group'), class: 'btn btn-warning'
 
-.sub-section
-  %h4.danger-title= _('Remove group')
-  = form_tag(@group, method: :delete) do
-    %p
-      = _('Removing group will cause all child projects and resources to be removed.')
-      %br
-      %strong= _('Removed group can not be restored!')
-
-    = button_to _('Remove group'), '#', class: 'btn btn-remove js-confirm-danger', data: { 'confirm-danger-message' => remove_group_message(@group) }
+= render 'groups/settings/remove', group: @group
+= render_if_exists 'groups/settings/restore', group: @group

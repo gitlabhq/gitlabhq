@@ -332,11 +332,11 @@ module Gitlab
         GitalyClient.call(@storage, :repository_service, :search_files_by_name, request, timeout: GitalyClient.fast_timeout).flat_map(&:files)
       end
 
-      def search_files_by_content(ref, query)
+      def search_files_by_content(ref, query, options = {})
         request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query)
         response = GitalyClient.call(@storage, :repository_service, :search_files_by_content, request, timeout: GitalyClient.default_timeout)
 
-        search_results_from_response(response)
+        search_results_from_response(response, options)
       end
 
       def disconnect_alternates
@@ -361,18 +361,24 @@ module Gitlab
 
       private
 
-      def search_results_from_response(gitaly_response)
+      def search_results_from_response(gitaly_response, options = {})
+        limit = options[:limit]
+
         matches = []
+        matches_count = 0
         current_match = +""
 
         gitaly_response.each do |message|
           next if message.nil?
+
+          break if limit && matches_count >= limit
 
           current_match << message.match_data
 
           if message.end_of_match
             matches << current_match
             current_match = +""
+            matches_count += 1
           end
         end
 

@@ -69,7 +69,6 @@
   &.footer-block {
     margin-top: $gl-padding-24;
     border-bottom: 0;
-    margin-bottom: -$gl-padding;
   }
 
   &.content-component-block {
@@ -326,11 +325,11 @@
   }
 
   .btn {
-    margin: $btn-side-margin 5px;
+    margin: $gl-padding-8 $gl-padding-4;
 
     @include media-breakpoint-down(xs) {
       width: 100%;
-      margin: $btn-side-margin 0;
+      margin: $gl-padding-8 0;
     }
   }
 }

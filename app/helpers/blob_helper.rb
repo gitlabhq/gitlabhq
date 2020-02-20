@@ -27,7 +27,7 @@ module BlobHelper
         "#{current_user.namespace.full_path}/#{project.path}"
       end
 
-    segments = [ide_path, 'project', project_path, 'edit', ref]
+    segments = [ide_path, 'project', project_path, 'edit', encode_ide_path(ref)]
     segments.concat(['-', encode_ide_path(path)]) if path.present?
     File.join(segments)
   end
@@ -47,7 +47,7 @@ module BlobHelper
   def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})
     return unless blob = readable_blob(options, path, project, ref)
 
-    common_classes = "btn btn-primary js-edit-blob #{options[:extra_class]}"
+    common_classes = "btn btn-primary js-edit-blob ml-2 #{options[:extra_class]}"
 
     edit_button_tag(blob,
                     common_classes,
@@ -62,7 +62,7 @@ module BlobHelper
     return unless blob = readable_blob(options, path, project, ref)
 
     edit_button_tag(blob,
-                    'btn btn-inverted btn-primary ide-edit-button',
+                    'btn btn-inverted btn-primary ide-edit-button ml-2',
                     _('Web IDE'),
                     ide_edit_path(project, ref, path, options),
                     project,

@@ -12,7 +12,7 @@ module Gitlab
         @options = { from: 7.days.ago }
       end
 
-      def to_json
+      def to_json(*)
         total = 0
 
         values =

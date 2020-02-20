@@ -63,6 +63,10 @@ module QA
         '/groups'
       end
 
+      def api_delete_path
+        "/groups/#{id}"
+      end
+
       def api_post_body
         {
           path: path,

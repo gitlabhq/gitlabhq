@@ -10,9 +10,9 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
   let(:attributes) do
     { name: 'test',
       index: 0,
-      builds: [{ name: 'rspec' },
-               { name: 'spinach' },
-               { name: 'deploy', only: { refs: ['feature'] } }] }
+      builds: [{ name: 'rspec', scheduling_type: :stage },
+               { name: 'spinach', scheduling_type: :stage },
+               { name: 'deploy', only: { refs: ['feature'] } }], scheduling_type: :stage }
   end
 
   subject do

@@ -77,6 +77,14 @@ describe API::Users do
         expect(json_response.first.keys).not_to include 'highest_role'
       end
 
+      it "does not return the current or last sign-in ip addresses" do
+        get api("/users"), params: { username: user.username }
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(json_response.first.keys).not_to include 'current_sign_in_ip'
+        expect(json_response.first.keys).not_to include 'last_sign_in_ip'
+      end
+
       context "when public level is restricted" do
         before do
           stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
@@ -314,6 +322,14 @@ describe API::Users do
       expect(json_response.keys).not_to include 'highest_role'
     end
 
+    it "does not return the user's sign in IPs" do
+      get api("/users/#{user.id}", user)
+
+      expect(response).to match_response_schema('public_api/v4/user/basic')
+      expect(json_response.keys).not_to include 'current_sign_in_ip'
+      expect(json_response.keys).not_to include 'last_sign_in_ip'
+    end
+
     context 'when authenticated as admin' do
       it 'includes the `is_admin` field' do
         get api("/users/#{user.id}", admin)
@@ -328,11 +344,33 @@ describe API::Users do
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response.keys).to include 'created_at'
       end
+
       it 'includes the `highest_role` field' do
         get api("/users/#{user.id}", admin)
 
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response['highest_role']).to be(0)
+      end
+
+      context 'when user has not logged in' do
+        it 'does not include the sign in IPs' do
+          get api("/users/#{user.id}", admin)
+
+          expect(response).to match_response_schema('public_api/v4/user/admin')
+          expect(json_response).to include('current_sign_in_ip' => nil, 'last_sign_in_ip' => nil)
+        end
+      end
+
+      context 'when user has logged in' do
+        let_it_be(:signed_in_user) { create(:user, :with_sign_ins) }
+
+        it 'includes the sign in IPs' do
+          get api("/users/#{signed_in_user.id}", admin)
+
+          expect(response).to match_response_schema('public_api/v4/user/admin')
+          expect(json_response['current_sign_in_ip']).to eq('127.0.0.1')
+          expect(json_response['last_sign_in_ip']).to eq('127.0.0.1')
+        end
       end
     end
 
@@ -423,7 +461,7 @@ describe API::Users do
     end
 
     it "creates user with optional attributes" do
-      optional_attributes = { confirm: true }
+      optional_attributes = { confirm: true, theme_id: 2, color_scheme_id: 4 }
       attributes = attributes_for(:user).merge(optional_attributes)
 
       post api('/users', admin), params: attributes
@@ -535,6 +573,15 @@ describe API::Users do
 
     it 'returns 400 error if username not given' do
       post api('/users', admin), params: attributes_for(:user).except(:username)
+      expect(response).to have_gitlab_http_status(400)
+    end
+
+    it "doesn't create user with invalid optional attributes" do
+      optional_attributes = { theme_id: 50, color_scheme_id: 50 }
+      attributes = attributes_for(:user).merge(optional_attributes)
+
+      post api('/users', admin), params: attributes
+
       expect(response).to have_gitlab_http_status(400)
     end
 
@@ -702,7 +749,7 @@ describe API::Users do
       expect(user.email).to eq('new@email.com')
     end
 
-    it 'updates user with his own username' do
+    it 'updates user with their own username' do
       put api("/users/#{user.id}", admin), params: { username: user.username }
 
       expect(response).to have_gitlab_http_status(200)
@@ -740,6 +787,12 @@ describe API::Users do
       expect(user.reload.external?).to be_truthy
     end
 
+    it "private profile is false by default" do
+      put api("/users/#{user.id}", admin), params: {}
+
+      expect(user.reload.private_profile).to eq(false)
+    end
+
     it "updates private profile" do
       put api("/users/#{user.id}", admin), params: { private_profile: true }
 
@@ -747,12 +800,22 @@ describe API::Users do
       expect(user.reload.private_profile).to eq(true)
     end
 
-    it "updates private profile when nil is given to false" do
-      admin.update(private_profile: true)
+    it "updates private profile to false when nil is given" do
+      user.update(private_profile: true)
 
       put api("/users/#{user.id}", admin), params: { private_profile: nil }
 
+      expect(response).to have_gitlab_http_status(200)
       expect(user.reload.private_profile).to eq(false)
+    end
+
+    it "does not modify private profile when field is not provided" do
+      user.update(private_profile: true)
+
+      put api("/users/#{user.id}", admin), params: {}
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(user.reload.private_profile).to eq(true)
     end
 
     it "does not update admin status" do
@@ -768,6 +831,34 @@ describe API::Users do
 
       expect(response).to have_gitlab_http_status(400)
       expect(user.reload.email).not_to eq('invalid email')
+    end
+
+    it "updates theme id" do
+      put api("/users/#{user.id}", admin), params: { theme_id: 5 }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(user.reload.theme_id).to eq(5)
+    end
+
+    it "does not update invalid theme id" do
+      put api("/users/#{user.id}", admin), params: { theme_id: 50 }
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(user.reload.theme_id).not_to eq(50)
+    end
+
+    it "updates color scheme id" do
+      put api("/users/#{user.id}", admin), params: { color_scheme_id: 5 }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(user.reload.color_scheme_id).to eq(5)
+    end
+
+    it "does not update invalid color scheme id" do
+      put api("/users/#{user.id}", admin), params: { color_scheme_id: 50 }
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(user.reload.color_scheme_id).not_to eq(50)
     end
 
     context 'when the current user is not an admin' do
@@ -858,6 +949,45 @@ describe API::Users do
     end
   end
 
+  describe "DELETE /users/:id/identities/:provider" do
+    let(:test_user) { create(:omniauth_user, provider: 'ldapmain') }
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        delete api("/users/#{test_user.id}/identities/ldapmain")
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when authenticated' do
+      it 'deletes identity of given provider' do
+        expect do
+          delete api("/users/#{test_user.id}/identities/ldapmain", admin)
+        end.to change { test_user.identities.count }.by(-1)
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/users/#{test_user.id}/identities/ldapmain", admin) }
+      end
+
+      it 'returns 404 error if user not found' do
+        delete api("/users/0/identities/ldapmain", admin)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+
+      it 'returns 404 error if identity not found' do
+        delete api("/users/#{test_user.id}/identities/saml", admin)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Identity Not Found')
+      end
+    end
+  end
+
   describe "POST /users/:id/keys" do
     before do
       admin
@@ -905,6 +1035,27 @@ describe API::Users do
       user.save
 
       get api("/users/#{user.id}/keys")
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.first['title']).to eq(key.title)
+    end
+  end
+
+  describe 'GET /user/:user_id/keys' do
+    it 'returns 404 for non-existing user' do
+      get api("/users/#{not_existing_user_id}/keys")
+
+      expect(response).to have_gitlab_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns array of ssh keys' do
+      user.keys << key
+      user.save
+
+      get api("/users/#{user.username}/keys")
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
@@ -2076,6 +2227,83 @@ describe API::Users do
       post api("/users/ASDF/block", admin)
 
       expect(response).to have_gitlab_http_status(404)
+    end
+  end
+
+  describe "GET /users/:id/memberships" do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let(:requesting_user) { create(:user) }
+
+    before_all do
+      project.add_guest(user)
+      group.add_guest(user)
+    end
+
+    it "responses with 403" do
+      get api("/users/#{user.id}/memberships", requesting_user)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    context 'requested by admin user' do
+      let(:requesting_user) { create(:user, :admin) }
+
+      it "responses successfully" do
+        get api("/users/#{user.id}/memberships", requesting_user)
+
+        aggregate_failures 'expect successful response including groups and projects' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/memberships')
+          expect(response).to include_pagination_headers
+          expect(json_response).to contain_exactly(
+            a_hash_including('source_type' => 'Project'),
+            a_hash_including('source_type' => 'Namespace')
+          )
+        end
+      end
+
+      it 'does not submit N+1 DB queries' do
+        # Avoid setup queries
+        get api("/users/#{user.id}/memberships", requesting_user)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get api("/users/#{user.id}/memberships", requesting_user)
+        end
+
+        create_list(:project, 5).map { |project| project.add_guest(user) }
+
+        expect do
+          get api("/users/#{user.id}/memberships", requesting_user)
+        end.not_to exceed_query_limit(control)
+      end
+
+      context 'with type filter' do
+        it "only returns project memberships" do
+          get api("/users/#{user.id}/memberships?type=Project", requesting_user)
+
+          aggregate_failures do
+            expect(json_response).to contain_exactly(a_hash_including('source_type' => 'Project'))
+            expect(json_response).not_to include(a_hash_including('source_type' => 'Namespace'))
+          end
+        end
+
+        it "only returns group memberships" do
+          get api("/users/#{user.id}/memberships?type=Namespace", requesting_user)
+
+          aggregate_failures do
+            expect(json_response).to contain_exactly(a_hash_including('source_type' => 'Namespace'))
+            expect(json_response).not_to include(a_hash_including('source_type' => 'Project'))
+          end
+        end
+
+        it "recognizes unsupported types" do
+          get api("/users/#{user.id}/memberships?type=foo", requesting_user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
     end
   end
 

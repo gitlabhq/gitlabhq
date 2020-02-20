@@ -9,6 +9,8 @@
 
   = render 'groups/home_panel'
 
+  = render_if_exists 'groups/self_or_ancestor_marked_for_deletion_notice', group: @group
+
   .groups-listing{ data: { endpoints: { default: group_children_path(@group, format: :json), shared: group_shared_projects_path(@group, format: :json) } } }
     .top-area.group-nav-container.justify-content-between
       .scrolling-tabs-container.inner-page-scroll-tabs

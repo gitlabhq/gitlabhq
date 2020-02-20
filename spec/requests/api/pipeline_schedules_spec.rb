@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe API::PipelineSchedules do
-  set(:developer) { create(:user) }
-  set(:user) { create(:user) }
-  set(:project) { create(:project, :repository, public_builds: false) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, public_builds: false) }
 
   before do
     project.add_developer(developer)
@@ -322,10 +322,60 @@ describe API::PipelineSchedules do
     end
   end
 
+  describe 'POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play' do
+    let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+
+    let(:route) { ->(id) { "/projects/#{project.id}/pipeline_schedules/#{id}/play" } }
+
+    context 'authenticated user with `:play_pipeline_schedule` permission' do
+      it 'schedules a pipeline worker' do
+        project.add_developer(developer)
+
+        expect(RunPipelineScheduleWorker)
+          .to receive(:perform_async)
+          .with(pipeline_schedule.id, developer.id)
+          .and_call_original
+        post api(route[pipeline_schedule.id], developer)
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'renders an error if scheduling failed' do
+        project.add_developer(developer)
+
+        expect(RunPipelineScheduleWorker)
+          .to receive(:perform_async)
+          .with(pipeline_schedule.id, developer.id)
+          .and_return(nil)
+        post api(route[pipeline_schedule.id], developer)
+
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+      end
+    end
+
+    context 'authenticated user with insufficient access' do
+      it 'responds with not found' do
+        project.add_guest(user)
+
+        post api(route[pipeline_schedule.id], user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'unauthenticated user' do
+      it 'responds with unauthorized' do
+        post api(route[pipeline_schedule.id])
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
   describe 'POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables' do
     let(:params) { attributes_for(:ci_pipeline_schedule_variable) }
 
-    set(:pipeline_schedule) do
+    let_it_be(:pipeline_schedule) do
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 
@@ -382,7 +432,7 @@ describe API::PipelineSchedules do
   end
 
   describe 'PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
-    set(:pipeline_schedule) do
+    let_it_be(:pipeline_schedule) do
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 
@@ -422,7 +472,7 @@ describe API::PipelineSchedules do
   describe 'DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
     let(:maintainer) { create(:user) }
 
-    set(:pipeline_schedule) do
+    let_it_be(:pipeline_schedule) do
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 

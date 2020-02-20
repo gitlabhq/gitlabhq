@@ -150,11 +150,25 @@ type BlobEdge {
   node: Blob
 }
 
+"""
+Types of blob viewers
+"""
+enum BlobViewersType {
+  auxiliary
+  rich
+  simple
+}
+
 type Commit {
   """
   Author of the commit
   """
   author: User
+
+  """
+  Commit authors gravatar
+  """
+  authorGravatar: String
 
   """
   Commit authors name
@@ -194,7 +208,7 @@ type Commit {
     Filter pipelines by their status
     """
     status: PipelineStatusEnum
-  ): Pipeline @deprecated(reason: "use pipelines")
+  ): Pipeline @deprecated(reason: "Use pipelines")
 
   """
   Raw commit message
@@ -646,6 +660,16 @@ type Design implements DesignFields & Noteable {
     before: String
 
     """
+    The Global ID of the most recent acceptable version
+    """
+    earlierOrEqualToId: ID
+
+    """
+    The SHA256 of the most recent acceptable version
+    """
+    earlierOrEqualToSha: String
+
+    """
     Returns the first _n_ elements from the list.
     """
     first: Int
@@ -658,9 +682,129 @@ type Design implements DesignFields & Noteable {
 }
 
 """
+A design pinned to a specific version. The image field reflects the design as of the associated version.
+"""
+type DesignAtVersion implements DesignFields {
+  """
+  The underlying design.
+  """
+  design: Design!
+
+  """
+  The diff refs for this design
+  """
+  diffRefs: DiffRefs!
+
+  """
+  How this design was changed in the current version
+  """
+  event: DesignVersionEvent!
+
+  """
+  The filename of the design
+  """
+  filename: String!
+
+  """
+  The full path to the design file
+  """
+  fullPath: String!
+
+  """
+  The ID of this design
+  """
+  id: ID!
+
+  """
+  The URL of the image
+  """
+  image: String!
+
+  """
+  The issue the design belongs to
+  """
+  issue: Issue!
+
+  """
+  The total count of user-created notes for this design
+  """
+  notesCount: Int!
+
+  """
+  The project the design belongs to
+  """
+  project: Project!
+
+  """
+  The version this design-at-versions is pinned to
+  """
+  version: DesignVersion!
+}
+
+"""
+The connection type for DesignAtVersion.
+"""
+type DesignAtVersionConnection {
+  """
+  A list of edges.
+  """
+  edges: [DesignAtVersionEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [DesignAtVersion]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type DesignAtVersionEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: DesignAtVersion
+}
+
+"""
 A collection of designs.
 """
 type DesignCollection {
+  """
+  Find a specific design
+  """
+  design(
+    """
+    Find a design by its filename
+    """
+    filename: String
+
+    """
+    Find a design by its ID
+    """
+    id: ID
+  ): Design
+
+  """
+  Find a design as of a version
+  """
+  designAtVersion(
+    """
+    The Global ID of the design at this version
+    """
+    id: ID!
+  ): DesignAtVersion
+
   """
   All designs for the design collection
   """
@@ -713,6 +857,21 @@ type DesignCollection {
   project: Project!
 
   """
+  A specific version
+  """
+  version(
+    """
+    The Global ID of the version
+    """
+    id: ID
+
+    """
+    The SHA256 of a specific version
+    """
+    sha: String
+  ): DesignVersion
+
+  """
   All versions related to all designs, ordered newest first
   """
   versions(
@@ -725,6 +884,16 @@ type DesignCollection {
     Returns the elements in the list that come before the specified cursor.
     """
     before: String
+
+    """
+    The Global ID of the most recent acceptable version
+    """
+    earlierOrEqualToId: ID
+
+    """
+    The SHA256 of the most recent acceptable version
+    """
+    earlierOrEqualToSha: String
 
     """
     Returns the first _n_ elements from the list.
@@ -818,6 +987,28 @@ interface DesignFields {
   The project the design belongs to
   """
   project: Project!
+}
+
+type DesignManagement {
+  """
+  Find a design as of a version
+  """
+  designAtVersion(
+    """
+    The Global ID of the design at this version
+    """
+    id: ID!
+  ): DesignAtVersion
+
+  """
+  Find a version
+  """
+  version(
+    """
+    The Global ID of the version
+    """
+    id: ID!
+  ): DesignVersion
 }
 
 """
@@ -915,7 +1106,30 @@ type DesignManagementUploadPayload {
   skippedDesigns: [Design!]!
 }
 
+"""
+A specific version in which designs were added, modified or deleted
+"""
 type DesignVersion {
+  """
+  A particular design as of this version, provided it is visible at this version
+  """
+  designAtVersion(
+    """
+    The ID of a specific design
+    """
+    designId: ID
+
+    """
+    The filename of a specific design
+    """
+    filename: String
+
+    """
+    The ID of the DesignAtVersion
+    """
+    id: ID
+  ): DesignAtVersion!
+
   """
   All designs that were changed in the version
   """
@@ -940,6 +1154,41 @@ type DesignVersion {
     """
     last: Int
   ): DesignConnection!
+
+  """
+  All designs that are visible at this version, as of this version
+  """
+  designsAtVersion(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Filters designs by their filename
+    """
+    filenames: [String!]
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Filters designs by their ID
+    """
+    ids: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+  ): DesignAtVersionConnection!
 
   """
   ID of the design version
@@ -1157,12 +1406,12 @@ input DiffImagePositionInput {
   width: Int!
 
   """
-  X position on which the comment was made
+  X position of the note
   """
   x: Int!
 
   """
-  Y position on which the comment was made
+  Y position of the note
   """
   y: Int!
 }
@@ -1226,12 +1475,12 @@ type DiffPosition {
   width: Int
 
   """
-  X position on which the comment was made
+  X position of the note
   """
   x: Int
 
   """
-  Y position on which the comment was made
+  Y position of the note
   """
   y: Int
 }
@@ -1491,8 +1740,8 @@ type Epic implements Noteable {
     before: String
 
     """
-    List epics within a time frame where epics.end_date is between start_date
-    and end_date parameters (start_date parameter must be present)
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
     """
     endDate: Time
 
@@ -1532,8 +1781,8 @@ type Epic implements Noteable {
     sort: EpicSort
 
     """
-    List epics within a time frame where epics.start_date is between start_date
-    and end_date parameters (end_date parameter must be present)
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
     """
     startDate: Time
 
@@ -1627,6 +1876,11 @@ type Epic implements Noteable {
   Indicates if the epic has direct issues
   """
   hasIssues: Boolean!
+
+  """
+  Current health status. Available only when feature flag save_issuable_health_status is enabled.
+  """
+  healthStatus: HealthStatus
 
   """
   ID of the epic
@@ -1742,7 +1996,20 @@ type Epic implements Noteable {
     """
     last: Int
   ): UserConnection
-  reference(full: Boolean = false): String!
+
+  """
+  Internal reference of the epic. Returned in shortened format by default
+  """
+  reference(
+    """
+    Indicates if the reference should be returned in full
+    """
+    full: Boolean = false
+  ): String!
+
+  """
+  URI path of the epic-issue relationship
+  """
   relationPath: String
 
   """
@@ -1799,7 +2066,15 @@ type Epic implements Noteable {
   Permissions for the current user on the resource
   """
   userPermissions: EpicPermissions!
+
+  """
+  Web path of the epic
+  """
   webPath: String!
+
+  """
+  Web URL of the epic
+  """
   webUrl: String!
 }
 
@@ -1928,9 +2203,9 @@ type EpicIssue implements Noteable {
   designCollection: DesignCollection
 
   """
-  Deprecated. Use `design_collection`
+  Deprecated. Use `designCollection`
   """
-  designs: DesignCollection @deprecated(reason: "use design_collection")
+  designs: DesignCollection @deprecated(reason: "Use designCollection")
 
   """
   Indicates discussion is locked on the issue
@@ -1981,6 +2256,11 @@ type EpicIssue implements Noteable {
   ID of the epic-issue relation
   """
   epicIssueId: ID!
+
+  """
+  Current health status. Available only when feature flag save_issuable_health_status is enabled.
+  """
+  healthStatus: HealthStatus
 
   """
   Global ID of the epic-issue relation
@@ -2426,6 +2706,11 @@ type GrafanaIntegration {
 
 type Group {
   """
+  Indicates whether Auto DevOps is enabled for all projects within this group
+  """
+  autoDevopsEnabled: Boolean
+
+  """
   Avatar URL of the group
   """
   avatarUrl: String
@@ -2441,6 +2726,11 @@ type Group {
   descriptionHtml: String
 
   """
+  Indicates if a group has email notifications disabled
+  """
+  emailsDisabled: Boolean
+
+  """
   Find a single epic
   """
   epic(
@@ -2450,8 +2740,8 @@ type Group {
     authorUsername: String
 
     """
-    List epics within a time frame where epics.end_date is between start_date
-    and end_date parameters (start_date parameter must be present)
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
     """
     endDate: Time
 
@@ -2481,8 +2771,8 @@ type Group {
     sort: EpicSort
 
     """
-    List epics within a time frame where epics.start_date is between start_date
-    and end_date parameters (end_date parameter must be present)
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
     """
     startDate: Time
 
@@ -2512,8 +2802,8 @@ type Group {
     before: String
 
     """
-    List epics within a time frame where epics.end_date is between start_date
-    and end_date parameters (start_date parameter must be present)
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
     """
     endDate: Time
 
@@ -2553,8 +2843,8 @@ type Group {
     sort: EpicSort
 
     """
-    List epics within a time frame where epics.start_date is between start_date
-    and end_date parameters (end_date parameter must be present)
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
     """
     startDate: Time
 
@@ -2600,6 +2890,48 @@ type Group {
   mentionsDisabled: Boolean
 
   """
+  Find milestones
+  """
+  milestones(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    List items within a time frame where items.end_date is between startDate and
+    endDate parameters (startDate parameter must be present)
+    """
+    endDate: Time
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    List items within a time frame where items.start_date is between startDate
+    and endDate parameters (endDate parameter must be present)
+    """
+    startDate: Time
+
+    """
+    Filter milestones by state
+    """
+    state: MilestoneStateEnum
+  ): MilestoneConnection
+
+  """
   Name of the namespace
   """
   name: String!
@@ -2613,6 +2945,11 @@ type Group {
   Path of the namespace
   """
   path: String!
+
+  """
+  The permission level required to create projects in the group
+  """
+  projectCreationLevel: String
 
   """
   Projects within this namespace
@@ -2650,9 +2987,24 @@ type Group {
   requestAccessEnabled: Boolean
 
   """
+  Indicates if all users in this group are required to set up two-factor authentication
+  """
+  requireTwoFactorAuthentication: Boolean
+
+  """
   Aggregated storage statistics of the namespace. Only available for root namespaces
   """
   rootStorageStatistics: RootStorageStatistics
+
+  """
+  Indicates if sharing a project with another group within this group is prevented
+  """
+  shareWithGroupLock: Boolean
+
+  """
+  The permission level required to create subgroups within the group
+  """
+  subgroupCreationLevel: String
 
   """
   Time logged in issues by group members
@@ -2690,6 +3042,11 @@ type Group {
   ): TimelogConnection!
 
   """
+  Time before two-factor authentication is enforced
+  """
+  twoFactorGracePeriod: Int
+
+  """
   Permissions for the current user on the resource
   """
   userPermissions: GroupPermissions!
@@ -2710,6 +3067,15 @@ type GroupPermissions {
   Indicates the user can perform `read_group` on this resource
   """
   readGroup: Boolean!
+}
+
+"""
+Health status of an issue or epic
+"""
+enum HealthStatus {
+  atRisk
+  needsAttention
+  onTrack
 }
 
 """
@@ -2783,9 +3149,9 @@ type Issue implements Noteable {
   designCollection: DesignCollection
 
   """
-  Deprecated. Use `design_collection`
+  Deprecated. Use `designCollection`
   """
-  designs: DesignCollection @deprecated(reason: "use design_collection")
+  designs: DesignCollection @deprecated(reason: "Use designCollection")
 
   """
   Indicates discussion is locked on the issue
@@ -2831,6 +3197,11 @@ type Issue implements Noteable {
   Epic to which this issue belongs
   """
   epic: Epic
+
+  """
+  Current health status. Available only when feature flag save_issuable_health_status is enabled.
+  """
+  healthStatus: HealthStatus
 
   """
   Internal ID of the issue
@@ -4178,6 +4549,9 @@ type Metadata {
   version: String!
 }
 
+"""
+Represents a milestone.
+"""
 type Milestone {
   """
   Timestamp of milestone creation
@@ -4207,7 +4581,7 @@ type Milestone {
   """
   State of the milestone
   """
-  state: String!
+  state: MilestoneStateEnum!
 
   """
   Title of the milestone
@@ -4218,6 +4592,51 @@ type Milestone {
   Timestamp of last milestone update
   """
   updatedAt: Time!
+
+  """
+  Web path of the milestone
+  """
+  webPath: String!
+}
+
+"""
+The connection type for Milestone.
+"""
+type MilestoneConnection {
+  """
+  A list of edges.
+  """
+  edges: [MilestoneEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Milestone]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type MilestoneEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Milestone
+}
+
+enum MilestoneStateEnum {
+  active
+  closed
 }
 
 """
@@ -4261,9 +4680,23 @@ type Mutation {
   removeAwardEmoji(input: RemoveAwardEmojiInput!): RemoveAwardEmojiPayload
   todoMarkDone(input: TodoMarkDoneInput!): TodoMarkDonePayload
   todoRestore(input: TodoRestoreInput!): TodoRestorePayload
+  todoRestoreMany(input: TodoRestoreManyInput!): TodoRestoreManyPayload
   todosMarkAllDone(input: TodosMarkAllDoneInput!): TodosMarkAllDonePayload
   toggleAwardEmoji(input: ToggleAwardEmojiInput!): ToggleAwardEmojiPayload
   updateEpic(input: UpdateEpicInput!): UpdateEpicPayload
+
+  """
+  Updates a DiffNote on an image (a `Note` where the `position.positionType` is
+  `"image"`). If the body of the Note contains only quick actions, the Note will
+  be destroyed during the update, and no Note will be returned
+  """
+  updateImageDiffNote(input: UpdateImageDiffNoteInput!): UpdateImageDiffNotePayload
+  updateIssue(input: UpdateIssueInput!): UpdateIssuePayload
+
+  """
+  Updates a Note. If the body of the Note contains only quick actions, the Note
+  will be destroyed during the update, and no Note will be returned
+  """
   updateNote(input: UpdateNoteInput!): UpdateNotePayload
   updateSnippet(input: UpdateSnippetInput!): UpdateSnippetPayload
 }
@@ -5175,6 +5608,11 @@ type Project {
   ): SentryDetailedError
 
   """
+  Paginated collection of Sentry errors on the project
+  """
+  sentryErrors: SentryErrorCollection
+
+  """
   E-mail address of the service desk.
   """
   serviceDeskAddress: String
@@ -5457,6 +5895,11 @@ type ProjectPermissions {
   readDesign: Boolean!
 
   """
+  Indicates the user can perform `read_merge_request` on this resource
+  """
+  readMergeRequest: Boolean!
+
+  """
   Indicates the user can perform `read_pages_content` on this resource
   """
   readPagesContent: Boolean!
@@ -5559,6 +6002,11 @@ type Query {
   Get information about current user
   """
   currentUser: User
+
+  """
+  Fields related to design management
+  """
+  designManagement: DesignManagement!
 
   """
   Text to echo back
@@ -5770,6 +6218,9 @@ type RootStorageStatistics {
   wikiSize: Int!
 }
 
+"""
+A Sentry error.
+"""
 type SentryDetailedError {
   """
   Count of occurrences
@@ -5780,6 +6231,11 @@ type SentryDetailedError {
   Culprit of the error
   """
   culprit: String!
+
+  """
+  External Base URL of the Sentry Instance
+  """
+  externalBaseUrl: String!
 
   """
   External URL of the error
@@ -5815,6 +6271,11 @@ type SentryDetailedError {
   Path to the GitLab page for the GitLab commit attributed to the error
   """
   gitlabCommitPath: String
+
+  """
+  URL of GitLab Issue
+  """
+  gitlabIssuePath: String
 
   """
   ID (global ID) of the error
@@ -5872,6 +6333,11 @@ type SentryDetailedError {
   status: SentryErrorStatus!
 
   """
+  Tags associated with the Sentry Error
+  """
+  tags: SentryErrorTags!
+
+  """
   Title of the error
   """
   title: String!
@@ -5887,6 +6353,196 @@ type SentryDetailedError {
   userCount: Int!
 }
 
+"""
+A Sentry error. A simplified version of SentryDetailedError.
+"""
+type SentryError {
+  """
+  Count of occurrences
+  """
+  count: Int!
+
+  """
+  Culprit of the error
+  """
+  culprit: String!
+
+  """
+  External URL of the error
+  """
+  externalUrl: String!
+
+  """
+  Timestamp when the error was first seen
+  """
+  firstSeen: Time!
+
+  """
+  Last 24hr stats of the error
+  """
+  frequency: [SentryErrorFrequency!]!
+
+  """
+  ID (global ID) of the error
+  """
+  id: ID!
+
+  """
+  Timestamp when the error was last seen
+  """
+  lastSeen: Time!
+
+  """
+  Sentry metadata message of the error
+  """
+  message: String
+
+  """
+  ID (Sentry ID) of the error
+  """
+  sentryId: String!
+
+  """
+  ID of the project (Sentry project)
+  """
+  sentryProjectId: ID!
+
+  """
+  Name of the project affected by the error
+  """
+  sentryProjectName: String!
+
+  """
+  Slug of the project affected by the error
+  """
+  sentryProjectSlug: String!
+
+  """
+  Short ID (Sentry ID) of the error
+  """
+  shortId: String!
+
+  """
+  Status of the error
+  """
+  status: SentryErrorStatus!
+
+  """
+  Title of the error
+  """
+  title: String!
+
+  """
+  Type of the error
+  """
+  type: String!
+
+  """
+  Count of users affected by the error
+  """
+  userCount: Int!
+}
+
+"""
+An object containing a collection of Sentry errors, and a detailed error.
+"""
+type SentryErrorCollection {
+  """
+  Detailed version of a Sentry error on the project
+  """
+  detailedError(
+    """
+    ID of the Sentry issue
+    """
+    id: ID!
+  ): SentryDetailedError
+
+  """
+  Stack Trace of Sentry Error
+  """
+  errorStackTrace(
+    """
+    ID of the Sentry issue
+    """
+    id: ID!
+  ): SentryErrorStackTrace
+
+  """
+  Collection of Sentry Errors
+  """
+  errors(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Search term for the Sentry error.
+    """
+    searchTerm: String
+
+    """
+    Attribute to sort on. Options are frequency, first_seen, last_seen. last_seen is default.
+    """
+    sort: String
+  ): SentryErrorConnection
+
+  """
+  External URL for Sentry
+  """
+  externalUrl: String
+}
+
+"""
+The connection type for SentryError.
+"""
+type SentryErrorConnection {
+  """
+  A list of edges.
+  """
+  edges: [SentryErrorEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [SentryError]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type SentryErrorEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: SentryError
+}
+
 type SentryErrorFrequency {
   """
   Count of errors received since the previously recorded time
@@ -5897,6 +6553,71 @@ type SentryErrorFrequency {
   Time the error frequency stats were recorded
   """
   time: Time!
+}
+
+"""
+An object containing a stack trace entry for a Sentry error.
+"""
+type SentryErrorStackTrace {
+  """
+  Time the stack trace was received by Sentry
+  """
+  dateReceived: String!
+
+  """
+  ID of the Sentry error
+  """
+  issueId: String!
+
+  """
+  Stack trace entries for the Sentry error
+  """
+  stackTraceEntries: [SentryErrorStackTraceEntry!]!
+}
+
+"""
+An object context for a Sentry error stack trace
+"""
+type SentryErrorStackTraceContext {
+  """
+  Code number of the context
+  """
+  code: String!
+
+  """
+  Line number of the context
+  """
+  line: Int!
+}
+
+"""
+An object containing a stack trace entry for a Sentry error.
+"""
+type SentryErrorStackTraceEntry {
+  """
+  Function in which the Sentry error occurred
+  """
+  col: String
+
+  """
+  File in which the Sentry error occurred
+  """
+  fileName: String
+
+  """
+  Function in which the Sentry error occurred
+  """
+  function: String
+
+  """
+  Function in which the Sentry error occurred
+  """
+  line: String
+
+  """
+  Context of the Sentry error
+  """
+  traceContext: [SentryErrorStackTraceContext!]
 }
 
 """
@@ -5925,6 +6646,21 @@ enum SentryErrorStatus {
 }
 
 """
+State of a Sentry error
+"""
+type SentryErrorTags {
+  """
+  Severity level of the Sentry Error
+  """
+  level: String
+
+  """
+  Logger of the Sentry Error
+  """
+  logger: String
+}
+
+"""
 Represents a snippet entry
 """
 type Snippet implements Noteable {
@@ -5934,9 +6670,9 @@ type Snippet implements Noteable {
   author: User!
 
   """
-  Content of the snippet
+  Snippet blob
   """
-  content: String!
+  blob: SnippetBlob!
 
   """
   Timestamp this snippet was created
@@ -6047,6 +6783,101 @@ type Snippet implements Noteable {
   Web URL of the snippet
   """
   webUrl: String!
+}
+
+"""
+Represents the snippet blob
+"""
+type SnippetBlob {
+  """
+  Shows whether the blob is binary
+  """
+  binary: Boolean!
+
+  """
+  Blob mode
+  """
+  mode: String
+
+  """
+  Blob name
+  """
+  name: String
+
+  """
+  Blob path
+  """
+  path: String
+
+  """
+  Blob plain highlighted data
+  """
+  plainData: String
+
+  """
+  Blob raw content endpoint path
+  """
+  rawPath: String!
+
+  """
+  Blob highlighted data
+  """
+  richData: String
+
+  """
+  Blob content rich viewer
+  """
+  richViewer: SnippetBlobViewer
+
+  """
+  Blob content simple viewer
+  """
+  simpleViewer: SnippetBlobViewer!
+
+  """
+  Blob size
+  """
+  size: Int!
+}
+
+"""
+Represents how the blob content should be displayed
+"""
+type SnippetBlobViewer {
+  """
+  Shows whether the blob should be displayed collapsed
+  """
+  collapsed: Boolean!
+
+  """
+  Content file type
+  """
+  fileType: String!
+
+  """
+  Shows whether the blob content is loaded async
+  """
+  loadAsync: Boolean!
+
+  """
+  Loading partial name
+  """
+  loadingPartialName: String!
+
+  """
+  Error rendering the blob content
+  """
+  renderError: String
+
+  """
+  Shows whether the blob too large to be displayed
+  """
+  tooLarge: Boolean!
+
+  """
+  Type of blob viewer
+  """
+  type: BlobViewersType!
 }
 
 """
@@ -6416,6 +7247,41 @@ input TodoRestoreInput {
 }
 
 """
+Autogenerated input type of TodoRestoreMany
+"""
+input TodoRestoreManyInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The global ids of the todos to restore (a maximum of 50 is supported at once)
+  """
+  ids: [ID!]!
+}
+
+"""
+Autogenerated return type of TodoRestoreMany
+"""
+type TodoRestoreManyPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Reasons why the mutation failed.
+  """
+  errors: [String!]!
+
+  """
+  The ids of the updated todo items
+  """
+  updatedIds: [ID!]!
+}
+
+"""
 Autogenerated return type of TodoRestore
 """
 type TodoRestorePayload {
@@ -6704,6 +7570,28 @@ enum TypeEnum {
   project
 }
 
+input UpdateDiffImagePositionInput {
+  """
+  Total height of the image
+  """
+  height: Int
+
+  """
+  Total width of the image
+  """
+  width: Int
+
+  """
+  X position of the note
+  """
+  x: Int
+
+  """
+  Y position of the note
+  """
+  y: Int
+}
+
 """
 Autogenerated input type of UpdateEpic
 """
@@ -6737,6 +7625,11 @@ input UpdateEpicInput {
   The group the epic to mutate is in
   """
   groupPath: ID!
+
+  """
+  The desired health status
+  """
+  healthStatus: HealthStatus
 
   """
   The iid of the epic to mutate
@@ -6787,6 +7680,96 @@ type UpdateEpicPayload {
   Reasons why the mutation failed.
   """
   errors: [String!]!
+}
+
+"""
+Autogenerated input type of UpdateImageDiffNote
+"""
+input UpdateImageDiffNoteInput {
+  """
+  Content of the note
+  """
+  body: String
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The global id of the note to update
+  """
+  id: ID!
+
+  """
+  The position of this note on a diff
+  """
+  position: UpdateDiffImagePositionInput
+}
+
+"""
+Autogenerated return type of UpdateImageDiffNote
+"""
+type UpdateImageDiffNotePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Reasons why the mutation failed.
+  """
+  errors: [String!]!
+
+  """
+  The note after mutation
+  """
+  note: Note
+}
+
+"""
+Autogenerated input type of UpdateIssue
+"""
+input UpdateIssueInput {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The desired health status
+  """
+  healthStatus: HealthStatus
+
+  """
+  The iid of the issue to mutate
+  """
+  iid: String!
+
+  """
+  The project the issue to mutate is in
+  """
+  projectPath: ID!
+}
+
+"""
+Autogenerated return type of UpdateIssue
+"""
+type UpdateIssuePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Reasons why the mutation failed.
+  """
+  errors: [String!]!
+
+  """
+  The issue after mutation
+  """
+  issue: Issue
 }
 
 """

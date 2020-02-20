@@ -49,7 +49,7 @@ RSpec.describe TriggerableHooks do
       TestableHook.create!(url: 'http://example2.com', push_events: true)
       filter1 = double(:filter1)
       filter2 = double(:filter2)
-      allow(ActiveHookFilter).to receive(:new).exactly(2).times.and_return(filter1, filter2)
+      allow(ActiveHookFilter).to receive(:new).twice.and_return(filter1, filter2)
       expect(filter1).to receive(:matches?).and_return(true)
       expect(filter2).to receive(:matches?).and_return(false)
 

@@ -46,7 +46,7 @@ module RspecProfilingExt
     rescue => err
       return if @already_logged_example_finished_error # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-      $stderr.puts "rspec_profiling couldn't collect an example: #{err}. Further warnings suppressed."
+      warn "rspec_profiling couldn't collect an example: #{err}. Further warnings suppressed."
       @already_logged_example_finished_error = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
@@ -61,7 +61,7 @@ RspecProfiling.configure do |config|
     RspecProfiling::Run.prepend(RspecProfilingExt::Run)
     config.collector = RspecProfilingExt::Collectors::CSVWithTimestamps
     config.csv_path = -> do
-      prefix = "#{ENV['CI_JOB_NAME']}-".tr(' ', '-') if ENV['CI_JOB_NAME']
+      prefix = "#{ENV['CI_JOB_NAME']}-".gsub(/[ \/]/, '-') if ENV['CI_JOB_NAME']
       "rspec_profiling/#{prefix}#{Time.now.to_i}-#{SecureRandom.hex(8)}-rspec-data.csv"
     end
   end

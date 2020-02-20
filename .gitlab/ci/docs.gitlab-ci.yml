@@ -2,11 +2,8 @@
   extends:
     - .default-tags
     - .default-retry
-    - .only:variables-canonical-dot-com
-    - .only:changes-docs
-  only:
-    refs:
-      - merge_requests
+    - .docs:rules:review-docs
+  allow_failure: true
   image: ruby:2.6-alpine
   stage: review
   dependencies: []
@@ -32,7 +29,6 @@ review-docs-deploy:
   extends: .review-docs
   script:
     - ./scripts/trigger-build-docs deploy
-  when: manual
 
 # Cleanup remote environment of gitlab-docs
 review-docs-cleanup:
@@ -42,14 +38,12 @@ review-docs-cleanup:
     action: stop
   script:
     - ./scripts/trigger-build-docs cleanup
-  when: manual
 
 docs lint:
   extends:
     - .default-tags
     - .default-retry
-    - .default-only
-    - .only:changes-docs
+    - .docs:rules:docs-lint
   image: "registry.gitlab.com/gitlab-org/gitlab-docs:docs-lint"
   stage: test
   dependencies: []
@@ -69,13 +63,11 @@ docs lint:
 
 graphql-reference-verify:
   extends:
-    - .only-ee
     - .default-tags
     - .default-retry
     - .default-cache
-    - .default-only
     - .default-before_script
-    - .only:changes-code-backstage-qa
+    - .docs:rules:graphql-reference-verify
     - .use-pg9
   stage: test
   needs: ["setup-test-env"]

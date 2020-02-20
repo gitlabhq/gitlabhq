@@ -4,14 +4,20 @@ import Translate from '~/vue_shared/translate';
 
 Vue.use(Translate);
 
-export default () =>
-  new Vue({
-    el: '#js-vue-registry-images',
+export default () => {
+  const el = document.getElementById('js-vue-registry-images');
+
+  if (!el) {
+    return null;
+  }
+
+  return new Vue({
+    el,
     components: {
       registryApp,
     },
     data() {
-      const { dataset } = document.querySelector(this.$options.el);
+      const { dataset } = el;
       return {
         registryData: {
           endpoint: dataset.endpoint,
@@ -35,3 +41,4 @@ export default () =>
       });
     },
   });
+};

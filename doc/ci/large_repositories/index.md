@@ -31,14 +31,14 @@ it often results in receiving extra commit logs.
 
 Ideally, you should always use `GIT_DEPTH` with a small number
 like 10. This will instruct GitLab Runner to perform shallow clones.
-Shallow clones makes Git request only the latest set of changes for a given branch,
+Shallow clones make Git request only the latest set of changes for a given branch,
 up to desired number of commits as defined by the `GIT_DEPTH` variable.
 
 This significantly speeds up fetching of changes from Git repositories,
 especially if the repository has a very long backlog consisting of number
 of big files as we effectively reduce amount of data transfer.
 
-The following example makes GitLab Runner shallow clone to fetch only a given branch,
+The following example makes GitLab Runner shallow clone to fetch only a given branch;
 it does not fetch any other branches nor tags.
 
 ```yaml
@@ -107,7 +107,7 @@ clean` is disk I/O intensive. Controlling that with `GIT_CLEAN_FLAGS: -ffdx
 -e .build/`, for example, allows you to control and disable removal of some
 directories within the worktree between subsequent runs, which can speed-up
 the incremental builds. This has the biggest effect if you re-use existing
-machines, and have an existing worktree that you can re-use for builds.
+machines and have an existing worktree that you can re-use for builds.
 
 For exact parameters accepted by
 [`GIT_CLEAN_FLAGS`](../yaml/README.md#git-clean-flags), see the documentation
@@ -118,19 +118,19 @@ are dependent on Git version.
 
 > Introduced in GitLab Runner 11.10.
 
-Following the guidelines above, lets imagine that we want to:
+Following the guidelines above, let's imagine that we want to:
 
 - Optimize for a big project (more than 50k files in directory).
 - Use forks-based workflow for contributing.
 - Reuse existing worktrees. Have preconfigured runners that are pre-cloned with repositories.
 - Runner assigned only to project and all forks.
 
-Lets consider the following two examples, one using `shell` executor and
+Let's consider the following two examples, one using `shell` executor and
 other using `docker` executor.
 
 ### `shell` executor example
 
-Lets assume that you have the following [config.toml](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+Let's assume that you have the following [config.toml](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
 
 ```toml
 concurrent = 4
@@ -155,7 +155,7 @@ This `config.toml`:
 
 ### `docker` executor example
 
-Lets assume that you have the following [config.toml](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+Let's assume that you have the following [config.toml](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
 
 ```toml
 concurrent = 4
@@ -238,5 +238,5 @@ concurrent = 4
     volumes = ["/builds:/builds", "/cache:/cache"]
 ```
 
-This makes the cloning configuration to be part of given Runner,
+This makes the cloning configuration to be part of given Runner
 and does not require us to update each `.gitlab-ci.yml`.

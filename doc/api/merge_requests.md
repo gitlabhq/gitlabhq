@@ -4,7 +4,7 @@ Every API call to merge requests must be authenticated.
 
 CAUTION: **Deprecation**
 > `reference` attribute in response is deprecated in favour of `references`.
-> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/merge_requests/20354)
+> Introduced [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354)
 
 NOTE: **Note**
 > `references.relative` is relative to the group / project that the merge request is being requested. When merge request is fetched from its project
@@ -37,29 +37,36 @@ GET /merge_requests?search=foo&in=title
 
 Parameters:
 
-| Attribute           | Type           | Required | Description                                                                                                            |
-| ------------------- | --------       | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                             |
-| `order_by`          | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                |
-| `sort`              | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                     |
-| `milestone`         | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
-| `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                              |
-| `labels`            | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413) |
-| `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                               |
-| `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                              |
-| `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                               |
-| `updated_before`    | datetime       | no       | Return merge requests updated on or before the given time                                                              |
-| `scope`             | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead. |
-| `author_id`         | integer        | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned_to_me`              |
-| `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
-| `approver_ids` **(STARTER)** | integer array | no | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
-| `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
-| `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                     |
-| `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                     |
-| `search`            | string         | no       | Search merge requests against their `title` and `description`                                                          |
-| `in`                | string         | no       | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description` |
-| `wip`               | string         | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
+| Attribute                       | Type           | Required | Description                                                                                                            |
+| ------------------------------- | -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `state`                         | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                             |
+| `order_by`                      | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                |
+| `sort`                          | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                     |
+| `milestone`                     | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
+| `view`                          | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                              |
+| `labels`                        | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
+| `with_labels_details`           | Boolean        | no       | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
+| `created_after`                 | datetime       | no       | Return merge requests created on or after the given time                                                               |
+| `created_before`                | datetime       | no       | Return merge requests created on or before the given time                                                              |
+| `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time                                                               |
+| `updated_before`                | datetime       | no       | Return merge requests updated on or before the given time                                                              |
+| `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead. |
+| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned_to_me`              |
+| `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
+| `approver_ids` **(STARTER)**    | integer array  | no       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approved_by_ids` **(STARTER)** | integer array  | no       | Returns merge requests which have been approved by all the users with the given `id`s (Max: 5). `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
+| `my_reaction_emoji`             | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `source_branch`                 | string         | no       | Return merge requests with the given source branch                                                                     |
+| `target_branch`                 | string         | no       | Return merge requests with the given target branch                                                                     |
+| `search`                        | string         | no       | Search merge requests against their `title` and `description`                                                          |
+| `in`                            | string         | no       | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description` |
+| `wip`                           | string         | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
+
+NOTE: **Note:**
+[Starting in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/29984),
+the mergeability (`merge_status`) of each merge request will be checked
+asynchronously when a request is made to this endpoint. Poll this API endpoint
+to get updated status.
 
 ```json
 [
@@ -204,30 +211,31 @@ will be the same. In the case of a merge request from a fork,
 
 Parameters:
 
-| Attribute           | Type           | Required | Description                                                                                                                    |
-| ------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                | integer        | yes      | The ID of a project                                                                                                            |
-| `iids[]`            | integer array  | no     | Return the request having the given `iid`                                                                                      |
-| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                     |
-| `order_by`          | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
-| `sort`              | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                             |
-| `milestone`         | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
-| `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
-| `labels`            | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413) |
-| `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                                       |
-| `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                                      |
-| `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
-| `updated_before`    | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
-| `scope`             | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13060] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
-| `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
-| `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
-| `approver_ids` **(STARTER)** | integer array | no | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
-| `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
-| `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                             |
-| `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                             |
-| `search`            | string         | no       | Search merge requests against their `title` and `description`                                                                  |
-| `wip`               | string         | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
+| Attribute                       | Type           | Required | Description                                                                                                                    |
+| ------------------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                            | integer        | yes      | The ID of a project                                                                                                            |
+| `iids[]`                        | integer array  | no       | Return the request having the given `iid`                                                                                      |
+| `state`                         | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                     |
+| `order_by`                      | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
+| `sort`                          | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                             |
+| `milestone`                     | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
+| `view`                          | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
+| `labels`                        | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
+| `with_labels_details`           | Boolean        | no       | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
+| `created_after`                 | datetime       | no       | Return merge requests created on or after the given time                                                                       |
+| `created_before`                | datetime       | no       | Return merge requests created on or before the given time                                                                      |
+| `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
+| `updated_before`                | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
+| `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13060] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
+| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
+| `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
+| `approver_ids` **(STARTER)**    | integer array  | no       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approved_by_ids` **(STARTER)** | integer array  | no       | Returns merge requests which have been approved by all the users with the given `id`s (Max: 5). `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
+| `my_reaction_emoji`             | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `source_branch`                 | string         | no       | Return merge requests with the given source branch                                                                             |
+| `target_branch`                 | string         | no       | Return merge requests with the given target branch                                                                             |
+| `search`                        | string         | no       | Search merge requests against their `title` and `description`                                                                  |
+| `wip`                           | string         | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
 
 ```json
 [
@@ -366,28 +374,30 @@ GET /groups/:id/merge_requests?my_reaction_emoji=star
 
 Parameters:
 
-| Attribute           | Type           | Required | Description                                                                                                                    |
-| ------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                | integer        | yes      | The ID of a group                                                                                                              |
-| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                     |
-| `order_by`          | string         | no       | Return merge requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                  |
-| `sort`              | string         | no       | Return merge requests sorted in `asc` or `desc` order. Default is `desc`                                                       |
-| `milestone`         | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
-| `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
-| `labels`            | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/merge_requests/21413)|
-| `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                                       |
-| `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                                      |
-| `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
-| `updated_before`    | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
-| `scope`             | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br>                                     |
-| `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
-| `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
-| `approver_ids` **(STARTER)** | integer array | no | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
-| `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
-| `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                             |
-| `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                             |
-| `search`            | string         | no       | Search merge requests against their `title` and `description`                                                                  |
+| Attribute                       | Type           | Required | Description                                                                                                                    |
+| ------------------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                            | integer        | yes      | The ID of a group                                                                                                              |
+| `state`                         | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                     |
+| `order_by`                      | string         | no       | Return merge requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                  |
+| `sort`                          | string         | no       | Return merge requests sorted in `asc` or `desc` order. Default is `desc`                                                       |
+| `milestone`                     | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
+| `view`                          | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
+| `labels`                        | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
+| `with_labels_details`           | Boolean        | no       | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413)|
+| `created_after`                 | datetime       | no       | Return merge requests created on or after the given time                                                                       |
+| `created_before`                | datetime       | no       | Return merge requests created on or before the given time                                                                      |
+| `updated_after`                 | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
+| `updated_before`                | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
+| `scope`                         | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br>                                     |
+| `author_id`                     | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
+| `assignee_id`                   | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
+| `approver_ids` **(STARTER)**    | integer array  | no       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approved_by_ids` **(STARTER)** | integer array  | no       | Returns merge requests which have been approved by all the users with the given `id`s (Max: 5). `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
+| `my_reaction_emoji`             | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
+| `source_branch`                 | string         | no       | Return merge requests with the given source branch                                                                             |
+| `target_branch`                 | string         | no       | Return merge requests with the given target branch                                                                             |
+| `search`                        | string         | no       | Search merge requests against their `title` and `description` |
+| `non_archived`                  | Boolean        | no       | Return merge requests from non archived projects only. Default is true. _(Introduced in [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23809))_  |
 
 ```json
 [
@@ -525,6 +535,12 @@ Parameters:
 - `render_html` (optional) - If `true` response includes rendered HTML for title and description
 - `include_diverged_commits_count` (optional) - If `true` response includes the commits behind the target branch
 - `include_rebase_in_progress` (optional) - If `true` response includes whether a rebase operation is in progress
+
+NOTE: **Note:**
+[Starting in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/29984),
+the mergeability (`merge_status`) of a merge request will be checked
+asynchronously when a request is made to this endpoint. Poll this API endpoint
+to get updated status.
 
 ```json
 {
@@ -870,7 +886,7 @@ Parameters:
 
 ## Create MR Pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/31722) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31722) in GitLab 12.3.
 
 Create a new [pipeline for a merge request](../ci/merge_request_pipelines/index.md). A pipeline created via this endpoint will not run a regular branch/tag pipeline, it requires `.gitlab-ci.yml` to be configured with `only: [merge_requests]` to create jobs.
 
@@ -1257,7 +1273,7 @@ DELETE /projects/:id/merge_requests/:merge_request_iid
 | `id`      | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/merge_requests/85
 ```
 
@@ -1615,8 +1631,8 @@ PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 | `skip_ci`           | boolean | no       | Set to `true` to skip creating a CI pipeline |
 
-```bash
-curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase
 ```
 
 This is an asynchronous request. The API will return a `202 Accepted` response
@@ -1677,7 +1693,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                  |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/closes_issues
 ```
 
@@ -1753,7 +1769,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/subscribe
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user         |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/subscribe
 ```
 
@@ -1904,7 +1920,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/unsubscribe
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                  |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/unsubscribe
 ```
 
@@ -2055,7 +2071,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/todo
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                  |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/27/todo
 ```
 
@@ -2172,7 +2188,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions
 | `id`                | String  | yes      | The ID of the project       |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions
 ```
 
@@ -2214,7 +2230,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request     |
 | `version_id`        | integer | yes      | The ID of the merge request diff version |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions/1
 ```
 
@@ -2282,7 +2298,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/time_estimate
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request     |
 | `duration`          | string  | yes      | The duration in human format. e.g: 3h30m |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_estimate?duration=3h30m
 ```
 
@@ -2310,7 +2326,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_time_estimate
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                          |
 | `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_time_estimate
 ```
 
@@ -2339,7 +2355,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/add_spent_time
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request     |
 | `duration`          | string  | yes      | The duration in human format. e.g: 3h30m |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/add_spent_time?duration=1h
 ```
 
@@ -2367,7 +2383,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_spent_time
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                          |
 | `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_spent_time
 ```
 
@@ -2393,8 +2409,8 @@ GET /projects/:id/merge_requests/:merge_request_iid/time_stats
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                  |
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
-```bash
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats
 ```
 
 Example response:
@@ -2408,10 +2424,10 @@ Example response:
 }
 ```
 
-[ce-13060]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/13060
-[ce-14016]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14016
-[ce-15454]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15454
-[ce-18935]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18935
+[ce-13060]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13060
+[ce-14016]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14016
+[ce-15454]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15454
+[ce-18935]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18935
 
 ## Approvals **(STARTER)**
 

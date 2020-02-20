@@ -61,14 +61,14 @@ describe('ide component, non-empty repo', () => {
   });
 
   it('shows error message when set', done => {
-    expect(vm.$el.querySelector('.flash-container')).toBe(null);
+    expect(vm.$el.querySelector('.gl-alert')).toBe(null);
 
     vm.$store.state.errorMessage = {
       text: 'error',
     };
 
     vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.flash-container')).not.toBe(null);
+      expect(vm.$el.querySelector('.gl-alert')).not.toBe(null);
 
       done();
     });

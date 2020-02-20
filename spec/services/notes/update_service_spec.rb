@@ -30,6 +30,12 @@ describe Notes::UpdateService do
       @note.reload
     end
 
+    it 'does not update the note when params is blank' do
+      Timecop.freeze(1.day.from_now) do
+        expect { update_note({}) }.not_to change { note.reload.updated_at }
+      end
+    end
+
     context 'suggestions' do
       it 'refreshes note suggestions' do
         markdown = <<-MARKDOWN.strip_heredoc

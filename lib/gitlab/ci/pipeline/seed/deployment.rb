@@ -24,8 +24,14 @@ module Gitlab
             # non-environment job.
             return unless deployment.valid? && deployment.environment.persisted?
 
-            deployment.cluster_id =
-              deployment.environment.deployment_platform&.cluster_id
+            if cluster_id = deployment.environment.deployment_platform&.cluster_id
+              # double write cluster_id until 12.9: https://gitlab.com/gitlab-org/gitlab/issues/202628
+              deployment.cluster_id = cluster_id
+              deployment.deployment_cluster = ::DeploymentCluster.new(
+                cluster_id: cluster_id,
+                kubernetes_namespace: deployment.environment.deployment_namespace
+              )
+            end
 
             # Allocate IID for deployments.
             # This operation must be outside of transactions of pipeline creations.

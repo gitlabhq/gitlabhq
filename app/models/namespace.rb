@@ -131,6 +131,11 @@ class Namespace < ApplicationRecord
       name = host.delete_suffix(gitlab_host)
       Namespace.find_by_full_path(name)
     end
+
+    # overridden in ee
+    def reset_ci_minutes!(namespace_id)
+      false
+    end
   end
 
   def visibility_level_field

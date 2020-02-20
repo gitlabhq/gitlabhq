@@ -142,7 +142,7 @@ describe Groups::ChildrenController do
 
           get :index, params: { group_id: subgroup.to_param, filter: 'test' }, format: :json
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'returns an array with one element when only one result is matched' do
@@ -185,7 +185,7 @@ describe Groups::ChildrenController do
 
           get :index, params: { group_id: group.to_param, filter: 'filter', per_page: 3 }, format: :json
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'includes pagination headers' do
@@ -316,7 +316,7 @@ describe Groups::ChildrenController do
           it 'correctly calculates the counts' do
             get :index, params: { group_id: group.to_param, sort: 'id_asc', page: 2 }, format: :json
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -328,7 +328,7 @@ describe Groups::ChildrenController do
 
         get :index, params: { group_id: group }, format: :json
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

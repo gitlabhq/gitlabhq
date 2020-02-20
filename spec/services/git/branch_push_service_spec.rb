@@ -12,6 +12,7 @@ describe Git::BranchPushService, services: true do
   let(:newrev)   { sample_commit.id }
   let(:branch)   { 'master' }
   let(:ref)      { "refs/heads/#{branch}" }
+  let(:push_options) { nil }
 
   before do
     project.add_maintainer(user)
@@ -19,7 +20,7 @@ describe Git::BranchPushService, services: true do
 
   describe 'Push branches' do
     subject do
-      execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
+      execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref, push_options: push_options)
     end
 
     context 'new branch' do
@@ -112,6 +113,20 @@ describe Git::BranchPushService, services: true do
         expect(Sidekiq.logger).to receive(:warn)
 
         expect { subject }.not_to change { Ci::Pipeline.count }
+      end
+
+      context 'with push options' do
+        let(:push_options) { ['mr.create'] }
+
+        it 'sanitizes push options' do
+          allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+          expect(Sidekiq.logger).to receive(:warn) do |args|
+            pipeline_params = args[:pipeline_params]
+            expect(pipeline_params.keys).to match_array(%i(before after ref variables_attributes checkout_sha))
+          end
+
+          expect { subject }.not_to change { Ci::Pipeline.count }
+        end
       end
     end
   end
@@ -421,7 +436,7 @@ describe Git::BranchPushService, services: true do
         let(:message) { "this is some work.\n\ncloses JIRA-1" }
         let(:comment_body) do
           {
-            body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.full_path}/commit/#{closing_commit.id}]."
+            body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/commit/#{closing_commit.id}]."
           }.to_json
         end
 
@@ -637,8 +652,8 @@ describe Git::BranchPushService, services: true do
     end
   end
 
-  def execute_service(project, user, change)
-    service = described_class.new(project, user, change: change)
+  def execute_service(project, user, change, push_options = {})
+    service = described_class.new(project, user, change: change, push_options: push_options)
     service.execute
     service
   end

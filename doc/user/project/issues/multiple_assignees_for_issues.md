@@ -2,7 +2,7 @@
 
 > **Note:**
 [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1904)
-in [GitLab Starter 9.2](https://about.gitlab.com/blog/2017/05/22/gitlab-9-2-released/#multiple-assignees-for-issues).
+in [GitLab Starter 9.2](https://about.gitlab.com/releases/2017/05/22/gitlab-9-2-released/#multiple-assignees-for-issues).
 
 ## Overview
 

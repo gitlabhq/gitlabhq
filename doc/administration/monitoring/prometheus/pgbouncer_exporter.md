@@ -27,7 +27,7 @@ is enabled.
 
 [← Back to the main Prometheus page](index.md)
 
-[2493]: https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2493
+[2493]: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2493
 [PgBouncer exporter]: https://github.com/stanhu/pgbouncer_exporter
 [postgres roles]: https://docs.gitlab.com/omnibus/roles/#postgres-roles
 [prometheus]: https://prometheus.io

@@ -53,7 +53,7 @@ module ButtonHelper
     }
 
     content_tag :button, button_attributes do
-      concat(sprite_icon('duplicate')) unless hide_button_icon
+      concat(sprite_icon('copy-to-clipboard')) unless hide_button_icon
       concat(button_text)
     end
   end

@@ -111,5 +111,70 @@ describe Types::BaseField do
         end
       end
     end
+
+    describe '#visible?' do
+      context 'and has a feature_flag' do
+        let(:flag) { :test_feature }
+        let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, feature_flag: flag, null: false) }
+        let(:context) { {} }
+
+        it 'returns false if the feature is not enabled' do
+          stub_feature_flags(flag => false)
+
+          expect(field.visible?(context)).to eq(false)
+        end
+
+        it 'returns true if the feature is enabled' do
+          expect(field.visible?(context)).to eq(true)
+        end
+
+        context 'falsey feature_flag values' do
+          using RSpec::Parameterized::TableSyntax
+
+          where(:flag, :feature_value, :visible) do
+            ''  | false | true
+            ''  | true  | true
+            nil | false | true
+            nil | true  | true
+          end
+
+          with_them do
+            it 'returns the correct value' do
+              stub_feature_flags(flag => feature_value)
+
+              expect(field.visible?(context)).to eq(visible)
+            end
+          end
+        end
+      end
+    end
+
+    describe '#description' do
+      context 'feature flag given' do
+        let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, feature_flag: flag, null: false, description: 'Test description') }
+        let(:flag) { :test_flag }
+
+        it 'prepends the description' do
+          expect(field.description). to eq 'Test description. Available only when feature flag test_flag is enabled.'
+        end
+
+        context 'falsey feature_flag values' do
+          using RSpec::Parameterized::TableSyntax
+
+          where(:flag, :feature_value) do
+            ''  | false
+            ''  | true
+            nil | false
+            nil | true
+          end
+
+          with_them do
+            it 'returns the correct description' do
+              expect(field.description).to eq('Test description')
+            end
+          end
+        end
+      end
+    end
   end
 end

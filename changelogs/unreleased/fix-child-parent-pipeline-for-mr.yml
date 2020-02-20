@@ -1,0 +1,5 @@
+---
+title: Allow running child pipelines as merge request pipelines
+merge_request: 23884
+author:
+type: fixed

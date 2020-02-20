@@ -27,7 +27,7 @@ describe('Stages Dropdown', () => {
     },
     merge_request: {
       iid: 1234,
-      path: '/root/detached-merge-request-pipelines/merge_requests/1',
+      path: '/root/detached-merge-request-pipelines/-/merge_requests/1',
       title: 'Update README.md',
       source_branch: 'feature-1234',
       source_branch_path: '/root/detached-merge-request-pipelines/branches/feature-1234',

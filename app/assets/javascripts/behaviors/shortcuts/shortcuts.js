@@ -1,6 +1,9 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import Mousetrap from 'mousetrap';
+import Vue from 'vue';
+import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
+import ShortcutsToggle from './shortcuts_toggle.vue';
 import axios from '../../lib/utils/axios_utils';
 import { refreshCurrentPage, visitUrl } from '../../lib/utils/url_utility';
 import findAndFollowLink from '../../lib/utils/navigation_utility';
@@ -14,6 +17,15 @@ Mousetrap.stopCallback = (e, element, combo) => {
 
   return defaultStopCallback(e, element, combo);
 };
+
+function initToggleButton() {
+  return new Vue({
+    el: document.querySelector('.js-toggle-shortcuts'),
+    render(createElement) {
+      return createElement(ShortcutsToggle);
+    },
+  });
+}
 
 export default class Shortcuts {
   constructor() {
@@ -48,6 +60,14 @@ export default class Shortcuts {
       $(this).remove();
       e.preventDefault();
     });
+
+    $('.js-shortcuts-modal-trigger')
+      .off('click')
+      .on('click', this.onToggleHelp);
+
+    if (shouldDisableShortcuts()) {
+      disableShortcuts();
+    }
   }
 
   onToggleHelp(e) {
@@ -104,7 +124,8 @@ export default class Shortcuts {
         }
 
         return $('.js-more-help-button').remove();
-      });
+      })
+      .then(initToggleButton);
   }
 
   focusFilter(e) {

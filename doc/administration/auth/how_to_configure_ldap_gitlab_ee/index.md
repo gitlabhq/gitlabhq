@@ -59,7 +59,7 @@ Using this permission structure in our example allows only UK staff access to se
 
 ### Updating user permissions - new feature
 
-Since GitLab [v8.15](https://gitlab.com/gitlab-org/gitlab/merge_requests/822) LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions visit the groups **Members** page and select **Edit permissions**.
+Since GitLab [v8.15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/822) LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions visit the groups **Members** page and select **Edit permissions**.
 
 ![Setting manual permissions](img/manual_permissions.gif)
 
@@ -108,7 +108,7 @@ gitlab_rails['ldap_servers'] = {
 ## Conclusion
 
 Integration of GitLab with Active Directory (LDAP) reduces the complexity of user management.
-It has the advantage of improving user permission controls, whilst easing the deployment of GitLab into an existing [IT environment](https://www.techopedia.com/definition/29199/it-infrastructure). GitLab EE offers advanced group management and multiple LDAP servers.
+It has the advantage of improving user permission controls, while easing the deployment of GitLab into an existing [IT environment](https://www.techopedia.com/definition/29199/it-infrastructure). GitLab EE offers advanced group management and multiple LDAP servers.
 
 With the assistance of the [GitLab Support](https://about.gitlab.com/support/) team, setting up GitLab with an existing AD/LDAP solution will be a smooth and painless process.
 

@@ -123,7 +123,7 @@ describe Import::BitbucketController do
 
       post :create, format: :json
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'returns 422 response when the project could not be imported' do
@@ -133,8 +133,10 @@ describe Import::BitbucketController do
 
       post :create, format: :json
 
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
+
+    it_behaves_like 'project import rate limiter'
 
     context "when the repository owner is the Bitbucket user" do
       context "when the Bitbucket user and GitLab user's usernames match" do
@@ -328,7 +330,7 @@ describe Import::BitbucketController do
 
         post :create, params: { target_namespace: other_namespace.name }, format: :json
 
-        expect(response).to have_gitlab_http_status(422)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
   end

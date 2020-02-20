@@ -11,13 +11,13 @@ JWT will provide you with a secret key for you to use.
 
    For Omnibus GitLab:
 
-   ```sh
+   ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
    For installations from source:
 
-   ```sh
+   ```shell
    cd /home/git/gitlab
    sudo -u git -H editor config/gitlab.yml
    ```
@@ -45,7 +45,7 @@ JWT will provide you with a secret key for you to use.
 
    For installation from source:
 
-   ```
+   ```yaml
    - { name: 'jwt',
        args: {
          secret: 'YOUR_APP_SECRET',

@@ -53,7 +53,7 @@ namespace :pngquant do
     end
   end
 
-  desc 'GitLab | pngquant | Compress all documentation PNG images using pngquant'
+  desc 'GitLab | Pngquant | Compress all documentation PNG images using pngquant'
   task :compress do
     check_executable
 
@@ -69,7 +69,7 @@ namespace :pngquant do
     end
   end
 
-  desc 'GitLab | pngquant | Checks that all documentation PNG images have been compressed with pngquant'
+  desc 'GitLab | Pngquant | Checks that all documentation PNG images have been compressed with pngquant'
   task :lint do
     check_executable
 

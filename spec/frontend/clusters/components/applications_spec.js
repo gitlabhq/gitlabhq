@@ -14,9 +14,6 @@ describe('Applications', () => {
 
   beforeEach(() => {
     Applications = Vue.extend(applications);
-
-    gon.features = gon.features || {};
-    gon.features.enableClusterApplicationElasticStack = true;
   });
 
   afterEach(() => {

@@ -17,7 +17,7 @@ changes.
 Finally, a restart of all GitLab processes is required for the changes to take
 effect:
 
-```bash
+```shell
 # For Omnibus installations
 sudo gitlab-ctl restart
 

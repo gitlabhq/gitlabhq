@@ -181,6 +181,8 @@ export default {
 
         boardsStore.startMoving(list, issue);
 
+        this.$root.$emit('bv::hide::tooltip');
+
         sortableStart();
       },
       onAdd: e => {

@@ -34,7 +34,7 @@ module QA
         result
       end
 
-      def retry_until(max_attempts: nil, max_duration: nil, reload_page: nil, sleep_interval: 0, raise_on_failure: false, retry_on_exception: false)
+      def retry_until(max_attempts: nil, max_duration: nil, reload_page: nil, sleep_interval: 0, raise_on_failure: true, retry_on_exception: false)
         # For backwards-compatibility
         max_attempts = 3 if max_attempts.nil? && max_duration.nil?
 

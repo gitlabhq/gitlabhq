@@ -35,6 +35,7 @@ describe ChatNotificationService do
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:webhook_url) { 'https://example.gitlab.com/' }
+    let(:data) { Gitlab::DataBuilder::Push.build_sample(subject.project, user) }
 
     before do
       allow(chat_service).to receive_messages(
@@ -51,9 +52,6 @@ describe ChatNotificationService do
 
     context 'with a repository' do
       it 'returns true' do
-        subject.project = project
-        data = Gitlab::DataBuilder::Push.build_sample(project, user)
-
         expect(chat_service).to receive(:notify).and_return(true)
         expect(chat_service.execute(data)).to be true
       end
@@ -62,10 +60,18 @@ describe ChatNotificationService do
     context 'with an empty repository' do
       it 'returns true' do
         subject.project = create(:project, :empty_repo)
-        data = Gitlab::DataBuilder::Push.build_sample(subject.project, user)
 
         expect(chat_service).to receive(:notify).and_return(true)
         expect(chat_service.execute(data)).to be true
+      end
+    end
+
+    context 'with a project with name containing spaces' do
+      it 'does not remove spaces' do
+        allow(project).to receive(:full_name).and_return('Project Name')
+
+        expect(chat_service).to receive(:get_message).with(any_args, hash_including(project_name: 'Project Name'))
+        chat_service.execute(data)
       end
     end
   end

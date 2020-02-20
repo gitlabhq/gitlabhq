@@ -123,7 +123,7 @@ Keeping that in mind, to create a profile, identify (or create) a spec that
 exercises the troublesome code path, then run it using the `bin/rspec-stackprof`
 helper, e.g.:
 
-```sh
+```shell
 $ LIMIT=10 bin/rspec-stackprof spec/policies/project_policy_spec.rb
 8/8 |====== 100 ======>| Time: 00:00:18
 
@@ -157,14 +157,14 @@ it calls, were being executed.
 
 To create a graphical view of the call stack:
 
-```sh
+```shell
 stackprof tmp/project_policy_spec.rb.dump --graphviz > project_policy_spec.dot
 dot -Tsvg project_policy_spec.dot > project_policy_spec.svg
 ```
 
 To load the profile in [kcachegrind](https://kcachegrind.github.io/):
 
-```sh
+```shell
 stackprof tmp/project_policy_spec.dump --callgrind > project_policy_spec.callgrind
 kcachegrind project_policy_spec.callgrind # Linux
 qcachegrind project_policy_spec.callgrind # Mac
@@ -172,7 +172,7 @@ qcachegrind project_policy_spec.callgrind # Mac
 
 It may be useful to zoom in on a specific method, e.g.:
 
-```sh
+```shell
 $ stackprof tmp/project_policy_spec.rb.dump --method warm_asset_cache
 TestEnv#warm_asset_cache (/Users/lupine/dev/gitlab.com/gitlab-org/gitlab-development-kit/gitlab/spec/support/test_env.rb:164)
   samples:     0 self (0.0%)  /   6288 total (36.9%)
@@ -225,7 +225,7 @@ may have changed over time.
 
 To activate profiling in your local environment, run the following:
 
-```sh
+```shell
 export RSPEC_PROFILING=yes
 rake rspec_profiling:install
 ```
@@ -237,7 +237,7 @@ variable set.
 Ad-hoc investigation of the collected results can be performed in an interactive
 shell:
 
-```sh
+```shell
 $ rake rspec_profiling:console
 irb(main):001:0> results.count
 => 231
@@ -271,7 +271,7 @@ bundle exec rbtrace -p <PID> -e 'File.open("heap.json", "wb") { |t| ObjectSpace.
 
 Having the JSON, you finally could render a picture using the script [provided by Aaron](https://gist.github.com/tenderlove/f28373d56fdd03d8b514af7191611b88) or similar:
 
-```sh
+```shell
 ruby heapviz.rb heap.json
 ```
   

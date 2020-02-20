@@ -1,0 +1,68 @@
+- form_name = 'js-serverless-domain-settings'
+- form_url = @domain.persisted? ? admin_serverless_domain_path(@domain.id, anchor: form_name) : admin_serverless_domains_path(anchor: form_name)
+- show_certificate_card = @domain.persisted? && @domain.errors.blank?
+= form_for @domain, url: form_url, html: { class: 'fieldset-form' } do |f|
+  = form_errors(@domain)
+
+  %fieldset
+    - if @domain.persisted?
+      - dns_record = "*.#{@domain.domain} CNAME #{Settings.pages.host}."
+      - verification_record = "#{@domain.verification_domain} TXT #{@domain.keyed_verification_code}"
+      .form-group.row
+        .col-sm-6.position-relative
+          = f.label :domain, _('Domain'), class: 'label-bold'
+          = f.text_field :domain, class: 'form-control has-floating-status-badge', readonly: true
+          .status-badge.floating-status-badge
+            - text, status = @domain.unverified? ? [_('Unverified'), 'badge-danger'] : [_('Verified'), 'badge-success']
+            .badge{ class: status }
+              = text
+            = link_to sprite_icon("redo"), verify_admin_serverless_domain_path(@domain.id), method: :post, class: "btn has-tooltip", title: _("Retry verification")
+
+        .col-sm-6
+          = f.label :serverless_domain_dns, _('DNS'), class: 'label-bold'
+          .input-group
+            = text_field_tag :serverless_domain_dns, dns_record , class: "monospace js-select-on-focus form-control", readonly: true
+            .input-group-append
+              = clipboard_button(target: '#serverless_domain_dns', class: 'btn-default input-group-text d-none d-sm-block')
+
+        .col-sm-12.form-text.text-muted
+          = _("To access this domain create a new DNS record")
+
+      .form-group
+        = f.label :serverless_domain_verification, _('Verification status'), class: 'label-bold'
+        .input-group
+          = text_field_tag :serverless_domain_verification, verification_record, class: "monospace js-select-on-focus form-control", readonly: true
+          .input-group-append
+            = clipboard_button(target: '#serverless_domain_verification', class: 'btn-default d-none d-sm-block')
+        %p.form-text.text-muted
+          - link_to_help = link_to(_('verify ownership'), help_page_path('user/project/pages/custom_domains_ssl_tls_certification/index.md', anchor: '4-verify-the-domains-ownership'))
+          = _("To %{link_to_help} of your domain, add the above key to a TXT record within to your DNS configuration.").html_safe % { link_to_help: link_to_help }
+
+    - else
+      .form-group
+        = f.label :domain, _('Domain'), class: 'label-bold'
+        = f.text_field :domain, class: 'form-control'
+
+    - if show_certificate_card
+      .card.js-domain-cert-show
+        .card-header
+          = _('Certificate')
+        .d-flex.justify-content-between.align-items-center.p-3
+          %span
+            = @domain.subject || _('missing')
+          %button.btn.btn-remove.btn-sm.js-domain-cert-replace-btn{ type: 'button' }
+            = _('Replace')
+
+    .js-domain-cert-inputs{ class: ('hidden' if show_certificate_card) }
+      .form-group
+        = f.label :user_provided_certificate, _('Certificate (PEM)'), class: 'label-bold'
+        = f.text_area :user_provided_certificate, rows: 5, class: 'form-control', value: ''
+        %span.form-text.text-muted
+          = _("Upload a certificate for your domain with all intermediates")
+      .form-group
+        = f.label :user_provided_key, _('Key (PEM)'), class: 'label-bold'
+        = f.text_area :user_provided_key, rows: 5, class: 'form-control', value: ''
+        %span.form-text.text-muted
+          = _("Upload a private key for your certificate")
+
+  = f.submit @domain.persisted? ? _('Save changes') : _('Add domain'), class: "btn btn-success js-serverless-domain-submit", disabled: @domain.persisted?

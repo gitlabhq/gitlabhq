@@ -54,6 +54,27 @@ describe NotePolicy do
       end
     end
 
+    context 'when the noteable is a personal snippet' do
+      let(:noteable) { create(:personal_snippet, :public) }
+      let(:note) { create(:note, noteable: noteable, author: user) }
+
+      it 'can edit note' do
+        expect(policy).to be_allowed(:admin_note)
+        expect(policy).to be_allowed(:resolve_note)
+        expect(policy).to be_allowed(:read_note)
+      end
+
+      context 'when it is private' do
+        let(:noteable) { create(:personal_snippet, :private) }
+
+        it 'can not edit nor read the note' do
+          expect(policy).to be_disallowed(:admin_note)
+          expect(policy).to be_disallowed(:resolve_note)
+          expect(policy).to be_disallowed(:read_note)
+        end
+      end
+    end
+
     context 'when the project is public' do
       context 'when the note author is not a project member' do
         it 'can edit a note' do
@@ -76,26 +97,6 @@ describe NotePolicy do
           let(:noteable) { create(:project_snippet, :private, project: project) }
 
           it_behaves_like 'a discussion with a private noteable'
-        end
-      end
-
-      context 'when the noteable is a personal snippet' do
-        let(:noteable) { create(:personal_snippet, :public) }
-
-        it 'can edit note' do
-          expect(policy).to be_allowed(:admin_note)
-          expect(policy).to be_allowed(:resolve_note)
-          expect(policy).to be_allowed(:read_note)
-        end
-
-        context 'when it is private' do
-          let(:noteable) { create(:personal_snippet, :private) }
-
-          it 'can not edit nor read the note' do
-            expect(policy).to be_disallowed(:admin_note)
-            expect(policy).to be_disallowed(:resolve_note)
-            expect(policy).to be_disallowed(:read_note)
-          end
         end
       end
 

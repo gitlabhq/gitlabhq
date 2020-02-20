@@ -119,6 +119,17 @@ module ApplicationSettingsHelper
     options_for_select(options, selected)
   end
 
+  def repository_storages_options_json
+    options = Gitlab.config.repositories.storages.map do |name, storage|
+      {
+        label: "#{name} - #{storage['gitaly_address']}",
+        value: name
+      }
+    end
+
+    options.to_json
+  end
+
   def external_authorization_description
     _("If enabled, access to projects will be validated on an external service"\
         " using their classification label.")
@@ -351,10 +362,10 @@ module ApplicationSettingsHelper
         status_delete_self_monitoring_project_admin_application_settings_path,
 
       'self_monitoring_project_exists' =>
-        Gitlab::CurrentSettings.instance_administration_project.present?.to_s,
+        Gitlab::CurrentSettings.self_monitoring_project.present?.to_s,
 
       'self_monitoring_project_full_path' =>
-        Gitlab::CurrentSettings.instance_administration_project&.full_path
+        Gitlab::CurrentSettings.self_monitoring_project&.full_path
     }
   end
 end

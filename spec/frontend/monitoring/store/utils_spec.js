@@ -1,4 +1,11 @@
-import { normalizeMetric, uniqMetricsId } from '~/monitoring/stores/utils';
+import {
+  normalizeMetric,
+  uniqMetricsId,
+  parseEnvironmentsResponse,
+  removeLeadingSlash,
+} from '~/monitoring/stores/utils';
+
+const projectPath = 'gitlab-org/gitlab-test';
 
 describe('normalizeMetric', () => {
   [
@@ -29,6 +36,74 @@ describe('uniqMetricsId', () => {
   ].forEach(({ input, expected }) => {
     it(`creates unique metric ID with ${JSON.stringify(input)}`, () => {
       expect(uniqMetricsId(input)).toEqual(expected);
+    });
+  });
+});
+
+describe('parseEnvironmentsResponse', () => {
+  [
+    {
+      input: null,
+      output: [],
+    },
+    {
+      input: undefined,
+      output: [],
+    },
+    {
+      input: [],
+      output: [],
+    },
+    {
+      input: [
+        {
+          id: '1',
+          name: 'env-1',
+        },
+      ],
+      output: [
+        {
+          id: 1,
+          name: 'env-1',
+          metrics_path: `${projectPath}/environments/1/metrics`,
+        },
+      ],
+    },
+    {
+      input: [
+        {
+          id: 'gid://gitlab/Environment/12',
+          name: 'env-12',
+        },
+      ],
+      output: [
+        {
+          id: 12,
+          name: 'env-12',
+          metrics_path: `${projectPath}/environments/12/metrics`,
+        },
+      ],
+    },
+  ].forEach(({ input, output }) => {
+    it(`parseEnvironmentsResponse returns ${JSON.stringify(output)} with input ${JSON.stringify(
+      input,
+    )}`, () => {
+      expect(parseEnvironmentsResponse(input, projectPath)).toEqual(output);
+    });
+  });
+});
+
+describe('removeLeadingSlash', () => {
+  [
+    { input: null, output: '' },
+    { input: '', output: '' },
+    { input: 'gitlab-org', output: 'gitlab-org' },
+    { input: 'gitlab-org/gitlab', output: 'gitlab-org/gitlab' },
+    { input: '/gitlab-org/gitlab', output: 'gitlab-org/gitlab' },
+    { input: '////gitlab-org/gitlab', output: 'gitlab-org/gitlab' },
+  ].forEach(({ input, output }) => {
+    it(`removeLeadingSlash returns ${output} with input ${input}`, () => {
+      expect(removeLeadingSlash(input)).toEqual(output);
     });
   });
 });

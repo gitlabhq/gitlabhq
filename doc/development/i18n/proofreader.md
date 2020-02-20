@@ -7,6 +7,8 @@ are very appreciative of the work done by translators and proofreaders!
 
 - Albanian
   - Proofreaders needed.
+- Amharic
+  - Tsegaselassie Tadesse - [GitLab](https://gitlab.com/tsega), [Crowdin](https://crowdin.com/profile/tsegaselassi/activity)
 - Arabic
   - Proofreaders needed.
 - Bulgarian

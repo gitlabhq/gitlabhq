@@ -14,9 +14,11 @@ describe Groups::Registry::RepositoriesController do
     sign_in(user)
   end
 
-  context 'GET #index' do
+  shared_examples 'renders a list of repositories' do
     context 'when container registry is enabled' do
       it 'show index page' do
+        expect(Gitlab::Tracking).not_to receive(:event)
+
         get :index, params: {
             group_id: group
         }
@@ -31,6 +33,7 @@ describe Groups::Registry::RepositoriesController do
         }
 
         expect(response).to match_response_schema('registry/repositories')
+        expect(response).to include_pagination_headers
       end
 
       it 'returns a list of projects for json format' do
@@ -54,7 +57,8 @@ describe Groups::Registry::RepositoriesController do
         expect(Gitlab::Tracking).to receive(:event).with(anything, 'list_repositories', {})
 
         get :index, params: {
-          group_id: group
+          group_id: group,
+          format: :json
         }
       end
     end
@@ -86,5 +90,29 @@ describe Groups::Registry::RepositoriesController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'with :vue_container_registry_explorer feature flag disabled' do
+      before do
+        stub_feature_flags(vue_container_registry_explorer: false)
+      end
+
+      it 'has the correct response schema' do
+        get :index, params: {
+          group_id: group,
+          format: :json
+        }
+
+        expect(response).to match_response_schema('registry/repositories')
+        expect(response).not_to include_pagination_headers
+      end
+    end
+  end
+
+  context 'GET #index' do
+    it_behaves_like 'renders a list of repositories'
+  end
+
+  context 'GET #show' do
+    it_behaves_like 'renders a list of repositories'
   end
 end

@@ -25,7 +25,7 @@ GitLab pipeline emails will also display the custom logo.
 
 ## Favicon
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14497) in GitLab 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14497) in GitLab 11.0.
 
 By default, the favicon (used by the browser as the tab icon, as well as the CI status icon)
 uses the GitLab logo, but this can be customized with any icon desired. It must be a

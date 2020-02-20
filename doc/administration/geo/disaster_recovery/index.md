@@ -39,13 +39,13 @@ must disable the **primary** node.
 
 1. SSH into the **primary** node to stop and disable GitLab, if possible:
 
-   ```sh
+   ```shell
    sudo gitlab-ctl stop
    ```
 
    Prevent GitLab from starting up again if the server unexpectedly reboots:
 
-   ```sh
+   ```shell
    sudo systemctl disable gitlab-runsvdir
    ```
 
@@ -54,7 +54,7 @@ must disable the **primary** node.
    started if the machine reboots isn't available (see [Omnibus GitLab issue #3058](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3058)).
    It may be safest to uninstall the GitLab package completely:
 
-   ```sh
+   ```shell
    yum remove gitlab-ee
    ```
 
@@ -63,7 +63,7 @@ must disable the **primary** node.
    or any other distro based on the Upstart init system, you can prevent GitLab
    from starting if the machine reboots by doing the following:
 
-   ```sh
+   ```shell
    initctl stop gitlab-runsvvdir
    echo 'manual' > /etc/init/gitlab-runsvdir.override
    initctl reload-configuration
@@ -87,16 +87,20 @@ must disable the **primary** node.
 
 ### Step 3. Promoting a **secondary** node
 
-NOTE: **Note:**
-A new **secondary** should not be added at this time. If you want to add a new
-**secondary**, do this after you have completed the entire process of promoting
-the **secondary** to the **primary**.
+Note the following when promoting a secondary:
+
+- A new **secondary** should not be added at this time. If you want to add a new
+  **secondary**, do this after you have completed the entire process of promoting
+  the **secondary** to the **primary**.
+- If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
+  error during this process, please read
+  [the troubleshooting advice](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-node).
 
 #### Promoting a **secondary** node running on a single machine
 
 1. SSH in to your **secondary** node and login as root:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
@@ -113,7 +117,7 @@ the **secondary** to the **primary**.
 
 1. Promote the **secondary** node to the **primary** node. Execute:
 
-   ```sh
+   ```shell
    gitlab-ctl promote-to-primary-node
    ```
 
@@ -131,7 +135,7 @@ do this manually.
 1. SSH in to the database node in the **secondary** and trigger PostgreSQL to
    promote to read-write:
 
-   ```bash
+   ```shell
    sudo gitlab-pg-ctl promote
    ```
 
@@ -153,7 +157,7 @@ do this manually.
 1. Promote the **secondary** to **primary**. SSH into a single application
    server and execute:
 
-   ```bash
+   ```shell
    sudo gitlab-rake geo:set_secondary_as_primary
    ```
 
@@ -169,7 +173,7 @@ secondary domain, like changing Git remotes and API URLs.
 
 1. SSH into the **secondary** node and login as root:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
@@ -188,18 +192,37 @@ secondary domain, like changing Git remotes and API URLs.
 
 1. Reconfigure the **secondary** node for the change to take effect:
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 
 1. Execute the command below to update the newly promoted **primary** node URL:
 
-   ```sh
+   ```shell
    gitlab-rake geo:update_primary_node_url
    ```
 
    This command will use the changed `external_url` configuration defined
    in `/etc/gitlab/gitlab.rb`.
+
+1. For GitLab 11.11 through 12.7 only, you may need to update the primary
+   node's name in the database. This bug has been fixed in GitLab 12.8.
+
+   To determine if you need to do this, search for the
+   `gitlab_rails["geo_node_name"]` setting in your `/etc/gitlab/gitlab.rb`
+   file. If it is commented out with `#` or not found at all, then you will
+   need to update the primary node's name in the database. You can search for it
+   like so:
+
+   ```shell
+   grep "geo_node_name" /etc/gitlab/gitlab.rb
+   ```
+
+   To update the primary node's name in the database:
+
+   ```shell
+   gitlab-rails runner 'Gitlab::Geo.primary_node.update!(name: GeoNode.current_node_name)'
+   ```
 
 1. Verify you can connect to the newly promoted **primary** using its URL.
    If you updated the DNS records for the primary domain, these changes may
@@ -219,7 +242,7 @@ Because the **secondary** is already promoted, that data in the tracking databas
 
 The data can be removed with the following command:
 
-```sh
+```shell
 sudo rm -rf /var/opt/gitlab/geo-postgresql
 ```
 
@@ -233,7 +256,7 @@ and after that you also need two extra steps.
 
 1. SSH into the new **primary** node and login as root:
 
-   ```sh
+   ```shell
    sudo -i
    ```
 
@@ -264,13 +287,13 @@ and after that you also need two extra steps.
 1. Save the file and reconfigure GitLab for the database listen changes and
    the replication slot changes to be applied.
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 
    Restart PostgreSQL for its changes to take effect:
 
-   ```sh
+   ```shell
    gitlab-ctl restart postgresql
    ```
 
@@ -285,7 +308,7 @@ and after that you also need two extra steps.
 
    Save the file and reconfigure GitLab:
 
-   ```sh
+   ```shell
    gitlab-ctl reconfigure
    ```
 

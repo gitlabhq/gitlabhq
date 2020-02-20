@@ -6,7 +6,7 @@ module ActiveRecord
           self
         end
 
-        def self.run(preloader)
+        def self.run
         end
 
         def self.preloaded_records

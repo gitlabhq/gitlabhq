@@ -25,13 +25,13 @@ describe SafeZip::Entry do
     FileUtils.remove_entry_secure(target_path)
   end
 
-  context '#path_dir' do
+  describe '#path_dir' do
     subject { entry.path_dir }
 
     it { is_expected.to eq(target_path + '/public/folder') }
   end
 
-  context '#exist?' do
+  describe '#exist?' do
     subject { entry.exist? }
 
     context 'when entry does not exist' do

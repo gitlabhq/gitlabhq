@@ -10,20 +10,24 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
   let(:project) { create(:project, :repository, namespace: namespace, path: 'merge-requests-project') }
 
   # rubocop: disable Layout/TrailingWhitespace
+  let(:description) do
+    <<~MARKDOWN.strip_heredoc
+    - [ ] Task List Item
+    - [ ]   
+    - [ ] Task List Item 2
+    MARKDOWN
+  end
+  # rubocop: enable Layout/TrailingWhitespace
+
   let(:merge_request) do
     create(
       :merge_request,
       :with_diffs,
       source_project: project,
       target_project: project,
-      description: <<~MARKDOWN.strip_heredoc
-      - [ ] Task List Item
-      - [ ]   
-      - [ ] Task List Item 2
-      MARKDOWN
+      description: description
     )
   end
-  # rubocop: enable Layout/TrailingWhitespace
 
   let(:merged_merge_request) { create(:merge_request, :merged, source_project: project, target_project: project) }
   let(:pipeline) do
@@ -36,10 +40,8 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
   end
   let(:path) { "files/ruby/popen.rb" }
   let(:position) do
-    Gitlab::Diff::Position.new(
-      old_path: path,
-      new_path: path,
-      old_line: nil,
+    build(:text_diff_position, :added,
+      file: path,
       new_line: 14,
       diff_refs: merge_request.diff_refs
     )
@@ -112,14 +114,8 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     let(:merge_request2) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, title: "Added images") }
     let(:image_path) { "files/images/ee_repo_logo.png" }
     let(:image_position) do
-      Gitlab::Diff::Position.new(
-        old_path: image_path,
-        new_path: image_path,
-        width: 100,
-        height: 100,
-        x: 1,
-        y: 1,
-        position_type: "image",
+      build(:image_diff_position,
+        file: image_path,
         diff_refs: merge_request2.diff_refs
       )
     end
@@ -127,6 +123,15 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     it 'merge_requests/image_diff_discussion.json' do
       create(:diff_note_on_merge_request, project: project, noteable: merge_request2, position: image_position)
       render_discussions_json(merge_request2)
+    end
+  end
+
+  context 'with mentions' do
+    let(:group) { create(:group) }
+    let(:description) { "@#{group.full_path} @all @#{admin.username}" }
+
+    it 'merge_requests/merge_request_with_mentions.html' do
+      render_merge_request(merge_request)
     end
   end
 

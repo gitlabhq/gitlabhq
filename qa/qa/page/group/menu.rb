@@ -13,15 +13,22 @@ module QA
           element :contribution_analytics_link
         end
 
+        view 'app/views/layouts/nav/sidebar/_analytics_links.html.haml' do
+          element :analytics_link
+          element :analytics_sidebar_submenu
+        end
+
         def click_group_members_item
           within_sidebar do
             click_element(:group_members_item)
           end
         end
 
-        def click_group_analytics_item
-          within_sidebar do
-            click_element(:contribution_analytics_link)
+        def click_contribution_analytics_item
+          hover_element(:analytics_link) do
+            within_submenu(:analytics_sidebar_submenu) do
+              click_element(:contribution_analytics_link)
+            end
           end
         end
 

@@ -160,7 +160,7 @@ describe Gitlab::UserAccess do
         expect(access.can_push_to_branch?('master')).to be_falsey
       end
 
-      it 'does not allow the user to push if he does not have push access to the canonical project' do
+      it 'does not allow the user to push if they do not have push access to the canonical project' do
         canonical_project.add_guest(user)
 
         expect(access.can_push_to_branch?('awesome-feature')).to be_falsey

@@ -9,4 +9,6 @@
 - page_url = current_page.last? ? '#' : url
 
 %li.page-item.js-next-button{ class: ('disabled' if current_page.last?) }
-  = link_to raw(t 'views.pagination.next'), page_url, rel: 'next', remote: remote, class: 'page-link'
+  = link_to page_url, rel: 'next', remote: remote, class: 'page-link' do
+    = s_('Pagination|Next')
+    = sprite_icon('angle-right', size: 8)

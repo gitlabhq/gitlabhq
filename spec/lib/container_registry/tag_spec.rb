@@ -70,26 +70,26 @@ describe ContainerRegistry::Tag do
             headers: { 'Content-Type' => 'application/vnd.docker.distribution.manifest.v1+prettyjws' })
       end
 
-      context '#layers' do
+      describe '#layers' do
         subject { tag.layers }
 
         it { expect(subject.length).to eq(1) }
       end
 
-      context '#total_size' do
+      describe '#total_size' do
         subject { tag.total_size }
 
         it { is_expected.to be_nil }
       end
 
       context 'config processing' do
-        context '#config' do
+        describe '#config' do
           subject { tag.config }
 
           it { is_expected.to be_nil }
         end
 
-        context '#created_at' do
+        describe '#created_at' do
           subject { tag.created_at }
 
           it { is_expected.to be_nil }
@@ -113,7 +113,7 @@ describe ContainerRegistry::Tag do
             body: File.read(Rails.root + 'spec/fixtures/container_registry/config_blob_helm.json'))
       end
 
-      context '#created_at' do
+      describe '#created_at' do
         subject { tag.created_at }
 
         it { is_expected.to be_nil }
@@ -130,13 +130,13 @@ describe ContainerRegistry::Tag do
             headers: { 'Content-Type' => 'application/vnd.docker.distribution.manifest.v2+json' })
       end
 
-      context '#layers' do
+      describe '#layers' do
         subject { tag.layers }
 
         it { expect(subject.length).to eq(1) }
       end
 
-      context '#total_size' do
+      describe '#total_size' do
         subject { tag.total_size }
 
         it { is_expected.to eq(2319870) }
@@ -144,13 +144,13 @@ describe ContainerRegistry::Tag do
 
       context 'config processing' do
         shared_examples 'a processable' do
-          context '#config' do
+          describe '#config' do
             subject { tag.config }
 
             it { is_expected.not_to be_nil }
           end
 
-          context '#created_at' do
+          describe '#created_at' do
             subject { tag.created_at }
 
             it { is_expected.not_to be_nil }

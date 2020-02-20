@@ -49,3 +49,9 @@
     @include spinner-color($white);
   }
 }
+
+.btn {
+  .spinner {
+    vertical-align: text-bottom;
+  }
+}

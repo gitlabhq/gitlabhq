@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe ResourceLabelEventFinder do
-  set(:user) { create(:user) }
-  set(:issue_project) { create(:project) }
-  set(:issue) { create(:issue, project: issue_project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:issue_project) { create(:project) }
+  let_it_be(:issue) { create(:issue, project: issue_project) }
 
   describe '#execute' do
     subject { described_class.new(user, issue).execute }

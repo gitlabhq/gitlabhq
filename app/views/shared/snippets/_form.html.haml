@@ -6,27 +6,37 @@
              html: { class: "snippet-form js-requires-input js-quick-submit common-note-form" } do |f|
     = form_errors(@snippet)
 
-    .form-group.row
-      .col-sm-2.col-form-label
-        = f.label :title
-      .col-sm-10
-        = f.text_field :title, class: 'form-control qa-snippet-title', required: true, autofocus: true
+    .form-group
+      = f.label :title, class: 'label-bold'
+      = f.text_field :title, class: 'form-control qa-snippet-title', required: true, autofocus: true
 
-    = render 'shared/form_elements/description', model: @snippet, project: @project, form: f
+    .form-group.js-description-input
+      - description_placeholder = s_('Snippets|Optionally add a description about what your snippet does or how to use it...')
+      - is_expanded = @snippet.description && !@snippet.description.empty?
+      = f.label :description, s_("Snippets|Description (optional)"), class: 'label-bold'
+      .js-collapsible-input
+        .js-collapsed{ class: ('d-none' if is_expanded) }
+          = text_field_tag nil, nil, class: 'form-control', placeholder: description_placeholder, data: { qa_selector: 'description_placeholder' }
+        .js-expanded{ class: ('d-none' if !is_expanded) }
+          = render layout: 'projects/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
+            = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: description_placeholder, qa_selector: 'description_field'
+            = render 'shared/notes/hints'
 
-    = render 'shared/old_visibility_level', f: f, visibility_level: @snippet.visibility_level, can_change_visibility_level: true, form_model: @snippet, with_label: false
+    .form-group.file-editor
+      = f.label :file_name, s_('Snippets|File')
+      .file-holder.snippet
+        .js-file-title.file-title-flex-parent
+          = f.text_field :file_name, placeholder: s_("Snippets|Give your file a name to add code highlighting, e.g. example.rb for Ruby"), class: 'form-control snippet-file-name qa-snippet-file-name'
+        .file-content.code
+          %pre#editor= @snippet.content
+          = f.hidden_field :content, class: 'snippet-file-content'
 
-    .file-editor
-      .form-group.row
-        .col-sm-2.col-form-label
-          = f.label :file_name, "File"
-        .col-sm-10
-          .file-holder.snippet
-            .js-file-title.file-title-flex-parent
-              = f.text_field :file_name, placeholder: "Optionally name this file to add code highlighting, e.g. example.rb for Ruby.", class: 'form-control snippet-file-name qa-snippet-file-name'
-            .file-content.code
-              %pre#editor= @snippet.content
-              = f.hidden_field :content, class: 'snippet-file-content'
+    .form-group
+      .font-weight-bold
+        = _('Visibility level')
+        = link_to icon('question-circle'), help_page_path("public_access/public_access"), target: '_blank'
+      = render 'shared/visibility_level', f: f, visibility_level: @snippet.visibility_level, can_change_visibility_level: true, form_model: @snippet, with_label: false
+
     - if params[:files]
       - params[:files].each_with_index do |file, index|
         = hidden_field_tag "files[]", file, id: "files_#{index}"

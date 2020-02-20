@@ -9,20 +9,29 @@ description: 'Learn how to contribute to GitLab.'
 
 - Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)
 - [GitLab contributing guide](contributing/index.md)
-- [Architecture](architecture.md) of GitLab
+  - [Issues workflow](contributing/issue_workflow.md) (issue tracker guidelines, triaging, labels, feature proposals, issue weight, regression issues, technical and UX debt)
+  - [Merge requests workflow](contributing/merge_request_workflow.md) (merge request guidelines, contribution acceptance criteria, definition of done, dependencies)
+  - [Style guides](contributing/style_guides.md)
+  - [Implement design & UI elements](contributing/design.md)
+- [GitLab Architecture Overview](architecture.md)
 - [Rake tasks](rake_tasks.md) for development
 
 ## Processes
 
-- [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md)
-- [Generate a changelog entry with `bin/changelog`](changelog.md)
+**Must-reads:**
+
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed
 - [Database review guidelines](database_review.md) for reviewing database-related changes and complex SQL queries, and having them reviewed
 - [Pipelines for the GitLab project](pipelines.md)
-- [Guidelines for implementing Enterprise Edition features](ee_features.md)
+
+Complementary reads:
+
+- [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md)
 - [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer)
-- [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLabbers)
+- [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Danger bot](dangerbot.md)
+- [Generate a changelog entry with `bin/changelog`](changelog.md)
+- [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLabbers)
 
 ## UX and Frontend guides
 
@@ -54,6 +63,7 @@ description: 'Learn how to contribute to GitLab.'
 - [How to dump production data to staging](db_dump.md)
 - [Working with the GitHub importer](github_importer.md)
 - [Import/Export development documentation](import_export.md)
+- [Test Import Project](import_project.md)
 - [Elasticsearch integration docs](elasticsearch.md)
 - [Working with Merge Request diffs](diffs.md)
 - [Kubernetes integration guidelines](kubernetes.md)
@@ -70,9 +80,10 @@ description: 'Learn how to contribute to GitLab.'
 - [File uploads](uploads.md)
 - [Auto DevOps development guide](auto_devops.md)
 - [Mass Inserting Models](mass_insert.md)
-- [Cycle Analytics development guide](cycle_analytics.md)
+- [Value Stream Analytics development guide](value_stream_analytics.md)
 - [Issue types vs first-class types](issue_types.md)
 - [Application limits](application_limits.md)
+- [Redis guidelines](redis.md)
 
 ## Performance guides
 
@@ -124,9 +135,9 @@ description: 'Learn how to contribute to GitLab.'
 - [Verifying database capabilities](verifying_database_capabilities.md)
 - [Database Debugging and Troubleshooting](database_debugging.md)
 - [Query Count Limits](query_count_limits.md)
-- [Database helper modules](database_helpers.md)
 - [Code comments](code_comments.md)
 - [Creating enums](creating_enums.md)
+- [Renaming features](renaming_features.md)
 
 ### Case studies
 
@@ -136,6 +147,7 @@ description: 'Learn how to contribute to GitLab.'
 ## Integration guides
 
 - [Jira Connect app](integrations/jira_connect.md)
+- [Security Scanners](integrations/secure.md)
 
 ## Testing guides
 
@@ -179,6 +191,10 @@ description: 'Learn how to contribute to GitLab.'
 ## Shell Scripting guides
 
 - [Shell scripting standards and style guidelines](shell_scripting_guide/index.md)
+
+## Domain-specific guides
+
+- [CI/CD development documentation](cicd/index.md)
 
 ## Other Development guides
 

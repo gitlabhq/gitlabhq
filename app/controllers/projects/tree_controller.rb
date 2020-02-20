@@ -32,7 +32,7 @@ class Projects::TreeController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        lfs_blob_ids if Feature.disabled?(:vue_file_list, @project)
+        lfs_blob_ids if Feature.disabled?(:vue_file_list, @project, default_enabled: true)
 
         @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
       end

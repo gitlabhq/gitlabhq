@@ -50,7 +50,7 @@ Lets take a look at the workflow when you need to check large files into your Gi
 repository with Git LFS. For example, if you want to upload a very large file and
 check it into your Git repository:
 
-```bash
+```shell
 git clone git@gitlab.example.com:group/project.git
 git lfs install                       # initialize the Git LFS project
 git lfs track "*.iso"                 # select the file extensions that you want to treat as large files
@@ -59,7 +59,7 @@ git lfs track "*.iso"                 # select the file extensions that you want
 Once a certain file extension is marked for tracking as a LFS object you can use
 Git as usual without having to redo the command to track a file with the same extension:
 
-```bash
+```shell
 cp ~/tmp/debian.iso ./                # copy a large file into the current directory
 git add .                             # add the large file to the project
 git commit -am "Added Debian iso"     # commit the file meta data
@@ -69,7 +69,7 @@ git push origin master                # sync the git repo and large file to the 
 **Make sure** that `.gitattributes` is tracked by Git. Otherwise Git
 LFS will not be working properly for people cloning the project:
 
-```bash
+```shell
 git add .gitattributes
 ```
 
@@ -78,14 +78,14 @@ LFS-tracked files and clones them via HTTP. If you performed the `git clone`
 command with a SSH URL, you have to enter your GitLab credentials for HTTP
 authentication.
 
-```bash
+```shell
 git clone git@gitlab.example.com:group/project.git
 ```
 
 If you already cloned the repository and you want to get the latest LFS object
 that are on the remote repository, eg. for a branch from origin:
 
-```bash
+```shell
 git lfs fetch origin master
 ```
 
@@ -101,14 +101,14 @@ The first thing to do before using File Locking is to tell Git LFS which
 kind of files are lockable. The following command will store PNG files
 in LFS and flag them as lockable:
 
-```bash
+```shell
 git lfs track "*.png" --lockable
 ```
 
 After executing the above command a file named `.gitattributes` will be
 created or updated with the following content:
 
-```bash
+```shell
 *.png filter=lfs diff=lfs merge=lfs -text lockable
 ```
 
@@ -116,7 +116,7 @@ You can also register a file type as lockable without using LFS
 (In order to be able to lock/unlock a file you need a remote server that implements the  LFS File Locking API),
 in order to do that you can edit the `.gitattributes` file manually:
 
-```bash
+```shell
 *.pdf lockable
 ```
 
@@ -128,14 +128,14 @@ need to lock the file before editing it.
 
 Once you're ready to edit your file you need to lock it first:
 
-```bash
+```shell
 git lfs lock images/banner.png
 Locked images/banner.png
 ```
 
 This will register the file as locked in your name on the server:
 
-```bash
+```shell
 git lfs locks
 images/banner.png  joe   ID:123
 ```
@@ -143,13 +143,13 @@ images/banner.png  joe   ID:123
 Once you have pushed your changes, you can unlock the file so others can
 also edit it:
 
-```bash
+```shell
 git lfs unlock images/banner.png
 ```
 
 You can also unlock by id:
 
-```bash
+```shell
 git lfs unlock --id=123
 ```
 
@@ -157,7 +157,7 @@ If for some reason you need to unlock a file that was not locked by you,
 you can use the `--force` flag as long as you have a `maintainer` access on
 the project:
 
-```bash
+```shell
 git lfs unlock --id=123 --force
 ```
 
@@ -183,7 +183,7 @@ available to the project anymore. Probably the object was removed from the serve
 Git LFS will log the failures into a log file.
 To view this log file, while in project directory:
 
-```bash
+```shell
 git lfs logs last
 ```
 
@@ -215,7 +215,7 @@ This behaviour is caused by Git LFS using HTTPS connections by default when a
 
 To prevent this from happening, set the lfs url in project Git config:
 
-```bash
+```shell
 git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs"
 ```
 
@@ -235,7 +235,7 @@ you use. This is described in [Git credentials man pages](https://git-scm.com/do
 For example, you can tell Git to remember the password for a period of time in
 which you expect to push the objects:
 
-```bash
+```shell
 git config --global credential.helper 'cache --timeout=3600'
 ```
 

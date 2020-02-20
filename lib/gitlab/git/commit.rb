@@ -130,8 +130,7 @@ module Gitlab
         #     :skip is the number of commits to skip
         #     :order is the commits order and allowed value is :none (default), :date,
         #        :topo, or any combination of them (in an array). Commit ordering types
-        #        are documented here:
-        #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
+        #        are documented here: https://git-scm.com/docs/git-log#_commit_ordering
         def find_all(repo, options = {})
           wrapped_gitaly_errors do
             Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)

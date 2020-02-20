@@ -9,7 +9,7 @@ Currently `Rails.logger` calls all get saved into `production.log`, which contai
 a mix of Rails' logs and other calls developers have inserted in the code base.
 For example:
 
-```
+```plaintext
 Started GET "/gitlabhq/yaml_db/tree/master" for 168.111.56.1 at 2015-02-12 19:34:53 +0200
 Processing by Projects::TreeController#show as HTML
   Parameters: {"project_id"=>"gitlabhq/yaml_db", "id"=>"master"}
@@ -129,7 +129,7 @@ importer progresses. Here's what to do:
 
 ## Multi-destination Logging
 
-GitLab is transitioning from unstructured/plaintext logs to structured/JSON logs.  During this transition period some logs will be recorded in multiple formats through multi-destination logging.
+GitLab is transitioning from unstructured/plaintext logs to structured/JSON logs. During this transition period some logs will be recorded in multiple formats through multi-destination logging.
 
 ### How to use multi-destination logging
 
@@ -265,7 +265,7 @@ provides helper methods to track exceptions:
    and DOES NOT send the exception to Sentry,
 1. `Gitlab::ErrorTracking.track_and_raise_for_dev_exception`: this method logs,
    sends exception to Sentry (if configured) and re-raises the exception
-  for development and test enviroments.
+  for development and test environments.
 
 It is advised to only use `Gitlab::ErrorTracking.track_and_raise_exception`
 and `Gitlab::ErrorTracking.track_exception` as presented on below examples.
@@ -312,7 +312,7 @@ end
 1. If you add a new file, submit an issue to the [production
    tracker](https://gitlab.com/gitlab-com/gl-infra/production/issues) or
    a merge request to the [gitlab_fluentd](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd)
-   project. See [this example](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd/merge_requests/51/diffs).
+   project. See [this example](https://gitlab.com/gitlab-cookbooks/gitlab_fluentd/-/merge_requests/51/diffs).
 
 1. Be sure to update the [GitLab CE/EE documentation](../administration/logs.md) and the [GitLab.com
    runbooks](https://gitlab.com/gitlab-com/runbooks/blob/master/howto/logging.md).

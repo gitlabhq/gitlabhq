@@ -27,11 +27,13 @@ module Quality
         policies
         presenters
         rack_servers
+        replicators
         routing
         rubocop
         serializers
         services
         sidekiq
+        support_specs
         tasks
         uploaders
         validators

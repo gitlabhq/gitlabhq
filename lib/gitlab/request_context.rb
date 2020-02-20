@@ -18,7 +18,6 @@ module Gitlab
     def request_deadline
       strong_memoize(:request_deadline) do
         next unless request_start_time
-        next unless Feature.enabled?(:request_deadline)
 
         request_start_time + max_request_duration_seconds
       end

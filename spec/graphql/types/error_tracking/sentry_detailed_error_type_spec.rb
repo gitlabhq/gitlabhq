@@ -20,6 +20,7 @@ describe GitlabSchema.types['SentryDetailedError'] do
       message
       culprit
       externalUrl
+      externalBaseUrl
       sentryProjectId
       sentryProjectName
       sentryProjectSlug
@@ -30,8 +31,10 @@ describe GitlabSchema.types['SentryDetailedError'] do
       lastReleaseLastCommit
       firstReleaseShortVersion
       lastReleaseShortVersion
+      gitlabIssuePath
       gitlabCommit
       gitlabCommitPath
+      tags
     ]
 
     is_expected.to have_graphql_fields(*expected_fields)

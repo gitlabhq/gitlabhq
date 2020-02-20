@@ -134,7 +134,7 @@ describe 'Admin Groups' do
   end
 
   describe 'add user into a group', :js do
-    shared_context 'adds user into a group' do
+    shared_examples 'adds user into a group' do
       it do
         visit admin_group_path(group)
 

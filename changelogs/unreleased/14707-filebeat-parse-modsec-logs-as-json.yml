@@ -1,0 +1,5 @@
+---
+title: Parse filebeat modsec logs as JSON
+merge_request: 24836
+author:
+type: changed

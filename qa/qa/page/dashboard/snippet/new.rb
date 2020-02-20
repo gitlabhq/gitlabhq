@@ -10,9 +10,16 @@ module QA
           end
 
           view 'app/views/shared/snippets/_form.html.haml' do
+            element :description_field
+            element :description_placeholder
             element :snippet_title
             element :snippet_file_name
             element :create_snippet_button
+          end
+
+          view 'app/views/projects/_zen.html.haml' do
+            # This 'element' is here only to ensure the changes in the view source aren't mistakenly changed
+            element :_, "qa_selector = local_assigns.fetch(:qa_selector, '')" # rubocop:disable QA/ElementWithPattern
           end
 
           def fill_title(title)
@@ -20,7 +27,8 @@ module QA
           end
 
           def fill_description(description)
-            fill_element :issuable_form_description, description
+            click_element :description_placeholder
+            fill_element :description_field, description
           end
 
           def set_visibility(visibility)

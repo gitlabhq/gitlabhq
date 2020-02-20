@@ -34,8 +34,9 @@ module QA
                 Please update the code in `qa/` directory to make it match
                 current changes in this merge request.
 
-                For more help see documentation in `qa/page/README.md` file or
-                ask for help on #quality channel on Slack (GitLab Team only).
+                For more help see documentation in
+                https://docs.gitlab.com/ee/development/testing_guide/end_to_end/page_objects.html
+                or ask for help on #quality channel on Slack (GitLab Team only).
 
                 If you are not a Team Member, and you still need help to
                 contribute, please open an issue in GitLab QA issue tracker.

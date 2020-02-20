@@ -1,0 +1,22 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties" : {
+      "id": { "type": "integer" },
+      "name": { "type": "string" },
+      "username": { "type": "string" },
+      "state": { "type": "string" },
+      "avatar_url": { "type": ["string", "null"] },
+      "web_url": { "type": ["string", "null"] },
+      "access_level": { "type": "integer" },
+      "expires_at": { "type": ["date", "null"] },
+      "is_using_seat": { "type": "boolean" }
+    },
+    "required": [
+      "id", "name", "username", "state",
+      "web_url", "access_level", "expires_at"
+    ],
+    "additionalProperties": false
+  }
+}

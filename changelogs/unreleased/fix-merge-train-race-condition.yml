@@ -1,0 +1,5 @@
+---
+title: Use state machine in Merge Train to avoid race conditions
+merge_request: 23395
+author:
+type: fixed

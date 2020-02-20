@@ -68,7 +68,7 @@ In short:
 
 1. Open a terminal and in a new directory run:
 
-   ```sh
+   ```shell
    vagrant init openshift/origin-all-in-one
    ```
 
@@ -76,7 +76,7 @@ In short:
 1. In the same directory where you generated the Vagrantfile
    enter:
 
-   ```sh
+   ```shell
    vagrant up
    ```
 
@@ -120,7 +120,7 @@ functionalities.
 
 Let's first see the version of `oc`:
 
-```sh
+```shell
 $ oc version
 
 oc v1.3.0
@@ -136,7 +136,7 @@ when we visited the web console earlier. The username/password for the
 administrator user is `admin/admin`. There is also a test user with username/
 password `user/user`, with limited access. Let's login as admin for the moment:
 
-```sh
+```shell
 $ oc login https://10.2.2.2:8443
 
 Authentication required for https://10.2.2.2:8443 (openshift)
@@ -158,13 +158,13 @@ Using project "default".
 
 Switch to the `openshift-infra` project with:
 
-```sh
+```shell
 oc project openshift-infra
 ```
 
 And finally, see its status:
 
-```sh
+```shell
 oc status
 ```
 
@@ -193,20 +193,20 @@ In that case, the OpenShift service might not be running, so in order to fix it:
 1. SSH into the VM by going to the directory where the Vagrantfile is and then
    run:
 
-   ```sh
+   ```shell
    vagrant ssh
    ```
 
 1. Run `systemctl` and verify by the output that the `openshift` service is not
    running (it will be in red color). If that's the case start the service with:
 
-   ```sh
+   ```shell
    sudo systemctl start openshift
    ```
 
 1. Verify the service is up with:
 
-   ```sh
+   ```shell
    systemctl status openshift -l
    ```
 
@@ -222,7 +222,7 @@ Now that you got a taste of what OpenShift looks like, let's deploy GitLab!
 First, we will create a new project to host our application. You can do this
 either by running the CLI client:
 
-```bash
+```shell
 oc new-project gitlab
 ```
 
@@ -233,7 +233,7 @@ or by using the web interface:
 If you used the command line, `oc` automatically uses the new project and you
 can see its status with:
 
-```sh
+```shell
 $ oc status
 
 In project gitlab on server https://10.2.2.2:8443
@@ -255,13 +255,13 @@ parameters for those objects.
 The template for GitLab resides in the Omnibus GitLab repository under the
 docker directory. Let's download it locally with `wget`:
 
-```bash
+```shell
 wget https://gitlab.com/gitlab-org/omnibus-gitlab/raw/master/docker/openshift-template.json
 ```
 
 And then let's import it in OpenShift:
 
-```bash
+```shell
 oc create -f openshift-template.json -n openshift
 ```
 
@@ -391,13 +391,13 @@ Let's see how to do that using the following steps.
 
 1. Make sure you are in the `gitlab` project:
 
-   ```sh
+   ```shell
    oc project gitlab
    ```
 
 1. See what services are used for this project:
 
-   ```sh
+   ```shell
    oc get svc
    ```
 
@@ -413,7 +413,7 @@ Let's see how to do that using the following steps.
 1. We need to see the replication controllers of the `gitlab-ce` service.
    Get a detailed view of the current ones:
 
-   ```sh
+   ```shell
    oc describe rc gitlab-ce
    ```
 
@@ -424,13 +424,13 @@ Let's see how to do that using the following steps.
 
 1. Scale GitLab using the previous information:
 
-   ```sh
+   ```shell
    oc scale --replicas=2 replicationcontrollers gitlab-ce-2
    ```
 
 1. Get the new replicas number to make sure scaling worked:
 
-   ```sh
+   ```shell
    oc get rc gitlab-ce-2
    ```
 
@@ -476,7 +476,7 @@ For OpenShift v3.0, you will need to do this manually:
 
 1. Edit the Security Context:
 
-   ```sh
+   ```shell
    oc edit scc anyuid
    ```
 
@@ -488,7 +488,7 @@ For OpenShift v3.0, you will need to do this manually:
 
 For OpenShift v3.1 and above, you can do:
 
-```sh
+```shell
 oc adm policy add-scc-to-user anyuid system:serviceaccount:gitlab:gitlab-ce-user
 ```
 

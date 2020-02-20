@@ -1,6 +1,6 @@
 # Issue Boards
 
-> [Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/blog/2016/08/22/gitlab-8-11-released/#issue-board).
+> [Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/releases/2016/08/22/gitlab-8-11-released/#issue-board).
 
 ## Overview
 
@@ -194,7 +194,7 @@ of the issue card you have selected and drop it in the new list you want.
 
 ### Configurable Issue Boards **(STARTER)**
 
-> Introduced in [GitLab Starter Edition 10.2](https://about.gitlab.com/blog/2017/11/22/gitlab-10-2-released/#issue-boards-configuration).
+> Introduced in [GitLab Starter Edition 10.2](https://about.gitlab.com/releases/2017/11/22/gitlab-10-2-released/#issue-boards-configuration).
 
 An Issue Board can be associated with a GitLab [Milestone](milestones/index.md#milestones),
 [Labels](labels.md), Assignee and Weight
@@ -214,7 +214,7 @@ If you don't have editing permission in a board, you're still able to see the co
 
 ### Focus mode **(STARTER)**
 
-> Introduced in [GitLab Starter 9.1](https://about.gitlab.com/blog/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep).
+> Introduced in [GitLab Starter 9.1](https://about.gitlab.com/releases/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep).
 
 Click the button at the top right to toggle focus mode on and off. In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.
 
@@ -230,7 +230,7 @@ especially in combination with [assignee lists](#assignee-lists-premium).
 
 ### Group Issue Boards **(PREMIUM)**
 
-> Introduced in [GitLab Premium 10.0](https://about.gitlab.com/blog/2017/09/22/gitlab-10-0-released/#group-issue-boards).
+> Introduced in [GitLab Premium 10.0](https://about.gitlab.com/releases/2017/09/22/gitlab-10-0-released/#group-issue-boards).
 
 Accessible at the group navigation level, a group issue board offers the same features as a project-level board,
 but it can display issues from all projects in that
@@ -239,7 +239,7 @@ boards. When updating milestones and labels for an issue through the sidebar upd
 group-level objects are available.
 
 NOTE: **Note:**
-Multiple group issue boards were originally introduced in [GitLab 10.0 Premium](https://about.gitlab.com/blog/2017/09/22/gitlab-10-0-released/#group-issue-boards) and
+Multiple group issue boards were originally introduced in [GitLab 10.0 Premium](https://about.gitlab.com/releases/2017/09/22/gitlab-10-0-released/#group-issue-boards) and
 one group issue board per group was made available in GitLab 10.6 Core.
 
 ![Group issue board](img/group_issue_board.png)
@@ -302,6 +302,14 @@ Different issue board features are available in different [GitLab tiers](https:/
 | Starter / Bronze  | Multiple                       | 1                            | Yes                       | No             |
 | Premium / Silver | Multiple                       | Multiple                     | Yes                       | Yes            |
 | Ultimate / Gold | Multiple                       | Multiple                     | Yes                       | Yes            |
+
+## Blocked issues
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34723) in GitLab 12.8.
+
+If an issue is blocked by another issue, an icon will display next to its title to differentiate it from unblocked issues.
+
+![Blocked issues](img/issue_boards_blocked_icon_v12_8.png)
 
 ## Actions you can take on an Issue Board
 
@@ -423,7 +431,7 @@ something between lists by changing a label.
 
 A typical workflow of using the Issue Board would be:
 
-1. You have [created](labels.md#creating-labels) and [prioritized](labels.md#label-priority)
+1. You have [created](labels.md#label-management) and [prioritized](labels.md#label-priority)
    labels so that you can easily categorize your issues.
 1. You have a bunch of issues (ideally labeled).
 1. You visit the Issue Board and start [creating lists](#creating-a-new-list) to
@@ -474,6 +482,6 @@ A few things to remember:
   by default. If you have more than 20 issues start scrolling down and the next
   20 will appear.
 
-[ce-5554]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5554
+[ce-5554]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5554
 [scrum]: https://en.wikipedia.org/wiki/Scrum_(software_development)
 [kanban]: https://en.wikipedia.org/wiki/Kanban_(development)

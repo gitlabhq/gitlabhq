@@ -13,7 +13,7 @@ Watch a video on [Using GitLab CI/CD pipelines with GitHub repositories](https:/
 
 NOTE: **Note:**
 Because of [GitHub limitations](https://gitlab.com/gitlab-org/gitlab/issues/9147),
-[GitHub OAuth](../../integration/github.html#enabling-github-oauth)
+[GitHub OAuth](../../integration/github.md#enabling-github-oauth)
 cannot be used to authenticate with GitHub as an external CI/CD repository.
 
 ## Connect with Personal Access Token
@@ -85,9 +85,9 @@ To manually enable GitLab CI/CD for your repository:
 
    The web hook URL should be set to the GitLab API to
    [trigger pull mirroring](../../api/projects.md#start-the-pull-mirroring-process-for-a-project-starter),
-   using the GitLab personal access token we just created.
+   using the GitLab personal access token we just created:
 
-   ```
+   ```plaintext
    https://gitlab.com/api/v4/projects/<NAMESPACE>%2F<PROJECT>/mirror/pull?private_token=<PERSONAL_ACCESS_TOKEN>
    ```
 

@@ -1,6 +1,6 @@
 # Group badges API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17082)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17082)
 in GitLab 10.6.
 
 ## Placeholder tokens
@@ -28,7 +28,7 @@ GET /groups/:id/badges
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`    | string         | no  | Name of the badges to return (case-sensitive). |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/badges?name=Coverage
 ```
 
@@ -61,7 +61,7 @@ GET /groups/:id/badges/:badge_id
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `badge_id` | integer | yes   | The badge ID |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/badges/:badge_id
 ```
 
@@ -92,7 +92,7 @@ POST /groups/:id/badges
 | `link_url` | string         | yes | URL of the badge link |
 | `image_url` | string | yes | URL of the badge image |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "link_url=https://gitlab.com/gitlab-org/gitlab-foss/commits/master&image_url=https://shields.io/my/badge1&position=0" https://gitlab.example.com/api/v4/groups/:id/badges
 ```
 
@@ -124,7 +124,7 @@ PUT /groups/:id/badges/:badge_id
 | `link_url` | string         | no | URL of the badge link |
 | `image_url` | string | no | URL of the badge image |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/badges/:badge_id
 ```
 
@@ -154,7 +154,7 @@ DELETE /groups/:id/badges/:badge_id
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `badge_id` | integer | yes   | The badge ID |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/badges/:badge_id
 ```
 
@@ -172,7 +172,7 @@ GET /groups/:id/badges/render
 | `link_url` | string         | yes | URL of the badge link|
 | `image_url` | string | yes | URL of the badge image |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/badges/render?link_url=http%3A%2F%2Fexample.com%2Fci_status.svg%3Fproject%3D%25%7Bproject_path%7D%26ref%3D%25%7Bdefault_branch%7D&image_url=https%3A%2F%2Fshields.io%2Fmy%2Fbadge
 ```
 

@@ -2,21 +2,36 @@
 type: reference, howto
 ---
 
-# Epics **(ULTIMATE)**
+# Epics **(PREMIUM)**
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
+> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
+> - In [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/37081), single-level Epics were moved to Premium tier.
 
 Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
 milestones.
 
-![epics list view](img/epics_list_view_v12.5.png)
+## Relationships between epics and issues
+
+The possible relationships between epics and issues are:
+
+- An epic is the parent of one or more issues.
+- An epic is the parent of one or more child epics. For details see [Multi-level child epics](#multi-level-child-epics-ultimate). **(ULTIMATE)**
+
+```mermaid
+graph TD
+    Parent_epic --> Issue1
+    Parent_epic --> Child_epic
+    Child_epic --> Issue2
+````
 
 ## Use cases
 
 - Suppose your team is working on a large feature that involves multiple discussions throughout different issues created in distinct projects within a [Group](../index.md). With Epics, you can track all the related activities that together contribute to that single feature.
 - Track when the work for the group of issues is targeted to begin, and when it is targeted to end.
 - Discuss and collaborate on feature ideas and scope at a high level.
+
+![epics list view](img/epics_list_view_v12.5.png)
 
 ## Creating an epic
 
@@ -86,7 +101,7 @@ To remove an issue from an epic:
 1. Click on the <kbd>x</kbd> button in the epic's issue list.
 1. Click **Remove** in the **Remove issue** warning message.
 
-## Multi-level child epics
+## Multi-level child epics **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8333) in GitLab Ultimate 11.7.
 
@@ -118,10 +133,13 @@ To remove a child epic from a parent epic:
 To set a **Start date** and **Due date** for an epic, select one of the following:
 
 - **Fixed**: Enter a fixed value.
-- **From milestones**: Inherit a dynamic value from the issues added to the epic.
-- **Inherited**: Inherit a dynamic value from the issues added to the epic. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 to replace **From milestones**).
+- **From milestones**: Inherit a dynamic value from the milestones currently assigned to the epic's issues.
+  Note that GitLab 12.5 replaced this option with **Inherited**.
+- **Inherited**: Inherit a dynamic value from the epic's issues, child epics, and milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 to replace **From milestones**).
 
-### Milestones
+### From milestones
+
+> [Replaced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 by **Inherited**.
 
 If you select **From milestones** for the start date, GitLab will automatically set the date to be earliest
 start date across all milestones that are currently assigned to the issues that are added to the epic.
@@ -135,6 +153,8 @@ These are dynamic dates which are recalculated if any of the following occur:
 - Issues are added or removed from the epic.
 
 ### Inherited
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 to replace **From milestones**.
 
 If you select **Inherited** for the start date, GitLab will scan all child epics and issues assigned to the epic,
 and will set the start date to match the earliest found start date or milestone. Similarly, if you select
@@ -156,7 +176,7 @@ then the parent epic's start date will reflect the change and this will propagat
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7327) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.10.
 
-If your epic contains one or more [child epics](#multi-level-child-epics) which
+If your epic contains one or more [child epics](#multi-level-child-epics-ultimate) which
 have a [start or due date](#start-date-and-due-date), a
 [roadmap](../roadmap/index.md) view of the child epics is listed under the parent epic.
 

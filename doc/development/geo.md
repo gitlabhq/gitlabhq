@@ -244,7 +244,7 @@ Whenever a new Geo node is configured or the database schema changes on the
 **primary** node, you must refresh the foreign tables on the **secondary** node
 by running the following:
 
-```sh
+```shell
 bundle exec rake geo:db:refresh_foreign_tables
 ```
 
@@ -546,3 +546,8 @@ old method:
 - Replication is synchronous and we preserve the order of events.
 - Replication of the events happen at the same time as the changes in the
   database.
+
+## Self-service framework
+
+If you want to add easy Geo replication of a resource you're working
+on, check out our [self-service framework](geo/framework.md).

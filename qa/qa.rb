@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-$: << File.expand_path(File.dirname(__FILE__))
+$: << File.expand_path(__dir__)
 
 Encoding.default_external = 'UTF-8'
 
@@ -16,6 +16,8 @@ module QA
   module Flow
     autoload :Login, 'qa/flow/login'
     autoload :Project, 'qa/flow/project'
+    autoload :Saml, 'qa/flow/saml'
+    autoload :User, 'qa/flow/user'
   end
 
   ##
@@ -157,6 +159,10 @@ module QA
     autoload :Validator, 'qa/page/validator'
     autoload :Validatable, 'qa/page/validatable'
 
+    module SubMenus
+      autoload :Common, 'qa/page/sub_menus/common'
+    end
+
     module Main
       autoload :Login, 'qa/page/main/login'
       autoload :Menu, 'qa/page/main/menu'
@@ -289,6 +295,8 @@ module QA
           autoload :AddExisting, 'qa/page/project/operations/kubernetes/add_existing'
           autoload :Show, 'qa/page/project/operations/kubernetes/show'
         end
+
+        autoload :Metrics, 'qa/page/project/operations/metrics'
       end
 
       module Wiki
@@ -429,6 +437,7 @@ module QA
       autoload :NodeJs, 'qa/service/docker_run/node_js'
       autoload :GitlabRunner, 'qa/service/docker_run/gitlab_runner'
       autoload :MailHog, 'qa/service/docker_run/mail_hog'
+      autoload :SamlIdp, 'qa/service/docker_run/saml_idp'
     end
   end
 
@@ -464,6 +473,7 @@ module QA
         autoload :Configure, 'qa/vendor/jenkins/page/configure'
         autoload :NewCredentials, 'qa/vendor/jenkins/page/new_credentials'
         autoload :NewJob, 'qa/vendor/jenkins/page/new_job'
+        autoload :Job, 'qa/vendor/jenkins/page/job'
         autoload :ConfigureJob, 'qa/vendor/jenkins/page/configure_job'
       end
     end

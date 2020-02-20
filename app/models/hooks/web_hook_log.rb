@@ -3,6 +3,8 @@
 class WebHookLog < ApplicationRecord
   include SafeUrl
   include Presentable
+  include DeleteWithLimit
+  include CreatedAtFilterable
 
   belongs_to :web_hook
 
@@ -21,6 +23,10 @@ class WebHookLog < ApplicationRecord
 
   def success?
     response_status =~ /^2/
+  end
+
+  def internal_error?
+    response_status == WebHookService::InternalErrorResponse::ERROR_MESSAGE
   end
 
   private

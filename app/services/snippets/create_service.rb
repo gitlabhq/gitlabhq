@@ -24,7 +24,9 @@ module Snippets
       spam_check(snippet, current_user)
 
       snippet_saved = snippet.with_transaction_returning_status do
-        snippet.save && snippet.store_mentions!
+        (snippet.save && snippet.store_mentions!).tap do |saved|
+          create_repository_for(snippet, current_user) if saved
+        end
       end
 
       if snippet_saved
@@ -35,6 +37,12 @@ module Snippets
       else
         snippet_error_response(snippet, 400)
       end
+    end
+
+    private
+
+    def create_repository_for(snippet, user)
+      snippet.create_repository if Feature.enabled?(:version_snippets, user)
     end
   end
 end

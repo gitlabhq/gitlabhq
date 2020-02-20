@@ -38,11 +38,7 @@ module Gitlab
           project_id: project.id,
           project_name: project.full_name,
 
-          user: {
-            id: user.try(:id),
-            name: user.try(:name),
-            email: user.try(:email)
-          },
+          user: user.try(:hook_attrs),
 
           commit: {
             # note: commit.id is actually the pipeline id

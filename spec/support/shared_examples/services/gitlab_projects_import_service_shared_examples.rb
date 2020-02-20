@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'gitlab projects import validations' do
+RSpec.shared_examples 'gitlab projects import validations' do
   context 'with an invalid path' do
     let(:path) { '/invalid-path/' }
 

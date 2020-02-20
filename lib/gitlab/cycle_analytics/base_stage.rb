@@ -50,7 +50,7 @@ module Gitlab
         # Build a `SELECT` query. We find the first of the `end_time_attrs` that isn't `NULL` (call this end_time).
         # Next, we find the first of the start_time_attrs that isn't `NULL` (call this start_time).
         # We compute the (end_time - start_time) interval, and give it an alias based on the current
-        # cycle analytics stage.
+        # value stream analytics stage.
 
         median_datetime(cte_table, interval_query(project_ids), name)
       end

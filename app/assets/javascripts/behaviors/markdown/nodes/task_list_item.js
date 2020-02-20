@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { Node } from 'tiptap';
+import { HIGHER_PARSE_RULE_PRIORITY } from '../constants';
 
 // Transforms generated HTML back to GFM for Banzai::Filter::TaskListFilter
 export default class TaskListItem extends Node {
@@ -20,7 +21,7 @@ export default class TaskListItem extends Node {
       content: 'paragraph block*',
       parseDOM: [
         {
-          priority: 51,
+          priority: HIGHER_PARSE_RULE_PRIORITY,
           tag: 'li.task-list-item',
           getAttrs: el => {
             const checkbox = el.querySelector('input[type=checkbox].task-list-item-checkbox');

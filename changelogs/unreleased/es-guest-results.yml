@@ -1,0 +1,5 @@
+---
+title: Fix advanced global search permissions for guest users
+merge_request: 23177
+author:
+type: fixed

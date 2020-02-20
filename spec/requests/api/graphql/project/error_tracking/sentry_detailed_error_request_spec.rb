@@ -57,6 +57,10 @@ describe 'getting a detailed sentry error' do
       expect(error_data['firstSeen']).to eql sentry_detailed_error.first_seen
       expect(error_data['lastSeen']).to eql sentry_detailed_error.last_seen
       expect(error_data['gitlabCommit']).to be nil
+      expect(error_data['externalBaseUrl']).to eq sentry_detailed_error.external_base_url
+      expect(error_data['gitlabIssuePath']).to eq sentry_detailed_error.gitlab_issue
+      expect(error_data['tags']['logger']).to eq sentry_detailed_error.tags[:logger]
+      expect(error_data['tags']['level']).to eq sentry_detailed_error.tags[:level]
     end
 
     it 'is expected to return the frequency correctly' do

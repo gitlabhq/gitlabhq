@@ -210,6 +210,9 @@ export default {
         :text="diffFile.file_path"
         :gfm="gfmCopyText"
         css-class="btn-default btn-transparent btn-clipboard"
+        data-track-event="click_copy_file_button"
+        data-track-label="diff_copy_file_path_button"
+        data-track-property="diff_copy_file"
       />
 
       <small v-if="isModeChanged" ref="fileMode" class="mr-1">
@@ -221,7 +224,7 @@ export default {
 
     <div
       v-if="!diffFile.submodule && addMergeRequestButtons"
-      class="file-actions d-none d-sm-block"
+      class="file-actions d-none d-sm-flex align-items-center flex-wrap"
     >
       <diff-stats :added-lines="diffFile.added_lines" :removed-lines="diffFile.removed_lines" />
       <div class="btn-group" role="group">
@@ -233,6 +236,9 @@ export default {
               :class="{ active: diffHasExpandedDiscussions(diffFile) }"
               class="js-btn-vue-toggle-comments btn"
               data-qa-selector="toggle_comments_button"
+              data-track-event="click_toggle_comments_button"
+              data-track-label="diff_toggle_comments_button"
+              data-track-property="diff_toggle_comments"
               type="button"
               @click="toggleFileDiscussionWrappers(diffFile)"
             >
@@ -245,6 +251,9 @@ export default {
             :can-current-user-fork="canCurrentUserFork"
             :edit-path="diffFile.edit_path"
             :can-modify-blob="diffFile.can_modify_blob"
+            data-track-event="click_toggle_edit_button"
+            data-track-label="diff_toggle_edit_button"
+            data-track-property="diff_toggle_edit"
             @showForkMessage="showForkMessage"
           />
         </template>
@@ -263,6 +272,9 @@ export default {
           v-gl-tooltip.hover
           :title="expandDiffToFullFileTitle"
           class="expand-file"
+          data-track-event="click_toggle_view_full_button"
+          data-track-label="diff_toggle_view_full_button"
+          data-track-property="diff_toggle_view_full"
           @click="toggleFullDiff(diffFile.file_path)"
         >
           <gl-loading-icon v-if="diffFile.isLoadingFullFile" color="dark" inline />
@@ -273,8 +285,11 @@ export default {
           ref="viewButton"
           v-gl-tooltip.hover
           :href="diffFile.view_path"
-          target="blank"
+          target="_blank"
           class="view-file"
+          data-track-event="click_toggle_view_sha_button"
+          data-track-label="diff_toggle_view_sha_button"
+          data-track-property="diff_toggle_view_sha"
           :title="viewFileButtonText"
         >
           <icon name="doc-text" />
@@ -288,6 +303,9 @@ export default {
           :title="`View on ${diffFile.formatted_external_url}`"
           target="_blank"
           rel="noopener noreferrer"
+          data-track-event="click_toggle_external_button"
+          data-track-label="diff_toggle_external_button"
+          data-track-property="diff_toggle_external"
           class="btn btn-file-option"
         >
           <icon name="external-link" />

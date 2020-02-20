@@ -62,18 +62,6 @@ class CommitStatus < ApplicationRecord
     preload(project: :namespace)
   end
 
-  scope :with_needs, -> (names = nil) do
-    needs = Ci::BuildNeed.scoped_build.select(1)
-    needs = needs.where(name: names) if names
-    where('EXISTS (?)', needs).preload(:needs)
-  end
-
-  scope :without_needs, -> (names = nil) do
-    needs = Ci::BuildNeed.scoped_build.select(1)
-    needs = needs.where(name: names) if names
-    where('NOT EXISTS (?)', needs)
-  end
-
   scope :match_id_and_lock_version, -> (slice) do
     # it expects that items are an array of attributes to match
     # each hash needs to have `id` and `lock_version`
@@ -198,6 +186,10 @@ class CommitStatus < ApplicationRecord
   def self.update_as_processed!
     # Marks items as processed, and increases `lock_version` (Optimisitc Locking)
     update_all('processed=TRUE, lock_version=COALESCE(lock_version,0)+1')
+  end
+
+  def self.locking_enabled?
+    false
   end
 
   def locking_enabled?

@@ -28,6 +28,13 @@
   }
 }
 
+@for $i from 1 through 12 {
+  #{'.tab-width-#{$i}'} {
+    -moz-tab-size: $i;
+    tab-size: $i;
+  }
+}
+
 .border-width-1px { border-width: 1px; }
 .border-bottom-width-1px { border-bottom-width: 1px; }
 .border-style-dashed { border-style: dashed; }
@@ -40,7 +47,10 @@
 
 .mh-50vh { max-height: 50vh; }
 
+.font-size-inherit { font-size: inherit; }
+
 .gl-w-64 { width: px-to-rem($grid-size * 8); }
+.gl-h-32 { height: px-to-rem($grid-size * 4); }
 .gl-h-64 { height: px-to-rem($grid-size * 8); }
 
 .gl-text-purple { color: $purple; }
@@ -55,8 +65,8 @@
 .gl-bg-green-100 { @include gl-bg-green-100;}
 
 .gl-text-blue-500 { @include gl-text-blue-500; }
+.gl-text-gray-700 { @include gl-text-gray-700; }
 .gl-text-gray-900 { @include gl-text-gray-900; }
 .gl-text-red-700 { @include gl-text-red-700; }
 .gl-text-orange-700 { @include gl-text-orange-700; }
 .gl-text-green-700 { @include gl-text-green-700; }
-

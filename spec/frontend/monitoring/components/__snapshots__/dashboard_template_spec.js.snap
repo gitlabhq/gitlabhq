@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dashboard template matches the default snapshot 1`] = `
+<div
+  class="prometheus-graphs"
+  data-qa-selector="prometheus_graphs"
+>
+  <div
+    class="prometheus-graphs-header gl-p-3 pb-0 border-bottom bg-gray-light"
+  >
+    <div
+      class="row"
+    >
+      <gl-form-group-stub
+        class="col-sm-12 col-md-6 col-lg-2"
+        label="Dashboard"
+        label-for="monitor-dashboards-dropdown"
+        label-size="sm"
+      >
+        <dashboards-dropdown-stub
+          class="mb-0 d-flex"
+          defaultbranch="master"
+          id="monitor-dashboards-dropdown"
+          selecteddashboard="[object Object]"
+          toggle-class="dropdown-menu-toggle"
+        />
+      </gl-form-group-stub>
+       
+      <gl-form-group-stub
+        class="col-sm-6 col-md-6 col-lg-2"
+        label="Environment"
+        label-for="monitor-environments-dropdown"
+        label-size="sm"
+      >
+        <gl-dropdown-stub
+          class="mb-0 d-flex"
+          data-qa-selector="environments_dropdown"
+          id="monitor-environments-dropdown"
+          menu-class="monitor-environment-dropdown-menu"
+          text="production"
+          toggle-class="dropdown-menu-toggle"
+        >
+          <div
+            class="d-flex flex-column overflow-hidden"
+          >
+            <gl-dropdown-header-stub
+              class="monitor-environment-dropdown-header text-center"
+            >
+              Environment
+            </gl-dropdown-header-stub>
+             
+            <gl-dropdown-divider-stub />
+             
+            <gl-search-box-by-type-stub
+              class="m-2"
+              value=""
+            />
+             
+            <div
+              class="flex-fill overflow-auto"
+            />
+             
+            <div
+              class="text-secondary no-matches-message"
+            >
+              
+              No matching results
+            
+            </div>
+          </div>
+        </gl-dropdown-stub>
+      </gl-form-group-stub>
+       
+      <gl-form-group-stub
+        class="col-sm-6 col-md-6 col-lg-4"
+        label="Show last"
+        label-for="monitor-time-window-dropdown"
+        label-size="sm"
+      >
+        <date-time-picker-stub
+          options="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
+          value="[object Object]"
+        />
+      </gl-form-group-stub>
+       
+      <!---->
+    </div>
+  </div>
+   
+  <empty-state-stub
+    clusterspath="/path/to/clusters"
+    documentationpath="/path/to/docs"
+    emptygettingstartedsvgpath="/path/to/getting-started.svg"
+    emptyloadingsvgpath="/path/to/loading.svg"
+    emptynodatasmallsvgpath="/path/to/no-data-small.svg"
+    emptynodatasvgpath="/path/to/no-data.svg"
+    emptyunabletoconnectsvgpath="/path/to/unable-to-connect.svg"
+    selectedstate="gettingStarted"
+    settingspath="/path/to/settings"
+  />
+</div>
+`;

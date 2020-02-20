@@ -8,7 +8,7 @@ describe Sentry::Client::Issue do
   let(:token) { 'test-token' }
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0' }
   let(:client) { Sentry::Client.new(sentry_url, token) }
-  let(:issue_id) { 503504 }
+  let(:issue_id) { 11 }
 
   describe '#list_issues' do
     shared_examples 'issues have correct return type' do |klass|
@@ -243,7 +243,7 @@ describe Sentry::Client::Issue do
       end
 
       it 'has a correct external URL' do
-        expect(subject.external_url).to eq('https://sentrytest.gitlab.com/api/0/issues/503504')
+        expect(subject.external_url).to eq('https://sentrytest.gitlab.com/api/0/issues/11')
       end
 
       it 'issue has a correct external base url' do

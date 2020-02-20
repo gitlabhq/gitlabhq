@@ -5,7 +5,22 @@ module QA
     module Component
       module CiBadgeLink
         COMPLETED_STATUSES = %w[passed failed canceled blocked skipped manual].freeze # excludes created, pending, running
-        PASSED_STATUS = 'passed'.freeze
+        INCOMPLETE_STATUSES = %w[pending created running].freeze
+
+        # e.g. def passed?(timeout: nil); status_badge == 'passed'; end
+        COMPLETED_STATUSES.map do |status|
+          define_method "#{status}?" do |timeout: nil|
+            timeout ? completed?(timeout: timeout) : completed?
+            status_badge == status
+          end
+        end
+
+        # e.g. def pending?; status_badge == 'pending'; end
+        INCOMPLETE_STATUSES.map do |status|
+          define_method "#{status}?" do
+            status_badge == status
+          end
+        end
 
         def self.included(base)
           base.view 'app/assets/javascripts/vue_shared/components/ci_badge_link.vue' do
@@ -15,12 +30,6 @@ module QA
 
         def status_badge
           find_element(:status_badge).text
-        end
-
-        def successful?(timeout: 60)
-          raise "Timed out waiting for the status to be a valid completed state" unless completed?(timeout: timeout)
-
-          status_badge == PASSED_STATUS
         end
 
         private

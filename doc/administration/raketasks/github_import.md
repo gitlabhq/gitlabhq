@@ -1,6 +1,6 @@
 # GitHub import
 
-> [Introduced]( https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10308) in GitLab 9.1.
+> [Introduced]( https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10308) in GitLab 9.1.
 
 In order to retrieve and import GitHub repositories, you will need a
 [GitHub personal access token](https://github.com/settings/tokens).
@@ -16,7 +16,7 @@ before/after the brackets. Also, Some shells (e.g., zsh) can interpret the open/
 
 To import a project from the list of your GitHub projects available:
 
-```bash
+```shell
 # Omnibus installations
 sudo gitlab-rake "import:github[access_token,root,foo/bar]"
 
@@ -32,7 +32,7 @@ will get created from your GitHub project. Subgroups are also possible: `foo/foo
 
 To import a specific GitHub project (named `foo/github_repo` here):
 
-```bash
+```shell
 # Omnibus installations
 sudo gitlab-rake "import:github[access_token,root,foo/bar,foo/github_repo]"
 

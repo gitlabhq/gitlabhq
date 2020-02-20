@@ -4,7 +4,7 @@ type: concepts, howto
 
 # Protected Environments **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/6303) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6303) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
 
 ## Overview
 

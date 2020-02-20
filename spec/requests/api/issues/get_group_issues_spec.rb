@@ -3,18 +3,16 @@
 require 'spec_helper'
 
 describe API::Issues do
-  set(:user) { create(:user) }
-  let(:user2)       { create(:user) }
-  let(:non_member)  { create(:user) }
-  set(:guest)       { create(:user) }
-  set(:author)      { create(:author) }
-  set(:assignee)    { create(:assignee) }
-  let(:admin)       { create(:user, :admin) }
-
-  let(:issue_title)       { 'foo' }
-  let(:issue_description) { 'closed' }
-
-  let(:no_milestone_title) { 'None' }
+  let_it_be(:user)          { create(:user) }
+  let(:user2)               { create(:user) }
+  let(:non_member)          { create(:user) }
+  let_it_be(:guest)         { create(:user) }
+  let_it_be(:author)        { create(:author) }
+  let_it_be(:assignee)      { create(:assignee) }
+  let(:admin)               { create(:user, :admin) }
+  let(:issue_title)         { 'foo' }
+  let(:issue_description)   { 'closed' }
+  let(:no_milestone_title)  { 'None' }
   let(:any_milestone_title) { 'Any' }
 
   before do
@@ -74,7 +72,7 @@ describe API::Issues do
       it 'returns issues statistics' do
         get api("/groups/#{group.id}/issues_statistics", user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['statistics']).not_to be_nil
         expect(json_response['statistics']['counts']['all']).to eq counts[:all]
         expect(json_response['statistics']['counts']['closed']).to eq counts[:closed]
@@ -345,7 +343,7 @@ describe API::Issues do
       it 'exposes known attributes' do
         get api(base_url, admin)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.last.keys).to include(*%w(id iid project_id title description))
         expect(json_response.last).not_to have_key('subscribed')
       end
@@ -529,7 +527,7 @@ describe API::Issues do
       it 'returns an array of issues with no milestone' do
         get api(base_url, user), params: { milestone: no_milestone_title }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
 
         expect_paginated_array_response(group_confidential_issue.id)
       end
@@ -676,20 +674,20 @@ describe API::Issues do
         it 'returns error when multiple assignees are passed' do
           get api(base_url, user), params: { assignee_username: [assignee.username, another_assignee.username], scope: 'all' }
 
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response["error"]).to include("allows one value, but found 2")
         end
 
         it 'returns error when assignee_username and assignee_id are passed together' do
           get api(base_url, user), params: { assignee_username: [assignee.username], assignee_id: another_assignee.id, scope: 'all' }
 
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response["error"]).to include("mutually exclusive")
         end
       end
     end
 
-    context "#to_reference" do
+    describe "#to_reference" do
       it 'exposes reference path in context of group' do
         get api(base_url, user)
 

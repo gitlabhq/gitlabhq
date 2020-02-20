@@ -3,12 +3,7 @@ pages:
     - .default-tags
     - .default-retry
     - .default-cache
-    - .default-only
-    - .only:variables-canonical-dot-com
-    - .only:changes-code-backstage-qa
-  only:
-    refs:
-      - master
+    - .pages:rules
   stage: pages
   dependencies: ["coverage", "karma", "gitlab:assets:compile pull-cache"]
   script:

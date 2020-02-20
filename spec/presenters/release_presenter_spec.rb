@@ -51,6 +51,22 @@ describe ReleasePresenter do
     end
   end
 
+  describe '#self_url' do
+    subject { presenter.self_url }
+
+    it 'returns its own url' do
+      is_expected.to match /#{project_release_url(project, release)}/
+    end
+
+    context 'when release_show_page feature flag is disabled' do
+      before do
+        stub_feature_flags(release_show_page: false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#merge_requests_url' do
     subject { presenter.merge_requests_url }
 

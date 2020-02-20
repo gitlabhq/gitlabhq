@@ -115,15 +115,15 @@ following command:
 
 **For Omnibus installations**
 
-```bash
-sudo gitlab-rails runner -e production 'puts Sidekiq::Queue.new("background_migration").size'
+```shell
+sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
 
 **For installations from source**
 
 ```
 cd /home/git/gitlab
-sudo -u git -H bundle exec rails runner -e production 'puts Sidekiq::Queue.new("background_migration").size'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
 
 ## Upgrading to a new major version
@@ -131,7 +131,7 @@ sudo -u git -H bundle exec rails runner -e production 'puts Sidekiq::Queue.new("
 Major versions are reserved for backwards incompatible changes. We recommend that
 you first upgrade to the latest available minor version within your major version.
 Please follow the [Upgrade Recommendations](../policy/maintenance.md#upgrade-recommendations)
-to identify the ideal upgrade path.
+to identify a supported upgrade path.
 
 Before upgrading to a new major version, you should ensure that any background
 migration jobs from previous releases have been completed. To see the current size
@@ -180,15 +180,21 @@ any downgrades would result to all sessions being invalidated and users are logg
 
 In 12.0.0 we made various database related changes. These changes require that
 users first upgrade to the latest 11.11 patch release. Once upgraded to 11.11.x,
-users can upgrade to 12.x. Failure to do so may result in database migrations
+users can upgrade to 12.0.x. Failure to do so may result in database migrations
 not being applied, which could lead to application errors.
 
-Example 1: you are currently using GitLab 11.11.3, which is the latest patch
-release for 11.11.x. You can upgrade as usual to 12.0.0, 12.1.0, etc.
+It is also required that you upgrade to 12.0.x before moving to a later version
+of 12.x.
+
+Example 1: you are currently using GitLab 11.11.8, which is the latest patch
+release for 11.11.x. You can upgrade as usual to 12.0.x.
 
 Example 2: you are currently using a version of GitLab 10.x. To upgrade, first
-upgrade to 11.11.3. Once upgraded to 11.11.3 you can safely upgrade to 12.0.0
-or future versions.
+upgrade to the last 10.x release (10.8.7) then the last 11.x release (11.11.8).
+Once upgraded to 11.11.8 you can safely upgrade to 12.0.x.
+
+See our [documentation on upgrade paths](../policy/maintenance.md#upgrade-recommendations)
+for more information.
 
 ## Miscellaneous
 

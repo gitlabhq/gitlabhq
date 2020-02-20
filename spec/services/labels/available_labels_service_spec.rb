@@ -12,7 +12,7 @@ describe Labels::AvailableLabelsService do
   let(:other_group_label) { create(:group_label) }
   let(:labels) { [project_label, other_project_label, group_label, other_group_label] }
 
-  context '#find_or_create_by_titles' do
+  describe '#find_or_create_by_titles' do
     let(:label_titles) { labels.map(&:title).push('non existing title') }
 
     context 'when parent is a project' do
@@ -64,7 +64,7 @@ describe Labels::AvailableLabelsService do
     end
   end
 
-  context '#filter_labels_ids_in_param' do
+  describe '#filter_labels_ids_in_param' do
     let(:label_ids) { labels.map(&:id).push(99999) }
 
     context 'when parent is a project' do

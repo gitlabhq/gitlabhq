@@ -9,3 +9,14 @@ test:
     ssl: true
     start_tls: false
     mailbox: "inbox"
+
+  service_desk_email:
+    enabled: false
+    address: "gitlab-incoming+%{key}@gmail.com"
+    user: "gitlab-incoming@gmail.com"
+    password: "[REDACTED]"
+    host: "imap.gmail.com"
+    port: 993
+    ssl: true
+    start_tls: false
+    mailbox: "inbox"

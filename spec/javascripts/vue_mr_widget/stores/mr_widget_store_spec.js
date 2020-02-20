@@ -83,4 +83,18 @@ describe('MergeRequestStore', () => {
       });
     });
   });
+
+  describe('setPaths', () => {
+    it('should set the add ci config path', () => {
+      store.setData({ ...mockData });
+
+      expect(store.mergeRequestAddCiConfigPath).toEqual('/group2/project2/new/pipeline');
+    });
+
+    it('should set humanAccess=Maintainer when user has that role', () => {
+      store.setData({ ...mockData });
+
+      expect(store.humanAccess).toEqual('Maintainer');
+    });
+  });
 });

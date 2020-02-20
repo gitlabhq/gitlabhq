@@ -14,9 +14,9 @@
     cursor: pointer;
 
     @media (min-width: map-get($grid-breakpoints, md)) {
-      // The `-1` below is to prevent two borders from clashing up against eachother -
+      // The `+11` is to ensure the file header border shows when scrolled -
       // the bottom of the compare-versions header and the top of the file header
-      $mr-file-header-top: $mr-version-controls-height + $header-height + $mr-tabs-height - 1;
+      $mr-file-header-top: $mr-version-controls-height + $header-height + $mr-tabs-height + 11;
 
       position: -webkit-sticky;
       position: sticky;
@@ -61,11 +61,6 @@
 
     &:hover {
       background-color: $gray-normal;
-    }
-
-    a,
-    button {
-      color: $gray-700;
     }
 
     svg {
@@ -552,7 +547,7 @@ table.code {
 
 .diff-stats {
   align-items: center;
-  padding: 0 0.25rem;
+  padding: 0 1rem;
 
   .diff-stats-group {
     padding: 0 0.25rem;
@@ -564,7 +559,7 @@ table.code {
 
   &.is-compare-versions-header {
     .diff-stats-group {
-      padding: 0 0.5rem;
+      padding: 0 0.25rem;
     }
   }
 }
@@ -1059,8 +1054,8 @@ table.code {
 .diff-tree-list {
   position: -webkit-sticky;
   position: sticky;
-  $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
-  top: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
+  $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 11px;
+  top: $top-pos;
   max-height: calc(100vh - #{$top-pos});
   z-index: 202;
 
@@ -1097,10 +1092,7 @@ table.code {
 
 .tree-list-scroll {
   max-height: 100%;
-  padding-top: $grid-size;
   padding-bottom: $grid-size;
-  border-top: 1px solid $border-color;
-  border-bottom: 1px solid $border-color;
   overflow-y: scroll;
   overflow-x: auto;
 }

@@ -44,6 +44,8 @@ class ProjectsFinder < UnionFinder
         init_collection
       end
 
+    use_cte = params.delete(:use_cte)
+    collection = Project.wrap_with_cte(collection) if use_cte
     collection = filter_projects(collection)
     sort(collection)
   end
@@ -177,7 +179,7 @@ class ProjectsFinder < UnionFinder
   end
 
   def sort(items)
-    params[:sort].present? ? items.sort_by_attribute(params[:sort]) : items.order_id_desc
+    params[:sort].present? ? items.sort_by_attribute(params[:sort]) : items.projects_order_id_desc
   end
 
   def by_archived(projects)

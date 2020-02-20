@@ -55,30 +55,6 @@ module API
         ::Users::ActivityService.new(actor).execute if commands.include?(params[:action])
       end
 
-      def merge_request_urls
-        ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
-      end
-
-      def process_mr_push_options(push_options, project, user, changes)
-        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/61359')
-
-        service = ::MergeRequests::PushOptionsHandlerService.new(
-          project,
-          user,
-          changes,
-          push_options
-        ).execute
-
-        if service.errors.present?
-          push_options_warning(service.errors.join("\n\n"))
-        end
-      end
-
-      def push_options_warning(warning)
-        options = Array.wrap(params[:push_options]).map { |p| "'#{p}'" }.join(' ')
-        "WARNINGS:\nError encountered with push options #{options}: #{warning}"
-      end
-
       def redis_ping
         result = Gitlab::Redis::SharedState.with { |redis| redis.ping }
 
@@ -104,21 +80,19 @@ module API
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def set_project
-        if params[:gl_repository]
-          @project, @repo_type = Gitlab::GlRepository.parse(params[:gl_repository])
-          @redirected_path = nil
-        elsif params[:project]
-          @project, @repo_type, @redirected_path = Gitlab::RepoPath.parse(params[:project])
-        else
-          @project, @repo_type, @redirected_path = nil, nil, nil
-        end
+        @project, @repo_type, @redirected_path =
+          if params[:gl_repository]
+            Gitlab::GlRepository.parse(params[:gl_repository])
+          elsif params[:project]
+            Gitlab::RepoPath.parse(params[:project])
+          end
       end
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       # Project id to pass between components that don't share/don't have
       # access to the same filesystem mounts
       def gl_repository
-        repo_type.identifier_for_subject(project)
+        repo_type.identifier_for_container(project)
       end
 
       def gl_project_path

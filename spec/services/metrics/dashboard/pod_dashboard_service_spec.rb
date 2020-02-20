@@ -13,7 +13,27 @@ describe Metrics::Dashboard::PodDashboardService, :use_clean_rails_memory_store_
     project.add_maintainer(user)
   end
 
-  describe 'get_dashboard' do
+  describe '.valid_params?' do
+    let(:params) { { dashboard_path: described_class::DASHBOARD_PATH } }
+
+    subject { described_class.valid_params?(params) }
+
+    it { is_expected.to be_truthy }
+
+    context 'missing dashboard_path' do
+      let(:params) { {} }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'non-matching dashboard_path' do
+      let(:params) { { dashboard_path: 'path/to/bunk.yml' } }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#get_dashboard' do
     let(:dashboard_path) { described_class::DASHBOARD_PATH }
     let(:service_params) { [project, user, { environment: environment, dashboard_path: dashboard_path }] }
     let(:service_call) { described_class.new(*service_params).get_dashboard }

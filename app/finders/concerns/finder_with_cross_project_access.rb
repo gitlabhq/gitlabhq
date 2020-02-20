@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Module to prepend into finders to specify wether or not the finder requires
+# Module to prepend into finders to specify whether or not the finder requires
 # cross project access
 #
 # This module depends on the finder implementing the following methods:

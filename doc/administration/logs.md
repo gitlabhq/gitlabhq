@@ -288,9 +288,12 @@ For source installations, edit the `gitlab.yml` and set the Sidekiq
 
 ## `gitlab-shell.log`
 
-This file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log` for
-Omnibus GitLab packages or in `/home/git/gitlab-shell/gitlab-shell.log` for
+This file lives in `/var/log/gitlab/gitaly/gitlab-shell.log` for
+Omnibus GitLab packages or in `/home/git/gitaly/gitlab-shell.log` for
 installations from source.
+
+NOTE: **Note**
+For GitLab 12.5 and earlier the file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log`.
 
 GitLab Shell is used by GitLab for executing Git commands and provide
 SSH access to Git repositories. For example:
@@ -387,7 +390,7 @@ installations from source.
 
 ## `mail_room_json.log` (default)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/19186) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19186) in GitLab 12.6.
 
 This file lives in `/var/log/gitlab/mail_room/mail_room_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/mail_room_json.log` for
@@ -421,7 +424,7 @@ installations from source.
 
 ## `database_load_balancing.log` **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/15442) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15442) in GitLab 12.3.
 
 Contains details of GitLab's [Database Load Balancing](database_load_balancing.md).
 It is stored at:
@@ -450,7 +453,7 @@ etc. For example:
 
 ## `exceptions_json.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/17819) in GitLab 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17819) in GitLab 12.6.
 
 This file lives in
 `/var/log/gitlab/gitlab-rails/exceptions_json.log` for Omnibus GitLab

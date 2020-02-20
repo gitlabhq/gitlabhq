@@ -52,6 +52,30 @@ bundle exec rails db RAILS_ENV=development
 - `SELECT * FROM schema_migrations WHERE version = '20170926203418';`: Check if a migration was run
 - `DELETE FROM schema_migrations WHERE version = '20170926203418';`: Manually remove a migration
 
+## Access the GDK database with Visual Studio Code
+
+Use these instructions for exploring the GitLab database while developing with the GDK:
+
+1. Install or open [Visual Studio Code](https://code.visualstudio.com/download).
+1. Install the [PostgreSQL VSCode Extension](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres) by Chris Kolkman.
+1. In Visual Studio Code click on the PostgreSQL Explorer button in the left toolbar.
+1. In the top bar of the new window, click on the `+` to **Add Database Connection**, and follow the prompts to fill in the details:
+   1. **Hostname**: the path to the PostgreSQL folder in your GDK directory (for example `/dev/gitlab-development-kit/postgresql`).
+   1. **PostgreSQL user to authenticate as**: usually your local username, unless otherwise specified during PostgreSQL installation.
+   1. **Password of the PostgreSQL user**: the password you set when installing PostgreSQL.
+   1. **Port number to connect to**: `5432` (default).
+   1. **Use an ssl connection?** This depends on your installation. Options are:
+      - **Use Secure Connection**
+      - **Standard Connection** (default)
+   1. **(Optional) The database to connect to**: `gitlabhq_development`.
+   1. **The display name for the database connection**: `gitlabhq_development`.
+
+Your database connection should now be displayed in the PostgreSQL Explorer pane and
+you can explore the `gitlabhq_development` database. If you cannot connect, ensure
+that GDK is running. For further instructions on how to use the PostgreSQL Explorer
+Extension for Visual Studio Code, read the [usage section](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres#usage)
+of the extension documentation.
+
 ## FAQ
 
 ### `ActiveRecord::PendingMigrationError` with Spring
@@ -60,7 +84,7 @@ When running specs with the [Spring preloader](rake_tasks.md#speed-up-tests-rake
 the test database can get into a corrupted state. Trying to run the migration or
 dropping/resetting the test database has no effect.
 
-```sh
+```shell
 $ bundle exec spring rspec some_spec.rb
 ...
 Failure/Error: ActiveRecord::Migration.maintain_test_schema!
@@ -78,7 +102,7 @@ ActiveRecord::PendingMigrationError:
 
 To resolve, you can kill the spring server and app that lives between spec runs.
 
-```sh
+```shell
 $ ps aux | grep spring
 eric             87304   1.3  2.9  3080836 482596   ??  Ss   10:12AM   4:08.36 spring app    | gitlab | started 6 hours ago | test mode
 eric             37709   0.0  0.0  2518640   7524 s006  S    Wed11AM   0:00.79 spring server | gitlab | started 29 hours ago
@@ -100,6 +124,6 @@ of GitLab schema later than the `MIN_SCHEMA_VERSION`, and then rolled back the
 to an older migration, from before. In this case, in order to migrate forward again,
 you should set the `SKIP_SCHEMA_VERSION_CHECK` environment variable.
 
-```sh
+```shell
 bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
 ```

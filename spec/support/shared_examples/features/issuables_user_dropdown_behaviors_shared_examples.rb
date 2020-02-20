@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples 'issuable user dropdown behaviors' do
+RSpec.shared_examples 'issuable user dropdown behaviors' do
   include FilteredSearchHelpers
 
   before do

@@ -47,4 +47,12 @@ describe ProjectGroupLink do
       group_users.each { |user| expect(user.authorized_projects).not_to include(project) }
     end
   end
+
+  describe 'search by group name' do
+    let_it_be(:project_group_link) { create(:project_group_link) }
+    let_it_be(:group) { project_group_link.group }
+
+    it { expect(described_class.search(group.name)).to eq([project_group_link]) }
+    it { expect(described_class.search('not-a-group-name')).to be_empty }
+  end
 end

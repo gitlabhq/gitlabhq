@@ -10,7 +10,7 @@ last_updated: 2019-03-06
 
 # Testing a Phoenix application with GitLab CI/CD
 
-[Phoenix](https://phoenixframework.org) is a web development framework written in [Elixir](https://elixir-lang.org), which is a
+[Phoenix](https://www.phoenixframework.org/) is a web development framework written in [Elixir](https://elixir-lang.org), which is a
 functional language designed for productivity and maintainability that runs on the
 [Erlang VM](https://www.erlang.org). Erlang VM is really really fast and can handle very large numbers of
 simultaneous users.
@@ -27,7 +27,7 @@ and the GitLab UI.
 
 ### What is Phoenix?
 
-[Phoenix](https://phoenixframework.org) is a web development framework written in [Elixir](https://elixir-lang.org) it's very useful
+[Phoenix](https://www.phoenixframework.org/) is a web development framework written in [Elixir](https://elixir-lang.org). It's useful
  for building fast, reliable, and high-performance applications, as it uses [Erlang VM](https://www.erlang.org).
 
 Many components and concepts are similar to Ruby on Rails or Python's Django. High developer
@@ -79,7 +79,7 @@ When we call `mix` command, we'll pass two arguments:
 - And the parameter `phoenix.new` requires, which is the name of the new project. In this case,
   we're calling it `hello_gitlab_ci`, but you're free to set your own name:
 
-```bash
+```shell
 mix phoenix.new hello_gitlab_ci
 ```
 
@@ -108,14 +108,14 @@ changes.
 
 Run the commands below to create our empty database:
 
-```bash
+```shell
 cd hello_gitlab_ci
 mix ecto.create
 ```
 
 We expect to see this output at the end of the command:
 
-```bash
+```plaintext
 Generated hello_gitlab_ci app
 The database for HelloGitlabCi.Repo has been created
 ```
@@ -130,13 +130,13 @@ permissions and a password of `postgres`. If it's not your case, check
 Now, it's time to see if everything we did until now went well. We'll call `mix` again, this time
 with `phoenix.server` parameter, which will start Phoenix's HTTP Server.
 
-```bash
+```shell
 mix phoenix.server
 ```
 
 This will be the output to this command:
 
-```bash
+```plaintext
 [info] Running HelloGitlabCi.Endpoint with Cowboy using http://localhost:4000
 23 May 11:44:35 - info: compiling
 23 May 11:44:37 - info: compiled 6 files into 2 files, copied 3 in 9.8 sec
@@ -223,13 +223,13 @@ Let's run a new task with `mix` to run those tests for us. This time, the parame
 
 In your terminal, navigate to the directory `hello_gitlab_ci` and run:
 
-```bash
+```shell
 mix test
 ```
 
 Our expected result is this:
 
-```bash
+```plaintext
 ....
 
 Finished in 0.7 seconds
@@ -265,20 +265,20 @@ project.
   As we are focusing on testing (not deploying), you can use the [elixir:latest](https://hub.docker.com/_/elixir) docker image, which already has the
   dependencies for running Phoenix tests installed, such as Elixir and Erlang:
 
-  ```yml
+  ```yaml
   image: elixir:latest
   ```
 
 - We'll only use `postgres`, so we can delete the `mysql` and `redis` lines from the `services` section:
 
-  ```yml
+  ```yaml
   services:
     - postgres:latest
   ```
 
 - Now, we'll create a new section called `variables`, before the `before_script` section:
 
-  ```yml
+  ```yaml
   variables:
     POSTGRES_DB: hello_gitlab_ci_test
     POSTGRES_HOST: postgres
@@ -293,7 +293,7 @@ project.
 
 - In the `before_script` section, we'll add some commands to prepare everything for the test:
 
-  ```yml
+  ```yaml
   before_script:
     - mix local.rebar --force
     - mix local.hex --force
@@ -310,7 +310,7 @@ project.
 
 Let's take a look at the updated file after the changes:
 
-```yml
+```yaml
 image: elixir:latest
 
 services:
@@ -353,7 +353,7 @@ actual running build job.
 Click on build's ID to watch the entire process. If everything went as expected, we can wait for the
 **Build succeeded** at the end of the process! :)
 
-```
+```shell
 $ mix test
 ....
 
@@ -395,7 +395,7 @@ using GitLab CI/CD. The benefits to our teams will be huge!
 
 ## References
 
-- [GitLab CI/CD introductory guide](https://about.gitlab.com/blog/2015/12/14/getting-started-with-gitlab-and-gitlab-ci)
+- [GitLab CI/CD introductory guide](https://about.gitlab.com/blog/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/)
 - [GitLab CI/CD full Documentation](../../README.md)
 - [GitLab Runners documentation](../../runners/README.md)
 - [Using Docker images documentation](../../docker/using_docker_images.md)

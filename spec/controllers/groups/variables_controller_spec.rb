@@ -50,7 +50,7 @@ describe Groups::VariablesController do
       it 'is successful' do
         get :show, params: { group_id: group }, format: :json
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -66,7 +66,7 @@ describe Groups::VariablesController do
               },
               format: :json
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

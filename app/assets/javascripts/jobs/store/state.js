@@ -22,6 +22,7 @@ export default () => ({
   isTraceComplete: false,
   traceSize: 0,
   isTraceSizeVisible: false,
+  traceTimeout: 0,
 
   // used as a query parameter to fetch the trace
   traceState: null,

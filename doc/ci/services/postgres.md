@@ -57,13 +57,13 @@ GitLab Runner with the Shell executor.
 
 First install the PostgreSQL server:
 
-```bash
+```shell
 sudo apt-get install -y postgresql postgresql-client libpq-dev
 ```
 
 The next step is to create a user, so login to PostgreSQL:
 
-```bash
+```shell
 sudo -u postgres psql -d template1
 ```
 
@@ -72,7 +72,7 @@ application. Change `$password` in the command below to a real strong password.
 
 *__Note:__ Do not type `template1=#`, this is part of the PostgreSQL prompt.*
 
-```bash
+```shell
 template1=# CREATE USER runner WITH PASSWORD '$password' CREATEDB;
 ```
 
@@ -83,20 +83,20 @@ testing framework you have tools that drop and create databases.*
 
 Create the database and grant all privileges on it for the user `runner`:
 
-```bash
+```shell
 template1=# CREATE DATABASE nice_marmot OWNER runner;
 ```
 
 If all went well you can now quit the database session:
 
-```bash
+```shell
 template1=# \q
 ```
 
 Now, try to connect to the newly created database with the user `runner` to
 check that everything is in place.
 
-```bash
+```shell
 psql -U runner -h localhost -d nice_marmot -W
 ```
 

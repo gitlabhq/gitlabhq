@@ -10,6 +10,7 @@
       = storage_counter(group.storage_size)
 
     = render_if_exists 'admin/namespace_plan_badge', namespace: group
+    = render_if_exists 'admin/groups/marked_for_deletion_badge', group: group
 
     %span
       = icon('bookmark')

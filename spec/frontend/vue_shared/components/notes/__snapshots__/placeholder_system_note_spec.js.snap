@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Placeholder system note component matches snapshot 1`] = `
+<timeline-entry-item-stub
+  class="note system-note being-posted fade-in-half"
+>
+  <div
+    class="timeline-content"
+  >
+    <em>
+      This is a placeholder
+    </em>
+  </div>
+</timeline-entry-item-stub>
+`;

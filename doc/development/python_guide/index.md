@@ -1,6 +1,6 @@
 # Python Development Guidelines
 
-GitLab requires Python as a dependency for [reStructuredText](http://docutils.sourceforge.net/rst.html)
+GitLab requires Python as a dependency for [reStructuredText](https://docutils.sourceforge.io/rst.html)
 markup rendering.
 
 As of GitLab 11.10, we require Python 3.
@@ -15,7 +15,7 @@ Ruby world: [rbenv](https://github.com/rbenv/rbenv).
 
 To install `pyenv` on macOS, you can use [Homebrew](https://brew.sh/) with:
 
-```bash
+```shell
 brew install pyenv
 ```
 
@@ -23,7 +23,7 @@ brew install pyenv
 
 To install `pyenv` on Linux, you can run the command below:
 
-```bash
+```shell
 curl https://pyenv.run | bash
 ```
 
@@ -38,20 +38,20 @@ check for any additional steps required for it.
 
 For Fish, you can install a plugin for [Fisher](https://github.com/jorgebucaran/fisher):
 
-```bash
+```shell
 fisher add fisherman/pyenv
 ```
 
 Or for [Oh My Fish](https://github.com/oh-my-fish/oh-my-fish):
 
-```bash
+```shell
 omf install pyenv
 ```
 
 ## Dependency management
 
 While GitLab doesn't directly contain any Python scripts, because we depend on Python to render
-[reStructuredText](http://docutils.sourceforge.net/rst.html) markup, we need to keep track on dependencies
+[reStructuredText](https://docutils.sourceforge.io/rst.html) markup, we need to keep track on dependencies
 on the main project level, so we can run that on our development machines.
 
 Recently, an equivalent to the `Gemfile` and the [Bundler](https://bundler.io/) project has been introduced to Python:
@@ -59,7 +59,7 @@ Recently, an equivalent to the `Gemfile` and the [Bundler](https://bundler.io/) 
 
 You will now find a `Pipfile` with the dependencies in the root folder. To install them, run:
 
-```bash
+```shell
 pipenv install
 ```
 
@@ -70,7 +70,7 @@ Running this command will install both the required Python version as well as re
 To run any Python code under the Pipenv environment, you need to first start a `virtualenv` based on the dependencies
 of the application. With Pipenv, this is a simple as running:
 
-```bash
+```shell
 pipenv shell
 ```
 

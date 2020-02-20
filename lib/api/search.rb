@@ -32,10 +32,6 @@ module API
 
         results = SearchService.new(current_user, search_params).search_objects
 
-        process_results(results)
-      end
-
-      def process_results(results)
         paginate(results)
       end
 
@@ -47,7 +43,7 @@ module API
         SCOPE_ENTITY[params[:scope].to_sym]
       end
 
-      def verify_search_scope!
+      def verify_search_scope!(resource:)
         # In EE we have additional validation requirements for searches.
         # Defining this method here as a noop allows us to easily extend it in
         # EE, without having to modify this file directly.
@@ -73,7 +69,7 @@ module API
         use :pagination
       end
       get do
-        verify_search_scope!
+        verify_search_scope!(resource: nil)
         check_users_search_allowed!
 
         present search, with: entity
@@ -94,7 +90,7 @@ module API
         use :pagination
       end
       get ':id/(-/)search' do
-        verify_search_scope!
+        verify_search_scope!(resource: user_group)
         check_users_search_allowed!
 
         present search(group_id: user_group.id), with: entity

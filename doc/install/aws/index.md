@@ -4,6 +4,8 @@ type: howto
 
 # Installing GitLab HA on Amazon Web Services (AWS)
 
+DANGER: **Danger:** This guide is under review and the steps below will be revised and updated in due time. For more detail, please see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/912).
+
 This page offers a walkthrough of a common HA (Highly Available) configuration
 for GitLab on AWS. You should customize it to accommodate your needs.
 
@@ -36,7 +38,7 @@ In addition to having a basic familiarity with [AWS](https://docs.aws.amazon.com
 
 Below is a diagram of the recommended architecture.
 
-![AWS architecture diagram](img/aws_diagram.png)
+![AWS architecture diagram](img/aws_ha_architecture_diagram.png)
 
 ## AWS costs
 
@@ -238,32 +240,7 @@ Now, it's time to create the database:
    auto updates to minor versions. You may want to turn it off.
 1. When done, click **Create database**.
 
-### Installing the `pg_trgm` extension for PostgreSQL
-
-Once the database is created, connect to your new RDS instance to verify access
-and to install a required extension.
-
-You can find the host or endpoint by selecting the instance you just created and
-after the details dropdown menu you'll find it labeled as 'Endpoint'. Do not to
-include the colon and port number:
-
-```sh
-sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
-```
-
-At the psql prompt create the extension and then quit the session:
-
-```sh
-psql (9.4.7)
-Type "help" for help.
-
-gitlab=# CREATE EXTENSION pg_trgm;
-gitlab=# \q
-```
-
----
-
-Now that the database is created, let's move on setting up Redis with ElasticCache.
+Now that the database is created, let's move on to setting up Redis with ElasticCache.
 
 ## Redis with ElastiCache
 
@@ -380,15 +357,7 @@ In this step we'll configure some details:
 
 ### Add storage
 
-The root volume is 8GB by default and should be enough given that we won't store
-any data there. Let's create a new EBS volume that will host the Git data. Its
-size depends on your needs and you can always migrate to a bigger volume later.
-You will be able to [set up that volume](#setting-up-the-ebs-volume)
-after the instance is created.
-
-CAUTION: **Caution:**
-We **do not** recommend using the AWS Elastic File System (EFS), as it can result
-in [significantly degraded performance](../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs).
+The root volume is 8GB by default and should be enough given that we won't store any data there.
 
 ### Configure security group
 
@@ -435,14 +404,31 @@ we intended.
 After a few minutes, the instances should be up and accessible via the internet.
 Let's connect to the primary and configure some things before logging in.
 
-### Configuring GitLab to connect with postgres and Redis
+### Installing the `pg_trgm` extension for PostgreSQL
 
-While connected to your server, let's connect to the RDS instance to verify
-access and to install a required extension:
+Connect to the RDS instance to verify access and to install the required `pg_trgm` extension.
 
-```sh
+To find the host or endpoint, naviagate to **Amazon RDS > Databases** and click on the database you created earlier. Look for the endpoint under the **Connectivity & security** tab.
+
+Do not to include the colon and port number:
+
+```shell
 sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
 ```
+
+At the psql prompt create the extension and then quit the session:
+
+```shell
+psql (10.9)
+Type "help" for help.
+
+gitlab=# CREATE EXTENSION pg_trgm;
+gitlab=# \q
+```
+
+---
+
+### Configuring GitLab to connect with postgres and Redis
 
 Edit the `gitlab.rb` file at `/etc/gitlab/gitlab.rb`
 find the `external_url 'http://gitlab.example.com'` option and change it
@@ -482,54 +468,50 @@ gitlab_rails['redis_port'] = 6379
 
 Finally, reconfigure GitLab for the change to take effect:
 
-```sh
+```shell
 sudo gitlab-ctl reconfigure
 ```
 
 You might also find it useful to run a check and a service status to make sure
 everything has been setup correctly:
 
-```sh
+```shell
 sudo gitlab-rake gitlab:check
 sudo gitlab-ctl status
 ```
 
 If everything looks good, you should be able to reach GitLab in your browser.
 
-### Setting up the EBS volume
-
-The EBS volume will host the Git repositories data:
-
-1. First, format the `/dev/xvdb` volume and then mount it under the directory
-   where the data will be stored. For example, `/mnt/gitlab-data/`.
-1. Tell GitLab to store its data in the new directory by editing
-   `/etc/gitlab/gitlab.rb` with your editor:
-
-   ```ruby
-   git_data_dirs({
-     "default" => { "path" => "/mnt/gitlab-data" }
-   })
-   ```
-
-   where `/mnt/gitlab-data` the location where you will store the Git data.
-
-1. Save the file and reconfigure GitLab:
-
-   ```sh
-   sudo gitlab-ctl reconfigure
-   ```
-
-TIP: **Tip:**
-If you wish to add more than one data volumes to store the Git repositories,
-read the [repository storage paths docs](../../administration/repository_storage_paths.md).
-
 ### Setting up Gitaly
 
-Gitaly is a service that provides high-level RPC access to Git repositories.
-It should be enabled and configured in a separate EC2 instance on the
-[private VPC](#subnets) we configured previously.
+CAUTION: **Caution:** In this architecture, having a single Gitaly server creates a single point of failure. This limitation will be removed once [Gitaly HA](https://gitlab.com/groups/gitlab-org/-/epics/842) is released.  
 
-Follow the [documentation to set up Gitaly](../../administration/gitaly/index.md).
+Gitaly is a service that provides high-level RPC access to Git repositories.
+It should be enabled and configured on a separate EC2 instance in one of the
+[private subnets](#subnets) we configured previously.
+
+Let's create an EC2 instance where we'll install Gitaly:
+
+1. From the EC2 dashboard, click **Launch instance**.
+1. Choose an AMI. In this example, we'll select the **Ubuntu Server 18.04 LTS (HVM), SSD Volume Type**.
+1. Choose an instance type. We'll pick a **c5.xlarge**.
+1. Click **Configure Instance Details**.
+   1. In the **Network** dropdown, select `gitlab-vpc`, the VPC we created earlier.
+   1. In the **Subnet** dropdown, select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.
+   1. Double check that **Auto-assign Public IP** is set to `Use subnet setting (Disable)`.
+   1. Click **Add Storage**.
+1. Increase the Root volume size to `20 GiB` and change the **Volume Type** to `Provisoned IOPS SSD (io1)`. (This is an arbitrary size. Create a volume big enough for your repository storage requirements.)
+   1. For **IOPS** set `1000` (20 GiB x 50 IOPS). You can provision up to 50 IOPS per GiB. If you select a larger volume, increase the IOPS accordingly. Workloads where many small files are written in a serialized manner, like `git`, requires performant storage, hence the choice of `Provisoned IOPS SSD (io1)`.
+1. Click on **Add Tags** and add your tags. In our case, we'll only set `Key: Name` and `Value: Gitaly`.
+1. Click on **Configure Security Group** and let's **Create a new security group**.
+   1. Give your security group a name and description. We'll use `gitlab-gitaly-sec-group` for both.
+   1. Create a **Custom TCP** rule and add port `8075` to the **Port Range**. For the **Source**, select the `gitlab-loadbalancer-sec-group`.
+1. Click **Review and launch** followed by **Launch** if you're happy with your settings.
+1. Finally, acknowledge that you have access to the selected private key file or create a new one. Click **Launch Instances**.
+
+  > **Optional:** Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above.
+
+Now that we have our EC2 instance ready, follow the [documentation to install GitLab and set up Gitaly on its own server](../../administration/gitaly/index.md#running-gitaly-on-its-own-server).
 
 ### Using Amazon S3 object storage
 
@@ -556,7 +538,7 @@ After you SSH into the instance, configure the domain name:
 
 1. Reconfigure GitLab:
 
-   ```sh
+   ```shell
    sudo gitlab-ctl reconfigure
    ```
 
@@ -609,7 +591,7 @@ To back up GitLab:
 1. SSH into your instance.
 1. Take a backup:
 
-   ```sh
+   ```shell
    sudo gitlab-backup create
    ```
 
@@ -630,7 +612,7 @@ released, you can update your GitLab instance:
 1. SSH into your instance
 1. Take a backup:
 
-   ```sh
+   ```shell
    sudo gitlab-backup create
    ```
 
@@ -639,7 +621,7 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 1. Update the repositories and install GitLab:
 
-   ```sh
+   ```shell
    sudo apt update
    sudo apt install gitlab-ee
    ```

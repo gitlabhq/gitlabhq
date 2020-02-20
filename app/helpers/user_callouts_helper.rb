@@ -22,6 +22,9 @@ module UserCalloutsHelper
   def render_dashboard_gold_trial(user)
   end
 
+  def render_account_recovery_regular_check
+  end
+
   def show_suggest_popover?
     !user_dismissed?(SUGGEST_POPOVER_DISMISSED)
   end
@@ -32,8 +35,10 @@ module UserCalloutsHelper
 
   private
 
-  def user_dismissed?(feature_name)
-    current_user&.callouts&.find_by(feature_name: UserCallout.feature_names[feature_name])
+  def user_dismissed?(feature_name, ignore_dismissal_earlier_than = nil)
+    return false unless current_user
+
+    current_user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: ignore_dismissal_earlier_than)
   end
 end
 

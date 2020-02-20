@@ -14,7 +14,7 @@ WHERE visibility_level IN (0, 20);
 
 When running this on GitLab.com, we are presented with the following output:
 
-```
+```sql
 Aggregate  (cost=922411.76..922411.77 rows=1 width=8)
   ->  Seq Scan on projects  (cost=0.00..908044.47 rows=5746914 width=0)
         Filter: (visibility_level = ANY ('{0,20}'::integer[]))
@@ -35,7 +35,7 @@ WHERE visibility_level IN (0, 20);
 
 This will produce:
 
-```
+```sql
 Aggregate  (cost=922420.60..922420.61 rows=1 width=8) (actual time=3428.535..3428.535 rows=1 loops=1)
   ->  Seq Scan on projects  (cost=0.00..908053.18 rows=5746969 width=0) (actual time=0.041..2987.606 rows=5746940 loops=1)
         Filter: (visibility_level = ANY ('{0,20}'::integer[]))
@@ -69,7 +69,7 @@ WHERE visibility_level IN (0, 20);
 
 This will then produce:
 
-```
+```sql
 Aggregate  (cost=922420.60..922420.61 rows=1 width=8) (actual time=3428.535..3428.535 rows=1 loops=1)
   Buffers: shared hit=208846
   ->  Seq Scan on projects  (cost=0.00..908053.18 rows=5746969 width=0) (actual time=0.041..2987.606 rows=5746940 loops=1)
@@ -105,7 +105,7 @@ aggregate(
 Nodes are indicated using a `->` followed by the type of node taken. For
 example:
 
-```
+```sql
 Aggregate  (cost=922411.76..922411.77 rows=1 width=8)
   ->  Seq Scan on projects  (cost=0.00..908044.47 rows=5746914 width=0)
         Filter: (visibility_level = ANY ('{0,20}'::integer[]))
@@ -119,7 +119,7 @@ above it.
 
 Nested nodes will look like this:
 
-```
+```sql
 Aggregate  (cost=176.97..176.98 rows=1 width=8) (actual time=0.252..0.252 rows=1 loops=1)
   Buffers: shared hit=155
   ->  Nested Loop  (cost=0.86..176.75 rows=87 width=0) (actual time=0.035..0.249 rows=36 loops=1)
@@ -142,7 +142,7 @@ Here we first perform two separate "Index Only" scans, followed by performing a
 Each node in a plan has a set of associated statistics, such as the cost, the
 number of rows produced, the number of loops performed, and more. For example:
 
-```
+```sql
 Seq Scan on projects  (cost=0.00..908044.47 rows=5746914 width=0)
 ```
 
@@ -157,7 +157,7 @@ influences the costs depends on a variety of settings, such as `seq_page_cost`,
 `cpu_tuple_cost`, and various others.
 The format of the costs field is as follows:
 
-```
+```sql
 STARTUP COST..TOTAL COST
 ```
 
@@ -169,7 +169,7 @@ When using `EXPLAIN ANALYZE`, these statistics will also include the actual time
 (in milliseconds) spent, and other runtime statistics (e.g. the actual number of
 produced rows):
 
-```
+```sql
 Seq Scan on projects  (cost=0.00..908053.18 rows=5746969 width=0) (actual time=0.041..2987.606 rows=5746940 loops=1)
 ```
 
@@ -181,7 +181,7 @@ Using `EXPLAIN (ANALYZE, BUFFERS)` will also give us information about the
 number of rows removed by a filter, the number of buffers used, and more. For
 example:
 
-```
+```sql
 Seq Scan on projects  (cost=0.00..908053.18 rows=5746969 width=0) (actual time=0.041..2987.606 rows=5746940 loops=1)
   Filter: (visibility_level = ANY ('{0,20}'::integer[]))
   Rows Removed by Filter: 65677
@@ -245,7 +245,7 @@ Sorts the input rows as specified using an `ORDER BY` statement.
 A nested loop will execute its child nodes for every row produced by a node that
 precedes it. For example:
 
-```
+```sql
 ->  Nested Loop  (cost=0.86..176.75 rows=87 width=0) (actual time=0.035..0.249 rows=36 loops=1)
       Buffers: shared hit=155
       ->  Index Only Scan using users_pkey on users users_1  (cost=0.43..4.95 rows=87 width=4) (actual time=0.029..0.123 rows=36 loops=1)
@@ -287,7 +287,7 @@ WHERE twitter != '';
 
 This will produce the following plan:
 
-```
+```sql
 Aggregate  (cost=845110.21..845110.22 rows=1 width=8) (actual time=1271.157..1271.158 rows=1 loops=1)
   Buffers: shared hit=202662
   ->  Seq Scan on users  (cost=0.00..844969.99 rows=56087 width=0) (actual time=0.019..1265.883 rows=51833 loops=1)
@@ -312,7 +312,7 @@ on the `users` table that we might be able to use. We can obtain this
 information by running `\d users` in a `psql` console, then scrolling down to
 the `Indexes:` section:
 
-```
+```sql
 Indexes:
     "users_pkey" PRIMARY KEY, btree (id)
     "users_confirmation_token_key" UNIQUE CONSTRAINT, btree (confirmation_token)
@@ -347,7 +347,7 @@ CREATE INDEX CONCURRENTLY twitter_test ON users (twitter);
 If we now re-run our query using `EXPLAIN (ANALYZE, BUFFERS)` we get the
 following plan:
 
-```
+```sql
 Aggregate  (cost=61002.82..61002.83 rows=1 width=8) (actual time=297.311..297.312 rows=1 loops=1)
   Buffers: shared hit=51854 dirtied=19
   ->  Index Only Scan using twitter_test on users  (cost=0.43..60873.13 rows=51877 width=0) (actual time=279.184..293.532 rows=51833 loops=1)
@@ -364,7 +364,7 @@ seconds. However, we still use 51,854 buffers, which is about 400 MB of memory.
 300 milliseconds is also quite slow for such a simple query. To understand why
 this query is still expensive, let's take a look at the following:
 
-```
+```sql
 Index Only Scan using twitter_test on users  (cost=0.43..60873.13 rows=51877 width=0) (actual time=279.184..293.532 rows=51833 loops=1)
   Filter: ((twitter)::text <> ''::text)
   Rows Removed by Filter: 2487830
@@ -401,7 +401,7 @@ CREATE INDEX CONCURRENTLY twitter_test ON users (twitter) WHERE twitter != '';
 
 Once created, if we run our query again we will be given the following plan:
 
-```
+```sql
 Aggregate  (cost=1608.26..1608.27 rows=1 width=8) (actual time=19.821..19.821 rows=1 loops=1)
   Buffers: shared hit=44036
   ->  Index Only Scan using twitter_test on users  (cost=0.41..1479.71 rows=51420 width=0) (actual time=0.023..15.514 rows=51833 loops=1)
@@ -438,7 +438,7 @@ WHERE visibility_level IN (0, 20);
 
 The output of `EXPLAIN (ANALYZE, BUFFERS)` is as follows:
 
-```
+```sql
 Aggregate  (cost=922420.60..922420.61 rows=1 width=8) (actual time=3428.535..3428.535 rows=1 loops=1)
   Buffers: shared hit=208846
   ->  Seq Scan on projects  (cost=0.00..908053.18 rows=5746969 width=0) (actual time=0.041..2987.606 rows=5746940 loops=1)
@@ -451,7 +451,7 @@ Execution time: 3428.596 ms
 
 Looking at the output we see the following Filter:
 
-```
+```sql
 Filter: (visibility_level = ANY ('{0,20}'::integer[]))
 Rows Removed by Filter: 65677
 ```
@@ -481,7 +481,7 @@ ORDER BY visibility_level ASC;
 
 For GitLab.com this produces:
 
-```
+```sql
  visibility_level | amount
 ------------------+---------
                 0 | 5071325
@@ -528,7 +528,7 @@ interacted with somehow?
 Fortunately, GitLab has an answer for this, and it's a table called
 `user_interacted_projects`. This table has the following schema:
 
-```
+```sql
 Table "public.user_interacted_projects"
    Column   |  Type   | Modifiers
 ------------+---------+-----------
@@ -564,7 +564,7 @@ What we do here is the following:
 
 If we run this query we get the following plan:
 
-```
+```sql
  Aggregate  (cost=871.03..871.04 rows=1 width=8) (actual time=9.763..9.763 rows=1 loops=1)
    ->  Nested Loop  (cost=0.86..870.52 rows=203 width=0) (actual time=1.072..9.748 rows=143 loops=1)
          ->  Index Scan using index_user_interacted_projects_on_user_id on user_interacted_projects  (cost=0.43..160.71 rows=205 width=4) (actual time=0.939..2.508 rows=145 loops=1)
@@ -580,7 +580,7 @@ If we run this query we get the following plan:
 Here it only took us just under 10 milliseconds to get the data. We can also see
 we're retrieving far fewer projects:
 
-```
+```sql
 Index Scan using projects_pkey on projects  (cost=0.43..3.45 rows=1 width=4) (actual time=0.049..0.050 rows=1 loops=145)
   Index Cond: (id = user_interacted_projects.project_id)
   Filter: (visibility_level = ANY ('{0,20}'::integer[]))
@@ -592,14 +592,14 @@ Here we see we perform 145 loops (`loops=145`), with every loop producing 1 row
 
 If we look at the plan we also see our costs are very low:
 
-```
+```sql
 Index Scan using projects_pkey on projects  (cost=0.43..3.45 rows=1 width=4) (actual time=0.049..0.050 rows=1 loops=145)
 ```
 
 Here our cost is only 3.45, and it only takes us 0.050 milliseconds to do so.
 The next index scan is a bit more expensive:
 
-```
+```sql
 Index Scan using index_user_interacted_projects_on_user_id on user_interacted_projects  (cost=0.43..160.71 rows=205 width=4) (actual time=0.939..2.508 rows=145 loops=1)
 ```
 
@@ -609,7 +609,7 @@ Here the cost is 160.71 (`cost=0.43..160.71`), taking about 2.5 milliseconds
 The most expensive part here is the "Nested Loop" that acts upon the result of
 these two index scans:
 
-```
+```sql
 Nested Loop  (cost=0.86..870.52 rows=203 width=0) (actual time=1.072..9.748 rows=143 loops=1)
 ```
 
@@ -687,13 +687,13 @@ Execution time: 0.113 ms
 `/chatops` slash command](chatops_on_gitlabcom.md).
 You can use chatops to get a query plan by running the following:
 
-```
+```sql
 /chatops run explain SELECT COUNT(*) FROM projects WHERE visibility_level IN (0, 20)
 ```
 
 Visualising the plan using <https://explain.depesz.com/> is also supported:
 
-```
+```sql
 /chatops run explain --visual SELECT COUNT(*) FROM projects WHERE visibility_level IN (0, 20)
 ```
 
@@ -701,45 +701,59 @@ Quoting the query is not necessary.
 
 For more information about the available options, run:
 
-```
+```sql
 /chatops run explain --help
 ```
 
 ### `#database-lab`
 
-Another tool GitLab employees can use is a chatbot powered by [Joe](https://gitlab.com/postgres-ai/joe), available in the [`#database-lab`](https://gitlab.slack.com/archives/CLJMDRD8C) channel on Slack.
+Another tool GitLab employees can use is a chatbot powered by [Joe](https://gitlab.com/postgres-ai/joe) which uses [Database Lab](https://gitlab.com/postgres-ai/database-lab) to instantly provide developers with their own clone of the production database. Joe is available in the [`#database-lab`](https://gitlab.slack.com/archives/CLJMDRD8C) channel on Slack.
 Unlike chatops, it gives you a way to execute DDL statements (like creating indexes and tables) and get query plan not only for `SELECT` but also `UPDATE` and `DELETE`.
 
 For example, in order to test new index you can do the following:
 
 Create the index:
 
-```
+```sql
 exec CREATE INDEX index_projects_marked_for_deletion ON projects (marked_for_deletion_at) WHERE marked_for_deletion_at IS NOT NULL
 ```
 
 Analyze the table to update its statistics:
 
-```
+```sql
 exec ANALYZE projects
 ```
 
 Get the query plan:
 
-```
+```sql
 explain SELECT * FROM projects WHERE marked_for_deletion_at < CURRENT_DATE
 ```
 
 Once done you can rollback your changes:
 
-```
+```sql
 reset
 ```
 
 For more information about the available options, run:
 
-```
+```sql
 help
+```
+
+#### Tips & Tricks
+
+The database connection is now maintained during your whole session, so you can use `exec set ...` for any session variables (such as `enable_seqscan` or `work_mem`). These settings will be applied to all subsequent commands until you reset them.
+
+It is also possible to use transactions. This may be useful when you are working on statements that modify the data, for example INSERT, UPDATE, and DELETE. The `explain` command will perform `EXPLAIN ANALYZE`, which executes the statement. In order to run each `explain` starting from a clean state you can wrap it in a transaction, for example:
+
+```sql
+exec BEGIN
+
+explain UPDATE some_table SET some_column = TRUE
+
+exec ROLLBACK
 ```
 
 ## Further reading

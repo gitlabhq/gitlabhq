@@ -3,6 +3,7 @@
 module Gitlab
   module Diff
     class HighlightCache
+      include Gitlab::Metrics::Methods
       include Gitlab::Utils::StrongMemoize
 
       EXPIRATION = 1.week
@@ -10,6 +11,11 @@ module Gitlab
 
       delegate :diffable,     to: :@diff_collection
       delegate :diff_options, to: :@diff_collection
+
+      define_histogram :gitlab_redis_diff_caching_memory_usage_bytes do
+        docstring 'Redis diff caching memory usage by key'
+        buckets [100, 1000, 10000, 100000, 1000000, 10000000]
+      end
 
       def initialize(diff_collection)
         @diff_collection = diff_collection
@@ -57,17 +63,6 @@ module Gitlab
 
       private
 
-      # We create a Gitlab::Diff::DeprecatedHighlightCache here in order to
-      #   expire deprecated cache entries while we make the transition. This can
-      #   be removed when :hset_redis_diff_caching is fully launched.
-      # See https://gitlab.com/gitlab-org/gitlab/issues/38008
-      #
-      def deprecated_cache
-        strong_memoize(:deprecated_cache) do
-          Gitlab::Diff::DeprecatedHighlightCache.new(@diff_collection)
-        end
-      end
-
       def cacheable_files
         strong_memoize(:cacheable_files) do
           diff_files.select { |file| cacheable?(file) && read_file(file).nil? }
@@ -104,10 +99,6 @@ module Gitlab
         #
         clear_memoization(:cached_content)
         clear_memoization(:cacheable_files)
-
-        # Clean up any deprecated hash entries
-        #
-        deprecated_cache.clear
       end
 
       def file_paths

@@ -6,41 +6,41 @@ module Gitlab
     module Dashboard
       class Url
         class << self
+          include Gitlab::Utils::StrongMemoize
+
+          QUERY_PATTERN = '(?<query>\?[a-zA-Z0-9%.()+_=-]+(&[a-zA-Z0-9%.()+_=-]+)*)?'
+          ANCHOR_PATTERN = '(?<anchor>\#[a-z0-9_-]+)?'
+          OPTIONAL_DASH_PATTERN = '(?:/-)?'
+
           # Matches urls for a metrics dashboard. This could be
           # either the /metrics endpoint or the /metrics_dashboard
           # endpoint.
           #
           # EX - https://<host>/<namespace>/<project>/environments/<env_id>/metrics
-          def regex
-            %r{
-              (?<url>
-                #{gitlab_pattern}
-                #{project_pattern}
-                (?:\/\-)?
-                \/environments
-                \/(?<environment>\d+)
-                \/metrics
-                #{query_pattern}
-                #{anchor_pattern}
+          def metrics_regex
+            strong_memoize(:metrics_regex) do
+              regex_for_project_metrics(
+                %r{
+                    /environments
+                    /(?<environment>\d+)
+                    /metrics
+                }x
               )
-            }x
+            end
           end
 
           # Matches dashboard urls for a Grafana embed.
           #
           # EX - https://<host>/<namespace>/<project>/grafana/metrics_dashboard
           def grafana_regex
-            %r{
-              (?<url>
-                #{gitlab_pattern}
-                #{project_pattern}
-                (?:\/\-)?
-                \/grafana
-                \/metrics_dashboard
-                #{query_pattern}
-                #{anchor_pattern}
+            strong_memoize(:grafana_regex) do
+              regex_for_project_metrics(
+                %r{
+                  /grafana
+                  /metrics_dashboard
+                }x
               )
-            }x
+            end
           end
 
           # Parses query params out from full url string into hash.
@@ -62,23 +62,30 @@ module Gitlab
 
           private
 
-          def gitlab_pattern
+          def regex_for_project_metrics(path_suffix_pattern)
+            %r{
+              (?<url>
+                #{gitlab_host_pattern}
+                #{project_path_pattern}
+                #{OPTIONAL_DASH_PATTERN}
+                #{path_suffix_pattern}
+                #{QUERY_PATTERN}
+                #{ANCHOR_PATTERN}
+              )
+            }x
+          end
+
+          def gitlab_host_pattern
             Regexp.escape(Gitlab.config.gitlab.url)
           end
 
-          def project_pattern
+          def project_path_pattern
             "\/#{Project.reference_pattern}"
-          end
-
-          def query_pattern
-            '(?<query>\?[a-zA-Z0-9%.()+_=-]+(&[a-zA-Z0-9%.()+_=-]+)*)?'
-          end
-
-          def anchor_pattern
-            '(?<anchor>\#[a-z0-9_-]+)?'
           end
         end
       end
     end
   end
 end
+
+Gitlab::Metrics::Dashboard::Url.extend_if_ee('::EE::Gitlab::Metrics::Dashboard::Url')

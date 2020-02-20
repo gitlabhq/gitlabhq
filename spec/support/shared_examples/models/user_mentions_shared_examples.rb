@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-shared_examples_for 'has user mentions' do
+RSpec.shared_examples 'has user mentions' do
   describe '#has_mentions?' do
     context 'when no mentions' do
       it 'returns false' do

@@ -20,11 +20,15 @@ describe User, :do_not_mock_admin_mode do
 
   describe 'delegations' do
     it { is_expected.to delegate_method(:path).to(:namespace).with_prefix }
+
+    it { is_expected.to delegate_method(:tab_width).to(:user_preference) }
+    it { is_expected.to delegate_method(:tab_width=).to(:user_preference).with_arguments(5) }
   end
 
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_one(:status) }
+    it { is_expected.to have_one(:max_access_level_membership) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:project_members) }
@@ -299,6 +303,20 @@ describe User, :do_not_mock_admin_mode do
         end
       end
 
+      context 'bad regex' do
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['([a-zA-Z0-9]+)+\.com'])
+        end
+
+        it 'does not hang on evil input' do
+          user = build(:user, email: 'user@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!.com')
+
+          expect do
+            Timeout.timeout(2.seconds) { user.valid? }
+          end.not_to raise_error
+        end
+      end
+
       context 'when a signup domain is whitelisted and subdomains are allowed' do
         before do
           allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['example.com', '*.example.com'])
@@ -350,6 +368,20 @@ describe User, :do_not_mock_admin_mode do
         before do
           allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist_enabled?).and_return(true)
           allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['example.com'])
+        end
+
+        context 'bad regex' do
+          before do
+            allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['([a-zA-Z0-9]+)+\.com'])
+          end
+
+          it 'does not hang on evil input' do
+            user = build(:user, email: 'user@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!.com')
+
+            expect do
+              Timeout.timeout(2.seconds) { user.valid? }
+            end.not_to raise_error
+          end
         end
 
         context 'when a signup domain is blacklisted' do
@@ -677,7 +709,7 @@ describe User, :do_not_mock_admin_mode do
   end
 
   describe 'before save hook' do
-    context '#default_private_profile_to_false' do
+    describe '#default_private_profile_to_false' do
       let(:user) { create(:user, private_profile: true) }
 
       it 'converts nil to false' do
@@ -839,8 +871,35 @@ describe User, :do_not_mock_admin_mode do
 
   describe '#highest_role' do
     let(:user) { create(:user) }
-
     let(:group) { create(:group) }
+
+    context 'with association :max_access_level_membership' do
+      let(:another_user) { create(:user) }
+
+      before do
+        create(:project, group: group) do |project|
+          group.add_user(user, GroupMember::GUEST)
+          group.add_user(another_user, GroupMember::DEVELOPER)
+        end
+
+        create(:project, group: create(:group)) do |project|
+          project.add_guest(another_user)
+        end
+
+        create(:project, group: create(:group)) do |project|
+          project.add_maintainer(user)
+        end
+      end
+
+      it 'returns the correct highest role' do
+        users = User.includes(:max_access_level_membership).where(id: [user.id, another_user.id])
+
+        expect(users.collect { |u| [u.id, u.highest_role] }).to contain_exactly(
+          [user.id, Gitlab::Access::MAINTAINER],
+          [another_user.id, Gitlab::Access::DEVELOPER]
+        )
+      end
+    end
 
     it 'returns NO_ACCESS if none has been set' do
       expect(user.highest_role).to eq(Gitlab::Access::NO_ACCESS)
@@ -2168,7 +2227,7 @@ describe User, :do_not_mock_admin_mode do
 
   describe '.find_by_private_commit_email' do
     context 'with email' do
-      set(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       it 'returns user through private commit email' do
         expect(described_class.find_by_private_commit_email(user.private_commit_email)).to eq(user)
@@ -2957,9 +3016,9 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  describe '#can_read_all_resources?' do
+  describe '#can_read_all_resources?', :request_store do
     it 'returns false for regular user' do
-      user = build(:user)
+      user = build_stubbed(:user)
 
       expect(user.can_read_all_resources?).to be_falsy
     end
@@ -2967,7 +3026,7 @@ describe User, :do_not_mock_admin_mode do
     context 'for admin user' do
       include_context 'custom session'
 
-      let(:user) { build(:user, :admin) }
+      let(:user) { build_stubbed(:user, :admin) }
 
       context 'when admin mode is disabled' do
         it 'returns false' do
@@ -3130,7 +3189,7 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  context '.active' do
+  describe '.active' do
     before do
       described_class.ghost
       create(:user, name: 'user', state: 'active')
@@ -3150,7 +3209,7 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  context '#invalidate_issue_cache_counts' do
+  describe '#invalidate_issue_cache_counts' do
     let(:user) { build_stubbed(:user) }
 
     it 'invalidates cache for issue counter' do
@@ -3164,7 +3223,7 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  context '#invalidate_merge_request_cache_counts' do
+  describe '#invalidate_merge_request_cache_counts' do
     let(:user) { build_stubbed(:user) }
 
     it 'invalidates cache for Merge Request counter' do
@@ -3178,7 +3237,7 @@ describe User, :do_not_mock_admin_mode do
     end
   end
 
-  context '#invalidate_personal_projects_count' do
+  describe '#invalidate_personal_projects_count' do
     let(:user) { build_stubbed(:user) }
 
     it 'invalidates cache for personal projects counter' do
@@ -4054,6 +4113,132 @@ describe User, :do_not_mock_admin_mode do
       it 'returns false' do
         is_expected.to be_falsey
       end
+    end
+  end
+
+  describe '#read_only_attribute?' do
+    context 'when LDAP server is enabled' do
+      before do
+        allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
+      end
+
+      %i[name email location].each do |attribute|
+        it "is true for #{attribute}" do
+          expect(subject.read_only_attribute?(attribute)).to be_truthy
+        end
+      end
+
+      context 'and ldap_readonly_attributes feature is disabled' do
+        before do
+          stub_feature_flags(ldap_readonly_attributes: false)
+        end
+
+        %i[name email location].each do |attribute|
+          it "is false" do
+            expect(subject.read_only_attribute?(attribute)).to be_falsey
+          end
+        end
+      end
+    end
+
+    context 'when synced attributes metadata is present' do
+      it 'delegates to synced_attributes_metadata' do
+        subject.build_user_synced_attributes_metadata
+
+        expect(subject.build_user_synced_attributes_metadata)
+          .to receive(:read_only?).with(:email).and_return('return-value')
+        expect(subject.read_only_attribute?(:email)).to eq('return-value')
+      end
+    end
+
+    context 'when synced attributes metadata is present' do
+      it 'is false for any attribute' do
+        expect(subject.read_only_attribute?(:email)).to be_falsey
+      end
+    end
+  end
+
+  describe 'internal methods' do
+    let_it_be(:user) { create(:user) }
+    let!(:ghost) { described_class.ghost }
+    let!(:alert_bot) { described_class.alert_bot }
+    let!(:non_internal) { [user] }
+    let!(:internal) { [ghost, alert_bot] }
+
+    it 'returns non internal users' do
+      expect(described_class.internal).to eq(internal)
+      expect(internal.all?(&:internal?)).to eq(true)
+    end
+
+    it 'returns internal users' do
+      expect(described_class.non_internal).to eq(non_internal)
+      expect(non_internal.all?(&:internal?)).to eq(false)
+    end
+
+    describe '#bot?' do
+      it 'marks bot users' do
+        expect(user.bot?).to eq(false)
+        expect(ghost.bot?).to eq(false)
+
+        expect(alert_bot.bot?).to eq(true)
+      end
+    end
+  end
+
+  describe '#dismissed_callout?' do
+    subject(:user) { create(:user) }
+
+    let(:feature_name) { UserCallout.feature_names.each_key.first }
+
+    context 'when no callout dismissal record exists' do
+      it 'returns false when no ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout?(feature_name: feature_name)).to eq false
+      end
+
+      it 'returns false when ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
+      end
+    end
+
+    context 'when dismissed callout exists' do
+      before do
+        create(:user_callout, user: user, feature_name: feature_name, dismissed_at: 4.months.ago)
+      end
+
+      it 'returns true when no ignore_dismissal_earlier_than provided' do
+        expect(user.dismissed_callout?(feature_name: feature_name)).to eq true
+      end
+
+      it 'returns true when ignore_dismissal_earlier_than is earlier than dismissed_at' do
+        expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 6.months.ago)).to eq true
+      end
+
+      it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
+        expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
+      end
+    end
+  end
+
+  describe 'bots & humans' do
+    it 'returns corresponding users' do
+      human = create(:user)
+      bot = create(:user, :bot)
+
+      expect(described_class.humans).to match_array([human])
+      expect(described_class.bots).to match_array([bot])
+    end
+  end
+
+  describe '#hook_attrs' do
+    it 'includes name, username, avatar_url, and email' do
+      user = create(:user)
+      user_attributes = {
+        name: user.name,
+        username: user.username,
+        avatar_url: user.avatar_url(only_path: false),
+        email: user.email
+      }
+      expect(user.hook_attrs).to eq(user_attributes)
     end
   end
 end

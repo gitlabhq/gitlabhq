@@ -5,13 +5,11 @@ require 'spec_helper'
 describe LfsRequest do
   include ProjectForksHelper
 
-  controller(Projects::GitHttpClientController) do
+  controller(Repositories::GitHttpClientController) do
     # `described_class` is not available in this context
     include LfsRequest
 
     def show
-      storage_project
-
       head :ok
     end
 
@@ -36,22 +34,6 @@ describe LfsRequest do
 
   before do
     stub_lfs_setting(enabled: true)
-  end
-
-  describe '#storage_project' do
-    it 'assigns the project as storage project' do
-      get :show, params: { id: project.id }
-
-      expect(assigns(:storage_project)).to eq(project)
-    end
-
-    it 'assigns the source of a forked project' do
-      forked_project = fork_project(project)
-
-      get :show, params: { id: forked_project.id }
-
-      expect(assigns(:storage_project)).to eq(project)
-    end
   end
 
   context 'user is authenticated without access to lfs' do

@@ -61,3 +61,42 @@ is stored in the `project_authorizations` table.
 Confidential issues can be accessed only by project members who are at least
 reporters (they can't be accessed by guests). Additionally they can be accessed
 by their authors and assignees.
+
+### Licensed features
+
+Some features can be accessed only if the user has the correct license plan.
+
+## Permission dependencies
+
+Feature policies can be quite complex and consist of multiple rules.
+Quite often, one permission can be based on another.
+
+Designing good permissions means reusing existing permissions as much as possible
+and making access to features granular.
+
+In the case of a complex resource, it should be broken into smaller pieces of information
+and each piece should be granted a different permission.
+
+A good example in this case is the _Merge Request widget_ and the _Security reports_.
+Depending on the visibility level of the _Pipelines_, the _Security reports_ will be either visible
+in the widget or not. So, the _Merge Request widget_, the _Pipelines_, and the _Security reports_,
+have separate permissions. Moreover, the permissions for the _Merge Request widget_
+and the _Pipelines_ are dependencies of the _Security reports_.
+
+### Permission dependencies of Secure features
+
+Secure features have complex permissions since these features are integrated
+into different features like Merge Requests and CI flow.
+
+ Here is a list of some permission dependencies.
+
+| Activity level | Resource | Locations |Permission dependency|
+|----------------|----------|-----------|-----|
+| View | License information | Dependency list, License Compliance | Can view repo |
+| View | Dependency information | Dependency list, License Compliance | Can view repo |
+| View | Vulnerabilities information | Dependency list | Can view security findings |
+| View | Black/Whitelisted licenses for the project | License Compliance, Merge request  | Can view repo |
+| View | Security findings | Merge Request, CI job page, Pipeline security tab | Can read the project and CI jobs |
+| View | Vulnerability feedback | Merge Request | Can read security findings |
+| View | Dependency List page | Project | Can access Dependency information |
+| View | License Compliance page | Project | Can access License information|

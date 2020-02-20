@@ -24,8 +24,8 @@ function update_tests_metadata() {
 
   scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH}" rspec_flaky/all_*.json
 
-  export FLAKY_RSPEC_GENERATE_REPORT="1"
-  scripts/prune-old-flaky-specs "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
+  export FLAKY_RSPEC_GENERATE_REPORT="true"
+  scripts/flaky_examples/prune-old-flaky-examples "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
 
   if [[ -n ${TESTS_METADATA_S3_BUCKET} ]]; then
     scripts/sync-reports put "${TESTS_METADATA_S3_BUCKET}" "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
@@ -40,7 +40,6 @@ function rspec_simple_job() {
   local rspec_opts="${1}"
 
   export NO_KNAPSACK="1"
-  export CACHE_CLASSES="true"
 
   scripts/gitaly-test-spawn
 
@@ -59,7 +58,6 @@ function rspec_paralellized_job() {
     spec_folder_prefix="ee/"
   fi
 
-  export CACHE_CLASSES="true"
   export KNAPSACK_LOG_LEVEL="debug"
   export KNAPSACK_REPORT_PATH="knapsack/${test_tool}_${test_level}_${database}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json"
 

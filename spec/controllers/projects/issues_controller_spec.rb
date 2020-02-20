@@ -24,7 +24,7 @@ describe Projects::IssuesController do
 
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -32,7 +32,7 @@ describe Projects::IssuesController do
         it 'renders the "index" template' do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:index)
         end
       end
@@ -51,14 +51,14 @@ describe Projects::IssuesController do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
           expect(response).to redirect_to(project_issues_path(new_project))
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
 
         it 'redirects from an old issue correctly' do
           get :show, params: { namespace_id: project.namespace, project_id: project, id: issue }
 
           expect(response).to redirect_to(project_issue_path(new_project, issue))
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
       end
     end
@@ -78,7 +78,7 @@ describe Projects::IssuesController do
       it "returns index" do
         get :index, params: { namespace_id: project.namespace, project_id: project }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it "returns 301 if request path doesn't match project path" do
@@ -92,7 +92,7 @@ describe Projects::IssuesController do
         project.save!
 
         get :index, params: { namespace_id: project.namespace, project_id: project }
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -118,7 +118,7 @@ describe Projects::IssuesController do
 
         get :index, params: params.merge(page: last_page + 1)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:issues).size).to eq(2)
       end
     end
@@ -227,7 +227,7 @@ describe Projects::IssuesController do
 
           get :new, params: { namespace_id: project.namespace, project_id: project }
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -235,7 +235,7 @@ describe Projects::IssuesController do
         it 'renders the "new" template' do
           get :new, params: { namespace_id: project.namespace, project_id: project }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:new)
         end
       end
@@ -330,7 +330,7 @@ describe Projects::IssuesController do
 
           [issue1, issue2, issue3].map(&:reload)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(issue1.relative_position)
             .to be_between(issue2.relative_position, issue3.relative_position)
         end
@@ -340,7 +340,7 @@ describe Projects::IssuesController do
         it 'returns a unprocessable entity 422 response for invalid move ids' do
           reorder_issue(issue1, move_after_id: 99, move_before_id: 999)
 
-          expect(response).to have_gitlab_http_status(422)
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
         end
 
         it 'returns a not found 404 response for invalid issue id' do
@@ -348,7 +348,7 @@ describe Projects::IssuesController do
             move_after_id: issue2.id,
             move_before_id: issue3.id)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
 
         it 'returns a unprocessable entity 422 response for issues not in group' do
@@ -359,7 +359,7 @@ describe Projects::IssuesController do
             move_before_id: issue3.id,
             group_full_path: another_group.full_path)
 
-          expect(response).to have_gitlab_http_status(422)
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
         end
       end
     end
@@ -415,14 +415,14 @@ describe Projects::IssuesController do
       it 'updates the issue' do
         subject
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(issue.reload.title).to eq('New title')
       end
 
       context 'when Akismet is enabled and the issue is identified as spam' do
         before do
           stub_application_setting(recaptcha_enabled: true)
-          expect_next_instance_of(AkismetService) do |akismet_service|
+          expect_next_instance_of(Spam::AkismetService) do |akismet_service|
             expect(akismet_service).to receive_messages(spam?: true)
           end
         end
@@ -443,7 +443,7 @@ describe Projects::IssuesController do
           it 'updates the issue' do
             subject
 
-            expect(response).to have_http_status(:ok)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(issue.reload.title).to eq('New title')
           end
         end
@@ -458,7 +458,7 @@ describe Projects::IssuesController do
       it 'responds with 404' do
         subject
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -505,7 +505,7 @@ describe Projects::IssuesController do
       it 'returns 200' do
         go(id: issue.iid)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -702,7 +702,7 @@ describe Projects::IssuesController do
 
         context 'when an issue is not identified as spam' do
           before do
-            expect_next_instance_of(AkismetService) do |akismet_service|
+            expect_next_instance_of(Spam::AkismetService) do |akismet_service|
               expect(akismet_service).to receive_messages(spam?: false)
             end
           end
@@ -715,7 +715,7 @@ describe Projects::IssuesController do
         context 'when an issue is identified as spam' do
           context 'when captcha is not verified' do
             before do
-              expect_next_instance_of(AkismetService) do |akismet_service|
+              expect_next_instance_of(Spam::AkismetService) do |akismet_service|
                 expect(akismet_service).to receive_messages(spam?: true)
               end
             end
@@ -749,7 +749,7 @@ describe Projects::IssuesController do
               it 'returns 200 status' do
                 update_issue
 
-                expect(response).to have_gitlab_http_status(200)
+                expect(response).to have_gitlab_http_status(:ok)
               end
             end
 
@@ -769,7 +769,7 @@ describe Projects::IssuesController do
               it 'returns 200 status' do
                 update_issue
 
-                expect(response).to have_gitlab_http_status(200)
+                expect(response).to have_gitlab_http_status(:ok)
               end
             end
           end
@@ -785,7 +785,7 @@ describe Projects::IssuesController do
             end
 
             it 'returns 200 status' do
-              expect(response).to have_gitlab_http_status(200)
+              expect(response).to have_gitlab_http_status(:ok)
             end
 
             it 'accepts an issue after recaptcha is verified' do
@@ -954,7 +954,7 @@ describe Projects::IssuesController do
         before do
           stub_feature_flags(allow_possible_spam: false)
 
-          expect_next_instance_of(AkismetService) do |akismet_service|
+          expect_next_instance_of(Spam::AkismetService) do |akismet_service|
             expect(akismet_service).to receive_messages(spam?: false)
           end
         end
@@ -971,7 +971,7 @@ describe Projects::IssuesController do
           end
 
           before do
-            expect_next_instance_of(AkismetService) do |akismet_service|
+            expect_next_instance_of(Spam::AkismetService) do |akismet_service|
               expect(akismet_service).to receive_messages(spam?: true)
             end
           end
@@ -1084,19 +1084,13 @@ describe Projects::IssuesController do
       it 'creates a sentry issue' do
         expect { subject }.to change(SentryIssue, :count)
       end
-
-      it 'with existing issue it will not create an issue' do
-        post_new_issue(sentry_issue_attributes: { sentry_issue_identifier: 1234567 })
-
-        expect { subject }.not_to change(Issue, :count)
-      end
     end
   end
 
   describe 'POST #mark_as_spam' do
     context 'properly submits to Akismet' do
       before do
-        expect_next_instance_of(AkismetService) do |akismet_service|
+        expect_next_instance_of(Spam::AkismetService) do |akismet_service|
           expect(akismet_service).to receive_messages(submit_spam: true)
         end
         expect_next_instance_of(ApplicationSetting) do |setting|
@@ -1129,9 +1123,10 @@ describe Projects::IssuesController do
         sign_in(user)
       end
 
-      it "rejects a developer to destroy an issue" do
+      it "does not delete the issue, returning :not_found" do
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
-        expect(response).to have_gitlab_http_status(404)
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -1147,14 +1142,7 @@ describe Projects::IssuesController do
       it "deletes the issue" do
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, destroy_confirm: true }
 
-        expect(response).to have_gitlab_http_status(302)
-        expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
-      end
-
-      it "deletes the issue" do
-        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, destroy_confirm: true }
-
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
       end
 
@@ -1163,7 +1151,7 @@ describe Projects::IssuesController do
 
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 
-        expect(response).to have_gitlab_http_status(302)
+        expect(response).to have_gitlab_http_status(:found)
         expect(controller).to set_flash[:notice].to('Destroy confirmation not provided for issue')
       end
 
@@ -1172,7 +1160,7 @@ describe Projects::IssuesController do
 
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, format: 'json' }
 
-        expect(response).to have_gitlab_http_status(422)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response).to eq({ 'errors' => 'Destroy confirmation not provided for issue' })
       end
 
@@ -1206,7 +1194,7 @@ describe Projects::IssuesController do
         subject
       end.to change { issue.award_emoji.count }.by(1)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it "removes the already awarded emoji" do
@@ -1214,7 +1202,7 @@ describe Projects::IssuesController do
 
       expect { subject }.to change { AwardEmoji.count }.by(-1)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'marks Todos on the Issue as done' do
@@ -1250,7 +1238,7 @@ describe Projects::IssuesController do
 
       create_merge_request
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'is not available for users who cannot create merge requests' do
@@ -1258,7 +1246,7 @@ describe Projects::IssuesController do
 
       create_merge_request
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     context 'target_project_id is set' do

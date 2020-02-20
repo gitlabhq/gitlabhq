@@ -152,7 +152,7 @@ Things to note:
 - The name of the element and the qa_selector must match and be snake_cased
 - If the element appears on the page unconditionally, add `required: true` to the element. See
   [Dynamic element validation](dynamic_element_validation.md)
-- You may see `.qa-selector` classes in existing Page Objects.  We should prefer the [`data-qa-selector`](#data-qa-selector-vs-qa-selector)
+- You may see `.qa-selector` classes in existing Page Objects. We should prefer the [`data-qa-selector`](#data-qa-selector-vs-qa-selector)
   method of definition over the `.qa-selector` CSS class
 
 ### `data-qa-selector` vs `.qa-selector`
@@ -173,7 +173,7 @@ and we should prefer the `data-qa-selector` method of definition.
 
 A common occurrence in automated testing is selecting a single "one-of-many" element.
 In a list of several items, how do you differentiate what you are selecting on?
-The most common workaround for this is via text matching.  Instead, a better practice is
+The most common workaround for this is via text matching. Instead, a better practice is
 by matching on that specific element by a unique identifier, rather than by text.
 
 We got around this by adding the `data-qa-*` extensible selection mechanism.

@@ -75,6 +75,11 @@ describe 'Projects > Files > Template type dropdown selector', :js do
       check_type_selector_toggle_text('.gitignore')
     end
 
+    it 'sets the toggle text when selecting the template type' do
+      select_template_type('.gitignore')
+      check_type_selector_toggle_text('.gitignore')
+    end
+
     it 'selects every template type correctly' do
       try_selecting_all_types
     end

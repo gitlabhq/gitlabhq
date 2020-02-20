@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
-import { activityBarViews } from '../constants';
+import { leftSidebarViews } from '../constants';
 
 export default {
   components: {
@@ -26,7 +26,7 @@ export default {
       $(e.currentTarget).tooltip('hide');
     },
   },
-  activityBarViews,
+  leftSidebarViews,
 };
 </script>
 
@@ -37,7 +37,7 @@ export default {
         <button
           v-tooltip
           :class="{
-            active: currentActivityView === $options.activityBarViews.edit,
+            active: currentActivityView === $options.leftSidebarViews.edit.name,
           }"
           :title="s__('IDE|Edit')"
           :aria-label="s__('IDE|Edit')"
@@ -45,7 +45,7 @@ export default {
           data-placement="right"
           type="button"
           class="ide-sidebar-link js-ide-edit-mode"
-          @click.prevent="changedActivityView($event, $options.activityBarViews.edit)"
+          @click.prevent="changedActivityView($event, $options.leftSidebarViews.edit.name)"
         >
           <icon name="code" />
         </button>
@@ -54,7 +54,7 @@ export default {
         <button
           v-tooltip
           :class="{
-            active: currentActivityView === $options.activityBarViews.review,
+            active: currentActivityView === $options.leftSidebarViews.review.name,
           }"
           :title="s__('IDE|Review')"
           :aria-label="s__('IDE|Review')"
@@ -62,7 +62,7 @@ export default {
           data-placement="right"
           type="button"
           class="ide-sidebar-link js-ide-review-mode"
-          @click.prevent="changedActivityView($event, $options.activityBarViews.review)"
+          @click.prevent="changedActivityView($event, $options.leftSidebarViews.review.name)"
         >
           <icon name="file-modified" />
         </button>
@@ -71,7 +71,7 @@ export default {
         <button
           v-tooltip
           :class="{
-            active: currentActivityView === $options.activityBarViews.commit,
+            active: currentActivityView === $options.leftSidebarViews.commit.name,
           }"
           :title="s__('IDE|Commit')"
           :aria-label="s__('IDE|Commit')"
@@ -79,7 +79,7 @@ export default {
           data-placement="right"
           type="button"
           class="ide-sidebar-link js-ide-commit-mode qa-commit-mode-tab"
-          @click.prevent="changedActivityView($event, $options.activityBarViews.commit)"
+          @click.prevent="changedActivityView($event, $options.leftSidebarViews.commit.name)"
         >
           <icon name="commit" />
         </button>

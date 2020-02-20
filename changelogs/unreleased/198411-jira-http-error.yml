@@ -1,0 +1,5 @@
+---
+title: Fix JIRA::HTTPError initialize parameter
+merge_request: 24060
+author:
+type: fixed

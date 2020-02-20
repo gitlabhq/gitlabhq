@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-shared_examples 'paginated collection' do
+RSpec.shared_examples 'paginated collection' do
   let(:collection) { nil }
   let(:last_page) { collection.page.total_pages }
   let(:action) { :index }
@@ -11,7 +9,7 @@ shared_examples 'paginated collection' do
   it 'renders a page number that is not ouf of range' do
     get action, params: params.merge(page: last_page)
 
-    expect(response).to have_gitlab_http_status(200)
+    expect(response).to have_gitlab_http_status(:ok)
   end
 
   it 'redirects to last_page if page number is larger than number of pages' do

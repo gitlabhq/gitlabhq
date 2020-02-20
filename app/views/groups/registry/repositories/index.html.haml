@@ -3,10 +3,21 @@
 %section
   .row.registry-placeholder.prepend-bottom-10
     .col-12
-      #js-vue-registry-images{ data: { endpoint: group_container_registries_path(@group, format: :json),
-        "help_page_path" => help_page_path('user/packages/container_registry/index'),
-        "no_containers_image" => image_path('illustrations/docker-empty-state.svg'),
-        "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
-        "repository_url" => "",
-        is_group_page: true,
-        character_error: @character_error.to_s } }
+      - if Feature.enabled?(:vue_container_registry_explorer)
+        #js-container-registry{ data: { endpoint: group_container_registries_path(@group),
+          "help_page_path" => help_page_path('user/packages/container_registry/index'),
+          "two_factor_auth_help_link" => help_page_path('user/profile/account/two_factor_authentication'),
+          "personal_access_tokens_help_link" => help_page_path('user/profile/personal_access_tokens'),
+          "no_containers_image" => image_path('illustrations/docker-empty-state.svg'),
+          "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
+          "registry_host_url_with_port" => escape_once(registry_config.host_port),
+          is_group_page: true,
+          character_error: @character_error.to_s } }
+      - else
+        #js-vue-registry-images{ data: { endpoint: group_container_registries_path(@group, format: :json),
+          "help_page_path" => help_page_path('user/packages/container_registry/index'),
+          "no_containers_image" => image_path('illustrations/docker-empty-state.svg'),
+          "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
+          "repository_url" => "",
+          is_group_page: true,
+          character_error: @character_error.to_s } }

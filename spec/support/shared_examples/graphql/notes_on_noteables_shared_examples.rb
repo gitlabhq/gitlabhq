@@ -1,7 +1,6 @@
 # frozen_string_literal: true
-require 'spec_helper'
 
-shared_context 'exposing regular notes on a noteable in GraphQL' do
+RSpec.shared_context 'exposing regular notes on a noteable in GraphQL' do
   include GraphqlHelpers
 
   let(:note) do

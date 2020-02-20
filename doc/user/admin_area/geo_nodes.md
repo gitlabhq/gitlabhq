@@ -45,7 +45,7 @@ download them all at once, so GitLab places an upper limit on the concurrency of
 these operations.
 
 How long the backfill takes is a function of the maximum concurrency, but higher
-values place more strain on the **primary** node. From [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab/merge_requests/3107),
+values place more strain on the **primary** node. From [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3107),
 the limits are configurable. If your **primary** node has lots of surplus capacity,
 you can increase the values to complete backfill in a shorter time. If it's
 under heavy load and backfill is reducing its availability for normal requests,

@@ -1,6 +1,14 @@
 const PATH_SEPARATOR = '/';
 const PATH_SEPARATOR_LEADING_REGEX = new RegExp(`^${PATH_SEPARATOR}+`);
 const PATH_SEPARATOR_ENDING_REGEX = new RegExp(`${PATH_SEPARATOR}+$`);
+const SHA_REGEX = /[\da-f]{40}/gi;
+
+// Reset the cursor in a Regex so that multiple uses before a recompile don't fail
+function resetRegExp(regex) {
+  regex.lastIndex = 0; /* eslint-disable-line no-param-reassign */
+
+  return regex;
+}
 
 // Returns a decoded url parameter value
 // - Treats '+' as '%20'
@@ -128,6 +136,20 @@ export function doesHashExistInUrl(hashName) {
   return hash && hash.includes(hashName);
 }
 
+export function urlContainsSha({ url = String(window.location) } = {}) {
+  return resetRegExp(SHA_REGEX).test(url);
+}
+
+export function getShaFromUrl({ url = String(window.location) } = {}) {
+  let sha = null;
+
+  if (urlContainsSha({ url })) {
+    [sha] = url.match(resetRegExp(SHA_REGEX));
+  }
+
+  return sha;
+}
+
 /**
  * Apply the fragment to the given url by returning a new url string that includes
  * the fragment. If the given url already contains a fragment, the original fragment
@@ -144,13 +166,23 @@ export const setUrlFragment = (url, fragment) => {
 
 export function visitUrl(url, external = false) {
   if (external) {
-    // Simulate `target="blank" rel="noopener noreferrer"`
+    // Simulate `target="_blank" rel="noopener noreferrer"`
     // See https://mathiasbynens.github.io/rel-noopener/
     const otherWindow = window.open();
     otherWindow.opener = null;
     otherWindow.location = url;
   } else {
     window.location.href = url;
+  }
+}
+
+export function updateHistory({ state = {}, title = '', url, replace = false, win = window } = {}) {
+  if (win.history) {
+    if (replace) {
+      win.history.replaceState(state, title, url);
+    } else {
+      win.history.pushState(state, title, url);
+    }
   }
 }
 
@@ -162,12 +194,14 @@ export function redirectTo(url) {
   return window.location.assign(url);
 }
 
+export const escapeFileUrl = fileUrl => encodeURIComponent(fileUrl).replace(/%2F/g, '/');
+
 export function webIDEUrl(route = undefined) {
   let returnUrl = `${gon.relative_url_root || ''}/-/ide/`;
   if (route) {
     returnUrl += `project${route.replace(new RegExp(`^${gon.relative_url_root || ''}`), '')}`;
   }
-  return returnUrl;
+  return escapeFileUrl(returnUrl);
 }
 
 /**
@@ -281,4 +315,6 @@ export const setUrlParams = (params, url = window.location.href, clearParams = f
   return urlObj.toString();
 };
 
-export const escapeFileUrl = fileUrl => encodeURIComponent(fileUrl).replace(/%2F/g, '/');
+export function urlIsDifferent(url, compare = String(window.location)) {
+  return url !== compare;
+}

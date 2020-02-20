@@ -4,7 +4,7 @@ type: reference, howto
 
 # Security Configuration **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/20711) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20711) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6.
 
 ## Overview
 

@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isEqual } from 'lodash';
 import { __, sprintf, s__ } from '../../locale';
 import createFlash from '../../flash';
 import PipelinesService from '../services/pipelines_service';
@@ -218,7 +218,7 @@ export default {
     successCallback(resp) {
       // Because we are polling & the user is interacting verify if the response received
       // matches the last request made
-      if (_.isEqual(resp.config.params, this.requestData)) {
+      if (isEqual(resp.config.params, this.requestData)) {
         this.store.storeCount(resp.data.count);
         this.store.storePagination(resp.headers);
         this.setCommonData(resp.data.pipelines);

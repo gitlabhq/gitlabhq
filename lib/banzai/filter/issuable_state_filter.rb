@@ -3,7 +3,7 @@
 module Banzai
   module Filter
     # HTML filter that appends state information to issuable links.
-    # Runs as a post-process filter as issuable state might change whilst
+    # Runs as a post-process filter as issuable state might change while
     # Markdown is in the cache.
     #
     # This filter supports cross-project references.

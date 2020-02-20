@@ -27,7 +27,7 @@ GET /projects/:id/dependencies?package_manager=yarn,bundler
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding).                                                            |
 | `package_manager` | string array   | no       | Returns dependencies belonging to specified package manager. Valid values: `bundler`, `composer`, `maven`, `npm`, `pip` or `yarn`.                                   |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/dependencies
 ```
 

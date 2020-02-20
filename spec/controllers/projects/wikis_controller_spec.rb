@@ -25,7 +25,7 @@ describe Projects::WikisController do
     it 'redirects to #show and appends a `random_title` param' do
       subject
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(:found)
       expect(Rails.application.routes.recognize_path(response.redirect_url)).to include(
         controller: 'projects/wikis',
         action: 'show'
@@ -70,7 +70,7 @@ describe Projects::WikisController do
       end
 
       it "returns status #{expected_status}" do
-        expect(response).to have_http_status(expected_status)
+        expect(response).to have_gitlab_http_status(expected_status)
       end
     end
 
@@ -103,7 +103,7 @@ describe Projects::WikisController do
 
         subject
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:page).title).to eq(wiki_title)
       end
 
@@ -113,7 +113,7 @@ describe Projects::WikisController do
 
           subject
 
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(flash[:notice]).to eq(_('The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.'))
         end
       end
@@ -204,7 +204,7 @@ describe Projects::WikisController do
       it 'shows the edit page' do
         subject
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to include(s_('Wiki|Edit Page'))
       end
     end

@@ -1,6 +1,6 @@
 # Monitoring AWS Resources
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12621) in GitLab 9.4
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12621) in GitLab 9.4
 
 GitLab has support for automatically detecting and monitoring AWS resources, starting with the [Elastic Load Balancer](https://aws.amazon.com/elasticloadbalancing/). This is provided by leveraging the official [Cloudwatch exporter](https://github.com/prometheus/cloudwatch_exporter), which translates [Cloudwatch metrics](https://aws.amazon.com/cloudwatch/) into a Prometheus readable form.
 
@@ -12,9 +12,9 @@ The [Prometheus service](../prometheus.md) must be enabled.
 
 | Name | Query |
 | ---- | ----- |
-| Throughput (req/sec) | sum(aws_elb_request_count_sum{%{environment_filter}}) / 60 |
-| Latency (ms) | avg(aws_elb_latency_average{%{environment_filter}}) * 1000 |
-| HTTP Error Rate (%) | sum(aws_elb_httpcode_backend_5_xx_sum{%{environment_filter}}) / sum(aws_elb_request_count_sum{%{environment_filter}}) |
+| Throughput (req/sec) | `sum(aws_elb_request_count_sum{%{environment_filter}}) / 60` |
+| Latency (ms) | `avg(aws_elb_latency_average{%{environment_filter}}) * 1000` |
+| HTTP Error Rate (%) | `sum(aws_elb_httpcode_backend_5_xx_sum{%{environment_filter}}) / sum(aws_elb_request_count_sum{%{environment_filter}})` |
 
 ## Configuring Prometheus to monitor for Cloudwatch metrics
 

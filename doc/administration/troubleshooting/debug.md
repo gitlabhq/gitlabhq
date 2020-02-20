@@ -10,13 +10,13 @@ an SMTP server, but you're not seeing mail delivered. Here's how to check the se
 
 1. Run a Rails console:
 
-   ```sh
+   ```shell
    sudo gitlab-rails console production
    ```
 
    or for source installs:
 
-   ```sh
+   ```shell
    bundle exec rails console production
    ```
 

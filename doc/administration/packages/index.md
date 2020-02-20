@@ -15,7 +15,7 @@ The Packages feature allows GitLab to act as a repository for the following:
 
 Don't you see your package management system supported yet?
 Please consider contributing
-to GitLab. This [development documentation](../../development/packages.md) will guide you through the process, it includes a list of [suggested contributions](../../development/packages.md#suggested-contributions).
+to GitLab. This [development documentation](../../development/packages.md) will guide you through the process.
 
 ## Enabling the Packages feature
 
@@ -166,12 +166,12 @@ The processing will be done in a background worker and requires **no downtime**.
 
 For Omnibus GitLab:
 
-```sh
+```shell
 sudo gitlab-rake "gitlab:packages:migrate"
 ```
 
 For installations from source:
 
-```bash
+```shell
 RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:packages:migrate
 ```

@@ -19,6 +19,18 @@ module ExploreHelper
     request_path_with_options(options)
   end
 
+  def filter_audit_path(options = {})
+    exist_opts = {
+      entity_type: params[:entity_type],
+      entity_id: params[:entity_id],
+      created_before: params[:created_before],
+      created_after: params[:created_after],
+      sort: params[:sort]
+    }
+    options = exist_opts.merge(options).delete_if { |key, value| value.blank? }
+    request_path_with_options(options)
+  end
+
   def filter_groups_path(options = {})
     request_path_with_options(options)
   end

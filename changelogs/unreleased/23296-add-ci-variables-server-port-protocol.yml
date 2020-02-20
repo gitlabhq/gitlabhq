@@ -1,0 +1,5 @@
+---
+title: Add CI variables to provide GitLab port and protocol
+merge_request: 23296
+author: Aidin Abedi
+type: added

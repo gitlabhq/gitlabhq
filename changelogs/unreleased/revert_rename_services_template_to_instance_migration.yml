@@ -1,0 +1,5 @@
+---
+title: Revert rename services template to instance migration
+merge_request: 24885
+author:
+type: fixed

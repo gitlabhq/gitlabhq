@@ -1,0 +1,17 @@
+.gpg-popover-certificate-details
+  %strong= _('Certificate Subject')
+  %ul
+    - signature.x509_certificate.subject.split(",").each do |i|
+      - if i.start_with?("CN", "O")
+        %li= i
+    %li= _('Subject Key Identifier:')
+    %li.unstyled= signature.x509_certificate.subject_key_identifier.gsub(":", " ")
+
+.gpg-popover-certificate-details
+  %strong= _('Certificate Issuer')
+  %ul
+    - signature.x509_certificate.x509_issuer.subject.split(",").each do |i|
+      - if i.start_with?("CN", "OU", "O")
+        %li= i
+    %li= _('Subject Key Identifier:')
+    %li.unstyled= signature.x509_certificate.x509_issuer.subject_key_identifier.gsub(":", " ")

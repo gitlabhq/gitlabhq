@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-properties, camelcase,
+/* eslint-disable no-restricted-properties, babel/camelcase,
 no-unused-expressions, default-case,
 consistent-return, no-alert, no-param-reassign, no-else-return,
 no-shadow, no-useless-escape,
@@ -11,11 +11,11 @@ old_notes_spec.js is the spec for the legacy, jQuery notes application. It has n
  */
 
 import $ from 'jquery';
-import _ from 'underscore';
+import { escape, uniqueId } from 'lodash';
 import Cookies from 'js-cookie';
 import Autosize from 'autosize';
 import 'jquery.caret'; // required by at.js
-import 'at.js';
+import '@gitlab/at.js';
 import Vue from 'vue';
 import { GlSkeletonLoading } from '@gitlab/ui';
 import AjaxCache from '~/lib/utils/ajax_cache';
@@ -1449,7 +1449,7 @@ export default class Notes {
     return {
       // eslint-disable-next-line no-jquery/no-serialize
       formData: $form.serialize(),
-      formContent: _.escape(content),
+      formContent: escape(content),
       formAction: $form.attr('action'),
       formContentOriginal: content,
     };
@@ -1516,18 +1516,16 @@ export default class Notes {
       `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
          <div class="timeline-entry-inner">
             <div class="timeline-icon">
-               <a href="/${_.escape(currentUsername)}">
+               <a href="/${escape(currentUsername)}">
                  <img class="avatar s40" src="${currentUserAvatar}" />
                </a>
             </div>
             <div class="timeline-content ${discussionClass}">
                <div class="note-header">
                   <div class="note-header-info">
-                     <a href="/${_.escape(currentUsername)}">
-                       <span class="d-none d-sm-inline-block bold">${_.escape(
-                         currentUsername,
-                       )}</span>
-                       <span class="note-headline-light">${_.escape(currentUsername)}</span>
+                     <a href="/${escape(currentUsername)}">
+                       <span class="d-none d-sm-inline-block bold">${escape(currentUsername)}</span>
+                       <span class="note-headline-light">${escape(currentUsername)}</span>
                      </a>
                   </div>
                </div>
@@ -1541,8 +1539,8 @@ export default class Notes {
       </li>`,
     );
 
-    $tempNote.find('.d-none.d-sm-inline-block').text(_.escape(currentUserFullname));
-    $tempNote.find('.note-headline-light').text(`@${_.escape(currentUsername)}`);
+    $tempNote.find('.d-none.d-sm-inline-block').text(escape(currentUserFullname));
+    $tempNote.find('.note-headline-light').text(`@${escape(currentUsername)}`);
 
     return $tempNote;
   }
@@ -1627,7 +1625,7 @@ export default class Notes {
 
     // Show placeholder note
     if (tempFormContent) {
-      noteUniqueId = _.uniqueId('tempNote_');
+      noteUniqueId = uniqueId('tempNote_');
       $notesContainer.append(
         this.createPlaceholderNote({
           formContent: tempFormContent,
@@ -1642,7 +1640,7 @@ export default class Notes {
 
     // Show placeholder system note
     if (hasQuickActions) {
-      systemNoteUniqueId = _.uniqueId('tempSystemNote_');
+      systemNoteUniqueId = uniqueId('tempSystemNote_');
       $notesContainer.append(
         this.createPlaceholderSystemNote({
           formContent: this.getQuickActionDescription(
@@ -1825,7 +1823,7 @@ export default class Notes {
       })
       .catch(() => {
         // Submission failed, revert back to original note
-        $noteBodyText.html(_.escape(cachedNoteBodyText));
+        $noteBodyText.html(escape(cachedNoteBodyText));
         $editingNote.removeClass('being-posted fade-in');
         $editingNote.find('.fa.fa-spinner').remove();
 

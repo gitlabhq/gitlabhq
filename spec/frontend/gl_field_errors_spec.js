@@ -1,5 +1,3 @@
-/* eslint-disable arrow-body-style */
-
 import $ from 'jquery';
 import GlFieldErrors from '~/gl_field_errors';
 

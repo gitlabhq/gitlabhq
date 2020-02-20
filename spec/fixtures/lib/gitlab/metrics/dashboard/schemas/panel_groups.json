@@ -10,7 +10,8 @@
     "panels": {
       "type": "array",
       "items": { "$ref": "panels.json" }
-    }
+    },
+    "has_custom_metrics": { "type": "boolean" }
   },
   "additionalProperties": false
 }

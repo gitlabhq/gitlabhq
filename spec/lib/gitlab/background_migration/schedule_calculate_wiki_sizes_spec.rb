@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190527194900_schedule_calculate_wiki_sizes.rb')
 
-describe ScheduleCalculateWikiSizes, :migration, :sidekiq do
+describe ScheduleCalculateWikiSizes, :migration do
   let(:migration_class) { Gitlab::BackgroundMigration::CalculateWikiSizes }
   let(:migration_name)  { migration_class.to_s.demodulize }
 

@@ -94,7 +94,7 @@ The rake task will use a sample data and execute each of file hook. The output
 should be enough to determine if the system sees your file hook and if it was
 executed without errors.
 
-```bash
+```shell
 # Omnibus installations
 sudo gitlab-rake file_hooks:validate
 
@@ -105,7 +105,7 @@ bundle exec rake file_hooks:validate RAILS_ENV=production
 
 Example of output:
 
-```
+```plaintext
 Validating file hooks from /plugins directory
 * /home/git/gitlab/plugins/save_to_file.clj succeed (zero exit code)
 * /home/git/gitlab/plugins/save_to_file.rb failure (non-zero exit code)

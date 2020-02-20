@@ -11,7 +11,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Validatable
           include ::Gitlab::Config::Entry::Attributable
 
-          ALLOWED_KEYS = %i[junit codequality sast dependency_scanning container_scanning dast performance license_management license_scanning metrics].freeze
+          ALLOWED_KEYS = %i[junit codequality sast dependency_scanning container_scanning dast performance license_management license_scanning metrics lsif].freeze
 
           attributes ALLOWED_KEYS
 
@@ -30,6 +30,7 @@ module Gitlab
               validates :license_management, array_of_strings_or_string: true
               validates :license_scanning, array_of_strings_or_string: true
               validates :metrics, array_of_strings_or_string: true
+              validates :lsif, array_of_strings_or_string: true
             end
           end
 

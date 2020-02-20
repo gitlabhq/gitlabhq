@@ -4,7 +4,7 @@ type: reference, howto
 
 # Allow collaboration on merge requests across forks
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17395) in GitLab 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17395) in GitLab 10.6.
 
 When a user opens a merge request from a fork, they are given the option to allow
 upstream members to collaborate with them on the source branch. This allows
@@ -55,7 +55,7 @@ Here's how the process would look like:
 1. Use the copy button to copy the first command and paste them
    in your terminal:
 
-   ```sh
+   ```shell
    git fetch git@gitlab.com:thedude/awesome-project.git update-docs
    git checkout -b thedude-awesome-project-update-docs FETCH_HEAD
    ```
@@ -66,7 +66,7 @@ Here's how the process would look like:
 1. Make any changes you want and commit.
 1. Push to the forked project:
 
-   ```sh
+   ```shell
    git push git@gitlab.com:thedude/awesome-project.git thedude-awesome-project-update-docs:update-docs
    ```
 

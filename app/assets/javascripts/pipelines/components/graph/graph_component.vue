@@ -1,5 +1,4 @@
 <script>
-import _ from 'underscore';
 import { GlLoadingIcon } from '@gitlab/ui';
 import StageColumnComponent from './stage_column_component.vue';
 import GraphMixin from '../../mixins/graph_component_mixin';
@@ -70,7 +69,7 @@ export default {
     expandedTriggeredBy() {
       return (
         this.pipeline.triggered_by &&
-        _.isArray(this.pipeline.triggered_by) &&
+        Array.isArray(this.pipeline.triggered_by) &&
         this.pipeline.triggered_by.find(el => el.isExpanded)
       );
     },

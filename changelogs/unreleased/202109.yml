@@ -1,0 +1,6 @@
+---
+title: update main javascript file to only apply right sidebar class when an aside
+  is present
+merge_request:
+author: Oregand
+type: fixed

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180104131052_schedule_set_confidential_note_events_on_webhooks.rb')
 
-describe ScheduleSetConfidentialNoteEventsOnWebhooks, :migration, :sidekiq do
+describe ScheduleSetConfidentialNoteEventsOnWebhooks, :migration do
   let(:web_hooks_table) { table(:web_hooks) }
   let(:migration_class) { Gitlab::BackgroundMigration::SetConfidentialNoteEventsOnWebhooks }
   let(:migration_name)  { migration_class.to_s.demodulize }

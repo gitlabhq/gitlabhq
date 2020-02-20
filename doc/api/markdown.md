@@ -16,7 +16,7 @@ POST /api/v4/markdown
 | `gfm`     | boolean | no (optional) | Render text using GitLab Flavored Markdown. Default is `false` |
 | `project` | string  | no (optional) | Use `project` as a context when creating references using GitLab Flavored Markdown. [Authentication](README.html#authentication) is required if a project is not public.  |
 
-```bash
+```shell
 curl --header Content-Type:application/json --data '{"text":"Hello world! :tada:", "gfm":true, "project":"group_example/project_example"}' https://gitlab.example.com/api/v4/markdown
 ```
 
@@ -26,4 +26,4 @@ Response example:
 { "html": "<p dir=\"auto\">Hello world! <gl-emoji title=\"party popper\" data-name=\"tada\" data-unicode-version=\"6.0\">🎉</gl-emoji></p>" }
 ```
 
-[ce-18926]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18926
+[ce-18926]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18926

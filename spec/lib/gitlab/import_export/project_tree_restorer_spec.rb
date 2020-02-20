@@ -13,8 +13,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       # Using an admin for import, so we can check assignment of existing members
       @user = create(:admin)
       @existing_members = [
-        create(:user, username: 'bernard_willms'),
-        create(:user, username: 'saul_will')
+        create(:user, email: 'bernard_willms@gitlabexample.com'),
+        create(:user, email: 'saul_will@gitlabexample.com')
       ]
 
       RSpec::Mocks.with_temporary_scope do
@@ -450,7 +450,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
   context 'project.json file access check' do
     let(:user) { create(:user) }
     let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
-    let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
+    let(:project_tree_restorer) do
+      described_class.new(user: user, shared: shared, project: project)
+    end
     let(:restored_project_json) { project_tree_restorer.restore }
 
     it 'does not read a symlink' do
@@ -495,6 +497,58 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
                         label_with_priorities: 'A project label',
                         milestones: 1,
                         first_issue_labels: 1
+      end
+    end
+
+    context 'when post import action throw non-retriable exception' do
+      let(:exception) { StandardError.new('post_import_error') }
+
+      before do
+        setup_import_export_config('light')
+        expect(project)
+          .to receive(:merge_requests)
+          .and_raise(exception)
+      end
+
+      it 'report post import error' do
+        expect(restored_project_json).to eq(false)
+        expect(shared.errors).to include('post_import_error')
+      end
+    end
+
+    context 'when post import action throw retriable exception one time' do
+      let(:exception) { GRPC::DeadlineExceeded.new }
+
+      before do
+        setup_import_export_config('light')
+        expect(project)
+          .to receive(:merge_requests)
+          .and_raise(exception)
+        expect(project)
+          .to receive(:merge_requests)
+          .and_call_original
+        expect(restored_project_json).to eq(true)
+      end
+
+      it_behaves_like 'restores project successfully',
+                      issues: 1,
+                      labels: 2,
+                      label_with_priorities: 'A project label',
+                      milestones: 1,
+                      first_issue_labels: 1,
+                      services: 1,
+                      import_failures: 1
+
+      it 'records the failures in the database' do
+        import_failure = ImportFailure.last
+
+        expect(import_failure.project_id).to eq(project.id)
+        expect(import_failure.relation_key).to be_nil
+        expect(import_failure.relation_index).to be_nil
+        expect(import_failure.exception_class).to eq('GRPC::DeadlineExceeded')
+        expect(import_failure.exception_message).to be_present
+        expect(import_failure.correlation_id_value).not_to be_empty
+        expect(import_failure.created_at).to be_present
       end
     end
 
@@ -673,7 +727,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     let(:project) { create(:project) }
     let(:user) { create(:user) }
     let(:tree_hash) { { 'visibility_level' => visibility } }
-    let(:restorer) { described_class.new(user: user, shared: shared, project: project) }
+    let(:restorer) do
+      described_class.new(user: user, shared: shared, project: project)
+    end
 
     before do
       expect(restorer).to receive(:read_tree_hash) { tree_hash }

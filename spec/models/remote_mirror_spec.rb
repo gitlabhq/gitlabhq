@@ -227,7 +227,7 @@ describe RemoteMirror, :mailer do
     end
   end
 
-  context '#sync' do
+  describe '#sync' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
 
     around do |example|
@@ -297,7 +297,7 @@ describe RemoteMirror, :mailer do
     end
   end
 
-  context '#ensure_remote!' do
+  describe '#ensure_remote!' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
     let(:project) { remote_mirror.project }
     let(:repository) { project.repository }
@@ -321,7 +321,7 @@ describe RemoteMirror, :mailer do
     end
   end
 
-  context '#url=' do
+  describe '#url=' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
 
     it 'resets all the columns when URL changes' do
@@ -340,7 +340,7 @@ describe RemoteMirror, :mailer do
     end
   end
 
-  context '#updated_since?' do
+  describe '#updated_since?' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
     let(:timestamp) { Time.now - 5.minutes }
 

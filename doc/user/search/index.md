@@ -33,8 +33,15 @@ Follow these steps to filter the **Issues** and **Merge Requests** list pages wi
 groups:
 
 1. Click in the field **Search or filter results...**.
-1. In the dropdown menu that appears, select the attribute you wish to filter by (for example,
-   author, assignee, milestone, and so on).
+1. In the dropdown menu that appears, select the attribute you wish to filter by:
+   - Author
+   - Assignee
+   - [Milestone](../project/milestones/index.md)
+   - Release
+   - [Label](../project/labels.md)
+   - My-reaction
+   - Confidential
+   - Search for this text
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
    - `=`: Is
@@ -73,6 +80,15 @@ You can filter issues and merge requests by specific terms included in titles or
 
 ![filter issues by specific terms](img/issue_search_by_term.png)
 
+### Filtering merge requests by approvers **(STARTER)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9468) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.9.
+
+To filter merge requests by an individual approver, you can type (or select from
+the dropdown) `approver` and select the user.
+
+![Filter MRs by an approver](img/filter_approver_merge_requests.png)
+
 ## Search history
 
 You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.
@@ -89,7 +105,7 @@ Some filters can be added multiple times. These include but are not limited to a
 
 ![multiple assignees filtering](img/multiple_assignees.png)
 
-### Shortcut
+## Shortcut
 
 You'll also find a shortcut on the search field on the top-right of the project's dashboard to
 quickly access issues and merge requests created or assigned to you within that project:

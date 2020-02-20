@@ -58,7 +58,7 @@ On each Consul node perform the following:
 Before moving on, make sure Consul is configured correctly. Run the following
 command to verify all server nodes are communicating:
 
-```sh
+```shell
 /opt/gitlab/embedded/bin/consul members
 ```
 

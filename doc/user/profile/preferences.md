@@ -108,6 +108,15 @@ You can choose between 3 options:
 - Readme
 - Activity
 
+### Tab width
+
+You can set the displayed width of tab characters across various parts of
+GitLab, for example, blobs, diffs, and snippets.
+
+NOTE: **Note:**
+Some parts of GitLab do not respect this setting, including the WebIDE, file
+editor and Markdown editor.
+
 ## Localization
 
 ### Language

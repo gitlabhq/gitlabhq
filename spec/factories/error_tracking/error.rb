@@ -2,13 +2,13 @@
 
 FactoryBot.define do
   factory :error_tracking_error, class: 'Gitlab::ErrorTracking::Error' do
-    id { 'id' }
+    id { '1' }
     title { 'title' }
     type { 'error' }
     user_count { 1 }
     count { 2 }
-    first_seen { Time.now }
-    last_seen { Time.now }
+    first_seen { Time.now.iso8601 }
+    last_seen { Time.now.iso8601 }
     message { 'message' }
     culprit { 'culprit' }
     external_url { 'http://example.com/id' }
@@ -17,7 +17,11 @@ FactoryBot.define do
     project_slug { 'project_name' }
     short_id { 'ID' }
     status { 'unresolved' }
-    frequency { [] }
+    frequency do
+      [
+        [Time.now.to_i, 10]
+      ]
+    end
 
     skip_create
   end

@@ -1,7 +1,12 @@
+# This file is generated automatically by
+#   bin/rake gitlab:sidekiq:sidekiq_queues_yml:generate
+#
+# Do not edit it manually!
+#
 # This configuration file should be exclusively used to set queue settings for
 # Sidekiq. Any other setting should be specified using the Sidekiq CLI or the
 # Sidekiq Ruby API (see config/initializers/sidekiq.rb).
----
+#
 # All the queues to process and their weights. Every queue _must_ have a weight
 # defined.
 #
@@ -17,114 +22,225 @@
 # to perform) is:
 #
 #     chance = (queue weight / total weight of all queues) * 100
+---
 :queues:
-  - [post_receive, 5]
-  - [merge, 5]
-  - [update_merge_requests, 3]
-  - [process_commit, 3]
-  - [new_note, 2]
-  - [new_issue, 2]
-  - [notifications, 2]
-  - [new_merge_request, 2]
-  - [pipeline_processing, 5]
-  - [pipeline_creation, 4]
-  - [pipeline_default, 3]
-  - [pipeline_cache, 3]
-  - [deployment, 3]
-  - [auto_merge, 3]
-  - [pipeline_hooks, 2]
-  - [gitlab_shell, 2]
-  - [email_receiver, 2]
-  - [emails_on_push, 2]
-  - [mailers, 2]
-  - [mail_scheduler, 2]
-  - [invalid_gpg_signature_update, 2]
-  - [create_gpg_signature, 2]
-  - [rebase, 2]
-  - [upload_checksum, 1]
-  - [repository_fork, 1]
-  - [repository_import, 1]
-  - [github_importer, 1]
-  - [github_import_advance_stage, 1]
-  - [project_service, 1]
-  - [delete_user, 1]
-  - [todos_destroyer, 1]
-  - [delete_merged_branches, 1]
-  - [authorized_projects, 2]
-  - [expire_build_instance_artifacts, 1]
-  - [group_destroy, 1]
-  - [irker, 1]
-  - [namespaceless_project_destroy, 1]
-  - [project_cache, 1]
-  - [project_destroy, 1]
-  - [project_export, 1]
-  - [web_hook, 1]
-  - [repository_check, 1]
-  - [git_garbage_collect, 1]
-  - [reactive_caching, 1]
-  - [cronjob, 1]
-  - [default, 1]
-  - [pages, 1]
-  - [system_hook_push, 1]
-  - [propagate_service_template, 1]
-  - [background_migration, 1]
-  - [gcp_cluster, 1]
-  - [project_migrate_hashed_storage, 1]
-  - [project_rollback_hashed_storage, 1]
-  - [hashed_storage, 1]
-  - [pages_domain_verification, 1]
-  - [pages_domain_ssl_renewal, 1]
-  - [object_storage_upload, 1]
-  - [object_storage, 1]
-  - [file_hook, 1]
-  - [pipeline_background, 1]
-  - [repository_update_remote_mirror, 1]
-  - [repository_remove_remote, 1]
-  - [create_note_diff_file, 1]
-  - [delete_diff_files, 1]
-  - [detect_repository_languages, 1]
-  - [auto_devops, 2]
-  - [container_repository, 1]
-  - [object_pool, 1]
-  - [repository_cleanup, 1]
-  - [delete_stored_files, 1]
-  - [remote_mirror_notification, 2]
-  - [project_daily_statistics, 1]
-  - [import_issues_csv, 2]
-  - [chat_notification, 2]
-  - [migrate_external_diffs, 1]
-  - [update_project_statistics, 1]
-  - [phabricator_import_import_tasks, 1]
-  - [update_namespace_statistics, 1]
-  - [chaos, 2]
-  - [create_evidence, 2]
-  - [group_export, 1]
-  - [self_monitoring_project_create, 2]
-  - [self_monitoring_project_delete, 2]
-
-  # EE-specific queues
-  - [analytics, 1]
-  - [ldap_group_sync, 2]
-  - [create_github_webhook, 2]
-  - [geo, 1]
-  - [repository_update_mirror, 1]
-  - [repository_push_audit_event, 1]
-  - [new_epic, 2]
-  - [project_import_schedule, 1]
-  - [project_update_repository_storage, 1]
-  - [admin_emails, 1]
-  - [elastic_batch_project_indexer, 1]
-  - [elastic_indexer, 1]
-  - [elastic_full_index, 1]
-  - [elastic_commit_indexer, 1]
-  - [elastic_namespace_indexer, 1]
-  - [elastic_namespace_rollout, 1]
-  - [export_csv, 1]
-  - [incident_management, 2]
-  - [jira_connect, 1]
-  - [update_external_pull_requests, 3]
-  - [refresh_license_compliance_checks, 2]
-  - [design_management_new_version, 1]
-  - [epics, 2]
-  - [personal_access_tokens, 1]
-  - [adjourned_project_deletion, 1]
+- - adjourned_project_deletion
+  - 1
+- - admin_emails
+  - 1
+- - authorized_projects
+  - 2
+- - auto_devops
+  - 2
+- - auto_merge
+  - 3
+- - background_migration
+  - 1
+- - chaos
+  - 2
+- - chat_notification
+  - 2
+- - container_repository
+  - 1
+- - create_commit_signature
+  - 2
+- - create_evidence
+  - 2
+- - create_github_webhook
+  - 2
+- - create_note_diff_file
+  - 1
+- - cronjob
+  - 1
+- - default
+  - 1
+- - delete_diff_files
+  - 1
+- - delete_merged_branches
+  - 1
+- - delete_stored_files
+  - 1
+- - delete_user
+  - 1
+- - deployment
+  - 3
+- - design_management_new_version
+  - 1
+- - detect_repository_languages
+  - 1
+- - elastic_batch_project_indexer
+  - 1
+- - elastic_commit_indexer
+  - 1
+- - elastic_full_index
+  - 1
+- - elastic_indexer
+  - 1
+- - elastic_namespace_indexer
+  - 1
+- - elastic_namespace_rollout
+  - 1
+- - email_receiver
+  - 2
+- - emails_on_push
+  - 2
+- - epics
+  - 2
+- - error_tracking_issue_link
+  - 1
+- - expire_build_instance_artifacts
+  - 1
+- - export_csv
+  - 1
+- - file_hook
+  - 1
+- - gcp_cluster
+  - 1
+- - geo
+  - 1
+- - git_garbage_collect
+  - 1
+- - github_import_advance_stage
+  - 1
+- - github_importer
+  - 1
+- - gitlab_shell
+  - 2
+- - group_destroy
+  - 1
+- - group_export
+  - 1
+- - group_import
+  - 1
+- - hashed_storage
+  - 1
+- - import_issues_csv
+  - 2
+- - incident_management
+  - 2
+- - invalid_gpg_signature_update
+  - 2
+- - irker
+  - 1
+- - jira_connect
+  - 1
+- - ldap_group_sync
+  - 2
+- - mail_scheduler
+  - 2
+- - mailers
+  - 2
+- - merge
+  - 5
+- - merge_request_mergeability_check
+  - 1
+- - migrate_external_diffs
+  - 1
+- - namespaceless_project_destroy
+  - 1
+- - new_epic
+  - 2
+- - new_issue
+  - 2
+- - new_merge_request
+  - 2
+- - new_note
+  - 2
+- - notifications
+  - 2
+- - object_pool
+  - 1
+- - object_storage
+  - 1
+- - package_repositories
+  - 1
+- - pages
+  - 1
+- - pages_domain_ssl_renewal
+  - 1
+- - pages_domain_verification
+  - 1
+- - personal_access_tokens
+  - 1
+- - phabricator_import_import_tasks
+  - 1
+- - pipeline_background
+  - 1
+- - pipeline_cache
+  - 3
+- - pipeline_creation
+  - 4
+- - pipeline_default
+  - 3
+- - pipeline_hooks
+  - 2
+- - pipeline_processing
+  - 5
+- - post_receive
+  - 5
+- - process_commit
+  - 3
+- - project_cache
+  - 1
+- - project_daily_statistics
+  - 1
+- - project_destroy
+  - 1
+- - project_export
+  - 1
+- - project_import_schedule
+  - 1
+- - project_service
+  - 1
+- - project_update_repository_storage
+  - 1
+- - propagate_service_template
+  - 1
+- - reactive_caching
+  - 1
+- - rebase
+  - 2
+- - refresh_license_compliance_checks
+  - 2
+- - remote_mirror_notification
+  - 2
+- - repository_check
+  - 1
+- - repository_cleanup
+  - 1
+- - repository_fork
+  - 1
+- - repository_import
+  - 1
+- - repository_push_audit_event
+  - 1
+- - repository_remove_remote
+  - 1
+- - repository_update_mirror
+  - 1
+- - repository_update_remote_mirror
+  - 1
+- - security_scans
+  - 2
+- - self_monitoring_project_create
+  - 2
+- - self_monitoring_project_delete
+  - 2
+- - service_desk_email_receiver
+  - 1
+- - system_hook_push
+  - 1
+- - todos_destroyer
+  - 1
+- - update_external_pull_requests
+  - 3
+- - update_merge_requests
+  - 3
+- - update_namespace_statistics
+  - 1
+- - update_project_statistics
+  - 1
+- - upload_checksum
+  - 1
+- - web_hook
+  - 1

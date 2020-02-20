@@ -24,7 +24,7 @@ describe Projects::UsagePingController do
         it 'returns 302' do
           subject
 
-          expect(response).to have_gitlab_http_status(302)
+          expect(response).to have_gitlab_http_status(:found)
         end
       end
 
@@ -32,7 +32,7 @@ describe Projects::UsagePingController do
         it 'returns 404' do
           subject
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -57,7 +57,7 @@ describe Projects::UsagePingController do
       it 'returns 404' do
         subject
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

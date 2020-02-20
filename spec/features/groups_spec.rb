@@ -82,8 +82,8 @@ describe 'Group' do
           expect(page).to have_selector('#group_create_chat_team')
         end
 
-        it 'checks the checkbox by default' do
-          expect(find('#group_create_chat_team')['checked']).to eq(true)
+        it 'unchecks the checkbox by default' do
+          expect(find('#group_create_chat_team')['checked']).to eq(false)
         end
 
         it 'updates the team URL on graph path update', :js do

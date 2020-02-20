@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 describe JobsFinder, '#execute' do
-  set(:user) { create(:user) }
-  set(:admin) { create(:user, :admin) }
-  set(:project) { create(:project, :private, public_builds: false) }
-  set(:pipeline) { create(:ci_pipeline, project: project) }
-  set(:job_1) { create(:ci_build) }
-  set(:job_2) { create(:ci_build, :running) }
-  set(:job_3) { create(:ci_build, :success, pipeline: pipeline) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:admin) { create(:user, :admin) }
+  let_it_be(:project) { create(:project, :private, public_builds: false) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:job_1) { create(:ci_build) }
+  let_it_be(:job_2) { create(:ci_build, :running) }
+  let_it_be(:job_3) { create(:ci_build, :success, pipeline: pipeline) }
 
   let(:params) { {} }
 

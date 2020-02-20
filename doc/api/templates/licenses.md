@@ -21,7 +21,7 @@ GET /templates/licenses
 | --------- | ------- | -------- | --------------------- |
 | `popular` | boolean | no       | If passed, returns only popular licenses |
 
-```bash
+```shell
 curl https://gitlab.example.com/api/v4/templates/licenses?popular=1
 ```
 
@@ -124,7 +124,7 @@ GET /templates/licenses/:key
 If you omit the `fullname` parameter but authenticate your request, the name of
 the authenticated user will be used to replace the copyright holder placeholder.
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/templates/licenses/mit?project=My+Cool+Project
 ```
 

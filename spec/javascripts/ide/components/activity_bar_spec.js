@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
-import { activityBarViews } from '~/ide/constants';
+import { leftSidebarViews } from '~/ide/constants';
 import ActivityBar from '~/ide/components/activity_bar.vue';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { resetStore } from '../helpers';
@@ -34,19 +34,19 @@ describe('IDE activity bar', () => {
     it('calls updateActivityBarView with edit value on click', () => {
       vm.$el.querySelector('.js-ide-edit-mode').click();
 
-      expect(vm.updateActivityBarView).toHaveBeenCalledWith(activityBarViews.edit);
+      expect(vm.updateActivityBarView).toHaveBeenCalledWith(leftSidebarViews.edit.name);
     });
 
     it('calls updateActivityBarView with commit value on click', () => {
       vm.$el.querySelector('.js-ide-commit-mode').click();
 
-      expect(vm.updateActivityBarView).toHaveBeenCalledWith(activityBarViews.commit);
+      expect(vm.updateActivityBarView).toHaveBeenCalledWith(leftSidebarViews.commit.name);
     });
 
     it('calls updateActivityBarView with review value on click', () => {
       vm.$el.querySelector('.js-ide-review-mode').click();
 
-      expect(vm.updateActivityBarView).toHaveBeenCalledWith(activityBarViews.review);
+      expect(vm.updateActivityBarView).toHaveBeenCalledWith(leftSidebarViews.review.name);
     });
   });
 
@@ -60,7 +60,7 @@ describe('IDE activity bar', () => {
     });
 
     it('sets commit item active', done => {
-      vm.$store.state.currentActivityView = activityBarViews.commit;
+      vm.$store.state.currentActivityView = leftSidebarViews.commit.name;
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelector('.js-ide-commit-mode').classList).toContain('active');

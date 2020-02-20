@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.shared_context 'IssuesFinder context' do
   set(:user) { create(:user) }
   set(:user2) { create(:user) }

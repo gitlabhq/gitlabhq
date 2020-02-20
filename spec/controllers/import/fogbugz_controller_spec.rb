@@ -75,4 +75,8 @@ describe Import::FogbugzController do
       expect(assigns(:repos)).to eq([])
     end
   end
+
+  describe 'POST create' do
+    it_behaves_like 'project import rate limiter'
+  end
 end

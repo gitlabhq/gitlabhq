@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StatisticsList matches the snapshot 1`] = `
+<ul>
+  <li>
+    <span>
+      Total:
+    </span>
+     
+    <strong>
+      4 pipelines
+    </strong>
+  </li>
+   
+  <li>
+    <span>
+      Successful:
+    </span>
+     
+    <strong>
+      2 pipelines
+    </strong>
+  </li>
+   
+  <li>
+    <span>
+      Failed:
+    </span>
+     
+    <strong>
+      2 pipelines
+    </strong>
+  </li>
+   
+  <li>
+    <span>
+      Success ratio:
+    </span>
+     
+    <strong>
+      50%
+    </strong>
+  </li>
+</ul>
+`;

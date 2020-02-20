@@ -1,0 +1,5 @@
+---
+title: Task lists work correctly again on closed MRs
+merge_request: 23714
+author:
+type: fixed

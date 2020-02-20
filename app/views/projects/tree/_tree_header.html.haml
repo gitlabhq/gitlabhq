@@ -25,7 +25,7 @@
         %li.breadcrumb-item
           %button.btn.add-to-tree.qa-add-to-tree{ addtotree_toggle_attributes, type: 'button' }
             = sprite_icon('plus', size: 16, css_class: 'float-left')
-            = sprite_icon('arrow-down', size: 16, css_class: 'float-left')
+            = sprite_icon('chevron-down', size: 16, css_class: 'float-left')
           - if on_top_of_branch?
             .add-to-tree-dropdown
               %ul.dropdown-menu
@@ -75,7 +75,7 @@
                     = link_to new_project_tag_path(@project) do
                       #{ _('New tag') }
 
-.tree-controls<
+.tree-controls{ class: ("gl-font-size-0" if vue_file_list_enabled?) }<
   = render_if_exists 'projects/tree/lock_link'
   - if vue_file_list_enabled?
     #js-tree-history-link.d-inline-block{ data: { history_link: project_commits_path(@project, @ref) } }
@@ -84,20 +84,25 @@
 
   = render 'projects/find_file_link'
 
-  - if can_create_mr_from_fork
-    - if can_collaborate || current_user&.already_forked?(@project)
-      - if vue_file_list_enabled?
-        #js-tree-web-ide-link.d-inline-block
-      - else
-        = link_to ide_edit_path(@project, @ref, @path), class: 'btn btn-default qa-web-ide-button' do
-          = _('Web IDE')
+  - if can_collaborate || current_user&.already_forked?(@project)
+    - if vue_file_list_enabled?
+      #js-tree-web-ide-link.d-inline-block
     - else
-      = link_to '#modal-confirm-fork', class: 'btn btn-default qa-web-ide-button', data: { target: '#modal-confirm-fork', toggle: 'modal'} do
+      = link_to ide_edit_path(@project, @ref, @path), class: 'btn btn-default qa-web-ide-button' do
         = _('Web IDE')
-      = render 'shared/confirm_fork_modal', fork_path: ide_fork_and_edit_path(@project, @ref, @path)
+  - elsif can_create_mr_from_fork
+    = link_to '#modal-confirm-fork', class: 'btn btn-default qa-web-ide-button', data: { target: '#modal-confirm-fork', toggle: 'modal'} do
+      = _('Web IDE')
+    = render 'shared/confirm_fork_modal', fork_path: ide_fork_and_edit_path(@project, @ref, @path)
 
   - if show_xcode_link?(@project)
     .project-action-button.project-xcode.inline<
       = render "projects/buttons/xcode_link"
 
   = render 'projects/buttons/download', project: @project, ref: @ref
+
+  .project-clone-holder.d-block.d-md-none.mt-sm-2.mt-md-0>
+    = render "shared/mobile_clone_panel"
+
+  .project-clone-holder.d-none.d-md-inline-block>
+    = render "projects/buttons/clone", dropdown_class: 'dropdown-menu-right'

@@ -31,7 +31,7 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
     Gitlab::GitalyClient.instance_variable_set(:@can_use_disk, {})
   end
 
-  context '#execute_rugged_call', :request_store do
+  describe '#execute_rugged_call', :request_store do
     let(:args) { ['refs/heads/master', 1] }
 
     before do
@@ -120,6 +120,12 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
       before do
         stub_const('::Puma', class_double('Puma'))
         allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
+      end
+
+      it "returns false when Puma doesn't support the cli_config method" do
+        allow(::Puma).to receive(:respond_to?).with(:cli_config).and_return(false)
+
+        expect(subject.running_puma_with_multiple_threads?).to be_falsey
       end
 
       it 'returns false for single thread Puma' do

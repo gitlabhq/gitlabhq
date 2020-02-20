@@ -3,56 +3,32 @@
 require 'spec_helper'
 
 describe API::BroadcastMessages do
-  set(:user)  { create(:user) }
-  set(:admin) { create(:admin) }
-  set(:message) { create(:broadcast_message) }
+  let_it_be(:user)  { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:message) { create(:broadcast_message) }
 
   describe 'GET /broadcast_messages' do
-    it 'returns a 401 for anonymous users' do
-      get api('/broadcast_messages')
-
-      expect(response).to have_gitlab_http_status(401)
-    end
-
-    it 'returns a 403 for users' do
-      get api('/broadcast_messages', user)
-
-      expect(response).to have_gitlab_http_status(403)
-    end
-
-    it 'returns an Array of BroadcastMessages for admins' do
+    it 'returns an Array of BroadcastMessages' do
       create(:broadcast_message)
 
-      get api('/broadcast_messages', admin)
+      get api('/broadcast_messages')
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_kind_of(Array)
       expect(json_response.first.keys)
-        .to match_array(%w(id message starts_at ends_at color font active target_path))
+        .to match_array(%w(id message starts_at ends_at color font active target_path broadcast_type))
     end
   end
 
   describe 'GET /broadcast_messages/:id' do
-    it 'returns a 401 for anonymous users' do
+    it 'returns the specified message' do
       get api("/broadcast_messages/#{message.id}")
-
-      expect(response).to have_gitlab_http_status(401)
-    end
-
-    it 'returns a 403 for users' do
-      get api("/broadcast_messages/#{message.id}", user)
-
-      expect(response).to have_gitlab_http_status(403)
-    end
-
-    it 'returns the specified message for admins' do
-      get api("/broadcast_messages/#{message.id}", admin)
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['id']).to eq message.id
       expect(json_response.keys)
-        .to match_array(%w(id message starts_at ends_at color font active target_path))
+        .to match_array(%w(id message starts_at ends_at color font active target_path broadcast_type))
     end
   end
 
@@ -108,6 +84,32 @@ describe API::BroadcastMessages do
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['target_path']).to eq attrs[:target_path]
+      end
+
+      it 'accepts a broadcast type' do
+        attrs = attributes_for(:broadcast_message, broadcast_type: 'notification')
+
+        post api('/broadcast_messages', admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['broadcast_type']).to eq attrs[:broadcast_type]
+      end
+
+      it 'uses default broadcast type' do
+        attrs = attributes_for(:broadcast_message)
+
+        post api('/broadcast_messages', admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['broadcast_type']).to eq 'banner'
+      end
+
+      it 'errors for invalid broadcast type' do
+        attrs = attributes_for(:broadcast_message, broadcast_type: 'invalid-type')
+
+        post api('/broadcast_messages', admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end
@@ -167,6 +169,23 @@ describe API::BroadcastMessages do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['target_path']).to eq attrs[:target_path]
+      end
+
+      it 'accepts a new broadcast_type' do
+        attrs = { broadcast_type: 'notification' }
+
+        put api("/broadcast_messages/#{message.id}", admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['broadcast_type']).to eq attrs[:broadcast_type]
+      end
+
+      it 'errors for invalid broadcast type' do
+        attrs = { broadcast_type: 'invalid-type' }
+
+        put api("/broadcast_messages/#{message.id}", admin), params: attrs
+
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end

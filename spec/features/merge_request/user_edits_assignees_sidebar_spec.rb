@@ -16,7 +16,7 @@ describe 'Merge request > User edits assignees sidebar', :js do
   # DOM finders to simplify and improve readability
   let(:sidebar_assignee_block) { page.find('.js-issuable-sidebar .assignee') }
   let(:sidebar_assignee_avatar_link) { sidebar_assignee_block.find_all('a').find { |a| a['href'].include? assignee.username } }
-  let(:sidebar_assignee_tooltip) { sidebar_assignee_avatar_link['data-original-title'] || '' }
+  let(:sidebar_assignee_tooltip) { sidebar_assignee_avatar_link['title'] || '' }
   let(:sidebar_assignee_dropdown_item) { sidebar_assignee_block.find(".dropdown-menu li[data-user-id=\"#{assignee.id}\"]") }
   let(:sidebar_assignee_dropdown_tooltip) { sidebar_assignee_dropdown_item.find('a')['data-title'] || '' }
 

@@ -6,8 +6,6 @@ require 'active_record/log_subscriber'
 module Gitlab
   module SidekiqLogging
     class StructuredLogger
-      MAXIMUM_JOB_ARGUMENTS_LENGTH = 10.kilobytes
-
       def call(job, queue)
         started_time = get_time
         base_payload = parse_job(job)
@@ -79,13 +77,15 @@ module Gitlab
       end
 
       def parse_job(job)
-        job = job.dup
+        # Error information from the previous try is in the payload for
+        # displaying in the Sidekiq UI, but is very confusing in logs!
+        job = job.except('error_backtrace', 'error_class', 'error_message')
 
         # Add process id params
         job['pid'] = ::Process.pid
 
         job.delete('args') unless ENV['SIDEKIQ_LOG_ARGUMENTS']
-        job['args'] = limited_job_args(job['args']) if job['args']
+        job['args'] = Gitlab::Utils::LogLimitedArray.log_limited_array(job['args']) if job['args']
 
         job
       end
@@ -107,21 +107,6 @@ module Gitlab
 
       def current_time
         Gitlab::Metrics::System.monotonic_time
-      end
-
-      def limited_job_args(args)
-        return unless args.is_a?(Array)
-
-        total_length = 0
-        limited_args = args.take_while do |arg|
-          total_length += arg.to_json.length
-
-          total_length <= MAXIMUM_JOB_ARGUMENTS_LENGTH
-        end
-
-        limited_args.push('...') if total_length > MAXIMUM_JOB_ARGUMENTS_LENGTH
-
-        limited_args
       end
     end
   end

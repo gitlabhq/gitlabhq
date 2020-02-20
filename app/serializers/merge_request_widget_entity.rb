@@ -50,6 +50,19 @@ class MergeRequestWidgetEntity < Grape::Entity
     ci_environments_status_project_merge_request_path(merge_request.project, merge_request)
   end
 
+  expose :merge_request_add_ci_config_path, if: ->(mr, _) { can_add_ci_config_path?(mr) } do |merge_request|
+    project_new_blob_path(
+      merge_request.source_project,
+      merge_request.source_branch,
+      file_name: '.gitlab-ci.yml',
+      commit_message: s_("CommitMessage|Add %{file_name}") % { file_name: Gitlab::FileDetector::PATTERNS[:gitlab_ci] }
+    )
+  end
+
+  expose :human_access do |merge_request|
+    merge_request.project.team.human_max_access(current_user&.id)
+  end
+
   # Rendering and redacting Markdown can be expensive. These links are
   # just nice to have in the merge request widget, so only
   # include them if they are explicitly requested on first load.
@@ -67,14 +80,6 @@ class MergeRequestWidgetEntity < Grape::Entity
     end
   end
 
-  def as_json(options = {})
-    return super(options) if Feature.enabled?(:async_mr_widget)
-
-    super(options)
-      .merge(MergeRequestPollCachedWidgetEntity.new(object, **@options.opts_hash).as_json(options))
-      .merge(MergeRequestPollWidgetEntity.new(object, **@options.opts_hash).as_json(options))
-  end
-
   private
 
   delegate :current_user, to: :request
@@ -82,6 +87,13 @@ class MergeRequestWidgetEntity < Grape::Entity
   def presenter(merge_request)
     @presenters ||= {}
     @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user) # rubocop: disable CodeReuse/Presenter
+  end
+
+  def can_add_ci_config_path?(merge_request)
+    merge_request.source_project&.uses_default_ci_config? &&
+      merge_request.all_pipelines.none? &&
+      merge_request.commits_count.positive? &&
+      can?(current_user, :push_code, merge_request.source_project)
   end
 end
 

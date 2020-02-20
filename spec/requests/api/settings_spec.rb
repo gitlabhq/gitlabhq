@@ -5,7 +5,7 @@ require 'spec_helper'
 describe API::Settings, 'Settings' do
   let(:user) { create(:user) }
 
-  set(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin) }
 
   describe "GET /application/settings" do
     it "returns application settings" do

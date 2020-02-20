@@ -63,6 +63,10 @@ module PreferencesHelper
     Gitlab::ColorSchemes.for_user(current_user).css_class
   end
 
+  def user_tab_width
+    Gitlab::TabWidth.css_class_for_user(current_user)
+  end
+
   def language_choices
     Gitlab::I18n::AVAILABLE_LANGUAGES.map { |value, label| [label, value] }
   end

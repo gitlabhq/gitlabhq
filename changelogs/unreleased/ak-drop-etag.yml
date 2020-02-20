@@ -1,0 +1,5 @@
+---
+title: Drop etag cache on logs API
+merge_request: 24864
+author:
+type: fixed

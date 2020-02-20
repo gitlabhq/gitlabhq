@@ -9,12 +9,15 @@ export default {
       olderThan: JSON.parse(initialState.olderThanOptions),
     };
   },
-  [types.UPDATE_SETTINGS](state, settings) {
-    state.settings = { ...state.settings, ...settings };
+  [types.UPDATE_SETTINGS](state, data) {
+    state.settings = { ...state.settings, ...data.settings };
   },
   [types.SET_SETTINGS](state, settings) {
     state.settings = settings;
     state.original = Object.freeze(settings);
+  },
+  [types.SET_IS_DISABLED](state, isDisabled) {
+    state.isDisabled = isDisabled;
   },
   [types.RESET_SETTINGS](state) {
     state.settings = { ...state.original };

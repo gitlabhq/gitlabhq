@@ -62,7 +62,7 @@ rspec:
 
 Artifacts may work a bit differently than you've used them with Jenkins. In GitLab, any job can define
 a set of artifacts to be saved by using the `artifacts:` keyword. This can be configured to point to a file
-or set of files that can then be persisted from job to job. Read more on our detailed [artifacts documentation](../../user/project/pipelines/job_artifacts.html)
+or set of files that can then be persisted from job to job. Read more on our detailed [artifacts documentation](../../user/project/pipelines/job_artifacts.md)
 
 ```yaml
 pdf:
@@ -102,7 +102,7 @@ and is meant to be a mapping of concepts there to concepts in GitLab.
 
 The agent section is used to define how a pipeline will be executed. For GitLab, we use the [GitLab Runner](../runners/README.md)
 to provide this capability. You can configure your own runners in Kubernetes or on any host, or take advantage
-of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users.) The link above will bring you to the documenation which will describe how to get
+of our shared runner fleet (note that the shared runner fleet is only available for GitLab.com users.) The link above will bring you to the documentation which will describe how to get
 up and running quickly. We also support using [tags](../runners/README.md#using-tags) to direct different jobs
 to different Runners (execution agents).
 
@@ -129,7 +129,7 @@ stages:
   - test
   - deploy
   - after_pipeline
-```  
+```
 
 Setting a step to be performed before and after any job can be done via the [`before_script` and `after_script` keywords](../yaml/README.md#before_script-and-after_script).
 

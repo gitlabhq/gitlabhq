@@ -18,7 +18,7 @@ GET /templates/gitignores
 
 Example request:
 
-```bash
+```shell
 curl https://gitlab.example.com/api/v4/templates/gitignores
 ```
 
@@ -123,7 +123,7 @@ GET /templates/gitignores/:key
 
 Example request:
 
-```bash
+```shell
 curl https://gitlab.example.com/api/v4/templates/gitignores/Ruby
 ```
 

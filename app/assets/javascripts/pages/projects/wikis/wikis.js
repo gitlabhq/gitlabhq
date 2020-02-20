@@ -40,7 +40,7 @@ export default class Wikis {
     // Replace hyphens with spaces
     if (title) title = title.replace(/-+/g, ' ');
 
-    const newCommitMessage = sprintf(this.commitMessageI18n, { pageTitle: title });
+    const newCommitMessage = sprintf(this.commitMessageI18n, { pageTitle: title }, false);
     this.commitMessageInput.value = newCommitMessage;
   }
 

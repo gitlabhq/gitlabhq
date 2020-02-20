@@ -131,6 +131,10 @@ describe Ci::CreatePipelineService do
             )
         end
       end
+
+      it "sets scheduling_type as 'dag'" do
+        expect(test_a_build.scheduling_type).to eq('dag')
+      end
     end
 
     context 'with an invalid config' do
@@ -169,6 +173,68 @@ describe Ci::CreatePipelineService do
       it 'assigns an error to the pipeline' do
         expect(pipeline.yaml_errors)
           .to eq('jobs:test_a:needs:need artifacts should be a boolean value')
+      end
+    end
+
+    context 'when needs is empty array' do
+      let(:config) do
+        <<~YAML
+          build_a:
+            stage: build
+            script: ls
+          test_a:
+            stage: test
+            script: ls
+          test_b:
+            stage: test
+            script: ls
+            needs: []
+          deploy_a:
+            stage: deploy
+            script: ls
+            needs: [test_a]
+          deploy_b:
+            stage: deploy
+            script: ls
+            when: manual
+            needs: []
+        YAML
+      end
+
+      it 'creates a pipeline with build_a and test_b pending; deploy_b manual' do
+        processables = pipeline.processables
+
+        build_a = processables.find { |processable| processable.name == 'build_a' }
+        test_a = processables.find { |processable| processable.name == 'test_a' }
+        test_b = processables.find { |processable| processable.name == 'test_b' }
+        deploy_a = processables.find { |processable| processable.name == 'deploy_a' }
+        deploy_b = processables.find { |processable| processable.name == 'deploy_b' }
+
+        expect(pipeline).to be_persisted
+        expect(build_a.status).to eq('pending')
+        expect(test_a.status).to eq('created')
+        expect(test_b.status).to eq('pending')
+        expect(deploy_a.status).to eq('created')
+        expect(deploy_b.status).to eq('manual')
+      end
+    end
+
+    context 'when needs is empty hash' do
+      let(:config) do
+        <<~YAML
+          regular_job:
+            stage: build
+            script: echo 'hello'
+          invalid_dag_job:
+            stage: test
+            script: ls
+            needs: {}
+        YAML
+      end
+
+      it 'raises error' do
+        expect(pipeline.yaml_errors)
+          .to eq('jobs:invalid_dag_job:needs config can not be an empty hash')
       end
     end
   end

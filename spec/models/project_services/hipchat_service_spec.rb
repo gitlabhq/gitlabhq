@@ -352,7 +352,7 @@ describe HipchatService do
       end
     end
 
-    context "#message_options" do
+    describe "#message_options" do
       it "is set to the defaults" do
         expect(hipchat.__send__(:message_options)).to eq({ notify: false, color: 'yellow' })
       end

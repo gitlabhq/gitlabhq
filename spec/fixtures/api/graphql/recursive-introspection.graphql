@@ -2,51 +2,11 @@ query allSchemaTypes {
   __schema {
     types {
       fields {
-        type{
+        type {
           fields {
             type {
               fields {
-                type {
-                  fields {
-                    type {
-                      fields {
-                        type {
-                          fields {
-                            type {
-                              fields {
-                                type {
-                                  fields {
-                                    type {
-                                      fields {
-                                        type {
-                                          fields {
-                                            type {
-                                              fields {
-                                                type {
-                                                  fields {
-                                                    type {
-                                                      fields {
-                                                        name
-                                                      }
-                                                    }
-                                                  }
-                                                }
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
+                name
               }
             }
           }

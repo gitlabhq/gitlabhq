@@ -31,6 +31,10 @@ class ProjectGroupLink < ApplicationRecord
     DEVELOPER
   end
 
+  def self.search(query)
+    joins(:group).merge(Group.search(query))
+  end
+
   def human_access
     self.class.access_options.key(self.group_access)
   end

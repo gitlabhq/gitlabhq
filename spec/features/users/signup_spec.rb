@@ -129,63 +129,29 @@ shared_examples 'Signup' do
         stub_application_setting(send_user_confirmation_email: true)
       end
 
-      context 'when soft email confirmation is not enabled' do
-        before do
-          stub_feature_flags(soft_email_confirmation: false)
+      it 'creates the user account and sends a confirmation email' do
+        visit new_user_registration_path
+
+        fill_in 'new_user_username', with: new_user.username
+        fill_in 'new_user_email', with: new_user.email
+
+        if Gitlab::Experimentation.enabled?(:signup_flow)
+          fill_in 'new_user_first_name', with: new_user.first_name
+          fill_in 'new_user_last_name', with: new_user.last_name
+        else
+          fill_in 'new_user_name', with: new_user.name
+          fill_in 'new_user_email_confirmation', with: new_user.email
         end
 
-        it 'creates the user account and sends a confirmation email' do
-          visit new_user_registration_path
+        fill_in 'new_user_password', with: new_user.password
 
-          fill_in 'new_user_username', with: new_user.username
-          fill_in 'new_user_email', with: new_user.email
+        expect { click_button 'Register' }.to change { User.count }.by(1)
 
-          if Gitlab::Experimentation.enabled?(:signup_flow)
-            fill_in 'new_user_first_name', with: new_user.first_name
-            fill_in 'new_user_last_name', with: new_user.last_name
-          else
-            fill_in 'new_user_name', with: new_user.name
-            fill_in 'new_user_email_confirmation', with: new_user.email
-          end
-
-          fill_in 'new_user_password', with: new_user.password
-
-          expect { click_button 'Register' }.to change { User.count }.by(1)
-
-          expect(current_path).to eq users_almost_there_path
-          expect(page).to have_content('Please check your email to confirm your account')
-        end
-      end
-
-      context 'when soft email confirmation is enabled' do
-        before do
-          stub_feature_flags(soft_email_confirmation: true)
-        end
-
-        it 'creates the user account and sends a confirmation email' do
-          visit new_user_registration_path
-
-          fill_in 'new_user_username', with: new_user.username
-          fill_in 'new_user_email', with: new_user.email
-
-          if Gitlab::Experimentation.enabled?(:signup_flow)
-            fill_in 'new_user_first_name', with: new_user.first_name
-            fill_in 'new_user_last_name', with: new_user.last_name
-          else
-            fill_in 'new_user_name', with: new_user.name
-            fill_in 'new_user_email_confirmation', with: new_user.email
-          end
-
-          fill_in 'new_user_password', with: new_user.password
-
-          expect { click_button 'Register' }.to change { User.count }.by(1)
-
-          if Gitlab::Experimentation.enabled?(:signup_flow)
-            expect(current_path).to eq users_sign_up_welcome_path
-          else
-            expect(current_path).to eq dashboard_projects_path
-            expect(page).to have_content("Please check your email (#{new_user.email}) to verify that you own this address and unlock the power of CI/CD.")
-          end
+        if Gitlab::Experimentation.enabled?(:signup_flow)
+          expect(current_path).to eq users_sign_up_welcome_path
+        else
+          expect(current_path).to eq dashboard_projects_path
+          expect(page).to have_content("Please check your email (#{new_user.email}) to verify that you own this address and unlock the power of CI/CD.")
         end
       end
     end
@@ -360,7 +326,7 @@ shared_examples 'Signup' do
       InvisibleCaptcha.timestamp_enabled = true
       stub_application_setting(recaptcha_enabled: true)
       allow_next_instance_of(RegistrationsController) do |instance|
-        allow(instance).to receive(:verify_recaptcha).and_return(false)
+        allow(instance).to receive(:verify_recaptcha).and_return(true)
       end
     end
 
@@ -368,28 +334,53 @@ shared_examples 'Signup' do
       InvisibleCaptcha.timestamp_enabled = false
     end
 
-    it 'prevents from signing up' do
-      visit new_user_registration_path
-
-      fill_in 'new_user_username', with: new_user.username
-      fill_in 'new_user_email', with: new_user.email
-
-      if Gitlab::Experimentation.enabled?(:signup_flow)
-        fill_in 'new_user_first_name', with: new_user.first_name
-        fill_in 'new_user_last_name', with: new_user.last_name
-      else
-        fill_in 'new_user_name', with: new_user.name
-        fill_in 'new_user_email_confirmation', with: new_user.email
+    context 'when reCAPTCHA detects malicious behaviour' do
+      before do
+        allow_next_instance_of(RegistrationsController) do |instance|
+          allow(instance).to receive(:verify_recaptcha).and_return(false)
+        end
       end
 
-      fill_in 'new_user_password', with: new_user.password
+      it 'prevents from signing up' do
+        visit new_user_registration_path
 
-      expect { click_button 'Register' }.not_to change { User.count }
+        fill_in 'new_user_username', with: new_user.username
+        fill_in 'new_user_email', with: new_user.email
 
-      if Gitlab::Experimentation.enabled?(:signup_flow)
-        expect(page).to have_content('That was a bit too quick! Please resubmit.')
-      else
+        if Gitlab::Experimentation.enabled?(:signup_flow)
+          fill_in 'new_user_first_name', with: new_user.first_name
+          fill_in 'new_user_last_name', with: new_user.last_name
+        else
+          fill_in 'new_user_name', with: new_user.name
+          fill_in 'new_user_email_confirmation', with: new_user.email
+        end
+
+        fill_in 'new_user_password', with: new_user.password
+
+        expect { click_button 'Register' }.not_to change { User.count }
         expect(page).to have_content('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
+      end
+    end
+
+    context 'when invisible captcha detects malicious behaviour' do
+      it 'prevents from signing up' do
+        visit new_user_registration_path
+
+        fill_in 'new_user_username', with: new_user.username
+        fill_in 'new_user_email', with: new_user.email
+
+        if Gitlab::Experimentation.enabled?(:signup_flow)
+          fill_in 'new_user_first_name', with: new_user.first_name
+          fill_in 'new_user_last_name', with: new_user.last_name
+        else
+          fill_in 'new_user_name', with: new_user.name
+          fill_in 'new_user_email_confirmation', with: new_user.email
+        end
+
+        fill_in 'new_user_password', with: new_user.password
+
+        expect { click_button 'Register' }.not_to change { User.count }
+        expect(page).to have_content('That was a bit too quick! Please resubmit.')
       end
     end
   end
@@ -445,8 +436,8 @@ end
 
 describe 'With experimental flow' do
   before do
-    stub_experiment(signup_flow: true)
-    stub_experiment_for_user(signup_flow: true)
+    stub_experiment(signup_flow: true, paid_signup_flow: false)
+    stub_experiment_for_user(signup_flow: true, paid_signup_flow: false)
   end
 
   it_behaves_like 'Signup'

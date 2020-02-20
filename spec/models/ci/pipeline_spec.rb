@@ -7,7 +7,7 @@ describe Ci::Pipeline, :mailer do
   include StubRequests
 
   let(:user) { create(:user) }
-  set(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
@@ -162,6 +162,23 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#merge_request?' do
+    let(:pipeline) { create(:ci_pipeline, merge_request: merge_request) }
+    let(:merge_request) { create(:merge_request) }
+
+    it 'returns true' do
+      expect(pipeline).to be_merge_request
+    end
+
+    context 'when merge request is nil' do
+      let(:merge_request) { nil }
+
+      it 'returns false' do
+        expect(pipeline).not_to be_merge_request
+      end
+    end
+  end
+
   describe '#detached_merge_request_pipeline?' do
     subject { pipeline.detached_merge_request_pipeline? }
 
@@ -231,7 +248,7 @@ describe Ci::Pipeline, :mailer do
   describe '#legacy_detached_merge_request_pipeline?' do
     subject { pipeline.legacy_detached_merge_request_pipeline? }
 
-    set(:merge_request) { create(:merge_request) }
+    let_it_be(:merge_request) { create(:merge_request) }
     let(:ref) { 'feature' }
     let(:target_sha) { nil }
 
@@ -363,48 +380,6 @@ describe Ci::Pipeline, :mailer do
 
       it 'returns empty array' do
         expect(subject).to be_empty
-      end
-    end
-  end
-
-  describe 'Validations for merge request pipelines' do
-    let(:pipeline) do
-      build(:ci_pipeline, source: source, merge_request: merge_request)
-    end
-
-    let(:merge_request) do
-      create(:merge_request,
-        source_project: project,
-        source_branch:  'feature',
-        target_project: project,
-        target_branch:  'master')
-    end
-
-    context 'when source is merge request' do
-      let(:source) { :merge_request_event }
-
-      context 'when merge request is specified' do
-        it { expect(pipeline).to be_valid }
-      end
-
-      context 'when merge request is empty' do
-        let(:merge_request) { nil }
-
-        it { expect(pipeline).not_to be_valid }
-      end
-    end
-
-    context 'when source is web' do
-      let(:source) { :web }
-
-      context 'when merge request is specified' do
-        it { expect(pipeline).not_to be_valid }
-      end
-
-      context 'when merge request is empty' do
-        let(:merge_request) { nil }
-
-        it { expect(pipeline).to be_valid }
       end
     end
   end
@@ -612,9 +587,9 @@ describe Ci::Pipeline, :mailer do
       ]
     end
 
-    context 'when source is merge request' do
+    context 'when pipeline is merge request' do
       let(:pipeline) do
-        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
+        create(:ci_pipeline, merge_request: merge_request)
       end
 
       let(:merge_request) do
@@ -651,7 +626,7 @@ describe Ci::Pipeline, :mailer do
             'CI_MERGE_REQUEST_TITLE' => merge_request.title,
             'CI_MERGE_REQUEST_ASSIGNEES' => merge_request.assignee_username_list,
             'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
-            'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).join(','),
+            'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).sort.join(','),
             'CI_MERGE_REQUEST_EVENT_TYPE' => pipeline.merge_request_event_type.to_s)
       end
 
@@ -1142,6 +1117,10 @@ describe Ci::Pipeline, :mailer do
     end
 
     describe 'pipeline caching' do
+      before do
+        pipeline.config_source = 'repository_source'
+      end
+
       it 'performs ExpirePipelinesCacheWorker' do
         expect(ExpirePipelineCacheWorker).to receive(:perform_async).with(pipeline.id)
 
@@ -1210,6 +1189,32 @@ describe Ci::Pipeline, :mailer do
         end
       end
 
+      context 'when pipeline is bridge triggered' do
+        before do
+          pipeline.source_bridge = create(:ci_bridge)
+        end
+
+        context 'when source bridge is dependent on pipeline status' do
+          before do
+            allow(pipeline.source_bridge).to receive(:dependent?).and_return(true)
+          end
+
+          it 'schedules the pipeline bridge worker' do
+            expect(::Ci::PipelineBridgeStatusWorker).to receive(:perform_async)
+
+            pipeline.succeed!
+          end
+        end
+
+        context 'when source bridge is not dependent on pipeline status' do
+          it 'does not schedule the pipeline bridge worker' do
+            expect(::Ci::PipelineBridgeStatusWorker).not_to receive(:perform_async)
+
+            pipeline.succeed!
+          end
+        end
+      end
+
       def auto_devops_pipelines_completed_total(status)
         Gitlab::Metrics.counter(:auto_devops_pipelines_completed_total, 'Number of completed auto devops pipelines').get(status: status)
       end
@@ -1237,9 +1242,9 @@ describe Ci::Pipeline, :mailer do
         is_expected.to be_truthy
       end
 
-      context 'when source is merge request' do
+      context 'when pipeline is merge request' do
         let(:pipeline) do
-          create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
+          create(:ci_pipeline, merge_request: merge_request)
         end
 
         let(:merge_request) do
@@ -2652,6 +2657,40 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#test_reports_count', :use_clean_rails_memory_store_caching do
+    subject { pipeline.test_reports }
+
+    context 'when pipeline has multiple builds with test reports' do
+      let!(:build_rspec) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline, project: project) }
+      let!(:build_java) { create(:ci_build, :success, name: 'java', pipeline: pipeline, project: project) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: build_rspec, project: project)
+        create(:ci_job_artifact, :junit_with_ant, job: build_java, project: project)
+      end
+
+      it 'returns test report count equal to test reports total_count' do
+        expect(subject.total_count).to eq(7)
+        expect(subject.total_count).to eq(pipeline.test_reports_count)
+      end
+
+      it 'reads from cache when records are cached' do
+        expect(Rails.cache.fetch(['project', project.id, 'pipeline', pipeline.id, 'test_reports_count'], force: false)).to be_nil
+
+        pipeline.test_reports_count
+
+        expect(ActiveRecord::QueryRecorder.new { pipeline.test_reports_count }.count).to eq(0)
+      end
+    end
+
+    context 'when pipeline does not have any builds with test reports' do
+      it 'returns empty test report count' do
+        expect(subject.total_count).to eq(0)
+        expect(subject.total_count).to eq(pipeline.test_reports_count)
+      end
+    end
+  end
+
   describe '#total_size' do
     let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
     let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
@@ -2880,6 +2919,84 @@ describe Ci::Pipeline, :mailer do
 
       it 'is not parent' do
         expect(pipeline).not_to be_parent
+      end
+    end
+  end
+
+  describe 'upstream status interactions' do
+    context 'when a pipeline has an upstream status' do
+      context 'when an upstream status is a bridge' do
+        let(:bridge) { create(:ci_bridge, status: :pending) }
+
+        before do
+          create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)
+        end
+
+        describe '#bridge_triggered?' do
+          it 'is a pipeline triggered by a bridge' do
+            expect(pipeline).to be_bridge_triggered
+          end
+        end
+
+        describe '#source_job' do
+          it 'has a correct source job' do
+            expect(pipeline.source_job).to eq bridge
+          end
+        end
+
+        describe '#source_bridge' do
+          it 'has a correct bridge source' do
+            expect(pipeline.source_bridge).to eq bridge
+          end
+        end
+
+        describe '#update_bridge_status!' do
+          it 'can update bridge status if it is running' do
+            pipeline.update_bridge_status!
+
+            expect(bridge.reload).to be_success
+          end
+
+          it 'can not update bridge status if is not active' do
+            bridge.success!
+
+            expect { pipeline.update_bridge_status! }
+              .to raise_error Ci::Pipeline::BridgeStatusError
+          end
+        end
+      end
+
+      context 'when an upstream status is a build' do
+        let(:build) { create(:ci_build) }
+
+        before do
+          create(:ci_sources_pipeline, pipeline: pipeline, source_job: build)
+        end
+
+        describe '#bridge_triggered?' do
+          it 'is a pipeline that has not been triggered by a bridge' do
+            expect(pipeline).not_to be_bridge_triggered
+          end
+        end
+
+        describe '#source_job' do
+          it 'has a correct source job' do
+            expect(pipeline.source_job).to eq build
+          end
+        end
+
+        describe '#source_bridge' do
+          it 'does not have a bridge source' do
+            expect(pipeline.source_bridge).to be_nil
+          end
+        end
+
+        describe '#update_bridge_status!' do
+          it 'can not update upstream job status' do
+            expect { pipeline.update_bridge_status! }
+              .to raise_error ArgumentError
+          end
+        end
       end
     end
   end

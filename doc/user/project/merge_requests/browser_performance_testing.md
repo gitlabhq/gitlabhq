@@ -4,7 +4,7 @@ type: reference, howto
 
 # Browser Performance Testing **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/3507) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3507) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
 
 If your application offers a web interface and you are using
 [GitLab CI/CD](../../../ci/README.md), you can quickly determine the performance

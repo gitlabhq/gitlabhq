@@ -98,30 +98,6 @@ members can join swiftly without requesting a link.
 
 Read more how to [add or remove a zoom meeting](../project/issues/associate_zoom_meeting.md).
 
-### Alerting
-
-You can let GitLab know of alerts that may be triggering in your applications and services. GitLab can react to these by automatically creating Issues, and alerting developers via Email.
-
-#### Prometheus Alerts
-
-Prometheus alerts can be setup in both GitLab-managed Prometheus installs and self-managed Prometheus installs.
-
-Documentation for each method can be found here:
-
-- [GitLab-managed Prometheus](../project/integrations/prometheus.md#setting-up-alerts-for-prometheus-metrics-ultimate)
-- [Self-managed Prometheus](../project/integrations/prometheus.md#external-prometheus-instances)
-
-#### Alert Endpoint
-
-GitLab can accept alerts from any source via a generic webhook receiver. When you set up the generic alerts integration, a unique endpoint will
-be created which can receive a payload in JSON format.
-
-More information on setting this up, including how to customize the payload [can be found here](../project/integrations/generic_alerts.md).
-
-#### Recovery Alerts
-
-Coming soon: GitLab can automatically close Issues that have been automatically created when we receive notification that the alert is resolved.
-
 ### Configuring Incidents
 
 Incident Management features can be easily enabled & disabled via the Project settings page. Head to Project -> Settings -> Operations -> Incidents.

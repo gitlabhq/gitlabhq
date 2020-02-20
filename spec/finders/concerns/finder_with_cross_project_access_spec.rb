@@ -128,7 +128,7 @@ describe FinderWithCrossProjectAccess do
       end
     end
 
-    context '.finder_model' do
+    describe '.finder_model' do
       it 'is set correctly' do
         expect(finder_class.finder_model).to eq(Project)
       end

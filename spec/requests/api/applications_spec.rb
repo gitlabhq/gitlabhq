@@ -21,6 +21,7 @@ describe API::Applications, :api do
         expect(json_response['application_id']).to eq application.uid
         expect(json_response['secret']).to eq application.secret
         expect(json_response['callback_url']).to eq application.redirect_uri
+        expect(json_response['confidential']).to eq application.confidential
       end
 
       it 'does not allow creating an application with the wrong redirect_uri format' do
@@ -71,6 +72,16 @@ describe API::Applications, :api do
         expect(response).to have_gitlab_http_status(400)
         expect(json_response).to be_a Hash
         expect(json_response['error']).to eq('scopes is missing')
+      end
+
+      it 'does not allow creating an application with confidential set to nil' do
+        expect do
+          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: '', confidential: nil }
+        end.not_to change { Doorkeeper::Application.count }
+
+        expect(response).to have_gitlab_http_status(400)
+        expect(json_response).to be_a Hash
+        expect(json_response['message']['confidential'].first).to eq('is not included in the list')
       end
     end
 

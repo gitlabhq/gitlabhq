@@ -65,14 +65,14 @@ export default {
   <div class="issuable-note-warning">
     <icon v-if="!isLockedAndConfidential" :name="warningIcon" :size="16" class="icon inline" />
 
-    <span v-if="isLockedAndConfidential">
+    <span v-if="isLockedAndConfidential" ref="lockedAndConfidential">
       <span v-html="confidentialAndLockedDiscussionText"></span>
       {{
         __("People without permission will never get a notification and won't be able to comment.")
       }}
     </span>
 
-    <span v-else-if="isConfidential">
+    <span v-else-if="isConfidential" ref="confidential">
       {{ __('This is a confidential issue.') }}
       {{ __('People without permission will never get a notification.') }}
       <gl-link :href="confidentialIssueDocsPath" target="_blank">
@@ -80,7 +80,7 @@ export default {
       </gl-link>
     </span>
 
-    <span v-else-if="isLocked">
+    <span v-else-if="isLocked" ref="locked">
       {{ __('This issue is locked.') }}
       {{ __('Only project members can comment.') }}
       <gl-link :href="lockedIssueDocsPath" target="_blank">

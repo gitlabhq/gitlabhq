@@ -4,7 +4,7 @@ type: reference
 
 # Parent-child pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/16094) in GitLab Starter 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/16094) in GitLab 12.7.
 
 As pipelines grow more complex, a few related problems start to emerge:
 
@@ -31,7 +31,7 @@ set of concurrently running child pipelines, but within the same project:
 - The configuration is split up into smaller child pipeline configurations, which are
   easier to understand. This reduces the cognitive load to understand the overall configuration.
 - Imports are done at the child pipeline level, reducing the likelihood of collisions.
-- Each pipeline has only the steps relevant steps, making it easier to understand what's going on.
+- Each pipeline has only relevant steps, making it easier to understand what's going on.
 
 Child pipelines work well with other GitLab CI features:
 
@@ -40,12 +40,12 @@ Child pipelines work well with other GitLab CI features:
 - Since the parent pipeline in `.gitlab-ci.yml` and the child pipeline run as normal
   pipelines, they can have their own behaviors and sequencing in relation to triggers.
 
-All of this will work with [`include:`](yaml/README.md#include) feature so you can compose
+All of this will work with the [`include:`](yaml/README.md#include) feature so you can compose
 the child pipeline configuration.
 
 ## Examples
 
-The simplest case is [triggering a child pipeline](yaml/README.md#trigger-premium) using a
+The simplest case is [triggering a child pipeline](yaml/README.md#trigger) using a
 local YAML file to define the pipeline configuration. In this case, the parent pipeline will
 trigger the child pipeline, and continue without waiting:
 

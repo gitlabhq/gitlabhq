@@ -18,11 +18,11 @@ describe('Search autocomplete dropdown', () => {
 
   const projectIssuesPath = '/gitlab-org/gitlab-foss/issues';
 
-  const projectMRsPath = '/gitlab-org/gitlab-foss/merge_requests';
+  const projectMRsPath = '/gitlab-org/gitlab-foss/-/merge_requests';
 
-  const groupIssuesPath = '/groups/gitlab-org/issues';
+  const groupIssuesPath = '/groups/gitlab-org/-/issues';
 
-  const groupMRsPath = '/groups/gitlab-org/merge_requests';
+  const groupMRsPath = '/groups/gitlab-org/-/merge_requests';
 
   const projectName = 'GitLab Community Edition';
 

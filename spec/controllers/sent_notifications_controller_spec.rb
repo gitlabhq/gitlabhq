@@ -30,6 +30,16 @@ describe SentNotificationsController do
   let(:target_project) { project }
 
   describe 'GET unsubscribe' do
+    shared_examples 'returns 404' do
+      it 'does not set the flash message' do
+        expect(controller).not_to set_flash[:notice]
+      end
+
+      it 'returns a 404' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'when the user is not logged in' do
       context 'when the force param is passed' do
         before do
@@ -156,6 +166,16 @@ describe SentNotificationsController do
           end
         end
       end
+
+      context 'when the noteable associated to the notification has been deleted' do
+        before do
+          sent_notification.noteable.destroy!
+
+          get(:unsubscribe, params: { id: sent_notification.reply_key })
+        end
+
+        it_behaves_like 'returns 404'
+      end
     end
 
     context 'when the user is logged in' do
@@ -168,17 +188,7 @@ describe SentNotificationsController do
           get(:unsubscribe, params: { id: sent_notification.reply_key.reverse })
         end
 
-        it 'does not unsubscribe the user' do
-          expect(issue.subscribed?(user, project)).to be_truthy
-        end
-
-        it 'does not set the flash message' do
-          expect(controller).not_to set_flash[:notice]
-        end
-
-        it 'returns a 404' do
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
+        it_behaves_like 'returns 404'
       end
 
       context 'when the force param is passed' do
@@ -253,6 +263,16 @@ describe SentNotificationsController do
             expect(response).to redirect_to(project_issue_path(private_project, issue))
           end
         end
+      end
+
+      context 'when the noteable associated to the notification has been deleted' do
+        before do
+          sent_notification.noteable.destroy!
+
+          get(:unsubscribe, params: { id: sent_notification.reply_key })
+        end
+
+        it_behaves_like 'returns 404'
       end
     end
   end

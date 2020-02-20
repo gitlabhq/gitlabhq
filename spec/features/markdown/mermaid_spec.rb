@@ -68,4 +68,34 @@ describe 'Mermaid rendering', :js do
       expect(page).to have_selector('pre.mermaid')
     end
   end
+
+  it 'correctly sizes mermaid diagram inside <details> block', :js do
+    description = <<~MERMAID
+      <details>
+      <summary>Click to show diagram</summary>
+
+      ```mermaid
+      graph TD;
+        A-->B;
+        A-->C;
+        B-->D;
+        C-->D;
+      ```
+
+      </details>
+    MERMAID
+
+    project = create(:project, :public)
+    issue = create(:issue, project: project, description: description)
+
+    visit project_issue_path(project, issue)
+
+    page.within('.description') do
+      page.find('summary').click
+      svg = page.find('svg.mermaid')
+
+      expect(svg[:width].to_i).to be_within(5).of(120)
+      expect(svg[:height].to_i).to be_within(5).of(220)
+    end
+  end
 end

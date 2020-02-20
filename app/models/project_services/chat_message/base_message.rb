@@ -16,7 +16,7 @@ module ChatMessage
 
     def initialize(params)
       @markdown = params[:markdown] || false
-      @project_name = params.dig(:project, :path_with_namespace) || params[:project_name]
+      @project_name = params[:project_name] || params.dig(:project, :path_with_namespace)
       @project_url = params.dig(:project, :web_url) || params[:project_url]
       @user_full_name = params.dig(:user, :name) || params[:user_full_name]
       @user_name = params.dig(:user, :username) || params[:user_name]

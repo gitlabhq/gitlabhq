@@ -41,7 +41,7 @@ export default {
   <div class="environments-container">
     <gl-loading-icon
       v-if="isLoading"
-      :size="3"
+      size="md"
       class="prepend-top-default"
       label="Loading environments"
     />

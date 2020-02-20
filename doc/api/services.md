@@ -4,7 +4,7 @@
 
 ## List all active services
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/21330) in GitLab 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21330) in GitLab 12.7.
 
 Get a list of all active project services.
 
@@ -557,7 +557,7 @@ GET /projects/:id/services/github
 
 Google GSuite team collaboration tool.
 
->**Note:** This service was [introduced in v11.2](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20290)
+>**Note:** This service was [introduced in v11.2](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20290)
 
 ### Create/Edit Hangouts Chat service
 
@@ -890,7 +890,7 @@ Parameters:
 | `add_pusher` | boolean | no | Add pusher to recipients list |
 | `notify_only_broken_pipelines` | boolean | no | Notify only broken pipelines |
 | `branches_to_be_notified` | string | all | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected" |
-| `notify_only_default_branch` | boolean | no | Send notifications only for the default branch ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/28271)) |
+| `notify_only_default_branch` | boolean | no | Send notifications only for the default branch ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28271)) |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 
 ### Delete Pipeline-Emails service
@@ -1369,7 +1369,7 @@ Get MockCI service settings for a project.
 GET /projects/:id/services/mock-ci
 ```
 
-[11435]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/11435
+[11435]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11435
 
 ## YouTrack
 

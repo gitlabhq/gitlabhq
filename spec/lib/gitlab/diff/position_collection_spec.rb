@@ -5,36 +5,17 @@ require 'spec_helper'
 describe Gitlab::Diff::PositionCollection do
   let(:merge_request) { build(:merge_request) }
 
-  def build_text_position(attrs = {})
-    attributes = {
-      old_path: "files/ruby/popen.rb",
-      new_path: "files/ruby/popen.rb",
-      old_line: nil,
-      new_line: 14,
-      diff_refs: merge_request.diff_refs
-    }.merge(attrs)
-
-    Gitlab::Diff::Position.new(attributes)
+  let(:text_position) do
+    build(:text_diff_position, :added, diff_refs: diff_refs)
+  end
+  let(:folded_text_position) do
+    build(:text_diff_position, diff_refs: diff_refs, old_line: 1, new_line: 1)
+  end
+  let(:image_position) do
+    build(:image_diff_position, diff_refs: diff_refs)
   end
 
-  def build_image_position(attrs = {})
-    attributes = {
-      old_path: "files/images/any_image.png",
-      new_path: "files/images/any_image.png",
-      width: 10,
-      height: 10,
-      x: 1,
-      y: 1,
-      diff_refs: merge_request.diff_refs,
-      position_type: "image"
-    }.merge(attrs)
-
-    Gitlab::Diff::Position.new(attributes)
-  end
-
-  let(:text_position) { build_text_position }
-  let(:folded_text_position) { build_text_position(old_line: 1, new_line: 1) }
-  let(:image_position) { build_image_position }
+  let(:diff_refs) { merge_request.diff_refs }
   let(:invalid_position) { 'a position' }
   let(:head_sha) { merge_request.diff_head_sha }
 
@@ -71,7 +52,9 @@ describe Gitlab::Diff::PositionCollection do
   end
 
   describe '#concat' do
-    let(:new_text_position) { build_text_position(old_line: 1, new_line: 1) }
+    let(:new_text_position) do
+      build(:text_diff_position, diff_refs: diff_refs, old_line: 1, new_line: 1)
+    end
 
     it 'returns a Gitlab::Diff::Position' do
       expect(collection.concat([new_text_position])).to be_a(described_class)

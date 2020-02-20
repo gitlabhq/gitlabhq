@@ -3,28 +3,25 @@
 module ErrorTracking
   class BaseService < ::BaseService
     def execute
-      unauthorized = check_permissions
       return unauthorized if unauthorized
 
-      begin
-        response = fetch
-      rescue Sentry::Client::Error => e
-        return error(e.message, :bad_request)
-      rescue Sentry::Client::MissingKeysError => e
-        return error(e.message, :internal_server_error)
-      end
-
-      errors = parse_errors(response)
-      return errors if errors
-
-      success(parse_response(response))
+      perform
     end
 
     private
 
-    def fetch
+    def perform
       raise NotImplementedError,
           "#{self.class} does not implement #{__method__}"
+    end
+
+    def compose_response(response, &block)
+      errors = parse_errors(response)
+      return errors if errors
+
+      yield if block_given?
+
+      success(parse_response(response))
     end
 
     def parse_response(response)
@@ -32,7 +29,7 @@ module ErrorTracking
           "#{self.class} does not implement #{__method__}"
     end
 
-    def check_permissions
+    def unauthorized
       return error('Error Tracking is not enabled') unless enabled?
       return error('Access denied', :unauthorized) unless can_read?
     end
@@ -61,6 +58,10 @@ module ErrorTracking
 
     def can_read?
       can?(current_user, :read_sentry_issue, project)
+    end
+
+    def can_update?
+      can?(current_user, :update_sentry_issue, project)
     end
   end
 end

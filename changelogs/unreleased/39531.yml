@@ -1,0 +1,6 @@
+---
+title: Update styles for pipeline status badge to be correctly vertically centered
+  in project pipeline card
+merge_request:
+author: Oregand
+type: fixed

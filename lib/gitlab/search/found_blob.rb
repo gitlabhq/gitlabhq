@@ -7,6 +7,7 @@ module Gitlab
       include Presentable
       include BlobLanguageFromGitAttributes
       include Gitlab::Utils::StrongMemoize
+      include BlobActiveModel
 
       attr_reader :project, :content_match, :blob_path
 

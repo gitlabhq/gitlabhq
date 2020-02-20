@@ -1,6 +1,6 @@
-# Dependency Proxy **(PREMIUM ONLY)**
+# Dependency Proxy **(ULTIMATE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7934) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
 
 NOTE: **Note:**
 This is the user guide. In order to use the dependency proxy, an administrator
@@ -41,19 +41,19 @@ To get a Docker image into the dependency proxy:
 
    - Manually pulling the Docker image:
 
-     ```bash
+     ```shell
      docker pull gitlab.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 
    - From a `Dockerfile`:
 
-     ```bash
+     ```shell
      FROM gitlab.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 
    - In [`.gitlab-ci.yml`](../../../ci/yaml/README.md#image):
 
-     ```bash
+     ```shell
      image: gitlab.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 

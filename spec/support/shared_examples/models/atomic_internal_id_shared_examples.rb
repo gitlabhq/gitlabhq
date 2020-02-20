@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-shared_examples_for 'AtomicInternalId' do |validate_presence: true|
+RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
   describe '.has_internal_id' do
     describe 'Module inclusion' do
       subject { described_class }

@@ -1,9 +1,7 @@
 :mailboxes:
   <%
     require_relative "../lib/gitlab/mail_room" unless defined?(Gitlab::MailRoom)
-    config = Gitlab::MailRoom.config
-
-    if Gitlab::MailRoom.enabled?
+    Gitlab::MailRoom.enabled_configs.each do |config|
   %>
     -
       :host: <%= config[:host].to_json %>
@@ -24,8 +22,8 @@
       :delivery_options:
         :redis_url: <%= config[:redis_url].to_json %>
         :namespace: <%= Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE %>
-        :queue: email_receiver
-        :worker: EmailReceiverWorker
+        :queue: <%= config[:queue] %>
+        :worker: <%= config[:worker] %>
         <% if config[:sentinels] %>
         :sentinels:
           <% config[:sentinels].each do |sentinel| %>

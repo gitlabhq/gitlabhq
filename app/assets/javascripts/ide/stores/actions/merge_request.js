@@ -2,10 +2,17 @@ import flash from '~/flash';
 import { __ } from '~/locale';
 import service from '../../services';
 import * as types from '../mutation_types';
-import { activityBarViews } from '../../constants';
+import { leftSidebarViews, PERMISSION_READ_MR } from '../../constants';
 
-export const getMergeRequestsForBranch = ({ commit, state }, { projectId, branchId } = {}) =>
-  service
+export const getMergeRequestsForBranch = (
+  { commit, state, getters },
+  { projectId, branchId } = {},
+) => {
+  if (!getters.findProjectPermissions(projectId)[PERMISSION_READ_MR]) {
+    return Promise.resolve();
+  }
+
+  return service
     .getProjectMergeRequests(`${projectId}`, {
       source_branch: branchId,
       source_project_id: state.projects[projectId].id,
@@ -36,6 +43,7 @@ export const getMergeRequestsForBranch = ({ commit, state }, { projectId, branch
       );
       throw e;
     });
+};
 
 export const getMergeRequestData = (
   { commit, dispatch, state },
@@ -44,9 +52,7 @@ export const getMergeRequestData = (
   new Promise((resolve, reject) => {
     if (!state.projects[projectId].mergeRequests[mergeRequestId] || force) {
       service
-        .getProjectMergeRequestData(targetProjectId || projectId, mergeRequestId, {
-          render_html: true,
-        })
+        .getProjectMergeRequestData(targetProjectId || projectId, mergeRequestId)
         .then(({ data }) => {
           commit(types.SET_MERGE_REQUEST, {
             projectPath: projectId,
@@ -58,7 +64,7 @@ export const getMergeRequestData = (
         })
         .catch(() => {
           dispatch('setErrorMessage', {
-            text: __('An error occurred whilst loading the merge request.'),
+            text: __('An error occurred while loading the merge request.'),
             action: payload =>
               dispatch('getMergeRequestData', payload).then(() =>
                 dispatch('setErrorMessage', null),
@@ -91,7 +97,7 @@ export const getMergeRequestChanges = (
         })
         .catch(() => {
           dispatch('setErrorMessage', {
-            text: __('An error occurred whilst loading the merge request changes.'),
+            text: __('An error occurred while loading the merge request changes.'),
             action: payload =>
               dispatch('getMergeRequestChanges', payload).then(() =>
                 dispatch('setErrorMessage', null),
@@ -125,7 +131,7 @@ export const getMergeRequestVersions = (
         })
         .catch(() => {
           dispatch('setErrorMessage', {
-            text: __('An error occurred whilst loading the merge request version data.'),
+            text: __('An error occurred while loading the merge request version data.'),
             action: payload =>
               dispatch('getMergeRequestVersions', payload).then(() =>
                 dispatch('setErrorMessage', null),
@@ -181,7 +187,7 @@ export const openMergeRequest = (
     )
     .then(mrChanges => {
       if (mrChanges.changes.length) {
-        dispatch('updateActivityBarView', activityBarViews.review);
+        dispatch('updateActivityBarView', leftSidebarViews.review.name);
       }
 
       mrChanges.changes.forEach((change, ind) => {

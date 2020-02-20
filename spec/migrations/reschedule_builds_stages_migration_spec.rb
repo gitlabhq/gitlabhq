@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180405101928_reschedule_builds_stages_migration')
 
-describe RescheduleBuildsStagesMigration, :sidekiq, :migration do
+describe RescheduleBuildsStagesMigration, :migration do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:pipelines) { table(:ci_pipelines) }

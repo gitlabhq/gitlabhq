@@ -7,6 +7,10 @@ class Dashboard::SnippetsController < Dashboard::ApplicationController
   skip_cross_project_access_check :index
 
   def index
+    @snippet_counts = Snippets::CountService
+      .new(current_user, author: current_user)
+      .execute
+
     @snippets = SnippetsFinder.new(current_user, author: current_user, scope: params[:scope])
       .execute
       .page(params[:page])

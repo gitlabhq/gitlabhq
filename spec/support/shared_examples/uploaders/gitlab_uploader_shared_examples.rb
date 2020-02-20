@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples "matches the method pattern" do |method|
+RSpec.shared_examples "matches the method pattern" do |method|
   let(:target) { subject }
   let(:args) { nil }
   let(:pattern) { patterns[method] }
@@ -12,7 +12,7 @@ shared_examples "matches the method pattern" do |method|
   end
 end
 
-shared_examples "builds correct paths" do |**patterns|
+RSpec.shared_examples "builds correct paths" do |**patterns|
   let(:patterns) { patterns }
 
   before do

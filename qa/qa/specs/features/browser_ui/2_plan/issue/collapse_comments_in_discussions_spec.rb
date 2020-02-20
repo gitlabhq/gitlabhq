@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan' do
+  context 'Plan', :reliable do
     describe 'collapse comments in issue discussions' do
       let(:my_first_reply) { 'My first reply' }
 
@@ -17,7 +17,7 @@ module QA
         end
       end
 
-      it 'user collapses and expands reply for comments in an issue' do
+      it 'collapses and expands reply for comments in an issue' do
         Page::Project::Issue::Show.perform do |show|
           one_reply = "1 reply"
 

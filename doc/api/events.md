@@ -71,7 +71,7 @@ Parameters:
 
 Example request:
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01&scope=all
 ```
 
@@ -143,7 +143,7 @@ Parameters:
 | `after` | date | no |  Include only events created after a particular date. Please see [here for the supported format][date-formatting]  |
 | `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc` |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/:id/events
 ```
 
@@ -276,7 +276,7 @@ Parameters:
 
 Example request:
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:project_id/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01
 ```
 

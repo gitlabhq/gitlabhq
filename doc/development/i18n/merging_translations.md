@@ -5,7 +5,7 @@ newly added externalized strings to the community of translators.
 
 [GitLab Crowdin Bot](https://gitlab.com/gitlab-crowdin-bot) also creates merge requests
 to take newly approved translation submissions and merge them into the `locale/<language>/gitlab.po`
-files. Check the [merge requests created by `gitlab-crowdin-bot`](https://gitlab.com/gitlab-org/gitlab/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&author_username=gitlab-crowdin-bot)
+files. Check the [merge requests created by `gitlab-crowdin-bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&author_username=gitlab-crowdin-bot)
 to see new and merged merge requests.
 
 ## Validation
@@ -47,7 +47,7 @@ We are discussing [automating this entire process](https://gitlab.com/gitlab-org
 Crowdin creates a new merge request as soon as the old one is closed
 or merged. But it won't recreate the `master-i18n` branch every
 time. To force Crowdin to recreate the branch, close any [open merge
-request](https://gitlab.com/gitlab-org/gitlab/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&author_username=gitlab-crowdin-bot)
+request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&author_username=gitlab-crowdin-bot)
 and delete the
 [`master-18n`](https://gitlab.com/gitlab-org/gitlab/-/branches/all?utf8=✓&search=master-i18n).
 

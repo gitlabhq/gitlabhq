@@ -20,13 +20,13 @@ Authenticate to GitLab using the Atlassian Crowd OmniAuth provider.
 
    **Omnibus:**
 
-   ```sh
+   ```shell
      sudo editor /etc/gitlab/gitlab.rb
    ```
 
    **Source:**
 
-   ```sh
+   ```shell
      cd /home/git/gitlab
 
      sudo -u git -H editor config/gitlab.yml
@@ -78,7 +78,7 @@ On the sign in page there should now be a Crowd tab in the sign in form.
 
 If you see an error message like the one below when you sign in after Crowd authentication is configured, you may want to consult the Crowd administrator for the Crowd log file to know the exact cause:
 
-```
+```plaintext
 could not authorize you from Crowd because invalid credentials
 ```
 

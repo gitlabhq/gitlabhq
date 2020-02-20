@@ -21,7 +21,7 @@ module MigrationsHelpers
   end
 
   def migration_context
-    ActiveRecord::MigrationContext.new(migrations_paths)
+    ActiveRecord::MigrationContext.new(migrations_paths, ActiveRecord::SchemaMigration)
   end
 
   def migrations

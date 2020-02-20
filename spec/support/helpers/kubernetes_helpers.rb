@@ -27,7 +27,10 @@ module KubernetesHelpers
     WebMock.stub_request(:get, api_url + '/api/v1').to_return(kube_response(kube_v1_discovery_body))
     WebMock
       .stub_request(:get, api_url + '/apis/extensions/v1beta1')
-      .to_return(kube_response(kube_v1beta1_discovery_body))
+      .to_return(kube_response(kube_extensions_v1beta1_discovery_body))
+    WebMock
+      .stub_request(:get, api_url + '/apis/apps/v1')
+      .to_return(kube_response(kube_apps_v1_discovery_body))
     WebMock
       .stub_request(:get, api_url + '/apis/rbac.authorization.k8s.io/v1')
       .to_return(kube_response(kube_v1_rbac_authorization_discovery_body))
@@ -55,6 +58,12 @@ module KubernetesHelpers
     WebMock
       .stub_request(:get, api_url + '/apis/serving.knative.dev/v1alpha1')
       .to_return(status: [404, "Resource Not Found"])
+  end
+
+  def stub_kubeclient_discover_knative_found(api_url)
+    WebMock
+      .stub_request(:get, api_url + '/apis/serving.knative.dev/v1alpha1')
+      .to_return(kube_response(kube_knative_discovery_body))
   end
 
   def stub_kubeclient_service_pods(response = nil, options = {})
@@ -92,7 +101,7 @@ module KubernetesHelpers
     end
 
     logs_url = service.api_url + "/api/v1/namespaces/#{namespace}/pods/#{pod_name}" \
-    "/log?#{container_query_param}tailLines=#{Clusters::Platforms::Kubernetes::LOGS_LIMIT}&timestamps=true"
+    "/log?#{container_query_param}tailLines=#{::PodLogs::KubernetesService::LOGS_LIMIT}&timestamps=true"
 
     if status
       response = { status: status }
@@ -275,15 +284,40 @@ module KubernetesHelpers
     }
   end
 
-  def kube_v1beta1_discovery_body
+  # From Kubernetes 1.16+ Deployments are no longer served from apis/extensions
+  def kube_1_16_extensions_v1beta1_discovery_body
     {
       "kind" => "APIResourceList",
       "resources" => [
-        { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
+        { "name" => "ingresses", "namespaced" => true, "kind" => "Deployment" }
+      ]
+    }
+  end
+
+  def kube_knative_discovery_body
+    {
+      "kind" => "APIResourceList",
+      "resources" => []
+    }
+  end
+
+  def kube_extensions_v1beta1_discovery_body
+    {
+      "kind" => "APIResourceList",
+      "resources" => [
         { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" },
-        { "name" => "secrets", "namespaced" => true, "kind" => "Secret" },
-        { "name" => "serviceaccounts", "namespaced" => true, "kind" => "ServiceAccount" },
-        { "name" => "services", "namespaced" => true, "kind" => "Service" }
+        { "name" => "ingresses", "namespaced" => true, "kind" => "Ingress" }
+      ]
+    }
+  end
+
+  # Yes, deployments are defined in both apis/extensions/v1beta1 and apis/v1
+  # (for Kubernetes < 1.16). This matches what Kubenetes API server returns.
+  def kube_apps_v1_discovery_body
+    {
+      "kind" => "APIResourceList",
+      "resources" => [
+        { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" }
       ]
     }
   end
@@ -460,7 +494,7 @@ module KubernetesHelpers
       "metadata" => {
         "name" => name,
         "namespace" => namespace,
-        "generate_name" => "generated-name-with-suffix",
+        "generateName" => "generated-name-with-suffix",
         "creationTimestamp" => "2016-11-25T19:55:19Z",
         "annotations" => {
           "app.gitlab.com/env" => environment_slug,
@@ -486,7 +520,7 @@ module KubernetesHelpers
       "metadata" => {
         "name" => name,
         "namespace" => namespace,
-        "generate_name" => "generated-name-with-suffix",
+        "generateName" => "generated-name-with-suffix",
         "creationTimestamp" => "2016-11-25T19:55:19Z",
         "labels" => {
           "serving.knative.dev/service" => name
@@ -517,16 +551,13 @@ module KubernetesHelpers
       },
       "spec" => { "replicas" => 3 },
       "status" => {
-        "observedGeneration" => 4,
-        "replicas" => 3,
-        "updatedReplicas" => 3,
-        "availableReplicas" => 3
+        "observedGeneration" => 4
       }
     }
   end
 
   # noinspection RubyStringKeysInHashInspection
-  def knative_06_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production')
+  def knative_06_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production', cluster_id: 9)
     { "apiVersion" => "serving.knative.dev/v1alpha1",
       "kind" => "Service",
       "metadata" =>
@@ -581,12 +612,12 @@ module KubernetesHelpers
         "url" => "http://#{name}.#{namespace}.#{domain}"
       },
       "environment_scope" => environment,
-      "cluster_id" => 9,
+      "cluster_id" => cluster_id,
       "podcount" => 0 }
   end
 
   # noinspection RubyStringKeysInHashInspection
-  def knative_07_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production')
+  def knative_07_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production', cluster_id: 5)
     { "apiVersion" => "serving.knative.dev/v1alpha1",
       "kind" => "Service",
       "metadata" =>
@@ -633,12 +664,12 @@ module KubernetesHelpers
           "traffic" => [{ "latestRevision" => true, "percent" => 100, "revisionName" => "#{name}-92tsj" }],
           "url" => "http://#{name}.#{namespace}.#{domain}" },
       "environment_scope" => environment,
-      "cluster_id" => 5,
+      "cluster_id" => cluster_id,
       "podcount" => 0 }
   end
 
   # noinspection RubyStringKeysInHashInspection
-  def knative_09_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production')
+  def knative_09_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production', cluster_id: 5)
     { "apiVersion" => "serving.knative.dev/v1alpha1",
       "kind" => "Service",
       "metadata" =>
@@ -685,12 +716,12 @@ module KubernetesHelpers
           "traffic" => [{ "latestRevision" => true, "percent" => 100, "revisionName" => "#{name}-92tsj" }],
           "url" => "http://#{name}.#{namespace}.#{domain}" },
       "environment_scope" => environment,
-      "cluster_id" => 5,
+      "cluster_id" => cluster_id,
       "podcount" => 0 }
   end
 
   # noinspection RubyStringKeysInHashInspection
-  def knative_05_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production')
+  def knative_05_service(name: 'kubetest', namespace: 'default', domain: 'example.com', description: 'a knative service', environment: 'production', cluster_id: 8)
     { "apiVersion" => "serving.knative.dev/v1alpha1",
       "kind" => "Service",
       "metadata" =>
@@ -740,7 +771,7 @@ module KubernetesHelpers
           "observedGeneration" => 1,
           "traffic" => [{ "percent" => 100, "revisionName" => "#{name}-58qgr" }] },
       "environment_scope" => environment,
-      "cluster_id" => 8,
+      "cluster_id" => cluster_id,
       "podcount" => 0 }
   end
 

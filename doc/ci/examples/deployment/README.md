@@ -18,7 +18,7 @@ To use Dpl you need at least Ruby 1.9.3 with ability to install gems.
 
 Dpl can be installed on any machine with:
 
-```
+```shell
 gem install dpl
 ```
 
@@ -27,7 +27,7 @@ having to test it on a CI server.
 
 If you don't have Ruby installed you can do it on Debian-compatible Linux with:
 
-```
+```shell
 apt-get update
 apt-get install ruby-dev
 ```

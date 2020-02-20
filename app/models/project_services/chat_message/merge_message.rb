@@ -62,7 +62,7 @@ module ChatMessage
     end
 
     def merge_request_url
-      "#{project_url}/merge_requests/#{merge_request_iid}"
+      "#{project_url}/-/merge_requests/#{merge_request_iid}"
     end
 
     # overridden in EE

@@ -62,7 +62,7 @@ module JavaScriptFixturesHelpers
     fixture = response.body
     fixture.force_encoding("utf-8")
 
-    response_mime_type = Mime::Type.lookup(response.content_type)
+    response_mime_type = Mime::Type.lookup(response.media_type)
     if response_mime_type.html?
       doc = Nokogiri::HTML::DocumentFragment.parse(fixture)
 

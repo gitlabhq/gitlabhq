@@ -17,29 +17,45 @@ describe Gitlab::Utils::DeepSize do
 
   let(:max_size) { 1.kilobyte }
   let(:max_depth) { 10 }
-  let(:deep_size) { described_class.new(data, max_size: max_size, max_depth: max_depth) }
 
-  describe '#evaluate' do
-    context 'when data within size and depth limits' do
-      it 'returns true' do
-        expect(deep_size).to be_valid
+  subject(:deep_size) { described_class.new(data, max_size: max_size, max_depth: max_depth) }
+
+  it { expect(described_class::DEFAULT_MAX_SIZE).to eq(1.megabyte) }
+  it { expect(described_class::DEFAULT_MAX_DEPTH).to eq(100) }
+
+  describe '#initialize' do
+    context 'when max_size is nil' do
+      let(:max_size) { nil }
+
+      it 'sets max_size to DEFAULT_MAX_SIZE' do
+        expect(subject.instance_variable_get(:@max_size)).to eq(described_class::DEFAULT_MAX_SIZE)
       end
+    end
+
+    context 'when max_depth is nil' do
+      let(:max_depth) { nil }
+
+      it 'sets max_depth to DEFAULT_MAX_DEPTH' do
+        expect(subject.instance_variable_get(:@max_depth)).to eq(described_class::DEFAULT_MAX_DEPTH)
+      end
+    end
+  end
+
+  describe '#valid?' do
+    context 'when data within size and depth limits' do
+      it { is_expected.to be_valid }
     end
 
     context 'when data not within size limit' do
       let(:max_size) { 200.bytes }
 
-      it 'returns false' do
-        expect(deep_size).not_to be_valid
-      end
+      it { is_expected.not_to be_valid }
     end
 
     context 'when data not within depth limit' do
       let(:max_depth) { 2 }
 
-      it 'returns false' do
-        expect(deep_size).not_to be_valid
-      end
+      it { is_expected.not_to be_valid }
     end
   end
 

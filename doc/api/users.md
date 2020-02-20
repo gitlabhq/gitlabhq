@@ -111,7 +111,9 @@ GET /users
     "can_create_project": true,
     "two_factor_enabled": true,
     "external": false,
-    "private_profile": false
+    "private_profile": false,
+    "current_sign_in_ip": "196.165.1.102",
+    "last_sign_in_ip": "172.127.2.22"
   },
   {
     "id": 2,
@@ -142,7 +144,9 @@ GET /users
     "can_create_project": true,
     "two_factor_enabled": true,
     "external": false,
-    "private_profile": false
+    "private_profile": false,
+    "current_sign_in_ip": "10.165.1.102",
+    "last_sign_in_ip": "172.127.2.22"
   }
 ]
 ```
@@ -294,7 +298,9 @@ Example Responses:
   "can_create_project": true,
   "two_factor_enabled": true,
   "external": false,
-  "private_profile": false
+  "private_profile": false,
+  "current_sign_in_ip": "196.165.1.102",
+  "last_sign_in_ip": "172.127.2.22"
 }
 ```
 
@@ -350,7 +356,7 @@ over `password`. In addition, `reset_password` and
 `force_random_password` can be used together.
 
 NOTE: **Note:**
-From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/29888/), `private_profile` will default to `false`.
+From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29888/), `private_profile` will default to `false`.
 
 ```
 POST /users
@@ -379,7 +385,9 @@ Parameters:
 - `skip_confirmation` (optional) - Skip confirmation - true or false (default)
 - `external` (optional)          - Flags the user as external - true or false (default)
 - `avatar` (optional)            - Image file for user's avatar
-- `private_profile` (optional)   - User's profile is private - true or false (default)
+- `theme_id` (optional)          - The GitLab theme for the user (see [the user preference docs](../user/profile/preferences.md#navigation-theme) for more information)
+- `color_scheme_id` (optional)   - User's color scheme for the file viewer (see [the user preference docs](../user/profile/preferences.md#syntax-highlighting-theme) for more information)
+- `private_profile` (optional)   - User's profile is private - true, false (default), or null (will be converted to false)
 - `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **(STARTER)**
 - `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **(STARTER)**
 
@@ -417,7 +425,9 @@ Parameters:
 - `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
 - `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user
 - `avatar` (optional)              - Image file for user's avatar
-- `private_profile` (optional)     - User's profile is private - true or false (default)
+- `theme_id` (optional)          - The GitLab theme for the user (see [the user preference docs](../user/profile/preferences.md#navigation-theme) for more information)
+- `color_scheme_id` (optional)   - User's color scheme for the file viewer (see [the user preference docs](../user/profile/preferences.md#syntax-highlighting-theme) for more information)
+- `private_profile` (optional)     - User's profile is private - true, false (default), or null (will be converted to false)
 - `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **(STARTER)**
 - `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **(STARTER)**
 - `note` (optional)                - Admin notes for this user **(STARTER)**
@@ -426,6 +436,19 @@ On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
 even in cases where a `409` (Conflict) would be more appropriate,
 e.g. when renaming the email address to some existing one.
+
+## Delete authentication identity from user
+
+Deletes a user's authentication identity using the provider name associated with that identity. Available only for administrators.
+
+```
+DELETE /users/:id/identities/:provider
+```
+
+Parameters:
+
+- `id` (required) - The ID of the user
+- `provider` (required) - External provider name
 
 ## User deletion
 
@@ -534,7 +557,9 @@ GET /user
   "can_create_project": true,
   "two_factor_enabled": true,
   "external": false,
-  "private_profile": false
+  "private_profile": false,
+  "current_sign_in_ip": "196.165.1.102",
+  "last_sign_in_ip": "172.127.2.22"
 }
 ```
 
@@ -546,7 +571,7 @@ Get the status of the currently signed in user.
 GET /user/status
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/user/status"
 ```
 
@@ -572,7 +597,7 @@ GET /users/:id_or_username/status
 | ---------------- | ------ | -------- | ----------- |
 | `id_or_username` | string | yes      | The id or username of the user to get a status of |
 
-```bash
+```shell
 curl "https://gitlab.example.com/users/janedoe/status"
 ```
 
@@ -601,7 +626,7 @@ PUT /user/status
 
 When both parameters `emoji` and `message` are empty, the status will be cleared.
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "emoji=coffee" --data "message=I crave coffee" https://gitlab.example.com/api/v4/user/status
 ```
 
@@ -627,7 +652,7 @@ Get the counts (same as in top right menu) of the currently signed in user.
 GET /user_counts
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/user_counts"
 ```
 
@@ -677,12 +702,12 @@ Parameters:
 Get a list of a specified user's SSH keys.
 
 ```
-GET /users/:id/keys
+GET /users/:id_or_username/keys
 ```
 
-Parameters:
-
-- `id` (required) - id of specified user
+| Attribute        | Type   | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| `id_or_username` | string | yes      | The id or username of the user to get the SSH keys for. |
 
 ## Single SSH key
 
@@ -791,7 +816,7 @@ Get a list of currently authenticated user's GPG keys.
 GET /user/gpg_keys
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys
 ```
 
@@ -821,7 +846,7 @@ Parameters:
 | --------- | ------- | -------- | ----------- |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys/1
 ```
 
@@ -849,7 +874,7 @@ Parameters:
 | --------- | ------ | -------- | ----------- |
 | key       | string | yes      | The new GPG key |
 
-```bash
+```shell
 curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys
 ```
 
@@ -879,7 +904,7 @@ Parameters:
 | --------- | ------- | -------- | ----------- |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/gpg_keys/1
 ```
 
@@ -899,7 +924,7 @@ Parameters:
 | --------- | ------- | -------- | ----------- |
 | `id`      | integer | yes      | The ID of the user |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys
 ```
 
@@ -930,7 +955,7 @@ Parameters:
 | `id`      | integer | yes      | The ID of the user |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys/1
 ```
 
@@ -959,7 +984,7 @@ Parameters:
 | `id`      | integer | yes      | The ID of the user |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
-```bash
+```shell
 curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..."  --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys
 ```
 
@@ -990,7 +1015,7 @@ Parameters:
 | `id`      | integer | yes      | The ID of the user |
 | `key_id`  | integer | yes      | The ID of the GPG key |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/2/gpg_keys/1
 ```
 
@@ -1154,9 +1179,9 @@ Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 
 ## Deactivate user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/63921) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22257) in GitLab 12.4.
 
-Deactivates the specified user.  Available only for admin.
+Deactivates the specified user. Available only for admin.
 
 ```
 POST /users/:id/deactivate
@@ -1176,9 +1201,9 @@ Returns:
 
 ## Activate user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/63921) in GitLab 12.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/22257) in GitLab 12.4.
 
-Activates the specified user.  Available only for admin.
+Activates the specified user. Available only for admin.
 
 ```
 POST /users/:id/activate
@@ -1364,6 +1389,7 @@ The activities that update the timestamp are:
 - Git HTTP/SSH activities (such as clone, push)
 - User logging in into GitLab
 - User visiting pages related to Dashboards, Projects, Issues and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/54947) in GitLab 11.8)
+- User using the API
 
 By default, it shows the activity for all users in the last 6 months, but this can be
 amended by using the `from` parameter.
@@ -1378,7 +1404,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `from` | string | no | Date string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`. Defaults to 6 months ago. |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/activities
 ```
 
@@ -1405,3 +1431,53 @@ Example response:
 ```
 
 Please note that `last_activity_at` is deprecated, please use `last_activity_on`.
+
+## User memberships (admin only)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22518) in GitLab 12.8.
+
+Lists all projects and groups a user is a member of. This endpoint is available for admins only.
+It returns the `source_id`, `source_name`, `source_type` and `access_level` of a membership.
+Source can be of type `Namespace` (representing a group) or `Project`. The response represents only direct memberships. Inherited memberships, for example in subgroups, will not be included.
+Access levels will be represented by an integer value. Read more about the meaning of access level values [here](access_requests.md#valid-access-levels).
+
+```
+GET /users/:id/memberships
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a specified user |
+| `type` | string | no | Filter memberships by type. Can be either `Project` or `Namespace` |
+
+Returns:
+
+- `200 OK` on success.
+- `404 User Not Found` if user cannot be found.
+- `403 Forbidden` when not requested by an admin.
+- `400 Bad Request` when requested type is not supported.
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/<user_id>/memberships
+```
+
+Example response:
+
+```json
+[
+  {
+    "source_id": 1,
+    "source_name": "Project one",
+    "source_type": "Project",
+    "access_level": "20"
+  },
+  {
+    "source_id": 3,
+    "source_name": "Group three",
+    "source_type": "Namespace",
+    "access_level": "20"
+  },
+]
+```

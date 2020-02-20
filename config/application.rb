@@ -1,7 +1,9 @@
 require_relative 'boot'
 
-# Based on https://github.com/rails/rails/blob/v5.2.3/railties/lib/rails/all.rb
+# Based on https://github.com/rails/rails/blob/v6.0.1/railties/lib/rails/all.rb
 # Only load the railties we need instead of loading everything
+require 'rails'
+
 require 'active_record/railtie'
 require 'action_controller/railtie'
 require 'action_view/railtie'
@@ -52,6 +54,8 @@ module Gitlab
         ee_path = config.root.join('ee', Pathname.new(path).relative_path_from(config.root))
         memo << ee_path.to_s
       end
+
+      ee_paths << "#{config.root}/ee/app/replicators"
 
       # Eager load should load CE first
       config.eager_load_paths.push(*ee_paths)

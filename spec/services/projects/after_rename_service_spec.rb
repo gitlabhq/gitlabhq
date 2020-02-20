@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Projects::AfterRenameService do
   let(:rugged_config) { rugged_repo(project.repository).config }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
-  let(:hashed_storage) { Storage::HashedProject.new(project) }
+  let(:hashed_storage) { Storage::Hashed.new(project) }
   let!(:path_before_rename) { project.path }
   let!(:full_path_before_rename) { project.full_path }
   let!(:path_after_rename) { "#{project.path}-renamed" }

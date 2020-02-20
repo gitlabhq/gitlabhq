@@ -30,7 +30,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
     service = ErrorTracking::IssueUpdateService.new(project, current_user, issue_update_params)
     result = service.execute
 
-    return if handle_errors(result)
+    return if render_errors(result)
 
     render json: {
       result: result
@@ -47,7 +47,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
     )
     result = service.execute
 
-    return if handle_errors(result)
+    return if render_errors(result)
 
     render json: {
       errors: serialize_errors(result[:issues]),
@@ -60,14 +60,14 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
     service = ErrorTracking::IssueDetailsService.new(project, current_user, issue_details_params)
     result = service.execute
 
-    return if handle_errors(result)
+    return if render_errors(result)
 
     render json: {
       error: serialize_detailed_error(result[:issue])
     }
   end
 
-  def handle_errors(result)
+  def render_errors(result)
     unless result[:status] == :success
       render json: { message: result[:message] },
              status: result[:http_status] || :bad_request
@@ -75,7 +75,7 @@ class Projects::ErrorTrackingController < Projects::ErrorTracking::BaseControlle
   end
 
   def list_issues_params
-    params.permit(:search_term, :sort, :cursor)
+    params.permit(:search_term, :sort, :cursor, :issue_status)
   end
 
   def issue_update_params

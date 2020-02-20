@@ -18,7 +18,7 @@ module CommitsHelper
   end
 
   def commit_to_html(commit, ref, project)
-    render 'projects/commits/commit',
+    render 'projects/commits/commit.html',
       commit: commit,
       ref: ref,
       project: project

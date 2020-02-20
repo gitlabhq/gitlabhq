@@ -7,21 +7,32 @@ module Projects
       before_action :ensure_root_container_repository!, only: [:index]
 
       def index
-        @images = project.container_repositories
-        track_event(:list_repositories)
-
         respond_to do |format|
           format.html
           format.json do
-            render json: ContainerRepositoriesSerializer
+            @images = project.container_repositories
+
+            track_event(:list_repositories)
+
+            serializer = ContainerRepositoriesSerializer
               .new(project: project, current_user: current_user)
-              .represent(@images)
+
+            if Feature.enabled?(:vue_container_registry_explorer)
+              render json: serializer.with_pagination(request, response).represent(@images)
+            else
+              render json: serializer.represent(@images)
+            end
           end
         end
       end
 
+      # The show action renders index to allow frontend routing to work on page refresh
+      def show
+        render :index
+      end
+
       def destroy
-        DeleteContainerRepositoryWorker.perform_async(current_user.id, image.id)
+        DeleteContainerRepositoryWorker.perform_async(current_user.id, image.id) # rubocop:disable CodeReuse/Worker
         track_event(:delete_repository)
 
         respond_to do |format|

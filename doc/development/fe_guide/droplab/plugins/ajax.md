@@ -33,6 +33,6 @@ droplab.addHook(trigger, list, [Ajax], {
 ```
 
 Optionally you can set `loadingTemplate` to a HTML string. This HTML string will
-replace the dropdown list whilst the request is pending.
+replace the dropdown list while the request is pending.
 
 Additionally, you can set `onError` to a function to catch any XHR errors.

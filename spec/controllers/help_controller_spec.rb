@@ -111,7 +111,7 @@ describe HelpController do
         it 'renders the raw file' do
           get :show,
               params: {
-                path: 'user/project/img/labels_default_v12_1'
+                path: 'user/img/markdown_logo'
               },
               format: :png
           expect(response).to be_successful
@@ -148,7 +148,7 @@ describe HelpController do
     context 'for UI Development Kit' do
       it 'renders found' do
         get :ui
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

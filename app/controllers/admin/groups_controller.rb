@@ -6,8 +6,7 @@ class Admin::GroupsController < Admin::ApplicationController
   before_action :group, only: [:edit, :update, :destroy, :project_update, :members_update]
 
   def index
-    @groups = Group.with_statistics.with_route
-    @groups = @groups.sort_by_attribute(@sort = params[:sort])
+    @groups = groups.sort_by_attribute(@sort = params[:sort])
     @groups = @groups.search(params[:name]) if params[:name].present?
     @groups = @groups.page(params[:page])
   end
@@ -74,6 +73,10 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   private
+
+  def groups
+    Group.with_statistics.with_route
+  end
 
   def group
     @group ||= Group.find_by_full_path(params[:id])

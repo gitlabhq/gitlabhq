@@ -24,10 +24,11 @@ module RegisterDateTimeWithTimeZone
   def initialize_type_map(mapping = type_map)
     super mapping
 
-    mapping.register_type 'timestamptz' do |_, _, sql_type|
-      precision = extract_precision(sql_type)
-      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::OID::DateTimeWithTimeZone.new(precision: precision)
-    end
+    register_class_with_precision(
+      mapping,
+      'timestamptz',
+      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::OID::DateTimeWithTimeZone
+    )
   end
 end
 
@@ -46,3 +47,5 @@ end
 if (ActiveRecord::Base.connection.active? rescue false)
   ActiveRecord::Base.connection.send :reload_type_map
 end
+
+ActiveRecord::Base.time_zone_aware_types += [:datetime_with_timezone]

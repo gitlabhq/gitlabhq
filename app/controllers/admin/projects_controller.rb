@@ -55,7 +55,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def repository_check
-    RepositoryCheck::SingleRepositoryWorker.perform_async(@project.id)
+    RepositoryCheck::SingleRepositoryWorker.perform_async(@project.id) # rubocop:disable CodeReuse/Worker
 
     redirect_to(
       admin_project_path(@project),

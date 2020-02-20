@@ -18,7 +18,7 @@
       %li.js-tests-tab-link
         = link_to test_report_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-tests', action: 'test_report', toggle: 'tab' }, class: 'test-tab' do
           = s_('TestReports|Tests')
-          %span.badge.badge-pill= pipeline.test_reports.total_count
+          %span.badge.badge-pill.js-test-report-badge-counter
     = render_if_exists "projects/pipelines/tabs_holder", pipeline: @pipeline, project: @project
 
 .tab-content

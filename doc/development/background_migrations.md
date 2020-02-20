@@ -56,6 +56,12 @@ for more details.
 Make sure that in case that your migration job is going to be retried data
 integrity is guaranteed.
 
+## Background migrations for EE-only features
+
+All the background migration classes for EE-only features should be present in GitLab CE.
+For this purpose, an empty class can be created for GitLab CE, and it can be extended for GitLab EE
+as explained in the [guidelines for implementing Enterprise Edition features](ee_features.md#code-in-libgitlabbackground_migration).
+
 ## How It Works
 
 Background migrations are simple classes that define a `perform` method. A

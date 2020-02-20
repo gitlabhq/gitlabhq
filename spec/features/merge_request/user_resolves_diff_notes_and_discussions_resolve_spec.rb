@@ -10,13 +10,9 @@ describe 'Merge request > User resolves diff notes and threads', :js do
   let!(:note)         { create(:diff_note_on_merge_request, project: project, noteable: merge_request, note: "| Markdown | Table |\n|-------|---------|\n| first | second |") }
   let(:path)          { "files/ruby/popen.rb" }
   let(:position) do
-    Gitlab::Diff::Position.new(
-      old_path: path,
-      new_path: path,
-      old_line: nil,
-      new_line: 9,
-      diff_refs: merge_request.diff_refs
-    )
+    build(:text_diff_position,
+          file: path, old_line: nil, new_line: 9,
+          diff_refs: merge_request.diff_refs)
   end
 
   before do
@@ -366,16 +362,6 @@ describe 'Merge request > User resolves diff notes and threads', :js do
 
           expect(resolve_button['aria-label']).to eq("Resolved by #{user.name}")
         end
-      end
-
-      it 'shows jump to next discussion button on all discussions' do
-        wait_for_requests
-
-        all_discussion_replies = page.all('.discussion-reply-holder')
-
-        expect(all_discussion_replies.count).to eq(2)
-        expect(all_discussion_replies.first.all('.discussion-next-btn').count).to eq(1)
-        expect(all_discussion_replies.last.all('.discussion-next-btn').count).to eq(1)
       end
 
       it 'displays next thread even if hidden' do

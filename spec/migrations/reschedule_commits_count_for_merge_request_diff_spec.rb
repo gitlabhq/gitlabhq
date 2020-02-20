@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180309121820_reschedule_commits_count_for_merge_request_diff')
 
-describe RescheduleCommitsCountForMergeRequestDiff, :migration, :sidekiq do
+describe RescheduleCommitsCountForMergeRequestDiff, :migration do
   let(:merge_request_diffs) { table(:merge_request_diffs) }
   let(:merge_requests) { table(:merge_requests) }
   let(:projects) { table(:projects) }

@@ -1,0 +1,5 @@
+---
+title: Fix custom charts in monitoring dashboard shrinking
+merge_request: 23649
+author:
+type: fixed

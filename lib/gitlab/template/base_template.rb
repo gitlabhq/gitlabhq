@@ -33,7 +33,7 @@ module Gitlab
         self
       end
 
-      def to_json
+      def to_json(*)
         { key: key, name: name, content: content }
       end
 

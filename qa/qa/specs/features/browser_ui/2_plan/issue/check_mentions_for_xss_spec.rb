@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan' do
+  context 'Plan', :reliable do
     describe 'check xss occurence in @mentions in issues', :requires_admin do
-      it 'user mentions a user in comment' do
+      it 'mentions a user in a comment' do
         QA::Runtime::Env.personal_access_token = QA::Runtime::Env.admin_personal_access_token
 
         unless QA::Runtime::Env.personal_access_token
@@ -21,8 +21,8 @@ module QA
 
         Flow::Login.sign_in
 
-        project = Resource::Project.fabricate_via_api! do |resource|
-          resource.name = 'xss-test-for-mentions-project'
+        project = Resource::Project.fabricate_via_api! do |project|
+          project.name = 'xss-test-for-mentions-project'
         end
 
         Flow::Project.add_member(project: project, username: user.username)

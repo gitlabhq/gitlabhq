@@ -220,4 +220,32 @@ describe ProtectedBranch do
       end
     end
   end
+
+  describe '.by_name' do
+    let!(:protected_branch) { create(:protected_branch, name: 'master') }
+    let!(:another_protected_branch) { create(:protected_branch, name: 'stable') }
+
+    it 'returns protected branches with a matching name' do
+      expect(described_class.by_name(protected_branch.name))
+        .to eq([protected_branch])
+    end
+
+    it 'returns protected branches with a partially matching name' do
+      expect(described_class.by_name(protected_branch.name[0..2]))
+        .to eq([protected_branch])
+    end
+
+    it 'returns protected branches with a matching name regardless of the casing' do
+      expect(described_class.by_name(protected_branch.name.upcase))
+        .to eq([protected_branch])
+    end
+
+    it 'returns nothing when nothing matches' do
+      expect(described_class.by_name('unknown')).to be_empty
+    end
+
+    it 'return nothing when query is blank' do
+      expect(described_class.by_name('')).to be_empty
+    end
+  end
 end

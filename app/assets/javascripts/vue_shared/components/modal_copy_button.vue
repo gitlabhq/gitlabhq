@@ -121,7 +121,7 @@ export default {
     :title="title"
   >
     <slot>
-      <icon name="duplicate" />
+      <icon name="copy-to-clipboard" />
     </slot>
   </gl-button>
 </template>

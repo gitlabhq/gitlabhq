@@ -6,9 +6,9 @@ There are two software distributions of GitLab: the open source [Community Editi
 
 New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
 
-For information, see the [GitLab Release Process](https://gitlab.com/gitlab-org/release/docs/tree/master#gitlab-release-process).
+For information, see the [GitLab Release Process](https://gitlab.com/gitlab-org/release/docs/-/tree/master#gitlab-release-process).
 
-Both EE and CE require some add-on components called GitLab Shell and Gitaly. These components are available from the [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell/tree/master) and [Gitaly](https://gitlab.com/gitlab-org/gitaly/tree/master) repositories respectively. New versions are usually tags but staying on the master branch will give you the latest stable version. New releases are generally around the same time as GitLab CE releases with exception for informal security updates deemed critical.
+Both EE and CE require some add-on components called GitLab Shell and Gitaly. These components are available from the [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/master) and [Gitaly](https://gitlab.com/gitlab-org/gitaly/-/tree/master) repositories respectively. New versions are usually tags but staying on the master branch will give you the latest stable version. New releases are generally around the same time as GitLab CE releases with exception for informal security updates deemed critical.
 
 ## Components
 
@@ -24,7 +24,7 @@ The add-on component GitLab Shell serves repositories over SSH. It manages the S
 
 Gitaly executes Git operations from GitLab Shell and the GitLab web app, and provides an API to the GitLab web app to get attributes from Git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files).
 
-You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/).
+You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/).
 
 ### Simplified Component Overview
 
@@ -52,17 +52,18 @@ graph TB
   Geo[GitLab Geo Node] -- TCP 22, 80, 443 --> NGINX
 
   GitLabShell --TCP 8080 -->Unicorn["Unicorn (GitLab Rails)"]
-  GitLabShell --> Gitaly
+  GitLabShell --> Praefect
   GitLabShell --> Redis
   Unicorn --> PgBouncer[PgBouncer]
   Unicorn --> Redis
-  Unicorn --> Gitaly
+  Unicorn --> Praefect
   Sidekiq --> Redis
   Sidekiq --> PgBouncer
-  Sidekiq --> Gitaly
+  Sidekiq --> Praefect
   GitLabWorkhorse[GitLab Workhorse] --> Unicorn
   GitLabWorkhorse --> Redis
-  GitLabWorkhorse --> Gitaly
+  GitLabWorkhorse --> Praefect
+  Praefect --> Gitaly
   NGINX --> GitLabWorkhorse
   NGINX -- TCP 8090 --> GitLabPages[GitLab Pages]
   NGINX --> Grafana[Grafana]
@@ -128,10 +129,11 @@ Component statuses are linked to configuration documentation for each component.
 | [Unicorn (GitLab Rails)](#unicorn) | Handles requests for the web interface and API | [✅][unicorn-omnibus] | [✅][unicorn-charts] | [✅][unicorn-charts] | [✅](../user/gitlab_com/index.md#unicorn) | [⚙][unicorn-source] | [✅][gitlab-yml] | CE & EE |
 | [Sidekiq](#sidekiq) | Background jobs processor | [✅][sidekiq-omnibus] | [✅][sidekiq-charts] | [✅](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html) | [✅](../user/gitlab_com/index.md#sidekiq) | [✅][gitlab-yml] | [✅][gitlab-yml] | CE & EE |
 | [Gitaly](#gitaly) | Git RPC service for handling all Git calls made by GitLab | [✅][gitaly-omnibus] | [✅][gitaly-charts] | [✅][gitaly-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][gitaly-source] | ✅ | CE & EE |
+| [Praefect](#praefect) | A transparent proxy between any Git client and Gitaly storage nodes. | [✅][gitaly-omnibus] | [❌][gitaly-charts] | [❌][gitaly-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][praefect-source] | ✅ | CE & EE |
 | [GitLab Workhorse](#gitlab-workhorse) | Smart reverse proxy, handles large HTTP requests | [✅][workhorse-omnibus] | [✅][workhorse-charts] | [✅][workhorse-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][workhorse-source] | ✅ | CE & EE |
 | [GitLab Shell](#gitlab-shell) | Handles `git` over SSH sessions | [✅][shell-omnibus] | [✅][shell-charts] | [✅][shell-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][shell-source] | [✅][gitlab-yml] | CE & EE |
 | [GitLab Pages](#gitlab-pages) | Hosts static websites | [⚙][pages-omnibus] | [❌][pages-charts] | [❌][pages-charts] | [✅](../user/gitlab_com/index.md#gitlab-pages) | [⚙][pages-source] | [⚙][pages-gdk] | CE & EE  |
-| [Registry](#registry) | Container registry, allows pushing and pulling of images | [⚙][registry-omnibus] | [✅][registry-charts] | [✅][registry-charts] | [✅](../user/packages/container_registry/index.md#build-and-push-images) | [⤓][registry-source] | [⚙][registry-gdk] | CE & EE  |
+| [Registry](#registry) | Container registry, allows pushing and pulling of images | [⚙][registry-omnibus] | [✅][registry-charts] | [✅][registry-charts] | [✅](../user/packages/container_registry/index.md#build-and-push-images-using-gitlab-cicd) | [⤓][registry-source] | [⚙][registry-gdk] | CE & EE  |
 | [Redis](#redis) | Caching service | [✅][redis-omnibus] | [✅][redis-omnibus] | [✅][redis-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⤓][redis-source] | ✅ | CE & EE |
 | [PostgreSQL](#postgresql) | Database | [✅][postgres-omnibus] | [✅][postgres-charts] | [✅][postgres-charts] | [✅](../user/gitlab_com/index.md#postgresql) | [⤓][postgres-source] | ✅ | CE & EE |
 | [PgBouncer](#pgbouncer) | Database connection pooling, failover | [⚙][pgbouncer-omnibus] | [❌][pgbouncer-charts] | [❌][pgbouncer-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#database-architecture) | ❌ | ❌ | EE Only |
@@ -219,6 +221,16 @@ Elasticsearch is a distributed RESTful search engine built for the cloud.
 - Process: `gitaly`
 
 Gitaly is a service designed by GitLab to remove our need for NFS for Git storage in distributed deployments of GitLab (think GitLab.com or High Availability Deployments). As of 11.3.0, this service handles all Git level access in GitLab. You can read more about the project [in the project's readme](https://gitlab.com/gitlab-org/gitaly).
+
+#### Praefect
+
+- [Project page](https://gitlab.com/gitlab-org/gitaly/blob/master/README.md)
+- Configuration: [Omnibus][gitaly-omnibus], [Source][praefect-source]
+- Layer: Core Service (Data)
+- Process: `praefect`
+
+Praefect is a transparent proxy between each Git client and the Gitaly coordinating the replication of
+repository updates to secondairy nodes.
 
 #### GitLab Geo
 
@@ -504,7 +516,7 @@ To summarize here's the [directory structure of the `git` user home directory](.
 
 ### Processes
 
-```sh
+```shell
 ps aux | grep '^git'
 ```
 
@@ -641,6 +653,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [gitaly-omnibus]: ../administration/gitaly/index.md
 [gitaly-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitaly/
 [gitaly-source]: ../install/installation.md#install-gitaly
+[praefect-source]: ../install/installation.md#install-gitaly
 [workhorse-omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
 [workhorse-charts]: https://docs.gitlab.com/charts/charts/gitlab/unicorn/
 [workhorse-source]: ../install/installation.md#install-gitlab-workhorse

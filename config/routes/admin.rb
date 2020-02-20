@@ -32,6 +32,14 @@ namespace :admin do
   resources :abuse_reports, only: [:index, :destroy]
   resources :gitaly_servers, only: [:index]
 
+  namespace :serverless do
+    resources :domains, only: [:index, :create, :update] do
+      member do
+        post '/verify', to: 'domains#verify'
+      end
+    end
+  end
+
   resources :spam_logs, only: [:index, :destroy] do
     member do
       post :mark_as_ham
@@ -107,7 +115,11 @@ namespace :admin do
     end
   end
 
-  resource :application_settings, only: [:show, :update] do
+  resource :application_settings, only: :update do
+    # This redirect should be removed with 13.0 release.
+    # https://gitlab.com/gitlab-org/gitlab/issues/199427
+    get '/', to: redirect('admin/application_settings/general'), as: nil
+
     resources :services, only: [:index, :edit, :update]
 
     get :usage_data

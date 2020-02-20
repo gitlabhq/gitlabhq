@@ -20,8 +20,14 @@ module Gitlab
       paid_signup_flow: {
         feature_toggle: :paid_signup_flow,
         environment: ::Gitlab.dev_env_or_com?,
-        enabled_ratio: 0.1,
+        enabled_ratio: 0.5,
         tracking_category: 'Growth::Acquisition::Experiment::PaidSignUpFlow'
+      },
+      suggest_pipeline: {
+        feature_toggle: :suggest_pipeline,
+        environment: ::Gitlab.dev_env_or_com?,
+        enabled_ratio: 0.1,
+        tracking_category: 'Growth::Expansion::Experiment::SuggestPipeline'
       }
     }.freeze
 
@@ -53,14 +59,14 @@ module Gitlab
         Experimentation.enabled_for_user?(experiment_key, experimentation_subject_index) || forced_enabled?(experiment_key)
       end
 
-      def track_experiment_event(experiment_key, action)
-        track_experiment_event_for(experiment_key, action) do |tracking_data|
+      def track_experiment_event(experiment_key, action, value = nil)
+        track_experiment_event_for(experiment_key, action, value) do |tracking_data|
           ::Gitlab::Tracking.event(tracking_data.delete(:category), tracking_data.delete(:action), tracking_data)
         end
       end
 
-      def frontend_experimentation_tracking_data(experiment_key, action)
-        track_experiment_event_for(experiment_key, action) do |tracking_data|
+      def frontend_experimentation_tracking_data(experiment_key, action, value = nil)
+        track_experiment_event_for(experiment_key, action, value) do |tracking_data|
           gon.push(tracking_data: tracking_data)
         end
       end
@@ -77,19 +83,20 @@ module Gitlab
         experimentation_subject_id.delete('-').hex % 100
       end
 
-      def track_experiment_event_for(experiment_key, action)
+      def track_experiment_event_for(experiment_key, action, value)
         return unless Experimentation.enabled?(experiment_key)
 
-        yield experimentation_tracking_data(experiment_key, action)
+        yield experimentation_tracking_data(experiment_key, action, value)
       end
 
-      def experimentation_tracking_data(experiment_key, action)
+      def experimentation_tracking_data(experiment_key, action, value)
         {
           category: tracking_category(experiment_key),
           action: action,
           property: tracking_group(experiment_key),
-          label: experimentation_subject_id
-        }
+          label: experimentation_subject_id,
+          value: value
+        }.compact
       end
 
       def tracking_category(experiment_key)

@@ -5,7 +5,7 @@ module SidekiqHelper
     (?<pid>\d+)\s+
     (?<cpu>[\d\.,]+)\s+
     (?<mem>[\d\.,]+)\s+
-    (?<state>[DIEKNRSTVWXZNLpsl\+<>/\d]+)\s+
+    (?<state>[DIEKNRSTVWXZLpsl\+<>/\d]+)\s+
     (?<start>.+?)\s+
     (?<command>(?:ruby\d+:\s+)?sidekiq.*\].*)
     \z}x.freeze

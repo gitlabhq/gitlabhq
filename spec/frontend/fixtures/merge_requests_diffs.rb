@@ -12,10 +12,8 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
   let(:path) { "files/ruby/popen.rb" }
   let(:selected_commit) { merge_request.all_commits[0] }
   let(:position) do
-    Gitlab::Diff::Position.new(
-      old_path: path,
-      new_path: path,
-      old_line: nil,
+    build(:text_diff_position, :added,
+      file: path,
       new_line: 14,
       diff_refs: merge_request.diff_refs
     )

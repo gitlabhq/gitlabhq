@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import { visitUrl } from '../../lib/utils/url_utility';
 import tooltip from '../../vue_shared/directives/tooltip';
 import identicon from '../../vue_shared/components/identicon.vue';
@@ -17,6 +17,7 @@ export default {
     tooltip,
   },
   components: {
+    GlBadge,
     GlLoadingIcon,
     identicon,
     itemCaret,
@@ -62,6 +63,9 @@ export default {
     isGroup() {
       return this.group.type === 'group';
     },
+    isGroupPendingRemoval() {
+      return this.group.type === 'group' && this.group.pendingRemoval;
+    },
     visibilityIcon() {
       return VISIBILITY_TYPE_ICON[this.group.visibility];
     },
@@ -91,7 +95,7 @@ export default {
   <li :id="groupDomId" :class="rowClass" class="group-row" @click.stop="onClickRowGroup">
     <div
       :class="{ 'project-row-contents': !isGroup }"
-      class="group-row-contents d-flex align-items-center"
+      class="group-row-contents d-flex align-items-center py-2"
     >
       <div class="folder-toggle-wrap append-right-4 d-flex align-items-center">
         <item-caret :is-group-open="group.isOpen" />
@@ -104,7 +108,7 @@ export default {
       />
       <div
         :class="{ 'd-sm-flex': !group.isChildrenLoading }"
-        class="avatar-container rect-avatar s40 d-none flex-grow-0 flex-shrink-0 "
+        class="avatar-container rect-avatar s32 d-none flex-grow-0 flex-shrink-0 "
       >
         <a :href="group.relativePath" class="no-expand">
           <img v-if="hasAvatar" :src="group.avatarUrl" class="avatar s40" />
@@ -138,6 +142,9 @@ export default {
           <div v-if="group.description" class="description">
             <span v-html="group.description"> </span>
           </div>
+        </div>
+        <div v-if="isGroupPendingRemoval">
+          <gl-badge variant="warning">{{ __('pending removal') }}</gl-badge>
         </div>
         <div
           class="metadata align-items-md-center d-flex flex-grow-1 flex-shrink-0 flex-wrap justify-content-md-between"

@@ -1,0 +1,5 @@
+---
+title: Fix job page not loading because kuberenetes/prometheus URL is blocked
+merge_request: 24743
+author:
+type: fixed

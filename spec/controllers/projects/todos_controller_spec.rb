@@ -22,7 +22,7 @@ describe Projects::TodosController do
 
       it "doesn't create todo" do
         expect { post_create }.not_to change { user.todos.count }
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

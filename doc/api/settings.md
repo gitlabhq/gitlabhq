@@ -1,8 +1,8 @@
-# Application settings API
+# Application settings API **(CORE ONLY)**
 
 These API calls allow you to read and modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
-as appear in `/admin/application_settings`. You have to be an
+as appear in `/admin/application_settings/general`. You have to be an
 administrator in order to perform this action.
 
 ## Get current application settings
@@ -14,7 +14,7 @@ of the GitLab instance.
 GET /application/settings
 ```
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings
 ```
 
@@ -94,7 +94,7 @@ Use an API call to modify GitLab instance
 PUT /application/settings
 ```
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
 ```
 
@@ -275,7 +275,7 @@ are listed in the descriptions of the relevant settings.
 | `metrics_enabled`                        | boolean          | no                                   | (**If enabled, requires:** `metrics_host`, `metrics_method_call_threshold`, `metrics_packet_size`, `metrics_pool_size`, `metrics_port`, `metrics_sample_interval` and `metrics_timeout`) Enable influxDB metrics. |
 | `metrics_host`                           | string           | required by: `metrics_enabled`       | InfluxDB host. |
 | `metrics_method_call_threshold`          | integer          | required by: `metrics_enabled`       | A method call is only tracked when it takes longer than the given amount of milliseconds. |
-| `metrics_packet_size`                    | integer          | required by: `metrics_enabled`       | The amount of datapoints to send in a single UDP packet. |
+| `metrics_packet_size`                    | integer          | required by: `metrics_enabled`       | The amount of data points to send in a single UDP packet. |
 | `metrics_pool_size`                      | integer          | required by: `metrics_enabled`       | The amount of InfluxDB connections to keep open. |
 | `metrics_port`                           | integer          | required by: `metrics_enabled`       | The UDP port to use for connecting to InfluxDB. |
 | `metrics_sample_interval`                | integer          | required by: `metrics_enabled`       | The sampling interval in seconds. |
@@ -294,7 +294,7 @@ are listed in the descriptions of the relevant settings.
 | `plantuml_enabled`                       | boolean          | no                                   | (**If enabled, requires:** `plantuml_url`) Enable PlantUML integration. Default is `false`. |
 | `plantuml_url`                           | string           | required by: `plantuml_enabled`      | The PlantUML instance URL for integration. |
 | `polling_interval_multiplier`            | decimal          | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
-| `deletion_adjourned_period`      | integer          | no                                   | **(PREMIUM ONLY)** How many days after marking project for deletion it is actually removed. Value between 0 and 90.
+| `deletion_adjourned_period`      | integer          | no                                   | **(PREMIUM ONLY)** The number of days to wait before removing a project or group that is marked for deletion. Value must be between 0 and 90.
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | Environment variables are protected by default. |
@@ -330,7 +330,7 @@ are listed in the descriptions of the relevant settings.
 | `snowplow_iglu_registry_url`             | string           | no                                   | The Snowplow base Iglu Schema Registry URL to use for custom context and self describing events'|
 | `sourcegraph_enabled`                    | boolean          | no                                    | Enables Sourcegraph integration. Default is `false`. **If enabled, requires** `sourcegraph_url`. |
 | `sourcegraph_url`                        | string           | required by: `sourcegraph_enabled`    | The Sourcegraph instance URL for integration. |
-| `sourcegraph_public_only`                | boolean          | no                                   | Blocks Sourcegraph from being loaded on private and internal projects. Defaul is `true`. |
+| `sourcegraph_public_only`                | boolean          | no                                   | Blocks Sourcegraph from being loaded on private and internal projects. Default is `true`. |
 | `terminal_max_session_time`              | integer          | no                                   | Maximum time for web terminal websocket connection (in seconds). Set to `0` for unlimited time. |
 | `terms`                                  | text             | required by: `enforce_terms`         | (**Required by:** `enforce_terms`) Markdown content for the ToS. |
 | `throttle_authenticated_api_enabled`     | boolean          | no                                   | (**If enabled, requires:** `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (e.g. from crawlers or abusive bots). |
@@ -345,7 +345,7 @@ are listed in the descriptions of the relevant settings.
 | `time_tracking_limit_to_hours`           | boolean          | no                                   | Limit display of time tracking units to hours. Default is `false`. |
 | `two_factor_grace_period`                | integer          | required by: `require_two_factor_authentication` | Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication. |
 | `unique_ips_limit_enabled`               | boolean          | no                                   | (**If enabled, requires:** `unique_ips_limit_per_user` and `unique_ips_limit_time_window`) Limit sign in from multiple ips. |
-| `unique_ips_limit_per_user`              | integer          | required by: `unique_ips_limit_enabled` | Maximum number of ips per user. |
+| `unique_ips_limit_per_user`              | integer          | required by: `unique_ips_limit_enabled` | Maximum number of IPs per user. |
 | `unique_ips_limit_time_window`           | integer          | required by: `unique_ips_limit_enabled` | How many seconds an IP will be counted towards the limit. |
 | `usage_ping_enabled`                     | boolean          | no                                   | Every week GitLab will report license usage back to GitLab, Inc. |
 | `user_default_external`                  | boolean          | no                                   | Newly registered users will be external by default. |

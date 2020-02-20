@@ -9,7 +9,7 @@ class ProjectPolicy < BasePolicy
     merge_request
     label
     milestone
-    project_snippet
+    snippet
     wiki
     note
     pipeline
@@ -185,7 +185,7 @@ class ProjectPolicy < BasePolicy
     enable :read_issue
     enable :read_label
     enable :read_milestone
-    enable :read_project_snippet
+    enable :read_snippet
     enable :read_project_member
     enable :read_note
     enable :create_project
@@ -208,7 +208,7 @@ class ProjectPolicy < BasePolicy
     enable :download_code
     enable :read_statistics
     enable :download_wiki_code
-    enable :create_project_snippet
+    enable :create_snippet
     enable :update_issue
     enable :reopen_issue
     enable :admin_issue
@@ -222,6 +222,7 @@ class ProjectPolicy < BasePolicy
     enable :read_deployment
     enable :read_merge_request
     enable :read_sentry_issue
+    enable :update_sentry_issue
     enable :read_prometheus
   end
 
@@ -285,8 +286,8 @@ class ProjectPolicy < BasePolicy
   rule { can?(:maintainer_access) }.policy do
     enable :admin_board
     enable :push_to_delete_protected_branch
-    enable :update_project_snippet
-    enable :admin_project_snippet
+    enable :update_snippet
+    enable :admin_snippet
     enable :admin_project_member
     enable :admin_note
     enable :admin_wiki
@@ -351,7 +352,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { snippets_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:project_snippet))
+    prevent(*create_read_update_admin_destroy(:snippet))
   end
 
   rule { wiki_disabled }.policy do
@@ -369,7 +370,7 @@ class ProjectPolicy < BasePolicy
 
   # There's two separate cases when builds_disabled is true:
   # 1. When internal CI is disabled - builds_disabled && internal_builds_disabled
-  #   - We do not prevent the user from accessing Pipelines to allow him to access external CI
+  #   - We do not prevent the user from accessing Pipelines to allow them to access external CI
   # 2. When the user is not allowed to access CI - builds_disabled && ~internal_builds_disabled
   #   - We prevent the user from accessing Pipelines
   rule { (builds_disabled & ~internal_builds_disabled) | repository_disabled }.policy do
@@ -404,7 +405,7 @@ class ProjectPolicy < BasePolicy
     enable :read_wiki
     enable :read_label
     enable :read_milestone
-    enable :read_project_snippet
+    enable :read_snippet
     enable :read_project_member
     enable :read_merge_request
     enable :read_note
@@ -514,6 +515,8 @@ class ProjectPolicy < BasePolicy
   end
 
   def lookup_access_level!
+    return ::Gitlab::Access::REPORTER if alert_bot?
+
     # NOTE: max_member_access has its own cache
     project.team.max_member_access(@user.id)
   end

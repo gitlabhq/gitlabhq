@@ -17,7 +17,7 @@ GET /projects/:id/boards
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards
 ```
 
@@ -92,7 +92,7 @@ GET /projects/:id/boards/:board_id
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards/1
 ```
 
@@ -166,7 +166,7 @@ POST /projects/:id/boards
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the new board |
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards?name=newboard
 ```
 
@@ -247,7 +247,7 @@ PUT /projects/:id/boards/:board_id
 | `labels`            | string         | no       | Comma-separated list of label names which the board should be scoped to |
 | `weight`            | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards/1?name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4
 ```
 
@@ -321,7 +321,7 @@ DELETE /projects/:id/boards/:board_id
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards/1
 ```
 
@@ -339,7 +339,7 @@ GET /projects/:id/boards/:board_id/lists
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards/1/lists
 ```
 
@@ -397,7 +397,7 @@ GET /projects/:id/boards/:board_id/lists/:list_id
 | `board_id` | integer | yes | The ID of a board |
 | `list_id`| integer | yes | The ID of a board's list |
 
-```bash
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1
 ```
 
@@ -439,7 +439,7 @@ that is, only one of them are accepted in a request.
 Check the [Issue Board docs](../user/project/issue_board.md#summary-of-features-per-tier)
 for more information regarding the required license for each list type.
 
-```bash
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards/1/lists?label_id=5
 ```
 
@@ -474,7 +474,7 @@ PUT /projects/:id/boards/:board_id/lists/:list_id
 | `list_id` | integer | yes | The ID of a board's list |
 | `position` | integer | yes | The position of the list |
 
-```bash
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1?position=2
 ```
 
@@ -508,8 +508,8 @@ DELETE /projects/:id/boards/:board_id/lists/:list_id
 | `board_id` | integer | yes | The ID of a board |
 | `list_id` | integer | yes | The ID of a board's list |
 
-```bash
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1
 ```
 
-[ee-5954]: https://gitlab.com/gitlab-org/gitlab/merge_requests/5954
+[ee-5954]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5954

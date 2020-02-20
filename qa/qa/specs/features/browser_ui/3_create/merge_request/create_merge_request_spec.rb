@@ -14,7 +14,7 @@ module QA
         @merge_request_description = '... to find them, to bring them all, and in the darkness bind them'
       end
 
-      it 'creates a basic merge request', :smoke do
+      it 'creates a basic merge request' do
         Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|
           merge_request.project = @project
           merge_request.title = @merge_request_title
@@ -32,7 +32,6 @@ module QA
 
         milestone = Resource::ProjectMilestone.fabricate_via_api! do |milestone|
           milestone.project = @project
-          milestone.title = 'milestone'
         end
 
         label = Resource::Label.fabricate_via_api! do |label|

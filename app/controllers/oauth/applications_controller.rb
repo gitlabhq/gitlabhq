@@ -8,8 +8,12 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include Gitlab::Experimentation::ControllerConcern
   include InitializesCurrentUserMode
 
-  before_action :verify_user_oauth_applications_enabled, except: :index
-  before_action :authenticate_user!
+  # Defined by the `Doorkeeper::ApplicationsController` and is redundant as we call `authenticate_user!` below. Not
+  # defining or skipping this will result in a `403` response to all requests.
+  skip_before_action :authenticate_admin!
+
+  prepend_before_action :verify_user_oauth_applications_enabled, except: :index
+  prepend_before_action :authenticate_user!
   before_action :add_gon_variables
   before_action :load_scopes, only: [:index, :create, :edit, :update]
 

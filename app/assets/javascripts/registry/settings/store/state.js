@@ -8,6 +8,10 @@ export default () => ({
    */
   isLoading: false,
   /*
+   * Boolean to determine if the user is allowed to interact with the form
+   */
+  isDisabled: false,
+  /*
    * This contains the data shown and manipulated in the UI
    * Has the following structure:
    * {

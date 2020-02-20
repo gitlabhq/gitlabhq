@@ -30,4 +30,4 @@ Disabling migrations requires explicit approval of Database Maintainer.
 
 ## Examples
 
-- [Disable scheduling of productivity analytics](https://gitlab.com/gitlab-org/gitlab/merge_requests/17253)
+- [Disable scheduling of productivity analytics](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17253)

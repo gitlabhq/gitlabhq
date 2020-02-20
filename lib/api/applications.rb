@@ -14,6 +14,9 @@ module API
         requires :name, type: String, desc: 'Application name'
         requires :redirect_uri, type: String, desc: 'Application redirect URI'
         requires :scopes, type: String, desc: 'Application scopes'
+
+        optional :confidential, type: Boolean, default: true,
+          desc: 'Application will be used where the client secret is confidential'
       end
       post do
         application = Doorkeeper::Application.new(declared_params)

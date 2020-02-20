@@ -31,6 +31,11 @@ describe MergeRequests::MergeService do
       it { expect(merge_request).to be_valid }
       it { expect(merge_request).to be_merged }
 
+      it 'persists merge_commit_sha and nullifies in_progress_merge_commit_sha' do
+        expect(merge_request.merge_commit_sha).not_to be_nil
+        expect(merge_request.in_progress_merge_commit_sha).to be_nil
+      end
+
       it 'sends email to user2 about merge of new merge_request' do
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)

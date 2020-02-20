@@ -183,6 +183,31 @@ describe Label do
     end
   end
 
+  describe '.top_labels_by_target' do
+    let(:label) { create(:label) }
+    let(:popular_label) { create(:label) }
+    let(:merge_request1) { create(:merge_request) }
+    let(:merge_request2) { create(:merge_request) }
+
+    before do
+      merge_request1.labels = [label, popular_label]
+      merge_request2.labels = [popular_label]
+    end
+
+    it 'returns distinct labels, ordered by usage in the given target relation' do
+      top_labels = described_class.top_labels_by_target(MergeRequest.all)
+
+      expect(top_labels).to match_array([popular_label, label])
+    end
+
+    it 'excludes labels that are not assigned to any records in the given target relation' do
+      merge_requests = MergeRequest.where(id: merge_request2.id)
+      top_labels = described_class.top_labels_by_target(merge_requests)
+
+      expect(top_labels).to match_array([popular_label])
+    end
+  end
+
   describe '.optionally_subscribed_by' do
     let!(:user)   { create(:user) }
     let!(:label)  { create(:label) }

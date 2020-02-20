@@ -5,18 +5,19 @@ module API
     include PaginationParams
 
     helpers Helpers::ProjectsHelpers
+    helpers Helpers::FileUploadHelpers
 
     helpers do
       def import_params
         declared_params(include_missing: false)
       end
 
-      def file_is_valid?
-        import_params[:file] && import_params[:file]['tempfile'].respond_to?(:read)
+      def throttled?(key, scope)
+        rate_limiter.throttled?(key, scope: scope)
       end
 
-      def validate_file!
-        render_api_error!('The file is invalid', 400) unless file_is_valid?
+      def rate_limiter
+        ::Gitlab::ApplicationRateLimiter
       end
     end
 
@@ -43,6 +44,14 @@ module API
         success Entities::ProjectImportStatus
       end
       post 'import' do
+        key = "project_import".to_sym
+
+        if throttled?(key, [current_user, key])
+          rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
+
+          render_api_error!({ error: _('This endpoint has been requested too many times. Try again later.') }, 429)
+        end
+
         validate_file!
 
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42437')

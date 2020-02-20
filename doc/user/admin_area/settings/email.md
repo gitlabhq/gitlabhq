@@ -22,12 +22,12 @@ legal/auditing/compliance reasons.
 1. Enter your text in the **Additional text** field.
 1. Click **Save**.
 
-[ee-5031]: https://gitlab.com/gitlab-org/gitlab/merge_requests/5031
+[ee-5031]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5031
 [eep]: https://about.gitlab.com/pricing/
 
 ## Custom hostname for private commit emails
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22560) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22560) in GitLab 11.5.
 
 This configuration option sets the email hostname for [private commit emails](../../profile/index.md#private-commit-email).
  By default it is set to `users.noreply.YOUR_CONFIGURED_HOSTNAME`.

@@ -384,6 +384,14 @@ describe MergeRequests::RefreshService do
       end
 
       context 'open fork merge request' do
+        it 'calls MergeRequests::LinkLfsObjectsService#execute' do
+          expect_next_instance_of(MergeRequests::LinkLfsObjectsService) do |svc|
+            expect(svc).to receive(:execute).with(@fork_merge_request, oldrev: @oldrev, newrev: @newrev)
+          end
+
+          refresh
+        end
+
         it 'executes hooks with update action' do
           refresh
 

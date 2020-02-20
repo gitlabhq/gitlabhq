@@ -1,6 +1,6 @@
 # Importing issues from CSV
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23532) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23532) in GitLab 11.7.
 
 Issues can be imported to a project by uploading a CSV file with the columns
 `title` and `description`, in that order.

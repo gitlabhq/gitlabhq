@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Gitlab::Application do # rubocop:disable RSpec/FilePath
   using RSpec::Parameterized::TableSyntax
 
-  FILTERED_PARAM = ActionDispatch::Http::ParameterFilter::FILTERED
+  FILTERED_PARAM = ActiveSupport::ParameterFilter::FILTERED
 
   context 'when parameters are logged' do
     describe 'rails does not leak confidential parameters' do

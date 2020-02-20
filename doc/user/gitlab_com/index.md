@@ -19,7 +19,7 @@ Below are the fingerprints for GitLab.com's SSH host keys.
 Add the following to `.ssh/known_hosts` to skip manual fingerprint
 confirmation in SSH:
 
-```
+```plaintext
 gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf
 gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9
 gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=
@@ -41,7 +41,7 @@ GitLab.com can be reached via a [different SSH port][altssh] for `git+ssh`.
 
 An example `~/.ssh/config` is the following:
 
-```
+```plaintext
 Host gitlab.com
   Hostname altssh.gitlab.com
   User git
@@ -75,6 +75,7 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 | Artifacts maximum size (uncompressed) | 1G                | 100M          |
 | Artifacts [expiry time](../../ci/yaml/README.md#artifactsexpire_in)   | kept forever           | deleted after 30 days unless otherwise specified    |
 | Scheduled Pipeline Cron | `*/5 * * * *` | `*/19 * * * *` |
+| [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited
 
 ## Repository size limit
 
@@ -95,7 +96,11 @@ IP based firewall can be configured by looking up all
 
 ## Shared Runners
 
-Shared Runners on GitLab.com run in [autoscale mode] and powered by Google Cloud Platform.
+GitLab offers Linux and Windows shared runners hosted on GitLab.com for executing your pipelines.
+
+### Linux Shared Runners
+
+Linux Shared Runners on GitLab.com run in [autoscale mode] and are powered by Google Cloud Platform.
 Autoscaling means reduced waiting times to spin up CI/CD jobs, and isolated VMs for each project,
 thus maximizing security. They're free to use for public open source projects and limited
 to 2000 CI minutes per month per group for private projects. More minutes
@@ -122,9 +127,12 @@ Below are the shared Runners settings.
 | Default Docker image                  | `ruby:2.5`                                        | -          |
 | `privileged` (run [Docker in Docker]) | `true`                                            | `false`    |
 
-### `config.toml`
+#### `config.toml`
 
 The full contents of our `config.toml` are:
+
+NOTE: **Note:**
+Settings that are not public are shown as `X`.
 
 **Google Cloud Platform**
 
@@ -183,6 +191,160 @@ sentry_dsn = "X"
       CredentialsFile = "/path/to/file"
       BucketName = "bucket-name"
 ```
+
+### Windows Shared Runners (beta)
+
+The Windows Shared Runners are currently in
+[beta](https://about.gitlab.com/handbook/product/#beta) and should not be used
+for production workloads.
+
+During the beta period, the
+[shared runner pipeline quota](../admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota-starter-only)
+will apply for groups and projects in the same way as Linux Runners.
+This may change when the beta period ends, as discussed in this
+[related issue](https://gitlab.com/gitlab-org/gitlab/issues/30834).
+
+Windows Shared Runners on GitLab.com automatically autoscale by
+launching virtual machines on the Google Cloud Platform. This solution uses
+a new [autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/tree/master/docs/readme.md)
+developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
+Windows Shared Runners execute your CI/CD jobs on `n1-standard-2` instances with 2
+vCPUs and 7.5GB RAM. You can find a full list of available Windows packages in the
+[package documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/master/cookbooks/preinstalled-software/README.md).
+
+We want to keep iterating to get Windows Shared Runners in a stable state and
+[generally available](https://about.gitlab.com/handbook/product/#generally-available-ga).
+You can follow our work towards this goal in the
+[related epic](https://gitlab.com/groups/gitlab-org/-/epics/2162).
+
+#### Configuration
+
+The full contents of our `config.toml` are:
+
+NOTE: **Note:**
+Settings that are not public are shown as `X`.
+
+```toml
+concurrent = X
+check_interval = 3
+
+[[runners]]
+  name = "windows-runner"
+  url = "https://gitlab.com/"
+  token = "TOKEN"
+  executor = "custom"
+  builds_dir = "C:\\GitLab-Runner\\builds"
+  cache_dir = "C:\\GitLab-Runner\\cache"
+  shell  = "powershell"
+  [runners.custom]
+    config_exec = "C:\\GitLab-Runner\\autoscaler\\autoscaler.exe"
+    config_args = ["--config", "C:\\GitLab-Runner\\autoscaler\\config.toml", "custom", "config"]
+    prepare_exec = "C:\\GitLab-Runner\\autoscaler\\autoscaler.exe"
+    prepare_args = ["--config", "C:\\GitLab-Runner\\autoscaler\\config.toml", "custom", "prepare"]
+    run_exec = "C:\\GitLab-Runner\\autoscaler\\autoscaler.exe"
+    run_args = ["--config", "C:\\GitLab-Runner\\autoscaler\\config.toml", "custom", "run"]
+    cleanup_exec = "C:\\GitLab-Runner\\autoscaler\\autoscaler.exe"
+    cleanup_args = ["--config", "C:\\GitLab-Runner\\autoscaler\\config.toml", "custom", "cleanup"]
+```
+
+The full contents of our `autoscaler/config.toml` are:
+
+```toml
+Provider = "gcp"
+Executor = "winrm"
+OS = "windows"
+LogLevel = "info"
+LogFormat = "text"
+LogFile = "C:\\GitLab-Runner\\autoscaler\\autoscaler.log"
+VMTag = "windows"
+
+[GCP]
+  ServiceAccountFile = "PATH"
+  Project = "some-project-df9323"
+  Zone = "us-east1-c"
+  MachineType = "n1-standard-2"
+  Image = "IMAGE"
+  DiskSize = 50
+  DiskType = "pd-standard"
+  Subnetwork = "default"
+  Network = "default"
+  Tags = ["TAGS"]
+  Username = "gitlab_runner"
+
+[WinRM]
+  MaximumTimeout = 3600
+  ExecutionMaxRetries = 0
+
+[ProviderCache]
+  Enabled = true
+  Directory = "C:\\GitLab-Runner\\autoscaler\\machines"
+```
+
+#### Example
+
+Below is a simple `.gitlab-ci.yml` file to show how to start using the
+Windows Shared Runners:
+
+```yaml
+.shared_windows_runners:
+  tags:
+  - shared-windows
+  - windows
+  - windows-1809
+
+stages:
+  - build
+  - test
+
+before_script:
+ - Set-Variable -Name "time" -Value (date -Format "%H:%m")
+ - echo ${time}
+ - echo "started by ${GITLAB_USER_NAME}"
+
+build:
+  extends:
+  - .shared_windows_runners
+  stage: build
+  script:
+  - echo "running scripts in the build job"
+
+test:
+  extends:
+  - .shared_windows_runners
+  stage: test
+  script:
+  - echo "running scripts in the test job"
+```
+
+#### Limitations and known issues
+
+- All the limitations mentioned in our [beta
+  definition](https://about.gitlab.com/handbook/product/#beta).
+- The average provisioning time for a new Windows VM is 5 minutes.
+  This means that you may notice slower build start times
+  on the Windows Shared Runner fleet during the beta. In a future
+  release we will update the autoscaler to enable
+  the pre-provisioning of virtual machines. This will significantly reduce
+  the time it takes to provision a VM on the Windows fleet. You can
+  follow along in the [related issue](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/issues/32).
+- The Windows Shared Runner fleet may be unavailable occasionally
+  for maintenance or updates.
+- The Windows Shared Runner virtual machine instances do not use the
+  GitLab Docker executor. This means that you will not be able to specify
+  [`image`](../../ci/yaml/README.md#image) or [`services`](../../ci/yaml/README.md#services) in
+  your pipeline configuration.
+- For the beta release, we have included a set of software packages in
+  the base VM image. If your CI job requires additional software that's
+  not included in this list, then you will need to add installation
+  commands to [`before_script`](../../ci/yaml/README.md#before_script-and-after_script) or [`script`](../../ci/yaml/README.md#script) to install the required
+  software. Note that each job runs on a new VM instance, so the
+  installation of additional software packages needs to be repeated for
+  each job in your pipeline.
+- The job may stay in a pending state for longer than the
+  Linux shared Runners.
+- There is the possibility that we introduce breaking changes which will
+  require updates to pipelines that are using the Windows Shared Runner
+  fleet.
 
 ## Sidekiq
 
@@ -298,7 +460,7 @@ per second per IP address.
 
 The following example headers are included for all API requests:
 
-```
+```plaintext
 RateLimit-Limit: 600
 RateLimit-Observed: 6
 RateLimit-Remaining: 594
@@ -324,7 +486,7 @@ user confirmation, user sign in, and password reset.
 
 This header is included in responses to blocked requests:
 
-```
+```plaintext
 Retry-After: 60
 ```
 

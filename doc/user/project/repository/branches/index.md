@@ -66,7 +66,7 @@ To compare branches in a repository:
 
 ## Delete merged branches
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/6449) in GitLab 8.14.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6449) in GitLab 8.14.
 
 ![Delete merged branches](img/delete_merged_branches.png)
 
@@ -79,7 +79,7 @@ automatically when a merge request was merged.
 
 ## Branch filter search box
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22166) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22166) in GitLab 11.5.
 
 ![Branch filter search box](img/branch_filter_search_box.png)
 

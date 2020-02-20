@@ -191,16 +191,81 @@ describe Projects::ServicesController do
         end
       end
     end
+
+    context 'Prometheus service' do
+      let!(:service) { create(:prometheus_service, project: project) }
+      let(:service_params) { { manual_configuration: '1', api_url: 'http://example.com' } }
+
+      context 'feature flag :settings_operations_prometheus_service is enabled' do
+        before do
+          stub_feature_flags(settings_operations_prometheus_service: true)
+        end
+
+        it 'redirects user back to edit page with alert' do
+          put :update, params: project_params.merge(service: service_params)
+
+          expect(response).to redirect_to(edit_project_service_path(project, service))
+          expected_alert = "You can now manage your Prometheus settings on the <a href=\"#{project_settings_operations_path(project)}\">Operations</a> page. Fields on this page has been deprecated."
+
+          expect(response).to set_flash.now[:alert].to(expected_alert)
+        end
+
+        it 'does not modify service' do
+          expect { put :update, params: project_params.merge(service: service_params) }.not_to change { project.prometheus_service.reload.attributes }
+        end
+      end
+
+      context 'feature flag :settings_operations_prometheus_service is disabled' do
+        before do
+          stub_feature_flags(settings_operations_prometheus_service: false)
+        end
+
+        it 'modifies service' do
+          expect { put :update, params: project_params.merge(service: service_params) }.to change { project.prometheus_service.reload.attributes }
+        end
+      end
+    end
   end
 
   describe 'GET #edit' do
-    before do
-      get :edit, params: project_params(id: 'jira')
+    context 'Jira service' do
+      let(:service_param) { 'jira' }
+
+      before do
+        get :edit, params: project_params(id: service_param)
+      end
+
+      context 'with approved services' do
+        it 'renders edit page' do
+          expect(response).to be_successful
+        end
+      end
     end
 
-    context 'with approved services' do
-      it 'renders edit page' do
-        expect(response).to be_successful
+    context 'Prometheus service' do
+      let(:service_param) { 'prometheus' }
+
+      context 'feature flag :settings_operations_prometheus_service is enabled' do
+        before do
+          stub_feature_flags(settings_operations_prometheus_service: true)
+          get :edit, params: project_params(id: service_param)
+        end
+
+        it 'renders deprecation warning notice' do
+          expected_alert = "You can now manage your Prometheus settings on the <a href=\"#{project_settings_operations_path(project)}\">Operations</a> page. Fields on this page has been deprecated."
+          expect(response).to set_flash.now[:alert].to(expected_alert)
+        end
+      end
+
+      context 'feature flag :settings_operations_prometheus_service is disabled' do
+        before do
+          stub_feature_flags(settings_operations_prometheus_service: false)
+          get :edit, params: project_params(id: service_param)
+        end
+
+        it 'does not render deprecation warning notice' do
+          expect(response).not_to set_flash.now[:alert]
+        end
       end
     end
   end

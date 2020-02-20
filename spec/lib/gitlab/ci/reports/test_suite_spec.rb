@@ -74,6 +74,15 @@ describe Gitlab::Ci::Reports::TestSuite do
 
       it { is_expected.to eq(Gitlab::Ci::Reports::TestCase::STATUS_FAILED) }
     end
+
+    context 'when a test case errored' do
+      before do
+        test_suite.add_test_case(test_case_success)
+        test_suite.add_test_case(test_case_error)
+      end
+
+      it { is_expected.to eq(Gitlab::Ci::Reports::TestCase::STATUS_FAILED) }
+    end
   end
 
   Gitlab::Ci::Reports::TestCase::STATUS_TYPES.each do |status_type|

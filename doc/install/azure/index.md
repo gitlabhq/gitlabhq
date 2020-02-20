@@ -105,7 +105,7 @@ ahead and select this one, but please choose the size which best meets your own 
 
 ![Azure - Create Virtual Machine - Size](img/azure-create-virtual-machine-size.png)
 
-> **Note:** be aware that whilst your VM is active (known as "allocated"), it will incur
+> **Note:** be aware that while your VM is active (known as "allocated"), it will incur
 "compute charges" which, ultimately, you will be billed for. So, even if you're using the
 free trial credits, you'll likely want to learn
 [how to properly shutdown an Azure VM to save money](https://buildazure.com/properly-shutdown-azure-vm-to-save-money/).
@@ -348,7 +348,7 @@ Again, remember that your Azure VM domain name will be the one you
 [set up previously in the tutorial](#set-up-a-domain-name). If you didn't set up a domain name for
 your VM, you can use the IP address in its place in the following command:
 
-```bash
+```shell
 ssh username@your-azure-domain-name.com
 ```
 
@@ -364,7 +364,7 @@ read on [using PuTTY in Windows][Using-SSH-In-Putty].
 Once you've logged in via SSH, enter the following command to update GitLab to the latest
 version:
 
-```bash
+```shell
 sudo apt-get update && sudo apt-get install gitlab-ce
 ```
 

@@ -12,7 +12,6 @@ describe API::Commits do
   let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
   let(:branch_with_dot) { project.repository.find_branch('ends-with.json') }
   let(:branch_with_slash) { project.repository.find_branch('improve/awesome') }
-
   let(:project_id) { project.id }
   let(:current_user) { nil }
 
@@ -238,6 +237,62 @@ describe API::Commits do
             expect(json_response.size).to eq(per_page)
             expect(json_response.first['id']).to eq(commit.id)
             expect(response.headers['X-Page']).to eq('3')
+          end
+        end
+      end
+
+      context 'with order parameter' do
+        let(:route) { "/projects/#{project_id}/repository/commits?ref_name=0031876&per_page=6&order=#{order}" }
+
+        context 'set to topo' do
+          let(:order) { 'topo' }
+
+          # git log --graph -n 6 --pretty=format:"%h" --topo-order 0031876
+          # *   0031876
+          # |\
+          # | * 48ca272
+          # | * 335bc94
+          # * | bf6e164
+          # * | 9d526f8
+          # |/
+          # * 1039376
+          it 'returns project commits ordered by topo order' do
+            commits = project.repository.commits("0031876", limit: 6, order: 'topo')
+
+            get api(route, current_user)
+
+            expect(json_response.size).to eq(6)
+            expect(json_response.map { |entry| entry["id"] }).to eq(commits.map(&:id))
+          end
+        end
+
+        context 'set to default' do
+          let(:order) { 'default' }
+
+          # git log --graph -n 6 --pretty=format:"%h" --date-order 0031876
+          # *   0031876
+          # |\
+          # * | bf6e164
+          # | * 48ca272
+          # * | 9d526f8
+          # | * 335bc94
+          # |/
+          # * 1039376
+          it 'returns project commits ordered by default order' do
+            commits = project.repository.commits("0031876", limit: 6, order: 'default')
+
+            get api(route, current_user)
+
+            expect(json_response.size).to eq(6)
+            expect(json_response.map { |entry| entry["id"] }).to eq(commits.map(&:id))
+          end
+        end
+
+        context 'set to an invalid parameter' do
+          let(:order) { 'invalid' }
+
+          it_behaves_like '400 response' do
+            let(:request) { get api(route, current_user) }
           end
         end
       end
