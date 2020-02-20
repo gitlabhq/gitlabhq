@@ -62,6 +62,8 @@ module ApplicationSettingImplementation
         eks_account_id: nil,
         eks_access_key_id: nil,
         eks_secret_access_key: nil,
+        email_restrictions_enabled: false,
+        email_restrictions: nil,
         first_day_of_week: 0,
         gitaly_timeout_default: 55,
         gitaly_timeout_fast: 10,

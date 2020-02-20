@@ -33,7 +33,7 @@ to original issue and epic.
 and those maintaining a GitLab setup.
 
 Any change submitted can have an impact not only on the application itself but
-also those maintaining it and those keeping it up and running (e.g. production
+also those maintaining it and those keeping it up and running (for example, production
 engineers). As a result you should think carefully about the impact of your
 merge request on not only the application but also on the people keeping it up
 and running.
@@ -85,34 +85,34 @@ the following:
 1. Is there something that we can do differently to not process such a
    big data set?
 1. Should we build some fail-safe mechanism to contain
-   computational complexity? Usually it is better to degrade
+   computational complexity? Usually it's better to degrade
    the service for a single user instead of all users.
 
 ## Query plans and database structure
 
-The query plan can answer the questions whether we need additional
-indexes, or whether we perform expensive filtering (i.e. using sequential scans).
+The query plan can tell us if we will need additional
+indexes, or expensive filtering (such as using sequential scans).
 
 Each query plan should be run against substantial size of data set.
-For example if you look for issues with specific conditions,
-you should consider validating the query against
+For example, if you look for issues with specific conditions,
+you should consider validating a query against
 a small number (a few hundred) and a big number (100_000) of issues.
 See how the query will behave if the result will be a few
 and a few thousand.
 
 This is needed as we have users using GitLab for very big projects and
-in a very unconventional way. Even, if it seems that it is unlikely
-that such big data set will be used, it is still plausible that one
-of our customers will have the problem with the feature.
+in a very unconventional way. Even if it seems that it's unlikely
+that such a big data set will be used, it's still plausible that one
+of our customers will encounter a problem with the feature.
 
-Understanding ahead of time how it is going to behave at scale even if we accept it,
-is the desired outcome. We should always have a plan or understanding what it takes
-to optimise feature to the magnitude of higher usage patterns.
+Understanding ahead of time how it's going to behave at scale, even if we accept it,
+is the desired outcome. We should always have a plan or understanding of what it will take
+to optimize the feature for higher usage patterns.
 
-Every database structure should be optimised and sometimes even over-described
-to be prepared to be easily extended. The hardest part after some point is
+Every database structure should be optimized and sometimes even over-described
+in preparation for easy extension. The hardest part after some point is
 data migration. Migrating millions of rows will always be troublesome and
-can have negative impact on application.
+can have a negative impact on the application.
 
 To better understand how to get help with the query plan reviews
 read this section on [how to prepare the merge request for a database review](https://docs.gitlab.com/ee/development/database_review.html#how-to-prepare-the-merge-request-for-a-database-review).
@@ -167,14 +167,14 @@ be clearly mentioned in the merge request description.
 
 ## Batch process
 
-**Summary:** Iterating a single process to external services (e.g. PostgreSQL, Redis, Object Storage, etc)
+**Summary:** Iterating a single process to external services (for example, PostgreSQL, Redis, Object Storage)
 should be executed in a **batch-style** in order to reduce connection overheads.
 
 For fetching rows from various tables in a batch-style, please see [Eager Loading](#eager-loading) section.
 
 ### Example: Delete multiple files from Object Storage
 
-When you delete multiple files from object storage (e.g. GCS),
+When you delete multiple files from object storage, like GCS,
 executing a single REST API call multiple times is a quite expensive
 process. Ideally, this should be done in a batch-style, for example, S3 provides
 [batch deletion API](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObjects.html),
@@ -187,12 +187,12 @@ in a batch style.
 ## Timeout
 
 **Summary:** You should set a reasonable timeout when the system invokes HTTP calls
-to external services (e.g. Kubernetes), and it should be executed in Sidekiq, not
+to external services (such as Kubernetes), and it should be executed in Sidekiq, not
 in Puma/Unicorn threads.
 
 Often, GitLab needs to communicate with an external service such as Kubernetes
 clusters. In this case, it's hard to estimate when the external service finishes
-the requested process, for example, if it's a user-owned cluster that is inactive for some reason,
+the requested process, for example, if it's a user-owned cluster that's inactive for some reason,
 GitLab might wait for the response forever ([Example](https://gitlab.com/gitlab-org/gitlab/issues/31475)).
 This could result in Puma/Unicorn timeout and should be avoided at all cost.
 
@@ -203,7 +203,7 @@ Using [`ReactiveCaching`](https://docs.gitlab.com/ee/development/utilities.html#
 
 ## Keep database transaction minimal
 
-**Summary:** You should avoid accessing to external services (e.g. Gitaly) during database
+**Summary:** You should avoid accessing to external services like Gitaly during database
 transactions, otherwise it leads to severe contention problems
 as an open transaction basically blocks the release of a Postgres backend connection.
 
@@ -247,14 +247,14 @@ necessary.
 
 A merge request must not increase the memory usage of GitLab by more than the
 absolute bare minimum required by the code. This means that if you have to parse
-some large document (e.g. an HTML document) it's best to parse it as a stream
+some large document (for example, an HTML document) it's best to parse it as a stream
 whenever possible, instead of loading the entire input into memory. Sometimes
 this isn't possible, in that case this should be stated explicitly in the merge
 request.
 
 ## Lazy Rendering of UI Elements
 
-**Summary:** only render UI elements when they're actually needed.
+**Summary:** only render UI elements when they are actually needed.
 
 Certain UI elements may not always be needed. For example, when hovering over a
 diff line there's a small icon displayed that can be used to create a new
@@ -284,7 +284,7 @@ data should be cached for a certain time period instead of the duration of the
 transaction.
 
 For example, say you process multiple snippets of text containing username
-mentions (e.g. `Hello @alice` and `How are you doing @alice?`). By caching the
+mentions (for example, `Hello @alice` and `How are you doing @alice?`). By caching the
 user objects for every username we can remove the need for running the same
 query for every mention of `@alice`.
 
@@ -304,7 +304,7 @@ The main styles of pagination are:
    and the total number of pages. This style is well supported by all components of GitLab.
 1. Offset-based pagination, but without the count: user goes to a specific page, like 1.
    User sees only the next page number, but does not see the total amount of pages.
-1. Next page using keyset-based pagination: user can only go to next page, as we do not know how many pages
+1. Next page using keyset-based pagination: user can only go to next page, as we don't know how many pages
    are available.
 1. Infinite scrolling pagination: user scrolls the page and next items are loaded asynchronously. This is ideal,
    as it has exact same benefits as the previous one.
@@ -316,20 +316,20 @@ can follow the progress looking at [API: Keyset Pagination
 
 Take into consideration the following when choosing a pagination strategy:
 
-1. It is very inefficient to calculate amount of objects that pass the filtering,
+1. It's very inefficient to calculate amount of objects that pass the filtering,
    this operation usually can take seconds, and can time out,
-1. It is very inefficient to get entries for page at higher ordinals, like 1000.
+1. It's very inefficient to get entries for page at higher ordinals, like 1000.
    The database has to sort and iterate all previous items, and this operation usually
    can result in substantial load put on database.
 
 ## Badge counters
 
-Counters should always be truncated. It means that we do not want to present
+Counters should always be truncated. It means that we don't want to present
 the exact number over some threshold. The reason for that is for the cases where we want
 to calculate exact number of items, we effectively need to filter each of them for
 the purpose of knowing the exact number of items matching.
 
-From ~UX perspective it is often acceptable to see that you have over 1000+ pipelines,
+From ~UX perspective it's often acceptable to see that you have over 1000+ pipelines,
 instead of that you have 40000+ pipelines, but at a tradeoff of loading page for 2s longer.
 
 An example of this pattern is the list of pipelines and jobs. We truncate numbers to `1000+`,
@@ -338,7 +338,7 @@ but we show an accurate number of running pipelines, which is the most interesti
 There's a helper method that can be used for that purpose - `NumbersHelper.limited_counter_with_delimiter` -
 that accepts an upper limit of counting rows.
 
-In some cases it is desired that badge counters are loaded asynchronously.
+In some cases it's desired that badge counters are loaded asynchronously.
 This can speed up the initial page load and give a better user experience overall.
 
 ## Application/misuse limits
@@ -349,9 +349,9 @@ be performant and usable for the user, but **not limiting**.
 
 **We want the features to be fully usable for the users.**
 **However, we want to ensure that the feature will continue to perform well if used at its limit**
-**and it will not cause availability issues.**
+**and it won't cause availability issues.**
 
-Consider that it is always better to start with some kind of limitation,
+Consider that it's always better to start with some kind of limitation,
 instead of later introducing a breaking change that would result in some
 workflows breaking.
 
@@ -370,9 +370,9 @@ The intent of quotas could be different:
 
 Examples:
 
-1. Pipeline Schedules: It is very unlikely that user will want to create
+1. Pipeline Schedules: It's very unlikely that user will want to create
    more than 50 schedules.
-   In such cases it is rather expected that this is either misuse
+   In such cases it's rather expected that this is either misuse
    or abuse of the feature. Lack of the upper limit can result
    in service degradation as the system will try to process all schedules
    assigned the the project.

@@ -189,6 +189,7 @@ class User < ApplicationRecord
   validate :owns_public_email, if: :public_email_changed?
   validate :owns_commit_email, if: :commit_email_changed?
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
+  validate :check_email_restrictions, on: :create, if: ->(user) { !user.created_by_id }
 
   validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
     message: _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } }
@@ -1748,6 +1749,18 @@ class User < ApplicationRecord
       escaped = Regexp.escape(domain).gsub('\*', '.*?')
       regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
       signup_domain =~ regexp
+    end
+  end
+
+  def check_email_restrictions
+    return unless Feature.enabled?(:email_restrictions)
+    return unless Gitlab::CurrentSettings.email_restrictions_enabled?
+
+    restrictions = Gitlab::CurrentSettings.email_restrictions
+    return if restrictions.blank?
+
+    if Gitlab::UntrustedRegexp.new(restrictions).match?(email)
+      errors.add(:email, _('is not allowed for sign-up'))
     end
   end
 

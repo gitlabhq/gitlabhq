@@ -633,5 +633,56 @@ describe ApplicationSetting do
     end
   end
 
+  describe 'email_restrictions' do
+    context 'when email restrictions are enabled' do
+      before do
+        subject.email_restrictions_enabled = true
+      end
+
+      it 'allows empty email restrictions' do
+        subject.email_restrictions = ''
+
+        expect(subject).to be_valid
+      end
+
+      it 'accepts valid email restrictions regex' do
+        subject.email_restrictions = '\+'
+
+        expect(subject).to be_valid
+      end
+
+      it 'does not accept invalid email restrictions regex' do
+        subject.email_restrictions = '+'
+
+        expect(subject).not_to be_valid
+      end
+
+      it 'sets an error when regex is not valid' do
+        subject.email_restrictions = '+'
+
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages[:email_restrictions].first).to eq(_('is not a valid regular expression'))
+      end
+    end
+
+    context 'when email restrictions are disabled' do
+      before do
+        subject.email_restrictions_enabled = false
+      end
+
+      it 'allows empty email restrictions' do
+        subject.email_restrictions = ''
+
+        expect(subject).to be_valid
+      end
+
+      it 'invalid regex is not valid' do
+        subject.email_restrictions = '+'
+
+        expect(subject).not_to be_valid
+      end
+    end
+  end
+
   it_behaves_like 'application settings examples'
 end

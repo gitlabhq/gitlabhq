@@ -315,7 +315,9 @@ module ApplicationSettingsHelper
       :push_event_hooks_limit,
       :push_event_activities_limit,
       :custom_http_clone_url_root,
-      :snippet_size_limit
+      :snippet_size_limit,
+      :email_restrictions_enabled,
+      :email_restrictions
     ]
   end
 

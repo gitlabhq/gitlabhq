@@ -483,34 +483,29 @@ A `serverless.yml` file is not required when deploying serverless applications.
 With all the pieces in place, the next time a CI pipeline runs, the Knative application will be deployed. Navigate to
 **CI/CD > Pipelines** and click the most recent pipeline.
 
-### Obtain the URL for the Knative deployment
+### Function details
 
-Go to the **CI/CD > Pipelines** and click on the pipeline that deployed your app. Once all the stages of the pipeline finish, click the **deploy** stage.
+Go to the **Operations > Serverless** page to see the final URL of your functions.
 
-![deploy stage](img/deploy-stage.png)
+![function_details](img/function-list_v12_7.png)
 
-The output will look like this:
+### Invocation metrics
 
-```shell
-Running with gitlab-runner 12.1.0-rc1 (6da35412)
-  on prm-com-gitlab-org ae3bfce3
-Using Docker executor with image registry.gitlab.com/gitlab-org/gitlabktl:latest ...
-Running on runner-ae3bfc-concurrent-0 via runner-ae3bfc ...
-Fetching changes...
-Authenticating with credentials from job payload (GitLab Registry)
-$ /usr/bin/gitlabktl application deploy
-Welcome to gitlabktl tool
-time="2019-07-15T10:51:07Z" level=info msg="deploying registry credentials"
-Creating app-hello function
-Waiting for app-hello ready state
-Service app-hello URL: http://app-hello.serverless.example.com
-Job succeeded
-```
+On the same page as above, click on one of the function
+rows to bring up the function details page.
 
-The second to last line, labeled **Service domain** contains the URL for the
-deployment. Copy and paste the domain into your browser to see the app live.
+![function_details](img/function-details-loaded.png)
 
-![knative app](img/knative-app.png)
+The pod count will give you the number of pods running the serverless function instances on a given cluster.
+
+For the Knative function invocations to appear,
+[Prometheus must be installed](../index.md#installing-applications).
+
+Once Prometheus is installed, a message may appear indicating that the metrics data _is
+loading or is not available at this time._  It will appear upon the first access of the
+page, but should go away after a few seconds. If the message does not disappear, then it
+is possible that GitLab is unable to connect to the Prometheus instance running on the
+cluster.
 
 ## Configuring logging
 
@@ -558,26 +553,6 @@ Or:
 1. Open the [Kibana UI](http://localhost:8001/api/v1/namespaces/kube-logging/services/kibana/proxy/app/kibana).
 1. Click on **Discover**, then select `filebeat-*` from the dropdown on the left.
 1. Enter `kubernetes.container.name:"queue-proxy" AND message:/httpRequest/` into the search box.
-
-## Function details
-
-Go to the **Operations > Serverless** page and click on one of the function
-rows to bring up the function details page.
-
-![function_details](img/function-details-loaded.png)
-
-The pod count will give you the number of pods running the serverless function instances on a given cluster.
-
-### Prometheus support
-
-For the Knative function invocations to appear,
-[Prometheus must be installed](../index.md#installing-applications).
-
-Once Prometheus is installed, a message may appear indicating that the metrics data _is
-loading or is not available at this time._  It will appear upon the first access of the
-page, but should go away after a few seconds. If the message does not disappear, then it
-is possible that GitLab is unable to connect to the Prometheus instance running on the
-cluster.
 
 ## Enabling TLS for Knative services
 

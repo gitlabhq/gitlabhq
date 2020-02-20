@@ -121,6 +121,7 @@ module API
       mount ::API::Commits
       mount ::API::CommitStatuses
       mount ::API::DeployKeys
+      mount ::API::DeployTokens
       mount ::API::Deployments
       mount ::API::Environments
       mount ::API::ErrorTracking

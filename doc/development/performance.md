@@ -7,16 +7,15 @@ consistent performance of GitLab.
 
 The process of solving performance problems is roughly as follows:
 
-1. Make sure there's an issue open somewhere (e.g., on the GitLab CE issue
-   tracker), create one if there isn't. See [#15607][#15607] for an example.
+1. Make sure there's an issue open somewhere (for example, on the GitLab CE issue
+   tracker), and create one if there is not. See [#15607][#15607] for an example.
 1. Measure the performance of the code in a production environment such as
    GitLab.com (see the [Tooling](#tooling) section below). Performance should be
    measured over a period of _at least_ 24 hours.
 1. Add your findings based on the measurement period (screenshots of graphs,
    timings, etc) to the issue mentioned in step 1.
 1. Solve the problem.
-1. Create a merge request, assign the "Performance" label and assign it to
-   [@yorickpeterse][yorickpeterse] for reviewing.
+1. Create a merge request, assign the "Performance" label and follow the [performance review process](merge_request_performance_guidelines.md).
 1. Once a change has been deployed make sure to _again_ measure for at least 24
    hours to see if your changes have any impact on the production environment.
 1. Repeat until you're done.
@@ -44,16 +43,16 @@ GitLab provides built-in tools to help improve performance and availability:
 - [QueryRecoder](query_recorder.md) for preventing `N+1` regressions.
 - [Chaos endpoints](chaos_endpoints.md) for testing failure scenarios. Intended mainly for testing availability.
 
-GitLab employees can use GitLab.com's performance monitoring systems located at
+GitLab team members can use [GitLab.com's performance monitoring systems](https://about.gitlab.com/handbook/engineering/monitoring/) located at
 <https://dashboards.gitlab.net>, this requires you to log in using your
-`@gitlab.com` Email address. Non-GitLab employees are advised to set up their
-own InfluxDB + Grafana stack.
+`@gitlab.com` email address. Non-GitLab team-members are advised to set up their
+own InfluxDB and Grafana stack.
 
 ## Benchmarks
 
 Benchmarks are almost always useless. Benchmarks usually only test small bits of
 code in isolation and often only measure the best case scenario. On top of that,
-benchmarks for libraries (e.g., a Gem) tend to be biased in favour of the
+benchmarks for libraries (such as a Gem) tend to be biased in favour of the
 library. After all there's little benefit to an author publishing a benchmark
 that shows they perform worse than their competitors.
 
@@ -68,8 +67,8 @@ When writing benchmarks you should almost always use
 [benchmark-ips](https://github.com/evanphx/benchmark-ips). Ruby's `Benchmark`
 module that comes with the standard library is rarely useful as it runs either a
 single iteration (when using `Benchmark.bm`) or two iterations (when using
-`Benchmark.bmbm`). Running this few iterations means external factors (e.g. a
-video streaming in the background) can very easily skew the benchmark
+`Benchmark.bmbm`). Running this few iterations means external factors, such as a
+video streaming in the background, can very easily skew the benchmark
 statistics.
 
 Another problem with the `Benchmark` module is that it displays timings, not
@@ -114,17 +113,18 @@ the behaviour of suspect code in detail.
 
 It's important to note that profiling an application *alters its performance*,
 and will generally be done *in an unrepresentative environment*. In particular,
-a method is not necessarily troublesome just because it is executed many times,
+a method is not necessarily troublesome just because it's executed many times,
 or takes a long time to execute. Profiles are tools you can use to better
 understand what is happening in an application - using that information wisely
 is up to you!
 
 Keeping that in mind, to create a profile, identify (or create) a spec that
 exercises the troublesome code path, then run it using the `bin/rspec-stackprof`
-helper, e.g.:
+helper, for example:
 
 ```shell
 $ LIMIT=10 bin/rspec-stackprof spec/policies/project_policy_spec.rb
+
 8/8 |====== 100 ======>| Time: 00:00:18
 
 Finished in 18.19 seconds (files took 4.8 seconds to load)
@@ -170,10 +170,11 @@ kcachegrind project_policy_spec.callgrind # Linux
 qcachegrind project_policy_spec.callgrind # Mac
 ```
 
-It may be useful to zoom in on a specific method, e.g.:
+It may be useful to zoom in on a specific method, for example:
 
 ```shell
 $ stackprof tmp/project_policy_spec.rb.dump --method warm_asset_cache
+
 TestEnv#warm_asset_cache (/Users/lupine/dev/gitlab.com/gitlab-org/gitlab-development-kit/gitlab/spec/support/test_env.rb:164)
   samples:     0 self (0.0%)  /   6288 total (36.9%)
   callers:
@@ -239,6 +240,7 @@ shell:
 
 ```shell
 $ rake rspec_profiling:console
+
 irb(main):001:0> results.count
 => 231
 irb(main):002:0> results.last.attributes.keys
@@ -257,9 +259,9 @@ One of the reasons of the increased memory footprint could be Ruby memory fragme
 
 To diagnose it, you can visualize Ruby heap as described in [this post by Aaron Patterson](https://tenderlovemaking.com/2017/09/27/visualizing-your-ruby-heap.html).
 
-To start, you want to dump the heap of the process you are investigating to a JSON file.  
+To start, you want to dump the heap of the process you're investigating to a JSON file.  
 
-You need to run the command inside the process you are exploring, you may do that with `rbtrace`.  
+You need to run the command inside the process you're exploring, you may do that with `rbtrace`.  
 `rbtrace` is already present in GitLab `Gemfile`, you just need to require it.  
 It could be achieved running webserver or Sidekiq with the environment variable set to `ENABLE_RBTRACE=1`.
 
@@ -274,7 +276,7 @@ Having the JSON, you finally could render a picture using the script [provided b
 ```shell
 ruby heapviz.rb heap.json
 ```
-  
+
 Fragmented Ruby heap snapshot could look like this:
 
 ![Ruby heap fragmentation](img/memory_ruby_heap_fragmentation.png)
@@ -295,11 +297,11 @@ There is no clear set of steps that you can follow to determine if a certain
 piece of code is worth optimizing. The only two things you can do are:
 
 1. Think about what the code does, how it's used, how many times it's called and
-   how much time is spent in it relative to the total execution time (e.g., the
+   how much time is spent in it relative to the total execution time (for example, the
    total time spent in a web request).
 1. Ask others (preferably in the form of an issue).
 
-Some examples of changes that aren't really important/worth the effort:
+Some examples of changes that are not really important/worth the effort:
 
 - Replacing double quotes with single quotes.
 - Replacing usage of Array with Set when the list of values is very small.
@@ -309,7 +311,7 @@ Some examples of changes that aren't really important/worth the effort:
 
 ## Slow Operations & Sidekiq
 
-Slow operations (e.g. merging branches) or operations that are prone to errors
+Slow operations, like merging branches, or operations that are prone to errors
 (using external APIs) should be performed in a Sidekiq worker instead of
 directly in a web request as much as possible. This has numerous benefits such
 as:
@@ -416,7 +418,7 @@ as omitting it may lead to style check failures.
 ## Anti-Patterns
 
 This is a collection of [anti-patterns][anti-pattern] that should be avoided
-unless these changes have a measurable, significant and positive impact on
+unless these changes have a measurable, significant, and positive impact on
 production environments.
 
 ### Moving Allocations to Constants
@@ -458,5 +460,4 @@ You may find some useful examples in this snippet:
 <https://gitlab.com/gitlab-org/gitlab-foss/snippets/33946>
 
 [#15607]: https://gitlab.com/gitlab-org/gitlab-foss/issues/15607
-[yorickpeterse]: https://gitlab.com/yorickpeterse
 [anti-pattern]: https://en.wikipedia.org/wiki/Anti-pattern

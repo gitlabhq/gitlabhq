@@ -430,6 +430,73 @@ describe User, :do_not_mock_admin_mode do
         end
       end
 
+      context 'email restrictions' do
+        context 'when email restriction is disabled' do
+          before do
+            stub_application_setting(email_restrictions_enabled: false)
+            stub_application_setting(email_restrictions: '\+')
+          end
+
+          it 'does accept email address' do
+            user = build(:user, email: 'info+1@test.com')
+
+            expect(user).to be_valid
+          end
+        end
+
+        context 'when email restrictions is enabled' do
+          before do
+            stub_application_setting(email_restrictions_enabled: true)
+            stub_application_setting(email_restrictions: '([\+]|\b(\w*gitlab.com\w*)\b)')
+          end
+
+          it 'does not accept email address with + characters' do
+            user = build(:user, email: 'info+1@test.com')
+
+            expect(user).not_to be_valid
+          end
+
+          it 'does not accept email with a gitlab domain' do
+            user = build(:user, email: 'info@gitlab.com')
+
+            expect(user).not_to be_valid
+          end
+
+          it 'adds an error message when email is not accepted' do
+            user = build(:user, email: 'info@gitlab.com')
+
+            expect(user).not_to be_valid
+            expect(user.errors.messages[:email].first).to eq(_('is not allowed for sign-up'))
+          end
+
+          it 'does accept a valid email address' do
+            user = build(:user, email: 'info@test.com')
+
+            expect(user).to be_valid
+          end
+
+          context 'when feature flag is turned off' do
+            before do
+              stub_feature_flags(email_restrictions: false)
+            end
+
+            it 'does accept the email address' do
+              user = build(:user, email: 'info+1@test.com')
+
+              expect(user).to be_valid
+            end
+          end
+
+          context 'when created_by_id is set' do
+            it 'does accept the email address' do
+              user = build(:user, email: 'info+1@test.com', created_by_id: 1)
+
+              expect(user).to be_valid
+            end
+          end
+        end
+      end
+
       context 'owns_notification_email' do
         it 'accepts temp_oauth_email emails' do
           user = build(:user, email: "temp-email-for-oauth@example.com")
