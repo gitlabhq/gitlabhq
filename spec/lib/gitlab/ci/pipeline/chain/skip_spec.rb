@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Chain::Skip do
-  set(:project) { create(:project) }
-  set(:user) { create(:user) }
-  set(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:pipeline, reload: true) { create(:ci_pipeline, project: project) }
 
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(

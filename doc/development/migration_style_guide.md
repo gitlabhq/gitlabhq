@@ -304,10 +304,16 @@ combining it with other operations that don't require `disable_ddl_transaction!`
 
 ## Adding indexes
 
-If you need to add a unique index, please keep in mind there is the possibility
-of existing duplicates being present in the database. This means that should
-always _first_ add a migration that removes any duplicates, before adding the
-unique index.
+Before adding an index, consider if this one is necessary. There are situations in which an index
+might not be required, like:
+
+- The table is small (less than `1,000` records) and it's not expected to exponentially grow in size.
+- Any existing indexes filter out enough rows.
+- The reduction in query timings after the index is added is not significant.
+
+Additionally, wide indexes are not required to match all filter criteria of queries, we just need
+to cover enough columns so that the index lookup has a small enough selectivity. Please review our
+[Adding Database indexes](adding_database_indexes.md) guide for more details.
 
 When adding an index to a non-empty table make sure to use the method
 `add_concurrent_index` instead of the regular `add_index` method.
@@ -333,6 +339,11 @@ class MyMigration < ActiveRecord::Migration[4.2]
   end
 end
 ```
+
+If you need to add a unique index, please keep in mind there is the possibility
+of existing duplicates being present in the database. This means that should
+always _first_ add a migration that removes any duplicates, before adding the
+unique index.
 
 For a small table (such as an empty one or one with less than `1,000` records),
 it is recommended to use `add_index` in a single-transaction migration, combining it with other

@@ -73,7 +73,7 @@ describe Gitlab::ProjectTemplate do
   end
 
   describe 'validate all templates' do
-    set(:admin) { create(:admin) }
+    let_it_be(:admin) { create(:admin) }
 
     described_class.all.each do |template|
       it "#{template.name} has a valid archive" do

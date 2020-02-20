@@ -235,12 +235,17 @@ class MergeRequest < ApplicationRecord
   end
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
+
+  PROJECT_ROUTE_AND_NAMESPACE_ROUTE = [
+    target_project: [:route, { namespace: :route }],
+    source_project: [:route, { namespace: :route }]
+  ].freeze
+
   scope :with_api_entity_associations, -> {
     preload(:assignees, :author, :unresolved_notes, :labels, :milestone,
             :timelogs, :latest_merge_request_diff,
-            metrics: [:latest_closed_by, :merged_by],
-            target_project: [:route, { namespace: :route }],
-            source_project: [:route, { namespace: :route }])
+            *PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
+            metrics: [:latest_closed_by, :merged_by])
   }
   scope :by_target_branch_wildcard, ->(wildcard_branch_name) do
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))

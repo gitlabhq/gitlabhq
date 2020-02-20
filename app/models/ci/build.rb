@@ -173,8 +173,10 @@ module Ci
     scope :queued_before, ->(time) { where(arel_table[:queued_at].lt(time)) }
     scope :order_id_desc, -> { order('ci_builds.id DESC') }
 
-    PROJECT_ROUTE_AND_NAMESPACE_ROUTE = { project: [:project_feature, :route, { namespace: :route }] }.freeze
-    scope :preload_project_and_pipeline_project, -> { preload(PROJECT_ROUTE_AND_NAMESPACE_ROUTE, pipeline: PROJECT_ROUTE_AND_NAMESPACE_ROUTE) }
+    scope :preload_project_and_pipeline_project, -> do
+      preload(Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
+              pipeline: Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE)
+    end
 
     acts_as_taggable
 

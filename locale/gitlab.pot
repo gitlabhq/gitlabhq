@@ -21618,10 +21618,16 @@ msgstr ""
 msgid "VulnerabilityManagement|Confirm"
 msgstr ""
 
+msgid "VulnerabilityManagement|Create issue"
+msgstr ""
+
 msgid "VulnerabilityManagement|Dismiss"
 msgstr ""
 
 msgid "VulnerabilityManagement|Resolved"
+msgstr ""
+
+msgid "VulnerabilityManagement|Something went wrong, could not create an issue."
 msgstr ""
 
 msgid "VulnerabilityManagement|Something went wrong, could not update vulnerability state."

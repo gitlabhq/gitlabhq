@@ -3,9 +3,7 @@
     - .default-tags
     - .default-retry
   stage: test
-  needs:
-    - job: "retrieve-tests-metadata"
-      artifacts: false
+  needs: []
   cache:
     key: "qa-framework-jobs:v1"
     paths:

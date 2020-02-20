@@ -1,0 +1,5 @@
+---
+title: Refuse to start web server without a working ActiveRecord connection
+merge_request: 25160
+author:
+type: other

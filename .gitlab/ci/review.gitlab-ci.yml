@@ -248,9 +248,7 @@ danger-review:
     - .review:rules:danger
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
-  needs:
-    - job: "retrieve-tests-metadata"
-      artifacts: false
+  needs: []
   script:
     - git version
     - node --version

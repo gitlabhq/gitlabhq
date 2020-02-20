@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties" : {
+    "properties" : {
+      "id": { "type": "integer" },
+      "iid": { "type": "integer" },
+      "project_id": { "type": "integer" },
+      "title": { "type": "string" },
+      "description": { "type": ["string", "null"] },
+      "state": { "type": "string" },
+      "created_at": { "type": "date" },
+      "updated_at": { "type": "date" },
+      "web_url": { "type": "uri" }
+    },
+    "required": [
+      "id", "iid", "project_id", "title", "description",
+      "state", "created_at", "updated_at", "web_url"
+    ],
+    "head_pipeline": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "pipeline/detail.json" }
+      ]
+    }
+  }
+}

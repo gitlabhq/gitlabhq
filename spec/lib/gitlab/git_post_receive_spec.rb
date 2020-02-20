@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe ::Gitlab::GitPostReceive do
-  set(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
 
   subject { described_class.new(project, "project-#{project.id}", changes.dup, {}) }
 

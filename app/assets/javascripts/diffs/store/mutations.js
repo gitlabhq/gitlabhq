@@ -140,6 +140,7 @@ export default {
     addContextLines({
       inlineLines: diffFile.highlighted_diff_lines,
       parallelLines: diffFile.parallel_diff_lines,
+      diffViewType: state.diffViewType,
       contextLines: lines,
       bottom,
       lineNumbers,

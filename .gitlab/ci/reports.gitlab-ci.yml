@@ -12,9 +12,7 @@ code_quality:
     - .default-retry
     - .reports:rules:code_quality
   stage: test
-  needs:
-    - job: "retrieve-tests-metadata"
-      artifacts: false
+  needs: []
   image: docker:stable
   allow_failure: true
   services:
@@ -54,9 +52,7 @@ sast:
     - .reports:rules:sast
   stage: test
   allow_failure: true
-  needs:
-    - job: "retrieve-tests-metadata"
-      artifacts: false
+  needs: []
   artifacts:
     paths:
       - gl-sast-report.json  # GitLab-specific
@@ -94,9 +90,7 @@ dependency_scanning:
     - .default-retry
     - .reports:rules:dependency_scanning
   stage: test
-  needs:
-    - job: "retrieve-tests-metadata"
-      artifacts: false
+  needs: []
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2

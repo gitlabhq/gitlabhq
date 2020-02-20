@@ -29,7 +29,7 @@ You can access them in two ways.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 12.5.
 
-Go to **Operations > Pod logs** on the sidebar menu.
+Go to **{cloud-gear}** **Operations > Pod logs** on the sidebar menu.
 
 ![Sidebar menu](img/sidebar_menu_pod_logs_v12_5.png)
 
@@ -37,7 +37,7 @@ Go to **Operations > Pod logs** on the sidebar menu.
 
 Logs can be displayed by clicking on a specific pod from [Deploy Boards](../deploy_boards.md):
 
-1. Go to **Operations > Environments** and find the environment which contains the desired pod, like `production`.
+1. Go to **{cloud-gear}** **Operations > Environments** and find the environment which contains the desired pod, like `production`.
 1. On the **Environments** page, you should see the status of the environment's pods with [Deploy Boards](../deploy_boards.md).
 1. When mousing over the list of pods, a tooltip will appear with the exact pod name and status.
    ![Deploy Boards pod list](img/pod_logs_deploy_board.png)
@@ -45,7 +45,7 @@ Logs can be displayed by clicking on a specific pod from [Deploy Boards](../depl
 
 ### Logs view
 
-The logs view will contain the last 500 lines for a pod, and has control to filter via:
+The logs view will contain the last 500 lines for a pod, and has control to filter through:
 
 - Pods.
 - [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/5769), environments.
@@ -62,14 +62,14 @@ Support for historical data is coming [in a future release](https://gitlab.com/g
 
 When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster, you can filter by date.
 
-Click on "Show last" to see the available options.
+Click on **Show last** to see the available options.
 
 ### Full text search
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656) in GitLab 12.7.
 
 When you enable [Elastic Stack](../../clusters/applications.md#elastic-stack) on your cluster,
-you can search the content of your logs via a search bar.
+you can search the content of your logs through a search bar.
 
 The search is passed on to Elasticsearch using the [simple_query_string](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html)
 Elasticsearch function, which supports the following operators:

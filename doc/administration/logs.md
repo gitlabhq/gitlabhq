@@ -1,10 +1,9 @@
 # Log system
 
-GitLab has an advanced log system where everything is logged so that you
+GitLab has an advanced log system where everything is logged, so you
 can analyze your instance using various system log files. In addition to
-system log files, GitLab Enterprise Edition comes with Audit Events.
-Find more about them [in Audit Events
-documentation](audit_events.md)
+system log files, GitLab Enterprise Edition provides Audit Events.
+Find more about them [in Audit Events documentation](audit_events.md).
 
 System log files are typically plain text in a standard log file format.
 This guide talks about how to read and use these system log files.
@@ -13,21 +12,40 @@ This guide talks about how to read and use these system log files.
 
 This file lives in `/var/log/gitlab/gitlab-rails/production_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/production_json.log` for
-installations from source. (When GitLab is running in an environment
-other than production, the corresponding logfile is shown here.)
+installations from source. When GitLab is running in an environment
+other than production, the corresponding logfile is shown here.
 
 It contains a structured log for Rails controller requests received from
 GitLab, thanks to [Lograge](https://github.com/roidrage/lograge/). Note that
 requests from the API are logged to a separate file in `api_json.log`.
 
-Each line contains a JSON line that can be ingested by Elasticsearch, Splunk, etc. For example:
+Each line contains a JSON line that can be ingested by services like Elasticsearch and Splunk.
+Line breaks have been added to this example for legibility:
 
 ```json
-{"method":"GET","path":"/gitlab/gitlab-foss/issues/1234","format":"html","controller":"Projects::IssuesController","action":"show","status":200,"duration":229.03,"view":174.07,"db":13.24,"time":"2017-08-08T20:15:54.821Z","params":[{"key":"param_key","value":"param_value"}],"remote_ip":"18.245.0.1","user_id":1,"username":"admin","gitaly_calls":76,"gitaly_duration":7.41,"queue_duration": 112.47}
+{
+  "method":"GET",
+  "path":"/gitlab/gitlab-foss/issues/1234",
+  "format":"html",
+  "controller":"Projects::IssuesController",
+  "action":"show",
+  "status":200,
+  "duration":229.03,
+  "view":174.07,
+  "db":13.24,
+  "time":"2017-08-08T20:15:54.821Z",
+  "params":[{"key":"param_key","value":"param_value"}],
+  "remote_ip":"18.245.0.1",
+  "user_id":1,
+  "username":"admin",
+  "gitaly_calls":76,
+  "gitaly_duration":7.41,
+  "queue_duration": 112.47
+}
 ```
 
-In this example, you can see this was a GET request for a specific
-issue. Notice each line also contains performance data. All times are in
+This example was a GET request for a specific
+issue. Each line also contains performance data, with times in
 milliseconds:
 
 1. `duration`: total time taken to retrieve the request
@@ -37,10 +55,10 @@ milliseconds:
 1. `gitaly_calls`: total number of calls made to Gitaly
 1. `gitaly_duration`: total time taken by Gitaly calls
 
-User clone/fetch activity using http transport appears in this log as `action: git_upload_pack`.
+User clone and fetch activity using HTTP transport appears in this log as `action: git_upload_pack`.
 
-In addition, the log contains the IP address from which the request originated
-(`remote_ip`) as well as the user's ID (`user_id`), and username (`username`).
+In addition, the log contains the originating IP address,
+(`remote_ip`),the user's ID (`user_id`), and username (`username`).
 
 NOTE: **Note:** Starting with GitLab 12.5, if an error occurs, an
 `exception` field is included with `class`, `message`, and
@@ -90,11 +108,11 @@ installations from source. (When GitLab is running in an environment
 other than production, the corresponding logfile is shown here.)
 
 It contains information about all performed requests. You can see the
-URL and type of request, IP address and what exactly parts of code were
-involved to service this particular request. Also you can see all SQL
-request that have been performed and how much time it took. This task is
+URL and type of request, IP address, and what parts of code were
+involved to service this particular request. Also, you can see all SQL
+requests performed, and how much time each took. This task is
 more useful for GitLab contributors and developers. Use part of this log
-file when you are going to report bug. For example:
+file when you're reporting bugs. For example:
 
 ```plaintext
 Started GET "/gitlabhq/yaml_db/tree/master" for 168.111.56.1 at 2015-02-12 19:34:53 +0200
@@ -114,26 +132,44 @@ Processing by Projects::TreeController#show as HTML
 Completed 200 OK in 166ms (Views: 117.4ms | ActiveRecord: 27.2ms)
 ```
 
-In this example we can see that server processed an HTTP request with URL
-`/gitlabhq/yaml_db/tree/master` from IP 168.111.56.1 at 2015-02-12
-19:34:53 +0200. Also we can see that request was processed by
-`Projects::TreeController`.
+In this example, the server processed an HTTP request with URL
+`/gitlabhq/yaml_db/tree/master` from IP `168.111.56.1` at `2015-02-12 19:34:53 +0200`.
+The request was processed by `Projects::TreeController`.
 
 ## `api_json.log`
 
 > Introduced in GitLab 10.0.
 
 This file lives in
-`/var/log/gitlab/gitlab-rails/api_json.log` for Omnibus GitLab packages or in
+`/var/log/gitlab/gitlab-rails/api_json.log` for Omnibus GitLab packages, or in
 `/home/git/gitlab/log/api_json.log` for installations from source.
 
 It helps you see requests made directly to the API. For example:
 
 ```json
-{"time":"2018-10-29T12:49:42.123Z","severity":"INFO","duration":709.08,"db":14.59,"view":694.49,"status":200,"method":"GET","path":"/api/v4/projects","params":[{"key":"action","value":"git-upload-pack"},{"key":"changes","value":"_any"},{"key":"key_id","value":"secret"},{"key":"secret_token","value":"[FILTERED]"}],"host":"localhost","remote_ip":"::1","ua":"Ruby","route":"/api/:version/projects","user_id":1,"username":"root","queue_duration":100.31,"gitaly_calls":30,"gitaly_duration":5.36}
+{
+  "time":"2018-10-29T12:49:42.123Z",
+  "severity":"INFO",
+  "duration":709.08,
+  "db":14.59,
+  "view":694.49,
+  "status":200,
+  "method":"GET",
+  "path":"/api/v4/projects",
+  "params":[{"key":"action","value":"git-upload-pack"},{"key":"changes","value":"_any"},{"key":"key_id","value":"secret"},{"key":"secret_token","value":"[FILTERED]"}],
+  "host":"localhost",
+  "remote_ip":"::1",
+  "ua":"Ruby",
+  "route":"/api/:version/projects",
+  "user_id":1,
+  "username":"root",
+  "queue_duration":100.31,
+  "gitaly_calls":30,
+  "gitaly_duration":5.36
+}
 ```
 
-This entry above shows an access to an internal endpoint to check whether an
+This entry shows an access to an internal endpoint to check whether an
 associated SSH key can download the project in question via a `git fetch` or
 `git clone`. In this example, we see:
 
@@ -141,7 +177,7 @@ associated SSH key can download the project in question via a `git fetch` or
 1. `queue_duration`: total time in milliseconds that the request was queued inside GitLab Workhorse
 1. `method`: The HTTP method used to make the request
 1. `path`: The relative path of the query
-1. `params`: Key-value pairs passed in a query string or HTTP body. Sensitive parameters (e.g. passwords, tokens, etc.) are filtered out.
+1. `params`: Key-value pairs passed in a query string or HTTP body. Sensitive parameters (such as passwords and tokens) are filtered out.
 1. `ua`: The User-Agent of the requester
 
 ## `application.log`
@@ -172,8 +208,18 @@ installations from source.
 It contains the JSON version of the logs in `application.log` like the example below:
 
 ``` json
-{"severity":"INFO","time":"2020-01-14T13:35:15.466Z","correlation_id":"3823a1550b64417f9c9ed8ee0f48087e","message":"User \"Administrator\" (admin@example.com) was created"}
-{"severity":"INFO","time":"2020-01-14T13:35:15.466Z","correlation_id":"78e3df10c9a18745243d524540bd5be4","message":"Project \"project133\" was removed"}
+{
+  "severity":"INFO",
+  "time":"2020-01-14T13:35:15.466Z",
+  "correlation_id":"3823a1550b64417f9c9ed8ee0f48087e",
+  "message":"User \"Administrator\" (admin@example.com) was created"
+}
+{
+  "severity":"INFO",
+  "time":"2020-01-14T13:35:15.466Z",
+  "correlation_id":"78e3df10c9a18745243d524540bd5be4",
+  "message":"Project \"project133\" was removed"
+}
 ```
 
 ## `integrations_json.log`
@@ -182,11 +228,28 @@ This file lives in `/var/log/gitlab/gitlab-rails/integrations_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/integrations_json.log` for
 installations from source.
 
-It contains information about [integrations](../user/project/integrations/project_services.md) activities such as Jira, Asana and Irker services. It uses JSON format like the example below:
+It contains information about [integrations](../user/project/integrations/project_services.md) activities such as Jira, Asana, and Irker services. It uses JSON format like the example below:
 
 ```json
-{"severity":"ERROR","time":"2018-09-06T14:56:20.439Z","service_class":"JiraService","project_id":8,"project_path":"h5bp/html5-boilerplate","message":"Error sending message","client_url":"http://jira.gitlap.com:8080","error":"execution expired"}
-{"severity":"INFO","time":"2018-09-06T17:15:16.365Z","service_class":"JiraService","project_id":3,"project_path":"namespace2/project2","message":"Successfully posted","client_url":"http://jira.example.com"}
+{
+  "severity":"ERROR",
+  "time":"2018-09-06T14:56:20.439Z",
+  "service_class":"JiraService",
+  "project_id":8,
+  "project_path":"h5bp/html5-boilerplate",
+  "message":"Error sending message",
+  "client_url":"http://jira.gitlap.com:8080",
+  "error":"execution expired"
+}
+{
+  "severity":"INFO",
+  "time":"2018-09-06T17:15:16.365Z",
+  "service_class":"JiraService",
+  "project_id":3,
+  "project_path":"namespace2/project2",
+  "message":"Successfully posted",
+  "client_url":"http://jira.example.com"
+}
 ```
 
 ## `kubernetes.log`
@@ -202,12 +265,32 @@ It logs information related to the Kubernetes Integration including errors
 during installing cluster applications on your GitLab managed Kubernetes
 clusters.
 
-Each line contains a JSON line that can be ingested by Elasticsearch, Splunk,
-etc. For example:
+Each line contains a JSON line that can be ingested by services like Elasticsearch and Splunk.
+Line breaks have been added to the following example for clarity:
 
 ```json
-{"severity":"ERROR","time":"2018-11-23T15:14:54.652Z","exception":"Kubeclient::HttpError","error_code":401,"service":"Clusters::Applications::CheckInstallationProgressService","app_id":14,"project_ids":[1],"group_ids":[],"message":"Unauthorized"}
-{"severity":"ERROR","time":"2018-11-23T15:42:11.647Z","exception":"Kubeclient::HttpError","error_code":null,"service":"Clusters::Applications::InstallService","app_id":2,"project_ids":[19],"group_ids":[],"message":"SSL_connect returned=1 errno=0 state=error: certificate verify failed (unable to get local issuer certificate)"}
+{
+  "severity":"ERROR",
+  "time":"2018-11-23T15:14:54.652Z",
+  "exception":"Kubeclient::HttpError",
+  "error_code":401,
+  "service":"Clusters::Applications::CheckInstallationProgressService",
+  "app_id":14,
+  "project_ids":[1],
+  "group_ids":[],
+  "message":"Unauthorized"
+}
+{
+  "severity":"ERROR",
+  "time":"2018-11-23T15:42:11.647Z",
+  "exception":"Kubeclient::HttpError",
+  "error_code":null,
+  "service":"Clusters::Applications::InstallService",
+  "app_id":2,
+  "project_ids":[19],
+  "group_ids":[],
+  "message":"SSL_connect returned=1 errno=0 state=error: certificate verify failed (unable to get local issuer certificate)"
+}
 ```
 
 ## `git_json.log`
@@ -220,8 +303,8 @@ NOTE: **Note:**
 After 12.2, this file was renamed from `githost.log` to
 `git_json.log` and stored in JSON format.
 
-GitLab has to interact with Git repositories but in some rare cases
-something can go wrong and in this case you will know what exactly
+GitLab has to interact with Git repositories, but in some rare cases
+something can go wrong, and in this case you will know what exactly
 happened. This log file contains all failed requests from GitLab to Git
 repositories. In the majority of cases this file will be useful for developers
 only. For example:
@@ -244,9 +327,20 @@ installations from source.
 Changes to group or project settings are logged to this file. For example:
 
 ```json
-{"severity":"INFO","time":"2018-10-17T17:38:22.523Z","author_id":3,"entity_id":2,"entity_type":"Project","change":"visibility","from":"Private","to":"Public","author_name":"John Doe4","target_id":2,"target_type":"Project","target_details":"namespace2/project2"}
-{"severity":"INFO","time":"2018-10-17T17:38:22.830Z","author_id":5,"entity_id":3,"entity_type":"Project","change":"name","from":"John Doe7 / project3","to":"John Doe7 / new name","author_name":"John Doe6","target_id":3,"target_type":"Project","target_details":"namespace3/project3"}
-{"severity":"INFO","time":"2018-10-17T17:38:23.175Z","author_id":7,"entity_id":4,"entity_type":"Project","change":"path","from":"","to":"namespace4/newpath","author_name":"John Doe8","target_id":4,"target_type":"Project","target_details":"namespace4/newpath"}
+{
+  "severity":"INFO",
+  "time":"2018-10-17T17:38:22.523Z",
+  "author_id":3,
+  "entity_id":2,
+  "entity_type":"Project",
+  "change":"visibility",
+  "from":"Private",
+  "to":"Public",
+  "author_name":"John Doe4",
+  "target_id":2,
+  "target_type":"Project",
+  "target_details":"namespace2/project2"
+}
 ```
 
 ## `sidekiq.log`
@@ -268,7 +362,27 @@ Instead of the format above, you can opt to generate JSON logs for
 Sidekiq. For example:
 
 ```json
-{"severity":"INFO","time":"2018-04-03T22:57:22.071Z","queue":"cronjob:update_all_mirrors","args":[],"class":"UpdateAllMirrorsWorker","retry":false,"queue_namespace":"cronjob","jid":"06aeaa3b0aadacf9981f368e","created_at":"2018-04-03T22:57:21.930Z","enqueued_at":"2018-04-03T22:57:21.931Z","pid":10077,"message":"UpdateAllMirrorsWorker JID-06aeaa3b0aadacf9981f368e: done: 0.139 sec","job_status":"done","duration":0.139,"completed_at":"2018-04-03T22:57:22.071Z","db_duration":0.05,"db_duration_s":0.0005,"gitaly_duration":0,"gitaly_calls":0}
+{
+  "severity":"INFO",
+  "time":"2018-04-03T22:57:22.071Z",
+  "queue":"cronjob:update_all_mirrors",
+  "args":[],
+  "class":"UpdateAllMirrorsWorker",
+  "retry":false,
+  "queue_namespace":"cronjob",
+  "jid":"06aeaa3b0aadacf9981f368e",
+  "created_at":"2018-04-03T22:57:21.930Z",
+  "enqueued_at":"2018-04-03T22:57:21.931Z",
+  "pid":10077,
+  "message":"UpdateAllMirrorsWorker JID-06aeaa3b0aadacf9981f368e: done: 0.139 sec",
+  "job_status":"done",
+  "duration":0.139,
+  "completed_at":"2018-04-03T22:57:22.071Z",
+  "db_duration":0.05,
+  "db_duration_s":0.0005,
+  "gitaly_duration":0,
+  "gitaly_calls":0
+}
 ```
 
 For Omnibus GitLab installations, add the configuration option:
@@ -292,8 +406,8 @@ This file lives in `/var/log/gitlab/gitaly/gitlab-shell.log` for
 Omnibus GitLab packages or in `/home/git/gitaly/gitlab-shell.log` for
 installations from source.
 
-NOTE: **Note**
-For GitLab 12.5 and earlier the file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log`.
+NOTE: **Note:**
+For GitLab 12.5 and earlier, the file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log`.
 
 GitLab Shell is used by GitLab for executing Git commands and provide
 SSH access to Git repositories. For example:
@@ -363,7 +477,7 @@ This log records:
 - [Protected paths] abusive requests.
 
 NOTE: **Note:**
-From [%12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/62756), user id and username are also
+From [%12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/62756), user ID and username are also
 recorded on this log, if available.
 
 ## `graphql_json.log`
@@ -411,13 +525,13 @@ was initiated, such as `1509705644.log`
 ## `sidekiq_exporter.log` and `web_exporter.log`
 
 If Prometheus metrics and the Sidekiq Exporter are both enabled, Sidekiq will
-start a Web server and listen to the defined port (default: 8082). Access logs
+start a Web server and listen to the defined port (default: `8082`). Access logs
 will be generated in `/var/log/gitlab/gitlab-rails/sidekiq_exporter.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq_exporter.log` for
 installations from source.
 
 If Prometheus metrics and the Web Exporter are both enabled, Unicorn/Puma will
-start a Web server and listen to the defined port (default: 8083). Access logs
+start a Web server and listen to the defined port (default: `8083`). Access logs
 will be generated in `/var/log/gitlab/gitlab-rails/web_exporter.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/web_exporter.log` for
 installations from source.
@@ -427,7 +541,7 @@ installations from source.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15442) in GitLab 12.3.
 
 Contains details of GitLab's [Database Load Balancing](database_load_balancing.md).
-It is stored at:
+It's stored at:
 
 - `/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab packages.
 - `/home/git/gitlab/log/database_load_balancing.log` for installations from source.
@@ -444,11 +558,21 @@ from source.
 It logs information related to the Elasticsearch Integration including
 errors during indexing or searching Elasticsearch.
 
-Each line contains a JSON line that can be ingested by Elasticsearch, Splunk,
-etc. For example:
+Each line contains a JSON line that can be ingested by services like Elasticsearch and Splunk.
+Line breaks have been added to the following example line for clarity:
 
 ```json
-{"severity":"DEBUG","time":"2019-10-17T06:23:13.227Z","correlation_id":null,"message":"redacted_search_result","class_name":"Milestone","id":2,"ability":"read_milestone","current_user_id":2,"query":"project"}
+{
+  "severity":"DEBUG",
+  "time":"2019-10-17T06:23:13.227Z",
+  "correlation_id":null,
+  "message":"redacted_search_result",
+  "class_name":"Milestone",
+  "id":2,
+  "ability":"read_milestone",
+  "current_user_id":2,
+  "query":"project"
+}
 ```
 
 ## `exceptions_json.log`
@@ -460,7 +584,7 @@ This file lives in
 packages or in `/home/git/gitlab/log/exceptions_json.log` for installations
 from source.
 
-It logs the information about exceptions being tracked by `Gitlab::ErrorTracking` which provides standard and consistent way of [processing rescued exceptions](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/logging.md#exception-handling).
+It logs the information about exceptions being tracked by `Gitlab::ErrorTracking` which provides a standard and consistent way of [processing rescued exceptions](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/logging.md#exception-handling).
 
 Each line contains a JSON line that can be ingested by Elasticsearch. For example:
 

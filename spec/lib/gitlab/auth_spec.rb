@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
+  let_it_be(:project) { create(:project) }
   let(:gl_auth) { described_class }
-
-  set(:project) { create(:project) }
 
   describe 'constants' do
     it 'API_SCOPES contains all scopes for API access' do

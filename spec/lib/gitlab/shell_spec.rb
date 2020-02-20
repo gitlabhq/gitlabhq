@@ -4,8 +4,7 @@ require 'spec_helper'
 require 'stringio'
 
 describe Gitlab::Shell do
-  set(:project) { create(:project, :repository) }
-
+  let_it_be(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:gitlab_shell) { described_class.new }
   let(:popen_vars) { { 'GIT_TERMINAL_PROMPT' => ENV['GIT_TERMINAL_PROMPT'] } }

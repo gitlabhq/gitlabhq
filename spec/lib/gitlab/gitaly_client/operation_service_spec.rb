@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe Gitlab::GitalyClient::OperationService do
-  set(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:repository) { project.repository.raw }
   let(:client) { described_class.new(repository) }
-  set(:user) { create(:user) }
   let(:gitaly_user) { Gitlab::Git::User.from_gitlab(user).to_gitaly }
 
   describe '#user_create_branch' do

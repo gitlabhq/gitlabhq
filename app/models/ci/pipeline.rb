@@ -16,6 +16,10 @@ module Ci
     include FromUnion
     include UpdatedAtFilterable
 
+    PROJECT_ROUTE_AND_NAMESPACE_ROUTE = {
+      project: [:project_feature, :route, { namespace: :route }]
+    }.freeze
+
     BridgeStatusError = Class.new(StandardError)
 
     sha_attribute :source_sha

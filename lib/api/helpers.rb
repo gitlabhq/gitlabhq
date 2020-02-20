@@ -359,6 +359,10 @@ module API
       render_api_error!('405 Method Not Allowed', 405)
     end
 
+    def service_unavailable!
+      render_api_error!('503 Service Unavailable', 503)
+    end
+
     def conflict!(message = nil)
       render_api_error!(message || '409 Conflict', 409)
     end

@@ -3,10 +3,9 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Project do
-  set(:context_project) { create(:project) }
-  set(:project) { create(:project, :repository) }
-  set(:user) { create(:user) }
-
+  let_it_be(:context_project) { create(:project) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
   let(:context_user) { user }
   let(:context_params) { { project: context_project, sha: '12345', user: context_user } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }

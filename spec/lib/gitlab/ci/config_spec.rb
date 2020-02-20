@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Gitlab::Ci::Config do
   include StubRequests
 
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|

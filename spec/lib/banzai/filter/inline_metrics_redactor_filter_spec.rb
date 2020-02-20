@@ -5,8 +5,7 @@ require 'spec_helper'
 describe Banzai::Filter::InlineMetricsRedactorFilter do
   include FilterSpecHelper
 
-  set(:project) { create(:project) }
-
+  let_it_be(:project) { create(:project) }
   let(:url) { urls.metrics_dashboard_project_environment_url(project, 1, embedded: true) }
   let(:input) { %(<a href="#{url}">example</a>) }
   let(:doc) { filter(input) }
