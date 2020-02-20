@@ -3,6 +3,7 @@ image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.1
 stages:
   - sync
   - prepare
+  - fixtures
   - test
   - post-test
   - review-prepare

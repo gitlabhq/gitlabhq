@@ -12,6 +12,9 @@ code_quality:
     - .default-retry
     - .reports:rules:code_quality
   stage: test
+  needs:
+    - job: "retrieve-tests-metadata"
+      artifacts: false
   image: docker:stable
   allow_failure: true
   services:
@@ -39,7 +42,6 @@ code_quality:
     paths:
       - gl-code-quality-report.json  # GitLab-specific
     expire_in: 1 week  # GitLab-specific
-  dependencies: []
 
 # We need to duplicate this job's definition because it seems it's impossible to
 # override an included `only.refs`.
@@ -52,7 +54,9 @@ sast:
     - .reports:rules:sast
   stage: test
   allow_failure: true
-  dependencies: []  # GitLab-specific
+  needs:
+    - job: "retrieve-tests-metadata"
+      artifacts: false
   artifacts:
     paths:
       - gl-sast-report.json  # GitLab-specific
@@ -90,6 +94,9 @@ dependency_scanning:
     - .default-retry
     - .reports:rules:dependency_scanning
   stage: test
+  needs:
+    - job: "retrieve-tests-metadata"
+      artifacts: false
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -148,7 +155,6 @@ dependency_scanning:
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
     expire_in: 1 week  # GitLab-specific
-  dependencies: []
 
 # We need to duplicate this job's definition because it seems it's impossible to
 # override an included `only.refs`.

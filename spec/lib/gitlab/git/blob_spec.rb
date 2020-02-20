@@ -22,7 +22,23 @@ describe Gitlab::Git::Blob, :seed_helper do
     it 'records blob size' do
       expect(described_class).to receive(:gitlab_blob_size).and_call_original
 
-      Gitlab::Git::Blob.new(name: 'test', size: 1234)
+      Gitlab::Git::Blob.new(name: 'test', size: 4, data: 'abcd')
+    end
+
+    context 'when untruncated' do
+      it 'attempts to record gitlab_blob_truncated_false' do
+        expect(described_class).to receive(:gitlab_blob_truncated_false).and_call_original
+
+        Gitlab::Git::Blob.new(name: 'test', size: 4, data: 'abcd')
+      end
+    end
+
+    context 'when truncated' do
+      it 'attempts to record gitlab_blob_truncated_true' do
+        expect(described_class).to receive(:gitlab_blob_truncated_true).and_call_original
+
+        Gitlab::Git::Blob.new(name: 'test', size: 40, data: 'abcd')
+      end
     end
   end
 
