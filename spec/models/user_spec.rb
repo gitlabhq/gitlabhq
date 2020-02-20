@@ -1943,18 +1943,28 @@ describe User, :do_not_mock_admin_mode do
 
   describe '#all_emails' do
     let(:user) { create(:user) }
+    let!(:email_confirmed) { create :email, user: user, confirmed_at: Time.now }
+    let!(:email_unconfirmed) { create :email, user: user }
 
-    it 'returns all emails' do
-      email_confirmed   = create :email, user: user, confirmed_at: Time.now
-      email_unconfirmed = create :email, user: user
-      user.reload
+    context 'when `include_private_email` is true' do
+      it 'returns all emails' do
+        expect(user.reload.all_emails).to contain_exactly(
+          user.email,
+          user.private_commit_email,
+          email_unconfirmed.email,
+          email_confirmed.email
+        )
+      end
+    end
 
-      expect(user.all_emails).to contain_exactly(
-        user.email,
-        user.private_commit_email,
-        email_unconfirmed.email,
-        email_confirmed.email
-      )
+    context 'when `include_private_email` is false' do
+      it 'does not include the private commit email' do
+        expect(user.reload.all_emails(include_private_email: false)).to contain_exactly(
+          user.email,
+          email_unconfirmed.email,
+          email_confirmed.email
+        )
+      end
     end
   end
 

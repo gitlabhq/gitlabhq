@@ -1186,12 +1186,16 @@ class User < ApplicationRecord
     Member.where(invite_email: verified_emails).invite
   end
 
-  def all_emails
+  def all_emails(include_private_email: true)
     all_emails = []
     all_emails << email unless temp_oauth_email?
-    all_emails << private_commit_email
+    all_emails << private_commit_email if include_private_email
     all_emails.concat(emails.map(&:email))
     all_emails
+  end
+
+  def all_public_emails
+    all_emails(include_private_email: false)
   end
 
   def verified_emails
