@@ -49,9 +49,9 @@ Docker pulls and pushes and re-run any CI pipelines to retrieve any build artifa
 
 ## Migrating between two self-hosted GitLab instances
 
-The best method for migrating a project from one GitLab instance to another,
+The best method for migrating from one GitLab instance to another,
 perhaps from an old server to a new server for example, is to
-[back up the project](../../../raketasks/backup_restore.md),
+[back up the instance](../../../raketasks/backup_restore.md),
 then restore it on the new server.
 
 In the event of merging two GitLab instances together (for example, both instances have existing data on them and one can't be wiped),

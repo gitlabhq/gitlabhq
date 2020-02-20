@@ -64,7 +64,7 @@ We intend to add a similar SSO requirement for [Git and API activity](https://gi
 
 #### Group-managed accounts
 
-[Introduced in GitLab 12.1](https://gitlab.com/groups/gitlab-org/-/epics/709).
+> [Introduced in GitLab 12.1](https://gitlab.com/groups/gitlab-org/-/epics/709).
 
 When SSO is being enforced, groups can enable an additional level of protection by enforcing the creation of dedicated user accounts to access the group.
 
@@ -94,6 +94,14 @@ Owners who manage user accounts in a group can view the following details of per
 To access the Credentials inventory of a group, navigate to **{shield}** **Security & Compliance > Credentials** in your group's sidebar.
 
 This feature is similar to the [Credentials inventory for self-managed instances](../../admin_area/credentials_inventory.md).
+
+##### Outer forks restriction for Group-managed accounts
+
+> [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/34648)
+
+Groups with enabled group-managed accounts can allow or disallow forking of projects outside of root group
+by using separate toggle. If forking is disallowed any project of given root group or its subgroups can be forked to
+a subgroup of the same root group only.
 
 #### Assertions
 

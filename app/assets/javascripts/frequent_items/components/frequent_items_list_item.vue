@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/require-default-prop */
-import _ from 'underscore';
+import { isEmpty, isString } from 'lodash';
 import Identicon from '~/vue_shared/components/identicon.vue';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     hasAvatar() {
-      return _.isString(this.avatarUrl) && !_.isEmpty(this.avatarUrl);
+      return isString(this.avatarUrl) && !isEmpty(this.avatarUrl);
     },
     truncatedNamespace() {
       return truncateNamespace(this.namespace);

@@ -3770,7 +3770,7 @@ ActiveRecord::Schema.define(version: 2020_02_13_220211) do
     t.string "sso_url", null: false
     t.boolean "enforced_sso", default: false, null: false
     t.boolean "enforced_group_managed_accounts", default: false, null: false
-    t.boolean "prohibited_outer_forks", default: false
+    t.boolean "prohibited_outer_forks", default: true, null: false
     t.index ["group_id"], name: "index_saml_providers_on_group_id"
   end
 

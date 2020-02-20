@@ -53,8 +53,8 @@ Here's a list of the AWS services we will use, with links to pricing information
   [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/).
 - **S3**: We will use S3 to store backups, artifacts, LFS objects, etc. See the
   [Amazon S3 pricing](https://aws.amazon.com/s3/pricing/).
-- **ALB**: An Application Load Balancer will be used to route requests to the
-  GitLab instance. See the [Amazon ELB pricing](https://aws.amazon.com/elasticloadbalancing/pricing/).
+- **ELB**: A Classic Load Balancer will be used to route requests to the
+  GitLab instances. See the [Amazon ELB pricing](https://aws.amazon.com/elasticloadbalancing/pricing/).
 - **RDS**: An Amazon Relational Database Service using PostgreSQL will be used
   to provide a High Availability database configuration. See the
   [Amazon RDS pricing](https://aws.amazon.com/rds/postgresql/pricing/).
@@ -291,27 +291,30 @@ and add a custom TCP rule for port `6379` accessible within itself.
 
 ## Load Balancer
 
-On the EC2 dashboard, look for Load Balancer on the left column:
+On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 
 1. Click the **Create Load Balancer** button.
-   1. Choose the Application Load Balancer.
-   1. Give it a name (`gitlab-loadbalancer`) and set the scheme to "internet-facing".
-   1. In the "Listeners" section, make sure it has HTTP and HTTPS.
-   1. In the "Availability Zones" section, select the `gitlab-vpc` we have created
-      and associate the **public subnets**.
-1. Click **Configure Security Settings** to go to the next section to
-   select the TLS certificate. When done, go to the next step.
-1. In the "Security Groups" section, create a new one by giving it a name
-   (`gitlab-loadbalancer-sec-group`) and allow both HTTP ad HTTPS traffic
+   1. Choose the **Classic Load Balancer**.
+   1. Give it a name (`gitlab-loadbalancer`) and for the **Create LB Inside** option, select `gitlab-vpc` from the dropdown menu.
+   1. In the **Listeners** section, set HTTP port 80, HTTPS port 443, and TCP port 22 for both load balancer and instance protocols and ports.
+   1. In the **Select Subnets** section, select both public subnets from the list.
+1. Click **Assign Security Groups** and select **Create a new security group**, give it a name
+   (`gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
    from anywhere (`0.0.0.0/0, ::/0`).
-1. In the next step, configure the routing and select an existing target group
-   (`gitlab-public`). The Load Balancer Health will allow us to indicate where to
-   ping and what makes up a healthy or unhealthy instance.
-1. Leave the "Register Targets" section as is, and finally review the settings
-   and create the ELB.
+1. Click **Configure Security Settings** and select an SSL/TLS certificate from ACM or upload a certificate to IAM.
+1. Click **Configure Health Check** and set up a health check for your EC2 instances.
+   1. For **Ping Protocol**, select HTTP.
+   1. For **Ping Port**, enter 80.
+   1. For **Ping Path**, enter `/explore`. (We use `/explore` as it's a public endpoint that does
+   not require authorization.)
+   1. Keep the default **Advanced Details** or adjust them according to your needs.
+1. For now, don't click **Add EC2 Instances**, as we don't have any instances to add yet. Come back
+to your load balancer after creating your GitLab instances and add them.
+1. Click **Add Tags** and add any tags you need.
+1. Click **Review and Create**, review all your settings, and click **Create** if you're happy.
 
 After the Load Balancer is up and running, you can revisit your Security
-Groups to refine the access only through the ELB and any other requirement
+Groups to refine the access only through the ELB and any other requirements
 you might have.
 
 ## Deploying GitLab inside an auto scaling group

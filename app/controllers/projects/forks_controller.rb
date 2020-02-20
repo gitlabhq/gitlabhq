@@ -3,6 +3,7 @@
 class Projects::ForksController < Projects::ApplicationController
   include ContinueParams
   include RendersMemberAccess
+  include Gitlab::Utils::StrongMemoize
 
   # Authorize
   before_action :whitelist_query_limiting, only: [:create]
@@ -10,6 +11,7 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authenticate_user!, only: [:new, :create]
   before_action :authorize_fork_project!, only: [:new, :create]
+  before_action :authorize_fork_namespace!, only: [:create]
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index
@@ -37,18 +39,15 @@ class Projects::ForksController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def new
-    @namespaces = current_user.manageable_namespaces
-    @namespaces.delete(@project.namespace)
+    @namespaces = fork_service.valid_fork_targets
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def create
-    namespace = Namespace.find(params[:namespace_key])
-
-    @forked_project = namespace.projects.find_by(path: project.path)
+    @forked_project = fork_namespace.projects.find_by(path: project.path)
     @forked_project = nil unless @forked_project && @forked_project.forked_from_project == project
 
-    @forked_project ||= ::Projects::ForkService.new(project, current_user, namespace: namespace).execute
+    @forked_project ||= fork_service.execute
 
     if !@forked_project.saved? || !@forked_project.forked?
       render :error
@@ -63,6 +62,22 @@ class Projects::ForksController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   private
+
+  def fork_service
+    strong_memoize(:fork_service) do
+      ::Projects::ForkService.new(project, current_user, namespace: fork_namespace)
+    end
+  end
+
+  def fork_namespace
+    strong_memoize(:fork_namespace) do
+      Namespace.find(params[:namespace_key]) if params[:namespace_key].present?
+    end
+  end
+
+  def authorize_fork_namespace!
+    access_denied! unless fork_namespace && fork_service.valid_fork_target?
+  end
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42335')

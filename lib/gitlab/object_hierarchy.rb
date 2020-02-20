@@ -51,7 +51,7 @@ module Gitlab
     # and all their ancestors (recursively).
     #
     # Passing an `upto` will stop the recursion once the specified parent_id is
-    # reached. So all ancestors *lower* than the specified acestor will be
+    # reached. So all ancestors *lower* than the specified ancestor will be
     # included.
     #
     # Passing a `hierarchy_order` with either `:asc` or `:desc` will cause the

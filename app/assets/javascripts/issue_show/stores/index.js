@@ -1,4 +1,3 @@
-import _ from 'underscore';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import updateDescription from '../utils/update_description';
 
@@ -26,7 +25,7 @@ export default class Store {
       '.detail-page-description.content-block',
     );
     const details =
-      !_.isNull(descriptionSection) && descriptionSection.getElementsByTagName('details');
+      descriptionSection != null && descriptionSection.getElementsByTagName('details');
 
     this.state.descriptionHtml = updateDescription(data.description, details);
     this.state.titleHtml = data.title;

@@ -68,6 +68,7 @@ class Namespace < ApplicationRecord
   after_destroy :rm_dir
 
   scope :for_user, -> { where('type IS NULL') }
+  scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
@@ -326,7 +327,10 @@ class Namespace < ApplicationRecord
   end
 
   def pages_virtual_domain
-    Pages::VirtualDomain.new(all_projects_with_pages, trim_prefix: full_path)
+    Pages::VirtualDomain.new(
+      all_projects_with_pages.includes(:route, :project_feature),
+      trim_prefix: full_path
+    )
   end
 
   def closest_setting(name)

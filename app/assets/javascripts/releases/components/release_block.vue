@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import $ from 'jquery';
 import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash } from '~/lib/utils/url_utility';
@@ -64,7 +64,7 @@ export default {
       return !this.glFeatures.releaseIssueSummary;
     },
     shouldRenderMilestoneInfo() {
-      return Boolean(this.glFeatures.releaseIssueSummary && !_.isEmpty(this.release.milestones));
+      return Boolean(this.glFeatures.releaseIssueSummary && !isEmpty(this.release.milestones));
     },
   },
 

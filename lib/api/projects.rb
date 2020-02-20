@@ -267,18 +267,16 @@ module API
       post ':id/fork' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42284')
 
+        not_found! unless can?(current_user, :fork_project, user_project)
+
         fork_params = declared_params(include_missing: false)
-        namespace_id = fork_params[:namespace]
+        fork_params[:namespace] = find_namespace!(fork_params[:namespace]) if fork_params[:namespace].present?
 
-        if namespace_id.present?
-          fork_params[:namespace] = find_namespace(namespace_id)
+        service = ::Projects::ForkService.new(user_project, current_user, fork_params)
 
-          unless fork_params[:namespace] && can?(current_user, :create_projects, fork_params[:namespace])
-            not_found!('Target Namespace')
-          end
-        end
+        not_found!('Target Namespace') unless service.valid_fork_target?
 
-        forked_project = ::Projects::ForkService.new(user_project, current_user, fork_params).execute
+        forked_project = service.execute
 
         if forked_project.errors.any?
           conflict!(forked_project.errors.messages)

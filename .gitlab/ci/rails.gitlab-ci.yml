@@ -238,6 +238,12 @@ rspec quarantine pg9:
     - .rails:rules:master-refs-code-backstage
     - .use-pg10
 
+rspec migration pg10:
+  extends:
+    - .rspec-base-pg10
+    - .rspec-base-migration
+  parallel: 2
+
 rspec unit pg10:
   extends: .rspec-base-pg10
   parallel: 20
@@ -251,6 +257,34 @@ rspec system pg10:
   parallel: 24
 # master-only jobs #
 ####################
+
+############################
+# nightly master-only jobs #
+.rspec-base-pg11:
+  extends:
+    - .rspec-base
+    - .rails:rules:nightly-master-refs-code-backstage
+    - .use-pg11
+
+rspec migration pg11:
+  extends:
+    - .rspec-base-pg11
+    - .rspec-base-migration
+  parallel: 2
+
+rspec unit pg11:
+  extends: .rspec-base-pg11
+  parallel: 20
+
+rspec integration pg11:
+  extends: .rspec-base-pg11
+  parallel: 8
+
+rspec system pg11:
+  extends: .rspec-base-pg11
+  parallel: 24
+# nightly master-only jobs #
+############################
 
 #########################
 # ee + master-only jobs #

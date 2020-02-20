@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { GlButton, GlFormInput, GlFormGroup } from '@gitlab/ui';
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import { __, sprintf } from '~/locale';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
@@ -50,7 +50,7 @@ export default {
           'Changing a Release tag is only supported via Releases API. %{linkStart}More information%{linkEnd}',
         ),
         {
-          linkStart: `<a href="${_.escape(
+          linkStart: `<a href="${esc(
             this.updateReleaseApiDocsPath,
           )}" target="_blank" rel="noopener noreferrer">`,
           linkEnd: '</a>',

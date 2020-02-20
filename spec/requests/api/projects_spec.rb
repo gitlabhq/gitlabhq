@@ -2698,20 +2698,14 @@ describe API::Projects do
       create(:project, :repository, creator: user, namespace: user.namespace)
     end
 
-    let(:group) { create(:group) }
-    let(:group2) do
-      group = create(:group, name: 'group2_name')
-      group.add_maintainer(user2)
-      group
-    end
-
-    let(:group3) do
-      group = create(:group, name: 'group3_name', parent: group2)
-      group.add_owner(user2)
-      group
-    end
+    let(:group) { create(:group, :public) }
+    let(:group2) { create(:group, name: 'group2_name') }
+    let(:group3) { create(:group, name: 'group3_name', parent: group2) }
 
     before do
+      group.add_guest(user2)
+      group2.add_maintainer(user2)
+      group3.add_owner(user2)
       project.add_reporter(user2)
       project2.add_reporter(user2)
     end
@@ -2720,7 +2714,7 @@ describe API::Projects do
       it 'forks if user has sufficient access to project' do
         post api("/projects/#{project.id}/fork", user2)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(project.name)
         expect(json_response['path']).to eq(project.path)
         expect(json_response['owner']['id']).to eq(user2.id)
@@ -2733,7 +2727,7 @@ describe API::Projects do
       it 'forks if user is admin' do
         post api("/projects/#{project.id}/fork", admin)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(project.name)
         expect(json_response['path']).to eq(project.path)
         expect(json_response['owner']['id']).to eq(admin.id)
@@ -2747,14 +2741,17 @@ describe API::Projects do
         new_user = create(:user)
         post api("/projects/#{project.id}/fork", new_user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Project Not Found')
       end
 
       it 'fails if forked project exists in the user namespace' do
-        post api("/projects/#{project.id}/fork", user)
+        new_project = create(:project, name: project.name, path: project.path)
+        new_project.add_reporter(user)
 
-        expect(response).to have_gitlab_http_status(409)
+        post api("/projects/#{new_project.id}/fork", user)
+
+        expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']['name']).to eq(['has already been taken'])
         expect(json_response['message']['path']).to eq(['has already been taken'])
       end
@@ -2762,48 +2759,48 @@ describe API::Projects do
       it 'fails if project to fork from does not exist' do
         post api('/projects/424242/fork', user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Project Not Found')
       end
 
       it 'forks with explicit own user namespace id' do
         post api("/projects/#{project.id}/fork", user2), params: { namespace: user2.namespace.id }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['owner']['id']).to eq(user2.id)
       end
 
       it 'forks with explicit own user name as namespace' do
         post api("/projects/#{project.id}/fork", user2), params: { namespace: user2.username }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['owner']['id']).to eq(user2.id)
       end
 
       it 'forks to another user when admin' do
         post api("/projects/#{project.id}/fork", admin), params: { namespace: user2.username }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['owner']['id']).to eq(user2.id)
       end
 
       it 'fails if trying to fork to another user when not admin' do
         post api("/projects/#{project.id}/fork", user2), params: { namespace: admin.namespace.id }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'fails if trying to fork to non-existent namespace' do
         post api("/projects/#{project.id}/fork", user2), params: { namespace: 42424242 }
 
-        expect(response).to have_gitlab_http_status(404)
-        expect(json_response['message']).to eq('404 Target Namespace Not Found')
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Namespace Not Found')
       end
 
       it 'forks to owned group' do
         post api("/projects/#{project.id}/fork", user2), params: { namespace: group2.name }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['namespace']['name']).to eq(group2.name)
       end
 
@@ -2811,7 +2808,7 @@ describe API::Projects do
         full_path = "#{group2.path}/#{group3.path}"
         post api("/projects/#{project.id}/fork", user2), params: { namespace: full_path }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['namespace']['name']).to eq(group3.name)
         expect(json_response['namespace']['full_path']).to eq(full_path)
       end
@@ -2819,20 +2816,21 @@ describe API::Projects do
       it 'fails to fork to not owned group' do
         post api("/projects/#{project.id}/fork", user2), params: { namespace: group.name }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq("404 Target Namespace Not Found")
       end
 
       it 'forks to not owned group when admin' do
         post api("/projects/#{project.id}/fork", admin), params: { namespace: group.name }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['namespace']['name']).to eq(group.name)
       end
 
       it 'accepts a path for the target project' do
         post api("/projects/#{project.id}/fork", user2), params: { path: 'foobar' }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(project.name)
         expect(json_response['path']).to eq('foobar')
         expect(json_response['owner']['id']).to eq(user2.id)
@@ -2846,14 +2844,14 @@ describe API::Projects do
         post api("/projects/#{project.id}/fork", user2), params: { path: 'foobar' }
         post api("/projects/#{project2.id}/fork", user2), params: { path: 'foobar' }
 
-        expect(response).to have_gitlab_http_status(409)
+        expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']['path']).to eq(['has already been taken'])
       end
 
       it 'accepts a name for the target project' do
         post api("/projects/#{project.id}/fork", user2), params: { name: 'My Random Project' }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq('My Random Project')
         expect(json_response['path']).to eq(project.path)
         expect(json_response['owner']['id']).to eq(user2.id)
@@ -2867,7 +2865,7 @@ describe API::Projects do
         post api("/projects/#{project.id}/fork", user2), params: { name: 'My Random Project' }
         post api("/projects/#{project2.id}/fork", user2), params: { name: 'My Random Project' }
 
-        expect(response).to have_gitlab_http_status(409)
+        expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']['name']).to eq(['has already been taken'])
       end
     end
@@ -2876,7 +2874,7 @@ describe API::Projects do
       it 'returns authentication error' do
         post api("/projects/#{project.id}/fork")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
         expect(json_response['message']).to eq('401 Unauthorized')
       end
     end
@@ -2890,8 +2888,7 @@ describe API::Projects do
       it 'denies project to be forked' do
         post api("/projects/#{project.id}/fork", admin)
 
-        expect(response).to have_gitlab_http_status(409)
-        expect(json_response['message']['forked_from_project_id']).to eq(['is forbidden'])
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

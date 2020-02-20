@@ -22,6 +22,9 @@
 .if-merge-request: &if-merge-request
   if: '$CI_MERGE_REQUEST_IID'
 
+.if-nightly-master-schedule: &if-nightly-master-schedule
+  if: '$NIGHTLY && $CI_COMMIT_REF_NAME == "master" && $CI_PIPELINE_SOURCE == "schedule"'
+
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
@@ -340,6 +343,12 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-master-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.rails:rules:nightly-master-refs-code-backstage:
+  rules:
+    - <<: *if-nightly-master-schedule
       changes: *code-backstage-patterns
       when: on_success
 
