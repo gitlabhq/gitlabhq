@@ -95,6 +95,10 @@ class Environment < ApplicationRecord
     end
   end
 
+  def self.for_id_and_slug(id, slug)
+    find_by(id: id, slug: slug)
+  end
+
   def self.max_deployment_id_sql
     Deployment.select(Deployment.arel_table[:id].maximum)
     .where(Deployment.arel_table[:environment_id].eq(arel_table[:id]))

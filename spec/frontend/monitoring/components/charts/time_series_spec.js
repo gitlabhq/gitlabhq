@@ -16,8 +16,6 @@ import {
 } from '../../mock_data';
 import * as iconUtils from '~/lib/utils/icon_utils';
 
-const mockWidgets = 'mockWidgets';
-
 const mockSvgPathContent = 'mockSvgPathContent';
 
 jest.mock('lodash/throttle', () =>
@@ -65,9 +63,6 @@ describe('Time series component', () => {
           deploymentData: store.state.monitoringDashboard.deploymentData,
           projectPath: `${mockHost}${mockProjectDir}`,
         },
-        slots: {
-          default: mockWidgets,
-        },
         store,
       });
   });
@@ -80,14 +75,6 @@ describe('Time series component', () => {
     beforeEach(done => {
       timeSeriesChart = makeTimeSeriesChart(mockGraphData, 'area-chart');
       timeSeriesChart.vm.$nextTick(done);
-    });
-
-    it('renders chart title', () => {
-      expect(timeSeriesChart.find('.js-graph-title').text()).toBe(mockGraphData.title);
-    });
-
-    it('contains graph widgets from slot', () => {
-      expect(timeSeriesChart.find('.js-graph-widgets').text()).toBe(mockWidgets);
     });
 
     it('allows user to override max value label text using prop', () => {

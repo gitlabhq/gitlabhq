@@ -16,11 +16,18 @@ module Serverless
       algorithm: 'aes-256-gcm'
 
     validates :pages_domain, :knative, presence: true
-    validates :uuid, presence: true, uniqueness: true, length: { is: Gitlab::Serverless::Domain::UUID_LENGTH },
+    validates :uuid, presence: true, uniqueness: true, length: { is: ::Serverless::Domain::UUID_LENGTH },
               format: { with: HEX_REGEXP, message: 'only allows hex characters' }
 
-    default_value_for(:uuid, allows_nil: false) { Gitlab::Serverless::Domain.generate_uuid }
+    default_value_for(:uuid, allows_nil: false) { ::Serverless::Domain.generate_uuid }
 
     delegate :domain, to: :pages_domain
+    delegate :cluster, to: :knative
+
+    def self.for_uuid(uuid)
+      joins(:pages_domain, :knative)
+        .includes(:pages_domain, :knative)
+        .find_by(uuid: uuid)
+    end
   end
 end

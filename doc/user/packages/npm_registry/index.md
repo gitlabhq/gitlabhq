@@ -280,7 +280,7 @@ page.
 To work with NPM commands within [GitLab CI](./../../../ci/README.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token in your commands.
 
-A simple example `gitlab-ci.yml` file for publishing NPM packages:
+A simple example `.gitlab-ci.yml` file for publishing NPM packages:
 
 ```yml
 image: node:latest

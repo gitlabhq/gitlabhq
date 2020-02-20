@@ -1,0 +1,5 @@
+---
+title: Remove unused loading spinner from badge_settings partial
+merge_request: 25044
+author: nuwe1
+type: other

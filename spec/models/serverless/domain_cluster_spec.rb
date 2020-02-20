@@ -10,7 +10,7 @@ describe ::Serverless::DomainCluster do
     it { is_expected.to validate_presence_of(:knative) }
 
     it { is_expected.to validate_presence_of(:uuid) }
-    it { is_expected.to validate_length_of(:uuid).is_equal_to(Gitlab::Serverless::Domain::UUID_LENGTH) }
+    it { is_expected.to validate_length_of(:uuid).is_equal_to(::Serverless::Domain::UUID_LENGTH) }
     it { is_expected.to validate_uniqueness_of(:uuid) }
 
     it 'validates that uuid has only hex characters' do
@@ -31,7 +31,7 @@ describe ::Serverless::DomainCluster do
     context 'when nil' do
       it 'generates a value by default' do
         attributes = build(:serverless_domain_cluster).attributes.merge(uuid: nil)
-        expect(Gitlab::Serverless::Domain).to receive(:generate_uuid).and_call_original
+        expect(::Serverless::Domain).to receive(:generate_uuid).and_call_original
 
         subject = Serverless::DomainCluster.new(attributes)
 
@@ -45,6 +45,10 @@ describe ::Serverless::DomainCluster do
         expect(build(:serverless_domain_cluster, uuid: uuid).uuid).to eq(uuid)
       end
     end
+  end
+
+  describe 'cluster' do
+    it { is_expected.to respond_to(:cluster) }
   end
 
   describe 'domain' do

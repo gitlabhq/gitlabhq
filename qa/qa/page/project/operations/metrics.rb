@@ -12,11 +12,8 @@ module QA
             element :prometheus_graphs
           end
 
-          view 'app/assets/javascripts/monitoring/components/charts/time_series.vue' do
-            element :prometheus_graph_widgets
-          end
-
           view 'app/assets/javascripts/monitoring/components/panel_type.vue' do
+            element :prometheus_graph_widgets
             element :prometheus_widgets_dropdown
             element :alert_widget_menu_item
           end

@@ -74,6 +74,18 @@ describe('Panel Type component', () => {
         glEmptyChart = wrapper.find(EmptyChart);
       });
 
+      it('renders the chart title', () => {
+        expect(wrapper.find({ ref: 'graphTitle' }).text()).toBe(graphDataNoResult.title);
+      });
+
+      it('renders the no download csv link', () => {
+        expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(false);
+      });
+
+      it('does not contain graph widgets', () => {
+        expect(wrapper.find('.js-graph-widgets').exists()).toBe(false);
+      });
+
       it('is a Vue instance', () => {
         expect(glEmptyChart.isVueInstance()).toBe(true);
       });
@@ -95,6 +107,15 @@ describe('Panel Type component', () => {
 
     afterEach(() => {
       wrapper.destroy();
+    });
+
+    it('renders the chart title', () => {
+      expect(wrapper.find({ ref: 'graphTitle' }).text()).toBe(graphDataPrometheusQueryRange.title);
+    });
+
+    it('contains graph widgets', () => {
+      expect(wrapper.find('.js-graph-widgets').exists()).toBe(true);
+      expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(true);
     });
 
     it('sets no clipboard copy link on dropdown by default', () => {

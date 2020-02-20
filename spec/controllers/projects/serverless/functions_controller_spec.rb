@@ -135,7 +135,7 @@ describe Projects::Serverless::FunctionsController do
 
         context 'when there is no serverless domain for a cluster' do
           it 'keeps function URL as it was' do
-            expect(Gitlab::Serverless::Domain).not_to receive(:new)
+            expect(::Serverless::Domain).not_to receive(:new)
 
             get :index, params: params({ format: :json })
             expect(response).to have_gitlab_http_status(:ok)

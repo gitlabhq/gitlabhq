@@ -60,7 +60,11 @@ class Gitlab::Serverless::Service
 
   def proxy_url
     if cluster&.serverless_domain
-      Gitlab::Serverless::FunctionURI.new(function: name, cluster: cluster.serverless_domain, environment: environment)
+      ::Serverless::Domain.new(
+        function_name: name,
+        serverless_domain_cluster: cluster.serverless_domain,
+        environment: environment
+      ).uri.to_s
     end
   end
 

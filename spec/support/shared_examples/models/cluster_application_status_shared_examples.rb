@@ -48,14 +48,44 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
         expect(subject).to be_installed
       end
 
-      it 'updates helm version' do
-        subject.cluster.application_helm.update!(version: '1.2.3')
+      context 'managed_apps_local_tiller feature flag disabled' do
+        before do
+          stub_feature_flags(managed_apps_local_tiller: false)
+        end
 
-        subject.make_installed!
+        it 'updates helm version' do
+          subject.cluster.application_helm.update!(version: '1.2.3')
 
-        subject.cluster.application_helm.reload
+          subject.make_installed!
 
-        expect(subject.cluster.application_helm.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
+          subject.cluster.application_helm.reload
+
+          expect(subject.cluster.application_helm.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
+        end
+      end
+
+      context 'managed_apps_local_tiller feature flag enabled' do
+        before do
+          stub_feature_flags(managed_apps_local_tiller: true)
+        end
+
+        it 'does not update the helm version' do
+          subject.cluster.application_helm.update!(version: '1.2.3')
+
+          expect do
+            subject.make_installed!
+
+            subject.cluster.application_helm.reload
+          end.not_to change { subject.cluster.application_helm.version }
+        end
+
+        context 'the cluster has no helm installed' do
+          subject { create(application_name, :installing, :no_helm_installed) }
+
+          it 'runs without errors' do
+            expect { subject.make_installed! }.not_to raise_error
+          end
+        end
       end
 
       it 'sets the correct version of the application' do
@@ -77,14 +107,44 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
           expect(subject).to be_updated
         end
 
-        it 'updates helm version' do
-          subject.cluster.application_helm.update!(version: '1.2.3')
+        context 'managed_apps_local_tiller feature flag disabled' do
+          before do
+            stub_feature_flags(managed_apps_local_tiller: false)
+          end
 
-          subject.make_installed!
+          it 'updates helm version' do
+            subject.cluster.application_helm.update!(version: '1.2.3')
 
-          subject.cluster.application_helm.reload
+            subject.make_installed!
 
-          expect(subject.cluster.application_helm.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
+            subject.cluster.application_helm.reload
+
+            expect(subject.cluster.application_helm.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
+          end
+        end
+
+        context 'managed_apps_local_tiller feature flag enabled' do
+          before do
+            stub_feature_flags(managed_apps_local_tiller: true)
+          end
+
+          it 'does not update the helm version' do
+            subject.cluster.application_helm.update!(version: '1.2.3')
+
+            expect do
+              subject.make_installed!
+
+              subject.cluster.application_helm.reload
+            end.not_to change { subject.cluster.application_helm.version }
+          end
+
+          context 'the cluster has no helm installed' do
+            subject { create(application_name, :updating, :no_helm_installed) }
+
+            it 'runs without errors' do
+              expect { subject.make_installed! }.not_to raise_error
+            end
+          end
         end
 
         it 'updates the version of the application' do

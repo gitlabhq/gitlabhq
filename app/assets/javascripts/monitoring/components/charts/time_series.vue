@@ -112,7 +112,6 @@ export default {
         isDeployment: false,
         sha: '',
       },
-      showTitleTooltip: false,
       width: 0,
       height: chartHeight,
       svgs: {},
@@ -285,12 +284,6 @@ export default {
       return `${this.graphData.y_label}`;
     },
   },
-  mounted() {
-    const graphTitleEl = this.$refs.graphTitle;
-    if (graphTitleEl && graphTitleEl.scrollWidth > graphTitleEl.offsetWidth) {
-      this.showTitleTooltip = true;
-    }
-  },
   created() {
     this.setSvg('rocket');
     this.setSvg('scroll-handle');
@@ -387,24 +380,7 @@ export default {
 </script>
 
 <template>
-  <div v-gl-resize-observer-directive="onResize" class="prometheus-graph">
-    <div class="prometheus-graph-header">
-      <h5
-        ref="graphTitle"
-        class="prometheus-graph-title js-graph-title text-truncate append-right-8"
-      >
-        {{ graphData.title }}
-      </h5>
-      <gl-tooltip :target="() => $refs.graphTitle" :disabled="!showTitleTooltip">
-        {{ graphData.title }}
-      </gl-tooltip>
-      <div
-        class="prometheus-graph-widgets js-graph-widgets flex-fill"
-        data-qa-selector="prometheus_graph_widgets"
-      >
-        <slot></slot>
-      </div>
-    </div>
+  <div v-gl-resize-observer-directive="onResize">
     <component
       :is="glChartComponent"
       ref="chart"

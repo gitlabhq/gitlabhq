@@ -1264,6 +1264,14 @@ describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '.for_id_and_slug' do
+    subject { described_class.for_id_and_slug(environment.id, environment.slug) }
+
+    let(:environment) { create(:environment) }
+
+    it { is_expected.not_to be_nil }
+  end
+
   describe '.find_or_create_by_name' do
     it 'finds an existing environment if it exists' do
       env = create(:environment)

@@ -94,17 +94,19 @@ describe Gitlab::Serverless::Service do
   end
 
   describe '#url' do
+    let(:serverless_domain) { instance_double(::Serverless::Domain, uri: URI('https://proxy.example.com')) }
+
     it 'returns proxy URL if cluster has serverless domain' do
       # cluster = create(:cluster)
       knative = create(:clusters_applications_knative, :installed, cluster: cluster)
       create(:serverless_domain_cluster, clusters_applications_knative_id: knative.id)
       service = Gitlab::Serverless::Service.new(attributes.merge('cluster' => cluster))
 
-      expect(Gitlab::Serverless::FunctionURI).to receive(:new).with(
-        function: service.name,
-        cluster: service.cluster.serverless_domain,
+      expect(::Serverless::Domain).to receive(:new).with(
+        function_name: service.name,
+        serverless_domain_cluster: service.cluster.serverless_domain,
         environment: service.environment
-      ).and_return('https://proxy.example.com')
+      ).and_return(serverless_domain)
 
       expect(service.url).to eq('https://proxy.example.com')
     end
