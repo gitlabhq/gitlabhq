@@ -2,7 +2,7 @@
   %h4.danger-title= _('Remove group')
   = form_tag(group, method: :delete) do
     %p
-      = _('Removing group will cause all child projects and resources to be removed.')
+      = _('Removing this group also removes all child projects, including archived projects, and their resources.')
       %br
       %strong= _('Removed group can not be restored!')
 

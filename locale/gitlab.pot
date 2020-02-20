@@ -16058,13 +16058,13 @@ msgstr ""
 msgid "Removing a project places it into a read-only state until %{date}, at which point the project will be permanently removed."
 msgstr ""
 
-msgid "Removing group will cause all child projects and resources to be removed."
-msgstr ""
-
 msgid "Removing license…"
 msgstr ""
 
 msgid "Removing the project will delete its repository and all related resources including issues, merge requests etc."
+msgstr ""
+
+msgid "Removing this group also removes all child projects, including archived projects, and their resources."
 msgstr ""
 
 msgid "Rename file"

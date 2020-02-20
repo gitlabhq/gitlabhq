@@ -18,6 +18,8 @@ GET /projects/:id/packages
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
+| `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/packages
@@ -61,6 +63,8 @@ GET /groups/:id/packages
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | ID or [URL-encoded path of the group](README.md#namespaced-path-encoding). |
 | `exclude_subgroups` | boolean | false | If the param is included as true, packages from projects from subgroups are not listed. Default is `false`. |
+| `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
+| `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=true
