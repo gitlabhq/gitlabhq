@@ -381,6 +381,14 @@ module ProjectsHelper
     @project.grafana_integration&.enabled?
   end
 
+  def project_license_name(project)
+    project.repository.license&.name
+  rescue GRPC::Unavailable, GRPC::DeadlineExceeded, Gitlab::Git::CommandError => e
+    Gitlab::ErrorTracking.track_exception(e)
+
+    nil
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)

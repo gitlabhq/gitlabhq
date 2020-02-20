@@ -994,4 +994,56 @@ describe ProjectsHelper do
       it { is_expected.to eq(grafana_integration.enabled) }
     end
   end
+
+  describe '#project_license_name(project)' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:repository) { project.repository }
+
+    subject { project_license_name(project) }
+
+    context 'gitaly is working appropriately' do
+      it 'returns the license name' do
+        license = Licensee::License.new('mit')
+        allow(repository).to receive(:license).and_return(license)
+
+        expect(subject).to eq(license.name)
+      end
+    end
+
+    context 'gitaly is unreachable' do
+      shared_examples 'returns nil and tracks exception' do
+        it { is_expected.to be_nil }
+
+        it 'tracks the exception' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            an_instance_of(exception)
+          )
+
+          subject
+        end
+      end
+
+      before do
+        allow(repository).to receive(:license).and_raise(exception)
+      end
+
+      context "Gitlab::Git::CommandError" do
+        let(:exception) { Gitlab::Git::CommandError }
+
+        it_behaves_like 'returns nil and tracks exception'
+      end
+
+      context "GRPC::Unavailable" do
+        let(:exception) { GRPC::Unavailable }
+
+        it_behaves_like 'returns nil and tracks exception'
+      end
+
+      context "GRPC::DeadlineExceeded" do
+        let(:exception) { GRPC::DeadlineExceeded }
+
+        it_behaves_like 'returns nil and tracks exception'
+      end
+    end
+  end
 end

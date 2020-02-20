@@ -1,3 +1,6 @@
+require 'gitlab/testing/request_blocker_middleware'
+require 'gitlab/testing/request_inspector_middleware'
+
 Rails.application.configure do
   # Make sure the middleware is inserted first in middleware chain
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RequestBlockerMiddleware)

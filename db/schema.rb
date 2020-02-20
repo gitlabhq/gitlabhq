@@ -1912,6 +1912,7 @@ ActiveRecord::Schema.define(version: 2020_02_14_034836) do
     t.bigint "gitlab_subscription_id", null: false
     t.datetime_with_timezone "created_at"
     t.date "trial_starts_on"
+    t.boolean "auto_renew"
     t.index ["gitlab_subscription_id"], name: "index_gitlab_subscription_histories_on_gitlab_subscription_id"
   end
 
@@ -1927,6 +1928,7 @@ ActiveRecord::Schema.define(version: 2020_02_14_034836) do
     t.integer "seats", default: 0
     t.boolean "trial", default: false
     t.date "trial_starts_on"
+    t.boolean "auto_renew"
     t.index ["hosted_plan_id"], name: "index_gitlab_subscriptions_on_hosted_plan_id"
     t.index ["namespace_id"], name: "index_gitlab_subscriptions_on_namespace_id", unique: true
   end
