@@ -1,5 +1,0 @@
----
-title: Eliminate statement timeouts when namespace is blank
-merge_request: 23839
-author:
-type: fixed

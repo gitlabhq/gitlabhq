@@ -1,5 +1,0 @@
----
-title: Add admin settings panel for instance-level serverless domain (behind feature flag)
-merge_request: 21222
-author:
-type: added

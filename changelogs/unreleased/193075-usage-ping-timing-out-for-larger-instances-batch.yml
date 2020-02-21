@@ -1,5 +1,0 @@
----
-title: Fix usage ping timeouts with batch counters
-merge_request: 22705
-author:
-type: performance

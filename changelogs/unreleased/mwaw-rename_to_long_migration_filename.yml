@@ -1,5 +1,0 @@
----
-title: Rename too long migration filename to address gem packaging limitations.
-merge_request:
-author:
-type: fixed

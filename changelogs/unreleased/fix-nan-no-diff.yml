@@ -1,5 +1,0 @@
----
-title: Fix showing 'NaN files' when a MR diff does not have any changes
-merge_request: 24002
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Replace custom action array in CI header bar with <slot>
-merge_request: 22839
-author: Fabio Huser
-type: other

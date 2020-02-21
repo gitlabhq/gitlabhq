@@ -1,5 +1,0 @@
----
-title: Use CTE optimization fence for loading projects in dashboard
-merge_request: 23754
-author:
-type: performance

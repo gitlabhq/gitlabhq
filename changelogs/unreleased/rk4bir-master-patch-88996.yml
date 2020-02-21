@@ -1,5 +1,0 @@
----
-title: Migrate from class .fa-spinner to .spinner in app/assets/javascripts/gfm_auto_complete.js
-merge_request: 25039
-author: rk4bir
-type: changed

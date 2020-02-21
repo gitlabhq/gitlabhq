@@ -1,5 +1,0 @@
----
-title: Deprecate /admin/application_settings in favor of /admin/application_settings/general. The former path is to be removed in 13.0.
-merge_request: 22252
-author: Alexander Oleynikov
-type: changed

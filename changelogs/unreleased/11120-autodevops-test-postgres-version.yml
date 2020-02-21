@@ -1,5 +1,0 @@
----
-title: Use POSTGRES_VERSION variable in Auto DevOps Test stage
-merge_request: 22884
-author: Serban Marti
-type: fixed

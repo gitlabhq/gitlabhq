@@ -1,5 +1,0 @@
----
-title: Default the `creation of a Mattermost team` checkbox to false
-merge_request: 23329
-author: briankabiro
-type: changed

@@ -1,5 +1,0 @@
----
-title: Ensure that error tracking frontend only polls when required
-merge_request: 23305
-author:
-type: fixed

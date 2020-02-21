@@ -1,6 +1,0 @@
----
-title: Ensure New Snippet button is displayed based on the :create_snippet permission
-  in Project Snippets page and User profile > Snippets tab
-merge_request: 55240
-author:
-type: fixed

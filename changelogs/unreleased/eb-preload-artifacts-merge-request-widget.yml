@@ -1,6 +1,0 @@
----
-title: Fix N+1 queries caused by loading job artifacts archive in pipeline details
-  entity
-merge_request: 25250
-author:
-type: fixed

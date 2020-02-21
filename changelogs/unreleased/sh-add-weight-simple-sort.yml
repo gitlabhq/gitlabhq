@@ -1,5 +1,0 @@
----
-title: Optimize issue search when sorting by weight
-merge_request: 24208
-author:
-type: performance

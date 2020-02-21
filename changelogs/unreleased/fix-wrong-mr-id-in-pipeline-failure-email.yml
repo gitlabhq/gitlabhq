@@ -1,5 +1,0 @@
----
-title: Fix wrong MR link is shown on pipeline failure email
-merge_request:
-author:
-type: fixed

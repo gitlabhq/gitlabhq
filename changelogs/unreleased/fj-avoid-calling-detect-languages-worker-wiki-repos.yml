@@ -1,5 +1,0 @@
----
-title: Call DetectRepositoryLanguagesWorker only for project repositories
-merge_request: 23696
-author:
-type: fixed

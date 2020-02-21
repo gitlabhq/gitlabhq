@@ -1,6 +1,0 @@
----
-title: Prevent unnecessary Gitaly calls when rendering comment excerpts in todos and
-  activity feed
-merge_request: 23100
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: 'Geo: Fix GeoNode name in geo:update_primary_node_url rake task'
-merge_request: 24649
-author:
-type: fixed

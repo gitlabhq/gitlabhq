@@ -1,5 +1,0 @@
----
-title: Replaced underscore with lodash for spec/javascripts/vue_shared/components
-merge_request: 25018
-author: Shubham Pandey
-type: other

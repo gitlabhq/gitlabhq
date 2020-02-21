@@ -1,6 +1,0 @@
----
-title: Fix inconditionally setting user profile to public when updating via
-  API and private_profile parameter is not present in the request
-merge_request: 24456
-author: Diego Louzán
-type: fixed

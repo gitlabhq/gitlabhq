@@ -1,5 +1,0 @@
----
-title: Eliminate Gitaly N+1 queries loading submodules
-merge_request: 23292
-author:
-type: performance
