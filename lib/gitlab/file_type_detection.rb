@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# The method `filename` must be defined in classes that use this module.
+# The method `filename` must be defined in classes that mix in this module.
 #
 # This module is intended to be used as a helper and not a security gate
 # to validate that a file is safe, as it identifies files only by the
@@ -34,6 +34,13 @@ module Gitlab
     DANGEROUS_IMAGE_EXT = %w[svg].freeze
     DANGEROUS_VIDEO_EXT = [].freeze # None, yet
     DANGEROUS_AUDIO_EXT = [].freeze # None, yet
+
+    def self.extension_match?(filename, extensions)
+      return false unless filename.present?
+
+      extension = File.extname(filename).delete('.')
+      extensions.include?(extension.downcase)
+    end
 
     def image?
       extension_match?(SAFE_IMAGE_EXT)
@@ -74,10 +81,7 @@ module Gitlab
     private
 
     def extension_match?(extensions)
-      return false unless filename
-
-      extension = File.extname(filename).delete('.')
-      extensions.include?(extension.downcase)
+      ::Gitlab::FileTypeDetection.extension_match?(filename, extensions)
     end
   end
 end

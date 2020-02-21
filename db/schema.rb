@@ -1417,10 +1417,11 @@ ActiveRecord::Schema.define(version: 2020_02_20_180944) do
     t.index ["project_id"], name: "index_design_management_designs_on_project_id"
   end
 
-  create_table "design_management_designs_versions", id: false, force: :cascade do |t|
+  create_table "design_management_designs_versions", force: :cascade do |t|
     t.bigint "design_id", null: false
     t.bigint "version_id", null: false
     t.integer "event", limit: 2, default: 0, null: false
+    t.string "image_v432x230", limit: 255
     t.index ["design_id", "version_id"], name: "design_management_designs_versions_uniqueness", unique: true
     t.index ["design_id"], name: "index_design_management_designs_versions_on_design_id"
     t.index ["event"], name: "index_design_management_designs_versions_on_event"
@@ -1652,14 +1653,6 @@ ActiveRecord::Schema.define(version: 2020_02_20_180944) do
     t.integer "root_project_id"
     t.string "deleted_root_project_name"
     t.index ["root_project_id"], name: "index_fork_networks_on_root_project_id", unique: true
-  end
-
-  create_table "forked_project_links", id: :serial, force: :cascade do |t|
-    t.integer "forked_to_project_id", null: false
-    t.integer "forked_from_project_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true
   end
 
   create_table "geo_cache_invalidation_events", force: :cascade do |t|
@@ -4747,7 +4740,6 @@ ActiveRecord::Schema.define(version: 2020_02_20_180944) do
   add_foreign_key "fork_network_members", "projects", column: "forked_from_project_id", name: "fk_b01280dae4", on_delete: :nullify
   add_foreign_key "fork_network_members", "projects", on_delete: :cascade
   add_foreign_key "fork_networks", "projects", column: "root_project_id", name: "fk_e7b436b2b5", on_delete: :nullify
-  add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
   add_foreign_key "geo_container_repository_updated_events", "container_repositories", name: "fk_212c89c706", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_cache_invalidation_events", column: "cache_invalidation_event_id", name: "fk_42c3b54bed", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_container_repository_updated_events", column: "container_repository_updated_event_id", name: "fk_6ada82d42a", on_delete: :cascade

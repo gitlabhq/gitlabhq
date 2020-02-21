@@ -73,6 +73,9 @@ gitlab-rake "gitlab:uploads:migrate[FileUploader, Project]"
 gitlab-rake "gitlab:uploads:migrate[PersonalFileUploader, Snippet]"
 gitlab-rake "gitlab:uploads:migrate[NamespaceFileUploader, Snippet]"
 gitlab-rake "gitlab:uploads:migrate[FileUploader, MergeRequest]"
+
+# Design Management design thumbnails (EE)
+gitlab-rake "gitlab:uploads:migrate[DesignManagement::DesignV432x230Uploader, DesignManagement::Action, :image_v432x230]"
 ```
 
 **Source Installation**
@@ -102,6 +105,8 @@ sudo -u git -H bundle exec rake "gitlab:uploads:migrate[PersonalFileUploader, Sn
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[NamespaceFileUploader, Snippet]"
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, MergeRequest]"
 
+# Design Management design thumbnails (EE)
+sudo -u git -H bundle exec rake "gitlab:uploads:migrate[DesignManagement::DesignV432x230Uploader, DesignManagement::Action]"
 ```
 
 ## Migrate legacy uploads out of deprecated paths

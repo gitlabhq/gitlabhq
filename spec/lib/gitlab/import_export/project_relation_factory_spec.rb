@@ -6,7 +6,6 @@ describe Gitlab::ImportExport::ProjectRelationFactory do
   let(:group)   { create(:group) }
   let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
-  let(:merge_requests_mapping) { {} }
   let(:user) { create(:admin) }
   let(:excluded_keys) { [] }
   let(:created_object) do
@@ -14,7 +13,6 @@ describe Gitlab::ImportExport::ProjectRelationFactory do
                            relation_hash: relation_hash,
                            object_builder: Gitlab::ImportExport::GroupProjectObjectBuilder,
                            members_mapper: members_mapper,
-                           merge_requests_mapping: merge_requests_mapping,
                            user: user,
                            importable: project,
                            excluded_keys: excluded_keys)

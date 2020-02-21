@@ -567,6 +567,8 @@ designs: *design
 actions:
 - design
 - version
+- uploads
+- file_uploads
 versions: &version
 - author
 - issue

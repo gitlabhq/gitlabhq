@@ -1,0 +1,5 @@
+---
+title: Add missing arguments to UpdateIssue mutation
+merge_request: 25268
+author:
+type: added

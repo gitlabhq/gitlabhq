@@ -7,7 +7,6 @@ describe Gitlab::ImportExport::BaseRelationFactory do
   let(:project) { create(:project) }
   let(:members_mapper) { double('members_mapper').as_null_object }
   let(:relation_sym) { :project_snippets }
-  let(:merge_requests_mapping) { {} }
   let(:relation_hash) { {} }
   let(:excluded_keys) { [] }
 
@@ -16,7 +15,6 @@ describe Gitlab::ImportExport::BaseRelationFactory do
                            relation_hash: relation_hash,
                            object_builder: Gitlab::ImportExport::GroupProjectObjectBuilder,
                            members_mapper: members_mapper,
-                           merge_requests_mapping: merge_requests_mapping,
                            user: user,
                            importable: project,
                            excluded_keys: excluded_keys)

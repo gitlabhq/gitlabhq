@@ -111,28 +111,6 @@ module Gitlab
         @relation_hash['group_id'] = @importable.namespace_id
       end
 
-      # This code is a workaround for broken project exports that don't
-      # export merge requests with CI pipelines (i.e. exports that were
-      # generated from
-      # https://gitlab.com/gitlab-org/gitlab/merge_requests/17844).
-      # This method can be removed in GitLab 12.6.
-      def update_merge_request_references
-        # If a merge request was properly created, we don't need to fix
-        # up this export.
-        return if @relation_hash['merge_request']
-
-        merge_request_id = @relation_hash['merge_request_id']
-
-        return unless merge_request_id
-
-        new_merge_request_id = @merge_requests_mapping[merge_request_id]
-
-        return unless new_merge_request_id
-
-        @relation_hash['merge_request_id'] = new_merge_request_id
-        parsed_relation_hash['merge_request_id'] = new_merge_request_id
-      end
-
       def setup_build
         @relation_hash.delete('trace') # old export files have trace
         @relation_hash.delete('token')
@@ -147,8 +125,6 @@ module Gitlab
       end
 
       def setup_pipeline
-        update_merge_request_references
-
         @relation_hash.fetch('stages', []).each do |stage|
           stage.statuses.each do |status|
             status.pipeline = imported_object

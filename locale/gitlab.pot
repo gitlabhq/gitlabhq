@@ -14075,6 +14075,9 @@ msgstr ""
 msgid "Please create a username with only alphanumeric characters."
 msgstr ""
 
+msgid "Please create an index before enabling indexing"
+msgstr ""
+
 msgid "Please enable and migrate to hashed storage to avoid security issues and ensure data integrity. %{migrate_link}"
 msgstr ""
 
@@ -21876,7 +21879,13 @@ msgstr ""
 msgid "Who will be able to see this group?"
 msgstr ""
 
+msgid "Who will be using GitLab?"
+msgstr ""
+
 msgid "Who will be using this GitLab subscription?"
+msgstr ""
+
+msgid "Who will be using this GitLab trial?"
 msgstr ""
 
 msgid "Wiki"

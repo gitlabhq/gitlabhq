@@ -27,7 +27,7 @@ module Projects
       @status.run!
 
       raise InvalidStateError, 'missing pages artifacts' unless build.artifacts?
-      raise InvalidStateError, 'pages are outdated' unless latest?
+      raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
 
       # Create temporary directory in which we will extract the artifacts
       make_secure_tmp_dir(tmp_path) do |archive_path|
@@ -36,7 +36,7 @@ module Projects
         # Check if we did extract public directory
         archive_public_path = File.join(archive_path, PUBLIC_DIR)
         raise InvalidStateError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
-        raise InvalidStateError, 'pages are outdated' unless latest?
+        raise InvalidStateError, 'build SHA is outdated for this ref' unless latest?
 
         deploy_page!(archive_public_path)
         success

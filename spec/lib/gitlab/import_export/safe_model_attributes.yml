@@ -769,7 +769,9 @@ DesignManagement::Design:
 - project_id
 - filename
 DesignManagement::Action:
+- id
 - event
+- image_v432x230
 DesignManagement::Version:
 - id
 - created_at

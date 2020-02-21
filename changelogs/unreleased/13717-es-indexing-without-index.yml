@@ -1,0 +1,5 @@
+---
+title: 'Elasticsearch: when index is absent warn users and disable index button'
+merge_request: 25254
+author:
+type: fixed

@@ -235,11 +235,17 @@ module Gitlab
       # PostgreSQL constraint names have a limit of 63 bytes. The logic used
       # here is based on Rails' foreign_key_name() method, which unfortunately
       # is private so we can't rely on it directly.
-      def concurrent_foreign_key_name(table, column)
+      #
+      # prefix:
+      # - The default prefix is `fk_` for backward compatibility with the existing
+      # concurrent foreign key helpers.
+      # - For standard rails foreign keys the prefix is `fk_rails_`
+      #
+      def concurrent_foreign_key_name(table, column, prefix: 'fk_')
         identifier = "#{table}_#{column}_fk"
         hashed_identifier = Digest::SHA256.hexdigest(identifier).first(10)
 
-        "fk_#{hashed_identifier}"
+        "#{prefix}#{hashed_identifier}"
       end
 
       # Long-running migrations may take more than the timeout allowed by

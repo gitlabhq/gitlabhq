@@ -1,6 +1,6 @@
 ## Problem Statement
 
-<!-- What is the problem we hope to validate and solve? -->
+<!-- What is the problem we hope to validate? Reference how to write a real customer problem statement at https://productcoalition.com/how-to-write-a-good-customer-problem-statement-a815f80189ba for guidance. -->
 
 ## Reach
 

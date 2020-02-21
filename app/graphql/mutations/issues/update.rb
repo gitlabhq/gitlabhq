@@ -5,7 +5,25 @@ module Mutations
     class Update < Base
       graphql_name 'UpdateIssue'
 
-      # Add arguments here instead of creating separate mutations
+      argument :title,
+                GraphQL::STRING_TYPE,
+                required: false,
+                description: copy_field_description(Types::IssueType, :title)
+
+      argument :description,
+                GraphQL::STRING_TYPE,
+                required: false,
+                description: copy_field_description(Types::IssueType, :description)
+
+      argument :due_date,
+               Types::TimeType,
+               required: true,
+               description: copy_field_description(Types::IssueType, :due_date)
+
+      argument :confidential,
+               GraphQL::BOOLEAN_TYPE,
+               required: true,
+               description: copy_field_description(Types::IssueType, :confidential)
 
       def resolve(project_path:, iid:, **args)
         issue = authorized_find!(project_path: project_path, iid: iid)

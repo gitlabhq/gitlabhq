@@ -76,8 +76,6 @@ module Gitlab
         import_failure_service.with_retry(action: 'relation_object.save!', relation_key: relation_key, relation_index: relation_index) do
           relation_object.save!
         end
-
-        save_id_mapping(relation_key, data_hash, relation_object)
       rescue => e
         import_failure_service.log_import_failure(
           source: 'process_relation_item!',
@@ -88,17 +86,6 @@ module Gitlab
 
       def import_failure_service
         @import_failure_service ||= ImportFailureService.new(@importable)
-      end
-
-      # Older, serialized CI pipeline exports may only have a
-      # merge_request_id and not the full hash of the merge request. To
-      # import these pipelines, we need to preserve the mapping between
-      # the old and new the merge request ID.
-      def save_id_mapping(relation_key, data_hash, relation_object)
-        return unless importable_class == Project
-        return unless relation_key == 'merge_requests'
-
-        merge_requests_mapping[data_hash['id']] = relation_object.id
       end
 
       def relations
@@ -219,13 +206,8 @@ module Gitlab
         importable_class.to_s.downcase.to_sym
       end
 
-      # A Hash of the imported merge request ID -> imported ID.
-      def merge_requests_mapping
-        @merge_requests_mapping ||= {}
-      end
-
       def relation_factory_params(relation_key, data_hash)
-        base_params = {
+        {
           relation_sym: relation_key.to_sym,
           relation_hash: data_hash,
           importable: @importable,
@@ -234,9 +216,6 @@ module Gitlab
           user: @user,
           excluded_keys: excluded_keys_for_relation(relation_key)
         }
-
-        base_params[:merge_requests_mapping] = merge_requests_mapping if importable_class == Project
-        base_params
       end
     end
   end

@@ -1,5 +1,117 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.8.0
+
+### Removed (1 change)
+
+- Remove confidence labels from security report. !24033
+
+### Fixed (33 changes, 1 of them is from the community)
+
+- Fix UI on Project Audit Events when the feature not available. !16032 (Takuya Noguchi)
+- Group SSO handles locked users gracefully instead of showing 500 error. !20329
+- Fix incorrect security status counts. !22650
+- Fix include subgroups in security status. !22653
+- Make sure type is set properly in Elasticsearch query when doing global search. !22821
+- Include users from all sub-projects and shared groups when counting billing seats currently in use. !22967
+- Fix vulnerability finding list endpoint query timeout on instance security dashboard. !23232
+- Add app validation for any-approver rule uniqueness. !23241
+- Fix 500 error in global search for blob, wiki_blob and commit search. !23326
+- Fix group hook triggering from subgroup project. !23333
+- Change conditions when user uses license seat. !23522
+- Accept group path as ID when fetching notes from API. !23535
+- Fixes a bug that prevented auto-remediation on the pipeline security dashboard. !23677
+- Fix nav link in security submenu. !23775
+- Order epic related issues by relative_position. !23776
+- Correctly display the number of approvals for a merge request. !23827
+- Fix orphan issues that were promoted to epics. !23916
+- Fix rendering of design management references. !24001
+- Fix 500 error when browsing the roadmap page for a group the user is not authorized to view. !24002
+- Use project slug instead of name for Error Tracking Settings Display. !24176
+- Display error message in MR License Report if it fails to load. !24201
+- Fix display logic of Securty Report MR widget. !24204
+- Set SSL certificates path env when calling ES indexer. !24213
+- Allow submit to event to trigger a new search. !24262
+- Fix npm package uploads when bundleDependencies is set to false. !24355
+- Resolve 500 error after Web IDE terminal use. !24443
+- Added commas to current active user count when appropriate. !24549
+- Hide duplicate company/individual question on trial selection. !24567
+- Update invalid SPDX identifiers in software licenses table. !24829
+- Cleanup deprecated package dependency links. !24868
+- Fix to display a link to the logs in both embed and dashboard. !25288
+- Disable self-approval at the Instance level - Fix approvals filtering. !25385
+- Allow user to close sidebar while editing boardlist and save wip limit.
+
+### Changed (13 changes)
+
+- Display generic error in codeclimate MR widget when base_path is null. !21666
+- Adjust skip trial copy in trial sign up flow for SaaS users who are logged in. !22923
+- Use export icon instead of download for the export button in the Dependencies List. !23094
+- Apply darker color to column headers and scan names in secure features configuration. !23104
+- Redacts quick actions used by support bot. !23353
+- Remove Code Review Analytics feature flag. !23418
+- Delete description change history - Frontend. !23568
+- Support moving the design repository of a project when the project is transferred to a new namespace. !23573
+- Display proper error messages on vulnerabilities fetch failure. !23812
+- Add date range validation for Cycle Analytics at the backend side. !24254
+- Exclude GitLab generated bot users from using a license seat. !24275
+- Changes the standalone vulnerabilty endpoint. !24777
+- Move Productivity Analytics page to the group level. !25329
+
+### Performance (1 change)
+
+- Geo - Fix query to retrieve Job Artifacts when selective sync is disabled. !25388
+
+### Added (42 changes, 1 of them is from the community)
+
+- Create DesignAtVersion model, exposing it with GraphQL. !15260
+- Add Group-level compliance dashboard MVC. !20844
+- Adds sorting to package api. !20963
+- Allow to soft delete issuables description history. !21439
+- Display warning flash if design upload is skipped. !21615
+- Ask if a user is trying GitLab for his company or for his individual usage. !22280
+- Support design tab link references for issues. !22330
+- Allow using custom user name for service desk emails. !22478
+- Raise exception if any namespaces runner minutes were not reset. !22636
+- Adds vulnerability management state dropdown. !22823
+- Add additional license information to admin dashboard. !22866
+- Add sort by date to audit logs and events. !22887
+- Add Group WebHooks API. !22994 (Rajendra Kadam)
+- Add API route to confirm a vulnerability. !23099
+- Creates the standalone vulnerability list page. !23438
+- Show license badge for Gitlab.com member overview. !23521
+- Create audit log when username changes. !23576
+- Resolve Disable self-approval at the Instance level. !23731
+- Add time picker to logs page. !23837
+- Introduce Credentials Inventory for Groups that enforce Group Managed Accounts. !23944
+- Add API for protected environments. !23964
+- Prompt users to check their account settings. !23994
+- Allow to pick a subgroup to hold the Insights config. !24053
+- Add health_status column to issues and epics tables. !24202
+- Add a link in dashboard to allow users to go to the logs page. !24240
+- Record audit event when user is deleted. !24257
+- Time Series chart filtered time range (datazoom) becomes reflected in the View logs link. !24343
+- Scope merge request approval rules to protected branches using API search. !24344
+- Add application limit for ES indexed field length. !24345
+- Add affected projects feature to instance security dashboard. !24644
+- Add trial field to namespaces API. !24666
+- Make elasticsearch bulk parameters configurable. !24688
+- Add feature filter for users. !24765
+- Design view: moveable `new comment` pin. !24769
+- Record audit event when user is added. !24855
+- Add group identification headers to epic emails. !24878
+- Record audit event when user is blocked. !24930
+- Moveable design note pins. !24934
+- Add NuGet Repository. !25157
+- Add single-level Epics to EE Premium. !25184
+- Show View logs link in embed metrics. !25217
+- Add usage ping counter for events. !199874
+
+### Other (1 change)
+
+- Prepare DB structure for GMA forking changes. !22002
+
+
 ## 12.7.5
 
 ### Fixed (1 change)

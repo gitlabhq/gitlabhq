@@ -16,32 +16,6 @@ describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
     allow(ObjectStorage::MigrateUploadsWorker).to receive(:perform_async)
   end
 
-  def run(task)
-    args = [uploader_class.to_s, model_class.to_s, mounted_as].compact
-    run_rake_task(task, *args)
-  end
-
-  shared_examples 'enqueue jobs in batch' do |batch:|
-    it 'migrates local storage to remote object storage' do
-      expect(ObjectStorage::MigrateUploadsWorker)
-        .to receive(:perform_async).exactly(batch).times
-        .and_return("A fake job.")
-
-      run('gitlab:uploads:migrate')
-    end
-
-    it 'migrates remote object storage to local storage' do
-      expect(Upload).to receive(:where).exactly(batch + 1).times { Upload.all }
-      expect(ObjectStorage::MigrateUploadsWorker)
-        .to receive(:perform_async)
-        .with(anything, model_class.name, mounted_as, ObjectStorage::Store::LOCAL)
-        .exactly(batch).times
-        .and_return("A fake job.")
-
-      run('gitlab:uploads:migrate_to_local')
-    end
-  end
-
   context "for AvatarUploader" do
     let(:uploader_class) { AvatarUploader }
     let(:mounted_as) { :avatar }
@@ -50,7 +24,7 @@ describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
       let(:model_class) { Project }
       let!(:projects) { create_list(:project, 10, :with_avatar) }
 
-      it_behaves_like 'enqueue jobs in batch', batch: 4
+      it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
     end
 
     context "for Group" do
@@ -60,7 +34,7 @@ describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
         create_list(:group, 10, :with_avatar)
       end
 
-      it_behaves_like 'enqueue jobs in batch', batch: 4
+      it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
     end
 
     context "for User" do
@@ -70,7 +44,7 @@ describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
         create_list(:user, 10, :with_avatar)
       end
 
-      it_behaves_like 'enqueue jobs in batch', batch: 4
+      it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
     end
   end
 
@@ -85,7 +59,7 @@ describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
         create_list(:note, 10, :with_attachment)
       end
 
-      it_behaves_like 'enqueue jobs in batch', batch: 4
+      it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
     end
 
     context "for Appearance" do
@@ -97,7 +71,7 @@ describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
       end
 
       %i(logo header_logo).each do |mount|
-        it_behaves_like 'enqueue jobs in batch', batch: 1 do
+        it_behaves_like 'enqueue upload migration jobs in batch', batch: 1 do
           let(:mounted_as) { mount }
         end
       end
@@ -115,7 +89,7 @@ describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
       end
     end
 
-    it_behaves_like 'enqueue jobs in batch', batch: 4
+    it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
   end
 
   context "for PersonalFileUploader" do
@@ -129,7 +103,7 @@ describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
       end
     end
 
-    it_behaves_like 'enqueue jobs in batch', batch: 4
+    it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
   end
 
   context "for NamespaceFileUploader" do
@@ -143,6 +117,6 @@ describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
       end
     end
 
-    it_behaves_like 'enqueue jobs in batch', batch: 4
+    it_behaves_like 'enqueue upload migration jobs in batch', batch: 4
   end
 end

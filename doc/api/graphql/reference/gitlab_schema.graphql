@@ -7842,6 +7842,21 @@ input UpdateIssueInput {
   clientMutationId: String
 
   """
+  Indicates the issue is confidential
+  """
+  confidential: Boolean!
+
+  """
+  Description of the issue
+  """
+  description: String
+
+  """
+  Due date of the issue
+  """
+  dueDate: Time!
+
+  """
   The desired health status
   """
   healthStatus: HealthStatus
@@ -7855,6 +7870,11 @@ input UpdateIssueInput {
   The project the issue to mutate is in
   """
   projectPath: ID!
+
+  """
+  Title of the issue
+  """
+  title: String
 }
 
 """
