@@ -39,7 +39,7 @@ class SessionsController < Devise::SessionsController
   # would cause the CSRF token to be cleared and then
   # RequestForgeryProtection#verify_authenticity_token would fail because of
   # token mismatch.
-  protect_from_forgery with: :exception, prepend: true
+  protect_from_forgery with: :exception, prepend: true, except: :destroy
 
   CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'
   MAX_FAILED_LOGIN_ATTEMPTS = 5

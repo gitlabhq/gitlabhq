@@ -69,18 +69,20 @@ describe QA::Git::Repository do
     end
 
     describe '#fetch_supported_git_protocol' do
+      Result = Struct.new(:response)
+
       it "reports the detected version" do
-        expect(repository).to receive(:run).and_return("packet: git< version 2")
+        expect(repository).to receive(:run).and_return(Result.new("packet: git< version 2"))
         expect(repository.fetch_supported_git_protocol).to eq('2')
       end
 
       it 'reports unknown if version is unknown' do
-        expect(repository).to receive(:run).and_return("packet: git< version -1")
+        expect(repository).to receive(:run).and_return(Result.new("packet: git< version -1"))
         expect(repository.fetch_supported_git_protocol).to eq('unknown')
       end
 
       it 'reports unknown if content does not identify a version' do
-        expect(repository).to receive(:run).and_return("foo")
+        expect(repository).to receive(:run).and_return(Result.new("foo"))
         expect(repository.fetch_supported_git_protocol).to eq('unknown')
       end
     end

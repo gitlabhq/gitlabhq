@@ -226,6 +226,7 @@ class Commit
     data = {
       id: id,
       message: safe_message,
+      title: title,
       timestamp: committed_date.xmlschema,
       url: Gitlab::UrlBuilder.build(self),
       author: {

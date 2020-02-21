@@ -1,0 +1,5 @@
+---
+title: Disable CSRF protection on logout endpoint
+merge_request: 25521
+author: Diego Louzán
+type: changed

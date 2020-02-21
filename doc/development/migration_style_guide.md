@@ -15,8 +15,8 @@ offline unless _absolutely necessary_.
 When downtime is necessary the migration has to be approved by:
 
 1. The VP of Engineering
-1. A Backend Lead
-1. A Database Specialist
+1. A Backend Maintainer
+1. A Database Maintainer
 
 An up-to-date list of people holding these titles can be found at
 <https://about.gitlab.com/company/team/>.
@@ -28,6 +28,10 @@ possible about the state of the database.
 Please don't depend on GitLab-specific code since it can change in future
 versions. If needed copy-paste GitLab code into the migration to make it forward
 compatible.
+
+For GitLab.com, please take into consideration that regular migrations (under `db/migrate`)
+are run before [Canary is deployed](https://about.gitlab.com/handbook/engineering/infrastructure/library/canary/#configuration-and-deployment),
+and post-deployment migrations (`db/post_migrate`) are run after the deployment to production has finished.
 
 ## Schema Changes
 

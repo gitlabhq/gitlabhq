@@ -7,6 +7,26 @@
     color: $blue-500;
     border-color: $blue-500;
   }
+
+  .error-details-header {
+    border-bottom: 1px solid $border-color;
+
+    @include media-breakpoint-down(xs) {
+      flex-flow: column;
+
+      .error-details-meta-culprit {
+        display: flex;
+      }
+
+      .error-details-options {
+        width: 100%;
+
+        .dropdown-toggle {
+          text-align: center;
+        }
+      }
+    }
+  }
 }
 
 .stacktrace {

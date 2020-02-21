@@ -12,7 +12,6 @@ module ChatMessage
     attr_reader :user_avatar
     attr_reader :project_name
     attr_reader :project_url
-    attr_reader :commit_message_html
 
     def initialize(params)
       @markdown = params[:markdown] || false
@@ -21,7 +20,6 @@ module ChatMessage
       @user_full_name = params.dig(:user, :name) || params[:user_full_name]
       @user_name = params.dig(:user, :username) || params[:user_name]
       @user_avatar = params.dig(:user, :avatar_url) || params[:user_avatar]
-      @commit_message_html = params[:commit_message_html] || false
     end
 
     def user_combined_name

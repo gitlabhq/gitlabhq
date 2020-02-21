@@ -10,6 +10,9 @@ import {
   GlBadge,
   GlAlert,
   GlSprintf,
+  GlDropdown,
+  GlDropdownItem,
+  GlDropdownDivider,
 } from '@gitlab/ui';
 import { __, sprintf, n__ } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
@@ -36,6 +39,9 @@ export default {
     GlBadge,
     GlAlert,
     GlSprintf,
+    GlDropdown,
+    GlDropdownItem,
+    GlDropdownDivider,
   },
   directives: {
     TrackEvent: TrackEventDirective,
@@ -108,7 +114,7 @@ export default {
       return sprintf(
         __('Reported %{timeAgo} by %{reportedBy}'),
         {
-          reportedBy: `<strong>${this.error.culprit}</strong>`,
+          reportedBy: `<strong class="error-details-meta-culprit">${this.error.culprit}</strong>`,
           timeAgo: this.timeFormatted(this.stacktraceData.date_received),
         },
         false,
@@ -142,6 +148,11 @@ export default {
           userCount: `${this.error.userCount}\n`,
         },
         false,
+      );
+    },
+    issueUpdateInProgress() {
+      return (
+        this.updatingIgnoreStatus || this.updatingResolveStatus || this.issueCreationInProgress
       );
     },
     errorLevel() {
@@ -217,54 +228,90 @@ export default {
         </gl-sprintf>
       </gl-alert>
 
-      <div class="top-area align-items-center justify-content-between py-3">
-        <span v-if="!loadingStacktrace && stacktrace" v-html="reported"></span>
-        <div class="d-inline-flex ml-lg-auto">
-          <loading-button
-            :label="ignoreBtnLabel"
-            :loading="updatingIgnoreStatus"
-            data-qa-selector="update_ignore_status_button"
-            @click="onIgnoreStatusUpdate"
-          />
-          <loading-button
-            class="btn-outline-info ml-2"
-            :label="resolveBtnLabel"
-            :loading="updatingResolveStatus"
-            data-qa-selector="update_resolve_status_button"
-            @click="onResolveStatusUpdate"
-          />
-          <gl-button
-            v-if="error.gitlabIssuePath"
-            class="ml-2"
-            data-qa-selector="view_issue_button"
-            :href="error.gitlabIssuePath"
-            variant="success"
-          >
-            {{ __('View issue') }}
-          </gl-button>
-          <form
-            ref="sentryIssueForm"
-            :action="projectIssuesPath"
-            method="POST"
-            class="d-inline-block ml-2"
-          >
-            <gl-form-input class="hidden" name="issue[title]" :value="issueTitle" />
-            <input name="issue[description]" :value="issueDescription" type="hidden" />
-            <gl-form-input
-              :value="error.sentryId"
-              class="hidden"
-              name="issue[sentry_issue_attributes][sentry_issue_identifier]"
-            />
-            <gl-form-input :value="csrfToken" class="hidden" name="authenticity_token" />
+      <div class="error-details-header d-flex py-2 justify-content-between">
+        <div class="error-details-meta my-auto">
+          <span v-if="!loadingStacktrace && stacktrace" v-html="reported"></span>
+        </div>
+        <div class="error-details-actions">
+          <div class="d-inline-flex bv-d-sm-down-none">
             <loading-button
+              :label="ignoreBtnLabel"
+              :loading="updatingIgnoreStatus"
+              data-qa-selector="update_ignore_status_button"
+              @click="onIgnoreStatusUpdate"
+            />
+            <loading-button
+              class="btn-outline-info ml-2"
+              :label="resolveBtnLabel"
+              :loading="updatingResolveStatus"
+              data-qa-selector="update_resolve_status_button"
+              @click="onResolveStatusUpdate"
+            />
+            <gl-button
+              v-if="error.gitlabIssuePath"
+              class="ml-2"
+              data-qa-selector="view_issue_button"
+              :href="error.gitlabIssuePath"
+              variant="success"
+            >
+              {{ __('View issue') }}
+            </gl-button>
+            <form
+              ref="sentryIssueForm"
+              :action="projectIssuesPath"
+              method="POST"
+              class="d-inline-block ml-2"
+            >
+              <gl-form-input class="hidden" name="issue[title]" :value="issueTitle" />
+              <input name="issue[description]" :value="issueDescription" type="hidden" />
+              <gl-form-input
+                :value="error.sentryId"
+                class="hidden"
+                name="issue[sentry_issue_attributes][sentry_issue_identifier]"
+              />
+              <gl-form-input :value="csrfToken" class="hidden" name="authenticity_token" />
+              <loading-button
+                v-if="!error.gitlabIssuePath"
+                class="btn-success"
+                :label="__('Create issue')"
+                :loading="issueCreationInProgress"
+                data-qa-selector="create_issue_button"
+                @click="createIssue"
+              />
+            </form>
+          </div>
+          <gl-dropdown
+            text="Options"
+            class="error-details-options d-md-none"
+            right
+            :disabled="issueUpdateInProgress"
+          >
+            <gl-dropdown-item
+              data-qa-selector="update_ignore_status_button"
+              @click="onIgnoreStatusUpdate"
+              >{{ ignoreBtnLabel }}</gl-dropdown-item
+            >
+            <gl-dropdown-item
+              data-qa-selector="update_resolve_status_button"
+              @click="onResolveStatusUpdate"
+              >{{ resolveBtnLabel }}</gl-dropdown-item
+            >
+            <gl-dropdown-divider />
+            <gl-dropdown-item
+              v-if="error.gitlabIssuePath"
+              data-qa-selector="view_issue_button"
+              :href="error.gitlabIssuePath"
+              variant="success"
+              >{{ __('View issue') }}</gl-dropdown-item
+            >
+            <gl-dropdown-item
               v-if="!error.gitlabIssuePath"
-              class="btn-success"
-              :label="__('Create issue')"
               :loading="issueCreationInProgress"
               data-qa-selector="create_issue_button"
               @click="createIssue"
-            />
-          </form>
+              >{{ __('Create issue') }}</gl-dropdown-item
+            >
+          </gl-dropdown>
         </div>
       </div>
       <div>
@@ -300,7 +347,6 @@ export default {
             <strong class="bold">{{ __('Sentry event') }}:</strong>
             <gl-link
               v-track-event="trackClickErrorLinkToSentryOptions(error.externalUrl)"
-              class="d-inline-flex align-items-center"
               :href="error.externalUrl"
               target="_blank"
             >
