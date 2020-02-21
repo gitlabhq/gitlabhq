@@ -37,7 +37,7 @@ describe API::AccessRequests do
               user = public_send(type)
               get api("/#{source_type.pluralize}/#{source.id}/access_requests", user)
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -47,7 +47,7 @@ describe API::AccessRequests do
         it 'returns access requesters' do
           get api("/#{source_type.pluralize}/#{source.id}/access_requests", maintainer)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(1)
@@ -70,7 +70,7 @@ describe API::AccessRequests do
                 user = public_send(type)
                 post api("/#{source_type.pluralize}/#{source.id}/access_requests", user)
 
-                expect(response).to have_gitlab_http_status(403)
+                expect(response).to have_gitlab_http_status(:forbidden)
               end.not_to change { source.requesters.count }
             end
           end
@@ -82,7 +82,7 @@ describe API::AccessRequests do
           expect do
             post api("/#{source_type.pluralize}/#{source.id}/access_requests", access_requester)
 
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end.not_to change { source.requesters.count }
         end
       end
@@ -97,7 +97,7 @@ describe API::AccessRequests do
             expect do
               post api("/#{source_type.pluralize}/#{source.id}/access_requests", stranger)
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end.not_to change { source.requesters.count }
           end
         end
@@ -106,7 +106,7 @@ describe API::AccessRequests do
           expect do
             post api("/#{source_type.pluralize}/#{source.id}/access_requests", stranger)
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
           end.to change { source.requesters.count }.by(1)
 
           # User attributes
@@ -137,7 +137,7 @@ describe API::AccessRequests do
               user = public_send(type)
               put api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}/approve", user)
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -149,7 +149,7 @@ describe API::AccessRequests do
             put api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}/approve", maintainer),
                 params: { access_level: Member::MAINTAINER }
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.count }.by(1)
           # User attributes
           expect(json_response['id']).to eq(access_requester.id)
@@ -168,7 +168,7 @@ describe API::AccessRequests do
             expect do
               put api("/#{source_type.pluralize}/#{source.id}/access_requests/#{stranger.id}/approve", maintainer)
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end.not_to change { source.members.count }
           end
         end
@@ -189,7 +189,7 @@ describe API::AccessRequests do
               user = public_send(type)
               delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", user)
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -200,7 +200,7 @@ describe API::AccessRequests do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", access_requester)
 
-            expect(response).to have_gitlab_http_status(204)
+            expect(response).to have_gitlab_http_status(:no_content)
           end.to change { source.requesters.count }.by(-1)
         end
       end
@@ -210,7 +210,7 @@ describe API::AccessRequests do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", maintainer)
 
-            expect(response).to have_gitlab_http_status(204)
+            expect(response).to have_gitlab_http_status(:no_content)
           end.to change { source.requesters.count }.by(-1)
         end
 
@@ -219,7 +219,7 @@ describe API::AccessRequests do
             expect do
               delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{developer.id}", maintainer)
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end.not_to change { source.requesters.count }
           end
         end
@@ -229,7 +229,7 @@ describe API::AccessRequests do
             expect do
               delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{stranger.id}", maintainer)
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end.not_to change { source.requesters.count }
           end
         end

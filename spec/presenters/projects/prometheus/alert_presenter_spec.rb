@@ -9,6 +9,15 @@ describe Projects::Prometheus::AlertPresenter do
   let(:payload) { {} }
   let(:alert) { create(:alerting_alert, project: project, payload: payload) }
 
+  shared_context 'gitlab alert' do
+    let(:gitlab_alert) { create(:prometheus_alert, project: project) }
+    let(:metric_id) { gitlab_alert.prometheus_metric_id }
+
+    let(:alert) do
+      create(:alerting_alert, project: project, metric_id: metric_id)
+    end
+  end
+
   describe '#project_full_path' do
     subject { presenter.project_full_path }
 
@@ -145,13 +154,35 @@ describe Projects::Prometheus::AlertPresenter do
     end
   end
 
-  context 'with gitlab alert' do
-    let(:gitlab_alert) { create(:prometheus_alert, project: project) }
-    let(:metric_id) { gitlab_alert.prometheus_metric_id }
+  describe '#show_performance_dashboard_link?' do
+    subject { presenter.show_performance_dashboard_link? }
 
-    let(:alert) do
-      create(:alerting_alert, project: project, metric_id: metric_id)
+    it { is_expected.to be_falsey }
+
+    context 'with gitlab alert' do
+      include_context 'gitlab alert'
+
+      it { is_expected.to eq(true) }
     end
+  end
+
+  describe '#show_incident_issues_link?' do
+    subject { presenter.show_incident_issues_link? }
+
+    it { is_expected.to be_falsey }
+
+    context 'create issue setting enabled' do
+      before do
+        create(:project_incident_management_setting, project: project, create_issue: true)
+        project.reload
+      end
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
+  context 'with gitlab alert' do
+    include_context 'gitlab alert'
 
     describe '#full_title' do
       let(:query_title) do
@@ -186,6 +217,17 @@ describe Projects::Prometheus::AlertPresenter do
       end
 
       subject { presenter.performance_dashboard_link }
+
+      it { is_expected.to eq(expected_link) }
+    end
+
+    describe '#incident_issues_link' do
+      let(:expected_link) do
+        Gitlab::Routing.url_helpers
+          .project_issues_url(project, label_name: described_class::INCIDENT_LABEL_NAME)
+      end
+
+      subject { presenter.incident_issues_link }
 
       it { is_expected.to eq(expected_link) }
     end

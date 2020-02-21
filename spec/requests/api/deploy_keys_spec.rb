@@ -51,7 +51,7 @@ describe API::DeployKeys do
     it 'returns array of ssh keys' do
       get api("/projects/#{project.id}/deploy_keys", admin)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(deploy_key.title)
@@ -62,14 +62,14 @@ describe API::DeployKeys do
     it 'returns a single key' do
       get api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['title']).to eq(deploy_key.title)
     end
 
     it 'returns 404 Not Found with invalid ID' do
       get api("/projects/#{project.id}/deploy_keys/404", admin)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -77,14 +77,14 @@ describe API::DeployKeys do
     it 'does not create an invalid ssh key' do
       post api("/projects/#{project.id}/deploy_keys", admin), params: { title: 'invalid key' }
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('key is missing')
     end
 
     it 'does not create a key without title' do
       post api("/projects/#{project.id}/deploy_keys", admin), params: { key: 'some key' }
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('title is missing')
     end
 
@@ -105,7 +105,7 @@ describe API::DeployKeys do
         post api("/projects/#{project.id}/deploy_keys", admin), params: { key: deploy_key.key, title: deploy_key.title }
       end.not_to change { project.deploy_keys.count }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
     end
 
     it 'joins an existing ssh key to a new project' do
@@ -113,7 +113,7 @@ describe API::DeployKeys do
         post api("/projects/#{project2.id}/deploy_keys", admin), params: { key: deploy_key.key, title: deploy_key.title }
       end.to change { project2.deploy_keys.count }.by(1)
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
     end
 
     it 'accepts can_push parameter' do
@@ -121,7 +121,7 @@ describe API::DeployKeys do
 
       post api("/projects/#{project.id}/deploy_keys", admin), params: key_attrs
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['can_push']).to eq(true)
     end
   end
@@ -139,7 +139,7 @@ describe API::DeployKeys do
       it 'does not update a public deploy key' do
         expect { subject }.not_to change(deploy_key, :title)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -151,12 +151,12 @@ describe API::DeployKeys do
 
         it 'updates the title of the deploy key' do
           expect { subject }.to change { deploy_key.reload.title }.to 'new title'
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'updates can_push of deploy_keys_project' do
           expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -169,12 +169,12 @@ describe API::DeployKeys do
 
         it 'updates the title of the deploy key' do
           expect { subject }.to change { deploy_key.reload.title }.to 'new title'
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'updates can_push of deploy_keys_project' do
           expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         context 'invalid title' do
@@ -182,7 +182,7 @@ describe API::DeployKeys do
 
           it 'does not update the title of the deploy key' do
             expect { subject }.not_to change { deploy_key.reload.title }
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
       end
@@ -200,12 +200,12 @@ describe API::DeployKeys do
 
         it 'updates the title of the deploy key' do
           expect { subject }.to change { deploy_key.reload.title }.to 'new title'
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'updates can_push of deploy_keys_project' do
           expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -222,12 +222,12 @@ describe API::DeployKeys do
 
         it 'does not update the title of the deploy key' do
           expect { subject }.not_to change { deploy_key.reload.title }
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'updates can_push of deploy_keys_project' do
           expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -242,7 +242,7 @@ describe API::DeployKeys do
       expect do
         delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end.to change { project.deploy_keys.count }.by(-1)
     end
 
@@ -251,7 +251,7 @@ describe API::DeployKeys do
         expect do
           delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
 
-          expect(response).to have_gitlab_http_status(204)
+          expect(response).to have_gitlab_http_status(:no_content)
         end.not_to change { DeployKey.count }
       end
     end
@@ -264,7 +264,7 @@ describe API::DeployKeys do
           expect do
             delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
 
-            expect(response).to have_gitlab_http_status(204)
+            expect(response).to have_gitlab_http_status(:no_content)
           end.to change { DeployKey.count }.by(-1)
         end
       end
@@ -278,7 +278,7 @@ describe API::DeployKeys do
           expect do
             delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
 
-            expect(response).to have_gitlab_http_status(204)
+            expect(response).to have_gitlab_http_status(:no_content)
           end.not_to change { DeployKey.count }
         end
       end
@@ -287,7 +287,7 @@ describe API::DeployKeys do
     it 'returns 404 Not Found with invalid ID' do
       delete api("/projects/#{project.id}/deploy_keys/404", admin)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it_behaves_like '412 response' do
@@ -304,7 +304,7 @@ describe API::DeployKeys do
           post api("/projects/#{project2.id}/deploy_keys/#{deploy_key.id}/enable", admin)
         end.to change { project2.deploy_keys.count }.from(0).to(1)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['id']).to eq(deploy_key.id)
       end
     end
@@ -313,7 +313,7 @@ describe API::DeployKeys do
       it 'returns a 404 error' do
         post api("/projects/#{project2.id}/deploy_keys/#{deploy_key.id}/enable", user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

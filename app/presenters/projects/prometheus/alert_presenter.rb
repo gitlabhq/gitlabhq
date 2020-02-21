@@ -6,6 +6,7 @@ module Projects
       RESERVED_ANNOTATIONS = %w(gitlab_incident_markdown title).freeze
       GENERIC_ALERT_SUMMARY_ANNOTATIONS = %w(monitoring_tool service hosts).freeze
       MARKDOWN_LINE_BREAK = "  \n".freeze
+      INCIDENT_LABEL_NAME = IncidentManagement::CreateIssueService::INCIDENT_LABEL[:title].freeze
 
       def full_title
         [environment_name, alert_title].compact.join(': ')
@@ -29,6 +30,18 @@ module Projects
         else
           metrics_project_environments_url(project)
         end
+      end
+
+      def show_performance_dashboard_link?
+        gitlab_alert.present?
+      end
+
+      def show_incident_issues_link?
+        project.incident_management_setting&.create_issue?
+      end
+
+      def incident_issues_link
+        project_issues_url(project, label_name: INCIDENT_LABEL_NAME)
       end
 
       def starts_at

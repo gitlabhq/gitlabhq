@@ -424,16 +424,10 @@ Take the following migration as an example:
 
 ```ruby
 class DefaultRequestAccessGroups < ActiveRecord::Migration[5.2]
-  include Gitlab::Database::MigrationHelpers
-
   DOWNTIME = false
 
-  def up
-    change_column_default :namespaces, :request_access_enabled, true
-  end
-
-  def down
-    change_column_default :namespaces, :request_access_enabled, false
+  def change
+    change_column_default(:namespaces, :request_access_enabled, from: false, to: true)
   end
 end
 ```

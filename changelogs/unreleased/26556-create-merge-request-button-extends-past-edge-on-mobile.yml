@@ -1,0 +1,6 @@
+---
+title: Prevent "Select project to create merge request" button from overflowing out
+  of the viewport on mobile
+merge_request: 25195
+author:
+type: fixed

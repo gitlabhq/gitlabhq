@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { escape } from 'lodash';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import createStore from '~/notes/stores';
 import issueNote from '~/notes/components/noteable_note.vue';
@@ -98,7 +98,7 @@ describe('issue_note', () => {
 
     setTimeout(() => {
       expect(alertSpy).not.toHaveBeenCalled();
-      expect(wrapper.vm.note.note_html).toEqual(_.escape(noteBody));
+      expect(wrapper.vm.note.note_html).toEqual(escape(noteBody));
       done();
     }, 0);
   });

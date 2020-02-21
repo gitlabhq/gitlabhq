@@ -36,6 +36,8 @@ module Issues
         execute_hooks(issue, 'close')
         invalidate_cache_counts(issue, users: issue.assignees)
         issue.update_project_counter_caches
+
+        store_first_mentioned_in_commit_at(issue, closed_via) if closed_via.is_a?(MergeRequest)
       end
 
       issue
@@ -45,6 +47,18 @@ module Issues
 
     def create_note(issue, current_commit)
       SystemNoteService.change_status(issue, issue.project, current_user, issue.state, current_commit)
+    end
+
+    def store_first_mentioned_in_commit_at(issue, merge_request)
+      return unless Feature.enabled?(:store_first_mentioned_in_commit_on_issue_close, issue.project)
+
+      metrics = issue.metrics
+      return if metrics.nil? || metrics.first_mentioned_in_commit_at
+
+      first_commit_timestamp = merge_request.commits(limit: 1).first&.date
+      return unless first_commit_timestamp
+
+      metrics.update!(first_mentioned_in_commit_at: first_commit_timestamp)
     end
   end
 end

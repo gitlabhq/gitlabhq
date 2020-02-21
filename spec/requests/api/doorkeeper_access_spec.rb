@@ -10,7 +10,7 @@ describe 'doorkeeper access' do
   describe "unauthenticated" do
     it "returns authentication success" do
       get api("/user"), params: { access_token: token.token }
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     include_examples 'user login request with unique ip limit' do
@@ -23,14 +23,14 @@ describe 'doorkeeper access' do
   describe "when token invalid" do
     it "returns authentication error" do
       get api("/user"), params: { access_token: "123a" }
-      expect(response).to have_gitlab_http_status(401)
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
   end
 
   describe "authorization by OAuth token" do
     it "returns authentication success" do
       get api("/user", user)
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     include_examples 'user login request with unique ip limit' do
@@ -44,7 +44,7 @@ describe 'doorkeeper access' do
     it 'returns 403 response' do
       get api("/user"), params: { access_token: token.token }
 
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
   end
 

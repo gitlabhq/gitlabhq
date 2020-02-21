@@ -1674,6 +1674,9 @@ msgstr ""
 msgid "Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication"
 msgstr ""
 
+msgid "An alert has been triggered in %{project_path}."
+msgstr ""
+
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
 msgstr ""
 
@@ -12164,6 +12167,9 @@ msgstr ""
 msgid "Metric was successfully updated."
 msgstr ""
 
+msgid "Metric:"
+msgstr ""
+
 msgid "MetricChart|Please select a metric"
 msgstr ""
 
@@ -21508,6 +21514,9 @@ msgstr ""
 msgid "View group labels"
 msgstr ""
 
+msgid "View incident issues."
+msgstr ""
+
 msgid "View issue"
 msgstr ""
 
@@ -21532,6 +21541,9 @@ msgstr ""
 msgid "View open merge request"
 msgstr ""
 
+msgid "View performance dashboard."
+msgstr ""
+
 msgid "View project"
 msgstr ""
 
@@ -21548,6 +21560,9 @@ msgid "View the documentation"
 msgstr ""
 
 msgid "View the latest successful deployment to this environment"
+msgstr ""
+
+msgid "View the performance dashboard at"
 msgstr ""
 
 msgid "Viewing commit"
