@@ -1,5 +1,0 @@
----
-title: Fix overriding the image pull policy from a values file for Auto Deploy
-merge_request: 25271
-author: robcalcroft
-type: fixed

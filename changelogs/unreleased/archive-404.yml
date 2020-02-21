@@ -1,5 +1,0 @@
----
-title: Return 404 when repository archive cannot be retrieved
-merge_request: 23926
-author:
-type: fixed

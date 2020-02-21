@@ -1,6 +1,0 @@
----
-title: Remove username lookup when mapping users when importing projects using Project
-  Import/Export and rely on email only
-merge_request: 24464
-author:
-type: changed

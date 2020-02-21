@@ -1,5 +1,0 @@
----
-title: Limit size of params array in JSON logs to 10 KiB
-merge_request: 25158
-author:
-type: changed

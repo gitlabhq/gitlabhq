@@ -1,5 +1,0 @@
----
-title: Replace unstructured application logs with structured (JSON) application logs in the admin interface
-merge_request: 24614
-author:
-type: other

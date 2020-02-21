@@ -1,5 +1,0 @@
----
-title: Fix backup restoration with pre-existing wiki
-merge_request: 24394
-author:
-type: fixed

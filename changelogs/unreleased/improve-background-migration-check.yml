@@ -1,5 +1,0 @@
----
-title: Add more accurate way of counting remaining background migrations before upgrading
-merge_request:
-author:
-type: fixed

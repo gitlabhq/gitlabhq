@@ -1,5 +1,0 @@
----
-title: Authenticate user when scope is passed to events api
-merge_request: 22956
-author: briankabiro
-type: fixed

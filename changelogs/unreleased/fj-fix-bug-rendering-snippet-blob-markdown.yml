@@ -1,5 +1,0 @@
----
-title: Fix bug rendering BlobType markdown data
-merge_request: 24960
-author:
-type: fixed

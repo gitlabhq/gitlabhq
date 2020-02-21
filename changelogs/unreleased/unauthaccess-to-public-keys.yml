@@ -1,5 +1,0 @@
----
-title: Allow SSH keys API endpoint to be requested for a given username
-merge_request: 22899
-author: Rajendra Kadam
-type: changed

@@ -1,5 +1,0 @@
----
-title: Make name, email, and location attributes readonly for LDAP enabled instances
-merge_request: 24049
-author:
-type: changed

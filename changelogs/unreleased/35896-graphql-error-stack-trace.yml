@@ -1,5 +1,0 @@
----
-title: Add Sentry error stack trace to GraphQL API
-merge_request: 23750
-author:
-type: added

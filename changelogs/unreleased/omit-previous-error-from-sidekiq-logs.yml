@@ -1,5 +1,0 @@
----
-title: Omit error details from previous attempt in Sidekiq JSON logs
-merge_request: 25161
-author:
-type: changed

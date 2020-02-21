@@ -1,5 +1,0 @@
----
-title: Fix emails on push integrations created before 12.7
-merge_request: 23699
-author:
-type: fixed

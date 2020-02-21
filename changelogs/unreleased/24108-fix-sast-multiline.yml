@@ -1,5 +1,0 @@
----
-title: Fix multiline issue when loading env vars from DinD in SAST
-merge_request: 24108
-author:
-type: fixed

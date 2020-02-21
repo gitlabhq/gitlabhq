@@ -1,5 +1,0 @@
----
-title: Fix 500 error while accessing Oauth::ApplicationsController without a valid session
-merge_request: 24775
-author:
-type: fixed

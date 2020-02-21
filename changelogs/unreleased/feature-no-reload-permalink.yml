@@ -1,6 +1,0 @@
----
-title: When switching to a file permalink, just change the URL instead of triggering
-  a useless page reload
-merge_request: 22340
-author:
-type: added

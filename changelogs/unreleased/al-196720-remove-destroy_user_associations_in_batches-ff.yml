@@ -1,5 +1,0 @@
----
-title: Destroy user associations in batches like we do with projects
-merge_request: 24641
-author:
-type: performance

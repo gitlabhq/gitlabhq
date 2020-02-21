@@ -1,5 +1,0 @@
----
-title: Upgrade Doorkeeper to 4.4.3 to address CVE-2018-1000211
-merge_request: 20953
-author:
-type: security

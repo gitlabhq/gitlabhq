@@ -1,6 +1,0 @@
----
-title: Fix pipeline status loading errors on project dashboard page caused by Gitaly
-  connection failures
-merge_request: 23378
-author:
-type: fixed

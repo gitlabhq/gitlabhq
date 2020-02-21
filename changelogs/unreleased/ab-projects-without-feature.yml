@@ -1,5 +1,0 @@
----
-title: Ensure all Project records have a corresponding ProjectFeature record
-merge_request: 23766
-author:
-type: fixed
