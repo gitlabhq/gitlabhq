@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_14_034836) do
+ActiveRecord::Schema.define(version: 2020_02_20_180944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3689,6 +3689,7 @@ ActiveRecord::Schema.define(version: 2020_02_14_034836) do
     t.boolean "only_protected_branches", default: false, null: false
     t.string "remote_name"
     t.boolean "error_notification_sent"
+    t.boolean "keep_divergent_refs"
     t.index ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at"
     t.index ["project_id"], name: "index_remote_mirrors_on_project_id"
   end
