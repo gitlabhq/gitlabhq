@@ -1,5 +1,0 @@
----
-title: Separate JobRequest entities into own class files
-merge_request: 24977
-author: Rajendra Kadam
-type: added

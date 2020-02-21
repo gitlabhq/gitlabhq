@@ -1,5 +1,0 @@
----
-title: Remove the OpenSSL include within SMIME email signing
-merge_request: 23642
-author: Roger Meier
-type: fixed

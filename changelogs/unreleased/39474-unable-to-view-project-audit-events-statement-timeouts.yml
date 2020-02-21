@@ -1,5 +1,0 @@
----
-title: Add index to audit_events (entity_id, entity_type, id)
-merge_request: 23998
-author:
-type: performance

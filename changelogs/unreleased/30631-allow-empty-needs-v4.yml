@@ -1,5 +1,0 @@
----
-title: Implement allowing empty needs for jobs in DAG pipelines
-merge_request: 22246
-author:
-type: added

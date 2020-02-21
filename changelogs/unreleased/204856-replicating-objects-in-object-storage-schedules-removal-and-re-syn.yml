@@ -1,6 +1,0 @@
----
-title: 'Geo: Don''t clean up files in object storage when Geo is responsible of syncing
-  them'
-merge_request: 24901
-author:
-type: fixed

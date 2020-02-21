@@ -1,5 +1,0 @@
----
-title: Sync GitLab issue back to Sentry when created in GitLab
-merge_request: 23007
-author:
-type: added

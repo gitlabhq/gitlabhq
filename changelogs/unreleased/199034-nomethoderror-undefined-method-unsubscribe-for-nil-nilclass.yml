@@ -1,5 +1,0 @@
----
-title: Fix 500 error when trying to unsubscribe from an already deleted entity
-merge_request: 23747
-author:
-type: fixed

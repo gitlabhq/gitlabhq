@@ -1,5 +1,0 @@
----
-title: Fix some of the file encoding issues when uploading in the Web IDE
-merge_request: 23761
-author:
-type: fixed

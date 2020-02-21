@@ -1,5 +1,0 @@
----
-title: Remove unneeded indexes on projects table
-merge_request: 24086
-author:
-type: performance

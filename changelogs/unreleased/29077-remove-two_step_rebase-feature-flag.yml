@@ -1,5 +1,0 @@
----
-title: Update rebasing to use the new two-phase Gitaly Rebase RPC
-merge_request: 23546
-author:
-type: changed

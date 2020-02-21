@@ -1,5 +1,0 @@
----
-title: Added migration which adds project_key column to service_desk_settings.
-merge_request: 24063
-author:
-type: added

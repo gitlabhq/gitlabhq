@@ -1,6 +1,0 @@
----
-title: Fix Group Import existing objects lookup when description attribute is an empty
-  string
-merge_request: 25187
-author:
-type: fixed

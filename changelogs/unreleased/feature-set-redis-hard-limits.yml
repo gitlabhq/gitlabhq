@@ -1,5 +1,0 @@
----
-title: Sets size limits on data loaded async, like deploy boards and merge request reports
-merge_request: 21871
-author:
-type: changed

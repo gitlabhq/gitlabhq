@@ -1,5 +1,0 @@
----
-title: Sanitize request parameters in exceptions_json.log
-merge_request: 24625
-author:
-type: fixed

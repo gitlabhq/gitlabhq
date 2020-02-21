@@ -1,5 +1,0 @@
----
-title: Prevent project path namespace overflow during import
-merge_request: 24042
-author: George Tsiolis
-type: fixed

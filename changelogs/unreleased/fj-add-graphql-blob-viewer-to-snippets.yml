@@ -1,5 +1,0 @@
----
-title: Add blob and blob_viewer fields to graphql snippet type
-merge_request: 22960
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Fix sidekiq jobs not always getting a database connection when running with low concurrency
-merge_request: 25261
-author:
-type: fixed

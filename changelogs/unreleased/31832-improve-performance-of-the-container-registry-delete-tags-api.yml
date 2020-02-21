@@ -1,5 +1,0 @@
----
-title: Improve performance of the Container Registry delete tags API
-merge_request: 23325
-author:
-type: performance

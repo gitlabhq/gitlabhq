@@ -1,5 +1,0 @@
----
-title: Trim extra period when merge error displayed
-merge_request: 23737
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Allow setting minimum concurrency for sidekiq-cluster processes
-merge_request: 23408
-author:
-type: added

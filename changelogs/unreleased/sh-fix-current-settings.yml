@@ -1,5 +1,0 @@
----
-title: Fix application settings not working with pending migrations
-merge_request:
-author:
-type: fixed

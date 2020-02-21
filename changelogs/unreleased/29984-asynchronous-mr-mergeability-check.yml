@@ -1,5 +1,0 @@
----
-title: Check mergeability of MR asynchronously
-merge_request: 21026
-author:
-type: performance

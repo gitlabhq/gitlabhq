@@ -1,5 +1,0 @@
----
-title: Don't leak entire objects into the error log when rendering markup fails
-merge_request: 24599
-author:
-type: fixed

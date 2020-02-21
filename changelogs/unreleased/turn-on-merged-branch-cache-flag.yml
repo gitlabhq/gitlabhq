@@ -1,5 +1,0 @@
----
-title: Cache repository merged branch names by default
-merge_request: 24986
-author:
-type: performance
