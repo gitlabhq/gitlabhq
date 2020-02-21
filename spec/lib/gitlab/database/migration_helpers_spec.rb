@@ -1332,6 +1332,15 @@ describe Gitlab::Database::MigrationHelpers do
           end
         end
       end
+
+      context 'with other_arguments option' do
+        it 'queues jobs correctly' do
+          model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes, other_arguments: [1, 2])
+
+          expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3, 1, 2]])
+          expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
+        end
+      end
     end
 
     context "when the model doesn't have an ID column" do

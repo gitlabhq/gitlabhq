@@ -1,4 +1,4 @@
-/* eslint-disable func-names, consistent-return, no-else-return, no-param-reassign */
+/* eslint-disable func-names, consistent-return, no-param-reassign */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -34,8 +34,6 @@ Sidebar.prototype.addEventListeners = function() {
 
   this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
   this.sidebar.on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
-  $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
-  $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
 
   $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked);
   return $(document)
@@ -131,36 +129,6 @@ Sidebar.prototype.todoUpdateDone = function(data) {
       $elText.text($el.data(`${attrPrefix}Text`));
     }
   });
-};
-
-Sidebar.prototype.sidebarDropdownLoading = function() {
-  const $sidebarCollapsedIcon = $(this)
-    .closest('.block')
-    .find('.sidebar-collapsed-icon');
-  const img = $sidebarCollapsedIcon.find('img');
-  const i = $sidebarCollapsedIcon.find('i');
-  const $loading = $('<i class="fa fa-spinner fa-spin"></i>');
-  if (img.length) {
-    img.before($loading);
-    return img.hide();
-  } else if (i.length) {
-    i.before($loading);
-    return i.hide();
-  }
-};
-
-Sidebar.prototype.sidebarDropdownLoaded = function() {
-  const $sidebarCollapsedIcon = $(this)
-    .closest('.block')
-    .find('.sidebar-collapsed-icon');
-  const img = $sidebarCollapsedIcon.find('img');
-  $sidebarCollapsedIcon.find('i.fa-spin').remove();
-  const i = $sidebarCollapsedIcon.find('i');
-  if (img.length) {
-    return img.show();
-  } else {
-    return i.show();
-  }
 };
 
 Sidebar.prototype.sidebarCollapseClicked = function(e) {

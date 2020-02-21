@@ -65,11 +65,12 @@ export default {
     },
     showIssue(e) {
       if (e.target.classList.contains('js-no-trigger')) return;
-      if (this.showDetail) {
-        this.showDetail = false;
 
-        // If CMD or CTRL is clicked
-        const isMultiSelect = this.canMultiSelect && (e.ctrlKey || e.metaKey);
+      // If CMD or CTRL is clicked
+      const isMultiSelect = this.canMultiSelect && (e.ctrlKey || e.metaKey);
+
+      if (this.showDetail || isMultiSelect) {
+        this.showDetail = false;
 
         if (boardsStore.detail.issue && boardsStore.detail.issue.id === this.issue.id) {
           eventHub.$emit('clearDetailIssue', isMultiSelect);

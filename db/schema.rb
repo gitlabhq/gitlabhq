@@ -1574,6 +1574,7 @@ ActiveRecord::Schema.define(version: 2020_02_20_180944) do
     t.index ["end_date"], name: "index_epics_on_end_date"
     t.index ["group_id"], name: "index_epics_on_group_id"
     t.index ["iid"], name: "index_epics_on_iid"
+    t.index ["lock_version"], name: "index_epics_on_lock_version", where: "(lock_version IS NULL)"
     t.index ["parent_id"], name: "index_epics_on_parent_id"
     t.index ["start_date"], name: "index_epics_on_start_date"
     t.index ["start_date_sourcing_epic_id"], name: "index_epics_on_start_date_sourcing_epic_id", where: "(start_date_sourcing_epic_id IS NOT NULL)"
@@ -2193,6 +2194,7 @@ ActiveRecord::Schema.define(version: 2020_02_20_180944) do
     t.index ["confidential"], name: "index_issues_on_confidential"
     t.index ["description"], name: "index_issues_on_description_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["duplicated_to_id"], name: "index_issues_on_duplicated_to_id", where: "(duplicated_to_id IS NOT NULL)"
+    t.index ["lock_version"], name: "index_issues_on_lock_version", where: "(lock_version IS NULL)"
     t.index ["milestone_id"], name: "index_issues_on_milestone_id"
     t.index ["moved_to_id"], name: "index_issues_on_moved_to_id", where: "(moved_to_id IS NOT NULL)"
     t.index ["project_id", "created_at", "id", "state"], name: "index_issues_on_project_id_and_created_at_and_id_and_state"
@@ -2611,6 +2613,7 @@ ActiveRecord::Schema.define(version: 2020_02_20_180944) do
     t.index ["id", "merge_jid"], name: "idx_merge_requests_on_id_and_merge_jid", where: "((merge_jid IS NOT NULL) AND (state_id = 4))"
     t.index ["id", "merge_jid"], name: "index_merge_requests_on_id_and_merge_jid", where: "((merge_jid IS NOT NULL) AND ((state)::text = 'locked'::text))"
     t.index ["latest_merge_request_diff_id"], name: "index_merge_requests_on_latest_merge_request_diff_id"
+    t.index ["lock_version"], name: "index_merge_requests_on_lock_version", where: "(lock_version IS NULL)"
     t.index ["merge_user_id"], name: "index_merge_requests_on_merge_user_id", where: "(merge_user_id IS NOT NULL)"
     t.index ["milestone_id"], name: "index_merge_requests_on_milestone_id"
     t.index ["source_branch"], name: "index_merge_requests_on_source_branch"

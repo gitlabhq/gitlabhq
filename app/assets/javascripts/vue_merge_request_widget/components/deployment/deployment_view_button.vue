@@ -1,4 +1,5 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import FilteredSearchDropdown from '~/vue_shared/components/filtered_search_dropdown.vue';
 import ReviewAppLink from '../review_app_link.vue';
 
@@ -6,6 +7,7 @@ export default {
   name: 'DeploymentViewButton',
   components: {
     FilteredSearchDropdown,
+    GlLink,
     ReviewAppLink,
     VisualReviewAppLink: () =>
       import('ee_component/vue_merge_request_widget/components/visual_review_app_link.vue'),
@@ -67,7 +69,7 @@ export default {
       </template>
 
       <template slot="result" slot-scope="slotProps">
-        <a
+        <gl-link
           :href="slotProps.result.external_url"
           target="_blank"
           rel="noopener noreferrer nofollow"
@@ -80,16 +82,15 @@ export default {
           <p class="text-secondary str-truncated-100 append-bottom-0 d-block">
             {{ slotProps.result.external_url }}
           </p>
-        </a>
+        </gl-link>
       </template>
     </filtered-search-dropdown>
-    <template v-else>
-      <review-app-link
-        :display="appButtonText"
-        :link="deploymentExternalUrl"
-        css-class="js-deploy-url deploy-link btn btn-default btn-sm inline"
-      />
-    </template>
+    <review-app-link
+      v-else
+      :display="appButtonText"
+      :link="deploymentExternalUrl"
+      css-class="js-deploy-url deploy-link btn btn-default btn-sm inline"
+    />
     <visual-review-app-link
       v-if="showVisualReviewApp"
       :link="deploymentExternalUrl"

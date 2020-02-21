@@ -1,0 +1,5 @@
+---
+title: Clean up conditional `col-` classes in `nav_dropdown_button.vue`
+merge_request: 25312
+author:
+type: other

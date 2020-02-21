@@ -160,6 +160,11 @@ _The artifacts are stored by default in
    gitlab-rake gitlab:artifacts:migrate
    ```
 
+CAUTION: **CAUTION:**
+JUnit test report artifact (`junit.xml.gz`) migration
+[is not supported](https://gitlab.com/gitlab-org/gitlab/issues/27698)
+by the `gitlab:artifacts:migrate` script.
+
 **In installations from source:**
 
 _The artifacts are stored by default in
@@ -187,6 +192,11 @@ _The artifacts are stored by default in
    ```shell
    sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
    ```
+
+CAUTION: **CAUTION:**
+JUnit test report artifact (`junit.xml.gz`) migration
+[is not supported](https://gitlab.com/gitlab-org/gitlab/issues/27698)
+by the `gitlab:artifacts:migrate` script.
 
 ### Migrating from object storage to local storage
 

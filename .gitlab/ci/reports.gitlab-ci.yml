@@ -168,6 +168,7 @@ dast:
     # DAST_USERNAME: "root"
     # DAST_USERNAME_FIELD: "user[login]"
     # DAST_PASSWORD_FIELD: "user[passowrd]"
+    DAST_VERSION: 1
   allow_failure: true
   script:
     - 'export DAST_WEBSITE="${DAST_WEBSITE:-$(cat environment_url.txt)}"'
