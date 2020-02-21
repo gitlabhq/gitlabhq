@@ -5,6 +5,9 @@ module Projects
     class CiCdController < Projects::ApplicationController
       before_action :authorize_admin_pipeline!
       before_action :define_variables
+      before_action do
+        push_frontend_feature_flag(:new_variables_ui, @project)
+      end
 
       def show
       end

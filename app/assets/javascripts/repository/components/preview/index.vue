@@ -2,6 +2,7 @@
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { handleLocationHash } from '~/lib/utils/common_utils';
 import getReadmeQuery from '../../queries/getReadme.query.graphql';
 
 export default {
@@ -36,6 +37,7 @@ export default {
     readme(newVal) {
       if (newVal) {
         this.$nextTick(() => {
+          handleLocationHash();
           $(this.$refs.readme).renderGFM();
         });
       }

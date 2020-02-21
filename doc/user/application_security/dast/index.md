@@ -351,6 +351,11 @@ dast:
     - /analyze -z"-config replacer.full_list\(0\).description=auth -config replacer.full_list\(0\).enabled=true -config replacer.full_list\(0\).matchtype=REQ_HEADER -config replacer.full_list\(0\).matchstr=Authorization -config replacer.full_list\(0\).regex=false -config replacer.full_list\(0\).replacement=TOKEN" -t $DAST_WEBSITE
 ```
 
+### Cloning the project's repository
+
+The DAST job does not require the project's repository to be present when running, so by default
+[`GIT_STRATEGY`](../../../ci/yaml/README.md#git-strategy) is set to `none`.
+
 ## Reports
 
 The DAST job can emit various reports.

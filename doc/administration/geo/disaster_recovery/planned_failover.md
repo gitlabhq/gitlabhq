@@ -187,7 +187,7 @@ access to the **primary** node during the maintenance window.
 1. On the **secondary** node, navigate to **Admin Area > Monitoring > Background Jobs > Queues**
    and wait for all the `geo` queues to drop to 0 queued and 0 running jobs.
 1. On the **secondary** node, use [these instructions][foreground-verification]
-   to verify the integrity of CI artifacts, LFS objects and uploads in file
+   to verify the integrity of CI artifacts, LFS objects, and uploads in file
    storage.
 
 At this point, your **secondary** node will contain an up-to-date copy of everything the

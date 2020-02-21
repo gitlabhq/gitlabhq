@@ -12,7 +12,8 @@ Replication with Geo is the solution for widely distributed development teams.
 
 Fetching large repositories can take a long time for teams located far from a single GitLab instance.
 
-Geo provides local, read-only instances of your GitLab instances, reducing the time it takes to clone and fetch large repositories and speeding up development.
+Geo provides local, read-only instances of your GitLab instances. This can reduce the time it takes
+to clone and fetch large repositories, speeding up development.
 
 NOTE: **Note:**
 Check the [requirements](#requirements-for-running-geo) carefully before setting up Geo.
@@ -269,7 +270,7 @@ For answers to common questions, see the [Geo FAQ](faq.md).
 
 Since GitLab 9.5, Geo stores structured log messages in a `geo.log` file. For Omnibus installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
 
-This file contains information about when Geo attempts to sync repositories and files. Each line in the file contains a separate JSON entry that can be ingested into Elasticsearch, Splunk, etc.
+This file contains information about when Geo attempts to sync repositories and files. Each line in the file contains a separate JSON entry that can be ingested into, for example, Elasticsearch or Splunk.
 
 For example:
 

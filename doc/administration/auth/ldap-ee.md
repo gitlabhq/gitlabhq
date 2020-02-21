@@ -392,7 +392,7 @@ Group sync was written to be as performant as possible. Data is cached, database
 queries are optimized, and LDAP queries are minimized. The last benchmark run
 revealed the following metrics:
 
-For 20,000 LDAP users, 11,000 LDAP groups and 1,000 GitLab groups with 10
+For 20000 LDAP users, 11000 LDAP groups and 1000 GitLab groups with 10
 LDAP group links each:
 
 - Initial sync (no existing members assigned in GitLab) took 1.8 hours

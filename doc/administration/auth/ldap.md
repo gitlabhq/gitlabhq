@@ -461,7 +461,8 @@ LDAP email address, and then sign into GitLab via their LDAP credentials.
 
 ## Enabling LDAP username lowercase
 
-Some LDAP servers, depending on their configurations, can return uppercase usernames. This can lead to several confusing issues like, for example, creating links or namespaces with uppercase names.
+Some LDAP servers, depending on their configurations, can return uppercase usernames.
+This can lead to several confusing issues such as creating links or namespaces with uppercase names.
 
 GitLab can automatically lowercase usernames provided by the LDAP server by enabling
 the configuration option `lowercase_usernames`. By default, this configuration option is `false`.

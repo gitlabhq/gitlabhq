@@ -13,7 +13,7 @@ We currently distinguish between three different data types:
 - [Blobs](#blobs)
 - [Database](#database)
 
-See the list below of each feature or component we replicate, its corresponding data type, replication and
+See the list below of each feature or component we replicate, its corresponding data type, replication, and
 verification methods:
 
 | Type     | Feature / component                           | Replication method                          | Verification method  |

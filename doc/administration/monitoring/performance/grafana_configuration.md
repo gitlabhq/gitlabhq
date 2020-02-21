@@ -148,7 +148,14 @@ However, you should **not** reinstate your old data _except_ under one of the fo
 1. If you are certain that you changed your default admin password when you enabled Grafana
 1. If you run GitLab in a private network, accessed only by trusted users, and your Grafana login page has not been exposed to the internet
 
-If you require access to your old Grafana data but do not meet one of these criteria, you may consider reinstating it temporarily, [exporting the dashboards](https://grafana.com/docs/reference/export_import/#exporting-a-dashboard) you need, then refreshing the data and [re-importing your dashboards](https://grafana.com/docs/reference/export_import/#importing-a-dashboard). Note that this poses a temporary vulnerability while your old Grafana data is in use, and the decision to do so should be weighed carefully with your need to access existing data and dashboards.
+If you require access to your old Grafana data but do not meet one of these criteria, you may consider:
+
+1. Reinstating it temporarily.
+1. [Exporting the dashboards](https://grafana.com/docs/reference/export_import/#exporting-a-dashboard) you need.
+1. Refreshing the data and [re-importing your dashboards](https://grafana.com/docs/reference/export_import/#importing-a-dashboard).
+
+DANGER: **Danger:**
+This poses a temporary vulnerability while your old Grafana data is in use and the decision to do so should be weighed carefully with your need to access existing data and dashboards.
 
 For more information and further mitigation details, please refer to our [blog post on the security release](https://about.gitlab.com/blog/2019/08/12/critical-security-release-gitlab-12-dot-1-dot-6-released/).
 

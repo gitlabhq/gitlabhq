@@ -81,7 +81,7 @@ incoming email domain to `hooli.com`, an attacker could abuse the "Create new
 issue by email" or
 "[Create new merge request by email](../user/project/merge_requests/creating_merge_requests.md#new-merge-request-by-email-core-only)"
 features by using a project's unique address as the email when signing up for
-Slack, which would send a confirmation email, which would create a new issue or
+Slack. This would send a confirmation email, which would create a new issue or
 merge request on the project owned by the attacker, allowing them to click the
 confirmation link and validate their account on your company's private Slack
 instance.

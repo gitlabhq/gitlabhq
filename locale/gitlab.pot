@@ -111,6 +111,11 @@ msgid_plural "%d fixed test results"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d group selected"
+msgid_plural "%d groups selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d inaccessible merge request"
 msgid_plural "%d inaccessible merge requests"
 msgstr[0] ""
@@ -168,6 +173,11 @@ msgstr[1] ""
 
 msgid "%d second"
 msgid_plural "%d seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d shard selected"
+msgid_plural "%d shards selected"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3597,6 +3607,9 @@ msgid "Choose visibility level, enable/disable project features (issues, reposit
 msgstr ""
 
 msgid "Choose what content you want to see on a group’s overview page"
+msgstr ""
+
+msgid "Choose which groups you wish to synchronize to this secondary node"
 msgstr ""
 
 msgid "Choose which repositories you want to connect and run CI/CD pipelines."
@@ -9919,6 +9932,9 @@ msgid "Groups (%{count})"
 msgstr ""
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
+msgstr ""
+
+msgid "Groups to synchronize"
 msgstr ""
 
 msgid "Groups with access to %{strong_start}%{group_name}%{strong_end}"
@@ -17145,6 +17161,9 @@ msgstr ""
 msgid "Select group or project"
 msgstr ""
 
+msgid "Select groups to replicate"
+msgstr ""
+
 msgid "Select labels"
 msgstr ""
 
@@ -17542,9 +17561,6 @@ msgid "Settings to prevent self-approval across all projects in the instance. On
 msgstr ""
 
 msgid "Severity: %{severity}"
-msgstr ""
-
-msgid "Shards selected: %{count}"
 msgstr ""
 
 msgid "Shards to synchronize"
@@ -19459,6 +19475,9 @@ msgid "There was an error fetching median data for stages"
 msgstr ""
 
 msgid "There was an error fetching the Designs"
+msgstr ""
+
+msgid "There was an error fetching the Node's Groups"
 msgstr ""
 
 msgid "There was an error fetching the environments information."

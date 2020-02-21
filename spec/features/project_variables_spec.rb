@@ -12,7 +12,7 @@ describe 'Project variables', :js do
     sign_in(user)
     project.add_maintainer(user)
     project.variables << variable
-
+    stub_feature_flags(new_variables_ui: false)
     visit page_path
   end
 

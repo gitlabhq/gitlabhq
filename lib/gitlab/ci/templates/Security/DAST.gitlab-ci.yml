@@ -18,6 +18,7 @@ dast:
   image:
     name: "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION"
   variables:
+    GIT_STRATEGY: none
   # URL to scan:
   # DAST_WEBSITE: https://example.com/
   #

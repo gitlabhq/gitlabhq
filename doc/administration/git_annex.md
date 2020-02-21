@@ -18,7 +18,7 @@ you can.
 
 Not being able to version control large binaries is a big problem for many
 larger organizations.
-Videos, photos, audio, compiled binaries and many other types of files are too
+Videos, photos, audio, compiled binaries, and many other types of files are too
 large. As a workaround, people keep artwork-in-progress in a Dropbox folder and
 only check in the final result. This results in using outdated files, not
 having a complete history and increases the risk of losing work.
@@ -41,13 +41,13 @@ configuration options required to enable it.
 
 `git-annex` needs to be installed both on the server and the client side.
 
-For Debian-like systems (e.g., Debian, Ubuntu) this can be achieved by running:
+For Debian-like systems (for example, Debian and Ubuntu) this can be achieved by running:
 
 ```
 sudo apt-get update && sudo apt-get install git-annex
 ```
 
-For RedHat-like systems (e.g., CentOS, RHEL) this can be achieved by running:
+For RedHat-like systems (for example, CentOS and RHEL) this can be achieved by running:
 
 ```
 sudo yum install epel-release && sudo yum install git-annex

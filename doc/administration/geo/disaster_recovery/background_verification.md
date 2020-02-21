@@ -176,7 +176,7 @@ progress to include them in [ee-1430]. For now, you can verify their integrity
 manually by following [these instructions][foreground-verification] on both
 nodes, and comparing the output between them.
 
-In GitLab EE 12.1, Geo calculates checksums for attachments, LFS objects and
+In GitLab EE 12.1, Geo calculates checksums for attachments, LFS objects, and
 archived traces on secondary nodes after the transfer, compares it with the
 stored checksums, and rejects transfers if mismatched. Please note that Geo
 currently does not support an automatic way to verify these data if they have
