@@ -13,6 +13,8 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
+        include ::Gitlab::RateLimitHelpers
+
         def handle_project_member_errors(errors)
           if errors[:project_access].any?
             error!(errors[:project_access], 422)
@@ -89,6 +91,10 @@ module API
         optional :format, type: String, desc: 'The archive format'
       end
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
+        if archive_rate_limit_reached?(current_user, user_project)
+          render_api_error!({ error: ::Gitlab::RateLimitHelpers::ARCHIVE_RATE_LIMIT_REACHED_MESSAGE }, 429)
+        end
+
         send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true
       rescue
         not_found!('File')

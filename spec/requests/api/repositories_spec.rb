@@ -223,6 +223,10 @@ describe API::Repositories do
   describe "GET /projects/:id/repository/archive(.:format)?:sha" do
     let(:route) { "/projects/#{project.id}/repository/archive" }
 
+    before do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+    end
+
     shared_examples_for 'repository archive' do
       it 'returns the repository archive' do
         get api(route, current_user)
@@ -262,6 +266,14 @@ describe API::Repositories do
           let(:request) { get api("#{route}?sha=xxx", current_user) }
           let(:message) { '404 File Not Found' }
         end
+      end
+
+      it 'rate limits user when thresholds hit' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
+        get api("/projects/#{project.id}/repository/archive.tar.bz2", user)
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
 
