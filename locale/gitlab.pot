@@ -1057,6 +1057,9 @@ msgstr ""
 msgid "Add README"
 msgstr ""
 
+msgid "Add Variable"
+msgstr ""
+
 msgid "Add Zoom meeting"
 msgstr ""
 
@@ -1187,6 +1190,9 @@ msgid "Add user(s) to the group:"
 msgstr ""
 
 msgid "Add users to group"
+msgstr ""
+
+msgid "Add variable"
 msgstr ""
 
 msgid "Add webhook"
@@ -1636,6 +1642,9 @@ msgid "Allow users to register any application to use GitLab as an OAuth provide
 msgstr ""
 
 msgid "Allow users to request access (if visibility is public or internal)"
+msgstr ""
+
+msgid "Allow variables to run on protected branches and tags."
 msgstr ""
 
 msgid "Allowed email domain restriction only permitted for top-level groups"
@@ -3702,6 +3711,9 @@ msgstr ""
 msgid "CiVariables|Cannot use Masked Variable with current value"
 msgstr ""
 
+msgid "CiVariables|Environment Scope"
+msgstr ""
+
 msgid "CiVariables|Input variable key"
 msgstr ""
 
@@ -3712,6 +3724,9 @@ msgid "CiVariables|Key"
 msgstr ""
 
 msgid "CiVariables|Masked"
+msgstr ""
+
+msgid "CiVariables|Protected"
 msgstr ""
 
 msgid "CiVariables|Remove variable row"
@@ -11822,6 +11837,9 @@ msgstr ""
 msgid "Marks this issue as related to %{issue_ref}."
 msgstr ""
 
+msgid "Mask variable"
+msgstr ""
+
 msgid "Match not found; try refining your search query."
 msgstr ""
 
@@ -15489,6 +15507,9 @@ msgid "Promotions|When you have a lot of issues, it can be hard to get an overvi
 msgstr ""
 
 msgid "Prompt users to upload SSH keys"
+msgstr ""
+
+msgid "Protect variable"
 msgstr ""
 
 msgid "Protected"
@@ -19372,6 +19393,9 @@ msgstr ""
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
+msgid "There are currently no variables, add a variable with the Add Variable button below."
+msgstr ""
+
 msgid "There are no GPG keys associated with this account."
 msgstr ""
 
@@ -20831,6 +20855,9 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
+msgid "Update Variable"
+msgstr ""
+
 msgid "Update all"
 msgstr ""
 
@@ -21441,6 +21468,9 @@ msgid "Variable"
 msgstr ""
 
 msgid "Variables"
+msgstr ""
+
+msgid "Variables will be masked in job logs. Requires values to meet regular expression requirements."
 msgstr ""
 
 msgid "Various container registry settings."

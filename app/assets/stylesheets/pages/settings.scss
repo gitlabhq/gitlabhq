@@ -130,6 +130,10 @@
   border-radius: $border-radius-base;
 }
 
+.empty-variables {
+  padding: 20px 0;
+}
+
 .warning-title {
   color: $orange-500;
 }
@@ -369,4 +373,11 @@
 
 .push-pull-table {
   margin-top: 1em;
+}
+
+.ci-variable-table {
+  table tr th {
+    background-color: transparent;
+    border: 0;
+  }
 }

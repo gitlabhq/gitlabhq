@@ -1,4 +1,5 @@
 import { __ } from '~/locale';
+import { cloneDeep } from 'lodash';
 
 const variableType = 'env_var';
 const fileType = 'file';
@@ -24,9 +25,9 @@ export const prepareDataForDisplay = variables => {
 };
 
 export const prepareDataForApi = (variable, destroy = false) => {
-  const variableCopy = variable;
-  variableCopy.protected.toString();
-  variableCopy.masked.toString();
+  const variableCopy = cloneDeep(variable);
+  variableCopy.protected = variableCopy.protected.toString();
+  variableCopy.masked = variableCopy.masked.toString();
   variableCopy.variable_type = variableTypeHandler(variableCopy.variable_type);
 
   if (variableCopy.environment_scope === __('All environments')) {

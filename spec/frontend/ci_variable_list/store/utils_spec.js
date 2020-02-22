@@ -17,8 +17,8 @@ describe('CI variables store utils', () => {
       environment_scope: '*',
       id: 113,
       key: 'test_var',
-      masked: false,
-      protected: false,
+      masked: 'false',
+      protected: 'false',
       value: 'test_val',
       variable_type: 'env_var',
     });
@@ -27,8 +27,8 @@ describe('CI variables store utils', () => {
       environment_scope: '*',
       id: 114,
       key: 'test_var_2',
-      masked: false,
-      protected: false,
+      masked: 'false',
+      protected: 'false',
       value: 'test_val_2',
       variable_type: 'file',
     });

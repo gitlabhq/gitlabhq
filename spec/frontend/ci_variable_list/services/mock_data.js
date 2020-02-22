@@ -9,24 +9,6 @@ export default {
       value: 'test_val',
       variable_type: 'Variable',
     },
-    {
-      environment_scope: 'All environments',
-      id: 114,
-      key: 'test_var_2',
-      masked: false,
-      protected: false,
-      value: 'test_val_2',
-      variable_type: 'Variable',
-    },
-    {
-      environment_scope: 'All environments',
-      id: 115,
-      key: 'test_var_3',
-      masked: false,
-      protected: false,
-      value: 'test_val_3',
-      variable_type: 'Variable',
-    },
   ],
 
   mockVariablesApi: [
