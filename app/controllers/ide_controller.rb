@@ -3,6 +3,8 @@
 class IdeController < ApplicationController
   layout 'fullscreen'
 
+  include StaticObjectExternalStorageCSP
+
   def index
     Gitlab::UsageDataCounters::WebIdeCounter.increment_views_count
   end
