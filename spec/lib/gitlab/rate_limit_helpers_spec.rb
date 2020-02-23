@@ -43,6 +43,7 @@ describe Gitlab::RateLimitHelpers, :clean_gitlab_redis_shared_state do
         end
 
         expect(class_instance.archive_rate_limit_reached?(nil, project)).to be_truthy
+        expect(class_instance.archive_rate_limit_reached?(user, project)).to be_falsey
       end
     end
   end

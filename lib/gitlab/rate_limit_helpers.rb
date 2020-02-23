@@ -11,7 +11,7 @@ module Gitlab
 
       key = ARCHIVE_RATE_THROTTLE_KEY
 
-      if rate_limiter.throttled?(key, scope: [project], threshold: archive_rate_threshold_by_user(user))
+      if rate_limiter.throttled?(key, scope: [project, user], threshold: archive_rate_threshold_by_user(user))
         rate_limiter.log_request(request, "#{key}_request_limit".to_sym, user)
 
         return true
