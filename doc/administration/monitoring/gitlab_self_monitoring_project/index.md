@@ -1,9 +1,7 @@
 # GitLab self monitoring project
 
-NOTE: **Note:**
-This feature is available behind a feature flag called `self_monitoring_project`
-since [12.7](https://gitlab.com/gitlab-org/gitlab/issues/32351). The feature flag
-will be removed once we [add dashboards to display metrics](https://gitlab.com/groups/gitlab-org/-/epics/2367).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32351) behind a disabled feature flag (`self_monitoring_project`) in GitLab 12.7.
+> - The feature flag was removed and the Self Monitoring Project was [made generally available](https://gitlab.com/gitlab-org/gitlab/issues/198511) in GitLab 12.8.
 
 GitLab has been adding the ability for administrators to see insights into the health of
 their GitLab instance. In order to surface this experience in a native way, similar to how

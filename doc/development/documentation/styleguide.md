@@ -540,6 +540,10 @@ Keep heading titles clear and direct. Make every word count. To accommodate sear
 | GitLab Release and Maintenance Policy | This section covers GitLab's Release and Maintenance Policy |
 | Backport to older releases | Backporting to older releases |
 
+NOTE: **Note:**
+If you change an existing title, be careful. Any such changes may affect not only [links](#anchor-links)
+within the page, but may also affect links from GitLab itself, as well as external links, to GitLab documentation.
+
 ### Anchor links
 
 Headings generate anchor links automatically when rendered. `## This is an example`
