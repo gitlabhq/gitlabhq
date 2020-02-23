@@ -60,7 +60,7 @@ published to the GitLab Package Registry.
 
 Start by opening your terminal and creating a directory where you would like to
 store the project in your environment. From inside the directory, you can run
-the following Maven command to initalize a new package:
+the following Maven command to initialize a new package:
 
 ```shell
 mvn archetype:generate -DgroupId=com.mycompany.mydepartment -DartifactId=my-project -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
@@ -71,7 +71,7 @@ The arguments are as follows:
 - `DgroupId`: A unique string that identifies your package. You should follow
 the [Maven naming conventions](https://maven.apache.org/guides/mini/guide-naming-conventions.html).
 - `DartifactId`: The name of the JAR, appended to the end of the `DgroupId`.
-- `DarchetypeArtifactId`: The archetype used to create the intial structure of
+- `DarchetypeArtifactId`: The archetype used to create the initial structure of
 the project.
 - `DinteractiveMode`: Create the project using batch mode (optional).
 
