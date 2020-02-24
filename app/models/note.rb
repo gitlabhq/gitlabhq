@@ -223,7 +223,7 @@ class Note < ApplicationRecord
   end
 
   # rubocop: disable CodeReuse/ServiceClass
-  def cross_reference?
+  def system_note_with_references?
     return unless system?
 
     if force_cross_reference_regex_check?
@@ -339,12 +339,10 @@ class Note < ApplicationRecord
     super
   end
 
-  def cross_reference_not_visible_for?(user)
-    cross_reference? && !all_referenced_mentionables_allowed?(user)
-  end
-
-  def visible_for?(user)
-    !cross_reference_not_visible_for?(user) && system_note_viewable_by?(user)
+  # This method is to be used for checking read permissions on a note instead of `system_note_with_references_visible_for?`
+  def readable_by?(user)
+    # note_policy accounts for #system_note_with_references_visible_for?(user) check when granting read access
+    Ability.allowed?(user, :read_note, self)
   end
 
   def award_emoji?
@@ -502,6 +500,10 @@ class Note < ApplicationRecord
     return Note.none unless noteable.present?
 
     noteable.user_mentions.where(note: self)
+  end
+
+  def system_note_with_references_visible_for?(user)
+    (!system_note_with_references? || all_referenced_mentionables_allowed?(user)) && system_note_viewable_by?(user)
   end
 
   private

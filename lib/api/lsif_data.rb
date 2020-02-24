@@ -21,9 +21,9 @@ module API
           authorize! :download_code, user_project
 
           artifact =
-            @project.job_artifacts
+            Ci::JobArtifact
               .with_file_types(['lsif'])
-              .for_sha(params[:commit_id])
+              .for_sha(params[:commit_id], @project.id)
               .last
 
           not_found! unless artifact

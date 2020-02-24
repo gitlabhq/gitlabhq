@@ -152,7 +152,7 @@ Where:
 
 ### Upload packages with .NET CLI
 
-This section assumes that your project is properly built and you already [created a NuGet package with .NET CLI](https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package-dotnet-cli.).
+This section assumes that your project is properly built and you already [created a NuGet package with .NET CLI](https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package-dotnet-cli).
 Upload your package using the following command:
 
 ```shell

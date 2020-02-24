@@ -62,7 +62,7 @@ module API
 
       def get_note(noteable, note_id)
         note = noteable.notes.with_metadata.find(note_id)
-        can_read_note = note.visible_for?(current_user)
+        can_read_note = note.readable_by?(current_user)
 
         if can_read_note
           present note, with: Entities::Note

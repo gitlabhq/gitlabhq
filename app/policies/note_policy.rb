@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class NotePolicy < BasePolicy
-  delegate { @subject.project }
+  delegate { @subject.resource_parent }
   delegate { @subject.noteable if DeclarativePolicy.has_policy?(@subject.noteable) }
 
   condition(:is_author) { @user && @subject.author == @user }
@@ -11,7 +11,7 @@ class NotePolicy < BasePolicy
 
   condition(:can_read_noteable) { can?(:"read_#{@subject.noteable_ability_name}") }
 
-  condition(:is_visible) { @subject.visible_for?(@user) }
+  condition(:is_visible) { @subject.system_note_with_references_visible_for?(@user) }
 
   rule { ~editable }.prevent :admin_note
 

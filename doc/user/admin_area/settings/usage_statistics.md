@@ -10,6 +10,9 @@ to perform various actions.
 All statistics are opt-out. You can enable/disable them in the
 **Admin Area > Settings > Metrics and profiling** section **Usage statistics**.
 
+NOTE: **Note:**
+Allow network traffic from your GitLab instance to IP address 104.196.17.203 to send usage statistics to GitLab Inc.
+
 ## Version Check **(CORE ONLY)**
 
 If enabled, version check will inform you if a new version is available and the

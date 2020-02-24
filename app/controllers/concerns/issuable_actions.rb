@@ -137,7 +137,7 @@ module IssuableActions
     end
 
     notes = prepare_notes_for_rendering(notes)
-    notes = notes.select { |n| n.visible_for?(current_user) }
+    notes = notes.select { |n| n.readable_by?(current_user) }
 
     discussions = Discussion.build_collection(notes, issuable)
 

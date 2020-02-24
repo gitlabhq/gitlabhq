@@ -1374,7 +1374,7 @@ class Project < ApplicationRecord
     @lfs_storage_project ||= begin
       result = self
 
-      # TODO: Make this go to the fork_network root immeadiatly
+      # TODO: Make this go to the fork_network root immediately
       # dependant on the discussion in: https://gitlab.com/gitlab-org/gitlab-foss/issues/39769
       result = result.fork_source while result&.forked?
 

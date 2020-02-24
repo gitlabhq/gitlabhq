@@ -283,7 +283,7 @@ class NotificationService
     return true unless note.noteable_type.present?
 
     # ignore gitlab service messages
-    return true if note.cross_reference? && note.system?
+    return true if note.system_note_with_references?
 
     send_new_note_notifications(note)
   end
