@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a supported metrics dashboard url' do
+RSpec.shared_examples 'redacts the embed placeholder' do
   context 'no user is logged in' do
     it 'redacts the placeholder' do
       expect(doc.to_s).to be_empty
@@ -14,7 +14,9 @@ RSpec.shared_examples 'a supported metrics dashboard url' do
       expect(doc.to_s).to be_empty
     end
   end
+end
 
+RSpec.shared_examples 'retains the embed placeholder when applicable' do
   context 'the user has requisite permissions' do
     let(:user) { create(:user) }
     let(:doc) { filter(input, current_user: user) }
@@ -22,7 +24,7 @@ RSpec.shared_examples 'a supported metrics dashboard url' do
     it 'leaves the placeholder' do
       project.add_maintainer(user)
 
-      expect(doc.to_s).to eq(input)
+      expect(CGI.unescapeHTML(doc.to_s)).to eq(input)
     end
   end
 end

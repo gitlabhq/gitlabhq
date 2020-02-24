@@ -614,6 +614,10 @@ $mr-widget-min-height: 69px;
   .circle-icon-container {
     color: $gl-text-color-quaternary;
   }
+
+  .popover {
+    z-index: 240;
+  }
 }
 
 .card-new-merge-request {

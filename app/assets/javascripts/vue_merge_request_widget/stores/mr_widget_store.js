@@ -176,6 +176,7 @@ export default class MergeRequestStore {
     this.eligibleApproversDocsPath = data.eligible_approvers_docs_path;
     this.mergeImmediatelyDocsPath = data.merge_immediately_docs_path;
     this.mergeRequestAddCiConfigPath = data.merge_request_add_ci_config_path;
+    this.pipelinesEmptySvgPath = data.pipelines_empty_svg_path;
     this.humanAccess = data.human_access;
   }
 

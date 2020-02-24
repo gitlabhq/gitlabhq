@@ -6,7 +6,7 @@ module Projects
       before_action :authorize_admin_pipeline!
       before_action :define_variables
       before_action do
-        push_frontend_feature_flag(:new_variables_ui, @project)
+        push_frontend_feature_flag(:new_variables_ui, @project, default_enabled: true)
       end
 
       def show

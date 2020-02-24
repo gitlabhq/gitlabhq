@@ -28,6 +28,7 @@ export default {
   },
   merge_status: 'can_be_merged',
   merge_user_id: null,
+  pipelines_empty_svg_path: '/path/to/svg',
   source_branch: 'daaaa',
   source_branch_link: 'daaaa',
   source_project_id: 19,

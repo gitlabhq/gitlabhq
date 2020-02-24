@@ -75,8 +75,9 @@ describe MergeRequestWidgetEntity do
         let(:role) { :developer }
 
         it 'has add ci config path' do
-          expect(subject[:merge_request_add_ci_config_path])
-            .to eq("/#{resource.project.full_path}/-/new/#{resource.source_branch}?commit_message=Add+.gitlab-ci.yml&file_name=.gitlab-ci.yml")
+          expected_path = "/#{resource.project.full_path}/-/new/#{resource.source_branch}?commit_message=Add+.gitlab-ci.yml&file_name=.gitlab-ci.yml&suggest_gitlab_ci_yml=true"
+
+          expect(subject[:merge_request_add_ci_config_path]).to eq(expected_path)
         end
 
         context 'when source project is missing' do

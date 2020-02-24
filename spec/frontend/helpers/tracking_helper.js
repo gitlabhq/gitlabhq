@@ -8,7 +8,7 @@ let handlers;
 export function mockTracking(category = '_category_', documentOverride, spyMethod) {
   document = documentOverride || window.document;
   window.snowplow = () => {};
-  Tracking.bindDocument(category, document);
+  handlers = Tracking.bindDocument(category, document);
   return spyMethod ? spyMethod(Tracking, 'event') : null;
 }
 

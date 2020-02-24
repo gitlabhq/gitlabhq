@@ -7,7 +7,7 @@ module Groups
       before_action :authorize_admin_group!
       before_action :authorize_update_max_artifacts_size!, only: [:update]
       before_action do
-        push_frontend_feature_flag(:new_variables_ui, @group)
+        push_frontend_feature_flag(:new_variables_ui, @group, default_enabled: true)
       end
 
       def show

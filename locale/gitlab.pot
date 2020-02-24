@@ -9448,6 +9448,9 @@ msgstr ""
 msgid "Go to %{link_to_google_takeout}."
 msgstr ""
 
+msgid "Go to Pipelines"
+msgstr ""
+
 msgid "Go to Webhooks"
 msgstr ""
 
@@ -11687,6 +11690,12 @@ msgstr ""
 msgid "MERGED"
 msgstr ""
 
+msgid "MR widget|Take a look at our %{beginnerLinkStart}Beginner's Guide to Continuous Integration%{beginnerLinkEnd} and our %{exampleLinkStart}examples of GitLab CI/CD%{exampleLinkEnd} to see all the cool stuff you can do with it."
+msgstr ""
+
+msgid "MR widget|The pipeline will now run automatically every time you commit code. Pipelines are useful for deploying static web pages, detecting vulnerabilities in dependencies, static or dynamic application security testing (SAST and DAST), and so much more!"
+msgstr ""
+
 msgid "MRApprovals|Approved by"
 msgstr ""
 
@@ -12958,6 +12967,9 @@ msgid "No start date"
 msgstr ""
 
 msgid "No template"
+msgstr ""
+
+msgid "No thanks, don't show this again"
 msgstr ""
 
 msgid "No value set by top-level parent group."
@@ -17650,6 +17662,9 @@ msgstr ""
 msgid "Show latest version"
 msgstr ""
 
+msgid "Show me how"
+msgstr ""
+
 msgid "Show only direct members"
 msgstr ""
 
@@ -19021,6 +19036,9 @@ msgid "Thanks for your purchase!"
 msgstr ""
 
 msgid "Thanks! Don't show me this again"
+msgstr ""
+
+msgid "That's it, well done!%{celebrate}"
 msgstr ""
 
 msgid "The \"%{group_path}\" group allows you to sign in with your Single Sign-On Account"
@@ -23346,6 +23364,9 @@ msgstr ""
 msgid "mrWidget|Approved by"
 msgstr ""
 
+msgid "mrWidget|Are you adding technical debt or code vulnerabilities?"
+msgstr ""
+
 msgid "mrWidget|Cancel automatic merge"
 msgstr ""
 
@@ -23377,6 +23398,9 @@ msgid "mrWidget|Delete source branch"
 msgstr ""
 
 msgid "mrWidget|Deployment statistics are not available currently"
+msgstr ""
+
+msgid "mrWidget|Detect issues before deployment with a CI pipeline"
 msgstr ""
 
 msgid "mrWidget|Did not close"
@@ -23556,6 +23580,9 @@ msgstr ""
 msgid "mrWidget|Your password"
 msgstr ""
 
+msgid "mrWidget|a quick guide that'll show you how to create"
+msgstr ""
+
 msgid "mrWidget|branch does not exist."
 msgstr ""
 
@@ -23563,6 +23590,15 @@ msgid "mrWidget|command line"
 msgstr ""
 
 msgid "mrWidget|into"
+msgstr ""
+
+msgid "mrWidget|one. Make your code more secure and more"
+msgstr ""
+
+msgid "mrWidget|robust in just a minute."
+msgstr ""
+
+msgid "mrWidget|that continuously tests your code. We created"
 msgstr ""
 
 msgid "mrWidget|to be added to the merge train when the pipeline succeeds"

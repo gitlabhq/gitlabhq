@@ -362,6 +362,8 @@ export default {
       v-if="shouldSuggestPipelines"
       class="mr-widget-workflow"
       :pipeline-path="mr.mergeRequestAddCiConfigPath"
+      :pipeline-svg-path="mr.pipelinesEmptySvgPath"
+      :human-access="mr.humanAccess.toLowerCase()"
     />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"

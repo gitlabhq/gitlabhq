@@ -31,6 +31,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   before_action only: :show do
     push_frontend_feature_flag(:code_navigation, @project)
+    push_frontend_feature_flag(:suggest_pipeline) if experiment_enabled?(:suggest_pipeline)
   end
 
   def new
