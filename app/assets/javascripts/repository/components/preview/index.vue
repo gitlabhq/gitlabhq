@@ -1,5 +1,8 @@
 <script>
+import $ from 'jquery';
+import '~/behaviors/markdown/render_gfm';
 import { GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { handleLocationHash } from '~/lib/utils/common_utils';
 import getReadmeQuery from '../../queries/getReadme.query.graphql';
 
 export default {
@@ -30,6 +33,16 @@ export default {
       loading: 0,
     };
   },
+  watch: {
+    readme(newVal) {
+      if (newVal) {
+        this.$nextTick(() => {
+          handleLocationHash();
+          $(this.$refs.readme).renderGFM();
+        });
+      }
+    },
+  },
 };
 </script>
 
@@ -45,7 +58,7 @@ export default {
     </div>
     <div class="blob-viewer">
       <gl-loading-icon v-if="loading > 0" size="md" color="dark" class="my-4 mx-auto" />
-      <div v-else-if="readme" v-html="readme.html"></div>
+      <div v-else-if="readme" ref="readme" v-html="readme.html"></div>
     </div>
   </article>
 </template>

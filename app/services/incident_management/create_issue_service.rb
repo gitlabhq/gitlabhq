@@ -58,7 +58,7 @@ module IncidentManagement
     end
 
     def issue_description
-      horizontal_line = "\n---\n\n"
+      horizontal_line = "\n\n---\n\n"
 
       [
         alert_summary,
