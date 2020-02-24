@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.8.1
+
+### Fixed (5 changes)
+
+- Fix markdown layout of incident issues. !25352
+- Time series extends axis options correctly. !25399
+- Fix "Edit Release" page. !25469
+- Fix upgrade failure in EE displaying license. !25788
+- Fixed last commit widget when Gravatar is disabled.
+
+
 ## 12.8.0
 
 ### Security (6 changes, 2 of them are from the community)
