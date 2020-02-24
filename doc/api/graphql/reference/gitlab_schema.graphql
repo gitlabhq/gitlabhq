@@ -7878,7 +7878,7 @@ type User {
   """
   URL of the user's avatar
   """
-  avatarUrl: String!
+  avatarUrl: String
 
   """
   Human-readable name of the user

@@ -14,7 +14,7 @@ module Types
           description: 'Human-readable name of the user'
     field :username, GraphQL::STRING_TYPE, null: false,
           description: 'Username of the user. Unique within this instance of GitLab'
-    field :avatar_url, GraphQL::STRING_TYPE, null: false,
+    field :avatar_url, GraphQL::STRING_TYPE, null: true,
           description: "URL of the user's avatar"
     field :web_url, GraphQL::STRING_TYPE, null: false,
           description: 'Web URL of the user'
