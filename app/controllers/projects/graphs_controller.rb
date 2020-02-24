@@ -37,7 +37,8 @@ class Projects::GraphsController < Projects::ApplicationController
   private
 
   def get_commits
-    @commits = @project.repository.commits(@ref, limit: 2000, skip_merges: true)
+    @commits_limit = 2000
+    @commits = @project.repository.commits(@ref, limit: @commits_limit, skip_merges: true)
     @commits_graph = Gitlab::Graphs::Commits.new(@commits)
     @commits_per_week_days = @commits_graph.commits_per_week_days
     @commits_per_time = @commits_graph.commits_per_time

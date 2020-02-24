@@ -1,35 +1,13 @@
 ---
-# `extends` indicates the Vale extension point being used.
-# Full list of styles: https://errata-ai.github.io/vale/styles/
+# Checks for use of common and uncommon contractions.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
 extends: substitution
-
-# Substitution rules can display the matched and suggested strings in the 
-# message shown to the user. The first use of %s prints the suggested option,
-# and the second use of %s displays what was found in the text.
 message: Use "%s" instead of "%s" in most cases.
-
-# Should a result be flagged as a suggestion, warning, or error?
-# Results that fall below the MinAlertLevel set in 
-# https://gitlab.com/gitlab-org/gitlab/blob/master/.vale.ini won't be shown.
-level: suggestion
-
-# Should a match be case-insensitive or case-sensitive?
-# Acceptable values are 'true' or 'false'
-ignorecase: true
-
-# Should this rule be limited to a specific scope? If yes, uncomment the line.
-# Possible scopes: https://errata-ai.github.io/vale/formats/#available-scopes
-# scope: heading
-
-# Should this rule ignore normal word boundaries, such as \b ?
-# Acceptable values are 'true' or 'false'
-nonword: false
-
-# What is the source for this rule?
 link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
-
-# The 'swap' section provides a list of values, one per line, in the form of
-# $bad: $good
+level: suggestion
+nonword: false
+ignorecase: true
 swap:
 
   # Common contractions are ok
@@ -73,4 +51,3 @@ swap:
   who'll: who will
   why's: why is
   why'll: why will
-

@@ -19,6 +19,7 @@ class ListIssue {
     this.isFetching = {
       subscriptions: true,
     };
+    this.closed = obj.closed;
     this.isLoading = {};
 
     this.refreshData(obj, defaultAvatar);

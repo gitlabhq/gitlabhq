@@ -20,6 +20,7 @@
         - end_time = capture do
           #{@commits_graph.end_date.strftime('%b %d')}
         = (_("Commit statistics for %{ref} %{start_time} - %{end_time}") % { ref: "<strong>#{h @ref}</strong>", start_time: start_time, end_time: end_time }).html_safe
+      = _("Excluding merge commits. Limited to %{limit} commits.") % {limit: number_with_delimiter(@commits_limit, delimiter: ',')}
 
     .col-md-6
       .tree-ref-container

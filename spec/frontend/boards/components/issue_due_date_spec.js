@@ -7,8 +7,8 @@ describe('Issue Due Date component', () => {
   let vm;
   let date;
   const Component = Vue.extend(IssueDueDate);
-  const createComponent = (dueDate = new Date()) =>
-    mountComponent(Component, { date: dateFormat(dueDate, 'yyyy-mm-dd', true) });
+  const createComponent = (dueDate = new Date(), closed = false) =>
+    mountComponent(Component, { closed, date: dateFormat(dueDate, 'yyyy-mm-dd', true) });
 
   beforeEach(() => {
     date = new Date();
@@ -56,10 +56,17 @@ describe('Issue Due Date component', () => {
     expect(vm.$el.querySelector('time').textContent.trim()).toEqual(dateFormat(date, format));
   });
 
-  it('should contain the correct `.text-danger` css class for overdue issue', () => {
+  it('should contain the correct `.text-danger` css class for overdue issue that is open', () => {
     date.setDate(date.getDate() - 17);
     vm = createComponent(date);
 
     expect(vm.$el.querySelector('time').classList.contains('text-danger')).toEqual(true);
+  });
+
+  it('should not contain the `.text-danger` css class for overdue issue that is closed', () => {
+    date.setDate(date.getDate() - 17);
+    vm = createComponent(date, true);
+
+    expect(vm.$el.querySelector('time').classList.contains('text-danger')).toEqual(false);
   });
 });

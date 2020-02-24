@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { property, isEqual } from 'lodash';
 import { truncatePathMiddleToLength } from '~/lib/utils/text_utility';
 import { diffModes, diffViewerModes } from '~/ide/constants';
 import {
@@ -442,7 +442,7 @@ export function isDiscussionApplicableToLine({ discussion, diffPosition, latestD
     const originalRefs = discussion.original_position;
     const refs = discussion.position;
 
-    return _.isEqual(refs, diffPositionCopy) || _.isEqual(originalRefs, diffPositionCopy);
+    return isEqual(refs, diffPositionCopy) || isEqual(originalRefs, diffPositionCopy);
   }
 
   // eslint-disable-next-line
@@ -578,10 +578,10 @@ export const convertExpandLines = ({
   for (let i = 0, diffLinesLength = diffLines.length; i < diffLinesLength; i += 1) {
     const line = diffLines[i];
 
-    if (_.property(typeKey)(line) === 'match') {
+    if (property(typeKey)(line) === 'match') {
       const beforeLine = diffLines[i - 1];
       const afterLine = diffLines[i + 1];
-      const newLineProperty = _.property(newLineKey);
+      const newLineProperty = property(newLineKey);
       const beforeLineIndex = newLineProperty(beforeLine) || 0;
       const afterLineIndex = newLineProperty(afterLine) - 1 || dataLength;
 
@@ -589,7 +589,7 @@ export const convertExpandLines = ({
         ...data.slice(beforeLineIndex, afterLineIndex).map((l, index) =>
           mapLine({
             line: Object.assign(l, { hasForm: false, discussions: [] }),
-            oldLine: (_.property(oldLineKey)(beforeLine) || 0) + index + 1,
+            oldLine: (property(oldLineKey)(beforeLine) || 0) + index + 1,
             newLine: (newLineProperty(beforeLine) || 0) + index + 1,
           }),
         ),

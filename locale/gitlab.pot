@@ -7951,6 +7951,9 @@ msgstr ""
 msgid "Except policy:"
 msgstr ""
 
+msgid "Excluding merge commits. Limited to %{limit} commits."
+msgstr ""
+
 msgid "Excluding merge commits. Limited to 6,000 commits."
 msgstr ""
 

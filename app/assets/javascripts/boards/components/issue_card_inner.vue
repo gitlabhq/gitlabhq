@@ -177,9 +177,9 @@ export default {
           class="confidential-icon append-right-4"
           :aria-label="__('Confidential')"
         />
-        <a :href="issue.path" :title="issue.title" class="js-no-trigger" @mousemove.stop>
-          {{ issue.title }}
-        </a>
+        <a :href="issue.path" :title="issue.title" class="js-no-trigger" @mousemove.stop>{{
+          issue.title
+        }}</a>
       </h4>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels prepend-top-4 d-flex flex-wrap">
@@ -225,7 +225,7 @@ export default {
           #{{ issue.iid }}
         </span>
         <span class="board-info-items prepend-top-8 d-inline-block">
-          <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" />
+          <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" :closed="issue.closed" />
           <issue-time-estimate v-if="issue.timeEstimate" :estimate="issue.timeEstimate" />
           <issue-card-weight
             v-if="validIssueWeight"

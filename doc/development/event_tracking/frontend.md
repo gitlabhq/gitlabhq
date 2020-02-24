@@ -104,7 +104,7 @@ And if needed within the template, you can use the `track` method directly as we
 Custom event tracking and instrumentation can be added by directly calling the `Tracking.event` static function. The following example demonstrates tracking a click on a button by calling `Tracking.event` manually.
 
 ```javascript
-import Tracking from `~/tracking`;
+import Tracking from '~/tracking';
 
 const button = document.getElementById('create_from_template_button');
 button.addEventListener('click', () => {
