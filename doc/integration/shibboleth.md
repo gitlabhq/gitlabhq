@@ -71,7 +71,6 @@ The following changes are needed to enable Shibboleth:
 
    gitlab_rails['omniauth_allow_single_sign_on'] = true
    gitlab_rails['omniauth_block_auto_created_users'] = false
-   gitlab_rails['omniauth_enabled'] = true
    gitlab_rails['omniauth_providers'] = [
      {
        "name"  => "'shibboleth"',

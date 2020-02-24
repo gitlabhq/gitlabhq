@@ -80,9 +80,6 @@ To change these settings:
   and change:
 
   ```ruby
-  # Versions prior to 11.4 require this to be set to true
-  # gitlab_rails['omniauth_enabled'] = nil
-
   # CAUTION!
   # This allows users to login without having a user account first. Define the allowed providers
   # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.

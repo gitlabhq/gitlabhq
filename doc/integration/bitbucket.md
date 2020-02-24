@@ -89,8 +89,6 @@ you to use.
    For Omnibus packages:
 
    ```ruby
-   gitlab_rails['omniauth_enabled'] = true
-
    gitlab_rails['omniauth_providers'] = [
      {
        "name" => "bitbucket",
