@@ -23,12 +23,16 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     {
         "key": "TEST_VARIABLE_1",
         "variable_type": "env_var",
-        "value": "TEST_1"
+        "value": "TEST_1",
+        "protected": false,
+        "masked": false
     },
     {
         "key": "TEST_VARIABLE_2",
         "variable_type": "env_var",
-        "value": "TEST_2"
+        "value": "TEST_2",
+        "protected": false,
+        "masked": false
     }
 ]
 ```
@@ -54,7 +58,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 {
     "key": "TEST_VARIABLE_1",
     "variable_type": "env_var",
-    "value": "TEST_1"
+    "value": "TEST_1",
+    "protected": false,
+    "masked": false
 }
 ```
 
@@ -73,6 +79,7 @@ POST /groups/:id/variables
 | `value`         | string  | yes      | The `value` of a variable |
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 | `protected`     | boolean | no       | Whether the variable is protected |
+| `masked`        | boolean | no       | Whether the variable is masked |
 
 ```
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables" --form "key=NEW_VARIABLE" --form "value=new value"
@@ -83,7 +90,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
     "key": "NEW_VARIABLE",
     "value": "new value",
     "variable_type": "env_var",
-    "protected": false
+    "protected": false,
+    "masked": false
 }
 ```
 
@@ -102,6 +110,7 @@ PUT /groups/:id/variables/:key
 | `value`         | string  | yes      | The `value` of a variable |
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 | `protected`     | boolean | no       | Whether the variable is protected |
+| `masked`        | boolean | no       | Whether the variable is masked |
 
 ```
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables/NEW_VARIABLE" --form "value=updated value"
@@ -112,7 +121,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
     "key": "NEW_VARIABLE",
     "value": "updated value",
     "variable_type": "env_var",
-    "protected": true
+    "protected": true,
+    "masked": true
 }
 ```
 

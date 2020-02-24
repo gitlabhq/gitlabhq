@@ -5,11 +5,14 @@ require 'spec_helper'
 describe 'Projects tree', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
+  let(:gravatar_enabled) { true }
 
   # This commit has a known state on the master branch of gitlab-test
   let(:test_sha) { '7975be0116940bf2ad4321f79d02a55c5f7779aa' }
 
   before do
+    stub_application_setting(gravatar_enabled: gravatar_enabled)
+
     project.add_maintainer(user)
     sign_in(user)
   end
@@ -32,6 +35,20 @@ describe 'Projects tree', :js do
     expect(page).to have_content('add spaces in whitespace file')
     expect(page).not_to have_selector('.label-lfs', text: 'LFS')
     expect(page).not_to have_selector('.flash-alert')
+  end
+
+  context 'gravatar disabled' do
+    let(:gravatar_enabled) { false }
+
+    it 'renders last commit' do
+      visit project_tree_path(project, test_sha)
+      wait_for_requests
+
+      page.within('.project-last-commit') do
+        expect(page).to have_selector('.user-avatar-link')
+        expect(page).to have_content('Merge branch')
+      end
+    end
   end
 
   context 'for signed commit' do
