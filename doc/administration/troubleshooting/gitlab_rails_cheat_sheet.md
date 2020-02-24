@@ -838,6 +838,12 @@ Project.all.each do |p|
 end
 ```
 
+### Obtain runners registration token
+
+```ruby
+Gitlab::CurrentSettings.current_application_settings.runners_registration_token
+```
+
 ## License
 
 ### See license plan name (since v9.3.0-ee)
