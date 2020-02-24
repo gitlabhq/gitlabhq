@@ -25,7 +25,7 @@ by [`Namespaces#with_statistics`](https://gitlab.com/gitlab-org/gitlab/blob/4ab5
 
 Additionally, the pattern that is currently used to update the project statistics
 (the callback) doesn't scale adequately. It is currently one of the largest
-[database queries transactions on production](https://gitlab.com/gitlab-org/gitlab-foss/issues/62488)
+[database queries transactions on production](https://gitlab.com/gitlab-org/gitlab/issues/29070)
 that takes the most time overall. We can't add one more query to it as
 it will increase the transaction's length.
 
@@ -142,7 +142,7 @@ but we refresh them through Sidekiq jobs and in different transactions:
 1. Create a second table (`namespace_aggregation_schedules`) with two columns `id` and `namespace_id`.
 1. Whenever the statistics of a project changes, insert a row into `namespace_aggregation_schedules`
    - We don't insert a new row if there's already one related to the root namespace.
-   - Keeping in mind the length of the transaction that involves updating `project_statistics`(<https://gitlab.com/gitlab-org/gitlab-foss/issues/62488>), the insertion should be done in a different transaction and through a Sidekiq Job.
+   - Keeping in mind the length of the transaction that involves updating `project_statistics`(<https://gitlab.com/gitlab-org/gitlab/issues/29070>), the insertion should be done in a different transaction and through a Sidekiq Job.
 1. After inserting the row, we schedule another worker to be executed async at two different moments:
    - One enqueued for immediate execution and another one scheduled in `1.5h` hours.
    - We only schedule the jobs, if we can obtain a `1.5h` lease on Redis on a key based on the root namespace ID.
@@ -162,7 +162,7 @@ This implementation has the following benefits:
 
 The only downside of this approach is that namespaces' statistics are updated up to `1.5` hours after the change is done,
 which means there's a time window in which the statistics are inaccurate. Because we're still not
-[enforcing storage limits](https://gitlab.com/gitlab-org/gitlab-foss/issues/30421), this is not a major problem.
+[enforcing storage limits](https://gitlab.com/gitlab-org/gitlab/issues/17664), this is not a major problem.
 
 ## Conclusion
 

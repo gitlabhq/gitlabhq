@@ -22,8 +22,7 @@ export const fetchRelease = ({ dispatch, state }) => {
   return api
     .release(state.projectId, state.tagName)
     .then(({ data: release }) => {
-      const camelCasedRelease = convertObjectPropsToCamelCase(release, { deep: true });
-      dispatch('receiveReleaseSuccess', camelCasedRelease);
+      dispatch('receiveReleaseSuccess', convertObjectPropsToCamelCase(release, { deep: true }));
     })
     .catch(error => {
       dispatch('receiveReleaseError', error);

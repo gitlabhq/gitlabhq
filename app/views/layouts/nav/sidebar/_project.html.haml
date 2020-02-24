@@ -366,10 +366,14 @@
                 %span
                   = _('Members')
             - if can_edit
-              = nav_link(controller: [:integrations, :services, :hooks, :hook_logs]) do
+              = nav_link(controller: [:integrations, :services]) do
                 = link_to project_settings_integrations_path(@project), title: _('Integrations'), data: { qa_selector: 'integrations_settings_link' } do
                   %span
                     = _('Integrations')
+              = nav_link(controller: [:hooks, :hook_logs]) do
+                = link_to project_hooks_path(@project), title: _('Webhooks'), data: { qa_selector: 'webhooks_settings_link' } do
+                  %span
+                    = _('Webhooks')
               = nav_link(controller: :repository) do
                 = link_to project_settings_repository_path(@project), title: _('Repository') do
                   %span

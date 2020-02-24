@@ -31,8 +31,8 @@ export default {
       <template #user>
         <user-avatar-link
           class="prepend-left-4"
-          :link-href="author.web_url"
-          :img-src="author.avatar_url"
+          :link-href="author.webUrl"
+          :img-src="author.avatarUrl"
           :img-alt="userImageAltDescription"
           :tooltip-text="author.username"
         />

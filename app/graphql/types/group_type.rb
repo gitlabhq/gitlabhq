@@ -52,6 +52,12 @@ module Types
           null: true,
           description: 'Boards of the group',
           resolver: Resolvers::BoardsResolver
+
+    field :board,
+          Types::BoardType,
+          null: true,
+          description: 'A single board of the group',
+          resolver: Resolvers::BoardsResolver.single
   end
 end
 

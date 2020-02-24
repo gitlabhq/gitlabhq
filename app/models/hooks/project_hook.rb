@@ -21,7 +21,7 @@ class ProjectHook < WebHook
   validates :project, presence: true
 
   def pluralized_name
-    _('Project Hooks')
+    _('Webhooks')
   end
 end
 

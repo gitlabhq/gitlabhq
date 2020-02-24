@@ -88,6 +88,7 @@ describe 'Project navbar' do
           _('General'),
           _('Members'),
           _('Integrations'),
+          _('Webhooks'),
           _('Repository'),
           _('CI / CD'),
           _('Operations'),

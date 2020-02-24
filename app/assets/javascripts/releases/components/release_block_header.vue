@@ -20,10 +20,10 @@ export default {
   },
   computed: {
     editLink() {
-      return this.release._links?.edit_url;
+      return this.release.Links?.editUrl;
     },
     selfLink() {
-      return this.release._links?.self;
+      return this.release.Links?.self;
     },
   },
 };
@@ -36,7 +36,7 @@ export default {
         {{ release.name }}
       </gl-link>
       <template v-else>{{ release.name }}</template>
-      <gl-badge v-if="release.upcoming_release" variant="warning" class="align-middle">{{
+      <gl-badge v-if="release.upcomingRelease" variant="warning" class="align-middle">{{
         __('Upcoming Release')
       }}</gl-badge>
     </h2>

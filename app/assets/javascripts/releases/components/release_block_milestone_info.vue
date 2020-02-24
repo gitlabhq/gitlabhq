@@ -40,7 +40,7 @@ export default {
       return Number.isNaN(percent) ? 0 : percent;
     },
     allIssueStats() {
-      return this.milestones.map(m => m.issue_stats || {});
+      return this.milestones.map(m => m.issueStats || {});
     },
     openIssuesCount() {
       return this.allIssueStats.map(stats => stats.opened || 0).reduce(sumReducer);
@@ -109,7 +109,7 @@ export default {
             :key="milestone.id"
             v-gl-tooltip
             :title="milestone.description"
-            :href="milestone.web_url"
+            :href="milestone.webUrl"
             class="append-right-4"
           >
             {{ milestone.title }}

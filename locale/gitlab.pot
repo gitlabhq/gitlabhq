@@ -6997,9 +6997,6 @@ msgstr ""
 msgid "Edit Pipeline Schedule %{id}"
 msgstr ""
 
-msgid "Edit Project Hook"
-msgstr ""
-
 msgid "Edit Release"
 msgstr ""
 
@@ -9451,6 +9448,9 @@ msgstr ""
 msgid "Go to %{link_to_google_takeout}."
 msgstr ""
 
+msgid "Go to Webhooks"
+msgstr ""
+
 msgid "Go to commits"
 msgstr ""
 
@@ -10607,10 +10607,13 @@ msgstr ""
 msgid "Instance license"
 msgstr ""
 
+msgid "Integration Settings"
+msgstr ""
+
 msgid "Integrations"
 msgstr ""
 
-msgid "Integrations Settings"
+msgid "Integrations allow you to integrate GitLab with other applications"
 msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
@@ -14780,9 +14783,6 @@ msgstr ""
 msgid "Project Files"
 msgstr ""
 
-msgid "Project Hooks"
-msgstr ""
-
 msgid "Project ID"
 msgstr ""
 
@@ -14945,28 +14945,16 @@ msgstr ""
 msgid "ProjectService|Comment will be posted on each event"
 msgstr ""
 
-msgid "ProjectService|Integrations"
-msgstr ""
-
 msgid "ProjectService|Last edit"
 msgstr ""
 
 msgid "ProjectService|Perform common operations on GitLab project: %{project_name}"
 msgstr ""
 
-msgid "ProjectService|Project services"
-msgstr ""
-
-msgid "ProjectService|Project services allow you to integrate GitLab with other applications"
-msgstr ""
-
 msgid "ProjectService|Service"
 msgstr ""
 
 msgid "ProjectService|Services"
-msgstr ""
-
-msgid "ProjectService|Settings"
 msgstr ""
 
 msgid "ProjectService|To set up this service:"
@@ -21811,6 +21799,15 @@ msgstr ""
 msgid "WebIDE|Merge request"
 msgstr ""
 
+msgid "Webhook"
+msgstr ""
+
+msgid "Webhook Logs"
+msgstr ""
+
+msgid "Webhook Settings"
+msgstr ""
+
 msgid "Webhooks"
 msgstr ""
 
@@ -21818,6 +21815,9 @@ msgid "Webhooks Help"
 msgstr ""
 
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
+msgstr ""
+
+msgid "Webhooks have moved. They can now be found under the Settings menu."
 msgstr ""
 
 msgid "Wednesday"

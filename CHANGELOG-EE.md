@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.8.1
+
+### Performance (1 change)
+
+- Geo - Fix query to retrieve Job Artifacts when selective sync is disabled. !25388
+
+
 ## 12.8.0
 
 ### Removed (1 change)

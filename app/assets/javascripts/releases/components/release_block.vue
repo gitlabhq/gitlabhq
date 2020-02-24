@@ -38,13 +38,13 @@ export default {
   },
   computed: {
     id() {
-      return slugify(this.release.tag_name);
+      return slugify(this.release.tagName);
     },
     assets() {
       return this.release.assets || {};
     },
     hasEvidence() {
-      return Boolean(this.release.evidence_sha);
+      return Boolean(this.release.evidenceSha);
     },
     milestones() {
       return this.release.milestones || [];
@@ -102,7 +102,7 @@ export default {
       <evidence-block v-if="hasEvidence && shouldShowEvidence" :release="release" />
 
       <div ref="gfm-content" class="card-text prepend-top-default">
-        <div v-html="release.description_html"></div>
+        <div v-html="release.descriptionHtml"></div>
       </div>
     </div>
 
@@ -110,11 +110,11 @@ export default {
       v-if="shouldShowFooter"
       class="card-footer"
       :commit="release.commit"
-      :commit-path="release.commit_path"
-      :tag-name="release.tag_name"
-      :tag-path="release.tag_path"
+      :commit-path="release.commitPath"
+      :tag-name="release.tagName"
+      :tag-path="release.tagPath"
       :author="release.author"
-      :released-at="release.released_at"
+      :released-at="release.releasedAt"
     />
   </div>
 </template>

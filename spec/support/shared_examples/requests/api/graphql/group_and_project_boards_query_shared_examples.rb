@@ -89,4 +89,24 @@ RSpec.shared_examples 'group and project boards query' do
       end
     end
   end
+
+  context 'when querying for a single board' do
+    before do
+      board_parent.add_reporter(current_user)
+    end
+
+    it_behaves_like 'a working graphql query' do
+      before do
+        post_graphql(query_single_board, current_user: current_user)
+      end
+    end
+
+    it 'finds the correct board' do
+      board = create(:board, resource_parent: board_parent, name: 'A')
+
+      post_graphql(query_single_board("id: \"#{global_id_of(board)}\""), current_user: current_user)
+
+      expect(board_data['name']).to eq board.name
+    end
+  end
 end

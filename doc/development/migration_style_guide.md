@@ -472,7 +472,7 @@ end
 ```
 
 If a computed update is needed, the value can be wrapped in `Arel.sql`, so Arel
-treats it as an SQL literal. It's also a required deprecation for [Rails 6](https://gitlab.com/gitlab-org/gitlab-foss/issues/61451).
+treats it as an SQL literal. It's also a required deprecation for [Rails 6](https://gitlab.com/gitlab-org/gitlab/issues/28497).
 
 The below example is the same as the one above, but
 the value is set to the product of the `bar` and `baz` columns:

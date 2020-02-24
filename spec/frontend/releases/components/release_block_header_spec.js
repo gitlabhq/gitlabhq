@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { cloneDeep, merge } from 'lodash';
+import { merge } from 'lodash';
 import { GlLink } from '@gitlab/ui';
 import ReleaseBlockHeader from '~/releases/components/release_block_header.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -18,9 +18,7 @@ describe('Release block header', () => {
   };
 
   beforeEach(() => {
-    release = convertObjectPropsToCamelCase(cloneDeep(originalRelease), {
-      ignoreKeyNames: ['_links'],
-    });
+    release = convertObjectPropsToCamelCase(originalRelease, { deep: true });
   });
 
   afterEach(() => {
@@ -39,13 +37,13 @@ describe('Release block header', () => {
       const link = findHeaderLink();
 
       expect(link.text()).toBe(release.name);
-      expect(link.attributes('href')).toBe(release._links.self);
+      expect(link.attributes('href')).toBe(release.Links.self);
     });
   });
 
   describe('when _links.self is missing', () => {
     beforeEach(() => {
-      factory({ _links: { self: null } });
+      factory({ Links: { self: null } });
     });
 
     it('renders the title as text', () => {

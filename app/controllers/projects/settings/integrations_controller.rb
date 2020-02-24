@@ -9,10 +9,6 @@ module Projects
       layout "project_settings"
 
       def show
-        @hooks = @project.hooks
-        @hook = ProjectHook.new
-
-        # Services
         @services = @project.find_or_initialize_services(exceptions: service_exceptions)
       end
 

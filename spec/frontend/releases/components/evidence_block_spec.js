@@ -2,12 +2,14 @@ import { mount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
 import { truncateSha } from '~/lib/utils/text_utility';
 import Icon from '~/vue_shared/components/icon.vue';
-import { release } from '../mock_data';
+import { release as originalRelease } from '../mock_data';
 import EvidenceBlock from '~/releases/components/evidence_block.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 describe('Evidence Block', () => {
   let wrapper;
+  let release;
 
   const factory = (options = {}) => {
     wrapper = mount(EvidenceBlock, {
@@ -16,6 +18,8 @@ describe('Evidence Block', () => {
   };
 
   beforeEach(() => {
+    release = convertObjectPropsToCamelCase(originalRelease, { deep: true });
+
     factory({
       propsData: {
         release,
@@ -32,7 +36,7 @@ describe('Evidence Block', () => {
   });
 
   it('renders the title for the dowload link', () => {
-    expect(wrapper.find(GlLink).text()).toBe(`${release.tag_name}-evidence.json`);
+    expect(wrapper.find(GlLink).text()).toBe(`${release.tagName}-evidence.json`);
   });
 
   it('renders the correct hover text for the download', () => {
@@ -40,19 +44,19 @@ describe('Evidence Block', () => {
   });
 
   it('renders the correct file link for download', () => {
-    expect(wrapper.find(GlLink).attributes().download).toBe(`${release.tag_name}-evidence.json`);
+    expect(wrapper.find(GlLink).attributes().download).toBe(`${release.tagName}-evidence.json`);
   });
 
   describe('sha text', () => {
     it('renders the short sha initially', () => {
-      expect(wrapper.find('.js-short').text()).toBe(truncateSha(release.evidence_sha));
+      expect(wrapper.find('.js-short').text()).toBe(truncateSha(release.evidenceSha));
     });
 
     it('renders the long sha after expansion', () => {
       wrapper.find('.js-text-expander-prepend').trigger('click');
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find('.js-expanded').text()).toBe(release.evidence_sha);
+        expect(wrapper.find('.js-expanded').text()).toBe(release.evidenceSha);
       });
     });
   });
@@ -68,7 +72,7 @@ describe('Evidence Block', () => {
 
     it('copies the sha', () => {
       expect(wrapper.find(ClipboardButton).attributes('data-clipboard-text')).toBe(
-        release.evidence_sha,
+        release.evidenceSha,
       );
     });
   });

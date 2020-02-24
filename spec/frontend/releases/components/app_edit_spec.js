@@ -13,7 +13,7 @@ describe('Release edit component', () => {
   beforeEach(() => {
     gon.api_version = 'v4';
 
-    releaseClone = JSON.parse(JSON.stringify(convertObjectPropsToCamelCase(release)));
+    releaseClone = convertObjectPropsToCamelCase(release, { deep: true });
 
     state = {
       release: releaseClone,

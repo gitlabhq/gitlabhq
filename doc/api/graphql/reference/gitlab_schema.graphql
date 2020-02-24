@@ -2771,6 +2771,16 @@ type Group {
   avatarUrl: String
 
   """
+  A single board of the group
+  """
+  board(
+    """
+    Find a board by its ID
+    """
+    id: ID
+  ): Board
+
+  """
   Boards of the group
   """
   boards(
@@ -2788,6 +2798,11 @@ type Group {
     Returns the first _n_ elements from the list.
     """
     first: Int
+
+    """
+    Find a board by its ID
+    """
+    id: ID
 
     """
     Returns the last _n_ elements from the list.
@@ -5255,6 +5270,16 @@ type Project {
   avatarUrl: String
 
   """
+  A single board of the project
+  """
+  board(
+    """
+    Find a board by its ID
+    """
+    id: ID
+  ): Board
+
+  """
   Boards of the project
   """
   boards(
@@ -5272,6 +5297,11 @@ type Project {
     Returns the first _n_ elements from the list.
     """
     first: Int
+
+    """
+    Find a board by its ID
+    """
+    id: ID
 
     """
     Returns the last _n_ elements from the list.

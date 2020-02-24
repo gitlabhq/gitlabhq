@@ -8,16 +8,18 @@ import {
 import state from '~/releases/stores/modules/list/state';
 import * as types from '~/releases/stores/modules/list/mutation_types';
 import api from '~/api';
-import { parseIntPagination } from '~/lib/utils/common_utils';
-import { pageInfoHeadersWithoutPagination, releases } from '../../../mock_data';
+import { parseIntPagination, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { pageInfoHeadersWithoutPagination, releases as originalReleases } from '../../../mock_data';
 
 describe('Releases State actions', () => {
   let mockedState;
   let pageInfo;
+  let releases;
 
   beforeEach(() => {
     mockedState = state();
     pageInfo = parseIntPagination(pageInfoHeadersWithoutPagination);
+    releases = convertObjectPropsToCamelCase(originalReleases, { deep: true });
   });
 
   describe('requestReleases', () => {

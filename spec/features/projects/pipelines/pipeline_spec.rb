@@ -1077,8 +1077,6 @@ describe 'Pipeline', :js do
     end
 
     context 'when pipeline has configuration errors' do
-      include_context 'pipeline builds'
-
       let(:pipeline) do
         create(:ci_pipeline,
                :invalid,
@@ -1118,6 +1116,10 @@ describe 'Pipeline', :js do
           expect(page).to have_selector(
             %Q{span[title="#{pipeline.present.failure_reason}"]})
         end
+      end
+
+      it 'contains a pipeline header with title' do
+        expect(page).to have_content "Pipeline ##{pipeline.id}"
       end
     end
 

@@ -2,49 +2,35 @@
 
 module ResourceEvents
   class ChangeMilestoneService
-    attr_reader :resource, :user, :event_created_at, :resource_args
+    attr_reader :resource, :user, :event_created_at, :milestone
 
     def initialize(resource:, user:, created_at: Time.now)
       @resource = resource
       @user = user
       @event_created_at = created_at
-
-      @resource_args = {
-        user_id: user.id,
-        created_at: event_created_at
-      }
+      @milestone = resource&.milestone
     end
 
     def execute
-      args = build_resource_args
-
-      action = if milestone.nil?
-                 :remove
-               else
-                 :add
-               end
-
-      record = args.merge(milestone_id: milestone&.id, action: ResourceMilestoneEvent.actions[action])
-
-      create_event(record)
-    end
-
-    private
-
-    def milestone
-      resource&.milestone
-    end
-
-    def create_event(record)
-      ResourceMilestoneEvent.create(record)
+      ResourceMilestoneEvent.create(build_resource_args)
 
       resource.expire_note_etag_cache
     end
 
-    def build_resource_args
-      key = resource.class.name.underscore.foreign_key
+    private
 
-      resource_args.merge(key => resource.id, state: ResourceMilestoneEvent.states[resource.state])
+    def build_resource_args
+      action = milestone.blank? ? :remove : :add
+      key = resource.class.name.foreign_key
+
+      {
+        user_id: user.id,
+        created_at: event_created_at,
+        milestone_id: milestone&.id,
+        state: ResourceMilestoneEvent.states[resource.state],
+        action: ResourceMilestoneEvent.actions[action],
+        key => resource.id
+      }
     end
   end
 end

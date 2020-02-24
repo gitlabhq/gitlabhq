@@ -32,21 +32,21 @@ export default {
       return this.release.commit || {};
     },
     commitUrl() {
-      return this.release.commit_path;
+      return this.release.commitPath;
     },
     hasAuthor() {
       return Boolean(this.author);
     },
     releasedTimeAgo() {
       return sprintf(__('released %{time}'), {
-        time: this.timeFormatted(this.release.released_at),
+        time: this.timeFormatted(this.release.releasedAt),
       });
     },
     shouldRenderMilestones() {
       return Boolean(this.release.milestones?.length);
     },
     tagUrl() {
-      return this.release.tag_path;
+      return this.release.tagPath;
     },
   },
 };
@@ -57,24 +57,24 @@ export default {
     <div class="append-right-8">
       <icon name="commit" class="align-middle" />
       <gl-link v-if="commitUrl" v-gl-tooltip.bottom :title="commit.title" :href="commitUrl">
-        {{ commit.short_id }}
+        {{ commit.shortId }}
       </gl-link>
-      <span v-else v-gl-tooltip.bottom :title="commit.title">{{ commit.short_id }}</span>
+      <span v-else v-gl-tooltip.bottom :title="commit.title">{{ commit.shortId }}</span>
     </div>
 
     <div class="append-right-8">
       <icon name="tag" class="align-middle" />
       <gl-link v-if="tagUrl" v-gl-tooltip.bottom :title="__('Tag')" :href="tagUrl">
-        {{ release.tag_name }}
+        {{ release.tagName }}
       </gl-link>
-      <span v-else v-gl-tooltip.bottom :title="__('Tag')">{{ release.tag_name }}</span>
+      <span v-else v-gl-tooltip.bottom :title="__('Tag')">{{ release.tagName }}</span>
     </div>
 
     <release-block-milestones v-if="shouldRenderMilestones" :milestones="release.milestones" />
 
     <div class="append-right-4">
       &bull;
-      <span v-gl-tooltip.bottom :title="tooltipTitle(release.released_at)">
+      <span v-gl-tooltip.bottom :title="tooltipTitle(release.releasedAt)">
         {{ releasedTimeAgo }}
       </span>
     </div>

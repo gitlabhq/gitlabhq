@@ -2,11 +2,10 @@
 
 require 'spec_helper'
 
-describe 'Projects > Settings > Integration settings' do
+describe 'Projects > Settings > Webhook Settings' do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
-  let(:role) { :developer }
-  let(:integrations_path) { project_settings_integrations_path(project) }
+  let(:webhooks_path) { project_hooks_path(project) }
 
   before do
     sign_in(user)
@@ -17,7 +16,7 @@ describe 'Projects > Settings > Integration settings' do
     let(:role) { :developer }
 
     it 'to be disallowed to view' do
-      visit integrations_path
+      visit webhooks_path
 
       expect(page.status_code).to eq(404)
     end
@@ -33,7 +32,7 @@ describe 'Projects > Settings > Integration settings' do
       it 'show list of webhooks' do
         hook
 
-        visit integrations_path
+        visit webhooks_path
 
         expect(page.status_code).to eq(200)
         expect(page).to have_content(hook.url)
@@ -49,7 +48,7 @@ describe 'Projects > Settings > Integration settings' do
       end
 
       it 'create webhook' do
-        visit integrations_path
+        visit webhooks_path
 
         fill_in 'hook_url', with: url
         check 'Tag push events'
@@ -68,7 +67,7 @@ describe 'Projects > Settings > Integration settings' do
 
       it 'edit existing webhook' do
         hook
-        visit integrations_path
+        visit webhooks_path
 
         click_link 'Edit'
         fill_in 'hook_url', with: url
@@ -81,25 +80,25 @@ describe 'Projects > Settings > Integration settings' do
 
       it 'test existing webhook', :js do
         WebMock.stub_request(:post, hook.url)
-        visit integrations_path
+        visit webhooks_path
 
         find('.hook-test-button.dropdown').click
         click_link 'Push events'
 
-        expect(current_path).to eq(integrations_path)
+        expect(current_path).to eq(webhooks_path)
       end
 
       context 'delete existing webhook' do
         it 'from webhooks list page' do
           hook
-          visit integrations_path
+          visit webhooks_path
 
           expect { click_link 'Delete' }.to change(ProjectHook, :count).by(-1)
         end
 
         it 'from webhook edit page' do
           hook
-          visit integrations_path
+          visit webhooks_path
           click_link 'Edit'
 
           expect { click_link 'Delete' }.to change(ProjectHook, :count).by(-1)

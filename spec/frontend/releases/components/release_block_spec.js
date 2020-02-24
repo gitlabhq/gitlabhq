@@ -5,9 +5,11 @@ import EvidenceBlock from '~/releases/components/evidence_block.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { release } from '../mock_data';
+import { release as originalRelease } from '../mock_data';
 import Icon from '~/vue_shared/components/icon.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
+
+const { convertObjectPropsToCamelCase } = jest.requireActual('~/lib/utils/common_utils');
 
 let mockLocationHash;
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -22,7 +24,7 @@ jest.mock('~/lib/utils/common_utils', () => ({
 
 describe('Release block', () => {
   let wrapper;
-  let releaseClone;
+  let release;
 
   const factory = (releaseProp, featureFlags = {}) => {
     wrapper = mount(ReleaseBlock, {
@@ -45,7 +47,7 @@ describe('Release block', () => {
 
   beforeEach(() => {
     jest.spyOn($.fn, 'renderGFM');
-    releaseClone = JSON.parse(JSON.stringify(release));
+    release = convertObjectPropsToCamelCase(originalRelease, { deep: true });
   });
 
   afterEach(() => {
@@ -61,7 +63,7 @@ describe('Release block', () => {
 
     it('renders an edit button that links to the "Edit release" page', () => {
       expect(editButton().exists()).toBe(true);
-      expect(editButton().attributes('href')).toBe(release._links.edit_url);
+      expect(editButton().attributes('href')).toBe(release.Links.editUrl);
     });
 
     it('renders release name', () => {
@@ -74,7 +76,7 @@ describe('Release block', () => {
     });
 
     it('renders release date', () => {
-      expect(wrapper.text()).toContain(timeagoMixin.methods.timeFormatted(release.released_at));
+      expect(wrapper.text()).toContain(timeagoMixin.methods.timeFormatted(release.releasedAt));
     });
 
     it('renders number of assets provided', () => {
@@ -129,72 +131,72 @@ describe('Release block', () => {
   });
 
   it('renders commit sha', () => {
-    releaseClone.commit_path = '/commit/example';
+    release.commitPath = '/commit/example';
 
-    return factory(releaseClone).then(() => {
-      expect(wrapper.text()).toContain(release.commit.short_id);
+    return factory(release).then(() => {
+      expect(wrapper.text()).toContain(release.commit.shortId);
 
       expect(wrapper.find('a[href="/commit/example"]').exists()).toBe(true);
     });
   });
 
   it('renders tag name', () => {
-    releaseClone.tag_path = '/tag/example';
+    release.tagPath = '/tag/example';
 
-    return factory(releaseClone).then(() => {
-      expect(wrapper.text()).toContain(release.tag_name);
+    return factory(release).then(() => {
+      expect(wrapper.text()).toContain(release.tagName);
 
       expect(wrapper.find('a[href="/tag/example"]').exists()).toBe(true);
     });
   });
 
-  it("does not render an edit button if release._links.edit_url isn't a string", () => {
-    delete releaseClone._links;
+  it("does not render an edit button if release.Links.editUrl isn't a string", () => {
+    delete release.Links;
 
-    return factory(releaseClone).then(() => {
+    return factory(release).then(() => {
       expect(editButton().exists()).toBe(false);
     });
   });
 
   it('does not render the milestone list if no milestones are associated to the release', () => {
-    delete releaseClone.milestones;
+    delete release.milestones;
 
-    return factory(releaseClone).then(() => {
+    return factory(release).then(() => {
       expect(milestoneListLabel().exists()).toBe(false);
     });
   });
 
   it('renders upcoming release badge', () => {
-    releaseClone.upcoming_release = true;
+    release.upcomingRelease = true;
 
-    return factory(releaseClone).then(() => {
+    return factory(release).then(() => {
       expect(wrapper.text()).toContain('Upcoming Release');
     });
   });
 
-  it('slugifies the tag_name before setting it as the elements ID', () => {
-    releaseClone.tag_name = 'a dangerous tag name <script>alert("hello")</script>';
+  it('slugifies the tagName before setting it as the elements ID', () => {
+    release.tagName = 'a dangerous tag name <script>alert("hello")</script>';
 
-    return factory(releaseClone).then(() => {
+    return factory(release).then(() => {
       expect(wrapper.attributes().id).toBe('a-dangerous-tag-name-script-alert-hello-script');
     });
   });
 
   describe('evidence block', () => {
     it('renders the evidence block when the evidence is available and the feature flag is true', () =>
-      factory(releaseClone, { releaseEvidenceCollection: true }).then(() =>
+      factory(release, { releaseEvidenceCollection: true }).then(() =>
         expect(wrapper.find(EvidenceBlock).exists()).toBe(true),
       ));
 
     it('does not render the evidence block when the evidence is available but the feature flag is false', () =>
-      factory(releaseClone, { releaseEvidenceCollection: true }).then(() =>
+      factory(release, { releaseEvidenceCollection: true }).then(() =>
         expect(wrapper.find(EvidenceBlock).exists()).toBe(true),
       ));
 
     it('does not render the evidence block when there is no evidence', () => {
-      releaseClone.evidence_sha = null;
+      release.evidenceSha = null;
 
-      return factory(releaseClone).then(() => {
+      return factory(release).then(() => {
         expect(wrapper.find(EvidenceBlock).exists()).toBe(false);
       });
     });
@@ -222,7 +224,7 @@ describe('Release block', () => {
     });
 
     it("attempts to scroll itself into view if the anchor tag matches the release's tag name", () => {
-      mockLocationHash = release.tag_name;
+      mockLocationHash = release.tagName;
       return factory(release).then(() => {
         expect(scrollToElement).toHaveBeenCalledTimes(1);
 
@@ -231,7 +233,7 @@ describe('Release block', () => {
     });
 
     it('renders with a light blue background if it is the target of the anchor', () => {
-      mockLocationHash = release.tag_name;
+      mockLocationHash = release.tagName;
 
       return factory(release).then(() => {
         expect(hasTargetBlueBackground()).toBe(true);
@@ -275,16 +277,16 @@ describe('Release block', () => {
 
         expect(milestoneLink.text()).toBe(milestone.title);
 
-        expect(milestoneLink.attributes('href')).toBe(milestone.web_url);
+        expect(milestoneLink.attributes('href')).toBe(milestone.webUrl);
 
         expect(milestoneLink.attributes('title')).toBe(milestone.description);
       });
     });
 
     it('renders the label as "Milestone" if only a single milestone is passed in', () => {
-      releaseClone.milestones = releaseClone.milestones.slice(0, 1);
+      release.milestones = release.milestones.slice(0, 1);
 
-      return factory(releaseClone, { releaseIssueSummary: false }).then(() => {
+      return factory(release, { releaseIssueSummary: false }).then(() => {
         expect(
           milestoneListLabel()
             .find('.js-label-text')

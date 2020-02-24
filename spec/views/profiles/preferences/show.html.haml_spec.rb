@@ -56,7 +56,7 @@ describe 'profiles/preferences/show' do
           expect(rendered).not_to have_sourcegraph_field
         end
 
-        it 'does not display integrations settings' do
+        it 'does not display Integration Settings' do
           expect(rendered).not_to have_integrations_section
         end
       end

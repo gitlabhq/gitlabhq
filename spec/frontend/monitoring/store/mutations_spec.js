@@ -50,9 +50,10 @@ describe('Monitoring mutations', () => {
       expect(groups[0].panels).toHaveLength(1);
       expect(groups[0].panels[0].metrics).toHaveLength(1);
 
-      expect(groups[1].panels).toHaveLength(2);
+      expect(groups[1].panels).toHaveLength(3);
       expect(groups[1].panels[0].metrics).toHaveLength(1);
       expect(groups[1].panels[1].metrics).toHaveLength(1);
+      expect(groups[1].panels[2].metrics).toHaveLength(5);
     });
     it('assigns metrics a metric id', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);

@@ -95,14 +95,14 @@ export default () => {
     },
   });
 
+  const tabsElement = document.querySelector('.pipelines-tabs');
   const testReportsEnabled =
     window.gon && window.gon.features && window.gon.features.junitPipelineView;
 
-  if (testReportsEnabled) {
+  if (tabsElement && testReportsEnabled) {
     const fetchReportsAction = 'fetchReports';
     testReportsStore.dispatch('setEndpoint', dataset.testReportEndpoint);
 
-    const tabsElmement = document.querySelector('.pipelines-tabs');
     const isTestTabActive = Boolean(
       document.querySelector('.pipelines-tabs > li > a.test-tab.active'),
     );
@@ -113,11 +113,11 @@ export default () => {
       const tabClickHandler = e => {
         if (e.target.className === 'test-tab') {
           testReportsStore.dispatch(fetchReportsAction);
-          tabsElmement.removeEventListener('click', tabClickHandler);
+          tabsElement.removeEventListener('click', tabClickHandler);
         }
       };
 
-      tabsElmement.addEventListener('click', tabClickHandler);
+      tabsElement.addEventListener('click', tabClickHandler);
     }
 
     // eslint-disable-next-line no-new

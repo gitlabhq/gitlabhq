@@ -22,7 +22,7 @@ import {
 } from '../mock_data';
 
 const localVue = createLocalVue();
-const expectedPanelCount = 2;
+const expectedPanelCount = 3;
 
 describe('Dashboard', () => {
   let store;

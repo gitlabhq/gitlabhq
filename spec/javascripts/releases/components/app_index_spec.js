@@ -12,6 +12,7 @@ import {
   release,
   releases,
 } from '../mock_data';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 describe('Releases App ', () => {
   const Component = Vue.extend(app);
@@ -27,7 +28,10 @@ describe('Releases App ', () => {
 
   beforeEach(() => {
     store = createStore({ list: listModule });
-    releasesPagination = _.range(21).map(index => ({ ...release, tag_name: `${index}.00` }));
+    releasesPagination = _.range(21).map(index => ({
+      ...convertObjectPropsToCamelCase(release, { deep: true }),
+      tagName: `${index}.00`,
+    }));
   });
 
   afterEach(() => {
