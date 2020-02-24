@@ -159,6 +159,8 @@
 
               = render_if_exists 'shared/issuable/filter_weight', type: type
 
+              = render_if_exists 'shared/issuable/filter_epic', type: type
+
             %button.clear-search.hidden{ type: 'button' }
               = icon('times')
     .filter-dropdown-container.d-flex.flex-column.flex-md-row

@@ -1728,6 +1728,9 @@ msgstr ""
 msgid "An error occurred when updating the issue weight"
 msgstr ""
 
+msgid "An error occurred while adding formatted title for epic"
+msgstr ""
+
 msgid "An error occurred while checking group path"
 msgstr ""
 
@@ -16372,9 +16375,6 @@ msgstr ""
 msgid "Resolve conflicts on source branch"
 msgstr ""
 
-msgid "Resolve discussion"
-msgstr ""
-
 msgid "Resolve thread"
 msgstr ""
 
@@ -20778,9 +20778,6 @@ msgid "Unmarks this %{noun} as Work In Progress."
 msgstr ""
 
 msgid "Unresolve"
-msgstr ""
-
-msgid "Unresolve discussion"
 msgstr ""
 
 msgid "Unresolve thread"

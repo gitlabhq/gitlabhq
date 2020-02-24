@@ -45,6 +45,11 @@ export default class FilteredSearchManager {
       this.filteredSearchTokenKeys.enableMultipleAssignees();
     }
 
+    const { epicsEndpoint } = this.filteredSearchInput.dataset;
+    if (!epicsEndpoint && this.filteredSearchTokenKeys.removeEpicToken) {
+      this.filteredSearchTokenKeys.removeEpicToken();
+    }
+
     this.recentSearchesStore = new RecentSearchesStore({
       isLocalStorageAvailable: RecentSearchesService.isAvailable(),
       allowedKeys: this.filteredSearchTokenKeys.getKeys(),
@@ -88,12 +93,20 @@ export default class FilteredSearchManager {
     if (this.filteredSearchInput) {
       this.tokenizer = FilteredSearchTokenizer;
 
+      const {
+        runnerTagsEndpoint = '',
+        labelsEndpoint = '',
+        milestonesEndpoint = '',
+        releasesEndpoint = '',
+        epicsEndpoint = '',
+      } = this.filteredSearchInput.dataset;
+
       this.dropdownManager = new FilteredSearchDropdownManager({
-        runnerTagsEndpoint:
-          this.filteredSearchInput.getAttribute('data-runner-tags-endpoint') || '',
-        labelsEndpoint: this.filteredSearchInput.getAttribute('data-labels-endpoint') || '',
-        milestonesEndpoint: this.filteredSearchInput.getAttribute('data-milestones-endpoint') || '',
-        releasesEndpoint: this.filteredSearchInput.getAttribute('data-releases-endpoint') || '',
+        runnerTagsEndpoint,
+        labelsEndpoint,
+        milestonesEndpoint,
+        releasesEndpoint,
+        epicsEndpoint,
         tokenizer: this.tokenizer,
         page: this.page,
         isGroup: this.isGroup,

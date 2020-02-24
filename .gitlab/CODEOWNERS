@@ -21,6 +21,8 @@ lib/gitlab/database/ @gitlab-org/maintainers/database
 lib/gitlab/sql/ @gitlab-org/maintainers/database
 lib/gitlab/github_import/ @gitlab-org/maintainers/database
 /ee/db/ @gitlab-org/maintainers/database
+/app/finders/ @gitlab-org/maintainers/database
+/ee/app/finders/ @gitlab-org/maintainers/database
 
 # Feature specific owners
 /ee/lib/gitlab/code_owners/ @reprazent

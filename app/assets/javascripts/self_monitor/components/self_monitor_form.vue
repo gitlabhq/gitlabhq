@@ -129,7 +129,7 @@ export default {
     </div>
     <div class="settings-content">
       <form name="self-monitoring-form">
-        <p v-html="selfMonitoringFormText"></p>
+        <p ref="selfMonitoringFormText" v-html="selfMonitoringFormText"></p>
         <gl-form-group :label="$options.formLabels.createProject" label-for="self-monitor-toggle">
           <gl-toggle
             v-model="selfMonitorEnabled"

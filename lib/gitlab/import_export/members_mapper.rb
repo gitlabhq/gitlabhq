@@ -51,7 +51,7 @@ module Gitlab
 
         @importable.members.destroy_all # rubocop: disable DestroyAll
 
-        relation_class.create!(user: @user, access_level: relation_class::MAINTAINER, source_id: @importable.id, importing: true)
+        relation_class.create!(user: @user, access_level: highest_access_level, source_id: @importable.id, importing: true)
       rescue => e
         raise e, "Error adding importer user to #{@importable.class} members. #{e.message}"
       end
@@ -59,7 +59,7 @@ module Gitlab
       def user_already_member?
         member = @importable.members&.first
 
-        member&.user == @user && member.access_level >= relation_class::MAINTAINER
+        member&.user == @user && member.access_level >= highest_access_level
       end
 
       def add_team_member(member, existing_user = nil)
@@ -72,7 +72,7 @@ module Gitlab
         parsed_hash(member).merge(
           'source_id' => @importable.id,
           'importing' => true,
-          'access_level' => [member['access_level'], relation_class::MAINTAINER].min
+          'access_level' => [member['access_level'], highest_access_level].min
         ).except('user_id')
       end
 
@@ -96,6 +96,12 @@ module Gitlab
         when Group
           GroupMember
         end
+      end
+
+      def highest_access_level
+        return relation_class::OWNER if relation_class == GroupMember
+
+        relation_class::MAINTAINER
       end
     end
   end

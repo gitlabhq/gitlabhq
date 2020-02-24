@@ -1,0 +1,5 @@
+---
+title: Migrate .fa-spinner to .spinner for ee/app/views/shared/members
+merge_request: 25019
+author: nuwe1
+type: other

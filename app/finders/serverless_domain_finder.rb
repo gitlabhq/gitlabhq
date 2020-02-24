@@ -11,7 +11,7 @@ class ServerlessDomainFinder
     return unless serverless?
 
     @serverless_domain_cluster = ::Serverless::DomainCluster.for_uuid(serverless_domain_cluster_uuid)
-    return unless serverless_domain_cluster
+    return unless serverless_domain_cluster&.knative&.external_ip
 
     @environment = ::Environment.for_id_and_slug(match[:environment_id].to_i(16), match[:environment_slug])
     return unless environment

@@ -67,7 +67,9 @@ module Gitlab
           entry :workflow, Entry::Workflow,
             description: 'List of evaluable rules to determine Pipeline status'
 
-          helpers :default, :jobs, :stages, :types, :variables, :workflow
+          helpers :default, :stages, :types, :variables, :workflow
+
+          helpers :jobs, dynamic: true
 
           delegate :before_script_value,
                    :image_value,

@@ -1,7 +1,7 @@
-import testAction from 'spec/helpers/vuex_action_helper';
+import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/create_cluster/gke_cluster/store/actions';
 import { createStore } from '~/create_cluster/gke_cluster/store';
-import { gapi } from '../helpers';
+import gapi from '../helpers';
 import { selectedProjectMock, selectedZoneMock, selectedMachineTypeMock } from '../mock_data';
 
 describe('GCP Cluster Dropdown Store Actions', () => {
@@ -65,9 +65,10 @@ describe('GCP Cluster Dropdown Store Actions', () => {
 
   describe('async fetch methods', () => {
     let originalGapi;
+
     beforeAll(() => {
       originalGapi = window.gapi;
-      window.gapi = gapi();
+      window.gapi = gapi;
     });
 
     afterAll(() => {

@@ -8,6 +8,8 @@ module Ci
 
     JOB_QUEUE_DURATION_SECONDS_BUCKETS = [1, 3, 10, 30, 60, 300, 900, 1800, 3600].freeze
     JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET = 5.freeze
+    METRICS_SHARD_TAG_PREFIX = 'metrics_shard::'.freeze
+    DEFAULT_METRICS_SHARD = 'default'.freeze
 
     Result = Struct.new(:build, :valid?)
 
@@ -193,7 +195,13 @@ module Ci
 
     def register_success(job)
       labels = { shared_runner: runner.instance_type?,
-                 jobs_running_for_project: jobs_running_for_project(job) }
+                 jobs_running_for_project: jobs_running_for_project(job),
+                 shard: DEFAULT_METRICS_SHARD }
+
+      if runner.instance_type?
+        shard = runner.tag_list.sort.find { |name| name.starts_with?(METRICS_SHARD_TAG_PREFIX) }
+        labels[:shard] = shard.gsub(METRICS_SHARD_TAG_PREFIX, '') if shard
+      end
 
       job_queue_duration_seconds.observe(labels, Time.now - job.queued_at) unless job.queued_at.nil?
       attempt_counter.increment

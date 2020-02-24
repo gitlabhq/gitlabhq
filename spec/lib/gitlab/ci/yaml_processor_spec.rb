@@ -2419,7 +2419,9 @@ module Gitlab
 
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
-            expect(subject.errors).to eq(['jobs:rspec config contains unknown keys: bad_tags', 'jobs:rspec rules should be an array of hashes'])
+            expect(subject.errors).to contain_exactly(
+              'jobs:rspec config contains unknown keys: bad_tags',
+              'jobs:rspec rules should be an array of hashes')
             expect(subject.content).to be_blank
           end
         end

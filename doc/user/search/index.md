@@ -41,6 +41,7 @@ groups:
    - [Label](../project/labels.md)
    - My-reaction
    - Confidential
+   - Epic ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/195704) in GitLab 12.8)
    - Search for this text
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:

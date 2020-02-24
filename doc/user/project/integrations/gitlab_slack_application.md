@@ -3,9 +3,9 @@
 NOTE: **Note:**
 The GitLab Slack application is only configurable for GitLab.com. It will **not**
 work for on-premises installations where you can configure the
-[Slack slash commands](slack_slash_commands.md) service instead. We're working
-with Slack on making this configurable for all GitLab installations, but there's
-no ETA.
+[Slack slash commands](slack_slash_commands.md) service instead. We're planning
+to make this configurable for all GitLab installations, but there's
+no ETA - see [#28164](https://gitlab.com/gitlab-org/gitlab/issues/28164).
 It was first introduced in GitLab 9.4 and distributed to Slack App Directory in
 GitLab 10.2.
 

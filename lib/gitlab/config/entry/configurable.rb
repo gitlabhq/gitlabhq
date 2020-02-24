@@ -75,6 +75,8 @@ module Gitlab
 
           # rubocop: disable CodeReuse/ActiveRecord
           def entry(key, entry, description: nil, default: nil, inherit: nil, reserved: nil, metadata: {})
+            raise ArgumentError, "Entry #{key} already defined" if @nodes.to_h[key.to_sym]
+
             factory = ::Gitlab::Config::Entry::Factory.new(entry)
               .with(description: description)
               .with(default: default)
@@ -86,8 +88,16 @@ module Gitlab
           end
           # rubocop: enable CodeReuse/ActiveRecord
 
-          def helpers(*nodes)
+          def helpers(*nodes, dynamic: false)
             nodes.each do |symbol|
+              if method_defined?("#{symbol}_defined?") || method_defined?("#{symbol}_value")
+                raise ArgumentError, "Method #{symbol}_defined? or #{symbol}_value already defined"
+              end
+
+              unless @nodes.to_h[symbol]
+                raise ArgumentError, "Entry for #{symbol} is undefined" unless dynamic
+              end
+
               define_method("#{symbol}_defined?") do
                 entries[symbol]&.specified?
               end

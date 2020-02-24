@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_20_180944) do
+ActiveRecord::Schema.define(version: 2020_02_21_105436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -351,7 +351,7 @@ ActiveRecord::Schema.define(version: 2020_02_20_180944) do
     t.boolean "prevent_merge_requests_committers_approval", default: false, null: false
     t.boolean "email_restrictions_enabled", default: false, null: false
     t.text "email_restrictions"
-    t.boolean "npm_package_requests_forwarding", default: false, null: false
+    t.boolean "npm_package_requests_forwarding", default: true, null: false
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"

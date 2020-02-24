@@ -72,11 +72,17 @@ describe('self monitor component', () => {
           selfMonitoringProjectExists: true,
           createSelfMonitoringProjectPath: '/create',
           deleteSelfMonitoringProjectPath: '/delete',
+          selfMonitoringProjectFullPath: 'instance-administrators-random/gitlab-self-monitoring',
         });
 
         wrapper = shallowMount(SelfMonitor, { store });
 
-        expect(wrapper.vm.selfMonitoringFormText).toContain('<a href="http://localhost/">');
+        expect(
+          wrapper
+            .find({ ref: 'selfMonitoringFormText' })
+            .find('a')
+            .attributes('href'),
+        ).toEqual('http://localhost/instance-administrators-random/gitlab-self-monitoring');
       });
     });
   });

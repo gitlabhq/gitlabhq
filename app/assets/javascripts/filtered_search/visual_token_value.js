@@ -28,6 +28,8 @@ export default class VisualTokenValue {
       this.updateUserTokenAppearance(tokenValueContainer, tokenValueElement);
     } else if (tokenType === 'my-reaction') {
       this.updateEmojiTokenAppearance(tokenValueContainer, tokenValueElement);
+    } else if (tokenType === 'epic') {
+      this.updateEpicLabel(tokenValueContainer, tokenValueElement);
     }
   }
 
@@ -81,6 +83,39 @@ export default class VisualTokenValue {
         );
       })
       .catch(() => new Flash(__('An error occurred while fetching label colors.')));
+  }
+
+  updateEpicLabel(tokenValueContainer) {
+    const tokenValue = this.tokenValue.replace(/^&/, '');
+    const filteredSearchInput = FilteredSearchContainer.container.querySelector('.filtered-search');
+    const { epicsEndpoint } = filteredSearchInput.dataset;
+    const epicsEndpointWithParams = FilteredSearchVisualTokens.getEndpointWithQueryParams(
+      `${epicsEndpoint}.json`,
+      filteredSearchInput.dataset.endpointQueryParams,
+    );
+
+    return AjaxCache.retrieve(epicsEndpointWithParams)
+      .then(epics => {
+        const matchingEpic = (epics || []).find(epic => epic.id === Number(tokenValue));
+
+        if (!matchingEpic) {
+          return;
+        }
+
+        VisualTokenValue.replaceEpicTitle(tokenValueContainer, matchingEpic.title, matchingEpic.id);
+      })
+      .catch(() => new Flash(__('An error occurred while adding formatted title for epic')));
+  }
+
+  static replaceEpicTitle(tokenValueContainer, epicTitle, epicId) {
+    const tokenContainer = tokenValueContainer;
+
+    const valueContainer = tokenContainer.querySelector('.value');
+
+    if (valueContainer) {
+      tokenContainer.dataset.originalValue = valueContainer.innerText;
+      valueContainer.innerText = `"${epicTitle}"::&${epicId}`;
+    }
   }
 
   static setTokenStyle(tokenValueContainer, backgroundColor, textColor) {

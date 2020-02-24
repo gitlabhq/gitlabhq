@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "required": [
+    "source"
+  ],
+  "properties": {
+    "source": { "type": "object",
+      "required": ["type", "service", "cluster"],
+      "properties" : {
+        "type": { "type": "string", "enum": ["serverless"] },
+        "service": { "type": "string" },
+        "cluster": { "type": "object",
+          "required": ["hostname", "address", "port", "cert", "key"],
+          "properties": {
+            "hostname": { "type": "string" },
+            "address": { "type": "string" },
+            "port": { "type": "integer" },
+            "cert": { "type": "string" },
+            "key": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

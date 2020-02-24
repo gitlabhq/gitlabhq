@@ -5,11 +5,33 @@ require 'spec_helper'
 describe ServerlessDomainFinder do
   let(:function_name) { 'test-function' }
   let(:pages_domain_name) { 'serverless.gitlab.io' }
-  let(:pages_domain) { create(:pages_domain, :instance_serverless, domain: pages_domain_name) }
-  let!(:serverless_domain_cluster) { create(:serverless_domain_cluster, uuid: 'abcdef12345678', pages_domain: pages_domain) }
   let(:valid_cluster_uuid) { 'aba1cdef123456f278' }
   let(:invalid_cluster_uuid) { 'aba1cdef123456f178' }
   let!(:environment) { create(:environment, name: 'test') }
+
+  let(:pages_domain) do
+    create(
+      :pages_domain,
+      :instance_serverless,
+      domain: pages_domain_name
+    )
+  end
+
+  let(:knative_with_ingress) do
+    create(
+      :clusters_applications_knative,
+      external_ip: '10.0.0.1'
+    )
+  end
+
+  let!(:serverless_domain_cluster) do
+    create(
+      :serverless_domain_cluster,
+      uuid: 'abcdef12345678',
+      pages_domain: pages_domain,
+      knative: knative_with_ingress
+    )
+  end
 
   let(:valid_uri) { "https://#{function_name}-#{valid_cluster_uuid}#{"%x" % environment.id}-#{environment.slug}.#{pages_domain_name}" }
   let(:valid_fqdn) { "#{function_name}-#{valid_cluster_uuid}#{"%x" % environment.id}-#{environment.slug}.#{pages_domain_name}" }
