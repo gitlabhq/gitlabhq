@@ -1,5 +1,0 @@
----
-title: Fix upgrade failure in EE displaying license
-merge_request: 25788
-author:
-type: fixed
