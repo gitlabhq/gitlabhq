@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe NamespaceBasicEntity do
-  set(:group) { create(:group) }
+  let_it_be(:group) { create(:group) }
   let(:entity) do
     described_class.represent(group)
   end

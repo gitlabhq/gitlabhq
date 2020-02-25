@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe ProjectSerializer do
-  set(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
   let(:provider_url) { 'http://provider.com' }
 
   context 'when serializer option is :import' do

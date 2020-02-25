@@ -42,14 +42,6 @@ module Banzai
           **query_params(params['url'])
         )
       end
-
-      # Parses query params out from full url string into hash.
-      #
-      # Ex) 'https://<root>/<project>/<environment>/metrics?title=Title&group=Group'
-      #       --> { title: 'Title', group: 'Group' }
-      def query_params(url)
-        Gitlab::Metrics::Dashboard::Url.parse_query(url)
-      end
     end
   end
 end

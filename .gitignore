@@ -30,6 +30,7 @@ eslint-report.html
 /app/assets/javascripts/locale/**/app.js
 /backups/*
 /config/aws.yml
+/config/cable.yml
 /config/database*.yml
 /config/gitlab.yml
 /config/gitlab_ci.yml

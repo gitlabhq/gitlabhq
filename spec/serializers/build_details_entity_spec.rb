@@ -5,7 +5,7 @@ require 'spec_helper'
 describe BuildDetailsEntity do
   include ProjectForksHelper
 
-  set(:user) { create(:admin) }
+  let_it_be(:user) { create(:admin) }
 
   it 'inherits from JobEntity' do
     expect(described_class).to be < JobEntity

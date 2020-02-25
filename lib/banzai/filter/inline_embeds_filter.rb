@@ -6,6 +6,7 @@ module Banzai
     # a given link format. To transform references to DB
     # resources in place, prefer to inherit from AbstractReferenceFilter.
     class InlineEmbedsFilter < HTML::Pipeline::Filter
+      include Gitlab::Utils::StrongMemoize
       # Find every relevant link, create a new node based on
       # the link, and insert this node after any html content
       # surrounding the link.
@@ -59,6 +60,16 @@ module Banzai
         url = node['href']
 
         link_pattern.match(url) { |m| m.named_captures }
+      end
+
+      # Parses query params out from full url string into hash.
+      #
+      # Ex) 'https://<root>/<project>/<environment>/metrics?title=Title&group=Group'
+      #       --> { title: 'Title', group: 'Group' }
+      def query_params(url)
+        strong_memoize(:query_params) do
+          Gitlab::Metrics::Dashboard::Url.parse_query(url)
+        end
       end
     end
   end

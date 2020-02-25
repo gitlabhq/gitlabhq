@@ -3,11 +3,10 @@
 require 'rake_helper'
 
 describe 'gitlab:web_hook namespace rake tasks' do
-  set(:group) { create(:group) }
-
-  set(:project1) { create(:project, namespace: group) }
-  set(:project2) { create(:project, namespace: group) }
-  set(:other_group_project) { create(:project) }
+  let_it_be(:group, refind: true) { create(:group) }
+  let_it_be(:project1, reload: true) { create(:project, namespace: group) }
+  let_it_be(:project2, reload: true) { create(:project, namespace: group) }
+  let_it_be(:other_group_project, reload: true) { create(:project) }
 
   let(:url) { 'http://example.com' }
   let(:hook_urls) { (project1.hooks + project2.hooks).map(&:url) }

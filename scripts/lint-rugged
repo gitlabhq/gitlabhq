@@ -15,6 +15,9 @@ ALLOWED = [
   'lib/gitlab/git/rugged_impl/',
   'lib/gitlab/gitaly_client/storage_settings.rb',
 
+  # Needed to detect Rugged enabled: https://gitlab.com/gitlab-org/gitlab/issues/35371
+  'lib/gitlab/config_checker/puma_rugged_checker.rb',
+
   # Needed for logging
   'config/initializers/peek.rb',
   'config/initializers/lograge.rb',
@@ -27,7 +30,8 @@ ALLOWED = [
 rugged_lines = IO.popen(%w[git grep -i -n rugged -- app config lib], &:read).lines
 rugged_lines = rugged_lines.select { |l| /^[^:]*\.rb:/ =~ l }
 rugged_lines = rugged_lines.reject { |l| l.start_with?(*ALLOWED) }
-rugged_lines = rugged_lines.reject { |l| /(include|prepend) Gitlab::Git::RuggedImpl/ =~ l}
+rugged_lines = rugged_lines.reject { |l| /(include|prepend) Gitlab::Git::RuggedImpl/ =~ l }
+rugged_lines = rugged_lines.reject { |l| l.include?('Gitlab::ConfigChecker::PumaRuggedChecker.check') }
 rugged_lines = rugged_lines.reject do |line|
   code, _comment = line.split('# ', 2)
   code !~ /rugged/i
