@@ -17,7 +17,7 @@ integrated [Container Registry](../../packages/container_registry.md#container-r
 
 You can enable a storage-agnostic replication so it
 can be used for cloud or local storages. Whenever a new image is pushed to the
-primary node, each **secondary** node will pull it to its own container
+**primary** node, each **secondary** node will pull it to its own container
 repository.
 
 To configure Docker Registry replication:
@@ -111,6 +111,7 @@ generate a short-lived JWT that is pull-only-capable to access the
 
 ### Verify replication
 
-To verify Container Registry replication is working, go to **Admin Area > Geo** (`/admin/geo/nodes`) on the **secondary** node.
+To verify Container Registry replication is working, go to **{admin}** **Admin Area >** **{location-dot}** **Geo**
+(`/admin/geo/nodes`) on the **secondary** node.
 The initial replication, or "backfill", will probably still be in progress.
 You can monitor the synchronization process on each Geo node from the **primary** node's **Geo Nodes** dashboard in your browser.

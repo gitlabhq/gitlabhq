@@ -186,7 +186,7 @@ Replicating over SSH has been deprecated, and support for this option will be
 removed in a future release.
 
 To switch to HTTP/HTTPS replication, log into the **primary** node as an admin and visit
-**Admin Area > Geo** (`/admin/geo/nodes`). For each **secondary** node listed,
+**{admin}** **Admin Area >** **{location-dot}** **Geo** (`/admin/geo/nodes`). For each **secondary** node listed,
 press the "Edit" button, change the "Repository cloning" setting from
 "SSH (deprecated)" to "HTTP/HTTPS", and press "Save changes". This should take
 effect immediately.

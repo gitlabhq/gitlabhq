@@ -367,6 +367,7 @@ Parameters:
 - `email` (required)             - Email
 - `password` (optional)          - Password
 - `reset_password` (optional)    - Send user password reset link - true or false(default)
+- `force_random_password` (optional) - Set user password to a random value - true or false (default)
 - `username` (required)          - Username
 - `name` (required)              - Name
 - `skype` (optional)             - Skype ID

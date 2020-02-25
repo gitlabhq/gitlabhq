@@ -216,6 +216,22 @@ describe Gitlab::QuickActions::Extractor do
       expect(msg).to eq "hello\nworld\nthis is great? SHRUG"
     end
 
+    it 'extracts and performs multiple substitution commands' do
+      msg = %(hello\nworld\n/reopen\n/shrug this is great?\n/shrug meh)
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq [['reopen'], ['shrug', 'this is great?'], %w(shrug meh)]
+      expect(msg).to eq "hello\nworld\nthis is great? SHRUG\nmeh SHRUG"
+    end
+
+    it 'does not extract substitution command in inline code' do
+      msg = %(hello\nworld\n/reopen\n`/tableflip this is great`?)
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq [['reopen']]
+      expect(msg).to eq "hello\nworld\n`/tableflip this is great`?"
+    end
+
     it 'extracts and performs substitution commands case insensitive' do
       msg = %(hello\nworld\n/reOpen\n/sHRuG this is great?)
       msg, commands = extractor.extract_commands(msg)

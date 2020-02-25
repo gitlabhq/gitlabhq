@@ -3,14 +3,13 @@
 class AuditEventService
   # Instantiates a new service
   #
-  # @param author [User] the user who authors the change
-  # @param entity [Object] an instance of either Project/Group/User type. This
-  #   param is also used to determine at which level the audit events are
-  #   shown.
-  #   - Project: events are visible at Project level
-  #   - Group: events are visible at Group level
+  # @param [User] author the user who authors the change
+  # @param [User, Project, Group] entity the scope which audit event belongs to
+  #   This param is also used to determine the visibility of the audit event.
+  #   - Project: events are visible at Project and Instance level
+  #   - Group: events are visible at Group and Instance level
   #   - User: events are visible at Instance level
-  # @param details [Hash] details to be added to audit event
+  # @param [Hash] details extra data of audit event
   #
   # @return [AuditEventService]
   def initialize(author, entity, details = {})
@@ -21,7 +20,7 @@ class AuditEventService
 
   # Builds the @details attribute for authentication
   #
-  # This uses the @author as the target object being changed
+  # This uses the @author as the target object being audited
   #
   # @return [AuditEventService]
   def for_authentication

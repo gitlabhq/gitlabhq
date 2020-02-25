@@ -49,7 +49,7 @@ require Rails.root.join('db', 'post_migrate', '20170526185842_migrate_pipeline_s
 #### `table`
 
 Use the `table` helper to create a temporary `ActiveRecord::Base`-derived model
-for a table. [FactoryBot](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#factories)
+for a table. [FactoryBot](best_practices.md#factories)
 **should not** be used to create data for migration specs. For example, to
 create a record in the `projects` table:
 

@@ -1,13 +1,19 @@
 import { file } from 'jest/ide/helpers';
 import FileRow from '~/vue_shared/components/file_row.vue';
-import { mount } from '@vue/test-utils';
+import FileHeader from '~/vue_shared/components/file_row_header.vue';
+import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import { escapeFileUrl } from '~/lib/utils/url_utility';
 
 describe('File row component', () => {
   let wrapper;
 
-  function createComponent(propsData) {
-    wrapper = mount(FileRow, {
+  function createComponent(propsData, $router = undefined) {
+    wrapper = shallowMount(FileRow, {
       propsData,
+      mocks: {
+        $router,
+      },
     });
   }
 
@@ -61,7 +67,7 @@ describe('File row component', () => {
       }),
     });
 
-    return wrapper.vm.$nextTick().then(() => {
+    return nextTick().then(() => {
       expect(wrapper.vm.scrollIntoView).toHaveBeenCalled();
     });
   });
@@ -85,6 +91,27 @@ describe('File row component', () => {
       level: 0,
     });
 
-    expect(wrapper.element.classList).toContain('js-file-row-header');
+    expect(wrapper.contains(FileHeader)).toBe(true);
+  });
+
+  it('matches the current route against encoded file URL', () => {
+    const fileName = 'with space';
+    const rowFile = Object.assign({}, file(fileName), {
+      url: `/${fileName}`,
+    });
+    const routerPath = `/project/${escapeFileUrl(fileName)}`;
+    createComponent(
+      {
+        file: rowFile,
+        level: 0,
+      },
+      {
+        currentRoute: {
+          path: routerPath,
+        },
+      },
+    );
+
+    expect(wrapper.vm.hasUrlAtCurrentRoute()).toBe(true);
   });
 });

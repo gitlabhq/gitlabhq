@@ -197,7 +197,11 @@ class Snippet < ApplicationRecord
   end
 
   def blob
-    @blob ||= Blob.decorate(SnippetBlob.new(self), nil)
+    @blob ||= Blob.decorate(SnippetBlob.new(self), self)
+  end
+
+  def blobs
+    repository.ls_files(repository.root_ref).map { |file| Blob.lazy(self, repository.root_ref, file) }
   end
 
   def hook_attrs
@@ -208,7 +212,7 @@ class Snippet < ApplicationRecord
     super.to_s
   end
 
-  def sanitized_file_name
+  def self.sanitized_file_name(file_name)
     file_name.gsub(/[^a-zA-Z0-9_\-\.]+/, '')
   end
 

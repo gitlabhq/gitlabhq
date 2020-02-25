@@ -1,0 +1,12 @@
+---
+# Checks for the presence of absolute hyperlinks that should be relative.
+#
+# Requires --ignore-syntax CLI flag to find matches.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: existence
+message: URL '%s' must be relative.
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#links-to-internal-documentation
+level: error
+raw:
+  - '\[.+\]\(https?:\/\/docs\.gitlab\.com\/ee.*\)'

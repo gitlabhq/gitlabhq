@@ -2,8 +2,8 @@
 
 ## Changing the sync capacity values
 
-In the Geo admin page (`/admin/geo/nodes`), there are several variables that
-can be tuned to improve performance of Geo:
+In the Geo admin page at **{admin}** **Admin Area >** **{location-dot}** **Geo** (`/admin/geo/nodes`),
+there are several variables that can be tuned to improve performance of Geo:
 
 - Repository sync capacity.
 - File sync capacity.

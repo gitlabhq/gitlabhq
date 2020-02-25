@@ -19,7 +19,7 @@ Before attempting more advanced troubleshooting:
 
 ### Check the health of the **secondary** node
 
-Visit the **primary** node's **Admin Area > Geo** (`/admin/geo/nodes`) in
+Visit the **primary** node's **{admin}** **Admin Area >** **{location-dot}** **Geo** (`/admin/geo/nodes`) in
 your browser. We perform the following health checks on each **secondary** node
 to help identify if something is wrong:
 
@@ -122,7 +122,7 @@ Geo finds the current machine's Geo node name in `/etc/gitlab/gitlab.rb` by:
 - If that is not defined, using the `external_url` setting.
 
 This name is used to look up the node with the same **Name** in
-**Admin Area > Geo**.
+**{admin}** **Admin Area >** **{location-dot}** **Geo**.
 
 To check if the current machine has a node name that matches a node in the
 database, run the check task:
@@ -211,9 +211,9 @@ sudo gitlab-rake gitlab:geo:check
     Checking Geo ... Finished
     ```
 
-    - Ensure that you have added the secondary node in the Admin Area of the primary node.
-    - Ensure that you entered the `external_url` or `gitlab_rails['geo_node_name']` when adding the secondary node in the admin are of the primary node.
-    - Prior to GitLab 12.4, edit the secondary node in the Admin Area of the primary node and ensure that there is a trailing `/` in the `Name` field.
+    - Ensure that you have added the secondary node in the Admin Area of the **primary** node.
+    - Ensure that you entered the `external_url` or `gitlab_rails['geo_node_name']` when adding the secondary node in the admin are of the **primary** node.
+    - Prior to GitLab 12.4, edit the secondary node in the Admin Area of the **primary** node and ensure that there is a trailing `/` in the `Name` field.
 
 1. Check returns Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist
 
@@ -244,8 +244,8 @@ sudo gitlab-rake gitlab:geo:check
 
     When performing a Postgres major version (9 > 10) update this is expected. Follow:
 
-    - [initiate-the-replication-process](https://docs.gitlab.com/ee/administration/geo/replication/database.html#step-3-initiate-the-replication-process)
-    - [Geo database has an outdated FDW remote schema](https://docs.gitlab.com/ee/administration/geo/replication/troubleshooting.html#geo-database-has-an-outdated-fdw-remote-schema-error)
+    - [initiate-the-replication-process](database.md#step-3-initiate-the-replication-process)
+    - [Geo database has an outdated FDW remote schema](troubleshooting.md#geo-database-has-an-outdated-fdw-remote-schema-error)
 
 ## Fixing replication errors
 
@@ -359,7 +359,7 @@ To help us resolve this problem, consider commenting on
 
 GitLab places a timeout on all repository clones, including project imports
 and Geo synchronization operations. If a fresh `git clone` of a repository
-on the primary takes more than a few minutes, you may be affected by this.
+on the **primary** takes more than a few minutes, you may be affected by this.
 
 To increase the timeout, add the following line to `/etc/gitlab/gitlab.rb`
 on the **secondary** node:
@@ -494,7 +494,7 @@ If you encounter this message when running `gitlab-rake geo:set_secondary_as_pri
 or `gitlab-ctl promote-to-primary-node`, either:
 
 - Enter a Rails console and run:
-  
+
   ```ruby
   Rails.application.load_tasks; nil
   Gitlab::Geo.expire_cache_keys!([:primary_node, :current_node])
@@ -750,7 +750,7 @@ If you are able to log in to the **primary** node, but you receive this error
 when attempting to log into a **secondary**, you should check that the Geo
 node's URL matches its external URL.
 
-1. On the primary, visit **Admin Area > Geo**.
+1. On the primary, visit **{admin}** **Admin Area >** **{location-dot}** **Geo**.
 1. Find the affected **secondary** and click **Edit**.
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`
    in `external_url "https://gitlab.example.com"` on the frontend server(s) of
@@ -833,4 +833,4 @@ To resolve this issue:
 - Check `/var/log/gitlab/gitlab-rails/geo.log` to see if the **secondary** node is
   using IPv6 to send its status to the **primary** node. If it is, add an entry to
   the **primary** node using IPv4 in the `/etc/hosts` file. Alternatively, you should
-  [enable IPv6 on the primary node](https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-address-or-addresses).
+  [enable IPv6 on the **primary** node](https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-address-or-addresses).

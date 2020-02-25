@@ -115,7 +115,7 @@ data migration. Migrating millions of rows will always be troublesome and
 can have a negative impact on the application.
 
 To better understand how to get help with the query plan reviews
-read this section on [how to prepare the merge request for a database review](https://docs.gitlab.com/ee/development/database_review.html#how-to-prepare-the-merge-request-for-a-database-review).
+read this section on [how to prepare the merge request for a database review](database_review.md#how-to-prepare-the-merge-request-for-a-database-review).
 
 ## Query Counts
 
@@ -199,7 +199,7 @@ This could result in Puma/Unicorn timeout and should be avoided at all cost.
 You should set a reasonable timeout, gracefully handle exceptions and surface the
 errors in UI or logging internally.
 
-Using [`ReactiveCaching`](https://docs.gitlab.com/ee/development/utilities.html#reactivecaching) is one of the best solutions to fetch external data.
+Using [`ReactiveCaching`](utilities.md#reactivecaching) is one of the best solutions to fetch external data.
 
 ## Keep database transaction minimal
 
@@ -396,4 +396,4 @@ Performance deficiencies should be addressed right away after we merge initial
 changes.
 
 Read more about when and how feature flags should be used in
-[Feature flags in GitLab development](https://docs.gitlab.com/ee/development/feature_flags/process.html#feature-flags-in-gitlab-development).
+[Feature flags in GitLab development](feature_flags/process.md#feature-flags-in-gitlab-development).

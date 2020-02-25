@@ -32,7 +32,7 @@ class SnippetBlobPresenter < BlobPresenter
   end
 
   def snippet
-    blob.snippet
+    blob.container
   end
 
   def language

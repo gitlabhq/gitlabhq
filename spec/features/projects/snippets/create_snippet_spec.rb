@@ -5,8 +5,8 @@ require 'spec_helper'
 describe 'Projects > Snippets > Create Snippet', :js do
   include DropzoneHelper
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public) }
 
   def description_field
     find('.js-description-input input,textarea')
@@ -102,7 +102,7 @@ describe 'Projects > Snippets > Create Snippet', :js do
     end
 
     it 'shows a public snippet on the index page but not the New snippet button' do
-      snippet = create(:project_snippet, :public, project: project)
+      snippet = create(:project_snippet, :public, :repository, project: project)
 
       visit project_snippets_path(project)
 

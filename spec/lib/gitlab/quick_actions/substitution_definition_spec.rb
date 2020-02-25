@@ -7,6 +7,7 @@ describe Gitlab::QuickActions::SubstitutionDefinition do
     <<EOF
 Hello! Let's do this!
 /sub_name I like this stuff
+/sub_name second substitution
 EOF
   end
 
@@ -24,6 +25,7 @@ EOF
         expect(subject.perform_substitution(self, content)).to eq <<EOF
 Hello! Let's do this!
 I like this stuff foo
+/sub_name second substitution
 EOF
       end
     end

@@ -494,7 +494,7 @@ describe('Multi-file store mutations', () => {
     it('properly handles files with spaces in name', () => {
       const path = 'my fancy path';
       const newPath = 'new path';
-      const oldEntry = { ...file(path, path, 'blob'), url: `project/-/${encodeURI(path)}` };
+      const oldEntry = { ...file(path, path, 'blob'), url: `project/-/${path}` };
 
       localState.entries[path] = oldEntry;
 
@@ -510,12 +510,12 @@ describe('Multi-file store mutations', () => {
         id: newPath,
         path: newPath,
         name: newPath,
-        url: `project/-/new%20path`,
+        url: `project/-/new path`,
         key: expect.stringMatching(newPath),
         prevId: path,
         prevName: path,
         prevPath: path,
-        prevUrl: `project/-/my%20fancy%20path`,
+        prevUrl: `project/-/my fancy path`,
         prevKey: oldEntry.key,
         prevParentPath: oldEntry.parentPath,
       });

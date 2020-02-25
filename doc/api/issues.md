@@ -647,7 +647,7 @@ POST /projects/:id/issues
 | `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires admin or project owner rights) |
 | `title`                                   | string         | yes      | The title of an issue |
 | `description`                             | string         | no       | The description of an issue. Limited to 1,048,576 characters. |
-| `confidential`                            | boolean        | no       | Set an issue to be confidential. Default is `false`.  |
+| `confidential`                            | Boolean        | no       | Set an issue to be confidential. Default is `false`.  |
 | `assignee_ids`                            | integer array  | no       | The ID of a user to assign issue |
 | `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue  |
 | `labels`                                  | string         | no       | Comma-separated label names for an issue  |
@@ -755,15 +755,15 @@ PUT /projects/:id/issues/:issue_iid
 | `issue_iid`    | integer | yes      | The internal ID of a project's issue                                                                       |
 | `title`        | string  | no       | The title of an issue                                                                                      |
 | `description`  | string  | no       | The description of an issue. Limited to 1,048,576 characters.        |
-| `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
+| `confidential` | Boolean | no       | Updates an issue to be confidential                                                                        |
 | `assignee_ids` | integer array | no | The ID of the user(s) to assign the issue to. Set to `0` or provide an empty value to unassign all assignees. |
 | `milestone_id` | integer | no       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
 | `labels`       | string  | no       | Comma-separated label names for an issue. Set to an empty string to unassign all labels.                   |
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
-| `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
+| `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights). Empty string or null values are not accepted.|
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
 | `weight` **(STARTER)** | integer | no | The weight of the issue. Valid values are greater than or equal to 0. 0                                                                    |
-| `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
+| `discussion_locked` | Boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
 | `epic_id` **(ULTIMATE)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
 | `epic_iid` **(ULTIMATE)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [will be removed in 13.0](https://gitlab.com/gitlab-org/gitlab/issues/35157)) |
 
@@ -851,9 +851,14 @@ the `weight` parameter:
 }
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE: **Note:**
+At least one of following parameters is required to be passed for the request to be successful: `:assignee_id`, `:assignee_ids`, `:confidential`, `:created_at`, `:description`, `:discussion_locked`, `:due_date`, `:labels`, `:milestone_id`, `:state_event`, or `:title`.
 
-**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+NOTE: **Note**:
+`assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+NOTE: **Note**:
+The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Delete an issue
 

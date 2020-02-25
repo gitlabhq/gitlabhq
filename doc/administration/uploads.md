@@ -63,7 +63,7 @@ For source installations the following settings are nested under `uploads:` and 
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
 | `remote_directory` | The bucket name where Uploads will be stored| |
-| `direct_upload` | Set to true to remove Unicorn from the Upload path. Workhorse handles the actual Artifact Upload to Object Storage while Unicorn does minimal processing to keep track of the upload. There is no need for local shared storage. The option may be removed if support for a single storage type for all files is introduced. Read more on [what the direct_upload setting means](https://docs.gitlab.com/ee/development/uploads.html#what-does-the-direct_upload-setting-mean). | `false` |
+| `direct_upload` | Set to true to remove Unicorn from the Upload path. Workhorse handles the actual Artifact Upload to Object Storage while Unicorn does minimal processing to keep track of the upload. There is no need for local shared storage. The option may be removed if support for a single storage type for all files is introduced. Read more on [direct upload](../development/uploads.md#direct-upload). | `false` |
 | `background_upload` | Set to false to disable automatic upload. Option may be removed once upload is direct to S3 (if `direct_upload` is set to `true` it will override `background_upload`) | `true` |
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |

@@ -10,8 +10,7 @@
   = render 'shared/snippets/header'
 
   .personal-snippets
-    %article.file-holder.snippet-file-content
-      = render 'shared/snippets/blob'
+    = render 'shared/snippets/blob', blob: @blob
 
 .row-content-block.top-block.content-component-block
   = render 'award_emoji/awards_block', awardable: @snippet, inline: true

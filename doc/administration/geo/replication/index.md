@@ -270,7 +270,7 @@ For answers to common questions, see the [Geo FAQ](faq.md).
 
 Since GitLab 9.5, Geo stores structured log messages in a `geo.log` file. For Omnibus installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
 
-This file contains information about when Geo attempts to sync repositories and files. Each line in the file contains a separate JSON entry that can be ingested into, for example, Elasticsearch or Splunk.
+This file contains information about when Geo attempts to sync repositories and files. Each line in the file contains a separate JSON entry that can be ingested into. For example, Elasticsearch or Splunk.
 
 For example:
 

@@ -1,5 +1,5 @@
 <script>
-import { omit } from 'underscore';
+import { omit } from 'lodash';
 import { GlEmptyState, GlPagination, GlSkeletonLoading } from '@gitlab/ui';
 import flash from '~/flash';
 import axios from '~/lib/utils/axios_utils';

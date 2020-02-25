@@ -511,7 +511,7 @@ Here are some common pitfalls and how to overcome them:
   If you see `Elasticsearch::Model::Response::Records`, you are using Elasticsearch.
 
   NOTE: **Note**:
-  The above instructions are used to verify that GitLab is using Elasticsearch only when indexing all namespaces. This is not to be used for scenarios that only index a [subset of namespaces](https://docs.gitlab.com/ee/integration/elasticsearch.html#limiting-namespaces-and-projects).
+  The above instructions are used to verify that GitLab is using Elasticsearch only when indexing all namespaces. This is not to be used for scenarios that only index a [subset of namespaces](#limiting-namespaces-and-projects).
 
 - **I updated GitLab and now I can't find anything**
 
@@ -534,7 +534,7 @@ Here are some common pitfalls and how to overcome them:
   ```
 
   NOTE: **Note**:
-  The above instructions are not to be used for scenarios that only index a [subset of namespaces](https://docs.gitlab.com/ee/integration/elasticsearch.html#limiting-namespaces-and-projects).
+  The above instructions are not to be used for scenarios that only index a [subset of namespaces](#limiting-namespaces-and-projects).
 
   See [Elasticsearch Index Scopes](#elasticsearch-index-scopes) for more information on searching for specific types of data.
 
@@ -597,7 +597,7 @@ Here are some common pitfalls and how to overcome them:
   AWS has [fixed limits](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html)
   for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of
   the underlying instance.
-  
+
 - **My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly**
 
   **For a single node Elasticsearch cluster the functional cluster health status will be yellow** (will never be green) because the primary shard is allocated but replicas can not be as there is no other node to which Elasticsearch can assign a replica. This also applies if you are using using the
@@ -614,7 +614,7 @@ Here are some common pitfalls and how to overcome them:
     }
   }'
   ```
-  
+
 - **I'm getting a `health check timeout: no Elasticsearch node available` error in Sidekiq during the indexing process**
 
    ```

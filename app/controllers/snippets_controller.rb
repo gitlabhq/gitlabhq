@@ -68,17 +68,15 @@ class SnippetsController < ApplicationController
   end
 
   def show
-    blob = @snippet.blob
     conditionally_expand_blob(blob)
-
-    @note = Note.new(noteable: @snippet)
-    @noteable = @snippet
-
-    @discussions = @snippet.discussions
-    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
     respond_to do |format|
       format.html do
+        @note = Note.new(noteable: @snippet)
+        @noteable = @snippet
+
+        @discussions = @snippet.discussions
+        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
         render 'show'
       end
 
@@ -120,6 +118,16 @@ class SnippetsController < ApplicationController
 
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet
+
+  def blob
+    return unless snippet
+
+    @blob ||= if Feature.enabled?(:version_snippets, current_user) && !snippet.repository.empty?
+                snippet.blobs.first
+              else
+                snippet.blob
+              end
+  end
 
   def spammable_path
     snippet_path(@snippet)

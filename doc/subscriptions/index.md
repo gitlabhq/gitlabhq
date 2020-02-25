@@ -243,7 +243,7 @@ If you reach your limit, you can [purchase additional CI minutes](#extra-shared-
 
 ##### How pipeline quota usage is calculated
 
-Pipeline quota usage is calculated as the sum of the duration of each individual job. This is slightly different to how pipeline _duration_ is [calculated](https://docs.gitlab.com/ee/ci/pipelines.html#how-pipeline-duration-is-calculated). Pipeline quota usage doesn't consider the intersection of jobs.
+Pipeline quota usage is calculated as the sum of the duration of each individual job. This is slightly different to how pipeline _duration_ is [calculated](../ci/pipelines.md#how-pipeline-duration-is-calculated). Pipeline quota usage doesn't consider the intersection of jobs.
 
 A simple example is:
 

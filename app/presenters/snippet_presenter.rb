@@ -27,6 +27,14 @@ class SnippetPresenter < Gitlab::View::Presenter::Delegated
     snippet.submittable_as_spam_by?(current_user)
   end
 
+  def blob
+    if Feature.enabled?(:version_snippets, current_user) && !snippet.repository.empty?
+      snippet.blobs.first
+    else
+      snippet.blob
+    end
+  end
+
   private
 
   def can_access_resource?(ability_prefix)

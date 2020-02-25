@@ -7,7 +7,7 @@ type: reference
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15643) in GitLab 11.7.
 
 GitLab supports using client-side [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt)
-to perform various actions at the same time as pushing changes. Additionally, [Push Rules](https://docs.gitlab.com/ee/push_rules/push_rules.html) offer server-side control and enforcement options.
+to perform various actions at the same time as pushing changes. Additionally, [Push Rules](../../push_rules/push_rules.md) offer server-side control and enforcement options.
 
 Currently, there are push options available for:
 

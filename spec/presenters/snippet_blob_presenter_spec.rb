@@ -76,18 +76,18 @@ describe SnippetBlobPresenter do
 
     context 'with ProjectSnippet' do
       let!(:project) { create(:project) }
-      let(:snippet) { build(:project_snippet, project: project, id: 1) }
+      let(:snippet) { create(:project_snippet, project: project) }
 
       it 'returns the raw path' do
-        expect(subject).to eq "/#{snippet.project.full_path}/snippets/1/raw"
+        expect(subject).to eq "/#{snippet.project.full_path}/snippets/#{snippet.id}/raw"
       end
     end
 
     context 'with PersonalSnippet' do
-      let(:snippet) { build(:personal_snippet, id: 1) }
+      let(:snippet) { create(:personal_snippet) }
 
       it 'returns the raw path' do
-        expect(subject).to eq "/snippets/1/raw"
+        expect(subject).to eq "/snippets/#{snippet.id}/raw"
       end
     end
   end
