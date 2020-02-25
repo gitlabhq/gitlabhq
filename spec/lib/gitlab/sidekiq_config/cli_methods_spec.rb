@@ -128,7 +128,7 @@ describe Gitlab::SidekiqConfig::CliMethods do
           resource_boundary: :cpu
         },
         {
-          name: 'a_2',
+          name: 'a:2',
           feature_category: :category_a,
           has_external_dependencies: false,
           latency_sensitive: true,
@@ -154,40 +154,40 @@ describe Gitlab::SidekiqConfig::CliMethods do
     context 'with valid input' do
       where(:query, :selected_queues) do
         # feature_category
-        'feature_category=category_a' | %w(a a_2)
-        'feature_category=category_a,category_c' | %w(a a_2 c)
-        'feature_category=category_a|feature_category=category_c' | %w(a a_2 c)
+        'feature_category=category_a' | %w(a a:2)
+        'feature_category=category_a,category_c' | %w(a a:2 c)
+        'feature_category=category_a|feature_category=category_c' | %w(a a:2 c)
         'feature_category!=category_a' | %w(b c)
 
         # has_external_dependencies
         'has_external_dependencies=true' | %w(b)
-        'has_external_dependencies=false' | %w(a a_2 c)
-        'has_external_dependencies=true,false' | %w(a a_2 b c)
-        'has_external_dependencies=true|has_external_dependencies=false' | %w(a a_2 b c)
-        'has_external_dependencies!=true' | %w(a a_2 c)
+        'has_external_dependencies=false' | %w(a a:2 c)
+        'has_external_dependencies=true,false' | %w(a a:2 b c)
+        'has_external_dependencies=true|has_external_dependencies=false' | %w(a a:2 b c)
+        'has_external_dependencies!=true' | %w(a a:2 c)
 
         # latency_sensitive
-        'latency_sensitive=true' | %w(a_2 b)
+        'latency_sensitive=true' | %w(a:2 b)
         'latency_sensitive=false' | %w(a c)
-        'latency_sensitive=true,false' | %w(a a_2 b c)
-        'latency_sensitive=true|latency_sensitive=false' | %w(a a_2 b c)
+        'latency_sensitive=true,false' | %w(a a:2 b c)
+        'latency_sensitive=true|latency_sensitive=false' | %w(a a:2 b c)
         'latency_sensitive!=true' | %w(a c)
 
         # name
         'name=a' | %w(a)
         'name=a,b' | %w(a b)
-        'name=a,a_2|name=b' | %w(a a_2 b)
-        'name!=a,a_2' | %w(b c)
+        'name=a,a:2|name=b' | %w(a a:2 b)
+        'name!=a,a:2' | %w(b c)
 
         # resource_boundary
         'resource_boundary=memory' | %w(b c)
         'resource_boundary=memory,cpu' | %w(a b c)
         'resource_boundary=memory|resource_boundary=cpu' | %w(a b c)
-        'resource_boundary!=memory,cpu' | %w(a_2)
+        'resource_boundary!=memory,cpu' | %w(a:2)
 
         # combinations
-        'feature_category=category_a&latency_sensitive=true' | %w(a_2)
-        'feature_category=category_a&latency_sensitive=true|feature_category=category_c' | %w(a_2 c)
+        'feature_category=category_a&latency_sensitive=true' | %w(a:2)
+        'feature_category=category_a&latency_sensitive=true|feature_category=category_c' | %w(a:2 c)
       end
 
       with_them do

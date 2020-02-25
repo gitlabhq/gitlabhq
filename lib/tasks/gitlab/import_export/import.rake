@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'gitlab/with_request_store'
+
 # Import large project archives
 #
 # This task:
@@ -27,19 +29,22 @@ namespace :gitlab do
         project_path:   args.project_path,
         username:       args.username,
         file_path:      args.archive_path,
-        measurement_enabled: args.measurement_enabled == 'true'
+        measurement_enabled: Gitlab::Utils.to_boolean(args.measurement_enabled)
       ).import
     end
   end
 end
 
 class GitlabProjectImport
+  include Gitlab::WithRequestStore
+
   def initialize(opts)
     @project_path = opts.fetch(:project_path)
     @file_path    = opts.fetch(:file_path)
     @namespace    = Namespace.find_by_full_path(opts.fetch(:namespace_path))
     @current_user = User.find_by_username(opts.fetch(:username))
     @measurement_enabled = opts.fetch(:measurement_enabled)
+    @measurement = Gitlab::Utils::Measuring.new if @measurement_enabled
   end
 
   def import
@@ -49,11 +54,11 @@ class GitlabProjectImport
 
     show_import_failures_count
 
-    if @project&.import_state&.last_error
-      puts "ERROR: #{@project.import_state.last_error}"
+    if project&.import_state&.last_error
+      puts "ERROR: #{project.import_state.last_error}"
       exit 1
-    elsif @project.errors.any?
-      puts "ERROR: #{@project.errors.full_messages.join(', ')}"
+    elsif project.errors.any?
+      puts "ERROR: #{project.errors.full_messages.join(', ')}"
       exit 1
     else
       puts 'Done!'
@@ -66,60 +71,10 @@ class GitlabProjectImport
 
   private
 
-  def with_request_store
-    RequestStore.begin!
-    yield
-  ensure
-    RequestStore.end!
-    RequestStore.clear!
-  end
-
-  def with_count_queries(&block)
-    count = 0
-
-    counter_f = ->(name, started, finished, unique_id, payload) {
-      unless payload[:name].in? %w[CACHE SCHEMA]
-        count += 1
-      end
-    }
-
-    ActiveSupport::Notifications.subscribed(counter_f, "sql.active_record", &block)
-
-    puts "Number of sql calls: #{count}"
-  end
-
-  def with_gc_counter
-    gc_counts_before = GC.stat.select { |k, v| k =~ /count/ }
-    yield
-    gc_counts_after = GC.stat.select { |k, v| k =~ /count/ }
-    stats = gc_counts_before.merge(gc_counts_after) { |k, vb, va| va - vb }
-    puts "Total GC count: #{stats[:count]}"
-    puts "Minor GC count: #{stats[:minor_gc_count]}"
-    puts "Major GC count: #{stats[:major_gc_count]}"
-  end
-
-  def with_measure_time
-    timing = Benchmark.realtime do
-      yield
-    end
-
-    time = Time.at(timing).utc.strftime("%H:%M:%S")
-    puts "Time to finish: #{time}"
-  end
-
-  def with_measuring
-    puts "Measuring enabled..."
-    with_gc_counter do
-      with_count_queries do
-        with_measure_time do
-          yield
-        end
-      end
-    end
-  end
+  attr_reader :measurement, :project, :namespace, :current_user, :file_path, :project_path
 
   def measurement_enabled?
-    @measurement_enabled != false
+    @measurement_enabled
   end
 
   # We want to ensure that all Sidekiq jobs are executed
@@ -135,7 +90,7 @@ class GitlabProjectImport
         # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24475#note_283090635
         # For development setups, this code-path will be excluded from n+1 detection.
         ::Gitlab::GitalyClient.allow_n_plus_1_calls do
-          measurement_enabled? ? with_measuring { yield } : yield
+          measurement_enabled? ? measurement.with_measuring { yield } : yield
         end
       end
 
@@ -158,11 +113,11 @@ class GitlabProjectImport
     # 2. Download of archive before unpacking
     disable_upload_object_storage do
       service = Projects::GitlabProjectsImportService.new(
-        @current_user,
+        current_user,
         {
-          namespace_id: @namespace.id,
-          path:         @project_path,
-          file:         File.open(@file_path)
+          namespace_id: namespace.id,
+          path:         project_path,
+          file:         File.open(file_path)
         }
       )
 
@@ -193,18 +148,18 @@ class GitlabProjectImport
   end
 
   def full_path
-    "#{@namespace.full_path}/#{@project_path}"
+    "#{namespace.full_path}/#{project_path}"
   end
 
   def show_import_start_message
-    puts "Importing GitLab export: #{@file_path} into GitLab" \
+    puts "Importing GitLab export: #{file_path} into GitLab" \
       " #{full_path}" \
-      " as #{@current_user.name}"
+      " as #{current_user.name}"
   end
 
   def show_import_failures_count
-    return unless @project.import_failures.exists?
+    return unless project.import_failures.exists?
 
-    puts "Total number of not imported relations: #{@project.import_failures.count}"
+    puts "Total number of not imported relations: #{project.import_failures.count}"
   end
 end

@@ -21,7 +21,7 @@ module Gitlab
       QUERY_OR_OPERATOR = '|'
       QUERY_AND_OPERATOR = '&'
       QUERY_CONCATENATE_OPERATOR = ','
-      QUERY_TERM_REGEX = %r{^(\w+)(!?=)([\w#{QUERY_CONCATENATE_OPERATOR}]+)}.freeze
+      QUERY_TERM_REGEX = %r{^(\w+)(!?=)([\w:#{QUERY_CONCATENATE_OPERATOR}]+)}.freeze
 
       QUERY_PREDICATES = {
         feature_category: :to_sym,

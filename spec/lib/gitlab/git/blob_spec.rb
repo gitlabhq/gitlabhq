@@ -613,6 +613,40 @@ describe Gitlab::Git::Blob, :seed_helper do
     end
   end
 
+  describe '#truncated?' do
+    context 'when blob.size is nil' do
+      let(:nil_size_blob) { Gitlab::Git::Blob.new(name: 'test', data: 'abcd') }
+
+      it 'returns false' do
+        expect(nil_size_blob.truncated?).to be_falsey
+      end
+    end
+
+    context 'when blob.data is missing' do
+      let(:nil_data_blob) { Gitlab::Git::Blob.new(name: 'test', size: 4) }
+
+      it 'returns false' do
+        expect(nil_data_blob.truncated?).to be_falsey
+      end
+    end
+
+    context 'when the blob is truncated' do
+      let(:truncated_blob) { Gitlab::Git::Blob.new(name: 'test', size: 40, data: 'abcd') }
+
+      it 'returns true' do
+        expect(truncated_blob.truncated?).to be_truthy
+      end
+    end
+
+    context 'when the blob is untruncated' do
+      let(:untruncated_blob) { Gitlab::Git::Blob.new(name: 'test', size: 4, data: 'abcd') }
+
+      it 'returns false' do
+        expect(untruncated_blob.truncated?).to be_falsey
+      end
+    end
+  end
+
   describe 'metrics' do
     it 'defines :gitlab_blob_truncated_true counter' do
       expect(described_class).to respond_to(:gitlab_blob_truncated_true)

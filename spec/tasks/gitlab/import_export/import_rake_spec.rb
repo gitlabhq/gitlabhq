@@ -70,7 +70,7 @@ describe 'gitlab:import_export:import rake task' do
       subject
     end
 
-    it_behaves_like 'import measurement'
+    it_behaves_like 'measurable'
   end
 
   context 'when project import is invalid' do

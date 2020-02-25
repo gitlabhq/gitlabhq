@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'import measurement' do
+RSpec.shared_examples 'measurable' do
   context 'when measurement is enabled' do
     let(:measurement_enabled) { true }
 

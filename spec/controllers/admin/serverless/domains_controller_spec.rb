@@ -15,7 +15,7 @@ describe Admin::Serverless::DomainsController do
       it 'responds with 404' do
         get :index
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -33,7 +33,7 @@ describe Admin::Serverless::DomainsController do
         it 'responds with 404' do
           get :index
 
-          expect(response.status).to eq(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -81,7 +81,7 @@ describe Admin::Serverless::DomainsController do
       it 'responds with 404' do
         post :create, params: { pages_domain: create_params }
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -98,7 +98,7 @@ describe Admin::Serverless::DomainsController do
         it 'responds with 404' do
           post :create, params: { pages_domain: create_params }
 
-          expect(response.status).to eq(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -169,7 +169,7 @@ describe Admin::Serverless::DomainsController do
       it 'responds with 404' do
         put :update, params: { id: domain.id, pages_domain: update_params }
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -186,7 +186,7 @@ describe Admin::Serverless::DomainsController do
         it 'responds with 404' do
           put :update, params: { id: domain.id, pages_domain: update_params }
 
-          expect(response.status).to eq(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -221,7 +221,7 @@ describe Admin::Serverless::DomainsController do
         it 'returns 404' do
           put :update, params: { id: 0, pages_domain: update_params }
 
-          expect(response.status).to eq(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -247,7 +247,7 @@ describe Admin::Serverless::DomainsController do
       it 'responds with 404' do
         post :verify, params: { id: domain.id }
 
-        expect(response.status).to eq(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -272,7 +272,7 @@ describe Admin::Serverless::DomainsController do
         it 'responds with 404' do
           post :verify, params: { id: domain.id }
 
-          expect(response.status).to eq(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -292,6 +292,78 @@ describe Admin::Serverless::DomainsController do
 
         expect(response).to redirect_to admin_serverless_domains_path
         expect(flash[:alert]).to eq('Failed to verify domain ownership')
+      end
+    end
+  end
+
+  describe '#destroy' do
+    let!(:domain) { create(:pages_domain, :instance_serverless) }
+
+    context 'non-admin user' do
+      before do
+        sign_in(user)
+      end
+
+      it 'responds with 404' do
+        delete :destroy, params: { id: domain.id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'admin user' do
+      before do
+        sign_in(admin)
+      end
+
+      context 'with serverless_domain feature disabled' do
+        before do
+          stub_feature_flags(serverless_domain: false)
+        end
+
+        it 'responds with 404' do
+          delete :destroy, params: { id: domain.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when domain exists' do
+        context 'and is not associated to any clusters' do
+          it 'deletes the domain' do
+            expect { delete :destroy, params: { id: domain.id } }
+              .to change { PagesDomain.count }.from(1).to(0)
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(flash[:notice]).to include('Domain was successfully deleted.')
+          end
+        end
+
+        context 'and is associated to any clusters' do
+          before do
+            create(:serverless_domain_cluster, pages_domain: domain)
+          end
+
+          it 'does not delete the domain' do
+            expect { delete :destroy, params: { id: domain.id } }
+              .not_to change { PagesDomain.count }
+
+            expect(response).to have_gitlab_http_status(:conflict)
+            expect(flash[:notice]).to include('Domain cannot be deleted while associated to one or more clusters.')
+          end
+        end
+      end
+
+      context 'when domain does not exist' do
+        before do
+          domain.destroy!
+        end
+
+        it 'responds with 404' do
+          delete :destroy, params: { id: domain.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
   end

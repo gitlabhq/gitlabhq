@@ -33,7 +33,7 @@ namespace :admin do
   resources :gitaly_servers, only: [:index]
 
   namespace :serverless do
-    resources :domains, only: [:index, :create, :update] do
+    resources :domains, only: [:index, :create, :update, :destroy] do
       member do
         post '/verify', to: 'domains#verify'
       end

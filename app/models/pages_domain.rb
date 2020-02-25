@@ -11,6 +11,7 @@ class PagesDomain < ApplicationRecord
 
   belongs_to :project
   has_many :acme_orders, class_name: "PagesDomainAcmeOrder"
+  has_many :serverless_domain_clusters, class_name: 'Serverless::DomainCluster', inverse_of: :pages_domain
 
   validates :domain, hostname: { allow_numeric_hostname: true }
   validates :domain, uniqueness: { case_sensitive: false }

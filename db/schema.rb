@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_21_144534) do
+ActiveRecord::Schema.define(version: 2020_02_24_163804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -2916,6 +2916,7 @@ ActiveRecord::Schema.define(version: 2020_02_21_144534) do
     t.string "name", null: false
     t.text "description"
     t.integer "iid", null: false
+    t.integer "version", limit: 2, default: 1, null: false
     t.index ["project_id", "iid"], name: "index_operations_feature_flags_on_project_id_and_iid", unique: true
     t.index ["project_id", "name"], name: "index_operations_feature_flags_on_project_id_and_name", unique: true
   end

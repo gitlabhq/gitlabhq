@@ -165,7 +165,9 @@ module Gitlab
       end
 
       def truncated?
-        size && (size > loaded_size)
+        return false unless size && loaded_size
+
+        size > loaded_size
       end
 
       # Valid LFS object pointer is a text file consisting of

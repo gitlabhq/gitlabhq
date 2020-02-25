@@ -3480,6 +3480,9 @@ msgstr ""
 msgid "Checkout|Country"
 msgstr ""
 
+msgid "Checkout|Create a new group"
+msgstr ""
+
 msgid "Checkout|Credit card form failed to load. Please try again."
 msgstr ""
 
@@ -3507,6 +3510,9 @@ msgstr ""
 msgid "Checkout|Failed to register credit card. Please try again."
 msgstr ""
 
+msgid "Checkout|GitLab group"
+msgstr ""
+
 msgid "Checkout|GitLab plan"
 msgstr ""
 
@@ -3529,6 +3535,9 @@ msgid "Checkout|Please select a country"
 msgstr ""
 
 msgid "Checkout|Please select a state"
+msgstr ""
+
+msgid "Checkout|Select"
 msgstr ""
 
 msgid "Checkout|State"
@@ -3555,7 +3564,13 @@ msgstr ""
 msgid "Checkout|Users"
 msgstr ""
 
+msgid "Checkout|You'll create your new group after checkout"
+msgstr ""
+
 msgid "Checkout|Your organization"
+msgstr ""
+
+msgid "Checkout|Your subscription will be applied to this group"
 msgstr ""
 
 msgid "Checkout|Zip code"
@@ -6865,10 +6880,16 @@ msgstr ""
 msgid "Domain"
 msgstr ""
 
+msgid "Domain cannot be deleted while associated to one or more clusters."
+msgstr ""
+
 msgid "Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled"
 msgstr ""
 
 msgid "Domain was successfully created."
+msgstr ""
+
+msgid "Domain was successfully deleted."
 msgstr ""
 
 msgid "Domain was successfully updated."
