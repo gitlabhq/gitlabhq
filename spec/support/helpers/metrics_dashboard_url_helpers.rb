@@ -9,7 +9,7 @@ module MetricsDashboardUrlHelpers
   end
 
   def clear_host_from_memoized_variables
-    [:metrics_regex, :grafana_regex, :cluster_metrics, :alerts_regex].each do |method_name|
+    [:metrics_regex, :grafana_regex, :clusters_regex, :alert_regex].each do |method_name|
       Gitlab::Metrics::Dashboard::Url.clear_memoization(method_name)
     end
   end

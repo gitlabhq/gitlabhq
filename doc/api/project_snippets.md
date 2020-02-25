@@ -123,7 +123,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request PUT https://gitlab.com/api/v4/projects/:id/snippets \
+curl --request PUT https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
      -d @snippet.json
@@ -157,7 +157,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request DELETE https://gitlab.com/api/v4/projects/:id/snippets \
+curl --request DELETE https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id \
      --header "PRIVATE-TOKEN: <your_access_token>"
 ```
 

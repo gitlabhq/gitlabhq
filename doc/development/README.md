@@ -22,6 +22,7 @@ description: 'Learn how to contribute to GitLab.'
 
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed
 - [Database review guidelines](database_review.md) for reviewing database-related changes and complex SQL queries, and having them reviewed
+- [Secure coding guidlines](https://gitlab.com/gitlab-com/gl-security/security-guidelines)
 - [Pipelines for the GitLab project](pipelines.md)
 
 Complementary reads:
