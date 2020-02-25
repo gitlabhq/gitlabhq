@@ -2537,6 +2537,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_163804) do
     t.integer "diff_size"
     t.integer "modified_paths_size"
     t.integer "commits_count"
+    t.datetime_with_timezone "first_approved_at"
     t.index ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at"
     t.index ["latest_closed_at"], name: "index_merge_request_metrics_on_latest_closed_at", where: "(latest_closed_at IS NOT NULL)"
     t.index ["latest_closed_by_id"], name: "index_merge_request_metrics_on_latest_closed_by_id"
@@ -3062,6 +3063,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_163804) do
     t.boolean "wildcard", default: false, null: false
     t.integer "usage", limit: 2, default: 0, null: false
     t.integer "scope", limit: 2, default: 2, null: false
+    t.index "lower((domain)::text)", name: "index_pages_domains_on_domain_lowercase"
     t.index ["certificate_source", "certificate_valid_not_after"], name: "index_pages_domains_need_auto_ssl_renewal", where: "(auto_ssl_enabled = true)"
     t.index ["domain", "wildcard"], name: "index_pages_domains_on_domain_and_wildcard", unique: true
     t.index ["project_id", "enabled_until"], name: "index_pages_domains_on_project_id_and_enabled_until"
@@ -3938,7 +3940,6 @@ ActiveRecord::Schema.define(version: 2020_02_24_163804) do
     t.string "encrypted_secret_token", limit: 255
     t.string "encrypted_secret_token_iv", limit: 255
     t.boolean "secret", default: false, null: false
-    t.string "repository_storage", limit: 255, default: "default", null: false
     t.index ["author_id"], name: "index_snippets_on_author_id"
     t.index ["content"], name: "index_snippets_on_content_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["created_at"], name: "index_snippets_on_created_at"

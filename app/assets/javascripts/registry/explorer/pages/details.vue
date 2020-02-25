@@ -199,10 +199,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-gl-resize-observer="handleResize"
-    class="my-3 position-absolute w-100 slide-enter-to-element"
-  >
+  <div v-gl-resize-observer="handleResize" class="my-3 w-100 slide-enter-to-element">
     <div class="d-flex my-3 align-items-center">
       <h4>
         <gl-sprintf :message="s__('ContainerRegistry|%{imageName} tags')">

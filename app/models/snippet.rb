@@ -17,7 +17,7 @@ class Snippet < ApplicationRecord
   include HasRepository
   extend ::Gitlab::Utils::Override
 
-  ignore_column :repository_storage, remove_with: '12.10', remove_after: '2020-04-22'
+  ignore_column :repository_storage, remove_with: '12.10', remove_after: '2020-03-22'
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description

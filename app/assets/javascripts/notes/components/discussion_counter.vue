@@ -39,7 +39,11 @@ export default {
 </script>
 
 <template>
-  <div v-if="resolvableDiscussionsCount > 0" class="line-resolve-all-container full-width-mobile">
+  <div
+    v-if="resolvableDiscussionsCount > 0"
+    ref="discussionCounter"
+    class="line-resolve-all-container full-width-mobile"
+  >
     <div class="full-width-mobile d-flex d-sm-block">
       <div :class="{ 'has-next-btn': hasNextButton }" class="line-resolve-all">
         <span

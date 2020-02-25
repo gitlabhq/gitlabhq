@@ -36,7 +36,7 @@ module API
               present virtual_domain, with: Entities::Internal::Serverless::VirtualDomain
             else
               # Handle Pages domains
-              host = Namespace.find_by_pages_host(params[:host]) || PagesDomain.find_by_domain(params[:host])
+              host = Namespace.find_by_pages_host(params[:host]) || PagesDomain.find_by_domain_case_insensitive(params[:host])
               no_content! unless host
 
               virtual_domain = host.pages_virtual_domain

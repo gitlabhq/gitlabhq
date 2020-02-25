@@ -531,6 +531,7 @@ module Ci
           .concat(persisted_variables)
           .concat(scoped_variables)
           .concat(job_variables)
+          .concat(environment_changed_page_variables)
           .concat(persisted_environment_variables)
           .to_runner_variables
       end
@@ -566,6 +567,15 @@ module Ci
         # and we need to make sure that CI_ENVIRONMENT_NAME and
         # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
         variables.append(key: 'CI_ENVIRONMENT_URL', value: environment_url) if environment_url
+      end
+    end
+
+    def environment_changed_page_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless environment_status
+
+        variables.append(key: 'CI_MERGE_REQUEST_CHANGED_PAGE_PATHS', value: environment_status.changed_paths.join(','))
+        variables.append(key: 'CI_MERGE_REQUEST_CHANGED_PAGE_URLS', value: environment_status.changed_urls.join(','))
       end
     end
 
@@ -968,6 +978,14 @@ module Ci
 
     def environment_url
       options&.dig(:environment, :url) || persisted_environment&.external_url
+    end
+
+    def environment_status
+      strong_memoize(:environment_status) do
+        if has_environment? && merge_request
+          EnvironmentStatus.new(project, persisted_environment, merge_request, pipeline.sha)
+        end
+      end
     end
 
     # The format of the retry option changed in GitLab 11.5: Before it was

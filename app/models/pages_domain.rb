@@ -68,6 +68,10 @@ class PagesDomain < ApplicationRecord
 
   scope :instance_serverless, -> { where(wildcard: true, scope: :instance, usage: :serverless) }
 
+  def self.find_by_domain_case_insensitive(domain)
+    find_by("LOWER(domain) = LOWER(?)", domain)
+  end
+
   def verified?
     !!verified_at
   end

@@ -84,10 +84,10 @@ class ChatNotificationService < Service
 
     event_type = data[:event_type] || object_kind
 
-    channel_name = get_channel_field(event_type).presence || channel
+    channel_names = get_channel_field(event_type).presence || channel
 
     opts = {}
-    opts[:channel] = channel_name if channel_name
+    opts[:channel] = channel_names.split(',').map(&:strip) if channel_names
     opts[:username] = username if username
 
     return false unless notify(message, opts)

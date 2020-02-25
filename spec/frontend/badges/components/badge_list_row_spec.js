@@ -1,6 +1,5 @@
-import $ from 'jquery';
 import Vue from 'vue';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { GROUP_BADGE, PROJECT_BADGE } from '~/badges/constants';
 import store from '~/badges/store';
 import BadgeListRow from '~/badges/components/badge_list_row.vue';
@@ -40,15 +39,15 @@ describe('BadgeListRow component', () => {
   });
 
   it('renders the badge name', () => {
-    expect(vm.$el).toContainText(badge.name);
+    expect(vm.$el.innerText).toMatch(badge.name);
   });
 
   it('renders the badge link', () => {
-    expect(vm.$el).toContainText(badge.linkUrl);
+    expect(vm.$el.innerText).toMatch(badge.linkUrl);
   });
 
   it('renders the badge kind', () => {
-    expect(vm.$el).toContainText('Project Badge');
+    expect(vm.$el.innerText).toMatch('Project Badge');
   });
 
   it('shows edit and delete buttons', () => {
@@ -66,7 +65,7 @@ describe('BadgeListRow component', () => {
   });
 
   it('calls editBadge when clicking then edit button', () => {
-    spyOn(vm, 'editBadge');
+    jest.spyOn(vm, 'editBadge').mockImplementation(() => {});
 
     const editButton = vm.$el.querySelector('.table-button-footer button:first-of-type');
     editButton.click();
@@ -75,13 +74,17 @@ describe('BadgeListRow component', () => {
   });
 
   it('calls updateBadgeInModal and shows modal when clicking then delete button', done => {
-    spyOn(vm, 'updateBadgeInModal');
-    $('#delete-badge-modal').on('shown.bs.modal', () => done());
+    jest.spyOn(vm, 'updateBadgeInModal').mockImplementation(() => {});
 
     const deleteButton = vm.$el.querySelector('.table-button-footer button:last-of-type');
     deleteButton.click();
 
-    expect(vm.updateBadgeInModal).toHaveBeenCalled();
+    Vue.nextTick()
+      .then(() => {
+        expect(vm.updateBadgeInModal).toHaveBeenCalled();
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   describe('for a group badge', () => {
@@ -94,7 +97,7 @@ describe('BadgeListRow component', () => {
     });
 
     it('renders the badge kind', () => {
-      expect(vm.$el).toContainText('Group Badge');
+      expect(vm.$el.innerText).toMatch('Group Badge');
     });
 
     it('hides edit and delete buttons', () => {

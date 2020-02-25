@@ -17847,7 +17847,25 @@ msgstr ""
 msgid "Slack application"
 msgstr ""
 
+msgid "Slack channels (e.g. general, development)"
+msgstr ""
+
 msgid "Slack integration allows you to interact with GitLab via slash commands in a chat window."
+msgstr ""
+
+msgid "SlackIntegration|%{webhooks_link_start}Add an incoming webhook%{webhooks_link_end} in your Slack team. The default channel can be overridden for each event."
+msgstr ""
+
+msgid "SlackIntegration|<strong>Note:</strong> Usernames and private channels are not supported."
+msgstr ""
+
+msgid "SlackIntegration|Paste the <strong>Webhook URL</strong> into the field below."
+msgstr ""
+
+msgid "SlackIntegration|Select events below to enable notifications. The <strong>Slack channel names</strong> and <strong>Slack username</strong> fields are optional."
+msgstr ""
+
+msgid "SlackIntegration|This service send notifications about projects' events to Slack channels. To set up this service:"
 msgstr ""
 
 msgid "SlackService|2. Paste the <strong>Token</strong> into the field below"

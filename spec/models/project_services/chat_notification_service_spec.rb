@@ -74,5 +74,28 @@ describe ChatNotificationService do
         chat_service.execute(data)
       end
     end
+
+    shared_examples 'with channel specified' do |channel, expected_channels|
+      before do
+        allow(chat_service).to receive(:push_channel).and_return(channel)
+      end
+
+      it 'notifies all channels' do
+        expect(chat_service).to receive(:notify).with(any_args, hash_including(channel: expected_channels)).and_return(true)
+        expect(chat_service.execute(data)).to be(true)
+      end
+    end
+
+    context 'with single channel specified' do
+      it_behaves_like 'with channel specified', 'slack-integration', ['slack-integration']
+    end
+
+    context 'with multiple channel names specified' do
+      it_behaves_like 'with channel specified', 'slack-integration,#slack-test', ['slack-integration', '#slack-test']
+    end
+
+    context 'with multiple channel names with spaces specified' do
+      it_behaves_like 'with channel specified', 'slack-integration, #slack-test, @UDLP91W0A', ['slack-integration', '#slack-test', '@UDLP91W0A']
+    end
   end
 end

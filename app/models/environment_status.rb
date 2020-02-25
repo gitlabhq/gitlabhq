@@ -62,14 +62,22 @@ class EnvironmentStatus
   end
 
   def changes
-    return [] unless has_route_map?
-
-    changed_files.map { |file| build_change(file) }.compact
+    strong_memoize(:changes) do
+      has_route_map? ? changed_files.map { |file| build_change(file) }.compact : []
+    end
   end
 
   def changed_files
     merge_request.merge_request_diff
       .merge_request_diff_files.where(deleted_file: false)
+  end
+
+  def changed_paths
+    changes.map { |change| change[:path] }
+  end
+
+  def changed_urls
+    changes.map { |change| change[:external_url] }
   end
 
   def has_route_map?

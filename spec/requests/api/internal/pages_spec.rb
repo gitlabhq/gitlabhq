@@ -141,21 +141,29 @@ describe API::Internal::Pages do
         context 'custom domain' do
           let(:namespace) { create(:namespace, name: 'gitlab-org') }
           let(:project) { create(:project, namespace: namespace, name: 'gitlab-ce') }
-          let!(:pages_domain) { create(:pages_domain, domain: 'pages.gitlab.io', project: project) }
+          let!(:pages_domain) { create(:pages_domain, domain: 'pages.io', project: project) }
 
           context 'when there are no pages deployed for the related project' do
             it 'responds with 204 No Content' do
-              query_host('pages.gitlab.io')
+              query_host('pages.io')
 
               expect(response).to have_gitlab_http_status(:no_content)
             end
           end
 
           context 'when there are pages deployed for the related project' do
+            it 'domain lookup is case insensitive' do
+              deploy_pages(project)
+
+              query_host('Pages.IO')
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
             it 'responds with the correct domain configuration' do
               deploy_pages(project)
 
-              query_host('pages.gitlab.io')
+              query_host('pages.io')
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('internal/pages/virtual_domain')

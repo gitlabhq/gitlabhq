@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/badges/store';
 import createEmptyBadge from '~/badges/empty_badge';
 import BadgeForm from '~/badges/components/badge_form.vue';
-import { DUMMY_IMAGE_URL, TEST_HOST } from '../../test_constants';
+import { DUMMY_IMAGE_URL, TEST_HOST } from 'helpers/test_constants';
 
 // avoid preview background process
 BadgeForm.methods.debouncedPreview = () => {};
@@ -41,7 +41,7 @@ describe('BadgeForm component', () => {
 
     describe('onCancel', () => {
       it('calls stopEditing', () => {
-        spyOn(vm, 'stopEditing');
+        jest.spyOn(vm, 'stopEditing').mockImplementation(() => {});
 
         vm.onCancel();
 
@@ -68,14 +68,14 @@ describe('BadgeForm component', () => {
     const expectInvalidInput = inputElementSelector => {
       const inputElement = vm.$el.querySelector(inputElementSelector);
 
-      expect(inputElement).toBeMatchedBy(':invalid');
+      expect(inputElement.checkValidity()).toBe(false);
       const feedbackElement = vm.$el.querySelector(`${inputElementSelector} + .invalid-feedback`);
 
       expect(feedbackElement).toBeVisible();
     };
 
-    beforeEach(() => {
-      spyOn(vm, submitAction).and.returnValue(Promise.resolve());
+    beforeEach(done => {
+      jest.spyOn(vm, submitAction).mockReturnValue(Promise.resolve());
       store.replaceState({
         ...store.state,
         badgeInAddForm: createEmptyBadge(),
@@ -83,9 +83,14 @@ describe('BadgeForm component', () => {
         isSaving: false,
       });
 
-      setValue(nameSelector, 'TestBadge');
-      setValue(linkUrlSelector, `${TEST_HOST}/link/url`);
-      setValue(imageUrlSelector, `${window.location.origin}${DUMMY_IMAGE_URL}`);
+      Vue.nextTick()
+        .then(() => {
+          setValue(nameSelector, 'TestBadge');
+          setValue(linkUrlSelector, `${TEST_HOST}/link/url`);
+          setValue(imageUrlSelector, `${window.location.origin}${DUMMY_IMAGE_URL}`);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('returns immediately if imageUrl is empty', () => {
@@ -131,8 +136,8 @@ describe('BadgeForm component', () => {
     it(`calls ${submitAction}`, () => {
       submitForm();
 
-      expect(findImageUrlElement()).toBeMatchedBy(':valid');
-      expect(findLinkUrlElement()).toBeMatchedBy(':valid');
+      expect(findImageUrlElement().checkValidity()).toBe(true);
+      expect(findLinkUrlElement().checkValidity()).toBe(true);
       expect(vm[submitAction]).toHaveBeenCalled();
     });
   };

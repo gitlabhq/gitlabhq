@@ -1,6 +1,5 @@
-import $ from 'jquery';
 import Vue from 'vue';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import store from '~/badges/store';
 import BadgeSettings from '~/badges/components/badge_settings.vue';
 import { createDummyBadge } from '../dummy_badge';
@@ -19,6 +18,10 @@ describe('BadgeSettings component', () => {
         data-target="#delete-badge-modal"
       >Show modal</button>
     `);
+
+    // Can be removed once GlLoadingIcon no longer throws a warning
+    jest.spyOn(global.console, 'warn').mockImplementation(() => jest.fn());
+
     vm = mountComponentWithStore(Component, {
       el: '#dummy-element',
       store,
@@ -35,20 +38,16 @@ describe('BadgeSettings component', () => {
     const modal = vm.$el.querySelector('#delete-badge-modal');
     const button = document.getElementById('dummy-modal-button');
 
-    $(modal).on('shown.bs.modal', () => {
-      expect(modal).toContainText('Delete badge?');
-      const badgeElement = modal.querySelector('img.project-badge');
-
-      expect(badgeElement).not.toBe(null);
-      expect(badgeElement.getAttribute('src')).toBe(badge.renderedImageUrl);
-
-      done();
-    });
+    button.click();
 
     Vue.nextTick()
       .then(() => {
-        button.click();
+        expect(modal.innerText).toMatch('Delete badge?');
+        const badgeElement = modal.querySelector('img.project-badge');
+        expect(badgeElement).not.toBe(null);
+        expect(badgeElement.getAttribute('src')).toBe(badge.renderedImageUrl);
       })
+      .then(done)
       .catch(done.fail);
   });
 
@@ -67,7 +66,7 @@ describe('BadgeSettings component', () => {
 
     expect(badgeListElement).not.toBe(null);
     expect(badgeListElement).toBeVisible();
-    expect(badgeListElement).toContainText('Your badges');
+    expect(badgeListElement.innerText).toMatch('Your badges');
   });
 
   describe('when editing', () => {
@@ -103,7 +102,7 @@ describe('BadgeSettings component', () => {
   describe('methods', () => {
     describe('onSubmitModal', () => {
       it('triggers ', () => {
-        spyOn(vm, 'deleteBadge').and.callFake(() => Promise.resolve());
+        jest.spyOn(vm, 'deleteBadge').mockImplementation(() => Promise.resolve());
         const modal = vm.$el.querySelector('#delete-badge-modal');
         const deleteButton = modal.querySelector('.btn-danger');
 

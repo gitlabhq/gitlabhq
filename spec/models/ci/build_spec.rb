@@ -2509,6 +2509,64 @@ describe Ci::Build do
       end
     end
 
+    describe 'CHANGED_PAGES variables' do
+      let(:route_map_yaml) do
+        <<~ROUTEMAP
+        - source: 'bar/branch-test.txt'
+          public: '/bar/branches'
+        ROUTEMAP
+      end
+
+      before do
+        allow_any_instance_of(Project)
+          .to receive(:route_map_for).with(/.+/)
+          .and_return(Gitlab::RouteMap.new(route_map_yaml))
+      end
+
+      context 'with a deployment environment and a merge request' do
+        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+        let(:environment)   { create(:environment, project: merge_request.project, name: "foo-#{project.default_branch}") }
+        let(:build)         { create(:ci_build, pipeline: pipeline, environment: environment.name) }
+
+        it 'populates CI_MERGE_REQUEST_CHANGED_PAGES_* variables' do
+          expect(subject).to include(
+            { key: 'CI_MERGE_REQUEST_CHANGED_PAGE_PATHS', value: '/bar/branches', public: true, masked: false },
+            { key: 'CI_MERGE_REQUEST_CHANGED_PAGE_URLS', value: File.join(environment.external_url, '/bar/branches'), public: true, masked: false }
+          )
+        end
+
+        context 'with a deployment environment and no merge request' do
+          let(:environment)   { create(:environment, project: project, name: "foo-#{project.default_branch}") }
+          let(:build)         { create(:ci_build, pipeline: pipeline, environment: environment.name) }
+
+          it 'does not append CHANGED_PAGES variables' do
+            ci_variables = subject.select { |var| var[:key] =~ /MERGE_REQUEST_CHANGED_PAGES/ }
+
+            expect(ci_variables).to be_empty
+          end
+        end
+
+        context 'with no deployment environment and a present merge request' do
+          let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project, target_project: project) }
+          let(:build)         { create(:ci_build, pipeline: merge_request.all_pipelines.take) }
+
+          it 'does not append CHANGED_PAGES variables' do
+            ci_variables = subject.select { |var| var[:key] =~ /MERGE_REQUEST_CHANGED_PAGES/ }
+
+            expect(ci_variables).to be_empty
+          end
+        end
+
+        context 'with no deployment environment and no merge request' do
+          it 'does not append CHANGED_PAGES variables' do
+            ci_variables = subject.select { |var| var[:key] =~ /MERGE_REQUEST_CHANGED_PAGES/ }
+
+            expect(ci_variables).to be_empty
+          end
+        end
+      end
+    end
+
     context 'when build has user' do
       let(:user_variables) do
         [

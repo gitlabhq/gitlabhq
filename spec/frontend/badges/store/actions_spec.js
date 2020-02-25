@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'spec/test_constants';
-import testAction from 'spec/helpers/vuex_action_helper';
+import testAction from 'helpers/vuex_action_helper';
 import axios from '~/lib/utils/axios_utils';
 import actions, { transformBackendBadge } from '~/badges/store/actions';
 import mutationTypes from '~/badges/store/mutation_types';
@@ -76,7 +76,7 @@ describe('Badges store actions', () => {
 
     beforeEach(() => {
       endpointMock = axiosMock.onPost(dummyEndpointUrl);
-      dispatch = jasmine.createSpy('dispatch');
+      dispatch = jest.fn();
       badgeInAddForm = createDummyBadge();
       state = {
         ...state,
@@ -96,8 +96,8 @@ describe('Badges store actions', () => {
           }),
         );
 
-        expect(dispatch.calls.allArgs()).toEqual([['requestNewBadge']]);
-        dispatch.calls.reset();
+        expect(dispatch.mock.calls).toEqual([['requestNewBadge']]);
+        dispatch.mockClear();
         return [200, dummyResponse];
       });
 
@@ -105,7 +105,7 @@ describe('Badges store actions', () => {
       actions
         .addBadge({ state, dispatch })
         .then(() => {
-          expect(dispatch.calls.allArgs()).toEqual([['receiveNewBadge', dummyBadge]]);
+          expect(dispatch.mock.calls).toEqual([['receiveNewBadge', dummyBadge]]);
         })
         .then(done)
         .catch(done.fail);
@@ -121,8 +121,8 @@ describe('Badges store actions', () => {
           }),
         );
 
-        expect(dispatch.calls.allArgs()).toEqual([['requestNewBadge']]);
-        dispatch.calls.reset();
+        expect(dispatch.mock.calls).toEqual([['requestNewBadge']]);
+        dispatch.mockClear();
         return [500, ''];
       });
 
@@ -130,7 +130,7 @@ describe('Badges store actions', () => {
         .addBadge({ state, dispatch })
         .then(() => done.fail('Expected Ajax call to fail!'))
         .catch(() => {
-          expect(dispatch.calls.allArgs()).toEqual([['receiveNewBadgeError']]);
+          expect(dispatch.mock.calls).toEqual([['receiveNewBadgeError']]);
         })
         .then(done)
         .catch(done.fail);
@@ -182,20 +182,20 @@ describe('Badges store actions', () => {
 
     beforeEach(() => {
       endpointMock = axiosMock.onDelete(`${dummyEndpointUrl}/${badgeId}`);
-      dispatch = jasmine.createSpy('dispatch');
+      dispatch = jest.fn();
     });
 
     it('dispatches requestDeleteBadge and receiveDeleteBadge for successful response', done => {
       endpointMock.replyOnce(() => {
-        expect(dispatch.calls.allArgs()).toEqual([['requestDeleteBadge', badgeId]]);
-        dispatch.calls.reset();
+        expect(dispatch.mock.calls).toEqual([['requestDeleteBadge', badgeId]]);
+        dispatch.mockClear();
         return [200, ''];
       });
 
       actions
         .deleteBadge({ state, dispatch }, { id: badgeId })
         .then(() => {
-          expect(dispatch.calls.allArgs()).toEqual([['receiveDeleteBadge', badgeId]]);
+          expect(dispatch.mock.calls).toEqual([['receiveDeleteBadge', badgeId]]);
         })
         .then(done)
         .catch(done.fail);
@@ -203,8 +203,8 @@ describe('Badges store actions', () => {
 
     it('dispatches requestDeleteBadge and receiveDeleteBadgeError for error response', done => {
       endpointMock.replyOnce(() => {
-        expect(dispatch.calls.allArgs()).toEqual([['requestDeleteBadge', badgeId]]);
-        dispatch.calls.reset();
+        expect(dispatch.mock.calls).toEqual([['requestDeleteBadge', badgeId]]);
+        dispatch.mockClear();
         return [500, ''];
       });
 
@@ -212,7 +212,7 @@ describe('Badges store actions', () => {
         .deleteBadge({ state, dispatch }, { id: badgeId })
         .then(() => done.fail('Expected Ajax call to fail!'))
         .catch(() => {
-          expect(dispatch.calls.allArgs()).toEqual([['receiveDeleteBadgeError', badgeId]]);
+          expect(dispatch.mock.calls).toEqual([['receiveDeleteBadgeError', badgeId]]);
         })
         .then(done)
         .catch(done.fail);
@@ -280,7 +280,7 @@ describe('Badges store actions', () => {
 
     beforeEach(() => {
       endpointMock = axiosMock.onGet(dummyEndpointUrl);
-      dispatch = jasmine.createSpy('dispatch');
+      dispatch = jest.fn();
     });
 
     it('dispatches requestLoadBadges and receiveLoadBadges for successful response', done => {
@@ -291,8 +291,8 @@ describe('Badges store actions', () => {
         createDummyBadgeResponse(),
       ];
       endpointMock.replyOnce(() => {
-        expect(dispatch.calls.allArgs()).toEqual([['requestLoadBadges', dummyData]]);
-        dispatch.calls.reset();
+        expect(dispatch.mock.calls).toEqual([['requestLoadBadges', dummyData]]);
+        dispatch.mockClear();
         return [200, dummyReponse];
       });
 
@@ -301,7 +301,7 @@ describe('Badges store actions', () => {
         .then(() => {
           const badges = dummyReponse.map(transformBackendBadge);
 
-          expect(dispatch.calls.allArgs()).toEqual([['receiveLoadBadges', badges]]);
+          expect(dispatch.mock.calls).toEqual([['receiveLoadBadges', badges]]);
         })
         .then(done)
         .catch(done.fail);
@@ -310,8 +310,8 @@ describe('Badges store actions', () => {
     it('dispatches requestLoadBadges and receiveLoadBadgesError for error response', done => {
       const dummyData = 'this is just some data';
       endpointMock.replyOnce(() => {
-        expect(dispatch.calls.allArgs()).toEqual([['requestLoadBadges', dummyData]]);
-        dispatch.calls.reset();
+        expect(dispatch.mock.calls).toEqual([['requestLoadBadges', dummyData]]);
+        dispatch.mockClear();
         return [500, ''];
       });
 
@@ -319,7 +319,7 @@ describe('Badges store actions', () => {
         .loadBadges({ state, dispatch }, dummyData)
         .then(() => done.fail('Expected Ajax call to fail!'))
         .catch(() => {
-          expect(dispatch.calls.allArgs()).toEqual([['receiveLoadBadgesError']]);
+          expect(dispatch.mock.calls).toEqual([['receiveLoadBadgesError']]);
         })
         .then(done)
         .catch(done.fail);
@@ -382,11 +382,11 @@ describe('Badges store actions', () => {
         `image_url=${encodeURIComponent(badgeInForm.imageUrl)}`,
       ].join('&');
       endpointMock = axiosMock.onGet(`${dummyEndpointUrl}/render?${urlParameters}`);
-      dispatch = jasmine.createSpy('dispatch');
+      dispatch = jest.fn();
     });
 
     it('returns immediately if imageUrl is empty', done => {
-      spyOn(axios, 'get');
+      jest.spyOn(axios, 'get').mockImplementation(() => {});
       badgeInForm.imageUrl = '';
 
       actions
@@ -399,7 +399,7 @@ describe('Badges store actions', () => {
     });
 
     it('returns immediately if linkUrl is empty', done => {
-      spyOn(axios, 'get');
+      jest.spyOn(axios, 'get').mockImplementation(() => {});
       badgeInForm.linkUrl = '';
 
       actions
@@ -412,19 +412,23 @@ describe('Badges store actions', () => {
     });
 
     it('escapes user input', done => {
-      spyOn(axios, 'get').and.callFake(() => Promise.resolve({ data: createDummyBadgeResponse() }));
+      jest
+        .spyOn(axios, 'get')
+        .mockImplementation(() => Promise.resolve({ data: createDummyBadgeResponse() }));
       badgeInForm.imageUrl = '&make-sandwich=true';
       badgeInForm.linkUrl = '<script>I am dangerous!</script>';
 
       actions
         .renderBadge({ state, dispatch })
         .then(() => {
-          expect(axios.get.calls.count()).toBe(1);
-          const url = axios.get.calls.argsFor(0)[0];
+          expect(axios.get.mock.calls.length).toBe(1);
+          const url = axios.get.mock.calls[0][0];
 
-          expect(url).toMatch(`^${dummyEndpointUrl}/render?`);
-          expect(url).toMatch('\\?link_url=%3Cscript%3EI%20am%20dangerous!%3C%2Fscript%3E&');
-          expect(url).toMatch('&image_url=%26make-sandwich%3Dtrue$');
+          expect(url).toMatch(new RegExp(`^${dummyEndpointUrl}/render?`));
+          expect(url).toMatch(
+            new RegExp('\\?link_url=%3Cscript%3EI%20am%20dangerous!%3C%2Fscript%3E&'),
+          );
+          expect(url).toMatch(new RegExp('&image_url=%26make-sandwich%3Dtrue$'));
         })
         .then(done)
         .catch(done.fail);
@@ -433,8 +437,8 @@ describe('Badges store actions', () => {
     it('dispatches requestRenderedBadge and receiveRenderedBadge for successful response', done => {
       const dummyReponse = createDummyBadgeResponse();
       endpointMock.replyOnce(() => {
-        expect(dispatch.calls.allArgs()).toEqual([['requestRenderedBadge']]);
-        dispatch.calls.reset();
+        expect(dispatch.mock.calls).toEqual([['requestRenderedBadge']]);
+        dispatch.mockClear();
         return [200, dummyReponse];
       });
 
@@ -443,7 +447,7 @@ describe('Badges store actions', () => {
         .then(() => {
           const renderedBadge = transformBackendBadge(dummyReponse);
 
-          expect(dispatch.calls.allArgs()).toEqual([['receiveRenderedBadge', renderedBadge]]);
+          expect(dispatch.mock.calls).toEqual([['receiveRenderedBadge', renderedBadge]]);
         })
         .then(done)
         .catch(done.fail);
@@ -451,8 +455,8 @@ describe('Badges store actions', () => {
 
     it('dispatches requestRenderedBadge and receiveRenderedBadgeError for error response', done => {
       endpointMock.replyOnce(() => {
-        expect(dispatch.calls.allArgs()).toEqual([['requestRenderedBadge']]);
-        dispatch.calls.reset();
+        expect(dispatch.mock.calls).toEqual([['requestRenderedBadge']]);
+        dispatch.mockClear();
         return [500, ''];
       });
 
@@ -460,7 +464,7 @@ describe('Badges store actions', () => {
         .renderBadge({ state, dispatch })
         .then(() => done.fail('Expected Ajax call to fail!'))
         .catch(() => {
-          expect(dispatch.calls.allArgs()).toEqual([['receiveRenderedBadgeError']]);
+          expect(dispatch.mock.calls).toEqual([['receiveRenderedBadgeError']]);
         })
         .then(done)
         .catch(done.fail);
@@ -519,7 +523,7 @@ describe('Badges store actions', () => {
         badgeInEditForm,
       };
       endpointMock = axiosMock.onPut(`${dummyEndpointUrl}/${badgeInEditForm.id}`);
-      dispatch = jasmine.createSpy('dispatch');
+      dispatch = jest.fn();
     });
 
     it('dispatches requestUpdatedBadge and receiveUpdatedBadge for successful response', done => {
@@ -534,8 +538,8 @@ describe('Badges store actions', () => {
           }),
         );
 
-        expect(dispatch.calls.allArgs()).toEqual([['requestUpdatedBadge']]);
-        dispatch.calls.reset();
+        expect(dispatch.mock.calls).toEqual([['requestUpdatedBadge']]);
+        dispatch.mockClear();
         return [200, dummyResponse];
       });
 
@@ -543,7 +547,7 @@ describe('Badges store actions', () => {
       actions
         .saveBadge({ state, dispatch })
         .then(() => {
-          expect(dispatch.calls.allArgs()).toEqual([['receiveUpdatedBadge', updatedBadge]]);
+          expect(dispatch.mock.calls).toEqual([['receiveUpdatedBadge', updatedBadge]]);
         })
         .then(done)
         .catch(done.fail);
@@ -559,8 +563,8 @@ describe('Badges store actions', () => {
           }),
         );
 
-        expect(dispatch.calls.allArgs()).toEqual([['requestUpdatedBadge']]);
-        dispatch.calls.reset();
+        expect(dispatch.mock.calls).toEqual([['requestUpdatedBadge']]);
+        dispatch.mockClear();
         return [500, ''];
       });
 
@@ -568,7 +572,7 @@ describe('Badges store actions', () => {
         .saveBadge({ state, dispatch })
         .then(() => done.fail('Expected Ajax call to fail!'))
         .catch(() => {
-          expect(dispatch.calls.allArgs()).toEqual([['receiveUpdatedBadgeError']]);
+          expect(dispatch.mock.calls).toEqual([['receiveUpdatedBadgeError']]);
         })
         .then(done)
         .catch(done.fail);

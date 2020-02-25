@@ -271,6 +271,7 @@ MergeRequest::Metrics:
 - diff_size
 - modified_paths_size
 - commits_count
+- first_approved_at
 Ci::Pipeline:
 - id
 - project_id

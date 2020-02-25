@@ -643,4 +643,12 @@ describe PagesDomain do
       end
     end
   end
+
+  describe '.find_by_domain_case_insensitive' do
+    it 'lookup is case-insensitive' do
+      pages_domain = create(:pages_domain, domain: "Pages.IO")
+
+      expect(PagesDomain.find_by_domain_case_insensitive('pages.io')).to eq(pages_domain)
+    end
+  end
 end

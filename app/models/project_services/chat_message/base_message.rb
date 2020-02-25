@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'slack-notifier'
-
 module ChatMessage
   class BaseMessage
     RELATIVE_LINK_REGEX = /!\[[^\]]*\]\((\/uploads\/[^\)]*)\)/.freeze
@@ -59,7 +57,7 @@ module ChatMessage
     end
 
     def format(string)
-      Slack::Notifier::LinkFormatter.format(format_relative_links(string))
+      Slack::Messenger::Util::LinkFormatter.format(format_relative_links(string))
     end
 
     def format_relative_links(string)

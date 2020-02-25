@@ -16,7 +16,7 @@ The Slack Notifications Service allows your GitLab project to send events (e.g. 
 1. Select the **Slack notifications** project service to configure it.
 1. Check the **Active** checkbox to turn on the service.
 1. Check the checkboxes corresponding to the GitLab events you want to send to Slack as a notification.
-1. For each event, optionally enter the Slack channel where you want to send the event. (Do _not_ include the `#` symbol.) If left empty, the event will be sent to the default channel that you configured in the Slack Configuration step.
+1. For each event, optionally enter the Slack channel names where you want to send the event, separated by a comma. If left empty, the event will be sent to the default channel that you configured in the Slack Configuration step. **Note:** Usernames and private channels are not supported. To send direct messages, use the Member ID found under user's Slack profile.
 1. Paste the **Webhook URL** that you copied from the Slack Configuration step.
 1. Optionally customize the Slack bot username that will be sending the notifications.
 1. Configure the remaining options and click `Save changes`.

@@ -78,7 +78,7 @@ export default {
 </script>
 
 <template>
-  <div class="position-absolute w-100 slide-enter-from-element">
+  <div class="w-100 slide-enter-from-element">
     <gl-empty-state
       v-if="config.characterError"
       :title="s__('ContainerRegistry|Docker connection error')"

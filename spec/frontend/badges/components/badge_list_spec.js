@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { GROUP_BADGE, PROJECT_BADGE } from '~/badges/constants';
 import store from '~/badges/store';
 import BadgeList from '~/badges/components/badge_list.vue';
@@ -22,6 +22,10 @@ describe('BadgeList component', () => {
       kind: PROJECT_BADGE,
       isLoading: false,
     });
+
+    // Can be removed once GlLoadingIcon no longer throws a warning
+    jest.spyOn(global.console, 'warn').mockImplementation(() => jest.fn());
+
     vm = mountComponentWithStore(Component, {
       el: '#dummy-element',
       store,
@@ -49,7 +53,7 @@ describe('BadgeList component', () => {
 
     Vue.nextTick()
       .then(() => {
-        expect(vm.$el).toContainText('This project has no badges');
+        expect(vm.$el.innerText).toMatch('This project has no badges');
       })
       .then(done)
       .catch(done.fail);
@@ -82,7 +86,7 @@ describe('BadgeList component', () => {
 
       Vue.nextTick()
         .then(() => {
-          expect(vm.$el).toContainText('This group has no badges');
+          expect(vm.$el.innerText).toMatch('This group has no badges');
         })
         .then(done)
         .catch(done.fail);

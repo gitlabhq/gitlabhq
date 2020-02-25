@@ -237,7 +237,7 @@ gem 'atlassian-jwt', '~> 0.2.0'
 gem 'flowdock', '~> 0.7'
 
 # Slack integration
-gem 'slack-notifier', '~> 1.5.1'
+gem 'slack-messenger', '~> 2.3.3'
 
 # Hangouts Chat integration
 gem 'hangouts-chat', '~> 0.0.5'
@@ -301,7 +301,7 @@ gem 'sentry-raven', '~> 2.9'
 gem 'premailer-rails', '~> 1.10.3'
 
 # LabKit: Tracing and Correlation
-gem 'gitlab-labkit', '0.9.1'
+gem 'gitlab-labkit', '0.10.0'
 
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false

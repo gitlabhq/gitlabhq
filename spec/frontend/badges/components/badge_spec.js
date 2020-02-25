@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import { DUMMY_IMAGE_URL, TEST_HOST } from 'spec/test_constants';
 import Badge from '~/badges/components/badge.vue';
 
@@ -23,9 +23,11 @@ describe('Badge component', () => {
   const createComponent = (props, el = null) => {
     vm = mountComponent(Component, props, el);
     const { badgeImage } = findElements();
-    return new Promise(resolve => badgeImage.addEventListener('load', resolve)).then(() =>
-      Vue.nextTick(),
-    );
+    return new Promise(resolve => {
+      badgeImage.addEventListener('load', resolve);
+      // Manually dispatch load event as it is not triggered
+      badgeImage.dispatchEvent(new Event('load'));
+    }).then(() => Vue.nextTick());
   };
 
   afterEach(() => {
@@ -111,7 +113,7 @@ describe('Badge component', () => {
       expect(badgeImage).toBeVisible();
       expect(loadingIcon).toBeHidden();
       expect(reloadButton).toBeHidden();
-      expect(vm.$el.innerText).toBe('');
+      expect(vm.$el.querySelector('.btn-group')).toBeHidden();
     });
 
     it('shows a loading icon when loading', done => {
@@ -124,7 +126,7 @@ describe('Badge component', () => {
           expect(badgeImage).toBeHidden();
           expect(loadingIcon).toBeVisible();
           expect(reloadButton).toBeHidden();
-          expect(vm.$el.innerText).toBe('');
+          expect(vm.$el.querySelector('.btn-group')).toBeHidden();
         })
         .then(done)
         .catch(done.fail);
