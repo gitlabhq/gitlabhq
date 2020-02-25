@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '6.0.2'
 
-gem 'bootsnap', '~> 1.4'
+gem 'bootsnap', '~> 1.4.6'
 
 # Improves copy-on-write performance for MRI
 gem 'nakayoshi_fork', '~> 0.0.4'

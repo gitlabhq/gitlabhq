@@ -1,0 +1,5 @@
+---
+title: Migrated the sidebar label select dropdown title component spinner to utilize GlLoadingIcon
+merge_request: 24914
+author: Raihan Kabir
+type: changed

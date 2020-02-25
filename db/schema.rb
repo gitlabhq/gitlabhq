@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_21_105436) do
+ActiveRecord::Schema.define(version: 2020_02_21_144534) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3648,6 +3648,7 @@ ActiveRecord::Schema.define(version: 2020_02_21_105436) do
     t.string "name", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.string "filepath", limit: 128
     t.index ["release_id", "name"], name: "index_release_links_on_release_id_and_name", unique: true
     t.index ["release_id", "url"], name: "index_release_links_on_release_id_and_url", unique: true
   end

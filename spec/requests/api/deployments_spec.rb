@@ -444,6 +444,7 @@ describe API::Deployments do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
         expect(json_response.map { |d| d['id'] }).to contain_exactly(merge_request1.id, merge_request2.id)
       end
 

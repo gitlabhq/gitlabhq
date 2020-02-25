@@ -2,25 +2,32 @@
 
 require 'spec_helper'
 
-describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidekiq_might_not_need_inline do
+describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidekiq_inline do
   include PrometheusHelpers
   include GrafanaApiHelpers
+  include MetricsDashboardUrlHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:prometheus_project) }
-  let(:environment) { create(:environment, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:prometheus_project) }
+  let_it_be(:environment) { create(:environment, project: project) }
+
   let(:issue) { create(:issue, project: project, description: description) }
   let(:description) { "See [metrics dashboard](#{metrics_url}) for info." }
-  let(:metrics_url) { metrics_project_environment_url(project, environment) }
+  let(:metrics_url) { urls.metrics_project_environment_url(project, environment) }
 
   before do
-    configure_host
+    clear_host_from_memoized_variables
+
+    allow(::Gitlab.config.gitlab)
+      .to receive(:url)
+      .and_return(urls.root_url.chomp('/'))
+
     project.add_developer(user)
     sign_in(user)
   end
 
   after do
-    restore_host
+    clear_host_from_memoized_variables
   end
 
   context 'internal metrics embeds' do
@@ -38,7 +45,7 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
     end
 
     context 'when dashboard params are in included the url' do
-      let(:metrics_url) { metrics_project_environment_url(project, environment, **chart_params) }
+      let(:metrics_url) { urls.metrics_project_environment_url(project, environment, **chart_params) }
 
       let(:chart_params) do
         {
@@ -80,33 +87,5 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
 
   def import_common_metrics
     ::Gitlab::DatabaseImporters::CommonMetrics::Importer.new.execute
-  end
-
-  def configure_host
-    @original_default_host = default_url_options[:host]
-    @original_gitlab_url = Gitlab.config.gitlab[:url]
-
-    # Ensure we create a metrics url with the right host.
-    # Configure host for route helpers in specs (also updates root_url):
-    default_url_options[:host] = Capybara.server_host
-
-    # Ensure we identify urls with the appropriate host.
-    # Configure host to include port in app:
-    Gitlab.config.gitlab[:url] = root_url.chomp('/')
-
-    clear_host_from_memoized_variables
-  end
-
-  def restore_host
-    default_url_options[:host] = @original_default_host
-    Gitlab.config.gitlab[:url] = @original_gitlab_url
-
-    clear_host_from_memoized_variables
-  end
-
-  def clear_host_from_memoized_variables
-    [:metrics_regex, :grafana_regex].each do |method_name|
-      Gitlab::Metrics::Dashboard::Url.clear_memoization(method_name)
-    end
   end
 end

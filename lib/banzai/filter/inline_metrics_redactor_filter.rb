@@ -143,3 +143,5 @@ module Banzai
     end
   end
 end
+
+Banzai::Filter::InlineMetricsRedactorFilter.prepend_if_ee('EE::Banzai::Filter::InlineMetricsRedactorFilter')

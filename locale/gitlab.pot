@@ -13655,6 +13655,9 @@ msgstr ""
 msgid "Part of merge request changes"
 msgstr ""
 
+msgid "Partial token for reference only"
+msgstr ""
+
 msgid "Participants"
 msgstr ""
 

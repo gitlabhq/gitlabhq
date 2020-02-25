@@ -133,6 +133,7 @@ Releases::Link:
 - id
 - url
 - name
+- filepath
 - created_at
 - updated_at
 ProjectMember:

@@ -3,7 +3,7 @@
     = runner_status_icon(runner)
 
     - if @project_runners.include?(runner)
-      = link_to runner.short_sha, project_runner_path(@project, runner), class: 'commit-sha'
+      = link_to runner.short_sha.concat("..."), project_runner_path(@project, runner), class: 'commit-sha has-tooltip', title: _("Partial token for reference only")
 
       - if runner.locked?
         = icon('lock', class: 'has-tooltip', title: _('Locked to current projects'))

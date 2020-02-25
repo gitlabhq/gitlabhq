@@ -1,0 +1,5 @@
+---
+title: Fix bug deleting internal project snippets by project maintainer
+merge_request: 25792
+author:
+type: fixed

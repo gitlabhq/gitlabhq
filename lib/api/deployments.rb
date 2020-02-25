@@ -143,6 +143,7 @@ module API
         success Entities::MergeRequestBasic
       end
       params do
+        use :pagination
         requires :deployment_id, type: Integer, desc: 'The deployment ID'
         use :merge_requests_base_params
       end
@@ -153,7 +154,7 @@ module API
         mr_params = declared_params.merge(deployment_id: params[:deployment_id])
         merge_requests = MergeRequestsFinder.new(current_user, mr_params).execute
 
-        present merge_requests, { with: Entities::MergeRequestBasic, current_user: current_user }
+        present paginate(merge_requests), { with: Entities::MergeRequestBasic, current_user: current_user }
       end
     end
   end
