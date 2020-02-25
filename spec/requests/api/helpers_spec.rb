@@ -269,7 +269,7 @@ describe API::Helpers do
 
         # The 500 status is expected as we're testing a case where an exception
         # is raised, but Grape shouldn't raise an additional exception
-        expect(response).to have_gitlab_http_status(500)
+        expect(response).to have_gitlab_http_status(:internal_server_error)
         expect(json_response['message']).not_to include("undefined local variable or method `request'")
         expect(json_response['message']).to start_with("\nRuntimeError (Runtime Error!):")
       end

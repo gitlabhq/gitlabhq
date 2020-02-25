@@ -159,7 +159,7 @@ gem 'escape_utils', '~> 1.1'
 gem 'icalendar'
 
 # Diffs
-gem 'diffy', '~> 3.1.0'
+gem 'diffy', '~> 3.3'
 gem 'diff_match_patch', '~> 0.1.0'
 
 # Application server

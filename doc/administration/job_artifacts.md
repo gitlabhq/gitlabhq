@@ -200,11 +200,18 @@ by the `gitlab:artifacts:migrate` script.
 
 ### Migrating from object storage to local storage
 
+**In Omnibus installations:**
+
 In order to migrate back to local storage:
 
-1. Set both `direct_upload` and `background_upload` to false under the artifacts object storage settings. Don't forget to restart GitLab.
-1. Run `rake gitlab:artifacts:migrate_to_local` on your console.
-1. Disable `object_storage` for artifacts in `gitlab.rb`. Remember to restart GitLab afterwards.
+1. Set both `direct_upload` and `background_upload` to false in `gitlab.rb`, under the artifacts object storage settings.
+1. [reconfigure GitLab][].
+1. Run `gitlab-rake gitlab:artifacts:migrate_to_local`.
+1. Disable object_storage for artifacts in `gitlab.rb`:
+   - Set `gitlab_rails['artifacts_object_store_enabled'] = false`.
+   - Comment out all other `artifacts_object_store` settings, including the entire
+     `artifacts_object_store_connection` section, including the closing `}`.
+1. [reconfigure GitLab][].
 
 ## Expiring artifacts
 

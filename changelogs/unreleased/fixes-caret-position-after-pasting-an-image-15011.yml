@@ -1,0 +1,5 @@
+---
+title: Fixes caret position after pasting an image 15011
+merge_request: 21382
+author: Carolina Carvalhosa
+type: fixed

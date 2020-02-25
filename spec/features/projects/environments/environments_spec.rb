@@ -37,6 +37,7 @@ describe 'Environments page', :js do
 
           expect(page).to have_css('.environments-container')
           expect(page.all('.environment-name').length).to eq(1)
+          expect(page.all('.ic-stop').length).to eq(1)
         end
       end
 
@@ -105,6 +106,7 @@ describe 'Environments page', :js do
 
           expect(page).to have_css('.environments-container')
           expect(page.all('.environment-name').length).to eq(1)
+          expect(page.all('.ic-stop').length).to eq(0)
         end
       end
     end

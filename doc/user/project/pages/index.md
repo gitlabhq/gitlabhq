@@ -30,7 +30,7 @@ instances (GitLab Core, Starter, Premium, and Ultimate).
 <div class="col-md-9">
 <p style="margin-top: 18px;">
 To publish a website with Pages, you can use any Static Site Generator (SSG),
-such as Jekyll, Hugo, Middleman, Harp, Hexo, and Brunch, just to name a few. You can also
+such as Gatsby, Jekyll, Hugo, Middleman, Harp, Hexo, and Brunch, just to name a few. You can also
 publish any website written directly in plain HTML, CSS, and JavaScript.</p>
 <p>Pages does <strong>not</strong> support dynamic server-side processing, for instance, as <code>.php</code> and <code>.asp</code> requires. See this article to learn more about
 <a href="https://about.gitlab.com/blog/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/">static websites vs dynamic websites</a>.</p>

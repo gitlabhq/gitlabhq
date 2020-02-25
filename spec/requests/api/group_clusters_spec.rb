@@ -26,7 +26,7 @@ describe API::GroupClusters do
       it 'responds with 403' do
         get api("/groups/#{group.id}/clusters", developer_user)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -36,7 +36,7 @@ describe API::GroupClusters do
       end
 
       it 'responds with 200' do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'includes pagination headers' do
@@ -70,7 +70,7 @@ describe API::GroupClusters do
       it 'responds with 403' do
         get api("/groups/#{group.id}/clusters/#{cluster_id}", developer_user)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -140,7 +140,7 @@ describe API::GroupClusters do
         let(:cluster_id) { 123 }
 
         it 'returns 404' do
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -179,7 +179,7 @@ describe API::GroupClusters do
       it 'responds with 403' do
         post api("/groups/#{group.id}/clusters/user", developer_user), params: cluster_params
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -190,7 +190,7 @@ describe API::GroupClusters do
 
       context 'with valid params' do
         it 'responds with 201' do
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
         end
 
         it 'creates a new Cluster::Cluster' do
@@ -238,7 +238,7 @@ describe API::GroupClusters do
         let(:api_url) { 'invalid_api_url' }
 
         it 'responds with 400' do
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
         end
 
         it 'does not create a new Clusters::Cluster' do
@@ -260,7 +260,7 @@ describe API::GroupClusters do
       end
 
       it 'responds with 400' do
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['base'].first).to eq(_('Instance does not support multiple Kubernetes clusters'))
       end
     end
@@ -271,7 +271,7 @@ describe API::GroupClusters do
       end
 
       it 'responds with 403' do
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
 
         expect(json_response['message']).to eq('403 Forbidden')
       end
@@ -305,7 +305,7 @@ describe API::GroupClusters do
       it 'responds with 403' do
         put api("/groups/#{group.id}/clusters/#{cluster.id}", developer_user), params: update_params
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -320,7 +320,7 @@ describe API::GroupClusters do
 
       context 'with valid params' do
         it 'responds with 200' do
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'updates cluster attributes' do
@@ -333,7 +333,7 @@ describe API::GroupClusters do
         let(:domain) { 'invalid domain' }
 
         it 'responds with 400' do
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
         end
 
         it 'does not update cluster attributes' do
@@ -350,7 +350,7 @@ describe API::GroupClusters do
         let(:management_project_id) { create(:project).id }
 
         it 'responds with 400' do
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
         end
 
         it 'returns validation errors' do
@@ -368,7 +368,7 @@ describe API::GroupClusters do
           end
 
           it 'responds with 400' do
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
 
           it 'returns validation error' do
@@ -380,7 +380,7 @@ describe API::GroupClusters do
           let(:domain) { 'new-domain.com' }
 
           it 'responds with 200' do
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -408,7 +408,7 @@ describe API::GroupClusters do
         end
 
         it 'responds with 200' do
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         it 'updates platform kubernetes attributes' do
@@ -424,7 +424,7 @@ describe API::GroupClusters do
         let(:cluster) { create(:cluster, :group, :provided_by_user) }
 
         it 'responds with 404' do
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -442,7 +442,7 @@ describe API::GroupClusters do
       it 'responds with 403' do
         delete api("/groups/#{group.id}/clusters/#{cluster.id}", developer_user), params: cluster_params
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -452,7 +452,7 @@ describe API::GroupClusters do
       end
 
       it 'responds with 204' do
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end
 
       it 'deletes the cluster' do
@@ -463,7 +463,7 @@ describe API::GroupClusters do
         let(:cluster) { create(:cluster, :group, :provided_by_user) }
 
         it 'responds with 404' do
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

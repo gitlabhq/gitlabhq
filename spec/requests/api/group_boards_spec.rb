@@ -50,7 +50,7 @@ describe API::GroupBoards do
 
       post api(url, user), params: { label_id: project_label.id }
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
 end

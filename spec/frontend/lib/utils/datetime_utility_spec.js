@@ -1,4 +1,6 @@
 import { __, s__ } from '~/locale';
+import $ from 'jquery';
+import '~/commons/bootstrap';
 import * as datetimeUtility from '~/lib/utils/datetime_utility';
 
 describe('Date time utils', () => {
@@ -561,5 +563,25 @@ describe('approximateDuration', () => {
     ${180000} | ${'2 days'}
   `('converts $seconds seconds to $approximation', ({ seconds, approximation }) => {
     expect(datetimeUtility.approximateDuration(seconds)).toBe(approximation);
+  });
+});
+
+describe('localTimeAgo', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `<time title="some time" datetime="2020-02-18T22:22:32Z">1 hour ago</time>`;
+  });
+
+  it.each`
+    timeagoArg | title          | dataOriginalTitle
+    ${false}   | ${'some time'} | ${null}
+    ${true}    | ${''}          | ${'Feb 18, 2020 10:22pm GMT+0000'}
+  `('converts $seconds seconds to $approximation', ({ timeagoArg, title, dataOriginalTitle }) => {
+    const element = document.querySelector('time');
+    datetimeUtility.localTimeAgo($(element), timeagoArg);
+
+    jest.runAllTimers();
+
+    expect(element.getAttribute('data-original-title')).toBe(dataOriginalTitle);
+    expect(element.getAttribute('title')).toBe(title);
   });
 });

@@ -7924,6 +7924,9 @@ msgstr ""
 msgid "Everything on your to-do list is marked as done."
 msgstr ""
 
+msgid "Everything you need to create a GitLab Pages site using Gatsby."
+msgstr ""
+
 msgid "Everything you need to create a GitLab Pages site using GitBook."
 msgstr ""
 
@@ -15206,6 +15209,9 @@ msgstr ""
 msgid "ProjectTemplates|NodeJS Express"
 msgstr ""
 
+msgid "ProjectTemplates|Pages/Gatsby"
+msgstr ""
+
 msgid "ProjectTemplates|Pages/GitBook"
 msgstr ""
 
@@ -18556,6 +18562,9 @@ msgid "Subscription"
 msgstr ""
 
 msgid "Subscription deletion failed."
+msgstr ""
+
+msgid "Subscription successfully applied to \"%{group_name}\""
 msgstr ""
 
 msgid "Subscription successfully created."

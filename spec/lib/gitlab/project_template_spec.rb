@@ -13,6 +13,7 @@ describe Gitlab::ProjectTemplate do
         described_class.new('dotnetcore', '.NET Core', 'A .NET Core console application template, customizable for any .NET Core project', 'https://gitlab.com/gitlab-org/project-templates/dotnetcore'),
         described_class.new('android', 'Android', 'A ready-to-go template for use with Android apps.', 'https://gitlab.com/gitlab-org/project-templates/android'),
         described_class.new('gomicro', 'Go Micro', 'Go Micro is a framework for micro service development.', 'https://gitlab.com/gitlab-org/project-templates/go-micro'),
+        described_class.new('gatsby', 'Pages/Gatsby', 'Everything you need to get started using a Gatsby site.', 'https://gitlab.com/pages/gatsby'),
         described_class.new('hugo', 'Pages/Hugo', 'Everything you need to get started using a Hugo Pages site.', 'https://gitlab.com/pages/hugo'),
         described_class.new('jekyll', 'Pages/Jekyll', 'Everything you need to get started using a Jekyll Pages site.', 'https://gitlab.com/pages/jekyll'),
         described_class.new('plainhtml', 'Pages/Plain HTML', 'Everything you need to get started using a plain HTML Pages site.', 'https://gitlab.com/pages/plain-html'),

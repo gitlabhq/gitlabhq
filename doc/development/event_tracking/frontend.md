@@ -118,7 +118,31 @@ button.addEventListener('click', () => {
 
 ## Tests and test helpers
 
-In Karma tests, you can use the following:
+In Jest particularly in vue tests, you can use the following:
+
+```javascript
+import { mockTracking } from 'helpers/tracking_helper';
+
+describe('MyTracking', () => {
+  let spy;
+
+  beforeEach(() => {
+    spy = mockTracking('_category_', wrapper.element, jest.spyOn);
+  });
+
+  it('tracks an event when clicked on feedback', () => {
+    wrapper.find('.discover-feedback-icon').trigger('click');
+
+    expect(spy).toHaveBeenCalledWith('_category_', 'click_button', {
+      label: 'security-discover-feedback-cta',
+      property: '0',
+    });
+  });
+});
+
+```
+
+In obsolete Karma tests it's used as below:
 
 ```javascript
 import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';

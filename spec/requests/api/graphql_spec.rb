@@ -58,7 +58,7 @@ describe 'GraphQL' do
     it 'returns an error' do
       post_graphql(query, variables: "This is not JSON")
 
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response['errors'].first['message']).not_to be_nil
     end
   end
@@ -114,7 +114,7 @@ describe 'GraphQL' do
 
           post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
 
           expect(graphql_data['echo']).to eq('nil says: Hello world')
         end
