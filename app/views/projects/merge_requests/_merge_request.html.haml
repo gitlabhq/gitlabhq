@@ -35,7 +35,7 @@
         - if merge_request.labels.any?
           &nbsp;
           - presented_labels_sorted_by_title(merge_request.labels, merge_request.project).each do |label|
-            = link_to_label(label, type: :merge_request, css_class: 'label-link')
+            = link_to_label(label, type: :merge_request, small: true)
 
     .issuable-meta
       %ul.controls.d-flex.align-items-end

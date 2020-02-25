@@ -56,7 +56,7 @@ describe LabelsHelper do
 
     context 'without subject' do
       it "uses the label's project" do
-        expect(link_to_label(label_presenter)).to match %r{<a href="/#{label.project.full_path}/issues\?label_name%5B%5D=#{label.name}">.*</a>}
+        expect(link_to_label(label_presenter)).to match %r{<a.*href="/#{label.project.full_path}/issues\?label_name%5B%5D=#{label.name}".*>.*</a>}m
       end
     end
 
@@ -65,7 +65,7 @@ describe LabelsHelper do
       let(:subject) { build(:project, namespace: namespace, name: 'bar3') }
 
       it 'links to project issues page' do
-        expect(link_to_label(label_presenter)).to match %r{<a href="/foo3/bar3/issues\?label_name%5B%5D=#{label.name}">.*</a>}
+        expect(link_to_label(label_presenter)).to match %r{<a.*href="/foo3/bar3/issues\?label_name%5B%5D=#{label.name}".*>.*</a>}m
       end
     end
 
@@ -73,7 +73,7 @@ describe LabelsHelper do
       let(:subject) { build(:group, name: 'bar') }
 
       it 'links to group issues page' do
-        expect(link_to_label(label_presenter)).to match %r{<a href="/groups/bar/-/issues\?label_name%5B%5D=#{label.name}">.*</a>}
+        expect(link_to_label(label_presenter)).to match %r{<a.*href="/groups/bar/-/issues\?label_name%5B%5D=#{label.name}".*>.*</a>}m
       end
     end
 
@@ -81,7 +81,7 @@ describe LabelsHelper do
       ['issue', :issue].each do |type|
         context "set to #{type}" do
           it 'links to correct page' do
-            expect(link_to_label(label_presenter, type: type)).to match %r{<a href="/#{label.project.full_path}/#{type.to_s.pluralize}\?label_name%5B%5D=#{label.name}">.*</a>}
+            expect(link_to_label(label_presenter, type: type)).to match %r{<a.*href="/#{label.project.full_path}/#{type.to_s.pluralize}\?label_name%5B%5D=#{label.name}".*>.*</a>}m
           end
         end
       end
@@ -89,7 +89,7 @@ describe LabelsHelper do
       ['merge_request', :merge_request].each do |type|
         context "set to #{type}" do
           it 'links to correct page' do
-            expect(link_to_label(label_presenter, type: type)).to match %r{<a href="/#{label.project.full_path}/-/#{type.to_s.pluralize}\?label_name%5B%5D=#{label.name}">.*</a>}
+            expect(link_to_label(label_presenter, type: type)).to match %r{<a.*href="/#{label.project.full_path}/-/#{type.to_s.pluralize}\?label_name%5B%5D=#{label.name}".*>.*</a>}m
           end
         end
       end
@@ -113,7 +113,7 @@ describe LabelsHelper do
     context 'without block' do
       it 'uses render_colored_label as the link content' do
         expect(self).to receive(:render_colored_label)
-          .with(label_presenter, tooltip: true).and_return('Foo')
+          .with(label_presenter).and_return('Foo')
         expect(link_to_label(label_presenter)).to match('Foo')
       end
     end

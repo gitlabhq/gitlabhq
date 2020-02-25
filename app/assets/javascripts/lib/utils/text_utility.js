@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { isString } from 'lodash';
 
 /**
  * Adds a , to a string composed by numbers, at every 3 chars.
@@ -199,7 +199,7 @@ export const splitCamelCase = string =>
  *      i.e. "My Group / My Subgroup / My Project"
  */
 export const truncateNamespace = (string = '') => {
-  if (_.isNull(string) || !_.isString(string)) {
+  if (string === null || !isString(string)) {
     return '';
   }
 

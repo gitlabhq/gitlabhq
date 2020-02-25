@@ -277,7 +277,7 @@ describe 'Issue Boards', :js do
         wait_for_requests
 
         page.within('.value') do
-          expect(page).to have_selector('.badge', count: 2)
+          expect(page).to have_selector('.gl-label-text', count: 2)
           expect(page).to have_content(development.title)
           expect(page).to have_content(stretch.title)
         end
@@ -299,7 +299,7 @@ describe 'Issue Boards', :js do
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.badge', count: 3)
+          expect(page).to have_selector('.gl-label-text', count: 3)
           expect(page).to have_content(bug.title)
         end
       end
@@ -328,7 +328,7 @@ describe 'Issue Boards', :js do
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.badge', count: 4)
+          expect(page).to have_selector('.gl-label-text', count: 4)
           expect(page).to have_content(bug.title)
           expect(page).to have_content(regression.title)
         end
@@ -357,13 +357,13 @@ describe 'Issue Boards', :js do
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.badge', count: 1)
+          expect(page).to have_selector('.gl-label-text', count: 1)
           expect(page).not_to have_content(stretch.title)
         end
       end
 
       # 'Development' label does not show since the card is in a 'Development' list label
-      expect(card).to have_selector('.badge', count: 0)
+      expect(card).to have_selector('.gl-label-text', count: 0)
       expect(card).not_to have_content(stretch.title)
     end
 

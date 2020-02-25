@@ -36,37 +36,42 @@ module LabelsHelper
   #   link_to_label(label) { "My Custom Label Text" }
   #
   # Returns a String
-  def link_to_label(label, type: :issue, tooltip: true, css_class: nil, &block)
+  def link_to_label(label, type: :issue, tooltip: true, small: false, &block)
     link = label.filter_path(type: type)
 
     if block_given?
-      link_to link, class: css_class, &block
+      link_to link, &block
     else
-      render_label(label, tooltip: tooltip, link: link, css: css_class)
+      render_label(label, link: link, tooltip: tooltip, small: small)
     end
   end
 
-  def render_label(label, tooltip: true, link: nil, css: nil, dataset: nil)
-    # if scoped label is used then EE wraps label tag with scoped label
-    # doc link
-    html = render_colored_label(label, tooltip: tooltip)
-    html = link_to(html, link, class: css, data: dataset) if link
+  def render_label(label, link: nil, tooltip: true, dataset: nil, small: false)
+    html = render_colored_label(label)
 
-    html
+    if link
+      title = label_tooltip_title(label) if tooltip
+      html = render_label_link(html, link: link, title: title, dataset: dataset)
+    end
+
+    wrap_label_html(html, small: small, label: label)
   end
 
-  def render_colored_label(label, label_suffix: '', tooltip: true, title: nil)
-    text_color = text_color_for_bg(label.color)
-    title ||= tooltip ? label_tooltip_title(label) : label.name
+  def render_colored_label(label, suffix: '')
+    render_label_text(
+      label.name,
+      suffix: suffix,
+      css_class: text_color_class_for_bg(label.color),
+      bg_color: label.color
+    )
+  end
 
-    # Intentionally not using content_tag here so that this method can be called
-    # by LabelReferenceFilter
-    span = %(<span class="badge color-label #{"has-tooltip" if tooltip}" ) +
-      %(data-html="true" style="background-color: #{label.color}; color: #{text_color}" ) +
-      %(title="#{ERB::Util.html_escape_once(title)}" data-container="body">) +
-      %(#{ERB::Util.html_escape_once(label.name)}#{label_suffix}</span>)
+  # We need the `label` argument here for EE
+  def wrap_label_html(label_html, small:, label:)
+    wrapper_classes = %w(gl-label)
+    wrapper_classes << 'gl-label-sm' if small
 
-    span.html_safe
+    %(<span class="#{wrapper_classes.join(' ')}">#{label_html}</span>).html_safe
   end
 
   def label_tooltip_title(label)
@@ -106,6 +111,20 @@ module LabelsHelper
 
     content_tag(:div, class: 'suggest-colors') do
       colors_html.join.html_safe
+    end
+  end
+
+  def text_color_class_for_bg(bg_color)
+    if bg_color.length == 4
+      r, g, b = bg_color[1, 4].scan(/./).map { |v| (v * 2).hex }
+    else
+      r, g, b = bg_color[1, 7].scan(/.{2}/).map(&:hex)
+    end
+
+    if (r + g + b) > 500
+      'gl-label-text-dark'
+    else
+      'gl-label-text-light'
     end
   end
 
@@ -245,6 +264,31 @@ module LabelsHelper
 
   def issuable_types
     ['issues', 'merge requests']
+  end
+
+  private
+
+  def render_label_link(label_html, link:, title:, dataset:)
+    classes = %w(gl-link gl-label-link)
+    dataset ||= {}
+
+    if title.present?
+      classes << 'has-tooltip'
+      dataset.merge!(html: true, title: title)
+    end
+
+    link_to(label_html, link, class: classes.join(' '), data: dataset)
+  end
+
+  def render_label_text(name, suffix: '', css_class: nil, bg_color: nil)
+    <<~HTML.chomp.html_safe
+      <span
+        class="gl-label-text #{css_class}"
+        data-container="body"
+        data-html="true"
+        #{"style=\"background-color: #{bg_color}\"" if bg_color}
+      >#{ERB::Util.html_escape_once(name)}#{suffix}</span>
+    HTML
   end
 end
 

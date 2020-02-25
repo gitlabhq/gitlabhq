@@ -11,15 +11,15 @@ module Clusters
     self.table_name = 'clusters'
 
     APPLICATIONS = {
-      Applications::Helm.application_name => Applications::Helm,
-      Applications::Ingress.application_name => Applications::Ingress,
-      Applications::CertManager.application_name => Applications::CertManager,
-      Applications::Crossplane.application_name => Applications::Crossplane,
-      Applications::Prometheus.application_name => Applications::Prometheus,
-      Applications::Runner.application_name => Applications::Runner,
-      Applications::Jupyter.application_name => Applications::Jupyter,
-      Applications::Knative.application_name => Applications::Knative,
-      Applications::ElasticStack.application_name => Applications::ElasticStack
+      Clusters::Applications::Helm.application_name => Clusters::Applications::Helm,
+      Clusters::Applications::Ingress.application_name => Clusters::Applications::Ingress,
+      Clusters::Applications::CertManager.application_name => Clusters::Applications::CertManager,
+      Clusters::Applications::Crossplane.application_name => Clusters::Applications::Crossplane,
+      Clusters::Applications::Prometheus.application_name => Clusters::Applications::Prometheus,
+      Clusters::Applications::Runner.application_name => Clusters::Applications::Runner,
+      Clusters::Applications::Jupyter.application_name => Clusters::Applications::Jupyter,
+      Clusters::Applications::Knative.application_name => Clusters::Applications::Knative,
+      Clusters::Applications::ElasticStack.application_name => Clusters::Applications::ElasticStack
     }.freeze
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'

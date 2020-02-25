@@ -101,7 +101,7 @@ module Issuable
     def create_milestone_note
       if milestone_changes_tracking_enabled?
         # Creates a synthetic note
-        ResourceEvents::ChangeMilestoneService.new(resource: issuable, user: current_user).execute
+        ResourceEvents::ChangeMilestoneService.new(issuable, current_user).execute
       else
         SystemNoteService.change_milestone(issuable, issuable.project, current_user, issuable.milestone)
       end

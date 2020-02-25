@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
-import { GlButtonGroup, GlButton, GlTooltip } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlLabel, GlTooltip } from '@gitlab/ui';
 import isWipLimitsOn from 'ee_else_ce/boards/mixins/is_wip_limits';
 import { s__, __, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -14,6 +14,7 @@ import IssueCount from './issue_count.vue';
 import boardsStore from '../stores/boards_store';
 import { getBoardSortableDefaultOptions, sortableEnd } from '../mixins/sortable_default_options';
 import { ListType } from '../constants';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default Vue.extend({
   components: {
@@ -24,6 +25,7 @@ export default Vue.extend({
     GlButtonGroup,
     IssueCount,
     GlButton,
+    GlLabel,
     GlTooltip,
   },
   directives: {
@@ -95,6 +97,9 @@ export default Vue.extend({
       // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
       return `boards.${this.boardId}.${this.list.type}.${this.list.id}`;
     },
+    helpLink() {
+      return boardsStore.scopedLabels.helpLink;
+    },
   },
   watch: {
     filter: {
@@ -145,6 +150,10 @@ export default Vue.extend({
     }
   },
   methods: {
+    showScopedLabels(label) {
+      return boardsStore.scopedLabels.enabled && isScopedLabel(label);
+    },
+
     showNewIssueForm() {
       this.$refs['board-list'].showIssueForm = !this.$refs['board-list'].showIssueForm;
     },

@@ -127,6 +127,11 @@
   .color-label {
     padding: $gl-padding-4 $grid-size;
   }
+
+  .prepend-description-left {
+    vertical-align: top;
+    line-height: 24px;
+  }
 }
 
 .prioritized-labels {
@@ -305,10 +310,13 @@
     width: 150px;
     flex-shrink: 0;
 
-    .badge {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
+    .scoped-label-wrapper,
+    .gl-label {
+      line-height: $gl-line-height;
+    }
+
+    .gl-label-scoped .gl-label-text:last-of-type {
+      padding-right: 22px;
     }
   }
 
@@ -445,10 +453,19 @@
   }
 }
 
+.gl-label-scoped {
+  box-shadow: 0 0 0 2px currentColor inset;
+
+  &.gl-label-sm {
+    box-shadow: 0 0 0 1px inset;
+  }
+}
+
 // Label inside title of Delete Label Modal
 .modal-header .page-title {
   .scoped-label-wrapper {
-    .scoped-label {
+    .scoped-label,
+    .gl-label-icon {
       line-height: 20px;
     }
 

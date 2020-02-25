@@ -29,11 +29,14 @@
             ":title" => '(list.assignee && list.assignee.username || "")' }
             @{{ list.assignee.username }}
 
-          %span.has-tooltip.badge.color-label.title.d-inline-block.mw-100.text-truncate.align-middle{ "v-if": "list.type === \"label\"",
-            ":title" => '(list.label ? list.label.description : "")',
-            data: { container: "body", placement: "bottom" },
-            ":style" => "{ backgroundColor: (list.label && list.label.color ? list.label.color : null), color: (list.label && list.label.textColor ? list.label.textColor : \"#2e2e2e\") }" }
-            {{ list.title }}
+          %gl-label{ "v-if" => " list.type === \"label\"",
+            ":background-color" => "list.label.color",
+            ":title" => "list.label.title",
+            ":description" => "list.label.description",
+            "tooltipPlacement" => "bottom",
+            ":size" => '(!list.isExpanded ? "sm" : "")',
+            ":scoped" => "showScopedLabels(list.label)",
+            ":scoped-labels-documentation-link" => "helpLink" }
 
         - if can?(current_user, :admin_list, current_board_parent)
           %board-delete{ "inline-template" => true,

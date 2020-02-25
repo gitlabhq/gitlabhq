@@ -5848,6 +5848,9 @@ msgstr ""
 msgid "CustomCycleAnalytics|Select stop event"
 msgstr ""
 
+msgid "CustomCycleAnalytics|Stage name already exists"
+msgstr ""
+
 msgid "CustomCycleAnalytics|Start event"
 msgstr ""
 
@@ -18564,9 +18567,6 @@ msgstr ""
 msgid "Subscription deletion failed."
 msgstr ""
 
-msgid "Subscription successfully applied to \"%{group_name}\""
-msgstr ""
-
 msgid "Subscription successfully created."
 msgstr ""
 
@@ -20754,6 +20754,12 @@ msgid "Uninstall"
 msgstr ""
 
 msgid "Uninstalling"
+msgstr ""
+
+msgid "Units|ms"
+msgstr ""
+
+msgid "Units|s"
 msgstr ""
 
 msgid "Unknown"

@@ -537,8 +537,10 @@ describe MarkupHelper do
 
         it 'does not style a label that can not be accessed by current_user' do
           project = create(:project, :private)
+          label = create_and_format_label(project)
 
-          expect(create_and_format_label(project)).to eq("<p>#{label_title}</p>")
+          expect(label).to include("~label_1")
+          expect(label).not_to match(/span class=.*style=.*/)
         end
       end
 

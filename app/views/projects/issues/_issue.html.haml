@@ -38,7 +38,7 @@
           - if issue.labels.any?
             &nbsp;
             - presented_labels_sorted_by_title(issue.labels, issue.project).each do |label|
-              = link_to_label(label, css_class: 'label-link')
+              = link_to_label(label, small: true)
 
           = render_if_exists "projects/issues/issue_weight", issue: issue
 

@@ -4,7 +4,7 @@ import { GlLink, GlButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 import { s__, __ } from '~/locale';
-import { roundOffFloat } from '~/lib/utils/common_utils';
+import { getFormatter } from '~/lib/utils/unit_format';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import {
@@ -36,6 +36,8 @@ const timestampToISODate = timestamp => new Date(timestamp).toISOString();
 const events = {
   datazoom: 'datazoom',
 };
+
+const yValFormatter = getFormatter('number');
 
 export default {
   components: {
@@ -171,7 +173,7 @@ export default {
         boundaryGap: [0.1, 0.1],
         scale: true,
         axisLabel: {
-          formatter: num => roundOffFloat(num, 3).toString(),
+          formatter: num => yValFormatter(num, 3),
         },
         ...yAxis,
       };
@@ -313,7 +315,8 @@ export default {
             this.tooltip.commitUrl = deploy.commitUrl;
           } else {
             const { seriesName, color, dataIndex } = dataPoint;
-            const value = yVal.toFixed(3);
+            const value = yValFormatter(yVal, 3);
+
             this.tooltip.content.push({
               name: seriesName,
               dataIndex,
