@@ -397,3 +397,108 @@ changes.
 
 Read more about when and how feature flags should be used in
 [Feature flags in GitLab development](feature_flags/process.md#feature-flags-in-gitlab-development).
+
+## Storage
+
+We can consider the following types of storages:
+
+- **Local temporary storage** (very-very short-term storage) This type of storage is system-provided storage, ex. `/tmp` folder.
+  This is the type of storage that you should ideally use for all your temporary tasks.
+  The fact that each node has its own temporary storage makes scaling significantly easier.
+  This storage is also very often SSD-based, thus is significantly faster.
+  The local storage can easily be configured for the application with
+  the usage of `TMPDIR` variable.
+
+- **Shared temporary storage** (short-term storage) This type of storage is network-based temporary storage,
+  usually run with a common NFS server. As of Feb 2020, we still use this type of storage
+  for most of our implementations. Even though this allows the above limit to be significantly larger,
+  it does not really mean that you can use more. The shared temporary storage is shared by
+  all nodes. Thus, the job that uses significant amount of that space or performs a lot
+  of operations will create a contention on execution of all other jobs and request
+  across the whole application, this can easily impact stability of the whole GitLab.
+  Be respectful of that.
+
+- **Shared persistent storage** (long-term storage) This type of storage uses
+  shared network-based storage (ex. NFS). This solution is mostly used by customers running small
+  installations consisting of a few nodes. The files on shared storage are easily accessible,
+  but any job that is uploading or downloading data can create a serious contention to all other jobs.
+  This is also an approach by default used by Omnibus.
+
+- **Object-based persistent storage** (long term storage) this type of storage uses external
+  services like [AWS S3](https://en.wikipedia.org/wiki/Amazon_S3). The Object Storage
+  can be treated as infinitely scalable and redundant. Accessing this storage usually requires
+  downloading the file in order to manipulate it. The Object Storage can be considered as an ultimate
+  solution, as by definition it can be assumed that it can handle unlimited concurrent uploads
+  and downloads of files. This is also ultimate solution required to ensure that application can
+  run in containerized deployments (Kubernetes) at ease.
+
+### Temporary storage
+
+The storage on production nodes is really sparse. The application should be built
+in a way that accomodates running under very limited temporary storage.
+You can expect the system on which your code runs has a total of `1G-10G`
+of temporary storage. However, this storage is really shared across all
+jobs being run. If your job requires to use more than `100MB` of that space
+you should reconsider the approach you have taken.
+
+Whatever your needs are, you should clearly document if you need to process files.
+If you require more than `100MB`, consider asking for help from a maintainer
+to work with you to possibly discover a better solution.
+
+#### Local temporary storage
+
+The usage of local storage is a desired solution to use,
+especially since we work on deploying applications to Kubernetes clusters.
+When you would like to use `Dir.mktmpdir`? In a case when you want for example
+to extract/create archives, perform extensive manipulation of existing data, etc.
+
+```ruby
+Dir.mktmpdir('designs') do |path|
+  # do manipulation on path
+  # the path will be removed once
+  # we go out of the block
+end
+```
+
+#### Shared temporary storage
+
+The usage of shared temporary storage is required if your intent
+is to persistent file for a disk-based storage, and not Object Storage.
+[Workhorse direct_upload](./uploads.md#direct-upload) when accepting file
+can write it to shared storage, and later GitLab Rails can perform a move operation.
+The move operation on the same destination is instantaneous.
+The system instead of performing `copy` operation just re-attaches file into a new place.
+
+Since this introduces extra complexity into application, you should only try
+to re-use well established patterns (ex.: `ObjectStorage` concern) instead of re-implementing it.
+
+The usage of shared temporary storage is otherwise deprecated for all other usages.
+
+### Persistent storage
+
+#### Object Storage
+
+It is required that all features holding persistent files support saving data
+to Object Storage. Having a persistent storage in the form of shared volume across nodes
+is not scalable, as it creates a contention on data access all nodes.
+
+GitLab offers the [ObjectStorage concern](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/uploaders/object_storage.rb)
+that implements a seamless support for Shared and Object Storage-based persistent storage.
+
+#### Data access
+
+Each feature that accepts data uploads or allows to download them needs to use
+[Workhorse direct_upload](./uploads.md#direct-upload). It means that uploads needs to be
+saved directly to Object Storage by Workhorse, and all downloads needs to be served
+by Workhorse.
+
+Performing uploads/downloads via Unicorn/Puma is an expensive operation,
+as it blocks the whole processing slot (worker or thread) for the duration of the upload.
+
+Performing uploads/downloads via Unicorn/Puma also has a problem where the operation
+can time out, which is especially problematic for slow clients. If clients take a long time
+to upload/download the processing slot might be killed due to request processing
+timeout (usually between 30s-60s).
+
+For the above reasons it is required that [Workhorse direct_upload](./uploads.md#direct-upload) is implemented
+for all file uploads and downloads.

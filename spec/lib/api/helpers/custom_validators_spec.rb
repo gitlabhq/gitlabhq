@@ -24,7 +24,38 @@ describe API::Helpers::CustomValidators do
 
     context 'invalid parameters' do
       it 'raises a validation error' do
-        expect_validation_error({ 'test' => 'some_value' })
+        expect_validation_error('test' => 'some_value')
+      end
+    end
+  end
+
+  describe API::Helpers::CustomValidators::FilePath do
+    subject do
+      described_class.new(['test'], {}, false, scope.new)
+    end
+
+    context 'valid file path' do
+      it 'does not raise a validation error' do
+        expect_no_validation_error('test' => './foo')
+        expect_no_validation_error('test' => './bar.rb')
+        expect_no_validation_error('test' => 'foo%2Fbar%2Fnew%2Ffile.rb')
+        expect_no_validation_error('test' => 'foo%2Fbar%2Fnew')
+        expect_no_validation_error('test' => 'foo%252Fbar%252Fnew%252Ffile.rb')
+      end
+    end
+
+    context 'invalid file path' do
+      it 'raise a validation error' do
+        expect_validation_error('test' => '../foo')
+        expect_validation_error('test' => '../')
+        expect_validation_error('test' => 'foo/../../bar')
+        expect_validation_error('test' => 'foo/../')
+        expect_validation_error('test' => 'foo/..')
+        expect_validation_error('test' => '../')
+        expect_validation_error('test' => '..\\')
+        expect_validation_error('test' => '..\/')
+        expect_validation_error('test' => '%2e%2e%2f')
+        expect_validation_error('test' => '/etc/passwd')
       end
     end
   end
@@ -36,12 +67,12 @@ describe API::Helpers::CustomValidators do
 
     context 'valid parameters' do
       it 'does not raise a validation error' do
-        expect_no_validation_error({ 'test' => 2 })
-        expect_no_validation_error({ 'test' => 100 })
-        expect_no_validation_error({ 'test' => 'None' })
-        expect_no_validation_error({ 'test' => 'Any' })
-        expect_no_validation_error({ 'test' => 'none' })
-        expect_no_validation_error({ 'test' => 'any' })
+        expect_no_validation_error('test' => 2)
+        expect_no_validation_error('test' => 100)
+        expect_no_validation_error('test' => 'None')
+        expect_no_validation_error('test' => 'Any')
+        expect_no_validation_error('test' => 'none')
+        expect_no_validation_error('test' => 'any')
       end
     end
 
@@ -59,18 +90,18 @@ describe API::Helpers::CustomValidators do
 
     context 'valid parameters' do
       it 'does not raise a validation error' do
-        expect_no_validation_error({ 'test' => [] })
-        expect_no_validation_error({ 'test' => [1, 2, 3] })
-        expect_no_validation_error({ 'test' => 'None' })
-        expect_no_validation_error({ 'test' => 'Any' })
-        expect_no_validation_error({ 'test' => 'none' })
-        expect_no_validation_error({ 'test' => 'any' })
+        expect_no_validation_error('test' => [])
+        expect_no_validation_error('test' => [1, 2, 3])
+        expect_no_validation_error('test' => 'None')
+        expect_no_validation_error('test' => 'Any')
+        expect_no_validation_error('test' => 'none')
+        expect_no_validation_error('test' => 'any')
       end
     end
 
     context 'invalid parameters' do
       it 'raises a validation error' do
-        expect_validation_error({ 'test' => 'some_other_string' })
+        expect_validation_error('test' => 'some_other_string')
       end
     end
   end

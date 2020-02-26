@@ -31,6 +31,14 @@ describe Gitlab::Utils do
     it 'does nothing for a safe string' do
       expect(check_path_traversal!('./foo')).to eq('./foo')
     end
+
+    it 'does nothing if an absolute path is allowed' do
+      expect(check_path_traversal!('/etc/folder/path', allowed_absolute: true)). to eq('/etc/folder/path')
+    end
+
+    it 'raises exception if an absolute path is not allowed' do
+      expect { check_path_traversal!('/etc/folder/path') }.to raise_error(/Invalid path/)
+    end
   end
 
   describe '.slugify' do

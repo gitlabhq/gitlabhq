@@ -7,6 +7,8 @@ describe API::Files do
   let!(:project) { create(:project, :repository, namespace: user.namespace ) }
   let(:guest) { create(:user) { |u| project.add_guest(u) } }
   let(:file_path) { "files%2Fruby%2Fpopen%2Erb" }
+  let(:rouge_file_path) { "%2e%2e%2f" }
+  let(:invalid_file_message) { 'file_path should be a valid file path' }
   let(:params) do
     {
       ref: 'master'
@@ -55,6 +57,12 @@ describe API::Files do
 
   describe "HEAD /projects/:id/repository/files/:file_path" do
     shared_examples_for 'repository files' do
+      it 'returns 400 when file path is invalid' do
+        head api(route(rouge_file_path), current_user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
       it 'returns file attributes in headers' do
         head api(route(file_path), current_user), params: params
 
@@ -145,6 +153,13 @@ describe API::Files do
 
   describe "GET /projects/:id/repository/files/:file_path" do
     shared_examples_for 'repository files' do
+      it 'returns 400 for invalid file path' do
+        get api(route(rouge_file_path), current_user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq(invalid_file_message)
+      end
+
       it 'returns file attributes as json' do
         get api(route(file_path), current_user), params: params
 
@@ -302,6 +317,13 @@ describe API::Files do
           .to eq('c440cd09bae50c4632cc58638ad33c6aa375b6109d811e76a9cc3a613c1e8887')
       end
 
+      it 'returns 400 when file path is invalid' do
+        get api(route(rouge_file_path) + '/blame', current_user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq(invalid_file_message)
+      end
+
       it 'returns blame file attributes as json' do
         get api(route(file_path) + '/blame', current_user), params: params
 
@@ -418,6 +440,13 @@ describe API::Files do
 
   describe "GET /projects/:id/repository/files/:file_path/raw" do
     shared_examples_for 'repository raw files' do
+      it 'returns 400 when file path is invalid' do
+        get api(route(rouge_file_path) + "/raw", current_user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq(invalid_file_message)
+      end
+
       it 'returns raw file info' do
         url = route(file_path) + "/raw"
         expect(Gitlab::Workhorse).to receive(:send_git_blob)
@@ -533,6 +562,13 @@ describe API::Files do
         content: "puts 8",
         commit_message: "Added newfile"
       }
+    end
+
+    it 'returns 400 when file path is invalid' do
+      post api(route(rouge_file_path), user), params: params
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq(invalid_file_message)
     end
 
     it "creates a new file in project repo" do
@@ -662,6 +698,17 @@ describe API::Files do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    it "returns 400 when file path is invalid" do
+      last_commit = Gitlab::Git::Commit
+                        .last_for_path(project.repository, 'master', URI.unescape(file_path))
+      params_with_correct_id = params.merge(last_commit_id: last_commit.id)
+
+      put api(route(rouge_file_path), user), params: params_with_correct_id
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq(invalid_file_message)
+    end
+
     it "returns a 400 bad request if no params given" do
       put api(route(file_path), user)
 
@@ -688,6 +735,13 @@ describe API::Files do
         branch: 'master',
         commit_message: 'Changed file'
       }
+    end
+
+    it 'returns 400 when file path is invalid' do
+      delete api(route(rouge_file_path), user), params: params
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq(invalid_file_message)
     end
 
     it "deletes existing file in project repo" do

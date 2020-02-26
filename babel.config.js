@@ -18,12 +18,10 @@ const presets = [
 
 // include stage 3 proposals
 const plugins = [
-  '@babel/plugin-syntax-dynamic-import',
   '@babel/plugin-syntax-import-meta',
   '@babel/plugin-proposal-class-properties',
   '@babel/plugin-proposal-json-strings',
   '@babel/plugin-proposal-private-methods',
-  '@babel/plugin-proposal-optional-chaining',
   'lodash',
 ];
 

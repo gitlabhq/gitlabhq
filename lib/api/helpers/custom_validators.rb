@@ -3,6 +3,17 @@
 module API
   module Helpers
     module CustomValidators
+      class FilePath < Grape::Validations::Base
+        def validate_param!(attr_name, params)
+          path = params[attr_name]
+
+          Gitlab::Utils.check_path_traversal!(path)
+        rescue StandardError
+          raise Grape::Exceptions::Validation, params: [@scope.full_name(attr_name)],
+                                               message: "should be a valid file path"
+        end
+      end
+
       class Absence < Grape::Validations::Base
         def validate_param!(attr_name, params)
           return if params.respond_to?(:key?) && !params.key?(attr_name)
@@ -38,6 +49,7 @@ module API
   end
 end
 
+Grape::Validations.register_validator(:file_path, ::API::Helpers::CustomValidators::FilePath)
 Grape::Validations.register_validator(:absence, ::API::Helpers::CustomValidators::Absence)
 Grape::Validations.register_validator(:integer_none_any, ::API::Helpers::CustomValidators::IntegerNoneAny)
 Grape::Validations.register_validator(:array_none_any, ::API::Helpers::CustomValidators::ArrayNoneAny)
