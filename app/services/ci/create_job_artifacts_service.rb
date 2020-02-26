@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 module Ci
-  class CreateJobArtifactsService
+  class CreateJobArtifactsService < ::BaseService
     ArtifactsExistError = Class.new(StandardError)
+    OBJECT_STORAGE_ERRORS = [
+      Errno::EIO,
+      Google::Apis::ServerError,
+      Signet::RemoteServerError
+    ].freeze
 
     def execute(job, artifacts_file, params, metadata_file: nil)
       expire_in = params['expire_in'] ||
@@ -26,18 +31,20 @@ module Ci
           expire_in: expire_in)
       end
 
-      job.update(artifacts_expire_in: expire_in)
+      if job.update(artifacts_expire_in: expire_in)
+        success
+      else
+        error(job.errors.messages, :bad_request)
+      end
+
     rescue ActiveRecord::RecordNotUnique => error
-      return true if sha256_matches_existing_artifact?(job, params['artifact_type'], artifacts_file)
+      return success if sha256_matches_existing_artifact?(job, params['artifact_type'], artifacts_file)
 
-      Gitlab::ErrorTracking.track_exception(error,
-        job_id: job.id,
-        project_id: job.project_id,
-        uploading_type: params['artifact_type']
-      )
-
-      job.errors.add(:base, 'another artifact of the same type already exists')
-      false
+      track_exception(error, job, params)
+      error('another artifact of the same type already exists', :bad_request)
+    rescue *OBJECT_STORAGE_ERRORS => error
+      track_exception(error, job, params)
+      error(error.message, :service_unavailable)
     end
 
     private
@@ -47,6 +54,14 @@ module Ci
       return false unless existing_artifact
 
       existing_artifact.file_sha256 == artifacts_file.sha256
+    end
+
+    def track_exception(error, job, params)
+      Gitlab::ErrorTracking.track_exception(error,
+        job_id: job.id,
+        project_id: job.project_id,
+        uploading_type: params['artifact_type']
+      )
     end
   end
 end

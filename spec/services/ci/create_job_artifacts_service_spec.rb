@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 describe Ci::CreateJobArtifactsService do
-  let(:service) { described_class.new }
-  let(:job) { create(:ci_build) }
+  let_it_be(:project) { create(:project) }
+  let(:service) { described_class.new(project) }
+  let(:job) { create(:ci_build, project: project) }
   let(:artifacts_sha256) { '0' * 64 }
   let(:metadata_file) { nil }
 
@@ -64,7 +65,7 @@ describe Ci::CreateJobArtifactsService do
         it 'sets expiration date according to application settings' do
           expected_expire_at = 1.day.from_now
 
-          expect(subject).to be_truthy
+          expect(subject).to match(a_hash_including(status: :success))
           archive_artifact, metadata_artifact = job.job_artifacts.last(2)
 
           expect(job.artifacts_expire_at).to be_within(1.minute).of(expected_expire_at)
@@ -80,7 +81,7 @@ describe Ci::CreateJobArtifactsService do
           it 'sets expiration date according to the parameter' do
             expected_expire_at = 2.hours.from_now
 
-            expect(subject).to be_truthy
+            expect(subject).to match(a_hash_including(status: :success))
             archive_artifact, metadata_artifact = job.job_artifacts.last(2)
 
             expect(job.artifacts_expire_at).to be_within(1.minute).of(expected_expire_at)
@@ -101,21 +102,50 @@ describe Ci::CreateJobArtifactsService do
 
         it 'ignores the changes' do
           expect { subject }.not_to change { Ci::JobArtifact.count }
-          expect(subject).to be_truthy
+          expect(subject).to match(a_hash_including(status: :success))
         end
       end
 
       context 'when sha256 of uploading artifact is different than the existing one' do
         let(:existing_sha256) { '1' * 64 }
 
-        it 'returns false and logs the error' do
+        it 'returns error status' do
           expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
 
           expect { subject }.not_to change { Ci::JobArtifact.count }
-          expect(subject).to be_falsey
-          expect(job.errors[:base]).to contain_exactly('another artifact of the same type already exists')
+          expect(subject).to match(
+            a_hash_including(http_status: :bad_request,
+              message: 'another artifact of the same type already exists',
+              status: :error))
         end
       end
     end
+
+    shared_examples 'rescues object storage error' do |klass, message, expected_message|
+      it "handles #{klass}" do
+        allow_next_instance_of(JobArtifactUploader) do |uploader|
+          allow(uploader).to receive(:store!).and_raise(klass, message)
+        end
+
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .and_call_original
+
+        expect(subject).to match(
+          a_hash_including(
+            http_status: :service_unavailable,
+            message: expected_message || message,
+            status: :error))
+      end
+    end
+
+    it_behaves_like 'rescues object storage error',
+      Errno::EIO, 'some/path', 'Input/output error - some/path'
+
+    it_behaves_like 'rescues object storage error',
+      Google::Apis::ServerError, 'Server error'
+
+    it_behaves_like 'rescues object storage error',
+      Signet::RemoteServerError, 'The service is currently unavailable'
   end
 end

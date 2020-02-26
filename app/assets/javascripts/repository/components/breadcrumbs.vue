@@ -1,5 +1,6 @@
 <script>
 import { GlDropdown, GlDropdownDivider, GlDropdownHeader, GlDropdownItem } from '@gitlab/ui';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '../../locale';
 import Icon from '../../vue_shared/components/icon.vue';
 import getRefMixin from '../mixins/get_ref';
@@ -102,12 +103,12 @@ export default {
         .filter(p => p !== '')
         .reduce(
           (acc, name, i) => {
-            const path = `${i > 0 ? acc[i].path : ''}/${name}`;
+            const path = joinPaths(i > 0 ? acc[i].path : '', encodeURIComponent(name));
 
             return acc.concat({
               name,
               path,
-              to: `/-/tree/${escape(this.ref)}${escape(path)}`,
+              to: `/-/tree/${joinPaths(escape(this.ref), path)}`,
             });
           },
           [

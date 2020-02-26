@@ -13658,16 +13658,10 @@ msgstr ""
 msgid "Pagination|Next"
 msgstr ""
 
-msgid "Pagination|Next ›"
-msgstr ""
-
 msgid "Pagination|Prev"
 msgstr ""
 
 msgid "Pagination|« First"
-msgstr ""
-
-msgid "Pagination|‹ Prev"
 msgstr ""
 
 msgid "Parameter"
@@ -18615,6 +18609,9 @@ msgstr ""
 msgid "Subscription deletion failed."
 msgstr ""
 
+msgid "Subscription successfully applied to \"%{group_name}\""
+msgstr ""
+
 msgid "Subscription successfully created."
 msgstr ""
 
@@ -19631,6 +19628,12 @@ msgid "There was an error syncing the Design Repositories."
 msgstr ""
 
 msgid "There was an error trying to validate your query"
+msgstr ""
+
+msgid "There was an error updating the dashboard, branch name is invalid."
+msgstr ""
+
+msgid "There was an error updating the dashboard, branch named: %{branch} already exists."
 msgstr ""
 
 msgid "There was an error when reseting email token."
@@ -22690,6 +22693,9 @@ msgid "Your custom stage '%{title}' was created"
 msgstr ""
 
 msgid "Your dashboard has been copied. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."
+msgstr ""
+
+msgid "Your dashboard has been updated. You can %{web_ide_link_start}edit it here%{web_ide_link_end}."
 msgstr ""
 
 msgid "Your deployment services will be broken, you will need to manually fix the services after renaming."

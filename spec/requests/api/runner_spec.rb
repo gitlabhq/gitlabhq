@@ -1979,6 +1979,21 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
         end
 
+        context 'when object storage throws errors' do
+          let(:params) { { artifact_type: :archive, artifact_format: :zip } }
+
+          it 'does not store artifacts' do
+            allow_next_instance_of(JobArtifactUploader) do |uploader|
+              allow(uploader).to receive(:store!).and_raise(Errno::EIO)
+            end
+
+            upload_artifacts(file_upload, headers_with_token, params)
+
+            expect(response).to have_gitlab_http_status(:service_unavailable)
+            expect(job.reload.job_artifacts_archive).to be_nil
+          end
+        end
+
         context 'when artifacts are being stored outside of tmp path' do
           let(:new_tmpdir) { Dir.mktmpdir }
 

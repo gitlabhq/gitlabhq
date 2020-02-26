@@ -90,6 +90,12 @@ module Ci
       end
     end
 
+    def needs_attributes
+      strong_memoize(:needs_attributes) do
+        needs.map { |need| need.attributes.except('id', 'build_id') }
+      end
+    end
+
     private
 
     def validate_scheduling_type?

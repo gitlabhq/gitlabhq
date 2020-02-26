@@ -37,6 +37,16 @@ describe 'Projects tree', :js do
     expect(page).not_to have_selector('.flash-alert')
   end
 
+  it 'renders tree table with non-ASCII filenames without errors' do
+    visit project_tree_path(project, File.join(test_sha, 'encoding'))
+    wait_for_requests
+
+    expect(page).to have_selector('.tree-item')
+    expect(page).to have_content('Files, encoding and much more')
+    expect(page).to have_content('テスト.txt')
+    expect(page).not_to have_selector('.flash-alert')
+  end
+
   context 'gravatar disabled' do
     let(:gravatar_enabled) { false }
 

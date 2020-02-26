@@ -212,7 +212,7 @@ describe Gitlab::Profiler do
       stub_const('STDOUT', stdout)
     end
 
-    it 'prints a profile result sorted by total time' do
+    it 'prints a profile result sorted by total time', quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/206907' do
       described_class.print_by_total_time(result)
 
       total_times =

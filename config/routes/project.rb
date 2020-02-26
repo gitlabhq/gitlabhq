@@ -252,7 +252,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         namespace :performance_monitoring do
-          resources :dashboards, only: [:create]
+          resources :dashboards, only: [:create] do
+            collection do
+              put '/:file_name', to: 'dashboards#update', constraints: { file_name: /.+\.yml/ }
+            end
+          end
         end
 
         namespace :error_tracking do

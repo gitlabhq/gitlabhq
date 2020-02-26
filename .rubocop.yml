@@ -349,8 +349,8 @@ RSpec/HaveGitlabHttpStatus:
     - 'ee/spec/requests/{groups,projects,repositories}/**/*'
     - 'spec/requests/api/*/**/*.rb'
     - 'ee/spec/requests/api/*/**/*.rb'
-    - 'spec/requests/api/[a-l]*.rb'
-    - 'ee/spec/requests/api/[a-l]*.rb'
+    - 'spec/requests/api/[a-o]*.rb'
+    - 'ee/spec/requests/api/[a-o]*.rb'
 
 Style/MultilineWhenThen:
   Enabled: false

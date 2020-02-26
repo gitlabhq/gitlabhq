@@ -11,7 +11,7 @@ describe API::NotificationSettings do
     it "returns global notification settings for the current user" do
       get api("/notification_settings", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_a Hash
       expect(json_response['notification_email']).to eq(user.notification_email)
       expect(json_response['level']).to eq(user.global_notification_setting.level)
@@ -24,7 +24,7 @@ describe API::NotificationSettings do
     it "updates global notification settings for the current user" do
       put api("/notification_settings", user), params: { level: 'watch', notification_email: email.email }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['notification_email']).to eq(email.email)
       expect(user.reload.notification_email).to eq(email.email)
       expect(json_response['level']).to eq(user.reload.global_notification_setting.level)
@@ -35,7 +35,7 @@ describe API::NotificationSettings do
     it "fails on non-user email address" do
       put api("/notification_settings", user), params: { notification_email: 'invalid@example.com' }
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
 
@@ -43,7 +43,7 @@ describe API::NotificationSettings do
     it "returns group level notification settings for the current user" do
       get api("/groups/#{group.id}/notification_settings", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_a Hash
       expect(json_response['level']).to eq(user.notification_settings_for(group).level)
     end
@@ -53,7 +53,7 @@ describe API::NotificationSettings do
     it "updates group level notification settings for the current user" do
       put api("/groups/#{group.id}/notification_settings", user), params: { level: 'watch' }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['level']).to eq(user.reload.notification_settings_for(group).level)
     end
   end
@@ -62,7 +62,7 @@ describe API::NotificationSettings do
     it "returns project level notification settings for the current user" do
       get api("/projects/#{project.id}/notification_settings", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_a Hash
       expect(json_response['level']).to eq(user.notification_settings_for(project).level)
     end
@@ -72,7 +72,7 @@ describe API::NotificationSettings do
     it "updates project level notification settings for the current user" do
       put api("/projects/#{project.id}/notification_settings", user), params: { level: 'custom', new_note: true }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['level']).to eq(user.reload.notification_settings_for(project).level)
       expect(json_response['events']['new_note']).to be_truthy
       expect(json_response['events']['new_issue']).to be_falsey
@@ -83,7 +83,7 @@ describe API::NotificationSettings do
     it "fails on invalid level" do
       put api("/projects/#{project.id}/notification_settings", user), params: { level: 'invalid' }
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
   end
 end

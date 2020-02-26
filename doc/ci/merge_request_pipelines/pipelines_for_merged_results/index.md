@@ -85,13 +85,27 @@ the following feature flags are enabled on your GitLab instance:
 - `:ci_use_merge_request_ref`
 - `:merge_ref_auto_sync`
 
-To check these feature flag values, please ask administrator to execute the following commands:
+To check and set these feature flag values, please ask an administrator to:
 
-```shell
-> sudo gitlab-rails console                         # Login to Rails console of GitLab instance.
-> Feature.enabled?(:ci_use_merge_request_ref)       # Check if it's enabled or not.
-> Feature.enable(:ci_use_merge_request_ref)         # Enable the feature flag.
-```
+1. Log into the Rails console of the GitLab instance:
+
+   ```shell
+   sudo gitlab-rails console
+   ```
+
+1. Check if the flags are enabled or not:
+
+   ```ruby
+   Feature.enabled?(:ci_use_merge_request_ref)
+   Feature.enabled?(:merge_ref_auto_sync)
+   ```
+
+1. If needed, enable the feature flags:
+
+   ```ruby
+   Feature.enable(:ci_use_merge_request_ref)
+   Feature.enable(:merge_ref_auto_sync)
+   ```
 
 ### Intermittently pipelines fail by `fatal: reference is not a tree:` error
 

@@ -283,10 +283,12 @@ module API
         bad_request!('Missing artifacts file!') unless artifacts
         file_too_large! unless artifacts.size < max_artifacts_size(job)
 
-        if Ci::CreateJobArtifactsService.new.execute(job, artifacts, params, metadata_file: metadata)
+        result = Ci::CreateJobArtifactsService.new(job.project).execute(job, artifacts, params, metadata_file: metadata)
+
+        if result[:status] == :success
           status :created
         else
-          render_validation_error!(job)
+          render_api_error!(result[:message], result[:http_status])
         end
       end
 

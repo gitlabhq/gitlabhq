@@ -12,7 +12,7 @@ describe Gitlab::ReactiveCacheSetCache, :clean_gitlab_redis_cache do
     subject { cache.cache_key(cache_prefix) }
 
     it 'includes the suffix' do
-      expect(subject).to eq "#{cache_prefix}:set"
+      expect(subject).to eq "#{Gitlab::Redis::Cache::CACHE_NAMESPACE}:#{cache_prefix}:set"
     end
   end
 

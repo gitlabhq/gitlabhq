@@ -145,4 +145,28 @@ describe Ci::Processable do
       expect(another_build.reload.scheduling_type).to be_nil
     end
   end
+
+  describe '#needs_attributes' do
+    let(:build) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+
+    context 'with needs' do
+      before do
+        create(:ci_build_need, build: build, name: 'test1')
+        create(:ci_build_need, build: build, name: 'test2')
+      end
+
+      it 'returns all needs attributes' do
+        expect(build.needs_attributes).to contain_exactly(
+          { 'artifacts' => true, 'name' => 'test1' },
+          { 'artifacts' => true, 'name' => 'test2' }
+        )
+      end
+    end
+
+    context 'without needs' do
+      it 'returns all needs attributes' do
+        expect(build.needs_attributes).to be_empty
+      end
+    end
+  end
 end

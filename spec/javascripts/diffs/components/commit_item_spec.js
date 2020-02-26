@@ -41,7 +41,9 @@ describe('diffs/components/commit_item', () => {
     expect(titleElement).toHaveText(commit.title_html);
   });
 
-  it('renders commit description', () => {
+  // https://gitlab.com/gitlab-org/gitlab/issues/197139
+  // eslint-disable-next-line jasmine/no-disabled-tests
+  xit('renders commit description', () => {
     const descElement = getDescElement(vm);
     const descExpandElement = getDescExpandElement(vm);
 

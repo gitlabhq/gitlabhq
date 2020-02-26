@@ -36,7 +36,7 @@ describe Ci::RetryBuildService do
        job_artifacts_performance job_artifacts_lsif
        job_artifacts_codequality job_artifacts_metrics scheduled_at
        job_variables waiting_for_resource_at job_artifacts_metrics_referee
-       job_artifacts_network_referee].freeze
+       job_artifacts_network_referee needs].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags trace_sections
@@ -46,7 +46,8 @@ describe Ci::RetryBuildService do
        sourced_pipelines artifacts_file_store artifacts_metadata_store
        metadata runner_session trace_chunks upstream_pipeline_id
        artifacts_file artifacts_metadata artifacts_size commands
-       resource resource_group_id processed security_scans].freeze
+       resource resource_group_id processed security_scans author
+       pipeline_id].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
@@ -79,8 +80,15 @@ describe Ci::RetryBuildService do
     end
 
     describe 'clone accessors' do
+      let(:forbidden_associations) do
+        Ci::Build.reflect_on_all_associations.each_with_object(Set.new) do |assoc, memo|
+          memo << assoc.name unless assoc.macro == :belongs_to
+        end
+      end
+
       CLONE_ACCESSORS.each do |attribute|
         it "clones #{attribute} build attribute" do
+          expect(attribute).not_to be_in(forbidden_associations), "association #{attribute} must be `belongs_to`"
           expect(build.send(attribute)).not_to be_nil
           expect(new_build.send(attribute)).not_to be_nil
           expect(new_build.send(attribute)).to eq build.send(attribute)
@@ -97,9 +105,17 @@ describe Ci::RetryBuildService do
           expect(new_build.protected).to eq build.protected
         end
       end
+
+      it 'clones only the needs attributes' do
+        expect(new_build.needs.exists?).to be_truthy
+        expect(build.needs.exists?).to be_truthy
+
+        expect(new_build.needs_attributes).to match(build.needs_attributes)
+        expect(new_build.needs).not_to match(build.needs)
+      end
     end
 
-    describe 'reject acessors' do
+    describe 'reject accessors' do
       REJECT_ACCESSORS.each do |attribute|
         it "does not clone #{attribute} build attribute" do
           expect(new_build.send(attribute)).not_to eq build.send(attribute)
@@ -117,8 +133,9 @@ describe Ci::RetryBuildService do
       #
       current_accessors =
         Ci::Build.attribute_names.map(&:to_sym) +
+        Ci::Build.attribute_aliases.keys.map(&:to_sym) +
         Ci::Build.reflect_on_all_associations.map(&:name) +
-        [:tag_list]
+        [:tag_list, :needs_attributes]
 
       current_accessors.uniq!
 

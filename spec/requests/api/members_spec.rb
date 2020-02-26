@@ -43,7 +43,7 @@ describe API::Members do
 
             get api(members_url, user)
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.size).to eq(2)
@@ -72,7 +72,7 @@ describe API::Members do
 
         get api(members_url, developer)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(2)
@@ -82,7 +82,7 @@ describe API::Members do
       it 'finds members with query string' do
         get api(members_url, developer), params: { query: maintainer.username }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.count).to eq(1)
@@ -92,7 +92,7 @@ describe API::Members do
       it 'finds members with the given user_ids' do
         get api(members_url, developer), params: { user_ids: [maintainer.id, developer.id, stranger.id] }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.map { |u| u['id'] }).to contain_exactly(maintainer.id, developer.id)
@@ -101,7 +101,7 @@ describe API::Members do
       it 'finds all members with no query specified' do
         get api(members_url, developer), params: { query: '' }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.count).to eq(2)
@@ -137,7 +137,7 @@ describe API::Members do
     it 'finds all project members including inherited members' do
       get api("/projects/#{project.id}/members/all", developer)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id, nested_user.id, project_user.id, linked_group_user.id]
@@ -148,7 +148,7 @@ describe API::Members do
 
       get api("/projects/#{project.id}/members/all", developer)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
 
@@ -165,7 +165,7 @@ describe API::Members do
     it 'finds all group members including inherited members' do
       get api("/groups/#{nested_group.id}/members/all", developer)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id, nested_user.id]
@@ -185,7 +185,7 @@ describe API::Members do
               user = public_send(type)
               get api("/#{source_type.pluralize}/#{source.id}/members/#{all ? 'all/' : ''}#{developer.id}", user)
 
-              expect(response).to have_gitlab_http_status(200)
+              expect(response).to have_gitlab_http_status(:ok)
               # User attributes
               expect(json_response['id']).to eq(developer.id)
               expect(json_response['name']).to eq(developer.name)
@@ -220,7 +220,7 @@ describe API::Members do
               post api("/#{source_type.pluralize}/#{source.id}/members", user),
                    params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -233,7 +233,7 @@ describe API::Members do
               post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
                    params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
 
-              expect(response).to have_gitlab_http_status(201)
+              expect(response).to have_gitlab_http_status(:created)
             end.to change { source.members.count }.by(1)
             expect(source.requesters.count).to eq(0)
             expect(json_response['id']).to eq(access_requester.id)
@@ -246,7 +246,7 @@ describe API::Members do
             post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
                  params: { user_id: stranger.id, access_level: Member::DEVELOPER, expires_at: '2016-08-05' }
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.count }.by(1)
           expect(json_response['id']).to eq(stranger.id)
           expect(json_response['access_level']).to eq(Member::DEVELOPER)
@@ -265,7 +265,7 @@ describe API::Members do
           post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
                params: { user_id: stranger.id, access_level: Member::REPORTER }
 
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']['access_level']).to eq(["should be greater than or equal to Developer inherited membership from group #{parent.name}"])
         end
 
@@ -279,7 +279,7 @@ describe API::Members do
           post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
                params: { user_id: stranger.id, access_level: Member::MAINTAINER }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response['id']).to eq(stranger.id)
           expect(json_response['access_level']).to eq(Member::MAINTAINER)
         end
@@ -289,14 +289,14 @@ describe API::Members do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
              params: { user_id: maintainer.id, access_level: Member::MAINTAINER }
 
-        expect(response).to have_gitlab_http_status(409)
+        expect(response).to have_gitlab_http_status(:conflict)
       end
 
       it 'returns 404 when the user_id is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
              params: { user_id: 0, access_level: Member::MAINTAINER }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
       end
 
@@ -304,21 +304,21 @@ describe API::Members do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
              params: { access_level: Member::MAINTAINER }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when access_level is not given' do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
              params: { user_id: stranger.id }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400  when access_level is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
              params: { user_id: stranger.id, access_level: 1234 }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
   end
@@ -340,7 +340,7 @@ describe API::Members do
               put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user),
                   params: { access_level: Member::MAINTAINER }
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -351,7 +351,7 @@ describe API::Members do
           put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
               params: { access_level: Member::MAINTAINER, expires_at: '2016-08-05' }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['id']).to eq(developer.id)
           expect(json_response['access_level']).to eq(Member::MAINTAINER)
           expect(json_response['expires_at']).to eq('2016-08-05')
@@ -362,20 +362,20 @@ describe API::Members do
         put api("/#{source_type.pluralize}/#{source.id}/members/123", maintainer),
             params: { access_level: Member::MAINTAINER }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'returns 400 when access_level is not given' do
         put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400  when access level is not valid' do
         put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
             params: { access_level: 1234 }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
   end
@@ -393,7 +393,7 @@ describe API::Members do
               user = public_send(type)
               delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user)
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -404,7 +404,7 @@ describe API::Members do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", developer)
 
-            expect(response).to have_gitlab_http_status(204)
+            expect(response).to have_gitlab_http_status(:no_content)
           end.to change { source.members.count }.by(-1)
         end
       end
@@ -415,7 +415,7 @@ describe API::Members do
             expect do
               delete api("/#{source_type.pluralize}/#{source.id}/members/#{access_requester.id}", maintainer)
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end.not_to change { source.requesters.count }
           end
         end
@@ -424,7 +424,7 @@ describe API::Members do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer)
 
-            expect(response).to have_gitlab_http_status(204)
+            expect(response).to have_gitlab_http_status(:no_content)
           end.to change { source.members.count }.by(-1)
         end
 
@@ -436,7 +436,7 @@ describe API::Members do
       it 'returns 404 if member does not exist' do
         delete api("/#{source_type.pluralize}/#{source.id}/members/123", maintainer)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -491,7 +491,7 @@ describe API::Members do
         post api("/projects/#{project.id}/members", maintainer),
              params: { user_id: stranger.id, access_level: Member::OWNER }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end.to change { project.members.count }.by(0)
     end
   end

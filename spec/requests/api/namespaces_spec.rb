@@ -12,7 +12,7 @@ describe API::Namespaces do
     context "when unauthenticated" do
       it "returns authentication error" do
         get api("/namespaces")
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -23,7 +23,7 @@ describe API::Namespaces do
         group_kind_json_response = json_response.find { |resource| resource['kind'] == 'group' }
         user_kind_json_response = json_response.find { |resource| resource['kind'] == 'user' }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(group_kind_json_response.keys).to include('id', 'kind', 'name', 'path', 'full_path',
                                                          'parent_id', 'members_count_with_descendants')
@@ -34,7 +34,7 @@ describe API::Namespaces do
       it "admin: returns an array of all namespaces" do
         get api("/namespaces", admin)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(Namespace.count)
@@ -43,7 +43,7 @@ describe API::Namespaces do
       it "admin: returns an array of matched namespaces" do
         get api("/namespaces?search=#{group2.name}", admin)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -77,7 +77,7 @@ describe API::Namespaces do
       it "user: returns an array of namespaces" do
         get api("/namespaces", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -86,7 +86,7 @@ describe API::Namespaces do
       it "admin: returns an array of matched namespaces" do
         get api("/namespaces?search=#{user.username}", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -102,7 +102,7 @@ describe API::Namespaces do
       it 'returns namespace details' do
         get api("/namespaces/#{namespace_id}", request_actor)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response['id']).to eq(requested_namespace.id)
         expect(json_response['path']).to eq(requested_namespace.path)
@@ -153,7 +153,7 @@ describe API::Namespaces do
         it 'returns not-found' do
           get api('/namespaces/0', request_actor)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -162,7 +162,7 @@ describe API::Namespaces do
       it 'returns authentication error' do
         get api("/namespaces/#{group1.id}")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -174,7 +174,7 @@ describe API::Namespaces do
           it 'returns not-found' do
             get api("/namespaces/#{group2.id}", request_actor)
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
@@ -182,7 +182,7 @@ describe API::Namespaces do
           it 'returns not-found' do
             get api("/namespaces/#{user2.namespace.id}", request_actor)
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end

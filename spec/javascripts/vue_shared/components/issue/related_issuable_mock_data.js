@@ -14,6 +14,8 @@ export const issuable1 = {
   path: '/foo/bar/issues/123',
   state: 'opened',
   linkType: 'relates_to',
+  dueDate: '2010-11-22',
+  weight: 5,
 };
 
 export const issuable2 = {

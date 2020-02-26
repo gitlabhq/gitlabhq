@@ -10,9 +10,13 @@ module Gitlab
       @expires_in = expires_in
     end
 
+    def cache_key(key)
+      "#{cache_type}:#{key}:set"
+    end
+
     def clear_cache!(key)
       with do |redis|
-        keys = read(key).map { |value| "#{cache_type}#{value}" }
+        keys = read(key).map { |value| "#{cache_type}:#{value}" }
         keys << cache_key(key)
 
         redis.pipelined do
@@ -24,7 +28,7 @@ module Gitlab
     private
 
     def cache_type
-      "#{Gitlab::Redis::Cache::CACHE_NAMESPACE}:"
+      Gitlab::Redis::Cache::CACHE_NAMESPACE
     end
   end
 end

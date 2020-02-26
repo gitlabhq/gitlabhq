@@ -50,10 +50,6 @@ After your merge request has being approved according to our [approval guideline
 | -------- | -------- |
 | Issue on [GitLab](https://gitlab.com/gitlab-org/gitlab/issues) | #TODO  |
 | Security Release tracking issue | #TODO  |
-| `master` MR | !TODO   |
-| `Backport X.Y` MR | !TODO   |
-| `Backport X.Y` MR | !TODO   |
-| `Backport X.Y` MR | !TODO   |
 
 ### Details
 
