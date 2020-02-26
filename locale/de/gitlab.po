@@ -2470,7 +2470,7 @@ msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr "Erfahre mehr in der %{link_to_documentation}"
 
 msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found. %{more_information_link}"
-msgstr "Die Auto-DevOps-Pipeline wurde aktiviert und wir verwendet, falls keine alternative CI-Konfigurationsdatei gefunden wurde. %{more_information_link}"
+msgstr "Die Auto-DevOps-Pipeline wurde aktiviert und wird verwendet, falls keine alternative CI-Konfigurationsdatei gefunden wurde. %{more_information_link}"
 
 msgid "Autocomplete"
 msgstr "Autovervollständigung"
