@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe 'User promotes milestone' do
-  set(:group) { create(:group) }
-  set(:user) { create(:user) }
-  set(:project) { create(:project, namespace: group) }
-  set(:milestone) { create(:milestone, project: project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, namespace: group) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
 
   context 'when user can admin group milestones' do
     before do

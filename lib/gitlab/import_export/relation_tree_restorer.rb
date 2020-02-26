@@ -69,7 +69,7 @@ module Gitlab
       def process_relation_item!(relation_key, relation_definition, relation_index, data_hash)
         relation_object = build_relation(relation_key, relation_definition, data_hash)
         return unless relation_object
-        return if importable_class == Project && group_model?(relation_object)
+        return if importable_class == ::Project && group_model?(relation_object)
 
         relation_object.assign_attributes(importable_class_sym => @importable)
 
@@ -110,7 +110,7 @@ module Gitlab
           excluded_keys:  excluded_keys_for_relation(importable_class_sym))
 
         @importable.assign_attributes(params)
-        @importable.drop_visibility_level! if importable_class == Project
+        @importable.drop_visibility_level! if importable_class == ::Project
 
         Gitlab::Timeless.timeless(@importable) do
           @importable.save!

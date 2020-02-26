@@ -49,7 +49,8 @@ def jobs_to_run(node_index, node_total)
     %w[scripts/lint-conflicts.sh],
     %w[scripts/lint-rugged],
     %w[scripts/frontend/check_no_partial_karma_jest.sh],
-    %w[scripts/lint-changelog-filenames]
+    %w[scripts/lint-changelog-filenames],
+    %w[scripts/gemfile_lock_changed.sh]
   ]
 
   case node_total

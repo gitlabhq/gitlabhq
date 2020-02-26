@@ -7,7 +7,7 @@ describe Groups::ImportExport::ExportService do
     let!(:user) { create(:user) }
     let(:group) { create(:group) }
     let(:shared) { Gitlab::ImportExport::Shared.new(group) }
-    let(:export_path) { shared.export_path }
+    let(:archive_path) { shared.archive_path }
     let(:service) { described_class.new(group: group, user: user, params: { shared: shared }) }
 
     before do
@@ -15,11 +15,11 @@ describe Groups::ImportExport::ExportService do
     end
 
     after do
-      FileUtils.rm_rf(export_path)
+      FileUtils.rm_rf(archive_path)
     end
 
     it 'saves the models' do
-      expect(Gitlab::ImportExport::GroupTreeSaver).to receive(:new).and_call_original
+      expect(Gitlab::ImportExport::Group::TreeSaver).to receive(:new).and_call_original
 
       service.execute
     end
@@ -29,7 +29,7 @@ describe Groups::ImportExport::ExportService do
         service.execute
 
         expect(group.import_export_upload.export_file.file).not_to be_nil
-        expect(File.directory?(export_path)).to eq(false)
+        expect(File.directory?(archive_path)).to eq(false)
         expect(File.exist?(shared.archive_path)).to eq(false)
       end
     end
@@ -46,25 +46,42 @@ describe Groups::ImportExport::ExportService do
       end
     end
 
-    context 'when saving services fail' do
-      before do
-        allow(service).to receive_message_chain(:tree_exporter, :save).and_return(false)
+    context 'when export fails' do
+      context 'when file saver fails' do
+        it 'removes the remaining exported data' do
+          allow_next_instance_of(Gitlab::ImportExport::Saver) do |saver|
+            allow(saver).to receive(:save).and_return(false)
+          end
+
+          expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
+
+          expect(group.import_export_upload).to be_nil
+          expect(File.exist?(shared.archive_path)).to eq(false)
+        end
       end
 
-      it 'removes the remaining exported data' do
-        allow_any_instance_of(Gitlab::ImportExport::Saver).to receive(:compress_and_save).and_return(false)
+      context 'when file compression fails' do
+        before do
+          allow(service).to receive_message_chain(:tree_exporter, :save).and_return(false)
+        end
 
-        expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
+        it 'removes the remaining exported data' do
+          allow_next_instance_of(Gitlab::ImportExport::Saver) do |saver|
+            allow(saver).to receive(:compress_and_save).and_return(false)
+          end
 
-        expect(group.import_export_upload).to be_nil
-        expect(File.directory?(export_path)).to eq(false)
-        expect(File.exist?(shared.archive_path)).to eq(false)
-      end
+          expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
 
-      it 'notifies logger' do
-        expect_any_instance_of(Gitlab::Import::Logger).to receive(:error)
+          expect(group.import_export_upload).to be_nil
+          expect(File.exist?(shared.archive_path)).to eq(false)
+        end
 
-        expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
+        it 'notifies logger' do
+          allow(service).to receive_message_chain(:tree_exporter, :save).and_return(false)
+          expect(shared.logger).to receive(:error)
+
+          expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
+        end
       end
     end
   end

@@ -43,7 +43,7 @@ module Gitlab
     end
 
     def config_file
-      Rails.root.join('lib/gitlab/import_export/import_export.yml')
+      Rails.root.join('lib/gitlab/import_export/project/import_export.yml')
     end
 
     def version_filename
@@ -77,7 +77,7 @@ module Gitlab
     end
 
     def group_config_file
-      Rails.root.join('lib/gitlab/import_export/group_import_export.yml')
+      Rails.root.join('lib/gitlab/import_export/group/import_export.yml')
     end
   end
 end

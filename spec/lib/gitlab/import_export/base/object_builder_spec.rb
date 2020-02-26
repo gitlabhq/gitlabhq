@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::BaseObjectBuilder do
+describe Gitlab::ImportExport::Base::ObjectBuilder do
   let(:project) do
     create(:project, :repository,
            :builds_disabled,
@@ -11,7 +11,7 @@ describe Gitlab::ImportExport::BaseObjectBuilder do
            path: 'project')
   end
   let(:klass) { Milestone }
-  let(:attributes) { { 'title' => 'Test BaseObjectBuilder Milestone', 'project' => project } }
+  let(:attributes) { { 'title' => 'Test Base::ObjectBuilder Milestone', 'project' => project } }
 
   subject { described_class.build(klass, attributes) }
 

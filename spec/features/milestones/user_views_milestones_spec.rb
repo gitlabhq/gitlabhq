@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe "User views milestones" do
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
-  set(:milestone) { create(:milestone, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
 
   before do
     project.add_developer(user)
@@ -22,8 +22,8 @@ describe "User views milestones" do
   end
 
   context "with issues" do
-    set(:issue) { create(:issue, project: project, milestone: milestone) }
-    set(:closed_issue) { create(:closed_issue, project: project, milestone: milestone) }
+    let_it_be(:issue) { create(:issue, project: project, milestone: milestone) }
+    let_it_be(:closed_issue) { create(:closed_issue, project: project, milestone: milestone) }
 
     it "opens milestone" do
       click_link(milestone.title)
@@ -38,7 +38,7 @@ describe "User views milestones" do
   end
 
   context "with associated releases" do
-    set(:first_release) { create(:release, project: project, name: "The first release", milestones: [milestone], released_at: Time.zone.parse('2019-10-07')) }
+    let_it_be(:first_release) { create(:release, project: project, name: "The first release", milestones: [milestone], released_at: Time.zone.parse('2019-10-07')) }
 
     context "with a single associated release" do
       it "shows the associated release" do
@@ -48,10 +48,10 @@ describe "User views milestones" do
     end
 
     context "with lots of associated releases" do
-      set(:second_release) { create(:release, project: project, name: "The second release", milestones: [milestone], released_at: first_release.released_at + 1.day) }
-      set(:third_release) { create(:release, project: project, name: "The third release", milestones: [milestone], released_at: second_release.released_at + 1.day) }
-      set(:fourth_release) { create(:release, project: project, name: "The fourth release", milestones: [milestone], released_at: third_release.released_at + 1.day) }
-      set(:fifth_release) { create(:release, project: project, name: "The fifth release", milestones: [milestone], released_at: fourth_release.released_at + 1.day) }
+      let_it_be(:second_release) { create(:release, project: project, name: "The second release", milestones: [milestone], released_at: first_release.released_at + 1.day) }
+      let_it_be(:third_release) { create(:release, project: project, name: "The third release", milestones: [milestone], released_at: second_release.released_at + 1.day) }
+      let_it_be(:fourth_release) { create(:release, project: project, name: "The fourth release", milestones: [milestone], released_at: third_release.released_at + 1.day) }
+      let_it_be(:fifth_release) { create(:release, project: project, name: "The fifth release", milestones: [milestone], released_at: fourth_release.released_at + 1.day) }
 
       it "shows the associated releases and the truncation text" do
         expect(page).to have_content("Releases #{fifth_release.name} • #{fourth_release.name} • #{third_release.name} • 2 more releases")
@@ -66,9 +66,9 @@ describe "User views milestones" do
 end
 
 describe "User views milestones with no MR" do
-  set(:user) { create(:user) }
-  set(:project) { create(:project, :merge_requests_disabled) }
-  set(:milestone) { create(:milestone, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :merge_requests_disabled) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
 
   before do
     project.add_developer(user)

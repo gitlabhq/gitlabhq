@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::ProjectTreeSaver do
+describe Gitlab::ImportExport::Project::TreeSaver do
   describe 'saves the project tree into a json object' do
     let(:shared) { project.import_export_shared }
     let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared) }
@@ -75,7 +75,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
     # except:
     # context 'with description override' do
     # context 'group members' do
-    # ^ These are specific for the ProjectTreeSaver
+    # ^ These are specific for the Project::TreeSaver
     context 'JSON' do
       let(:saved_project_json) do
         project_tree_saver.save

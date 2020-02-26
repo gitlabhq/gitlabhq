@@ -91,9 +91,9 @@ module Gitlab
 
       def relation_class
         case @importable
-        when Project
+        when ::Project
           ProjectMember
-        when Group
+        when ::Group
           GroupMember
         end
       end

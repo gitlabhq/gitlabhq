@@ -139,6 +139,7 @@ class Repository
       repo: raw_repository,
       ref: ref,
       path: opts[:path],
+      author: opts[:author],
       follow: Array(opts[:path]).length == 1,
       limit: opts[:limit],
       offset: opts[:offset],

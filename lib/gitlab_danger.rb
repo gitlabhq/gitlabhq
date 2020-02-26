@@ -3,7 +3,6 @@
 class GitlabDanger
   LOCAL_RULES ||= %w[
     changes_size
-    gemfile
     documentation
     frozen_string
     duplicate_yarn_dependencies

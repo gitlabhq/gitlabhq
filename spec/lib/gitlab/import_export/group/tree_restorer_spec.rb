@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::GroupTreeRestorer do
+describe Gitlab::ImportExport::Group::TreeRestorer do
   include ImportExport::CommonUtil
 
   let(:shared) { Gitlab::ImportExport::Shared.new(group) }

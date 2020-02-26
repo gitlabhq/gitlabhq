@@ -49,7 +49,7 @@ module Gitlab
       end
 
       def project_tree
-        @project_tree ||= Gitlab::ImportExport::ProjectTreeRestorer.new(user: current_user,
+        @project_tree ||= Gitlab::ImportExport::Project::TreeRestorer.new(user: current_user,
                                                                         shared: shared,
                                                                         project: project)
       end
@@ -125,7 +125,7 @@ module Gitlab
 
       def project_to_overwrite
         strong_memoize(:project_to_overwrite) do
-          Project.find_by_full_path("#{project.namespace.full_path}/#{original_path}")
+          ::Project.find_by_full_path("#{project.namespace.full_path}/#{original_path}")
         end
       end
     end

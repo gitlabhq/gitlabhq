@@ -257,7 +257,7 @@ use an A record. If your external endpoint is a hostname, use a CNAME record.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21966) in GitLab 12.7.
 
-A Web Application Firewall (WAF) is able to examine traffic being sent/received
+A Web Application Firewall (WAF) examines traffic being sent or received,
 and can block malicious traffic before it reaches your application. The benefits
 of a WAF are:
 
@@ -266,7 +266,7 @@ of a WAF are:
 - Access control for your application
 - Highly configurable logging and blocking rules
 
-Out of the box, GitLab provides you with a WAF known as [`ModSecurity`](https://www.modsecurity.org/)
+Out of the box, GitLab provides you with a WAF known as [`ModSecurity`](https://www.modsecurity.org/).
 
 ModSecurity is a toolkit for real-time web application monitoring, logging,
 and access control. With GitLab's offering, the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/),
@@ -287,9 +287,6 @@ when installing your [Ingress application](#ingress).
 
 If this is your first time using GitLab's WAF, we recommend you follow the
 [quick start guide](../../topics/web_application_firewall/quick_start_guide.md).
-
-There is a small performance overhead by enabling ModSecurity. However,
-if this is considered significant for your application, you can disable it.
 
 There is a small performance overhead by enabling ModSecurity. If this is
 considered significant for your application, you can disable ModSecurity's
@@ -693,7 +690,7 @@ cilium:
 ```
 
 The `clusterType` variable enables the recommended Helm variables for
-a corresponding cluster type, the default value is blank. You can
+a corresponding cluster type. The default value is blank. You can
 check the recommended variables for each cluster type in the official
 documentation:
 
@@ -720,13 +717,13 @@ information.
 By default, Cilium will drop all non-whitelisted packets upon policy
 deployment. The audit mode is scheduled for release in
 [Cilium 1.8](https://github.com/cilium/cilium/pull/9970). In the audit
-mode non-whitelisted packets will not be dropped, instead audit
-notifications will be generated. GitLab provides alternative Docker
+mode, non-whitelisted packets will not be dropped, and audit
+notifications will be generated instead. GitLab provides alternative Docker
 images for Cilium with the audit patch included. You can switch to the
 custom build and enable the audit mode by adding the following to
 `.gitlab/managed-apps/cilium/values.yaml`:
 
-```yml
+```yaml
 global:
   registry: registry.gitlab.com/gitlab-org/defend/cilium
   policyAuditMode: true
@@ -737,15 +734,15 @@ agent:
 ```
 
 The Cilium monitor log for traffic is logged out by the
-`cilium-monitor` sidecar container. You can check these logs via:
+`cilium-monitor` sidecar container. You can check these logs with the following command:
 
 ```shell
 kubectl -n gitlab-managed-apps logs cilium-XXXX cilium-monitor
 ```
 
-You can disable the monitor log via `.gitlab/managed-apps/cilium/values.yaml`:
+You can disable the monitor log in `.gitlab/managed-apps/cilium/values.yaml`:
 
-```yml
+```yaml
 agent:
   monitor:
     enabled: false

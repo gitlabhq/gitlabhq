@@ -11,7 +11,7 @@ describe Gitlab::Checks::TagCheck do
     it 'raises an error when user does not have access' do
       allow(user_access).to receive(:can_do_action?).with(:admin_tag).and_return(false)
 
-      expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to change existing tags on this project.')
+      expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, 'You are not allowed to change existing tags on this project.')
     end
 
     context 'with protected tag' do
@@ -27,7 +27,7 @@ describe Gitlab::Checks::TagCheck do
           let(:newrev) { '0000000000000000000000000000000000000000' }
 
           it 'is prevented' do
-            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /cannot be deleted/)
+            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, /cannot be deleted/)
           end
         end
 
@@ -36,7 +36,7 @@ describe Gitlab::Checks::TagCheck do
           let(:newrev) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
 
           it 'is prevented' do
-            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /cannot be updated/)
+            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, /cannot be updated/)
           end
         end
       end
@@ -47,7 +47,7 @@ describe Gitlab::Checks::TagCheck do
         let(:ref) { 'refs/tags/v9.1.0' }
 
         it 'prevents creation below access level' do
-          expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /allowed to create this tag as it is protected/)
+          expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, /allowed to create this tag as it is protected/)
         end
 
         context 'when user has access' do

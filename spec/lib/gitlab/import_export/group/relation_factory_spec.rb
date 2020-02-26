@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::GroupRelationFactory do
+describe Gitlab::ImportExport::Group::RelationFactory do
   let(:group) { create(:group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
   let(:user) { create(:admin) }
@@ -11,7 +11,7 @@ describe Gitlab::ImportExport::GroupRelationFactory do
     described_class.create(relation_sym:   relation_sym,
                            relation_hash:  relation_hash,
                            members_mapper: members_mapper,
-                           object_builder: Gitlab::ImportExport::GroupObjectBuilder,
+                           object_builder: Gitlab::ImportExport::Group::ObjectBuilder,
                            user:           user,
                            importable:     group,
                            excluded_keys:  excluded_keys)

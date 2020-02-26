@@ -34,7 +34,7 @@ module Groups
       end
 
       def restorer
-        @restorer ||= Gitlab::ImportExport::GroupTreeRestorer.new(user: @current_user,
+        @restorer ||= Gitlab::ImportExport::Group::TreeRestorer.new(user: @current_user,
                                                                   shared: @shared,
                                                                   group: @group,
                                                                   group_hash: nil)

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe "User edits milestone", :js do
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
-  set(:milestone) { create(:milestone, project: project, start_date: Date.today, due_date: 5.days.from_now) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:milestone) { create(:milestone, project: project, start_date: Date.today, due_date: 5.days.from_now) }
 
   before do
     project.add_developer(user)

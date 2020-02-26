@@ -63,7 +63,7 @@ describe Gitlab::ImportExport::Importer do
       end
 
       it 'restores the ProjectTree' do
-        expect(Gitlab::ImportExport::ProjectTreeRestorer).to receive(:new).and_call_original
+        expect(Gitlab::ImportExport::Project::TreeRestorer).to receive(:new).and_call_original
 
         importer.execute
       end

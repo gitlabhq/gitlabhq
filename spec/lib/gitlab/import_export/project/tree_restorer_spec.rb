@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-include ImportExport::CommonUtil
 
-describe Gitlab::ImportExport::ProjectTreeRestorer do
+describe Gitlab::ImportExport::Project::TreeRestorer do
   include ImportExport::CommonUtil
 
   let(:shared) { project.import_export_shared }

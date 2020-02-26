@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe 'User explores projects' do
-  set(:archived_project) { create(:project, :archived) }
-  set(:internal_project) { create(:project, :internal) }
-  set(:private_project) { create(:project, :private) }
-  set(:public_project) { create(:project, :public) }
+  let_it_be(:archived_project) { create(:project, :archived) }
+  let_it_be(:internal_project) { create(:project, :internal) }
+  let_it_be(:private_project) { create(:project, :private) }
+  let_it_be(:public_project) { create(:project, :public) }
 
   context 'when not signed in' do
     context 'when viewing public projects' do
@@ -19,7 +19,7 @@ describe 'User explores projects' do
   end
 
   context 'when signed in' do
-    set(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     before do
       sign_in(user)

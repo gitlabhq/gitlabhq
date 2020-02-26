@@ -49,8 +49,8 @@ module API
                            result = access_checker.check(params[:action], params[:changes])
                            @project ||= access_checker.project
                            result
-                         rescue Gitlab::GitAccess::UnauthorizedError => e
-                           return response_with_status(code: 401, success: false, message: e.message)
+                         rescue Gitlab::GitAccess::ForbiddenError => e
+                           return response_with_status(code: 403, success: false, message: e.message)
                          rescue Gitlab::GitAccess::TimeoutError => e
                            return response_with_status(code: 503, success: false, message: e.message)
                          rescue Gitlab::GitAccess::NotFoundError => e

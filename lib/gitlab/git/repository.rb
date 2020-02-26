@@ -322,6 +322,7 @@ module Gitlab
           limit: 10,
           offset: 0,
           path: nil,
+          author: nil,
           follow: false,
           skip_merges: false,
           after: nil,

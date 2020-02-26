@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::ProjectRelationFactory do
+describe Gitlab::ImportExport::Project::RelationFactory do
   let(:group)   { create(:group) }
   let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
@@ -11,7 +11,7 @@ describe Gitlab::ImportExport::ProjectRelationFactory do
   let(:created_object) do
     described_class.create(relation_sym: relation_sym,
                            relation_hash: relation_hash,
-                           object_builder: Gitlab::ImportExport::GroupProjectObjectBuilder,
+                           object_builder: Gitlab::ImportExport::Project::ObjectBuilder,
                            members_mapper: members_mapper,
                            user: user,
                            importable: project,
@@ -243,11 +243,11 @@ describe Gitlab::ImportExport::ProjectRelationFactory do
   context 'Project references' do
     let(:relation_sym) { :project_foo_model }
     let(:relation_hash) do
-      Gitlab::ImportExport::ProjectRelationFactory::PROJECT_REFERENCES.map { |ref| { ref => 99 } }.inject(:merge)
+      Gitlab::ImportExport::Project::RelationFactory::PROJECT_REFERENCES.map { |ref| { ref => 99 } }.inject(:merge)
     end
 
     class ProjectFooModel < FooModel
-      attr_accessor(*Gitlab::ImportExport::ProjectRelationFactory::PROJECT_REFERENCES)
+      attr_accessor(*Gitlab::ImportExport::Project::RelationFactory::PROJECT_REFERENCES)
     end
 
     before do

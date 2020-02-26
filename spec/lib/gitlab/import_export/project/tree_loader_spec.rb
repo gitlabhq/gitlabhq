@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::ProjectTreeLoader do
+describe Gitlab::ImportExport::Project::TreeLoader do
   let(:fixture) { 'spec/fixtures/lib/gitlab/import_export/with_duplicates.json' }
   let(:project_tree) { JSON.parse(File.read(fixture)) }
 

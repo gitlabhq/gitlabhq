@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 describe 'User sees user popover', :js do
-  set(:project) { create(:project, :repository) }
-
+  let_it_be(:project) { create(:project, :repository) }
   let(:user) { project.creator }
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project)

@@ -1,0 +1,5 @@
+---
+title: Do not parse undefined severity and confidence from reports
+merge_request: 25884
+author:
+type: other

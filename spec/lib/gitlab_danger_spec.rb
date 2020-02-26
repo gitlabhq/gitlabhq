@@ -9,7 +9,7 @@ describe GitlabDanger do
 
   describe '.local_warning_message' do
     it 'returns an informational message with rules that can run' do
-      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changes_size, gemfile, documentation, frozen_string, duplicate_yarn_dependencies, prettier, eslint, database, commit_messages')
+      expect(described_class.local_warning_message).to eq('==> Only the following Danger rules can be run locally: changes_size, documentation, frozen_string, duplicate_yarn_dependencies, prettier, eslint, database, commit_messages')
     end
   end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::ImportExport::GroupTreeSaver do
+describe Gitlab::ImportExport::Group::TreeSaver do
   describe 'saves the group tree into a json object' do
     let(:shared) { Gitlab::ImportExport::Shared.new(group) }
     let(:group_tree_saver) { described_class.new(group: group, current_user: user, shared: shared) }
@@ -72,7 +72,7 @@ describe Gitlab::ImportExport::GroupTreeSaver do
     # except:
     # context 'with description override' do
     # context 'group members' do
-    # ^ These are specific for the groupTreeSaver
+    # ^ These are specific for the Group::TreeSaver
     context 'JSON' do
       let(:saved_group_json) do
         group_tree_saver.save

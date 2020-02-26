@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Shared examples for ProjectTreeRestorer (shared to allow the testing
+# Shared examples for Project::TreeRestorer (shared to allow the testing
 # of EE-specific features)
 RSpec.shared_examples 'restores project successfully' do |**results|
   it 'restores the project' do

@@ -22,7 +22,7 @@ describe Gitlab::ImportExport::RelationRenameService do
   end
 
   context 'when importing' do
-    let(:project_tree_restorer) { Gitlab::ImportExport::ProjectTreeRestorer.new(user: user, shared: shared, project: project) }
+    let(:project_tree_restorer) { Gitlab::ImportExport::Project::TreeRestorer.new(user: user, shared: shared, project: project) }
     let(:file_content) { IO.read(File.join(shared.export_path, 'project.json')) }
     let(:json_file) { ActiveSupport::JSON.decode(file_content) }
 
@@ -99,7 +99,7 @@ describe Gitlab::ImportExport::RelationRenameService do
     let(:relation_tree_saver) { Gitlab::ImportExport::RelationTreeSaver.new }
 
     let(:project_tree_saver) do
-      Gitlab::ImportExport::ProjectTreeSaver.new(
+      Gitlab::ImportExport::Project::TreeSaver.new(
         project: project, current_user: user, shared: shared)
     end
 
