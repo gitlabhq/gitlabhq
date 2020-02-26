@@ -13481,6 +13481,9 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
+msgid "Package Registry"
+msgstr ""
+
 msgid "Package deleted successfully"
 msgstr ""
 
@@ -17627,6 +17630,9 @@ msgid "Sets weight to %{weight}."
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid "Settings related to the use and experience of using GitLab's Package Registry."
 msgstr ""
 
 msgid "Settings to prevent self-approval across all projects in the instance. Only an administrator can modify these settings."
@@ -21944,6 +21950,9 @@ msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
 msgid "When enabled, any user visiting %{host} will be able to create an account."
+msgstr ""
+
+msgid "When enabled, if an NPM package isn't found in the GitLab Registry, we will attempt to pull from the global NPM registry."
 msgstr ""
 
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."

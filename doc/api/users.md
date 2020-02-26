@@ -1435,14 +1435,14 @@ Please note that `last_activity_at` is deprecated, please use `last_activity_on`
 
 ## User memberships (admin only)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22518) in GitLab 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/20532) in GitLab 12.8.
 
 Lists all projects and groups a user is a member of. This endpoint is available for admins only.
 It returns the `source_id`, `source_name`, `source_type` and `access_level` of a membership.
-Source can be of type `Namespace` (representing a group) or `Project`. The response represents only direct memberships. Inherited memberships, for example in subgroups, will not be included.
-Access levels will be represented by an integer value. Read more about the meaning of access level values [here](access_requests.md#valid-access-levels).
+Source can be of type `Namespace` (representing a group) or `Project`. The response represents only direct memberships. Inherited memberships, for example in subgroups, are not included.
+Access levels are represented by an integer value. For more details, read about the meaning of [access level values](access_requests.md#valid-access-levels).
 
-```
+```plaintext
 GET /users/:id/memberships
 ```
 
@@ -1456,7 +1456,7 @@ Parameters:
 Returns:
 
 - `200 OK` on success.
-- `404 User Not Found` if user cannot be found.
+- `404 User Not Found` if user can't be found.
 - `403 Forbidden` when not requested by an admin.
 - `400 Bad Request` when requested type is not supported.
 

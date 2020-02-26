@@ -1,9 +1,11 @@
 # SAML OmniAuth Provider
 
-> This topic is for SAML on self-managed GitLab instances. For SAML on GitLab.com, see [SAML SSO for GitLab.com Groups](../user/group/saml_sso/index.md).
+Note that:
 
-NOTE: **Note:**
-You need to [enable OmniAuth](omniauth.md) in order to use this.
+- SAML OmniAuth Provider is for SAML on self-managed GitLab instances. For SAML on
+  GitLab.com, see [SAML SSO for GitLab.com Groups](../user/group/saml_sso/index.md).
+- Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
+  earlier version, you'll need to explicitly enable it.
 
 GitLab can be configured to act as a SAML 2.0 Service Provider (SP). This allows
 GitLab to consume assertions from a SAML 2.0 Identity Provider (IdP) such as
