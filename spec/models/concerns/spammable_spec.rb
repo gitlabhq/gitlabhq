@@ -36,6 +36,46 @@ describe Spammable do
       end
     end
 
+    describe '#invalidate_if_spam' do
+      using RSpec::Parameterized::TableSyntax
+
+      context 'when the model is spam' do
+        where(:recaptcha_enabled, :error) do
+          true  | /solve the reCAPTCHA to proceed/
+          false | /has been discarded/
+        end
+
+        with_them do
+          subject { invalidate_if_spam(true, recaptcha_enabled) }
+
+          it 'has an error related to spam on the model' do
+            expect(subject.errors.messages[:base]).to match_array error
+          end
+        end
+      end
+
+      context 'when the model is not spam' do
+        [true, false].each do |enabled|
+          let(:recaptcha_enabled) { enabled }
+
+          subject { invalidate_if_spam(false, recaptcha_enabled) }
+
+          it 'returns no error' do
+            expect(subject.errors.messages[:base]).to be_empty
+          end
+        end
+      end
+
+      def invalidate_if_spam(is_spam, recaptcha_enabled)
+        stub_application_setting(recaptcha_enabled: recaptcha_enabled)
+
+        issue.tap do |i|
+          i.spam = is_spam
+          i.invalidate_if_spam
+        end
+      end
+    end
+
     describe '#submittable_as_spam_by?' do
       let(:admin) { build(:admin) }
       let(:user) { build(:user) }

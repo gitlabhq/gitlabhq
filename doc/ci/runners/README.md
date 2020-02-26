@@ -337,8 +337,8 @@ How this feature will work:
 ### Be careful with sensitive information
 
 With some [Runner Executors](https://docs.gitlab.com/runner/executors/README.html),
-if you can run a job on the Runner, you can get access to any code it runs
-and get the token of the Runner. With shared Runners, this means that anyone
+if you can run a job on the Runner, you can get full access to the file system,
+and thus any code it runs as well as the token of the Runner. With shared Runners, this means that anyone
 that runs jobs on the Runner, can access anyone else's code that runs on the
 Runner.
 

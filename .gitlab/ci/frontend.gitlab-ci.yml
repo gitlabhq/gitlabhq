@@ -207,11 +207,11 @@ karma-as-if-foss:
   extends: .frontend-job-base
   script:
     - date
-    - yarn jest --ci --coverage
+    - yarn jest --ci --coverage --testSequencer ./scripts/frontend/parallel_ci_sequencer.js
   cache:
     key: jest
     paths:
-      - tmp/jest/jest/
+      - tmp/cache/jest/
     policy: pull-push
 
 jest:
@@ -229,6 +229,7 @@ jest:
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml
+  parallel: 2
 
 jest-as-if-foss:
   extends:
@@ -238,6 +239,26 @@ jest-as-if-foss:
   needs: ["frontend-fixtures-as-if-foss"]
   cache:
     policy: pull
+
+coverage-frontend:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .frontend:rules:default-frontend-jobs
+  needs: ["jest"]
+  stage: post-test
+  before_script:
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
+  script:
+    - yarn node scripts/frontend/merge_coverage_frontend.js
+  artifacts:
+    name: coverage-frontend
+    expire_in: 31d
+    paths:
+      - coverage-frontend/
+  cache:
+    paths:
+      - .yarn-cache/
 
 .qa-frontend-node:
   extends:

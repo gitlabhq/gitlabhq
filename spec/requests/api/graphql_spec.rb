@@ -152,4 +152,52 @@ describe 'GraphQL' do
       end
     end
   end
+
+  describe 'resolver complexity' do
+    let_it_be(:project) { create(:project, :public) }
+    let(:query) do
+      graphql_query_for(
+        'project',
+        { 'fullPath' => project.full_path },
+        query_graphql_field(resource, {}, 'edges { node { iid } }')
+      )
+    end
+
+    before do
+      stub_const('GitlabSchema::DEFAULT_MAX_COMPLEXITY', 6)
+      stub_feature_flags(graphql_resolver_complexity: true)
+    end
+
+    context 'when fetching single resource' do
+      let(:resource) { 'issues(first: 1)' }
+
+      it 'processes the query' do
+        post_graphql(query)
+
+        expect(graphql_errors).to be_nil
+      end
+    end
+
+    context 'when fetching too many resources' do
+      let(:resource) { 'issues(first: 100)' }
+
+      it 'returns an error' do
+        post_graphql(query)
+
+        expect_graphql_errors_to_include(/which exceeds max complexity/)
+      end
+
+      context 'when graphql_resolver_complexity is disabled' do
+        before do
+          stub_feature_flags(graphql_resolver_complexity: false)
+        end
+
+        it 'processes the query' do
+          post_graphql(query)
+
+          expect(graphql_errors).to be_nil
+        end
+      end
+    end
+  end
 end

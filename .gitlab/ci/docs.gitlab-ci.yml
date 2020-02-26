@@ -44,13 +44,15 @@ docs lint:
     - .default-tags
     - .default-retry
     - .docs:rules:docs-lint
-  image: "registry.gitlab.com/gitlab-org/gitlab-docs:docs-lint"
+  image: "registry.gitlab.com/gitlab-org/gitlab-docs:lint"
   stage: test
   needs: []
   script:
     - scripts/lint-doc.sh
     # Lint Markdown
     - markdownlint --config .markdownlint.json 'doc/**/*.md'
+    # Lint content (error-level text-scoped rules only)
+    - vale --minAlertLevel error --ignore-syntax doc
     # Prepare docs for build
     - mv doc/ /tmp/gitlab-docs/content/$DOCS_GITLAB_REPO_SUFFIX
     - cd /tmp/gitlab-docs

@@ -14,6 +14,7 @@ module Gitlab
       MAX_CHANGED_LINES_IN_COMMIT = 30
       SHORT_REFERENCE_REGEX = %r{([\w\-\/]+)?(#|!|&|%)\d+\b}.freeze
       DEFAULT_SUBJECT_DESCRIPTION = 'commit subject'
+      WIP_PREFIX = 'WIP: '
       PROBLEMS = {
         subject_too_short: "The %s must contain at least #{MIN_SUBJECT_WORDS_COUNT} words",
         subject_too_long: "The %s may not be longer than #{MAX_LINE_LENGTH} characters",
@@ -164,7 +165,7 @@ module Gitlab
       end
 
       def subject
-        message_parts[0]
+        message_parts[0].delete_prefix(WIP_PREFIX)
       end
 
       def separator

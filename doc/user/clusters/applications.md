@@ -117,7 +117,7 @@ service included with GitLab that coordinates the jobs.
 
 If the project is on GitLab.com, shared Runners are available
 (the first 2000 minutes are free, you can
-[buy more later](../../subscriptions/index.md#extra-shared-runners-pipeline-minutes))
+[buy more later](../../subscriptions/index.md#purchasing-additional-ci-minutes))
 and you do not have to deploy one if they are enough for your needs. If a
 project-specific Runner is desired, or there are no shared Runners, it is easy
 to deploy one.

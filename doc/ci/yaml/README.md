@@ -825,10 +825,8 @@ This could result in some unexpected behavior, including:
 
 Available rule clauses include:
 
-- [`if`](#rulesif)
-  (similar to [`only:variables`](#onlyvariablesexceptvariables)).
-- [`changes`](#ruleschanges)
-  (same as [`only:changes`](#onlychangesexceptchanges)).
+- [`if`](#rulesif) (similar to [`only:variables`](#onlyvariablesexceptvariables))
+- [`changes`](#ruleschanges) (same as [`only:changes`](#onlychangesexceptchanges))
 - [`exists`](#rulesexists)
 
 For example, using `if`. This configuration specifies that `job` should be built
@@ -895,7 +893,6 @@ docker build:
     - if: '$VAR == "string value"'
       when: manual # Will include the job and set to when:manual if the expression evaluates to true, after the `changes:` rule fails to match.
     - when: on_success # If neither of the first rules match, set to on_success
-
 ```
 
 In this example, a job either set to:
@@ -955,6 +952,47 @@ job:
 ```
 
 In this example, if the first rule matches, then the job will have `when: manual` and `allow_failure: true`.
+
+#### Exclude jobs with `rules:` from certain pipelines
+
+Jobs with `rules:` can cause two pipelines to be created unexpectedly:
+
+- One pipeline from pushing a commit to a branch.
+- A second ["detached" pipeline for a merge request](../merge_request_pipelines/index.md).
+
+`only` and `except` jobs do not trigger merge request pipelines by default, but this
+is not the case for jobs with `rules:`, which may be surprising if migrating from `only`
+and `except` to `rules:`.
+
+If you are using `rules:` and you see two pipelines for commits to branches that have
+a merge request, you have two options:
+
+- Individually exclude each job that uses `rules:` from merge request pipelines. The
+  example below will cause the job to **not** run in *pipelines for merge requests*,
+  but it **will** run in pipelines for *new tags and pipelines running on branch refs*:
+
+  ```yaml
+  job:
+    rules:
+      - if: $CI_MERGE_REQUEST_ID
+        when: never
+      - when: manual
+    script:
+      - echo hello
+  ```
+
+- Add a global [`workflow: rules`](#workflowrules) to allow pipelines in only certain
+  situations. The example below will only run pipelines for merge requests, new tags and
+  changes to master. It will **not** run any pipelines *on any branch except master*, but
+  it will run **detached merge request pipelines** for any merge request, targeting any branch:
+
+  ```yaml
+  workflow:
+    rules:
+      - if: $CI_MERGE_REQUEST_ID
+      - if: $CI_COMMIT_TAG
+      - if: $CI_COMMIT_BRANCH == "master"
+  ```
 
 #### Complex rule clauses
 

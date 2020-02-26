@@ -146,6 +146,7 @@ graph RL;
   U2["frontend-fixtures-as-if-foss<br/>(EE default refs only)"];
   V["webpack-dev-server, static-analysis"];
   M[coverage];
+  O[coverage-frontend];
   N["pages (master only)"];
   Q[package-and-qa];
   S["RSpec<br/>(e.g. rspec unit pg9)"]
@@ -190,6 +191,7 @@ subgraph "`test` stage"
 
 subgraph "`post-test` stage"
     M --> |happens after| S
+    O --> |needs `jest`| I
     end
 
 subgraph "`review-prepare` stage"

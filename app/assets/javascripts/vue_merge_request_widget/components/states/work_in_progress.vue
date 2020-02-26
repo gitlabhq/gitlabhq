@@ -1,15 +1,17 @@
 <script>
 import $ from 'jquery';
-import { __ } from '~/locale';
+import { GlButton } from '@gitlab/ui';
+import { __, s__ } from '~/locale';
 import createFlash from '~/flash';
-import statusIcon from '../mr_widget_status_icon.vue';
+import StatusIcon from '../mr_widget_status_icon.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import eventHub from '../../event_hub';
 
 export default {
   name: 'WorkInProgress',
   components: {
-    statusIcon,
+    StatusIcon,
+    GlButton,
   },
   directives: {
     tooltip,
@@ -23,8 +25,15 @@ export default {
       isMakingRequest: false,
     };
   },
+  computed: {
+    wipInfoTooltip() {
+      return s__(
+        'mrWidget|When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged',
+      );
+    },
+  },
   methods: {
-    removeWIP() {
+    handleRemoveWIP() {
       this.isMakingRequest = true;
       this.service
         .removeWIP()
@@ -52,29 +61,22 @@ export default {
         <i
           v-tooltip
           class="fa fa-question-circle"
-          :title="
-            s__(
-              'mrWidget|When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged',
-            )
-          "
-          :aria-label="
-            s__(
-              'mrWidget|When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged',
-            )
-          "
+          :title="wipInfoTooltip"
+          :aria-label="wipInfoTooltip"
         >
         </i>
       </span>
-      <button
+      <gl-button
         v-if="mr.removeWIPPath"
+        size="sm"
+        variant="default"
         :disabled="isMakingRequest"
-        type="button"
-        class="btn btn-default btn-sm js-remove-wip"
-        @click="removeWIP"
+        :loading="isMakingRequest"
+        class="js-remove-wip"
+        @click="handleRemoveWIP"
       >
-        <i v-if="isMakingRequest" class="fa fa-spinner fa-spin" aria-hidden="true"> </i>
         {{ s__('mrWidget|Resolve WIP status') }}
-      </button>
+      </gl-button>
     </div>
   </div>
 </template>

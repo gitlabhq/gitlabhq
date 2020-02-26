@@ -14,7 +14,7 @@ describe 'User creates snippet', :js do
   end
 
   def description_field
-    find('.js-description-input input,textarea')
+    find('.js-description-input').find('input,textarea')
   end
 
   def fill_form

@@ -145,34 +145,30 @@ describe('ReadyToMerge', () => {
       });
     });
 
-    describe('mergeButtonClass', () => {
-      const defaultClass = 'btn btn-sm btn-success accept-merge-request';
-      const failedClass = `${defaultClass} btn-danger`;
-      const inActionClass = `${defaultClass} btn-info`;
-
+    describe('mergeButtonVariant', () => {
       it('defaults to success class', () => {
         Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
 
-        expect(vm.mergeButtonClass).toEqual(defaultClass);
+        expect(vm.mergeButtonVariant).toEqual('success');
       });
 
       it('returns success class for success status', () => {
         Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
         Vue.set(vm.mr, 'pipeline', true);
 
-        expect(vm.mergeButtonClass).toEqual(defaultClass);
+        expect(vm.mergeButtonVariant).toEqual('success');
       });
 
       it('returns info class for pending status', () => {
         Vue.set(vm.mr, 'availableAutoMergeStrategies', [MTWPS_MERGE_STRATEGY]);
 
-        expect(vm.mergeButtonClass).toEqual(inActionClass);
+        expect(vm.mergeButtonVariant).toEqual('info');
       });
 
-      it('returns failed class for failed status', () => {
+      it('returns danger class for failed status', () => {
         vm.mr.hasCI = true;
 
-        expect(vm.mergeButtonClass).toEqual(failedClass);
+        expect(vm.mergeButtonVariant).toEqual('danger');
       });
     });
 

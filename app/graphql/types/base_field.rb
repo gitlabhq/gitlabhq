@@ -9,7 +9,7 @@ module Types
     def initialize(*args, **kwargs, &block)
       @calls_gitaly = !!kwargs.delete(:calls_gitaly)
       @constant_complexity = !!kwargs[:complexity]
-      kwargs[:complexity] ||= field_complexity(kwargs[:resolver_class])
+      kwargs[:complexity] = field_complexity(kwargs[:resolver_class], kwargs[:complexity])
       @feature_flag = kwargs[:feature_flag]
       kwargs = check_feature_flag(kwargs)
 
@@ -51,7 +51,9 @@ module Types
       args
     end
 
-    def field_complexity(resolver_class)
+    def field_complexity(resolver_class, current)
+      return current if current.present? && current > 0
+
       if resolver_class
         field_resolver_complexity
       else
@@ -66,22 +68,30 @@ module Types
       # proc because we set complexity depending on arguments and number of
       # items which can be loaded.
       proc do |ctx, args, child_complexity|
+        next base_complexity unless resolver_complexity_enabled?(ctx)
+
         # Resolvers may add extra complexity depending on used arguments
         complexity = child_complexity + self.resolver&.try(:resolver_complexity, args, child_complexity: child_complexity).to_i
         complexity += 1 if calls_gitaly?
-
-        field_defn = to_graphql
-
-        if field_defn.connection?
-          # Resolvers may add extra complexity depending on number of items being loaded.
-          page_size   = field_defn.connection_max_page_size || ctx.schema.default_max_page_size
-          limit_value = [args[:first], args[:last], page_size].compact.min
-          multiplier  = self.resolver&.try(:complexity_multiplier, args).to_f
-          complexity += complexity * limit_value * multiplier
-        end
+        complexity += complexity * connection_complexity_multiplier(ctx, args)
 
         complexity.to_i
       end
+    end
+
+    def resolver_complexity_enabled?(ctx)
+      ctx.fetch(:graphql_resolver_complexity_flag) { |key| ctx[key] = Feature.enabled?(:graphql_resolver_complexity) }
+    end
+
+    def connection_complexity_multiplier(ctx, args)
+      # Resolvers may add extra complexity depending on number of items being loaded.
+      field_defn = to_graphql
+      return 0 unless field_defn.connection?
+
+      page_size   = field_defn.connection_max_page_size || ctx.schema.default_max_page_size
+      limit_value = [args[:first], args[:last], page_size].compact.min
+      multiplier  = self.resolver&.try(:complexity_multiplier, args).to_f
+      limit_value * multiplier
     end
   end
 end

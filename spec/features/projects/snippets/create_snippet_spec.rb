@@ -9,7 +9,7 @@ describe 'Projects > Snippets > Create Snippet', :js do
   let_it_be(:project) { create(:project, :public) }
 
   def description_field
-    find('.js-description-input input,textarea')
+    find('.js-description-input').find('input,textarea')
   end
 
   def fill_form

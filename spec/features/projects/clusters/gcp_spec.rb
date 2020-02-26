@@ -200,7 +200,7 @@ describe 'Gcp Cluster', :js, :do_not_mock_admin_mode do
     end
   end
 
-  context 'when third party offers are disabled' do
+  context 'when third party offers are disabled', :clean_gitlab_redis_shared_state do
     let(:admin) { create(:admin) }
 
     before do

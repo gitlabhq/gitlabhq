@@ -60,7 +60,7 @@ Capybara.register_driver :chrome do |app|
   )
 end
 
-Capybara.server = :webrick
+Capybara.server = :puma
 Capybara.javascript_driver = :chrome
 Capybara.default_max_wait_time = timeout
 Capybara.ignore_hidden_elements = true

@@ -1,6 +1,6 @@
 <script>
 import _ from 'underscore';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlButton } from '@gitlab/ui';
 import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
@@ -26,6 +26,7 @@ export default {
     CommitEdit,
     CommitMessageDropdown,
     GlIcon,
+    GlButton,
     MergeImmediatelyConfirmationDialog: () =>
       import(
         'ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'
@@ -67,18 +68,13 @@ export default {
 
       return 'success';
     },
-    mergeButtonClass() {
-      const defaultClass = 'btn btn-sm btn-success accept-merge-request';
-      const failedClass = `${defaultClass} btn-danger`;
-      const inActionClass = `${defaultClass} btn-info`;
-
+    mergeButtonVariant() {
       if (this.status === 'failed') {
-        return failedClass;
+        return 'danger';
       } else if (this.status === 'pending') {
-        return inActionClass;
+        return 'info';
       }
-
-      return defaultClass;
+      return 'success';
     },
     iconClass() {
       if (
@@ -267,16 +263,16 @@ export default {
       <div class="media-body">
         <div class="mr-widget-body-controls media space-children">
           <span class="btn-group">
-            <button
+            <gl-button
+              size="sm"
+              class="qa-merge-button accept-merge-request"
+              :variant="mergeButtonVariant"
               :disabled="isMergeButtonDisabled"
-              :class="mergeButtonClass"
-              type="button"
-              class="qa-merge-button"
+              :loading="isMakingRequest"
               @click="handleMergeButtonClick(isAutoMergeAvailable)"
             >
-              <i v-if="isMakingRequest" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
               {{ mergeButtonText }}
-            </button>
+            </gl-button>
             <button
               v-if="shouldShowMergeImmediatelyDropdown"
               :disabled="isMergeButtonDisabled"

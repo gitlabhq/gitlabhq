@@ -6,7 +6,7 @@ describe 'User creates snippet', :js do
   let(:user) { create(:user) }
 
   def description_field
-    find('.js-description-input input,textarea')
+    find('.js-description-input').find('input,textarea')
   end
 
   before do

@@ -16,7 +16,7 @@ module Spammable
     attr_accessor :spam_log
     alias_method :spam?, :spam
 
-    after_validation :check_for_spam, on: [:create, :update]
+    after_validation :invalidate_if_spam, on: [:create, :update]
 
     cattr_accessor :spammable_attrs, instance_accessor: false do
       []
@@ -37,7 +37,7 @@ module Spammable
     end
   end
 
-  def check_for_spam
+  def invalidate_if_spam
     error_msg = if Gitlab::Recaptcha.enabled?
                   "Your #{spammable_entity_type} has been recognized as spam. "\
                   "Please, change the content or solve the reCAPTCHA to proceed."

@@ -152,6 +152,18 @@ describe Gitlab::Danger::CommitLinter do
         end
       end
 
+      context 'when subject is a WIP' do
+        let(:final_message) { 'A B C' }
+        # commit message with prefix will be over max length. commit message without prefix will be of maximum size
+        let(:commit_message) { described_class::WIP_PREFIX + final_message + 'D' * (described_class::WARN_SUBJECT_LENGTH - final_message.size) }
+
+        it 'does not have any problems' do
+          commit_linter.lint
+
+          expect(commit_linter.problems).to be_empty
+        end
+      end
+
       context 'when subject is too short and too long' do
         let(:commit_message) { 'A ' + 'B' * described_class::MAX_LINE_LENGTH }
 
@@ -183,7 +195,7 @@ describe Gitlab::Danger::CommitLinter do
         end
       end
 
-      context 'when subject ands with a period' do
+      context 'when subject ends with a period' do
         let(:commit_message) { 'A B C.' }
 
         it 'adds a problem' do

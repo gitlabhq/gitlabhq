@@ -46,7 +46,15 @@ describe Types::BaseField do
       expect(field.to_graphql.complexity).to eq 12
     end
 
-    context 'when field has a resolver proc' do
+    context 'when field has a resolver' do
+      context 'when a valid complexity is already set' do
+        let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE.connection_type, resolver_class: resolver, complexity: 2, max_page_size: 100, null: true) }
+
+        it 'uses this complexity' do
+          expect(field.to_graphql.complexity).to eq 2
+        end
+      end
+
       context 'and is a connection' do
         let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE.connection_type, resolver_class: resolver, max_page_size: 100, null: true) }
 
@@ -58,6 +66,17 @@ describe Types::BaseField do
         it 'sets complexity depending on number load limits for resolvers' do
           expect(field.to_graphql.complexity.call({}, { first: 1 }, 2)).to eq 2
           expect(field.to_graphql.complexity.call({}, { first: 1, foo: true }, 2)).to eq 4
+        end
+
+        context 'when graphql_resolver_complexity is disabled' do
+          before do
+            stub_feature_flags(graphql_resolver_complexity: false)
+          end
+
+          it 'sets default field complexity' do
+            expect(field.to_graphql.complexity.call({}, {}, 2)).to eq 1
+            expect(field.to_graphql.complexity.call({}, { first: 50 }, 2)).to eq 1
+          end
         end
       end
 

@@ -89,6 +89,8 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
               title="Copy login command"
               type="button"
             >
+              <!---->
+               
               <svg
                 class="gl-icon s16"
               >
@@ -126,6 +128,8 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
               title="Copy build command"
               type="button"
             >
+              <!---->
+               
               <svg
                 class="gl-icon s16"
               >
@@ -155,6 +159,8 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
               title="Copy push command"
               type="button"
             >
+              <!---->
+               
               <svg
                 class="gl-icon s16"
               >
