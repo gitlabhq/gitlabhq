@@ -66,13 +66,13 @@
     - @commit.parents.each do |parent|
       = link_to parent.short_id, project_commit_path(@project, parent), class: "commit-sha"
     .commit-info.branches
-      %i.fa.fa-spinner.fa-spin
+      .spinner.vertical-align-middle
 
   .well-segment.merge-request-info
     .icon-container
       = custom_icon('mr_bold')
     %span.commit-info.merge-requests{ 'data-project-commit-path' => merge_requests_project_commit_path(@project, @commit.id, format: :json) }
-      = icon('spinner spin')
+      .spinner.vertical-align-middle
 
   - last_pipeline = @commit.last_pipeline
   - if can?(current_user, :read_pipeline, last_pipeline)

@@ -1,4 +1,4 @@
-# Product Analytics
+# Event tracking
 
 At GitLab, we encourage event tracking so we can iterate on and improve the project and user experience.
 
@@ -44,7 +44,7 @@ From the backend, the events that are tracked will likely consist of things like
 
 See [Backend tracking guide](backend.md).
 
-Also, see [Application performance metrics](../instrumentation.md) if you are after instrumenting application performance metrics.
+Also, see [Instrumenting Ruby code](../instrumentation.md) if you are instrumenting application performance metrics for Ruby code.
 
 ## Enabling tracking
 

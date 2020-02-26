@@ -35,13 +35,23 @@ Read more in the [CI documentation](../ci/yaml/README.md#processing-git-pushes).
 
 Activity history for projects and individuals' profiles was limited to one year until [GitLab 11.4](https://gitlab.com/gitlab-org/gitlab-foss/issues/52246) when it was extended to two years, and in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/33840) to three years.
 
-## Number of project webhooks
+## Number of webhooks
+
+A maximum number of webhooks applies to each GitLab.com tier. Limits apply to project and group webhooks.
+
+### Project Webhooks
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20730) in GitLab 12.6.
 
-A maximum number of project webhooks applies to each GitLab.com tier. Check the
-[Maximum number of webhooks (per tier)](../user/project/integrations/webhooks.md#maximum-number-of-webhooks-per-tier)
-section in the Webhooks page.
+Check the [Maximum number of project webhooks (per tier)](../user/project/integrations/webhooks.md#maximum-number-of-project-webhooks-per-tier) section in the Webhooks page.
+
+### Group Webhooks
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25129) in GitLab 12.9.
+
+Check the [Maximum number of group webhooks (per tier)](../user/project/integrations/webhooks.md#maximum-number-of-group-webhooks-per-tier) section in the Webhooks page.
+
+### Setting the limit on a self-hosted installation
 
 To set this limit on a self-hosted installation, run the following in the
 [GitLab Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session):
@@ -50,7 +60,11 @@ To set this limit on a self-hosted installation, run the following in the
 # If limits don't exist for the default plan, you can create one with:
 # Plan.default.create_limits!
 
+# For project webhooks
 Plan.default.limits.update!(project_hooks: 100)
+
+# For group webhooks
+Plan.default.limits.update!(group_hooks: 100)
 ```
 
 NOTE: **Note:** Set the limit to `0` to disable it.
