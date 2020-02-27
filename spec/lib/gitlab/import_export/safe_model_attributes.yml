@@ -72,6 +72,7 @@ Note:
 - resolved_by_push
 - discussion_id
 - original_discussion_id
+- confidential
 LabelLink:
 - id
 - target_type

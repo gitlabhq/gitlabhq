@@ -12,6 +12,7 @@ import {
   deploymentData,
   metricsDashboardPayload,
   mockedQueryResultPayload,
+  metricsDashboardViewModel,
   mockProjectDir,
   mockHost,
 } from '../../mock_data';
@@ -65,7 +66,7 @@ describe('Time series component', () => {
       );
 
       // Pick the second panel group and the first panel in it
-      [mockGraphData] = store.state.monitoringDashboard.dashboard.panel_groups[1].panels;
+      [mockGraphData] = store.state.monitoringDashboard.dashboard.panelGroups[0].panels;
     });
 
     describe('general functions', () => {
@@ -188,7 +189,7 @@ describe('Time series component', () => {
             });
 
             it('formats tooltip content', () => {
-              const name = 'Pod average';
+              const name = 'Total';
               const value = '5.556';
               const dataIndex = 0;
               const seriesLabel = timeSeriesChart.find(GlChartSeriesLabel);
@@ -439,7 +440,7 @@ describe('Time series component', () => {
           it('constructs a label for the chart y-axis', () => {
             const { yAxis } = getChartOptions();
 
-            expect(yAxis[0].name).toBe('Memory Used per Pod');
+            expect(yAxis[0].name).toBe('Total Memory Used');
           });
         });
       });
@@ -535,46 +536,22 @@ describe('Time series component', () => {
   });
 
   describe('with multiple time series', () => {
-    const mockedResultMultipleSeries = [];
-    const [, , panelData] = metricsDashboardPayload.panel_groups[1].panels;
-
-    for (let i = 0; i < panelData.metrics.length; i += 1) {
-      mockedResultMultipleSeries.push(cloneDeep(mockedQueryResultPayload));
-      mockedResultMultipleSeries[
-        i
-      ].metricId = `${panelData.metrics[i].metric_id}_${panelData.metrics[i].id}`;
-    }
-
-    beforeEach(() => {
-      setTestTimeout(1000);
-
-      store = createStore();
-
-      store.commit(
-        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
-        metricsDashboardPayload,
-      );
-
-      store.commit(`monitoringDashboard/${types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS}`, deploymentData);
-
-      // Mock data contains the metric_id for a multiple time series panel
-      for (let i = 0; i < panelData.metrics.length; i += 1) {
-        store.commit(
-          `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
-          mockedResultMultipleSeries[i],
-        );
-      }
-
-      // Pick the second panel group and the second panel in it
-      [, , mockGraphData] = store.state.monitoringDashboard.dashboard.panel_groups[1].panels;
-    });
-
     describe('General functions', () => {
       let timeSeriesChart;
 
       beforeEach(done => {
-        timeSeriesChart = makeTimeSeriesChart(mockGraphData, 'area-chart');
+        store = createStore();
+        const graphData = cloneDeep(metricsDashboardViewModel.panelGroups[0].panels[3]);
+        graphData.metrics.forEach(metric =>
+          Object.assign(metric, { result: mockedQueryResultPayload.result }),
+        );
+
+        timeSeriesChart = makeTimeSeriesChart(graphData, 'area-chart');
         timeSeriesChart.vm.$nextTick(done);
+      });
+
+      afterEach(() => {
+        timeSeriesChart.destroy();
       });
 
       describe('computed', () => {

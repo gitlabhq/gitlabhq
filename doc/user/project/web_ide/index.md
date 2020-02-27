@@ -30,11 +30,11 @@ the Web IDE will make your direct editing even easier.
 The Web IDE currently provides:
 
 - Basic syntax colorization for a variety of programming, scripting and markup
-  languages such as XML, PHP, C#, C++, Markdown, Java, VB, Batch, Python, Ruby
+  languages such as XML, PHP, C#, C++, Markdown, Java, VB, Batch, Python, Ruby,
   and Objective-C.
 - IntelliSense and validation support (displaying errors and warnings, providing
   smart completions, formatting, and outlining) for some languages. For example:
-TypeScript, JavaScript, CSS, LESS, SCSS, JSON and HTML.
+  TypeScript, JavaScript, CSS, LESS, SCSS, JSON, and HTML.
 
 Because the Web IDE is based on the [Monaco Editor](https://microsoft.github.io/monaco-editor/),
 you can find a more complete list of supported languages in the

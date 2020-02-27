@@ -522,7 +522,7 @@ export default {
 
     <div v-if="!showEmptyState">
       <graph-group
-        v-for="(groupData, index) in dashboard.panel_groups"
+        v-for="(groupData, index) in dashboard.panelGroups"
         :key="`${groupData.group}.${groupData.priority}`"
         :name="groupData.group"
         :show-panels="showPanels"

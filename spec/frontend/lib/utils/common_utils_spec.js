@@ -1,27 +1,4 @@
-import MockAdapter from 'axios-mock-adapter';
-import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
-import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
-import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from './mock_data';
-
-const PIXEL_TOLERANCE = 0.2;
-
-/**
- * Loads a data URL as the src of an
- * {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image|Image}
- * and resolves to that Image once loaded.
- *
- * @param url
- * @returns {Promise}
- */
-const urlToImage = url =>
-  new Promise(resolve => {
-    const img = new Image();
-    img.onload = function() {
-      resolve(img);
-    };
-    img.src = url;
-  });
 
 describe('common_utils', () => {
   describe('parseUrl', () => {
@@ -87,13 +64,11 @@ describe('common_utils', () => {
 
   describe('handleLocationHash', () => {
     beforeEach(() => {
-      spyOn(window.document, 'getElementById').and.callThrough();
-      jasmine.clock().install();
+      jest.spyOn(window.document, 'getElementById');
     });
 
     afterEach(() => {
       window.history.pushState({}, null, '');
-      jasmine.clock().uninstall();
     });
 
     function expectGetElementIdToHaveBeenCalledWith(elementId) {
@@ -162,7 +137,7 @@ describe('common_utils', () => {
     });
 
     it('scrolls to element with offset from navbar', () => {
-      spyOn(window, 'scrollBy').and.callThrough();
+      jest.spyOn(window, 'scrollBy');
       document.body.innerHTML += `
         <div id="parent">
           <div class="navbar-gitlab" style="position: fixed; top: 0; height: 50px;"></div>
@@ -173,7 +148,7 @@ describe('common_utils', () => {
 
       window.history.pushState({}, null, '#test');
       commonUtils.handleLocationHash();
-      jasmine.clock().tick(1);
+      jest.advanceTimersByTime(1);
 
       expectGetElementIdToHaveBeenCalledWith('test');
       expectGetElementIdToHaveBeenCalledWith('user-content-test');
@@ -191,12 +166,12 @@ describe('common_utils', () => {
     });
 
     it('should call pushState with the correct path', () => {
-      spyOn(window.history, 'pushState');
+      jest.spyOn(window.history, 'pushState').mockImplementation(() => {});
 
       commonUtils.historyPushState('newpath?page=2');
 
       expect(window.history.pushState).toHaveBeenCalled();
-      expect(window.history.pushState.calls.allArgs()[0][2]).toContain('newpath?page=2');
+      expect(window.history.pushState.mock.calls[0][2]).toContain('newpath?page=2');
     });
   });
 
@@ -238,7 +213,7 @@ describe('common_utils', () => {
 
   describe('debounceByAnimationFrame', () => {
     it('debounces a function to allow a maximum of one call per animation frame', done => {
-      const spy = jasmine.createSpy('spy');
+      const spy = jest.fn();
       const debouncedSpy = commonUtils.debounceByAnimationFrame(spy);
       window.requestAnimationFrame(() => {
         debouncedSpy();
@@ -302,25 +277,24 @@ describe('common_utils', () => {
   });
 
   describe('normalizeCRLFHeaders', () => {
-    beforeEach(function() {
-      this.CLRFHeaders =
+    const testContext = {};
+    beforeEach(() => {
+      testContext.CLRFHeaders =
         'a-header: a-value\nAnother-Header: ANOTHER-VALUE\nLaSt-HeAdEr: last-VALUE';
-      spyOn(String.prototype, 'split').and.callThrough();
-      this.normalizeCRLFHeaders = commonUtils.normalizeCRLFHeaders(this.CLRFHeaders);
+      jest.spyOn(String.prototype, 'split');
+      testContext.normalizeCRLFHeaders = commonUtils.normalizeCRLFHeaders(testContext.CLRFHeaders);
     });
 
-    it('should split by newline', function() {
+    it('should split by newline', () => {
       expect(String.prototype.split).toHaveBeenCalledWith('\n');
     });
 
-    it('should split by colon+space for each header', function() {
-      expect(String.prototype.split.calls.allArgs().filter(args => args[0] === ': ').length).toBe(
-        3,
-      );
+    it('should split by colon+space for each header', () => {
+      expect(String.prototype.split.mock.calls.filter(args => args[0] === ': ').length).toBe(3);
     });
 
-    it('should return a normalized headers object', function() {
-      expect(this.normalizeCRLFHeaders).toEqual({
+    it('should return a normalized headers object', () => {
+      expect(testContext.normalizeCRLFHeaders).toEqual({
         'A-HEADER': 'a-value',
         'ANOTHER-HEADER': 'ANOTHER-VALUE',
         'LAST-HEADER': 'last-VALUE',
@@ -384,38 +358,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('contentTop', () => {
-    it('does not add height for fileTitle or compareVersionsHeader if screen is too small', () => {
-      spyOn(breakpointInstance, 'isDesktop').and.returnValue(false);
-
-      setFixtures(`
-        <div class="diff-file file-title-flex-parent">
-          blah blah blah
-        </div>
-        <div class="mr-version-controls">
-          more blah blah blah
-        </div>
-      `);
-
-      expect(commonUtils.contentTop()).toBe(0);
-    });
-
-    it('adds height for fileTitle and compareVersionsHeader screen is large enough', () => {
-      spyOn(breakpointInstance, 'isDesktop').and.returnValue(true);
-
-      setFixtures(`
-        <div class="diff-file file-title-flex-parent">
-          blah blah blah
-        </div>
-        <div class="mr-version-controls">
-          more blah blah blah
-        </div>
-      `);
-
-      expect(commonUtils.contentTop()).toBe(18);
-    });
-  });
-
   describe('parseBoolean', () => {
     const { parseBoolean } = commonUtils;
 
@@ -448,8 +390,7 @@ describe('common_utils', () => {
   describe('backOff', () => {
     beforeEach(() => {
       // shortcut our timeouts otherwise these tests will take a long time to finish
-      const origSetTimeout = window.setTimeout;
-      spyOn(window, 'setTimeout').and.callFake(cb => origSetTimeout(cb, 0));
+      jest.spyOn(window, 'setTimeout').mockImplementation(cb => setImmediate(cb, 0));
     });
 
     it('solves the promise from the callback', done => {
@@ -507,7 +448,7 @@ describe('common_utils', () => {
             .catch(done.fail),
         )
         .then(respBackoff => {
-          const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
+          const timeouts = window.setTimeout.mock.calls.map(([, timeout]) => timeout);
 
           expect(timeouts).toEqual([2000, 4000]);
           expect(respBackoff).toBe(expectedResponseValue);
@@ -520,7 +461,7 @@ describe('common_utils', () => {
       commonUtils
         .backOff(next => next(), 64000)
         .catch(errBackoffResp => {
-          const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
+          const timeouts = window.setTimeout.mock.calls.map(([, timeout]) => timeout);
 
           expect(timeouts).toEqual([2000, 4000, 8000, 16000, 32000, 32000]);
           expect(errBackoffResp instanceof Error).toBe(true);
@@ -569,90 +510,6 @@ describe('common_utils', () => {
       commonUtils.resetFavicon();
 
       expect(document.getElementById('favicon').getAttribute('href')).toEqual('default/favicon');
-    });
-  });
-
-  describe('createOverlayIcon', () => {
-    it('should return the favicon with the overlay', done => {
-      commonUtils
-        .createOverlayIcon(faviconDataUrl, overlayDataUrl)
-        .then(url => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
-        .then(([actual, expected]) => {
-          expect(actual).toImageDiffEqual(expected, PIXEL_TOLERANCE);
-          done();
-        })
-        .catch(done.fail);
-    });
-  });
-
-  describe('setFaviconOverlay', () => {
-    beforeEach(() => {
-      const favicon = document.createElement('link');
-      favicon.setAttribute('id', 'favicon');
-      favicon.setAttribute('data-original-href', faviconDataUrl);
-      document.body.appendChild(favicon);
-    });
-
-    afterEach(() => {
-      document.body.removeChild(document.getElementById('favicon'));
-    });
-
-    it('should set page favicon to provided favicon overlay', done => {
-      commonUtils
-        .setFaviconOverlay(overlayDataUrl)
-        .then(() => document.getElementById('favicon').getAttribute('href'))
-        .then(url => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
-        .then(([actual, expected]) => {
-          expect(actual).toImageDiffEqual(expected, PIXEL_TOLERANCE);
-          done();
-        })
-        .catch(done.fail);
-    });
-  });
-
-  describe('setCiStatusFavicon', () => {
-    const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1/status.json`;
-    let mock;
-
-    beforeEach(() => {
-      const favicon = document.createElement('link');
-      favicon.setAttribute('id', 'favicon');
-      favicon.setAttribute('href', 'null');
-      favicon.setAttribute('data-original-href', faviconDataUrl);
-      document.body.appendChild(favicon);
-      mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => {
-      mock.restore();
-      document.body.removeChild(document.getElementById('favicon'));
-    });
-
-    it('should reset favicon in case of error', done => {
-      mock.onGet(BUILD_URL).replyOnce(500);
-
-      commonUtils.setCiStatusFavicon(BUILD_URL).catch(() => {
-        const favicon = document.getElementById('favicon');
-
-        expect(favicon.getAttribute('href')).toEqual(faviconDataUrl);
-        done();
-      });
-    });
-
-    it('should set page favicon to CI status favicon based on provided status', done => {
-      mock.onGet(BUILD_URL).reply(200, {
-        favicon: overlayDataUrl,
-      });
-
-      commonUtils
-        .setCiStatusFavicon(BUILD_URL)
-        .then(() => document.getElementById('favicon').getAttribute('href'))
-        .then(url => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
-        .then(([actual, expected]) => {
-          expect(actual).toImageDiffEqual(expected, PIXEL_TOLERANCE);
-          done();
-        })
-        .catch(done.fail);
     });
   });
 
@@ -894,32 +751,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('isInViewport', () => {
-    let el;
-
-    beforeEach(() => {
-      el = document.createElement('div');
-    });
-
-    afterEach(() => {
-      document.body.removeChild(el);
-    });
-
-    it('returns true when provided `el` is in viewport', () => {
-      el.setAttribute('style', `position: absolute; right: ${window.innerWidth + 0.2};`);
-      document.body.appendChild(el);
-
-      expect(commonUtils.isInViewport(el)).toBe(true);
-    });
-
-    it('returns false when provided `el` is not in viewport', () => {
-      el.setAttribute('style', 'position: absolute; top: -1000px; left: -1000px;');
-      document.body.appendChild(el);
-
-      expect(commonUtils.isInViewport(el)).toBe(false);
-    });
-  });
-
   describe('searchBy', () => {
     const searchSpace = {
       iid: 1,
@@ -937,14 +768,14 @@ describe('common_utils', () => {
     it('returns object with matching props based on `query` & `searchSpace` params', () => {
       // String `omnis` is found only in `title` prop so return just that
       expect(commonUtils.searchBy('omnis', searchSpace)).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           title: searchSpace.title,
         }),
       );
 
       // String `1` is found in both `iid` and `reference` props so return both
       expect(commonUtils.searchBy('1', searchSpace)).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           iid: searchSpace.iid,
           reference: searchSpace.reference,
         }),
@@ -952,7 +783,7 @@ describe('common_utils', () => {
 
       // String `/epics/1` is found in `url` prop so return just that
       expect(commonUtils.searchBy('/epics/1', searchSpace)).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           url: searchSpace.url,
         }),
       );

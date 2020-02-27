@@ -19,7 +19,7 @@ describe 'Container Registry', :js do
 
   describe 'Registry explorer is off' do
     before do
-      stub_feature_flags(vue_container_registry_explorer: false)
+      stub_feature_flags(vue_container_registry_explorer: { enabled: false, thing: project.group })
     end
 
     it 'has a page title set' do

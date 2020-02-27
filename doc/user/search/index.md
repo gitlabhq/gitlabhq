@@ -119,7 +119,7 @@ Your [To-Do List](../todos.md#gitlab-to-do-list) can be searched by "to do" and 
 You can [filter](../todos.md#filtering-your-to-do-list) them per project,
 author, type, and action. Also, you can sort them by
 [**Label priority**](../../user/project/labels.md#label-priority),
-**Last created** and **Oldest created**.
+**Last created**, and **Oldest created**.
 
 ## Projects
 

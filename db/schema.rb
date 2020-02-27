@@ -2806,6 +2806,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_163804) do
     t.text "change_position"
     t.boolean "resolved_by_push"
     t.bigint "review_id"
+    t.boolean "confidential"
     t.index ["author_id"], name: "index_notes_on_author_id"
     t.index ["commit_id"], name: "index_notes_on_commit_id"
     t.index ["created_at"], name: "index_notes_on_created_at"

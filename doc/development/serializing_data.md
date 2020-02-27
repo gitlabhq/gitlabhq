@@ -20,7 +20,7 @@ alternative.
 ## Serialized Data Is Less Powerful
 
 When using a relational database you have the ability to query individual
-fields, change the schema, index data and so forth. When you use serialized data
+fields, change the schema, index data, and so forth. When you use serialized data
 all of that becomes either very difficult or downright impossible. While
 PostgreSQL does offer the ability to query JSON fields it is mostly meant for
 very specialized use cases, and not for more general use. If you use YAML in

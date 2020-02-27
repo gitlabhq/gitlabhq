@@ -28,10 +28,10 @@ export default {
     ...mapState('monitoringDashboard', ['dashboard']),
     ...mapGetters('monitoringDashboard', ['metricsWithData']),
     charts() {
-      if (!this.dashboard || !this.dashboard.panel_groups) {
+      if (!this.dashboard || !this.dashboard.panelGroups) {
         return [];
       }
-      const groupWithMetrics = this.dashboard.panel_groups.find(group =>
+      const groupWithMetrics = this.dashboard.panelGroups.find(group =>
         group.panels.find(chart => this.chartHasData(chart)),
       ) || { panels: [] };
 

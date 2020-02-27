@@ -1,27 +1,169 @@
 import {
-  normalizeMetric,
   uniqMetricsId,
   parseEnvironmentsResponse,
   removeLeadingSlash,
+  mapToDashboardViewModel,
 } from '~/monitoring/stores/utils';
 
 const projectPath = 'gitlab-org/gitlab-test';
 
-describe('normalizeMetric', () => {
-  [
-    { args: [], expected: 'undefined_undefined' },
-    { args: [undefined], expected: 'undefined_undefined' },
-    { args: [{ id: 'something' }], expected: 'undefined_something' },
-    { args: [{ id: 45 }], expected: 'undefined_45' },
-    { args: [{ metric_id: 5 }], expected: '5_undefined' },
-    { args: [{ metric_id: 'something' }], expected: 'something_undefined' },
-    {
-      args: [{ metric_id: 5, id: 'system_metrics_kubernetes_container_memory_total' }],
-      expected: '5_system_metrics_kubernetes_container_memory_total',
-    },
-  ].forEach(({ args, expected }) => {
-    it(`normalizes metric to "${expected}" with args=${JSON.stringify(args)}`, () => {
-      expect(normalizeMetric(...args)).toEqual({ metric_id: expected, metricId: expected });
+describe('mapToDashboardViewModel', () => {
+  it('maps an empty dashboard', () => {
+    expect(mapToDashboardViewModel({})).toEqual({
+      dashboard: '',
+      panelGroups: [],
+    });
+  });
+
+  it('maps a simple dashboard', () => {
+    const response = {
+      dashboard: 'Dashboard Name',
+      panel_groups: [
+        {
+          group: 'Group 1',
+          panels: [
+            {
+              title: 'Title A',
+              type: 'chart-type',
+              y_label: 'Y Label A',
+              metrics: [],
+            },
+          ],
+        },
+      ],
+    };
+
+    expect(mapToDashboardViewModel(response)).toEqual({
+      dashboard: 'Dashboard Name',
+      panelGroups: [
+        {
+          group: 'Group 1',
+          key: 'group-1-0',
+          panels: [
+            {
+              title: 'Title A',
+              type: 'chart-type',
+              y_label: 'Y Label A',
+              metrics: [],
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  describe('panel groups mapping', () => {
+    it('key', () => {
+      const response = {
+        dashboard: 'Dashboard Name',
+        panel_groups: [
+          {
+            group: 'Group A',
+          },
+          {
+            group: 'Group B',
+          },
+          {
+            group: '',
+            unsupported_property: 'This should be removed',
+          },
+        ],
+      };
+
+      expect(mapToDashboardViewModel(response).panelGroups).toEqual([
+        {
+          group: 'Group A',
+          key: 'group-a-0',
+          panels: [],
+        },
+        {
+          group: 'Group B',
+          key: 'group-b-1',
+          panels: [],
+        },
+        {
+          group: '',
+          key: 'default-2',
+          panels: [],
+        },
+      ]);
+    });
+  });
+
+  describe('metrics mapping', () => {
+    const defaultLabel = 'Panel Label';
+    const dashboardWithMetric = (metric, label = defaultLabel) => ({
+      panel_groups: [
+        {
+          panels: [
+            {
+              y_label: label,
+              metrics: [metric],
+            },
+          ],
+        },
+      ],
+    });
+
+    const getMappedMetric = dashboard => {
+      return mapToDashboardViewModel(dashboard).panelGroups[0].panels[0].metrics[0];
+    };
+
+    it('creates a metric', () => {
+      const dashboard = dashboardWithMetric({});
+
+      expect(getMappedMetric(dashboard)).toEqual({
+        label: expect.any(String),
+        metricId: expect.any(String),
+        metric_id: expect.any(String),
+      });
+    });
+
+    it('creates a metric with a correct ids', () => {
+      const dashboard = dashboardWithMetric({
+        id: 'http_responses',
+        metric_id: 1,
+      });
+
+      expect(getMappedMetric(dashboard)).toMatchObject({
+        metricId: '1_http_responses',
+        metric_id: '1_http_responses',
+      });
+    });
+
+    it('creates a metric with a default label', () => {
+      const dashboard = dashboardWithMetric({});
+
+      expect(getMappedMetric(dashboard)).toMatchObject({
+        label: defaultLabel,
+      });
+    });
+
+    it('creates a metric with an endpoint and query', () => {
+      const dashboard = dashboardWithMetric({
+        prometheus_endpoint_path: 'http://test',
+        query_range: 'http_responses',
+      });
+
+      expect(getMappedMetric(dashboard)).toMatchObject({
+        prometheusEndpointPath: 'http://test',
+        queryRange: 'http_responses',
+      });
+    });
+
+    it('creates a metric with an ad-hoc property', () => {
+      // This behavior is deprecated and should be removed
+      // https://gitlab.com/gitlab-org/gitlab/issues/207198
+
+      const dashboard = dashboardWithMetric({
+        x_label: 'Another label',
+        unkown_option: 'unkown_data',
+      });
+
+      expect(getMappedMetric(dashboard)).toMatchObject({
+        x_label: 'Another label',
+        unkown_option: 'unkown_data',
+      });
     });
   });
 });

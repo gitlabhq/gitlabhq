@@ -1,4 +1,4 @@
-import { omit } from 'lodash';
+import { slugify } from '~/lib/utils/text_utility';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
@@ -9,6 +9,13 @@ export const gqClient = createGqClient(
   },
 );
 
+/**
+ * Metrics loaded from project-defined dashboards do not have a metric_id.
+ * This method creates a unique ID combining metric_id and id, if either is present.
+ * This is hopefully a temporary solution until BE processes metrics before passing to fE
+ * @param {Object} metric - metric
+ * @returns {Object} - normalized metric with a uniqueID
+ */
 export const uniqMetricsId = metric => `${metric.metric_id}_${metric.id}`;
 
 /**
@@ -41,22 +48,75 @@ export const parseEnvironmentsResponse = (response = [], projectPath) =>
   });
 
 /**
- * Metrics loaded from project-defined dashboards do not have a metric_id.
- * This method creates a unique ID combining metric_id and id, if either is present.
- * This is hopefully a temporary solution until BE processes metrics before passing to fE
- * @param {Object} metric - metric
- * @returns {Object} - normalized metric with a uniqueID
+ * Maps metrics to its view model
+ *
+ * This function difers from other in that is maps all
+ * non-define properties as-is to the object. This is not
+ * advisable as it could lead to unexpected side-effects.
+ *
+ * Related issue:
+ * https://gitlab.com/gitlab-org/gitlab/issues/207198
+ *
+ * @param {Array} metrics - Array of prometheus metrics
+ * @param {String} defaultLabel - Default label for metrics
+ * @returns {Object}
  */
+const mapToMetricsViewModel = (metrics, defaultLabel) =>
+  metrics.map(({ label, id, metric_id, query_range, prometheus_endpoint_path, ...metric }) => ({
+    label: label || defaultLabel,
+    queryRange: query_range,
+    prometheusEndpointPath: prometheus_endpoint_path,
+    metricId: uniqMetricsId({ metric_id, id }),
 
-export const normalizeMetric = (metric = {}) =>
-  omit(
-    {
-      ...metric,
-      metric_id: uniqMetricsId(metric),
-      metricId: uniqMetricsId(metric),
-    },
-    'id',
-  );
+    // `metric_id` is used by embed.vue, keeping this duplicated.
+    // https://gitlab.com/gitlab-org/gitlab/issues/37492
+    metric_id: uniqMetricsId({ metric_id, id }),
+    ...metric,
+  }));
+
+/**
+ * Maps a metrics panel to its view model
+ *
+ * @param {Object} panel - Metrics panel
+ * @returns {Object}
+ */
+const mapToPanelViewModel = ({ title = '', type, y_label, metrics = [] }) => {
+  return {
+    title,
+    type,
+    y_label,
+    metrics: mapToMetricsViewModel(metrics, y_label),
+  };
+};
+
+/**
+ * Maps a metrics panel group to its view model
+ *
+ * @param {Object} panelGroup - Panel Group
+ * @returns {Object}
+ */
+const mapToPanelGroupViewModel = ({ group = '', panels = [] }, i) => {
+  return {
+    key: `${slugify(group || 'default')}-${i}`,
+    group,
+    panels: panels.map(mapToPanelViewModel),
+  };
+};
+
+/**
+ * Maps a dashboard json object to its view model
+ *
+ * @param {Object} dashboard - Dashboard object
+ * @param {String} dashboard.dashboard - Dashboard name object
+ * @param {Array} dashboard.panel_groups - Panel groups array
+ * @returns {Object}
+ */
+export const mapToDashboardViewModel = ({ dashboard = '', panel_groups = [] }) => {
+  return {
+    dashboard,
+    panelGroups: panel_groups.map(mapToPanelGroupViewModel),
+  };
+};
 
 export const normalizeQueryResult = timeSeries => {
   let normalizedResult = {};

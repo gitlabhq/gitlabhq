@@ -16,7 +16,7 @@ To do so, follow the steps below.
    click **New project**, and name it according to the
    [Pages domain names](../getting_started_part_one.md#gitlab-pages-default-domain-names).
 1. Clone it to your local computer, add your website
-   files to your project, add, commit and push to GitLab.
+   files to your project, add, commit, and push to GitLab.
    Alternatively, you can run `git init` in your local directory,
    add the remote URL:
    `git remote add origin git@gitlab.com:namespace/project-name.git`,

@@ -104,7 +104,7 @@ Some things to note about precedence:
 
 [Jupyter](https://jupyter.org/) Notebook (previously IPython Notebook) files are used for
 interactive computing in many fields and contain a complete record of the
-user's sessions and include code, narrative text, equations and rich output.
+user's sessions and include code, narrative text, equations, and rich output.
 
 [Read how to use Jupyter notebooks with GitLab.](jupyter_notebooks/index.md)
 

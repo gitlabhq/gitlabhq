@@ -671,7 +671,7 @@ The sharing dialog within Grafana provides the link, as highlighted below.
 ![Grafana Direct Linked Rendered Image](img/grafana_live_embed.png)
 
 NOTE: **Note:**
-For this embed to display correctly, the Grafana instance must be available to the target user, either as a public dashboard or on the same network.
+For this embed to display correctly, the Grafana instance must be available to the target user, either as a public dashboard, or on the same network.
 
 Copy the link and add an image tag as [inline HTML](../../markdown.md#inline-html) in your Markdown. You may tweak the query parameters as required. For instance, removing the `&from=` and `&to=` parameters will give you a live chart. Here is example markup for a live chart from GitLab's public dashboard:
 

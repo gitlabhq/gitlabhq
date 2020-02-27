@@ -119,7 +119,7 @@ The next time a pipeline is scheduled, your credentials will be used.
 NOTE: **Note:**
 If the owner of a pipeline schedule doesn't have the ability to create pipelines
 on the target branch, the schedule will stop creating new pipelines. This can
-happen if, for example, the owner is blocked or removed from the project, or
+happen if the owner is blocked or removed from the project, or
 the target branch or tag is protected. In this case, someone with sufficient
 privileges must take ownership of the schedule.
 

@@ -17,12 +17,13 @@ import { setupComponentStore, propsData } from '../init_utils';
 import {
   metricsDashboardPayload,
   mockedQueryResultPayload,
+  metricsDashboardViewModel,
   environmentData,
   dashboardGitResponse,
 } from '../mock_data';
 
 const localVue = createLocalVue();
-const expectedPanelCount = 3;
+const expectedPanelCount = 4;
 
 describe('Dashboard', () => {
   let store;
@@ -366,7 +367,7 @@ describe('Dashboard', () => {
 
         it('metrics can be swapped', () => {
           const firstDraggable = findDraggables().at(0);
-          const mockMetrics = [...metricsDashboardPayload.panel_groups[1].panels];
+          const mockMetrics = [...metricsDashboardViewModel.panelGroups[0].panels];
 
           const firstTitle = mockMetrics[0].title;
           const secondTitle = mockMetrics[1].title;
@@ -376,7 +377,7 @@ describe('Dashboard', () => {
           firstDraggable.vm.$emit('input', mockMetrics);
 
           return wrapper.vm.$nextTick(() => {
-            const { panels } = wrapper.vm.dashboard.panel_groups[1];
+            const { panels } = wrapper.vm.dashboard.panelGroups[0];
 
             expect(panels[1].title).toEqual(firstTitle);
             expect(panels[0].title).toEqual(secondTitle);

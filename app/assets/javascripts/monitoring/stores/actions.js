@@ -51,9 +51,11 @@ export const requestMetricsDashboard = ({ commit }) => {
   commit(types.REQUEST_METRICS_DATA);
 };
 export const receiveMetricsDashboardSuccess = ({ commit, dispatch }, { response, params }) => {
-  commit(types.SET_ALL_DASHBOARDS, response.all_dashboards);
-  commit(types.RECEIVE_METRICS_DATA_SUCCESS, response.dashboard);
-  commit(types.SET_ENDPOINTS, convertObjectPropsToCamelCase(response.metrics_data));
+  const { all_dashboards, dashboard, metrics_data } = response;
+
+  commit(types.SET_ALL_DASHBOARDS, all_dashboards);
+  commit(types.RECEIVE_METRICS_DATA_SUCCESS, dashboard);
+  commit(types.SET_ENDPOINTS, convertObjectPropsToCamelCase(metrics_data));
 
   return dispatch('fetchPrometheusMetrics', params);
 };
@@ -149,16 +151,16 @@ export const fetchPrometheusMetric = ({ commit }, { metric, params }) => {
     step,
   };
 
-  commit(types.REQUEST_METRIC_RESULT, { metricId: metric.metric_id });
+  commit(types.REQUEST_METRIC_RESULT, { metricId: metric.metricId });
 
-  return fetchPrometheusResult(metric.prometheus_endpoint_path, queryParams)
+  return fetchPrometheusResult(metric.prometheusEndpointPath, queryParams)
     .then(result => {
-      commit(types.RECEIVE_METRIC_RESULT_SUCCESS, { metricId: metric.metric_id, result });
+      commit(types.RECEIVE_METRIC_RESULT_SUCCESS, { metricId: metric.metricId, result });
     })
     .catch(error => {
       Sentry.captureException(error);
 
-      commit(types.RECEIVE_METRIC_RESULT_FAILURE, { metricId: metric.metric_id, error });
+      commit(types.RECEIVE_METRIC_RESULT_FAILURE, { metricId: metric.metricId, error });
       // Continue to throw error so the dashboard can notify using createFlash
       throw error;
     });
@@ -168,7 +170,7 @@ export const fetchPrometheusMetrics = ({ state, commit, dispatch, getters }, par
   commit(types.REQUEST_METRICS_DATA);
 
   const promises = [];
-  state.dashboard.panel_groups.forEach(group => {
+  state.dashboard.panelGroups.forEach(group => {
     group.panels.forEach(panel => {
       panel.metrics.forEach(metric => {
         promises.push(dispatch('fetchPrometheusMetric', { metric, params }));

@@ -50,7 +50,7 @@ For more examples on artifacts, follow the [artifacts reference in
 
 ## Browsing artifacts
 
-> - From GitLab 9.2, PDFs, images, videos and other formats can be previewed directly in the job artifacts browser without the need to download them.
+> - From GitLab 9.2, PDFs, images, videos, and other formats can be previewed directly in the job artifacts browser without the need to download them.
 > - Introduced in [GitLab 10.1][ce-14399], HTML files in a public project can be previewed directly in a new tab without the need to download them when [GitLab Pages](../../../administration/pages/index.md) is enabled. The same applies for textual formats (currently supported extensions: `.txt`, `.json`, and `.log`).
 > - Introduced in [GitLab 12.4][gitlab-16675], artifacts in private projects can be previewed when [GitLab Pages access control](../../../administration/pages/index.md#access-control) is enabled.
 

@@ -13,7 +13,7 @@ assets output by your CI system to use them, not just the raw source
 code.
 
 GitLab's **Releases** are a way to track deliverables in your project. Consider them
-a snapshot in time of the source, build output, and other metadata or artifacts
+a snapshot in time of the source, build output, artifacts, and other metadata
 associated with a released version of your code.
 
 There are several ways to create a Release:

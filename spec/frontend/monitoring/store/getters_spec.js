@@ -32,7 +32,7 @@ describe('Monitoring store Getters', () => {
     it('when dashboard has no panel groups, returns empty', () => {
       setupState({
         dashboard: {
-          panel_groups: [],
+          panelGroups: [],
         },
       });
 
@@ -43,10 +43,10 @@ describe('Monitoring store Getters', () => {
       let groups;
       beforeEach(() => {
         setupState({
-          dashboard: { panel_groups: [] },
+          dashboard: { panelGroups: [] },
         });
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsDashboardPayload);
-        groups = state.dashboard.panel_groups;
+        groups = state.dashboard.panelGroups;
       });
 
       it('no loaded metric returns empty', () => {
@@ -84,8 +84,8 @@ describe('Monitoring store Getters', () => {
         expect(getMetricStates()).toEqual([metricStates.OK]);
 
         // Filtered by groups
-        expect(getMetricStates(state.dashboard.panel_groups[0].key)).toEqual([]);
-        expect(getMetricStates(state.dashboard.panel_groups[1].key)).toEqual([metricStates.OK]);
+        expect(getMetricStates(state.dashboard.panelGroups[0].key)).toEqual([metricStates.OK]);
+        expect(getMetricStates(state.dashboard.panelGroups[1].key)).toEqual([]);
       });
       it('on multiple metrics errors', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsDashboardPayload);
@@ -94,10 +94,10 @@ describe('Monitoring store Getters', () => {
           metricId: groups[0].panels[0].metrics[0].metricId,
         });
         mutations[types.RECEIVE_METRIC_RESULT_FAILURE](state, {
-          metricId: groups[1].panels[0].metrics[0].metricId,
+          metricId: groups[0].panels[0].metrics[0].metricId,
         });
         mutations[types.RECEIVE_METRIC_RESULT_FAILURE](state, {
-          metricId: groups[1].panels[1].metrics[0].metricId,
+          metricId: groups[1].panels[0].metrics[0].metricId,
         });
 
         // Entire dashboard fails
@@ -113,18 +113,18 @@ describe('Monitoring store Getters', () => {
         mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayload);
         // An error in 2 groups
         mutations[types.RECEIVE_METRIC_RESULT_FAILURE](state, {
-          metricId: groups[0].panels[0].metrics[0].metricId,
+          metricId: groups[0].panels[1].metrics[0].metricId,
         });
         mutations[types.RECEIVE_METRIC_RESULT_FAILURE](state, {
-          metricId: groups[1].panels[1].metrics[0].metricId,
+          metricId: groups[1].panels[0].metrics[0].metricId,
         });
 
         expect(getMetricStates()).toEqual([metricStates.OK, metricStates.UNKNOWN_ERROR]);
-        expect(getMetricStates(groups[0].key)).toEqual([metricStates.UNKNOWN_ERROR]);
-        expect(getMetricStates(groups[1].key)).toEqual([
+        expect(getMetricStates(groups[0].key)).toEqual([
           metricStates.OK,
           metricStates.UNKNOWN_ERROR,
         ]);
+        expect(getMetricStates(groups[1].key)).toEqual([metricStates.UNKNOWN_ERROR]);
       });
     });
   });
@@ -154,7 +154,7 @@ describe('Monitoring store Getters', () => {
     it('when dashboard has no panel groups, returns empty', () => {
       setupState({
         dashboard: {
-          panel_groups: [],
+          panelGroups: [],
         },
       });
 
@@ -164,7 +164,7 @@ describe('Monitoring store Getters', () => {
     describe('when the dashboard is set', () => {
       beforeEach(() => {
         setupState({
-          dashboard: { panel_groups: [] },
+          dashboard: { panelGroups: [] },
         });
       });
 
@@ -204,14 +204,14 @@ describe('Monitoring store Getters', () => {
         mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayload);
         mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayloadCoresTotal);
 
-        // First group has no metrics
-        expect(metricsWithData(state.dashboard.panel_groups[0].key)).toEqual([]);
-
-        // Second group has metrics
-        expect(metricsWithData(state.dashboard.panel_groups[1].key)).toEqual([
+        // First group has metrics
+        expect(metricsWithData(state.dashboard.panelGroups[0].key)).toEqual([
           mockedQueryResultPayload.metricId,
           mockedQueryResultPayloadCoresTotal.metricId,
         ]);
+
+        // Second group has no metrics
+        expect(metricsWithData(state.dashboard.panelGroups[1].key)).toEqual([]);
       });
     });
   });

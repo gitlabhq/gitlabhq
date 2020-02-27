@@ -48,7 +48,7 @@ about CI/CD pipelines, when present), followed by the discussion threads of the 
 collaborating with that MR.
 
 MRs also contain navigation tabs from which you can see the discussion happening on the thread,
-the list of commits, the list of pipelines and jobs, the code changes and inline code reviews.
+the list of commits, the list of pipelines and jobs, the code changes, and inline code reviews.
 
 To get started, read the [introduction to merge requests](getting_started.md).
 

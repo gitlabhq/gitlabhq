@@ -115,7 +115,7 @@ no longer actively maintained. Projects that have been archived can also be
 unarchived. Only project Owners and Admin users have the
 [permissions](../../permissions.md#project-members-permissions) to archive a project.
 
-When a project is archived, the repository, issues, merge requests and all
+When a project is archived, the repository, issues, merge requests, and all
 other features are read-only. Archived projects are also hidden
 in project listings.
 

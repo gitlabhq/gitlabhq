@@ -6,7 +6,7 @@ Issues are the fundamental medium for collaborating on ideas and planning work i
 
 The GitLab issue tracker is an advanced tool for collaboratively developing ideas, solving problems, and planning work.
 
-Issues can allow you, your team, and your collaborators to share and discuss proposals
+Issues can allow you and your team to share and discuss proposals
 before, and during, their implementation. However, they can be used for a variety of
 other purposes, customized to your needs and workflow.
 

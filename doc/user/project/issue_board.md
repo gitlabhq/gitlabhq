@@ -147,7 +147,7 @@ Create lists for each of your team members and quickly drag-and-drop issues onto
 ## Permissions
 
 [Reporters and up](../permissions.md) can use all the functionality of the
-Issue Board, that is, create or delete lists and drag issues from one list to another.
+Issue Board to create or delete lists, and drag issues from one list to another.
 
 ## GitLab Enterprise features for Issue Boards
 
@@ -373,7 +373,7 @@ window where you can see all the issues that do not belong to any list.
 
 Select one or more issues by clicking on the cards and then click **Add issues**
 to add them to the selected list. You can limit the issues you want to add to
-the list by filtering by author, assignee, milestone and label.
+the list by filtering by author, assignee, milestone, and label.
 
 ![Bulk adding issues to lists](img/issue_boards_add_issues_modal.png)
 
@@ -419,7 +419,7 @@ You should be able to use the filters on top of your Issue Board to show only
 the results you want. This is similar to the filtering used in the issue tracker
 since the metadata from the issues and labels are re-used in the Issue Board.
 
-You can filter by author, assignee, milestone and label.
+You can filter by author, assignee, milestone, and label.
 
 ### Creating workflows
 
