@@ -200,7 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  if (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs') {
+  const isBoardsPage = /(projects|groups):boards:show/.test(document.body.dataset.page);
+  if (!isBoardsPage && (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs')) {
     const $rightSidebar = $('aside.right-sidebar');
     const $layoutPage = $('.layout-page');
 

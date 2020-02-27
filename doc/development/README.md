@@ -200,6 +200,7 @@ Complementary reads:
 ## Other Development guides
 
 - [Defining relations between files using projections](projections.md)
+- [Reference processing](./reference_processing.md)
 
 ## Other GitLab Development Kit (GDK) guides
 

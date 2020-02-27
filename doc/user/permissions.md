@@ -141,11 +141,12 @@ The following table depicts the various user permission levels in a project.
 | Remove protected branches (*4*)                   |         |            |             |          |        |
 
 \* Owner permission is only available at the group or personal namespace level (and for instance admins) and is inherited by its projects.
-(*1*): Guest users are able to perform this action on public and internal projects, but not private projects.
-(*2*): Guest users can only view the confidential issues they created themselves.
-(*3*): If **Public pipelines** is enabled in **Project Settings > CI/CD**.
-(*4*): Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [Protected Branches](./project/protected_branches.md).
-(*5*): If the [branch is protected](./project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings), this depends on the access Developers and Maintainers are given.
+
+1. Guest users are able to perform this action on public and internal projects, but not private projects.
+1. Guest users can only view the confidential issues they created themselves.
+1. If **Public pipelines** is enabled in **Project Settings > CI/CD**.
+1. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [Protected Branches](./project/protected_branches.md).
+1. If the [branch is protected](./project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings), this depends on the access Developers and Maintainers are given.
 
 ## Project features permissions
 
@@ -234,12 +235,12 @@ group.
 | Disable notification emails                            |       |          |           |            | ✓     |
 | View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
 
-- (1): Groups can be set to [allow either Owners or Owners and
+1. Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)
-- (2): Introduced in GitLab 12.2.
-- (3): Default project creation role can be changed at:
-  - The [instance level](admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
-  - The [group level](group/index.html#default-project-creation-level).
+1. Introduced in GitLab 12.2.
+1. Default project creation role can be changed at:
+   - The [instance level](admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
+   - The [group level](group/index.html#default-project-creation-level).
 
 ### Subgroup permissions
 
@@ -380,7 +381,7 @@ instance and project. In addition, all admins can use the admin interface under
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
 
-- *1*: Only if the job was triggered by the user
+1. Only if the job was triggered by the user
 
 ### Job permissions
 
@@ -409,8 +410,8 @@ users:
 | Push container images to other projects     |                 |             |          |         |
 | Push source and LFS                         |                 |             |          |         |
 
-- *1*: Only if the user is not an external one
-- *2*: Only if the user is a member of the project
+1. Only if the user is not an external one
+1. Only if the user is a member of the project
 
 ### New CI job permissions model
 
