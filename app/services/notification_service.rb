@@ -434,18 +434,19 @@ class NotificationService
     mailer.project_was_not_exported_email(current_user, project, errors).deliver_later
   end
 
-  def pipeline_finished(pipeline, recipients = nil)
+  def pipeline_finished(pipeline, ref_status: nil, recipients: nil)
     # Must always check project configuration since recipients could be a list of emails
     # from the PipelinesEmailService integration.
     return if pipeline.project.emails_disabled?
 
-    email_template = "pipeline_#{pipeline.status}_email"
+    ref_status ||= pipeline.status
+    email_template = "pipeline_#{ref_status}_email"
 
     return unless mailer.respond_to?(email_template)
 
     recipients ||= notifiable_users(
       [pipeline.user], :watch,
-      custom_action: :"#{pipeline.status}_pipeline",
+      custom_action: :"#{ref_status}_pipeline",
       target: pipeline
     ).map do |user|
       user.notification_email_for(pipeline.project.group)

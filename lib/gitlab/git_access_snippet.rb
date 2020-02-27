@@ -28,7 +28,7 @@ module Gitlab
       # TODO: Investigate if expanding actor/authentication types are needed.
       # https://gitlab.com/gitlab-org/gitlab/issues/202190
       if actor && !actor.is_a?(User) && !actor.instance_of?(Key)
-        raise UnauthorizedError, ERROR_MESSAGES[:authentication_mechanism]
+        raise ForbiddenError, ERROR_MESSAGES[:authentication_mechanism]
       end
 
       unless Feature.enabled?(:version_snippets, user)
@@ -53,7 +53,7 @@ module Gitlab
 
     override :check_push_access!
     def check_push_access!
-      raise UnauthorizedError, ERROR_MESSAGES[:update_snippet] unless user
+      raise ForbiddenError, ERROR_MESSAGES[:update_snippet] unless user
 
       check_change_access!
     end
@@ -74,7 +74,7 @@ module Gitlab
       passed = guest_can_download_code? || user_can_download_code?
 
       unless passed
-        raise UnauthorizedError, ERROR_MESSAGES[:read_snippet]
+        raise ForbiddenError, ERROR_MESSAGES[:read_snippet]
       end
     end
 
@@ -91,7 +91,7 @@ module Gitlab
     override :check_change_access!
     def check_change_access!
       unless user_access.can_do_action?(:update_snippet)
-        raise UnauthorizedError, ERROR_MESSAGES[:update_snippet]
+        raise ForbiddenError, ERROR_MESSAGES[:update_snippet]
       end
 
       changes_list.each do |change|

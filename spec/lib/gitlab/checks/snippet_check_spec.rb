@@ -19,7 +19,7 @@ describe Gitlab::Checks::SnippetCheck do
       let(:newrev) { '0000000000000000000000000000000000000000' }
 
       it 'raises an error' do
-        expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You can not create or delete branches.')
+        expect { subject.exec }.to raise_error(Gitlab::GitAccess::ForbiddenError, 'You can not create or delete branches.')
       end
     end
 
@@ -27,7 +27,7 @@ describe Gitlab::Checks::SnippetCheck do
       let(:oldrev) { '0000000000000000000000000000000000000000' }
 
       it 'raises an error' do
-        expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You can not create or delete branches.')
+        expect { subject.exec }.to raise_error(Gitlab::GitAccess::ForbiddenError, 'You can not create or delete branches.')
       end
     end
   end

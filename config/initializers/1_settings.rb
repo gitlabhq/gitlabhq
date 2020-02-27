@@ -245,6 +245,12 @@ Settings['incoming_email'] ||= Settingslogic.new({})
 Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled'].nil?
 
 #
+# Service desk email
+#
+Settings['service_desk_email'] ||= Settingslogic.new({})
+Settings.service_desk_email['enabled'] = false if Settings.service_desk_email['enabled'].nil?
+
+#
 # Build Artifacts
 #
 Settings['artifacts'] ||= Settingslogic.new({})

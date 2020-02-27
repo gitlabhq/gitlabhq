@@ -65,9 +65,16 @@ shared_examples 'resource notes mentions migration' do |migration_class, resourc
 end
 
 shared_examples 'schedules resource mentions migration' do |resource_class, is_for_notes|
+  before do
+    stub_const("#{described_class.name}::BATCH_SIZE", 1)
+  end
+
   it 'schedules background migrations' do
     Sidekiq::Testing.fake! do
       Timecop.freeze do
+        resource_count = is_for_notes ? Note.count : resource_class.count
+        expect(resource_count).to eq 5
+
         migrate!
 
         migration = described_class::MIGRATION

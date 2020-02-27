@@ -2,6 +2,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import CompareVersionsDropdown from '~/diffs/components/compare_versions_dropdown.vue';
 import diffsMockData from '../mock_data/merge_request_diffs';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import { TEST_HOST } from 'helpers/test_constants';
 
 const localVue = createLocalVue();
 const targetBranch = { branchName: 'tmp-wine-dev', versionIndex: -1 };
@@ -109,6 +110,24 @@ describe('CompareVersionsDropdown', () => {
 
       expect(findLastLink().attributes('href')).toEqual(baseVersionPath);
       expect(findLastLink().text()).toContain('(base)');
+      expect(findLastLink().text()).not.toContain('(HEAD)');
+    });
+
+    it('should render a correct head version link', () => {
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: { href: `${TEST_HOST}?diff_head=true` },
+      });
+
+      createComponent({
+        baseVersionPath,
+        otherVersions: diffsMockData.slice(1),
+        targetBranch,
+      });
+
+      expect(findLastLink().attributes('href')).toEqual(baseVersionPath);
+      expect(findLastLink().text()).not.toContain('(base)');
+      expect(findLastLink().text()).toContain('(HEAD)');
     });
 
     it('should not render commits count if no showCommitsCount is passed', () => {

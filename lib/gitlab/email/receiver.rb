@@ -34,8 +34,7 @@ module Gitlab
 
         ignore_auto_reply!(mail)
 
-        mail_key = extract_mail_key(mail)
-        handler = Handler.for(mail, mail_key)
+        handler = find_handler(mail)
 
         raise UnknownIncomingEmail unless handler
 
@@ -45,6 +44,11 @@ module Gitlab
       end
 
       private
+
+      def find_handler(mail)
+        mail_key = extract_mail_key(mail)
+        Handler.for(mail, mail_key)
+      end
 
       def build_mail
         Mail::Message.new(@raw)

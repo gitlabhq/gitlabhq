@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import { s__, sprintf } from '~/locale';
@@ -43,10 +43,10 @@ You are going to change the username %{currentUsernameBold} to %{newUsernameBold
 Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group.
 Please update your Git repository remotes as soon as possible.`),
         {
-          currentUsernameBold: `<strong>${_.escape(this.username)}</strong>`,
-          newUsernameBold: `<strong>${_.escape(this.newUsername)}</strong>`,
-          currentUsername: _.escape(this.username),
-          newUsername: _.escape(this.newUsername),
+          currentUsernameBold: `<strong>${esc(this.username)}</strong>`,
+          newUsernameBold: `<strong>${esc(this.newUsername)}</strong>`,
+          currentUsername: esc(this.username),
+          newUsername: esc(this.newUsername),
         },
         false,
       );

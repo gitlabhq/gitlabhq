@@ -26,7 +26,7 @@ describe Gitlab::GitAccessSnippet do
     let(:actor) { build(:deploy_key) }
 
     it 'does not allow push and pull access' do
-      expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:authentication_mechanism])
+      expect { pull_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:authentication_mechanism])
     end
   end
 
@@ -76,8 +76,8 @@ describe Gitlab::GitAccessSnippet do
     it 'blocks access when the user did not accept terms' do
       message = /must accept the Terms of Service in order to perform this action/
 
-      expect { push_access_check }.to raise_unauthorized(message)
-      expect { pull_access_check }.to raise_unauthorized(message)
+      expect { push_access_check }.to raise_forbidden(message)
+      expect { pull_access_check }.to raise_forbidden(message)
     end
 
     it 'allows access when the user accepted the terms' do
@@ -101,13 +101,13 @@ describe Gitlab::GitAccessSnippet do
             if Ability.allowed?(user, :update_snippet, snippet)
               expect { push_access_check }.not_to raise_error
             else
-              expect { push_access_check }.to raise_error(described_class::UnauthorizedError)
+              expect { push_access_check }.to raise_error(described_class::ForbiddenError)
             end
 
             if Ability.allowed?(user, :read_snippet, snippet)
               expect { pull_access_check }.not_to raise_error
             else
-              expect { pull_access_check }.to raise_error(described_class::UnauthorizedError)
+              expect { pull_access_check }.to raise_error(described_class::ForbiddenError)
             end
           end
         end
@@ -154,7 +154,7 @@ describe Gitlab::GitAccessSnippet do
 
     with_them do
       it "respects accessibility" do
-        error_class = described_class::UnauthorizedError
+        error_class = described_class::ForbiddenError
 
         if Ability.allowed?(user, :update_snippet, snippet)
           expect { push_access_check }.not_to raise_error
@@ -180,7 +180,7 @@ describe Gitlab::GitAccessSnippet do
       allow(::Gitlab::Database).to receive(:read_only?).and_return(true)
       allow(::Gitlab::Geo).to receive(:secondary_with_primary?).and_return(true)
 
-      expect { push_access_check }.to raise_unauthorized(/You can't push code to a read-only GitLab instance/)
+      expect { push_access_check }.to raise_forbidden(/You can't push code to a read-only GitLab instance/)
     end
   end
 
@@ -198,10 +198,10 @@ describe Gitlab::GitAccessSnippet do
 
     it 'raises error if SnippetCheck raises error' do
       expect_next_instance_of(Gitlab::Checks::SnippetCheck) do |check|
-        allow(check).to receive(:exec).and_raise(Gitlab::GitAccess::UnauthorizedError, 'foo')
+        allow(check).to receive(:exec).and_raise(Gitlab::GitAccess::ForbiddenError, 'foo')
       end
 
-      expect { push_access_check }.to raise_unauthorized('foo')
+      expect { push_access_check }.to raise_forbidden('foo')
     end
   end
 
@@ -215,7 +215,7 @@ describe Gitlab::GitAccessSnippet do
     raise_error(Gitlab::GitAccess::NotFoundError, Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found])
   end
 
-  def raise_unauthorized(message)
-    raise_error(Gitlab::GitAccess::UnauthorizedError, message)
+  def raise_forbidden(message)
+    raise_error(Gitlab::GitAccess::ForbiddenError, message)
   end
 end

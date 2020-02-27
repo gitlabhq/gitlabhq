@@ -20,6 +20,7 @@ module Gitlab
         chain.add Gitlab::SidekiqMiddleware::AdminMode::Server
         chain.add Gitlab::SidekiqStatus::ServerMiddleware
         chain.add Gitlab::SidekiqMiddleware::WorkerContext::Server
+        chain.add Gitlab::SidekiqMiddleware::DuplicateJobs::Server
       end
     end
 
@@ -33,6 +34,7 @@ module Gitlab
         chain.add Gitlab::SidekiqMiddleware::WorkerContext::Client # needs to be before the Labkit middleware
         chain.add Labkit::Middleware::Sidekiq::Client
         chain.add Gitlab::SidekiqMiddleware::AdminMode::Client
+        chain.add Gitlab::SidekiqMiddleware::DuplicateJobs::Client
       end
     end
   end

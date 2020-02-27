@@ -178,7 +178,8 @@ In most of the below cases, the notification will be sent to:
 | Remove milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
 | Failed pipeline        | The author of the pipeline |
-| Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set |
+| Fixed pipeline    | The author of the pipeline |
+| Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set. If the pipeline failed previously, a `Fixed pipeline` message will be sent for the first successful pipeline after the failure, then a `Successful pipeline` message for any further successful pipelines. |
 | New epic **(ULTIMATE)** |        |
 | Close epic **(ULTIMATE)** |      |
 | Reopen epic **(ULTIMATE)** |     |

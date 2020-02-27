@@ -1,0 +1,32 @@
+<%= local_assigns[:title] %>
+
+Project: <%= @project.name %> ( <%= project_url(@project) %> )
+Branch: <%= @pipeline.source_ref %> ( <%= commits_url(@pipeline) %> )
+<% if @merge_request -%>
+Merge Request: <%= @merge_request.to_reference %> ( <%= merge_request_url(@merge_request) %> )
+<% end -%>
+
+Commit: <%= @pipeline.short_sha %> ( <%= commit_url(@pipeline) %> )
+Commit Message: <%= @pipeline.git_commit_message.truncate(50) %>
+<% commit = @pipeline.commit -%>
+<% if commit.author -%>
+Commit Author: <%= sanitize_name(commit.author.name) %> ( <%= user_url(commit.author) %> )
+<% else -%>
+Commit Author: <%= commit.author_name %>
+<% end -%>
+<% if commit.different_committer? -%>
+<% if commit.committer -%>
+Committed by: <%= sanitize_name(commit.committer.name) %> ( <%= user_url(commit.committer) %> )
+<% else -%>
+Committed by: <%= commit.committer_name %>
+<% end -%>
+<% end -%>
+
+<% job_count = @pipeline.total_size -%>
+<% stage_count = @pipeline.stages_count -%>
+<% if @pipeline.user -%>
+Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) triggered by <%= sanitize_name(@pipeline.user.name) %> ( <%= user_url(@pipeline.user) %> )
+<% else -%>
+Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) triggered by API
+<% end -%>
+successfully completed <%= job_count %> <%= 'job'.pluralize(job_count) %> in <%= stage_count %> <%= 'stage'.pluralize(stage_count) %>.

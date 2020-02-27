@@ -52,7 +52,8 @@ class NotificationRecipient
     when :mention
       @type == :mention
     when :participating
-      @custom_action == :failed_pipeline || %i[participating mention].include?(@type)
+      %i[failed_pipeline fixed_pipeline].include?(@custom_action) ||
+        %i[participating mention].include?(@type)
     when :custom
       custom_enabled? || %i[participating mention].include?(@type)
     when :watch
@@ -63,7 +64,13 @@ class NotificationRecipient
   end
 
   def custom_enabled?
-    @custom_action && notification_setting&.event_enabled?(@custom_action)
+    return false unless @custom_action
+    return false unless notification_setting
+
+    notification_setting.event_enabled?(@custom_action) ||
+      # fixed_pipeline is a subset of success_pipeline event
+      (@custom_action == :fixed_pipeline &&
+       notification_setting.event_enabled?(:success_pipeline))
   end
 
   def unsubscribed?

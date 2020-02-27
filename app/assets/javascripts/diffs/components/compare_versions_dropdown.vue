@@ -1,6 +1,7 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
 import { n__, __, sprintf } from '~/locale';
+import { getParameterByName, parseBoolean } from '~/lib/utils/common_utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
@@ -94,6 +95,9 @@ export default {
       }
       return version.versionIndex === -1;
     },
+    isHead() {
+      return parseBoolean(getParameterByName('diff_head'));
+    },
     isLatest(version) {
       return (
         this.mergeRequestVersion && version.version_index === this.targetVersions[0].version_index
@@ -121,7 +125,8 @@ export default {
               <div>
                 <strong>
                   {{ versionName(version) }}
-                  <template v-if="isBase(version)">{{
+                  <template v-if="isHead()">{{ s__('DiffsCompareBaseBranch|(HEAD)') }}</template>
+                  <template v-else-if="isBase(version)">{{
                     s__('DiffsCompareBaseBranch|(base)')
                   }}</template>
                 </strong>

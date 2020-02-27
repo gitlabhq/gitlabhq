@@ -196,6 +196,11 @@ msgid_plural "%d unstaged changes"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d vulnerability dismissed"
+msgid_plural "%d vulnerabilities dismissed"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
 msgstr[0] ""
@@ -3930,6 +3935,9 @@ msgstr ""
 msgid "Cluster cache cleared."
 msgstr ""
 
+msgid "Cluster does not exist"
+msgstr ""
+
 msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
 msgstr ""
 
@@ -6700,6 +6708,9 @@ msgstr ""
 msgid "Difference between start date and now"
 msgstr ""
 
+msgid "DiffsCompareBaseBranch|(HEAD)"
+msgstr ""
+
 msgid "DiffsCompareBaseBranch|(base)"
 msgstr ""
 
@@ -6823,10 +6834,18 @@ msgstr ""
 msgid "Dismiss"
 msgstr ""
 
+msgid "Dismiss %d selected vulnerability as"
+msgid_plural "Dismiss %d selected vulnerabilities as"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Dismiss DevOps Score introduction"
 msgstr ""
 
 msgid "Dismiss Merge Request promotion"
+msgstr ""
+
+msgid "Dismiss Selected"
 msgstr ""
 
 msgid "Dismiss Value Stream Analytics introduction box"
@@ -7394,6 +7413,9 @@ msgid "Enter zen mode"
 msgstr ""
 
 msgid "Environment"
+msgstr ""
+
+msgid "Environment does not have deployments"
 msgstr ""
 
 msgid "Environment variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. Additionally, they can be masked so they are hidden in job logs, though they must match certain regexp requirements to do so. You can use environment variables for passwords, secret keys, or whatever you want."
@@ -8291,6 +8313,9 @@ msgid "Failed to verify domain ownership"
 msgstr ""
 
 msgid "Failure"
+msgstr ""
+
+msgid "False positive"
 msgstr ""
 
 msgid "Fast-forward merge is not possible. Rebase the source branch onto the target branch or merge target branch into source branch to allow this merge request to be merged."
@@ -12640,6 +12665,9 @@ msgstr ""
 msgid "Name:"
 msgstr ""
 
+msgid "Namespace is empty"
+msgstr ""
+
 msgid "Namespace: %{namespace}"
 msgstr ""
 
@@ -12897,9 +12925,6 @@ msgstr ""
 msgid "No data to display"
 msgstr ""
 
-msgid "No deployment platform available"
-msgstr ""
-
 msgid "No deployments found"
 msgstr ""
 
@@ -13147,6 +13172,9 @@ msgid "NotificationEvent|Close merge request"
 msgstr ""
 
 msgid "NotificationEvent|Failed pipeline"
+msgstr ""
+
+msgid "NotificationEvent|Fixed pipeline"
 msgstr ""
 
 msgid "NotificationEvent|Merge merge request"
@@ -17056,6 +17084,9 @@ msgstr ""
 msgid "Security Reports|There was an error deleting the comment."
 msgstr ""
 
+msgid "Security Reports|There was an error dismissing the vulnerabilities."
+msgstr ""
+
 msgid "Security Reports|There was an error dismissing the vulnerability."
 msgstr ""
 
@@ -17210,6 +17241,9 @@ msgid "Select a project"
 msgstr ""
 
 msgid "Select a project to read Insights configuration file"
+msgstr ""
+
+msgid "Select a reason"
 msgstr ""
 
 msgid "Select a repository"
@@ -22173,6 +22207,9 @@ msgstr ""
 msgid "Withdraw Access Request"
 msgstr ""
 
+msgid "Won't fix / Accept risk"
+msgstr ""
+
 msgid "Work in progress Limit"
 msgstr ""
 
@@ -22759,6 +22796,9 @@ msgid "Zoom meeting added"
 msgstr ""
 
 msgid "Zoom meeting removed"
+msgstr ""
+
+msgid "[No reason]"
 msgstr ""
 
 msgid "a deleted user"

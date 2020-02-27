@@ -21,6 +21,7 @@ describe NotificationsHelper do
   describe '#notification_event_name' do
     it { expect(notification_event_name(:success_pipeline)).to match('Successful pipeline') }
     it { expect(notification_event_name(:failed_pipeline)).to match('Failed pipeline') }
+    it { expect(notification_event_name(:fixed_pipeline)).to match('Fixed pipeline') }
   end
 
   describe '#notification_icon_level' do

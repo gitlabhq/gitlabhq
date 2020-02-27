@@ -21,7 +21,7 @@ module Gitlab
 
       def exec
         if creation? || deletion?
-          raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:create_delete_branch]
+          raise GitAccess::ForbiddenError, ERROR_MESSAGES[:create_delete_branch]
         end
 
         # TODO: https://gitlab.com/gitlab-org/gitlab/issues/205628

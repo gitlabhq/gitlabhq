@@ -30,6 +30,7 @@ If the `custom` level is used, specific email events can be controlled. Availabl
 - `reassign_merge_request`
 - `merge_merge_request`
 - `failed_pipeline`
+- `fixed_pipeline`
 - `success_pipeline`
 - `new_epic` **(ULTIMATE)**
 
@@ -83,6 +84,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.
 | `reassign_merge_request` | boolean | no | Enable/disable this notification |
 | `merge_merge_request` | boolean | no | Enable/disable this notification |
 | `failed_pipeline` | boolean | no | Enable/disable this notification |
+| `fixed_pipeline` | boolean | no | Enable/disable this notification |
 | `success_pipeline` | boolean | no | Enable/disable this notification |
 | `new_epic` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6626) in 11.3) **(ULTIMATE)** |
 
@@ -152,6 +154,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.
 | `reassign_merge_request` | boolean | no | Enable/disable this notification |
 | `merge_merge_request` | boolean | no | Enable/disable this notification |
 | `failed_pipeline` | boolean | no | Enable/disable this notification |
+| `fixed_pipeline` | boolean | no | Enable/disable this notification |
 | `success_pipeline` | boolean | no | Enable/disable this notification |
 | `new_epic` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6626) in 11.3) **(ULTIMATE)** |
 
@@ -178,6 +181,7 @@ Example responses:
     "reassign_merge_request": false,
     "merge_merge_request": false,
     "failed_pipeline": false,
+    "fixed_pipeline": false,
     "success_pipeline": false
   }
 }

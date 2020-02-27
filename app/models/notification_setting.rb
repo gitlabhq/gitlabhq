@@ -44,6 +44,7 @@ class NotificationSetting < ApplicationRecord
     :reassign_merge_request,
     :merge_merge_request,
     :failed_pipeline,
+    :fixed_pipeline,
     :success_pipeline
   ].freeze
 
@@ -76,15 +77,22 @@ class NotificationSetting < ApplicationRecord
     setting
   end
 
-  # Allow people to receive failed pipeline notifications if they already have
-  # custom notifications enabled, as these are more like mentions than the other
-  # custom settings.
+  # Allow people to receive both failed pipeline/fixed pipeline notifications
+  # if they already have custom notifications enabled,
+  # as these are more like mentions than the other custom settings.
   def failed_pipeline
     bool = super
 
     bool.nil? || bool
   end
   alias_method :failed_pipeline?, :failed_pipeline
+
+  def fixed_pipeline
+    bool = super
+
+    bool.nil? || bool
+  end
+  alias_method :fixed_pipeline?, :fixed_pipeline
 
   def event_enabled?(event)
     respond_to?(event) && !!public_send(event) # rubocop:disable GitlabSecurity/PublicSend

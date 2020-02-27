@@ -50,12 +50,12 @@ For indexing Git repository data, GitLab uses an [indexer written in Go](https:/
 The way you install the Go indexer depends on your version of GitLab:
 
 - For GitLab Omnibus 11.8 and above, see [GitLab Omnibus](#gitlab-omnibus).
-- For older versions of GitLab, install the indexer [From Source](#from-source).
+- For installations from source or older versions of GitLab Omnibus, install the indexer [From Source](#from-source).
 
 ### GitLab Omnibus
 
-The Go indexer was included in Omnibus GitLab 11.8 as an optional replacement to a
-Ruby-based indexer. [Since GitLab v12.3](https://gitlab.com/gitlab-org/gitlab/issues/6481),
+Since GitLab 11.8 the Go indexer is included in GitLab Omnibus.  
+The former Ruby-based indexer was removed in [GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/issues/6481).
 
 ### From source
 

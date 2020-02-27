@@ -1863,6 +1863,12 @@ type Epic implements Noteable {
   descendantCounts: EpicDescendantCount
 
   """
+  Total weight of open and closed descendant epic's issues. Available only when
+  feature flag unfiltered_epic_aggregates is enabled.
+  """
+  descendantWeightSum: EpicDescendantWeights
+
+  """
   Description of the epic
   """
   description: String
@@ -2174,6 +2180,21 @@ type EpicDescendantCount {
 
   """
   Number of opened epic issues
+  """
+  openedIssues: Int
+}
+
+"""
+Total weight of open and closed descendant issues
+"""
+type EpicDescendantWeights {
+  """
+  Total weight of completed (closed) issues in this epic, including epic descendants
+  """
+  closedIssues: Int
+
+  """
+  Total weight of opened issues in this epic, including epic descendants
   """
   openedIssues: Int
 }

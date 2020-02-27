@@ -668,6 +668,13 @@
   :resource_boundary: :cpu
   :weight: 3
   :idempotent: 
+- :name: pipeline_default:pipeline_update_ci_ref_status
+  :feature_category: :continuous_integration
+  :has_external_dependencies: 
+  :latency_sensitive: true
+  :resource_boundary: :cpu
+  :weight: 3
+  :idempotent: 
 - :name: pipeline_hooks:build_hooks
   :feature_category: :continuous_integration
   :has_external_dependencies: 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_24_163804) do
+ActiveRecord::Schema.define(version: 2020_02_26_162723) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -876,6 +876,17 @@ ActiveRecord::Schema.define(version: 2020_02_24_163804) do
   create_table "ci_pipelines_config", primary_key: "pipeline_id", force: :cascade do |t|
     t.text "content", null: false
     t.index ["pipeline_id"], name: "index_ci_pipelines_config_on_pipeline_id"
+  end
+
+  create_table "ci_refs", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "lock_version", default: 0
+    t.integer "last_updated_by_pipeline_id"
+    t.boolean "tag", default: false, null: false
+    t.string "ref", limit: 255, null: false
+    t.string "status", limit: 255, null: false
+    t.index ["last_updated_by_pipeline_id"], name: "index_ci_refs_on_last_updated_by_pipeline_id"
+    t.index ["project_id", "ref", "tag"], name: "index_ci_refs_on_project_id_and_ref_and_tag", unique: true
   end
 
   create_table "ci_resource_groups", force: :cascade do |t|
@@ -2845,6 +2856,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_163804) do
     t.boolean "issue_due"
     t.boolean "new_epic"
     t.string "notification_email"
+    t.boolean "fixed_pipeline"
     t.boolean "new_release"
     t.index ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type"
     t.index ["user_id", "source_id", "source_type"], name: "index_notifications_on_user_id_and_source_id_and_source_type", unique: true
@@ -4356,8 +4368,6 @@ ActiveRecord::Schema.define(version: 2020_02_24_163804) do
     t.text "description_html"
     t.bigint "start_date_sourcing_milestone_id"
     t.bigint "due_date_sourcing_milestone_id"
-    t.bigint "closed_by_id"
-    t.datetime_with_timezone "closed_at"
     t.integer "state", limit: 2, default: 1, null: false
     t.integer "severity", limit: 2, null: false
     t.boolean "severity_overridden", default: false
@@ -4369,9 +4379,11 @@ ActiveRecord::Schema.define(version: 2020_02_24_163804) do
     t.integer "cached_markdown_version"
     t.bigint "confirmed_by_id"
     t.datetime_with_timezone "confirmed_at"
+    t.datetime_with_timezone "dismissed_at"
+    t.bigint "dismissed_by_id"
     t.index ["author_id"], name: "index_vulnerabilities_on_author_id"
-    t.index ["closed_by_id"], name: "index_vulnerabilities_on_closed_by_id"
     t.index ["confirmed_by_id"], name: "index_vulnerabilities_on_confirmed_by_id"
+    t.index ["dismissed_by_id"], name: "index_vulnerabilities_on_dismissed_by_id"
     t.index ["due_date_sourcing_milestone_id"], name: "index_vulnerabilities_on_due_date_sourcing_milestone_id"
     t.index ["epic_id"], name: "index_vulnerabilities_on_epic_id"
     t.index ["last_edited_by_id"], name: "index_vulnerabilities_on_last_edited_by_id"
@@ -4650,6 +4662,8 @@ ActiveRecord::Schema.define(version: 2020_02_24_163804) do
   add_foreign_key "ci_pipelines", "merge_requests", name: "fk_a23be95014", on_delete: :cascade
   add_foreign_key "ci_pipelines", "projects", name: "fk_86635dbd80", on_delete: :cascade
   add_foreign_key "ci_pipelines_config", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
+  add_foreign_key "ci_refs", "ci_pipelines", column: "last_updated_by_pipeline_id", on_delete: :nullify
+  add_foreign_key "ci_refs", "projects", on_delete: :cascade
   add_foreign_key "ci_resource_groups", "projects", name: "fk_774722d144", on_delete: :cascade
   add_foreign_key "ci_resources", "ci_builds", column: "build_id", name: "fk_e169a8e3d5", on_delete: :nullify
   add_foreign_key "ci_resources", "ci_resource_groups", column: "resource_group_id", on_delete: :cascade
@@ -5026,8 +5040,8 @@ ActiveRecord::Schema.define(version: 2020_02_24_163804) do
   add_foreign_key "vulnerabilities", "milestones", name: "fk_131d289c65", on_delete: :nullify
   add_foreign_key "vulnerabilities", "projects", name: "fk_efb96ab1e2", on_delete: :cascade
   add_foreign_key "vulnerabilities", "users", column: "author_id", name: "fk_b1de915a15", on_delete: :nullify
-  add_foreign_key "vulnerabilities", "users", column: "closed_by_id", name: "fk_cf5c60acbf", on_delete: :nullify
   add_foreign_key "vulnerabilities", "users", column: "confirmed_by_id", name: "fk_959d40ad0a", on_delete: :nullify
+  add_foreign_key "vulnerabilities", "users", column: "dismissed_by_id", name: "fk_725465b774", on_delete: :nullify
   add_foreign_key "vulnerabilities", "users", column: "last_edited_by_id", name: "fk_1302949740", on_delete: :nullify
   add_foreign_key "vulnerabilities", "users", column: "resolved_by_id", name: "fk_76bc5f5455", on_delete: :nullify
   add_foreign_key "vulnerabilities", "users", column: "updated_by_id", name: "fk_7ac31eacb9", on_delete: :nullify

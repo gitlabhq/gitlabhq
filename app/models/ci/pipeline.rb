@@ -63,6 +63,14 @@ module Ci
     has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_pipeline_id
 
     has_one :source_pipeline, class_name: 'Ci::Sources::Pipeline', inverse_of: :pipeline
+
+    has_one :ref_status, ->(pipeline) {
+      # We use .read_attribute to save 1 extra unneeded query to load the :project.
+      unscope(:where)
+        .where(project_id: pipeline.read_attribute(:project_id), ref: pipeline.ref, tag: pipeline.tag)
+      # Sadly :inverse_of is not supported (yet) by Rails for composite PKs.
+    }, class_name: 'Ci::Ref', inverse_of: :pipelines
+
     has_one :chat_data, class_name: 'Ci::PipelineChatData'
 
     has_many :triggered_pipelines, through: :sourced_pipelines, source: :pipeline
@@ -227,7 +235,7 @@ module Ci
 
       after_transition any => [:success, :failed] do |pipeline|
         pipeline.run_after_commit do
-          PipelineNotificationWorker.perform_async(pipeline.id)
+          PipelineUpdateCiRefStatusWorker.perform_async(pipeline.id)
         end
       end
 

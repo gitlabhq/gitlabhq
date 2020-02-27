@@ -28,8 +28,9 @@ module Gitlab
         config.address.sub(WILDCARD_PLACEHOLDER, "#{key}#{UNSUBSCRIBE_SUFFIX}")
       end
 
-      def key_from_address(address)
-        regex = address_regex
+      def key_from_address(address, wildcard_address: nil)
+        wildcard_address ||= config.address
+        regex = address_regex(wildcard_address)
         return unless regex
 
         match = address.match(regex)
@@ -55,8 +56,7 @@ module Gitlab
 
       private
 
-      def address_regex
-        wildcard_address = config.address
+      def address_regex(wildcard_address)
         return unless wildcard_address
 
         regex = Regexp.escape(wildcard_address)

@@ -216,7 +216,7 @@ If you're using a custom setup for License Compliance, you're required
 to update your CI config accordingly:
 
 1. Change the CI template to `License-Scanning.gitlab-ci.yml`.
-1. Change the job name to `license_management` (if you mention it in `.gitlab-ci.yml`).
+1. Change the job name to `license_scanning` (if you mention it in `.gitlab-ci.yml`).
 1. Change the artifact name to `gl-license-scanning-report.json` (if you mention it in `.gitlab-ci.yml`).
 
 For example, the following `.gitlab-ci.yml`:
