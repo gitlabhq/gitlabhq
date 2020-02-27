@@ -123,6 +123,26 @@ describe MergeRequestWidgetEntity do
             expect(subject[:merge_request_add_ci_config_path]).not_to be_nil
           end
         end
+
+        context 'when build feature is disabled' do
+          before do
+            project.project_feature.update(builds_access_level: ProjectFeature::DISABLED)
+          end
+
+          it 'has no path' do
+            expect(subject[:merge_request_add_ci_config_path]).to be_nil
+          end
+        end
+
+        context 'when creating the pipeline is not allowed' do
+          before do
+            user.state = 'blocked'
+          end
+
+          it 'has no path' do
+            expect(subject[:merge_request_add_ci_config_path]).to be_nil
+          end
+        end
       end
 
       context 'when user does not have permissions' do

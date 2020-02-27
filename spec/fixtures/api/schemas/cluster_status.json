@@ -39,9 +39,15 @@
         "stack": { "type": ["string", "null"] },
         "modsecurity_enabled": { "type": ["boolean", "null"] },
         "update_available": { "type": ["boolean", "null"] },
-        "can_uninstall": { "type": "boolean" }
+        "can_uninstall": { "type": "boolean" },
+        "available_domains": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/domain" }
+        },
+        "pages_domain": { "type": [ { "$ref": "#/definitions/domain" }, "null"] }
       },
       "required" : [ "name", "status" ]
-    }
+    },
+    "domain": { "id": "integer", "domain": "string" }
   }
 }

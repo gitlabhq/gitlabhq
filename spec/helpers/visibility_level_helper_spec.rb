@@ -59,7 +59,7 @@ describe VisibilityLevelHelper do
   describe "#project_visibility_level_description" do
     it "describes private projects" do
       expect(project_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE))
-            .to eq _('Project access must be granted explicitly to each user.')
+            .to eq _('Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.')
     end
 
     it "describes public projects" do

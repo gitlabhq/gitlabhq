@@ -1,0 +1,5 @@
+---
+title: Change back internal api return code
+merge_request: 26063
+author:
+type: fixed

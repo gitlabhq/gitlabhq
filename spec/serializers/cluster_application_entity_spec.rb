@@ -59,5 +59,23 @@ describe ClusterApplicationEntity do
         expect(subject[:external_ip]).to eq('111.222.111.222')
       end
     end
+
+    context 'for knative application' do
+      let(:pages_domain) { create(:pages_domain, :instance_serverless) }
+      let(:application) { build(:clusters_applications_knative, :installed) }
+
+      before do
+        create(:serverless_domain_cluster, knative: application, pages_domain: pages_domain)
+      end
+
+      it 'includes available domains' do
+        expect(subject[:available_domains].length).to eq(1)
+        expect(subject[:available_domains].first).to eq(id: pages_domain.id, domain: pages_domain.domain)
+      end
+
+      it 'includes pages_domain' do
+        expect(subject[:pages_domain]).to eq(id: pages_domain.id, domain: pages_domain.domain)
+      end
+    end
   end
 end

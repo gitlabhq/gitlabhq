@@ -337,7 +337,8 @@ const boardsStore = {
     return (
       (listTo.type !== 'label' && listFrom.type === 'assignee') ||
       (listTo.type !== 'assignee' && listFrom.type === 'label') ||
-      listFrom.type === 'backlog'
+      listFrom.type === 'backlog' ||
+      listFrom.type === 'closed'
     );
   },
   moveIssueInList(list, issue, oldIndex, newIndex, idArray) {

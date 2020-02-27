@@ -135,15 +135,43 @@ describe API::Release::Links do
         end
       end
     end
+
+    describe '#direct_asset_url' do
+      let!(:link) { create(:release_link, release: release, url: url, filepath: filepath) }
+      let(:url) { 'https://google.com/-/jobs/140463678/artifacts/download' }
+
+      context 'when filepath is provided' do
+        let(:filepath) { '/bin/bigfile.exe' }
+
+        specify do
+          get api("/projects/#{project.id}/releases/v0.1/assets/links/#{link.id}", maintainer)
+
+          expect(json_response['direct_asset_url']).to eq("http://localhost/#{project.namespace.path}/#{project.name}/-/releases/#{release.tag}/bin/bigfile.exe")
+        end
+      end
+
+      context 'when filepath is not provided' do
+        let(:filepath) { nil }
+
+        specify do
+          get api("/projects/#{project.id}/releases/v0.1/assets/links/#{link.id}", maintainer)
+
+          expect(json_response['direct_asset_url']).to eq(url)
+        end
+      end
+    end
   end
 
   describe 'POST /projects/:id/releases/:tag_name/assets/links' do
     let(:params) do
       {
         name: 'awesome-app.dmg',
+        filepath: '/binaries/awesome-app.dmg',
         url: 'https://example.com/download/awesome-app.dmg'
       }
     end
+
+    let(:last_release_link) { release.links.last }
 
     it 'accepts the request' do
       post api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer), params: params
@@ -157,8 +185,9 @@ describe API::Release::Links do
       end.to change { Releases::Link.count }.by(1)
 
       release.reload
-      expect(release.links.last.name).to eq('awesome-app.dmg')
-      expect(release.links.last.url).to eq('https://example.com/download/awesome-app.dmg')
+      expect(last_release_link.name).to eq('awesome-app.dmg')
+      expect(last_release_link.filepath).to eq('/binaries/awesome-app.dmg')
+      expect(last_release_link.url).to eq('https://example.com/download/awesome-app.dmg')
     end
 
     it 'matches response schema' do

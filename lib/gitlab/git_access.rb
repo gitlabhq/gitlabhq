@@ -60,7 +60,6 @@ module Gitlab
       @logger = Checks::TimedLogger.new(timeout: INTERNAL_TIMEOUT, header: LOG_HEADER)
       @changes = changes
 
-      check_namespace!
       check_protocol!
       check_valid_actor!
       check_active_user!
@@ -72,11 +71,7 @@ module Gitlab
       return custom_action if custom_action
 
       check_db_accessibility!(cmd)
-
-      ensure_project_on_push!(cmd, changes)
-
-      check_project_accessibility!
-      add_project_moved_message!
+      check_project!(changes, cmd)
       check_repository_existence!
 
       case cmd
@@ -112,6 +107,13 @@ module Gitlab
     end
 
     private
+
+    def check_project!(changes, cmd)
+      check_namespace!
+      ensure_project_on_push!(cmd, changes)
+      check_project_accessibility!
+      add_project_moved_message!
+    end
 
     def check_custom_action(cmd)
       nil

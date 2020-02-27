@@ -98,7 +98,7 @@ module Gitlab
       @permission_cache ||= {}
     end
 
-    def can_access_git?
+    request_cache def can_access_git?
       user && user.can?(:access_git)
     end
 

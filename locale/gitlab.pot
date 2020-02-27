@@ -14396,7 +14396,7 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
-msgid "Private - Project access must be granted explicitly to each user."
+msgid "Private - Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group."
 msgstr ""
 
 msgid "Private - The group and its projects can only be viewed by members."
@@ -14834,7 +14834,7 @@ msgstr ""
 msgid "Project URL"
 msgstr ""
 
-msgid "Project access must be granted explicitly to each user."
+msgid "Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group."
 msgstr ""
 
 msgid "Project already deleted"
