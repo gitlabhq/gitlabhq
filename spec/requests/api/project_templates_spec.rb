@@ -15,7 +15,7 @@ describe API::ProjectTemplates do
     it 'returns dockerfiles' do
       get api("/projects/#{public_project.id}/templates/dockerfiles")
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(response).to match_response_schema('public_api/v4/template_list')
       expect(json_response).to satisfy_one { |template| template['key'] == 'Binary' }
@@ -24,7 +24,7 @@ describe API::ProjectTemplates do
     it 'returns gitignores' do
       get api("/projects/#{public_project.id}/templates/gitignores")
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(response).to match_response_schema('public_api/v4/template_list')
       expect(json_response).to satisfy_one { |template| template['key'] == 'Actionscript' }
@@ -33,7 +33,7 @@ describe API::ProjectTemplates do
     it 'returns gitlab_ci_ymls' do
       get api("/projects/#{public_project.id}/templates/gitlab_ci_ymls")
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(response).to match_response_schema('public_api/v4/template_list')
       expect(json_response).to satisfy_one { |template| template['key'] == 'Android' }
@@ -42,7 +42,7 @@ describe API::ProjectTemplates do
     it 'returns licenses' do
       get api("/projects/#{public_project.id}/templates/licenses")
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(response).to match_response_schema('public_api/v4/template_list')
       expect(json_response).to satisfy_one { |template| template['key'] == 'mit' }
@@ -51,19 +51,19 @@ describe API::ProjectTemplates do
     it 'returns 400 for an unknown template type' do
       get api("/projects/#{public_project.id}/templates/unknown")
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'denies access to an anonymous user on a private project' do
       get api("/projects/#{private_project.id}/templates/licenses")
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'permits access to a developer on a private project' do
       get api("/projects/#{private_project.id}/templates/licenses", developer)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/template_list')
     end
   end
@@ -72,7 +72,7 @@ describe API::ProjectTemplates do
     it 'returns key and name for the listed licenses' do
       get api("/projects/#{public_project.id}/templates/licenses")
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/template_list')
     end
   end
@@ -81,7 +81,7 @@ describe API::ProjectTemplates do
     it 'returns a specific dockerfile' do
       get api("/projects/#{public_project.id}/templates/dockerfiles/Binary")
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/template')
       expect(json_response['name']).to eq('Binary')
     end
@@ -89,7 +89,7 @@ describe API::ProjectTemplates do
     it 'returns a specific gitignore' do
       get api("/projects/#{public_project.id}/templates/gitignores/Actionscript")
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/template')
       expect(json_response['name']).to eq('Actionscript')
     end
@@ -97,7 +97,7 @@ describe API::ProjectTemplates do
     it 'returns C++ gitignore' do
       get api("/projects/#{public_project.id}/templates/gitignores/C++")
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/template')
       expect(json_response['name']).to eq('C++')
     end
@@ -105,7 +105,7 @@ describe API::ProjectTemplates do
     it 'returns C++ gitignore for URL-encoded names' do
       get api("/projects/#{public_project.id}/templates/gitignores/C%2B%2B")
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/template')
       expect(json_response['name']).to eq('C++')
     end
@@ -113,7 +113,7 @@ describe API::ProjectTemplates do
     it 'returns a specific gitlab_ci_yml' do
       get api("/projects/#{public_project.id}/templates/gitlab_ci_ymls/Android")
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/template')
       expect(json_response['name']).to eq('Android')
     end
@@ -121,26 +121,26 @@ describe API::ProjectTemplates do
     it 'returns a specific license' do
       get api("/projects/#{public_project.id}/templates/licenses/mit")
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/license')
     end
 
     it 'returns 404 for an unknown specific template' do
       get api("/projects/#{public_project.id}/templates/licenses/unknown")
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'denies access to an anonymous user on a private project' do
       get api("/projects/#{private_project.id}/templates/licenses/mit")
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'permits access to a developer on a private project' do
       get api("/projects/#{private_project.id}/templates/licenses/mit", developer)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/license')
     end
 
@@ -148,7 +148,7 @@ describe API::ProjectTemplates do
       it 'rejects invalid filenames' do
         get api("/projects/#{public_project.id}/templates/#{template_type}/%2e%2e%2fPython%2ea")
 
-        expect(response).to have_gitlab_http_status(500)
+        expect(response).to have_gitlab_http_status(:internal_server_error)
       end
     end
 
@@ -165,7 +165,7 @@ describe API::ProjectTemplates do
             fullname: 'Fullname Placeholder'
           }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/license')
 
       content = json_response['content']

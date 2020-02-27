@@ -1,0 +1,6 @@
+---
+title: Allow 0 to be set for pages maximum size per project/group to indicate unlimited
+  size
+merge_request: 25677
+author:
+type: fixed

@@ -9,7 +9,7 @@ class AddPrivilegedToRunner < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :clusters_applications_runners, :privileged, :boolean, default: true, allow_null: false # rubocop:disable Migration/AddColumnWithDefault
+    add_column_with_default :clusters_applications_runners, :privileged, :boolean, default: true, allow_null: false
   end
 
   def down

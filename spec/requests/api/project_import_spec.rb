@@ -30,7 +30,7 @@ describe API::ProjectImport do
 
       post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.id }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
     end
 
     it 'schedules an import using the namespace path' do
@@ -38,7 +38,7 @@ describe API::ProjectImport do
 
       post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
     end
 
     context 'when a name is explicitly set' do
@@ -49,7 +49,7 @@ describe API::ProjectImport do
 
         post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.id, name: expected_name }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
       end
 
       it 'schedules an import using the namespace path and a different name' do
@@ -57,7 +57,7 @@ describe API::ProjectImport do
 
         post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path, name: expected_name }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
       end
 
       it 'sets name correctly' do
@@ -93,7 +93,7 @@ describe API::ProjectImport do
 
       post api('/projects/import', user), params: { path: 'test-import2', file: fixture_file_upload(file) }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
     end
 
     it 'does not schedule an import for a namespace that does not exist' do
@@ -102,7 +102,7 @@ describe API::ProjectImport do
 
       post api('/projects/import', user), params: { namespace: 'nonexistent', path: 'test-import2', file: fixture_file_upload(file) }
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Namespace Not Found')
     end
 
@@ -116,7 +116,7 @@ describe API::ProjectImport do
              namespace: namespace.full_path
            })
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Namespace Not Found')
     end
 
@@ -125,7 +125,7 @@ describe API::ProjectImport do
 
       post api('/projects/import', user), params: { path: 'test-import3', file: './random/test' }
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('file is invalid')
     end
 
@@ -186,7 +186,7 @@ describe API::ProjectImport do
 
         post api('/projects/import', user), params: { path: existing_project.path, file: fixture_file_upload(file) }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('Name has already been taken')
       end
 
@@ -196,7 +196,7 @@ describe API::ProjectImport do
 
           post api('/projects/import', user), params: { path: existing_project.path, file: fixture_file_upload(file), overwrite: true }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
         end
       end
     end
@@ -209,7 +209,7 @@ describe API::ProjectImport do
       it 'prevents users from importing projects' do
         post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.id }
 
-        expect(response).to have_gitlab_http_status(429)
+        expect(response).to have_gitlab_http_status(:too_many_requests)
         expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
       end
     end
@@ -276,7 +276,7 @@ describe API::ProjectImport do
 
       get api("/projects/#{project.id}/import", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to include('import_status' => 'started')
     end
 
@@ -287,7 +287,7 @@ describe API::ProjectImport do
 
       get api("/projects/#{project.id}/import", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to include('import_status' => 'failed',
                                        'import_error' => 'error')
     end

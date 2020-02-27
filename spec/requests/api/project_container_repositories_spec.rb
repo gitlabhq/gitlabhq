@@ -163,7 +163,7 @@ describe API::ProjectContainerRepositories do
             stub_exclusive_lease_taken(lease_key, timeout: 1.hour)
             subject
 
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
             expect(response.body).to include('This request has already been made.')
           end
 

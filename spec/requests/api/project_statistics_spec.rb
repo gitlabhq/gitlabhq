@@ -21,7 +21,7 @@ describe API::ProjectStatistics do
     it 'returns the fetch statistics of the last 30 days' do
       get api("/projects/#{public_project.id}/statistics", maintainer)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       fetches = json_response['fetches']
       expect(fetches['total']).to eq(40)
       expect(fetches['days'].length).to eq(5)
@@ -34,7 +34,7 @@ describe API::ProjectStatistics do
 
       get api("/projects/#{public_project.id}/statistics", maintainer)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       fetches = json_response['fetches']
       expect(fetches['total']).to eq(40)
       expect(fetches['days'].length).to eq(5)
@@ -47,7 +47,7 @@ describe API::ProjectStatistics do
 
       get api("/projects/#{public_project.id}/statistics", developer)
 
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
       expect(json_response['message']).to eq('403 Forbidden')
     end
 
@@ -56,7 +56,7 @@ describe API::ProjectStatistics do
 
       get api("/projects/#{public_project.id}/statistics", maintainer)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 end

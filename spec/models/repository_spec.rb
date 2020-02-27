@@ -2381,7 +2381,7 @@ describe Repository do
     end
   end
 
-  describe '#tree' do
+  shared_examples '#tree' do
     context 'using a non-existing repository' do
       before do
         allow(repository).to receive(:head_commit).and_return(nil)
@@ -2399,8 +2399,15 @@ describe Repository do
     context 'using an existing repository' do
       it 'returns a Tree' do
         expect(repository.tree(:head)).to be_an_instance_of(Tree)
+        expect(repository.tree('v1.1.1')).to be_an_instance_of(Tree)
       end
     end
+  end
+
+  it_behaves_like '#tree'
+
+  describe '#tree? with Rugged enabled', :enable_rugged do
+    it_behaves_like '#tree'
   end
 
   describe '#size' do

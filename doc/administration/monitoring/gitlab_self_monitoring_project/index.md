@@ -1,6 +1,6 @@
 # GitLab self monitoring project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32351) behind a disabled feature flag (`self_monitoring_project`) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32351) in GitLab 12.7, behind a disabled feature flag (`self_monitoring_project`).
 > - The feature flag was removed and the Self Monitoring Project was [made generally available](https://gitlab.com/gitlab-org/gitlab/issues/198511) in GitLab 12.8.
 
 GitLab has been adding the ability for administrators to see insights into the health of

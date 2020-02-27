@@ -19,7 +19,7 @@ describe API::ProtectedBranches do
       it 'returns the protected branches' do
         get api(route, user), params: params.merge(per_page: 100)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
 
@@ -66,7 +66,7 @@ describe API::ProtectedBranches do
       it 'returns the protected branch' do
         get api(route, user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
@@ -118,7 +118,7 @@ describe API::ProtectedBranches do
     let(:post_endpoint) { api("/projects/#{project.id}/protected_branches", user) }
 
     def expect_protection_to_be_successful
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(branch_name)
     end
 
@@ -130,7 +130,7 @@ describe API::ProtectedBranches do
       it 'protects a single branch' do
         post post_endpoint, params: { name: branch_name }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
@@ -139,7 +139,7 @@ describe API::ProtectedBranches do
       it 'protects a single branch and developers can push' do
         post post_endpoint, params: { name: branch_name, push_access_level: 30 }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
@@ -148,7 +148,7 @@ describe API::ProtectedBranches do
       it 'protects a single branch and developers can merge' do
         post post_endpoint, params: { name: branch_name, merge_access_level: 30 }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
@@ -157,7 +157,7 @@ describe API::ProtectedBranches do
       it 'protects a single branch and developers can push and merge' do
         post post_endpoint, params: { name: branch_name, push_access_level: 30, merge_access_level: 30 }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
@@ -166,7 +166,7 @@ describe API::ProtectedBranches do
       it 'protects a single branch and no one can push' do
         post post_endpoint, params: { name: branch_name, push_access_level: 0 }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
@@ -175,7 +175,7 @@ describe API::ProtectedBranches do
       it 'protects a single branch and no one can merge' do
         post post_endpoint, params: { name: branch_name, merge_access_level: 0 }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
@@ -184,7 +184,7 @@ describe API::ProtectedBranches do
       it 'protects a single branch and no one can push or merge' do
         post post_endpoint, params: { name: branch_name, push_access_level: 0, merge_access_level: 0 }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
@@ -193,7 +193,7 @@ describe API::ProtectedBranches do
       it 'returns a 409 error if the same branch is protected twice' do
         post post_endpoint, params: { name: protected_name }
 
-        expect(response).to have_gitlab_http_status(409)
+        expect(response).to have_gitlab_http_status(:conflict)
       end
 
       context 'when branch has a wildcard in its name' do
@@ -217,7 +217,7 @@ describe API::ProtectedBranches do
         it "prevents deletion of the protected branch rule" do
           post post_endpoint, params: { name: branch_name }
 
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -230,7 +230,7 @@ describe API::ProtectedBranches do
       it "returns a 403 error if guest" do
         post post_endpoint, params: { name: branch_name }
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end
@@ -245,7 +245,7 @@ describe API::ProtectedBranches do
     it "unprotects a single branch" do
       delete delete_endpoint
 
-      expect(response).to have_gitlab_http_status(204)
+      expect(response).to have_gitlab_http_status(:no_content)
     end
 
     it_behaves_like '412 response' do
@@ -255,7 +255,7 @@ describe API::ProtectedBranches do
     it "returns 404 if branch does not exist" do
       delete api("/projects/#{project.id}/protected_branches/barfoo", user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     context 'when a policy restricts rule deletion' do
@@ -267,7 +267,7 @@ describe API::ProtectedBranches do
       it "prevents deletion of the protected branch rule" do
         delete delete_endpoint
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -277,7 +277,7 @@ describe API::ProtectedBranches do
       it "unprotects a wildcard branch" do
         delete delete_endpoint
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end
     end
   end

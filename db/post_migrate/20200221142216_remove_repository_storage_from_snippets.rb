@@ -16,7 +16,7 @@ class RemoveRepositoryStorageFromSnippets < ActiveRecord::Migration[6.0]
   def down
     return if column_exists?(:snippets, :repository_storage)
 
-    add_column_with_default( # rubocop:disable Migration/AddColumnWithDefault
+    add_column_with_default(
       :snippets,
       :repository_storage,
       :string,

@@ -8,7 +8,7 @@ class AddStorageVersionToSnippets < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default( # rubocop:disable Migration/AddColumnWithDefault
+    add_column_with_default(
       :snippets,
       :storage_version,
       :integer,

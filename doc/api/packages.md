@@ -8,8 +8,8 @@ This is the API docs of [GitLab Packages](../administration/packages/index.md).
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9259) in GitLab 11.8.
 
-Get a list of project packages. Both Maven and NPM packages are included in results.
-When accessed without authentication, only packages of public projects are returned.
+Get a list of project packages. All package types are included in results. When
+accessed without authentication, only packages of public projects are returned.
 
 ```
 GET /projects/:id/packages
@@ -20,6 +20,7 @@ GET /projects/:id/packages
 | `id`      | integer/string | yes | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
+| `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm` or `nuget`. (_Introduced in GitLab 12.9_)
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/packages
