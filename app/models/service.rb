@@ -32,7 +32,7 @@ class Service < ApplicationRecord
   belongs_to :project, inverse_of: :services
   has_one :service_hook
 
-  validates :project_id, presence: true, unless: proc { |service| service.template? }
+  validates :project_id, presence: true, unless: -> { template? }
   validates :type, presence: true
 
   scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
@@ -68,10 +68,6 @@ class Service < ApplicationRecord
 
   def editable?
     true
-  end
-
-  def template?
-    template
   end
 
   def category

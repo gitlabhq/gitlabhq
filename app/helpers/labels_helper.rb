@@ -115,13 +115,7 @@ module LabelsHelper
   end
 
   def text_color_class_for_bg(bg_color)
-    if bg_color.length == 4
-      r, g, b = bg_color[1, 4].scan(/./).map { |v| (v * 2).hex }
-    else
-      r, g, b = bg_color[1, 7].scan(/.{2}/).map(&:hex)
-    end
-
-    if (r + g + b) > 500
+    if light_color?(bg_color)
       'gl-label-text-dark'
     else
       'gl-label-text-light'
@@ -129,17 +123,21 @@ module LabelsHelper
   end
 
   def text_color_for_bg(bg_color)
-    if bg_color.length == 4
-      r, g, b = bg_color[1, 4].scan(/./).map { |v| (v * 2).hex }
-    else
-      r, g, b = bg_color[1, 7].scan(/.{2}/).map(&:hex)
-    end
-
-    if (r + g + b) > 500
+    if light_color?(bg_color)
       '#333333'
     else
       '#FFFFFF'
     end
+  end
+
+  def light_color?(color)
+    if color.length == 4
+      r, g, b = color[1, 4].scan(/./).map { |v| (v * 2).hex }
+    else
+      r, g, b = color[1, 7].scan(/.{2}/).map(&:hex)
+    end
+
+    (r + g + b) > 500
   end
 
   def labels_filter_path_with_defaults(only_group_labels: false, include_ancestor_groups: true, include_descendant_groups: false)

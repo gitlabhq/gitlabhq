@@ -10,8 +10,13 @@ describe Service do
     it { is_expected.to have_one :issue_tracker_data }
   end
 
-  describe 'Validations' do
+  describe 'validations' do
     it { is_expected.to validate_presence_of(:type) }
+
+    it 'validates presence of project_id if not template', :aggregate_failures do
+      expect(build(:service, project_id: nil, template: true)).to be_valid
+      expect(build(:service, project_id: nil, template: false)).to be_invalid
+    end
   end
 
   describe 'Scopes' do

@@ -7,7 +7,7 @@ describe Spam::MarkAsSpamService do
   let(:spammable) { build(:issue, user_agent_detail: user_agent_detail) }
   let(:fake_akismet_service) { double(:akismet_service, submit_spam: true) }
 
-  subject { described_class.new(spammable: spammable) }
+  subject { described_class.new(target: spammable) }
 
   describe '#execute' do
     before do
