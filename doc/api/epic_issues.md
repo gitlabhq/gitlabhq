@@ -10,7 +10,7 @@ Epics are available only in Ultimate. If epics feature is not available a `403` 
 
 Gets all issues that are assigned to an epic and the authenticated user has  access to.
 
-```
+```plaintext
 GET /groups/:id/epics/:epic_iid/issues
 ```
 
@@ -106,7 +106,7 @@ Example response:
 
 Creates an epic - issue association. If the issue in question belongs to another epic it is unassigned from that epic.
 
-```
+```plaintext
 POST /groups/:id/epics/:epic_iid/issues/:issue_id
 ```
 
@@ -212,7 +212,7 @@ Example response:
 
 Removes an epic - issue association.
 
-```
+```plaintext
 DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 ```
 
@@ -318,7 +318,7 @@ Example response:
 
 Updates an epic - issue association.
 
-```
+```plaintext
 PUT /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 ```
 

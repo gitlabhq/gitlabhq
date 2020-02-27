@@ -107,50 +107,6 @@ For example:
 
 ![Pipeline mini graph sorting](img/pipelines_mini_graph_sorting.png)
 
-### How pipeline duration is calculated
-
-Total running time for a given pipeline excludes retries and pending
-(queued) time.
-
-Each job is represented as a `Period`, which consists of:
-
-- `Period#first` (when the job started).
-- `Period#last` (when the job finished).
-
-A simple example is:
-
-- A (1, 3)
-- B (2, 4)
-- C (6, 7)
-
-In the example:
-
-- A begins at 1 and ends at 3.
-- B begins at 2 and ends at 4.
-- C begins at 6 and ends at 7.
-
-Visually, it can be viewed as:
-
-```text
-0  1  2  3  4  5  6  7
-   AAAAAAA
-      BBBBBBB
-                  CCCC
-```
-
-The union of A, B, and C is (1, 4) and (6, 7). Therefore, the total running time is:
-
-```text
-(4 - 1) + (7 - 6) => 4
-```
-
-### How pipeline quotas are used
-
-Each user has a personal pipeline quota that tracks the usage of shared runners in all personal projects.
-Each group has a [usage quota](../subscriptions/index.md#ci-pipeline-minutes) that tracks the usage of shared runners for all projects created within the group.
-
-When a pipeline is triggered, regardless of who triggered it, the pipeline quota for the project owner's [namespace](../user/group/index.md#namespaces) is used. In this case, the namespace can be the user or group that owns the project.
-
 ### Expanding and collapsing job log sections
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/14664) in GitLab
@@ -201,6 +157,65 @@ Sample raw job log:
 section_start:1560896352:my_first_section\r\e[0KHeader of the 1st collapsible section
 this line should be hidden when collapsed
 section_end:1560896353:my_first_section\r\e[0K
+```
+
+### Pipeline success and duration charts
+
+> - Introduced in GitLab 3.1.1 as Commit Stats, and later renamed to Pipeline Charts.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/issues/38318) to CI / CD Analytics in GitLab 12.8.
+
+GitLab tracks the history of your pipeline successes and failures, as well as how long each pipeline ran. To view this information, go to **Analytics > CI / CD Analytics**.
+
+View successful pipelines:
+
+![Successful pipelines](img/pipelines_success_chart.png)
+
+View pipeline duration history:
+
+![Pipeline duration](img/pipelines_duration_chart.png)
+
+## Pipeline quotas
+
+Each user has a personal pipeline quota that tracks the usage of shared runners in all personal projects.
+Each group has a [usage quota](../subscriptions/index.md#ci-pipeline-minutes) that tracks the usage of shared runners for all projects created within the group.
+
+When a pipeline is triggered, regardless of who triggered it, the pipeline quota for the project owner's [namespace](../user/group/index.md#namespaces) is used. In this case, the namespace can be the user or group that owns the project.
+
+### How pipeline duration is calculated
+
+Total running time for a given pipeline excludes retries and pending
+(queued) time.
+
+Each job is represented as a `Period`, which consists of:
+
+- `Period#first` (when the job started).
+- `Period#last` (when the job finished).
+
+A simple example is:
+
+- A (1, 3)
+- B (2, 4)
+- C (6, 7)
+
+In the example:
+
+- A begins at 1 and ends at 3.
+- B begins at 2 and ends at 4.
+- C begins at 6 and ends at 7.
+
+Visually, it can be viewed as:
+
+```text
+0  1  2  3  4  5  6  7
+   AAAAAAA
+      BBBBBBB
+                  CCCC
+```
+
+The union of A, B, and C is (1, 4) and (6, 7). Therefore, the total running time is:
+
+```text
+(4 - 1) + (7 - 6) => 4
 ```
 
 ## Configuring pipelines

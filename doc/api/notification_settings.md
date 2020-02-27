@@ -6,7 +6,7 @@
 
 The notification levels are defined in the `NotificationSetting.level` model enumeration. Currently, these levels are recognized:
 
-```
+```plaintext
 disabled
 participating
 watch
@@ -37,7 +37,7 @@ If the `custom` level is used, specific email events can be controlled. Availabl
 
 Get current notification settings and email address.
 
-```
+```plaintext
 GET /notification_settings
 ```
 
@@ -58,7 +58,7 @@ Example response:
 
 Update current notification settings and email address.
 
-```
+```plaintext
 PUT /notification_settings
 ```
 
@@ -99,7 +99,7 @@ Example response:
 
 Get current group or project notification settings.
 
-```
+```plaintext
 GET /groups/:id/notification_settings
 GET /projects/:id/notification_settings
 ```
@@ -125,7 +125,7 @@ Example response:
 
 Update current group/project notification settings.
 
-```
+```plaintext
 PUT /groups/:id/notification_settings
 PUT /projects/:id/notification_settings
 ```

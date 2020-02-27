@@ -567,7 +567,7 @@ Set Hangouts Chat service for a project.
 PUT /projects/:id/services/hangouts-chat
 ```
 
->**Note:** Specific event parameters (e.g. `push_events` flag) were [introduced in v10.4][11435]
+>**Note:** Specific event parameters (for example, `push_events` flag) were [introduced in v10.4][11435]
 
 Parameters:
 
@@ -833,7 +833,7 @@ DELETE /projects/:id/services/mattermost-slash-commands
 
 ## Packagist
 
-Update your project on Packagist, the main Composer repository, when commits or tags are pushed to GitLab.
+Update your project on Packagist (the main Composer repository) when commits or tags are pushed to GitLab.
 
 ### Create/Edit Packagist service
 
@@ -1068,7 +1068,7 @@ Set Slack service for a project.
 PUT /projects/:id/services/slack
 ```
 
->**Note:** Specific event parameters (e.g. `push_events` flag and `push_channel`) were [introduced in v10.4][11435]
+>**Note:** Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4][11435]
 
 Parameters:
 
@@ -1177,7 +1177,7 @@ Set Mattermost service for a project.
 PUT /projects/:id/services/mattermost
 ```
 
->**Note:** Specific event parameters (e.g. `push_events` flag and `push_channel`) were [introduced in v10.4][11435]
+>**Note:** Specific event parameters (for example, `push_events` flag and `push_channel`) were [introduced in v10.4][11435]
 
 Parameters:
 

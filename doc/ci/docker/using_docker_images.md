@@ -12,7 +12,7 @@ run applications in independent "containers" that are run within a single Linux
 instance. [Docker Hub][hub] has a rich database of pre-built images that can be
 used to test and build your applications.
 
-Docker, when used with GitLab CI, runs each job in a separate and isolated
+When used with GitLab CI, Docker runs each job in a separate and isolated
 container using the predefined image that is set up in
 [`.gitlab-ci.yml`](../yaml/README.md).
 
@@ -588,7 +588,7 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
   # Example output to copy
   bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
   ```
-  
+
   Create the Docker JSON configuration content as follows:
 
   ```json

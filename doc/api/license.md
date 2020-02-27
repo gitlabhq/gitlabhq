@@ -5,7 +5,7 @@ as an admin.
 
 ## Retrieve information about the current license
 
-```
+```plaintext
 GET /license
 ```
 
@@ -34,7 +34,7 @@ GET /license
 
 ## Retrieve information about all licenses
 
-```
+```plaintext
 GET /licenses
 ```
 
@@ -93,7 +93,7 @@ Returns:
 
 ## Add a new license
 
-```
+```plaintext
 POST /license
 ```
 
@@ -137,7 +137,7 @@ Returns:
 
 ## Delete a license
 
-```
+```plaintext
 DELETE /license/:id
 ```
 

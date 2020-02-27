@@ -4,7 +4,7 @@
 
 Get all managed licenses for a given project.
 
-```
+```plaintext
 GET /projects/:id/managed_licenses
 ```
 
@@ -37,7 +37,7 @@ Example response:
 
 Shows an existing managed license.
 
-```
+```plaintext
 GET /projects/:id/managed_licenses/:managed_license_id
 ```
 
@@ -64,7 +64,7 @@ Example response:
 
 Creates a new managed license for the given project with the given name and approval status.
 
-```
+```plaintext
 POST /projects/:id/managed_licenses
 ```
 
@@ -92,7 +92,7 @@ Example response:
 
 Deletes a managed license with a given id.
 
-```
+```plaintext
 DELETE /projects/:id/managed_licenses/:managed_license_id
 ```
 
@@ -111,7 +111,7 @@ When successful, it replies with an HTTP 204 response.
 
 Updates an existing managed license with a new approval status.
 
-```
+```plaintext
 PATCH /projects/:id/managed_licenses/:managed_license_id
 ```
 

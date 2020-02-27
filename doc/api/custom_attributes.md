@@ -9,7 +9,7 @@ which will be referred to as "resource" in this documentation.
 
 Get all custom attributes on a resource.
 
-```
+```plaintext
 GET /users/:id/custom_attributes
 GET /groups/:id/custom_attributes
 GET /projects/:id/custom_attributes
@@ -42,7 +42,7 @@ Example response:
 
 Get a single custom attribute on a resource.
 
-```
+```plaintext
 GET /users/:id/custom_attributes/:key
 GET /groups/:id/custom_attributes/:key
 GET /projects/:id/custom_attributes/:key
@@ -71,7 +71,7 @@ Example response:
 Set a custom attribute on a resource. The attribute will be updated if it already exists,
 or newly created otherwise.
 
-```
+```plaintext
 PUT /users/:id/custom_attributes/:key
 PUT /groups/:id/custom_attributes/:key
 PUT /projects/:id/custom_attributes/:key
@@ -100,7 +100,7 @@ Example response:
 
 Delete a custom attribute on a resource.
 
-```
+```plaintext
 DELETE /users/:id/custom_attributes/:key
 DELETE /groups/:id/custom_attributes/:key
 DELETE /projects/:id/custom_attributes/:key

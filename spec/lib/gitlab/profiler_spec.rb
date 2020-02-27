@@ -221,6 +221,12 @@ describe Gitlab::Profiler do
           .map { |(total)| total.to_f }
 
       expect(output).to include('Kernel#sleep')
+
+      if total_times != total_times.sort.reverse
+        warn "Profiler test failed, output is:"
+        warn output
+      end
+
       expect(total_times).to eq(total_times.sort.reverse)
       expect(total_times).not_to eq(total_times.uniq)
     end

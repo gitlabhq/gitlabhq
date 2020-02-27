@@ -38,7 +38,7 @@ Let's assume you deploy your web app from different projects in GitLab:
 - One for the paid version add-ons, which also pass through builds and tests
 - One for the documentation, which also builds, tests, and deploys with an SSG
 
-With Multi-Project Pipelines, you can visualize the entire pipeline, including all stages of builds and tests for the three projects.
+With Multi-Project Pipelines you can visualize the entire pipeline, including all build and test stages for the three projects.
 
 ## Triggering multi-project pipelines through API
 

@@ -435,8 +435,8 @@ Parameters:
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
-even in cases where a `409` (Conflict) would be more appropriate,
-e.g. when renaming the email address to some existing one.
+even in cases where a `409` (Conflict) would be more appropriate.
+For example, when renaming the email address to some existing one.
 
 ## Delete authentication identity from user
 
@@ -1389,7 +1389,7 @@ The activities that update the timestamp are:
 
 - Git HTTP/SSH activities (such as clone, push)
 - User logging in into GitLab
-- User visiting pages related to Dashboards, Projects, Issues and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/54947) in GitLab 11.8)
+- User visiting pages related to Dashboards, Projects, Issues, and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/54947) in GitLab 11.8)
 - User using the API
 
 By default, it shows the activity for all users in the last 6 months, but this can be
@@ -1403,7 +1403,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `from` | string | no | Date string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`. Defaults to 6 months ago. |
+| `from` | string | no | Date string in the format YEAR-MONTH-DAY. For example, `2016-03-11`. Defaults to 6 months ago. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/user/activities

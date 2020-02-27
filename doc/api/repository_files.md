@@ -2,7 +2,7 @@
 
 **CRUD for repository files**
 
-**Create, read, update and delete repository files using this API**
+**Create, read, update, and delete repository files using this API**
 
 The different scopes available using [personal access tokens](../user/profile/personal_access_tokens.md) are depicted
 in the following table.
@@ -242,7 +242,7 @@ If the commit fails for any reason we return a 400 error with a non-specific
 error message. Possible causes for a failed commit include:
 
 - the `file_path` contained `/../` (attempted directory traversal);
-- the new file contents were identical to the current file contents, i.e. the
+- the new file contents were identical to the current file contents. That is, the
   user tried to make an empty commit;
 - the branch was updated by a Git push while the file edit was in progress.
 

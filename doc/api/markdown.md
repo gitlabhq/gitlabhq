@@ -6,7 +6,7 @@ Available only in APIv4.
 
 ## Render an arbitrary Markdown document
 
-```
+```plaintext
 POST /api/v4/markdown
 ```
 

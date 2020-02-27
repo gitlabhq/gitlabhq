@@ -26,7 +26,7 @@ Get all issues the authenticated user has access to. By default it
 returns only issues created by the current user. To get all issues,
 use parameter `scope=all`.
 
-```
+```plaintext
 GET /issues
 GET /issues?state=opened
 GET /issues?state=closed
@@ -181,7 +181,7 @@ the `weight` parameter:
 
 Get a list of a group's issues.
 
-```
+```plaintext
 GET /groups/:id/issues
 GET /groups/:id/issues?state=opened
 GET /groups/:id/issues?state=closed
@@ -336,7 +336,7 @@ the `weight` parameter:
 
 Get a list of a project's issues.
 
-```
+```plaintext
 GET /projects/:id/issues
 GET /projects/:id/issues?state=opened
 GET /projects/:id/issues?state=closed
@@ -497,7 +497,7 @@ the `weight` parameter:
 
 Get a single project issue.
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid
 ```
 
@@ -637,7 +637,7 @@ Please use `iid` of the `epic` attribute instead.
 
 Creates a new project issue.
 
-```
+```plaintext
 POST /projects/:id/issues
 ```
 
@@ -745,7 +745,7 @@ the `weight` parameter:
 Updates an existing project issue. This call is also used to mark an issue as
 closed.
 
-```
+```plaintext
 PUT /projects/:id/issues/:issue_iid
 ```
 
@@ -864,7 +864,7 @@ The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value 
 
 Only for admins and project owners. Deletes the issue in question.
 
-```
+```plaintext
 DELETE /projects/:id/issues/:issue_iid
 ```
 
@@ -886,7 +886,7 @@ issue, error `400` together with an explaining error message is returned.
 If a given label and/or milestone with the same name also exists in the target
 project, it will then be assigned to the issue that is being moved.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/move
 ```
 
@@ -993,7 +993,7 @@ Subscribes the authenticated user to an issue to receive notifications.
 If the user is already subscribed to the issue, the status code `304`
 is returned.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/subscribe
 ```
 
@@ -1099,7 +1099,7 @@ Unsubscribes the authenticated user from the issue to not receive notifications
 from it. If the user is not subscribed to the issue, the
 status code `304` is returned.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/unsubscribe
 ```
 
@@ -1170,7 +1170,7 @@ Manually creates a todo for the current user on an issue. If
 there already exists a todo for the user on that issue, status code `304` is
 returned.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/todo
 ```
 
@@ -1284,7 +1284,7 @@ Example response:
 
 Sets an estimated time of work for this issue.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/time_estimate
 ```
 
@@ -1313,7 +1313,7 @@ Example response:
 
 Resets the estimated time for this issue to 0 seconds.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/reset_time_estimate
 ```
 
@@ -1341,7 +1341,7 @@ Example response:
 
 Adds spent time for this issue
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/add_spent_time
 ```
 
@@ -1370,7 +1370,7 @@ Example response:
 
 Resets the total spent time for this issue to 0 seconds.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/reset_spent_time
 ```
 
@@ -1396,7 +1396,7 @@ Example response:
 
 ## Get time tracking stats
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/time_stats
 ```
 
@@ -1424,7 +1424,7 @@ Example response:
 
 Get all the merge requests that are related to the issue.
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_id/related_merge_requests
 ```
 
@@ -1580,7 +1580,7 @@ Example response:
 
 Get all the merge requests that will close issue when merged.
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/closed_by
 ```
 
@@ -1653,7 +1653,7 @@ Example response:
 
 ## Participants on issues
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/participants
 ```
 
@@ -1697,7 +1697,7 @@ Comments are done via the [notes](notes.md) resource.
 
 Available only for admins.
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/user_agent_detail
 ```
 

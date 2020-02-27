@@ -5,7 +5,7 @@
 Get a list of related issues of a given issue, sorted by the relationship creation datetime (ascending).
 Issues will be filtered according to the user authorizations.
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/links
 ```
 
@@ -57,7 +57,7 @@ Parameters:
 
 Creates a two-way relation between two issues. User must be allowed to update both issues in order to succeed.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/links
 ```
 
@@ -145,7 +145,7 @@ Example response:
 
 Deletes an issue link, thus removes the two-way relationship.
 
-```
+```plaintext
 DELETE /projects/:id/issues/:issue_iid/links/:issue_link_id
 ```
 

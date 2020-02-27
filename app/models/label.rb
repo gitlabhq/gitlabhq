@@ -202,10 +202,6 @@ class Label < ApplicationRecord
     priorities.present?
   end
 
-  def template?
-    template
-  end
-
   def color
     super || DEFAULT_COLOR
   end

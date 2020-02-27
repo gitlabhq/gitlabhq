@@ -167,7 +167,7 @@ build_docs:
   - tags
 ```
 
-Now, whenever a new tag is pushed on project A, the job will run and the
+This means that whenever a new tag is pushed on project A, the job will run and the
 `build_docs` job will be executed, triggering a rebuild of project B. The
 `stage: deploy` ensures that this job will run only after all jobs with
 `stage: test` complete successfully.

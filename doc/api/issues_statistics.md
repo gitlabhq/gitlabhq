@@ -11,7 +11,7 @@ Gets issues count statistics on all issues the authenticated user has access to.
 returns only issues created by the current user. To get all issues,
 use parameter `scope=all`.
 
-```
+```plaintext
 GET /issues_statistics
 GET /issues_statistics?labels=foo
 GET /issues_statistics?labels=foo,bar
@@ -67,7 +67,7 @@ Example response:
 
 Gets issues count statistics for given group.
 
-```
+```plaintext
 GET /groups/:id/issues_statistics
 GET /groups/:id/issues_statistics?labels=foo
 GET /groups/:id/issues_statistics?labels=foo,bar

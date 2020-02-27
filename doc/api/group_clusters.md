@@ -10,7 +10,7 @@ User will need at least maintainer access for the group to use these endpoints.
 
 Returns a list of group clusters.
 
-```
+```plaintext
 GET /groups/:id/clusters
 ```
 
@@ -77,7 +77,7 @@ Example response:
 
 Gets a single group cluster.
 
-```
+```plaintext
 GET /groups/:id/clusters/:cluster_id
 ```
 
@@ -144,7 +144,7 @@ Example response:
 
 Adds an existing Kubernetes cluster to the group.
 
-```
+```plaintext
 POST /groups/:id/clusters/user
 ```
 
@@ -213,7 +213,7 @@ Example response:
 
 Updates an existing group cluster.
 
-```
+```plaintext
 PUT /groups/:id/clusters/:cluster_id
 ```
 
@@ -287,14 +287,13 @@ Example response:
     "web_url":"https://gitlab.example.com/group-with-clusters-api"
   }
 }
-
 ```
 
 ## Delete group cluster
 
 Deletes an existing group cluster.
 
-```
+```plaintext
 DELETE /groups/:id/clusters/:cluster_id
 ```
 

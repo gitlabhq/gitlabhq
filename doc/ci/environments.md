@@ -118,7 +118,7 @@ NOTE: **Note:**
 The `environment` keyword defines where the app is deployed.
 The environment `name` and `url` is exposed in various places
 within GitLab. Each time a job that has an environment specified
-succeeds, a deployment is recorded, along with the Git SHA and environment name.
+succeeds, a deployment is recorded, along with the Git SHA, and environment name.
 
 CAUTION: **Caution**:
 Some characters are not allowed in environment names. Use only letters,

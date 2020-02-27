@@ -11576,6 +11576,9 @@ msgstr[1] ""
 msgid "Line changes"
 msgstr ""
 
+msgid "Link Prometheus monitoring to GitLab."
+msgstr ""
+
 msgid "Link copied"
 msgstr ""
 
@@ -15372,6 +15375,9 @@ msgid "ProjectsNew|Visibility Level"
 msgstr ""
 
 msgid "ProjectsNew|Want to house several dependent projects under the same namespace? %{link_start}Create a group.%{link_end}"
+msgstr ""
+
+msgid "Prometheus"
 msgstr ""
 
 msgid "PrometheusAlerts|%{count} alerts applied"

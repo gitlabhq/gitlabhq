@@ -10,7 +10,7 @@ This is the API docs of the [GitLab Container Registry](../user/packages/contain
 
 Get a list of registry repositories in a project.
 
-```
+```plaintext
 GET /projects/:id/registry/repositories
 ```
 
@@ -50,7 +50,7 @@ Example response:
 
 Get a list of registry repositories in a group.
 
-```
+```plaintext
 GET /groups/:id/registry/repositories
 ```
 
@@ -116,7 +116,7 @@ Delete a repository in registry.
 
 This operation is executed asynchronously and might take some time to get executed.
 
-```
+```plaintext
 DELETE /projects/:id/registry/repositories/:repository_id
 ```
 
@@ -135,7 +135,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 Get a list of tags for given registry repository.
 
-```
+```plaintext
 GET /projects/:id/registry/repositories/:repository_id/tags
 ```
 
@@ -169,7 +169,7 @@ Example response:
 
 Get details of a registry repository tag.
 
-```
+```plaintext
 GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 ```
 
@@ -202,7 +202,7 @@ Example response:
 
 Delete a registry repository tag.
 
-```
+```plaintext
 DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 ```
 
@@ -223,7 +223,7 @@ This action does not delete blobs. In order to delete them and recycle disk spac
 
 Delete registry repository tags in bulk based on given criteria.
 
-```
+```plaintext
 DELETE /projects/:id/registry/repositories/:repository_id/tags
 ```
 

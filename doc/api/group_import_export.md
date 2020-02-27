@@ -19,7 +19,7 @@ Group exports include the following:
 
 Start a new group export.
 
-```text
+```plaintext
 POST /groups/:id/export
 ```
 

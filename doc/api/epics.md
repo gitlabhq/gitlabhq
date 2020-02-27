@@ -41,7 +41,7 @@ NOTE: **Note**
 
 Gets all epics of the requested group and its subgroups.
 
-```
+```plaintext
 GET /groups/:id/epics
 GET /groups/:id/epics?author_id=5
 GET /groups/:id/epics?labels=bug,reproduced
@@ -160,7 +160,7 @@ Example response:
 
 Gets a single epic
 
-```
+```plaintext
 GET /groups/:id/epics/:epic_iid
 ```
 
@@ -228,7 +228,7 @@ Starting with GitLab [11.3][ee-6448], `start_date` and `end_date` should no long
 directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
 `*_fixed` fields instead.
 
-```
+```plaintext
 POST /groups/:id/epics
 ```
 
@@ -302,7 +302,7 @@ Starting with GitLab [11.3][ee-6448], `start_date` and `end_date` should no long
 directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
 `*_fixed` fields instead.
 
-```
+```plaintext
 PUT /groups/:id/epics/:epic_iid
 ```
 
@@ -372,7 +372,7 @@ Example response:
 
 Deletes an epic
 
-```
+```plaintext
 DELETE /groups/:id/epics/:epic_iid
 ```
 
@@ -391,7 +391,7 @@ Manually creates a todo for the current user on an epic. If
 there already exists a todo for the user on that epic, status code `304` is
 returned.
 
-```
+```plaintext
 POST /groups/:id/epics/:epic_iid/todo
 ```
 

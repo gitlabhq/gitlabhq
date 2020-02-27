@@ -3,10 +3,15 @@
 require 'spec_helper'
 
 describe API::ProjectImport do
+  include WorkhorseHelpers
+
   let(:export_path) { "#{Dir.tmpdir}/project_export_spec" }
   let(:user) { create(:user) }
   let(:file) { File.join('spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:namespace) { create(:group) }
+
+  let(:workhorse_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
+  let(:workhorse_headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
 
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
@@ -209,6 +214,55 @@ describe API::ProjectImport do
       end
     end
 
+    context 'with direct upload enabled' do
+      subject { upload_archive(file_upload, workhorse_headers, params) }
+
+      let(:file_name) { 'project_export.tar.gz' }
+
+      let!(:fog_connection) do
+        stub_uploads_object_storage(ImportExportUploader, direct_upload: true)
+      end
+
+      let(:tmp_object) do
+        fog_connection.directories.new(key: 'uploads').files.create(
+          key: "tmp/uploads/#{file_name}",
+          body: fixture_file_upload(file)
+        )
+      end
+
+      let(:file_upload) { fog_to_uploaded_file(tmp_object) }
+
+      let(:params) do
+        {
+          path: 'test-import-project',
+          namespace: namespace.id,
+          'file.remote_id' => file_name,
+          'file.size' => file_upload.size
+        }
+      end
+
+      before do
+        allow(ImportExportUploader).to receive(:workhorse_upload_path).and_return('/')
+      end
+
+      it 'accepts the request and stores the file' do
+        expect { subject }.to change { Project.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    def upload_archive(file, headers = {}, params = {})
+      workhorse_finalize(
+        api("/projects/import", user),
+        method: :post,
+        file_key: :file,
+        params: params.merge(file: file_upload),
+        headers: headers,
+        send_rewritten_field: true
+      )
+    end
+
     def stub_import(namespace)
       expect_any_instance_of(ProjectImportState).to receive(:schedule)
       expect(::Projects::CreateService).to receive(:new).with(user, hash_including(namespace_id: namespace.id)).and_call_original
@@ -236,6 +290,61 @@ describe API::ProjectImport do
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to include('import_status' => 'failed',
                                        'import_error' => 'error')
+    end
+  end
+
+  describe 'POST /projects/import/authorize' do
+    subject { post api('/projects/import/authorize', user), headers: workhorse_headers }
+
+    it 'authorizes importing project with workhorse header' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+    end
+
+    it 'rejects requests that bypassed gitlab-workhorse' do
+      workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
+
+      subject
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    context 'when using remote storage' do
+      context 'when direct upload is enabled' do
+        before do
+          stub_uploads_object_storage(ImportExportUploader, enabled: true, direct_upload: true)
+        end
+
+        it 'responds with status 200, location of file remote store and object details' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          expect(json_response).not_to have_key('TempPath')
+          expect(json_response['RemoteObject']).to have_key('ID')
+          expect(json_response['RemoteObject']).to have_key('GetURL')
+          expect(json_response['RemoteObject']).to have_key('StoreURL')
+          expect(json_response['RemoteObject']).to have_key('DeleteURL')
+          expect(json_response['RemoteObject']).to have_key('MultipartUpload')
+        end
+      end
+
+      context 'when direct upload is disabled' do
+        before do
+          stub_uploads_object_storage(ImportExportUploader, enabled: true, direct_upload: false)
+        end
+
+        it 'handles as a local file' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          expect(json_response['TempPath']).to eq(ImportExportUploader.workhorse_local_upload_path)
+          expect(json_response['RemoteObject']).to be_nil
+        end
+      end
     end
   end
 end

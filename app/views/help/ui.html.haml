@@ -323,8 +323,8 @@
           .dropdown-footer
             %strong Tip:
             If an author is not a member of this project, you can still filter by their name while using the search field.
-          .dropdown-loading
-            = icon('spinner spin')
+          .dropdown-loading.text-center
+            .spinner.spinner-md.mt-8
 
   .example
     %div
@@ -404,8 +404,8 @@
             %input.dropdown-input-field{ type: "search", placeholder: "Filter results" }
             = icon('search')
           .dropdown-content
-          .dropdown-loading
-            = icon('spinner spin')
+          .dropdown-loading.text-center
+            .spinner.spinner-md.mt-8
 
   .example
     %div

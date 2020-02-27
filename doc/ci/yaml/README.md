@@ -2905,7 +2905,7 @@ your configuration file is on. In other words, when using a `include:local`, mak
 sure that both `.gitlab-ci.yml` and the local file are on the same branch.
 
 All [nested includes](#nested-includes) will be executed in the scope of the same project,
-so it is possible to use local, project, remote or template includes.
+so it is possible to use local, project, remote, or template includes.
 
 NOTE: **Note:**
 Including local files through Git submodules paths is not supported.

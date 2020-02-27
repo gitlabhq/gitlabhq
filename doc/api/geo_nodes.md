@@ -7,7 +7,7 @@ as an admin.
 
 Creates a new Geo node.
 
-```
+```plaintext
 POST /geo_nodes
 ```
 
@@ -68,7 +68,7 @@ Example response:
 
 ## Retrieve configuration about all Geo nodes
 
-```
+```plaintext
 GET /geo_nodes
 ```
 
@@ -135,7 +135,7 @@ Example response:
 
 ## Retrieve configuration about a specific Geo node
 
-```
+```plaintext
 GET /geo_nodes/:id
 ```
 
@@ -178,7 +178,7 @@ Updates settings of an existing Geo node.
 
 _This can only be run against a primary Geo node._
 
-```
+```plaintext
 PUT /geo_nodes/:id
 ```
 
@@ -237,7 +237,7 @@ Removes the Geo node.
 NOTE: **Note:**
 Only a Geo primary node will accept this request.
 
-```
+```plaintext
 DELETE /geo_nodes/:id
 ```
 
@@ -251,7 +251,7 @@ To repair the OAuth authentication of a Geo node.
 
 _This can only be run against a primary Geo node._
 
-```
+```plaintext
 POST /geo_nodes/:id/repair
 ```
 
@@ -282,7 +282,7 @@ Example response:
 
 ## Retrieve status about all Geo nodes
 
-```
+```plaintext
 GET /geo_nodes/status
 ```
 
@@ -441,7 +441,7 @@ In GitLab 12.0, deprecated fields `wikis_count` and `repositories_count` were re
 
 ## Retrieve status about a specific Geo node
 
-```
+```plaintext
 GET /geo_nodes/:id/status
 ```
 
@@ -512,7 +512,7 @@ In GitLab 12.0, deprecated fields `wikis_count` and `repositories_count` were re
 
 This only works on a secondary node.
 
-```
+```plaintext
 GET /geo_nodes/current/failures
 ```
 

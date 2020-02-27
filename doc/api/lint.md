@@ -4,7 +4,7 @@
 
 Checks if your `.gitlab-ci.yml` file is valid.
 
-```
+```plaintext
 POST /ci/lint
 ```
 

@@ -8,7 +8,7 @@ To retrieve audit events using the API, you must [authenticate yourself](README.
 
 ### Retrieve all instance audit events
 
-```
+```plaintext
 GET /audit_events
 ```
 
@@ -87,7 +87,7 @@ Example response:
 
 ### Retrieve single instance audit event
 
-```
+```plaintext
 GET /audit_events/:id
 ```
 
@@ -126,7 +126,7 @@ To retrieve group audit events using the API, you must [authenticate yourself](R
 
 ### Retrieve all group audit events
 
-```
+```plaintext
 GET /groups/:id/audit_events
 ```
 
@@ -188,7 +188,7 @@ Example response:
 
 Only available to group owners and administrators.
 
-```
+```plaintext
 GET /groups/:id/audit_events/:audit_event_id
 ```
 

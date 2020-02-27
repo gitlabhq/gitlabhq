@@ -21,7 +21,7 @@ Parameters:
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md) |
 
-```
+```plaintext
 GET /groups
 ```
 
@@ -55,7 +55,7 @@ GET /groups
 
 When adding the parameter `statistics=true` and the authenticated user is an admin, additional group statistics are returned.
 
-```
+```plaintext
 GET /groups?statistics=true
 ```
 
@@ -99,7 +99,7 @@ You can search for groups by name or path, see below.
 
 You can filter by [custom attributes](custom_attributes.md) with:
 
-```
+```plaintext
 GET /groups?custom_attributes[key]=value&custom_attributes[other_key]=other_value
 ```
 
@@ -127,7 +127,7 @@ Parameters:
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [access level](members.md) |
 
-```
+```plaintext
 GET /groups/:id/subgroups
 ```
 
@@ -165,7 +165,7 @@ Get a list of projects in this group. When accessed without authentication, only
 
 By default, this request returns 20 results at a time because the API results [are paginated](README.md#pagination).
 
-```
+```plaintext
 GET /groups/:id/projects
 ```
 
@@ -239,7 +239,7 @@ Example response:
 Get all details of a group. This endpoint can be accessed without authentication
 if the group is publicly accessible. In case the user that requests is admin of the group, it will return the `runners_token` for the group too.
 
-```
+```plaintext
 GET /groups/:id
 ```
 
@@ -470,7 +470,7 @@ Feature.disable(:limit_projects_in_groups_api)
 
 Creates a new project group. Available only for users who can create groups.
 
-```
+```plaintext
 POST /groups
 ```
 
@@ -500,7 +500,7 @@ Parameters:
 
 Transfer a project to the Group namespace. Available only to instance administrators, although an [alternative API endpoint](projects.md#transfer-a-project-to-a-new-namespace) is available which does not require instance administrator access. Transferring projects may fail when tagged packages exist in the project's repository.
 
-```
+```plaintext
 POST  /groups/:id/projects/:project_id
 ```
 
@@ -519,7 +519,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 
 Updates the project group. Only available to group owners and administrators.
 
-```
+```plaintext
 PUT /groups/:id
 ```
 
@@ -548,7 +548,6 @@ PUT /groups/:id
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
-
 ```
 
 This endpoint returns:
@@ -639,7 +638,7 @@ This endpoint either:
 - Removes group, and queues a background job to delete all projects in the group as well.
 - Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/33257), on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
 
-```
+```plaintext
 DELETE /groups/:id
 ```
 
@@ -671,7 +670,7 @@ Parameters:
 
 Get all groups that match your string in their name or path.
 
-```
+```plaintext
 GET /groups?search=foobar
 ```
 
@@ -695,7 +694,7 @@ These are different from [System Hooks](system_hooks.md) that are system wide an
 
 Get a list of group hooks
 
-```
+```plaintext
 GET /groups/:id/hooks
 ```
 
@@ -712,7 +711,7 @@ Get a specific hook for a group.
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `hook_id` | integer        | yes      | The ID of a group hook |
 
-```
+```plaintext
 GET /groups/:id/hooks/:hook_id
 ```
 
@@ -739,7 +738,7 @@ GET /groups/:id/hooks/:hook_id
 
 Adds a hook to a specified group.
 
-```
+```plaintext
 POST /groups/:id/hooks
 ```
 
@@ -763,7 +762,7 @@ POST /groups/:id/hooks
 
 Edits a hook for a specified group.
 
-```
+```plaintext
 PUT /groups/:id/hooks/:hook_id
 ```
 
@@ -789,7 +788,7 @@ PUT /groups/:id/hooks/:hook_id
 Removes a hook from a group. This is an idempotent method and can be called multiple times.
 Either the hook is available or not.
 
-```
+```plaintext
 DELETE /groups/:id/hooks/:hook_id
 ```
 
@@ -806,7 +805,7 @@ Group audit events can be accessed via the [Group Audit Events API](audit_events
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
 
-```
+```plaintext
 POST /groups/:id/ldap_sync
 ```
 
@@ -826,7 +825,7 @@ List, add, and delete LDAP group links.
 
 Lists LDAP group links.
 
-```
+```plaintext
 GET /groups/:id/ldap_group_links
 ```
 
@@ -838,7 +837,7 @@ Parameters:
 
 Adds an LDAP group link.
 
-```
+```plaintext
 POST /groups/:id/ldap_group_links
 ```
 
@@ -853,7 +852,7 @@ Parameters:
 
 Deletes an LDAP group link.
 
-```
+```plaintext
 DELETE /groups/:id/ldap_group_links/:cn
 ```
 
@@ -864,7 +863,7 @@ Parameters:
 
 Deletes a LDAP group link for a specific LDAP provider
 
-```
+```plaintext
 DELETE /groups/:id/ldap_group_links/:provider/:cn
 ```
 
@@ -880,13 +879,13 @@ By default, groups only get 20 namespaces at a time because the API results are 
 
 To get more (up to 100), pass the following as an argument to the API call:
 
-```
+```plaintext
 /groups?per_page=100
 ```
 
 And to switch pages add:
 
-```
+```plaintext
 /groups?per_page=100&page=2
 ```
 

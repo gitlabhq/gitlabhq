@@ -23,7 +23,7 @@ given state (`opened`, `closed`, `locked`, or `merged`) or all of them (`all`). 
 The pagination parameters `page` and `per_page` can be used to
 restrict the list of merge requests.
 
-```
+```plaintext
 GET /merge_requests
 GET /merge_requests?state=opened
 GET /merge_requests?state=all
@@ -190,7 +190,7 @@ Get all merge requests for this project.
 The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, `locked`, or `merged`) or all of them (`all`).
 The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
 
-```
+```plaintext
 GET /projects/:id/merge_requests
 GET /projects/:id/merge_requests?state=opened
 GET /projects/:id/merge_requests?state=all
@@ -361,7 +361,7 @@ Get all merge requests for this group and its subgroups.
 The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, `locked`, or `merged`) or all of them (`all`).
 The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
 
-```
+```plaintext
 GET /groups/:id/merge_requests
 GET /groups/:id/merge_requests?state=opened
 GET /groups/:id/merge_requests?state=all
@@ -524,7 +524,7 @@ integer. This is because when an MR has too many changes to display and store,
 it will be capped at 1,000. In that case, the API will return the string
 `"1000+"` for the changes count.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid
 ```
 
@@ -683,7 +683,7 @@ the `approvals_before_merge` parameter:
 
 Get a list of merge request participants.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/participants
 ```
 
@@ -717,7 +717,7 @@ Parameters:
 
 Get a list of merge request commits.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/commits
 ```
 
@@ -753,7 +753,7 @@ Parameters:
 
 Shows information about the merge request including its files and changes.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/changes
 ```
 
@@ -864,7 +864,7 @@ Parameters:
 
 Get a list of merge request pipelines.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/pipelines
 ```
 
@@ -896,7 +896,7 @@ The new pipeline can be:
 - A [pipeline for merged results](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md)
   if the [project setting is enabled](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md#enabling-pipelines-for-merged-results).
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/pipelines
 ```
 
@@ -948,7 +948,7 @@ Parameters:
 
 Creates a new merge request.
 
-```
+```plaintext
 POST /projects/:id/merge_requests
 ```
 
@@ -1105,7 +1105,7 @@ the `approvals_before_merge` parameter:
 
 Updates an existing merge request. You can change the target branch, title, or even close the MR.
 
-```
+```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid
 ```
 
@@ -1264,7 +1264,7 @@ the `approvals_before_merge` parameter:
 
 Only for admins and project owners. Deletes the merge request in question.
 
-```
+```plaintext
 DELETE /projects/:id/merge_requests/:merge_request_iid
 ```
 
@@ -1289,7 +1289,7 @@ If the `sha` parameter is passed and does not match the HEAD of the source - you
 
 If you don't have permissions to accept this merge request - you'll get a `401`
 
-```
+```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/merge
 ```
 
@@ -1450,7 +1450,7 @@ If the merge request has conflicts, is empty or already merged, you'll get a `40
 
 It returns the HEAD commit of `refs/merge-requests/:iid/merge` in the response body in case of `200`.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/merge_ref
 ```
 
@@ -1473,7 +1473,7 @@ If the merge request is already merged or closed - you get `405` and error messa
 
 In case the merge request is not set to be merged when the pipeline succeeds, you'll also get a `406` error.
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds
 ```
 
@@ -1621,7 +1621,7 @@ Automatically rebase the `source_branch` of the merge request against its
 If you don't have permissions to push to the merge request's source branch -
 you'll get a `403 Forbidden` response.
 
-```
+```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 ```
 
@@ -1684,7 +1684,7 @@ Comments are done via the [notes](notes.md) resource.
 
 Get all the issues that would be closed by merging the provided merge request.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 ```
 
@@ -1760,7 +1760,7 @@ Example response when an external issue tracker (e.g. Jira) is used:
 Subscribes the authenticated user to a merge request to receive notification. If the user is already subscribed to the merge request, the
 status code `304` is returned.
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/subscribe
 ```
 
@@ -1911,7 +1911,7 @@ Unsubscribes the authenticated user from a merge request to not receive
 notifications from that merge request. If the user is
 not subscribed to the merge request, the status code `304` is returned.
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/unsubscribe
 ```
 
@@ -2062,7 +2062,7 @@ Manually creates a todo for the current user on a merge request.
 If there already exists a todo for the user on that merge request,
 status code `304` is returned.
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/todo
 ```
 
@@ -2179,7 +2179,7 @@ Example response:
 
 Get a list of merge request diff versions.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/versions
 ```
 
@@ -2220,7 +2220,7 @@ Example response:
 
 Get a single merge request diff version.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 ```
 
@@ -2288,7 +2288,7 @@ Example response:
 
 Sets an estimated time of work for this merge request.
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/time_estimate
 ```
 
@@ -2317,7 +2317,7 @@ Example response:
 
 Resets the estimated time for this merge request to 0 seconds.
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/reset_time_estimate
 ```
 
@@ -2345,7 +2345,7 @@ Example response:
 
 Adds spent time for this merge request
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/add_spent_time
 ```
 
@@ -2374,7 +2374,7 @@ Example response:
 
 Resets the total spent time for this merge request to 0 seconds.
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/reset_spent_time
 ```
 
@@ -2400,7 +2400,7 @@ Example response:
 
 ## Get time tracking stats
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/time_stats
 ```
 

@@ -38,7 +38,7 @@ Note that these options are downcased.
 
 Dates for the `before` and `after` parameters should be supplied in the following format:
 
-```
+```plaintext
 YYYY-MM-DD
 ```
 
@@ -54,7 +54,7 @@ GitLab removes events older than 2 years from the events table for performance r
 
 Get a list of events for the authenticated user. Scope `read_user` or `api` is required.
 
-```
+```plaintext
 GET /events
 ```
 
@@ -128,7 +128,7 @@ Example response:
 
 Get the contribution events for the specified user, sorted from newest to oldest. Scope `read_user` or `api` is required.
 
-```
+```plaintext
 GET /users/:id/events
 ```
 
@@ -259,7 +259,7 @@ Example response:
 
 Get a list of visible events for a particular project.
 
-```
+```plaintext
 GET /projects/:project_id/events
 ```
 

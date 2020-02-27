@@ -1,6 +1,6 @@
 # Resource label events API
 
-Resource label events keep track about who, when, and which label was added or removed to an issuable.
+Resource label events keep track about who, when, and which label was added to, or removed from, an issuable.
 
 ## Issues
 

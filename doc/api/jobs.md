@@ -4,7 +4,7 @@
 
 Get a list of jobs in a project. Jobs are sorted in descending order of their IDs.
 
-```
+```plaintext
 GET /projects/:id/jobs
 ```
 
@@ -138,7 +138,7 @@ Example of response
 
 Get a list of jobs for a pipeline.
 
-```
+```plaintext
 GET /projects/:id/pipelines/:pipeline_id/jobs
 ```
 
@@ -273,7 +273,7 @@ Example of response
 
 Get a single job of a project
 
-```
+```plaintext
 GET /projects/:id/jobs/:job_id
 ```
 
@@ -351,7 +351,7 @@ Example of response
 
 Get the job's artifacts zipped archive of a project.
 
-```
+```plaintext
 GET /projects/:id/jobs/:job_id/artifacts
 ```
 
@@ -414,7 +414,7 @@ the given reference name and job, provided the job finished successfully. This
 is the same as [getting the job's artifacts](#get-job-artifacts), but by
 defining the job's name instead of its ID.
 
-```
+```plaintext
 GET /projects/:id/jobs/artifacts/:ref_name/download?job=name
 ```
 
@@ -476,7 +476,7 @@ Download a single artifact file from a job with a specified ID from within
 the job's artifacts zipped archive. The file is extracted from the archive and
 streamed to the client.
 
-```
+```plaintext
 GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
 ```
 
@@ -510,7 +510,7 @@ Download a single artifact file for a specific job of the latest successful
 pipeline for the given reference name from within the job's artifacts archive.
 The file is extracted from the archive and streamed to the client.
 
-```
+```plaintext
 GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name
 ```
 
@@ -541,7 +541,7 @@ Possible response status codes:
 
 Get a log (trace) of a specific job of a project:
 
-```
+```plaintext
 GET /projects/:id/jobs/:job_id/trace
 ```
 
@@ -565,7 +565,7 @@ Possible response status codes:
 
 Cancel a single job of a project
 
-```
+```plaintext
 POST /projects/:id/jobs/:job_id/cancel
 ```
 
@@ -614,7 +614,7 @@ Example of response
 
 Retry a single job of a project
 
-```
+```plaintext
 POST /projects/:id/jobs/:job_id/retry
 ```
 
@@ -663,7 +663,7 @@ Example of response
 
 Erase a single job of a project (remove job artifacts and a job log)
 
-```
+```plaintext
 POST /projects/:id/jobs/:job_id/erase
 ```
 
@@ -717,7 +717,7 @@ Example of response
 
 Prevents artifacts from being deleted when expiration is set.
 
-```
+```plaintext
 POST /projects/:id/jobs/:job_id/artifacts/keep
 ```
 
@@ -773,7 +773,7 @@ Example response:
 
 Delete artifacts of a job.
 
-```
+```plaintext
 DELETE /projects/:id/jobs/:job_id/artifacts
 ```
 
@@ -797,7 +797,7 @@ If the artifacts were deleted successfully, a response with status `204 No Conte
 
 Triggers a manual action to start a job.
 
-```
+```plaintext
 POST /projects/:id/jobs/:job_id/play
 ```
 
