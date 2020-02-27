@@ -170,7 +170,7 @@ class ProjectWiki
   end
 
   def repository
-    @repository ||= Repository.new(full_path, @project, disk_path: disk_path, repo_type: Gitlab::GlRepository::WIKI)
+    @repository ||= Repository.new(full_path, @project, shard: repository_storage, disk_path: disk_path, repo_type: Gitlab::GlRepository::WIKI)
   end
 
   def default_branch

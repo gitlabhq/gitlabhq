@@ -20,10 +20,10 @@ export default {
   },
   computed: {
     editLink() {
-      return this.release.Links?.editUrl;
+      return this.release._links?.editUrl;
     },
     selfLink() {
-      return this.release.Links?.self;
+      return this.release._links?.self;
     },
   },
 };

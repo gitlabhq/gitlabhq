@@ -37,13 +37,13 @@ describe('Release block header', () => {
       const link = findHeaderLink();
 
       expect(link.text()).toBe(release.name);
-      expect(link.attributes('href')).toBe(release.Links.self);
+      expect(link.attributes('href')).toBe(release._links.self);
     });
   });
 
   describe('when _links.self is missing', () => {
     beforeEach(() => {
-      factory({ Links: { self: null } });
+      factory({ _links: { self: null } });
     });
 
     it('renders the title as text', () => {

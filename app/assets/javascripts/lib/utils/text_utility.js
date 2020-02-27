@@ -142,11 +142,25 @@ export const stripHtml = (string, replace = '') => {
 };
 
 /**
- * Converts snake_case string to camelCase
+ * Converts a snake_cased string to camelCase.
+ * Leading and trailing underscores are ignored.
  *
- * @param {*} string
+ * @param {String} string The snake_cased string to convert
+ * @returns {String} A camelCased version of the string
+ *
+ * @example
+ *
+ * // returns "aSnakeCasedString"
+ * convertToCamelCase('a_snake_cased_string')
+ *
+ * // returns "_leadingUnderscore"
+ * convertToCamelCase('_leading_underscore')
+ *
+ * // returns "trailingUnderscore_"
+ * convertToCamelCase('trailing_underscore_')
  */
-export const convertToCamelCase = string => string.replace(/(_\w)/g, s => s[1].toUpperCase());
+export const convertToCamelCase = string =>
+  string.replace(/([a-z0-9])_([a-z0-9])/gi, (match, p1, p2) => `${p1}${p2.toUpperCase()}`);
 
 /**
  * Converts camelCase string to snake_case

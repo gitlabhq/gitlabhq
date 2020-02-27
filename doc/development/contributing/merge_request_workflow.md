@@ -222,6 +222,7 @@ requirements.
 1. Regressions and bugs are covered with tests that reduce the risk of the issue happening
    again.
 1. [Performance guidelines](../merge_request_performance_guidelines.md) have been followed.
+1. [Secure coding guidelines](https://gitlab.com/gitlab-com/gl-security/security-guidelines) have been followed.
 1. [Documented](../documentation/index.md) in the `/doc` directory.
 1. [Changelog entry added](../changelog.md), if necessary.
 1. Reviewed by relevant (UX/FE/BE/tech writing) reviewers and all concerns are addressed.

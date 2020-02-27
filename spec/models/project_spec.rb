@@ -1791,20 +1791,18 @@ describe Project do
     let(:project) { create(:project, :repository) }
     let(:repo)    { double(:repo, exists?: true) }
     let(:wiki)    { double(:wiki, exists?: true) }
-    let(:design)  { double(:wiki, exists?: false) }
 
     it 'expires the caches of the repository and wiki' do
+      # In EE, there are design repositories as well
+      allow(Repository).to receive(:new).and_call_original
+
       allow(Repository).to receive(:new)
-        .with('foo', project)
+        .with('foo', project, shard: project.repository_storage)
         .and_return(repo)
 
       allow(Repository).to receive(:new)
-        .with('foo.wiki', project)
+        .with('foo.wiki', project, shard: project.repository_storage, repo_type: Gitlab::GlRepository::WIKI)
         .and_return(wiki)
-
-      allow(Repository).to receive(:new)
-        .with('foo.design', project)
-        .and_return(design)
 
       expect(repo).to receive(:before_delete)
       expect(wiki).to receive(:before_delete)

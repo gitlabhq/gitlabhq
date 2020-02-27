@@ -22,7 +22,7 @@ class Repository
 
   include Gitlab::RepositoryCacheAdapter
 
-  attr_accessor :full_path, :disk_path, :container, :repo_type
+  attr_accessor :full_path, :shard, :disk_path, :container, :repo_type
 
   delegate :ref_name_for_sha, to: :raw_repository
   delegate :bundle_to_disk, to: :raw_repository
@@ -65,8 +65,9 @@ class Repository
     xcode_config: :xcode_project?
   }.freeze
 
-  def initialize(full_path, container, disk_path: nil, repo_type: Gitlab::GlRepository::PROJECT)
+  def initialize(full_path, container, shard:, disk_path: nil, repo_type: Gitlab::GlRepository::PROJECT)
     @full_path = full_path
+    @shard = shard
     @disk_path = disk_path || full_path
     @container = container
     @commit_cache = {}
@@ -95,7 +96,7 @@ class Repository
   def path_to_repo
     @path_to_repo ||=
       begin
-        storage = Gitlab.config.repositories.storages[container.repository_storage]
+        storage = Gitlab.config.repositories.storages[shard]
 
         File.expand_path(
           File.join(storage.legacy_disk_path, disk_path + '.git')
@@ -1181,7 +1182,7 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(container.repository_storage,
+    Gitlab::Git::Repository.new(shard,
                                 disk_path + '.git',
                                 repo_type.identifier_for_container(container),
                                 container.full_path)
