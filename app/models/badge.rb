@@ -32,7 +32,9 @@ class Badge < ApplicationRecord
   end
 
   def rendered_image_url(project = nil)
-    build_rendered_url(image_url, project)
+    Gitlab::AssetProxy.proxy_url(
+      build_rendered_url(image_url, project)
+    )
   end
 
   private
