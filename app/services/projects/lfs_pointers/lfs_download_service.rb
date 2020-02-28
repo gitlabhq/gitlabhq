@@ -16,17 +16,14 @@ module Projects
         @lfs_download_object = lfs_download_object
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def execute
         return unless project&.lfs_enabled? && lfs_download_object
         return error("LFS file with oid #{lfs_oid} has invalid attributes") unless lfs_download_object.valid?
-        return if LfsObject.exists?(oid: lfs_oid)
 
         wrap_download_errors do
           download_lfs_file!
         end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 
@@ -39,12 +36,22 @@ module Projects
       def download_lfs_file!
         with_tmp_file do |tmp_file|
           download_and_save_file!(tmp_file)
-          project.all_lfs_objects << LfsObject.new(oid: lfs_oid,
-                                                   size: lfs_size,
-                                                   file: tmp_file)
+
+          project.lfs_objects << find_or_create_lfs_object(tmp_file)
 
           success
         end
+      end
+
+      def find_or_create_lfs_object(tmp_file)
+        lfs_obj = LfsObject.safe_find_or_create_by!(
+          oid:  lfs_oid,
+          size: lfs_size
+        )
+
+        lfs_obj.update!(file: tmp_file) unless lfs_obj.file.file
+
+        lfs_obj
       end
 
       def download_and_save_file!(file)

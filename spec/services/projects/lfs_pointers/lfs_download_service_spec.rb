@@ -133,6 +133,21 @@ describe Projects::LfsPointers::LfsDownloadService do
       end
     end
 
+    context 'when an lfs object with the same oid already exists' do
+      let!(:existing_lfs_object) { create(:lfs_object, oid: oid) }
+
+      before do
+        stub_full_request(download_link).to_return(body: lfs_content)
+      end
+
+      it_behaves_like 'no lfs object is created'
+
+      it 'does not update the file attached to the existing LfsObject' do
+        expect { subject.execute }
+          .not_to change { existing_lfs_object.reload.file.file.file }
+      end
+    end
+
     context 'when credentials present' do
       let(:download_link_with_credentials) { "http://user:password@gitlab.com/#{oid}" }
       let(:lfs_object) { LfsDownloadObject.new(oid: oid, size: size, link: download_link_with_credentials) }
@@ -203,18 +218,6 @@ describe Projects::LfsPointers::LfsDownloadService do
       end
 
       it_behaves_like 'no lfs object is created'
-
-      it 'does not download the file' do
-        expect(subject).not_to receive(:download_lfs_file!)
-
-        subject.execute
-      end
-    end
-
-    context 'when an lfs object with the same oid already exists' do
-      before do
-        create(:lfs_object, oid: oid)
-      end
 
       it 'does not download the file' do
         expect(subject).not_to receive(:download_lfs_file!)

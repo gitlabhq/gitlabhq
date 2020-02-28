@@ -1,0 +1,5 @@
+---
+title: Check merge requests read permissions before showing them in the pipeline widget
+merge_request:
+author:
+type: security

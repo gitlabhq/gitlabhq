@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import dateFormat from 'dateformat';
-import { GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlFormInput, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { __, sprintf, n__ } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -17,6 +17,7 @@ export default {
     GlFormInput,
     GlLink,
     GlLoadingIcon,
+    GlSprintf,
     TooltipOnTruncate,
     Icon,
     Stacktrace,
@@ -51,16 +52,6 @@ export default {
   computed: {
     ...mapState('details', ['error', 'loading', 'loadingStacktrace', 'stacktraceData']),
     ...mapGetters('details', ['stacktrace']),
-    reported() {
-      return sprintf(
-        __('Reported %{timeAgo} by %{reportedBy}'),
-        {
-          reportedBy: `<strong>${this.error.culprit}</strong>`,
-          timeAgo: this.timeFormatted(this.stacktraceData.date_received),
-        },
-        false,
-      );
-    },
     firstReleaseLink() {
       return `${this.error.external_base_url}/releases/${this.error.first_release_short_version}`;
     },
@@ -120,7 +111,16 @@ export default {
     </div>
     <div v-else-if="showDetails" class="error-details">
       <div class="top-area align-items-center justify-content-between py-3">
-        <span v-if="!loadingStacktrace && stacktrace" v-html="reported"></span>
+        <div v-if="!loadingStacktrace && stacktrace" data-qa-selector="reported_text">
+          <gl-sprintf :message="__('Reported %{timeAgo} by %{reportedBy}')">
+            <template #reportedBy>
+              <strong>{{ error.culprit }}</strong>
+            </template>
+            <template #timeAgo>
+              {{ timeFormatted(stacktraceData.date_received) }}
+            </template>
+          </gl-sprintf>
+        </div>
         <form ref="sentryIssueForm" :action="projectIssuesPath" method="POST">
           <gl-form-input class="hidden" name="issue[title]" :value="issueTitle" />
           <input name="issue[description]" :value="issueDescription" type="hidden" />

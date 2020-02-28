@@ -132,6 +132,18 @@ describe API::Triggers do
         end
       end
     end
+
+    context 'when is triggered by a pipeline hook' do
+      it 'does not create a new pipeline' do
+        expect do
+          post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"),
+            params: { ref: 'refs/heads/other-branch' },
+            headers: { WebHookService::GITLAB_EVENT_HEADER => 'Pipeline Hook' }
+        end.not_to change(Ci::Pipeline, :count)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 
   describe 'GET /projects/:id/triggers' do

@@ -1,6 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlLoadingIcon, GlLink } from '@gitlab/ui';
+import { GlLoadingIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
@@ -16,7 +16,7 @@ describe('ErrorDetails', () => {
 
   function mountComponent() {
     wrapper = shallowMount(ErrorDetails, {
-      stubs: { LoadingButton },
+      stubs: { LoadingButton, GlSprintf },
       localVue,
       store,
       propsData: {
@@ -186,6 +186,29 @@ describe('ErrorDetails', () => {
         it('should display the create issue button', () => {
           expect(findCreateIssueButton().exists()).toBe(true);
         });
+      });
+    });
+
+    describe('Escape unsafe chars for culprit field', () => {
+      const findReportedText = () => wrapper.find('[data-qa-selector="reported_text"]');
+      const culprit = '<script>console.log("surprise!")</script>';
+      beforeEach(() => {
+        store.state.details.loadingStacktrace = false;
+        store.state.details.loading = false;
+        store.state.details.error = {
+          id: 1,
+          culprit,
+        };
+        mountComponent();
+      });
+
+      it('should not convert interpolated text to html entities', () => {
+        expect(findReportedText().findAll('script').length).toEqual(0);
+        expect(findReportedText().findAll('strong').length).toEqual(1);
+      });
+
+      it('should render text instead of converting to html entities', () => {
+        expect(findReportedText().text()).toContain(culprit);
       });
     });
   });
