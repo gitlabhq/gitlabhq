@@ -470,7 +470,7 @@ step of the sync.
    sudo gitlab-rails console
 
    # For installations from source
-   sudo -u git -H bundle exec rails console production
+   sudo -u git -H bundle exec rails console -e production
    ```
 
 1. Set the log level to debug (only for this session):

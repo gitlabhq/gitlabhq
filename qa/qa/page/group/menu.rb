@@ -24,6 +24,12 @@ module QA
           end
         end
 
+        def click_settings
+          within_sidebar do
+            click_element(:group_settings_item)
+          end
+        end
+
         def click_contribution_analytics_item
           hover_element(:analytics_link) do
             within_submenu(:analytics_sidebar_submenu) do

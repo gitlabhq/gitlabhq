@@ -88,6 +88,27 @@ subgraph "gitlab-qa pipeline"
 Please note, we plan to [add more specific information](https://gitlab.com/gitlab-org/quality/team-tasks/issues/156)
 about the tests included in each job/scenario that runs in `gitlab-qa`.
 
+#### With Pipeline for Merged Results
+
+In a Pipeline for Merged Results, the pipeline runs on a new ref that contains the merge result of the source and target branch.
+However, this ref is not available to the `gitlab-qa` pipeline.
+
+For this reason, the end-to-end tests on a Pipeline for Merged Results would use the head of the merge request source branch.
+
+```mermaid
+graph LR
+
+A["a1b1c1 - branch HEAD (CI_MERGE_REQUEST_SOURCE_BRANCH_SHA)"]
+B["x1y1z1 - master HEAD"]
+C["d1e1f1 - merged results (CI_COMMIT_SHA)"]
+
+A --> C
+B --> C
+
+A --> E["E2E tests"]
+C --> D["Pipeline for merged results"]
+ ```
+
 ##### Running custom tests
 
 The [existing scenarios](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md)

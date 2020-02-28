@@ -64,7 +64,7 @@ migrations are marked complete.
 
 ```
 # Source install
-sudo -u git -H bundle exec rails console production
+sudo -u git -H bundle exec rails console -e production
 
 # Omnibus install
 sudo gitlab-rails console

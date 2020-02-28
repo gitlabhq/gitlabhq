@@ -52,10 +52,10 @@ the below rails console script.
 
 ```shell
 # start a rails console:
-sudo gitlab-rails console production
+sudo gitlab-rails console -e production
 
 # or for source installs:
-bundle exec rails console production
+bundle exec rails console -e production
 ```
 
 ```ruby

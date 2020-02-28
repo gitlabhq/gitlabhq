@@ -966,7 +966,7 @@ To make sure your configuration is correct:
    sudo gitlab-rails console
 
    # For source installations
-   sudo -u git rails console production
+   sudo -u git rails console -e production
    ```
 
 1. Run in the console:

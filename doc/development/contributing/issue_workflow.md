@@ -89,7 +89,7 @@ Following is a non-exhaustive list of facet labels:
 
 - ~enhancement: This label can refine an issue that has the ~feature label.
 - ~"master:broken": This label can refine an issue that has the ~bug label.
-- ~"master:flaky": This label can refine an issue that has the ~bug label.
+- ~"failure::flaky-test": This label can refine an issue that has the ~bug label.
 - ~"technical debt": This label can refine an issue that has the ~backstage label.
 - ~"static analysis": This label can refine an issue that has the ~backstage label.
 - ~"ci-build": This label can refine an issue that has the ~backstage label.
