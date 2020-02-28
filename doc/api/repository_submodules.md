@@ -9,7 +9,7 @@ submodule's reference to keep up to date other projects that use it.
 This endpoint allows you to update a [Git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) reference in a
 specific branch.
 
-```
+```plaintext
 PUT /projects/:id/repository/submodules/:submodule
 ```
 

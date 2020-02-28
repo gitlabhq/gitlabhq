@@ -399,6 +399,8 @@ For an empty table (such as a fresh one), it is recommended to use
 `add_reference` in a single-transaction migration, combining it with other
 operations that don't require `disable_ddl_transaction!`.
 
+You can read more about adding [foreign key constraints to an existing column](database/add_foreign_key_to_existing_column.md).
+
 ## Adding Columns With Default Values
 
 When adding columns with default values to non-empty tables, you must use

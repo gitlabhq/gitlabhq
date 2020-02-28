@@ -20,7 +20,7 @@ Allows you to receive information about file in repository like name, size,
 content. Note that file content is Base64 encoded. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
 
-```
+```plaintext
 GET /projects/:id/repository/files/:file_path
 ```
 
@@ -55,7 +55,7 @@ NOTE: **Note:**
 
 In addition to the `GET` method, you can also use `HEAD` to get just file metadata.
 
-```
+```plaintext
 HEAD /projects/:id/repository/files/:file_path
 ```
 
@@ -84,7 +84,7 @@ X-Gitlab-Size: 1476
 
 Allows you to receive blame information. Each blame range contains lines and corresponding commit info.
 
-```
+```plaintext
 GET /projects/:id/repository/files/:file_path/blame
 ```
 
@@ -151,7 +151,7 @@ X-Gitlab-Size: 1476
 
 ## Get raw file from repository
 
-```
+```plaintext
 GET /projects/:id/repository/files/:file_path/raw
 ```
 
@@ -171,7 +171,7 @@ Like [Get file from repository](repository_files.md#get-file-from-repository) yo
 
 This allows you to create a single file. For creating multiple files with a single request see the [commits API](commits.html#create-a-commit-with-multiple-files-and-actions).
 
-```
+```plaintext
 POST /projects/:id/repository/files/:file_path
 ```
 
@@ -206,7 +206,7 @@ Parameters:
 
 This allows you to update a single file. For updating multiple files with a single request see the [commits API](commits.html#create-a-commit-with-multiple-files-and-actions).
 
-```
+```plaintext
 PUT /projects/:id/repository/files/:file_path
 ```
 
@@ -252,7 +252,7 @@ Currently GitLab Shell has a boolean return code, preventing GitLab from specify
 
 This allows you to delete a single file. For deleting multiple files with a single request, see the [commits API](commits.html#create-a-commit-with-multiple-files-and-actions).
 
-```
+```plaintext
 DELETE /projects/:id/repository/files/:file_path
 ```
 

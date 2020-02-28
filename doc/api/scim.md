@@ -219,7 +219,7 @@ They match an expression as specified in [the RFC7644 filtering section](https:/
 
 Example:
 
-```
+```plaintext
 id eq a-b-c-d
 ```
 

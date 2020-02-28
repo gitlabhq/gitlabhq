@@ -9,7 +9,7 @@
 
 Paginated list of Releases, sorted by `released_at`.
 
-```
+```plaintext
 GET /projects/:id/releases
 ```
 
@@ -191,7 +191,7 @@ Example response:
 
 Get a Release for the given tag.
 
-```
+```plaintext
 GET /projects/:id/releases/:tag_name
 ```
 
@@ -303,7 +303,7 @@ Example response:
 
 Create a Release. You need push access to the repository to create a Release.
 
-```
+```plaintext
 POST /projects/:id/releases
 ```
 
@@ -430,7 +430,7 @@ Example response:
 
 Update a Release.
 
-```
+```plaintext
 PUT /projects/:id/releases/:tag_name
 ```
 
@@ -533,7 +533,7 @@ Example response:
 
 Delete a Release. Deleting a Release will not delete the associated tag.
 
-```
+```plaintext
 DELETE /projects/:id/releases/:tag_name
 ```
 
