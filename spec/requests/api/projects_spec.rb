@@ -1250,6 +1250,8 @@ describe API::Projects do
       expect(json_response['alt']).to eq("dk")
       expect(json_response['url']).to start_with("/uploads/")
       expect(json_response['url']).to end_with("/dk.png")
+
+      expect(json_response['full_path']).to start_with("/#{project.namespace.path}/#{project.path}/uploads")
     end
   end
 

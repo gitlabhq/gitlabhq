@@ -175,6 +175,21 @@ are loaded dynamically with webpack.
 Do not use `innerHTML`, `append()` or `html()` to set content. It opens up too many
 vulnerabilities.
 
+## Avoid single-line conditional statements
+
+Indentation is important when scanning code as it gives a quick indication of the existence of branches, loops, and return points.
+This can help to quickly understand the control flow.
+
+```javascript
+// bad
+if (isThingNull) return '';
+
+// good
+if (isThingNull) {
+  return '';
+}
+```
+
 ## ESLint
 
 ESLint behaviour can be found in our [tooling guide](../tooling.md).

@@ -1293,6 +1293,15 @@ msgstr ""
 msgid "AdminArea|Stopping jobs failed"
 msgstr ""
 
+msgid "AdminArea|Users statistics"
+msgstr ""
+
+msgid "AdminArea|Users total"
+msgstr ""
+
+msgid "AdminArea|Users with highest role"
+msgstr ""
+
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
 msgstr ""
 
@@ -6667,6 +6676,9 @@ msgid "DesignManagement|The maximum number of designs allowed to be uploaded is 
 msgstr ""
 
 msgid "DesignManagement|The one place for your designs"
+msgstr ""
+
+msgid "DesignManagement|To enable design management, you'll need to  %{requirements_link_start}meet the requirements%{requirements_link_end}. If you need help, reach out to our %{support_link_start}support team%{support_link_end} for assistance."
 msgstr ""
 
 msgid "DesignManagement|Upload and view the latest designs for this issue. Consistent and easy to find, so everyone is up to date."
@@ -19356,6 +19368,9 @@ msgid "The number of changes to be fetched from GitLab when cloning a repository
 msgstr ""
 
 msgid "The number of times an upload record could not find its file"
+msgstr ""
+
+msgid "The one place for your designs"
 msgstr ""
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."

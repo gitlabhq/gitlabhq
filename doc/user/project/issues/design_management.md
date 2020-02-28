@@ -37,6 +37,8 @@ Design Management requires that projects are using
 [hashed storage](../../../administration/repository_storage_types.md#hashed-storage)
 (the default storage type since v10.0).
 
+If the requirements are not met, the **Designs** tab displays a message to the user.
+
 ### Feature Flags
 
 - Reference Parsing

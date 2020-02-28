@@ -1372,7 +1372,9 @@ ActiveRecord::Schema.define(version: 2020_02_26_162723) do
   create_table "deployment_merge_requests", id: false, force: :cascade do |t|
     t.integer "deployment_id", null: false
     t.integer "merge_request_id", null: false
+    t.integer "environment_id"
     t.index ["deployment_id", "merge_request_id"], name: "idx_deployment_merge_requests_unique_index", unique: true
+    t.index ["environment_id", "merge_request_id"], name: "idx_environment_merge_requests_unique_index", unique: true
     t.index ["merge_request_id"], name: "index_deployment_merge_requests_on_merge_request_id"
   end
 
@@ -4719,6 +4721,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_162723) do
   add_foreign_key "deployment_clusters", "clusters", on_delete: :cascade
   add_foreign_key "deployment_clusters", "deployments", on_delete: :cascade
   add_foreign_key "deployment_merge_requests", "deployments", on_delete: :cascade
+  add_foreign_key "deployment_merge_requests", "environments", name: "fk_a064ff4453", on_delete: :cascade
   add_foreign_key "deployment_merge_requests", "merge_requests", on_delete: :cascade
   add_foreign_key "deployments", "clusters", name: "fk_289bba3222", on_delete: :nullify
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade

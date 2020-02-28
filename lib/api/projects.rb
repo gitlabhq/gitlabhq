@@ -494,7 +494,9 @@ module API
         requires :file, type: File, desc: 'The file to be uploaded' # rubocop:disable Scalability/FileUploads
       end
       post ":id/uploads" do
-        UploadService.new(user_project, params[:file]).execute.to_h
+        upload = UploadService.new(user_project, params[:file]).execute
+
+        present upload, with: Entities::ProjectUpload
       end
 
       desc 'Get the users list of a project' do

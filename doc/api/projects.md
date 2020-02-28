@@ -1836,11 +1836,12 @@ Returned object:
 {
   "alt": "dk",
   "url": "/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png",
+  "full_path": "/namespace1/project1/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png",
   "markdown": "![dk](/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png)"
 }
 ```
 
->**Note**: The returned `url` is relative to the project path.
+>**Note**: The returned `url` is relative to the project path. The returned `full_path` is the absolute path to the file.
 In Markdown contexts, the link is automatically expanded when the format in
 `markdown` is used.
 

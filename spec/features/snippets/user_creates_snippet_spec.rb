@@ -2,13 +2,10 @@
 
 require 'spec_helper'
 
-describe 'User creates snippet', :js do
-  include DropzoneHelper
-
-  let(:user) { create(:user) }
-
+shared_examples_for 'snippet editor' do
   before do
     stub_feature_flags(snippets_vue: false)
+    stub_feature_flags(monaco_snippets: flag)
     sign_in(user)
     visit new_snippet_path
   end
@@ -25,7 +22,8 @@ describe 'User creates snippet', :js do
     fill_in 'personal_snippet_description', with: 'My Snippet **Description**'
 
     page.within('.file-editor') do
-      find('.ace_text-input', visible: false).send_keys 'Hello World!'
+      el = flag == true ? find('.inputarea') : find('.ace_text-input', visible: false)
+      el.send_keys 'Hello World!'
     end
   end
 
@@ -109,7 +107,8 @@ describe 'User creates snippet', :js do
     fill_in 'personal_snippet_title', with: 'My Snippet Title'
     page.within('.file-editor') do
       find(:xpath, "//input[@id='personal_snippet_file_name']").set 'snippet+file+name'
-      find('.ace_text-input', visible: false).send_keys 'Hello World!'
+      el = flag == true ? find('.inputarea') : find('.ace_text-input', visible: false)
+      el.send_keys 'Hello World!'
     end
 
     click_button 'Create snippet'
@@ -118,5 +117,23 @@ describe 'User creates snippet', :js do
     expect(page).to have_content('My Snippet Title')
     expect(page).to have_content('snippet+file+name')
     expect(page).to have_content('Hello World!')
+  end
+end
+
+describe 'User creates snippet', :js do
+  include DropzoneHelper
+
+  let_it_be(:user) { create(:user) }
+
+  context 'when using Monaco' do
+    it_behaves_like "snippet editor" do
+      let(:flag) { true }
+    end
+  end
+
+  context 'when using ACE' do
+    it_behaves_like "snippet editor" do
+      let(:flag) { false }
+    end
   end
 end
