@@ -1,9 +1,18 @@
 import { s__ } from '~/locale';
 
-import { suffixFormatter, scaledSIFormatter, numberFormatter } from './formatter_factory';
+import {
+  suffixFormatter,
+  scaledSIFormatter,
+  scaledBinaryFormatter,
+  numberFormatter,
+} from './formatter_factory';
 
 /**
  * Supported formats
+ *
+ * Based on:
+ *
+ * https://tc39.es/proposal-unified-intl-numberformat/section6/locales-currencies-tz_proposed_out.html#sec-issanctionedsimpleunitidentifier
  */
 export const SUPPORTED_FORMATS = {
   // Number
@@ -13,15 +22,23 @@ export const SUPPORTED_FORMATS = {
 
   // Duration
   seconds: 'seconds',
-  miliseconds: 'miliseconds',
+  milliseconds: 'milliseconds',
 
-  // Digital
-  bytes: 'bytes',
+  // Digital (Metric)
+  decimalBytes: 'decimalBytes',
   kilobytes: 'kilobytes',
   megabytes: 'megabytes',
   gigabytes: 'gigabytes',
   terabytes: 'terabytes',
   petabytes: 'petabytes',
+
+  // Digital (IEC)
+  bytes: 'bytes',
+  kibibytes: 'kibibytes',
+  mebibytes: 'mebibytes',
+  gibibytes: 'gibibytes',
+  tebibytes: 'tebibytes',
+  pebibytes: 'pebibytes',
 };
 
 /**
@@ -32,6 +49,7 @@ export const SUPPORTED_FORMATS = {
  */
 export const getFormatter = (format = SUPPORTED_FORMATS.number) => {
   // Number
+
   if (format === SUPPORTED_FORMATS.number) {
     /**
      * Formats a number
@@ -70,6 +88,7 @@ export const getFormatter = (format = SUPPORTED_FORMATS.number) => {
   }
 
   // Durations
+
   if (format === SUPPORTED_FORMATS.seconds) {
     /**
      * Formats a number of seconds
@@ -82,9 +101,9 @@ export const getFormatter = (format = SUPPORTED_FORMATS.number) => {
      */
     return suffixFormatter(s__('Units|s'));
   }
-  if (format === SUPPORTED_FORMATS.miliseconds) {
+  if (format === SUPPORTED_FORMATS.milliseconds) {
     /**
-     * Formats a number of miliseconds with ms as units
+     * Formats a number of milliseconds with ms as units
      *
      * @function
      * @param {Number} value - Number to format, `1` is formatted as `1ms`
@@ -95,8 +114,9 @@ export const getFormatter = (format = SUPPORTED_FORMATS.number) => {
     return suffixFormatter(s__('Units|ms'));
   }
 
-  // Digital
-  if (format === SUPPORTED_FORMATS.bytes) {
+  // Digital (Metric)
+
+  if (format === SUPPORTED_FORMATS.decimalBytes) {
     /**
      * Formats a number of bytes scaled up to larger digital
      * units for larger numbers.
@@ -162,6 +182,76 @@ export const getFormatter = (format = SUPPORTED_FORMATS.number) => {
      */
     return scaledSIFormatter('B', 5);
   }
+
+  // Digital (IEC)
+
+  if (format === SUPPORTED_FORMATS.bytes) {
+    /**
+     * Formats a number of bytes scaled up to larger digital
+     * units for larger numbers.
+     *
+     * @function
+     * @param {Number} value - Number to format, `1` is formatted as `1B`
+     * @param {Number} fractionDigits - number of precision decimals
+     */
+    return scaledBinaryFormatter('B');
+  }
+  if (format === SUPPORTED_FORMATS.kibibytes) {
+    /**
+     * Formats a number of kilobytes scaled up to larger digital
+     * units for larger numbers.
+     *
+     * @function
+     * @param {Number} value - Number to format, `1` is formatted as `1kB`
+     * @param {Number} fractionDigits - number of precision decimals
+     */
+    return scaledBinaryFormatter('B', 1);
+  }
+  if (format === SUPPORTED_FORMATS.mebibytes) {
+    /**
+     * Formats a number of megabytes scaled up to larger digital
+     * units for larger numbers.
+     *
+     * @function
+     * @param {Number} value - Number to format, `1` is formatted as `1MB`
+     * @param {Number} fractionDigits - number of precision decimals
+     */
+    return scaledBinaryFormatter('B', 2);
+  }
+  if (format === SUPPORTED_FORMATS.gibibytes) {
+    /**
+     * Formats a number of gigabytes scaled up to larger digital
+     * units for larger numbers.
+     *
+     * @function
+     * @param {Number} value - Number to format, `1` is formatted as `1GB`
+     * @param {Number} fractionDigits - number of precision decimals
+     */
+    return scaledBinaryFormatter('B', 3);
+  }
+  if (format === SUPPORTED_FORMATS.tebibytes) {
+    /**
+     * Formats a number of terabytes scaled up to larger digital
+     * units for larger numbers.
+     *
+     * @function
+     * @param {Number} value - Number to format, `1` is formatted as `1GB`
+     * @param {Number} fractionDigits - number of precision decimals
+     */
+    return scaledBinaryFormatter('B', 4);
+  }
+  if (format === SUPPORTED_FORMATS.pebibytes) {
+    /**
+     * Formats a number of petabytes scaled up to larger digital
+     * units for larger numbers.
+     *
+     * @function
+     * @param {Number} value - Number to format, `1` is formatted as `1PB`
+     * @param {Number} fractionDigits - number of precision decimals
+     */
+    return scaledBinaryFormatter('B', 5);
+  }
+
   // Fail so client library addresses issue
   throw TypeError(`${format} is not a valid number format`);
 };

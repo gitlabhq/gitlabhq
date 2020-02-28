@@ -178,67 +178,63 @@ describe Issue do
     let(:namespace) { build(:namespace, path: 'sample-namespace') }
     let(:project)   { build(:project, name: 'sample-project', namespace: namespace) }
     let(:issue)     { build(:issue, iid: 1, project: project) }
-    let(:group)     { create(:group, name: 'Group', path: 'sample-group') }
 
     context 'when nil argument' do
       it 'returns issue id' do
         expect(issue.to_reference).to eq "#1"
       end
-    end
 
-    context 'when full is true' do
-      it 'returns complete path to the issue' do
-        expect(issue.to_reference(full: true)).to          eq 'sample-namespace/sample-project#1'
-        expect(issue.to_reference(project, full: true)).to eq 'sample-namespace/sample-project#1'
-        expect(issue.to_reference(group, full: true)).to   eq 'sample-namespace/sample-project#1'
+      it 'returns complete path to the issue with full: true' do
+        expect(issue.to_reference(full: true)).to eq 'sample-namespace/sample-project#1'
       end
     end
 
-    context 'when same project argument' do
-      it 'returns issue id' do
-        expect(issue.to_reference(project)).to eq("#1")
+    context 'when argument is a project' do
+      context 'when same project' do
+        it 'returns issue id' do
+          expect(issue.to_reference(project)).to eq("#1")
+        end
+
+        it 'returns full reference with full: true' do
+          expect(issue.to_reference(project, full: true)).to eq 'sample-namespace/sample-project#1'
+        end
       end
-    end
 
-    context 'when cross namespace project argument' do
-      let(:another_namespace_project) { create(:project, name: 'another-project') }
+      context 'when cross-project in same namespace' do
+        let(:another_project) do
+          build(:project, name: 'another-project', namespace: project.namespace)
+        end
 
-      it 'returns complete path to the issue' do
-        expect(issue.to_reference(another_namespace_project)).to eq 'sample-namespace/sample-project#1'
+        it 'returns a cross-project reference' do
+          expect(issue.to_reference(another_project)).to eq "sample-project#1"
+        end
       end
-    end
 
-    it 'supports a cross-project reference' do
-      another_project = build(:project, name: 'another-project', namespace: project.namespace)
-      expect(issue.to_reference(another_project)).to eq "sample-project#1"
-    end
+      context 'when cross-project in different namespace' do
+        let(:another_namespace) { build(:namespace, path: 'another-namespace') }
+        let(:another_namespace_project) { build(:project, path: 'another-project', namespace: another_namespace) }
 
-    context 'when same namespace / cross-project argument' do
-      let(:another_project) { create(:project, namespace: namespace) }
-
-      it 'returns path to the issue with the project name' do
-        expect(issue.to_reference(another_project)).to eq 'sample-project#1'
-      end
-    end
-
-    context 'when different namespace / cross-project argument' do
-      let(:another_namespace) { create(:namespace, path: 'another-namespace') }
-      let(:another_project)   { create(:project, path: 'another-project', namespace: another_namespace) }
-
-      it 'returns full path to the issue' do
-        expect(issue.to_reference(another_project)).to eq 'sample-namespace/sample-project#1'
+        it 'returns complete path to the issue' do
+          expect(issue.to_reference(another_namespace_project)).to eq 'sample-namespace/sample-project#1'
+        end
       end
     end
 
     context 'when argument is a namespace' do
-      context 'with same project path' do
+      context 'when same as issue' do
         it 'returns path to the issue with the project name' do
           expect(issue.to_reference(namespace)).to eq 'sample-project#1'
         end
+
+        it 'returns full reference with full: true' do
+          expect(issue.to_reference(namespace, full: true)).to eq 'sample-namespace/sample-project#1'
+        end
       end
 
-      context 'with different project path' do
-        it 'returns full path to the issue' do
+      context 'when different to issue namespace' do
+        let(:group) { build(:group, name: 'Group', path: 'sample-group') }
+
+        it 'returns full path to the issue with full: true' do
           expect(issue.to_reference(group)).to eq 'sample-namespace/sample-project#1'
         end
       end

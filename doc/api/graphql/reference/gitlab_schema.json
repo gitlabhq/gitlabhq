@@ -24410,6 +24410,20 @@
           "fields": null,
           "inputFields": [
             {
+              "name": "iid",
+              "description": "The iid of the epic to mutate",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
               "name": "groupPath",
               "description": "The group the epic to mutate is in",
               "type": {
@@ -24515,20 +24529,6 @@
                     "name": "ID",
                     "ofType": null
                   }
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "iid",
-              "description": "The iid of the epic to mutate",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
                 }
               },
               "defaultValue": null
@@ -24863,8 +24863,8 @@
           "fields": null,
           "inputFields": [
             {
-              "name": "groupPath",
-              "description": "The group the epic to (un)subscribe is in",
+              "name": "iid",
+              "description": "The iid of the epic to mutate",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -24877,8 +24877,8 @@
               "defaultValue": null
             },
             {
-              "name": "iid",
-              "description": "The iid of the epic to (un)subscribe",
+              "name": "groupPath",
+              "description": "The group the epic to mutate is in",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,

@@ -5,7 +5,6 @@ import { mount } from '@vue/test-utils';
 import { setTestTimeout } from 'helpers/timeout';
 import axios from '~/lib/utils/axios_utils';
 import NotesApp from '~/notes/components/notes_app.vue';
-import service from '~/notes/services/notes_service';
 import createStore from '~/notes/stores';
 import '~/behaviors/markdown/render_gfm';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-foss/issues/62491)
@@ -192,7 +191,6 @@ describe('note_app', () => {
     describe('individual note', () => {
       beforeEach(() => {
         axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
-        jest.spyOn(service, 'updateNote');
         wrapper = mountComponent();
         return waitForDiscussionsRequest().then(() => {
           wrapper.find('.js-note-edit').trigger('click');
@@ -203,18 +201,18 @@ describe('note_app', () => {
         expect(wrapper.find('.js-vue-issue-note-form').exists()).toBe(true);
       });
 
-      it('calls the service to update the note', () => {
+      it('calls the store action to update the note', () => {
+        jest.spyOn(axios, 'put').mockImplementation(() => Promise.resolve({ data: {} }));
         wrapper.find('.js-vue-issue-note-form').value = 'this is a note';
         wrapper.find('.js-vue-issue-save').trigger('click');
 
-        expect(service.updateNote).toHaveBeenCalled();
+        expect(axios.put).toHaveBeenCalled();
       });
     });
 
     describe('discussion note', () => {
       beforeEach(() => {
         axiosMock.onAny().reply(mockData.getDiscussionNoteResponse);
-        jest.spyOn(service, 'updateNote');
         wrapper = mountComponent();
         return waitForDiscussionsRequest().then(() => {
           wrapper.find('.js-note-edit').trigger('click');
@@ -226,10 +224,11 @@ describe('note_app', () => {
       });
 
       it('updates the note and resets the edit form', () => {
+        jest.spyOn(axios, 'put').mockImplementation(() => Promise.resolve({ data: {} }));
         wrapper.find('.js-vue-issue-note-form').value = 'this is a note';
         wrapper.find('.js-vue-issue-save').trigger('click');
 
-        expect(service.updateNote).toHaveBeenCalled();
+        expect(axios.put).toHaveBeenCalled();
       });
     });
   });

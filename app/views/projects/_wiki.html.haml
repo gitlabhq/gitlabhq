@@ -1,6 +1,6 @@
 - if @wiki_home.present?
   %div{ class: container_class }
-    .md.md-file.prepend-top-default.append-bottom-default
+    .md.prepend-top-default.append-bottom-default
       = render_wiki_content(@wiki_home)
 - else
   - can_create_wiki = can?(current_user, :create_wiki, @project)

@@ -1,9 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
-import mockData from '../mock_data'; // can also use 'mockGroup', but not useful to test here
-
-const mockProject = mockData();
+import { mockProject } from '../mock_data'; // can also use 'mockGroup', but not useful to test here
 
 describe('FrequentItemsListItemComponent', () => {
   let wrapper;

@@ -3,7 +3,8 @@
 module API
   module Entities
     class DeployToken < Grape::Entity
-      expose :id, :name, :username, :expires_at, :token, :scopes
+      # exposing :token is a security risk and should be avoided
+      expose :id, :name, :username, :expires_at, :scopes
     end
   end
 end

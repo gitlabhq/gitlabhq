@@ -117,3 +117,23 @@ export const scaledSIFormatter = (unit = '', prefixOffset = 0) => {
 
   return scaledFormatter(units);
 };
+
+/**
+ * Returns a function that formats a number scaled using SI units notation.
+ */
+export const scaledBinaryFormatter = (unit = '', prefixOffset = 0) => {
+  // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+  const multiplicative = ['Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi', 'Yi'];
+  const symbols = ['', ...multiplicative];
+
+  const units = symbols.slice(prefixOffset).map(prefix => {
+    return `${prefix}${unit}`;
+  });
+
+  if (!units.length) {
+    // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+    throw new RangeError('The unit cannot be converted, please try a different scale');
+  }
+
+  return scaledFormatter(units, 1024);
+};

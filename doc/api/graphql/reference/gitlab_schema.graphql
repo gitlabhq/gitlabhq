@@ -2609,12 +2609,12 @@ input EpicSetSubscriptionInput {
   clientMutationId: String
 
   """
-  The group the epic to (un)subscribe is in
+  The group the epic to mutate is in
   """
   groupPath: ID!
 
   """
-  The iid of the epic to (un)subscribe
+  The iid of the epic to mutate
   """
   iid: ID!
 
@@ -7820,7 +7820,7 @@ input UpdateEpicInput {
   """
   The iid of the epic to mutate
   """
-  iid: String!
+  iid: ID!
 
   """
   The IDs of labels to be removed from the epic.
