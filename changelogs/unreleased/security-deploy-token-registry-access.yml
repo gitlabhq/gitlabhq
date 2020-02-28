@@ -1,0 +1,6 @@
+---
+title: Update container registry authentication to account for login request when
+  checking permissions
+merge_request:
+author:
+type: security
