@@ -11,7 +11,13 @@ class WebHookService
     end
   end
 
+  GITLAB_EVENT_HEADER = 'X-Gitlab-Event'
+
   attr_accessor :hook, :data, :hook_name, :request_options
+
+  def self.hook_to_event(hook_name)
+    hook_name.to_s.singularize.titleize
+  end
 
   def initialize(hook, data, hook_name)
     @hook = hook
@@ -110,7 +116,7 @@ class WebHookService
     @headers ||= begin
       {
         'Content-Type' => 'application/json',
-        'X-Gitlab-Event' => hook_name.singularize.titleize
+        GITLAB_EVENT_HEADER => self.class.hook_to_event(hook_name)
       }.tap do |hash|
         hash['X-Gitlab-Token'] = Gitlab::Utils.remove_line_breaks(hook.token) if hook.token.present?
       end

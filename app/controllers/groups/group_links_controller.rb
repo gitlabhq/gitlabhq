@@ -24,7 +24,7 @@ class Groups::GroupLinksController < Groups::ApplicationController
   end
 
   def update
-    @group_link.update(group_link_params)
+    Groups::GroupLinks::UpdateService.new(@group_link).execute(group_link_params)
   end
 
   def destroy
