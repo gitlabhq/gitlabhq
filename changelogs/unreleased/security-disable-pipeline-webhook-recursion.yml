@@ -1,0 +1,5 @@
+---
+title: Protect against denial of service using pipeline webhook recursion
+merge_request:
+author:
+type: security

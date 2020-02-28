@@ -26,12 +26,12 @@ module Projects
           return []
         end
 
-        # Getting all Lfs pointers already in the database and linking them to the project
-        linked_oids = LfsLinkService.new(project).execute(lfs_pointers_in_repository.keys)
-        # Retrieving those oids not present in the database which we need to download
-        missing_oids = lfs_pointers_in_repository.except(*linked_oids)
-        # Downloading the required information and gathering it inside a LfsDownloadObject for each oid
-        LfsDownloadLinkListService.new(project, remote_uri: current_endpoint_uri).execute(missing_oids)
+        # Downloading the required information and gathering it inside an
+        #   LfsDownloadObject for each oid
+        #
+        LfsDownloadLinkListService
+          .new(project, remote_uri: current_endpoint_uri)
+          .execute(lfs_pointers_in_repository)
       rescue LfsDownloadLinkListService::DownloadLinksError => e
         raise LfsObjectDownloadListError, "The LFS objects download list couldn't be imported. Error: #{e.message}"
       end

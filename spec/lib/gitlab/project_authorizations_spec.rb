@@ -109,6 +109,20 @@ describe Gitlab::ProjectAuthorizations do
       end
     end
 
+    context 'with lower group access level than max access level for share' do
+      let(:user) { create(:user) }
+
+      it 'creates proper authorizations' do
+        group.add_reporter(user)
+
+        mapping = map_access_levels(authorizations)
+
+        expect(mapping[project_parent.id]).to be_nil
+        expect(mapping[project.id]).to eq(Gitlab::Access::REPORTER)
+        expect(mapping[project_child.id]).to eq(Gitlab::Access::REPORTER)
+      end
+    end
+
     context 'parent group user' do
       let(:user) { parent_group_user }
 

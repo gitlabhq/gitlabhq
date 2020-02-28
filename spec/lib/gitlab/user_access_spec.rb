@@ -30,6 +30,17 @@ describe Gitlab::UserAccess do
       end
     end
 
+    describe 'push to branch in an internal project' do
+      it 'will not infinitely loop when a project is internal' do
+        project.visibility_level = Gitlab::VisibilityLevel::INTERNAL
+        project.save!
+
+        expect(project).not_to receive(:branch_allows_collaboration?)
+
+        access.can_push_to_branch?('master')
+      end
+    end
+
     describe 'push to empty project' do
       let(:empty_project) { create(:project_empty_repo) }
       let(:project_access) { described_class.new(user, project: empty_project) }
