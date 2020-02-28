@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import _ from 'underscore';
+import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
 import { __ } from '~/locale';
@@ -34,7 +34,7 @@ export default () => {
 
   $broadcastMessage.on(
     'input',
-    _.debounce(function onMessageInput() {
+    debounce(function onMessageInput() {
       const message = $(this).val();
       if (message === '') {
         $jsBroadcastMessagePreview.text(__('Your message here'));

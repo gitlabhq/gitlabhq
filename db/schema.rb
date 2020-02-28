@@ -766,6 +766,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_162723) do
     t.integer "file_location", limit: 2
     t.index ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id"
     t.index ["file_store"], name: "index_ci_job_artifacts_on_file_store"
+    t.index ["id", "file_type", "job_id", "created_at", "updated_at"], name: "job_artifacts_secure_reports_temp_index", where: "((file_type >= 5) AND (file_type <= 8))"
     t.index ["job_id", "file_type"], name: "index_ci_job_artifacts_on_job_id_and_file_type", unique: true
     t.index ["project_id"], name: "index_ci_job_artifacts_on_project_id"
     t.index ["project_id"], name: "index_ci_job_artifacts_on_project_id_for_security_reports", where: "(file_type = ANY (ARRAY[5, 6, 7, 8]))"
@@ -2824,6 +2825,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_162723) do
     t.index ["discussion_id"], name: "index_notes_on_discussion_id"
     t.index ["id"], name: "design_mentions_temp_index", where: "((note ~~ '%@%'::text) AND ((noteable_type)::text = 'DesignManagement::Design'::text))"
     t.index ["id"], name: "epic_mentions_temp_index", where: "((note ~~ '%@%'::text) AND ((noteable_type)::text = 'Epic'::text))"
+    t.index ["id"], name: "snippet_mentions_temp_index", where: "((note ~~ '%@%'::text) AND ((noteable_type)::text = 'Snippet'::text))"
     t.index ["line_code"], name: "index_notes_on_line_code"
     t.index ["note"], name: "index_notes_on_note_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["note"], name: "tmp_idx_on_promoted_notes", where: "(((noteable_type)::text = 'Issue'::text) AND (system IS TRUE) AND (note ~~ 'promoted to epic%'::text))"

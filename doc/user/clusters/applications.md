@@ -26,8 +26,9 @@ This namespace:
 To see a list of available applications to install. For a:
 
 - [Project-level cluster](../project/clusters/index.md), navigate to your project's
-  **Operations > Kubernetes**.
-- [Group-level cluster](../group/clusters/index.md), navigate to your group's **Kubernetes** page.
+  **{cloud-gear}** **Operations > Kubernetes**.
+- [Group-level cluster](../group/clusters/index.md), navigate to your group's
+  **{cloud-gear}** **Kubernetes** page.
 
 Install Helm first as it's used to install other applications.
 
@@ -655,7 +656,7 @@ GitLab Runner is installed into the `gitlab-managed-apps` namespace of your clus
 
 In order for GitLab Runner to function, you **must** specify the following:
 
-- `gitlabUrl` - the GitLab server full URL (e.g., `https://example.gitlab.com`) to register the Runner against.
+- `gitlabUrl` - the GitLab server full URL (for example, `https://example.gitlab.com`) to register the Runner against.
 - `runnerRegistrationToken` - The registration token for adding new Runners to GitLab. This must be
   [retrieved from your GitLab instance](../../ci/runners/README.md).
 
@@ -752,7 +753,8 @@ agent:
 
 > [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/40) in GitLab 12.8.
 
-Enable JupyterHub in the `.gitlab/managed-apps/config.yaml` file to install it:
+JupyterHub is installed using GitLab CI by defining configuration in
+`.gitlab/managed-apps/config.yaml` as follows:
 
 ```yaml
 jupyterhub:
@@ -761,33 +763,40 @@ jupyterhub:
   gitlabGroupWhitelist: []
 ```
 
-`gitlabProjectIdWhitelist` restricts GitLab authentication to only members of the specified projects. `gitlabGroupWhitelist` restricts GitLab authentication to only members of the specified groups. Specifying an empty array for both will allow any user on the GitLab instance to log in.
+In the configuration:
 
-JupyterHub is installed into the `gitlab-managed-apps` namespace of your
-cluster.
+- `gitlabProjectIdWhitelist` restricts GitLab authentication to only members of the specified projects.
+- `gitlabGroupWhitelist` restricts GitLab authentication to only members of the specified groups.
+- Specifying an empty array for both will allow any user on the GitLab instance to sign in.
 
-In order for JupyterHub to function, you must setup an [OAuth Application](../../integration/oauth_provider.md). Using the following values:
+JupyterHub is installed into the `gitlab-managed-apps` namespace of your cluster.
 
-- "Redirect URI" to `http://<JupyterHub Host>/hub/oauth_callback`
-- "Scope" to `api read_repository write_repository`
+For JupyterHub to function, you must set up an [OAuth Application](../../integration/oauth_provider.md).
+Set:
 
-In addition the following variables must be specified using [CI variables](../../ci/variables/README.md):
+- "Redirect URI" to `http://<JupyterHub Host>/hub/oauth_callback`.
+- "Scope" to `api read_repository write_repository`.
 
-- `JUPYTERHUB_PROXY_SECRET_TOKEN` will set [`proxy.secretToken`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#proxy-secrettoken). Generate this using `openssl rand -hex 32`.
-- `JUPYTERHUB_COOKIE_SECRET` will set [`hub.cookieSecret`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#hub-cookiesecret). Generate this using `openssl rand -hex 32`.
-- `JUPYTERHUB_HOST` is the hostname used for the installation (e.g., `jupyter.example.gitlab.com`).
-- `JUPYTERHUB_GITLAB_HOST` is the hostname of the GitLab instance used for authentication (e.g., `example.gitlab.com`).
-- `JUPYTERHUB_AUTH_CRYPTO_KEY` will set [`auth.state.cryptoKey`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#auth-state-cryptokey). Generate this using `openssl rand -hex 32`.
-- `JUPYTERHUB_AUTH_GITLAB_CLIENT_ID` the "Application ID" for the OAuth Application.
-- `JUPYTERHUB_AUTH_GITLAB_CLIENT_SECRET` the "Secret" for the OAuth Application.
+In addition, the following variables must be specified using [CI variables](../../ci/variables/README.md):
 
-By default JupyterHub will be installed using a
+| CI Variable                            | Description                                                                                                                                                         |
+|:---------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `JUPYTERHUB_PROXY_SECRET_TOKEN`        | Sets [`proxy.secretToken`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#proxy-secrettoken). Generate using `openssl rand -hex 32`.             |
+| `JUPYTERHUB_COOKIE_SECRET`             | Sets [`hub.cookieSecret`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#hub-cookiesecret). Generate using `openssl rand -hex 32`.               |
+| `JUPYTERHUB_HOST`                      | Hostname used for the installation. For example, `jupyter.gitlab.example.com`.                                                                                      |
+| `JUPYTERHUB_GITLAB_HOST`               | Hostname of the GitLab instance used for authentication. For example, `gitlab.example.com`.                                                                         |
+| `JUPYTERHUB_AUTH_CRYPTO_KEY`           | Sets [`auth.state.cryptoKey`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#auth-state-cryptokey). Generate using `openssl rand -hex 32`. |
+| `JUPYTERHUB_AUTH_GITLAB_CLIENT_ID`     | "Application ID" for the OAuth Application.                                                                                                                         |
+| `JUPYTERHUB_AUTH_GITLAB_CLIENT_SECRET` | "Secret" for the OAuth Application.                                                                                                                                 |
+
+By default, JupyterHub will be installed using a
 [default values file](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/blob/master/src/default-data/jupyterhub/values.yaml.gotmpl).
-You can customize the installation of JupyterHub by defining
-`.gitlab/managed-apps/jupyterhub/values.yaml` file in your cluster management
-project. Refer to the
-[chart reference](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html)
-for the available configuration options.
+You can customize the installation of JupyterHub by defining a
+`.gitlab/managed-apps/jupyterhub/values.yaml` file in your cluster management project.
+
+Refer to the
+[chart reference](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html) for the
+available configuration options.
 
 ### Install Elastic Stack using GitLab CI
 
