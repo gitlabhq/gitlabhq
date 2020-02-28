@@ -18,7 +18,7 @@ describe Snippets::UpdateService do
     let(:updater) { user }
 
     subject do
-      Snippets::UpdateService.new(
+      described_class.new(
         project,
         updater,
         options

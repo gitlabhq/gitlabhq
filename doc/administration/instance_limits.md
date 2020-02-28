@@ -37,23 +37,9 @@ Activity history for projects and individuals' profiles was limited to one year 
 
 ## Number of webhooks
 
-A maximum number of webhooks applies to each GitLab.com tier. Limits apply to project and group webhooks.
+On GitLab.com, the [maximum number of webhooks](../user/gitlab_com/index.md#maximum-number-of-webhooks) per project, and per group, is limited.
 
-### Project Webhooks
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20730) in GitLab 12.6.
-
-Check the [Maximum number of project webhooks (per tier)](../user/project/integrations/webhooks.md#maximum-number-of-project-webhooks-per-tier) section in the Webhooks page.
-
-### Group Webhooks
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25129) in GitLab 12.9.
-
-Check the [Maximum number of group webhooks (per tier)](../user/project/integrations/webhooks.md#maximum-number-of-group-webhooks-per-tier) section in the Webhooks page.
-
-### Setting the limit on a self-hosted installation
-
-To set this limit on a self-hosted installation, run the following in the
+To set this limit on a self-managed installation, run the following in the
 [GitLab Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session):
 
 ```ruby

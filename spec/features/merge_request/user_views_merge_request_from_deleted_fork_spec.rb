@@ -20,7 +20,7 @@ describe 'User views merged merge request from deleted fork' do
     fork_owner = source_project.namespace.owners.first
     # Place the source_project in the weird in between state
     source_project.update_attribute(:pending_delete, true)
-    Projects::DestroyService.new(source_project, fork_owner, {}).__send__(:trash_repositories!)
+    Projects::DestroyService.new(source_project, fork_owner, {}).__send__(:trash_project_repositories!)
   end
 
   it 'correctly shows the merge request' do

@@ -18,7 +18,7 @@ describe Snippets::CreateService do
     let(:extra_opts) { {} }
     let(:creator) { admin }
 
-    subject { Snippets::CreateService.new(project, creator, opts).execute }
+    subject { described_class.new(project, creator, opts).execute }
 
     let(:snippet) { subject.payload[:snippet] }
 

@@ -188,6 +188,7 @@ excluded_attributes:
   issues:
     - :milestone_id
     - :moved_to_id
+    - :sent_notifications
     - :state_id
     - :duplicated_to_id
     - :promoted_to_epic_id

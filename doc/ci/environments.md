@@ -340,6 +340,12 @@ deploy:
   - master
 ```
 
+When deploying to a Kubernetes cluster using GitLab's Kubernetes integration,
+information about the cluster and namespace will be displayed above the job
+trace on the deployment job page:
+
+![Deployment cluster information](img/environments_deployment_cluster_v12_8.png)
+
 NOTE: **Note:**
 Kubernetes configuration is not supported for Kubernetes clusters
 that are [managed by GitLab](../user/project/clusters/index.md#gitlab-managed-clusters).

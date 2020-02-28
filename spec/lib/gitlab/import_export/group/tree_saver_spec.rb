@@ -189,7 +189,7 @@ describe Gitlab::ImportExport::Group::TreeSaver do
     create(:group_badge, group: group)
     group_label = create(:group_label, group: group)
     create(:label_priority, label: group_label, priority: 1)
-    board = create(:board, group: group)
+    board = create(:board, group: group, milestone_id: Milestone::Upcoming.id)
     create(:list, board: board, label: group_label)
     create(:group_badge, group: group)
 

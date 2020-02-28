@@ -6260,6 +6260,9 @@ msgstr ""
 msgid "DeleteProject|Failed to remove project repository. Please try again or contact administrator."
 msgstr ""
 
+msgid "DeleteProject|Failed to remove project snippets. Please try again or contact administrator."
+msgstr ""
+
 msgid "DeleteProject|Failed to remove some tags in project container registry. Please try again or contact administrator."
 msgstr ""
 
@@ -20790,6 +20793,9 @@ msgstr ""
 msgid "Unable to connect to server: %{error}"
 msgstr ""
 
+msgid "Unable to fetch unscanned projects"
+msgstr ""
+
 msgid "Unable to fetch vulnerable projects"
 msgstr ""
 
@@ -20902,6 +20908,18 @@ msgid "Unresolve"
 msgstr ""
 
 msgid "Unresolve thread"
+msgstr ""
+
+msgid "UnscannedProjects|15 or more days"
+msgstr ""
+
+msgid "UnscannedProjects|30 or more days"
+msgstr ""
+
+msgid "UnscannedProjects|5 or more days"
+msgstr ""
+
+msgid "UnscannedProjects|60 or more days"
 msgstr ""
 
 msgid "UnscannedProjects|Default branch scanning by project"

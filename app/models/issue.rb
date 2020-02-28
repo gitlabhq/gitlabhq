@@ -44,6 +44,8 @@ class Issue < ApplicationRecord
   has_many :assignees, class_name: "User", through: :issue_assignees
   has_many :zoom_meetings
   has_many :user_mentions, class_name: "IssueUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :sent_notifications, as: :noteable
+
   has_one :sentry_issue
 
   accepts_nested_attributes_for :sentry_issue

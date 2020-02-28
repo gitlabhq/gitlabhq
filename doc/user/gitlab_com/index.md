@@ -94,6 +94,13 @@ IP based firewall can be configured by looking up all
 
 [Static endpoints](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/97) are being considered.
 
+## Maximum number of webhooks
+
+A limit of:
+
+- 100 webhooks applies to projects.
+- 50 webhooks applies to groups. **(BRONZE ONLY)**
+
 ## Shared Runners
 
 GitLab offers Linux and Windows shared runners hosted on GitLab.com for executing your pipelines.

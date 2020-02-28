@@ -123,7 +123,7 @@ Example response:
 
 Gets issues count statistics for given project.
 
-```
+```plaintext
 GET /projects/:id/issues_statistics
 GET /projects/:id/issues_statistics?labels=foo
 GET /projects/:id/issues_statistics?labels=foo,bar

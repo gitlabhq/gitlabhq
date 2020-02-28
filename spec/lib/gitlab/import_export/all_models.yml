@@ -10,6 +10,7 @@ issues:
 - resource_label_events
 - resource_weight_events
 - resource_milestone_events
+- sent_notifications
 - sentry_issue
 - label_links
 - labels

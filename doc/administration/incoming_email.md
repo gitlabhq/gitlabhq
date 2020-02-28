@@ -283,10 +283,17 @@ incoming_email:
     idle_timeout: 60
 ```
 
-#### MS Exchange
+#### Microsoft Exchange Server
 
-Example configuration for Microsoft Exchange mail server with IMAP enabled. Assumes the
-catch-all mailbox incoming@exchange.example.com.
+Example configurations for Microsoft Exchange Server with IMAP enabled. Since
+Exchange does not support sub-addressing, only two options exist:
+
+- Catch-all mailbox (recommended for Exchange-only)
+- Dedicated email address (supports Reply by Email only)
+
+##### Catch-all mailbox
+
+Assumes the catch-all mailbox `incoming@exchange.example.com`.
 
 Example for Omnibus installs:
 
@@ -335,11 +342,53 @@ incoming_email:
     port: 993
     # Whether the IMAP server uses SSL
     ssl: true
-    # Whether the IMAP server uses StartTLS
-    start_tls: false
+```
 
-    # The mailbox where incoming mail will end up. Usually "inbox".
-    mailbox: "inbox"
-    # The IDLE command timeout.
-    idle_timeout: 60
+##### Dedicated email address
+
+Assumes the dedicated email address `incoming@exchange.example.com`.
+
+Example for Omnibus installs:
+
+```ruby
+gitlab_rails['incoming_email_enabled'] = true
+
+# Exchange does not support sub-addressing, and we're not using a catch-all mailbox so %{key} is not used here
+gitlab_rails['incoming_email_address'] = "incoming@exchange.example.com"
+
+# Email account username
+# Typically this is the userPrincipalName (UPN)
+gitlab_rails['incoming_email_email'] = "incoming@ad-domain.example.com"
+# Email account password
+gitlab_rails['incoming_email_password'] = "[REDACTED]"
+
+# IMAP server host
+gitlab_rails['incoming_email_host'] = "exchange.example.com"
+# IMAP server port
+gitlab_rails['incoming_email_port'] = 993
+# Whether the IMAP server uses SSL
+gitlab_rails['incoming_email_ssl'] = true
+```
+
+Example for source installs:
+
+```yaml
+incoming_email:
+    enabled: true
+
+    # Exchange does not support sub-addressing, and we're not using a catch-all mailbox so %{key} is not used here
+    address: "incoming@exchange.example.com"
+
+    # Email account username
+    # Typically this is the userPrincipalName (UPN)
+    user: "incoming@ad-domain.example.com"
+    # Email account password
+    password: "[REDACTED]"
+
+    # IMAP server host
+    host: "exchange.example.com"
+    # IMAP server port
+    port: 993
+    # Whether the IMAP server uses SSL
+    ssl: true
 ```

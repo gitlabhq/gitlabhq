@@ -181,7 +181,7 @@ To make full use of Auto DevOps, you will need:
   If you have configured GitLab's Kubernetes integration, you can deploy it to
   your cluster by installing the
   [GitLab-managed app for cert-manager](../../user/clusters/applications.md#cert-manager).
-  
+
 If you do not have Kubernetes or Prometheus installed, then Auto Review Apps,
 Auto Deploy, and Auto Monitoring will be silently skipped.
 
@@ -1029,6 +1029,32 @@ Then add any extra changes you want. Your additions will be merged with the
 It is also possible to copy and paste the contents of the [Auto DevOps
 template] into your project and edit this as needed. You may prefer to do it
 that way if you want to specifically remove any part of it.
+
+### Customizing the Kubernetes namespace
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27630) in GitLab 12.6.
+
+For **non**-GitLab-managed clusters, the namespace can be customized using
+`.gitlab-ci.yml` by specifying
+[`environment:kubernetes:namespace`](../../ci/environments.md#configuring-kubernetes-deployments).
+For example, the following configuration overrides the namespace used for
+`production` deployments:
+
+```yaml
+include:
+  - template: Auto-DevOps.gitlab-ci.yml
+
+production:
+  environment:
+    kubernetes:
+      namespace: production
+```
+
+When deploying to a custom namespace with Auto DevOps, the service account
+provided with the cluster needs at least the `edit` role within the namespace.
+
+- If the service account can create namespaces, then the namespace can be created on-demand.
+- Otherwise, the namespace must exist prior to deployment.
 
 ### Using components of Auto DevOps
 

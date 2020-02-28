@@ -11,7 +11,7 @@ This is the API docs of [GitLab Packages](../administration/packages/index.md).
 Get a list of project packages. All package types are included in results. When
 accessed without authentication, only packages of public projects are returned.
 
-```
+```plaintext
 GET /projects/:id/packages
 ```
 
@@ -56,7 +56,7 @@ By default, the `GET` request will return 20 results, since the API is [paginate
 Get a list of project packages at the group level.
 When accessed without authentication, only packages of public projects are returned.
 
-```
+```plaintext
 GET /groups/:id/packages
 ```
 
@@ -135,7 +135,7 @@ The `_links` object contains the following properties:
 
 Get a single project package.
 
-```
+```plaintext
 GET /projects/:id/packages/:package_id
 ```
 
@@ -186,7 +186,7 @@ The `_links` object contains the following properties:
 
 Get a list of package files of a single package.
 
-```
+```plaintext
 GET /projects/:id/packages/:package_id/package_files
 ```
 
@@ -241,7 +241,7 @@ By default, the `GET` request will return 20 results, since the API is [paginate
 
 Deletes a project package.
 
-```
+```plaintext
 DELETE /projects/:id/packages/:package_id
 ```
 

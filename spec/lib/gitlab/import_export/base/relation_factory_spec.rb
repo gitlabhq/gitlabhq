@@ -33,6 +33,15 @@ describe Gitlab::ImportExport::Base::RelationFactory do
       end
     end
 
+    context 'when the relation is predefined' do
+      let(:relation_sym) { :milestone }
+      let(:relation_hash) { { 'name' => '#upcoming', 'title' => 'Upcoming', 'id' => -2 } }
+
+      it 'returns without creating a new relation' do
+        expect(subject).to be_nil
+      end
+    end
+
     context 'when #setup_models is not implemented' do
       it 'raises NotImplementedError' do
         expect { subject }.to raise_error(NotImplementedError)

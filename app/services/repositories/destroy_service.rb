@@ -14,11 +14,11 @@ class Repositories::DestroyService < Repositories::BaseService
       log_info(%Q{Repository "#{disk_path}" moved to "#{removal_path}" for repository "#{full_path}"})
 
       current_repository = repository
-      project.run_after_commit do
+      container.run_after_commit do
         Repositories::ShellDestroyService.new(current_repository).execute
       end
 
-      log_info("Project \"#{project.full_path}\" was removed")
+      log_info("Repository \"#{full_path}\" was removed")
 
       success
     else

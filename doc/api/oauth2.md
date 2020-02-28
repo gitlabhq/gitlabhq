@@ -112,7 +112,7 @@ easily accessible, therefore secrets can leak easily.
 To request the access token, you should redirect the user to the
 `/oauth/authorize` endpoint using `token` response type:
 
-```
+```plaintext
 https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=token&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES
 ```
 
@@ -124,7 +124,7 @@ would request `read_user` and `profile` scopes). The redirect
 will include a fragment with `access_token` as well as token details in GET
 parameters, for example:
 
-```
+```plaintext
 http://myapp.com/oauth/redirect#access_token=ABCDExyz123&state=YOUR_UNIQUE_STATE_HASH&token_type=bearer&expires_in=3600
 ```
 
@@ -182,7 +182,7 @@ curl --data "@auth.txt" --request POST https://gitlab.example.com/oauth/token
 
 Then, you'll receive the access token back in the response:
 
-```
+```json
 {
   "access_token": "1f0af717251950dbd4d73154fdf0a474a5c5119adad999683f5b450c460726aa",
   "token_type": "bearer",
@@ -192,7 +192,7 @@ Then, you'll receive the access token back in the response:
 
 For testing, you can use the `oauth2` Ruby gem:
 
-```
+```ruby
 client = OAuth2::Client.new('the_client_id', 'the_client_secret', :site => "http://example.com")
 access_token = client.password.get_token('user@example.com', 'secret')
 puts access_token.token
@@ -203,13 +203,13 @@ puts access_token.token
 The `access token` allows you to make requests to the API on behalf of a user.
 You can pass the token either as GET parameter:
 
-```
+```plaintext
 GET https://gitlab.example.com/api/v4/user?access_token=OAUTH-TOKEN
 ```
 
 or you can put the token to the Authorization header:
 
-```
+```shell
 curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v4/user
 ```
 
@@ -222,7 +222,7 @@ You must supply the access token, either:
 
 - As a parameter:
 
-   ```
+   ```plaintext
    GET https://gitlab.example.com/oauth/token/info?access_token=<OAUTH-TOKEN>
    ```
 

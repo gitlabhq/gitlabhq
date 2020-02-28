@@ -35,7 +35,7 @@ There are currently three options for `merge_method` to choose from:
 Get a list of all visible projects across GitLab for the authenticated user.
 When accessed without authentication, only public projects with "simple" fields are returned.
 
-```
+```plaintext
 GET /projects
 ```
 
@@ -298,7 +298,7 @@ the `approvals_before_merge` parameter:
 
 You can filter by [custom attributes](custom_attributes.md) with:
 
-```
+```plaintext
 GET /projects?custom_attributes[key]=value&custom_attributes[other_key]=other_value
 ```
 
@@ -315,7 +315,7 @@ Note that keyset pagination only supports `order_by=id`. Other sorting options a
 
 Get a list of visible projects owned by the given user. When accessed without authentication, only public projects are returned.
 
-```
+```plaintext
 GET /users/:user_id/projects
 ```
 
@@ -530,7 +530,7 @@ This endpoint supports [keyset pagination](README.md#keyset-based-pagination) fo
 
 Get a list of visible projects owned by the given user. When accessed without authentication, only public projects are returned.
 
-```
+```plaintext
 GET /users/:user_id/starred_projects
 ```
 
@@ -740,7 +740,7 @@ Example response:
 Get a specific project. This endpoint can be accessed without authentication if
 the project is publicly accessible.
 
-```
+```plaintext
 GET /projects/:id
 ```
 
@@ -955,7 +955,7 @@ If the project is a fork, and you provide a valid token to authenticate, the
 
 Get the users list of a project.
 
-```
+```plaintext
 GET /projects/:id/users
 ```
 
@@ -993,7 +993,7 @@ Please refer to the [Events API documentation](events.md#list-a-projects-visible
 
 Creates a new project owned by the authenticated user.
 
-```
+```plaintext
 POST /projects
 ```
 
@@ -1061,7 +1061,7 @@ where `password` is a public access key with the `api` scope enabled.
 
 Creates a new project owned by the specified user. Available only for admins.
 
-```
+```plaintext
 POST /projects/user/:user_id
 ```
 
@@ -1128,7 +1128,7 @@ where `password` is a public access key with the `api` scope enabled.
 
 Updates an existing project.
 
-```
+```plaintext
 PUT /projects/:id
 ```
 
@@ -1200,7 +1200,7 @@ The forking operation for a project is asynchronous and is completed in a
 background job. The request will return immediately. To determine whether the
 fork of the project has completed, query the `import_status` for the new project.
 
-```
+```plaintext
 POST /projects/:id/fork
 ```
 
@@ -1217,7 +1217,7 @@ POST /projects/:id/fork
 
 List the projects accessible to the calling user that have an established, forked relationship with the specified project
 
-```
+```plaintext
 GET /projects/:id/forks
 ```
 
@@ -1315,7 +1315,7 @@ Example responses:
 
 Stars a given project. Returns status code `304` if the project is already starred.
 
-```
+```plaintext
 POST /projects/:id/star
 ```
 
@@ -1405,7 +1405,7 @@ Example response:
 
 Unstars a given project. Returns status code `304` if the project is not starred.
 
-```
+```plaintext
 POST /projects/:id/unstar
 ```
 
@@ -1495,7 +1495,7 @@ Example response:
 
 List the users who starred the specified project.
 
-```
+```plaintext
 GET /projects/:id/starrers
 ```
 
@@ -1540,7 +1540,7 @@ Example responses:
 
 Get languages used in a project with percentage value.
 
-```
+```plaintext
 GET /projects/:id/languages
 ```
 
@@ -1564,7 +1564,7 @@ Example response:
 Archives the project if the user is either admin or the project owner of this project. This action is
 idempotent, thus archiving an already archived project will not change the project.
 
-```
+```plaintext
 POST /projects/:id/archive
 ```
 
@@ -1673,7 +1673,7 @@ Example response:
 Unarchives the project if the user is either admin or the project owner of this project. This action is
 idempotent, thus unarchiving a non-archived project will not change the project.
 
-```
+```plaintext
 POST /projects/:id/unarchive
 ```
 
@@ -1786,7 +1786,7 @@ This endpoint either:
   deletion happens after number of days specified in
   [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
 
-```
+```plaintext
 DELETE /projects/:id
 ```
 
@@ -1800,7 +1800,7 @@ DELETE /projects/:id
 
 Restores project marked for deletion.
 
-```
+```plaintext
 POST /projects/:id/restore
 ```
 
@@ -1812,7 +1812,7 @@ POST /projects/:id/restore
 
 Uploads a file to the specified project to be used in an issue or merge request description, or a comment.
 
-```
+```plaintext
 POST /projects/:id/uploads
 ```
 
@@ -1848,7 +1848,7 @@ In Markdown contexts, the link is automatically expanded when the format in
 
 Allow to share project with group.
 
-```
+```plaintext
 POST /projects/:id/share
 ```
 
@@ -1863,7 +1863,7 @@ POST /projects/:id/share
 
 Unshare the project from the group. Returns `204` and no content on success.
 
-```
+```plaintext
 DELETE /projects/:id/share/:group_id
 ```
 
@@ -1885,7 +1885,7 @@ These are different for [System Hooks](system_hooks.md) that are system wide.
 
 Get a list of project hooks.
 
-```
+```plaintext
 GET /projects/:id/hooks
 ```
 
@@ -1897,7 +1897,7 @@ GET /projects/:id/hooks
 
 Get a specific hook for a project.
 
-```
+```plaintext
 GET /projects/:id/hooks/:hook_id
 ```
 
@@ -1930,7 +1930,7 @@ GET /projects/:id/hooks/:hook_id
 
 Adds a hook to a specified project.
 
-```
+```plaintext
 POST /projects/:id/hooks
 ```
 
@@ -1955,7 +1955,7 @@ POST /projects/:id/hooks
 
 Edits a hook for a specified project.
 
-```
+```plaintext
 PUT /projects/:id/hooks/:hook_id
 ```
 
@@ -1982,7 +1982,7 @@ PUT /projects/:id/hooks/:hook_id
 Removes a hook from a project. This is an idempotent method and can be called multiple times.
 Either the hook is available or not.
 
-```
+```plaintext
 DELETE /projects/:id/hooks/:hook_id
 ```
 
@@ -2000,7 +2000,7 @@ Allows modification of the forked relationship between existing projects. Availa
 
 ### Create a forked from/to relation between existing projects
 
-```
+```plaintext
 POST /projects/:id/fork/:forked_from_id
 ```
 
@@ -2011,7 +2011,7 @@ POST /projects/:id/fork/:forked_from_id
 
 ### Delete an existing forked from relationship
 
-```
+```plaintext
 DELETE /projects/:id/fork
 ```
 
@@ -2025,7 +2025,7 @@ Search for projects by name which are accessible to the authenticated user. This
 endpoint can be accessed without authentication if the project is publicly
 accessible.
 
-```
+```plaintext
 GET /projects
 ```
 
@@ -2043,7 +2043,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 > Introduced in GitLab 9.0.
 
-```
+```plaintext
 POST /projects/:id/housekeeping
 ```
 
@@ -2057,7 +2057,7 @@ POST /projects/:id/housekeeping
 
 Get the push rules of a project.
 
-```
+```plaintext
 GET /projects/:id/push_rule
 ```
 
@@ -2101,7 +2101,7 @@ the `commit_committer_check` and `reject_unsigned_commits` parameters:
 
 Adds a push rule to a specified project.
 
-```
+```plaintext
 POST /projects/:id/push_rule
 ```
 
@@ -2124,7 +2124,7 @@ POST /projects/:id/push_rule
 
 Edits a push rule for a specified project.
 
-```
+```plaintext
 PUT /projects/:id/push_rule
 ```
 
@@ -2150,7 +2150,7 @@ PUT /projects/:id/push_rule
 Removes a push rule from a project. This is an idempotent method and can be called multiple times.
 Either the push rule is available or not.
 
-```
+```plaintext
 DELETE /projects/:id/push_rule
 ```
 
@@ -2162,7 +2162,7 @@ DELETE /projects/:id/push_rule
 
 > Introduced in GitLab 11.1.
 
-```
+```plaintext
 PUT /projects/:id/transfer
 ```
 
@@ -2186,7 +2186,7 @@ Read more in the [Project members](members.md) documentation.
 
 > Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
 
-```
+```plaintext
 POST /projects/:id/mirror/pull
 ```
 
@@ -2219,7 +2219,7 @@ format.
 If a repository is corrupted to the point where `git clone` does not work, the
 snapshot may allow some of the data to be retrieved.
 
-```
+```plaintext
 GET /projects/:id/snapshot
 ```
 

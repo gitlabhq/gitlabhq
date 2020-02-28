@@ -6,7 +6,7 @@
 
 The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` method. Currently, these levels are recognized:
 
-```
+```plaintext
 0  => No access
 30 => Developer access
 40 => Maintainer access
@@ -17,7 +17,7 @@ The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` 
 
 Gets a list of protected branches from a project.
 
-```
+```plaintext
 GET /projects/:id/protected_branches
 ```
 
@@ -91,7 +91,7 @@ Example response:
 
 Gets a single protected branch or wildcard protected branch.
 
-```
+```plaintext
 GET /projects/:id/protected_branches/:name
 ```
 
@@ -160,7 +160,7 @@ Example response:
 Protects a single repository branch or several project repository
 branches using a wildcard protected branch.
 
-```
+```plaintext
 POST /projects/:id/protected_branches
 ```
 
@@ -292,7 +292,7 @@ Example response:
 
 Unprotects the given protected branch or wildcard protected branch.
 
-```
+```plaintext
 DELETE /projects/:id/protected_branches/:name
 ```
 
@@ -309,7 +309,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" 'https://git
 
 Update the "code owner approval required" option for the given protected branch protected branch.
 
-```
+```plaintext
 PATCH /projects/:id/protected_branches/:name
 ```
 

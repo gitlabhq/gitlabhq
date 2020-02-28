@@ -7,7 +7,7 @@
 The access levels are defined in the `ProtectedEnvironment::DeployAccessLevel::ALLOWED_ACCESS_LEVELS` method.
 Currently, these levels are recognized:
 
-```
+```plaintext
 30 => Developer access
 40 => Maintainer access
 60 => Admin access

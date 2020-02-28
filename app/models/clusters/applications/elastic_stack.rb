@@ -15,9 +15,6 @@ module Clusters
       include ::Clusters::Concerns::ApplicationData
       include ::Gitlab::Utils::StrongMemoize
 
-      include IgnorableColumns
-      ignore_column :kibana_hostname, remove_with: '12.9', remove_after: '2020-02-22'
-
       default_value_for :version, VERSION
 
       def chart

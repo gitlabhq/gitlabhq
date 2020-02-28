@@ -260,7 +260,7 @@ returned with status code `404`:
 Example of a valid API call and a request using cURL with sudo request,
 providing a username:
 
-```
+```plaintext
 GET /projects?private_token=<your_access_token>&sudo=username
 ```
 
@@ -271,7 +271,7 @@ curl --header "Private-Token: <your_access_token>" --header "Sudo: username" "ht
 Example of a valid API call and a request using cURL with sudo request,
 providing an ID:
 
-```
+```plaintext
 GET /projects?private_token=<your_access_token>&sudo=23
 ```
 
@@ -444,7 +444,7 @@ URL-encoded.
 
 For example, `/` is represented by `%2F`:
 
-```
+```plaintext
 GET /api/v4/projects/diaspora%2Fdiaspora
 ```
 
@@ -460,7 +460,7 @@ URL-encoded.
 
 For example, `/` is represented by `%2F`:
 
-```
+```plaintext
 GET /api/v4/projects/1/branches/my%2Fbranch/commits
 ```
 
@@ -604,13 +604,13 @@ to a [W3 recommendation](http://www.w3.org/Addressing/URL/4_URI_Recommentations.
 causes a `+` to be interpreted as a space. For example, in an ISO 8601 date, you may want to pass
 a time in Mountain Standard Time, such as:
 
-```
+```plaintext
 2017-10-17T23:11:13.000+05:30
 ```
 
 The correct encoding for the query parameter would be:
 
-```
+```plaintext
 2017-10-17T23:11:13.000%2B05:30
 ```
 

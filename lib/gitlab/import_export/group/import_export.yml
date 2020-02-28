@@ -70,6 +70,7 @@ ee:
             - :push_event_payload
       - boards:
         - :board_assignee
+        - :milestone
         - labels:
           - :priorities
         - lists:

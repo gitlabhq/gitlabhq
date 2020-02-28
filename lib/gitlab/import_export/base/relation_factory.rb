@@ -67,7 +67,7 @@ module Gitlab
         # the relation_hash, updating references with new object IDs, mapping users using
         # the "members_mapper" object, also updating notes if required.
         def create
-          return if invalid_relation?
+          return if invalid_relation? || predefined_relation?
 
           setup_base_models
           setup_models
@@ -87,6 +87,10 @@ module Gitlab
 
         def invalid_relation?
           false
+        end
+
+        def predefined_relation?
+          relation_class.try(:predefined_id?, @relation_hash['id'])
         end
 
         def setup_models
