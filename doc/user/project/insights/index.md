@@ -61,6 +61,7 @@ bugsCharts:
   title: "Charts for bugs"
   charts:
     - title: "Monthly bugs created"
+      description: "Open bugs created per month"
       type: bar
       query:
         issuable_type: issue
@@ -77,6 +78,7 @@ For example, here's single chart definition:
 
 ```yaml
 - title: "Monthly bugs created"
+  description: "Open bugs created per month"
   type: bar
   query:
     issuable_type: issue
@@ -96,6 +98,7 @@ The following table lists available parameters for charts:
 | Keyword                                            | Description |
 |:---------------------------------------------------|:------------|
 | [`title`](#title)                                  | The title of the chart. This will displayed on the Insights page. |
+| [`description`](#description)                      | A description for the individual chart. This will be displayed above the relevant chart. |
 | [`type`](#type)                                    | The type of chart: `bar`, `line` or `stacked-bar`. |
 | [`query`](#query)                                  | A hash that defines the conditions for issues / merge requests to be part of the chart. |
 
@@ -112,6 +115,17 @@ For example:
 ```yaml
 monthlyBugsCreated:
   title: "Monthly bugs created"
+```
+
+### `description`
+
+The `description` text is displayed above the chart, but below the title. It's used
+to give extra details regarding the chart, for example:
+
+```yaml
+monthlyBugsCreated:
+  title: "Monthly bugs created"
+  description: "Open bugs created per month"
 ```
 
 ### `type`
@@ -145,6 +159,7 @@ Example:
 ```yaml
 monthlyBugsCreated:
   title: "Monthly bugs created"
+  description: "Open bugs created per month"
   type: bar
   query:
     issuable_type: issue
@@ -283,6 +298,7 @@ a group's insights:
 ```yaml
 monthlyBugsCreated:
   title: "Monthly bugs created"
+  description: "Open bugs created per month"
   type: bar
   query:
     issuable_type: issue
@@ -311,6 +327,7 @@ bugsCharts:
   title: "Charts for bugs"
   charts:
     - title: "Monthly bugs created"
+      description: "Open bugs created per month"
       type: bar
       <<: *projectsOnly
       query:

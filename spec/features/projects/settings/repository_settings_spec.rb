@@ -108,39 +108,6 @@ describe 'Projects > Settings > Repository settings' do
       end
     end
 
-    context 'Deploy tokens' do
-      let!(:deploy_token) { create(:deploy_token, projects: [project]) }
-
-      before do
-        stub_container_registry_config(enabled: true)
-        visit project_settings_repository_path(project)
-      end
-
-      it 'view deploy tokens' do
-        within('.deploy-tokens') do
-          expect(page).to have_content(deploy_token.name)
-          expect(page).to have_content('read_repository')
-          expect(page).to have_content('read_registry')
-        end
-      end
-
-      it 'add a new deploy token' do
-        fill_in 'deploy_token_name', with: 'new_deploy_key'
-        fill_in 'deploy_token_expires_at', with: (Date.today + 1.month).to_s
-        fill_in 'deploy_token_username', with: 'deployer'
-        check 'deploy_token_read_repository'
-        check 'deploy_token_read_registry'
-        click_button 'Create deploy token'
-
-        expect(page).to have_content('Your new project deploy token has been created')
-
-        within('.created-deploy-token-container') do
-          expect(page).to have_selector("input[name='deploy-token-user'][value='deployer']")
-          expect(page).to have_selector("input[name='deploy-token'][readonly='readonly']")
-        end
-      end
-    end
-
     context 'remote mirror settings' do
       let(:user2) { create(:user) }
 

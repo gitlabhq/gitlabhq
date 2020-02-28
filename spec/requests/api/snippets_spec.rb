@@ -199,9 +199,13 @@ describe API::Snippets do
     end
 
     shared_examples 'snippet creation' do
+      let(:snippet) { Snippet.find(json_response["id"]) }
+
+      subject { post api("/snippets/", user), params: params }
+
       it 'creates a new snippet' do
         expect do
-          post api("/snippets/", user), params: params
+          subject
         end.to change { PersonalSnippet.count }.by(1)
 
         expect(response).to have_gitlab_http_status(201)
@@ -209,6 +213,32 @@ describe API::Snippets do
         expect(json_response['description']).to eq(params[:description])
         expect(json_response['file_name']).to eq(params[:file_name])
         expect(json_response['visibility']).to eq(params[:visibility])
+      end
+
+      it 'creates repository' do
+        subject
+
+        expect(snippet.repository.exists?).to be_truthy
+      end
+
+      it 'commit the files to the repository' do
+        subject
+
+        blob = snippet.repository.blob_at('master', params[:file_name])
+
+        expect(blob.data).to eq params[:content]
+      end
+
+      context 'when feature flag :version_snippets is disabled' do
+        it 'does not create snippet repository' do
+          stub_feature_flags(version_snippets: false)
+
+          expect do
+            subject
+          end.to change { PersonalSnippet.count }.by(1)
+
+          expect(snippet.repository_exists?).to be_falsey
+        end
       end
     end
 

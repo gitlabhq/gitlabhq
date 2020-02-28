@@ -374,6 +374,7 @@ linters:
       - 'app/views/shared/boards/components/sidebar/_due_date.html.haml'
       - 'app/views/shared/boards/components/sidebar/_labels.html.haml'
       - 'app/views/shared/boards/components/sidebar/_milestone.html.haml'
+      - 'app/views/shared/deploy_tokens/_revoke_modal.html.haml'
       - 'app/views/shared/empty_states/_priority_labels.html.haml'
       - 'app/views/shared/hook_logs/_content.html.haml'
       - 'app/views/shared/issuable/_assignees.html.haml'

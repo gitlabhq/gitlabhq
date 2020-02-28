@@ -6507,6 +6507,9 @@ msgstr ""
 msgid "DeployTokens|Expires"
 msgstr ""
 
+msgid "DeployTokens|Group deploy tokens allow read-only access to the repositories and registry images within the group."
+msgstr ""
+
 msgid "DeployTokens|Name"
 msgstr ""
 
@@ -6516,16 +6519,19 @@ msgstr ""
 msgid "DeployTokens|Revoke"
 msgstr ""
 
+msgid "DeployTokens|Revoke %{b_start}%{name}%{b_end}?"
+msgstr ""
+
 msgid "DeployTokens|Revoke %{name}"
 msgstr ""
 
 msgid "DeployTokens|Scopes"
 msgstr ""
 
-msgid "DeployTokens|This action cannot be undone."
+msgid "DeployTokens|This %{entity_type} has no active Deploy Tokens."
 msgstr ""
 
-msgid "DeployTokens|This project has no active Deploy Tokens."
+msgid "DeployTokens|This action cannot be undone."
 msgstr ""
 
 msgid "DeployTokens|Use this token as a password. Make sure you save it - you won't be able to access it again."
@@ -6537,10 +6543,13 @@ msgstr ""
 msgid "DeployTokens|Username"
 msgstr ""
 
-msgid "DeployTokens|You are about to revoke"
+msgid "DeployTokens|You are about to revoke %{b_start}%{name}%{b_end}."
 msgstr ""
 
 msgid "DeployTokens|Your New Deploy Token"
+msgstr ""
+
+msgid "DeployTokens|Your new group deploy token has been created."
 msgstr ""
 
 msgid "DeployTokens|Your new project deploy token has been created."
@@ -15735,10 +15744,7 @@ msgstr ""
 msgid "Pull"
 msgstr ""
 
-msgid "Puma is running with a thread count above 1 and the rugged service is enabled. This may decrease performance in some environments. See our %{link_start}documentation%{link_end} for details of this issue."
-msgstr ""
-
-msgid "Puma is running with a thread count above 1. Information on deprecated GitLab features in this configuration is available in the %{link_start}documentation%{link_end}."
+msgid "Puma is running with a thread count above 1 and the Rugged service is enabled. This may decrease performance in some environments. See our %{link_start}documentation%{link_end} for details of this issue."
 msgstr ""
 
 msgid "Purchase more minutes"
@@ -22322,9 +22328,6 @@ msgid "You are on a read-only GitLab instance."
 msgstr ""
 
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
-msgstr ""
-
-msgid "You are running Puma, which is currently experimental. More information is available in our %{link_start}documentation%{link_end}."
 msgstr ""
 
 msgid "You can %{linkStart}view the blob%{linkEnd} instead."

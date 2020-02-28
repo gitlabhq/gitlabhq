@@ -210,4 +210,16 @@ describe Groups::Settings::CiCdController do
       end
     end
   end
+
+  describe 'POST create_deploy_token' do
+    it_behaves_like 'a created deploy token' do
+      let(:entity) { group }
+      let(:create_entity_params) { { group_id: group } }
+      let(:deploy_token_type) { DeployToken.deploy_token_types[:group_type] }
+
+      before do
+        entity.add_owner(user)
+      end
+    end
+  end
 end

@@ -798,6 +798,11 @@ describe 'project routing' do
     end
 
     it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/settings/repository", "/gitlab/gitlabhq/-/settings/repository"
+
+    # TODO: remove this test as part of https://gitlab.com/gitlab-org/gitlab/issues/207079 (12.9)
+    it 'to ci_cd#create_deploy_token' do
+      expect(post('gitlab/gitlabhq/-/settings/repository/deploy_token/create')).to route_to('projects/settings/ci_cd#create_deploy_token', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
   end
 
   describe Projects::TemplatesController, 'routing' do

@@ -98,6 +98,36 @@ describe API::ProjectSnippets do
       }
     end
 
+    shared_examples 'project snippet repository actions' do
+      let(:snippet) { ProjectSnippet.find(json_response['id']) }
+
+      it 'creates repository' do
+        subject
+
+        expect(snippet.repository.exists?).to be_truthy
+      end
+
+      it 'commit the files to the repository' do
+        subject
+
+        blob = snippet.repository.blob_at('master', params[:file_name])
+
+        expect(blob.data).to eq params[:code]
+      end
+
+      context 'when feature flag :version_snippets is disabled' do
+        it 'does not create snippet repository' do
+          stub_feature_flags(version_snippets: false)
+
+          expect do
+            subject
+          end.to change { ProjectSnippet.count }.by(1)
+
+          expect(snippet.repository_exists?).to be_falsey
+        end
+      end
+    end
+
     context 'with a regular user' do
       let(:user) { create(:user) }
 
@@ -118,6 +148,10 @@ describe API::ProjectSnippets do
         expect(snippet.file_name).to eq(params[:file_name])
         expect(snippet.visibility_level).to eq(Snippet::INTERNAL)
       end
+
+      it_behaves_like 'project snippet repository actions' do
+        subject { post api("/projects/#{project.id}/snippets/", user), params: params }
+      end
     end
 
     it 'creates a new snippet' do
@@ -130,6 +164,10 @@ describe API::ProjectSnippets do
       expect(snippet.title).to eq(params[:title])
       expect(snippet.file_name).to eq(params[:file_name])
       expect(snippet.visibility_level).to eq(Snippet::PUBLIC)
+    end
+
+    it_behaves_like 'project snippet repository actions' do
+      subject { post api("/projects/#{project.id}/snippets/", admin), params: params }
     end
 
     it 'creates a new snippet with content parameter' do

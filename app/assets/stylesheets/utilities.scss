@@ -54,7 +54,7 @@
 .mh-50vh { max-height: 50vh; }
 
 .font-size-inherit { font-size: inherit; }
-
+.gl-w-16 { width: px-to-rem($grid-size * 2); }
 .gl-w-64 { width: px-to-rem($grid-size * 8); }
 .gl-h-32 { height: px-to-rem($grid-size * 4); }
 .gl-h-64 { height: px-to-rem($grid-size * 8); }

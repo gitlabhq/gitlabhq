@@ -2343,6 +2343,14 @@ class Project < ApplicationRecord
     Gitlab::CurrentSettings.self_monitoring_project_id == id
   end
 
+  def deploy_token_create_url(opts = {})
+    Gitlab::Routing.url_helpers.create_deploy_token_project_settings_ci_cd_path(self, opts)
+  end
+
+  def deploy_token_revoke_url_for(token)
+    Gitlab::Routing.url_helpers.revoke_project_deploy_token_path(self, token)
+  end
+
   private
 
   def closest_namespace_setting(name)

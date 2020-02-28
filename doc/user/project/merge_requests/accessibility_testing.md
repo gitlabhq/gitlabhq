@@ -33,16 +33,18 @@ defined in that template.
 Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
-include:
-  template: Verify/Accessibility.gitlab-ci.yml
+variables:
+  a11y_urls: "https://about.gitlab.com"
 
-a11y:
-  variables:
-    a11y_urls: https://example.com https://example.com/another-page
+include:
+  - remote: "https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml"
 ```
 
 The example above will create an `a11y` job in your CI/CD pipeline and will run
 Pa11y against the webpage you defined in `a11y_urls` to build a report.
+
+NOTE: **Note:**
+Only one URL may be currently passed into `a11y_urls`.
 
 The full HTML Pa11y report will be saved as an artifact that can be [viewed directly in your browser](../pipelines/job_artifacts.md#browsing-artifacts).
 

@@ -1,7 +1,7 @@
 %p.profile-settings-content
   = s_("DeployTokens|Pick a name for the application, and we'll give you a unique deploy token.")
 
-= form_for token, url: create_deploy_token_namespace_project_settings_repository_path(project.namespace, project, anchor: 'js-deploy-tokens'), method: :post do |f|
+= form_for token, url: create_deploy_token_path(group_or_project, anchor: 'js-deploy-tokens'), method: :post do |f|
   = form_errors(token)
 
   .form-group
@@ -24,7 +24,7 @@
       = label_tag ("deploy_token_read_repository"), 'read_repository', class: 'label-bold form-check-label'
       .text-secondary= s_('DeployTokens|Allows read-only access to the repository')
 
-    - if container_registry_enabled?(project)
+    - if container_registry_enabled?(group_or_project)
       %fieldset.form-group.form-check
         = f.check_box :read_registry, class: 'form-check-input qa-deploy-token-read-registry'
         = label_tag ("deploy_token_read_registry"), 'read_registry', class: 'label-bold form-check-label'

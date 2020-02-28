@@ -1,0 +1,5 @@
+---
+title: Remove unreachable link from embded dashboard context menu
+merge_request: 25892
+author:
+type: fixed

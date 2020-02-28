@@ -79,7 +79,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :integrations, only: [:show]
 
           resource :repository, only: [:show], controller: :repository do
-            post :create_deploy_token, path: 'deploy_token/create'
+            # TODO: Move 'create_deploy_token' here to the ':ci_cd' resource above during 12.9.
+            # More details here: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24102#note_287572556
+            post :create_deploy_token, path: 'deploy_token/create', to: 'ci_cd#create_deploy_token'
             post :cleanup
           end
         end

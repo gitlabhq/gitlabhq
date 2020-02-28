@@ -59,6 +59,9 @@ class Group < Namespace
 
   has_many :import_failures, inverse_of: :group
 
+  has_many :group_deploy_tokens
+  has_many :deploy_tokens, through: :group_deploy_tokens
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects
