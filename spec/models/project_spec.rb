@@ -2930,6 +2930,19 @@ describe Project do
       end
     end
 
+    it 'memoizes the result by ref and environment', :request_store do
+      scoped_variable = create(:ci_variable, value: 'secret', project: project, environment_scope: 'scoped')
+
+      expect(project).to receive(:protected_for?).with('ref').once.and_return(true)
+      expect(project).to receive(:protected_for?).with('other').twice.and_return(false)
+
+      2.times do
+        expect(project.reload.ci_variables_for(ref: 'ref', environment: 'production')).to contain_exactly(ci_variable, protected_variable)
+        expect(project.reload.ci_variables_for(ref: 'other')).to contain_exactly(ci_variable)
+        expect(project.reload.ci_variables_for(ref: 'other', environment: 'scoped')).to contain_exactly(ci_variable, scoped_variable)
+      end
+    end
+
     context 'when the ref is not protected' do
       before do
         allow(project).to receive(:protected_for?).with('ref').and_return(false)

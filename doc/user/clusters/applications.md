@@ -9,10 +9,6 @@ and [deployments](../../ci/environments.md) when using [Auto DevOps](../../topic
 You can install them after you
 [create a cluster](../project/clusters/add_remove_clusters.md).
 
-Interested in contributing a new GitLab managed app? Visit the
-[development guidelines page](../../development/kubernetes.md#gitlab-managed-apps)
-to get started.
-
 ## Installing applications
 
 Applications managed by GitLab will be installed onto the `gitlab-managed-apps` namespace.
@@ -465,6 +461,12 @@ NOTE: **Note:**
 The chart will deploy 5 Elasticsearch nodes: 2 masters, 2 data and 1 client node,
 with resource requests totalling 0.125 CPU and 4.5GB RAM. Each data node requests 1.5GB of memory,
 which makes it incompatible with clusters of `f1-micro` and `g1-small` instance types.
+
+### Future apps
+
+Interested in contributing a new GitLab managed app? Visit the
+[development guidelines page](../../development/kubernetes.md#gitlab-managed-apps)
+to get started.
 
 ## Install using GitLab CI (alpha)
 

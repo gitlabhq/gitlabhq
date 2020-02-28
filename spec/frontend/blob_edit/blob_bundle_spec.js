@@ -1,9 +1,10 @@
 import $ from 'jquery';
 import blobBundle from '~/blob_edit/blob_bundle';
 
+jest.mock('~/blob_edit/edit_blob');
+
 describe('BlobBundle', () => {
   beforeEach(() => {
-    spyOnDependency(blobBundle, 'EditBlob').and.stub();
     setFixtures(`
       <div class="js-edit-blob-form" data-blob-filename="blah">
         <button class="js-commit-button"></button>

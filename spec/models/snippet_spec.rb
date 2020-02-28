@@ -632,4 +632,26 @@ describe Snippet do
       end
     end
   end
+
+  describe '#can_cache_field?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:snippet) { create(:snippet, file_name: file_name) }
+
+    subject { snippet.can_cache_field?(field) }
+
+    where(:field, :file_name, :result) do
+      :title       | nil           | true
+      :title       | 'foo.bar'     | true
+      :description | nil           | true
+      :description | 'foo.bar'     | true
+      :content     | nil           | false
+      :content     | 'bar.foo'     | false
+      :content     | 'markdown.md' | true
+    end
+
+    with_them do
+      it { is_expected.to eq result }
+    end
+  end
 end

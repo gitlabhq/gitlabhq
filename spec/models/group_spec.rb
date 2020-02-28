@@ -911,6 +911,16 @@ describe Group do
 
     subject { group.ci_variables_for('ref', project) }
 
+    it 'memoizes the result by ref', :request_store do
+      expect(project).to receive(:protected_for?).with('ref').once.and_return(true)
+      expect(project).to receive(:protected_for?).with('other').once.and_return(false)
+
+      2.times do
+        expect(group.ci_variables_for('ref', project)).to contain_exactly(ci_variable, protected_variable)
+        expect(group.ci_variables_for('other', project)).to contain_exactly(ci_variable)
+      end
+    end
+
     shared_examples 'ref is protected' do
       it 'contains all the variables' do
         is_expected.to contain_exactly(ci_variable, protected_variable)

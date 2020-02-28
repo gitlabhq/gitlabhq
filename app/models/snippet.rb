@@ -301,6 +301,10 @@ class Snippet < ApplicationRecord
     repository.update!(shard_name: repository_storage, disk_path: disk_path)
   end
 
+  def can_cache_field?(field)
+    field != :content || MarkupHelper.gitlab_markdown?(file_name)
+  end
+
   class << self
     # Searches for snippets with a matching title or file name.
     #
