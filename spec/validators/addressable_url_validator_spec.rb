@@ -5,6 +5,9 @@ require 'spec_helper'
 describe AddressableUrlValidator do
   let!(:badge) { build(:badge, link_url: 'http://www.example.com') }
 
+  let(:validator) { described_class.new(validator_options.reverse_merge(attributes: [:link_url])) }
+  let(:validator_options) { {} }
+
   subject { validator.validate(badge) }
 
   include_examples 'url validator examples', described_class::DEFAULT_OPTIONS[:schemes]
@@ -111,6 +114,19 @@ describe AddressableUrlValidator do
     it 'does block nil url with provided error message' do
       expect(validator.validate_each(badge, :link_url, nil)).to be_falsey
       expect(badge.errors.first[1]).to eq message
+    end
+  end
+
+  context 'when blocked_message is set' do
+    let(:message) { 'is not allowed due to: %{exception_message}' }
+    let(:validator_options) { { blocked_message: message } }
+
+    it 'blocks url with provided error message' do
+      badge.link_url = 'javascript:alert(window.opener.document.location)'
+
+      subject
+
+      expect(badge.errors.first[1]).to eq 'is not allowed due to: Only allowed schemes are http, https'
     end
   end
 
