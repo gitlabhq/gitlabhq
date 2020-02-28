@@ -1,0 +1,5 @@
+---
+title: Fix for XSS in branch names
+merge_request:
+author:
+type: security

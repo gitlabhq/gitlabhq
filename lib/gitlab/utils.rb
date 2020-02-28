@@ -130,5 +130,14 @@ module Gitlab
       IPAddr.new(str)
     rescue IPAddr::InvalidAddressError
     end
+
+    # Converts a string to an Addressable::URI object.
+    # If the string is not a valid URI, it returns nil.
+    # Param uri_string should be a String object.
+    # This method returns an Addressable::URI object or nil.
+    def parse_url(uri_string)
+      Addressable::URI.parse(uri_string)
+    rescue Addressable::URI::InvalidURIError, TypeError
+    end
   end
 end

@@ -252,4 +252,18 @@ describe Gitlab::Utils do
       expect(described_class.string_to_ip_object('1:0:0:0:0:0:0:0/124')).to eq(IPAddr.new('1:0:0:0:0:0:0:0/124'))
     end
   end
+
+  describe '.parse_url' do
+    it 'returns Addressable::URI object' do
+      expect(described_class.parse_url('http://gitlab.com')).to be_instance_of(Addressable::URI)
+    end
+
+    it 'returns nil when URI cannot be parsed' do
+      expect(described_class.parse_url('://gitlab.com')).to be nil
+    end
+
+    it 'returns nil with invalid parameter' do
+      expect(described_class.parse_url(1)).to be nil
+    end
+  end
 end
