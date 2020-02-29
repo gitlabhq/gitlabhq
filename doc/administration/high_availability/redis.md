@@ -20,11 +20,9 @@ The following are the requirements for providing your own Redis instance:
 Note the Redis node's IP address or hostname, port, and password (if required).
 These will be necessary when configuring the GitLab application servers later.
 
-## Redis in a Scaled Environment
+## Redis in a Scaled and Highly Available Environment
 
-This section is relevant for [Scaled Architecture](README.md#scalable-architecture-examples)
-environments including [Basic Scaling](README.md#basic-scaling) and
-[Full Scaling](README.md#full-scaling).
+This section is relevant for [Scalable and Highly Available Setups](README.md).
 
 ### Provide your own Redis instance **(CORE ONLY)**
 
@@ -85,22 +83,8 @@ Omnibus:
 Advanced configuration options are supported and can be added if
 needed.
 
-Continue configuration of other components by going
-[back to Scaled Architectures](README.md#scalable-architecture-examples)
-
-## Redis with High Availability
-
-This section is relevant for [High Availability Architecture](README.md#high-availability-architecture-examples)
-environments including [Horizontal](README.md#horizontal),
-[Hybrid](README.md#hybrid), and
-[Fully Distributed](README.md#fully-distributed).
-
-### Provide your own Redis instance **(CORE ONLY)**
-
-If you want to use your own deployed Redis instance(s),
-see [Provide your own Redis instance](#provide-your-own-redis-instance-core-only)
-for more details. However, you can use the GitLab Omnibus package to easily
-deploy the bundled Redis.
+Continue configuration of other components by going back to the
+[Scaling and High Availability](README.md#gitlab-components-and-configuration-instructions) page.
 
 ### High Availability with GitLab Omnibus **(PREMIUM ONLY)**
 

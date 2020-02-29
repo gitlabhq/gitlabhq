@@ -11,18 +11,15 @@ should consider using Gitaly on a separate node.
 See the [Gitaly HA Epic](https://gitlab.com/groups/gitlab-org/-/epics/289) to
 track plans and progress toward high availability support.
 
-This document is relevant for [Scaled Architecture](README.md#scalable-architecture-examples)
-environments and [High Availability Architecture](README.md#high-availability-architecture-examples).
+This document is relevant for [Scalable and Highly Available Setups](README.md).
 
 ## Running Gitaly on its own server
 
 See [Running Gitaly on its own server](../gitaly/index.md#running-gitaly-on-its-own-server)
 in Gitaly documentation.
 
-Continue configuration of other components by going back to:
-
-- [Scaled Architectures](README.md#scalable-architecture-examples)
-- [High Availability Architectures](README.md#high-availability-architecture-examples)
+Continue configuration of other components by going back to the
+[Scaling and High Availability](README.md#gitlab-components-and-configuration-instructions) page.
 
 ## Enable Monitoring
 

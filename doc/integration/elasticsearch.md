@@ -260,7 +260,7 @@ If the database size is less than 500 MiB, and the size of all hosted repos is l
 
 CAUTION: **Warning**:
 Performing asynchronous indexing will generate a lot of Sidekiq jobs.
-Make sure to prepare for this task by either [Horizontally Scaling](../administration/high_availability/README.md#basic-scaling)
+Make sure to prepare for this task by having a [Scalable and Highly Available Setup](README.md)
 or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq_processes.md)
 
 1. [Configure your Elasticsearch host and port](#enabling-elasticsearch).

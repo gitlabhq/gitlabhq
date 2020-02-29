@@ -6,9 +6,9 @@ components can read or write Git data. GitLab components that access Git
 repositories (GitLab Rails, GitLab Shell, GitLab Workhorse, etc.) act as clients
 to Gitaly. End users do not have direct access to Gitaly.
 
-In the rest of this page, Gitaly server is referred to the standalone node that
-only runs Gitaly, and Gitaly client to the GitLab Rails node that runs all other
-processes except Gitaly.
+On this page, *Gitaly server* refers to a standalone node that only runs Gitaly
+and *Gitaly client* is a GitLab Rails app node that runs all other processes
+except Gitaly.
 
 ## Architecture
 
@@ -20,7 +20,7 @@ Here's a high-level architecture overview of how Gitaly is used.
 
 The Gitaly service itself is configured via a [TOML configuration file](reference.md).
 
-In case you want to change some of its settings:
+If you want to change any of its settings:
 
 **For Omnibus GitLab**
 
@@ -53,10 +53,6 @@ a Gitaly setup that isn't utilising NFS. In order to use Elasticsearch in this
 scenario, the [new repository indexer](../../integration/elasticsearch.md#elasticsearch-repository-indexer)
 needs to be enabled in your GitLab configuration. [Since GitLab v12.3](https://gitlab.com/gitlab-org/gitlab/issues/6481),
 the new indexer becomes the default and no configuration is required.
-
-NOTE: **Note:** While Gitaly can be used as a replacement for NFS, it's not recommended
-to use EFS as it may impact GitLab's performance. Review the [relevant documentation](../high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs)
-for more details.
 
 ### Network architecture
 
@@ -567,30 +563,6 @@ server with the following settings.
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
-
-## Eliminating NFS altogether
-
-If you are planning to use Gitaly without NFS for your storage needs
-and want to eliminate NFS from your environment altogether, there are
-a few things that you need to do:
-
-1. Make sure the [`git` user home directory](https://docs.gitlab.com/omnibus/settings/configuration.html#moving-the-home-directory-for-a-user) is on local disk.
-1. Configure [database lookup of SSH keys](../operations/fast_ssh_key_lookup.md)
-   to eliminate the need for a shared `authorized_keys` file.
-1. Configure [object storage for job artifacts](../job_artifacts.md#using-object-storage)
-   including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
-1. Configure [object storage for LFS objects](../lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage).
-1. Configure [object storage for uploads](../uploads.md#using-object-storage-core-only).
-1. Configure [object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
-1. Configure [object storage for packages](../packages/index.md#using-object-storage) (optional feature).
-1. Configure [object storage for dependency proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature).
-1. Configure [object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
-
-NOTE: **Note:**
-One current feature of GitLab that still requires a shared directory (NFS) is
-[GitLab Pages](../../user/project/pages/index.md).
-There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
-to eliminate the need for NFS to support GitLab Pages.
 
 ## Limiting RPC concurrency
 
