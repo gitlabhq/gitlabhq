@@ -39,7 +39,7 @@ conan --version
 
 You should see the Conan version printed in the output:
 
-```
+```plaintext
 Conan version 1.20.5
 ```
 

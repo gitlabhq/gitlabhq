@@ -10,7 +10,7 @@ This function takes pagination parameters `page` and `per_page` to restrict the 
 
 ### For normal users
 
-```
+```plaintext
 GET /users
 ```
 
@@ -39,13 +39,13 @@ You can also search for users by name or primary email using `?search=`. For exa
 
 In addition, you can lookup users by username:
 
-```
+```plaintext
 GET /users?username=:username
 ```
 
 For example:
 
-```
+```plaintext
 GET /users?username=jack_smith
 ```
 
@@ -53,11 +53,11 @@ In addition, you can filter users based on states eg. `blocked`, `active`
 This works only to filter users who are `blocked` or `active`.
 It does not support `active=false` or `blocked=false`.
 
-```
+```plaintext
 GET /users?active=true
 ```
 
-```
+```plaintext
 GET /users?blocked=true
 ```
 
@@ -66,7 +66,7 @@ Username search is case insensitive.
 
 ### For admins
 
-```
+```plaintext
 GET /users
 ```
 
@@ -187,13 +187,13 @@ the `group_saml` provider option:
 
 You can lookup users by external UID and provider:
 
-```
+```plaintext
 GET /users?extern_uid=:extern_uid&provider=:provider
 ```
 
 For example:
 
-```
+```plaintext
 GET /users?extern_uid=1234567&provider=github
 ```
 
@@ -201,19 +201,19 @@ You can search for users who are external with: `/users?external=true`
 
 You can search users by creation date time range with:
 
-```
+```plaintext
 GET /users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060
 ```
 
 You can filter by [custom attributes](custom_attributes.md) with:
 
-```
+```plaintext
 GET /users?custom_attributes[key]=value&custom_attributes[other_key]=other_value
 ```
 
 You can include the users' [custom attributes](custom_attributes.md) in the response with:
 
-```
+```plaintext
 GET /users?with_custom_attributes=true
 ```
 
@@ -223,7 +223,7 @@ Get a single user.
 
 ### For user
 
-```
+```plaintext
 GET /users/:id
 ```
 
@@ -253,7 +253,7 @@ Parameters:
 
 ### For admin
 
-```
+```plaintext
 GET /users/:id
 ```
 
@@ -340,7 +340,7 @@ see the `group_saml` option:
 
 You can include the user's [custom attributes](custom_attributes.md) in the response with:
 
-```
+```plaintext
 GET /users/:id?with_custom_attributes=true
 ```
 
@@ -358,7 +358,7 @@ over `password`. In addition, `reset_password` and
 NOTE: **Note:**
 From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29888/), `private_profile` will default to `false`.
 
-```
+```plaintext
 POST /users
 ```
 
@@ -399,7 +399,7 @@ Parameters:
 
 Modifies an existing user. Only administrators can change attributes of a user.
 
-```
+```plaintext
 PUT /users/:id
 ```
 
@@ -445,7 +445,7 @@ For example, when renaming the email address to some existing one.
 
 Deletes a user's authentication identity using the provider name associated with that identity. Available only for administrators.
 
-```
+```plaintext
 DELETE /users/:id/identities/:provider
 ```
 
@@ -459,7 +459,7 @@ Parameters:
 Deletes a user. Available only for administrators.
 This returns a `204 No Content` status code if the operation was successfully, `404` if the resource was not found or `409` if the user cannot be soft deleted.
 
-```
+```plaintext
 DELETE /users/:id
 ```
 
@@ -474,7 +474,7 @@ Parameters:
 
 Gets currently authenticated user.
 
-```
+```plaintext
 GET /user
 ```
 
@@ -522,7 +522,7 @@ Parameters:
 
 - `sudo` (optional) - the ID of a user to make the call in their place
 
-```
+```plaintext
 GET /user
 ```
 
@@ -571,7 +571,7 @@ GET /user
 
 Get the status of the currently signed in user.
 
-```
+```plaintext
 GET /user/status
 ```
 
@@ -593,7 +593,7 @@ Example response:
 
 Get the status of a user.
 
-```
+```plaintext
 GET /users/:id_or_username/status
 ```
 
@@ -619,7 +619,7 @@ Example response:
 
 Set the status of the current user.
 
-```
+```plaintext
 PUT /user/status
 ```
 
@@ -652,7 +652,7 @@ Get the counts (same as in top right menu) of the currently signed in user.
 | --------- | ---- | ----------- |
 | `merge_requests`   | number | Merge requests that are active and assigned to current user. |
 
-```
+```plaintext
 GET /user_counts
 ```
 
@@ -676,7 +676,7 @@ Please refer to the [List of user projects](projects.md#list-user-projects).
 
 Get a list of currently authenticated user's SSH keys.
 
-```
+```plaintext
 GET /user/keys
 ```
 
@@ -705,7 +705,7 @@ Parameters:
 
 Get a list of a specified user's SSH keys.
 
-```
+```plaintext
 GET /users/:id_or_username/keys
 ```
 
@@ -717,7 +717,7 @@ GET /users/:id_or_username/keys
 
 Get a single key.
 
-```
+```plaintext
 GET /user/keys/:key_id
 ```
 
@@ -738,7 +738,7 @@ Parameters:
 
 Creates a new key owned by the currently authenticated user.
 
-```
+```plaintext
 POST /user/keys
 ```
 
@@ -776,7 +776,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 
 Create new key owned by specified user. Available only for admin
 
-```
+```plaintext
 POST /users/:id/keys
 ```
 
@@ -791,7 +791,7 @@ Parameters:
 Deletes key owned by currently authenticated user.
 This returns a `204 No Content` status code if the operation was successfully or `404` if the resource was not found.
 
-```
+```plaintext
 DELETE /user/keys/:key_id
 ```
 
@@ -803,7 +803,7 @@ Parameters:
 
 Deletes key owned by a specified user. Available only for admin.
 
-```
+```plaintext
 DELETE /users/:id/keys/:key_id
 ```
 
@@ -816,7 +816,7 @@ Parameters:
 
 Get a list of currently authenticated user's GPG keys.
 
-```
+```plaintext
 GET /user/gpg_keys
 ```
 
@@ -840,7 +840,7 @@ Example response:
 
 Get a specific GPG key of currently authenticated user.
 
-```
+```plaintext
 GET /user/gpg_keys/:key_id
 ```
 
@@ -868,7 +868,7 @@ Example response:
 
 Creates a new GPG key owned by the currently authenticated user.
 
-```
+```plaintext
 POST /user/gpg_keys
 ```
 
@@ -898,7 +898,7 @@ Example response:
 
 Delete a GPG key owned by currently authenticated user.
 
-```
+```plaintext
 DELETE /user/gpg_keys/:key_id
 ```
 
@@ -918,7 +918,7 @@ Returns `204 No Content` on success, or `404 Not found` if the key cannot be fou
 
 Get a list of a specified user's GPG keys. Available only for admins.
 
-```
+```plaintext
 GET /users/:id/gpg_keys
 ```
 
@@ -948,7 +948,7 @@ Example response:
 
 Get a specific GPG key for a given user. Available only for admins.
 
-```
+```plaintext
 GET /users/:id/gpg_keys/:key_id
 ```
 
@@ -977,7 +977,7 @@ Example response:
 
 Create new GPG key owned by the specified user. Available only for admins.
 
-```
+```plaintext
 POST /users/:id/gpg_keys
 ```
 
@@ -1008,7 +1008,7 @@ Example response:
 
 Delete a GPG key owned by a specified user. Available only for admins.
 
-```
+```plaintext
 DELETE /users/:id/gpg_keys/:key_id
 ```
 
@@ -1027,7 +1027,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitl
 
 Get a list of currently authenticated user's emails.
 
-```
+```plaintext
 GET /user/emails
 ```
 
@@ -1052,7 +1052,7 @@ Parameters:
 
 Get a list of a specified user's emails. Available only for admin
 
-```
+```plaintext
 GET /users/:id/emails
 ```
 
@@ -1064,7 +1064,7 @@ Parameters:
 
 Get a single email.
 
-```
+```plaintext
 GET /user/emails/:email_id
 ```
 
@@ -1083,7 +1083,7 @@ Parameters:
 
 Creates a new email owned by the currently authenticated user.
 
-```
+```plaintext
 POST /user/emails
 ```
 
@@ -1115,7 +1115,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 
 Create new email owned by specified user. Available only for admin
 
-```
+```plaintext
 POST /users/:id/emails
 ```
 
@@ -1130,7 +1130,7 @@ Parameters:
 Deletes email owned by currently authenticated user.
 This returns a `204 No Content` status code if the operation was successfully or `404` if the resource was not found.
 
-```
+```plaintext
 DELETE /user/emails/:email_id
 ```
 
@@ -1142,7 +1142,7 @@ Parameters:
 
 Deletes email owned by a specified user. Available only for admin.
 
-```
+```plaintext
 DELETE /users/:id/emails/:email_id
 ```
 
@@ -1155,7 +1155,7 @@ Parameters:
 
 Blocks the specified user. Available only for admin.
 
-```
+```plaintext
 POST /users/:id/block
 ```
 
@@ -1170,7 +1170,7 @@ Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 
 Unblocks the specified user. Available only for admin.
 
-```
+```plaintext
 POST /users/:id/unblock
 ```
 
@@ -1187,7 +1187,7 @@ Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 
 Deactivates the specified user. Available only for admin.
 
-```
+```plaintext
 POST /users/:id/deactivate
 ```
 
@@ -1209,7 +1209,7 @@ Returns:
 
 Activates the specified user. Available only for admin.
 
-```
+```plaintext
 POST /users/:id/activate
 ```
 
@@ -1234,7 +1234,7 @@ Please refer to the [Events API documentation](events.md#get-user-contribution-e
 It retrieves every impersonation token of the user. Use the pagination
 parameters `page` and `per_page` to restrict the list of impersonation tokens.
 
-```
+```plaintext
 GET /users/:user_id/impersonation_tokens
 ```
 
@@ -1245,7 +1245,7 @@ Parameters:
 | `user_id` | integer | yes      | The ID of the user                                         |
 | `state`   | string  | no       | filter tokens based on state (`all`, `active`, `inactive`) |
 
-```
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
 ```
 
@@ -1286,7 +1286,7 @@ Example response:
 
 It shows a user's impersonation token.
 
-```
+```plaintext
 GET /users/:user_id/impersonation_tokens/:impersonation_token_id
 ```
 
@@ -1297,7 +1297,7 @@ Parameters:
 | `user_id`                | integer | yes      | The ID of the user                |
 | `impersonation_token_id` | integer | yes      | The ID of the impersonation token |
 
-```
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2
 ```
 
@@ -1328,7 +1328,7 @@ You are only able to create impersonation tokens to impersonate the user and per
 both API calls and Git reads and writes. The user will not see these tokens in their profile
 settings page.
 
-```
+```plaintext
 POST /users/:user_id/impersonation_tokens
 ```
 
@@ -1339,7 +1339,7 @@ POST /users/:user_id/impersonation_tokens
 | `expires_at` | date    | no       | The expiration date of the impersonation token in ISO format (`YYYY-MM-DD`)|
 | `scopes`     | array   | yes      | The array of scopes of the impersonation token (`api`, `read_user`) |
 
-```
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
 ```
 
@@ -1367,11 +1367,11 @@ Example response:
 
 It revokes an impersonation token.
 
-```
+```plaintext
 DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
 ```
 
-```
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1
 ```
 
@@ -1398,7 +1398,7 @@ The activities that update the timestamp are:
 By default, it shows the activity for all users in the last 6 months, but this can be
 amended by using the `from` parameter.
 
-```
+```plaintext
 GET /user/activities
 ```
 

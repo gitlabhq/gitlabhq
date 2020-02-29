@@ -485,10 +485,6 @@ table.code {
           }
         }
       }
-
-      &:not(.js-unfold-bottom) a::before {
-        content: attr(data-linenumber);
-      }
     }
 
     &.line_content {

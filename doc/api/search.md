@@ -751,7 +751,7 @@ Search within the specified project.
 
 If a user is not a member of a project and the project is private, a `GET` request on that project will result to a `404` status code.
 
-```
+```plaintext
 GET /projects/:id/search
 ```
 

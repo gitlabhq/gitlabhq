@@ -155,6 +155,10 @@ describe('DiffTableCell', () => {
           });
         });
 
+        it('renders the correct line number', () => {
+          expect(findLineNumber().text()).toEqual(TEST_LINE_NUMBER.toString());
+        });
+
         it('on click, dispatches setHighlightedRow', () => {
           expect(store.dispatch).not.toHaveBeenCalled();
 

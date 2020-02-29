@@ -12,7 +12,7 @@ information on Dockerfiles, see the
 
 Get all Dockerfile templates.
 
-```
+```plaintext
 GET /templates/dockerfiles
 ```
 
@@ -99,7 +99,7 @@ Example response:
 
 Get a single Dockerfile template.
 
-```
+```plaintext
 GET /templates/dockerfiles/:key
 ```
 

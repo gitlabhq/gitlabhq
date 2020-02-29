@@ -7,7 +7,7 @@ Every API call to suggestions must be authenticated.
 Applies a suggested patch in a merge request. Users must be
 at least [Developer](../user/permissions.md) to perform such action.
 
-```
+```plaintext
 PUT /suggestions/:id/apply
 ```
 

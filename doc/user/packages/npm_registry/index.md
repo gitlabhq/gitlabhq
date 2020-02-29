@@ -49,7 +49,7 @@ npm --version
 
 You should see the NPM version printed in the output:
 
-```
+```plaintext
 6.10.3
 ```
 
@@ -67,7 +67,7 @@ yarn --version
 
 You should see the version printed like so:
 
-```
+```plaintext
 1.19.1
 ```
 

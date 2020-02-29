@@ -355,7 +355,7 @@ curl --head --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example
 
 The response will then be:
 
-```
+```http
 HTTP/1.1 200 OK
 Cache-Control: no-cache
 Content-Length: 1103
@@ -415,7 +415,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 The response header includes a link to the next page. For example:
 
-```
+```http
 HTTP/1.1 200 OK
 ...
 Link: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
@@ -540,7 +540,7 @@ Such errors appear in two cases:
 
 When an attribute is missing, you will get something like:
 
-```
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 {
@@ -551,7 +551,7 @@ Content-Type: application/json
 When a validation error occurs, error messages will be different. They will
 hold all details of validation errors:
 
-```
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 {
@@ -589,7 +589,7 @@ follows:
 
 When you try to access an API URL that does not exist you will receive 404 Not Found.
 
-```
+```http
 HTTP/1.1 404 Not Found
 Content-Type: application/json
 {

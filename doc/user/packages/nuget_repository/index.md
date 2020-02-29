@@ -26,7 +26,7 @@ nuget help
 
 You should see something similar to:
 
-```
+```plaintext
 NuGet Version: 5.2.0.6090
 usage: NuGet <command> [args] [options]
 Type 'NuGet help <command>' for help on a specific command.

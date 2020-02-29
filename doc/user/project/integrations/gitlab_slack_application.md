@@ -56,7 +56,7 @@ We are working on making this configurable in the future.
 For example, to show the issue number `1001` under the `gitlab-org/gitlab`
 project, you would do:
 
-```
+```plaintext
 /gitlab gitlab-org/gitlab issue show 1001
 ```
 

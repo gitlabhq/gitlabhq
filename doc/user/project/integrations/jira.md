@@ -119,7 +119,7 @@ link back to GitLab. This means that in comments in merge requests and commits
 referencing an issue, e.g., `PROJECT-7`, will add a comment in Jira issue in the
 format:
 
-```
+```plaintext
 USER mentioned this issue in RESOURCE_NAME of [PROJECT_NAME|LINK_TO_COMMENT]:
 ENTITY_TITLE
 ```

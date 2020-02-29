@@ -10,7 +10,7 @@ administrator in order to perform this action.
 List the current [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
 of the GitLab instance.
 
-```
+```plaintext
 GET /application/settings
 ```
 
@@ -90,7 +90,7 @@ the `file_template_project_id`, `deletion_adjourned_period`, or the `geo_node_al
 Use an API call to modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls).
 
-```
+```plaintext
 PUT /application/settings
 ```
 
