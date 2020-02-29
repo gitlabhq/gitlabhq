@@ -30,7 +30,6 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
     let(:clock_thread_cputime_end) { 1.333333799 }
     let(:start_payload) do
       job.except('error_backtrace', 'error_class', 'error_message').merge(
-        'args' => job['args'].map(&:to_s),
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: start',
         'job_status' => 'start',
         'pid' => Process.pid,
@@ -100,29 +99,13 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
 
-      context 'when the job args contain non-string objects' do
-        it 'converts them to strings' do
-          Timecop.freeze(timestamp) do
-            job['args'] = [2, true, 'foo', { "foo" => "bar" }]
-            expected_args = ['2', 'true', 'foo', '{"foo"=>"bar"}']
-
-            expect(logger).to receive(:info).with(start_payload.merge('args' => expected_args)).ordered
-            expect(logger).to receive(:info).with(end_payload.merge('args' => expected_args)).ordered
-            expect(subject).to receive(:log_job_start).and_call_original
-            expect(subject).to receive(:log_job_done).and_call_original
-
-            subject.call(job, 'test_queue') { }
-          end
-        end
-      end
-
       context 'when the job args are bigger than the maximum allowed' do
         it 'keeps args from the front until they exceed the limit' do
           Timecop.freeze(timestamp) do
             half_limit = Gitlab::Utils::LogLimitedArray::MAXIMUM_ARRAY_LENGTH / 2
             job['args'] = [1, 2, 'a' * half_limit, 'b' * half_limit, 3]
 
-            expected_args = job['args'].map(&:to_s).take(3) + ['...']
+            expected_args = job['args'].take(3) + ['...']
 
             expect(logger).to receive(:info).with(start_payload.merge('args' => expected_args)).ordered
             expect(logger).to receive(:info).with(end_payload.merge('args' => expected_args)).ordered

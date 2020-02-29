@@ -85,11 +85,7 @@ module Gitlab
         job['pid'] = ::Process.pid
 
         job.delete('args') unless ENV['SIDEKIQ_LOG_ARGUMENTS']
-
-        if job['args']
-          job['args'].map!(&:to_s)
-          job['args'] = Gitlab::Utils::LogLimitedArray.log_limited_array(job['args'])
-        end
+        job['args'] = Gitlab::Utils::LogLimitedArray.log_limited_array(job['args']) if job['args']
 
         job
       end
