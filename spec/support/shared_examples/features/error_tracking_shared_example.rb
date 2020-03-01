@@ -50,17 +50,21 @@ end
 
 shared_examples 'error tracking show page' do
   it 'renders the error details' do
+    content = page.find(".content")
+    nav = page.find("nav.breadcrumbs")
+    header = page.find(".error-details-header")
+
     release_short_version = issue_response['firstRelease']['shortVersion']
 
-    expect(page).to have_content('1 month ago by raven.scripts.runner in main')
-    expect(page).to have_content(issue_response['metadata']['title'])
-    expect(page).to have_content('level: error')
-    expect(page).to have_content('Error Details')
-    expect(page).to have_content('GitLab Issue: https://gitlab.com/gitlab-org/gitlab/issues/1')
-    expect(page).to have_content("Sentry event: https://sentrytest.gitlab.com/sentry-org/sentry-project/issues/#{issue_id}")
-    expect(page).to have_content("First seen: 1 year ago (#{formatted_issue_seen}) Release: #{release_short_version}")
-    expect(page).to have_content('Events: 1')
-    expect(page).to have_content('Users: 0')
+    expect(header).to have_content('1 month ago by raven.scripts.runner in main')
+    expect(content).to have_content(issue_response['metadata']['title'])
+    expect(content).to have_content('level: error')
+    expect(nav).to have_content('Error Details')
+    expect(content).to have_content('GitLab Issue: https://gitlab.com/gitlab-org/gitlab/issues/1')
+    expect(content).to have_content("Sentry event: https://sentrytest.gitlab.com/sentry-org/sentry-project/issues/#{issue_id}")
+    expect(content).to have_content("First seen: 1 year ago (#{formatted_issue_seen}) Release: #{release_short_version}")
+    expect(content).to have_content('Events: 1')
+    expect(content).to have_content('Users: 0')
   end
 
   it 'renders the stack trace heading' do
