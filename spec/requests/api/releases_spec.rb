@@ -78,7 +78,7 @@ describe API::Releases do
         issue_uri = URI.parse(links['issues_url'])
 
         expect(mr_uri.path).to eq("#{path_base}/-/merge_requests")
-        expect(issue_uri.path).to eq("#{path_base}/issues")
+        expect(issue_uri.path).to eq("#{path_base}/-/issues")
         expect(mr_uri.query).to eq(expected_query)
         expect(issue_uri.query).to eq(expected_query)
       end

@@ -23,22 +23,22 @@ Use [BrowserStack](https://www.browserstack.com/) to test with our supported bro
 
 Current high-level frontend goals are listed on [Frontend Epics](https://gitlab.com/groups/gitlab-org/-/epics?label_name%5B%5D=frontend).
 
-## [Principles](principles.md)
+## Principles
 
-High-level guidelines for contributing to GitLab.
+[High-level guidelines](principles.md) for contributing to GitLab.
 
-## [Development Process](development_process.md)
+## Development Process
 
-How we plan and execute the work on the frontend.
+How we [plan and execute](development_process.md) the work on the frontend.
 
-## [Architecture](architecture.md)
+## Architecture
 
-How we go about making fundamental design decisions in GitLab's frontend team
+How we go about [making fundamental design decisions](architecture.md) in GitLab's frontend team
 or make changes to our frontend development guidelines.
 
-## [Testing](../testing_guide/frontend_testing.md)
+## Testing
 
-How we write frontend tests, run the GitLab test suite, and debug test related
+How we write [frontend tests](../testing_guide/frontend_testing.md), run the GitLab test suite, and debug test related
 issues.
 
 ## Pajamas Design System
@@ -46,29 +46,33 @@ issues.
 Reusable components with technical and usage guidelines can be found in our
 [Pajamas Design System](https://design.gitlab.com/).
 
-## [Design Patterns](design_patterns.md)
+## Design Patterns
 
-Common JavaScript design patterns in GitLab's codebase.
+Common JavaScript [design patterns](design_patterns.md) in GitLab's codebase.
 
-## [Vue.js Best Practices](vue.md)
+## Vue.js Best Practices
 
-Vue specific design patterns and practices.
+Vue specific [design patterns and practices](vue.md).
 
-## [Vuex](vuex.md)
+## Vuex
 
-Vuex specific design patterns and practices.
+[Vuex](vuex.md) specific design patterns and practices.
 
-## [Axios](axios.md)
+## Axios
 
-Axios specific practices and gotchas.
+[Axios](axios.md) specific practices and gotchas.
 
-## [GraphQL](graphql.md)
+## GraphQL
 
-How to use GraphQL
+How to use [GraphQL](graphql.md).
 
-## [Icons and Illustrations](icons.md)
+## Icons and Illustrations
 
-How we use SVG for our Icons and Illustrations.
+How we use SVG for our [Icons and Illustrations](icons.md).
+
+## Dependencies
+
+General information about frontend [dependencies](dependencies.md) and how we manage them.
 
 ## Frontend FAQ
 

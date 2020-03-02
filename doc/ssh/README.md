@@ -344,7 +344,7 @@ Integration (CI) server. By using deploy keys, you don't have to set up a
 dummy user account.
 
 If you are a project maintainer or owner, you can add a deploy key in the
-project's **Settings > Repository** page by expanding the
+project's **{settings}** **Settings > CI / CD** page by expanding the
 **Deploy Keys** section. Specify a title for the new
 deploy key and paste a public SSH key. After this, the machine that uses
 the corresponding private SSH key has read-only or read-write (if enabled)
@@ -387,7 +387,7 @@ of broader usage for something like "Anywhere you need to give read access to
 your repository".
 
 Once a GitLab administrator adds the Global Deployment key, project maintainers
-and owners can add it in project's **Settings > Repository** page by expanding the
+and owners can add it in project's **{settings}** **Settings > CI / CD** page by expanding the
 **Deploy Keys** section and clicking **Enable** next to the appropriate key listed
 under **Public deploy keys available to any project**.
 

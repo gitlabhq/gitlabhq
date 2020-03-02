@@ -167,7 +167,10 @@ module Ci
         target_revision: {
           ref: target_ref || downstream_project.default_branch
         },
-        execute_params: { ignore_skip_ci: true }
+        execute_params: {
+          ignore_skip_ci: true,
+          bridge: self
+        }
       }
     end
 

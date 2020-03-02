@@ -109,7 +109,7 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
       expect(pipeline.source_bridge).to be_a ::Ci::Bridge
     end
 
-    it 'updates bridge status when downstream pipeline gets proceesed' do
+    it 'updates bridge status when downstream pipeline gets processed' do
       pipeline = service.execute(bridge)
 
       expect(pipeline.reload).to be_pending
@@ -125,6 +125,37 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
         pipeline = service.execute(bridge)
 
         expect(pipeline.ref).to eq 'master'
+      end
+    end
+
+    context 'when downstream pipeline has yaml configuration error' do
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(job: { invalid: 'yaml' }))
+      end
+
+      it 'creates only one new pipeline' do
+        expect { service.execute(bridge) }
+          .to change { Ci::Pipeline.count }.by(1)
+      end
+
+      it 'creates a new pipeline in a downstream project' do
+        pipeline = service.execute(bridge)
+
+        expect(pipeline.user).to eq bridge.user
+        expect(pipeline.project).to eq downstream_project
+        expect(bridge.sourced_pipelines.first.pipeline).to eq pipeline
+        expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
+        expect(pipeline.source_bridge).to eq bridge
+        expect(pipeline.source_bridge).to be_a ::Ci::Bridge
+      end
+
+      it 'does not update bridge status when downstream pipeline gets processed' do
+        pipeline = service.execute(bridge)
+
+        expect(pipeline.reload).to be_failed
+        # TODO: This should change to failed once #198354 gets fixed.
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25706
+        expect(bridge.reload).to be_pending
       end
     end
 
@@ -173,7 +204,7 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
             expect(pipeline.source_bridge).to be_a ::Ci::Bridge
           end
 
-          it 'updates bridge status when downstream pipeline gets proceesed' do
+          it 'updates bridge status when downstream pipeline gets processed' do
             pipeline = service.execute(bridge)
 
             expect(pipeline.reload).to be_pending

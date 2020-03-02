@@ -27,8 +27,6 @@ module Projects
       private
 
       def render_show
-        @deploy_keys = DeployKeysPresenter.new(@project, current_user: current_user)
-
         define_protected_refs
         remote_mirror
 

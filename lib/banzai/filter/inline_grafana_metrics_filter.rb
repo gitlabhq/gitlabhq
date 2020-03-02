@@ -10,11 +10,7 @@ module Banzai
       def create_element(params)
         begin_loading_dashboard(params[:url])
 
-        doc.document.create_element(
-          'div',
-          class: 'js-render-metrics',
-          'data-dashboard-url': metrics_dashboard_url(params)
-        )
+        super
       end
 
       def embed_params(node)

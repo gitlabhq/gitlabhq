@@ -279,6 +279,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        draw :issues
         draw :merge_requests
 
         # The wiki and repository routing contains wildcard characters so
@@ -401,12 +402,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       # Unscoped route. It will be replaced with redirect to /-/issues/
       # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      draw :issues
-
-      # To ensure an old unscoped routing is used for the UI we need to
-      # add prefix 'as' to the scope routing and place it below original routing.
-      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      scope '-', as: 'scoped' do
+      scope as: 'deprecated' do
         draw :issues
       end
 

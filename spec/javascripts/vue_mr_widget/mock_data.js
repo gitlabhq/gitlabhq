@@ -216,7 +216,7 @@ export default {
   remove_wip_path: '/root/acets-app/-/merge_requests/22/remove_wip',
   cancel_auto_merge_path: '/root/acets-app/-/merge_requests/22/cancel_auto_merge',
   create_issue_to_resolve_discussions_path:
-    '/root/acets-app/issues/new?merge_request_to_resolve_discussions_of=22',
+    '/root/acets-app/-/issues/new?merge_request_to_resolve_discussions_of=22',
   merge_path: '/root/acets-app/-/merge_requests/22/merge',
   cherry_pick_in_fork_path:
     '/root/acets-app/forks?continue%5Bnotice%5D=You%27re+not+allowed+to+make+changes+to+this+project+directly.+A+fork+of+this+project+has+been+created+that+you+can+make+changes+in%2C+so+you+can+submit+a+merge+request.+Try+to+revert+this+commit+again.&continue%5Bnotice_now%5D=You%27re+not+allowed+to+make+changes+to+this+project+directly.+A+fork+of+this+project+is+being+created+that+you+can+make+changes+in%2C+so+you+can+submit+a+merge+request.&continue%5Bto%5D=%2Froot%2Facets-app%2Fmerge_requests%2F22&namespace_key=1',

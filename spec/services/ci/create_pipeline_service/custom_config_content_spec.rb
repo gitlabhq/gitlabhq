@@ -4,18 +4,22 @@ require 'spec_helper'
 describe Ci::CreatePipelineService do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:admin) }
+  let(:upstream_pipeline) { create(:ci_pipeline) }
   let(:ref) { 'refs/heads/master' }
   let(:service) { described_class.new(project, user, { ref: ref }) }
 
   context 'custom config content' do
     let(:bridge) do
-      double(:bridge, yaml_for_downstream: <<~YML
-        rspec:
-          script: rspec
-        custom:
-          script: custom
-      YML
-      )
+      create(:ci_bridge, status: 'running', pipeline: upstream_pipeline, project: upstream_pipeline.project).tap do |bridge|
+        allow(bridge).to receive(:yaml_for_downstream).and_return(
+          <<~YML
+            rspec:
+              script: rspec
+            custom:
+              script: custom
+          YML
+        )
+      end
     end
 
     subject { service.execute(:push, bridge: bridge) }

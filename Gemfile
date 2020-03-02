@@ -383,7 +383,7 @@ group :development, :test do
 
   gem 'simple_po_parser', '~> 1.1.2', require: false
 
-  gem 'timecop', '~> 0.8.0'
+  gem 'timecop', '~> 0.9.1'
 
   gem 'png_quantizator', '~> 0.2.1', require: false
 

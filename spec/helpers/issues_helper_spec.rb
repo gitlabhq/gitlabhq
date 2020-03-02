@@ -200,7 +200,7 @@ describe IssuesHelper do
 
     shared_examples 'successfully displays link to issue and with css class' do |action|
       it 'returns link' do
-        link = "<a class=\"#{css_class}\" href=\"/#{new_issue.project.full_path}/issues/#{new_issue.iid}\">(#{action})</a>"
+        link = "<a class=\"#{css_class}\" href=\"/#{new_issue.project.full_path}/-/issues/#{new_issue.iid}\">(#{action})</a>"
 
         expect(helper.issue_closed_link(issue, user, css_class: css_class)).to match(link)
       end

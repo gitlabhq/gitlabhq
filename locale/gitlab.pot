@@ -2066,6 +2066,9 @@ msgstr ""
 msgid "Application settings saved successfully"
 msgstr ""
 
+msgid "Application settings update failed"
+msgstr ""
+
 msgid "Application uninstalled but failed to destroy: %{error_message}"
 msgstr ""
 

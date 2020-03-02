@@ -27,7 +27,7 @@ describe ErrorTracking::IssueDetailsService do
           create(:sentry_issue, issue: gitlab_issue, sentry_issue_identifier: detailed_error.id)
 
           expect(result[:issue].gitlab_issue).to include(
-            "http", "/#{project.full_path}/issues/#{gitlab_issue.iid}"
+            "http", "/#{project.full_path}/-/issues/#{gitlab_issue.iid}"
           )
         end
 

@@ -1,0 +1,5 @@
+---
+title: Allow issues/merge_requests as an issuable_type in Insights configuration
+merge_request: 26061
+author:
+type: added

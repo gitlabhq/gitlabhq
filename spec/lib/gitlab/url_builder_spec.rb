@@ -20,7 +20,7 @@ describe Gitlab::UrlBuilder do
 
         url = described_class.build(issue)
 
-        expect(url).to eq "#{Settings.gitlab['url']}/#{issue.project.full_path}/issues/#{issue.iid}"
+        expect(url).to eq "#{Settings.gitlab['url']}/#{issue.project.full_path}/-/issues/#{issue.iid}"
       end
     end
 
@@ -107,7 +107,7 @@ describe Gitlab::UrlBuilder do
 
           url = described_class.build(note)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{issue.project.full_path}/issues/#{issue.iid}#note_#{note.id}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{issue.project.full_path}/-/issues/#{issue.iid}#note_#{note.id}"
         end
       end
 

@@ -20,12 +20,6 @@ module Ci
 
       service.execute(
         pipeline_params.fetch(:source), pipeline_params[:execute_params]) do |pipeline|
-          @bridge.sourced_pipelines.build(
-            source_pipeline: @bridge.pipeline,
-            source_project: @bridge.project,
-            project: @bridge.downstream_project,
-            pipeline: pipeline)
-
           pipeline.variables.build(@bridge.downstream_variables)
         end
     end
