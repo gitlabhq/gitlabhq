@@ -54,8 +54,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['targetNoteHash']),
-    ...mapState(['descriptionVersion', 'isLoadingDescriptionVersion']),
+    ...mapGetters(['targetNoteHash', 'descriptionVersion']),
+    ...mapState(['isLoadingDescriptionVersion']),
     noteAnchorId() {
       return `note_${this.note.id}`;
     },
