@@ -1,16 +1,27 @@
 # frozen_string_literal: true
 
-module ResourceEventTools
-  extend ActiveSupport::Concern
+class ResourceEvent < ApplicationRecord
+  include Gitlab::Utils::StrongMemoize
+  include Importable
 
-  included do
-    belongs_to :user
+  self.abstract_class = true
 
-    validates :user, presence: { unless: :importing? }, on: :create
+  validates :user, presence: { unless: :importing? }, on: :create
 
-    validate :exactly_one_issuable
+  belongs_to :user
 
-    scope :created_after, ->(time) { where('created_at > ?', time) }
+  scope :created_after, ->(time) { where('created_at > ?', time) }
+
+  def discussion_id
+    strong_memoize(:discussion_id) do
+      Digest::SHA1.hexdigest(discussion_id_key.join("-"))
+    end
+  end
+
+  private
+
+  def discussion_id_key
+    [self.class.name, created_at, user_id]
   end
 
   def exactly_one_issuable

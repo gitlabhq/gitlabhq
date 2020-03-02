@@ -122,7 +122,7 @@ Parameters:
 | `userName`   | string      | yes | Username of the user. |
 | `emails`     | JSON string | yes | Work email. |
 | `name`       | JSON string | yes | Name of the user. |
-| `meta`       | string      | no  | Resource type (`User'). |
+| `meta`       | string      | no  | Resource type (`User`). |
 
 Example request:
 

@@ -10,8 +10,21 @@ shared_examples 'a resource event' do
   let_it_be(:issue2) { create(:issue, author: user1) }
   let_it_be(:issue3) { create(:issue, author: user2) }
 
+  describe 'importable' do
+    it { is_expected.to respond_to(:importing?) }
+    it { is_expected.to respond_to(:imported?) }
+  end
+
   describe 'validations' do
     it { is_expected.not_to allow_value(nil).for(:user) }
+
+    context 'when importing' do
+      before do
+        allow(subject).to receive(:importing?).and_return(true)
+      end
+
+      it { is_expected.to allow_value(nil).for(:user) }
+    end
   end
 
   describe 'associations' do

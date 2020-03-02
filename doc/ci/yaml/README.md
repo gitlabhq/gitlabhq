@@ -857,7 +857,10 @@ In this example, if the first rule:
 
 `rules:if` differs slightly from `only:variables` by accepting only a single
 expression string, rather than an array of them. Any set of expressions to be
-evaluated should be conjoined into a single expression using `&&` or `||`. For example:
+evaluated should be conjoined into a single expression using `&&` or `||`, and use
+the [variable matching syntax](../variables/README.md#supported-syntax).
+
+For example:
 
 ```yaml
 job:

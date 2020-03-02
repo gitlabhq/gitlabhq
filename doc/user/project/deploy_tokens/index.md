@@ -9,11 +9,11 @@ at midnight UTC and that they can be only managed by [maintainers](../../permiss
 
 ## Creating a Deploy Token
 
-You can create as many deploy tokens as you like from the settings of your project:
+You can create as many deploy tokens as you like from the settings of your project. Alternatively, you can also create [group-scoped deploy tokens](#group-deploy-token).
 
 1. Log in to your GitLab account.
-1. Go to the project you want to create Deploy Tokens for.
-1. Go to **Settings** > **Repository**.
+1. Go to the project (or group) you want to create Deploy Tokens for.
+1. Go to **{settings}** **Settings** > **CI / CD**.
 1. Click on "Expand" on **Deploy Tokens** section.
 1. Choose a name, expiry date (optional), and username (optional) for the token.
 1. Choose the [desired scopes](#limiting-scopes-of-a-deploy-token).
@@ -76,6 +76,22 @@ docker login -u <username> -p <deploy_token> registry.example.com
 
 Just replace `<username>` and `<deploy_token>` with the proper values. Then you can simply
 pull images from your Container Registry.
+
+### Group Deploy Token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21765) in GitLab 12.9.
+
+A deploy token created at the group level can be used across all projects that
+belong either to the specific group or to one of its subgroups.
+
+To use a group deploy token:
+
+1. [Create](#creating-a-deploy-token) a deploy token for a group.
+1. Use it the same way you use a project deploy token when
+   [cloning a repository](#git-clone-a-repository).
+
+The scopes applied to a group deploy token (such as `read_repository`) will
+apply consistently when cloning the repository of related projects.
 
 ### GitLab Deploy Token
 
