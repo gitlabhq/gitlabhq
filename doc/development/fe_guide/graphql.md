@@ -53,7 +53,7 @@ fragment DesignListItem on Design {
 }
 ```
 
-Fragments can be stored in separate files, imported and used in queries, mutations or other fragments.
+Fragments can be stored in separate files, imported and used in queries, mutations, or other fragments.
 
 ```javascript
 #import "./designList.fragment.graphql"

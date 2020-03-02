@@ -107,7 +107,7 @@ The pipeline in the `gitlab-docs` project:
 
 ### Rebuild the docs site Docker images
 
-Once a week, on Mondays, a scheduled pipeline runs and rebuilds the Docker images
+Once a week on Mondays, a scheduled pipeline runs and rebuilds the Docker images
 used in various pipeline jobs, like `docs-lint`. The Docker image configuration files are
 located at <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/dockerfiles>.
 
@@ -230,7 +230,7 @@ for its search function. This is how it works:
 NOTE: **For GitLab employees:**
 The credentials to access the Algolia dashboard are stored in 1Password. If you
 want to receive weekly reports of the search usage, search the Google doc with
-title "Email, Slack, and GitLab Groups and Aliases", search for `docsearch`,
+title `Email, Slack, and GitLab Groups and Aliases`, search for `docsearch`,
 and add a comment with your email to be added to the alias that gets the weekly
 reports.
 

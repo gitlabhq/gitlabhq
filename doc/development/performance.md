@@ -259,10 +259,10 @@ One of the reasons of the increased memory footprint could be Ruby memory fragme
 
 To diagnose it, you can visualize Ruby heap as described in [this post by Aaron Patterson](https://tenderlovemaking.com/2017/09/27/visualizing-your-ruby-heap.html).
 
-To start, you want to dump the heap of the process you're investigating to a JSON file.  
+To start, you want to dump the heap of the process you're investigating to a JSON file.
 
-You need to run the command inside the process you're exploring, you may do that with `rbtrace`.  
-`rbtrace` is already present in GitLab `Gemfile`, you just need to require it.  
+You need to run the command inside the process you're exploring, you may do that with `rbtrace`.
+`rbtrace` is already present in GitLab `Gemfile`, you just need to require it.
 It could be achieved running webserver or Sidekiq with the environment variable set to `ENABLE_RBTRACE=1`.
 
 To get the heap dump:
@@ -281,7 +281,7 @@ Fragmented Ruby heap snapshot could look like this:
 
 ![Ruby heap fragmentation](img/memory_ruby_heap_fragmentation.png)
 
-Memory fragmentation could be reduced by tuning GC parameters as described in [this post by Nate Berkopec](https://www.speedshop.co/2017/12/04/malloc-doubles-ruby-memory.html), which should be considered as a tradeoff, as it may affect overall performance of memory allocation and GC cycles.
+Memory fragmentation could be reduced by tuning GC parameters as described in [this post by Nate Berkopec](https://www.speedshop.co/2017/12/04/malloc-doubles-ruby-memory.html). This should be considered as a tradeoff, as it may affect overall performance of memory allocation and GC cycles.
 
 ## Importance of Changes
 

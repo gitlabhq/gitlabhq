@@ -832,3 +832,6 @@ Epic:
   - start_date_sourcing_epic_id
   - due_date_sourcing_epic_id
   - health_status
+EpicIssue:
+  - id
+  - relative_position

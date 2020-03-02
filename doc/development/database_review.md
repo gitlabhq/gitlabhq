@@ -12,7 +12,7 @@ A database review is required for:
   including files in:
   - `db/`
   - `lib/gitlab/background_migration/`
-- Changes to the database tooling, e.g.:
+- Changes to the database tooling. For example:
   - migration or ActiveRecord helpers in `lib/gitlab/database/`
   - load balancing
 - Changes that produce SQL queries that are beyond the obvious. It is
@@ -50,7 +50,7 @@ A database **reviewer**'s role is to:
 Currently we have a [critical shortage of database maintainers](https://gitlab.com/gitlab-org/gitlab/issues/29717). Until we are able to increase the number of database maintainers to support the volume of reviews, we have implemented this temporary solution. If the database **reviewer** cannot find an available database **maintainer** then:
 
 1. Assign the MR for a second review by a **database trainee maintainer** for further review.
-1. Once satisfied with the review process, and if the database **maintainer** is still not available, skip the database maintainer approval step and assign the merge request to a backend maintainer for final review and approval.
+1. Once satisfied with the review process and if the database **maintainer** is still not available, skip the database maintainer approval step and assign the merge request to a backend maintainer for final review and approval.
 
 A database **maintainer**'s role is to:
 
@@ -119,10 +119,10 @@ the following preparations into account.
 - Add foreign keys to any columns pointing to data in other tables, including [an index](migration_style_guide.md#adding-foreign-key-constraints).
 - Add indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s.
 
-#### Preparation when removing columns, tables, indexes or other structures
+#### Preparation when removing columns, tables, indexes, or other structures
 
 - Follow the [guidelines on dropping columns](what_requires_downtime.md#dropping-columns).
-- Generally it's best practice, but not a hard rule, to remove indexes and foreign keys in a post-deployment migration.
+- Generally it's best practice (but not a hard rule) to remove indexes and foreign keys in a post-deployment migration.
   - Exceptions include removing indexes and foreign keys for small tables.
 
 ### How to review for database
@@ -156,14 +156,14 @@ the following preparations into account.
 - Check migrations are reversible and implement a `#down` method
 - Check data migrations:
   - Establish a time estimate for execution on GitLab.com.
-  - Depending on timing, data migrations can be placed on regular, post-deploy or background migrations.
+  - Depending on timing, data migrations can be placed on regular, post-deploy, or background migrations.
   - Data migrations should be reversible too or come with a description of how to reverse, when possible.
     This applies to all types of migrations (regular, post-deploy, background).
 - Query performance
   - Check for any obviously complex queries and queries the author specifically
     points out for review (if any)
   - If not present yet, ask the author to provide SQL queries and query plans
-    (e.g. by using [chatops](understanding_explain_plans.md#chatops) or direct
+    (for example, by using [chatops](understanding_explain_plans.md#chatops) or direct
     database access)
   - For given queries, review parameters regarding data distribution
   - [Check query plans](understanding_explain_plans.md) and suggest improvements

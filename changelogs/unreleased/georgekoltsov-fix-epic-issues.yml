@@ -1,0 +1,5 @@
+---
+title: Fix issues missing on epic's page after project import
+merge_request: 26099
+author:
+type: fixed

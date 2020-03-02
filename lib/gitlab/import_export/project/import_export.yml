@@ -319,6 +319,9 @@ excluded_attributes:
     - :state_id
     - :start_date_sourcing_epic_id
     - :due_date_sourcing_epic_id
+  epic_issue:
+    - :epic_id
+    - :issue_id
 methods:
   notes:
     - :type
@@ -371,7 +374,8 @@ ee:
         - design_versions:
           - actions:
             - :design # Duplicate export of issues.designs in order to link the record to both Issue and Action
-        - :epic
+        - epic_issue:
+          - :epic
       - protected_branches:
         - :unprotect_access_levels
       - protected_environments:

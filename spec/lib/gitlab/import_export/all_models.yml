@@ -609,3 +609,6 @@ epic:
 - events
 - resource_label_events
 - user_mentions
+epic_issue:
+- epic
+- issue

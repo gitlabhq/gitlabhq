@@ -17,13 +17,11 @@ that apply to all GitLab content, not just documentation.
 
 ### Why a single source of truth
 
-The documentation is the SSOT for all information related to the implementation, usage, and troubleshooting of GitLab products and features. It evolves continually, in keeping with new products and features, and with improvements for clarity, accuracy, and completeness.
+The documentation of GitLab products and features is the SSOT for all information related to implementation, usage, and troubleshooting. It evolves continually, in keeping with new products and features, and with improvements for clarity, accuracy, and completeness.
 
 This policy prevents information silos, ensuring that it remains easy to find information about GitLab products.
 
 It also informs decisions about the kinds of content we include in our documentation.
-
-The documentation is a continually evolving SSOT for all information related to the implementation, usage, and troubleshooting of GitLab products and features.
 
 ### All information
 
@@ -34,7 +32,7 @@ For the Troubleshooting sections, people in GitLab Support can merge additions t
 
 ### All media types
 
-Include any media types/sources if the content is relevant to readers. You can freely include or link presentations, diagrams, videos, etc.; no matter who it was originally composed for, if it is helpful to any of our audiences, we can include it.
+Include any media types/sources if the content is relevant to readers. You can freely include or link presentations, diagrams, videos, and so on; no matter who it was originally composed for, if it is helpful to any of our audiences, we can include it.
 
 - If you use an image that has a separate source file (for example, a vector or diagram format), link the image to the source file so that it may be reused or updated by anyone.
 - Do not copy and paste content from other sources unless it is a limited quotation with the source cited. Typically it is better to either rephrase relevant information in your own words or link out to the other source.
@@ -63,13 +61,17 @@ Instead, link to the SSOT and explain why it is important to consume the informa
 
 ### Organize by topic, not by type
 
-Beyond top-level audience-type folders (e.g. `administration`), we organize content by topic, not by type, so that it can be located as easily as possible within the single-source-of-truth (SSOT) section for the subject matter.
+Beyond top-level audience-type folders (for example, `administration`), we organize content by topic, not by type, so that it can be located as easily as possible within the single-source-of-truth (SSOT) section for the subject matter.
 
-For example, do not create groupings of similar media types (e.g. glossaries, FAQs, or sets of all articles or videos).
+For example, do not create groupings of similar media types. For example:
+
+- Glossaries.
+- FAQs.
+- Sets of all articles or videos.
 
 Such grouping of content by type makes
 it difficult to browse for the information you need and difficult to maintain up-to-date content.
-Instead, organize content by its subject (e.g. everything related to CI goes together)
+Instead, organize content by its subject (for example, everything related to CI goes together)
 and cross-link between any related content.
 
 ### Docs-first methodology
@@ -79,7 +81,10 @@ We employ a **docs-first methodology** to help ensure that the docs remain a com
 - If the answer to a question exists in documentation, share the link to the docs instead of rephrasing the information.
 - When you encounter new information not available in GitLab’s documentation (for example, when working on a support case or testing a feature), your first step should be to create a merge request (MR) to add this information to the docs. You can then share the MR in order to communicate this information.
 
-New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can always add a Troubleshooting section to a doc if none exists, or un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#template-for-new-docs), if present.
+New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can either:
+
+- Add a Troubleshooting section to a doc if none exists.
+- Un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#template-for-new-docs), if present.
 
 The more we reflexively add useful information to the docs, the more (and more successfully) the docs will be used to efficiently accomplish tasks and solve problems.
 
@@ -98,7 +103,7 @@ Ruby gem will support all [GFM markup](../../user/markdown.md) in the future. Th
 all markup that is supported for display in the GitLab application itself. For now,
 use regular Markdown markup, following the rules in the linked style guide.
 
-Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
+Note that Kramdown-specific markup (for example, `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
 
 Hard-coded HTML is valid, although it's discouraged to be used while we have `/help`. HTML is permitted as long as:
 
@@ -1149,7 +1154,7 @@ keyword "only":
 - For GitLab Premium: `**(PREMIUM ONLY)**`.
 - For GitLab Ultimate: `**(ULTIMATE ONLY)**`.
 
-For GitLab.com only tiers (when the feature is not available for self-hosted instances):
+For GitLab.com only tiers (when the feature is not available for self-managed instances):
 
 - For GitLab Free and higher tiers: `**(FREE ONLY)**`.
 - For GitLab Bronze and higher tiers: `**(BRONZE ONLY)**`.

@@ -17,7 +17,7 @@ uncovered edge cases. The reviewer can be from a different team, but it is
 recommended to pick someone who knows the domain well. You can read more about the
 importance of involving reviewer(s) in the section on the responsibility of the author below.
 
-If you need some guidance (e.g. it's your first merge request), feel free to ask
+If you need some guidance (for example, it's your first merge request), feel free to ask
 one of the [Merge request coaches](https://about.gitlab.com/company/team/).
 
 If you need assistance with security scans or comments, feel free to include the
@@ -148,7 +148,7 @@ architecture, code organization, separation of concerns, tests, DRYness,
 consistency, and readability.
 
 Since a maintainer's job only depends on their knowledge of the overall GitLab
-codebase, and not that of any specific domain, they can review, approve and merge
+codebase, and not that of any specific domain, they can review, approve, and merge
 merge requests from any team and in any product area.
 
 In fact, authors are encouraged to get their merge requests merged by maintainers
@@ -334,7 +334,7 @@ reviewee.
   reviewer before doing it, but have the courage to do it when you believe it is
   important.
 - In the interest of [Iteration](https://about.gitlab.com/handbook/values/#iteration),
-  if, as a reviewer, your suggestions are non-blocking changes or personal preference
+  if your review suggestions are non-blocking changes, or personal preference
   (not a documented or agreed requirement), consider approving the merge request
   before passing it back to the author. This allows them to implement your suggestions
   if they agree, or allows them to pass it onto the

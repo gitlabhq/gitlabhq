@@ -13,7 +13,7 @@ As developers, we should attempt to add tracking and instrumentation where possi
 - Usage patterns.
 - Other metrics that can potentially be improved on.
 
-To maintain consistency, and not adversely effect performance, we have some basic tracking functionality exposed at both the frontend and backend layers that can be utilized while building new features or updating existing features.
+To maintain consistency and not adversely effect performance, we have some basic tracking functionality exposed at both the frontend and backend layers that can be utilized while building new features or updating existing features.
 
 We also encourage users to enable tracking, and we embrace full transparency with our tracking approach so it can be easily understood and trusted. By enabling tracking, users can:
 

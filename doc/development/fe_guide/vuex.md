@@ -6,7 +6,7 @@ _Note:_ All of the below is explained in more detail in the official [Vuex docum
 
 ## Separation of concerns
 
-Vuex is composed of State, Getters, Mutations, Actions and Modules.
+Vuex is composed of State, Getters, Mutations, Actions, and Modules.
 
 When a user clicks on an action, we need to `dispatch` it. This action will `commit` a mutation that will change the state.
 _Note:_ The action itself will not update the state, only a mutation should update the state.

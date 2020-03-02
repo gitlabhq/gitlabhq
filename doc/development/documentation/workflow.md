@@ -118,7 +118,7 @@ Reviewers help ensure:
 Prior to merging, documentation changes committed by the developer must be reviewed by:
 
 - The code reviewer for the merge request. This is known as a technical review.
-- Optionally, others involved in the work, such as other developers or the Product Manager.
+- Optionally, others involved in the work such as other developers or the Product Manager.
 - The Technical Writer for the DevOps stage group, except in exceptional circumstances where a
   [post-merge review](#post-merge-reviews) can be requested.
 - A maintainer of the project.
@@ -137,11 +137,11 @@ For issues requiring any new or updated documentation, the Product Manager must:
 - Confirm or add the [documentation requirements](#documentation-requirements).
 - Ensure the issue contains:
   - Any new or updated feature name.
-  - Overview, description, and use cases, as required by the
-    [documentation structure and template](structure.md), when applicable.
+  - Overview, description, and use cases when applicable (as required by the
+    [documentation structure and template](structure.md)).
 
-Everyone is encouraged to draft the documentation requirements in the issue, but a Product Manager
-will do the following:
+Everyone is encouraged to draft the documentation requirements in the issue. However, a Product
+Manager will:
 
 - When the issue is assigned a release milestone, review and update the Documentation details.
 - By the kickoff, finalize the documentation details.
@@ -238,7 +238,7 @@ The following details should be included:
 - What concepts and procedures should the documentation guide and enable the user to understand or
   accomplish?
 - To this end, what new page(s) are needed, if any? What pages or subsections need updates?
-  Consider user, admin, and API documentation changes and additions.
+  Consider changes and additions to user, admin, and API documentation.
 - For any guide or instruction set, should it help address a single use case, or be flexible to
   address a certain range of use cases?
 - Do we need to update a previously recommended workflow? Should we link the new feature from

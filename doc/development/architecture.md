@@ -288,7 +288,7 @@ GitLab CI is the open-source continuous integration service included with GitLab
 - Configuration: [Omnibus][grafana-omnibus], [Charts][grafana-charts]
 - Layer: Monitoring
 
-Grafana is an open source, feature rich metrics dashboard and graph editor for Graphite, Elasticsearch, OpenTSDB, Prometheus and InfluxDB.
+Grafana is an open source, feature rich metrics dashboard and graph editor for Graphite, Elasticsearch, OpenTSDB, Prometheus, and InfluxDB.
 
 #### Jaeger
 
@@ -321,7 +321,7 @@ Mattermost is an open source, private cloud, Slack-alternative from <https://mat
 - Configuration: [Omnibus][minio-omnibus], [Charts][minio-charts], [GDK][minio-gdk]
 - Layer: Core Service (Data)
 
-MinIO is an object storage server released under Apache License v2.0. It is compatible with Amazon S3 cloud storage service. It is best suited for storing unstructured data such as photos, videos, log files, backups and container / VM images. Size of an object can range from a few KBs to a maximum of 5TB.
+MinIO is an object storage server released under Apache License v2.0. It is compatible with Amazon S3 cloud storage service. It is best suited for storing unstructured data such as photos, videos, log files, backups, and container / VM images. Size of an object can range from a few KBs to a maximum of 5TB.
 
 #### NGINX
 

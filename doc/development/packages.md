@@ -75,8 +75,8 @@ that gives a way to identify the project that the package belongs to. This gener
 id or full project path in the package name. See
 [Conan's naming convention](../user/packages/conan_repository/index.md#package-recipe-naming-convention) as an example.
 
-For group and project-level endpoints, naming can be less constrained, and it will be up to the group and project
-members to be certain that there is no conflict between two package names, however the system should prevent
+For group and project-level endpoints, naming can be less constrained and it will be up to the group and project
+members to be certain that there is no conflict between two package names. However, the system should prevent
 a user from reusing an existing name within a given scope.
 
 Otherwise, naming should follow the package manager's naming conventions and include a validation in the `package.md`

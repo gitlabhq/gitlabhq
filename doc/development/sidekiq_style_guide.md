@@ -66,7 +66,7 @@ are not adjusted appropriately.
 
 ## Idempotent Jobs
 
-It's known that a job can fail for multiple reasons, for example, network outages or bugs.
+It's known that a job can fail for multiple reasons. For example, network outages or bugs.
 In order to address this, Sidekiq has a built-in retry mechanism that is
 used by default by most workers within GitLab.
 
@@ -178,7 +178,7 @@ end
 ## Jobs with External Dependencies
 
 Most background jobs in the GitLab application communicate with other GitLab
-services, eg Postgres, Redis, Gitaly and Object Storage. These are considered
+services. For example, Postgres, Redis, Gitaly, and Object Storage. These are considered
 to be "internal" dependencies for a job.
 
 However, some jobs will be dependent on external services in order to complete
@@ -388,7 +388,7 @@ requests. We do this to avoid incorrect metadata when other jobs are
 scheduled from the cron-worker.
 
 Cron-Workers themselves run instance wide, so they aren't scoped to
-users, namespaces, projects or other resources that should be added to
+users, namespaces, projects, or other resources that should be added to
 the context.
 
 However, they often schedule other jobs that _do_ require context.
