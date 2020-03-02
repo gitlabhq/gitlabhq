@@ -6,7 +6,8 @@ describe FileUploader do
   let(:group) { create(:group, name: 'awesome') }
   let(:project) { create(:project, :legacy_storage, namespace: group, name: 'project') }
   let(:uploader) { described_class.new(project, :avatar) }
-  let(:upload) { double(model: project, path: 'secret/foo.jpg') }
+  let(:upload) { double(model: project, path: "#{secret}/foo.jpg") }
+  let(:secret) { "55dc16aa0edd05693fd98b5051e83321" } # this would be nicer as SecureRandom.hex, but the shared_examples breaks
 
   subject { uploader }
 
@@ -14,7 +15,7 @@ describe FileUploader do
     include_examples 'builds correct paths',
                      store_dir: %r{awesome/project/\h+},
                      upload_path: %r{\h+/<filename>},
-                     absolute_path: %r{#{described_class.root}/awesome/project/secret/foo.jpg}
+                     absolute_path: %r{#{described_class.root}/awesome/project/55dc16aa0edd05693fd98b5051e83321/foo.jpg}
   end
 
   context 'legacy storage' do
@@ -51,11 +52,11 @@ describe FileUploader do
   end
 
   describe 'initialize' do
-    let(:uploader) { described_class.new(double, secret: 'secret') }
+    let(:uploader) { described_class.new(double, secret: secret) }
 
     it 'accepts a secret parameter' do
       expect(described_class).not_to receive(:generate_secret)
-      expect(uploader.secret).to eq('secret')
+      expect(uploader.secret).to eq(secret)
     end
   end
 
@@ -154,8 +155,39 @@ describe FileUploader do
 
   describe '#secret' do
     it 'generates a secret if none is provided' do
-      expect(described_class).to receive(:generate_secret).and_return('secret')
-      expect(uploader.secret).to eq('secret')
+      expect(described_class).to receive(:generate_secret).and_return(secret)
+      expect(uploader.secret).to eq(secret)
+      expect(uploader.secret.size).to eq(32)
+    end
+
+    context "validation" do
+      before do
+        uploader.instance_variable_set(:@secret, secret)
+      end
+
+      context "32-byte hexadecimal" do
+        let(:secret) { SecureRandom.hex }
+
+        it "returns the secret" do
+          expect(uploader.secret).to eq(secret)
+        end
+      end
+
+      context "10-byte hexadecimal" do
+        let(:secret) { SecureRandom.hex(10) }
+
+        it "returns the secret" do
+          expect(uploader.secret).to eq(secret)
+        end
+      end
+
+      context "invalid secret supplied" do
+        let(:secret) { "%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fgrafana%2Fconf%2F" }
+
+        it "raises an exception" do
+          expect { uploader.secret }.to raise_error(described_class::InvalidSecret)
+        end
+      end
     end
   end
 
