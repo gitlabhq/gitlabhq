@@ -613,6 +613,25 @@ describe Projects::UpdateService do
     end
   end
 
+  describe 'repository_storage' do
+    let(:admin) { create(:admin) }
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :repository) }
+    let(:opts) { { repository_storage: 'test_second_storage' } }
+
+    it 'calls the change repository storage method if the storage changed' do
+      expect(project).to receive(:change_repository_storage).with('test_second_storage')
+
+      update_project(project, admin, opts).inspect
+    end
+
+    it "doesn't call the change repository storage for non-admin users" do
+      expect(project).not_to receive(:change_repository_storage)
+
+      update_project(project, user, opts).inspect
+    end
+  end
+
   def update_project(project, user, opts)
     described_class.new(project, user, opts).execute
   end

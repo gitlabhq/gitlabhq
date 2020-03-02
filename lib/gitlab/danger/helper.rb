@@ -118,10 +118,9 @@ module Gitlab
           \.haml-lint_todo.yml |
           babel\.config\.js |
           jest\.config\.js |
-          karma\.config\.js |
-          webpack\.config\.js |
           package\.json |
           yarn\.lock |
+          config/.+\.js |
           \.gitlab/ci/frontend\.gitlab-ci\.yml
         )\z}x => :frontend,
 

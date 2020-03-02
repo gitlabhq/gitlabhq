@@ -25,6 +25,7 @@ module API
       end
 
       def verify_update_project_attrs!(project, attrs)
+        attrs.delete(:repository_storage) unless can?(current_user, :change_repository_storage, project)
       end
 
       def delete_project(user_project)

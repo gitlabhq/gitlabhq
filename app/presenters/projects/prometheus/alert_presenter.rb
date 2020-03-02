@@ -53,7 +53,7 @@ module Projects
           #### Summary
 
           #{metadata_list}
-          #{alert_details}
+          #{alert_details}#{metric_embed_for_alert}
         MARKDOWN
       end
 
@@ -118,6 +118,10 @@ module Projects
       def host_links
         Array(hosts.value).join(' ')
       end
+
+      def metric_embed_for_alert; end
     end
   end
 end
+
+Projects::Prometheus::AlertPresenter.prepend_if_ee('EE::Projects::Prometheus::AlertPresenter')

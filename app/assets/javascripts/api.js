@@ -476,12 +476,12 @@ const Api = {
     return axios.get(url);
   },
 
-  lsifData(projectPath, commitId, path) {
+  lsifData(projectPath, commitId, paths) {
     const url = Api.buildUrl(this.lsifPath)
       .replace(':id', encodeURIComponent(projectPath))
       .replace(':commit_id', commitId);
 
-    return axios.get(url, { params: { path } });
+    return axios.get(url, { params: { paths } });
   },
 
   environments(id) {

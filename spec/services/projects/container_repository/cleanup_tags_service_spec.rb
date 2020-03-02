@@ -48,25 +48,37 @@ describe Projects::ContainerRepository::CleanupTagsService do
     end
 
     context 'when regex matching everything is specified' do
-      let(:params) do
-        { 'name_regex' => '.*' }
+      shared_examples 'removes all matches' do
+        it 'does remove B* and C' do
+          # The :A cannot be removed as config is shared with :latest
+          # The :E cannot be removed as it does not have valid manifest
+
+          expect_delete('sha256:configB').twice
+          expect_delete('sha256:configC')
+          expect_delete('sha256:configD')
+
+          is_expected.to include(status: :success, deleted: %w(D Bb Ba C))
+        end
       end
 
-      it 'does remove B* and C' do
-        # The :A cannot be removed as config is shared with :latest
-        # The :E cannot be removed as it does not have valid manifest
+      let(:params) do
+        { 'name_regex_delete' => '.*' }
+      end
 
-        expect_delete('sha256:configB').twice
-        expect_delete('sha256:configC')
-        expect_delete('sha256:configD')
+      it_behaves_like 'removes all matches'
 
-        is_expected.to include(status: :success, deleted: %w(D Bb Ba C))
+      context 'with deprecated name_regex param' do
+        let(:params) do
+          { 'name_regex' => '.*' }
+        end
+
+        it_behaves_like 'removes all matches'
       end
     end
 
-    context 'when regex matching specific tags is used' do
+    context 'when delete regex matching specific tags is used' do
       let(:params) do
-        { 'name_regex' => 'C|D' }
+        { 'name_regex_delete' => 'C|D' }
       end
 
       it 'does remove C and D' do
@@ -75,11 +87,37 @@ describe Projects::ContainerRepository::CleanupTagsService do
 
         is_expected.to include(status: :success, deleted: %w(D C))
       end
+
+      context 'with overriding allow regex' do
+        let(:params) do
+          { 'name_regex_delete' => 'C|D',
+            'name_regex_keep' => 'C' }
+        end
+
+        it 'does not remove C' do
+          expect_delete('sha256:configD')
+
+          is_expected.to include(status: :success, deleted: %w(D))
+        end
+      end
+
+      context 'with name_regex_delete overriding deprecated name_regex' do
+        let(:params) do
+          { 'name_regex' => 'C|D',
+            'name_regex_delete' => 'D' }
+        end
+
+        it 'does not remove C' do
+          expect_delete('sha256:configD')
+
+          is_expected.to include(status: :success, deleted: %w(D))
+        end
+      end
     end
 
     context 'when removing a tagged image that is used by another tag' do
       let(:params) do
-        { 'name_regex' => 'Ba' }
+        { 'name_regex_delete' => 'Ba' }
       end
 
       it 'does not remove the tag' do
@@ -89,9 +127,23 @@ describe Projects::ContainerRepository::CleanupTagsService do
       end
     end
 
+    context 'with allow regex value' do
+      let(:params) do
+        { 'name_regex_delete' => '.*',
+          'name_regex_keep' => 'B.*' }
+      end
+
+      it 'does not remove B*' do
+        expect_delete('sha256:configC')
+        expect_delete('sha256:configD')
+
+        is_expected.to include(status: :success, deleted: %w(D C))
+      end
+    end
+
     context 'when removing keeping only 3' do
       let(:params) do
-        { 'name_regex' => '.*',
+        { 'name_regex_delete' => '.*',
           'keep_n' => 3 }
       end
 
@@ -104,7 +156,7 @@ describe Projects::ContainerRepository::CleanupTagsService do
 
     context 'when removing older than 1 day' do
       let(:params) do
-        { 'name_regex' => '.*',
+        { 'name_regex_delete' => '.*',
           'older_than' => '1 day' }
       end
 
@@ -118,7 +170,7 @@ describe Projects::ContainerRepository::CleanupTagsService do
 
     context 'when combining all parameters' do
       let(:params) do
-        { 'name_regex' => '.*',
+        { 'name_regex_delete' => '.*',
           'keep_n' => 1,
           'older_than' => '1 day' }
       end
@@ -136,7 +188,7 @@ describe Projects::ContainerRepository::CleanupTagsService do
 
       context 'with valid container_expiration_policy param' do
         let(:params) do
-          { 'name_regex' => '.*',
+          { 'name_regex_delete' => '.*',
             'keep_n' => 1,
             'older_than' => '1 day',
             'container_expiration_policy' => true }
@@ -152,7 +204,7 @@ describe Projects::ContainerRepository::CleanupTagsService do
 
       context 'without container_expiration_policy param' do
         let(:params) do
-          { 'name_regex' => '.*',
+          { 'name_regex_delete' => '.*',
             'keep_n' => 1,
             'older_than' => '1 day' }
         end

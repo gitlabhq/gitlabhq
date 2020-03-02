@@ -136,3 +136,5 @@ Incident Management features can be easily enabled & disabled via the Project se
 #### Auto-creation
 
 GitLab Issues can automatically be created as a result of an Alert notification. An Issue created this way will contain error information to help you further debug the error.
+
+For [GitLab-managed alerting rules](../project/integrations/prometheus.md#setting-up-alerts-for-prometheus-metrics-ultimate), the issue will include an embedded chart for the query corresponding to the alert. The chart will show an hour of data surrounding the starting point of the incident, 30 minutes before and after.

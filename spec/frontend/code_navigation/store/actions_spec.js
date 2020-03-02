@@ -45,18 +45,20 @@ describe('Code navigation actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(apiUrl).replyOnce(200, [
-          {
-            start_line: 0,
-            start_char: 0,
-            hover: { value: '123' },
-          },
-          {
-            start_line: 1,
-            start_char: 0,
-            hover: null,
-          },
-        ]);
+        mock.onGet(apiUrl).replyOnce(200, {
+          index: [
+            {
+              start_line: 0,
+              start_char: 0,
+              hover: { value: '123' },
+            },
+            {
+              start_line: 1,
+              start_char: 0,
+              hover: null,
+            },
+          ],
+        });
       });
 
       it('commits REQUEST_DATA_SUCCESS with normalized data', done => {

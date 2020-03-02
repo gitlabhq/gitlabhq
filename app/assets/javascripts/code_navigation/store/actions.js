@@ -13,9 +13,10 @@ export default {
     commit(types.REQUEST_DATA);
 
     api
-      .lsifData(state.projectPath, state.commitId, state.blobPath)
+      .lsifData(state.projectPath, state.commitId, [state.blobPath])
       .then(({ data }) => {
-        const normalizedData = data.reduce((acc, d) => {
+        const dataForPath = data[state.blobPath];
+        const normalizedData = dataForPath.reduce((acc, d) => {
           if (d.hover) {
             acc[`${d.start_line}:${d.start_char}`] = d;
             addInteractionClass(d);

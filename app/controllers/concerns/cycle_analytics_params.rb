@@ -38,7 +38,7 @@ module CycleAnalyticsParams
   end
 
   def to_utc_time(field)
-    date = field.is_a?(Date) ? field : Date.parse(field)
+    date = field.is_a?(Date) || field.is_a?(Time) ? field : Date.parse(field)
     date.to_time.utc
   end
 end

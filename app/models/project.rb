@@ -2039,6 +2039,16 @@ class Project < ApplicationRecord
     end
   end
 
+  def change_repository_storage(new_repository_storage_key)
+    return if repository_read_only?
+    return if repository_storage == new_repository_storage_key
+
+    raise ArgumentError unless ::Gitlab.config.repositories.storages.key?(new_repository_storage_key)
+
+    run_after_commit { ProjectUpdateRepositoryStorageWorker.perform_async(id, new_repository_storage_key) }
+    self.repository_read_only = true
+  end
+
   def pushes_since_gc
     Gitlab::Redis::SharedState.with { |redis| redis.get(pushes_since_gc_redis_shared_state_key).to_i }
   end

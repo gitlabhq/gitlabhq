@@ -175,9 +175,12 @@ describe Gitlab::Danger::Helper do
       'spec/javascripts/foo' | :frontend
       'spec/frontend/bar'    | :frontend
       'vendor/assets/foo'    | :frontend
+      'babel.config.js'      | :frontend
       'jest.config.js'       | :frontend
       'package.json'         | :frontend
       'yarn.lock'            | :frontend
+      'config/foo.js'        | :frontend
+      'config/deep/foo.js'   | :frontend
 
       'ee/app/assets/foo'       | :frontend
       'ee/app/views/foo'        | :frontend

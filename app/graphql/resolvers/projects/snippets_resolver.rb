@@ -10,6 +10,11 @@ module Resolvers
       def resolve(**args)
         return Snippet.none if project.nil?
 
+        unless project.feature_available?(:snippets, current_user)
+          raise Gitlab::Graphql::Errors::ResourceNotAvailable,
+            'Snippets are not enabled for this Project'
+        end
+
         super
       end
 

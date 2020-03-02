@@ -7,9 +7,8 @@ describe Projects::LsifDataService do
   let(:project) { build_stubbed(:project) }
   let(:path) { 'main.go' }
   let(:commit_id) { Digest::SHA1.hexdigest(SecureRandom.hex) }
-  let(:params) { { path: path, commit_id: commit_id } }
 
-  let(:service) { described_class.new(artifact.file, project, params) }
+  let(:service) { described_class.new(artifact.file, project, commit_id) }
 
   describe '#execute' do
     def highlighted_value(value)
@@ -18,7 +17,7 @@ describe Projects::LsifDataService do
 
     context 'fetched lsif file', :use_clean_rails_memory_store_caching do
       it 'is cached' do
-        service.execute
+        service.execute(path)
 
         cached_data = Rails.cache.fetch("project:#{project.id}:lsif:#{commit_id}")
 
@@ -30,7 +29,7 @@ describe Projects::LsifDataService do
       let(:path_prefix) { "/#{project.full_path}/-/blob/#{commit_id}" }
 
       it 'returns lsif ranges for the file' do
-        expect(service.execute).to eq([
+        expect(service.execute(path)).to eq([
           {
             end_char: 9,
             end_line: 6,
@@ -87,7 +86,7 @@ describe Projects::LsifDataService do
       let(:path) { 'morestrings/reverse.go' }
 
       it 'returns lsif ranges for the file' do
-        expect(service.execute.first).to eq({
+        expect(service.execute(path).first).to eq({
           end_char: 2,
           end_line: 11,
           start_char: 1,
@@ -102,7 +101,7 @@ describe Projects::LsifDataService do
       let(:path) { 'unknown.go' }
 
       it 'returns nil' do
-        expect(service.execute).to eq(nil)
+        expect(service.execute(path)).to eq(nil)
       end
     end
   end
@@ -120,9 +119,7 @@ describe Projects::LsifDataService do
       end
 
       it 'fetches the document with the shortest absolute path' do
-        service.instance_variable_set(:@docs, docs)
-
-        expect(service.__send__(:doc_id)).to eq(3)
+        expect(service.__send__(:find_doc_id, docs, path)).to eq(3)
       end
     end
   end

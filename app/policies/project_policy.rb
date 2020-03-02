@@ -469,6 +469,8 @@ class ProjectPolicy < BasePolicy
     prevent :create_pipeline
   end
 
+  rule { admin }.enable :change_repository_storage
+
   private
 
   def team_member?

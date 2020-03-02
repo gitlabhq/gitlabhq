@@ -1151,6 +1151,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+- :name: project_update_repository_storage
+  :feature_category: :source_code_management
+  :has_external_dependencies: 
+  :urgency: :default
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: 
 - :name: propagate_service_template
   :feature_category: :source_code_management
   :has_external_dependencies: 
