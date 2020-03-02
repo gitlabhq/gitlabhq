@@ -34,14 +34,14 @@ module WaitForRequests
   # Wait for active Rack requests and client-side AJAX requests
   def wait_for_all_requests
     wait_for('pending requests complete') do
-      finished_all_rack_reqiests? &&
+      finished_all_rack_requests? &&
         finished_all_js_requests?
     end
   end
 
   private
 
-  def finished_all_rack_reqiests?
+  def finished_all_rack_requests?
     Gitlab::Testing::RequestBlockerMiddleware.num_active_requests.zero?
   end
 

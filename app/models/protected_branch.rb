@@ -11,7 +11,8 @@ class ProtectedBranch < ApplicationRecord
 
   def self.protected_ref_accessible_to?(ref, user, project:, action:, protected_refs: nil)
     # Maintainers, owners and admins are allowed to create the default branch
-    if default_branch_protected? && project.empty_repo?
+
+    if project.empty_repo? && project.default_branch_protected?
       return true if user.admin? || project.team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
     end
 
@@ -20,7 +21,7 @@ class ProtectedBranch < ApplicationRecord
 
   # Check if branch name is marked as protected in the system
   def self.protected?(project, ref_name)
-    return true if project.empty_repo? && default_branch_protected?
+    return true if project.empty_repo? && project.default_branch_protected?
 
     self.matching(ref_name, protected_refs: protected_refs(project)).present?
   end
@@ -31,11 +32,6 @@ class ProtectedBranch < ApplicationRecord
         protected_ref.matches?(ref_name)
       end
     end
-  end
-
-  def self.default_branch_protected?
-    Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
-      Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
   end
 
   def self.protected_refs(project)

@@ -193,15 +193,6 @@ class Environment < ApplicationRecord
     folder_name == "production"
   end
 
-  def first_deployment_for(commit_sha)
-    ref = project.repository.ref_name_for_sha(ref_path, commit_sha)
-
-    return unless ref
-
-    deployment_iid = ref.split('/').last
-    deployments.find_by(iid: deployment_iid)
-  end
-
   def ref_path
     "refs/#{Repository::REF_ENVIRONMENTS}/#{slug}"
   end

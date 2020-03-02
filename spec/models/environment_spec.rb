@@ -325,26 +325,6 @@ describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#first_deployment_for' do
-    let(:project)       { create(:project, :repository) }
-    let!(:deployment)   { create(:deployment, :succeed, environment: environment, ref: commit.parent.id) }
-    let!(:deployment1)  { create(:deployment, :succeed, environment: environment, ref: commit.id) }
-    let(:head_commit)   { project.commit }
-    let(:commit)        { project.commit.parent }
-
-    it 'returns deployment id for the environment', :sidekiq_might_not_need_inline do
-      expect(environment.first_deployment_for(commit.id)).to eq deployment1
-    end
-
-    it 'return nil when no deployment is found' do
-      expect(environment.first_deployment_for(head_commit.id)).to eq nil
-    end
-
-    it 'returns a UTF-8 ref', :sidekiq_might_not_need_inline do
-      expect(environment.first_deployment_for(commit.id).ref).to be_utf8
-    end
-  end
-
   describe '#environment_type' do
     subject { environment.environment_type }
 

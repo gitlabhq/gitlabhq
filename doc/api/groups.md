@@ -42,6 +42,7 @@ GET /groups
     "emails_disabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch_protection": 2,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
     "request_access_enabled": false,
@@ -76,6 +77,7 @@ GET /groups?statistics=true
     "emails_disabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch_protection": 2,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
     "request_access_enabled": false,
@@ -148,6 +150,7 @@ GET /groups/:id/subgroups
     "emails_disabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch_protection": 2,
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://gitlab.example.com/groups/foo-bar",
     "request_access_enabled": false,
@@ -493,8 +496,19 @@ Parameters:
 | `lfs_enabled`                        | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `parent_id`                          | integer | no       | The parent group ID for creating nested group. |
+| `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.      |
 | `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group. |
 | `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group. |
+
+### Options for `default_branch_protection`
+
+The `default_branch_protection` attribute determines whether developers and maintainers can push to the applicable master branch, as described in the following table:
+
+| Value | Description |
+|-------|-------------------------------------------------------------------------------------------------------------|
+| `0`   | No protection. Developers and maintainers can:  <br>- Push new commits<br>- Force push changes<br>- Delete the branch |
+| `1`   | Partial protection. Developers and maintainers can:  <br>- Push new commits |
+| `2`   | Full protection. Only maintainers can:  <br>- Push new commits |
 
 ## Transfer project to group
 
@@ -542,6 +556,7 @@ PUT /groups/:id
 | `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned |
 | `lfs_enabled` (optional)             | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
+| `default_branch_protection`          | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `file_template_project_id`           | integer | no       | **(PREMIUM)** The ID of a project to load custom file templates from. |
 | `shared_runners_minutes_limit`       | integer | no       | **(STARTER ONLY)** Pipeline minutes quota for this group. |
 | `extra_shared_runners_minutes_limit` | integer | no       | **(STARTER ONLY)** Extra pipeline minutes quota for this group. |

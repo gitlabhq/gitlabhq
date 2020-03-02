@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Users do
+describe API::Users, :do_not_mock_admin_mode do
   let(:user)  { create(:user, username: 'user.with.dot') }
   let(:admin) { create(:admin) }
   let(:key) { create(:key, user: user) }

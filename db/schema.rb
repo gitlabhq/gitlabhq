@@ -2762,6 +2762,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_162723) do
     t.integer "max_pages_size"
     t.integer "max_artifacts_size"
     t.boolean "mentions_disabled"
+    t.integer "default_branch_protection", limit: 2
     t.index ["created_at"], name: "index_namespaces_on_created_at"
     t.index ["custom_project_templates_group_id", "type"], name: "index_namespaces_on_custom_project_templates_group_id_and_type", where: "(custom_project_templates_group_id IS NOT NULL)"
     t.index ["file_template_project_id"], name: "index_namespaces_on_file_template_project_id"

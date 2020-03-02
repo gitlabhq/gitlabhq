@@ -97,6 +97,7 @@ Complementary reads:
 - [Issue types vs first-class types](issue_types.md)
 - [Application limits](application_limits.md)
 - [Redis guidelines](redis.md)
+- [Rails initializers](rails_initializers.md)
 
 ## Performance guides
 

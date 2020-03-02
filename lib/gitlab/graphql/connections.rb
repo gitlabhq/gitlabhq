@@ -16,6 +16,10 @@ module Gitlab
           Gitlab::Graphql::ExternallyPaginatedArray,
           Gitlab::Graphql::Connections::ExternallyPaginatedArrayConnection
         )
+        GraphQL::Relay::BaseConnection.register_connection_implementation(
+          Gitlab::Graphql::Pagination::Relations::OffsetActiveRecordRelation,
+          Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection
+        )
       end
     end
   end

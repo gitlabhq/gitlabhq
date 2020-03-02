@@ -139,6 +139,10 @@ class Namespace < ApplicationRecord
     end
   end
 
+  def default_branch_protection
+    super || Gitlab::CurrentSettings.default_branch_protection
+  end
+
   def visibility_level_field
     :visibility_level
   end

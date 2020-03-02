@@ -2359,6 +2359,12 @@ class Project < ApplicationRecord
     Gitlab::Routing.url_helpers.revoke_project_deploy_token_path(self, token)
   end
 
+  def default_branch_protected?
+    branch_protection = Gitlab::Access::BranchProtection.new(self.namespace.default_branch_protection)
+
+    branch_protection.fully_protected? || branch_protection.developer_can_merge?
+  end
+
   private
 
   def closest_namespace_setting(name)

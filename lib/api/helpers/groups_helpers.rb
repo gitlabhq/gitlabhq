@@ -21,6 +21,7 @@ module API
         optional :mentions_disabled, type: Boolean, desc: 'Disable a group from getting mentioned'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
+        optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to master'
       end
 
       params :optional_params_ee do

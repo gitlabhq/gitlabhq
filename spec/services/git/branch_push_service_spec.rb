@@ -186,7 +186,7 @@ describe Git::BranchPushService, services: true do
       end
 
       it "when pushing a branch for the first time with default branch protection disabled" do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_NONE)
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -195,7 +195,7 @@ describe Git::BranchPushService, services: true do
       end
 
       it "when pushing a branch for the first time with default branch protection set to 'developers can push'" do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -208,7 +208,7 @@ describe Git::BranchPushService, services: true do
       end
 
       it "when pushing a branch for the first time with an existing branch permission configured" do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
         create(:protected_branch, :no_one_can_push, :developers_can_merge, project: project, name: 'master')
         expect(project).to receive(:execute_hooks)
@@ -223,7 +223,7 @@ describe Git::BranchPushService, services: true do
       end
 
       it "when pushing a branch for the first time with default branch protection set to 'developers can merge'" do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")

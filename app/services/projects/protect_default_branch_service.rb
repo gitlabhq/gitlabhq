@@ -11,7 +11,7 @@ module Projects
       @project = project
 
       @default_branch_protection = Gitlab::Access::BranchProtection
-        .new(Gitlab::CurrentSettings.default_branch_protection)
+        .new(project.namespace.default_branch_protection)
     end
 
     def execute

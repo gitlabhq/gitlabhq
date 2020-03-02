@@ -187,4 +187,4 @@ NOTE: **Note:** Keep in mind that all runtimes should be measured against GitLab
 |----|----|---|
 | Regular migrations on `db/migrate` | `3 minutes` | A valid exception  are index creation as this can take a long time. |
 | Post migrations on `db/post_migrate` | `10 minutes` | |
-| Background migrations | --- | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any query must stay well below `10s` of execution time. |
+| Background migrations | --- | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below `1 second` execution time with cold caches. |

@@ -181,6 +181,21 @@ of a group:
   1. Give a different member **Owner** permissions.
   1. Have the new owner sign in and remove **Owner** permissions from you.
 
+## Changing the default branch protection of a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7583) in GitLab 12.9.
+
+By default, every group inherits the branch protection set at the global level.
+
+To change this setting for a specific group:
+
+1. Go to the group's **{settings}** **Settings > General** page.
+1. Expand the **Permissions, LFS, 2FA** section.
+1. Select the desired option in the **Default branch protection** dropdown list.
+1. Click **Save changes**.
+
+To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
+
 ## Add projects to a group
 
 There are two different ways to add a new project to a group:

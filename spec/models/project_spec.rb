@@ -1623,6 +1623,29 @@ describe Project do
     end
   end
 
+  describe '#default_branch_protected?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:project) { create(:project) }
+
+    subject { project.default_branch_protected? }
+
+    where(:default_branch_protection_level, :result) do
+      Gitlab::Access::PROTECTION_NONE           | false
+      Gitlab::Access::PROTECTION_DEV_CAN_PUSH   | false
+      Gitlab::Access::PROTECTION_DEV_CAN_MERGE  | true
+      Gitlab::Access::PROTECTION_FULL           | true
+    end
+
+    with_them do
+      before do
+        expect(project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level)
+      end
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
   describe '#pages_url' do
     let(:group) { create(:group, name: group_name) }
     let(:project) { create(:project, namespace: group, name: project_name) }
@@ -4576,7 +4599,7 @@ describe Project do
       end
 
       it 'does not protect when branch protection is disabled' do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_NONE)
 
         project.after_import
 
@@ -4584,7 +4607,7 @@ describe Project do
       end
 
       it "gives developer access to push when branch protection is set to 'developers can push'" do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
         project.after_import
 
@@ -4594,7 +4617,7 @@ describe Project do
       end
 
       it "gives developer access to merge when branch protection is set to 'developers can merge'" do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
         project.after_import
 

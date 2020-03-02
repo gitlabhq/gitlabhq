@@ -432,10 +432,6 @@ default values if absolutely necessary. There is a RuboCop cop that will fail if
 this method is used on some tables that are very large on GitLab.com, which
 would cause other issues.
 
-For a small table (such as an empty one or one with less than `1,000` records),
-use `add_column` and `change_column_default` in a single-transaction migration,
-combining it with other operations that don't require `disable_ddl_transaction!`.
-
 ## Changing the column default
 
 One might think that changing a default column with `change_column_default` is an

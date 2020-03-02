@@ -292,6 +292,13 @@ module Gitlab
     initializer :move_initializers, before: :load_config_initializers, after: :let_zeitwerk_take_over do
     end
 
+    # We need this for initializers that need to be run before Zeitwerk is loaded
+    initializer :before_zeitwerk, before: :let_zeitwerk_take_over, after: :prepend_helpers_path do
+      Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].sort.each do |initializer|
+        load_config_initializer(initializer)
+      end
+    end
+
     config.after_initialize do
       Rails.application.reload_routes!
 

@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 describe GitlabSchema do
+  let_it_be(:implementations) { GraphQL::Relay::BaseConnection::CONNECTION_IMPLEMENTATIONS }
   let(:user) { build :user }
 
   it 'uses batch loading' do
@@ -33,10 +34,28 @@ describe GitlabSchema do
     expect(described_class.query).to eq(::Types::QueryType.to_graphql)
   end
 
-  it 'paginates active record relations using `Gitlab::Graphql::Connections::KeysetConnection`' do
-    connection = GraphQL::Relay::BaseConnection::CONNECTION_IMPLEMENTATIONS[ActiveRecord::Relation.name]
+  it 'paginates active record relations using `Connections::Keyset::Connection`' do
+    connection = implementations[ActiveRecord::Relation.name]
 
     expect(connection).to eq(Gitlab::Graphql::Connections::Keyset::Connection)
+  end
+
+  it 'paginates ExternallyPaginatedArray using `Connections::ExternallyPaginatedArrayConnection`' do
+    connection = implementations[Gitlab::Graphql::ExternallyPaginatedArray.name]
+
+    expect(connection).to eq(Gitlab::Graphql::Connections::ExternallyPaginatedArrayConnection)
+  end
+
+  it 'paginates FilterableArray using `Connections::FilterableArrayConnection`' do
+    connection = implementations[Gitlab::Graphql::FilterableArray.name]
+
+    expect(connection).to eq(Gitlab::Graphql::Connections::FilterableArrayConnection)
+  end
+
+  it 'paginates OffsetActiveRecordRelation using `Pagination::OffsetActiveRecordRelationConnection`' do
+    connection = implementations[Gitlab::Graphql::Pagination::Relations::OffsetActiveRecordRelation.name]
+
+    expect(connection).to eq(Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection)
   end
 
   describe '.execute' do

@@ -26,6 +26,8 @@ To change the default branch protection:
 
 For more details, see [Protected branches](../../project/protected_branches.md).
 
+To change this setting for a specific group, see [Default branch protection for groups](../../group/index.md#changing-the-default-branch-protection-of-a-group)
+
 ## Default project creation protection
 
 Project creation protection specifies which roles can create projects.

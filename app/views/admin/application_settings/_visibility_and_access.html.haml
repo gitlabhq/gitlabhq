@@ -2,9 +2,8 @@
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group
-      = f.label :default_branch_protection, class: 'label-bold'
-      = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection), {}, class: 'form-control'
+    = render 'shared/default_branch_protection', f: f, selected_level: @application_setting.default_branch_protection
+
     .form-group
       = f.label s_('ProjectCreationLevel|Default project creation protection'), class: 'label-bold'
       = f.select :default_project_creation, options_for_select(Gitlab::Access.project_creation_options, @application_setting.default_project_creation), {}, class: 'form-control'

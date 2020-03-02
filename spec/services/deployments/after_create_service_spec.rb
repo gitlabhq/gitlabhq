@@ -49,7 +49,7 @@ describe Deployments::AfterCreateService do
     it 'creates ref' do
       expect_any_instance_of(Repository)
         .to receive(:create_ref)
-        .with(deployment.ref, deployment.send(:ref_path))
+        .with(deployment.sha, deployment.send(:ref_path))
 
       service.execute
     end

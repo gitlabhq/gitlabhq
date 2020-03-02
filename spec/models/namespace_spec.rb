@@ -531,6 +531,41 @@ describe Namespace do
     end
   end
 
+  describe "#default_branch_protection" do
+    let(:namespace) { create(:namespace) }
+    let(:default_branch_protection) { nil }
+    let(:group) { create(:group, default_branch_protection: default_branch_protection) }
+
+    before do
+      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+    end
+
+    context 'for a namespace' do
+      # Unlike a group, the settings of a namespace cannot be altered
+      # via the UI or the API.
+
+      it 'returns the instance level setting' do
+        expect(namespace.default_branch_protection).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+      end
+    end
+
+    context 'for a group' do
+      context 'that has not altered the default value' do
+        it 'returns the instance level setting' do
+          expect(group.default_branch_protection).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        end
+      end
+
+      context 'that has altered the default value' do
+        let(:default_branch_protection) { Gitlab::Access::PROTECTION_FULL }
+
+        it 'returns the group level setting' do
+          expect(group.default_branch_protection).to eq(default_branch_protection)
+        end
+      end
+    end
+  end
+
   describe '#self_and_hierarchy' do
     let!(:group) { create(:group, path: 'git_lab') }
     let!(:nested_group) { create(:group, parent: group) }

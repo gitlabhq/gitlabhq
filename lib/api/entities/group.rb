@@ -13,6 +13,7 @@ module API
       expose :emails_disabled
       expose :mentions_disabled
       expose :lfs_enabled?, as: :lfs_enabled
+      expose :default_branch_protection
       expose :avatar_url do |group, options|
         group.avatar_url(only_path: false)
       end

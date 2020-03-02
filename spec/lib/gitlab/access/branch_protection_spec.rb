@@ -51,4 +51,21 @@ describe Gitlab::Access::BranchProtection do
       end
     end
   end
+
+  describe '#fully_protected?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:level, :result) do
+      Gitlab::Access::PROTECTION_NONE          | false
+      Gitlab::Access::PROTECTION_DEV_CAN_PUSH  | false
+      Gitlab::Access::PROTECTION_DEV_CAN_MERGE | false
+      Gitlab::Access::PROTECTION_FULL          | true
+    end
+
+    with_them do
+      it do
+        expect(described_class.new(level).fully_protected?).to eq(result)
+      end
+    end
+  end
 end
