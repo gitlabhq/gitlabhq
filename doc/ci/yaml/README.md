@@ -2090,9 +2090,8 @@ job:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20390) in
 GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
-The `reports` keyword is used for collecting test reports from jobs and
-exposing them in GitLab's UI (merge requests, pipeline views). Read how to use
-this with [JUnit reports](#artifactsreportsjunit).
+The `reports` keyword is used for collecting test reports, code quality reports, and security reports from jobs.
+It also exposes these reports in GitLab's UI (merge requests, pipeline views, and security dashboards).
 
 NOTE: **Note:**
 The test reports are collected regardless of the job results (success or failure).

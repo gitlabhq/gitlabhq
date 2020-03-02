@@ -5,7 +5,7 @@ class NewMergeRequestWorker # rubocop:disable Scalability/IdempotentWorker
   include NewIssuable
 
   feature_category :source_code_management
-  latency_sensitive_worker!
+  urgency :high
   worker_resource_boundary :cpu
   weight 2
 

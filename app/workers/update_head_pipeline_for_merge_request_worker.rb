@@ -6,7 +6,7 @@ class UpdateHeadPipelineForMergeRequestWorker # rubocop:disable Scalability/Idem
 
   queue_namespace :pipeline_processing
   feature_category :continuous_integration
-  latency_sensitive_worker!
+  urgency :high
   worker_resource_boundary :cpu
 
   def perform(merge_request_id)

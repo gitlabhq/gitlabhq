@@ -4,7 +4,7 @@ class PipelineNotificationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include PipelineQueue
 
-  latency_sensitive_worker!
+  urgency :high
   worker_resource_boundary :cpu
 
   # rubocop: disable CodeReuse/ActiveRecord

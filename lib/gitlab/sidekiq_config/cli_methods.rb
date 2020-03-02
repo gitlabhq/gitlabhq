@@ -26,9 +26,9 @@ module Gitlab
       QUERY_PREDICATES = {
         feature_category: :to_sym,
         has_external_dependencies: lambda { |value| value == 'true' },
-        latency_sensitive: lambda { |value| value == 'true' },
         name: :to_s,
-        resource_boundary: :to_sym
+        resource_boundary: :to_sym,
+        urgency: :to_sym
       }.freeze
 
       QueryError = Class.new(StandardError)

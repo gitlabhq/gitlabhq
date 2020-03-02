@@ -6,7 +6,7 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
 
   queue_namespace :pipeline_creation
   feature_category :continuous_integration
-  latency_sensitive_worker!
+  urgency :high
   worker_resource_boundary :cpu
 
   def perform(project_id, user_id, ref, source, params = {})

@@ -11,7 +11,7 @@ class ProcessCommitWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :source_code_management
-  latency_sensitive_worker!
+  urgency :high
   weight 3
 
   # project_id - The ID of the project this commit belongs to.

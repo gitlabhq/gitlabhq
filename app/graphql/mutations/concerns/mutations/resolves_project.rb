@@ -5,10 +5,10 @@ module Mutations
     extend ActiveSupport::Concern
 
     def resolve_project(full_path:)
-      resolver.resolve(full_path: full_path)
+      project_resolver.resolve(full_path: full_path)
     end
 
-    def resolver
+    def project_resolver
       Resolvers::ProjectResolver.new(object: nil, context: context)
     end
   end

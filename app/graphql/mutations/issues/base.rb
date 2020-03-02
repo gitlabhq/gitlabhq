@@ -3,7 +3,7 @@
 module Mutations
   module Issues
     class Base < BaseMutation
-      include Mutations::ResolvesProject
+      include Mutations::ResolvesIssuable
 
       argument :project_path, GraphQL::ID_TYPE,
                required: true,
@@ -23,11 +23,7 @@ module Mutations
       private
 
       def find_object(project_path:, iid:)
-        project = resolve_project(full_path: project_path)
-        resolver = Resolvers::IssuesResolver
-          .single.new(object: project, context: context)
-
-        resolver.resolve(iid: iid)
+        resolve_issuable(type: :issue, parent_path: project_path, iid: iid)
       end
     end
   end

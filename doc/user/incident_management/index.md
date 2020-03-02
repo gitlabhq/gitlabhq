@@ -65,6 +65,11 @@ alert is resolved.
 Metrics can be embedded anywhere where GitLab Markdown is used, for example,
 descriptions and comments on issues and merge requests.
 
+This can be useful for when you're sharing metrics, such as for discussing
+an incident or performance issues, so you can output the dashboard directly
+into any issue, merge request, epic, or any other Markdown text field in GitLab
+by simply [copying and pasting the link to the metrics dashboard](../project/integrations/prometheus.md#embedding-gitlab-managed-kubernetes-metrics).
+
 TIP: **Tip:**
 Both GitLab-hosted and Grafana metrics can also be
 [embedded in issue templates](../project/integrations/prometheus.md#embedding-metrics-in-issue-templates).
@@ -72,6 +77,32 @@ Both GitLab-hosted and Grafana metrics can also be
 ### GitLab-hosted metrics
 
 Learn how to embed [GitLab hosted metric charts](../project/integrations/prometheus.md#embedding-metric-charts-within-gitlab-flavored-markdown).
+
+#### Context menu
+
+From each of the embedded metrics panels, you can access more details
+about the data you are viewing from a context menu.
+
+You can access the context menu by clicking the **{ellipsis_v}** **More actions**
+dropdown box above the upper right corner of the panel:
+
+The options are:
+
+- [View logs](#view-logs-ultimate) **(ULTIMATE)**
+- [Download CSV](#download-csv)
+
+##### View logs **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/201846) in GitLab Ultimate 12.8.
+
+This can be useful if you are triaging an application incident and need to
+[explore logs](../project/integrations/prometheus.md#view-pod-logs-ultimate)
+from across your application. It also helps you to understand
+what is affecting your application's performance and quickly resolve any problems.
+
+##### Download CSV
+
+Data from embedded charts can be [downloaded as CSV](../project/integrations/prometheus.md#downloading-data-as-csv).
 
 ### Grafana metrics
 

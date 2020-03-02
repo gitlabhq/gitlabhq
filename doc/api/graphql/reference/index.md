@@ -307,7 +307,6 @@ Represents an epic.
 | `group` | Group! | Group to which the epic belongs |
 | `hasChildren` | Boolean! | Indicates if the epic has children |
 | `hasIssues` | Boolean! | Indicates if the epic has direct issues |
-| `healthStatus` | HealthStatus | Current health status. Available only when feature flag save_issuable_health_status is enabled. |
 | `id` | ID! | ID of the epic |
 | `iid` | ID! | Internal ID of the epic |
 | `parent` | Epic | Parent epic of the epic |

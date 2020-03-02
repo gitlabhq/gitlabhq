@@ -73,8 +73,12 @@ Without group-managed accounts, users can link their SAML identity with any exis
 When this option is enabled:
 
 - All existing and new users in the group will be required to log in via the SSO URL associated with the group.
-- On successfully authenticating, GitLab will prompt the user to create a new, dedicated account using the email address received from the configured identity provider.
 - After the group-managed account has been created, group activity will require the use of this user account.
+
+Upon successful authentication, GitLab prompts the user with options, based on the email address received from the configured identity provider:
+
+- To create a unique account with the newly received email address.
+- If the received email address matches one of the user's verified GitLab email addresses, the option to convert the existing account to a group-managed account. ([Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/13481).)
 
 Since use of the group-managed account requires the use of SSO, users of group-managed accounts will lose access to these accounts when they are no longer able to authenticate with the connected identity provider. In the case of an offboarded employee who has been removed from your identity provider:
 

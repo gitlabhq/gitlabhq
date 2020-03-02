@@ -6,7 +6,7 @@ class BuildHooksWorker # rubocop:disable Scalability/IdempotentWorker
 
   queue_namespace :pipeline_hooks
   feature_category :continuous_integration
-  latency_sensitive_worker!
+  urgency :high
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)

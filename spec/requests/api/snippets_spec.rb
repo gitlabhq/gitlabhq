@@ -13,7 +13,7 @@ describe API::Snippets do
 
       get api("/snippets/", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
@@ -30,7 +30,7 @@ describe API::Snippets do
 
       get api("/snippets/", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(0)
@@ -41,7 +41,7 @@ describe API::Snippets do
 
       get api("/snippets/")
 
-      expect(response).to have_gitlab_http_status(401)
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it 'does not return snippets related to a project with disable feature visibility' do
@@ -73,7 +73,7 @@ describe API::Snippets do
     it 'returns all snippets with public visibility from all users' do
       get api("/snippets/public", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
@@ -95,13 +95,13 @@ describe API::Snippets do
     it 'requires authentication' do
       get api("/snippets/#{snippet.id}", nil)
 
-      expect(response).to have_gitlab_http_status(401)
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it 'returns raw text' do
       get api("/snippets/#{snippet.id}/raw", author)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response.content_type).to eq 'text/plain'
       expect(response.body).to eq(snippet.content)
     end
@@ -117,14 +117,14 @@ describe API::Snippets do
 
       get api("/snippets/#{snippet.id}/raw", author)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     it 'hides private snippets from ordinary users' do
       get api("/snippets/#{snippet.id}/raw", user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'shows internal snippets to ordinary users' do
@@ -132,7 +132,7 @@ describe API::Snippets do
 
       get api("/snippets/#{internal_snippet.id}/raw", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
@@ -145,13 +145,13 @@ describe API::Snippets do
     it 'requires authentication' do
       get api("/snippets/#{private_snippet.id}", nil)
 
-      expect(response).to have_gitlab_http_status(401)
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it 'returns snippet json' do
       get api("/snippets/#{private_snippet.id}", author)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
 
       expect(json_response['title']).to eq(private_snippet.title)
       expect(json_response['description']).to eq(private_snippet.description)
@@ -162,19 +162,19 @@ describe API::Snippets do
     it 'shows private snippets to an admin' do
       get api("/snippets/#{private_snippet.id}", admin)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'hides private snippets from an ordinary user' do
       get api("/snippets/#{private_snippet.id}", user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'shows internal snippets to an ordinary user' do
       get api("/snippets/#{internal_snippet.id}", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'returns 404 for invalid snippet id' do
@@ -182,7 +182,7 @@ describe API::Snippets do
 
       get api("/snippets/#{private_snippet.id}", admin)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
   end
@@ -208,7 +208,7 @@ describe API::Snippets do
           subject
         end.to change { PersonalSnippet.count }.by(1)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['title']).to eq(params[:title])
         expect(json_response['description']).to eq(params[:description])
         expect(json_response['file_name']).to eq(params[:file_name])
@@ -259,7 +259,7 @@ describe API::Snippets do
 
       post api("/snippets/", user), params: params
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     context 'when the snippet is spam' do
@@ -285,7 +285,7 @@ describe API::Snippets do
           expect { create_snippet(visibility: 'public') }
             .not_to change { Snippet.count }
 
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq({ "error" => "Spam detected" })
         end
 
@@ -311,7 +311,7 @@ describe API::Snippets do
 
         put api("/snippets/#{snippet.id}", user), params: { content: new_content, description: new_description, visibility: 'internal' }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         snippet.reload
         expect(snippet.content).to eq(new_content)
         expect(snippet.description).to eq(new_description)
@@ -334,21 +334,21 @@ describe API::Snippets do
     it 'returns 404 for invalid snippet id' do
       put api("/snippets/1234", user), params: { title: 'foo' }
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     it "returns 404 for another user's snippet" do
       put api("/snippets/#{snippet.id}", other_user), params: { title: 'fubar' }
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     it 'returns 400 for missing parameters' do
       put api("/snippets/1234", user)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     context 'when the snippet is spam' do
@@ -378,7 +378,7 @@ describe API::Snippets do
           expect { update_snippet(title: 'Foo') }
             .not_to change { snippet.reload.title }
 
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq({ "error" => "Spam detected" })
         end
 
@@ -410,14 +410,14 @@ describe API::Snippets do
       expect do
         delete api("/snippets/#{public_snippet.id}", user)
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end.to change { PersonalSnippet.count }.by(-1)
     end
 
     it 'returns 404 for invalid snippet id' do
       delete api("/snippets/1234", user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
@@ -434,7 +434,7 @@ describe API::Snippets do
     it 'exposes known attributes' do
       get api("/snippets/#{snippet.id}/user_agent_detail", admin)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
       expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
       expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
@@ -443,7 +443,7 @@ describe API::Snippets do
     it "returns unauthorized for non-admin users" do
       get api("/snippets/#{snippet.id}/user_agent_detail", user)
 
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
   end
 end

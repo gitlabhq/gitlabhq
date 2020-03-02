@@ -333,11 +333,15 @@ class WikiPage
     *dirnames, title = @attributes[:title].split('/')
 
     if title.bytesize > MAX_TITLE_BYTES
-      errors.add(:title, _("exceeds the limit of %{bytes} bytes for page titles") % { bytes: MAX_TITLE_BYTES })
+      errors.add(:title, _("exceeds the limit of %{bytes} bytes") % { bytes: MAX_TITLE_BYTES })
     end
 
-    if dirnames.any? { |d| d.bytesize > MAX_DIRECTORY_BYTES }
-      errors.add(:title, _("exceeds the limit of %{bytes} bytes for directory names") % { bytes: MAX_DIRECTORY_BYTES })
+    invalid_dirnames = dirnames.select { |d| d.bytesize > MAX_DIRECTORY_BYTES }
+    invalid_dirnames.each do |dirname|
+      errors.add(:title, _('exceeds the limit of %{bytes} bytes for directory name "%{dirname}"') % {
+        bytes: MAX_DIRECTORY_BYTES,
+        dirname: dirname
+      })
     end
   end
 end

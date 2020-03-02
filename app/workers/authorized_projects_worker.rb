@@ -5,7 +5,7 @@ class AuthorizedProjectsWorker # rubocop:disable Scalability/IdempotentWorker
   prepend WaitableWorker
 
   feature_category :authentication_and_authorization
-  latency_sensitive_worker!
+  urgency :high
   weight 2
 
   # This is a workaround for a Ruby 2.3.7 bug. rspec-mocks cannot restore the

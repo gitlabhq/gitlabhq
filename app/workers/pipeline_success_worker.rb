@@ -5,7 +5,7 @@ class PipelineSuccessWorker # rubocop:disable Scalability/IdempotentWorker
   include PipelineQueue
 
   queue_namespace :pipeline_processing
-  latency_sensitive_worker!
+  urgency :high
 
   def perform(pipeline_id)
     # no-op

@@ -124,28 +124,28 @@ describe Gitlab::SidekiqConfig::CliMethods do
           name: 'a',
           feature_category: :category_a,
           has_external_dependencies: false,
-          latency_sensitive: false,
+          urgency: :default,
           resource_boundary: :cpu
         },
         {
           name: 'a:2',
           feature_category: :category_a,
           has_external_dependencies: false,
-          latency_sensitive: true,
+          urgency: :high,
           resource_boundary: :none
         },
         {
           name: 'b',
           feature_category: :category_b,
           has_external_dependencies: true,
-          latency_sensitive: true,
+          urgency: :high,
           resource_boundary: :memory
         },
         {
           name: 'c',
           feature_category: :category_c,
           has_external_dependencies: false,
-          latency_sensitive: false,
+          urgency: :none,
           resource_boundary: :memory
         }
       ]
@@ -166,12 +166,12 @@ describe Gitlab::SidekiqConfig::CliMethods do
         'has_external_dependencies=true|has_external_dependencies=false' | %w(a a:2 b c)
         'has_external_dependencies!=true' | %w(a a:2 c)
 
-        # latency_sensitive
-        'latency_sensitive=true' | %w(a:2 b)
-        'latency_sensitive=false' | %w(a c)
-        'latency_sensitive=true,false' | %w(a a:2 b c)
-        'latency_sensitive=true|latency_sensitive=false' | %w(a a:2 b c)
-        'latency_sensitive!=true' | %w(a c)
+        # urgency
+        'urgency=high' | %w(a:2 b)
+        'urgency=default' | %w(a)
+        'urgency=high,default,none' | %w(a a:2 b c)
+        'urgency=default|urgency=none' | %w(a c)
+        'urgency!=high' | %w(a c)
 
         # name
         'name=a' | %w(a)
@@ -186,8 +186,8 @@ describe Gitlab::SidekiqConfig::CliMethods do
         'resource_boundary!=memory,cpu' | %w(a:2)
 
         # combinations
-        'feature_category=category_a&latency_sensitive=true' | %w(a:2)
-        'feature_category=category_a&latency_sensitive=true|feature_category=category_c' | %w(a:2 c)
+        'feature_category=category_a&urgency=high' | %w(a:2)
+        'feature_category=category_a&urgency=high|feature_category=category_c' | %w(a:2 c)
       end
 
       with_them do

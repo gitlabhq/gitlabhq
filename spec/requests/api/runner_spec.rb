@@ -22,7 +22,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'returns 400 error' do
           post api('/runners')
 
-          expect(response).to have_gitlab_http_status 400
+          expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
 
@@ -30,7 +30,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'returns 403 error' do
           post api('/runners'), params: { token: 'invalid' }
 
-          expect(response).to have_gitlab_http_status 403
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
@@ -40,7 +40,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           runner = Ci::Runner.first
 
-          expect(response).to have_gitlab_http_status 201
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response['id']).to eq(runner.id)
           expect(json_response['token']).to eq(runner.token)
           expect(runner.run_untagged).to be true
@@ -55,7 +55,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'creates project runner' do
             post api('/runners'), params: { token: project.runners_token }
 
-            expect(response).to have_gitlab_http_status 201
+            expect(response).to have_gitlab_http_status(:created)
             expect(project.runners.size).to eq(1)
             runner = Ci::Runner.first
             expect(runner.token).not_to eq(registration_token)
@@ -70,7 +70,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'creates a group runner' do
             post api('/runners'), params: { token: group.runners_token }
 
-            expect(response).to have_http_status 201
+            expect(response).to have_gitlab_http_status(:created)
             expect(group.runners.reload.size).to eq(1)
             runner = Ci::Runner.first
             expect(runner.token).not_to eq(registration_token)
@@ -87,7 +87,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                   description: 'server.hostname'
                                 }
 
-          expect(response).to have_gitlab_http_status 201
+          expect(response).to have_gitlab_http_status(:created)
           expect(Ci::Runner.first.description).to eq('server.hostname')
         end
       end
@@ -99,7 +99,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                   tag_list: 'tag1, tag2'
                                 }
 
-          expect(response).to have_gitlab_http_status 201
+          expect(response).to have_gitlab_http_status(:created)
           expect(Ci::Runner.first.tag_list.sort).to eq(%w(tag1 tag2))
         end
       end
@@ -113,7 +113,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                     tag_list: ['tag']
                                   }
 
-            expect(response).to have_gitlab_http_status 201
+            expect(response).to have_gitlab_http_status(:created)
             expect(Ci::Runner.first.run_untagged).to be false
             expect(Ci::Runner.first.tag_list.sort).to eq(['tag'])
           end
@@ -126,7 +126,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                     run_untagged: false
                                   }
 
-            expect(response).to have_gitlab_http_status 400
+            expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']).to include(
               'tags_list' => ['can not be empty when runner is not allowed to pick untagged jobs'])
           end
@@ -140,7 +140,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                   locked: true
                                 }
 
-          expect(response).to have_gitlab_http_status 201
+          expect(response).to have_gitlab_http_status(:created)
           expect(Ci::Runner.first.locked).to be true
         end
       end
@@ -153,7 +153,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                     active: true
                                   }
 
-            expect(response).to have_gitlab_http_status 201
+            expect(response).to have_gitlab_http_status(:created)
             expect(Ci::Runner.first.active).to be true
           end
         end
@@ -165,7 +165,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                     active: false
                                   }
 
-            expect(response).to have_gitlab_http_status 201
+            expect(response).to have_gitlab_http_status(:created)
             expect(Ci::Runner.first.active).to be false
           end
         end
@@ -179,7 +179,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                     access_level: 'ref_protected'
                                   }
 
-            expect(response).to have_gitlab_http_status 201
+            expect(response).to have_gitlab_http_status(:created)
             expect(Ci::Runner.first.ref_protected?).to be true
           end
         end
@@ -191,7 +191,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                     access_level: 'not_protected'
                                   }
 
-            expect(response).to have_gitlab_http_status 201
+            expect(response).to have_gitlab_http_status(:created)
             expect(Ci::Runner.first.ref_protected?).to be false
           end
         end
@@ -204,7 +204,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                   maximum_timeout: 9000
                                 }
 
-          expect(response).to have_gitlab_http_status 201
+          expect(response).to have_gitlab_http_status(:created)
           expect(Ci::Runner.first.maximum_timeout).to eq(9000)
         end
 
@@ -215,7 +215,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                     maximum_timeout: ''
                                   }
 
-            expect(response).to have_gitlab_http_status 201
+            expect(response).to have_gitlab_http_status(:created)
             expect(Ci::Runner.first.maximum_timeout).to be_nil
           end
         end
@@ -231,7 +231,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                                     info: { param => value }
                                   }
 
-            expect(response).to have_gitlab_http_status 201
+            expect(response).to have_gitlab_http_status(:created)
             expect(Ci::Runner.first.read_attribute(param.to_sym)).to eq(value)
           end
         end
@@ -242,7 +242,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
              params: { token: registration_token },
              headers: { 'X-Forwarded-For' => '123.111.123.111' }
 
-        expect(response).to have_gitlab_http_status 201
+        expect(response).to have_gitlab_http_status(:created)
         expect(Ci::Runner.first.ip_address).to eq('123.111.123.111')
       end
     end
@@ -252,7 +252,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'returns 400 error' do
           delete api('/runners')
 
-          expect(response).to have_gitlab_http_status 400
+          expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
 
@@ -260,7 +260,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'returns 403 error' do
           delete api('/runners'), params: { token: 'invalid' }
 
-          expect(response).to have_gitlab_http_status 403
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
@@ -270,7 +270,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'deletes Runner' do
           delete api('/runners'), params: { token: runner.token }
 
-          expect(response).to have_gitlab_http_status 204
+          expect(response).to have_gitlab_http_status(:no_content)
           expect(Ci::Runner.count).to eq(0)
         end
 
@@ -296,7 +296,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'returns 403 error' do
           post api('/runners/verify'), params: { token: 'invalid-token' }
 
-          expect(response).to have_gitlab_http_status 403
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
@@ -304,7 +304,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'verifies Runner credentials' do
           post api('/runners/verify'), params: { token: runner.token }
 
-          expect(response).to have_gitlab_http_status 200
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -361,7 +361,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         context 'when runner sends version in User-Agent' do
           context 'for stable version' do
             it 'gives 204 and set X-GitLab-Last-Update' do
-              expect(response).to have_gitlab_http_status(204)
+              expect(response).to have_gitlab_http_status(:no_content)
               expect(response.header).to have_key('X-GitLab-Last-Update')
             end
           end
@@ -370,7 +370,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let(:last_update) { runner.ensure_runner_queue_value }
 
             it 'gives 204 and set the same X-GitLab-Last-Update' do
-              expect(response).to have_gitlab_http_status(204)
+              expect(response).to have_gitlab_http_status(:no_content)
               expect(response.header['X-GitLab-Last-Update']).to eq(last_update)
             end
           end
@@ -380,7 +380,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let(:new_update) { runner.tick_runner_queue }
 
             it 'gives 204 and set a new X-GitLab-Last-Update' do
-              expect(response).to have_gitlab_http_status(204)
+              expect(response).to have_gitlab_http_status(:no_content)
               expect(response.header['X-GitLab-Last-Update']).to eq(new_update)
             end
           end
@@ -388,19 +388,19 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           context 'when beta version is sent' do
             let(:user_agent) { 'gitlab-runner 9.0.0~beta.167.g2b2bacc (master; go1.7.4; linux/amd64)' }
 
-            it { expect(response).to have_gitlab_http_status(204) }
+            it { expect(response).to have_gitlab_http_status(:no_content) }
           end
 
           context 'when pre-9-0 version is sent' do
             let(:user_agent) { 'gitlab-ci-multi-runner 1.6.0 (1-6-stable; go1.6.3; linux/amd64)' }
 
-            it { expect(response).to have_gitlab_http_status(204) }
+            it { expect(response).to have_gitlab_http_status(:no_content) }
           end
 
           context 'when pre-9-0 beta version is sent' do
             let(:user_agent) { 'gitlab-ci-multi-runner 1.6.0~beta.167.g2b2bacc (master; go1.6.3; linux/amd64)' }
 
-            it { expect(response).to have_gitlab_http_status(204) }
+            it { expect(response).to have_gitlab_http_status(:no_content) }
           end
         end
       end
@@ -409,7 +409,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'returns 400 error' do
           post api('/jobs/request')
 
-          expect(response).to have_gitlab_http_status 400
+          expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
 
@@ -417,7 +417,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'returns 403 error' do
           post api('/jobs/request'), params: { token: 'invalid' }
 
-          expect(response).to have_gitlab_http_status 403
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
@@ -429,7 +429,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'returns 204 error' do
             request_job
 
-            expect(response).to have_gitlab_http_status(204)
+            expect(response).to have_gitlab_http_status(:no_content)
             expect(response.header['X-GitLab-Last-Update']).to eq(update_value)
           end
         end
@@ -516,7 +516,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'picks a job' do
             request_job info: { platform: :darwin }
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
             expect(response.headers).not_to have_key('X-GitLab-Last-Update')
             expect(runner.reload.platform).to eq('darwin')
             expect(json_response['id']).to eq(job.id)
@@ -541,7 +541,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
             request_job info: { platform: :darwin }
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
             expect(json_response['id']).to eq(job.id)
           end
 
@@ -551,7 +551,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'sets branch as ref_type' do
               request_job
 
-              expect(response).to have_gitlab_http_status(201)
+              expect(response).to have_gitlab_http_status(:created)
               expect(json_response['git_info']['ref_type']).to eq('tag')
             end
 
@@ -563,7 +563,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'specifies refspecs' do
                 request_job
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['git_info']['refspecs']).to include("+refs/tags/#{job.ref}:refs/tags/#{job.ref}")
               end
             end
@@ -576,7 +576,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'specifies refspecs' do
                 request_job
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['git_info']['refspecs'])
                   .to contain_exactly('+refs/tags/*:refs/tags/*', '+refs/heads/*:refs/remotes/origin/*')
               end
@@ -592,7 +592,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'gives 204' do
                 request_job(job_age: job_age)
 
-                expect(response).to have_gitlab_http_status(204)
+                expect(response).to have_gitlab_http_status(:no_content)
               end
             end
 
@@ -602,7 +602,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'picks a job' do
                 request_job(job_age: job_age)
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
               end
             end
           end
@@ -611,7 +611,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'sets tag as ref_type' do
               request_job
 
-              expect(response).to have_gitlab_http_status(201)
+              expect(response).to have_gitlab_http_status(:created)
               expect(json_response['git_info']['ref_type']).to eq('branch')
             end
 
@@ -623,7 +623,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'specifies refspecs' do
                 request_job
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['git_info']['refspecs']).to include("+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}")
               end
             end
@@ -636,7 +636,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'specifies refspecs' do
                 request_job
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['git_info']['refspecs'])
                   .to contain_exactly('+refs/tags/*:refs/tags/*', '+refs/heads/*:refs/remotes/origin/*')
               end
@@ -651,7 +651,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'sets branch as ref_type' do
               request_job
 
-              expect(response).to have_gitlab_http_status(201)
+              expect(response).to have_gitlab_http_status(:created)
               expect(json_response['git_info']['ref_type']).to eq('branch')
             end
 
@@ -663,7 +663,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'returns the overwritten git depth for merge request refspecs' do
                 request_job
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['git_info']['depth']).to eq(1)
               end
             end
@@ -680,7 +680,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it "updates provided Runner's parameter" do
                 request_job info: { param => value }
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(runner.reload.read_attribute(param.to_sym)).to eq(value)
               end
             end
@@ -691,7 +691,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               params: { token: runner.token },
               headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222' }
 
-            expect(response).to have_gitlab_http_status 201
+            expect(response).to have_gitlab_http_status(:created)
             expect(runner.reload.ip_address).to eq('123.222.123.222')
           end
 
@@ -700,7 +700,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               params: { token: runner.token },
               headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222, 127.0.0.1' }
 
-            expect(response).to have_gitlab_http_status 201
+            expect(response).to have_gitlab_http_status(:created)
             expect(runner.reload.ip_address).to eq('123.222.123.222')
           end
 
@@ -713,7 +713,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'returns a conflict' do
               request_job
 
-              expect(response).to have_gitlab_http_status(409)
+              expect(response).to have_gitlab_http_status(:conflict)
               expect(response.headers).not_to have_key('X-GitLab-Last-Update')
             end
           end
@@ -731,7 +731,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'returns dependent jobs' do
               request_job
 
-              expect(response).to have_gitlab_http_status(201)
+              expect(response).to have_gitlab_http_status(:created)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(2)
               expect(json_response['dependencies']).to include(
@@ -751,7 +751,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'returns dependent jobs' do
               request_job
 
-              expect(response).to have_gitlab_http_status(201)
+              expect(response).to have_gitlab_http_status(:created)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(1)
               expect(json_response['dependencies']).to include(
@@ -777,7 +777,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'returns dependent jobs' do
               request_job
 
-              expect(response).to have_gitlab_http_status(201)
+              expect(response).to have_gitlab_http_status(:created)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(1)
               expect(json_response['dependencies'][0]).to include('id' => job2.id, 'name' => job2.name, 'token' => job2.token)
@@ -801,7 +801,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'returns an empty array' do
               request_job
 
-              expect(response).to have_gitlab_http_status(201)
+              expect(response).to have_gitlab_http_status(:created)
               expect(json_response['id']).to eq(empty_dependencies_job.id)
               expect(json_response['dependencies'].count).to eq(0)
             end
@@ -820,7 +820,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'picks job' do
                 request_job
 
-                expect(response).to have_gitlab_http_status 201
+                expect(response).to have_gitlab_http_status(:created)
               end
             end
 
@@ -854,7 +854,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'returns variables for triggers' do
                 request_job
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['variables']).to include(*expected_variables)
               end
             end
@@ -919,7 +919,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'contains info about timeout taken from project' do
                 request_job
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(json_response['runner_info']).to include({ 'timeout' => 1234 })
               end
 
@@ -929,7 +929,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 it 'contains info about timeout overridden by runner' do
                   request_job
 
-                  expect(response).to have_gitlab_http_status(201)
+                  expect(response).to have_gitlab_http_status(:created)
                   expect(json_response['runner_info']).to include({ 'timeout' => 1000 })
                 end
               end
@@ -940,7 +940,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 it 'contains info about timeout not overridden by runner' do
                   request_job
 
-                  expect(response).to have_gitlab_http_status(201)
+                  expect(response).to have_gitlab_http_status(:created)
                   expect(json_response['runner_info']).to include({ 'timeout' => 1234 })
                 end
               end
@@ -965,7 +965,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'returns the image ports' do
               request_job
 
-              expect(response).to have_http_status(:created)
+              expect(response).to have_gitlab_http_status(:created)
               expect(json_response).to include(
                 'id' => job.id,
                 'image' => a_hash_including('name' => 'ruby', 'ports' => [{ 'number' => 80, 'protocol' => 'http', 'name' => 'default_port' }]),
@@ -989,7 +989,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'returns the service ports' do
               request_job
 
-              expect(response).to have_http_status(:created)
+              expect(response).to have_gitlab_http_status(:created)
               expect(json_response).to include(
                 'id' => job.id,
                 'image' => a_hash_including('name' => 'ruby'),
@@ -1089,7 +1089,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
 
           job.reload
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(job.trace.raw).to eq 'BUILD TRACE UPDATED'
           expect(job.job_artifacts_trace.open.read).to eq 'BUILD TRACE UPDATED'
         end
@@ -1133,7 +1133,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'responds with forbidden' do
           update_job
 
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
@@ -1147,7 +1147,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
 
           job.reload
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
           expect(response.header['Job-Status']).to eq 'failed'
           expect(job.trace.raw).to eq 'Job failed'
           expect(job).to be_failed
@@ -1461,7 +1461,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'succeeds' do
                 subject
 
-                expect(response).to have_gitlab_http_status(200)
+                expect(response).to have_gitlab_http_status(:ok)
                 expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                 expect(json_response['TempPath']).to eq(JobArtifactUploader.workhorse_local_upload_path)
                 expect(json_response['RemoteObject']).to be_nil
@@ -1481,7 +1481,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 it 'succeeds' do
                   subject
 
-                  expect(response).to have_gitlab_http_status(200)
+                  expect(response).to have_gitlab_http_status(:ok)
                   expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
                   expect(json_response).not_to have_key('TempPath')
                   expect(json_response['RemoteObject']).to have_key('ID')
@@ -1509,7 +1509,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'fails to post' do
                 authorize_artifacts_with_token_in_params(filesize: sample_max_size.megabytes.to_i)
 
-                expect(response).to have_gitlab_http_status(413)
+                expect(response).to have_gitlab_http_status(:payload_too_large)
               end
             end
 
@@ -1557,7 +1557,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'authorizes posting artifacts to running job' do
             authorize_artifacts_with_token_in_headers
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response['TempPath']).not_to be_nil
           end
@@ -1567,7 +1567,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
             authorize_artifacts_with_token_in_headers(filesize: 100)
 
-            expect(response).to have_gitlab_http_status(413)
+            expect(response).to have_gitlab_http_status(:payload_too_large)
           end
         end
 
@@ -1575,7 +1575,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'fails to authorize artifacts posting' do
             authorize_artifacts(token: job.project.runners_token)
 
-            expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
 
@@ -1591,7 +1591,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'responds with forbidden' do
             authorize_artifacts(token: 'invalid', filesize: 100 )
 
-            expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
 
@@ -1632,14 +1632,14 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'responds with forbidden' do
               upload_artifacts(file_upload, headers_with_token)
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
 
           context 'when job is running' do
             shared_examples 'successful artifacts upload' do
               it 'updates successfully' do
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
               end
             end
 
@@ -1678,7 +1678,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                   let(:remote_id) { 'invalid id' }
 
                   it 'responds with bad request' do
-                    expect(response).to have_gitlab_http_status(500)
+                    expect(response).to have_gitlab_http_status(:internal_server_error)
                     expect(json_response['message']).to eq("Missing file")
                   end
                 end
@@ -1689,7 +1689,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'responds with forbidden' do
                 upload_artifacts(file_upload, headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.project.runners_token))
 
-                expect(response).to have_gitlab_http_status(403)
+                expect(response).to have_gitlab_http_status(:forbidden)
               end
             end
           end
@@ -1700,7 +1700,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
               upload_artifacts(file_upload, headers_with_token)
 
-              expect(response).to have_gitlab_http_status(413)
+              expect(response).to have_gitlab_http_status(:payload_too_large)
             end
           end
 
@@ -1708,7 +1708,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'fails to post artifacts without file' do
               post api("/jobs/#{job.id}/artifacts"), params: {}, headers: headers_with_token
 
-              expect(response).to have_gitlab_http_status(400)
+              expect(response).to have_gitlab_http_status(:bad_request)
             end
           end
 
@@ -1716,7 +1716,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             it 'fails to post artifacts without GitLab-Workhorse' do
               post api("/jobs/#{job.id}/artifacts"), params: { token: job.token }, headers: {}
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
 
@@ -1750,7 +1750,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               let(:expire_in) { '7 days' }
 
               it 'updates when specified' do
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(job.reload.artifacts_expire_at).to be_within(5.minutes).of(7.days.from_now)
               end
             end
@@ -1759,7 +1759,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               let(:expire_in) { nil }
 
               it 'ignores if not specified' do
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(job.reload.artifacts_expire_at).to be_nil
               end
 
@@ -1768,7 +1768,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                   let(:default_artifacts_expire_in) { '5 days' }
 
                   it 'sets to application default' do
-                    expect(response).to have_gitlab_http_status(201)
+                    expect(response).to have_gitlab_http_status(:created)
                     expect(job.reload.artifacts_expire_at).to be_within(5.minutes).of(5.days.from_now)
                   end
                 end
@@ -1777,7 +1777,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                   let(:default_artifacts_expire_in) { '0' }
 
                   it 'does not set expire_in' do
-                    expect(response).to have_gitlab_http_status(201)
+                    expect(response).to have_gitlab_http_status(:created)
                     expect(job.reload.artifacts_expire_at).to be_nil
                   end
                 end
@@ -1812,7 +1812,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
 
               it 'stores artifacts and artifacts metadata' do
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(stored_artifacts_file.filename).to eq(artifacts.original_filename)
                 expect(stored_metadata_file.filename).to eq(metadata.original_filename)
                 expect(stored_artifacts_size).to eq(artifacts.size)
@@ -1827,7 +1827,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
 
               it 'is expected to respond with bad request' do
-                expect(response).to have_gitlab_http_status(400)
+                expect(response).to have_gitlab_http_status(:bad_request)
               end
 
               it 'does not store metadata' do
@@ -1843,7 +1843,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'stores junit test report' do
                 upload_artifacts(file_upload, headers_with_token, params)
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(job.reload.job_artifacts_archive).not_to be_nil
               end
             end
@@ -1854,7 +1854,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'returns an error' do
                 upload_artifacts(file_upload, headers_with_token, params)
 
-                expect(response).to have_gitlab_http_status(400)
+                expect(response).to have_gitlab_http_status(:bad_request)
                 expect(job.reload.job_artifacts_archive).to be_nil
               end
             end
@@ -1868,7 +1868,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'stores junit test report' do
                 upload_artifacts(file_upload, headers_with_token, params)
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(job.reload.job_artifacts_junit).not_to be_nil
               end
             end
@@ -1880,7 +1880,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'returns an error' do
                 upload_artifacts(file_upload, headers_with_token, params)
 
-                expect(response).to have_gitlab_http_status(400)
+                expect(response).to have_gitlab_http_status(:bad_request)
                 expect(job.reload.job_artifacts_junit).to be_nil
               end
             end
@@ -1894,7 +1894,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'stores metrics_referee data' do
                 upload_artifacts(file_upload, headers_with_token, params)
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(job.reload.job_artifacts_metrics_referee).not_to be_nil
               end
             end
@@ -1906,7 +1906,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'returns an error' do
                 upload_artifacts(file_upload, headers_with_token, params)
 
-                expect(response).to have_gitlab_http_status(400)
+                expect(response).to have_gitlab_http_status(:bad_request)
                 expect(job.reload.job_artifacts_metrics_referee).to be_nil
               end
             end
@@ -1920,7 +1920,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'stores network_referee data' do
                 upload_artifacts(file_upload, headers_with_token, params)
 
-                expect(response).to have_gitlab_http_status(201)
+                expect(response).to have_gitlab_http_status(:created)
                 expect(job.reload.job_artifacts_network_referee).not_to be_nil
               end
             end
@@ -1932,7 +1932,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               it 'returns an error' do
                 upload_artifacts(file_upload, headers_with_token, params)
 
-                expect(response).to have_gitlab_http_status(400)
+                expect(response).to have_gitlab_http_status(:bad_request)
                 expect(job.reload.job_artifacts_network_referee).to be_nil
               end
             end
@@ -2013,7 +2013,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it' "fails to post artifacts for outside of tmp path"' do
             upload_artifacts(file_upload, headers_with_token)
 
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
 
@@ -2055,7 +2055,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
 
               it 'download artifacts' do
-                expect(response).to have_gitlab_http_status(200)
+                expect(response).to have_gitlab_http_status(:ok)
                 expect(response.headers.to_h).to include download_headers
               end
             end
@@ -2070,7 +2070,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 end
 
                 it 'uses workhorse send-url' do
-                  expect(response).to have_gitlab_http_status(200)
+                  expect(response).to have_gitlab_http_status(:ok)
                   expect(response.headers.to_h).to include(
                     'Gitlab-Workhorse-Send-Data' => /send-url:/)
                 end
@@ -2082,7 +2082,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 end
 
                 it 'receive redirect for downloading artifacts' do
-                  expect(response).to have_gitlab_http_status(302)
+                  expect(response).to have_gitlab_http_status(:found)
                   expect(response.headers).to include('Location')
                 end
               end
@@ -2097,7 +2097,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             end
 
             it 'responds with forbidden' do
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -2106,7 +2106,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'responds with not found' do
             download_artifact
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 

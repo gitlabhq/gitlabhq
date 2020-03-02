@@ -3,18 +3,23 @@
 module FormHelper
   prepend_if_ee('::EE::FormHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
-  def form_errors(model, type: 'form')
+  def form_errors(model, type: 'form', truncate: [])
     return unless model.errors.any?
 
     headline = n_('The %{type} contains the following error:', 'The %{type} contains the following errors:', model.errors.count) % { type: type }
+    truncate = Array.wrap(truncate)
 
     content_tag(:div, class: 'alert alert-danger', id: 'error_explanation') do
       content_tag(:h4, headline) <<
         content_tag(:ul) do
-          model.errors.full_messages
-            .map { |msg| content_tag(:li, msg) }
-            .join
-            .html_safe
+          messages = model.errors.map do |attribute, message|
+            message = model.errors.full_message(attribute, message)
+            message = content_tag(:span, message, class: 'str-truncated-100') if truncate.include?(attribute)
+
+            content_tag(:li, message)
+          end
+
+          messages.join.html_safe
         end
     end
   end

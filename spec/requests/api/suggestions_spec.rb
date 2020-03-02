@@ -40,7 +40,7 @@ describe API::Suggestions do
 
         put api(url, user), params: { id: suggestion.id }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response)
           .to include('id', 'from_line', 'to_line', 'appliable', 'applied',
                       'from_content', 'to_content')
@@ -57,7 +57,7 @@ describe API::Suggestions do
 
         put api(url, user), params: { id: suggestion.id }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to eq({ 'message' => 'Suggestion is not appliable' })
       end
     end
@@ -74,7 +74,7 @@ describe API::Suggestions do
 
         put api(url, user), params: { id: suggestion.id }
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
         expect(json_response).to eq({ 'message' => '403 Forbidden' })
       end
     end

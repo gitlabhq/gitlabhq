@@ -4,7 +4,7 @@ class EmailReceiverWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :issue_tracking
-  latency_sensitive_worker!
+  urgency :high
   weight 2
 
   def perform(raw)

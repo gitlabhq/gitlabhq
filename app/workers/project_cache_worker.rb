@@ -4,7 +4,7 @@
 class ProjectCacheWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  latency_sensitive_worker!
+  urgency :high
 
   LEASE_TIMEOUT = 15.minutes.to_i
 

@@ -4,7 +4,7 @@ class PipelineMetricsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include PipelineQueue
 
-  latency_sensitive_worker!
+  urgency :high
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id)

@@ -6,7 +6,7 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
   attr_reader :email, :skip_premailer
 
   feature_category :source_code_management
-  latency_sensitive_worker!
+  urgency :high
   worker_resource_boundary :cpu
   weight 2
 

@@ -468,6 +468,7 @@ export default {
               ref="addMetricBtn"
               v-gl-modal="$options.addMetric.modalId"
               variant="outline-success"
+              data-qa-selector="add_metric_button"
               class="mr-2 mt-1"
               >{{ $options.addMetric.title }}</gl-button
             >

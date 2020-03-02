@@ -24544,16 +24544,6 @@
               "defaultValue": null
             },
             {
-              "name": "healthStatus",
-              "description": "The desired health status",
-              "type": {
-                "kind": "ENUM",
-                "name": "HealthStatus",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
               "name": "clientMutationId",
               "description": "A unique identifier for the client performing the mutation.",
               "type": {

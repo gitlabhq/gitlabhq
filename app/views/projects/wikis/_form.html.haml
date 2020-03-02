@@ -4,7 +4,7 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post,
            html: { class: form_classes },
            data: { uploads_path: uploads_path } do |f|
-  = form_errors(@page)
+  = form_errors(@page, truncate: :title)
 
   - if @page.persisted?
     = f.hidden_field :last_commit_sha, value: @page.last_commit_sha

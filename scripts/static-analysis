@@ -45,6 +45,7 @@ def jobs_to_run(node_index, node_total)
     %w[yarn run eslint],
     %w[yarn run stylelint],
     %w[yarn run prettier-all],
+    %w[yarn run block-dependencies],
     %w[bundle exec rubocop --parallel],
     %w[scripts/lint-conflicts.sh],
     %w[scripts/lint-rugged],

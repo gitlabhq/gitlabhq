@@ -5,7 +5,7 @@ class NewIssueWorker # rubocop:disable Scalability/IdempotentWorker
   include NewIssuable
 
   feature_category :issue_tracking
-  latency_sensitive_worker!
+  urgency :high
   worker_resource_boundary :cpu
   weight 2
 

@@ -15,7 +15,7 @@ describe Avatarable do
   end
 
   describe '#update' do
-    let(:validator) { project._validators[:avatar].detect { |v| v.is_a?(FileSizeValidator) } }
+    let(:validator) { project.class.validators_on(:avatar).find { |v| v.is_a?(FileSizeValidator) } }
 
     context 'when avatar changed' do
       it 'validates the file size' do

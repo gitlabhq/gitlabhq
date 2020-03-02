@@ -33,7 +33,7 @@ describe API::Submodules do
       it 'returns 401' do
         put api(route(submodule)), params: params
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -41,7 +41,7 @@ describe API::Submodules do
       it 'returns 403' do
         put api(route(submodule), guest), params: params
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -49,19 +49,19 @@ describe API::Submodules do
       it 'returns 400 if params is missing' do
         put api(route(submodule), user)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 if branch is missing' do
         put api(route(submodule), user), params: params.except(:branch)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 if commit_sha is missing' do
         put api(route(submodule), user), params: params.except(:commit_sha)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns the commit' do
@@ -69,7 +69,7 @@ describe API::Submodules do
 
         put api(route(submodule), user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['message']).to eq commit_message
         expect(json_response['author_name']).to eq user.name
         expect(json_response['committer_name']).to eq user.name
@@ -89,7 +89,7 @@ describe API::Submodules do
 
           put api(route(encoded_submodule), user), params: params
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['id']).to eq project.repository.commit(branch).id
           expect(project.repository.blob_at(branch, submodule).id).to eq commit_sha
         end

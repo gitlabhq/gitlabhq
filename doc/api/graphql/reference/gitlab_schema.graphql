@@ -1939,11 +1939,6 @@ type Epic implements Noteable {
   hasIssues: Boolean!
 
   """
-  Current health status. Available only when feature flag save_issuable_health_status is enabled.
-  """
-  healthStatus: HealthStatus
-
-  """
   ID of the epic
   """
   id: ID!
@@ -7811,11 +7806,6 @@ input UpdateEpicInput {
   The group the epic to mutate is in
   """
   groupPath: ID!
-
-  """
-  The desired health status
-  """
-  healthStatus: HealthStatus
 
   """
   The iid of the epic to mutate

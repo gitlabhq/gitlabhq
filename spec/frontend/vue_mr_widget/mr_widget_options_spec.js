@@ -1,15 +1,17 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import waitForPromises from 'spec/helpers/wait_for_promises';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
+import SmartInterval from '~/smart_interval';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mockData from './mock_data';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
+
+jest.mock('~/smart_interval');
 
 const returnPromise = data =>
   new Promise(resolve => {
@@ -26,7 +28,6 @@ describe('mrWidgetOptions', () => {
   const COLLABORATION_MESSAGE = 'Allows commits from members who can merge to the target branch';
 
   beforeEach(() => {
-    jasmine.clock().install();
     // Prevent component mounting
     delete mrWidgetOptions.el;
 
@@ -41,9 +42,7 @@ describe('mrWidgetOptions', () => {
   });
 
   afterEach(() => {
-    jasmine.clock().uninstall();
     mock.restore();
-
     vm.$destroy();
     vm = null;
 
@@ -59,11 +58,13 @@ describe('mrWidgetOptions', () => {
     vm = mountComponent(MrWidgetOptions, {
       mrData: { ...mockData },
     });
+
+    return axios.waitForAll();
   };
 
   describe('default', () => {
     beforeEach(() => {
-      createComponent();
+      return createComponent();
     });
 
     describe('data', () => {
@@ -259,9 +260,9 @@ describe('mrWidgetOptions', () => {
     describe('methods', () => {
       describe('checkStatus', () => {
         it('should tell service to check status', () => {
-          spyOn(vm.service, 'checkStatus').and.returnValue(returnPromise(mockData));
-          spyOn(vm.mr, 'setData');
-          spyOn(vm, 'handleNotification');
+          jest.spyOn(vm.service, 'checkStatus').mockReturnValue(returnPromise(mockData));
+          jest.spyOn(vm.mr, 'setData').mockImplementation(() => {});
+          jest.spyOn(vm, 'handleNotification').mockImplementation(() => {});
 
           let isCbExecuted = false;
           const cb = () => {
@@ -281,33 +282,33 @@ describe('mrWidgetOptions', () => {
 
       describe('initPolling', () => {
         it('should call SmartInterval', () => {
-          spyOn(vm, 'checkStatus').and.returnValue(Promise.resolve());
           vm.initPolling();
 
-          expect(vm.checkStatus).not.toHaveBeenCalled();
-
-          jasmine.clock().tick(10000);
-
-          expect(vm.pollingInterval).toBeDefined();
-          expect(vm.checkStatus).toHaveBeenCalled();
+          expect(SmartInterval).toHaveBeenCalledWith(
+            expect.objectContaining({
+              callback: vm.checkStatus,
+            }),
+          );
         });
       });
 
       describe('initDeploymentsPolling', () => {
         it('should call SmartInterval', () => {
-          spyOn(vm, 'fetchDeployments').and.returnValue(Promise.resolve());
           vm.initDeploymentsPolling();
 
-          expect(vm.deploymentsInterval).toBeDefined();
-          expect(vm.fetchDeployments).toHaveBeenCalled();
+          expect(SmartInterval).toHaveBeenCalledWith(
+            expect.objectContaining({
+              callback: vm.fetchPreMergeDeployments,
+            }),
+          );
         });
       });
 
       describe('fetchDeployments', () => {
         it('should fetch deployments', () => {
-          spyOn(vm.service, 'fetchDeployments').and.returnValue(
-            returnPromise([{ id: 1, status: SUCCESS }]),
-          );
+          jest
+            .spyOn(vm.service, 'fetchDeployments')
+            .mockReturnValue(returnPromise([{ id: 1, status: SUCCESS }]));
 
           vm.fetchPreMergeDeployments();
 
@@ -321,9 +322,9 @@ describe('mrWidgetOptions', () => {
 
       describe('fetchActionsContent', () => {
         it('should fetch content of Cherry Pick and Revert modals', () => {
-          spyOn(vm.service, 'fetchMergeActionsContent').and.returnValue(
-            returnPromise('hello world'),
-          );
+          jest
+            .spyOn(vm.service, 'fetchMergeActionsContent')
+            .mockReturnValue(returnPromise('hello world'));
 
           vm.fetchActionsContent();
 
@@ -335,59 +336,48 @@ describe('mrWidgetOptions', () => {
       });
 
       describe('bindEventHubListeners', () => {
-        it('should bind eventHub listeners', () => {
-          spyOn(vm, 'checkStatus').and.returnValue(() => {});
-          spyOn(vm.service, 'checkStatus').and.returnValue(returnPromise(mockData));
-          spyOn(vm, 'fetchActionsContent');
-          spyOn(vm.mr, 'setData');
-          spyOn(vm, 'resumePolling');
-          spyOn(vm, 'stopPolling');
-          spyOn(eventHub, '$on').and.callThrough();
+        it.each`
+          event                        | method                   | methodArgs
+          ${'MRWidgetUpdateRequested'} | ${'checkStatus'}         | ${x => [x]}
+          ${'MRWidgetRebaseSuccess'}   | ${'checkStatus'}         | ${x => [x, true]}
+          ${'FetchActionsContent'}     | ${'fetchActionsContent'} | ${() => []}
+          ${'EnablePolling'}           | ${'resumePolling'}       | ${() => []}
+          ${'DisablePolling'}          | ${'stopPolling'}         | ${() => []}
+        `('should bind to $event', ({ event, method, methodArgs }) => {
+          jest.spyOn(vm, method).mockImplementation();
 
-          return waitForPromises().then(() => {
-            eventHub.$emit('SetBranchRemoveFlag', ['flag']);
+          const eventArg = {};
+          eventHub.$emit(event, eventArg);
 
-            expect(vm.mr.isRemovingSourceBranch).toEqual('flag');
+          expect(vm[method]).toHaveBeenCalledWith(...methodArgs(eventArg));
+        });
 
-            eventHub.$emit('FailedToMerge');
+        it('should bind to SetBranchRemoveFlag', () => {
+          expect(vm.mr.isRemovingSourceBranch).toBe(false);
 
-            expect(vm.mr.state).toEqual('failedToMerge');
+          eventHub.$emit('SetBranchRemoveFlag', [true]);
 
-            eventHub.$emit('UpdateWidgetData', mockData);
+          expect(vm.mr.isRemovingSourceBranch).toBe(true);
+        });
 
-            expect(vm.mr.setData).toHaveBeenCalledWith(mockData);
+        it('should bind to FailedToMerge', () => {
+          vm.mr.state = '';
+          vm.mr.mergeError = '';
 
-            eventHub.$emit('EnablePolling');
+          const mergeError = 'Something bad happened!';
+          eventHub.$emit('FailedToMerge', mergeError);
 
-            expect(vm.resumePolling).toHaveBeenCalled();
+          expect(vm.mr.state).toBe('failedToMerge');
+          expect(vm.mr.mergeError).toBe(mergeError);
+        });
 
-            eventHub.$emit('DisablePolling');
+        it('should bind to UpdateWidgetData', () => {
+          jest.spyOn(vm.mr, 'setData').mockImplementation();
 
-            expect(vm.stopPolling).toHaveBeenCalled();
+          const data = { ...mockData };
+          eventHub.$emit('UpdateWidgetData', data);
 
-            const listenersWithServiceRequest = {
-              MRWidgetUpdateRequested: true,
-              FetchActionsContent: true,
-            };
-
-            const allArgs = eventHub.$on.calls.allArgs();
-            allArgs.forEach(params => {
-              const eventName = params[0];
-              const callback = params[1];
-
-              if (listenersWithServiceRequest[eventName]) {
-                listenersWithServiceRequest[eventName] = callback;
-              }
-            });
-
-            listenersWithServiceRequest.MRWidgetUpdateRequested();
-
-            expect(vm.checkStatus).toHaveBeenCalled();
-
-            listenersWithServiceRequest.FetchActionsContent();
-
-            expect(vm.fetchActionsContent).toHaveBeenCalled();
-          });
+          expect(vm.mr.setData).toHaveBeenCalledWith(data);
         });
       });
 
@@ -419,8 +409,8 @@ describe('mrWidgetOptions', () => {
               expect(faviconElement.getAttribute('href')).not.toEqual(null);
               expect(faviconElement.getAttribute('href')).not.toEqual(overlayDataUrl);
               expect(faviconElement.getAttribute('href')).not.toEqual(faviconDataUrl);
-              done();
             })
+            .then(done)
             .catch(done.fail);
         });
 
@@ -443,7 +433,7 @@ describe('mrWidgetOptions', () => {
         };
 
         beforeEach(() => {
-          spyOn(notify, 'notifyMe');
+          jest.spyOn(notify, 'notifyMe').mockImplementation(() => {});
 
           vm.mr.ciStatus = 'failed';
           vm.mr.gitlabLogo = 'logo.png';
@@ -478,25 +468,23 @@ describe('mrWidgetOptions', () => {
       });
 
       describe('resumePolling', () => {
-        it('should call stopTimer on pollingInterval', () =>
-          waitForPromises().then(() => {
-            spyOn(vm.pollingInterval, 'resume');
+        it('should call stopTimer on pollingInterval', () => {
+          jest.spyOn(vm.pollingInterval, 'resume').mockImplementation(() => {});
 
-            vm.resumePolling();
+          vm.resumePolling();
 
-            expect(vm.pollingInterval.resume).toHaveBeenCalled();
-          }));
+          expect(vm.pollingInterval.resume).toHaveBeenCalled();
+        });
       });
 
       describe('stopPolling', () => {
-        it('should call stopTimer on pollingInterval', () =>
-          waitForPromises().then(() => {
-            spyOn(vm.pollingInterval, 'stopTimer');
+        it('should call stopTimer on pollingInterval', () => {
+          jest.spyOn(vm.pollingInterval, 'stopTimer').mockImplementation(() => {});
 
-            vm.stopPolling();
+          vm.stopPolling();
 
-            expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
-          }));
+          expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
+        });
       });
     });
 
@@ -814,8 +802,12 @@ describe('mrWidgetOptions', () => {
 
   describe('given suggestPipeline feature flag is enabled', () => {
     beforeEach(() => {
+      // This is needed because some grandchildren Bootstrap components throw warnings
+      // https://gitlab.com/gitlab-org/gitlab/issues/208458
+      jest.spyOn(console, 'warn').mockImplementation();
+
       gon.features = { suggestPipeline: true };
-      createComponent();
+      return createComponent();
     });
 
     it('should suggest pipelines when none exist', () => {

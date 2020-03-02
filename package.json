@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "check-dependencies": "scripts/frontend/check_dependencies.sh",
+    "block-dependencies": "node scripts/frontend/block_dependencies.js",
     "clean": "rm -rf public/assets tmp/cache/*-loader",
     "dev-server": "NODE_OPTIONS=\"--max-old-space-size=3584\" nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
     "eslint": "eslint --cache --max-warnings 0 --report-unused-disable-directives --ext .js,.vue .",
@@ -54,7 +55,6 @@
     "babel-loader": "^8.0.6",
     "babel-plugin-lodash": "^3.3.4",
     "bootstrap": "4.3.1",
-    "bootstrap-vue": "2.1.0",
     "brace-expansion": "^1.1.8",
     "cache-loader": "^4.1.0",
     "chart.js": "2.7.2",
@@ -201,6 +201,9 @@
     "webpack-dev-server": "^3.8.1",
     "yarn-check-webpack-plugin": "^1.2.0",
     "yarn-deduplicate": "^1.1.1"
+  },
+  "blockedDependencies": {
+    "bootstrap-vue": "https://docs.gitlab.com/ee/development/fe_guide/dependencies.md#bootstrapvue"
   },
   "resolutions": {
     "vue-jest/ts-jest": "24.0.0",

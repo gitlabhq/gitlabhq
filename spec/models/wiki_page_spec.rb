@@ -192,16 +192,17 @@ describe WikiPage do
 
           expect(subject).not_to be_valid
           expect(subject.errors[:title]).to contain_exactly(
-            "exceeds the limit of #{max_title} bytes for page titles"
+            "exceeds the limit of #{max_title} bytes"
           )
         end
 
         it 'rejects directories exceeding the limit' do
-          subject.title = invalid_directory + '/foo'
+          subject.title = "#{invalid_directory}/#{invalid_directory}2/foo"
 
           expect(subject).not_to be_valid
           expect(subject.errors[:title]).to contain_exactly(
-            "exceeds the limit of #{max_directory} bytes for directory names"
+            "exceeds the limit of #{max_directory} bytes for directory name \"#{invalid_directory}\"",
+            "exceeds the limit of #{max_directory} bytes for directory name \"#{invalid_directory}2\""
           )
         end
 
@@ -210,8 +211,8 @@ describe WikiPage do
 
           expect(subject).not_to be_valid
           expect(subject.errors[:title]).to contain_exactly(
-            "exceeds the limit of #{max_title} bytes for page titles",
-            "exceeds the limit of #{max_directory} bytes for directory names"
+            "exceeds the limit of #{max_title} bytes",
+            "exceeds the limit of #{max_directory} bytes for directory name \"#{invalid_directory}\""
           )
         end
       end

@@ -18,7 +18,7 @@ describe API::SystemHooks do
       it "returns authentication error" do
         get api("/hooks")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -26,7 +26,7 @@ describe API::SystemHooks do
       it "returns forbidden error" do
         get api("/hooks", user)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -34,7 +34,7 @@ describe API::SystemHooks do
       it "returns an array of hooks" do
         get api("/hooks", admin)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['url']).to eq(hook.url)
@@ -56,13 +56,13 @@ describe API::SystemHooks do
     it "responds with 400 if url not given" do
       post api("/hooks", admin)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "responds with 400 if url is invalid" do
       post api("/hooks", admin), params: { url: 'hp://mep.mep' }
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "does not create new hook without url" do
@@ -76,7 +76,7 @@ describe API::SystemHooks do
 
       post api('/hooks', admin), params: { url: 'http://mep.mep' }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['enable_ssl_verification']).to be true
       expect(json_response['push_events']).to be false
       expect(json_response['tag_push_events']).to be false
@@ -95,7 +95,7 @@ describe API::SystemHooks do
           merge_requests_events: true
         }
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['enable_ssl_verification']).to be false
       expect(json_response['push_events']).to be true
       expect(json_response['tag_push_events']).to be true
@@ -106,13 +106,13 @@ describe API::SystemHooks do
   describe "GET /hooks/:id" do
     it "returns hook by id" do
       get api("/hooks/#{hook.id}", admin)
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['event_name']).to eq('project_create')
     end
 
     it "returns 404 on failure" do
       get api("/hooks/404", admin)
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -121,14 +121,14 @@ describe API::SystemHooks do
       expect do
         delete api("/hooks/#{hook.id}", admin)
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end.to change { SystemHook.count }.by(-1)
     end
 
     it 'returns 404 if the system hook does not exist' do
       delete api('/hooks/12345', admin)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it_behaves_like '412 response' do

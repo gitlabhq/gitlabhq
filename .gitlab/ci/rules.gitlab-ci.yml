@@ -493,13 +493,6 @@
       changes: *code-backstage-patterns
       when: on_success
 
-.test-metadata:rules:flaky-examples-check:
-  rules:
-    - <<: *if-merge-request
-      changes: *code-backstage-patterns
-      when: on_success
-
-
 ##############
 # YAML rules #
 ##############

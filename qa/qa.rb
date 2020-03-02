@@ -296,7 +296,9 @@ module QA
           autoload :Show, 'qa/page/project/operations/kubernetes/show'
         end
 
-        autoload :Metrics, 'qa/page/project/operations/metrics'
+        module Metrics
+          autoload :Show, 'qa/page/project/operations/metrics/show'
+        end
       end
 
       module Wiki

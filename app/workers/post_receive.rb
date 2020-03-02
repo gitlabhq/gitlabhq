@@ -4,7 +4,7 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :source_code_management
-  latency_sensitive_worker!
+  urgency :high
   worker_resource_boundary :cpu
   weight 5
 

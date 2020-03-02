@@ -7,7 +7,7 @@ class ChatNotificationWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: false
   feature_category :chatops
-  latency_sensitive_worker!
+  urgency :high
   weight 2
 
   # TODO: break this into multiple jobs

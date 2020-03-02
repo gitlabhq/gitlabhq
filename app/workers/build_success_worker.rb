@@ -5,7 +5,7 @@ class BuildSuccessWorker # rubocop:disable Scalability/IdempotentWorker
   include PipelineQueue
 
   queue_namespace :pipeline_processing
-  latency_sensitive_worker!
+  urgency :high
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)

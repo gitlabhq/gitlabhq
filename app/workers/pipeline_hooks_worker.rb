@@ -5,7 +5,7 @@ class PipelineHooksWorker # rubocop:disable Scalability/IdempotentWorker
   include PipelineQueue
 
   queue_namespace :pipeline_hooks
-  latency_sensitive_worker!
+  urgency :high
   worker_resource_boundary :cpu
 
   # rubocop: disable CodeReuse/ActiveRecord

@@ -1682,6 +1682,9 @@ msgstr ""
 msgid "Alternate support URL for help page and help dropdown"
 msgstr ""
 
+msgid "Alternatively, you can convert your account to a managed account by the %{group_name} group."
+msgstr ""
+
 msgid "Amazon EKS"
 msgstr ""
 
@@ -8034,6 +8037,9 @@ msgid "Existing members and groups"
 msgstr ""
 
 msgid "Existing shares"
+msgstr ""
+
+msgid "Existing sign in methods may be removed"
 msgstr ""
 
 msgid "Expand"
@@ -20625,6 +20631,9 @@ msgstr ""
 msgid "Track your project with Audit Events."
 msgstr ""
 
+msgid "Transfer ownership"
+msgstr ""
+
 msgid "Transfer project"
 msgstr ""
 
@@ -22294,6 +22303,9 @@ msgstr ""
 msgid "You"
 msgstr ""
 
+msgid "You are about to transfer the control of your account to %{group_name} group. This action is NOT reversible, you won't be able to access any of your groups and projects outside of %{group_name} once this transfer is complete."
+msgstr ""
+
 msgid "You are an admin, which means granting access to <strong>%{client_name}</strong> will allow them to interact with GitLab as an admin as well. Proceed with caution."
 msgstr ""
 
@@ -22598,6 +22610,9 @@ msgid "You need to upload a Google Takeout archive."
 msgstr ""
 
 msgid "You tried to fork %{link_to_the_project} but it failed for the following reason:"
+msgstr ""
+
+msgid "You will be removed from existing projects/groups"
 msgstr ""
 
 msgid "You will lose all changes you've made to this file. This action cannot be undone."
@@ -23230,10 +23245,10 @@ msgstr ""
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
 msgstr ""
 
-msgid "exceeds the limit of %{bytes} bytes for directory names"
+msgid "exceeds the limit of %{bytes} bytes"
 msgstr ""
 
-msgid "exceeds the limit of %{bytes} bytes for page titles"
+msgid "exceeds the limit of %{bytes} bytes for directory name \"%{dirname}\""
 msgstr ""
 
 msgid "expired on %{milestone_due_date}"

@@ -5,7 +5,7 @@ class ExpirePipelineCacheWorker # rubocop:disable Scalability/IdempotentWorker
   include PipelineQueue
 
   queue_namespace :pipeline_cache
-  latency_sensitive_worker!
+  urgency :high
   worker_resource_boundary :cpu
 
   # rubocop: disable CodeReuse/ActiveRecord

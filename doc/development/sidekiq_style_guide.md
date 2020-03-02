@@ -121,7 +121,30 @@ NOTE: **Note:**
 Note that a cop will fail if the worker class is not marked as idempotent.
 Consider skipping the cop if you're not confident your job can safely run multiple times.
 
-## Latency Sensitive Jobs
+## Job urgency
+
+Jobs can have an `urgency` attribute set, which can be `:high`,
+`:default`, or `:none`. These have the below targets:
+
+| **Urgency** | **Queue Scheduling Target** | **Execution Latency Requirement**  |
+|-------------|-----------------------------|------------------------------------|
+| `:high`     | 100 milliseconds            | p50 of 1 second, p99 of 10 seconds |
+| `:default`  | 1 minute                    | Maximum run time of 1 hour         |
+| `:none`     | None                        | Maximum run time of 1 hour         |
+
+To set a job's urgency, use the `urgency` class method:
+
+```ruby
+class HighUrgencyWorker
+  include ApplicationWorker
+
+  urgency :high
+
+  # ...
+end
+```
+
+### Latency sensitive jobs
 
 If a large number of background jobs get scheduled at once, queueing of jobs may
 occur while jobs wait for a worker node to be become available. This is normal
@@ -140,7 +163,7 @@ of these jobs include:
 When these jobs are delayed, the user may perceive the delay as a bug: for
 example, they may push a branch and then attempt to create a merge request for
 that branch, but be told in the UI that the branch does not exist. We deem these
-jobs to be `latency_sensitive`.
+jobs to be `urgency :high`.
 
 Extra effort is made to ensure that these jobs are started within a very short
 period of time after being scheduled. However, in order to ensure throughput,
@@ -150,30 +173,10 @@ these jobs also have very strict execution duration requirements:
 1. 99% of jobs should complete within 10 seconds.
 
 If a worker cannot meet these expectations, then it cannot be treated as a
-`latency_sensitive` worker: consider redesigning the worker, or splitting the
-work between two different workers, one with `latency_sensitive` code that
-executes quickly, and the other with non-`latency_sensitive`, which has no
+`urgency :high` worker: consider redesigning the worker, or splitting the
+work between two different workers, one with `urgency :high` code that
+executes quickly, and the other with `urgency :default`, which has no
 execution latency requirements (but also has lower scheduling targets).
-
-This can be summed up in the following table:
-
-| **Latency Sensitivity** | **Queue Scheduling Target** | **Execution Latency Requirement**   |
-|-------------------------|-----------------------------|-------------------------------------|
-| Not `latency_sensitive` | 1 minute                    | Maximum run time of 1 hour          |
-| `latency_sensitive`     | 100 milliseconds            | p50 of 1 second, p99 of 10 seconds  |
-
-To mark a worker as being `latency_sensitive`, use the
-`latency_sensitive_worker!` attribute, as shown in this example:
-
-```ruby
-class LatencySensitiveWorker
-  include ApplicationWorker
-
-  latency_sensitive_worker!
-
-  # ...
-end
-```
 
 ## Jobs with External Dependencies
 
@@ -194,7 +197,7 @@ the background processing cluster in several ways:
    therefore we cannot guarantee the execution latencies on these jobs. Since we
    cannot guarantee execution latency, we cannot ensure throughput and
    therefore, in high-traffic environments, we need to ensure that jobs with
-   external dependencies are separated from `latency_sensitive` jobs, to ensure
+   external dependencies are separated from high urgency jobs, to ensure
    throughput on those queues.
 1. Errors in jobs with external dependencies have higher alerting thresholds as
    there is a likelihood that the cause of the error is external.
@@ -212,7 +215,7 @@ class ExternalDependencyWorker
 end
 ```
 
-NOTE: **Note:** Note that a job cannot be both latency sensitive and have
+NOTE: **Note:** Note that a job cannot be both high urgency and have
 external dependencies.
 
 ## CPU-bound and Memory-bound Workers
@@ -246,14 +249,14 @@ bespoke low concurrency, high memory fleet.
 
 Note that memory-bound workers create heavy GC workloads, with pauses of
 10-50ms. This will have an impact on the latency requirements for the
-worker. For this reason, `memory` bound, `latency_sensitive` jobs are not
+worker. For this reason, `memory` bound, `urgency :high` jobs are not
 permitted and will fail CI. In general, `memory` bound workers are
 discouraged, and alternative approaches to processing the work should be
 considered.
 
-If a worker needs large amounts of both memory and CPU time, it should be marked as
-memory-bound, due to the above restrction on latency-sensitive memory-bound
-workers.
+If a worker needs large amounts of both memory and CPU time, it should
+be marked as memory-bound, due to the above restrction on high urgency
+memory-bound workers.
 
 ## Declaring a Job as CPU-bound
 
