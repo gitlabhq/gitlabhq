@@ -390,7 +390,7 @@ the [asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 ### Special GitLab references
 
 GFM recognizes special GitLab related references. For example, you can easily reference
-an issue, a commit, a team member or even the whole team within a project. GFM will turn
+an issue, a commit, a team member, or even the whole team within a project. GFM will turn
 that reference into a link so you can navigate between them easily.
 
 Additionally, GFM recognizes certain cross-project references, and also has a shorthand

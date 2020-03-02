@@ -160,6 +160,7 @@ have lost your code generation device) you can:
 
 - [Use a saved recovery code](#use-a-saved-recovery-code).
 - [Generate new recovery codes using SSH](#generate-new-recovery-codes-using-ssh).
+- [Regenerate 2FA recovery codes](#regenerate-2fa-recovery-codes).
 - [Ask a GitLab administrator to disable two-factor authentication on your account](#ask-a-gitlab-administrator-to-disable-two-factor-authentication-on-your-account).
 
 ### Use a saved recovery code
@@ -218,6 +219,20 @@ a new set of recovery codes with SSH:
 
 After signing in, visit your **Profile settings > Account**  immediately to set
 up two-factor authentication with a new device.
+
+### Regenerate 2FA recovery codes
+
+To regenerate 2FA recovery codes, you need access to a desktop browser:
+
+1. Navigate to GitLab.
+1. Sign in to your GitLab account.
+1. Go to your [Profile settings](../index.md#profile-settings).
+1. Select **{account}** **Account > Two-Factor Authentication (2FA)**.
+1. If you've already configured 2FA, click **Manage two-factor authentication**.
+1. In the **Register Two-Factor Authenticator** pane, click **Regenerate recovery codes**.
+
+NOTE: **Note:**
+If you regenerate 2FA recovery codes, save them. You won't be able to use any previously created 2FA codes.
 
 ### Ask a GitLab administrator to disable two-factor authentication on your account
 

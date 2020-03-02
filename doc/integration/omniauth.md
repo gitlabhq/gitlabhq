@@ -51,7 +51,7 @@ that are in common for all providers that we need to consider.
   be created manually or they will not be able to sign in via OmniAuth.
 - `auto_link_ldap_user` can be used if you have [LDAP / ActiveDirectory](ldap.md)
   integration enabled. It defaults to false. When enabled, users automatically
-  created through OmniAuth will be linked to their LDAP entry as well.
+  created through an OmniAuth provider will have their LDAP identity created in GitLab as well.
 - `block_auto_created_users` defaults to `true`. If `true` auto created users will
   be blocked by default and will have to be unblocked by an administrator before
   they are able to sign in.

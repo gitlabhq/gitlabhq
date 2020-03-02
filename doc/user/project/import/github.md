@@ -40,10 +40,13 @@ in which case it defaults to the default project visibility.
 When issues and pull requests are being imported, the importer attempts to find their GitHub authors and
 assignees in the database of the GitLab instance (note that pull requests are called "merge requests" in GitLab).
 
-For this association to succeed, prior to the import, each GitHub author and assignee in the repository must
-have either previously logged in to a GitLab account using the GitHub icon **or** have a GitHub account with
-a [primary email address](https://help.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address) that
-matches their GitLab account's email address.
+For this association to succeed, each GitHub author and assignee in the repository
+must meet one of the following conditions prior to the import:
+
+- Have previously logged in to a GitLab account using the GitHub icon.
+- Have a GitHub account with a
+  [primary email address](https://help.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address)
+  that matches their GitLab account's email address.
 
 If a user referenced in the project is not found in GitLab's database, the project creator (typically the user
 that initiated the import process) is set as the author/assignee, but a note on the issue mentioning the original

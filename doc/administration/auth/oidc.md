@@ -42,6 +42,7 @@ The OpenID Connect will provide you with a client details and secret for you to 
          'discovery' => true,
          'client_auth_method' => 'query',
          'uid_field' => '<uid_field>',
+         'send_scope_to_token_endpoint' => 'false',
          'client_options' => {
            'identifier' => '<your_oidc_client_id>',
            'secret' => '<your_oidc_client_secret>',
@@ -65,6 +66,7 @@ The OpenID Connect will provide you with a client details and secret for you to 
            discovery: true,
            client_auth_method: 'query',
            uid_field: '<uid_field>',
+           send_scope_to_token_endpoint: false,
            client_options: {
              identifier: '<your_oidc_client_id>',
              secret: '<your_oidc_client_secret>',
@@ -92,6 +94,8 @@ The OpenID Connect will provide you with a client details and secret for you to 
      - If not specified, defaults to `basic`.
    - `<uid_field>` (optional) is the field name from the `user_info` details that will be used as `uid` value. For example, `preferred_username`.
      If this value is not provided or the field with the configured value is missing from the `user_info` details, the `uid` will use the `sub` field.
+   - `send_scope_to_token_endpoint` is `true` by default. In other words, the `scope` parameter is normally included in requests to the token endpoint.
+     However, if your OpenID Connect provider does not accept the `scope` parameter in such requests, set this to `false`.
    - `client_options` are the OpenID Connect client-specific options. Specifically:
      - `identifier` is the client identifier as configured in the OpenID Connect service provider.
      - `secret` is the client secret as configured in the OpenID Connect service provider.

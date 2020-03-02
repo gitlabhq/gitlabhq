@@ -1145,7 +1145,7 @@ Parameters:
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
 | `note_events` | boolean | false | Enable notifications for note events |
-| `confidental_note_events` | boolean | false | Enable notifications for confidential note events |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 

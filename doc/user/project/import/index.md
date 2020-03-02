@@ -24,7 +24,7 @@ There is also the option of [connecting your external repository to get CI/CD be
 
 ## Migrating from self-hosted GitLab to GitLab.com
 
-If you only need to migrate Git repos, you can [import each project by URL](repo_by_url.md), but issues and merge requests can't be imported.
+If you only need to migrate Git repos, you can [import each project by URL](repo_by_url.md). Issues and merge requests can't be imported.
 
 If you want to retain all metadata like issues and merge requests, you can use
 the [import/export feature](../settings/import_export.md) to export projects from self-hosted GitLab and import those projects into GitLab.com.
