@@ -91,7 +91,7 @@ production:
 
 Next, generate a new secret:
 
-```
+```shell
 # omnibus-gitlab
 sudo gitlab-rake secret
 
@@ -102,7 +102,7 @@ bundle exec rake secret RAILS_ENV=production
 Now you need to stop the GitLab server, back up the existing secrets file and
 update the database:
 
-```
+```shell
 # omnibus-gitlab
 sudo gitlab-ctl stop
 sudo cp config/secrets.yml config/secrets.yml.bak
@@ -122,7 +122,7 @@ error.
 Finally, change `config/secrets.yml` to set `otp_key_base` to `<new key>` and
 restart. Again, make sure you're operating in the **production** section.
 
-```
+```shell
 # omnibus-gitlab
 sudo gitlab-ctl start
 
@@ -133,7 +133,7 @@ sudo /etc/init.d/gitlab start
 If there are any problems (perhaps using the wrong value for `old_key`), you can
 restore your backup of `config/secrets.yml` and rollback the changes:
 
-```
+```shell
 # omnibus-gitlab
 sudo gitlab-ctl stop
 sudo gitlab-rake gitlab:two_factor:rotate_key:rollback filename=backup.csv

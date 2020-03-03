@@ -15,7 +15,7 @@
 
 The new folder needs to have Git user ownership and read/write/execute access for Git user and its group:
 
-```
+```shell
 sudo -u git mkdir -p /var/opt/gitlab/git-data/repository-import-<date>/new_group
 ```
 
@@ -27,7 +27,7 @@ sudo -u git mkdir -p /var/opt/gitlab/git-data/repository-import-<date>/new_group
 If we copy the repos to `/var/opt/gitlab/git-data/repository-import-<date>`, and repo A needs to be under the groups G1 and G2, it will
 have to be created under those folders: `/var/opt/gitlab/git-data/repository-import-<date>/G1/G2/A.git`.
 
-```
+```shell
 sudo cp -r /old/git/foo.git /var/opt/gitlab/git-data/repository-import-<date>/new_group/
 
 # Do this once when you are done copying git repositories
@@ -57,7 +57,7 @@ sudo -u git -H bundle exec rake gitlab:import:repos['/var/opt/gitlab/git-data/re
 
 #### Example output
 
-```
+```plaintext
 Processing /var/opt/gitlab/git-data/repository-import-1/a/b/c/blah.git
  * Using namespace: a/b/c
  * Created blah (a/b/c/blah)

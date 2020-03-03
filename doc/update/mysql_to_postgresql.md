@@ -54,13 +54,13 @@ pgloader within the container as it is not included in the container image.
 
 1. Start a shell session in the context of the running container:
 
-   ``` bash
+   ```shell
    docker exec -it gitlab bash
    ```
 
 1. Install pgloader:
 
-   ``` bash
+   ```shell
    apt-get update
    apt-get -y install pgloader
    ```
@@ -78,7 +78,7 @@ need to enable the bundled PostgreSQL:
 
 1. Edit `/etc/gitlab/gitlab.rb` to enable bundled PostgreSQL:
 
-   ```
+   ```ruby
    postgresql['enable'] = true
    ```
 
@@ -116,7 +116,7 @@ new PostgreSQL one:
 1. Save the following snippet in a `commands.load` file, and edit with your
    MySQL database `username`, `password` and `host`:
 
-   ```
+   ```sql
    LOAD DATABASE
         FROM mysql://username:password@host/gitlabhq_production
         INTO postgresql://gitlab-psql@unix://var/opt/gitlab/postgresql:/gitlabhq_production
@@ -143,7 +143,7 @@ new PostgreSQL one:
 1. Once the migration finishes, you should see a summary table that looks like
    the following:
 
-   ```
+   ```plaintext
                                     table name       read   imported     errors      total time
    -----------------------------------------------  ---------  ---------  ---------  --------------
                                    fetch meta data        119        119          0          0.388s
@@ -217,7 +217,7 @@ new PostgreSQL one:
 1. Save the following snippet in a `commands.load` file, and edit with your
    MySQL `username`, `password` and `host`:
 
-   ```
+   ```sql
    LOAD DATABASE
         FROM mysql://username:password@host/gitlabhq_production
         INTO postgresql://postgres@unix://var/run/postgresql:/gitlabhq_production
@@ -244,7 +244,7 @@ new PostgreSQL one:
 1. Once the migration finishes, you should see a summary table that looks like
    the following:
 
-   ```
+   ```plaintext
                                     table name       read   imported     errors      total time
    -----------------------------------------------  ---------  ---------  ---------  --------------
                                    fetch meta data        119        119          0          0.388s
@@ -284,7 +284,7 @@ Sometimes, you might encounter some errors during or after the migration.
 The PostgreSQL user that you use for the migration MUST have **superuser** privileges.
 Otherwise, you may see a similar message to the following:
 
-```
+```plaintext
 debugger invoked on a CL-POSTGRES-ERROR:INSUFFICIENT-PRIVILEGE in thread
     #<THREAD "lparallel" RUNNING {10078A3513}>:
       Database error 42501: permission denied: "RI_ConstraintTrigger_a_20937" is a system trigger

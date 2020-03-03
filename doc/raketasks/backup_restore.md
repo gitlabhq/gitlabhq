@@ -115,7 +115,7 @@ also running Unicorn/Puma and/or Sidekiq.
 
 Example output:
 
-```
+```plaintext
 Dumping database tables:
 - Dumping table events... [DONE]
 - Dumping table issues... [DONE]
@@ -465,7 +465,7 @@ For installations from source:
 Note: This option only works for remote storage. If you want to group your backups
 you can pass a `DIRECTORY` environment variable:
 
-```
+```shell
 sudo gitlab-backup create DIRECTORY=daily
 sudo gitlab-backup create DIRECTORY=weekly
 ```
@@ -586,7 +586,7 @@ crontab -e
 
 There, add the following line to schedule the backup for everyday at 2 AM:
 
-```
+```plaintext
 0 2 * * * /opt/gitlab/bin/gitlab-backup create CRON=1
 ```
 
@@ -614,7 +614,7 @@ sudo -u git crontab -e # Edit the crontab for the git user
 
 Add the following lines at the bottom:
 
-```
+```plaintext
 # Create a full backup of the GitLab repositories and SQL database every day at 4am
 0 4 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production CRON=1
 ```
@@ -674,7 +674,7 @@ Read more on [configuring NFS mounts](../administration/high_availability/nfs.md
 
 ### Restore for installation from source
 
-```
+```shell
 # Stop processes that are connected to the database
 sudo service gitlab stop
 
@@ -683,7 +683,7 @@ bundle exec rake gitlab:backup:restore RAILS_ENV=production
 
 Example output:
 
-```
+```plaintext
 Unpacking backup... [DONE]
 Restoring database tables:
 -- create_table("events", {:force=>true})
@@ -853,7 +853,7 @@ will have all your repositories, but not any other data.
 
 If you are using backup restore procedures you might encounter the following warnings:
 
-```
+```plaintext
 psql:/var/opt/gitlab/backups/db/database.sql:22: ERROR:  must be owner of extension plpgsql
 psql:/var/opt/gitlab/backups/db/database.sql:2931: WARNING:  no privileges could be revoked for "public" (two occurrences)
 psql:/var/opt/gitlab/backups/db/database.sql:2933: WARNING:  no privileges were granted for "public" (two occurrences)
@@ -1003,7 +1003,7 @@ GitLab instance after restoring the registry data.
 
 These failures will mention permission issues in the registry logs, like:
 
-```
+```plaintext
 level=error
 msg="response completed with error"
 err.code=unknown

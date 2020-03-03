@@ -11,6 +11,6 @@ which loads the appropriate data set if it is present within the `sample_metrics
 
 **Example:**
 
-```
+```shell
 bundle exec rake gitlab:generate_sample_prometheus_data[21]
 ```

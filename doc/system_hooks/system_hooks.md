@@ -41,7 +41,7 @@ for Push and Tag events, but we never display commits.
 
 **Request header**:
 
-```
+```plaintext
 X-Gitlab-Event: System Hook
 ```
 
@@ -396,7 +396,7 @@ It generates one event per modified branch.
 
 **Request header**:
 
-```
+```plaintext
 X-Gitlab-Event: System Hook
 ```
 
@@ -462,7 +462,7 @@ It generates one event per modified tag.
 
 **Request header**:
 
-```
+```plaintext
 X-Gitlab-Event: System Hook
 ```
 
@@ -516,7 +516,7 @@ updated/merged/closed or a commit is added in the source branch.
 
 **Request header**:
 
-```
+```plaintext
 X-Gitlab-Event: System Hook
 ```
 
@@ -643,7 +643,7 @@ Triggered only once when you push to the repository (including tags).
 
 **Request header**:
 
-```
+```plaintext
 X-Gitlab-Event: System Hook
 ```
 
