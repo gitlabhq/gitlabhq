@@ -380,6 +380,12 @@ describe ApplicationSetting do
 
         expect(subject).to be_invalid
       end
+
+      it 'does not prevent from saving when gitaly timeouts were previously invalid' do
+        subject.update_column(:gitaly_timeout_default, Settings.gitlab.max_request_duration_seconds + 1)
+
+        expect(subject.reload).to be_valid
+      end
     end
 
     describe 'enforcing terms' do

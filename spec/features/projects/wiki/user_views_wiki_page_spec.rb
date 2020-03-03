@@ -33,6 +33,8 @@ describe 'User views a wiki page' do
         fill_in(:wiki_content, with: 'wiki content')
         click_on('Create page')
       end
+
+      expect(page).to have_content('Wiki was successfully updated.')
     end
 
     it 'shows the history of a page that has a path' do
@@ -62,8 +64,10 @@ describe 'User views a wiki page' do
       expect(page).to have_content('Edit Page')
 
       fill_in('Content', with: 'Updated Wiki Content')
-
       click_on('Save changes')
+
+      expect(page).to have_content('Wiki was successfully updated.')
+
       click_on('Page history')
 
       page.within(:css, '.nav-text') do
@@ -129,6 +133,36 @@ describe 'User views a wiki page' do
       visit(project_wiki_path(project, wiki_page, version_id: wiki_page.versions.last.id))
 
       expect(page).not_to have_selector('a.btn', text: 'Edit')
+    end
+  end
+
+  context 'when a page has special characters in its title' do
+    let(:title) { '<foo> !@#$%^&*()[]{}=_+\'"\\|<>? <bar>' }
+
+    before do
+      wiki_page.update(title: title )
+    end
+
+    it 'preserves the special characters' do
+      visit(project_wiki_path(project, wiki_page))
+
+      expect(page).to have_css('.wiki-page-title', text: title)
+      expect(page).to have_css('.wiki-pages li', text: title)
+    end
+  end
+
+  context 'when a page has XSS in its title or content' do
+    let(:title) { '<script>alert("title")<script>' }
+
+    before do
+      wiki_page.update(title: title, content: 'foo <script>alert("content")</script> bar')
+    end
+
+    it 'safely displays the page' do
+      visit(project_wiki_path(project, wiki_page))
+
+      expect(page).to have_css('.wiki-page-title', text: title)
+      expect(page).to have_content('foo bar')
     end
   end
 

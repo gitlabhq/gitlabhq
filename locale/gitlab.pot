@@ -4993,9 +4993,6 @@ msgstr ""
 msgid "Commits|An error occurred while fetching merge requests data."
 msgstr ""
 
-msgid "Commits|Commit: %{commitText}"
-msgstr ""
-
 msgid "Commits|History"
 msgstr ""
 
@@ -8772,9 +8769,6 @@ msgid "ForkedFromProjectPath|Forked from an inaccessible project"
 msgstr ""
 
 msgid "Forking in progress"
-msgstr ""
-
-msgid "Forking repository"
 msgstr ""
 
 msgid "Forks"

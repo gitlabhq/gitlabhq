@@ -14,7 +14,7 @@ describe 'Projects > Show > User sees last commit CI status' do
 
     page.within '.commit-detail' do
       expect(page).to have_content(project.commit.sha[0..6])
-      expect(page).to have_selector('[aria-label="Commit: skipped"]')
+      expect(page).to have_selector('[aria-label="Pipeline: skipped"]')
     end
   end
 end

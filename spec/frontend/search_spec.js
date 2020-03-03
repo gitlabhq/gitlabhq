@@ -2,6 +2,8 @@ import $ from 'jquery';
 import Api from '~/api';
 import Search from '~/pages/search/show/search';
 
+jest.mock('~/api');
+
 describe('Search', () => {
   const fixturePath = 'search/show.html';
   const searchTerm = 'some search';
@@ -19,20 +21,19 @@ describe('Search', () => {
     new Search(); // eslint-disable-line no-new
   });
 
-  it('requests groups from backend when filtering', done => {
-    spyOn(Api, 'groups').and.callFake(term => {
+  it('requests groups from backend when filtering', () => {
+    jest.spyOn(Api, 'groups').mockImplementation(term => {
       expect(term).toBe(searchTerm);
-      done();
     });
+
     const inputElement = fillDropdownInput('.js-search-group-dropdown');
 
     $(inputElement).trigger('input');
   });
 
-  it('requests projects from backend when filtering', done => {
-    spyOn(Api, 'projects').and.callFake(term => {
+  it('requests projects from backend when filtering', () => {
+    jest.spyOn(Api, 'projects').mockImplementation(term => {
       expect(term).toBe(searchTerm);
-      done();
     });
     const inputElement = fillDropdownInput('.js-search-project-dropdown');
 

@@ -65,7 +65,7 @@ To enable Container Scanning in your pipeline, you need:
     services:
       - docker:19.03.1-dind
     variables:
-      IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_REF_SHA
+      IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
     script:
       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
       - docker build -t $IMAGE_TAG .

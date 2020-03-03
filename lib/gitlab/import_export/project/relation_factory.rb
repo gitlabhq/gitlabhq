@@ -51,6 +51,8 @@ module Gitlab
           epic
           ProjectCiCdSetting
           container_expiration_policy
+          external_pull_request
+          external_pull_requests
         ].freeze
 
         def create

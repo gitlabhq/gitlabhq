@@ -172,6 +172,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :gitaly_timeout_default,
             presence: true,
+            if: :gitaly_timeout_default_changed?,
             numericality: {
               only_integer: true,
               greater_than_or_equal_to: 0,
@@ -180,6 +181,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :gitaly_timeout_medium,
             presence: true,
+            if: :gitaly_timeout_medium_changed?,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :gitaly_timeout_medium,
             numericality: { less_than_or_equal_to: :gitaly_timeout_default },
@@ -190,6 +192,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :gitaly_timeout_fast,
             presence: true,
+            if: :gitaly_timeout_fast_changed?,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :gitaly_timeout_fast,
             numericality: { less_than_or_equal_to: :gitaly_timeout_default },

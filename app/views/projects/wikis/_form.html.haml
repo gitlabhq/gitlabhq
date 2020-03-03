@@ -12,7 +12,7 @@
   .form-group.row
     .col-sm-12= f.label :title, class: 'control-label-full-width'
     .col-sm-12
-      = f.text_field :title, class: 'form-control qa-wiki-title-textbox', value: @page.title, required: true, autofocus: !@page.persisted?, placeholder: _('Wiki|Page title')
+      = f.text_field :title, class: 'form-control qa-wiki-title-textbox', value: @page.title, required: true, autofocus: !@page.persisted?, placeholder: s_('Wiki|Page title')
       %span.d-inline-block.mw-100.prepend-top-5
         = icon('lightbulb-o')
         - if @page.persisted?

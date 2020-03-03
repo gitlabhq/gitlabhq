@@ -12,7 +12,7 @@ or ways to contact the project maintainers.
 
 ## Project badges
 
-Badges can be added to a project and will then be visible on the project's overview page.
+Badges can be added to a project by Maintainers or Owners, and will then be visible on the project's overview page.
 If you find that you have to add the same badges to several projects, you may want to add them at the [group level](#group-badges).
 
 To add a new badge to a project:

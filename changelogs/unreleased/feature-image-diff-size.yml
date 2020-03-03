@@ -1,0 +1,6 @@
+---
+title: All image diffs (except for renamed files) show the image file size in the
+  diff
+merge_request: 25734
+author:
+type: added

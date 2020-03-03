@@ -25,9 +25,18 @@ describe Gitlab::Checks::SnippetCheck do
 
     context 'trying to create the branch' do
       let(:oldrev) { '0000000000000000000000000000000000000000' }
+      let(:ref) { 'refs/heads/feature' }
 
       it 'raises an error' do
         expect { subject.exec }.to raise_error(Gitlab::GitAccess::ForbiddenError, 'You can not create or delete branches.')
+      end
+
+      context "when branch is 'master'" do
+        let(:ref) { 'refs/heads/master' }
+
+        it "allows the operation" do
+          expect { subject.exec }.not_to raise_error
+        end
       end
     end
   end

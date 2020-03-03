@@ -17,7 +17,7 @@ module Gitlab
         (start_id..stop_id).each_slice(QUERY_ITEM_SIZE).each do |range|
           model
               .where(lock_version: nil)
-              .where(id: range)
+              .where("ID BETWEEN ? AND ?", range.first, range.last)
               .update_all(lock_version: 0)
         end
       end

@@ -107,7 +107,7 @@ class ProjectWiki
       direction_desc: direction == DIRECTION_DESC,
       load_content: load_content
     ).map do |page|
-      WikiPage.new(self, page, true)
+      WikiPage.new(self, page)
     end
   end
 
@@ -122,7 +122,7 @@ class ProjectWiki
     page_title, page_dir = page_title_and_dir(title)
 
     if page = wiki.page(title: page_title, version: version, dir: page_dir)
-      WikiPage.new(self, page, true)
+      WikiPage.new(self, page)
     end
   end
 

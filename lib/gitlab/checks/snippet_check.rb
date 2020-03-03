@@ -3,6 +3,7 @@
 module Gitlab
   module Checks
     class SnippetCheck < BaseChecker
+      DEFAULT_BRANCH = 'master'.freeze
       ERROR_MESSAGES = {
         create_delete_branch: 'You can not create or delete branches.'
       }.freeze
@@ -28,6 +29,12 @@ module Gitlab
         # Check operation will not result in more than one file in the repository
 
         true
+      end
+
+      private
+
+      def creation?
+        @branch_name != DEFAULT_BRANCH && super
       end
     end
   end

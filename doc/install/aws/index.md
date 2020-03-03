@@ -202,13 +202,10 @@ create the actual RDS instance.
 ### RDS Subnet Group
 
 1. Navigate to the RDS dashboard and select **Subnet Groups** from the left menu.
-1. Give it a name (`gitlab-rds-group`), a description, and choose the VPC from
-   the VPC dropdown.
-1. Click "Add all the subnets related to this VPC" and
-   remove the public ones, we only want the **private subnets**.
-   In the end, you should see `10.0.1.0/24` and `10.0.3.0/24` (as
-   we defined them in the [subnets section](#subnets)).
-   Click **Create** when ready.
+1. Click on **Create DB Subnet Group**.
+1. Under **Subnet group details**, enter a name (we'll use `gitlab-rds-group`), a description, and choose the `gitlab-vpc` from the VPC dropdown.
+1. Under **Add subnets**, click **Add all the subnets related to this VPC** and remove the public ones, we only want the **private subnets**. In the end, you should see `10.0.1.0/24` and `10.0.3.0/24` (as we defined them in the [subnets section](#subnets)).
+1. Click **Create** when ready.
 
    ![RDS Subnet Group](img/rds_subnet_group.png)
 
@@ -217,33 +214,31 @@ create the actual RDS instance.
 Now, it's time to create the database:
 
 1. Select **Databases** from the left menu and click **Create database**.
-1. Select PostgreSQL and click **Next**.
-1. Since this is a production server, let's choose "Production". Click **Next**.
-1. Let's see the instance specifications:
-   1. Leave the license model as is (`postgresql-license`).
-   1. For the version, select the latest of the 9.6 series (check the
-      [database requirements](../../install/requirements.md#postgresql-requirements))
-      if there are any updates on this).
-   1. For the size, let's select a `t2.medium` instance.
-   1. Multi-AZ-deployment is recommended as redundancy, so choose "Create
-      replica in different zone". Read more at
-      [High Availability (Multi-AZ)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
-   1. A Provisioned IOPS (SSD) storage type is best suited for HA (though you can
-      choose a General Purpose (SSD) to reduce the costs). Read more about it at
-      [Storage for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
+1. Select **Standard Create** for the database creation method.
+1. Select **PostgreSQL** as the database engine and select **PostgreSQL 10.9-R1** from the version dropdown menu (check the [database requirements](../../install/requirements.md#postgresql-requirements) to see if there are any updates on this for your chosen version of GitLab).
+1. Since this is a production server, let's choose **Production** from the **Templates** section.
+1. Under **Settings**, set a DB instance identifier, a master username, and a master password. We'll use `gitlab-db-ha`, `gitlab`, and a very secure password respectively. Make a note of these as we'll need them later.
+1. For the DB instance size, select **Standard classes** and select an instance size that meets your requirements from the dropdown menu. We'll use a `db.m4.large` instance.
+1. Under **Storage**, configure the following:
+   1. Select **Provisioned IOPS (SSD)** from the storage type dropdown menu. Provisioned IOPS (SSD) storage is best suited for HA (though you can choose General Purpose (SSD) to reduce the costs). Read more about it at [Storage for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
+   1. Allocate storage and set provisioned IOPS. We'll use the minimum values, `100` and `1000`, respectively.
+   1. Enable storage autoscaling (optional) and set a maximum storage threshold.
+1. Under **Availability & durability**, select **Create a standby instance** to have a standby RDS instance provisioned in a different Availability Zone. Read more at [High Availability (Multi-AZ)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
+1. Under **Connectivity**, configure the following:
+   1. Select the VPC we created earlier (`gitlab-vpc`) from the **Virtual Private Cloud (VPC)** dropdown menu.
+   1. Expand the **Additional connectivity configuration** section and select the subnet group (`gitlab-rds-group`) we created earlier.
+   1. Set public accessibility to **No**.
+   1. Under **VPC security group**, select **Create new** and enter a name. We'll use `gitlab-rds-sec-group`.
+   1. Leave the database port as the default `5432`.
+1. For **Database authentication**, select **Password authentication**.
+1. Expand the **Additional configuration** section and complete the following:
+   1. The initial database name. We'll use `gitlabhq_production`.
+   1. Configure your preferred backup settings.
+   1. The only other change we'll make here is to disable auto minor version updates under **Maintenance**.
+   1. Leave all the other settings as is or tweak according to your needs.
+   1. Once you're happy, click **Create database**.
 
-1. The rest of the settings on this page request a DB instance identifier, username
-   and a master password. We've chosen to use `gitlab-db-ha`, `gitlab` and a
-   very secure password respectively. Keep these in hand for later.
-1. Click **Next** to proceed to the advanced settings.
-1. Make sure to choose our GitLab VPC, our subnet group, set public accessibility to
-   **No**, and to leave it to create a new security group. The only additional
-   change which will be helpful is the database name for which we can use
-   `gitlabhq_production`. At the very bottom, there's an option to enable
-   auto updates to minor versions. You may want to turn it off.
-1. When done, click **Create database**.
-
-Now that the database is created, let's move on to setting up Redis with ElasticCache.
+Now that the database is created, let's move on to setting up Redis with ElastiCache.
 
 ## Redis with ElastiCache
 
@@ -311,7 +306,7 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
    1. For **Ping Path**, enter `/explore`. (We use `/explore` as it's a public endpoint that does
    not require authorization.)
    1. Keep the default **Advanced Details** or adjust them according to your needs.
-1. For now, don't click **Add EC2 Instances**, as we don't have any instances to add yet. Come back
+1. Click **Add EC2 Instances** but, as we don't have any instances to add yet, come back
 to your load balancer after creating your GitLab instances and add them.
 1. Click **Add Tags** and add any tags you need.
 1. Click **Review and Create**, review all your settings, and click **Create** if you're happy.

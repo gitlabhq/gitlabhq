@@ -110,6 +110,7 @@ module API
 
       # Keep in alphabetical order
       mount ::API::AccessRequests
+      mount ::API::Admin::Sidekiq
       mount ::API::Appearance
       mount ::API::Applications
       mount ::API::Avatar

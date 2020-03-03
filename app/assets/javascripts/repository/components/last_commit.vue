@@ -71,8 +71,8 @@ export default {
   },
   computed: {
     statusTitle() {
-      return sprintf(s__('Commits|Commit: %{commitText}'), {
-        commitText: this.commit.pipeline.detailedStatus.text,
+      return sprintf(s__('PipelineStatusTooltip|Pipeline: %{ciStatus}'), {
+        ciStatus: this.commit.pipeline.detailedStatus.text,
       });
     },
     isLoading() {

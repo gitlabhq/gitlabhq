@@ -475,43 +475,59 @@ describe WikiPage do
     end
   end
 
-  describe "#title" do
-    it "replaces a hyphen to a space" do
-      subject.title = "Import-existing-repositories-into-GitLab"
+  describe '#title_changed?' do
+    using RSpec::Parameterized::TableSyntax
 
-      expect(subject.title).to eq("Import existing repositories into GitLab")
+    let(:untitled_page) { described_class.new(wiki) }
+    let(:directory_page) do
+      create_page('parent/child', 'test content')
+      wiki.find_page('parent/child')
     end
 
-    it 'unescapes html' do
-      subject.title = 'foo &amp; bar'
+    where(:page, :title, :changed) do
+      :untitled_page  | nil            | false
+      :untitled_page  | 'new title'    | true
 
-      expect(subject.title).to eq('foo & bar')
+      :new_page       | nil            | true
+      :new_page       | 'test page'    | true
+      :new_page       | 'new title'    | true
+
+      :existing_page  | nil            | false
+      :existing_page  | 'test page'    | false
+      :existing_page  | '/test page'   | false
+      :existing_page  | 'new title'    | true
+
+      :directory_page | nil            | false
+      :directory_page | 'parent/child' | false
+      :directory_page | 'child'        | false
+      :directory_page | '/child'       | true
+      :directory_page | 'parent/other' | true
+      :directory_page | 'other/child'  | true
+    end
+
+    with_them do
+      it 'returns the expected value' do
+        subject = public_send(page)
+        subject.title = title if title
+
+        expect(subject.title_changed?).to be(changed)
+      end
     end
   end
 
   describe '#path' do
-    let(:path) { 'mypath.md' }
-    let(:git_page) { instance_double('Gitlab::Git::WikiPage', path: path).as_null_object }
-
     it 'returns the path when persisted' do
-      page = described_class.new(wiki, git_page, true)
-
-      expect(page.path).to eq(path)
+      expect(existing_page.path).to eq('test-page.md')
     end
 
     it 'returns nil when not persisted' do
-      page = described_class.new(wiki, git_page, false)
-
-      expect(page.path).to be_nil
+      expect(new_page.path).to be_nil
     end
   end
 
   describe '#directory' do
     context 'when the page is at the root directory' do
-      subject do
-        create_page('file', 'content')
-        wiki.find_page('file')
-      end
+      subject { existing_page }
 
       it 'returns an empty string' do
         expect(subject.directory).to eq('')

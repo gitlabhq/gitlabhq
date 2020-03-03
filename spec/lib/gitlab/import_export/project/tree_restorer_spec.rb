@@ -426,6 +426,10 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
 
           expect(pipeline_with_external_pr.external_pull_request).to be_persisted
         end
+
+        it 'has no import failures' do
+          expect(@project.import_failures.size).to eq 0
+        end
       end
     end
   end
@@ -496,6 +500,30 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
                         label_with_priorities: 'A project label',
                         milestones: 1,
                         first_issue_labels: 1
+      end
+    end
+
+    context 'multiple pipelines reference the same external pull request' do
+      before do
+        setup_import_export_config('multi_pipeline_ref_one_external_pr')
+        expect(restored_project_json).to eq(true)
+      end
+
+      it_behaves_like 'restores project successfully',
+                      issues: 0,
+                      labels: 0,
+                      milestones: 0,
+                      ci_pipelines: 2,
+                      external_pull_requests: 1,
+                      import_failures: 0
+
+      it 'restores external pull request for the restored pipelines' do
+        external_pr = project.external_pull_requests.first
+
+        project.ci_pipelines.each do |pipeline_with_external_pr|
+          expect(pipeline_with_external_pr.external_pull_request).to be_persisted
+          expect(pipeline_with_external_pr.external_pull_request).to eq(external_pr)
+        end
       end
     end
 

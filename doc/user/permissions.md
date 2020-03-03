@@ -116,6 +116,7 @@ The following table depicts the various user permission levels in a project.
 | Turn on/off protected branch push for devs        |         |            |             | ✓        | ✓      |
 | Enable/disable tag protections                    |         |            |             | ✓        | ✓      |
 | Edit project                                      |         |            |             | ✓        | ✓      |
+| Edit project badges                               |         |            |             | ✓        | ✓      |
 | Add deploy keys to project                        |         |            |             | ✓        | ✓      |
 | Configure project hooks                           |         |            |             | ✓        | ✓      |
 | Manage Runners                                    |         |            |             | ✓        | ✓      |

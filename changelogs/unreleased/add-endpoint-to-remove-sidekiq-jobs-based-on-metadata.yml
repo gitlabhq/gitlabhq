@@ -1,0 +1,5 @@
+---
+title: Add admin API endpoint to delete Sidekiq jobs matching metadata
+merge_request: 25998
+author:
+type: added
