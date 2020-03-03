@@ -60,7 +60,7 @@ RSpec.shared_examples 'diff file entity' do
 
     context 'when the `single_mr_diff_view` feature is disabled' do
       before do
-        stub_feature_flags(single_mr_diff_view: false)
+        stub_feature_flags(single_mr_diff_view: { enabled: false, thing: project })
       end
 
       it 'contains both kinds of diffs' do

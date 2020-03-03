@@ -162,6 +162,9 @@ class CleanupUsersUpdatedAtRename < ActiveRecord::Migration[4.2]
 end
 ```
 
+NOTE: **Note:** If you're renaming a large table, please carefully consider the state when the first migration has run but the second cleanup migration hasn't been run yet.
+With [Canary](https://about.gitlab.com/handbook/engineering/infrastructure/library/canary/) it is possible that the system runs in this state for a significant amount of time.
+
 ## Changing Column Constraints
 
 Adding or removing a NOT NULL clause (or another constraint) can typically be

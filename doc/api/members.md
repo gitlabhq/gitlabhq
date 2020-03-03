@@ -17,6 +17,8 @@ The access levels are defined in the `Gitlab::Access` module. Currently, these l
 Gets a list of group or project members viewable by the authenticated user.
 Returns only direct members and not inherited members through ancestors groups.
 
+This function takes pagination parameters `page` and `per_page` to restrict the list of users.
+
 ```plaintext
 GET /groups/:id/members
 GET /projects/:id/members
@@ -71,6 +73,8 @@ Example response:
 Gets a list of group or project members viewable by the authenticated user, including inherited members through ancestor groups.
 When a user is a member of the project/group and of one or more ancestor groups the user is returned only once with the project `access_level` (if exists)
 or the `access_level` for the user in the first group which they belong to in the project groups ancestors chain.
+
+This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
 ```plaintext
 GET /groups/:id/members/all

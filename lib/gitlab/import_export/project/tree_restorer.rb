@@ -21,8 +21,6 @@ module Gitlab
           @tree_hash = read_tree_hash
           @project_members = @tree_hash.delete('project_members')
 
-          RelationRenameService.rename(@tree_hash)
-
           if relation_tree_restorer.restore
             import_failure_service.with_retry(action: 'set_latest_merge_request_diff_ids!') do
               @project.merge_requests.set_latest_merge_request_diff_ids!

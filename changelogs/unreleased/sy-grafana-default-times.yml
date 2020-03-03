@@ -1,0 +1,5 @@
+---
+title: Allow default time window on grafana embeds
+merge_request: 21884
+author:
+type: changed

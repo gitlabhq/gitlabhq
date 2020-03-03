@@ -35,8 +35,6 @@ module Gitlab
           end
 
           project_tree['project_members'] += group_members_array
-
-          RelationRenameService.add_new_associations(project_tree)
         end
 
         def reader

@@ -89,8 +89,6 @@ describe 'Test coverage of the Project Import' do
   def relations_from_json(json_file)
     json = ActiveSupport::JSON.decode(IO.read(json_file))
 
-    Gitlab::ImportExport::RelationRenameService.rename(json)
-
     [].tap {|res| gather_relations({ project: json }, res, [])}
       .map {|relation_names| relation_names.join('.')}
   end

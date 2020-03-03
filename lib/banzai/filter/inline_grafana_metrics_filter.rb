@@ -13,13 +13,16 @@ module Banzai
         super
       end
 
+      # @return [Hash<Symbol, String>] with keys :grafana_url, :start, and :end
       def embed_params(node)
         query_params = Gitlab::Metrics::Dashboard::Url.parse_query(node['href'])
-        return unless [:panelId, :from, :to].all? do |param|
-          query_params.include?(param)
-        end
 
-        { url: node['href'], start: query_params[:from], end: query_params[:to] }
+        return unless query_params.include?(:panelId)
+
+        time_window = Grafana::TimeWindow.new(query_params[:from], query_params[:to])
+        url = url_with_window(node['href'], query_params, time_window.in_milliseconds)
+
+        { grafana_url: url }.merge(time_window.formatted)
       end
 
       # Selects any links with an href contains the configured
@@ -44,18 +47,24 @@ module Banzai
         Gitlab::Routing.url_helpers.project_grafana_api_metrics_dashboard_url(
           project,
           embedded: true,
-          grafana_url: params[:url],
-          start: format_time(params[:start]),
-          end: format_time(params[:end])
+          **params
         )
       end
 
-      # Formats a timestamp from Grafana for compatibility with
-      # parsing in JS via `new Date(timestamp)`
+      # If the provided url is missing time window parameters,
+      # this inserts the default window into the url, allowing
+      # the embed service to correctly format prometheus
+      # queries during embed processing.
       #
-      # @param time [String] Represents miliseconds since epoch
-      def format_time(time)
-        Time.at(time.to_i / 1000).utc.strftime('%FT%TZ')
+      # @param url [String]
+      # @param query_params [Hash<Symbol, String>]
+      # @param time_window_params [Hash<Symbol, Integer>]
+      # @return [String]
+      def url_with_window(url, query_params, time_window_params)
+        uri = URI(url)
+        uri.query = time_window_params.merge(query_params).to_query
+
+        uri.to_s
       end
 
       # Fetches a dashboard and caches the result for the
