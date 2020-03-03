@@ -33,6 +33,9 @@ In addition to having a basic familiarity with [AWS](https://docs.aws.amazon.com
 - [To create or upload an SSH key](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
   to connect to the instance via SSH
 - A domain name for the GitLab instance
+- An SSL/TLS certificate to secure your domain. If you do not already own one, you can provision a free public SSL/TLS certificate through [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)(ACM) for use with the [Elastic Load Balancer](#load-balancer) we'll create.
+
+NOTE: **Note:** It can take a few hours to validate a certificate provisioned through ACM. To avoid delays later, request your certificate as soon as possible.
 
 ## Architecture
 
@@ -316,6 +319,20 @@ to your load balancer after creating your GitLab instances and add them.
 After the Load Balancer is up and running, you can revisit your Security
 Groups to refine the access only through the ELB and any other requirements
 you might have.
+
+### Configure DNS for Load Balancer
+
+On the Route 53 dashboard, click **Hosted zones** in the left navigation bar:
+
+1. Select an existing hosted zone or, if you do not already have one for your domain, click **Create Hosted Zone**, enter your domain name, and click **Create**.
+1. Click **Create Record Set** and provide the following values:
+    1. **Name:** Use the domain name (the default value) or enter a subdomain.
+    1. **Type:** Select **A - IPv4 address**.
+    1. **Alias Target:** Find the **ELB Classic Load Balancers** section and select the classic load balancer we created earlier.
+    1. **Routing Policy:** We'll use **Simple** but you can choose a different policy based on your use case.
+    1. **Evaluate Target Health:** We'll set this to **No** but you can choose to have the load balancer route traffic based on target health.
+    1. Click **Create**.
+1. Update your DNS records with your domain registrar. The steps for doing this vary depending on which registrar you use and is beyond the scope of this guide.
 
 ## Deploying GitLab inside an auto scaling group
 

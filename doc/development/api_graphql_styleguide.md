@@ -261,7 +261,7 @@ the field depending on if the feature has been enabled or not.
 
 GraphQL feature flags use the common
 [GitLab feature flag](../development/feature_flags.md) system, and can be added to a
-field using the `feature_key` property.
+field using the `feature_flag` property.
 
 For example:
 
@@ -269,11 +269,11 @@ For example:
 field :test_field, type: GraphQL::STRING_TYPE,
       null: false,
       description: 'Some test field',
-      feature_key: :some_feature_key
+      feature_flag: :some_feature_flag
 ```
 
 In the above example, the `test_field` field will only be returned if
-the `some_feature_key` feature flag is enabled.
+the `some_feature_flag` feature flag is enabled.
 
 If the feature flag is not enabled, an error will be returned saying the field does not exist.
 

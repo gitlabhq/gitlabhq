@@ -175,7 +175,9 @@ An approval is optional when a security report:
 - Contains no new vulnerabilities.
 - Contains only new vulnerabilities of `low` or `medium` severity.
 
-### Enabling License Approvals within a project
+## Enabling License Approvals within a project
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
 To enable License Approvals, a [project approval rule](../project/merge_requests/merge_request_approvals.md#multiple-approval-rules-premium)
 must be created with the case-sensitive name `License-Check`. This approval group must be set

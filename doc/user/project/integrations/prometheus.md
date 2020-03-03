@@ -102,15 +102,26 @@ Installing and configuring Prometheus to monitor applications is fairly straight
 #### Configuration in GitLab
 
 The actual configuration of Prometheus integration within GitLab is very simple.
-All you will need is the DNS or IP address of the Prometheus server you'd like
+All you will need is the domain name or IP address of the Prometheus server you'd like
 to integrate with.
 
-1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
-1. Click the **Prometheus** service
-1. Provide the base URL of your server, for example `http://prometheus.example.com/`
-1. Click **Save changes**
+1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services).
+1. Click the **Prometheus** service.
+1. Provide the domain name or IP address of your server, for example `http://prometheus.example.com/` or `http://192.0.2.1/`.
+1. Click **Save changes**.
 
 ![Configure Prometheus Service](img/prometheus_service_configuration.png)
+
+#### Thanos configuration in GitLab
+
+You can configure [Thanos](https://thanos.io/) as a drop-in replacement for Prometheus
+with GitLab. You will need the domain name or IP address of the Thanos server you'd like
+to integrate with.
+
+1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services).
+1. Click the **Prometheus** service.
+1. Provide the domain name or IP address of your server, for example `http://thanos.example.com/` or `http://192.0.2.1/`.
+1. Click **Save changes**.
 
 ## Monitoring CI/CD Environments
 

@@ -7,7 +7,8 @@ module Gitlab
         LABELS = {
           "github"         => "GitHub",
           "gitlab"         => "GitLab.com",
-          "google_oauth2"  => "Google"
+          "google_oauth2"  => "Google",
+          "azure_oauth2"   => "Azure AD"
         }.freeze
 
         def self.authentication(user, provider)

@@ -253,4 +253,4 @@ danger-review:
     - git version
     - node --version
     - yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
-    - danger --verbose  # fail-on-errors=true
+    - danger --fail-on-errors=true --new-comment --remove-previous-comments --verbose

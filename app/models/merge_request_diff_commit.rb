@@ -11,6 +11,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   alias_attribute :id, :sha
 
   def self.create_bulk(merge_request_diff_id, commits)
+    warn 'Deprecated; use `bulk_insert` from `BulkInsertSafe` mixin instead'
     rows = commits.map.with_index do |commit, index|
       # See #parent_ids.
       commit_hash = commit.to_hash.except(:parent_ids)

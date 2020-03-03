@@ -114,9 +114,9 @@ Docker-in-Docker works well, and is the recommended configuration, but it is
 not without its own challenges:
 
 - When using docker-in-docker, each job is in a clean environment without the past
-  history. Concurrent jobs work fine because every build gets it's own
+  history. Concurrent jobs work fine because every build gets its own
   instance of Docker engine so they won't conflict with each other. But this
-  also means jobs can be slower because there's no caching of layers.
+  also means that jobs can be slower because there's no caching of layers.
 - By default, Docker 17.09 and higher uses `--storage-driver overlay2` which is
   the recommended storage driver. See [Using the overlayfs driver](#using-the-overlayfs-driver)
   for details.
