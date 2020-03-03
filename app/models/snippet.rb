@@ -188,14 +188,6 @@ class Snippet < ApplicationRecord
     end
   end
 
-  def self.content_types
-    [
-      ".rb", ".py", ".pl", ".scala", ".c", ".cpp", ".java",
-      ".haml", ".html", ".sass", ".scss", ".xml", ".php", ".erb",
-      ".js", ".sh", ".coffee", ".yml", ".md"
-    ]
-  end
-
   def blob
     @blob ||= Blob.decorate(SnippetBlob.new(self), self)
   end

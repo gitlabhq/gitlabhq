@@ -26,6 +26,26 @@ module API
           with: Entities::RemoteMirror
       end
 
+      desc 'Create remote mirror for a project' do
+        success Entities::RemoteMirror
+      end
+      params do
+        requires :url, type: String, desc: 'The URL for a remote mirror'
+        optional :enabled, type: Boolean, desc: 'Determines if the mirror is enabled'
+        optional :only_protected_branches, type: Boolean, desc: 'Determines if only protected branches are mirrored'
+      end
+      post ':id/remote_mirrors' do
+        create_params = declared_params(include_missing: false)
+
+        new_mirror = user_project.remote_mirrors.create(create_params)
+
+        if new_mirror.persisted?
+          present new_mirror, with: Entities::RemoteMirror
+        else
+          render_validation_error!(new_mirror)
+        end
+      end
+
       desc 'Update the attributes of a single remote mirror' do
         success Entities::RemoteMirror
       end

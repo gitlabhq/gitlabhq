@@ -14,6 +14,18 @@ describe Gitlab::UrlBuilder do
       end
     end
 
+    context 'when passing a batch loaded Commit' do
+      it 'returns a proper URL' do
+        commit = BatchLoader.for(:commit).batch do |batch, loader|
+          batch.each { |commit| loader.call(:commit, build_stubbed(:commit)) }
+        end
+
+        url = described_class.build(commit)
+
+        expect(url).to eq "#{Settings.gitlab['url']}/#{commit.project.full_path}/-/commit/#{commit.id}"
+      end
+    end
+
     context 'when passing an Issue' do
       it 'returns a proper URL' do
         issue = build_stubbed(:issue, iid: 42)
@@ -160,7 +172,7 @@ describe Gitlab::UrlBuilder do
           project = build_stubbed(:project)
 
           expect { described_class.build(project) }
-            .to raise_error(NotImplementedError, 'No URL builder defined for Project')
+            .to raise_error(NotImplementedError, "No URL builder defined for #{project.inspect}")
         end
       end
     end

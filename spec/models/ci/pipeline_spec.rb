@@ -2813,6 +2813,30 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#created_successfully?' do
+    subject { pipeline.created_successfully? }
+
+    context 'when pipeline is not persisted' do
+      let(:pipeline) { build(:ci_pipeline) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when pipeline is persisted' do
+      context 'when pipeline has failure reasons' do
+        let(:pipeline) { create(:ci_pipeline, failure_reason: :config_error) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when pipeline has no failure reasons' do
+        let(:pipeline) { create(:ci_pipeline, failure_reason: nil) }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
   describe '#parent_pipeline' do
     let(:project) { create(:project) }
     let(:pipeline) { create(:ci_pipeline, project: project) }
@@ -2960,8 +2984,7 @@ describe Ci::Pipeline, :mailer do
           it 'can not update bridge status if is not active' do
             bridge.success!
 
-            expect { pipeline.update_bridge_status! }
-              .to raise_error Ci::Pipeline::BridgeStatusError
+            expect { pipeline.update_bridge_status! }.not_to change { bridge.status }
           end
         end
       end
@@ -2992,9 +3015,12 @@ describe Ci::Pipeline, :mailer do
         end
 
         describe '#update_bridge_status!' do
-          it 'can not update upstream job status' do
-            expect { pipeline.update_bridge_status! }
-              .to raise_error ArgumentError
+          it 'tracks an ArgumentError and does not update upstream job status' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:track_exception)
+              .with(instance_of(ArgumentError), pipeline_id: pipeline.id)
+
+            pipeline.update_bridge_status!
           end
         end
       end

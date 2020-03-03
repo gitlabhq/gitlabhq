@@ -21,6 +21,47 @@ describe API::Groups do
     group2.add_owner(user2)
   end
 
+  shared_examples 'group avatar upload' do
+    context 'when valid' do
+      let(:file_path) { 'spec/fixtures/banana_sample.gif' }
+
+      it 'returns avatar url in response' do
+        make_upload_request
+
+        group_id = json_response['id']
+        expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
+                                                  '-/system/group/avatar/'\
+                                                  "#{group_id}/banana_sample.gif")
+      end
+    end
+
+    context 'when invalid' do
+      shared_examples 'invalid file upload request' do
+        it 'returns 400' do
+          make_upload_request
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(response.message).to eq('Bad Request')
+          expect(json_response['message'].to_s).to match(/#{message}/)
+        end
+      end
+
+      context 'when file format is not supported' do
+        let(:file_path) { 'spec/fixtures/doc_sample.txt' }
+        let(:message)   { 'file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico' }
+
+        it_behaves_like 'invalid file upload request'
+      end
+
+      context 'when file format is not supported' do
+        let(:file_path) { 'spec/fixtures/big-image.png' }
+        let(:message)   { 'is too big' }
+
+        it_behaves_like 'invalid file upload request'
+      end
+    end
+  end
+
   describe "GET /groups" do
     context "when unauthenticated" do
       it "returns public groups" do
@@ -539,6 +580,15 @@ describe API::Groups do
   describe 'PUT /groups/:id' do
     let(:new_group_name) { 'New Group'}
 
+    it_behaves_like 'group avatar upload' do
+      def make_upload_request
+        group_param = {
+          avatar: fixture_file_upload(file_path)
+        }
+        put api("/groups/#{group1.id}", user1), params: group_param
+      end
+    end
+
     context 'when authenticated as the group owner' do
       it 'updates the group' do
         put api("/groups/#{group1.id}", user1), params: {
@@ -940,6 +990,16 @@ describe API::Groups do
   end
 
   describe "POST /groups" do
+    it_behaves_like 'group avatar upload' do
+      def make_upload_request
+        params = attributes_for_group_api(request_access_enabled: false).tap do |attrs|
+          attrs[:avatar] = fixture_file_upload(file_path)
+        end
+
+        post api("/groups", user3), params: params
+      end
+    end
+
     context "when authenticated as user without group permissions" do
       it "does not create group" do
         group = attributes_for_group_api

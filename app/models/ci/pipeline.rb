@@ -227,6 +227,7 @@ module Ci
       end
 
       after_transition created: :pending do |pipeline|
+        next if Feature.enabled?(:ci_drop_bridge_on_downstream_errors, pipeline.project, default_enabled: true)
         next unless pipeline.bridge_triggered?
         next if pipeline.bridge_waiting?
 
@@ -756,6 +757,8 @@ module Ci
       raise BridgeStatusError unless source_bridge.active?
 
       source_bridge.success!
+    rescue => e
+      Gitlab::ErrorTracking.track_exception(e, pipeline_id: id)
     end
 
     def bridge_triggered?
@@ -772,6 +775,10 @@ module Ci
 
     def parent?
       child_pipelines.exists?
+    end
+
+    def created_successfully?
+      persisted? && failure_reason.blank?
     end
 
     def detailed_status(current_user)

@@ -39,7 +39,7 @@ class Projects::ForksController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def new
-    @namespaces = fork_service.valid_fork_targets
+    @namespaces = fork_service.valid_fork_targets - [project.namespace]
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

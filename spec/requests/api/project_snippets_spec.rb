@@ -6,6 +6,12 @@ describe API::ProjectSnippets do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }
+  let_it_be(:project_no_snippets) { create(:project, :snippets_disabled) }
+
+  before do
+    project_no_snippets.add_developer(admin)
+    project_no_snippets.add_developer(user)
+  end
 
   describe "GET /projects/:project_id/snippets/:id/user_agent_detail" do
     let(:snippet) { create(:project_snippet, :public, project: project) }
@@ -31,6 +37,12 @@ describe API::ProjectSnippets do
       get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/user_agent_detail", user)
 
       expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    context 'with snippets disabled' do
+      it_behaves_like '403 response' do
+        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/123/user_agent_detail", admin) }
+      end
     end
   end
 
@@ -63,6 +75,12 @@ describe API::ProjectSnippets do
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(0)
     end
+
+    context 'with snippets disabled' do
+      it_behaves_like '403 response' do
+        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets", user) }
+      end
+    end
   end
 
   describe 'GET /projects/:project_id/snippets/:id' do
@@ -84,6 +102,12 @@ describe API::ProjectSnippets do
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Not found')
+    end
+
+    context 'with snippets disabled' do
+      it_behaves_like '403 response' do
+        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/123", user) }
+      end
     end
   end
 
@@ -244,11 +268,17 @@ describe API::ProjectSnippets do
         end
       end
     end
+
+    context 'with snippets disabled' do
+      it_behaves_like '403 response' do
+        let(:request) { post api("/projects/#{project_no_snippets.id}/snippets", user), params: params }
+      end
+    end
   end
 
   describe 'PUT /projects/:project_id/snippets/:id/' do
     let(:visibility_level) { Snippet::PUBLIC }
-    let(:snippet) { create(:project_snippet, author: admin, visibility_level: visibility_level) }
+    let(:snippet) { create(:project_snippet, author: admin, visibility_level: visibility_level, project: project) }
 
     it 'updates snippet' do
       new_content = 'New content'
@@ -354,10 +384,16 @@ describe API::ProjectSnippets do
         end
       end
     end
+
+    context 'with snippets disabled' do
+      it_behaves_like '403 response' do
+        let(:request) { put api("/projects/#{project_no_snippets.id}/snippets/123", admin), params: { description: 'foo' } }
+      end
+    end
   end
 
   describe 'DELETE /projects/:project_id/snippets/:id/' do
-    let(:snippet) { create(:project_snippet, author: admin) }
+    let(:snippet) { create(:project_snippet, author: admin, project: project) }
 
     it 'deletes snippet' do
       delete api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
@@ -375,10 +411,16 @@ describe API::ProjectSnippets do
     it_behaves_like '412 response' do
       let(:request) { api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin) }
     end
+
+    context 'with snippets disabled' do
+      it_behaves_like '403 response' do
+        let(:request) { delete api("/projects/#{project_no_snippets.id}/snippets/123", admin) }
+      end
+    end
   end
 
   describe 'GET /projects/:project_id/snippets/:id/raw' do
-    let(:snippet) { create(:project_snippet, author: admin) }
+    let(:snippet) { create(:project_snippet, author: admin, project: project) }
 
     it 'returns raw text' do
       get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw", admin)
@@ -393,6 +435,12 @@ describe API::ProjectSnippets do
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
+    end
+
+    context 'with snippets disabled' do
+      it_behaves_like '403 response' do
+        let(:request) { get api("/projects/#{project_no_snippets.id}/snippets/123/raw", admin) }
+      end
     end
   end
 end

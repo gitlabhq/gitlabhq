@@ -1150,12 +1150,16 @@ describe API::MergeRequests do
 
   describe 'POST /projects/:id/merge_requests/:merge_request_iid/pipelines' do
     before do
-      stub_ci_pipeline_yaml_file(YAML.dump({
+      stub_ci_pipeline_yaml_file(ci_yaml)
+    end
+
+    let(:ci_yaml) do
+      YAML.dump({
         rspec: {
           script: 'ls',
           only: ['merge_requests']
         }
-      }))
+      })
     end
 
     let(:project) do
@@ -1206,6 +1210,18 @@ describe API::MergeRequests do
       it 'responds with a blank 404' do
         expect { request }.not_to change(Ci::Pipeline, :count)
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the .gitlab-ci.yml file is invalid' do
+      let(:ci_yaml) { 'invalid yaml file' }
+
+      it 'creates a failed pipeline' do
+        expect { request }.to change(Ci::Pipeline, :count).by(1)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_a Hash
+        expect(merge_request.pipelines_for_merge_request.last).to be_failed
+        expect(merge_request.pipelines_for_merge_request.last).to be_config_error
       end
     end
   end

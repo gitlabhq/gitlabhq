@@ -8,7 +8,7 @@ class ForkTargetsFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def execute
-    ::Namespace.where(id: user.manageable_namespaces).where.not(id: project.namespace).sort_by_type
+    ::Namespace.where(id: user.manageable_namespaces).sort_by_type
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

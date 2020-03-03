@@ -62,6 +62,10 @@ module Ci
       end
     end
 
+    def has_downstream_pipeline?
+      sourced_pipelines.exists?
+    end
+
     def downstream_pipeline_params
       return child_params if triggers_child_pipeline?
       return cross_project_params if downstream_project.present?

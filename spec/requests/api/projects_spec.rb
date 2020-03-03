@@ -2935,6 +2935,26 @@ describe API::Projects do
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']['name']).to eq(['has already been taken'])
       end
+
+      it 'forks to the same namespace with alternative path and name' do
+        post api("/projects/#{project.id}/fork", user), params: { path: 'path_2', name: 'name_2' }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['name']).to eq('name_2')
+        expect(json_response['path']).to eq('path_2')
+        expect(json_response['owner']['id']).to eq(user.id)
+        expect(json_response['namespace']['id']).to eq(user.namespace.id)
+        expect(json_response['forked_from_project']['id']).to eq(project.id)
+        expect(json_response['import_status']).to eq('scheduled')
+      end
+
+      it 'fails to fork to the same namespace without alternative path and name' do
+        post api("/projects/#{project.id}/fork", user)
+
+        expect(response).to have_gitlab_http_status(:conflict)
+        expect(json_response['message']['path']).to eq(['has already been taken'])
+        expect(json_response['message']['name']).to eq(['has already been taken'])
+      end
     end
 
     context 'when unauthenticated' do

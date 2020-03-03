@@ -28,8 +28,8 @@ describe ForkTargetsFinder do
   end
 
   describe '#execute' do
-    it 'returns all user manageable namespaces except project namespace' do
-      expect(finder.execute).to match_array([user.namespace, maintained_group, owned_group])
+    it 'returns all user manageable namespaces' do
+      expect(finder.execute).to match_array([user.namespace, maintained_group, owned_group, project.namespace])
     end
   end
 end

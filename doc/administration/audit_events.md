@@ -79,6 +79,8 @@ From there, you can see the following actions:
 - Release was added to a project
 - Release was updated
 - Release milestone associations changed
+- Permission to approve merge requests by committers was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/7531) in GitLab 12.9)
+- Permission to approve merge requests by authors was updated ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/7531) in GitLab 12.9)
 
 ### Instance events **(PREMIUM ONLY)**
 

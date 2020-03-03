@@ -177,18 +177,18 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
 
       describe 'Pipelines for merge requests' do
         before do
-          stub_ci_pipeline_yaml_file(YAML.dump(config))
+          stub_ci_pipeline_yaml_file(config)
         end
 
         context "when .gitlab-ci.yml has merge_requests keywords" do
           let(:config) do
-            {
+            YAML.dump({
               test: {
                 stage: 'test',
                 script: 'echo',
                 only: ['merge_requests']
               }
-            }
+            })
           end
 
           it 'creates a detached merge request pipeline and sets it as a head pipeline' do
@@ -269,12 +269,12 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
 
         context "when .gitlab-ci.yml does not have merge_requests keywords" do
           let(:config) do
-            {
+            YAML.dump({
               test: {
                 stage: 'test',
                 script: 'echo'
               }
-            }
+            })
           end
 
           it 'does not create a detached merge request pipeline' do
@@ -282,6 +282,19 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
 
             merge_request.reload
             expect(merge_request.pipelines_for_merge_request.count).to eq(0)
+          end
+        end
+
+        context 'when .gitlab-ci.yml is invalid' do
+          let(:config) { 'invalid yaml file' }
+
+          it 'persists a pipeline with config error' do
+            expect(merge_request).to be_persisted
+
+            merge_request.reload
+            expect(merge_request.pipelines_for_merge_request.count).to eq(1)
+            expect(merge_request.pipelines_for_merge_request.last).to be_failed
+            expect(merge_request.pipelines_for_merge_request.last).to be_config_error
           end
         end
       end

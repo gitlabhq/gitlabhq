@@ -129,6 +129,21 @@ describe Git::BranchPushService, services: true do
         end
       end
     end
+
+    context 'when .gitlab-ci.yml file is invalid' do
+      before do
+        stub_ci_pipeline_yaml_file('invalid yaml file')
+      end
+
+      it 'persists an error pipeline' do
+        expect { subject }.to change { Ci::Pipeline.count }
+
+        pipeline = Ci::Pipeline.last
+        expect(pipeline).to be_push
+        expect(pipeline).to be_failed
+        expect(pipeline).to be_config_error
+      end
+    end
   end
 
   describe "Updates merge requests" do

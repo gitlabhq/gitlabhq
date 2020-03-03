@@ -1,0 +1,5 @@
+---
+title: Add support for configuring remote mirrors via API
+merge_request: 25825
+author: Rajendra Kadam
+type: added
