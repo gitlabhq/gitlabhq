@@ -8,7 +8,7 @@ module QA
         Flow::Login.sign_in
 
         # Create a project to push to
-        project = Resource::Project.fabricate! do |project|
+        project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'git-protocol-project'
         end
 

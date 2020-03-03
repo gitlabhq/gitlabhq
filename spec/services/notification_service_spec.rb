@@ -394,7 +394,7 @@ describe NotificationService, :mailer do
       end
     end
 
-    context 'confidential issue note', :deliver_mails_inline do
+    context 'confidential issue note' do
       let(:project) { create(:project, :public) }
       let(:author) { create(:user) }
       let(:assignee) { create(:user) }
@@ -406,23 +406,22 @@ describe NotificationService, :mailer do
       let(:note) { create(:note_on_issue, noteable: confidential_issue, project: project, note: "#{author.to_reference} #{assignee.to_reference} #{non_member.to_reference} #{member.to_reference} #{admin.to_reference}") }
       let(:guest_watcher) { create_user_with_notification(:watch, "guest-watcher-confidential") }
 
-      it 'filters out users that can not read the issue' do
+      subject { notification.new_note(note) }
+
+      before do
         project.add_developer(member)
         project.add_guest(guest)
-
-        expect(SentNotification).to receive(:record).with(confidential_issue, any_args).exactly(4).times
-
         reset_delivered_emails!
+      end
 
-        notification.new_note(note)
+      it 'filters out users that can not read the issue' do
+        subject
 
-        should_not_email(non_member)
-        should_not_email(guest)
-        should_not_email(guest_watcher)
-        should_email(author)
-        should_email(assignee)
-        should_email(member)
-        should_email(admin)
+        expect_delivery_jobs_count(4)
+        expect_enqueud_email(author.id, note.id, "mentioned", mail: "note_issue_email")
+        expect_enqueud_email(assignee.id, note.id, "mentioned", mail: "note_issue_email")
+        expect_enqueud_email(member.id, note.id, "mentioned", mail: "note_issue_email")
+        expect_enqueud_email(admin.id, note.id, "mentioned", mail: "note_issue_email")
       end
 
       context 'on project that belongs to subgroup' do
@@ -442,10 +441,10 @@ describe NotificationService, :mailer do
           end
 
           it 'does not email guest user' do
-            notification.new_note(note)
+            subject
 
-            should_email(group_reporter)
-            should_not_email(group_guest)
+            expect_enqueud_email(group_reporter.id, note.id, nil, mail: "note_issue_email")
+            expect_not_enqueud_email(group_guest.id, "mentioned", mail: "note_issue_email")
           end
         end
       end

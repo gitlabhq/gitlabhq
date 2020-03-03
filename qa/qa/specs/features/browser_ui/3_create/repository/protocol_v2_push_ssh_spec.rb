@@ -34,7 +34,7 @@ module QA
 
       it 'user pushes to the repository' do
         # Create a project to push to
-        project = Resource::Project.fabricate! do |project|
+        project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'git-protocol-project'
         end
 
