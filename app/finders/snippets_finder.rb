@@ -61,9 +61,11 @@ class SnippetsFinder < UnionFinder
   def execute
     # The snippet query can be expensive, therefore if the
     # author or project params have been passed and they don't
-    # exist, it's better to return
+    # exist, or if a Project has been passed and has snippets
+    # disabled, it's better to return
     return Snippet.none if author.nil? && params[:author].present?
     return Snippet.none if project.nil? && params[:project].present?
+    return Snippet.none if project && !project.feature_available?(:snippets, current_user)
 
     items = init_collection
     items = by_ids(items)

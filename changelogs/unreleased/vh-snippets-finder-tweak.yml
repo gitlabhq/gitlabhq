@@ -1,0 +1,5 @@
+---
+title: Improve SnippetsFinder performance with disabled project snippets
+merge_request: 26295
+author:
+type: performance

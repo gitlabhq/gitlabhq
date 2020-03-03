@@ -61,7 +61,7 @@ describe API::Tags do
       it 'only returns searched tags' do
         get api("#{route}", user), params: { search: 'v1.1.0' }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
@@ -73,7 +73,7 @@ describe API::Tags do
       it 'returns the repository tags' do
         get api(route, current_user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/tags')
         expect(response).to include_pagination_headers
         expect(json_response.map { |r| r['name'] }).to include(tag_name)
@@ -133,7 +133,7 @@ describe API::Tags do
       it 'returns an array of project tags with release info' do
         get api(route, user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/tags')
         expect(response).to include_pagination_headers
 
@@ -151,7 +151,7 @@ describe API::Tags do
       it 'returns the repository branch' do
         get api(route, current_user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/tag')
         expect(json_response['name']).to eq(tag_name)
       end
@@ -214,7 +214,7 @@ describe API::Tags do
       it 'creates a new tag' do
         post api(route, current_user), params: { tag_name: tag_name, ref: 'master' }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('public_api/v4/tag')
         expect(json_response['name']).to eq(tag_name)
       end
@@ -269,26 +269,26 @@ describe API::Tags do
       it 'returns 400 if tag name is invalid' do
         post api(route, current_user), params: { tag_name: 'new design', ref: 'master' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('Tag name invalid')
       end
 
       it 'returns 400 if tag already exists' do
         post api(route, current_user), params: { tag_name: 'new_design1', ref: 'master' }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('public_api/v4/tag')
 
         post api(route, current_user), params: { tag_name: 'new_design1', ref: 'master' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('Tag new_design1 already exists')
       end
 
       it 'returns 400 if ref name is invalid' do
         post api(route, current_user), params: { tag_name: 'new_design3', ref: 'foo' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('Target foo is invalid')
       end
 
@@ -296,7 +296,7 @@ describe API::Tags do
         it 'creates a new tag' do
           post api(route, current_user), params: { tag_name: tag_name, ref: 'master', release_description: 'Wow' }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(response).to match_response_schema('public_api/v4/tag')
           expect(json_response['name']).to eq(tag_name)
           expect(json_response['release']['description']).to eq('Wow')
@@ -315,7 +315,7 @@ describe API::Tags do
 
           post api(route, current_user), params: { tag_name: 'v7.1.0', ref: 'master', message: 'Release 7.1.0' }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(response).to match_response_schema('public_api/v4/tag')
           expect(json_response['name']).to eq('v7.1.0')
           expect(json_response['message']).to eq('Release 7.1.0')
@@ -337,7 +337,7 @@ describe API::Tags do
       it 'deletes a tag' do
         delete api(route, current_user)
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end
 
       it_behaves_like '412 response' do
@@ -383,7 +383,7 @@ describe API::Tags do
       it 'creates description for existing git tag' do
         post api(route, user), params: { description: description }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('public_api/v4/release/tag_release')
         expect(json_response['tag_name']).to eq(tag_name)
         expect(json_response['description']).to eq(description)
@@ -424,7 +424,7 @@ describe API::Tags do
         it 'returns 409 if there is already a release' do
           post api(route, user), params: { description: description }
 
-          expect(response).to have_gitlab_http_status(409)
+          expect(response).to have_gitlab_http_status(:conflict)
           expect(json_response['message']).to eq('Release already exists')
         end
       end
@@ -449,7 +449,7 @@ describe API::Tags do
         it 'updates the release description' do
           put api(route, current_user), params: { description: new_description }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['tag_name']).to eq(tag_name)
           expect(json_response['description']).to eq(new_description)
         end

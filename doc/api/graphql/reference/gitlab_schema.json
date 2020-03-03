@@ -24550,20 +24550,20 @@
         {
           "kind": "ENUM",
           "name": "MoveType",
-          "description": "The position the adjacent object should be moved.",
+          "description": "The position to which the adjacent object should be moved",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
           "enumValues": [
             {
               "name": "before",
-              "description": "The adjacent object will be moved before the object that is being moved.",
+              "description": "The adjacent object will be moved before the object that is being moved",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "after",
-              "description": "The adjacent object will be moved after the object that is being moved.",
+              "description": "The adjacent object will be moved after the object that is being moved",
               "isDeprecated": false,
               "deprecationReason": null
             }

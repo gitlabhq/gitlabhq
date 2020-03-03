@@ -166,7 +166,7 @@ describe API::Todos do
       it 'returns authentication error' do
         post api("/todos/#{pending_1.id}/mark_as_done")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -174,7 +174,7 @@ describe API::Todos do
       it 'marks a todo as done' do
         post api("/todos/#{pending_1.id}/mark_as_done", john_doe)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['id']).to eq(pending_1.id)
         expect(json_response['state']).to eq('done')
         expect(pending_1.reload).to be_done
@@ -199,7 +199,7 @@ describe API::Todos do
       it 'returns authentication error' do
         post api('/todos/mark_as_done')
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -207,7 +207,7 @@ describe API::Todos do
       it 'marks all todos as done' do
         post api('/todos/mark_as_done', john_doe)
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
         expect(pending_1.reload).to be_done
         expect(pending_2.reload).to be_done
         expect(pending_3.reload).to be_done
@@ -258,9 +258,9 @@ describe API::Todos do
       post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", guest)
 
       if issuable_type == 'merge_requests'
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       else
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

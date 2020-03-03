@@ -8,6 +8,7 @@ class GitlabDanger
     duplicate_yarn_dependencies
     prettier
     eslint
+    karma
     database
     commit_messages
   ].freeze

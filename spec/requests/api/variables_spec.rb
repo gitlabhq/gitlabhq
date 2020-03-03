@@ -15,7 +15,7 @@ describe API::Variables do
       it 'returns project variables' do
         get api("/projects/#{project.id}/variables", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_a(Array)
       end
     end
@@ -24,7 +24,7 @@ describe API::Variables do
       it 'does not return project variables' do
         get api("/projects/#{project.id}/variables", user2)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -32,7 +32,7 @@ describe API::Variables do
       it 'does not return project variables' do
         get api("/projects/#{project.id}/variables")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end
@@ -42,7 +42,7 @@ describe API::Variables do
       it 'returns project variable details' do
         get api("/projects/#{project.id}/variables/#{variable.key}", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['value']).to eq(variable.value)
         expect(json_response['protected']).to eq(variable.protected?)
         expect(json_response['masked']).to eq(variable.masked?)
@@ -52,7 +52,7 @@ describe API::Variables do
       it 'responds with 404 Not Found if requesting non-existing variable' do
         get api("/projects/#{project.id}/variables/non_existing_variable", user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -60,7 +60,7 @@ describe API::Variables do
       it 'does not return project variable details' do
         get api("/projects/#{project.id}/variables/#{variable.key}", user2)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -68,7 +68,7 @@ describe API::Variables do
       it 'does not return project variable details' do
         get api("/projects/#{project.id}/variables/#{variable.key}")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end
@@ -80,7 +80,7 @@ describe API::Variables do
           post api("/projects/#{project.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked: true }
         end.to change {project.variables.count}.by(1)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('PROTECTED_VALUE_2')
         expect(json_response['protected']).to be_truthy
@@ -93,7 +93,7 @@ describe API::Variables do
           post api("/projects/#{project.id}/variables", user), params: { variable_type: 'file',  key: 'TEST_VARIABLE_2', value: 'VALUE_2' }
         end.to change {project.variables.count}.by(1)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['protected']).to be_falsey
@@ -106,7 +106,7 @@ describe API::Variables do
           post api("/projects/#{project.id}/variables", user), params: { key: variable.key, value: 'VALUE_2' }
         end.to change {project.variables.count}.by(0)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'creates variable with a specific environment scope' do
@@ -114,7 +114,7 @@ describe API::Variables do
           post api("/projects/#{project.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'VALUE_2', environment_scope: 'review/*' }
         end.to change { project.variables.reload.count }.by(1)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['environment_scope']).to eq('review/*')
@@ -127,7 +127,7 @@ describe API::Variables do
           post api("/projects/#{project.id}/variables", user), params: { key: variable.key, value: 'VALUE_2', environment_scope: 'review/*' }
         end.to change { project.variables.reload.count }.by(1)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['key']).to eq(variable.key)
         expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['environment_scope']).to eq('review/*')
@@ -138,7 +138,7 @@ describe API::Variables do
       it 'does not create variable' do
         post api("/projects/#{project.id}/variables", user2)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -146,7 +146,7 @@ describe API::Variables do
       it 'does not create variable' do
         post api("/projects/#{project.id}/variables")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end
@@ -161,7 +161,7 @@ describe API::Variables do
 
         updated_variable = project.variables.reload.first
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(value_before).to eq(variable.value)
         expect(updated_variable.value).to eq('VALUE_1_UP')
         expect(updated_variable).to be_protected
@@ -171,7 +171,7 @@ describe API::Variables do
       it 'responds with 404 Not Found if requesting non-existing variable' do
         put api("/projects/#{project.id}/variables/non_existing_variable", user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -179,7 +179,7 @@ describe API::Variables do
       it 'does not update variable' do
         put api("/projects/#{project.id}/variables/#{variable.key}", user2)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -187,7 +187,7 @@ describe API::Variables do
       it 'does not update variable' do
         put api("/projects/#{project.id}/variables/#{variable.key}")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end
@@ -198,14 +198,14 @@ describe API::Variables do
         expect do
           delete api("/projects/#{project.id}/variables/#{variable.key}", user)
 
-          expect(response).to have_gitlab_http_status(204)
+          expect(response).to have_gitlab_http_status(:no_content)
         end.to change {project.variables.count}.by(-1)
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do
         delete api("/projects/#{project.id}/variables/non_existing_variable", user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -213,7 +213,7 @@ describe API::Variables do
       it 'does not delete variable' do
         delete api("/projects/#{project.id}/variables/#{variable.key}", user2)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -221,7 +221,7 @@ describe API::Variables do
       it 'does not delete variable' do
         delete api("/projects/#{project.id}/variables/#{variable.key}")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end

@@ -4831,16 +4831,16 @@ enum MilestoneStateEnum {
 }
 
 """
-The position the adjacent object should be moved.
+The position to which the adjacent object should be moved
 """
 enum MoveType {
   """
-  The adjacent object will be moved after the object that is being moved.
+  The adjacent object will be moved after the object that is being moved
   """
   after
 
   """
-  The adjacent object will be moved before the object that is being moved.
+  The adjacent object will be moved before the object that is being moved
   """
   before
 }
