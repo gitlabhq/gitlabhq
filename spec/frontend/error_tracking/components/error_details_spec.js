@@ -1,8 +1,15 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { __ } from '~/locale';
-import { GlLoadingIcon, GlLink, GlBadge, GlFormInput, GlAlert, GlSprintf } from '@gitlab/ui';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import {
+  GlButton,
+  GlLoadingIcon,
+  GlLink,
+  GlBadge,
+  GlFormInput,
+  GlAlert,
+  GlSprintf,
+} from '@gitlab/ui';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
 import {
@@ -28,7 +35,7 @@ describe('ErrorDetails', () => {
 
   function mountComponent() {
     wrapper = shallowMount(ErrorDetails, {
-      stubs: { LoadingButton, GlSprintf },
+      stubs: { GlButton, GlSprintf },
       localVue,
       store,
       mocks,
@@ -127,7 +134,7 @@ describe('ErrorDetails', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
       expect(wrapper.find(Stacktrace).exists()).toBe(false);
       expect(wrapper.find(GlBadge).exists()).toBe(false);
-      expect(wrapper.findAll('button').length).toBe(3);
+      expect(wrapper.findAll(GlButton).length).toBe(3);
     });
 
     describe('Badges', () => {
@@ -226,7 +233,7 @@ describe('ErrorDetails', () => {
       it('should submit the form', () => {
         window.HTMLFormElement.prototype.submit = () => {};
         const submitSpy = jest.spyOn(wrapper.vm.$refs.sentryIssueForm, 'submit');
-        wrapper.find('[data-qa-selector="create_issue_button"]').trigger('click');
+        wrapper.find('[data-qa-selector="create_issue_button"]').vm.$emit('click');
         expect(submitSpy).toHaveBeenCalled();
         submitSpy.mockRestore();
       });
@@ -255,14 +262,14 @@ describe('ErrorDetails', () => {
         });
 
         it('marks error as ignored when ignore button is clicked', () => {
-          findUpdateIgnoreStatusButton().trigger('click');
+          findUpdateIgnoreStatusButton().vm.$emit('click');
           expect(actions.updateIgnoreStatus.mock.calls[0][1]).toEqual(
             expect.objectContaining({ status: errorStatus.IGNORED }),
           );
         });
 
         it('marks error as resolved when resolve button is clicked', () => {
-          findUpdateResolveStatusButton().trigger('click');
+          findUpdateResolveStatusButton().vm.$emit('click');
           expect(actions.updateResolveStatus.mock.calls[0][1]).toEqual(
             expect.objectContaining({ status: errorStatus.RESOLVED }),
           );
@@ -281,14 +288,14 @@ describe('ErrorDetails', () => {
         });
 
         it('marks error as unresolved when ignore button is clicked', () => {
-          findUpdateIgnoreStatusButton().trigger('click');
+          findUpdateIgnoreStatusButton().vm.$emit('click');
           expect(actions.updateIgnoreStatus.mock.calls[0][1]).toEqual(
             expect.objectContaining({ status: errorStatus.UNRESOLVED }),
           );
         });
 
         it('marks error as resolved when resolve button is clicked', () => {
-          findUpdateResolveStatusButton().trigger('click');
+          findUpdateResolveStatusButton().vm.$emit('click');
           expect(actions.updateResolveStatus.mock.calls[0][1]).toEqual(
             expect.objectContaining({ status: errorStatus.RESOLVED }),
           );
@@ -307,14 +314,14 @@ describe('ErrorDetails', () => {
         });
 
         it('marks error as ignored when ignore button is clicked', () => {
-          findUpdateIgnoreStatusButton().trigger('click');
+          findUpdateIgnoreStatusButton().vm.$emit('click');
           expect(actions.updateIgnoreStatus.mock.calls[0][1]).toEqual(
             expect.objectContaining({ status: errorStatus.IGNORED }),
           );
         });
 
         it('marks error as unresolved when unresolve button is clicked', () => {
-          findUpdateResolveStatusButton().trigger('click');
+          findUpdateResolveStatusButton().vm.$emit('click');
           expect(actions.updateResolveStatus.mock.calls[0][1]).toEqual(
             expect.objectContaining({ status: errorStatus.UNRESOLVED }),
           );

@@ -1281,6 +1281,9 @@ msgstr ""
 msgid "Admin notes"
 msgstr ""
 
+msgid "AdminArea|Included Free in license"
+msgstr ""
+
 msgid "AdminArea|Stop all jobs"
 msgstr ""
 
@@ -2010,6 +2013,9 @@ msgid "Ancestors"
 msgstr ""
 
 msgid "Anonymous"
+msgstr ""
+
+msgid "Another issue tracker is already in use. Only one issue tracker service can be active at a time"
 msgstr ""
 
 msgid "Anti-spam verification"
@@ -3246,6 +3252,9 @@ msgid "Cannot merge"
 msgstr ""
 
 msgid "Cannot modify managed Kubernetes cluster"
+msgstr ""
+
+msgid "Cannot modify provider during creation"
 msgstr ""
 
 msgid "Cannot refer to a group milestone by an internal id!"
@@ -5817,6 +5826,9 @@ msgstr ""
 msgid "Current node"
 msgstr ""
 
+msgid "Current node must be the primary node or you will be locking yourself out"
+msgstr ""
+
 msgid "Current password"
 msgstr ""
 
@@ -8018,6 +8030,9 @@ msgstr ""
 msgid "Evidence collection"
 msgstr ""
 
+msgid "Exactly one of %{attributes} is required"
+msgstr ""
+
 msgid "Example: @sub\\.company\\.com$"
 msgstr ""
 
@@ -9776,6 +9791,9 @@ msgstr ""
 msgid "Group pipeline minutes were successfully reset."
 msgstr ""
 
+msgid "Group requires separate account"
+msgstr ""
+
 msgid "Group variables (inherited)"
 msgstr ""
 
@@ -10119,6 +10137,9 @@ msgid "Guideline"
 msgstr ""
 
 msgid "HTTP Basic: Access denied\\nYou must use a personal access token with 'api' scope for Git over HTTP.\\nYou can generate one at %{profile_personal_access_tokens_url}"
+msgstr ""
+
+msgid "Hashed Storage must be enabled to use Geo"
 msgstr ""
 
 msgid "Hashed repository storage paths"
@@ -10755,6 +10776,9 @@ msgstr ""
 msgid "Invalid field"
 msgstr ""
 
+msgid "Invalid file format with specified file type"
+msgstr ""
+
 msgid "Invalid file."
 msgstr ""
 
@@ -10846,6 +10870,9 @@ msgid "Issue cannot be found."
 msgstr ""
 
 msgid "Issue events"
+msgstr ""
+
+msgid "Issue or Merge Request ID is required"
 msgstr ""
 
 msgid "Issue template (optional)"
@@ -12387,6 +12414,9 @@ msgstr ""
 msgid "Metrics|Prometheus Query Documentation"
 msgstr ""
 
+msgid "Metrics|Reload this page"
+msgstr ""
+
 msgid "Metrics|Show last"
 msgstr ""
 
@@ -12430,6 +12460,9 @@ msgid "Metrics|Used if the query returns a single series. If it returns multiple
 msgstr ""
 
 msgid "Metrics|Validating query"
+msgstr ""
+
+msgid "Metrics|Values"
 msgstr ""
 
 msgid "Metrics|View logs"
@@ -13141,6 +13174,9 @@ msgstr ""
 msgid "Note"
 msgstr ""
 
+msgid "Note parameters are invalid: %{errors}"
+msgstr ""
+
 msgid "Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."
 msgstr ""
 
@@ -13374,6 +13410,12 @@ msgstr ""
 msgid "Only 'Reporter' roles and above on tiers Premium / Silver and above can see Value Stream Analytics."
 msgstr ""
 
+msgid "Only 1 appearances row can exist"
+msgstr ""
+
+msgid "Only Issue ID or Merge Request ID is required"
+msgstr ""
+
 msgid "Only Project Members"
 msgstr ""
 
@@ -13548,10 +13590,22 @@ msgstr ""
 msgid "Package Registry"
 msgstr ""
 
+msgid "Package already exists"
+msgstr ""
+
 msgid "Package deleted successfully"
 msgstr ""
 
 msgid "Package information"
+msgstr ""
+
+msgid "Package recipe already exists"
+msgstr ""
+
+msgid "Package type must be Conan"
+msgstr ""
+
+msgid "Package type must be Maven"
 msgstr ""
 
 msgid "Package was removed"
@@ -15753,6 +15807,9 @@ msgstr ""
 msgid "Pull"
 msgstr ""
 
+msgid "Pull requests from fork are not supported"
+msgstr ""
+
 msgid "Puma is running with a thread count above 1 and the Rugged service is enabled. This may decrease performance in some environments. See our %{link_start}documentation%{link_end} for details of this issue."
 msgstr ""
 
@@ -16014,6 +16071,9 @@ msgid "Release"
 msgid_plural "Releases"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Release does not have the same project as the milestone"
+msgstr ""
 
 msgid "Release notes"
 msgstr ""
@@ -16832,6 +16892,9 @@ msgid "Scoped label"
 msgstr ""
 
 msgid "Scopes"
+msgstr ""
+
+msgid "Scopes can't be blank"
 msgstr ""
 
 msgid "Scroll down"
@@ -17906,6 +17969,9 @@ msgid "Size limit per repository (MB)"
 msgstr ""
 
 msgid "Size settings for static websites"
+msgstr ""
+
+msgid "Skip older, pending deployment jobs"
 msgstr ""
 
 msgid "Skip this for now"
@@ -19349,6 +19415,9 @@ msgstr ""
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
 msgstr ""
 
+msgid "The license key is invalid. Make sure it is exactly as you received it from GitLab Inc."
+msgstr ""
+
 msgid "The license was removed. GitLab has fallen back on the previous license."
 msgstr ""
 
@@ -20003,6 +20072,9 @@ msgstr ""
 msgid "This job will automatically run after its timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
 msgstr ""
 
+msgid "This license has already expired."
+msgstr ""
+
 msgid "This may expose confidential information as the selected fork is in another namespace that can have other members."
 msgstr ""
 
@@ -20114,6 +20186,9 @@ msgstr ""
 msgid "Those emails automatically become issues (with the comments becoming the email conversation) listed here."
 msgstr ""
 
+msgid "Thread to reply to cannot be found"
+msgstr ""
+
 msgid "Threat Monitoring"
 msgstr ""
 
@@ -20208,6 +20283,9 @@ msgid "Time spent"
 msgstr ""
 
 msgid "Time to merge"
+msgstr ""
+
+msgid "Time to subtract exceeds the total time spent"
 msgstr ""
 
 msgid "Time tracking"
@@ -21288,6 +21366,9 @@ msgstr ""
 msgid "User identity was successfully updated."
 msgstr ""
 
+msgid "User is not allowed to resolve thread"
+msgstr ""
+
 msgid "User key was successfully removed."
 msgstr ""
 
@@ -22043,6 +22124,9 @@ msgstr ""
 msgid "What are you searching for?"
 msgstr ""
 
+msgid "When a deployment job is successful, skip older deployment jobs that are still pending"
+msgstr ""
+
 msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
@@ -22598,6 +22682,9 @@ msgid "You need to be logged in."
 msgstr ""
 
 msgid "You need to register a two-factor authentication app before you can set up a U2F device."
+msgstr ""
+
+msgid "You need to set terms to be enforced"
 msgstr ""
 
 msgid "You need to specify both an Access Token and a Host URL."

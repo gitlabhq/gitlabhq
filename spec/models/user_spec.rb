@@ -29,6 +29,7 @@ describe User, :do_not_mock_admin_mode do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_one(:status) }
     it { is_expected.to have_one(:max_access_level_membership) }
+    it { is_expected.to have_one(:user_detail) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:project_members) }
@@ -4316,6 +4317,21 @@ describe User, :do_not_mock_admin_mode do
         email: user.email
       }
       expect(user.hook_attrs).to eq(user_attributes)
+    end
+  end
+
+  describe 'user detail' do
+    context 'when user is initialized' do
+      let(:user) { build(:user) }
+
+      it { expect(user.user_detail).to be_present }
+      it { expect(user.user_detail).not_to be_persisted }
+    end
+
+    context 'when user detail exists' do
+      let(:user) { create(:user, job_title: 'Engineer') }
+
+      it { expect(user.user_detail).to be_persisted }
     end
   end
 end

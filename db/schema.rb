@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_26_162723) do
+ActiveRecord::Schema.define(version: 2020_02_27_165129) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -4170,6 +4170,11 @@ ActiveRecord::Schema.define(version: 2020_02_26_162723) do
     t.index ["user_id", "key"], name: "index_user_custom_attributes_on_user_id_and_key", unique: true
   end
 
+  create_table "user_details", primary_key: "user_id", force: :cascade do |t|
+    t.string "job_title", limit: 200, default: "", null: false
+    t.index ["user_id"], name: "index_user_details_on_user_id", unique: true
+  end
+
   create_table "user_interacted_projects", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id", null: false
@@ -5028,6 +5033,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_162723) do
   add_foreign_key "u2f_registrations", "users"
   add_foreign_key "user_callouts", "users", on_delete: :cascade
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
+  add_foreign_key "user_details", "users", on_delete: :cascade
   add_foreign_key "user_interacted_projects", "projects", name: "fk_722ceba4f7", on_delete: :cascade
   add_foreign_key "user_interacted_projects", "users", name: "fk_0894651f08", on_delete: :cascade
   add_foreign_key "user_preferences", "users", on_delete: :cascade

@@ -95,6 +95,7 @@ GET /users
     "twitter": "",
     "website_url": "",
     "organization": "",
+    "job_title": "",
     "last_sign_in_at": "2012-06-01T11:41:01Z",
     "confirmed_at": "2012-05-23T09:05:22Z",
     "theme_id": 1,
@@ -132,6 +133,7 @@ GET /users
     "twitter": "",
     "website_url": "",
     "organization": "",
+    "job_title": "",
     "last_sign_in_at": null,
     "confirmed_at": "2012-05-30T16:53:06.148Z",
     "theme_id": 1,
@@ -247,7 +249,8 @@ Parameters:
   "linkedin": "",
   "twitter": "",
   "website_url": "",
-  "organization": ""
+  "organization": "",
+  "job_title": "Operations Specialist"
 }
 ```
 
@@ -282,6 +285,7 @@ Example Responses:
   "twitter": "",
   "website_url": "",
   "organization": "",
+  "job_title": "Operations Specialist",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
   "theme_id": 1,
@@ -545,6 +549,7 @@ GET /user
   "twitter": "",
   "website_url": "",
   "organization": "",
+  "job_title": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
   "theme_id": 1,

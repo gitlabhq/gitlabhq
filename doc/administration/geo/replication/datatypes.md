@@ -75,7 +75,7 @@ GitLab stores files and blobs such as Issue attachments or LFS objects into eith
 - The filesystem in a specific location.
 - An Object Storage solution. Object Storage solutions can be:
   - Cloud based like Amazon S3 Google Cloud Storage.
-  - Self hosted (like MinIO).
+  - Hosted by you (like MinIO).
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
 When using the filesystem store instead of Object Storage, you need to use network mounted filesystems

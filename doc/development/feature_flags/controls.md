@@ -147,7 +147,7 @@ is always on or off to the users.
 ## Cleaning up
 
 Once the change is deemed stable, submit a new merge request to remove the
-feature flag. This ensures the change is available to all users and self-hosted
+feature flag. This ensures the change is available to all users and self-managed
 instances. Make sure to add the ~"feature flag" label to this merge request so
 release managers are aware the changes are hidden behind a feature flag. If the
 merge request has to be picked into a stable branch, make sure to also add the

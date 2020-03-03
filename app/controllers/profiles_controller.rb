@@ -117,6 +117,7 @@ class ProfilesController < Profiles::ApplicationController
       :private_profile,
       :include_private_contributions,
       :timezone,
+      :job_title,
       status: [:emoji, :message]
     )
   end

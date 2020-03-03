@@ -1,0 +1,5 @@
+---
+title: Refresh widget after canceling "Merge When Pipeline Succeeds"
+merge_request: 26232
+author:
+type: fixed

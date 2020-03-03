@@ -1,3 +1,4 @@
+import { SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
 import {
   uniqMetricsId,
   parseEnvironmentsResponse,
@@ -44,6 +45,11 @@ describe('mapToDashboardViewModel', () => {
               title: 'Title A',
               type: 'chart-type',
               y_label: 'Y Label A',
+              yAxis: {
+                name: 'Y Label A',
+                format: 'number',
+                precision: 2,
+              },
               metrics: [],
             },
           ],
@@ -87,6 +93,98 @@ describe('mapToDashboardViewModel', () => {
           panels: [],
         },
       ]);
+    });
+  });
+
+  describe('panel mapping', () => {
+    const panelTitle = 'Panel Title';
+    const yAxisName = 'Y Axis Name';
+
+    let dashboard;
+
+    const setupWithPanel = panel => {
+      dashboard = {
+        panel_groups: [
+          {
+            panels: [panel],
+          },
+        ],
+      };
+    };
+
+    const getMappedPanel = () => mapToDashboardViewModel(dashboard).panelGroups[0].panels[0];
+
+    it('group y_axis defaults', () => {
+      setupWithPanel({
+        title: panelTitle,
+      });
+
+      expect(getMappedPanel()).toEqual({
+        title: panelTitle,
+        y_label: '',
+        yAxis: {
+          name: '',
+          format: SUPPORTED_FORMATS.number,
+          precision: 2,
+        },
+        metrics: [],
+      });
+    });
+
+    it('panel with y_axis.name', () => {
+      setupWithPanel({
+        y_axis: {
+          name: yAxisName,
+        },
+      });
+
+      expect(getMappedPanel().y_label).toBe(yAxisName);
+      expect(getMappedPanel().yAxis.name).toBe(yAxisName);
+    });
+
+    it('panel with y_axis.name and y_label, displays y_axis.name', () => {
+      setupWithPanel({
+        y_label: 'Ignored Y Label',
+        y_axis: {
+          name: yAxisName,
+        },
+      });
+
+      expect(getMappedPanel().y_label).toBe(yAxisName);
+      expect(getMappedPanel().yAxis.name).toBe(yAxisName);
+    });
+
+    it('group y_label', () => {
+      setupWithPanel({
+        y_label: yAxisName,
+      });
+
+      expect(getMappedPanel().y_label).toBe(yAxisName);
+      expect(getMappedPanel().yAxis.name).toBe(yAxisName);
+    });
+
+    it('group y_axis format and precision', () => {
+      setupWithPanel({
+        title: panelTitle,
+        y_axis: {
+          precision: 0,
+          format: SUPPORTED_FORMATS.bytes,
+        },
+      });
+
+      expect(getMappedPanel().yAxis.format).toBe(SUPPORTED_FORMATS.bytes);
+      expect(getMappedPanel().yAxis.precision).toBe(0);
+    });
+
+    it('group y_axis unsupported format defaults to number', () => {
+      setupWithPanel({
+        title: panelTitle,
+        y_axis: {
+          format: 'invalid_format',
+        },
+      });
+
+      expect(getMappedPanel().yAxis.format).toBe(SUPPORTED_FORMATS.number);
     });
   });
 

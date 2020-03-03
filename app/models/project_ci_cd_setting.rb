@@ -31,7 +31,7 @@ class ProjectCiCdSetting < ApplicationRecord
   end
 
   def forward_deployment_enabled?
-    super && ::Feature.enabled?(:forward_deployment_enabled, project)
+    super && ::Feature.enabled?(:forward_deployment_enabled, project, default_enabled: true)
   end
 
   private

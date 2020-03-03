@@ -15,7 +15,6 @@ import {
   GlDropdownDivider,
 } from '@gitlab/ui';
 import { __, sprintf, n__ } from '~/locale';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import Stacktrace from './stacktrace.vue';
@@ -28,7 +27,6 @@ import query from '../queries/details.query.graphql';
 
 export default {
   components: {
-    LoadingButton,
     GlButton,
     GlFormInput,
     GlLink,
@@ -234,19 +232,21 @@ export default {
         </div>
         <div class="error-details-actions">
           <div class="d-inline-flex bv-d-sm-down-none">
-            <loading-button
-              :label="ignoreBtnLabel"
+            <gl-button
               :loading="updatingIgnoreStatus"
               data-qa-selector="update_ignore_status_button"
               @click="onIgnoreStatusUpdate"
-            />
-            <loading-button
+            >
+              {{ ignoreBtnLabel }}
+            </gl-button>
+            <gl-button
               class="btn-outline-info ml-2"
-              :label="resolveBtnLabel"
               :loading="updatingResolveStatus"
               data-qa-selector="update_resolve_status_button"
               @click="onResolveStatusUpdate"
-            />
+            >
+              {{ resolveBtnLabel }}
+            </gl-button>
             <gl-button
               v-if="error.gitlabIssuePath"
               class="ml-2"
@@ -270,14 +270,15 @@ export default {
                 name="issue[sentry_issue_attributes][sentry_issue_identifier]"
               />
               <gl-form-input :value="csrfToken" class="hidden" name="authenticity_token" />
-              <loading-button
+              <gl-button
                 v-if="!error.gitlabIssuePath"
                 class="btn-success"
-                :label="__('Create issue')"
                 :loading="issueCreationInProgress"
                 data-qa-selector="create_issue_button"
                 @click="createIssue"
-              />
+              >
+                {{ __('Create issue') }}
+              </gl-button>
             </form>
           </div>
           <gl-dropdown

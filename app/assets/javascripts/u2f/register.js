@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import _ from 'underscore';
+import { template as lodashTemplate } from 'lodash';
 import importU2FLibrary from './util';
 import U2FError from './error';
 
@@ -59,7 +59,7 @@ export default class U2FRegister {
 
   renderTemplate(name, params) {
     const templateString = $(this.templates[name]).html();
-    const template = _.template(templateString);
+    const template = lodashTemplate(templateString);
     return this.container.html(template(params));
   }
 

@@ -121,7 +121,7 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 
 To change billing information:
 
-1. Log in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Go to the **My Account** page.
 1. Make the required changes to the **Account Details** information.
 1. Click **Update Account**.
@@ -143,7 +143,7 @@ account:
 1. On the Customers Portal page, click
    [**My Account**](https://customers.gitlab.com/customers/edit) in the top menu.
 1. Under **Your GitLab.com account**, click **Change linked account** button.
-1. Log in to the [GitLab.com](https://gitlab.com) account you want to link to Customers Portal.
+1. Log in to the [GitLab.com](https://gitlab.com) account you want to link to the Customers Portal.
 
 ### Change the associated namespace
 
@@ -195,9 +195,9 @@ The [Customers Portal](https://customers.gitlab.com/customers/sign_in) is your t
 TIP: **Tip:**
 Contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) if you need assistance accessing the Customers Portal or if you need to change the contact person who manages your subscription.
 
-Check who is accessing your system. Are there user accounts which are no longer active? It's important to regularly review your GitLab user accounts because:
+It's important to regularly review your user accounts, because:
 
-- A GitLab subscription is based on the number of users. Renewing a subscription for too many users results in you paying more than you should. Attempting to renew a subscription for too few users will result in the renewal failing.
+- A GitLab subscription is based on the number of users. You will pay more than you should if you renew for too many users, while the renewal will fail if you attempt to renew a subscription for too few users.
 - Stale user accounts can be a security risk. A regular review helps reduce this risk.
 
 #### Users over License
@@ -219,7 +219,7 @@ Self-managed instances can add users to a subscription any time during the subsc
 
 To add users to a subscription:
 
-1. Log in to [Customers Portal](https://customers.gitlab.com/).
+1. Log in to the [Customers Portal](https://customers.gitlab.com/).
 1. Select **Manage Purchases**.
 1. Select **Add more seats**.
 1. Enter the number of additional users.
@@ -234,7 +234,7 @@ The following will be emailed to you:
 
 ### Renew or change a GitLab.com subscription
 
-To renew for more users than are currently active in your GitLab.com system, contact our sales team via `renewals@gitlab.com` for assistance as this can't be done in Customers Portal.
+To renew for more users than are currently active in your GitLab.com system, contact our sales team via `renewals@gitlab.com` for assistance as this can't be done in the Customers Portal.
 
 To change the [GitLab tier](https://about.gitlab.com/pricing/), select **Upgrade** under your subscription on the [My Account](https://customers.gitlab.com/subscriptions) page.
 
@@ -259,13 +259,13 @@ We recommend following these steps during renewal:
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and select the **Renew** button beneath your existing subscription.
 
    TIP: **Tip:**
-   If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team via `renewals@gitlab.com` for assistance as this can't be done in Customers Portal.
+   If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team via `renewals@gitlab.com` for assistance as this can't be done in the Customers Portal.
 
 1. In the first box, enter the total number of user licenses you’ll need for the upcoming year. Be sure this number is at least **equal to, or greater than** the number of active users in the system at the time of performing the renewal.
 1. Enter the number of [users over license](#users-over-license) in the second box for the user overage incurred in your previous subscription term.
 
    TIP: **Tip:**
-   You can find the _users over license_ in your instance's **Admin** dashboard by clicking on {**admin**} (**Admin Area**) in the top bar, or going to `/admin`.
+   You can find the _users over license_ in your instance's **Admin** dashboard by clicking on **{admin}** (**Admin Area**) in the top bar, or going to `/admin`.
 
 1. Review your renewal details and complete the payment process.
 1. A license for the renewal term will be available on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page beneath your new subscription details.
@@ -294,12 +294,10 @@ CI pipeline minutes are the execution time for your [pipelines](../ci/pipelines.
 
 Quotas apply to:
 
-- Groups, where the minutes are shared across all members of the group, its subgroups, and nested projects. To view the group's usage, navigate to the group's page, then **Settings > Usage Quotas**.
-- Your personal account, where the minutes are available for your personal projects. To view and buy personal minutes, click your avatar, then **Settings > Pipeline quota**.
+- Groups, where the minutes are shared across all members of the group, its subgroups, and nested projects. To view the group's usage, navigate to the group, then **{settings}** **Settings > Usage Quotas**.
+- Your personal account, where the minutes are available for your personal projects. To view and buy personal minutes, click your avatar, then **{settings}** **Settings > Pipeline quota**.
 
 Only pipeline minutes for GitLab shared runners are restricted. If you have a specific runner set up for your projects, there is no limit to your build time on GitLab.com.
-
-The minutes limit does not apply to public projects.
 
 The available quota is reset on the first of each calendar month at midnight UTC.
 
@@ -317,10 +315,10 @@ main quota. Additional minutes:
 
 To purchase additional minutes for your group on GitLab.com:
 
-1. From your group, go to **Settings > Pipeline quota**.
+1. From your group, go to **{settings}** **Settings > Usage Quotas**.
 1. Locate the subscription card that's linked to your group on GitLab.com, click **Buy more CI minutes**, and complete the details about the transaction.
 1. Once we have processed your payment, the extra CI minutes will be synced to your group.
-1. To confirm the available CI minutes, go to **Group > Settings > Pipelines quota**.  
+1. To confirm the available CI minutes, go to your group, then **{settings}** **Settings > Usage Quotas**.
    The **Additional minutes** displayed now includes the purchased additional CI minutes, plus any minutes rolled over from last month.
 
 To purchase additional minutes for your personal namespace:

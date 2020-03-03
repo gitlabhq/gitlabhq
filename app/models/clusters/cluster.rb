@@ -306,7 +306,7 @@ module Clusters
         .where.not(id: id)
 
       if duplicate_management_clusters.any?
-        errors.add(:environment_scope, "cannot add duplicated environment scope")
+        errors.add(:environment_scope, 'cannot add duplicated environment scope')
       end
     end
 
@@ -380,7 +380,7 @@ module Clusters
 
     def restrict_modification
       if provider&.on_creation?
-        errors.add(:base, "cannot modify during creation")
+        errors.add(:base, _('Cannot modify provider during creation'))
         return false
       end
 

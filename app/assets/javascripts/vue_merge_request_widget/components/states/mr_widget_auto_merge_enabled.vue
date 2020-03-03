@@ -53,6 +53,7 @@ export default {
         .then(res => res.data)
         .then(data => {
           eventHub.$emit('UpdateWidgetData', data);
+          eventHub.$emit('MRWidgetUpdateRequested');
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;

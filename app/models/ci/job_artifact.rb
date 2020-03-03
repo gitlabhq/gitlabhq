@@ -148,7 +148,7 @@ module Ci
 
     def valid_file_format?
       unless TYPE_AND_FORMAT_PAIRS[self.file_type&.to_sym] == self.file_format&.to_sym
-        errors.add(:file_format, 'Invalid file format with specified file type')
+        errors.add(:base, _('Invalid file format with specified file type'))
       end
     end
 

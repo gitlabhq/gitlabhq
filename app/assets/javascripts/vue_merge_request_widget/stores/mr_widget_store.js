@@ -123,13 +123,15 @@ export default class MergeRequestStore {
 
     const currentUser = data.current_user;
 
-    this.cherryPickInForkPath = currentUser.cherry_pick_in_fork_path;
-    this.revertInForkPath = currentUser.revert_in_fork_path;
+    if (currentUser) {
+      this.cherryPickInForkPath = currentUser.cherry_pick_in_fork_path;
+      this.revertInForkPath = currentUser.revert_in_fork_path;
 
-    this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
-    this.canCreateIssue = currentUser.can_create_issue || false;
-    this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
-    this.canRevertInCurrentMR = currentUser.can_revert_on_current_merge_request || false;
+      this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
+      this.canCreateIssue = currentUser.can_create_issue || false;
+      this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
+      this.canRevertInCurrentMR = currentUser.can_revert_on_current_merge_request || false;
+    }
 
     this.setState(data);
   }

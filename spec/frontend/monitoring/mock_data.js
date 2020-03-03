@@ -393,13 +393,16 @@ export const metricsDashboardPayload = {
           type: 'area-chart',
           y_label: 'Total Memory Used',
           weight: 4,
+          y_axis: {
+            format: 'megabytes',
+          },
           metrics: [
             {
               id: 'system_metrics_kubernetes_container_memory_total',
               query_range:
-                'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1024/1024/1024',
+                'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1000/1000',
               label: 'Total',
-              unit: 'GB',
+              unit: 'MB',
               metric_id: 12,
               prometheus_endpoint_path: 'http://test',
             },

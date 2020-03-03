@@ -214,6 +214,19 @@ describe('Dashboard', () => {
     });
   });
 
+  it('renders the refresh dashboard button', () => {
+    createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
+
+    setupComponentStore(wrapper);
+
+    return wrapper.vm.$nextTick().then(() => {
+      const refreshBtn = wrapper.findAll({ ref: 'refreshDashboardBtn' });
+
+      expect(refreshBtn).toHaveLength(1);
+      expect(refreshBtn.is(GlButton)).toBe(true);
+    });
+  });
+
   describe('when one of the metrics is missing', () => {
     beforeEach(() => {
       createShallowWrapper({ hasMetrics: true });

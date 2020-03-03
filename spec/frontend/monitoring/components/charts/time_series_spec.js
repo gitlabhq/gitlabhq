@@ -190,7 +190,8 @@ describe('Time series component', () => {
 
             it('formats tooltip content', () => {
               const name = 'Total';
-              const value = '5.556';
+              const value = '5.556MB';
+
               const dataIndex = 0;
               const seriesLabel = timeSeriesChart.find(GlChartSeriesLabel);
 
@@ -348,9 +349,9 @@ describe('Time series component', () => {
               });
             });
 
-            it('additional y axis data', () => {
+            it('additional y-axis data', () => {
               const mockCustomYAxisOption = {
-                name: 'Custom y axis label',
+                name: 'Custom y-axis label',
                 axisLabel: {
                   formatter: jest.fn(),
                 },
@@ -397,8 +398,8 @@ describe('Time series component', () => {
               deploymentFormatter = getChartOptions().yAxis[1].axisLabel.formatter;
             });
 
-            it('rounds to 3 decimal places', () => {
-              expect(dataFormatter(0.88888)).toBe('0.889');
+            it('formats and rounds to 2 decimal places', () => {
+              expect(dataFormatter(0.88888)).toBe('0.89MB');
             });
 
             it('deployment formatter is set as is required to display a tooltip', () => {
@@ -421,7 +422,7 @@ describe('Time series component', () => {
         });
 
         describe('yAxisLabel', () => {
-          it('y axis is configured correctly', () => {
+          it('y-axis is configured correctly', () => {
             const { yAxis } = getChartOptions();
 
             expect(yAxis).toHaveLength(2);

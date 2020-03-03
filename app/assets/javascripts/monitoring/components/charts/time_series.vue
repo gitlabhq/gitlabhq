@@ -4,7 +4,6 @@ import { GlLink, GlButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 import { s__, __ } from '~/locale';
-import { getFormatter } from '~/lib/utils/unit_format';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import {
@@ -16,6 +15,7 @@ import {
   dateFormats,
   chartColorValues,
 } from '../../constants';
+import { getYAxisOptions, getChartGrid, getTooltipFormatter } from './options';
 import { makeDataSeries } from '~/helpers/monitor_helper';
 import { graphDataValidatorForValues } from '../../utils';
 
@@ -30,14 +30,12 @@ const deploymentYAxisCoords = {
   max: 100,
 };
 
-const THROTTLED_DATAZOOM_WAIT = 1000; // miliseconds
+const THROTTLED_DATAZOOM_WAIT = 1000; // milliseconds
 const timestampToISODate = timestamp => new Date(timestamp).toISOString();
 
 const events = {
   datazoom: 'datazoom',
 };
-
-const yValFormatter = getFormatter('number');
 
 export default {
   components: {
@@ -167,14 +165,7 @@ export default {
       const option = omit(this.option, ['series', 'yAxis', 'xAxis']);
 
       const dataYAxis = {
-        name: this.yAxisLabel,
-        nameGap: 50, // same as gitlab-ui's default
-        nameLocation: 'center', // same as gitlab-ui's default
-        boundaryGap: [0.1, 0.1],
-        scale: true,
-        axisLabel: {
-          formatter: num => yValFormatter(num, 3),
-        },
+        ...getYAxisOptions(this.graphData.yAxis),
         ...yAxis,
       };
 
@@ -204,6 +195,7 @@ export default {
         series: this.chartOptionSeries,
         xAxis: timeXAxis,
         yAxis: [dataYAxis, deploymentsYAxis],
+        grid: getChartGrid(),
         dataZoom: [this.dataZoomConfig],
         ...option,
       };
@@ -282,8 +274,9 @@ export default {
         },
       };
     },
-    yAxisLabel() {
-      return `${this.graphData.y_label}`;
+    tooltipYFormatter() {
+      // Use same format as y-axis
+      return getTooltipFormatter({ format: this.graphData.yAxis?.format });
     },
   },
   created() {
@@ -315,12 +308,11 @@ export default {
             this.tooltip.commitUrl = deploy.commitUrl;
           } else {
             const { seriesName, color, dataIndex } = dataPoint;
-            const value = yValFormatter(yVal, 3);
 
             this.tooltip.content.push({
               name: seriesName,
               dataIndex,
-              value,
+              value: this.tooltipYFormatter(yVal),
               color,
             });
           }

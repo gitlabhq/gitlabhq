@@ -693,7 +693,7 @@ To configure credentials store, follow these steps:
        }
      ```
 
-   - Or, if you are running self-hosted Runners, add the above JSON to
+   - Or, if you are running self-managed Runners, add the above JSON to
      `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner will read this config file
      and will use the needed helper for this specific repository.
 
@@ -726,7 +726,7 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
      }
      ```
 
-   - Or, if you are running self-hosted Runners,
+   - Or, if you are running self-managed Runners,
      add the above JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.
      GitLab Runner will read this config file and will use the needed helper for this
      specific repository.

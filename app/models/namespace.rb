@@ -376,7 +376,7 @@ class Namespace < ApplicationRecord
 
   def nesting_level_allowed
     if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
-      errors.add(:parent_id, "has too deep level of nesting")
+      errors.add(:parent_id, 'has too deep level of nesting')
     end
   end
 

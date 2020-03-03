@@ -330,6 +330,21 @@ describe API::Users, :do_not_mock_admin_mode do
       expect(json_response.keys).not_to include 'last_sign_in_ip'
     end
 
+    context 'when job title is present' do
+      let(:job_title) { 'Fullstack Engineer' }
+
+      before do
+        create(:user_detail, user: user, job_title: job_title)
+      end
+
+      it 'returns job title of a user' do
+        get api("/users/#{user.id}", user)
+
+        expect(response).to match_response_schema('public_api/v4/user/basic')
+        expect(json_response['job_title']).to eq(job_title)
+      end
+    end
+
     context 'when authenticated as admin' do
       it 'includes the `is_admin` field' do
         get api("/users/#{user.id}", admin)

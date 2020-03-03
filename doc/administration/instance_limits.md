@@ -72,10 +72,10 @@ If a new pipeline would cause the total number of jobs to exceed the limit, the 
 will fail with a `job_activity_limit_exceeded` error.
 
 - On GitLab.com different [limits are defined per plan](../user/gitlab_com/index.md#gitlab-cicd) and they affect all projects under that plan.
-- On [GitLab Starter](https://about.gitlab.com/pricing/#self-managed) tier or higher self-hosted installations, this limit is defined for the `default` plan that affects all projects.
+- On [GitLab Starter](https://about.gitlab.com/pricing/#self-managed) tier or higher self-managed installations, this limit is defined for the `default` plan that affects all projects.
   This limit is disabled by default.
 
-To set this limit on a self-hosted installation, run the following in the
+To set this limit on a self-managed installation, run the following in the
 [GitLab Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session):
 
 ```ruby
@@ -113,9 +113,9 @@ text field exceeds this limit then the text will be truncated to this number of
 characters and the rest will not be indexed and hence will not be searchable.
 
 - On GitLab.com this is limited to 20000 characters
-- For self-hosted installations it is unlimited by default
+- For self-managed installations it is unlimited by default
 
-This limit can be configured for self hosted installations when [enabling
+This limit can be configured for self-managed installations when [enabling
 Elasticsearch](../integration/elasticsearch.md#enabling-elasticsearch).
 
 NOTE: **Note:** Set the limit to `0` to disable it.

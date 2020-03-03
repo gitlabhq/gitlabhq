@@ -1,0 +1,5 @@
+---
+title: 'Issue Analytics: Fix svg illustration path for empty state'
+merge_request: 26219
+author:
+type: fixed

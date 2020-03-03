@@ -19,7 +19,7 @@ module HasRepository
   def valid_repo?
     repository.exists?
   rescue
-    errors.add(:path, _('Invalid repository path'))
+    errors.add(:base, _('Invalid repository path'))
     false
   end
 

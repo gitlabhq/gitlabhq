@@ -162,6 +162,7 @@ class User < ApplicationRecord
 
   has_one :status, class_name: 'UserStatus'
   has_one :user_preference
+  has_one :user_detail
 
   #
   # Validations
@@ -259,8 +260,10 @@ class User < ApplicationRecord
   delegate :sourcegraph_enabled, :sourcegraph_enabled=, to: :user_preference
   delegate :setup_for_company, :setup_for_company=, to: :user_preference
   delegate :render_whitespace_in_code, :render_whitespace_in_code=, to: :user_preference
+  delegate :job_title, :job_title=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
+  accepts_nested_attributes_for :user_detail, update_only: true
 
   state_machine :state, initial: :active do
     event :block do
@@ -1617,6 +1620,10 @@ class User < ApplicationRecord
   # Avoid migrations only building user preference object when needed.
   def user_preference
     super.presence || build_user_preference
+  end
+
+  def user_detail
+    super.presence || build_user_detail
   end
 
   def todos_limited_to(ids)

@@ -19,7 +19,13 @@ class DescriptionVersion < ApplicationRecord
   def exactly_one_issuable
     issuable_count = self.class.issuable_attrs.count { |attr| self["#{attr}_id"] }
 
-    errors.add(:base, "Exactly one of #{self.class.issuable_attrs.join(', ')} is required") if issuable_count != 1
+    if issuable_count != 1
+      errors.add(
+        :base,
+        _("Exactly one of %{attributes} is required") %
+          { attributes: self.class.issuable_attrs.join(', ') }
+      )
+    end
   end
 end
 

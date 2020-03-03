@@ -236,6 +236,7 @@ export default {
             </gl-dropdown>
             <div class="filtered-search-input-container flex-fill">
               <gl-form-input
+                v-model="errorSearchQuery"
                 class="pl-2 filtered-search"
                 :disabled="loading"
                 :placeholder="__('Search or filter results…')"

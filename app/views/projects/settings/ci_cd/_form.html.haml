@@ -88,6 +88,15 @@
               = _("New pipelines will cancel older, pending pipelines on the same branch")
               = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'auto-cancel-pending-pipelines'), target: '_blank'
 
+        .form-group
+          .form-check
+            = f.check_box :forward_deployment_enabled, { class: 'form-check-input' }
+            = f.label :forward_deployment_enabled, class: 'form-check-label' do
+              %strong= _("Skip older, pending deployment jobs")
+            .form-text.text-muted
+              = _("When a deployment job is successful, skip older deployment jobs that are still pending")
+              = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'skip-older-pending-deployment-jobs'), target: '_blank'
+
         %hr
         .form-group
           = f.label :build_coverage_regex, _("Test coverage parsing"), class: 'label-bold'

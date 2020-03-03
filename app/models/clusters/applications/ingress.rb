@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Ingress < ApplicationRecord
-      VERSION = '1.29.3'
+      VERSION = '1.29.7'
       MODSECURITY_LOG_CONTAINER_NAME = 'modsecurity-log'
 
       self.table_name = 'clusters_applications_ingress'

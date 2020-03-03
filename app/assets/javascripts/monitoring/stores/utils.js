@@ -1,5 +1,6 @@
 import { slugify } from '~/lib/utils/text_utility';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
+import { SUPPORTED_FORMATS } from '~/lib/utils/unit_format';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 export const gqClient = createGqClient(
@@ -75,17 +76,37 @@ const mapToMetricsViewModel = (metrics, defaultLabel) =>
   }));
 
 /**
+ * Maps an axis view model
+ *
+ * Defaults to a 2 digit precision and `number` format. It only allows
+ * formats in the SUPPORTED_FORMATS array.
+ *
+ * @param {Object} axis
+ */
+const mapToAxisViewModel = ({ name = '', format = SUPPORTED_FORMATS.number, precision = 2 }) => {
+  return {
+    name,
+    format: SUPPORTED_FORMATS[format] || SUPPORTED_FORMATS.number,
+    precision,
+  };
+};
+
+/**
  * Maps a metrics panel to its view model
  *
  * @param {Object} panel - Metrics panel
  * @returns {Object}
  */
-const mapToPanelViewModel = ({ title = '', type, y_label, metrics = [] }) => {
+const mapToPanelViewModel = ({ title = '', type, y_label, y_axis = {}, metrics = [] }) => {
+  // Both `y_axis.name` and `y_label` are supported for now
+  // https://gitlab.com/gitlab-org/gitlab/issues/208385
+  const yAxis = mapToAxisViewModel({ name: y_label, ...y_axis }); // eslint-disable-line babel/camelcase
   return {
     title,
     type,
-    y_label,
-    metrics: mapToMetricsViewModel(metrics, y_label),
+    y_label: yAxis.name, // Changing y_label to yLabel is pending https://gitlab.com/gitlab-org/gitlab/issues/207198
+    yAxis,
+    metrics: mapToMetricsViewModel(metrics, yAxis.name),
   };
 };
 

@@ -98,6 +98,14 @@
   }
 }
 
+.refresh-dashboard-button {
+  margin-top: 22px;
+
+  @media(max-width: map-get($grid-breakpoints, sm)) {
+    margin-top: 0;
+  }
+}
+
 .metric-area {
   opacity: 0.25;
 }

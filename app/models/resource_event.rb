@@ -37,6 +37,9 @@ class ResourceEvent < ApplicationRecord
       return true if issuable_count == 1
     end
 
-    errors.add(:base, "Exactly one of #{self.class.issuable_attrs.join(', ')} is required")
+    errors.add(
+      :base, _("Exactly one of %{attributes} is required") %
+        { attributes: self.class.issuable_attrs.join(', ') }
+    )
   end
 end

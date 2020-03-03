@@ -44,7 +44,7 @@ Complementary reads:
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Danger bot](dangerbot.md)
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
-- [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLabbers)
+- [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLab team members)
 
 ## UX and Frontend guides
 

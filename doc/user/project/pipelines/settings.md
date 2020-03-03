@@ -191,6 +191,25 @@ you can enable this in the project settings:
 1. Check the **Auto-cancel redundant, pending pipelines** checkbox.
 1. Click **Save changes**.
 
+## Skip older, pending deployment jobs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/25276) in GitLab 12.9.
+
+Your project may have multiple concurrent deployment jobs that are
+scheduled to run within the same time frame.
+
+This can lead to a situation where an older deployment job runs after a
+newer one, which may not be what you want.
+
+To avoid this scenario:
+
+1. Go to **{settings}** **Settings > CI / CD**.
+1. Expand **General pipelines**.
+1. Check the **Skip older, pending deployment jobs** checkbox.
+1. Click **Save changes**.
+
+The pending deployment jobs will be skipped.
+
 ## Pipeline Badges
 
 In the pipelines settings page you can find pipeline status and test coverage
