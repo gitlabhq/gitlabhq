@@ -94,7 +94,7 @@ nuget source Add -Name "GitLab" -Source "https//gitlab.example/api/v4/projects/1
    - **Name**: Desired name for the source
    - **Location**: `https://gitlab.com/api/v4/projects/<your_project_id>/packages/nuget/index.json`
      - Replace `<your_project_id>` with your project ID.
-     - If you have a self-hosted GitLab installation, replace `gitlab.com` with your domain name.
+     - If you have a self-managed GitLab installation, replace `gitlab.com` with your domain name.
    - **Username**: Your GitLab username
    - **Password**: Your personal access token
 
@@ -104,7 +104,7 @@ nuget source Add -Name "GitLab" -Source "https//gitlab.example/api/v4/projects/1
 
    ![Visual Studio NuGet source added](img/visual_studio_nuget_source_added.png)
 
-In case of any warning, please make sure that the **Location**, **Username** and **Password** are correct.
+In case of any warning, please make sure that the **Location**, **Username**, and **Password** are correct.
 
 ### Add NuGet Repository source with .NET CLI
 

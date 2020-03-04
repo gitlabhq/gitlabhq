@@ -98,7 +98,7 @@ To support importing bare repositories from hashed storage, GitLab 10.4 and
 later stores the full project path with each repository, in a special section of
 the Git repository's config file. This section is formatted as follows:
 
-```
+```ini
 [gitlab]
   fullpath = gitlab-org/gitlab
 ```
@@ -128,7 +128,7 @@ Until then, you may wish to manually migrate repositories yourself. You can use
 [Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session)
 to do so. In a Rails console session, run the following to migrate a project:
 
-```
+```ruby
 project = Project.find_by_full_path('gitlab-org/gitlab')
 project.write_repository_config
 ```
@@ -136,7 +136,7 @@ project.write_repository_config
 In a Rails console session, run the following to migrate all of a namespace's
 projects (this may take a while if there are 1000s of projects in a namespace):
 
-```
+```ruby
 namespace = Namespace.find_by_full_path('gitlab-org')
 namespace.send(:write_projects_repository_config)
 ```

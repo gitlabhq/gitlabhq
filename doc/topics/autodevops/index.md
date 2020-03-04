@@ -40,7 +40,7 @@ If you are using GitLab.com, see the [quick start guide](quick_start_guide.md)
 for how to use Auto DevOps with GitLab.com and a Kubernetes cluster on Google Kubernetes
 Engine (GKE).
 
-If you are using a self-hosted instance of GitLab, you will need to configure the
+If you are using a self-managed instance of GitLab, you will need to configure the
 [Google OAuth2 OmniAuth Provider](../../integration/google.md) before
 you can configure a cluster on GKE. Once this is set up, you can follow the steps on the
 [quick start guide](quick_start_guide.md) to get started.
@@ -55,7 +55,7 @@ in multiple ways:
 - Auto DevOps works with any Kubernetes cluster; you're not limited to running
   on GitLab's infrastructure. (Note that many features also work without Kubernetes).
 - There is no additional cost (no markup on the infrastructure costs), and you
-  can use a self-hosted Kubernetes cluster or Containers as a Service on any
+  can use a Kubernetes cluster you host or Containers as a Service on any
   public cloud (for example, [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)).
 - Auto DevOps has more features including security testing, performance testing,
   and code quality testing.
@@ -93,7 +93,8 @@ knowledge of the following:
 Auto DevOps provides great defaults for all the stages; you can, however,
 [customize](#customizing) almost everything to your needs.
 
-For an overview on the creation of Auto DevOps, read the blog post [From 2/3 of the Self-Hosted Git Market, to the Next-Generation CI System, to Auto DevOps](https://about.gitlab.com/blog/2017/06/29/whats-next-for-gitlab-ci/).
+For an overview on the creation of Auto DevOps, read more
+[in this blog post](https://about.gitlab.com/blog/2017/06/29/whats-next-for-gitlab-ci/).
 
 NOTE: **Note**
 Kubernetes clusters can [be used without](../../user/project/clusters/index.md)

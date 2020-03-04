@@ -36,7 +36,7 @@ The following assumes you already have Vault installed and running.
 
     You should see the following output in the terminal:
 
-    ```shell
+    ```plaintext
     Success! Enabled oidc auth method at: oidc/
     ```
 
@@ -113,7 +113,7 @@ The following assumes you already have Vault installed and running.
 
     The terminal will output:
 
-    ```
+    ```plaintext
     Success! You are now authenticated. The token information displayed below
     is already stored in the token helper. You do NOT need to run "vault login"
     again. Future Vault requests will automatically use this token.

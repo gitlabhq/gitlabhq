@@ -1,19 +1,19 @@
 # Import your project from GitHub to GitLab
 
 Using the importer, you can import your GitHub repositories to GitLab.com or to
-your self-hosted GitLab instance.
+your self-managed GitLab instance.
 
 ## Overview
 
 NOTE: **Note:**
 These instructions work for users on GitLab.com, but if you are an
-administrator of a self-hosted GitLab instance or if you are importing from GitHub Enterprise,
+administrator of a self-managed GitLab instance or if you are importing from GitHub Enterprise,
 you must enable [GitHub integration][gh-import]. GitHub integration is the only method for
 importing from GitHub Enterprise. If you are using GitLab.com, you can alternatively import
 GitHub repositories using a [personal access token](#using-a-github-token),
 but this method is not recommended because it cannot associate all user activity
 (such as issues and pull requests) with matching GitLab users.
-If you are an administrator of a self-hosted GitLab instance, you can also use the
+If you are an administrator of a self-managed GitLab instance, you can also use the
 [GitHub rake task](../../../administration/raketasks/github_import.md) to import projects from
 GitHub without the constraints of a Sidekiq worker.
 
@@ -80,7 +80,7 @@ User-matching attempts occur in that order, and if a user is not identified eith
 the user account that is performing the import.
 
 NOTE: **Note:**
-If you are using a self-hosted GitLab instance or if you are importing from GitHub Enterprise, this process requires that you have configured
+If you are using a self-managed GitLab instance or if you are importing from GitHub Enterprise, this process requires that you have configured
 [GitHub integration][gh-import].
 
 1. From the top navigation bar, click **+** and select **New project**.
@@ -95,7 +95,7 @@ NOTE: **Note:**
 Using a personal access token to import projects is not recommended. If you are a GitLab.com user,
 you can use a personal access token to import your project from GitHub, but this method cannot
 associate all user activity (such as issues and pull requests) with matching GitLab users.
-If you are an administrator of a self-hosted GitLab instance or if you are importing from
+If you are an administrator of a self-managed GitLab instance or if you are importing from
 GitHub Enterprise, you cannot use a personal access token.
 The [GitHub integration method (above)](#using-the-github-integration) is recommended for all users.
 Read more in the [How it works](#how-it-works) section.
@@ -137,7 +137,7 @@ Additionally, you can configure GitLab to send pipeline status updates back GitH
 If you import your project using [CI/CD for external repo](../../../ci/ci_cd_for_external_repos/index.md), then both
 of the above are automatically configured. **(PREMIUM)**
 
-## Improving the speed of imports on self-hosted instances
+## Improving the speed of imports on self-managed instances
 
 NOTE: **Note:**
 Admin access to the GitLab server is required.

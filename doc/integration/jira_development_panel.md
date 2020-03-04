@@ -4,8 +4,10 @@
 
 Complementary to our [existing Jira][existing-jira] project integration, you're now able to integrate
 GitLab projects with [Jira Development Panel][jira-development-panel]. Both can be used
-simultaneously. This works with self-hosted GitLab or GitLab.com integrated with self-hosted Jira
-or cloud Jira.
+simultaneously. This works with self-managed GitLab or GitLab.com integrated with:
+
+- Jira hosted by you.
+- Cloud Jira.
 
 By doing this you can easily access related GitLab merge requests, branches, and commits directly from a Jira issue.
 
@@ -19,7 +21,7 @@ Note this is different from the [existing Jira][existing-jira] project integrati
 is one GitLab project to the entire Jira instance.
 
 We recommend that a GitLab group admin
-or instance admin (in the case of self-hosted GitLab) set up the integration,
+or instance admin (in the case of self-managed GitLab) set up the integration,
 in order to simplify administration.
 
 TIP: **Tip:**
@@ -28,9 +30,9 @@ regular users won't impact your integration.
 
 ## Requirements
 
-### Self-hosted GitLab
+### Self-managed GitLab
 
-If you are using self-hosted GitLab, make sure your GitLab instance is accessible by Jira.
+If you are using self-managed GitLab, make sure your GitLab instance is accessible by Jira.
 
 - If you are connecting to Jira Cloud, make sure your instance is accessible via the internet.
 - If you are using Jira Server, make sure your instance is accessible however your network is set up.

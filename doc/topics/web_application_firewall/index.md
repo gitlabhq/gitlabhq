@@ -49,7 +49,7 @@ The Web Application Firewall requires:
 If you are using GitLab.com, see the [quick start guide](quick_start_guide.md) for
 how to use the WAF with GitLab.com and a Kubernetes cluster on Google Kubernetes Engine (GKE).
 
-If you are using a self-hosted instance of GitLab, you need to configure the
+If you are using a self-managed instance of GitLab, you need to configure the
 [Google OAuth2 OmniAuth Provider](../../integration/google.md) before
 you can configure a cluster on GKE. Once this is set up, you can follow the steps on the [quick start guide](quick_start_guide.md) to get started.
 

@@ -22,20 +22,20 @@ repository is too large the import can timeout.
 
 There is also the option of [connecting your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md). **(PREMIUM)**
 
-## Migrating from self-hosted GitLab to GitLab.com
+## Migrating from self-managed GitLab to GitLab.com
 
 If you only need to migrate Git repos, you can [import each project by URL](repo_by_url.md). Issues and merge requests can't be imported.
 
 If you want to retain all metadata like issues and merge requests, you can use
-the [import/export feature](../settings/import_export.md) to export projects from self-hosted GitLab and import those projects into GitLab.com.
+the [import/export feature](../settings/import_export.md) to export projects from self-managed GitLab and import those projects into GitLab.com.
 
 NOTE: **Note:**
-This approach assumes all users from the self-hosted instance have already been migrated.
+This approach assumes all users from the self-managed instance have already been migrated.
 If the users haven't been migrated yet, the user conducting the import
 will take the place of all references to the missing user(s).
 
-If you need to migrate all data over, you can leverage our [API](../../../api/README.md) to migrate from self-hosted to GitLab.com.
-The order of assets to migrate from a self-hosted instance to GitLab is the following:
+If you need to migrate all data over, you can leverage our [API](../../../api/README.md) to migrate from self-managed to GitLab.com.
+The order of assets to migrate from a self-managed instance to GitLab.com is the following:
 
 1. [Users](../../../api/users.md)
 1. [Groups](../../../api/groups.md)
@@ -47,7 +47,7 @@ Keep in mind the limitations of the [import/export feature](../settings/import_e
 You will still need to migrate your Container Registry over a series of
 Docker pulls and pushes and re-run any CI pipelines to retrieve any build artifacts.
 
-## Migrating between two self-hosted GitLab instances
+## Migrating between two self-managed GitLab instances
 
 The best method for migrating from one GitLab instance to another,
 perhaps from an old server to a new server for example, is to
@@ -55,4 +55,4 @@ perhaps from an old server to a new server for example, is to
 then restore it on the new server.
 
 In the event of merging two GitLab instances together (for example, both instances have existing data on them and one can't be wiped),
-refer to the instructions in [Migrating from self-hosted GitLab to GitLab.com](#migrating-from-self-hosted-gitlab-to-gitlabcom).
+refer to the instructions in [Migrating from self-managed GitLab to GitLab.com](#migrating-from-self-managed-gitlab-to-gitlabcom).

@@ -5,7 +5,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/customization/branded_login_page.
 
 # GitLab Appearance **(CORE ONLY)**
 
-There are several options for customizing the appearance of a self hosted instance
+There are several options for customizing the appearance of a self-managed instance
 of GitLab. These settings are accessed from the **Admin Area** in the **Appearance**
 section.
 

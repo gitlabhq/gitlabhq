@@ -127,7 +127,7 @@ npm config set '//gitlab.com/api/v4/packages/npm/:_authToken' "<your_token>"
 Replace `<your_project_id>` with your project ID which can be found on the home page
 of your project and `<your_token>` with your personal access token.
 
-If you have a self-hosted GitLab installation, replace `gitlab.com` with your
+If you have a self-managed GitLab installation, replace `gitlab.com` with your
 domain name.
 
 You should now be able to download and upload NPM packages to your project.
@@ -185,7 +185,7 @@ for NPM. To do this, add the following section to the bottom of `package.json`:
 Replace `<your_project_id>` with your project ID, which can be found on the home
 page of your project, and replace `@foo` with your own scope.
 
-If you have a self-hosted GitLab installation, replace `gitlab.com` with your
+If you have a self-managed GitLab installation, replace `gitlab.com` with your
 domain name.
 
 Once you have enabled it and set up [authentication](#authenticating-to-the-gitlab-npm-registry),

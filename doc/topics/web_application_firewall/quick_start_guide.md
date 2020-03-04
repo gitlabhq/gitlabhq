@@ -7,7 +7,7 @@ We will use GitLab's native Kubernetes integration, so you will not need
 to create a Kubernetes cluster manually using the Google Cloud Platform console.
 We will create and deploy a simple application that we create from a GitLab template.
 
-These instructions will also work for a self-hosted GitLab instance. However, you will
+These instructions will also work for a self-managed GitLab instance. However, you will
 need to ensure your own [Runners are configured](../../ci/runners/README.md) and
 [Google OAuth is enabled](../../integration/google.md).
 

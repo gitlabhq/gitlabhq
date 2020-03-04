@@ -154,16 +154,16 @@ Response:
     "id": "12d65c8dd2b2676fa3ac47d955accc085a37a9c1",
     "short_id": "12d65c8dd2b",
     "title": "JS fix",
-    "author_name": "Dmitriy Zaporozhets",
-    "author_email": "dmitriy.zaporozhets@gmail.com",
+    "author_name": "Example User",
+    "author_email": "user@example.com",
     "created_at": "2014-02-27T10:27:00+02:00"
   },
   "commits": [{
     "id": "12d65c8dd2b2676fa3ac47d955accc085a37a9c1",
     "short_id": "12d65c8dd2b",
     "title": "JS fix",
-    "author_name": "Dmitriy Zaporozhets",
-    "author_email": "dmitriy.zaporozhets@gmail.com",
+    "author_name": "Example User",
+    "author_email": "user@example.com",
     "created_at": "2014-02-27T10:27:00+02:00"
   }],
   "diffs": [{
@@ -241,11 +241,11 @@ Example response:
   "created_at": "2014-02-27T08:03:18.000Z",
   "parent_ids": [],
   "message": "Initial commit\n",
-  "author_name": "Dmitriy Zaporozhets",
-  "author_email": "dmitriy.zaporozhets@gmail.com",
+  "author_name": "Example User",
+  "author_email": "user@example.com",
   "authored_date": "2014-02-27T08:03:18.000Z",
-  "committer_name": "Dmitriy Zaporozhets",
-  "committer_email": "dmitriy.zaporozhets@gmail.com",
+  "committer_name": "Example User",
+  "committer_email": "user@example.com",
   "committed_date": "2014-02-27T08:03:18.000Z"
 }
 ```

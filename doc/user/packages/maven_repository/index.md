@@ -207,7 +207,7 @@ The `id` must be the same with what you
 Replace `PROJECT_ID` with your project ID which can be found on the home page
 of your project.
 
-If you have a self-hosted GitLab installation, replace `gitlab.com` with your
+If you have a self-managed GitLab installation, replace `gitlab.com` with your
 domain name.
 
 NOTE: **Note:**
@@ -260,7 +260,7 @@ The `id` must be the same with what you
 Replace `my-group` with your group name and `PROJECT_ID` with your project ID
 which can be found on the home page of your project.
 
-If you have a self-hosted GitLab installation, replace `gitlab.com` with your
+If you have a self-managed GitLab installation, replace `gitlab.com` with your
 domain name.
 
 NOTE: **Note:**
@@ -315,7 +315,7 @@ The `id` must be the same with what you
 Replace `PROJECT_ID` with your project ID which can be found on the home page
 of your project.
 
-If you have a self-hosted GitLab installation, replace `gitlab.com` with your
+If you have a self-managed GitLab installation, replace `gitlab.com` with your
 domain name.
 
 NOTE: **Note:**
