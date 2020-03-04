@@ -49,8 +49,6 @@ module Gitlab
             description: 'Environment variables available for this job.',
             inherit: false
 
-          helpers :trigger, :needs, :variables
-
           attributes :when, :allow_failure
 
           def self.matching?(name, config)

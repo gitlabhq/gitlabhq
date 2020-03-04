@@ -28,7 +28,7 @@ class PostReceiveService
       response.add_alert_message(message)
     end
 
-    broadcast_message = BroadcastMessage.current&.last&.message
+    broadcast_message = BroadcastMessage.current_banner_messages&.last&.message
     response.add_alert_message(broadcast_message)
 
     response.add_merge_request_urls(merge_request_urls)

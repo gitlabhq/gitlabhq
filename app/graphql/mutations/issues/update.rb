@@ -17,12 +17,12 @@ module Mutations
 
       argument :due_date,
                Types::TimeType,
-               required: true,
+               required: false,
                description: copy_field_description(Types::IssueType, :due_date)
 
       argument :confidential,
                GraphQL::BOOLEAN_TYPE,
-               required: true,
+               required: false,
                description: copy_field_description(Types::IssueType, :confidential)
 
       def resolve(project_path:, iid:, **args)

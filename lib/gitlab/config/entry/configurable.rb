@@ -75,7 +75,8 @@ module Gitlab
 
           # rubocop: disable CodeReuse/ActiveRecord
           def entry(key, entry, description: nil, default: nil, inherit: nil, reserved: nil, metadata: {})
-            raise ArgumentError, "Entry #{key} already defined" if @nodes.to_h[key.to_sym]
+            entry_name = key.to_sym
+            raise ArgumentError, "Entry #{key} already defined" if @nodes.to_h[entry_name]
 
             factory = ::Gitlab::Config::Entry::Factory.new(entry)
               .with(description: description)
@@ -84,9 +85,16 @@ module Gitlab
               .with(reserved: reserved)
               .metadata(metadata)
 
-            (@nodes ||= {}).merge!(key.to_sym => factory)
+            @nodes ||= {}
+            @nodes[entry_name] = factory
+
+            helpers(entry_name)
           end
           # rubocop: enable CodeReuse/ActiveRecord
+
+          def dynamic_helpers(*nodes)
+            helpers(*nodes, dynamic: true)
+          end
 
           def helpers(*nodes, dynamic: false)
             nodes.each do |symbol|

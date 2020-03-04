@@ -107,6 +107,7 @@ recorded:
 - User was deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
 - User was added ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
 - User was blocked via Admin Area ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/251) in GitLab 12.8)
+- User was blocked via API ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25872) in GitLab 12.9)
 
 It's possible to filter particular actions by choosing an audit data type from
 the filter dropdown box. You can further filter by specific group, project, or user

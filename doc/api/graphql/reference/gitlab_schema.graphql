@@ -8011,7 +8011,7 @@ input UpdateIssueInput {
   """
   Indicates the issue is confidential
   """
-  confidential: Boolean!
+  confidential: Boolean
 
   """
   Description of the issue
@@ -8021,7 +8021,7 @@ input UpdateIssueInput {
   """
   Due date of the issue
   """
-  dueDate: Time!
+  dueDate: Time
 
   """
   The desired health status

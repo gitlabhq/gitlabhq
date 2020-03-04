@@ -14,7 +14,8 @@ module Gitlab
     end
 
     def drop_jobs!(search_metadata, timeout:)
-      completed = false
+      start_time = Gitlab::Metrics::System.monotonic_time
+      completed = true
       deleted_jobs = 0
 
       job_search_metadata =
@@ -27,18 +28,16 @@ module Gitlab
       raise NoMetadataError if job_search_metadata.empty?
       raise InvalidQueueError unless queue
 
-      begin
-        Timeout.timeout(timeout) do
-          queue.each do |job|
-            next unless job_matches?(job, job_search_metadata)
-
-            job.delete
-            deleted_jobs += 1
-          end
-
-          completed = true
+      queue.each do |job|
+        if timeout_exceeded?(start_time, timeout)
+          completed = false
+          break
         end
-      rescue Timeout::Error
+
+        next unless job_matches?(job, job_search_metadata)
+
+        job.delete
+        deleted_jobs += 1
       end
 
       {
@@ -47,6 +46,8 @@ module Gitlab
         queue_size: queue.size
       }
     end
+
+    private
 
     def queue
       strong_memoize(:queue) do
@@ -58,6 +59,10 @@ module Gitlab
 
     def job_matches?(job, job_search_metadata)
       job_search_metadata.all? { |key, value| job[key] == value }
+    end
+
+    def timeout_exceeded?(start_time, timeout)
+      (Gitlab::Metrics::System.monotonic_time - start_time) > timeout
     end
   end
 end

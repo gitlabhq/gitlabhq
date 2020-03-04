@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module InvisibleCaptcha
+module InvisibleCaptchaOnSignup
   extend ActiveSupport::Concern
 
   included do

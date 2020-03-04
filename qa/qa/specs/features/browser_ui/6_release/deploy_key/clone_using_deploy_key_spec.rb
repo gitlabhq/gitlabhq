@@ -35,7 +35,7 @@ module QA
       ]
 
       keys.each do |(key_class, bits)|
-        it "user sets up a deploy key with #{key_class}(#{bits}) to clone code using pipelines" do
+        it "user sets up a deploy key with #{key_class}(#{bits}) to clone code using pipelines", quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/208761' do
           key = key_class.new(*bits)
 
           Resource::DeployKey.fabricate_via_browser_ui! do |resource|

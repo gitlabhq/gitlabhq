@@ -13,7 +13,7 @@ module Gitlab
 
         total_length = 0
         limited_array = array.take_while do |arg|
-          total_length += arg.to_json.length
+          total_length += JsonSizeEstimator.estimate(arg)
 
           total_length <= MAXIMUM_ARRAY_LENGTH
         end

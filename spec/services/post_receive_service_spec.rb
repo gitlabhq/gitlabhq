@@ -130,11 +130,19 @@ describe PostReceiveService do
     end
   end
 
-  context 'broadcast message exists' do
+  context 'broadcast message banner exists' do
     it 'outputs a broadcast message' do
-      broadcast_message = create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now)
+      broadcast_message = create(:broadcast_message)
 
       expect(subject).to include(build_alert_message(broadcast_message.message))
+    end
+  end
+
+  context 'broadcast message notification exists' do
+    it 'does not output a broadcast message' do
+      create(:broadcast_message, :notification)
+
+      expect(has_alert_messages?(subject)).to be_falsey
     end
   end
 

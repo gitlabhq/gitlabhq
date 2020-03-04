@@ -1168,8 +1168,11 @@ Parameters:
 
 - `id` (required) - id of specified user
 
-Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
-`403 Forbidden` when trying to block an already blocked user by LDAP synchronization.
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if user cannot be found.
+- `403 Forbidden` when trying to block an already blocked user by LDAP synchronization.
 
 ## Unblock user
 

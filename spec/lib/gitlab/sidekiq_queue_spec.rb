@@ -31,14 +31,7 @@ describe Gitlab::SidekiqQueue do
 
       context 'when the queue is not processed in time' do
         before do
-          calls = 0
-
-          allow(sidekiq_queue).to receive(:job_matches?).and_wrap_original do |m, *args|
-            raise Timeout::Error if calls > 0
-
-            calls += 1
-            m.call(*args)
-          end
+          allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(1, 2, 12)
         end
 
         it 'returns a non-completion flag, the number of jobs deleted, and the remaining queue size' do

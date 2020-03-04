@@ -6,7 +6,7 @@ module Gitlab
     module UserMentions
       module Models
         class Note < ActiveRecord::Base
-          include IsolatedMentionable
+          include Concerns::IsolatedMentionable
           include CacheMarkdownField
 
           self.table_name = 'notes'

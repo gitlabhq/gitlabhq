@@ -2165,14 +2165,20 @@ describe API::Users, :do_not_mock_admin_mode do
   end
 
   describe 'POST /users/:id/block' do
+    let(:blocked_user) { create(:user, state: 'blocked') }
+
     before do
       admin
     end
 
     it 'blocks existing user' do
       post api("/users/#{user.id}/block", admin)
-      expect(response).to have_gitlab_http_status(:created)
-      expect(user.reload.state).to eq('blocked')
+
+      aggregate_failures do
+        expect(response).to have_gitlab_http_status(:created)
+        expect(response.body).to eq('true')
+        expect(user.reload.state).to eq('blocked')
+      end
     end
 
     it 'does not re-block ldap blocked users' do
@@ -2191,6 +2197,15 @@ describe API::Users, :do_not_mock_admin_mode do
       post api('/users/0/block', admin)
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns a 201 if user is already blocked' do
+      post api("/users/#{blocked_user.id}/block", admin)
+
+      aggregate_failures do
+        expect(response).to have_gitlab_http_status(:created)
+        expect(response.body).to eq('null')
+      end
     end
   end
 

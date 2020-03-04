@@ -54,8 +54,6 @@ module Gitlab
                 allowed_when: %w[on_success on_failure always never manual delayed].freeze
               }
 
-            helpers :stage, :only, :except, :rules
-
             attributes :extends, :rules
           end
 

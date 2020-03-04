@@ -7,7 +7,7 @@ module Gitlab
       module Models
         module DesignManagement
           class Design < ActiveRecord::Base
-            include MentionableMigrationMethods
+            include Concerns::MentionableMigrationMethods
 
             def self.user_mention_model
               Gitlab::BackgroundMigration::UserMentions::Models::DesignUserMention

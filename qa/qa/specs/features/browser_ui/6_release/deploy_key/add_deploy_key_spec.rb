@@ -3,7 +3,7 @@
 module QA
   context 'Release' do
     describe 'Deploy key creation' do
-      it 'user adds a deploy key' do
+      it 'user adds a deploy key', quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/208761' do
         Flow::Login.sign_in
 
         key = Runtime::Key::RSA.new

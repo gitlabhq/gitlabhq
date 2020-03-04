@@ -198,6 +198,63 @@ describe Projects::ReleasesController do
     end
   end
 
+  context 'GET #downloads' do
+    subject do
+      get :downloads, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        tag: tag,
+        filepath: filepath
+       }
+    end
+
+    before do
+      sign_in(user)
+    end
+
+    let(:release) { create(:release, project: project, tag: tag ) }
+    let(:tag) { 'v11.9.0-rc2' }
+    let(:db_filepath) { '/binaries/linux-amd64' }
+    let!(:link) do
+      create :release_link,
+        release: release,
+        name: 'linux-amd64 binaries',
+        filepath: db_filepath,
+        url: 'https://downloads.example.com/bin/gitlab-linux-amd64'
+    end
+
+    context 'valid filepath' do
+      let(:filepath) { CGI.escape('/binaries/linux-amd64') }
+
+      it 'redirects to the asset direct link' do
+        subject
+
+        expect(response).to redirect_to(link.url)
+      end
+    end
+
+    context 'invalid filepath' do
+      let(:filepath) { CGI.escape('/binaries/win32') }
+
+      it 'is not found' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'ignores filepath extension' do
+      let(:db_filepath) { '/binaries/linux-amd64.json' }
+      let(:filepath) { CGI.escape(db_filepath) }
+
+      it 'redirects to the asset direct link' do
+        subject
+
+        expect(response).to redirect_to(link.url)
+      end
+    end
+  end
+
   describe 'GET #evidence' do
     let_it_be(:tag_name) { "v1.1.0-evidence" }
     let!(:release) { create(:release, :with_evidence, project: project, tag: tag_name) }

@@ -128,11 +128,6 @@ module Gitlab
             description: 'This job will produce a release.',
             inherit: false
 
-          helpers :before_script, :script, :type, :after_script,
-                  :cache, :image, :services, :variables,
-                  :artifacts, :environment, :coverage, :retry,
-                  :needs, :interruptible, :release, :tags
-
           attributes :script, :tags, :allow_failure, :when, :dependencies,
                      :needs, :retry, :parallel, :start_in,
                      :interruptible, :timeout, :resource_group, :release

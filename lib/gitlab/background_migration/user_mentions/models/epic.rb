@@ -6,9 +6,9 @@ module Gitlab
     module UserMentions
       module Models
         class Epic < ActiveRecord::Base
-          include IsolatedMentionable
+          include Concerns::IsolatedMentionable
+          include Concerns::MentionableMigrationMethods
           include CacheMarkdownField
-          include MentionableMigrationMethods
 
           attr_mentionable :title, pipeline: :single_line
           attr_mentionable :description

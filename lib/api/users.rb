@@ -528,10 +528,17 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        if !user.ldap_blocked?
-          user.block
-        else
+        if user.ldap_blocked?
           forbidden!('LDAP blocked users cannot be modified by the API')
+        end
+
+        break if user.blocked?
+
+        result = ::Users::BlockService.new(current_user).execute(user)
+        if result[:status] == :success
+          true
+        else
+          render_api_error!(result[:message], result[:http_status])
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

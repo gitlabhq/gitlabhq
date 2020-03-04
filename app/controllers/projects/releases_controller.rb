@@ -3,7 +3,7 @@
 class Projects::ReleasesController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project, except: [:index]
-  before_action :release, only: %i[edit show update]
+  before_action :release, only: %i[edit show update downloads]
   before_action :authorize_read_release!
   before_action do
     push_frontend_feature_flag(:release_issue_summary, project)
@@ -40,6 +40,10 @@ class Projects::ReleasesController < Projects::ApplicationController
     end
   end
 
+  def downloads
+    redirect_to link.url
+  end
+
   protected
 
   def releases
@@ -67,6 +71,14 @@ class Projects::ReleasesController < Projects::ApplicationController
 
   def release
     @release ||= project.releases.find_by_tag!(sanitized_tag_name)
+  end
+
+  def link
+    release.links.find_by_filepath!(sanitized_filepath)
+  end
+
+  def sanitized_filepath
+    CGI.unescape(params[:filepath])
   end
 
   def sanitized_tag_name

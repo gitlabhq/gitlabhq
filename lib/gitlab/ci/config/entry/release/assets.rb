@@ -23,8 +23,6 @@ module Gitlab
               validates :links, array_of_hashes: true, presence: true
             end
 
-            helpers :links
-
             def value
               @config[:links] = links_value if @config.key?(:links)
               @config
