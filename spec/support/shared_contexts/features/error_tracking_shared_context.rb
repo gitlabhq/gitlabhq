@@ -13,7 +13,7 @@ shared_context 'sentry error tracking context feature' do
   let(:issue_id) { issue_response['id'] }
   let(:issue_seen) { 1.year.ago.utc }
   let(:formatted_issue_seen) { issue_seen.strftime("%Y-%m-%d %-l:%M:%S%p %Z") }
-  let(:date_received) { 1.month.ago.utc }
+  let(:date_received) { 32.days.ago.utc }
 
   before do
     request_headers = { 'Authorization' => 'Bearer access_token_123', 'Content-Type' => 'application/json' }

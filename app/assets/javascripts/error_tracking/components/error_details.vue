@@ -104,16 +104,6 @@ export default {
       'errorStatus',
     ]),
     ...mapGetters('details', ['stacktrace']),
-    reported() {
-      return sprintf(
-        __('Reported %{timeAgo} by %{reportedBy}'),
-        {
-          reportedBy: `<strong>${this.error.culprit}</strong>`,
-          timeAgo: this.timeFormatted(this.stacktraceData.date_received),
-        },
-        false,
-      );
-    },
     firstReleaseLink() {
       return `${this.error.externalBaseUrl}/releases/${this.error.firstReleaseShortVersion}`;
     },
@@ -218,7 +208,17 @@ export default {
       </gl-alert>
 
       <div class="top-area align-items-center justify-content-between py-3">
-        <span v-if="!loadingStacktrace && stacktrace" v-html="reported"></span>
+        <div v-if="!loadingStacktrace && stacktrace" data-qa-selector="reported_text">
+          <gl-sprintf :message="__('Reported %{timeAgo} by %{reportedBy}')">
+            <template #reportedBy>
+              <strong>{{ error.culprit }}</strong>
+            </template>
+            <template #timeAgo>
+              {{ timeFormatted(stacktraceData.date_received) }}
+            </template>
+          </gl-sprintf>
+        </div>
+
         <div class="d-inline-flex ml-lg-auto">
           <loading-button
             :label="ignoreBtnLabel"

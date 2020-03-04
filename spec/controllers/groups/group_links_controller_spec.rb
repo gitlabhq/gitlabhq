@@ -6,9 +6,13 @@ describe Groups::GroupLinksController do
   let(:shared_with_group) { create(:group, :private) }
   let(:shared_group) { create(:group, :private) }
   let(:user) { create(:user) }
+  let(:group_member) { create(:user) }
+  let!(:project) { create(:project, group: shared_group) }
 
   before do
     sign_in(user)
+
+    shared_with_group.add_developer(group_member)
   end
 
   describe '#create' do
@@ -40,13 +44,9 @@ describe Groups::GroupLinksController do
     end
 
     context 'when user has correct access to both groups' do
-      let(:group_member) { create(:user) }
-
       before do
         shared_with_group.add_developer(user)
         shared_group.add_owner(user)
-
-        shared_with_group.add_developer(group_member)
       end
 
       context 'when default access level is requested' do
@@ -56,12 +56,20 @@ describe Groups::GroupLinksController do
       context 'when owner access is requested' do
         let(:shared_group_access) { Gitlab::Access::OWNER }
 
+        before do
+          shared_with_group.add_owner(group_member)
+        end
+
         include_examples 'creates group group link'
 
         it 'allows admin access for group member' do
           expect { subject }.to(
             change { group_member.can?(:admin_group, shared_group) }.from(false).to(true))
         end
+      end
+
+      it 'updates project permissions' do
+        expect { subject }.to change { group_member.can?(:read_project, project) }.from(false).to(true)
       end
 
       context 'when shared with group id is not present' do
@@ -149,6 +157,7 @@ describe Groups::GroupLinksController do
     context 'when user has admin access to the shared group' do
       before do
         shared_group.add_owner(user)
+        shared_with_group.refresh_members_authorized_projects
       end
 
       it 'updates existing link' do
@@ -161,6 +170,10 @@ describe Groups::GroupLinksController do
 
         expect(link.group_access).to eq(Gitlab::Access::GUEST)
         expect(link.expires_at).to eq(expiry_date)
+      end
+
+      it 'updates project permissions' do
+        expect { subject }.to change { group_member.can?(:create_release, project) }.from(true).to(false)
       end
     end
 
@@ -199,10 +212,15 @@ describe Groups::GroupLinksController do
     context 'when user has admin access to the shared group' do
       before do
         shared_group.add_owner(user)
+        shared_with_group.refresh_members_authorized_projects
       end
 
       it 'deletes existing link' do
         expect { subject }.to change(GroupGroupLink, :count).by(-1)
+      end
+
+      it 'updates project permissions' do
+        expect { subject }.to change { group_member.can?(:create_release, project) }.from(true).to(false)
       end
     end
 

@@ -80,8 +80,16 @@ Devise.setup do |config|
   # When allow_unconfirmed_access_for is zero, the user won't be able to sign in without confirming.
   # You can use this to let your user access some features of your application
   # without confirming the account, but blocking it after a certain period
-  # (ie 2 days).
-  config.allow_unconfirmed_access_for = 30.days
+  # (e.g. 3 days).
+  config.allow_unconfirmed_access_for = 3.days
+
+  # A period that the user is allowed to confirm their account before their
+  # token becomes invalid. For example, if set to 1.day, the user can confirm
+  # their account within 1 days after the mail was sent, but on the second day
+  # their account can't be confirmed with the token any more.
+  # Default is nil, meaning there is no restriction on how long a user can take
+  # before confirming their account.
+  config.confirm_within = 1.day
 
   # Defines which key will be used when confirming an account
   # config.confirmation_keys = [ :email ]
