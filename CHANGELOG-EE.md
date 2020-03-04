@@ -1,5 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.6.8
+
+### Security (5 changes)
+
+- Don't show Contribution Analytics to users who are not group members.
+- Update epic tree when group is transfered.
+- Fix Service Side Request Forgery in JenkinsDeprecatedService.
+- Enforce vulnerability feedback pipeline is in the same project.
+- Enforce existing vulnerability feedback pipeline is in the same project.
+
+
 ## 12.6.7
 
 - No changes.
