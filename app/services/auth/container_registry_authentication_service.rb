@@ -3,11 +3,23 @@
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
     AUDIENCE = 'container_registry'
+    REGISTRY_LOGIN_ABILITIES = [
+      :read_container_image,
+      :create_container_image,
+      :destroy_container_image,
+      :update_container_image,
+      :admin_container_image,
+      :build_read_container_image,
+      :build_create_container_image,
+      :build_destroy_container_image
+    ].freeze
 
     def execute(authentication_abilities:)
       @authentication_abilities = authentication_abilities
 
       return error('UNAVAILABLE', status: 404, message: 'registry not enabled') unless registry.enabled
+
+      return error('DENIED', status: 403, message: 'access forbidden') unless has_registry_ability?
 
       unless scopes.any? || current_user || project
         return error('DENIED', status: 403, message: 'access forbidden')
@@ -196,6 +208,12 @@ module Auth
 
     def has_authentication_ability?(capability)
       @authentication_abilities.to_a.include?(capability)
+    end
+
+    def has_registry_ability?
+      @authentication_abilities.any? do |ability|
+        REGISTRY_LOGIN_ABILITIES.include?(ability)
+      end
     end
   end
 end

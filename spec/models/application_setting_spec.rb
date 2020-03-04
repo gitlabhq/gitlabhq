@@ -19,6 +19,7 @@ describe ApplicationSetting do
     let(:http)  { 'http://example.com' }
     let(:https) { 'https://example.com' }
     let(:ftp)   { 'ftp://example.com' }
+    let(:javascript) { 'javascript:alert(window.opener.document.location)' }
 
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }
@@ -73,6 +74,53 @@ describe ApplicationSetting do
     it { is_expected.not_to allow_value(nil).for(:minimum_password_length) }
     it { is_expected.not_to allow_value('abc').for(:minimum_password_length) }
     it { is_expected.to allow_value(10).for(:minimum_password_length) }
+
+    context 'grafana_url validations' do
+      before do
+        subject.instance_variable_set(:@parsed_grafana_url, nil)
+      end
+
+      it { is_expected.to allow_value(http).for(:grafana_url) }
+      it { is_expected.to allow_value(https).for(:grafana_url) }
+      it { is_expected.not_to allow_value(ftp).for(:grafana_url) }
+      it { is_expected.not_to allow_value(javascript).for(:grafana_url) }
+      it { is_expected.to allow_value('/-/grafana').for(:grafana_url) }
+      it { is_expected.to allow_value('http://localhost:9000').for(:grafana_url) }
+
+      context 'when local URLs are not allowed in system hooks' do
+        before do
+          stub_application_setting(allow_local_requests_from_system_hooks: false)
+        end
+
+        it { is_expected.not_to allow_value('http://localhost:9000').for(:grafana_url) }
+      end
+
+      context 'with invalid grafana URL' do
+        it 'adds an error' do
+          subject.grafana_url = ' ' + http
+          expect(subject.save).to be false
+
+          expect(subject.errors[:grafana_url]).to eq([
+            'must be a valid relative or absolute URL. ' \
+            'Please check your Grafana URL setting in ' \
+            'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
+          ])
+        end
+      end
+
+      context 'with blocked grafana URL' do
+        it 'adds an error' do
+          subject.grafana_url = javascript
+          expect(subject.save).to be false
+
+          expect(subject.errors[:grafana_url]).to eq([
+            'is blocked: Only allowed schemes are http, https. Please check your ' \
+            'Grafana URL setting in ' \
+            'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
+          ])
+        end
+      end
+    end
 
     context 'when snowplow is enabled' do
       before do

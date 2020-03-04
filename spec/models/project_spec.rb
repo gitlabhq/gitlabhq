@@ -4766,6 +4766,38 @@ describe Project do
     end
   end
 
+  context 'with cross internal project merge requests' do
+    let(:project) { create(:project, :repository, :internal) }
+    let(:forked_project) { fork_project(project, nil, repository: true) }
+    let(:user) { double(:user) }
+
+    it "does not endlessly loop for internal projects with MRs to each other", :sidekiq_inline do
+      allow(user).to receive(:can?).and_return(true, false, true)
+      allow(user).to receive(:id).and_return(1)
+
+      create(
+        :merge_request,
+        target_project: project,
+        target_branch: 'merge-test',
+        source_project: forked_project,
+        source_branch: 'merge-test',
+        allow_collaboration: true
+      )
+
+      create(
+        :merge_request,
+        target_project: forked_project,
+        target_branch: 'merge-test',
+        source_project: project,
+        source_branch: 'merge-test',
+        allow_collaboration: true
+      )
+
+      expect(user).to receive(:can?).at_most(5).times
+      project.branch_allows_collaboration?(user, "merge-test")
+    end
+  end
+
   context 'with cross project merge requests' do
     let(:user) { create(:user) }
     let(:target_project) { create(:project, :repository) }

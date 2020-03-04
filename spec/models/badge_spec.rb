@@ -91,6 +91,22 @@ describe Badge do
       let(:method) { :image_url }
 
       it_behaves_like 'rendered_links'
+
+      context 'when asset proxy is enabled' do
+        let(:placeholder_url) { 'http://www.example.com/image' }
+
+        before do
+          stub_asset_proxy_setting(
+            enabled: true,
+            url: 'https://assets.example.com',
+            secret_key: 'shared-secret'
+          )
+        end
+
+        it 'returns a proxied URL' do
+          expect(badge.rendered_image_url).to start_with('https://assets.example.com')
+        end
+      end
     end
   end
 end

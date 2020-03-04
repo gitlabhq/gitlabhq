@@ -195,7 +195,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `headSha` | String! | SHA of the HEAD at the time the comment was made |
-| `baseSha` | String! | Merge base of the branch the comment was made on |
+| `baseSha` | String | Merge base of the branch the comment was made on |
 | `startSha` | String! | SHA of the branch being compared against |
 
 ### Discussion

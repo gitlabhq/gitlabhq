@@ -113,8 +113,9 @@ If you have set up Grafana, you can enable a link to access it easily from the s
    and expand "Metrics - Grafana".
 1. Check the "Enable access to Grafana" checkbox.
 1. If Grafana is enabled through Omnibus GitLab and on the same server,
-   leave "Grafana URL" unchanged. In any other case, enter the full URL
-   path of the Grafana instance.
+   leave **Grafana URL** unchanged. It should be `/-/grafana`.
+
+   In any other case, enter the full URL of the Grafana instance.
 1. Click **Save changes**.
 1. The new link will be available in the admin area under **Monitoring > Metrics Dashboard**.
 
