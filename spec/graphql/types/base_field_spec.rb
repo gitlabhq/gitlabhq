@@ -174,7 +174,7 @@ describe Types::BaseField do
         let(:flag) { :test_flag }
 
         it 'prepends the description' do
-          expect(field.description). to eq 'Test description. Available only when feature flag test_flag is enabled.'
+          expect(field.description). to eq 'Test description. Available only when feature flag `test_flag` is enabled.'
         end
 
         context 'falsey feature_flag values' do

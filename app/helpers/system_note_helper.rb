@@ -23,7 +23,7 @@ module SystemNoteHelper
     'moved' => 'arrow-right',
     'outdated' => 'pencil-square',
     'pinned_embed' => 'thumbtack',
-    'duplicate' => 'issue-duplicate',
+    'duplicate' => 'duplicate',
     'locked' => 'lock',
     'unlocked' => 'lock-open',
     'due_date' => 'calendar'

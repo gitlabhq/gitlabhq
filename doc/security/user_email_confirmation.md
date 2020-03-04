@@ -5,8 +5,12 @@ type: howto
 # User email confirmation at sign-up
 
 GitLab can be configured to require confirmation of a user's email address when
-the user signs up. When this setting is enabled, the user is unable to sign in until
-they confirm their email address.
+the user signs up. When this setting is enabled:
+
+- For GitLab 12.1 and earlier, the user is unable to sign in until they confirm their
+  email address.
+- For GitLab 12.2 and later, the user [has 30 days to confirm their email address](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31245).
+  After 30 days, they will be unable to log in and access GitLab features.
 
 In **Admin Area > Settings** (`/admin/application_settings/general`), go to the section
 **Sign-up Restrictions** and look for the **Send confirmation email on sign-up** option.

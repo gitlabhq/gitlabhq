@@ -19907,6 +19907,9 @@ msgstr ""
 msgid "This group"
 msgstr ""
 
+msgid "This group cannot be invited to a project inside a group with enforced SSO"
+msgstr ""
+
 msgid "This group does not provide any group Runners yet."
 msgstr ""
 

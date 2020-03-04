@@ -377,6 +377,14 @@ sudo gitlab-ctl reconfigure
 This will increase the timeout to three hours (10800 seconds). Choose a time
 long enough to accommodate a full clone of your largest repositories.
 
+### New LFS objects are never replicated
+
+If new LFS objects are never replicated to secondary Geo nodes, check the version of
+GitLab you are running. GitLab versions 11.11.x or 12.0.x are affected by
+[a bug that results in new LFS objects not being replicated to Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/issues/32696).
+
+To resolve the issue, upgrade to GitLab 12.1 or newer.
+
 ### Resetting Geo **secondary** node replication
 
 If you get a **secondary** node in a broken state and want to reset the replication state,

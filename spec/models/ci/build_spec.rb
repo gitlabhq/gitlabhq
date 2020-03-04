@@ -1293,7 +1293,35 @@ describe Ci::Build do
                  environment: 'review/$APP_HOST')
         end
 
-        it { is_expected.to eq('review/host') }
+        it 'returns an expanded environment name with a list of variables' do
+          expect(build).to receive(:simple_variables).once.and_call_original
+
+          is_expected.to eq('review/host')
+        end
+
+        context 'when build metadata has already persisted the expanded environment name' do
+          before do
+            build.metadata.expanded_environment_name = 'review/host'
+          end
+
+          it 'returns a persisted expanded environment name without a list of variables' do
+            expect(build).not_to receive(:simple_variables)
+
+            is_expected.to eq('review/host')
+          end
+
+          context 'when ci_persisted_expanded_environment_name feature flag is disabled' do
+            before do
+              stub_feature_flags(ci_persisted_expanded_environment_name: false)
+            end
+
+            it 'returns an expanded environment name with a list of variables' do
+              expect(build).to receive(:simple_variables).once.and_call_original
+
+              is_expected.to eq('review/host')
+            end
+          end
+        end
       end
 
       context 'when using persisted variables' do

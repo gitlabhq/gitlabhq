@@ -722,6 +722,7 @@ ActiveRecord::Schema.define(version: 2020_02_27_165129) do
     t.jsonb "config_variables"
     t.boolean "has_exposed_artifacts"
     t.string "environment_auto_stop_in", limit: 255
+    t.string "expanded_environment_name", limit: 255
     t.index ["build_id"], name: "index_ci_builds_metadata_on_build_id", unique: true
     t.index ["build_id"], name: "index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts", where: "(has_exposed_artifacts IS TRUE)"
     t.index ["build_id"], name: "index_ci_builds_metadata_on_build_id_and_interruptible", where: "(interruptible = true)"
@@ -1581,6 +1582,7 @@ ActiveRecord::Schema.define(version: 2020_02_27_165129) do
     t.integer "start_date_sourcing_epic_id"
     t.integer "due_date_sourcing_epic_id"
     t.integer "health_status", limit: 2
+    t.index "group_id, ((iid)::character varying) varchar_pattern_ops", name: "index_epics_on_group_id_and_iid_varchar_pattern"
     t.index ["assignee_id"], name: "index_epics_on_assignee_id"
     t.index ["author_id"], name: "index_epics_on_author_id"
     t.index ["closed_by_id"], name: "index_epics_on_closed_by_id"

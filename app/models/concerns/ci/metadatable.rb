@@ -14,6 +14,8 @@ module Ci
                          inverse_of: :build,
                          autosave: true
 
+      accepts_nested_attributes_for :metadata
+
       delegate :timeout, to: :metadata, prefix: true, allow_nil: true
       delegate :interruptible, to: :metadata, prefix: false, allow_nil: true
       delegate :has_exposed_artifacts?, to: :metadata, prefix: false, allow_nil: true

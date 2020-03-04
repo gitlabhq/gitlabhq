@@ -1891,6 +1891,11 @@ type Epic implements Noteable {
     iid: ID
 
     """
+    Filter epics by iid for autocomplete
+    """
+    iidStartsWith: String
+
+    """
     List of IIDs of epics, e.g., [1, 2]
     """
     iids: [ID!]
@@ -1944,7 +1949,7 @@ type Epic implements Noteable {
 
   """
   Total weight of open and closed descendant epic's issues. Available only when
-  feature flag unfiltered_epic_aggregates is enabled.
+  feature flag `unfiltered_epic_aggregates` is enabled.
   """
   descendantWeightSum: EpicDescendantWeights
 
@@ -2409,7 +2414,7 @@ type EpicIssue implements Noteable {
   epicIssueId: ID!
 
   """
-  Current health status. Available only when feature flag save_issuable_health_status is enabled.
+  Current health status. Available only when feature flag `save_issuable_health_status` is enabled.
   """
   healthStatus: HealthStatus
 
@@ -2942,6 +2947,11 @@ type Group {
     iid: ID
 
     """
+    Filter epics by iid for autocomplete
+    """
+    iidStartsWith: String
+
+    """
     List of IIDs of epics, e.g., [1, 2]
     """
     iids: [ID!]
@@ -3007,6 +3017,11 @@ type Group {
     IID of the epic, e.g., "1"
     """
     iid: ID
+
+    """
+    Filter epics by iid for autocomplete
+    """
+    iidStartsWith: String
 
     """
     List of IIDs of epics, e.g., [1, 2]
@@ -3390,7 +3405,7 @@ type Issue implements Noteable {
   epic: Epic
 
   """
-  Current health status. Available only when feature flag save_issuable_health_status is enabled.
+  Current health status. Available only when feature flag `save_issuable_health_status` is enabled.
   """
   healthStatus: HealthStatus
 

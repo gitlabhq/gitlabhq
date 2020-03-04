@@ -37,7 +37,12 @@ email domains to prevent malicious users from creating accounts.
 ## Require email confirmation
 
 You can send confirmation emails during sign-up and require that users confirm
-their email address before they are allowed to sign in.
+their email address. If this setting is selected:
+
+- For GitLab 12.1 and earlier, the user is unable to sign in until they confirm their
+  email address.
+- For GitLab 12.2 and later, the user [has 30 days to confirm their email address](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31245).
+  After 30 days, they will be unable to log in and access GitLab features.
 
 ![Email confirmation](img/email_confirmation_v12_7.png)
 

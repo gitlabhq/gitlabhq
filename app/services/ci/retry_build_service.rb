@@ -52,7 +52,7 @@ module Ci
 
     def create_build!(attributes)
       build = project.builds.new(attributes)
-      build.deployment = ::Gitlab::Ci::Pipeline::Seed::Deployment.new(build).to_resource
+      build.assign_attributes(::Gitlab::Ci::Pipeline::Seed::Build.environment_attributes_for(build))
       build.retried = false
       build.save!
       build

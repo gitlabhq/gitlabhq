@@ -12,24 +12,14 @@ module Gitlab
           end
 
           def to_resource
-            find_environment || ::Environment.create(attributes)
+            job.project.environments
+              .safe_find_or_create_by(name: expanded_environment_name)
           end
 
           private
 
-          def find_environment
-            job.project.environments.find_by_name(expanded_environment_name)
-          end
-
           def expanded_environment_name
             job.expanded_environment_name
-          end
-
-          def attributes
-            {
-              project: job.project,
-              name: expanded_environment_name
-            }
           end
         end
       end

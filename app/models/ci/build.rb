@@ -59,15 +59,11 @@ module Ci
     ##
     # Since Gitlab 11.5, deployments records started being created right after
     # `ci_builds` creation. We can look up a relevant `environment` through
-    # `deployment` relation today. This is much more efficient than expanding
-    # environment name with variables.
+    # `deployment` relation today.
     # (See more https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22380)
     #
-    # However, we have to still expand environment name if it's a stop action,
-    # because `deployment` persists information for start action only.
-    #
-    # We will follow up this by persisting expanded name in build metadata or
-    # persisting stop action in database.
+    # Since Gitlab 12.9, we started persisting the expanded environment name to
+    # avoid repeated variables expansion in `action: stop` builds as well.
     def persisted_environment
       return unless has_environment?
 
@@ -465,7 +461,14 @@ module Ci
       return unless has_environment?
 
       strong_memoize(:expanded_environment_name) do
-        ExpandVariables.expand(environment, -> { simple_variables })
+        # We're using a persisted expanded environment name in order to avoid
+        # variable expansion per request.
+        if Feature.enabled?(:ci_persisted_expanded_environment_name, project, default_enabled: true) &&
+          metadata&.expanded_environment_name.present?
+          metadata.expanded_environment_name
+        else
+          ExpandVariables.expand(environment, -> { simple_variables })
+        end
       end
     end
 

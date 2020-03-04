@@ -45,6 +45,20 @@ This can be temporarily disabled by running the following before updating:
 sudo touch /etc/gitlab/disable-postgresql-upgrade
 ```
 
+## Updating to GitLab 12.0
+
+WARNING: **Warning:**
+This version is affected by [a bug that results in new LFS objects not being replicated to
+Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/issues/32696). The issue is fixed
+in GitLab 12.1. Please upgrade to GitLab 12.1 or newer.
+
+## Updating to GitLab 11.11
+
+WARNING: **Warning:**
+This version is affected by [a bug that results in new LFS objects not being replicated to
+Geo secondary nodes](https://gitlab.com/gitlab-org/gitlab/issues/32696). The issue is fixed
+in GitLab 12.1. Please upgrade to GitLab 12.1 or newer.
+
 ## Updating to GitLab 10.8
 
 Before 10.8, broadcast messages would not propagate without flushing

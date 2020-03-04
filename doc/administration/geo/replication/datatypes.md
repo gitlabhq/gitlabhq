@@ -131,7 +131,7 @@ successfully, you must replicate their data using some other means.
 | Project wiki repository                             | **Yes**                  | **Yes**                     |                                             |
 | Project designs repository                          | **Yes**                  | [No][design-verification]   |                                             |
 | Uploads                                             | **Yes**                  | [No][upload-verification]   | Verified only on transfer, or manually (*1*)|
-| LFS objects                                         | **Yes**                  | [No][lfs-verification]      | Verified only on transfer, or manually (*1*)|
+| LFS objects                                         | **Yes**                  | [No][lfs-verification]      | Verified only on transfer, or manually (*1*). Unavailable for new LFS objects in 11.11.x and 12.0.x (*2*). |
 | CI job artifacts (other than traces)                | **Yes**                  | [No][artifact-verification] | Verified only manually (*1*)                |
 | Archived traces                                     | **Yes**                  | [No][artifact-verification] | Verified only on transfer, or manually (*1*)|
 | Personal snippets                                   | **Yes**                  | **Yes**                     |                                             |
@@ -148,7 +148,10 @@ successfully, you must replicate their data using some other means.
 | Content in object storage                           | **Yes**                  | No                          |                                             |
 
 - (*1*): The integrity can be verified manually using
-  [Integrity Check Rake Task](../../raketasks/check.md) on both nodes and comparing the output between them.
+  [Integrity Check Rake Task](../../raketasks/check.md) on both nodes and comparing
+  the output between them.
+- (*2*): GitLab versions 11.11.x and 12.0.x are affected by [a bug that prevents any new
+  LFS objects from replicating](https://gitlab.com/gitlab-org/gitlab/issues/32696).
 
 [design-replication]: https://gitlab.com/groups/gitlab-org/-/epics/1633
 [design-verification]: https://gitlab.com/gitlab-org/gitlab/issues/32467

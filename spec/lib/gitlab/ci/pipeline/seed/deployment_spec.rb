@@ -10,7 +10,8 @@ describe Gitlab::Ci::Pipeline::Seed::Deployment do
   end
 
   let(:job) { build(:ci_build, project: project, pipeline: pipeline) }
-  let(:seed) { described_class.new(job) }
+  let(:environment) { Gitlab::Ci::Pipeline::Seed::Environment.new(job).to_resource }
+  let(:seed) { described_class.new(job, environment) }
   let(:attributes) { {} }
 
   before do
@@ -77,6 +78,14 @@ describe Gitlab::Ci::Pipeline::Seed::Deployment do
           options: { environment: { name: 'production', action: 'stop' } }
         }
       end
+
+      it 'returns nothing' do
+        is_expected.to be_nil
+      end
+    end
+
+    context 'when job does not have environment attribute' do
+      let(:attributes) { { name: 'test' } }
 
       it 'returns nothing' do
         is_expected.to be_nil

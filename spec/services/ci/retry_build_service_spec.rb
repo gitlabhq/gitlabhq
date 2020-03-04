@@ -238,6 +238,10 @@ describe Ci::RetryBuildService do
         it 'creates a new deployment' do
           expect { new_build }.to change { Deployment.count }.by(1)
         end
+
+        it 'persists expanded environment name' do
+          expect(new_build.metadata.expanded_environment_name).to eq('production')
+        end
       end
 
       context 'when scheduling_type of build is nil' do

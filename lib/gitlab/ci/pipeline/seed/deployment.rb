@@ -7,9 +7,9 @@ module Gitlab
         class Deployment < Seed::Base
           attr_reader :job, :environment
 
-          def initialize(job)
+          def initialize(job, environment)
             @job = job
-            @environment = Seed::Environment.new(@job)
+            @environment = environment
           end
 
           def to_resource
@@ -17,7 +17,6 @@ module Gitlab
             return unless job.starts_environment?
 
             deployment = ::Deployment.new(attributes)
-            deployment.environment = environment.to_resource
 
             # If there is a validation error on environment creation, such as
             # the name contains invalid character, the job will fall back to a
@@ -45,6 +44,7 @@ module Gitlab
           def attributes
             {
               project: job.project,
+              environment: environment,
               user: job.user,
               ref: job.ref,
               tag: job.tag,
