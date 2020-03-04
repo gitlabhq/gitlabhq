@@ -9,6 +9,7 @@ module UploadsActions
 
   included do
     prepend_before_action :set_request_format_from_path_extension
+    rescue_from FileUploader::InvalidSecret, with: :render_404
   end
 
   def create

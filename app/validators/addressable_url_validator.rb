@@ -23,7 +23,8 @@
 # protect against Server-side Request Forgery (SSRF), or check for the right port.
 #
 # Configuration options:
-# * <tt>message</tt> - A custom error message (default is: "must be a valid URL").
+# * <tt>message</tt> - A custom error message, used when the URL is blank. (default is: "must be a valid URL").
+# * <tt>blocked_message</tt> - A custom error message, used when the URL is blocked. Default: +'is blocked: %{exception_message}'+.
 # * <tt>schemes</tt> - Array of URI schemes. Default: +['http', 'https']+
 # * <tt>allow_localhost</tt> - Allow urls pointing to +localhost+. Default: +true+
 # * <tt>allow_local_network</tt> - Allow urls pointing to private network addresses. Default: +true+
@@ -59,7 +60,8 @@ class AddressableUrlValidator < ActiveModel::EachValidator
   }.freeze
 
   DEFAULT_OPTIONS = BLOCKER_VALIDATE_OPTIONS.merge({
-    message: 'must be a valid URL'
+    message: 'must be a valid URL',
+    blocked_message: 'is blocked: %{exception_message}'
   }).freeze
 
   def initialize(options)
@@ -80,7 +82,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
 
     Gitlab::UrlBlocker.validate!(value, blocker_args)
   rescue Gitlab::UrlBlocker::BlockedUrlError => e
-    record.errors.add(attribute, "is blocked: #{e.message}")
+    record.errors.add(attribute, options.fetch(:blocked_message) % { exception_message: e.message })
   end
 
   private

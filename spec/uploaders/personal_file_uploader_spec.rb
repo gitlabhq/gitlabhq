@@ -6,12 +6,13 @@ describe PersonalFileUploader do
   let(:model) { create(:personal_snippet) }
   let(:uploader) { described_class.new(model) }
   let(:upload) { create(:upload, :personal_snippet_upload) }
+  let(:secret) { SecureRandom.hex }
 
   subject { uploader }
 
   shared_examples '#base_dir' do
     before do
-      subject.instance_variable_set(:@secret, 'secret')
+      subject.instance_variable_set(:@secret, secret)
     end
 
     it 'is prefixed with uploads/-/system' do
@@ -23,12 +24,12 @@ describe PersonalFileUploader do
 
   shared_examples '#to_h' do
     before do
-      subject.instance_variable_set(:@secret, 'secret')
+      subject.instance_variable_set(:@secret, secret)
     end
 
     it 'is correct' do
       allow(uploader).to receive(:file).and_return(double(extension: 'txt', filename: 'file_name'))
-      expected_url = "/uploads/-/system/personal_snippet/#{model.id}/secret/file_name"
+      expected_url = "/uploads/-/system/personal_snippet/#{model.id}/#{secret}/file_name"
 
       expect(uploader.to_h).to eq(
         alt: 'file_name',

@@ -67,7 +67,13 @@ module Gitlab
       return false unless can_access_git?
       return false unless project
 
-      return false if !user.can?(:push_code, project) && !project.branch_allows_collaboration?(user, ref)
+      # Checking for an internal project to prevent an infinite loop:
+      # https://gitlab.com/gitlab-org/gitlab/issues/36805
+      if project.internal?
+        return false unless user.can?(:push_code, project)
+      else
+        return false if !user.can?(:push_code, project) && !project.branch_allows_collaboration?(user, ref)
+      end
 
       if protected?(ProtectedBranch, project, ref)
         protected_branch_accessible_to?(ref, action: :push)

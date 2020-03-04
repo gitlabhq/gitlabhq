@@ -66,6 +66,7 @@ class GroupMember < Member
 
   def after_accept_invite
     notification_service.accept_group_invite(self)
+    update_two_factor_requirement
 
     super
   end

@@ -769,6 +769,15 @@ describe Auth::ContainerRegistryAuthenticationService do
     context 'when deploy token has read_registry as a scope' do
       let(:current_user) { create(:deploy_token, projects: [project]) }
 
+      shared_examples 'able to login' do
+        context 'registry provides read_container_image authentication_abilities' do
+          let(:current_params) { {} }
+          let(:authentication_abilities) { [:read_container_image] }
+
+          it_behaves_like 'an authenticated'
+        end
+      end
+
       context 'for public project' do
         let(:project) { create(:project, :public) }
 
@@ -783,6 +792,8 @@ describe Auth::ContainerRegistryAuthenticationService do
 
           it_behaves_like 'an inaccessible'
         end
+
+        it_behaves_like 'able to login'
       end
 
       context 'for internal project' do
@@ -799,6 +810,8 @@ describe Auth::ContainerRegistryAuthenticationService do
 
           it_behaves_like 'an inaccessible'
         end
+
+        it_behaves_like 'able to login'
       end
 
       context 'for private project' do
@@ -815,11 +828,29 @@ describe Auth::ContainerRegistryAuthenticationService do
 
           it_behaves_like 'an inaccessible'
         end
+
+        it_behaves_like 'able to login'
       end
     end
 
     context 'when deploy token does not have read_registry scope' do
       let(:current_user) { create(:deploy_token, projects: [project], read_registry: false) }
+
+      shared_examples 'unable to login' do
+        context 'registry provides no container authentication_abilities' do
+          let(:current_params) { {} }
+          let(:authentication_abilities) { [] }
+
+          it_behaves_like 'a forbidden'
+        end
+
+        context 'registry provides inapplicable container authentication_abilities' do
+          let(:current_params) { {} }
+          let(:authentication_abilities) { [:download_code] }
+
+          it_behaves_like 'a forbidden'
+        end
+      end
 
       context 'for public project' do
         let(:project) { create(:project, :public) }
@@ -827,6 +858,8 @@ describe Auth::ContainerRegistryAuthenticationService do
         context 'when pulling' do
           it_behaves_like 'a pullable'
         end
+
+        it_behaves_like 'unable to login'
       end
 
       context 'for internal project' do
@@ -835,6 +868,8 @@ describe Auth::ContainerRegistryAuthenticationService do
         context 'when pulling' do
           it_behaves_like 'an inaccessible'
         end
+
+        it_behaves_like 'unable to login'
       end
 
       context 'for private project' do
@@ -843,6 +878,15 @@ describe Auth::ContainerRegistryAuthenticationService do
         context 'when pulling' do
           it_behaves_like 'an inaccessible'
         end
+
+        context 'when logging in' do
+          let(:current_params) { {} }
+          let(:authentication_abilities) { [] }
+
+          it_behaves_like 'a forbidden'
+        end
+
+        it_behaves_like 'unable to login'
       end
     end
 
