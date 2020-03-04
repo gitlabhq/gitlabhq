@@ -1,5 +1,0 @@
----
-title: Prevent XSS in admin grafana URL setting
-merge_request:
-author:
-type: security

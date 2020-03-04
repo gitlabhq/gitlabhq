@@ -1,5 +1,0 @@
----
-title: Prevent an endless checking loop for two merge requests targeting each other
-merge_request:
-author:
-type: security
