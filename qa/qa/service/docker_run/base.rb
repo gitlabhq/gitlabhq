@@ -37,6 +37,10 @@ module QA
         def running?
           `docker ps -f name=#{@name}`.include?(@name)
         end
+
+        def read_file(file_path)
+          `docker exec #{@name} /bin/cat #{file_path}`
+        end
       end
     end
   end

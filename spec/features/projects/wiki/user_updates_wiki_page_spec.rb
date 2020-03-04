@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe 'User updates wiki page' do
+  include WikiHelpers
+
   let(:user) { create(:user) }
 
   before do
@@ -11,8 +13,11 @@ describe 'User updates wiki page' do
   end
 
   context 'when wiki is empty' do
-    before do
+    before do |example|
       visit(project_wikis_path(project))
+
+      wait_for_svg_to_be_loaded(example)
+
       click_link "Create your first page"
     end
 

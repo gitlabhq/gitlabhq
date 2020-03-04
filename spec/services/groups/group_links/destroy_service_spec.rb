@@ -40,24 +40,11 @@ describe Groups::GroupLinks::DestroyService, '#execute' do
     end
 
     it 'updates project authorization once per group' do
-      expect(GroupGroupLink).to receive(:delete)
+      expect(GroupGroupLink).to receive(:delete).and_call_original
       expect(group).to receive(:refresh_members_authorized_projects).once
       expect(another_group).to receive(:refresh_members_authorized_projects).once
 
       subject.execute(links)
-    end
-
-    it 'rolls back changes when error happens' do
-      group.add_developer(user)
-
-      expect(group).to receive(:refresh_members_authorized_projects).once.and_call_original
-      expect(another_group).to(
-        receive(:refresh_members_authorized_projects).and_raise('boom'))
-
-      expect { subject.execute(links) }.to raise_error('boom')
-
-      expect(GroupGroupLink.count).to eq(links.length)
-      expect(Ability.allowed?(user, :read_project, project)).to be_truthy
     end
   end
 end

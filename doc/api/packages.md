@@ -21,6 +21,7 @@ GET /projects/:id/packages
 | `order_by`| string | no | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
 | `sort`    | string | no | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type` | string | no | Filter the returned packages by type. One of `conan`, `maven`, `npm` or `nuget`. (_Introduced in GitLab 12.9_)
+| `package_name` | string | no | Filter the project packages with a fuzzy search by name. (_Introduced in GitLab 12.9_)
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/packages

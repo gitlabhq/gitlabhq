@@ -108,16 +108,6 @@ export default {
       'errorStatus',
     ]),
     ...mapGetters('details', ['stacktrace']),
-    reported() {
-      return sprintf(
-        __('Reported %{timeAgo} by %{reportedBy}'),
-        {
-          reportedBy: `<strong class="error-details-meta-culprit">${this.error.culprit}</strong>`,
-          timeAgo: this.timeFormatted(this.stacktraceData.date_received),
-        },
-        false,
-      );
-    },
     firstReleaseLink() {
       return `${this.error.externalBaseUrl}/releases/${this.error.firstReleaseShortVersion}`;
     },
@@ -227,8 +217,19 @@ export default {
       </gl-alert>
 
       <div class="error-details-header d-flex py-2 justify-content-between">
-        <div class="error-details-meta my-auto">
-          <span v-if="!loadingStacktrace && stacktrace" v-html="reported"></span>
+        <div
+          v-if="!loadingStacktrace && stacktrace"
+          class="error-details-meta my-auto"
+          data-qa-selector="reported_text"
+        >
+          <gl-sprintf :message="__('Reported %{timeAgo} by %{reportedBy}')">
+            <template #reportedBy>
+              <strong class="error-details-meta-culprit">{{ error.culprit }}</strong>
+            </template>
+            <template #timeAgo>
+              {{ timeFormatted(stacktraceData.date_received) }}
+            </template>
+          </gl-sprintf>
         </div>
         <div class="error-details-actions">
           <div class="d-inline-flex bv-d-sm-down-none">

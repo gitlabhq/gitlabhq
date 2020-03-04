@@ -1665,7 +1665,7 @@ type DiffRefs {
   """
   Merge base of the branch the comment was made on
   """
-  baseSha: String!
+  baseSha: String
 
   """
   SHA of the HEAD at the time the comment was made

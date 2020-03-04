@@ -3,5 +3,5 @@
 class UserDetail < ApplicationRecord
   belongs_to :user
 
-  validates :job_title, presence: true, length: { maximum: 200 }
+  validates :job_title, length: { maximum: 200 }
 end

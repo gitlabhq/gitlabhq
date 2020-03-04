@@ -11,7 +11,7 @@ module QA
               element :api_url, 'url_field :api_url' # rubocop:disable QA/ElementWithPattern
               element :ca_certificate, 'text_area :ca_cert' # rubocop:disable QA/ElementWithPattern
               element :token, 'text_field :token' # rubocop:disable QA/ElementWithPattern
-              element :add_cluster_button, "submit s_('ClusterIntegration|Add Kubernetes cluster')" # rubocop:disable QA/ElementWithPattern
+              element :add_kubernetes_cluster_button
               element :rbac_checkbox
             end
 
@@ -32,7 +32,7 @@ module QA
             end
 
             def add_cluster!
-              click_on 'Add Kubernetes cluster'
+              click_element :add_kubernetes_cluster_button, Page::Project::Operations::Kubernetes::Show
             end
 
             def uncheck_rbac!

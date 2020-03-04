@@ -137,6 +137,28 @@ describe('ErrorDetails', () => {
       expect(wrapper.findAll(GlButton).length).toBe(3);
     });
 
+    describe('unsafe chars for culprit field', () => {
+      const findReportedText = () => wrapper.find('[data-qa-selector="reported_text"]');
+      const culprit = '<script>console.log("surprise!")</script>';
+      beforeEach(() => {
+        store.state.details.loadingStacktrace = false;
+        wrapper.setData({
+          error: {
+            culprit,
+          },
+        });
+      });
+
+      it('should not convert interpolated text to html entities', () => {
+        expect(findReportedText().findAll('script').length).toEqual(0);
+        expect(findReportedText().findAll('strong').length).toEqual(1);
+      });
+
+      it('should render text instead of converting to html entities', () => {
+        expect(findReportedText().text()).toContain(culprit);
+      });
+    });
+
     describe('Badges', () => {
       it('should show language and error level badges', () => {
         wrapper.setData({

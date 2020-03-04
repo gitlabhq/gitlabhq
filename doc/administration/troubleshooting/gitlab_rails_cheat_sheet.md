@@ -262,14 +262,6 @@ p.each do |project|
 end
 ```
 
-### Identify un-indexed projects
-
-```ruby
-Project.find_each do |project|
-  puts "id #{project.id}: #{project.namespace.name.to_s}/#{project.name.to_s}" if project.index_status.nil?
-end
-```
-
 ## Wikis
 
 ### Recreate
@@ -761,12 +753,6 @@ Ci::Pipeline.where(project_id: p.id).where(status: 'pending').each {|p| p.cancel
 Ci::Pipeline.where(project_id: p.id).where(status: 'pending').count
 ```
 
-### Manually modify runner minutes
-
-```ruby
-Namespace.find_by_full_path("user/proj").namespace_statistics.update(shared_runners_seconds: 27360)
-```
-
 ### Remove artifacts more than a week old
 
 The Latest version of these steps can be found in the [job artifacts documentation](../job_artifacts.md)
@@ -804,21 +790,6 @@ build.failure_reason
 
 build.dependencies.each do |d| { puts "status: #{d.status}, finished at: #{d.finished_at},
   completed: #{d.complete?}, artifacts_expired: #{d.artifacts_expired?}, erased: #{d.erased?}" }
-```
-
-### Disable strict artifact checking (Introduced in GitLab 10.3.0)
-
-See [job artifacts documentation](../job_artifacts.md#validation-for-dependencies).
-
-```ruby
-Feature.enable('ci_disable_validates_dependencies')
-```
-
-### Remove CI traces older than 6 months
-
-```ruby
-current_user = User.find_by_email('cindy@gitlap.com')
-Ci::Build.where("finished_at < ?", 6.months.ago.to_date).each {|b| puts b.id; b.erase(erased_by: current_user) if b.erasable?};nil
 ```
 
 ### Try CI service
@@ -965,12 +936,6 @@ end
 
 ## Sidekiq
 
-### Size of a queue
-
-```ruby
-Sidekiq::Queue.new('background_migration').size
-```
-
 ### Kill a worker's Sidekiq jobs
 
 ```ruby
@@ -1015,12 +980,6 @@ See <https://github.com/mperham/sidekiq/wiki/Signals#ttin>.
 
 ```shell
 /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket
-```
-
-### Connect to Redis (HA)
-
-```shell
-/opt/gitlab/embedded/bin/redis-cli -h <host ip> -a <password>
 ```
 
 ## LFS

@@ -79,26 +79,37 @@ subgraph "CNG-mirror pipeline"
 **Additional notes:**
 
 - If the `review-deploy` job keep failing (note that we already retry it twice),
-  please post a message in the `#quality` channel and/or create a ~Quality ~bug
+  please post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"ep::review apps"` `~bug`
   issue with a link to your merge request. Note that the deployment failure can
   reveal an actual problem introduced in your merge request (i.e. this isn't
   necessarily a transient failure)!
-- If the `review-qa-smoke` job keep failing (note that we already retry it twice),
+- If the `review-qa-smoke` job keeps failing (note that we already retry it twice),
   please check the job's logs: you could discover an actual problem introduced in
   your merge request. You can also download the artifacts to see screenshots of
   the page at the time the failures occurred. If you don't find the cause of the
   failure or if it seems unrelated to your change, please post a message in the
   `#quality` channel and/or create a ~Quality ~bug issue with a link to your
   merge request.
-- The manual [`review-stop`][gitlab-ci-yml] in the `test` stage can be used to
+- The manual `review-stop` can be used to
   stop a Review App manually, and is also started by GitLab once a merge
   request's branch is deleted after being merged.
-- Review Apps are cleaned up regularly via a pipeline schedule that runs
-  the [`schedule:review-cleanup`][gitlab-ci-yml] job.
 - The Kubernetes cluster is connected to the `gitlab-{ce,ee}` projects using
   [GitLab's Kubernetes integration][gitlab-k8s-integration]. This basically
   allows to have a link to the Review App directly from the merge request
   widget.
+
+### Auto-stopping of Review Apps
+
+Review Apps are automatically stopped 2 days after the last deployment thanks to
+the [Environment auto-stop](../../ci/environments.html#environments-auto-stop) feature.
+
+If you need your Review App to stay up for a longer time, you can
+[pin its environment](../../ci/environments.html#auto-stop-example).
+
+The `review-cleanup` job that automatically runs in scheduled
+pipelines (and is manual in merge request) stops stale Review Apps after 5 days,
+deletes their environment after 6 days, and cleans up any dangling Helm releases
+and Kubernetes resources after 7 days.
 
 ## QA runs
 
@@ -206,7 +217,7 @@ aids in identifying load spikes on the cluster, and if nodes are problematic or 
 
 **Potential cause:**
 
-That could be a sign that the [`schedule:review-cleanup`][gitlab-ci-yml] job is
+That could be a sign that the `review-cleanup` job is
 failing to cleanup stale Review Apps and Kubernetes resources.
 
 **Where to look for further debugging:**
@@ -270,7 +281,7 @@ kubectl get cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-' | grep
 
 ### Using K9s
 
-[K9s] is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
+[K9s] is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
 
 - In K9s you can sort or add filters by typing the `/` character
   - `-lrelease=<review-app-slug>` - filters down to all pods for a release. This aids in determining what is having issues in a single deployment
@@ -387,13 +398,11 @@ find a way to limit it to only us.**
 [helm-chart]: https://gitlab.com/gitlab-org/charts/gitlab/
 [review-apps-ce]: https://console.cloud.google.com/kubernetes/clusters/details/us-central1-a/review-apps-ce?project=gitlab-review-apps
 [review-apps-ee]: https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps-ee?project=gitlab-review-apps
-[review-apps.sh]: https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/review-apps.sh
-[automated_cleanup.rb]: https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/automated_cleanup.rb
-[Auto-DevOps.gitlab-ci.yml]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
-[gitlab-ci-yml]: https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml
+[review-apps.sh]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/review-apps.sh
+[automated_cleanup.rb]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/automated_cleanup.rb
+[Auto-DevOps.gitlab-ci.yml]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [gitlab-k8s-integration]: ../../user/project/clusters/index.md
 [K9s]: https://github.com/derailed/k9s
-[password-bug]: https://gitlab.com/gitlab-org/gitlab-foss/issues/53621
 
 ---
 

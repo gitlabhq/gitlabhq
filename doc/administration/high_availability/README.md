@@ -76,7 +76,7 @@ On different cloud vendors a best effort like for like can be used.
 - **Known Issues:** For the latest list of known performance issues head
 [here](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues).
 
-| Service                     | Nodes | Configuration         | GCP type      |
+| Service                     | Nodes | Configuration[^8]     | GCP type      |
 | ----------------------------|-------|-----------------------|---------------|
 | GitLab Rails[^1]            | 3     | 8 vCPU, 7.2GB Memory  | n1-highcpu-8 |
 | PostgreSQL                  | 3     | 2 vCPU, 7.5GB Memory  | n1-standard-2 |
@@ -98,7 +98,7 @@ On different cloud vendors a best effort like for like can be used.
 - **Known Issues:** For the latest list of known performance issues head
 [here](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues).
 
-| Service                     | Nodes | Configuration         | GCP type      |
+| Service                     | Nodes | Configuration[^8]     | GCP type      |
 | ----------------------------|-------|-----------------------|---------------|
 | GitLab Rails[^1]            | 3     | 16 vCPU, 14.4GB Memory | n1-highcpu-16 |
 | PostgreSQL                  | 3     | 2 vCPU, 7.5GB Memory  | n1-standard-2 |
@@ -120,7 +120,7 @@ On different cloud vendors a best effort like for like can be used.
 - **Known Issues:** For the latest list of known performance issues head
 [here](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues).
 
-| Service                     | Nodes | Configuration         | GCP type      |
+| Service                     | Nodes | Configuration[^8]     | GCP type      |
 | ----------------------------|-------|-----------------------|---------------|
 | GitLab Rails[^1]            | 3     | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
 | PostgreSQL                  | 3     | 4 vCPU, 15GB Memory   | n1-standard-4 |
@@ -145,9 +145,9 @@ On different cloud vendors a best effort like for like can be used.
 - **Known Issues:** For the latest list of known performance issues head
 [here](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues).
 
-| Service                     | Nodes | Configuration         | GCP type      |
+| Service                     | Nodes | Configuration[^8]     | GCP type      |
 | ----------------------------|-------|-----------------------|---------------|
-| GitLab Rails[^1]            | 7     | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
+| GitLab Rails[^1]            | 5     | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
 | PostgreSQL                  | 3     | 8 vCPU, 30GB Memory   | n1-standard-8 |
 | PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
 | Gitaly[^2] [^5] [^7]        | X     | 32 vCPU, 120GB Memory | n1-standard-32 |
@@ -170,9 +170,9 @@ On different cloud vendors a best effort like for like can be used.
 - **Known Issues:** For the latest list of known performance issues head
 [here](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues).
 
-| Service                     | Nodes | Configuration         | GCP type      |
+| Service                     | Nodes | Configuration[^8]     | GCP type      |
 | ----------------------------|-------|-----------------------|---------------|
-| GitLab Rails[^1]            | 15    | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
+| GitLab Rails[^1]            | 12    | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
 | PostgreSQL                  | 3     | 16 vCPU, 60GB Memory  | n1-standard-16 |
 | PgBouncer                   | 3     | 2 vCPU, 1.8GB Memory  | n1-highcpu-2  |
 | Gitaly[^2] [^5] [^7]        | X     | 64 vCPU, 240GB Memory | n1-standard-64 |
@@ -230,3 +230,9 @@ On different cloud vendors a best effort like for like can be used.
       as with time they may be adjusted higher or lower depending on the scale of your
       environment's workload. If you're running the environment on a Cloud provider
       you may need to refer to their documentation on how configure IOPS correctly.
+
+[^8]: The architectures were built and tested with the [Intel Xeon E5 v3 (Haswell)](https://cloud.google.com/compute/docs/cpu-platforms)
+      CPU platform on GCP. On different hardware you may find that adjustments, either lower
+      or higher, are required for your CPU or Node counts accordingly. For more info a
+      [Sysbench](https://github.com/akopytov/sysbench) benchmark of the CPU can be found
+      [here](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Reference-Architectures/GCP-CPU-Benchmarks).

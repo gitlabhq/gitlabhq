@@ -24,7 +24,6 @@ describe Projects::LfsPointers::LfsObjectDownloadListService do
   describe '#execute' do
     context 'when no lfs pointer is linked' do
       before do
-        allow_any_instance_of(Projects::LfsPointers::LfsLinkService).to receive(:execute).and_return([])
         allow_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute).and_return(oid_download_links)
         expect(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:new).with(project, remote_uri: URI.parse(default_endpoint)).and_call_original
       end
@@ -35,42 +34,10 @@ describe Projects::LfsPointers::LfsObjectDownloadListService do
         subject.execute
       end
 
-      it 'links existent lfs objects to the project' do
-        expect_any_instance_of(Projects::LfsPointers::LfsLinkService).to receive(:execute)
-
-        subject.execute
-      end
-
       it 'retrieves the download links of non existent objects' do
         expect_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute).with(all_oids)
 
         subject.execute
-      end
-    end
-
-    context 'when some lfs objects are linked' do
-      before do
-        allow_any_instance_of(Projects::LfsPointers::LfsLinkService).to receive(:execute).and_return(existing_lfs_objects.keys)
-        allow_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute).and_return(oid_download_links)
-      end
-
-      it 'retrieves the download links of non existent objects' do
-        expect_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute).with(oids)
-
-        subject.execute
-      end
-    end
-
-    context 'when all lfs objects are linked' do
-      before do
-        allow_any_instance_of(Projects::LfsPointers::LfsLinkService).to receive(:execute).and_return(all_oids.keys)
-        allow_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute)
-      end
-
-      it 'retrieves no download links' do
-        expect_any_instance_of(Projects::LfsPointers::LfsDownloadLinkListService).to receive(:execute).with({}).and_call_original
-
-        expect(subject.execute).to be_empty
       end
     end
 

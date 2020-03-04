@@ -75,6 +75,7 @@ review-build-cng:
     name: review/${CI_COMMIT_REF_NAME}
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
     on_stop: review-stop
+    auto_stop_in: 48 hours
 
 review-deploy:
   extends:

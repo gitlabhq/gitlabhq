@@ -26,6 +26,7 @@ module Gitlab
         ActiveRecord::Base.uncached do
           ActiveRecord::Base.no_touching do
             update_params!
+            update_relation_hashes!
             create_relations!
           end
         end
@@ -216,6 +217,10 @@ module Gitlab
           user: @user,
           excluded_keys: excluded_keys_for_relation(relation_key)
         }
+      end
+
+      def update_relation_hashes!
+        @tree_hash['ci_pipelines']&.sort_by! { |hash| hash['id'] }
       end
     end
   end

@@ -104,6 +104,24 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
         expect(pipeline.merge_request.source_branch).to eq('feature_conflict')
       end
 
+      it 'restores pipelines based on ascending id order' do
+        expected_ordered_shas = %w[
+          2ea1f3dec713d940208fb5ce4a38765ecb5d3f73
+          ce84140e8b878ce6e7c4d298c7202ff38170e3ac
+          048721d90c449b244b7b4c53a9186b04330174ec
+          sha-notes
+          5f923865dde3436854e9ceb9cdb7815618d4e849
+          d2d430676773caa88cdaf7c55944073b2fd5561a
+          2ea1f3dec713d940208fb5ce4a38765ecb5d3f73
+        ]
+
+        project = Project.find_by_path('project')
+
+        project.ci_pipelines.order(:id).each_with_index do |pipeline, i|
+          expect(pipeline['sha']).to eq expected_ordered_shas[i]
+        end
+      end
+
       it 'preserves updated_at on issues' do
         issue = Issue.where(description: 'Aliquam enim illo et possimus.').first
 
@@ -385,7 +403,7 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
         it 'has the correct number of pipelines and statuses' do
           expect(@project.ci_pipelines.size).to eq(7)
 
-          @project.ci_pipelines.order(:id).zip([2, 2, 2, 2, 2, 0, 0])
+          @project.ci_pipelines.order(:id).zip([2, 0, 2, 2, 2, 2, 0])
             .each do |(pipeline, expected_status_size)|
             expect(pipeline.statuses.size).to eq(expected_status_size)
           end
@@ -422,7 +440,7 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
         end
 
         it 'restores external pull request for the restored pipeline' do
-          pipeline_with_external_pr = @project.ci_pipelines.order(:id).last
+          pipeline_with_external_pr = @project.ci_pipelines.where(source: 'external_pull_request_event').first
 
           expect(pipeline_with_external_pr.external_pull_request).to be_persisted
         end

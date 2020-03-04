@@ -11,14 +11,20 @@ module QA
             end
 
             view 'app/views/clusters/clusters/_form.html.haml' do
-              element :base_domain
-              element :save_domain
+              element :integration_status_toggle, required: true
+              element :base_domain_field, required: true
+              element :save_changes_button, required: true
+            end
+
+            view 'app/assets/javascripts/clusters/components/application_row.vue' do
+              element :install_button
+              element :uninstall_button
             end
 
             def install!(application_name)
               within_element(application_name) do
                 has_element?(:install_button, application: application_name, wait: 30)
-                click_on 'Install' # TODO replace with click_element
+                click_element :install_button
               end
             end
 
@@ -41,11 +47,11 @@ module QA
             end
 
             def set_domain(domain)
-              fill_element :base_domain, domain
+              fill_element :base_domain_field, domain
             end
 
             def save_domain
-              click_element :save_domain
+              click_element :save_changes_button, Page::Project::Operations::Kubernetes::Show
             end
           end
         end

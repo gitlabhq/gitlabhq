@@ -260,8 +260,10 @@ describe SnippetsController do
     context 'when the snippet description contains a file' do
       include FileMoverHelpers
 
-      let(:picture_file) { "/-/system/user/#{user.id}/secret56/picture.jpg" }
-      let(:text_file) { "/-/system/user/#{user.id}/secret78/text.txt" }
+      let(:picture_secret) { SecureRandom.hex }
+      let(:text_secret) { SecureRandom.hex }
+      let(:picture_file) { "/-/system/user/#{user.id}/#{picture_secret}/picture.jpg" }
+      let(:text_file) { "/-/system/user/#{user.id}/#{text_secret}/text.txt" }
       let(:description) do
         "Description with picture: ![picture](/uploads#{picture_file}) and "\
         "text: [text.txt](/uploads#{text_file})"
@@ -284,8 +286,8 @@ describe SnippetsController do
         snippet = subject
 
         expected_description = "Description with picture: "\
-          "![picture](/uploads/-/system/personal_snippet/#{snippet.id}/secret56/picture.jpg) and "\
-          "text: [text.txt](/uploads/-/system/personal_snippet/#{snippet.id}/secret78/text.txt)"
+          "![picture](/uploads/-/system/personal_snippet/#{snippet.id}/#{picture_secret}/picture.jpg) and "\
+          "text: [text.txt](/uploads/-/system/personal_snippet/#{snippet.id}/#{text_secret}/text.txt)"
 
         expect(snippet.description).to eq(expected_description)
       end
