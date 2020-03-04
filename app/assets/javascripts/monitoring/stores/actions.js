@@ -79,7 +79,7 @@ export const fetchData = ({ dispatch }) => {
   dispatch('fetchEnvironmentsData');
 };
 
-export const fetchDashboard = ({ state, dispatch }) => {
+export const fetchDashboard = ({ state, commit, dispatch }) => {
   dispatch('requestMetricsDashboard');
 
   const params = {};
@@ -100,6 +100,7 @@ export const fetchDashboard = ({ state, dispatch }) => {
     .catch(error => {
       Sentry.captureException(error);
 
+      commit(types.SET_ALL_DASHBOARDS, error.response?.data?.all_dashboards ?? []);
       dispatch('receiveMetricsDashboardFailure', error);
 
       if (state.showErrorBanner) {

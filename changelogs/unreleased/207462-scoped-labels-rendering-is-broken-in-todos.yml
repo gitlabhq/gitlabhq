@@ -1,0 +1,5 @@
+---
+title: Fix scoped labels rendering in To-Do List
+merge_request: 26146
+author:
+type: fixed

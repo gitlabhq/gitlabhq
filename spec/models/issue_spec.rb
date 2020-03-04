@@ -425,16 +425,16 @@ describe Issue do
     let(:issue) { create(:issue, title: 'testing-issue') }
 
     it 'starts with the issue iid' do
-      expect(issue.to_branch_name).to match /\A#{issue.iid}-[A-Za-z\-]+\z/
+      expect(issue.to_branch_name).to match(/\A#{issue.iid}-[A-Za-z\-]+\z/)
     end
 
     it "contains the issue title if not confidential" do
-      expect(issue.to_branch_name).to match /testing-issue\z/
+      expect(issue.to_branch_name).to match(/testing-issue\z/)
     end
 
     it "does not contain the issue title if confidential" do
       issue = create(:issue, title: 'testing-issue', confidential: true)
-      expect(issue.to_branch_name).to match /confidential-issue\z/
+      expect(issue.to_branch_name).to match(/confidential-issue\z/)
     end
 
     context 'issue title longer than 100 characters' do
@@ -932,4 +932,33 @@ describe Issue do
   end
 
   it_behaves_like 'versioned description'
+
+  describe "#previous_updated_at" do
+    let_it_be(:updated_at) { Time.new(2012, 01, 06) }
+    let_it_be(:issue) { create(:issue, updated_at: updated_at) }
+
+    it 'returns updated_at value if updated_at did not change at all' do
+      allow(issue).to receive(:previous_changes).and_return({})
+
+      expect(issue.previous_updated_at).to eq(updated_at)
+    end
+
+    it 'returns updated_at value if `previous_changes` has nil value for `updated_at`' do
+      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => nil })
+
+      expect(issue.previous_updated_at).to eq(updated_at)
+    end
+
+    it 'returns updated_at value if previous updated_at value is not present' do
+      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => [nil, Time.new(2013, 02, 06)] })
+
+      expect(issue.previous_updated_at).to eq(updated_at)
+    end
+
+    it 'returns previous updated_at when present' do
+      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => [Time.new(2013, 02, 06), Time.new(2013, 03, 06)] })
+
+      expect(issue.previous_updated_at).to eq(Time.new(2013, 02, 06))
+    end
+  end
 end

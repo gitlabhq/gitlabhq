@@ -1,3 +1,10 @@
+/**
+ * Polyfill: CustomEvent constructor
+ * @what new CustomEvent()
+ * @why Certain features, e.g. notes utilize this
+ * @browsers Internet Explorer 11
+ * @see https://caniuse.com/#feat=customevent
+ */
 if (typeof window.CustomEvent !== 'function') {
   window.CustomEvent = function CustomEvent(event, params) {
     const evt = document.createEvent('CustomEvent');

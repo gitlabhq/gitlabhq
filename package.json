@@ -125,6 +125,7 @@
     "tiptap-commands": "^1.4.0",
     "tiptap-extensions": "^1.8.0",
     "underscore": "^1.9.0",
+    "unfetch": "^4.1.0",
     "url-loader": "^2.1.0",
     "visibilityjs": "^1.2.4",
     "vue": "^2.6.10",

@@ -484,6 +484,9 @@ msgstr ""
 msgid "%{title} changes"
 msgstr ""
 
+msgid "%{token}..."
+msgstr ""
+
 msgid "%{totalWeight} total weight"
 msgstr ""
 
@@ -1279,6 +1282,9 @@ msgid "Admin mode enabled"
 msgstr ""
 
 msgid "Admin notes"
+msgstr ""
+
+msgid "AdminArea|Bots"
 msgstr ""
 
 msgid "AdminArea|Included Free in license"
@@ -24072,6 +24078,12 @@ msgid "stuck"
 msgstr ""
 
 msgid "success"
+msgstr ""
+
+msgid "suggestPipeline|1/2: Choose a template"
+msgstr ""
+
+msgid "suggestPipeline|We recommend the %{boldStart}Code Quality%{boldEnd} template, which will add a report widget to your Merge Requests. This way you’ll learn about code quality degradations much sooner. %{footerStart} Goodbye technical debt! %{footerEnd}"
 msgstr ""
 
 msgid "syntax is correct"

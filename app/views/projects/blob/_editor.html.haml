@@ -17,8 +17,10 @@
       %span.pull-left.append-right-10
         \/
       = text_field_tag 'file_name', params[:file_name], placeholder: "File name",
-        required: true, class: 'form-control new-file-name js-file-path-name-input'
+        required: true, class: 'form-control new-file-name js-file-path-name-input', value: params[:file_name] || (should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : '')
       = render 'template_selectors'
+      - if should_suggest_gitlab_ci_yml?
+        = render partial: 'suggest_gitlab_ci_yml', locals: { target: '#gitlab-ci-yml-selector', dismiss_key: "suggest_gitlab_ci_yml_#{@project.id}" }
 
     .file-buttons
       - if is_markdown

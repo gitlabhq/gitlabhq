@@ -1,10 +1,12 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlButton, GlFormInput, GlFormGroup } from '@gitlab/ui';
+import { GlButton, GlLink, GlFormInput, GlFormGroup } from '@gitlab/ui';
 import { escape as esc } from 'lodash';
 import { __, sprintf } from '~/locale';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
+import { BACK_URL_PARAM } from '~/releases/constants';
+import { getParameterByName } from '~/lib/utils/common_utils';
 
 export default {
   name: 'ReleaseEditApp',
@@ -12,6 +14,7 @@ export default {
     GlFormInput,
     GlFormGroup,
     GlButton,
+    GlLink,
     MarkdownField,
   },
   directives: {
@@ -74,6 +77,9 @@ export default {
         this.updateReleaseNotes(notes);
       },
     },
+    cancelPath() {
+      return getParameterByName(BACK_URL_PARAM) || this.releasesPagePath;
+    },
   },
   created() {
     this.fetchRelease();
@@ -84,7 +90,6 @@ export default {
       'updateRelease',
       'updateReleaseTitle',
       'updateReleaseNotes',
-      'navigateToReleasesPage',
     ]),
   },
 };
@@ -157,15 +162,9 @@ export default {
         >
           {{ __('Save changes') }}
         </gl-button>
-        <gl-button
-          class="js-cancel-button"
-          variant="default"
-          type="button"
-          :aria-label="__('Cancel')"
-          @click="navigateToReleasesPage()"
-        >
+        <gl-link :href="cancelPath" class="js-cancel-button btn btn-default">
           {{ __('Cancel') }}
-        </gl-button>
+        </gl-link>
       </div>
     </form>
   </div>

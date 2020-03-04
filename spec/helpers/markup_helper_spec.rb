@@ -531,8 +531,10 @@ describe MarkupHelper do
 
         it 'preserves style attribute for a label that can be accessed by current_user' do
           project = create(:project, :public)
+          label = create_and_format_label(project)
 
-          expect(create_and_format_label(project)).to match(/span class=.*style=.*/)
+          expect(label).to match(/span class=.*style=.*/)
+          expect(label).to include('data-html="true"')
         end
 
         it 'does not style a label that can not be accessed by current_user' do
@@ -542,6 +544,15 @@ describe MarkupHelper do
           expect(label).to include("~label_1")
           expect(label).not_to match(/span class=.*style=.*/)
         end
+      end
+
+      it 'keeps whitelisted tags' do
+        html = '<a><i></i></a> <strong>strong</strong><em>em</em><b>b</b>'
+
+        object = create_object(html)
+        result = first_line_in_markdown(object, attribute, 100, project: project)
+
+        expect(result).to include(html)
       end
 
       it 'truncates Markdown properly' do

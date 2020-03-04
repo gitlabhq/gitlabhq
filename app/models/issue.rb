@@ -305,6 +305,10 @@ class Issue < ApplicationRecord
     labels.map(&:hook_attrs)
   end
 
+  def previous_updated_at
+    previous_changes['updated_at']&.first || updated_at
+  end
+
   private
 
   def ensure_metrics

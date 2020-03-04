@@ -1,0 +1,5 @@
+---
+title: Fix scoped labels rendering in emails
+merge_request: 26347
+author:
+type: fixed

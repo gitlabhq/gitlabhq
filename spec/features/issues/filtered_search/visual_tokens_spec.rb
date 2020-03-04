@@ -36,7 +36,7 @@ describe 'Visual tokens', :js do
 
   describe 'editing a single token' do
     before do
-      input_filtered_search('author=@root assignee=none', submit: false)
+      input_filtered_search('author:=@root assignee:=none', submit: false)
       first('.tokens-container .filtered-search-token').click
       wait_for_requests
     end
@@ -77,7 +77,7 @@ describe 'Visual tokens', :js do
 
   describe 'editing multiple tokens' do
     before do
-      input_filtered_search('author=@root assignee=none', submit: false)
+      input_filtered_search('author:=@root assignee:=none', submit: false)
       first('.tokens-container .filtered-search-token').click
     end
 
@@ -93,7 +93,7 @@ describe 'Visual tokens', :js do
 
   describe 'editing a search term while editing another filter token' do
     before do
-      input_filtered_search('foo assignee=', submit: false)
+      input_filtered_search('foo assignee:=', submit: false)
       first('.tokens-container .filtered-search-term').click
     end
 
@@ -112,7 +112,7 @@ describe 'Visual tokens', :js do
 
   describe 'add new token after editing existing token' do
     before do
-      input_filtered_search('author=@root assignee=none', submit: false)
+      input_filtered_search('author:=@root assignee:=none', submit: false)
       first('.tokens-container .filtered-search-token').double_click
       filtered_search.send_keys(' ')
     end
@@ -123,7 +123,7 @@ describe 'Visual tokens', :js do
       end
 
       it 'opens token dropdown' do
-        filtered_search.send_keys('author=')
+        filtered_search.send_keys('author:=')
 
         expect(page).to have_css('#js-dropdown-author', visible: true)
       end
@@ -131,7 +131,7 @@ describe 'Visual tokens', :js do
 
     describe 'visual tokens' do
       it 'creates visual token' do
-        filtered_search.send_keys('author=@thomas ')
+        filtered_search.send_keys('author:=@thomas ')
         token = page.all('.tokens-container .filtered-search-token')[1]
 
         expect(token.find('.name').text).to eq('Author')
@@ -140,7 +140,7 @@ describe 'Visual tokens', :js do
     end
 
     it 'does not tokenize incomplete token' do
-      filtered_search.send_keys('author=')
+      filtered_search.send_keys('author:=')
 
       find('body').click
       token = page.all('.tokens-container .js-visual-token')[1]
@@ -152,7 +152,7 @@ describe 'Visual tokens', :js do
 
   describe 'search using incomplete visual tokens' do
     before do
-      input_filtered_search('author=@root assignee=none', extra_space: false)
+      input_filtered_search('author:=@root assignee:=none', extra_space: false)
     end
 
     it 'tokenizes the search term to complete visual token' do

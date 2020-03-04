@@ -1,12 +1,13 @@
 .template-selectors-menu.gl-pl-2
   .template-selector-dropdowns-wrap
     .template-type-selector.js-template-type-selector-wrap.hidden
-      = dropdown_tag(_("Select a template type"), options: { toggle_class: 'js-template-type-selector qa-template-type-dropdown', dropdown_class: 'dropdown-menu-selectable'} )
+      - toggle_text = should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : 'Select a template type'
+      = dropdown_tag(_(toggle_text), options: { toggle_class: 'js-template-type-selector qa-template-type-dropdown', dropdown_class: 'dropdown-menu-selectable' })
     .license-selector.js-license-selector-wrap.js-template-selector-wrap.hidden
       = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-license-selector qa-license-dropdown', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: licenses_for_select(@project), project: @project.name, fullname: @project.namespace.human_name } } )
     .gitignore-selector.js-gitignore-selector-wrap.js-template-selector-wrap.hidden
       = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-gitignore-selector qa-gitignore-dropdown', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: gitignore_names(@project) } } )
-    .gitlab-ci-yml-selector.js-gitlab-ci-yml-selector-wrap.js-template-selector-wrap.hidden
+    #gitlab-ci-yml-selector.gitlab-ci-yml-selector.js-gitlab-ci-yml-selector-wrap.js-template-selector-wrap.hidden
       = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-gitlab-ci-yml-selector qa-gitlab-ci-yml-dropdown', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: gitlab_ci_ymls(@project) } } )
     .dockerfile-selector.js-dockerfile-selector-wrap.js-template-selector-wrap.hidden
       = dropdown_tag(_("Apply a template"), options: { toggle_class: 'js-dockerfile-selector qa-dockerfile-dropdown', dropdown_class: 'dropdown-menu-selectable', filter: true, placeholder: "Filter", data: { data: dockerfile_names(@project) } } )

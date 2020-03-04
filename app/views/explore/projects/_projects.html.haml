@@ -1,2 +1,2 @@
 - is_explore_page = defined?(explore_page) && explore_page
-= render 'shared/projects/list', projects: projects, user: current_user, explore_page: is_explore_page
+= render 'shared/projects/list', projects: projects, user: current_user, explore_page: is_explore_page, pipeline_status: Feature.enabled?(:dashboard_pipeline_status, default_enabled: true)

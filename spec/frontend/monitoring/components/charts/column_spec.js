@@ -6,56 +6,75 @@ jest.mock('~/lib/utils/icon_utils', () => ({
   getSvgIconPathContent: jest.fn().mockResolvedValue('mockSvgPathContent'),
 }));
 
+const yAxisName = 'Y-axis mock name';
+const yAxisFormat = 'bytes';
+const yAxisPrecistion = 3;
+const dataValues = [
+  [1495700554.925, '8.0390625'],
+  [1495700614.925, '8.0390625'],
+  [1495700674.925, '8.0390625'],
+];
+
 describe('Column component', () => {
-  let columnChart;
+  let wrapper;
+
+  const findChart = () => wrapper.find(GlColumnChart);
+  const chartProps = prop => findChart().props(prop);
 
   beforeEach(() => {
-    columnChart = shallowMount(ColumnChart, {
+    wrapper = shallowMount(ColumnChart, {
       propsData: {
         graphData: {
+          yAxis: {
+            name: yAxisName,
+            format: yAxisFormat,
+            precision: yAxisPrecistion,
+          },
           metrics: [
             {
-              x_label: 'Time',
-              y_label: 'Usage',
               result: [
                 {
                   metric: {},
-                  values: [
-                    [1495700554.925, '8.0390625'],
-                    [1495700614.925, '8.0390625'],
-                    [1495700674.925, '8.0390625'],
-                  ],
+                  values: dataValues,
                 },
               ],
             },
           ],
         },
-        containerWidth: 100,
       },
     });
   });
 
   afterEach(() => {
-    columnChart.destroy();
+    wrapper.destroy();
   });
 
   describe('wrapped components', () => {
     describe('GitLab UI column chart', () => {
-      let glColumnChart;
-
-      beforeEach(() => {
-        glColumnChart = columnChart.find(GlColumnChart);
-      });
-
       it('is a Vue instance', () => {
-        expect(glColumnChart.isVueInstance()).toBe(true);
+        expect(findChart().isVueInstance()).toBe(true);
       });
 
       it('receives data properties needed for proper chart render', () => {
-        const props = glColumnChart.props();
+        expect(chartProps('data').values).toEqual(dataValues);
+      });
 
-        expect(props.data).toBe(columnChart.vm.chartData);
-        expect(props.option).toBe(columnChart.vm.chartOptions);
+      it('passes the y axis name correctly', () => {
+        expect(chartProps('yAxisTitle')).toBe(yAxisName);
+      });
+
+      it('passes the y axis configuration correctly', () => {
+        expect(chartProps('option').yAxis).toMatchObject({
+          name: yAxisName,
+          axisLabel: {
+            formatter: expect.any(Function),
+          },
+          scale: false,
+        });
+      });
+
+      it('passes a dataZoom configuration', () => {
+        expect(chartProps('option').dataZoom).toBeDefined();
       });
     });
   });

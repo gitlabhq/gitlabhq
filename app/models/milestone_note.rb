@@ -12,6 +12,7 @@ class MilestoneNote < ::Note
         created_at: event.created_at,
         noteable: resource,
         milestone: event.milestone,
+        discussion_id: event.discussion_id,
         event: event,
         system_note_metadata: ::SystemNoteMetadata.new(action: 'milestone'),
         resource_parent: resource_parent

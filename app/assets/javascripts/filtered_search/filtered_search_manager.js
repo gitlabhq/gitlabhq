@@ -472,33 +472,6 @@ export default class FilteredSearchManager {
         });
         input.value = input.value.replace(`${tokenKey}:`, '');
       }
-
-      const splitSearchToken = searchToken && searchToken.split(' ');
-      let lastSearchToken = _.last(splitSearchToken);
-      lastSearchToken = lastSearchToken?.toLowerCase();
-
-      /**
-       * If user writes "milestone", a known token, in the input, we should not
-       * wait for leading colon to flush it as a filter token.
-       */
-      if (this.filteredSearchTokenKeys.getKeys().includes(lastSearchToken)) {
-        if (splitSearchToken.length > 1) {
-          splitSearchToken.pop();
-          const searchVisualTokens = splitSearchToken.join(' ');
-
-          input.value = input.value.replace(searchVisualTokens, '');
-          FilteredSearchVisualTokens.addSearchVisualToken(searchVisualTokens);
-        }
-        FilteredSearchVisualTokens.addFilterVisualToken(lastSearchToken, null, null, {
-          uppercaseTokenName: this.filteredSearchTokenKeys.shouldUppercaseTokenName(
-            lastSearchToken,
-          ),
-          capitalizeTokenValue: this.filteredSearchTokenKeys.shouldCapitalizeTokenValue(
-            lastSearchToken,
-          ),
-        });
-        input.value = input.value.replace(lastSearchToken, '');
-      }
     } else if (!isLastVisualTokenValid && !FilteredSearchVisualTokens.getLastTokenOperator()) {
       const tokenKey = FilteredSearchVisualTokens.getLastTokenPartial();
       const tokenOperator = searchToken && searchToken.trim();

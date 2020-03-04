@@ -7,20 +7,9 @@ import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { release as originalRelease } from '../mock_data';
 import Icon from '~/vue_shared/components/icon.vue';
-import { scrollToElement } from '~/lib/utils/common_utils';
-
-const { convertObjectPropsToCamelCase } = jest.requireActual('~/lib/utils/common_utils');
-
-let mockLocationHash;
-jest.mock('~/lib/utils/url_utility', () => ({
-  __esModule: true,
-  getLocationHash: jest.fn().mockImplementation(() => mockLocationHash),
-}));
-
-jest.mock('~/lib/utils/common_utils', () => ({
-  __esModule: true,
-  scrollToElement: jest.fn(),
-}));
+import * as commonUtils from '~/lib/utils/common_utils';
+import { BACK_URL_PARAM } from '~/releases/constants';
+import * as urlUtility from '~/lib/utils/url_utility';
 
 describe('Release block', () => {
   let wrapper;
@@ -47,7 +36,7 @@ describe('Release block', () => {
 
   beforeEach(() => {
     jest.spyOn($.fn, 'renderGFM');
-    release = convertObjectPropsToCamelCase(originalRelease, { deep: true });
+    release = commonUtils.convertObjectPropsToCamelCase(originalRelease, { deep: true });
   });
 
   afterEach(() => {
@@ -61,9 +50,11 @@ describe('Release block', () => {
       expect(wrapper.attributes().id).toBe('v0.3');
     });
 
-    it('renders an edit button that links to the "Edit release" page', () => {
+    it(`renders an edit button that links to the "Edit release" page with a "${BACK_URL_PARAM}" parameter`, () => {
       expect(editButton().exists()).toBe(true);
-      expect(editButton().attributes('href')).toBe(release._links.editUrl);
+      expect(editButton().attributes('href')).toBe(
+        `${release._links.editUrl}?${BACK_URL_PARAM}=${encodeURIComponent(window.location.href)}`,
+      );
     });
 
     it('renders release name', () => {
@@ -150,14 +141,6 @@ describe('Release block', () => {
     });
   });
 
-  it("does not render an edit button if release._links.editUrl isn't a string", () => {
-    delete release._links;
-
-    return factory(release).then(() => {
-      expect(editButton().exists()).toBe(false);
-    });
-  });
-
   it('does not render the milestone list if no milestones are associated to the release', () => {
     delete release.milestones;
 
@@ -203,37 +186,40 @@ describe('Release block', () => {
   });
 
   describe('anchor scrolling', () => {
+    let locationHash;
+
     beforeEach(() => {
-      scrollToElement.mockClear();
+      commonUtils.scrollToElement = jest.fn();
+      urlUtility.getLocationHash = jest.fn().mockImplementation(() => locationHash);
     });
 
     const hasTargetBlueBackground = () => wrapper.classes('bg-line-target-blue');
 
     it('does not attempt to scroll the page if no anchor tag is included in the URL', () => {
-      mockLocationHash = '';
+      locationHash = '';
       return factory(release).then(() => {
-        expect(scrollToElement).not.toHaveBeenCalled();
+        expect(commonUtils.scrollToElement).not.toHaveBeenCalled();
       });
     });
 
     it("does not attempt to scroll the page if the anchor tag doesn't match the release's tag name", () => {
-      mockLocationHash = 'v0.4';
+      locationHash = 'v0.4';
       return factory(release).then(() => {
-        expect(scrollToElement).not.toHaveBeenCalled();
+        expect(commonUtils.scrollToElement).not.toHaveBeenCalled();
       });
     });
 
     it("attempts to scroll itself into view if the anchor tag matches the release's tag name", () => {
-      mockLocationHash = release.tagName;
+      locationHash = release.tagName;
       return factory(release).then(() => {
-        expect(scrollToElement).toHaveBeenCalledTimes(1);
+        expect(commonUtils.scrollToElement).toHaveBeenCalledTimes(1);
 
-        expect(scrollToElement).toHaveBeenCalledWith(wrapper.element);
+        expect(commonUtils.scrollToElement).toHaveBeenCalledWith(wrapper.element);
       });
     });
 
     it('renders with a light blue background if it is the target of the anchor', () => {
-      mockLocationHash = release.tagName;
+      locationHash = release.tagName;
 
       return factory(release).then(() => {
         expect(hasTargetBlueBackground()).toBe(true);
@@ -241,7 +227,7 @@ describe('Release block', () => {
     });
 
     it('does not render with a light blue background if it is not the target of the anchor', () => {
-      mockLocationHash = '';
+      locationHash = '';
 
       return factory(release).then(() => {
         expect(hasTargetBlueBackground()).toBe(false);

@@ -1,0 +1,5 @@
+---
+title: Polyfill fetch for Internet Explorer 11
+merge_request: 26366
+author:
+type: fixed

@@ -103,6 +103,10 @@ class ResourceLabelEvent < ResourceEvent
   def resource_parent
     issuable.project || issuable.group
   end
+
+  def discussion_id_key
+    [self.class.name, created_at, user_id]
+  end
 end
 
 ResourceLabelEvent.prepend_if_ee('EE::ResourceLabelEvent')

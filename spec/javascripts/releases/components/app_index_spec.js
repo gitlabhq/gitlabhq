@@ -27,7 +27,7 @@ describe('Releases App ', () => {
   };
 
   beforeEach(() => {
-    store = createStore({ list: listModule });
+    store = createStore({ modules: { list: listModule } });
     releasesPagination = _.range(21).map(index => ({
       ...convertObjectPropsToCamelCase(release, { deep: true }),
       tagName: `${index}.00`,

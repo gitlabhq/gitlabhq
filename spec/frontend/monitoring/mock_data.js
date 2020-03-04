@@ -544,6 +544,12 @@ export const dashboardGitResponse = [
   ...customDashboardsData,
 ];
 
+export const mockDashboardsErrorResponse = {
+  all_dashboards: customDashboardsData,
+  message: "Each 'panel_group' must define an array :panels",
+  status: 'error',
+};
+
 export const graphDataPrometheusQuery = {
   title: 'Super Chart A2',
   type: 'single-stat',

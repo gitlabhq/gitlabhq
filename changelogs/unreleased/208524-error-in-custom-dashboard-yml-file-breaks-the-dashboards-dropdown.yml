@@ -1,0 +1,5 @@
+---
+title: Fix dashboards dropdown if custom dashboard is broken
+merge_request: 26228
+author:
+type: fixed

@@ -21,7 +21,7 @@ class ResourceEvent < ApplicationRecord
   private
 
   def discussion_id_key
-    [self.class.name, created_at, user_id]
+    [self.class.name, id, user_id]
   end
 
   def exactly_one_issuable

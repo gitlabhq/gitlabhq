@@ -8,7 +8,11 @@ export default () => {
 
   return new Vue({
     el,
-    store: createStore({ list: listModule }),
+    store: createStore({
+      modules: {
+        list: listModule,
+      },
+    }),
     render: h =>
       h(ReleaseListApp, {
         props: {
