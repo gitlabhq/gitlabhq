@@ -2,6 +2,33 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.8.2
+
+### Security (17 changes)
+
+- Update container registry authentication to account for login request when checking permissions.
+- Update ProjectAuthorization when deleting or updating GroupGroupLink.
+- Prevent an endless checking loop for two merge requests targeting each other.
+- Update user 2fa when accepting a group invite.
+- Fix for XSS in branch names.
+- Prevent directory traversal through FileUploader.
+- Run project badge images through the asset proxy.
+- Check merge requests read permissions before showing them in the pipeline widget.
+- Respect member access level for group shares.
+- Remove OID filtering during LFS imports.
+- Protect against denial of service using pipeline webhook recursion.
+- Expire account confirmation token.
+- Prevent XSS in admin grafana URL setting.
+- Don't require base_sha in DiffRefsType.
+- Sanitize output by dependency linkers.
+- Recalculate ProjectAuthorizations for all users.
+- Escape special chars in Sentry error header.
+
+### Other (1 change, 1 of them is from the community)
+
+- Fix fixtures for Error Tracking Web UI. !26233 (Takuya Noguchi)
+
+
 ## 12.8.1
 
 ### Fixed (5 changes)
