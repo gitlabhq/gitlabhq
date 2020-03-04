@@ -10,6 +10,7 @@ describe('Blob Simple Viewer component', () => {
     wrapper = shallowMount(SimpleViewer, {
       propsData: {
         content,
+        type: 'text',
       },
     });
   }

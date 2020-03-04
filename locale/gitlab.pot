@@ -7778,6 +7778,9 @@ msgstr ""
 msgid "Error creating epic"
 msgstr ""
 
+msgid "Error creating label."
+msgstr ""
+
 msgid "Error deleting  %{issuableType}"
 msgstr ""
 
@@ -21313,6 +21316,9 @@ msgid "Use a hardware device to add the second factor of authentication."
 msgstr ""
 
 msgid "Use an one time password authenticator on your mobile device or computer to enable two-factor authentication (2FA)."
+msgstr ""
+
+msgid "Use custom color #FF0000"
 msgstr ""
 
 msgid "Use group milestones to manage issues from multiple projects in the same milestone."

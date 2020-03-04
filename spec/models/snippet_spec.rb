@@ -601,10 +601,23 @@ describe Snippet do
         expect(snippet.create_repository).to be_nil
       end
 
-      it 'does not track snippet repository' do
-        expect do
-          snippet.create_repository
-        end.not_to change(SnippetRepository, :count)
+      context 'when snippet_repository exists' do
+        it 'does not create a new snippet repository' do
+          expect do
+            snippet.create_repository
+          end.not_to change(SnippetRepository, :count)
+        end
+      end
+
+      context 'when snippet_repository does not exist' do
+        it 'creates a snippet_repository' do
+          snippet.snippet_repository.destroy
+          snippet.reload
+
+          expect do
+            snippet.create_repository
+          end.to change(SnippetRepository, :count).by(1)
+        end
       end
     end
   end

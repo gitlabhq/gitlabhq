@@ -1,0 +1,5 @@
+---
+title: Make design_management_versions.created_at not null
+merge_request: 20182
+author: Lee Tickett
+type: other

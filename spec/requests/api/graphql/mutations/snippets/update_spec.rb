@@ -91,7 +91,7 @@ describe 'Updating a Snippet' do
 
   describe 'PersonalSnippet' do
     it_behaves_like 'graphql update actions' do
-      let_it_be(:snippet) do
+      let(:snippet) do
         create(:personal_snippet,
                :private,
                file_name: original_file_name,
@@ -104,7 +104,7 @@ describe 'Updating a Snippet' do
 
   describe 'ProjectSnippet' do
     let_it_be(:project) { create(:project, :private) }
-    let_it_be(:snippet) do
+    let(:snippet) do
       create(:project_snippet,
              :private,
              project: project,

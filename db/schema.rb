@@ -1446,7 +1446,7 @@ ActiveRecord::Schema.define(version: 2020_03_03_074328) do
   create_table "design_management_versions", force: :cascade do |t|
     t.binary "sha", null: false
     t.bigint "issue_id"
-    t.datetime_with_timezone "created_at"
+    t.datetime_with_timezone "created_at", null: false
     t.integer "author_id"
     t.index ["author_id"], name: "index_design_management_versions_on_author_id", where: "(author_id IS NOT NULL)"
     t.index ["issue_id"], name: "index_design_management_versions_on_issue_id"

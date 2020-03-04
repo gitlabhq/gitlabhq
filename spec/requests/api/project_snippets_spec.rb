@@ -278,13 +278,13 @@ describe API::ProjectSnippets do
 
   describe 'PUT /projects/:project_id/snippets/:id/' do
     let(:visibility_level) { Snippet::PUBLIC }
-    let(:snippet) { create(:project_snippet, author: admin, visibility_level: visibility_level, project: project) }
+    let(:snippet) { create(:project_snippet, :repository, author: admin, visibility_level: visibility_level, project: project) }
 
     it 'updates snippet' do
       new_content = 'New content'
       new_description = 'New description'
 
-      put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), params: { code: new_content, description: new_description, visibility: 'private' }
+      update_snippet(params: { code: new_content, description: new_description, visibility: 'private' })
 
       expect(response).to have_gitlab_http_status(:ok)
       snippet.reload
@@ -297,7 +297,7 @@ describe API::ProjectSnippets do
       new_content = 'New content'
       new_description = 'New description'
 
-      put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), params: { content: new_content, description: new_description }
+      update_snippet(params: { content: new_content, description: new_description })
 
       expect(response).to have_gitlab_http_status(:ok)
       snippet.reload
@@ -306,21 +306,21 @@ describe API::ProjectSnippets do
     end
 
     it 'returns 400 when both code and content parameters specified' do
-      put api("/projects/#{snippet.project.id}/snippets/1234", admin), params: { code: 'some content', content: 'other content' }
+      update_snippet(params: { code: 'some content', content: 'other content' })
 
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('code, content are mutually exclusive')
     end
 
     it 'returns 404 for invalid snippet id' do
-      put api("/projects/#{snippet.project.id}/snippets/1234", admin), params: { title: 'foo' }
+      update_snippet(snippet_id: '1234', params: { title: 'foo' })
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     it 'returns 400 for missing parameters' do
-      put api("/projects/#{project.id}/snippets/1234", admin)
+      update_snippet
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
@@ -328,16 +328,16 @@ describe API::ProjectSnippets do
     it 'returns 400 for empty code field' do
       new_content = ''
 
-      put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), params: { code: new_content }
+      update_snippet(params: { code: new_content })
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    context 'when the snippet is spam' do
-      def update_snippet(snippet_params = {})
-        put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}", admin), params: snippet_params
-      end
+    it_behaves_like 'update with repository actions' do
+      let(:snippet_without_repo) { create(:project_snippet, author: admin, project: project, visibility_level: visibility_level) }
+    end
 
+    context 'when the snippet is spam' do
       before do
         allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
@@ -348,7 +348,7 @@ describe API::ProjectSnippets do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'creates the snippet' do
-          expect { update_snippet(title: 'Foo') }
+          expect { update_snippet(params: { title: 'Foo' }) }
             .to change { snippet.reload.title }.to('Foo')
         end
       end
@@ -357,12 +357,12 @@ describe API::ProjectSnippets do
         let(:visibility_level) { Snippet::PUBLIC }
 
         it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo') }
+          expect { update_snippet(params: { title: 'Foo' }) }
             .not_to change { snippet.reload.title }
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo') }
+          expect { update_snippet(params: { title: 'Foo' }) }
             .to log_spam(title: 'Foo', user_id: admin.id, noteable_type: 'ProjectSnippet')
         end
       end
@@ -371,7 +371,7 @@ describe API::ProjectSnippets do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo', visibility: 'public') }
+          expect { update_snippet(params: { title: 'Foo', visibility: 'public' }) }
             .not_to change { snippet.reload.title }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -379,7 +379,7 @@ describe API::ProjectSnippets do
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo', visibility: 'public') }
+          expect { update_snippet(params: { title: 'Foo', visibility: 'public' }) }
             .to log_spam(title: 'Foo', user_id: admin.id, noteable_type: 'ProjectSnippet')
         end
       end
@@ -389,6 +389,10 @@ describe API::ProjectSnippets do
       it_behaves_like '403 response' do
         let(:request) { put api("/projects/#{project_no_snippets.id}/snippets/123", admin), params: { description: 'foo' } }
       end
+    end
+
+    def update_snippet(snippet_id: snippet.id, params: {})
+      put api("/projects/#{snippet.project.id}/snippets/#{snippet_id}", admin), params: params
     end
   end
 

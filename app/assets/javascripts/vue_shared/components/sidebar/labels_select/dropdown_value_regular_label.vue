@@ -27,7 +27,12 @@ export default {
     <span :style="labelStyle" class="badge color-label">
       {{ label.title }}
     </span>
-    <gl-tooltip :target="() => $refs.regularLabelRef" placement="top" boundary="viewport">
+    <gl-tooltip
+      v-if="label.description"
+      :target="() => $refs.regularLabelRef"
+      placement="top"
+      boundary="viewport"
+    >
       {{ label.description }}
     </gl-tooltip>
   </a>

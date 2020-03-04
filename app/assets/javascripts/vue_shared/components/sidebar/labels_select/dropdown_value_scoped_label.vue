@@ -33,7 +33,12 @@ export default {
       <span :ref="`labelTitleRef`" :style="labelStyle" class="badge color-label label">
         {{ label.title }}
       </span>
-      <gl-tooltip :target="() => $refs.labelTitleRef" placement="top" boundary="viewport">
+      <gl-tooltip
+        v-if="label.description"
+        :target="() => $refs.labelTitleRef"
+        placement="top"
+        boundary="viewport"
+      >
         <span class="font-weight-bold scoped-label-tooltip-title">{{ __('Scoped label') }}</span
         ><br />
         {{ label.description }}

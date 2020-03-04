@@ -281,11 +281,10 @@ class Snippet < ApplicationRecord
   end
 
   def create_repository
-    return if repository_exists?
+    return if repository_exists? && snippet_repository
 
     repository.create_if_not_exists
-
-    track_snippet_repository if repository_exists?
+    track_snippet_repository
   end
 
   def track_snippet_repository

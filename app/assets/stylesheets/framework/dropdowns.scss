@@ -1019,3 +1019,54 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     opacity: 0;
   }
 }
+
+.labels-select-wrapper {
+  .labels-select-dropdown-contents {
+    min-height: $dropdown-min-height;
+    max-height: 330px;
+    background-color: $white-light;
+    border: 1px solid $border-color;
+    box-shadow: 0 2px 4px $dropdown-shadow-color;
+    z-index: 2;
+
+    .dropdown-content {
+      height: 135px;
+    }
+  }
+
+  .labels-fetch-loading {
+    top: 0;
+    left: 0;
+    opacity: 0.5;
+    background-color: $white-light;
+    z-index: 1;
+  }
+
+  .dropdown-header-button {
+    .gl-icon {
+      color: $dropdown-title-btn-color;
+
+      &:hover {
+        color: $gl-gray-400;
+      }
+    }
+  }
+
+  .label-item {
+    padding: 8px 20px;
+
+    &:hover,
+    &.is-focused {
+      @include dropdown-item-hover;
+
+      text-decoration: none;
+    }
+  }
+
+  .color-input-container {
+    .dropdown-label-color-preview {
+      border: 1px solid $gray-200;
+      border-right: 0;
+    }
+  }
+}

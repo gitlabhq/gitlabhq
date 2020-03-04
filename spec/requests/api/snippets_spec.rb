@@ -301,7 +301,7 @@ describe API::Snippets do
     let(:visibility_level) { Snippet::PUBLIC }
     let(:other_user) { create(:user) }
     let(:snippet) do
-      create(:personal_snippet, author: user, visibility_level: visibility_level)
+      create(:personal_snippet, :repository, author: user, visibility_level: visibility_level)
     end
 
     shared_examples 'snippet updates' do
@@ -309,7 +309,7 @@ describe API::Snippets do
         new_content = 'New content'
         new_description = 'New description'
 
-        put api("/snippets/#{snippet.id}", user), params: { content: new_content, description: new_description, visibility: 'internal' }
+        update_snippet(params: { content: new_content, description: new_description, visibility: 'internal' })
 
         expect(response).to have_gitlab_http_status(:ok)
         snippet.reload
@@ -332,30 +332,30 @@ describe API::Snippets do
     it_behaves_like 'snippet updates'
 
     it 'returns 404 for invalid snippet id' do
-      put api("/snippets/1234", user), params: { title: 'foo' }
+      update_snippet(snippet_id: '1234', params: { title: 'Foo' })
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     it "returns 404 for another user's snippet" do
-      put api("/snippets/#{snippet.id}", other_user), params: { title: 'fubar' }
+      update_snippet(requester: other_user, params: { title: 'foobar' })
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     it 'returns 400 for missing parameters' do
-      put api("/snippets/1234", user)
+      update_snippet
 
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
-    context 'when the snippet is spam' do
-      def update_snippet(snippet_params = {})
-        put api("/snippets/#{snippet.id}", user), params: snippet_params
-      end
+    it_behaves_like 'update with repository actions' do
+      let(:snippet_without_repo) { create(:personal_snippet, author: user, visibility_level: visibility_level) }
+    end
 
+    context 'when the snippet is spam' do
       before do
         allow_next_instance_of(Spam::AkismetService) do |instance|
           allow(instance).to receive(:spam?).and_return(true)
@@ -366,7 +366,7 @@ describe API::Snippets do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'updates the snippet' do
-          expect { update_snippet(title: 'Foo') }
+          expect { update_snippet(params: { title: 'Foo' }) }
             .to change { snippet.reload.title }.to('Foo')
         end
       end
@@ -375,7 +375,7 @@ describe API::Snippets do
         let(:visibility_level) { Snippet::PUBLIC }
 
         it 'rejects the shippet' do
-          expect { update_snippet(title: 'Foo') }
+          expect { update_snippet(params: { title: 'Foo' }) }
             .not_to change { snippet.reload.title }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -383,7 +383,7 @@ describe API::Snippets do
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo') }.to log_spam(title: 'Foo', user_id: user.id, noteable_type: 'PersonalSnippet')
+          expect { update_snippet(params: { title: 'Foo' }) }.to log_spam(title: 'Foo', user_id: user.id, noteable_type: 'PersonalSnippet')
         end
       end
 
@@ -391,15 +391,19 @@ describe API::Snippets do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo', visibility: 'public') }
+          expect { update_snippet(params: { title: 'Foo', visibility: 'public' }) }
             .not_to change { snippet.reload.title }
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo', visibility: 'public') }
+          expect { update_snippet(params: { title: 'Foo', visibility: 'public' }) }
             .to log_spam(title: 'Foo', user_id: user.id, noteable_type: 'PersonalSnippet')
         end
       end
+    end
+
+    def update_snippet(snippet_id: snippet.id, params: {}, requester: user)
+      put api("/snippets/#{snippet_id}", requester), params: params
     end
   end
 

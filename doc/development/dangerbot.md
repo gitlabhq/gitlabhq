@@ -71,12 +71,6 @@ the need as part of the product in a future version of GitLab!
 Implement each task as an isolated piece of functionality and place it in its
 own directory under `danger` as `danger/<task-name>/Dangerfile`.
 
-Add a line to the top-level `Dangerfile` to ensure it is loaded like:
-
-```ruby
-danger.import_dangerfile('danger/<task-name>')
-```
-
 Each task should be isolated from the others, and able to function in isolation.
 If there is code that should be shared between multiple tasks, add a plugin to
 `danger/plugins/...` and require it in each task that needs it. You can also
