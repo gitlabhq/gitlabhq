@@ -1,5 +1,0 @@
----
-title: Don't require base_sha in DiffRefsType
-merge_request:
-author:
-type: security
