@@ -1862,6 +1862,9 @@ msgstr ""
 msgid "An error occurred while loading chart data"
 msgstr ""
 
+msgid "An error occurred while loading clusters"
+msgstr ""
+
 msgid "An error occurred while loading commit signatures"
 msgstr ""
 
@@ -3960,6 +3963,9 @@ msgid "Cluster cache cleared."
 msgstr ""
 
 msgid "Cluster does not exist"
+msgstr ""
+
+msgid "Cluster level"
 msgstr ""
 
 msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
@@ -7452,6 +7458,9 @@ msgid "Environment"
 msgstr ""
 
 msgid "Environment does not have deployments"
+msgstr ""
+
+msgid "Environment scope"
 msgstr ""
 
 msgid "Environment variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. Additionally, they can be masked so they are hidden in job logs, though they must match certain regexp requirements to do so. You can use environment variables for passwords, secret keys, or whatever you want."
@@ -11179,6 +11188,9 @@ msgid "Kubernetes Cluster"
 msgstr ""
 
 msgid "Kubernetes Clusters"
+msgstr ""
+
+msgid "Kubernetes cluster"
 msgstr ""
 
 msgid "Kubernetes cluster creation time exceeds timeout; %{timeout}"
@@ -17192,10 +17204,10 @@ msgstr ""
 msgid "Security dashboard"
 msgstr ""
 
-msgid "Security report is out of date. Please incorporate latest changes from %{targetBranchName}"
+msgid "Security report is out of date. Please update your branch with the latest changes from the target branch (%{targetBranchName})"
 msgstr ""
 
-msgid "Security report is out of date. Retry the pipeline for the target branch."
+msgid "Security report is out of date. Run %{newPipelineLinkStart}a new pipeline%{newPipelineLinkEnd} for the target branch (%{targetBranchName})"
 msgstr ""
 
 msgid "SecurityConfiguration|Configured"

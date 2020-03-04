@@ -37,6 +37,7 @@ export default {
   target_project_id: 19,
   target_project_full_path: '/group2/project2',
   merge_request_add_ci_config_path: '/group2/project2/new/pipeline',
+  new_project_pipeline_path: '/group2/project2/pipelines/new',
   metrics: {
     merged_by: {
       name: 'Administrator',

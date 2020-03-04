@@ -102,5 +102,11 @@ describe('MergeRequestStore', () => {
 
       expect(store.pipelinesEmptySvgPath).toBe('/path/to/svg');
     });
+
+    it('should set newPipelinePath', () => {
+      store.setData({ ...mockData });
+
+      expect(store.newPipelinePath).toBe('/group2/project2/pipelines/new');
+    });
   });
 });

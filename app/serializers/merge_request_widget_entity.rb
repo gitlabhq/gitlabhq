@@ -64,6 +64,10 @@ class MergeRequestWidgetEntity < Grape::Entity
     merge_request.project.team.human_max_access(current_user&.id)
   end
 
+  expose :new_project_pipeline_path do |merge_request|
+    new_project_pipeline_path(merge_request.project)
+  end
+
   # Rendering and redacting Markdown can be expensive. These links are
   # just nice to have in the merge request widget, so only
   # include them if they are explicitly requested on first load.

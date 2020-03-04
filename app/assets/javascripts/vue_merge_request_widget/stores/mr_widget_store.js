@@ -180,6 +180,7 @@ export default class MergeRequestStore {
     this.mergeRequestAddCiConfigPath = data.merge_request_add_ci_config_path;
     this.pipelinesEmptySvgPath = data.pipelines_empty_svg_path;
     this.humanAccess = data.human_access;
+    this.newPipelinePath = data.new_project_pipeline_path;
   }
 
   get isNothingToMergeState() {

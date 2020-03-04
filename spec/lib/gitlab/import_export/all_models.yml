@@ -466,6 +466,7 @@ project:
 - container_expiration_policy
 - resource_groups
 - autoclose_referenced_issues
+- status_page_setting
 award_emoji:
 - awardable
 - user

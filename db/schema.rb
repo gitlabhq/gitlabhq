@@ -4002,6 +4002,18 @@ ActiveRecord::Schema.define(version: 2020_02_27_165129) do
     t.boolean "recaptcha_verified", default: false, null: false
   end
 
+  create_table "status_page_settings", primary_key: "project_id", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.boolean "enabled", default: false, null: false
+    t.string "aws_s3_bucket_name", limit: 63, null: false
+    t.string "aws_region", limit: 255, null: false
+    t.string "aws_access_key", limit: 255, null: false
+    t.string "encrypted_aws_secret_key", limit: 255, null: false
+    t.string "encrypted_aws_secret_key_iv", limit: 255, null: false
+    t.index ["project_id"], name: "index_status_page_settings_on_project_id"
+  end
+
   create_table "subscriptions", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.integer "subscribable_id"
@@ -5018,6 +5030,7 @@ ActiveRecord::Schema.define(version: 2020_02_27_165129) do
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
   add_foreign_key "software_license_policies", "projects", on_delete: :cascade
   add_foreign_key "software_license_policies", "software_licenses", on_delete: :cascade
+  add_foreign_key "status_page_settings", "projects", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "suggestions", "notes", on_delete: :cascade
   add_foreign_key "system_note_metadata", "description_versions", name: "fk_fbd87415c9", on_delete: :nullify
