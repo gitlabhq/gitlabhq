@@ -34,6 +34,7 @@ class Service < ApplicationRecord
 
   validates :project_id, presence: true, unless: -> { template? }
   validates :type, presence: true
+  validates :template, uniqueness: { scope: :type }, if: -> { template? }
 
   scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
   scope :issue_trackers, -> { where(category: 'issue_tracker') }

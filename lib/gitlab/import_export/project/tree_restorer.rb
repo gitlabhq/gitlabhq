@@ -43,10 +43,7 @@ module Gitlab
 
         def read_tree_hash
           path = File.join(@shared.export_path, 'project.json')
-          dedup_entries = large_project?(path) &&
-            Feature.enabled?(:dedup_project_import_metadata, project.group)
-
-          @tree_loader.load(path, dedup_entries: dedup_entries)
+          @tree_loader.load(path, dedup_entries: large_project?(path))
         rescue => e
           Rails.logger.error("Import/Export error: #{e.message}") # rubocop:disable Gitlab/RailsLogger
           raise Gitlab::ImportExport::Error.new('Incorrect JSON format')

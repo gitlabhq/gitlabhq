@@ -17,6 +17,16 @@ describe Service do
       expect(build(:service, project_id: nil, template: true)).to be_valid
       expect(build(:service, project_id: nil, template: false)).to be_invalid
     end
+
+    context 'with an existing service template' do
+      before do
+        create(:service, type: 'Service', template: true)
+      end
+
+      it 'validates only one service template per type' do
+        expect(build(:service, type: 'Service', template: true)).to be_invalid
+      end
+    end
   end
 
   describe 'Scopes' do

@@ -18480,6 +18480,9 @@ msgstr ""
 msgid "Specific Runners"
 msgstr ""
 
+msgid "Specified URL cannot be used."
+msgstr ""
+
 msgid "Specify an e-mail address regex pattern to identify default internal users."
 msgstr ""
 
@@ -22296,7 +22299,7 @@ msgstr ""
 msgid "WikiMarkdownDocs|documentation"
 msgstr ""
 
-msgid "WikiMarkdownTip|To link to a (new) page, simply type %{link_example}"
+msgid "WikiMarkdownTip|To link to a (new) page, simply type <code class=\"js-markup-link-example\">%{link_example}</code>"
 msgstr ""
 
 msgid "WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories."

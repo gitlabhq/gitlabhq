@@ -10,15 +10,20 @@ import TimeSeries from '~/monitoring/components/charts/time_series.vue';
 import * as types from '~/monitoring/stores/mutation_types';
 import {
   deploymentData,
-  metricsDashboardPayload,
-  mockedQueryResultPayload,
+  mockedQueryResultFixture,
   metricsDashboardViewModel,
   mockProjectDir,
   mockHost,
 } from '../../mock_data';
 import * as iconUtils from '~/lib/utils/icon_utils';
+import { getJSONFixture } from '../../../helpers/fixtures';
 
 const mockSvgPathContent = 'mockSvgPathContent';
+
+const metricsDashboardFixture = getJSONFixture(
+  'metrics_dashboard/environment_metrics_dashboard.json',
+);
+const metricsDashboardPayload = metricsDashboardFixture.dashboard;
 
 jest.mock('lodash/throttle', () =>
   // this throttle mock executes immediately
@@ -59,13 +64,11 @@ describe('Time series component', () => {
 
       store.commit(`monitoringDashboard/${types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS}`, deploymentData);
 
-      // Mock data contains 2 panel groups, with 1 and 2 panels respectively
       store.commit(
         `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
-        mockedQueryResultPayload,
+        mockedQueryResultFixture,
       );
-
-      // Pick the second panel group and the first panel in it
+      // dashboard is a dynamically generated fixture and stored at environment_metrics_dashboard.json
       [mockGraphData] = store.state.monitoringDashboard.dashboard.panelGroups[0].panels;
     });
 
@@ -189,9 +192,8 @@ describe('Time series component', () => {
             });
 
             it('formats tooltip content', () => {
-              const name = 'Total';
-              const value = '5.556MB';
-
+              const name = 'Status Code';
+              const value = '5.556';
               const dataIndex = 0;
               const seriesLabel = timeSeriesChart.find(GlChartSeriesLabel);
 
@@ -399,7 +401,7 @@ describe('Time series component', () => {
             });
 
             it('formats and rounds to 2 decimal places', () => {
-              expect(dataFormatter(0.88888)).toBe('0.89MB');
+              expect(dataFormatter(0.88888)).toBe('0.89');
             });
 
             it('deployment formatter is set as is required to display a tooltip', () => {
@@ -441,7 +443,7 @@ describe('Time series component', () => {
           it('constructs a label for the chart y-axis', () => {
             const { yAxis } = getChartOptions();
 
-            expect(yAxis[0].name).toBe('Total Memory Used');
+            expect(yAxis[0].name).toBe('Requests / Sec');
           });
         });
       });
@@ -544,7 +546,7 @@ describe('Time series component', () => {
         store = createStore();
         const graphData = cloneDeep(metricsDashboardViewModel.panelGroups[0].panels[3]);
         graphData.metrics.forEach(metric =>
-          Object.assign(metric, { result: mockedQueryResultPayload.result }),
+          Object.assign(metric, { result: mockedQueryResultFixture.result }),
         );
 
         timeSeriesChart = makeTimeSeriesChart(graphData, 'area-chart');

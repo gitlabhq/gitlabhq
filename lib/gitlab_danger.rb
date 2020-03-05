@@ -11,6 +11,7 @@ class GitlabDanger
     karma
     database
     commit_messages
+    telemetry
   ].freeze
 
   CI_ONLY_RULES ||= %w[

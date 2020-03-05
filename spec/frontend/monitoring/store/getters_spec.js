@@ -4,11 +4,16 @@ import * as types from '~/monitoring/stores/mutation_types';
 import { metricStates } from '~/monitoring/constants';
 import {
   environmentData,
-  metricsDashboardPayload,
-  mockedEmptyResult,
-  mockedQueryResultPayload,
-  mockedQueryResultPayloadCoresTotal,
+  mockedEmptyThroughputResult,
+  mockedQueryResultFixture,
+  mockedQueryResultFixtureStatusCode,
 } from '../mock_data';
+import { getJSONFixture } from '../../helpers/fixtures';
+
+const metricsDashboardFixture = getJSONFixture(
+  'metrics_dashboard/environment_metrics_dashboard.json',
+);
+const metricsDashboardPayload = metricsDashboardFixture.dashboard;
 
 describe('Monitoring store Getters', () => {
   describe('getMetricStates', () => {
@@ -55,14 +60,14 @@ describe('Monitoring store Getters', () => {
 
       it('on an empty metric with no result, returns NO_DATA', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsDashboardPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedEmptyResult);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedEmptyThroughputResult);
 
         expect(getMetricStates()).toEqual([metricStates.NO_DATA]);
       });
 
       it('on a metric with a result, returns OK', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsDashboardPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayload);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultFixture);
 
         expect(getMetricStates()).toEqual([metricStates.OK]);
       });
@@ -78,8 +83,8 @@ describe('Monitoring store Getters', () => {
 
       it('on multiple metrics with results, returns OK', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsDashboardPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayloadCoresTotal);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultFixture);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultFixtureStatusCode);
 
         expect(getMetricStates()).toEqual([metricStates.OK]);
 
@@ -110,7 +115,7 @@ describe('Monitoring store Getters', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsDashboardPayload);
 
         // An success in 1 group
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayload);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultFixture);
         // An error in 2 groups
         mutations[types.RECEIVE_METRIC_RESULT_FAILURE](state, {
           metricId: groups[0].panels[1].metrics[0].metricId,
@@ -176,38 +181,38 @@ describe('Monitoring store Getters', () => {
 
       it('an empty metric, returns empty', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsDashboardPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedEmptyResult);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedEmptyThroughputResult);
 
         expect(metricsWithData()).toEqual([]);
       });
 
       it('a metric with results, it returns a metric', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsDashboardPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayload);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultFixture);
 
-        expect(metricsWithData()).toEqual([mockedQueryResultPayload.metricId]);
+        expect(metricsWithData()).toEqual([mockedQueryResultFixture.metricId]);
       });
 
       it('multiple metrics with results, it return multiple metrics', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsDashboardPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayloadCoresTotal);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultFixture);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultFixtureStatusCode);
 
         expect(metricsWithData()).toEqual([
-          mockedQueryResultPayload.metricId,
-          mockedQueryResultPayloadCoresTotal.metricId,
+          mockedQueryResultFixture.metricId,
+          mockedQueryResultFixtureStatusCode.metricId,
         ]);
       });
 
       it('multiple metrics with results, it returns metrics filtered by group', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsDashboardPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayload);
-        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultPayloadCoresTotal);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultFixture);
+        mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultFixtureStatusCode);
 
         // First group has metrics
         expect(metricsWithData(state.dashboard.panelGroups[0].key)).toEqual([
-          mockedQueryResultPayload.metricId,
-          mockedQueryResultPayloadCoresTotal.metricId,
+          mockedQueryResultFixture.metricId,
+          mockedQueryResultFixtureStatusCode.metricId,
         ]);
 
         // Second group has no metrics

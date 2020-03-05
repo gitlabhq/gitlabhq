@@ -280,11 +280,11 @@ class Deployment < ApplicationRecord
     errors.add(:ref, _('The branch or tag does not exist'))
   end
 
+  private
+
   def ref_path
     File.join(environment.ref_path, 'deployments', iid.to_s)
   end
-
-  private
 
   def legacy_finished_at
     self.created_at if success? && !read_attribute(:finished_at)

@@ -911,10 +911,8 @@ class Repository
   def merged_branch_names(branch_names = [])
     # Currently we should skip caching if requesting all branch names
     # This is only used in a few places, notably app/services/branches/delete_merged_service.rb,
-    # and it could potentially result in a very large cache/performance issues with the current
-    # implementation.
-    skip_cache = branch_names.empty? || Feature.disabled?(:merged_branch_names_redis_caching, default_enabled: true)
-    return raw_repository.merged_branch_names(branch_names) if skip_cache
+    # and it could potentially result in a very large cache.
+    return raw_repository.merged_branch_names(branch_names) if branch_names.empty?
 
     cache = redis_hash_cache
 

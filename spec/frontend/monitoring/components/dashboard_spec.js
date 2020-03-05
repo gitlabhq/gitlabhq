@@ -6,6 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
+import { getJSONFixture } from '../../../../spec/frontend/helpers/fixtures';
 
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
@@ -15,15 +16,19 @@ import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import { setupComponentStore, propsData } from '../init_utils';
 import {
-  metricsDashboardPayload,
-  mockedQueryResultPayload,
   metricsDashboardViewModel,
   environmentData,
   dashboardGitResponse,
+  mockedQueryResultFixture,
 } from '../mock_data';
 
 const localVue = createLocalVue();
 const expectedPanelCount = 4;
+
+const metricsDashboardFixture = getJSONFixture(
+  'metrics_dashboard/environment_metrics_dashboard.json',
+);
+const metricsDashboardPayload = metricsDashboardFixture.dashboard;
 
 describe('Dashboard', () => {
   let store;
@@ -196,7 +201,7 @@ describe('Dashboard', () => {
     );
     wrapper.vm.$store.commit(
       `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
-      mockedQueryResultPayload,
+      mockedQueryResultFixture,
     );
 
     return wrapper.vm.$nextTick().then(() => {

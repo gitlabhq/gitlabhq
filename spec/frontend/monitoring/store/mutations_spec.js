@@ -5,7 +5,13 @@ import * as types from '~/monitoring/stores/mutation_types';
 import state from '~/monitoring/stores/state';
 import { metricStates } from '~/monitoring/constants';
 
-import { metricsDashboardPayload, deploymentData, dashboardGitResponse } from '../mock_data';
+import { deploymentData, dashboardGitResponse } from '../mock_data';
+import { getJSONFixture } from '../../helpers/fixtures';
+
+const metricsDashboardFixture = getJSONFixture(
+  'metrics_dashboard/environment_metrics_dashboard.json',
+);
+const metricsDashboardPayload = metricsDashboardFixture.dashboard;
 
 describe('Monitoring mutations', () => {
   let stateCopy;
@@ -26,32 +32,31 @@ describe('Monitoring mutations', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
       const groups = getGroups();
 
-      expect(groups[0].key).toBe('system-metrics-kubernetes-0');
-      expect(groups[1].key).toBe('response-metrics-nginx-ingress-vts-1');
+      expect(groups[0].key).toBe('response-metrics-nginx-ingress-vts-0');
+      expect(groups[1].key).toBe('response-metrics-nginx-ingress-1');
     });
     it('normalizes values', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
-      const expectedLabel = 'Pod average';
+      const expectedLabel = '5xx Errors (%)';
 
       const { label, queryRange } = getGroups()[0].panels[2].metrics[0];
       expect(label).toEqual(expectedLabel);
       expect(queryRange.length).toBeGreaterThan(0);
     });
-    it('contains two groups, with panels with a metric each', () => {
+    it('contains six groups, with panels with a metric each', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
 
       const groups = getGroups();
 
       expect(groups).toBeDefined();
-      expect(groups).toHaveLength(2);
+      expect(groups).toHaveLength(6);
 
-      expect(groups[0].panels).toHaveLength(4);
+      expect(groups[0].panels).toHaveLength(3);
       expect(groups[0].panels[0].metrics).toHaveLength(1);
       expect(groups[0].panels[1].metrics).toHaveLength(1);
       expect(groups[0].panels[2].metrics).toHaveLength(1);
-      expect(groups[0].panels[3].metrics).toHaveLength(5);
 
-      expect(groups[1].panels).toHaveLength(1);
+      expect(groups[1].panels).toHaveLength(3);
       expect(groups[1].panels[0].metrics).toHaveLength(1);
     });
     it('assigns metrics a metric id', () => {
@@ -60,10 +65,10 @@ describe('Monitoring mutations', () => {
       const groups = getGroups();
 
       expect(groups[0].panels[0].metrics[0].metricId).toEqual(
-        '12_system_metrics_kubernetes_container_memory_total',
+        'undefined_response_metrics_nginx_ingress_throughput_status_code',
       );
       expect(groups[1].panels[0].metrics[0].metricId).toEqual(
-        '1_response_metrics_nginx_ingress_throughput_status_code',
+        'undefined_response_metrics_nginx_ingress_16_throughput_status_code',
       );
     });
   });
@@ -123,7 +128,7 @@ describe('Monitoring mutations', () => {
   });
 
   describe('Individual panel/metric results', () => {
-    const metricId = '12_system_metrics_kubernetes_container_memory_total';
+    const metricId = 'undefined_response_metrics_nginx_ingress_throughput_status_code';
     const result = [
       {
         values: [[0, 1], [1, 1], [1, 3]],

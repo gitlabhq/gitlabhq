@@ -530,41 +530,6 @@ describe ApplicationController do
 
       expect(controller.last_payload).to include('correlation_id' => 'new-id')
     end
-
-    context '422 errors' do
-      it 'logs a response with a string' do
-        response = spy(ActionDispatch::Response, status: 422, body: 'Hello world', content_type: 'application/json', cookies: {})
-        allow(controller).to receive(:response).and_return(response)
-        get :index
-
-        expect(controller.last_payload[:response]).to eq('Hello world')
-      end
-
-      it 'logs a response with an array' do
-        body = ['I want', 'my hat back']
-        response = spy(ActionDispatch::Response, status: 422, body: body, content_type: 'application/json', cookies: {})
-        allow(controller).to receive(:response).and_return(response)
-        get :index
-
-        expect(controller.last_payload[:response]).to eq(body)
-      end
-
-      it 'does not log a string with an empty body' do
-        response = spy(ActionDispatch::Response, status: 422, body: nil, content_type: 'application/json', cookies: {})
-        allow(controller).to receive(:response).and_return(response)
-        get :index
-
-        expect(controller.last_payload.has_key?(:response)).to be_falsey
-      end
-
-      it 'does not log an HTML body' do
-        response = spy(ActionDispatch::Response, status: 422, body: 'This is a test', content_type: 'application/html', cookies: {})
-        allow(controller).to receive(:response).and_return(response)
-        get :index
-
-        expect(controller.last_payload.has_key?(:response)).to be_falsey
-      end
-    end
   end
 
   describe '#access_denied' do
