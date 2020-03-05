@@ -38,11 +38,30 @@ describe Groups::ImportExport::ExportService do
       let!(:another_user) { create(:user) }
       let(:service) { described_class.new(group: group, user: another_user, params: { shared: shared }) }
 
+      let(:expected_message) do
+        "User with ID: %s does not have required permissions for Group: %s with ID: %s" %
+          [another_user.id, group.name, group.id]
+      end
+
       it 'fails' do
-        expected_message =
-          "User with ID: %s does not have permission to Group %s with ID: %s." %
-            [another_user.id, group.name, group.id]
         expect { service.execute }.to raise_error(Gitlab::ImportExport::Error).with_message(expected_message)
+      end
+
+      it 'logs the error' do
+        expect(shared.logger).to receive(:error).with(
+          group_id:   group.id,
+          group_name: group.name,
+          error:      expected_message,
+          message:    'Group Import/Export: Export failed'
+        )
+
+        expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
+      end
+
+      it 'tracks the error' do
+        expect(shared).to receive(:error) { |param| expect(param.message).to eq expected_message }
+
+        expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
       end
     end
 

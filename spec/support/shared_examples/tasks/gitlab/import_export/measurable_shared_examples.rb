@@ -18,7 +18,7 @@ RSpec.shared_examples 'measurable' do
   end
 
   context 'when measurement is not provided' do
-    let(:task_params) { [username, namespace_path, project_name, archive_path] }
+    let(:measurement_enabled) { nil }
 
     it 'does not output measurement results' do
       expect { subject }.not_to output(/Measuring enabled.../).to_stdout

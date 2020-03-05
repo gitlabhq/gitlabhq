@@ -17,7 +17,7 @@ const initAce = () => {
 const initMonaco = () => {
   const editorEl = document.getElementById('editor');
   const contentEl = document.querySelector('.snippet-file-content');
-  const fileNameEl = document.querySelector('.snippet-file-name');
+  const fileNameEl = document.querySelector('.js-snippet-file-name');
   const form = document.querySelector('.snippet-form-holder form');
 
   editor = new Editor();

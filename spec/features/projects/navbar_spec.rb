@@ -10,10 +10,10 @@ describe 'Project navbar' do
     {
       nav_item: _('Analytics'),
       nav_sub_items: [
-        _('CI / CD Analytics'),
+        _('CI / CD'),
         (_('Code Review') if Gitlab.ee?),
-        _('Repository Analytics'),
-        _('Value Stream Analytics')
+        _('Repository'),
+        _('Value Stream')
       ]
     }
   end
@@ -114,7 +114,7 @@ describe 'Project navbar' do
       before do
         stub_licensed_features(issues_analytics: true)
 
-        analytics_nav_item[:nav_sub_items] << _('Issues Analytics')
+        analytics_nav_item[:nav_sub_items] << _('Issues')
         analytics_nav_item[:nav_sub_items].sort!
 
         visit project_path(project)

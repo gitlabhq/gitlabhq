@@ -225,6 +225,29 @@ describe 'Issue Sidebar' do
     it 'does not have a option to edit labels' do
       expect(page).not_to have_selector('.block.labels .edit-link')
     end
+
+    context 'interacting with collapsed sidebar', :js do
+      collapsed_sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
+      expanded_sidebar_selector = 'aside.right-sidebar.right-sidebar-expanded'
+      lock_sidebar_block = '.block.lock'
+      lock_button = '.block.lock .btn-close'
+      collapsed_sidebar_block_icon = '.sidebar-collapsed-icon'
+
+      before do
+        resize_screen_sm
+      end
+
+      it 'expands then does not show the lock dialog form' do
+        expect(page).to have_css(collapsed_sidebar_selector)
+
+        page.within(lock_sidebar_block) do
+          find(collapsed_sidebar_block_icon).click
+        end
+
+        expect(page).to have_css(expanded_sidebar_selector)
+        expect(page).not_to have_selector(lock_button)
+      end
+    end
   end
 
   def visit_issue(project, issue)

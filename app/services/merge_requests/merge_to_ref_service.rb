@@ -60,7 +60,7 @@ module MergeRequests
 
     def commit
       repository.merge_to_ref(current_user, source, merge_request, target_ref, commit_message, first_parent_ref)
-    rescue Gitlab::Git::PreReceiveError => error
+    rescue Gitlab::Git::PreReceiveError, Gitlab::Git::CommandError => error
       raise MergeError, error.message
     end
   end

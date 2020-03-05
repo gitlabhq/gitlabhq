@@ -11,11 +11,7 @@ module Groups
       end
 
       def execute
-        unless @current_user.can?(:admin_group, @group)
-          raise ::Gitlab::ImportExport::Error.new(
-            "User with ID: %s does not have permission to Group %s with ID: %s." %
-              [@current_user.id, @group.name, @group.id])
-        end
+        validate_user_permissions
 
         save!
       ensure
@@ -25,6 +21,14 @@ module Groups
       private
 
       attr_accessor :shared
+
+      def validate_user_permissions
+        unless @current_user.can?(:admin_group, @group)
+          @shared.error(::Gitlab::ImportExport::Error.permission_error(@current_user, @group))
+
+          notify_error!
+        end
+      end
 
       def save!
         if savers.all?(&:save)

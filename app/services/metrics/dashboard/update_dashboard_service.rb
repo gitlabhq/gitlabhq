@@ -9,7 +9,7 @@ module Metrics
 
       def execute
         catch(:error) do
-          throw(:error, error(_(%q(You can't commit to this project)), :forbidden)) unless push_authorized?
+          throw(:error, error(_(%q(You are not allowed to push into this branch. Create another branch or open a merge request.)), :forbidden)) unless push_authorized?
 
           result = ::Files::UpdateService.new(project, current_user, dashboard_attrs).execute
           throw(:error, result.merge(http_status: :bad_request)) unless result[:status] == :success

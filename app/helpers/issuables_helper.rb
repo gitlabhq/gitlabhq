@@ -463,6 +463,7 @@ module IssuablesHelper
       currentUser: issuable[:current_user],
       rootPath: root_path,
       fullPath: issuable[:project_full_path],
+      id: issuable[:id],
       timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours
     }
   end

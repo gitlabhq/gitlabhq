@@ -104,7 +104,8 @@ Review Apps are automatically stopped 2 days after the last deployment thanks to
 the [Environment auto-stop](../../ci/environments.html#environments-auto-stop) feature.
 
 If you need your Review App to stay up for a longer time, you can
-[pin its environment](../../ci/environments.html#auto-stop-example).
+[pin its environment](../../ci/environments.html#auto-stop-example) or retry the
+`review-deploy` job to update the "latest deployed at" time.
 
 The `review-cleanup` job that automatically runs in scheduled
 pipelines (and is manual in merge request) stops stale Review Apps after 5 days,

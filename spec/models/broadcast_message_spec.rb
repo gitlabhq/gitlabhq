@@ -65,6 +65,17 @@ describe BroadcastMessage do
       end
     end
 
+    it 'expires the value if a broadcast message has ended', :request_store do
+      message = create(:broadcast_message, broadcast_type: broadcast_type, ends_at: Time.now.utc + 1.day)
+
+      expect(subject.call).to match_array([message])
+      expect(described_class.cache).to receive(:expire).and_call_original
+
+      Timecop.travel(1.week) do
+        2.times { expect(subject.call).to be_empty }
+      end
+    end
+
     it 'does not create new records' do
       create(:broadcast_message, broadcast_type: broadcast_type)
 

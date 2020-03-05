@@ -1,0 +1,5 @@
+---
+title: Fix avg_cycle_analytics uncaught error and optimize query
+merge_request: 26381
+author:
+type: fixed

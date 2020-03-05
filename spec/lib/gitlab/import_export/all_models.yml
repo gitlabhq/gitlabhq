@@ -467,6 +467,7 @@ project:
 - resource_groups
 - autoclose_referenced_issues
 - status_page_setting
+- requirements
 award_emoji:
 - awardable
 - user

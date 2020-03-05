@@ -3,7 +3,7 @@
 class CreateEvidenceWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  feature_category :release_governance
+  feature_category :release_evidence
   weight 2
 
   def perform(release_id)

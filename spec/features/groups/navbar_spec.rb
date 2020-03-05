@@ -10,7 +10,7 @@ describe 'Group navbar' do
     {
       nav_item: _('Analytics'),
       nav_sub_items: [
-        _('Contribution Analytics')
+        _('Contribution')
       ]
     }
   end
@@ -63,7 +63,7 @@ describe 'Group navbar' do
       before do
         stub_licensed_features(productivity_analytics: true)
 
-        analytics_nav_item[:nav_sub_items] << _('Productivity Analytics')
+        analytics_nav_item[:nav_sub_items] << _('Productivity')
 
         group.add_maintainer(user)
         sign_in(user)
@@ -78,7 +78,7 @@ describe 'Group navbar' do
       before do
         stub_licensed_features(cycle_analytics_for_groups: true)
 
-        analytics_nav_item[:nav_sub_items] << _('Value Stream Analytics')
+        analytics_nav_item[:nav_sub_items] << _('Value Stream')
 
         group.add_maintainer(user)
         sign_in(user)

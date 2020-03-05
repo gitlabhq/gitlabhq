@@ -27,7 +27,7 @@ describe('Snippet editor', () => {
       setHTMLFixture(`
         <div class="snippet-form-holder">
           <form>
-            <input class="snippet-file-name" type="text" value="${name}">
+            <input class="js-snippet-file-name" type="text" value="${name}">
             <input class="snippet-file-content" type="hidden" value="${content}">
             <pre id="editor"></pre>
           </form>
@@ -39,7 +39,7 @@ describe('Snippet editor', () => {
       setUpFixture(name, content);
       editorEl = document.getElementById('editor');
       contentEl = document.querySelector('.snippet-file-content');
-      fileNameEl = document.querySelector('.snippet-file-name');
+      fileNameEl = document.querySelector('.js-snippet-file-name');
       form = document.querySelector('.snippet-form-holder form');
 
       initEditor();

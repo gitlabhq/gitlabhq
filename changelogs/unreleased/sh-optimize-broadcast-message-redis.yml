@@ -1,0 +1,5 @@
+---
+title: Remove unnecessary Redis deletes for broadcast messages
+merge_request: 26541
+author:
+type: performance

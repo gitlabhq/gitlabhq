@@ -1,0 +1,5 @@
+---
+title: Fix MergeToRefService raises Gitlab::Git::CommandError
+merge_request: 26465
+author:
+type: fixed

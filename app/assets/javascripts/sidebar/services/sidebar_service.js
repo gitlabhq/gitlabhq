@@ -1,4 +1,14 @@
 import axios from '~/lib/utils/axios_utils';
+import createGqClient, { fetchPolicies } from '~/lib/graphql';
+import sidebarDetailsQuery from 'ee_else_ce/sidebar/queries/sidebarDetails.query.graphql';
+import sidebarDetailsForHealthStatusFeatureFlagQuery from 'ee_else_ce/sidebar/queries/sidebarDetailsForHealthStatusFeatureFlag.query.graphql';
+
+export const gqClient = createGqClient(
+  {},
+  {
+    fetchPolicy: fetchPolicies.NO_CACHE,
+  },
+);
 
 export default class SidebarService {
   constructor(endpointMap) {
@@ -7,6 +17,8 @@ export default class SidebarService {
       this.toggleSubscriptionEndpoint = endpointMap.toggleSubscriptionEndpoint;
       this.moveIssueEndpoint = endpointMap.moveIssueEndpoint;
       this.projectsAutocompleteEndpoint = endpointMap.projectsAutocompleteEndpoint;
+      this.fullPath = endpointMap.fullPath;
+      this.id = endpointMap.id;
 
       SidebarService.singleton = this;
     }
@@ -15,7 +27,20 @@ export default class SidebarService {
   }
 
   get() {
-    return axios.get(this.endpoint);
+    const hasHealthStatusFeatureFlag = gon.features && gon.features.saveIssuableHealthStatus;
+
+    return Promise.all([
+      axios.get(this.endpoint),
+      gqClient.query({
+        query: hasHealthStatusFeatureFlag
+          ? sidebarDetailsForHealthStatusFeatureFlagQuery
+          : sidebarDetailsQuery,
+        variables: {
+          fullPath: this.fullPath,
+          iid: this.id.toString(),
+        },
+      }),
+    ]);
   }
 
   update(key, data) {

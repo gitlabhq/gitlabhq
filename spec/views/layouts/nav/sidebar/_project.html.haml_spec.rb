@@ -173,7 +173,7 @@ describe 'layouts/nav/sidebar/_project' do
       it 'shows the value stream analytics entry' do
         render
 
-        expect(rendered).to have_link('Value Stream Analytics', href: project_cycle_analytics_path(project))
+        expect(rendered).to have_link('Value Stream', href: project_cycle_analytics_path(project))
       end
     end
 
@@ -183,7 +183,7 @@ describe 'layouts/nav/sidebar/_project' do
       it 'does not show the value stream analytics entry' do
         render
 
-        expect(rendered).not_to have_link('Value Stream Analytics', href: project_cycle_analytics_path(project))
+        expect(rendered).not_to have_link('Value Stream', href: project_cycle_analytics_path(project))
       end
     end
   end

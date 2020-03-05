@@ -2,19 +2,25 @@
 
 require 'rake_helper'
 
-describe 'gitlab:import_export:import rake task' do
+describe Gitlab::ImportExport::Project::ImportTask do
   let(:username) { 'root' }
   let(:namespace_path) { username }
   let!(:user) { create(:user, username: username) }
   let(:measurement_enabled) { false }
-  let(:task_params) { [username, namespace_path, project_name, archive_path, measurement_enabled] }
   let(:project) { Project.find_by_full_path("#{namespace_path}/#{project_name}") }
+  let(:import_task) { described_class.new(task_params) }
+  let(:task_params) do
+    {
+      username: username,
+      namespace_path: namespace_path,
+      project_path: project_name,
+      file_path: file_path,
+      measurement_enabled: measurement_enabled
+    }
+  end
 
   before do
-    Rake.application.rake_require('tasks/gitlab/import_export/import')
     allow(Settings.uploads.object_store).to receive(:[]=).and_call_original
-    allow_any_instance_of(GitlabProjectImport).to receive(:exit)
-      .and_raise(RuntimeError, 'exit not handled')
   end
 
   around do |example|
@@ -30,15 +36,16 @@ describe 'gitlab:import_export:import rake task' do
     Settings.uploads.object_store['background_upload'] = old_background_upload_setting
   end
 
-  subject { run_rake_task('gitlab:import_export:import', task_params) }
+  subject { import_task.import }
 
   context 'when project import is valid' do
     let(:project_name) { 'import_rake_test_project' }
-    let(:archive_path) { 'spec/fixtures/gitlab/import_export/lightweight_project_export.tar.gz' }
+    let(:file_path) { 'spec/fixtures/gitlab/import_export/lightweight_project_export.tar.gz' }
 
     it 'performs project import successfully' do
       expect { subject }.to output(/Done!/).to_stdout
       expect { subject }.not_to raise_error
+      expect(subject).to eq(true)
 
       expect(project.merge_requests.count).to be > 0
       expect(project.issues.count).to be > 0
@@ -56,15 +63,13 @@ describe 'gitlab:import_export:import rake task' do
         end
       end
 
-      expect_next_instance_of(GitlabProjectImport) do |importer|
-        expect(importer).to receive(:execute_sidekiq_job).and_wrap_original do |m|
-          expect(Settings.uploads.object_store['background_upload']).to eq(true)
-          expect(Settings.uploads.object_store['direct_upload']).to eq(true)
-          expect(Settings.uploads.object_store).not_to receive(:[]=).with('backgroud_upload', false)
-          expect(Settings.uploads.object_store).not_to receive(:[]=).with('direct_upload', false)
+      expect(import_task).to receive(:execute_sidekiq_job).and_wrap_original do |m|
+        expect(Settings.uploads.object_store['background_upload']).to eq(true)
+        expect(Settings.uploads.object_store['direct_upload']).to eq(true)
+        expect(Settings.uploads.object_store).not_to receive(:[]=).with('backgroud_upload', false)
+        expect(Settings.uploads.object_store).not_to receive(:[]=).with('direct_upload', false)
 
-          m.call
-        end
+        m.call
       end
 
       subject
@@ -75,13 +80,13 @@ describe 'gitlab:import_export:import rake task' do
 
   context 'when project import is invalid' do
     let(:project_name) { 'import_rake_invalid_test_project' }
-    let(:archive_path) { 'spec/fixtures/gitlab/import_export/corrupted_project_export.tar.gz' }
+    let(:file_path) { 'spec/fixtures/gitlab/import_export/corrupted_project_export.tar.gz' }
     let(:not_imported_message) { /Total number of not imported relations: 1/ }
-    let(:error) { /Validation failed: Notes is invalid/ }
 
     it 'performs project import successfully' do
       expect { subject }.to output(not_imported_message).to_stdout
       expect { subject }.not_to raise_error
+      expect(subject).to eq(true)
 
       expect(project.merge_requests).to be_empty
       expect(project.import_state.last_error).to be_nil

@@ -3723,6 +3723,25 @@ ActiveRecord::Schema.define(version: 2020_03_04_160823) do
     t.index ["project_id", "programming_language_id"], name: "index_repository_languages_on_project_and_languages_id", unique: true
   end
 
+  create_table "requirements", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "project_id", null: false
+    t.integer "author_id"
+    t.integer "iid", null: false
+    t.integer "cached_markdown_version"
+    t.integer "state", limit: 2, default: 1, null: false
+    t.string "title", limit: 255, null: false
+    t.text "title_html"
+    t.index ["author_id"], name: "index_requirements_on_author_id"
+    t.index ["created_at"], name: "index_requirements_on_created_at"
+    t.index ["project_id", "iid"], name: "index_requirements_on_project_id_and_iid", unique: true, where: "(project_id IS NOT NULL)"
+    t.index ["project_id"], name: "index_requirements_on_project_id"
+    t.index ["state"], name: "index_requirements_on_state"
+    t.index ["title"], name: "index_requirements_on_title_trigram", opclass: :gin_trgm_ops, using: :gin
+    t.index ["updated_at"], name: "index_requirements_on_updated_at"
+  end
+
   create_table "resource_label_events", force: :cascade do |t|
     t.integer "action", null: false
     t.integer "issue_id"
@@ -5001,6 +5020,8 @@ ActiveRecord::Schema.define(version: 2020_03_04_160823) do
   add_foreign_key "releases", "users", column: "author_id", name: "fk_8e4456f90f", on_delete: :nullify
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
   add_foreign_key "repository_languages", "projects", on_delete: :cascade
+  add_foreign_key "requirements", "projects", on_delete: :cascade
+  add_foreign_key "requirements", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "resource_label_events", "epics", on_delete: :cascade
   add_foreign_key "resource_label_events", "issues", on_delete: :cascade
   add_foreign_key "resource_label_events", "labels", on_delete: :nullify

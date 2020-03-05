@@ -48,9 +48,9 @@
             - unless should_display_analytics_pages_in_sidebar
               - if group_sidebar_link?(:contribution_analytics)
                 = nav_link(path: 'contribution_analytics#show') do
-                  = link_to group_contribution_analytics_path(@group), title: _('Contribution Analytics'), data: { placement: 'right', qa_selector: 'contribution_analytics_link' } do
+                  = link_to group_contribution_analytics_path(@group), title: _('Contribution'), data: { placement: 'right', qa_selector: 'contribution_analytics_link' } do
                     %span
-                      = _('Contribution Analytics')
+                      = _('Contribution')
 
               = render_if_exists 'layouts/nav/group_insights_link'
 

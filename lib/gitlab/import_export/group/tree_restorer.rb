@@ -49,11 +49,7 @@ module Gitlab
           json = IO.read(@path)
           ActiveSupport::JSON.decode(json)
         rescue => e
-          @shared.logger.error(
-            group_id:   @group.id,
-            group_name: @group.name,
-            message:    "Import/Export error: #{e.message}"
-          )
+          @shared.error(e)
 
           raise Gitlab::ImportExport::Error.new('Incorrect JSON format')
         end

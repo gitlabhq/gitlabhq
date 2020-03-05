@@ -35,7 +35,7 @@ module AnalyticsNavbarHelper
     return unless project_nav_tab?(:cycle_analytics)
 
     navbar_sub_item(
-      title: _('Value Stream Analytics'),
+      title: _('Value Stream'),
       path: 'cycle_analytics#show',
       link: project_cycle_analytics_path(project),
       link_to_options: { class: 'shortcuts-project-cycle-analytics' }
@@ -47,7 +47,7 @@ module AnalyticsNavbarHelper
     return if project.empty_repo?
 
     navbar_sub_item(
-      title: _('Repository Analytics'),
+      title: _('Repository'),
       path: 'graphs#charts',
       link: charts_project_graph_path(project, current_ref),
       link_to_options: { class: 'shortcuts-repository-charts' }
@@ -60,7 +60,7 @@ module AnalyticsNavbarHelper
     return unless project.feature_available?(:builds, current_user) || !project.empty_repo?
 
     navbar_sub_item(
-      title: _('CI / CD Analytics'),
+      title: _('CI / CD'),
       path: 'pipelines#charts',
       link: charts_project_pipelines_path(project)
     )

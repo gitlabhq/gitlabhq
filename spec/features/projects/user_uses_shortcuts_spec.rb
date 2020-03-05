@@ -222,7 +222,7 @@ describe 'User uses shortcuts', :js do
       find('body').native.send_key('d')
 
       expect(page).to have_active_navigation(_('Analytics'))
-      expect(page).to have_active_sub_navigation(_('Repository Analytics'))
+      expect(page).to have_active_sub_navigation(_('Repository'))
     end
   end
 end

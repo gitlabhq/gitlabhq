@@ -5,9 +5,7 @@ module Projects
     class ExportService < BaseService
       def execute(after_export_strategy = nil, options = {})
         unless project.template_source? || can?(current_user, :admin_project, project)
-          raise ::Gitlab::ImportExport::Error.new(
-            "User with ID: %s does not have permission to Project %s with ID: %s." %
-              [current_user.id, project.name, project.id])
+          raise ::Gitlab::ImportExport::Error.permission_error(current_user, project)
         end
 
         @shared = project.import_export_shared

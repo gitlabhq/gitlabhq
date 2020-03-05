@@ -52,7 +52,9 @@ class BroadcastMessage < ApplicationRecord
     end
 
     def cache
-      Gitlab::JsonCache.new(cache_key_with_version: false)
+      ::Gitlab::SafeRequestStore.fetch(:broadcast_message_json_cache) do
+        Gitlab::JsonCache.new(cache_key_with_version: false)
+      end
     end
 
     def cache_expires_in
@@ -68,9 +70,9 @@ class BroadcastMessage < ApplicationRecord
 
       now_or_future = messages.select(&:now_or_future?)
 
-      # If there are cached entries but none are to be displayed we'll purge the
-      # cache so we don't keep running this code all the time.
-      cache.expire(cache_key) if now_or_future.empty?
+      # If there are cached entries but they don't match the ones we are
+      # displaying we'll refresh the cache so we don't need to keep filtering.
+      cache.expire(cache_key) if now_or_future != messages
 
       now_or_future.select(&:now?).select { |message| message.matches_current_path(current_path) }
     end

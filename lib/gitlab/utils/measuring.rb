@@ -59,14 +59,15 @@ module Gitlab
       end
 
       def duration_in_numbers(duration_in_seconds)
+        milliseconds = duration_in_seconds.in_milliseconds % 1.second.in_milliseconds
         seconds = duration_in_seconds % 1.minute
         minutes = (duration_in_seconds / 1.minute) % (1.hour / 1.minute)
         hours = duration_in_seconds / 1.hour
 
         if hours == 0
-          "%02d:%02d" % [minutes, seconds]
+          "%02d:%02d:%03d" % [minutes, seconds, milliseconds]
         else
-          "%02d:%02d:%02d" % [hours, minutes, seconds]
+          "%02d:%02d:%02d:%03d" % [hours, minutes, seconds, milliseconds]
         end
       end
     end

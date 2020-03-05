@@ -865,7 +865,7 @@
   :weight: 2
   :idempotent: 
 - :name: create_evidence
-  :feature_category: :release_governance
+  :feature_category: :release_evidence
   :has_external_dependencies: 
   :urgency: :default
   :resource_boundary: :unknown

@@ -1142,6 +1142,9 @@ msgstr ""
 msgid "Add email address"
 msgstr ""
 
+msgid "Add environment"
+msgstr ""
+
 msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
 msgstr ""
 
@@ -2453,6 +2456,9 @@ msgstr ""
 msgid "At least one of group_id or project_id must be specified"
 msgstr ""
 
+msgid "At risk"
+msgstr ""
+
 msgid "Attach a file"
 msgstr ""
 
@@ -3131,9 +3137,6 @@ msgid "CHANGELOG"
 msgstr ""
 
 msgid "CI / CD"
-msgstr ""
-
-msgid "CI / CD Analytics"
 msgstr ""
 
 msgid "CI / CD Charts"
@@ -5612,6 +5615,9 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
+msgid "Create %{environment}"
+msgstr ""
+
 msgid "Create %{type} token"
 msgstr ""
 
@@ -7432,6 +7438,9 @@ msgstr ""
 msgid "Enter a number"
 msgstr ""
 
+msgid "Enter a whole number between 0 and 100"
+msgstr ""
+
 msgid "Enter at least three characters to search"
 msgstr ""
 
@@ -7454,6 +7463,9 @@ msgid "Enter new AWS Secret Access Key"
 msgstr ""
 
 msgid "Enter number of issues"
+msgstr ""
+
+msgid "Enter one or more user ID separated by commas"
 msgstr ""
 
 msgid "Enter the issue description"
@@ -8552,6 +8564,18 @@ msgid "FeatureFlags|Try again in a few moments or contact your support team."
 msgstr ""
 
 msgid "FeatureFlags|User IDs"
+msgstr ""
+
+msgid "FeatureFlag|Delete strategy"
+msgstr ""
+
+msgid "FeatureFlag|Percentage"
+msgstr ""
+
+msgid "FeatureFlag|Type"
+msgstr ""
+
+msgid "FeatureFlag|User IDs"
 msgstr ""
 
 msgid "Feb"
@@ -12790,6 +12814,9 @@ msgstr ""
 msgid "Need help?"
 msgstr ""
 
+msgid "Needs attention"
+msgstr ""
+
 msgid "Network"
 msgstr ""
 
@@ -13398,6 +13425,9 @@ msgstr ""
 msgid "Omnibus Protected Paths throttle is active. From 12.4, Omnibus throttle is deprecated and will be removed in a future release. Please read the %{relative_url_link_start}Migrating Protected Paths documentation%{relative_url_link_end}."
 msgstr ""
 
+msgid "On track"
+msgstr ""
+
 msgid "Onboarding"
 msgstr ""
 
@@ -13899,6 +13929,9 @@ msgid "People without permission will never get a notification and won't be able
 msgstr ""
 
 msgid "People without permission will never get a notification."
+msgstr ""
+
+msgid "Percent rollout (logged in users)"
 msgstr ""
 
 msgid "Percentage"
@@ -14550,6 +14583,9 @@ msgid "Private projects can be created in your personal namespace with:"
 msgstr ""
 
 msgid "Proceed"
+msgstr ""
+
+msgid "Productivity"
 msgstr ""
 
 msgid "Productivity Analytics"
@@ -16431,9 +16467,6 @@ msgstr ""
 msgid "Repository"
 msgstr ""
 
-msgid "Repository Analytics"
-msgstr ""
-
 msgid "Repository Graph"
 msgstr ""
 
@@ -17425,6 +17458,9 @@ msgstr ""
 msgid "Select source branch"
 msgstr ""
 
+msgid "Select strategy activation method"
+msgstr ""
+
 msgid "Select target branch"
 msgstr ""
 
@@ -17911,6 +17947,9 @@ msgid "Sidebar|None"
 msgstr ""
 
 msgid "Sidebar|Only numeral characters allowed"
+msgstr ""
+
+msgid "Sidebar|Status"
 msgstr ""
 
 msgid "Sidebar|Weight"
@@ -21383,6 +21422,9 @@ msgstr ""
 msgid "User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled."
 msgstr ""
 
+msgid "User IDs"
+msgstr ""
+
 msgid "User OAuth applications"
 msgstr ""
 
@@ -21738,6 +21780,9 @@ msgid "Validity"
 msgstr ""
 
 msgid "Value"
+msgstr ""
+
+msgid "Value Stream"
 msgstr ""
 
 msgid "Value Stream Analytics"
@@ -22449,6 +22494,9 @@ msgstr ""
 msgid "You are going to transfer %{project_full_name} to another owner. Are you ABSOLUTELY sure?"
 msgstr ""
 
+msgid "You are not allowed to push into this branch. Create another branch or open a merge request."
+msgstr ""
+
 msgid "You are not allowed to unlink your primary login account"
 msgstr ""
 
@@ -22567,9 +22615,6 @@ msgid "You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}."
 msgstr ""
 
 msgid "You can try again using %{begin_link}basic search%{end_link}"
-msgstr ""
-
-msgid "You can't commit to this project"
 msgstr ""
 
 msgid "You cannot access the raw file. Please wait a minute."
@@ -23510,6 +23555,9 @@ msgid "is not allowed for sign-up"
 msgstr ""
 
 msgid "is not an email you own"
+msgstr ""
+
+msgid "is not in the group enforcing Group Managed Account"
 msgstr ""
 
 msgid "is too long (%{current_value}). The maximum size is %{max_size}."

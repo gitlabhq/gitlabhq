@@ -164,7 +164,7 @@ describe Projects::ImportExport::ExportService do
 
       it 'fails' do
         expected_message =
-          "User with ID: %s does not have permission to Project %s with ID: %s." %
+          "User with ID: %s does not have required permissions for Project: %s with ID: %s" %
             [another_user.id, project.name, project.id]
         expect { service.execute }.to raise_error(Gitlab::ImportExport::Error).with_message(expected_message)
       end
