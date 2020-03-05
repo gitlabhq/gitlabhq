@@ -43,15 +43,15 @@ module Gitlab
     PUSH_COMMANDS = %w{git-receive-pack}.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes, :logger
+    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :repository_path, :redirected_path, :auth_result_type, :changes, :logger
 
-    def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, project_path: nil, redirected_path: nil, auth_result_type: nil)
+    def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, repository_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor    = actor
       @project  = project
       @protocol = protocol
-      @authentication_abilities = authentication_abilities
+      @authentication_abilities = Array(authentication_abilities)
       @namespace_path = namespace_path || project&.namespace&.full_path
-      @project_path = project_path || project&.path
+      @repository_path = repository_path || project&.path
       @redirected_path = redirected_path
       @auth_result_type = auth_result_type
     end
@@ -224,7 +224,7 @@ module Gitlab
       return unless user&.can?(:create_projects, namespace)
 
       project_params = {
-        path: project_path,
+        path: repository_path,
         namespace_id: namespace.id,
         visibility_level: Gitlab::VisibilityLevel::PRIVATE
       }

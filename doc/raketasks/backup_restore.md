@@ -271,6 +271,31 @@ For installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=production
 ```
 
+### Skipping tar creation
+
+The last part of creating a backup is generation of a `.tar` file containing
+all the parts. In some cases (for example, if the backup is picked up by other
+backup software) creating a `.tar` file might be wasted effort or even directly
+harmful, so you can skip this step by adding `tar` to the `SKIP` environment
+variable.
+
+Adding `tar` to the `SKIP` variable leaves the files and directories containing the
+backup in the directory used for the intermediate files. These files will be
+overwritten when a new backup is created, so you should make sure they are copied
+elsewhere, because you can only have one backup on the system.
+
+For Omnibus GitLab packages:
+
+```shell
+sudo gitlab-backup create SKIP=tar
+```
+
+For installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create SKIP=tar RAILS_ENV=production
+```
+
 ### Uploading backups to a remote (cloud) storage
 
 Starting with GitLab 7.4 you can let the backup script upload the '.tar' file it creates.
@@ -657,6 +682,10 @@ backup, users with two-factor authentication enabled and GitLab Runners will
 lose access to your GitLab server.
 
 You may also want to restore any TLS keys, certificates, or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+
+Starting with GitLab 12.9 if an untarred backup (like the ones made with
+`SKIP=tar`) is found, and no backup is chosen with `BACKUP=<timestamp>`, the
+untarred backup is used.
 
 Depending on your case, you might want to run the restore command with one or
 more of the following options:

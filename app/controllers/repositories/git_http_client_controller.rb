@@ -6,7 +6,7 @@ module Repositories
     include KerberosSpnegoHelper
     include Gitlab::Utils::StrongMemoize
 
-    attr_reader :authentication_result, :redirected_path
+    attr_reader :authentication_result, :redirected_path, :container
 
     delegate :actor, :authentication_abilities, to: :authentication_result, allow_nil: true
     delegate :type, to: :authentication_result, allow_nil: true, prefix: :auth_result
@@ -81,7 +81,7 @@ module Repositories
     end
 
     def parse_repo_path
-      @project, @repo_type, @redirected_path = Gitlab::RepoPath.parse("#{params[:namespace_id]}/#{params[:repository_id]}")
+      @container, @project, @repo_type, @redirected_path = Gitlab::RepoPath.parse("#{params[:namespace_id]}/#{params[:repository_id]}")
     end
 
     def render_missing_personal_access_token
@@ -93,7 +93,7 @@ module Repositories
 
     def repository
       strong_memoize(:repository) do
-        repo_type.repository_for(project)
+        repo_type.repository_for(container)
       end
     end
 
@@ -117,7 +117,8 @@ module Repositories
     def http_download_allowed?
       Gitlab::ProtocolAccess.allowed?('http') &&
       download_request? &&
-      project && Guest.can?(:download_code, project)
+      container &&
+      Guest.can?(repo_type.guest_read_ability, container)
     end
   end
 end

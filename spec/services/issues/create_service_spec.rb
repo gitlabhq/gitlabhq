@@ -196,6 +196,14 @@ describe Issues::CreateService do
           end
         end
       end
+
+      it 'deletes milestone issues count cache' do
+        expect_next_instance_of(Milestones::IssuesCountService, milestone) do |service|
+          expect(service).to receive(:delete_cache).and_call_original
+        end
+
+        issue
+      end
     end
 
     context 'issue create service' do

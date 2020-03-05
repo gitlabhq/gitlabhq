@@ -7,6 +7,8 @@ module Gitlab
                   :access_checker_class,
                   :repository_resolver,
                   :container_resolver,
+                  :project_resolver,
+                  :guest_read_ability,
                   :suffix
 
       def initialize(
@@ -14,11 +16,15 @@ module Gitlab
         access_checker_class:,
         repository_resolver:,
         container_resolver: default_container_resolver,
+        project_resolver: nil,
+        guest_read_ability: :download_code,
         suffix: nil)
         @name = name
         @access_checker_class = access_checker_class
         @repository_resolver = repository_resolver
         @container_resolver = container_resolver
+        @project_resolver = project_resolver
+        @guest_read_ability = guest_read_ability
         @suffix = suffix
       end
 
@@ -59,8 +65,18 @@ module Gitlab
         repository_resolver.call(container)
       end
 
+      def project_for(container)
+        return container unless project_resolver
+
+        project_resolver.call(container)
+      end
+
       def valid?(repository_path)
-        repository_path.end_with?(path_suffix)
+        repository_path.end_with?(path_suffix) &&
+        (
+          !snippet? ||
+          repository_path.match?(Gitlab::PathRegex.full_snippets_repository_path_regex)
+        )
       end
 
       private

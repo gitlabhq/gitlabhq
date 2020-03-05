@@ -43,6 +43,16 @@ describe Issues::ReopenService do
           .to change { project.open_issues_count }.from(0).to(1)
       end
 
+      it 'deletes milestone issue counters cache' do
+        issue.update(milestone: create(:milestone, project: project))
+
+        expect_next_instance_of(Milestones::ClosedIssuesCountService, issue.milestone) do |service|
+          expect(service).to receive(:delete_cache).and_call_original
+        end
+
+        described_class.new(project, user).execute(issue)
+      end
+
       context 'when issue is not confidential' do
         it 'executes issue hooks' do
           expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)

@@ -160,6 +160,10 @@ class Snippet < ApplicationRecord
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
   end
 
+  def self.find_by_id_and_project(id:, project:)
+    Snippet.find_by(id: id, project: project)
+  end
+
   def initialize(attributes = {})
     # We can't use default_value_for because the database has a default
     # value of 0 for visibility_level. If someone attempts to create a

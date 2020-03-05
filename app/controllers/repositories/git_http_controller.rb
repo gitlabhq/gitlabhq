@@ -84,10 +84,10 @@ module Repositories
     end
 
     def access
-      @access ||= access_klass.new(access_actor, project, 'http',
+      @access ||= access_klass.new(access_actor, container, 'http',
         authentication_abilities: authentication_abilities,
         namespace_path: params[:namespace_id],
-        project_path: project_path,
+        repository_path: repository_path,
         redirected_path: redirected_path,
         auth_result_type: auth_result_type)
     end
@@ -99,15 +99,18 @@ module Repositories
 
     def access_check
       access.check(git_command, Gitlab::GitAccess::ANY)
-      @project ||= access.project
+
+      if repo_type.project? && !container
+        @project = @container = access.project
+      end
     end
 
     def access_klass
       @access_klass ||= repo_type.access_checker_class
     end
 
-    def project_path
-      @project_path ||= params[:repository_id].sub(/\.git$/, '')
+    def repository_path
+      @repository_path ||= params[:repository_id].sub(/\.git$/, '')
     end
 
     def log_user_activity

@@ -40,6 +40,25 @@ describe Milestones::TransferService do
           expect(new_milestone.project_milestone?).to be_truthy
         end
 
+        it 'deletes milestone issue counters cache for both milestones' do
+          new_milestone = create(:milestone, project: project, title: group_milestone.title)
+
+          expect_next_instance_of(Milestones::IssuesCountService, group_milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+          expect_next_instance_of(Milestones::ClosedIssuesCountService, group_milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+          expect_next_instance_of(Milestones::IssuesCountService, new_milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+          expect_next_instance_of(Milestones::ClosedIssuesCountService, new_milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+
+          service.execute
+        end
+
         it 'does not apply new project milestone to issues with project milestone' do
           service.execute
 

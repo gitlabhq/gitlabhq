@@ -1666,6 +1666,9 @@ msgstr ""
 msgid "Allow this secondary node to replicate content on Object Storage"
 msgstr ""
 
+msgid "Allow users to dismiss the broadcast message"
+msgstr ""
+
 msgid "Allow users to register any application to use GitLab as an OAuth provider"
 msgstr ""
 
@@ -6908,6 +6911,9 @@ msgid "Dismiss Value Stream Analytics introduction box"
 msgstr ""
 
 msgid "Dismiss trial promotion"
+msgstr ""
+
+msgid "Dismissable"
 msgstr ""
 
 msgid "Dismissed"

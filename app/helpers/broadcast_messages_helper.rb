@@ -2,12 +2,14 @@
 
 module BroadcastMessagesHelper
   def current_broadcast_banner_messages
-    BroadcastMessage.current_banner_messages(request.path)
+    BroadcastMessage.current_banner_messages(request.path).select do |message|
+      cookies["hide_broadcast_message_#{message.id}"].blank?
+    end
   end
 
   def current_broadcast_notification_message
     not_hidden_messages = BroadcastMessage.current_notification_messages(request.path).select do |message|
-      cookies["hide_broadcast_notification_message_#{message.id}"].blank?
+      cookies["hide_broadcast_message_#{message.id}"].blank?
     end
     not_hidden_messages.last
   end

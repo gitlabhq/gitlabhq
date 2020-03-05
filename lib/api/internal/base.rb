@@ -67,7 +67,7 @@ module API
           when ::Gitlab::GitAccessResult::Success
             payload = {
               gl_repository: gl_repository,
-              gl_project_path: gl_project_path,
+              gl_project_path: gl_repository_path,
               gl_id: Gitlab::GlId.gl_id(actor.user),
               gl_username: actor.username,
               git_config_options: [],
@@ -216,7 +216,7 @@ module API
         post '/post_receive' do
           status 200
 
-          response = PostReceiveService.new(actor.user, project, params).execute
+          response = PostReceiveService.new(actor.user, repository, project, params).execute
 
           ee_post_receive_response_hook(response)
 

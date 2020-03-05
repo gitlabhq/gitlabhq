@@ -27,7 +27,7 @@ describe Metrics::Dashboard::DefaultEmbedService, :use_clean_rails_memory_store_
     end
 
     context 'not embedded' do
-      let(:params) { { embedded: false } }
+      let(:params) { { embedded: 'false' } }
 
       it { is_expected.to be_falsey }
     end

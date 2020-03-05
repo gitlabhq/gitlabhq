@@ -178,34 +178,54 @@ describe Issues::CloseService do
     end
 
     context "valid params" do
-      before do
+      def close_issue
         perform_enqueued_jobs do
           described_class.new(project, user).close_issue(issue)
         end
       end
 
       it 'closes the issue' do
+        close_issue
+
         expect(issue).to be_valid
         expect(issue).to be_closed
       end
 
       it 'records closed user' do
+        close_issue
+
         expect(issue.closed_by_id).to be(user.id)
       end
 
       it 'sends email to user2 about assign of new issue', :sidekiq_might_not_need_inline do
+        close_issue
+
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(issue.title)
       end
 
       it 'creates system note about issue reassign' do
+        close_issue
+
         note = issue.notes.last
         expect(note.note).to include "closed"
       end
 
       it 'marks todos as done' do
+        close_issue
+
         expect(todo.reload).to be_done
+      end
+
+      it 'deletes milestone issue counters cache' do
+        issue.update(milestone: create(:milestone, project: project))
+
+        expect_next_instance_of(Milestones::ClosedIssuesCountService, issue.milestone) do |service|
+          expect(service).to receive(:delete_cache).and_call_original
+        end
+
+        close_issue
       end
     end
 

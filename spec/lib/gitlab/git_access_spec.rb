@@ -240,7 +240,7 @@ describe Gitlab::GitAccess do
         let(:access) do
           described_class.new(actor, nil,
             protocol, authentication_abilities: authentication_abilities,
-                      project_path: project_path, namespace_path: namespace_path,
+                      repository_path: project_path, namespace_path: namespace_path,
                       redirected_path: redirected_path)
         end
 
@@ -259,7 +259,7 @@ describe Gitlab::GitAccess do
         let(:access) do
           described_class.new(actor, nil,
             protocol, authentication_abilities: authentication_abilities,
-                      project_path: project_path, namespace_path: namespace_path,
+                      repository_path: project_path, namespace_path: namespace_path,
                       redirected_path: redirected_path)
         end
 
@@ -453,7 +453,7 @@ describe Gitlab::GitAccess do
     let(:access) do
       described_class.new(actor, project,
         protocol, authentication_abilities: authentication_abilities,
-                  project_path: project_path, namespace_path: namespace_path,
+                  repository_path: project_path, namespace_path: namespace_path,
                   redirected_path: redirected_path)
     end
 
@@ -598,7 +598,7 @@ describe Gitlab::GitAccess do
         let(:public_project) { create(:project, :public, :repository) }
         let(:project_path) { public_project.path }
         let(:namespace_path) { public_project.namespace.path }
-        let(:access) { described_class.new(nil, public_project, 'web', authentication_abilities: [:download_code], project_path: project_path, namespace_path: namespace_path) }
+        let(:access) { described_class.new(nil, public_project, 'web', authentication_abilities: [:download_code], repository_path: project_path, namespace_path: namespace_path) }
 
         context 'when repository is enabled' do
           it 'give access to download code' do
@@ -1203,7 +1203,7 @@ describe Gitlab::GitAccess do
   def access
     described_class.new(actor, project, protocol,
                         authentication_abilities: authentication_abilities,
-                        namespace_path: namespace_path, project_path: project_path,
+                        namespace_path: namespace_path, repository_path: project_path,
                         redirected_path: redirected_path, auth_result_type: auth_result_type)
   end
 

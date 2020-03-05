@@ -25,9 +25,11 @@ export default () => {
 
   $broadcastMessageType.on('change', () => {
     const $broadcastMessageColorFormGroup = $('.js-broadcast-message-background-color-form-group');
+    const $broadcastMessageDismissableFormGroup = $('.js-broadcast-message-dismissable-form-group');
     const $broadcastNotificationMessagePreview = $('.js-broadcast-notification-message-preview');
 
     $broadcastMessageColorFormGroup.toggleClass('hidden');
+    $broadcastMessageDismissableFormGroup.toggleClass('hidden');
     $broadcastBannerMessagePreview.toggleClass('hidden');
     $broadcastNotificationMessagePreview.toggleClass('hidden');
   });

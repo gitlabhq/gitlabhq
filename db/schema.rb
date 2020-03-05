@@ -573,6 +573,7 @@ ActiveRecord::Schema.define(version: 2020_03_03_074328) do
     t.integer "cached_markdown_version"
     t.string "target_path", limit: 255
     t.integer "broadcast_type", limit: 2, default: 1, null: false
+    t.boolean "dismissable"
     t.index ["ends_at", "broadcast_type", "id"], name: "index_broadcast_message_on_ends_at_and_broadcast_type_and_id"
   end
 

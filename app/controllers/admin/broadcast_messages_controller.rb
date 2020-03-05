@@ -62,6 +62,7 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
       starts_at
       target_path
       broadcast_type
+      dismissable
     ))
   end
 end

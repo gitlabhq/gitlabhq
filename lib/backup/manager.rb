@@ -12,7 +12,7 @@ module Backup
       @progress = progress
     end
 
-    def pack
+    def write_info
       # Make sure there is a connection
       ActiveRecord::Base.connection.reconnect!
 
@@ -20,7 +20,11 @@ module Backup
         File.open("#{backup_path}/backup_information.yml", "w+") do |file|
           file << backup_information.to_yaml.gsub(/^---\n/, '')
         end
+      end
+    end
 
+    def pack
+      Dir.chdir(backup_path) do
         # create archive
         progress.print "Creating backup archive: #{tar_file} ... "
         # Set file permissions on open to prevent chmod races.
@@ -31,8 +35,6 @@ module Backup
           puts "creating archive #{tar_file} failed".color(:red)
           raise Backup::Error, 'Backup failed'
         end
-
-        upload
       end
     end
 
@@ -105,8 +107,30 @@ module Backup
       end
     end
 
-    # rubocop: disable Metrics/AbcSize
+    def verify_backup_version
+      Dir.chdir(backup_path) do
+        # restoring mismatching backups can lead to unexpected problems
+        if settings[:gitlab_version] != Gitlab::VERSION
+          progress.puts(<<~HEREDOC.color(:red))
+            GitLab version mismatch:
+              Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!
+              Please switch to the following version and try again:
+              version: #{settings[:gitlab_version]}
+          HEREDOC
+          progress.puts
+          progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
+          exit 1
+        end
+      end
+    end
+
     def unpack
+      if ENV['BACKUP'].blank? && non_tarred_backup?
+        progress.puts "Non tarred backup found in #{backup_path}, using that"
+
+        return false
+      end
+
       Dir.chdir(backup_path) do
         # check for existing backups in the backup dir
         if backup_file_list.empty?
@@ -141,21 +165,6 @@ module Backup
           progress.puts 'unpacking backup failed'.color(:red)
           exit 1
         end
-
-        ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
-
-        # restoring mismatching backups can lead to unexpected problems
-        if settings[:gitlab_version] != Gitlab::VERSION
-          progress.puts(<<~HEREDOC.color(:red))
-            GitLab version mismatch:
-              Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!
-              Please switch to the following version and try again:
-              version: #{settings[:gitlab_version]}
-          HEREDOC
-          progress.puts
-          progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
-          exit 1
-        end
       end
     end
 
@@ -169,6 +178,10 @@ module Backup
     end
 
     private
+
+    def non_tarred_backup?
+      File.exist?(File.join(backup_path, 'backup_information.yml'))
+    end
 
     def backup_path
       Gitlab.config.backup.path
@@ -252,7 +265,7 @@ module Backup
     def create_attributes
       attrs = {
         key: remote_target,
-        body: File.open(tar_file),
+        body: File.open(File.join(backup_path, tar_file)),
         multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
         encryption: Gitlab.config.backup.upload.encryption,
         encryption_key: Gitlab.config.backup.upload.encryption_key,

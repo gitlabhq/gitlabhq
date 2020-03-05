@@ -2,13 +2,27 @@
 
 module Milestoneish
   def total_issues_count(user)
-    count_issues_by_state(user).values.sum
+    @total_issues_count ||=
+      if Feature.enabled?(:cached_milestone_issue_counters)
+        Milestones::IssuesCountService.new(self).count
+      else
+        count_issues_by_state(user).values.sum
+      end
   end
 
   def closed_issues_count(user)
-    closed_state_id = Issue.available_states[:closed]
+    @close_issues_count ||=
+      if Feature.enabled?(:cached_milestone_issue_counters)
+        Milestones::ClosedIssuesCountService.new(self).count
+      else
+        closed_state_id = Issue.available_states[:closed]
 
-    count_issues_by_state(user)[closed_state_id].to_i
+        count_issues_by_state(user)[closed_state_id].to_i
+      end
+  end
+
+  def opened_issues_count(user)
+    total_issues_count(user) - closed_issues_count(user)
   end
 
   def complete?(user)

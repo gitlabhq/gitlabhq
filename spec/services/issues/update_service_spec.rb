@@ -412,9 +412,24 @@ describe Issues::UpdateService, :mailer do
           should_email(subscriber)
           should_not_email(non_subscriber)
         end
+
+        it 'clears milestone issue counters cache' do
+          issue.milestone = create(:milestone, project: project)
+
+          issue.save
+
+          expect_next_instance_of(Milestones::IssuesCountService, issue.milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+          expect_next_instance_of(Milestones::ClosedIssuesCountService, issue.milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+
+          update_issue(milestone_id: "")
+        end
       end
 
-      context 'when the milestone is changed' do
+      context 'when the milestone is assigned' do
         before do
           stub_feature_flags(track_resource_milestone_change_events: false)
         end
@@ -443,6 +458,43 @@ describe Issues::UpdateService, :mailer do
 
           should_email(subscriber)
           should_not_email(non_subscriber)
+        end
+
+        it 'deletes issue counters cache for the milestone' do
+          milestone = create(:milestone, project: project)
+
+          expect_next_instance_of(Milestones::IssuesCountService, milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+          expect_next_instance_of(Milestones::ClosedIssuesCountService, milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+
+          update_issue(milestone: milestone)
+        end
+      end
+
+      context 'when the milestone is changed' do
+        it 'deletes issue counters cache for both milestones' do
+          old_milestone = create(:milestone, project: project)
+          new_milestone = create(:milestone, project: project)
+
+          issue.update!(milestone: old_milestone)
+
+          expect_next_instance_of(Milestones::IssuesCountService, old_milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+          expect_next_instance_of(Milestones::ClosedIssuesCountService, old_milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+          expect_next_instance_of(Milestones::IssuesCountService, new_milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+          expect_next_instance_of(Milestones::ClosedIssuesCountService, new_milestone) do |service|
+            expect(service).to receive(:delete_cache).and_call_original
+          end
+
+          update_issue(milestone: new_milestone)
         end
       end
 

@@ -46,6 +46,13 @@
 
       = render_suggested_colors
 
+  .form-group.row.js-broadcast-message-dismissable-form-group{ class: ('hidden' unless @broadcast_message.banner? ) }
+    .col-sm-2.col-form-label.pt-0
+      = f.label :starts_at, _("Dismissable")
+    .col-sm-10
+      = f.check_box :dismissable
+      = f.label :dismissable do
+        = _('Allow users to dismiss the broadcast message')
   .form-group.row.js-toggle-colors-container.toggle-colors.hide
     .col-sm-2.col-form-label
       = f.label :font, "Font Color"

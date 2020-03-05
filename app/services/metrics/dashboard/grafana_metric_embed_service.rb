@@ -6,7 +6,7 @@
 # Use Gitlab::Metrics::Dashboard::Finder to retrive dashboards.
 module Metrics
   module Dashboard
-    class GrafanaMetricEmbedService < ::Metrics::Dashboard::BaseService
+    class GrafanaMetricEmbedService < ::Metrics::Dashboard::BaseEmbedService
       include ReactiveCaching
 
       SEQUENCE = [
@@ -24,7 +24,7 @@ module Metrics
         # to uniquely identify a grafana dashboard.
         def valid_params?(params)
           [
-            params[:embedded],
+            embedded?(params[:embedded]),
             params[:grafana_url]
           ].all?
         end

@@ -151,18 +151,20 @@ module MilestonesHelper
   end
 
   def milestone_issues_tooltip_text(milestone)
-    issues = milestone.count_issues_by_state(current_user)
+    total = milestone.total_issues_count(current_user)
+    opened = milestone.opened_issues_count(current_user)
+    closed = milestone.closed_issues_count(current_user)
 
-    return _("Issues") if issues.empty?
+    return _("Issues") if total.zero?
 
     content = []
 
-    if issues["opened"]
-      content << n_("1 open issue", "%{issues} open issues", issues["opened"]) % { issues: issues["opened"] }
+    if opened > 0
+      content << n_("1 open issue", "%{issues} open issues", opened) % { issues: opened }
     end
 
-    if issues["closed"]
-      content << n_("1 closed issue", "%{issues} closed issues", issues["closed"]) % { issues: issues["closed"] }
+    if closed > 0
+      content << n_("1 closed issue", "%{issues} closed issues", closed) % { issues: closed }
     end
 
     content.join('<br />').html_safe

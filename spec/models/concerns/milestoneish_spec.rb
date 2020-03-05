@@ -211,20 +211,21 @@ describe Milestone, 'Milestoneish' do
     end
   end
 
-  describe '#complete?' do
+  describe '#complete?', :use_clean_rails_memory_store_caching do
     it 'returns false when has items opened' do
       expect(milestone.complete?(non_member)).to eq false
     end
 
     it 'returns true when all items are closed' do
       issue.close
-      merge_request.close
+      security_issue_1.close
+      security_issue_2.close
 
       expect(milestone.complete?(non_member)).to eq true
     end
   end
 
-  describe '#percent_complete' do
+  describe '#percent_complete', :use_clean_rails_memory_store_caching do
     context 'division by zero' do
       let(:new_milestone) { build_stubbed(:milestone) }
 
@@ -233,34 +234,58 @@ describe Milestone, 'Milestoneish' do
   end
 
   describe '#count_issues_by_state' do
-    it 'does not count confidential issues for non project members' do
-      expect(milestone.closed_issues_count(non_member)).to eq 2
-      expect(milestone.total_issues_count(non_member)).to eq 3
+    describe '#total_issues_count', :use_clean_rails_memory_store_caching do
+      it 'counts all issues including confidential' do
+        expect(milestone.total_issues_count(guest)).to eq 9
+      end
     end
 
-    it 'does not count confidential issues for project members with guest role' do
-      expect(milestone.closed_issues_count(guest)).to eq 2
-      expect(milestone.total_issues_count(guest)).to eq 3
+    describe '#opened_issues_count', :use_clean_rails_memory_store_caching do
+      it 'counts all open issues including confidential' do
+        expect(milestone.opened_issues_count(guest)).to eq 3
+      end
     end
 
-    it 'counts confidential issues for author' do
-      expect(milestone.closed_issues_count(author)).to eq 4
-      expect(milestone.total_issues_count(author)).to eq 6
+    describe '#closed_issues_count', :use_clean_rails_memory_store_caching do
+      it 'counts all closed issues including confidential' do
+        expect(milestone.closed_issues_count(guest)).to eq 6
+      end
     end
 
-    it 'counts confidential issues for assignee' do
-      expect(milestone.closed_issues_count(assignee)).to eq 4
-      expect(milestone.total_issues_count(assignee)).to eq 6
-    end
+    context 'when cached_milestone_issue_counters are disabled' do
+      before do
+        stub_feature_flags(cached_milestone_issue_counters: false)
+      end
 
-    it 'counts confidential issues for project members' do
-      expect(milestone.closed_issues_count(member)).to eq 6
-      expect(milestone.total_issues_count(member)).to eq 9
-    end
+      it 'does not count confidential issues for non project members' do
+        expect(milestone.closed_issues_count(non_member)).to eq 2
+        expect(milestone.total_issues_count(non_member)).to eq 3
+      end
 
-    it 'counts confidential issues for admin' do
-      expect(milestone.closed_issues_count(admin)).to eq 6
-      expect(milestone.total_issues_count(admin)).to eq 9
+      it 'does not count confidential issues for project members with guest role' do
+        expect(milestone.closed_issues_count(guest)).to eq 2
+        expect(milestone.total_issues_count(guest)).to eq 3
+      end
+
+      it 'counts confidential issues for author' do
+        expect(milestone.closed_issues_count(author)).to eq 4
+        expect(milestone.total_issues_count(author)).to eq 6
+      end
+
+      it 'counts confidential issues for assignee' do
+        expect(milestone.closed_issues_count(assignee)).to eq 4
+        expect(milestone.total_issues_count(assignee)).to eq 6
+      end
+
+      it 'counts confidential issues for project members' do
+        expect(milestone.closed_issues_count(member)).to eq 6
+        expect(milestone.total_issues_count(member)).to eq 9
+      end
+
+      it 'counts confidential issues for admin' do
+        expect(milestone.closed_issues_count(admin)).to eq 6
+        expect(milestone.total_issues_count(admin)).to eq 9
+      end
     end
   end
 
