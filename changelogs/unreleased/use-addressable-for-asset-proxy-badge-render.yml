@@ -1,5 +1,0 @@
----
-title: Rescue invalid URLs during badge retrieval in asset proxy
-merge_request: 26524
-author:
-type: fixed
