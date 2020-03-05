@@ -13,6 +13,25 @@ If Danger is asking you to change something about your merge request, it's best
 just to make the change. If you want to learn how Danger works, or make changes
 to the existing rules, then this is the document for you.
 
+## Danger comments in merge requests
+
+As of [2020-03-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26275),
+Danger is posting a new comment each time it runs in a pipeline and removes the
+previous comments it posted. Before that, Danger would only post one comment and
+update its content on subsequent `danger-review` runs.
+
+### Advantages
+
+- You get email notifications of Danger failures before the pipeline fails.
+- If someone introduces a change that creates a new Danger warning, it's very obvious now, both in email and in the UI.
+- If there are no new Danger warnings - just the roulette message - then the email acts as confirmation of that.
+- It's easier to see if a roulette recommendation changed, which is useful for people that think about roulette logic/behavior quite often.
+- You don't have to scroll up to get to the first Danger comment (sometimes MR can have more than discussions).
+
+### Disadvantages
+
+- You get new email notifications for each `danger-review` run, which can clutter threaded discussions in email clients.
+
 ## Run Danger locally
 
 A subset of the current checks can be run locally with the following rake task:

@@ -198,7 +198,7 @@ Add the Conan recipe to the `[requires]` section of the file:
  cmake
 ```
 
-Next, from the root of your project, create a build directory and navigate to it:
+Next, create a build directory from the root of your project and navigate to it:
 
 ```shell
 mkdir build && cd build

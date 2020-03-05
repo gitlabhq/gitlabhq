@@ -347,7 +347,7 @@ Changing a group's path can have unintended side effects. Read
 before proceeding.
 
 If you are vacating the path so it can be claimed by another group or user,
-you may need to rename the group, too, since both names and paths must
+you may need to rename the group too, since both names and paths must
 be unique.
 
 To change your group path:

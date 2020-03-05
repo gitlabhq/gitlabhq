@@ -266,7 +266,7 @@ For example, to unlink the `MyOrg` account, the following **Disconnect** button 
 
 | Term | Description |
 |------|-------------|
-| Identity Provider | The service which manages your user identities such as ADFS, Okta, Onelogin or Ping Identity. |
+| Identity Provider | The service which manages your user identities such as ADFS, Okta, Onelogin, or Ping Identity. |
 | Service Provider | SAML considers GitLab to be a service provider. |
 | Assertion | A piece of information about a user's identity, such as their name or role. Also know as claims or attributes. |
 | SSO | Single Sign On. |

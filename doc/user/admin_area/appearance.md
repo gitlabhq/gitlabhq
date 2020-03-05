@@ -47,7 +47,7 @@ instance, including the sign in / sign up page. The default color is white text 
 an orange background, but this can be customized by clicking on **Customize colors**.
 
 Limited [Markdown](../markdown.md) is supported, such as bold, italics, and links, for
-example. Other Markdown features, including lists, images and quotes, are not supported,
+example. Other Markdown features, including lists, images, and quotes are not supported
 as the header and footer messages can only be a single line.
 
 ![header and footer screenshot](img/appearance_header_footer_v12_3.png)

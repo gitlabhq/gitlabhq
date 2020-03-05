@@ -26,7 +26,7 @@ The Security Dashboard supports the following reports:
 
 ## Requirements
 
-To use the instance, group, project or pipeline security dashboard:
+To use the instance, group, project, or pipeline security dashboard:
 
 1. At least one project inside a group must be configured with at least one of
    the [supported reports](#supported-reports).

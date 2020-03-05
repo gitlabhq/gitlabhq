@@ -4,7 +4,7 @@ type: reference
 
 # Continuous Integration and Deployment Admin settings **(CORE ONLY)**
 
-In this area, you will find settings for Auto DevOps, Runners and job artifacts.
+In this area, you will find settings for Auto DevOps, Runners, and job artifacts.
 You can find it in the **Admin Area > Settings > CI/CD**.
 
 ![Admin Area settings button](../img/admin_area_settings_button.png)

@@ -4732,7 +4732,7 @@ msgstr ""
 msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
 msgstr ""
 
-msgid "ClusterIntegration|The namespace associated with your project. This will be used for deploy boards, pod logs, and Web terminals."
+msgid "ClusterIntegration|The namespace associated with your project. This will be used for deploy boards, logs, and Web terminals."
 msgstr ""
 
 msgid "ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid."
@@ -7600,6 +7600,9 @@ msgstr ""
 msgid "Environments|Learn more about stopping environments"
 msgstr ""
 
+msgid "Environments|Logs from"
+msgstr ""
+
 msgid "Environments|New environment"
 msgstr ""
 
@@ -7619,9 +7622,6 @@ msgid "Environments|Note that this action will stop the environment, but it will
 msgstr ""
 
 msgid "Environments|Open live environment"
-msgstr ""
-
-msgid "Environments|Pod logs from"
 msgstr ""
 
 msgid "Environments|Re-deploy"
@@ -11819,7 +11819,7 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
-msgid "Logs|To see the pod logs, deploy your code to an environment."
+msgid "Logs|To see the logs, deploy your code to an environment."
 msgstr ""
 
 msgid "Low vulnerabilities present"
@@ -14379,9 +14379,6 @@ msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
 msgid "Pod does not exist"
-msgstr ""
-
-msgid "Pod logs"
 msgstr ""
 
 msgid "Pod not found"

@@ -35,6 +35,10 @@ Having an extra job in your pipeline that checks for those vulnerabilities,
 and the fact that they are displayed inside a merge request, makes it very easy
 to perform audits for your Docker-based apps.
 
+[//]: # "NOTE: The container scanning tool references the following heading in the code, so if you"
+[//]: # "      make a change to this heading, make sure to update the documentation URLs used in the"
+[//]: # "      container scanning tool (https://gitlab.com/gitlab-org/security-products/analyzers/klar)"
+
 ## Requirements
 
 To enable Container Scanning in your pipeline, you need:
@@ -157,6 +161,10 @@ container_scanning:
   variables:
     GIT_STRATEGY: fetch
 ```
+
+[//]: # "NOTE: The container scanning tool references the following heading in the code, so if you"
+[//]: # "      make a change to this heading, make sure to update the documentation URLs used in the"
+[//]: # "      container scanning tool (https://gitlab.com/gitlab-org/security-products/analyzers/klar)"
 
 ### Available variables
 

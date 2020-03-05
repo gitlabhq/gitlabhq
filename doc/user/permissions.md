@@ -9,7 +9,11 @@ particular group or project. If a user is both in a project's group and the
 project itself, the highest permission level is used.
 
 On public and internal projects the Guest role is not enforced. All users will
-be able to create issues, leave comments, and clone or download the project code.
+be able to:
+
+- Create issues.
+- Leave comments.
+- Clone or download the project code.
 
 When a member leaves a team's project, all the assigned [Issues](project/issues/index.md) and [Merge Requests](project/merge_requests/index.md)
 will be unassigned automatically.
@@ -267,7 +271,7 @@ External users:
   logged out).
 
 Access can be granted by adding the user as member to the project or group.
-They will, like usual users, receive a role in the project or group with all
+Like usual users, they will receive a role in the project or group with all
 the abilities that are mentioned in the [permissions table above](#project-members-permissions).
 For example, if an external user is added as Guest, and your project is
 private, they will not have access to the code; you would need to grant the external

@@ -476,6 +476,77 @@ Once a vulnerability is found, you can interact with it. Read more on how to
 For more information about the vulnerabilities database update, check the
 [maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
 
+## GitLab SAST in an offline air-gapped installation
+
+For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
+to external resources via the internet, some adjustments are required for the SAST job to
+successfully run.
+
+### Requirements for offline SAST
+
+To use SAST in an offline environment, you need:
+
+- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- Docker Container Registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
+
+NOTE: **Note:**
+GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+meaning the runner may try to pull remote images even if a local copy is available. Set GitLab
+Runner's [`pull_policy` to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+in an offline environment if you prefer using only locally available Docker images.
+
+### Make GitLab SAST analyzer images available inside your Docker registry
+
+For SAST with all [supported languages and frameworks](#supported-languages-and-frameworks),
+import the following default SAST analyzer images from `registry.gitlab.com` to your local "offline"
+registry:
+
+```
+registry.gitlab.com/gitlab-org/security-products/analyzers/bandit:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/brakeman:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/eslint:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/flawfinder:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/go-ast-scanner:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/gosec:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/kubesec:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/pmd-apex:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/security-code-scan:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/sobelow:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/spotbugs:2
+registry.gitlab.com/gitlab-org/security-products/analyzers/tslint:2
+```
+
+The process for importing Docker images into a local offline Docker registry depends on
+**your network security policy**. Please consult your IT staff to find an accepted and approved
+process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../index.md#maintenance-and-update-of-the-vulnerabilities-database)
+with new definitions, so consider if you are able to make periodic updates yourself.
+
+For details on saving and transporting Docker images as a file, see Docker's documentation on
+[`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
+[`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
+
+### Set SAST CI job variables to use local SAST analyzers
+
+[Override SAST environment variables](#customizing-the-sast-settings) to use to your [local container registry](./analyzers.md#using-a-custom-docker-mirror)
+as the source for SAST analyzer images.
+
+For example, assuming a local Docker registry repository of `localhost:5000/analyzers`:
+
+  ```yaml
+include:
+  - template: SAST.gitlab-ci.yml
+
+variables:
+  SAST_ANALYZER_IMAGE_PREFIX: "localhost:5000/analyzers"
+  SAST_DISABLE_DIND: "true"
+  ```
+
+The SAST job should now use local copies of the SAST analyzers to scan your code and generate
+security reports without requiring internet access.
+
 ## Troubleshooting
 
 ### Error response from daemon: error processing tar file: docker-tar: relocation error

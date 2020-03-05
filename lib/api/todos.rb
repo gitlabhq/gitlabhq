@@ -13,13 +13,6 @@ module API
       'issues' => ->(iid) { find_project_issue(iid) }
     }.freeze
 
-    helpers do
-      # EE::API::Todos would override this method
-      def find_todos
-        TodosFinder.new(current_user, params).execute
-      end
-    end
-
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -48,6 +41,10 @@ module API
 
     resource :todos do
       helpers do
+        def find_todos
+          TodosFinder.new(current_user, params).execute
+        end
+
         def issuable_and_awardable?(type)
           obj_type = Object.const_get(type, false)
 
