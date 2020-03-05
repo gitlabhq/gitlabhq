@@ -48,5 +48,39 @@ then
   exit 1
 fi
 
+MD_DOC_PATH=${MD_DOC_PATH:-doc/**/*.md}
+
+function run_locally_or_in_docker() {
+  local cmd=$1
+  local args=$2
+
+  if hash ${cmd} 2>/dev/null
+  then
+    $cmd $args
+  elif hash docker 2>/dev/null
+  then
+    docker run -t -v ${PWD}:/gitlab -w /gitlab --rm registry.gitlab.com/gitlab-org/gitlab-docs:lint ${cmd} ${args}
+  else
+    echo
+    echo "  ✖ ERROR: '${cmd}' not found. Install '${cmd}' or Docker to proceed." >&2
+    echo
+    exit 1
+  fi
+
+  if [ $? -ne 0 ]
+  then
+    echo
+    echo "  ✖ ERROR: '${cmd}' failed with errors." >&2
+    echo
+    exit 1
+  fi
+}
+
+echo '=> Linting markdown style...'
+run_locally_or_in_docker 'markdownlint' "--config .markdownlint.json ${MD_DOC_PATH}"
+
+echo '=> Linting prose...'
+run_locally_or_in_docker 'vale' "--minAlertLevel error --ignore-syntax ${MD_DOC_PATH}"
+
 echo "✔ Linting passed"
 exit 0

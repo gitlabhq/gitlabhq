@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Projects::Prometheus::AlertPresenter do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project, reload: true) { create(:project) }
 
   let(:presenter) { described_class.new(alert) }
   let(:payload) { {} }
@@ -174,7 +174,6 @@ describe Projects::Prometheus::AlertPresenter do
     context 'create issue setting enabled' do
       before do
         create(:project_incident_management_setting, project: project, create_issue: true)
-        project.reload
       end
 
       it { is_expected.to eq(true) }
