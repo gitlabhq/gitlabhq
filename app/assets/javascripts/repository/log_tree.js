@@ -27,7 +27,7 @@ export function fetchLogsTree(client, path, offset, resolver = null) {
 
   fetchpromise = axios
     .get(
-      `${gon.relative_url_root}/${projectPath}/-/refs/${escape(ref)}/logs_tree/${escape(
+      `${gon.relative_url_root}/${projectPath}/-/refs/${escape(ref)}/logs_tree/${encodeURIComponent(
         path.replace(/^\//, ''),
       )}`,
       {

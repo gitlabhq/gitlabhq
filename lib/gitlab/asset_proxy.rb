@@ -11,12 +11,14 @@ module Gitlab
         return url if asset_host_whitelisted?(url)
 
         "#{Gitlab.config.asset_proxy.url}/#{asset_url_hash(url)}/#{hexencode(url)}"
+      rescue Addressable::URI::InvalidURIError
+        url
       end
 
       private
 
       def asset_host_whitelisted?(url)
-        parsed_url = URI.parse(url)
+        parsed_url = Addressable::URI.parse(url)
 
         Gitlab.config.asset_proxy.domain_regexp&.match?(parsed_url.host)
       end

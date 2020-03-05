@@ -49,7 +49,7 @@ describe Sentry::Client::Issue do
     it_behaves_like 'calls sentry api'
 
     it_behaves_like 'issues have correct return type', Gitlab::ErrorTracking::Error
-    it_behaves_like 'issues have correct length', 1
+    it_behaves_like 'issues have correct length', 2
 
     shared_examples 'has correct external_url' do
       context 'external_url' do
@@ -184,7 +184,7 @@ describe Sentry::Client::Issue do
       it_behaves_like 'calls sentry api'
 
       it_behaves_like 'issues have correct return type', Gitlab::ErrorTracking::Error
-      it_behaves_like 'issues have correct length', 1
+      it_behaves_like 'issues have correct length', 2
     end
 
     context 'when cursor is present' do
@@ -194,7 +194,7 @@ describe Sentry::Client::Issue do
       it_behaves_like 'calls sentry api'
 
       it_behaves_like 'issues have correct return type', Gitlab::ErrorTracking::Error
-      it_behaves_like 'issues have correct length', 1
+      it_behaves_like 'issues have correct length', 2
     end
   end
 

@@ -1,0 +1,5 @@
+---
+title: Fix Group Import API file upload when object storage is disabled
+merge_request: 25715
+author:
+type: fixed

@@ -33,9 +33,15 @@ describe Gitlab::AssetProxy do
       expect(described_class.proxy_url(url)).to eq(proxied_url)
     end
 
+    it 'returns original URL for invalid domains' do
+      url = 'foo_bar://'
+
+      expect(described_class.proxy_url(url)).to eq(url)
+    end
+
     context 'whitelisted domain' do
       it 'returns original URL for single domain whitelist' do
-        url = 'http://gitlab.com/test.png'
+        url = 'http://gitlab.com/${default_branch}/test.png'
 
         expect(described_class.proxy_url(url)).to eq(url)
       end

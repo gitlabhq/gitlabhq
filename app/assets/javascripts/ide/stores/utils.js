@@ -1,5 +1,4 @@
 import { commitActionTypes, FILE_VIEW_MODE_EDITOR } from '../constants';
-import { escapeFileUrl } from '~/lib/utils/url_utility';
 
 export const dataStructure = () => ({
   id: '',
@@ -220,9 +219,7 @@ export const mergeTrees = (fromTree, toTree) => {
 
 export const replaceFileUrl = (url, oldPath, newPath) => {
   // Add `/-/` so that we don't accidentally replace project path
-  const result = url.replace(`/-/${escapeFileUrl(oldPath)}`, `/-/${escapeFileUrl(newPath)}`);
-
-  return result;
+  return url.replace(`/-/${oldPath}`, `/-/${newPath}`);
 };
 
 export const swapInStateArray = (state, arr, key, entryPath) =>

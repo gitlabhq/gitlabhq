@@ -41,7 +41,7 @@ describe('Repository breadcrumbs component', () => {
         .findAll(RouterLinkStub)
         .at(3)
         .props('to'),
-    ).toEqual('/-/tree//app/assets/javascripts%23');
+    ).toEqual('/-/tree/app/assets/javascripts%23');
   });
 
   it('renders last link as active', () => {

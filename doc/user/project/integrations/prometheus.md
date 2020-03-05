@@ -492,7 +492,9 @@ The options are:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/122013) in GitLab 12.8.
 
-If you have [Kubernetes Pod Logs](../clusters/kubernetes_pod_logs.md) enabled, you can navigate from the charts in the dashboard to view Pod Logs by clicking on the context menu in the upper-right corner.
+If you have [Pod Logs](../clusters/kubernetes_pod_logs.md) enabled,
+you can navigate from the charts in the dashboard to view Pod Logs by
+clicking on the context menu in the upper-right corner.
 
 If you use the **Timeline zoom** function at the bottom of the chart, logs will narrow down to the time range you selected.
 
@@ -608,10 +610,19 @@ Prometheus server.
 
 It is possible to display metrics charts within [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm). The maximum number of embeds allowed in a GitLab Flavored Markdown field is 100.
 
+This can be useful if you are sharing an application incident or performance
+metrics to others and want to have relevant information directly available.
+
 NOTE: **Note:**
 Requires [Kubernetes](prometheus_library/kubernetes.md) metrics.
 
-To display a metric chart, include a link of the form `https://<root_url>/<project>/-/environments/<environment_id>/metrics`.
+To display metric charts, include a link of the form `https://<root_url>/<project>/-/environments/<environment_id>/metrics`:
+
+![Embedded Metrics Markdown](img/embedded_metrics_markdown_v12_8.png)
+
+GitLab unfurls the link as an embedded metrics panel:
+
+![Embedded Metrics Rendered](img/embedded_metrics_rendered_v12_8.png)
 
 A single chart may also be embedded. You can generate a link to the chart via the dropdown located on the right side of the chart:
 

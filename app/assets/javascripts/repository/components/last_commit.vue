@@ -79,7 +79,7 @@ export default {
       return this.$apollo.queries.commit.loading;
     },
     showCommitId() {
-      return this.commit.sha.substr(0, 8);
+      return this.commit?.sha?.substr(0, 8);
     },
   },
   watch: {

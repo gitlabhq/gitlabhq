@@ -45,6 +45,12 @@
 .border-bottom-color-default { border-bottom-color: $border-color; }
 .box-shadow-default { box-shadow: 0 2px 4px 0 $black-transparent; }
 
+.gl-children-ml-sm-3 > * {
+  @include media-breakpoint-up(sm) {
+    @include gl-ml-3;
+  }
+}
+
 .mh-50vh { max-height: 50vh; }
 
 .font-size-inherit { font-size: inherit; }

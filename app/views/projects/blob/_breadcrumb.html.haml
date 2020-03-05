@@ -17,7 +17,7 @@
           - else
             = link_to title, project_tree_path(@project, tree_join(@ref, path))
 
-  .tree-controls<
+  .tree-controls.gl-children-ml-sm-3<
     = render 'projects/find_file_link'
     -# only show normal/blame view links for text files
     - if blob.readable_text?

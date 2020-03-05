@@ -26,6 +26,10 @@ export default (resolvers = {}, config = {}) => {
     headers: {
       [csrf.headerKey]: csrf.token,
     },
+    // fetch won’t send cookies in older browsers, unless you set the credentials init option.
+    // We set to `same-origin` which is default value in modern browsers.
+    // See https://github.com/whatwg/fetch/pull/585 for more information.
+    credentials: 'same-origin',
   };
 
   return new ApolloClient({

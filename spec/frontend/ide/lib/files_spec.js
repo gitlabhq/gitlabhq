@@ -1,7 +1,6 @@
 import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import { decorateFiles, splitParent } from '~/ide/lib/files';
 import { decorateData } from '~/ide/stores/utils';
-import { escapeFileUrl } from '~/lib/utils/url_utility';
 
 const TEST_BRANCH_ID = 'lorem-ipsum';
 const TEST_PROJECT_ID = 10;
@@ -22,7 +21,7 @@ const createEntries = paths => {
         id: path,
         name,
         path,
-        url: createUrl(`/${TEST_PROJECT_ID}/${type}/${TEST_BRANCH_ID}/-/${escapeFileUrl(path)}`),
+        url: createUrl(`/${TEST_PROJECT_ID}/${type}/${TEST_BRANCH_ID}/-/${path}`),
         type,
         previewMode,
         binary: (previewMode && previewMode.binary) || false,
