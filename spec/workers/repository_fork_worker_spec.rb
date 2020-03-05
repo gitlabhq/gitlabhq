@@ -83,7 +83,7 @@ describe RepositoryForkWorker do
       it 'calls Projects::LfsPointers::LfsLinkService#execute with OIDs of source project LFS objects' do
         expect_fork_repository.and_return(true)
         expect_next_instance_of(Projects::LfsPointers::LfsLinkService) do |service|
-          expect(service).to receive(:execute).with(project.lfs_objects_oids)
+          expect(service).to receive(:execute).with(project.all_lfs_objects_oids)
         end
 
         perform!

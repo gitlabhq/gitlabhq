@@ -5692,6 +5692,53 @@ describe Project do
     end
   end
 
+  describe '#all_lfs_objects_oids' do
+    let(:project) { create(:project) }
+    let(:lfs_object) { create(:lfs_object) }
+    let(:another_lfs_object) { create(:lfs_object) }
+
+    subject { project.all_lfs_objects_oids }
+
+    context 'when project has associated LFS objects' do
+      before do
+        create(:lfs_objects_project, lfs_object: lfs_object, project: project)
+        create(:lfs_objects_project, lfs_object: another_lfs_object, project: project)
+      end
+
+      it 'returns OIDs of LFS objects' do
+        expect(subject).to match_array([lfs_object.oid, another_lfs_object.oid])
+      end
+
+      context 'and there are specified oids' do
+        subject { project.all_lfs_objects_oids(oids: [lfs_object.oid]) }
+
+        it 'returns OIDs of LFS objects that match specified oids' do
+          expect(subject).to eq([lfs_object.oid])
+        end
+      end
+    end
+
+    context 'when fork has associated LFS objects to itself and source' do
+      let(:source) { create(:project) }
+      let(:project) { fork_project(source) }
+
+      before do
+        create(:lfs_objects_project, lfs_object: lfs_object, project: source)
+        create(:lfs_objects_project, lfs_object: another_lfs_object, project: project)
+      end
+
+      it 'returns OIDs of LFS objects' do
+        expect(subject).to match_array([lfs_object.oid, another_lfs_object.oid])
+      end
+    end
+
+    context 'when project has no associated LFS objects' do
+      it 'returns empty array' do
+        expect(subject).to be_empty
+      end
+    end
+  end
+
   describe '#lfs_objects_oids' do
     let(:project) { create(:project) }
     let(:lfs_object) { create(:lfs_object) }
@@ -5707,6 +5754,14 @@ describe Project do
 
       it 'returns OIDs of LFS objects' do
         expect(subject).to match_array([lfs_object.oid, another_lfs_object.oid])
+      end
+
+      context 'and there are specified oids' do
+        subject { project.lfs_objects_oids(oids: [lfs_object.oid]) }
+
+        it 'returns OIDs of LFS objects that match specified oids' do
+          expect(subject).to eq([lfs_object.oid])
+        end
       end
     end
 

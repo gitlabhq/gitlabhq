@@ -60,6 +60,7 @@ class User < ApplicationRecord
   MINIMUM_INACTIVE_DAYS = 180
 
   enum bot_type: ::UserBotTypeEnums.bots
+  enum user_type: ::UserTypeEnums.types
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
@@ -336,7 +337,7 @@ class User < ApplicationRecord
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
   scope :with_public_profile, -> { where(private_profile: false) }
   scope :bots, -> { where.not(bot_type: nil) }
-  scope :humans, -> { where(bot_type: nil) }
+  scope :humans, -> { where(user_type: nil, bot_type: nil) }
 
   scope :with_expiring_and_not_notified_personal_access_tokens, ->(at) do
     where('EXISTS (?)',

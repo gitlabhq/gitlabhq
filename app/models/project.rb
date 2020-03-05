@@ -1398,12 +1398,17 @@ class Project < ApplicationRecord
       .where(lfs_objects_projects: { project_id: [self, lfs_storage_project] })
   end
 
-  # TODO: Call `#lfs_objects` instead once all LfsObjectsProject records are
-  # backfilled. At that point, projects can look at their own `lfs_objects`.
+  # TODO: Remove this method once all LfsObjectsProject records are backfilled
+  # for forks. At that point, projects can look at their own `lfs_objects` so
+  # `lfs_objects_oids` can be used instead.
   #
   # See https://gitlab.com/gitlab-org/gitlab/issues/122002 for more info.
-  def lfs_objects_oids
-    all_lfs_objects.pluck(:oid)
+  def all_lfs_objects_oids(oids: [])
+    oids(all_lfs_objects, oids: oids)
+  end
+
+  def lfs_objects_oids(oids: [])
+    oids(lfs_objects, oids: oids)
   end
 
   def personal?
@@ -2514,6 +2519,12 @@ class Project < ApplicationRecord
   rescue ActiveRecord::RecordNotUnique
     reset
     retry
+  end
+
+  def oids(objects, oids: [])
+    collection = oids.any? ? objects.where(oid: oids) : objects
+
+    collection.pluck(:oid)
   end
 end
 

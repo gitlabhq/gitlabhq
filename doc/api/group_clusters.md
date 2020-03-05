@@ -160,7 +160,7 @@ Parameters:
 | `managed` | boolean | no | Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to true |
 | `platform_kubernetes_attributes[api_url]` | string | yes | The URL to access the Kubernetes API |
 | `platform_kubernetes_attributes[token]` | string | yes | The token to authenticate against Kubernetes |
-| `platform_kubernetes_attributes[ca_cert]` | string | no | TLS certificate (needed if API is using a self-signed TLS certificate |
+| `platform_kubernetes_attributes[ca_cert]` | string | no | TLS certificate. Required if API is using a self-signed TLS certificate. |
 | `platform_kubernetes_attributes[authorization_type]` | string | no | The cluster authorization type: `rbac`, `abac` or `unknown_authorization`. Defaults to `rbac`. |
 | `environment_scope` | string | no | The associated environment to the cluster. Defaults to `*` **(PREMIUM)** |
 
@@ -227,7 +227,7 @@ Parameters:
 | `domain` | string | no | The [base domain](../user/group/clusters/index.md#base-domain) of the cluster |
 | `platform_kubernetes_attributes[api_url]` | string | no | The URL to access the Kubernetes API |
 | `platform_kubernetes_attributes[token]` | string | no | The token to authenticate against Kubernetes |
-| `platform_kubernetes_attributes[ca_cert]` | string | no | TLS certificate (needed if API is using a self-signed TLS certificate |
+| `platform_kubernetes_attributes[ca_cert]` | string | no | TLS certificate. Required if API is using a self-signed TLS certificate. |
 | `environment_scope` | string | no | The associated environment to the cluster **(PREMIUM)** |
 
 NOTE: **Note:**

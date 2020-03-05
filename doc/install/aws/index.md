@@ -293,11 +293,11 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 
 1. Click the **Create Load Balancer** button.
    1. Choose the **Classic Load Balancer**.
-   1. Give it a name (`gitlab-loadbalancer`) and for the **Create LB Inside** option, select `gitlab-vpc` from the dropdown menu.
+   1. Give it a name (we'll use `gitlab-loadbalancer`) and for the **Create LB Inside** option, select `gitlab-vpc` from the dropdown menu.
    1. In the **Listeners** section, set HTTP port 80, HTTPS port 443, and TCP port 22 for both load balancer and instance protocols and ports.
    1. In the **Select Subnets** section, select both public subnets from the list.
 1. Click **Assign Security Groups** and select **Create a new security group**, give it a name
-   (`gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
+   (we'll use `gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
    from anywhere (`0.0.0.0/0, ::/0`).
 1. Click **Configure Security Settings** and select an SSL/TLS certificate from ACM or upload a certificate to IAM.
 1. Click **Configure Health Check** and set up a health check for your EC2 instances.

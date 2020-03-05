@@ -45,15 +45,9 @@ module Repositories
       params[:operation] == 'upload'
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
-    def existing_oids
-      @existing_oids ||= begin
-        project.all_lfs_objects.where(oid: objects.map { |o| o['oid'].to_s }).pluck(:oid)
-      end
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
-
     def download_objects!
+      existing_oids = project.all_lfs_objects_oids(oids: objects_oids)
+
       objects.each do |object|
         if existing_oids.include?(object[:oid])
           object[:actions] = download_actions(object)
@@ -68,13 +62,17 @@ module Repositories
           }
         end
       end
+
       objects
     end
 
     def upload_objects!
+      existing_oids = project.lfs_objects_oids(oids: objects_oids)
+
       objects.each do |object|
         object[:actions] = upload_actions(object) unless existing_oids.include?(object[:oid])
       end
+
       objects
     end
 
