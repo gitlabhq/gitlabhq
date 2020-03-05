@@ -179,18 +179,19 @@ export default {
         <div v-if="errorMessage" class="diff-viewer">
           <div class="nothing-here-block" v-html="errorMessage"></div>
         </div>
-        <div v-else-if="isCollapsed" class="nothing-here-block diff-collapsed">
-          {{ __('This diff is collapsed.') }}
-          <a class="click-to-expand js-click-to-expand" href="#" @click.prevent="handleToggle">{{
-            __('Click to expand it.')
-          }}</a>
-        </div>
-        <diff-content
-          v-else
-          :class="{ hidden: isCollapsed || isFileTooLarge }"
-          :diff-file="file"
-          :help-page-path="helpPagePath"
-        />
+        <template v-else>
+          <div v-show="isCollapsed" class="nothing-here-block diff-collapsed">
+            {{ __('This diff is collapsed.') }}
+            <a class="click-to-expand js-click-to-expand" href="#" @click.prevent="handleToggle">{{
+              __('Click to expand it.')
+            }}</a>
+          </div>
+          <diff-content
+            v-show="!isCollapsed && !isFileTooLarge"
+            :diff-file="file"
+            :help-page-path="helpPagePath"
+          />
+        </template>
       </div>
     </template>
   </div>

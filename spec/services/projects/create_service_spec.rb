@@ -344,7 +344,7 @@ describe Projects::CreateService, '#execute' do
 
   context 'when there is an active service template' do
     before do
-      create(:service, project: nil, template: true, active: true)
+      create(:prometheus_service, project: nil, template: true, active: true)
     end
 
     it 'creates a service from this template' do
@@ -392,6 +392,67 @@ describe Projects::CreateService, '#execute' do
     rugged = rugged_repo(project.repository)
 
     expect(rugged.config['gitlab.fullpath']).to eq project.full_path
+  end
+
+  context 'when project has access to shared service' do
+    context 'Prometheus application is shared via group cluster' do
+      let(:cluster) { create(:cluster, :group, groups: [group]) }
+      let(:group) do
+        create(:group).tap do |group|
+          group.add_owner(user)
+        end
+      end
+
+      before do
+        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+      end
+
+      it 'creates PrometheusService record', :aggregate_failures do
+        project = create_project(user, opts.merge!(namespace_id: group.id))
+        service = project.prometheus_service
+
+        expect(service.active).to be true
+        expect(service.manual_configuration?).to be false
+        expect(service.persisted?).to be true
+      end
+    end
+
+    context 'Prometheus application is shared via instance cluster' do
+      let(:cluster) { create(:cluster, :instance) }
+
+      before do
+        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+      end
+
+      it 'creates PrometheusService record', :aggregate_failures do
+        project = create_project(user, opts)
+        service = project.prometheus_service
+
+        expect(service.active).to be true
+        expect(service.manual_configuration?).to be false
+        expect(service.persisted?).to be true
+      end
+
+      it 'cleans invalid record and logs warning', :aggregate_failures do
+        invalid_service_record = build(:prometheus_service, properties: { api_url: nil, manual_configuration: true }.to_json)
+        allow_next_instance_of(Project) do |instance|
+          allow(instance).to receive(:build_prometheus_service).and_return(invalid_service_record)
+        end
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(an_instance_of(ActiveRecord::RecordInvalid), include(extra: { project_id: a_kind_of(Integer) }))
+        project = create_project(user, opts)
+
+        expect(project.prometheus_service).to be_nil
+      end
+    end
+
+    context 'shared Prometheus application is not available' do
+      it 'does not persist PrometheusService record', :aggregate_failures do
+        project = create_project(user, opts)
+
+        expect(project.prometheus_service).to be_nil
+      end
+    end
   end
 
   context 'with external authorization enabled' do

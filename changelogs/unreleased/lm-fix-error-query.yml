@@ -1,0 +1,5 @@
+---
+title: Fix search for Sentry error list
+merge_request: 26129
+author:
+type: fixed

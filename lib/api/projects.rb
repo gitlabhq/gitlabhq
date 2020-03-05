@@ -177,6 +177,7 @@ module API
         use :create_params
       end
       post do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/issues/21139')
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
         filter_attributes_using_license!(attrs)
@@ -209,6 +210,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post "user/:user_id" do
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/issues/21139')
         authenticated_as_admin!
         user = User.find_by(id: params.delete(:user_id))
         not_found!('User') unless user

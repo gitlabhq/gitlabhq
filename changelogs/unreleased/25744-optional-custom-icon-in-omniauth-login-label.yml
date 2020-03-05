@@ -1,0 +1,5 @@
+---
+title: Optional custom icon in the OmniAuth login labels
+merge_request: 25744
+author: Tobias Wawryniuk, Luca Leonardo Scorcia
+type: added

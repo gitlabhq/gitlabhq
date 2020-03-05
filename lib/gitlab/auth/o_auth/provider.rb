@@ -75,6 +75,12 @@ module Gitlab
           config = config_for(name)
           (config && config['label']) || LABELS[name] || name.titleize
         end
+
+        def self.icon_for(name)
+          name = name.to_s
+          config = config_for(name)
+          config && config['icon']
+        end
       end
     end
   end
