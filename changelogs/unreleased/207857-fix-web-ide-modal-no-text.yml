@@ -1,0 +1,5 @@
+---
+title: Fix Web IDE fork modal showing no text
+merge_request: 25842
+author:
+type: fixed

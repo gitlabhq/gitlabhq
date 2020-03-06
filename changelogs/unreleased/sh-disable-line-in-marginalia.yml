@@ -1,0 +1,5 @@
+---
+title: Disable Marginalia line backtrace in production
+merge_request: 26199
+author:
+type: performance
