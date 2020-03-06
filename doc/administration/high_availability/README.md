@@ -20,12 +20,12 @@ watch [this 1 hour Q&A](https://www.youtube.com/watch?v=uCU8jdYzpac)
 with [John Northrup](https://gitlab.com/northrup), and live questions coming
 in from some of our customers.
 
-## Recommended Setups based on number of users
+## Recommended setups based on number of users
 
 - 1 - 1000 Users: A single-node [Omnibus](https://docs.gitlab.com/omnibus/) setup with frequent backups. Refer to the [requirements page](../../install/requirements.md) for further details of the specs you will require.
 - 2000 - 50000+ Users: A scaled HA environment based on one of our [Reference Architectures](#reference-architectures) below.
 
-## GitLab Components and Configuration Instructions
+## GitLab components and configuration instructions
 
 The GitLab application depends on the following [components](../../development/architecture.md#component-diagram)
 and services. They are included in the reference architectures along with our
@@ -48,7 +48,7 @@ in which you would typically configure them.
 
 In some cases, components can be combined on the same nodes to reduce complexity as well.
 
-## Reference Architectures
+## Reference architectures
 
 In this section we'll detail the Reference Architectures that can support large numbers
 of users. These were built, tested and verified by our Quality and Support teams.
@@ -69,12 +69,11 @@ how much automation you use, mirroring, and repo/change size. Additionally the
 shown memory values are given directly by [GCP machine types](https://cloud.google.com/compute/docs/machine-types).
 On different cloud vendors a best effort like for like can be used.
 
-### 2,000 User Configuration
+### 2,000 user configuration
 
-- **Supported Users (approximate):** 2,000
-- **Test RPS Rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
-- **Known Issues:** For the latest list of known performance issues head
-[here](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues).
+- **Supported users (approximate):** 2,000
+- **Test RPS rates:** API: 40 RPS, Web: 4 RPS, Git: 4 RPS
+- **Known issues:**  [List of known performance issues](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues)
 
 | Service                     | Nodes | Configuration[^8]     | GCP type      |
 | ----------------------------|-------|-----------------------|---------------|
@@ -91,12 +90,11 @@ On different cloud vendors a best effort like for like can be used.
 | External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
 | Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
 
-### 5,000 User Configuration
+### 5,000 user configuration
 
-- **Supported Users (approximate):** 5,000
-- **Test RPS Rates:** API: 100 RPS, Web: 10 RPS, Git: 10 RPS
-- **Known Issues:** For the latest list of known performance issues head
-[here](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues).
+- **Supported users (approximate):** 5,000
+- **Test RPS rates:** API: 100 RPS, Web: 10 RPS, Git: 10 RPS
+- **Known issues:**  [List of known performance issues](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues)
 
 | Service                     | Nodes | Configuration[^8]     | GCP type      |
 | ----------------------------|-------|-----------------------|---------------|
@@ -113,12 +111,11 @@ On different cloud vendors a best effort like for like can be used.
 | External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
 | Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
 
-### 10,000 User Configuration
+### 10,000 user configuration
 
-- **Supported Users (approximate):** 10,000
-- **Test RPS Rates:** API: 200 RPS, Web: 20 RPS, Git: 20 RPS
-- **Known Issues:** For the latest list of known performance issues head
-[here](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues).
+- **Supported users (approximate):** 10,000
+- **Test RPS rates:** API: 200 RPS, Web: 20 RPS, Git: 20 RPS
+- **Known issues:**  [List of known performance issues](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues)
 
 | Service                     | Nodes | Configuration[^8]     | GCP type      |
 | ----------------------------|-------|-----------------------|---------------|
@@ -138,12 +135,11 @@ On different cloud vendors a best effort like for like can be used.
 | External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
 | Internal load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
 
-### 25,000 User Configuration
+### 25,000 user configuration
 
-- **Supported Users (approximate):** 25,000
-- **Test RPS Rates:** API: 500 RPS, Web: 50 RPS, Git: 50 RPS
-- **Known Issues:** For the latest list of known performance issues head
-[here](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues).
+- **Supported users (approximate):** 25,000
+- **Test RPS rates:** API: 500 RPS, Web: 50 RPS, Git: 50 RPS
+- **Known issues:**  [List of known performance issues](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues)
 
 | Service                     | Nodes | Configuration[^8]     | GCP type      |
 | ----------------------------|-------|-----------------------|---------------|
@@ -163,12 +159,11 @@ On different cloud vendors a best effort like for like can be used.
 | External load balancing node[^6] | 1 | 2 vCPU, 1.8GB Memory | n1-highcpu-2  |
 | Internal load balancing node[^6] | 1 | 4 vCPU, 3.6GB Memory | n1-highcpu-4  |
 
-### 50,000 User Configuration
+### 50,000 user configuration
 
-- **Supported Users (approximate):** 50,000
-- **Test RPS Rates:** API: 1000 RPS, Web: 100 RPS, Git: 100 RPS
-- **Known Issues:** For the latest list of known performance issues head
-[here](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues).
+- **Supported users (approximate):** 50,000
+- **Test RPS rates:** API: 1000 RPS, Web: 100 RPS, Git: 100 RPS
+- **Known issues:**  [List of known performance issues](https://gitlab.com/gitlab-org/gitlab/issues?label_name%5B%5D=Quality%3Aperformance-issues)
 
 | Service                     | Nodes | Configuration[^8]     | GCP type      |
 | ----------------------------|-------|-----------------------|---------------|

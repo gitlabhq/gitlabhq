@@ -48,8 +48,8 @@ vulnerability will then be displayed below it.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10536) in GitLab Ultimate 12.3.
 
-If the [License Compliance](../license_compliance/index.md) CI job is configured,
-the [discovered licenses](../license_compliance/index.md#supported-languages-and-package-managers) will be displayed on this page.
+If the [License Compliance](../../compliance/license_compliance/index.md) CI job is configured,
+the [discovered licenses](../../compliance/license_compliance/index.md#supported-languages-and-package-managers) will be displayed on this page.
 
 ## Downloading the Dependency List
 

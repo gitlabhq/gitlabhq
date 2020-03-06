@@ -359,14 +359,14 @@ The following documentation relates to the DevOps **Secure** stage:
 
 | Secure Topics                                                                                         | Description                                                            |
 |:------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------|
-| [Compliance Dashboard](user/application_security/compliance_dashboard/index.md) **(ULTIMATE)**        | View the most recent Merge Request activity in a group.                |
+| [Compliance Dashboard](user/compliance/compliance_dashboard/index.md) **(ULTIMATE)**        | View the most recent Merge Request activity in a group.                |
 | [Container Scanning](user/application_security/container_scanning/index.md) **(ULTIMATE)**            | Use Clair to scan docker images for known vulnerabilities.             |
 | [Dependency List](user/application_security/dependency_list/index.md) **(ULTIMATE)**                  | View your project's dependencies and their known vulnerabilities.      |
 | [Dependency Scanning](user/application_security/dependency_scanning/index.md) **(ULTIMATE)**          | Analyze your dependencies for known vulnerabilities.                   |
 | [Dynamic Application Security Testing (DAST)](user/application_security/dast/index.md) **(ULTIMATE)** | Analyze running web applications for known vulnerabilities.            |
 | [Group Security Dashboard](user/application_security/security_dashboard/index.md#group-security-dashboard) **(ULTIMATE)**      | View vulnerabilities in all the projects in a group and its subgroups. |
 | [Instance Security Dashboard](user/application_security/security_dashboard/index.md#instance-security-dashboard) **(ULTIMATE)**      | View vulnerabilities in all the projects you're interested in. |
-| [License Compliance](user/application_security/license_compliance/index.md) **(ULTIMATE)**            | Search your project's dependencies for their licenses.                 |
+| [License Compliance](user/compliance/license_compliance/index.md) **(ULTIMATE)**            | Search your project's dependencies for their licenses.                 |
 | [Pipeline Security Dashboard](user/application_security/security_dashboard/index.md#pipeline-security-dashboard) **(ULTIMATE)**    | View the security reports for your project's pipelines.               |
 | [Project Security Dashboard](user/application_security/security_dashboard/index.md#project-security-dashboard) **(ULTIMATE)**    | View the latest security reports for your project.                     |
 | [Static Application Security Testing (SAST)](user/application_security/sast/index.md) **(ULTIMATE)**  | Analyze source code for known vulnerabilities.                         |

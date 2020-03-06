@@ -1,0 +1,5 @@
+---
+title: Add nginx request aggregations to WAF anomaly service
+merge_request: 25273
+author:
+type: added

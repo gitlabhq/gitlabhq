@@ -8,7 +8,7 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
 
   let_it_be(:project) { create(:project) }
 
-  subject(:setting) { create(:project_error_tracking_setting, project: project) }
+  subject(:setting) { build(:project_error_tracking_setting, project: project) }
 
   describe 'Associations' do
     it { is_expected.to belong_to(:project) }

@@ -276,6 +276,8 @@ describe MergeRequest do
   end
 
   describe 'respond to' do
+    subject { build(:merge_request) }
+
     it { is_expected.to respond_to(:unchecked?) }
     it { is_expected.to respond_to(:checking?) }
     it { is_expected.to respond_to(:can_be_merged?) }

@@ -2772,8 +2772,6 @@ Service
     should return false by default
   #deprecation_message
     should be empty by default
-  .find_by_template
-    returns service template
   #api_field_names
     filters out sensitive fields
 

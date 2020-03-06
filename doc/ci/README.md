@@ -133,7 +133,7 @@ Its feature set is listed on the table below according to DevOps stages.
 | **Secure** ||
 | [Container Scanning](../user/application_security/container_scanning/index.md) **(ULTIMATE)** | Check your Docker containers for known vulnerabilities.|
 | [Dependency Scanning](../user/application_security/dependency_scanning/index.md) **(ULTIMATE)** | Analyze your dependencies for known vulnerabilities. |
-| [License Compliance](../user/application_security/license_compliance/index.md) **(ULTIMATE)** | Search your project dependencies for their licenses. |
+| [License Compliance](../user/compliance/license_compliance/index.md) **(ULTIMATE)** | Search your project dependencies for their licenses. |
 | [Security Test reports](../user/application_security/index.md) **(ULTIMATE)** | Check for app vulnerabilities. |
 
 ## Examples

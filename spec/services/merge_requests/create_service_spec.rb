@@ -129,7 +129,23 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         end
       end
 
-      context 'when head pipelines already exist for merge request source branch' do
+      # https://gitlab.com/gitlab-org/gitlab/issues/208813
+      context 'when the create_merge_request_pipelines_in_sidekiq flag is disabled' do
+        before do
+          stub_feature_flags(create_merge_request_pipelines_in_sidekiq: false)
+        end
+
+        it 'creates a pipeline and updates the HEAD pipeline' do
+          expect(service).to receive(:create_pipeline_for)
+          expect_next_instance_of(MergeRequest) do |merge_request|
+            expect(merge_request).to receive(:update_head_pipeline)
+          end
+
+          service.execute
+        end
+      end
+
+      context 'when head pipelines already exist for merge request source branch', :sidekiq_inline do
         let(:shas) { project.repository.commits(opts[:source_branch], limit: 2).map(&:id) }
         let!(:pipeline_1) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[1]) }
         let!(:pipeline_2) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[0]) }
@@ -175,7 +191,7 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
         end
       end
 
-      describe 'Pipelines for merge requests' do
+      describe 'Pipelines for merge requests', :sidekiq_inline do
         before do
           stub_ci_pipeline_yaml_file(config)
         end
@@ -216,7 +232,9 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
               target_project.add_maintainer(user)
             end
 
-            it 'create legacy detached merge request pipeline for fork merge request', :sidekiq_might_not_need_inline do
+            it 'create legacy detached merge request pipeline for fork merge request' do
+              merge_request.reload
+
               expect(merge_request.actual_head_pipeline)
                 .to be_legacy_detached_merge_request_pipeline
             end
@@ -228,6 +246,8 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
             end
 
             it 'create legacy detached merge request pipeline for non-fork merge request' do
+              merge_request.reload
+
               expect(merge_request.actual_head_pipeline)
                 .to be_legacy_detached_merge_request_pipeline
             end
@@ -262,6 +282,8 @@ describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
             end
 
             it 'sets the latest detached merge request pipeline as the head pipeline' do
+              merge_request.reload
+
               expect(merge_request.actual_head_pipeline).to be_merge_request_event
             end
           end

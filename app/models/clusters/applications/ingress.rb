@@ -4,6 +4,7 @@ module Clusters
   module Applications
     class Ingress < ApplicationRecord
       VERSION = '1.29.7'
+      INGRESS_CONTAINER_NAME = 'nginx-ingress-controller'
       MODSECURITY_LOG_CONTAINER_NAME = 'modsecurity-log'
 
       self.table_name = 'clusters_applications_ingress'
@@ -69,7 +70,7 @@ module Clusters
       end
 
       def ingress_service
-        cluster.kubeclient.get_service('ingress-nginx-ingress-controller', Gitlab::Kubernetes::Helm::NAMESPACE)
+        cluster.kubeclient.get_service("ingress-#{INGRESS_CONTAINER_NAME}", Gitlab::Kubernetes::Helm::NAMESPACE)
       end
 
       private
@@ -123,7 +124,7 @@ module Clusters
               {
                 "name" => "modsecurity-template-volume",
                 "configMap" => {
-                  "name" => "ingress-nginx-ingress-controller",
+                  "name" => "ingress-#{INGRESS_CONTAINER_NAME}",
                   "items" => [
                     {
                       "key" => "modsecurity.conf",

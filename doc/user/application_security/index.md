@@ -19,12 +19,10 @@ GitLab uses the following tools to scan and report known vulnerabilities found i
 
 | Secure scanning tool                                                         | Description                                                            |
 |:-----------------------------------------------------------------------------|:-----------------------------------------------------------------------|
-| [Compliance Dashboard](compliance_dashboard/index.md) **(ULTIMATE)**         | View the most recent Merge Request activity in a group.                |
 | [Container Scanning](container_scanning/index.md) **(ULTIMATE)**             | Scan Docker containers for known vulnerabilities.                      |
 | [Dependency List](dependency_list/index.md) **(ULTIMATE)**                   | View your project's dependencies and their known vulnerabilities.      |
 | [Dependency Scanning](dependency_scanning/index.md) **(ULTIMATE)**           | Analyze your dependencies for known vulnerabilities.                   |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) **(ULTIMATE)**  | Analyze running web applications for known vulnerabilities.            |
-| [License Compliance](license_compliance/index.md) **(ULTIMATE)**             | Search your project's dependencies for their licenses.                 |
 | [Security Dashboard](security_dashboard/index.md) **(ULTIMATE)**             | View vulnerabilities in all your projects and groups.                  |
 | [Static Application Security Testing (SAST)](sast/index.md) **(ULTIMATE)**   | Analyze source code for known vulnerabilities.                         |
 
@@ -185,7 +183,7 @@ with the number of approvals required greater than zero.
 
 Once this group is added to your project, the approval rule is enabled for all Merge Requests. To
 configure how this rule behaves, you can choose which licenses to `approve` or `blacklist` in the
-[project policies for License Compliance](license_compliance/index.md#project-policies-for-license-compliance)
+[project policies for License Compliance](../compliance/license_compliance/index.md#project-policies-for-license-compliance)
 section.
 
 Any code changes cause the approvals required to reset.

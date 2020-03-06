@@ -319,10 +319,6 @@ class Service < ApplicationRecord
     nil
   end
 
-  def self.find_by_template
-    find_by(template: true)
-  end
-
   # override if needed
   def supports_data_fields?
     false

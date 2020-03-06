@@ -8,7 +8,7 @@ describe Analytics::CycleAnalytics::ProjectStage do
   end
 
   it 'default stages must be valid' do
-    project = create(:project)
+    project = build(:project)
 
     Gitlab::Analytics::CycleAnalytics::DefaultStages.all.each do |params|
       stage = described_class.new(params.merge(project: project))
@@ -17,13 +17,13 @@ describe Analytics::CycleAnalytics::ProjectStage do
   end
 
   it_behaves_like 'cycle analytics stage' do
-    let(:parent) { create(:project) }
+    let(:parent) { build(:project) }
     let(:parent_name) { :project }
   end
 
   context 'relative positioning' do
     it_behaves_like 'a class that supports relative positioning' do
-      let(:project) { create(:project) }
+      let(:project) { build(:project) }
       let(:factory) { :cycle_analytics_project_stage }
       let(:default_params) { { project: project } }
     end

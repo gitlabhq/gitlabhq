@@ -406,14 +406,6 @@ describe Service do
     end
   end
 
-  describe '.find_by_template' do
-    let!(:service) { create(:service, template: true) }
-
-    it 'returns service template' do
-      expect(described_class.find_by_template).to eq(service)
-    end
-  end
-
   describe '#api_field_names' do
     let(:fake_service) do
       Class.new(Service) do

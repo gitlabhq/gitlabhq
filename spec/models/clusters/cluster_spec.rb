@@ -573,17 +573,17 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   end
 
   describe '#allow_user_defined_namespace?' do
-    let(:cluster) { create(:cluster, :provided_by_gcp) }
-
     subject { cluster.allow_user_defined_namespace? }
 
     context 'project type cluster' do
       context 'gitlab managed' do
+        let(:cluster) { build(:cluster, :provided_by_gcp) }
+
         it { is_expected.to be_truthy }
       end
 
       context 'not managed' do
-        let(:cluster) { create(:cluster, :provided_by_gcp, managed: false) }
+        let(:cluster) { build(:cluster, :provided_by_gcp, managed: false) }
 
         it { is_expected.to be_truthy }
       end
@@ -591,13 +591,13 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
     context 'group type cluster' do
       context 'gitlab managed' do
-        let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
+        let(:cluster) { build(:cluster, :provided_by_gcp, :group) }
 
         it { is_expected.to be_falsey }
       end
 
       context 'not managed' do
-        let(:cluster) { create(:cluster, :provided_by_gcp, :group, managed: false) }
+        let(:cluster) { build(:cluster, :provided_by_gcp, :group, managed: false) }
 
         it { is_expected.to be_truthy }
       end
@@ -605,13 +605,13 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
     context 'instance type cluster' do
       context 'gitlab managed' do
-        let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+        let(:cluster) { build(:cluster, :provided_by_gcp, :instance) }
 
         it { is_expected.to be_falsey }
       end
 
       context 'not managed' do
-        let(:cluster) { create(:cluster, :provided_by_gcp, :instance, managed: false) }
+        let(:cluster) { build(:cluster, :provided_by_gcp, :instance, managed: false) }
 
         it { is_expected.to be_truthy }
       end
@@ -649,18 +649,18 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   end
 
   describe '#kube_ingress_domain' do
-    let(:cluster) { create(:cluster, :provided_by_gcp) }
+    let(:cluster) { build(:cluster, :provided_by_gcp) }
 
     subject { cluster.kube_ingress_domain }
 
     context 'with domain set in cluster' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, :with_domain) }
+      let(:cluster) { build(:cluster, :provided_by_gcp, :with_domain) }
 
       it { is_expected.to eq(cluster.domain) }
     end
 
     context 'with no domain on cluster' do
-      let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+      let(:cluster) { build(:cluster, :project, :provided_by_gcp) }
       let(:project) { cluster.project }
 
       context 'with domain set at instance level' do
@@ -754,7 +754,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
 
     context 'with no domain' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, :project) }
+      let(:cluster) { build(:cluster, :provided_by_gcp, :project) }
 
       it 'returns an empty array' do
         expect(subject.to_hash).to be_empty
@@ -782,7 +782,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     subject { cluster.status_name }
 
     context 'the cluster has a provider' do
-      let(:cluster) { create(:cluster, :provided_by_gcp) }
+      let(:cluster) { build(:cluster, :provided_by_gcp) }
       let(:provider_status) { :errored }
 
       before do
@@ -816,7 +816,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
 
     context 'there is a cached connection status' do
-      let(:cluster) { create(:cluster, :provided_by_user) }
+      let(:cluster) { build(:cluster, :provided_by_user) }
 
       before do
         allow(cluster).to receive(:connection_status).and_return(:connected)
@@ -826,7 +826,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
 
     context 'there is no connection status in the cache' do
-      let(:cluster) { create(:cluster, :provided_by_user) }
+      let(:cluster) { build(:cluster, :provided_by_user) }
 
       before do
         allow(cluster).to receive(:connection_status).and_return(nil)
