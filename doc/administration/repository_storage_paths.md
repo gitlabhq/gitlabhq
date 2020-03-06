@@ -15,7 +15,7 @@ storage shards) to distribute the storage load between several mount points.
 
 Example: this is OK:
 
-```
+```plaintext
 default:
   path: /mnt/git-storage-1
 storage2:
@@ -24,7 +24,7 @@ storage2:
 
 This is not OK because it nests storage paths:
 
-```
+```plaintext
 default:
   path: /mnt/git-storage-1
 storage2:

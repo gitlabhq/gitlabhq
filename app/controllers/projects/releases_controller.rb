@@ -8,7 +8,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:release_issue_summary, project)
     push_frontend_feature_flag(:release_evidence_collection, project, default_enabled: true)
-    push_frontend_feature_flag(:release_show_page, project)
+    push_frontend_feature_flag(:release_show_page, project, default_enabled: true)
   end
   before_action :authorize_update_release!, only: %i[edit update]
   before_action :authorize_read_release_evidence!, only: [:evidence]
@@ -31,7 +31,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   end
 
   def show
-    return render_404 unless Feature.enabled?(:release_show_page, project)
+    return render_404 unless Feature.enabled?(:release_show_page, project, default_enabled: true)
 
     respond_to do |format|
       format.html do

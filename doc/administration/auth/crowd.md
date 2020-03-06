@@ -54,7 +54,7 @@ Authenticate to GitLab using the Atlassian Crowd OmniAuth provider.
 
    **Source:**
 
-   ```
+   ```yaml
       - { name: 'crowd',
           args: {
             crowd_server_url: 'CROWD_SERVER_URL',

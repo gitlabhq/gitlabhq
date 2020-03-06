@@ -147,7 +147,7 @@ information on the Security Dashboard can become outdated as new vulnerabilities
 are discovered.
 
 To ensure the information on the Security Dashboard is regularly updated,
-[configure a scheduled pipeline](../../project/pipelines/schedules.md) to run a
+[configure a scheduled pipeline](../../../ci/pipelines/schedules.md) to run a
 daily security scan. This will update the information displayed on the Security
 Dashboard regardless of how often the default branch is updated.
 

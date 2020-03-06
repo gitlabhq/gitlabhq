@@ -353,7 +353,7 @@ GitLab uses background jobs for processing tasks which can take a long
 time. All information about processing these jobs are written down to
 this file. For example:
 
-```
+```plaintext
 2014-06-10T07:55:20Z 2037 TID-tm504 ERROR: /opt/bitnami/apps/discourse/htdocs/vendor/bundle/ruby/1.9.1/gems/redis-3.0.7/lib/redis/client.rb:228:in `read'
 2014-06-10T18:18:26Z 14299 TID-55uqo INFO: Booting Sidekiq 3.0.0 with redis options {:url=>"redis://localhost:6379/0", :namespace=>"sidekiq"}
 ```

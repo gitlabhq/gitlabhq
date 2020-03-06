@@ -86,9 +86,9 @@ Now that the Okta app is configured, it's time to enable it in GitLab.
 
    Edit `config/gitlab.yml`:
 
-    ```yaml
-    auto_link_saml_user: true
-    ```
+   ```yaml
+   auto_link_saml_user: true
+   ```
 
 1. Add the provider configuration.
 

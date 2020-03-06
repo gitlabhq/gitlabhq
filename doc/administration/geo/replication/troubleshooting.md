@@ -46,7 +46,7 @@ sudo gitlab-rake gitlab:geo:check
 
 Example output:
 
-```text
+```plaintext
 Checking Geo ...
 
 GitLab Geo is available ... yes
@@ -79,7 +79,7 @@ sudo gitlab-rake geo:status
 
 Example output:
 
-```text
+```plaintext
 http://secondary.example.com/
 -----------------------------------------------------
                         GitLab Version: 11.10.4-ee
@@ -134,11 +134,11 @@ sudo gitlab-rake gitlab:geo:check
 It displays the current machine's node name and whether the matching database
 record is a **primary** or **secondary** node.
 
-```
+```plaintext
 This machine's Geo node name matches a database record ... yes, found a secondary node named "Shanghai"
 ```
 
-```
+```plaintext
 This machine's Geo node name matches a database record ... no
   Try fixing it:
   You could add or update a Geo node database record, setting the name to "https://example.com/".
@@ -157,95 +157,95 @@ sudo gitlab-rake gitlab:geo:check
 
 1. Rails did not provide a password when connecting to the database
 
-    ```text
-    Checking Geo ...
+   ```plaintext
+   Checking Geo ...
 
-    GitLab Geo is available ... Exception: fe_sendauth: no password supplied
-    GitLab Geo is enabled ... Exception: fe_sendauth: no password supplied
-    ...
-    Checking Geo ... Finished
-    ```
+   GitLab Geo is available ... Exception: fe_sendauth: no password supplied
+   GitLab Geo is enabled ... Exception: fe_sendauth: no password supplied
+   ...
+   Checking Geo ... Finished
+   ```
 
-    - Ensure that you have the `gitlab_rails['db_password']` set to the plain text-password used when creating the hash for `postgresql['sql_user_password']`.
+   - Ensure that you have the `gitlab_rails['db_password']` set to the plain text-password used when creating the hash for `postgresql['sql_user_password']`.
 
 1. Rails is unable to connect to the database
 
-    ```text
-    Checking Geo ...
+   ```plaintext
+   Checking Geo ...
 
-    GitLab Geo is available ... Exception: FATAL:  no pg_hba.conf entry for host "1.1.1.1",  user "gitlab", database "gitlabhq_production", SSL on
-    FATAL:  no pg_hba.conf entry for host "1.1.1.1", user "gitlab", database "gitlabhq_production", SSL off
-    GitLab Geo is enabled ... Exception: FATAL:  no pg_hba.conf entry for host "1.1.1.1", user "gitlab", database "gitlabhq_production", SSL on
-    FATAL:  no pg_hba.conf entry for host "1.1.1.1", user "gitlab", database "gitlabhq_production", SSL off
-    ...
-    Checking Geo ... Finished
-    ```
+   GitLab Geo is available ... Exception: FATAL:  no pg_hba.conf entry for host "1.1.1.1",  user "gitlab", database "gitlabhq_production", SSL on
+   FATAL:  no pg_hba.conf entry for host "1.1.1.1", user "gitlab", database "gitlabhq_production", SSL off
+   GitLab Geo is enabled ... Exception: FATAL:  no pg_hba.conf entry for host "1.1.1.1", user "gitlab", database "gitlabhq_production", SSL on
+   FATAL:  no pg_hba.conf entry for host "1.1.1.1", user "gitlab", database "gitlabhq_production", SSL off
+   ...
+   Checking Geo ... Finished
+   ```
 
-    - Ensure that you have the IP address of the rails node included in `postgresql['md5_auth_cidr_addresses']`.
-    - Ensure that you have included the subnet mask on the IP address: `postgresql['md5_auth_cidr_addresses'] = ['1.1.1.1/32']`.
+   - Ensure that you have the IP address of the rails node included in `postgresql['md5_auth_cidr_addresses']`.
+   - Ensure that you have included the subnet mask on the IP address: `postgresql['md5_auth_cidr_addresses'] = ['1.1.1.1/32']`.
 
 1. Rails has supplied the incorrect password
 
-    ```text
-    Checking Geo ...
-    GitLab Geo is available ... Exception: FATAL:  password authentication failed for user "gitlab"
-    FATAL:  password authentication failed for user "gitlab"
-    GitLab Geo is enabled ... Exception: FATAL:  password authentication failed for user "gitlab"
-    FATAL:  password authentication failed for user "gitlab"
-    ...
-    Checking Geo ... Finished
-    ```
+   ```plaintext
+   Checking Geo ...
+   GitLab Geo is available ... Exception: FATAL:  password authentication failed for user "gitlab"
+   FATAL:  password authentication failed for user "gitlab"
+   GitLab Geo is enabled ... Exception: FATAL:  password authentication failed for user "gitlab"
+   FATAL:  password authentication failed for user "gitlab"
+   ...
+   Checking Geo ... Finished
+   ```
 
-    - Verify the correct password is set for `gitlab_rails['db_password']` that was used when creating the hash in  `postgresql['sql_user_password']` by running `gitlab-ctl pg-password-md5 gitlab` and entering the password.
+   - Verify the correct password is set for `gitlab_rails['db_password']` that was used when creating the hash in  `postgresql['sql_user_password']` by running `gitlab-ctl pg-password-md5 gitlab` and entering the password.
 
 1. Check returns not a secondary node
 
-    ```text
-    Checking Geo ...
+   ```plaintext
+   Checking Geo ...
 
-    GitLab Geo is available ... yes
-    GitLab Geo is enabled ... yes
-    GitLab Geo secondary database is correctly configured ... not a secondary node
-    Database replication enabled? ... not a secondary node
-    ...
-    Checking Geo ... Finished
-    ```
+   GitLab Geo is available ... yes
+   GitLab Geo is enabled ... yes
+   GitLab Geo secondary database is correctly configured ... not a secondary node
+   Database replication enabled? ... not a secondary node
+   ...
+   Checking Geo ... Finished
+   ```
 
-    - Ensure that you have added the secondary node in the Admin Area of the **primary** node.
-    - Ensure that you entered the `external_url` or `gitlab_rails['geo_node_name']` when adding the secondary node in the admin are of the **primary** node.
-    - Prior to GitLab 12.4, edit the secondary node in the Admin Area of the **primary** node and ensure that there is a trailing `/` in the `Name` field.
+   - Ensure that you have added the secondary node in the Admin Area of the **primary** node.
+   - Ensure that you entered the `external_url` or `gitlab_rails['geo_node_name']` when adding the secondary node in the admin are of the **primary** node.
+   - Prior to GitLab 12.4, edit the secondary node in the Admin Area of the **primary** node and ensure that there is a trailing `/` in the `Name` field.
 
 1. Check returns Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist
 
-    ```text
-    Checking Geo ...
+   ```plaintext
+   Checking Geo ...
 
-    GitLab Geo is available ... no
-      Try fixing it:
-      Upload a new license that includes the GitLab Geo feature
-      For more information see:
-      https://about.gitlab.com/features/gitlab-geo/
-    GitLab Geo is enabled ... Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist
-    LINE 8:                WHERE a.attrelid = '"geo_nodes"'::regclass
-                                              ^
-    :               SELECT a.attname, format_type(a.atttypid, a.atttypmod),
-                         pg_get_expr(d.adbin, d.adrelid), a.attnotnull, a.atttypid, a.atttypmod,
-                         c.collname, col_description(a.attrelid, a.attnum) AS comment
-                    FROM pg_attribute a
-                    LEFT JOIN pg_attrdef d ON a.attrelid = d.adrelid AND a.attnum = d.adnum
-                    LEFT JOIN pg_type t ON a.atttypid = t.oid
-                    LEFT JOIN pg_collation c ON a.attcollation = c.oid AND a.attcollation <> t.typcollation
-                   WHERE a.attrelid = '"geo_nodes"'::regclass
-                     AND a.attnum > 0 AND NOT a.attisdropped
-                   ORDER BY a.attnum
-    ...
-    Checking Geo ... Finished
-    ```
+   GitLab Geo is available ... no
+     Try fixing it:
+     Upload a new license that includes the GitLab Geo feature
+     For more information see:
+     https://about.gitlab.com/features/gitlab-geo/
+   GitLab Geo is enabled ... Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist
+   LINE 8:                WHERE a.attrelid = '"geo_nodes"'::regclass
+                                             ^
+   :               SELECT a.attname, format_type(a.atttypid, a.atttypmod),
+                        pg_get_expr(d.adbin, d.adrelid), a.attnotnull, a.atttypid, a.atttypmod,
+                        c.collname, col_description(a.attrelid, a.attnum) AS comment
+                   FROM pg_attribute a
+                   LEFT JOIN pg_attrdef d ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+                   LEFT JOIN pg_type t ON a.atttypid = t.oid
+                   LEFT JOIN pg_collation c ON a.attcollation = c.oid AND a.attcollation <> t.typcollation
+                  WHERE a.attrelid = '"geo_nodes"'::regclass
+                    AND a.attnum > 0 AND NOT a.attisdropped
+                  ORDER BY a.attnum
+   ...
+   Checking Geo ... Finished
+   ```
 
-    When performing a Postgres major version (9 > 10) update this is expected. Follow:
+   When performing a Postgres major version (9 > 10) update this is expected. Follow:
 
-    - [initiate-the-replication-process](database.md#step-3-initiate-the-replication-process)
-    - [Geo database has an outdated FDW remote schema](troubleshooting.md#geo-database-has-an-outdated-fdw-remote-schema-error)
+   - [initiate-the-replication-process](database.md#step-3-initiate-the-replication-process)
+   - [Geo database has an outdated FDW remote schema](troubleshooting.md#geo-database-has-an-outdated-fdw-remote-schema-error)
 
 ## Fixing replication errors
 
@@ -483,7 +483,7 @@ when promoting a secondary to a primary node with strategies to resolve them.
 When [promoting a **secondary** node](../disaster_recovery/index.md#step-3-promoting-a-secondary-node),
 you might encounter the following error:
 
-```text
+```plaintext
 Running gitlab-rake geo:set_secondary_as_primary...
 
 rake aborted!
@@ -523,7 +523,7 @@ This section documents ways to fix potential Foreign Data Wrapper errors.
 When setting up Geo, you might see this warning in the `gitlab-rake
 gitlab:geo:check` output:
 
-```text
+```plaintext
 GitLab Geo tracking database Foreign Data Wrapper schema is up-to-date? ... foreign data wrapper is not configured
 ```
 
@@ -607,7 +607,7 @@ To check the configuration:
 1. Check that the foreign server mapping is correct via `\des+`. The
    results should look something like this:
 
-   ```
+   ```plaintext
    gitlabhq_geo_production=# \des+
    List of foreign servers
    -[ RECORD 1 ]--------+------------------------------------------------------------
@@ -643,7 +643,7 @@ To check the configuration:
 
 1. Check that the user mapping is configured properly via `\deu+`:
 
-   ```
+   ```plaintext
    gitlabhq_geo_production=# \deu+
                                                 List of user mappings
          Server      | User name  |                                  FDW Options
@@ -731,7 +731,7 @@ GitLab can error with a `Geo database has an outdated FDW remote schema` message
 
 For example:
 
-```text
+```plaintext
 Geo database has an outdated FDW remote schema. It contains 229 of 236 expected tables. Please refer to Geo Troubleshooting.
 ```
 

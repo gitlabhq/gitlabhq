@@ -377,7 +377,7 @@ variables, depending on where they are defined.
 
 The order of precedence for variables is (from highest to lowest):
 
-1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables) or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#using-variables).
+1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables) or [scheduled pipeline variables](../pipelines/schedules.md#using-variables).
 1. Project-level [variables](#creating-a-custom-environment-variable) or [protected variables](#protected-environment-variables).
 1. Group-level [variables](#group-level-environment-variables) or [protected variables](#protected-environment-variables).
 1. YAML-defined [job-level variables](../yaml/README.md#variables).

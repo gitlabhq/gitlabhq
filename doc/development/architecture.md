@@ -542,28 +542,28 @@ See the README for more information.
 
 The GitLab init script starts and stops Unicorn and Sidekiq:
 
-```
+```plaintext
 /etc/init.d/gitlab
 Usage: service gitlab {start|stop|restart|reload|status}
 ```
 
 Redis (key-value store/non-persistent database):
 
-```
+```plaintext
 /etc/init.d/redis
 Usage: /etc/init.d/redis {start|stop|status|restart|condrestart|try-restart}
 ```
 
 SSH daemon:
 
-```
+```plaintext
 /etc/init.d/sshd
 Usage: /etc/init.d/sshd {start|stop|restart|reload|force-reload|condrestart|try-restart|status}
 ```
 
 Web server (one of the following):
 
-```
+```plaintext
 /etc/init.d/httpd
 Usage: httpd {start|stop|restart|condrestart|try-restart|force-reload|reload|status|fullstatus|graceful|help|configtest}
 
@@ -573,7 +573,7 @@ Usage: nginx {start|stop|restart|reload|force-reload|status|configtest}
 
 Persistent database:
 
-```
+```plaintext
 $ /etc/init.d/postgresql
 Usage: /etc/init.d/postgresql {start|stop|restart|reload|force-reload|status} [version ..]
 ```
@@ -626,7 +626,7 @@ GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
 [GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance rake tasks](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/raketasks/maintenance.md).
 In a nutshell, do the following:
 
-```
+```shell
 sudo -i -u git
 cd gitlab
 bundle exec rake gitlab:env:info RAILS_ENV=production

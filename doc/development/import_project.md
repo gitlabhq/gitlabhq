@@ -115,13 +115,13 @@ The last option is to import a project using a Rails console:
                                           project: project).restore
    ```
 
-    We are storing all import failures in the `import_failures` data table.
+   We are storing all import failures in the `import_failures` data table.
 
-    To make sure that the project import finished without any issues, check:
+   To make sure that the project import finished without any issues, check:
 
-    ```ruby
-    project.import_failures.all
-    ```
+   ```ruby
+   project.import_failures.all
+   ```
 
 ## Performance testing
 

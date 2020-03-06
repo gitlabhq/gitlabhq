@@ -57,7 +57,7 @@ Fire up a terminal, navigate to your Git repository and:
 
 1. Enable `git-lfs`:
 
-   ```
+   ```shell
    git lfs install
    git lfs track <files>
    git add .

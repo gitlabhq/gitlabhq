@@ -287,7 +287,7 @@ The following documentation relates to the DevOps **Release** stage:
 | [GitLab CI/CD](ci/README.md)                                                                                                        | Explore the features and capabilities of Continuous Deployment and Delivery with GitLab.                                              |
 | [GitLab Pages](user/project/pages/index.md)                                                                                         | Build, test, and deploy a static site directly from GitLab.                                                                           |
 | [Protected Runners](ci/runners/README.md#protected-runners)                                                                         | Select Runners to only pick jobs for protected branches and tags.                                                                     |
-| [Scheduled Pipelines](user/project/pipelines/schedules.md)                                                                          | Execute pipelines on a schedule.                                                                                                      |
+| [Scheduled Pipelines](ci/pipelines/schedules.md)                                                                          | Execute pipelines on a schedule.                                                                                                      |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">

@@ -202,9 +202,9 @@ and they will assist you with any issues you are having.
 - How to get the manifest for a release. It can be useful because it contains the info about
 all Kubernetes resources and dependent charts:
 
-    ```shell
-    helm get manifest <release name>
-    ```
+  ```shell
+  helm get manifest <release name>
+  ```
 
 ## Installation of minimal GitLab config via Minukube on macOS
 

@@ -239,7 +239,7 @@ Container Scanning can be executed on an offline air-gapped GitLab Ultimate inst
    self-signed certificate, then you must set `DOCKER_INSECURE: true` in the above
    `container_scanning` section of your `.gitlab-ci.yml`.
 
-It may be worthwhile to set up a [scheduled pipeline](../../project/pipelines/schedules.md) to automatically build a new version of the vulnerabilities database on a preset schedule. You can use the following `.gitlab-yml.ci` as a template:
+It may be worthwhile to set up a [scheduled pipeline](../../../ci/pipelines/schedules.md) to automatically build a new version of the vulnerabilities database on a preset schedule. You can use the following `.gitlab-yml.ci` as a template:
 
 ```yaml
 image: docker:stable
@@ -270,9 +270,9 @@ image directly, follow these steps:
 1. Run [Docker Desktop](https://www.docker.com/products/docker-desktop) or [Docker Machine](https://github.com/docker/machine).
 1. Run the latest [prefilled vulnerabilities database](https://cloud.docker.com/repository/docker/arminc/clair-db) Docker image:
 
-    ```shell
-    docker run -p 5432:5432 -d --name clair-db arminc/clair-db:latest
-    ```
+   ```shell
+   docker run -p 5432:5432 -d --name clair-db arminc/clair-db:latest
+   ```
 
 1. Configure an environment variable to point to your local machine's IP address (or insert your IP address instead of the `LOCAL_MACHINE_IP_ADDRESS` variable in the `CLAIR_DB_CONNECTION_STRING` in the next step):
 
@@ -282,16 +282,16 @@ image directly, follow these steps:
 
 1. Run the analyzer's Docker image, passing the image and tag you want to analyze in the `CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG` environment variables:
 
-    ```shell
-    docker run \
-      --interactive --rm \
-      --volume "$PWD":/tmp/app \
-      -e CI_PROJECT_DIR=/tmp/app \
-      -e CLAIR_DB_CONNECTION_STRING="postgresql://postgres:password@${LOCAL_MACHINE_IP_ADDRESS}:5432/postgres?sslmode=disable&statement_timeout=60000" \
-      -e CI_APPLICATION_REPOSITORY=registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256 \
-      -e CI_APPLICATION_TAG=bc09fe2e0721dfaeee79364115aeedf2174cce0947b9ae5fe7c33312ee019a4e \
-      registry.gitlab.com/gitlab-org/security-products/analyzers/klar
-    ```
+   ```shell
+   docker run \
+     --interactive --rm \
+     --volume "$PWD":/tmp/app \
+     -e CI_PROJECT_DIR=/tmp/app \
+     -e CLAIR_DB_CONNECTION_STRING="postgresql://postgres:password@${LOCAL_MACHINE_IP_ADDRESS}:5432/postgres?sslmode=disable&statement_timeout=60000" \
+     -e CI_APPLICATION_REPOSITORY=registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256 \
+     -e CI_APPLICATION_TAG=bc09fe2e0721dfaeee79364115aeedf2174cce0947b9ae5fe7c33312ee019a4e \
+     registry.gitlab.com/gitlab-org/security-products/analyzers/klar
+   ```
 
 The results are stored in `gl-container-scanning-report.json`.
 

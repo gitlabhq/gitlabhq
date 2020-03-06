@@ -4055,6 +4055,6 @@ but commented out to help encourage others to add to it in the future. -->
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12909
 [ce-19232]: https://gitlab.com/gitlab-org/gitlab-foss/issues/19232
 [environment]: ../environments.md "CI/CD environments"
-[schedules]: ../../user/project/pipelines/schedules.md "Pipelines schedules"
+[schedules]: ../pipelines/schedules.md "Pipelines schedules"
 [variables]: ../variables/README.md "CI/CD variables"
 [push-option]: https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt

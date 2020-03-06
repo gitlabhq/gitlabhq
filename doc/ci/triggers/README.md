@@ -256,7 +256,7 @@ of all types of variables.
 
 >**Note:**
 The following behavior can also be achieved through GitLab's UI with
-[pipeline schedules](../../user/project/pipelines/schedules.md).
+[pipeline schedules](../pipelines/schedules.md).
 
 Whether you craft a script or just run cURL directly, you can trigger jobs
 in conjunction with cron. The example below triggers a job on the `master`

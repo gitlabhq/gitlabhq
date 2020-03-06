@@ -1,6 +1,6 @@
 # Pipeline schedules API
 
-You can read more about [pipeline schedules](../user/project/pipelines/schedules.md).
+You can read more about [pipeline schedules](../ci/pipelines/schedules.md).
 
 ## Get all pipeline schedules
 

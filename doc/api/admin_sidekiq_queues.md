@@ -17,7 +17,7 @@ The response has three fields:
 
 This API endpoint is only available to admin users.
 
-```
+```plaintext
 DELETE /admin/sidekiq/queues/:queue_name
 ```
 

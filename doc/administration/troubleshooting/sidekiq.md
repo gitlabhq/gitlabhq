@@ -31,7 +31,7 @@ Check in `/var/log/gitlab/sidekiq/current` or `$GITLAB_HOME/log/sidekiq.log` for
 the backtrace output. The backtraces will be lengthy and generally start with
 several `WARN` level messages. Here's an example of a single thread's backtrace:
 
-```
+```plaintext
 2016-04-13T06:21:20.022Z 31517 TID-orn4urby0 WARN: ActiveRecord::RecordNotFound: Couldn't find Note with 'id'=3375386
 2016-04-13T06:21:20.022Z 31517 TID-orn4urby0 WARN: /opt/gitlab/embedded/service/gem/ruby/2.1.0/gems/activerecord-4.2.5.2/lib/active_record/core.rb:155:in `find'
 /opt/gitlab/embedded/service/gitlab-rails/app/workers/new_note_worker.rb:7:in `perform'
@@ -55,7 +55,7 @@ respond to the `TTIN` signal, this is a good next step.
 
 If `perf` is not installed on your system, install it with `apt-get` or `yum`:
 
-```
+```shell
 # Debian
 sudo apt-get install linux-tools
 
@@ -68,13 +68,13 @@ sudo yum install perf
 
 Run perf against the Sidekiq PID:
 
-```
+```shell
 sudo perf record -p <sidekiq_pid>
 ```
 
 Let this run for 30-60 seconds and then press Ctrl-C. Then view the perf report:
 
-```
+```shell
 sudo perf report
 
 # Sample output
@@ -102,13 +102,13 @@ of the process (Sidekiq will not process jobs while `gdb` is attached).
 
 Start by attaching to the Sidekiq PID:
 
-```
+```shell
 gdb -p <sidekiq_pid>
 ```
 
 Then gather information on all the threads:
 
-```
+```plaintext
 info threads
 
 # Example output
@@ -129,7 +129,7 @@ from /opt/gitlab/embedded/service/gem/ruby/2.1.0/gems/nokogiri-1.6.7.2/lib/nokog
 If you see a suspicious thread, like the Nokogiri one above, you may want
 to get more information:
 
-```
+```plaintext
 thread 21
 bt
 
@@ -147,7 +147,7 @@ bt
 
 To output a backtrace from all threads at once:
 
-```
+```plaintext
 set pagination off
 thread apply all bt
 ```
@@ -155,7 +155,7 @@ thread apply all bt
 Once you're done debugging with `gdb`, be sure to detach from the process and
 exit:
 
-```
+```plaintext
 detach
 exit
 ```

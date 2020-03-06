@@ -49,7 +49,7 @@ The web application flow is:
 1. Request authorization code. To do that, you should redirect the user to the
    `/oauth/authorize` endpoint with the following GET parameters:
 
-   ```
+   ```plaintext
    https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES
    ```
 
@@ -60,7 +60,7 @@ The web application flow is:
    would request `read_user` and `profile` scopes). The redirect will
    include the GET `code` parameter, for example:
 
-   ```
+   ```plaintext
    http://myapp.com/oauth/redirect?code=1234567890&state=YOUR_UNIQUE_STATE_HASH
    ```
 

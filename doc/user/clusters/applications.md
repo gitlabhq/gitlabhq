@@ -501,20 +501,20 @@ To install applications using GitLab CI:
 1. Connect the cluster to a [cluster management project](management_project.md).
 1. In that project, add a `.gitlab-ci.yml` file with the following content:
 
-    ```yaml
-    include:
-      - template: Managed-Cluster-Applications.gitlab-ci.yml
-    ```
+   ```yaml
+   include:
+     - template: Managed-Cluster-Applications.gitlab-ci.yml
+   ```
 
 1. Add a `.gitlab/managed-apps/config.yaml` file to define which
   applications you would like to install. Define the `installed` key as
   `true` to install the application and `false` to uninstall the
   application. For example, to install Ingress:
 
-    ```yaml
-    ingress:
-      installed: true
-    ```
+   ```yaml
+   ingress:
+     installed: true
+   ```
 
 1. Optionally, define `.gitlab/managed-apps/<application>/values.yaml` file to
    customize values for the installed application.

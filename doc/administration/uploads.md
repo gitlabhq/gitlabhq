@@ -153,7 +153,7 @@ Note that Oracle Cloud S3 must be sure to use the following settings:
 If `enable_signature_v4_streaming` is set to `true`, you may see the
 following error:
 
-```
+```plaintext
 STREAMING-AWS4-HMAC-SHA256-PAYLOAD is not supported
 ```
 

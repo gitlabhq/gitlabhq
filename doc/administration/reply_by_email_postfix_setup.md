@@ -73,7 +73,7 @@ The instructions make the assumption that you will be using the email address `i
 
 1. Send the new `incoming` user a dummy email to test SMTP, by entering the following into the SMTP prompt:
 
-   ```
+   ```plaintext
    ehlo localhost
    mail from: root@localhost
    rcpt to: incoming@localhost
@@ -101,7 +101,7 @@ The instructions make the assumption that you will be using the email address `i
 
    You should see output like this:
 
-   ```
+   ```plaintext
    "/var/mail/incoming": 1 message 1 unread
    >U   1 root@localhost                           59/2842  Re: Some issue
    ```
@@ -147,7 +147,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
       You should see output like this:
 
-      ```
+      ```plaintext
       "/home/incoming/Maildir": 1 message 1 unread
       >U   1 root@localhost                           59/2842  Re: Some issue
       ```
@@ -253,7 +253,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
    1. Send the `incoming` user a dummy email to test SMTP, by entering the following into the SMTP prompt:
 
-      ```
+      ```plaintext
       ehlo gitlab.example.com
       mail from: root@gitlab.example.com
       rcpt to: incoming@gitlab.example.com
@@ -277,7 +277,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
       You should see output like this:
 
-      ```
+      ```plaintext
       "/home/incoming/Maildir": 1 message 1 unread
       >U   1 root@gitlab.example.com                           59/2842  Re: Some issue
       ```
@@ -313,7 +313,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
    1. Sign in as the `incoming` user to test IMAP, by entering the following into the IMAP prompt:
 
-      ```
+      ```plaintext
       a login incoming PASSWORD
       ```
 
@@ -321,7 +321,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
 
       You should see output like this:
 
-      ```
+      ```plaintext
       a OK LOGIN Ok.
       ```
 

@@ -495,7 +495,7 @@ work:
 
 1. On the **secondary** nodes, change `/etc/gitlab/gitlab.rb`:
 
-   ```
+   ```ruby
    geo_postgresql['fdw_external_user'] = 'gitlab_geo_fdw'
    ```
 

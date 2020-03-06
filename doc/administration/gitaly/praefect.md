@@ -121,7 +121,7 @@ node, using `psql` which is installed by GitLab Omnibus.
 
    ```sql
    CREATE ROLE praefect WITH LOGIN CREATEDB PASSWORD 'PRAEFECT_SQL_PASSWORD';
-    ```
+   ```
 
 1. Reconnect to the PostgreSQL server, this time as the `praefect` user:
 

@@ -123,7 +123,7 @@ pagination models.
 
 To expose a collection of resources we can use a connection type. This wraps the array with default pagination fields. For example a query for project-pipelines could look like this:
 
-```
+```graphql
 query($project_path: ID!) {
   project(fullPath: $project_path) {
     pipelines(first: 2) {
@@ -181,7 +181,7 @@ look like this:
 To get the next page, the cursor of the last known element could be
 passed:
 
-```
+```graphql
 query($project_path: ID!) {
   project(fullPath: $project_path) {
     pipelines(first: 2, after: "Njc=") {
@@ -319,7 +319,6 @@ module Types
     value 'CLOSED', value: 'closed', description: 'An closed Epic'
   end
 end
-
 ```
 
 ## Descriptions

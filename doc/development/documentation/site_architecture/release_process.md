@@ -70,9 +70,9 @@ this needs to happen when the stable branches for all products have been created
 
 1. Run the raketask to create the single version:
 
-    ```shell
-    ./bin/rake "release:single[12.0]"
-    ```
+   ```shell
+   ./bin/rake "release:single[12.0]"
+   ```
 
     A new `Dockerfile.12.0` should have been created and committed to a new branch.
 
