@@ -20,7 +20,7 @@ module QA
           cluster.remove!
         end
 
-        it 'can create and associate a project cluster', :smoke do
+        it 'can create and associate a project cluster', :smoke, quarantine: { type: :new } do
           Resource::KubernetesCluster.fabricate_via_browser_ui! do |k8s_cluster|
             k8s_cluster.project = project
             k8s_cluster.cluster = cluster
