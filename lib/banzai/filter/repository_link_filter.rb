@@ -80,6 +80,13 @@ module Banzai
         end
 
         Gitlab::GitalyClient::BlobService.new(repository).get_blob_types(revision_paths, 1)
+      rescue GRPC::Unavailable, GRPC::DeadlineExceeded => e
+        # Handle Gitaly connection issues gracefully
+        Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
+        # Return all links as blob types
+        paths.collect do |path|
+          [path, :blob]
+        end
       end
 
       def get_uri(html_attr)

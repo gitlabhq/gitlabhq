@@ -149,6 +149,34 @@ describe Banzai::Filter::RepositoryLinkFilter do
   end
 
   shared_examples :valid_repository do
+    it 'handles Gitaly unavailable exceptions gracefully' do
+      allow_next_instance_of(Gitlab::GitalyClient::BlobService) do |blob_service|
+        allow(blob_service).to receive(:get_blob_types).and_raise(GRPC::Unavailable)
+      end
+
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+        an_instance_of(GRPC::Unavailable), project_id: project.id
+      )
+      doc = ""
+      expect { doc = filter(link('doc/api/README.md')) }.not_to raise_error
+      expect(doc.at_css('a')['href'])
+          .to eq "/#{project_path}/-/blob/#{ref}/doc/api/README.md"
+    end
+
+    it 'handles Gitaly timeout exceptions gracefully' do
+      allow_next_instance_of(Gitlab::GitalyClient::BlobService) do |blob_service|
+        allow(blob_service).to receive(:get_blob_types).and_raise(GRPC::DeadlineExceeded)
+      end
+
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+        an_instance_of(GRPC::DeadlineExceeded), project_id: project.id
+      )
+      doc = ""
+      expect { doc = filter(link('doc/api/README.md')) }.not_to raise_error
+      expect(doc.at_css('a')['href'])
+          .to eq "/#{project_path}/-/blob/#{ref}/doc/api/README.md"
+    end
+
     it 'rebuilds absolute URL for a file in the repo' do
       doc = filter(link('/doc/api/README.md'))
       expect(doc.at_css('a')['href'])

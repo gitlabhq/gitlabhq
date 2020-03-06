@@ -1,5 +1,5 @@
+import { last } from 'lodash';
 import AvailableDropdownMappings from 'ee_else_ce/filtered_search/available_dropdown_mappings';
-import _ from 'underscore';
 import DropLab from '~/droplab/drop_lab';
 import FilteredSearchContainer from './container';
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
@@ -184,8 +184,8 @@ export default class FilteredSearchDropdownManager {
       // Eg. token = 'label:'
 
       const split = lastToken.split(':');
-      const dropdownName = _.last(split[0].split(' '));
-      const possibleOperatorToken = _.last(split[1]);
+      const dropdownName = last(split[0].split(' '));
+      const possibleOperatorToken = last(split[1]);
 
       const hasOperator = FilteredSearchVisualTokens.permissibleOperatorValues.includes(
         possibleOperatorToken && possibleOperatorToken.trim(),

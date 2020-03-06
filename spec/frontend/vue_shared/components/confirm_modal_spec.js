@@ -3,6 +3,8 @@ import { GlModal } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import ConfirmModal from '~/vue_shared/components/confirm_modal.vue';
 
+jest.mock('~/lib/utils/csrf', () => ({ token: 'test-csrf-token' }));
+
 describe('vue_shared/components/confirm_modal', () => {
   const testModalProps = {
     path: `${TEST_HOST}/1`,
@@ -39,45 +41,61 @@ describe('vue_shared/components/confirm_modal', () => {
   });
 
   const findModal = () => wrapper.find(GlModal);
+  const findForm = () => wrapper.find('form');
+  const findFormData = () =>
+    findForm()
+      .findAll('input')
+      .wrappers.map(x => ({ name: x.attributes('name'), value: x.attributes('value') }));
 
   describe('template', () => {
-    beforeEach(() => {
-      createComponent();
+    describe('when showModal is false', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render GlModal', () => {
+        expect(findModal().exists()).toBeFalsy();
+      });
     });
 
-    it('calls openModal on mount', () => {
-      expect(actionSpies.openModal).toHaveBeenCalled();
-    });
+    describe('when showModal is true', () => {
+      beforeEach(() => {
+        createComponent({ showModal: true });
+      });
 
-    it('renders GlModal', () => {
-      expect(findModal().exists()).toBeTruthy();
+      it('renders GlModal', () => {
+        expect(findModal().exists()).toBeTruthy();
+        expect(findModal().attributes()).toEqual(
+          expect.objectContaining({
+            modalid: testModalProps.modalAttributes.modalId,
+            oktitle: testModalProps.modalAttributes.okTitle,
+            okvariant: testModalProps.modalAttributes.okVariant,
+          }),
+        );
+      });
     });
   });
 
   describe('methods', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ showModal: true });
     });
 
-    describe('submitModal', () => {
+    it('does not submit form', () => {
+      expect(findForm().element.submit).not.toHaveBeenCalled();
+    });
+
+    describe('when modal submitted', () => {
       beforeEach(() => {
-        wrapper.vm.$refs.form.requestSubmit = jest.fn();
+        findModal().vm.$emit('primary');
       });
 
-      it('calls requestSubmit', () => {
-        wrapper.vm.submitModal();
-        expect(wrapper.vm.$refs.form.requestSubmit).toHaveBeenCalled();
-      });
-    });
-
-    describe('dismiss', () => {
-      it('removes gl-modal', () => {
-        expect(findModal().exists()).toBeTruthy();
-        wrapper.vm.dismiss();
-
-        return wrapper.vm.$nextTick(() => {
-          expect(findModal().exists()).toBeFalsy();
-        });
+      it('submits form', () => {
+        expect(findFormData()).toEqual([
+          { name: '_method', value: testModalProps.method },
+          { name: 'authenticity_token', value: 'test-csrf-token' },
+        ]);
+        expect(findForm().element.submit).toHaveBeenCalled();
       });
     });
   });

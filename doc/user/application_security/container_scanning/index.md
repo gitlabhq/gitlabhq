@@ -107,23 +107,19 @@ artifact available. Behind the scenes, the
 [GitLab Klar analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar/)
 is used and runs the scans.
 
-### Example
-
-The following is a sample `.gitlab-ci.yml` that will build your Docker Image, push it to the container registry and run Container Scanning.
+The following is a sample `.gitlab-ci.yml` that will build your Docker image,
+push it to the Container Registry, and run Container Scanning:
 
 ```yaml
 variables:
   DOCKER_DRIVER: overlay2
 
 services:
-  - docker:stable-dind
+  - docker:19.03.5-dind
 
 stages:
   - build
   - test
-
-include:
-  - template: Container-Scanning.gitlab-ci.yml
 
 build:
   image: docker:stable
@@ -135,40 +131,37 @@ build:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker build -t $IMAGE .
     - docker push $IMAGE
+
+include:
+  - template: Container-Scanning.gitlab-ci.yml
 ```
 
-### Vulnerability Whitelisting
+### Customizing the Container Scanning settings
 
-If you want to whitelist specific vulnerabilities, you'll need to:
+You can change container scanning settings by using the [`variables`](../../../ci/yaml/README.md#variables)
+parameter in your `.gitlab-ci.yml` to change [environment variables](#available-variables).
 
-   1. Set [`GIT_STRATEGY: fetch`](../../../ci/yaml/README.md#git-strategy) in your `.gitlab-ci.yml` file by following the instructions described in the
-   [overriding the Container Scanning template](#overriding-the-container-scanning-template) section of this document.
-   1. Define the whitelisted vulnerabilities in a YAML file named `clair-whitelist.yml` which must use the format described
-   in the [following whitelist example file](https://github.com/arminc/clair-scanner/blob/v12/example-whitelist.yaml).
-   1. Add the `clair-whitelist.yml` file to the Git repository of your project
-
-### Overriding the Container Scanning template
-
-If you want to override the job definition (for example, change properties like
-`variables`), you need to declare a `container_scanning` job after the
-template inclusion and specify any additional keys under it. For example:
+In the following example, we [include](../../../ci/yaml/README.md#include) the template and also
+set the `CLAIR_OUTPUT` variable to `High`:
 
 ```yaml
 include:
-  - template: Container-Scanning.gitlab-ci.yml
+  template: Container-Scanning.gitlab-ci.yml
 
-container_scanning:
-  variables:
-    GIT_STRATEGY: fetch
+variables:
+  CLAIR_OUTPUT: High
 ```
+
+The `CLAIR_OUTPUT` variable defined in the main `gitlab-ci.yml` will overwrite what's
+defined in `Container-Scanning.gitlab-ci.yml`, changing the Container Scanning behavior.
 
 [//]: # "NOTE: The container scanning tool references the following heading in the code, so if you"
 [//]: # "      make a change to this heading, make sure to update the documentation URLs used in the"
 [//]: # "      container scanning tool (https://gitlab.com/gitlab-org/security-products/analyzers/klar)"
 
-### Available variables
+#### Available variables
 
-Container Scanning can be [configured](#overriding-the-container-scanning-template)
+Container Scanning can be [configured](#customizing-the-container-scanning-settings)
 using environment variables.
 
 | Environment Variable           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Default                                                                                                         |
@@ -187,36 +180,32 @@ using environment variables.
 | `CLAIR_DB_IMAGE_TAG`           | (**DEPRECATED - use `CLAIR_DB_IMAGE` instead**) The Docker image tag for the [Postgres server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db). It can be useful to override this value with a specific version, for example, to provide a consistent set of vulnerabilities for integration testing purposes.                                                                                                                                                                                                                                                                                                                                                                                                                                   | `latest`                                                                                                        |
 | `DOCKERFILE_PATH`              | The path to the `Dockerfile` to be used for generating remediations. By default, the scanner will look for a file named `Dockerfile` in the root directory of the project, so this variable should only be configured if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details.                                                                                                                                                                                                                                                                                                                                                                          | `Dockerfile`                                                                                                    |
 
-## Security Dashboard
+### Overriding the Container Scanning template
 
-The Security Dashboard is a good place to get an overview of all the security
-vulnerabilities in your groups, projects and pipelines. Read more about the
-[Security Dashboard](../security_dashboard/index.md).
+If you want to override the job definition (for example, change properties like
+`variables`), you need to declare a `container_scanning` job after the
+template inclusion and specify any additional keys under it. For example:
 
-## Interacting with the vulnerabilities
+```yaml
+include:
+  template: Container-Scanning.gitlab-ci.yml
 
-Once a vulnerability is found, you can interact with it. Read more on how to
-[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+container_scanning:
+  variables:
+    GIT_STRATEGY: fetch
+```
 
-## Solutions for vulnerabilities (auto-remediation)
+### Vulnerability whitelisting
 
-Some vulnerabilities can be fixed by applying the solution that GitLab
-automatically generates.
+If you want to whitelist specific vulnerabilities, you'll need to:
 
-To enable remediation support, the scanning tool _must_ have access to the `Dockerfile` specified by
-the `DOCKERFILE_PATH` environment variable. To ensure that the scanning tool has access to this
-file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/yaml/README.md#git-strategy) in
-your `.gitlab-ci.yml` file by following the instructions described in this document's
-[overriding the Container Scanning template](#overriding-the-container-scanning-template) section.
+1. Set `GIT_STRATEGY: fetch` in your `.gitlab-ci.yml` file by following the instructions described in the
+   [overriding the Container Scanning template](#overriding-the-container-scanning-template) section of this document.
+1. Define the whitelisted vulnerabilities in a YAML file named `clair-whitelist.yml` which must use the format described
+   in the [whitelist example file](https://github.com/arminc/clair-scanner/blob/v12/example-whitelist.yaml).
+1. Add the `clair-whitelist.yml` file to the Git repository of your project.
 
-Read more about the [solutions for vulnerabilities](../index.md#solutions-for-vulnerabilities-auto-remediation).
-
-## Vulnerabilities database update
-
-For more information about the vulnerabilities database update, check the
-[maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
-
-## Running Container Scanning in an offline air-gapped installation
+### Running Container Scanning in an offline, air-gapped installation
 
 Container Scanning can be executed on an offline air-gapped GitLab Ultimate installation using the following process:
 
@@ -245,7 +234,7 @@ It may be worthwhile to set up a [scheduled pipeline](../../../ci/pipelines/sche
 image: docker:stable
 
 services:
-  - docker:stable-dind
+  - docker:19.03.5-dind
 
 stages:
   - build
@@ -395,6 +384,33 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `remediations[].fixes[].cve`                         | A string value that describes a fixed vulnerability occurrence in the same format as `vulnerabilities[].cve`.                                                                                                                                                                                                                                                                              |
 | `remediations[].summary`                             | Overview of how the vulnerabilities have been fixed.                                                                                                                                                                                                                                                                                                                                       |
 | `remediations[].diff`                                | base64-encoded remediation code diff, compatible with [`git apply`](https://git-scm.com/docs/git-format-patch#_discussion).                                                                                                                                                                                                                                                                |
+
+## Security Dashboard
+
+The [Security Dashboard](../security_dashboard/index.md) shows you an overview of all
+the security vulnerabilities in your groups, projects and pipelines.
+
+## Vulnerabilities database update
+
+For more information about the vulnerabilities database update, check the
+[maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
+
+## Interacting with the vulnerabilities
+
+Once a vulnerability is found, you can [interact with it](../index.md#interacting-with-the-vulnerabilities).
+
+## Solutions for vulnerabilities (auto-remediation)
+
+Some vulnerabilities can be fixed by applying the solution that GitLab
+automatically generates.
+
+To enable remediation support, the scanning tool _must_ have access to the `Dockerfile` specified by
+the `DOCKERFILE_PATH` environment variable. To ensure that the scanning tool has access to this
+file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/yaml/README.md#git-strategy) in
+your `.gitlab-ci.yml` file by following the instructions described in this document's
+[overriding the Container Scanning template](#overriding-the-container-scanning-template) section.
+
+Read more about the [solutions for vulnerabilities](../index.md#solutions-for-vulnerabilities-auto-remediation).
 
 ## Troubleshooting
 

@@ -9250,6 +9250,12 @@ msgstr ""
 msgid "Geo|Remove"
 msgstr ""
 
+msgid "Geo|Remove entry"
+msgstr ""
+
+msgid "Geo|Remove tracking database entry"
+msgstr ""
+
 msgid "Geo|Repository sync capacity"
 msgstr ""
 
@@ -9301,13 +9307,13 @@ msgstr ""
 msgid "Geo|This is a primary node"
 msgstr ""
 
+msgid "Geo|Tracking database entry will be removed. Are you sure?"
+msgstr ""
+
 msgid "Geo|Tracking entry for project (%{project_id}) was successfully removed."
 msgstr ""
 
 msgid "Geo|Tracking entry for upload (%{type}/%{id}) was successfully removed."
-msgstr ""
-
-msgid "Geo|Tracking entry will be removed. Are you sure?"
 msgstr ""
 
 msgid "Geo|URL"

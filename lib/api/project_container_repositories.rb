@@ -70,14 +70,9 @@ module API
       params do
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
         optional :name_regex_delete, type: String, desc: 'The tag name regexp to delete, specify .* to delete all'
-        # require either name_regex (deprecated) or name_regex_delete, it is ok to have both
-        given name_regex_delete: ->(val) { val.nil? } do
-          requires :name_regex, type: String, desc: 'The tag name regexp to delete, specify .* to delete all'
-        end
         optional :name_regex, type: String, desc: 'The tag name regexp to delete, specify .* to delete all'
-        given name_regex: ->(val) { val.nil? } do
-          requires :name_regex_delete, type: String, desc: 'The tag name regexp to delete, specify .* to delete all'
-        end
+        # require either name_regex (deprecated) or name_regex_delete, it is ok to have both
+        at_least_one_of :name_regex, :name_regex_delete
         optional :name_regex_keep, type: String, desc: 'The tag name regexp to retain'
         optional :keep_n, type: Integer, desc: 'Keep n of latest tags with matching name'
         optional :older_than, type: String, desc: 'Delete older than: 1h, 1d, 1month'

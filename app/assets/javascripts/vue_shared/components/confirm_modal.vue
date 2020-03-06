@@ -9,34 +9,43 @@ export default {
   props: {
     modalAttributes: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => {
+        return {};
+      },
     },
     path: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     method: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
+    },
+    showModal: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
-  data() {
-    return {
-      isDismissed: false,
-    };
-  },
-  mounted() {
-    this.openModal();
+  watch: {
+    showModal(val) {
+      if (val) {
+        // Wait for v-if to render
+        this.$nextTick(() => {
+          this.openModal();
+        });
+      }
+    },
   },
   methods: {
     openModal() {
       this.$refs.modal.show();
     },
     submitModal() {
-      this.$refs.form.requestSubmit();
-    },
-    dismiss() {
-      this.isDismissed = true;
+      this.$refs.form.submit();
     },
   },
   csrf,
@@ -45,11 +54,11 @@ export default {
 
 <template>
   <gl-modal
-    v-if="!isDismissed"
+    v-if="showModal"
     ref="modal"
     v-bind="modalAttributes"
     @primary="submitModal"
-    @canceled="dismiss"
+    @canceled="$emit('dismiss')"
   >
     <form ref="form" :action="path" method="post">
       <!-- Rails workaround for <form method="delete" />
