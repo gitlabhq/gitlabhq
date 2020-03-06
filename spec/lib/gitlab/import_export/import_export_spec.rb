@@ -21,4 +21,12 @@ describe Gitlab::ImportExport do
       expect(described_class.export_filename(exportable: project).length).to be < 70
     end
   end
+
+  describe '#snippet_repo_bundle_filename_for' do
+    let(:snippet) { build(:snippet, id: 1) }
+
+    it 'generates the snippet bundle name' do
+      expect(described_class.snippet_repo_bundle_filename_for(snippet)).to eq "#{snippet.hexdigest}.bundle"
+    end
+  end
 end

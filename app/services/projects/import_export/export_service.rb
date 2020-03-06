@@ -42,7 +42,7 @@ module Projects
       end
 
       def exporters
-        [version_saver, avatar_saver, project_tree_saver, uploads_saver, repo_saver, wiki_repo_saver, lfs_saver]
+        [version_saver, avatar_saver, project_tree_saver, uploads_saver, repo_saver, wiki_repo_saver, lfs_saver, snippets_repo_saver]
       end
 
       def version_saver
@@ -71,6 +71,10 @@ module Projects
 
       def lfs_saver
         Gitlab::ImportExport::LfsSaver.new(project: project, shared: shared)
+      end
+
+      def snippets_repo_saver
+        Gitlab::ImportExport::SnippetsRepoSaver.new(current_user: current_user, project: project, shared: shared)
       end
 
       def cleanup

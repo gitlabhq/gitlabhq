@@ -110,6 +110,7 @@ the **Download codes** button for storage in a safe place. If you choose to
 download them, the file will be called `gitlab-recovery-codes.txt`.
 
 If you lose the recovery codes or just want to generate new ones, you can do so
+from the [two-factor authentication account settings page](#regenerate-2fa-recovery-codes) or
 [using SSH](#generate-new-recovery-codes-using-ssh).
 
 ## Logging in with 2FA Enabled

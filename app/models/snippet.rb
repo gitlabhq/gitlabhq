@@ -302,6 +302,10 @@ class Snippet < ApplicationRecord
     field != :content || MarkupHelper.gitlab_markdown?(file_name)
   end
 
+  def hexdigest
+    Digest::SHA256.hexdigest("#{title}#{description}#{created_at}#{updated_at}")
+  end
+
   class << self
     # Searches for snippets with a matching title or file name.
     #

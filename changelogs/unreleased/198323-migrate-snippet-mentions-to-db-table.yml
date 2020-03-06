@@ -1,6 +1,0 @@
----
-title: Migrate mentions for snippet and snippet notes to snippet_user_mentions DB
-  table
-merge_request: 23783
-author:
-type: changed

@@ -72,7 +72,7 @@ shared_examples 'schedules resource mentions migration' do |resource_class, is_f
   it 'schedules background migrations' do
     Sidekiq::Testing.fake! do
       Timecop.freeze do
-        resource_count = is_for_notes ? Note.where(noteable_type: resource_class.to_s).count : resource_class.count
+        resource_count = is_for_notes ? Note.count : resource_class.count
         expect(resource_count).to eq 5
 
         migrate!

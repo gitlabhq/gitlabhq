@@ -234,6 +234,29 @@ Recommended `NameID` value: `OneLogin ID`.
 
 Set parameters according to the [assertions table](#assertions).
 
+### Additional setup options
+
+GitLab [isn't limited to the SAML providers listed above](#my-identity-provider-isnt-listed) but your Identity Provider may require additional configuration, such as the following:
+
+| Field | Value | Notes |
+|-------|-------|-------|
+| SAML Profile | Web browser SSO profile | GitLab uses SAML to sign users in via their browser. We don't make requests direct to the Identity Provider. |
+| SAML Request Binding | HTTP Redirect | GitLab (the service provider) redirects users to your Identity Provider with a base64 encoded `SAMLRequest` HTTP parameter. |
+| SAML Response Binding | HTTP POST | Your Identity Provider responds to users with an HTTP form including the `SAMLResponse`, which a user's browser submits back to GitLab. |
+| Sign SAML Response | Yes | We require this to prevent tampering. |
+| X509 Certificate in response | Yes | This is used to sign the response and checked against the provided fingerprint. |
+| Fingerprint Algorithm | SHA-1  | We need a SHA-1 hash of the certificate used to sign the SAML Response. |
+| Signature Algorithm | SHA-1/SHA-256/SHA-384/SHA-512 | Also known as the Digest Method, this can be specified in the SAML response. It determines how a response is signed. |
+| Encrypt SAML Assertion | No | TLS is used between your Identity Provider, the user's browser, and GitLab. |
+| Sign SAML Assertion | Optional | We don't require Assertions to be signed. We validate their integrity by requiring the whole response to be signed. |
+| Check SAML Request Signature | No | GitLab does not sign SAML requests, but does check the signature on the SAML response. |
+| Default RelayState | Optional | The URL users should end up on after signing in via a button on your Identity Provider. |
+| NameID Format | `Persistent` | See [details above](#nameid-format). |
+| Additional URLs | | You may need to use the `Identifier` or `Assertion consumer service URL` in other fields on some providers. |
+| Single Sign Out URL | | Not supported |
+
+If the information information you need isn't listed above you may wish to check our [troubleshooting docs below](#i-need-additional-information-to-configure-my-identity-provider).
+
 ## Linking SAML to your existing GitLab.com account
 
 To link SAML to your existing GitLab.com account:
@@ -320,3 +343,20 @@ To change which identity you sign in with, you can [unlink the previous SAML ide
 Getting both of these errors at the same time suggests the NameID capitalization provided by the Identity Provider didn't exactly match the previous value for that user.
 
 This can be prevented by configuring the [NameID](#nameid) to return a consistent value. Fixing this for an individual user involves [unlinking SAML in the GitLab account](#unlinking-accounts), although this will cause group membership and Todos to be lost.
+
+### My identity provider isn't listed
+
+Not a problem, the SAML standard means that a wide range of identity providers will work with GitLab. Unfortunately we aren't familiar with all of them so can only offer support configuring the [listed providers](#providers).
+
+### I need additional information to configure my identity provider
+
+Many SAML terms can vary between providers. It is possible that the information you are looking for is listed under another name.
+
+For more information, start with your Identity Provider's documentation. Look for their options and examples to see how they configure SAML. This can provide hints on what you'll need to configure GitLab to work with these providers.
+
+It can also help to look at our [more detailed docs for self-managed GitLab](../../../integration/saml.md).
+SAML configuration for GitLab.com is mostly the same as for self-managed instances.
+However, self-managed GitLab instances use a configuration file that supports more options as described in the external [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml/).
+Internally that uses the [`ruby-saml` library](https://github.com/onelogin/ruby-saml), so we sometimes check there to verify low level details of less commonly used options.
+
+It can also help to compare the XML response from your provider with our [example XML used for internal testing](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/spec/fixtures/saml/response.xml).

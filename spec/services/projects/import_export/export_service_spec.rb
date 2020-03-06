@@ -64,6 +64,14 @@ describe Projects::ImportExport::ExportService do
       service.execute
     end
 
+    it 'saves the snippets' do
+      expect_next_instance_of(Gitlab::ImportExport::SnippetsRepoSaver) do |instance|
+        expect(instance).to receive(:save).and_call_original
+      end
+
+      service.execute
+    end
+
     context 'when all saver services succeed' do
       before do
         allow(service).to receive(:save_services).and_return(true)

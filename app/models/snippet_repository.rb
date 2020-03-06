@@ -18,6 +18,12 @@ class SnippetRepository < ApplicationRecord
     end
   end
 
+  def create_file(user, path, content, **options)
+    options[:actions] = transform_file_entries([{ file_path: path, content: content }])
+
+    capture_git_error { repository.multi_action(user, **options) }
+  end
+
   def multi_files_action(user, files = [], **options)
     return if files.nil? || files.empty?
 

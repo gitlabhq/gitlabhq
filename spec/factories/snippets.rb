@@ -34,7 +34,7 @@ FactoryBot.define do
 
     trait :empty_repo do
       after(:create) do |snippet|
-        raise "Failed to create repository!" unless snippet.repository.create_if_not_exists
+        raise "Failed to create repository!" unless snippet.create_repository
       end
     end
   end
