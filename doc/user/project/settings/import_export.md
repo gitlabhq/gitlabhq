@@ -77,6 +77,7 @@ The following items will be exported:
 - Design Management files and data **(PREMIUM)**
 - LFS objects
 - Issue boards
+- Pipelines history
 
 The following items will NOT be exported:
 

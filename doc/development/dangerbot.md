@@ -15,22 +15,19 @@ to the existing rules, then this is the document for you.
 
 ## Danger comments in merge requests
 
-As of [2020-03-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26275),
-Danger is posting a new comment each time it runs in a pipeline and removes the
-previous comments it posted. Before that, Danger would only post one comment and
-update its content on subsequent `danger-review` runs.
+Danger only posts one comment and updates its content on subsequent
+`danger-review` runs. Given this, it's usually one of the first few comments
+in a merge request if not the first. If you didn't see it, try to look
+from the start of the merge request.
 
 ### Advantages
 
-- You get email notifications of Danger failures before the pipeline fails.
-- If someone introduces a change that creates a new Danger warning, it's very obvious now, both in email and in the UI.
-- If there are no new Danger warnings - just the roulette message - then the email acts as confirmation of that.
-- It's easier to see if a roulette recommendation changed, which is useful for people that think about roulette logic/behavior quite often.
-- You don't have to scroll up to get to the first Danger comment (sometimes MR can have more than discussions).
+- You don't get email notifications each time `danger-review` runs.
 
 ### Disadvantages
 
-- You get new email notifications for each `danger-review` run, which can clutter threaded discussions in email clients.
+- It's not obvious Danger will update the old comment, thus you need to
+  pay attention to it if it is updated or not.
 
 ## Run Danger locally
 

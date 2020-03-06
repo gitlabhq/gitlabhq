@@ -966,6 +966,13 @@ ActiveRecord::Schema.define(version: 2020_03_04_160823) do
     t.index ["source_project_id"], name: "index_ci_sources_pipelines_on_source_project_id"
   end
 
+  create_table "ci_sources_projects", force: :cascade do |t|
+    t.bigint "pipeline_id", null: false
+    t.bigint "source_project_id", null: false
+    t.index ["pipeline_id"], name: "index_ci_sources_projects_on_pipeline_id"
+    t.index ["source_project_id", "pipeline_id"], name: "index_ci_sources_projects_on_source_project_id_and_pipeline_id", unique: true
+  end
+
   create_table "ci_stages", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.integer "pipeline_id"
@@ -3131,6 +3138,7 @@ ActiveRecord::Schema.define(version: 2020_03_04_160823) do
     t.integer "ci_active_jobs", default: 0, null: false
     t.integer "project_hooks", default: 0, null: false
     t.integer "group_hooks", default: 0, null: false
+    t.integer "ci_project_subscriptions", default: 0, null: false
     t.index ["plan_id"], name: "index_plan_limits_on_plan_id", unique: true
   end
 
@@ -4735,6 +4743,8 @@ ActiveRecord::Schema.define(version: 2020_03_04_160823) do
   add_foreign_key "ci_sources_pipelines", "ci_pipelines", column: "source_pipeline_id", name: "fk_d4e29af7d7", on_delete: :cascade
   add_foreign_key "ci_sources_pipelines", "projects", column: "source_project_id", name: "fk_acd9737679", on_delete: :cascade
   add_foreign_key "ci_sources_pipelines", "projects", name: "fk_1e53c97c0a", on_delete: :cascade
+  add_foreign_key "ci_sources_projects", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
+  add_foreign_key "ci_sources_projects", "projects", column: "source_project_id", on_delete: :cascade
   add_foreign_key "ci_stages", "ci_pipelines", column: "pipeline_id", name: "fk_fb57e6cc56", on_delete: :cascade
   add_foreign_key "ci_stages", "projects", name: "fk_2360681d1d", on_delete: :cascade
   add_foreign_key "ci_subscriptions_projects", "projects", column: "downstream_project_id", on_delete: :cascade

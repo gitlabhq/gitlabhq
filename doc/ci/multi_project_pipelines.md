@@ -227,3 +227,19 @@ Some features are not implemented yet. For example, support for environments.
 - `only` and `except`
 - `when` (only with `on_success`, `on_failure`, and `always` values)
 - `extends`
+
+## Trigger a pipeline when an upstream project is rebuilt
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9045) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
+
+You can trigger a pipeline in your project whenever a pipeline finishes for a new
+tag in a different project:
+
+1. Go to the project's **Settings > CI / CD** page, and expand the **Pipeline subscriptions** section.
+1. Enter the path to the project you want to subscribe to.
+1. Click subscribe.
+
+Any pipelines that complete successfully for new tags in the subscribed project
+will now trigger a pipeline on the current project's default branch. The maximum
+number of upstream pipeline subscriptions is 2, for both the upstream and
+downstream projects.

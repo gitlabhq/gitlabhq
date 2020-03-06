@@ -1,5 +1,0 @@
----
-title: Fixed regression when URL was encoded in a loop
-merge_request: 25849
-author:
-type: fixed

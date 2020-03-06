@@ -87,6 +87,28 @@ Plan.default.limits.update!(ci_active_jobs: 500)
 
 NOTE: **Note:** Set the limit to `0` to disable it.
 
+### Number of CI/CD subscriptions to a project
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9045) in GitLab 12.9.
+
+The total number of subscriptions can be limited per project. This limit is
+checked each time a new subscription is created.
+
+If a new subscription would cause the total number of subscription to exceed the
+limit, the subscription will be considered invalid.
+
+- On GitLab.com different [limits are defined per plan](../user/gitlab_com/index.md#gitlab-cicd) and they affect all projects under that plan.
+- On [GitLab Starter](https://about.gitlab.com/pricing/#self-managed) tier or higher self-hosted installations, this limit is defined for the `default` plan that affects all projects.
+
+To set this limit on a self-hosted installation, run the following in the
+[GitLab Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session):
+
+```ruby
+Plan.default.limits.update!(ci_project_subscriptions: 500)
+```
+
+NOTE: **Note:** Set the limit to `0` to disable it.
+
 ## Environment data on Deploy Boards
 
 [Deploy Boards](../user/project/deploy_boards.md) load information from Kubernetes about
