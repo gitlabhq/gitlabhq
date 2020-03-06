@@ -319,18 +319,21 @@ describe Backup::Manager do
 
     context 'when there is a non-tarred backup in the directory' do
       before do
-        allow(Dir).to receieve(:glob).and_return(
+        allow(Dir).to receive(:glob).and_return(
           [
             'backup_information.yml'
           ]
         )
+        allow(File).to receive(:exist?).and_return(true)
+      end
 
-        it 'selects the non-tarred backup to restore from' do
-          expect { subject.unpack }.to output.to_stdout
-          expect(progress).to have_received(:puts)
-            .with(a_string_matching('Non tarred backup found '))
-          expect(Kernel).not_to receive(:system)
-        end
+      it 'selects the non-tarred backup to restore from' do
+        expect(Kernel).not_to receive(:system)
+
+        subject.unpack
+
+        expect(progress).to have_received(:puts)
+          .with(a_string_matching('Non tarred backup found '))
       end
     end
   end

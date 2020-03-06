@@ -59,6 +59,8 @@ dependency_scanning:
           BUNDLER_AUDIT_UPDATE_DISABLED \
           BUNDLER_AUDIT_ADVISORY_DB_URL \
           BUNDLER_AUDIT_ADVISORY_DB_REF_NAME \
+          RETIREJS_JS_ADVISORY_DB \
+          RETIREJS_NODE_ADVISORY_DB \
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \

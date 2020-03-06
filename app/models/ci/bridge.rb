@@ -89,6 +89,10 @@ module Ci
       end
     end
 
+    def parent_pipeline
+      pipeline if triggers_child_pipeline?
+    end
+
     def triggers_child_pipeline?
       yaml_for_downstream.present?
     end

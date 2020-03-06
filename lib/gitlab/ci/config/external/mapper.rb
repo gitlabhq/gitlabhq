@@ -13,7 +13,8 @@ module Gitlab
             External::File::Remote,
             External::File::Template,
             External::File::Local,
-            External::File::Project
+            External::File::Project,
+            External::File::Artifact
           ].freeze
 
           Error = Class.new(StandardError)

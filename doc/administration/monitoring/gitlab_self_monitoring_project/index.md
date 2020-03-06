@@ -17,7 +17,7 @@ members to the group in order to give them maintainer access to the project.
 
 This project will be used for self monitoring your GitLab instance.
 
-## Activating the self monitoring project
+## Creating the self monitoring project
 
 1. Navigate to **Admin Area > Settings > Metrics and profiling**, and expand the **Self monitoring** section.
 1. Toggle the **Create Project** button on.
@@ -26,10 +26,11 @@ created, GitLab displays a message with a link to the project. The project
 will also be linked in the help text above the **Create Project** button. You can also
 find the project under **Projects > Your projects**.
 
-## Deactivating the self monitoring project
+## Deleting the self monitoring project
 
 CAUTION: **Warning:**
-If you deactivate the self monitoring project, it will be permanently deleted.
+If you delete the self monitoring project, you will lose any changes made to the
+project. If you create the project again, it will be created in its default state.
 
 1. Navigate to **Admin Area > Settings > Metrics and profiling**, and expand the **Self monitoring** section.
 1. Toggle the **Create Project** button off.

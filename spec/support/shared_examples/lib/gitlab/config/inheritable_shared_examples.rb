@@ -53,7 +53,7 @@ RSpec.shared_examples 'with inheritable CI config' do
 
       let(:deps) do
         if inheritable_key
-          double('deps', inheritable_key => inheritable, '[]' => unspecified)
+          double('deps', "#{inheritable_key}_entry" => inheritable, '[]' => unspecified)
         else
           inheritable
         end
@@ -68,7 +68,7 @@ RSpec.shared_examples 'with inheritable CI config' do
         it 'does inherit value' do
           expect(inheritable).to receive('[]').with(entry_key).and_return(specified)
 
-          entry.compose!(deps)
+          entry.send(:inherit!, deps)
 
           expect(entry[entry_key]).to eq(specified)
         end
@@ -86,7 +86,7 @@ RSpec.shared_examples 'with inheritable CI config' do
             expect do
               # we ignore exceptions as `#overwrite_entry`
               # can raise exception on duplicates
-              entry.compose!(deps) rescue described_class::InheritError
+              entry.send(:inherit!, deps) rescue described_class::InheritError
             end.not_to change { entry[entry_key] }
           end
         end
@@ -94,7 +94,7 @@ RSpec.shared_examples 'with inheritable CI config' do
 
       context 'when inheritable does not specify' do
         it 'does not inherit value' do
-          entry.compose!(deps)
+          entry.send(:inherit!, deps)
 
           expect(entry[entry_key]).to be_a(
             Gitlab::Config::Entry::Undefined)

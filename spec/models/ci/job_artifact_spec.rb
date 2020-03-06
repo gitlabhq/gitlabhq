@@ -25,7 +25,7 @@ describe Ci::JobArtifact do
     end
 
     it_behaves_like 'UpdateProjectStatistics' do
-      subject { build(:ci_job_artifact, :archive, size: 106365) }
+      subject { build(:ci_job_artifact, :archive, size: 107464) }
     end
   end
 
@@ -35,7 +35,7 @@ describe Ci::JobArtifact do
     end
 
     it_behaves_like 'UpdateProjectStatistics' do
-      subject { build(:ci_job_artifact, :archive, size: 106365) }
+      subject { build(:ci_job_artifact, :archive, size: 107464) }
     end
   end
 
@@ -173,7 +173,7 @@ describe Ci::JobArtifact do
     let(:artifact) { create(:ci_job_artifact, :archive, project: project) }
 
     it 'sets the size from the file size' do
-      expect(artifact.size).to eq(106365)
+      expect(artifact.size).to eq(107464)
     end
   end
 

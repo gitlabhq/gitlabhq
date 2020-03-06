@@ -50,4 +50,14 @@ Rails.application.configure do
 
   # BetterErrors live shell (REPL) on every stack frame
   BetterErrors::Middleware.allow_ip!("127.0.0.1/0")
+
+  # Reassign some performance related settings when we profile the app
+  if Gitlab::Utils.to_boolean(ENV['RAILS_PROFILE'].to_s)
+    warn "Hot-reloading is disabled as you are running with RAILS_PROFILE enabled"
+    config.cache_classes = true
+    config.eager_load = true
+    config.active_record.migration_error = false
+    config.active_record.verbose_query_logs = false
+    config.action_view.cache_template_loading = true
+  end
 end

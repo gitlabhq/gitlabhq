@@ -511,6 +511,32 @@ describe Snippet do
     end
   end
 
+  describe '#blobs' do
+    let(:snippet) { create(:snippet) }
+
+    context 'when repository does not exist' do
+      it 'returns empty array' do
+        expect(snippet.blobs).to be_empty
+      end
+    end
+
+    context 'when repository exists' do
+      let(:snippet) { create(:snippet, :repository) }
+
+      it 'returns array of blobs' do
+        expect(snippet.blobs).to all(be_a(Blob))
+      end
+    end
+
+    it 'returns a blob representing the snippet data' do
+      blob = snippet.blob
+
+      expect(blob).to be_a(Blob)
+      expect(blob.path).to eq(snippet.file_name)
+      expect(blob.data).to eq(snippet.content)
+    end
+  end
+
   describe '#to_json' do
     let(:snippet) { build(:snippet) }
 

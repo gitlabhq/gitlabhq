@@ -2553,6 +2553,19 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#find_job_with_archive_artifacts' do
+    let!(:old_job) { create(:ci_build, name: 'rspec', retried: true, pipeline: pipeline) }
+    let!(:job_without_artifacts) { create(:ci_build, name: 'rspec', pipeline: pipeline) }
+    let!(:expected_job) { create(:ci_build, :artifacts, name: 'rspec', pipeline: pipeline ) }
+    let!(:different_job) { create(:ci_build, name: 'deploy', pipeline: pipeline) }
+
+    subject { pipeline.find_job_with_archive_artifacts('rspec') }
+
+    it 'finds the expected job' do
+      expect(subject).to eq(expected_job)
+    end
+  end
+
   describe '#latest_builds_with_artifacts' do
     let!(:fresh_build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
     let!(:stale_build) { create(:ci_build, :success, :expired, :artifacts, pipeline: pipeline) }

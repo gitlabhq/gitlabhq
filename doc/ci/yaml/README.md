@@ -158,6 +158,42 @@ rspec 2.6:
   script: bundle exec rspec
 ```
 
+### `inherit`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/207484) in GitLab 12.9.
+
+You can disable inheritance of globally defined defaults
+and variables with the `inherit:` parameter.
+
+In the example below:
+
+- `rubocop` **will** inherit both the `before_script` and the variable `DOMAIN`.
+- `rspec` **will not** inherit the `before_script` or the variable `DOMAIN`.
+- `capybara` **will** inherit the `before_script`, but **will not** inherit the variable `DOMAIN`.
+
+```yaml
+default:
+  before_script:
+    - echo Hello World
+
+variables:
+  DOMAIN: example.com
+
+rubocop:
+  script: bundle exec rubocop
+
+rspec:
+  inherit:
+    default: false
+    variables: false
+  script: bundle exec rspec
+
+capybara:
+  inherit:
+    variables: false
+  script: bundle exec capybara
+```
+
 ## Parameter details
 
 The following are detailed explanations for parameters used to configure CI/CD pipelines.

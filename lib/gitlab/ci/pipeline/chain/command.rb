@@ -72,6 +72,10 @@ module Gitlab
               project.repository.ambiguous_ref?(origin_ref)
             end
           end
+
+          def parent_pipeline
+            bridge&.parent_pipeline
+          end
         end
       end
     end

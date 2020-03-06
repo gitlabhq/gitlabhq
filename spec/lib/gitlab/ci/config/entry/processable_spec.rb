@@ -7,6 +7,10 @@ describe Gitlab::Ci::Config::Entry::Processable do
     Class.new(::Gitlab::Config::Entry::Node) do
       include Gitlab::Ci::Config::Entry::Processable
 
+      entry :tags, ::Gitlab::Config::Entry::ArrayOfStrings,
+        description: 'Set the default tags.',
+        inherit: true
+
       def self.name
         'job'
       end
@@ -189,14 +193,17 @@ describe Gitlab::Ci::Config::Entry::Processable do
   end
 
   describe '#compose!' do
-    let(:specified) do
-      double('specified', 'specified?' => true, value: 'specified')
-    end
-
     let(:unspecified) { double('unspecified', 'specified?' => false) }
     let(:default) { double('default', '[]' => unspecified) }
     let(:workflow) { double('workflow', 'has_rules?' => false) }
-    let(:deps) { double('deps', 'default' => default, '[]' => unspecified, 'workflow' => workflow) }
+    let(:variables) { }
+
+    let(:deps) do
+      double('deps',
+        default_entry: default,
+        workflow_entry: workflow,
+        variables_value: variables)
+    end
 
     context 'with workflow rules' do
       using RSpec::Parameterized::TableSyntax
@@ -240,6 +247,84 @@ describe Gitlab::Ci::Config::Entry::Processable do
         end
       end
     end
+
+    context 'with inheritance' do
+      context 'of variables' do
+        let(:config) do
+          { variables: { A: 'job', B: 'job' } }
+        end
+
+        before do
+          entry.compose!(deps)
+        end
+
+        context 'with only job variables' do
+          it 'does return defined variables' do
+            expect(entry.value).to include(
+              variables: { 'A' => 'job', 'B' => 'job' }
+            )
+          end
+        end
+
+        context 'when root yaml variables are used' do
+          let(:variables) do
+            Gitlab::Ci::Config::Entry::Variables.new(
+              A: 'root', C: 'root'
+            ).value
+          end
+
+          it 'does return all variables and overwrite them' do
+            expect(entry.value).to include(
+              variables: { 'A' => 'job', 'B' => 'job', 'C' => 'root' }
+            )
+          end
+
+          context 'when inherit of defaults is disabled' do
+            let(:config) do
+              {
+                variables: { A: 'job', B: 'job' },
+                inherit: { variables: false }
+              }
+            end
+
+            it 'does return only job variables' do
+              expect(entry.value).to include(
+                variables: { 'A' => 'job', 'B' => 'job' }
+              )
+            end
+          end
+        end
+      end
+
+      context 'of default:tags' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:default_tags, :tags, :inherit_default, :result) do
+          nil | %w[a b] | nil | %w[a b]
+          nil | %w[a b] | true | %w[a b]
+          nil | %w[a b] | false | %w[a b]
+          %w[b c] | %w[a b] | nil | %w[a b]
+          %w[b c] | %w[a b] | true | %w[a b]
+          %w[b c] | %w[a b] | false | %w[a b]
+          %w[b c] | nil | nil | %w[b c]
+          %w[b c] | nil | true | %w[b c]
+          %w[b c] | nil | false | nil
+        end
+
+        with_them do
+          let(:config) { { tags: tags, inherit: { default: inherit_default } } }
+          let(:default_specified_tags) { double('tags', 'specified?' => true, 'valid?' => true, 'value' => default_tags) }
+
+          before do
+            allow(default).to receive('[]').with(:tags).and_return(default_specified_tags)
+
+            entry.compose!(deps)
+          end
+
+          it { expect(entry.tags_value).to eq(result) }
+        end
+      end
+    end
   end
 
   context 'when composed' do
@@ -254,10 +339,12 @@ describe Gitlab::Ci::Config::Entry::Processable do
         end
 
         it 'returns correct value' do
-          expect(entry.value)
-            .to eq(name: :rspec,
-                   stage: 'test',
-                   only: { refs: %w[branches tags] })
+          expect(entry.value).to eq(
+            name: :rspec,
+            stage: 'test',
+            only: { refs: %w[branches tags] },
+            variables: {}
+          )
         end
       end
     end

@@ -4,7 +4,6 @@ entry.
 
 ## 12.8.4
 
-- No changes.
 ### Fixed (8 changes)
 
 - Fix Group Import API file upload when object storage is disabled. !25715

@@ -1,0 +1,5 @@
+---
+title: Allow selecting all queues with sidekiq-cluster
+merge_request: 26594
+author:
+type: added

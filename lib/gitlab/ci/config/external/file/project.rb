@@ -71,7 +71,8 @@ module Gitlab
               {
                 project: project,
                 sha: sha,
-                user: context.user
+                user: context.user,
+                parent_pipeline: context.parent_pipeline
               }
             end
           end

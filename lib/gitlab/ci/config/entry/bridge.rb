@@ -11,7 +11,7 @@ module Gitlab
         class Bridge < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Ci::Config::Entry::Processable
 
-          ALLOWED_KEYS = %i[trigger allow_failure when variables needs].freeze
+          ALLOWED_KEYS = %i[trigger allow_failure when needs].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS + PROCESSABLE_ALLOWED_KEYS
@@ -45,10 +45,6 @@ module Gitlab
             inherit: false,
             metadata: { allowed_needs: %i[job bridge] }
 
-          entry :variables, ::Gitlab::Ci::Config::Entry::Variables,
-            description: 'Environment variables available for this job.',
-            inherit: false
-
           attributes :when, :allow_failure
 
           def self.matching?(name, config)
@@ -67,7 +63,6 @@ module Gitlab
               needs: (needs_value if needs_defined?),
               ignore: !!allow_failure,
               when: self.when,
-              variables: (variables_value if variables_defined?),
               scheduling_type: needs_defined? && !bridge_needs ? :dag : :stage
             ).compact
           end

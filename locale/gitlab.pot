@@ -21221,6 +21221,18 @@ msgstr ""
 msgid "UpdateProject|Project could not be updated!"
 msgstr ""
 
+msgid "UpdateRepositoryStorage|Error moving repository storage for %{project_full_path} - %{message}"
+msgstr ""
+
+msgid "UpdateRepositoryStorage|Failed to fetch %{type} repository as mirror"
+msgstr ""
+
+msgid "UpdateRepositoryStorage|Failed to verify %{type} repository checksum from %{old} to %{new}"
+msgstr ""
+
+msgid "UpdateRepositoryStorage|Timeout waiting for %{type} repository pushes"
+msgstr ""
+
 msgid "Updated"
 msgstr ""
 

@@ -315,6 +315,7 @@ describe Projects::ForkService do
       # Stub everything required to move a project to a Gitaly shard that does not exist
       stub_storage_settings('test_second_storage' => { 'path' => 'tmp/tests/second_storage' })
       allow_any_instance_of(Gitlab::Git::Repository).to receive(:fetch_repository_as_mirror).and_return(true)
+      allow_any_instance_of(Gitlab::Git::Repository).to receive(:checksum).and_return(::Gitlab::Git::BLANK_SHA)
 
       Projects::UpdateRepositoryStorageService.new(project).execute('test_second_storage')
       fork_after_move = fork_project(project)

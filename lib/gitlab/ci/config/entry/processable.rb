@@ -14,7 +14,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Attributable
           include ::Gitlab::Config::Entry::Inheritable
 
-          PROCESSABLE_ALLOWED_KEYS = %i[extends stage only except rules].freeze
+          PROCESSABLE_ALLOWED_KEYS = %i[extends stage only except rules variables inherit].freeze
 
           included do
             validations do
@@ -54,12 +54,21 @@ module Gitlab
                 allowed_when: %w[on_success on_failure always never manual delayed].freeze
               }
 
+            entry :variables, ::Gitlab::Ci::Config::Entry::Variables,
+              description: 'Environment variables available for this job.',
+              inherit: false
+
+            entry :inherit, ::Gitlab::Ci::Config::Entry::Inherit,
+              description: 'Indicates whether to inherit defaults or not.',
+              inherit: false,
+              default: {}
+
             attributes :extends, :rules
           end
 
           def compose!(deps = nil)
             super do
-              has_workflow_rules = deps&.workflow&.has_rules?
+              has_workflow_rules = deps&.workflow_entry&.has_rules?
 
               # If workflow:rules: or rules: are used
               # they are considered not compatible
@@ -73,6 +82,9 @@ module Gitlab
                 @entries.delete(:except) unless except_defined? # rubocop:disable Gitlab/ModuleWithInstanceVariables
               end
 
+              # inherit root variables
+              @root_variables_value = deps&.variables_value # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
               yield if block_given?
             end
           end
@@ -82,7 +94,10 @@ module Gitlab
           end
 
           def overwrite_entry(deps, key, current_entry)
-            deps.default[key] unless current_entry.specified?
+            return unless inherit_entry&.default_value
+            return unless deps.default_entry
+
+            deps.default_entry[key] unless current_entry.specified?
           end
 
           def value
@@ -90,8 +105,17 @@ module Gitlab
               stage: stage_value,
               extends: extends,
               rules: rules_value,
+              variables: root_and_job_variables_value,
               only: only_value,
               except: except_value }.compact
+          end
+
+          def root_and_job_variables_value
+            if inherit_entry&.variables_value
+              @root_variables_value.to_h.merge(variables_value.to_h) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+            else
+              variables_value.to_h
+            end
           end
         end
       end

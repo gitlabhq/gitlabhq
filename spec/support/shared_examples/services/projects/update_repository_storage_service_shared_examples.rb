@@ -2,7 +2,10 @@
 
 RSpec.shared_examples 'moves repository to another storage' do |repository_type|
   let(:project_repository_double) { double(:repository) }
+  let!(:project_repository_checksum) { project.repository.checksum }
+
   let(:repository_double) { double(:repository) }
+  let(:repository_checksum) { repository.checksum }
 
   before do
     # Default stub for non-specified params
@@ -19,15 +22,16 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
   context 'when the move succeeds', :clean_gitlab_redis_shared_state do
     before do
-      allow(project_repository_double)
-        .to receive(:fetch_repository_as_mirror)
+      allow(project_repository_double).to receive(:fetch_repository_as_mirror)
         .with(project.repository.raw)
         .and_return(true)
+      allow(project_repository_double).to receive(:checksum)
+        .and_return(project_repository_checksum)
 
-      allow(repository_double)
-        .to receive(:fetch_repository_as_mirror)
-        .with(repository.raw)
-        .and_return(true)
+      allow(repository_double).to receive(:fetch_repository_as_mirror)
+        .with(repository.raw).and_return(true)
+      allow(repository_double).to receive(:checksum)
+        .and_return(repository_checksum)
     end
 
     it "moves the project and its #{repository_type} repository to the new storage and unmarks the repository as read only" do
@@ -37,8 +41,9 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
       old_repository_path = repository.full_path
 
-      subject.execute('test_second_storage')
+      result = subject.execute('test_second_storage')
 
+      expect(result[:status]).to eq(:success)
       expect(project).not_to be_repository_read_only
       expect(project.repository_storage).to eq('test_second_storage')
       expect(gitlab_shell.repository_exists?('default', old_project_repository_path)).to be(false)
@@ -87,13 +92,38 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
     it 'unmarks the repository as read-only without updating the repository storage' do
       allow(project_repository_double).to receive(:fetch_repository_as_mirror)
         .with(project.repository.raw).and_return(true)
+      allow(project_repository_double).to receive(:checksum)
+        .and_return(project_repository_checksum)
       allow(repository_double).to receive(:fetch_repository_as_mirror)
         .with(repository.raw).and_return(false)
 
       expect(GitlabShellWorker).not_to receive(:perform_async)
 
-      subject.execute('test_second_storage')
+      result = subject.execute('test_second_storage')
 
+      expect(result[:status]).to eq(:error)
+      expect(project).not_to be_repository_read_only
+      expect(project.repository_storage).to eq('default')
+    end
+  end
+
+  context "when the checksum of the #{repository_type} repository does not match" do
+    it 'unmarks the repository as read-only without updating the repository storage' do
+      allow(project_repository_double).to receive(:fetch_repository_as_mirror)
+        .with(project.repository.raw).and_return(true)
+      allow(project_repository_double).to receive(:checksum)
+        .and_return(project_repository_checksum)
+
+      allow(repository_double).to receive(:fetch_repository_as_mirror)
+        .with(repository.raw).and_return(true)
+      allow(repository_double).to receive(:checksum)
+        .and_return('not matching checksum')
+
+      expect(GitlabShellWorker).not_to receive(:perform_async)
+
+      result = subject.execute('test_second_storage')
+
+      expect(result[:status]).to eq(:error)
       expect(project).not_to be_repository_read_only
       expect(project.repository_storage).to eq('default')
     end

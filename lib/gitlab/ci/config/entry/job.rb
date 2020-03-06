@@ -13,7 +13,7 @@ module Gitlab
           ALLOWED_WHEN = %w[on_success on_failure always manual delayed].freeze
           ALLOWED_KEYS = %i[tags script type image services
                             allow_failure type when start_in artifacts cache
-                            dependencies before_script needs after_script variables
+                            dependencies before_script needs after_script
                             environment coverage retry parallel interruptible timeout
                             resource_group release].freeze
 
@@ -112,10 +112,6 @@ module Gitlab
             metadata: { allowed_needs: %i[job cross_dependency] },
             inherit: false
 
-          entry :variables, Entry::Variables,
-            description: 'Environment variables available for this job.',
-            inherit: false
-
           entry :environment, Entry::Environment,
             description: 'Environment configuration for this job.',
             inherit: false
@@ -174,7 +170,6 @@ module Gitlab
               when: self.when,
               start_in: self.start_in,
               dependencies: dependencies,
-              variables: variables_defined? ? variables_value : {},
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,
               coverage: coverage_defined? ? coverage_value : nil,

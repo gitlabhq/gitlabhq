@@ -57,7 +57,7 @@ module Gitlab
           when: job[:when] || 'on_success',
           environment: job[:environment_name],
           coverage_regex: job[:coverage],
-          yaml_variables: transform_to_yaml_variables(job_variables(name)),
+          yaml_variables: transform_to_yaml_variables(job[:variables]),
           needs_attributes: job.dig(:needs, :job),
           interruptible: job[:interruptible],
           only: job[:only],
@@ -144,13 +144,6 @@ module Gitlab
           validate_job_needs!(name, job)
           validate_job_environment!(name, job)
         end
-      end
-
-      def job_variables(name)
-        job_variables = @jobs.dig(name.to_sym, :variables)
-
-        @variables.to_h
-          .merge(job_variables.to_h)
       end
 
       def transform_to_yaml_variables(variables)

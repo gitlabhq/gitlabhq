@@ -53,6 +53,20 @@ To start extra Sidekiq processes, you must enable `sidekiq-cluster`:
    ]
    ```
 
+   [In GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26594) and
+   later, the special queue name `*` means all queues. This starts two
+   processes, each handling all queues:
+
+   ```ruby
+   sidekiq_cluster['queue_groups'] = [
+     "*",
+     "*"
+   ]
+   ```
+
+   `*` cannot be combined with concrete queue names - `*, mailers` will
+   just handle the `mailers` queue.
+
 1. Save the file and reconfigure GitLab for the changes to take effect:
 
    ```shell
@@ -154,6 +168,10 @@ from highest to lowest precedence:
 The operator precedence for this syntax is fixed: it's not possible to make AND
 have higher precedence than OR.
 
+[In GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26594) and
+later, as with the standard queue group syntax above, a single `*` as the
+entire queue group selects all queues.
+
 ### Example queries
 
 In `/etc/gitlab/gitlab.rb`:
@@ -163,9 +181,11 @@ sidekiq_cluster['enable'] = true
 sidekiq_cluster['experimental_queue_selector'] = true
 sidekiq_cluster['queue_groups'] = [
   # Run all non-CPU-bound queues that are high urgency
-  'resource_boundary!=cpu&urgency=high,
+  'resource_boundary!=cpu&urgency=high',
   # Run all continuous integration and pages queues that are not high urgency
-  'feature_category=continuous_integration,pages&urgency!=high
+  'feature_category=continuous_integration,pages&urgency!=high',
+  # Run all queues
+  '*'
 ]
 ```
 

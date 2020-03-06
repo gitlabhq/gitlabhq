@@ -15,7 +15,8 @@ module Gitlab
                 @command.config_content, {
                   project: project,
                   sha: @pipeline.sha,
-                  user: current_user
+                  user: current_user,
+                  parent_pipeline: parent_pipeline
                 }
               )
             rescue Gitlab::Ci::YamlProcessor::ValidationError => ex

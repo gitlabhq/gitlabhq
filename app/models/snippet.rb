@@ -197,6 +197,8 @@ class Snippet < ApplicationRecord
   end
 
   def blobs
+    return [] unless repository_exists?
+
     repository.ls_files(repository.root_ref).map { |file| Blob.lazy(self, repository.root_ref, file) }
   end
 

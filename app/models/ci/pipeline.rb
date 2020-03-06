@@ -787,6 +787,10 @@ module Ci
         .fabricate!
     end
 
+    def find_job_with_archive_artifacts(name)
+      builds.latest.with_artifacts_archive.find_by_name(name)
+    end
+
     def latest_builds_with_artifacts
       # We purposely cast the builds to an Array here. Because we always use the
       # rows if there are more than 0 this prevents us from having to run two
