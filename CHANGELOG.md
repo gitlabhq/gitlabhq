@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.8.5
+
+### Fixed (8 changes)
+
+- Fix Group Import API file upload when object storage is disabled. !25715
+- Fix Web IDE fork modal showing no text. !25842
+- Fixed regression when URL was encoded in a loop. !25849
+- Fixed repository browsing for folders with non-ascii characters. !25877
+- Fix search for Sentry error list. !26129
+- Send credentials with GraphQL fetch requests. !26386
+- Show CI status in project dashboards. !26403
+- Rescue invalid URLs during badge retrieval in asset proxy. !26524
+
+### Performance (2 changes)
+
+- Disable Marginalia line backtrace in production. !26199
+- Remove unnecessary Redis deletes for broadcast messages. !26541
+
+### Other (1 change, 1 of them is from the community)
+
+- Fix fixtures for Error Tracking Web UI. !26233 (Takuya Noguchi)
+
+
 ## 12.8.4
 
 ### Fixed (8 changes)
