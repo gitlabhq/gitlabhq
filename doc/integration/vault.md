@@ -87,11 +87,11 @@ The following assumes you already have Vault installed and running.
    1. If the `OIDC` method is not currently selected, open the dropdown and select it.
    1. Click the **Sign in With GitLab** button, which will open a modal window:
 
-   ![Sign into Vault with GitLab](img/sign_into_vault_with_gitlab_v12_6.png)
+      ![Sign into Vault with GitLab](img/sign_into_vault_with_gitlab_v12_6.png)
 
    1. Click **Authorize** on the modal to allow Vault to sign in through GitLab. This will redirect you back to your Vault UI as a signed-in user.
 
-   ![Authorize Vault to connect with GitLab](img/authorize_vault_with_gitlab_v12_6.png)
+      ![Authorize Vault to connect with GitLab](img/authorize_vault_with_gitlab_v12_6.png)
 
 1. **Sign in using the Vault CLI** (optional):
 

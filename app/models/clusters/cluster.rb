@@ -249,9 +249,13 @@ module Clusters
       platform_kubernetes.kubeclient if kubernetes?
     end
 
-    def kubernetes_namespace_for(environment)
+    def kubernetes_namespace_for(environment, deployable: environment.last_deployable)
+      if deployable && environment.project_id != deployable.project_id
+        raise ArgumentError, 'environment.project_id must match deployable.project_id'
+      end
+
       managed_namespace(environment) ||
-        ci_configured_namespace(environment) ||
+        ci_configured_namespace(deployable) ||
         default_namespace(environment)
     end
 
@@ -318,8 +322,11 @@ module Clusters
       ).execute&.namespace
     end
 
-    def ci_configured_namespace(environment)
-      environment.last_deployable&.expanded_kubernetes_namespace
+    def ci_configured_namespace(deployable)
+      # YAML configuration of namespaces not supported for managed clusters
+      return if managed?
+
+      deployable&.expanded_kubernetes_namespace
     end
 
     def default_namespace(environment)

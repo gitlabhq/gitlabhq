@@ -530,6 +530,14 @@ On GitLab.com, projects, groups, and snippets created
 As of GitLab 12.2 (July 2019), projects, groups, and snippets have the
 [**Internal** visibility](../../public_access/public_access.md#internal-projects) setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/issues/12388).
 
+### SSH maximum number of connections
+
+GitLab.com defines the maximum number of concurrent, unauthenticated SSH connections by
+using the [MaxStartups setting](http://man.openbsd.org/sshd_config.5#MaxStartups).
+If more than the maximum number of allowed connections occur concurrently, they are
+dropped and users get
+[an `ssh_exchange_identification` error](../../topics/git/troubleshooting_git.md#ssh_exchange_identification-error).
+
 ## GitLab.com Logging
 
 We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd) to parse our logs. Fluentd sends our logs to

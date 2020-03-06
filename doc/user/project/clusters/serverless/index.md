@@ -384,7 +384,8 @@ The sample function can now be triggered from any HTTP client using a simple `PO
 
 ### Secrets
 
-To access your Kubernetes secrets from within your function, the secrets should be created under the namespace of your serverless deployment.
+To access your Kubernetes secrets from within your function, the secrets should be created under the namespace of your serverless deployment and specified in your `serverless.yml` file as above.
+You can create secrets in several ways. The following sections show some examples.
 
 #### CLI example
 

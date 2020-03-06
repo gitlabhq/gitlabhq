@@ -3819,6 +3819,18 @@ ActiveRecord::Schema.define(version: 2020_03_04_160823) do
     t.index ["group_id"], name: "index_saml_providers_on_group_id"
   end
 
+  create_table "scim_identities", force: :cascade do |t|
+    t.bigint "group_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.boolean "active", default: false
+    t.string "extern_uid", limit: 255, null: false
+    t.index "lower((extern_uid)::text), group_id", name: "index_scim_identities_on_lower_extern_uid_and_group_id", unique: true
+    t.index ["group_id"], name: "index_scim_identities_on_group_id"
+    t.index ["user_id", "group_id"], name: "index_scim_identities_on_user_id_and_group_id", unique: true
+  end
+
   create_table "scim_oauth_access_tokens", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -5037,6 +5049,8 @@ ActiveRecord::Schema.define(version: 2020_03_04_160823) do
   add_foreign_key "reviews", "projects", on_delete: :cascade
   add_foreign_key "reviews", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "saml_providers", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "scim_identities", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "scim_identities", "users", on_delete: :cascade
   add_foreign_key "scim_oauth_access_tokens", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "security_scans", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "self_managed_prometheus_alert_events", "environments", on_delete: :cascade

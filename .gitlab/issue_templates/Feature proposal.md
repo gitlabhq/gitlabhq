@@ -15,6 +15,8 @@
 * [Sidney (Systems Administrator)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sidney-systems-administrator)
 * [Sam (Security Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sam-security-analyst)
 * [Dana (Data Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#dana-data-analyst)
+* [Simone (Software Engineer in Test)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#simone-software-engineer-in-test)
+* [Allison (Application Ops)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#allison-application-ops)
 
 Personas are described at https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/ -->
 
