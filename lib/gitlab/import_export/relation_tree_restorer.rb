@@ -26,8 +26,13 @@ module Gitlab
         ActiveRecord::Base.uncached do
           ActiveRecord::Base.no_touching do
             update_params!
-            update_relation_hashes!
-            create_relations!
+
+            bulk_inserts_enabled = @importable.class == ::Project &&
+              Feature.enabled?(:import_bulk_inserts, @importable.group)
+            BulkInsertableAssociations.with_bulk_insert(enabled: bulk_inserts_enabled) do
+              update_relation_hashes!
+              create_relations!
+            end
           end
         end
 
@@ -170,7 +175,7 @@ module Gitlab
 
         # if object is a hash we can create simple object
         # as it means that this is 1-to-1 vs 1-to-many
-        sub_data_hash =
+        current_item =
           if sub_data_hash.is_a?(Array)
             build_relations(
               sub_relation_key,
@@ -183,9 +188,8 @@ module Gitlab
               sub_data_hash)
           end
 
-        # persist object(s) or delete from relation
-        if sub_data_hash
-          data_hash[sub_relation_key] = sub_data_hash
+        if current_item
+          data_hash[sub_relation_key] = current_item
         else
           data_hash.delete(sub_relation_key)
         end
