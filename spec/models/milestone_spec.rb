@@ -231,17 +231,17 @@ describe Milestone do
   describe "#percent_complete" do
     it "does not count open issues" do
       milestone.issues << issue
-      expect(milestone.percent_complete(user)).to eq(0)
+      expect(milestone.percent_complete).to eq(0)
     end
 
     it "counts closed issues" do
       issue.close
       milestone.issues << issue
-      expect(milestone.percent_complete(user)).to eq(100)
+      expect(milestone.percent_complete).to eq(100)
     end
 
     it "recovers from dividing by zero" do
-      expect(milestone.percent_complete(user)).to eq(0)
+      expect(milestone.percent_complete).to eq(0)
     end
   end
 

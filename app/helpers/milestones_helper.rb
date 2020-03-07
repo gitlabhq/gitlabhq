@@ -92,12 +92,12 @@ module MilestonesHelper
   end
 
   def milestone_progress_tooltip_text(milestone)
-    has_issues = milestone.total_issues_count(current_user) > 0
+    has_issues = milestone.total_issues_count > 0
 
     if has_issues
       [
         _('Progress'),
-        _("%{percent}%% complete") % { percent: milestone.percent_complete(current_user) }
+        _("%{percent}%% complete") % { percent: milestone.percent_complete }
       ].join('<br />')
     else
       _('Progress')
@@ -107,7 +107,7 @@ module MilestonesHelper
   def milestone_progress_bar(milestone)
     options = {
       class: 'progress-bar bg-success',
-      style: "width: #{milestone.percent_complete(current_user)}%;"
+      style: "width: #{milestone.percent_complete}%;"
     }
 
     content_tag :div, class: 'progress' do
@@ -151,9 +151,9 @@ module MilestonesHelper
   end
 
   def milestone_issues_tooltip_text(milestone)
-    total = milestone.total_issues_count(current_user)
-    opened = milestone.opened_issues_count(current_user)
-    closed = milestone.closed_issues_count(current_user)
+    total = milestone.total_issues_count
+    opened = milestone.opened_issues_count
+    closed = milestone.closed_issues_count
 
     return _("Issues") if total.zero?
 

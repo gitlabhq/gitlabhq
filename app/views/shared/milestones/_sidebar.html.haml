@@ -7,7 +7,7 @@
       %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => "Toggle sidebar", title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
         = sidebar_gutter_toggle_icon
       .title.hide-collapsed
-        %strong.bold== #{milestone.percent_complete(current_user)}%
+        %strong.bold== #{milestone.percent_complete}%
         %span.hide-collapsed
           complete
       .value.hide-collapsed
@@ -15,7 +15,7 @@
 
     .block.milestone-progress.hide-expanded
       .sidebar-collapsed-icon.has-tooltip{ title: milestone_progress_tooltip_text(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
-        %span== #{milestone.percent_complete(current_user)}%
+        %span== #{milestone.percent_complete}%
         = milestone_progress_bar(milestone)
 
     .block.start_date.hide-collapsed

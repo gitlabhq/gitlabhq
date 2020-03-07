@@ -434,7 +434,7 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (~> 0.7)
-    gpgme (2.0.19)
+    gpgme (2.0.20)
       mini_portile2 (~> 2.3)
     grape (1.1.0)
       activesupport

@@ -33,17 +33,27 @@ limit values. It's recommended to create separate migration script files.
    `create_or_update_plan_limit` migration helper, eg:
 
    ```ruby
-   create_or_update_plan_limit('project_hooks', 'free', 10)
-   create_or_update_plan_limit('project_hooks', 'bronze', 20)
-   create_or_update_plan_limit('project_hooks', 'silver', 30)
-   create_or_update_plan_limit('project_hooks', 'gold', 100)
+   def up
+     return unless Gitlab.com?
+
+     create_or_update_plan_limit('project_hooks', 'free', 100)
+     create_or_update_plan_limit('project_hooks', 'bronze', 100)
+     create_or_update_plan_limit('project_hooks', 'silver', 100)
+     create_or_update_plan_limit('project_hooks', 'gold', 100)
+   end
+
+   def down
+     return unless Gitlab.com?
+
+     create_or_update_plan_limit('project_hooks', 'free', 0)
+     create_or_update_plan_limit('project_hooks', 'bronze', 0)
+     create_or_update_plan_limit('project_hooks', 'silver', 0)
+     create_or_update_plan_limit('project_hooks', 'gold', 0)
+   end
    ```
 
 NOTE: **Note:** Some plans exist only on GitLab.com. You can check if the
 migration is running on GitLab.com with `Gitlab.com?`.
-
-NOTE: **Note:** The test environment doesn't have any plans. You can check if a
-migration is running in a test environment with `Rails.env.test?`
 
 ### Plan limits validation
 

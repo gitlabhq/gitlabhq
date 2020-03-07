@@ -1,36 +1,24 @@
 # frozen_string_literal: true
 
 module Milestoneish
-  def total_issues_count(user)
-    @total_issues_count ||=
-      if Feature.enabled?(:cached_milestone_issue_counters)
-        Milestones::IssuesCountService.new(self).count
-      else
-        count_issues_by_state(user).values.sum
-      end
+  def total_issues_count
+    @total_issues_count ||= Milestones::IssuesCountService.new(self).count
   end
 
-  def closed_issues_count(user)
-    @close_issues_count ||=
-      if Feature.enabled?(:cached_milestone_issue_counters)
-        Milestones::ClosedIssuesCountService.new(self).count
-      else
-        closed_state_id = Issue.available_states[:closed]
-
-        count_issues_by_state(user)[closed_state_id].to_i
-      end
+  def closed_issues_count
+    @close_issues_count ||= Milestones::ClosedIssuesCountService.new(self).count
   end
 
-  def opened_issues_count(user)
-    total_issues_count(user) - closed_issues_count(user)
+  def opened_issues_count
+    total_issues_count - closed_issues_count
   end
 
-  def complete?(user)
-    total_issues_count(user) > 0 && total_issues_count(user) == closed_issues_count(user)
+  def complete?
+    total_issues_count > 0 && total_issues_count == closed_issues_count
   end
 
-  def percent_complete(user)
-    closed_issues_count(user) * 100 / total_issues_count(user)
+  def percent_complete
+    closed_issues_count * 100 / total_issues_count
   rescue ZeroDivisionError
     0
   end
@@ -133,12 +121,6 @@ module Milestoneish
 
   def human_total_issue_time_estimate
     Gitlab::TimeTrackingFormatter.output(total_issue_time_estimate)
-  end
-
-  def count_issues_by_state(user)
-    memoize_per_user(user, :count_issues_by_state) do
-      issues_visible_to_user(user).reorder(nil).group(:state_id).count
-    end
   end
 
   private

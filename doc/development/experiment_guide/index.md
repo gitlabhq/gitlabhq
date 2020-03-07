@@ -2,7 +2,7 @@
 
 Experiments will be conducted by teams from the [Growth Section](https://about.gitlab.com/handbook/engineering/development/growth/) and are not tied to releases, because they will primarily target GitLab.com.
 
-Experiments will be run as an A/B test and will be behind a feature flag to turn the test on or off. Based on the data the experiment generates, the team decides if the experiment had a positive impact and will be the new default or rolled back.
+Experiments will be run as an A/B test and will be behind a feature flag to turn the test on or off. Based on the data the experiment generates, the team will decide if the experiment had a positive impact and will be the new default or rolled back.
 
 ## Follow-up issue
 

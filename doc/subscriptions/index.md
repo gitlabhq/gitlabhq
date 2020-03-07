@@ -334,7 +334,7 @@ Be aware that:
   we will calculate a pro-rated charge for your paid plan. That means you may
   be charged for less than one year since your subscription was previously
   created with the extra CI minutes.
-- Once the extra CI minutes has been assigned to a Group they can't be transferred
+- Once the extra CI minutes have been assigned to a Group, they can't be transferred
   to a different Group.
 - If you have used more minutes than your default quota, these minutes will
   be deducted from your Additional Minutes quota immediately after your purchase of additional
