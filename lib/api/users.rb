@@ -308,7 +308,7 @@ module API
 
       desc 'Add a GPG key to a specified user. Available only for admins.' do
         detail 'This feature was added in GitLab 10.0'
-        success Entities::GPGKey
+        success Entities::GpgKey
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -324,7 +324,7 @@ module API
         key = user.gpg_keys.new(declared_params(include_missing: false))
 
         if key.save
-          present key, with: Entities::GPGKey
+          present key, with: Entities::GpgKey
         else
           render_validation_error!(key)
         end
@@ -333,7 +333,7 @@ module API
 
       desc 'Get the GPG keys of a specified user. Available only for admins.' do
         detail 'This feature was added in GitLab 10.0'
-        success Entities::GPGKey
+        success Entities::GpgKey
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -346,7 +346,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        present paginate(user.gpg_keys), with: Entities::GPGKey
+        present paginate(user.gpg_keys), with: Entities::GpgKey
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -746,18 +746,18 @@ module API
 
       desc "Get the currently authenticated user's GPG keys" do
         detail 'This feature was added in GitLab 10.0'
-        success Entities::GPGKey
+        success Entities::GpgKey
       end
       params do
         use :pagination
       end
       get 'gpg_keys' do
-        present paginate(current_user.gpg_keys), with: Entities::GPGKey
+        present paginate(current_user.gpg_keys), with: Entities::GpgKey
       end
 
       desc 'Get a single GPG key owned by currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
-        success Entities::GPGKey
+        success Entities::GpgKey
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the GPG key'
@@ -767,13 +767,13 @@ module API
         key = current_user.gpg_keys.find_by(id: params[:key_id])
         not_found!('GPG Key') unless key
 
-        present key, with: Entities::GPGKey
+        present key, with: Entities::GpgKey
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Add a new GPG key to the currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
-        success Entities::GPGKey
+        success Entities::GpgKey
       end
       params do
         requires :key, type: String, desc: 'The new GPG key'
@@ -782,7 +782,7 @@ module API
         key = current_user.gpg_keys.new(declared_params)
 
         if key.save
-          present key, with: Entities::GPGKey
+          present key, with: Entities::GpgKey
         else
           render_validation_error!(key)
         end

@@ -180,12 +180,12 @@ The following table describes details of your subscription for groups:
 
 ## Renew your subscription
 
-To renew your subscription, [prepare for the renewal](#prepare-for-renewal), then do one of the following:
+To renew your subscription, [prepare for renewal by reviewing your account](#prepare-for-renewal-by-reviewing-your-account), then do one of the following:
 
 - [Renew a GitLab.com subscription](#renew-or-change-a-gitlabcom-subscription).
 - [Renew a self-managed subscription](#renew-a-self-managed-subscription).
 
-### Prepare for renewal
+### Prepare for renewal by reviewing your account
 
 The [Customers Portal](https://customers.gitlab.com/customers/sign_in) is your tool for renewing and modifying your subscription. Before going ahead with renewal, log in and verify or update:
 
