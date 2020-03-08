@@ -5,6 +5,7 @@ export default {
   [types.SET_INITIAL_STATE](state, config) {
     state.config = {
       ...config,
+      expirationPolicy: config.expirationPolicy ? JSON.parse(config.expirationPolicy) : undefined,
       isGroupPage: config.isGroupPage !== undefined,
     };
   },

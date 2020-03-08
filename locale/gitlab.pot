@@ -5250,6 +5250,9 @@ msgstr ""
 msgid "ContainerRegistry|Docker tags with names matching this regex pattern will expire:"
 msgstr ""
 
+msgid "ContainerRegistry|Edit Settings"
+msgstr ""
+
 msgid "ContainerRegistry|Expiration interval:"
 msgstr ""
 
@@ -5266,6 +5269,9 @@ msgid "ContainerRegistry|If you are not already logged in, you need to authentic
 msgstr ""
 
 msgid "ContainerRegistry|Image ID"
+msgstr ""
+
+msgid "ContainerRegistry|Image deleted successfully"
 msgstr ""
 
 msgid "ContainerRegistry|Keep and protect the images that matter most."
@@ -5294,10 +5300,28 @@ msgid_plural "ContainerRegistry|Remove tags"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ContainerRegistry|Retention policy has been Enabled"
+msgstr ""
+
 msgid "ContainerRegistry|Size"
 msgstr ""
 
+msgid "ContainerRegistry|Something went wrong while deleting the image."
+msgstr ""
+
+msgid "ContainerRegistry|Something went wrong while deleting the tag."
+msgstr ""
+
+msgid "ContainerRegistry|Something went wrong while deleting the tags."
+msgstr ""
+
 msgid "ContainerRegistry|Something went wrong while fetching the expiration policy."
+msgstr ""
+
+msgid "ContainerRegistry|Something went wrong while fetching the packages list."
+msgstr ""
+
+msgid "ContainerRegistry|Something went wrong while fetching the tags list."
 msgstr ""
 
 msgid "ContainerRegistry|Something went wrong while updating the expiration policy."
@@ -5306,13 +5330,25 @@ msgstr ""
 msgid "ContainerRegistry|Tag"
 msgstr ""
 
+msgid "ContainerRegistry|Tag deleted successfully"
+msgstr ""
+
 msgid "ContainerRegistry|Tag expiration policy"
 msgstr ""
 
 msgid "ContainerRegistry|Tag expiration policy is designed to:"
 msgstr ""
 
+msgid "ContainerRegistry|Tags deleted successfully"
+msgstr ""
+
 msgid "ContainerRegistry|The last tag related to this image was recently removed. This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process. If you have any questions, contact your administrator."
+msgstr ""
+
+msgid "ContainerRegistry|The retention and expiration policy for this Container Registry has been enabled and will run in %{days}. For more information visit the %{linkStart}documentation%{linkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|The retention and expiration policy for this Container Registry has been enabled. For more information visit the %{linkStart}documentation%{linkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|The value of this input should be less than 255 characters"
@@ -10500,12 +10536,6 @@ msgstr ""
 msgid "Image %{imageName} was scheduled for deletion from the registry."
 msgstr ""
 
-msgid "Image ID"
-msgstr ""
-
-msgid "Image deleted successfully"
-msgstr ""
-
 msgid "Image: %{image}"
 msgstr ""
 
@@ -11372,9 +11402,6 @@ msgid "Last Pipeline"
 msgstr ""
 
 msgid "Last Seen"
-msgstr ""
-
-msgid "Last Updated"
 msgstr ""
 
 msgid "Last accessed on"
@@ -18192,19 +18219,10 @@ msgstr ""
 msgid "Something went wrong while deleting description changes. Please try again."
 msgstr ""
 
-msgid "Something went wrong while deleting the image."
-msgstr ""
-
 msgid "Something went wrong while deleting the package."
 msgstr ""
 
 msgid "Something went wrong while deleting the source branch. Please try again."
-msgstr ""
-
-msgid "Something went wrong while deleting the tag."
-msgstr ""
-
-msgid "Something went wrong while deleting the tags."
 msgstr ""
 
 msgid "Something went wrong while deleting your note. Please try again."
@@ -18247,9 +18265,6 @@ msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching the registry list."
-msgstr ""
-
-msgid "Something went wrong while fetching the tags list."
 msgstr ""
 
 msgid "Something went wrong while initializing the OpenAPI viewer"
@@ -19074,9 +19089,6 @@ msgstr ""
 msgid "Tag"
 msgstr ""
 
-msgid "Tag deleted successfully"
-msgstr ""
-
 msgid "Tag list:"
 msgstr ""
 
@@ -19093,9 +19105,6 @@ msgid "Tagged this commit to %{tag_name}."
 msgstr ""
 
 msgid "Tags"
-msgstr ""
-
-msgid "Tags deleted successfully"
 msgstr ""
 
 msgid "Tags feed"

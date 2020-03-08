@@ -15,6 +15,7 @@ import Tracking from '~/tracking';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ProjectEmptyState from '../components/project_empty_state.vue';
 import GroupEmptyState from '../components/group_empty_state.vue';
+import ProjectPolicyAlert from '../components/project_policy_alert.vue';
 
 export default {
   name: 'RegistryListApp',
@@ -23,6 +24,7 @@ export default {
     GlPagination,
     ProjectEmptyState,
     GroupEmptyState,
+    ProjectPolicyAlert,
     ClipboardButton,
     GlButton,
     GlIcon,
@@ -84,6 +86,8 @@ export default {
 
 <template>
   <div class="w-100 slide-enter-from-element">
+    <project-policy-alert v-if="!config.isGroupPage" />
+
     <gl-empty-state
       v-if="config.characterError"
       :title="s__('ContainerRegistry|Docker connection error')"
