@@ -263,7 +263,9 @@ module API
         success Entities::Project
       end
       params do
-        optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be forked into'
+        optional :namespace, type: String, desc: '(deprecated) The ID or name of the namespace that the project will be forked into'
+        optional :namespace_id, type: Integer, desc: 'The ID of the namespace that the project will be forked into'
+        optional :namespace_path, type: String, desc: 'The path of the namespace that the project will be forked into'
         optional :path, type: String, desc: 'The path that will be assigned to the fork'
         optional :name, type: String, desc: 'The name that will be assigned to the fork'
       end
@@ -273,7 +275,15 @@ module API
         not_found! unless can?(current_user, :fork_project, user_project)
 
         fork_params = declared_params(include_missing: false)
-        fork_params[:namespace] = find_namespace!(fork_params[:namespace]) if fork_params[:namespace].present?
+
+        fork_params[:namespace] =
+          if fork_params[:namespace_id].present?
+            find_namespace!(fork_params[:namespace_id])
+          elsif fork_params[:namespace_path].present?
+            find_namespace_by_path!(fork_params[:namespace_path])
+          elsif fork_params[:namespace].present?
+            find_namespace!(fork_params[:namespace])
+          end
 
         service = ::Projects::ForkService.new(user_project, current_user, fork_params)
 
@@ -285,8 +295,8 @@ module API
           conflict!(forked_project.errors.messages)
         else
           present forked_project, with: Entities::Project,
-                                  user_can_admin_project: can?(current_user, :admin_project, forked_project),
-                                  current_user: current_user
+                  user_can_admin_project: can?(current_user, :admin_project, forked_project),
+                  current_user: current_user
         end
       end
 

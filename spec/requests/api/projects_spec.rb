@@ -2871,6 +2871,66 @@ describe API::Projects do
         expect(json_response['namespace']['name']).to eq(group2.name)
       end
 
+      context 'when namespace_id is specified' do
+        shared_examples_for 'forking to specified namespace_id' do
+          it 'forks to specified namespace_id' do
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['owner']['id']).to eq(user2.id)
+            expect(json_response['namespace']['id']).to eq(user2.namespace.id)
+          end
+        end
+
+        context 'and namespace_id is specified alone' do
+          before do
+            post api("/projects/#{project.id}/fork", user2), params: { namespace_id: user2.namespace.id }
+          end
+
+          it_behaves_like 'forking to specified namespace_id'
+        end
+
+        context 'and namespace_id and namespace are both specified' do
+          before do
+            post api("/projects/#{project.id}/fork", user2), params: { namespace_id: user2.namespace.id, namespace: admin.namespace.id }
+          end
+
+          it_behaves_like 'forking to specified namespace_id'
+        end
+
+        context 'and namespace_id and namespace_path are both specified' do
+          before do
+            post api("/projects/#{project.id}/fork", user2), params: { namespace_id: user2.namespace.id, namespace_path: admin.namespace.path }
+          end
+
+          it_behaves_like 'forking to specified namespace_id'
+        end
+      end
+
+      context 'when namespace_path is specified' do
+        shared_examples_for 'forking to specified namespace_path' do
+          it 'forks to specified namespace_path' do
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['owner']['id']).to eq(user2.id)
+            expect(json_response['namespace']['path']).to eq(user2.namespace.path)
+          end
+        end
+
+        context 'and namespace_path is specified alone' do
+          before do
+            post api("/projects/#{project.id}/fork", user2), params: { namespace_path: user2.namespace.path }
+          end
+
+          it_behaves_like 'forking to specified namespace_path'
+        end
+
+        context 'and namespace_path and namespace are both specified' do
+          before do
+            post api("/projects/#{project.id}/fork", user2), params: { namespace_path: user2.namespace.path, namespace: admin.namespace.path }
+          end
+
+          it_behaves_like 'forking to specified namespace_path'
+        end
+      end
+
       it 'forks to owned subgroup' do
         full_path = "#{group2.path}/#{group3.path}"
         post api("/projects/#{project.id}/fork", user2), params: { namespace: full_path }

@@ -1207,7 +1207,9 @@ POST /projects/:id/fork
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `namespace` | integer/string | yes | The ID or path of the namespace that the project will be forked to |
+| `namespace` | integer/string | no | (deprecated) The ID or path of the namespace that the project will be forked to |
+| `namespace_id` | integer | no | The ID of the namespace that the project will be forked to |
+| `namespace_path` | string | no | The path of the namespace that the project will be forked to |
 | `path` | string | no | The path that will be assigned to the resultant project after forking |
 | `name` | string | no | The name that will be assigned to the resultant project after forking |
 

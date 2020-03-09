@@ -56,8 +56,13 @@ class PipelineSerializer < BaseSerializer
       :manual_actions,
       :scheduled_actions,
       :artifacts,
-      :merge_request,
       :user,
+      {
+        merge_request: {
+          source_project: [:route, { namespace: :route }],
+          target_project: [:route, { namespace: :route }]
+        }
+      },
       {
         pending_builds: :project,
         project: [:route, { namespace: :route }],

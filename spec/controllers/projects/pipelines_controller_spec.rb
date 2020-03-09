@@ -38,9 +38,9 @@ describe Projects::PipelinesController do
         expect(response).to match_response_schema('pipeline')
 
         expect(json_response).to include('pipelines')
-        expect(json_response['pipelines'].count).to eq 5
-        expect(json_response['count']['all']).to eq '5'
-        expect(json_response['count']['running']).to eq '1'
+        expect(json_response['pipelines'].count).to eq 6
+        expect(json_response['count']['all']).to eq '6'
+        expect(json_response['count']['running']).to eq '2'
         expect(json_response['count']['pending']).to eq '1'
         expect(json_response['count']['finished']).to eq '3'
 
@@ -61,7 +61,7 @@ describe Projects::PipelinesController do
         # There appears to be one extra query for Pipelines#has_warnings? for some reason
         expect { get_pipelines_index_json }.not_to exceed_query_limit(control_count + 1)
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['pipelines'].count).to eq 10
+        expect(json_response['pipelines'].count).to eq 12
       end
     end
 
@@ -77,9 +77,9 @@ describe Projects::PipelinesController do
         expect(response).to match_response_schema('pipeline')
 
         expect(json_response).to include('pipelines')
-        expect(json_response['pipelines'].count).to eq 5
-        expect(json_response['count']['all']).to eq '5'
-        expect(json_response['count']['running']).to eq '1'
+        expect(json_response['pipelines'].count).to eq 6
+        expect(json_response['count']['all']).to eq '6'
+        expect(json_response['count']['running']).to eq '2'
         expect(json_response['count']['pending']).to eq '1'
         expect(json_response['count']['finished']).to eq '3'
 
@@ -99,8 +99,9 @@ describe Projects::PipelinesController do
 
         # There appears to be one extra query for Pipelines#has_warnings? for some reason
         expect { get_pipelines_index_json }.not_to exceed_query_limit(control_count + 1)
+
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['pipelines'].count).to eq 10
+        expect(json_response['pipelines'].count).to eq 12
       end
     end
 
@@ -139,7 +140,7 @@ describe Projects::PipelinesController do
       it 'returns the pipelines when the user has access' do
         get_pipelines_index_json
 
-        expect(json_response['pipelines'].size).to eq(5)
+        expect(json_response['pipelines'].size).to eq(6)
       end
     end
 
@@ -155,18 +156,32 @@ describe Projects::PipelinesController do
       %w(pending running success failed canceled).each_with_index do |status, index|
         create_pipeline(status, project.commit("HEAD~#{index}"))
       end
+
+      create_pipeline_with_merge_request
     end
 
-    def create_pipeline(status, sha)
+    def create_pipeline_with_merge_request
+      # New merge requests must be created with different branches, so
+      # let's just create new ones with random names.
+      branch_name = "test-#{SecureRandom.hex}"
+      project.repository.create_branch(branch_name, project.repository.root_ref)
+      mr = create(:merge_request, source_project: project, target_project: project, source_branch: branch_name)
+      create_pipeline(:running, project.commit('HEAD'), merge_request: mr)
+    end
+
+    def create_pipeline(status, sha, merge_request: nil)
       user = create(:user)
       pipeline = create(:ci_empty_pipeline, status: status,
                                             project: project,
                                             sha: sha,
-                                            user: user)
+                                            user: user,
+                                            merge_request: merge_request)
 
       create_build(pipeline, 'build', 1, 'build', user)
       create_build(pipeline, 'test', 2, 'test', user)
       create_build(pipeline, 'deploy', 3, 'deploy', user)
+
+      pipeline
     end
 
     def create_build(pipeline, stage, stage_idx, name, user = nil)

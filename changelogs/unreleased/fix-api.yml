@@ -1,0 +1,5 @@
+---
+title: Support finding namespace by ID or path on fork API
+merge_request: 20603
+author: leoleoasd
+type: fixed

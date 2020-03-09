@@ -8,7 +8,6 @@ module Gitlab
       authentication_mechanism: 'The authentication mechanism is not supported.',
       read_snippet: 'You are not allowed to read this snippet.',
       update_snippet: 'You are not allowed to update this snippet.',
-      project_not_found: 'The project you were looking for could not be found.',
       snippet_not_found: 'The snippet you were looking for could not be found.',
       repository_not_found: 'The snippet repository you were looking for could not be found.'
     }.freeze
@@ -29,10 +28,6 @@ module Gitlab
       # https://gitlab.com/gitlab-org/gitlab/issues/202190
       if actor && !actor.is_a?(User) && !actor.instance_of?(Key)
         raise ForbiddenError, ERROR_MESSAGES[:authentication_mechanism]
-      end
-
-      unless Feature.enabled?(:version_snippets, user)
-        raise NotFoundError, ERROR_MESSAGES[:project_not_found]
       end
 
       check_snippet_accessibility!

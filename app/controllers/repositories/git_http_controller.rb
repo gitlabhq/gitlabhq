@@ -12,6 +12,8 @@ module Repositories
     rescue_from Gitlab::GitAccess::ProjectCreationError, with: :render_422_with_exception
     rescue_from Gitlab::GitAccess::TimeoutError, with: :render_503_with_exception
 
+    before_action :snippet_request_allowed?
+
     # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
     # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
     def info_refs
@@ -115,6 +117,12 @@ module Repositories
 
     def log_user_activity
       Users::ActivityService.new(user).execute
+    end
+
+    def snippet_request_allowed?
+      if repo_type.snippet? && Feature.disabled?(:version_snippets, user)
+        render plain: 'The project you were looking for could not be found.', status: :not_found
+      end
     end
   end
 end

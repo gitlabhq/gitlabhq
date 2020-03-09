@@ -1,0 +1,5 @@
+---
+title: Fix N+1 queries for PipelinesController#index.json
+merge_request: 26643
+author:
+type: performance

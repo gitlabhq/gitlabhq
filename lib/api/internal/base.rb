@@ -108,6 +108,10 @@ module API
         #   check_ip - optional, only in EE version, may limit access to
         #     group resources based on its IP restrictions
         post "/allowed" do
+          if repo_type.snippet? && Feature.disabled?(:version_snippets, actor.user)
+            break response_with_status(code: 404, success: false, message: 'The project you were looking for could not be found.')
+          end
+
           # It was moved to a separate method so that EE can alter its behaviour more
           # easily.
           check_allowed(params)

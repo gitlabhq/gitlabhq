@@ -202,14 +202,8 @@ On different cloud vendors a best effort like for like can be used.
       and another for the Queues and Shared State classes respectively. We also recommend
       that you run the Redis Sentinel clusters separately as well for each Redis Cluster.
 
-[^4]: For data objects such as LFS, Uploads, Artifacts, etc... We recommend a Cloud Object Storage
-      where possible over NFS due to better performance and availability. Several types of objects
-      are supported for S3 storage - [Job artifacts](../job_artifacts.md#using-object-storage),
-      [LFS](../lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage),
-      [Uploads](../uploads.md#using-object-storage-core-only),
-      [Merge Request Diffs](../merge_request_diffs.md#using-object-storage),
-      [Packages](../packages/index.md#using-object-storage) (Optional Feature),
-      [Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (Optional Feature).
+[^4]: For data objects such as LFS, Uploads, Artifacts, etc. We recommend a [Cloud Object Storage service](object_storage.md)
+      over NFS where possible, due to better performance and availability.
 
 [^5]: NFS can be used as an alternative for both repository data (replacing Gitaly) and
       object storage but this isn't typically recommended for performance reasons. Note however it is required for

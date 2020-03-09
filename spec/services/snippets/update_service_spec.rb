@@ -148,7 +148,7 @@ describe Snippets::UpdateService do
         response = subject
 
         expect(response).to be_error
-        expect(response.payload[:snippet].errors.full_messages).to eq ['Error updating the snippet']
+        expect(response.payload[:snippet].errors.full_messages).to eq ['Repository Error updating the snippet']
       end
     end
 
@@ -173,7 +173,7 @@ describe Snippets::UpdateService do
         response = subject
 
         expect(response).to be_error
-        expect(response.payload[:snippet].errors.full_messages).to eq ['Error updating the snippet']
+        expect(response.payload[:snippet].errors.full_messages).to eq ['Repository Error updating the snippet']
       end
 
       it 'returns error if snippet does not have a snippet_repository' do

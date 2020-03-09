@@ -28,4 +28,11 @@ module SnippetsActions
   def convert_line_endings(content)
     params[:line_ending] == 'raw' ? content : content.gsub(/\r\n/, "\n")
   end
+
+  def check_repository_error
+    repository_error = snippet.errors.delete(:repository)
+
+    flash.now[:alert] = repository_error if repository_error
+    recaptcha_check_with_fallback(repository_error.nil?) { render :edit }
+  end
 end

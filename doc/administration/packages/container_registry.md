@@ -736,10 +736,14 @@ To enable the read-only mode:
 
    This will set the Container Registry into the read only mode.
 
-1. Next, trigger the garbage collect command:
+1. Next, trigger one of the garbage collect commands:
 
    ```sh
+   # Recycling unused tags
    sudo /opt/gitlab/embedded/bin/registry garbage-collect /var/opt/gitlab/registry/config.yml
+   
+   # Removing unused layers not referenced by manifests
+   sudo /opt/gitlab/embedded/bin/registry garbage-collect -m /var/opt/gitlab/registry/config.yml
    ```
 
    This will start the garbage collection, which might take some time to complete.

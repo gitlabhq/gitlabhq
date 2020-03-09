@@ -52,7 +52,7 @@ module Snippets
           create_commit(snippet) if snippet.repository_exists?
         end
       rescue
-        snippet.errors.add(:base, 'Error updating the snippet')
+        snippet.errors.add(:repository, 'Error updating the snippet')
 
         false
       end

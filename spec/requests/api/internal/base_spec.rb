@@ -315,6 +315,18 @@ describe API::Internal::Base do
         end
       end
 
+      shared_examples 'snippets with disabled feature flag' do
+        context 'when feature flag :version_snippets is disabled' do
+          it 'returns 404' do
+            stub_feature_flags(version_snippets: false)
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
       context 'git push with personal snippet' do
         it 'responds with success' do
           push(key, personal_snippet)
@@ -324,6 +336,10 @@ describe API::Internal::Base do
           expect(json_response["gl_project_path"]).to eq(personal_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
           expect(user.reload.last_activity_on).to be_nil
+        end
+
+        it_behaves_like 'snippets with disabled feature flag' do
+          subject { push(key, personal_snippet) }
         end
       end
 
@@ -337,6 +353,10 @@ describe API::Internal::Base do
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
+
+        it_behaves_like 'snippets with disabled feature flag' do
+          subject { pull(key, personal_snippet) }
+        end
       end
 
       context 'git push with project snippet' do
@@ -349,6 +369,10 @@ describe API::Internal::Base do
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
           expect(user.reload.last_activity_on).to be_nil
         end
+
+        it_behaves_like 'snippets with disabled feature flag' do
+          subject { push(key, project_snippet) }
+        end
       end
 
       context 'git pull with project snippet' do
@@ -360,6 +384,10 @@ describe API::Internal::Base do
           expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
           expect(user.reload.last_activity_on).to eql(Date.today)
+        end
+
+        it_behaves_like 'snippets with disabled feature flag' do
+          subject { pull(key, project_snippet) }
         end
       end
 
