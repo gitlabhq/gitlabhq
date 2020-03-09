@@ -48,7 +48,7 @@ describe Namespaces::ScheduleAggregationWorker, '#perform', :clean_gitlab_redis_
 
   context 'when namespace does not exist' do
     it 'logs the error' do
-      expect(Gitlab::SidekiqLogger).to receive(:error).once
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).once
 
       worker.perform(12345)
     end

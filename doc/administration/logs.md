@@ -400,6 +400,21 @@ For source installations, edit the `gitlab.yml` and set the Sidekiq
     log_format: json
 ```
 
+## `sidekiq_client.log`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26586) in GitLab 12.9.
+
+This file lives in `/var/log/gitlab/gitlab-rails/sidekiq_client.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/sidekiq_client.log` for
+installations from source.
+
+This file contains logging information about jobs before they are start
+being processed by Sidekiq, for example before being enqueued.
+
+This logfile follows the same structure as
+[`sidekiq.log`](#sidekiqlog), so it will be structured as JSON if
+you've configured this for Sidekiq as mentioned above.
+
 ## `gitlab-shell.log`
 
 This file lives in `/var/log/gitlab/gitaly/gitlab-shell.log` for

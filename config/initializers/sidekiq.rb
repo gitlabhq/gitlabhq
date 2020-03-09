@@ -108,6 +108,11 @@ end
 
 Sidekiq.configure_client do |config|
   config.redis = queues_config_hash
+  # We only need to do this for other clients. If Sidekiq-server is the
+  # client scheduling jobs, we have access to the regular sidekiq logger that
+  # writes to STDOUT
+  Sidekiq.logger = Gitlab::SidekiqLogging::ClientLogger.build
+  Sidekiq.logger.formatter = Gitlab::SidekiqLogging::JSONFormatter.new if enable_json_logs
 
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 end
