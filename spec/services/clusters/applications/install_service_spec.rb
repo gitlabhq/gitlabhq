@@ -7,7 +7,7 @@ describe Clusters::Applications::InstallService do
     let(:application) { create(:clusters_applications_helm, :scheduled) }
     let!(:install_command) { application.install_command }
     let(:service) { described_class.new(application) }
-    let(:helm_client) { instance_double(Gitlab::Kubernetes::Helm::Api) }
+    let(:helm_client) { instance_double(Gitlab::Kubernetes::Helm::API) }
 
     before do
       allow(service).to receive(:install_command).and_return(install_command)

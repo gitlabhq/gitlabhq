@@ -66,6 +66,10 @@ module Gitlab
           jid != existing_jid
         end
 
+        def droppable?
+          idempotent? && duplicate? && DuplicateJobs.drop_duplicates?
+        end
+
         private
 
         attr_reader :queue_name, :strategy, :job
@@ -97,6 +101,14 @@ module Gitlab
 
         def idempotency_string
           "#{worker_class_name}:#{arguments.join('-')}"
+        end
+
+        def idempotent?
+          worker_class = worker_class_name.to_s.safe_constantize
+          return false unless worker_class
+          return false unless worker_class.respond_to?(:idempotent?)
+
+          worker_class.idempotent?
         end
       end
     end

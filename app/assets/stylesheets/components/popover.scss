@@ -144,9 +144,7 @@
 
   .popover-header {
     padding: $gl-padding;
-
-    .ic-close {
-      margin-top: -1em;
-    }
+    display: flex;
+    align-items: center;
   }
 }

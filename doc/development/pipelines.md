@@ -91,7 +91,8 @@ and are as follows:
 1. For `master` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
 1. For tags, create a pipeline.
 1. If `$GITLAB_INTERNAL` isn't set, don't create a pipeline.
-   1. For stable, auto-deploy, and security branches, create a pipeline.
+1. For stable, auto-deploy, and security branches, create a pipeline.
+1. For any other cases (e.g. when pushing a branch with no MR for it), no pipeline is created.
 
 ## `rules`, `if:` conditions and `changes:` patterns
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Kubernetes::Helm::Api do
+describe Gitlab::Kubernetes::Helm::API do
   let(:client) { double('kubernetes client') }
   let(:helm) { described_class.new(client) }
   let(:gitlab_namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }

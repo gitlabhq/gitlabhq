@@ -68,5 +68,51 @@ describe Gitlab::UrlBlockers::UrlWhitelist do
     it 'returns false when ip is blank' do
       expect(described_class).not_to be_ip_whitelisted(nil)
     end
+
+    context 'with ip ranges in whitelist' do
+      let(:ipv4_range) { '127.0.0.0/28' }
+      let(:ipv6_range) { 'fd84:6d02:f6d8:c89e::/124' }
+
+      let(:whitelist) do
+        [
+          ipv4_range,
+          ipv6_range
+        ]
+      end
+
+      it 'does not whitelist ipv4 range when not in whitelist' do
+        stub_application_setting(outbound_local_requests_whitelist: [])
+
+        IPAddr.new(ipv4_range).to_range.to_a.each do |ip|
+          expect(described_class).not_to be_ip_whitelisted(ip.to_s)
+        end
+      end
+
+      it 'whitelists all ipv4s in the range when in whitelist' do
+        IPAddr.new(ipv4_range).to_range.to_a.each do |ip|
+          expect(described_class).to be_ip_whitelisted(ip.to_s)
+        end
+      end
+
+      it 'does not whitelist ipv6 range when not in whitelist' do
+        stub_application_setting(outbound_local_requests_whitelist: [])
+
+        IPAddr.new(ipv6_range).to_range.to_a.each do |ip|
+          expect(described_class).not_to be_ip_whitelisted(ip.to_s)
+        end
+      end
+
+      it 'whitelists all ipv6s in the range when in whitelist' do
+        IPAddr.new(ipv6_range).to_range.to_a.each do |ip|
+          expect(described_class).to be_ip_whitelisted(ip.to_s)
+        end
+      end
+
+      it 'does not whitelist IPs outside the range' do
+        expect(described_class).not_to be_ip_whitelisted("fd84:6d02:f6d8:c89e:0:0:1:f")
+
+        expect(described_class).not_to be_ip_whitelisted("127.0.1.15")
+      end
+    end
   end
 end

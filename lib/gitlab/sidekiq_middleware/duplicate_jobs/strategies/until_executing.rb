@@ -17,6 +17,11 @@ module Gitlab
               job['duplicate-of'] = duplicate_job.existing_jid
             end
 
+            if duplicate_job.droppable?
+              Gitlab::SidekiqLogging::DeduplicationLogger.instance.log(job, "dropped until executing")
+              return false
+            end
+
             yield
           end
 

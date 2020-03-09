@@ -744,9 +744,9 @@ workers:
 
 By default, all Kubernetes pods are
 [non-isolated](https://kubernetes.io/docs/concepts/services-networking/network-policies/#isolated-and-non-isolated-pods),
-and accept traffic from any source. You can use
+meaning that they will accept traffic to and from any source. You can use
 [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
-to restrict connections to selected pods or namespaces.
+to restrict connections to and from selected pods, namespaces, and the Internet.
 
 NOTE: **Note:**
 You must use a Kubernetes network plugin that implements support for
@@ -767,7 +767,7 @@ networkPolicy:
 The default policy deployed by the auto deploy pipeline will allow
 traffic within a local namespace and from the `gitlab-managed-apps`
 namespace. All other inbound connection will be blocked. Outbound
-traffic is not affected by the default policy.
+traffic (for example, to the Internet) is not affected by the default policy.
 
 You can also provide a custom [policy specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.16/#networkpolicyspec-v1-networking-k8s-io)
 via the `.gitlab/auto-deploy-values.yaml` file, for example:
@@ -787,6 +787,9 @@ networkPolicy:
           matchLabels:
             app.gitlab.com/managed_by: gitlab
 ```
+
+For more information on how to install Network Policies, see
+[Install Cilium using GitLab CI](../../user/clusters/applications.md#install-cilium-using-gitlab-ci).
 
 #### Web Application Firewall (ModSecurity) customization
 

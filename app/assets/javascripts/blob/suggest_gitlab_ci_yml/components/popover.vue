@@ -1,10 +1,25 @@
 <script>
 import { GlPopover, GlSprintf, GlButton, GlIcon } from '@gitlab/ui';
 import Cookies from 'js-cookie';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { glEmojiTag } from '~/emoji';
 
+const popoverStates = {
+  suggest_gitlab_ci_yml: {
+    title: s__(`suggestPipeline|1/2: Choose a template`),
+    content: s__(
+      `suggestPipeline|We recommend the %{boldStart}Code Quality%{boldEnd} template, which will add a report widget to your Merge Requests. This way you’ll learn about code quality degradations much sooner. %{footerStart} Goodbye technical debt! %{footerEnd}`,
+    ),
+    emoji: glEmojiTag('wave'),
+  },
+  suggest_commit_first_project_gitlab_ci_yml: {
+    title: s__(`suggestPipeline|2/2: Commit your changes`),
+    content: s__(
+      `suggestPipeline|Commit the changes and your pipeline will automatically run for the first time.`,
+    ),
+  },
+};
 export default {
   components: {
     GlPopover,
@@ -17,7 +32,7 @@ export default {
       type: String,
       required: true,
     },
-    cssClass: {
+    trackLabel: {
       type: String,
       required: true,
     },
@@ -33,16 +48,18 @@ export default {
   },
   computed: {
     suggestTitle() {
-      return s__(`suggestPipeline|1/2: Choose a template`);
+      return popoverStates[this.trackLabel].title || '';
     },
     suggestContent() {
-      return s__(
-        `suggestPipeline|We recommend the %{boldStart}Code Quality%{boldEnd} template, which will add a report widget to your Merge Requests. This way you’ll learn about code quality degradations much sooner. %{footerStart} Goodbye technical debt! %{footerEnd}`,
-      );
+      return popoverStates[this.trackLabel].content || '';
     },
     emoji() {
-      return glEmojiTag('wave');
+      return popoverStates[this.trackLabel].emoji || '';
     },
+  },
+  mounted() {
+    if (this.trackLabel === 'suggest_commit_first_project_gitlab_ci_yml' && !this.popoverDismissed)
+      scrollToElement(document.querySelector(this.target));
   },
   methods: {
     onDismiss() {
@@ -61,13 +78,15 @@ export default {
     placement="rightbottom"
     trigger="manual"
     container="viewport"
-    :css-classes="[cssClass]"
+    :css-classes="['suggest-gitlab-ci-yml', 'ml-4']"
   >
     <template #title>
-      <gl-button :aria-label="__('Close')" class="btn-blank float-right" @click="onDismiss">
-        <gl-icon name="close" aria-hidden="true" />
-      </gl-button>
-      {{ suggestTitle }}
+      <span v-html="suggestTitle"></span>
+      <span class="ml-auto">
+        <gl-button :aria-label="__('Close')" class="btn-blank" @click="onDismiss">
+          <gl-icon name="close" aria-hidden="true" />
+        </gl-button>
+      </span>
     </template>
 
     <gl-sprintf :message="suggestContent">

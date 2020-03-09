@@ -183,6 +183,7 @@ Continued reading:
 - [Best Practices](best_practices.md)
 - [Testing with feature flags](feature_flags.md)
 - [Flows](flows.md)
+- [RSpec metadata/tags](rspec_metadata_tests.md)
 
 ## Where can I ask for help?
 

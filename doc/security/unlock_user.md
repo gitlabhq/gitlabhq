@@ -4,7 +4,7 @@ type: howto
 
 # How to unlock a locked user from the command line
 
-After six failed login attempts a user gets in a locked state.
+After ten failed login attempts a user gets in a locked state.
 
 To unlock a locked user:
 

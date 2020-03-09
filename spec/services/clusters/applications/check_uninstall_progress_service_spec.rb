@@ -48,7 +48,7 @@ describe Clusters::Applications::CheckUninstallProgressService do
       let(:phase) { Gitlab::Kubernetes::Pod::SUCCEEDED }
 
       before do
-        expect_next_instance_of(Gitlab::Kubernetes::Helm::Api) do |instance|
+        expect_next_instance_of(Gitlab::Kubernetes::Helm::API) do |instance|
           expect(instance).to receive(:delete_pod!).with(kind_of(String)).once
         end
         expect(service).to receive(:pod_phase).once.and_return(phase)

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gitlab_redis_queues do
+  using RSpec::Parameterized::TableSyntax
+
   subject(:duplicate_job) do
     described_class.new(job, queue)
   end
@@ -107,6 +109,36 @@ describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gitlab_r
       duplicate_job.check!
 
       expect(duplicate_job.duplicate?).to be(true)
+    end
+  end
+
+  describe 'droppable?' do
+    where(:idempotent, :duplicate, :feature_enabled) do
+      # [true, false].repeated_permutation(3)
+      [[true, true, true],
+       [true, true, false],
+       [true, false, true],
+       [true, false, false],
+       [false, true, true],
+       [false, true, false],
+       [false, false, true],
+       [false, false, false]]
+    end
+
+    with_them do
+      before do
+        allow(AuthorizedProjectsWorker).to receive(:idempotent?).and_return(idempotent)
+        allow(duplicate_job).to receive(:duplicate?).and_return(duplicate)
+        stub_feature_flags(drop_duplicate_sidekiq_jobs: feature_enabled)
+      end
+
+      it 'is droppable when all conditions are met' do
+        if idempotent && duplicate && feature_enabled
+          expect(duplicate_job).to be_droppable
+        else
+          expect(duplicate_job).not_to be_droppable
+        end
+      end
     end
   end
 
