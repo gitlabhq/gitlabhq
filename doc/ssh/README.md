@@ -343,12 +343,16 @@ This is really useful for cloning repositories to your Continuous
 Integration (CI) server. By using deploy keys, you don't have to set up a
 dummy user account.
 
-If you are a project maintainer or owner, you can add a deploy key in the
-project's **{settings}** **Settings > CI / CD** page by expanding the
-**Deploy Keys** section. Specify a title for the new
-deploy key and paste a public SSH key. After this, the machine that uses
-the corresponding private SSH key has read-only or read-write (if enabled)
-access to the project.
+Project maintainers and owners can add a deploy key. To add one:
+
+1. Go to the settings page:
+   - On GitLab 12.8 and earlier, navigate to the project's **Settings > Repository**.
+   - On GitLab 12.9 and later, navigate to the project's **Settings > CI / CD**.
+1. Expand the **Deploy Keys** section.
+1. Specify a title for the new deploy key and paste a public SSH key.
+
+After this, the machine that uses the corresponding private SSH key has read-only or
+read-write (if enabled) access to the project.
 
 You can't add the same deploy key twice using the form.
 If you want to add the same key to another project, please enable it in the
@@ -387,9 +391,14 @@ of broader usage for something like "Anywhere you need to give read access to
 your repository".
 
 Once a GitLab administrator adds the Global Deployment key, project maintainers
-and owners can add it in project's **{settings}** **Settings > CI / CD** page by expanding the
-**Deploy Keys** section and clicking **Enable** next to the appropriate key listed
-under **Public deploy keys available to any project**.
+and owners can add it by:
+
+1. Navigating the settings page:
+   - On GitLab 12.8 and earlier, the project's **Settings > Repository** page.
+   - On GitLab 12.9 and later, the project's **Settings > CI / CD** page.
+1. Expanding the **Deploy Keys** section.
+1. Clicking **Enable** next to the appropriate key listed under
+   **Public deploy keys available to any project**.
 
 NOTE: **Note:**
 The heading **Public deploy keys available to any project** only appears

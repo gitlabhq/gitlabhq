@@ -299,11 +299,12 @@ Pipeline status and test coverage report badges are available and configurable f
 
 For information on adding pipeline badges to projects, see [Pipeline badges](../user/project/pipelines/settings.md#pipeline-badges).
 
-## Multi-project pipelines **(PREMIUM)**
+## Multi-project pipelines
 
-Pipelines for different projects can be combined and visualized together.
+Pipelines for different projects can be combined together into [Multi-project pipelines](multi_project_pipelines.md).
 
-For more information, see [Multi-project pipelines](multi_project_pipelines.md).
+[Multi-project pipeline graphs](multi_project_pipelines.md#multi-project-pipeline-visualization-premium) help
+you visualize the entire pipeline, including all cross-project inter-dependencies. **(PREMIUM)**
 
 ## Parent-child pipelines
 
