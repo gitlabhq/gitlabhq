@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Blob Header Editing rendering matches the snapshot 1`] = `
+<div
+  class="file-content code"
+>
+  <pre
+    data-editor-loading=""
+    id="editor"
+  >
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  </pre>
+</div>
+`;

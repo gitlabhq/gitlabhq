@@ -84,6 +84,8 @@ with secure tokens as you complete the setup process.
    Praefect cluster directly; that could lead to data loss.
 1. `PRAEFECT_SQL_PASSWORD`: this password is used by Praefect to connect to
    PostgreSQL.
+1. `GRAFANA_PASSWORD`: this password is used to access the `admin`
+   account in the Grafana dashboards.
 
 We will note in the instructions below where these secrets are required.
 
@@ -184,6 +186,10 @@ application server, or a Gitaly node.
    # Make Praefect accept connections on all network interfaces.
    # Use firewalls to restrict access to this address/port.
    praefect['listen_addr'] = '0.0.0.0:2305'
+
+   # Enable Prometheus metrics access to Praefect. You must use firewalls
+   # to restrict access to this address/port.
+   praefect['prometheus_listen_addr'] = '0.0.0.0:9652'
    ```
 
 1. Configure a strong `auth_token` for **Praefect** by editing
@@ -354,6 +360,10 @@ documentation](index.md#3-gitaly-server-configuration).
    # Make Gitaly accept connections on all network interfaces.
    # Use firewalls to restrict access to this address/port.
    gitaly['listen_addr'] = '0.0.0.0:8075'
+
+   # Enable Prometheus metrics access to Gitaly. You must use firewalls
+   # to restrict access to this address/port.
+   gitaly['prometheus_listen_addr'] = '0.0.0.0:9236'
    ```
 
 1. Configure a strong `auth_token` for **Gitaly** by editing
@@ -453,7 +463,7 @@ Particular attention should be shown to:
 
    You will need to replace:
 
-   - `PRAEFECT_URL_OR_IP` with the IP/host address of the Praefect node
+   - `PRAEFECT_HOST` with the IP address or hostname of the Praefect node
    - `PRAEFECT_EXTERNAL_TOKEN` with the real secret
 
    ```ruby
@@ -462,7 +472,7 @@ Particular attention should be shown to:
        "path" => "/var/opt/gitlab/git-data"
      },
      "praefect" => {
-       "gitaly_address" => "tcp://PRAEFECT_URL_OR_IP:2305",
+       "gitaly_address" => "tcp://PRAEFECT_HOST:2305",
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
    })
@@ -478,6 +488,38 @@ Particular attention should be shown to:
    gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
    ```
 
+1. Add Prometheus monitoring settings by editing `/etc/gitlab/gitlab.rb`.
+
+   You will need to replace:
+
+   - `PRAEFECT_HOST` with the IP address or hostname of the Praefect node
+   - `GITALY_HOST` with the IP address or hostname of each Gitaly node
+
+   ```ruby
+   prometheus['scrape_configs'] = [
+     {
+       'job_name' => 'praefect',
+       'static_configs' => [
+         'targets' => [
+           'PRAEFECT_HOST:9652' # praefect
+         ]
+       ]
+     },
+     {
+       'job_name' => 'praefect-gitaly',
+       'static_configs' => [
+         'targets' => [
+           'GITALY_HOST:9236', # gitaly-1
+           'GITALY_HOST:9236', # gitaly-2
+           'GITALY_HOST:9236', # gitaly-3
+         ]
+       ]
+     }
+   ]
+
+   grafana['disable_login_form'] = false
+   ```
+
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
@@ -488,6 +530,12 @@ Particular attention should be shown to:
 
    ```shell
    sudo gitlab-rake gitlab:gitaly:check
+   ```
+
+1. Set the Grafana admin password. This command will prompt you to enter a new password:
+
+   ```shell
+   sudo gitlab-ctl set-grafana-password
    ```
 
 1. Update the **Repository storage** settings from **Admin Area > Settings >
@@ -502,7 +550,12 @@ Particular attention should be shown to:
    repository that viewed. If the project is created, and you can see the
    README file, it works!
 
-Congratulations! You have configured a highly available Praefect cluster, and
+1. Inspect metrics by browsing to `/-/grafana` on your GitLab server.
+   Log in with `admin` / `GRAFANA_PASSWORD`. Go to 'Explore' and query
+   `gitlab_build_info` to verify that you are getting metrics from all your
+   machines.
+
+Congratulations! You have configured a highly available Praefect cluster.
 
 ## Migrating existing repositories to Praefect
 

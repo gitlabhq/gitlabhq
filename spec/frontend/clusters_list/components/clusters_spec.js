@@ -1,7 +1,8 @@
+import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
 import { GlTable, GlLoadingIcon } from '@gitlab/ui';
 import Clusters from '~/clusters_list/components/clusters.vue';
-import Vuex from 'vuex';
+import mockData from '../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -11,9 +12,10 @@ describe('Clusters', () => {
 
   const findTable = () => wrapper.find(GlTable);
   const findLoader = () => wrapper.find(GlLoadingIcon);
+  const findStatuses = () => findTable().findAll('.js-status');
 
   const mountComponent = _state => {
-    const state = { clusters: [], endpoint: 'some/endpoint', ..._state };
+    const state = { clusters: mockData, endpoint: 'some/endpoint', ..._state };
     const store = new Vuex.Store({
       state,
     });
@@ -50,6 +52,27 @@ describe('Clusters', () => {
 
     it('should stack on smaller devices', () => {
       expect(findTable().classes()).toContain('b-table-stacked-md');
+    });
+  });
+
+  describe('cluster status', () => {
+    it.each`
+      statusName                  | className       | lineNumber
+      ${'disabled'}               | ${'disabled'}   | ${0}
+      ${'unreachable'}            | ${'bg-danger'}  | ${1}
+      ${'authentication_failure'} | ${'bg-warning'} | ${2}
+      ${'deleting'}               | ${null}         | ${3}
+      ${'connected'}              | ${'bg-success'} | ${4}
+    `('renders a status for each cluster', ({ statusName, className, lineNumber }) => {
+      const statuses = findStatuses();
+      const status = statuses.at(lineNumber);
+      if (statusName !== 'deleting') {
+        const statusIndicator = status.find('.cluster-status-indicator');
+        expect(statusIndicator.exists()).toBe(true);
+        expect(statusIndicator.classes()).toContain(className);
+      } else {
+        expect(status.find(GlLoadingIcon).exists()).toBe(true);
+      }
     });
   });
 });

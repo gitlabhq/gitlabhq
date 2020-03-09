@@ -305,7 +305,7 @@ describe 'Issue Boards', :js do
       end
 
       # 'Development' label does not show since the card is in a 'Development' list label
-      expect(card).to have_selector('.badge', count: 2)
+      expect(card).to have_selector('.gl-label', count: 2)
       expect(card).to have_content(bug.title)
     end
 
@@ -335,7 +335,7 @@ describe 'Issue Boards', :js do
       end
 
       # 'Development' label does not show since the card is in a 'Development' list label
-      expect(card).to have_selector('.badge', count: 3)
+      expect(card).to have_selector('.gl-label', count: 3)
       expect(card).to have_content(bug.title)
       expect(card).to have_content(regression.title)
     end

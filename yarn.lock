@@ -796,15 +796,15 @@
   dependencies:
     vue-eslint-parser "^7.0.0"
 
-"@gitlab/svgs@^1.105.0":
-  version "1.105.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.105.0.tgz#9686f8696594a5f22de11af2b81fdcceb715f4f2"
-  integrity sha512-2wzZXe2b7DnGyL7FTbPq0dSpk+gjkq4SBTNtMrqdwX2qaM+XJB50XaMm17kdY5V1bBkMgbc7JJ2vgbLxhS/CkQ==
+"@gitlab/svgs@^1.110.0":
+  version "1.110.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.110.0.tgz#3c4f5f0e78fcf616ec63a265754158b84ed80af8"
+  integrity sha512-bLVUW9Hj6j7zTdeoQELO3Bls5xDKr6AoSEU8gZbEZKLK9PV81hxRl/lJPJUo1qt4E7eJGapCTlH73tTIL4OZ3A==
 
-"@gitlab/ui@^9.21.1":
-  version "9.21.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-9.21.1.tgz#76da9b86de959c2757a0c0a9389970f8d5afcc47"
-  integrity sha512-nJi2lFYq3WFXDNlH5vAg1Mb3Tf/PKnaVIm5W07I+hIWj/GALnwZHO3WHJuhwWIUTZOtLz7egIr4Wyh3EqBk+cg==
+"@gitlab/ui@^9.23.0":
+  version "9.23.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-9.23.0.tgz#0ad0232c529d1f8a386c8e86159e273111a55686"
+  integrity sha512-1VOob5tNPB3zjLHeTuMbQBMG3q6LF36iCq6XqH5eeYzpAI42zj/WhY5T47RKrfvlkflWRSUPTarGo97pQqIKzg==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.3.0"
@@ -6872,10 +6872,10 @@ js-beautify@^1.6.12, js-beautify@^1.8.8:
     mkdirp "~0.5.1"
     nopt "~4.0.1"
 
-js-cookie@^2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-2.1.3.tgz#48071625217ac9ecfab8c343a13d42ec09ff0526"
-  integrity sha1-SAcWJSF6yez6uMNDoT1C7An/BSY=
+js-cookie@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-2.2.1.tgz#69e106dc5d5806894562902aa5baec3744e9b2b8"
+  integrity sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"

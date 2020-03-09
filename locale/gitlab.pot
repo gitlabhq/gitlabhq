@@ -2026,10 +2026,10 @@ msgstr ""
 msgid "Analyze a review version of your web application."
 msgstr ""
 
-msgid "Analyze your dependencies for known vulnerabilities"
+msgid "Analyze your dependencies for known vulnerabilities."
 msgstr ""
 
-msgid "Analyze your source code for known vulnerabilities"
+msgid "Analyze your source code for known vulnerabilities."
 msgstr ""
 
 msgid "Ancestors"
@@ -2507,6 +2507,9 @@ msgid "Authenticate with GitHub"
 msgstr ""
 
 msgid "Authenticating"
+msgstr ""
+
+msgid "Authentication Failure"
 msgstr ""
 
 msgid "Authentication Log"
@@ -3460,7 +3463,7 @@ msgstr ""
 msgid "Check your .gitlab-ci.yml"
 msgstr ""
 
-msgid "Check your Docker images for known vulnerabilities"
+msgid "Check your Docker images for known vulnerabilities."
 msgstr ""
 
 msgid "Checking %{text} availability…"
@@ -5169,6 +5172,9 @@ msgstr ""
 msgid "Connect your external repositories, and CI/CD pipelines will run for new commits. A GitLab project will be created with only CI/CD features enabled."
 msgstr ""
 
+msgid "Connected"
+msgstr ""
+
 msgid "Connecting"
 msgstr ""
 
@@ -6371,6 +6377,9 @@ msgid "Deleted chat nickname: %{chat_name}!"
 msgstr ""
 
 msgid "Deleted in this version"
+msgstr ""
+
+msgid "Deleting"
 msgstr ""
 
 msgid "Deleting the license failed."
@@ -16986,9 +16995,6 @@ msgstr ""
 msgid "Scoped issue boards"
 msgstr ""
 
-msgid "Scoped label"
-msgstr ""
-
 msgid "Scopes"
 msgstr ""
 
@@ -17085,7 +17091,7 @@ msgstr ""
 msgid "Search users or groups"
 msgstr ""
 
-msgid "Search your project dependencies for their licenses and apply policies"
+msgid "Search your project dependencies for their licenses and apply policies."
 msgstr ""
 
 msgid "Search your projects"
@@ -17311,7 +17317,7 @@ msgstr ""
 msgid "SecurityConfiguration|Feature"
 msgstr ""
 
-msgid "SecurityConfiguration|Feature documentation"
+msgid "SecurityConfiguration|Feature documentation for %{featureName}"
 msgstr ""
 
 msgid "SecurityConfiguration|Not yet configured"
@@ -18718,6 +18724,9 @@ msgid "Status"
 msgstr ""
 
 msgid "Status:"
+msgstr ""
+
+msgid "Status: %{title}"
 msgstr ""
 
 msgid "Stay updated about the performance and health of your environment by configuring Prometheus to monitor your deployments."
@@ -21099,6 +21108,9 @@ msgid "Unmarked this %{noun} as Work In Progress."
 msgstr ""
 
 msgid "Unmarks this %{noun} as Work In Progress."
+msgstr ""
+
+msgid "Unreachable"
 msgstr ""
 
 msgid "Unresolve"

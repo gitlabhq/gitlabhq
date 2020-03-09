@@ -155,10 +155,17 @@ Multiple metrics can be displayed on the same chart if the fields **Name**, **Ty
 
 #### Query Variables
 
-GitLab supports a limited set of [CI variables](../../../ci/variables/README.md) in the Prometheus query. This is particularly useful for identifying a specific environment, for example with `CI_ENVIRONMENT_SLUG`. The supported variables are:
+GitLab supports a limited set of [CI variables](../../../ci/variables/README.md) in the Prometheus query. This is particularly useful for identifying a specific environment, for example with `ci_environment_slug`. The supported variables are:
 
-- CI_ENVIRONMENT_SLUG
-- KUBE_NAMESPACE
+- `ci_environment_slug`
+- `kube_namespace`
+- `ci_project_name`
+- `ci_project_namespace`
+- `ci_project_path`
+- `ci_environment_name`
+
+NOTE: **Note:**
+Variables for Prometheus queries must be lowercase.
 
 There are 2 methods to specify a variable in a query or dashboard:
 

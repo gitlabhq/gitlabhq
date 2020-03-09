@@ -163,3 +163,9 @@
   color: $black;
   font-weight: $gl-font-weight-bold;
 }
+
+.cluster-status-indicator {
+  &.disabled {
+    background-color: $gray-600;
+  }
+}

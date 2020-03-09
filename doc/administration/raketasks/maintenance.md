@@ -58,6 +58,7 @@ Runs the following rake tasks:
 - `gitlab:app:check`
 
 It will check that each component was set up according to the installation guide and suggest fixes for issues found.
+This command must be run from your app server and will not work correctly on component servers like [Gitaly](../gitaly/index.md#running-gitaly-on-its-own-server).
 
 You may also have a look at our Troubleshooting Guides:
 

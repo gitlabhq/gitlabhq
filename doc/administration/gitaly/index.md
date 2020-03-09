@@ -1006,6 +1006,12 @@ unset http_proxy
 unset https_proxy
 ```
 
+### Gitaly not listening on new address after reconfiguring
+
+When updating the `gitaly['listen_addr']` or `gitaly['prometheus_listen_addr']` values, Gitaly may continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
+
+When this occurs, performing a `sudo gitlab-ctl restart` will resolve the issue.  This will no longer be necessary after [this issue](https://gitlab.com/gitlab-org/gitaly/issues/2521) is resolved.
+
 ### Praefect
 
 Praefect is an experimental daemon that allows for replication of the Git data.
