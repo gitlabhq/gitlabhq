@@ -107,7 +107,7 @@ keys must be manually replicated to the **secondary** node.
    scp root@<primary_node_fqdn>:/etc/ssh/ssh_host_*_key* /etc/ssh
    ```
 
-   If you only have access through a user with **sudo** privileges:
+   If you only have access through a user with `sudo` privileges:
 
    ```shell
    # Run this from your primary node:
@@ -153,7 +153,7 @@ keys must be manually replicated to the **secondary** node.
    NOTE: **Note:**
    The output for private keys and public keys command should generate the same fingerprint.
 
-1. Restart sshd on your **secondary** node:
+1. Restart `sshd` on your **secondary** node:
 
    ```shell
    # Debian or Ubuntu installations

@@ -71,3 +71,26 @@ Example response:
   }
 ]
 ```
+
+## Group deploy tokens
+
+These endpoints require group maintainer access or higher.
+
+### Delete a group deploy token
+
+Removes a deploy token from the group.
+
+```
+DELETE /groups/:id/deploy_tokens/:token_id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `token_id`  | integer | yes | The ID of the deploy token |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/deploy_tokens/13"
+```

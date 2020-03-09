@@ -149,7 +149,7 @@ Note there are several options that you should consider using:
 
 ## A single NFS mount
 
-It's recommended to nest all GitLab data dirs within a mount, that allows automatic
+It's recommended to nest all GitLab data directories within a mount, that allows automatic
 restore of backups without manually moving existing data.
 
 ```plaintext

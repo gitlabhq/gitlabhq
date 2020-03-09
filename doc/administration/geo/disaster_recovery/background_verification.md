@@ -17,7 +17,7 @@ You can restore it from backup or remove it from the **primary** node to resolve
 If verification succeeds on the **primary** node but fails on the **secondary** node,
 this indicates that the object was corrupted during the replication process.
 Geo actively try to correct verification failures marking the repository to
-be resynced with a backoff period. If you want to reset the verification for
+be resynced with a back-off period. If you want to reset the verification for
 these failures, so you should follow [these instructions][reset-verification].
 
 If verification is lagging significantly behind replication, consider giving
@@ -114,9 +114,9 @@ Feature.enable('geo_repository_reverification')
 ## Reset verification for projects where verification has failed
 
 Geo actively try to correct verification failures marking the repository to
-be resynced with a backoff period. If you want to reset them manually, this
+be resynced with a back-off period. If you want to reset them manually, this
 rake task marks projects where verification has failed or the checksum mismatch
-to be resynced without the backoff period:
+to be resynced without the back-off period:
 
 For repositories:
 

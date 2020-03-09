@@ -233,7 +233,7 @@ The following values configure logging in Gitaly under the `[logging]` section.
 | `sentry_environment` | string | no | [Sentry Environment](https://docs.sentry.io/enriching-error-data/environments/) for exception monitoring. |
 | `ruby_sentry_dsn` | string | no | Sentry DSN for `gitaly-ruby` exception monitoring. |
 
-While the main Gitaly application logs go to stdout, there are some extra log
+While the main Gitaly application logs go to `stdout`, there are some extra log
 files that go to a configured directory, like the GitLab Shell logs.
 GitLab Shell does not support `panic` or `trace` level logs. `panic` will fall
 back to `error`, while `trace` will fall back to `debug`. Any other invalid log

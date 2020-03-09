@@ -34,5 +34,22 @@ module API
         present paginate(user_project.deploy_tokens), with: Entities::DeployToken
       end
     end
+
+    params do
+      requires :id, type: Integer, desc: 'The ID of a group'
+    end
+    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      desc 'Delete a group deploy token' do
+        detail 'This feature was introduced in GitLab 12.9'
+      end
+      delete ':id/deploy_tokens/:token_id' do
+        authorize!(:destroy_deploy_token, user_group)
+
+        deploy_token = user_group.group_deploy_tokens
+          .find_by_deploy_token_id!(params[:token_id])
+
+        destroy_conditionally!(deploy_token)
+      end
+    end
   end
 end

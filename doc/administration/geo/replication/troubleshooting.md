@@ -290,7 +290,7 @@ sudo gitlab-ctl \
 This will give the initial replication up to six hours to complete, rather than
 the default thirty minutes. Adjust as required for your installation.
 
-### Message: "PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device"
+### Message: "PANIC: could not write to file `pg_xlog/xlogtemp.123`: No space left on device"
 
 Determine if you have any unused replication slots in the **primary** database. This can cause large amounts of
 log data to build up in `pg_xlog`. Removing the unused slots can reduce the amount of space used in the `pg_xlog`.

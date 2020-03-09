@@ -36,7 +36,7 @@ Repository-centric strategies for using `rsync` effectively can be found in the
 be adapted for use with any other file-based data, such as GitLab Pages (to
 be found in `/var/opt/gitlab/gitlab-rails/shared/pages` if using Omnibus).
 
-## Pre-flight checks
+## Preflight checks
 
 Follow these steps before scheduling a planned failover to ensure the process
 will go smoothly.
