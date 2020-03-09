@@ -344,3 +344,6 @@ Style/MultilineWhenThen:
 
 Style/FloatDivision:
   Enabled: false
+
+Cop/BanCatchThrow:
+  Enabled: true

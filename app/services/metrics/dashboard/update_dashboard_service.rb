@@ -7,6 +7,7 @@ module Metrics
       ALLOWED_FILE_TYPE = '.yml'
       USER_DASHBOARDS_DIR = ::Metrics::Dashboard::ProjectDashboardService::DASHBOARD_ROOT
 
+      # rubocop:disable Cop/BanCatchThrow
       def execute
         catch(:error) do
           throw(:error, error(_(%q(You are not allowed to push into this branch. Create another branch or open a merge request.)), :forbidden)) unless push_authorized?
@@ -17,6 +18,7 @@ module Metrics
           success(result.merge(http_status: :created, dashboard: dashboard_details))
         end
       end
+      # rubocop:enable Cop/BanCatchThrow
 
       private
 
@@ -44,6 +46,7 @@ module Metrics
         Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(branch)
       end
 
+      # rubocop:disable Cop/BanCatchThrow
       def branch
         @branch ||= begin
           throw(:error, error(_('There was an error updating the dashboard, branch name is invalid.'), :bad_request)) unless valid_branch_name?
@@ -52,6 +55,7 @@ module Metrics
           params[:branch]
         end
       end
+      # rubocop:enable Cop/BanCatchThrow
 
       def new_or_default_branch?
         !repository.branch_exists?(params[:branch]) || project.default_branch == params[:branch]
@@ -69,6 +73,7 @@ module Metrics
         File.extname(params[:file_name]) == ALLOWED_FILE_TYPE
       end
 
+      # rubocop:disable Cop/BanCatchThrow
       def file_name
         @file_name ||= begin
           throw(:error, error(_('The file name should have a .yml extension'), :bad_request)) unless target_file_type_valid?
@@ -76,6 +81,7 @@ module Metrics
           File.basename(CGI.unescape(params[:file_name]))
         end
       end
+      # rubocop:enable Cop/BanCatchThrow
 
       def update_dashboard_content
         ::PerformanceMonitoring::PrometheusDashboard.from_json(params[:file_content]).to_yaml

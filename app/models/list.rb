@@ -97,6 +97,6 @@ class List < ApplicationRecord
   private
 
   def can_be_destroyed
-    throw(:abort) unless destroyable?
+    throw(:abort) unless destroyable? # rubocop:disable Cop/BanCatchThrow
   end
 end

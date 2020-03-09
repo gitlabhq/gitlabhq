@@ -20999,6 +20999,9 @@ msgstr ""
 msgid "Unable to connect to server: %{error}"
 msgstr ""
 
+msgid "Unable to convert Kubernetes logs encoding to UTF-8"
+msgstr ""
+
 msgid "Unable to fetch unscanned projects"
 msgstr ""
 
