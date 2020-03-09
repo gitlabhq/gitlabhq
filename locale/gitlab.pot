@@ -10533,6 +10533,9 @@ msgstr ""
 msgid "Ignore"
 msgstr ""
 
+msgid "Ignored"
+msgstr ""
+
 msgid "Image %{imageName} was scheduled for deletion from the registry."
 msgstr ""
 
@@ -21102,6 +21105,9 @@ msgid "Unresolve"
 msgstr ""
 
 msgid "Unresolve thread"
+msgstr ""
+
+msgid "Unresolved"
 msgstr ""
 
 msgid "UnscannedProjects|15 or more days"

@@ -6,6 +6,7 @@ const ADD_RECENT_SEARCH = mutations[types.ADD_RECENT_SEARCH];
 const CLEAR_RECENT_SEARCHES = mutations[types.CLEAR_RECENT_SEARCHES];
 const LOAD_RECENT_SEARCHES = mutations[types.LOAD_RECENT_SEARCHES];
 const REMOVE_IGNORED_RESOLVED_ERRORS = mutations[types.REMOVE_IGNORED_RESOLVED_ERRORS];
+const SET_STATUS_FILTER = mutations[types.SET_STATUS_FILTER];
 
 describe('Error tracking mutations', () => {
   describe('SET_ERRORS', () => {
@@ -137,6 +138,16 @@ describe('Error tracking mutations', () => {
         REMOVE_IGNORED_RESOLVED_ERRORS(state, ignoredError);
 
         expect(state.errors).not.toContain(ignoredError);
+      });
+    });
+
+    describe('SET_STATUS_FILTER', () => {
+      it('sets the filter to ignored, resolved or unresolved', () => {
+        state.statusFilter = 'unresolved';
+
+        SET_STATUS_FILTER(state, 'ignored');
+
+        expect(state.statusFilter).toBe('ignored');
       });
     });
   });

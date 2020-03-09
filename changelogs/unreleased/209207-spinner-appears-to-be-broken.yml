@@ -1,0 +1,5 @@
+---
+title: Fix spinner in Create MR dropdown
+merge_request: 26679
+author:
+type: fixed
