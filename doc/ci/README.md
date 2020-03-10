@@ -83,7 +83,7 @@ GitLab CI/CD supports numerous configuration options:
 | [Pipelines](pipelines.md) | Structure your CI/CD process through pipelines. |
 | [Environment variables](variables/README.md) | Reuse values based on a variable/value key pair. |
 | [Environments](environments.md) | Deploy your application to different environments (e.g., staging, production). |
-| [Job artifacts](../user/project/pipelines/job_artifacts.md) | Output, use, and reuse job artifacts. |
+| [Job artifacts](pipelines/job_artifacts.md) | Output, use, and reuse job artifacts. |
 | [Cache dependencies](caching/index.md) | Cache your dependencies for a faster execution. |
 | [Schedule pipelines](pipelines/schedules.md) | Schedule pipelines to run as often as you need. |
 | [Custom path for `.gitlab-ci.yml`](../user/project/pipelines/settings.md#custom-ci-configuration-path) | Define a custom path for the CI/CD configuration file. |

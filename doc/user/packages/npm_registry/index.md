@@ -117,11 +117,11 @@ npm config set @foo:registry https://gitlab.com/api/v4/packages/npm/
 
 # Add the token for the scoped packages URL. This will allow you to download
 # `@foo/` packages from private projects.
-npm config set '//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "<your_token>"
+npm config set '//gitlab.com/api/v4/packages/npm/:_authToken' "<your_token>"
 
 # Add token for uploading to the registry. Replace <your_project_id>
 # with the project you want your package to be uploaded to.
-npm config set '//gitlab.com/api/v4/packages/npm/:_authToken' "<your_token>"
+npm config set '//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "<your_token>"
 ```
 
 Replace `<your_project_id>` with your project ID which can be found on the home page

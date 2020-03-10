@@ -1902,7 +1902,7 @@ attached to the job when it [succeeds, fails, or always](#artifactswhen).
 The artifacts will be sent to GitLab after the job finishes and will
 be available for download in the GitLab UI.
 
-[Read more about artifacts](../../user/project/pipelines/job_artifacts.md).
+[Read more about artifacts](../pipelines/job_artifacts.md).
 
 #### `artifacts:paths`
 
@@ -1956,7 +1956,7 @@ release-job:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/15018) in GitLab 12.5.
 
-The `expose_as` keyword can be used to expose [job artifacts](../../user/project/pipelines/job_artifacts.md)
+The `expose_as` keyword can be used to expose [job artifacts](../pipelines/job_artifacts.md)
 in the [merge request](../../user/project/merge_requests/index.md) UI.
 
 For example, to match a single file:
@@ -1986,7 +1986,7 @@ Note the following:
 
 - A maximum of 10 job artifacts per merge request can be exposed.
 - Glob patterns are unsupported.
-- If a directory is specified, the link will be to the job [artifacts browser](../../user/project/pipelines/job_artifacts.md#browsing-artifacts) if there is more than
+- If a directory is specified, the link will be to the job [artifacts browser](../pipelines/job_artifacts.md#browsing-artifacts) if there is more than
   one file in the directory.
 - For exposed single file artifacts with `.html`, `.htm`, `.txt`, `.json`, `.xml`,
   and `.log` extensions, if [GitLab Pages](../../administration/pages/index.md) is:
@@ -2368,7 +2368,7 @@ deploy:
 
 If the artifacts of the job that is set as a dependency have been
 [expired](#artifactsexpire_in) or
-[erased](../../user/project/pipelines/job_artifacts.md#erasing-artifacts), then
+[erased](../pipelines/job_artifacts.md#erasing-artifacts), then
 the dependent job will fail.
 
 NOTE: **Note:**

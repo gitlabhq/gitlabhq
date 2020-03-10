@@ -46,7 +46,7 @@ Pa11y against the webpage you defined in `a11y_urls` to build a report.
 NOTE: **Note:**
 Only one URL may be currently passed into `a11y_urls`.
 
-The full HTML Pa11y report will be saved as an artifact that can be [viewed directly in your browser](../pipelines/job_artifacts.md#browsing-artifacts).
+The full HTML Pa11y report will be saved as an artifact that can be [viewed directly in your browser](../../../ci/pipelines/job_artifacts.md#browsing-artifacts).
 
 NOTE: **Note:**
 The job definition provided by the template does not support Kubernetes yet.

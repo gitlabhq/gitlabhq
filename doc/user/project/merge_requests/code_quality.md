@@ -269,7 +269,7 @@ Once the Code Quality job has completed:
   The Code Quality widget in the merge request compares the reports from the base and head of the branch,
   then lists any violations that will be resolved or created when the branch is merged.
 - The full JSON report is available as a
-  [downloadable artifact](../../project/pipelines/job_artifacts.html#downloading-artifacts)
+  [downloadable artifact](../../../ci/pipelines/job_artifacts.html#downloading-artifacts)
   for the `code_quality` job.
 
 If multiple jobs in a pipeline generate a code quality artifact, only the artifact from

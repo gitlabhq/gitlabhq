@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-describe Gitlab::GithubImport::NotifyUponDeath do
+describe Gitlab::NotifyUponDeath do
   let(:worker_class) do
     Class.new do
       include Sidekiq::Worker
-      include Gitlab::GithubImport::NotifyUponDeath
+      include Gitlab::NotifyUponDeath
     end
   end
 

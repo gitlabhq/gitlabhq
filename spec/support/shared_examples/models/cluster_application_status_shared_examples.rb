@@ -264,6 +264,8 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
   describe '#available?' do
     using RSpec::Parameterized::TableSyntax
 
+    let_it_be(:cluster) { create(:cluster, :provided_by_gcp) }
+
     where(:trait, :available) do
       :not_installable   | false
       :installable       | false
@@ -280,7 +282,7 @@ RSpec.shared_examples 'cluster application status specs' do |application_name|
     end
 
     with_them do
-      subject { build(application_name, trait) }
+      subject { build(application_name, trait, cluster: cluster) }
 
       if params[:available]
         it { is_expected.to be_available }

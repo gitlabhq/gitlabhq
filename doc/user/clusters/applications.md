@@ -523,7 +523,7 @@ A GitLab CI pipeline will then run on the `master` branch to install the
 applications you have configured. In case of pipeline failure, the
 output of the [Helm
 Tiller](https://v2.helm.sh/docs/install/#running-tiller-locally) binary
-will be saved as a [CI job artifact](../project/pipelines/job_artifacts.md).
+will be saved as a [CI job artifact](../../ci/pipelines/job_artifacts.md).
 
 ### Install Ingress using GitLab CI
 

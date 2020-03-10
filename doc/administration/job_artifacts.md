@@ -3,7 +3,7 @@
 > - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
 > - Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format changed to `ZIP`.
 > - Starting with GitLab 8.17, builds are renamed to jobs.
-> - This is the administration documentation. For the user guide see [pipelines/job_artifacts](../user/project/pipelines/job_artifacts.md).
+> - This is the administration documentation. For the user guide see [pipelines/job_artifacts](../ci/pipelines/job_artifacts.md).
 
 Artifacts is a list of files and directories which are attached to a job after it
 finishes. This feature is enabled by default in all GitLab installations. Keep reading
@@ -79,7 +79,7 @@ _The artifacts are stored by default in
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1762) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-> - Since version 9.5, artifacts are [browsable](../user/project/pipelines/job_artifacts.md#browsing-artifacts),
+> - Since version 9.5, artifacts are [browsable](../ci/pipelines/job_artifacts.md#browsing-artifacts),
 >   when object storage is enabled. 9.4 lacks this feature.
 > - Since version 10.6, available in [GitLab Core](https://about.gitlab.com/pricing/)
 > - Since version 11.0, we support `direct_upload` to S3.
@@ -386,7 +386,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
    NOTE: **NOTE:**
    This step will also erase artifacts that users have chosen to
-   ["keep"](../user/project/pipelines/job_artifacts.md#browsing-artifacts).
+   ["keep"](../ci/pipelines/job_artifacts.md#browsing-artifacts).
 
    ```ruby
    builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
