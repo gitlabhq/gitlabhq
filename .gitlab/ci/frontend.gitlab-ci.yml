@@ -279,10 +279,6 @@ coverage-frontend:
     - date
     - yarn run webpack-prod
 
-qa-frontend-node:8:
-  extends: .qa-frontend-node
-  image: node:carbon
-
 qa-frontend-node:10:
   extends: .qa-frontend-node
   image: node:dubnium

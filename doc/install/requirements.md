@@ -59,16 +59,16 @@ GitLab 11.11 and higher only supports Git 2.21.x and newer, and
 
 ### Node.js versions
 
-Beginning in GitLab 11.8, we only support Node.js 8.10.0 or higher, and dropped
-support for Node.js 6.
+Beginning in GitLab 12.9, we only support node.js 10.13.0 or higher, and we have dropped
+support for node.js 8. (node.js 6 support was dropped in GitLab 11.8)
 
 We recommend Node 12.x, as it is faster.
 
 GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets, which requires a minimum
-version of Node.js 8.10.0.
+version of Node.js 10.13.0.
 
 You can check which version you are running with `node -v`. If you are running
-a version older than `v8.10.0`, you need to update to a newer version. You
+a version older than `v10.13.0`, you need to update to a newer version. You
 can find instructions to install from community maintained packages or compile
 from source at the [Node.js website](https://nodejs.org/en/download).
 

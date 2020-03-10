@@ -5,9 +5,6 @@ module API
     include PaginationParams
 
     before do
-      # TODO: Remove flag: https://gitlab.com/gitlab-org/gitlab/issues/38121
-      not_found! unless Feature.enabled?(:remote_mirrors_api, user_project)
-
       unauthorized! unless can?(current_user, :admin_remote_mirror, user_project)
     end
 

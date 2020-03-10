@@ -24,19 +24,6 @@ describe API::RemoteMirrors do
       expect(response).to have_gitlab_http_status(:success)
       expect(response).to match_response_schema('remote_mirrors')
     end
-
-    # TODO: Remove flag: https://gitlab.com/gitlab-org/gitlab/issues/38121
-    context 'with the `remote_mirrors_api` feature disabled' do
-      before do
-        stub_feature_flags(remote_mirrors_api: false)
-      end
-
-      it 'responds with `not_found`' do
-        get api(route, user)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   describe 'POST /projects/:id/remote_mirrors' do
@@ -130,19 +117,6 @@ describe API::RemoteMirrors do
 
         expect(response).to have_gitlab_http_status(:success)
         expect(json_response['keep_divergent_refs']).to eq(true)
-      end
-    end
-
-    # TODO: Remove flag: https://gitlab.com/gitlab-org/gitlab/issues/38121
-    context 'with the `remote_mirrors_api` feature disabled' do
-      before do
-        stub_feature_flags(remote_mirrors_api: false)
-      end
-
-      it 'responds with `not_found`' do
-        put api(route[mirror.id], user)
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

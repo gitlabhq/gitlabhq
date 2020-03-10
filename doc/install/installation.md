@@ -263,7 +263,7 @@ Since GitLab 8.17, GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
-- `node` >= v8.10.0. (We recommend node 12.x as it is faster)
+- `node` >= v10.13.0. (We recommend node 12.x as it is faster)
 - `yarn` >= v1.10.0.
 
 In many distros,

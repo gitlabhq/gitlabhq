@@ -49,7 +49,7 @@ visit a specific URL or interact with elements on the page. It can be programmat
 from a variety of programming languages. In this article we're going to be using the
 [WebdriverIO](https://webdriver.io/) JavaScript bindings, but the general concept should carry over
 pretty well to
-[other programming languages supported by Selenium](https://selenium.dev/about/platforms.jsp#programming-languages).
+[other programming languages supported by Selenium](https://www.selenium.dev/documentation/en/legacy_docs/selenium_rc/).
 
 ## Writing tests
 

@@ -9,7 +9,7 @@ GitLab is built on top of [Ruby on Rails](https://rubyonrails.org) using [Haml][
 Be wary of [the limitations that come with using Hamlit][hamlit-limits]. We also use [SCSS](https://sass-lang.com) and plain JavaScript with
 modern ECMAScript standards supported through [Babel][babel] and ES module support through [webpack][webpack].
 
-Working with our frontend assets requires Node (v8.10.0 or greater) and Yarn
+Working with our frontend assets requires Node (v10.13.0 or greater) and Yarn
 (v1.10.0 or greater). You can find information on how to install these on our
 [installation guide][install].
 
