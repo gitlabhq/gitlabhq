@@ -17,6 +17,8 @@ panel_groups:
   - title: "Latency"
     type: "area-chart"
     y_label: "Latency (ms)"
+    y_axis:
+      format: milliseconds
     weight: 1
     metrics:
     - id: response_metrics_nginx_ingress_latency_pod_average
@@ -26,6 +28,8 @@ panel_groups:
   - title: "HTTP Error Rate"
     type: "area-chart"
     y_label: "HTTP Errors (%)"
+    y_axis:
+      format: percentHundred
     weight: 1
     metrics:
     - id: response_metrics_nginx_ingress_http_error_rate
@@ -138,6 +142,8 @@ panel_groups:
   - title: "HTTP Error Rate (Errors / Sec)"
     type: "area-chart"
     y_label: "HTTP 500 Errors / Sec"
+    y_axis:
+      precision: 0
     weight: 1
     metrics:
     - id: response_metrics_nginx_http_error_rate
@@ -150,6 +156,8 @@ panel_groups:
   - title: "Memory Usage (Total)"
     type: "area-chart"
     y_label: "Total Memory Used (GB)"
+    y_axis:
+      format: "gibibytes"
     weight: 4
     metrics:
     - id: system_metrics_kubernetes_container_memory_total
@@ -168,6 +176,8 @@ panel_groups:
   - title: "Memory Usage (Pod average)"
     type: "line-chart"
     y_label: "Memory Used per Pod (MB)"
+    y_axis:
+      format: "mebibytes"
     weight: 2
     metrics:
     - id: system_metrics_kubernetes_container_memory_average
@@ -177,6 +187,8 @@ panel_groups:
   - title: "Canary: Memory Usage (Pod Average)"
     type: "line-chart"
     y_label: "Memory Used per Pod (MB)"
+    y_axis:
+      format: "mebibytes"
     weight: 2
     metrics:
     - id: system_metrics_kubernetes_container_memory_average_canary
@@ -206,6 +218,8 @@ panel_groups:
   - title: "Knative function invocations"
     type: "area-chart"
     y_label: "Invocations"
+    y_axis:
+      precision: 0
     weight: 1
     metrics:
     - id: system_metrics_knative_function_invocation_count

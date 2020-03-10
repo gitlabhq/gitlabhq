@@ -52,8 +52,6 @@ Here's a list of the AWS services we will use, with links to pricing information
   will apply. If you want to run it on a dedicated or reserved instance,
   consult the [EC2 pricing page](https://aws.amazon.com/ec2/pricing/) for more
   information on the cost.
-- **EBS**: We will also use an EBS volume to store the Git data. See the
-  [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/).
 - **S3**: We will use S3 to store backups, artifacts, LFS objects, etc. See the
   [Amazon S3 pricing](https://aws.amazon.com/s3/pricing/).
 - **ELB**: A Classic Load Balancer will be used to route requests to the
@@ -524,7 +522,7 @@ Let's create an EC2 instance where we'll install Gitaly:
 1. Click **Review and launch** followed by **Launch** if you're happy with your settings.
 1. Finally, acknowledge that you have access to the selected private key file or create a new one. Click **Launch Instances**.
 
-  > **Optional:** Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above.
+  > **Optional:** Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above. See the [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/).
 
 Now that we have our EC2 instance ready, follow the [documentation to install GitLab and set up Gitaly on its own server](../../administration/gitaly/index.md#running-gitaly-on-its-own-server).
 

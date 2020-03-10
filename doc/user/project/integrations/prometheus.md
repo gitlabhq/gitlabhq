@@ -203,14 +203,17 @@ For example:
    panel_groups:
      - group: 'Group Title'
        panels:
-         - type: area-chart
-           title: "Chart Title"
-           y_label: "Y-Axis"
-           metrics:
-             - id: metric_of_ages
-               query_range: 'http_requests_total'
-               label: "Instance: {{instance}}, method: {{method}}"
-               unit: "count"
+       - type: area-chart
+         title: "Chart Title"
+         y_label: "Y-Axis"
+         y_axis:
+           format: number
+           precision: 0
+         metrics:
+         - id: my_metric_id
+           query_range: 'http_requests_total'
+           label: "Instance: {{instance}}, method: {{method}}"
+           unit: "count"
    ```
 
    The above sample dashboard would display a single area chart. Each file should
@@ -276,8 +279,17 @@ The following tables outline the details of expected properties.
 | `type` | enum | no, defaults to `area-chart` | Specifies the chart type to use, can be: `area-chart`, `line-chart` or `anomaly-chart`. |
 | `title` | string | yes | Heading for the panel. |
 | `y_label` | string | no, but highly encouraged | Y-Axis label for the panel. |
+| `y_axis` | string | no | Y-Axis configuration for the panel. |
 | `weight` | number | no, defaults to order in file | Order to appear within the grouping. Lower number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
 | `metrics` | array | yes | The metrics which should be displayed in the panel. Any number of metrics can be displayed when `type` is `area-chart` or `line-chart`, whereas only 3 can be displayed when `type` is `anomaly-chart`. |
+
+**Axis (`panels[].y_axis`) properties:**
+
+| Property    | Type   | Required                  | Description                                                          |
+| ----------- | ------ | ------------------------- | -------------------------------------------------------------------- |
+| `name`      | string | no, but highly encouraged | Y-Axis label for the panel, it will replace `y_label` if set.        |
+| `format`    | string | no, defaults to `number`  | Unit format used. See the [full list of units](prometheus_units.md). |
+| `precision` | number | no, defaults to `2`       | Number of decimals to display in the number.                         |
 
 **Metrics (`metrics`) properties:**
 
@@ -297,7 +309,7 @@ When a static label is used and a query returns multiple time series, then all t
 
 ```yaml
 metrics:
-  - id: metric_of_ages
+  - id: my_metric_id
     query_range: 'http_requests_total'
     label: "Time Series"
     unit: "count"
@@ -311,7 +323,7 @@ For labels to be more explicit, using variables that reflect time series labels 
 
 ```yaml
 metrics:
-  - id: metric_of_ages
+  - id: my_metric_id
     query_range: 'http_requests_total'
     label: "Instance: {{instance}}, method: {{method}}"
     unit: "count"
@@ -325,7 +337,7 @@ There is also a shorthand value for dynamic dashboard labels that make use of on
 
 ```yaml
 metrics:
-  - id: metric_of_ages
+  - id: my_metric_id
     query_range: 'http_requests_total'
     label: "Method"
     unit: "count"
@@ -351,6 +363,9 @@ panel_groups:
       - type: area-chart # or line-chart
         title: 'Area Chart Title'
         y_label: "Y-Axis"
+        y_axis:
+          format: number
+          precision: 0
         metrics:
           - id: area_http_requests_total
             query_range: 'http_requests_total'

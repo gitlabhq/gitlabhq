@@ -42,7 +42,7 @@ module Gitlab
           klass = stub_class(name)
           addr = stub_address(storage)
           creds = stub_creds(storage)
-          klass.new(addr, creds, interceptors: interceptors)
+          klass.new(addr, creds, interceptors: interceptors, channel_args: channel_args)
         end
       end
     end
@@ -53,6 +53,16 @@ module Gitlab
       [Labkit::Tracing::GRPC::ClientInterceptor.instance]
     end
     private_class_method :interceptors
+
+    def self.channel_args
+      # These values match the go Gitaly client
+      # https://gitlab.com/gitlab-org/gitaly/-/blob/bf9f52bc/client/dial.go#L78
+      {
+        'grpc.keepalive_time_ms': 20000,
+        'grpc.keepalive_permit_without_calls': 1
+      }
+    end
+    private_class_method :channel_args
 
     def self.stub_cert_paths
       cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]

@@ -212,6 +212,8 @@ export default {
       return new MRWidgetService(this.getServiceEndpoints(store));
     },
     checkStatus(cb, isRebased) {
+      if (document.visibilityState !== 'visible') return Promise.resolve();
+
       return this.service
         .checkStatus()
         .then(({ data }) => {

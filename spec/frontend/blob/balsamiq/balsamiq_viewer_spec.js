@@ -3,6 +3,8 @@ import axios from '~/lib/utils/axios_utils';
 import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
 import ClassSpecHelper from '../../helpers/class_spec_helper';
 
+jest.mock('sql.js');
+
 describe('BalsamiqViewer', () => {
   const mockArrayBuffer = new ArrayBuffer(10);
   let balsamiqViewer;
@@ -34,22 +36,22 @@ describe('BalsamiqViewer', () => {
     });
 
     it('should call `axios.get` on `endpoint` param with responseType set to `arraybuffer', () => {
-      spyOn(axios, 'get').and.returnValue(requestSuccess);
-      spyOn(bv, 'renderFile').and.stub();
+      jest.spyOn(axios, 'get').mockReturnValue(requestSuccess);
+      jest.spyOn(bv, 'renderFile').mockReturnValue();
 
       bv.loadFile(endpoint);
 
       expect(axios.get).toHaveBeenCalledWith(
         endpoint,
-        jasmine.objectContaining({
+        expect.objectContaining({
           responseType: 'arraybuffer',
         }),
       );
     });
 
     it('should call `renderFile` on request success', done => {
-      spyOn(axios, 'get').and.returnValue(requestSuccess);
-      spyOn(bv, 'renderFile').and.callFake(() => {});
+      jest.spyOn(axios, 'get').mockReturnValue(requestSuccess);
+      jest.spyOn(bv, 'renderFile').mockImplementation(() => {});
 
       bv.loadFile(endpoint)
         .then(() => {
@@ -60,8 +62,8 @@ describe('BalsamiqViewer', () => {
     });
 
     it('should not call `renderFile` on request failure', done => {
-      spyOn(axios, 'get').and.returnValue(Promise.reject());
-      spyOn(bv, 'renderFile');
+      jest.spyOn(axios, 'get').mockReturnValue(Promise.reject());
+      jest.spyOn(bv, 'renderFile').mockImplementation(() => {});
 
       bv.loadFile(endpoint)
         .then(() => {
@@ -80,19 +82,21 @@ describe('BalsamiqViewer', () => {
     let previews;
 
     beforeEach(() => {
-      viewer = jasmine.createSpyObj('viewer', ['appendChild']);
+      viewer = {
+        appendChild: jest.fn(),
+      };
       previews = [document.createElement('ul'), document.createElement('ul')];
 
-      balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', [
-        'initDatabase',
-        'getPreviews',
-        'renderPreview',
-      ]);
+      balsamiqViewer = {
+        initDatabase: jest.fn(),
+        getPreviews: jest.fn(),
+        renderPreview: jest.fn(),
+      };
       balsamiqViewer.viewer = viewer;
 
-      balsamiqViewer.getPreviews.and.returnValue(previews);
-      balsamiqViewer.renderPreview.and.callFake(preview => preview);
-      viewer.appendChild.and.callFake(containerElement => {
+      balsamiqViewer.getPreviews.mockReturnValue(previews);
+      balsamiqViewer.renderPreview.mockImplementation(preview => preview);
+      viewer.appendChild.mockImplementation(containerElement => {
         container = containerElement;
       });
 
@@ -108,7 +112,7 @@ describe('BalsamiqViewer', () => {
     });
 
     it('should call .renderPreview for each preview', () => {
-      const allArgs = balsamiqViewer.renderPreview.calls.allArgs();
+      const allArgs = balsamiqViewer.renderPreview.mock.calls;
 
       expect(allArgs.length).toBe(2);
 
@@ -132,19 +136,15 @@ describe('BalsamiqViewer', () => {
   });
 
   describe('initDatabase', () => {
-    let database;
     let uint8Array;
     let data;
 
     beforeEach(() => {
       uint8Array = {};
-      database = {};
       data = 'data';
-
       balsamiqViewer = {};
-
-      spyOn(window, 'Uint8Array').and.returnValue(uint8Array);
-      spyOn(sqljs, 'Database').and.returnValue(database);
+      window.Uint8Array = jest.fn();
+      window.Uint8Array.mockReturnValue(uint8Array);
 
       BalsamiqViewer.prototype.initDatabase.call(balsamiqViewer, data);
     });
@@ -158,7 +158,7 @@ describe('BalsamiqViewer', () => {
     });
 
     it('should set .database', () => {
-      expect(balsamiqViewer.database).toBe(database);
+      expect(balsamiqViewer.database).not.toBe(null);
     });
   });
 
@@ -168,15 +168,17 @@ describe('BalsamiqViewer', () => {
     let getPreviews;
 
     beforeEach(() => {
-      database = jasmine.createSpyObj('database', ['exec']);
+      database = {
+        exec: jest.fn(),
+      };
       thumbnails = [{ values: [0, 1, 2] }];
 
       balsamiqViewer = {
         database,
       };
 
-      spyOn(BalsamiqViewer, 'parsePreview').and.callFake(preview => preview.toString());
-      database.exec.and.returnValue(thumbnails);
+      jest.spyOn(BalsamiqViewer, 'parsePreview').mockImplementation(preview => preview.toString());
+      database.exec.mockReturnValue(thumbnails);
 
       getPreviews = BalsamiqViewer.prototype.getPreviews.call(balsamiqViewer);
     });
@@ -186,7 +188,7 @@ describe('BalsamiqViewer', () => {
     });
 
     it('should call .parsePreview for each value', () => {
-      const allArgs = BalsamiqViewer.parsePreview.calls.allArgs();
+      const allArgs = BalsamiqViewer.parsePreview.mock.calls;
 
       expect(allArgs.length).toBe(3);
 
@@ -207,7 +209,9 @@ describe('BalsamiqViewer', () => {
     let getResource;
 
     beforeEach(() => {
-      database = jasmine.createSpyObj('database', ['exec']);
+      database = {
+        exec: jest.fn(),
+      };
       resourceID = 4;
       resource = ['resource'];
 
@@ -215,7 +219,7 @@ describe('BalsamiqViewer', () => {
         database,
       };
 
-      database.exec.and.returnValue(resource);
+      database.exec.mockReturnValue(resource);
 
       getResource = BalsamiqViewer.prototype.getResource.call(balsamiqViewer, resourceID);
     });
@@ -241,14 +245,18 @@ describe('BalsamiqViewer', () => {
       innerHTML = '<a>innerHTML</a>';
       previewElement = {
         outerHTML: '<p>outerHTML</p>',
-        classList: jasmine.createSpyObj('classList', ['add']),
+        classList: {
+          add: jest.fn(),
+        },
       };
       preview = {};
 
-      balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', ['renderTemplate']);
+      balsamiqViewer = {
+        renderTemplate: jest.fn(),
+      };
 
-      spyOn(document, 'createElement').and.returnValue(previewElement);
-      balsamiqViewer.renderTemplate.and.returnValue(innerHTML);
+      jest.spyOn(document, 'createElement').mockReturnValue(previewElement);
+      balsamiqViewer.renderTemplate.mockReturnValue(innerHTML);
 
       renderPreview = BalsamiqViewer.prototype.renderPreview.call(balsamiqViewer, preview);
     });
@@ -290,10 +298,12 @@ describe('BalsamiqViewer', () => {
         </div>
       `;
 
-      balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', ['getResource']);
+      balsamiqViewer = {
+        getResource: jest.fn(),
+      };
 
-      spyOn(BalsamiqViewer, 'parseTitle').and.returnValue(name);
-      balsamiqViewer.getResource.and.returnValue(resource);
+      jest.spyOn(BalsamiqViewer, 'parseTitle').mockReturnValue(name);
+      balsamiqViewer.getResource.mockReturnValue(resource);
 
       renderTemplate = BalsamiqViewer.prototype.renderTemplate.call(balsamiqViewer, preview);
     });
@@ -306,7 +316,7 @@ describe('BalsamiqViewer', () => {
       expect(BalsamiqViewer.parseTitle).toHaveBeenCalledWith(resource);
     });
 
-    it('should return the template string', function() {
+    it('should return the template string', () => {
       expect(renderTemplate.replace(/\s/g, '')).toEqual(template.replace(/\s/g, ''));
     });
   });
@@ -318,7 +328,7 @@ describe('BalsamiqViewer', () => {
     beforeEach(() => {
       preview = ['{}', '{ "id": 1 }'];
 
-      spyOn(JSON, 'parse').and.callThrough();
+      jest.spyOn(JSON, 'parse');
 
       parsePreview = BalsamiqViewer.parsePreview(preview);
     });
@@ -337,7 +347,7 @@ describe('BalsamiqViewer', () => {
     beforeEach(() => {
       title = { values: [['{}', '{}', '{"name":"name"}']] };
 
-      spyOn(JSON, 'parse').and.callThrough();
+      jest.spyOn(JSON, 'parse');
 
       parseTitle = BalsamiqViewer.parseTitle(title);
     });

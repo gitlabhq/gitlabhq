@@ -25,7 +25,9 @@
       "items": {
         "type": "string"
       }
+    },
+    "token": {
+      "type": "string"
     }
-  },
-  "additionalProperties": false
+  }
 }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_09_105539) do
+ActiveRecord::Schema.define(version: 2020_03_06_170531) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1616,6 +1616,7 @@ ActiveRecord::Schema.define(version: 2020_03_09_105539) do
     t.string "target_type"
     t.bigint "group_id"
     t.index ["action"], name: "index_events_on_action"
+    t.index ["author_id", "created_at"], name: "index_events_on_author_id_and_created_at"
     t.index ["author_id", "project_id"], name: "index_events_on_author_id_and_project_id"
     t.index ["created_at", "author_id"], name: "analytics_index_events_on_created_at_and_author_id"
     t.index ["group_id"], name: "index_events_on_group_id_partial", where: "(group_id IS NOT NULL)"
@@ -2206,6 +2207,7 @@ ActiveRecord::Schema.define(version: 2020_03_09_105539) do
     t.integer "duplicated_to_id"
     t.integer "promoted_to_epic_id"
     t.integer "health_status", limit: 2
+    t.index ["author_id", "id", "created_at"], name: "index_issues_on_author_id_and_id_and_created_at"
     t.index ["author_id"], name: "index_issues_on_author_id"
     t.index ["closed_by_id"], name: "index_issues_on_closed_by_id"
     t.index ["confidential"], name: "index_issues_on_confidential"
@@ -4454,6 +4456,7 @@ ActiveRecord::Schema.define(version: 2020_03_09_105539) do
     t.index ["dismissed_by_id"], name: "index_vulnerabilities_on_dismissed_by_id"
     t.index ["due_date_sourcing_milestone_id"], name: "index_vulnerabilities_on_due_date_sourcing_milestone_id"
     t.index ["epic_id"], name: "index_vulnerabilities_on_epic_id"
+    t.index ["id"], name: "undefined_vulnerability", where: "(severity = 0)"
     t.index ["last_edited_by_id"], name: "index_vulnerabilities_on_last_edited_by_id"
     t.index ["milestone_id"], name: "index_vulnerabilities_on_milestone_id"
     t.index ["project_id"], name: "index_vulnerabilities_on_project_id"

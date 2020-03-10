@@ -45,7 +45,14 @@ const boardsStore = {
   },
   multiSelect: { list: [] },
 
-  setEndpoints({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId, recentBoardsEndpoint }) {
+  setEndpoints({
+    boardsEndpoint,
+    listsEndpoint,
+    bulkUpdatePath,
+    boardId,
+    recentBoardsEndpoint,
+    fullPath,
+  }) {
     const listsEndpointGenerate = `${listsEndpoint}/generate.json`;
     this.state.endpoints = {
       boardsEndpoint,
@@ -53,6 +60,7 @@ const boardsStore = {
       listsEndpoint,
       listsEndpointGenerate,
       bulkUpdatePath,
+      fullPath,
       recentBoardsEndpoint: `${recentBoardsEndpoint}.json`,
     };
   },
@@ -540,10 +548,6 @@ const boardsStore = {
 
   toggleIssueSubscription(endpoint) {
     return axios.post(endpoint);
-  },
-
-  allBoards() {
-    return axios.get(this.generateBoardsPath());
   },
 
   recentBoards() {

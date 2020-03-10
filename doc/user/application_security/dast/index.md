@@ -356,6 +356,31 @@ dast:
 The DAST job does not require the project's repository to be present when running, so by default
 [`GIT_STRATEGY`](../../../ci/yaml/README.md#git-strategy) is set to `none`.
 
+## Running DAST in an offline air-gapped installation
+
+DAST can be executed on an offline air-gapped GitLab Ultimate installation using the following process:
+
+1. Host the DAST image `registry.gitlab.com/gitlab-org/security-products/dast:latest` in your local
+   Docker container registry.
+1. Add the following configuration to your `.gitlab-ci.yml` file. You must replace `image` to refer
+   to the DAST Docker image hosted on your local Docker container registry:
+
+   ```yaml
+   include:
+     - template: DAST.gitlab-ci.yml
+
+   dast:
+     image: registry.example.com/namespace/dast:latest
+     script:
+        - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
+        - /analyze -t $DAST_WEBSITE --auto-update-addons false -z"-silent"
+   ```
+
+The option `--auto-update-addons false` instructs ZAP not to update add-ons.
+
+The option `-z` passes the quoted `-silent` parameter to ZAP. The `-silent` parameter ensures ZAP
+does not make any unsolicited requests including checking for updates.
+
 ## Reports
 
 The DAST job can emit various reports.

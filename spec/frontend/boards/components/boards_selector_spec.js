@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
-import { GlDropdown } from '@gitlab/ui';
+import { GlDropdown, GlLoadingIcon } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
 import boardsStore from '~/boards/stores/boards_store';
@@ -8,7 +8,8 @@ import boardsStore from '~/boards/stores/boards_store';
 const throttleDuration = 1;
 
 function boardGenerator(n) {
-  return new Array(n).fill().map((board, id) => {
+  return new Array(n).fill().map((board, index) => {
+    const id = `${index}`;
     const name = `board${id}`;
 
     return {
@@ -34,8 +35,17 @@ describe('BoardsSelector', () => {
 
   const getDropdownItems = () => wrapper.findAll('.js-dropdown-item');
   const getDropdownHeaders = () => wrapper.findAll('.dropdown-bold-header');
+  const getLoadingIcon = () => wrapper.find(GlLoadingIcon);
 
   beforeEach(() => {
+    const $apollo = {
+      queries: {
+        boards: {
+          loading: false,
+        },
+      },
+    };
+
     boardsStore.setEndpoints({
       boardsEndpoint: '',
       recentBoardsEndpoint: '',
@@ -45,7 +55,13 @@ describe('BoardsSelector', () => {
     });
 
     allBoardsResponse = Promise.resolve({
-      data: boards,
+      data: {
+        group: {
+          boards: {
+            edges: boards.map(board => ({ node: board })),
+          },
+        },
+      },
     });
     recentBoardsResponse = Promise.resolve({
       data: recentBoards,
@@ -54,8 +70,7 @@ describe('BoardsSelector', () => {
     boardsStore.allBoards = jest.fn(() => allBoardsResponse);
     boardsStore.recentBoards = jest.fn(() => recentBoardsResponse);
 
-    const Component = Vue.extend(BoardsSelector);
-    wrapper = mount(Component, {
+    wrapper = mount(BoardsSelector, {
       propsData: {
         throttleDuration,
         currentBoard: {
@@ -77,13 +92,18 @@ describe('BoardsSelector', () => {
         scopedIssueBoardFeatureEnabled: true,
         weights: [],
       },
+      mocks: { $apollo },
       attachToDocument: true,
+    });
+
+    wrapper.vm.$apollo.addSmartQuery = jest.fn((_, options) => {
+      wrapper.setData({
+        [options.loadingKey]: true,
+      });
     });
 
     // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
     wrapper.find(GlDropdown).vm.$emit('show');
-
-    return Promise.all([allBoardsResponse, recentBoardsResponse]).then(() => Vue.nextTick());
   });
 
   afterEach(() => {
@@ -91,64 +111,99 @@ describe('BoardsSelector', () => {
     wrapper = null;
   });
 
-  describe('filtering', () => {
-    it('shows all boards without filtering', () => {
-      expect(getDropdownItems().length).toBe(boards.length + recentBoards.length);
+  describe('loading', () => {
+    // we are testing loading state, so don't resolve responses until after the tests
+    afterEach(() => {
+      return Promise.all([allBoardsResponse, recentBoardsResponse]).then(() => nextTick());
     });
 
-    it('shows only matching boards when filtering', () => {
-      const filterTerm = 'board1';
-      const expectedCount = boards.filter(board => board.name.includes(filterTerm)).length;
-
-      fillSearchBox(filterTerm);
-
-      return Vue.nextTick().then(() => {
-        expect(getDropdownItems().length).toBe(expectedCount);
-      });
-    });
-
-    it('shows message if there are no matching boards', () => {
-      fillSearchBox('does not exist');
-
-      return Vue.nextTick().then(() => {
-        expect(getDropdownItems().length).toBe(0);
-        expect(wrapper.text().includes('No matching boards found')).toBe(true);
-      });
+    it('shows loading spinner', () => {
+      expect(getDropdownHeaders()).toHaveLength(0);
+      expect(getDropdownItems()).toHaveLength(0);
+      expect(getLoadingIcon().exists()).toBe(true);
     });
   });
 
-  describe('recent boards section', () => {
-    it('shows only when boards are greater than 10', () => {
-      const expectedCount = 2; // Recent + All
-
-      expect(getDropdownHeaders().length).toBe(expectedCount);
+  describe('loaded', () => {
+    beforeEach(() => {
+      return Promise.all([allBoardsResponse, recentBoardsResponse]).then(() => nextTick());
     });
 
-    it('does not show when boards are less than 10', () => {
-      wrapper.setData({
-        boards: boards.slice(0, 5),
+    it('hides loading spinner', () => {
+      expect(getLoadingIcon().exists()).toBe(false);
+    });
+
+    describe('filtering', () => {
+      beforeEach(() => {
+        wrapper.setData({
+          boards,
+        });
+
+        return nextTick();
       });
 
-      return Vue.nextTick().then(() => {
-        expect(getDropdownHeaders().length).toBe(0);
+      it('shows all boards without filtering', () => {
+        expect(getDropdownItems()).toHaveLength(boards.length + recentBoards.length);
+      });
+
+      it('shows only matching boards when filtering', () => {
+        const filterTerm = 'board1';
+        const expectedCount = boards.filter(board => board.name.includes(filterTerm)).length;
+
+        fillSearchBox(filterTerm);
+
+        return nextTick().then(() => {
+          expect(getDropdownItems()).toHaveLength(expectedCount);
+        });
+      });
+
+      it('shows message if there are no matching boards', () => {
+        fillSearchBox('does not exist');
+
+        return nextTick().then(() => {
+          expect(getDropdownItems()).toHaveLength(0);
+          expect(wrapper.text().includes('No matching boards found')).toBe(true);
+        });
       });
     });
 
-    it('does not show when recentBoards api returns empty array', () => {
-      wrapper.setData({
-        recentBoards: [],
+    describe('recent boards section', () => {
+      it('shows only when boards are greater than 10', () => {
+        wrapper.setData({
+          boards,
+        });
+
+        return nextTick().then(() => {
+          expect(getDropdownHeaders()).toHaveLength(2);
+        });
       });
 
-      return Vue.nextTick().then(() => {
-        expect(getDropdownHeaders().length).toBe(0);
+      it('does not show when boards are less than 10', () => {
+        wrapper.setData({
+          boards: boards.slice(0, 5),
+        });
+
+        return nextTick().then(() => {
+          expect(getDropdownHeaders()).toHaveLength(0);
+        });
       });
-    });
 
-    it('does not show when search is active', () => {
-      fillSearchBox('Random string');
+      it('does not show when recentBoards api returns empty array', () => {
+        wrapper.setData({
+          recentBoards: [],
+        });
 
-      return Vue.nextTick().then(() => {
-        expect(getDropdownHeaders().length).toBe(0);
+        return nextTick().then(() => {
+          expect(getDropdownHeaders()).toHaveLength(0);
+        });
+      });
+
+      it('does not show when search is active', () => {
+        fillSearchBox('Random string');
+
+        return nextTick().then(() => {
+          expect(getDropdownHeaders()).toHaveLength(0);
+        });
       });
     });
   });

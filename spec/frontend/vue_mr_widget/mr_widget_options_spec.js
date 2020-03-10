@@ -259,16 +259,40 @@ describe('mrWidgetOptions', () => {
 
     describe('methods', () => {
       describe('checkStatus', () => {
-        it('should tell service to check status', () => {
+        let cb;
+        let isCbExecuted;
+
+        beforeEach(() => {
           jest.spyOn(vm.service, 'checkStatus').mockReturnValue(returnPromise(mockData));
           jest.spyOn(vm.mr, 'setData').mockImplementation(() => {});
           jest.spyOn(vm, 'handleNotification').mockImplementation(() => {});
 
-          let isCbExecuted = false;
-          const cb = () => {
+          isCbExecuted = false;
+          cb = () => {
             isCbExecuted = true;
           };
+        });
 
+        it('should not tell service to check status if document is not visible', () => {
+          Object.defineProperty(document, 'visibilityState', {
+            value: 'hidden',
+            configurable: true,
+          });
+          vm.checkStatus(cb);
+
+          return vm.$nextTick().then(() => {
+            expect(vm.service.checkStatus).not.toHaveBeenCalled();
+            expect(vm.mr.setData).not.toHaveBeenCalled();
+            expect(vm.handleNotification).not.toHaveBeenCalled();
+            expect(isCbExecuted).toBeFalsy();
+            Object.defineProperty(document, 'visibilityState', {
+              value: 'visible',
+              configurable: true,
+            });
+          });
+        });
+
+        it('should tell service to check status if document is visible', () => {
           vm.checkStatus(cb);
 
           return vm.$nextTick().then(() => {

@@ -98,6 +98,7 @@ export default () => {
         listsEndpoint: this.listsEndpoint,
         bulkUpdatePath: this.bulkUpdatePath,
         boardId: this.boardId,
+        fullPath: $boardApp.dataset.fullPath,
       });
       boardsStore.rootPath = this.boardsEndpoint;
 

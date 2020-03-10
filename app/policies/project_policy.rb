@@ -313,6 +313,7 @@ class ProjectPolicy < BasePolicy
     enable :daily_statistics
     enable :admin_operations
     enable :read_deploy_token
+    enable :create_deploy_token
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror

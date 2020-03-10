@@ -15422,6 +15422,9 @@ msgstr ""
 msgid "ProjectSettings|View and edit files in this project"
 msgstr ""
 
+msgid "ProjectSettings|View and edit files in this project. Non-project members will only have read access"
+msgstr ""
+
 msgid "ProjectSettings|When conflicts arise the user is given the option to rebase"
 msgstr ""
 
@@ -18172,6 +18175,9 @@ msgid "Snippets|Give your file a name to add code highlighting, e.g. example.rb 
 msgstr ""
 
 msgid "Snippets|Optionally add a description about what your snippet does or how to use it..."
+msgstr ""
+
+msgid "Snippets|Optionally add a description about what your snippet does or how to use it…"
 msgstr ""
 
 msgid "Snowplow"

@@ -28,7 +28,7 @@ module Gitlab
 
     class BatchCounter
       FALLBACK = -1
-      MIN_REQUIRED_BATCH_SIZE = 2_000
+      MIN_REQUIRED_BATCH_SIZE = 1_250
       MAX_ALLOWED_LOOPS = 10_000
       SLEEP_TIME_IN_SECONDS = 0.01 # 10 msec sleep
       # Each query should take <<500ms https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22705

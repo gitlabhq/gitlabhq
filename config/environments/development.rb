@@ -59,5 +59,7 @@ Rails.application.configure do
     config.active_record.migration_error = false
     config.active_record.verbose_query_logs = false
     config.action_view.cache_template_loading = true
+
+    config.middleware.delete BetterErrors::Middleware
   end
 end

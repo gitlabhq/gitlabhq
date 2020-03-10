@@ -133,4 +133,57 @@ describe API::DeployTokens do
       end
     end
   end
+
+  describe 'POST /projects/:id/deploy_tokens' do
+    let(:params) do
+      {
+        name: 'Foo',
+        expires_at: 1.year.from_now,
+        scopes: [
+          'read_repository'
+        ],
+        username: 'Bar'
+      }
+    end
+
+    subject do
+      post api("/projects/#{project.id}/deploy_tokens", user), params: params
+      response
+    end
+
+    context 'when unauthenticated' do
+      let(:user) { nil }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'when authenticated as non-admin user' do
+      before do
+        project.add_developer(user)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
+    end
+
+    context 'when authenticated as maintainer' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'creates the deploy token' do
+        expect { subject }.to change { DeployToken.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('public_api/v4/deploy_token')
+      end
+
+      context 'with an invalid scope' do
+        before do
+          params[:scopes] = %w[read_repository all_access]
+        end
+
+        it { is_expected.to have_gitlab_http_status(:bad_request) }
+      end
+    end
+  end
 end
