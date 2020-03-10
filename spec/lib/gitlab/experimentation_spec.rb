@@ -30,7 +30,12 @@ describe Gitlab::Experimentation do
     end
 
     describe '#set_experimentation_subject_id_cookie' do
+      let(:do_not_track) { nil }
+      let(:cookie) { cookies.permanent.signed[:experimentation_subject_id] }
+
       before do
+        request.headers['DNT'] = do_not_track if do_not_track.present?
+
         get :index
       end
 
@@ -46,12 +51,30 @@ describe Gitlab::Experimentation do
 
       context 'cookie is not present' do
         it 'sets a permanent signed cookie' do
-          expect(cookies.permanent.signed[:experimentation_subject_id]).to be_present
+          expect(cookie).to be_present
+        end
+
+        context 'DNT: 0' do
+          let(:do_not_Track) { '0' }
+
+          it 'sets a permanent signed cookie' do
+            expect(cookie).to be_present
+          end
+        end
+
+        context 'DNT: 1' do
+          let(:do_not_track) { '1' }
+
+          it 'does nothing' do
+            expect(cookie).not_to be_present
+          end
         end
       end
     end
 
     describe '#experiment_enabled?' do
+      subject { controller.experiment_enabled?(:test_experiment) }
+
       context 'cookie is not present' do
         it 'calls Gitlab::Experimentation.enabled_for_user? with the name of the experiment and an experimentation_subject_index of nil' do
           expect(Gitlab::Experimentation).to receive(:enabled_for_user?).with(:test_experiment, nil)
@@ -72,11 +95,25 @@ describe Gitlab::Experimentation do
         end
       end
 
+      it 'returns true when DNT: 0 is set in the request' do
+        allow(Gitlab::Experimentation).to receive(:enabled_for_user?) { true }
+        controller.request.headers['DNT'] = '0'
+
+        is_expected.to be_truthy
+      end
+
+      it 'returns false when DNT: 1 is set in the request' do
+        allow(Gitlab::Experimentation).to receive(:enabled_for_user?) { true }
+        controller.request.headers['DNT'] = '1'
+
+        is_expected.to be_falsy
+      end
+
       describe 'URL parameter to force enable experiment' do
-        it 'returns true' do
+        it 'returns true unconditionally' do
           get :index, params: { force_experiment: :test_experiment }
 
-          expect(controller.experiment_enabled?(:test_experiment)).to be_truthy
+          is_expected.to be_truthy
         end
       end
     end

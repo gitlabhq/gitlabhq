@@ -359,13 +359,6 @@ On the secondary the following GitLab frontend services will be enabled:
 Verify these services by running `sudo gitlab-ctl status` on the frontend
 application servers.
 
-You may wish to run backend application services on backend-specific servers.
-For example, you can disable the `geo-logcursor` service with
-`geo_logcursor['enable'] = false` and run it on application servers not
-attached to the load balancer. On those backend application servers, you would
-disable Unicorn with `unicorn['enable'] = false`. You might also choose to do
-the same thing with the `sidekiq` service.
-
 ### Step 5: Set up the LoadBalancer for the **secondary** node
 
 In this topology, a load balancer is required at each geographic location to
@@ -373,6 +366,98 @@ route traffic to the application servers.
 
 See [Load Balancer for GitLab HA](../../high_availability/load_balancer.md) for
 more information.
+
+### Step 6: Configure the backend application servers on the **secondary** node
+
+The minimal reference architecture diagram above shows all application services
+running together on the same machines. However, for high availability we
+[strongly recommend running all services separately](../../high_availability/README.md).
+
+For example, a Sidekiq server could be configured similarly to the frontend
+application servers above, with some changes to run only the `sidekiq` service:
+
+1. Edit `/etc/gitlab/gitlab.rb` on each Sidekiq server in the **secondary**
+   cluster, and add the following:
+
+   ```ruby
+   ##
+   ## Enable the Geo secondary role
+   ##
+   roles ['geo_secondary_role']
+
+   ##
+   ## Enable the Sidekiq service
+   ##
+   sidekiq['enable'] = true
+
+   ##
+   ## Ensure unnecessary services are disabled
+   ##
+   alertmanager['enable'] = false
+   consul['enable'] = false
+   geo_logcursor['enable'] = false
+   gitaly['enable'] = false
+   gitlab_exporter['enable'] = false
+   gitlab_workhorse['enable'] = false
+   nginx['enable'] = false
+   node_exporter['enable'] = false
+   pgbouncer_exporter['enable'] = false
+   postgresql['enable'] = false
+   prometheus['enable'] = false
+   redis['enable'] = false
+   redis_exporter['enable'] = false
+   repmgr['enable'] = false
+   unicorn['enable'] = false
+
+   ##
+   ## The unique identifier for the Geo node.
+   ##
+   gitlab_rails['geo_node_name'] = '<node_name_here>'
+
+   ##
+   ## Disable automatic migrations
+   ##
+   gitlab_rails['auto_migrate'] = false
+
+   ##
+   ## Configure the connection to the tracking DB. And disable application
+   ## servers from running tracking databases.
+   ##
+   geo_secondary['db_host'] = '<geo_tracking_db_host>'
+   geo_secondary['db_password'] = '<geo_tracking_db_password>'
+   geo_postgresql['enable'] = false
+
+   ##
+   ## Configure connection to the streaming replica database, if you haven't
+   ## already
+   ##
+   gitlab_rails['db_host'] = '<replica_database_host>'
+   gitlab_rails['db_password'] = '<replica_database_password>'
+
+   ##
+   ## Configure connection to Redis, if you haven't already
+   ##
+   gitlab_rails['redis_host'] = '<redis_host>'
+   gitlab_rails['redis_password'] = '<redis_password>'
+
+   ##
+   ## If you are using custom users not managed by Omnibus, you need to specify
+   ## UIDs and GIDs like below, and ensure they match between servers in a
+   ## cluster to avoid permissions issues
+   ##
+   user['uid'] = 9000
+   user['gid'] = 9000
+   web_server['uid'] = 9001
+   web_server['gid'] = 9001
+   registry['uid'] = 9002
+   registry['gid'] = 9002
+   ```
+
+   You can similarly configure a server to run only the `geo-logcursor` service
+   with `geo_logcursor['enable'] = true` and disabling Sidekiq with
+   `sidekiq['enable'] = false`.
+
+   These servers do not need to be attached to the load balancer.
 
 [diagram-source]: https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit
 [gitlab-reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure

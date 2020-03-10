@@ -6,7 +6,7 @@ type: reference, howto
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1984) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
 
-With the help of [GitLab CI/CD](../../../ci/README.md), you can analyze your
+Ensuring your project's code stays simple, readable and easy to contribute to can be problematic. With the help of [GitLab CI/CD](../../../ci/README.md), you can analyze your
 source code quality using GitLab Code Quality.
 
 Code Quality:
@@ -14,12 +14,13 @@ Code Quality:
 - Uses [Code Climate Engines](https://codeclimate.com), which are
   free and open source. Code Quality doesn't require a Code Climate
   subscription.
-- Runs in [pipelines](../../../ci/pipelines.md) using an Docker image built in
+- Runs in [pipelines](../../../ci/pipelines.md) using a Docker image built in the
   [GitLab Code
-  Quality](https://gitlab.com/gitlab-org/security-products/codequality) project.
+  Quality](https://gitlab.com/gitlab-org/security-products/codequality) project using [default Code Climate configurations](https://gitlab.com/gitlab-org/security-products/codequality/-/tree/master/codeclimate_defaults).
 - Can make use of a [template](#example-configuration).
 - Is available with [Auto
   DevOps](../../../topics/autodevops/index.md#auto-code-quality-starter).
+- Can be extended through [Analysis Plugins](https://docs.codeclimate.com/docs/list-of-engines) or a [custom tool](#implementing-a-custom-tool).
 
 Going a step further, GitLab can show the Code Quality report right
 in the merge request widget area:

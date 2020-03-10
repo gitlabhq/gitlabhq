@@ -314,7 +314,7 @@ controller.instance_variable_set(:@user, user)
 
 and use methods which are deprecated in Rails 5 ([#23768]).
 
-[#23768]: https://gitlab.com/gitlab-org/gitlab-foss/issues/23768
+[#23768]: https://gitlab.com/gitlab-org/gitlab/-/issues/16260
 
 ### About Karma
 
