@@ -195,6 +195,39 @@ describe Gitlab::Danger::CommitLinter do
         end
       end
 
+      [
+        '[ci skip] A commit message',
+        '[Ci skip] A commit message',
+        '[API] A commit message'
+      ].each do |message|
+        context "when subject is '#{message}'" do
+          let(:commit_message) { message }
+
+          it 'does not add a problem' do
+            expect(commit_linter).not_to receive(:add_problem)
+
+            commit_linter.lint
+          end
+        end
+      end
+
+      [
+        '[ci skip]A commit message',
+        '[Ci skip]  A commit message',
+        '[ci skip] a commit message',
+        '! A commit message'
+      ].each do |message|
+        context "when subject is '#{message}'" do
+          let(:commit_message) { message }
+
+          it 'adds a problem' do
+            expect(commit_linter).to receive(:add_problem).with(:subject_starts_with_lowercase, described_class::DEFAULT_SUBJECT_DESCRIPTION)
+
+            commit_linter.lint
+          end
+        end
+      end
+
       context 'when subject ends with a period' do
         let(:commit_message) { 'A B C.' }
 

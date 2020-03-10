@@ -2450,6 +2450,7 @@ ActiveRecord::Schema.define(version: 2020_03_06_170531) do
   create_table "merge_request_assignees", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "merge_request_id", null: false
+    t.datetime_with_timezone "created_at"
     t.index ["merge_request_id", "user_id"], name: "index_merge_request_assignees_on_merge_request_id_and_user_id", unique: true
     t.index ["merge_request_id"], name: "index_merge_request_assignees_on_merge_request_id"
     t.index ["user_id"], name: "index_merge_request_assignees_on_user_id"
@@ -2564,6 +2565,7 @@ ActiveRecord::Schema.define(version: 2020_03_06_170531) do
     t.integer "modified_paths_size"
     t.integer "commits_count"
     t.datetime_with_timezone "first_approved_at"
+    t.datetime_with_timezone "first_reassigned_at"
     t.index ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at"
     t.index ["latest_closed_at"], name: "index_merge_request_metrics_on_latest_closed_at", where: "(latest_closed_at IS NOT NULL)"
     t.index ["latest_closed_by_id"], name: "index_merge_request_metrics_on_latest_closed_by_id"

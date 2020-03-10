@@ -1,8 +1,8 @@
-import $ from 'jquery';
 import { TEST_HOST } from 'spec/test_constants';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Api from '~/api';
-import actionsModule, * as actions from '~/notes/stores/actions';
+import Flash from '~/flash';
+import * as actions from '~/notes/stores/actions';
 import * as mutationTypes from '~/notes/stores/mutation_types';
 import * as notesConstants from '~/notes/constants';
 import createStore from '~/notes/stores';
@@ -19,21 +19,20 @@ import {
 import axios from '~/lib/utils/axios_utils';
 
 const TEST_ERROR_MESSAGE = 'Test error message';
+jest.mock('~/flash');
 
 describe('Actions Notes Store', () => {
   let commit;
   let dispatch;
   let state;
   let store;
-  let flashSpy;
   let axiosMock;
 
   beforeEach(() => {
     store = createStore();
-    commit = jasmine.createSpy('commit');
-    dispatch = jasmine.createSpy('dispatch');
+    commit = jest.fn();
+    dispatch = jest.fn();
     state = {};
-    flashSpy = spyOnDependency(actionsModule, 'Flash');
     axiosMock = new AxiosMockAdapter(axios);
   });
 
@@ -244,19 +243,15 @@ describe('Actions Notes Store', () => {
   });
 
   describe('poll', () => {
-    beforeEach(done => {
-      jasmine.clock().install();
+    jest.useFakeTimers();
 
-      spyOn(axios, 'get').and.callThrough();
+    beforeEach(done => {
+      jest.spyOn(axios, 'get');
 
       store
         .dispatch('setNotesData', notesDataMock)
         .then(done)
         .catch(done.fail);
-    });
-
-    afterEach(() => {
-      jasmine.clock().uninstall();
     });
 
     it('calls service with last fetched state', done => {
@@ -271,7 +266,7 @@ describe('Actions Notes Store', () => {
           expect(axios.get).toHaveBeenCalled();
           expect(store.state.lastFetchedAt).toBe('123456');
 
-          jasmine.clock().tick(1500);
+          jest.advanceTimersByTime(1500);
         })
         .then(
           () =>
@@ -280,8 +275,8 @@ describe('Actions Notes Store', () => {
             }),
         )
         .then(() => {
-          expect(axios.get.calls.count()).toBe(2);
-          expect(axios.get.calls.mostRecent().args[1].headers).toEqual({
+          expect(axios.get.mock.calls.length).toBe(2);
+          expect(axios.get.mock.calls[axios.get.mock.calls.length - 1][1].headers).toEqual({
             'X-Last-Fetched-At': '123456',
           });
         })
@@ -310,13 +305,13 @@ describe('Actions Notes Store', () => {
     beforeEach(() => {
       axiosMock.onDelete(endpoint).replyOnce(200, {});
 
-      $('body').attr('data-page', '');
+      document.body.setAttribute('data-page', '');
     });
 
     afterEach(() => {
       axiosMock.restore();
 
-      $('body').attr('data-page', '');
+      document.body.setAttribute('data-page', '');
     });
 
     it('commits DELETE_NOTE and dispatches updateMergeRequestWidget', done => {
@@ -347,7 +342,7 @@ describe('Actions Notes Store', () => {
     it('dispatches removeDiscussionsFromDiff on merge request page', done => {
       const note = { path: endpoint, id: 1 };
 
-      $('body').attr('data-page', 'projects:merge_requests:show');
+      document.body.setAttribute('data-page', 'projects:merge_requests:show');
 
       testAction(
         actions.removeNote,
@@ -381,13 +376,13 @@ describe('Actions Notes Store', () => {
     beforeEach(() => {
       axiosMock.onDelete(endpoint).replyOnce(200, {});
 
-      $('body').attr('data-page', '');
+      document.body.setAttribute('data-page', '');
     });
 
     afterEach(() => {
       axiosMock.restore();
 
-      $('body').attr('data-page', '');
+      document.body.setAttribute('data-page', '');
     });
 
     it('dispatches removeNote', done => {
@@ -534,7 +529,7 @@ describe('Actions Notes Store', () => {
 
   describe('updateMergeRequestWidget', () => {
     it('calls mrWidget checkStatus', () => {
-      spyOn(mrWidgetEventHub, '$emit');
+      jest.spyOn(mrWidgetEventHub, '$emit').mockImplementation(() => {});
 
       actions.updateMergeRequestWidget();
 
@@ -589,7 +584,7 @@ describe('Actions Notes Store', () => {
 
       actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
 
-      expect(commit.calls.allArgs()).toEqual([[mutationTypes.UPDATE_NOTE, note]]);
+      expect(commit.mock.calls).toEqual([[mutationTypes.UPDATE_NOTE, note]]);
     });
 
     it('Creates a new note if none exisits', () => {
@@ -597,7 +592,7 @@ describe('Actions Notes Store', () => {
       const getters = { notesById: {} };
       actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
 
-      expect(commit.calls.allArgs()).toEqual([[mutationTypes.ADD_NEW_NOTE, note]]);
+      expect(commit.mock.calls).toEqual([[mutationTypes.ADD_NEW_NOTE, note]]);
     });
 
     describe('Discussion notes', () => {
@@ -619,7 +614,7 @@ describe('Actions Notes Store', () => {
 
         actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [discussionNote]);
 
-        expect(commit.calls.allArgs()).toEqual([
+        expect(commit.mock.calls).toEqual([
           [mutationTypes.ADD_NEW_REPLY_TO_DISCUSSION, discussionNote],
         ]);
       });
@@ -630,7 +625,7 @@ describe('Actions Notes Store', () => {
 
         actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [diffNote]);
 
-        expect(dispatch.calls.allArgs()).toEqual([
+        expect(dispatch.mock.calls).toEqual([
           ['fetchDiscussions', { path: state.notesData.discussionsPath }],
         ]);
       });
@@ -645,7 +640,7 @@ describe('Actions Notes Store', () => {
 
         actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [discussionNote]);
 
-        expect(commit.calls.allArgs()).toEqual([[mutationTypes.ADD_NEW_NOTE, discussionNote]]);
+        expect(commit.mock.calls).toEqual([[mutationTypes.ADD_NEW_NOTE, discussionNote]]);
       });
     });
   });
@@ -770,7 +765,7 @@ describe('Actions Notes Store', () => {
           .then(() => done.fail('Expected error to be thrown!'))
           .catch(err => {
             expect(err).toBe(error);
-            expect(flashSpy).not.toHaveBeenCalled();
+            expect(Flash).not.toHaveBeenCalled();
           })
           .then(done)
           .catch(done.fail);
@@ -792,7 +787,7 @@ describe('Actions Notes Store', () => {
           )
           .then(resp => {
             expect(resp.hasFlash).toBe(true);
-            expect(flashSpy).toHaveBeenCalledWith(
+            expect(Flash).toHaveBeenCalledWith(
               'Your comment could not be submitted because something went wrong',
               'alert',
               flashContainer,
@@ -818,7 +813,7 @@ describe('Actions Notes Store', () => {
           )
           .then(data => {
             expect(data).toBe(res);
-            expect(flashSpy).not.toHaveBeenCalled();
+            expect(Flash).not.toHaveBeenCalled();
           })
           .then(done)
           .catch(done.fail);
@@ -833,9 +828,8 @@ describe('Actions Notes Store', () => {
     let flashContainer;
 
     beforeEach(() => {
-      spyOn(Api, 'applySuggestion');
-      dispatch.and.returnValue(Promise.resolve());
-      Api.applySuggestion.and.returnValue(Promise.resolve());
+      jest.spyOn(Api, 'applySuggestion').mockReturnValue(Promise.resolve());
+      dispatch.mockReturnValue(Promise.resolve());
       flashContainer = {};
     });
 
@@ -852,32 +846,32 @@ describe('Actions Notes Store', () => {
 
     it('when service success, commits and resolves discussion', done => {
       testSubmitSuggestion(done, () => {
-        expect(commit.calls.allArgs()).toEqual([
+        expect(commit.mock.calls).toEqual([
           [mutationTypes.APPLY_SUGGESTION, { discussionId, noteId, suggestionId }],
         ]);
 
-        expect(dispatch.calls.allArgs()).toEqual([['resolveDiscussion', { discussionId }]]);
-        expect(flashSpy).not.toHaveBeenCalled();
+        expect(dispatch.mock.calls).toEqual([['resolveDiscussion', { discussionId }]]);
+        expect(Flash).not.toHaveBeenCalled();
       });
     });
 
     it('when service fails, flashes error message', done => {
       const response = { response: { data: { message: TEST_ERROR_MESSAGE } } };
 
-      Api.applySuggestion.and.returnValue(Promise.reject(response));
+      Api.applySuggestion.mockReturnValue(Promise.reject(response));
 
       testSubmitSuggestion(done, () => {
         expect(commit).not.toHaveBeenCalled();
         expect(dispatch).not.toHaveBeenCalled();
-        expect(flashSpy).toHaveBeenCalledWith(`${TEST_ERROR_MESSAGE}.`, 'alert', flashContainer);
+        expect(Flash).toHaveBeenCalledWith(`${TEST_ERROR_MESSAGE}.`, 'alert', flashContainer);
       });
     });
 
     it('when resolve discussion fails, fail gracefully', done => {
-      dispatch.and.returnValue(Promise.reject());
+      dispatch.mockReturnValue(Promise.reject());
 
       testSubmitSuggestion(done, () => {
-        expect(flashSpy).not.toHaveBeenCalled();
+        expect(Flash).not.toHaveBeenCalled();
       });
     });
   });
@@ -887,13 +881,13 @@ describe('Actions Notes Store', () => {
     const filter = 0;
 
     beforeEach(() => {
-      dispatch.and.returnValue(new Promise(() => {}));
+      dispatch.mockReturnValue(new Promise(() => {}));
     });
 
     it('fetches discussions with filter and persistFilter false', () => {
       actions.filterDiscussion({ dispatch }, { path, filter, persistFilter: false });
 
-      expect(dispatch.calls.allArgs()).toEqual([
+      expect(dispatch.mock.calls).toEqual([
         ['setLoadingState', true],
         ['fetchDiscussions', { path, filter, persistFilter: false }],
       ]);
@@ -902,7 +896,7 @@ describe('Actions Notes Store', () => {
     it('fetches discussions with filter and persistFilter true', () => {
       actions.filterDiscussion({ dispatch }, { path, filter, persistFilter: true });
 
-      expect(dispatch.calls.allArgs()).toEqual([
+      expect(dispatch.mock.calls).toEqual([
         ['setLoadingState', true],
         ['fetchDiscussions', { path, filter, persistFilter: true }],
       ]);

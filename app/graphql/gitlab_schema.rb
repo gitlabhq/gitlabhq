@@ -141,3 +141,5 @@ class GitlabSchema < GraphQL::Schema
     end
   end
 end
+
+GitlabSchema.prepend_if_ee('EE::GitlabSchema')

@@ -43,11 +43,7 @@ module MergeRequests
         abort_auto_merge(merge_request, 'target branch was changed')
       end
 
-      if merge_request.assignees != old_assignees
-        create_assignee_note(merge_request, old_assignees)
-        notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignees)
-        todo_service.reassigned_issuable(merge_request, current_user, old_assignees)
-      end
+      handle_assignees_change(merge_request, old_assignees) if merge_request.assignees != old_assignees
 
       if merge_request.previous_changes.include?('target_branch') ||
           merge_request.previous_changes.include?('source_branch')
@@ -118,6 +114,12 @@ module MergeRequests
       else
         notification_service.async.changed_milestone_merge_request(merge_request, merge_request.milestone, current_user)
       end
+    end
+
+    def handle_assignees_change(merge_request, old_assignees)
+      create_assignee_note(merge_request, old_assignees)
+      notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignees)
+      todo_service.reassigned_issuable(merge_request, current_user, old_assignees)
     end
 
     def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
