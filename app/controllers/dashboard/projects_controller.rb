@@ -33,7 +33,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def starred
     @projects = load_projects(params.merge(starred: true))
-      .includes(:forked_from_project, :tags)
+      .includes(:forked_from_project, :tags).page(params[:page])
 
     @groups = []
 
@@ -51,7 +51,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   private
 
   def projects
-    @projects ||= load_projects(params.merge(non_public: true))
+    @projects ||= load_projects(params.merge(non_public: true)).page(params[:page])
   end
 
   def render_projects
@@ -73,7 +73,6 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
                 .execute
                 .includes(:route, :creator, :group, namespace: [:route, :owner])
                 .preload(:project_feature)
-                .page(finder_params[:page])
 
     prepare_projects_for_rendering(projects)
   end

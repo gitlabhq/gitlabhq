@@ -680,7 +680,7 @@ available configuration options.
 [Cilium](https://cilium.io/) is a networking plugin for Kubernetes
 that you can use to implement support for
 [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
-resources.
+resources. For more information on [Network Policies](../../topics/autodevops/index.md#network-policy), see the documentation.
 
 Enable Cilium in the `.gitlab/managed-apps/config.yaml` file to install it:
 

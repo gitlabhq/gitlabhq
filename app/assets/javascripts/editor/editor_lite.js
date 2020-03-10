@@ -11,6 +11,7 @@ export default class Editor {
     this.instance = null;
     this.model = null;
     this.options = {
+      extraEditorClassName: 'gl-editor-lite',
       ...defaultEditorOptions,
       ...options,
     };

@@ -1,48 +1,44 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
+import { uniqueId } from 'lodash';
 
 export default {
   components: {
     GlModal,
   },
   props: {
-    modalAttributes: {
-      type: Object,
-      required: false,
-      default: () => {
-        return {};
-      },
-    },
-    path: {
+    selector: {
       type: String,
-      required: false,
-      default: '',
-    },
-    method: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    showModal: {
-      type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
   },
-  watch: {
-    showModal(val) {
-      if (val) {
-        // Wait for v-if to render
-        this.$nextTick(() => {
-          this.openModal();
-        });
-      }
-    },
+  data() {
+    return {
+      modalId: uniqueId('confirm-modal-'),
+      path: '',
+      method: '',
+      modalAttributes: {},
+    };
+  },
+  mounted() {
+    document.querySelectorAll(this.selector).forEach(button => {
+      button.addEventListener('click', e => {
+        e.preventDefault();
+
+        this.path = button.dataset.path;
+        this.method = button.dataset.method;
+        this.modalAttributes = JSON.parse(button.dataset.modalAttributes);
+        this.openModal();
+      });
+    });
   },
   methods: {
     openModal() {
       this.$refs.modal.show();
+    },
+    closeModal() {
+      this.$refs.modal.hide();
     },
     submitModal() {
       this.$refs.form.submit();
@@ -54,11 +50,11 @@ export default {
 
 <template>
   <gl-modal
-    v-if="showModal"
     ref="modal"
+    :modal-id="modalId"
     v-bind="modalAttributes"
     @primary="submitModal"
-    @canceled="$emit('dismiss')"
+    @cancel="closeModal"
   >
     <form ref="form" :action="path" method="post">
       <!-- Rails workaround for <form method="delete" />

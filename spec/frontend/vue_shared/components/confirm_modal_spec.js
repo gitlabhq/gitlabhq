@@ -6,11 +6,10 @@ import ConfirmModal from '~/vue_shared/components/confirm_modal.vue';
 jest.mock('~/lib/utils/csrf', () => ({ token: 'test-csrf-token' }));
 
 describe('vue_shared/components/confirm_modal', () => {
-  const testModalProps = {
+  const MOCK_MODAL_DATA = {
     path: `${TEST_HOST}/1`,
     method: 'delete',
     modalAttributes: {
-      modalId: 'test-confirm-modal',
       title: 'Are you sure?',
       message: 'This will remove item 1',
       okVariant: 'danger',
@@ -18,8 +17,13 @@ describe('vue_shared/components/confirm_modal', () => {
     },
   };
 
+  const defaultProps = {
+    selector: '.test-button',
+  };
+
   const actionSpies = {
     openModal: jest.fn(),
+    closeModal: jest.fn(),
   };
 
   let wrapper;
@@ -27,7 +31,7 @@ describe('vue_shared/components/confirm_modal', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMount(ConfirmModal, {
       propsData: {
-        ...testModalProps,
+        ...defaultProps,
         ...props,
       },
       methods: {
@@ -48,28 +52,18 @@ describe('vue_shared/components/confirm_modal', () => {
       .wrappers.map(x => ({ name: x.attributes('name'), value: x.attributes('value') }));
 
   describe('template', () => {
-    describe('when showModal is false', () => {
+    describe('when modal data is set', () => {
       beforeEach(() => {
         createComponent();
+        wrapper.vm.modalAttributes = MOCK_MODAL_DATA.modalAttributes;
       });
 
-      it('does not render GlModal', () => {
-        expect(findModal().exists()).toBeFalsy();
-      });
-    });
-
-    describe('when showModal is true', () => {
-      beforeEach(() => {
-        createComponent({ showModal: true });
-      });
-
-      it('renders GlModal', () => {
+      it('renders GlModal wtih data', () => {
         expect(findModal().exists()).toBeTruthy();
         expect(findModal().attributes()).toEqual(
           expect.objectContaining({
-            modalid: testModalProps.modalAttributes.modalId,
-            oktitle: testModalProps.modalAttributes.okTitle,
-            okvariant: testModalProps.modalAttributes.okVariant,
+            oktitle: MOCK_MODAL_DATA.modalAttributes.okTitle,
+            okvariant: MOCK_MODAL_DATA.modalAttributes.okVariant,
           }),
         );
       });
@@ -77,25 +71,49 @@ describe('vue_shared/components/confirm_modal', () => {
   });
 
   describe('methods', () => {
-    beforeEach(() => {
-      createComponent({ showModal: true });
-    });
-
-    it('does not submit form', () => {
-      expect(findForm().element.submit).not.toHaveBeenCalled();
-    });
-
-    describe('when modal submitted', () => {
+    describe('submitModal', () => {
       beforeEach(() => {
-        findModal().vm.$emit('primary');
+        createComponent();
+        wrapper.vm.path = MOCK_MODAL_DATA.path;
+        wrapper.vm.method = MOCK_MODAL_DATA.method;
       });
 
-      it('submits form', () => {
-        expect(findFormData()).toEqual([
-          { name: '_method', value: testModalProps.method },
-          { name: 'authenticity_token', value: 'test-csrf-token' },
-        ]);
-        expect(findForm().element.submit).toHaveBeenCalled();
+      it('does not submit form', () => {
+        expect(findForm().element.submit).not.toHaveBeenCalled();
+      });
+
+      describe('when modal submitted', () => {
+        beforeEach(() => {
+          findModal().vm.$emit('primary');
+        });
+
+        it('submits form', () => {
+          expect(findFormData()).toEqual([
+            { name: '_method', value: MOCK_MODAL_DATA.method },
+            { name: 'authenticity_token', value: 'test-csrf-token' },
+          ]);
+          expect(findForm().element.submit).toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('closeModal', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not close modal', () => {
+        expect(actionSpies.closeModal).not.toHaveBeenCalled();
+      });
+
+      describe('when modal closed', () => {
+        beforeEach(() => {
+          findModal().vm.$emit('cancel');
+        });
+
+        it('closes modal', () => {
+          expect(actionSpies.closeModal).toHaveBeenCalled();
+        });
       });
     });
   });

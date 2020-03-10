@@ -8,7 +8,6 @@ describe('ConfirmModal', () => {
       path: `${TEST_HOST}/1`,
       method: 'delete',
       modalAttributes: {
-        modalId: 'geo-entry-removal-modal',
         title: 'Remove tracking database entry',
         message: 'Tracking database entry will be removed. Are you sure?',
         okVariant: 'danger',
@@ -19,7 +18,6 @@ describe('ConfirmModal', () => {
       path: `${TEST_HOST}/1`,
       method: 'post',
       modalAttributes: {
-        modalId: 'geo-entry-removal-modal',
         title: 'Update tracking database entry',
         message: 'Tracking database entry will be updated. Are you sure?',
         okVariant: 'success',
@@ -53,6 +51,7 @@ describe('ConfirmModal', () => {
   const findModalOkButton = (modal, variant) =>
     modal.querySelector(`.modal-footer .btn-${variant}`);
   const findModalCancelButton = modal => modal.querySelector('.modal-footer .btn-secondary');
+  const modalIsHidden = () => findModal().getAttribute('aria-hidden') === 'true';
 
   const serializeModal = (modal, buttonIndex) => {
     const { modalAttributes } = buttons[buttonIndex];
@@ -61,7 +60,6 @@ describe('ConfirmModal', () => {
       path: modal.querySelector('form').action,
       method: modal.querySelector('input[name="_method"]').value,
       modalAttributes: {
-        modalId: modal.id,
         title: modal.querySelector('.modal-title').innerHTML,
         message: modal.querySelector('.modal-body div').innerHTML,
         okVariant: [...findModalOkButton(modal, modalAttributes.okVariant).classList]
@@ -92,6 +90,7 @@ describe('ConfirmModal', () => {
     describe('GlModal', () => {
       it('is rendered', () => {
         expect(findModal()).toExist();
+        expect(modalIsHidden()).toBe(false);
       });
 
       describe('Cancel Button', () => {
@@ -102,7 +101,7 @@ describe('ConfirmModal', () => {
         });
 
         it('closes the modal', () => {
-          expect(findModal()).not.toExist();
+          expect(modalIsHidden()).toBe(true);
         });
       });
     });
