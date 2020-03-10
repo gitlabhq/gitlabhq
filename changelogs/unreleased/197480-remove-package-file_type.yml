@@ -1,0 +1,5 @@
+---
+title: Remove unused file_type column from packages_package_files
+merge_request: 26527
+author:
+type: changed

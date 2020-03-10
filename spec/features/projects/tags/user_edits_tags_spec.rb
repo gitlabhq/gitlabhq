@@ -68,7 +68,7 @@ describe 'Project > Tags', :js do
         end
       end
 
-      it 'shows "Attaching a file" message on uploading 1 file', :js do
+      it 'shows "Attaching a file" message on uploading 1 file', :js, :capybara_ignore_server_errors do
         slow_requests do
           dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
 

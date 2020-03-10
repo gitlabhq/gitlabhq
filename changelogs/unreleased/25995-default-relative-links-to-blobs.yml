@@ -1,0 +1,5 @@
+---
+title: Default to generating blob links for missing paths
+merge_request: 26817
+author:
+type: fixed

@@ -3029,7 +3029,6 @@ ActiveRecord::Schema.define(version: 2020_03_06_170531) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.bigint "size"
-    t.integer "file_type"
     t.integer "file_store"
     t.binary "file_md5"
     t.binary "file_sha1"

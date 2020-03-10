@@ -22,7 +22,7 @@ describe 'User uploads file to note' do
     end
   end
 
-  context 'uploading is in progress' do
+  context 'uploading is in progress', :capybara_ignore_server_errors do
     it 'cancels uploading on clicking to "Cancel" button', :js do
       slow_requests do
         dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)

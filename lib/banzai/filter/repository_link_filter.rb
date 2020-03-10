@@ -131,7 +131,7 @@ module Banzai
         path = cleaned_file_path(uri)
         nested_path = relative_file_path(uri)
 
-        file_exists?(nested_path) ? nested_path : path
+        path_exists?(nested_path) ? nested_path : path
       end
 
       def cleaned_file_path(uri)
@@ -190,12 +190,12 @@ module Banzai
         parts.push(path).join('/')
       end
 
-      def file_exists?(path)
-        path.present? && uri_type(path).present?
+      def path_exists?(path)
+        path.present? && @uri_types[path] != :unknown
       end
 
       def uri_type(path)
-        @uri_types[path] == :unknown ? "" : @uri_types[path]
+        @uri_types[path] == :unknown ? :blob : @uri_types[path]
       end
 
       def current_commit

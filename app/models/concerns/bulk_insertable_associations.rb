@@ -93,11 +93,14 @@ module BulkInsertableAssociations
   end
 
   def _bulk_insert_configure_foreign_key(reflection, items)
-    primary_key = self[reflection.active_record_primary_key]
-    raise "Classes including `BulkInsertableAssociations` must define a `primary_key`" unless primary_key
+    primary_key_column = reflection.active_record_primary_key
+    raise "Classes including `BulkInsertableAssociations` must define a `primary_key`" unless primary_key_column
+
+    primary_key_value = self[primary_key_column]
+    raise "No value found for primary key `#{primary_key_column}`" unless primary_key_value
 
     items.each do |item|
-      item[reflection.foreign_key] = primary_key
+      item[reflection.foreign_key] = primary_key_value
 
       if reflection.type
         item[reflection.type] = self.class.polymorphic_name

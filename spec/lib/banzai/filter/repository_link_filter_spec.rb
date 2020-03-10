@@ -145,7 +145,7 @@ describe Banzai::Filter::RepositoryLinkFilter do
   it 'ignores ref if commit is passed' do
     doc = filter(link('non/existent.file'), commit: project.commit('empty-branch') )
     expect(doc.at_css('a')['href'])
-      .to eq "/#{project_path}/#{ref}/non/existent.file" # non-existent files have no leading blob/raw/tree
+      .to eq "/#{project_path}/-/blob/#{ref}/non/existent.file"
   end
 
   shared_examples :valid_repository do
@@ -199,6 +199,12 @@ describe Banzai::Filter::RepositoryLinkFilter do
       doc = filter(link('doc/api/README.md'))
       expect(doc.at_css('a')['href'])
         .to eq "/#{project_path}/-/blob/#{ref}/doc/api/README.md"
+    end
+
+    it 'rebuilds relative URL for a missing file in the repo' do
+      doc = filter(link('missing-file'))
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/-/blob/#{ref}/missing-file"
     end
 
     it 'rebuilds relative URL for a file in the repo with leading ./' do

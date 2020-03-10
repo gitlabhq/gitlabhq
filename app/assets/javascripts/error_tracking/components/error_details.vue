@@ -25,6 +25,8 @@ import { severityLevel, severityLevelVariant, errorStatus } from './constants';
 
 import query from '../queries/details.query.graphql';
 
+const SENTRY_TIMEOUT = 10000;
+
 export default {
   components: {
     GlButton,
@@ -87,6 +89,8 @@ export default {
         if (res.data.project?.sentryErrors?.detailedError) {
           this.$apollo.queries.error.stopPolling();
           this.setStatus(this.error.status);
+        } else {
+          this.onNoApolloResult();
         }
       },
     },
@@ -94,6 +98,8 @@ export default {
   data() {
     return {
       error: null,
+      errorLoading: true,
+      errorPollTimeout: 0,
       issueCreationInProgress: false,
       isAlertVisible: false,
       closedIssueId: null,
@@ -158,8 +164,19 @@ export default {
       return this.errorStatus !== errorStatus.RESOLVED ? __('Resolve') : __('Unresolve');
     },
   },
+  watch: {
+    error(val) {
+      if (val) {
+        this.errorLoading = false;
+      }
+    },
+  },
   mounted() {
     this.startPollingStacktrace(this.issueStackTracePath);
+    this.errorPollTimeout = Date.now() + SENTRY_TIMEOUT;
+    this.$apollo.queries.error.setOptions({
+      fetchPolicy: 'cache-and-network',
+    });
   },
   methods: {
     ...mapActions('details', [
@@ -191,6 +208,13 @@ export default {
         }
       });
     },
+    onNoApolloResult() {
+      if (Date.now() > this.errorPollTimeout) {
+        this.$apollo.queries.error.stopPolling();
+        this.errorLoading = false;
+        createFlash(__('Could not connect to Sentry. Refresh the page to try again.'), 'warning');
+      }
+    },
     formatDate(date) {
       return `${this.timeFormatted(date)} (${dateFormat(date, 'UTC:yyyy-mm-dd h:MM:ssTT Z')})`;
     },
@@ -200,7 +224,7 @@ export default {
 
 <template>
   <div>
-    <div v-if="$apollo.queries.error.loading" class="py-3">
+    <div v-if="errorLoading" class="py-3">
       <gl-loading-icon :size="3" />
     </div>
     <div v-else-if="error" class="error-details">

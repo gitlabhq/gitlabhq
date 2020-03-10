@@ -114,7 +114,7 @@ describe MarkupHelper do
         let(:requested_path) { nil }
 
         it 'returns the link to the image path as a relative path' do
-          expanded_path = "/#{project.full_path}/master/./#{image_file}"
+          expanded_path = "/#{project.full_path}/-/blob/master/./#{image_file}"
 
           expect(subject.css('a')[0].attr('href')).to eq(expanded_path)
         end

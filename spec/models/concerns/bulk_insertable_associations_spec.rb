@@ -57,16 +57,12 @@ describe BulkInsertableAssociations do
     end
   end
 
-  before do
-    ActiveRecord::Base.connection.execute('TRUNCATE bulk_foos RESTART IDENTITY')
-  end
-
   context 'saving bulk insertable associations' do
     let(:parent) { BulkParent.new(name: 'parent') }
 
     context 'when items already have IDs' do
       it 'stores nothing and raises an error' do
-        build_items(parent: parent) { |n, item| item.id = 100 + n }
+        build_items(parent: parent) { |n, item| item.id = n }
 
         expect { save_with_bulk_inserts(parent) }.to raise_error(BulkInsertSafe::PrimaryKeySetError)
         expect(BulkFoo.count).to eq(0)
@@ -79,7 +75,7 @@ describe BulkInsertableAssociations do
 
         expect(BulkFoo).to receive(:bulk_insert!).once.and_call_original
         expect { save_with_bulk_inserts(parent) }.to change { BulkFoo.count }.from(0).to(items.size)
-        expect(parent.bulk_foos.pluck(:id)).to contain_exactly(*(1..10))
+        expect(parent.bulk_foos.pluck(:id)).to all(be_a Integer)
       end
     end
 

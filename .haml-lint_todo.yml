@@ -305,7 +305,6 @@ linters:
       - 'app/views/shared/_milestone_expired.html.haml'
       - 'app/views/shared/_no_password.html.haml'
       - 'app/views/shared/_no_ssh.html.haml'
-      - 'app/views/shared/_outdated_browser.html.haml'
       - 'app/views/shared/_ping_consent.html.haml'
       - 'app/views/shared/_project_limit.html.haml'
       - 'app/views/shared/boards/components/_board.html.haml'

@@ -23,6 +23,18 @@ JS_CONSOLE_FILTER = Regexp.union([
 
 CAPYBARA_WINDOW_SIZE = [1366, 768].freeze
 
+# Run Workhorse on the given host and port, proxying to Puma on a UNIX socket,
+# for a closer-to-production experience
+Capybara.register_server :puma_via_workhorse do |app, port, host, **options|
+  file = Tempfile.new
+  socket_path = file.path
+  file.close! # We just want the filename
+
+  TestEnv.with_workhorse(TestEnv.workhorse_dir, host, port, socket_path) do
+    Capybara.servers[:puma].call(app, nil, socket_path, **options)
+  end
+end
+
 Capybara.register_driver :chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
     # This enables access to logs with `page.driver.manage.get_log(:browser)`
@@ -60,7 +72,7 @@ Capybara.register_driver :chrome do |app|
   )
 end
 
-Capybara.server = :puma
+Capybara.server = :puma_via_workhorse
 Capybara.javascript_driver = :chrome
 Capybara.default_max_wait_time = timeout
 Capybara.ignore_hidden_elements = true
@@ -99,6 +111,18 @@ RSpec.configure do |config|
       rescue # ?
       end
     end
+  end
+
+  # The :capybara_ignore_server_errors metadata means unhandled exceptions raised
+  # by the application under test will not necessarily fail the server. This is
+  # useful when testing conditions that are expected to raise a 500 error in
+  # production; it should not be used on the happy path.
+  config.around(:each, :capybara_ignore_server_errors) do |example|
+    Capybara.raise_server_errors = false
+
+    example.run
+  ensure
+    Capybara.raise_server_errors = true
   end
 
   config.after(:example, :js) do |example|

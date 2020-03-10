@@ -14,23 +14,23 @@ module NotificationRecipients
     end
 
     def self.build_recipients(*args)
-      Builder::Default.new(*args).notification_recipients
+      ::NotificationRecipients::Builder::Default.new(*args).notification_recipients
     end
 
     def self.build_new_note_recipients(*args)
-      Builder::NewNote.new(*args).notification_recipients
+      ::NotificationRecipients::Builder::NewNote.new(*args).notification_recipients
     end
 
     def self.build_merge_request_unmergeable_recipients(*args)
-      Builder::MergeRequestUnmergeable.new(*args).notification_recipients
+      ::NotificationRecipients::Builder::MergeRequestUnmergeable.new(*args).notification_recipients
     end
 
     def self.build_project_maintainers_recipients(*args)
-      Builder::ProjectMaintainers.new(*args).notification_recipients
+      ::NotificationRecipients::Builder::ProjectMaintainers.new(*args).notification_recipients
     end
 
     def self.build_new_release_recipients(*args)
-      Builder::NewRelease.new(*args).notification_recipients
+      ::NotificationRecipients::Builder::NewRelease.new(*args).notification_recipients
     end
   end
 end

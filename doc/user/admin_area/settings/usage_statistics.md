@@ -74,6 +74,8 @@ You can view the exact JSON payload in the administration panel. To view the pay
 
 You can see how [the usage ping data maps to different stages of the product](https://gitlab.com/gitlab-data/analytics/blob/master/transform/snowflake-dbt/data/version_usage_stats_to_stage_mappings.csv).
 
+Usage ping is important to GitLab as we use it to calculate our [Action Monthly Active Users (AMAU)](https://about.gitlab.com/handbook/product/metrics/#action-monthly-active-users-amau) which helps us measure the success of our features.
+
 ### Request flow example
 
 The following example shows a basic request/response flow between the self-managed GitLab instance, GitLab Version Application,

@@ -111,8 +111,8 @@ module BulkInsertSafe
     end
 
     def _bulk_insert_reject_primary_key!(attributes, primary_key)
-      if attributes.delete(primary_key)
-        raise PrimaryKeySetError, "Primary key set: #{primary_key}:#{attributes[primary_key]}\n" \
+      if existing_pk = attributes.delete(primary_key)
+        raise PrimaryKeySetError, "Primary key set: #{primary_key}:#{existing_pk}\n" \
           "Bulk-inserts are only supported for rows that don't already have PK set"
       end
     end

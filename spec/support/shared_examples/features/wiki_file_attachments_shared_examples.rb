@@ -20,7 +20,7 @@ RSpec.shared_examples 'wiki file attachments' do
       end
     end
 
-    context 'uploading is in progress' do
+    context 'uploading is in progress', :capybara_ignore_server_errors do
       it 'cancels uploading on clicking to "Cancel" button' do
         slow_requests do
           attach_with_dropzone

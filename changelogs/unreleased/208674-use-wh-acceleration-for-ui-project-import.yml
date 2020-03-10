@@ -1,0 +1,5 @@
+---
+title: Use Workhorse acceleration for Project Import file upload via UI
+merge_request: 26278
+author:
+type: performance

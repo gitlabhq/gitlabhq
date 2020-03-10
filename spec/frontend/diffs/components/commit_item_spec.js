@@ -59,7 +59,9 @@ describe('diffs/components/commit_item', () => {
       expect(titleElement.text()).toBe(commit.title_html);
     });
 
-    it('renders commit description', () => {
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/209776
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('renders commit description', () => {
       const descElement = getDescElement();
       const descExpandElement = getDescExpandElement();
 
