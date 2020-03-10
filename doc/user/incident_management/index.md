@@ -96,7 +96,7 @@ The options are:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/201846) in GitLab Ultimate 12.8.
 
 This can be useful if you are triaging an application incident and need to
-[explore logs](../project/integrations/prometheus.md#view-pod-logs-ultimate)
+[explore logs](../project/integrations/prometheus.md#view-logs-ultimate)
 from across your application. It also helps you to understand
 what is affecting your application's performance and quickly resolve any problems.
 

@@ -53,8 +53,9 @@ module Gitlab
 
         repository_url = if Gitlab::CurrentSettings.enabled_git_access_protocol == 'ssh'
                            shell = config.gitlab_shell
+                           user = "#{shell.ssh_user}@" unless shell.ssh_user.empty?
                            port = ":#{shell.ssh_port}" unless shell.ssh_port == 22
-                           "ssh://#{shell.ssh_user}@#{shell.ssh_host}#{port}/#{path}.git"
+                           "ssh://#{user}#{shell.ssh_host}#{port}/#{path}.git"
                          else
                            "#{project_url}.git"
                          end

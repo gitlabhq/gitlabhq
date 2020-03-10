@@ -44,7 +44,8 @@ class Settings < Settingslogic
     end
 
     def build_gitlab_shell_ssh_path_prefix
-      user_host = "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}"
+      user = "#{gitlab_shell.ssh_user}@" unless gitlab_shell.ssh_user.empty?
+      user_host = "#{user}#{gitlab_shell.ssh_host}"
 
       if gitlab_shell.ssh_port != 22
         "ssh://#{user_host}:#{gitlab_shell.ssh_port}/"

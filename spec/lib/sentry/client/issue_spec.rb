@@ -254,6 +254,34 @@ describe Sentry::Client::Issue do
         expect(subject.gitlab_issue).to eq('https://gitlab.com/gitlab-org/gitlab/issues/1')
       end
 
+      context 'when issue annotations exist' do
+        before do
+          issue_sample_response['annotations'] = [
+            nil,
+            '',
+            "<a href=\"http://github.com/issues/6\">github-issue-6</a>",
+            "<div>annotation</a>",
+            "<a href=\"http://localhost/gitlab-org/gitlab/issues/2\">gitlab-org/gitlab#2</a>"
+          ]
+          stub_sentry_request(sentry_request_url, body: issue_sample_response)
+        end
+
+        it 'has a correct GitLab issue url' do
+          expect(subject.gitlab_issue).to eq('http://localhost/gitlab-org/gitlab/issues/2')
+        end
+      end
+
+      context 'when no GitLab issue is linked' do
+        before do
+          issue_sample_response['pluginIssues'] = []
+          stub_sentry_request(sentry_request_url, body: issue_sample_response)
+        end
+
+        it 'does not find a GitLab issue' do
+          expect(subject.gitlab_issue).to be_nil
+        end
+      end
+
       it 'has the correct tags' do
         expect(subject.tags).to eq({ level: issue_sample_response['level'], logger: issue_sample_response['logger'] })
       end

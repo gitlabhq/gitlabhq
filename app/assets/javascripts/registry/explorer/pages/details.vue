@@ -102,7 +102,7 @@ export default {
         return this.tagsPagination.page;
       },
       set(page) {
-        this.requestTagsList({ pagination: { page }, id: this.$route.params.id });
+        this.requestTagsList({ pagination: { page }, params: this.$route.params.id });
       },
     },
   },

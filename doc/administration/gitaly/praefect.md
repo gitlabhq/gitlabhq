@@ -278,7 +278,7 @@ application server, or a Gitaly node.
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
-   sudo gitlab-ctl reconfigure
+   gitlab-ctl reconfigure
    ```
 
 1. Verify that Praefect can reach PostgreSQL:
@@ -420,7 +420,7 @@ documentation](index.md#3-gitaly-server-configuration).
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure Gitaly](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
-   sudo gitlab-ctl reconfigure
+   gitlab-ctl reconfigure
    ```
 
 **Complete these steps for each Gitaly node!**
@@ -488,6 +488,16 @@ Particular attention should be shown to:
    gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
    ```
 
+1. Configure the `external_url` so that files could be served by GitLab
+   by proper endpoint access by editing `/etc/gitlab/gitlab.rb`:
+   
+   You will need to replace `GITLAB_SERVER_URL` with the real URL on which
+   current GitLab instance is serving:
+   
+   ```ruby
+   external_url 'GITLAB_SERVER_URL'
+   ```
+
 1. Add Prometheus monitoring settings by editing `/etc/gitlab/gitlab.rb`.
 
    You will need to replace:
@@ -523,19 +533,19 @@ Particular attention should be shown to:
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
-   sudo gitlab-ctl reconfigure
+   gitlab-ctl reconfigure
    ```
 
 1. Verify that GitLab can reach Praefect:
 
    ```shell
-   sudo gitlab-rake gitlab:gitaly:check
+   gitlab-rake gitlab:gitaly:check
    ```
 
 1. Set the Grafana admin password. This command will prompt you to enter a new password:
 
    ```shell
-   sudo gitlab-ctl set-grafana-password
+   gitlab-ctl set-grafana-password
    ```
 
 1. Update the **Repository storage** settings from **Admin Area > Settings >

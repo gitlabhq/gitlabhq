@@ -710,7 +710,7 @@ describe NotificationService, :mailer do
         user_3 = create(:user)
         recipient_1 = NotificationRecipient.new(user_1, :custom, custom_action: :new_release)
         recipient_2 = NotificationRecipient.new(user_2, :custom, custom_action: :new_release)
-        allow(NotificationRecipientService).to receive(:build_new_release_recipients).and_return([recipient_1, recipient_2])
+        allow(NotificationRecipients::BuildService).to receive(:build_new_release_recipients).and_return([recipient_1, recipient_2])
 
         release
 

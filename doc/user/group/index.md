@@ -256,7 +256,7 @@ and give all group members access to the project at once.
 
 Alternatively, you can [lock the sharing with group feature](#share-with-group-lock).
 
-## Sharing a group with another group **(CORE ONLY)**
+## Sharing a group with another group
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18328) in GitLab 12.7.
 

@@ -219,22 +219,15 @@ module ApplicationSettingImplementation
     self.outbound_local_requests_whitelist.uniq!
   end
 
+  # This method separates out the strings stored in the
+  # application_setting.outbound_local_requests_whitelist array into 2 arrays;
+  # an array of IPAddr objects (`[IPAddr.new('127.0.0.1')]`), and an array of
+  # domain strings (`['www.example.com']`).
   def outbound_local_requests_whitelist_arrays
     strong_memoize(:outbound_local_requests_whitelist_arrays) do
       next [[], []] unless self.outbound_local_requests_whitelist
 
-      ip_whitelist = []
-      domain_whitelist = []
-
-      self.outbound_local_requests_whitelist.each do |str|
-        ip_obj = Gitlab::Utils.string_to_ip_object(str)
-
-        if ip_obj
-          ip_whitelist << ip_obj
-        else
-          domain_whitelist << str
-        end
-      end
+      ip_whitelist, domain_whitelist = separate_whitelists(self.outbound_local_requests_whitelist)
 
       [ip_whitelist, domain_whitelist]
     end
@@ -359,6 +352,20 @@ module ApplicationSettingImplementation
   end
 
   private
+
+  def separate_whitelists(string_array)
+    string_array.reduce([[], []]) do |(ip_whitelist, domain_whitelist), string|
+      ip_obj = Gitlab::Utils.string_to_ip_object(string)
+
+      if ip_obj
+        ip_whitelist << ip_obj
+      else
+        domain_whitelist << string
+      end
+
+      [ip_whitelist, domain_whitelist]
+    end
+  end
 
   def array_to_string(arr)
     arr&.join("\n")

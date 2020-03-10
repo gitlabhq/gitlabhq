@@ -168,34 +168,42 @@ describe SnippetRepository do
       end
     end
 
-    context 'when files are not named' do
-      let(:data) do
-        [
-          {
-            file_path: '',
-            content: 'foo',
-            action: :create
-          },
-          {
-            file_path: '',
-            content: 'bar',
-            action: :create
-          },
-          {
-            file_path: 'foo.txt',
-            content: 'bar',
-            action: :create
-          }
-        ]
+    shared_examples 'snippet repository with file names' do |*filenames|
+      it 'sets a name for unnamed files' do
+        ls_files = snippet.repository.ls_files(nil)
+        expect(ls_files).to include(*filenames)
       end
+    end
 
-      it 'sets a name for non named files' do
+    let_it_be(:named_snippet) { { file_path: 'fee.txt', content: 'bar', action: :create } }
+    let_it_be(:unnamed_snippet) { { file_path: '', content: 'dummy', action: :create } }
+
+    context 'when some files are not named' do
+      let(:data) { [named_snippet] + Array.new(2) { unnamed_snippet.clone } }
+
+      before do
         expect do
           snippet_repository.multi_files_action(user, data, commit_opts)
         end.not_to raise_error
-
-        expect(snippet.repository.ls_files(nil)).to include('snippetfile1.txt', 'snippetfile2.txt', 'foo.txt')
       end
+
+      it_behaves_like 'snippet repository with file names', 'snippetfile1.txt', 'snippetfile2.txt'
+    end
+
+    context 'repository already has 10 unnamed snippets' do
+      let(:pre_populate_data) { Array.new(10) { unnamed_snippet.clone } }
+      let(:data) { [named_snippet] + Array.new(2) { unnamed_snippet.clone } }
+
+      before do
+        # Pre-populate repository with 9 unnamed snippets.
+        snippet_repository.multi_files_action(user, pre_populate_data, commit_opts)
+
+        expect do
+          snippet_repository.multi_files_action(user, data, commit_opts)
+        end.not_to raise_error
+      end
+
+      it_behaves_like 'snippet repository with file names', 'snippetfile10.txt', 'snippetfile11.txt'
     end
   end
 

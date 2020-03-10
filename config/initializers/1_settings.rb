@@ -179,6 +179,8 @@ Settings.gitlab['email_smime'] = SmimeSignatureSettings.parse(Settings.gitlab['e
 Settings.gitlab['base_url'] ||= Settings.__send__(:build_base_gitlab_url)
 Settings.gitlab['url'] ||= Settings.__send__(:build_gitlab_url)
 Settings.gitlab['user'] ||= 'git'
+# External configuration may cause the ssh user to differ from the GitLab user
+Settings.gitlab['ssh_user'] ||= Settings.gitlab.user
 Settings.gitlab['user_home'] ||= begin
   Etc.getpwnam(Settings.gitlab['user']).dir
 rescue ArgumentError # no user configured
@@ -560,7 +562,7 @@ Settings.gitlab_shell['receive_pack']   = true if Settings.gitlab_shell['receive
 Settings.gitlab_shell['upload_pack']    = true if Settings.gitlab_shell['upload_pack'].nil?
 Settings.gitlab_shell['ssh_host']     ||= Settings.gitlab.ssh_host
 Settings.gitlab_shell['ssh_port']     ||= 22
-Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
+Settings.gitlab_shell['ssh_user']       = Settings.gitlab.ssh_user
 Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.__send__(:build_gitlab_shell_ssh_path_prefix)
 Settings.gitlab_shell['git_timeout'] ||= 10800

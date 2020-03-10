@@ -165,33 +165,79 @@ rspec 2.6:
 You can disable inheritance of globally defined defaults
 and variables with the `inherit:` parameter.
 
+To enable or disable the inheritance of all `variables:` or `default:` parameters, use the following format:
+
+- `default: true` or `default: false`
+- `variables: true` or `variables: false`
+
+To inherit only a subset of `default:` parameters or `variables:`, specify what
+you wish to inherit, and any not listed will **not** be inherited. Use
+one of the following formats:
+
+```yaml
+inherit:
+  default: [parameter1, parameter2]
+  variables: [VARIABLE1, VARIABLE2]
+```
+
+Or:
+
+```yaml
+inherit:
+  default:
+    - parameter1
+    - parameter2
+  variables:
+    - VARIABLE1
+    - VARIABLE2
+```
+
 In the example below:
 
-- `rubocop` **will** inherit both the `before_script` and the variable `DOMAIN`.
-- `rspec` **will not** inherit the `before_script` or the variable `DOMAIN`.
-- `capybara` **will** inherit the `before_script`, but **will not** inherit the variable `DOMAIN`.
+- `rubocop`:
+  - **will** inherit: Nothing.
+- `rspec`:
+  - **will** inherit: the default `image` and the `WEBHOOK_URL` variable.
+  - **will not** inherit: the default `before_script` and the `DOMAIN` variable.
+- `capybara`:
+  - **will** inherit: the default `before_script` and `image`.
+  - **will not** inherit: the `DOMAIN` and `WEBHOOK_URL` variables.
+- `karma`:
+  - **will** inherit: the default `image` and `before_script`, and the `DOMAIN` variable.
+  - **will not** inherit: `WEBHOOK_URL` variable.
 
 ```yaml
 default:
+  image: 'ruby:2.4'
   before_script:
     - echo Hello World
 
 variables:
   DOMAIN: example.com
+  WEBHOOK_URL: https://my-webhook.example.com
 
 rubocop:
+  inherit:
+    default: false
+    variables: false
   script: bundle exec rubocop
 
 rspec:
   inherit:
-    default: false
-    variables: false
+    default: [image]
+    variables: [WEBHOOK_URL]
   script: bundle exec rspec
 
 capybara:
   inherit:
     variables: false
   script: bundle exec capybara
+
+karma:
+  inherit:
+    default: true
+    variables: [DOMAIN]
+  script: karma
 ```
 
 ## Parameter details

@@ -219,7 +219,7 @@ describe('Details Page', () => {
       dispatchSpy.mockResolvedValue();
       wrapper.setData({ currentPage: 2 });
       expect(store.dispatch).toHaveBeenCalledWith('requestTagsList', {
-        id: wrapper.vm.$route.params.id,
+        params: wrapper.vm.$route.params.id,
         pagination: { page: 2 },
       });
     });

@@ -16,11 +16,11 @@ module Gitlab
             validates :config, allowed_keys: ALLOWED_KEYS
           end
 
-          entry :default, ::Gitlab::Config::Entry::Boolean,
+          entry :default, ::Gitlab::Ci::Config::Entry::Inherit::Default,
             description: 'Indicates whether to inherit `default:`.',
             default: true
 
-          entry :variables, ::Gitlab::Config::Entry::Boolean,
+          entry :variables, ::Gitlab::Ci::Config::Entry::Inherit::Variables,
             description: 'Indicates whether to inherit `variables:`.',
             default: true
         end

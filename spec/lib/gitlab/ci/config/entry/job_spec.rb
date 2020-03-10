@@ -18,7 +18,7 @@ describe Gitlab::Ci::Config::Entry::Job do
     end
 
     before do
-      allow(entry).to receive_message_chain(:inherit_entry, :default_value).and_return(true)
+      allow(entry).to receive_message_chain(:inherit_entry, :default_entry, :inherit?).and_return(true)
     end
   end
 

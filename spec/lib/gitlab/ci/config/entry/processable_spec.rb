@@ -269,13 +269,13 @@ describe Gitlab::Ci::Config::Entry::Processable do
         context 'when root yaml variables are used' do
           let(:variables) do
             Gitlab::Ci::Config::Entry::Variables.new(
-              A: 'root', C: 'root'
+              A: 'root', C: 'root', D: 'root'
             ).value
           end
 
           it 'does return all variables and overwrite them' do
             expect(entry.value).to include(
-              variables: { 'A' => 'job', 'B' => 'job', 'C' => 'root' }
+              variables: { 'A' => 'job', 'B' => 'job', 'C' => 'root', 'D' => 'root' }
             )
           end
 
@@ -293,32 +293,61 @@ describe Gitlab::Ci::Config::Entry::Processable do
               )
             end
           end
+
+          context 'when inherit of only specific variable is enabled' do
+            let(:config) do
+              {
+                variables: { A: 'job', B: 'job' },
+                inherit: { variables: ['D'] }
+              }
+            end
+
+            it 'does return only job variables' do
+              expect(entry.value).to include(
+                variables: { 'A' => 'job', 'B' => 'job', 'D' => 'root' }
+              )
+            end
+          end
         end
       end
 
       context 'of default:tags' do
         using RSpec::Parameterized::TableSyntax
 
-        where(:default_tags, :tags, :inherit_default, :result) do
-          nil | %w[a b] | nil | %w[a b]
-          nil | %w[a b] | true | %w[a b]
-          nil | %w[a b] | false | %w[a b]
-          %w[b c] | %w[a b] | nil | %w[a b]
-          %w[b c] | %w[a b] | true | %w[a b]
-          %w[b c] | %w[a b] | false | %w[a b]
-          %w[b c] | nil | nil | %w[b c]
-          %w[b c] | nil | true | %w[b c]
-          %w[b c] | nil | false | nil
+        where(:name, :default_tags, :tags, :inherit_default, :result) do
+          "only local tags"       | nil     | %w[a b] | nil       | %w[a b]
+          "only local tags"       | nil     | %w[a b] | true      | %w[a b]
+          "only local tags"       | nil     | %w[a b] | false     | %w[a b]
+          "global and local tags" | %w[b c] | %w[a b] | nil       | %w[a b]
+          "global and local tags" | %w[b c] | %w[a b] | true      | %w[a b]
+          "global and local tags" | %w[b c] | %w[a b] | false     | %w[a b]
+          "only global tags"      | %w[b c] | nil     | nil       | %w[b c]
+          "only global tags"      | %w[b c] | nil     | true      | %w[b c]
+          "only global tags"      | %w[b c] | nil     | false     | nil
+          "only global tags"      | %w[b c] | nil     | %w[image] | nil
+          "only global tags"      | %w[b c] | nil     | %w[tags]  | %w[b c]
         end
 
         with_them do
-          let(:config) { { tags: tags, inherit: { default: inherit_default } } }
-          let(:default_specified_tags) { double('tags', 'specified?' => true, 'valid?' => true, 'value' => default_tags) }
+          let(:config) do
+            { tags: tags,
+              inherit: { default: inherit_default } }
+          end
+
+          let(:default_specified_tags) do
+            double('tags',
+              'specified?' => true,
+              'valid?' => true,
+              'value' => default_tags,
+              'errors' => [])
+          end
 
           before do
             allow(default).to receive('[]').with(:tags).and_return(default_specified_tags)
 
             entry.compose!(deps)
+
+            expect(entry).to be_valid
           end
 
           it { expect(entry.tags_value).to eq(result) }

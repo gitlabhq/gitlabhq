@@ -59,4 +59,4 @@ responsibility. The Application Development Platform integrates key performance 
 into GitLab, automatically. The following features are included:
 
 - [Auto Monitoring](../autodevops/index.md#auto-monitoring)
-- [In-app Kubernetes Pod Logs](../../user/project/clusters/kubernetes_pod_logs.md)
+- [In-app Kubernetes Logs](../../user/project/clusters/kubernetes_pod_logs.md)

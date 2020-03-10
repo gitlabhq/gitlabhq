@@ -38,25 +38,30 @@ module Snippets
     private
 
     def save_and_commit(snippet)
-      snippet.with_transaction_returning_status do
+      result = snippet.with_transaction_returning_status do
         (snippet.save && snippet.store_mentions!).tap do |saved|
           break false unless saved
 
           if Feature.enabled?(:version_snippets, current_user)
             create_repository_for(snippet)
-            create_commit(snippet)
           end
         end
-      rescue => e # Rescuing all because we can receive Creation exceptions, GRPC exceptions, Git exceptions, ...
-        snippet.errors.add(:base, e.message)
-
-        # If the commit action failed we need to remove the repository if exists
-        if snippet.repository_exists?
-          Repositories::DestroyService.new(snippet.repository).execute
-        end
-
-        false
       end
+
+      create_commit(snippet) if result && snippet.repository_exists?
+
+      result
+    rescue => e # Rescuing all because we can receive Creation exceptions, GRPC exceptions, Git exceptions, ...
+      snippet.errors.add(:base, e.message)
+
+      # If the commit action failed we need to remove the repository if exists
+      snippet.repository.remove if snippet.repository_exists?
+
+      # If the snippet was created, we need to remove it as we
+      # would do like if it had had any validation error
+      snippet.delete if snippet.persisted?
+
+      false
     end
 
     def create_repository_for(snippet)

@@ -185,12 +185,10 @@ describe Snippets::CreateService do
           expect { subject }.not_to change { Snippet.count }
         end
 
-        it 'does not create the repository' do
-          expect(snippet.repository_exists?).to be_falsey
-        end
-
-        it 'destroys the existing repository' do
-          expect(Repositories::DestroyService).to receive(:new).and_call_original
+        it 'destroys the created repository' do
+          expect_next_instance_of(Repository) do |instance|
+            expect(instance).to receive(:remove).and_call_original
+          end
 
           subject
         end

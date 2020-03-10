@@ -129,33 +129,44 @@ dependency_scanning:
 Dependency Scanning can be [configured](#customizing-the-dependency-scanning-settings)
 using environment variables.
 
-| Environment variable                    | Description |
-| --------------------------------------- | ----------- |
-| `DS_ANALYZER_IMAGES`                    | Comma separated list of custom images. The official default images are still enabled. Read more about [customizing analyzers](analyzers.md). |
-| `DS_ANALYZER_IMAGE_PREFIX`              | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
-| `DS_ANALYZER_IMAGE_TAG`                 | Override the Docker tag of the official default images. Read more about [customizing analyzers](analyzers.md). |
-| `DS_PYTHON_VERSION`                     | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12296) in GitLab 12.1)|
-| `DS_PIP_VERSION`                        | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12811) in GitLab 12.7) |
-| `DS_PIP_DEPENDENCY_PATH`                | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12412) in GitLab 12.2) |
-| `GEMNASIUM_DB_LOCAL_PATH`               | Path to local gemnasium database (default `/gemnasium-db`).
-| `GEMNASIUM_DB_REMOTE_URL`               | Repository URL for fetching the gemnasium database (default `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git`).
-| `GEMNASIUM_DB_REF_NAME`                 | Branch name for remote repository database (default `master`). `GEMNASIUM_DB_REMOTE_URL` is required.
-| `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
-| `DS_DISABLE_DIND`                       | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-dependency-scanning).|
-| `DS_PULL_ANALYZER_IMAGES`               | Pull the images from the Docker registry (set to `0` to disable). |
-| `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, file or folder paths (e.g., `doc,spec`). Parent directories will also match patterns. |
-| `DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT`  | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
-| `DS_PULL_ANALYZER_IMAGE_TIMEOUT`        | Time limit when pulling the image of an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
-| `DS_RUN_ANALYZER_TIMEOUT`               | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
-| `PIP_INDEX_URL`                         | Base URL of Python Package Index (default `https://pypi.org/simple`). |
-| `PIP_EXTRA_INDEX_URL`                   | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma separated. |
-| `PIP_REQUIREMENTS_FILE`                 | Pip requirements file to be scanned. |
-| `MAVEN_CLI_OPTS`                        | List of command line arguments that will be passed to `maven` by the analyzer. The default is `"-DskipTests --batch-mode"`. See an example for [using private repos](#using-private-maven-repos). |
-| `BUNDLER_AUDIT_UPDATE_DISABLED`         | Disable automatic updates for the `bundler-audit` analyzer (default: `"false"`). Useful if you're running Dependency Scanning in an offline, air-gapped environment.|
-| `BUNDLER_AUDIT_ADVISORY_DB_URL`         | URL of the advisory database used by bundler-audit (default: `https://github.com/rubysec/ruby-advisory-db`). |
-| `BUNDLER_AUDIT_ADVISORY_DB_REF_NAME`    | Git ref for the advisory database specified by `BUNDLER_AUDIT_ADVISORY_DB_URL` (default: `master`). |
-| `RETIREJS_JS_ADVISORY_DB`               | Path or URL to Retire.js [`jsrepository.json`](https://raw.githubusercontent.com/RetireJS/retire.js/master/repository/jsrepository.json) vulnerability data file. |
-| `RETIREJS_NODE_ADVISORY_DB`             | Path or URL to Retire.js [`npmrepository.json`](https://raw.githubusercontent.com/RetireJS/retire.js/master/repository/npmrepository.json) vulnerability data file. |
+#### Configuring Dependency Scanning
+
+The following variables allow configuration of global dependency scanning settings.
+
+| Environment variable                    | Default     | Description |
+| --------------------------------------- | ----------- | ----------- |
+| `DS_ANALYZER_IMAGES`                    |             | Comma separated list of custom images. The official default images are still enabled. Read more about [customizing analyzers](analyzers.md). |
+| `DS_ANALYZER_IMAGE_PREFIX`              |             | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
+| `DS_ANALYZER_IMAGE_TAG`                 |             | Override the Docker tag of the official default images. Read more about [customizing analyzers](analyzers.md). |
+| `DS_DEFAULT_ANALYZERS`                  |             | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). |
+| `DS_DISABLE_DIND`                       |             | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-dependency-scanning).|
+| `DS_PULL_ANALYZER_IMAGES`               |             | Pull the images from the Docker registry (set to `0` to disable). |
+| `DS_EXCLUDED_PATHS`                     |             | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, file or folder paths (for example, `doc,spec`). Parent directories will also match patterns. |
+| `DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT`  | 2m          | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, or `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
+| `DS_PULL_ANALYZER_IMAGE_TIMEOUT`        | 5m          | Time limit when pulling an analyzer's image. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, or `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
+| `DS_RUN_ANALYZER_TIMEOUT`               | 20m         | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, or `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
+
+#### Configuring specific analyzers used by Dependency Scanning
+
+The following variables are used for configuring specific analyzers (used for a specific language/framework).
+
+| Environment variable                    | Analyzer           | Default                      | Description |
+| --------------------------------------- | ------------------ | ---------------------------- |------------ |
+| `GEMNASIUM_DB_LOCAL_PATH`               | `gemnasium`        | `/gemnasium-db`              | Path to local gemnasium database. |
+| `GEMNASIUM_DB_REMOTE_URL`               | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the gemnasium database. |
+| `GEMNASIUM_DB_REF_NAME`                 | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
+| `PIP_INDEX_URL`                         | `gemnasium-python` | `https://pypi.org/simple`    | Base URL of Python Package Index. |
+| `PIP_EXTRA_INDEX_URL`                   | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma separated. |
+| `PIP_REQUIREMENTS_FILE`                 | `gemnasium-python` |                              | Pip requirements file to be scanned. |
+| `DS_PIP_VERSION`                        | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12811) in GitLab 12.7) |
+| `DS_PIP_DEPENDENCY_PATH`                | `gemnasium-python` |                              | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12412) in GitLab 12.2) |
+| `DS_PYTHON_VERSION`                     | `retire.js`        |                              | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12296) in GitLab 12.1)|
+| `MAVEN_CLI_OPTS`                        | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that will be passed to `maven` by the analyzer. See an example for [using private repos](#using-private-maven-repos). |
+| `BUNDLER_AUDIT_UPDATE_DISABLED`         | `bundler-audit`    | `false`                      | Disable automatic updates for the `bundler-audit` analyzer. Useful if you're running Dependency Scanning in an offline, air-gapped environment.|
+| `BUNDLER_AUDIT_ADVISORY_DB_URL`         | `bundler-audit`    | `https://github.com/rubysec/ruby-advisory-db` | URL of the advisory database used by bundler-audit. |
+| `BUNDLER_AUDIT_ADVISORY_DB_REF_NAME`    | `bundler-audit`    | `master`                     | Git ref for the advisory database specified by `BUNDLER_AUDIT_ADVISORY_DB_URL`. |
+| `RETIREJS_JS_ADVISORY_DB`               | `retire.js`        | `https://raw.githubusercontent.com/RetireJS/retire.js/master/repository/jsrepository.json` | Path or URL to Retire.js js vulnerability data file. |
+| `RETIREJS_NODE_ADVISORY_DB`             | `retire.js`        | `https://raw.githubusercontent.com/RetireJS/retire.js/master/repository/npmrepository.json` | Path or URL to Retire.js node vulnerability data file. |
 
 ### Using private Maven repos
 

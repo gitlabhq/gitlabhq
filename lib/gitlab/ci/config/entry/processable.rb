@@ -94,7 +94,7 @@ module Gitlab
           end
 
           def overwrite_entry(deps, key, current_entry)
-            return unless inherit_entry&.default_value
+            return unless inherit_entry&.default_entry&.inherit?(key)
             return unless deps.default_entry
 
             deps.default_entry[key] unless current_entry.specified?
@@ -111,11 +111,12 @@ module Gitlab
           end
 
           def root_and_job_variables_value
-            if inherit_entry&.variables_value
-              @root_variables_value.to_h.merge(variables_value.to_h) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-            else
-              variables_value.to_h
+            root_variables = @root_variables_value.to_h # rubocop:disable Gitlab/ModuleWithInstanceVariables
+            root_variables = root_variables.select do |key, _|
+              inherit_entry&.variables_entry&.inherit?(key)
             end
+
+            root_variables.merge(variables_value.to_h)
           end
         end
       end

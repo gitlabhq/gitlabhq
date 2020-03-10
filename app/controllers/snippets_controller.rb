@@ -52,10 +52,17 @@ class SnippetsController < ApplicationController
     create_params = snippet_params.merge(spammable_params)
     service_response = Snippets::CreateService.new(nil, current_user, create_params).execute
     @snippet = service_response.payload[:snippet]
+    repository_operation_error = service_response.error? && !@snippet.persisted? && @snippet.valid?
 
-    move_temporary_files if @snippet.valid? && params[:files]
+    if repository_operation_error
+      flash.now[:alert] = service_response.message
 
-    recaptcha_check_with_fallback { render :new }
+      render :new
+    else
+      move_temporary_files if @snippet.valid? && params[:files]
+
+      recaptcha_check_with_fallback { render :new }
+    end
   end
 
   def update

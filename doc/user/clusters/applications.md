@@ -825,7 +825,7 @@ management project. Refer to the
 available configuration options.
 
 NOTE: **Note:**
-In this alpha implementation of installing Elastic Stack through CI, reading the environment pod logs through Elasticsearch is unsupported. This is supported if [installed via the UI](#elastic-stack).
+In this alpha implementation of installing Elastic Stack through CI, reading the environment logs through Elasticsearch is unsupported. This is supported if [installed via the UI](#elastic-stack).
 
 ## Upgrading applications
 

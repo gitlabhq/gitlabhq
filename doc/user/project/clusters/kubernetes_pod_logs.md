@@ -1,4 +1,4 @@
-# Kubernetes Pod Logs **(ULTIMATE)**
+# Kubernetes Logs **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4752) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 
@@ -11,17 +11,17 @@ Everything you need to build, test, deploy, and run your app at scale.
 
 ## Overview
 
-[Kubernetes](https://kubernetes.io) pod logs can be viewed directly within GitLab.
+[Kubernetes](https://kubernetes.io) logs can be viewed directly within GitLab.
 
-![Pod logs](img/kubernetes_pod_logs_v12_8.png)
+![Pod logs](img/kubernetes_pod_logs_v12_9.png)
 
 ## Requirements
 
-[Deploying to a Kubernetes environment](../deploy_boards.md#enabling-deploy-boards) is required in order to be able to use Pod Logs.
+[Deploying to a Kubernetes environment](../deploy_boards.md#enabling-deploy-boards) is required in order to be able to use Logs.
 
 ## Usage
 
-To access pod logs, you must have the right [permissions](../../permissions.md#project-members-permissions).
+To access logs, you must have the right [permissions](../../permissions.md#project-members-permissions).
 
 You can access them in two ways.
 
@@ -29,7 +29,7 @@ You can access them in two ways.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 12.5.
 
-Go to **{cloud-gear}** **Operations > Pod logs** on the sidebar menu.
+Go to **{cloud-gear}** **Operations > Logs** on the sidebar menu.
 
 ![Sidebar menu](img/sidebar_menu_pod_logs_v12_5.png)
 

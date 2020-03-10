@@ -9,9 +9,14 @@ describe('Blob viewer', () => {
   let blob;
   let mock;
 
+  const jQueryMock = {
+    tooltip: jest.fn(),
+  };
+
   preloadFixtures('snippets/show.html');
 
   beforeEach(() => {
+    $.fn.extend(jQueryMock);
     mock = new MockAdapter(axios);
 
     loadFixtures('snippets/show.html');
@@ -27,7 +32,7 @@ describe('Blob viewer', () => {
       html: '<div>testing</div>',
     });
 
-    spyOn(axios, 'get').and.callThrough();
+    jest.spyOn(axios, 'get');
   });
 
   afterEach(() => {
@@ -38,7 +43,7 @@ describe('Blob viewer', () => {
   it('loads source file after switching views', done => {
     document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(
         document
           .querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]')
@@ -54,7 +59,7 @@ describe('Blob viewer', () => {
 
     new BlobViewer();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(
         document
           .querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]')
@@ -65,26 +70,20 @@ describe('Blob viewer', () => {
     });
   });
 
-  it('doesnt reload file if already loaded', done => {
+  it('doesnt reload file if already loaded', () => {
     const asyncClick = () =>
       new Promise(resolve => {
         document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
-        setTimeout(resolve);
+        setImmediate(resolve);
       });
 
-    asyncClick()
+    return asyncClick()
       .then(() => asyncClick())
       .then(() => {
         expect(
           document.querySelector('.blob-viewer[data-type="simple"]').getAttribute('data-loaded'),
         ).toBe('true');
-
-        done();
-      })
-      .catch(() => {
-        fail();
-        done();
       });
   });
 
@@ -100,13 +99,13 @@ describe('Blob viewer', () => {
     });
 
     it('has tooltip when disabled', () => {
-      expect(copyButton.getAttribute('data-original-title')).toBe(
+      expect(copyButton.getAttribute('title')).toBe(
         'Switch to the source to copy the file contents',
       );
     });
 
     it('is blurred when clicked and disabled', () => {
-      spyOn(copyButton, 'blur');
+      jest.spyOn(copyButton, 'blur').mockImplementation(() => {});
 
       copyButton.click();
 
@@ -114,7 +113,7 @@ describe('Blob viewer', () => {
     });
 
     it('is not blurred when clicked and not disabled', () => {
-      spyOn(copyButton, 'blur');
+      jest.spyOn(copyButton, 'blur').mockImplementation(() => {});
 
       copyButton.classList.remove('disabled');
       copyButton.click();
@@ -125,7 +124,7 @@ describe('Blob viewer', () => {
     it('enables after switching to simple view', done => {
       document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
-      setTimeout(() => {
+      setImmediate(() => {
         expect(copyButton.classList.contains('disabled')).toBeFalsy();
 
         done();
@@ -135,8 +134,8 @@ describe('Blob viewer', () => {
     it('updates tooltip after switching to simple view', done => {
       document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
-      setTimeout(() => {
-        expect(copyButton.getAttribute('data-original-title')).toBe('Copy file contents');
+      setImmediate(() => {
+        expect(copyButton.getAttribute('title')).toBe('Copy file contents');
 
         done();
       });
@@ -155,7 +154,7 @@ describe('Blob viewer', () => {
     it('adds active class to new viewer button', () => {
       const simpleBtn = document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]');
 
-      spyOn(simpleBtn, 'blur');
+      jest.spyOn(simpleBtn, 'blur').mockImplementation(() => {});
 
       blob.switchToViewer('simple');
 
@@ -174,7 +173,7 @@ describe('Blob viewer', () => {
       blob.switchToViewer('simple');
       blob.switchToViewer('rich');
 
-      expect(axios.get.calls.count()).toBe(1);
+      expect(axios.get.mock.calls.length).toBe(1);
     });
   });
 });

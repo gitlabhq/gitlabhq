@@ -515,6 +515,8 @@ module Gitlab
               nil | ["global script"]
               { default: false } | nil
               { default: true } | ["global script"]
+              { default: %w[before_script] } | ["global script"]
+              { default: %w[image] } | nil
             end
 
             with_them do
@@ -527,26 +529,28 @@ module Gitlab
 
               it { expect(subject[:options][:before_script]).to eq(result) }
             end
-          end
 
-          context "in default context" do
-            using RSpec::Parameterized::TableSyntax
+            context "in default context" do
+              using RSpec::Parameterized::TableSyntax
 
-            where(:inherit, :result) do
-              nil | ["global script"]
-              { default: false } | nil
-              { default: true } | ["global script"]
-            end
-
-            with_them do
-              let(:config) do
-                {
-                  default: { before_script: ["global script"] },
-                  test: { script: ["script"], inherit: inherit }
-                }
+              where(:inherit, :result) do
+                nil | ["global script"]
+                { default: false } | nil
+                { default: true } | ["global script"]
+                { default: %w[before_script] } | ["global script"]
+                { default: %w[image] } | nil
               end
 
-              it { expect(subject[:options][:before_script]).to eq(result) }
+              with_them do
+                let(:config) do
+                  {
+                    default: { before_script: ["global script"] },
+                    test: { script: ["script"], inherit: inherit }
+                  }
+                end
+
+                it { expect(subject[:options][:before_script]).to eq(result) }
+              end
             end
           end
 
@@ -840,6 +844,18 @@ module Gitlab
 
             it 'does not inherit variables' do
               expect(subject).to contain_exactly(
+                { key: 'VAR1', value: 'value1', public: true },
+                { key: 'VAR2', value: 'value2', public: true }
+              )
+            end
+          end
+
+          context 'when specific variables are to inherited' do
+            let(:inherit) { { variables: %w[VAR1 VAR4] } }
+
+            it 'returns all unique variables and inherits only specified variables' do
+              expect(subject).to contain_exactly(
+                { key: 'VAR4', value: 'global4', public: true },
                 { key: 'VAR1', value: 'value1', public: true },
                 { key: 'VAR2', value: 'value2', public: true }
               )

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe NotificationRecipientService do
+describe NotificationRecipients::BuildService do
   let(:service) { described_class }
   let(:assignee) { create(:user) }
   let(:project) { create(:project, :public) }

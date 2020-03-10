@@ -45,6 +45,8 @@ module Gitlab
           labels[:job_status] = job_succeeded ? "done" : "fail"
           @metrics[:sidekiq_jobs_cpu_seconds].observe(labels, job_thread_cputime)
           @metrics[:sidekiq_jobs_completion_seconds].observe(labels, monotonic_time)
+          @metrics[:sidekiq_jobs_db_seconds].observe(labels, ActiveRecord::LogSubscriber.runtime / 1000)
+          @metrics[:sidekiq_jobs_gitaly_seconds].observe(labels, Gitlab::GitalyClient.query_time)
         end
       end
 
@@ -54,6 +56,8 @@ module Gitlab
         {
           sidekiq_jobs_cpu_seconds:            ::Gitlab::Metrics.histogram(:sidekiq_jobs_cpu_seconds, 'Seconds of cpu time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
           sidekiq_jobs_completion_seconds:     ::Gitlab::Metrics.histogram(:sidekiq_jobs_completion_seconds, 'Seconds to complete Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
+          sidekiq_jobs_db_seconds:             ::Gitlab::Metrics.histogram(:sidekiq_jobs_db_seconds, 'Seconds of database time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
+          sidekiq_jobs_gitaly_seconds:         ::Gitlab::Metrics.histogram(:sidekiq_jobs_gitaly_seconds, 'Seconds of Gitaly time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
           sidekiq_jobs_queue_duration_seconds: ::Gitlab::Metrics.histogram(:sidekiq_jobs_queue_duration_seconds, 'Duration in seconds that a Sidekiq job was queued before being executed', {}, SIDEKIQ_LATENCY_BUCKETS),
           sidekiq_jobs_failed_total:           ::Gitlab::Metrics.counter(:sidekiq_jobs_failed_total, 'Sidekiq jobs failed'),
           sidekiq_jobs_retried_total:          ::Gitlab::Metrics.counter(:sidekiq_jobs_retried_total, 'Sidekiq jobs retried'),

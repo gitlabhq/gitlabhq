@@ -327,6 +327,46 @@ On the Route 53 dashboard, click **Hosted zones** in the left navigation bar:
     1. Click **Create**.
 1. Update your DNS records with your domain registrar. The steps for doing this vary depending on which registrar you use and is beyond the scope of this guide.
 
+## Setting up Bastion Hosts
+
+Since our GitLab instances will be in private subnets, we need a way to connect to these instances via SSH to make configuration changes, perform upgrades, etc. One way of doing this is via a [bastion host](https://en.wikipedia.org/wiki/Bastion_host), sometimes also referred to as a jump box.
+
+TIP: **Tip:** If you do not want to maintain bastion hosts, you can set up [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) for access to instances. This is beyond the scope of this document.
+
+### Create Bastion Host A
+
+1. Navigate to the EC2 Dashboard and click on **Launch instance**.
+1. Select the **Ubuntu Server 18.04 LTS (HVM)** AMI.
+1. Choose an instance type. We'll use a `t2.micro` as we'll only use the bastion host to SSH into our other instances.
+1. Click **Configure Instance Details**.
+   1. Under **Network**, select the `gitlab-vpc` from the dropdown menu.
+   1. Under **Subnet**, select the public subnet we created earlier (`gitlab-public-10.0.0.0`).
+   1. Double check that under **Auto-assign Public IP** you have **Use subnet setting (Enable)** selected.
+   1. Leave everything else as default and click **Add Storage**.
+1. For storage, we'll leave everything as default and only add an 8GB root volume. We won't store anything on this instance.
+1. Click **Add Tags** and on the next screen click **Add Tag**.
+   1. We’ll only set `Key: Name` and `Value: Bastion Host A`.
+1. Click **Configure Security Group**.
+   1. Select **Create a new security group**, enter a **Security group name** (we'll use `bastion-sec-group`), and add a description.
+   1. We'll enable SSH access from anywhere (`0.0.0.0/0`). If you want stricter security, specify a single IP address or an IP address range in CIDR notation.
+   1. Click **Review and Launch**
+1. Review all your settings and, if you're happy, click **Launch**.
+1. Acknowledge that you have access to an existing key pair or create a new one. Click **Launch Instance**.
+
+Confirm that you can SHH into the instance:
+
+1. On the EC2 Dashboard, click on **Instances** in the left menu.
+1. Select **Bastion Host A** from your list of instances.
+1. Click **Connect** and follow the connection instructions.
+1. If you are able to connect successfully, let's move on to setting up our second bastion host for redundancy.
+
+### Create Bastion Host B
+
+1. Create an EC2 instance following the same steps as above with the following changes:
+   1. For the **Subnet**, select the second public subnet we created earlier (`gitlab-public-10.0.2.0`).
+   1. Under the **Add Tags** section, we’ll set `Key: Name` and `Value: Bastion Host B` so that we can easily identify our two instances.
+   1. For the security group, select the existing `bastion-sec-group` we created above.
+
 ## Deploying GitLab inside an auto scaling group
 
 We'll use AWS's wizard to deploy GitLab and then SSH into the instance to

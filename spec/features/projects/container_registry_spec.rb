@@ -126,6 +126,7 @@ describe 'Container Registry', :js do
 
       describe 'image repo details' do
         before do
+          stub_container_registry_tags(repository: %r{my/image}, tags: ('1'..'20').to_a, with_manifest: true)
           visit_container_registry_details 'my/image'
         end
 
@@ -140,11 +141,17 @@ describe 'Container Registry', :js do
         it 'user removes a specific tag from container repository' do
           service = double('service')
           expect(service).to receive(:execute).with(container_repository) { { status: :success } }
-          expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(container_repository.project, user, tags: ['latest']) { service }
+          expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(container_repository.project, user, tags: ['1']) { service }
 
-          click_on(class: 'js-delete-registry')
+          first('.js-delete-registry').click
           expect(find('.modal .modal-title')).to have_content _('Remove tag')
           find('.modal .modal-footer .btn-danger').click
+        end
+
+        it('pagination navigate to the second page') do
+          pagination = find('.gl-pagination')
+          pagination.click_link('2')
+          expect(page).to have_content '20'
         end
       end
     end
