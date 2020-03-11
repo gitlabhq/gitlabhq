@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::FixCrossProjectLabelLinks, :migration, schema: 20180702120647 do
+describe Gitlab::BackgroundMigration::FixCrossProjectLabelLinks, schema: 20180702120647 do
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }
   let(:issues_table) { table(:issues) }

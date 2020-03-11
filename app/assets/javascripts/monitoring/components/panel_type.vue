@@ -11,7 +11,7 @@ import {
   GlTooltip,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, n__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorAnomalyChart from './charts/anomaly.vue';
@@ -120,6 +120,12 @@ export default {
         !this.isPanelType('stacked-column')
       );
     },
+    editCustomMetricLink() {
+      return this.graphData?.metrics[0].edit_path;
+    },
+    editCustomMetricLinkText() {
+      return n__('Metrics|Edit metric', 'Metrics|Edit metrics', this.graphData.metrics.length);
+    },
   },
   mounted() {
     this.refreshTitleTooltip();
@@ -195,7 +201,13 @@ export default {
             <template slot="button-content">
               <icon name="ellipsis_v" class="text-secondary" />
             </template>
-
+            <gl-dropdown-item
+              v-if="editCustomMetricLink"
+              ref="editMetricLink"
+              :href="editCustomMetricLink"
+            >
+              {{ editCustomMetricLinkText }}
+            </gl-dropdown-item>
             <gl-dropdown-item
               v-if="logsPathWithTimeRange"
               ref="viewLogsLink"

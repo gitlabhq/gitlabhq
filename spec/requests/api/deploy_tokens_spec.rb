@@ -195,56 +195,71 @@ describe API::DeployTokens do
     end
   end
 
-  describe 'POST /projects/:id/deploy_tokens' do
-    let(:params) do
-      {
-        name: 'Foo',
-        expires_at: 1.year.from_now,
-        scopes: [
-          'read_repository'
-        ],
-        username: 'Bar'
-      }
-    end
-
-    subject do
-      post api("/projects/#{project.id}/deploy_tokens", user), params: params
-      response
-    end
-
-    context 'when unauthenticated' do
-      let(:user) { nil }
-
-      it { is_expected.to have_gitlab_http_status(:not_found) }
-    end
-
-    context 'when authenticated as non-admin user' do
-      before do
-        project.add_developer(user)
+  context 'deploy token creation' do
+    shared_examples 'creating a deploy token' do |entity, unauthenticated_response|
+      let(:params) do
+        {
+          name: 'Foo',
+          expires_at: 1.year.from_now,
+          scopes: [
+            'read_repository'
+          ],
+          username: 'Bar'
+        }
       end
 
-      it { is_expected.to have_gitlab_http_status(:forbidden) }
-    end
+      context 'when unauthenticated' do
+        let(:user) { nil }
 
-    context 'when authenticated as maintainer' do
-      before do
-        project.add_maintainer(user)
+        it { is_expected.to have_gitlab_http_status(unauthenticated_response) }
       end
 
-      it 'creates the deploy token' do
-        expect { subject }.to change { DeployToken.count }.by(1)
-
-        expect(response).to have_gitlab_http_status(:created)
-        expect(response).to match_response_schema('public_api/v4/deploy_token')
-      end
-
-      context 'with an invalid scope' do
+      context 'when authenticated as non-admin user' do
         before do
-          params[:scopes] = %w[read_repository all_access]
+          send(entity).add_developer(user)
         end
 
-        it { is_expected.to have_gitlab_http_status(:bad_request) }
+        it { is_expected.to have_gitlab_http_status(:forbidden) }
       end
+
+      context 'when authenticated as maintainer' do
+        before do
+          send(entity).add_maintainer(user)
+        end
+
+        it 'creates the deploy token' do
+          expect { subject }.to change { DeployToken.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(response).to match_response_schema('public_api/v4/deploy_token')
+        end
+
+        context 'with an invalid scope' do
+          before do
+            params[:scopes] = %w[read_repository all_access]
+          end
+
+          it { is_expected.to have_gitlab_http_status(:bad_request) }
+        end
+      end
+    end
+
+    describe 'POST /projects/:id/deploy_tokens' do
+      subject do
+        post api("/projects/#{project.id}/deploy_tokens", user), params: params
+        response
+      end
+
+      it_behaves_like 'creating a deploy token', :project, :not_found
+    end
+
+    describe 'POST /groups/:id/deploy_tokens' do
+      subject do
+        post api("/groups/#{group.id}/deploy_tokens", user), params: params
+        response
+      end
+
+      it_behaves_like 'creating a deploy token', :group, :forbidden
     end
   end
 end

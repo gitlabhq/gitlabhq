@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { range as rge } from 'lodash';
 import DirtySubmitForm from '~/dirty_submit/dirty_submit_form';
 import { getInputValue, setInputValue, createForm } from './helper';
 
@@ -82,7 +82,7 @@ describe('DirtySubmitForm', () => {
       const { form, input } = createForm();
       const updateDirtyInputSpy = spyOn(new DirtySubmitForm(form), 'updateDirtyInput');
 
-      _.range(10).forEach(i => {
+      rge(10).forEach(i => {
         setInputValue(input, `change ${i}`, false);
       });
 
@@ -93,7 +93,7 @@ describe('DirtySubmitForm', () => {
 
     it('does not throttle updates when rapid changes are made to different form elements', () => {
       const form = document.createElement('form');
-      const range = _.range(10);
+      const range = rge(10);
       range.forEach(i => {
         form.innerHTML += `<input type="text" name="input-${i}" class="js-input-${i}"/>`;
       });

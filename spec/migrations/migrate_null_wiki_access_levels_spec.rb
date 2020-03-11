@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180809195358_migrate_null_wiki_access_levels.rb')
 
-describe MigrateNullWikiAccessLevels, :migration do
+describe MigrateNullWikiAccessLevels do
   let(:namespaces) { table('namespaces') }
   let(:projects) { table(:projects) }
   let(:project_features) { table(:project_features) }

@@ -155,23 +155,26 @@ describe('Issue card component', () => {
 
     describe('assignee default avatar', () => {
       beforeEach(done => {
+        global.gon.default_avatar_url = 'default_avatar';
+
         wrapper.setProps({
           issue: {
             ...wrapper.props('issue'),
             assignees: [
-              new ListAssignee(
-                {
-                  id: 1,
-                  name: 'testing 123',
-                  username: 'test',
-                },
-                'default_avatar',
-              ),
+              new ListAssignee({
+                id: 1,
+                name: 'testing 123',
+                username: 'test',
+              }),
             ],
           },
         });
 
         wrapper.vm.$nextTick(done);
+      });
+
+      afterEach(() => {
+        global.gon.default_avatar_url = null;
       });
 
       it('displays defaults avatar if users avatar is null', () => {

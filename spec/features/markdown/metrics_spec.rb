@@ -62,6 +62,29 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidek
         expect(page).to have_text(chart_params[:title])
         expect(page).to have_text(chart_params[:y_label])
       end
+
+      context 'when two dashboard urls are included' do
+        let(:chart_params_2) do
+          {
+            group: 'System metrics (Kubernetes)',
+            title: 'Core Usage (Total)',
+            y_label: 'Total Cores'
+          }
+        end
+        let(:metrics_url_2) { urls.metrics_project_environment_url(project, environment, **chart_params_2) }
+        let(:description) { "See [metrics dashboard](#{metrics_url}) for info. \n See [metrics dashboard](#{metrics_url_2}) for info." }
+        let(:issue) { create(:issue, project: project, description: description) }
+
+        it 'shows embedded metrics for both urls' do
+          visit project_issue_path(project, issue)
+
+          expect(page).to have_css('div.prometheus-graph')
+          expect(page).to have_text(chart_params[:title])
+          expect(page).to have_text(chart_params[:y_label])
+          expect(page).to have_text(chart_params_2[:title])
+          expect(page).to have_text(chart_params_2[:y_label])
+        end
+      end
     end
   end
 

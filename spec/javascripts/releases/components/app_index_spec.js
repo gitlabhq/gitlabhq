@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { range as rge } from 'lodash';
 import Vue from 'vue';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import app from '~/releases/components/app_index.vue';
@@ -28,7 +28,7 @@ describe('Releases App ', () => {
 
   beforeEach(() => {
     store = createStore({ modules: { list: listModule } });
-    releasesPagination = _.range(21).map(index => ({
+    releasesPagination = rge(21).map(index => ({
       ...convertObjectPropsToCamelCase(release, { deep: true }),
       tagName: `${index}.00`,
     }));

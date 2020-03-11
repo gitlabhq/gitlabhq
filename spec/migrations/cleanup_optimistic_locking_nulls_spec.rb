@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20200128210353_cleanup_optimistic_locking_nulls')
 
-describe CleanupOptimisticLockingNulls, :migration do
+describe CleanupOptimisticLockingNulls do
   TABLES = %w(epics merge_requests issues).freeze
   TABLES.each do |table|
     let(table.to_sym) { table(table.to_sym) }

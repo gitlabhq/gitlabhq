@@ -74,8 +74,8 @@ const boardsStore = {
   showPage(page) {
     this.state.currentPage = page;
   },
-  addList(listObj, defaultAvatar) {
-    const list = new List(listObj, defaultAvatar);
+  addList(listObj) {
+    const list = new List(listObj);
     this.state.lists = _.sortBy([...this.state.lists, list], 'position');
 
     return list;
@@ -602,7 +602,7 @@ const boardsStore = {
   clearMultiSelect() {
     this.multiSelect.list = [];
   },
-  refreshIssueData(issue, obj, defaultAvatar) {
+  refreshIssueData(issue, obj) {
     issue.id = obj.id;
     issue.iid = obj.iid;
     issue.title = obj.title;
@@ -631,7 +631,7 @@ const boardsStore = {
     }
 
     if (obj.assignees) {
-      issue.assignees = obj.assignees.map(a => new ListAssignee(a, defaultAvatar));
+      issue.assignees = obj.assignees.map(a => new ListAssignee(a));
     }
   },
 };

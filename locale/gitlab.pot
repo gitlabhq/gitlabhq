@@ -12507,7 +12507,9 @@ msgid "Metrics|Duplicating..."
 msgstr ""
 
 msgid "Metrics|Edit metric"
-msgstr ""
+msgid_plural "Metrics|Edit metrics"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Metrics|Environment"
 msgstr ""

@@ -148,6 +148,82 @@ describe('Panel Type component', () => {
     });
   });
 
+  describe('Edit custom metric dropdown item', () => {
+    const findEditCustomMetricLink = () => wrapper.find({ ref: 'editMetricLink' });
+
+    beforeEach(() => {
+      createWrapper({
+        graphData: {
+          ...graphDataPrometheusQueryRange,
+        },
+      });
+
+      return wrapper.vm.$nextTick();
+    });
+
+    it('is not present if the panel is not a custom metric', () => {
+      expect(findEditCustomMetricLink().exists()).toBe(false);
+    });
+
+    it('is present when the panel contains an edit_path property', () => {
+      wrapper.setProps({
+        graphData: {
+          ...graphDataPrometheusQueryRange,
+          metrics: [
+            {
+              ...graphDataPrometheusQueryRange.metrics[0],
+              edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
+            },
+          ],
+        },
+      });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findEditCustomMetricLink().exists()).toBe(true);
+      });
+    });
+
+    it('shows an "Edit metric" link for a panel with a single metric', () => {
+      wrapper.setProps({
+        graphData: {
+          ...graphDataPrometheusQueryRange,
+          metrics: [
+            {
+              ...graphDataPrometheusQueryRange.metrics[0],
+              edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
+            },
+          ],
+        },
+      });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findEditCustomMetricLink().text()).toBe('Edit metric');
+      });
+    });
+
+    it('shows an "Edit metrics" link for a panel with multiple metrics', () => {
+      wrapper.setProps({
+        graphData: {
+          ...graphDataPrometheusQueryRange,
+          metrics: [
+            {
+              ...graphDataPrometheusQueryRange.metrics[0],
+              edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
+            },
+            {
+              ...graphDataPrometheusQueryRange.metrics[0],
+              edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
+            },
+          ],
+        },
+      });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findEditCustomMetricLink().text()).toBe('Edit metrics');
+      });
+    });
+  });
+
   describe('View Logs dropdown item', () => {
     const mockLogsPath = '/path/to/logs';
     const mockTimeRange = { duration: { seconds: 120 } };

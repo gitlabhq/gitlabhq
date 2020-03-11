@@ -10,7 +10,7 @@ import IssueProject from './project';
 import boardsStore from '../stores/boards_store';
 
 class ListIssue {
-  constructor(obj, defaultAvatar) {
+  constructor(obj) {
     this.subscribed = obj.subscribed;
     this.labels = [];
     this.assignees = [];
@@ -22,11 +22,11 @@ class ListIssue {
     this.closed = obj.closed;
     this.isLoading = {};
 
-    this.refreshData(obj, defaultAvatar);
+    this.refreshData(obj);
   }
 
-  refreshData(obj, defaultAvatar) {
-    boardsStore.refreshIssueData(this, obj, defaultAvatar);
+  refreshData(obj) {
+    boardsStore.refreshIssueData(this, obj);
   }
 
   addLabel(label) {

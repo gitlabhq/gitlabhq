@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180529152628_schedule_to_archive_legacy_traces')
 
-describe ScheduleToArchiveLegacyTraces, :migration do
+describe ScheduleToArchiveLegacyTraces do
   include TraceHelpers
 
   let(:namespaces) { table(:namespaces) }

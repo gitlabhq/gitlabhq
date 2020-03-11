@@ -36,7 +36,7 @@ const TYPES = {
 };
 
 class List {
-  constructor(obj, defaultAvatar) {
+  constructor(obj) {
     this.id = obj.id;
     this._uid = this.guid();
     this.position = obj.position;
@@ -55,7 +55,6 @@ class List {
     this.maxIssueCount = Object.hasOwnProperty.call(obj, 'max_issue_count')
       ? obj.max_issue_count
       : 0;
-    this.defaultAvatar = defaultAvatar;
 
     if (obj.label) {
       this.label = new ListLabel(obj.label);
@@ -156,7 +155,7 @@ class List {
 
   createIssues(data) {
     data.forEach(issueObj => {
-      this.addIssue(new ListIssue(issueObj, this.defaultAvatar));
+      this.addIssue(new ListIssue(issueObj));
     });
   }
 

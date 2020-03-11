@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 # rubocop:disable RSpec/FactoriesInMigrationSpecs
-describe Gitlab::BackgroundMigration::BackfillProjectRepositories do
+describe Gitlab::BackgroundMigration::BackfillProjectRepositories, schema: :latest do
   let(:group) { create(:group, name: 'foo', path: 'foo') }
 
   describe described_class::ShardFinder do

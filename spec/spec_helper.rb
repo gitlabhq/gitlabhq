@@ -76,11 +76,16 @@ RSpec.configure do |config|
     metadata[:level] = quality_level.level_for(location)
     metadata[:api] = true if location =~ %r{/spec/requests/api/}
 
-    # do not overwrite type if it's already set
-    next if metadata.key?(:type)
+    # Do not overwrite migration if it's already set
+    unless metadata.key?(:migration)
+      metadata[:migration] = true if metadata[:level] == :migration
+    end
 
-    match = location.match(%r{/spec/([^/]+)/})
-    metadata[:type] = match[1].singularize.to_sym if match
+    # Do not overwrite type if it's already set
+    unless metadata.key?(:type)
+      match = location.match(%r{/spec/([^/]+)/})
+      metadata[:type] = match[1].singularize.to_sym if match
+    end
   end
 
   config.include LicenseHelpers

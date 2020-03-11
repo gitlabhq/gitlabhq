@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180413022611_create_missing_namespace_for_internal_users.rb')
 
-describe CreateMissingNamespaceForInternalUsers, :migration do
+describe CreateMissingNamespaceForInternalUsers do
   let(:users) { table(:users) }
   let(:namespaces) { table(:namespaces) }
   let(:routes) { table(:routes) }

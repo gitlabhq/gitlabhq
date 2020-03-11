@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::AddMergeRequestDiffCommitsCount, :migration, schema: 20180105212544 do
+describe Gitlab::BackgroundMigration::AddMergeRequestDiffCommitsCount, schema: 20180105212544 do
   let(:projects_table) { table(:projects) }
   let(:merge_requests_table) { table(:merge_requests) }
   let(:merge_request_diffs_table) { table(:merge_request_diffs) }

@@ -488,6 +488,7 @@ describe 'project routing' do
     end
 
     it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/project_members", "/gitlab/gitlabhq/-/project_members"
+    it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/-/settings/members", "/gitlab/gitlabhq/-/project_members"
   end
 
   #     project_milestones    GET    /:project_id/milestones(.:format)          milestones#index

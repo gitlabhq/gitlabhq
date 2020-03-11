@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180508100222_add_not_null_constraint_to_project_mirror_data_foreign_key.rb')
 
-describe AddNotNullConstraintToProjectMirrorDataForeignKey, :migration do
+describe AddNotNullConstraintToProjectMirrorDataForeignKey do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:import_state) { table(:project_mirror_data) }

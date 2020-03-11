@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180423204600_add_pages_access_level_to_project_feature.rb')
 
-describe AddPagesAccessLevelToProjectFeature, :migration do
+describe AddPagesAccessLevelToProjectFeature do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:features) { table(:project_features) }
