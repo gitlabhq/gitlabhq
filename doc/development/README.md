@@ -145,6 +145,7 @@ Complementary reads:
 - [Hash indexes](hash_indexes.md)
 - [Storing SHA1 hashes as binary](sha1_as_binary.md)
 - [Iterating tables in batches](iterating_tables_in_batches.md)
+- [Insert into tables in batches](insert_into_tables_in_batches.md)
 - [Ordering table columns](ordering_table_columns.md)
 - [Verifying database capabilities](verifying_database_capabilities.md)
 - [Database Debugging and Troubleshooting](database_debugging.md)

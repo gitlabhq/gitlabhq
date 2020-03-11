@@ -1,0 +1,5 @@
+---
+title: Include snippet description as part of snippet title search (when Elasticsearch is not enabled)
+merge_request: 25961
+author:
+type: added

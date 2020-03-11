@@ -17,7 +17,7 @@
     },
     "milestones": {
       "type": "array",
-      "items": { "$ref": "milestone.json" }
+      "items": { "$ref": "milestone_with_stats.json" }
     },
     "commit_path": { "type": "string" },
     "tag_path": { "type": "string" },

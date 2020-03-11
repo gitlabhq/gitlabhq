@@ -193,8 +193,10 @@ RSpec.configure do |config|
     # expect(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
     allow(Gitlab::Git::KeepAround).to receive(:execute)
 
-    # Clear thread cache and Sidekiq queues
-    Gitlab::ThreadMemoryCache.cache_backend.clear
+    [Gitlab::ThreadMemoryCache, Gitlab::ProcessMemoryCache].each do |cache|
+      cache.cache_backend.clear
+    end
+
     Sidekiq::Worker.clear_all
 
     # Temporary patch to force admin mode to be active by default in tests when

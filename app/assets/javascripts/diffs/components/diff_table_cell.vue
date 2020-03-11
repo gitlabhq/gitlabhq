@@ -166,7 +166,6 @@ export default {
         :href="lineHref"
         @click="setHighlightedRow(lineCode)"
       >
-        {{ lineNumber }}
       </a>
       <diff-gutter-avatars
         v-if="shouldShowAvatarsOnGutter"

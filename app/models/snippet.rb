@@ -307,7 +307,7 @@ class Snippet < ApplicationRecord
   end
 
   class << self
-    # Searches for snippets with a matching title or file name.
+    # Searches for snippets with a matching title, description or file name.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
     #
@@ -315,7 +315,7 @@ class Snippet < ApplicationRecord
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      fuzzy_search(query, [:title, :file_name])
+      fuzzy_search(query, [:title, :description, :file_name])
     end
 
     # Searches for snippets with matching content.

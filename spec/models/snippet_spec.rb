@@ -149,7 +149,7 @@ describe Snippet do
   end
 
   describe '.search' do
-    let(:snippet) { create(:snippet, title: 'test snippet') }
+    let(:snippet) { create(:snippet, title: 'test snippet', description: 'description') }
 
     it 'returns snippets with a matching title' do
       expect(described_class.search(snippet.title)).to eq([snippet])
@@ -173,6 +173,10 @@ describe Snippet do
 
     it 'returns snippets with a matching file name regardless of the casing' do
       expect(described_class.search(snippet.file_name.upcase)).to eq([snippet])
+    end
+
+    it 'returns snippets with a matching description' do
+      expect(described_class.search(snippet.description)).to eq([snippet])
     end
   end
 

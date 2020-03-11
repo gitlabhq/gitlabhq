@@ -18,7 +18,7 @@ module API
       expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
       expose :commit, using: Entities::Commit, if: ->(_, _) { can_download_code? }
       expose :upcoming_release?, as: :upcoming_release
-      expose :milestones, using: Entities::Milestone, if: -> (release, _) { release.milestones.present? && can_read_milestone? }
+      expose :milestones, using: Entities::MilestoneWithStats, if: -> (release, _) { release.milestones.present? && can_read_milestone? }
       expose :commit_path, expose_nil: false
       expose :tag_path, expose_nil: false
       expose :evidence_sha, expose_nil: false, if: ->(_, _) { can_download_code? }

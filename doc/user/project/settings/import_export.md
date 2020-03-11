@@ -29,10 +29,11 @@ Note the following:
 - Exports are stored in a temporary [shared directory](../../../development/shared_files.md)
   and are deleted every 24 hours by a specific worker.
 - Group members are exported as project members, as long as the user has
-  maintainer or admin access to the group where the exported project lives. Import admins should map users by email address.
+  maintainer or admin access to the group where the exported project lives.
+- Project members with owner access will be imported as maintainers.
+- Using an admin account to import will map users by email address (self-managed only).
   Otherwise, a supplementary comment is left to mention that the original author and
   the MRs, notes, or issues will be owned by the importer.
-- Project members with owner access will be imported as maintainers.
 - If an imported project contains merge requests originating from forks,
   then new branches associated with such merge requests will be created
   within a project during the import/export. Thus, the number of branches
@@ -142,4 +143,4 @@ To help avoid abuse, users are rate limited to:
 | ---------------- | --------------------------- |
 | Export           | 1 project per 5 minutes     |
 | Download export  | 10 projects per 10 minutes  |
-| Import           | 30 projects per 10 minutes  |
+| Import           | 30 projects per 5 minutes  |

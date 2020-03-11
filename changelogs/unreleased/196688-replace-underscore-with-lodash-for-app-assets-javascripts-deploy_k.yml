@@ -1,0 +1,5 @@
+---
+title: Replace underscore with lodash for ./app/assets/javascripts/deploy_keys
+merge_request: 24965
+author: Jacopo Beschi @jacopo-beschi
+type: changed
