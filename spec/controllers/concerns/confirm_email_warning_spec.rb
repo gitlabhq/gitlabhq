@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 describe ConfirmEmailWarning do
+  before do
+    stub_feature_flags(soft_email_confirmation: true)
+  end
+
   controller(ApplicationController) do
     # `described_class` is not available in this context
     include ConfirmEmailWarning
