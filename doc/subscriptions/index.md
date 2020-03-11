@@ -4,7 +4,12 @@ type: index, reference
 
 # GitLab subscription
 
-Access to GitLab features is provided on a subscription basis. A subscription entitles users to the features of a specific GitLab tier. Each tier provides a set of features. A subscription is valid for 12 months.
+GitLab offers tiers of features. Your subscription determines which tier you have access to. Subscriptions are valid for 12 months.
+
+GitLab provides special subscriptions to participants in the [GitLab Education Program](https://about.gitlab.com/solutions/education/) and [GitLab Open Source Program](https://about.gitlab.com/solutions/open-source/). For details on obtaining and renewing these subscriptions, see:
+
+- [GitLab Education Program subscriptions](#gitlab-education-program-subscriptions)
+- [GitLab Open Source Program subscriptions](#gitlab-open-source-program-subscriptions)
 
 ## Choosing a GitLab subscription
 
@@ -352,6 +357,20 @@ Learn more about:
 
 - The tiers of [GitLab Support](https://about.gitlab.com/support/).
 - [Submit a request via the Support Portal](https://support.gitlab.com/hc/en-us/requests/new).
+
+## GitLab Education Program subscriptions
+
+To renew a [GitLab Education Program](https://about.gitlab.com/solutions/education/) subscription, send an email to `education@gitlab.com` with the following information:
+
+1. The number of seats for the renewal. You can add seats if needed.
+1. The use case for the license. Specifically, we need verification that the use meets the conditions of the [End User License Agreement](https://about.gitlab.com/terms/#edu-oss). Note that university infrastructure operations and information technology operations don't fall within the stated terms of the Education Program. For details, see the [Education FAQ](https://about.gitlab.com/solutions/education/#FAQ).
+1. The full name, email address, and phone number of the primary contact who will be signing the renewal quote. Only signatures by faculty or staff with proper signing authority on the behalf of the university will be accepted.
+
+After we receive the above information, we will process the request and return a renewal quote for signature. Please allow a minimum of 2 business days for return. Email us at `education@gitlab.com` with any questions.
+
+## GitLab Open Source Program subscriptions
+
+All requests for our GitLab Open Source program, including subscription renewals, must be made by using the [Open Source Program](https://about.gitlab.com/solutions/open-source/program/) application process. If you have any questions, send an email to `opensource@gitlab.com` for assistance.
 
 <!-- ## Troubleshooting
 
