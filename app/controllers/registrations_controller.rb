@@ -54,7 +54,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def welcome
     return redirect_to new_user_registration_path unless current_user
-    return redirect_to stored_location_or_dashboard(current_user) if current_user.role.present? && !current_user.setup_for_company.nil?
+    return redirect_to path_for_signed_in_user(current_user) if current_user.role.present? && !current_user.setup_for_company.nil?
   end
 
   def update_registration
@@ -64,7 +64,7 @@ class RegistrationsController < Devise::RegistrationsController
     if result[:status] == :success
       track_experiment_event(:signup_flow, 'end') # We want this event to be tracked when the user is _in_ the experimental group
       set_flash_message! :notice, :signed_up
-      redirect_to stored_location_or_dashboard(current_user)
+      redirect_to path_for_signed_in_user(current_user)
     else
       render :welcome
     end
@@ -111,14 +111,12 @@ class RegistrationsController < Devise::RegistrationsController
 
     return users_sign_up_welcome_path if experiment_enabled?(:signup_flow)
 
-    stored_location_or_dashboard(user)
+    path_for_signed_in_user(user)
   end
 
   def after_inactive_sign_up_path_for(resource)
-    # With the current `allow_unconfirmed_access_for` Devise setting in config/initializers/8_devise.rb,
-    # this method is never called. Leaving this here in case that value is set to 0.
     Gitlab::AppLogger.info(user_created_message)
-    users_almost_there_path
+    Feature.enabled?(:soft_email_confirmation) ? dashboard_projects_path : users_almost_there_path
   end
 
   private
@@ -180,8 +178,20 @@ class RegistrationsController < Devise::RegistrationsController
     Gitlab::Utils.to_boolean(params[:terms_opt_in])
   end
 
-  def stored_location_or_dashboard(user)
-    stored_location_for(user) || dashboard_projects_path
+  def path_for_signed_in_user(user)
+    if requires_confirmation?(user)
+      users_almost_there_path
+    else
+      stored_location_for(user) || dashboard_projects_path
+    end
+  end
+
+  def requires_confirmation?(user)
+    return false if user.confirmed?
+    return false if Feature.enabled?(:soft_email_confirmation)
+    return false if experiment_enabled?(:signup_flow)
+
+    true
   end
 
   def load_recaptcha
