@@ -23,6 +23,8 @@ module API
       use :pagination
     end
     get 'deploy_tokens' do
+      service_unavailable! unless Feature.enabled?(:deploy_tokens_api, default_enabled: true)
+
       authenticated_as_admin!
 
       present paginate(DeployToken.all), with: Entities::DeployToken
@@ -32,6 +34,10 @@ module API
       requires :id, type: Integer, desc: 'The ID of a project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      before do
+        service_unavailable! unless Feature.enabled?(:deploy_tokens_api, user_project, default_enabled: true)
+      end
+
       params do
         use :pagination
       end
@@ -71,6 +77,23 @@ module API
       requires :id, type: Integer, desc: 'The ID of a group'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      before do
+        service_unavailable! unless Feature.enabled?(:deploy_tokens_api, user_group, default_enabled: true)
+      end
+
+      params do
+        use :pagination
+      end
+      desc 'List deploy tokens for a group' do
+        detail 'This feature was introduced in GitLab 12.9'
+        success Entities::DeployToken
+      end
+      get ':id/deploy_tokens' do
+        authorize!(:read_deploy_token, user_group)
+
+        present paginate(user_group.deploy_tokens), with: Entities::DeployToken
+      end
+
       desc 'Delete a group deploy token' do
         detail 'This feature was introduced in GitLab 12.9'
       end

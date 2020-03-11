@@ -10,11 +10,23 @@ describe API::DeployTokens do
   let!(:deploy_token) { create(:deploy_token, projects: [project]) }
   let!(:group_deploy_token) { create(:deploy_token, :group, groups: [group]) }
 
+  shared_examples 'with feature flag disabled' do
+    context 'disabled feature flag' do
+      before do
+        stub_feature_flags(deploy_tokens_api: false)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:service_unavailable) }
+    end
+  end
+
   describe 'GET /deploy_tokens' do
     subject do
       get api('/deploy_tokens', user)
       response
     end
+
+    it_behaves_like 'with feature flag disabled'
 
     context 'when unauthenticated' do
       let(:user) { nil }
@@ -69,6 +81,8 @@ describe API::DeployTokens do
         project.add_maintainer(user)
       end
 
+      it_behaves_like 'with feature flag disabled'
+
       it { is_expected.to have_gitlab_http_status(:ok) }
 
       it 'returns all deploy tokens for the project' do
@@ -79,6 +93,53 @@ describe API::DeployTokens do
       end
 
       it 'does not return deploy tokens for other projects' do
+        subject
+
+        token_ids = json_response.map { |token| token['id'] }
+        expect(token_ids).not_to include(other_deploy_token.id)
+      end
+    end
+  end
+
+  describe 'GET /groups/:id/deploy_tokens' do
+    subject do
+      get api("/groups/#{group.id}/deploy_tokens", user)
+      response
+    end
+
+    context 'when unauthenticated' do
+      let(:user) { nil }
+
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
+    end
+
+    context 'when authenticated as non-admin user' do
+      before do
+        group.add_developer(user)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
+    end
+
+    context 'when authenticated as maintainer' do
+      let!(:other_deploy_token) { create(:deploy_token, :group) }
+
+      before do
+        group.add_maintainer(user)
+      end
+
+      it_behaves_like 'with feature flag disabled'
+
+      it { is_expected.to have_gitlab_http_status(:ok) }
+
+      it 'returns all deploy tokens for the group' do
+        subject
+
+        expect(response).to include_pagination_headers
+        expect(response).to match_response_schema('public_api/v4/deploy_tokens')
+      end
+
+      it 'does not return deploy tokens for other groups' do
         subject
 
         token_ids = json_response.map { |token| token['id'] }
@@ -119,10 +180,10 @@ describe API::DeployTokens do
       end
 
       context 'invalid request' do
-        it 'returns bad request with invalid group id' do
+        it 'returns not found with invalid group id' do
           delete api("/groups/bad_id/deploy_tokens/#{group_deploy_token.id}", user)
 
-          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
 
         it 'returns not found with invalid deploy token id' do

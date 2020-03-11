@@ -3,11 +3,11 @@
 When there's a clear benefit to separating state management from components (e.g. due to state complexity) we recommend using [Vuex][vuex-docs] over any other Flux pattern. Otherwise, feel free to manage state within the components.
 
 Vuex should be strongly considered when:
+
 - You expect multiple parts of the application to react to state changes
 - There's a need to share data between multiple components
 - There are complex interactions with Backend, e.g. multiple API calls
 - The app involves interacting with backend via both traditional REST API and GraphQL (especially when moving the REST API over to GraphQL is a pending backend task)
-
 
 _Note:_ All of the below is explained in more detail in the official [Vuex documentation][vuex-docs].
 

@@ -64,7 +64,6 @@ Another example of GitLab as a company would be the following:
 
 ---
 
-
 When performing actions such as transferring or importing a project between
 subgroups, the behavior is the same as when performing these actions at the
 `group/project` level.

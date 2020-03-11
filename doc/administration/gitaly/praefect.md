@@ -490,10 +490,10 @@ Particular attention should be shown to:
 
 1. Configure the `external_url` so that files could be served by GitLab
    by proper endpoint access by editing `/etc/gitlab/gitlab.rb`:
-   
+
    You will need to replace `GITLAB_SERVER_URL` with the real URL on which
    current GitLab instance is serving:
-   
+
    ```ruby
    external_url 'GITLAB_SERVER_URL'
    ```

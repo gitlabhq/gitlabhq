@@ -48,7 +48,7 @@ then
   exit 1
 fi
 
-MD_DOC_PATH=${MD_DOC_PATH:-doc/**/*.md}
+MD_DOC_PATH=${MD_DOC_PATH:-doc}
 
 function run_locally_or_in_docker() {
   local cmd=$1

@@ -741,7 +741,7 @@ To enable the read-only mode:
    ```sh
    # Recycling unused tags
    sudo /opt/gitlab/embedded/bin/registry garbage-collect /var/opt/gitlab/registry/config.yml
-   
+
    # Removing unused layers not referenced by manifests
    sudo /opt/gitlab/embedded/bin/registry garbage-collect -m /var/opt/gitlab/registry/config.yml
    ```
