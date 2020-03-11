@@ -330,6 +330,10 @@ class Environment < ApplicationRecord
     self.auto_stop_at = parsed_result.seconds.from_now
   end
 
+  def elastic_stack_available?
+    !!deployment_platform&.cluster&.application_elastic_stack&.available?
+  end
+
   private
 
   def has_metrics_and_can_query?

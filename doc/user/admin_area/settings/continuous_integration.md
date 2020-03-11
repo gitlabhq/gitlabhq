@@ -191,3 +191,16 @@ To set required pipeline configuration:
 1. Click **Save changes**.
 
 ![Required pipeline](img/admin_required_pipeline.png)
+
+## Package Registry configuration **(PREMIUM ONLY)**
+
+GitLab administrators can disable the forwarding of NPM requests to [npmjs.com](https://www.npmjs.com/).
+
+To disable it:
+
+1. Go to **Admin Area > Settings > CI/CD**.
+1. Expand the **Package Registry** section.
+1. Uncheck **Enable forwarding of NPM package requests to npmjs.org**.
+1. Click **Save changes**.
+
+![NPM package requests forwarding](img/admin_package_registry_npm_package_requests_forward.png)

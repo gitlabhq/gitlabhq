@@ -26,44 +26,6 @@ describe SnippetRepository do
     end
   end
 
-  describe '#create_file' do
-    let(:snippet) { create(:personal_snippet, :empty_repo, author: user) }
-
-    it 'creates the file' do
-      snippet_repository.create_file(user, 'foo', 'bar', commit_opts)
-      blob = first_blob(snippet)
-
-      aggregate_failures do
-        expect(blob).not_to be_nil
-        expect(blob.path).to eq 'foo'
-        expect(blob.data).to eq 'bar'
-      end
-    end
-
-    it 'fills the file path if empty' do
-      snippet_repository.create_file(user, nil, 'bar', commit_opts)
-      blob = first_blob(snippet)
-
-      aggregate_failures do
-        expect(blob).not_to be_nil
-        expect(blob.path).to eq 'snippetfile1.txt'
-        expect(blob.data).to eq 'bar'
-      end
-    end
-
-    context 'when the file exists' do
-      let(:snippet) { create(:personal_snippet, :repository, author: user) }
-
-      it 'captures the git exception and raises a SnippetRepository::CommitError' do
-        existing_blob = first_blob(snippet)
-
-        expect do
-          snippet_repository.create_file(user, existing_blob.path, existing_blob.data, commit_opts)
-        end.to raise_error described_class::CommitError
-      end
-    end
-  end
-
   describe '#multi_files_action' do
     let(:new_file) { { file_path: 'new_file_test', content: 'bar' } }
     let(:move_file) { { previous_path: 'CHANGELOG', file_path: 'CHANGELOG_new', content: 'bar' } }

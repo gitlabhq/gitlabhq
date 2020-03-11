@@ -82,7 +82,7 @@ Capybara.enable_aria_label = true
 Capybara::Screenshot.append_timestamp = false
 
 Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
-  ::File.join(QA::Runtime::Namespace.name, example.full_description.downcase.parameterize(separator: "_")[0..99])
+  example.full_description.downcase.parameterize(separator: "_")[0..99]
 end
 # Keep only the screenshots generated from the last failing test suite
 Capybara::Screenshot.prune_strategy = :keep_last_run

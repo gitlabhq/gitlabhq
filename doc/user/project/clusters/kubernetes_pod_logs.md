@@ -1,6 +1,7 @@
-# Kubernetes Logs **(ULTIMATE)**
+# Kubernetes Logs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4752) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to [GitLab Core](https://about.gitlab.com/pricing/) 12.9.
 
 GitLab makes it easy to view the logs of running pods in [connected Kubernetes clusters](index.md).
 By displaying the logs directly in GitLab, developers can avoid having to manage console tools or jump to a different interface.

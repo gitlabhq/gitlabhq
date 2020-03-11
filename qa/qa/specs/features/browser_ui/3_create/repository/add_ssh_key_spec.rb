@@ -8,7 +8,7 @@ module QA
       it 'user adds and then removes an SSH key', :smoke do
         Flow::Login.sign_in
 
-        key = Resource::SSHKey.fabricate! do |resource|
+        key = Resource::SSHKey.fabricate_via_browser_ui! do |resource|
           resource.title = key_title
         end
 

@@ -1227,7 +1227,7 @@ test:
     client_path: tmp/tests/gitaly
     token: secret
   workhorse:
-    secret_file: tmp/tests/gitlab_workhorse_secret
+    secret_file: tmp/gitlab_workhorse_test_secret
   backup:
     path: tmp/tests/backups
   pseudonymizer:

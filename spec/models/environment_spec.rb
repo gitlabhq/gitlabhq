@@ -1266,4 +1266,39 @@ describe Environment, :use_clean_rails_memory_store_caching do
       expect(env).to be_persisted
     end
   end
+
+  describe '#elastic_stack_available?' do
+    let!(:cluster) { create(:cluster, :project, :provided_by_user, projects: [project]) }
+    let!(:deployment) { create(:deployment, :success, environment: environment, project: project, cluster: cluster) }
+
+    context 'when app does not exist' do
+      it 'returns false' do
+        expect(environment.elastic_stack_available?).to be(false)
+      end
+    end
+
+    context 'when app exists' do
+      let!(:application) { create(:clusters_applications_elastic_stack, cluster: cluster) }
+
+      it 'returns false' do
+        expect(environment.elastic_stack_available?).to be(false)
+      end
+    end
+
+    context 'when app is installed' do
+      let!(:application) { create(:clusters_applications_elastic_stack, :installed, cluster: cluster) }
+
+      it 'returns true' do
+        expect(environment.elastic_stack_available?).to be(true)
+      end
+    end
+
+    context 'when app is updated' do
+      let!(:application) { create(:clusters_applications_elastic_stack, :updated, cluster: cluster) }
+
+      it 'returns true' do
+        expect(environment.elastic_stack_available?).to be(true)
+      end
+    end
+  end
 end

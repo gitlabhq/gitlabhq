@@ -6110,6 +6110,9 @@ msgstr ""
 msgid "CycleAnalyticsStage|should be under a group"
 msgstr ""
 
+msgid "CycleAnalytics|%{selectedLabelsCount} selected (%{maxLabels} max)"
+msgstr ""
+
 msgid "CycleAnalytics|%{stageCount} stages selected"
 msgstr ""
 
@@ -6129,6 +6132,9 @@ msgid "CycleAnalytics|No stages selected"
 msgstr ""
 
 msgid "CycleAnalytics|Number of tasks"
+msgstr ""
+
+msgid "CycleAnalytics|Only %{maxLabels} labels can be selected at this time"
 msgstr ""
 
 msgid "CycleAnalytics|Project selected"
@@ -13170,6 +13176,9 @@ msgstr ""
 msgid "No licenses found."
 msgstr ""
 
+msgid "No matching labels"
+msgstr ""
+
 msgid "No matching results"
 msgstr ""
 
@@ -19906,6 +19915,9 @@ msgstr ""
 msgid "There was an error fetching the environments information."
 msgstr ""
 
+msgid "There was an error fetching the top labels for the selected group"
+msgstr ""
+
 msgid "There was an error fetching the variables."
 msgstr ""
 
@@ -20862,6 +20874,9 @@ msgid "Total Contributions"
 msgstr ""
 
 msgid "Total artifacts size: %{total_size}"
+msgstr ""
+
+msgid "Total cores (vCPUs)"
 msgstr ""
 
 msgid "Total issues"

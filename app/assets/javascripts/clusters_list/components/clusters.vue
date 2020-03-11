@@ -28,6 +28,10 @@ export default {
       label: __('Size'),
     },
     {
+      key: 'cpu',
+      label: __('Total cores (vCPUs)'),
+    },
+    {
       key: 'memory',
       label: __('Total memory (GB)'),
     },

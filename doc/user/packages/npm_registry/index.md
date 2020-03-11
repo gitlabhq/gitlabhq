@@ -269,6 +269,14 @@ Or if you're using Yarn:
 yarn add @my-project-scope/my-package
 ```
 
+### Forwarding requests to npmjs.org
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/55344) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9.
+
+By default, when an NPM package is not found in the GitLab NPM Registry, the request will be forwarded to [npmjs.com](https://www.npmjs.com/).
+
+Administrators can disable this behavior in the [Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
+
 ## Removing a package
 
 In the packages view of your project page, you can delete packages by clicking

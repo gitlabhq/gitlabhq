@@ -357,3 +357,42 @@
     }
   }
 }
+
+.build-page-pod-logs {
+  .build-trace-container {
+    position: relative;
+  }
+
+  .build-trace {
+    @include build-trace();
+  }
+
+  .top-bar {
+    @include build-trace-top-bar($gl-line-height * 5);
+
+    .dropdown-menu-toggle {
+      width: 200px;
+
+      @include media-breakpoint-up(sm) {
+        width: 300px;
+      }
+    }
+
+    .controllers {
+      @include build-controllers(16px, flex-end, true, 2);
+    }
+
+    .refresh-control {
+      @include build-controllers(16px, flex-end, true, 0);
+      margin-left: 2px;
+    }
+  }
+
+  .btn-refresh svg {
+    top: 0;
+  }
+
+  .build-loader-animation {
+    @include build-loader-animation;
+  }
+}

@@ -27,7 +27,7 @@ Using the GitLab project Kubernetes integration, you can:
 - Use [Web terminals](#web-terminals).
 - Use [Deploy Boards](#deploy-boards-premium). **(PREMIUM)**
 - Use [Canary Deployments](#canary-deployments-premium). **(PREMIUM)**
-- View [Logs](#logs-ultimate). **(ULTIMATE)**
+- View [Logs](#logs).
 - Run serverless workloads on [Kubernetes with Knative](serverless/index.md).
 
 ### Deploy Boards **(PREMIUM)**
@@ -48,7 +48,7 @@ the need to leave GitLab.
 
 [Read more about Canary Deployments](../canary_deployments.md)
 
-### Logs **(ULTIMATE)**
+### Logs
 
 GitLab makes it easy to view the logs of running pods in connected Kubernetes clusters. By displaying the logs directly in GitLab, developers can avoid having to manage console tools or jump to a different interface.
 

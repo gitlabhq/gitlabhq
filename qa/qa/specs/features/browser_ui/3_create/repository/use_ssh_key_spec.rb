@@ -11,7 +11,7 @@ module QA
       it 'user adds an ssh key and pushes code to the repository' do
         Flow::Login.sign_in
 
-        key = Resource::SSHKey.fabricate! do |resource|
+        key = Resource::SSHKey.fabricate_via_api! do |resource|
           resource.title = key_title
         end
 

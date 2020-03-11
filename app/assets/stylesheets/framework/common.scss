@@ -524,6 +524,8 @@ img.emoji {
   cursor: pointer;
 }
 
+.cursor-not-allowed { cursor: not-allowed; }
+
 // this needs to use "!important" due to some very specific styles
 // around buttons
 .cursor-default {

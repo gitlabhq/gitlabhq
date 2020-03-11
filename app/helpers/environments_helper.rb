@@ -41,4 +41,13 @@ module EnvironmentsHelper
       "external-dashboard-url" => project.metrics_setting_external_dashboard_url
     }
   end
+
+  def environment_logs_data(project, environment)
+    {
+      "environment-name": environment.name,
+      "environments-path": project_environments_path(project, format: :json),
+      "environment-id": environment.id,
+      "cluster-applications-documentation-path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack')
+    }
+  end
 end

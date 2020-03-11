@@ -1,3 +1,5 @@
+// this file can't be migrated to jest because it relies on the browser to perform integration tests:
+//  see: https://gitlab.com/gitlab-org/gitlab/-/issues/194207#note_301878738
 import { FIXTURES_PATH } from 'spec/test_constants';
 import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
 

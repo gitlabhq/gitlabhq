@@ -492,6 +492,41 @@ const Api = {
   buildUrl(url) {
     return joinPaths(gon.relative_url_root || '', url.replace(':version', gon.api_version));
   },
+
+  /**
+   * Returns pods logs for an environment with an optional pod and container
+   *
+   * @param {Object} params
+   * @param {Object} param.environment - Environment object
+   * @param {string=} params.podName - Pod name, if not set the backend assumes a default one
+   * @param {string=} params.containerName - Container name, if not set the backend assumes a default one
+   * @param {string=} params.start - Starting date to query the logs in ISO format
+   * @param {string=} params.end - Ending date to query the logs in ISO format
+   * @returns {Promise} Axios promise for the result of a GET request of logs
+   */
+  getPodLogs({ environment, podName, containerName, search, start, end }) {
+    const url = this.buildUrl(environment.logs_api_path);
+
+    const params = {};
+
+    if (podName) {
+      params.pod_name = podName;
+    }
+    if (containerName) {
+      params.container_name = containerName;
+    }
+    if (search) {
+      params.search = search;
+    }
+    if (start) {
+      params.start = start;
+    }
+    if (end) {
+      params.end = end;
+    }
+
+    return axios.get(url, { params });
+  },
 };
 
 export default Api;
