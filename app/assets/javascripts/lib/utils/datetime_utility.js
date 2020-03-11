@@ -566,6 +566,14 @@ export const getDateInPast = (date, daysInPast) =>
 export const getDateInFuture = (date, daysInFuture) =>
   new Date(newDate(date).setDate(date.getDate() + daysInFuture));
 
+/**
+ * Checks if a given date-instance was created with a valid date
+ *
+ * @param  {Date} date
+ * @returns boolean
+ */
+export const isValidDate = date => date instanceof Date && !Number.isNaN(date.getTime());
+
 /*
  * Appending T00:00:00 makes JS assume local time and prevents it from shifting the date
  * to match the user's time zone. We want to display the date in server time for now, to

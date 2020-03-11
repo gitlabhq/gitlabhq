@@ -28,6 +28,10 @@ export default {
       label: __('Size'),
     },
     {
+      key: 'memory',
+      label: __('Total memory (GB)'),
+    },
+    {
       key: 'clusterType',
       label: __('Cluster level'),
       formatter: value => CLUSTER_TYPES[value],

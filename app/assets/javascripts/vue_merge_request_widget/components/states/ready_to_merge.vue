@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import { GlIcon, GlButton } from '@gitlab/ui';
 import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     isAutoMergeAvailable() {
-      return !_.isEmpty(this.mr.availableAutoMergeStrategies);
+      return !isEmpty(this.mr.availableAutoMergeStrategies);
     },
     status() {
       const { pipeline, isPipelineFailed, hasCI, ciStatus } = this.mr;
@@ -158,7 +158,7 @@ export default {
         .then(data => {
           const hasError = data.status === 'failed' || data.status === 'hook_validation_error';
 
-          if (_.includes(AUTO_MERGE_STRATEGIES, data.status)) {
+          if (AUTO_MERGE_STRATEGIES.includes(data.status)) {
             eventHub.$emit('MRWidgetUpdateRequested');
           } else if (data.status === 'success') {
             this.initiateMergePolling();

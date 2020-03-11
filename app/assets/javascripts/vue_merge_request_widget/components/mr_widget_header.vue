@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import { n__, s__, sprintf } from '~/locale';
 import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -35,7 +35,7 @@ export default {
           'mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch',
         ),
         {
-          commitsBehindLinkStart: `<a href="${_.escape(this.mr.targetBranchPath)}">`,
+          commitsBehindLinkStart: `<a href="${esc(this.mr.targetBranchPath)}">`,
           commitsBehind: n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount),
           commitsBehindLinkEnd: '</a>',
         },

@@ -474,6 +474,23 @@ describe('getDateInFuture', () => {
   });
 });
 
+describe('isValidDate', () => {
+  it.each`
+    valueToCheck                              | isValid
+    ${new Date()}                             | ${true}
+    ${new Date('December 17, 1995 03:24:00')} | ${true}
+    ${new Date('1995-12-17T03:24:00')}        | ${true}
+    ${new Date('foo')}                        | ${false}
+    ${5}                                      | ${false}
+    ${''}                                     | ${false}
+    ${false}                                  | ${false}
+    ${undefined}                              | ${false}
+    ${null}                                   | ${false}
+  `('returns $expectedReturnValue when called with $dateToCheck', ({ valueToCheck, isValid }) => {
+    expect(datetimeUtility.isValidDate(valueToCheck)).toBe(isValid);
+  });
+});
+
 describe('getDatesInRange', () => {
   it('returns an empty array if 1st or 2nd argument is not a Date object', () => {
     const d1 = new Date('2019-01-01');

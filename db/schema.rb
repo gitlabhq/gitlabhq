@@ -873,7 +873,7 @@ ActiveRecord::Schema.define(version: 2020_03_09_195710) do
     t.index ["project_id", "status", "config_source"], name: "index_ci_pipelines_on_project_id_and_status_and_config_source"
     t.index ["project_id", "status", "updated_at"], name: "index_ci_pipelines_on_project_id_and_status_and_updated_at"
     t.index ["status"], name: "index_ci_pipelines_on_status"
-    t.index ["user_id"], name: "index_ci_pipelines_on_user_id"
+    t.index ["user_id", "created_at"], name: "index_ci_pipelines_on_user_id_and_created_at"
   end
 
   create_table "ci_pipelines_config", primary_key: "pipeline_id", force: :cascade do |t|

@@ -24,12 +24,40 @@ can be a great resource.
 There are some high level differences between the products worth mentioning:
 
 - With GitLab you don't need a root `pipeline` keyword to wrap everything.
+- The way pipelines are triggered and [trigger other pipelines](../yaml/README.md#trigger)
+  is different than Jenkins. GitLab pipelines can be triggered:
+
+  - on push
+  - on [schedule](../pipelines/schedules.md)
+  - from the [GitLab UI](../pipelines.md#manually-executing-pipelines)
+  - by [API call](../triggers/README.md)
+  - by [webhook](../triggers/README.md#triggering-a-pipeline-from-a-webhook)
+  - by [ChatOps](../chatops/README.md)
+
+  You can control which jobs run in which cases, depending on how they are triggered,
+  with the [`rules` syntax](../yaml/README.md#rules).
+- GitLab [pipeline scheduling concepts](../pipelines/schedules.md) are also different than with Jenkins.
 - All jobs within a single stage always run in parallel, and all stages run in sequence. We are planning
   to allow certain jobs to break this sequencing as needed with our [directed acyclic graph](https://gitlab.com/gitlab-org/gitlab-foss/issues/47063)
   feature.
+- The [`parallel`](../yaml/README.md#parallel) keyword can automatically parallelize tasks,
+  like tests that support parallelization.
+- Normally all jobs within a single stage run in parallel, and all stages run in sequence.
+  There are different [pipeline architectures](../pipelines/pipeline_architectures.md)
+  that allow you to change this behavior.
+- The new [`rules` syntax](../yaml/README.md#rules) is the recommended method of
+  controlling when different jobs run. It is more powerful than the `only/except` syntax.
+- One important difference is that jobs run independently of each other and have a
+  fresh environment in each job. Passing artifacts between jobs is controlled using the
+  [`artifacts`](../yaml/README.md#artifacts) and [`dependencies`](../yaml/README.md#dependencies)
+  keywords. When finished, the planned [Workspaces](https://gitlab.com/gitlab-org/gitlab/issues/29265)
+  feature will allow you to more easily persist a common workspace between serial jobs.
 - The `.gitlab-ci.yml` file is checked in to the root of your repository, much like a Jenkinsfile, but
   is in the YAML format (see [complete reference](../yaml/README.md)) instead of a Groovy DSL. It's most
   analogous to the declarative Jenkinsfile format.
+- Manual approvals or gates can be set up as [`when:manual` jobs](../yaml/README.md#whenmanual). These can
+  also leverage [`protected environments`](../yaml/README.md#protecting-manual-jobs-premium)
+  to control who is able to approve them.
 - GitLab comes with a [container registry](../../user/packages/container_registry/index.md), and we recommend using
   container images to set up your build environment.
 - Totally stuck and not sure where to turn for advice? The [GitLab community forum](https://forum.gitlab.com/) can be a great resource.

@@ -1,0 +1,5 @@
+---
+title: Optimize ci_pipelines counters in usage data
+merge_request: 26774
+author:
+type: performance
