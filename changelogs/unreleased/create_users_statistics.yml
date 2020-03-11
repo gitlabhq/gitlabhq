@@ -1,0 +1,5 @@
+---
+title: Introduce db table to store users statistics
+merge_request: 26261
+author:
+type: added

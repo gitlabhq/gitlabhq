@@ -821,4 +821,29 @@ eos
       expect(commit.has_signature?).to be_falsey
     end
   end
+
+  describe '#has_been_reverted?' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue, author: user, project: project) }
+
+    it 'returns true if the commit has been reverted' do
+      create(:note_on_issue,
+             noteable: issue,
+             system: true,
+             note: commit.revert_description(user),
+             project: issue.project)
+
+      expect_next_instance_of(Commit) do |revert_commit|
+        expect(revert_commit).to receive(:reverts_commit?)
+          .with(commit, user)
+          .and_return(true)
+      end
+
+      expect(commit.has_been_reverted?(user, issue.notes_with_associations)).to eq(true)
+    end
+
+    it 'returns false if the commit has not been reverted' do
+      expect(commit.has_been_reverted?(user, issue.notes_with_associations)).to eq(false)
+    end
+  end
 end

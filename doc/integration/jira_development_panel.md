@@ -67,6 +67,8 @@ There are no special requirements if you are using GitLab.com.
 
 ## Jira Configuration
 
+### GitLab self-managed
+
 1. In Jira, go to **Jira Settings > Applications > DVCS accounts**, then click **Link GitHub Enterprise account** to start creating a new integration.
    (We are pretending to be GitHub in this integration until there is further platform support from Jira.)
 
@@ -110,7 +112,45 @@ There are no special requirements if you are using GitLab.com.
 To connect additional GitLab projects from other GitLab top-level groups (or personal namespaces), repeat the above
 steps with additional Jira DVCS accounts.
 
-You may now refer any Jira issue by its ID in branch names, commit messages and  merge request names on GitLab's side,
+### GitLab.com
+
+You can integrate GitLab.com and Jira Cloud using the **GitLab for Jira** App in the [Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira).
+
+GitLab and Jira can also be integrated using the DVCS connector as described in the [GitLab self-managed section](#gitlab-self-managed). The [GitLab for Jira App](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira) is recommended when using GitLab.com and Jira Cloud because data is synchronized in real time, while the DVCS connector updates data only once per hour.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a walkthrough of the integration with GitLab for Jira, watch [Configure GitLab Jira Integration using Marketplace App](https://youtu.be/SwR-g1s1zTo) on YouTube.
+
+NOTE: **Note:**
+The **GitLab for Jira** App is only compatible with GitLab.com **and** Jira Cloud.
+
+1. Go to **Jira Settings > Apps > Find new apps**, then search for GitLab.
+1. Click **GitLab for Jira**, then click **Get it now**. Or go the [App in the marketplace directly](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira)
+
+   ![Install GitLab App on Jira](img/jira_dev_panel_setup_com_1.png)
+1. After installing, click **Get started** to go to the configurations page. This page is always available under **Jira Settings > Apps > Manage apps**.
+
+   ![Start GitLab App configuration on Jira](img/jira_dev_panel_setup_com_2.png)
+1. Enter the group or personal namespace in the **Namespace** field and click **Link namespace to Jira**.   Make sure you are logged in on GitLab.com and the namespace has a Silver or above license. The user setting up _GitLab for Jira_ must have **Maintainer** access to the GitLab namespace.
+
+NOTE: **Note:**
+The GitLab user only needs access when adding a new namespace. For syncing with Jira, we do not depend on the user's token.
+
+   ![Confure namespace on GitLab Jira App](img/jira_dev_panel_setup_com_3.png)
+
+After a namespace is added, all future commits, branches and merge requests of all projects under that namespace will be synced to Jira. Past data cannot be synced at the moment.
+
+#### Troubleshooting GitLab for Jira
+
+The GitLab for Jira App uses an iframe to add namespaces on the settings page. Some browsers block cross-site cookies which can lead to a message saying that the user needs to log in on GitLab.com even though the user is already logged in.
+
+> "You need to sign in or sign up before continuing."
+
+In this case, enable cross-site cookies in your browser.
+
+## Usage
+
+Once the integration is set up on GitLab and Jira you may refer any Jira issue by its ID in branch names, commit messages and  merge request titles on GitLab's side,
 and you will be able to see the linked `branches`, `commits`, and `merge requests` when entering a Jira issue
 (inside the Jira issue, merge requests will be called "pull requests").
 

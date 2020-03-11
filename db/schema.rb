@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_06_170531) do
+ActiveRecord::Schema.define(version: 2020_03_09_195710) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3264,6 +3264,7 @@ ActiveRecord::Schema.define(version: 2020_03_06_170531) do
     t.integer "pages_access_level", null: false
     t.integer "forking_access_level"
     t.index ["project_id"], name: "index_project_features_on_project_id", unique: true
+    t.index ["project_id"], name: "index_project_features_on_project_id_bal_20", where: "(builds_access_level = 20)"
   end
 
   create_table "project_group_links", id: :serial, force: :cascade do |t|
@@ -3465,6 +3466,7 @@ ActiveRecord::Schema.define(version: 2020_03_06_170531) do
     t.index ["created_at", "id"], name: "index_projects_api_created_at_id_desc", order: { id: :desc }
     t.index ["created_at", "id"], name: "index_projects_api_vis20_created_at", where: "(visibility_level = 20)"
     t.index ["created_at", "id"], name: "index_projects_on_created_at_and_id"
+    t.index ["creator_id", "created_at"], name: "index_projects_on_mirror_creator_id_created_at", where: "((mirror = true) AND (mirror_trigger_builds = true))"
     t.index ["creator_id"], name: "index_projects_on_creator_id"
     t.index ["description"], name: "index_projects_on_description_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["id", "repository_storage", "last_repository_updated_at"], name: "idx_projects_on_repository_storage_last_repository_updated_at"
@@ -4419,6 +4421,19 @@ ActiveRecord::Schema.define(version: 2020_03_06_170531) do
     t.datetime "updated_at"
     t.index ["project_id"], name: "index_users_star_projects_on_project_id"
     t.index ["user_id", "project_id"], name: "index_users_star_projects_on_user_id_and_project_id", unique: true
+  end
+
+  create_table "users_statistics", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "without_groups_and_projects", default: 0, null: false
+    t.integer "with_highest_role_guest", default: 0, null: false
+    t.integer "with_highest_role_reporter", default: 0, null: false
+    t.integer "with_highest_role_developer", default: 0, null: false
+    t.integer "with_highest_role_maintainer", default: 0, null: false
+    t.integer "with_highest_role_owner", default: 0, null: false
+    t.integer "bots", default: 0, null: false
+    t.integer "blocked", default: 0, null: false
   end
 
   create_table "vulnerabilities", force: :cascade do |t|

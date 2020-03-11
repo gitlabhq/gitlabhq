@@ -415,7 +415,7 @@ class Commit
   end
 
   def has_been_reverted?(current_user, notes_association = nil)
-    ext = all_references(current_user)
+    ext = Gitlab::ReferenceExtractor.new(project, current_user)
     notes_association ||= notes_with_associations
 
     notes_association.system.each do |note|
