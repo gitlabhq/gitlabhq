@@ -86,58 +86,11 @@ describe Dashboard::ProjectsController do
     end
 
     describe 'GET /starred.json' do
-      subject { get :starred, format: :json }
-
-      let(:projects) { create_list(:project, 2, creator: user) }
-
       before do
-        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
-
-        projects.each do |project|
-          project.add_developer(user)
-          create(:users_star_project, project_id: project.id, user_id: user.id)
-        end
+        get :starred, format: :json
       end
 
-      it 'returns success' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      it 'paginates the records' do
-        subject
-
-        expect(assigns(:projects).count).to eq(1)
-      end
-    end
-  end
-
-  context 'atom requests' do
-    let(:user) { create(:user) }
-
-    before do
-      sign_in(user)
-    end
-
-    describe '#index' do
-      context 'project pagination' do
-        let(:projects) { create_list(:project, 2, creator: user) }
-
-        before do
-          allow(Kaminari.config).to receive(:default_per_page).and_return(1)
-
-          projects.each do |project|
-            project.add_developer(user)
-          end
-        end
-
-        it 'does not paginate projects, even if page number is passed' do
-          get :index, format: :atom
-
-          expect(assigns(:events).count).to eq(2)
-        end
-      end
+      it { is_expected.to respond_with(:success) }
     end
   end
 end

@@ -4,6 +4,11 @@ FactoryBot.define do
   factory :service do
     project
     type { 'Service' }
+
+    trait :instance do
+      project { nil }
+      instance { true }
+    end
   end
 
   factory :custom_issue_tracker_service, class: 'CustomIssueTrackerService' do

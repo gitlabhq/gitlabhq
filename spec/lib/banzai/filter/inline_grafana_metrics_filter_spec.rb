@@ -46,11 +46,9 @@ describe Banzai::Filter::InlineGrafanaMetricsFilter do
   end
 
   context 'when "panelId" parameter is missing' do
-    let(:dashboard_path) { '/d/XDaNK6amz/gitlab-omnibus-redis' }
+    let(:dashboard_path) { '/d/XDaNK6amz/gitlab-omnibus-redis?from=1570397739557&to=1570484139557' }
 
-    it 'leaves the markdown unchanged' do
-      expect(unescape(doc.to_s)).to eq(input)
-    end
+    it_behaves_like 'a metrics embed filter'
   end
 
   context 'when time window parameters are missing' do
@@ -83,6 +81,14 @@ describe Banzai::Filter::InlineGrafanaMetricsFilter do
         'from%3D1570455339000', 'to%3D1570484139557',
         'start=2019-10-07T13%3A35%3A39Z', 'end=2019-10-07T21%3A35%3A39Z'
       )
+    end
+  end
+
+  context 'when no parameters are provided' do
+    let(:dashboard_path) { '/d/XDaNK6amz/gitlab-omnibus-redis' }
+
+    it 'inserts a placeholder' do
+      expect(embed_url).to be_present
     end
   end
 

@@ -10,7 +10,12 @@ An Epic within a group containing **Start date** and/or **Due date**
 can be visualized in a form of a timeline (e.g. a Gantt chart). The Epics Roadmap page
 shows such a visualization for all the epics which are under a group and/or its subgroups.
 
-![roadmap view](img/roadmap_view.png)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5164) in GitLab 12.9.
+
+On the epic bars, you can see their title, progress, and completed weight percentage.
+When you hover over an epic bar, a popover appears with its description, start and due dates, and weight completed.
+
+![roadmap view](img/roadmap_view_v12_9.png)
 
 A dropdown allows you to show only open or closed epics. By default, all epics are shown.
 
@@ -68,11 +73,7 @@ the timeline header represent the days of the week.
 
 ## Timeline bar for an epic
 
-The timeline bar indicates the approximate position of an epic based on its start
-and due date. If an epic doesn't have a due date, the timeline bar fades
-away towards the future. Similarly, if an epic doesn't have a start date, the
-timeline bar becomes more visible as it approaches the epic's due date on the
-timeline.
+The timeline bar indicates the approximate position of an epic based on its start and due date.
 
 <!-- ## Troubleshooting
 

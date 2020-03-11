@@ -220,6 +220,9 @@ msgstr ""
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr ""
 
+msgid "%{completedWeight} of %{totalWeight} weight completed"
+msgstr ""
+
 msgid "%{cores} cores"
 msgstr ""
 
@@ -599,6 +602,9 @@ msgid "- User"
 msgid_plural "- Users"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "- of - weight completed"
+msgstr ""
 
 msgid "- show less"
 msgstr ""
@@ -7795,6 +7801,9 @@ msgstr ""
 msgid "Epics|An error occurred while saving the %{epicDateType} date"
 msgstr ""
 
+msgid "Epics|An error occurred while updating labels."
+msgstr ""
+
 msgid "Epics|Are you sure you want to remove %{bStart}%{targetIssueTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}?"
 msgstr ""
 
@@ -9925,10 +9934,13 @@ msgstr ""
 msgid "Group: %{name}"
 msgstr ""
 
-msgid "GroupRoadmap|%{startDateInWords} &ndash; %{endDateInWords}"
+msgid "GroupRoadmap|%{dateWord} – No end date"
 msgstr ""
 
-msgid "GroupRoadmap|From %{dateWord}"
+msgid "GroupRoadmap|%{startDateInWords} – %{endDateInWords}"
+msgstr ""
+
+msgid "GroupRoadmap|No start date – %{dateWord}"
 msgstr ""
 
 msgid "GroupRoadmap|Something went wrong while fetching epics"
@@ -9947,9 +9959,6 @@ msgid "GroupRoadmap|To view the roadmap, add a start or due date to one of your 
 msgstr ""
 
 msgid "GroupRoadmap|To widen your search, change or remove filters; from %{startDate} to %{endDate}."
-msgstr ""
-
-msgid "GroupRoadmap|Until %{dateWord}"
 msgstr ""
 
 msgid "GroupSAML|Certificate fingerprint"

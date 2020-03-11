@@ -69,7 +69,7 @@ describe('Time series component', () => {
         mockedQueryResultFixture,
       );
       // dashboard is a dynamically generated fixture and stored at environment_metrics_dashboard.json
-      [mockGraphData] = store.state.monitoringDashboard.dashboard.panelGroups[0].panels;
+      [mockGraphData] = store.state.monitoringDashboard.dashboard.panelGroups[1].panels;
     });
 
     describe('general functions', () => {

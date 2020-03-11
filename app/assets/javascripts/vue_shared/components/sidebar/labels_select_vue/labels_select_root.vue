@@ -122,9 +122,14 @@ export default {
     this.$store.subscribeAction({
       after: this.handleVuexActionDispatch,
     });
+
+    document.addEventListener('click', this.handleDocumentClick);
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', this.handleDocumentClick);
   },
   methods: {
-    ...mapActions(['setInitialState']),
+    ...mapActions(['setInitialState', 'toggleDropdownContents']),
     /**
      * This method differentiates between
      * dispatched actions and calls necessary method.
@@ -136,6 +141,22 @@ export default {
         !state.showDropdownContents
       ) {
         this.handleDropdownClose(state.labels.filter(label => label.touched));
+      }
+    },
+    /**
+     * This method listens for document-wide click event
+     * and toggle dropdown if user clicks anywhere outside
+     * the dropdown while dropdown is visible.
+     */
+    handleDocumentClick({ target }) {
+      if (
+        this.showDropdownButton &&
+        this.showDropdownContents &&
+        !target?.classList.contains('js-sidebar-dropdown-toggle') &&
+        !this.$refs.dropdownButtonCollapsed?.$el.contains(target) &&
+        !this.$refs.dropdownContents?.$el.contains(target)
+      ) {
+        this.toggleDropdownContents();
       }
     },
     handleDropdownClose(labels) {
@@ -156,6 +177,7 @@ export default {
     <div v-if="!dropdownOnly">
       <dropdown-value-collapsed
         v-if="allowLabelCreate"
+        ref="dropdownButtonCollapsed"
         :labels="selectedLabels"
         @onValueClick="handleCollapsedValueClick"
       />
@@ -167,7 +189,7 @@ export default {
         <slot></slot>
       </dropdown-value>
       <dropdown-button v-show="showDropdownButton" />
-      <dropdown-contents v-if="showDropdownButton && showDropdownContents" />
+      <dropdown-contents v-if="showDropdownButton && showDropdownContents" ref="dropdownContents" />
     </div>
   </div>
 </template>

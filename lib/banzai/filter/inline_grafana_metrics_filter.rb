@@ -17,8 +17,6 @@ module Banzai
       def embed_params(node)
         query_params = Gitlab::Metrics::Dashboard::Url.parse_query(node['href'])
 
-        return unless query_params.include?(:panelId)
-
         time_window = Grafana::TimeWindow.new(query_params[:from], query_params[:to])
         url = url_with_window(node['href'], query_params, time_window.in_milliseconds)
 

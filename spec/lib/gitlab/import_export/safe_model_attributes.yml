@@ -459,6 +459,7 @@ Service:
 - active
 - properties
 - template
+- instance
 - push_events
 - issues_events
 - commit_events

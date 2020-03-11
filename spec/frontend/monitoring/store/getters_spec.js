@@ -89,8 +89,8 @@ describe('Monitoring store Getters', () => {
         expect(getMetricStates()).toEqual([metricStates.OK]);
 
         // Filtered by groups
-        expect(getMetricStates(state.dashboard.panelGroups[0].key)).toEqual([metricStates.OK]);
-        expect(getMetricStates(state.dashboard.panelGroups[1].key)).toEqual([]);
+        expect(getMetricStates(state.dashboard.panelGroups[1].key)).toEqual([metricStates.OK]);
+        expect(getMetricStates(state.dashboard.panelGroups[2].key)).toEqual([]);
       });
       it('on multiple metrics errors', () => {
         mutations[types.RECEIVE_METRICS_DATA_SUCCESS](state, metricsDashboardPayload);
@@ -118,18 +118,18 @@ describe('Monitoring store Getters', () => {
         mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultFixture);
         // An error in 2 groups
         mutations[types.RECEIVE_METRIC_RESULT_FAILURE](state, {
-          metricId: groups[0].panels[1].metrics[0].metricId,
+          metricId: groups[1].panels[1].metrics[0].metricId,
         });
         mutations[types.RECEIVE_METRIC_RESULT_FAILURE](state, {
-          metricId: groups[1].panels[0].metrics[0].metricId,
+          metricId: groups[2].panels[0].metrics[0].metricId,
         });
 
         expect(getMetricStates()).toEqual([metricStates.OK, metricStates.UNKNOWN_ERROR]);
-        expect(getMetricStates(groups[0].key)).toEqual([
+        expect(getMetricStates(groups[1].key)).toEqual([
           metricStates.OK,
           metricStates.UNKNOWN_ERROR,
         ]);
-        expect(getMetricStates(groups[1].key)).toEqual([metricStates.UNKNOWN_ERROR]);
+        expect(getMetricStates(groups[2].key)).toEqual([metricStates.UNKNOWN_ERROR]);
       });
     });
   });
@@ -210,13 +210,13 @@ describe('Monitoring store Getters', () => {
         mutations[types.RECEIVE_METRIC_RESULT_SUCCESS](state, mockedQueryResultFixtureStatusCode);
 
         // First group has metrics
-        expect(metricsWithData(state.dashboard.panelGroups[0].key)).toEqual([
+        expect(metricsWithData(state.dashboard.panelGroups[1].key)).toEqual([
           mockedQueryResultFixture.metricId,
           mockedQueryResultFixtureStatusCode.metricId,
         ]);
 
         // Second group has no metrics
-        expect(metricsWithData(state.dashboard.panelGroups[1].key)).toEqual([]);
+        expect(metricsWithData(state.dashboard.panelGroups[2].key)).toEqual([]);
       });
     });
   });

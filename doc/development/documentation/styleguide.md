@@ -261,15 +261,6 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
     Some features are also objects. For example, "GitLab's Merge Requests support X" and
     "Create a new merge request for Z."
 
-- Use common contractions when it helps create a friendly and informal tone, especially in tutorials and [UIs](https://design.gitlab.com/content/punctuation/#contractions).
-  - Do use contractions like: _it's_, _can't_, _wouldn't_, _you're_, _you've_, _haven't_, don't, _we're_, _that's_, and _won't_. Contractions in instructional documentation such as tutorials can help create a friendly and informal tone.
-  - Avoid less common contractions such as: _he'd_, _it'll_, _should've_, and _there'd_.
-  - Do not use contractions in reference documentation. Examples:
-    - You cannot set a limit higher than 1000.
-    - For `parameter1`, the default is 10.
-  - Do not use contractions with a proper noun and a verb, such as _GitLab's creating X_.
-  - Avoid using contractions when you need to emphasize a negative, such as "Do **not** install X with Y."
-
 - Avoid use of the future tense:
   - Instead of "after you execute this command, GitLab will display the result", use "after you execute this command, GitLab displays the result".
   - Only use the future tense to convey when the action or result will actually occur at a future time.
@@ -285,6 +276,58 @@ as even native users of English might misunderstand them.
   - Instead of "i.e.", use "that is."
   - Instead of "e.g.", use "for example," "such as," "for instance," or "like."
   - Instead of "etc.", either use "and so on" or consider editing it out, since it can be vague.
+
+### Contractions
+
+- Use common contractions when it helps create a friendly and informal tone, especially in tutorials, instructional documentation, and [UIs](https://design.gitlab.com/content/punctuation/#contractions).
+
+| Do       | Don't     |
+|----------|-----------|
+| it's     | it is     |
+| can't    | cannot    |
+| wouldn't | would not |
+| you're   | you are   |
+| you've   | you have  |
+| haven't  | have not  |
+| don't    | do not    |
+| we're    | we are    |
+| that's'  | that is   |
+| won't    | will not  |
+
+- Avoid less common contractions:
+
+| Do           | Don't       |
+|--------------|-------------|
+| he would     | he'd        |
+| it will      | it'll       |
+| should have  | should've   |
+| there would  | there'd     |
+
+- Do not use contractions with a proper noun and a verb. For example:
+
+| Do                   | Don't               |
+|----------------------|---------------------|
+| GitLab is creating X | GitLab's creating X |
+
+- Do not use contractions when you need to emphasize a negative. For example:
+
+| Do                          | Don't                      |
+|-----------------------------|----------------------------|
+| Do **not** install X with Y | **Don't** install X with Y |
+
+- Do not use contractions in reference documentation. For example:
+
+| Do                                       | Don't                      |
+|------------------------------------------|----------------------------|
+| Do **not** set a limit greater than 1000 | **Don't** set a limit greater than 1000 |
+| For `parameter1`, the default is 10      | For `parameter1`, the default's 10     |
+
+- Avoid contractions in error messages. Examples:
+
+| Do                                       | Don't                      |
+|------------------------------------------|----------------------------|
+| Requests to localhost are not allowed    | Requests to localhost aren't allowed |
+| Specified URL cannot be used             | Specified URL can't be used          |
 
 ## Text
 

@@ -327,6 +327,7 @@ Represents an epic.
 | `group` | Group! | Group to which the epic belongs |
 | `hasChildren` | Boolean! | Indicates if the epic has children |
 | `hasIssues` | Boolean! | Indicates if the epic has direct issues |
+| `healthStatus` | EpicHealthStatus | Current health status of the epic |
 | `id` | ID! | ID of the epic |
 | `iid` | ID! | Internal ID of the epic |
 | `parent` | Epic | Parent epic of the epic |
@@ -376,6 +377,16 @@ Total weight of open and closed descendant issues
 | ---   |  ---- | ----------  |
 | `closedIssues` | Int | Total weight of completed (closed) issues in this epic, including epic descendants |
 | `openedIssues` | Int | Total weight of opened issues in this epic, including epic descendants |
+
+## EpicHealthStatus
+
+Health status of child issues
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `issuesAtRisk` | Int | Number of issues at risk |
+| `issuesNeedingAttention` | Int | Number of issues that need attention |
+| `issuesOnTrack` | Int | Number of issues on track |
 
 ## EpicIssue
 

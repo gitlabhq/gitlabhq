@@ -703,6 +703,12 @@ describe Gitlab::ImportExport::Project::TreeRestorer do
         expect(project.services.where(template: true).count).to eq(0)
       end
 
+      it 'does not import any instance services' do
+        expect(restored_project_json).to eq(true)
+
+        expect(project.services.where(instance: true).count).to eq(0)
+      end
+
       it 'imports labels' do
         create(:group_label, name: 'Another label', group: project.group)
 

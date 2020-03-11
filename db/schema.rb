@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_09_195710) do
+ActiveRecord::Schema.define(version: 2020_03_10_135823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3265,6 +3265,7 @@ ActiveRecord::Schema.define(version: 2020_03_09_195710) do
     t.integer "forking_access_level"
     t.index ["project_id"], name: "index_project_features_on_project_id", unique: true
     t.index ["project_id"], name: "index_project_features_on_project_id_bal_20", where: "(builds_access_level = 20)"
+    t.index ["project_id"], name: "index_project_features_on_project_id_ral_20", where: "(repository_access_level = 20)"
   end
 
   create_table "project_group_links", id: :serial, force: :cascade do |t|
@@ -3939,8 +3940,10 @@ ActiveRecord::Schema.define(version: 2020_03_09_195710) do
     t.string "description", limit: 500
     t.boolean "comment_on_event_enabled", default: true, null: false
     t.boolean "template", default: false
+    t.boolean "instance", default: false, null: false
     t.index ["project_id"], name: "index_services_on_project_id"
     t.index ["template"], name: "index_services_on_template"
+    t.index ["type", "instance"], name: "index_services_on_type_and_instance", unique: true, where: "(instance IS TRUE)"
     t.index ["type", "template"], name: "index_services_on_type_and_template", unique: true, where: "(template IS TRUE)"
     t.index ["type"], name: "index_services_on_type"
   end

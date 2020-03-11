@@ -248,6 +248,7 @@ excluded_attributes:
     - :token_encrypted
   services:
     - :template
+    - :instance
   error_tracking_setting:
     - :encrypted_token
     - :encrypted_token_iv

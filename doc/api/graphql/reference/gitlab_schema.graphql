@@ -2024,6 +2024,11 @@ type Epic implements Noteable {
   hasIssues: Boolean!
 
   """
+  Current health status of the epic
+  """
+  healthStatus: EpicHealthStatus
+
+  """
   ID of the epic
   """
   id: ID!
@@ -2347,6 +2352,26 @@ type EpicEdge {
   The item at the end of the edge.
   """
   node: Epic
+}
+
+"""
+Health status of child issues
+"""
+type EpicHealthStatus {
+  """
+  Number of issues at risk
+  """
+  issuesAtRisk: Int
+
+  """
+  Number of issues that need attention
+  """
+  issuesNeedingAttention: Int
+
+  """
+  Number of issues on track
+  """
+  issuesOnTrack: Int
 }
 
 """
