@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.8.6 (2020-03-11)
+
+### Security (1 change)
+
+- Do not enable soft email confirmation by default.
+
+
 ## 12.8.5
 
 ### Fixed (8 changes)
