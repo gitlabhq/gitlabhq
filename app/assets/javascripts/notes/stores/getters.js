@@ -28,7 +28,7 @@ export const getUserData = state => state.userData || {};
 
 export const getUserDataByProp = state => prop => state.userData && state.userData[prop];
 
-export const descriptionVersion = state => state.descriptionVersion;
+export const descriptionVersions = state => state.descriptionVersions;
 
 export const notesById = state =>
   state.discussions.reduce((acc, note) => {

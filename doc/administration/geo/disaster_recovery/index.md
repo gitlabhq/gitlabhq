@@ -139,7 +139,7 @@ do this manually.
    sudo gitlab-pg-ctl promote
    ```
 
-   In GitLab 12.8 and earlier, see [Message: "sudo: gitlab-pg-ctl: command not found"](../replication/troubleshooting.md#message-sudo-gitlab-pg-ctl-command-not-found).
+   In GitLab 12.8 and earlier, see [Message: `sudo: gitlab-pg-ctl: command not found`](../replication/troubleshooting.md#message-sudo-gitlab-pg-ctl-command-not-found).
 
 1. Edit `/etc/gitlab/gitlab.rb` on every machine in the **secondary** to
    reflect its new status as **primary** by removing any lines that enabled the

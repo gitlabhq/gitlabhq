@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PodLogs
-  class ElasticsearchService < BaseService
+  class ElasticsearchService < PodLogs::BaseService
     steps :check_arguments,
           :check_param_lengths,
           :get_raw_pods,

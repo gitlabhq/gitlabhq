@@ -514,7 +514,7 @@ or `gitlab-ctl promote-to-primary-node`, either:
   bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was
   fixed.
 
-### Message: "sudo: gitlab-pg-ctl: command not found"
+### Message: `sudo: gitlab-pg-ctl: command not found`
 
 When
 [promoting a **secondary** node with HA](../disaster_recovery/index.md#promoting-a-secondary-node-with-ha),

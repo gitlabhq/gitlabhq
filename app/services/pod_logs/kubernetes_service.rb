@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PodLogs
-  class KubernetesService < BaseService
+  class KubernetesService < PodLogs::BaseService
     LOGS_LIMIT = 500.freeze
     REPLACEMENT_CHAR = "\u{FFFD}"
 
