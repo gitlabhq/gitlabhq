@@ -4618,13 +4618,14 @@ describe Project do
     let(:import_state) { create(:import_state, project: project) }
 
     it 'runs the correct hooks' do
-      expect(project.repository).to receive(:after_import)
-      expect(project.wiki.repository).to receive(:after_import)
+      expect(project.repository).to receive(:expire_content_cache)
+      expect(project.wiki.repository).to receive(:expire_content_cache)
       expect(import_state).to receive(:finish)
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
       expect(InternalId).to receive(:flush_records!).with(project: project)
+      expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
 
       project.after_import
     end

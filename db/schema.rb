@@ -2840,8 +2840,7 @@ ActiveRecord::Schema.define(version: 2020_03_10_135823) do
     t.index ["commit_id"], name: "index_notes_on_commit_id"
     t.index ["created_at"], name: "index_notes_on_created_at"
     t.index ["discussion_id"], name: "index_notes_on_discussion_id"
-    t.index ["id"], name: "design_mentions_temp_index", where: "((note ~~ '%@%'::text) AND ((noteable_type)::text = 'DesignManagement::Design'::text))"
-    t.index ["id"], name: "epic_mentions_temp_index", where: "((note ~~ '%@%'::text) AND ((noteable_type)::text = 'Epic'::text))"
+    t.index ["id", "noteable_type"], name: "note_mentions_temp_index", where: "(note ~~ '%@%'::text)"
     t.index ["line_code"], name: "index_notes_on_line_code"
     t.index ["note"], name: "index_notes_on_note_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["note"], name: "tmp_idx_on_promoted_notes", where: "(((noteable_type)::text = 'Issue'::text) AND (system IS TRUE) AND (note ~~ 'promoted to epic%'::text))"

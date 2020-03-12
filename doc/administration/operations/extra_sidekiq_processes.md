@@ -311,11 +311,11 @@ If you experience a problem, you should contact GitLab support. Use the command
 line at your own risk.
 
 For debugging purposes, you can start extra Sidekiq processes by using the command
-`/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster`. This command
+`/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster`. This command
 takes arguments using the following syntax:
 
 ```shell
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster [QUEUE,QUEUE,...] [QUEUE, ...]
+/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster [QUEUE,QUEUE,...] [QUEUE, ...]
 ```
 
 Each separate argument denotes a group of queues that have to be processed by a
@@ -333,14 +333,14 @@ For example, say you want to start 2 extra processes: one to process the
 done as follows:
 
 ```shell
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit post_receive
+/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster process_commit post_receive
 ```
 
 If you instead want to start one process processing both queues, you'd use the
 following syntax:
 
 ```shell
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit,post_receive
+/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster process_commit,post_receive
 ```
 
 If you want to have one Sidekiq process dealing with the `process_commit` and
@@ -348,7 +348,7 @@ If you want to have one Sidekiq process dealing with the `process_commit` and
 you'd use the following:
 
 ```shell
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit,post_receive gitlab_shell
+/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster process_commit,post_receive gitlab_shell
 ```
 
 ### Monitoring the `sidekiq-cluster` command
@@ -380,7 +380,7 @@ file is written, but this can be changed by passing the `--pidfile` option to
 `sidekiq-cluster`. For example:
 
 ```shell
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster --pidfile /var/run/gitlab/sidekiq_cluster.pid process_commit
+/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster --pidfile /var/run/gitlab/sidekiq_cluster.pid process_commit
 ```
 
 Keep in mind that the PID file will contain the PID of the `sidekiq-cluster`

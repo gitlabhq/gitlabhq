@@ -514,6 +514,27 @@ or `gitlab-ctl promote-to-primary-node`, either:
   bug](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22021) was
   fixed.
 
+### Message: "sudo: gitlab-pg-ctl: command not found"
+
+When
+[promoting a **secondary** node with HA](../disaster_recovery/index.md#promoting-a-secondary-node-with-ha),
+you need to run the `gitlab-pg-ctl` command to promote the PostgreSQL
+read-replica database.
+
+In GitLab 12.8 and earlier, this command will fail with the message:
+
+```plaintext
+sudo: gitlab-pg-ctl: command not found
+```
+
+In this case, the workaround is to use the full path to the binary, for example:
+
+```shell
+sudo /opt/gitlab/embedded/bin/gitlab-pg-ctl promote
+```
+
+GitLab 12.9 and later are [unaffected by this error](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5147).
+
 ## Fixing Foreign Data Wrapper errors
 
 This section documents ways to fix potential Foreign Data Wrapper errors.

@@ -257,6 +257,10 @@ class MergeRequest < ApplicationRecord
     with_state(:opened).where(auto_merge_enabled: true)
   end
 
+  scope :including_metrics, -> do
+    includes(:metrics)
+  end
+
   ignore_column :state, remove_with: '12.7', remove_after: '2019-12-22'
 
   after_save :keep_around_commit, unless: :importing?

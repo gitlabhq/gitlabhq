@@ -23,8 +23,7 @@ describe ProjectImportState, type: :model do
 
       # Works around https://github.com/rspec/rspec-mocks/issues/910
       allow(Project).to receive(:find).with(project.id).and_return(project)
-      expect(project.repository).to receive(:after_import).and_call_original
-      expect(project.wiki.repository).to receive(:after_import).and_call_original
+      expect(project).to receive(:after_import).and_call_original
     end
 
     it 'imports a project', :sidekiq_might_not_need_inline do

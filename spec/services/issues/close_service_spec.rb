@@ -103,8 +103,8 @@ describe Issues::CloseService do
         subject { described_class.new(project, user).close_issue(issue, closed_via: closing_merge_request) }
 
         context 'when `metrics.first_mentioned_in_commit_at` is not set' do
-          it 'uses the first commit timestamp' do
-            expected = closing_merge_request.commits.first.date
+          it 'uses the first commit authored timestamp' do
+            expected = closing_merge_request.commits.first.authored_date
 
             subject
 

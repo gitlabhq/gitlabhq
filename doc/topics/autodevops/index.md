@@ -666,6 +666,10 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster, you must:
    This will opt-in to using a version of the PostgreSQL chart that supports Kubernetes
    1.16 and higher.
 
+CAUTION: **Caution:** Opting into `AUTO_DEVOPS_POSTGRES_CHANNEL` version `2` will delete
+the version `1` PostgreSQL database. Please backup the contents of the PostgreSQL database
+first before opting into version `2`, so that you can restore into the version `2` database.
+
 #### Migrations
 
 > [Introduced][ce-21955] in GitLab 11.4

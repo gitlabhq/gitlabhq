@@ -1,0 +1,5 @@
+---
+title: Replace several temporary indexes with a single one to save time when running mentions migration
+merge_request:
+author:
+type: performance
