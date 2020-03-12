@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import _ from 'underscore';
+import { intersection } from 'lodash';
 
 import '~/smart_interval';
 
@@ -38,7 +38,7 @@ export default {
       } else {
         changedCommands = [];
       }
-      if (changedCommands && _.intersection(subscribedCommands, changedCommands).length) {
+      if (changedCommands && intersection(subscribedCommands, changedCommands).length) {
         this.mediator.fetch();
       }
     },

@@ -1,0 +1,5 @@
+---
+title: Fix code search pagination on a custom branch
+merge_request: 25984
+author:
+type: fixed

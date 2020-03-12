@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Popover from '~/blob/suggest_gitlab_ci_yml/components/popover.vue';
 import Cookies from 'js-cookie';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import * as utils from '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/common_utils', () => ({
@@ -11,6 +12,8 @@ jest.mock('~/lib/utils/common_utils', () => ({
 const target = 'gitlab-ci-yml-selector';
 const dismissKey = 'suggest_gitlab_ci_yml_99';
 const defaultTrackLabel = 'suggest_gitlab_ci_yml';
+const commitTrackLabel = 'suggest_commit_first_project_gitlab_ci_yml';
+const humanAccess = 'owner';
 
 describe('Suggest gitlab-ci.yml Popover', () => {
   let wrapper;
@@ -21,6 +24,7 @@ describe('Suggest gitlab-ci.yml Popover', () => {
         target,
         trackLabel,
         dismissKey,
+        humanAccess,
       },
     });
   }
@@ -50,15 +54,43 @@ describe('Suggest gitlab-ci.yml Popover', () => {
       expect(wrapper.vm.popoverDismissed).toEqual(true);
     });
 
-    beforeEach(() => {
+    afterEach(() => {
       Cookies.remove(dismissKey);
+    });
+  });
+
+  describe('tracking', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      createWrapper(commitTrackLabel);
+      trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('sends a tracking event with the expected properties for the popover being viewed', () => {
+      const expectedCategory = undefined;
+      const expectedAction = undefined;
+      const expectedLabel = 'suggest_commit_first_project_gitlab_ci_yml';
+      const expectedProperty = 'owner';
+
+      document.body.dataset.page = 'projects:blob:new';
+
+      wrapper.vm.trackOnShow();
+
+      expect(trackingSpy).toHaveBeenCalledWith(expectedCategory, expectedAction, {
+        label: expectedLabel,
+        property: expectedProperty,
+      });
     });
   });
 
   describe('when the popover is mounted with the trackLabel of the Confirm button popover at the bottom of the page', () => {
     it('calls scrollToElement so that the Confirm button and popover will be in sight', () => {
       const scrollToElementSpy = jest.spyOn(utils, 'scrollToElement');
-      const commitTrackLabel = 'suggest_commit_first_project_gitlab_ci_yml';
 
       createWrapper(commitTrackLabel);
 

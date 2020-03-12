@@ -752,7 +752,9 @@ production: &base
     # Path to a file containing a CA certificate
     ca_file: '/etc/ssl/certs/CA.pem'
 
-    # Port where the client side certificate is requested by the webserver (NGINX/Apache)
+    # Host and port where the client side certificate is requested by the
+    # webserver (NGINX/Apache)
+    # client_certificate_required_host: smartcard.gitlab.example.com
     # client_certificate_required_port: 3444
 
     # Browser session with smartcard sign-in is required for Git access

@@ -4,6 +4,9 @@ import Cookies from 'js-cookie';
 import { parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { glEmojiTag } from '~/emoji';
+import Tracking from '~/tracking';
+
+const trackingMixin = Tracking.mixin();
 
 const popoverStates = {
   suggest_gitlab_ci_yml: {
@@ -27,6 +30,7 @@ export default {
     GlIcon,
     GlButton,
   },
+  mixins: [trackingMixin],
   props: {
     target: {
       type: String,
@@ -40,10 +44,18 @@ export default {
       type: String,
       required: true,
     },
+    humanAccess: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       popoverDismissed: parseBoolean(Cookies.get(this.dismissKey)),
+      tracking: {
+        label: this.trackLabel,
+        property: this.humanAccess,
+      },
     };
   },
   computed: {
@@ -60,11 +72,16 @@ export default {
   mounted() {
     if (this.trackLabel === 'suggest_commit_first_project_gitlab_ci_yml' && !this.popoverDismissed)
       scrollToElement(document.querySelector(this.target));
+
+    this.trackOnShow();
   },
   methods: {
     onDismiss() {
       this.popoverDismissed = true;
       Cookies.set(this.dismissKey, this.popoverDismissed, { expires: 365 });
+    },
+    trackOnShow() {
+      if (!this.popoverDismissed) this.track();
     },
   },
 };

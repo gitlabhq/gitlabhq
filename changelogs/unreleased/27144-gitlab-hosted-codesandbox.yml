@@ -1,0 +1,5 @@
+---
+title: Update Web IDE clientside preview bundler to use GitLab managed server
+merge_request: 21520
+author:
+type: changed

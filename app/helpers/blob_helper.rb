@@ -353,4 +353,8 @@ module BlobHelper
   def suggest_pipeline_commit_cookie_name
     "suggest_gitlab_ci_yml_commit_#{@project.id}"
   end
+
+  def human_access
+    @project.team.human_max_access(current_user&.id).try(:downcase)
+  end
 end

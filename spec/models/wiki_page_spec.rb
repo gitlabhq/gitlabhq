@@ -480,29 +480,39 @@ describe WikiPage do
 
     let(:untitled_page) { described_class.new(wiki) }
     let(:directory_page) do
-      create_page('parent/child', 'test content')
-      wiki.find_page('parent/child')
+      create_page('parent directory/child page', 'test content')
+      wiki.find_page('parent directory/child page')
     end
 
     where(:page, :title, :changed) do
-      :untitled_page  | nil            | false
-      :untitled_page  | 'new title'    | true
+      :untitled_page  | nil                             | false
+      :untitled_page  | 'new title'                     | true
 
-      :new_page       | nil            | true
-      :new_page       | 'test page'    | true
-      :new_page       | 'new title'    | true
+      :new_page       | nil                             | true
+      :new_page       | 'test page'                     | true
+      :new_page       | 'new title'                     | true
 
-      :existing_page  | nil            | false
-      :existing_page  | 'test page'    | false
-      :existing_page  | '/test page'   | false
-      :existing_page  | 'new title'    | true
+      :existing_page  | nil                             | false
+      :existing_page  | 'test page'                     | false
+      :existing_page  | 'test-page'                     | false
+      :existing_page  | '/test page'                    | false
+      :existing_page  | '/test-page'                    | false
+      :existing_page  | ' test page '                   | true
+      :existing_page  | 'new title'                     | true
+      :existing_page  | 'new-title'                     | true
 
-      :directory_page | nil            | false
-      :directory_page | 'parent/child' | false
-      :directory_page | 'child'        | false
-      :directory_page | '/child'       | true
-      :directory_page | 'parent/other' | true
-      :directory_page | 'other/child'  | true
+      :directory_page | nil                             | false
+      :directory_page | 'parent directory/child page'   | false
+      :directory_page | 'parent-directory/child page'   | false
+      :directory_page | 'parent-directory/child-page'   | false
+      :directory_page | 'child page'                    | false
+      :directory_page | 'child-page'                    | false
+      :directory_page | '/child page'                   | true
+      :directory_page | 'parent directory/other'        | true
+      :directory_page | 'parent-directory/other'        | true
+      :directory_page | 'parent-directory / child-page' | true
+      :directory_page | 'other directory/child page'    | true
+      :directory_page | 'other-directory/child page'    | true
     end
 
     with_them do

@@ -257,7 +257,7 @@ class WikiPage
   def title_changed?
     if persisted?
       old_title, old_dir = wiki.page_title_and_dir(self.class.unhyphenize(@page.url_path))
-      new_title, new_dir = wiki.page_title_and_dir(title)
+      new_title, new_dir = wiki.page_title_and_dir(self.class.unhyphenize(title))
 
       new_title != old_title || (title.include?('/') && new_dir != old_dir)
     else

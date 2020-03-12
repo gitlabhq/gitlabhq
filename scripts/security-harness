@@ -28,9 +28,9 @@ HOOK_DATA = <<~HOOK
 
   if [ -e "$harness" ]
   then
-    if [[ ("$url" != *"dev.gitlab.org"*) && ("$url" != *"gitlab-org/security/"*) ]]
+    if [["$url" != *"gitlab-org/security/"*]]
     then
-      echo "Pushing to remotes other than dev.gitlab.org and gitlab.com/gitlab-org/security has been disabled!"
+      echo "Pushing to remotes other than gitlab.com/gitlab-org/security has been disabled!"
       echo "Run scripts/security-harness to disable this check."
       echo
 
@@ -58,7 +58,7 @@ def toggle
   else
     FileUtils.touch(harness_path)
 
-    puts "#{SHELL_GREEN}Security harness installed -- you will only be able to push to dev.gitlab.org or gitlab.com/gitlab-org/security!#{SHELL_CLEAR}"
+    puts "#{SHELL_GREEN}Security harness installed -- you will only be able to push to gitlab.com/gitlab-org/security!#{SHELL_CLEAR}"
   end
 end
 

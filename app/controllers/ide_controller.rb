@@ -3,6 +3,7 @@
 class IdeController < ApplicationController
   layout 'fullscreen'
 
+  include ClientsidePreviewCSP
   include StaticObjectExternalStorageCSP
 
   def index

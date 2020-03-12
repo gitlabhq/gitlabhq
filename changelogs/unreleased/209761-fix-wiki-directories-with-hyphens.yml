@@ -1,0 +1,5 @@
+---
+title: Fix WikiPage#title_changed for paths with spaces
+merge_request: 27087
+author:
+type: fixed
