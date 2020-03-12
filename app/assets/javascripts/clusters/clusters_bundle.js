@@ -315,10 +315,13 @@ export default class Clusters {
 
     this.checkForNewInstalls(prevApplicationMap, this.store.state.applications);
     this.updateContainer(prevStatus, this.store.state.status, this.store.state.statusReason);
-    this.toggleIngressDomainHelpText(
-      prevApplicationMap[INGRESS],
-      this.store.state.applications[INGRESS],
-    );
+
+    if (this.ingressDomainHelpText) {
+      this.toggleIngressDomainHelpText(
+        prevApplicationMap[INGRESS],
+        this.store.state.applications[INGRESS],
+      );
+    }
   }
 
   showToken() {

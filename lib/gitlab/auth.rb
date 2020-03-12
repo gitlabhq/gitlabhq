@@ -88,7 +88,7 @@ module Gitlab
           else
             # If no user is provided, try LDAP.
             #   LDAP users are only authenticated via LDAP
-            authenticators << Gitlab::Auth::LDAP::Authentication
+            authenticators << Gitlab::Auth::Ldap::Authentication
           end
 
           authenticators.compact!
@@ -134,7 +134,7 @@ module Gitlab
       end
 
       def authenticate_using_internal_or_ldap_password?
-        Gitlab::CurrentSettings.password_authentication_enabled_for_git? || Gitlab::Auth::LDAP::Config.enabled?
+        Gitlab::CurrentSettings.password_authentication_enabled_for_git? || Gitlab::Auth::Ldap::Config.enabled?
       end
 
       def service_request_check(login, password, project)

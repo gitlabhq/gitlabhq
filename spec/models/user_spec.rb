@@ -4197,7 +4197,7 @@ describe User, :do_not_mock_admin_mode do
   describe '#read_only_attribute?' do
     context 'when LDAP server is enabled' do
       before do
-        allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
+        allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(true)
       end
 
       %i[name email location].each do |attribute|

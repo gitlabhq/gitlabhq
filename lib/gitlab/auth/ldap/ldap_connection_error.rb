@@ -2,8 +2,8 @@
 
 module Gitlab
   module Auth
-    module LDAP
-      LDAPConnectionError = Class.new(StandardError)
+    module Ldap
+      LdapConnectionError = Class.new(StandardError)
     end
   end
 end

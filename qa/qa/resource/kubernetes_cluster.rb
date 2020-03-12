@@ -38,6 +38,9 @@ module QA
             # We must wait a few seconds for permissions to be set up correctly for new cluster
             sleep 10
 
+            # Open applications tab
+            show.open_applications
+
             # Helm must be installed before everything else
             show.install!(:helm)
             show.await_installed(:helm)
@@ -52,6 +55,8 @@ module QA
 
             if @install_ingress
               populate(:ingress_ip)
+
+              show.open_details
               show.set_domain("#{ingress_ip}.nip.io")
               show.save_domain
             end

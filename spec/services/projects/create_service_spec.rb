@@ -6,7 +6,6 @@ describe Projects::CreateService, '#execute' do
   include ExternalAuthorizationServiceHelpers
   include GitHelpers
 
-  let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create :user }
   let(:opts) do
     {
@@ -264,8 +263,6 @@ describe Projects::CreateService, '#execute' do
     end
 
     context 'when another repository already exists on disk' do
-      let(:repository_storage) { 'default' }
-
       let(:opts) do
         {
           name: 'Existing',
@@ -274,13 +271,15 @@ describe Projects::CreateService, '#execute' do
       end
 
       context 'with legacy storage' do
+        let(:fake_repo_path) { File.join(TestEnv.repos_path, user.namespace.full_path, 'existing.git') }
+
         before do
           stub_application_setting(hashed_storage_enabled: false)
-          gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing", 'group/project')
+          TestEnv.create_bare_repository(fake_repo_path)
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage, "#{user.namespace.full_path}/existing")
+          FileUtils.rm_rf(fake_repo_path)
         end
 
         it 'does not allow to create a project when path matches existing repository on disk' do
@@ -305,17 +304,15 @@ describe Projects::CreateService, '#execute' do
       context 'with hashed storage' do
         let(:hash) { '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
         let(:hashed_path) { '@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
+        let(:fake_repo_path) { File.join(TestEnv.repos_path, "#{hashed_path}.git") }
 
         before do
           allow(Digest::SHA2).to receive(:hexdigest) { hash }
-        end
-
-        before do
-          gitlab_shell.create_repository(repository_storage, hashed_path, 'group/project')
+          TestEnv.create_bare_repository(fake_repo_path)
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage, hashed_path)
+          FileUtils.rm_rf(fake_repo_path)
         end
 
         it 'does not allow to create a project when path matches existing repository on disk' do

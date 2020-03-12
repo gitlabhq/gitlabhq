@@ -67,7 +67,7 @@ describe('Evidence Block', () => {
     });
 
     it('renders the correct hover text', () => {
-      expect(wrapper.find(ClipboardButton).attributes('title')).toBe('Copy commit SHA');
+      expect(wrapper.find(ClipboardButton).attributes('title')).toBe('Copy evidence SHA');
     });
 
     it('copies the sha', () => {

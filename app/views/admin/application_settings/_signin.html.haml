@@ -16,7 +16,7 @@
           Password authentication enabled for Git over HTTP(S)
           .form-text.text-muted
             When disabled, a Personal Access Token
-            - if Gitlab::Auth::LDAP::Config.enabled?
+            - if Gitlab::Auth::Ldap::Config.enabled?
               or LDAP password
             must be used to authenticate.
     - if omniauth_enabled? && button_based_providers.any?

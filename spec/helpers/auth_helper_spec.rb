@@ -56,7 +56,7 @@ describe AuthHelper do
 
   describe 'any_form_based_providers_enabled?' do
     before do
-      allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
+      allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(true)
     end
 
     it 'detects form-based providers' do

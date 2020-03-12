@@ -2,9 +2,9 @@
 
 module Gitlab
   module Auth
-    module LDAP
+    module Ldap
       class Adapter
-        prepend_if_ee('::EE::Gitlab::Auth::LDAP::Adapter') # rubocop: disable Cop/InjectEnterpriseEditionModule
+        prepend_if_ee('::EE::Gitlab::Auth::Ldap::Adapter') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
         SEARCH_RETRY_FACTOR = [1, 1, 2, 3].freeze
         MAX_SEARCH_RETRIES = Rails.env.test? ? 1 : SEARCH_RETRY_FACTOR.size.freeze
@@ -18,7 +18,7 @@ module Gitlab
         end
 
         def self.config(provider)
-          Gitlab::Auth::LDAP::Config.new(provider)
+          Gitlab::Auth::Ldap::Config.new(provider)
         end
 
         def initialize(provider, ldap = nil)
@@ -27,7 +27,7 @@ module Gitlab
         end
 
         def config
-          Gitlab::Auth::LDAP::Config.new(provider)
+          Gitlab::Auth::Ldap::Config.new(provider)
         end
 
         def users(fields, value, limit = nil)
@@ -75,7 +75,7 @@ module Gitlab
             renew_connection_adapter
             retry
           else
-            raise LDAPConnectionError, error_message
+            raise LdapConnectionError, error_message
           end
         end
 
@@ -91,13 +91,13 @@ module Gitlab
           end
 
           entries.map do |entry|
-            Gitlab::Auth::LDAP::Person.new(entry, provider)
+            Gitlab::Auth::Ldap::Person.new(entry, provider)
           end
         end
 
         def user_options(fields, value, limit)
           options = {
-            attributes: Gitlab::Auth::LDAP::Person.ldap_attributes(config),
+            attributes: Gitlab::Auth::Ldap::Person.ldap_attributes(config),
             base: config.base
           }
 

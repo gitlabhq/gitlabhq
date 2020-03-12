@@ -421,24 +421,6 @@ describe PostReceive do
             perform
           end
         end
-
-        it 'updates the snippet db information' do
-          blob = snippet.blobs.first
-
-          expect(snippet).to receive(:update).with(file_name: blob.path, content: blob.data)
-
-          perform
-        end
-
-        context 'when snippet does not have any blob' do
-          it 'does not update snippet db information' do
-            allow(snippet).to receive(:blobs).and_return([])
-
-            expect(snippet).not_to receive(:update)
-
-            perform
-          end
-        end
       end
     end
 

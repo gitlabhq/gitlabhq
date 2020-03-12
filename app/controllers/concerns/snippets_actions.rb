@@ -30,9 +30,9 @@ module SnippetsActions
   end
 
   def check_repository_error
-    repository_error = snippet.errors.delete(:repository)
+    repository_errors = Array(snippet.errors.delete(:repository))
 
-    flash.now[:alert] = repository_error if repository_error
-    recaptcha_check_with_fallback(repository_error.nil?) { render :edit }
+    flash.now[:alert] = repository_errors.first if repository_errors.present?
+    recaptcha_check_with_fallback(repository_errors.empty?) { render :edit }
   end
 end

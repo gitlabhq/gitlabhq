@@ -273,8 +273,8 @@ class SessionsController < Devise::SessionsController
 
   def ldap_servers
     @ldap_servers ||= begin
-      if Gitlab::Auth::LDAP::Config.sign_in_enabled?
-        Gitlab::Auth::LDAP::Config.available_servers
+      if Gitlab::Auth::Ldap::Config.sign_in_enabled?
+        Gitlab::Auth::Ldap::Config.available_servers
       else
         []
       end

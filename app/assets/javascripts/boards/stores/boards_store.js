@@ -2,7 +2,7 @@
 /* global List */
 
 import $ from 'jquery';
-import _ from 'underscore';
+import { sortBy } from 'lodash';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
@@ -76,8 +76,7 @@ const boardsStore = {
   },
   addList(listObj) {
     const list = new List(listObj);
-    this.state.lists = _.sortBy([...this.state.lists, list], 'position');
-
+    this.state.lists = sortBy([...this.state.lists, list], 'position');
     return list;
   },
   new(listObj) {
@@ -90,7 +89,7 @@ const boardsStore = {
         // Remove any new issues from the backlog
         // as they will be visible in the new list
         list.issues.forEach(backlogList.removeIssue.bind(backlogList));
-        this.state.lists = _.sortBy(this.state.lists, 'position');
+        this.state.lists = sortBy(this.state.lists, 'position');
       })
       .catch(() => {
         // https://gitlab.com/gitlab-org/gitlab-foss/issues/30821
@@ -194,10 +193,9 @@ const boardsStore = {
 
   moveMultipleIssuesToList({ listFrom, listTo, issues, newIndex }) {
     const issueTo = issues.map(issue => listTo.findIssue(issue.id));
-    const issueLists = _.flatten(issues.map(issue => issue.getLists()));
+    const issueLists = issues.map(issue => issue.getLists()).flat();
     const listLabels = issueLists.map(list => list.label);
-
-    const hasMoveableIssues = _.compact(issueTo).length > 0;
+    const hasMoveableIssues = issueTo.filter(Boolean).length > 0;
 
     if (!hasMoveableIssues) {
       // Check if target list assignee is already present in this issue

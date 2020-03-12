@@ -34,7 +34,7 @@ describe 'User Cluster', :js do
         it 'user sees a cluster details page' do
           subject
 
-          expect(page).to have_content('Kubernetes cluster integration')
+          expect(page).to have_content('GitLab Integration')
           expect(page.find_field('cluster[name]').value).to eq('dev-cluster')
           expect(page.find_field('cluster[platform_kubernetes_attributes][api_url]').value)
             .to have_content('http://example.com')
@@ -93,7 +93,7 @@ describe 'User Cluster', :js do
     context 'when user disables the cluster' do
       before do
         page.find(:css, '.js-cluster-enable-toggle-area .js-project-feature-toggle').click
-        page.within('#cluster-integration') { click_button 'Save changes' }
+        page.within('.js-cluster-integration-form') { click_button 'Save changes' }
       end
 
       it 'user sees the successful message' do
@@ -105,7 +105,7 @@ describe 'User Cluster', :js do
       before do
         fill_in 'cluster_name', with: 'my-dev-cluster'
         fill_in 'cluster_platform_kubernetes_attributes_token', with: 'new-token'
-        page.within('#js-cluster-details') { click_button 'Save changes' }
+        page.within('.js-provider-details') { click_button 'Save changes' }
       end
 
       it 'user sees the successful message' do
@@ -117,6 +117,7 @@ describe 'User Cluster', :js do
 
     context 'when user destroys the cluster' do
       before do
+        click_link 'Advanced Settings'
         click_button 'Remove integration and resources'
         fill_in 'confirm_cluster_name_input', with: cluster.name
         click_button 'Remove integration'

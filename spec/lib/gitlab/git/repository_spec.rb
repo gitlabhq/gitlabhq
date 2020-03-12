@@ -500,11 +500,11 @@ describe Gitlab::Git::Repository, :seed_helper do
     subject { new_repository.fetch_repository_as_mirror(repository) }
 
     before do
-      Gitlab::Shell.new.create_repository('default', 'my_project', 'group/project')
+      new_repository.create_repository
     end
 
     after do
-      Gitlab::Shell.new.remove_repository('default', 'my_project')
+      new_repository.remove
     end
 
     it 'fetches a repository as a mirror remote' do

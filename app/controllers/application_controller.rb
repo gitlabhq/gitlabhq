@@ -307,7 +307,7 @@ class ApplicationController < ActionController::Base
     if current_user && current_user.requires_ldap_check?
       return unless current_user.try_obtain_ldap_lease
 
-      unless Gitlab::Auth::LDAP::Access.allowed?(current_user)
+      unless Gitlab::Auth::Ldap::Access.allowed?(current_user)
         sign_out current_user
         flash[:alert] = _("Access denied for your LDAP account.")
         redirect_to new_user_session_path

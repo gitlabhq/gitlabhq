@@ -67,7 +67,7 @@ export default {
         </template>
       </expand-button>
       <clipboard-button
-        :title="__('Copy commit SHA')"
+        :title="__('Copy evidence SHA')"
         :text="sha"
         css-class="btn-default btn-transparent btn-clipboard"
       />

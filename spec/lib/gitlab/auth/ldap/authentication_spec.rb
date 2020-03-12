@@ -2,15 +2,15 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::LDAP::Authentication do
+describe Gitlab::Auth::Ldap::Authentication do
   let(:dn)       { 'uid=John Smith, ou=People, dc=example, dc=com' }
-  let(:user)     { create(:omniauth_user, extern_uid: Gitlab::Auth::LDAP::Person.normalize_dn(dn)) }
+  let(:user)     { create(:omniauth_user, extern_uid: Gitlab::Auth::Ldap::Person.normalize_dn(dn)) }
   let(:login)    { 'john' }
   let(:password) { 'password' }
 
   describe 'login' do
     before do
-      allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
+      allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(true)
     end
 
     it "finds the user if authentication is successful" do
@@ -48,7 +48,7 @@ describe Gitlab::Auth::LDAP::Authentication do
     end
 
     it "fails if ldap is disabled" do
-      allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(false)
+      allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(false)
       expect(described_class.login(login, password)).to be_falsey
     end
 

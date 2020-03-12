@@ -4,7 +4,6 @@ require 'spec_helper'
 
 describe Projects::ForkService do
   include ProjectForksHelper
-  include Gitlab::ShellAdapter
 
   shared_examples 'forks count cache refresh' do
     it 'flushes the forks count cache of the source project', :clean_gitlab_redis_cache do
@@ -135,17 +134,16 @@ describe Projects::ForkService do
       end
 
       context 'repository in legacy storage already exists' do
-        let(:repository_storage) { 'default' }
-        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
+        let(:fake_repo_path) { File.join(TestEnv.repos_path, @to_user.namespace.full_path, "#{@from_project.path}.git") }
         let(:params) { { namespace: @to_user.namespace } }
 
         before do
           stub_application_setting(hashed_storage_enabled: false)
-          gitlab_shell.create_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}", "#{@to_user.namespace.full_path}/#{@from_project.path}")
+          TestEnv.create_bare_repository(fake_repo_path)
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
+          FileUtils.rm_rf(fake_repo_path)
         end
 
         subject { fork_project(@from_project, @to_user, params) }

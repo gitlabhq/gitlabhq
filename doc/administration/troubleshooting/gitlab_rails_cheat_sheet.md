@@ -626,7 +626,7 @@ EE::Gitlab::LDAP::Sync::Group.execute_all_providers(group)
 
 # Run a GroupSync for a single group (10.6+)
 group = Group.find_by(name: 'my_gitlab_group')
-EE::Gitlab::Auth::LDAP::Sync::Group.execute_all_providers(group)
+EE::Gitlab::Auth::Ldap::Sync::Group.execute_all_providers(group)
 
 # Query an LDAP group directly (10.6-)
 adapter = Gitlab::LDAP::Adapter.new('ldapmain') # If `main` is the LDAP provider
@@ -635,20 +635,20 @@ ldap_group.member_dns
 ldap_group.member_uids
 
 # Query an LDAP group directly (10.6+)
-adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain') # If `main` is the LDAP provider
-ldap_group = EE::Gitlab::Auth::LDAP::Group.find_by_cn('group_cn_here', adapter)
+adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain') # If `main` is the LDAP provider
+ldap_group = EE::Gitlab::Auth::Ldap::Group.find_by_cn('group_cn_here', adapter)
 ldap_group.member_dns
 ldap_group.member_uids
 
 # Lookup a particular user (10.6+)
 # This could expose potential errors connecting to and/or querying LDAP that may seem to
 # fail silently in the GitLab UI
-adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain') # If `main` is the LDAP provider
-user = Gitlab::Auth::LDAP::Person.find_by_uid('<username>',adapter)
+adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain') # If `main` is the LDAP provider
+user = Gitlab::Auth::Ldap::Person.find_by_uid('<username>',adapter)
 
 # Query the LDAP server directly (10.6+)
 ## For an example, see https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ee/gitlab/auth/ldap/adapter.rb
-adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain')
+adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain')
 options = {
     # the :base is required
     # use adapter.config.base for the base or .group_base for the group_base

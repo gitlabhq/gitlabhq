@@ -5,11 +5,11 @@ module AuthHelper
   LDAP_PROVIDER = /\Aldap/.freeze
 
   def ldap_enabled?
-    Gitlab::Auth::LDAP::Config.enabled?
+    Gitlab::Auth::Ldap::Config.enabled?
   end
 
   def ldap_sign_in_enabled?
-    Gitlab::Auth::LDAP::Config.sign_in_enabled?
+    Gitlab::Auth::Ldap::Config.sign_in_enabled?
   end
 
   def omniauth_enabled?

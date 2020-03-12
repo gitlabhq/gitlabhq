@@ -92,7 +92,7 @@ describe('Release block', () => {
       expect(wrapper.findAll('.js-assets-list li').length).toEqual(release.assets.links.length);
 
       expect(wrapper.find('.js-assets-list li a').attributes().href).toEqual(
-        first(release.assets.links).url,
+        first(release.assets.links).directAssetUrl,
       );
 
       expect(wrapper.find('.js-assets-list li a').text()).toContain(

@@ -1,5 +1,5 @@
 <script>
-import { throttle } from 'underscore';
+import { throttle } from 'lodash';
 import {
   GlLoadingIcon,
   GlSearchBoxByType,

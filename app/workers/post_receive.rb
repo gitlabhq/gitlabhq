@@ -77,11 +77,6 @@ class PostReceive # rubocop:disable Scalability/IdempotentWorker
 
     return false unless user
 
-    # We can remove once we implement multi-file snippets
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/39269
-    blob = snippet.blobs.first
-    snippet.update(file_name: blob.path, content: blob.data) if blob
-
     # At the moment, we only expires the repository caches.
     # In the future we might need to call ProjectCacheWorker
     # (or the custom class we create) to update the snippet

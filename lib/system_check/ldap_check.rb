@@ -6,7 +6,7 @@ module SystemCheck
     set_name 'LDAP:'
 
     def multi_check
-      if Gitlab::Auth::LDAP::Config.enabled?
+      if Gitlab::Auth::Ldap::Config.enabled?
         # Only show up to 100 results because LDAP directories can be very big.
         # This setting only affects the `rake gitlab:check` script.
         limit = ENV['LDAP_CHECK_LIMIT']
@@ -21,13 +21,13 @@ module SystemCheck
     private
 
     def check_ldap(limit)
-      servers = Gitlab::Auth::LDAP::Config.providers
+      servers = Gitlab::Auth::Ldap::Config.providers
 
       servers.each do |server|
         $stdout.puts "Server: #{server}"
 
         begin
-          Gitlab::Auth::LDAP::Adapter.open(server) do |adapter|
+          Gitlab::Auth::Ldap::Adapter.open(server) do |adapter|
             check_ldap_auth(adapter)
 
             $stdout.puts "LDAP users with access to your GitLab server (only showing the first #{limit} results)"

@@ -33,7 +33,7 @@ module Gitlab
       return false unless can_access_git?
 
       if user.requires_ldap_check? && user.try_obtain_ldap_lease
-        return false unless Gitlab::Auth::LDAP::Access.allowed?(user)
+        return false unless Gitlab::Auth::Ldap::Access.allowed?(user)
       end
 
       true

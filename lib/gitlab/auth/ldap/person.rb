@@ -2,9 +2,9 @@
 
 module Gitlab
   module Auth
-    module LDAP
+    module Ldap
       class Person
-        prepend_if_ee('::EE::Gitlab::Auth::LDAP::Person') # rubocop: disable Cop/InjectEnterpriseEditionModule
+        prepend_if_ee('::EE::Gitlab::Auth::Ldap::Person') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
         # Active Directory-specific LDAP filter that checks if bit 2 of the
         # userAccountControl attribute is set.
@@ -45,8 +45,8 @@ module Gitlab
         end
 
         def self.normalize_dn(dn)
-          ::Gitlab::Auth::LDAP::DN.new(dn).to_normalized_s
-        rescue ::Gitlab::Auth::LDAP::DN::FormatError => e
+          ::Gitlab::Auth::Ldap::DN.new(dn).to_normalized_s
+        rescue ::Gitlab::Auth::Ldap::DN::FormatError => e
           Rails.logger.info("Returning original DN \"#{dn}\" due to error during normalization attempt: #{e.message}") # rubocop:disable Gitlab/RailsLogger
 
           dn
@@ -57,8 +57,8 @@ module Gitlab
         # 1. Excess spaces are stripped
         # 2. The string is downcased (for case-insensitivity)
         def self.normalize_uid(uid)
-          ::Gitlab::Auth::LDAP::DN.normalize_value(uid)
-        rescue ::Gitlab::Auth::LDAP::DN::FormatError => e
+          ::Gitlab::Auth::Ldap::DN.normalize_value(uid)
+        rescue ::Gitlab::Auth::Ldap::DN::FormatError => e
           Rails.logger.info("Returning original UID \"#{uid}\" due to error during normalization attempt: #{e.message}") # rubocop:disable Gitlab/RailsLogger
 
           uid
@@ -103,7 +103,7 @@ module Gitlab
         attr_reader :entry
 
         def config
-          @config ||= Gitlab::Auth::LDAP::Config.new(provider)
+          @config ||= Gitlab::Auth::Ldap::Config.new(provider)
         end
 
         # Using the LDAP attributes configuration, find and return the first

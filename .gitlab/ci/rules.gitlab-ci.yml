@@ -80,6 +80,9 @@
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
 
+.frontend-dependency-patterns: &frontend-dependency-patterns
+  - "{package.json,yarn.lock}"
+
 .qa-patterns: &qa-patterns
   - ".dockerignore"
   - "qa/**/*"
@@ -269,6 +272,9 @@
 .frontend:rules:qa-frontend-node:
   rules:
     - <<: *if-master-refs
+      when: on_success
+    - <<: *if-merge-request
+      changes: *frontend-dependency-patterns
       when: on_success
 
 ################

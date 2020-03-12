@@ -93,7 +93,10 @@ export default {
     <release-block-header :release="release" />
     <div class="card-body">
       <div v-if="shouldRenderMilestoneInfo">
-        <release-block-milestone-info :milestones="milestones" />
+        <release-block-milestone-info
+          :milestones="milestones"
+          :open-issues-path="release._links.issuesUrl"
+        />
         <hr class="mb-3 mt-0" />
       </div>
 

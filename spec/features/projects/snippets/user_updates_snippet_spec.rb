@@ -38,7 +38,7 @@ describe 'Projects > Snippets > User updates a snippet' do
     end
 
     it 'renders edit page and displays the error' do
-      expect(page).to have_content('Error updating the snippet')
+      expect(page.find('.flash-container span').text).to eq('Error updating the snippet')
       expect(page).to have_content('Edit Snippet')
     end
   end

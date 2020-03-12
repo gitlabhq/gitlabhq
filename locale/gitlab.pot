@@ -1550,13 +1550,13 @@ msgstr ""
 msgid "Advanced"
 msgstr ""
 
+msgid "Advanced Settings"
+msgstr ""
+
 msgid "Advanced permissions, Large File Storage and Two-Factor authentication settings."
 msgstr ""
 
 msgid "Advanced search functionality"
-msgstr ""
-
-msgid "Advanced settings"
 msgstr ""
 
 msgid "After a successful password update you will be redirected to login screen."
@@ -3991,6 +3991,9 @@ msgstr ""
 msgid "Closed this %{quick_action_target}."
 msgstr ""
 
+msgid "Closed: %{closedIssuesCount}"
+msgstr ""
+
 msgid "Closes this %{quick_action_target}."
 msgstr ""
 
@@ -4019,6 +4022,9 @@ msgid "ClusterIntegration| is the default environment scope for this cluster. Th
 msgstr ""
 
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
+msgstr ""
+
+msgid "ClusterIntegration|%{external_ip}.nip.io"
 msgstr ""
 
 msgid "ClusterIntegration|%{title} uninstalled successfully."
@@ -4057,7 +4063,7 @@ msgstr ""
 msgid "ClusterIntegration|Adding an integration will share the cluster across all projects."
 msgstr ""
 
-msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
+msgid "ClusterIntegration|Advanced options on this Kubernetes cluster’s integration"
 msgstr ""
 
 msgid "ClusterIntegration|All data not committed to GitLab will be deleted and cannot be restored."
@@ -4091,9 +4097,6 @@ msgid "ClusterIntegration|An error occurred while trying to fetch zone machine t
 msgstr ""
 
 msgid "ClusterIntegration|Any running pipelines will be canceled."
-msgstr ""
-
-msgid "ClusterIntegration|Applications"
 msgstr ""
 
 msgid "ClusterIntegration|Apply for credit"
@@ -4145,9 +4148,6 @@ msgid "ClusterIntegration|Cloud Run"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster being created"
-msgstr ""
-
-msgid "ClusterIntegration|Cluster health"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster management project (alpha)"
@@ -4342,7 +4342,7 @@ msgstr ""
 msgid "ClusterIntegration|If you do not wish to delete all associated GitLab resources, you can simply remove the integration."
 msgstr ""
 
-msgid "ClusterIntegration|In order to view the health of your cluster, you must first install Prometheus below."
+msgid "ClusterIntegration|In order to view the health of your cluster, you must first install Prometheus in the Applications tab."
 msgstr ""
 
 msgid "ClusterIntegration|Ingress"
@@ -4364,9 +4364,6 @@ msgid "ClusterIntegration|Instance type"
 msgstr ""
 
 msgid "ClusterIntegration|Integrate Kubernetes cluster automation"
-msgstr ""
-
-msgid "ClusterIntegration|Integration status"
 msgstr ""
 
 msgid "ClusterIntegration|Issuer Email"
@@ -4403,9 +4400,6 @@ msgid "ClusterIntegration|Knative extends Kubernetes to provide a set of middlew
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Kubernetes cluster details"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster is being created..."
@@ -4556,6 +4550,9 @@ msgid "ClusterIntegration|Prometheus"
 msgstr ""
 
 msgid "ClusterIntegration|Prometheus is an open-source monitoring system with %{gitlabIntegrationLink} to monitor deployed applications."
+msgstr ""
+
+msgid "ClusterIntegration|Provider details"
 msgstr ""
 
 msgid "ClusterIntegration|Provision Role ARN"
@@ -5570,6 +5567,9 @@ msgstr ""
 msgid "Copy commit SHA"
 msgstr ""
 
+msgid "Copy evidence SHA"
+msgstr ""
+
 msgid "Copy file contents"
 msgstr ""
 
@@ -5630,9 +5630,6 @@ msgstr ""
 msgid "Could not create group"
 msgstr ""
 
-msgid "Could not create issue"
-msgstr ""
-
 msgid "Could not create project"
 msgstr ""
 
@@ -5640,9 +5637,6 @@ msgid "Could not delete %{design}. Please try again."
 msgstr ""
 
 msgid "Could not delete chat nickname %{chat_name}."
-msgstr ""
-
-msgid "Could not fetch projects"
 msgstr ""
 
 msgid "Could not find design"
@@ -7838,6 +7832,9 @@ msgid "Epics|Something went wrong while assigning issue to epic."
 msgstr ""
 
 msgid "Epics|Something went wrong while creating child epics."
+msgstr ""
+
+msgid "Epics|Something went wrong while creating issue."
 msgstr ""
 
 msgid "Epics|Something went wrong while fetching child epics."
@@ -10286,6 +10283,9 @@ msgid "Header logo was successfully removed."
 msgstr ""
 
 msgid "Header message"
+msgstr ""
+
+msgid "Health"
 msgstr ""
 
 msgid "Health Check"
@@ -13178,6 +13178,9 @@ msgstr ""
 msgid "No licenses found."
 msgstr ""
 
+msgid "No matches found"
+msgstr ""
+
 msgid "No matching labels"
 msgstr ""
 
@@ -13634,6 +13637,9 @@ msgid "Open sidebar"
 msgstr ""
 
 msgid "Open source software to collaborate on code"
+msgstr ""
+
+msgid "Open: %{openIssuesCount}"
 msgstr ""
 
 msgid "Open: %{open} • Closed: %{closed}"
@@ -18318,6 +18324,9 @@ msgid "Something went wrong while fetching latest comments."
 msgstr ""
 
 msgid "Something went wrong while fetching projects"
+msgstr ""
+
+msgid "Something went wrong while fetching projects."
 msgstr ""
 
 msgid "Something went wrong while fetching related merge requests."

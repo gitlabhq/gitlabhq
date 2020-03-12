@@ -18,7 +18,7 @@ module Gitlab
           authenticator =
             case provider
             when /^ldap/
-              Gitlab::Auth::LDAP::Authentication
+              Gitlab::Auth::Ldap::Authentication
             when 'database'
               Gitlab::Auth::Database::Authentication
             end
@@ -60,8 +60,8 @@ module Gitlab
         def self.config_for(name)
           name = name.to_s
           if ldap_provider?(name)
-            if Gitlab::Auth::LDAP::Config.valid_provider?(name)
-              Gitlab::Auth::LDAP::Config.new(name).options
+            if Gitlab::Auth::Ldap::Config.valid_provider?(name)
+              Gitlab::Auth::Ldap::Config.new(name).options
             else
               nil
             end

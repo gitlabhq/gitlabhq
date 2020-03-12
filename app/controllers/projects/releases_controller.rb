@@ -6,7 +6,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :release, only: %i[edit show update downloads]
   before_action :authorize_read_release!
   before_action do
-    push_frontend_feature_flag(:release_issue_summary, project)
+    push_frontend_feature_flag(:release_issue_summary, project, default_enabled: true)
     push_frontend_feature_flag(:release_evidence_collection, project, default_enabled: true)
     push_frontend_feature_flag(:release_show_page, project, default_enabled: true)
   end

@@ -1,10 +1,15 @@
 <script>
-import { GlProgressBar, GlLink, GlBadge, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlProgressBar,
+  GlLink,
+  GlBadge,
+  GlButton,
+  GlTooltipDirective,
+  GlSprintf,
+} from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
 import { MAX_MILESTONES_TO_DISPLAY } from '../constants';
-
-/** Sums the values of an array. For use with Array.reduce. */
-const sumReducer = (acc, curr) => acc + curr;
+import { sum } from 'lodash';
 
 export default {
   name: 'ReleaseBlockMilestoneInfo',
@@ -13,6 +18,7 @@ export default {
     GlLink,
     GlBadge,
     GlButton,
+    GlSprintf,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -21,6 +27,16 @@ export default {
     milestones: {
       type: Array,
       required: true,
+    },
+    openIssuesPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    closedIssuesPath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -42,14 +58,14 @@ export default {
     allIssueStats() {
       return this.milestones.map(m => m.issueStats || {});
     },
-    openIssuesCount() {
-      return this.allIssueStats.map(stats => stats.opened || 0).reduce(sumReducer);
+    totalIssuesCount() {
+      return sum(this.allIssueStats.map(stats => stats.total || 0));
     },
     closedIssuesCount() {
-      return this.allIssueStats.map(stats => stats.closed || 0).reduce(sumReducer);
+      return sum(this.allIssueStats.map(stats => stats.closed || 0));
     },
-    totalIssuesCount() {
-      return this.openIssuesCount + this.closedIssuesCount;
+    openIssuesCount() {
+      return this.totalIssuesCount - this.closedIssuesCount;
     },
     milestoneLabelText() {
       return n__('Milestone', 'Milestones', this.milestones.length);
@@ -130,7 +146,27 @@ export default {
         {{ __('Issues') }}
         <gl-badge pill variant="light" class="font-weight-bold">{{ totalIssuesCount }}</gl-badge>
       </span>
-      {{ issueCountsText }}
+      <div class="d-flex">
+        <gl-link v-if="openIssuesPath" ref="openIssuesLink" :href="openIssuesPath">
+          <gl-sprintf :message="__('Open: %{openIssuesCount}')">
+            <template #openIssuesCount>{{ openIssuesCount }}</template>
+          </gl-sprintf>
+        </gl-link>
+        <span v-else ref="openIssuesText">
+          {{ sprintf(__('Open: %{openIssuesCount}'), { openIssuesCount }) }}
+        </span>
+
+        <span class="mx-1">&bull;</span>
+
+        <gl-link v-if="closedIssuesPath" ref="closedIssuesLink" :href="closedIssuesPath">
+          <gl-sprintf :message="__('Closed: %{closedIssuesCount}')">
+            <template #closedIssuesCount>{{ closedIssuesCount }}</template>
+          </gl-sprintf>
+        </gl-link>
+        <span v-else ref="closedIssuesText">
+          {{ sprintf(__('Closed: %{closedIssuesCount}'), { closedIssuesCount }) }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
