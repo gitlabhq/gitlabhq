@@ -642,19 +642,15 @@ do not use this option until further notice.
 
   Don't:
 
-  ```md
-  [merge requests](../../merge_requests/)
-  [issues](../../issues/tags.html)
-  [issue tags](../../issues/tags.html#stages)
-  ```
+  - `../../merge_requests/`
+  - `../../issues/tags.html`
+  - `../../issues/tags.html#stages`
 
   Do:
 
-  ```md
-  [merge requests](../../merge_requests/index.md)
-  [issues](../../issues/tags.md)
-  [issue tags](../../issues/tags.md#stages)
-  ```
+  - `../../merge_requests/index.md`
+  - `../../issues/tags.md`
+  - `../../issues/tags.md#stages`
 
 - Using the Markdown extension is necessary for the [`/help`](index.md#gitlab-help)
   section of GitLab.

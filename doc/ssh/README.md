@@ -334,20 +334,23 @@ git remote set-url origin git@<user_1.gitlab.com>:gitlab-org/gitlab.git
 
 ## Deploy keys
 
-### Per-repository deploy keys
-
 Deploy keys allow read-only or read-write (if enabled) access to one or
-multiple projects with a single SSH key pair.
+multiple repositories with a single SSH key pair.
 
-This is really useful for cloning repositories to your Continuous
+This is useful for cloning repositories to your Continuous
 Integration (CI) server. By using deploy keys, you don't have to set up a
 dummy user account.
 
-Project maintainers and owners can add a deploy key. To add one:
+If you don't have a key pair, you might want to use a
+[deploy token](../user/project/deploy_tokens/index.md#deploy-tokens) instead.
 
-1. Go to the settings page:
-   - On GitLab 12.8 and earlier, navigate to the project's **Settings > Repository**.
-   - On GitLab 12.9 and later, navigate to the project's **Settings > CI / CD**.
+### Per-repository deploy keys
+
+Project maintainers and owners can add a deploy key for a repository.
+
+1. Navigate to the project's **Settings** page, then:
+   - On GitLab 12.8 and earlier, click **Repository**.
+   - On GitLab 12.9 and later, click **CI / CD**.
 1. Expand the **Deploy Keys** section.
 1. Specify a title for the new deploy key and paste a public SSH key.
 
@@ -356,7 +359,7 @@ read-write (if enabled) access to the project.
 
 You can't add the same deploy key twice using the form.
 If you want to add the same key to another project, please enable it in the
-list that says 'Deploy keys from projects available to you'. All the deploy
+list that says **Deploy keys from projects available to you**. All the deploy
 keys of all the projects you have access to are available. This project
 access can happen through being a direct member of the project, or through
 a group.
@@ -366,10 +369,10 @@ project.
 
 ### Global shared deploy keys
 
-Global Shared Deploy keys allow read-only or read-write (if enabled) access to
-be configured on any repository in the entire GitLab installation.
+Global Shared Deploy keys allow read-only or read-write access to
+any repository in the entire GitLab installation.
 
-This is really useful for integrating repositories to secured, shared Continuous
+This is useful for integrating repositories to secured, shared Continuous
 Integration (CI) services or other shared services.
 GitLab administrators can set up the Global Shared Deploy key in GitLab and
 add the private key to any shared systems. Individual repositories opt into

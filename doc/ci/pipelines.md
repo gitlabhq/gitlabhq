@@ -224,8 +224,8 @@ Pipelines, and their component jobs and stages, are defined in the [`.gitlab-ci.
 
 In particular:
 
-- Jobs are the [basic configuration](yaml/README.html#introduction) component.
-- Stages are defined using the [`stages`](yaml/README.html#stages) keyword.
+- Jobs are the [basic configuration](yaml/README.md#introduction) component.
+- Stages are defined using the [`stages`](yaml/README.md#stages) keyword.
 
 For all available configuration options, see the [GitLab CI/CD Pipeline Configuration Reference](yaml/README.md).
 

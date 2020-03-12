@@ -782,7 +782,7 @@ All tests in `spec/javascripts/` will eventually be migrated to `spec/frontend/`
 
 Before May 2018, `features/` also contained feature tests run by Spinach. These tests were removed from the codebase in May 2018 ([#23036](https://gitlab.com/gitlab-org/gitlab-foss/issues/23036)).
 
-See also [Notes on testing Vue components](../fe_guide/vue.html#testing-vue-components).
+See also [Notes on testing Vue components](../fe_guide/vue.md#testing-vue-components).
 
 ## Test helpers
 

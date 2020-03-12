@@ -245,7 +245,7 @@ group.
 1. Introduced in GitLab 12.2.
 1. Default project creation role can be changed at:
    - The [instance level](admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
-   - The [group level](group/index.html#default-project-creation-level).
+   - The [group level](group/index.md#default-project-creation-level).
 
 ### Subgroup permissions
 

@@ -285,7 +285,7 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 
 ## Environment Variables
 
-[Environment variables](../../../ci/variables/README.html#gitlab-cicd-environment-variables) can be set in an environment to be available to a runner.
+[Environment variables](../../../ci/variables/README.md#gitlab-cicd-environment-variables) can be set in an environment to be available to a runner.
 
 ## Deploy Keys
 

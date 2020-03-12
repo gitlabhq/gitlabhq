@@ -3,10 +3,11 @@
 > - [Introduced][ce-17894] in GitLab 10.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/issues/199370) from **Settings > Repository** in GitLab 12.9.
 
-Deploy tokens allow you to download (through `git clone`) or read the container registry images of a project without having a user and a password.
+Deploy tokens allow you to download (`git clone`) or read the container registry images of a project without having a user and a password.
 
-Please note that deploy tokens expire on the date you define,
-at midnight UTC, and that they can be only managed by [maintainers](../../permissions.md).
+Deploy tokens can be managed by [maintainers only](../../permissions.md).
+
+If you have a key pair, you might want to use [deploy keys](../../../ssh/README.md#deploy-keys) instead.
 
 ## Creating a Deploy Token
 
@@ -23,6 +24,10 @@ You can create as many deploy tokens as you like from the settings of your proje
    the page, **you won't be able to access it again**.
 
 ![Personal access tokens page](img/deploy_tokens.png)
+
+## Deploy token expiration
+
+Deploy tokens expire on the date you define, at midnight UTC.
 
 ## Revoking a deploy token
 
