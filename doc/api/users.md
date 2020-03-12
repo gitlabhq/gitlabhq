@@ -304,9 +304,13 @@ Example Responses:
   "external": false,
   "private_profile": false,
   "current_sign_in_ip": "196.165.1.102",
-  "last_sign_in_ip": "172.127.2.22"
+  "last_sign_in_ip": "172.127.2.22",
+  "plan": "gold",
+  "trial": true
 }
 ```
+
+NOTE: **Note:** The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
 
 Users on GitLab [Starter, Bronze, or higher](https://about.gitlab.com/pricing/) will also see
 the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, and `note` parameters.

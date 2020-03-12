@@ -568,5 +568,8 @@ describe 'Merge request > User resolves diff notes and threads', :js do
   def visit_merge_request(mr = nil)
     mr ||= merge_request
     visit project_merge_request_path(mr.project, mr)
+
+    # Wait for MR widget to load
+    wait_for_requests
   end
 end

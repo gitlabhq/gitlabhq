@@ -192,84 +192,6 @@ module Gitlab
       false
     end
 
-    # Add new key to authorized_keys
-    #
-    # @example Add new key
-    #   add_key("key-42", "sha-rsa ...")
-    #
-    # @param [String] key_id identifier of the key
-    # @param [String] key_content key content (public certificate)
-    # @return [Boolean] whether key could be added
-    def add_key(key_id, key_content)
-      return unless self.authorized_keys_enabled?
-
-      gitlab_authorized_keys.add_key(key_id, key_content)
-    end
-
-    # Batch-add keys to authorized_keys
-    #
-    # @example
-    #   batch_add_keys(Key.all)
-    #
-    # @param [Array<Key>] keys
-    # @return [Boolean] whether keys could be added
-    def batch_add_keys(keys)
-      return unless self.authorized_keys_enabled?
-
-      gitlab_authorized_keys.batch_add_keys(keys)
-    end
-
-    # Remove SSH key from authorized_keys
-    #
-    # @example Remove a key
-    #   remove_key("key-342")
-    #
-    # @param [String] key_id
-    # @return [Boolean] whether key could be removed or not
-    def remove_key(key_id, _ = nil)
-      return unless self.authorized_keys_enabled?
-
-      gitlab_authorized_keys.rm_key(key_id)
-    end
-
-    # Remove all SSH keys from gitlab shell
-    #
-    # @example Remove all keys
-    #   remove_all_keys
-    #
-    # @return [Boolean] whether keys could be removed or not
-    def remove_all_keys
-      return unless self.authorized_keys_enabled?
-
-      gitlab_authorized_keys.clear
-    end
-
-    # Remove SSH keys from gitlab shell that are not in the DB
-    #
-    # @example Remove keys not on the database
-    #   remove_keys_not_found_in_db
-    #
-    # rubocop: disable CodeReuse/ActiveRecord
-    def remove_keys_not_found_in_db
-      return unless self.authorized_keys_enabled?
-
-      Rails.logger.info("Removing keys not found in DB") # rubocop:disable Gitlab/RailsLogger
-
-      batch_read_key_ids do |ids_in_file|
-        ids_in_file.uniq!
-        keys_in_db = Key.where(id: ids_in_file)
-
-        next unless ids_in_file.size > keys_in_db.count # optimization
-
-        ids_to_remove = ids_in_file - keys_in_db.pluck(:id)
-        ids_to_remove.each do |id|
-          Rails.logger.info("Removing key-#{id} not found in DB") # rubocop:disable Gitlab/RailsLogger
-          remove_key("key-#{id}")
-        end
-      end
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
-
     # Add empty directory for storing repositories
     #
     # @example Add new namespace directory
@@ -372,14 +294,6 @@ module Gitlab
       File.join(Gitlab.config.repositories.storages[storage].legacy_disk_path, dir_name)
     end
 
-    def authorized_keys_enabled?
-      # Return true if nil to ensure the authorized_keys methods work while
-      # fixing the authorized_keys file during migration.
-      return true if Gitlab::CurrentSettings.current_application_settings.authorized_keys_enabled.nil?
-
-      Gitlab::CurrentSettings.current_application_settings.authorized_keys_enabled
-    end
-
     private
 
     def git_timeout
@@ -392,32 +306,6 @@ module Gitlab
       # Old Popen code returns [Error, output] to the caller, so we
       # need to do the same here...
       raise Error, e
-    end
-
-    def gitlab_authorized_keys
-      @gitlab_authorized_keys ||= Gitlab::AuthorizedKeys.new
-    end
-
-    def batch_read_key_ids(batch_size: 100, &block)
-      return unless self.authorized_keys_enabled?
-
-      gitlab_authorized_keys.list_key_ids.lazy.each_slice(batch_size) do |key_ids|
-        yield(key_ids)
-      end
-    end
-
-    def strip_key(key)
-      key.split(/[ ]+/)[0, 2].join(' ')
-    end
-
-    def add_keys_to_io(keys, io)
-      keys.each do |k|
-        key = strip_key(k.key)
-
-        raise Error.new("Invalid key: #{key.inspect}") if key.include?("\t") || key.include?("\n")
-
-        io.puts("#{k.shell_id}\t#{key}")
-      end
     end
 
     class GitalyGitlabProjects

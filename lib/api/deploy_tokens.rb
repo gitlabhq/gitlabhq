@@ -71,6 +71,24 @@ module API
 
         present deploy_token, with: Entities::DeployTokenWithToken
       end
+
+      desc 'Delete a project deploy token' do
+        detail 'This feature was introduced in GitLab 12.9'
+      end
+      params do
+        requires :token_id, type: Integer, desc: 'The deploy token ID'
+      end
+      delete ':id/deploy_tokens/:token_id' do
+        authorize!(:destroy_deploy_token, user_project)
+
+        deploy_token = user_project.project_deploy_tokens
+          .find_by_deploy_token_id(params[:token_id])
+
+        not_found!('Deploy Token') unless deploy_token
+
+        deploy_token.destroy
+        no_content!
+      end
     end
 
     params do

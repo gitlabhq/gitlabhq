@@ -8,7 +8,7 @@ module Gitlab
         # Resources that have mentions to be migrated:
         # issue, merge_request, epic, commit, snippet, design
 
-        BULK_INSERT_SIZE = 5000
+        BULK_INSERT_SIZE = 1_000
         ISOLATION_MODULE = 'Gitlab::BackgroundMigration::UserMentions::Models'
 
         def perform(resource_model, join, conditions, with_notes, start_id, end_id)

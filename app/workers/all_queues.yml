@@ -843,6 +843,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+- :name: authorized_keys
+  :feature_category: :source_code_management
+  :has_external_dependencies: 
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 2
+  :idempotent: true
 - :name: authorized_projects
   :feature_category: :authentication_and_authorization
   :has_external_dependencies: 

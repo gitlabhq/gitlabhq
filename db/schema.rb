@@ -2634,6 +2634,7 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.index ["head_pipeline_id"], name: "index_merge_requests_on_head_pipeline_id"
     t.index ["id", "merge_jid"], name: "idx_merge_requests_on_id_and_merge_jid", where: "((merge_jid IS NOT NULL) AND (state_id = 4))"
     t.index ["id", "merge_jid"], name: "index_merge_requests_on_id_and_merge_jid", where: "((merge_jid IS NOT NULL) AND ((state)::text = 'locked'::text))"
+    t.index ["id"], name: "merge_request_mentions_temp_index", where: "((description ~~ '%@%'::text) OR ((title)::text ~~ '%@%'::text))"
     t.index ["latest_merge_request_diff_id"], name: "index_merge_requests_on_latest_merge_request_diff_id"
     t.index ["lock_version"], name: "index_merge_requests_on_lock_version", where: "(lock_version IS NULL)"
     t.index ["merge_user_id"], name: "index_merge_requests_on_merge_user_id", where: "(merge_user_id IS NOT NULL)"

@@ -330,6 +330,14 @@ describe API::Users, :do_not_mock_admin_mode do
       expect(json_response.keys).not_to include 'last_sign_in_ip'
     end
 
+    it "does not contain plan or trial data" do
+      get api("/users/#{user.id}", user)
+
+      expect(response).to match_response_schema('public_api/v4/user/basic')
+      expect(json_response.keys).not_to include 'plan'
+      expect(json_response.keys).not_to include 'trial'
+    end
+
     context 'when job title is present' do
       let(:job_title) { 'Fullstack Engineer' }
 
@@ -365,6 +373,22 @@ describe API::Users, :do_not_mock_admin_mode do
 
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response['highest_role']).to be(0)
+      end
+
+      if Gitlab.ee?
+        it 'does not include values for plan or trial' do
+          get api("/users/#{user.id}", admin)
+
+          expect(response).to match_response_schema('public_api/v4/user/basic')
+        end
+      else
+        it 'does not include plan or trial data' do
+          get api("/users/#{user.id}", admin)
+
+          expect(response).to match_response_schema('public_api/v4/user/basic')
+          expect(json_response.keys).not_to include 'plan'
+          expect(json_response.keys).not_to include 'trial'
+        end
       end
 
       context 'when user has not logged in' do

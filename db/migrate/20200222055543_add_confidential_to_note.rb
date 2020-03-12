@@ -4,9 +4,15 @@ class AddConfidentialToNote < ActiveRecord::Migration[6.0]
 
   DOWNTIME = false
 
-  def change
+  def up
     with_lock_retries do
       add_column :notes, :confidential, :boolean
+    end
+  end
+
+  def down
+    with_lock_retries do
+      remove_column :notes, :confidential
     end
   end
 end

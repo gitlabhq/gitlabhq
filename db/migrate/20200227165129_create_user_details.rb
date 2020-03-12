@@ -5,7 +5,7 @@ class CreateUserDetails < ActiveRecord::Migration[6.0]
 
   DOWNTIME = false
 
-  def change
+  def up
     with_lock_retries do
       create_table :user_details, id: false do |t|
         t.references :user, index: false, foreign_key: { on_delete: :cascade }, null: false, primary_key: true
@@ -14,5 +14,11 @@ class CreateUserDetails < ActiveRecord::Migration[6.0]
     end
 
     add_index :user_details, :user_id, unique: true
+  end
+
+  def down
+    with_lock_retries do
+      drop_table :user_details
+    end
   end
 end

@@ -1,0 +1,5 @@
+---
+title: Expose `plan` and `trial` to `/users/:id` endpoint
+merge_request: 25151
+author:
+type: added

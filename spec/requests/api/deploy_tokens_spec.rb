@@ -148,21 +148,21 @@ describe API::DeployTokens do
     end
   end
 
-  describe 'DELETE /groups/:id/deploy_tokens/:token_id' do
+  describe 'DELETE /projects/:id/deploy_tokens/:token_id' do
     subject do
-      delete api("/groups/#{group.id}/deploy_tokens/#{group_deploy_token.id}", user)
+      delete api("/projects/#{project.id}/deploy_tokens/#{deploy_token.id}", user)
       response
     end
 
     context 'when unauthenticated' do
       let(:user) { nil }
 
-      it { is_expected.to have_gitlab_http_status(:forbidden) }
+      it { is_expected.to have_gitlab_http_status(:not_found) }
     end
 
     context 'when authenticated as non-admin user' do
       before do
-        group.add_developer(user)
+        project.add_developer(user)
       end
 
       it { is_expected.to have_gitlab_http_status(:forbidden) }
@@ -170,26 +170,26 @@ describe API::DeployTokens do
 
     context 'when authenticated as maintainer' do
       before do
-        group.add_maintainer(user)
+        project.add_maintainer(user)
       end
 
-      it 'deletes the deploy token' do
-        expect { subject }.to change { group.deploy_tokens.count }.by(-1)
+      it { is_expected.to have_gitlab_http_status(:no_content) }
 
-        expect(group.deploy_tokens).to be_empty
+      it 'deletes the deploy token' do
+        expect { subject }.to change { project.deploy_tokens.count }.by(-1)
       end
 
       context 'invalid request' do
         it 'returns not found with invalid group id' do
-          delete api("/groups/bad_id/deploy_tokens/#{group_deploy_token.id}", user)
+          delete api("/projects/bad_id/deploy_tokens/#{group_deploy_token.id}", user)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
 
-        it 'returns not found with invalid deploy token id' do
-          delete api("/groups/#{group.id}/deploy_tokens/bad_id", user)
+        it 'returns bad_request with invalid token id' do
+          delete api("/projects/#{project.id}/deploy_tokens/123abc", user)
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
     end
@@ -260,6 +260,53 @@ describe API::DeployTokens do
       end
 
       it_behaves_like 'creating a deploy token', :group, :forbidden
+    end
+  end
+
+  describe 'DELETE /groups/:id/deploy_tokens/:token_id' do
+    subject do
+      delete api("/groups/#{group.id}/deploy_tokens/#{group_deploy_token.id}", user)
+      response
+    end
+
+    context 'when unauthenticated' do
+      let(:user) { nil }
+
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
+    end
+
+    context 'when authenticated as non-admin user' do
+      before do
+        group.add_developer(user)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:forbidden) }
+    end
+
+    context 'when authenticated as maintainer' do
+      before do
+        group.add_maintainer(user)
+      end
+
+      it 'deletes the deploy token' do
+        expect { subject }.to change { group.deploy_tokens.count }.by(-1)
+
+        expect(group.deploy_tokens).to be_empty
+      end
+
+      context 'invalid request' do
+        it 'returns bad request with invalid group id' do
+          delete api("/groups/bad_id/deploy_tokens/#{group_deploy_token.id}", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'returns not found with invalid deploy token id' do
+          delete api("/groups/#{group.id}/deploy_tokens/bad_id", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
   end
 end

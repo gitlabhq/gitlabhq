@@ -2542,6 +2542,8 @@ describe Ci::Build do
         <<~ROUTEMAP
         - source: 'bar/branch-test.txt'
           public: '/bar/branches'
+        - source: 'with space/README.md'
+          public: '/README'
         ROUTEMAP
       end
 
@@ -2556,10 +2558,27 @@ describe Ci::Build do
         let(:environment)   { create(:environment, project: merge_request.project, name: "foo-#{project.default_branch}") }
         let(:build)         { create(:ci_build, pipeline: pipeline, environment: environment.name) }
 
+        let(:full_urls) do
+          [
+            File.join(environment.external_url, '/bar/branches'),
+            File.join(environment.external_url, '/README')
+          ]
+        end
+
         it 'populates CI_MERGE_REQUEST_CHANGED_PAGES_* variables' do
           expect(subject).to include(
-            { key: 'CI_MERGE_REQUEST_CHANGED_PAGE_PATHS', value: '/bar/branches', public: true, masked: false },
-            { key: 'CI_MERGE_REQUEST_CHANGED_PAGE_URLS', value: File.join(environment.external_url, '/bar/branches'), public: true, masked: false }
+            {
+              key: 'CI_MERGE_REQUEST_CHANGED_PAGE_PATHS',
+              value: '/bar/branches,/README',
+              public: true,
+              masked: false
+            },
+            {
+              key: 'CI_MERGE_REQUEST_CHANGED_PAGE_URLS',
+              value: full_urls.join(','),
+              public: true,
+              masked: false
+            }
           )
         end
 

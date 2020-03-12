@@ -21,7 +21,7 @@ export default {
       {{ snippet.title }}
     </h2>
     <div v-if="snippet.description" class="description" data-qa-selector="snippet_description">
-      <div class="md">{{ snippet.description }}</div>
+      <div class="md js-snippet-description" v-html="snippet.descriptionHtml"></div>
     </div>
 
     <small v-if="snippet.updatedAt !== snippet.createdAt" class="edited-text">

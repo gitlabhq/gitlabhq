@@ -78,7 +78,7 @@ Example response:
 
 ### Create a project deploy token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21811) in GitLab 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21811) in GitLab 12.9.
 
 Creates a new deploy token for a project.
 
@@ -111,6 +111,27 @@ Example response:
     "read_repository"
   ]
 }
+```
+
+### Delete a project deploy token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21811) in GitLab 12.9.
+
+Removes a deploy token from the project.
+
+```
+DELETE /projects/:id/deploy_tokens/:token_id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `token_id`  | integer | yes | The ID of the deploy token |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_tokens/13"
 ```
 
 ## Group deploy tokens

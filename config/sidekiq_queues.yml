@@ -30,6 +30,8 @@
   - 1
 - - analytics_code_review_metrics
   - 1
+- - authorized_keys
+  - 2
 - - authorized_projects
   - 2
 - - auto_devops
