@@ -8,7 +8,7 @@ module WorkerAttributes
   VALID_RESOURCE_BOUNDARIES = [:memory, :cpu, :unknown].freeze
 
   # Urgencies that workers can declare through the `urgencies` attribute
-  VALID_URGENCIES = [:high, :default, :none].freeze
+  VALID_URGENCIES = [:high, :low, :throttled].freeze
 
   NAMESPACE_WEIGHTS = {
     auto_devops: 2,
@@ -65,7 +65,7 @@ module WorkerAttributes
     end
 
     def get_urgency
-      worker_attributes[:urgency] || :default
+      worker_attributes[:urgency] || :low
     end
 
     # Set this attribute on a job when it will call to services outside of the

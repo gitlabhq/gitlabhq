@@ -10,7 +10,6 @@ module QA
           element :group_settings_item
           element :group_members_item
           element :general_settings_link
-          element :contribution_analytics_link
         end
 
         view 'app/views/layouts/nav/sidebar/_analytics_links.html.haml' do

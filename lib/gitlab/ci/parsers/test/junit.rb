@@ -6,6 +6,7 @@ module Gitlab
       module Test
         class Junit
           JunitParserError = Class.new(Gitlab::Ci::Parsers::ParserError)
+          ATTACHMENT_TAG_REGEX = /\[\[ATTACHMENT\|(?<path>.+?)\]\]/.freeze
 
           def parse!(xml_data, test_suite)
             root = Hash.from_xml(xml_data)
@@ -49,6 +50,7 @@ module Gitlab
             if data['failure']
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED
               system_output = data['failure']
+              attachment = attachment_path(data['system_out'])
             elsif data['error']
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_ERROR
               system_output = data['error']
@@ -63,8 +65,16 @@ module Gitlab
               file: data['file'],
               execution_time: data['time'],
               status: status,
-              system_output: system_output
+              system_output: system_output,
+              attachment: attachment
             )
+          end
+
+          def attachment_path(data)
+            return unless data
+
+            matches = data.match(ATTACHMENT_TAG_REGEX)
+            matches[:path] if matches
           end
         end
       end

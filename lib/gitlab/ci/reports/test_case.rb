@@ -10,9 +10,9 @@ module Gitlab
         STATUS_ERROR = 'error'
         STATUS_TYPES = [STATUS_SUCCESS, STATUS_FAILED, STATUS_SKIPPED, STATUS_ERROR].freeze
 
-        attr_reader :name, :classname, :execution_time, :status, :file, :system_output, :stack_trace, :key
+        attr_reader :name, :classname, :execution_time, :status, :file, :system_output, :stack_trace, :key, :attachment
 
-        def initialize(name:, classname:, execution_time:, status:, file: nil, system_output: nil, stack_trace: nil)
+        def initialize(name:, classname:, execution_time:, status:, file: nil, system_output: nil, stack_trace: nil, attachment: nil)
           @name = name
           @classname = classname
           @file = file
@@ -21,6 +21,11 @@ module Gitlab
           @system_output = system_output
           @stack_trace = stack_trace
           @key = sanitize_key_name("#{classname}_#{name}")
+          @attachment = attachment
+        end
+
+        def has_attachment?
+          attachment.present?
         end
 
         private

@@ -9,7 +9,7 @@ describe Gitlab::SidekiqMiddleware::ClientMetrics do
     let(:queue) { :test }
     let(:worker_class) { worker.class }
     let(:job) { {} }
-    let(:default_labels) { { queue: queue.to_s, boundary: "", external_dependencies: "no", feature_category: "", urgency: "default" } }
+    let(:default_labels) { { queue: queue.to_s, boundary: "", external_dependencies: "no", feature_category: "", urgency: "low" } }
 
     shared_examples "a metrics client middleware" do
       context "with mocked prometheus" do
@@ -80,8 +80,8 @@ describe Gitlab::SidekiqMiddleware::ClientMetrics do
 
       context "no urgency" do
         it_behaves_like "a metrics client middleware" do
-          let(:urgency) { :none }
-          let(:labels) { default_labels.merge(urgency: "none") }
+          let(:urgency) { :throttled }
+          let(:labels) { default_labels.merge(urgency: "throttled") }
         end
       end
 

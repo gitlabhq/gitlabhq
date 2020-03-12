@@ -48,7 +48,7 @@ describe API::Groups do
 
       context 'when file format is not supported' do
         let(:file_path) { 'spec/fixtures/doc_sample.txt' }
-        let(:message)   { 'file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico' }
+        let(:message)   { 'file format is not supported. Please try one of the following supported formats: image/png, image/jpeg, image/gif, image/bmp, image/tiff, image/vnd.microsoft.icon' }
 
         it_behaves_like 'invalid file upload request'
       end

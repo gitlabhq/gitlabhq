@@ -130,7 +130,7 @@ class Namespace < ApplicationRecord
       return unless host.ends_with?(gitlab_host)
 
       name = host.delete_suffix(gitlab_host)
-      Namespace.find_by_path(name)
+      Namespace.where(parent_id: nil).find_by_path(name)
     end
 
     # overridden in ee

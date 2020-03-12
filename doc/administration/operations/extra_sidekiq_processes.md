@@ -130,7 +130,7 @@ following attributes:
 - `has_external_dependencies` - whether or not the queue connects to external
   services. For example, all importers have this set to `true`.
 - `urgency` - how important it is that this queue's jobs run
-  quickly. Can be `high`, `default`, or `none`. For example, the
+  quickly. Can be `high`, `low`, or `throttled`. For example, the
   `authorized_projects` queue is used to refresh user permissions, and
   is high urgency.
 - `name` - the queue name. The other attributes are typically more useful as

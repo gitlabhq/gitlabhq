@@ -26,8 +26,8 @@ class ErrorTrackingIssueLinkWorker # rubocop:disable Scalability/IdempotentWorke
       logger.info("Linking Sentry issue #{sentry_issue_id} to GitLab issue #{issue.id}")
 
       sentry_client.create_issue_link(integration_id, sentry_issue_id, issue)
-    rescue Sentry::Client::Error
-      logger.info("Failed to link Sentry issue #{sentry_issue_id} to GitLab issue #{issue.id}")
+    rescue Sentry::Client::Error => e
+      logger.info("Failed to link Sentry issue #{sentry_issue_id} to GitLab issue #{issue.id} with error: #{e.message}")
     end
   end
 

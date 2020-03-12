@@ -541,7 +541,7 @@ argument :project_path, GraphQL::ID_TYPE,
          required: true,
          description: "The project the merge request to mutate is in"
 
-argument :iid, GraphQL::STRING_TYPE,
+argument :iid, GraphQL::ID_TYPE,
          required: true,
          description: "The iid of the merge request to mutate"
 

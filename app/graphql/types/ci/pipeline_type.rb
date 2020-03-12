@@ -11,7 +11,7 @@ module Types
 
       field :id, GraphQL::ID_TYPE, null: false,
             description: 'ID of the pipeline'
-      field :iid, GraphQL::STRING_TYPE, null: false,
+      field :iid, GraphQL::ID_TYPE, null: false,
             description: 'Internal ID of the pipeline'
 
       field :sha, GraphQL::STRING_TYPE, null: false,

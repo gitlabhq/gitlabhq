@@ -124,7 +124,7 @@ describe Gitlab::SidekiqConfig::CliMethods do
           name: 'a',
           feature_category: :category_a,
           has_external_dependencies: false,
-          urgency: :default,
+          urgency: :low,
           resource_boundary: :cpu
         },
         {
@@ -145,7 +145,7 @@ describe Gitlab::SidekiqConfig::CliMethods do
           name: 'c',
           feature_category: :category_c,
           has_external_dependencies: false,
-          urgency: :none,
+          urgency: :throttled,
           resource_boundary: :memory
         }
       ]
@@ -168,9 +168,9 @@ describe Gitlab::SidekiqConfig::CliMethods do
 
         # urgency
         'urgency=high' | %w(a:2 b)
-        'urgency=default' | %w(a)
-        'urgency=high,default,none' | %w(a a:2 b c)
-        'urgency=default|urgency=none' | %w(a c)
+        'urgency=low' | %w(a)
+        'urgency=high,low,throttled' | %w(a a:2 b c)
+        'urgency=low|urgency=throttled' | %w(a c)
         'urgency!=high' | %w(a c)
 
         # name

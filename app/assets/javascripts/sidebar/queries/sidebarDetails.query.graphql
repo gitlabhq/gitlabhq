@@ -1,4 +1,4 @@
-query ($fullPath: ID!, $iid: String!) {
+query ($fullPath: ID!, $iid: ID!) {
   project (fullPath: $fullPath) {
     issue (iid: $iid) {
       iid

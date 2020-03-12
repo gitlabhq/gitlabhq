@@ -11,7 +11,7 @@ describe Gitlab::SidekiqMiddleware::ServerMetrics do
     let(:job) { {} }
     let(:job_status) { :done }
     let(:labels_with_job_status) { labels.merge(job_status: job_status.to_s) }
-    let(:default_labels) { { queue: queue.to_s, boundary: "", external_dependencies: "no", feature_category: "", urgency: "default" } }
+    let(:default_labels) { { queue: queue.to_s, boundary: "", external_dependencies: "no", feature_category: "", urgency: "low" } }
 
     shared_examples "a metrics middleware" do
       context "with mocked prometheus" do
@@ -202,11 +202,11 @@ describe Gitlab::SidekiqMiddleware::ServerMetrics do
       end
 
       context "combined" do
-        let(:urgency) { :none }
+        let(:urgency) { :throttled }
         let(:external_dependencies) { true }
         let(:resource_boundary) { :cpu }
         let(:feature_category) { :authentication }
-        let(:labels) { default_labels.merge(urgency: "none", external_dependencies: "yes", boundary: "cpu", feature_category: "authentication") }
+        let(:labels) { default_labels.merge(urgency: "throttled", external_dependencies: "yes", boundary: "cpu", feature_category: "authentication") }
 
         it_behaves_like "a metrics middleware"
       end

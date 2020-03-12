@@ -124,13 +124,13 @@ Consider skipping the cop if you're not confident your job can safely run multip
 ## Job urgency
 
 Jobs can have an `urgency` attribute set, which can be `:high`,
-`:default`, or `:none`. These have the below targets:
+`:low`, or `:throttled`. These have the below targets:
 
-| **Urgency** | **Queue Scheduling Target** | **Execution Latency Requirement**  |
-|-------------|-----------------------------|------------------------------------|
-| `:high`     | 100 milliseconds            | p50 of 1 second, p99 of 10 seconds |
-| `:default`  | 1 minute                    | Maximum run time of 1 hour         |
-| `:none`     | None                        | Maximum run time of 1 hour         |
+| **Urgency**  | **Queue Scheduling Target** | **Execution Latency Requirement**  |
+|--------------|-----------------------------|------------------------------------|
+| `:high`      | 100 milliseconds            | p50 of 1 second, p99 of 10 seconds |
+| `:low`       | 1 minute                    | Maximum run time of 1 hour         |
+| `:throttled` | None                        | Maximum run time of 1 hour         |
 
 To set a job's urgency, use the `urgency` class method:
 
@@ -175,7 +175,7 @@ these jobs also have very strict execution duration requirements:
 If a worker cannot meet these expectations, then it cannot be treated as a
 `urgency :high` worker: consider redesigning the worker, or splitting the
 work between two different workers, one with `urgency :high` code that
-executes quickly, and the other with `urgency :default`, which has no
+executes quickly, and the other with `urgency :low`, which has no
 execution latency requirements (but also has lower scheduling targets).
 
 ## Jobs with External Dependencies

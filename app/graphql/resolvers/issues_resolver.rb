@@ -2,11 +2,11 @@
 
 module Resolvers
   class IssuesResolver < BaseResolver
-    argument :iid, GraphQL::STRING_TYPE,
+    argument :iid, GraphQL::ID_TYPE,
               required: false,
               description: 'IID of the issue. For example, "1"'
 
-    argument :iids, [GraphQL::STRING_TYPE],
+    argument :iids, [GraphQL::ID_TYPE],
               required: false,
               description: 'List of IIDs of issues. For example, [1, 2]'
     argument :state, Types::IssuableStateEnum,

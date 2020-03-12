@@ -31,7 +31,6 @@ module AnalyticsNavbarHelper
   end
 
   def cycle_analytics_navbar_link(project, current_user)
-    return unless Feature.enabled?(:analytics_pages_under_project_analytics_sidebar, project, default_enabled: true)
     return unless project_nav_tab?(:cycle_analytics)
 
     navbar_sub_item(
@@ -43,7 +42,6 @@ module AnalyticsNavbarHelper
   end
 
   def repository_analytics_navbar_link(project, current_user)
-    return if Feature.disabled?(:analytics_pages_under_project_analytics_sidebar, project, default_enabled: true)
     return if project.empty_repo?
 
     navbar_sub_item(
@@ -55,7 +53,6 @@ module AnalyticsNavbarHelper
   end
 
   def ci_cd_analytics_navbar_link(project, current_user)
-    return unless Feature.enabled?(:analytics_pages_under_project_analytics_sidebar, project, default_enabled: true)
     return unless project_nav_tab?(:pipelines)
     return unless project.feature_available?(:builds, current_user) || !project.empty_repo?
 

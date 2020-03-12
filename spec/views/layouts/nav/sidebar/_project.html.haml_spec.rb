@@ -166,7 +166,6 @@ describe 'layouts/nav/sidebar/_project' do
 
     before do
       allow(view).to receive(:can?).with(nil, :read_cycle_analytics, project).and_return(read_cycle_analytics)
-      stub_feature_flags(analytics_pages_under_project_analytics_sidebar: { enabled: false, thing: project })
     end
 
     describe 'when value stream analytics is enabled' do

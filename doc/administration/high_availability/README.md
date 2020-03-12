@@ -30,7 +30,7 @@ This configuration is supported in [GitLab Starter, Premium and Ultimate](https:
 
 References:
 
-- [Installation Docs](../../install/README.html)
+- [Installation Docs](../../install/README.md)
 - [Backup/Restore Docs](https://docs.gitlab.com/omnibus/settings/backups.html#backup-and-restore-omnibus-gitlab-configuration)
 
 ### Level 2: Multiple application servers
@@ -68,7 +68,7 @@ This configuration is supported in [GitLab Premium and Ultimate](https://about.g
 References:
 
 - [Geo Documentation](../../gitlab-geo/README.html)
-- [GitLab Geo with a highly available configuration](../geo/replication/high_availability.html)
+- [GitLab Geo with a highly available configuration](../geo/replication/high_availability.md)
 
 ## Recommended setups based on number of users
 

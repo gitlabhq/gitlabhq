@@ -88,7 +88,7 @@ describe Gitlab::SidekiqConfig::Worker do
       attributes_a = {
         feature_category: :source_code_management,
         has_external_dependencies: false,
-        urgency: :default,
+        urgency: :low,
         resource_boundary: :memory,
         weight: 2,
         idempotent: true

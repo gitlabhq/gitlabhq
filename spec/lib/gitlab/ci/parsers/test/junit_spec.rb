@@ -205,6 +205,75 @@ describe Gitlab::Ci::Parsers::Test::Junit do
       end
     end
 
+    context 'when data contains an attachment tag' do
+      let(:junit) do
+        <<~EOF
+          <testsuites>
+            <testsuite>
+              <testcase classname='Calculator' name='sumTest1' time='0.01'>
+                <failure>Some failure</failure>
+                <system-out>[[ATTACHMENT|some/path.png]]</system-out>
+              </testcase>
+            </testsuite>
+          </testsuites>
+        EOF
+      end
+
+      it 'add attachment to a test case' do
+        expect { subject }.not_to raise_error
+
+        expect(test_cases[0].has_attachment?).to be_truthy
+        expect(test_cases[0].attachment).to eq("some/path.png")
+      end
+    end
+
+    context 'when data contains multiple attachments tag' do
+      let(:junit) do
+        <<~EOF
+          <testsuites>
+            <testsuite>
+              <testcase classname='Calculator' name='sumTest1' time='0.01'>
+                <failure>Some failure</failure>
+                <system-out>
+                  [[ATTACHMENT|some/path.png]]
+                  [[ATTACHMENT|some/path.html]]
+                </system-out>
+              </testcase>
+            </testsuite>
+          </testsuites>
+        EOF
+      end
+
+      it 'adds the first match attachment to a test case' do
+        expect { subject }.not_to raise_error
+
+        expect(test_cases[0].has_attachment?).to be_truthy
+        expect(test_cases[0].attachment).to eq("some/path.png")
+      end
+    end
+
+    context 'when data does not match attachment tag regex' do
+      let(:junit) do
+        <<~EOF
+          <testsuites>
+            <testsuite>
+              <testcase classname='Calculator' name='sumTest1' time='0.01'>
+                <failure>Some failure</failure>
+                <system-out>[[attachment]some/path.png]]</system-out>
+              </testcase>
+            </testsuite>
+          </testsuites>
+        EOF
+      end
+
+      it 'does not add attachment to a test case' do
+        expect { subject }.not_to raise_error
+
+        expect(test_cases[0].has_attachment?).to be_falsy
+        expect(test_cases[0].attachment).to be_nil
+      end
+    end
+
     private
 
     def flattened_test_cases(test_suite)

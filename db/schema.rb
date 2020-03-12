@@ -4251,6 +4251,12 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.index ["user_id"], name: "index_user_details_on_user_id", unique: true
   end
 
+  create_table "user_highest_roles", primary_key: "user_id", id: :bigint, default: nil, force: :cascade do |t|
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "highest_access_level"
+    t.index ["user_id", "highest_access_level"], name: "index_user_highest_roles_on_user_id_and_highest_access_level"
+  end
+
   create_table "user_interacted_projects", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id", null: false
@@ -5135,6 +5141,7 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
   add_foreign_key "user_callouts", "users", on_delete: :cascade
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
   add_foreign_key "user_details", "users", on_delete: :cascade
+  add_foreign_key "user_highest_roles", "users", on_delete: :cascade
   add_foreign_key "user_interacted_projects", "projects", name: "fk_722ceba4f7", on_delete: :cascade
   add_foreign_key "user_interacted_projects", "users", name: "fk_0894651f08", on_delete: :cascade
   add_foreign_key "user_preferences", "users", on_delete: :cascade
