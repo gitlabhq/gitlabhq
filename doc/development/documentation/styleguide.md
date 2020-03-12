@@ -476,7 +476,7 @@ as the list item. This can be done with:
 Items nested in lists should always align with the first character of the list item.
 In unordered lists (using `-`), this means two spaces for each level of indentation:
 
-~~~md
+````markdown
 - Unordered list item 1
 
   A line nested using 2 spaces to align with the `U` above.
@@ -495,11 +495,11 @@ In unordered lists (using `-`), this means two spaces for each level of indentat
 - Unordered list item 4
 
   ![an image that will nest inside list item 4](image.png)
-~~~
+````
 
 For ordered lists, use three spaces for each level of indentation:
 
-~~~md
+````markdown
 1. Ordered list item 1
 
    A line nested using 3 spaces to align with the `O` above.
@@ -518,7 +518,7 @@ For ordered lists, use three spaces for each level of indentation:
 1. Ordered list item 4
 
    ![an image that will nest inside list item 4](image.png)
-~~~
+````
 
 You can nest full lists inside other lists using the same rules as above. If you wish
 to mix types, that is also possible, as long as you don't mix items at the same level:
@@ -1364,7 +1364,7 @@ on this document. Further explanation is given below.
 
 The following can be used as a template to get started:
 
-~~~md
+````markdown
 ## Descriptive title
 
 One or two sentence description of what endpoint does.
@@ -1392,7 +1392,7 @@ Example response:
   }
 ]
 ```
-~~~
+````
 
 ### Fake tokens
 

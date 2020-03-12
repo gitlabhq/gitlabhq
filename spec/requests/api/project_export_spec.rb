@@ -27,12 +27,9 @@ describe API::ProjectExport, :clean_gitlab_redis_cache do
 
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
-
-    # simulate exporting work directory
-    FileUtils.mkdir_p File.join(project_started.export_path, 'securerandom-hex')
-
-    # simulate in after export action
-    FileUtils.touch File.join(project_after_export.import_export_shared.lock_files_path, SecureRandom.hex)
+    allow_next_instance_of(ProjectExportWorker) do |job|
+      allow(job).to receive(:jid).and_return(SecureRandom.hex(8))
+    end
   end
 
   after do
@@ -82,28 +79,42 @@ describe API::ProjectExport, :clean_gitlab_redis_cache do
         expect(json_response['export_status']).to eq('none')
       end
 
-      it 'is started' do
-        get api(path_started, user)
+      context 'when project export has started' do
+        before do
+          create(:project_export_job, project: project_started, status: 1)
+        end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/project/export_status')
-        expect(json_response['export_status']).to eq('started')
+        it 'returns status started' do
+          get api(path_started, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/project/export_status')
+          expect(json_response['export_status']).to eq('started')
+        end
       end
 
-      it 'is after_export' do
-        get api(path_after_export, user)
+      context 'when project export has finished' do
+        it 'returns status finished' do
+          get api(path_finished, user)
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/project/export_status')
-        expect(json_response['export_status']).to eq('after_export_action')
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/project/export_status')
+          expect(json_response['export_status']).to eq('finished')
+        end
       end
 
-      it 'is finished' do
-        get api(path_finished, user)
+      context 'when project export is being regenerated' do
+        before do
+          create(:project_export_job, project: project_finished, status: 1)
+        end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/project/export_status')
-        expect(json_response['export_status']).to eq('finished')
+        it 'returns status regeneration_in_progress' do
+          get api(path_finished, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/project/export_status')
+          expect(json_response['export_status']).to eq('regeneration_in_progress')
+        end
       end
     end
 

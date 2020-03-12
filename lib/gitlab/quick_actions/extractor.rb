@@ -106,6 +106,17 @@ module Gitlab
               \n```$
             )
           |
+            (?<inline_code>
+              # Inline code on separate rows:
+              # `
+              # Anything, including `/cmd arg` which are ignored by this filter
+              # `
+
+              ^.*`\n*
+              .+?
+              \n*`$
+            )
+          |
             (?<html>
               # HTML block:
               # <tag>

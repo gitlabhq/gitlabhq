@@ -3957,6 +3957,12 @@ describe Project do
   describe '#remove_export' do
     let(:project) { create(:project, :with_export) }
 
+    before do
+      allow_next_instance_of(ProjectExportWorker) do |job|
+        allow(job).to receive(:jid).and_return(SecureRandom.hex(8))
+      end
+    end
+
     it 'removes the export' do
       project.remove_exports
 
@@ -5811,6 +5817,86 @@ describe Project do
     context 'when the project is not self monitoring' do
       it { is_expected.to be false }
     end
+  end
+
+  describe '#add_export_job' do
+    context 'if not already present' do
+      it 'starts project export job' do
+        user = create(:user)
+        project = build(:project)
+
+        expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+
+        project.add_export_job(current_user: user)
+      end
+    end
+  end
+
+  describe '#export_in_progress?' do
+    let(:project) { build(:project) }
+    let!(:project_export_job ) { create(:project_export_job, project: project) }
+
+    context 'when project export is enqueued' do
+      it { expect(project.export_in_progress?).to be false }
+    end
+
+    context 'when project export is in progress' do
+      before do
+        project_export_job.start!
+      end
+
+      it { expect(project.export_in_progress?).to be true }
+    end
+
+    context 'when project export is completed' do
+      before do
+        finish_job(project_export_job)
+      end
+
+      it { expect(project.export_in_progress?).to be false }
+    end
+  end
+
+  describe '#export_status' do
+    let(:project) { build(:project) }
+    let!(:project_export_job ) { create(:project_export_job, project: project) }
+
+    context 'when project export is enqueued' do
+      it { expect(project.export_status).to eq :queued }
+    end
+
+    context 'when project export is in progress' do
+      before do
+        project_export_job.start!
+      end
+
+      it { expect(project.export_status).to eq :started }
+    end
+
+    context 'when project export is completed' do
+      before do
+        finish_job(project_export_job)
+        allow(project).to receive(:export_file).and_return(double(ImportExportUploader, file: 'exists.zip'))
+      end
+
+      it { expect(project.export_status).to eq :finished }
+    end
+
+    context 'when project export is being regenerated' do
+      let!(:new_project_export_job ) { create(:project_export_job, project: project) }
+
+      before do
+        finish_job(project_export_job)
+        allow(project).to receive(:export_file).and_return(double(ImportExportUploader, file: 'exists.zip'))
+      end
+
+      it { expect(project.export_status).to eq :regeneration_in_progress }
+    end
+  end
+
+  def finish_job(export_job)
+    export_job.start
+    export_job.finish
   end
 
   def rugged_config

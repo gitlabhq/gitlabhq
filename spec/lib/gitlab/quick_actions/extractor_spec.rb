@@ -291,6 +291,33 @@ describe Gitlab::QuickActions::Extractor do
       expect(msg).to eq expected
     end
 
+    it 'does not extract commands in multiline inline code on seperated rows' do
+      msg = "Hello\r\n`\r\nThis is some text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
+      expected = msg.delete("\r")
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to be_empty
+      expect(msg).to eq expected
+    end
+
+    it 'does not extract commands in multiline inline code starting from text' do
+      msg = "Hello `This is some text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
+      expected = msg.delete("\r")
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to be_empty
+      expect(msg).to eq expected
+    end
+
+    it 'does not extract commands in inline code' do
+      msg = "`This is some text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
+      expected = msg.delete("\r")
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to be_empty
+      expect(msg).to eq expected
+    end
+
     it 'limits to passed commands when they are passed' do
       msg = <<~MSG.strip
       Hello, we should only extract the commands passed

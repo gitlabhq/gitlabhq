@@ -56,7 +56,7 @@ All labels, their meaning and priority are defined on the
 [labels page](https://gitlab.com/gitlab-org/gitlab/-/labels).
 
 If you come across an issue that has none of these, and you're allowed to set
-labels, you can _always_ add the team and type, and often also the subject.
+labels, you can _always_ add the type, stage, group, and often the category/feature labels.
 
 ### Type labels
 
@@ -75,7 +75,7 @@ A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.
 
 Type labels are always lowercase, and can have any color, besides blue (which is
-already reserved for subject labels).
+already reserved for category labels).
 
 The descriptions on the [labels page](https://gitlab.com/groups/gitlab-org/-/labels)
 explain what falls under each type label.

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_10_135823) do
+ActiveRecord::Schema.define(version: 2020_03_11_165635) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3242,6 +3242,18 @@ ActiveRecord::Schema.define(version: 2020_03_10_135823) do
     t.string "organization_name"
   end
 
+  create_table "project_export_jobs", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "status", limit: 2, default: 0, null: false
+    t.string "jid", limit: 100, null: false
+    t.index ["jid"], name: "index_project_export_jobs_on_jid", unique: true
+    t.index ["project_id", "jid"], name: "index_project_export_jobs_on_project_id_and_jid"
+    t.index ["project_id", "status"], name: "index_project_export_jobs_on_project_id_and_status"
+    t.index ["status"], name: "index_project_export_jobs_on_status"
+  end
+
   create_table "project_feature_usages", primary_key: "project_id", id: :integer, default: nil, force: :cascade do |t|
     t.datetime "jira_dvcs_cloud_last_sync_at"
     t.datetime "jira_dvcs_server_last_sync_at"
@@ -5017,6 +5029,7 @@ ActiveRecord::Schema.define(version: 2020_03_10_135823) do
   add_foreign_key "project_deploy_tokens", "deploy_tokens", on_delete: :cascade
   add_foreign_key "project_deploy_tokens", "projects", on_delete: :cascade
   add_foreign_key "project_error_tracking_settings", "projects", on_delete: :cascade
+  add_foreign_key "project_export_jobs", "projects", on_delete: :cascade
   add_foreign_key "project_feature_usages", "projects", on_delete: :cascade
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade

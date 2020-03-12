@@ -1,0 +1,5 @@
+---
+title: Fix quick actions executing in multiline inline code when placed on its own line
+merge_request: 24933
+author: Pavlo Dudchenko
+type: fixed

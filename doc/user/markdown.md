@@ -165,7 +165,7 @@ Visit the [official page](https://mermaidjs.github.io/) for more details. If you
 
 In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block:
 
-~~~
+````markdown
 ```mermaid
 graph TD;
   A-->B;
@@ -173,7 +173,7 @@ graph TD;
   B-->D;
   C-->D;
 ```
-~~~
+````
 
 ```mermaid
 graph TD;
@@ -185,7 +185,7 @@ graph TD;
 
 Subgraphs can also be included:
 
-~~~
+````markdown
 ```mermaid
 graph TB
 
@@ -202,7 +202,7 @@ graph TB
   SubGraph1 --> FinalThing[Final Thing]
 end
 ```
-~~~
+````
 
 ```mermaid
 graph TB
@@ -280,27 +280,27 @@ The following delimiters are supported:
 
 - YAML (`---`):
 
-  ~~~yaml
+  ```yaml
   ---
   title: About Front Matter
   example:
   language: yaml
   ---
-  ~~~
+  ```
 
 - TOML (`+++`):
 
-  ~~~toml
+  ```toml
   +++
   title = "About Front Matter"
   [example]
   language = "toml"
   +++
-  ~~~
+  ```
 
 - JSON (`;;;`):
 
-  ~~~json
+  ```json
   ;;;
   {
     "title": "About Front Matter"
@@ -309,7 +309,7 @@ The following delimiters are supported:
     }
   }
   ;;;
-  ~~~
+  ```
 
 Other languages are supported by adding a specifier to any of the existing
 delimiters. For example:
@@ -364,7 +364,7 @@ Math written between dollar signs `$` will be rendered inline with the text. Mat
 inside a [code block](#code-spans-and-blocks) with the language declared as `math`, will be rendered
 on a separate line:
 
-~~~
+````markdown
 This math is inline $`a^2+b^2=c^2`$.
 
 This is on a separate line
@@ -372,7 +372,7 @@ This is on a separate line
 ```math
 a^2+b^2=c^2
 ```
-~~~
+````
 
 This math is inline $`a^2+b^2=c^2`$.
 
@@ -613,12 +613,12 @@ Inline `code` has `back-ticks around` it.
 
 ---
 
-Similarly, a whole block of code can be fenced with triple backticks ```` ``` ````,
+Similarly, a whole block of code can be fenced with triple backticks (```` ``` ````),
 triple tildes (`~~~`), or indented 4 or more spaces to achieve a similar effect for
 a larger body of code.
 
-~~~
-```
+````markdown
+```python
 def function():
     #indenting works just fine in the fenced code block
     s = "Python code"
@@ -628,7 +628,7 @@ def function():
     Using 4 spaces
     is like using
     3-backtick fences.
-~~~
+````
 
 ```plaintext
 ~~~
@@ -651,9 +651,9 @@ is like using
 3-backtick fences.
 ```
 
-~~~plaintext
+```plaintext
 Tildes are OK too.
-~~~
+```
 
 #### Colored code and syntax highlighting
 
@@ -665,10 +665,10 @@ highlighting in code blocks. For a list of supported languages visit the
 Syntax highlighting is only supported in code blocks, it is not possible to highlight
 code when it is inline.
 
-Blocks of code are fenced by lines with three back-ticks ```` ``` ```` or three tildes `~~~`, and have
+Blocks of code are fenced by lines with three back-ticks (```` ``` ````) or three tildes (`~~~`), and have
 the language identified at the end of the first fence:
 
-~~~markdown
+````markdown
 ```javascript
 var s = "JavaScript syntax highlighting";
 alert(s);
@@ -692,7 +692,7 @@ No language indicated, so no syntax highlighting.
 s = "There is no highlighting for this."
 But let's throw in a <b>tag</b>.
 ```
-~~~
+````
 
 The four examples above render as:
 

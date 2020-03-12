@@ -19,7 +19,26 @@ to GitLab!
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/)
 can be a great resource.
 
-## Important differences
+## Managing the organizational transition
+
+An important part of transitioning from Jenkins to GitLab is the cultural and organizational
+changes that comes with the move, and successfully managing them. There are a few
+things we have found that helps this:
+
+- Setting and communicating a clear vision of what your migration goals are helps
+  your users understand why the effort is worth it. The value will be clear when
+  the work is done, but people need to be aware while it's in progress too.
+- Sponsorship and alignment from the relevant leadership team helps with the point above.
+- Spending time educating your users on what's different, sharing this document with them,
+  and so on will help ensure you are successful.
+- Finding ways to sequence or delay parts of the migration can help a lot, but you
+  don't want to leave things in a non-migrated (or partially-migrated) state for too
+  long. To gain all the benefits of GitLab, moving your existing Jenkins setup over
+  as-is, including any current problems, will not be enough. You need to take advantage
+  of the improvements that GitLab offers, and this requires (eventually) updating
+  your implementation as part of the transition.
+
+## Important product differences
 
 There are some high level differences between the products worth mentioning:
 

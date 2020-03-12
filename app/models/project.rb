@@ -186,6 +186,7 @@ class Project < ApplicationRecord
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :export_jobs, class_name: 'ProjectExportJob'
   has_one :project_repository, inverse_of: :project
   has_one :incident_management_setting, inverse_of: :project, class_name: 'IncidentManagement::ProjectIncidentManagementSetting'
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
@@ -1850,10 +1851,12 @@ class Project < ApplicationRecord
   end
 
   def export_status
-    if export_in_progress?
+    if regeneration_in_progress?
+      :regeneration_in_progress
+    elsif export_enqueued?
+      :queued
+    elsif export_in_progress?
       :started
-    elsif after_export_in_progress?
-      :after_export_action
     elsif export_file_exists?
       :finished
     else
@@ -1862,11 +1865,19 @@ class Project < ApplicationRecord
   end
 
   def export_in_progress?
-    import_export_shared.active_export_count > 0
+    strong_memoize(:export_in_progress) do
+      ::Projects::ExportJobFinder.new(self, { status: :started }).execute.present?
+    end
   end
 
-  def after_export_in_progress?
-    import_export_shared.after_export_in_progress?
+  def export_enqueued?
+    strong_memoize(:export_enqueued) do
+      ::Projects::ExportJobFinder.new(self, { status: :queued }).execute.present?
+    end
+  end
+
+  def regeneration_in_progress?
+    (export_enqueued? || export_in_progress?) && export_file_exists?
   end
 
   def remove_exports

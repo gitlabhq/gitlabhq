@@ -198,6 +198,35 @@ An approval is optional when a license report:
 - Contains no software license violations.
 - Contains only new licenses that are `approved` or unknown.
 
+## Outdated security reports
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4913) in GitLab 12.7.
+
+When a security report generated for a merge request becomes outdated, the merge request shows a warning
+message in the security widget and prompts you to take an appropriate action.
+
+This can happen in two scenarios:
+
+1. Your [source branch is behind the target branch](#source-branch-is-behind-the-target-branch).
+1. The [target branch security report is out of date](#target-branch-security-report-is-out-of-date).
+
+### Source branch is behind the target branch
+
+This means the most recent common ancestor commit between the target branch and the source branch is
+not the most recent commit on the target branch. This is by far the most common situation.
+
+In this case you must rebase or merge to incorporate the changes from the target branch.
+
+![Incorporate target branch changes](img/outdated_report_branch_v12_9.png)
+
+### Target branch security report is out of date
+
+This can happen for many reasons, including failed jobs or new advisories. When the merge request shows that a
+security report is out of date, you must run a new pipeline on the target branch.
+You can do it quickly by following the hyperlink given to run a new pipeline.
+
+![Run a new pipeline](img/outdated_report_pipeline_v12_9.png)
+
 ## Troubleshooting
 
 ### Getting error message `sast job: stage parameter should be [some stage name here]`

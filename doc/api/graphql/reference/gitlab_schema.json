@@ -4988,6 +4988,20 @@
               "deprecationReason": null
             },
             {
+              "name": "descendantWeightSum",
+              "description": "Total weight of open and closed issues in the epic and its descendants. Available only when feature flag `unfiltered_epic_aggregates` is enabled.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EpicDescendantWeights",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "description",
               "description": "Description of the epic",
               "args": [
@@ -9738,6 +9752,20 @@
               "deprecationReason": null
             },
             {
+              "name": "healthStatus",
+              "description": "Current health status. Available only when feature flag `save_issuable_health_status` is enabled.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "HealthStatus",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "Global ID of the epic-issue relation",
               "args": [
@@ -11112,6 +11140,20 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Epic",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "healthStatus",
+              "description": "Current health status. Available only when feature flag `save_issuable_health_status` is enabled.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "ENUM",
+                "name": "HealthStatus",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -13079,6 +13121,47 @@
             {
               "name": "openedIssues",
               "description": "Number of opened epic issues",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "EpicDescendantWeights",
+          "description": "Total weight of open and closed descendant issues",
+          "fields": [
+            {
+              "name": "closedIssues",
+              "description": "Total weight of completed (closed) issues in this epic, including epic descendants",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "openedIssues",
+              "description": "Total weight of opened issues in this epic, including epic descendants",
               "args": [
 
               ],

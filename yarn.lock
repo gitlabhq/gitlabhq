@@ -1866,14 +1866,14 @@ autosize@^4.0.2:
   resolved "https://registry.yarnpkg.com/autosize/-/autosize-4.0.2.tgz#073cfd07c8bf45da4b9fd153437f5bafbba1e4c9"
   integrity sha512-jnSyH2d+qdfPGpWlcuhGiHmqBJ6g3X+8T+iRwFrHPLVcdoGJE/x6Qicm6aDHfTsbgZKxyV8UU/YB2p4cjKDRRA==
 
-aws-sdk@^2.526.0:
-  version "2.526.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.526.0.tgz#e0f899be59edb7d50eb8cca7978bcd401a5d48c2"
-  integrity sha512-ZZqf8AnD9A8ZJd/4oU711R8taxm8sV7wcAOvT0HhrZxv8zASAzoz2lpZ19QAil6uJ52IOkq4ij/zGy7VBXEgPA==
+aws-sdk@^2.637.0:
+  version "2.637.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.637.0.tgz#810e25e53acf2250d35fc74498f9d4492e154217"
+  integrity sha512-e7EYX5rNtQyEaleQylUtLSNKXOmvOwfifQ4bYkfF80mFsVI3DSydczLHXrqPzXoEJaS/GI/9HqVnlQcPs6Q3ew==
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
-    ieee754 "1.1.8"
+    ieee754 "1.1.13"
     jmespath "0.15.0"
     querystring "0.2.0"
     sax "1.2.1"
@@ -5752,10 +5752,10 @@ icss-utils@^2.1.0:
   dependencies:
     postcss "^6.0.1"
 
-ieee754@1.1.8, ieee754@^1.1.4:
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.8.tgz#be33d40ac10ef1926701f6f08a2d86fbfd1ad3e4"
-  integrity sha1-vjPUCsEO8ZJnAfbwii2G+/0a0+Q=
+ieee754@1.1.13, ieee754@^1.1.4:
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.13.tgz#ec168558e95aa181fd87d37f55c32bbcb6708b84"
+  integrity sha512-4vf7I2LYV/HaWerSo3XmlMkp5eZ83i+/CDluXi/IGTs/O1sejBNhTtnxzmRZfvOUqj7lZjqHkeTvpgSFDlWZTg==
 
 iferr@^0.1.5:
   version "0.1.5"

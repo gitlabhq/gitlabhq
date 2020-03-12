@@ -122,12 +122,12 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
 
 - **Markdown**
 
-  ~~~markdown
+  ````markdown
   ```plantuml
   Bob -> Alice : hello
   Alice -> Bob : hi
   ```
-  ~~~
+  ````
 
 - **AsciiDoc**
 

@@ -469,6 +469,7 @@ project:
 - autoclose_referenced_issues
 - status_page_setting
 - requirements
+- export_jobs
 award_emoji:
 - awardable
 - user

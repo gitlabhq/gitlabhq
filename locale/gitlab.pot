@@ -7015,7 +7015,7 @@ msgstr ""
 msgid "Display source"
 msgstr ""
 
-msgid "Displays dependencies and known vulnerabilities, based on the %{linkStart}latest pipeline%{linkEnd} scan"
+msgid "Displays dependencies and known vulnerabilities, based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr ""
 
 msgid "Do not display offers from third parties within GitLab"
@@ -11724,7 +11724,7 @@ msgstr ""
 msgid "Licenses|Detected in Project"
 msgstr ""
 
-msgid "Licenses|Displays licenses detected in the project, based on the %{linkStart}latest pipeline%{linkEnd} scan"
+msgid "Licenses|Displays licenses detected in the project, based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr ""
 
 msgid "Licenses|Error fetching the license list. Please check your network connection and try again."

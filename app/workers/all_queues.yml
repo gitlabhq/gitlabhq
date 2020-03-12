@@ -234,6 +234,13 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: 
+- :name: cronjob:stuck_export_jobs
+  :feature_category: :importers
+  :has_external_dependencies: 
+  :urgency: :default
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: 
 - :name: cronjob:stuck_import_jobs
   :feature_category: :importers
   :has_external_dependencies: 

@@ -1140,7 +1140,7 @@ describe ProjectsController do
       end
 
       it 'prevents requesting project export' do
-        get action, params: { namespace_id: project.namespace, id: project }
+        post action, params: { namespace_id: project.namespace, id: project }
 
         expect(flash[:alert]).to eq('This endpoint has been requested too many times. Try again later.')
         expect(response).to have_gitlab_http_status(:found)
@@ -1152,7 +1152,7 @@ describe ProjectsController do
 
       context 'when project export is enabled' do
         it 'returns 302' do
-          get action, params: { namespace_id: project.namespace, id: project }
+          post action, params: { namespace_id: project.namespace, id: project }
 
           expect(response).to have_gitlab_http_status(:found)
         end
@@ -1164,7 +1164,7 @@ describe ProjectsController do
         end
 
         it 'returns 404' do
-          get action, params: { namespace_id: project.namespace, id: project }
+          post action, params: { namespace_id: project.namespace, id: project }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end

@@ -52,6 +52,11 @@ module Ci
           subject.drop!(:downstream_pipeline_creation_failed)
         end
       end
+    rescue StateMachines::InvalidTransition => e
+      Gitlab::ErrorTracking.track_exception(
+        Ci::Bridge::InvalidTransitionError.new(e.message),
+        bridge_id: bridge.id,
+        downstream_pipeline_id: pipeline.id)
     end
 
     def ensure_preconditions!(target_ref)

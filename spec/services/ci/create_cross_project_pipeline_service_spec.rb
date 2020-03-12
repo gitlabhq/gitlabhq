@@ -362,6 +362,26 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
       end
     end
 
+    context 'when bridge job status update raises state machine errors' do
+      let(:stub_config) { false }
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(invalid: { yaml: 'error' }))
+        bridge.drop!
+      end
+
+      it 'tracks the exception' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(
+            instance_of(Ci::Bridge::InvalidTransitionError),
+            bridge_id: bridge.id,
+            downstream_pipeline_id: kind_of(Numeric))
+
+        service.execute(bridge)
+      end
+    end
+
     context 'when bridge job has YAML variables defined' do
       before do
         bridge.yaml_variables = [{ key: 'BRIDGE', value: 'var', public: true }]
