@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class MigrateEpicMentionsToDb < ActiveRecord::Migration[5.2]
-  include Gitlab::Database::MigrationHelpers
-
   DOWNTIME = false
 
   disable_ddl_transaction!
@@ -28,7 +26,7 @@ class MigrateEpicMentionsToDb < ActiveRecord::Migration[5.2]
       .where(QUERY_CONDITIONS)
       .each_batch(of: BATCH_SIZE) do |batch, index|
       range = batch.pluck(Arel.sql('MIN(epics.id)'), Arel.sql('MAX(epics.id)')).first
-      migrate_in(index * DELAY, MIGRATION, ['Epic', JOIN, QUERY_CONDITIONS, false, *range])
+      BackgroundMigrationWorker.perform_in(index * DELAY, MIGRATION, ['Epic', JOIN, QUERY_CONDITIONS, false, *range])
     end
   end
 

@@ -17,12 +17,12 @@ describe('Ci variable table', () => {
     store.state.isGroup = true;
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = mount(CiVariableTable, {
+      attachToDocument: true,
       localVue,
       store,
     });
   };
 
-  const findDeleteButton = () => wrapper.find({ ref: 'delete-ci-variable' });
   const findRevealButton = () => wrapper.find({ ref: 'secret-value-reveal-button' });
   const findEditButton = () => wrapper.find({ ref: 'edit-ci-variable' });
   const findEmptyVariablesPlaceholder = () => wrapper.find({ ref: 'empty-variables' });
@@ -69,11 +69,6 @@ describe('Ci variable table', () => {
   describe('Table click actions', () => {
     beforeEach(() => {
       store.state.variables = mockData.mockVariables;
-    });
-
-    it('dispatches deleteVariable with correct variable to delete', () => {
-      findDeleteButton().trigger('click');
-      expect(store.dispatch).toHaveBeenCalledWith('deleteVariable', mockData.mockVariables[0]);
     });
 
     it('reveals secret values when button is clicked', () => {

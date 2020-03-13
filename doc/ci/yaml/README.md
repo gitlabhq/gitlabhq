@@ -4,7 +4,7 @@ type: reference
 
 # GitLab CI/CD Pipeline Configuration Reference
 
-GitLab CI/CD [pipelines](../pipelines.md) are configured using a YAML file called `.gitlab-ci.yml` within each project.
+GitLab CI/CD [pipelines](../pipelines/index.md) are configured using a YAML file called `.gitlab-ci.yml` within each project.
 
 The `.gitlab-ci.yml` file defines the structure and order of the pipelines and determines:
 
@@ -2735,7 +2735,7 @@ test:
 ```
 
 The job-level timeout can exceed the
-[project-level timeout](../../user/project/pipelines/settings.md#timeout) but can not
+[project-level timeout](../pipelines/settings.md#timeout) but can not
 exceed the Runner-specific timeout.
 
 ### `parallel`
@@ -2906,7 +2906,7 @@ starting, at the cost of reduced parallelization.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23464) in GitLab 12.3.
 
 `interruptible` is used to indicate that a job should be canceled if made redundant by a newer pipeline run. Defaults to `false`.
-This value will only be used if the [automatic cancellation of redundant pipelines feature](../../user/project/pipelines/settings.md#auto-cancel-pending-pipelines)
+This value will only be used if the [automatic cancellation of redundant pipelines feature](../pipelines/settings.md#auto-cancel-pending-pipelines)
 is enabled.
 
 When enabled, a pipeline on the same branch will be canceled when:

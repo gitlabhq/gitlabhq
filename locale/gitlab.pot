@@ -106,13 +106,18 @@ msgid_plural "%d contributions"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d error"
+msgid_plural "%d errors"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d exporter"
 msgid_plural "%d exporters"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d failed/error test result"
-msgid_plural "%d failed/error test results"
+msgid "%d failed"
+msgid_plural "%d failed"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1677,9 +1682,6 @@ msgid "Allow users to register any application to use GitLab as an OAuth provide
 msgstr ""
 
 msgid "Allow users to request access (if visibility is public or internal)"
-msgstr ""
-
-msgid "Allow variables to run on protected branches and tags."
 msgstr ""
 
 msgid "Allowed email domain restriction only permitted for top-level groups"
@@ -3710,6 +3712,9 @@ msgstr ""
 msgid "Choose which shards you wish to synchronize to this secondary node."
 msgstr ""
 
+msgid "Choose which status most accurately reflects the current state of this issue:"
+msgstr ""
+
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
@@ -3788,7 +3793,7 @@ msgstr ""
 msgid "CiVariables|Cannot use Masked Variable with current value"
 msgstr ""
 
-msgid "CiVariables|Environment Scope"
+msgid "CiVariables|Environments"
 msgstr ""
 
 msgid "CiVariables|Input variable key"
@@ -5556,6 +5561,9 @@ msgstr ""
 msgid "Copy commit SHA"
 msgstr ""
 
+msgid "Copy environment"
+msgstr ""
+
 msgid "Copy evidence SHA"
 msgstr ""
 
@@ -5566,6 +5574,9 @@ msgid "Copy file path"
 msgstr ""
 
 msgid "Copy impersonation token"
+msgstr ""
+
+msgid "Copy key"
 msgstr ""
 
 msgid "Copy labels and milestone from %{source_issuable_reference}."
@@ -5590,6 +5601,9 @@ msgid "Copy token"
 msgstr ""
 
 msgid "Copy trigger token"
+msgstr ""
+
+msgid "Copy value"
 msgstr ""
 
 msgid "Could not add admins as members"
@@ -6360,6 +6374,9 @@ msgid "Delete source branch"
 msgstr ""
 
 msgid "Delete this attachment"
+msgstr ""
+
+msgid "Delete variable"
 msgstr ""
 
 msgid "DeleteProject|Failed to remove project repository. Please try again or contact administrator."
@@ -7958,6 +7975,9 @@ msgstr ""
 msgid "Error occurred when toggling the notification subscription"
 msgstr ""
 
+msgid "Error occurred while updating the issue status"
+msgstr ""
+
 msgid "Error occurred while updating the issue weight"
 msgstr ""
 
@@ -8250,6 +8270,9 @@ msgid "Export project"
 msgstr ""
 
 msgid "Export this project with all its related data in order to move your project to a new GitLab instance. Once the export is finished, you can import the file from the \"New Project\" page."
+msgstr ""
+
+msgid "Export variable to pipelines running on protected branches and tags only."
 msgstr ""
 
 msgid "External Classification Policy Authorization"
@@ -8820,6 +8843,9 @@ msgid "Fixed start date"
 msgstr ""
 
 msgid "Fixed:"
+msgstr ""
+
+msgid "Flags"
 msgstr ""
 
 msgid "FlowdockService|Flowdock Git source token"
@@ -16578,7 +16604,7 @@ msgstr ""
 msgid "Reporting"
 msgstr ""
 
-msgid "Reports|%{failedString} and %{resolvedString}"
+msgid "Reports|%{combinedString} and %{resolvedString}"
 msgstr ""
 
 msgid "Reports|Actions"
@@ -16716,6 +16742,9 @@ msgid "Requires approval."
 msgid_plural "Requires %d more approvals."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Requires values to meet regular expression requirements."
+msgstr ""
 
 msgid "Resend confirmation email"
 msgstr ""
@@ -19849,9 +19878,6 @@ msgstr ""
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
-msgid "There are currently no variables, add a variable with the Add Variable button below."
-msgstr ""
-
 msgid "There are no GPG keys associated with this account."
 msgstr ""
 
@@ -19904,6 +19930,9 @@ msgid "There are no packages yet"
 msgstr ""
 
 msgid "There are no projects shared with this group yet"
+msgstr ""
+
+msgid "There are no variables yet."
 msgstr ""
 
 msgid "There is a limit of %{ci_project_subscriptions_limit} subscriptions from or to a project."
@@ -20423,6 +20452,9 @@ msgid "This user will be the author of all events in the activity feed that are 
 msgstr ""
 
 msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches. Upon creation or when reassigning you can only assign yourself to be the mirror user."
+msgstr ""
+
+msgid "This variable can not be masked"
 msgstr ""
 
 msgid "This will help us personalize your onboarding experience."
@@ -21362,9 +21394,6 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-msgid "Update Variable"
-msgstr ""
-
 msgid "Update all"
 msgstr ""
 
@@ -21381,6 +21410,9 @@ msgid "Update it"
 msgstr ""
 
 msgid "Update now"
+msgstr ""
+
+msgid "Update variable"
 msgstr ""
 
 msgid "Update your bookmarked URLs as filtered/sorted branches URL has been changed."
@@ -21992,13 +22024,13 @@ msgstr ""
 msgid "Value Stream Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr ""
 
-msgid "Variable"
+msgid "Var"
+msgstr ""
+
+msgid "Variable will be masked in job logs."
 msgstr ""
 
 msgid "Variables"
-msgstr ""
-
-msgid "Variables will be masked in job logs. Requires values to meet regular expression requirements."
 msgstr ""
 
 msgid "Various container registry settings."

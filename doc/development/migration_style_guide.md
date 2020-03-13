@@ -176,9 +176,15 @@ Removing a column:
 ```ruby
 include Gitlab::Database::MigrationHelpers
 
-def change
+def up
   with_lock_retries do
-    remove_column :users, :full_name, :string
+    remove_column :users, :full_name
+  end
+end
+
+def down
+  with_lock_retries do
+    add_column :users, :full_name, :string
   end
 end
 ```
@@ -188,9 +194,15 @@ Removing a foreign key:
 ```ruby
 include Gitlab::Database::MigrationHelpers
 
-def change
+def up
   with_lock_retries do
     remove_foreign_key :issues, :projects
+  end
+end
+
+def down
+  with_lock_retries do
+    add_foreign_key :issues, :projects
   end
 end
 ```
@@ -200,9 +212,15 @@ Changing default value for a column:
 ```ruby
 include Gitlab::Database::MigrationHelpers
 
-def change
+def up
   with_lock_retries do
     change_column_default :merge_requests, :lock_version, from: nil, to: 0
+  end
+end
+
+def down
+  with_lock_retries do
+    change_column_default :merge_requests, :lock_version, from: 0, to: nil
   end
 end
 ```
@@ -230,6 +248,8 @@ Example changes:
 - `change_column_default`
 
 **Note:** `with_lock_retries` method **cannot** be used with `disable_ddl_transaction!`.
+
+**Note:** `with_lock_retries` method **cannot** be used within the `change` method, you must manually define the `up` and `down` methods to make the migration reversible.
 
 ### How the helper method works
 

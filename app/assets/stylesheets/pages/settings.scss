@@ -376,8 +376,29 @@
 }
 
 .ci-variable-table {
-  table tr th {
-    background-color: transparent;
-    border: 0;
+  table {
+    thead {
+      border-bottom: 1px solid $white-normal;
+    }
+
+    tr {
+      td,
+      th {
+        padding-left: 0;
+      }
+
+      th {
+        background-color: transparent;
+        font-weight: $gl-font-weight-bold;
+        border: 0;
+      }
+    }
+  }
+
+  @media(max-width: map-get($grid-breakpoints, lg)-1) {
+    .truncated-container {
+      justify-content: flex-end;
+    }
   }
 }
+

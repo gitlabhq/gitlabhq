@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe HasRef do
+describe Ci::HasRef do
   describe '#branch?' do
     let(:build) { create(:ci_build) }
 

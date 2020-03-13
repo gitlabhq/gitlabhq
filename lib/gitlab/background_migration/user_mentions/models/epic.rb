@@ -18,6 +18,7 @@ module Gitlab
           self.table_name = 'epics'
 
           belongs_to :author, class_name: "User"
+          belongs_to :project
           belongs_to :group
 
           def self.user_mention_model

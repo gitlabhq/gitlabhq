@@ -20,7 +20,7 @@ export default class SidebarMediator {
       moveIssueEndpoint: options.moveIssueEndpoint,
       projectsAutocompleteEndpoint: options.projectsAutocompleteEndpoint,
       fullPath: options.fullPath,
-      id: options.id,
+      iid: options.iid,
     });
     SidebarMediator.singleton = this;
   }

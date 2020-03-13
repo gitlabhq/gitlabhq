@@ -10,7 +10,7 @@ module Ci
     include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
-    include HasRef
+    include Ci::HasRef
     include IgnorableColumns
 
     BuildArchivedError = Class.new(StandardError)

@@ -12,7 +12,7 @@ Cron notation is parsed by [Fugit](https://github.com/floraison/fugit).
 
 Pipelines are normally run based on certain conditions being met. For example, when a branch is pushed to repository.
 
-Pipeline schedules can be used to also run [pipelines](../pipelines.md) at specific intervals. For example:
+Pipeline schedules can be used to also run [pipelines](index.md) at specific intervals. For example:
 
 - Every month on the 22nd for a certain branch.
 - Once every day.

@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { displayText } from '../constants';
 
 export default () => ({
   endpoint: null,
@@ -8,17 +8,17 @@ export default () => ({
   isLoading: false,
   isDeleting: false,
   variable: {
-    variable_type: __('Variable'),
+    variable_type: displayText.variableText,
     key: '',
     secret_value: '',
     protected: false,
     masked: false,
-    environment_scope: __('All environments'),
+    environment_scope: displayText.allEnvironmentsText,
   },
   variables: null,
   valuesHidden: true,
   error: null,
   environments: [],
-  typeOptions: [__('Variable'), __('File')],
+  typeOptions: [displayText.variableText, displayText.fileText],
   variableBeingEdited: null,
 });

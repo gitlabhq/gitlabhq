@@ -254,7 +254,9 @@ describe API::Pipelines do
         context 'when order_by and sort are specified' do
           context 'when order_by user_id' do
             before do
-              create_list(:ci_pipeline, 3, project: project, user: create(:user))
+              create_list(:user, 3).each do |some_user|
+                create(:ci_pipeline, project: project, user: some_user)
+              end
             end
 
             context 'when sort parameter is valid' do

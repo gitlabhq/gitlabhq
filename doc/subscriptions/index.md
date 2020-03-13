@@ -354,7 +354,7 @@ features, and the instance will be read / write again.
 
 ## CI pipeline minutes
 
-CI pipeline minutes are the execution time for your [pipelines](../ci/pipelines.md) on GitLab's shared runners. Each [GitLab.com tier](https://about.gitlab.com/pricing/) includes a monthly quota of CI pipeline minutes.
+CI pipeline minutes are the execution time for your [pipelines](../ci/pipelines/index.md) on GitLab's shared runners. Each [GitLab.com tier](https://about.gitlab.com/pricing/) includes a monthly quota of CI pipeline minutes.
 
 Quotas apply to:
 

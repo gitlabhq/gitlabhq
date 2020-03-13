@@ -66,12 +66,12 @@ export default {
     individualChartsData() {
       const maxNumberOfIndividualContributorsCharts = 100;
 
-      return Object.keys(this.parsedData.byAuthor)
-        .map(name => {
-          const author = this.parsedData.byAuthor[name];
+      return Object.keys(this.parsedData.byAuthorEmail)
+        .map(email => {
+          const author = this.parsedData.byAuthorEmail[email];
           return {
-            name,
-            email: author.email,
+            name: author.name,
+            email,
             commits: author.commits,
             dates: [
               {

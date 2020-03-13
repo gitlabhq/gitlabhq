@@ -1174,7 +1174,7 @@ PUT /projects/:id
 | `auto_cancel_pending_pipelines` | string | no | Auto-cancel pending pipelines (Note: this is not a boolean, but enabled/disabled |
 | `build_coverage_regex` | string | no | Test coverage parsing |
 | `ci_config_path` | string | no | The path to CI config file |
-| `ci_default_git_depth` | integer | no | Default number of revisions for [shallow cloning](../user/project/pipelines/settings.md#git-shallow-clone) |
+| `ci_default_git_depth` | integer | no | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#git-shallow-clone) |
 | `auto_devops_enabled` | boolean | no | Enable Auto DevOps for this project |
 | `auto_devops_deploy_strategy` | string | no | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`) |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |

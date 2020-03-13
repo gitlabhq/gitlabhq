@@ -422,4 +422,4 @@ You can find the IP address of a Runner for a specific project by:
 [register]: https://docs.gitlab.com/runner/register/
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
-[project defined timeout]: ../../user/project/pipelines/settings.html#timeout
+[project defined timeout]: ../pipelines/settings.md#timeout

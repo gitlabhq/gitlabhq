@@ -1,5 +1,5 @@
 import * as types from './mutation_types';
-import { __ } from '~/locale';
+import { displayText } from '../constants';
 
 export default {
   [types.REQUEST_VARIABLES](state) {
@@ -61,7 +61,7 @@ export default {
   [types.RECEIVE_ENVIRONMENTS_SUCCESS](state, environments) {
     state.isLoading = false;
     state.environments = environments;
-    state.environments.unshift(__('All environments'));
+    state.environments.unshift(displayText.allEnvironmentsText);
   },
 
   [types.VARIABLE_BEING_EDITED](state, variable) {
@@ -70,12 +70,12 @@ export default {
 
   [types.CLEAR_MODAL](state) {
     state.variable = {
-      variable_type: __('Variable'),
+      variable_type: displayText.variableText,
       key: '',
       secret_value: '',
       protected: false,
       masked: false,
-      environment_scope: __('All environments'),
+      environment_scope: displayText.allEnvironmentsText,
     };
   },
 

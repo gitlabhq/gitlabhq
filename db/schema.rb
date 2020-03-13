@@ -2921,6 +2921,21 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.index ["access_grant_id"], name: "index_oauth_openid_requests_on_access_grant_id"
   end
 
+  create_table "open_project_tracker_data", force: :cascade do |t|
+    t.integer "service_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "encrypted_url", limit: 255
+    t.string "encrypted_url_iv", limit: 255
+    t.string "encrypted_api_url", limit: 255
+    t.string "encrypted_api_url_iv", limit: 255
+    t.string "encrypted_token", limit: 255
+    t.string "encrypted_token_iv", limit: 255
+    t.string "closed_status_id", limit: 5
+    t.string "project_identifier_code", limit: 100
+    t.index ["service_id"], name: "index_open_project_tracker_data_on_service_id"
+  end
+
   create_table "operations_feature_flag_scopes", force: :cascade do |t|
     t.bigint "feature_flag_id", null: false
     t.datetime_with_timezone "created_at", null: false
@@ -4993,6 +5008,7 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
   add_foreign_key "notes", "reviews", name: "fk_2e82291620", on_delete: :nullify
   add_foreign_key "notification_settings", "users", name: "fk_0c95e91db7", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_77114b3b09", on_delete: :cascade
+  add_foreign_key "open_project_tracker_data", "services", on_delete: :cascade
   add_foreign_key "operations_feature_flag_scopes", "operations_feature_flags", column: "feature_flag_id", on_delete: :cascade
   add_foreign_key "operations_feature_flags", "projects", on_delete: :cascade
   add_foreign_key "operations_feature_flags_clients", "projects", on_delete: :cascade

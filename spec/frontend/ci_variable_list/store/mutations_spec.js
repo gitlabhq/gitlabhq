@@ -48,12 +48,12 @@ describe('CI variable list mutations', () => {
   describe('CLEAR_MODAL', () => {
     it('should clear modal state ', () => {
       const modalState = {
-        variable_type: 'Variable',
+        variable_type: 'Var',
         key: '',
         secret_value: '',
         protected: false,
         masked: false,
-        environment_scope: 'All environments',
+        environment_scope: 'All',
       };
 
       mutations[types.CLEAR_MODAL](stateCopy);

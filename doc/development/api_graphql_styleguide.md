@@ -21,6 +21,12 @@ and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/8e78ea7f326b2ef6
 Everything covered in this deep dive was accurate as of GitLab 11.9, and while specific
 details may have changed since then, it should still serve as a good introduction.
 
+## GraphiQL
+
+GraphiQL is an interactive GraphQL API explorer where you can play around with existing queries.
+You can access it in any GitLab environment on `https://<your-gitlab-site.com>/-/graphql-explorer`.
+For example, the one for [GitLab.com](https://gitlab.com/-/graphql-explorer).
+
 ## Authentication
 
 Authentication happens through the `GraphqlController`, right now this
@@ -335,7 +341,7 @@ field :id, GraphQL::ID_TYPE, description: 'ID of the resource'
 
 Descriptions of fields and arguments are viewable to users through:
 
-- The [GraphiQL explorer](../api/graphql/#graphiql).
+- The [GraphiQL explorer](#graphiql).
 - The [static GraphQL API reference](../api/graphql/#reference).
 
 ### Description styleguide

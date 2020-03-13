@@ -14,7 +14,7 @@ Code Quality:
 - Uses [Code Climate Engines](https://codeclimate.com), which are
   free and open source. Code Quality doesn't require a Code Climate
   subscription.
-- Runs in [pipelines](../../../ci/pipelines.md) using a Docker image built in the
+- Runs in [pipelines](../../../ci/pipelines/index.md) using a Docker image built in the
   [GitLab Code
   Quality](https://gitlab.com/gitlab-org/security-products/codequality) project using [default Code Climate configurations](https://gitlab.com/gitlab-org/security-products/codequality/-/tree/master/codeclimate_defaults).
 - Can make use of a [template](#example-configuration).

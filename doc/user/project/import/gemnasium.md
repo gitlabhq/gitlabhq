@@ -102,5 +102,5 @@ back to both GitLab and GitHub when completed.
 
 NOTE: **Note:**
 If you don't commit very often to your project, you may want to use
-[scheduled pipelines](../pipelines/schedules.md) to run the job on a regular
+[scheduled pipelines](../../../ci/pipelines/schedules.md) to run the job on a regular
 basis.

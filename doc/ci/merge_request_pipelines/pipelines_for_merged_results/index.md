@@ -115,7 +115,7 @@ unexpected timing. For example, when a source or target branch is advanced.
 In this case, the pipeline fails because of `fatal: reference is not a tree:` error,
 which indicates that the checkout-SHA is not found in the merge ref.
 
-This behavior was improved at GitLab 12.4 by introducing [Persistent pipeline refs](../../pipelines.md#persistent-pipeline-refs).
+This behavior was improved at GitLab 12.4 by introducing [Persistent pipeline refs](../../pipelines/index.md#persistent-pipeline-refs).
 You should be able to create pipelines at any timings without concerning the error.
 
 ## Using Merge Trains **(PREMIUM)**

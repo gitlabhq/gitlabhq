@@ -204,7 +204,7 @@ const mockData = {
     },
     rootPath: '/',
     fullPath: '/gitlab-org/gitlab-shell',
-    id: 1,
+    iid: 1,
   },
   time: {
     time_estimate: 3600,

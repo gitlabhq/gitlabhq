@@ -40,7 +40,7 @@ With Multi-Project Pipelines you can visualize the entire pipeline, including al
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2121) in [GitLab Premium 9.3](https://about.gitlab.com/releases/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
 
 When you configure GitLab CI for your project, you can visualize the stages of your
-[jobs](pipelines.md#configuring-pipelines) on a [pipeline graph](pipelines.md#visualizing-pipelines).
+[jobs](pipelines/index.md#configuring-pipelines) on a [pipeline graph](pipelines/index.md#visualizing-pipelines).
 
 ![Multi-project pipeline graph](img/multi_project_pipeline_graph.png)
 

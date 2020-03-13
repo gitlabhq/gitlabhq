@@ -35,10 +35,6 @@ describe('Ci variable modal', () => {
     expect(findModal().props('actionPrimary').attributes.disabled).toBeTruthy();
   });
 
-  it('masked checkbox is disabled when value does not meet regex requirements', () => {
-    expect(wrapper.find({ ref: 'masked-ci-variable' }).attributes('disabled')).toBeTruthy();
-  });
-
   describe('Adding a new variable', () => {
     beforeEach(() => {
       const [variable] = mockData.mockVariables;
@@ -47,13 +43,6 @@ describe('Ci variable modal', () => {
 
     it('button is enabled when key/value pair are present', () => {
       expect(findModal().props('actionPrimary').attributes.disabled).toBeFalsy();
-    });
-
-    it('masked checkbox is enabled when value meets regex requirements', () => {
-      store.state.maskableRegex = '^[a-zA-Z0-9_+=/@:-]{8,}$';
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.find({ ref: 'masked-ci-variable' }).attributes('disabled')).toBeFalsy();
-      });
     });
 
     it('Add variable button dispatches addVariable action', () => {
@@ -74,7 +63,7 @@ describe('Ci variable modal', () => {
     });
 
     it('button text is Update variable when updating', () => {
-      expect(wrapper.vm.modalActionText).toBe('Update Variable');
+      expect(wrapper.vm.modalActionText).toBe('Update variable');
     });
 
     it('Update variable button dispatches updateVariable with correct variable', () => {
@@ -88,6 +77,11 @@ describe('Ci variable modal', () => {
     it('Resets the editing state once modal is hidden', () => {
       findModal().vm.$emit('hidden');
       expect(store.dispatch).toHaveBeenCalledWith('resetEditing');
+    });
+
+    it('dispatches deleteVariable with correct variable to delete', () => {
+      findModal().vm.$emit('secondary');
+      expect(store.dispatch).toHaveBeenCalledWith('deleteVariable', mockData.mockVariables[0]);
     });
   });
 });

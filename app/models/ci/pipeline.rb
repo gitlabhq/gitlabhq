@@ -11,7 +11,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
     include EnumWithNil
-    include HasRef
+    include Ci::HasRef
     include ShaAttribute
     include FromUnion
     include UpdatedAtFilterable

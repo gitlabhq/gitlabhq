@@ -47,7 +47,7 @@ can even access a [web terminal](#web-terminals) for your environment from withi
 
 Configuring environments involves:
 
-1. Understanding how [pipelines](pipelines.md) work.
+1. Understanding how [pipelines](pipelines/index.md) work.
 1. Defining environments in your project's [`.gitlab-ci.yml`](yaml/README.md) file.
 1. Creating a job configured to deploy your application. For example, a deploy job configured with [`environment`](yaml/README.md#environment) to deploy your application to a [Kubernetes cluster](../user/project/clusters/index.md).
 

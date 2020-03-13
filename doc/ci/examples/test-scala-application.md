@@ -60,7 +60,7 @@ You can use other versions of Scala and SBT by defining them in
 
 Add the `Coverage was \[\d+.\d+\%\]` regular expression in the
 **Settings ➔ Pipelines ➔ Coverage report** project setting to
-retrieve the [test coverage](../../user/project/pipelines/settings.md#test-coverage-report-badge)
+retrieve the [test coverage](../pipelines/settings.md#test-coverage-report-badge)
 rate from the build trace and have it displayed with your jobs.
 
 **Pipelines** must be enabled for this option to appear.

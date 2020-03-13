@@ -18,7 +18,7 @@ export default class SidebarService {
       this.moveIssueEndpoint = endpointMap.moveIssueEndpoint;
       this.projectsAutocompleteEndpoint = endpointMap.projectsAutocompleteEndpoint;
       this.fullPath = endpointMap.fullPath;
-      this.id = endpointMap.id;
+      this.iid = endpointMap.iid;
 
       SidebarService.singleton = this;
     }
@@ -37,7 +37,7 @@ export default class SidebarService {
           : sidebarDetailsQuery,
         variables: {
           fullPath: this.fullPath,
-          iid: this.id.toString(),
+          iid: this.iid.toString(),
         },
       }),
     ]);
@@ -45,6 +45,17 @@ export default class SidebarService {
 
   update(key, data) {
     return axios.put(this.endpoint, { [key]: data });
+  }
+
+  updateWithGraphQl(mutation, variables) {
+    return gqClient.mutate({
+      mutation,
+      variables: {
+        ...variables,
+        projectPath: this.fullPath,
+        iid: this.iid.toString(),
+      },
+    });
   }
 
   getProjectsAutocomplete(searchTerm) {

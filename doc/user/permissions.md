@@ -420,7 +420,7 @@ read through the documentation on the [new CI/CD permissions model](project/new_
 The permission to merge or push to protected branches is used to define if a user can
 run CI/CD pipelines and execute actions on jobs that are related to those branches.
 
-See [Security on protected branches](../ci/pipelines.md#security-on-protected-branches)
+See [Security on protected branches](../ci/pipelines/index.md#security-on-protected-branches)
 for details about the pipelines security model.
 
 ## LDAP users permissions

@@ -1375,7 +1375,7 @@ increasing the rollout up to 100%.
 
 If `INCREMENTAL_ROLLOUT_MODE` is set to `manual` in your project, then instead
 of the standard `production` job, 4 different
-[manual jobs](../../ci/pipelines.md#manual-actions-from-pipeline-graphs)
+[manual jobs](../../ci/pipelines/index.md#manual-actions-from-pipeline-graphs)
 will be created:
 
 1. `rollout 10%`

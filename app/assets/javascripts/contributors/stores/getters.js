@@ -1,17 +1,17 @@
 export const showChart = state => Boolean(!state.loading && state.chartData);
 
 export const parsedData = state => {
-  const byAuthor = {};
+  const byAuthorEmail = {};
   const total = {};
 
   state.chartData.forEach(({ date, author_name, author_email }) => {
     total[date] = total[date] ? total[date] + 1 : 1;
 
-    const authorData = byAuthor[author_name];
+    const authorData = byAuthorEmail[author_email];
 
     if (!authorData) {
-      byAuthor[author_name] = {
-        email: author_email.toLowerCase(),
+      byAuthorEmail[author_email] = {
+        name: author_name,
         commits: 1,
         dates: {
           [date]: 1,
@@ -25,7 +25,7 @@ export const parsedData = state => {
 
   return {
     total,
-    byAuthor,
+    byAuthorEmail,
   };
 };
 

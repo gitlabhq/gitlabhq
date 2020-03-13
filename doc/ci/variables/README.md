@@ -169,7 +169,7 @@ You can either set the variable directly in the `.gitlab-ci.yml`
 file or through the UI.
 
 NOTE: **Note:**
-It is possible to [specify variables when running manual jobs](../pipelines.md#specifying-variables-when-running-manual-jobs).
+It is possible to [specify variables when running manual jobs](../pipelines/index.md#specifying-variables-when-running-manual-jobs).
 
 #### Via `.gitlab-ci.yml`
 
@@ -185,14 +185,19 @@ For a deeper look into them, see [`.gitlab-ci.yml` defined variables](#gitlab-ci
 
 #### Via the UI
 
-From the UI, navigate to your project's **Settings > CI/CD** and
-expand **Variables**. Create a new variable by choosing its **type**, naming
-it in the field **Input variable key**, and defining its value in the
-**Input variable value** field:
+From within the UI, you can add or update custom environment variables:
 
-![CI/CD settings - new variable](img/new_custom_variables_example.png)
+1. Go to your project's **Settings > CI/CD** and expand the **Variables** section.
+1. Click the **Add variable** button. In the **Add variable** modal, fill in the details:
 
-You'll also see the option to mask and/or protect your variables.
+    - **Key**: Must be one line, with no spaces, using only letters, numbers, `-` or `_`.
+    - **Value**: No limitations.
+    - **Type**: `File` or `Variable`.
+    - **Environment scope**: `All`, or specific environments.
+    - **Protect variable** (Optional): If selected, the variable will only be available in pipelines that run on protected branches or tags.
+    - **Mask variable** (Optional): If selected, the variable's **Value** will be masked in job logs. The variable will fail to save if the value does not meet the [masking requirements](#masked-variables).
+
+After a variable is created, you can update any of the details by clicking on the **{pencil}** **Edit** button.
 
 Once you've set the variables, call them from the `.gitlab-ci.yml` file:
 
@@ -460,7 +465,7 @@ limitations with the current Auto DevOps scripting environment.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/44059) in GitLab 10.8.
 
-[Manually triggered pipelines](../pipelines.md#manually-executing-pipelines) allow you to override the value of a current variable.
+[Manually triggered pipelines](../pipelines/index.md#manually-executing-pipelines) allow you to override the value of a current variable.
 
 For instance, suppose you added a
 [custom variable `$TEST`](#creating-a-custom-environment-variable)
@@ -616,7 +621,7 @@ variables that were set, etc.
 
 Before enabling this, you should ensure jobs are visible to
 [team members only](../../user/permissions.md#project-features). You should
-also [erase](../pipelines.md#accessing-individual-jobs) all generated job logs
+also [erase](../pipelines/index.md#accessing-individual-jobs) all generated job logs
 before making them visible again.
 
 To enable debug logs (traces), set the `CI_DEBUG_TRACE` variable to `true`:

@@ -1,23 +1,22 @@
-import { __ } from '~/locale';
 import { cloneDeep } from 'lodash';
+import { displayText, types } from '../constants';
 
-const variableType = 'env_var';
-const fileType = 'file';
-
-const variableTypeHandler = type => (type === 'Variable' ? variableType : fileType);
+const variableTypeHandler = type =>
+  type === displayText.variableText ? types.variableType : types.fileType;
 
 export const prepareDataForDisplay = variables => {
   const variablesToDisplay = [];
   variables.forEach(variable => {
     const variableCopy = variable;
-    if (variableCopy.variable_type === variableType) {
-      variableCopy.variable_type = __('Variable');
+    if (variableCopy.variable_type === types.variableType) {
+      variableCopy.variable_type = displayText.variableText;
     } else {
-      variableCopy.variable_type = __('File');
+      variableCopy.variable_type = displayText.fileText;
     }
+    variableCopy.secret_value = variableCopy.value;
 
-    if (variableCopy.environment_scope === '*') {
-      variableCopy.environment_scope = __('All environments');
+    if (variableCopy.environment_scope === types.allEnvironmentsType) {
+      variableCopy.environment_scope = displayText.allEnvironmentsText;
     }
     variablesToDisplay.push(variableCopy);
   });
@@ -29,9 +28,8 @@ export const prepareDataForApi = (variable, destroy = false) => {
   variableCopy.protected = variableCopy.protected.toString();
   variableCopy.masked = variableCopy.masked.toString();
   variableCopy.variable_type = variableTypeHandler(variableCopy.variable_type);
-
-  if (variableCopy.environment_scope === __('All environments')) {
-    variableCopy.environment_scope = __('*');
+  if (variableCopy.environment_scope === displayText.allEnvironmentsText) {
+    variableCopy.environment_scope = types.allEnvironmentsType;
   }
 
   if (destroy) {

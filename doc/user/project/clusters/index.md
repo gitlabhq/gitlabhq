@@ -20,7 +20,7 @@ NOTE: **Scalable app deployment with GitLab and Google Cloud Platform**
 Using the GitLab project Kubernetes integration, you can:
 
 - Use [Review Apps](../../../ci/review_apps/index.md).
-- Run [pipelines](../../../ci/pipelines.md).
+- Run [pipelines](../../../ci/pipelines/index.md).
 - [Deploy](#deploying-to-a-kubernetes-cluster) your applications.
 - Detect and [monitor Kubernetes](#kubernetes-monitoring).
 - Use it with [Auto DevOps](#auto-devops).

@@ -2151,11 +2151,11 @@ describe Gitlab::Git::Repository, :seed_helper do
         'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
         'path' => TestEnv::SECOND_STORAGE_PATH
       })
-      Gitlab::Shell.new.create_repository('test_second_storage', TEST_REPO_PATH, 'group/project')
+      new_repository.create_repository
     end
 
     after do
-      Gitlab::Shell.new.remove_repository('test_second_storage', TEST_REPO_PATH)
+      new_repository.remove
     end
 
     it 'mirrors the source repository' do
