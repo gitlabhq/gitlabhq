@@ -35,7 +35,7 @@ If you need to migrate all data over, you can leverage our [API](../../../api/RE
 The order of assets to migrate from a self-managed instance to GitLab.com is the following:
 
 NOTE: **Note:**
-When migrating to GitLab.com, users would need to be manually created unless [SCIM](../../../user/group/saml_sso/scim_setup.md) is going to be used. Creating users with the API is limited to self-hosted instances as it requires administrator access.
+When migrating to GitLab.com, users would need to be manually created unless [SCIM](../../../user/group/saml_sso/scim_setup.md) is going to be used. Creating users with the API is limited to self-managed instances as it requires administrator access.
 
 1. [Groups](../../../api/groups.md)
 1. [Projects](../../../api/projects.md)

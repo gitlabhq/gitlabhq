@@ -937,6 +937,9 @@ This could result in some unexpected behavior, including:
 
 `rules` allows for a list of individual rule objects to be evaluated
 *in order*, until one matches and dynamically provides attributes to the job.
+Note that `rules` cannot be used in combination with `only/except` since it is intended
+to replace that functionality. If you attempt to do this the linter will return a
+`key may not be used with rules` error.
 
 Available rule clauses include:
 

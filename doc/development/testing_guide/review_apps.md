@@ -9,42 +9,43 @@ pipeline](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6665).
 
 ```mermaid
 graph TD
-    build-qa-image -->|once the `prepare` stage is done| gitlab:assets:compile
-    gitlab:assets:compile -->|once the `gitlab:assets:compile` job is done| review-build-cng
-    review-build-cng -.->|triggers a CNG-mirror pipeline and wait for it to be done| CNG-mirror
-    CNG-mirror -.->|polls until completed| review-build-cng
-    review-build-cng -->|once the `review-build-cng` job is done| review-deploy
-    review-deploy -->|once the `review-deploy` job is done| review-qa-smoke
+  A["build-qa-image, gitlab:assets:compile pull-cache<br/>(canonical default refs only)"];
+  B[review-build-cng];
+  C[review-deploy];
+  D[CNG-mirror];
+  E[review-qa-smoke];
 
-subgraph "1. gitlab-foss/gitlab `prepare` stage"
-    build-qa-image
-    end
+  A -->|once the `prepare` stage is done| B
+  B -.->|triggers a CNG-mirror pipeline and wait for it to be done| D
+  D -.->|polls until completed| B
+  B -->|once the `review-build-cng` job is done| C
+  C -->|once the `review-deploy` job is done| E
 
-subgraph "2. gitlab-foss/gitlab `test` stage"
-    gitlab:assets:compile
-    end
+subgraph "1. gitlab `prepare` stage"
+  A
+  end
 
-subgraph "3. gitlab-foss/gitlab `review-prepare` stage"
-    review-build-cng
-    end
+subgraph "2. gitlab `review-prepare` stage"
+  B
+  end
 
-subgraph "4. gitlab-foss/gitlab `review` stage"
-    review-deploy["review-deploy<br><br>Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps-ce` or `review-apps-ee`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
-    end
+subgraph "3. gitlab `review` stage"
+  C["review-deploy<br><br>Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps-ce` or `review-apps-ee`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
+  end
 
-subgraph "5. gitlab-foss/gitlab `qa` stage"
-    review-qa-smoke[review-qa-smoke<br><br>gitlab-qa runs the smoke suite against the Review App.]
-    end
+subgraph "4. gitlab `qa` stage"
+  E[review-qa-smoke<br><br>gitlab-qa runs the smoke suite against the Review App.]
+  end
 
 subgraph "CNG-mirror pipeline"
-    CNG-mirror>Cloud Native images are built];
-    end
+  D>Cloud Native images are built];
+  end
 ```
 
 ### Detailed explanation
 
 1. On every [pipeline][gitlab-pipeline] during the `test` stage, the
-   [`gitlab:assets:compile`][gitlab:assets:compile] job is automatically started.
+   [`gitlab:assets:compile`][gitlab:assets:compile pull-cache] job is automatically started.
    - Once it's done, it starts the [`review-build-cng`][review-build-cng]
      manual job since the [`CNG-mirror`][cng-mirror] pipeline triggered in the
      following step depends on it.
@@ -223,7 +224,7 @@ failing to cleanup stale Review Apps and Kubernetes resources.
 
 **Where to look for further debugging:**
 
-Look at the latest `schedule:review-cleanup` job log, and identify look for any
+Look at the latest `review-cleanup` job log, and identify look for any
 unexpected failure.
 
 ### p99 CPU utilization is at 100% for most of the nodes and/or many components
@@ -388,10 +389,10 @@ find a way to limit it to only us.**
 - [Stern](https://github.com/wercker/stern) - enables cross pod log tailing based on label/field selectors
 
 [charts-1068]: https://gitlab.com/gitlab-org/charts/gitlab/issues/1068
-[gitlab-pipeline]: https://gitlab.com/gitlab-org/gitlab-foss/pipelines/44362587
-[gitlab:assets:compile]: https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/149511610
-[review-build-cng]: https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/149511623
-[review-deploy]: https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/149511624
+[gitlab-pipeline]: https://gitlab.com/gitlab-org/gitlab/pipelines/125315730
+[gitlab:assets:compile pull-cache]: https://gitlab.com/gitlab-org/gitlab/-/jobs/467724487
+[review-build-cng]: https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808
+[review-deploy]: https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810
 [cng-mirror]: https://gitlab.com/gitlab-org/build/CNG-mirror
 [cng]: https://gitlab.com/gitlab-org/build/CNG
 [cng-mirror-pipeline]: https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657

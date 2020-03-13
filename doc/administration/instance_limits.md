@@ -98,9 +98,9 @@ If a new subscription would cause the total number of subscription to exceed the
 limit, the subscription will be considered invalid.
 
 - On GitLab.com different [limits are defined per plan](../user/gitlab_com/index.md#gitlab-cicd) and they affect all projects under that plan.
-- On [GitLab Starter](https://about.gitlab.com/pricing/#self-managed) tier or higher self-hosted installations, this limit is defined for the `default` plan that affects all projects.
+- On [GitLab Starter](https://about.gitlab.com/pricing/#self-managed) tier or higher self-managed installations, this limit is defined for the `default` plan that affects all projects.
 
-To set this limit on a self-hosted installation, run the following in the
+To set this limit on a self-managed installation, run the following in the
 [GitLab Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session):
 
 ```ruby

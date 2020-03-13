@@ -112,17 +112,15 @@ end
 
 ### Subscription Plans
 
-Self-hosted:
+Self-managed:
 
 - `default` - Everyone
 
-Hosted:
+GitLab.com:
 
 - `free` - Everyone
 - `bronze`- Namespaces with a Bronze subscription
 - `silver` - Namespaces with a Silver subscription
 - `gold` - Namespaces with a Gold subscription
-
-NOTE: **Note:** Hosted plans exist only on GitLab.com.
 
 NOTE: **Note:** The test environment doesn't have any plans.

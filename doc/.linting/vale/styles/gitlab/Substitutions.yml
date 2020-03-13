@@ -3,10 +3,9 @@
 #
 # For a list of all options, see https://errata-ai.github.io/vale/styles/
 extends: substitution
-message: Use `%s` instead of `%s`.
+message: Use "%s" instead of "%s".
 link: https://about.gitlab.com/handbook/communication/#top-misused-terms
-level: warning
-nonword: true
+level: error
 ignorecase: true
 swap:
   GitLabber: GitLab team member
