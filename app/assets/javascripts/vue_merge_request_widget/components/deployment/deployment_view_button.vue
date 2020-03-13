@@ -93,8 +93,10 @@ export default {
     />
     <visual-review-app-link
       v-if="showVisualReviewApp"
+      :view-app-display="appButtonText"
       :link="deploymentExternalUrl"
       :app-metadata="visualReviewAppMeta"
+      :changes="deployment.changes"
     />
   </span>
 </template>

@@ -78,24 +78,41 @@ References:
 
 ## GitLab components and configuration instructions
 
-The GitLab application depends on the following [components](../../development/architecture.md#component-diagram)
-and services. They are included in the reference architectures along with our
-recommendations for their use and configuration. They are presented in the order
-in which you would typically configure them.
+The GitLab application depends on the following [components](../../development/architecture.md#component-diagram).
+It can also depend on several third party services depending on
+your environment setup. Here we'll detail both in the order in which
+you would typically configure them along with our recommendations for
+their use and configuration.
 
-| Component                                                                                                                                                         | Description                                                                                                                       | Configuration Instructions                                   |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
-| [Load Balancer(s)](load_balancer.md)[^6]                                                                                                                          | Handles load balancing for the GitLab nodes where required.                                                                       | [Load balancer HA configuration](load_balancer.md)                               |
-| [Consul](../../development/architecture.md#consul)[^3]                                                                                     | Service discovery and health checks/failover                                                                                      | [Consul HA configuration](consul.md) **(PREMIUM ONLY)**                                     |
-| [PostgreSQL](../../development/architecture.md#postgresql)                                                                                 | Database                                                                                                                          | [Database HA configuration](database.md) |
-| [PgBouncer](../../development/architecture.md#pgbouncer)                                                                                   | Database Pool Manager                                                                                                             | [PgBouncer HA configuration](pgbouncer.md) **(PREMIUM ONLY)**                                  |
-| [Redis](../../development/architecture.md#redis)[^3] with Redis Sentinel                                                                   | Key/Value store for shared data with HA watcher service                                                                           | [Redis HA configuration](redis.md)        |
-| [Gitaly](../../development/architecture.md#gitaly)[^2] [^5] [^7]                                                                           | Recommended high-level storage for Git repository data.                                                                           | [Gitaly HA configuration](gitaly.md)                                      |
-| [Sidekiq](../../development/architecture.md#sidekiq)                                                                                       | Asynchronous/Background jobs                                                                                                      |                                                        |
-| [Cloud Object Storage service](object_storage.md)[^4]                                                                                                                | Recommended store for shared data objects such as LFS, Uploads, Artifacts, etc...                                              | [Cloud Object Storage configuration](object_storage.md)                              |
-| [GitLab application nodes](../../development/architecture.md#unicorn)[^1]                                                                  | (Unicorn / Puma, Workhorse) - Web-requests (UI, API, Git over HTTP)                                                               | [GitLab app HA/scaling configuration](gitlab.md)                                      |
-| [NFS](nfs.md)[^5] [^7]                                                                                                                                            | Shared disk storage service. Can be used as an alternative for Gitaly or Object Storage. Required for GitLab Pages.               | [NFS configuration](nfs.md)                                         |
-| [Prometheus](../../development/architecture.md#prometheus) and [Grafana](../../development/architecture.md#grafana) | GitLab environment monitoring                                                                                                     | [Monitoring node for scaling/HA](monitoring_node.md)                             |
+### Third party services
+
+Here's some details of several third party services a typical environment
+will depend on. The services can be provided by numerous applications
+or providers and further advice can be given on how best to select.
+These should be configured first, before the [GitLab components](#gitlab-components).
+
+| Component                                              | Description                                                                                                         | Configuration instructions                              |
+|--------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| [Load Balancer(s)](load_balancer.md)[^6]               | Handles load balancing for the GitLab nodes where required                                                          | [Load balancer HA configuration](load_balancer.md)      |
+| [Cloud Object Storage service](object_storage.md)[^4]  | Recommended store for shared data objects                                                                           | [Cloud Object Storage configuration](object_storage.md) |
+| [NFS](nfs.md)[^5] [^7]                                 | Shared disk storage service. Can be used as an alternative for Gitaly or Object Storage. Required for GitLab Pages  | [NFS configuration](nfs.md)                             |
+
+### GitLab components
+
+Next are all of the components provided directly by GitLab. As mentioned
+earlier, they are presented in the typical order you would configure
+them.
+
+| Component                                                                                                           | Description                                                         | Configuration instructions                                    |
+|---------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|---------------------------------------------------------------|
+| [Consul](../../development/architecture.md#consul)[^3]                                                              | Service discovery and health checks/failover                        | [Consul HA configuration](consul.md) **(PREMIUM ONLY)**       |
+| [PostgreSQL](../../development/architecture.md#postgresql)                                                          | Database                                                            | [Database HA configuration](database.md)                      |
+| [PgBouncer](../../development/architecture.md#pgbouncer)                                                            | Database Pool Manager                                               | [PgBouncer HA configuration](pgbouncer.md) **(PREMIUM ONLY)** |
+| [Redis](../../development/architecture.md#redis)[^3] with Redis Sentinel                                            | Key/Value store for shared data with HA watcher service             | [Redis HA configuration](redis.md)                            |
+| [Gitaly](../../development/architecture.md#gitaly)[^2] [^5] [^7]                                                    | Recommended high-level storage for Git repository data              | [Gitaly HA configuration](gitaly.md)                          |
+| [Sidekiq](../../development/architecture.md#sidekiq)                                                                | Asynchronous/Background jobs                                        |                                                               |
+| [GitLab application nodes](../../development/architecture.md#unicorn)[^1]                                           | (Unicorn / Puma, Workhorse) - Web-requests (UI, API, Git over HTTP) | [GitLab app HA/scaling configuration](gitlab.md)              |
+| [Prometheus](../../development/architecture.md#prometheus) and [Grafana](../../development/architecture.md#grafana) | GitLab environment monitoring                                       | [Monitoring node for scaling/HA](monitoring_node.md)          |
 
 In some cases, components can be combined on the same nodes to reduce complexity as well.
 

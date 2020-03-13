@@ -177,6 +177,7 @@ describe Clusters::Applications::Ingress do
     context 'when modsecurity_enabled is disabled' do
       before do
         allow(subject).to receive(:cluster).and_return(cluster)
+        allow(subject).to receive(:modsecurity_enabled).and_return(false)
       end
 
       it 'excludes modsecurity module enablement' do

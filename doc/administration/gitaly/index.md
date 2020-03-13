@@ -777,7 +777,7 @@ two checks. The result of both of these checks is cached.
     see if we can access filesystem underneath the Gitaly server
     directly. If so, use the Rugged patch.
 
-To see if GitLab  Rails can access the repo filesystem directly, we use
+To see if GitLab Rails can access the repo filesystem directly, we use
 the following heuristic:
 
 - Gitaly ensures that the filesystem has a metadata file in its root
@@ -1010,7 +1010,7 @@ unset https_proxy
 
 When updating the `gitaly['listen_addr']` or `gitaly['prometheus_listen_addr']` values, Gitaly may continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
 
-When this occurs, performing a `sudo gitlab-ctl restart` will resolve the issue.  This will no longer be necessary after [this issue](https://gitlab.com/gitlab-org/gitaly/issues/2521) is resolved.
+When this occurs, performing a `sudo gitlab-ctl restart` will resolve the issue. This will no longer be necessary after [this issue](https://gitlab.com/gitlab-org/gitaly/issues/2521) is resolved.
 
 ### Praefect
 

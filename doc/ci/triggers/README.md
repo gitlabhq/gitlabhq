@@ -123,7 +123,7 @@ settings page which provides self-explanatory examples.
 When a rerun of a pipeline is triggered, the information is exposed in GitLab's
 UI under the **Jobs** page and the jobs are marked as triggered 'by API'.
 
-![Marked rebuilds as  on jobs page](img/builds_page.png)
+![Marked rebuilds as on jobs page](img/builds_page.png)
 
 ---
 

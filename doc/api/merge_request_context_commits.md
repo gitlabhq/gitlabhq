@@ -1,4 +1,4 @@
-# Merge request context commits  API
+# Merge request context commits API
 
 ## List MR context commits
 

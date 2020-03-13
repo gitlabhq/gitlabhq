@@ -81,7 +81,7 @@ module Gitlab
         check_push_access!
       end
 
-      success_result(cmd)
+      success_result
     end
 
     def guest_can_download_code?
@@ -119,12 +119,24 @@ module Gitlab
       nil
     end
 
-    def check_for_console_messages(cmd)
+    def check_for_console_messages
+      return console_messages unless key?
+
+      key_status = Gitlab::Auth::KeyStatusChecker.new(actor)
+
+      if key_status.show_console_message?
+        console_messages.push(key_status.console_message)
+      else
+        console_messages
+      end
+    end
+
+    def console_messages
       []
     end
 
     def check_valid_actor!
-      return unless actor.is_a?(Key)
+      return unless key?
 
       unless actor.valid?
         raise ForbiddenError, "Your SSH key #{actor.errors[:key].first}."
@@ -340,6 +352,10 @@ module Gitlab
       actor == :ci
     end
 
+    def key?
+      actor.is_a?(Key)
+    end
+
     def can_read_project?
       if deploy_key?
         deploy_key.has_access_to?(project)
@@ -374,8 +390,8 @@ module Gitlab
 
     protected
 
-    def success_result(cmd)
-      ::Gitlab::GitAccessResult::Success.new(console_messages: check_for_console_messages(cmd))
+    def success_result
+      ::Gitlab::GitAccessResult::Success.new(console_messages: check_for_console_messages)
     end
 
     def changes_list

@@ -1,0 +1,5 @@
+---
+title: Replace checkbox by toggle for ModSecurity on Cluster App Page
+merge_request: 26720
+author:
+type: changed

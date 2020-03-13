@@ -39,7 +39,7 @@ Sometimes you may notice that there is already good coverage in lower test level
 
 - Take a look at the [How to test at the correct level?](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md#how-to-test-at-the-correct-level) section of the [Testing levels](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md) document
 
-- Look into the frequency in which such a feature is changed  (_Stable features that don't change very often might not be worth covering with end-to-end tests if they're already covered in lower levels_)
+- Look into the frequency in which such a feature is changed (_Stable features that don't change very often might not be worth covering with end-to-end tests if they're already covered in lower levels_)
 
 - Finally, discuss with the developer(s) involved in developing the feature and the tests themselves, to get their feeling
 

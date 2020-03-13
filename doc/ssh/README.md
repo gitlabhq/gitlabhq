@@ -186,7 +186,10 @@ Now, it's time to add the newly created public key to your GitLab account.
    1. Navigating to **SSH Keys** and pasting your **public** key from the clipboard into the **Key** field. If you:
       - Created the key with a comment, this will appear in the **Title** field.
       - Created the key without a comment, give your key an identifiable title like _Work Laptop_ or _Home Workstation_.
+   1. Choose an (optional) expiry date for the key under "Expires at" section. (Introduced in [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36243))
    1. Click the **Add key** button.
+
+SSH keys that have "expired" using this procedure will still be valid in GitLab workflows. As the GitLab-configured expiration date is not included in the SSH key itself, you can still export public SSH keys as needed.
 
    NOTE: **Note:**
    If you manually copied your public SSH key make sure you copied the entire

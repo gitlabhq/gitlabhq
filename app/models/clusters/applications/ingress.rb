@@ -16,7 +16,7 @@ module Clusters
       include AfterCommitQueue
 
       default_value_for :ingress_type, :nginx
-      default_value_for :modsecurity_enabled, false
+      default_value_for :modsecurity_enabled, true
       default_value_for :version, VERSION
 
       enum ingress_type: {

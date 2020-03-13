@@ -74,7 +74,7 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/README.md).
 | -----------             | ----------------- | ------------- |
 | Artifacts maximum size (uncompressed) | 1G                | 100M          |
 | Artifacts [expiry time](../../ci/yaml/README.md#artifactsexpire_in)   | kept forever           | deleted after 30 days unless otherwise specified    |
-| Scheduled Pipeline Cron | `*/5 * * * *` | `*/19 * * * *` |
+| Scheduled Pipeline Cron | `*/5 * * * *` | `19 * * * *` |
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited
 
 ## Repository size limit
@@ -371,15 +371,6 @@ and the following environment variables:
 NOTE: **Note:**
 The `SIDEKIQ_MEMORY_KILLER_MAX_RSS` setting is `16000000` on Sidekiq import
 nodes and Sidekiq export nodes.
-
-## Cron jobs
-
-Periodically executed jobs by Sidekiq, to self-heal GitLab, do external
-synchronizations, run scheduled pipelines, etc.:
-
-| Setting                     | GitLab.com   | Default      |
-|--------                     |------------- |------------- |
-| `pipeline_schedule_worker`  | `19 * * * *` | `19 * * * *` |
 
 ## PostgreSQL
 

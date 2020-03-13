@@ -83,10 +83,11 @@ Releases can optionally be associated with one or more
 by including a `milestones` array in your requests to the
 [Releases API](../../../api/releases/index.md#create-a-release).
 
-Releases display this association with the **Milestone** indicator near
-the top of the Release block on the **Project overview > Releases** page.
+Releases display this association with the **Milestone** indicator in the top
+section of the Release block on the **Project overview > Releases** page, along
+with some statistics about the issues in the milestone(s).
 
-![A Release with one associated milestone](img/release_with_milestone_v12_5.png)
+![A Release with one associated milestone](img/release_with_milestone_v12_9.png)
 
 Below is an example of milestones with no Releases, one Release, and two
 Releases, respectively.
@@ -104,7 +105,7 @@ associated with a large number of Releases.
 Navigate to **Project > Releases** in order to see the list of releases for a given
 project.
 
-![Releases list](img/releases.png)
+![Releases list](img/releases_v12_9.png)
 
 ### Number of Releases
 

@@ -307,4 +307,4 @@ has number of drawbacks, as mentioned in [Why Ruby’s Timeout is dangerous (and
 > - while creating an object to save to the database afterwards
 > - in any of your code, regardless of whether it could have possibly raised an exception before
 >
-> Nobody writes code to defend against an exception being raised on literally any line. That’s not even possible. So Thread.raise is  basically like a sneak attack on your code that could result in almost anything. It would probably be okay if it were pure-functional code that did not modify any state. But this is Ruby, so that’s unlikely :)
+> Nobody writes code to defend against an exception being raised on literally any line. That’s not even possible. So Thread.raise is basically like a sneak attack on your code that could result in almost anything. It would probably be okay if it were pure-functional code that did not modify any state. But this is Ruby, so that’s unlikely :)

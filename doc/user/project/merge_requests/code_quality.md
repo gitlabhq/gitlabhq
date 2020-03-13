@@ -27,6 +27,8 @@ in the merge request widget area:
 
 ![Code Quality Widget](img/code_quality.png)
 
+For more information, see the Code Climate list of [Supported Languages for Maintainability](https://docs.codeclimate.com/docs/supported-languages-for-maintainability).
+
 ## Use cases
 
 For instance, consider the following workflow:

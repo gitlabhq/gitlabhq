@@ -150,7 +150,7 @@ before creating a database.
 
 _**Note:** If you [created an admin user](#create-a-new-admin-user) and enabled
 [HTTP authentication](#http), remember to append the username (`-username <username>`)
-and password (`-password <password>`)  you set earlier to the commands below._
+and password (`-password <password>`) you set earlier to the commands below._
 
 Run the following command to create a database named `gitlab`:
 

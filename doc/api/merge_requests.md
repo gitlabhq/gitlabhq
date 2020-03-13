@@ -1296,13 +1296,13 @@ PUT /projects/:id/merge_requests/:merge_request_iid/merge
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `merge_request_iid` (required)            - Internal ID of MR
-- `merge_commit_message` (optional)         - Custom merge commit message
-- `squash_commit_message` (optional)        - Custom squash commit message
-- `squash` (optional)                       - if `true` the commits will be squashed into a single commit on merge
-- `should_remove_source_branch` (optional)  - if `true` removes the source branch
+- `merge_request_iid` (required) - Internal ID of MR
+- `merge_commit_message` (optional) - Custom merge commit message
+- `squash_commit_message` (optional) - Custom squash commit message
+- `squash` (optional) - if `true` the commits will be squashed into a single commit on merge
+- `should_remove_source_branch` (optional) - if `true` removes the source branch
 - `merge_when_pipeline_succeeds` (optional) - if `true` the MR is merged when the pipeline succeeds
-- `sha` (optional)                          - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail
+- `sha` (optional) - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail
 
 ```json
 {
@@ -1457,7 +1457,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/merge_ref
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `merge_request_iid` (required)            - Internal ID of MR
+- `merge_request_iid` (required) - Internal ID of MR
 
 ```json
 {

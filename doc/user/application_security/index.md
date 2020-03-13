@@ -13,6 +13,35 @@ information provided, you can immediately begin risk analysis and remediation.
 For an overview of application security with GitLab, see
 [Security Deep Dive](https://www.youtube.com/watch?v=k4vEJnGYy84).
 
+## Quick start
+
+Get started quickly with Dependency Scanning, License Scanning, and Static Application Security
+Testing (SAST) by adding the following to your `.gitlab-ci.yml`:
+
+```yaml
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
+```
+
+To add Dynamic Application Security Testing (DAST) scanning, add the following to your
+`.gitlab-ci.yml` and replace `https://staging.example.com` with a staging server's web address:
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+variables:
+  DAST_WEBSITE: https://staging.example.com
+```
+
+To ensure the DAST scanner runs *after* deploying the application to the staging server, review the [DAST full documentation](dast/index.md).
+
+To add Container Scanning, follow the steps listed in the [Container Scanning documentation](container_scanning/index.md#requirements).
+
+To further configure any of the other scanners, refer to each scanner's documentation.
+
 ## Security scanning tools
 
 GitLab uses the following tools to scan and report known vulnerabilities found in your project.

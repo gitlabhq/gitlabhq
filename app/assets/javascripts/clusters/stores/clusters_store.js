@@ -211,9 +211,7 @@ export default class ClusterStore {
         this.state.applications.ingress.externalIp = serverAppEntry.external_ip;
         this.state.applications.ingress.externalHostname = serverAppEntry.external_hostname;
         if (!this.state.applications.ingress.isEditingModSecurityEnabled) {
-          this.state.applications.ingress.modsecurity_enabled =
-            serverAppEntry.modsecurity_enabled ||
-            this.state.applications.ingress.modsecurity_enabled;
+          this.state.applications.ingress.modsecurity_enabled = serverAppEntry.modsecurity_enabled;
         }
       } else if (appId === CERT_MANAGER) {
         this.state.applications.cert_manager.email =

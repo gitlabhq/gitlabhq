@@ -65,7 +65,7 @@ export default {
 </template>
 ```
 
-- **name** Name of the Icon in the SVG Sprite  ([Overview is available here][svg-preview]).
+- **name** Name of the Icon in the SVG Sprite ([Overview is available here][svg-preview]).
 - **size (optional)** Number value for the size which is then mapped to a specific CSS class
   (Available Sizes: 8, 12, 16, 18, 24, 32, 48, 72 are mapped to `sXX` css classes)
 - **css-classes (optional)** Additional CSS Classes to add to the svg tag.

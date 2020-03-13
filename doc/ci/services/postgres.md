@@ -119,7 +119,7 @@ We have set up an [Example PostgreSQL Project][postgres-example-repo] for your
 convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
 available [shared runners](../runners/README.md).
 
-Want to hack on it? Simply fork it, commit and push  your changes. Within a few
+Want to hack on it? Simply fork it, commit and push your changes. Within a few
 moments the changes will be picked by a public runner and the job will begin.
 
 [hub-pg]: https://hub.docker.com/_/postgres

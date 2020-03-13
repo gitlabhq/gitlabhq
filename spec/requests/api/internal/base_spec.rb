@@ -575,30 +575,35 @@ describe API::Internal::Base do
         project.add_developer(user)
       end
 
-      context "git pull" do
-        context "with no console message" do
-          it "has the correct payload" do
+      context 'git pull' do
+        context 'with a key that has expired' do
+          let(:key) { create(:key, user: user, expires_at: 2.days.ago) }
+
+          it 'includes the `key expired` message in the response' do
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['gl_console_messages']).to eq(['INFO: Your SSH key has expired. Please generate a new key.'])
+          end
+        end
+
+        context 'with a key that will expire in the next 7 days' do
+          let(:key) { create(:key, user: user, expires_at: 2.days.from_now) }
+
+          it 'includes the `key expiring soon` message in the response' do
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['gl_console_messages']).to eq(['INFO: Your SSH key is expiring soon. Please generate a new key.'])
+          end
+        end
+
+        context 'with a key that has no expiry' do
+          it 'does not include any message in the response' do
             pull(key, project)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['gl_console_messages']).to eq([])
-          end
-        end
-
-        context "with a console message" do
-          let(:console_messages) { ['message for the console'] }
-
-          it "has the correct payload" do
-            expect_next_instance_of(Gitlab::GitAccess) do |access|
-              expect(access).to receive(:check_for_console_messages)
-                                  .with('git-upload-pack')
-                                  .and_return(console_messages)
-            end
-
-            pull(key, project)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['gl_console_messages']).to eq(console_messages)
           end
         end
       end

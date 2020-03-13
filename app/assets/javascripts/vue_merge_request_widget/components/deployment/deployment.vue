@@ -64,7 +64,7 @@ export default {
             :deployment="deployment"
             :computed-deployment-status="computedDeploymentStatus"
             :show-visual-review-app="showVisualReviewApp"
-            :visual-review-app-metadata="visualReviewAppMeta"
+            :visual-review-app-meta="visualReviewAppMeta"
           />
         </div>
       </div>

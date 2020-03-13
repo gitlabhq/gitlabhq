@@ -28,6 +28,9 @@ export default {
       v-gl-tooltip
       class="btn btn-default discussion-next-btn"
       :title="s__('MergeRequests|Jump to next unresolved thread')"
+      data-track-event="click_button"
+      data-track-label="mr_next_unresolved_thread"
+      data-track-property="click_next_unresolved_thread"
       @click="jumpToNextRelativeDiscussion(fromDiscussionId)"
     >
       <icon name="comment-next" />

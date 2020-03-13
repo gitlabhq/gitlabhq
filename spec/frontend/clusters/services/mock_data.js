@@ -20,6 +20,7 @@ const CLUSTERS_MOCK_DATA = {
             external_ip: null,
             external_hostname: null,
             can_uninstall: false,
+            modsecurity_enabled: false,
           },
           {
             name: 'runner',

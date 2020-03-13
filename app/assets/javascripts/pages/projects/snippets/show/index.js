@@ -14,5 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     snippetEmbed();
   } else {
     initSnippetsApp();
+    initNotes();
   }
 });

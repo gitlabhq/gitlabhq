@@ -1,8 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import IngressModsecuritySettings from '~/clusters/components/ingress_modsecurity_settings.vue';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import { APPLICATION_STATUS, INGRESS } from '~/clusters/constants';
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlToggle } from '@gitlab/ui';
 import eventHub from '~/clusters/event_hub';
 
 const { UPDATING } = APPLICATION_STATUS;
@@ -27,32 +26,55 @@ describe('IngressModsecuritySettings', () => {
     });
   };
 
-  const findSaveButton = () => wrapper.find(LoadingButton);
-  const findModSecurityCheckbox = () => wrapper.find('input').element;
+  const findSaveButton = () => wrapper.find('.btn-success');
+  const findCancelButton = () => wrapper.find('[variant="secondary"]');
+  const findModSecurityToggle = () => wrapper.find(GlToggle);
 
   describe('when ingress is installed', () => {
     beforeEach(() => {
-      createComponent({ installed: true });
+      createComponent({ installed: true, status: 'installed' });
       jest.spyOn(eventHub, '$emit');
     });
 
-    it('renders save button', () => {
-      expect(findSaveButton().exists()).toBe(true);
-      expect(findModSecurityCheckbox().checked).toBe(false);
+    it('does not render save and cancel buttons', () => {
+      expect(findSaveButton().exists()).toBe(false);
+      expect(findCancelButton().exists()).toBe(false);
     });
 
-    describe('and the save changes button is clicked', () => {
+    describe('with toggle changed by the user', () => {
       beforeEach(() => {
-        findSaveButton().vm.$emit('click');
+        findModSecurityToggle().vm.$emit('change');
       });
 
-      it('triggers save event and pass current modsecurity value', () =>
-        wrapper.vm.$nextTick().then(() => {
+      it('renders both save and cancel buttons', () => {
+        expect(findSaveButton().exists()).toBe(true);
+        expect(findCancelButton().exists()).toBe(true);
+      });
+
+      describe('and the save changes button is clicked', () => {
+        beforeEach(() => {
+          findSaveButton().vm.$emit('click');
+        });
+
+        it('triggers save event and pass current modsecurity value', () => {
           expect(eventHub.$emit).toHaveBeenCalledWith('updateApplication', {
             id: INGRESS,
             params: { modsecurity_enabled: false },
           });
-        }));
+        });
+      });
+
+      describe('and the cancel button is clicked', () => {
+        beforeEach(() => {
+          findCancelButton().vm.$emit('click');
+        });
+
+        it('triggers reset event and hides both cancel and save changes button', () => {
+          expect(eventHub.$emit).toHaveBeenCalledWith('resetIngressModSecurityEnabled', INGRESS);
+          expect(findSaveButton().exists()).toBe(false);
+          expect(findCancelButton().exists()).toBe(false);
+        });
+      });
     });
 
     it('triggers set event to be propagated with the current modsecurity value', () => {
@@ -79,7 +101,7 @@ describe('IngressModsecuritySettings', () => {
       });
 
       it('renders save button with "Saving" label', () => {
-        expect(findSaveButton().props('label')).toBe('Saving');
+        expect(findSaveButton().text()).toBe('Saving');
       });
     });
 
@@ -101,7 +123,7 @@ describe('IngressModsecuritySettings', () => {
 
     it('does not render the save button', () => {
       expect(findSaveButton().exists()).toBe(false);
-      expect(findModSecurityCheckbox().checked).toBe(false);
+      expect(findModSecurityToggle().props('value')).toBe(false);
     });
   });
 });

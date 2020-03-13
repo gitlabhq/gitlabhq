@@ -6,6 +6,7 @@ class Key < ApplicationRecord
   include AfterCommitQueue
   include Sortable
   include Sha256Attribute
+  include Expirable
 
   sha256_attribute :fingerprint_sha256
 

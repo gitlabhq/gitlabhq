@@ -65,7 +65,7 @@ There are multiple ways to find the source of queries.
    `QueryRecorder#occurrences_by_line_method` returns a sorted array based on `data`, sorted by `count`.
 
 1. You can output the call backtrace for the specific `QueryRecorder` instance you want
-   by using `ActiveRecord::QueryRecorder.new(query_recorder_debug: true)`.  The output
+   by using `ActiveRecord::QueryRecorder.new(query_recorder_debug: true)`. The output
    will be in `test.log`
 
 1. Using the environment variable `QUERY_RECORDER_DEBUG`, the call backtrace will be output for all tests.

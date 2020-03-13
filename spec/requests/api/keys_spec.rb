@@ -5,7 +5,7 @@ require 'spec_helper'
 describe API::Keys do
   let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
-  let(:key)   { create(:key, user: user) }
+  let(:key)   { create(:key, user: user, expires_at: 1.day.from_now) }
   let(:email) { create(:email, user: user) }
 
   describe 'GET /keys/:uid' do
@@ -28,6 +28,7 @@ describe API::Keys do
         get api("/keys/#{key.id}", admin)
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(key.title)
+        expect(Time.parse(json_response['expires_at'])).to be_like_time(key.expires_at)
         expect(json_response['user']['id']).to eq(user.id)
         expect(json_response['user']['username']).to eq(user.username)
       end

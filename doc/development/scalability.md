@@ -67,7 +67,7 @@ kind of partitioning.
 Sharding is likely more difficult and will require significant changes
 to the schema and application. For example, if we have to store projects
 in many different databases, we immediately run into the question, "How
-can we retrieve data across different projects?"  One answer to this is
+can we retrieve data across different projects?" One answer to this is
 to abstract data access into API calls that abstract the database from
 the application, but this is a significant amount of work.
 

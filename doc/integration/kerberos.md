@@ -248,7 +248,7 @@ OmniauthKerberosSpnegoController: failed to process Negotiate/Kerberos authentic
 ```
 
 This is usually seen when the browser is unable to contact the Kerberos server
-directly. It will fall back to an  unsupported mechanism known as
+directly. It will fall back to an unsupported mechanism known as
 [`IAKERB`](https://k5wiki.kerberos.org/wiki/Projects/IAKERB), which tries to use
 the GitLab server as an intermediary to the Kerberos server.
 

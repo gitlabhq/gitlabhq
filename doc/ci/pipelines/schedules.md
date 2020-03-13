@@ -86,7 +86,7 @@ To change the Sidekiq worker's frequency:
 1. Edit the `gitlab_rails['pipeline_schedule_worker_cron']` value in your instance's `gitlab.rb` file.
 1. [Reconfigure GitLab](../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-For GitLab.com, refer to the [dedicated settings page](../../user/gitlab_com/index.md#cron-jobs).
+For GitLab.com, refer to the [dedicated settings page](../../user/gitlab_com/index.md#gitlab-cicd).
 
 ## Working with scheduled pipelines
 

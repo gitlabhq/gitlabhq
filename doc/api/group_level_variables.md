@@ -1,4 +1,4 @@
-# Group-level Variables  API
+# Group-level Variables API
 
 > [Introduced][ce-34519] in GitLab 9.5
 

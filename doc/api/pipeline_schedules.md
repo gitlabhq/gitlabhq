@@ -141,7 +141,7 @@ curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form descri
 
 ## Edit a pipeline schedule
 
-Updates the pipeline schedule  of a project. Once the update is done, it will be rescheduled automatically.
+Updates the pipeline schedule of a project. Once the update is done, it will be rescheduled automatically.
 
 ```plaintext
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id

@@ -46,10 +46,16 @@ If the requirements are not met, the **Designs** tab displays a message to the u
   Designs support short references in Markdown, but this needs to be enabled by setting
   the `:design_management_reference_filter_gfm_pipeline` feature flag.
 
+## Supported files
+
+Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`,
+`gif`, `bmp`, `tiff` or `ico`.
+
+Support for [SVG files](https://gitlab.com/gitlab-org/gitlab/issues/12771)
+and [PDFs](https://gitlab.com/gitlab-org/gitlab/issues/32811) is planned for a future release.
+
 ## Limitations
 
-- Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`, `gif`, `bmp`, `tiff` or `ico`.
-  The [`svg` extension is not yet supported](https://gitlab.com/gitlab-org/gitlab/issues/12771).
 - Design uploads are limited to 10 files at a time.
 - Design Management data
   [isn't deleted when a project is destroyed](https://gitlab.com/gitlab-org/gitlab/issues/13429) yet.
@@ -76,6 +82,11 @@ of the design, and will replace the previous version.
 
 Designs cannot be added if the issue has been moved, or its
 [discussion is locked](../../discussions/#lock-discussions).
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9,
+you can drag and drop designs onto the dedicated dropzone to upload them.
+
+![Drag and drop design uploads](img/design_drag_and_drop_uploads_v12_9.png)
 
 ### Skipped designs
 

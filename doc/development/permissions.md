@@ -9,11 +9,11 @@ anything that deals with permissions, all of them should be considered.
 
 Groups and projects can have the following visibility levels:
 
-- public (20) -  an entity is visible to everyone
+- public (20) - an entity is visible to everyone
 - internal (10) - an entity is visible to logged in users
 - private (0) - an entity is visible only to the approved members of the entity
 
-The visibility level of a group can be changed  only if all subgroups and
+The visibility level of a group can be changed only if all subgroups and
 subprojects have the same or lower visibility level. (e.g., a group can be set
 to internal only if all subgroups and projects are internal or private).
 

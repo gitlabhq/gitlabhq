@@ -119,9 +119,6 @@ export default {
     ingressInstalled() {
       return this.applications.ingress.status === APPLICATION_STATUS.INSTALLED;
     },
-    ingressEnableModsecurity() {
-      return this.applications.ingress.modsecurity_enabled;
-    },
     ingressExternalEndpoint() {
       return this.applications.ingress.externalIp || this.applications.ingress.externalHostname;
     },

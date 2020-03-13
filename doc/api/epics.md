@@ -167,7 +167,7 @@ GET /groups/:id/epics/:epic_iid
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
-| `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
+| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5
@@ -309,7 +309,7 @@ PUT /groups/:id/epics/:epic_iid
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
-| `epic_iid`          | integer/string   | yes        | The internal ID  of the epic  |
+| `epic_iid`          | integer/string   | yes        | The internal ID of the epic  |
 | `title`             | string           | no         | The title of an epic |
 | `description`       | string           | no         | The description of an epic. Limited to 1,048,576 characters.  |
 | `labels`            | string           | no         | The comma separated list of labels |
@@ -379,7 +379,7 @@ DELETE /groups/:id/epics/:epic_iid
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
-| `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
+| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
 curl --header DELETE "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5

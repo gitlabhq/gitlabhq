@@ -52,28 +52,26 @@ class Projects::ServicesController < Projects::ApplicationController
   private
 
   def service_test_response
-    if @service.update(service_params[:service])
-      data = @service.test_data(project, current_user)
-      outcome = @service.test(data)
-
-      if outcome[:success]
-        {}
-      else
-        { error: true, message: _('Test failed.'), service_response: outcome[:result].to_s, test_failed: true }
-      end
-    else
-      { error: true, message: _('Validations failed.'), service_response: @service.errors.full_messages.join(','), test_failed: false }
+    unless @service.update(service_params[:service])
+      return { error: true, message: _('Validations failed.'), service_response: @service.errors.full_messages.join(','), test_failed: false }
     end
+
+    data = @service.test_data(project, current_user)
+    outcome = @service.test(data)
+
+    unless outcome[:success]
+      return { error: true, message: _('Test failed.'), service_response: outcome[:result].to_s, test_failed: true }
+    end
+
+    {}
   rescue Gitlab::HTTP::BlockedUrlError => e
     { error: true, message: _('Test failed.'), service_response: e.message, test_failed: true }
   end
 
   def success_message
-    if @service.active?
-      _("%{service_title} activated.") % { service_title: @service.title }
-    else
-      _("%{service_title} settings saved, but not activated.") % { service_title: @service.title }
-    end
+    message = @service.active? ? _('activated') : _('settings saved, but not activated')
+
+    _('%{service_title} %{message}.') % { service_title: @service.title, message: message }
   end
 
   def service

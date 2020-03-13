@@ -1409,6 +1409,7 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.index ["environment_id", "id"], name: "index_deployments_on_environment_id_and_id"
     t.index ["environment_id", "iid", "project_id"], name: "index_deployments_on_environment_id_and_iid_and_project_id"
     t.index ["environment_id", "status"], name: "index_deployments_on_environment_id_and_status"
+    t.index ["id", "status"], name: "index_deployments_on_id_and_status"
     t.index ["id"], name: "partial_index_deployments_for_legacy_successful_deployments", where: "((finished_at IS NULL) AND (status = 2))"
     t.index ["project_id", "id"], name: "index_deployments_on_project_id_and_id", order: { id: :desc }
     t.index ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true
@@ -1417,6 +1418,7 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.index ["project_id", "status"], name: "index_deployments_on_project_id_and_status"
     t.index ["project_id", "updated_at", "id"], name: "index_deployments_on_project_id_and_updated_at_and_id", order: { updated_at: :desc, id: :desc }
     t.index ["project_id"], name: "partial_index_deployments_for_project_id_and_tag", where: "(tag IS TRUE)"
+    t.index ["user_id", "status", "created_at"], name: "index_deployments_on_user_id_and_status_and_created_at"
   end
 
   create_table "description_versions", force: :cascade do |t|
@@ -2291,6 +2293,7 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.boolean "public", default: false, null: false
     t.datetime "last_used_at"
     t.binary "fingerprint_sha256"
+    t.datetime_with_timezone "expires_at"
     t.index ["fingerprint"], name: "index_keys_on_fingerprint", unique: true
     t.index ["fingerprint_sha256"], name: "index_keys_on_fingerprint_sha256"
     t.index ["id", "type"], name: "index_on_deploy_keys_id_and_type_and_public", unique: true, where: "(public = true)"

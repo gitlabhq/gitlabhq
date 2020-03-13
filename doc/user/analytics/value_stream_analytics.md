@@ -133,12 +133,12 @@ environments is configured.
 From the above example you can conclude the time it took each stage to complete
 as long as their total time:
 
-- **Issue**:  2h (11:00 - 09:00)
-- **Plan**:   1h (12:00 - 11:00)
-- **Code**:   2h (14:00 - 12:00)
-- **Test**:   5min
+- **Issue**: 2h (11:00 - 09:00)
+- **Plan**: 1h (12:00 - 11:00)
+- **Code**: 2h (14:00 - 12:00)
+- **Test**: 5min
 - **Review**: 5h (19:00 - 14:00)
-- **Staging**:  30min (19:30 - 19:00)
+- **Staging**: 30min (19:30 - 19:00)
 - **Total**: Since this stage measures the sum of median time of all
   previous stages, we cannot calculate it if we don't know the status of the
   stages before. In case this is the very first cycle that is run in the project,

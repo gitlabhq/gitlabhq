@@ -113,7 +113,7 @@ created or updated with the following content:
 ```
 
 You can also register a file type as lockable without using LFS
-(In order to be able to lock/unlock a file you need a remote server that implements the  LFS File Locking API),
+(In order to be able to lock/unlock a file you need a remote server that implements the LFS File Locking API),
 in order to do that you can edit the `.gitattributes` file manually:
 
 ```shell

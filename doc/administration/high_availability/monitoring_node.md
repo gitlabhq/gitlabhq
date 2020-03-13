@@ -74,8 +74,8 @@ Omnibus:
 ## Migrating to Service Discovery
 
 Once monitoring using Service Discovery is enabled with `consul['monitoring_service_discovery'] =  true`,
-ensure that `prometheus['scrape_configs']` is not set  in `/etc/gitlab/gitlab.rb`. Setting both
-`consul['monitoring_service_discovery'] =  true` and `prometheus['scrape_configs']` in `/etc/gitlab/gitlab.rb`
+ensure that `prometheus['scrape_configs']` is not set in `/etc/gitlab/gitlab.rb`. Setting both
+`consul['monitoring_service_discovery'] = true` and `prometheus['scrape_configs']` in `/etc/gitlab/gitlab.rb`
 will result in errors.
 
 <!-- ## Troubleshooting

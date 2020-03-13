@@ -137,7 +137,7 @@ their color is `#A8D695`.
 with `_` replaced with a space.
 
 For instance, the "Continuous Integration" group is represented by the
-~"group::continuous integration"  label in the `gitlab-org` group since its key
+~"group::continuous integration" label in the `gitlab-org` group since its key
 under `stages.manage.groups` is `continuous_integration`.
 
 The current group labels can be found by [searching the labels list for `group::`](https://gitlab.com/groups/gitlab-org/-/labels?search=group::).

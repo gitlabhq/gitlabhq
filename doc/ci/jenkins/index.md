@@ -53,7 +53,7 @@ There are some high level differences between the products worth mentioning:
   - by [webhook](../triggers/README.md#triggering-a-pipeline-from-a-webhook)
   - by [ChatOps](../chatops/README.md)
 
-  You can control which jobs run in which cases, depending on how they are triggered,
+- You can control which jobs run in which cases, depending on how they are triggered,
   with the [`rules` syntax](../yaml/README.md#rules).
 - GitLab [pipeline scheduling concepts](../pipelines/schedules.md) are also different than with Jenkins.
 - All jobs within a single stage always run in parallel, and all stages run in sequence. We are planning
@@ -78,7 +78,9 @@ There are some high level differences between the products worth mentioning:
   also leverage [`protected environments`](../yaml/README.md#protecting-manual-jobs-premium)
   to control who is able to approve them.
 - GitLab comes with a [container registry](../../user/packages/container_registry/index.md), and we recommend using
-  container images to set up your build environment.
+  container images to set up your build environment. For example, set up one pipeline that builds your build environment
+  itself and publish that to the container registry. Then, have your pipelines use this instead of each building their
+  own environment, which will be slower and may be less consistent. We have extensive docs on [how to use the Container Registry](../../user/packages/container_registry/index.md).
 - Totally stuck and not sure where to turn for advice? The [GitLab community forum](https://forum.gitlab.com/) can be a great resource.
 
 ## Groovy vs. YAML

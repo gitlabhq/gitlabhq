@@ -333,6 +333,9 @@ msgstr ""
 msgid "%{level_name} is not allowed since the fork source project has lower visibility."
 msgstr ""
 
+msgid "%{lineOneStart}Drag and drop to upload your designs%{lineOneEnd} or %{linkStart}click to upload%{linkEnd}."
+msgstr ""
+
 msgid "%{link_start}Read more%{link_end} about role permissions"
 msgstr ""
 
@@ -404,10 +407,7 @@ msgstr ""
 msgid "%{screenreaderOnlyStart}Keyboard shorcuts%{screenreaderOnlyEnd} Enabled"
 msgstr ""
 
-msgid "%{service_title} activated."
-msgstr ""
-
-msgid "%{service_title} settings saved, but not activated."
+msgid "%{service_title} %{message}."
 msgstr ""
 
 msgid "%{size} GiB"
@@ -4249,9 +4249,6 @@ msgstr ""
 msgid "ClusterIntegration|Enable Cloud Run for Anthos"
 msgstr ""
 
-msgid "ClusterIntegration|Enable Web Application Firewall"
-msgstr ""
-
 msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster."
 msgstr ""
 
@@ -4429,9 +4426,6 @@ msgstr ""
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about %{linkStart}ModSecurity%{linkEnd}"
-msgstr ""
-
 msgid "ClusterIntegration|Learn more about %{startLink}Regions %{externalLinkIcon}%{endLink}."
 msgstr ""
 
@@ -4562,6 +4556,9 @@ msgid "ClusterIntegration|RBAC-enabled cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Read our %{link_start}help page%{link_end} on Kubernetes cluster integration."
+msgstr ""
+
+msgid "ClusterIntegration|Real-time web application monitoring, logging and access control. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "ClusterIntegration|Region"
@@ -4711,13 +4708,13 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong while installing %{title}"
 msgstr ""
 
+msgid "ClusterIntegration|Something went wrong while trying to save your settings. Please try again."
+msgstr ""
+
 msgid "ClusterIntegration|Something went wrong while uninstalling %{title}"
 msgstr ""
 
 msgid "ClusterIntegration|Something went wrong while updating Knative domain name."
-msgstr ""
-
-msgid "ClusterIntegration|Something went wrong while updating the Web Application Firewall."
 msgstr ""
 
 msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured matching the domain."
@@ -5661,6 +5658,9 @@ msgid "Could not save project ID"
 msgstr ""
 
 msgid "Could not save prometheus manual configuration"
+msgstr ""
+
+msgid "Could not upload your designs as one or more files uploaded are not supported."
 msgstr ""
 
 msgid "Country"
@@ -6794,13 +6794,7 @@ msgstr ""
 msgid "DesignManagement|The maximum number of designs allowed to be uploaded is %{upload_limit}. Please try again."
 msgstr ""
 
-msgid "DesignManagement|The one place for your designs"
-msgstr ""
-
 msgid "DesignManagement|To enable design management, you'll need to  %{requirements_link_start}meet the requirements%{requirements_link_end}. If you need help, reach out to our %{support_link_start}support team%{support_link_end} for assistance."
-msgstr ""
-
-msgid "DesignManagement|Upload and view the latest designs for this issue. Consistent and easy to find, so everyone is up to date."
 msgstr ""
 
 msgid "DesignManagement|Upload skipped."
@@ -7118,6 +7112,9 @@ msgid "Downstream"
 msgstr ""
 
 msgid "Downvotes"
+msgstr ""
+
+msgid "Drop your designs to start your upload."
 msgstr ""
 
 msgid "Due date"
@@ -8213,6 +8210,9 @@ msgid "Expires at"
 msgstr ""
 
 msgid "Expires in %{expires_at}"
+msgstr ""
+
+msgid "Expires:"
 msgstr ""
 
 msgid "Explain the problem. If appropriate, provide a link to the relevant issue or comment."
@@ -10500,6 +10500,12 @@ msgstr ""
 msgid "IDE|This option is disabled because you don't have write permissions for the current branch."
 msgstr ""
 
+msgid "INFO: Your SSH key has expired. Please generate a new key."
+msgstr ""
+
+msgid "INFO: Your SSH key is expiring soon. Please generate a new key."
+msgstr ""
+
 msgid "IP Address"
 msgstr ""
 
@@ -10765,6 +10771,9 @@ msgid "Includes an MVC structure, mvnw and pom.xml to help you get started."
 msgstr ""
 
 msgid "Incoming email"
+msgstr ""
+
+msgid "Incoming!"
 msgstr ""
 
 msgid "Incompatible Project"
@@ -12867,9 +12876,6 @@ msgstr ""
 msgid "Name new label"
 msgstr ""
 
-msgid "Name your individual key via a title"
-msgstr ""
-
 msgid "Name:"
 msgstr ""
 
@@ -13512,6 +13518,9 @@ msgid "October"
 msgstr ""
 
 msgid "OfSearchInADropdown|Filter"
+msgstr ""
+
+msgid "Oh no!"
 msgstr ""
 
 msgid "Ok let's go"
@@ -14857,10 +14866,19 @@ msgstr ""
 msgid "Profiles|Enter your name, so people you know can recognize you"
 msgstr ""
 
+msgid "Profiles|Expires at"
+msgstr ""
+
+msgid "Profiles|Expires:"
+msgstr ""
+
 msgid "Profiles|Feed token was successfully reset"
 msgstr ""
 
 msgid "Profiles|Full name"
+msgstr ""
+
+msgid "Profiles|Give your individual key a title"
 msgstr ""
 
 msgid "Profiles|Impersonation"
@@ -14882,6 +14900,9 @@ msgid "Profiles|Invalid username"
 msgstr ""
 
 msgid "Profiles|Key"
+msgstr ""
+
+msgid "Profiles|Last used:"
 msgstr ""
 
 msgid "Profiles|Learn more"
@@ -15038,6 +15059,9 @@ msgid "Profiles|Your account is currently an owner in these groups:"
 msgstr ""
 
 msgid "Profiles|Your email address was automatically set based on your %{provider_label} account"
+msgstr ""
+
+msgid "Profiles|Your key has expired"
 msgstr ""
 
 msgid "Profiles|Your location was automatically set based on your %{provider_label} account"
@@ -22146,6 +22170,9 @@ msgstr ""
 msgid "VisualReviewApp|%{stepStart}Step 4%{stepEnd}. Leave feedback in the Review App."
 msgstr ""
 
+msgid "VisualReviewApp|Cancel"
+msgstr ""
+
 msgid "VisualReviewApp|Copy merge request ID"
 msgstr ""
 
@@ -22158,13 +22185,16 @@ msgstr ""
 msgid "VisualReviewApp|Follow the steps below to enable Visual Reviews inside your application."
 msgstr ""
 
+msgid "VisualReviewApp|No review app found or available."
+msgstr ""
+
 msgid "VisualReviewApp|Open review app"
 msgstr ""
 
 msgid "VisualReviewApp|Review"
 msgstr ""
 
-msgid "VisualReviewApp|Steps 1 and 2 (and sometimes 3) are performed once by the developer before requesting feedback. Steps 3 (if necessary), 4, and 5 are performed by the reviewer each time they perform a review."
+msgid "VisualReviewApp|Steps 1 and 2 (and sometimes 3) are performed once by the developer before requesting feedback. Steps 3 (if necessary), 4 is performed by the reviewer each time they perform a review."
 msgstr ""
 
 msgid "Vulnerabilities"
@@ -22680,6 +22710,9 @@ msgid "You are on a read-only GitLab instance."
 msgstr ""
 
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
+msgstr ""
+
+msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr ""
 
 msgid "You can %{linkStart}view the blob%{linkEnd} instead."
@@ -23202,6 +23235,9 @@ msgid "about 1 hour"
 msgid_plural "about %d hours"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "activated"
+msgstr ""
 
 msgid "added %{created_at_timeago}"
 msgstr ""
@@ -24256,6 +24292,9 @@ msgid "score"
 msgstr ""
 
 msgid "security Reports|There was an error creating the merge request"
+msgstr ""
+
+msgid "settings saved, but not activated"
 msgstr ""
 
 msgid "severity|Critical"
