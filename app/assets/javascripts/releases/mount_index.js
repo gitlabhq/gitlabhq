@@ -15,11 +15,7 @@ export default () => {
     }),
     render: h =>
       h(ReleaseListApp, {
-        props: {
-          projectId: el.dataset.projectId,
-          documentationLink: el.dataset.documentationPath,
-          illustrationPath: el.dataset.illustrationPath,
-        },
+        props: el.dataset,
       }),
   });
 };

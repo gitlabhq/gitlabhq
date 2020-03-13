@@ -30,19 +30,13 @@ describe('RepoCommitSection', () => {
     const files = [file('file1'), file('file2')].map(f =>
       Object.assign(f, {
         type: 'blob',
+        content: 'orginal content',
       }),
     );
 
     vm.$store.state.rightPanelCollapsed = false;
     vm.$store.state.currentBranch = 'master';
-    vm.$store.state.changedFiles = [...files];
-    vm.$store.state.changedFiles.forEach(f =>
-      Object.assign(f, {
-        changed: true,
-        content: 'changedFile testing',
-      }),
-    );
-
+    vm.$store.state.changedFiles = [];
     vm.$store.state.stagedFiles = [{ ...files[0] }, { ...files[1] }];
     vm.$store.state.stagedFiles.forEach(f =>
       Object.assign(f, {
@@ -51,7 +45,7 @@ describe('RepoCommitSection', () => {
       }),
     );
 
-    vm.$store.state.changedFiles.forEach(f => {
+    files.forEach(f => {
       vm.$store.state.entries[f.path] = f;
     });
 
@@ -96,7 +90,7 @@ describe('RepoCommitSection', () => {
     const changedFileElements = [...vm.$el.querySelectorAll('.multi-file-commit-list > li')];
     const allFiles = vm.$store.state.changedFiles.concat(vm.$store.state.stagedFiles);
 
-    expect(changedFileElements.length).toEqual(4);
+    expect(changedFileElements).toHaveLength(2);
 
     changedFileElements.forEach((changedFile, i) => {
       expect(changedFile.textContent.trim()).toContain(allFiles[i].path);

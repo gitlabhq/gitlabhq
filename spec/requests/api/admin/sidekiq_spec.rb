@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe API::Admin::Sidekiq do
+describe API::Admin::Sidekiq, :clean_gitlab_redis_queues do
   let_it_be(:admin) { create(:admin) }
 
   describe 'DELETE /admin/sidekiq/queues/:queue_name' do
@@ -21,20 +21,20 @@ describe API::Admin::Sidekiq do
         Sidekiq::Queue.new('authorized_projects').clear
       end
 
-      def add_job(user)
+      def add_job(user, args)
         Sidekiq::Client.push(
           'class' => 'AuthorizedProjectsWorker',
           'queue' => 'authorized_projects',
-          'args' => [user.id],
+          'args' => args,
           'meta.user' => user.username
         )
       end
 
       context 'valid request' do
         it 'returns info about the deleted jobs' do
-          add_job(admin)
-          add_job(admin)
-          add_job(create(:user))
+          add_job(admin, [1])
+          add_job(admin, [2])
+          add_job(create(:user), [3])
 
           delete api("/admin/sidekiq/queues/authorized_projects?user=#{admin.username}", admin)
 

@@ -15,7 +15,7 @@ describe 'admin/sessions/new.html.haml' do
       render
 
       expect(rendered).to have_css('#login-pane.active')
-      expect(rendered).to have_selector('input[name="password"]')
+      expect(rendered).to have_selector('input[name="user[password]"]')
     end
 
     it 'warns authentication not possible if password not set' do

@@ -100,7 +100,13 @@ module BulkInsertSafe
     def _bulk_insert_item_attributes(items, validate_items)
       items.map do |item|
         item.validate! if validate_items
-        attributes = item.attributes
+
+        attributes = {}
+        column_names.each do |name|
+          value = item.read_attribute(name)
+          value = item.type_for_attribute(name).serialize(value) # rubocop:disable Cop/ActiveRecordSerialize
+          attributes[name] = value
+        end
 
         _bulk_insert_reject_primary_key!(attributes, item.class.primary_key)
 

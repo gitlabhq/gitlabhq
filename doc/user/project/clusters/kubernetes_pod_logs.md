@@ -46,12 +46,14 @@ Logs can be displayed by clicking on a specific pod from [Deploy Boards](../depl
 
 ### Logs view
 
-The logs view will contain the last 500 lines for a pod, and has control to filter through:
+The logs view lets you filter the logs by:
 
 - Pods.
 - [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/5769), environments.
 - [From GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21656), [full text search](#full-text-search).
 - [From GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/197879), dates.
+
+Loading more than 500 log lines is possible from [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/198050) onwards.
 
 Support for pods with multiple containers is coming [in a future release](https://gitlab.com/gitlab-org/gitlab/issues/13404).
 

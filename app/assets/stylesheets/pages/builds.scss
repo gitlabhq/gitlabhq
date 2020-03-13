@@ -358,17 +358,30 @@
   }
 }
 
-.build-page-pod-logs {
+.environment-logs-viewer {
   .build-trace-container {
     position: relative;
   }
 
+  .log-lines,
+  .gl-infinite-scroll-container {
+    // makes scrollbar visible by creating contrast
+    background: $black;
+  }
+
+  .gl-infinite-scroll-legend {
+    margin: 0;
+  }
+
   .build-trace {
     @include build-trace();
+    margin: 0;
   }
 
   .top-bar {
     @include build-trace-top-bar($gl-line-height * 5);
+    position: relative;
+    top: 0;
 
     .dropdown-menu-toggle {
       width: 200px;
@@ -394,5 +407,10 @@
 
   .build-loader-animation {
     @include build-loader-animation;
+  }
+
+  .log-footer {
+    color: $white-normal;
+    background-color: $gray-900;
   }
 }

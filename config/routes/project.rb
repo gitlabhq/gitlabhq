@@ -295,6 +295,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         draw :repository_scoped
         draw :repository
         draw :wiki
+
+        namespace :import do
+          resource :jira, only: [:show], controller: :jira do
+            post :import
+          end
+        end
       end
       # End of the /-/ scope.
 

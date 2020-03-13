@@ -1,4 +1,5 @@
 import { timeRanges, defaultTimeRange } from '~/monitoring/constants';
+import { convertToFixedRange } from '~/lib/utils/datetime_range';
 
 export default () => ({
   /**
@@ -11,7 +12,10 @@ export default () => ({
    */
   timeRange: {
     options: timeRanges,
-    current: defaultTimeRange,
+    // Selected time range, can be fixed or relative
+    selected: defaultTimeRange,
+    // Current time range, must be fixed
+    current: convertToFixedRange(defaultTimeRange),
   },
 
   /**
@@ -29,7 +33,12 @@ export default () => ({
   logs: {
     lines: [],
     isLoading: false,
-    isComplete: true,
+    /**
+     * Logs `cursor` represents the current pagination position,
+     * Should be sent in next batch (page) of logs to be fetched
+     */
+    cursor: null,
+    isComplete: false,
   },
 
   /**

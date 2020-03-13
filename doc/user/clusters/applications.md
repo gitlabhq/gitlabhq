@@ -462,6 +462,11 @@ The chart will deploy 5 Elasticsearch nodes: 2 masters, 2 data and 1 client node
 with resource requests totalling 0.125 CPU and 4.5GB RAM. Each data node requests 1.5GB of memory,
 which makes it incompatible with clusters of `f1-micro` and `g1-small` instance types.
 
+NOTE: **Note:**
+The Elastic Stack cluster application is intended as a log aggregation solution and is not related to our
+[Advanced Global Search](../search/advanced_global_search.md) functionality, which uses a separate
+Elasticsearch cluster.
+
 ### Future apps
 
 Interested in contributing a new GitLab managed app? Visit the

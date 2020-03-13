@@ -77,16 +77,17 @@ Navigate to the **Design Management** page from any issue by clicking the **Desi
 
 To upload design images, click the **Upload Designs** button and select images to upload.
 
-Designs with the same filename as an existing uploaded design will create a new version
-of the design, and will replace the previous version.
-
-Designs cannot be added if the issue has been moved, or its
-[discussion is locked](../../discussions/#lock-discussions).
-
 [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9,
 you can drag and drop designs onto the dedicated dropzone to upload them.
 
 ![Drag and drop design uploads](img/design_drag_and_drop_uploads_v12_9.png)
+
+Designs with the same filename as an existing uploaded design will create a new version
+of the design, and will replace the previous version. [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9, dropping a design on an existing uploaded design will also create a new version,
+provided the filenames are the same.
+
+Designs cannot be added if the issue has been moved, or its
+[discussion is locked](../../discussions/#lock-discussions).
 
 ### Skipped designs
 

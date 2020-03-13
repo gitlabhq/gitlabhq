@@ -57,13 +57,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      'discardFileChanges',
-      'updateViewer',
-      'openPendingTab',
-      'unstageChange',
-      'stageChange',
-    ]),
+    ...mapActions(['discardFileChanges', 'updateViewer', 'openPendingTab']),
     openFileInEditor() {
       if (this.file.type === 'tree') return null;
 
@@ -75,13 +69,6 @@ export default {
           this.updateViewer(viewerTypes.diff);
         }
       });
-    },
-    fileAction() {
-      if (this.file.staged) {
-        this.unstageChange(this.file.path);
-      } else {
-        this.stageChange(this.file.path);
-      }
     },
   },
 };
@@ -97,7 +84,6 @@ export default {
       }"
       class="multi-file-commit-list-path w-100 border-0 ml-0 mr-0"
       role="button"
-      @dblclick="fileAction"
       @click="openFileInEditor"
     >
       <span class="multi-file-commit-list-file-path d-flex align-items-center">

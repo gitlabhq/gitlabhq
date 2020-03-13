@@ -9,7 +9,7 @@ module Mutations
     end
 
     def group_resolver
-      Resolvers::GroupResolver.new(object: nil, context: context)
+      Resolvers::GroupResolver.new(object: nil, context: context, field: nil)
     end
   end
 end

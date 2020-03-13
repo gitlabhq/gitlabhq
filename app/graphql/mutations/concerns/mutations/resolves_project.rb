@@ -9,7 +9,7 @@ module Mutations
     end
 
     def project_resolver
-      Resolvers::ProjectResolver.new(object: nil, context: context)
+      Resolvers::ProjectResolver.new(object: nil, context: context, field: nil)
     end
   end
 end

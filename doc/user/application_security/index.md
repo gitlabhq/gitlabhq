@@ -113,6 +113,19 @@ context for a vulnerability as you learn more over time.
 
 ![Dismissed vulnerability comment](img/dismissed_info_v12_3.png)
 
+#### Dismissing multiple vulnerabilities
+
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+
+You can dismiss multiple vulnerabilities at once, providing an optional reason.
+Selecting the checkboxes on the side of each vulnerability in the list will select that individual vulnerability.
+Alternatively, you can select all the vulnerabilities in the list by selecting the checkbox in the table header.
+Deselecting the checkbox in the header will deselect all the vulnerabilities in the list.
+Once you have selected some vulnerabilities, a menu appears at the top of the table that allows you to select a dismissal reason.
+Pressing the "Dismiss Selected" button will dismiss all the selected vulnerabilities at once, with the reason you chose.
+
+![Multiple vulnerability dismissal](img/multi_select_v12_9.png)
+
 ### Creating an issue for a vulnerability
 
 You can create an issue for a vulnerability by selecting the **Create issue**

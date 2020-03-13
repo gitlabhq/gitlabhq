@@ -14,7 +14,7 @@ module Mutations
     def issuable_resolver(type, parent, context)
       resolver_class = "Resolvers::#{type.to_s.classify.pluralize}Resolver".constantize
 
-      resolver_class.single.new(object: parent, context: context)
+      resolver_class.single.new(object: parent, context: context, field: nil)
     end
 
     def resolve_issuable_parent(parent_path)

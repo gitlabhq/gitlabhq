@@ -13,7 +13,7 @@ describe Mutations::Issues::Update do
       due_date: Date.tomorrow
     }
   end
-  let(:mutation) { described_class.new(object: nil, context: { current_user: user }) }
+  let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
   let(:mutated_issue) { subject[:issue] }
 
   describe '#resolve' do

@@ -51,7 +51,7 @@ module LoginHelpers
   def gitlab_enable_admin_mode_sign_in(user)
     visit new_admin_session_path
 
-    fill_in 'password', with: user.password
+    fill_in 'user_password', with: user.password
 
     click_button 'Enter Admin Mode'
   end
@@ -62,6 +62,12 @@ module LoginHelpers
     click_link provider
   end
 
+  def gitlab_enable_admin_mode_sign_in_via(provider, user, uid, saml_response = nil)
+    mock_auth_hash_with_saml_xml(provider, uid, user.email, saml_response)
+    visit new_admin_session_path
+    click_link provider
+  end
+
   # Requires Javascript driver.
   def gitlab_sign_out
     find(".header-user-dropdown-toggle").click
@@ -69,6 +75,11 @@ module LoginHelpers
     @current_user = nil
 
     expect(page).to have_button('Sign in')
+  end
+
+  # Requires Javascript driver.
+  def gitlab_disable_admin_mode
+    click_on 'Leave Admin Mode'
   end
 
   private

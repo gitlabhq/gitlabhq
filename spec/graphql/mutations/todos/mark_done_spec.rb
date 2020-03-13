@@ -14,7 +14,7 @@ describe Mutations::Todos::MarkDone do
 
   let_it_be(:other_user_todo) { create(:todo, user: other_user, author: author, state: :pending) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }) }
+  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
 
   describe '#resolve' do
     it 'marks a single todo as done' do

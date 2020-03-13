@@ -86,28 +86,12 @@ export default {
     </deprecated-modal>
     <template v-if="showStageUnstageArea">
       <commit-files-list
-        :title="__('Unstaged')"
-        :key-prefix="$options.stageKeys.unstaged"
-        :file-list="changedFiles"
-        :action-btn-text="__('Stage all changes')"
-        :active-file-key="activeFileKey"
-        :empty-state-text="__('There are no unstaged changes')"
-        action="stageAllChanges"
-        action-btn-icon="stage-all"
-        class="is-first"
-        icon-name="unstaged"
-      />
-      <commit-files-list
-        :title="__('Staged')"
         :key-prefix="$options.stageKeys.staged"
         :file-list="stagedFiles"
-        :action-btn-text="__('Unstage all changes')"
-        :staged-list="true"
         :active-file-key="activeFileKey"
-        :empty-state-text="__('There are no staged changes')"
-        action="unstageAllChanges"
-        action-btn-icon="unstage-all"
-        icon-name="staged"
+        :empty-state-text="__('There are no changes')"
+        class="is-first"
+        icon-name="unstaged"
       />
     </template>
     <empty-state v-if="unusedSeal" />

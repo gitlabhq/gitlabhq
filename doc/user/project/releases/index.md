@@ -16,13 +16,6 @@ GitLab's **Releases** are a way to track deliverables in your project. Consider 
 a snapshot in time of the source, build output, artifacts, and other metadata
 associated with a released version of your code.
 
-There are several ways to create a Release:
-
-- In the interface, when you create a new Git tag.
-- In the interface, by adding a release note to an existing Git tag.
-- Using the [Releases API](../../../api/releases/index.md): we recommend doing this as one of the last
-  steps in your CI/CD release pipeline.
-
 ## Getting started with Releases
 
 Start by giving a [description](#release-description) to the Release and
@@ -117,7 +110,7 @@ it takes you to the list of Releases.
 ![Number of Releases](img/releases_count_v12_8.png "Incremental counter of Releases")
 
 For private projects, the number of Releases is displayed to users with Reporter
-[permissions](../../permissions.md#releases-permissions) or higher. For public projects,
+[permissions](../../permissions.md#project-members-permissions) or higher. For public projects,
 it is displayed to every user regardless of their permission level.
 
 ### Upcoming Releases
@@ -129,6 +122,29 @@ the `released_at` date and time is reached, an **Upcoming Release** badge will a
 Release tag. Once the `released_at` date and time has passed, the badge is automatically removed.
 
 ![An upcoming release](img/upcoming_release_v12_7.png)
+
+## Creating a Release
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32812) in GitLab
+  12.9, Releases can be created directly through the GitLab Releases UI.
+
+NOTE: **Note:**
+Only users with Developer permissions or higher can create Releases.
+Read more about [Release permissions](../../../user/permissions.md#project-members-permissions).
+
+To create a new Release through the GitLab UI:
+
+1. Navigate to **Project overview > Releases** and click the **New release** button.
+1. On the **New Tag** page, fill out the tag details.
+1. Optionally, in the **Release notes** field, enter the Release's description.
+   If you leave this field empty, only a tag will be created.
+   If you populate it, both a tag and a Release will be created.
+1. Click **Create tag**.
+
+If you created a release, you can view it at **Project overview > Releases**.
+
+You can also create a Release using the [Releases API](../../../api/releases/index.md#create-a-release):
+we recommend doing this as one of the last steps in your CI/CD release pipeline.
 
 ## Editing a release
 

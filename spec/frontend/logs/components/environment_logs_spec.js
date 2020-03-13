@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlDropdown, GlDropdownItem, GlSearchBoxByClick } from '@gitlab/ui';
+import { GlSprintf, GlDropdown, GlDropdownItem, GlSearchBoxByClick } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import EnvironmentLogs from '~/logs/components/environment_logs.vue';
@@ -20,9 +20,18 @@ import {
 
 jest.mock('~/lib/utils/scroll_utils');
 
+const module = 'environmentLogs';
+
+jest.mock('lodash/throttle', () =>
+  jest.fn(func => {
+    return func;
+  }),
+);
+
 describe('EnvironmentLogs', () => {
   let EnvironmentLogsComponent;
   let store;
+  let dispatch;
   let wrapper;
   let state;
 
@@ -32,14 +41,6 @@ describe('EnvironmentLogs', () => {
     clusterApplicationsDocumentationPath: mockDocumentationPath,
   };
 
-  const actionMocks = {
-    setInitData: jest.fn(),
-    setSearch: jest.fn(),
-    showPodLogs: jest.fn(),
-    showEnvironment: jest.fn(),
-    fetchEnvironments: jest.fn(),
-  };
-
   const updateControlBtnsMock = jest.fn();
 
   const findEnvironmentsDropdown = () => wrapper.find('.js-environments-dropdown');
@@ -47,24 +48,25 @@ describe('EnvironmentLogs', () => {
   const findSearchBar = () => wrapper.find('.js-logs-search');
   const findTimeRangePicker = () => wrapper.find({ ref: 'dateTimePicker' });
   const findInfoAlert = () => wrapper.find('.js-elasticsearch-alert');
-
   const findLogControlButtons = () => wrapper.find({ name: 'log-control-buttons-stub' });
+
+  const findInfiniteScroll = () => wrapper.find({ ref: 'infiniteScroll' });
   const findLogTrace = () => wrapper.find('.js-log-trace');
+  const findLogFooter = () => wrapper.find({ ref: 'logFooter' });
+  const getInfiniteScrollAttr = attr => parseInt(findInfiniteScroll().attributes(attr), 10);
 
   const mockSetInitData = () => {
     state.pods.options = mockPods;
     state.environments.current = mockEnvName;
     [state.pods.current] = state.pods.options;
 
-    state.logs.isComplete = false;
-    state.logs.lines = mockLogsResult;
+    state.logs.lines = [];
   };
 
-  const mockShowPodLogs = podName => {
+  const mockShowPodLogs = () => {
     state.pods.options = mockPods;
-    [state.pods.current] = podName;
+    [state.pods.current] = mockPods;
 
-    state.logs.isComplete = false;
     state.logs.lines = mockLogsResult;
   };
 
@@ -83,10 +85,21 @@ describe('EnvironmentLogs', () => {
           methods: {
             update: updateControlBtnsMock,
           },
+          props: {
+            scrollDownButtonDisabled: false,
+          },
         },
-      },
-      methods: {
-        ...actionMocks,
+        GlInfiniteScroll: {
+          name: 'gl-infinite-scroll',
+          template: `
+          <div>
+            <slot name="header"></slot>
+            <slot name="items"></slot>
+            <slot></slot>
+          </div>
+          `,
+        },
+        GlSprintf,
       },
     });
   };
@@ -95,12 +108,14 @@ describe('EnvironmentLogs', () => {
     store = createStore();
     state = store.state.environmentLogs;
     EnvironmentLogsComponent = Vue.extend(EnvironmentLogs);
+
+    jest.spyOn(store, 'dispatch').mockResolvedValue();
+
+    dispatch = store.dispatch;
   });
 
   afterEach(() => {
-    actionMocks.setInitData.mockReset();
-    actionMocks.showPodLogs.mockReset();
-    actionMocks.fetchEnvironments.mockReset();
+    store.dispatch.mockReset();
 
     if (wrapper) {
       wrapper.destroy();
@@ -124,14 +139,14 @@ describe('EnvironmentLogs', () => {
     expect(findTimeRangePicker().is(DateTimePicker)).toBe(true);
 
     // log trace
-    expect(findLogTrace().isEmpty()).toBe(false);
+    expect(findInfiniteScroll().exists()).toBe(true);
+    expect(findLogTrace().exists()).toBe(true);
   });
 
   it('mounted inits data', () => {
     initWrapper();
 
-    expect(actionMocks.setInitData).toHaveBeenCalledTimes(1);
-    expect(actionMocks.setInitData).toHaveBeenLastCalledWith({
+    expect(dispatch).toHaveBeenCalledWith(`${module}/setInitData`, {
       timeRange: expect.objectContaining({
         default: true,
       }),
@@ -139,18 +154,15 @@ describe('EnvironmentLogs', () => {
       podName: null,
     });
 
-    expect(actionMocks.fetchEnvironments).toHaveBeenCalledTimes(1);
-    expect(actionMocks.fetchEnvironments).toHaveBeenLastCalledWith(mockEnvironmentsEndpoint);
+    expect(dispatch).toHaveBeenCalledWith(`${module}/fetchEnvironments`, mockEnvironmentsEndpoint);
   });
 
   describe('loading state', () => {
     beforeEach(() => {
       state.pods.options = [];
 
-      state.logs = {
-        lines: [],
-        isLoading: true,
-      };
+      state.logs.lines = [];
+      state.logs.isLoading = true;
 
       state.environments = {
         options: [],
@@ -183,6 +195,18 @@ describe('EnvironmentLogs', () => {
       expect(updateControlBtnsMock).not.toHaveBeenCalled();
     });
 
+    it('shows an infinite scroll with height and no content', () => {
+      expect(getInfiniteScrollAttr('max-list-height')).toBeGreaterThan(0);
+      expect(getInfiniteScrollAttr('fetched-items')).toBe(0);
+    });
+
+    it('shows an infinite scroll container with equal height and max-height ', () => {
+      const height = getInfiniteScrollAttr('max-list-height');
+
+      expect(height).toEqual(expect.any(Number));
+      expect(findInfiniteScroll().attributes('style')).toMatch(`height: ${height}px;`);
+    });
+
     it('shows a logs trace', () => {
       expect(findLogTrace().text()).toBe('');
       expect(
@@ -193,14 +217,12 @@ describe('EnvironmentLogs', () => {
     });
   });
 
-  describe('legacy environment', () => {
+  describe('k8s environment', () => {
     beforeEach(() => {
       state.pods.options = [];
 
-      state.logs = {
-        lines: [],
-        isLoading: false,
-      };
+      state.logs.lines = [];
+      state.logs.isLoading = false;
 
       state.environments = {
         options: mockEnvironments,
@@ -226,9 +248,16 @@ describe('EnvironmentLogs', () => {
 
   describe('state with data', () => {
     beforeEach(() => {
-      actionMocks.setInitData.mockImplementation(mockSetInitData);
-      actionMocks.showPodLogs.mockImplementation(mockShowPodLogs);
-      actionMocks.fetchEnvironments.mockImplementation(mockFetchEnvs);
+      dispatch.mockImplementation(actionName => {
+        if (actionName === `${module}/setInitData`) {
+          mockSetInitData();
+        } else if (actionName === `${module}/showPodLogs`) {
+          mockShowPodLogs();
+        } else if (actionName === `${module}/fetchEnvironments`) {
+          mockFetchEnvs();
+          mockShowPodLogs();
+        }
+      });
 
       initWrapper();
     });
@@ -236,10 +265,6 @@ describe('EnvironmentLogs', () => {
     afterEach(() => {
       scrollDown.mockReset();
       updateControlBtnsMock.mockReset();
-
-      actionMocks.setInitData.mockReset();
-      actionMocks.showPodLogs.mockReset();
-      actionMocks.fetchEnvironments.mockReset();
     });
 
     it('displays an enabled search bar', () => {
@@ -249,8 +274,8 @@ describe('EnvironmentLogs', () => {
       findSearchBar().vm.$emit('input', mockSearch);
       findSearchBar().vm.$emit('submit');
 
-      expect(actionMocks.setSearch).toHaveBeenCalledTimes(1);
-      expect(actionMocks.setSearch).toHaveBeenCalledWith(mockSearch);
+      expect(dispatch).toHaveBeenCalledWith(`${module}/setInitData`, expect.any(Object));
+      expect(dispatch).toHaveBeenCalledWith(`${module}/setSearch`, mockSearch);
     });
 
     it('displays an enabled time window dropdown', () => {
@@ -282,18 +307,21 @@ describe('EnvironmentLogs', () => {
       });
     });
 
+    it('shows infinite scroll with height and no content', () => {
+      expect(getInfiniteScrollAttr('max-list-height')).toBeGreaterThan(0);
+      expect(getInfiniteScrollAttr('fetched-items')).toBe(mockTrace.length);
+    });
+
     it('populates logs trace', () => {
       const trace = findLogTrace();
       expect(trace.text().split('\n').length).toBe(mockTrace.length);
       expect(trace.text().split('\n')).toEqual(mockTrace);
     });
 
-    it('update control buttons state', () => {
-      expect(updateControlBtnsMock).toHaveBeenCalledTimes(1);
-    });
+    it('populates footer', () => {
+      const footer = findLogFooter().text();
 
-    it('scrolls to bottom when loaded', () => {
-      expect(scrollDown).toHaveBeenCalledTimes(1);
+      expect(footer).toContain(`${mockLogsResult.length} results`);
     });
 
     describe('when user clicks', () => {
@@ -301,33 +329,99 @@ describe('EnvironmentLogs', () => {
         const items = findEnvironmentsDropdown().findAll(GlDropdownItem);
         const index = 1; // any env
 
-        expect(actionMocks.showEnvironment).toHaveBeenCalledTimes(0);
+        expect(dispatch).not.toHaveBeenCalledWith(`${module}/showEnvironment`, expect.anything());
 
         items.at(index).vm.$emit('click');
 
-        expect(actionMocks.showEnvironment).toHaveBeenCalledTimes(1);
-        expect(actionMocks.showEnvironment).toHaveBeenLastCalledWith(mockEnvironments[index].name);
+        expect(dispatch).toHaveBeenCalledWith(
+          `${module}/showEnvironment`,
+          mockEnvironments[index].name,
+        );
       });
 
       it('pod name, trace is refreshed', () => {
         const items = findPodsDropdown().findAll(GlDropdownItem);
         const index = 2; // any pod
 
-        expect(actionMocks.showPodLogs).toHaveBeenCalledTimes(0);
+        expect(dispatch).not.toHaveBeenCalledWith(`${module}/showPodLogs`, expect.anything());
 
         items.at(index).vm.$emit('click');
 
-        expect(actionMocks.showPodLogs).toHaveBeenCalledTimes(1);
-        expect(actionMocks.showPodLogs).toHaveBeenLastCalledWith(mockPods[index]);
+        expect(dispatch).toHaveBeenCalledWith(`${module}/showPodLogs`, mockPods[index]);
       });
 
       it('refresh button, trace is refreshed', () => {
-        expect(actionMocks.showPodLogs).toHaveBeenCalledTimes(0);
+        expect(dispatch).not.toHaveBeenCalledWith(`${module}/showPodLogs`, expect.anything());
 
         findLogControlButtons().vm.$emit('refresh');
 
-        expect(actionMocks.showPodLogs).toHaveBeenCalledTimes(1);
-        expect(actionMocks.showPodLogs).toHaveBeenLastCalledWith(mockPodName);
+        expect(dispatch).toHaveBeenCalledWith(`${module}/showPodLogs`, mockPodName);
+      });
+    });
+  });
+
+  describe('listeners', () => {
+    beforeEach(() => {
+      initWrapper();
+    });
+
+    it('attaches listeners in components', () => {
+      expect(findInfiniteScroll().vm.$listeners).toEqual({
+        topReached: expect.any(Function),
+        scroll: expect.any(Function),
+      });
+    });
+
+    it('`topReached` when not loading', () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith(`${module}/fetchMoreLogsPrepend`, undefined);
+
+      findInfiniteScroll().vm.$emit('topReached');
+
+      expect(store.dispatch).toHaveBeenCalledWith(`${module}/fetchMoreLogsPrepend`, undefined);
+    });
+
+    it('`topReached` does not fetches more logs when already loading', () => {
+      state.logs.isLoading = true;
+      findInfiniteScroll().vm.$emit('topReached');
+
+      expect(store.dispatch).not.toHaveBeenCalledWith(`${module}/fetchMoreLogsPrepend`, undefined);
+    });
+
+    it('`topReached` fetches more logs', () => {
+      state.logs.isLoading = true;
+      findInfiniteScroll().vm.$emit('topReached');
+
+      expect(store.dispatch).not.toHaveBeenCalledWith(`${module}/fetchMoreLogsPrepend`, undefined);
+    });
+
+    it('`scroll` on a scrollable target results in enabled scroll buttons', () => {
+      const target = { scrollTop: 10, clientHeight: 10, scrollHeight: 21 };
+
+      state.logs.isLoading = true;
+      findInfiniteScroll().vm.$emit('scroll', { target });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findLogControlButtons().props('scrollDownButtonDisabled')).toEqual(false);
+      });
+    });
+
+    it('`scroll` on a non-scrollable target in disabled scroll buttons', () => {
+      const target = { scrollTop: 10, clientHeight: 10, scrollHeight: 20 };
+
+      state.logs.isLoading = true;
+      findInfiniteScroll().vm.$emit('scroll', { target });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findLogControlButtons().props('scrollDownButtonDisabled')).toEqual(true);
+      });
+    });
+
+    it('`scroll` on no target results in disabled scroll buttons', () => {
+      state.logs.isLoading = true;
+      findInfiniteScroll().vm.$emit('scroll', { target: undefined });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findLogControlButtons().props('scrollDownButtonDisabled')).toEqual(true);
       });
     });
   });

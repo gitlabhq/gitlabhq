@@ -12,7 +12,7 @@ describe Mutations::ResolvesIssuable do
   let(:project)  { create(:project) }
   let(:user)     { create(:user) }
   let(:context)  { { current_user: user } }
-  let(:mutation) { mutation_class.new(object: nil, context: context) }
+  let(:mutation) { mutation_class.new(object: nil, context: context, field: nil) }
 
   shared_examples 'resolving an issuable' do |type|
     context 'when user has access' do
@@ -39,7 +39,7 @@ describe Mutations::ResolvesIssuable do
           .and_return(resolved_project)
 
         expect(resolver_class).to receive(:new)
-          .with(object: resolved_project, context: context)
+          .with(object: resolved_project, context: context, field: nil)
           .and_call_original
 
         subject
@@ -47,7 +47,7 @@ describe Mutations::ResolvesIssuable do
 
       it 'uses the ResolvesProject to resolve project' do
         expect(Resolvers::ProjectResolver).to receive(:new)
-          .with(object: nil, context: context)
+          .with(object: nil, context: context, field: nil)
           .and_call_original
 
         subject

@@ -856,7 +856,7 @@
   :urgency: :high
   :resource_boundary: :unknown
   :weight: 2
-  :idempotent: 
+  :idempotent: true
 - :name: background_migration
   :feature_category: :not_owned
   :has_external_dependencies: 

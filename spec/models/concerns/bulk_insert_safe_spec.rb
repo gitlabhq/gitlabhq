@@ -6,7 +6,19 @@ describe BulkInsertSafe do
   class BulkInsertItem < ApplicationRecord
     include BulkInsertSafe
 
-    validates :name, presence: true
+    validates :name, :enum_value, :secret_value, presence: true
+
+    ENUM_VALUES = {
+      case_1: 1
+    }.freeze
+
+    enum enum_value: ENUM_VALUES
+
+    attr_encrypted :secret_value,
+      mode: :per_attribute_iv,
+      algorithm: 'aes-256-gcm',
+      key: Settings.attr_encrypted_db_key_base_32,
+      insecure_mode: false
   end
 
   module InheritedUnsafeMethods
@@ -29,8 +41,13 @@ describe BulkInsertSafe do
     ActiveRecord::Schema.define do
       create_table :bulk_insert_items, force: true do |t|
         t.string :name, null: true
+        t.integer :enum_value, null: false
+        t.text :encrypted_secret_value, null: false
+        t.string :encrypted_secret_value_iv, null: false
       end
     end
+
+    BulkInsertItem.reset_column_information
   end
 
   after(:all) do
@@ -41,13 +58,21 @@ describe BulkInsertSafe do
 
   def build_valid_items_for_bulk_insertion
     Array.new(10) do |n|
-      BulkInsertItem.new(name: "item-#{n}")
+      BulkInsertItem.new(
+        name: "item-#{n}",
+        enum_value: 'case_1',
+        secret_value: "my-secret"
+      )
     end
   end
 
   def build_invalid_items_for_bulk_insertion
     Array.new(10) do
-      BulkInsertItem.new # requires `name` to be set
+      BulkInsertItem.new(
+        name: nil, # requires `name` to be set
+        enum_value: 'case_1',
+        secret_value: "my-secret"
+      )
     end
   end
 

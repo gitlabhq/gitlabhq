@@ -2,10 +2,10 @@
 - page_title _('Enter Admin Mode')
 
 .row.justify-content-center
-  .col-6.new-session-forms-container
+  .col-md-5.new-session-forms-container
     .login-page
       #signin-container
-        = render 'admin/sessions/tabs_normal'
+        = render 'admin/sessions/tabs_normal', tab_title: _('Enter Admin Mode')
         .tab-content
           - if !current_user.require_password_creation_for_web?
             .login-box.tab-pane.active{ id: 'login-pane', role: 'tabpanel' }
@@ -14,7 +14,7 @@
 
           - if omniauth_enabled? && button_based_providers_enabled?
             .clearfix
-              = render 'devise/shared/omniauth_box'
+              = render 'devise/shared/omniauth_box', hide_remember_me: true
 
           -# Show a message if none of the mechanisms above are enabled
           - if current_user.require_password_creation_for_web? && !omniauth_enabled?

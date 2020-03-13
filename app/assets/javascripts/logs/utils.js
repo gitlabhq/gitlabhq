@@ -1,4 +1,7 @@
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
+import dateFormat from 'dateformat';
+
+const dateFormatMask = 'UTC:mmm dd HH:MM:ss.l"Z"';
 
 /**
  * Returns a time range (`start`, `end`) where `start` is the
@@ -19,5 +22,7 @@ export const getTimeRange = (seconds = 0) => {
     end: new Date(secondsToMilliseconds(end)).toISOString(),
   };
 };
+
+export const formatDate = timestamp => dateFormat(timestamp, dateFormatMask);
 
 export default {};

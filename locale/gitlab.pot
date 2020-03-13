@@ -68,6 +68,11 @@ msgstr ""
 msgid "\"%{path}\" did not exist on \"%{ref}\""
 msgstr ""
 
+msgid "%d changed file"
+msgid_plural "%d changed files"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d code quality issue"
 msgid_plural "%d code quality issues"
 msgstr[0] ""
@@ -186,18 +191,8 @@ msgid_plural "%d shards selected"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d staged change"
-msgid_plural "%d staged changes"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d tag"
 msgid_plural "%d tags"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d unstaged change"
-msgid_plural "%d unstaged changes"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -429,9 +424,6 @@ msgid "%{spanStart}at line%{spanEnd} %{errorLine}%{errorColumn}"
 msgstr ""
 
 msgid "%{spanStart}in%{spanEnd} %{errorFn}"
-msgstr ""
-
-msgid "%{staged} staged and %{unstaged} unstaged changes"
 msgstr ""
 
 msgid "%{start} to %{end}"
@@ -775,9 +767,6 @@ msgid "<no scopes selected>"
 msgstr ""
 
 msgid "<strong>%{group_name}</strong> group members"
-msgstr ""
-
-msgid "<strong>%{stagedFilesLength} staged</strong> and <strong>%{changedFilesLength} unstaged</strong> changes"
 msgstr ""
 
 msgid "<strong>Deletes</strong> source branch"
@@ -5154,6 +5143,9 @@ msgstr ""
 msgid "Configure the %{link} integration."
 msgstr ""
 
+msgid "Configure the Jira integration first on your project's %{strong_start} Settings > Integrations > Jira%{strong_end} page."
+msgstr ""
+
 msgid "Configure the way a user creates a new account."
 msgstr ""
 
@@ -6878,13 +6870,10 @@ msgstr ""
 msgid "Disabled mirrors can only be enabled by instance owners. It is recommended that you delete them."
 msgstr ""
 
-msgid "Discard"
-msgstr ""
-
 msgid "Discard all changes"
 msgstr ""
 
-msgid "Discard all unstaged changes?"
+msgid "Discard all changes?"
 msgstr ""
 
 msgid "Discard changes"
@@ -7492,6 +7481,9 @@ msgstr ""
 msgid "Ensure your %{linkStart}environment is part of the deploy stage%{linkEnd} of your CI pipeline to track deployments to your cluster."
 msgstr ""
 
+msgid "Enter 2FA for Admin Mode"
+msgstr ""
+
 msgid "Enter Admin Mode"
 msgstr ""
 
@@ -7529,6 +7521,9 @@ msgid "Enter number of issues"
 msgstr ""
 
 msgid "Enter one or more user ID separated by commas"
+msgstr ""
+
+msgid "Enter the code from the two-factor app on your mobile device. If you've lost your device, you may enter one of your recovery codes."
 msgstr ""
 
 msgid "Enter the issue description"
@@ -7645,6 +7640,12 @@ msgstr ""
 msgid "Environments|Commit"
 msgstr ""
 
+msgid "Environments|Currently showing %{fetched} results."
+msgstr ""
+
+msgid "Environments|Currently showing all results."
+msgstr ""
+
 msgid "Environments|Deploy to..."
 msgstr ""
 
@@ -7676,6 +7677,9 @@ msgid "Environments|Learn more about stopping environments"
 msgstr ""
 
 msgid "Environments|Logs from"
+msgstr ""
+
+msgid "Environments|Logs from %{start} to %{end}."
 msgstr ""
 
 msgid "Environments|New environment"
@@ -8960,6 +8964,9 @@ msgid "From issue creation until deploy to production"
 msgstr ""
 
 msgid "From merge request merge until deploy to production"
+msgstr ""
+
+msgid "From project"
 msgstr ""
 
 msgid "From the Kubernetes cluster details view, install Runner from the applications list"
@@ -10608,7 +10615,13 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
+msgid "Import %{status}"
+msgstr ""
+
 msgid "Import CSV"
+msgstr ""
+
+msgid "Import Jira issues"
 msgstr ""
 
 msgid "Import Projects from Gitea"
@@ -10630,6 +10643,9 @@ msgid "Import in progress"
 msgstr ""
 
 msgid "Import issues"
+msgstr ""
+
+msgid "Import issues from Jira"
 msgstr ""
 
 msgid "Import members"
@@ -11142,6 +11158,9 @@ msgid "Jan"
 msgstr ""
 
 msgid "January"
+msgstr ""
+
+msgid "Jira Issue Import"
 msgstr ""
 
 msgid "JiraService|Events for %{noteable_model_name} are disabled."
@@ -12747,6 +12766,9 @@ msgstr ""
 msgid "Modal|Close"
 msgstr ""
 
+msgid "Modified"
+msgstr ""
+
 msgid "Modified in this version"
 msgstr ""
 
@@ -13026,6 +13048,9 @@ msgid "New pipelines will cancel older, pending pipelines on the same branch"
 msgstr ""
 
 msgid "New project"
+msgstr ""
+
+msgid "New release"
 msgstr ""
 
 msgid "New runners registration token has been generated!"
@@ -13619,9 +13644,6 @@ msgid "Oops, are you sure?"
 msgstr ""
 
 msgid "Open"
-msgstr ""
-
-msgid "Open Documentation"
 msgstr ""
 
 msgid "Open Selection"
@@ -16295,6 +16317,9 @@ msgstr ""
 msgid "Releases are based on Git tags. We recommend naming tags that fit within semantic versioning, for example %{codeStart}v1.0%{codeEnd}, %{codeStart}v2.0-pre%{codeEnd}."
 msgstr ""
 
+msgid "Releases documentation"
+msgstr ""
+
 msgid "Release|Something went wrong while getting the release details"
 msgstr ""
 
@@ -18680,19 +18705,10 @@ msgstr ""
 msgid "Stage & Commit"
 msgstr ""
 
-msgid "Stage all changes"
-msgstr ""
-
 msgid "Stage data updated"
 msgstr ""
 
 msgid "Stage removed"
-msgstr ""
-
-msgid "Staged"
-msgstr ""
-
-msgid "Staged %{type}"
 msgstr ""
 
 msgid "Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging."
@@ -19304,7 +19320,7 @@ msgstr ""
 msgid "TagsPage|Optionally, add a message to the tag. Leaving this blank creates a %{link_start}lightweight tag.%{link_end}"
 msgstr ""
 
-msgid "TagsPage|Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page."
+msgid "TagsPage|Optionally, create a public Release of your project, based on this tag. Release notes are displayed on the %{releases_page_link_start}Releases%{link_end} page. %{docs_link_start}More information%{link_end}"
 msgstr ""
 
 msgid "TagsPage|Release notes"
@@ -19851,6 +19867,9 @@ msgstr ""
 msgid "There are no archived projects yet"
 msgstr ""
 
+msgid "There are no changes"
+msgstr ""
+
 msgid "There are no charts configured for this page"
 msgstr ""
 
@@ -19885,12 +19904,6 @@ msgid "There are no packages yet"
 msgstr ""
 
 msgid "There are no projects shared with this group yet"
-msgstr ""
-
-msgid "There are no staged changes"
-msgstr ""
-
-msgid "There are no unstaged changes"
 msgstr ""
 
 msgid "There is a limit of %{ci_project_subscriptions_limit} subscriptions from or to a project."
@@ -21094,6 +21107,9 @@ msgstr ""
 msgid "Two-Factor Authentication"
 msgstr ""
 
+msgid "Two-Factor Authentication code"
+msgstr ""
+
 msgid "Two-factor Authentication"
 msgstr ""
 
@@ -21302,18 +21318,6 @@ msgid "UnscannedProjects|Your projects are up do date! Nice job!"
 msgstr ""
 
 msgid "Unschedule job"
-msgstr ""
-
-msgid "Unstage"
-msgstr ""
-
-msgid "Unstage all changes"
-msgstr ""
-
-msgid "Unstaged"
-msgstr ""
-
-msgid "Unstaged %{type}"
 msgstr ""
 
 msgid "Unstar"
@@ -22799,6 +22803,9 @@ msgstr ""
 msgid "You can only transfer the project to namespaces you manage."
 msgstr ""
 
+msgid "You can only upload one design when dropping onto an existing design."
+msgstr ""
+
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
@@ -22952,6 +22959,9 @@ msgstr ""
 msgid "You must set up incoming email before it becomes active."
 msgstr ""
 
+msgid "You must upload a file with the same file name when dropping onto an existing design."
+msgstr ""
+
 msgid "You need a different license to enable FileLocks feature"
 msgstr ""
 
@@ -22988,7 +22998,7 @@ msgstr ""
 msgid "You will lose all changes you've made to this file. This action cannot be undone."
 msgstr ""
 
-msgid "You will lose all the unstaged changes you've made in this project. This action cannot be undone."
+msgid "You will lose all uncommitted changes you've made in this project. This action cannot be undone."
 msgstr ""
 
 msgid "You will need to update your local repositories to point to the new location."

@@ -14,7 +14,6 @@ describe('IDE commit editor header', () => {
 
   const findDiscardModal = () => wrapper.find({ ref: 'discardModal' });
   const findDiscardButton = () => wrapper.find({ ref: 'discardButton' });
-  const findActionButton = () => wrapper.find({ ref: 'actionButton' });
 
   beforeEach(() => {
     f = file('file');
@@ -28,9 +27,7 @@ describe('IDE commit editor header', () => {
       },
     });
 
-    jest.spyOn(wrapper.vm, 'stageChange').mockImplementation();
-    jest.spyOn(wrapper.vm, 'unstageChange').mockImplementation();
-    jest.spyOn(wrapper.vm, 'discardFileChanges').mockImplementation();
+    jest.spyOn(wrapper.vm, 'discardChanges').mockImplementation();
   });
 
   afterEach(() => {
@@ -38,8 +35,8 @@ describe('IDE commit editor header', () => {
     wrapper = null;
   });
 
-  it('renders button to discard & stage', () => {
-    expect(wrapper.vm.$el.querySelectorAll('.btn').length).toBe(2);
+  it('renders button to discard', () => {
+    expect(wrapper.vm.$el.querySelectorAll('.btn')).toHaveLength(1);
   });
 
   describe('discard button', () => {
@@ -60,23 +57,7 @@ describe('IDE commit editor header', () => {
     it('calls discardFileChanges if dialog result is confirmed', () => {
       modal.vm.$emit('ok');
 
-      expect(wrapper.vm.discardFileChanges).toHaveBeenCalledWith(f.path);
-    });
-  });
-
-  describe('stage/unstage button', () => {
-    it('unstages the file if it was already staged', () => {
-      f.staged = true;
-
-      findActionButton().trigger('click');
-
-      expect(wrapper.vm.unstageChange).toHaveBeenCalledWith(f.path);
-    });
-
-    it('stages the file if it was not staged', () => {
-      findActionButton().trigger('click');
-
-      expect(wrapper.vm.stageChange).toHaveBeenCalledWith(f.path);
+      expect(wrapper.vm.discardChanges).toHaveBeenCalledWith(f.path);
     });
   });
 });

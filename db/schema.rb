@@ -2829,7 +2829,7 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.boolean "resolved_by_push"
     t.bigint "review_id"
     t.boolean "confidential"
-    t.index ["author_id"], name: "index_notes_on_author_id"
+    t.index ["author_id", "created_at"], name: "index_notes_on_author_id_and_created_at"
     t.index ["commit_id"], name: "index_notes_on_commit_id"
     t.index ["created_at"], name: "index_notes_on_created_at"
     t.index ["discussion_id"], name: "index_notes_on_discussion_id"

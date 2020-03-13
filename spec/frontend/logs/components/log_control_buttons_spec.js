@@ -1,15 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
 import LogControlButtons from '~/logs/components/log_control_buttons.vue';
-import {
-  canScroll,
-  isScrolledToTop,
-  isScrolledToBottom,
-  scrollDown,
-  scrollUp,
-} from '~/lib/utils/scroll_utils';
-
-jest.mock('~/lib/utils/scroll_utils');
 
 describe('LogControlButtons', () => {
   let wrapper;
@@ -18,8 +9,14 @@ describe('LogControlButtons', () => {
   const findScrollToBottom = () => wrapper.find('.js-scroll-to-bottom');
   const findRefreshBtn = () => wrapper.find('.js-refresh-log');
 
-  const initWrapper = () => {
-    wrapper = shallowMount(LogControlButtons);
+  const initWrapper = opts => {
+    wrapper = shallowMount(LogControlButtons, {
+      listeners: {
+        scrollUp: () => {},
+        scrollDown: () => {},
+      },
+      ...opts,
+    });
   };
 
   afterEach(() => {
@@ -55,19 +52,8 @@ describe('LogControlButtons', () => {
   describe('when scrolling actions are enabled', () => {
     beforeEach(() => {
       // mock scrolled to the middle of a long page
-      canScroll.mockReturnValue(true);
-      isScrolledToBottom.mockReturnValue(false);
-      isScrolledToTop.mockReturnValue(false);
-
       initWrapper();
-      wrapper.vm.update();
       return wrapper.vm.$nextTick();
-    });
-
-    afterEach(() => {
-      canScroll.mockReset();
-      isScrolledToTop.mockReset();
-      isScrolledToBottom.mockReset();
     });
 
     it('click on "scroll to top" scrolls up', () => {
@@ -75,7 +61,7 @@ describe('LogControlButtons', () => {
 
       findScrollToTop().vm.$emit('click');
 
-      expect(scrollUp).toHaveBeenCalledTimes(1);
+      expect(wrapper.emitted('scrollUp')).toHaveLength(1);
     });
 
     it('click on "scroll to bottom" scrolls down', () => {
@@ -83,25 +69,23 @@ describe('LogControlButtons', () => {
 
       findScrollToBottom().vm.$emit('click');
 
-      expect(scrollDown).toHaveBeenCalledTimes(1); // plus one time when trace was loaded
+      expect(wrapper.emitted('scrollDown')).toHaveLength(1);
     });
   });
 
   describe('when scrolling actions are disabled', () => {
     beforeEach(() => {
-      // mock a short page without a scrollbar
-      canScroll.mockReturnValue(false);
-      isScrolledToBottom.mockReturnValue(true);
-      isScrolledToTop.mockReturnValue(true);
-
-      initWrapper();
+      initWrapper({ listeners: {} });
+      return wrapper.vm.$nextTick();
     });
 
     it('buttons are disabled', () => {
-      wrapper.vm.update();
       return wrapper.vm.$nextTick(() => {
-        expect(findScrollToTop().is('[disabled]')).toBe(true);
-        expect(findScrollToBottom().is('[disabled]')).toBe(true);
+        expect(findScrollToTop().exists()).toBe(false);
+        expect(findScrollToBottom().exists()).toBe(false);
+        // This should be enabled when gitlab-ui contains:
+        // https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/1149
+        // expect(findScrollToBottom().is('[disabled]')).toBe(true);
       });
     });
   });

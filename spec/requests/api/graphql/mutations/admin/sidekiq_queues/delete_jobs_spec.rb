@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Deleting Sidekiq jobs' do
+describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues do
   include GraphqlHelpers
 
   let_it_be(:admin) { create(:admin) }
@@ -31,19 +31,19 @@ describe 'Deleting Sidekiq jobs' do
         Sidekiq::Queue.new('authorized_projects').clear
       end
 
-      def add_job(user)
+      def add_job(user, args)
         Sidekiq::Client.push(
           'class' => 'AuthorizedProjectsWorker',
           'queue' => 'authorized_projects',
-          'args' => [user.id],
+          'args' => args,
           'meta.user' => user.username
         )
       end
 
       it 'returns info about the deleted jobs' do
-        add_job(admin)
-        add_job(admin)
-        add_job(create(:user))
+        add_job(admin, [1])
+        add_job(admin, [2])
+        add_job(create(:user), [3])
 
         post_graphql_mutation(mutation, current_user: admin)
 

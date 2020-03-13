@@ -10,6 +10,7 @@ import {
   showPodLogs,
   fetchEnvironments,
   fetchLogs,
+  fetchMoreLogsPrepend,
 } from '~/logs/stores/actions';
 
 import { defaultTimeRange } from '~/monitoring/constants';
@@ -18,7 +19,6 @@ import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
 
 import {
-  mockProjectPath,
   mockPodName,
   mockEnvironmentsEndpoint,
   mockEnvironments,
@@ -26,6 +26,10 @@ import {
   mockLogsResult,
   mockEnvName,
   mockSearch,
+  mockLogsEndpoint,
+  mockResponse,
+  mockCursor,
+  mockNextCursor,
 } from '../mock_data';
 
 jest.mock('~/flash');
@@ -52,6 +56,8 @@ describe('Logs Store actions', () => {
   let state;
   let mock;
 
+  const latestGetParams = () => mock.history.get[mock.history.get.length - 1].params;
+
   convertToFixedRange.mockImplementation(range => {
     if (range === defaultTimeRange) {
       return { ...mockDefaultRange };
@@ -75,10 +81,16 @@ describe('Logs Store actions', () => {
 
   describe('setInitData', () => {
     it('should commit environment and pod name mutation', () =>
-      testAction(setInitData, { environmentName: mockEnvName, podName: mockPodName }, state, [
-        { type: types.SET_PROJECT_ENVIRONMENT, payload: mockEnvName },
-        { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
-      ]));
+      testAction(
+        setInitData,
+        { timeRange: mockFixedRange, environmentName: mockEnvName, podName: mockPodName },
+        state,
+        [
+          { type: types.SET_TIME_RANGE, payload: mockFixedRange },
+          { type: types.SET_PROJECT_ENVIRONMENT, payload: mockEnvName },
+          { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
+        ],
+      ));
   });
 
   describe('setSearch', () => {
@@ -140,169 +152,212 @@ describe('Logs Store actions', () => {
     });
   });
 
-  describe('fetchLogs', () => {
+  describe('when the backend responds succesfully', () => {
+    let expectedMutations;
+    let expectedActions;
+
     beforeEach(() => {
       mock = new MockAdapter(axios);
+      mock.onGet(mockLogsEndpoint).reply(200, mockResponse);
+      mock.onGet(mockLogsEndpoint).replyOnce(202); // mock reactive cache
+
+      state.environments.options = mockEnvironments;
+      state.environments.current = mockEnvName;
     });
 
     afterEach(() => {
       mock.reset();
     });
 
-    it('should commit logs and pod data when there is pod name defined', () => {
-      state.environments.options = mockEnvironments;
-      state.environments.current = mockEnvName;
-      state.pods.current = mockPodName;
-
-      const endpoint = '/dummy_logs_path.json';
-
-      mock
-        .onGet(endpoint, {
-          params: {
-            pod_name: mockPodName,
-            ...mockDefaultRange,
-          },
-        })
-        .reply(200, {
-          pod_name: mockPodName,
-          pods: mockPods,
-          logs: mockLogsResult,
-        });
-
-      mock.onGet(endpoint).replyOnce(202); // mock reactive cache
-
-      return testAction(
-        fetchLogs,
-        null,
-        state,
-        [
+    describe('fetchLogs', () => {
+      beforeEach(() => {
+        expectedMutations = [
           { type: types.REQUEST_PODS_DATA },
           { type: types.REQUEST_LOGS_DATA },
           { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
           { type: types.RECEIVE_PODS_DATA_SUCCESS, payload: mockPods },
-          { type: types.RECEIVE_LOGS_DATA_SUCCESS, payload: mockLogsResult },
-        ],
-        [],
-      );
-    });
+          {
+            type: types.RECEIVE_LOGS_DATA_SUCCESS,
+            payload: { logs: mockLogsResult, cursor: mockNextCursor },
+          },
+        ];
 
-    it('should commit logs and pod data when there is pod name defined and a non-default date range', () => {
-      state.projectPath = mockProjectPath;
-      state.environments.options = mockEnvironments;
-      state.environments.current = mockEnvName;
-      state.pods.current = mockPodName;
-      state.timeRange.current = mockFixedRange;
+        expectedActions = [];
+      });
 
-      const endpoint = '/dummy_logs_path.json';
+      it('should commit logs and pod data when there is pod name defined', () => {
+        state.pods.current = mockPodName;
 
-      mock
-        .onGet(endpoint, {
-          params: {
+        return testAction(fetchLogs, null, state, expectedMutations, expectedActions, () => {
+          expect(latestGetParams()).toMatchObject({
+            pod_name: mockPodName,
+          });
+        });
+      });
+
+      it('should commit logs and pod data when there is pod name defined and a non-default date range', () => {
+        state.pods.current = mockPodName;
+        state.timeRange.current = mockFixedRange;
+        state.logs.cursor = mockCursor;
+
+        return testAction(fetchLogs, null, state, expectedMutations, expectedActions, () => {
+          expect(latestGetParams()).toEqual({
             pod_name: mockPodName,
             start: mockFixedRange.start,
             end: mockFixedRange.end,
-          },
-        })
-        .reply(200, {
-          pod_name: mockPodName,
-          pods: mockPods,
-          logs: mockLogsResult,
+            cursor: mockCursor,
+          });
         });
+      });
 
-      return testAction(
-        fetchLogs,
-        null,
-        state,
-        [
-          { type: types.REQUEST_PODS_DATA },
-          { type: types.REQUEST_LOGS_DATA },
-          { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
-          { type: types.RECEIVE_PODS_DATA_SUCCESS, payload: mockPods },
-          { type: types.RECEIVE_LOGS_DATA_SUCCESS, payload: mockLogsResult },
-        ],
-        [],
-      );
-    });
+      it('should commit logs and pod data when there is pod name and search and a faulty date range', () => {
+        state.pods.current = mockPodName;
+        state.search = mockSearch;
+        state.timeRange.current = 'INVALID_TIME_RANGE';
 
-    it('should commit logs and pod data when there is pod name and search and a faulty date range', () => {
-      state.environments.options = mockEnvironments;
-      state.environments.current = mockEnvName;
-      state.pods.current = mockPodName;
-      state.search = mockSearch;
-      state.timeRange.current = 'INVALID_TIME_RANGE';
-
-      const endpoint = '/dummy_logs_path.json';
-
-      mock
-        .onGet(endpoint, {
-          params: {
+        return testAction(fetchLogs, null, state, expectedMutations, expectedActions, () => {
+          expect(latestGetParams()).toEqual({
             pod_name: mockPodName,
             search: mockSearch,
-          },
-        })
-        .reply(200, {
-          pod_name: mockPodName,
-          pods: mockPods,
-          logs: mockLogsResult,
-        });
-
-      mock.onGet(endpoint).replyOnce(202); // mock reactive cache
-
-      return testAction(
-        fetchLogs,
-        null,
-        state,
-        [
-          { type: types.REQUEST_PODS_DATA },
-          { type: types.REQUEST_LOGS_DATA },
-          { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
-          { type: types.RECEIVE_PODS_DATA_SUCCESS, payload: mockPods },
-          { type: types.RECEIVE_LOGS_DATA_SUCCESS, payload: mockLogsResult },
-        ],
-        [],
-        () => {
+          });
           // Warning about time ranges was issued
           expect(flash).toHaveBeenCalledTimes(1);
           expect(flash).toHaveBeenCalledWith(expect.any(String), 'warning');
-        },
-      );
-    });
-
-    it('should commit logs and pod data when no pod name defined', done => {
-      state.environments.options = mockEnvironments;
-      state.environments.current = mockEnvName;
-
-      const endpoint = '/dummy_logs_path.json';
-
-      mock.onGet(endpoint, { params: { ...mockDefaultRange } }).reply(200, {
-        pod_name: mockPodName,
-        pods: mockPods,
-        logs: mockLogsResult,
+        });
       });
-      mock.onGet(endpoint).replyOnce(202); // mock reactive cache
 
-      testAction(
-        fetchLogs,
-        null,
-        state,
-        [
-          { type: types.REQUEST_PODS_DATA },
-          { type: types.REQUEST_LOGS_DATA },
-          { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
-          { type: types.RECEIVE_PODS_DATA_SUCCESS, payload: mockPods },
-          { type: types.RECEIVE_LOGS_DATA_SUCCESS, payload: mockLogsResult },
-        ],
-        [],
-        done,
-      );
+      it('should commit logs and pod data when no pod name defined', () => {
+        state.timeRange.current = mockDefaultRange;
+
+        return testAction(fetchLogs, null, state, expectedMutations, expectedActions, () => {
+          expect(latestGetParams()).toEqual({});
+        });
+      });
     });
 
-    it('should commit logs and pod errors when backend fails', () => {
+    describe('fetchMoreLogsPrepend', () => {
+      beforeEach(() => {
+        expectedMutations = [
+          { type: types.REQUEST_LOGS_DATA_PREPEND },
+          {
+            type: types.RECEIVE_LOGS_DATA_PREPEND_SUCCESS,
+            payload: { logs: mockLogsResult, cursor: mockNextCursor },
+          },
+        ];
+
+        expectedActions = [];
+      });
+
+      it('should commit logs and pod data when there is pod name defined', () => {
+        state.pods.current = mockPodName;
+
+        expectedActions = [];
+
+        return testAction(
+          fetchMoreLogsPrepend,
+          null,
+          state,
+          expectedMutations,
+          expectedActions,
+          () => {
+            expect(latestGetParams()).toMatchObject({
+              pod_name: mockPodName,
+            });
+          },
+        );
+      });
+
+      it('should commit logs and pod data when there is pod name defined and a non-default date range', () => {
+        state.pods.current = mockPodName;
+        state.timeRange.current = mockFixedRange;
+        state.logs.cursor = mockCursor;
+
+        return testAction(
+          fetchMoreLogsPrepend,
+          null,
+          state,
+          expectedMutations,
+          expectedActions,
+          () => {
+            expect(latestGetParams()).toEqual({
+              pod_name: mockPodName,
+              start: mockFixedRange.start,
+              end: mockFixedRange.end,
+              cursor: mockCursor,
+            });
+          },
+        );
+      });
+
+      it('should commit logs and pod data when there is pod name and search and a faulty date range', () => {
+        state.pods.current = mockPodName;
+        state.search = mockSearch;
+        state.timeRange.current = 'INVALID_TIME_RANGE';
+
+        return testAction(
+          fetchMoreLogsPrepend,
+          null,
+          state,
+          expectedMutations,
+          expectedActions,
+          () => {
+            expect(latestGetParams()).toEqual({
+              pod_name: mockPodName,
+              search: mockSearch,
+            });
+            // Warning about time ranges was issued
+            expect(flash).toHaveBeenCalledTimes(1);
+            expect(flash).toHaveBeenCalledWith(expect.any(String), 'warning');
+          },
+        );
+      });
+
+      it('should commit logs and pod data when no pod name defined', () => {
+        state.timeRange.current = mockDefaultRange;
+
+        return testAction(
+          fetchMoreLogsPrepend,
+          null,
+          state,
+          expectedMutations,
+          expectedActions,
+          () => {
+            expect(latestGetParams()).toEqual({});
+          },
+        );
+      });
+
+      it('should not commit logs or pod data when it has reached the end', () => {
+        state.logs.isComplete = true;
+        state.logs.cursor = null;
+
+        return testAction(
+          fetchMoreLogsPrepend,
+          null,
+          state,
+          [], // no mutations done
+          [], // no actions dispatched
+          () => {
+            expect(mock.history.get).toHaveLength(0);
+          },
+        );
+      });
+    });
+  });
+
+  describe('when the backend responds with an error', () => {
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+      mock.onGet(mockLogsEndpoint).reply(500);
+    });
+
+    afterEach(() => {
+      mock.reset();
+    });
+
+    it('fetchLogs should commit logs and pod errors', () => {
       state.environments.options = mockEnvironments;
       state.environments.current = mockEnvName;
-
-      const endpoint = `/${mockProjectPath}/-/logs/elasticsearch.json?environment_name=${mockEnvName}`;
-      mock.onGet(endpoint).replyOnce(500);
 
       return testAction(
         fetchLogs,
@@ -316,7 +371,26 @@ describe('Logs Store actions', () => {
         ],
         [],
         () => {
-          expect(flash).toHaveBeenCalledTimes(1);
+          expect(mock.history.get[0].url).toBe(mockLogsEndpoint);
+        },
+      );
+    });
+
+    it('fetchMoreLogsPrepend should commit logs and pod errors', () => {
+      state.environments.options = mockEnvironments;
+      state.environments.current = mockEnvName;
+
+      return testAction(
+        fetchMoreLogsPrepend,
+        null,
+        state,
+        [
+          { type: types.REQUEST_LOGS_DATA_PREPEND },
+          { type: types.RECEIVE_LOGS_DATA_PREPEND_ERROR },
+        ],
+        [],
+        () => {
+          expect(mock.history.get[0].url).toBe(mockLogsEndpoint);
         },
       );
     });

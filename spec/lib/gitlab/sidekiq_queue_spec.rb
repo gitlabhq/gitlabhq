@@ -2,18 +2,18 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqQueue do
+describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues do
   around do |example|
     Sidekiq::Queue.new('authorized_projects').clear
     Sidekiq::Testing.disable!(&example)
     Sidekiq::Queue.new('authorized_projects').clear
   end
 
-  def add_job(user)
+  def add_job(user, args)
     Sidekiq::Client.push(
       'class' => 'AuthorizedProjectsWorker',
       'queue' => 'authorized_projects',
-      'args' => [user.id],
+      'args' => args,
       'meta.user' => user.username
     )
   end
@@ -24,9 +24,9 @@ describe Gitlab::SidekiqQueue do
       let_it_be(:sidekiq_queue_user) { create(:user) }
 
       before do
-        add_job(create(:user))
-        add_job(sidekiq_queue_user)
-        add_job(sidekiq_queue_user)
+        add_job(create(:user), [1])
+        add_job(sidekiq_queue_user, [2])
+        add_job(sidekiq_queue_user, [3])
       end
 
       context 'when the queue is not processed in time' do
@@ -70,7 +70,7 @@ describe Gitlab::SidekiqQueue do
 
     context 'when there are no valid metadata keys passed' do
       it 'raises NoMetadataError' do
-        add_job(create(:user))
+        add_job(create(:user), [1])
 
         expect { described_class.new('authorized_projects').drop_jobs!({ username: 'sidekiq_queue_user' }, timeout: 1) }
           .to raise_error(described_class::NoMetadataError)

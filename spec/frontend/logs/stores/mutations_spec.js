@@ -9,6 +9,8 @@ import {
   mockPodName,
   mockLogsResult,
   mockSearch,
+  mockCursor,
+  mockNextCursor,
 } from '../mock_data';
 
 describe('Logs Store Mutations', () => {
@@ -73,27 +75,47 @@ describe('Logs Store Mutations', () => {
     it('starts loading for logs', () => {
       mutations[types.REQUEST_LOGS_DATA](state);
 
-      expect(state.logs).toEqual(
-        expect.objectContaining({
-          lines: [],
-          isLoading: true,
-          isComplete: false,
-        }),
-      );
+      expect(state.timeRange.current).toEqual({
+        start: expect.any(String),
+        end: expect.any(String),
+      });
+
+      expect(state.logs).toEqual({
+        lines: [],
+        cursor: null,
+        isLoading: true,
+        isComplete: false,
+      });
     });
   });
 
   describe('RECEIVE_LOGS_DATA_SUCCESS', () => {
-    it('receives logs lines', () => {
-      mutations[types.RECEIVE_LOGS_DATA_SUCCESS](state, mockLogsResult);
+    it('receives logs lines and cursor', () => {
+      mutations[types.RECEIVE_LOGS_DATA_SUCCESS](state, {
+        logs: mockLogsResult,
+        cursor: mockCursor,
+      });
 
-      expect(state.logs).toEqual(
-        expect.objectContaining({
-          lines: mockLogsResult,
-          isLoading: false,
-          isComplete: true,
-        }),
-      );
+      expect(state.logs).toEqual({
+        lines: mockLogsResult,
+        isLoading: false,
+        cursor: mockCursor,
+        isComplete: false,
+      });
+    });
+
+    it('receives logs lines and a null cursor to indicate the end', () => {
+      mutations[types.RECEIVE_LOGS_DATA_SUCCESS](state, {
+        logs: mockLogsResult,
+        cursor: null,
+      });
+
+      expect(state.logs).toEqual({
+        lines: mockLogsResult,
+        isLoading: false,
+        cursor: null,
+        isComplete: true,
+      });
     });
   });
 
@@ -101,13 +123,77 @@ describe('Logs Store Mutations', () => {
     it('receives log data error and stops loading', () => {
       mutations[types.RECEIVE_LOGS_DATA_ERROR](state);
 
-      expect(state.logs).toEqual(
-        expect.objectContaining({
-          lines: [],
-          isLoading: false,
-          isComplete: true,
-        }),
-      );
+      expect(state.logs).toEqual({
+        lines: [],
+        isLoading: false,
+        cursor: null,
+        isComplete: false,
+      });
+    });
+  });
+
+  describe('REQUEST_LOGS_DATA_PREPEND', () => {
+    it('receives logs lines and cursor', () => {
+      mutations[types.REQUEST_LOGS_DATA_PREPEND](state);
+
+      expect(state.logs.isLoading).toBe(true);
+    });
+  });
+
+  describe('RECEIVE_LOGS_DATA_PREPEND_SUCCESS', () => {
+    it('receives logs lines and cursor', () => {
+      mutations[types.RECEIVE_LOGS_DATA_PREPEND_SUCCESS](state, {
+        logs: mockLogsResult,
+        cursor: mockCursor,
+      });
+
+      expect(state.logs).toEqual({
+        lines: mockLogsResult,
+        isLoading: false,
+        cursor: mockCursor,
+        isComplete: false,
+      });
+    });
+
+    it('receives additional logs lines and a new cursor', () => {
+      mutations[types.RECEIVE_LOGS_DATA_PREPEND_SUCCESS](state, {
+        logs: mockLogsResult,
+        cursor: mockCursor,
+      });
+
+      mutations[types.RECEIVE_LOGS_DATA_PREPEND_SUCCESS](state, {
+        logs: mockLogsResult,
+        cursor: mockNextCursor,
+      });
+
+      expect(state.logs).toEqual({
+        lines: [...mockLogsResult, ...mockLogsResult],
+        isLoading: false,
+        cursor: mockNextCursor,
+        isComplete: false,
+      });
+    });
+
+    it('receives logs lines and a null cursor to indicate is complete', () => {
+      mutations[types.RECEIVE_LOGS_DATA_PREPEND_SUCCESS](state, {
+        logs: mockLogsResult,
+        cursor: null,
+      });
+
+      expect(state.logs).toEqual({
+        lines: mockLogsResult,
+        isLoading: false,
+        cursor: null,
+        isComplete: true,
+      });
+    });
+  });
+
+  describe('RECEIVE_LOGS_DATA_PREPEND_ERROR', () => {
+    it('receives logs lines and cursor', () => {
+      mutations[types.RECEIVE_LOGS_DATA_PREPEND_ERROR](state);
+
+      expect(state.logs.isLoading).toBe(false);
     });
   });
 
@@ -121,6 +207,7 @@ describe('Logs Store Mutations', () => {
 
   describe('SET_TIME_RANGE', () => {
     it('sets a default range', () => {
+      expect(state.timeRange.selected).toEqual(expect.any(Object));
       expect(state.timeRange.current).toEqual(expect.any(Object));
     });
 
@@ -131,12 +218,13 @@ describe('Logs Store Mutations', () => {
       };
       mutations[types.SET_TIME_RANGE](state, mockRange);
 
+      expect(state.timeRange.selected).toEqual(mockRange);
       expect(state.timeRange.current).toEqual(mockRange);
     });
   });
 
   describe('REQUEST_PODS_DATA', () => {
-    it('receives log data error and stops loading', () => {
+    it('receives pods data', () => {
       mutations[types.REQUEST_PODS_DATA](state);
 
       expect(state.pods).toEqual(

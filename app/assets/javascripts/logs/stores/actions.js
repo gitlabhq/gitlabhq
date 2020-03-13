@@ -1,4 +1,3 @@
-import Api from '~/api';
 import { backOff } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
@@ -16,9 +15,10 @@ const flashLogsError = () => {
   flash(s__('Metrics|There was an error fetching the logs, please try again'));
 };
 
-const requestLogsUntilData = params =>
+const requestUntilData = (url, params) =>
   backOff((next, stop) => {
-    Api.getPodLogs(params)
+    axios
+      .get(url, { params })
       .then(res => {
         if (res.status === httpStatusCodes.ACCEPTED) {
           next();
@@ -31,10 +31,36 @@ const requestLogsUntilData = params =>
       });
   });
 
-export const setInitData = ({ commit }, { timeRange, environmentName, podName }) => {
-  if (timeRange) {
-    commit(types.SET_TIME_RANGE, timeRange);
+const requestLogsUntilData = state => {
+  const params = {};
+  const { logs_api_path } = state.environments.options.find(
+    ({ name }) => name === state.environments.current,
+  );
+
+  if (state.pods.current) {
+    params.pod_name = state.pods.current;
   }
+  if (state.search) {
+    params.search = state.search;
+  }
+  if (state.timeRange.current) {
+    try {
+      const { start, end } = convertToFixedRange(state.timeRange.current);
+      params.start = start;
+      params.end = end;
+    } catch {
+      flashTimeRangeWarning();
+    }
+  }
+  if (state.logs.cursor) {
+    params.cursor = state.logs.cursor;
+  }
+
+  return requestUntilData(logs_api_path, params);
+};
+
+export const setInitData = ({ commit }, { timeRange, environmentName, podName }) => {
+  commit(types.SET_TIME_RANGE, timeRange);
   commit(types.SET_PROJECT_ENVIRONMENT, environmentName);
   commit(types.SET_CURRENT_POD_NAME, podName);
 };
@@ -60,10 +86,15 @@ export const showEnvironment = ({ dispatch, commit }, environmentName) => {
   dispatch('fetchLogs');
 };
 
+/**
+ * Fetch environments data and initial logs
+ * @param {Object} store
+ * @param {String} environmentsPath
+ */
 export const fetchEnvironments = ({ commit, dispatch }, environmentsPath) => {
   commit(types.REQUEST_ENVIRONMENTS_DATA);
 
-  axios
+  return axios
     .get(environmentsPath)
     .then(({ data }) => {
       commit(types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS, data.environments);
@@ -76,36 +107,39 @@ export const fetchEnvironments = ({ commit, dispatch }, environmentsPath) => {
 };
 
 export const fetchLogs = ({ commit, state }) => {
-  const params = {
-    environment: state.environments.options.find(({ name }) => name === state.environments.current),
-    podName: state.pods.current,
-    search: state.search,
-  };
-
-  if (state.timeRange.current) {
-    try {
-      const { start, end } = convertToFixedRange(state.timeRange.current);
-      params.start = start;
-      params.end = end;
-    } catch {
-      flashTimeRangeWarning();
-    }
-  }
-
   commit(types.REQUEST_PODS_DATA);
   commit(types.REQUEST_LOGS_DATA);
 
-  return requestLogsUntilData(params)
+  return requestLogsUntilData(state)
     .then(({ data }) => {
-      const { pod_name, pods, logs } = data;
+      const { pod_name, pods, logs, cursor } = data;
       commit(types.SET_CURRENT_POD_NAME, pod_name);
 
       commit(types.RECEIVE_PODS_DATA_SUCCESS, pods);
-      commit(types.RECEIVE_LOGS_DATA_SUCCESS, logs);
+      commit(types.RECEIVE_LOGS_DATA_SUCCESS, { logs, cursor });
     })
     .catch(() => {
       commit(types.RECEIVE_PODS_DATA_ERROR);
       commit(types.RECEIVE_LOGS_DATA_ERROR);
+      flashLogsError();
+    });
+};
+
+export const fetchMoreLogsPrepend = ({ commit, state }) => {
+  if (state.logs.isComplete) {
+    // return when all logs are loaded
+    return Promise.resolve();
+  }
+
+  commit(types.REQUEST_LOGS_DATA_PREPEND);
+
+  return requestLogsUntilData(state)
+    .then(({ data }) => {
+      const { logs, cursor } = data;
+      commit(types.RECEIVE_LOGS_DATA_PREPEND_SUCCESS, { logs, cursor });
+    })
+    .catch(() => {
+      commit(types.RECEIVE_LOGS_DATA_PREPEND_ERROR);
       flashLogsError();
     });
 };

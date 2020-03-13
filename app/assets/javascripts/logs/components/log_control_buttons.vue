@@ -1,12 +1,5 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import {
-  canScroll,
-  isScrolledToTop,
-  isScrolledToBottom,
-  scrollDown,
-  scrollUp,
-} from '~/lib/utils/scroll_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
@@ -17,32 +10,34 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  props: {
+    scrollUpButtonDisabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    scrollDownButtonDisabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   data() {
     return {
-      scrollToTopEnabled: false,
-      scrollToBottomEnabled: false,
+      scrollUpAvailable: Boolean(this.$listeners.scrollUp),
+      scrollDownAvailable: Boolean(this.$listeners.scrollDown),
     };
   },
-  created() {
-    window.addEventListener('scroll', this.update);
-  },
-  destroyed() {
-    window.removeEventListener('scroll', this.update);
-  },
   methods: {
-    /**
-     * Checks if page can be scrolled and updates
-     * enabled/disabled state of buttons accordingly
-     */
-    update() {
-      this.scrollToTopEnabled = canScroll() && !isScrolledToTop();
-      this.scrollToBottomEnabled = canScroll() && !isScrolledToBottom();
-    },
     handleRefreshClick() {
       this.$emit('refresh');
     },
-    scrollUp,
-    scrollDown,
+    handleScrollUp() {
+      this.$emit('scrollUp');
+    },
+    handleScrollDown() {
+      this.$emit('scrollDown');
+    },
   },
 };
 </script>
@@ -50,6 +45,7 @@ export default {
 <template>
   <div>
     <div
+      v-if="scrollUpAvailable"
       v-gl-tooltip
       class="controllers-buttons"
       :title="__('Scroll to top')"
@@ -59,13 +55,15 @@ export default {
         id="scroll-to-top"
         class="btn-blank js-scroll-to-top"
         :aria-label="__('Scroll to top')"
-        :disabled="!scrollToTopEnabled"
-        @click="scrollUp()"
+        :disabled="scrollUpButtonDisabled"
+        @click="handleScrollUp()"
         ><icon name="scroll_up"
       /></gl-button>
     </div>
     <div
+      v-if="scrollDownAvailable"
       v-gl-tooltip
+      :disabled="scrollUpButtonDisabled"
       class="controllers-buttons"
       :title="__('Scroll to bottom')"
       aria-labelledby="scroll-to-bottom"
@@ -74,8 +72,9 @@ export default {
         id="scroll-to-bottom"
         class="btn-blank js-scroll-to-bottom"
         :aria-label="__('Scroll to bottom')"
-        :disabled="!scrollToBottomEnabled"
-        @click="scrollDown()"
+        :v-if="scrollDownAvailable"
+        :disabled="scrollDownButtonDisabled"
+        @click="handleScrollDown()"
         ><icon name="scroll_down"
       /></gl-button>
     </div>
