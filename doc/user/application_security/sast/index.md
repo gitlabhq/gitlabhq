@@ -413,6 +413,9 @@ it highlighted:
 }
 ```
 
+CAUTION: **Deprecation:**
+Beginning with GitLab 12.9, SAST no longer reports `undefined` severity and confidence levels.
+
 Here is the description of the report file structure nodes and their meaning. All fields are mandatory in
 the report JSON unless stated otherwise. Presence of optional fields depends on the underlying analyzers being used.
 

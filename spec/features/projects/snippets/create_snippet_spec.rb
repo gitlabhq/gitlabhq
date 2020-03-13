@@ -32,6 +32,8 @@ shared_examples_for 'snippet editor' do
 
       visit project_snippets_path(project)
 
+      # Wait for the SVG to ensure the button location doesn't shift
+      within('.empty-state') { find('img.js-lazy-loaded') }
       click_on('New snippet')
       wait_for_requests
     end

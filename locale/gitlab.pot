@@ -18284,9 +18284,6 @@ msgstr ""
 msgid "Smartcard authentication failed: client certificate header is missing."
 msgstr ""
 
-msgid "Snippet Contents"
-msgstr ""
-
 msgid "Snippets"
 msgstr ""
 

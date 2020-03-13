@@ -172,6 +172,14 @@ There are 2 methods to specify a variable in a query or dashboard:
 1. Variables can be specified using the [Liquid template format](https://help.shopify.com/en/themes/liquid/basics), for example `{{ci_environment_slug}}` ([added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20793) in GitLab 12.6).
 1. You can also enclose it in quotation marks with curly braces with a leading percent, for example `"%{ci_environment_slug}"`. This method is deprecated though and support will be [removed in the next major release](https://gitlab.com/gitlab-org/gitlab/issues/37990).
 
+#### Editing additional metrics from the dashboard
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/208976) in GitLab 12.9.
+
+You can edit existing additional custom metrics by clicking the **{ellipsis_v}** **More actions** dropdown and selecting **Edit metric**.
+
+![Edit metric](img/prometheus_dashboard_edit_metric_link_v_12_9.png)
+
 ### Defining custom dashboards per project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/59974) in GitLab 12.1.

@@ -21,10 +21,6 @@ module API
       def rate_limiter
         ::Gitlab::ApplicationRateLimiter
       end
-
-      def with_workhorse_upload_acceleration?
-        request.headers[Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER].present?
-      end
     end
 
     before do
@@ -46,11 +42,7 @@ module API
 
       params do
         requires :path, type: String, desc: 'The new project path and name'
-        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
-        # and mark WH fields as required (instead of optional) after the WH version including
-        # https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/459
-        # is deployed and GITLAB_WORKHORSE_VERSION is updated accordingly.
-        requires :file, types: [::API::Validations::Types::WorkhorseFile, File], desc: 'The project export file to be imported' # rubocop:disable Scalability/FileUploads
+        requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The project export file to be imported'
         optional :name, type: String, desc: 'The name of the project to be imported. Defaults to the path of the project if not provided.'
         optional :namespace, type: String, desc: "The ID or name of the namespace that the project will be imported into. Defaults to the current user's namespace."
         optional :overwrite, type: Boolean, default: false, desc: 'If there is a project in the same namespace and with the same name overwrite it'
@@ -75,7 +67,7 @@ module API
         success Entities::ProjectImportStatus
       end
       post 'import' do
-        require_gitlab_workhorse! if with_workhorse_upload_acceleration?
+        require_gitlab_workhorse!
 
         key = "project_import".to_sym
 
@@ -87,27 +79,19 @@ module API
 
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42437')
 
+        validate_file!
+
         namespace = if import_params[:namespace]
                       find_namespace!(import_params[:namespace])
                     else
                       current_user.namespace
                     end
 
-        # TODO: remove the condition after the WH version including
-        # https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/459
-        # is deployed and GITLAB_WORKHORSE_VERSION is updated accordingly.
-        file = if with_workhorse_upload_acceleration?
-                 import_params[:file] || bad_request!('Unable to process project import file')
-               else
-                 validate_file!
-                 import_params[:file]['tempfile']
-               end
-
         project_params = {
             path: import_params[:path],
             namespace_id: namespace.id,
             name: import_params[:name],
-            file: file,
+            file: import_params[:file],
             overwrite: import_params[:overwrite]
         }
 

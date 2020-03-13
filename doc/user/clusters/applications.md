@@ -279,21 +279,23 @@ This feature:
   kubectl logs -n gitlab-managed-apps $(kubectl get pod -n gitlab-managed-apps -l app=nginx-ingress,component=controller --no-headers=true -o custom-columns=:metadata.name) modsecurity-log -f
   ```
 
-To enable ModSecurity, check the **Enable Web Application Firewall** checkbox
-when installing your [Ingress application](#ingress).
+To enable WAF, switch its respective toggle to the enabled position when installing or updating [Ingress application](#ingress).
 
 If this is your first time using GitLab's WAF, we recommend you follow the
 [quick start guide](../../topics/web_application_firewall/quick_start_guide.md).
 
 There is a small performance overhead by enabling ModSecurity. If this is
 considered significant for your application, you can disable ModSecurity's
-rule engine for your deployed application by setting
-[the deployment variable](../../topics/autodevops/index.md)
+rule engine for your deployed application in any of the following ways:
+
+1. Setting [the deployment variable](../../topics/autodevops/index.md)
 `AUTO_DEVOPS_MODSECURITY_SEC_RULE_ENGINE` to `Off`. This will prevent ModSecurity
 from processing any requests for the given application or environment.
 
-To permanently disable it, you must [uninstall](#uninstalling-applications) and
-reinstall your Ingress application for the changes to take effect.
+1. Switching its respective toggle to the disabled position and applying changes through the **Save changes** button. This will reinstall
+Ingress with the recent changes.
+
+![Disabling WAF](../../topics/web_application_firewall/img/guide_waf_ingress_save_changes_v12_9.png)
 
 ### JupyterHub
 

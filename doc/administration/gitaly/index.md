@@ -163,17 +163,21 @@ Git operations in GitLab will result in an API error.
    unicorn['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
+   grafana['enable'] = false
+
+   # If you run a seperate monitoring node you can disable these services
+   alertmanager['enable'] = false
+   prometheus['enable'] = false
+
+   # If you don't run a seperate monitoring node you can
+   # Enable Prometheus access & disable these extra services
+   # This makes Prometheus listen on all interfaces. You must use firewalls to restrict access to this address/port.
+   # prometheus['listen_address'] = '0.0.0.0:9090'
+   # prometheus['monitor_kubernetes'] = false
 
    # If you don't want to run monitoring services uncomment the following (not recommended)
-   # alertmanager['enable'] = false
    # gitlab_exporter['enable'] = false
-   # grafana['enable'] = false
    # node_exporter['enable'] = false
-   # prometheus['enable'] = false
-
-   # Enable prometheus monitoring - comment out if you disable monitoring services above.
-   # This makes Prometheus listen on all interfaces. You must use firewalls to restrict access to this address/port.
-   prometheus['listen_address'] = '0.0.0.0:9090'
 
    # Prevent database connections during 'gitlab-ctl reconfigure'
    gitlab_rails['rake_cache_clear'] = false
@@ -861,7 +865,7 @@ default level is `WARN`.
 You can run a gRPC trace with:
 
 ```shell
-GRPC_TRACE=all GRPC_VERBOSITY=DEBUG sudo gitlab-rake gitlab:gitaly:check
+sudo GRPC_TRACE=all GRPC_VERBOSITY=DEBUG gitlab-rake gitlab:gitaly:check
 ```
 
 ### Observing `gitaly-ruby` traffic

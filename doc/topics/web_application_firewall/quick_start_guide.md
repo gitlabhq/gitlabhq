@@ -14,16 +14,6 @@ need to ensure your own [Runners are configured](../../ci/runners/README.md) and
 **Note**: GitLab's Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#Ingress),
 so it will be available to your applications no matter how you deploy them to Kubernetes.
 
-## Enable or disable ModSecurity
-
-ModSecurity is enabled by default on GitLab.com. You can toggle the feature flag to false by running the following command in the Rails console:
-
-```ruby
-Feature.disable(:ingress_modsecurity)
-```
-
-Once disabled, you must uninstall and reinstall your Ingress application for the changes to take effect. See the [Feature Flag](../../user/project/operations/feature_flags.md) documentation for more information.
-
 ## Configuring your Google account
 
 Before creating and connecting your Kubernetes cluster to your GitLab project,
@@ -112,10 +102,9 @@ Once it is installed, the other applications that rely on it will each have thei
 
 For this guide, we need to install Ingress. Ingress provides load balancing,
 SSL termination, and name-based virtual hosting, using NGINX behind
-the scenes. Make sure that the **Enable Web Application Firewall** button is checked
-before installing.
+the scenes. Make sure to switch the toogle to the enabled position before installing.
 
-![Cluster applications](./img/guide_waf_ingress_installation.png)
+![Cluster applications](./img/guide_waf_ingress_installation_v12_9.png)
 
 After Ingress is installed, wait a few seconds and copy the IP address that
 is displayed in order to add in your base **Domain** at the top of the page. For

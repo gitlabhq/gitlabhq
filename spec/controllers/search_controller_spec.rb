@@ -140,6 +140,14 @@ describe SearchController do
       end
     end
 
+    context 'snippet search' do
+      it 'forces title search' do
+        get :show, params: { scope: 'snippet_blobs', snippets: 'true', search: 'foo' }
+
+        expect(assigns[:scope]).to eq('snippet_titles')
+      end
+    end
+
     it 'finds issue comments' do
       project = create(:project, :public)
       note = create(:note_on_issue, project: project)

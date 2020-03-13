@@ -5,12 +5,15 @@ require 'spec_helper'
 describe BulkInsertSafe do
   class BulkInsertItem < ApplicationRecord
     include BulkInsertSafe
+    include ShaAttribute
 
-    validates :name, :enum_value, :secret_value, presence: true
+    validates :name, :enum_value, :secret_value, :sha_value, presence: true
 
     ENUM_VALUES = {
       case_1: 1
     }.freeze
+
+    sha_attribute :sha_value
 
     enum enum_value: ENUM_VALUES
 
@@ -44,6 +47,7 @@ describe BulkInsertSafe do
         t.integer :enum_value, null: false
         t.text :encrypted_secret_value, null: false
         t.string :encrypted_secret_value_iv, null: false
+        t.binary :sha_value, null: false, limit: 20
       end
     end
 
@@ -61,7 +65,8 @@ describe BulkInsertSafe do
       BulkInsertItem.new(
         name: "item-#{n}",
         enum_value: 'case_1',
-        secret_value: "my-secret"
+        secret_value: 'my-secret',
+        sha_value: '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12'
       )
     end
   end
@@ -71,7 +76,8 @@ describe BulkInsertSafe do
       BulkInsertItem.new(
         name: nil, # requires `name` to be set
         enum_value: 'case_1',
-        secret_value: "my-secret"
+        secret_value: 'my-secret',
+        sha_value: '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12'
       )
     end
   end
@@ -110,6 +116,16 @@ describe BulkInsertSafe do
       expect(BulkInsertItem).to receive(:insert_all!).twice
 
       BulkInsertItem.bulk_insert!(items, batch_size: 5)
+    end
+
+    it 'items can be properly fetched from database' do
+      items = build_valid_items_for_bulk_insertion
+
+      BulkInsertItem.bulk_insert!(items)
+
+      attribute_names = BulkInsertItem.attribute_names - %w[id]
+      expect(BulkInsertItem.last(items.size).pluck(*attribute_names)).to eq(
+        items.pluck(*attribute_names))
     end
 
     it 'rolls back the transaction when any item is invalid' do

@@ -81,7 +81,9 @@ There are some high level differences between the products worth mentioning:
   container images to set up your build environment. For example, set up one pipeline that builds your build environment
   itself and publish that to the container registry. Then, have your pipelines use this instead of each building their
   own environment, which will be slower and may be less consistent. We have extensive docs on [how to use the Container Registry](../../user/packages/container_registry/index.md).
-- Totally stuck and not sure where to turn for advice? The [GitLab community forum](https://forum.gitlab.com/) can be a great resource.
+- A central utilities repository can be a great place to put assorted scheduled jobs
+  or other manual jobs that function like utilities. Jenkins installations tend to
+  have a few of these.
 
 ## Agents vs. Runners
 

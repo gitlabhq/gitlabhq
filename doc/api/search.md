@@ -255,6 +255,8 @@ Example response:
 
 ### Scope: snippet_blobs
 
+This scope will be disabled after GitLab 13.0.
+
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/search?scope=snippet_blobs&search=test
 ```

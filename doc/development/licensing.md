@@ -57,6 +57,7 @@ Libraries with the following licenses are acceptable for use:
 - [Creative Commons Zero (CC0)][CC0]: A public domain dedication, recommended as a way to disclaim copyright on your work to the maximum extent possible.
 - [Unlicense][UNLICENSE]: Another public domain dedication.
 - [OWFa 1.0][OWFa1]: An open-source license and patent grant designed for specifications.
+- [JSON License](https://www.json.org/license.html): Equivalent to the MIT license plus the statement, "The Software shall be used for Good, not Evil."
 
 ## Unacceptable Licenses
 

@@ -5,7 +5,6 @@ require 'spec_helper'
 describe API::ProjectImport do
   include WorkhorseHelpers
 
-  let(:export_path) { "#{Dir.tmpdir}/project_export_spec" }
   let(:user) { create(:user) }
   let(:file) { File.join('spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:namespace) { create(:group) }
@@ -14,29 +13,39 @@ describe API::ProjectImport do
   let(:workhorse_headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => workhorse_token } }
 
   before do
-    allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
-    stub_uploads_object_storage(FileUploader)
-
     namespace.add_owner(user)
   end
 
-  after do
-    FileUtils.rm_rf(export_path, secure: true)
-  end
-
   describe 'POST /projects/import' do
+    subject { upload_archive(file_upload, workhorse_headers, params) }
+
+    let(:file_upload) { fixture_file_upload(file) }
+
+    let(:params) do
+      {
+        path: 'test-import',
+        'file.size' => file_upload.size
+      }
+    end
+
+    before do
+      allow(ImportExportUploader).to receive(:workhorse_upload_path).and_return('/')
+    end
+
     it 'schedules an import using a namespace' do
       stub_import(namespace)
+      params[:namespace] = namespace.id
 
-      post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.id }
+      subject
 
       expect(response).to have_gitlab_http_status(:created)
     end
 
     it 'schedules an import using the namespace path' do
       stub_import(namespace)
+      params[:namespace] = namespace.full_path
 
-      post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path }
+      subject
 
       expect(response).to have_gitlab_http_status(:created)
     end
@@ -46,24 +55,30 @@ describe API::ProjectImport do
 
       it 'schedules an import using a namespace and a different name' do
         stub_import(namespace)
+        params[:name] = expected_name
+        params[:namespace] = namespace.id
 
-        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.id, name: expected_name }
+        subject
 
         expect(response).to have_gitlab_http_status(:created)
       end
 
       it 'schedules an import using the namespace path and a different name' do
         stub_import(namespace)
+        params[:name] = expected_name
+        params[:namespace] = namespace.full_path
 
-        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path, name: expected_name }
+        subject
 
         expect(response).to have_gitlab_http_status(:created)
       end
 
       it 'sets name correctly' do
         stub_import(namespace)
+        params[:name] = expected_name
+        params[:namespace] = namespace.full_path
 
-        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path, name: expected_name }
+        subject
 
         project = Project.find(json_response['id'])
         expect(project.name).to eq(expected_name)
@@ -71,8 +86,11 @@ describe API::ProjectImport do
 
       it 'sets name correctly with an overwrite' do
         stub_import(namespace)
+        params[:name] = 'new project name'
+        params[:namespace] = namespace.full_path
+        params[:overwrite] = true
 
-        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path, name: 'new project name', overwrite: true }
+        subject
 
         project = Project.find(json_response['id'])
         expect(project.name).to eq('new project name')
@@ -80,8 +98,10 @@ describe API::ProjectImport do
 
       it 'schedules an import using the path and name explicitly set to nil' do
         stub_import(namespace)
+        params[:name] = nil
+        params[:namespace] = namespace.full_path
 
-        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path, name: nil }
+        subject
 
         project = Project.find(json_response['id'])
         expect(project.name).to eq('test-import')
@@ -90,8 +110,9 @@ describe API::ProjectImport do
 
     it 'schedules an import at the user namespace level' do
       stub_import(user.namespace)
+      params[:path] = 'test-import2'
 
-      post api('/projects/import', user), params: { path: 'test-import2', file: fixture_file_upload(file) }
+      subject
 
       expect(response).to have_gitlab_http_status(:created)
     end
@@ -100,7 +121,10 @@ describe API::ProjectImport do
       expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
       expect(::Projects::CreateService).not_to receive(:new)
 
-      post api('/projects/import', user), params: { namespace: 'nonexistent', path: 'test-import2', file: fixture_file_upload(file) }
+      params[:namespace] = 'nonexistent'
+      params[:path] = 'test-import2'
+
+      subject
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Namespace Not Found')
@@ -109,37 +133,40 @@ describe API::ProjectImport do
     it 'does not schedule an import if the user has no permission to the namespace' do
       expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
 
-      post(api('/projects/import', create(:user)),
-           params: {
-             path: 'test-import3',
-             file: fixture_file_upload(file),
-             namespace: namespace.full_path
-           })
+      new_namespace = create(:group)
+      params[:path] = 'test-import3'
+      params[:namespace] = new_namespace.full_path
+
+      subject
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Namespace Not Found')
     end
 
-    it 'does not schedule an import if the user uploads no valid file' do
-      expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
+    context 'if user uploads no valid file' do
+      let(:file) { 'README.md' }
 
-      post api('/projects/import', user), params: { path: 'test-import3', file: './random/test' }
+      it 'does not schedule an import if the user uploads no valid file' do
+        expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
 
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq('file is invalid')
+        params[:path] = 'test-import3'
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']['error']).to eq('You need to upload a GitLab project export archive (ending in .gz).')
+      end
     end
 
     it 'stores params that can be overridden' do
       stub_import(namespace)
       override_params = { 'description' => 'Hello world' }
 
-      post api('/projects/import', user),
-           params: {
-             path: 'test-import',
-             file: fixture_file_upload(file),
-             namespace: namespace.id,
-             override_params: override_params
-           }
+      params[:namespace] = namespace.id
+      params[:override_params] = override_params
+
+      subject
+
       import_project = Project.find(json_response['id'])
 
       expect(import_project.import_data.data['override_params']).to eq(override_params)
@@ -149,33 +176,14 @@ describe API::ProjectImport do
       stub_import(namespace)
       override_params = { 'not_allowed' => 'Hello world' }
 
-      post api('/projects/import', user),
-           params: {
-             path: 'test-import',
-             file: fixture_file_upload(file),
-             namespace: namespace.id,
-             override_params: override_params
-           }
+      params[:namespace] = namespace.id
+      params[:override_params] = override_params
+
+      subject
+
       import_project = Project.find(json_response['id'])
 
       expect(import_project.import_data.data['override_params']).to be_empty
-    end
-
-    it 'correctly overrides params during the import', :sidekiq_might_not_need_inline do
-      override_params = { 'description' => 'Hello world' }
-
-      perform_enqueued_jobs do
-        post api('/projects/import', user),
-             params: {
-               path: 'test-import',
-               file: fixture_file_upload(file),
-               namespace: namespace.id,
-               override_params: override_params
-             }
-      end
-      import_project = Project.find(json_response['id'])
-
-      expect(import_project.description).to eq('Hello world')
     end
 
     context 'when target path already exists in namespace' do
@@ -184,7 +192,9 @@ describe API::ProjectImport do
       it 'does not schedule an import' do
         expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
 
-        post api('/projects/import', user), params: { path: existing_project.path, file: fixture_file_upload(file) }
+        params[:path] = existing_project.path
+
+        subject
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('Name has already been taken')
@@ -194,7 +204,10 @@ describe API::ProjectImport do
         it 'schedules an import' do
           stub_import(user.namespace)
 
-          post api('/projects/import', user), params: { path: existing_project.path, file: fixture_file_upload(file), overwrite: true }
+          params[:path] = existing_project.path
+          params[:overwrite] = true
+
+          subject
 
           expect(response).to have_gitlab_http_status(:created)
         end
@@ -207,16 +220,16 @@ describe API::ProjectImport do
       end
 
       it 'prevents users from importing projects' do
-        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.id }
+        params[:namespace] = namespace.id
+
+        subject
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
         expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
       end
     end
 
-    context 'with direct upload enabled' do
-      subject { upload_archive(file_upload, workhorse_headers, params) }
-
+    context 'when using remote storage' do
       let(:file_name) { 'project_export.tar.gz' }
 
       let!(:fog_connection) do
@@ -232,21 +245,11 @@ describe API::ProjectImport do
 
       let(:file_upload) { fog_to_uploaded_file(tmp_object) }
 
-      let(:params) do
-        {
-          path: 'test-import-project',
-          namespace: namespace.id,
-          'file.remote_id' => file_name,
-          'file.size' => file_upload.size
-        }
-      end
+      it 'schedules an import' do
+        stub_import(namespace)
+        params[:namespace] = namespace.id
 
-      before do
-        allow(ImportExportUploader).to receive(:workhorse_upload_path).and_return('/')
-      end
-
-      it 'accepts the request and stores the file' do
-        expect { subject }.to change { Project.count }.by(1)
+        subject
 
         expect(response).to have_gitlab_http_status(:created)
       end
@@ -257,7 +260,7 @@ describe API::ProjectImport do
         api("/projects/import", user),
         method: :post,
         file_key: :file,
-        params: params.merge(file: file_upload),
+        params: params.merge(file: file),
         headers: headers,
         send_rewritten_field: true
       )
@@ -301,6 +304,7 @@ describe API::ProjectImport do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+      expect(json_response['TempPath']).to eq(ImportExportUploader.workhorse_local_upload_path)
     end
 
     it 'rejects requests that bypassed gitlab-workhorse' do
