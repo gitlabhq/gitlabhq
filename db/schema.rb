@@ -2184,7 +2184,6 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.datetime "updated_at"
     t.text "description"
     t.integer "milestone_id"
-    t.string "state"
     t.integer "iid"
     t.integer "updated_by_id"
     t.integer "weight"
@@ -2216,18 +2215,13 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.index ["lock_version"], name: "index_issues_on_lock_version", where: "(lock_version IS NULL)"
     t.index ["milestone_id"], name: "index_issues_on_milestone_id"
     t.index ["moved_to_id"], name: "index_issues_on_moved_to_id", where: "(moved_to_id IS NOT NULL)"
-    t.index ["project_id", "created_at", "id", "state"], name: "index_issues_on_project_id_and_created_at_and_id_and_state"
     t.index ["project_id", "created_at", "id", "state_id"], name: "idx_issues_on_project_id_and_created_at_and_id_and_state_id"
-    t.index ["project_id", "due_date", "id", "state"], name: "idx_issues_on_project_id_and_due_date_and_id_and_state_partial", where: "(due_date IS NOT NULL)"
     t.index ["project_id", "due_date", "id", "state_id"], name: "idx_issues_on_project_id_and_due_date_and_id_and_state_id", where: "(due_date IS NOT NULL)"
     t.index ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true
-    t.index ["project_id", "relative_position", "state", "id"], name: "index_issues_on_project_id_and_rel_position_and_state_and_id", order: { id: :desc }
     t.index ["project_id", "relative_position", "state_id", "id"], name: "idx_issues_on_project_id_and_rel_position_and_state_id_and_id", order: { id: :desc }
-    t.index ["project_id", "updated_at", "id", "state"], name: "index_issues_on_project_id_and_updated_at_and_id_and_state"
     t.index ["project_id", "updated_at", "id", "state_id"], name: "idx_issues_on_project_id_and_updated_at_and_id_and_state_id"
     t.index ["promoted_to_epic_id"], name: "index_issues_on_promoted_to_epic_id", where: "(promoted_to_epic_id IS NOT NULL)"
     t.index ["relative_position"], name: "index_issues_on_relative_position"
-    t.index ["state"], name: "index_issues_on_state"
     t.index ["state_id"], name: "idx_issues_on_state_id"
     t.index ["title"], name: "index_issues_on_title_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["updated_at"], name: "index_issues_on_updated_at"
@@ -2597,7 +2591,6 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "milestone_id"
-    t.string "state", default: "opened", null: false
     t.string "merge_status", default: "unchecked", null: false
     t.integer "target_project_id", null: false
     t.integer "iid"
@@ -2633,7 +2626,6 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.index ["description"], name: "index_merge_requests_on_description_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["head_pipeline_id"], name: "index_merge_requests_on_head_pipeline_id"
     t.index ["id", "merge_jid"], name: "idx_merge_requests_on_id_and_merge_jid", where: "((merge_jid IS NOT NULL) AND (state_id = 4))"
-    t.index ["id", "merge_jid"], name: "index_merge_requests_on_id_and_merge_jid", where: "((merge_jid IS NOT NULL) AND ((state)::text = 'locked'::text))"
     t.index ["id"], name: "merge_request_mentions_temp_index", where: "((description ~~ '%@%'::text) OR ((title)::text ~~ '%@%'::text))"
     t.index ["latest_merge_request_diff_id"], name: "index_merge_requests_on_latest_merge_request_diff_id"
     t.index ["lock_version"], name: "index_merge_requests_on_lock_version", where: "(lock_version IS NULL)"
@@ -2641,15 +2633,12 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.index ["milestone_id"], name: "index_merge_requests_on_milestone_id"
     t.index ["source_branch"], name: "index_merge_requests_on_source_branch"
     t.index ["source_project_id", "source_branch"], name: "idx_merge_requests_on_source_project_and_branch_state_opened", where: "(state_id = 1)"
-    t.index ["source_project_id", "source_branch"], name: "index_merge_requests_on_source_project_and_branch_state_opened", where: "((state)::text = 'opened'::text)"
     t.index ["source_project_id", "source_branch"], name: "index_merge_requests_on_source_project_id_and_source_branch"
-    t.index ["state", "merge_status"], name: "index_merge_requests_on_state_and_merge_status", where: "(((state)::text = 'opened'::text) AND ((merge_status)::text = 'can_be_merged'::text))"
     t.index ["state_id", "merge_status"], name: "idx_merge_requests_on_state_id_and_merge_status", where: "((state_id = 1) AND ((merge_status)::text = 'can_be_merged'::text))"
     t.index ["target_branch"], name: "index_merge_requests_on_target_branch"
     t.index ["target_project_id", "created_at"], name: "index_merge_requests_target_project_id_created_at"
     t.index ["target_project_id", "iid"], name: "idx_merge_requests_on_target_project_id_and_iid_opened", where: "(state_id = 1)"
     t.index ["target_project_id", "iid"], name: "index_merge_requests_on_target_project_id_and_iid", unique: true
-    t.index ["target_project_id", "iid"], name: "index_merge_requests_on_target_project_id_and_iid_opened", where: "((state)::text = 'opened'::text)"
     t.index ["target_project_id", "merge_commit_sha", "id"], name: "index_merge_requests_on_tp_id_and_merge_commit_sha_and_id"
     t.index ["target_project_id", "target_branch"], name: "index_merge_requests_on_target_project_id_and_target_branch", where: "((state_id = 1) AND (merge_when_pipeline_succeeds = true))"
     t.index ["title"], name: "index_merge_requests_on_title"
@@ -2844,7 +2833,6 @@ ActiveRecord::Schema.define(version: 2020_03_11_165635) do
     t.index ["id", "noteable_type"], name: "note_mentions_temp_index", where: "(note ~~ '%@%'::text)"
     t.index ["line_code"], name: "index_notes_on_line_code"
     t.index ["note"], name: "index_notes_on_note_trigram", opclass: :gin_trgm_ops, using: :gin
-    t.index ["note"], name: "tmp_idx_on_promoted_notes", where: "(((noteable_type)::text = 'Issue'::text) AND (system IS TRUE) AND (note ~~ 'promoted to epic%'::text))"
     t.index ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type"
     t.index ["project_id", "id"], name: "index_notes_on_project_id_and_id_and_system_false", where: "(NOT system)"
     t.index ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type"

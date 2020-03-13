@@ -20,6 +20,7 @@ describe Gitlab::Elasticsearch::Logs do
   let(:search) { "foo +bar "}
   let(:start_time) { "2019-12-13T14:35:34.034Z" }
   let(:end_time) { "2019-12-13T14:35:34.034Z" }
+  let(:cursor) { "9999934,1572449784442" }
 
   let(:body) { JSON.parse(fixture_file('lib/elasticsearch/query.json')) }
   let(:body_with_container) { JSON.parse(fixture_file('lib/elasticsearch/query_with_container.json')) }
@@ -27,6 +28,7 @@ describe Gitlab::Elasticsearch::Logs do
   let(:body_with_times) { JSON.parse(fixture_file('lib/elasticsearch/query_with_times.json')) }
   let(:body_with_start_time) { JSON.parse(fixture_file('lib/elasticsearch/query_with_start_time.json')) }
   let(:body_with_end_time) { JSON.parse(fixture_file('lib/elasticsearch/query_with_end_time.json')) }
+  let(:body_with_cursor) { JSON.parse(fixture_file('lib/elasticsearch/query_with_cursor.json')) }
 
   RSpec::Matchers.define :a_hash_equal_to_json do |expected|
     match do |actual|
@@ -39,42 +41,49 @@ describe Gitlab::Elasticsearch::Logs do
       expect(client).to receive(:search).with(body: a_hash_equal_to_json(body)).and_return(es_response)
 
       result = subject.pod_logs(namespace, pod_name)
-      expect(result).to eq([es_message_4, es_message_3, es_message_2, es_message_1])
+      expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
     end
 
     it 'can further filter the logs by container name' do
       expect(client).to receive(:search).with(body: a_hash_equal_to_json(body_with_container)).and_return(es_response)
 
-      result = subject.pod_logs(namespace, pod_name, container_name)
-      expect(result).to eq([es_message_4, es_message_3, es_message_2, es_message_1])
+      result = subject.pod_logs(namespace, pod_name, container_name: container_name)
+      expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
     end
 
     it 'can further filter the logs by search' do
       expect(client).to receive(:search).with(body: a_hash_equal_to_json(body_with_search)).and_return(es_response)
 
-      result = subject.pod_logs(namespace, pod_name, nil, search)
-      expect(result).to eq([es_message_4, es_message_3, es_message_2, es_message_1])
+      result = subject.pod_logs(namespace, pod_name, search: search)
+      expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
     end
 
     it 'can further filter the logs by start_time and end_time' do
       expect(client).to receive(:search).with(body: a_hash_equal_to_json(body_with_times)).and_return(es_response)
 
-      result = subject.pod_logs(namespace, pod_name, nil, nil, start_time, end_time)
-      expect(result).to eq([es_message_4, es_message_3, es_message_2, es_message_1])
+      result = subject.pod_logs(namespace, pod_name, start_time: start_time, end_time: end_time)
+      expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
     end
 
     it 'can further filter the logs by only start_time' do
       expect(client).to receive(:search).with(body: a_hash_equal_to_json(body_with_start_time)).and_return(es_response)
 
-      result = subject.pod_logs(namespace, pod_name, nil, nil, start_time)
-      expect(result).to eq([es_message_4, es_message_3, es_message_2, es_message_1])
+      result = subject.pod_logs(namespace, pod_name, start_time: start_time)
+      expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
     end
 
     it 'can further filter the logs by only end_time' do
       expect(client).to receive(:search).with(body: a_hash_equal_to_json(body_with_end_time)).and_return(es_response)
 
-      result = subject.pod_logs(namespace, pod_name, nil, nil, nil, end_time)
-      expect(result).to eq([es_message_4, es_message_3, es_message_2, es_message_1])
+      result = subject.pod_logs(namespace, pod_name, end_time: end_time)
+      expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
+    end
+
+    it 'can search after a cursor' do
+      expect(client).to receive(:search).with(body: a_hash_equal_to_json(body_with_cursor)).and_return(es_response)
+
+      result = subject.pod_logs(namespace, pod_name, cursor: cursor)
+      expect(result).to eq(logs: [es_message_4, es_message_3, es_message_2, es_message_1], cursor: cursor)
     end
   end
 end

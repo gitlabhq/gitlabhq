@@ -440,6 +440,27 @@ describe JiraService do
         end
       end
 
+      context 'when Remote Link already exists' do
+        let(:remote_link) do
+          double(
+            'remote link',
+            object: {
+              url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/-/commit/#{commit_id}"
+            }.with_indifferent_access
+          )
+        end
+
+        it 'does not create comment' do
+          allow(JIRA::Resource::Remotelink).to receive(:all).and_return([remote_link])
+
+          expect(remote_link).to receive(:save!)
+
+          @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
+
+          expect(WebMock).not_to have_requested(:post, @comment_url)
+        end
+      end
+
       it 'does not send comment or remote links to issues already closed' do
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:resolution).and_return(true)
 

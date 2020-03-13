@@ -67,7 +67,7 @@ export default {
       'setShowErrorBanner',
     ]),
     chartHasData(chart) {
-      return chart.metrics.some(metric => this.metricsWithData().includes(metric.metric_id));
+      return chart.metrics.some(metric => this.metricsWithData().includes(metric.metricId));
     },
     onSidebarMutation() {
       setTimeout(() => {

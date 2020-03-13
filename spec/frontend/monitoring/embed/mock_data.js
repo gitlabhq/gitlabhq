@@ -1,4 +1,4 @@
-export const metricsWithData = [15, 16];
+export const metricsWithData = ['15_metric_a', '16_metric_b'];
 
 export const groups = [
   {
@@ -7,38 +7,9 @@ export const groups = [
         title: 'Memory Usage (Total)',
         type: 'area-chart',
         y_label: 'Total Memory Used',
-        weight: 4,
-        metrics: [
-          {
-            id: 'system_metrics_kubernetes_container_memory_total',
-            metric_id: 15,
-          },
-        ],
-      },
-      {
-        title: 'Core Usage (Total)',
-        type: 'area-chart',
-        y_label: 'Total Cores',
-        weight: 3,
-        metrics: [
-          {
-            id: 'system_metrics_kubernetes_container_cores_total',
-            metric_id: 16,
-          },
-        ],
+        metrics: null,
       },
     ],
-  },
-];
-
-export const metrics = [
-  {
-    id: 'system_metrics_kubernetes_container_memory_total',
-    metric_id: 15,
-  },
-  {
-    id: 'system_metrics_kubernetes_container_cores_total',
-    metric_id: 16,
   },
 ];
 
@@ -60,7 +31,7 @@ export const metricsData = [
   {
     metrics: [
       {
-        metric_id: 15,
+        metricId: '15_metric_a',
         result,
       },
     ],
@@ -68,7 +39,7 @@ export const metricsData = [
   {
     metrics: [
       {
-        metric_id: 16,
+        metricId: '16_metric_b',
         result,
       },
     ],

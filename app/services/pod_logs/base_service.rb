@@ -10,8 +10,6 @@ module PodLogs
     CACHE_KEY_GET_POD_LOG = 'get_pod_log'
     K8S_NAME_MAX_LENGTH = 253
 
-    SUCCESS_RETURN_KEYS = %i(status logs pod_name container_name pods).freeze
-
     def id
       cluster.id
     end
@@ -47,6 +45,10 @@ module PodLogs
 
     def valid_params
       %w(pod_name container_name)
+    end
+
+    def success_return_keys
+      %i(status logs pod_name container_name pods)
     end
 
     def check_arguments(result)
@@ -122,7 +124,7 @@ module PodLogs
     end
 
     def filter_return_keys(result)
-      result.slice(*SUCCESS_RETURN_KEYS)
+      result.slice(*success_return_keys)
     end
 
     def filter_params(params)

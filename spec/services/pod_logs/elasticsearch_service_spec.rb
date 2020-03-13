@@ -11,6 +11,7 @@ describe ::PodLogs::ElasticsearchService do
   let(:search) { 'foo -bar' }
   let(:start_time) { '2019-01-02T12:13:14+02:00' }
   let(:end_time) { '2019-01-03T12:13:14+02:00' }
+  let(:cursor) { '9999934,1572449784442' }
   let(:params) { {} }
   let(:expected_logs) do
     [
@@ -116,6 +117,36 @@ describe ::PodLogs::ElasticsearchService do
     end
   end
 
+  describe '#check_cursor' do
+    context 'with cursor provided and valid' do
+      let(:params) do
+        {
+          'cursor' => cursor
+        }
+      end
+
+      it 'returns success with cursor' do
+        result = subject.send(:check_cursor, {})
+
+        expect(result[:status]).to eq(:success)
+        expect(result[:cursor]).to eq(cursor)
+      end
+    end
+
+    context 'with cursor not provided' do
+      let(:params) do
+        {}
+      end
+
+      it 'returns success with nothing else' do
+        result = subject.send(:check_cursor, {})
+
+        expect(result.keys.length).to eq(1)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+  end
+
   describe '#pod_logs' do
     let(:result_arg) do
       {
@@ -123,9 +154,11 @@ describe ::PodLogs::ElasticsearchService do
         container_name: container_name,
         search: search,
         start: start_time,
-        end: end_time
+        end: end_time,
+        cursor: cursor
       }
     end
+    let(:expected_cursor) { '9999934,1572449784442' }
 
     before do
       create(:clusters_applications_elastic_stack, :installed, cluster: cluster)
@@ -137,13 +170,14 @@ describe ::PodLogs::ElasticsearchService do
         .and_return(Elasticsearch::Transport::Client.new)
       allow_any_instance_of(::Gitlab::Elasticsearch::Logs)
         .to receive(:pod_logs)
-        .with(namespace, pod_name, container_name, search, start_time, end_time)
-        .and_return(expected_logs)
+        .with(namespace, pod_name, container_name: container_name, search: search, start_time: start_time, end_time: end_time, cursor: cursor)
+        .and_return({ logs: expected_logs, cursor: expected_cursor })
 
       result = subject.send(:pod_logs, result_arg)
 
       expect(result[:status]).to eq(:success)
       expect(result[:logs]).to eq(expected_logs)
+      expect(result[:cursor]).to eq(expected_cursor)
     end
 
     it 'returns an error when ES is unreachable' do
@@ -169,6 +203,20 @@ describe ::PodLogs::ElasticsearchService do
 
       expect(result[:status]).to eq(:error)
       expect(result[:message]).to eq('Elasticsearch returned status code: ServiceUnavailable')
+    end
+
+    it 'handles cursor errors from elasticsearch' do
+      allow_any_instance_of(::Clusters::Applications::ElasticStack)
+        .to receive(:elasticsearch_client)
+        .and_return(Elasticsearch::Transport::Client.new)
+      allow_any_instance_of(::Gitlab::Elasticsearch::Logs)
+        .to receive(:pod_logs)
+        .and_raise(::Gitlab::Elasticsearch::Logs::InvalidCursor.new)
+
+      result = subject.send(:pod_logs, result_arg)
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('Invalid cursor value provided')
     end
   end
 end

@@ -33,8 +33,6 @@ module Gitlab
 
         if Rails.env.test?
           storage_path = Rails.root.join('tmp', 'tests', 'second_storage').to_s
-
-          FileUtils.mkdir(storage_path) unless File.exist?(storage_path)
           storages << { name: 'test_second_storage', path: storage_path }
         end
 

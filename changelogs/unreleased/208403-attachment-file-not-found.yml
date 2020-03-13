@@ -1,0 +1,5 @@
+---
+title: Ensure valid mount point is used by attachments on notes
+merge_request: 26849
+author:
+type: fixed

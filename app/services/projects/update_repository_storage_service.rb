@@ -5,19 +5,12 @@ module Projects
     include Gitlab::ShellAdapter
 
     Error = Class.new(StandardError)
-    RepositoryAlreadyMoved = Class.new(StandardError)
 
     def initialize(project)
       @project = project
     end
 
     def execute(new_repository_storage_key)
-      # Raising an exception is a little heavy handed but this behavior (doing
-      # nothing if the repo is already on the right storage) prevents data
-      # loss, so it is valuable for us to be able to observe it via the
-      # exception.
-      raise RepositoryAlreadyMoved if project.repository_storage == new_repository_storage_key
-
       mirror_repositories(new_repository_storage_key)
 
       mark_old_paths_for_archive
@@ -30,7 +23,7 @@ module Projects
 
       success
 
-    rescue Error => e
+    rescue Error, ArgumentError, Gitlab::Git::BaseError => e
       project.update(repository_read_only: false)
 
       Gitlab::ErrorTracking.track_exception(e, project_path: project.full_path)
@@ -65,10 +58,7 @@ module Projects
                                                    raw_repository.gl_repository,
                                                    full_path)
 
-      unless new_repository.fetch_repository_as_mirror(raw_repository)
-        raise Error, s_('UpdateRepositoryStorage|Failed to fetch %{type} repository as mirror') % { type: type.name }
-      end
-
+      new_repository.replicate(raw_repository)
       new_checksum = new_repository.checksum
 
       if checksum != new_checksum

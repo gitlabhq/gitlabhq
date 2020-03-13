@@ -13,11 +13,12 @@ export const gqClient = createGqClient(
 /**
  * Metrics loaded from project-defined dashboards do not have a metric_id.
  * This method creates a unique ID combining metric_id and id, if either is present.
- * This is hopefully a temporary solution until BE processes metrics before passing to fE
+ * This is hopefully a temporary solution until BE processes metrics before passing to FE
  * @param {Object} metric - metric
  * @returns {Object} - normalized metric with a uniqueID
  */
-export const uniqMetricsId = metric => `${metric.metric_id}_${metric.id}`;
+// eslint-disable-next-line babel/camelcase
+export const uniqMetricsId = ({ metric_id, id }) => `${metric_id}_${id}`;
 
 /**
  * Project path has a leading slash that doesn't work well
@@ -68,10 +69,6 @@ const mapToMetricsViewModel = (metrics, defaultLabel) =>
     queryRange: query_range,
     prometheusEndpointPath: prometheus_endpoint_path,
     metricId: uniqMetricsId({ metric_id, id }),
-
-    // `metric_id` is used by embed.vue, keeping this duplicated.
-    // https://gitlab.com/gitlab-org/gitlab/issues/37492
-    metric_id: uniqMetricsId({ metric_id, id }),
     ...metric,
   }));
 

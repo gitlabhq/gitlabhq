@@ -2455,7 +2455,7 @@ describe API::Projects do
         end
 
         it 'returns 200 when repository storage has changed' do
-          stub_storage_settings('test_second_storage' => { 'path' => 'tmp/tests/second_storage' })
+          stub_storage_settings('test_second_storage' => { 'path' => TestEnv::SECOND_STORAGE_PATH })
 
           expect do
             Sidekiq::Testing.fake! do

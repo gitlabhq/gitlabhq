@@ -10,6 +10,7 @@ module PodLogs
           :check_container_name,
           :check_times,
           :check_search,
+          :check_cursor,
           :pod_logs,
           :filter_return_keys
 
@@ -18,7 +19,11 @@ module PodLogs
     private
 
     def valid_params
-      %w(pod_name container_name search start end)
+      super + %w(search start end cursor)
+    end
+
+    def success_return_keys
+      super + %i(cursor)
     end
 
     def check_times(result)
@@ -36,18 +41,27 @@ module PodLogs
       success(result)
     end
 
+    def check_cursor(result)
+      result[:cursor] = params['cursor'] if params.key?('cursor')
+
+      success(result)
+    end
+
     def pod_logs(result)
       client = cluster&.application_elastic_stack&.elasticsearch_client
       return error(_('Unable to connect to Elasticsearch')) unless client
 
-      result[:logs] = ::Gitlab::Elasticsearch::Logs.new(client).pod_logs(
+      response = ::Gitlab::Elasticsearch::Logs.new(client).pod_logs(
         namespace,
         result[:pod_name],
-        result[:container_name],
-        result[:search],
-        result[:start],
-        result[:end]
+        container_name: result[:container_name],
+        search: result[:search],
+        start_time: result[:start],
+        end_time: result[:end],
+        cursor: result[:cursor]
       )
+
+      result.merge!(response)
 
       success(result)
     rescue Elasticsearch::Transport::Transport::ServerError => e
@@ -58,6 +72,8 @@ module PodLogs
         # there is no method on the exception other than the class name to determine the type of error encountered.
         status_code: e.class.name.split('::').last
       })
+    rescue ::Gitlab::Elasticsearch::Logs::InvalidCursor
+      error(_('Invalid cursor value provided'))
     end
   end
 end

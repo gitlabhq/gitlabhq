@@ -184,11 +184,13 @@ module Gitlab
           commit_sha: @commit.sha,
           project: @commit.project,
           x509_certificate_id: certificate.id,
-          verification_status: verification_status
+          verification_status: verification_status(certificate)
         }
       end
 
-      def verification_status
+      def verification_status(certificate)
+        return :unverified if certificate.revoked?
+
         if verified_signature && certificate_email == @commit.committer_email
           :verified
         else

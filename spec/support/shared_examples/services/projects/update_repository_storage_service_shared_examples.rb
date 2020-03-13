@@ -22,14 +22,13 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
   context 'when the move succeeds', :clean_gitlab_redis_shared_state do
     before do
-      allow(project_repository_double).to receive(:fetch_repository_as_mirror)
+      allow(project_repository_double).to receive(:replicate)
         .with(project.repository.raw)
-        .and_return(true)
       allow(project_repository_double).to receive(:checksum)
         .and_return(project_repository_checksum)
 
-      allow(repository_double).to receive(:fetch_repository_as_mirror)
-        .with(repository.raw).and_return(true)
+      allow(repository_double).to receive(:replicate)
+        .with(repository.raw)
       allow(repository_double).to receive(:checksum)
         .and_return(repository_checksum)
     end
@@ -82,20 +81,23 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
   context 'when the project is already on the target storage' do
     it 'bails out and does nothing' do
-      expect do
-        subject.execute(project.repository_storage)
-      end.to raise_error(described_class::RepositoryAlreadyMoved)
+      result = subject.execute(project.repository_storage)
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to match(/repository and source have the same storage/)
     end
   end
 
   context "when the move of the #{repository_type} repository fails" do
     it 'unmarks the repository as read-only without updating the repository storage' do
-      allow(project_repository_double).to receive(:fetch_repository_as_mirror)
-        .with(project.repository.raw).and_return(true)
+      allow(project_repository_double).to receive(:replicate)
+        .with(project.repository.raw)
       allow(project_repository_double).to receive(:checksum)
         .and_return(project_repository_checksum)
-      allow(repository_double).to receive(:fetch_repository_as_mirror)
-        .with(repository.raw).and_return(false)
+
+      allow(repository_double).to receive(:replicate)
+        .with(repository.raw)
+        .and_raise(Gitlab::Git::CommandError)
 
       expect(GitlabShellWorker).not_to receive(:perform_async)
 
@@ -109,13 +111,13 @@ RSpec.shared_examples 'moves repository to another storage' do |repository_type|
 
   context "when the checksum of the #{repository_type} repository does not match" do
     it 'unmarks the repository as read-only without updating the repository storage' do
-      allow(project_repository_double).to receive(:fetch_repository_as_mirror)
-        .with(project.repository.raw).and_return(true)
+      allow(project_repository_double).to receive(:replicate)
+        .with(project.repository.raw)
       allow(project_repository_double).to receive(:checksum)
         .and_return(project_repository_checksum)
 
-      allow(repository_double).to receive(:fetch_repository_as_mirror)
-        .with(repository.raw).and_return(true)
+      allow(repository_double).to receive(:replicate)
+        .with(repository.raw)
       allow(repository_double).to receive(:checksum)
         .and_return('not matching checksum')
 

@@ -560,6 +560,9 @@ msgstr ""
 msgid "(removed)"
 msgstr ""
 
+msgid "(revoked)"
+msgstr ""
+
 msgid "*"
 msgstr ""
 
@@ -10887,6 +10890,9 @@ msgid "Invalid Login or password"
 msgstr ""
 
 msgid "Invalid URL"
+msgstr ""
+
+msgid "Invalid cursor value provided"
 msgstr ""
 
 msgid "Invalid date"
@@ -21368,9 +21374,6 @@ msgid "UpdateProject|Project could not be updated!"
 msgstr ""
 
 msgid "UpdateRepositoryStorage|Error moving repository storage for %{project_full_path} - %{message}"
-msgstr ""
-
-msgid "UpdateRepositoryStorage|Failed to fetch %{type} repository as mirror"
 msgstr ""
 
 msgid "UpdateRepositoryStorage|Failed to verify %{type} repository checksum from %{old} to %{new}"

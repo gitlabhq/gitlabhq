@@ -43,6 +43,28 @@ RSpec.describe X509Certificate do
       expect(certificate.subject).to eq(subject)
       expect(certificate.email).to eq(email)
     end
+
+    it 'calls mark_commit_signatures_unverified' do
+      expect_any_instance_of(described_class).to receive(:mark_commit_signatures_unverified)
+
+      described_class.safe_create!(attributes)
+    end
+
+    context 'certificate revocation handling' do
+      let(:x509_certificate) { create(:x509_certificate) }
+
+      it 'starts a revoke worker if certificate is revoked' do
+        expect(X509CertificateRevokeWorker).to receive(:perform_async).with(x509_certificate.id)
+
+        x509_certificate.revoked!
+      end
+
+      it 'does not starts a revoke worker for good certificates' do
+        expect(X509CertificateRevokeWorker).not_to receive(:perform_async).with(x509_certificate.id)
+
+        x509_certificate
+      end
+    end
   end
 
   describe 'validators' do

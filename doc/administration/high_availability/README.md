@@ -67,7 +67,7 @@ This configuration is supported in [GitLab Premium and Ultimate](https://about.g
 
 References:
 
-- [Geo Documentation](../../gitlab-geo/README.html)
+- [Geo Documentation](../geo/replication/index.md)
 - [GitLab Geo with a highly available configuration](../geo/replication/high_availability.md)
 
 ## Recommended setups based on number of users

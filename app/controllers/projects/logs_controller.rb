@@ -48,7 +48,7 @@ module Projects
     end
 
     def elasticsearch_params
-      params.permit(:container_name, :pod_name, :search, :start, :end)
+      params.permit(:container_name, :pod_name, :search, :start, :end, :cursor)
     end
 
     def environment

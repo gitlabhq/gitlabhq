@@ -213,20 +213,16 @@ describe('mapToDashboardViewModel', () => {
       expect(getMappedMetric(dashboard)).toEqual({
         label: expect.any(String),
         metricId: expect.any(String),
-        metric_id: expect.any(String),
       });
     });
 
-    it('creates a metric with a correct ids', () => {
+    it('creates a metric with a correct id', () => {
       const dashboard = dashboardWithMetric({
         id: 'http_responses',
         metric_id: 1,
       });
 
-      expect(getMappedMetric(dashboard)).toMatchObject({
-        metricId: '1_http_responses',
-        metric_id: '1_http_responses',
-      });
+      expect(getMappedMetric(dashboard).metricId).toEqual('1_http_responses');
     });
 
     it('creates a metric with a default label', () => {

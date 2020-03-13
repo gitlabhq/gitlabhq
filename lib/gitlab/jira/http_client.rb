@@ -15,7 +15,7 @@ module Gitlab
         unless result.response.is_a?(Net::HTTPSuccess)
           Gitlab::ErrorTracking.track_and_raise_exception(
             JIRA::HTTPError.new(result.response),
-            response_body: result.body
+            response: result.body
           )
         end
 

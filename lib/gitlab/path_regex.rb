@@ -42,7 +42,6 @@ module Gitlab
       invites
       jwt
       login
-      notification_settings
       oauth
       profile
       projects

@@ -64,13 +64,13 @@ source projects, GitLab grants access to **Gold** features for all GitLab.com
 
 #### Self-managed
 
-A self-managed subscription uses a hybrid model. You pay for a subscription according to the maximum number of users enabled during the subscription period. At the end of the subscription period, the maximum number of simultaneous users in the self-managed installation is checked. If the number of users is higher than your subscription, you are billed for the extra users. The maximum number of simultaneous users is also used to calculate the cost of subscription renewal.
+A self-managed subscription uses a hybrid model. You pay for a subscription according to the maximum number of users enabled during the subscription period. For instances that aren't air-gapped or on a closed network, the maximum number of simultaneous users in the self-managed installation is checked each quarter, using [Seat Link](#seat-link).
 
 Every occupied seat, whether by person, job, or bot is counted in the subscription, with the following exceptions:
 
 - Blocked users who are blocked prior to the renewal of a subscription won't be counted as active users for the renewal subscription. They may count as active users in the subscription period in which they were originally added.
 - Members with Guest permissions on an Ultimate subscription.
-- Special internal GitLab accounts: `Ghost User` and `Support Bot`.
+- GitLab-created service accounts: `Ghost User` and `Support Bot`.
 
 NOTE: **Note:**
 If you have LDAP integration enabled, anyone in the configured domain can sign up for a GitLab account. This can result in an unexpected bill at time of renewal. Consider [disabling new signups](../user/admin_area/settings/sign_up_restrictions.md) and managing new users manually instead.
@@ -236,6 +236,65 @@ The following will be emailed to you:
 
 - A payment receipt. You can also access this information in the Customers Portal under **Payment History**.
 - A new license. [Upload this license](../user/admin_area/license.md#uploading-your-license) to your instance to use it.
+
+### Seat Link
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208832) in [GitLab Starter](https://about.gitlab.com/pricing) 12.9.
+
+Seat Link allows us to provide our self-managed customers with prorated charges for user growth throughout the year using a quarterly reconciliation process.
+
+Seat Link sends to GitLab daily a count of all users in connected self-managed instances. That information is used to automate prorated reconciliations. The data is sent securely through an encrypted HTTPS connection.
+
+Seat Link is mandatory because we need the user count data to enable prorated billing. Seat Link provides **only** the following information to GitLab:
+
+- Date
+- Historical maximum user count
+- License key
+
+Here is an example of the POST request:
+
+```plaintext
+{
+  date: '2020-01-29',
+  license_key: 'ZXlKa1lYUmhJam9pWm5WNmVsTjVZekZ2YTJoV2NucDBh
+RXRxTTA5amQxcG1VMVZqDQpXR3RwZEc5SGIyMVhibmxuZDJ0NWFrNXJTVzVH
+UzFCT1hHNVRiVFIyT0ZaUFlVSm1OV1ZGV0VObE1uVk4NCk4xY3ZkM1F4Y2to
+MFFuVklXSFJvUWpSM01VdE9SVE5rYkVjclZrdDJORkpOTlhka01qaE5aalpj
+YmxSMg0KWVd3MFNFTldTRmRtV1ZGSGRDOUhPR05oUVZvNUsxVnRXRUZIZFU1
+U1VqUm5aVFZGZUdwTWIxbDFZV1EyDQphV1JTY1V4c1ZYSjNPVGhrYVZ4dVlu
+TkpWMHRJZUU5dmF6ZEJRVVkxTlVWdFUwMTNSMGRHWm5SNlJFcFYNClQyVkJl
+VXc0UzA0NWFFb3ZlSFJrZW0xbVRqUlZabkZ4U1hWcWNXRnZYRzVaTm5GSmVW
+UnJVR1JQYTJKdA0KU0ZZclRHTmFPRTVhZEVKMUt6UjRkSE15WkRCT1UyNWlS
+MGRJZDFCdmRFWk5Za2h4Tm5sT1VsSktlVlYyDQpXRmhjYmxSeU4wRnRNMU5q
+THpCVWFGTmpTMnh3UWpOWVkyc3pkbXBST1dnelZHY3hUV3hxVDIwdlZYRlQN
+Ck9EWTJSVWx4WlVOT01EQXhVRlZ3ZGs1Rk0xeHVSVEJTTDFkMWJUQTVhV1ZK
+WjBORFdWUktaRXNyVnpsTw0KTldkWWQwWTNZa05VWlZBMmRUVk9kVUpxT1hV
+Mk5VdDFTUzk0TUU5V05XbFJhWGh0WEc1cVkyWnhaeTlXDQpTMEpyZWt0cmVY
+bzBOVGhFVG1oU1oxSm5WRFprY0Uwck0wZEdhVUpEV1d4a1RXZFRjVU5tYTB0
+a2RteEQNCmNWTlFSbFpuWlZWY2JpdFVVbXhIV0d4MFRuUnRWbkJKTkhwSFJt
+TnRaMGsyV0U1MFFUUXJWMUJVTWtOSA0KTVhKUWVGTkxPVTkzV1VsMlVUUldk
+R3hNTWswNU1USlNjRnh1U1UxTGJTdHRRM1l5YTFWaWJtSlBTMkUxDQplRkpL
+SzJSckszaG1hVXB1ZVRWT1UwdHZXV0ZOVG1WamMyVjRPV0pSUlZkUU9UUnpU
+VWh2Wlc5cFhHNUgNClNtRkdVMDUyY1RGMWNGTnhVbU5JUkZkeGVWcHVRMnBh
+VTBSUGR6VnRNVGhvWTFBM00zVkZlVzFOU0djMA0KY1ZFM1FWSlplSFZ5UzFS
+aGIxTmNia3BSUFQxY2JpSXNJbxRsZVNJNkltZFhiVzFGVkRZNWNFWndiV2Rt
+DQpNWEIyY21SbFFrdFNZamxaYURCdVVHcHhiRlV3Tm1WQ2JGSlFaSFJ3Y0Rs
+cFMybGhSMnRPTkZOMWNVNU0NClVGeHVTa3N6TUUxcldVOTVWREl6WVVWdk5U
+ZGhWM1ZvVjJkSFRtZFBZVXRJTkVGcE55dE1NRE5dWnpWeQ0KWlV0aWJsVk9T
+RmRzVVROUGRHVXdWR3hEWEc1MWjWaEtRMGQ2YTAxWFpUZHJURTVET0doV00w
+ODRWM0V2DQphV2M1YWs5cWFFWk9aR3BYTm1aVmJXNUNaazlXVUVRMWRrMXpj
+bTFDV0V4dldtRmNibFpTTWpWU05VeFMNClEwTjRNMWxWCUtSVGEzTTJaV2xE
+V0hKTFRGQmpURXRsZFVaQlNtRnJTbkpPZGtKdlUyUmlNVWxNWWpKaQ0KT0dw
+c05YbE1kVnh1YzFWbk5VZDFhbU56ZUM5Tk16TXZUakZOVW05cVpsVTNObEo0
+TjJ4eVlVUkdkWEJtDQpkSHByYWpreVJrcG9UVlo0Y0hKSU9URndiV2RzVFdO
+VlhHNXRhVmszTkV0SVEzcEpNMWRyZEVoRU4ydHINCmRIRnFRVTlCVUVVM1pV
+SlRORE4xUjFaYVJGb3JlWGM5UFZ4dUlpd2lhWFlpt2lKV00yRnNVbk5RTjJk
+Sg0KU1hNMGExaE9SVGR2V2pKQlBUMWNiaUo5DQo=',
+  max_historical_user_count: 10
+}
+```
+
+For air-gapped or closed network customers, the existing [true-up model](#users-over-license) will be used. Prorated charges are not possible without user count data.
 
 ### Renew or change a GitLab.com subscription
 

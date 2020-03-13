@@ -32,8 +32,8 @@ describe Projects::UpdateRepositoryStorageService do
             project.repository.path_to_repo
           end
 
-          expect(project_repository_double).to receive(:fetch_repository_as_mirror)
-            .with(project.repository.raw).and_return(true)
+          expect(project_repository_double).to receive(:replicate)
+            .with(project.repository.raw)
           expect(project_repository_double).to receive(:checksum)
             .and_return(checksum)
 
@@ -49,16 +49,18 @@ describe Projects::UpdateRepositoryStorageService do
 
       context 'when the project is already on the target storage' do
         it 'bails out and does nothing' do
-          expect do
-            subject.execute(project.repository_storage)
-          end.to raise_error(described_class::RepositoryAlreadyMoved)
+          result = subject.execute(project.repository_storage)
+
+          expect(result[:status]).to eq(:error)
+          expect(result[:message]).to match(/repository and source have the same storage/)
         end
       end
 
       context 'when the move fails' do
         it 'unmarks the repository as read-only without updating the repository storage' do
-          expect(project_repository_double).to receive(:fetch_repository_as_mirror)
-            .with(project.repository.raw).and_return(false)
+          expect(project_repository_double).to receive(:replicate)
+            .with(project.repository.raw)
+            .and_raise(Gitlab::Git::CommandError)
           expect(GitlabShellWorker).not_to receive(:perform_async)
 
           result = subject.execute('test_second_storage')
@@ -71,8 +73,8 @@ describe Projects::UpdateRepositoryStorageService do
 
       context 'when the checksum does not match' do
         it 'unmarks the repository as read-only without updating the repository storage' do
-          expect(project_repository_double).to receive(:fetch_repository_as_mirror)
-            .with(project.repository.raw).and_return(true)
+          expect(project_repository_double).to receive(:replicate)
+            .with(project.repository.raw)
           expect(project_repository_double).to receive(:checksum)
             .and_return('not matching checksum')
           expect(GitlabShellWorker).not_to receive(:perform_async)
@@ -89,8 +91,8 @@ describe Projects::UpdateRepositoryStorageService do
         let!(:pool) { create(:pool_repository, :ready, source_project: project) }
 
         it 'leaves the pool' do
-          expect(project_repository_double).to receive(:fetch_repository_as_mirror)
-            .with(project.repository.raw).and_return(true)
+          expect(project_repository_double).to receive(:replicate)
+            .with(project.repository.raw)
           expect(project_repository_double).to receive(:checksum)
             .and_return(checksum)
 

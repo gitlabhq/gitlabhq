@@ -35,43 +35,39 @@ export REGION=us-central1 # the GCP region where the GKE cluster is provisioned.
 
 ## Configure RBAC permissions
 
-- For a non-GitLab managed cluster(s), ensure that the service account for the token provided can manage resources in the `database.crossplane.io` API group.
-Manually grant GitLab's service account the ability to manage resources in the
-`database.crossplane.io` API group. The Aggregated ClusterRole allows us to do that.
-​
-NOTE: **Note:**
-For a non-GitLab managed cluster, ensure that the service account for the token provided can manage resources in the `database.crossplane.io` API group.
-​1. Save the following YAML as `crossplane-database-role.yaml`:
+- For GitLab-managed clusters, RBAC is configured automatically.
 
-```shell
-cat > crossplane-database-role.yaml <<EOF
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: crossplane-database-role
-  labels:
-    rbac.authorization.k8s.io/aggregate-to-edit: "true"
-rules:
-- apiGroups:
-  - database.crossplane.io
-  resources:
-  - postgresqlinstances
-  verbs:
-  - get
-  - list
-  - create
-  - update
-  - delete
-  - patch
-  - watch
-EOF
-```
+- For non-GitLab managed clusters, ensure that the service account for the token provided can manage resources in the `database.crossplane.io` API group:
 
-Once the file is created, apply it with the following command in order to create the necessary role:
+  1. Save the following YAML as `crossplane-database-role.yaml`:
 
-```shell
-kubectl apply -f crossplane-database-role.yaml
-```
+      ```yaml
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      metadata:
+        name: crossplane-database-role
+        labels:
+          rbac.authorization.k8s.io/aggregate-to-edit: "true"
+      rules:
+      - apiGroups:
+        - database.crossplane.io
+        resources:
+        - postgresqlinstances
+        verbs:
+        - get
+        - list
+        - create
+        - update
+        - delete
+        - patch
+        - watch
+      ```
+
+  1. Apply the cluster role to the cluster:
+
+      ```shell
+      kubectl apply -f crossplane-database-role.yaml
+      ```
 
 ## Configure Crossplane with a cloud provider
 
