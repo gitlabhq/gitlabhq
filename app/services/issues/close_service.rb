@@ -18,9 +18,9 @@ module Issues
     # The code calling this method is responsible for ensuring that a user is
     # allowed to close the given issue.
     def close_issue(issue, closed_via: nil, notifications: true, system_note: true)
-      if project.jira_tracker_active? && issue.is_a?(ExternalIssue)
-        project.jira_service.close_issue(closed_via, issue)
-        todo_service.close_issue(issue, current_user)
+      if issue.is_a?(ExternalIssue)
+        close_external_issue(issue, closed_via)
+
         return issue
       end
 
@@ -46,6 +46,13 @@ module Issues
     end
 
     private
+
+    def close_external_issue(issue, closed_via)
+      return unless project.external_issue_tracker&.support_close_issue?
+
+      project.external_issue_tracker.close_issue(closed_via, issue)
+      todo_service.close_issue(issue, current_user)
+    end
 
     def create_note(issue, current_commit)
       SystemNoteService.change_status(issue, issue.project, current_user, issue.state, current_commit)

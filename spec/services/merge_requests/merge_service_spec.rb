@@ -158,7 +158,7 @@ describe MergeRequests::MergeService do
           end
 
           it 'does not close issue' do
-            allow(jira_tracker).to receive_messages(jira_issue_transition_id: nil)
+            jira_tracker.update(jira_issue_transition_id: nil)
 
             expect_any_instance_of(JiraService).not_to receive(:transition_issue)
 

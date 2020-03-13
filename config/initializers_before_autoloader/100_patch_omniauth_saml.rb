@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
+require 'omniauth/strategies/saml'
+
 module OmniAuth
   module Strategies
     class SAML
-      extend ::Gitlab::Utils::Override
-
       # NOTE: This method duplicates code from omniauth-saml
       #       so that we can access authn_request to store it
       #       See: https://github.com/omniauth/omniauth-saml/issues/172
-      override :request_phase
       def request_phase
         authn_request = OneLogin::RubySaml::Authrequest.new
 

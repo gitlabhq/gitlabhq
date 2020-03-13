@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class JiraService < IssueTrackerService
+  extend ::Gitlab::Utils::Override
   include Gitlab::Routing
   include ApplicationHelper
   include ActionView::Helpers::AssetUrlHelper
@@ -203,6 +204,16 @@ class JiraService < IssueTrackerService
   # We are requesting the project that belongs to the project key.
   def test_data(user = nil, project = nil)
     nil
+  end
+
+  override :support_close_issue?
+  def support_close_issue?
+    true
+  end
+
+  override :support_cross_reference?
+  def support_cross_reference?
+    true
   end
 
   private

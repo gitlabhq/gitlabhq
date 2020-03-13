@@ -9949,6 +9949,9 @@ msgstr ""
 msgid "GroupRoadmap|Something went wrong while fetching epics"
 msgstr ""
 
+msgid "GroupRoadmap|Something went wrong while fetching milestones"
+msgstr ""
+
 msgid "GroupRoadmap|Sorry, no epics matched your search"
 msgstr ""
 

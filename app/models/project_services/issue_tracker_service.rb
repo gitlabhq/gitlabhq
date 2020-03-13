@@ -151,6 +151,14 @@ class IssueTrackerService < Service
     result
   end
 
+  def support_close_issue?
+    false
+  end
+
+  def support_cross_reference?
+    false
+  end
+
   private
 
   def enabled_in_gitlab_config

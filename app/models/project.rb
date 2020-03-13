@@ -1190,6 +1190,10 @@ class Project < ApplicationRecord
     update_column(:has_external_issue_tracker, services.external_issue_trackers.any?) if Gitlab::Database.read_write?
   end
 
+  def external_references_supported?
+    external_issue_tracker&.support_cross_reference?
+  end
+
   def has_wiki?
     wiki_enabled? || has_external_wiki?
   end

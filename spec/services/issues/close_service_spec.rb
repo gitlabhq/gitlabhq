@@ -70,6 +70,38 @@ describe Issues::CloseService do
   end
 
   describe '#close_issue' do
+    context 'with external issue' do
+      context 'with an active external issue tracker supporting close_issue' do
+        let!(:external_issue_tracker) { create(:jira_service, project: project) }
+
+        it 'closes the issue on the external issue tracker' do
+          expect(project.external_issue_tracker).to receive(:close_issue)
+
+          described_class.new(project, user).close_issue(external_issue)
+        end
+      end
+
+      context 'with innactive external issue tracker supporting close_issue' do
+        let!(:external_issue_tracker) { create(:jira_service, project: project, active: false) }
+
+        it 'does not close the issue on the external issue tracker' do
+          expect(project.external_issue_tracker).not_to receive(:close_issue)
+
+          described_class.new(project, user).close_issue(external_issue)
+        end
+      end
+
+      context 'with an active external issue tracker not supporting close_issue' do
+        let!(:external_issue_tracker) { create(:bugzilla_service, project: project) }
+
+        it 'does not close the issue on the external issue tracker' do
+          expect(project.external_issue_tracker).not_to receive(:close_issue)
+
+          described_class.new(project, user).close_issue(external_issue)
+        end
+      end
+    end
+
     context "closed by a merge request", :sidekiq_might_not_need_inline do
       it 'mentions closure via a merge request' do
         perform_enqueued_jobs do

@@ -144,7 +144,7 @@ module SystemNotes
     #
     # Returns Boolean
     def cross_reference_disallowed?(mentioner)
-      return true if noteable.is_a?(ExternalIssue) && !noteable.project.jira_tracker_active?
+      return true if noteable.is_a?(ExternalIssue) && !noteable.project&.external_references_supported?
       return false unless mentioner.is_a?(MergeRequest)
       return false unless noteable.is_a?(Commit)
 
