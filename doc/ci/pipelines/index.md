@@ -1,4 +1,5 @@
 ---
+disqus_identifier: 'https://docs.gitlab.com/ee/ci/pipelines.html'
 type: reference
 ---
 

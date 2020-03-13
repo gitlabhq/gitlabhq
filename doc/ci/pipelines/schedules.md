@@ -1,4 +1,5 @@
 ---
+disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/schedules.html'
 type: reference, howto
 ---
 

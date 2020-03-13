@@ -149,6 +149,16 @@ FactoryBot.define do
       end
     end
 
+    trait :dotenv do
+      file_type { :dotenv }
+      file_format { :gzip }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/build.env.gz'), 'application/x-gzip')
+      end
+    end
+
     trait :correct_checksum do
       after(:build) do |artifact, evaluator|
         artifact.file_sha256 = Digest::SHA256.file(artifact.file.path).hexdigest

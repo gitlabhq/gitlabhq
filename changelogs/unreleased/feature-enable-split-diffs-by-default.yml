@@ -1,0 +1,5 @@
+---
+title: Diffs load each view style separately, on demand
+merge_request: 24821
+author:
+type: performance

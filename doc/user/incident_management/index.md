@@ -39,6 +39,8 @@ To select your issue template for use within Incident Management:
 GitLab can react to the alerts that your applications and services may be
 triggering by automatically creating issues, and alerting developers via email.
 
+The emails will be sent to [owners and maintainers](../permissions.md) of the project and will contain details on the alert as well as a link to see more information.
+
 ### Prometheus alerts
 
 Prometheus alerts can be set up in both:

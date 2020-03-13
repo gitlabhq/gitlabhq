@@ -1,4 +1,5 @@
 ---
+disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/settings.html'
 type: reference, howto
 ---
 

@@ -7,6 +7,11 @@ describe PagesDomain do
 
   subject(:pages_domain) { described_class.new }
 
+  # Locking in date due to cert expiration date https://gitlab.com/gitlab-org/gitlab/-/issues/210557#note_304749257
+  around do |example|
+    Timecop.travel(Time.new(2020, 3, 12)) { example.run }
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:serverless_domain_clusters) }

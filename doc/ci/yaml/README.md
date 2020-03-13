@@ -2264,6 +2264,25 @@ concatenated into a single file. Use a filename pattern (`junit: rspec-*.xml`),
 an array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`), or a
 combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 
+##### `artifacts:reports:dotenv`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/17066) in GitLab 12.9. Requires GitLab Runner 11.5 and later.
+
+The `dotenv` report collects a set of environment variables as artifacts.
+
+The collected variables are registered as runtime-created variables of the job,
+which is useful to [set dynamic environment URLs after a job finishes](../environments.md#set-dynamic-environment-urls-after-a-job-finishes).
+It is not available for download through the web interface.
+
+There are a couple of limitations on top of the [original dotenv rules](https://github.com/motdotla/dotenv#rules).
+
+- The variable key can contain only letters, digits and underscore ('_').
+- The size of dotenv file must be smaller than 5 kilobytes.
+- The number of variables must be less than 10.
+- It doesn't support variable substitution in the dotenv file itself.
+- It doesn't support empty lines and comments (`#`) in dotenv file.
+- It doesn't support quote escape, spaces in a quote, a new line expansion in a quote, in dotenv file.
+
 ##### `artifacts:reports:codequality` **(STARTER)**
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.

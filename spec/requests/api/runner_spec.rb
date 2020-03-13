@@ -1937,6 +1937,49 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
             end
           end
+
+          context 'when artifact_type is dotenv' do
+            context 'when artifact_format is gzip' do
+              let(:file_upload) { fixture_file_upload('spec/fixtures/build.env.gz') }
+              let(:params) { { artifact_type: :dotenv, artifact_format: :gzip } }
+
+              it 'stores dotenv file' do
+                upload_artifacts(file_upload, headers_with_token, params)
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(job.reload.job_artifacts_dotenv).not_to be_nil
+              end
+
+              it 'parses dotenv file' do
+                expect do
+                  upload_artifacts(file_upload, headers_with_token, params)
+                end.to change { job.job_variables.count }.from(0).to(2)
+              end
+
+              context 'when parse error happens' do
+                let(:file_upload) { fixture_file_upload('spec/fixtures/ci_build_artifacts_metadata.gz') }
+
+                it 'returns an error' do
+                  upload_artifacts(file_upload, headers_with_token, params)
+
+                  expect(response).to have_gitlab_http_status(:bad_request)
+                  expect(json_response['message']).to eq('Invalid Format')
+                end
+              end
+            end
+
+            context 'when artifact_format is raw' do
+              let(:file_upload) { fixture_file_upload('spec/fixtures/build.env.gz') }
+              let(:params) { { artifact_type: :dotenv, artifact_format: :raw } }
+
+              it 'returns an error' do
+                upload_artifacts(file_upload, headers_with_token, params)
+
+                expect(response).to have_gitlab_http_status(:bad_request)
+                expect(job.reload.job_artifacts_dotenv).to be_nil
+              end
+            end
+          end
         end
 
         context 'when artifacts already exist for the job' do

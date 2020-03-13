@@ -780,6 +780,7 @@ ActiveRecord::Schema.define(version: 2020_03_12_163407) do
     t.string "encrypted_value_iv"
     t.bigint "job_id", null: false
     t.integer "variable_type", limit: 2, default: 1, null: false
+    t.integer "source", limit: 2, default: 0, null: false
     t.index ["job_id"], name: "index_ci_job_variables_on_job_id"
     t.index ["key", "job_id"], name: "index_ci_job_variables_on_key_and_job_id", unique: true
   end

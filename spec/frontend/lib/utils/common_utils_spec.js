@@ -539,193 +539,382 @@ describe('common_utils', () => {
     });
   });
 
-  describe('convertObjectPropsToCamelCase', () => {
-    it('returns new object with camelCase property names by converting object with snake_case names', () => {
-      const snakeRegEx = /(_\w)/g;
-      const mockObj = {
-        id: 1,
-        group_name: 'GitLab.org',
-        absolute_web_url: 'https://gitlab.com/gitlab-org/',
-      };
-      const mappings = {
-        id: 'id',
-        groupName: 'group_name',
-        absoluteWebUrl: 'absolute_web_url',
-      };
+  describe('convertObjectProps*', () => {
+    const mockConversionFunction = prop => `${prop}_converted`;
+    const isEmptyObject = obj =>
+      typeof obj === 'object' && obj !== null && Object.keys(obj).length === 0;
 
-      const convertedObj = commonUtils.convertObjectPropsToCamelCase(mockObj);
+    const mockObjects = {
+      convertObjectProps: {
+        obj: {
+          id: 1,
+          group_name: 'GitLab.org',
+          absolute_web_url: 'https://gitlab.com/gitlab-org/',
+        },
+        objNested: {
+          project_name: 'GitLab CE',
+          group_name: 'GitLab.org',
+          license_type: 'MIT',
+          tech_stack: {
+            backend: 'Ruby',
+            frontend_framework: 'Vue',
+            database: 'PostgreSQL',
+          },
+        },
+      },
+      convertObjectPropsToCamelCase: {
+        obj: {
+          id: 1,
+          group_name: 'GitLab.org',
+          absolute_web_url: 'https://gitlab.com/gitlab-org/',
+        },
+        objNested: {
+          project_name: 'GitLab CE',
+          group_name: 'GitLab.org',
+          license_type: 'MIT',
+          tech_stack: {
+            backend: 'Ruby',
+            frontend_framework: 'Vue',
+            database: 'PostgreSQL',
+          },
+        },
+      },
+      convertObjectPropsToSnakeCase: {
+        obj: {
+          id: 1,
+          groupName: 'GitLab.org',
+          absoluteWebUrl: 'https://gitlab.com/gitlab-org/',
+        },
+        objNested: {
+          projectName: 'GitLab CE',
+          groupName: 'GitLab.org',
+          licenseType: 'MIT',
+          techStack: {
+            backend: 'Ruby',
+            frontendFramework: 'Vue',
+            database: 'PostgreSQL',
+          },
+        },
+      },
+    };
 
-      Object.keys(convertedObj).forEach(prop => {
-        expect(snakeRegEx.test(prop)).toBeFalsy();
-        expect(convertedObj[prop]).toBe(mockObj[mappings[prop]]);
+    describe('convertObjectProps', () => {
+      it('returns an empty object if `conversionFunction` parameter is not a function', () => {
+        const result = commonUtils.convertObjectProps(null, mockObjects.convertObjectProps.obj);
+
+        expect(isEmptyObject(result)).toBeTruthy();
       });
     });
 
-    it('return empty object if method is called with null or undefined', () => {
-      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase(null)).length).toBe(0);
-      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase()).length).toBe(0);
-      expect(Object.keys(commonUtils.convertObjectPropsToCamelCase({})).length).toBe(0);
-    });
+    describe.each`
+      functionName                       | mockObj                                          | mockObjNested
+      ${'convertObjectProps'}            | ${mockObjects.convertObjectProps.obj}            | ${mockObjects.convertObjectProps.objNested}
+      ${'convertObjectPropsToCamelCase'} | ${mockObjects.convertObjectPropsToCamelCase.obj} | ${mockObjects.convertObjectPropsToCamelCase.objNested}
+      ${'convertObjectPropsToSnakeCase'} | ${mockObjects.convertObjectPropsToSnakeCase.obj} | ${mockObjects.convertObjectPropsToSnakeCase.objNested}
+    `('$functionName', ({ functionName, mockObj, mockObjNested }) => {
+      const testFunction =
+        functionName === 'convertObjectProps'
+          ? (obj, options = {}) =>
+              commonUtils.convertObjectProps(mockConversionFunction, obj, options)
+          : commonUtils[functionName];
 
-    it('does not deep-convert by default', () => {
-      const obj = {
-        snake_key: {
-          child_snake_key: 'value',
-        },
-      };
-
-      expect(commonUtils.convertObjectPropsToCamelCase(obj)).toEqual({
-        snakeKey: {
-          child_snake_key: 'value',
-        },
+      it('returns an empty object if `obj` parameter is null, undefined or an empty object', () => {
+        expect(isEmptyObject(testFunction(null))).toBeTruthy();
+        expect(isEmptyObject(testFunction())).toBeTruthy();
+        expect(isEmptyObject(testFunction({}))).toBeTruthy();
       });
-    });
 
-    describe('convertObjectPropsToSnakeCase', () => {
-      it('converts each object key to snake case', () => {
-        const obj = {
-          some: 'some',
-          'cool object': 'cool object',
-          likeThisLongOne: 'likeThisLongOne',
+      it('converts object properties', () => {
+        const expected = {
+          convertObjectProps: {
+            id_converted: 1,
+            group_name_converted: 'GitLab.org',
+            absolute_web_url_converted: 'https://gitlab.com/gitlab-org/',
+          },
+          convertObjectPropsToCamelCase: {
+            id: 1,
+            groupName: 'GitLab.org',
+            absoluteWebUrl: 'https://gitlab.com/gitlab-org/',
+          },
+          convertObjectPropsToSnakeCase: {
+            id: 1,
+            group_name: 'GitLab.org',
+            absolute_web_url: 'https://gitlab.com/gitlab-org/',
+          },
         };
 
-        expect(commonUtils.convertObjectPropsToSnakeCase(obj)).toEqual({
-          some: 'some',
-          cool_object: 'cool object',
-          like_this_long_one: 'likeThisLongOne',
-        });
+        expect(testFunction(mockObj)).toEqual(expected[functionName]);
       });
 
-      it('returns an empty object if there are no keys', () => {
-        ['', {}, [], null].forEach(badObj => {
-          expect(commonUtils.convertObjectPropsToSnakeCase(badObj)).toEqual({});
-        });
-      });
-    });
-
-    describe('with options', () => {
-      const objWithoutChildren = {
-        project_name: 'GitLab CE',
-        group_name: 'GitLab.org',
-        license_type: 'MIT',
-      };
-
-      const objWithChildren = {
-        project_name: 'GitLab CE',
-        group_name: 'GitLab.org',
-        license_type: 'MIT',
-        tech_stack: {
-          backend: 'Ruby',
-          frontend_framework: 'Vue',
-          database: 'PostgreSQL',
-        },
-      };
-
-      describe('when options.deep is true', () => {
-        it('converts object with child objects', () => {
-          const obj = {
-            snake_key: {
-              child_snake_key: 'value',
-            },
-          };
-
-          expect(commonUtils.convertObjectPropsToCamelCase(obj, { deep: true })).toEqual({
-            snakeKey: {
-              childSnakeKey: 'value',
-            },
-          });
-        });
-
-        it('converts array with child objects', () => {
-          const arr = [
-            {
-              child_snake_key: 'value',
-            },
-          ];
-
-          expect(commonUtils.convertObjectPropsToCamelCase(arr, { deep: true })).toEqual([
-            {
-              childSnakeKey: 'value',
-            },
-          ]);
-        });
-
-        it('converts array with child arrays', () => {
-          const arr = [
-            [
-              {
-                child_snake_key: 'value',
-              },
-            ],
-          ];
-
-          expect(commonUtils.convertObjectPropsToCamelCase(arr, { deep: true })).toEqual([
-            [
-              {
-                childSnakeKey: 'value',
-              },
-            ],
-          ]);
-        });
-      });
-
-      describe('when options.dropKeys is provided', () => {
-        it('discards properties mentioned in `dropKeys` array', () => {
-          expect(
-            commonUtils.convertObjectPropsToCamelCase(objWithoutChildren, {
-              dropKeys: ['group_name'],
-            }),
-          ).toEqual({
-            projectName: 'GitLab CE',
-            licenseType: 'MIT',
-          });
-        });
-
-        it('discards properties mentioned in `dropKeys` array when `deep` is true', () => {
-          expect(
-            commonUtils.convertObjectPropsToCamelCase(objWithChildren, {
-              deep: true,
-              dropKeys: ['group_name', 'database'],
-            }),
-          ).toEqual({
-            projectName: 'GitLab CE',
-            licenseType: 'MIT',
-            techStack: {
+      it('does not deep-convert by default', () => {
+        const expected = {
+          convertObjectProps: {
+            project_name_converted: 'GitLab CE',
+            group_name_converted: 'GitLab.org',
+            license_type_converted: 'MIT',
+            tech_stack_converted: {
               backend: 'Ruby',
-              frontendFramework: 'Vue',
+              frontend_framework: 'Vue',
+              database: 'PostgreSQL',
             },
-          });
-        });
-      });
-
-      describe('when options.ignoreKeyNames is provided', () => {
-        it('leaves properties mentioned in `ignoreKeyNames` array intact', () => {
-          expect(
-            commonUtils.convertObjectPropsToCamelCase(objWithoutChildren, {
-              ignoreKeyNames: ['group_name'],
-            }),
-          ).toEqual({
+          },
+          convertObjectPropsToCamelCase: {
             projectName: 'GitLab CE',
-            licenseType: 'MIT',
-            group_name: 'GitLab.org',
-          });
-        });
-
-        it('leaves properties mentioned in `ignoreKeyNames` array intact when `deep` is true', () => {
-          expect(
-            commonUtils.convertObjectPropsToCamelCase(objWithChildren, {
-              deep: true,
-              ignoreKeyNames: ['group_name', 'frontend_framework'],
-            }),
-          ).toEqual({
-            projectName: 'GitLab CE',
-            group_name: 'GitLab.org',
+            groupName: 'GitLab.org',
             licenseType: 'MIT',
             techStack: {
               backend: 'Ruby',
               frontend_framework: 'Vue',
               database: 'PostgreSQL',
             },
+          },
+          convertObjectPropsToSnakeCase: {
+            project_name: 'GitLab CE',
+            group_name: 'GitLab.org',
+            license_type: 'MIT',
+            tech_stack: {
+              backend: 'Ruby',
+              frontendFramework: 'Vue',
+              database: 'PostgreSQL',
+            },
+          },
+        };
+
+        expect(testFunction(mockObjNested)).toEqual(expected[functionName]);
+      });
+
+      describe('with options', () => {
+        describe('when options.deep is true', () => {
+          const expected = {
+            convertObjectProps: {
+              project_name_converted: 'GitLab CE',
+              group_name_converted: 'GitLab.org',
+              license_type_converted: 'MIT',
+              tech_stack_converted: {
+                backend_converted: 'Ruby',
+                frontend_framework_converted: 'Vue',
+                database_converted: 'PostgreSQL',
+              },
+            },
+            convertObjectPropsToCamelCase: {
+              projectName: 'GitLab CE',
+              groupName: 'GitLab.org',
+              licenseType: 'MIT',
+              techStack: {
+                backend: 'Ruby',
+                frontendFramework: 'Vue',
+                database: 'PostgreSQL',
+              },
+            },
+            convertObjectPropsToSnakeCase: {
+              project_name: 'GitLab CE',
+              group_name: 'GitLab.org',
+              license_type: 'MIT',
+              tech_stack: {
+                backend: 'Ruby',
+                frontend_framework: 'Vue',
+                database: 'PostgreSQL',
+              },
+            },
+          };
+
+          it('converts nested objects', () => {
+            expect(testFunction(mockObjNested, { deep: true })).toEqual(expected[functionName]);
+          });
+
+          it('converts array of nested objects', () => {
+            expect(testFunction([mockObjNested], { deep: true })).toEqual([expected[functionName]]);
+          });
+
+          it('converts array with child arrays', () => {
+            expect(testFunction([[mockObjNested]], { deep: true })).toEqual([
+              [expected[functionName]],
+            ]);
+          });
+        });
+
+        describe('when options.dropKeys is provided', () => {
+          it('discards properties mentioned in `dropKeys` array', () => {
+            const expected = {
+              convertObjectProps: {
+                project_name_converted: 'GitLab CE',
+                license_type_converted: 'MIT',
+                tech_stack_converted: {
+                  backend: 'Ruby',
+                  frontend_framework: 'Vue',
+                  database: 'PostgreSQL',
+                },
+              },
+              convertObjectPropsToCamelCase: {
+                projectName: 'GitLab CE',
+                licenseType: 'MIT',
+                techStack: {
+                  backend: 'Ruby',
+                  frontend_framework: 'Vue',
+                  database: 'PostgreSQL',
+                },
+              },
+              convertObjectPropsToSnakeCase: {
+                project_name: 'GitLab CE',
+                license_type: 'MIT',
+                tech_stack: {
+                  backend: 'Ruby',
+                  frontendFramework: 'Vue',
+                  database: 'PostgreSQL',
+                },
+              },
+            };
+
+            const dropKeys = {
+              convertObjectProps: ['group_name'],
+              convertObjectPropsToCamelCase: ['group_name'],
+              convertObjectPropsToSnakeCase: ['groupName'],
+            };
+
+            expect(
+              testFunction(mockObjNested, {
+                dropKeys: dropKeys[functionName],
+              }),
+            ).toEqual(expected[functionName]);
+          });
+
+          it('discards properties mentioned in `dropKeys` array when `deep` is true', () => {
+            const expected = {
+              convertObjectProps: {
+                project_name_converted: 'GitLab CE',
+                license_type_converted: 'MIT',
+                tech_stack_converted: {
+                  backend_converted: 'Ruby',
+                  frontend_framework_converted: 'Vue',
+                },
+              },
+              convertObjectPropsToCamelCase: {
+                projectName: 'GitLab CE',
+                licenseType: 'MIT',
+                techStack: {
+                  backend: 'Ruby',
+                  frontendFramework: 'Vue',
+                },
+              },
+              convertObjectPropsToSnakeCase: {
+                project_name: 'GitLab CE',
+                license_type: 'MIT',
+                tech_stack: {
+                  backend: 'Ruby',
+                  frontend_framework: 'Vue',
+                },
+              },
+            };
+
+            const dropKeys = {
+              convertObjectProps: ['group_name', 'database'],
+              convertObjectPropsToCamelCase: ['group_name', 'database'],
+              convertObjectPropsToSnakeCase: ['groupName', 'database'],
+            };
+
+            expect(
+              testFunction(mockObjNested, {
+                dropKeys: dropKeys[functionName],
+                deep: true,
+              }),
+            ).toEqual(expected[functionName]);
+          });
+        });
+
+        describe('when options.ignoreKeyNames is provided', () => {
+          it('leaves properties mentioned in `ignoreKeyNames` array intact', () => {
+            const expected = {
+              convertObjectProps: {
+                project_name_converted: 'GitLab CE',
+                group_name: 'GitLab.org',
+                license_type_converted: 'MIT',
+                tech_stack_converted: {
+                  backend: 'Ruby',
+                  frontend_framework: 'Vue',
+                  database: 'PostgreSQL',
+                },
+              },
+              convertObjectPropsToCamelCase: {
+                projectName: 'GitLab CE',
+                group_name: 'GitLab.org',
+                licenseType: 'MIT',
+                techStack: {
+                  backend: 'Ruby',
+                  frontend_framework: 'Vue',
+                  database: 'PostgreSQL',
+                },
+              },
+              convertObjectPropsToSnakeCase: {
+                project_name: 'GitLab CE',
+                groupName: 'GitLab.org',
+                license_type: 'MIT',
+                tech_stack: {
+                  backend: 'Ruby',
+                  frontendFramework: 'Vue',
+                  database: 'PostgreSQL',
+                },
+              },
+            };
+
+            const ignoreKeyNames = {
+              convertObjectProps: ['group_name'],
+              convertObjectPropsToCamelCase: ['group_name'],
+              convertObjectPropsToSnakeCase: ['groupName'],
+            };
+
+            expect(
+              testFunction(mockObjNested, {
+                ignoreKeyNames: ignoreKeyNames[functionName],
+              }),
+            ).toEqual(expected[functionName]);
+          });
+
+          it('leaves properties mentioned in `ignoreKeyNames` array intact when `deep` is true', () => {
+            const expected = {
+              convertObjectProps: {
+                project_name_converted: 'GitLab CE',
+                group_name: 'GitLab.org',
+                license_type_converted: 'MIT',
+                tech_stack_converted: {
+                  backend_converted: 'Ruby',
+                  frontend_framework: 'Vue',
+                  database_converted: 'PostgreSQL',
+                },
+              },
+              convertObjectPropsToCamelCase: {
+                projectName: 'GitLab CE',
+                group_name: 'GitLab.org',
+                licenseType: 'MIT',
+                techStack: {
+                  backend: 'Ruby',
+                  frontend_framework: 'Vue',
+                  database: 'PostgreSQL',
+                },
+              },
+              convertObjectPropsToSnakeCase: {
+                project_name: 'GitLab CE',
+                groupName: 'GitLab.org',
+                license_type: 'MIT',
+                tech_stack: {
+                  backend: 'Ruby',
+                  frontendFramework: 'Vue',
+                  database: 'PostgreSQL',
+                },
+              },
+            };
+
+            const ignoreKeyNames = {
+              convertObjectProps: ['group_name', 'frontend_framework'],
+              convertObjectPropsToCamelCase: ['group_name', 'frontend_framework'],
+              convertObjectPropsToSnakeCase: ['groupName', 'frontendFramework'],
+            };
+
+            expect(
+              testFunction(mockObjNested, {
+                deep: true,
+                ignoreKeyNames: ignoreKeyNames[functionName],
+              }),
+            ).toEqual(expected[functionName]);
           });
         });
       });

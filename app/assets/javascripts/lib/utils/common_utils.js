@@ -8,6 +8,7 @@ import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';
+import { isFunction } from 'lodash';
 
 export const getPagePath = (index = 0) => {
   const page = $('body').attr('data-page') || '';
@@ -667,30 +668,34 @@ export const spriteIcon = (icon, className = '') => {
 };
 
 /**
- * This method takes in object with snake_case property names
- * and returns a new object with camelCase property names
- *
- * Reasoning for this method is to ensure consistent property
- * naming conventions across JS code.
+ * @callback ConversionFunction
+ * @param {string} prop
+ */
+
+/**
+ * This function takes a conversion function as the first parameter
+ * and applies this function to each prop in the provided object.
  *
  * This method also supports additional params in `options` object
  *
+ * @param {ConversionFunction} conversionFunction - Function to apply to each prop of the object.
  * @param {Object} obj - Object to be converted.
  * @param {Object} options - Object containing additional options.
  * @param {boolean} options.deep - FLag to allow deep object converting
- * @param {Array[]} dropKeys - List of properties to discard while building new object
- * @param {Array[]} ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
+ * @param {Array[]} options.dropKeys - List of properties to discard while building new object
+ * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
  */
-export const convertObjectPropsToCamelCase = (obj = {}, options = {}) => {
-  if (obj === null) {
+export const convertObjectProps = (conversionFunction, obj = {}, options = {}) => {
+  if (!isFunction(conversionFunction) || obj === null) {
     return {};
   }
 
-  const initial = Array.isArray(obj) ? [] : {};
   const { deep = false, dropKeys = [], ignoreKeyNames = [] } = options;
 
+  const isObjParameterArray = Array.isArray(obj);
+  const initialValue = isObjParameterArray ? [] : {};
+
   return Object.keys(obj).reduce((acc, prop) => {
-    const result = acc;
     const val = obj[prop];
 
     // Drop properties from new object if
@@ -702,34 +707,54 @@ export const convertObjectPropsToCamelCase = (obj = {}, options = {}) => {
     // Skip converting properties in new object
     // if there are any mentioned in options
     if (ignoreKeyNames.indexOf(prop) > -1) {
-      result[prop] = obj[prop];
+      acc[prop] = val;
       return acc;
     }
 
     if (deep && (isObject(val) || Array.isArray(val))) {
-      result[convertToCamelCase(prop)] = convertObjectPropsToCamelCase(val, options);
+      if (isObjParameterArray) {
+        acc[prop] = convertObjectProps(conversionFunction, val, options);
+      } else {
+        acc[conversionFunction(prop)] = convertObjectProps(conversionFunction, val, options);
+      }
     } else {
-      result[convertToCamelCase(prop)] = obj[prop];
+      acc[conversionFunction(prop)] = val;
     }
     return acc;
-  }, initial);
+  }, initialValue);
 };
+
+/**
+ * This method takes in object with snake_case property names
+ * and returns a new object with camelCase property names
+ *
+ * Reasoning for this method is to ensure consistent property
+ * naming conventions across JS code.
+ *
+ * This method also supports additional params in `options` object
+ *
+ * @param {Object} obj - Object to be converted.
+ * @param {Object} options - Object containing additional options.
+ * @param {boolean} options.deep - FLag to allow deep object converting
+ * @param {Array[]} options.dropKeys - List of properties to discard while building new object
+ * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
+ */
+export const convertObjectPropsToCamelCase = (obj = {}, options = {}) =>
+  convertObjectProps(convertToCamelCase, obj, options);
 
 /**
  * Converts all the object keys to snake case
  *
- * @param {Object} obj    Object to transform
- * @returns {Object}
+ * This method also supports additional params in `options` object
+ *
+ * @param {Object} obj - Object to be converted.
+ * @param {Object} options - Object containing additional options.
+ * @param {boolean} options.deep - FLag to allow deep object converting
+ * @param {Array[]} options.dropKeys - List of properties to discard while building new object
+ * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
  */
-// Follow up to add additional options param:
-// https://gitlab.com/gitlab-org/gitlab/issues/39173
-export const convertObjectPropsToSnakeCase = (obj = {}) =>
-  obj
-    ? Object.entries(obj).reduce(
-        (acc, [key, value]) => ({ ...acc, [convertToSnakeCase(key)]: value }),
-        {},
-      )
-    : {};
+export const convertObjectPropsToSnakeCase = (obj = {}, options = {}) =>
+  convertObjectProps(convertToSnakeCase, obj, options);
 
 export const imagePath = imgUrl =>
   `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;

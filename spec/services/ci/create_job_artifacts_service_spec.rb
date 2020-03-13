@@ -121,6 +121,42 @@ describe Ci::CreateJobArtifactsService do
       end
     end
 
+    context 'when artifact type is dotenv' do
+      let(:artifacts_file) do
+        file_to_upload('spec/fixtures/build.env.gz', sha256: artifacts_sha256)
+      end
+
+      let(:params) do
+        {
+          'artifact_type' => 'dotenv',
+          'artifact_format' => 'gzip'
+        }
+      end
+
+      it 'calls parse service' do
+        expect_any_instance_of(Ci::ParseDotenvArtifactService) do |service|
+          expect(service).to receive(:execute).once.and_call_original
+        end
+
+        expect(subject[:status]).to eq(:success)
+        expect(job.job_variables.as_json).to contain_exactly(
+          hash_including('key' => 'KEY1', 'value' => 'VAR1', 'source' => 'dotenv'),
+          hash_including('key' => 'KEY2', 'value' => 'VAR2', 'source' => 'dotenv'))
+      end
+
+      context 'when ci_synchronous_artifact_parsing feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_synchronous_artifact_parsing: false)
+        end
+
+        it 'does not call parse service' do
+          expect(Ci::ParseDotenvArtifactService).not_to receive(:new)
+
+          expect(subject[:status]).to eq(:success)
+        end
+      end
+    end
+
     shared_examples 'rescues object storage error' do |klass, message, expected_message|
       it "handles #{klass}" do
         allow_next_instance_of(JobArtifactUploader) do |uploader|

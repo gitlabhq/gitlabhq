@@ -28,7 +28,8 @@ module Ci
       license_scanning: 'gl-license-scanning-report.json',
       performance: 'performance.json',
       metrics: 'metrics.txt',
-      lsif: 'lsif.json'
+      lsif: 'lsif.json',
+      dotenv: '.env'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -43,6 +44,7 @@ module Ci
       metrics_referee: :gzip,
       network_referee: :gzip,
       lsif: :gzip,
+      dotenv: :gzip,
 
       # All these file formats use `raw` as we need to store them uncompressed
       # for Frontend to fetch the files and do analysis
@@ -118,7 +120,8 @@ module Ci
       metrics: 12, ## EE-specific
       metrics_referee: 13, ## runner referees
       network_referee: 14, ## runner referees
-      lsif: 15 # LSIF data for code navigation
+      lsif: 15, # LSIF data for code navigation
+      dotenv: 16
     }
 
     enum file_format: {
