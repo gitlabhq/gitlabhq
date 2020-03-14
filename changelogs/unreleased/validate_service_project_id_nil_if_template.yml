@@ -1,0 +1,5 @@
+---
+title: Validate absence of project_id if service is a template
+merge_request: 26563
+author:
+type: other

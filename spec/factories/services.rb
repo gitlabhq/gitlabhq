@@ -4,11 +4,6 @@ FactoryBot.define do
   factory :service do
     project
     type { 'Service' }
-
-    trait :instance do
-      project { nil }
-      instance { true }
-    end
   end
 
   factory :custom_issue_tracker_service, class: 'CustomIssueTrackerService' do
@@ -69,6 +64,7 @@ FactoryBot.define do
   factory :jira_service do
     project
     active { true }
+    type { 'JiraService' }
 
     transient do
       create_data { true }
@@ -158,5 +154,15 @@ FactoryBot.define do
     after(:create) do
       IssueTrackerService.set_callback(:validation, :before, :handle_properties)
     end
+  end
+
+  trait :template do
+    project { nil }
+    template { true }
+  end
+
+  trait :instance do
+    project { nil }
+    instance { true }
   end
 end

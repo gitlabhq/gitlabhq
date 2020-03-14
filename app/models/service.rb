@@ -33,7 +33,7 @@ class Service < ApplicationRecord
   has_one :service_hook
 
   validates :project_id, presence: true, unless: -> { template? || instance? }
-  validates :project_id, absence: true, if: -> { instance? }
+  validates :project_id, absence: true, if: -> { template? || instance? }
   validates :type, presence: true
   validates :template, uniqueness: { scope: :type }, if: -> { template? }
   validates :instance, uniqueness: { scope: :type }, if: -> { instance? }
