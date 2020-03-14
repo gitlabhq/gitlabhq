@@ -3,7 +3,7 @@
 class ProjectUpdateRepositoryStorageWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  feature_category :source_code_management
+  feature_category :gitaly
 
   def perform(project_id, new_repository_storage_key)
     project = Project.find(project_id)

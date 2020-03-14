@@ -2,7 +2,6 @@
 
 module Gitlab
   class UsageData
-    APPROXIMATE_COUNT_MODELS = [Label, MergeRequest, Note, Todo].freeze
     BATCH_SIZE = 100
 
     class << self
@@ -107,10 +106,12 @@ module Gitlab
             suggestions: count(Suggestion),
             todos: count(Todo),
             uploads: count(Upload),
-            web_hooks: count(WebHook)
+            web_hooks: count(WebHook),
+            labels: count(Label),
+            merge_requests: count(MergeRequest),
+            notes: count(Note)
           }.merge(
             services_usage,
-            approximate_counts,
             usage_counters,
             user_preferences_usage,
             ingress_modsecurity_usage
@@ -249,16 +250,6 @@ module Gitlab
         end
       rescue ActiveRecord::StatementInvalid
         fallback
-      end
-
-      def approximate_counts
-        approx_counts = Gitlab::Database::Count.approximate_counts(APPROXIMATE_COUNT_MODELS)
-
-        APPROXIMATE_COUNT_MODELS.each_with_object({}) do |model, result|
-          key = model.name.underscore.pluralize.to_sym
-
-          result[key] = approx_counts[model] || -1
-        end
       end
 
       def installation_type

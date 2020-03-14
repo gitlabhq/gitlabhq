@@ -23,7 +23,7 @@ module Gitlab
       #
       # This method will return `nil` if no ID could be found.
       def database_id
-        val = Caching.read(cache_key)
+        val = Gitlab::Cache::Import::Caching.read(cache_key)
 
         val.to_i if val.present?
       end
@@ -32,7 +32,7 @@ module Gitlab
       #
       # database_id - The ID of the corresponding database row.
       def cache_database_id(database_id)
-        Caching.write(cache_key, database_id)
+        Gitlab::Cache::Import::Caching.write(cache_key, database_id)
       end
 
       private

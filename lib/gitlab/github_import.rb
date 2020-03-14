@@ -16,7 +16,7 @@ module Gitlab
     def self.ghost_user_id
       key = 'github-import/ghost-user-id'
 
-      Caching.read_integer(key) || Caching.write(key, User.select(:id).ghost.id)
+      Gitlab::Cache::Import::Caching.read_integer(key) || Gitlab::Cache::Import::Caching.write(key, User.select(:id).ghost.id)
     end
   end
 end

@@ -832,6 +832,13 @@ describe API::Users, :do_not_mock_admin_mode do
       expect(user.reload.private_profile).to eq(false)
     end
 
+    it "does have default values for theme and color-scheme ID" do
+      put api("/users/#{user.id}", admin), params: {}
+
+      expect(user.reload.theme_id).to eq(Gitlab::Themes.default.id)
+      expect(user.reload.color_scheme_id).to eq(Gitlab::ColorSchemes.default.id)
+    end
+
     it "updates private profile" do
       put api("/users/#{user.id}", admin), params: { private_profile: true }
 
@@ -855,6 +862,19 @@ describe API::Users, :do_not_mock_admin_mode do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(user.reload.private_profile).to eq(true)
+    end
+
+    it "does not modify theme or color-scheme ID when field is not provided" do
+      theme = Gitlab::Themes.each.find { |t| t.id != Gitlab::Themes.default.id }
+      scheme = Gitlab::ColorSchemes.each.find { |t| t.id != Gitlab::ColorSchemes.default.id }
+
+      user.update(theme_id: theme.id, color_scheme_id: scheme.id)
+
+      put api("/users/#{user.id}", admin), params: {}
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(user.reload.theme_id).to eq(theme.id)
+      expect(user.reload.color_scheme_id).to eq(scheme.id)
     end
 
     it "does not update admin status" do

@@ -308,6 +308,48 @@ describe 'File blob', :js do
     end
   end
 
+  context 'Jupiter Notebook file' do
+    before do
+      project.add_maintainer(project.creator)
+
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'master',
+        branch_name: 'master',
+        commit_message: "Add Jupiter Notebook",
+        file_path: 'files/basic.ipynb',
+        file_content: project.repository.blob_at('add-ipython-files', 'files/ipython/basic.ipynb').data
+      ).execute
+
+      visit_blob('files/basic.ipynb')
+
+      wait_for_requests
+    end
+
+    it 'displays the blob' do
+      aggregate_failures do
+        # shows rendered notebook
+        expect(page).to have_selector('.js-notebook-viewer-mounted')
+
+        # does show a viewer switcher
+        expect(page).to have_selector('.js-blob-viewer-switcher')
+
+        # show a disabled copy button
+        expect(page).to have_selector('.js-copy-blob-source-btn.disabled')
+
+        # shows a raw button
+        expect(page).to have_link('Open raw')
+
+        # shows a download button
+        expect(page).to have_link('Download')
+
+        # shows the rendered notebook
+        expect(page).to have_content('test')
+      end
+    end
+  end
+
   context 'ISO file (stored in LFS)' do
     context 'when LFS is enabled on the project' do
       before do

@@ -1,0 +1,5 @@
+---
+title: Prevent default overwrite for theme and color ID in user API
+merge_request: 26792
+author: Fabio Huser
+type: fixed

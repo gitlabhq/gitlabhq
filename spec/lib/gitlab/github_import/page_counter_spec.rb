@@ -12,7 +12,7 @@ describe Gitlab::GithubImport::PageCounter, :clean_gitlab_redis_cache do
     end
 
     it 'sets the initial page number to the cached value when one is present' do
-      Gitlab::GithubImport::Caching.write(counter.cache_key, 2)
+      Gitlab::Cache::Import::Caching.write(counter.cache_key, 2)
 
       expect(described_class.new(project, :issues).current).to eq(2)
     end

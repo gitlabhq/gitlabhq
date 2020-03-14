@@ -35,7 +35,7 @@ describe Gitlab::GithubImport do
     end
 
     it 'caches the ghost user ID' do
-      expect(Gitlab::GithubImport::Caching)
+      expect(Gitlab::Cache::Import::Caching)
         .to receive(:write)
         .once
         .and_call_original

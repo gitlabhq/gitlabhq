@@ -1,0 +1,81 @@
+<script>
+import axios from '~/lib/utils/axios_utils';
+import notebookLab from '~/notebook/index.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
+
+export default {
+  components: {
+    notebookLab,
+    GlLoadingIcon,
+  },
+  props: {
+    endpoint: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      error: false,
+      loadError: false,
+      loading: true,
+      json: {},
+    };
+  },
+  mounted() {
+    if (gon.katex_css_url) {
+      const katexStyles = document.createElement('link');
+      katexStyles.setAttribute('rel', 'stylesheet');
+      katexStyles.setAttribute('href', gon.katex_css_url);
+      document.head.appendChild(katexStyles);
+    }
+
+    if (gon.katex_js_url) {
+      const katexScript = document.createElement('script');
+      katexScript.addEventListener('load', () => {
+        this.loadFile();
+      });
+      katexScript.setAttribute('src', gon.katex_js_url);
+      document.head.appendChild(katexScript);
+    } else {
+      this.loadFile();
+    }
+  },
+  methods: {
+    loadFile() {
+      axios
+        .get(this.endpoint)
+        .then(res => res.data)
+        .then(data => {
+          this.json = data;
+          this.loading = false;
+        })
+        .catch(e => {
+          if (e.status !== 200) {
+            this.loadError = true;
+          }
+          this.error = true;
+        });
+    },
+  },
+};
+</script>
+
+<template>
+  <div
+    class="js-notebook-viewer-mounted container-fluid md prepend-top-default append-bottom-default"
+  >
+    <div v-if="loading && !error" class="text-center loading">
+      <gl-loading-icon class="mt-5" size="lg" />
+    </div>
+    <notebook-lab v-if="!loading && !error" :notebook="json" code-css-class="code white" />
+    <p v-if="error" class="text-center">
+      <span v-if="loadError" ref="loadErrorMessage">{{
+        __('An error occurred while loading the file. Please try again later.')
+      }}</span>
+      <span v-else ref="parsingErrorMessage">{{
+        __('An error occurred while parsing the file.')
+      }}</span>
+    </p>
+  </div>
+</template>

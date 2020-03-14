@@ -22,7 +22,7 @@ describe Gitlab::GithubImport::MilestoneFinder, :clean_gitlab_redis_cache do
       it 'returns nil for an empty cache key' do
         key = finder.cache_key_for(milestone.iid)
 
-        Gitlab::GithubImport::Caching.write(key, '')
+        Gitlab::Cache::Import::Caching.write(key, '')
 
         expect(finder.id_for(issuable)).to be_nil
       end
@@ -41,7 +41,7 @@ describe Gitlab::GithubImport::MilestoneFinder, :clean_gitlab_redis_cache do
 
   describe '#build_cache' do
     it 'builds the cache of all project milestones' do
-      expect(Gitlab::GithubImport::Caching)
+      expect(Gitlab::Cache::Import::Caching)
         .to receive(:write_multiple)
         .with("github-import/milestone-finder/#{project.id}/1" => milestone.id)
         .and_call_original

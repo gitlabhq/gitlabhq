@@ -30,7 +30,7 @@ describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_cache do
 
   describe '#cache_database_id' do
     it 'caches the ID of a database row' do
-      expect(Gitlab::GithubImport::Caching)
+      expect(Gitlab::Cache::Import::Caching)
         .to receive(:write)
         .with('github-import/issuable-finder/4/MergeRequest/1', 10)
 

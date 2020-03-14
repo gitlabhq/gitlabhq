@@ -52,8 +52,8 @@ module API
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
           optional :avatar, type: File, desc: 'Avatar image for user' # rubocop:disable Scalability/FileUploads
-          optional :theme_id, type: Integer, default: 1, desc: 'The GitLab theme for the user'
-          optional :color_scheme_id, type: Integer, default: 1, desc: 'The color scheme for the file viewer'
+          optional :theme_id, type: Integer, desc: 'The GitLab theme for the user'
+          optional :color_scheme_id, type: Integer, desc: 'The color scheme for the file viewer'
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
           all_or_none_of :extern_uid, :provider
 
