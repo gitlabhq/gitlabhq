@@ -1,6 +1,5 @@
 .run-dev-fixtures:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .default-before_script

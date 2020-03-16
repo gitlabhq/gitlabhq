@@ -26,6 +26,34 @@ describe 'User page' do
 
       expect(page).not_to have_content("This user has a private profile")
     end
+
+    context 'work information' do
+      subject { visit(user_path(user)) }
+
+      it 'shows job title and organization details' do
+        user.update(organization: 'GitLab - work info test', job_title: 'Frontend Engineer')
+
+        subject
+
+        expect(page).to have_content('Frontend Engineer at GitLab - work info test')
+      end
+
+      it 'shows job title' do
+        user.update(organization: nil, job_title: 'Frontend Engineer - work info test')
+
+        subject
+
+        expect(page).to have_content('Frontend Engineer - work info test')
+      end
+
+      it 'shows organization details' do
+        user.update(organization: 'GitLab - work info test', job_title: '')
+
+        subject
+
+        expect(page).to have_content('GitLab - work info test')
+      end
+    end
   end
 
   context 'with private profile' do

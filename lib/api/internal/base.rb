@@ -40,7 +40,7 @@ module API
 
           # Stores some Git-specific env thread-safely
           env = parse_env
-          Gitlab::Git::HookEnv.set(gl_repository, env) if project
+          Gitlab::Git::HookEnv.set(gl_repository, env) if container
 
           actor.update_last_used_at!
           access_checker = access_checker_for(actor, params[:protocol])

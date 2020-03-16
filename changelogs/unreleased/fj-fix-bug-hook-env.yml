@@ -1,0 +1,5 @@
+---
+title: Fix bug setting hook env with personal snippets
+merge_request: 27235
+author:
+type: fixed

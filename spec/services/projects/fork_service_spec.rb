@@ -312,6 +312,8 @@ describe Projects::ForkService do
 
       # Stub everything required to move a project to a Gitaly shard that does not exist
       stub_storage_settings('test_second_storage' => { 'path' => TestEnv::SECOND_STORAGE_PATH })
+      allow_any_instance_of(Gitlab::Git::Repository).to receive(:create_repository)
+        .and_return(true)
       allow_any_instance_of(Gitlab::Git::Repository).to receive(:replicate)
       allow_any_instance_of(Gitlab::Git::Repository).to receive(:checksum)
         .and_return(::Gitlab::Git::BLANK_SHA)

@@ -1921,30 +1921,15 @@ describe Project do
 
   describe '#create_repository' do
     let(:project) { create(:project, :repository) }
-    let(:shell) { Gitlab::Shell.new }
-
-    before do
-      allow(project).to receive(:gitlab_shell).and_return(shell)
-    end
 
     context 'using a regular repository' do
       it 'creates the repository' do
-        expect(shell).to receive(:create_repository)
-          .with(project.repository_storage, project.disk_path, project.full_path)
-          .and_return(true)
-
-        expect(project.repository).to receive(:after_create)
-
+        expect(project.repository).to receive(:create_repository)
         expect(project.create_repository).to eq(true)
       end
 
       it 'adds an error if the repository could not be created' do
-        expect(shell).to receive(:create_repository)
-          .with(project.repository_storage, project.disk_path, project.full_path)
-          .and_return(false)
-
-        expect(project.repository).not_to receive(:after_create)
-
+        expect(project.repository).to receive(:create_repository) { raise 'Fail in test' }
         expect(project.create_repository).to eq(false)
         expect(project.errors).not_to be_empty
       end
@@ -1953,7 +1938,7 @@ describe Project do
     context 'using a forked repository' do
       it 'does nothing' do
         expect(project).to receive(:forked?).and_return(true)
-        expect(shell).not_to receive(:create_repository)
+        expect(project.repository).not_to receive(:create_repository)
 
         project.create_repository
       end
@@ -1962,28 +1947,16 @@ describe Project do
 
   describe '#ensure_repository' do
     let(:project) { create(:project, :repository) }
-    let(:shell) { Gitlab::Shell.new }
-
-    before do
-      allow(project).to receive(:gitlab_shell).and_return(shell)
-    end
 
     it 'creates the repository if it not exist' do
-      allow(project).to receive(:repository_exists?)
-        .and_return(false)
-
-      allow(shell).to receive(:create_repository)
-        .with(project.repository_storage, project.disk_path, project.full_path)
-        .and_return(true)
-
+      allow(project).to receive(:repository_exists?).and_return(false)
       expect(project).to receive(:create_repository).with(force: true)
 
       project.ensure_repository
     end
 
     it 'does not create the repository if it exists' do
-      allow(project).to receive(:repository_exists?)
-        .and_return(true)
+      allow(project).to receive(:repository_exists?).and_return(true)
 
       expect(project).not_to receive(:create_repository)
 
@@ -1992,13 +1965,8 @@ describe Project do
 
     it 'creates the repository if it is a fork' do
       expect(project).to receive(:forked?).and_return(true)
-
-      allow(project).to receive(:repository_exists?)
-        .and_return(false)
-
-      expect(shell).to receive(:create_repository)
-        .with(project.repository_storage, project.disk_path, project.full_path)
-        .and_return(true)
+      expect(project).to receive(:repository_exists?).and_return(false)
+      expect(project.repository).to receive(:create_repository) { true }
 
       project.ensure_repository
     end

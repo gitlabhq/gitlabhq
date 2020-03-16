@@ -2,7 +2,6 @@
 # rubygems.org in the future.
 cache gems:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .default-before_script
@@ -21,7 +20,6 @@ cache gems:
 
 .minimal-job:
   extends:
-    - .default-tags
     - .default-retry
   needs: []
 

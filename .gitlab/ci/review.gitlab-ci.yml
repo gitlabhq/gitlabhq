@@ -1,6 +1,5 @@
 .review-docker:
   extends:
-    - .default-tags
     - .default-retry
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.6
   services:
@@ -29,7 +28,6 @@ build-qa-image:
 
 review-cleanup:
   extends:
-    - .default-tags
     - .default-retry
     - .review:rules:review-cleanup
   stage: prepare
@@ -46,7 +44,6 @@ review-cleanup:
 
 review-build-cng:
   extends:
-    - .default-tags
     - .default-retry
     - .review:rules:mr-and-schedule
   image: ruby:2.6-alpine
@@ -63,7 +60,6 @@ review-build-cng:
 
 .review-workflow-base:
   extends:
-    - .default-tags
     - .default-retry
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   variables:
@@ -217,7 +213,6 @@ review-performance:
 
 parallel-spec-reports:
   extends:
-    - .default-tags
     - .review:rules:mr-only-manual
   image: ruby:2.6-alpine
   stage: post-qa
@@ -244,7 +239,6 @@ parallel-spec-reports:
 
 danger-review:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .review:rules:danger

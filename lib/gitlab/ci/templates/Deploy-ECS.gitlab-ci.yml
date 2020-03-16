@@ -1,0 +1,36 @@
+stages:
+  - build
+  - test
+  - review
+  - deploy
+  - production
+
+include:
+  - template: Jobs/Build.gitlab-ci.yml
+
+.deploy_to_ecs:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy:latest
+  script:
+    - ecs update-task-definition
+
+review:
+  extends: .deploy_to_ecs
+  stage: review
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+  only:
+    refs:
+      - branches
+      - tags
+  except:
+    refs:
+      - master
+
+production:
+  extends: .deploy_to_ecs
+  stage: production
+  environment:
+    name: production
+  only:
+    refs:
+      - master

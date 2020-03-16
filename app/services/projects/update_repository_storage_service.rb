@@ -52,11 +52,14 @@ module Projects
       checksum = repository.checksum
 
       # Initialize a git repository on the target path
-      gitlab_shell.create_repository(new_storage_key, raw_repository.relative_path, full_path)
-      new_repository = Gitlab::Git::Repository.new(new_storage_key,
-                                                   raw_repository.relative_path,
-                                                   raw_repository.gl_repository,
-                                                   full_path)
+      new_repository = Gitlab::Git::Repository.new(
+        new_storage_key,
+        raw_repository.relative_path,
+        raw_repository.gl_repository,
+        full_path
+      )
+
+      new_repository.create_repository
 
       new_repository.replicate(raw_repository)
       new_checksum = new_repository.checksum

@@ -59,6 +59,10 @@ See the test engineering planning process and reach out to your counterpart Soft
 
 <!-- Which leads to: in which enterprise tier should this feature go? See https://about.gitlab.com/handbook/product/pricing/#four-tiers -->
 
+### Is this a cross-stage feature?
+
+<!-- Communicate if this change will affect multiple Stage Groups or product areas. We recommend always start with the assumption that a feature request will have an impact into another Group. Loop in the most relevant PM and Product Designer from that Group to provide strategic support to help align the Group's broader plan and vision, as well as to avoid UX and technical debt. https://about.gitlab.com/handbook/product/#cross-stage-features -->
+
 ### Links / references
 
 /label ~feature

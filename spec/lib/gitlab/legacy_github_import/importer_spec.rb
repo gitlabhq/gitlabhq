@@ -173,10 +173,6 @@ describe Gitlab::LegacyGithubImport::Importer do
         ]
       }
 
-      unless project.gitea_import?
-        error[:errors] << { type: :release, url: "#{api_root}/repos/octocat/Hello-World/releases/2", errors: "Validation failed: Description can't be blank" }
-      end
-
       described_class.new(project).execute
 
       expect(project.import_state.last_error).to eq error.to_json

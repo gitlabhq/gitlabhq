@@ -61,12 +61,13 @@ module BulkInsertSafe
       super
     end
 
-    # Inserts the given ActiveRecord [items] to the table mapped to this class via [InsertAll].
+    # Inserts the given ActiveRecord [items] to the table mapped to this class.
     # Items will be inserted in batches of a given size, where insertion semantics are
-    # "atomic across all batches", i.e. either all items will be inserted or none.
+    # "atomic across all batches".
     #
     # @param [Boolean] validate          Whether validations should run on [items]
     # @param [Integer] batch_size        How many items should at most be inserted at once
+    # @param [Boolean] skip_duplicates   Marks duplicates as allowed, and skips inserting them
     # @param [Proc]    handle_attributes Block that will receive each item attribute hash
     #                                    prior to insertion for further processing
     #
@@ -75,26 +76,65 @@ module BulkInsertSafe
     # - [ActiveRecord::RecordInvalid]   on entity validation failures
     # - [ActiveRecord::RecordNotUnique] on duplicate key errors
     #
-    # @return true if all items succeeded to be inserted, throws otherwise.
+    # @return true if operation succeeded, throws otherwise.
     #
-    def bulk_insert!(items, validate: true, batch_size: DEFAULT_BATCH_SIZE, &handle_attributes)
-      return true if items.empty?
+    def bulk_insert!(items, validate: true, skip_duplicates: false, batch_size: DEFAULT_BATCH_SIZE, &handle_attributes)
+      _bulk_insert_all!(items,
+        validate: validate,
+        on_duplicate: skip_duplicates ? :skip : :raise,
+        unique_by: nil,
+        batch_size: batch_size,
+        &handle_attributes)
+    end
 
-      _bulk_insert_in_batches(items, batch_size, validate, &handle_attributes)
-
-      true
+    # Upserts the given ActiveRecord [items] to the table mapped to this class.
+    # Items will be inserted or updated in batches of a given size,
+    # where insertion semantics are "atomic across all batches".
+    #
+    # @param [Boolean] validate          Whether validations should run on [items]
+    # @param [Integer] batch_size        How many items should at most be inserted at once
+    # @param [Symbol/Array] unique_by    Defines index or columns to use to consider item duplicate
+    # @param [Proc]    handle_attributes Block that will receive each item attribute hash
+    #                                    prior to insertion for further processing
+    #
+    # Unique indexes can be identified by columns or name:
+    #  - unique_by: :isbn
+    #  - unique_by: %i[ author_id name ]
+    #  - unique_by: :index_books_on_isbn
+    #
+    # Note that this method will throw on the following occasions:
+    # - [PrimaryKeySetError]            when primary keys are set on entities prior to insertion
+    # - [ActiveRecord::RecordInvalid]   on entity validation failures
+    # - [ActiveRecord::RecordNotUnique] on duplicate key errors
+    #
+    # @return true if operation succeeded, throws otherwise.
+    #
+    def bulk_upsert!(items, unique_by:, validate: true, batch_size: DEFAULT_BATCH_SIZE, &handle_attributes)
+      _bulk_insert_all!(items,
+        validate: validate,
+        on_duplicate: :update,
+        unique_by: unique_by,
+        batch_size: batch_size,
+        &handle_attributes)
     end
 
     private
 
-    def _bulk_insert_in_batches(items, batch_size, validate_items, &handle_attributes)
+    def _bulk_insert_all!(items, on_duplicate:, unique_by:, validate:, batch_size:, &handle_attributes)
+      return true if items.empty?
+
       transaction do
         items.each_slice(batch_size) do |item_batch|
-          attributes = _bulk_insert_item_attributes(item_batch, validate_items, &handle_attributes)
+          attributes = _bulk_insert_item_attributes(
+            item_batch, validate, &handle_attributes)
 
-          insert_all!(attributes)
+          ActiveRecord::InsertAll
+            .new(self, attributes, on_duplicate: on_duplicate, unique_by: unique_by)
+            .execute
         end
       end
+
+      true
     end
 
     def _bulk_insert_item_attributes(items, validate_items)

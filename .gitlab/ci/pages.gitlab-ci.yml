@@ -1,6 +1,5 @@
 pages:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .pages:rules

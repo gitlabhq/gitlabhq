@@ -1,4 +1,4 @@
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import UserPopover from '~/vue_shared/components/user_popover/user_popover.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -11,6 +11,7 @@ const DEFAULT_PROPS = {
     location: 'Vienna',
     bio: null,
     organization: null,
+    jobTitle: null,
     status: null,
   },
 };
@@ -39,6 +40,9 @@ describe('User Popover Component', () => {
         target: findTarget(),
         ...props,
       },
+      stubs: {
+        'gl-sprintf': GlSprintf,
+      },
       ...options,
     });
   };
@@ -56,6 +60,7 @@ describe('User Popover Component', () => {
               location: null,
               bio: null,
               organization: null,
+              jobTitle: null,
               status: null,
             },
           },
@@ -85,51 +90,125 @@ describe('User Popover Component', () => {
   });
 
   describe('job data', () => {
-    it('should show only bio if no organization is available', () => {
-      const user = { ...DEFAULT_PROPS.user, bio: 'Engineer' };
+    const findWorkInformation = () => wrapper.find({ ref: 'workInformation' });
+    const findBio = () => wrapper.find({ ref: 'bio' });
+
+    it('should show only bio if organization and job title are not available', () => {
+      const user = { ...DEFAULT_PROPS.user, bio: 'My super interesting bio' };
 
       createWrapper({ user });
 
-      expect(wrapper.text()).toContain('Engineer');
+      expect(findBio().text()).toBe('My super interesting bio');
+      expect(findWorkInformation().exists()).toBe(false);
     });
 
-    it('should show only organization if no bio is available', () => {
+    it('should show only organization if job title is not available', () => {
       const user = { ...DEFAULT_PROPS.user, organization: 'GitLab' };
 
       createWrapper({ user });
 
-      expect(wrapper.text()).toContain('GitLab');
+      expect(findWorkInformation().text()).toBe('GitLab');
     });
 
-    it('should display bio and organization in separate lines', () => {
-      const user = { ...DEFAULT_PROPS.user, bio: 'Engineer', organization: 'GitLab' };
+    it('should show only job title if organization is not available', () => {
+      const user = { ...DEFAULT_PROPS.user, jobTitle: 'Frontend Engineer' };
 
       createWrapper({ user });
 
-      expect(wrapper.find('.js-bio').text()).toContain('Engineer');
-      expect(wrapper.find('.js-organization').text()).toContain('GitLab');
+      expect(findWorkInformation().text()).toBe('Frontend Engineer');
     });
 
-    it('should not encode special characters in bio and organization', () => {
+    it('should show organization and job title if they are both available', () => {
       const user = {
         ...DEFAULT_PROPS.user,
-        bio: 'Manager & Team Lead',
+        organization: 'GitLab',
+        jobTitle: 'Frontend Engineer',
+      };
+
+      createWrapper({ user });
+
+      expect(findWorkInformation().text()).toBe('Frontend Engineer at GitLab');
+    });
+
+    it('should display bio and job info in separate lines', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        bio: 'My super interesting bio',
+        organization: 'GitLab',
+      };
+
+      createWrapper({ user });
+
+      expect(findBio().text()).toBe('My super interesting bio');
+      expect(findWorkInformation().text()).toBe('GitLab');
+    });
+
+    it('should not encode special characters in bio', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        bio: 'I like <html> & CSS',
+      };
+
+      createWrapper({ user });
+
+      expect(findBio().text()).toBe('I like <html> & CSS');
+    });
+
+    it('should not encode special characters in organization', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
         organization: 'Me & my <funky> Company',
       };
 
       createWrapper({ user });
 
-      expect(wrapper.find('.js-bio').text()).toContain('Manager & Team Lead');
-      expect(wrapper.find('.js-organization').text()).toContain('Me & my <funky> Company');
+      expect(findWorkInformation().text()).toBe('Me & my <funky> Company');
+    });
+
+    it('should not encode special characters in job title', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        jobTitle: 'Manager & Team Lead',
+      };
+
+      createWrapper({ user });
+
+      expect(findWorkInformation().text()).toBe('Manager & Team Lead');
+    });
+
+    it('should not encode special characters when both job title and organization are set', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        jobTitle: 'Manager & Team Lead',
+        organization: 'Me & my <funky> Company',
+      };
+
+      createWrapper({ user });
+
+      expect(findWorkInformation().text()).toBe('Manager & Team Lead at Me & my <funky> Company');
     });
 
     it('shows icon for bio', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        bio: 'My super interesting bio',
+      };
+
+      createWrapper({ user });
+
       expect(wrapper.findAll(Icon).filter(icon => icon.props('name') === 'profile').length).toEqual(
         1,
       );
     });
 
     it('shows icon for organization', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        organization: 'GitLab',
+      };
+
+      createWrapper({ user });
+
       expect(wrapper.findAll(Icon).filter(icon => icon.props('name') === 'work').length).toEqual(1);
     });
   });

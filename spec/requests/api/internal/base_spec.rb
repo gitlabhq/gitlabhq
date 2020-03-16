@@ -262,6 +262,8 @@ describe API::Internal::Base do
 
   describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
     context "access granted" do
+      let(:env) { {} }
+
       around do |example|
         Timecop.freeze { example.run }
       end
@@ -270,36 +272,42 @@ describe API::Internal::Base do
         project.add_developer(user)
       end
 
-      context 'with env passed as a JSON' do
-        let(:gl_repository) { Gitlab::GlRepository::WIKI.identifier_for_container(project) }
+      shared_examples 'sets hook env' do
+        context 'with env passed as a JSON' do
+          let(:obj_dir_relative) { './objects' }
+          let(:alt_obj_dirs_relative) { ['./alt-objects-1', './alt-objects-2'] }
+          let(:env) do
+            {
+              GIT_OBJECT_DIRECTORY_RELATIVE: obj_dir_relative,
+              GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE: alt_obj_dirs_relative
+            }
+          end
 
-        it 'sets env in RequestStore' do
-          obj_dir_relative = './objects'
-          alt_obj_dirs_relative = ['./alt-objects-1', './alt-objects-2']
+          it 'sets env in RequestStore' do
+            expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, env.stringify_keys)
 
-          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, {
-            'GIT_OBJECT_DIRECTORY_RELATIVE' => obj_dir_relative,
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => alt_obj_dirs_relative
-          })
+            subject
 
-          push(key, project.wiki, env: {
-            GIT_OBJECT_DIRECTORY_RELATIVE: obj_dir_relative,
-            GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE: alt_obj_dirs_relative
-          }.to_json)
-
-          expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
       end
 
       context "git push with project.wiki" do
+        subject { push(key, project.wiki, env: env.to_json) }
+
         it 'responds with success' do
-          push(key, project.wiki)
+          subject
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user.reload.last_activity_on).to be_nil
+        end
+
+        it_behaves_like 'sets hook env' do
+          let(:gl_repository) { Gitlab::GlRepository::WIKI.identifier_for_container(project) }
         end
       end
 
@@ -328,8 +336,10 @@ describe API::Internal::Base do
       end
 
       context 'git push with personal snippet' do
+        subject { push(key, personal_snippet, env: env.to_json) }
+
         it 'responds with success' do
-          push(key, personal_snippet)
+          subject
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response["status"]).to be_truthy
@@ -338,8 +348,9 @@ describe API::Internal::Base do
           expect(user.reload.last_activity_on).to be_nil
         end
 
-        it_behaves_like 'snippets with disabled feature flag' do
-          subject { push(key, personal_snippet) }
+        it_behaves_like 'snippets with disabled feature flag'
+        it_behaves_like 'sets hook env' do
+          let(:gl_repository) { Gitlab::GlRepository::SNIPPET.identifier_for_container(personal_snippet) }
         end
       end
 
@@ -360,8 +371,10 @@ describe API::Internal::Base do
       end
 
       context 'git push with project snippet' do
+        subject { push(key, project_snippet, env: env.to_json) }
+
         it 'responds with success' do
-          push(key, project_snippet)
+          subject
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response["status"]).to be_truthy
@@ -370,8 +383,9 @@ describe API::Internal::Base do
           expect(user.reload.last_activity_on).to be_nil
         end
 
-        it_behaves_like 'snippets with disabled feature flag' do
-          subject { push(key, project_snippet) }
+        it_behaves_like 'snippets with disabled feature flag'
+        it_behaves_like 'sets hook env' do
+          let(:gl_repository) { Gitlab::GlRepository::SNIPPET.identifier_for_container(project_snippet) }
         end
       end
 

@@ -7,18 +7,17 @@ describe Gitlab::Shell do
   let_it_be(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:gitlab_shell) { described_class.new }
-  let(:popen_vars) { { 'GIT_TERMINAL_PROMPT' => ENV['GIT_TERMINAL_PROMPT'] } }
-  let(:timeout) { Gitlab.config.gitlab_shell.git_timeout }
 
-  before do
-    allow(Project).to receive(:find).and_return(project)
-  end
-
-  it { is_expected.to respond_to :create_repository }
   it { is_expected.to respond_to :remove_repository }
   it { is_expected.to respond_to :fork_repository }
 
-  it { expect(gitlab_shell.url_to_repo('diaspora')).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "diaspora.git") }
+  describe '.url_to_repo' do
+    let(:full_path) { 'diaspora/disaspora-rails' }
+
+    subject { described_class.url_to_repo(full_path) }
+
+    it { is_expected.to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + full_path + '.git') }
+  end
 
   describe 'memoized secret_token' do
     let(:secret_file) { 'tmp/tests/.secret_shell_test' }
@@ -49,35 +48,10 @@ describe Gitlab::Shell do
   describe 'projects commands' do
     let(:gitlab_shell_path) { File.expand_path('tmp/tests/gitlab-shell') }
     let(:projects_path) { File.join(gitlab_shell_path, 'bin/gitlab-projects') }
-    let(:gitlab_shell_hooks_path) { File.join(gitlab_shell_path, 'hooks') }
 
     before do
       allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(gitlab_shell_path)
       allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
-    end
-
-    describe '#create_repository' do
-      let(:repository_storage) { 'default' }
-      let(:repository_storage_path) do
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          Gitlab.config.repositories.storages[repository_storage].legacy_disk_path
-        end
-      end
-      let(:repo_name) { 'project/path' }
-      let(:created_path) { File.join(repository_storage_path, repo_name + '.git') }
-
-      after do
-        FileUtils.rm_rf(created_path)
-      end
-
-      it 'returns false when the command fails' do
-        FileUtils.mkdir_p(File.dirname(created_path))
-        # This file will block the creation of the repo's .git directory. That
-        # should cause #create_repository to fail.
-        FileUtils.touch(created_path)
-
-        expect(gitlab_shell.create_repository(repository_storage, repo_name, repo_name)).to be_falsy
-      end
     end
 
     describe '#remove_repository' do

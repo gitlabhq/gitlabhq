@@ -121,6 +121,7 @@ export default {
             data-placement="bottom"
             tabindex="0"
             role="button"
+            data-qa-selector="open_in_web_ide_button"
           >
             {{ s__('mrWidget|Open in Web IDE') }}
           </a>

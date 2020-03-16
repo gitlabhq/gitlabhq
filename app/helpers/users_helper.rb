@@ -91,6 +91,21 @@ module UsersHelper
     end
   end
 
+  def work_information(user)
+    return unless user
+
+    organization = user.organization
+    job_title = user.job_title
+
+    if organization.present? && job_title.present?
+      s_('Profile|%{job_title} at %{organization}') % { job_title: job_title, organization: organization }
+    elsif job_title.present?
+      job_title
+    elsif organization.present?
+      organization
+    end
+  end
+
   private
 
   def get_profile_tabs

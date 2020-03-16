@@ -4,7 +4,6 @@ require 'yaml'
 
 module Backup
   class Repository
-    include Gitlab::ShellAdapter
     attr_reader :progress
 
     def initialize(progress)
@@ -71,23 +70,14 @@ module Backup
     def restore
       Project.find_each(batch_size: 1000) do |project|
         progress.print " * #{project.full_path} ... "
-        path_to_project_bundle = path_to_bundle(project)
 
-        project.repository.remove rescue nil
-        restore_repo_success = nil
-
-        if File.exist?(path_to_project_bundle)
+        restore_repo_success =
           begin
-            project.repository.create_from_bundle(path_to_project_bundle)
-            restore_custom_hooks(project)
-            restore_repo_success = true
-          rescue => e
-            restore_repo_success = false
-            progress.puts "Error: #{e}".color(:red)
+            try_restore_repository(project)
+          rescue => err
+            progress.puts "Error: #{err}".color(:red)
+            false
           end
-        else
-          restore_repo_success = gitlab_shell.create_project_repository(project)
-        end
 
         if restore_repo_success
           progress.puts "[DONE]".color(:green)
@@ -117,6 +107,20 @@ module Backup
     end
 
     protected
+
+    def try_restore_repository(project)
+      path_to_project_bundle = path_to_bundle(project)
+      project.repository.remove rescue nil
+
+      if File.exist?(path_to_project_bundle)
+        project.repository.create_from_bundle(path_to_project_bundle)
+        restore_custom_hooks(project)
+      else
+        project.repository.create_repository
+      end
+
+      true
+    end
 
     def path_to_bundle(project)
       File.join(backup_repos_path, project.disk_path + '.bundle')

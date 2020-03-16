@@ -119,6 +119,14 @@ describe Ci::UpdateCiRefStatusService do
         it_behaves_like 'does a noop'
       end
 
+      context 'pipeline is retried' do
+        before do
+          ci_ref.update!(last_updated_by_pipeline: pipeline)
+        end
+
+        it_behaves_like 'updates ci_ref'
+      end
+
       context 'ref is stale' do
         let(:pipeline1) { create(:ci_pipeline, :success, project: ci_ref.project, ref: ci_ref.ref, tag: ci_ref.tag) }
         let(:pipeline2) { create(:ci_pipeline, :success, project: ci_ref.project, ref: ci_ref.ref, tag: ci_ref.tag) }

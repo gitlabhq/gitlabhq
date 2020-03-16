@@ -406,6 +406,22 @@ describe API::Releases do
       expect(project.releases.last.description).to eq('Super nice release')
     end
 
+    it 'creates a new release without description' do
+      params = {
+          name: 'New release without description',
+          tag_name: 'v0.1',
+          released_at: '2019-03-25 10:00:00'
+      }
+
+      expect do
+        post api("/projects/#{project.id}/releases", maintainer), params: params
+      end.to change { Release.count }.by(1)
+
+      expect(project.releases.last.name).to eq('New release without description')
+      expect(project.releases.last.tag).to eq('v0.1')
+      expect(project.releases.last.description).to eq(nil)
+    end
+
     it 'sets the released_at to the current time if the released_at parameter is not provided' do
       now = Time.zone.parse('2015-08-25 06:00:00Z')
       Timecop.freeze(now) do
@@ -449,26 +465,6 @@ describe API::Releases do
       post api("/projects/#{project.id}/releases", maintainer), params: params
 
       expect(project.releases.last.released_at).to eq('2019-03-25T01:00:00Z')
-    end
-
-    context 'when description is empty' do
-      let(:params) do
-        {
-          name: 'New release',
-          tag_name: 'v0.1',
-          description: ''
-        }
-      end
-
-      it 'returns an error as validation failure' do
-        expect do
-          post api("/projects/#{project.id}/releases", maintainer), params: params
-        end.not_to change { Release.count }
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message'])
-          .to eq("Validation failed: Description can't be blank")
-      end
     end
 
     it 'matches response schema' do

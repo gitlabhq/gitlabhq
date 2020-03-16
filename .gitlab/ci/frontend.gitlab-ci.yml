@@ -10,7 +10,6 @@
 
 .gitlab:assets:compile-metadata:
   extends:
-    - .default-tags
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
@@ -64,7 +63,6 @@ gitlab:assets:compile pull-cache:
 
 .compile-assets-metadata:
   extends:
-    - .default-tags
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
@@ -122,7 +120,6 @@ compile-assets pull-cache as-if-foss:
 
 .frontend-fixtures-base:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .default-before_script
@@ -160,7 +157,6 @@ frontend-fixtures-as-if-foss:
 
 .frontend-job-base:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .default-before_script
@@ -242,7 +238,6 @@ jest-as-if-foss:
 
 coverage-frontend:
   extends:
-    - .default-tags
     - .default-retry
     - .frontend:rules:default-frontend-jobs
   needs: ["jest"]
@@ -262,7 +257,6 @@ coverage-frontend:
 
 .qa-frontend-node:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .frontend:rules:qa-frontend-node
@@ -290,7 +284,6 @@ qa-frontend-node:latest:
 
 webpack-dev-server:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .frontend:rules:default-frontend-jobs

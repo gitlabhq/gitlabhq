@@ -15,6 +15,11 @@ describe 'User edit profile' do
     wait_for_requests if respond_to?(:wait_for_requests)
   end
 
+  def visit_user
+    visit user_path(user)
+    wait_for_requests
+  end
+
   it 'changes user profile' do
     fill_in 'user_skype', with: 'testskype'
     fill_in 'user_linkedin', with: 'testlinkedin'
@@ -22,8 +27,8 @@ describe 'User edit profile' do
     fill_in 'user_website_url', with: 'testurl'
     fill_in 'user_location', with: 'Ukraine'
     fill_in 'user_bio', with: 'I <3 GitLab'
+    fill_in 'user_job_title', with: 'Frontend Engineer'
     fill_in 'user_organization', with: 'GitLab'
-    select 'Data Analyst', from: 'user_role'
     submit_settings
 
     expect(user.reload).to have_attributes(
@@ -32,8 +37,8 @@ describe 'User edit profile' do
       twitter: 'testtwitter',
       website_url: 'testurl',
       bio: 'I <3 GitLab',
-      organization: 'GitLab',
-      role: 'data_analyst'
+      job_title: 'Frontend Engineer',
+      organization: 'GitLab'
     )
 
     expect(find('#user_location').value).to eq 'Ukraine'
@@ -94,11 +99,6 @@ describe 'User edit profile' do
   end
 
   context 'user status', :js do
-    def visit_user
-      visit user_path(user)
-      wait_for_requests
-    end
-
     def select_emoji(emoji_name, is_modal = false)
       emoji_menu_class = is_modal ? '.js-modal-status-emoji-menu' : '.js-status-emoji-menu'
       toggle_button = find('.js-toggle-emoji-menu')
@@ -378,6 +378,42 @@ describe 'User edit profile' do
       it 'timezone defaults to servers default' do
         timezone_name = Time.zone.tzinfo.name
         expect(page.find('.user-time-preferences #user_timezone', visible: false).value).to eq(timezone_name)
+      end
+    end
+  end
+
+  context 'work information', :js do
+    context 'when job title and organziation are entered' do
+      it "shows job title and organzation on user's profile" do
+        fill_in 'user_job_title', with: 'Frontend Engineer'
+        fill_in 'user_organization', with: 'GitLab - work info test'
+        submit_settings
+
+        visit_user
+
+        expect(page).to have_content('Frontend Engineer at GitLab - work info test')
+      end
+    end
+
+    context 'when only job title is entered' do
+      it "shows only job title on user's profile" do
+        fill_in 'user_job_title', with: 'Frontend Engineer - work info test'
+        submit_settings
+
+        visit_user
+
+        expect(page).to have_content('Frontend Engineer - work info test')
+      end
+    end
+
+    context 'when only organization is entered' do
+      it "shows only organization on user's profile" do
+        fill_in 'user_organization', with: 'GitLab - work info test'
+        submit_settings
+
+        visit_user
+
+        expect(page).to have_content('GitLab - work info test')
       end
     end
   end

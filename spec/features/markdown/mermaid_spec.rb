@@ -38,7 +38,9 @@ describe 'Mermaid rendering', :js do
 
     visit project_issue_path(project, issue)
 
-    expected = '<text><tspan xml:space="preserve" dy="1em" x="1">Line 1</tspan><tspan xml:space="preserve" dy="1em" x="1">Line 2</tspan></text>'
+    wait_for_requests
+
+    expected = '<text style=""><tspan xml:space="preserve" dy="1em" x="1">Line 1</tspan><tspan xml:space="preserve" dy="1em" x="1">Line 2</tspan></text>'
     expect(page.html.scan(expected).count).to be(4)
   end
 
@@ -120,5 +122,41 @@ describe 'Mermaid rendering', :js do
     expect(svg[:style]).to match(/max-width/)
     expect(svg[:width].to_i).to eq(100)
     expect(svg[:height].to_i).to eq(0)
+  end
+
+  it 'display button when diagram exceeds length', :js do
+    graph_edges = "A-->B;B-->A;" * 420
+
+    description = <<~MERMAID
+    ```mermaid
+    graph LR
+    #{graph_edges}
+    ```
+    MERMAID
+
+    project = create(:project, :public)
+    issue = create(:issue, project: project, description: description)
+
+    visit project_issue_path(project, issue)
+
+    page.within('.description') do
+      expect(page).not_to have_selector('svg')
+
+      expect(page).to have_selector('pre.mermaid')
+
+      expect(page).to have_selector('.lazy-alert-shown')
+
+      expect(page).to have_selector('.js-lazy-render-mermaid-container')
+    end
+
+    wait_for_requests
+
+    find('.js-lazy-render-mermaid').click
+
+    page.within('.description') do
+      expect(page).to have_selector('svg')
+
+      expect(page).not_to have_selector('.js-lazy-render-mermaid-container')
+    end
   end
 end

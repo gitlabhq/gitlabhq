@@ -1460,13 +1460,14 @@ class Project < ApplicationRecord
     # Forked import is handled asynchronously
     return if forked? && !force
 
-    if gitlab_shell.create_project_repository(self)
-      repository.after_create
-      true
-    else
-      errors.add(:base, _('Failed to create repository via gitlab-shell'))
-      false
-    end
+    repository.create_repository
+    repository.after_create
+
+    true
+  rescue => err
+    Gitlab::ErrorTracking.track_exception(err, project: { id: id, full_path: full_path, disk_path: disk_path })
+    errors.add(:base, _('Failed to create repository'))
+    false
   end
 
   def hook_attrs(backward: true)

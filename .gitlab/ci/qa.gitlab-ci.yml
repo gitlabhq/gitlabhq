@@ -1,6 +1,5 @@
 .qa-job-base:
   extends:
-    - .default-tags
     - .default-retry
   stage: test
   needs: []

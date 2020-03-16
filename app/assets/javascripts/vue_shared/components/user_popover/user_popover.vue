@@ -1,8 +1,10 @@
 <script>
-import { GlPopover, GlSkeletonLoading } from '@gitlab/ui';
+import { GlPopover, GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 import { glEmojiTag } from '../../../emoji';
+import { s__ } from '~/locale';
+import { isString } from 'lodash';
 
 export default {
   name: 'UserPopover',
@@ -10,6 +12,7 @@ export default {
     Icon,
     GlPopover,
     GlSkeletonLoading,
+    GlSprintf,
     UserAvatarImage,
   },
   props: {
@@ -45,8 +48,27 @@ export default {
     nameIsLoading() {
       return !this.user.name;
     },
-    jobInfoIsLoading() {
-      return !this.user.loaded && this.user.organization === null;
+    workInformationIsLoading() {
+      return !this.user.loaded && this.workInformation === null;
+    },
+    workInformation() {
+      const { jobTitle, organization } = this.user;
+
+      if (organization && jobTitle) {
+        return {
+          message: s__('Profile|%{job_title} at %{organization}'),
+          placeholders: { job_title: jobTitle, organization },
+        };
+      } else if (organization) {
+        return organization;
+      } else if (jobTitle) {
+        return jobTitle;
+      }
+
+      return null;
+    },
+    workInformationShouldUseSprintf() {
+      return !isString(this.workInformation);
     },
     locationIsLoading() {
       return !this.user.loaded && this.user.location === null;
@@ -72,16 +94,30 @@ export default {
           <gl-skeleton-loading v-else :lines="1" class="animation-container-small mb-1" />
         </div>
         <div class="text-secondary">
-          <div v-if="user.bio" class="js-bio d-flex mb-1">
+          <div v-if="user.bio" class="d-flex mb-1">
             <icon name="profile" class="category-icon flex-shrink-0" />
-            <span class="ml-1">{{ user.bio }}</span>
+            <span ref="bio" class="ml-1">{{ user.bio }}</span>
           </div>
-          <div v-if="user.organization" class="js-organization d-flex mb-1">
-            <icon v-show="!jobInfoIsLoading" name="work" class="category-icon flex-shrink-0" />
-            <span class="ml-1">{{ user.organization }}</span>
+          <div v-if="workInformation" class="d-flex mb-1">
+            <icon
+              v-show="!workInformationIsLoading"
+              name="work"
+              class="category-icon flex-shrink-0"
+            />
+            <span ref="workInformation" class="ml-1">
+              <gl-sprintf v-if="workInformationShouldUseSprintf" :message="workInformation.message">
+                <template
+                  v-for="(placeholder, slotName) in workInformation.placeholders"
+                  v-slot:[slotName]
+                >
+                  <span :key="slotName">{{ placeholder }}</span>
+                </template>
+              </gl-sprintf>
+              <span v-else>{{ workInformation }}</span>
+            </span>
           </div>
           <gl-skeleton-loading
-            v-if="jobInfoIsLoading"
+            v-if="workInformationIsLoading"
             :lines="1"
             class="animation-container-small mb-1"
           />

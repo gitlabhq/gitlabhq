@@ -12,6 +12,11 @@ stages:
   - post-qa
   - pages
 
+# always use `gitlab-org` runners
+default:
+  tags:
+    - gitlab-org
+
 workflow:
   rules:
     # If `$FORCE_GITLAB_CI` is set, create a pipeline.

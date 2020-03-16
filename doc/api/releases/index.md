@@ -328,7 +328,7 @@ POST /projects/:id/releases
 | `id`               | integer/string  | yes                         | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                                              |
 | `name`             | string          | no                          | The release name.                                                                                                                |
 | `tag_name`         | string          | yes                         | The tag where the release will be created from.                                                                                  |
-| `description`      | string          | yes                         | The description of the release. You can use [Markdown](../../user/markdown.md).                                                  |
+| `description`      | string          | no                          | The description of the release. You can use [Markdown](../../user/markdown.md).                                                  |
 | `ref`              | string          | yes, if `tag_name` doesn't exist | If `tag_name` doesn't exist, the release will be created from `ref`. It can be a commit SHA, another tag name, or a branch name. |
 | `milestones`       | array of string | no                          | The title of each milestone the release is associated with.                                                                      |
 | `assets:links`     | array of hash   | no                          | An array of assets links.                                                                                                        |

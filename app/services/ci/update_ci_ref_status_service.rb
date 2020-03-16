@@ -22,7 +22,7 @@ module Ci
       begin
         retry_optimistic_lock(ref) do
           next false if ref.persisted? &&
-            (ref.last_updated_by_pipeline_id || 0) >= pipeline.id
+            (ref.last_updated_by_pipeline_id || 0) > pipeline.id
 
           ref.update(status: next_status(ref.status, pipeline.status),
                      last_updated_by_pipeline: pipeline)

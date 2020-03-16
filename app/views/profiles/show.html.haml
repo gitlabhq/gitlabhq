@@ -90,7 +90,6 @@
       .row
         = render 'profiles/name', form: f, user: @user
         = f.text_field :id, readonly: true, label: s_('Profiles|User ID'), wrapper: { class: 'col-md-3' }
-      = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, { prompt: _('Select your role') }, required: true, class: 'input-md'
 
       = render_if_exists 'profiles/email_settings', form: f
       = f.text_field :skype, class: 'input-md', placeholder: s_("Profiles|username")
@@ -101,6 +100,7 @@
         = f.text_field :location, readonly: true, help: s_("Profiles|Your location was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:location) }
       - else
         = f.text_field :location, label: s_('Profiles|Location'), class: 'input-lg', placeholder: s_("Profiles|City, country")
+      = f.text_field :job_title, class: 'input-md'
       = f.text_field :organization, label: s_('Profiles|Organization'), class: 'input-md', help: s_("Profiles|Who you represent or work for")
       = f.text_area :bio, label: s_('Profiles|Bio'), rows: 4, maxlength: 250, help: s_("Profiles|Tell us about yourself in fewer than 250 characters")
       %hr

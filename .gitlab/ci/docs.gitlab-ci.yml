@@ -1,6 +1,5 @@
 .review-docs:
   extends:
-    - .default-tags
     - .default-retry
     - .docs:rules:review-docs
   allow_failure: true
@@ -42,7 +41,6 @@ review-docs-cleanup:
 
 docs lint:
   extends:
-    - .default-tags
     - .default-retry
     - .docs:rules:docs-lint
   image: "registry.gitlab.com/gitlab-org/gitlab-docs:lint"
@@ -64,7 +62,6 @@ docs lint:
 
 graphql-reference-verify:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .default-before_script

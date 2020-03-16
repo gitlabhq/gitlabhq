@@ -2,7 +2,6 @@
 # This uses rules from project root `.yamllint`.
 lint-ci-gitlab:
   extends:
-    - .default-tags
     - .default-retry
     - .yaml:rules
   image: sdesbure/yamllint:latest

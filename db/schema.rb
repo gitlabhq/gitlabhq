@@ -3486,8 +3486,8 @@ ActiveRecord::Schema.define(version: 2020_03_12_163407) do
     t.index ["created_at", "id"], name: "index_projects_api_created_at_id_desc", order: { id: :desc }
     t.index ["created_at", "id"], name: "index_projects_api_vis20_created_at", where: "(visibility_level = 20)"
     t.index ["created_at", "id"], name: "index_projects_on_created_at_and_id"
+    t.index ["creator_id", "created_at"], name: "index_projects_on_creator_id_and_created_at"
     t.index ["creator_id", "created_at"], name: "index_projects_on_mirror_creator_id_created_at", where: "((mirror = true) AND (mirror_trigger_builds = true))"
-    t.index ["creator_id"], name: "index_projects_on_creator_id"
     t.index ["description"], name: "index_projects_on_description_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["id", "repository_storage", "last_repository_updated_at"], name: "idx_projects_on_repository_storage_last_repository_updated_at"
     t.index ["id"], name: "index_on_id_partial_with_legacy_storage", where: "((storage_version < 2) OR (storage_version IS NULL))"
@@ -3961,7 +3961,7 @@ ActiveRecord::Schema.define(version: 2020_03_12_163407) do
     t.boolean "comment_on_event_enabled", default: true, null: false
     t.boolean "template", default: false
     t.boolean "instance", default: false, null: false
-    t.index ["project_id"], name: "index_services_on_project_id"
+    t.index ["project_id", "type"], name: "index_services_on_project_id_and_type"
     t.index ["template"], name: "index_services_on_template"
     t.index ["type", "instance"], name: "index_services_on_type_and_instance", unique: true, where: "(instance IS TRUE)"
     t.index ["type", "template"], name: "index_services_on_type_and_template", unique: true, where: "(template IS TRUE)"

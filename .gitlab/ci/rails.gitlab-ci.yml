@@ -7,7 +7,6 @@
 
 .rails-job-base:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .default-before_script

@@ -3256,6 +3256,9 @@ msgstr ""
 msgid "Can't find variable: ZiteReader"
 msgstr ""
 
+msgid "Can't load mermaid module: %{err}"
+msgstr ""
+
 msgid "Can't remove group members without group managed account"
 msgstr ""
 
@@ -3302,9 +3305,6 @@ msgid "Cannot modify provider during creation"
 msgstr ""
 
 msgid "Cannot refer to a group milestone by an internal id!"
-msgstr ""
-
-msgid "Cannot render the image. Maximum character count (%{charLimit}) has been exceeded."
 msgstr ""
 
 msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
@@ -7492,6 +7492,9 @@ msgstr ""
 msgid "Enabling this will only make licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public."
 msgstr ""
 
+msgid "Encountered an error while rendering: %{err}"
+msgstr ""
+
 msgid "End date"
 msgstr ""
 
@@ -8380,7 +8383,7 @@ msgstr ""
 msgid "Failed to create a branch for this issue. Please try again."
 msgstr ""
 
-msgid "Failed to create repository via gitlab-shell"
+msgid "Failed to create repository"
 msgstr ""
 
 msgid "Failed to create resources"
@@ -15148,6 +15151,9 @@ msgstr ""
 msgid "Profiles|your account"
 msgstr ""
 
+msgid "Profile|%{job_title} at %{organization}"
+msgstr ""
+
 msgid "Profiling - Performance bar"
 msgstr ""
 
@@ -17677,9 +17683,6 @@ msgid "Select timeframe"
 msgstr ""
 
 msgid "Select user"
-msgstr ""
-
-msgid "Select your role"
 msgstr ""
 
 msgid "Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users."
@@ -22360,6 +22363,9 @@ msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
 
 msgid "Warning:"
+msgstr ""
+
+msgid "Warning: Displaying this diagram might cause performance issues on this page."
 msgstr ""
 
 msgid "We could not determine the path to remove the epic"

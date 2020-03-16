@@ -11,6 +11,9 @@ Rails.application.configure do
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
 
+  # Show a warning when a large data set is loaded into memory
+  config.active_record.warn_on_records_fetched_greater_than = 1000
+
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
 
