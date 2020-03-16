@@ -7,6 +7,11 @@ describe PagesDomainSslRenewalCronWorker do
 
   subject(:worker) { described_class.new }
 
+  # Locking in date due to cert expiration date https://gitlab.com/gitlab-org/gitlab/-/issues/210557#note_304749257
+  around do |example|
+    Timecop.travel(Time.new(2020, 3, 12)) { example.run }
+  end
+
   before do
     stub_lets_encrypt_settings
   end
