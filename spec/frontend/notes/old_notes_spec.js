@@ -28,7 +28,10 @@ window.gl = window.gl || {};
 gl.utils = gl.utils || {};
 gl.utils.disableButtonIfEmptyField = () => {};
 
-describe('Old Notes (~/notes.js)', () => {
+// the following test is unreliable and failing in master 2-3 times a day
+// see https://gitlab.com/gitlab-org/gitlab/issues/206906#note_290602581
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip('Old Notes (~/notes.js)', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     loadFixtures(fixture);

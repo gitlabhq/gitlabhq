@@ -7,10 +7,12 @@ module Repositories
     before_action :access_check
     prepend_before_action :deny_head_requests, only: [:info_refs]
 
-    rescue_from Gitlab::GitAccess::UnauthorizedError, with: :render_403_with_exception
+    rescue_from Gitlab::GitAccess::ForbiddenError, with: :render_403_with_exception
     rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404_with_exception
     rescue_from Gitlab::GitAccess::ProjectCreationError, with: :render_422_with_exception
     rescue_from Gitlab::GitAccess::TimeoutError, with: :render_503_with_exception
+
+    before_action :snippet_request_allowed?
 
     # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
     # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
@@ -84,10 +86,10 @@ module Repositories
     end
 
     def access
-      @access ||= access_klass.new(access_actor, project, 'http',
+      @access ||= access_klass.new(access_actor, container, 'http',
         authentication_abilities: authentication_abilities,
         namespace_path: params[:namespace_id],
-        project_path: project_path,
+        repository_path: repository_path,
         redirected_path: redirected_path,
         auth_result_type: auth_result_type)
     end
@@ -99,19 +101,28 @@ module Repositories
 
     def access_check
       access.check(git_command, Gitlab::GitAccess::ANY)
-      @project ||= access.project
+
+      if repo_type.project? && !container
+        @project = @container = access.project
+      end
     end
 
     def access_klass
       @access_klass ||= repo_type.access_checker_class
     end
 
-    def project_path
-      @project_path ||= params[:repository_id].sub(/\.git$/, '')
+    def repository_path
+      @repository_path ||= params[:repository_id].sub(/\.git$/, '')
     end
 
     def log_user_activity
       Users::ActivityService.new(user).execute
+    end
+
+    def snippet_request_allowed?
+      if repo_type.snippet? && Feature.disabled?(:version_snippets, user)
+        render plain: 'The project you were looking for could not be found.', status: :not_found
+      end
     end
   end
 end

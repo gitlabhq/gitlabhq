@@ -1,0 +1,5 @@
+---
+title: 'Use uncached SQL queries for Geo long-running workers'
+merge_request: 26187
+author:
+type: fixed

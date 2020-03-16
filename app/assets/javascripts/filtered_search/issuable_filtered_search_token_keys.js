@@ -1,4 +1,4 @@
-import { flatten } from 'underscore';
+import { flattenDeep } from 'lodash';
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
 import { __ } from '~/locale';
 
@@ -73,7 +73,7 @@ export const alternativeTokenKeys = [
   },
 ];
 
-export const conditions = flatten(
+export const conditions = flattenDeep(
   [
     {
       url: 'assignee_id=None',

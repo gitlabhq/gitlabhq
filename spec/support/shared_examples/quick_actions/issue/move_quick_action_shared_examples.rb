@@ -50,6 +50,8 @@ RSpec.shared_examples 'move quick action' do
       let(:bug)      { create(:label, project: project, title: 'bug') }
       let(:wontfix)  { create(:label, project: project, title: 'wontfix') }
 
+      let!(:target_milestone) { create(:milestone, title: '1.0', project: target_project) }
+
       before do
         target_project.add_maintainer(user)
       end

@@ -6,6 +6,7 @@ module Projects
       RESERVED_ANNOTATIONS = %w(gitlab_incident_markdown title).freeze
       GENERIC_ALERT_SUMMARY_ANNOTATIONS = %w(monitoring_tool service hosts).freeze
       MARKDOWN_LINE_BREAK = "  \n".freeze
+      INCIDENT_LABEL_NAME = IncidentManagement::CreateIssueService::INCIDENT_LABEL[:title].freeze
 
       def full_title
         [environment_name, alert_title].compact.join(': ')
@@ -31,6 +32,18 @@ module Projects
         end
       end
 
+      def show_performance_dashboard_link?
+        gitlab_alert.present?
+      end
+
+      def show_incident_issues_link?
+        project.incident_management_setting&.create_issue?
+      end
+
+      def incident_issues_link
+        project_issues_url(project, label_name: INCIDENT_LABEL_NAME)
+      end
+
       def starts_at
         super&.rfc3339
       end
@@ -40,7 +53,7 @@ module Projects
           #### Summary
 
           #{metadata_list}
-          #{alert_details}
+          #{alert_details}#{metric_embed_for_alert}
         MARKDOWN
       end
 
@@ -105,6 +118,10 @@ module Projects
       def host_links
         Array(hosts.value).join(' ')
       end
+
+      def metric_embed_for_alert; end
     end
   end
 end
+
+Projects::Prometheus::AlertPresenter.prepend_if_ee('EE::Projects::Prometheus::AlertPresenter')

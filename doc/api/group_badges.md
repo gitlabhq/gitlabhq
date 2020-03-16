@@ -19,7 +19,7 @@ from the first group's project by creation date. If the group hasn't got any pro
 
 Gets a list of a group's badges.
 
-```
+```plaintext
 GET /groups/:id/badges
 ```
 
@@ -52,7 +52,7 @@ Example response:
 
 Gets a badge of a group.
 
-```
+```plaintext
 GET /groups/:id/badges/:badge_id
 ```
 
@@ -82,7 +82,7 @@ Example response:
 
 Adds a badge to a group.
 
-```
+```plaintext
 POST /groups/:id/badges
 ```
 
@@ -113,7 +113,7 @@ Example response:
 
 Updates a badge of a group.
 
-```
+```plaintext
 PUT /groups/:id/badges/:badge_id
 ```
 
@@ -145,7 +145,7 @@ Example response:
 
 Removes a badge from a group.
 
-```
+```plaintext
 DELETE /groups/:id/badges/:badge_id
 ```
 
@@ -162,7 +162,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitl
 
 Returns how the `link_url` and `image_url` final URLs would be after resolving the placeholder interpolation.
 
-```
+```plaintext
 GET /groups/:id/badges/render
 ```
 

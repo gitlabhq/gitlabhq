@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module TodosDestroyer
-  class ProjectPrivateWorker
+  class ProjectPrivateWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include TodosDestroyerQueue
 

@@ -420,7 +420,7 @@ table.pipeline-project-metrics tr td {
       p {
         @include str-truncated;
 
-        max-width: none;
+        max-width: 100%;
       }
     }
 

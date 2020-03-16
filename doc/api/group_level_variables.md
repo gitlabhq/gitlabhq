@@ -1,4 +1,4 @@
-# Group-level Variables  API
+# Group-level Variables API
 
 > [Introduced][ce-34519] in GitLab 9.5
 
@@ -6,7 +6,7 @@
 
 Get list of a group's variables.
 
-```
+```plaintext
 GET /groups/:id/variables
 ```
 
@@ -14,7 +14,7 @@ GET /groups/:id/variables
 |-----------|---------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID of a group or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 
-```
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables"
 ```
 
@@ -23,12 +23,16 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     {
         "key": "TEST_VARIABLE_1",
         "variable_type": "env_var",
-        "value": "TEST_1"
+        "value": "TEST_1",
+        "protected": false,
+        "masked": false
     },
     {
         "key": "TEST_VARIABLE_2",
         "variable_type": "env_var",
-        "value": "TEST_2"
+        "value": "TEST_2",
+        "protected": false,
+        "masked": false
     }
 ]
 ```
@@ -37,7 +41,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Get the details of a group's specific variable.
 
-```
+```plaintext
 GET /groups/:id/variables/:key
 ```
 
@@ -46,7 +50,7 @@ GET /groups/:id/variables/:key
 | `id`      | integer/string | yes      | The ID of a group or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user   |
 | `key`     | string  | yes      | The `key` of a variable |
 
-```
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables/TEST_VARIABLE_1"
 ```
 
@@ -54,7 +58,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 {
     "key": "TEST_VARIABLE_1",
     "variable_type": "env_var",
-    "value": "TEST_1"
+    "value": "TEST_1",
+    "protected": false,
+    "masked": false
 }
 ```
 
@@ -62,7 +68,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Create a new variable.
 
-```
+```plaintext
 POST /groups/:id/variables
 ```
 
@@ -73,8 +79,9 @@ POST /groups/:id/variables
 | `value`         | string  | yes      | The `value` of a variable |
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 | `protected`     | boolean | no       | Whether the variable is protected |
+| `masked`        | boolean | no       | Whether the variable is masked |
 
-```
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables" --form "key=NEW_VARIABLE" --form "value=new value"
 ```
 
@@ -83,7 +90,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
     "key": "NEW_VARIABLE",
     "value": "new value",
     "variable_type": "env_var",
-    "protected": false
+    "protected": false,
+    "masked": false
 }
 ```
 
@@ -91,7 +99,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 
 Update a group's variable.
 
-```
+```plaintext
 PUT /groups/:id/variables/:key
 ```
 
@@ -102,8 +110,9 @@ PUT /groups/:id/variables/:key
 | `value`         | string  | yes      | The `value` of a variable |
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 | `protected`     | boolean | no       | Whether the variable is protected |
+| `masked`        | boolean | no       | Whether the variable is masked |
 
-```
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables/NEW_VARIABLE" --form "value=updated value"
 ```
 
@@ -112,7 +121,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
     "key": "NEW_VARIABLE",
     "value": "updated value",
     "variable_type": "env_var",
-    "protected": true
+    "protected": true,
+    "masked": true
 }
 ```
 
@@ -120,7 +130,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 Remove a group's variable.
 
-```
+```plaintext
 DELETE /groups/:id/variables/:key
 ```
 
@@ -129,7 +139,7 @@ DELETE /groups/:id/variables/:key
 | `id`      | integer/string | yes      | The ID of a group or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user     |
 | `key`     | string  | yes      | The `key` of a variable |
 
-```
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/variables/VARIABLE_1"
 ```
 

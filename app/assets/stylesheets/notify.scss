@@ -18,3 +18,19 @@ p.details {
 pre.commit-message {
   white-space: pre-wrap;
 }
+
+.gl-label-scoped {
+  box-shadow: 0 0 0 2px currentColor inset;
+}
+
+.gl-label-text {
+  padding: 0 5px;
+}
+
+.gl-label-text-light {
+  color: $white-light;
+}
+
+.gl-label-text-dark {
+  color: $gl-gray-800;
+}

@@ -7,6 +7,8 @@ module Gitlab
       GIT_INVALID_URL_REGEX = /^git\+#{URL_REGEX}/.freeze
       REPO_REGEX = %r{[^/'" ]+/[^/'" ]+}.freeze
 
+      include ActionView::Helpers::SanitizeHelper
+
       class_attribute :file_type
 
       def self.support?(blob_name)
@@ -62,7 +64,10 @@ module Gitlab
       end
 
       def link_tag(name, url)
-        %{<a href="#{ERB::Util.html_escape_once(url)}" rel="nofollow noreferrer noopener" target="_blank">#{ERB::Util.html_escape_once(name)}</a>}.html_safe
+        sanitize(
+          %{<a href="#{ERB::Util.html_escape_once(url)}" rel="nofollow noreferrer noopener" target="_blank">#{ERB::Util.html_escape_once(name)}</a>},
+          attributes: %w[href rel target]
+        )
       end
 
       # Links package names based on regex.

@@ -111,4 +111,6 @@ export function initUserTracking() {
   if (opts.linkClickTracking) window.snowplow('enableLinkClickTracking');
 
   Tracking.bindDocument();
+
+  document.dispatchEvent(new Event('SnowplowInitialized'));
 }

@@ -1,0 +1,5 @@
+---
+title: Store first commit's authored_date for value stream calculation on merge
+merge_request: 26885
+author:
+type: changed

@@ -2,29 +2,29 @@ import { mount } from '@vue/test-utils';
 import { GlProgressBar, GlLink, GlBadge, GlButton } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
 import ReleaseBlockMilestoneInfo from '~/releases/components/release_block_milestone_info.vue';
-import { milestones } from '../mock_data';
+import { milestones as originalMilestones } from '../mock_data';
 import { MAX_MILESTONES_TO_DISPLAY } from '~/releases/constants';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 describe('Release block milestone info', () => {
   let wrapper;
-  let milestonesClone;
+  let milestones;
 
-  const factory = milestonesProp => {
+  const factory = props => {
     wrapper = mount(ReleaseBlockMilestoneInfo, {
-      propsData: {
-        milestones: milestonesProp,
-      },
+      propsData: props,
     });
 
     return wrapper.vm.$nextTick();
   };
 
   beforeEach(() => {
-    milestonesClone = JSON.parse(JSON.stringify(milestones));
+    milestones = convertObjectPropsToCamelCase(originalMilestones, { deep: true });
   });
 
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   const milestoneProgressBarContainer = () => wrapper.find('.js-milestone-progress-bar-container');
@@ -32,7 +32,7 @@ describe('Release block milestone info', () => {
   const issuesContainer = () => wrapper.find('.js-issues-container');
 
   describe('with default props', () => {
-    beforeEach(() => factory(milestonesClone));
+    beforeEach(() => factory({ milestones }));
 
     it('renders the correct percentage', () => {
       expect(milestoneProgressBarContainer().text()).toContain('41% complete');
@@ -53,13 +53,13 @@ describe('Release block milestone info', () => {
     it('renders a list of links to all associated milestones', () => {
       expect(trimText(milestoneListContainer().text())).toContain('Milestones 13.6 • 13.5');
 
-      milestonesClone.forEach((m, i) => {
+      milestones.forEach((m, i) => {
         const milestoneLink = milestoneListContainer()
           .findAll(GlLink)
           .at(i);
 
         expect(milestoneLink.text()).toBe(m.title);
-        expect(milestoneLink.attributes('href')).toBe(m.web_url);
+        expect(milestoneLink.attributes('href')).toBe(m.webUrl);
         expect(milestoneLink.attributes('title')).toBe(m.description);
       });
     });
@@ -84,7 +84,7 @@ describe('Release block milestone info', () => {
 
     beforeEach(() => {
       lotsOfMilestones = [];
-      const template = milestonesClone[0];
+      const template = milestones[0];
 
       for (let i = 0; i < MAX_MILESTONES_TO_DISPLAY + 10; i += 1) {
         lotsOfMilestones.push({
@@ -101,7 +101,7 @@ describe('Release block milestone info', () => {
         .map(m => m.title)
         .join(' • ');
 
-      return factory(lotsOfMilestones);
+      return factory({ milestones: lotsOfMilestones });
     });
 
     const clickShowMoreFewerButton = () => {
@@ -148,16 +148,16 @@ describe('Release block milestone info', () => {
   /** Ensures we don't have any issues with dividing by zero when computing percentages */
   describe('when all issue counts are zero', () => {
     beforeEach(() => {
-      milestonesClone = milestonesClone.map(m => ({
+      milestones = milestones.map(m => ({
         ...m,
-        issue_stats: {
-          ...m.issue_stats,
-          opened: 0,
+        issueStats: {
+          ...m.issueStats,
+          total: 0,
           closed: 0,
         },
       }));
 
-      return factory(milestonesClone);
+      return factory({ milestones });
     });
 
     expectAllZeros();
@@ -165,14 +165,77 @@ describe('Release block milestone info', () => {
 
   describe('if the API response is missing the "issue_stats" property', () => {
     beforeEach(() => {
-      milestonesClone = milestonesClone.map(m => ({
+      milestones = milestones.map(m => ({
         ...m,
-        issue_stats: undefined,
+        issueStats: undefined,
       }));
 
-      return factory(milestonesClone);
+      return factory({ milestones });
     });
 
     expectAllZeros();
+  });
+
+  describe('Issue links', () => {
+    const findOpenIssuesLink = () => wrapper.find({ ref: 'openIssuesLink' });
+    const findOpenIssuesText = () => wrapper.find({ ref: 'openIssuesText' });
+    const findClosedIssuesLink = () => wrapper.find({ ref: 'closedIssuesLink' });
+    const findClosedIssuesText = () => wrapper.find({ ref: 'closedIssuesText' });
+
+    describe('when openIssuePath is provided', () => {
+      const openIssuesPath = '/path/to/open/issues';
+
+      beforeEach(() => {
+        return factory({ milestones, openIssuesPath });
+      });
+
+      it('renders the open issues as a link', () => {
+        expect(findOpenIssuesLink().exists()).toBe(true);
+        expect(findOpenIssuesText().exists()).toBe(false);
+      });
+
+      it('renders the open issues link with the correct href', () => {
+        expect(findOpenIssuesLink().attributes().href).toBe(openIssuesPath);
+      });
+    });
+
+    describe('when openIssuePath is not provided', () => {
+      beforeEach(() => {
+        return factory({ milestones });
+      });
+
+      it('renders the open issues as plain text', () => {
+        expect(findOpenIssuesLink().exists()).toBe(false);
+        expect(findOpenIssuesText().exists()).toBe(true);
+      });
+    });
+
+    describe('when closedIssuePath is provided', () => {
+      const closedIssuesPath = '/path/to/closed/issues';
+
+      beforeEach(() => {
+        return factory({ milestones, closedIssuesPath });
+      });
+
+      it('renders the closed issues as a link', () => {
+        expect(findClosedIssuesLink().exists()).toBe(true);
+        expect(findClosedIssuesText().exists()).toBe(false);
+      });
+
+      it('renders the closed issues link with the correct href', () => {
+        expect(findClosedIssuesLink().attributes().href).toBe(closedIssuesPath);
+      });
+    });
+
+    describe('when closedIssuePath is not provided', () => {
+      beforeEach(() => {
+        return factory({ milestones });
+      });
+
+      it('renders the closed issues as plain text', () => {
+        expect(findClosedIssuesLink().exists()).toBe(false);
+        expect(findClosedIssuesText().exists()).toBe(true);
+      });
+    });
   });
 });

@@ -4,7 +4,7 @@
 
 Get all environments for a given project.
 
-```
+```plaintext
 GET /projects/:id/environments
 ```
 
@@ -34,7 +34,7 @@ Example response:
 
 ## Get a specific environment
 
-```
+```plaintext
 GET /projects/:id/environments/:environment_id
 ```
 
@@ -145,7 +145,7 @@ Creates a new environment with the given name and external_url.
 
 It returns `201` if the environment was successfully created, `400` for wrong parameters.
 
-```
+```plaintext
 POST /projects/:id/environments
 ```
 
@@ -177,7 +177,7 @@ Updates an existing environment's name and/or external_url.
 
 It returns `200` if the environment was successfully updated. In case of an error, a status code `400` is returned.
 
-```
+```plaintext
 PUT /projects/:id/environments/:environments_id
 ```
 
@@ -208,7 +208,7 @@ Example response:
 
 It returns `204` if the environment was successfully deleted, and `404` if the environment does not exist.
 
-```
+```plaintext
 DELETE /projects/:id/environments/:environment_id
 ```
 
@@ -225,7 +225,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 It returns `200` if the environment was successfully stopped, and `404` if the environment does not exist.
 
-```
+```plaintext
 POST /projects/:id/environments/:environment_id/stop
 ```
 

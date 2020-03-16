@@ -60,8 +60,8 @@ describe Projects::LfsPointers::LfsLinkService do
       stub_const("#{described_class}::BATCH_SIZE", 1)
       oids = %w(one two)
 
-      expect(LfsObject).to receive(:where).with(oid: %w(one)).once.and_call_original
-      expect(LfsObject).to receive(:where).with(oid: %w(two)).once.and_call_original
+      expect(LfsObject).to receive(:for_oids).with(%w(one)).once.and_call_original
+      expect(LfsObject).to receive(:for_oids).with(%w(two)).once.and_call_original
 
       subject.execute(oids)
     end

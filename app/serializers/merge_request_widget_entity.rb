@@ -55,12 +55,17 @@ class MergeRequestWidgetEntity < Grape::Entity
       merge_request.source_project,
       merge_request.source_branch,
       file_name: '.gitlab-ci.yml',
-      commit_message: s_("CommitMessage|Add %{file_name}") % { file_name: Gitlab::FileDetector::PATTERNS[:gitlab_ci] }
+      commit_message: s_("CommitMessage|Add %{file_name}") % { file_name: Gitlab::FileDetector::PATTERNS[:gitlab_ci] },
+      suggest_gitlab_ci_yml: true
     )
   end
 
   expose :human_access do |merge_request|
     merge_request.project.team.human_max_access(current_user&.id)
+  end
+
+  expose :new_project_pipeline_path do |merge_request|
+    new_project_pipeline_path(merge_request.project)
   end
 
   # Rendering and redacting Markdown can be expensive. These links are
@@ -93,7 +98,8 @@ class MergeRequestWidgetEntity < Grape::Entity
     merge_request.source_project&.uses_default_ci_config? &&
       merge_request.all_pipelines.none? &&
       merge_request.commits_count.positive? &&
-      can?(current_user, :push_code, merge_request.source_project)
+      can?(current_user, :read_build, merge_request.source_project) &&
+      can?(current_user, :create_pipeline, merge_request.source_project)
   end
 end
 

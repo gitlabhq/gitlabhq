@@ -1,0 +1,5 @@
+---
+title: 'Add a bulk processor for elasticsearch incremental updates'
+merge_request: 24298
+author:
+type: added

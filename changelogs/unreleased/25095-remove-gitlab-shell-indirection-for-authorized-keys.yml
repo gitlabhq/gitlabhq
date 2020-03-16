@@ -1,0 +1,5 @@
+---
+title: Move authorized_keys operations into their own Sidekiq queue
+merge_request: 26913
+author:
+type: changed

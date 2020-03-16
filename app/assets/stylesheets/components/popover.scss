@@ -138,3 +138,13 @@
     max-width: 40%;
   }
 }
+
+.suggest-gitlab-ci-yml {
+  margin-top: -1em;
+
+  .popover-header {
+    padding: $gl-padding;
+    display: flex;
+    align-items: center;
+  }
+}

@@ -11,15 +11,15 @@ module Clusters
     self.table_name = 'clusters'
 
     APPLICATIONS = {
-      Applications::Helm.application_name => Applications::Helm,
-      Applications::Ingress.application_name => Applications::Ingress,
-      Applications::CertManager.application_name => Applications::CertManager,
-      Applications::Crossplane.application_name => Applications::Crossplane,
-      Applications::Prometheus.application_name => Applications::Prometheus,
-      Applications::Runner.application_name => Applications::Runner,
-      Applications::Jupyter.application_name => Applications::Jupyter,
-      Applications::Knative.application_name => Applications::Knative,
-      Applications::ElasticStack.application_name => Applications::ElasticStack
+      Clusters::Applications::Helm.application_name => Clusters::Applications::Helm,
+      Clusters::Applications::Ingress.application_name => Clusters::Applications::Ingress,
+      Clusters::Applications::CertManager.application_name => Clusters::Applications::CertManager,
+      Clusters::Applications::Crossplane.application_name => Clusters::Applications::Crossplane,
+      Clusters::Applications::Prometheus.application_name => Clusters::Applications::Prometheus,
+      Clusters::Applications::Runner.application_name => Clusters::Applications::Runner,
+      Clusters::Applications::Jupyter.application_name => Clusters::Applications::Jupyter,
+      Clusters::Applications::Knative.application_name => Clusters::Applications::Knative,
+      Clusters::Applications::ElasticStack.application_name => Clusters::Applications::ElasticStack
     }.freeze
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
@@ -249,9 +249,13 @@ module Clusters
       platform_kubernetes.kubeclient if kubernetes?
     end
 
-    def kubernetes_namespace_for(environment)
+    def kubernetes_namespace_for(environment, deployable: environment.last_deployable)
+      if deployable && environment.project_id != deployable.project_id
+        raise ArgumentError, 'environment.project_id must match deployable.project_id'
+      end
+
       managed_namespace(environment) ||
-        ci_configured_namespace(environment) ||
+        ci_configured_namespace(deployable) ||
         default_namespace(environment)
     end
 
@@ -306,7 +310,7 @@ module Clusters
         .where.not(id: id)
 
       if duplicate_management_clusters.any?
-        errors.add(:environment_scope, "cannot add duplicated environment scope")
+        errors.add(:environment_scope, 'cannot add duplicated environment scope')
       end
     end
 
@@ -318,8 +322,11 @@ module Clusters
       ).execute&.namespace
     end
 
-    def ci_configured_namespace(environment)
-      environment.last_deployable&.expanded_kubernetes_namespace
+    def ci_configured_namespace(deployable)
+      # YAML configuration of namespaces not supported for managed clusters
+      return if managed?
+
+      deployable&.expanded_kubernetes_namespace
     end
 
     def default_namespace(environment)
@@ -380,7 +387,7 @@ module Clusters
 
     def restrict_modification
       if provider&.on_creation?
-        errors.add(:base, "cannot modify during creation")
+        errors.add(:base, _('Cannot modify provider during creation'))
         return false
       end
 

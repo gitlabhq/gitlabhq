@@ -99,6 +99,7 @@ describe Gitlab::Ci::Config::Entry::Jobs do
               only: { refs: %w[branches tags] },
               stage: 'test',
               trigger: { project: 'my/project' },
+              variables: {},
               scheduling_type: :stage
             },
             regular_job: {

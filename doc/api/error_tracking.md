@@ -8,7 +8,7 @@ The project settings API allows you to retrieve the Error Tracking settings for 
 
 ### Get Error Tracking settings
 
-```
+```plaintext
 GET /projects/:id/error_tracking/settings
 ```
 
@@ -35,7 +35,7 @@ Example response:
 
 The API allows you to enable or disable the Error Tracking settings for a project. Only for project maintainers.
 
-```
+```plaintext
 PATCH /projects/:id/error_tracking/settings
 ```
 

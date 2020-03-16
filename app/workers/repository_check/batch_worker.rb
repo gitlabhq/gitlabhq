@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RepositoryCheck
-  class BatchWorker
+  class BatchWorker # rubocop:disable Scalability/IdempotentWorker
     prepend_if_ee('::EE::RepositoryCheck::BatchWorker') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
     include ApplicationWorker

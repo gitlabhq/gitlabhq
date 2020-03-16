@@ -26,6 +26,8 @@ class SessionsController < Devise::SessionsController
   before_action :load_recaptcha
   before_action :frontend_tracking_data, only: [:new]
 
+  around_action :set_current_context
+
   after_action :log_failed_login, if: :action_new_and_failed_login?
 
   helper_method :captcha_enabled?, :captcha_on_login_required?
@@ -39,7 +41,7 @@ class SessionsController < Devise::SessionsController
   # would cause the CSRF token to be cleared and then
   # RequestForgeryProtection#verify_authenticity_token would fail because of
   # token mismatch.
-  protect_from_forgery with: :exception, prepend: true
+  protect_from_forgery with: :exception, prepend: true, except: :destroy
 
   CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'
   MAX_FAILED_LOGIN_ATTEMPTS = 5
@@ -271,8 +273,8 @@ class SessionsController < Devise::SessionsController
 
   def ldap_servers
     @ldap_servers ||= begin
-      if Gitlab::Auth::LDAP::Config.sign_in_enabled?
-        Gitlab::Auth::LDAP::Config.available_servers
+      if Gitlab::Auth::Ldap::Config.sign_in_enabled?
+        Gitlab::Auth::Ldap::Config.available_servers
       else
         []
       end
@@ -304,6 +306,13 @@ class SessionsController < Devise::SessionsController
   def frontend_tracking_data
     # We want tracking data pushed to the frontend when the user is _in_ the control group
     frontend_experimentation_tracking_data(:signup_flow, 'start') unless experiment_enabled?(:signup_flow)
+  end
+
+  def set_current_context(&block)
+    Gitlab::ApplicationContext.with_context(
+      user: -> { current_user },
+      caller_id: "#{self.class.name}##{action_name}",
+      &block)
   end
 end
 

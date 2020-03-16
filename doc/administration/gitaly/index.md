@@ -6,9 +6,9 @@ components can read or write Git data. GitLab components that access Git
 repositories (GitLab Rails, GitLab Shell, GitLab Workhorse, etc.) act as clients
 to Gitaly. End users do not have direct access to Gitaly.
 
-In the rest of this page, Gitaly server is referred to the standalone node that
-only runs Gitaly, and Gitaly client to the GitLab Rails node that runs all other
-processes except Gitaly.
+On this page, *Gitaly server* refers to a standalone node that only runs Gitaly
+and *Gitaly client* is a GitLab Rails app node that runs all other processes
+except Gitaly.
 
 ## Architecture
 
@@ -20,7 +20,7 @@ Here's a high-level architecture overview of how Gitaly is used.
 
 The Gitaly service itself is configured via a [TOML configuration file](reference.md).
 
-In case you want to change some of its settings:
+If you want to change any of its settings:
 
 **For Omnibus GitLab**
 
@@ -53,10 +53,6 @@ a Gitaly setup that isn't utilising NFS. In order to use Elasticsearch in this
 scenario, the [new repository indexer](../../integration/elasticsearch.md#elasticsearch-repository-indexer)
 needs to be enabled in your GitLab configuration. [Since GitLab v12.3](https://gitlab.com/gitlab-org/gitlab/issues/6481),
 the new indexer becomes the default and no configuration is required.
-
-NOTE: **Note:** While Gitaly can be used as a replacement for NFS, it's not recommended
-to use EFS as it may impact GitLab's performance. Review the [relevant documentation](../high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs)
-for more details.
 
 ### Network architecture
 
@@ -167,17 +163,21 @@ Git operations in GitLab will result in an API error.
    unicorn['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
+   grafana['enable'] = false
+
+   # If you run a seperate monitoring node you can disable these services
+   alertmanager['enable'] = false
+   prometheus['enable'] = false
+
+   # If you don't run a seperate monitoring node you can
+   # Enable Prometheus access & disable these extra services
+   # This makes Prometheus listen on all interfaces. You must use firewalls to restrict access to this address/port.
+   # prometheus['listen_address'] = '0.0.0.0:9090'
+   # prometheus['monitor_kubernetes'] = false
 
    # If you don't want to run monitoring services uncomment the following (not recommended)
-   # alertmanager['enable'] = false
    # gitlab_exporter['enable'] = false
-   # grafana['enable'] = false
    # node_exporter['enable'] = false
-   # prometheus['enable'] = false
-
-   # Enable prometheus monitoring - comment out if you disable monitoring services above.
-   # This makes Prometheus listen on all interfaces. You must use firewalls to restrict access to this address/port.
-   prometheus['listen_address'] = '0.0.0.0:9090'
 
    # Prevent database connections during 'gitlab-ctl reconfigure'
    gitlab_rails['rake_cache_clear'] = false
@@ -568,30 +568,6 @@ server with the following settings.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 
-## Eliminating NFS altogether
-
-If you are planning to use Gitaly without NFS for your storage needs
-and want to eliminate NFS from your environment altogether, there are
-a few things that you need to do:
-
-1. Make sure the [`git` user home directory](https://docs.gitlab.com/omnibus/settings/configuration.html#moving-the-home-directory-for-a-user) is on local disk.
-1. Configure [database lookup of SSH keys](../operations/fast_ssh_key_lookup.md)
-   to eliminate the need for a shared `authorized_keys` file.
-1. Configure [object storage for job artifacts](../job_artifacts.md#using-object-storage)
-   including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
-1. Configure [object storage for LFS objects](../lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage).
-1. Configure [object storage for uploads](../uploads.md#using-object-storage-core-only).
-1. Configure [object storage for merge request diffs](../merge_request_diffs.md#using-object-storage).
-1. Configure [object storage for packages](../packages/index.md#using-object-storage) (optional feature).
-1. Configure [object storage for dependency proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature).
-1. Configure [object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
-
-NOTE: **Note:**
-One current feature of GitLab that still requires a shared directory (NFS) is
-[GitLab Pages](../../user/project/pages/index.md).
-There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
-to eliminate the need for NFS to support GitLab Pages.
-
 ## Limiting RPC concurrency
 
 It can happen that CI clone traffic puts a large strain on your Gitaly
@@ -805,7 +781,7 @@ two checks. The result of both of these checks is cached.
     see if we can access filesystem underneath the Gitaly server
     directly. If so, use the Rugged patch.
 
-To see if GitLab  Rails can access the repo filesystem directly, we use
+To see if GitLab Rails can access the repo filesystem directly, we use
 the following heuristic:
 
 - Gitaly ensures that the filesystem has a metadata file in its root
@@ -886,10 +862,10 @@ you are seeing Gitaly errors. You can control the log level of the
 gRPC client with the `GRPC_LOG_LEVEL` environment variable. The
 default level is `WARN`.
 
-You can run a GRPC trace with:
+You can run a gRPC trace with:
 
 ```shell
-GRPC_TRACE=all GRPC_VERBOSITY=DEBUG sudo gitlab-rake gitlab:gitaly:check
+sudo GRPC_TRACE=all GRPC_VERBOSITY=DEBUG gitlab-rake gitlab:gitaly:check
 ```
 
 ### Observing `gitaly-ruby` traffic
@@ -1033,6 +1009,12 @@ To remove the proxy setting, run the following commands (depending on which vari
 unset http_proxy
 unset https_proxy
 ```
+
+### Gitaly not listening on new address after reconfiguring
+
+When updating the `gitaly['listen_addr']` or `gitaly['prometheus_listen_addr']` values, Gitaly may continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
+
+When this occurs, performing a `sudo gitlab-ctl restart` will resolve the issue. This will no longer be necessary after [this issue](https://gitlab.com/gitlab-org/gitaly/issues/2521) is resolved.
 
 ### Praefect
 

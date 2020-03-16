@@ -15,7 +15,9 @@ test:
     - export DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:5432/${POSTGRES_DB}"
     - cp -R . /tmp/app
     - /bin/herokuish buildpack test
-  rules:
-    - if: '$TEST_DISABLED'
-      when: never
-    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+  only:
+    - branches
+    - tags
+  except:
+    variables:
+      - $TEST_DISABLED

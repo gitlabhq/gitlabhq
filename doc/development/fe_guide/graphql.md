@@ -53,7 +53,7 @@ fragment DesignListItem on Design {
 }
 ```
 
-Fragments can be stored in separate files, imported and used in queries, mutations or other fragments.
+Fragments can be stored in separate files, imported and used in queries, mutations, or other fragments.
 
 ```javascript
 #import "./designList.fragment.graphql"
@@ -257,6 +257,134 @@ export default {
   },
 };
 ```
+
+### Working with pagination
+
+GitLab's GraphQL API uses [Relay-style cursor pagination](https://www.apollographql.com/docs/react/data/pagination/#cursor-based)
+for connection types. This means a "cursor" is used to keep track of where in the data
+set the next items should be fetched from.
+
+Every connection type (for example, `DesignConnection` and `DiscussionConnection`) has a field `pageInfo` that contains an information required for pagination:
+
+```javascript
+pageInfo {
+  endCursor
+  hasNextPage
+  hasPreviousPage
+  startCursor
+}
+```
+
+Here:
+
+- `startCursor` and `endCursor` display the cursor of the first and last items
+  respectively.
+- `hasPreviousPage` and `hasNextPage` allow us to check if there are more pages
+  available before or after the current page.
+
+When we fetch data with a connection type, we can pass cursor as `after` or `before`
+parameter, indicating a starting or ending point of our pagination. They should be
+followed with `first` or `last` parameter respectively to indicate _how many_ items
+we want to fetch after or before a given endpoint.
+
+For example, here we're fetching 10 designs after a cursor:
+
+```javascript
+query {
+  project(fullPath: "root/my-project") {
+    id
+    issue(iid: "42") {
+      designCollection {
+        designs(atVersion: null, after: "Ihwffmde0i", first: 10) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+#### Using `fetchMore` method in components
+
+When making an initial fetch, we usually want to start a pagination from the beginning.
+In this case, we can either:
+
+- Skip passing a cursor.
+- Pass `null` explicitly to `after`.
+
+After data is fetched, we should save a `pageInfo` object. Let's assume we're storing
+it to Vue component `data`:
+
+```javascript
+data() {
+  return {
+    pageInfo: null,
+  }
+},
+apollo: {
+  designs: {
+    query: projectQuery,
+    variables() {
+      return {
+        // rest of design variables
+        ...
+        first: 10,
+      };
+    },
+    result(res) {
+      this.pageInfo = res.data?.project?.issue?.designCollection?.designs?.pageInfo;
+    },
+  },
+},
+```
+
+When we want to move to the next page, we use an Apollo `fetchMore` method, passing a
+new cursor (and, optionally, new variables) there. In the `updateQuery` hook, we have
+to return a result we want to see in the Apollo cache after fetching the next page.
+
+```javascript
+fetchNextPage() {
+  // as a first step, we're checking if we have more pages to move forward
+  if (this.pageInfo?.hasNextPage) {
+    this.$apollo.queries.designs.fetchMore({
+      variables: {
+        // rest of design variables
+        ...
+        first: 10,
+        after: this.pageInfo?.endCursor,
+      },
+      updateQuery(previousResult, { fetchMoreResult }) {
+        // here we can implement the logic of adding new designs to fetched one (for example, if we use infinite scroll)
+        // or replacing old result with the new one if we use numbered pages
+
+        const newDesigns = fetchMoreResult.project.issue.designCollection.designs;
+        previousResult.project.issue.designCollection.designs.push(...newDesigns)
+
+        return previousResult;
+      },
+    });
+  }
+}
+```
+
+Please note we don't have to save `pageInfo` one more time; `fetchMore` triggers a query
+`result` hook as well.
+
+#### Limitations
+
+Currently, bidirectional pagination doesn't work:
+
+- `hasNextPage` returns a correct value only when we paginate forward using `endCursor`
+  and `first` parameters.
+- `hasPreviousPage` returns a correct value only when we paginate backward using
+  `startCursor` and `last` parameters.
+
+This should be resolved in the scope of the issue
+[Bi-directional Pagination in GraphQL doesn't work as expected](https://gitlab.com/gitlab-org/gitlab/-/issues/208301).
 
 ### Testing
 

@@ -49,7 +49,7 @@ describe API::PagesDomains do
         it 'returns paginated all pages domains' do
           get api('/pages/domains', admin)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('public_api/v4/pages_domain_basics')
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
@@ -76,7 +76,7 @@ describe API::PagesDomains do
       it 'returns paginated pages domains' do
         get api(route, user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domains')
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
@@ -147,7 +147,7 @@ describe API::PagesDomains do
       it 'returns pages domain' do
         get api(route_domain, user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(json_response['domain']).to eq(pages_domain.domain)
         expect(json_response['url']).to eq(pages_domain.url)
@@ -157,7 +157,7 @@ describe API::PagesDomains do
       it 'returns pages domain with project path' do
         get api(route_domain_path, user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(json_response['domain']).to eq(pages_domain.domain)
         expect(json_response['url']).to eq(pages_domain.url)
@@ -167,7 +167,7 @@ describe API::PagesDomains do
       it 'returns pages domain with a certificate' do
         get api(route_secure_domain, user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(json_response['domain']).to eq(pages_domain_secure.domain)
         expect(json_response['url']).to eq(pages_domain_secure.url)
@@ -179,7 +179,7 @@ describe API::PagesDomains do
       it 'returns pages domain with an expired certificate' do
         get api(route_expired_domain, user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(json_response['certificate']['expired']).to be true
       end
@@ -187,7 +187,7 @@ describe API::PagesDomains do
       it 'returns pages domain with letsencrypt' do
         get api(route_letsencrypt_domain, user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(json_response['domain']).to eq(pages_domain_with_letsencrypt.domain)
         expect(json_response['url']).to eq(pages_domain_with_letsencrypt.url)
@@ -261,7 +261,7 @@ describe API::PagesDomains do
         post api(route, user), params: params
         pages_domain = PagesDomain.find_by(domain: json_response['domain'])
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain.domain).to eq(params[:domain])
         expect(pages_domain.certificate).to be_nil
@@ -273,7 +273,7 @@ describe API::PagesDomains do
         post api(route, user), params: params_secure
         pages_domain = PagesDomain.find_by(domain: json_response['domain'])
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain.domain).to eq(params_secure[:domain])
         expect(pages_domain.certificate).to eq(params_secure[:certificate])
@@ -285,7 +285,7 @@ describe API::PagesDomains do
         post api(route, user), params: pages_domain_with_letsencrypt_params
         pages_domain = PagesDomain.find_by(domain: json_response['domain'])
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain.domain).to eq(pages_domain_with_letsencrypt_params[:domain])
         expect(pages_domain.auto_ssl_enabled).to be true
@@ -295,7 +295,7 @@ describe API::PagesDomains do
         post api(route, user), params: params_secure.merge(auto_ssl_enabled: true)
         pages_domain = PagesDomain.find_by(domain: json_response['domain'])
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain.domain).to eq(params_secure[:domain])
         expect(pages_domain.certificate).to eq(params_secure[:certificate])
@@ -306,13 +306,13 @@ describe API::PagesDomains do
       it 'fails to create pages domain without key' do
         post api(route, user), params: pages_domain_secure_params.slice(:domain, :certificate)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'fails to create pages domain with key missmatch' do
         post api(route, user), params: pages_domain_secure_key_missmatch_params.slice(:domain, :certificate, :key)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
@@ -370,7 +370,7 @@ describe API::PagesDomains do
         put api(route_secure_domain, user), params: { certificate: nil, key: nil }
         pages_domain_secure.reload
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain_secure.certificate).to be_nil
         expect(pages_domain_secure.key).to be_nil
@@ -381,7 +381,7 @@ describe API::PagesDomains do
         put api(route_domain, user), params: params_secure
         pages_domain.reload
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain.certificate).to eq(params_secure[:certificate])
         expect(pages_domain.key).to eq(params_secure[:key])
@@ -391,7 +391,7 @@ describe API::PagesDomains do
         put api(route_domain, user), params: params_secure.merge(auto_ssl_enabled: true)
         pages_domain.reload
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain.certificate).to eq(params_secure[:certificate])
         expect(pages_domain.key).to eq(params_secure[:key])
@@ -402,7 +402,7 @@ describe API::PagesDomains do
         put api(route_domain, user), params: { auto_ssl_enabled: true }
         pages_domain.reload
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain.auto_ssl_enabled).to be true
       end
@@ -411,7 +411,7 @@ describe API::PagesDomains do
         put api(route_letsencrypt_domain, user), params: { auto_ssl_enabled: false }
         pages_domain_with_letsencrypt.reload
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain_with_letsencrypt.auto_ssl_enabled).to be false
         expect(pages_domain_with_letsencrypt.key).to be
@@ -422,7 +422,7 @@ describe API::PagesDomains do
         put api(route_expired_domain, user), params: params_secure
         pages_domain_expired.reload
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain_expired.certificate).to eq(params_secure[:certificate])
         expect(pages_domain_expired.key).to eq(params_secure[:key])
@@ -432,7 +432,7 @@ describe API::PagesDomains do
         put api(route_secure_domain, user), params: params_secure_nokey
         pages_domain_secure.reload
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain_secure.certificate).to eq(params_secure_nokey[:certificate])
       end
@@ -448,19 +448,19 @@ describe API::PagesDomains do
       it 'fails to update pages domain adding certificate without key' do
         put api(route_domain, user), params: params_secure_nokey
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'fails to update pages domain adding certificate with missing chain' do
         put api(route_domain, user), params: pages_domain_secure_missing_chain_params.slice(:certificate)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'fails to update pages domain with key missmatch' do
         put api(route_secure_domain, user), params: pages_domain_secure_key_missmatch_params.slice(:certificate, :key)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
@@ -524,7 +524,7 @@ describe API::PagesDomains do
       it 'deletes a pages domain' do
         delete api(route_domain, user)
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end
     end
 

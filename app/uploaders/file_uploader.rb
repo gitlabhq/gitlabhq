@@ -16,6 +16,9 @@ class FileUploader < GitlabUploader
 
   MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}.freeze
   DYNAMIC_PATH_PATTERN = %r{.*(?<secret>\h{32})/(?<identifier>.*)}.freeze
+  VALID_SECRET_PATTERN = %r{\A\h{10,32}\z}.freeze
+
+  InvalidSecret = Class.new(StandardError)
 
   after :remove, :prune_store_dir
 
@@ -153,6 +156,10 @@ class FileUploader < GitlabUploader
 
   def secret
     @secret ||= self.class.generate_secret
+
+    raise InvalidSecret unless @secret =~ VALID_SECRET_PATTERN
+
+    @secret
   end
 
   # return a new uploader with a file copy on another project

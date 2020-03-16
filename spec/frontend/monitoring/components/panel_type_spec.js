@@ -74,6 +74,18 @@ describe('Panel Type component', () => {
         glEmptyChart = wrapper.find(EmptyChart);
       });
 
+      it('renders the chart title', () => {
+        expect(wrapper.find({ ref: 'graphTitle' }).text()).toBe(graphDataNoResult.title);
+      });
+
+      it('renders the no download csv link', () => {
+        expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(false);
+      });
+
+      it('does not contain graph widgets', () => {
+        expect(wrapper.find('.js-graph-widgets').exists()).toBe(false);
+      });
+
       it('is a Vue instance', () => {
         expect(glEmptyChart.isVueInstance()).toBe(true);
       });
@@ -95,6 +107,15 @@ describe('Panel Type component', () => {
 
     afterEach(() => {
       wrapper.destroy();
+    });
+
+    it('renders the chart title', () => {
+      expect(wrapper.find({ ref: 'graphTitle' }).text()).toBe(graphDataPrometheusQueryRange.title);
+    });
+
+    it('contains graph widgets', () => {
+      expect(wrapper.find('.js-graph-widgets').exists()).toBe(true);
+      expect(wrapper.find({ ref: 'downloadCsvLink' }).exists()).toBe(true);
     });
 
     it('sets no clipboard copy link on dropdown by default', () => {
@@ -123,6 +144,82 @@ describe('Panel Type component', () => {
       it('is rendered with an anomaly chart', () => {
         expect(wrapper.find(AnomalyChart).isVueInstance()).toBe(true);
         expect(wrapper.find(AnomalyChart).exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('Edit custom metric dropdown item', () => {
+    const findEditCustomMetricLink = () => wrapper.find({ ref: 'editMetricLink' });
+
+    beforeEach(() => {
+      createWrapper({
+        graphData: {
+          ...graphDataPrometheusQueryRange,
+        },
+      });
+
+      return wrapper.vm.$nextTick();
+    });
+
+    it('is not present if the panel is not a custom metric', () => {
+      expect(findEditCustomMetricLink().exists()).toBe(false);
+    });
+
+    it('is present when the panel contains an edit_path property', () => {
+      wrapper.setProps({
+        graphData: {
+          ...graphDataPrometheusQueryRange,
+          metrics: [
+            {
+              ...graphDataPrometheusQueryRange.metrics[0],
+              edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
+            },
+          ],
+        },
+      });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findEditCustomMetricLink().exists()).toBe(true);
+      });
+    });
+
+    it('shows an "Edit metric" link for a panel with a single metric', () => {
+      wrapper.setProps({
+        graphData: {
+          ...graphDataPrometheusQueryRange,
+          metrics: [
+            {
+              ...graphDataPrometheusQueryRange.metrics[0],
+              edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
+            },
+          ],
+        },
+      });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findEditCustomMetricLink().text()).toBe('Edit metric');
+      });
+    });
+
+    it('shows an "Edit metrics" link for a panel with multiple metrics', () => {
+      wrapper.setProps({
+        graphData: {
+          ...graphDataPrometheusQueryRange,
+          metrics: [
+            {
+              ...graphDataPrometheusQueryRange.metrics[0],
+              edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
+            },
+            {
+              ...graphDataPrometheusQueryRange.metrics[0],
+              edit_path: '/root/kubernetes-gke-project/prometheus/metrics/23/edit',
+            },
+          ],
+        },
+      });
+
+      return wrapper.vm.$nextTick(() => {
+        expect(findEditCustomMetricLink().text()).toBe('Edit metrics');
       });
     });
   });

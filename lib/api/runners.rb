@@ -115,7 +115,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the runner'
         optional :status, type: String, desc: 'Status of the job', values: Ci::Build::AVAILABLE_STATUSES
-        optional :order_by, type: String, desc: 'Order by `id` or not', values: RunnerJobsFinder::ALLOWED_INDEXED_COLUMNS
+        optional :order_by, type: String, desc: 'Order by `id` or not', values: Ci::RunnerJobsFinder::ALLOWED_INDEXED_COLUMNS
         optional :sort, type: String, values: %w[asc desc], default: 'desc', desc: 'Sort by asc (ascending) or desc (descending)'
         use :pagination
       end
@@ -123,7 +123,7 @@ module API
         runner = get_runner(params[:id])
         authenticate_list_runners_jobs!(runner)
 
-        jobs = RunnerJobsFinder.new(runner, params).execute
+        jobs = Ci::RunnerJobsFinder.new(runner, params).execute
 
         present paginate(jobs), with: Entities::JobBasicWithProject
       end

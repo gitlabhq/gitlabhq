@@ -23,15 +23,26 @@ module Gitlab
 
       class << self
         # Admin mode activation requires storing a flag in the user session. Using this
-        # method when scheduling jobs in Sidekiq will bypass the session check for a
-        # user that was already in admin mode
+        # method when scheduling jobs in sessionless environments (e.g. Sidekiq, API)
+        # will bypass the session check for a user that was already in admin mode
+        #
+        # If passed a block, it will surround the block execution and reset the session
+        # bypass at the end; otherwise use manually '.reset_bypass_session!'
         def bypass_session!(admin_id)
           Gitlab::SafeRequestStore[CURRENT_REQUEST_BYPASS_SESSION_ADMIN_ID_RS_KEY] = admin_id
 
           Gitlab::AppLogger.debug("Bypassing session in admin mode for: #{admin_id}")
 
-          yield
-        ensure
+          if block_given?
+            begin
+              yield
+            ensure
+              reset_bypass_session!
+            end
+          end
+        end
+
+        def reset_bypass_session!
           Gitlab::SafeRequestStore.delete(CURRENT_REQUEST_BYPASS_SESSION_ADMIN_ID_RS_KEY)
         end
 
@@ -88,10 +99,6 @@ module Gitlab
 
         current_session_data[ADMIN_MODE_REQUESTED_TIME_KEY] = nil
         current_session_data[ADMIN_MODE_START_TIME_KEY] = Time.now
-      end
-
-      def enable_sessionless_admin_mode!
-        request_admin_mode! && enable_admin_mode!(skip_password_validation: true)
       end
 
       def disable_admin_mode!

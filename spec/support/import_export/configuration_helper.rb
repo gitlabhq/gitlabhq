@@ -36,8 +36,8 @@ module ConfigurationHelper
   end
 
   def relation_class_for_name(relation_name)
-    relation_name = Gitlab::ImportExport::ProjectRelationFactory.overrides[relation_name.to_sym] || relation_name
-    Gitlab::ImportExport::ProjectRelationFactory.relation_class(relation_name)
+    relation_name = Gitlab::ImportExport::Project::RelationFactory.overrides[relation_name.to_sym] || relation_name
+    Gitlab::ImportExport::Project::RelationFactory.relation_class(relation_name)
   end
 
   def parsed_attributes(relation_name, attributes, config: Gitlab::ImportExport.config_file)

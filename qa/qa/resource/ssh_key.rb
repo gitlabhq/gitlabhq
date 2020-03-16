@@ -7,6 +7,8 @@ module QA
 
       attr_accessor :title
 
+      attribute :id
+
       def_delegators :key, :private_key, :public_key, :md5_fingerprint
 
       def key
@@ -20,6 +22,35 @@ module QA
         Page::Profile::SSHKeys.perform do |profile_page|
           profile_page.add_key(public_key, title)
         end
+      end
+
+      def fabricate_via_api!
+        api_post
+      end
+
+      def api_delete
+        QA::Runtime::Logger.debug("Deleting SSH key with title '#{title}' and fingerprint '#{md5_fingerprint}'")
+
+        super
+      end
+
+      def api_get_path
+        "/user/keys/#{id}"
+      end
+
+      def api_post_path
+        '/user/keys'
+      end
+
+      def api_post_body
+        {
+          title: title,
+          key: public_key
+        }
+      end
+
+      def api_delete_path
+        "/user/keys/#{id}"
       end
     end
   end

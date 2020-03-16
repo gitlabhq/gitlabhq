@@ -11,12 +11,12 @@ describe Mutations::ResolvesGroup do
 
   let(:context) { double }
 
-  subject(:mutation) { mutation_class.new(object: nil, context: context) }
+  subject(:mutation) { mutation_class.new(object: nil, context: context, field: nil) }
 
   it 'uses the GroupsResolver to resolve groups by path' do
     group = create(:group)
 
-    expect(Resolvers::GroupResolver).to receive(:new).with(object: nil, context: context).and_call_original
+    expect(Resolvers::GroupResolver).to receive(:new).with(object: nil, context: context, field: nil).and_call_original
     expect(mutation.resolve_group(full_path: group.full_path).sync).to eq(group)
   end
 end

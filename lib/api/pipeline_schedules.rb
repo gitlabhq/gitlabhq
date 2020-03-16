@@ -22,7 +22,7 @@ module API
       get ':id/pipeline_schedules' do
         authorize! :read_pipeline_schedule, user_project
 
-        schedules = PipelineSchedulesFinder.new(user_project).execute(scope: params[:scope])
+        schedules = Ci::PipelineSchedulesFinder.new(user_project).execute(scope: params[:scope])
           .preload([:owner, :last_pipeline])
         present paginate(schedules), with: Entities::PipelineSchedule
       end

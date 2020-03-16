@@ -1,0 +1,5 @@
+---
+title: Migrated from .fa-spinner to .spinner in app/assets/javascripts/sidebar/components/assignees/assignee_title.vue
+merge_request: 24919
+author: rk4bir
+type: changed

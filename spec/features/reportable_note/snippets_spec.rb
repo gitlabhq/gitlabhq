@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe 'Reportable note on snippets', :js do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
 
   before do
     stub_feature_flags(snippets_vue: false)
@@ -13,8 +13,8 @@ describe 'Reportable note on snippets', :js do
   end
 
   describe 'on project snippet' do
-    let(:snippet) { create(:project_snippet, :public, project: project, author: user) }
-    let!(:note) { create(:note_on_project_snippet, noteable: snippet, project: project) }
+    let_it_be(:snippet) { create(:project_snippet, :public, :repository, project: project, author: user) }
+    let_it_be(:note) { create(:note_on_project_snippet, noteable: snippet, project: project) }
 
     before do
       visit project_snippet_path(project, snippet)

@@ -18,7 +18,7 @@ module Gitlab
       def id_for(issuable)
         return unless issuable.milestone_number
 
-        Caching.read_integer(cache_key_for(issuable.milestone_number))
+        Gitlab::Cache::Import::Caching.read_integer(cache_key_for(issuable.milestone_number))
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -30,7 +30,7 @@ module Gitlab
             hash[cache_key_for(iid)] = id
           end
 
-        Caching.write_multiple(mapping)
+        Gitlab::Cache::Import::Caching.write_multiple(mapping)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

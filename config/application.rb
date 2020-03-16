@@ -285,6 +285,20 @@ module Gitlab
       g.factory_bot false
     end
 
+    # This empty initializer forces the :let_zeitwerk_take_over initializer to run before we load
+    # initializers in config/initializers. This is done because autoloading before Zeitwerk takes
+    # over is deprecated but our initializers do a lot of autoloading.
+    # See https://gitlab.com/gitlab-org/gitlab/issues/197346 for more details
+    initializer :move_initializers, before: :load_config_initializers, after: :let_zeitwerk_take_over do
+    end
+
+    # We need this for initializers that need to be run before Zeitwerk is loaded
+    initializer :before_zeitwerk, before: :let_zeitwerk_take_over, after: :prepend_helpers_path do
+      Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].sort.each do |initializer|
+        load_config_initializer(initializer)
+      end
+    end
+
     config.after_initialize do
       Rails.application.reload_routes!
 

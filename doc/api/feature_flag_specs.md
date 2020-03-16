@@ -16,7 +16,7 @@ For instance, there are two specs, `staging` and `production`, for a feature fla
 When you pass `production` as a parameter to this endpoint, the system returns
 the `production` feature flag spec only.
 
-```
+```plaintext
 GET /projects/:id/feature_flag_scopes
 ```
 
@@ -84,7 +84,7 @@ Example response:
 
 Get all specs of a feature flag.
 
-```
+```plaintext
 GET /projects/:id/feature_flags/:name/scopes
 ```
 
@@ -147,7 +147,7 @@ Example response:
 
 Creates a new feature flag spec.
 
-```
+```plaintext
 POST /projects/:id/feature_flags/:name/scopes
 ```
 
@@ -194,7 +194,7 @@ Example response:
 
 Gets a single feature flag spec.
 
-```
+```plaintext
 GET /projects/:id/feature_flags/:name/scopes/:environment_scope
 ```
 
@@ -230,7 +230,7 @@ Example response:
 
 Updates an existing feature flag spec.
 
-```
+```plaintext
 PUT /projects/:id/feature_flags/:name/scopes/:environment_scope
 ```
 
@@ -276,7 +276,7 @@ Example response:
 
 Deletes a feature flag spec.
 
-```
+```plaintext
 DELETE /projects/:id/feature_flags/:name/scopes/:environment_scope
 ```
 

@@ -5,19 +5,27 @@ module AuthHelper
   LDAP_PROVIDER = /\Aldap/.freeze
 
   def ldap_enabled?
-    Gitlab::Auth::LDAP::Config.enabled?
+    Gitlab::Auth::Ldap::Config.enabled?
   end
 
   def ldap_sign_in_enabled?
-    Gitlab::Auth::LDAP::Config.sign_in_enabled?
+    Gitlab::Auth::Ldap::Config.sign_in_enabled?
   end
 
   def omniauth_enabled?
     Gitlab::Auth.omniauth_enabled?
   end
 
-  def provider_has_icon?(name)
+  def provider_has_custom_icon?(name)
+    icon_for_provider(name.to_s)
+  end
+
+  def provider_has_builtin_icon?(name)
     PROVIDERS_WITH_ICONS.include?(name.to_s)
+  end
+
+  def provider_has_icon?(name)
+    provider_has_builtin_icon?(name) || provider_has_custom_icon?(name)
   end
 
   def qa_class_for_provider(provider)
@@ -33,6 +41,10 @@ module AuthHelper
 
   def label_for_provider(name)
     Gitlab::Auth::OAuth::Provider.label_for(name)
+  end
+
+  def icon_for_provider(name)
+    Gitlab::Auth::OAuth::Provider.icon_for(name)
   end
 
   def form_based_provider_priority
@@ -109,7 +121,9 @@ module AuthHelper
   def provider_image_tag(provider, size = 64)
     label = label_for_provider(provider)
 
-    if provider_has_icon?(provider)
+    if provider_has_custom_icon?(provider)
+      image_tag(icon_for_provider(provider), alt: label, title: "Sign in with #{label}")
+    elsif provider_has_builtin_icon?(provider)
       file_name = "#{provider.to_s.split('_').first}_#{size}.png"
 
       image_tag("auth_buttons/#{file_name}", alt: label, title: "Sign in with #{label}")

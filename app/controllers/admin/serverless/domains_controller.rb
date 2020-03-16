@@ -2,7 +2,7 @@
 
 class Admin::Serverless::DomainsController < Admin::ApplicationController
   before_action :check_feature_flag
-  before_action :domain, only: [:update, :verify]
+  before_action :domain, only: [:update, :verify, :destroy]
 
   def index
     @domain = PagesDomain.instance_serverless.first_or_initialize
@@ -28,6 +28,20 @@ class Admin::Serverless::DomainsController < Admin::ApplicationController
     else
       render 'index'
     end
+  end
+
+  def destroy
+    if domain.serverless_domain_clusters.count > 0
+      return redirect_to admin_serverless_domains_path,
+                         status: :conflict,
+                         notice: _('Domain cannot be deleted while associated to one or more clusters.')
+    end
+
+    domain.destroy!
+
+    redirect_to admin_serverless_domains_path,
+                status: :found,
+                notice: _('Domain was successfully deleted.')
   end
 
   def verify

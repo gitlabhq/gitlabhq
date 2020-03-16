@@ -26,16 +26,18 @@ shared_examples 'resource notes mentions migration' do |migration_class, resourc
     note1.becomes(Note).save!
     note2.becomes(Note).save!
     note3.becomes(Note).save!
-    # note4.becomes(Note).save(validate: false)
+    note4.becomes(Note).save!
+    note5.becomes(Note).save(validate: false)
   end
 
   it 'migrates mentions from note' do
     join = migration_class::JOIN
     conditions = migration_class::QUERY_CONDITIONS
 
-    # there are 4 notes for each noteable_type, but one does not have mentions and
+    # there are 5 notes for each noteable_type, but two do not have mentions and
     # another one's noteable_id points to an inexistent resource
-    expect(notes.where(noteable_type: resource_class.to_s).count).to eq 4
+    expect(notes.where(noteable_type: resource_class.to_s).count).to eq 5
+    expect(user_mentions.count).to eq 0
 
     expect do
       subject.perform(resource_class.name, join, conditions, true, Note.minimum(:id), Note.maximum(:id))
@@ -63,18 +65,26 @@ shared_examples 'resource notes mentions migration' do |migration_class, resourc
 end
 
 shared_examples 'schedules resource mentions migration' do |resource_class, is_for_notes|
+  before do
+    stub_const("#{described_class.name}::BATCH_SIZE", 1)
+  end
+
   it 'schedules background migrations' do
     Sidekiq::Testing.fake! do
       Timecop.freeze do
+        resource_count = is_for_notes ? Note.count : resource_class.count
+        expect(resource_count).to eq 5
+
         migrate!
 
         migration = described_class::MIGRATION
         join = described_class::JOIN
         conditions = described_class::QUERY_CONDITIONS
+        delay = described_class::DELAY
 
-        expect(migration).to be_scheduled_delayed_migration(2.minutes, resource_class.name, join, conditions, is_for_notes, resource1.id, resource1.id)
-        expect(migration).to be_scheduled_delayed_migration(4.minutes, resource_class.name, join, conditions, is_for_notes, resource2.id, resource2.id)
-        expect(migration).to be_scheduled_delayed_migration(6.minutes, resource_class.name, join, conditions, is_for_notes, resource3.id, resource3.id)
+        expect(migration).to be_scheduled_delayed_migration(1 * delay, resource_class.name, join, conditions, is_for_notes, resource1.id, resource1.id)
+        expect(migration).to be_scheduled_delayed_migration(2 * delay, resource_class.name, join, conditions, is_for_notes, resource2.id, resource2.id)
+        expect(migration).to be_scheduled_delayed_migration(3 * delay, resource_class.name, join, conditions, is_for_notes, resource3.id, resource3.id)
         expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end

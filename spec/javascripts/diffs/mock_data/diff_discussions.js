@@ -64,7 +64,7 @@ export default {
       resolve_path:
         '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
       resolve_with_issue_path:
-        '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
+        '/gitlab-org/gitlab-test/-/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
       id: '1753',
@@ -117,7 +117,7 @@ export default {
       resolve_path:
         '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
       resolve_with_issue_path:
-        '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
+        '/gitlab-org/gitlab-test/-/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
       id: '1754',
@@ -160,7 +160,7 @@ export default {
       resolve_path:
         '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
       resolve_with_issue_path:
-        '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
+        '/gitlab-org/gitlab-test/-/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
       id: '1755',
@@ -203,7 +203,7 @@ export default {
       resolve_path:
         '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
       resolve_with_issue_path:
-        '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
+        '/gitlab-org/gitlab-test/-/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
     {
       id: '1756',
@@ -246,7 +246,7 @@ export default {
       resolve_path:
         '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
       resolve_with_issue_path:
-        '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
+        '/gitlab-org/gitlab-test/-/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
     },
   ],
   individual_note: false,
@@ -255,7 +255,7 @@ export default {
   resolve_path:
     '/gitlab-org/gitlab-test/-/merge_requests/20/discussions/6b232e05bea388c6b043ccc243ba505faac04ea8/resolve',
   resolve_with_issue_path:
-    '/gitlab-org/gitlab-test/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
+    '/gitlab-org/gitlab-test/-/issues/new?discussion_to_resolve=6b232e05bea388c6b043ccc243ba505faac04ea8&merge_request_to_resolve_discussions_of=20',
   diff_file: {
     submodule: false,
     submodule_link: null,

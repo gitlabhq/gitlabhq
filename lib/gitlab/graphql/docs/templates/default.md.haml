@@ -11,6 +11,9 @@
 
   Each table below documents a GraphQL type. Types match loosely to models, but not all
   fields and methods on a model are available via GraphQL.
+
+  CAUTION: **Caution:**
+  Fields that are deprecated are marked with **{warning-solid}**.
 \
 - objects.each do |type|
   - unless type[:fields].empty?
@@ -22,5 +25,5 @@
     ~ "| Name  | Type  | Description |"
     ~ "| ---   |  ---- | ----------  |"
     - sorted_fields(type[:fields]).each do |field|
-      = "| `#{field[:name]}` | #{render_field_type(field[:type][:info])} | #{field[:description]} |"
+      = render_field(field)
     \

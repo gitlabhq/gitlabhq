@@ -5,7 +5,6 @@ require 'spec_helper'
 describe Projects::TransferService do
   include GitHelpers
 
-  let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, :legacy_storage, namespace: user.namespace) }
@@ -104,7 +103,7 @@ describe Projects::TransferService do
     it 'rolls back repo location' do
       attempt_project_transfer
 
-      expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be(true)
+      expect(project.repository.raw.exists?).to be(true)
       expect(original_path).to eq current_path
     end
 
@@ -172,21 +171,18 @@ describe Projects::TransferService do
   end
 
   context 'namespace which contains orphan repository with same projects path name' do
-    let(:repository_storage) { 'default' }
-    let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
+    let(:fake_repo_path) { File.join(TestEnv.repos_path, group.full_path, "#{project.path}.git") }
 
     before do
       group.add_owner(user)
 
-      unless gitlab_shell.create_repository(repository_storage, "#{group.full_path}/#{project.path}", project.full_path)
-        raise 'failed to add repository'
-      end
+      TestEnv.create_bare_repository(fake_repo_path)
 
       @result = transfer_project(project, user, group)
     end
 
     after do
-      gitlab_shell.remove_repository(repository_storage, "#{group.full_path}/#{project.path}")
+      FileUtils.rm_rf(fake_repo_path)
     end
 
     it { expect(@result).to eq false }

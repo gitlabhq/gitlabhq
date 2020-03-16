@@ -40,7 +40,7 @@ module Gitlab
       extend ActiveSupport::Concern
 
       included do
-        before_action :set_experimentation_subject_id_cookie
+        before_action :set_experimentation_subject_id_cookie, unless: :dnt_enabled?
         helper_method :experiment_enabled?
       end
 
@@ -56,7 +56,12 @@ module Gitlab
       end
 
       def experiment_enabled?(experiment_key)
-        Experimentation.enabled_for_user?(experiment_key, experimentation_subject_index) || forced_enabled?(experiment_key)
+        return false if dnt_enabled?
+
+        return true if Experimentation.enabled_for_user?(experiment_key, experimentation_subject_index)
+        return true if forced_enabled?(experiment_key)
+
+        false
       end
 
       def track_experiment_event(experiment_key, action, value = nil)
@@ -72,6 +77,10 @@ module Gitlab
       end
 
       private
+
+      def dnt_enabled?
+        Gitlab::Utils.to_boolean(request.headers['DNT'])
+      end
 
       def experimentation_subject_id
         cookies.signed[:experimentation_subject_id]

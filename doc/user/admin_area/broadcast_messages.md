@@ -28,7 +28,7 @@ To add a broadcast message:
 
 NOTE: **Note:**
 Once a broadcast message has expired, it is no longer displayed in the UI but is still listed in the
-list of broadcast messages.
+list of broadcast messages. User can also dismiss a broadcast message if the option **Dismissable** is set.
 
 ## Editing a broadcast message
 

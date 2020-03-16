@@ -21,7 +21,7 @@ just as it works in the current state. However, instead of queuing and waiting,
 each item takes the completed state of the previous (pending) merge ref, adds its own changes,
 and starts the pipeline immediately in parallel under the assumption that everything is going to pass.
 
-In this way, if all the pipelines in the train merge successfully, no pipeline time is wasted either queuing or retrying.
+This means that if all the pipelines in the train merge successfully, no pipeline time is wasted either queuing or retrying.
 If the button is subsequently pressed in a different MR, instead of creating a new pipeline for the target branch,
 it creates a new pipeline targeting the merge result of the previous MR plus the target branch.
 Pipelines invalidated through failures are immediately canceled and requeued.
@@ -83,7 +83,7 @@ button while the latest pipeline is running.
 
 ## Immediately merge a merge request with a merge train
 
-In case, you have a high-priority merge request (e.g. critical patch) to be merged urgently,
+In the case where you have a high-priority merge request (for example, a critical patch) to be merged urgently,
 you can use **Merge Immediately** option for bypassing the merge train.
 This is the fastest option to get the change merged into the target branch.
 
@@ -140,15 +140,15 @@ workaround you'd be able to take immediately. If it's not available or acceptabl
 please read through this section.
 
 Merge train is enabled by default when you enable [Pipelines for merged results](../index.md),
-however, you can forcibly disable this feature by disabling the feature flag `:merge_trains_enabled`.
-After you disabled this feature, all the existing merge trains will be aborted and
-you will no longer see the **Start/Add Merge Train** button in merge requests.
+however, you can disable this feature by setting the `:disable_merge_trains` feature flag to `enable`.
+When you disable this feature, all existing merge trains are aborted and
+the **Start/Add Merge Train** button no longer appears in merge requests.
 
 To check if the feature flag is enabled on your GitLab instance,
-please ask administrator to execute the following commands:
+please ask an administrator to execute the following commands **(CORE ONLY)**:
 
 ```shell
 > sudo gitlab-rails console                         # Login to Rails console of GitLab instance.
-> Feature.enabled?(:merge_trains_enabled)           # Check if it's enabled or not.
-> Feature.disable(:merge_trains_enabled)            # Disable the feature flag.
+> Feature.enabled?(:disable_merge_trains)           # Check if it's disabled or not.
+> Feature.enable(:disable_merge_trains)             # Disable Merge Trains.
 ```

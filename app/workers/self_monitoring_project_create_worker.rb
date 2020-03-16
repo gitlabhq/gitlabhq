@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SelfMonitoringProjectCreateWorker
+class SelfMonitoringProjectCreateWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ExclusiveLeaseGuard
   include SelfMonitoringProjectWorker

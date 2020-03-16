@@ -135,7 +135,7 @@ class Deployment < ApplicationRecord
   end
 
   def create_ref
-    project.repository.create_ref(ref, ref_path)
+    project.repository.create_ref(sha, ref_path)
   end
 
   def invalidate_cache
@@ -229,7 +229,14 @@ class Deployment < ApplicationRecord
   end
 
   def link_merge_requests(relation)
-    select = relation.select(['merge_requests.id', id]).to_sql
+    # NOTE: relation.select will perform column deduplication,
+    # when id == environment_id it will outputs 2 columns instead of 3
+    # i.e.:
+    # MergeRequest.select(1, 2).to_sql #=> SELECT 1, 2 FROM "merge_requests"
+    # MergeRequest.select(1, 1).to_sql #=> SELECT 1 FROM "merge_requests"
+    select = relation.select('merge_requests.id',
+                             "#{id} as deployment_id",
+                             "#{environment_id} as environment_id").to_sql
 
     # We don't use `Gitlab::Database.bulk_insert` here so that we don't need to
     # first pluck lots of IDs into memory.
@@ -238,7 +245,7 @@ class Deployment < ApplicationRecord
     # for the same deployment, only inserting any missing merge requests.
     DeploymentMergeRequest.connection.execute(<<~SQL)
       INSERT INTO #{DeploymentMergeRequest.table_name}
-      (merge_request_id, deployment_id)
+      (merge_request_id, deployment_id, environment_id)
       #{select}
       ON CONFLICT DO NOTHING
     SQL

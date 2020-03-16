@@ -30,11 +30,11 @@ the Web IDE will make your direct editing even easier.
 The Web IDE currently provides:
 
 - Basic syntax colorization for a variety of programming, scripting and markup
-  languages such as XML, PHP, C#, C++, Markdown, Java, VB, Batch, Python, Ruby
+  languages such as XML, PHP, C#, C++, Markdown, Java, VB, Batch, Python, Ruby,
   and Objective-C.
 - IntelliSense and validation support (displaying errors and warnings, providing
   smart completions, formatting, and outlining) for some languages. For example:
-TypeScript, JavaScript, CSS, LESS, SCSS, JSON and HTML.
+  TypeScript, JavaScript, CSS, LESS, SCSS, JSON, and HTML.
 
 Because the Web IDE is based on the [Monaco Editor](https://microsoft.github.io/monaco-editor/),
 you can find a more complete list of supported languages in the
@@ -43,30 +43,33 @@ you can find a more complete list of supported languages in the
 NOTE: **Note:**
 Single file editing is based on the [Ace Editor](https://ace.c9.io).
 
-## Stage and commit changes
+## Commit changes
 
-After making your changes, click the **Commit** button in the bottom left to
-review the list of changed files. If you're using GitLab 12.6 or older versions,
-click on each file to review the changes and tick the item to stage a file.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4539) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4 and [brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/issues/44157) in 10.7.
+> - From [GitLab 12.7 onwards](https://gitlab.com/gitlab-org/gitlab/issues/33441),
+files were automatically staged.
+> - From [GitLab 12.9 onwards](https://gitlab.com/gitlab-org/gitlab/-/issues/196609), support for staging files was removed
+to prevent loss of unstaged data. All your current changes necessarily have to be
+committed or discarded.
 
-From [GitLab 12.7 onward](https://gitlab.com/gitlab-org/gitlab/issues/33441),
-all your files will be automatically staged. You still have the option to unstage
-changes in case you want to submit them in multiple smaller commits. To unstage
-a change, simply click the **Unstage** button when a staged file is open, or click
-the undo icon next to **Staged changes** to unstage all changes.
+After making your changes, click the **Commit** button on the bottom-left to
+review the list of changed files.
 
 Once you have finalized your changes, you can add a commit message, commit the
-staged changes and directly create a merge request. In case you don't have write
+changes and directly create a merge request. In case you don't have write
 access to the selected branch, you will see a warning, but still be able to create
 a new branch and start a merge request.
 
-![Commit changes](img/commit_changes_v12_3.png)
+To discard a change in a particular file, click the **Discard changes** button on that
+file in the changes tab. To discard all the changes, click the trash icon on the
+top-right corner of the changes sidebar.
+
+![Commit changes](img/commit_changes_v12_9.png)
 
 ## Reviewing changes
 
 Before you commit your changes, you can compare them with the previous commit
-by switching to the review mode or selecting the file from the staged files
-list.
+by switching to the review mode or selecting the file from the list of changes.
 
 An additional review mode is available when you open a merge request, which
 shows you a preview of the merge request diff if you commit your changes.

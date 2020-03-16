@@ -1,0 +1,5 @@
+---
+title: 'Geo: Show secondary-only setting on only on secondaries'
+merge_request: 26029
+author:
+type: fixed

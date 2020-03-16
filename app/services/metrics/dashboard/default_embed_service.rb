@@ -22,7 +22,7 @@ module Metrics
 
       class << self
         def valid_params?(params)
-          params[:embedded].present?
+          embedded?(params[:embedded])
         end
       end
 

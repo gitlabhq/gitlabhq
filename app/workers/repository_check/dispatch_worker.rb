@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RepositoryCheck
-  class DispatchWorker
+  class DispatchWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     # rubocop:disable Scalability/CronWorkerContext
     # This worker does not perform work scoped to a context

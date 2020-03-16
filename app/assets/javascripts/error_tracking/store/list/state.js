@@ -3,6 +3,7 @@ export default () => ({
   loading: true,
   endpoint: null,
   sortField: 'last_seen',
+  statusFilter: 'unresolved',
   searchQuery: null,
   indexPath: '',
   recentSearches: [],

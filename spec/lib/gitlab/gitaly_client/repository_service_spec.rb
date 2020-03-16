@@ -275,7 +275,18 @@ describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
-  describe 'remove' do
+  describe '#rename' do
+    it 'sends a rename_repository message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:rename_repository)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(value: true))
+
+      client.rename('some/new/path')
+    end
+  end
+
+  describe '#remove' do
     it 'sends a remove_repository message' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)
         .to receive(:remove_repository)
@@ -286,14 +297,15 @@ describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
-  describe 'rename' do
-    it 'sends a rename_repository message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:rename_repository)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(value: true))
+  describe '#replicate' do
+    let(:source_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '', 'group/project') }
 
-      client.rename('some/new/path')
+    it 'sends a replicate_repository message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:replicate_repository)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+
+      client.replicate(source_repository)
     end
   end
 end

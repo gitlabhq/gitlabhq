@@ -32,7 +32,7 @@ describe Gitlab::Ci::Config::Entry::Root do
           image: 'ruby:2.2',
           default: {},
           services: ['postgres:9.1', 'mysql:5.5'],
-          variables: { VAR: 'value' },
+          variables: { VAR: 'root' },
           after_script: ['make clean'],
           stages: %w(build pages release),
           cache: { key: 'k', untracked: true, paths: ['public/'] },
@@ -42,6 +42,7 @@ describe Gitlab::Ci::Config::Entry::Root do
             stage: 'release',
             before_script: [],
             after_script: [],
+            variables: { 'VAR' => 'job' },
             script: ["make changelog | tee release_changelog.txt"],
             release: {
               tag_name: 'v0.06',
@@ -127,7 +128,7 @@ describe Gitlab::Ci::Config::Entry::Root do
                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                        stage: 'test',
                        cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push' },
-                       variables: {},
+                       variables: { 'VAR' => 'root' },
                        ignore: false,
                        after_script: ['make clean'],
                        only: { refs: %w[branches tags] },
@@ -141,7 +142,7 @@ describe Gitlab::Ci::Config::Entry::Root do
                          services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                          stage: 'test',
                          cache: { key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push' },
-                         variables: {},
+                         variables: { 'VAR' => 'root' },
                          ignore: false,
                          after_script: ['make clean'],
                          only: { refs: %w[branches tags] },
@@ -157,7 +158,7 @@ describe Gitlab::Ci::Config::Entry::Root do
                          services: [{ name: "postgres:9.1" }, { name: "mysql:5.5" }],
                          cache: { key: "k", untracked: true, paths: ["public/"], policy: "pull-push" },
                          only: { refs: %w(branches tags) },
-                         variables: {},
+                         variables: { 'VAR' => 'job' },
                          after_script: [],
                          ignore: false,
                          scheduling_type: :stage }
@@ -175,11 +176,11 @@ describe Gitlab::Ci::Config::Entry::Root do
             image: 'ruby:2.1',
             services: ['postgres:9.1', 'mysql:5.5']
           },
-          variables: { VAR: 'value' },
+          variables: { VAR: 'root' },
           stages: %w(build pages),
           cache: { key: 'k', untracked: true, paths: ['public/'] },
           rspec: { script: %w[rspec ls] },
-          spinach: { before_script: [], variables: { VAR: 'AA' }, script: 'spinach' } }
+          spinach: { before_script: [], variables: { VAR: 'job' }, script: 'spinach' } }
       end
 
       context 'when composed' do
@@ -203,7 +204,7 @@ describe Gitlab::Ci::Config::Entry::Root do
                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                        stage: 'test',
                        cache: { key: 'k', untracked: true, paths: ['public/'], policy: "pull-push" },
-                       variables: {},
+                       variables: { 'VAR' => 'root' },
                        ignore: false,
                        after_script: ['make clean'],
                        only: { refs: %w[branches tags] },
@@ -215,7 +216,7 @@ describe Gitlab::Ci::Config::Entry::Root do
                          services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                          stage: 'test',
                          cache: { key: 'k', untracked: true, paths: ['public/'], policy: "pull-push" },
-                         variables: { 'VAR' => 'AA' },
+                         variables: { 'VAR' => 'job' },
                          ignore: false,
                          after_script: ['make clean'],
                          only: { refs: %w[branches tags] },

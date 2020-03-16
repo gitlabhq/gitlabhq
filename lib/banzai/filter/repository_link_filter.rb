@@ -80,6 +80,13 @@ module Banzai
         end
 
         Gitlab::GitalyClient::BlobService.new(repository).get_blob_types(revision_paths, 1)
+      rescue GRPC::Unavailable, GRPC::DeadlineExceeded => e
+        # Handle Gitaly connection issues gracefully
+        Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
+        # Return all links as blob types
+        paths.collect do |path|
+          [path, :blob]
+        end
       end
 
       def get_uri(html_attr)
@@ -124,7 +131,7 @@ module Banzai
         path = cleaned_file_path(uri)
         nested_path = relative_file_path(uri)
 
-        file_exists?(nested_path) ? nested_path : path
+        path_exists?(nested_path) ? nested_path : path
       end
 
       def cleaned_file_path(uri)
@@ -183,12 +190,12 @@ module Banzai
         parts.push(path).join('/')
       end
 
-      def file_exists?(path)
-        path.present? && uri_type(path).present?
+      def path_exists?(path)
+        path.present? && @uri_types[path] != :unknown
       end
 
       def uri_type(path)
-        @uri_types[path] == :unknown ? "" : @uri_types[path]
+        @uri_types[path] == :unknown ? :blob : @uri_types[path]
       end
 
       def current_commit

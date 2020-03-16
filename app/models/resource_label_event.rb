@@ -1,21 +1,18 @@
 # frozen_string_literal: true
 
-class ResourceLabelEvent < ApplicationRecord
-  include Importable
-  include Gitlab::Utils::StrongMemoize
+class ResourceLabelEvent < ResourceEvent
   include CacheMarkdownField
 
   cache_markdown_field :reference
 
-  belongs_to :user
   belongs_to :issue
   belongs_to :merge_request
   belongs_to :label
 
-  scope :created_after, ->(time) { where('created_at > ?', time) }
   scope :inc_relations, -> { includes(:label, :user) }
+  scope :by_issue, ->(issue) { where(issue_id: issue.id) }
+  scope :by_merge_request, ->(merge_request) { where(merge_request_id: merge_request.id) }
 
-  validates :user, presence: { unless: :importing? }, on: :create
   validates :label, presence: { unless: :importing? }, on: :create
   validate :exactly_one_issuable
 
@@ -42,12 +39,6 @@ class ResourceLabelEvent < ApplicationRecord
 
   def issuable
     issue || merge_request
-  end
-
-  def discussion_id(resource = nil)
-    strong_memoize(:discussion_id) do
-      Digest::SHA1.hexdigest(discussion_id_key.join("-"))
-    end
   end
 
   def project
@@ -92,22 +83,6 @@ class ResourceLabelEvent < ApplicationRecord
     else
       label.to_reference(resource_parent, format: :id)
     end
-  end
-
-  def exactly_one_issuable
-    issuable_count = self.class.issuable_attrs.count { |attr| self["#{attr}_id"] }
-
-    return true if issuable_count == 1
-
-    # if none of issuable IDs is set, check explicitly if nested issuable
-    # object is set, this is used during project import
-    if issuable_count == 0 && importing?
-      issuable_count = self.class.issuable_attrs.count { |attr| self.public_send(attr) } # rubocop:disable GitlabSecurity/PublicSend
-
-      return true if issuable_count == 1
-    end
-
-    errors.add(:base, "Exactly one of #{self.class.issuable_attrs.join(', ')} is required")
   end
 
   def expire_etag_cache

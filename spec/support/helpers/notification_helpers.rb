@@ -57,7 +57,7 @@ module NotificationHelpers
     expect(ActionMailer::DeliveryJob).to have_been_enqueued.with(mailer, mail, delivery, *args)
   end
 
-  def expect_not_enqueud_email(*args, mailer: "Notify", mail: "", delivery: "deliver_now")
+  def expect_not_enqueud_email(*args, mailer: "Notify", mail: "")
     expect(ActionMailer::DeliveryJob).not_to have_been_enqueued.with(mailer, mail, *args, any_args)
   end
 end

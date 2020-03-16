@@ -22,7 +22,7 @@ describe API::ErrorTracking do
   end
 
   shared_examples 'returns 404' do
-    it 'returns correct project settings' do
+    it 'returns no project settings' do
       make_request
 
       expect(response).to have_gitlab_http_status(:not_found)

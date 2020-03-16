@@ -116,6 +116,10 @@ module LfsRequest
     @objects ||= (params[:objects] || []).to_a
   end
 
+  def objects_oids
+    objects.map { |o| o['oid'].to_s }
+  end
+
   def has_authentication_ability?(capability)
     (authentication_abilities || []).include?(capability)
   end

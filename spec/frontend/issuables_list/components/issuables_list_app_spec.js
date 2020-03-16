@@ -12,11 +12,20 @@ import { PAGE_SIZE, PAGE_SIZE_MANUAL, RELATIVE_POSITION } from '~/issuables_list
 
 jest.mock('~/flash', () => jest.fn());
 jest.mock('~/issuables_list/eventhub');
+jest.mock('~/lib/utils/common_utils', () => ({
+  ...jest.requireActual('~/lib/utils/common_utils'),
+  scrollToElement: () => {},
+}));
 
 const TEST_LOCATION = `${TEST_HOST}/issues`;
 const TEST_ENDPOINT = '/issues';
 const TEST_CREATE_ISSUES_PATH = '/createIssue';
 const TEST_EMPTY_SVG_PATH = '/emptySvg';
+
+const setUrl = query => {
+  window.location.href = `${TEST_LOCATION}${query}`;
+  window.location.search = query;
+};
 
 const MOCK_ISSUES = Array(PAGE_SIZE_MANUAL)
   .fill(0)
@@ -267,8 +276,6 @@ describe('Issuables list component', () => {
   });
 
   describe('with query params in window.location', () => {
-    const query =
-      '?assignee_username=root&author_username=root&confidential=yes&label_name%5B%5D=Aquapod&label_name%5B%5D=Astro&milestone_title=v3.0&my_reaction_emoji=airplane&scope=all&sort=priority&state=opened&utf8=%E2%9C%93&weight=0';
     const expectedFilters = {
       assignee_username: 'root',
       author_username: 'root',
@@ -284,32 +291,73 @@ describe('Issuables list component', () => {
       sort: 'desc',
     };
 
-    beforeEach(() => {
-      window.location.href = `${TEST_LOCATION}${query}`;
-      window.location.search = query;
-      setupApiMock(() => [200, MOCK_ISSUES.slice(0)]);
-      factory({ sortKey: 'milestone_due_desc' });
-      return waitForPromises();
+    describe('when page is not present in params', () => {
+      const query =
+        '?assignee_username=root&author_username=root&confidential=yes&label_name%5B%5D=Aquapod&label_name%5B%5D=Astro&milestone_title=v3.0&my_reaction_emoji=airplane&scope=all&sort=priority&state=opened&utf8=%E2%9C%93&weight=0';
+
+      beforeEach(() => {
+        setUrl(query);
+
+        setupApiMock(() => [200, MOCK_ISSUES.slice(0)]);
+        factory({ sortKey: 'milestone_due_desc' });
+
+        return waitForPromises();
+      });
+
+      afterEach(() => {
+        apiSpy.mockClear();
+      });
+
+      it('applies filters and sorts', () => {
+        expect(wrapper.vm.hasFilters).toBe(true);
+        expect(wrapper.vm.filters).toEqual(expectedFilters);
+
+        expect(apiSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            params: {
+              ...expectedFilters,
+              with_labels_details: true,
+              page: 1,
+              per_page: PAGE_SIZE,
+            },
+          }),
+        );
+      });
+
+      it('passes the base url to issuable', () => {
+        expect(findFirstIssuable().props('baseUrl')).toBe(TEST_LOCATION);
+      });
     });
 
-    it('applies filters and sorts', () => {
-      expect(wrapper.vm.hasFilters).toBe(true);
-      expect(wrapper.vm.filters).toEqual(expectedFilters);
+    describe('when page is present in the param', () => {
+      const query =
+        '?assignee_username=root&author_username=root&confidential=yes&label_name%5B%5D=Aquapod&label_name%5B%5D=Astro&milestone_title=v3.0&my_reaction_emoji=airplane&scope=all&sort=priority&state=opened&utf8=%E2%9C%93&weight=0&page=3';
 
-      expect(apiSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          params: {
-            ...expectedFilters,
-            with_labels_details: true,
-            page: 1,
-            per_page: PAGE_SIZE,
-          },
-        }),
-      );
-    });
+      beforeEach(() => {
+        setUrl(query);
 
-    it('passes the base url to issuable', () => {
-      expect(findFirstIssuable().props('baseUrl')).toEqual(TEST_LOCATION);
+        setupApiMock(() => [200, MOCK_ISSUES.slice(0)]);
+        factory({ sortKey: 'milestone_due_desc' });
+
+        return waitForPromises();
+      });
+
+      afterEach(() => {
+        apiSpy.mockClear();
+      });
+
+      it('applies filters and sorts', () => {
+        expect(apiSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            params: {
+              ...expectedFilters,
+              with_labels_details: true,
+              page: 3,
+              per_page: PAGE_SIZE,
+            },
+          }),
+        );
+      });
     });
   });
 
@@ -322,7 +370,7 @@ describe('Issuables list component', () => {
     });
 
     it('passes the base url to issuable', () => {
-      expect(findFirstIssuable().props('baseUrl')).toEqual(TEST_LOCATION);
+      expect(findFirstIssuable().props('baseUrl')).toBe(TEST_LOCATION);
     });
   });
 
@@ -400,6 +448,49 @@ describe('Issuables list component', () => {
       it('should display the message "There are no open issues"', () => {
         expect(findEmptyState().props('title')).toMatchSnapshot();
       });
+    });
+  });
+
+  describe('when paginates', () => {
+    const newPage = 3;
+
+    beforeEach(() => {
+      window.history.pushState = jest.fn();
+      setupApiMock(() => [
+        200,
+        MOCK_ISSUES.slice(0, PAGE_SIZE),
+        {
+          'x-total': 100,
+          'x-page': 2,
+        },
+      ]);
+
+      factory();
+
+      return waitForPromises();
+    });
+
+    afterEach(() => {
+      // reset to original value
+      window.history.pushState.mockRestore();
+    });
+
+    it('calls window.history.pushState one time', () => {
+      // Trigger pagination
+      wrapper.find(GlPagination).vm.$emit('input', newPage);
+
+      expect(window.history.pushState).toHaveBeenCalledTimes(1);
+    });
+
+    it('sets params in the url', () => {
+      // Trigger pagination
+      wrapper.find(GlPagination).vm.$emit('input', newPage);
+
+      expect(window.history.pushState).toHaveBeenCalledWith(
+        {},
+        '',
+        `${TEST_LOCATION}?state=opened&order_by=priority&sort=asc&page=${newPage}`,
+      );
     });
   });
 });

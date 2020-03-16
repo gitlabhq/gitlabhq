@@ -12,7 +12,7 @@ export const milestones = [
     start_date: '2019-08-31',
     web_url: 'http://0.0.0.0:3001/root/release-test/-/milestones/2',
     issue_stats: {
-      opened: 14,
+      total: 33,
       closed: 19,
     },
   },
@@ -29,7 +29,7 @@ export const milestones = [
     start_date: '2019-08-19',
     web_url: 'http://0.0.0.0:3001/root/release-test/-/milestones/1',
     issue_stats: {
-      opened: 18,
+      total: 21,
       closed: 3,
     },
   },
@@ -96,6 +96,7 @@ export const release = {
         id: 1,
         name: 'my link',
         url: 'https://google.com',
+        direct_asset_url: 'https://redirected.google.com',
         external: true,
       },
       {
@@ -103,6 +104,7 @@ export const release = {
         name: 'my second link',
         url:
           'https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/v11.6.0-rc4/download?job=rspec-mysql+41%2F50',
+        direct_asset_url: 'https://redirected.google.com',
         external: false,
       },
     ],

@@ -45,7 +45,7 @@ describe API::Boards do
 
       post api(url, user), params: { label_id: group_label.id }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['label']['name']).to eq(group_label.title)
       expect(json_response['position']).to eq(3)
     end
@@ -60,7 +60,7 @@ describe API::Boards do
 
       post api(url, user), params: { label_id: group_label.id }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['label']['name']).to eq(group_label.title)
     end
   end
@@ -78,7 +78,7 @@ describe API::Boards do
 
       post api(url, user), params: { label_id: group_label.id }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['label']['name']).to eq(group_label.title)
     end
   end

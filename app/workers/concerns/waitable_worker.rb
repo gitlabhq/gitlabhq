@@ -9,7 +9,7 @@ module WaitableWorker
       # Short-circuit: it's more efficient to do small numbers of jobs inline
       return bulk_perform_inline(args_list) if args_list.size <= 3
 
-      waiter = Gitlab::JobWaiter.new(args_list.size)
+      waiter = Gitlab::JobWaiter.new(args_list.size, worker_label: self.to_s)
 
       # Point all the bulk jobs at the same JobWaiter. Converts, [[1], [2], [3]]
       # into [[1, "key"], [2, "key"], [3, "key"]]

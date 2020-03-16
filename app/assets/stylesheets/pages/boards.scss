@@ -266,20 +266,9 @@
     background-color: $blue-50;
   }
 
-  .badge {
-    border: 0;
-    outline: 0;
-
-    &:hover {
-      text-decoration: underline;
-    }
-
-    @include media-breakpoint-down(lg) {
-      font-size: $gl-font-size-xs;
-      padding-left: $gl-padding-4;
-      padding-right: $gl-padding-4;
-      font-weight: $gl-font-weight-bold;
-    }
+  .gl-label {
+    margin-top: 4px;
+    margin-right: 4px;
   }
 
   .confidential-icon {

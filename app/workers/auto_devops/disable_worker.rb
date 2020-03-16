@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AutoDevops
-  class DisableWorker
+  class DisableWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include AutoDevopsQueue
 

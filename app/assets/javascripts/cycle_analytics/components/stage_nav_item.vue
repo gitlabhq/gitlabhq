@@ -45,10 +45,13 @@ export default {
       :class="{ active: isActive }"
       class="stage-nav-item d-flex pl-4 pr-4 m-0 mb-1 ml-2 rounded border-color-default border-style-solid border-width-1px"
     >
-      <div class="stage-nav-item-cell stage-name p-0" :class="{ 'font-weight-bold': isActive }">
+      <div
+        class="stage-nav-item-cell stage-name w-50 pr-2"
+        :class="{ 'font-weight-bold': isActive }"
+      >
         {{ title }}
       </div>
-      <div class="stage-nav-item-cell stage-median mr-4">
+      <div class="stage-nav-item-cell stage-median w-50">
         <template v-if="isUserAllowed">
           <span v-if="hasValue">{{ value }}</span>
           <span v-else class="stage-empty">{{ __('Not enough data') }}</span>

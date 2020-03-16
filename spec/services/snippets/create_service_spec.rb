@@ -18,7 +18,7 @@ describe Snippets::CreateService do
     let(:extra_opts) { {} }
     let(:creator) { admin }
 
-    subject { Snippets::CreateService.new(project, creator, opts).execute }
+    subject { described_class.new(project, creator, opts).execute }
 
     let(:snippet) { subject.payload[:snippet] }
 
@@ -143,37 +143,100 @@ describe Snippets::CreateService do
       end
     end
 
-    shared_examples 'creates repository' do
-      it do
+    shared_examples 'creates repository and files' do
+      it 'creates repository' do
         subject
 
-        expect(snippet.repository_exists?).to be_truthy
+        expect(snippet.repository.exists?).to be_truthy
+      end
+
+      it 'commit the files to the repository' do
+        subject
+
+        blob = snippet.repository.blob_at('master', base_opts[:file_name])
+
+        expect(blob.data).to eq base_opts[:content]
+      end
+
+      context 'when repository creation action fails' do
+        before do
+          allow_next_instance_of(Snippet) do |instance|
+            allow(instance).to receive(:create_repository).and_return(nil)
+          end
+        end
+
+        it 'does not create the snippet' do
+          expect { subject }.not_to change { Snippet.count }
+        end
+
+        it 'returns the error' do
+          expect(snippet.errors.full_messages).to include('Repository could not be created')
+        end
+      end
+
+      context 'when the commit action fails' do
+        before do
+          allow_next_instance_of(SnippetRepository) do |instance|
+            allow(instance).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError.new('foobar'))
+          end
+        end
+
+        it 'does not create the snippet' do
+          expect { subject }.not_to change { Snippet.count }
+        end
+
+        it 'destroys the created repository' do
+          expect_next_instance_of(Repository) do |instance|
+            expect(instance).to receive(:remove).and_call_original
+          end
+
+          subject
+        end
+
+        it 'returns the error' do
+          response = subject
+
+          expect(response).to be_error
+          expect(response.payload[:snippet].errors.full_messages).to eq ['foobar']
+        end
       end
 
       context 'when snippet creation fails' do
         let(:extra_opts) { { content: nil } }
 
         it 'does not create repository' do
-          subject
+          expect do
+            subject
+          end.not_to change(Snippet, :count)
 
           expect(snippet.repository_exists?).to be_falsey
         end
       end
 
       context 'when feature flag :version_snippets is disabled' do
-        it 'does not create snippet repository' do
+        before do
           stub_feature_flags(version_snippets: false)
+        end
 
+        it 'does not create snippet repository' do
           expect do
             subject
           end.to change(Snippet, :count).by(1)
 
           expect(snippet.repository_exists?).to be_falsey
         end
+
+        it 'does not try to commit files' do
+          expect_next_instance_of(described_class) do |instance|
+            expect(instance).not_to receive(:create_commit)
+          end
+
+          subject
+        end
       end
     end
 
-    context 'when Project Snippet' do
+    context 'when ProjectSnippet' do
       let_it_be(:project) { create(:project) }
 
       before do
@@ -185,7 +248,7 @@ describe Snippets::CreateService do
       it_behaves_like 'spam check is performed'
       it_behaves_like 'snippet create data is tracked'
       it_behaves_like 'an error service response when save fails'
-      it_behaves_like 'creates repository'
+      it_behaves_like 'creates repository and files'
     end
 
     context 'when PersonalSnippet' do
@@ -196,7 +259,7 @@ describe Snippets::CreateService do
       it_behaves_like 'spam check is performed'
       it_behaves_like 'snippet create data is tracked'
       it_behaves_like 'an error service response when save fails'
-      it_behaves_like 'creates repository'
+      it_behaves_like 'creates repository and files'
     end
   end
 end

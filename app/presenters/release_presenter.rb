@@ -20,7 +20,7 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
   end
 
   def self_url
-    return unless ::Feature.enabled?(:release_show_page, project)
+    return unless ::Feature.enabled?(:release_show_page, project, default_enabled: true)
 
     project_release_url(project, release)
   end

@@ -7,19 +7,21 @@ module Gitlab
     PROJECT = RepoType.new(
       name: :project,
       access_checker_class: Gitlab::GitAccess,
-      repository_resolver: -> (project) { project.repository }
+      repository_resolver: -> (project) { project&.repository }
     ).freeze
     WIKI = RepoType.new(
       name: :wiki,
       access_checker_class: Gitlab::GitAccessWiki,
-      repository_resolver: -> (project) { project.wiki.repository },
+      repository_resolver: -> (project) { project&.wiki&.repository },
       suffix: :wiki
     ).freeze
     SNIPPET = RepoType.new(
       name: :snippet,
       access_checker_class: Gitlab::GitAccessSnippet,
-      repository_resolver: -> (snippet) { snippet.repository },
-      container_resolver: -> (id) { Snippet.find_by_id(id) }
+      repository_resolver: -> (snippet) { snippet&.repository },
+      container_resolver: -> (id) { Snippet.find_by_id(id) },
+      project_resolver: -> (snippet) { snippet&.project },
+      guest_read_ability: :read_snippet
     ).freeze
 
     TYPES = {
@@ -42,7 +44,7 @@ module Gitlab
 
       container = type.fetch_container!(gl_repository)
 
-      [container, type]
+      [container, type.project_for(container), type]
     end
 
     def self.default_type

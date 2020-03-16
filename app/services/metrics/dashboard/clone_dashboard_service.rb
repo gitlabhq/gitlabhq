@@ -22,9 +22,10 @@ module Metrics
         end
       end
 
+      # rubocop:disable Cop/BanCatchThrow
       def execute
         catch(:error) do
-          throw(:error, error(_(%q(You can't commit to this project)), :forbidden)) unless push_authorized?
+          throw(:error, error(_(%q(You are not allowed to push into this branch. Create another branch or open a merge request.)), :forbidden)) unless push_authorized?
 
           result = ::Files::CreateService.new(project, current_user, dashboard_attrs).execute
           throw(:error, wrap_error(result)) unless result[:status] == :success
@@ -33,6 +34,7 @@ module Metrics
           success(result.merge(http_status: :created, dashboard: dashboard_details))
         end
       end
+      # rubocop:enable Cop/BanCatchThrow
 
       private
 
@@ -60,6 +62,7 @@ module Metrics
         Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(branch)
       end
 
+      # rubocop:disable Cop/BanCatchThrow
       def dashboard_template
         @dashboard_template ||= begin
           throw(:error, error(_('Not found.'), :not_found)) unless self.class.allowed_dashboard_templates.include?(params[:dashboard])
@@ -67,7 +70,9 @@ module Metrics
           params[:dashboard]
         end
       end
+      # rubocop:enable Cop/BanCatchThrow
 
+      # rubocop:disable Cop/BanCatchThrow
       def branch
         @branch ||= begin
           throw(:error, error(_('There was an error creating the dashboard, branch name is invalid.'), :bad_request)) unless valid_branch_name?
@@ -76,6 +81,7 @@ module Metrics
           params[:branch]
         end
       end
+      # rubocop:enable Cop/BanCatchThrow
 
       def new_or_default_branch?
         !repository.branch_exists?(params[:branch]) || project.default_branch == params[:branch]
@@ -89,6 +95,7 @@ module Metrics
         @new_dashboard_path ||= File.join(USER_DASHBOARDS_DIR, file_name)
       end
 
+      # rubocop:disable Cop/BanCatchThrow
       def file_name
         @file_name ||= begin
           throw(:error, error(_('The file name should have a .yml extension'), :bad_request)) unless target_file_type_valid?
@@ -96,6 +103,7 @@ module Metrics
           File.basename(params[:file_name])
         end
       end
+      # rubocop:enable Cop/BanCatchThrow
 
       def target_file_type_valid?
         File.extname(params[:file_name]) == ALLOWED_FILE_TYPE

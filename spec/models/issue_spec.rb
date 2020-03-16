@@ -178,67 +178,63 @@ describe Issue do
     let(:namespace) { build(:namespace, path: 'sample-namespace') }
     let(:project)   { build(:project, name: 'sample-project', namespace: namespace) }
     let(:issue)     { build(:issue, iid: 1, project: project) }
-    let(:group)     { create(:group, name: 'Group', path: 'sample-group') }
 
     context 'when nil argument' do
       it 'returns issue id' do
         expect(issue.to_reference).to eq "#1"
       end
-    end
 
-    context 'when full is true' do
-      it 'returns complete path to the issue' do
-        expect(issue.to_reference(full: true)).to          eq 'sample-namespace/sample-project#1'
-        expect(issue.to_reference(project, full: true)).to eq 'sample-namespace/sample-project#1'
-        expect(issue.to_reference(group, full: true)).to   eq 'sample-namespace/sample-project#1'
+      it 'returns complete path to the issue with full: true' do
+        expect(issue.to_reference(full: true)).to eq 'sample-namespace/sample-project#1'
       end
     end
 
-    context 'when same project argument' do
-      it 'returns issue id' do
-        expect(issue.to_reference(project)).to eq("#1")
+    context 'when argument is a project' do
+      context 'when same project' do
+        it 'returns issue id' do
+          expect(issue.to_reference(project)).to eq("#1")
+        end
+
+        it 'returns full reference with full: true' do
+          expect(issue.to_reference(project, full: true)).to eq 'sample-namespace/sample-project#1'
+        end
       end
-    end
 
-    context 'when cross namespace project argument' do
-      let(:another_namespace_project) { create(:project, name: 'another-project') }
+      context 'when cross-project in same namespace' do
+        let(:another_project) do
+          build(:project, name: 'another-project', namespace: project.namespace)
+        end
 
-      it 'returns complete path to the issue' do
-        expect(issue.to_reference(another_namespace_project)).to eq 'sample-namespace/sample-project#1'
+        it 'returns a cross-project reference' do
+          expect(issue.to_reference(another_project)).to eq "sample-project#1"
+        end
       end
-    end
 
-    it 'supports a cross-project reference' do
-      another_project = build(:project, name: 'another-project', namespace: project.namespace)
-      expect(issue.to_reference(another_project)).to eq "sample-project#1"
-    end
+      context 'when cross-project in different namespace' do
+        let(:another_namespace) { build(:namespace, path: 'another-namespace') }
+        let(:another_namespace_project) { build(:project, path: 'another-project', namespace: another_namespace) }
 
-    context 'when same namespace / cross-project argument' do
-      let(:another_project) { create(:project, namespace: namespace) }
-
-      it 'returns path to the issue with the project name' do
-        expect(issue.to_reference(another_project)).to eq 'sample-project#1'
-      end
-    end
-
-    context 'when different namespace / cross-project argument' do
-      let(:another_namespace) { create(:namespace, path: 'another-namespace') }
-      let(:another_project)   { create(:project, path: 'another-project', namespace: another_namespace) }
-
-      it 'returns full path to the issue' do
-        expect(issue.to_reference(another_project)).to eq 'sample-namespace/sample-project#1'
+        it 'returns complete path to the issue' do
+          expect(issue.to_reference(another_namespace_project)).to eq 'sample-namespace/sample-project#1'
+        end
       end
     end
 
     context 'when argument is a namespace' do
-      context 'with same project path' do
+      context 'when same as issue' do
         it 'returns path to the issue with the project name' do
           expect(issue.to_reference(namespace)).to eq 'sample-project#1'
         end
+
+        it 'returns full reference with full: true' do
+          expect(issue.to_reference(namespace, full: true)).to eq 'sample-namespace/sample-project#1'
+        end
       end
 
-      context 'with different project path' do
-        it 'returns full path to the issue' do
+      context 'when different to issue namespace' do
+        let(:group) { build(:group, name: 'Group', path: 'sample-group') }
+
+        it 'returns full path to the issue with full: true' do
           expect(issue.to_reference(group)).to eq 'sample-namespace/sample-project#1'
         end
       end
@@ -429,16 +425,16 @@ describe Issue do
     let(:issue) { create(:issue, title: 'testing-issue') }
 
     it 'starts with the issue iid' do
-      expect(issue.to_branch_name).to match /\A#{issue.iid}-[A-Za-z\-]+\z/
+      expect(issue.to_branch_name).to match(/\A#{issue.iid}-[A-Za-z\-]+\z/)
     end
 
     it "contains the issue title if not confidential" do
-      expect(issue.to_branch_name).to match /testing-issue\z/
+      expect(issue.to_branch_name).to match(/testing-issue\z/)
     end
 
     it "does not contain the issue title if confidential" do
       issue = create(:issue, title: 'testing-issue', confidential: true)
-      expect(issue.to_branch_name).to match /confidential-issue\z/
+      expect(issue.to_branch_name).to match(/confidential-issue\z/)
     end
 
     context 'issue title longer than 100 characters' do
@@ -936,4 +932,33 @@ describe Issue do
   end
 
   it_behaves_like 'versioned description'
+
+  describe "#previous_updated_at" do
+    let_it_be(:updated_at) { Time.new(2012, 01, 06) }
+    let_it_be(:issue) { create(:issue, updated_at: updated_at) }
+
+    it 'returns updated_at value if updated_at did not change at all' do
+      allow(issue).to receive(:previous_changes).and_return({})
+
+      expect(issue.previous_updated_at).to eq(updated_at)
+    end
+
+    it 'returns updated_at value if `previous_changes` has nil value for `updated_at`' do
+      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => nil })
+
+      expect(issue.previous_updated_at).to eq(updated_at)
+    end
+
+    it 'returns updated_at value if previous updated_at value is not present' do
+      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => [nil, Time.new(2013, 02, 06)] })
+
+      expect(issue.previous_updated_at).to eq(updated_at)
+    end
+
+    it 'returns previous updated_at when present' do
+      allow(issue).to receive(:previous_changes).and_return({ 'updated_at' => [Time.new(2013, 02, 06), Time.new(2013, 03, 06)] })
+
+      expect(issue.previous_updated_at).to eq(Time.new(2013, 02, 06))
+    end
+  end
 end

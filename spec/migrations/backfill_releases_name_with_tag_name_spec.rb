@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20181212104941_backfill_releases_name_with_tag_name.rb')
 
-describe BackfillReleasesNameWithTagName, :migration do
+describe BackfillReleasesNameWithTagName do
   let(:releases)   { table(:releases) }
   let(:namespaces) { table(:namespaces) }
   let(:projects)   { table(:projects) }

@@ -1,0 +1,14 @@
+- @content_class = 'limit-container-width' unless fluid_layout
+- breadcrumb_title _('Webhook Settings')
+- page_title _('Webhooks')
+
+.row.prepend-top-default
+  .col-lg-4
+    = render 'shared/web_hooks/title_and_docs', hook: @hook
+
+  .col-lg-8.append-bottom-default
+    = form_for @hook, as: :hook, url: polymorphic_path([@project.namespace.becomes(Namespace), @project, :hooks]) do |f|
+      = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
+      = f.submit 'Add webhook', class: 'btn btn-success'
+
+    = render 'shared/web_hooks/index', hooks: @hooks, hook_class: @hook.class

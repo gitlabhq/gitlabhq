@@ -181,16 +181,49 @@ describe Key, :mailer do
   end
 
   context 'callbacks' do
-    it 'adds new key to authorized_file' do
-      key = build(:personal_key, id: 7)
-      expect(GitlabShellWorker).to receive(:perform_async).with(:add_key, key.shell_id, key.key)
-      key.save!
+    let(:key) { build(:personal_key) }
+
+    context 'authorized keys file is enabled' do
+      before do
+        stub_application_setting(authorized_keys_enabled: true)
+      end
+
+      it 'adds new key to authorized_file' do
+        allow(AuthorizedKeysWorker).to receive(:perform_async)
+
+        key.save!
+
+        # Check after the fact so we have access to Key#id
+        expect(AuthorizedKeysWorker).to have_received(:perform_async).with(:add_key, key.shell_id, key.key)
+      end
+
+      it 'removes key from authorized_file' do
+        key.save!
+
+        expect(AuthorizedKeysWorker).to receive(:perform_async).with(:remove_key, key.shell_id)
+
+        key.destroy
+      end
     end
 
-    it 'removes key from authorized_file' do
-      key = create(:personal_key)
-      expect(GitlabShellWorker).to receive(:perform_async).with(:remove_key, key.shell_id)
-      key.destroy
+    context 'authorized_keys file is disabled' do
+      before do
+        stub_application_setting(authorized_keys_enabled: false)
+      end
+
+      it 'does not add the key on creation' do
+        expect(AuthorizedKeysWorker).not_to receive(:perform_async)
+
+        key.save!
+      end
+
+      it 'does not remove the key on destruction' do
+        key.save!
+
+        expect(AuthorizedKeysWorker).not_to receive(:perform_async)
+
+        key.destroy
+      end
     end
   end
 

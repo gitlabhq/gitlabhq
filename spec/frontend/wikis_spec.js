@@ -8,11 +8,21 @@ describe('Wikis', () => {
     }">
         <input type="text" id="wiki_title" value="My title" />
         <input type="text" id="wiki_message" />
-      </form>`;
+        <select class="form-control select-control" name="wiki[format]" id="wiki_format">
+          <option value="markdown">Markdown</option>
+          <option selected="selected" value="rdoc">RDoc</option>
+          <option value="asciidoc">AsciiDoc</option>
+          <option value="org">Org</option>
+        </select>
+        <code class="js-markup-link-example">{Link title}[link:page-slug]</code>
+      </form>
+      `;
 
     let wikis;
     let titleInput;
     let messageInput;
+    let changeFormatSelect;
+    let linkExample;
 
     describe('when the wiki page is being created', () => {
       const formHtmlFixture = editFormHtmlFixture({ newPage: true });
@@ -22,6 +32,8 @@ describe('Wikis', () => {
 
         titleInput = document.getElementById('wiki_title');
         messageInput = document.getElementById('wiki_message');
+        changeFormatSelect = document.querySelector('#wiki_format');
+        linkExample = document.querySelector('.js-markup-link-example');
         wikis = new Wikis();
       });
 
@@ -68,6 +80,19 @@ describe('Wikis', () => {
         titleInput.dispatchEvent(new Event('keyup'));
 
         expect(messageInput.value).toEqual('Update My title');
+      });
+
+      it.each`
+        value         | text
+        ${'markdown'} | ${'[Link Title](page-slug)'}
+        ${'rdoc'}     | ${'{Link title}[link:page-slug]'}
+        ${'asciidoc'} | ${'link:page-slug[Link title]'}
+        ${'org'}      | ${'[[page-slug]]'}
+      `('updates a message when value=$value is selected', ({ value, text }) => {
+        changeFormatSelect.value = value;
+        changeFormatSelect.dispatchEvent(new Event('change'));
+
+        expect(linkExample.innerHTML).toBe(text);
       });
     });
   });

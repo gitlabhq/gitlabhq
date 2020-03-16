@@ -6,8 +6,11 @@ module Releases
 
     belongs_to :release
 
+    FILEPATH_REGEX = /\A\/([\-\.\w]+\/?)*[\da-zA-Z]+\z/.freeze
+
     validates :url, presence: true, addressable_url: { schemes: %w(http https ftp) }, uniqueness: { scope: :release }
     validates :name, presence: true, uniqueness: { scope: :release }
+    validates :filepath, uniqueness: { scope: :release }, format: { with: FILEPATH_REGEX }, allow_blank: true, length: { maximum: 128 }
 
     scope :sorted, -> { order(created_at: :desc) }
 

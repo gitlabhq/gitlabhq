@@ -23,7 +23,6 @@ describe Projects::ClustersController do
 
     describe 'functionality' do
       context 'when project has one or more clusters' do
-        let(:project) { create(:project) }
         let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
         let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, projects: [project]) }
 
@@ -53,8 +52,6 @@ describe Projects::ClustersController do
       end
 
       context 'when project does not have a cluster' do
-        let(:project) { create(:project) }
-
         it 'returns an empty state page' do
           go
 

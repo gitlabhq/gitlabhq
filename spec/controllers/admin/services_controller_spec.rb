@@ -30,9 +30,9 @@ describe Admin::ServicesController do
 
   describe "#update" do
     let(:project) { create(:project) }
-    let!(:service) do
+    let!(:service_template) do
       RedmineService.create(
-        project: project,
+        project: nil,
         active: false,
         template: true,
         properties: {
@@ -44,9 +44,9 @@ describe Admin::ServicesController do
     end
 
     it 'calls the propagation worker when service is active' do
-      expect(PropagateServiceTemplateWorker).to receive(:perform_async).with(service.id)
+      expect(PropagateServiceTemplateWorker).to receive(:perform_async).with(service_template.id)
 
-      put :update, params: { id: service.id, service: { active: true } }
+      put :update, params: { id: service_template.id, service: { active: true } }
 
       expect(response).to have_gitlab_http_status(:found)
     end
@@ -54,7 +54,7 @@ describe Admin::ServicesController do
     it 'does not call the propagation worker when service is not active' do
       expect(PropagateServiceTemplateWorker).not_to receive(:perform_async)
 
-      put :update, params: { id: service.id, service: { properties: {} } }
+      put :update, params: { id: service_template.id, service: { properties: {} } }
 
       expect(response).to have_gitlab_http_status(:found)
     end

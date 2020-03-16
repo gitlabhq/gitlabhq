@@ -1,6 +1,5 @@
 <script>
 /* eslint-disable vue/require-default-prop */
-import _ from 'underscore';
 import Identicon from '~/vue_shared/components/identicon.vue';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
@@ -38,9 +37,6 @@ export default {
     },
   },
   computed: {
-    hasAvatar() {
-      return _.isString(this.avatarUrl) && !_.isEmpty(this.avatarUrl);
-    },
     truncatedNamespace() {
       return truncateNamespace(this.namespace);
     },
@@ -54,8 +50,11 @@ export default {
 <template>
   <li class="frequent-items-list-item-container">
     <a :href="webUrl" class="clearfix">
-      <div class="frequent-items-item-avatar-container avatar-container rect-avatar s32">
-        <img v-if="hasAvatar" :src="avatarUrl" class="avatar s32" />
+      <div
+        ref="frequentItemsItemAvatarContainer"
+        class="frequent-items-item-avatar-container avatar-container rect-avatar s32"
+      >
+        <img v-if="avatarUrl" ref="frequentItemsItemAvatar" :src="avatarUrl" class="avatar s32" />
         <identicon
           v-else
           :entity-id="itemId"
@@ -64,16 +63,18 @@ export default {
           class="rect-avatar"
         />
       </div>
-      <div class="frequent-items-item-metadata-container">
+      <div ref="frequentItemsItemMetadataContainer" class="frequent-items-item-metadata-container">
         <div
+          ref="frequentItemsItemTitle"
           :title="itemName"
-          class="frequent-items-item-title js-frequent-items-item-title"
+          class="frequent-items-item-title"
           v-html="highlightedItemName"
         ></div>
         <div
           v-if="namespace"
+          ref="frequentItemsItemNamespace"
           :title="namespace"
-          class="frequent-items-item-namespace js-frequent-items-item-namespace"
+          class="frequent-items-item-namespace"
         >
           {{ truncatedNamespace }}
         </div>

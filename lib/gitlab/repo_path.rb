@@ -19,22 +19,33 @@ module Gitlab
 
         # Removing the suffix (.wiki, .design, ...) from the project path
         full_path = repo_path.chomp(type.path_suffix)
-
-        project, was_redirected = find_project(full_path)
+        container, project, was_redirected = find_container(type, full_path)
         redirected_path = repo_path if was_redirected
 
-        # If we found a matching project, then the type was matched, no need to
-        # continue looking.
-        return [project, type, redirected_path] if project
+        return [container, project, type, redirected_path] if container
       end
 
       # When a project did not exist, the parsed repo_type would be empty.
       # In that case, we want to continue with a regular project repository. As we
       # could create the project if the user pushing is allowed to do so.
-      [nil, Gitlab::GlRepository.default_type, nil]
+      [nil, nil, Gitlab::GlRepository.default_type, nil]
+    end
+
+    def self.find_container(type, full_path)
+      if type.snippet?
+        snippet, was_redirected = find_snippet(full_path)
+
+        [snippet, snippet&.project, was_redirected]
+      else
+        project, was_redirected = find_project(full_path)
+
+        [project, project, was_redirected]
+      end
     end
 
     def self.find_project(project_path)
+      return [nil, false] if project_path.blank?
+
       project = Project.find_by_full_path(project_path, follow_redirects: true)
 
       [project, redirected?(project, project_path)]
@@ -42,6 +53,27 @@ module Gitlab
 
     def self.redirected?(project, project_path)
       project && project.full_path.casecmp(project_path) != 0
+    end
+
+    # Snippet_path can be either:
+    # - snippets/1
+    # - h5bp/html5-boilerplate/snippets/53
+    def self.find_snippet(snippet_path)
+      return [nil, false] if snippet_path.blank?
+
+      snippet_id, project_path = extract_snippet_info(snippet_path)
+      project, was_redirected = find_project(project_path)
+
+      [Snippet.find_by_id_and_project(id: snippet_id, project: project), was_redirected]
+    end
+
+    def self.extract_snippet_info(snippet_path)
+      path_segments = snippet_path.split('/')
+      snippet_id = path_segments.pop
+      path_segments.pop # Remove snippets from path
+      project_path = File.join(path_segments)
+
+      [snippet_id, project_path]
     end
   end
 end

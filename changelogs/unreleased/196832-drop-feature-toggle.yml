@@ -1,0 +1,5 @@
+---
+title: Optimize project representation in large imports
+merge_request: !22598
+author:
+type: performance

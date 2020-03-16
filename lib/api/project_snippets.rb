@@ -5,12 +5,17 @@ module API
     include PaginationParams
 
     before { authenticate! }
+    before { check_snippets_enabled }
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
+        def check_snippets_enabled
+          forbidden! unless user_project.feature_available?(:snippets, current_user)
+        end
+
         def handle_project_member_errors(errors)
           if errors[:project_access].any?
             error!(errors[:project_access], 422)

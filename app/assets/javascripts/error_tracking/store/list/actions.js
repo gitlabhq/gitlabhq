@@ -18,6 +18,7 @@ export function startPolling({ state, commit, dispatch }) {
         search_term: state.searchQuery,
         sort: state.sortField,
         cursor: state.cursor,
+        issue_status: state.statusFilter,
       },
     },
     successCallback: ({ data }) => {
@@ -79,6 +80,12 @@ export const searchByQuery = ({ commit, dispatch }, query) => {
   commit(types.SET_CURSOR, null);
   commit(types.SET_SEARCH_QUERY, searchQuery);
   commit(types.ADD_RECENT_SEARCH, searchQuery);
+  dispatch('stopPolling');
+  dispatch('startPolling');
+};
+
+export const filterByStatus = ({ commit, dispatch }, status) => {
+  commit(types.SET_STATUS_FILTER, status);
   dispatch('stopPolling');
   dispatch('startPolling');
 };

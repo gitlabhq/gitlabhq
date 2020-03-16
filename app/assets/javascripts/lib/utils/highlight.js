@@ -1,5 +1,4 @@
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import _ from 'underscore';
 import sanitize from 'sanitize-html';
 
 /**
@@ -17,11 +16,11 @@ import sanitize from 'sanitize-html';
  * @param {String} matchSuffix The string to insert at the end of a match
  */
 export default function highlight(string, match = '', matchPrefix = '<b>', matchSuffix = '</b>') {
-  if (_.isUndefined(string) || _.isNull(string)) {
+  if (!string) {
     return '';
   }
 
-  if (_.isUndefined(match) || _.isNull(match) || match === '') {
+  if (!match) {
     return string;
   }
 
@@ -34,7 +33,7 @@ export default function highlight(string, match = '', matchPrefix = '<b>', match
   return sanitizedValue
     .split('')
     .map((character, i) => {
-      if (_.contains(occurrences, i)) {
+      if (occurrences.includes(i)) {
         return `${matchPrefix}${character}${matchSuffix}`;
       }
 

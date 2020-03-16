@@ -1,0 +1,5 @@
+---
+title: Resolves the disappearance of a ticket when it was moved from the closed list.
+merge_request:
+author: Gwen_
+type: fixed

@@ -28,8 +28,6 @@ module Gitlab
           entry :paths, Entry::Paths,
             description: 'Specify which paths should be cached across builds.'
 
-          helpers :key
-
           attributes :policy
 
           def value

@@ -1,3 +1,10 @@
+/**
+ * Polyfill
+ * @what requestIdleCallback
+ * @why To align browser features
+ * @browsers Safari (all versions), Internet Explorer 11
+ * @see https://caniuse.com/#feat=requestidlecallback
+ */
 window.requestIdleCallback =
   window.requestIdleCallback ||
   function requestShim(cb) {

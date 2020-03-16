@@ -152,6 +152,12 @@ module Gitlab
         end
       end
 
+      def replicate(source_repository)
+        wrapped_gitaly_errors do
+          gitaly_repository_client.replicate(source_repository)
+        end
+      end
+
       def expire_has_local_branches_cache
         clear_memoization(:has_local_branches)
       end
@@ -322,6 +328,7 @@ module Gitlab
           limit: 10,
           offset: 0,
           path: nil,
+          author: nil,
           follow: false,
           skip_merges: false,
           after: nil,
@@ -764,12 +771,6 @@ module Gitlab
 
       def empty?
         !has_visible_content?
-      end
-
-      def fetch_repository_as_mirror(repository)
-        wrapped_gitaly_errors do
-          gitaly_remote_client.fetch_internal_remote(repository)
-        end
       end
 
       # Fetch remote for repository

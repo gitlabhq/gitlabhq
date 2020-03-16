@@ -109,6 +109,26 @@ describe('Repository table row component', () => {
     });
   });
 
+  it.each`
+    path
+    ${'test#'}
+    ${'Änderungen'}
+  `('renders link for $path', ({ path }) => {
+    factory({
+      id: '1',
+      sha: '123',
+      path,
+      type: 'tree',
+      currentPath: '/',
+    });
+
+    return vm.vm.$nextTick().then(() => {
+      expect(vm.find({ ref: 'link' }).props('to')).toEqual({
+        path: `/-/tree/master/${encodeURIComponent(path)}`,
+      });
+    });
+  });
+
   it('pushes new route for directory with hash', () => {
     factory({
       id: '1',

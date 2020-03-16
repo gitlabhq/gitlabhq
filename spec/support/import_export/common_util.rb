@@ -34,13 +34,13 @@ module ImportExport
     end
 
     def get_project_restorer(project, import_path)
-      Gitlab::ImportExport::ProjectTreeRestorer.new(
+      Gitlab::ImportExport::Project::TreeRestorer.new(
         user: project.creator, shared: get_shared_env(path: import_path), project: project
       )
     end
 
     def get_project_saver(project, export_path)
-      Gitlab::ImportExport::ProjectTreeSaver.new(
+      Gitlab::ImportExport::Project::TreeSaver.new(
         project: project, current_user: project.creator, shared: get_shared_env(path: export_path)
       )
     end

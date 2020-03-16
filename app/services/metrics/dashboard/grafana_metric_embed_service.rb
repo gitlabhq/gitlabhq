@@ -6,7 +6,7 @@
 # Use Gitlab::Metrics::Dashboard::Finder to retrive dashboards.
 module Metrics
   module Dashboard
-    class GrafanaMetricEmbedService < ::Metrics::Dashboard::BaseService
+    class GrafanaMetricEmbedService < ::Metrics::Dashboard::BaseEmbedService
       include ReactiveCaching
 
       SEQUENCE = [
@@ -24,7 +24,7 @@ module Metrics
         # to uniquely identify a grafana dashboard.
         def valid_params?(params)
           [
-            params[:embedded],
+            embedded?(params[:embedded]),
             params[:grafana_url]
           ].all?
         end
@@ -138,7 +138,9 @@ module Metrics
     end
 
     # Identifies the name of the datasource for a dashboard
-    # based on the panelId query parameter found in the url
+    # based on the panelId query parameter found in the url.
+    #
+    # If no panel is specified, defaults to the first valid panel.
     class DatasourceNameParser
       def initialize(grafana_url, grafana_dashboard)
         @grafana_url, @grafana_dashboard = grafana_url, grafana_dashboard
@@ -146,14 +148,28 @@ module Metrics
 
       def parse
         @grafana_dashboard[:dashboard][:panels]
-          .find { |panel| panel[:id].to_s == query_params[:panelId] }
+          .find { |panel| panel_id ? matching_panel?(panel) : valid_panel?(panel) }
           .try(:[], :datasource)
       end
 
       private
 
+      def panel_id
+        query_params[:panelId]
+      end
+
       def query_params
         Gitlab::Metrics::Dashboard::Url.parse_query(@grafana_url)
+      end
+
+      def matching_panel?(panel)
+        panel[:id].to_s == panel_id
+      end
+
+      def valid_panel?(panel)
+        ::Grafana::Validator
+          .new(@grafana_dashboard, nil, panel, query_params)
+          .valid?
       end
     end
   end

@@ -15,7 +15,7 @@ module Gitlab
 
       # Returns the label ID for the given name.
       def id_for(name)
-        Caching.read_integer(cache_key_for(name))
+        Gitlab::Cache::Import::Caching.read_integer(cache_key_for(name))
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -27,7 +27,7 @@ module Gitlab
             hash[cache_key_for(name)] = id
           end
 
-        Caching.write_multiple(mapping)
+        Gitlab::Cache::Import::Caching.write_multiple(mapping)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

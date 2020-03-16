@@ -1,0 +1,5 @@
+---
+title: Migrated from .fa-spinner to .spinner in app/assets/javascripts/blob/template_selector.js
+merge_request: 25045
+author: Raihan Kabir (gitlab/rk4bir)
+type: changed

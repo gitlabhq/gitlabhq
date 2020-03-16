@@ -1,0 +1,5 @@
+---
+title: Fix variable passthrough in the SAST CI/CD template when using DinD
+merge_request: 25697
+author:
+type: fixed

@@ -4,8 +4,8 @@ module Gitlab
   module ImportExport
     class AttributeCleaner
       ALLOWED_REFERENCES = [
-        *ProjectRelationFactory::PROJECT_REFERENCES,
-        *ProjectRelationFactory::USER_REFERENCES,
+        *Gitlab::ImportExport::Project::RelationFactory::PROJECT_REFERENCES,
+        *Gitlab::ImportExport::Project::RelationFactory::USER_REFERENCES,
         'group_id',
         'commit_id',
         'discussion_id',

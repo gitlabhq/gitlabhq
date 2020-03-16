@@ -28,7 +28,7 @@ may need to manually correct the problem next time you upgrade.
 
 Example error:
 
-```
+```plaintext
 == 20151103134857 CreateLfsObjects: migrating =================================
 -- create_table(:lfs_objects)
 rake aborted!
@@ -48,7 +48,7 @@ need to do.
 Pass the version to a database rake task to manually mark the migration as
 complete.
 
-```
+```shell
 # Source install
 sudo -u git -H bundle exec rake gitlab:db:mark_migration_complete[20151103134857] RAILS_ENV=production
 
@@ -62,9 +62,9 @@ migrations are marked complete.
 
 ### GitLab < 8.6
 
-```
+```shell
 # Source install
-sudo -u git -H bundle exec rails console production
+sudo -u git -H bundle exec rails console -e production
 
 # Omnibus install
 sudo gitlab-rails console
@@ -72,7 +72,7 @@ sudo gitlab-rails console
 
 At the Rails console, type the following commands:
 
-```
+```ruby
 ActiveRecord::Base.connection.execute("INSERT INTO schema_migrations (version) VALUES('20151103134857')")
 exit
 ```

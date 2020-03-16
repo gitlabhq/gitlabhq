@@ -109,7 +109,7 @@ become available, you will be able to share job templates like this
 Dependencies should be kept to the minimum. The introduction of a new
 dependency should be argued in the merge request, as per our [Approval
 Guidelines](../code_review.md#approval-guidelines). Both [License
-Management](../../user/application_security/license_compliance/index.md)
+Management](../../user/compliance/license_compliance/index.md)
 **(ULTIMATE)** and [Dependency
 Scanning](../../user/application_security/dependency_scanning/index.md)
 **(ULTIMATE)** should be activated on all projects to ensure new dependencies
@@ -195,7 +195,7 @@ When comparing expected and actual values in tests, use
 and others to improve readability when comparing structs, errors,
 large portions of text, or JSON documents:
 
-```go
+```golang
 type TestData struct {
     // ...
 }

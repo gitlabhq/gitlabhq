@@ -10,7 +10,6 @@ module QA
           element :group_settings_item
           element :group_members_item
           element :general_settings_link
-          element :contribution_analytics_link
         end
 
         view 'app/views/layouts/nav/sidebar/_analytics_links.html.haml' do
@@ -21,6 +20,12 @@ module QA
         def click_group_members_item
           within_sidebar do
             click_element(:group_members_item)
+          end
+        end
+
+        def click_settings
+          within_sidebar do
+            click_element(:group_settings_item)
           end
         end
 

@@ -7,13 +7,14 @@ module Gitlab
         class Context
           TimeoutError = Class.new(StandardError)
 
-          attr_reader :project, :sha, :user
+          attr_reader :project, :sha, :user, :parent_pipeline
           attr_reader :expandset, :execution_deadline
 
-          def initialize(project: nil, sha: nil, user: nil)
+          def initialize(project: nil, sha: nil, user: nil, parent_pipeline: nil)
             @project = project
             @sha = sha
             @user = user
+            @parent_pipeline = parent_pipeline
             @expandset = Set.new
             @execution_deadline = 0
 

@@ -1,5 +1,0 @@
----
-title: Remove kibana_hostname column from clusters_applications_elastic_stacks table
-merge_request: 23503
-author:
-type: changed

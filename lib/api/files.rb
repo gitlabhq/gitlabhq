@@ -61,7 +61,7 @@ module API
       end
 
       params :simple_file_params do
-        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :file_path, type: String, file_path: true, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.', allow_blank: false
         requires :commit_message, type: String, allow_blank: false, desc: 'Commit message'
         optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
@@ -85,7 +85,7 @@ module API
 
       desc 'Get blame file metadata from repository'
       params do
-        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :file_path, type: String, file_path: true, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :ref, type: String, desc: 'The name of branch, tag or commit', allow_blank: false
       end
       head ":id/repository/files/:file_path/blame", requirements: FILE_ENDPOINT_REQUIREMENTS do
@@ -96,7 +96,7 @@ module API
 
       desc 'Get blame file from the repository'
       params do
-        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :file_path, type: String, file_path: true, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :ref, type: String, desc: 'The name of branch, tag or commit', allow_blank: false
       end
       get ":id/repository/files/:file_path/blame", requirements: FILE_ENDPOINT_REQUIREMENTS do
@@ -110,7 +110,7 @@ module API
 
       desc 'Get raw file metadata from repository'
       params do
-        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :file_path, type: String, file_path: true, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :ref, type: String, desc: 'The name of branch, tag or commit', allow_blank: false
       end
       head ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS do
@@ -121,7 +121,7 @@ module API
 
       desc 'Get raw file contents from the repository'
       params do
-        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :file_path, type: String, file_path: true, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :ref, type: String, desc: 'The name of branch, tag commit', allow_blank: false
       end
       get ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS do
@@ -135,7 +135,7 @@ module API
 
       desc 'Get file metadata from repository'
       params do
-        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :file_path, type: String, file_path: true, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :ref, type: String, desc: 'The name of branch, tag or commit', allow_blank: false
       end
       head ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
@@ -146,7 +146,7 @@ module API
 
       desc 'Get a file from the repository'
       params do
-        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :file_path, type: String, file_path: true, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :ref, type: String, desc: 'The name of branch, tag or commit', allow_blank: false
       end
       get ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do

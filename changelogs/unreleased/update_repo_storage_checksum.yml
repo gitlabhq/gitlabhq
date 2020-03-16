@@ -1,0 +1,5 @@
+---
+title: Ensure checksums match when updating repository storage
+merge_request: 26334
+author:
+type: changed

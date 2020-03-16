@@ -46,13 +46,13 @@ sudo -u git -H bin/rails console RAILS_ENV=production
 
 Then run the following command to enable the feature flag:
 
-```
+```ruby
 Feature.enable(:sourcegraph)
 ```
 
 You can also enable the feature flag only for specific projects with:
 
-```
+```ruby
 Feature.enable(:sourcegraph, Project.find_by_full_path('my_group/my_project'))
 ```
 

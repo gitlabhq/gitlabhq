@@ -14,7 +14,7 @@ GitLab has supported LDAP integration since [version 2.2](https://about.gitlab.c
 
 ### Choosing an LDAP Server
 
-The main reason organizations choose to utilize a LDAP server is to keep the entire organization's user base consolidated into a central repository. Users can access multiple applications and systems across the  IT environment using a single login. Because LDAP is an open, vendor-neutral, industry standard application protocol, the number of applications using LDAP authentication continues to increase.
+The main reason organizations choose to utilize a LDAP server is to keep the entire organization's user base consolidated into a central repository. Users can access multiple applications and systems across the IT environment using a single login. Because LDAP is an open, vendor-neutral, industry standard application protocol, the number of applications using LDAP authentication continues to increase.
 
 There are many commercial and open source [directory servers](https://en.wikipedia.org/wiki/Directory_service#LDAP_implementations) that support the LDAP protocol. Deciding on the right directory server highly depends on the existing IT environment in which the server will be integrated with.
 
@@ -32,9 +32,9 @@ For example, [Active Directory](https://docs.microsoft.com/en-us/previous-versio
 
 We won't cover the installation and configuration of Windows Server or Active Directory Domain Services in this tutorial. There are a number of resources online to guide you through this process:
 
-- Install Windows Server 2012  - (`technet.microsoft.com`) - [Installing Windows Server 2012](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/jj134246(v=ws.11))
+- Install Windows Server 2012 - (`technet.microsoft.com`) - [Installing Windows Server 2012](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/jj134246(v=ws.11))
 
-- Install Active Directory Domain Services (AD DS) (`technet.microsoft.com`)- [Install Active Directory Domain Services](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/deploy/install-active-directory-domain-services--level-100-#BKMK_PS)
+- Install Active Directory Domain Services (AD DS) (`technet.microsoft.com`) - [Install Active Directory Domain Services](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/deploy/install-active-directory-domain-services--level-100-#BKMK_PS)
 
 > **Shortcut:** You can quickly install AD DS via PowerShell using
 `Install-WindowsFeature AD-Domain-Services -IncludeManagementTools`

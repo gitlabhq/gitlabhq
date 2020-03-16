@@ -4,7 +4,7 @@ You can find more about the organization of the frontend team in the [handbook](
 
 ## Development Checklist
 
-The idea is to remind us about specific topics during the time we build a new feature or start something. This is a common practice in other industries (like pilots) that also use  standardised checklists to reduce problems early on.
+The idea is to remind us about specific topics during the time we build a new feature or start something. This is a common practice in other industries (like pilots) that also use standardised checklists to reduce problems early on.
 
 Copy the content over to your issue or merge request and if something doesn't apply simply remove it from your current list.
 
@@ -71,7 +71,7 @@ With the purpose of being [respectful of others' time](https://about.gitlab.com/
   - includes tests
   - includes a changelog entry (when necessary)
 - Before assigning to a maintainer, assign to a reviewer.
-- If you assigned a merge request, or pinged someone directly, keep in mind that we work in different timezones and asynchronously, so be patient. Unless the merge request is urgent (like fixing a broken master), please don't DM or reassign the merge request before waiting for a 24-hour window.
+- If you assigned a merge request or pinged someone directly, be patient because we work in different timezones and asynchronously. Unless the merge request is urgent (like fixing a broken master), please don't DM or reassign the merge request before waiting for a 24-hour window.
 - If you have a question regarding your merge request/issue, make it on the merge request/issue. When we DM each other, we no longer have a SSOT and [no one else is able to contribute](https://about.gitlab.com/handbook/values/#public-by-default).
 - When you have a big WIP merge request with many changes, you're advised to get the review started before adding/removing significant code. Make sure it is assigned well before the release cut-off, as the reviewer(s)/maintainer(s) would always prioritize reviewing finished MRs before WIP ones.
 - Make sure to remove the WIP title before the last round of review.

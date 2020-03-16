@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe "User views milestone" do
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
-  set(:milestone) { create(:milestone, project: project) }
-  set(:labels) { create_list(:label, 2, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be(:labels) { create_list(:label, 2, project: project) }
 
   before do
     project.add_developer(user)

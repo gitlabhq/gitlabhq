@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ArchiveTraceWorker
+class ArchiveTraceWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include PipelineBackgroundQueue
 

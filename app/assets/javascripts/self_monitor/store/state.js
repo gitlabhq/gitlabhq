@@ -9,7 +9,7 @@ export default (initialState = {}) => ({
   deleteProjectStatusEndpoint: initialState.statusDeleteSelfMonitoringProjectPath || '',
   selfMonitorProjectPath: initialState.selfMonitoringProjectFullPath || '',
   showAlert: false,
-  projectPath: '',
+  projectPath: initialState.selfMonitoringProjectFullPath || '',
   loading: false,
   alertContent: {},
 });

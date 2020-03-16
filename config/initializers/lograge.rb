@@ -20,38 +20,6 @@ unless Gitlab::Runtime.sidekiq?
     config.lograge.ignore_actions = ['Gitlab::RequestForgeryProtection::Controller#index']
 
     # Add request parameters to log output
-    config.lograge.custom_options = lambda do |event|
-      params = event.payload[:params]
-        .except(*%w(controller action format))
-        .each_pair
-        .map { |k, v| { key: k, value: v } }
-
-      payload = {
-        time: Time.now.utc.iso8601(3),
-        params: Gitlab::Utils::LogLimitedArray.log_limited_array(params),
-        remote_ip: event.payload[:remote_ip],
-        user_id: event.payload[:user_id],
-        username: event.payload[:username],
-        ua: event.payload[:ua],
-        queue_duration: event.payload[:queue_duration]
-      }
-
-      ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
-
-      payload[:response] = event.payload[:response] if event.payload[:response]
-      payload[:etag_route] = event.payload[:etag_route] if event.payload[:etag_route]
-      payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
-
-      if cpu_s = Gitlab::Metrics::System.thread_cpu_duration(::Gitlab::RequestContext.instance.start_thread_cpu_time)
-        payload[:cpu_s] = cpu_s
-      end
-
-      # https://github.com/roidrage/lograge#logging-errors--exceptions
-      exception = event.payload[:exception_object]
-
-      ::Gitlab::ExceptionLogFormatter.format!(exception, payload)
-
-      payload
-    end
+    config.lograge.custom_options = Gitlab::Lograge::CustomOptions
   end
 end

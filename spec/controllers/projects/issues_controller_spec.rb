@@ -740,16 +740,16 @@ describe Projects::IssuesController do
                   .to log_spam(title: 'Spam title', noteable_type: 'Issue')
               end
 
-              it 'renders recaptcha_html json response' do
-                update_issue
+              context 'renders properly' do
+                render_views
 
-                expect(json_response).to have_key('recaptcha_html')
-              end
+                it 'renders recaptcha_html json response' do
+                  update_issue
 
-              it 'returns 200 status' do
-                update_issue
-
-                expect(response).to have_gitlab_http_status(:ok)
+                  expect(response).to have_gitlab_http_status(:ok)
+                  expect(json_response).to have_key('recaptcha_html')
+                  expect(json_response['recaptcha_html']).not_to be_empty
+                end
               end
             end
 

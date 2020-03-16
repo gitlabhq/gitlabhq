@@ -91,7 +91,9 @@ export default {
   },
   computed: {
     routerLinkTo() {
-      return this.isFolder ? { path: `/-/tree/${escape(this.ref)}/${escape(this.path)}` } : null;
+      return this.isFolder
+        ? { path: `/-/tree/${escape(this.ref)}/${encodeURIComponent(this.path)}` }
+        : null;
     },
     iconName() {
       return `fa-${getIconName(this.type, this.path)}`;
@@ -141,6 +143,7 @@ export default {
       <i v-else :aria-label="type" role="img" :class="iconName" class="fa fa-fw"></i>
       <component
         :is="linkComponent"
+        ref="link"
         :to="routerLinkTo"
         :href="url"
         class="str-truncated"

@@ -22,8 +22,7 @@ export const fetchRelease = ({ dispatch, state }) => {
   return api
     .release(state.projectId, state.tagName)
     .then(({ data: release }) => {
-      const camelCasedRelease = convertObjectPropsToCamelCase(release, { deep: true });
-      dispatch('receiveReleaseSuccess', camelCasedRelease);
+      dispatch('receiveReleaseSuccess', convertObjectPropsToCamelCase(release, { deep: true }));
     })
     .catch(error => {
       dispatch('receiveReleaseError', error);
@@ -34,9 +33,11 @@ export const updateReleaseTitle = ({ commit }, title) => commit(types.UPDATE_REL
 export const updateReleaseNotes = ({ commit }, notes) => commit(types.UPDATE_RELEASE_NOTES, notes);
 
 export const requestUpdateRelease = ({ commit }) => commit(types.REQUEST_UPDATE_RELEASE);
-export const receiveUpdateReleaseSuccess = ({ commit, dispatch }) => {
+export const receiveUpdateReleaseSuccess = ({ commit, state, rootState }) => {
   commit(types.RECEIVE_UPDATE_RELEASE_SUCCESS);
-  dispatch('navigateToReleasesPage');
+  redirectTo(
+    rootState.featureFlags.releaseShowPage ? state.release._links.self : state.releasesPagePath,
+  );
 };
 export const receiveUpdateReleaseError = ({ commit }, error) => {
   commit(types.RECEIVE_UPDATE_RELEASE_ERROR, error);

@@ -112,6 +112,43 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#with_reactive_cache_set', :use_clean_rails_redis_caching do
+    subject(:go!) do
+      instance.with_reactive_cache_set('resource', {}) do |data|
+        data
+      end
+    end
+
+    it 'calls with_reactive_cache' do
+      expect(instance)
+        .to receive(:with_reactive_cache)
+
+      go!
+    end
+
+    context 'data returned' do
+      let(:resource) { 'resource' }
+      let(:set_key) { "#{cache_key}:#{resource}" }
+      let(:set_cache) { Gitlab::ReactiveCacheSetCache.new }
+
+      before do
+        stub_reactive_cache(instance, true, resource, {})
+      end
+
+      it 'saves keys in set' do
+        expect(set_cache.read(set_key)).to be_empty
+
+        go!
+
+        expect(set_cache.read(set_key)).not_to be_empty
+      end
+
+      it 'returns the data' do
+        expect(go!).to eq(true)
+      end
+    end
+  end
+
   describe '.reactive_cache_worker_finder' do
     context 'with default reactive_cache_worker_finder' do
       let(:args) { %w(other args) }

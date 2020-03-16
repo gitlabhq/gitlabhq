@@ -1,5 +1,0 @@
----
-title: Replace underscore with lodash for ./app/assets/javascripts/error_tracking
-merge_request: 25143
-author: Tobias Spagert
-type: other

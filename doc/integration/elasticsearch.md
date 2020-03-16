@@ -47,24 +47,26 @@ updated automatically.
 
 For indexing Git repository data, GitLab uses an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
 
-The Go indexer was included in Omnibus GitLab 11.8 as an optional replacement to a
-Ruby-based indexer. [Since GitLab v12.3](https://gitlab.com/gitlab-org/gitlab/issues/6481),
-all indexing is done by the Go indexer, and the Ruby indexer is removed.
+The way you install the Go indexer depends on your version of GitLab:
 
-If you would like to use the Elasticsearch Go indexer with a source installation or an older version of GitLab, please follow the instructions below.
+- For GitLab Omnibus 11.8 and above, see [GitLab Omnibus](#gitlab-omnibus).
+- For installations from source or older versions of GitLab Omnibus, install the indexer [From Source](#from-source).
 
-### Installation
+### GitLab Omnibus
+
+Since GitLab 11.8 the Go indexer is included in GitLab Omnibus.
+The former Ruby-based indexer was removed in [GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/issues/6481).
+
+### From source
 
 First, we need to install some dependencies, then we'll build and install
 the indexer itself.
-
-#### Dependencies
 
 This project relies on [ICU](http://site.icu-project.org/) for text encoding,
 therefore we need to ensure the development packages for your platform are
 installed before running `make`.
 
-##### Debian / Ubuntu
+#### Debian / Ubuntu
 
 To install on Debian or Ubuntu, run:
 
@@ -72,7 +74,7 @@ To install on Debian or Ubuntu, run:
 sudo apt install libicu-dev
 ```
 
-##### CentOS / RHEL
+#### CentOS / RHEL
 
 To install on CentOS or RHEL, run:
 
@@ -89,7 +91,7 @@ brew install icu4c
 export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig:$PKG_CONFIG_PATH"
 ```
 
-#### Building and installing
+### Building and installing
 
 To build and install the indexer, run:
 
@@ -258,7 +260,7 @@ If the database size is less than 500 MiB, and the size of all hosted repos is l
 
 CAUTION: **Warning**:
 Performing asynchronous indexing will generate a lot of Sidekiq jobs.
-Make sure to prepare for this task by either [Horizontally Scaling](../administration/high_availability/README.md#basic-scaling)
+Make sure to prepare for this task by having a [Scalable and Highly Available Setup](README.md)
 or creating [extra Sidekiq processes](../administration/operations/extra_sidekiq_processes.md)
 
 1. [Configure your Elasticsearch host and port](#enabling-elasticsearch).
@@ -511,7 +513,7 @@ Here are some common pitfalls and how to overcome them:
   If you see `Elasticsearch::Model::Response::Records`, you are using Elasticsearch.
 
   NOTE: **Note**:
-  The above instructions are used to verify that GitLab is using Elasticsearch only when indexing all namespaces. This is not to be used for scenarios that only index a [subset of namespaces](https://docs.gitlab.com/ee/integration/elasticsearch.html#limiting-namespaces-and-projects).
+  The above instructions are used to verify that GitLab is using Elasticsearch only when indexing all namespaces. This is not to be used for scenarios that only index a [subset of namespaces](#limiting-namespaces-and-projects).
 
 - **I updated GitLab and now I can't find anything**
 
@@ -534,7 +536,7 @@ Here are some common pitfalls and how to overcome them:
   ```
 
   NOTE: **Note**:
-  The above instructions are not to be used for scenarios that only index a [subset of namespaces](https://docs.gitlab.com/ee/integration/elasticsearch.html#limiting-namespaces-and-projects).
+  The above instructions are not to be used for scenarios that only index a [subset of namespaces](#limiting-namespaces-and-projects).
 
   See [Elasticsearch Index Scopes](#elasticsearch-index-scopes) for more information on searching for specific types of data.
 
@@ -597,7 +599,7 @@ Here are some common pitfalls and how to overcome them:
   AWS has [fixed limits](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html)
   for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of
   the underlying instance.
-  
+
 - **My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly**
 
   **For a single node Elasticsearch cluster the functional cluster health status will be yellow** (will never be green) because the primary shard is allocated but replicas can not be as there is no other node to which Elasticsearch can assign a replica. This also applies if you are using using the
@@ -614,7 +616,7 @@ Here are some common pitfalls and how to overcome them:
     }
   }'
   ```
-  
+
 - **I'm getting a `health check timeout: no Elasticsearch node available` error in Sidekiq during the indexing process**
 
    ```
@@ -622,7 +624,7 @@ Here are some common pitfalls and how to overcome them:
    ```
 
    You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticseach Integration Menu. Please make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be acceped as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
-   Once you have corrected the formatting of the URL please delete the index (via the [dedicated rake task](#gitlab-elasticsearch-rake-tasks)) and [index the content of your intance](#adding-gitlabs-data-to-the-elasticsearch-index) once more.
+   Once you have corrected the formatting of the URL, delete the index (via the [dedicated rake task](#gitlab-elasticsearch-rake-tasks)) and [reindex the content of your instance](#adding-gitlabs-data-to-the-elasticsearch-index).
 
 ### Reverting to basic search
 

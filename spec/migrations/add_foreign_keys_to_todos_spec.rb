@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180201110056_add_foreign_keys_to_todos.rb')
 
-describe AddForeignKeysToTodos, :migration do
+describe AddForeignKeysToTodos do
   let(:todos) { table(:todos) }
   let(:users) { table(:users) }
   let(:projects) { table(:projects) }

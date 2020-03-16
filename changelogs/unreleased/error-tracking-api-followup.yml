@@ -1,5 +1,0 @@
----
-title: Refactor error tracking specs and add validation to enabled field in error tracking model
-merge_request: 24892
-author: Rajendra Kadam
-type: added

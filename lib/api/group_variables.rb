@@ -47,6 +47,7 @@ module API
         requires :key, type: String, desc: 'The key of the variable'
         requires :value, type: String, desc: 'The value of the variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
+        optional :masked, type: String, desc: 'Whether the variable is masked'
         optional :variable_type, type: String, values: Ci::GroupVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
       end
       post ':id/variables' do
@@ -68,6 +69,7 @@ module API
         optional :key, type: String, desc: 'The key of the variable'
         optional :value, type: String, desc: 'The value of the variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
+        optional :masked, type: String, desc: 'Whether the variable is masked'
         optional :variable_type, type: String, values: Ci::GroupVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
       end
       # rubocop: disable CodeReuse/ActiveRecord

@@ -6,6 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { metricStates } from '~/monitoring/constants';
 import Dashboard from '~/monitoring/components/dashboard.vue';
+import { getJSONFixture } from '../../../../spec/frontend/helpers/fixtures';
 
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
@@ -15,14 +16,19 @@ import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import { setupComponentStore, propsData } from '../init_utils';
 import {
-  metricsDashboardPayload,
-  mockedQueryResultPayload,
+  metricsDashboardViewModel,
   environmentData,
   dashboardGitResponse,
+  mockedQueryResultFixture,
 } from '../mock_data';
 
 const localVue = createLocalVue();
-const expectedPanelCount = 2;
+const expectedPanelCount = 4;
+
+const metricsDashboardFixture = getJSONFixture(
+  'metrics_dashboard/environment_metrics_dashboard.json',
+);
+const metricsDashboardPayload = metricsDashboardFixture.dashboard;
 
 describe('Dashboard', () => {
   let store;
@@ -195,7 +201,7 @@ describe('Dashboard', () => {
     );
     wrapper.vm.$store.commit(
       `monitoringDashboard/${types.RECEIVE_METRIC_RESULT_SUCCESS}`,
-      mockedQueryResultPayload,
+      mockedQueryResultFixture,
     );
 
     return wrapper.vm.$nextTick().then(() => {
@@ -210,6 +216,19 @@ describe('Dashboard', () => {
 
     return wrapper.vm.$nextTick().then(() => {
       expect(wrapper.find(DateTimePicker).exists()).toBe(true);
+    });
+  });
+
+  it('renders the refresh dashboard button', () => {
+    createMountedWrapper({ hasMetrics: true }, { stubs: ['graph-group', 'panel-type'] });
+
+    setupComponentStore(wrapper);
+
+    return wrapper.vm.$nextTick().then(() => {
+      const refreshBtn = wrapper.findAll({ ref: 'refreshDashboardBtn' });
+
+      expect(refreshBtn).toHaveLength(1);
+      expect(refreshBtn.is(GlButton)).toBe(true);
     });
   });
 
@@ -366,7 +385,7 @@ describe('Dashboard', () => {
 
         it('metrics can be swapped', () => {
           const firstDraggable = findDraggables().at(0);
-          const mockMetrics = [...metricsDashboardPayload.panel_groups[1].panels];
+          const mockMetrics = [...metricsDashboardViewModel.panelGroups[0].panels];
 
           const firstTitle = mockMetrics[0].title;
           const secondTitle = mockMetrics[1].title;
@@ -376,7 +395,7 @@ describe('Dashboard', () => {
           firstDraggable.vm.$emit('input', mockMetrics);
 
           return wrapper.vm.$nextTick(() => {
-            const { panels } = wrapper.vm.dashboard.panel_groups[1];
+            const { panels } = wrapper.vm.dashboard.panelGroups[0];
 
             expect(panels[1].title).toEqual(firstTitle);
             expect(panels[0].title).toEqual(secondTitle);

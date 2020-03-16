@@ -35,7 +35,7 @@ module Ci
       {
         text: job.artifacts_expose_as,
         url: path_for_entries(metadata_entries, job),
-        job_path: project_job_path(project, job),
+        job_path: project_job_path(job.project, job),
         job_name: job.name
       }
     end
@@ -59,9 +59,9 @@ module Ci
       return if entries.empty?
 
       if single_artifact?(entries)
-        file_project_job_artifacts_path(project, job, entries.first.path)
+        file_project_job_artifacts_path(job.project, job, entries.first.path)
       else
-        browse_project_job_artifacts_path(project, job)
+        browse_project_job_artifacts_path(job.project, job)
       end
     end
 

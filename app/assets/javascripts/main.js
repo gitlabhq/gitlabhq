@@ -69,7 +69,7 @@ if (gon && gon.disable_animations) {
 // inject test utilities if necessary
 if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
   disableJQueryAnimations();
-  import(/* webpackMode: "eager" */ './test_utils/');
+  import(/* webpackMode: "eager" */ './test_utils/'); // eslint-disable-line no-unused-expressions
 }
 
 document.addEventListener('beforeunload', () => {
@@ -200,7 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  if (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs') {
+  const isBoardsPage = /(projects|groups):boards:show/.test(document.body.dataset.page);
+  if (!isBoardsPage && (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs')) {
     const $rightSidebar = $('aside.right-sidebar');
     const $layoutPage = $('.layout-page');
 

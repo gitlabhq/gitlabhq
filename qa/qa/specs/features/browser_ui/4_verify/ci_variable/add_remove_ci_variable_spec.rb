@@ -2,7 +2,7 @@
 
 module QA
   context 'Verify' do
-    describe 'Add or Remove CI variable via UI', :smoke do
+    describe 'Add or Remove CI variable via UI', :smoke, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/207915', type: :stale } do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-ci-variables'

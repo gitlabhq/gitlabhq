@@ -7,7 +7,7 @@ describe "User views issues" do
   let!(:open_issue1) { create(:issue, project: project) }
   let!(:open_issue2) { create(:issue, project: project) }
 
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   shared_examples "opens issue from list" do
     it "opens issue" do

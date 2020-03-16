@@ -15,8 +15,8 @@ offline unless _absolutely necessary_.
 When downtime is necessary the migration has to be approved by:
 
 1. The VP of Engineering
-1. A Backend Lead
-1. A Database Specialist
+1. A Backend Maintainer
+1. A Database Maintainer
 
 An up-to-date list of people holding these titles can be found at
 <https://about.gitlab.com/company/team/>.
@@ -28,6 +28,10 @@ possible about the state of the database.
 Please don't depend on GitLab-specific code since it can change in future
 versions. If needed copy-paste GitLab code into the migration to make it forward
 compatible.
+
+For GitLab.com, please take into consideration that regular migrations (under `db/migrate`)
+are run before [Canary is deployed](https://about.gitlab.com/handbook/engineering/infrastructure/library/canary/#configuration-and-deployment),
+and post-deployment migrations (`db/post_migrate`) are run after the deployment to production has finished.
 
 ## Schema Changes
 
@@ -84,6 +88,21 @@ be possible to downgrade in case of a vulnerability or bugs.
 
 In your migration, add a comment describing how the reversibility of the
 migration was tested.
+
+Some migrations cannot be reversed. For example, some data migrations can't be
+reversed because we lose information about the state of the database before the migration.
+You should still create a `down` method with a comment, explaining why
+the changes performed by the `up` method can't be reversed, so that the
+migration itself can be reversed, even if the changes performed during the migration
+can't be reversed:
+
+```ruby
+def down
+  # no-op
+
+  # comment explaining why changes performed by `up` cannot be reversed.
+end
+```
 
 ## Atomicity
 
@@ -157,9 +176,15 @@ Removing a column:
 ```ruby
 include Gitlab::Database::MigrationHelpers
 
-def change
+def up
   with_lock_retries do
-    remove_column :users, :full_name, :string
+    remove_column :users, :full_name
+  end
+end
+
+def down
+  with_lock_retries do
+    add_column :users, :full_name, :string
   end
 end
 ```
@@ -169,9 +194,15 @@ Removing a foreign key:
 ```ruby
 include Gitlab::Database::MigrationHelpers
 
-def change
+def up
   with_lock_retries do
     remove_foreign_key :issues, :projects
+  end
+end
+
+def down
+  with_lock_retries do
+    add_foreign_key :issues, :projects
   end
 end
 ```
@@ -181,9 +212,15 @@ Changing default value for a column:
 ```ruby
 include Gitlab::Database::MigrationHelpers
 
-def change
+def up
   with_lock_retries do
     change_column_default :merge_requests, :lock_version, from: nil, to: 0
+  end
+end
+
+def down
+  with_lock_retries do
+    change_column_default :merge_requests, :lock_version, from: 0, to: nil
   end
 end
 ```
@@ -211,6 +248,8 @@ Example changes:
 - `change_column_default`
 
 **Note:** `with_lock_retries` method **cannot** be used with `disable_ddl_transaction!`.
+
+**Note:** `with_lock_retries` method **cannot** be used within the `change` method, you must manually define the `up` and `down` methods to make the migration reversible.
 
 ### How the helper method works
 
@@ -304,10 +343,16 @@ combining it with other operations that don't require `disable_ddl_transaction!`
 
 ## Adding indexes
 
-If you need to add a unique index, please keep in mind there is the possibility
-of existing duplicates being present in the database. This means that should
-always _first_ add a migration that removes any duplicates, before adding the
-unique index.
+Before adding an index, consider if this one is necessary. There are situations in which an index
+might not be required, like:
+
+- The table is small (less than `1,000` records) and it's not expected to exponentially grow in size.
+- Any existing indexes filter out enough rows.
+- The reduction in query timings after the index is added is not significant.
+
+Additionally, wide indexes are not required to match all filter criteria of queries, we just need
+to cover enough columns so that the index lookup has a small enough selectivity. Please review our
+[Adding Database indexes](adding_database_indexes.md) guide for more details.
 
 When adding an index to a non-empty table make sure to use the method
 `add_concurrent_index` instead of the regular `add_index` method.
@@ -333,6 +378,11 @@ class MyMigration < ActiveRecord::Migration[4.2]
   end
 end
 ```
+
+If you need to add a unique index, please keep in mind there is the possibility
+of existing duplicates being present in the database. This means that should
+always _first_ add a migration that removes any duplicates, before adding the
+unique index.
 
 For a small table (such as an empty one or one with less than `1,000` records),
 it is recommended to use `add_index` in a single-transaction migration, combining it with other
@@ -369,6 +419,8 @@ For an empty table (such as a fresh one), it is recommended to use
 `add_reference` in a single-transaction migration, combining it with other
 operations that don't require `disable_ddl_transaction!`.
 
+You can read more about adding [foreign key constraints to an existing column](database/add_foreign_key_to_existing_column.md).
+
 ## Adding Columns With Default Values
 
 When adding columns with default values to non-empty tables, you must use
@@ -400,10 +452,6 @@ default values if absolutely necessary. There is a RuboCop cop that will fail if
 this method is used on some tables that are very large on GitLab.com, which
 would cause other issues.
 
-For a small table (such as an empty one or one with less than `1,000` records),
-use `add_column` and `change_column_default` in a single-transaction migration,
-combining it with other operations that don't require `disable_ddl_transaction!`.
-
 ## Changing the column default
 
 One might think that changing a default column with `change_column_default` is an
@@ -413,16 +461,10 @@ Take the following migration as an example:
 
 ```ruby
 class DefaultRequestAccessGroups < ActiveRecord::Migration[5.2]
-  include Gitlab::Database::MigrationHelpers
-
   DOWNTIME = false
 
-  def up
-    change_column_default :namespaces, :request_access_enabled, true
-  end
-
-  def down
-    change_column_default :namespaces, :request_access_enabled, false
+  def change
+    change_column_default(:namespaces, :request_access_enabled, from: false, to: true)
   end
 end
 ```
@@ -463,7 +505,7 @@ end
 ```
 
 If a computed update is needed, the value can be wrapped in `Arel.sql`, so Arel
-treats it as an SQL literal. It's also a required deprecation for [Rails 6](https://gitlab.com/gitlab-org/gitlab-foss/issues/61451).
+treats it as an SQL literal. It's also a required deprecation for [Rails 6](https://gitlab.com/gitlab-org/gitlab/issues/28497).
 
 The below example is the same as the one above, but
 the value is set to the product of the `bar` and `baz` columns:

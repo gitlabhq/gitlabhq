@@ -30,11 +30,11 @@ People are saying multiple inheritance is bad. Mixing multiple modules with
 multiple instance variables scattering everywhere suffer from the same issue.
 The same applies to `ActiveSupport::Concern`. See:
 [Consider replacing concerns with dedicated classes & composition](
-https://gitlab.com/gitlab-org/gitlab-foss/issues/23786)
+https://gitlab.com/gitlab-org/gitlab/issues/16270)
 
 There's also a similar idea:
 [Use decorators and interface segregation to solve overgrowing models problem](
-https://gitlab.com/gitlab-org/gitlab-foss/issues/13484)
+https://gitlab.com/gitlab-org/gitlab/issues/14235)
 
 Note that `included` doesn't solve the whole issue. They define the
 dependencies, but they still allow each modules to talk implicitly via the

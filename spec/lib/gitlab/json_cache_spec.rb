@@ -3,12 +3,11 @@
 require 'spec_helper'
 
 describe Gitlab::JsonCache do
+  let_it_be(:broadcast_message) { create(:broadcast_message) }
   let(:backend) { double('backend').as_null_object }
   let(:namespace) { 'geo' }
   let(:key) { 'foo' }
   let(:expanded_key) { "#{namespace}:#{key}:#{Gitlab::VERSION}:#{Rails.version}" }
-
-  set(:broadcast_message) { create(:broadcast_message) }
 
   subject(:cache) { described_class.new(namespace: namespace, backend: backend) }
 

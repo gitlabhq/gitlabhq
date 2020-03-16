@@ -247,4 +247,12 @@ describe Projects::Settings::CiCdController do
       end
     end
   end
+
+  describe 'POST create_deploy_token' do
+    it_behaves_like 'a created deploy token' do
+      let(:entity) { project }
+      let(:create_entity_params) { { namespace_id: project.namespace, project_id: project } }
+      let(:deploy_token_type) { DeployToken.deploy_token_types[:project_type] }
+    end
+  end
 end

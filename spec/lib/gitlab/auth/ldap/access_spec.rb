@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::LDAP::Access do
+describe Gitlab::Auth::Ldap::Access do
   include LdapHelpers
 
   let(:user) { create(:omniauth_user) }
@@ -64,7 +64,7 @@ describe Gitlab::Auth::LDAP::Access do
 
       context 'and the user is disabled via active directory' do
         before do
-          allow(Gitlab::Auth::LDAP::Person).to receive(:disabled_via_active_directory?).and_return(true)
+          allow(Gitlab::Auth::Ldap::Person).to receive(:disabled_via_active_directory?).and_return(true)
         end
 
         it 'returns false' do
@@ -90,7 +90,7 @@ describe Gitlab::Auth::LDAP::Access do
 
       context 'and has no disabled flag in active directory' do
         before do
-          allow(Gitlab::Auth::LDAP::Person).to receive(:disabled_via_active_directory?).and_return(false)
+          allow(Gitlab::Auth::Ldap::Person).to receive(:disabled_via_active_directory?).and_return(false)
         end
 
         it { is_expected.to be_truthy }
@@ -135,8 +135,8 @@ describe Gitlab::Auth::LDAP::Access do
 
       context 'without ActiveDirectory enabled' do
         before do
-          allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
-          allow_next_instance_of(Gitlab::Auth::LDAP::Config) do |instance|
+          allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(true)
+          allow_next_instance_of(Gitlab::Auth::Ldap::Config) do |instance|
             allow(instance).to receive(:active_directory).and_return(false)
           end
         end

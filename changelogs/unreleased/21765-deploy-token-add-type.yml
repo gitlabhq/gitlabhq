@@ -1,5 +1,0 @@
----
-title: Add deploy_token_type column to deploy_tokens table.
-merge_request: 23530
-author:
-type: added

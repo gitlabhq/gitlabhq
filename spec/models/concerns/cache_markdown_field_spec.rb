@@ -230,6 +230,26 @@ describe CacheMarkdownField, :clean_gitlab_redis_cache do
         end
       end
     end
+
+    describe '#rendered_field_content' do
+      let(:thing) { klass.new(description: markdown, description_html: nil, cached_markdown_version: cache_version) }
+
+      context 'when a field can be cached' do
+        it 'returns the html' do
+          thing.description = updated_markdown
+
+          expect(thing.rendered_field_content(:description)).to eq updated_html
+        end
+      end
+
+      context 'when a field cannot be cached' do
+        it 'returns nil' do
+          allow(thing).to receive(:can_cache_field?).with(:description).and_return false
+
+          expect(thing.rendered_field_content(:description)).to eq nil
+        end
+      end
+    end
   end
 
   context 'for Active record classes' do

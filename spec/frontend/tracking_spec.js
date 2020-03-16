@@ -226,6 +226,14 @@ describe('Tracking', () => {
         };
       });
 
+      it('calls the event method with no category or action defined', () => {
+        mixin.trackingCategory = mixin.trackingCategory();
+        mixin.trackingOptions = mixin.trackingOptions();
+
+        mixin.track();
+        expect(eventSpy).toHaveBeenCalledWith(undefined, undefined, {});
+      });
+
       it('calls the event method', () => {
         mixin.trackingCategory = mixin.trackingCategory();
         mixin.trackingOptions = mixin.trackingOptions();

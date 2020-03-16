@@ -54,8 +54,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['targetNoteHash']),
-    ...mapState(['descriptionVersion', 'isLoadingDescriptionVersion']),
+    ...mapGetters(['targetNoteHash', 'descriptionVersions']),
+    ...mapState(['isLoadingDescriptionVersion']),
     noteAnchorId() {
       return `note_${this.note.id}`;
     },
@@ -80,6 +80,9 @@ export default {
           .filter('ul')
           .children().length > MAX_VISIBLE_COMMIT_LIST_COUNT
       );
+    },
+    descriptionVersion() {
+      return this.descriptionVersions[this.note.description_version_id];
     },
   },
   mounted() {

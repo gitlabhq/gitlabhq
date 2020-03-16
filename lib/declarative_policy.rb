@@ -13,6 +13,8 @@ require_dependency 'declarative_policy/step'
 require_dependency 'declarative_policy/base'
 
 module DeclarativePolicy
+  extend PreferredScope
+
   CLASS_CACHE_MUTEX = Mutex.new
   CLASS_CACHE_IVAR = :@__DeclarativePolicy_CLASS_CACHE
 

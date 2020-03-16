@@ -45,7 +45,7 @@ module API
 
     before do
       Gitlab::ApplicationContext.push(
-        user: -> { current_user },
+        user: -> { @current_user },
         project: -> { @project },
         namespace: -> { @group },
         caller_id: route.origin
@@ -110,6 +110,7 @@ module API
 
       # Keep in alphabetical order
       mount ::API::AccessRequests
+      mount ::API::Admin::Sidekiq
       mount ::API::Appearance
       mount ::API::Applications
       mount ::API::Avatar
@@ -121,6 +122,7 @@ module API
       mount ::API::Commits
       mount ::API::CommitStatuses
       mount ::API::DeployKeys
+      mount ::API::DeployTokens
       mount ::API::Deployments
       mount ::API::Environments
       mount ::API::ErrorTracking

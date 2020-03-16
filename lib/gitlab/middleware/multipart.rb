@@ -84,12 +84,6 @@ module Gitlab
         end
 
         def open_file(params, key)
-          allowed_paths = [
-            ::FileUploader.root,
-            Gitlab.config.uploads.storage_path,
-            File.join(Rails.root, 'public/uploads/tmp')
-          ]
-
           ::UploadedFile.from_params(params, key, allowed_paths)
         end
 
@@ -105,6 +99,16 @@ module Gitlab
           # ActionDispatch::Request is based on Rack::Request but it caches params
           # inside other env keys, here we ensure everything is updated correctly
           ActionDispatch::Request.new(@request.env).update_param(key, value)
+        end
+
+        private
+
+        def allowed_paths
+          [
+            ::FileUploader.root,
+            Gitlab.config.uploads.storage_path,
+            File.join(Rails.root, 'public/uploads/tmp')
+          ]
         end
       end
 
@@ -125,3 +129,5 @@ module Gitlab
     end
   end
 end
+
+::Gitlab::Middleware::Multipart::Handler.prepend_if_ee('EE::Gitlab::Middleware::Multipart::Handler')

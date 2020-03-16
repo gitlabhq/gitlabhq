@@ -28,7 +28,7 @@ For an overview, check the video demonstration on [Mapping work versus time with
 
 ## Use cases
 
-Burndown Charts, in general, are used for tracking and analyzing the completion of
+Burndown Charts are generally used for tracking and analyzing the completion of
 a milestone. Therefore, their use cases are tied to the
 [use you are assigning your milestone to](index.md).
 

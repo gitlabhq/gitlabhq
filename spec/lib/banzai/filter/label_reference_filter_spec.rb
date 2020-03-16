@@ -28,7 +28,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
   it 'includes default classes' do
     doc = reference_filter("Label #{reference}")
-    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-label has-tooltip'
+    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-label has-tooltip gl-link gl-label-link'
   end
 
   it 'includes a data-project attribute' do
@@ -66,12 +66,12 @@ describe Banzai::Filter::LabelReferenceFilter do
   describe 'label span element' do
     it 'includes default classes' do
       doc = reference_filter("Label #{reference}")
-      expect(doc.css('a span').first.attr('class')).to eq 'badge color-label has-tooltip'
+      expect(doc.css('a span').first.attr('class')).to include 'gl-label-text'
     end
 
     it 'includes a style attribute' do
       doc = reference_filter("Label #{reference}")
-      expect(doc.css('a span').first.attr('style')).to match(/\Abackground-color: #\h{6}; color: #\h{6}\z/)
+      expect(doc.css('a span').first.attr('style')).to match(/\Abackground-color: #\h{6}\z/)
     end
   end
 
@@ -85,7 +85,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
+      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{label.name}</span></a></span>\.\)))
     end
 
     it 'ignores invalid label IDs' do
@@ -109,7 +109,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}).")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\)\.))
+      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{label.name}</span></a></span>\)\.))
     end
 
     it 'ignores invalid label names' do
@@ -133,7 +133,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}).")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\)\.))
+      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{label.name}</span></a></span>\)\.))
     end
 
     it 'ignores invalid label names' do
@@ -158,7 +158,7 @@ describe Banzai::Filter::LabelReferenceFilter do
     it 'does not include trailing punctuation', :aggregate_failures do
       ['.', ', ok?', '...', '?', '!', ': is that ok?'].each do |trailing_punctuation|
         doc = filter("Label #{reference}#{trailing_punctuation}")
-        expect(doc.to_html).to match(%r(<a.+><span.+>\?g\.fm&amp;</span></a>#{Regexp.escape(trailing_punctuation)}))
+        expect(doc.to_html).to match(%r(<span.+><a.+><span.+>\?g\.fm&amp;</span></a></span>#{Regexp.escape(trailing_punctuation)}))
       end
     end
 
@@ -184,7 +184,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
+      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{label.name}</span></a></span>\.\)))
     end
 
     it 'ignores invalid label names' do
@@ -208,7 +208,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
+      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{label.name}</span></a></span>\.\)))
     end
 
     it 'ignores invalid label names' do
@@ -232,7 +232,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>g\.fm &amp; references\?</span></a>\.\)))
+      expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>g\.fm &amp; references\?</span></a></span>\.\)))
     end
 
     it 'ignores invalid label names' do
@@ -320,7 +320,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+>Label</a>\.\)))
+      expect(doc.to_html).to match(%r(\(<span.+><a.+>Label</a></span>\.\)))
     end
 
     it 'includes a data-project attribute' do
@@ -358,7 +358,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
       it 'links with adjacent text' do
         doc = reference_filter("Label (#{reference}.)")
-        expect(doc.to_html).to match(%r(\(<a.+><span.+>#{group_label.name}</span></a>\.\)))
+        expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{group_label.name}</span></a></span>\.\)))
       end
 
       it 'ignores invalid label names' do
@@ -381,7 +381,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
       it 'links with adjacent text' do
         doc = reference_filter("Label (#{reference}.)")
-        expect(doc.to_html).to match(%r(\(<a.+><span.+>#{group_label.name}</span></a>\.\)))
+        expect(doc.to_html).to match(%r(\(<span.+><a.+><span.+>#{group_label.name}</span></a></span>\.\)))
       end
 
       it 'ignores invalid label names' do

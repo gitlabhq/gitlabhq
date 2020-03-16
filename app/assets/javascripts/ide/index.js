@@ -53,6 +53,7 @@ export function initIde(el, options = {}) {
         clientsidePreviewEnabled: parseBoolean(el.dataset.clientsidePreviewEnabled),
         renderWhitespaceInCode: parseBoolean(el.dataset.renderWhitespaceInCode),
         editorTheme: window.gon?.user_color_scheme || DEFAULT_THEME,
+        codesandboxBundlerUrl: el.dataset.codesandboxBundlerUrl,
       });
     },
     methods: {

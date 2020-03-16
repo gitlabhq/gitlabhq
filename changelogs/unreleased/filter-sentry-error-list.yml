@@ -1,0 +1,5 @@
+---
+title: Filter sentry error list by status (unresolved/ignored/resolved)
+merge_request: 26205
+author:
+type: added

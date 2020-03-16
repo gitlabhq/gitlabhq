@@ -12,6 +12,9 @@ module API
       expose :last_successful_update_at
       expose :last_error
       expose :only_protected_branches
+      expose :keep_divergent_refs, if: -> (mirror, _options) do
+        ::Feature.enabled?(:keep_divergent_refs, mirror.project)
+      end
     end
   end
 end

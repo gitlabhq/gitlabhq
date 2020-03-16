@@ -4,12 +4,14 @@ module Projects
   module Alerting
     class NotifyService < BaseService
       include Gitlab::Utils::StrongMemoize
+      include IncidentManagement::Settings
 
       def execute(token)
         return forbidden unless alerts_service_activated?
         return unauthorized unless valid_token?(token)
 
-        process_incident_issues
+        process_incident_issues if process_issues?
+        send_alert_email if send_email?
 
         ServiceResponse.success
       rescue Gitlab::Alerting::NotificationPayloadParser::BadPayloadError
@@ -20,9 +22,19 @@ module Projects
 
       delegate :alerts_service, :alerts_service_activated?, to: :project
 
+      def send_email?
+        incident_management_setting.send_email?
+      end
+
       def process_incident_issues
         IncidentManagement::ProcessAlertWorker
           .perform_async(project.id, parsed_payload)
+      end
+
+      def send_alert_email
+        notification_service
+          .async
+          .prometheus_alerts_fired(project, [parsed_payload])
       end
 
       def parsed_payload

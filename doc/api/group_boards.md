@@ -9,7 +9,7 @@ request will result in `404` status code.
 
 Lists Issue Boards in the given group.
 
-```
+```plaintext
 GET /groups/:id/boards
 ```
 
@@ -126,7 +126,7 @@ Example response:
 
 Gets a single group issue board.
 
-```
+```plaintext
 GET /groups/:id/boards/:board_id
 ```
 
@@ -240,7 +240,7 @@ Example response:
 
 Creates a Group Issue Board.
 
-```
+```plaintext
 POST /groups/:id/boards
 ```
 
@@ -306,7 +306,7 @@ Example response:
 
 Updates a Group Issue Board.
 
-```
+```plaintext
 PUT /groups/:id/boards/:board_id
 ```
 
@@ -372,7 +372,7 @@ Example response:
 
 Deletes a Group Issue Board.
 
-```
+```plaintext
 DELETE /groups/:id/boards/:board_id
 ```
 
@@ -390,7 +390,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitl
 Get a list of the board's lists.
 Does not include `open` and `closed` lists
 
-```
+```plaintext
 GET /groups/:id/boards/:board_id/lists
 ```
 
@@ -441,7 +441,7 @@ Example response:
 
 Get a single board list.
 
-```
+```plaintext
 GET /groups/:id/boards/:board_id/lists/:list_id
 ```
 
@@ -473,7 +473,7 @@ Example response:
 
 Creates a new Issue Board list.
 
-```
+```plaintext
 POST /groups/:id/boards/:board_id/lists
 ```
 
@@ -514,7 +514,7 @@ Example response:
 
 Updates an existing Issue Board list. This call is used to change list position.
 
-```
+```plaintext
 PUT /groups/:id/boards/:board_id/lists/:list_id
 ```
 
@@ -547,7 +547,7 @@ Example response:
 
 Only for admins and group owners. Deletes the board list in question.
 
-```
+```plaintext
 DELETE /groups/:id/boards/:board_id/lists/:list_id
 ```
 

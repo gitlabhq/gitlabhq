@@ -44,8 +44,6 @@ module Gitlab
             end
           end
 
-          helpers :reports
-
           def value
             @config[:reports] = reports_value if @config.key?(:reports)
             @config

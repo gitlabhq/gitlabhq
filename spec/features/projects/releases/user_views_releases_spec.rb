@@ -24,13 +24,28 @@ describe 'User views releases', :js do
   context 'when there is a link as an asset' do
     let!(:release_link) { create(:release_link, release: release, url: url ) }
     let(:url) { "#{project.web_url}/-/jobs/1/artifacts/download" }
+    let(:direct_asset_link) { Gitlab::Routing.url_helpers.project_release_url(project, release) << release_link.filepath }
 
     it 'sees the link' do
       visit project_releases_path(project)
 
       page.within('.js-assets-list') do
-        expect(page).to have_link release_link.name, href: release_link.url
+        expect(page).to have_link release_link.name, href: direct_asset_link
         expect(page).not_to have_content('(external source)')
+      end
+    end
+
+    context 'when there is a link redirect' do
+      let!(:release_link) { create(:release_link, release: release, name: 'linux-amd64 binaries', filepath: '/binaries/linux-amd64', url: url) }
+      let(:url) { "#{project.web_url}/-/jobs/1/artifacts/download" }
+
+      it 'sees the link' do
+        visit project_releases_path(project)
+
+        page.within('.js-assets-list') do
+          expect(page).to have_link release_link.name, href: direct_asset_link
+          expect(page).not_to have_content('(external source)')
+        end
       end
     end
 

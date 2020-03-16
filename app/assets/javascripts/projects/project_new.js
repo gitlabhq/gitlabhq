@@ -169,6 +169,10 @@ const bindEvents = () => {
         text: s__('ProjectTemplates|Go Micro'),
         icon: '.template-option .icon-gomicro',
       },
+      gatsby: {
+        text: s__('ProjectTemplates|Pages/Gatsby'),
+        icon: '.template-option .icon-gatsby',
+      },
       hugo: {
         text: s__('ProjectTemplates|Pages/Hugo'),
         icon: '.template-option .icon-hugo',

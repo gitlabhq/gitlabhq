@@ -10,7 +10,7 @@ feedback from [Visual Reviews](../ci/review_apps/index.md#visual-reviews-starter
 Creates a new thread to a single project merge request. This is similar to creating
 a note but other comments (replies) can be added to it later.
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/visual_review_discussions
 ```
 

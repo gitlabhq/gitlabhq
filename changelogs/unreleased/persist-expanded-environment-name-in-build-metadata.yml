@@ -1,0 +1,5 @@
+---
+title: Persist expanded environment name in ci build metadata
+merge_request: 22374
+author:
+type: performance

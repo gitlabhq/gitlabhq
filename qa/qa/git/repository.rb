@@ -165,7 +165,7 @@ module QA
         # ls-remote is one command known to respond to Git protocol v2 so we use
         # it to get output including the version reported via Git tracing
         output = run("git ls-remote #{uri}", "GIT_TRACE_PACKET=1")
-        output[/git< version (\d+)/, 1] || 'unknown'
+        output.response[/git< version (\d+)/, 1] || 'unknown'
       end
 
       def try_add_credentials_to_netrc

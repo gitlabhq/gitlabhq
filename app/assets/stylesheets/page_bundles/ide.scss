@@ -75,7 +75,7 @@ $ide-commit-header-height: 48px;
 
 .multi-file-tabs {
   display: flex;
-  background-color: $white-normal;
+  background-color: $gray-light;
   box-shadow: inset 0 -1px $white-dark;
 
   > ul {
@@ -994,11 +994,6 @@ $ide-commit-header-height: 48px;
 }
 
 .ide-context-header {
-  .ide-merge-requests-dropdown.dropdown-menu {
-    width: 385px;
-    max-height: initial;
-  }
-
   .avatar-container {
     flex: 0 0 auto;
     margin-right: 0;

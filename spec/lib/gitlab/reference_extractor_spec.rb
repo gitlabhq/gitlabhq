@@ -225,6 +225,24 @@ describe Gitlab::ReferenceExtractor do
     end
   end
 
+  context 'with an inactive external issue tracker' do
+    let(:project) { create(:project) }
+    let!(:jira_service) { create(:jira_service, project: project, active: false) }
+    let(:issue)   { create(:issue, project: project) }
+
+    context 'when GitLab issues are enabled' do
+      it 'returns only internal issue' do
+        subject.analyze("JIRA-123 and FOOBAR-4567 and #{issue.to_reference}")
+        expect(subject.issues).to eq([issue])
+      end
+
+      it 'does not return any issue if the internal one does not exists' do
+        subject.analyze("JIRA-123 and FOOBAR-4567 and #999")
+        expect(subject.issues).to be_empty
+      end
+    end
+  end
+
   context 'with a project with an underscore' do
     let(:other_project) { create(:project, path: 'test_project') }
     let(:issue) { create(:issue, project: other_project) }

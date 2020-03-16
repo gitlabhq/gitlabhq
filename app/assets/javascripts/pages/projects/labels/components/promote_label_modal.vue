@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
@@ -48,7 +48,7 @@ export default {
       const label = `<span
           class="label color-label"
           style="background-color: ${this.labelColor}; color: ${this.labelTextColor};"
-        >${_.escape(this.labelTitle)}</span>`;
+        >${esc(this.labelTitle)}</span>`;
 
       return sprintf(
         s__('Labels|<span>Promote label</span> %{labelTitle} <span>to Group Label?</span>'),

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'settingslogic'
 require 'digest/md5'
 
@@ -42,7 +44,8 @@ class Settings < Settingslogic
     end
 
     def build_gitlab_shell_ssh_path_prefix
-      user_host = "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}"
+      user = "#{gitlab_shell.ssh_user}@" unless gitlab_shell.ssh_user.empty?
+      user_host = "#{user}#{gitlab_shell.ssh_host}"
 
       if gitlab_shell.ssh_port != 22
         "ssh://#{user_host}:#{gitlab_shell.ssh_port}/"
@@ -141,6 +144,10 @@ class Settings < Settingslogic
     # https://github.com/attr-encrypted/encryptor/blob/c3a62c4a9e74686dd95e0548f9dc2a361fdc95d1/lib/encryptor.rb#L77
     def attr_encrypted_db_key_base
       Gitlab::Application.secrets.db_key_base
+    end
+
+    def load_dynamic_cron_schedules!
+      cron_jobs['gitlab_usage_ping_worker']['cron'] ||= cron_for_usage_ping
     end
 
     private

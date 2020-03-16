@@ -288,7 +288,7 @@ GitLab CI is the open-source continuous integration service included with GitLab
 - Configuration: [Omnibus][grafana-omnibus], [Charts][grafana-charts]
 - Layer: Monitoring
 
-Grafana is an open source, feature rich metrics dashboard and graph editor for Graphite, Elasticsearch, OpenTSDB, Prometheus and InfluxDB.
+Grafana is an open source, feature rich metrics dashboard and graph editor for Graphite, Elasticsearch, OpenTSDB, Prometheus, and InfluxDB.
 
 #### Jaeger
 
@@ -321,7 +321,7 @@ Mattermost is an open source, private cloud, Slack-alternative from <https://mat
 - Configuration: [Omnibus][minio-omnibus], [Charts][minio-charts], [GDK][minio-gdk]
 - Layer: Core Service (Data)
 
-MinIO is an object storage server released under Apache License v2.0. It is compatible with Amazon S3 cloud storage service. It is best suited for storing unstructured data such as photos, videos, log files, backups and container / VM images. Size of an object can range from a few KBs to a maximum of 5TB.
+MinIO is an object storage server released under Apache License v2.0. It is compatible with Amazon S3 cloud storage service. It is best suited for storing unstructured data such as photos, videos, log files, backups, and container / VM images. Size of an object can range from a few KBs to a maximum of 5TB.
 
 #### NGINX
 
@@ -542,28 +542,28 @@ See the README for more information.
 
 The GitLab init script starts and stops Unicorn and Sidekiq:
 
-```
+```plaintext
 /etc/init.d/gitlab
 Usage: service gitlab {start|stop|restart|reload|status}
 ```
 
 Redis (key-value store/non-persistent database):
 
-```
+```plaintext
 /etc/init.d/redis
 Usage: /etc/init.d/redis {start|stop|status|restart|condrestart|try-restart}
 ```
 
 SSH daemon:
 
-```
+```plaintext
 /etc/init.d/sshd
 Usage: /etc/init.d/sshd {start|stop|restart|reload|force-reload|condrestart|try-restart|status}
 ```
 
 Web server (one of the following):
 
-```
+```plaintext
 /etc/init.d/httpd
 Usage: httpd {start|stop|restart|condrestart|try-restart|force-reload|reload|status|fullstatus|graceful|help|configtest}
 
@@ -573,7 +573,7 @@ Usage: nginx {start|stop|restart|reload|force-reload|status|configtest}
 
 Persistent database:
 
-```
+```plaintext
 $ /etc/init.d/postgresql
 Usage: /etc/init.d/postgresql {start|stop|restart|reload|force-reload|status} [version ..]
 ```
@@ -626,7 +626,7 @@ GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
 [GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance rake tasks](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/raketasks/maintenance.md).
 In a nutshell, do the following:
 
-```
+```shell
 sudo -i -u git
 cd gitlab
 bundle exec rake gitlab:env:info RAILS_ENV=production

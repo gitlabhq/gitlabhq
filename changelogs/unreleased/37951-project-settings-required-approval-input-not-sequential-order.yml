@@ -1,0 +1,5 @@
+---
+title: Fix project setting approval input in non-sequential order
+merge_request: 25391
+author:
+type: fixed

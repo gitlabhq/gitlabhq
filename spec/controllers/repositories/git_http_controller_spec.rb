@@ -6,16 +6,18 @@ describe Repositories::GitHttpController do
   include GitHttpHelpers
 
   let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:personal_snippet) { create(:personal_snippet, :public, :repository) }
+  let_it_be(:project_snippet) { create(:project_snippet, :public, :repository, project: project) }
 
   let(:namespace_id) { project.namespace.to_param }
   let(:repository_id) { project.path + '.git' }
-  let(:project_params) do
+  let(:container_params) do
     {
       namespace_id: namespace_id,
       repository_id: repository_id
     }
   end
-  let(:params) { project_params }
+  let(:params) { container_params }
 
   describe 'HEAD #info_refs' do
     it 'returns 403' do
@@ -27,7 +29,7 @@ describe Repositories::GitHttpController do
 
   shared_examples 'info_refs behavior' do
     describe 'GET #info_refs' do
-      let(:params) { project_params.merge(service: 'git-upload-pack') }
+      let(:params) { container_params.merge(service: 'git-upload-pack') }
 
       it 'returns 401 for unauthenticated requests to public repositories when http protocol is disabled' do
         stub_application_setting(enabled_git_access_protocol: 'ssh')
@@ -41,8 +43,6 @@ describe Repositories::GitHttpController do
       end
 
       context 'with authorized user' do
-        let(:user) { project.owner }
-
         before do
           request.headers.merge! auth_env(user.username, user.password, nil)
         end
@@ -122,7 +122,7 @@ describe Repositories::GitHttpController do
   end
 
   shared_examples 'access checker class' do
-    let(:params) { project_params.merge(service: 'git-upload-pack') }
+    let(:params) { container_params.merge(service: 'git-upload-pack') }
 
     it 'calls the right access class checker with the right object' do
       allow(controller).to receive(:verify_workhorse_api!).and_return(true)
@@ -135,12 +135,80 @@ describe Repositories::GitHttpController do
     end
   end
 
+  shared_examples 'snippet feature flag disabled behavior' do
+    before do
+      stub_feature_flags(version_snippets: false)
+
+      request.headers.merge! auth_env(user.username, user.password, nil)
+    end
+
+    describe 'GET #info_refs' do
+      let(:params) { container_params.merge(service: 'git-upload-pack') }
+
+      it 'returns 404' do
+        get :info_refs, params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    describe 'POST #git_upload_pack' do
+      before do
+        allow(controller).to receive(:authenticate_user).and_return(true)
+        allow(controller).to receive(:verify_workhorse_api!).and_return(true)
+        allow(controller).to receive(:access_check).and_return(nil)
+      end
+
+      it 'returns 404' do
+        post :git_upload_pack, params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   context 'when repository container is a project' do
-    it_behaves_like 'info_refs behavior'
+    it_behaves_like 'info_refs behavior' do
+      let(:user) { project.owner }
+    end
     it_behaves_like 'git_upload_pack behavior', true
     it_behaves_like 'access checker class' do
       let(:expected_class) { Gitlab::GitAccess }
       let(:expected_object) { project }
+    end
+  end
+
+  context 'when repository container is a personal snippet' do
+    let(:namespace_id) { 'snippets' }
+    let(:repository_id) { personal_snippet.to_param + '.git' }
+
+    it_behaves_like 'info_refs behavior' do
+      let(:user) { personal_snippet.author }
+    end
+    it_behaves_like 'git_upload_pack behavior', false
+    it_behaves_like 'access checker class' do
+      let(:expected_class) { Gitlab::GitAccessSnippet }
+      let(:expected_object) { personal_snippet }
+    end
+    it_behaves_like 'snippet feature flag disabled behavior' do
+      let(:user) { personal_snippet.author }
+    end
+  end
+
+  context 'when repository container is a project snippet' do
+    let(:namespace_id) { project.full_path + '/snippets' }
+    let(:repository_id) { project_snippet.to_param + '.git' }
+
+    it_behaves_like 'info_refs behavior' do
+      let(:user) { project_snippet.author }
+    end
+    it_behaves_like 'git_upload_pack behavior', false
+    it_behaves_like 'access checker class' do
+      let(:expected_class) { Gitlab::GitAccessSnippet }
+      let(:expected_object) { project_snippet }
+    end
+    it_behaves_like 'snippet feature flag disabled behavior' do
+      let(:user) { project_snippet.author }
     end
   end
 end

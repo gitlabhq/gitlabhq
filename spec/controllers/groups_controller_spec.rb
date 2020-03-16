@@ -411,6 +411,13 @@ describe GroupsController do
       expect(group.reload.project_creation_level).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
     end
 
+    it 'updates the default_branch_protection successfully' do
+      post :update, params: { id: group.to_param, group: { default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE } }
+
+      expect(response).to have_gitlab_http_status(:found)
+      expect(group.reload.default_branch_protection).to eq(::Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+    end
+
     context 'when a project inside the group has container repositories' do
       before do
         stub_container_registry_config(enabled: true)

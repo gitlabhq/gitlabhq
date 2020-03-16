@@ -4,7 +4,7 @@ type: reference
 
 # Continuous Integration and Deployment Admin settings **(CORE ONLY)**
 
-In this area, you will find settings for Auto DevOps, Runners and job artifacts.
+In this area, you will find settings for Auto DevOps, Runners, and job artifacts.
 You can find it in the **Admin Area > Settings > CI/CD**.
 
 ![Admin Area settings button](../img/admin_area_settings_button.png)
@@ -53,7 +53,7 @@ To change it at the:
   1. Change the value of **maximum artifacts size (in MB)**.
   1. Press **Save changes** for the changes to take effect.
 
-- [Project level](../../project/pipelines/settings.md) (this will override the instance and group settings):
+- [Project level](../../../ci/pipelines/settings.md) (this will override the instance and group settings):
 
   1. Go to the project's **Settings > CI / CD > General Pipelines**.
   1. Change the value of **maximum artifacts size (in MB)**.
@@ -152,7 +152,7 @@ Area of your GitLab instance (`.gitlab-ci.yml` if not set):
 1. Input the new path in the **Default CI configuration path** field.
 1. Hit **Save changes** for the changes to take effect.
 
-It is also possible to specify a [custom CI configuration path for a specific project](../../project/pipelines/settings.md#custom-ci-configuration-path).
+It is also possible to specify a [custom CI configuration path for a specific project](../../../ci/pipelines/settings.md#custom-ci-configuration-path).
 
 <!-- ## Troubleshooting
 
@@ -191,3 +191,16 @@ To set required pipeline configuration:
 1. Click **Save changes**.
 
 ![Required pipeline](img/admin_required_pipeline.png)
+
+## Package Registry configuration **(PREMIUM ONLY)**
+
+GitLab administrators can disable the forwarding of NPM requests to [npmjs.com](https://www.npmjs.com/).
+
+To disable it:
+
+1. Go to **Admin Area > Settings > CI/CD**.
+1. Expand the **Package Registry** section.
+1. Uncheck **Enable forwarding of NPM package requests to npmjs.org**.
+1. Click **Save changes**.
+
+![NPM package requests forwarding](img/admin_package_registry_npm_package_requests_forward.png)

@@ -19,7 +19,7 @@ describe API::Repositories do
       it 'returns the repository tree' do
         get api(route, current_user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
 
@@ -108,7 +108,7 @@ describe API::Repositories do
       it 'returns blob attributes as json' do
         get api(route, current_user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['size']).to eq(111)
         expect(json_response['encoding']).to eq("base64")
         expect(Base64.decode64(json_response['content']).lines.first).to eq("class Commit\n")
@@ -167,7 +167,7 @@ describe API::Repositories do
 
         get api(route, current_user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
       end
 
@@ -223,11 +223,15 @@ describe API::Repositories do
   describe "GET /projects/:id/repository/archive(.:format)?:sha" do
     let(:route) { "/projects/#{project.id}/repository/archive" }
 
+    before do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+    end
+
     shared_examples_for 'repository archive' do
       it 'returns the repository archive' do
         get api(route, current_user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
 
         type, params = workhorse_send_data
 
@@ -238,7 +242,7 @@ describe API::Repositories do
       it 'returns the repository archive archive.zip' do
         get api("/projects/#{project.id}/repository/archive.zip", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
 
         type, params = workhorse_send_data
 
@@ -249,7 +253,7 @@ describe API::Repositories do
       it 'returns the repository archive archive.tar.bz2' do
         get api("/projects/#{project.id}/repository/archive.tar.bz2", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
 
         type, params = workhorse_send_data
 
@@ -262,6 +266,14 @@ describe API::Repositories do
           let(:request) { get api("#{route}?sha=xxx", current_user) }
           let(:message) { '404 File Not Found' }
         end
+      end
+
+      it 'rate limits user when thresholds hit' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
+        get api("/projects/#{project.id}/repository/archive.tar.bz2", user)
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
 
@@ -302,7 +314,7 @@ describe API::Repositories do
         }).and_call_original
         get api(route, current_user), params: { from: 'master', to: 'feature' }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
       end
@@ -313,7 +325,7 @@ describe API::Repositories do
         }).and_call_original
         get api(route, current_user), params: { from: 'master', to: 'feature', straight: false }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
       end
@@ -324,7 +336,7 @@ describe API::Repositories do
         }).and_call_original
         get api(route, current_user), params: { from: 'master', to: 'feature', straight: true }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
       end
@@ -332,7 +344,7 @@ describe API::Repositories do
       it "compares tags" do
         get api(route, current_user), params: { from: 'v1.0.0', to: 'v1.1.0' }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
       end
@@ -340,7 +352,7 @@ describe API::Repositories do
       it "compares commits" do
         get api(route, current_user), params: { from: sample_commit.id, to: sample_commit.parent_id }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['commits']).to be_empty
         expect(json_response['diffs']).to be_empty
         expect(json_response['compare_same_ref']).to be_falsey
@@ -349,7 +361,7 @@ describe API::Repositories do
       it "compares commits in reverse order" do
         get api(route, current_user), params: { from: sample_commit.parent_id, to: sample_commit.id }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
       end
@@ -357,7 +369,7 @@ describe API::Repositories do
       it "compares same refs" do
         get api(route, current_user), params: { from: 'master', to: 'master' }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['commits']).to be_empty
         expect(json_response['diffs']).to be_empty
         expect(json_response['compare_same_ref']).to be_truthy
@@ -368,7 +380,7 @@ describe API::Repositories do
 
         get api(route, current_user), params: { from: 'master', to: 'feature' }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
         expect(json_response['diffs'].first['diff']).to be_empty
@@ -377,13 +389,13 @@ describe API::Repositories do
       it "returns a 404 when from ref is unknown" do
         get api(route, current_user), params: { from: 'unknown_ref', to: 'master' }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it "returns a 404 when to ref is unknown" do
         get api(route, current_user), params: { from: 'master', to: 'unknown_ref' }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -421,7 +433,7 @@ describe API::Repositories do
       it 'returns valid data' do
         get api(route, current_user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
 
@@ -438,7 +450,7 @@ describe API::Repositories do
           it 'returns the repository contribuors sorted by commits desc' do
             get api(route, current_user), params: { order_by: 'commits', sort: 'desc' }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('contributors')
             expect(json_response.first['commits']).to be > json_response.last['commits']
           end
@@ -448,7 +460,7 @@ describe API::Repositories do
           it 'returns the repository contribuors sorted by name asc case insensitive' do
             get api(route, current_user), params: { order_by: 'name', sort: 'asc' }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('contributors')
             expect(json_response.first['name'].downcase).to be < json_response.last['name'].downcase
           end

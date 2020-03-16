@@ -56,6 +56,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Adi Ferdian - [GitLab](https://gitlab.com/adiferd), [Crowdin](https://crowdin.com/profile/adiferd)
   - Ahmad Naufal Mukhtar - [GitLab](https://gitlab.com/anaufalm), [Crowdin](https://crowdin.com/profile/anaufalm)
 - Italian
+  - Massimiliano Cuttini - [GitLab](https://gitlab.com/maxcuttins), [Crowdin](https://crowdin.com/profile/maxcuttins)
   - Paolo Falomo - [GitLab](https://gitlab.com/paolofalomo), [Crowdin](https://crowdin.com/profile/paolo.falomo)
 - Japanese
   - Hiroyuki Sato - [GitLab](https://gitlab.com/hiroponz), [Crowdin](https://crowdin.com/profile/hiroponz)

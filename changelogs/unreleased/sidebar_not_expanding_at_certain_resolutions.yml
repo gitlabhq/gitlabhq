@@ -1,0 +1,5 @@
+---
+title: Fix bug with sidebar not expanding at certain resolutions
+merge_request: 25313
+author: Lee Tickett
+type: fixed

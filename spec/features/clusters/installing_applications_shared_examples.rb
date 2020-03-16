@@ -17,6 +17,12 @@ shared_examples "installing applications on a cluster" do
   context 'when cluster is created' do
     let(:cluster) { create(:cluster, :provided_by_gcp, *cluster_factory_args) }
 
+    before do
+      page.within('.js-edit-cluster-form') do
+        click_link 'Applications'
+      end
+    end
+
     it 'user can install applications' do
       wait_for_requests
 
@@ -29,6 +35,7 @@ shared_examples "installing applications on a cluster" do
     context 'when user installs Helm' do
       before do
         allow(ClusterInstallAppWorker).to receive(:perform_async)
+        wait_for_requests
 
         page.within('.js-cluster-application-row-helm') do
           page.find(:css, '.js-cluster-application-install-button').click

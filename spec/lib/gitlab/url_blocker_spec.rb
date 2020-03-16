@@ -502,63 +502,31 @@ describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
             end
           end
 
-          context 'with ip ranges in whitelist' do
-            let(:ipv4_range) { '127.0.0.0/28' }
-            let(:ipv6_range) { 'fd84:6d02:f6d8:c89e::/124' }
-
+          context 'with ports' do
             let(:whitelist) do
-              [
-                ipv4_range,
-                ipv6_range
-              ]
+              ["127.0.0.1:2000"]
             end
 
-            it 'blocks ipv4 range when not in whitelist' do
-              stub_application_setting(outbound_local_requests_whitelist: [])
-
-              IPAddr.new(ipv4_range).to_range.to_a.each do |ip|
-                expect(described_class).to be_blocked_url("http://#{ip}",
-                  url_blocker_attributes)
+            it 'allows domain with port when resolved ip has port whitelisted' do
+              stub_domain_resolv("www.resolve-domain.com", '127.0.0.1') do
+                expect(described_class).not_to be_blocked_url("http://www.resolve-domain.com:2000", url_blocker_attributes)
               end
-            end
-
-            it 'allows all ipv4s in the range when in whitelist' do
-              IPAddr.new(ipv4_range).to_range.to_a.each do |ip|
-                expect(described_class).not_to be_blocked_url("http://#{ip}",
-                  url_blocker_attributes)
-              end
-            end
-
-            it 'blocks ipv6 range when not in whitelist' do
-              stub_application_setting(outbound_local_requests_whitelist: [])
-
-              IPAddr.new(ipv6_range).to_range.to_a.each do |ip|
-                expect(described_class).to be_blocked_url("http://[#{ip}]",
-                  url_blocker_attributes)
-              end
-            end
-
-            it 'allows all ipv6s in the range when in whitelist' do
-              IPAddr.new(ipv6_range).to_range.to_a.each do |ip|
-                expect(described_class).not_to be_blocked_url("http://[#{ip}]",
-                  url_blocker_attributes)
-              end
-            end
-
-            it 'blocks IPs outside the range' do
-              expect(described_class).to be_blocked_url("http://[fd84:6d02:f6d8:c89e:0:0:1:f]",
-                url_blocker_attributes)
-
-              expect(described_class).to be_blocked_url("http://127.0.1.15",
-                url_blocker_attributes)
             end
           end
         end
       end
 
-      def stub_domain_resolv(domain, ip, &block)
-        address = double(ip_address: ip, ipv4_private?: true, ipv6_link_local?: false, ipv4_loopback?: false, ipv6_loopback?: false, ipv4?: false)
-        allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([address])
+      def stub_domain_resolv(domain, ip, port = 80, &block)
+        address = instance_double(Addrinfo,
+          ip_address: ip,
+          ipv4_private?: true,
+          ipv6_linklocal?: false,
+          ipv4_loopback?: false,
+          ipv6_loopback?: false,
+          ipv4?: false,
+          ip_port: port
+        )
+        allow(Addrinfo).to receive(:getaddrinfo).with(domain, port, any_args).and_return([address])
         allow(address).to receive(:ipv6_v4mapped?).and_return(false)
 
         yield

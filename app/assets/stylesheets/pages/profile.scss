@@ -118,6 +118,14 @@
   }
 }
 
+.ssh-keys-list {
+  .last-used-at,
+  .expires,
+  .key-created-at {
+    line-height: 32px;
+  }
+}
+
 .key-created-at {
   line-height: 42px;
 }

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ExceedQueryLimitHelpers
+  MARGINALIA_ANNOTATION_REGEX = %r{\s*\/\*.*\*\/}.freeze
+
   def with_threshold(threshold)
     @threshold = threshold
     self
@@ -41,8 +43,8 @@ module ExceedQueryLimitHelpers
 
   def log_message
     if expected.is_a?(ActiveRecord::QueryRecorder)
-      counts = count_queries(expected.log)
-      extra_queries = @recorder.log.reject { |query| counts[query] -= 1 unless counts[query].zero? }
+      counts = count_queries(strip_marginalia_annotations(expected.log))
+      extra_queries = strip_marginalia_annotations(@recorder.log).reject { |query| counts[query] -= 1 unless counts[query].zero? }
       extra_queries_display = count_queries(extra_queries).map { |query, count| "[#{count}] #{query}" }
 
       (['Extra queries:'] + extra_queries_display).join("\n\n")
@@ -64,6 +66,10 @@ module ExceedQueryLimitHelpers
     threshold_message = threshold > 0 ? " (+#{@threshold})" : ''
     counts = "#{expected_count}#{threshold_message}"
     "Expected a maximum of #{counts} queries, got #{actual_count}:\n\n#{log_message}"
+  end
+
+  def strip_marginalia_annotations(logs)
+    logs.map { |log| log.sub(MARGINALIA_ANNOTATION_REGEX, '') }
   end
 end
 

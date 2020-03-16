@@ -1,0 +1,5 @@
+---
+title: Update Ruby version in official CI templates
+merge_request: 23585
+author: Takuya Noguchi
+type: other

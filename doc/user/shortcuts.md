@@ -34,7 +34,7 @@ These shortcuts are available in most areas of GitLab
 | <kbd>p</kbd> + <kbd>b</kbd>     | Show/hide the Performance Bar. |
 
 Additionally, the following shortcuts are available when editing text in text fields,
-for example comments, replies, or issue and merge request descriptions:
+for example comments, replies, issue descriptions, and merge request descriptions:
 
 | Keyboard Shortcut                                                      | Description |
 | ---------------------------------------------------------------------- | ----------- |

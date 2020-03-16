@@ -129,6 +129,17 @@ describe Gitlab::TreeSummary do
         expect(commits).to satisfy_one { |c| c.id == whitespace_commit_sha }
       end
     end
+
+    context 'in a subdirectory with non-ASCII filenames' do
+      let(:path) { 'encoding' }
+
+      it 'returns commits for entries in the subdirectory' do
+        entry = entries.find { |x| x[:file_name] == 'テスト.txt' }
+
+        expect(entry).to be_a(Hash)
+        expect(entry).to include(:commit)
+      end
+    end
   end
 
   describe '#more?' do

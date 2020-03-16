@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ScheduleMigrateExternalDiffsWorker
+class ScheduleMigrateExternalDiffsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   # rubocop:disable Scalability/CronWorkerContext:
   # This schedules the `MigrateExternalDiffsWorker`

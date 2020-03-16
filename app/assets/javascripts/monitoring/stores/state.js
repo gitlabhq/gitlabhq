@@ -15,7 +15,7 @@ export default () => ({
   showEmptyState: true,
   showErrorBanner: true,
   dashboard: {
-    panel_groups: [],
+    panelGroups: [],
   },
   allDashboards: [],
 

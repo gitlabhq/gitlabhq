@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Status::Composite do
-  set(:pipeline) { create(:ci_pipeline) }
+  let_it_be(:pipeline) { create(:ci_pipeline) }
 
   before(:all) do
     @statuses = HasStatus::STATUSES_ENUM.map do |status, idx|

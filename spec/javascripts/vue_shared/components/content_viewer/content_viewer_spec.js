@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import waitForPromises from 'spec/helpers/wait_for_promises';
 import { GREEN_BOX_IMAGE_URL } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import contentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
@@ -22,7 +23,7 @@ describe('ContentViewer', () => {
 
   it('markdown preview renders + loads rendered markdown from server', done => {
     mock = new MockAdapter(axios);
-    mock.onPost(`${gon.relative_url_root}/testproject/preview_markdown`).reply(200, {
+    mock.onPost(`${gon.relative_url_root}/testproject/preview_markdown`).replyOnce(200, {
       body: '<b>testing</b>',
     });
 
@@ -33,13 +34,12 @@ describe('ContentViewer', () => {
       type: 'markdown',
     });
 
-    const previewContainer = vm.$el.querySelector('.md-previewer');
-
-    setTimeout(() => {
-      expect(previewContainer.textContent).toContain('testing');
-
-      done();
-    });
+    waitForPromises()
+      .then(() => {
+        expect(vm.$el.querySelector('.md-previewer').textContent).toContain('testing');
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   it('renders image preview', done => {
@@ -49,11 +49,12 @@ describe('ContentViewer', () => {
       type: 'image',
     });
 
-    setTimeout(() => {
-      expect(vm.$el.querySelector('img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
-
-      done();
-    });
+    vm.$nextTick()
+      .then(() => {
+        expect(vm.$el.querySelector('img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   it('renders fallback download control', done => {
@@ -62,18 +63,19 @@ describe('ContentViewer', () => {
       fileSize: 1024,
     });
 
-    setTimeout(() => {
-      expect(
-        vm.$el
-          .querySelector('.file-info')
-          .textContent.trim()
-          .replace(/\s+/, ' '),
-      ).toEqual('test.abc (1.00 KiB)');
+    vm.$nextTick()
+      .then(() => {
+        expect(
+          vm.$el
+            .querySelector('.file-info')
+            .textContent.trim()
+            .replace(/\s+/, ' '),
+        ).toEqual('test.abc (1.00 KiB)');
 
-      expect(vm.$el.querySelector('.btn.btn-default').textContent.trim()).toEqual('Download');
-
-      done();
-    });
+        expect(vm.$el.querySelector('.btn.btn-default').textContent.trim()).toEqual('Download');
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   it('renders fallback download control for file with a data URL path properly', done => {
@@ -82,13 +84,14 @@ describe('ContentViewer', () => {
       filePath: 'somepath/test.abc',
     });
 
-    setTimeout(() => {
-      expect(vm.$el.querySelector('.file-info').textContent.trim()).toEqual('test.abc');
-      expect(vm.$el.querySelector('.btn.btn-default')).toHaveAttr('download', 'test.abc');
-      expect(vm.$el.querySelector('.btn.btn-default').textContent.trim()).toEqual('Download');
-
-      done();
-    });
+    vm.$nextTick()
+      .then(() => {
+        expect(vm.$el.querySelector('.file-info').textContent.trim()).toEqual('test.abc');
+        expect(vm.$el.querySelector('.btn.btn-default')).toHaveAttr('download', 'test.abc');
+        expect(vm.$el.querySelector('.btn.btn-default').textContent.trim()).toEqual('Download');
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   it('markdown preview receives the file path as a parameter', done => {
@@ -106,14 +109,15 @@ describe('ContentViewer', () => {
       filePath: 'foo/test.md',
     });
 
-    setTimeout(() => {
-      expect(axios.post).toHaveBeenCalledWith(
-        `${gon.relative_url_root}/testproject/preview_markdown`,
-        { path: 'foo/test.md', text: '*  Test' },
-        jasmine.any(Object),
-      );
-
-      done();
-    });
+    vm.$nextTick()
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledWith(
+          `${gon.relative_url_root}/testproject/preview_markdown`,
+          { path: 'foo/test.md', text: '*  Test' },
+          jasmine.any(Object),
+        );
+      })
+      .then(done)
+      .catch(done.fail);
   });
 });

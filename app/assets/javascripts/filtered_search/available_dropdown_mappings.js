@@ -9,7 +9,7 @@ import DropdownUtils from './dropdown_utils';
 import { mergeUrlParams } from '../lib/utils/url_utility';
 
 export default class AvailableDropdownMappings {
-  constructor(
+  constructor({
     container,
     runnerTagsEndpoint,
     labelsEndpoint,
@@ -18,7 +18,7 @@ export default class AvailableDropdownMappings {
     groupsOnly,
     includeAncestorGroups,
     includeDescendantGroups,
-  ) {
+  }) {
     this.container = container;
     this.runnerTagsEndpoint = runnerTagsEndpoint;
     this.labelsEndpoint = labelsEndpoint;

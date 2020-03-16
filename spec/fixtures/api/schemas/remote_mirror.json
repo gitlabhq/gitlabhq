@@ -10,7 +10,7 @@
     "last_successful_update_at",
     "last_error",
     "only_protected_branches"
-    ],
+  ],
   "properties": {
     "id": { "type": "integer" },
     "enabled": { "type": "boolean" },
@@ -20,7 +20,8 @@
     "last_update_started_at": { "type": ["string", "null"] },
     "last_successful_update_at": { "type": ["string", "null"] },
     "last_error": { "type": ["string", "null"] },
-    "only_protected_branches": { "type": "boolean" }
+    "only_protected_branches": { "type": "boolean" },
+    "keep_divergent_refs": { "type": ["boolean", "null"] }
   },
   "additionalProperties": false
 }

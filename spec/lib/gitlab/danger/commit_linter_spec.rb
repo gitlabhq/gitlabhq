@@ -152,6 +152,18 @@ describe Gitlab::Danger::CommitLinter do
         end
       end
 
+      context 'when subject is a WIP' do
+        let(:final_message) { 'A B C' }
+        # commit message with prefix will be over max length. commit message without prefix will be of maximum size
+        let(:commit_message) { described_class::WIP_PREFIX + final_message + 'D' * (described_class::WARN_SUBJECT_LENGTH - final_message.size) }
+
+        it 'does not have any problems' do
+          commit_linter.lint
+
+          expect(commit_linter.problems).to be_empty
+        end
+      end
+
       context 'when subject is too short and too long' do
         let(:commit_message) { 'A ' + 'B' * described_class::MAX_LINE_LENGTH }
 
@@ -183,7 +195,40 @@ describe Gitlab::Danger::CommitLinter do
         end
       end
 
-      context 'when subject ands with a period' do
+      [
+        '[ci skip] A commit message',
+        '[Ci skip] A commit message',
+        '[API] A commit message'
+      ].each do |message|
+        context "when subject is '#{message}'" do
+          let(:commit_message) { message }
+
+          it 'does not add a problem' do
+            expect(commit_linter).not_to receive(:add_problem)
+
+            commit_linter.lint
+          end
+        end
+      end
+
+      [
+        '[ci skip]A commit message',
+        '[Ci skip]  A commit message',
+        '[ci skip] a commit message',
+        '! A commit message'
+      ].each do |message|
+        context "when subject is '#{message}'" do
+          let(:commit_message) { message }
+
+          it 'adds a problem' do
+            expect(commit_linter).to receive(:add_problem).with(:subject_starts_with_lowercase, described_class::DEFAULT_SUBJECT_DESCRIPTION)
+
+            commit_linter.lint
+          end
+        end
+      end
+
+      context 'when subject ends with a period' do
         let(:commit_message) { 'A B C.' }
 
         it 'adds a problem' do

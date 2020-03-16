@@ -8,11 +8,13 @@ describe Resolvers::IssuesResolver do
   let(:current_user) { create(:user) }
 
   context "with a project" do
-    set(:project) { create(:project) }
-    set(:issue1) { create(:issue, project: project, state: :opened, created_at: 3.hours.ago, updated_at: 3.hours.ago) }
-    set(:issue2) { create(:issue, project: project, state: :closed, title: 'foo', created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at: 1.hour.ago) }
-    set(:label1) { create(:label, project: project) }
-    set(:label2) { create(:label, project: project) }
+    let_it_be(:project)   { create(:project) }
+    let_it_be(:milestone) { create(:milestone, project: project) }
+    let_it_be(:assignee)  { create(:user) }
+    let_it_be(:issue1)    { create(:issue, project: project, state: :opened, created_at: 3.hours.ago, updated_at: 3.hours.ago, milestone: milestone) }
+    let_it_be(:issue2)    { create(:issue, project: project, state: :closed, title: 'foo', created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at: 1.hour.ago, assignees: [assignee]) }
+    let_it_be(:label1)    { create(:label, project: project) }
+    let_it_be(:label2)    { create(:label, project: project) }
 
     before do
       project.add_developer(current_user)
@@ -29,6 +31,26 @@ describe Resolvers::IssuesResolver do
       it 'filters by state' do
         expect(resolve_issues(state: 'opened')).to contain_exactly(issue1)
         expect(resolve_issues(state: 'closed')).to contain_exactly(issue2)
+      end
+
+      it 'filters by milestone' do
+        expect(resolve_issues(milestone_title: milestone.title)).to contain_exactly(issue1)
+      end
+
+      it 'filters by assignee_username' do
+        expect(resolve_issues(assignee_username: assignee.username)).to contain_exactly(issue2)
+      end
+
+      it 'filters by assignee_id' do
+        expect(resolve_issues(assignee_id: assignee.id)).to contain_exactly(issue2)
+      end
+
+      it 'filters by any assignee' do
+        expect(resolve_issues(assignee_id: IssuableFinder::FILTER_ANY)).to contain_exactly(issue2)
+      end
+
+      it 'filters by no assignee' do
+        expect(resolve_issues(assignee_id: IssuableFinder::FILTER_NONE)).to contain_exactly(issue1)
       end
 
       it 'filters by labels' do

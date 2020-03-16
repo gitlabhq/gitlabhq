@@ -18,6 +18,7 @@ class MergeRequest < ApplicationRecord
   include DeprecatedAssignee
   include ShaAttribute
   include IgnorableColumns
+  include MilestoneEventable
 
   sha_attribute :squash_commit_sha
 
@@ -234,12 +235,17 @@ class MergeRequest < ApplicationRecord
   end
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
+
+  PROJECT_ROUTE_AND_NAMESPACE_ROUTE = [
+    target_project: [:route, { namespace: :route }],
+    source_project: [:route, { namespace: :route }]
+  ].freeze
+
   scope :with_api_entity_associations, -> {
     preload(:assignees, :author, :unresolved_notes, :labels, :milestone,
             :timelogs, :latest_merge_request_diff,
-            metrics: [:latest_closed_by, :merged_by],
-            target_project: [:route, { namespace: :route }],
-            source_project: [:route, { namespace: :route }])
+            *PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
+            metrics: [:latest_closed_by, :merged_by])
   }
   scope :by_target_branch_wildcard, ->(wildcard_branch_name) do
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))
@@ -251,7 +257,11 @@ class MergeRequest < ApplicationRecord
     with_state(:opened).where(auto_merge_enabled: true)
   end
 
-  ignore_column :state, remove_with: '12.7', remove_after: '2019-12-22'
+  scope :including_metrics, -> do
+    includes(:metrics)
+  end
+
+  ignore_column :state, remove_with: '12.10', remove_after: '2020-03-22'
 
   after_save :keep_around_commit, unless: :importing?
 
@@ -1245,7 +1255,7 @@ class MergeRequest < ApplicationRecord
 
   def all_pipelines
     strong_memoize(:all_pipelines) do
-      MergeRequest::Pipelines.new(self).all
+      Ci::PipelinesForMergeRequestFinder.new(self).all
     end
   end
 

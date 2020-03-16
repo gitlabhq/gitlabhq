@@ -70,10 +70,9 @@ class WikiPage
     Gitlab::HookData::WikiPageBuilder.new(self).build
   end
 
-  def initialize(wiki, page = nil, persisted = false)
+  def initialize(wiki, page = nil)
     @wiki       = wiki
     @page       = page
-    @persisted  = persisted
     @attributes = {}.with_indifferent_access
 
     set_attributes if persisted?
@@ -94,11 +93,7 @@ class WikiPage
 
   # The formatted title of this page.
   def title
-    if @attributes[:title]
-      CGI.unescape_html(self.class.unhyphenize(@attributes[:title]))
-    else
-      ""
-    end
+    @attributes[:title] || ''
   end
 
   # Sets the title of this page.
@@ -176,7 +171,7 @@ class WikiPage
   # Returns boolean True or False if this instance
   # has been fully created on disk or not.
   def persisted?
-    @persisted == true
+    @page.present?
   end
 
   # Creates a new Wiki Page.
@@ -196,7 +191,7 @@ class WikiPage
   def create(attrs = {})
     update_attributes(attrs)
 
-    save(page_details: title) do
+    save do
       wiki.create_page(title, content, format, attrs[:message])
     end
   end
@@ -222,18 +217,12 @@ class WikiPage
 
     update_attributes(attrs)
 
-    if title_changed?
-      page_details = title
-
-      if wiki.find_page(page_details).present?
-        @attributes[:title] = @page.url_path
-        raise PageRenameError
-      end
-    else
-      page_details = @page.url_path
+    if title.present? && title_changed? && wiki.find_page(title).present?
+      @attributes[:title] = @page.title
+      raise PageRenameError
     end
 
-    save(page_details: page_details) do
+    save do
       wiki.update_page(
         @page,
         content: content,
@@ -266,7 +255,14 @@ class WikiPage
   end
 
   def title_changed?
-    title.present? && (@page.nil? || self.class.unhyphenize(@page.url_path) != title)
+    if persisted?
+      old_title, old_dir = wiki.page_title_and_dir(self.class.unhyphenize(@page.url_path))
+      new_title, new_dir = wiki.page_title_and_dir(self.class.unhyphenize(title))
+
+      new_title != old_title || (title.include?('/') && new_dir != old_dir)
+    else
+      title.present?
+    end
   end
 
   # Updates the current @attributes hash by merging a hash of params
@@ -313,31 +309,33 @@ class WikiPage
     attributes[:format] = @page.format
   end
 
-  def save(page_details:)
-    return unless valid?
+  def save
+    return false unless valid?
 
     unless yield
       errors.add(:base, wiki.error_message)
       return false
     end
 
-    page_title, page_dir = wiki.page_title_and_dir(page_details)
-    gitlab_git_wiki = wiki.wiki
-    @page = gitlab_git_wiki.page(title: page_title, dir: page_dir)
-
+    @page = wiki.find_page(title).page
     set_attributes
-    @persisted = errors.blank?
+
+    true
   end
 
   def validate_path_limits
     *dirnames, title = @attributes[:title].split('/')
 
-    if title.bytesize > MAX_TITLE_BYTES
-      errors.add(:title, _("exceeds the limit of %{bytes} bytes for page titles") % { bytes: MAX_TITLE_BYTES })
+    if title && title.bytesize > MAX_TITLE_BYTES
+      errors.add(:title, _("exceeds the limit of %{bytes} bytes") % { bytes: MAX_TITLE_BYTES })
     end
 
-    if dirnames.any? { |d| d.bytesize > MAX_DIRECTORY_BYTES }
-      errors.add(:title, _("exceeds the limit of %{bytes} bytes for directory names") % { bytes: MAX_DIRECTORY_BYTES })
+    invalid_dirnames = dirnames.select { |d| d.bytesize > MAX_DIRECTORY_BYTES }
+    invalid_dirnames.each do |dirname|
+      errors.add(:title, _('exceeds the limit of %{bytes} bytes for directory name "%{dirname}"') % {
+        bytes: MAX_DIRECTORY_BYTES,
+        dirname: dirname
+      })
     end
   end
 end

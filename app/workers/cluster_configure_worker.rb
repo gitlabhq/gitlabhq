@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ClusterConfigureWorker
+class ClusterConfigureWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ClusterQueue
 

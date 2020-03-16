@@ -9,7 +9,7 @@ class AddSecretToSnippet < ActiveRecord::Migration[5.2]
 
   def up
     unless column_exists?(:snippets, :secret)
-      add_column_with_default :snippets, :secret, :boolean, default: false # rubocop:disable Migration/AddColumnWithDefault
+      add_column_with_default :snippets, :secret, :boolean, default: false
     end
 
     add_concurrent_index :snippets, [:visibility_level, :secret]

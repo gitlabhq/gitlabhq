@@ -1,0 +1,5 @@
+---
+title: Use process-wide memory cache for feature flags
+merge_request: 26935
+author:
+type: performance

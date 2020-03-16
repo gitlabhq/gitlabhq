@@ -21,7 +21,7 @@
 # class also helps take care of that.
 module Gitlab
   module Auth
-    module LDAP
+    module Ldap
       class DN
         FormatError = Class.new(StandardError)
         MalformedError = Class.new(FormatError)

@@ -392,7 +392,7 @@ Group sync was written to be as performant as possible. Data is cached, database
 queries are optimized, and LDAP queries are minimized. The last benchmark run
 revealed the following metrics:
 
-For 20,000 LDAP users, 11,000 LDAP groups and 1,000 GitLab groups with 10
+For 20000 LDAP users, 11000 LDAP groups and 1000 GitLab groups with 10
 LDAP group links each:
 
 - Initial sync (no existing members assigned in GitLab) took 1.8 hours
@@ -470,7 +470,7 @@ step of the sync.
    sudo gitlab-rails console
 
    # For installations from source
-   sudo -u git -H bundle exec rails console production
+   sudo -u git -H bundle exec rails console -e production
    ```
 
 1. Set the log level to debug (only for this session):
@@ -493,7 +493,7 @@ step of the sync.
 1. Run a group sync for this particular group.
 
    ```ruby
-   EE::Gitlab::Auth::LDAP::Sync::Group.execute_all_providers(group)
+   EE::Gitlab::Auth::Ldap::Sync::Group.execute_all_providers(group)
    ```
 
 1. Look through the output of the sync. See [example log output](#example-log-output)
@@ -503,11 +503,11 @@ step of the sync.
    run the following query:
 
    ```ruby
-   adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain') # If `main` is the LDAP provider
-   ldap_group = EE::Gitlab::Auth::LDAP::Group.find_by_cn('group_cn_here', adapter)
+   adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain') # If `main` is the LDAP provider
+   ldap_group = EE::Gitlab::Auth::Ldap::Group.find_by_cn('group_cn_here', adapter)
 
    # Output
-   => #<EE::Gitlab::Auth::LDAP::Group:0x007fcbdd0bb6d8
+   => #<EE::Gitlab::Auth::Ldap::Group:0x007fcbdd0bb6d8
    ```
 
 1. Query the LDAP group's member DNs and see if the user's DN is in the list.

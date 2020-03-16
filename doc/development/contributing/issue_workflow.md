@@ -2,7 +2,7 @@
 
 ## Issue tracker guidelines
 
-**[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab-foss/issues)** for similar entries before
+**[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/issues)** for similar entries before
 submitting your own, there's a good chance somebody else had the same issue or
 feature proposal. Show your support with an award emoji and/or join the
 discussion.
@@ -35,7 +35,7 @@ project.
 ## Labels
 
 To allow for asynchronous issue handling, we use [milestones](https://gitlab.com/groups/gitlab-org/-/milestones)
-and [labels](https://gitlab.com/gitlab-org/gitlab-foss/-/labels). Leads and product managers handle most of the
+and [labels](https://gitlab.com/gitlab-org/gitlab/-/labels). Leads and product managers handle most of the
 scheduling into milestones. Labelling is a task for everyone.
 
 Most issues will have labels for at least one of the following:
@@ -53,10 +53,10 @@ Most issues will have labels for at least one of the following:
 - Severity: ~`S1`, `~S2`, `~S3`, `~S4`
 
 All labels, their meaning and priority are defined on the
-[labels page](https://gitlab.com/gitlab-org/gitlab-foss/-/labels).
+[labels page](https://gitlab.com/gitlab-org/gitlab/-/labels).
 
 If you come across an issue that has none of these, and you're allowed to set
-labels, you can _always_ add the team and type, and often also the subject.
+labels, you can _always_ add the type, stage, group, and often the category/feature labels.
 
 ### Type labels
 
@@ -75,7 +75,7 @@ A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.
 
 Type labels are always lowercase, and can have any color, besides blue (which is
-already reserved for subject labels).
+already reserved for category labels).
 
 The descriptions on the [labels page](https://gitlab.com/groups/gitlab-org/-/labels)
 explain what falls under each type label.
@@ -89,7 +89,7 @@ Following is a non-exhaustive list of facet labels:
 
 - ~enhancement: This label can refine an issue that has the ~feature label.
 - ~"master:broken": This label can refine an issue that has the ~bug label.
-- ~"master:flaky": This label can refine an issue that has the ~bug label.
+- ~"failure::flaky-test": This label can refine an issue that has the ~bug label.
 - ~"technical debt": This label can refine an issue that has the ~backstage label.
 - ~"static analysis": This label can refine an issue that has the ~backstage label.
 - ~"ci-build": This label can refine an issue that has the ~backstage label.
@@ -137,7 +137,7 @@ their color is `#A8D695`.
 with `_` replaced with a space.
 
 For instance, the "Continuous Integration" group is represented by the
-~"group::continuous integration"  label in the `gitlab-org` group since its key
+~"group::continuous integration" label in the `gitlab-org` group since its key
 under `stages.manage.groups` is `continuous_integration`.
 
 The current group labels can be found by [searching the labels list for `group::`](https://gitlab.com/groups/gitlab-org/-/labels?search=group::).
@@ -372,14 +372,11 @@ A recent example of this was the issue for
 
 ## Feature proposals
 
-To create a feature proposal for CE, open an issue on the
-[issue tracker of CE](https://gitlab.com/gitlab-org/gitlab-foss/issues).
-
-For feature proposals for EE, open an issue on the
-[issue tracker of EE](https://gitlab.com/gitlab-org/gitlab/issues).
+To create a feature proposal, open an issue on the
+[issue tracker](https://gitlab.com/gitlab-org/gitlab/issues).
 
 In order to help track the feature proposals, we have created a
-[`feature`](https://gitlab.com/gitlab-org/gitlab-foss/issues?label_name=feature) label. For the time being, users that are not members
+[`feature`](https://gitlab.com/gitlab-org/gitlab/issues?label_name=feature) label. For the time being, users that are not members
 of the project cannot add labels. You can instead ask one of the [core team](https://about.gitlab.com/community/core-team/)
 members to add the label ~feature to the issue or add the following
 code snippet right after your description in a new line: `~feature`.
@@ -441,7 +438,7 @@ addressed.
 ## Technical and UX debt
 
 In order to track things that can be improved in GitLab's codebase,
-we use the ~"technical debt" label in [GitLab's issue tracker](https://gitlab.com/gitlab-org/gitlab-foss/issues).
+we use the ~"technical debt" label in [GitLab's issue tracker](https://gitlab.com/gitlab-org/gitlab/issues).
 For missed user experience requirements, we use the ~"UX debt" label.
 
 These labels should be added to issues that describe things that can be improved,

@@ -1,6 +1,7 @@
 <script>
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import { escapeFileUrl } from '~/lib/utils/url_utility';
 
 export default {
   name: 'FileRow',
@@ -94,7 +95,7 @@ export default {
     hasUrlAtCurrentRoute() {
       if (!this.$router || !this.$router.currentRoute) return true;
 
-      return this.$router.currentRoute.path === `/project${this.file.url}`;
+      return this.$router.currentRoute.path === `/project${escapeFileUrl(this.file.url)}`;
     },
   },
 };

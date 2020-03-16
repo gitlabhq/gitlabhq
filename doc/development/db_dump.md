@@ -10,7 +10,7 @@ data leaks.
 On the staging VM, add the following line to `/etc/gitlab/gitlab.rb` to speed up
 large database imports.
 
-```
+```shell
 # On STAGING
 echo "postgresql['checkpoint_segments'] = 64" | sudo tee -a /etc/gitlab/gitlab.rb
 sudo touch /etc/gitlab/skip-auto-reconfigure
@@ -23,7 +23,7 @@ Next, we let the production environment stream a compressed SQL dump to our
 local machine via SSH, and redirect this stream to a psql client on the staging
 VM.
 
-```
+```shell
 # On LOCAL MACHINE
 ssh -C gitlab.example.com sudo -u gitlab-psql /opt/gitlab/embedded/bin/pg_dump -Cc gitlabhq_production |\
   ssh -C staging-vm sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -d template1
@@ -37,14 +37,14 @@ use this procedure.
 First, on the production server, create a list of directories you want to
 re-create.
 
-```
+```shell
 # On PRODUCTION
 (umask 077; sudo find /var/opt/gitlab/git-data/repositories -maxdepth 1 -type d -print0 > directories.txt)
 ```
 
 Copy `directories.txt` to the staging server and create the directories there.
 
-```
+```shell
 # On STAGING
 sudo -u git xargs -0 mkdir -p < directories.txt
 ```

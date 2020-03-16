@@ -11,7 +11,7 @@ Configuration for approvals on all Merge Requests (MR) in the project. Must be a
 You can request information about a project's approval configuration using the
 following endpoint:
 
-```
+```plaintext
 GET /projects/:id/approvals
 ```
 
@@ -39,7 +39,7 @@ GET /projects/:id/approvals
 If you are allowed to, you can change approval configuration using the following
 endpoint:
 
-```
+```plaintext
 POST /projects/:id/approvals
 ```
 
@@ -73,7 +73,7 @@ POST /projects/:id/approvals
 
 You can request information about a project's approval rules using the following endpoint:
 
-```
+```plaintext
 GET /projects/:id/approval_rules
 ```
 
@@ -172,7 +172,7 @@ GET /projects/:id/approval_rules
 
 You can create project approval rules using the following endpoint:
 
-```
+```plaintext
 POST /projects/:id/approval_rules
 ```
 
@@ -274,7 +274,7 @@ POST /projects/:id/approval_rules
 
 You can update project approval rules using the following endpoint:
 
-```
+```plaintext
 PUT /projects/:id/approval_rules/:approval_rule_id
 ```
 
@@ -379,7 +379,7 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 
 You can delete project approval rules using the following endpoint:
 
-```
+```plaintext
 DELETE /projects/:id/approval_rules/:approval_rule_id
 ```
 
@@ -398,7 +398,7 @@ DELETE /projects/:id/approval_rules/:approval_rule_id
 If you are allowed to, you can change approvers and approver groups using
 the following endpoint:
 
-```
+```plaintext
 PUT /projects/:id/approvers
 ```
 
@@ -464,7 +464,7 @@ Configuration for approvals on a specific Merge Request. Must be authenticated f
 You can request information about a merge request's approval status using the
 following endpoint:
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approvals
 ```
 
@@ -510,7 +510,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
 If you are allowed to, you can change `approvals_required` using the following
 endpoint:
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/approvals
 ```
 
@@ -547,7 +547,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approvals
 If you are allowed to, you can change approvers and approver groups using
 the following endpoint:
 
-```
+```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/approvers
 ```
 
@@ -617,7 +617,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approvers
 
 You can request information about a merge request's approval state by using the following endpoint:
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approval_state
 ```
 
@@ -688,7 +688,7 @@ This includes additional information about the users who have already approved
 
 You can request information about a merge request's approval rules using the following endpoint:
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
 ```
 
@@ -764,7 +764,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
 
 You can create merge request approval rules using the following endpoint:
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
 ```
 
@@ -847,7 +847,7 @@ will be used.
 
 You can update merge request approval rules using the following endpoint:
 
-```
+```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
@@ -931,7 +931,7 @@ These are system generated rules.
 
 You can delete merge request approval rules using the following endpoint:
 
-```
+```plaintext
 DELETE /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
@@ -953,7 +953,7 @@ These are system generated rules.
 If you are allowed to, you can approve a merge request using the following
 endpoint:
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/approve
 ```
 
@@ -1016,7 +1016,7 @@ does not match, the response code will be `409`.
 If you did approve a merge request, you can unapprove it using the following
 endpoint:
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/unapprove
 ```
 

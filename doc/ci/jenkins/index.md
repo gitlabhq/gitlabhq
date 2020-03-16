@@ -7,28 +7,114 @@ type: index, howto
 
 A lot of GitLab users have successfully migrated to GitLab CI/CD from Jenkins. To make this
 easier if you're just getting started, we've collected several resources here that you might find useful
-before diving in.
+before diving in. Think of this page as a "GitLab CI/CD for Jenkins Users" guide.
 
 First of all, our [Quick Start Guide](../quick_start/README.md) contains a good overview of how GitLab CI/CD works.
 You may also be interested in [Auto DevOps](../../topics/autodevops/index.md) which can potentially be used to build, test,
 and deploy your applications with little to no configuration needed at all.
 
+For advanced CI/CD teams, [templates](#templates) can enable the reuse of pipeline configurations.
+
 Otherwise, read on for important information that will help you get the ball rolling. Welcome
 to GitLab!
 
-## Important differences
+If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/)
+can be a great resource.
+
+## Managing the organizational transition
+
+An important part of transitioning from Jenkins to GitLab is the cultural and organizational
+changes that comes with the move, and successfully managing them. There are a few
+things we have found that helps this:
+
+- Setting and communicating a clear vision of what your migration goals are helps
+  your users understand why the effort is worth it. The value will be clear when
+  the work is done, but people need to be aware while it's in progress too.
+- Sponsorship and alignment from the relevant leadership team helps with the point above.
+- Spending time educating your users on what's different, sharing this document with them,
+  and so on will help ensure you are successful.
+- Finding ways to sequence or delay parts of the migration can help a lot, but you
+  don't want to leave things in a non-migrated (or partially-migrated) state for too
+  long. To gain all the benefits of GitLab, moving your existing Jenkins setup over
+  as-is, including any current problems, will not be enough. You need to take advantage
+  of the improvements that GitLab offers, and this requires (eventually) updating
+  your implementation as part of the transition.
+
+## Important product differences
 
 There are some high level differences between the products worth mentioning:
 
 - With GitLab you don't need a root `pipeline` keyword to wrap everything.
+- The way pipelines are triggered and [trigger other pipelines](../yaml/README.md#trigger)
+  is different than Jenkins. GitLab pipelines can be triggered:
+
+  - on push
+  - on [schedule](../pipelines/schedules.md)
+  - from the [GitLab UI](../pipelines/index.md#manually-executing-pipelines)
+  - by [API call](../triggers/README.md)
+  - by [webhook](../triggers/README.md#triggering-a-pipeline-from-a-webhook)
+  - by [ChatOps](../chatops/README.md)
+
+- You can control which jobs run in which cases, depending on how they are triggered,
+  with the [`rules` syntax](../yaml/README.md#rules).
+- GitLab [pipeline scheduling concepts](../pipelines/schedules.md) are also different than with Jenkins.
+- You can reuse pipeline configurations using the [`include` keyword](../yaml/README.md#include)
+  and [templates](#templates). Your templates can be kept in a central repo (with different
+  permissions), and then any project can use them. This central project could also
+  contain scripts or other reusable code.
+- You can also use the [`extends` keyword](../yaml/README.md#extends) to reuse configuration
+  within a single pipeline configuration.
 - All jobs within a single stage always run in parallel, and all stages run in sequence. We are planning
   to allow certain jobs to break this sequencing as needed with our [directed acyclic graph](https://gitlab.com/gitlab-org/gitlab-foss/issues/47063)
   feature.
+- The [`parallel`](../yaml/README.md#parallel) keyword can automatically parallelize tasks,
+  like tests that support parallelization.
+- Normally all jobs within a single stage run in parallel, and all stages run in sequence.
+  There are different [pipeline architectures](../pipelines/pipeline_architectures.md)
+  that allow you to change this behavior.
+- The new [`rules` syntax](../yaml/README.md#rules) is the recommended method of
+  controlling when different jobs run. It is more powerful than the `only/except` syntax.
+- One important difference is that jobs run independently of each other and have a
+  fresh environment in each job. Passing artifacts between jobs is controlled using the
+  [`artifacts`](../yaml/README.md#artifacts) and [`dependencies`](../yaml/README.md#dependencies)
+  keywords. When finished, the planned [Workspaces](https://gitlab.com/gitlab-org/gitlab/issues/29265)
+  feature will allow you to more easily persist a common workspace between serial jobs.
 - The `.gitlab-ci.yml` file is checked in to the root of your repository, much like a Jenkinsfile, but
   is in the YAML format (see [complete reference](../yaml/README.md)) instead of a Groovy DSL. It's most
   analogous to the declarative Jenkinsfile format.
+- Manual approvals or gates can be set up as [`when:manual` jobs](../yaml/README.md#whenmanual). These can
+  also leverage [`protected environments`](../yaml/README.md#protecting-manual-jobs-premium)
+  to control who is able to approve them.
 - GitLab comes with a [container registry](../../user/packages/container_registry/index.md), and we recommend using
-  container images to set up your build environment.
+  container images to set up your build environment. For example, set up one pipeline that builds your build environment
+  itself and publish that to the container registry. Then, have your pipelines use this instead of each building their
+  own environment, which will be slower and may be less consistent. We have extensive docs on [how to use the Container Registry](../../user/packages/container_registry/index.md).
+- A central utilities repository can be a great place to put assorted scheduled jobs
+  or other manual jobs that function like utilities. Jenkins installations tend to
+  have a few of these.
+
+## Agents vs. Runners
+
+Both Jenkins agents and GitLab Runners are the hosts that run jobs. To convert the
+Jenkins agent, simply uninstall it and then [install and register the runner](../runners/README.md).
+Runners do not require much overhead, so you can size them similarly to the Jenkins
+agents you were using.
+
+There are some important differences in the way Runners work in comparison to agents:
+
+- Runners can be set up as [shared across an instance, be added at the group level, or set up at the project level](../runners/README.md#shared-specific-and-group-runners).
+  They will self-select jobs from the scopes you've defined automatically.
+- You can also [use tags](../runners/README.md#using-tags) for finer control, and
+  associate runners with specific jobs. For example, you can use a tag for jobs that
+  require dedicated, more powerful, or specific hardware.
+- GitLab has [autoscaling for Runners](https://docs.gitlab.com/runner/configuration/autoscale.html)
+  which will let configure them to be provisioned as needed, and scaled down when not.
+  This is similar to ephemeral agents in Jenkins.
+
+If you are using `gitlab.com`, you can take advantage of our [shared Runner fleet](../../user/gitlab_com/index.md#shared-runners)
+to run jobs without provisioning your own Runners. We are investigating making them
+[available for self-managed instances](https://gitlab.com/gitlab-org/customers-gitlab-com/issues/414)
+as well.
 
 ## Groovy vs. YAML
 
@@ -42,8 +128,9 @@ and manage.
 
 That said, we do of course still value DRY (don't repeat yourself) principles and want to ensure that
 behaviors of your jobs can be codified once and applied as needed. You can use the `extends:` syntax to
-[templatize your jobs](../yaml/README.md#extends), and `include:` can be used to [bring in entire sets of behaviors](../yaml/README.md#include)
-to pipelines in different projects.
+[reuse configuration in your jobs](../yaml/README.md#extends), and `include:` can
+be used to [reuse pipeline configurations](../yaml/README.md#include) in pipelines
+in different projects:
 
 ```yaml
 .in-docker:
@@ -62,7 +149,8 @@ rspec:
 
 Artifacts may work a bit differently than you've used them with Jenkins. In GitLab, any job can define
 a set of artifacts to be saved by using the `artifacts:` keyword. This can be configured to point to a file
-or set of files that can then be persisted from job to job. Read more on our detailed [artifacts documentation](../../user/project/pipelines/job_artifacts.md)
+or set of files that can then be persisted from job to job. Read more on our detailed
+[artifacts documentation](../pipelines/job_artifacts.md):
 
 ```yaml
 pdf:
@@ -88,6 +176,19 @@ need to configure anything to have these appear.
 If they aren't working as expected, or if you'd like to see what's available, our [CI feature index](../README.md#feature-set) has the full list
 of bundled features and links to the documentation for each.
 
+### Templates
+
+For advanced CI/CD teams, project templates can enable the reuse of pipeline configurations,
+as well as encourage inner sourcing.
+
+In self-managed GitLab instances, you can build an [Instance Template Repository](../../user/admin_area/settings/instance_template_repository.md).
+Development teams across the whole organization can select templates from a dropdown menu.
+A group administrator is able to set a group to use as the source for the
+[custom project templates](../../user/admin_area/custom_project_templates.md), which can
+be used by all projects in the group. An instance adminsitrator can set a group as
+the source for [instance project templates](../../user/group/custom_project_templates.md),
+which can be used by projects in that instance.
+
 ## Converting Declarative Jenkinsfiles
 
 Declarative Jenkinsfiles contain "Sections" and "Directives" which are used to control the behavior of your
@@ -108,7 +209,7 @@ to different Runners (execution agents).
 
 The `agent` section also allows you to define which Docker images should be used for execution, for which we use
 the [`image`](../yaml/README.md#image) keyword. The `image` can be set on a single job or at the top level, in which
-case it will apply to all jobs in the pipeline.
+case it will apply to all jobs in the pipeline:
 
 ```yaml
 my_job:
@@ -120,7 +221,7 @@ my_job:
 
 The `post` section defines the actions that should be performed at the end of the pipeline. GitLab also supports
 this through the use of stages. You can define your stages as follows, and any jobs assigned to the `before_pipeline`
-or `after_pipeline` stages will run as expected. You can call these stages anything you like.
+or `after_pipeline` stages will run as expected. You can call these stages anything you like:
 
 ```yaml
 stages:
@@ -131,7 +232,8 @@ stages:
   - after_pipeline
 ```
 
-Setting a step to be performed before and after any job can be done via the [`before_script` and `after_script` keywords](../yaml/README.md#before_script-and-after_script).
+Setting a step to be performed before and after any job can be done via the
+[`before_script` and `after_script` keywords](../yaml/README.md#before_script-and-after_script):
 
 ```yaml
 default:
@@ -164,7 +266,7 @@ my_job:
 #### `steps`
 
 The `steps` section is equivalent to the [`script` section](../yaml/README.md#script) of an individual job. This is
-a simple YAML array with each line representing an individual command to be run.
+a simple YAML array with each line representing an individual command to be run:
 
 ```yaml
 my_job:
@@ -181,7 +283,7 @@ my_job:
 In GitLab, we use the [`variables` keyword](../yaml/README.md#variables) to define different variables at runtime.
 These can also be set up through the GitLab UI, under CI/CD settings. See also our [general documentation on variables](../variables/README.md),
 including the section on [protected variables](../variables/README.md#protected-environment-variables) which can be used
-to limit access to certain variables to certain environments or runners.
+to limit access to certain variables to certain environments or runners:
 
 ```yaml
 variables:
@@ -203,7 +305,7 @@ can provide any variables they like.
 #### `triggers` / `cron`
 
 Because GitLab is integrated tightly with Git, SCM polling options for triggers are not needed. We support an easy to use
-[syntax for scheduling pipelines](../../user/project/pipelines/schedules.md).
+[syntax for scheduling pipelines](../pipelines/schedules.md).
 
 #### `tools`
 
@@ -224,7 +326,8 @@ variable entry.
 
 GitLab does support a [`when` keyword](../yaml/README.md#when) which is used to indicate when a job should be
 run in case of (or despite) failure, but most of the logic for controlling pipelines can be found in
-our very powerful [`only/except` rules system](../yaml/README.md#onlyexcept-basic) (see also our [advanced syntax](../yaml/README.md#onlyexcept-basic))
+our very powerful [`only/except` rules system](../yaml/README.md#onlyexcept-basic)
+(see also our [advanced syntax](../yaml/README.md#onlyexcept-basic)):
 
 ```yaml
 my_job:

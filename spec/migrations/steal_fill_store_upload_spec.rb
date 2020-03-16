@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20181105201455_steal_fill_store_upload.rb')
 
-describe StealFillStoreUpload, :migration do
+describe StealFillStoreUpload do
   let(:uploads) { table(:uploads) }
 
   describe '#up' do

@@ -10,6 +10,10 @@ RSpec.describe ResourceLabelEvent, type: :model do
 
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'a resource event'
+  it_behaves_like 'a resource event for issues'
+  it_behaves_like 'a resource event for merge requests'
+
   describe 'associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:issue) }

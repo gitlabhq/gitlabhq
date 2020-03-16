@@ -112,20 +112,57 @@ importer progresses. Here's what to do:
    all messages might have `current_user_id` and `project_id` to make it easier
    to search for activities by user for a given time.
 
-1. Do NOT mix and match types. Elasticsearch won't be able to index your
-   logs properly if you [mix integer and string
-   types](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping.html#_avoiding_type_gotchas):
+#### Implicit schema for JSON logging
 
-   ```ruby
-   # BAD
-   logger.info(message: "Import error", error: 1)
-   logger.info(message: "Import error", error: "I/O failure")
-   ```
+When using something like Elasticsearch to index structured logs, there is a
+schema for the types of each log field (even if that schema is implicit /
+inferred). It's important to be consistent with the types of your field values,
+otherwise this might break the ability to search/filter on these fields, or even
+cause whole log events to be dropped. While much of this section is phrased in
+an Elasticsearch-specific way, the concepts should translate to many systems you
+might use to index structured logs. GitLab.com uses Elasticsearch to index log
+data.
 
-   ```ruby
-   # GOOD
-   logger.info(message: "Import error", error_code: 1, error: "I/O failure")
-   ```
+Unless a field type is explicitly mapped, Elasticsearch will infer the type from
+the first instance of that field value it sees. Subsequent instances of that
+field value with different types will either fail to be indexed, or in some
+cases (scalar/object conflict), the whole log line will be dropped.
+
+GitLab.com's logging Elasticsearch sets
+[`ignore_malformed`](https://www.elastic.co/guide/en/elasticsearch/reference/current/ignore-malformed.html),
+which allows documents to be indexed even when there are simpler sorts of
+mapping conflict (for example, number / string), although indexing on the affected fields
+will break.
+
+Examples:
+
+```ruby
+# GOOD
+logger.info(message: "Import error", error_code: 1, error: "I/O failure")
+
+# BAD
+logger.info(message: "Import error", error: 1)
+logger.info(message: "Import error", error: "I/O failure")
+
+# WORST
+logger.info(message: "Import error", error: "I/O failure")
+logger.info(message: "Import error", error: { message: "I/O failure" })
+```
+
+List elements must be the same type:
+
+```ruby
+# GOOD
+logger.info(a_list: ["foo", "1", "true"])
+
+# BAD
+logger.info(a_list: ["foo", 1, true])
+```
+
+Resources:
+
+- [Elasticsearch mapping - avoiding type gotchas](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping.html#_avoiding_type_gotchas)
+- [Elasticsearch mapping types]( https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html)
 
 ## Multi-destination Logging
 

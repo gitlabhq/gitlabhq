@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe "Admin Health Check", :feature do
   include StubENV
-  set(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin) }
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')

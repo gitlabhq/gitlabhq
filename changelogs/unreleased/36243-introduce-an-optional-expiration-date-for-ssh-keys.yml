@@ -1,0 +1,5 @@
+---
+title: Introduce optional expiry date for SSH Keys
+merge_request: 26351
+author:
+type: added

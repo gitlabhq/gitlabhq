@@ -259,8 +259,15 @@ export default function dropzoneInput(form) {
 
   const insertToTextArea = (filename, url) => {
     const $child = $(child);
-    $child.val((index, val) => val.replace(`{{${filename}}}`, url));
-
+    const textarea = $child.get(0);
+    const caretStart = textarea.selectionStart;
+    const caretEnd = textarea.selectionEnd;
+    const formattedText = `{{${filename}}}`;
+    $child.val((index, val) => val.replace(formattedText, url));
+    textarea.setSelectionRange(
+      caretStart - formattedText.length + url.length,
+      caretEnd - formattedText.length + url.length,
+    );
     $child.trigger('change');
   };
 

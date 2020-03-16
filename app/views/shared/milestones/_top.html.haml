@@ -8,7 +8,7 @@
 = render 'shared/milestones/deprecation_message' if is_dynamic_milestone
 = render 'shared/milestones/description', milestone: milestone
 
-- if milestone.complete?(current_user) && milestone.active?
+- if milestone.complete? && milestone.active?
   .alert.alert-success.prepend-top-default
     %span
       = _('All issues for this milestone are closed.')

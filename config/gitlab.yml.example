@@ -454,6 +454,11 @@ production: &base
     pseudonymizer_worker:
       cron: "0 * * * *"
 
+    # Elasticsearch bulk updater for incremental updates.
+    # NOTE: This will only take effect if elasticsearch is enabled.
+    elastic_index_bulk_cron_worker:
+      cron: "*/1 * * * *"
+
   registry:
     # enabled: true
     # host: registry.example.com
@@ -747,7 +752,9 @@ production: &base
     # Path to a file containing a CA certificate
     ca_file: '/etc/ssl/certs/CA.pem'
 
-    # Port where the client side certificate is requested by the webserver (NGINX/Apache)
+    # Host and port where the client side certificate is requested by the
+    # webserver (NGINX/Apache)
+    # client_certificate_required_host: smartcard.gitlab.example.com
     # client_certificate_required_port: 3444
 
     # Browser session with smartcard sign-in is required for Git access
@@ -1221,6 +1228,8 @@ test:
   gitaly:
     client_path: tmp/tests/gitaly
     token: secret
+  workhorse:
+    secret_file: tmp/gitlab_workhorse_test_secret
   backup:
     path: tmp/tests/backups
   pseudonymizer:

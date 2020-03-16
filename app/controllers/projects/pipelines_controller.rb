@@ -22,7 +22,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @pipelines = PipelinesFinder
+    @pipelines = Ci::PipelinesFinder
       .new(project, current_user, scope: @scope)
       .execute
       .page(params[:page])
@@ -251,7 +251,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def limited_pipelines_count(project, scope = nil)
-    finder = PipelinesFinder.new(project, current_user, scope: scope)
+    finder = Ci::PipelinesFinder.new(project, current_user, scope: scope)
 
     view_context.limited_counter_with_delimiter(finder.execute)
   end

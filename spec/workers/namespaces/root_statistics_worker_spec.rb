@@ -42,7 +42,7 @@ describe Namespaces::RootStatisticsWorker, '#perform' do
         allow_any_instance_of(Namespace::AggregationSchedule)
           .to receive(:schedule_root_storage_statistics).and_return(nil)
 
-        expect(Gitlab::SidekiqLogger).to receive(:error).once
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).once
 
         worker.perform(group.id)
       end

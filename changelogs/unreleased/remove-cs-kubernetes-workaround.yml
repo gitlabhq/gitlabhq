@@ -1,0 +1,5 @@
+---
+title: Remove kubernetes workaround in container scanning
+merge_request: 21188
+author:
+type: changed

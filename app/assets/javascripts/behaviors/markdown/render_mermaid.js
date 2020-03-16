@@ -35,6 +35,7 @@ function renderMermaids($els) {
         // mermaidAPI options
         theme: 'neutral',
         flowchart: {
+          useMaxWidth: true,
           htmlLabels: false,
         },
         securityLevel: 'strict',

@@ -9,6 +9,7 @@
     "title": { "type": "string" },
     "type": { "type": "string" },
     "y_label": { "type": "string" },
+    "y_axis": { "$ref": "axis.json" },
     "weight": { "type": "number" },
     "metrics": {
       "type": "array",

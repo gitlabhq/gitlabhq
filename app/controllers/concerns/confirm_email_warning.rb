@@ -10,7 +10,7 @@ module ConfirmEmailWarning
   protected
 
   def show_confirm_warning?
-    html_request? && request.get?
+    html_request? && request.get? && Feature.enabled?(:soft_email_confirmation)
   end
 
   def set_confirm_warning

@@ -1,5 +1,0 @@
----
-title: Fix blobs search API degradation
-merge_request: 24607
-author:
-type: fixed

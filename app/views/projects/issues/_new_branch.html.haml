@@ -13,7 +13,7 @@
   .create-mr-dropdown-wrap.d-inline-block.full-width-mobile.js-create-mr{ data: { project_path: @project.full_path, project_id: @project.id, can_create_path: can_create_path, create_mr_path: create_mr_path, create_branch_path: create_branch_path, refs_path: refs_path, is_confidential: can_create_confidential_merge_request?.to_s } }
     .btn-group.btn-group-sm.unavailable
       %button.btn.btn-grouped{ type: 'button', disabled: 'disabled' }
-        = icon('spinner', class: 'fa-spin')
+        .spinner.align-text-bottom.mr-1.hide
         %span.text
           Checking branch availability…
 

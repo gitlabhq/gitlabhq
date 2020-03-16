@@ -26,7 +26,7 @@ The Security Dashboard supports the following reports:
 
 ## Requirements
 
-To use the instance, group, project or pipeline security dashboard:
+To use the instance, group, project, or pipeline security dashboard:
 
 1. At least one project inside a group must be configured with at least one of
    the [supported reports](#supported-reports).
@@ -147,7 +147,7 @@ information on the Security Dashboard can become outdated as new vulnerabilities
 are discovered.
 
 To ensure the information on the Security Dashboard is regularly updated,
-[configure a scheduled pipeline](../../project/pipelines/schedules.md) to run a
+[configure a scheduled pipeline](../../../ci/pipelines/schedules.md) to run a
 daily security scan. This will update the information displayed on the Security
 Dashboard regardless of how often the default branch is updated.
 

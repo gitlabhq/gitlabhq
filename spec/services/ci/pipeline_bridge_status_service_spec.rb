@@ -22,6 +22,24 @@ describe Ci::PipelineBridgeStatusService do
 
         subject
       end
+
+      context 'when bridge job status raises state machine errors' do
+        before do
+          pipeline.drop!
+          bridge.drop!
+        end
+
+        it 'tracks the exception' do
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception)
+            .with(
+              instance_of(Ci::Bridge::InvalidTransitionError),
+              bridge_id: bridge.id,
+              downstream_pipeline_id: pipeline.id)
+
+          subject
+        end
+      end
     end
   end
 end

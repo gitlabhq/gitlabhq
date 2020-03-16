@@ -3,18 +3,15 @@
 class SnippetBlobPresenter < BlobPresenter
   def rich_data
     return if blob.binary?
+    return unless blob.rich_viewer
 
-    if markup?
-      blob.rendered_markup
-    else
-      highlight(plain: false)
-    end
+    render_rich_partial
   end
 
   def plain_data
     return if blob.binary?
 
-    highlight(plain: !markup?)
+    highlight(plain: false)
   end
 
   def raw_path
@@ -27,15 +24,25 @@ class SnippetBlobPresenter < BlobPresenter
 
   private
 
-  def markup?
-    blob.rich_viewer&.partial_name == 'markup'
-  end
-
   def snippet
-    blob.snippet
+    blob.container
   end
 
   def language
     nil
+  end
+
+  def render_rich_partial
+    renderer.render("projects/blob/viewers/_#{blob.rich_viewer.partial_name}",
+                    locals: { viewer: blob.rich_viewer, blob: blob, blob_raw_path: raw_path },
+                    layout: false)
+  end
+
+  def renderer
+    proxy = Warden::Proxy.new({}, Warden::Manager.new({})).tap do |proxy_instance|
+      proxy_instance.set_user(current_user, scope: :user)
+    end
+
+    ApplicationController.renderer.new('warden' => proxy)
   end
 end

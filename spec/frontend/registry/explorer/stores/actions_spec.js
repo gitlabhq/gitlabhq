@@ -180,10 +180,7 @@ describe('Actions RegistryExplorer Store', () => {
         {
           tagsPagination: {},
         },
-        [
-          { type: types.SET_MAIN_LOADING, payload: true },
-          { type: types.SET_MAIN_LOADING, payload: false },
-        ],
+        [{ type: types.SET_MAIN_LOADING, payload: true }],
         [
           {
             type: 'requestTagsList',
@@ -220,13 +217,11 @@ describe('Actions RegistryExplorer Store', () => {
   });
 
   describe('request delete multiple tags', () => {
-    const id = 1;
-    const params = window.btoa(JSON.stringify({ id }));
-    const projectPath = 'project-path';
-    const url = `${projectPath}/registry/repository/${id}/tags/bulk_destroy`;
+    const url = `project-path/registry/repository/foo/tags`;
+    const params = window.btoa(JSON.stringify({ tags_path: `${url}?format=json` }));
 
     it('successfully performs the delete request', done => {
-      mock.onDelete(url).replyOnce(200);
+      mock.onDelete(`${url}/bulk_destroy`).replyOnce(200);
 
       testAction(
         actions.requestDeleteTags,
@@ -235,15 +230,9 @@ describe('Actions RegistryExplorer Store', () => {
           params,
         },
         {
-          config: {
-            projectPath,
-          },
           tagsPagination: {},
         },
-        [
-          { type: types.SET_MAIN_LOADING, payload: true },
-          { type: types.SET_MAIN_LOADING, payload: false },
-        ],
+        [{ type: types.SET_MAIN_LOADING, payload: true }],
         [
           {
             type: 'requestTagsList',
@@ -267,9 +256,6 @@ describe('Actions RegistryExplorer Store', () => {
           params,
         },
         {
-          config: {
-            projectPath,
-          },
           tagsPagination: {},
         },
         [

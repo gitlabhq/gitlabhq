@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 module QA
-  # Git protocol v2 is temporarily disabled
-  context 'Create', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/issues/27828', type: :bug } do
+  context 'Create' do
     describe 'Push over HTTP using Git protocol version 2', :requires_git_protocol_v2 do
       it 'user pushes to the repository' do
         Flow::Login.sign_in
 
         # Create a project to push to
-        project = Resource::Project.fabricate! do |project|
+        project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'git-protocol-project'
         end
 

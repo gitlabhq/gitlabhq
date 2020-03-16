@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PersonalAccessTokens
-  class ExpiringWorker
+  class ExpiringWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include CronjobQueue
 

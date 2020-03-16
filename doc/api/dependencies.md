@@ -16,7 +16,7 @@ Get a list of project dependencies. This API partially mirroring
 This list can be generated only for [languages and package managers](../user/application_security/dependency_scanning/index.md#supported-languages-and-package-managers)
 supported by Gemnasium.
 
-```
+```plaintext
 GET /projects/:id/dependencies
 GET /projects/:id/dependencies?package_manager=maven
 GET /projects/:id/dependencies?package_manager=yarn,bundler

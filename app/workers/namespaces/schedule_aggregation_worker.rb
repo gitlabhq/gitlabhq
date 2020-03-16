@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Namespaces
-  class ScheduleAggregationWorker
+  class ScheduleAggregationWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
     queue_namespace :update_namespace_statistics
@@ -16,8 +16,8 @@ module Namespaces
       return if root_ancestor.aggregation_scheduled?
 
       Namespace::AggregationSchedule.safe_find_or_create_by!(namespace_id: root_ancestor.id)
-    rescue ActiveRecord::RecordNotFound
-      log_error(namespace_id)
+    rescue ActiveRecord::RecordNotFound => ex
+      Gitlab::ErrorTracking.track_exception(ex, namespace_id: namespace_id)
     end
 
     private
@@ -33,10 +33,6 @@ module Namespaces
       return true unless Rails.env.test?
 
       Namespace::AggregationSchedule.table_exists?
-    end
-
-    def log_error(root_ancestor_id)
-      Gitlab::SidekiqLogger.error("Namespace can't be scheduled for aggregation: #{root_ancestor_id} does not exist")
     end
   end
 end

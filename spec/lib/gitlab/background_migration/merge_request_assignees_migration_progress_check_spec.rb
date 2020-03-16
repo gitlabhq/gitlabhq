@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MergeRequestAssigneesMigrationProgressCheck do
+describe Gitlab::BackgroundMigration::MergeRequestAssigneesMigrationProgressCheck, schema: :latest do
   context 'rescheduling' do
     context 'when there are ongoing and no dead jobs' do
       it 'reschedules check' do

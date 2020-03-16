@@ -1,0 +1,5 @@
+---
+title: Moved Deploy Keys from Repository to CI/CD settings.
+merge_request: 25444
+author:
+type: changed

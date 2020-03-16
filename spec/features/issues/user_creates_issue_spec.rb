@@ -156,7 +156,7 @@ describe "User creates issue" do
         expect(page.find_field("issue_description").value).not_to match /\n\n$/
       end
 
-      it "cancels a file upload correctly" do
+      it "cancels a file upload correctly", :capybara_ignore_server_errors do
         slow_requests do
           dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
 

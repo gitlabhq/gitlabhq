@@ -118,3 +118,11 @@ different components are making use of.
 [Entity]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/entities.rb
 [validation, and coercion of the parameters]: https://github.com/ruby-grape/grape#parameter-validation-and-coercion
 [installing GitLab under a relative URL]: https://docs.gitlab.com/ee/install/relative_url.html
+
+## Testing
+
+When writing tests for new API endpoints, consider using a schema [fixture](./testing_guide/best_practices.md#fixtures) located in `/spec/fixtures/api/schemas`. You can `expect` a response to match a given schema:
+
+```ruby
+expect(response).to match_response_schema('merge_requests')
+```

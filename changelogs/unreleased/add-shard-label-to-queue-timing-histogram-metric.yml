@@ -1,0 +1,5 @@
+---
+title: Add 'shard' label for 'job_queue_duration_seconds' metric
+merge_request: 23536
+author:
+type: changed

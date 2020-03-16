@@ -59,7 +59,7 @@ module Gitlab
         end
 
         def local_tiller_enabled?
-          Feature.enabled?(:managed_apps_local_tiller)
+          ::Gitlab::Kubernetes::Helm.local_tiller_enabled?
         end
       end
     end

@@ -52,7 +52,7 @@ module QA
           private
 
           def text_area
-            find('#editor>textarea', visible: false)
+            find('#editor textarea', visible: false)
           end
         end
       end

@@ -31,12 +31,6 @@ module QA
             end
           end
 
-          def expand_deploy_tokens(&block)
-            expand_section(:deploy_tokens_settings) do
-              DeployTokens.perform(&block)
-            end
-          end
-
           def expand_mirroring_repositories(&block)
             expand_section(:mirroring_repositories_settings_section) do
               MirroringRepositories.perform(&block)

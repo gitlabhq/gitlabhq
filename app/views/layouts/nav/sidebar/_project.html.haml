@@ -1,5 +1,3 @@
-- should_display_analytics_pages_in_sidebar = Feature.enabled?(:analytics_pages_under_project_analytics_sidebar, @project, default_enabled: true)
-
 .nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
     - can_edit = can?(current_user, :admin_project, @project)
@@ -10,9 +8,7 @@
         .sidebar-context-title
           = @project.name
     %ul.sidebar-top-level-items.qa-project-sidebar
-      - paths = sidebar_projects_paths
-      - paths << 'cycle_analytics#show' unless should_display_analytics_pages_in_sidebar
-      = nav_link(path: paths, html_options: { class: 'home' }) do
+      = nav_link(path: sidebar_projects_paths, html_options: { class: 'home' }) do
         = link_to project_path(@project), class: 'shortcuts-project rspec-project-link', data: { qa_selector: 'project_link' } do
           .nav-icon-container
             = sprite_icon('home')
@@ -39,17 +35,8 @@
                 %span= _('Releases')
 
 
-          - unless should_display_analytics_pages_in_sidebar
-            - if can?(current_user, :read_cycle_analytics, @project)
-              = nav_link(path: 'cycle_analytics#show') do
-                = link_to project_cycle_analytics_path(@project), title: _('Value Stream Analytics'), class: 'shortcuts-project-cycle-analytics' do
-                  %span= _('Value Stream Analytics')
-
-            = render_if_exists 'layouts/nav/project_insights_link'
-
-
       - if project_nav_tab? :files
-        = nav_link(controller: sidebar_repository_paths, unless: -> { should_display_analytics_pages_in_sidebar && current_path?('projects/graphs#charts') }) do
+        = nav_link(controller: sidebar_repository_paths, unless: -> { current_path?('projects/graphs#charts') }) do
           = link_to project_tree_path(@project), class: 'shortcuts-tree qa-project-menu-repo' do
             .nav-icon-container
               = sprite_icon('doc-text')
@@ -89,11 +76,6 @@
             = nav_link(controller: :compare) do
               = link_to project_compare_index_path(@project, from: @repository.root_ref, to: current_ref) do
                 = _('Compare')
-
-            - unless should_display_analytics_pages_in_sidebar
-              = nav_link(path: 'graphs#charts') do
-                = link_to charts_project_graph_path(@project, current_ref) do
-                  = _('Charts')
 
             = render_if_exists 'projects/sidebar/repository_locked_files'
 
@@ -143,7 +125,7 @@
           - issue_tracker = @project.external_issue_tracker
           = link_to issue_tracker.issue_tracker_path, class: 'shortcuts-external_tracker' do
             .nav-icon-container
-              = sprite_icon('issue-external')
+              = sprite_icon('external-link')
             %span.nav-item-name
               = issue_tracker.title
           %ul.sidebar-sub-level-items.is-fly-out-only
@@ -178,7 +160,7 @@
                   = number_with_delimiter(@project.open_merge_requests_count)
 
       - if project_nav_tab? :pipelines
-        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts], unless: -> { should_display_analytics_pages_in_sidebar && current_path?('projects/pipelines#charts') }) do
+        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts], unless: -> { current_path?('projects/pipelines#charts') }) do
           = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines qa-link-pipelines rspec-link-pipelines', data: { qa_selector: 'ci_cd_link' } do
             .nav-icon-container
               = sprite_icon('rocket')
@@ -214,12 +196,6 @@
                 = link_to pipeline_schedules_path(@project), title: _('Schedules'), class: 'shortcuts-builds' do
                   %span
                     = _('Schedules')
-
-            - if !should_display_analytics_pages_in_sidebar && @project.feature_available?(:builds, current_user) && !@project.empty_repo?
-              = nav_link(path: 'pipelines#charts') do
-                = link_to charts_project_pipelines_path(@project), title: _('Charts'), class: 'shortcuts-pipelines-charts' do
-                  %span
-                    = _('Charts')
 
       = render_if_exists 'layouts/nav/sidebar/project_security_link' # EE-specific
 
@@ -263,7 +239,11 @@
                   %span
                     = _('Serverless')
 
-            = render_if_exists 'layouts/nav/sidebar/pod_logs_link' # EE-specific
+            - if project_nav_tab?(:environments) && can?(current_user, :read_pod_logs, @project)
+              = nav_link(controller: :logs, action: [:index]) do
+                = link_to project_logs_path(@project), title: _('Logs') do
+                  %span
+                    = _('Logs')
 
             - if project_nav_tab? :clusters
               - show_cluster_hint = show_gke_cluster_integration_callout?(@project)
@@ -319,7 +299,7 @@
         = nav_link do
           = link_to external_wiki_url, class: 'shortcuts-external_wiki' do
             .nav-icon-container
-              = sprite_icon('issue-external')
+              = sprite_icon('external-link')
             %span.nav-item-name
               = _('External Wiki')
           %ul.sidebar-sub-level-items.is-fly-out-only
@@ -366,10 +346,14 @@
                 %span
                   = _('Members')
             - if can_edit
-              = nav_link(controller: [:integrations, :services, :hooks, :hook_logs]) do
+              = nav_link(controller: [:integrations, :services]) do
                 = link_to project_settings_integrations_path(@project), title: _('Integrations'), data: { qa_selector: 'integrations_settings_link' } do
                   %span
                     = _('Integrations')
+              = nav_link(controller: [:hooks, :hook_logs]) do
+                = link_to project_hooks_path(@project), title: _('Webhooks'), data: { qa_selector: 'webhooks_settings_link' } do
+                  %span
+                    = _('Webhooks')
               = nav_link(controller: :repository) do
                 = link_to project_settings_repository_path(@project), title: _('Repository') do
                   %span
@@ -417,13 +401,6 @@
         %li.hidden
           = link_to project_network_path(@project, current_ref), title: _('Network'), class: 'shortcuts-network' do
             = _('Graph')
-
-      - unless should_display_analytics_pages_in_sidebar
-        -# Shortcut to Repository > Charts (formerly, top-nav item "Graphs")
-        - unless @project.empty_repo?
-          %li.hidden
-            = link_to charts_project_graph_path(@project, current_ref), title: _('Charts'), class: 'shortcuts-repository-charts' do
-              = _('Charts')
 
       -# Shortcut to Issues > New Issue
       - if project_nav_tab?(:issues)

@@ -1,0 +1,5 @@
+---
+title: Add functionality to revoke a X509Certificate and update related X509CommitSignatures
+merge_request: 24889
+author: Roger Meier
+type: added

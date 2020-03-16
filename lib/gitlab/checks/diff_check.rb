@@ -46,7 +46,7 @@ module Gitlab
       def validate_diff(diff)
         validations_for_diff.each do |validation|
           if error = validation.call(diff)
-            raise ::Gitlab::GitAccess::UnauthorizedError, error
+            raise ::Gitlab::GitAccess::ForbiddenError, error
           end
         end
       end
@@ -77,7 +77,7 @@ module Gitlab
         logger.log_timed(LOG_MESSAGES[__method__]) do
           path_validations.each do |validation|
             if error = validation.call(file_paths)
-              raise ::Gitlab::GitAccess::UnauthorizedError, error
+              raise ::Gitlab::GitAccess::ForbiddenError, error
             end
           end
         end

@@ -1,9 +1,8 @@
 -# @project is present when viewing Project's milestone
 - project = @project || issuable.project
-- namespace = @project_namespace || project.namespace.becomes(Namespace)
 - labels = issuable.labels
 - assignees = issuable.assignees
-- base_url_args = [namespace, project]
+- base_url_args = [project]
 - issuable_type_args = base_url_args + [issuable.class.table_name]
 - issuable_url_args = base_url_args + [issuable]
 
@@ -17,11 +16,11 @@
       = confidential_icon(issuable)
     = link_to issuable.title, issuable_url_args, title: issuable.title
   .issuable-detail
-    = link_to [namespace, project, issuable], class: 'issue-link' do
+    = link_to issuable_url_args, class: 'issue-link' do
       %span.issuable-number= issuable.to_reference
 
     - labels.each do |label|
-      = render_label(label.present(issuable_subject: project), link: polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, label_name: label.title, state: 'all' }))
+      = render_label(label.present(issuable_subject: project), link: polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, label_name: label.title, state: 'all' }), small: true)
 
     %span.assignee-icon
       - assignees.each do |assignee|

@@ -15,7 +15,7 @@ describe('CreateMergeRequestDropdown', () => {
       <div id="dummy-wrapper-element">
         <div class="available"></div>
         <div class="unavailable">
-          <div class="fa"></div>
+          <div class="spinner"></div>
           <div class="text"></div>
         </div>
         <div class="js-ref"></div>

@@ -8,6 +8,7 @@ module Quality
       migration: %w[
         migrations
         lib/gitlab/background_migration
+        lib/ee/gitlab/background_migration
       ],
       unit: %w[
         bin

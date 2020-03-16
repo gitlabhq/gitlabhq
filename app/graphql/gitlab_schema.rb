@@ -16,6 +16,7 @@ class GitlabSchema < GraphQL::Schema
   use Gitlab::Graphql::CallsGitaly
   use Gitlab::Graphql::Connections
   use Gitlab::Graphql::GenericTracing
+  use Gitlab::Graphql::Timeout, max_seconds: Gitlab.config.gitlab.graphql_timeout
 
   query_analyzer Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer.new
   query_analyzer Gitlab::Graphql::QueryAnalyzers::RecursionAnalyzer.new
@@ -141,3 +142,5 @@ class GitlabSchema < GraphQL::Schema
     end
   end
 end
+
+GitlabSchema.prepend_if_ee('EE::GitlabSchema')

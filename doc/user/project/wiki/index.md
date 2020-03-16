@@ -38,7 +38,7 @@ automatically. For example, a title of `docs/my-page` will create a wiki
 page with a path `/wikis/docs/my-page`.
 
 Once you enter the page name, it's time to fill in its content. GitLab wikis
-support Markdown, RDoc, AsciiDoc and Org. For Markdown based pages, all the
+support Markdown, RDoc, AsciiDoc, and Org. For Markdown based pages, all the
 [Markdown features](../../markdown.md) are supported and for links there is
 some [wiki specific](../../markdown.md#wiki-specific-markdown) behavior.
 
@@ -59,6 +59,14 @@ interface will be stored in the wiki Git repository, and it will be available
 if you clone the wiki repository locally. All uploaded files prior to GitLab
 11.3 are stored in GitLab itself. If you want them to be part of the wiki's Git
 repository, you will have to upload them again.
+
+### Special characters in page titles
+
+Wiki pages are stored as files in a Git repository, so certain characters have a special meaning:
+
+- Spaces are converted into hyphens when storing a page.
+- Hyphens (`-`) are converted back into spaces when displaying a page.
+- Slashes (`/`) can't be used, because they're used as path separator.
 
 ### Length restrictions for file and directory names
 
@@ -121,7 +129,7 @@ The changes of a wiki page over time are recorded in the wiki's Git repository,
 and you can view them by clicking the **Page history** button.
 
 From the history page you can see the revision of the page (Git commit SHA), its
-author, the commit message, when it was last updated and the page markup format.
+author, the commit message, when it was last updated, and the page markup format.
 To see how a previous version of the page looked like, click on a revision
 number.
 

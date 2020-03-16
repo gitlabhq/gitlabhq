@@ -12,19 +12,44 @@ describe Gitlab::RepositoryCache do
   describe '#cache_key' do
     subject { cache.cache_key(:foo) }
 
-    it 'includes the namespace' do
-      expect(subject).to eq "foo:#{namespace}"
-    end
-
-    context 'with a given namespace' do
-      let(:extra_namespace) { 'my:data' }
-      let(:cache) do
-        described_class.new(repository, extra_namespace: extra_namespace,
-                                        backend: backend)
+    shared_examples 'cache_key examples' do
+      it 'includes the namespace' do
+        expect(subject).to eq "foo:#{namespace}"
       end
 
-      it 'includes the full namespace' do
-        expect(subject).to eq "foo:#{namespace}:#{extra_namespace}"
+      context 'with a given namespace' do
+        let(:extra_namespace) { 'my:data' }
+        let(:cache) do
+          described_class.new(repository, extra_namespace: extra_namespace,
+                                          backend: backend)
+        end
+
+        it 'includes the full namespace' do
+          expect(subject).to eq "foo:#{namespace}:#{extra_namespace}"
+        end
+      end
+    end
+
+    describe 'project repository' do
+      it_behaves_like 'cache_key examples' do
+        let(:repository) { project.repository }
+      end
+    end
+
+    describe 'personal snippet repository' do
+      let_it_be(:personal_snippet) { create(:personal_snippet) }
+      let(:namespace) { repository.full_path }
+
+      it_behaves_like 'cache_key examples' do
+        let(:repository) { personal_snippet.repository }
+      end
+    end
+
+    describe 'project snippet repository' do
+      let_it_be(:project_snippet) { create(:project_snippet, project: project) }
+
+      it_behaves_like 'cache_key examples' do
+        let(:repository) { project_snippet.repository }
       end
     end
   end

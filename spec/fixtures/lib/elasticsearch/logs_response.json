@@ -1,0 +1,73 @@
+{
+  "took": 7087,
+  "timed_out": false,
+  "_shards": {
+    "total": 151,
+    "successful": 151,
+    "skipped": 0,
+    "failed": 0,
+    "failures": []
+  },
+  "hits": {
+    "total": 486924,
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "filebeat-6.7.0-2019.10.25",
+        "_type": "doc",
+        "_id": "SkbxAW4BWzhswgK-C5-R",
+        "_score": null,
+        "_source": {
+          "message": "10.8.2.1 - - [25/Oct/2019:08:03:22 UTC] \"GET / HTTP/1.1\" 200 13",
+          "@timestamp": "2019-12-13T14:35:34.034Z"
+        },
+        "sort": [
+          9999998,
+          1571990602947
+        ]
+      },
+      {
+        "_index": "filebeat-6.7.0-2019.10.27",
+        "_type": "doc",
+        "_id": "wEigD24BWzhswgK-WUU2",
+        "_score": null,
+        "_source": {
+          "message": "10.8.2.1 - - [27/Oct/2019:23:49:54 UTC] \"GET / HTTP/1.1\" 200 13",
+          "@timestamp": "2019-12-13T14:35:35.034Z"
+        },
+        "sort": [
+          9999949,
+          1572220194500
+        ]
+      },
+      {
+        "_index": "filebeat-6.7.0-2019.11.04",
+        "_type": "doc",
+        "_id": "gE6uOG4BWzhswgK-M0x2",
+        "_score": null,
+        "_source": {
+          "message": "10.8.2.1 - - [04/Nov/2019:23:09:24 UTC] \"GET / HTTP/1.1\" 200 13",
+          "@timestamp": "2019-12-13T14:35:36.034Z"
+        },
+        "sort": [
+          9999944,
+          1572908964497
+        ]
+      },
+      {
+        "_index": "filebeat-6.7.0-2019.10.30",
+        "_type": "doc",
+        "_id": "0klPHW4BWzhswgK-nfCF",
+        "_score": null,
+        "_source": {
+          "message": "- -\u003e /",
+          "@timestamp": "2019-12-13T14:35:37.034Z"
+        },
+        "sort": [
+          9999934,
+          1572449784442
+        ]
+      }
+    ]
+  }
+}

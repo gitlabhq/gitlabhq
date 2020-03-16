@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "required": [],
+  "properties": {
+    "name": { "type": "string" },
+    "precision": { "type": "number" },
+    "format": { "type": "string" }
+  },
+  "additionalProperties": false
+}

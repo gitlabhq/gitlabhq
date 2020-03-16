@@ -12,6 +12,9 @@ performance, especially for actions that read or write to Git repositories. See
 [Filesystem Performance Benchmarking](../operations/filesystem_benchmarking.md)
 for steps to test filesystem performance.
 
+NOTE: **Note:** [Cloud Object Storage service](object_storage.md) with [Gitaly](gitaly.md)
+is recommended over NFS wherever possible for improved performance.
+
 ## NFS Server features
 
 ### Required features
@@ -146,7 +149,7 @@ Note there are several options that you should consider using:
 
 ## A single NFS mount
 
-It's recommended to nest all GitLab data dirs within a mount, that allows automatic
+It's recommended to nest all GitLab data directories within a mount, that allows automatic
 restore of backups without manually moving existing data.
 
 ```plaintext

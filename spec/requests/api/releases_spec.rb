@@ -78,7 +78,7 @@ describe API::Releases do
         issue_uri = URI.parse(links['issues_url'])
 
         expect(mr_uri.path).to eq("#{path_base}/-/merge_requests")
-        expect(issue_uri.path).to eq("#{path_base}/issues")
+        expect(issue_uri.path).to eq("#{path_base}/-/issues")
         expect(mr_uri.query).to eq(expected_query)
         expect(issue_uri.query).to eq(expected_query)
       end
@@ -233,31 +233,6 @@ describe API::Releases do
           .to match_array(release.sources.map(&:url))
       end
 
-      context "when release description contains confidential issue's link" do
-        let(:confidential_issue) do
-          create(:issue,
-                 :confidential,
-                 project: project,
-                 title: 'A vulnerability')
-        end
-
-        let!(:release) do
-          create(:release,
-                 project: project,
-                 tag: 'v0.1',
-                 sha: commit.id,
-                 author: maintainer,
-                 description: "This is confidential #{confidential_issue.to_reference}")
-        end
-
-        it "does not expose confidential issue's title" do
-          get api("/projects/#{project.id}/releases/v0.1", maintainer)
-
-          expect(json_response['description_html']).to include(confidential_issue.to_reference)
-          expect(json_response['description_html']).not_to include('A vulnerability')
-        end
-      end
-
       context 'when release has link asset' do
         let!(:link) do
           create(:release_link,
@@ -359,10 +334,27 @@ describe API::Releases do
 
           let(:milestone) { create(:milestone, project: project) }
 
+          it 'matches schema' do
+            get api("/projects/#{project.id}/releases/v0.1", non_project_member)
+
+            expect(response).to match_response_schema('public_api/v4/release')
+          end
+
           it 'exposes milestones' do
             get api("/projects/#{project.id}/releases/v0.1", non_project_member)
 
             expect(json_response['milestones'].first['title']).to eq(milestone.title)
+          end
+
+          it 'returns issue stats for milestone' do
+            create_list(:issue, 2, milestone: milestone, project: project)
+            create_list(:issue, 3, :closed, milestone: milestone, project: project)
+
+            get api("/projects/#{project.id}/releases/v0.1", non_project_member)
+
+            issue_stats = json_response['milestones'].first["issue_stats"]
+            expect(issue_stats["total"]).to eq(5)
+            expect(issue_stats["closed"]).to eq(3)
           end
 
           context 'when project restricts visibility of issues and merge requests' do

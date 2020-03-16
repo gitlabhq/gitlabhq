@@ -6,7 +6,7 @@ module Gitlab
       def validate!
         logger.log_timed("Checking if you are allowed to push...") do
           unless can_push?
-            raise GitAccess::UnauthorizedError, GitAccess::ERROR_MESSAGES[:push_code]
+            raise GitAccess::ForbiddenError, GitAccess::ERROR_MESSAGES[:push_code]
           end
         end
       end

@@ -34,7 +34,7 @@ export default {
 
     <ul v-if="assets.links.length" class="pl-0 mb-0 prepend-top-8 list-unstyled js-assets-list">
       <li v-for="link in assets.links" :key="link.name" class="append-bottom-8">
-        <gl-link v-gl-tooltip.bottom :title="__('Download asset')" :href="link.url">
+        <gl-link v-gl-tooltip.bottom :title="__('Download asset')" :href="link.directAssetUrl">
           <icon name="package" class="align-middle append-right-4 align-text-bottom" />
           {{ link.name }}
           <span v-if="link.external">{{ __('(external source)') }}</span>

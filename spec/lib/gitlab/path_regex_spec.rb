@@ -411,4 +411,37 @@ describe Gitlab::PathRegex do
     it { is_expected.not_to match('git lab') }
     it { is_expected.not_to match('gitlab.git') }
   end
+
+  shared_examples 'invalid snippet routes' do
+    it { is_expected.not_to match('gitlab-org/gitlab/snippets/1.git') }
+    it { is_expected.not_to match('snippets/1.git') }
+    it { is_expected.not_to match('gitlab-org/gitlab/snippets/') }
+    it { is_expected.not_to match('/gitlab-org/gitlab/snippets/1') }
+    it { is_expected.not_to match('gitlab-org/gitlab/snippets/foo') }
+    it { is_expected.not_to match('root/snippets/1') }
+    it { is_expected.not_to match('/snippets/1') }
+    it { is_expected.not_to match('snippets/') }
+    it { is_expected.not_to match('snippets/foo') }
+  end
+
+  describe '.full_snippets_repository_path_regex' do
+    subject { described_class.full_snippets_repository_path_regex }
+
+    it { is_expected.to match('gitlab-org/gitlab/snippets/1') }
+    it { is_expected.to match('snippets/1') }
+
+    it_behaves_like 'invalid snippet routes'
+  end
+
+  describe '.personal_and_project_snippets_path_regex' do
+    subject { %r{\A#{described_class.personal_and_project_snippets_path_regex}\z} }
+
+    it { is_expected.to match('gitlab-org/gitlab/snippets') }
+    it { is_expected.to match('snippets') }
+
+    it { is_expected.not_to match('gitlab-org/gitlab/snippets/1') }
+    it { is_expected.not_to match('snippets/1') }
+
+    it_behaves_like 'invalid snippet routes'
+  end
 end

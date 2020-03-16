@@ -1,0 +1,6 @@
+- if can_admin_cluster?(current_user, @cluster)
+  .settings.expanded.border-0.m-0
+    %p
+      = s_('ClusterIntegration|Advanced options on this Kubernetes cluster’s integration')
+    .settings-content#advanced-settings-section
+      = render 'clusters/clusters/advanced_settings'

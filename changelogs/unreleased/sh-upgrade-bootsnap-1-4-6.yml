@@ -1,0 +1,5 @@
+---
+title: Upgrade to Bootsnap 1.4.6
+merge_request: 25844
+author:
+type: performance

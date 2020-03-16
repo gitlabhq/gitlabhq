@@ -7,8 +7,8 @@ class Repositories::BaseService < BaseService
 
   attr_reader :repository
 
-  delegate :project, :disk_path, :full_path, to: :repository
-  delegate :repository_storage, to: :project
+  delegate :container, :disk_path, :full_path, to: :repository
+  delegate :repository_storage, to: :container
 
   def initialize(repository)
     @repository = repository
@@ -31,7 +31,7 @@ class Repositories::BaseService < BaseService
   # gitlab/cookies.git -> gitlab/cookies+119+deleted.git
   #
   def removal_path
-    "#{disk_path}+#{project.id}#{DELETED_FLAG}"
+    "#{disk_path}+#{container.id}#{DELETED_FLAG}"
   end
 
   # If we get a Gitaly error, the repository may be corrupted. We can
@@ -40,7 +40,7 @@ class Repositories::BaseService < BaseService
   def ignore_git_errors(&block)
     yield
   rescue Gitlab::Git::CommandError => e
-    Gitlab::GitLogger.warn(class: self.class.name, project_id: project.id, disk_path: disk_path, message: e.to_s)
+    Gitlab::GitLogger.warn(class: self.class.name, container_id: container.id, disk_path: disk_path, message: e.to_s)
   end
 
   def move_error(path)

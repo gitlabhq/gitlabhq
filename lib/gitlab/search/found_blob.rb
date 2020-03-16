@@ -155,7 +155,7 @@ module Gitlab
       end
 
       def repository
-        @repository ||= project.repository
+        @repository ||= project&.repository
       end
     end
   end

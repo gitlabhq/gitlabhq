@@ -12,8 +12,8 @@ module GraphqlHelpers
   end
 
   # Run a loader's named resolver
-  def resolve(resolver_class, obj: nil, args: {}, ctx: {})
-    resolver_class.new(object: obj, context: ctx).resolve(args)
+  def resolve(resolver_class, obj: nil, args: {}, ctx: {}, field: nil)
+    resolver_class.new(object: obj, context: ctx, field: field).resolve(args)
   end
 
   # Eagerly run a loader's named resolver

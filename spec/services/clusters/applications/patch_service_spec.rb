@@ -7,7 +7,7 @@ describe Clusters::Applications::PatchService do
     let(:application) { create(:clusters_applications_knative, :scheduled) }
     let!(:update_command) { application.update_command }
     let(:service) { described_class.new(application) }
-    let(:helm_client) { instance_double(Gitlab::Kubernetes::Helm::Api) }
+    let(:helm_client) { instance_double(Gitlab::Kubernetes::Helm::API) }
 
     before do
       allow(service).to receive(:update_command).and_return(update_command)

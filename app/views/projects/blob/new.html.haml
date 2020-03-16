@@ -13,3 +13,9 @@
     = hidden_field_tag 'content', '', id: 'file-content'
     = render 'projects/commit_button', ref: @ref,
               cancel_path: project_tree_path(@project, @id)
+    - if should_suggest_gitlab_ci_yml?
+      .js-suggest-gitlab-ci-yml-commit-changes{ data: { toggle: 'popover',
+        target: '#commit-changes',
+        track_label: 'suggest_commit_first_project_gitlab_ci_yml',
+        dismiss_key: "suggest_commit_first_project_gitlab_ci_yml_#{@project.id}",
+        human_access: human_access } }

@@ -129,6 +129,9 @@
 
         = render_if_exists 'shared/issuable/sidebar_weight', issuable_sidebar: issuable_sidebar
 
+        - if Feature.enabled?(:save_issuable_health_status, @project.group) && issuable_sidebar[:type] == "issue"
+          .js-sidebar-status-entry-point
+
         - if issuable_sidebar.has_key?(:confidential)
           -# haml-lint:disable InlineJavaScript
           %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: issuable_sidebar[:confidential], is_editable: can_edit_issuable }.to_json.html_safe

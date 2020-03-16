@@ -1,0 +1,5 @@
+---
+title: Set new_variables_ui feature flag default value to true
+merge_request: 25731
+author:
+type: added

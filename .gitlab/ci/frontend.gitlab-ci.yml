@@ -1,68 +1,3 @@
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-not-canonical-namespace: &if-not-canonical-namespace
-  if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/'
-
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-not-ee: &if-not-ee
-  if: '$CI_PROJECT_NAME !~ /^gitlab(-ee)?$/'
-
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-master-refs: &if-master-refs
-  if: '$CI_COMMIT_REF_NAME == "master"'
-
-# Make sure to update all the similar conditions in other CI config files if you modify these conditions
-.if-default-refs: &if-default-refs
-  if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG'
-
-# Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.code-backstage-patterns: &code-backstage-patterns
-  - ".gitlab/ci/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
-  - ".csscomb.json"
-  - "Dockerfile.assets"
-  - "*_VERSION"
-  - "Gemfile{,.lock}"
-  - "Rakefile"
-  - "{babel.config,jest.config}.js"
-  - "config.ru"
-  - "{package.json,yarn.lock}"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
-  # Backstage changes
-  - "Dangerfile"
-  - "danger/**/*"
-  - "{,ee/}fixtures/**/*"
-  - "{,ee/}rubocop/**/*"
-  - "{,ee/}spec/**/*"
-  - "doc/README.md"  # Some RSpec test rely on this file
-
-# Make sure to update all the similar patterns in other CI config files if you modify these patterns
-.code-backstage-qa-patterns: &code-backstage-qa-patterns
-  - ".gitlab/ci/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,scss-lint}.yml"
-  - ".csscomb.json"
-  - "Dockerfile.assets"
-  - "*_VERSION"
-  - "Gemfile{,.lock}"
-  - "Rakefile"
-  - "{babel.config,jest.config}.js"
-  - "config.ru"
-  - "{package.json,yarn.lock}"
-  - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*" # Files in this folder are auto-generated
-  # Backstage changes
-  - "Dangerfile"
-  - "danger/**/*"
-  - "{,ee/}fixtures/**/*"
-  - "{,ee/}rubocop/**/*"
-  - "{,ee/}spec/**/*"
-  - "doc/README.md"  # Some RSpec test rely on this file
-  # QA changes
-  - ".dockerignore"
-  - "qa/**/*"
-
 .assets-compile-cache:
   cache:
     paths:
@@ -71,6 +6,7 @@
       - tmp/cache/assets/sprockets
       - tmp/cache/babel-loader
       - tmp/cache/vue-loader
+      - tmp/cache/webpack-dlls
 
 .gitlab:assets:compile-metadata:
   extends:
@@ -113,24 +49,16 @@
     - docker
 
 gitlab:assets:compile pull-push-cache:
-  extends: .gitlab:assets:compile-metadata
-  rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - <<: *if-master-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
+  extends:
+    - .gitlab:assets:compile-metadata
+    - .frontend:rules:gitlab-assets-compile-pull-push-cache
   cache:
     policy: pull-push
 
 gitlab:assets:compile pull-cache:
-  extends: .gitlab:assets:compile-metadata
-  rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
+  extends:
+    - .gitlab:assets:compile-metadata
+    - .frontend:rules:gitlab-assets-compile-pull-cache
   cache:
     policy: pull
 
@@ -151,6 +79,7 @@ gitlab:assets:compile pull-cache:
     SETUP_DB: "false"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
+    WEBPACK_VENDOR_DLL: "true"
   cache:
     key: "assets-compile:v9"
   artifacts:
@@ -160,50 +89,74 @@ gitlab:assets:compile pull-cache:
       - public/assets
 
 compile-assets pull-push-cache:
-  extends: .compile-assets-metadata
-  rules:
-    - <<: *if-master-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
+  extends:
+    - .compile-assets-metadata
+    - .frontend:rules:compile-assets-pull-push-cache
   cache:
     policy: pull-push
 
-compile-assets pull-push-cache foss:
+compile-assets pull-push-cache as-if-foss:
   extends:
     - .compile-assets-metadata
+    - .frontend:rules:compile-assets-pull-push-cache-as-if-foss
     - .as-if-foss
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-master-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
   cache:
     policy: pull-push
     key: "assets-compile:v9:foss"
 
 compile-assets pull-cache:
-  extends: .compile-assets-metadata
-  rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
+  extends:
+    - .compile-assets-metadata
+    - .frontend:rules:compile-assets-pull-cache
   cache:
     policy: pull
 
-compile-assets pull-cache foss:
+compile-assets pull-cache as-if-foss:
   extends:
     - .compile-assets-metadata
+    - .frontend:rules:compile-assets-pull-cache-as-if-foss
     - .as-if-foss
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
-      when: on_success
   cache:
     policy: pull
     key: "assets-compile:v9:foss"
+
+.frontend-fixtures-base:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .use-pg9
+  stage: fixtures
+  needs:
+    - job: "setup-test-env"
+      artifacts: true
+    - job: "compile-assets pull-cache"
+      artifacts: true
+  script:
+    - date
+    - scripts/gitaly-test-spawn
+    - date
+    - bundle exec rake frontend:fixtures
+  artifacts:
+    name: frontend-fixtures
+    expire_in: 31d
+    when: always
+    paths:
+      - node_modules
+      - public/assets
+      - tmp/tests/frontend/
+
+frontend-fixtures:
+  extends:
+    - .frontend-fixtures-base
+    - .frontend:rules:default-frontend-jobs
+
+frontend-fixtures-as-if-foss:
+  extends:
+    - .frontend-fixtures-base
+    - .frontend:rules:default-frontend-jobs-as-if-foss
+    - .as-if-foss
 
 .frontend-job-base:
   extends:
@@ -211,9 +164,10 @@ compile-assets pull-cache foss:
     - .default-retry
     - .default-cache
     - .default-before_script
-    - .use-pg9
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+    SETUP_DB: "false"
   stage: test
-  needs: ["setup-test-env", "compile-assets pull-cache"]
 
 .karma-base:
   extends: .frontend-job-base
@@ -223,16 +177,13 @@ compile-assets pull-cache foss:
   script:
     - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
     - date
-    - scripts/gitaly-test-spawn
-    - date
-    - bundle exec rake karma
+    - yarn karma
 
 karma:
-  extends: .karma-base
-  rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
-      when: on_success
+  extends:
+    - .karma-base
+    - .frontend:rules:default-frontend-jobs
+  needs: ["frontend-fixtures"]
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
     name: coverage-javascript
@@ -245,37 +196,29 @@ karma:
     reports:
       junit: junit_karma.xml
 
-karma-foss:
+karma-as-if-foss:
   extends:
     - .karma-base
+    - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
-      when: on_success
+  needs: ["frontend-fixtures-as-if-foss"]
 
 .jest-base:
   extends: .frontend-job-base
   script:
-    - scripts/gitaly-test-spawn
     - date
-    - bundle exec rake frontend:fixtures
-    - date
-    - yarn jest --ci --coverage
+    - yarn jest --ci --coverage --testSequencer ./scripts/frontend/parallel_ci_sequencer.js
   cache:
     key: jest
     paths:
-      - tmp/jest/jest/
+      - tmp/cache/jest/
     policy: pull-push
 
 jest:
-  extends: .jest-base
-  rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
-      when: on_success
+  extends:
+    - .jest-base
+    - .frontend:rules:default-frontend-jobs
+  needs: ["frontend-fixtures"]
   artifacts:
     name: coverage-frontend
     expire_in: 31d
@@ -286,29 +229,44 @@ jest:
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml
+  parallel: 2
 
-jest-foss:
+jest-as-if-foss:
   extends:
     - .jest-base
+    - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
-      when: on_success
+  needs: ["frontend-fixtures-as-if-foss"]
   cache:
     policy: pull
+
+coverage-frontend:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .frontend:rules:default-frontend-jobs
+  needs: ["jest"]
+  stage: post-test
+  before_script:
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
+  script:
+    - yarn node scripts/frontend/merge_coverage_frontend.js
+  artifacts:
+    name: coverage-frontend
+    expire_in: 31d
+    paths:
+      - coverage-frontend/
+  cache:
+    paths:
+      - .yarn-cache/
 
 .qa-frontend-node:
   extends:
     - .default-tags
     - .default-retry
     - .default-cache
+    - .frontend:rules:qa-frontend-node
   stage: test
-  rules:
-    - <<: *if-master-refs
-      when: on_success
   dependencies: []
   cache:
     key: "$CI_JOB_NAME"
@@ -320,10 +278,6 @@ jest-foss:
     - yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
     - date
     - yarn run webpack-prod
-
-qa-frontend-node:8:
-  extends: .qa-frontend-node
-  image: node:carbon
 
 qa-frontend-node:10:
   extends: .qa-frontend-node
@@ -339,11 +293,8 @@ webpack-dev-server:
     - .default-tags
     - .default-retry
     - .default-cache
+    - .frontend:rules:default-frontend-jobs
   stage: test
-  rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
-      when: on_success
   needs: ["setup-test-env", "compile-assets pull-cache"]
   variables:
     WEBPACK_MEMORY_TEST: "true"

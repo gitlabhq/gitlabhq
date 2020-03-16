@@ -8,14 +8,16 @@ function hasHiddenStyle(node) {
   return false;
 }
 
-function createDefaultClientRect() {
+function createDefaultClientRect(node) {
+  const { outerWidth: width, outerHeight: height } = node;
+
   return {
-    bottom: 0,
-    height: 0,
+    bottom: height,
+    height,
     left: 0,
-    right: 0,
+    right: width,
     top: 0,
-    width: 0,
+    width,
     x: 0,
     y: 0,
   };
@@ -46,5 +48,5 @@ window.Element.prototype.getClientRects = function getClientRects() {
     return [];
   }
 
-  return [createDefaultClientRect()];
+  return [createDefaultClientRect(node)];
 };

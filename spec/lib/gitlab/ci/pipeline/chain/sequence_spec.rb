@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Chain::Sequence do
-  set(:project) { create(:project) }
-  set(:user) { create(:user) }
-
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
   let(:pipeline) { build_stubbed(:ci_pipeline) }
   let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new }
   let(:first_step) { spy('first step') }

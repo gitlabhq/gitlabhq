@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe PipelineSerializer do
-  set(:project) { create(:project, :repository) }
-  set(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
 
   let(:serializer) do
     described_class.new(current_user: user, project: project)

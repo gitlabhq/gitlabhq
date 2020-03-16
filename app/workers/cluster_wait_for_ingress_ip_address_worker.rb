@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ClusterWaitForIngressIpAddressWorker
+class ClusterWaitForIngressIpAddressWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ClusterQueue
   include ClusterApplications

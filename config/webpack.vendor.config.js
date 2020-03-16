@@ -15,6 +15,9 @@ module.exports = {
     extensions: ['.js'],
   },
 
+  // ensure output is not generated when errors are encountered
+  bail: true,
+
   context: ROOT_PATH,
 
   entry: {

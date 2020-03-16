@@ -102,11 +102,11 @@ module Gitlab
 
       def email_for_github_username(username)
         cache_key = EMAIL_FOR_USERNAME_CACHE_KEY % username
-        email = Caching.read(cache_key)
+        email = Gitlab::Cache::Import::Caching.read(cache_key)
 
         unless email
           user = client.user(username)
-          email = Caching.write(cache_key, user.email) if user
+          email = Gitlab::Cache::Import::Caching.write(cache_key, user.email) if user
         end
 
         email
@@ -125,7 +125,7 @@ module Gitlab
       def id_for_github_id(id)
         gitlab_id = query_id_for_github_id(id) || nil
 
-        Caching.write(ID_CACHE_KEY % id, gitlab_id)
+        Gitlab::Cache::Import::Caching.write(ID_CACHE_KEY % id, gitlab_id)
       end
 
       # Queries and caches the GitLab user ID for a GitHub email, if one was
@@ -133,7 +133,7 @@ module Gitlab
       def id_for_github_email(email)
         gitlab_id = query_id_for_github_email(email) || nil
 
-        Caching.write(ID_FOR_EMAIL_CACHE_KEY % email, gitlab_id)
+        Gitlab::Cache::Import::Caching.write(ID_FOR_EMAIL_CACHE_KEY % email, gitlab_id)
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -155,7 +155,7 @@ module Gitlab
       # 1. A boolean indicating if the key was present or not.
       # 2. The ID as an Integer, or nil in case no ID could be found.
       def read_id_from_cache(key)
-        value = Caching.read(key)
+        value = Gitlab::Cache::Import::Caching.read(key)
         exists = !value.nil?
         number = value.to_i
 

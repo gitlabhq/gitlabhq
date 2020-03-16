@@ -42,7 +42,7 @@ module Gitlab
           klass = stub_class(name)
           addr = stub_address(storage)
           creds = stub_creds(storage)
-          klass.new(addr, creds, interceptors: interceptors)
+          klass.new(addr, creds, interceptors: interceptors, channel_args: channel_args)
         end
       end
     end
@@ -53,6 +53,16 @@ module Gitlab
       [Labkit::Tracing::GRPC::ClientInterceptor.instance]
     end
     private_class_method :interceptors
+
+    def self.channel_args
+      # These values match the go Gitaly client
+      # https://gitlab.com/gitlab-org/gitaly/-/blob/bf9f52bc/client/dial.go#L78
+      {
+        'grpc.keepalive_time_ms': 20000,
+        'grpc.keepalive_permit_without_calls': 1
+      }
+    end
+    private_class_method :channel_args
 
     def self.stub_cert_paths
       cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
@@ -140,6 +150,20 @@ module Gitlab
     # GitalyClient.call(storage, service, rpc, request) do |kwargs|
     #   kwargs.merge(deadline: Time.now + 10)
     # end
+    #
+    # The optional remote_storage keyword argument is used to enable
+    # inter-gitaly calls. Say you have an RPC that needs to pull data from
+    # one repository to another. For example, to fetch a branch from a
+    # (non-deduplicated) fork into the fork parent. In that case you would
+    # send an RPC call to the Gitaly server hosting the fork parent, and in
+    # the request, you would tell that Gitaly server to pull Git data from
+    # the fork. How does that Gitaly server connect to the Gitaly server the
+    # forked repo lives on? This is the problem `remote_storage:` solves: it
+    # adds address and authentication information to the call, as gRPC
+    # metadata (under the `gitaly-servers` header). The request would say
+    # "pull from repo X on gitaly-2". In the Ruby code you pass
+    # `remote_storage: 'gitaly-2'`. And then the metadata would say
+    # "gitaly-2 is at network address tcp://10.0.1.2:8075".
     #
     def self.call(storage, service, rpc, request, remote_storage: nil, timeout: default_timeout, &block)
       self.measure_timings(service, rpc, request) do

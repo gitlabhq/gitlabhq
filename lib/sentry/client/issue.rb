@@ -75,7 +75,21 @@ module Sentry
         http_get(api_urls.issue_url(issue_id))[:body]
       end
 
-      def parse_gitlab_issue(plugin_issues)
+      def parse_gitlab_issue(issue)
+        parse_issue_annotations(issue) || parse_plugin_issue(issue)
+      end
+
+      def parse_issue_annotations(issue)
+        issue
+          .fetch('annotations', [])
+          .reject(&:blank?)
+          .map { |annotation| Nokogiri.make(annotation) }
+          .find { |html| html['href']&.starts_with?(Gitlab.config.gitlab.url) }
+          .try(:[], 'href')
+      end
+
+      def parse_plugin_issue(issue)
+        plugin_issues = issue.fetch('pluginIssues', nil)
         return unless plugin_issues
 
         gitlab_plugin = plugin_issues.detect { |item| item['id'] == 'gitlab' }
@@ -145,7 +159,7 @@ module Sentry
           short_id: issue.fetch('shortId', nil),
           status: issue.fetch('status', nil),
           frequency: issue.dig('stats', '24h'),
-          gitlab_issue: parse_gitlab_issue(issue.fetch('pluginIssues', nil)),
+          gitlab_issue: parse_gitlab_issue(issue),
           project_id: issue.dig('project', 'id'),
           project_name: issue.dig('project', 'name'),
           project_slug: issue.dig('project', 'slug'),

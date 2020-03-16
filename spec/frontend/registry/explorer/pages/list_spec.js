@@ -1,6 +1,6 @@
 import VueRouter from 'vue-router';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { GlPagination, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { GlPagination, GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import component from '~/registry/explorer/pages/list.vue';
 import store from '~/registry/explorer/stores/';
@@ -17,7 +17,7 @@ describe('List Page', () => {
 
   const findDeleteBtn = () => wrapper.find({ ref: 'deleteImageButton' });
   const findDeleteModal = () => wrapper.find(GlModal);
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findSkeletonLoader = () => wrapper.find(GlSkeletonLoader);
   const findImagesList = () => wrapper.find({ ref: 'imagesList' });
   const findRowItems = () => wrapper.findAll({ ref: 'rowItem' });
   const findEmptyState = () => wrapper.find(GlEmptyState);
@@ -71,7 +71,7 @@ describe('List Page', () => {
     });
 
     it('should not show the loading or default state', () => {
-      expect(findLoadingIcon().exists()).toBe(false);
+      expect(findSkeletonLoader().exists()).toBe(false);
       expect(findImagesList().exists()).toBe(false);
     });
   });
@@ -81,8 +81,8 @@ describe('List Page', () => {
 
     afterAll(() => store.commit(SET_MAIN_LOADING, false));
 
-    it('shows the loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(true);
+    it('shows the skeleton loader', () => {
+      expect(findSkeletonLoader().exists()).toBe(true);
     });
 
     it('imagesList is not visible', () => {

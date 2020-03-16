@@ -1,5 +1,0 @@
----
-title: Replace artifacts via Runner API if already exist
-merge_request: 24165
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fixes a new line issue with suggestions in the last line of a file
-merge_request: 22732
-author:
-type: fixed

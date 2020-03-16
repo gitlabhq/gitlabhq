@@ -5,10 +5,9 @@ require 'spec_helper'
 describe Resolvers::ProjectResolver do
   include GraphqlHelpers
 
-  set(:project1) { create(:project) }
-  set(:project2) { create(:project) }
-
-  set(:other_project) { create(:project) }
+  let_it_be(:project1) { create(:project) }
+  let_it_be(:project2) { create(:project) }
+  let_it_be(:other_project) { create(:project) }
 
   describe '#resolve' do
     it 'batch-resolves projects by full path' do

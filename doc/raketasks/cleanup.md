@@ -6,7 +6,7 @@ Clean up local project upload files if they don't exist in GitLab database. The
 task attempts to fix the file if it can find its project, otherwise it moves the
 file to a lost and found directory.
 
-```
+```shell
 # omnibus-gitlab
 sudo gitlab-rake gitlab:cleanup:project_uploads
 
@@ -16,8 +16,9 @@ bundle exec rake gitlab:cleanup:project_uploads RAILS_ENV=production
 
 Example output:
 
-```
+```shell
 $ sudo gitlab-rake gitlab:cleanup:project_uploads
+
 I, [2018-07-27T12:08:27.671559 #89817]  INFO -- : Looking for orphaned project uploads to clean up. Dry run...
 D, [2018-07-27T12:08:28.293568 #89817] DEBUG -- : Processing batch of 500 project upload file paths, starting with /opt/gitlab/embedded/service/gitlab-rails/public/uploads/test.out
 I, [2018-07-27T12:08:28.689869 #89817]  INFO -- : Can move to lost and found /opt/gitlab/embedded/service/gitlab-rails/public/uploads/test.out -> /opt/gitlab/embedded/service/gitlab-rails/public/uploads/-/project-lost-found/test.out
@@ -35,7 +36,7 @@ I, [2018-07-27T12:08:33.760257 #89817]  INFO -- : Did move to lost and found /op
 
 Remove object store upload files if they don't exist in GitLab database.
 
-```
+```shell
 # omnibus-gitlab
 sudo gitlab-rake gitlab:cleanup:remote_upload_files
 
@@ -45,7 +46,7 @@ bundle exec rake gitlab:cleanup:remote_upload_files RAILS_ENV=production
 
 Example output:
 
-```
+```shell
 $ sudo gitlab-rake gitlab:cleanup:remote_upload_files
 
 I, [2018-08-02T10:26:13.995978 #45011]  INFO -- : Looking for orphaned remote uploads to remove. Dry run...
@@ -54,7 +55,7 @@ I, [2018-08-02T10:26:14.120482 #45011]  INFO -- : Can be moved to lost and found
 I, [2018-08-02T10:26:14.120634 #45011]  INFO -- : To cleanup these files run this command with DRY_RUN=false
 ```
 
-```
+```shell
 $ sudo gitlab-rake gitlab:cleanup:remote_upload_files DRY_RUN=false
 
 I, [2018-08-02T10:26:47.598424 #45087]  INFO -- : Looking for orphaned remote uploads to remove...
@@ -109,7 +110,7 @@ level with `NICENESS`. Below are the valid levels, but consult
 
 ## Remove expired ActiveSession lookup keys
 
-```
+```shell
 # omnibus-gitlab
 sudo gitlab-rake gitlab:cleanup:sessions:active_sessions_lookup_keys
 

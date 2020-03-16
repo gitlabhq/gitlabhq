@@ -4,10 +4,10 @@
 #
 module Gitlab
   module Auth
-    module LDAP
+    module Ldap
       class AuthHash < Gitlab::Auth::OAuth::AuthHash
         def uid
-          @uid ||= Gitlab::Auth::LDAP::Person.normalize_dn(super)
+          @uid ||= Gitlab::Auth::Ldap::Person.normalize_dn(super)
         end
 
         def username
@@ -42,7 +42,7 @@ module Gitlab
         end
 
         def ldap_config
-          @ldap_config ||= Gitlab::Auth::LDAP::Config.new(self.provider)
+          @ldap_config ||= Gitlab::Auth::Ldap::Config.new(self.provider)
         end
       end
     end

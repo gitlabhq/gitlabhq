@@ -52,10 +52,17 @@ class SnippetsController < ApplicationController
     create_params = snippet_params.merge(spammable_params)
     service_response = Snippets::CreateService.new(nil, current_user, create_params).execute
     @snippet = service_response.payload[:snippet]
+    repository_operation_error = service_response.error? && !@snippet.persisted? && @snippet.valid?
 
-    move_temporary_files if @snippet.valid? && params[:files]
+    if repository_operation_error
+      flash.now[:alert] = service_response.message
 
-    recaptcha_check_with_fallback { render :new }
+      render :new
+    else
+      move_temporary_files if @snippet.valid? && params[:files]
+
+      recaptcha_check_with_fallback { render :new }
+    end
   end
 
   def update
@@ -64,21 +71,19 @@ class SnippetsController < ApplicationController
     service_response = Snippets::UpdateService.new(nil, current_user, update_params).execute(@snippet)
     @snippet = service_response.payload[:snippet]
 
-    recaptcha_check_with_fallback { render :edit }
+    check_repository_error
   end
 
   def show
-    blob = @snippet.blob
     conditionally_expand_blob(blob)
-
-    @note = Note.new(noteable: @snippet)
-    @noteable = @snippet
-
-    @discussions = @snippet.discussions
-    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
     respond_to do |format|
       format.html do
+        @note = Note.new(noteable: @snippet)
+        @noteable = @snippet
+
+        @discussions = @snippet.discussions
+        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
         render 'show'
       end
 
@@ -120,6 +125,16 @@ class SnippetsController < ApplicationController
 
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet
+
+  def blob
+    return unless snippet
+
+    @blob ||= if Feature.enabled?(:version_snippets, current_user) && !snippet.repository.empty?
+                snippet.blobs.first
+              else
+                snippet.blob
+              end
+  end
 
   def spammable_path
     snippet_path(@snippet)

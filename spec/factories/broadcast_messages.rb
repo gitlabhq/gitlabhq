@@ -6,6 +6,8 @@ FactoryBot.define do
     starts_at { 1.day.ago }
     ends_at { 1.day.from_now }
 
+    broadcast_type { :banner }
+
     trait :expired do
       starts_at { 5.days.ago }
       ends_at { 3.days.ago }
@@ -14,6 +16,10 @@ FactoryBot.define do
     trait :future do
       starts_at { 5.days.from_now }
       ends_at { 6.days.from_now }
+    end
+
+    trait :notification do
+      broadcast_type { :notification }
     end
   end
 end

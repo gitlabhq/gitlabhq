@@ -1,19 +1,21 @@
 # Deploy Tokens
 
-> [Introduced][ce-17894] in GitLab 10.7.
+> - [Introduced][ce-17894] in GitLab 10.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/issues/199370) from **Settings > Repository** in GitLab 12.9.
 
-Deploy tokens allow to download (through `git clone`), or read the container registry images of a project without the need of having a user and a password.
+Deploy tokens allow you to download (`git clone`) or read the container registry images of a project without having a user and a password.
 
-Please note, that the expiration of deploy tokens happens on the date you define,
-at midnight UTC and that they can be only managed by [maintainers](../../permissions.md).
+Deploy tokens can be managed by [maintainers only](../../permissions.md).
+
+If you have a key pair, you might want to use [deploy keys](../../../ssh/README.md#deploy-keys) instead.
 
 ## Creating a Deploy Token
 
-You can create as many deploy tokens as you like from the settings of your project:
+You can create as many deploy tokens as you like from the settings of your project. Alternatively, you can also create [group-scoped deploy tokens](#group-deploy-token).
 
 1. Log in to your GitLab account.
-1. Go to the project you want to create Deploy Tokens for.
-1. Go to **Settings** > **Repository**.
+1. Go to the project (or group) you want to create Deploy Tokens for.
+1. Go to **{settings}** **Settings** > **CI / CD**.
 1. Click on "Expand" on **Deploy Tokens** section.
 1. Choose a name, expiry date (optional), and username (optional) for the token.
 1. Choose the [desired scopes](#limiting-scopes-of-a-deploy-token).
@@ -22,6 +24,10 @@ You can create as many deploy tokens as you like from the settings of your proje
    the page, **you won't be able to access it again**.
 
 ![Personal access tokens page](img/deploy_tokens.png)
+
+## Deploy token expiration
+
+Deploy tokens expire on the date you define, at midnight UTC.
 
 ## Revoking a deploy token
 
@@ -76,6 +82,22 @@ docker login -u <username> -p <deploy_token> registry.example.com
 
 Just replace `<username>` and `<deploy_token>` with the proper values. Then you can simply
 pull images from your Container Registry.
+
+### Group Deploy Token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/21765) in GitLab 12.9.
+
+A deploy token created at the group level can be used across all projects that
+belong either to the specific group or to one of its subgroups.
+
+To use a group deploy token:
+
+1. [Create](#creating-a-deploy-token) a deploy token for a group.
+1. Use it the same way you use a project deploy token when
+   [cloning a repository](#git-clone-a-repository).
+
+The scopes applied to a group deploy token (such as `read_repository`) will
+apply consistently when cloning the repository of related projects.
 
 ### GitLab Deploy Token
 

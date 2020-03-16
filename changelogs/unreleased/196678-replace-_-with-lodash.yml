@@ -1,5 +1,0 @@
----
-title: Replaced underscore with lodash for spec/javascripts/badges
-merge_request: 25135
-author: Shubham Pandey
-type: other

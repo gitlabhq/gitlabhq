@@ -32,7 +32,7 @@ describe API::Wikis do
       it 'returns the list of wiki pages without content' do
         get api(url, user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.size).to eq(2)
 
         json_response.each_with_index do |page, index|
@@ -45,7 +45,7 @@ describe API::Wikis do
       it 'returns the list of wiki pages with content' do
         get api(url, user), params: { with_content: 1 }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.size).to eq(2)
 
         json_response.each_with_index do |page, index|
@@ -60,14 +60,14 @@ describe API::Wikis do
     it 'return the empty list of wiki pages' do
       get api(url, user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.size).to eq(0)
     end
   end
 
   shared_examples_for 'returns wiki page' do
     it 'returns the wiki page' do
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.size).to eq(4)
       expect(json_response.keys).to match_array(expected_keys_with_content)
       expect(json_response['content']).to eq(page.content)
@@ -80,7 +80,7 @@ describe API::Wikis do
     it 'creates the wiki page' do
       post(api(url, user), params: payload)
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response.size).to eq(4)
       expect(json_response.keys).to match_array(expected_keys_with_content)
       expect(json_response['content']).to eq(payload[:content])
@@ -95,7 +95,7 @@ describe API::Wikis do
 
         post(api(url, user), params: payload)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response.size).to eq(1)
         expect(json_response['error']).to eq("#{part} is missing")
       end
@@ -106,7 +106,7 @@ describe API::Wikis do
     it 'updates the wiki page' do
       put(api(url, user), params: payload)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.size).to eq(4)
       expect(json_response.keys).to match_array(expected_keys_with_content)
       expect(json_response['content']).to eq(payload[:content])
@@ -120,14 +120,14 @@ describe API::Wikis do
 
         put(api(url, user), params: payload)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
 
   shared_examples_for '403 Forbidden' do
     it 'returns 403 Forbidden' do
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
       expect(json_response.size).to eq(1)
       expect(json_response['message']).to eq('403 Forbidden')
     end
@@ -135,7 +135,7 @@ describe API::Wikis do
 
   shared_examples_for '404 Wiki Page Not Found' do
     it 'returns 404 Wiki Page Not Found' do
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response.size).to eq(1)
       expect(json_response['message']).to eq('404 Wiki Page Not Found')
     end
@@ -143,7 +143,7 @@ describe API::Wikis do
 
   shared_examples_for '404 Project Not Found' do
     it 'returns 404 Project Not Found' do
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response.size).to eq(1)
       expect(json_response['message']).to eq('404 Project Not Found')
     end
@@ -151,7 +151,7 @@ describe API::Wikis do
 
   shared_examples_for '204 No Content' do
     it 'returns 204 No Content' do
-      expect(response).to have_gitlab_http_status(204)
+      expect(response).to have_gitlab_http_status(:no_content)
     end
   end
 
@@ -161,7 +161,7 @@ describe API::Wikis do
 
       workhorse_post_with_file(api(url, user), file_key: :file, params: payload)
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response).to eq result_hash.deep_stringify_keys
     end
 
@@ -170,7 +170,7 @@ describe API::Wikis do
 
       post(api(url, user), params: payload)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response.size).to eq(1)
       expect(json_response['error']).to eq('file is missing')
     end
@@ -180,7 +180,7 @@ describe API::Wikis do
 
       post(api(url, user), params: payload)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response.size).to eq(1)
       expect(json_response['error']).to eq('file is invalid')
     end
@@ -190,7 +190,7 @@ describe API::Wikis do
 
       post(api(url, user), params: payload)
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response).to eq result_hash.deep_stringify_keys
     end
   end

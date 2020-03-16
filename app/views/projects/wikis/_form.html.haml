@@ -4,7 +4,7 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post,
            html: { class: form_classes },
            data: { uploads_path: uploads_path } do |f|
-  = form_errors(@page)
+  = form_errors(@page, truncate: :title)
 
   - if @page.persisted?
     = f.hidden_field :last_commit_sha, value: @page.last_commit_sha
@@ -12,7 +12,7 @@
   .form-group.row
     .col-sm-12= f.label :title, class: 'control-label-full-width'
     .col-sm-12
-      = f.text_field :title, class: 'form-control qa-wiki-title-textbox', value: @page.title, required: true, autofocus: !@page.persisted?, placeholder: _('Wiki|Page title')
+      = f.text_field :title, class: 'form-control qa-wiki-title-textbox', value: @page.title, required: true, autofocus: !@page.persisted?, placeholder: s_('Wiki|Page title')
       %span.d-inline-block.mw-100.prepend-top-5
         = icon('lightbulb-o')
         - if @page.persisted?
@@ -43,8 +43,16 @@
 
       .form-text.text-muted
         = succeed '.' do
-          = (s_("WikiMarkdownTip|To link to a (new) page, simply type %{link_example}") % { link_example: '<code>[Link Title](page-slug)</code>' }).html_safe
-
+          - case @page.format.to_s
+            - when 'rdoc'
+              - link_example = '{Link title}[link:page-slug]'
+            - when 'asciidoc'
+              - link_example = 'link:page-slug[Link title]'
+            - when 'org'
+              - link_example = '[[page-slug]]'
+            - else
+              - link_example = '[Link Title](page-slug)'
+          = (s_('WikiMarkdownTip|To link to a (new) page, simply type <code class="js-markup-link-example">%{link_example}</code>') % { link_example: link_example }).html_safe
         = succeed '.' do
           - markdown_link = link_to s_("WikiMarkdownDocs|documentation"), help_page_path('user/markdown', anchor: 'wiki-specific-markdown')
           = (s_("WikiMarkdownDocs|More examples are in the %{docs_link}") % { docs_link: markdown_link }).html_safe

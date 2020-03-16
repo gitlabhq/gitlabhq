@@ -9,7 +9,7 @@
 
 Paginated list of Releases, sorted by `released_at`.
 
-```
+```plaintext
 GET /projects/:id/releases
 ```
 
@@ -70,7 +70,11 @@ Example response:
             "updated_at":"2019-07-12T19:45:44.256Z",
             "due_date":"2019-08-16T11:00:00.256Z",
             "start_date":"2019-07-30T12:00:00.256Z",
-            "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1"
+            "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1",
+            "issue_stats": {
+               "total": 98,
+               "closed": 76
+            }
          },
          {
             "id":52,
@@ -83,7 +87,11 @@ Example response:
             "updated_at":"2019-07-16T14:00:12.256Z",
             "due_date":"2019-08-16T11:00:00.256Z",
             "start_date":"2019-07-30T12:00:00.256Z",
-            "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2"
+            "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2",
+            "issue_stats": {
+               "total": 24,
+               "closed": 21
+            }
          }
       ],
       "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
@@ -191,7 +199,7 @@ Example response:
 
 Get a Release for the given tag.
 
-```
+```plaintext
 GET /projects/:id/releases/:tag_name
 ```
 
@@ -252,7 +260,11 @@ Example response:
          "updated_at":"2019-07-12T19:45:44.256Z",
          "due_date":"2019-08-16T11:00:00.256Z",
          "start_date":"2019-07-30T12:00:00.256Z",
-         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1"
+         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1",
+         "issue_stats": {
+            "total": 98,
+            "closed": 76
+         }
        },
        {
          "id":52,
@@ -265,7 +277,11 @@ Example response:
          "updated_at":"2019-07-16T14:00:12.256Z",
          "due_date":"2019-08-16T11:00:00.256Z",
          "start_date":"2019-07-30T12:00:00.256Z",
-         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2"
+         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2",
+         "issue_stats": {
+            "total": 24,
+            "closed": 21
+         }
        }
    ],
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
@@ -303,7 +319,7 @@ Example response:
 
 Create a Release. You need push access to the repository to create a Release.
 
-```
+```plaintext
 POST /projects/:id/releases
 ```
 
@@ -374,7 +390,11 @@ Example response:
          "updated_at":"2019-07-12T19:45:44.256Z",
          "due_date":"2019-08-16T11:00:00.256Z",
          "start_date":"2019-07-30T12:00:00.256Z",
-         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1"
+         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1",
+         "issue_stats": {
+            "total": 99,
+            "closed": 76
+         }
        },
        {
          "id":52,
@@ -387,7 +407,11 @@ Example response:
          "updated_at":"2019-07-16T14:00:12.256Z",
          "due_date":"2019-08-16T11:00:00.256Z",
          "start_date":"2019-07-30T12:00:00.256Z",
-         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2"
+         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2",
+         "issue_stats": {
+            "total": 24,
+            "closed": 21
+         }
        }
    ],
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
@@ -430,7 +454,7 @@ Example response:
 
 Update a Release.
 
-```
+```plaintext
 PUT /projects/:id/releases/:tag_name
 ```
 
@@ -495,7 +519,11 @@ Example response:
          "updated_at":"2019-09-01T13:00:00.256Z",
          "due_date":"2019-09-20T13:00:00.256Z",
          "start_date":"2019-09-05T12:00:00.256Z",
-         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/3"
+         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/3",
+         "issue_stats": {
+            "opened": 11,
+            "closed": 78
+         }
       }
    ],
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
@@ -533,7 +561,7 @@ Example response:
 
 Delete a Release. Deleting a Release will not delete the associated tag.
 
-```
+```plaintext
 DELETE /projects/:id/releases/:tag_name
 ```
 

@@ -64,7 +64,87 @@ the extra jobs will take resources away from jobs from workers that were already
 there, if the resources available to the Sidekiq process handling the namespace
 are not adjusted appropriately.
 
-## Latency Sensitive Jobs
+## Idempotent Jobs
+
+It's known that a job can fail for multiple reasons. For example, network outages or bugs.
+In order to address this, Sidekiq has a built-in retry mechanism that is
+used by default by most workers within GitLab.
+
+It's expected that a job can run again after a failure without major side-effects for the
+application or users, which is why Sidekiq encourages
+jobs to be [idempotent and transactional](https://github.com/mperham/sidekiq/wiki/Best-Practices#2-make-your-job-idempotent-and-transactional).
+
+As a general rule, a worker can be considered idempotent if:
+
+- It can safely run multiple times with the same arguments.
+- Application side-effects are expected to happen only once
+  (or side-effects of a second run are not impactful).
+
+A good example of that would be a cache expiration worker.
+
+### Ensuring a worker is idempotent
+
+Make sure the worker tests pass using the following shared example:
+
+```ruby
+include_examples 'an idempotent worker' do
+  it 'marks the MR as merged' do
+    # Using subject inside this block will process the job multiple times
+    subject
+
+    expect(merge_request.state).to eq('merged')
+  end
+end
+```
+
+Use the `perform_multiple` method directly instead of `job.perform` (this
+helper method is automatically included for workers).
+
+### Declaring a worker as idempotent
+
+```ruby
+class IdempotentWorker
+  include ApplicationWorker
+
+  # Declares a worker is idempotent and can
+  # safely run multiple times.
+  idempotent!
+
+  # ...
+end
+```
+
+It's encouraged to only have the `idempotent!` call in the top-most worker class, even if
+the `perform` method is defined in another class or module.
+
+NOTE: **Note:**
+Note that a cop will fail if the worker class is not marked as idempotent.
+Consider skipping the cop if you're not confident your job can safely run multiple times.
+
+## Job urgency
+
+Jobs can have an `urgency` attribute set, which can be `:high`,
+`:low`, or `:throttled`. These have the below targets:
+
+| **Urgency**  | **Queue Scheduling Target** | **Execution Latency Requirement**  |
+|--------------|-----------------------------|------------------------------------|
+| `:high`      | 100 milliseconds            | p50 of 1 second, p99 of 10 seconds |
+| `:low`       | 1 minute                    | Maximum run time of 1 hour         |
+| `:throttled` | None                        | Maximum run time of 1 hour         |
+
+To set a job's urgency, use the `urgency` class method:
+
+```ruby
+class HighUrgencyWorker
+  include ApplicationWorker
+
+  urgency :high
+
+  # ...
+end
+```
+
+### Latency sensitive jobs
 
 If a large number of background jobs get scheduled at once, queueing of jobs may
 occur while jobs wait for a worker node to be become available. This is normal
@@ -83,7 +163,7 @@ of these jobs include:
 When these jobs are delayed, the user may perceive the delay as a bug: for
 example, they may push a branch and then attempt to create a merge request for
 that branch, but be told in the UI that the branch does not exist. We deem these
-jobs to be `latency_sensitive`.
+jobs to be `urgency :high`.
 
 Extra effort is made to ensure that these jobs are started within a very short
 period of time after being scheduled. However, in order to ensure throughput,
@@ -93,35 +173,15 @@ these jobs also have very strict execution duration requirements:
 1. 99% of jobs should complete within 10 seconds.
 
 If a worker cannot meet these expectations, then it cannot be treated as a
-`latency_sensitive` worker: consider redesigning the worker, or splitting the
-work between two different workers, one with `latency_sensitive` code that
-executes quickly, and the other with non-`latency_sensitive`, which has no
+`urgency :high` worker: consider redesigning the worker, or splitting the
+work between two different workers, one with `urgency :high` code that
+executes quickly, and the other with `urgency :low`, which has no
 execution latency requirements (but also has lower scheduling targets).
-
-This can be summed up in the following table:
-
-| **Latency Sensitivity** | **Queue Scheduling Target** | **Execution Latency Requirement**   |
-|-------------------------|-----------------------------|-------------------------------------|
-| Not `latency_sensitive` | 1 minute                    | Maximum run time of 1 hour          |
-| `latency_sensitive`     | 100 milliseconds            | p50 of 1 second, p99 of 10 seconds  |
-
-To mark a worker as being `latency_sensitive`, use the
-`latency_sensitive_worker!` attribute, as shown in this example:
-
-```ruby
-class LatencySensitiveWorker
-  include ApplicationWorker
-
-  latency_sensitive_worker!
-
-  # ...
-end
-```
 
 ## Jobs with External Dependencies
 
 Most background jobs in the GitLab application communicate with other GitLab
-services, eg Postgres, Redis, Gitaly and Object Storage. These are considered
+services. For example, Postgres, Redis, Gitaly, and Object Storage. These are considered
 to be "internal" dependencies for a job.
 
 However, some jobs will be dependent on external services in order to complete
@@ -137,7 +197,7 @@ the background processing cluster in several ways:
    therefore we cannot guarantee the execution latencies on these jobs. Since we
    cannot guarantee execution latency, we cannot ensure throughput and
    therefore, in high-traffic environments, we need to ensure that jobs with
-   external dependencies are separated from `latency_sensitive` jobs, to ensure
+   external dependencies are separated from high urgency jobs, to ensure
    throughput on those queues.
 1. Errors in jobs with external dependencies have higher alerting thresholds as
    there is a likelihood that the cause of the error is external.
@@ -155,7 +215,7 @@ class ExternalDependencyWorker
 end
 ```
 
-NOTE: **Note:** Note that a job cannot be both latency sensitive and have
+NOTE: **Note:** Note that a job cannot be both high urgency and have
 external dependencies.
 
 ## CPU-bound and Memory-bound Workers
@@ -167,7 +227,7 @@ Most workers tend to spend most of their time blocked, wait on network responses
 from other services such as Redis, Postgres and Gitaly. Since Sidekiq is a
 multithreaded environment, these jobs can be scheduled with high concurrency.
 
-Some workers, however, spend large amounts of time _on-cpu_ running logic in
+Some workers, however, spend large amounts of time _on-CPU_ running logic in
 Ruby. Ruby MRI does not support true multithreading - it relies on the
 [GIL](https://thoughtbot.com/blog/untangling-ruby-threads#the-global-interpreter-lock)
 to greatly simplify application development by only allowing one section of Ruby
@@ -187,12 +247,16 @@ performance.
 Likewise, if a worker uses large amounts of memory, we can run these on a
 bespoke low concurrency, high memory fleet.
 
-Note that Memory-bound workers create heavy GC workloads, with pauses of
+Note that memory-bound workers create heavy GC workloads, with pauses of
 10-50ms. This will have an impact on the latency requirements for the
-worker. For this reason, `memory` bound, `latency_sensitive` jobs are not
+worker. For this reason, `memory` bound, `urgency :high` jobs are not
 permitted and will fail CI. In general, `memory` bound workers are
 discouraged, and alternative approaches to processing the work should be
 considered.
+
+If a worker needs large amounts of both memory and CPU time, it should
+be marked as memory-bound, due to the above restrction on high urgency
+memory-bound workers.
 
 ## Declaring a Job as CPU-bound
 
@@ -327,7 +391,7 @@ requests. We do this to avoid incorrect metadata when other jobs are
 scheduled from the cron-worker.
 
 Cron-Workers themselves run instance wide, so they aren't scoped to
-users, namespaces, projects or other resources that should be added to
+users, namespaces, projects, or other resources that should be added to
 the context.
 
 However, they often schedule other jobs that _do_ require context.

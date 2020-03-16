@@ -1,6 +1,6 @@
-if Gitlab::Auth::LDAP::Config.enabled?
+if Gitlab::Auth::Ldap::Config.enabled?
   module OmniAuth::Strategies
-    Gitlab::Auth::LDAP::Config.available_servers.each do |server|
+    Gitlab::Auth::Ldap::Config.available_servers.each do |server|
       # do not redeclare LDAP
       next if server['provider_name'] == 'ldap'
 
@@ -16,3 +16,7 @@ OmniAuth.config.allowed_request_methods << :get if Gitlab.config.omniauth.auto_s
 OmniAuth.config.before_request_phase do |env|
   Gitlab::RequestForgeryProtection.call(env)
 end
+
+# Use json formatter
+OmniAuth.config.logger.formatter = Gitlab::OmniauthLogging::JSONFormatter.new
+OmniAuth.config.logger.level = Logger::ERROR if Rails.env.production?

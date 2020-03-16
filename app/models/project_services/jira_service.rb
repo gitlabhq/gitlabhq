@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class JiraService < IssueTrackerService
+  extend ::Gitlab::Utils::Override
   include Gitlab::Routing
   include ApplicationHelper
   include ActionView::Helpers::AssetUrlHelper
@@ -205,6 +206,16 @@ class JiraService < IssueTrackerService
     nil
   end
 
+  override :support_close_issue?
+  def support_close_issue?
+    true
+  end
+
+  override :support_cross_reference?
+  def support_cross_reference?
+    true
+  end
+
   private
 
   def test_settings
@@ -229,7 +240,15 @@ class JiraService < IssueTrackerService
     jira_issue_transition_id.scan(Gitlab::Regex.jira_transition_id_regex).each do |transition_id|
       issue.transitions.build.save!(transition: { id: transition_id })
     rescue => error
-      log_error("Issue transition failed", error: error.message, client_url: client_url)
+      log_error(
+        "Issue transition failed",
+          error: {
+            exception_class: error.class.name,
+            exception_message: error.message,
+            exception_backtrace: Gitlab::BacktraceCleaner.clean_backtrace(error.backtrace)
+          },
+         client_url: client_url
+      )
       return false
     end
   end
@@ -272,19 +291,15 @@ class JiraService < IssueTrackerService
     return unless client_url.present?
 
     jira_request do
-      create_issue_link(issue, remote_link_props)
-      create_issue_comment(issue, message)
+      remote_link = find_remote_link(issue, remote_link_props[:object][:url])
+
+      create_issue_comment(issue, message) unless remote_link
+      remote_link ||= issue.remotelink.build
+      remote_link.save!(remote_link_props)
 
       log_info("Successfully posted", client_url: client_url)
       "SUCCESS: Successfully posted to #{client_url}."
     end
-  end
-
-  def create_issue_link(issue, remote_link_props)
-    remote_link = find_remote_link(issue, remote_link_props[:object][:url])
-    remote_link ||= issue.remotelink.build
-
-    remote_link.save!(remote_link_props)
   end
 
   def create_issue_comment(issue, message)
@@ -354,7 +369,7 @@ class JiraService < IssueTrackerService
       error: {
         exception_class: error.class.name,
         exception_message: error.message,
-        exception_backtrace: error.backtrace.join("\n")
+        exception_backtrace: Gitlab::BacktraceCleaner.clean_backtrace(error.backtrace)
       }
     )
     nil

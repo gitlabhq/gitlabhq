@@ -56,10 +56,13 @@ module Users
 
       MigrateToGhostUserService.new(user).execute unless options[:hard_delete]
 
+      response = Snippets::BulkDestroyService.new(current_user, user.snippets).execute
+      raise DestroyError, response.message if response.error?
+
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
       # This ensures we delete records in batches.
-      user.destroy_dependent_associations_in_batches
+      user.destroy_dependent_associations_in_batches(exclude: [:snippets])
 
       # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
       user_data = user.destroy

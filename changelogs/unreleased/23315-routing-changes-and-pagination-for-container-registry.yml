@@ -1,6 +1,0 @@
----
-title: Add show routes for group and project repositories_controllers and add pagination
-  to the index responses
-merge_request: 23151
-author:
-type: added

@@ -68,7 +68,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         namespace :settings do
-          get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
+          get :members, to: redirect("%{namespace_id}/%{project_id}/-/project_members")
 
           resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
             post :reset_cache
@@ -79,7 +79,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resource :integrations, only: [:show]
 
           resource :repository, only: [:show], controller: :repository do
-            post :create_deploy_token, path: 'deploy_token/create'
+            # TODO: Move 'create_deploy_token' here to the ':ci_cd' resource above during 12.9.
+            # More details here: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24102#note_287572556
+            post :create_deploy_token, path: 'deploy_token/create', to: 'ci_cd#create_deploy_token'
             post :cleanup
           end
         end
@@ -169,6 +171,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :releases, only: [:index, :show, :edit], param: :tag, constraints: { tag: %r{[^/]+} } do
           member do
             get :evidence
+            get :downloads, path: 'downloads/*filepath', format: false
+          end
+        end
+
+        resources :logs, only: [:index] do
+          collection do
+            get :k8s
+            get :elasticsearch
           end
         end
 
@@ -252,7 +262,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         namespace :performance_monitoring do
-          resources :dashboards, only: [:create]
+          resources :dashboards, only: [:create] do
+            collection do
+              put '/:file_name', to: 'dashboards#update', constraints: { file_name: /.+\.yml/ }
+            end
+          end
         end
 
         namespace :error_tracking do
@@ -273,6 +287,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        draw :issues
         draw :merge_requests
 
         # The wiki and repository routing contains wildcard characters so
@@ -280,6 +295,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         draw :repository_scoped
         draw :repository
         draw :wiki
+
+        namespace :import do
+          resource :jira, only: [:show], controller: :jira do
+            post :import
+          end
+        end
       end
       # End of the /-/ scope.
 
@@ -395,12 +416,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       # Unscoped route. It will be replaced with redirect to /-/issues/
       # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      draw :issues
-
-      # To ensure an old unscoped routing is used for the UI we need to
-      # add prefix 'as' to the scope routing and place it below original routing.
-      # Issue https://gitlab.com/gitlab-org/gitlab/issues/118849
-      scope '-', as: 'scoped' do
+      scope as: 'deprecated' do
         draw :issues
       end
 

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-class BuildQueueWorker
+class BuildQueueWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include PipelineQueue
 
   queue_namespace :pipeline_processing
   feature_category :continuous_integration
-  latency_sensitive_worker!
+  urgency :high
   worker_resource_boundary :cpu
 
   # rubocop: disable CodeReuse/ActiveRecord

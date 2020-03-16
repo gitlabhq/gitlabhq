@@ -200,8 +200,12 @@ to let them know your reaction without spamming them.
 #### 21. Show all activity
 
 You can filter what is displayed in the issue history by clicking on **Show all activity**
-and selecting either **Show comments only**, which only shows threads and hides
-updates to the issue, or **Show history only**, which hides threads and only shows updates.
+and selecting either:
+
+- **Show comments only**, which only shows threads and hides updates to the issue.
+- **Show history only**, which hides threads and only shows updates.
+
+Also:
 
 - You can mention a user or a group present in your GitLab instance with
   `@username` or `@groupname` and they will be notified via To-Do items

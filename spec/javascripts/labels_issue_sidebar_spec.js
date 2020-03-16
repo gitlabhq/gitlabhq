@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
-import _ from 'underscore';
+import { shuffle } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import IssuableContext from '~/issuable_context';
 import LabelsSelect from '~/labels_select';
@@ -27,7 +27,7 @@ function testLabelClicks(labelOrder, done) {
     expect(labelsInDropdown.length).toBe(10);
 
     const arrayOfLabels = labelsInDropdown.get();
-    const randomArrayOfLabels = _.shuffle(arrayOfLabels);
+    const randomArrayOfLabels = shuffle(arrayOfLabels);
     randomArrayOfLabels.forEach((label, i) => {
       if (i < saveLabelCount) {
         $(label).click();

@@ -42,7 +42,7 @@ module Gitlab
         # still scheduling duplicates while. Since all work has already been
         # completed those jobs will just cycle through any remaining pages while
         # not scheduling anything.
-        Caching.expire(already_imported_cache_key, 15.minutes.to_i)
+        Gitlab::Cache::Import::Caching.expire(already_imported_cache_key, 15.minutes.to_i)
 
         retval
       end
@@ -112,14 +112,14 @@ module Gitlab
       def already_imported?(object)
         id = id_for_already_imported_cache(object)
 
-        Caching.set_includes?(already_imported_cache_key, id)
+        Gitlab::Cache::Import::Caching.set_includes?(already_imported_cache_key, id)
       end
 
       # Marks the given object as "already imported".
       def mark_as_imported(object)
         id = id_for_already_imported_cache(object)
 
-        Caching.set_add(already_imported_cache_key, id)
+        Gitlab::Cache::Import::Caching.set_add(already_imported_cache_key, id)
       end
 
       # Returns the ID to use for the cache used for checking if an object has

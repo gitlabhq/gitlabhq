@@ -96,5 +96,17 @@ describe('MergeRequestStore', () => {
 
       expect(store.humanAccess).toEqual('Maintainer');
     });
+
+    it('should set pipelinesEmptySvgPath', () => {
+      store.setData({ ...mockData });
+
+      expect(store.pipelinesEmptySvgPath).toBe('/path/to/svg');
+    });
+
+    it('should set newPipelinePath', () => {
+      store.setData({ ...mockData });
+
+      expect(store.newPipelinePath).toBe('/group2/project2/pipelines/new');
+    });
   });
 });

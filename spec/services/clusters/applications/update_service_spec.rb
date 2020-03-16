@@ -7,8 +7,9 @@ describe Clusters::Applications::UpdateService do
 
   let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
   let(:user) { create(:user) }
-  let(:params) { { application: 'knative', hostname: 'udpate.example.com' } }
+  let(:params) { { application: 'knative', hostname: 'update.example.com', pages_domain_id: domain.id } }
   let(:service) { described_class.new(cluster, user, params) }
+  let(:domain) { create(:pages_domain, :instance_serverless) }
 
   subject { service.execute(test_request) }
 
@@ -50,6 +51,24 @@ describe Clusters::Applications::UpdateService do
           expect(ClusterPatchAppWorker).to receive(:perform_async)
 
           subject
+        end
+
+        context 'knative application' do
+          let(:associate_domain_service) { double('AssociateDomainService') }
+
+          it 'executes AssociateDomainService' do
+            expect(Serverless::AssociateDomainService).to receive(:new) do |knative, args|
+              expect(knative.id).to eq(application.id)
+              expect(args[:pages_domain_id]).to eq(params[:pages_domain_id])
+              expect(args[:creator]).to eq(user)
+
+              associate_domain_service
+            end
+
+            expect(associate_domain_service).to receive(:execute)
+
+            subject
+          end
         end
       end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180711103851_drop_duplicate_protected_tags.rb')
 
-describe DropDuplicateProtectedTags, :migration do
+describe DropDuplicateProtectedTags do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:protected_tags) { table(:protected_tags) }

@@ -12,12 +12,11 @@ describe Projects::HooksController do
   end
 
   describe '#index' do
-    it 'redirects to settings/integrations page' do
-      get(:index, params: { namespace_id: project.namespace, project_id: project })
+    it 'renders index with 200 status code' do
+      get :index, params: { namespace_id: project.namespace, project_id: project }
 
-      expect(response).to redirect_to(
-        project_settings_integrations_path(project)
-      )
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template(:index)
     end
   end
 

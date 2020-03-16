@@ -1,0 +1,6 @@
+---
+title: Added the multiSelect option to stop event propagation when clicking on the
+  dropdown
+merge_request: 24611
+author: Gwen_
+type: fixed

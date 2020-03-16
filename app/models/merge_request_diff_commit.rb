@@ -10,6 +10,8 @@ class MergeRequestDiffCommit < ApplicationRecord
   sha_attribute :sha
   alias_attribute :id, :sha
 
+  # Deprecated; use `bulk_insert!` from `BulkInsertSafe` mixin instead.
+  # cf. https://gitlab.com/gitlab-org/gitlab/issues/207989 for progress
   def self.create_bulk(merge_request_diff_id, commits)
     rows = commits.map.with_index do |commit, index|
       # See #parent_ids.

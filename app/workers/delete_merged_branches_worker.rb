@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DeleteMergedBranchesWorker
+class DeleteMergedBranchesWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :source_code_management

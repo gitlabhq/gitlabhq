@@ -1,0 +1,5 @@
+---
+title: Fix crl_url parsing and certificate visualization
+merge_request: 25876
+author: Roger Meier
+type: fixed

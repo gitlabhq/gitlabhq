@@ -9,7 +9,7 @@ Requires GitLab Runner 11.2 and above.
 
 ## Overview
 
-It is very common that a [CI/CD pipeline](pipelines.md) contains a
+It is very common that a [CI/CD pipeline](pipelines/index.md) contains a
 test job that will verify your code.
 If the tests fail, the pipeline fails and users get notified. The person that
 works on the merge request will have to check the job logs and see where the
@@ -42,13 +42,15 @@ JUnit test reports, where:
 - The base branch is the target branch (usually `master`).
 - The head branch is the source branch (the latest pipeline in each merge request).
 
-The reports panel has a summary showing how many tests failed and how many were fixed.
-If no comparison can be done because data for the base branch is not available,
-the panel will just show the list of failed tests for head.
+The reports panel has a summary showing how many tests failed, how many had errors
+and how many were fixed. If no comparison can be done because data for the base branch
+is not available, the panel will just show the list of failed tests for head.
 
-There are three types of results:
+There are four types of results:
 
 1. **Newly failed tests:** Test cases which passed on base branch and failed on head branch
+1. **Newly encountered errors:** Test cases which passed on base branch and failed due to a
+   test error on head branch
 1. **Existing failures:**  Test cases which failed on base branch and failed on head branch
 1. **Resolved failures:**  Test cases which failed on base branch and passed on head branch
 

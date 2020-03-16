@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe 'Projects > Snippets > User comments on a snippet', :js do
-  let(:project) { create(:project) }
-  let!(:snippet) { create(:project_snippet, project: project, author: user) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:snippet) { create(:project_snippet, :repository, project: project, author: user) }
 
   before do
     stub_feature_flags(snippets_vue: false)

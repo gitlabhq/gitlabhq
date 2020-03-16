@@ -41,10 +41,10 @@ describe 'issuable list' do
 
       visit_issuable_list(issuable_type)
 
-      expect(all('.label-link')[0].text).to have_content('B')
-      expect(all('.label-link')[1].text).to have_content('X')
-      expect(all('.label-link')[2].text).to have_content('a')
-      expect(all('.label-link')[3].text).to have_content('z')
+      expect(all('.gl-label-text')[0].text).to have_content('B')
+      expect(all('.gl-label-text')[1].text).to have_content('X')
+      expect(all('.gl-label-text')[2].text).to have_content('a')
+      expect(all('.gl-label-text')[3].text).to have_content('z')
     end
   end
 

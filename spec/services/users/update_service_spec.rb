@@ -64,6 +64,13 @@ describe Users::UpdateService do
       end.not_to change { user.name }
     end
 
+    it 'updates user detail with provided attributes' do
+      result = update_user(user, job_title: 'Backend Engineer')
+
+      expect(result).to eq(status: :success)
+      expect(user.job_title).to eq('Backend Engineer')
+    end
+
     def update_user(user, opts)
       described_class.new(user, opts.merge(user: user)).execute
     end

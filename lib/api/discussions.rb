@@ -230,7 +230,7 @@ module API
           .fresh
 
         # Without RendersActions#prepare_notes_for_rendering,
-        # Note#cross_reference_not_visible_for? will attempt to render
+        # Note#system_note_with_references_visible_for? will attempt to render
         # Markdown references mentioned in the note to see whether they
         # should be redacted. For notes that reference a commit, this
         # would also incur a Gitaly call to verify the commit exists.
@@ -239,7 +239,7 @@ module API
         # because notes are redacted if they point to projects that
         # cannot be accessed by the user.
         notes = prepare_notes_for_rendering(notes)
-        notes.select { |n| n.visible_for?(current_user) }
+        notes.select { |n| n.readable_by?(current_user) }
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

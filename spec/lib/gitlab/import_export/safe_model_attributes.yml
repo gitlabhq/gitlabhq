@@ -72,6 +72,7 @@ Note:
 - resolved_by_push
 - discussion_id
 - original_discussion_id
+- confidential
 LabelLink:
 - id
 - target_type
@@ -133,6 +134,7 @@ Releases::Link:
 - id
 - url
 - name
+- filepath
 - created_at
 - updated_at
 ProjectMember:
@@ -270,6 +272,8 @@ MergeRequest::Metrics:
 - diff_size
 - modified_paths_size
 - commits_count
+- first_approved_at
+- first_reassigned_at
 Ci::Pipeline:
 - id
 - project_id
@@ -455,6 +459,7 @@ Service:
 - active
 - properties
 - template
+- instance
 - push_events
 - issues_events
 - commit_events
@@ -769,7 +774,9 @@ DesignManagement::Design:
 - project_id
 - filename
 DesignManagement::Action:
+- id
 - event
+- image_v432x230
 DesignManagement::Version:
 - id
 - created_at
@@ -827,3 +834,6 @@ Epic:
   - start_date_sourcing_epic_id
   - due_date_sourcing_epic_id
   - health_status
+EpicIssue:
+  - id
+  - relative_position

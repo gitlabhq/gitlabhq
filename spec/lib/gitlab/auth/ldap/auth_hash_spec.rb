@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::LDAP::AuthHash do
+describe Gitlab::Auth::Ldap::AuthHash do
   include LdapHelpers
 
   let(:auth_hash) do
@@ -58,7 +58,7 @@ describe Gitlab::Auth::LDAP::AuthHash do
     end
 
     before do
-      allow_next_instance_of(Gitlab::Auth::LDAP::Config) do |instance|
+      allow_next_instance_of(Gitlab::Auth::Ldap::Config) do |instance|
         allow(instance).to receive(:attributes).and_return(attributes)
       end
     end

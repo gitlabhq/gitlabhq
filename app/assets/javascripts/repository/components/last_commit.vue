@@ -71,15 +71,15 @@ export default {
   },
   computed: {
     statusTitle() {
-      return sprintf(s__('Commits|Commit: %{commitText}'), {
-        commitText: this.commit.pipeline.detailedStatus.text,
+      return sprintf(s__('PipelineStatusTooltip|Pipeline: %{ciStatus}'), {
+        ciStatus: this.commit.pipeline.detailedStatus.text,
       });
     },
     isLoading() {
       return this.$apollo.queries.commit.loading;
     },
     showCommitId() {
-      return this.commit.sha.substr(0, 8);
+      return this.commit?.sha?.substr(0, 8);
     },
   },
   watch: {

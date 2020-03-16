@@ -209,6 +209,17 @@ describe Projects::ForksController do
         expect(response).to redirect_to(namespace_project_import_path(user.namespace, project))
       end
 
+      context 'when target namespace is not valid for forking' do
+        let(:params) { super().merge(namespace_key: another_group.id) }
+        let(:another_group) { create :group }
+
+        it 'responds with :not_found' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
       context 'continue params' do
         let(:params) do
           {

@@ -11,7 +11,7 @@ describe API::Settings, 'Settings' do
     it "returns application settings" do
       get api("/application/settings", admin)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_an Hash
       expect(json_response['default_projects_limit']).to eq(42)
       expect(json_response['password_authentication_enabled_for_web']).to be_truthy
@@ -91,7 +91,7 @@ describe API::Settings, 'Settings' do
             snippet_size_limit: 5
           }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['default_ci_config_path']).to eq('debian/salsa-ci.yml')
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['default_project_creation']).to eq(::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
@@ -132,7 +132,7 @@ describe API::Settings, 'Settings' do
       put api("/application/settings", admin),
         params: { performance_bar_allowed_group_id: group.full_path }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)
     end
 
@@ -143,7 +143,7 @@ describe API::Settings, 'Settings' do
           performance_bar_allowed_group_id: group.full_path
         }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
     end
 
@@ -151,7 +151,7 @@ describe API::Settings, 'Settings' do
       put api("/application/settings", admin),
           params: { allow_local_requests_from_hooks_and_services: true }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['allow_local_requests_from_hooks_and_services']).to eq(true)
     end
 
@@ -173,7 +173,7 @@ describe API::Settings, 'Settings' do
       it 'includes the attributes in the API' do
         get api("/application/settings", admin)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         attribute_names.each do |attribute|
           expect(json_response.keys).to include(attribute)
         end
@@ -182,7 +182,7 @@ describe API::Settings, 'Settings' do
       it 'allows updating the settings' do
         put api("/application/settings", admin), params: settings
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         settings.each do |attribute, value|
           expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
         end
@@ -205,7 +205,7 @@ describe API::Settings, 'Settings' do
       it "includes the attributes in the API" do
         get api("/application/settings", admin)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         attribute_names.each do |attribute|
           expect(json_response.keys).to include(attribute)
         end
@@ -214,7 +214,7 @@ describe API::Settings, 'Settings' do
       it "allows updating the settings" do
         put api("/application/settings", admin), params: settings
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         settings.each do |attribute, value|
           expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
         end
@@ -224,7 +224,7 @@ describe API::Settings, 'Settings' do
         it "returns a blank parameter error message" do
           put api("/application/settings", admin), params: { snowplow_enabled: true }
 
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response["error"]).to eq("snowplow_collector_hostname is missing")
         end
 
@@ -233,7 +233,7 @@ describe API::Settings, 'Settings' do
             snowplow_collector_hostname: nil
           })
 
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
           message = json_response["message"]
           expect(message["snowplow_collector_hostname"]).to include("can't be blank")
         end
@@ -257,7 +257,7 @@ describe API::Settings, 'Settings' do
       it 'includes attributes in the API' do
         get api("/application/settings", admin)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         exposed_attributes.each do |attribute|
           expect(json_response.keys).to include(attribute)
         end
@@ -266,7 +266,7 @@ describe API::Settings, 'Settings' do
       it 'does not include sensitive attributes in the API' do
         get api("/application/settings", admin)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         sensitive_attributes.each do |attribute|
           expect(json_response.keys).not_to include(attribute)
         end
@@ -275,7 +275,7 @@ describe API::Settings, 'Settings' do
       it 'allows updating the settings' do
         put api("/application/settings", admin), params: settings
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         settings.each do |attribute, value|
           expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
         end
@@ -287,7 +287,7 @@ describe API::Settings, 'Settings' do
         it 'does not update the settings' do
           put api("/application/settings", admin), params: settings
 
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']).to include('eks_account_id is missing')
           expect(json_response['error']).to include('eks_access_key_id is missing')
           expect(json_response['error']).to include('eks_secret_access_key is missing')
@@ -299,7 +299,7 @@ describe API::Settings, 'Settings' do
       it "returns a blank parameter error message" do
         put api("/application/settings", admin), params: { plantuml_enabled: true }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('plantuml_url is missing')
       end
     end
@@ -314,7 +314,7 @@ describe API::Settings, 'Settings' do
             asset_proxy_whitelist: ['example.com', '*.example.com']
           }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['asset_proxy_enabled']).to be(true)
         expect(json_response['asset_proxy_url']).to eq('http://assets.example.com')
         expect(json_response['asset_proxy_secret_key']).to be_nil
@@ -327,7 +327,7 @@ describe API::Settings, 'Settings' do
             asset_proxy_whitelist: 'example.com, *.example.com'
           }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['asset_proxy_whitelist']).to eq(['example.com', '*.example.com', 'localhost'])
       end
     end
@@ -340,7 +340,7 @@ describe API::Settings, 'Settings' do
             domain_blacklist: []
           }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         message = json_response["message"]
         expect(message["domain_blacklist"]).to eq(["Domain blacklist cannot be empty if Blacklist is enabled."])
       end
@@ -352,7 +352,7 @@ describe API::Settings, 'Settings' do
             domain_blacklist: ['domain1.com', 'domain2.com']
           }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['domain_blacklist_enabled']).to be(true)
         expect(json_response['domain_blacklist']).to eq(['domain1.com', 'domain2.com'])
       end
@@ -364,7 +364,7 @@ describe API::Settings, 'Settings' do
             domain_blacklist: 'domain3.com, *.domain4.com'
           }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['domain_blacklist_enabled']).to be(true)
         expect(json_response['domain_blacklist']).to eq(['domain3.com', '*.domain4.com'])
       end
@@ -374,7 +374,7 @@ describe API::Settings, 'Settings' do
       it "returns a blank parameter error message" do
         put api("/application/settings", admin), params: { sourcegraph_enabled: true }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('sourcegraph_url is missing')
       end
     end

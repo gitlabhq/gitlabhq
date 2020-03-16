@@ -39,7 +39,11 @@ export default {
 </script>
 
 <template>
-  <div v-if="resolvableDiscussionsCount > 0" class="line-resolve-all-container full-width-mobile">
+  <div
+    v-if="resolvableDiscussionsCount > 0"
+    ref="discussionCounter"
+    class="line-resolve-all-container full-width-mobile"
+  >
     <div class="full-width-mobile d-flex d-sm-block">
       <div :class="{ 'has-next-btn': hasNextButton }" class="line-resolve-all">
         <span
@@ -73,6 +77,9 @@ export default {
           v-gl-tooltip
           title="Jump to next unresolved thread"
           class="btn btn-default discussion-next-btn"
+          data-track-event="click_button"
+          data-track-label="mr_next_unresolved_thread"
+          data-track-property="click_next_unresolved_thread_top"
           @click="jumpToNextDiscussion"
         >
           <icon name="comment-next" />

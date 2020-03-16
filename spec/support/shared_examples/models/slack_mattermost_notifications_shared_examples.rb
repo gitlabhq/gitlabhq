@@ -151,22 +151,14 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
     it 'uses the username as an option for slack when configured' do
       allow(chat_service).to receive(:username).and_return(username)
 
-      expect(Slack::Notifier).to receive(:new)
-       .with(webhook_url, username: username, http_client: SlackService::Notifier::HTTPClient)
-       .and_return(
-         double(:slack_service).as_null_object
-       )
+      expect(Slack::Messenger).to execute_with_options(username: username)
 
       chat_service.execute(data)
     end
 
     it 'uses the channel as an option when it is configured' do
       allow(chat_service).to receive(:channel).and_return(channel)
-      expect(Slack::Notifier).to receive(:new)
-        .with(webhook_url, channel: channel, http_client: SlackService::Notifier::HTTPClient)
-        .and_return(
-          double(:slack_service).as_null_object
-        )
+      expect(Slack::Messenger).to execute_with_options(channel: [channel])
       chat_service.execute(data)
     end
 
@@ -174,11 +166,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       it "uses the right channel for push event" do
         chat_service.update(push_channel: "random")
 
-        expect(Slack::Notifier).to receive(:new)
-         .with(webhook_url, channel: "random", http_client: SlackService::Notifier::HTTPClient)
-         .and_return(
-           double(:slack_service).as_null_object
-         )
+        expect(Slack::Messenger).to execute_with_options(channel: ['random'])
 
         chat_service.execute(data)
       end
@@ -186,11 +174,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       it "uses the right channel for merge request event" do
         chat_service.update(merge_request_channel: "random")
 
-        expect(Slack::Notifier).to receive(:new)
-         .with(webhook_url, channel: "random", http_client: SlackService::Notifier::HTTPClient)
-         .and_return(
-           double(:slack_service).as_null_object
-         )
+        expect(Slack::Messenger).to execute_with_options(channel: ['random'])
 
         chat_service.execute(@merge_sample_data)
       end
@@ -198,11 +182,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       it "uses the right channel for issue event" do
         chat_service.update(issue_channel: "random")
 
-        expect(Slack::Notifier).to receive(:new)
-         .with(webhook_url, channel: "random", http_client: SlackService::Notifier::HTTPClient)
-         .and_return(
-           double(:slack_service).as_null_object
-         )
+        expect(Slack::Messenger).to execute_with_options(channel: ['random'])
 
         chat_service.execute(@issues_sample_data)
       end
@@ -213,7 +193,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
         it "uses confidential issue channel" do
           chat_service.update(confidential_issue_channel: 'confidential')
 
-          expect(Slack::Notifier).to execute_with_options(channel: 'confidential')
+          expect(Slack::Messenger).to execute_with_options(channel: ['confidential'])
 
           chat_service.execute(@issues_sample_data)
         end
@@ -221,7 +201,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
         it 'falls back to issue channel' do
           chat_service.update(issue_channel: 'fallback_channel')
 
-          expect(Slack::Notifier).to execute_with_options(channel: 'fallback_channel')
+          expect(Slack::Messenger).to execute_with_options(channel: ['fallback_channel'])
 
           chat_service.execute(@issues_sample_data)
         end
@@ -230,11 +210,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
       it "uses the right channel for wiki event" do
         chat_service.update(wiki_page_channel: "random")
 
-        expect(Slack::Notifier).to receive(:new)
-         .with(webhook_url, channel: "random", http_client: SlackService::Notifier::HTTPClient)
-         .and_return(
-           double(:slack_service).as_null_object
-         )
+        expect(Slack::Messenger).to execute_with_options(channel: ['random'])
 
         chat_service.execute(@wiki_page_sample_data)
       end
@@ -249,11 +225,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
           note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
-          expect(Slack::Notifier).to receive(:new)
-           .with(webhook_url, channel: "random", http_client: SlackService::Notifier::HTTPClient)
-           .and_return(
-             double(:slack_service).as_null_object
-           )
+          expect(Slack::Messenger).to execute_with_options(channel: ['random'])
 
           chat_service.execute(note_data)
         end
@@ -268,7 +240,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
             note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
-            expect(Slack::Notifier).to execute_with_options(channel: 'confidential')
+            expect(Slack::Messenger).to execute_with_options(channel: ['confidential'])
 
             chat_service.execute(note_data)
           end
@@ -278,7 +250,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do |service_name|
 
             note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
-            expect(Slack::Notifier).to execute_with_options(channel: 'fallback_channel')
+            expect(Slack::Messenger).to execute_with_options(channel: ['fallback_channel'])
 
             chat_service.execute(note_data)
           end

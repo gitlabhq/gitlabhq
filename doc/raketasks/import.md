@@ -15,7 +15,7 @@
 
 The new folder needs to have Git user ownership and read/write/execute access for Git user and its group:
 
-```
+```shell
 sudo -u git mkdir -p /var/opt/gitlab/git-data/repository-import-<date>/new_group
 ```
 
@@ -27,7 +27,7 @@ sudo -u git mkdir -p /var/opt/gitlab/git-data/repository-import-<date>/new_group
 If we copy the repos to `/var/opt/gitlab/git-data/repository-import-<date>`, and repo A needs to be under the groups G1 and G2, it will
 have to be created under those folders: `/var/opt/gitlab/git-data/repository-import-<date>/G1/G2/A.git`.
 
-```
+```shell
 sudo cp -r /old/git/foo.git /var/opt/gitlab/git-data/repository-import-<date>/new_group/
 
 # Do this once when you are done copying git repositories
@@ -57,7 +57,7 @@ sudo -u git -H bundle exec rake gitlab:import:repos['/var/opt/gitlab/git-data/re
 
 #### Example output
 
-```
+```plaintext
 Processing /var/opt/gitlab/git-data/repository-import-1/a/b/c/blah.git
  * Using namespace: a/b/c
  * Created blah (a/b/c/blah)
@@ -98,7 +98,7 @@ To support importing bare repositories from hashed storage, GitLab 10.4 and
 later stores the full project path with each repository, in a special section of
 the Git repository's config file. This section is formatted as follows:
 
-```
+```ini
 [gitlab]
   fullpath = gitlab-org/gitlab
 ```
@@ -128,7 +128,7 @@ Until then, you may wish to manually migrate repositories yourself. You can use
 [Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session)
 to do so. In a Rails console session, run the following to migrate a project:
 
-```
+```ruby
 project = Project.find_by_full_path('gitlab-org/gitlab')
 project.write_repository_config
 ```
@@ -136,7 +136,7 @@ project.write_repository_config
 In a Rails console session, run the following to migrate all of a namespace's
 projects (this may take a while if there are 1000s of projects in a namespace):
 
-```
+```ruby
 namespace = Namespace.find_by_full_path('gitlab-org')
 namespace.send(:write_projects_repository_config)
 ```

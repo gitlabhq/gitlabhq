@@ -128,6 +128,12 @@ describe Gitlab::EncodingHelper do
       expect { ext_class.encode_utf8('') }.not_to raise_error
     end
 
+    it 'replaces invalid and undefined chars with the replace argument' do
+      str = 'hællo'.encode(Encoding::UTF_16LE).force_encoding(Encoding::ASCII_8BIT)
+
+      expect(ext_class.encode_utf8(str, replace: "\u{FFFD}")).to eq("h�llo")
+    end
+
     context 'with strings that can be forcefully encoded into utf8' do
       let(:test_string) do
         "refs/heads/FixSymbolsTitleDropdown".encode("ASCII-8BIT")

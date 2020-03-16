@@ -1,7 +1,7 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
 import { n__ } from '~/locale';
-import { isNumber } from 'underscore';
+import { isNumber } from 'lodash';
 
 export default {
   components: { Icon },

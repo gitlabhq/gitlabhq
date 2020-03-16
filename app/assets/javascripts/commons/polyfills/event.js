@@ -1,6 +1,10 @@
 /**
- * Polyfill for IE11 support.
- * new Event() is not supported by IE11.
+ * Polyfill: Event constructor
+ * @what new Event()
+ * @why To align browser support
+ * @browsers Internet Explorer 11
+ * @see https://caniuse.com/#feat=mdn-api_event_event
+ *
  * Although `initEvent` is deprecated for modern browsers it is the one supported by IE
  */
 if (typeof window.Event !== 'function') {

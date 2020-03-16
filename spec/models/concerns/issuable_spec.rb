@@ -56,8 +56,6 @@ describe Issuable do
   end
 
   describe "Scope" do
-    subject { build(:issue) }
-
     it { expect(issuable_class).to respond_to(:opened) }
     it { expect(issuable_class).to respond_to(:closed) }
     it { expect(issuable_class).to respond_to(:assigned) }

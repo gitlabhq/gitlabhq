@@ -1,13 +1,13 @@
-- blob = @snippet.blob
-.js-file-title.file-title-flex-parent
-  = render 'projects/blob/header_content', blob: blob
+%article.file-holder.snippet-file-content
+  .js-file-title.file-title-flex-parent
+    = render 'projects/blob/header_content', blob: blob
 
-  .file-actions.d-none.d-sm-block
-    = render 'projects/blob/viewer_switcher', blob: blob
+    .file-actions.d-none.d-sm-block
+      = render 'projects/blob/viewer_switcher', blob: blob
 
-    .btn-group{ role: "group" }<
-      = copy_blob_source_button(blob)
-      = open_raw_blob_button(blob)
-      = download_raw_snippet_button(@snippet)
+      .btn-group{ role: "group" }<
+        = copy_blob_source_button(blob)
+        = open_raw_blob_button(blob)
+        = download_raw_snippet_button(@snippet)
 
-= render 'projects/blob/content', blob: blob
+  = render 'projects/blob/content', blob: blob

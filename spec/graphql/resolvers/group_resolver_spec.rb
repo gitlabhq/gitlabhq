@@ -5,8 +5,8 @@ require 'spec_helper'
 describe Resolvers::GroupResolver do
   include GraphqlHelpers
 
-  set(:group1) { create(:group) }
-  set(:group2) { create(:group) }
+  let_it_be(:group1) { create(:group) }
+  let_it_be(:group2) { create(:group) }
 
   describe '#resolve' do
     it 'batch-resolves groups by full path' do

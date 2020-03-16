@@ -9,6 +9,8 @@ issues:
 - notes
 - resource_label_events
 - resource_weight_events
+- resource_milestone_events
+- sent_notifications
 - sentry_issue
 - label_links
 - labels
@@ -109,6 +111,7 @@ merge_requests:
 - milestone
 - notes
 - resource_label_events
+- resource_milestone_events
 - label_links
 - labels
 - last_edited_by
@@ -190,9 +193,11 @@ ci_pipelines:
 - environments
 - chat_data
 - source_pipeline
+- ref_status
 - source_bridge
 - source_job
 - sourced_pipelines
+- source_project
 - triggered_by_pipeline
 - triggered_pipelines
 - child_pipelines
@@ -357,6 +362,7 @@ project:
 - ci_pipelines
 - all_pipelines
 - stages
+- ci_refs
 - builds
 - runner_projects
 - runners
@@ -461,6 +467,9 @@ project:
 - container_expiration_policy
 - resource_groups
 - autoclose_referenced_issues
+- status_page_setting
+- requirements
+- export_jobs
 award_emoji:
 - awardable
 - user
@@ -565,6 +574,8 @@ designs: *design
 actions:
 - design
 - version
+- uploads
+- file_uploads
 versions: &version
 - author
 - issue
@@ -602,3 +613,6 @@ epic:
 - events
 - resource_label_events
 - user_mentions
+epic_issue:
+- epic
+- issue

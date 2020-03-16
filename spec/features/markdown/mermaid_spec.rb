@@ -94,8 +94,31 @@ describe 'Mermaid rendering', :js do
       page.find('summary').click
       svg = page.find('svg.mermaid')
 
-      expect(svg[:width].to_i).to be_within(5).of(120)
-      expect(svg[:height].to_i).to be_within(5).of(220)
+      expect(svg[:style]).to match(/max-width/)
+      expect(svg[:width].to_i).to eq(100)
+      expect(svg[:height].to_i).to eq(0)
     end
+  end
+
+  it 'correctly sizes mermaid diagram block', :js do
+    description = <<~MERMAID
+      ```mermaid
+      graph TD;
+        A-->B;
+        A-->C;
+        B-->D;
+        C-->D;
+      ```
+    MERMAID
+
+    project = create(:project, :public)
+    issue = create(:issue, project: project, description: description)
+
+    visit project_issue_path(project, issue)
+
+    svg = page.find('svg.mermaid')
+    expect(svg[:style]).to match(/max-width/)
+    expect(svg[:width].to_i).to eq(100)
+    expect(svg[:height].to_i).to eq(0)
   end
 end

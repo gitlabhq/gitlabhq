@@ -28,7 +28,7 @@ export default () => ({
     commentsDisabled: false,
     resolvableDiscussionsCount: 0,
     unresolvedDiscussionsCount: 0,
-    descriptionVersion: null,
+    descriptionVersions: {},
   },
   actions,
   getters,

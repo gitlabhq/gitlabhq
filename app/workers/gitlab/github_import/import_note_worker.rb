@@ -2,7 +2,7 @@
 
 module Gitlab
   module GithubImport
-    class ImportNoteWorker
+    class ImportNoteWorker # rubocop:disable Scalability/IdempotentWorker
       include ObjectImporter
 
       def representation_class

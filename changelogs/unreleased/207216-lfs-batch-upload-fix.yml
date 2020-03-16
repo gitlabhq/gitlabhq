@@ -1,0 +1,5 @@
+---
+title: Mark existing LFS object for upload for forks
+merge_request: 26344
+author:
+type: fixed

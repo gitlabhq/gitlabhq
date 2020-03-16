@@ -1,0 +1,5 @@
+---
+title: Use ReplicateRepository when moving repo storage
+merge_request: 26550
+author:
+type: changed

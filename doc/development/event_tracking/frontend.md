@@ -104,7 +104,7 @@ And if needed within the template, you can use the `track` method directly as we
 Custom event tracking and instrumentation can be added by directly calling the `Tracking.event` static function. The following example demonstrates tracking a click on a button by calling `Tracking.event` manually.
 
 ```javascript
-import Tracking from `~/tracking`;
+import Tracking from '~/tracking';
 
 const button = document.getElementById('create_from_template_button');
 button.addEventListener('click', () => {
@@ -118,19 +118,43 @@ button.addEventListener('click', () => {
 
 ## Tests and test helpers
 
-In Karma tests, you can use the following:
+In Jest particularly in vue tests, you can use the following:
+
+```javascript
+import { mockTracking } from 'helpers/tracking_helper';
+
+describe('MyTracking', () => {
+  let spy;
+
+  beforeEach(() => {
+    spy = mockTracking('_category_', wrapper.element, jest.spyOn);
+  });
+
+  it('tracks an event when clicked on feedback', () => {
+    wrapper.find('.discover-feedback-icon').trigger('click');
+
+    expect(spy).toHaveBeenCalledWith('_category_', 'click_button', {
+      label: 'security-discover-feedback-cta',
+      property: '0',
+    });
+  });
+});
+
+```
+
+In obsolete Karma tests it's used as below:
 
 ```javascript
 import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';
 
 describe('my component', () => {
   let trackingSpy;
-  
+
   beforeEach(() => {
     const vm = mountComponent(MyComponent);
     trackingSpy = mockTracking('_category_', vm.$el, spyOn);
   });
-  
+
   it('tracks an event when toggled', () => {
     triggerEvent('a.toggle');
 

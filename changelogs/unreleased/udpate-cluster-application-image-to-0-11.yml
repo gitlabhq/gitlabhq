@@ -1,0 +1,6 @@
+---
+title: Update cluster-applications image to v0.11 with a runner bugfix, updated cert-manager,
+  and vault as a new app
+merge_request: 26842
+author:
+type: changed

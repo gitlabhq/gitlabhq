@@ -690,22 +690,34 @@ describe 'Git LFS API and storage' do
           end
 
           context 'when pushing an LFS object that already exists' do
+            shared_examples_for 'batch upload with existing LFS object' do
+              it_behaves_like 'LFS http 200 response'
+
+              it 'responds with links the object to the project' do
+                expect(json_response['objects']).to be_kind_of(Array)
+                expect(json_response['objects'].first).to include(sample_object)
+                expect(lfs_object.projects.pluck(:id)).not_to include(project.id)
+                expect(lfs_object.projects.pluck(:id)).to include(other_project.id)
+                expect(json_response['objects'].first['actions']['upload']['href']).to eq(objects_url(project, sample_oid, sample_size))
+                expect(json_response['objects'].first['actions']['upload']['header']).to include('Content-Type' => 'application/octet-stream')
+              end
+
+              it_behaves_like 'process authorization header', renew_authorization: true
+            end
+
             let(:update_lfs_permissions) do
               other_project.lfs_objects << lfs_object
             end
 
-            it_behaves_like 'LFS http 200 response'
-
-            it 'responds with links the object to the project' do
-              expect(json_response['objects']).to be_kind_of(Array)
-              expect(json_response['objects'].first).to include(sample_object)
-              expect(lfs_object.projects.pluck(:id)).not_to include(project.id)
-              expect(lfs_object.projects.pluck(:id)).to include(other_project.id)
-              expect(json_response['objects'].first['actions']['upload']['href']).to eq(objects_url(project, sample_oid, sample_size))
-              expect(json_response['objects'].first['actions']['upload']['header']).to include('Content-Type' => 'application/octet-stream')
+            context 'in another project' do
+              it_behaves_like 'batch upload with existing LFS object'
             end
 
-            it_behaves_like 'process authorization header', renew_authorization: true
+            context 'in source of fork project' do
+              let(:project) { fork_project(other_project) }
+
+              it_behaves_like 'batch upload with existing LFS object'
+            end
           end
 
           context 'when pushing a LFS object that does not exist' do

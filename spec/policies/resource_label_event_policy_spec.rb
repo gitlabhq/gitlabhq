@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe ResourceLabelEventPolicy do
-  set(:user) { create(:user) }
-  set(:project) { create(:project, :private) }
-  set(:issue) { create(:issue, project: project) }
-  set(:private_project) { create(:project, :private) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:private_project) { create(:project, :private) }
 
   describe '#read_resource_label_event' do
     context 'with non-member user' do

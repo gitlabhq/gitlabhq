@@ -65,15 +65,16 @@ module Gitlab
             reserved: true
 
           entry :workflow, Entry::Workflow,
-            description: 'List of evaluable rules to determine Pipeline status'
+            description: 'List of evaluable rules to determine Pipeline status',
+            default: {}
 
-          helpers :default, :jobs, :stages, :types, :variables, :workflow
+          dynamic_helpers :jobs
 
           delegate :before_script_value,
                    :image_value,
                    :services_value,
                    :after_script_value,
-                   :cache_value, to: :default
+                   :cache_value, to: :default_entry
 
           attr_reader :jobs_config
 
@@ -100,14 +101,6 @@ module Gitlab
               compose_deprecated_entries!
               compose_jobs!
             end
-          end
-
-          def default
-            self[:default]
-          end
-
-          def workflow
-            self[:workflow] if workflow_defined?
           end
 
           private

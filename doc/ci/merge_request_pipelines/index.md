@@ -89,7 +89,7 @@ Read the [documentation on Merge Trains](pipelines_for_merged_results/merge_trai
 The behavior of the `only: [merge_requests]` parameter is such that _only_ jobs with
 that parameter are run in the context of a merge request; no other jobs will be run.
 
-However, you may want to reverse this behavior, having all of your jobs to run _except_
+However, you can invert this behavior and have all of your jobs run _except_
 for one or two.
 
 Consider the following pipeline, with jobs `A`, `B`, and `C`. Imagine you want:
@@ -188,7 +188,7 @@ External users could steal secret variables from the parent project by modifying
 
 We're discussing a secure solution of running pipelines for merge requests
 that are submitted from forked projects,
-see [the issue about the permission extension](https://gitlab.com/gitlab-org/gitlab-foss/issues/23902).
+see [the issue about the permission extension](https://gitlab.com/gitlab-org/gitlab/-/issues/11934).
 
 ## Additional predefined variables
 

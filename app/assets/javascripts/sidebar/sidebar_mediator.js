@@ -19,6 +19,8 @@ export default class SidebarMediator {
       toggleSubscriptionEndpoint: options.toggleSubscriptionEndpoint,
       moveIssueEndpoint: options.moveIssueEndpoint,
       projectsAutocompleteEndpoint: options.projectsAutocompleteEndpoint,
+      fullPath: options.fullPath,
+      iid: options.iid,
     });
     SidebarMediator.singleton = this;
   }
@@ -45,8 +47,8 @@ export default class SidebarMediator {
   fetch() {
     return this.service
       .get()
-      .then(({ data }) => {
-        this.processFetchedData(data);
+      .then(([restResponse, graphQlResponse]) => {
+        this.processFetchedData(restResponse.data, graphQlResponse.data);
       })
       .catch(() => new Flash(__('Error occurred when fetching sidebar data')));
   }

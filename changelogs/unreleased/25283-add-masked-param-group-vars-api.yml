@@ -1,0 +1,5 @@
+---
+title: "Allow to create masked variable from group variables API"
+merge_request: 25283
+author: Emmanuel CARRE
+type: added

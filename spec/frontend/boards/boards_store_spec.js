@@ -440,23 +440,6 @@ describe('boardsStore', () => {
     });
   });
 
-  describe('allBoards', () => {
-    const url = `${endpoints.boardsEndpoint}.json`;
-
-    it('makes a request to fetch all boards', () => {
-      axiosMock.onGet(url).replyOnce(200, dummyResponse);
-      const expectedResponse = expect.objectContaining({ data: dummyResponse });
-
-      return expect(boardsStore.allBoards()).resolves.toEqual(expectedResponse);
-    });
-
-    it('fails for error response', () => {
-      axiosMock.onGet(url).replyOnce(500);
-
-      return expect(boardsStore.allBoards()).rejects.toThrow();
-    });
-  });
-
   describe('recentBoards', () => {
     const url = `${endpoints.recentBoardsEndpoint}.json`;
 

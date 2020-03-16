@@ -28,6 +28,10 @@ module Resolvers
       end
     end
 
+    def self.complexity
+      0
+    end
+
     def self.resolver_complexity(args, child_complexity:)
       complexity = 1
       complexity += 1 if args[:sort]

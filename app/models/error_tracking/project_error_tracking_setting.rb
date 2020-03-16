@@ -85,7 +85,7 @@ module ErrorTracking
     end
 
     def list_sentry_issues(opts = {})
-      with_reactive_cache('list_issues', opts.stringify_keys) do |result|
+      with_reactive_cache_set('list_issues', opts.stringify_keys) do |result|
         result
       end
     end
@@ -128,6 +128,10 @@ module ErrorTracking
           }
         end
       end
+    end
+
+    def expire_issues_cache
+      clear_reactive_cache_set!('list_issues')
     end
 
     # http://HOST/api/0/projects/ORG/PROJECT

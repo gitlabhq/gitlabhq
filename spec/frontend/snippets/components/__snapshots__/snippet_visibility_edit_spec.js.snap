@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = `
+<div
+  class="form-group"
+>
+  <label>
+    
+    Visibility level
+    
+    <gl-link-stub
+      href="/foo/bar"
+      target="_blank"
+    >
+      <gl-icon-stub
+        name="question"
+        size="12"
+      />
+    </gl-link-stub>
+  </label>
+   
+  <gl-form-group-stub
+    id="visibility-level-setting"
+  >
+    <gl-form-radio-group-stub
+      checked="0"
+      disabledfield="disabled"
+      htmlfield="html"
+      options=""
+      stacked=""
+      textfield="text"
+      valuefield="value"
+    >
+      <gl-form-radio-stub
+        class="mb-3"
+        value="0"
+      >
+        <div
+          class="d-flex align-items-center"
+        >
+          <gl-icon-stub
+            name="lock"
+            size="16"
+          />
+           
+          <span
+            class="font-weight-bold ml-1"
+          >
+            Private
+          </span>
+        </div>
+      </gl-form-radio-stub>
+      <gl-form-radio-stub
+        class="mb-3"
+        value="1"
+      >
+        <div
+          class="d-flex align-items-center"
+        >
+          <gl-icon-stub
+            name="shield"
+            size="16"
+          />
+           
+          <span
+            class="font-weight-bold ml-1"
+          >
+            Internal
+          </span>
+        </div>
+      </gl-form-radio-stub>
+      <gl-form-radio-stub
+        class="mb-3"
+        value="2"
+      >
+        <div
+          class="d-flex align-items-center"
+        >
+          <gl-icon-stub
+            name="earth"
+            size="16"
+          />
+           
+          <span
+            class="font-weight-bold ml-1"
+          >
+            Public
+          </span>
+        </div>
+      </gl-form-radio-stub>
+    </gl-form-radio-group-stub>
+  </gl-form-group-stub>
+</div>
+`;

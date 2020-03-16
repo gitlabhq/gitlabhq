@@ -5,9 +5,9 @@ require 'spec_helper'
 describe PipelineEntity do
   include Gitlab::Routing
 
-  set(:project) { create(:project) }
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
   let(:request) { double('request') }
 
   before do

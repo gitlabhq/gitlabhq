@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-class PostReceive
+class PostReceive # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :source_code_management
-  latency_sensitive_worker!
+  urgency :high
   worker_resource_boundary :cpu
   weight 5
 
   def perform(gl_repository, identifier, changes, push_options = {})
-    project, repo_type = Gitlab::GlRepository.parse(gl_repository)
+    container, project, repo_type = Gitlab::GlRepository.parse(gl_repository)
 
-    if project.nil?
+    if project.nil? && (!repo_type.snippet? || container.is_a?(ProjectSnippet))
       log("Triggered hook for non-existing project with gl_repository \"#{gl_repository}\"")
       return false
     end
@@ -20,12 +20,14 @@ class PostReceive
     # Use Sidekiq.logger so arguments can be correlated with execution
     # time and thread ID's.
     Sidekiq.logger.info "changes: #{changes.inspect}" if ENV['SIDEKIQ_LOG_ARGUMENTS']
-    post_received = Gitlab::GitPostReceive.new(project, identifier, changes, push_options)
+    post_received = Gitlab::GitPostReceive.new(container, identifier, changes, push_options)
 
     if repo_type.wiki?
-      process_wiki_changes(post_received)
+      process_wiki_changes(post_received, container)
     elsif repo_type.project?
-      process_project_changes(post_received)
+      process_project_changes(post_received, container)
+    elsif repo_type.snippet?
+      process_snippet_changes(post_received, container)
     else
       # Other repos don't have hooks for now
     end
@@ -39,22 +41,48 @@ class PostReceive
     end
   end
 
-  def process_project_changes(post_received)
+  def process_project_changes(post_received, project)
     user = identify_user(post_received)
 
     return false unless user
 
-    project = post_received.project
     push_options = post_received.push_options
     changes = post_received.changes
 
     # We only need to expire certain caches once per push
-    expire_caches(post_received, post_received.project.repository)
-    enqueue_repository_cache_update(post_received)
+    expire_caches(post_received, project.repository)
+    enqueue_project_cache_update(post_received, project)
 
     process_ref_changes(project, user, push_options: push_options, changes: changes)
-    update_remote_mirrors(post_received)
+    update_remote_mirrors(post_received, project)
     after_project_changes_hooks(project, user, changes.refs, changes.repository_data)
+  end
+
+  def process_wiki_changes(post_received, project)
+    project.touch(:last_activity_at, :last_repository_updated_at)
+    project.wiki.repository.expire_statistics_caches
+    ProjectCacheWorker.perform_async(project.id, [], [:wiki_size])
+
+    user = identify_user(post_received)
+    return false unless user
+
+    # We only need to expire certain caches once per push
+    expire_caches(post_received, project.wiki.repository)
+
+    ::Git::WikiPushService.new(project, user, changes: post_received.changes).execute
+  end
+
+  def process_snippet_changes(post_received, snippet)
+    user = identify_user(post_received)
+
+    return false unless user
+
+    # At the moment, we only expires the repository caches.
+    # In the future we might need to call ProjectCacheWorker
+    # (or the custom class we create) to update the snippet
+    # repository size or any other key.
+    # We might also need to update the repository statistics.
+    expire_caches(post_received, snippet.repository)
   end
 
   # Expire the repository status, branch, and tag cache once per push.
@@ -65,12 +93,12 @@ class PostReceive
   end
 
   # Schedule an update for the repository size and commit count if necessary.
-  def enqueue_repository_cache_update(post_received)
+  def enqueue_project_cache_update(post_received, project)
     stats_to_invalidate = [:repository_size]
     stats_to_invalidate << :commit_count if post_received.includes_default_branch?
 
     ProjectCacheWorker.perform_async(
-      post_received.project.id,
+      project.id,
       [],
       stats_to_invalidate,
       true
@@ -83,10 +111,9 @@ class PostReceive
     Git::ProcessRefChangesService.new(project, user, params).execute
   end
 
-  def update_remote_mirrors(post_received)
+  def update_remote_mirrors(post_received, project)
     return unless post_received.includes_branches? || post_received.includes_tags?
 
-    project = post_received.project
     return unless project.has_remote_mirror?
 
     project.mark_stuck_remote_mirrors_as_failed!
@@ -97,20 +124,6 @@ class PostReceive
     repository_update_hook_data = Gitlab::DataBuilder::Repository.update(project, user, changes, refs)
     SystemHooksService.new.execute_hooks(repository_update_hook_data, :repository_update_hooks)
     Gitlab::UsageDataCounters::SourceCodeCounter.count(:pushes)
-  end
-
-  def process_wiki_changes(post_received)
-    post_received.project.touch(:last_activity_at, :last_repository_updated_at)
-    post_received.project.wiki.repository.expire_statistics_caches
-    ProjectCacheWorker.perform_async(post_received.project.id, [], [:wiki_size])
-
-    user = identify_user(post_received)
-    return false unless user
-
-    # We only need to expire certain caches once per push
-    expire_caches(post_received, post_received.project.wiki.repository)
-
-    ::Git::WikiPushService.new(post_received.project, user, changes: post_received.changes).execute
   end
 
   def log(message)

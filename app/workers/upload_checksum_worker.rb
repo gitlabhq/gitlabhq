@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UploadChecksumWorker
+class UploadChecksumWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :geo_replication

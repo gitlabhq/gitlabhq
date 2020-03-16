@@ -153,16 +153,6 @@ describe Projects::ServicesController do
           expect(flash[:notice]).to eq 'Jira settings saved, but not activated.'
         end
       end
-
-      context 'when activating Jira service from a template' do
-        let(:service) do
-          create(:jira_service, project: project, template: true)
-        end
-
-        it 'activate Jira service from template' do
-          expect(flash[:notice]).to eq 'Jira activated.'
-        end
-      end
     end
 
     describe 'as JSON' do

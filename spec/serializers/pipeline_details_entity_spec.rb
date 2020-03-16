@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe PipelineDetailsEntity do
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:request) { double('request') }
 
   it 'inherrits from PipelineEntity' do

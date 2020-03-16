@@ -6,7 +6,7 @@ module QA
       let(:branch_name) { 'protected-branch' }
       let(:commit_message) { 'Protected push commit message' }
       let(:project) do
-        Resource::Project.fabricate! do |resource|
+        Resource::Project.fabricate_via_api! do |resource|
           resource.name = 'protected-branch-project'
           resource.initialize_with_readme = true
         end

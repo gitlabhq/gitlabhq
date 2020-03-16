@@ -1,5 +1,0 @@
----
-title: Fix copy markdown with elements with no text content
-merge_request: 24020
-author:
-type: fixed

@@ -1,13 +1,14 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
+import { cloneDeep, merge } from 'lodash';
 import * as actions from '~/releases/stores/modules/detail/actions';
 import * as types from '~/releases/stores/modules/detail/mutation_types';
-import { release } from '../../../mock_data';
-import state from '~/releases/stores/modules/detail/state';
+import { release as originalRelease } from '../../../mock_data';
+import createState from '~/releases/stores/modules/detail/state';
 import createFlash from '~/flash';
-import { redirectTo } from '~/lib/utils/url_utility';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { redirectTo } from '~/lib/utils/url_utility';
 
 jest.mock('~/flash', () => jest.fn());
 
@@ -17,14 +18,14 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 describe('Release detail actions', () => {
-  let stateClone;
-  let releaseClone;
+  let state;
+  let release;
   let mock;
   let error;
 
   beforeEach(() => {
-    stateClone = state();
-    releaseClone = JSON.parse(JSON.stringify(release));
+    state = createState();
+    release = cloneDeep(originalRelease);
     mock = new MockAdapter(axios);
     gon.api_version = 'v4';
     error = { message: 'An error occurred' };
@@ -39,7 +40,7 @@ describe('Release detail actions', () => {
     it(`commits ${types.SET_INITIAL_STATE} with the provided object`, () => {
       const initialState = {};
 
-      return testAction(actions.setInitialState, initialState, stateClone, [
+      return testAction(actions.setInitialState, initialState, state, [
         { type: types.SET_INITIAL_STATE, payload: initialState },
       ]);
     });
@@ -47,19 +48,19 @@ describe('Release detail actions', () => {
 
   describe('requestRelease', () => {
     it(`commits ${types.REQUEST_RELEASE}`, () =>
-      testAction(actions.requestRelease, undefined, stateClone, [{ type: types.REQUEST_RELEASE }]));
+      testAction(actions.requestRelease, undefined, state, [{ type: types.REQUEST_RELEASE }]));
   });
 
   describe('receiveReleaseSuccess', () => {
     it(`commits ${types.RECEIVE_RELEASE_SUCCESS}`, () =>
-      testAction(actions.receiveReleaseSuccess, releaseClone, stateClone, [
-        { type: types.RECEIVE_RELEASE_SUCCESS, payload: releaseClone },
+      testAction(actions.receiveReleaseSuccess, release, state, [
+        { type: types.RECEIVE_RELEASE_SUCCESS, payload: release },
       ]));
   });
 
   describe('receiveReleaseError', () => {
     it(`commits ${types.RECEIVE_RELEASE_ERROR}`, () =>
-      testAction(actions.receiveReleaseError, error, stateClone, [
+      testAction(actions.receiveReleaseError, error, state, [
         { type: types.RECEIVE_RELEASE_ERROR, payload: error },
       ]));
 
@@ -77,24 +78,24 @@ describe('Release detail actions', () => {
     let getReleaseUrl;
 
     beforeEach(() => {
-      stateClone.projectId = '18';
-      stateClone.tagName = 'v1.3';
-      getReleaseUrl = `/api/v4/projects/${stateClone.projectId}/releases/${stateClone.tagName}`;
+      state.projectId = '18';
+      state.tagName = 'v1.3';
+      getReleaseUrl = `/api/v4/projects/${state.projectId}/releases/${state.tagName}`;
     });
 
     it(`dispatches requestRelease and receiveReleaseSuccess with the camel-case'd release object`, () => {
-      mock.onGet(getReleaseUrl).replyOnce(200, releaseClone);
+      mock.onGet(getReleaseUrl).replyOnce(200, release);
 
       return testAction(
         actions.fetchRelease,
         undefined,
-        stateClone,
+        state,
         [],
         [
           { type: 'requestRelease' },
           {
             type: 'receiveReleaseSuccess',
-            payload: convertObjectPropsToCamelCase(releaseClone, { deep: true }),
+            payload: convertObjectPropsToCamelCase(release, { deep: true }),
           },
         ],
       );
@@ -106,7 +107,7 @@ describe('Release detail actions', () => {
       return testAction(
         actions.fetchRelease,
         undefined,
-        stateClone,
+        state,
         [],
         [{ type: 'requestRelease' }, { type: 'receiveReleaseError', payload: expect.anything() }],
       );
@@ -116,7 +117,7 @@ describe('Release detail actions', () => {
   describe('updateReleaseTitle', () => {
     it(`commits ${types.UPDATE_RELEASE_TITLE} with the updated release title`, () => {
       const newTitle = 'The new release title';
-      return testAction(actions.updateReleaseTitle, newTitle, stateClone, [
+      return testAction(actions.updateReleaseTitle, newTitle, state, [
         { type: types.UPDATE_RELEASE_TITLE, payload: newTitle },
       ]);
     });
@@ -125,7 +126,7 @@ describe('Release detail actions', () => {
   describe('updateReleaseNotes', () => {
     it(`commits ${types.UPDATE_RELEASE_NOTES} with the updated release notes`, () => {
       const newReleaseNotes = 'The new release notes';
-      return testAction(actions.updateReleaseNotes, newReleaseNotes, stateClone, [
+      return testAction(actions.updateReleaseNotes, newReleaseNotes, state, [
         { type: types.UPDATE_RELEASE_NOTES, payload: newReleaseNotes },
       ]);
     });
@@ -133,25 +134,40 @@ describe('Release detail actions', () => {
 
   describe('requestUpdateRelease', () => {
     it(`commits ${types.REQUEST_UPDATE_RELEASE}`, () =>
-      testAction(actions.requestUpdateRelease, undefined, stateClone, [
+      testAction(actions.requestUpdateRelease, undefined, state, [
         { type: types.REQUEST_UPDATE_RELEASE },
       ]));
   });
 
   describe('receiveUpdateReleaseSuccess', () => {
     it(`commits ${types.RECEIVE_UPDATE_RELEASE_SUCCESS}`, () =>
-      testAction(
-        actions.receiveUpdateReleaseSuccess,
-        undefined,
-        stateClone,
-        [{ type: types.RECEIVE_UPDATE_RELEASE_SUCCESS }],
-        [{ type: 'navigateToReleasesPage' }],
-      ));
+      testAction(actions.receiveUpdateReleaseSuccess, undefined, { ...state, featureFlags: {} }, [
+        { type: types.RECEIVE_UPDATE_RELEASE_SUCCESS },
+      ]));
+
+    describe('when the releaseShowPage feature flag is enabled', () => {
+      const rootState = { featureFlags: { releaseShowPage: true } };
+      const updatedState = merge({}, state, {
+        releasesPagePath: 'path/to/releases/page',
+        release: {
+          _links: {
+            self: 'path/to/self',
+          },
+        },
+      });
+
+      actions.receiveUpdateReleaseSuccess({ commit: jest.fn(), state: updatedState, rootState });
+
+      expect(redirectTo).toHaveBeenCalledTimes(1);
+      expect(redirectTo).toHaveBeenCalledWith(updatedState.release._links.self);
+    });
+
+    describe('when the releaseShowPage feature flag is disabled', () => {});
   });
 
   describe('receiveUpdateReleaseError', () => {
     it(`commits ${types.RECEIVE_UPDATE_RELEASE_ERROR}`, () =>
-      testAction(actions.receiveUpdateReleaseError, error, stateClone, [
+      testAction(actions.receiveUpdateReleaseError, error, state, [
         { type: types.RECEIVE_UPDATE_RELEASE_ERROR, payload: error },
       ]));
 
@@ -169,10 +185,10 @@ describe('Release detail actions', () => {
     let getReleaseUrl;
 
     beforeEach(() => {
-      stateClone.release = releaseClone;
-      stateClone.projectId = '18';
-      stateClone.tagName = 'v1.3';
-      getReleaseUrl = `/api/v4/projects/${stateClone.projectId}/releases/${stateClone.tagName}`;
+      state.release = release;
+      state.projectId = '18';
+      state.tagName = 'v1.3';
+      getReleaseUrl = `/api/v4/projects/${state.projectId}/releases/${state.tagName}`;
     });
 
     it(`dispatches requestUpdateRelease and receiveUpdateReleaseSuccess`, () => {
@@ -181,7 +197,7 @@ describe('Release detail actions', () => {
       return testAction(
         actions.updateRelease,
         undefined,
-        stateClone,
+        state,
         [],
         [{ type: 'requestUpdateRelease' }, { type: 'receiveUpdateReleaseSuccess' }],
       );
@@ -193,25 +209,13 @@ describe('Release detail actions', () => {
       return testAction(
         actions.updateRelease,
         undefined,
-        stateClone,
+        state,
         [],
         [
           { type: 'requestUpdateRelease' },
           { type: 'receiveUpdateReleaseError', payload: expect.anything() },
         ],
       );
-    });
-  });
-
-  describe('navigateToReleasesPage', () => {
-    it(`calls redirectTo() with the URL to the releases page`, () => {
-      const releasesPagePath = 'path/to/releases/page';
-      stateClone.releasesPagePath = releasesPagePath;
-
-      actions.navigateToReleasesPage({ state: stateClone });
-
-      expect(redirectTo).toHaveBeenCalledTimes(1);
-      expect(redirectTo).toHaveBeenCalledWith(releasesPagePath);
     });
   });
 });

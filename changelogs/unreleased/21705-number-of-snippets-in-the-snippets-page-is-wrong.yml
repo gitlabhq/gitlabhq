@@ -1,5 +1,0 @@
----
-title: Fix bug with snippet counts not being scoped to current authorisation
-merge_request: 21705
-author:
-type: fixed

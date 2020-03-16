@@ -1,5 +1,0 @@
----
-title: Refactored repository browser to use Vue and GraphQL
-merge_request: 24450
-author:
-type: performance

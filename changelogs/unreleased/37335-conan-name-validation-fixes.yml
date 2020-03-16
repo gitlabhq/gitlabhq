@@ -1,5 +1,0 @@
----
-title: Conan packages are validated based on full recipe instead of name/version alone
-merge_request: 24692
-author:
-type: changed

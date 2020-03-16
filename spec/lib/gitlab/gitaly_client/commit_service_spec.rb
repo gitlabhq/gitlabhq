@@ -306,5 +306,19 @@ describe Gitlab::GitalyClient::CommitService do
 
       client.find_commits(order: 'topo')
     end
+
+    it 'sends an RPC request with an author' do
+      request = Gitaly::FindCommitsRequest.new(
+        repository: repository_message,
+        disable_walk: true,
+        order: 'NONE',
+        author: "Billy Baggins <bilbo@shire.com>"
+      )
+
+      expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commits)
+        .with(request, kind_of(Hash)).and_return([])
+
+      client.find_commits(order: 'default', author: "Billy Baggins <bilbo@shire.com>")
+    end
   end
 end

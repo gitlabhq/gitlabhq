@@ -40,7 +40,7 @@ it](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/htm
 We assume that you already have SSH certificates set up, and have
 added the `TrustedUserCAKeys` of your CA to your `sshd_config`, e.g.:
 
-```
+```plaintext
 TrustedUserCAKeys /etc/security/mycompany_user_ca.pub
 ```
 
@@ -87,7 +87,7 @@ Then, in your `sshd_config` set up `AuthorizedPrincipalsCommand` for
 the `git` user. Hopefully you can use the default one shipped with
 GitLab:
 
-```
+```plaintext
 Match User git
     AuthorizedPrincipalsCommandUser root
     AuthorizedPrincipalsCommand /opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-principals-check %i sshUsers
@@ -95,7 +95,7 @@ Match User git
 
 This command will emit output that looks something like:
 
-```
+```shell
 command="/opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell username-{KEY_ID}",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty {PRINCIPAL}
 ```
 
@@ -108,7 +108,7 @@ some principal that's guaranteed to be part of the key for all users
 who can log in to GitLab, or you must provide a list of principals,
 one of which is going to be present for the user, e.g.:
 
-```
+```plaintext
     [...]
     AuthorizedPrincipalsCommand /opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-principals-check %i sshUsers windowsUsers
 ```

@@ -8,6 +8,8 @@ exports[`Expand button on click when short text is provided renders button after
     style="display: none;"
     type="button"
   >
+    <!---->
+     
     <svg
       aria-hidden="true"
       class="s12 ic-ellipsis_h"
@@ -32,6 +34,8 @@ exports[`Expand button on click when short text is provided renders button after
     style=""
     type="button"
   >
+    <!---->
+     
     <svg
       aria-hidden="true"
       class="s12 ic-ellipsis_h"
@@ -51,6 +55,8 @@ exports[`Expand button when short text is provided renders button before text 1`
     class="btn js-text-expander-prepend text-expander btn-blank btn-secondary btn-md"
     type="button"
   >
+    <!---->
+     
     <svg
       aria-hidden="true"
       class="s12 ic-ellipsis_h"
@@ -75,6 +81,8 @@ exports[`Expand button when short text is provided renders button before text 1`
     style="display: none;"
     type="button"
   >
+    <!---->
+     
     <svg
       aria-hidden="true"
       class="s12 ic-ellipsis_h"

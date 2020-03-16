@@ -24,24 +24,63 @@ describe API::RemoteMirrors do
       expect(response).to have_gitlab_http_status(:success)
       expect(response).to match_response_schema('remote_mirrors')
     end
+  end
 
-    # TODO: Remove flag: https://gitlab.com/gitlab-org/gitlab/issues/38121
-    context 'with the `remote_mirrors_api` feature disabled' do
-      before do
-        stub_feature_flags(remote_mirrors_api: false)
+  describe 'POST /projects/:id/remote_mirrors' do
+    let(:route) { "/projects/#{project.id}/remote_mirrors" }
+
+    shared_examples 'creates a remote mirror' do
+      it 'creates a remote mirror and returns reponse' do
+        project.add_maintainer(user)
+
+        post api(route, user), params: params
+
+        enabled = params.fetch(:enabled, false)
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to match_response_schema('remote_mirror')
+        expect(json_response['enabled']).to eq(enabled)
+      end
+    end
+
+    it 'requires `admin_remote_mirror` permission' do
+      post api(route, developer)
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    context 'creates a remote mirror' do
+      context 'disabled by default' do
+        let(:params) { { url: 'https://foo:bar@test.com' } }
+
+        it_behaves_like 'creates a remote mirror'
       end
 
-      it 'responds with `not_found`' do
-        get api(route, user)
+      context 'enabled' do
+        let(:params) { { url: 'https://foo:bar@test.com', enabled: true } }
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        it_behaves_like 'creates a remote mirror'
       end
+    end
+
+    it 'returns error if url is invalid' do
+      project.add_maintainer(user)
+
+      post api(route, user), params: {
+        url: 'ftp://foo:bar@test.com'
+      }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']['url']).to eq(["is blocked: Only allowed schemes are ssh, git, http, https"])
     end
   end
 
   describe 'PUT /projects/:id/remote_mirrors/:mirror_id' do
     let(:route) { ->(id) { "/projects/#{project.id}/remote_mirrors/#{id}" } }
     let(:mirror) { project.remote_mirrors.first }
+
+    before do
+      stub_feature_flags(keep_divergent_refs: false)
+    end
 
     it 'requires `admin_remote_mirror` permission' do
       put api(route[mirror.id], developer)
@@ -54,24 +93,30 @@ describe API::RemoteMirrors do
 
       put api(route[mirror.id], user), params: {
         enabled: '0',
-        only_protected_branches: 'true'
+        only_protected_branches: 'true',
+        keep_divergent_refs: 'true'
       }
 
       expect(response).to have_gitlab_http_status(:success)
       expect(json_response['enabled']).to eq(false)
       expect(json_response['only_protected_branches']).to eq(true)
+
+      # Deleted due to lack of feature availability
+      expect(json_response['keep_divergent_refs']).to be_nil
     end
 
-    # TODO: Remove flag: https://gitlab.com/gitlab-org/gitlab/issues/38121
-    context 'with the `remote_mirrors_api` feature disabled' do
+    context 'with the `keep_divergent_refs` feature enabled' do
       before do
-        stub_feature_flags(remote_mirrors_api: false)
+        stub_feature_flags(keep_divergent_refs: { enabled: true, project: project })
       end
 
-      it 'responds with `not_found`' do
-        put api(route[mirror.id], user)
+      it 'updates the `keep_divergent_refs` attribute' do
+        project.add_maintainer(user)
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        put api(route[mirror.id], user), params: { keep_divergent_refs: 'true' }
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(json_response['keep_divergent_refs']).to eq(true)
       end
     end
   end

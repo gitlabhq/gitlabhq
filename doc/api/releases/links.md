@@ -9,7 +9,7 @@ GitLab supports links links to `http`, `https`, and `ftp` assets.
 
 Get assets as links from a Release.
 
-```
+```plaintext
 GET /projects/:id/releases/:tag_name/assets/links
 ```
 
@@ -47,7 +47,7 @@ Example response:
 
 Get an asset as a link from a Release.
 
-```
+```plaintext
 GET /projects/:id/releases/:tag_name/assets/links/:link_id
 ```
 
@@ -78,7 +78,7 @@ Example response:
 
 Create an asset as a link from a Release.
 
-```
+```plaintext
 POST /projects/:id/releases/:tag_name/assets/links
 ```
 
@@ -114,7 +114,7 @@ Example response:
 
 Update an asset as a link from a Release.
 
-```
+```plaintext
 PUT /projects/:id/releases/:tag_name/assets/links/:link_id
 ```
 
@@ -150,7 +150,7 @@ Example response:
 
 Delete an asset as a link from a Release.
 
-```
+```plaintext
 DELETE /projects/:id/releases/:tag_name/assets/links/:link_id
 ```
 

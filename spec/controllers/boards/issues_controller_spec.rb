@@ -57,6 +57,18 @@ describe Boards::IssuesController do
           expect(development.issues.map(&:relative_position)).not_to include(nil)
         end
 
+        it 'returns issues by closed_at in descending order in closed list' do
+          create(:closed_issue, project: project, title: 'New Issue 1', closed_at: 1.day.ago)
+          create(:closed_issue, project: project, title: 'New Issue 2', closed_at: 1.week.ago)
+
+          list_issues user: user, board: board, list: board.lists.last.id
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['issues'].length).to eq(2)
+          expect(json_response['issues'][0]['title']).to eq('New Issue 1')
+          expect(json_response['issues'][1]['title']).to eq('New Issue 2')
+        end
+
         it 'avoids N+1 database queries' do
           create(:labeled_issue, project: project, labels: [development])
           control_count = ActiveRecord::QueryRecorder.new { list_issues(user: user, board: board, list: list2) }.count

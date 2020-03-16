@@ -17,7 +17,7 @@ describe 'Clusterable > Show page' do
     it 'allow the user to set domain' do
       visit cluster_path
 
-      within '#cluster-integration' do
+      within '.js-cluster-integration-form' do
         fill_in('cluster_base_domain', with: 'test.com')
         click_on 'Save changes'
       end
@@ -34,7 +34,7 @@ describe 'Clusterable > Show page' do
       end
 
       it 'shows help text with the domain as an alternative to custom domain' do
-        within '#cluster-integration' do
+        within '.js-cluster-integration-form' do
           expect(find(cluster_ingress_help_text_selector)).not_to match_css(hide_modifier_selector)
         end
       end
@@ -44,7 +44,7 @@ describe 'Clusterable > Show page' do
       it 'alternative to custom domain is not shown' do
         visit cluster_path
 
-        within '#cluster-integration' do
+        within '.js-cluster-integration-form' do
           expect(find(cluster_ingress_help_text_selector)).to match_css(hide_modifier_selector)
         end
       end
@@ -63,7 +63,7 @@ describe 'Clusterable > Show page' do
     end
 
     it 'is not able to edit the name, API url, CA certificate nor token' do
-      within('#js-cluster-details') do
+      within('.js-provider-details') do
         cluster_name_field = find('.cluster-name')
         api_url_field = find('#cluster_platform_kubernetes_attributes_api_url')
         ca_certificate_field = find('#cluster_platform_kubernetes_attributes_ca_cert')
@@ -77,6 +77,8 @@ describe 'Clusterable > Show page' do
     end
 
     it 'displays GKE information' do
+      click_link 'Advanced Settings'
+
       within('#advanced-settings-section') do
         expect(page).to have_content('Google Kubernetes Engine')
         expect(page).to have_content('Manage your Kubernetes cluster by visiting')
@@ -91,7 +93,7 @@ describe 'Clusterable > Show page' do
     end
 
     it 'is able to edit the name, API url, CA certificate and token' do
-      within('#js-cluster-details') do
+      within('.js-provider-details') do
         cluster_name_field = find('#cluster_name')
         api_url_field = find('#cluster_platform_kubernetes_attributes_api_url')
         ca_certificate_field = find('#cluster_platform_kubernetes_attributes_ca_cert')
@@ -105,6 +107,8 @@ describe 'Clusterable > Show page' do
     end
 
     it 'does not display GKE information' do
+      click_link 'Advanced Settings'
+
       within('#advanced-settings-section') do
         expect(page).not_to have_content('Google Kubernetes Engine')
         expect(page).not_to have_content('Manage your Kubernetes cluster by visiting')

@@ -15,7 +15,7 @@ are [paginated](README.md#pagination).
 
 Gets all feature flags of the requested project.
 
-```
+```plaintext
 GET /projects/:id/feature_flags
 ```
 
@@ -145,7 +145,7 @@ Example response:
 
 Creates a new feature flag.
 
-```
+```plaintext
 POST /projects/:id/feature_flags
 ```
 
@@ -219,7 +219,7 @@ Example response:
 
 Gets a single feature flag.
 
-```
+```plaintext
 GET /projects/:id/feature_flags/:name
 ```
 
@@ -294,7 +294,7 @@ Example response:
 
 Deletes a feature flag.
 
-```
+```plaintext
 DELETE /projects/:id/feature_flags/:name
 ```
 

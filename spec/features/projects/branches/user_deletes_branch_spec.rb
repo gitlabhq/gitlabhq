@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe "User deletes branch", :js do
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
   before do

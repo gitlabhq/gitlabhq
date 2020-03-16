@@ -11,24 +11,30 @@ module Groups
       end
 
       def execute
-        unless @current_user.can?(:admin_group, @group)
-          raise ::Gitlab::ImportExport::Error.new(
-            "User with ID: %s does not have permission to Group %s with ID: %s." %
-              [@current_user.id, @group.name, @group.id])
-        end
+        validate_user_permissions
 
         save!
+      ensure
+        cleanup
       end
 
       private
 
       attr_accessor :shared
 
+      def validate_user_permissions
+        unless @current_user.can?(:admin_group, @group)
+          @shared.error(::Gitlab::ImportExport::Error.permission_error(@current_user, @group))
+
+          notify_error!
+        end
+      end
+
       def save!
         if savers.all?(&:save)
           notify_success
         else
-          cleanup_and_notify_error!
+          notify_error!
         end
       end
 
@@ -37,21 +43,19 @@ module Groups
       end
 
       def tree_exporter
-        Gitlab::ImportExport::GroupTreeSaver.new(group: @group, current_user: @current_user, shared: @shared, params: @params)
+        Gitlab::ImportExport::Group::TreeSaver.new(group: @group, current_user: @current_user, shared: @shared, params: @params)
       end
 
       def file_saver
         Gitlab::ImportExport::Saver.new(exportable: @group, shared: @shared)
       end
 
-      def cleanup_and_notify_error
-        FileUtils.rm_rf(shared.export_path)
-
-        notify_error
+      def cleanup
+        FileUtils.rm_rf(shared.archive_path) if shared&.archive_path
       end
 
-      def cleanup_and_notify_error!
-        cleanup_and_notify_error
+      def notify_error!
+        notify_error
 
         raise Gitlab::ImportExport::Error.new(shared.errors.to_sentence)
       end

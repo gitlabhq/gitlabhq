@@ -22,11 +22,9 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 1. Configure the GitLab application servers with the appropriate details.
    This step is covered in [Configuring GitLab for HA](gitlab.md).
 
-## PostgreSQL in a Scaled Environment
+## PostgreSQL in a Scaled and Highly Available Environment
 
-This section is relevant for [Scaled Architecture](README.md#scalable-architecture-examples)
-environments including [Basic Scaling](README.md#basic-scaling) and
-[Full Scaling](README.md#full-scaling).
+This section is relevant for [Scalable and Highly Available Setups](README.md).
 
 ### Provide your own PostgreSQL instance **(CORE ONLY)**
 
@@ -93,23 +91,6 @@ deploy the bundled PostgreSQL.
 
 Advanced configuration options are supported and can be added if
 needed.
-
-Continue configuration of other components by going
-[back to Scaled Architectures](README.md#scalable-architecture-examples)
-
-## PostgreSQL with High Availability
-
-This section is relevant for [High Availability Architecture](README.md#high-availability-architecture-examples)
-environments including [Horizontal](README.md#horizontal),
-[Hybrid](README.md#hybrid), and
-[Fully Distributed](README.md#fully-distributed).
-
-### Provide your own PostgreSQL instance **(CORE ONLY)**
-
-If you want to use your own deployed PostgreSQL instance(s),
-see [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance-core-only)
-for more details. However, you can use the GitLab Omnibus package to easily
-deploy the bundled PostgreSQL.
 
 ### High Availability with GitLab Omnibus **(PREMIUM ONLY)**
 
@@ -182,7 +163,7 @@ Similarly, PostgreSQL access is controlled based on the network source.
 This is why you will need:
 
 - IP address of each nodes network interface. This can be set to `0.0.0.0` to
-  listen on all interfaces. It cannot be set to the loopack address `127.0.0.1`.
+  listen on all interfaces. It cannot be set to the loopback address `127.0.0.1`.
 - Network Address. This can be in subnet (i.e. `192.168.0.0/255.255.255.0`)
   or CIDR (i.e. `192.168.0.0/24`) form.
 
@@ -402,7 +383,7 @@ Select one node as a primary node.
    * master  | HOSTNAME |          | host=HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
    ```
 
-1. Note down the hostname/ip in the connection string: `host=HOSTNAME`. We will
+1. Note down the hostname or IP address in the connection string: `host=HOSTNAME`. We will
    refer to the hostname in the next section as `MASTER_NODE_NAME`. If the value
    is not an IP address, it will need to be a resolvable name (via DNS or
    `/etc/hosts`)
@@ -554,7 +535,7 @@ Here is a list and description of each machine and the assigned IP:
 - `10.6.0.33`: PostgreSQL secondary
 - `10.6.0.41`: GitLab application
 
-All passwords are set to `toomanysecrets`, please do not use this password or derived hashes and the external_url for GitLab is `http://gitlab.example.com`.
+All passwords are set to `toomanysecrets`, please do not use this password or derived hashes and the `external_url` for GitLab is `http://gitlab.example.com`.
 
 Please note that after the initial configuration, if a failover occurs, the PostgresSQL master will change to one of the available secondaries until it is failed back.
 
@@ -758,7 +739,7 @@ Here is a list and description of each machine and the assigned IP:
 
 All passwords are set to `toomanysecrets`, please do not use this password or derived hashes.
 
-The external_url for GitLab is `http://gitlab.example.com`
+The `external_url` for GitLab is `http://gitlab.example.com`
 
 Please note that after the initial configuration, if a failover occurs, the PostgresSQL master will change to one of the available secondaries until it is failed back.
 
@@ -963,7 +944,7 @@ repmgr['trust_auth_cidr_addresses'] = %w(192.168.1.44/32 db2.example.com)
 ##### MD5 Authentication
 
 If you are running on an untrusted network, repmgr can use md5 authentication
-with a [.pgpass file](https://www.postgresql.org/docs/9.6/libpq-pgpass.html)
+with a [`.pgpass` file](https://www.postgresql.org/docs/9.6/libpq-pgpass.html)
 to authenticate.
 
 You can specify by IP address, FQDN, or by subnet, using the same format as in

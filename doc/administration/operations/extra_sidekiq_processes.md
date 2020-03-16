@@ -53,6 +53,20 @@ To start extra Sidekiq processes, you must enable `sidekiq-cluster`:
    ]
    ```
 
+   [In GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26594) and
+   later, the special queue name `*` means all queues. This starts two
+   processes, each handling all queues:
+
+   ```ruby
+   sidekiq_cluster['queue_groups'] = [
+     "*",
+     "*"
+   ]
+   ```
+
+   `*` cannot be combined with concrete queue names - `*, mailers` will
+   just handle the `mailers` queue.
+
 1. Save the file and reconfigure GitLab for the changes to take effect:
 
    ```shell
@@ -115,10 +129,10 @@ following attributes:
   `source_code_management` category.
 - `has_external_dependencies` - whether or not the queue connects to external
   services. For example, all importers have this set to `true`.
-- `latency_sensitive` - whether or not the queue is particularly sensitive to
-  latency, which also means that its jobs should run quickly. For example, the
-  `authorized_projects` queue is used to refresh user permissions, and is
-  latency sensitive.
+- `urgency` - how important it is that this queue's jobs run
+  quickly. Can be `high`, `low`, or `throttled`. For example, the
+  `authorized_projects` queue is used to refresh user permissions, and
+  is high urgency.
 - `name` - the queue name. The other attributes are typically more useful as
   they are more general, but this is available in case a particular queue needs
   to be selected.
@@ -126,9 +140,9 @@ following attributes:
   `unknown`. For example, the `project_export` queue is memory bound as it has
   to load data in memory before saving it for export.
 
-Both `has_external_dependencies` and `latency_sensitive` are boolean attributes:
-only the exact string `true` is considered true, and everything else is
-considered false.
+`has_external_dependencies` is a boolean attribute: only the exact
+string `true` is considered true, and everything else is considered
+false.
 
 ### Available operators
 
@@ -154,6 +168,10 @@ from highest to lowest precedence:
 The operator precedence for this syntax is fixed: it's not possible to make AND
 have higher precedence than OR.
 
+[In GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26594) and
+later, as with the standard queue group syntax above, a single `*` as the
+entire queue group selects all queues.
+
 ### Example queries
 
 In `/etc/gitlab/gitlab.rb`:
@@ -162,10 +180,12 @@ In `/etc/gitlab/gitlab.rb`:
 sidekiq_cluster['enable'] = true
 sidekiq_cluster['experimental_queue_selector'] = true
 sidekiq_cluster['queue_groups'] = [
-  # Run all non-CPU-bound queues that are latency sensitive
-  'resource_boundary!=cpu&latency_sensitive=true',
-  # Run all continuous integration and pages queues that are not latency sensitive
-  'feature_category=continuous_integration,pages&latency_sensitive=false'
+  # Run all non-CPU-bound queues that are high urgency
+  'resource_boundary!=cpu&urgency=high',
+  # Run all continuous integration and pages queues that are not high urgency
+  'feature_category=continuous_integration,pages&urgency!=high',
+  # Run all queues
+  '*'
 ]
 ```
 
@@ -291,11 +311,11 @@ If you experience a problem, you should contact GitLab support. Use the command
 line at your own risk.
 
 For debugging purposes, you can start extra Sidekiq processes by using the command
-`/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster`. This command
+`/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster`. This command
 takes arguments using the following syntax:
 
 ```shell
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster [QUEUE,QUEUE,...] [QUEUE, ...]
+/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster [QUEUE,QUEUE,...] [QUEUE, ...]
 ```
 
 Each separate argument denotes a group of queues that have to be processed by a
@@ -313,14 +333,14 @@ For example, say you want to start 2 extra processes: one to process the
 done as follows:
 
 ```shell
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit post_receive
+/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster process_commit post_receive
 ```
 
 If you instead want to start one process processing both queues, you'd use the
 following syntax:
 
 ```shell
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit,post_receive
+/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster process_commit,post_receive
 ```
 
 If you want to have one Sidekiq process dealing with the `process_commit` and
@@ -328,7 +348,7 @@ If you want to have one Sidekiq process dealing with the `process_commit` and
 you'd use the following:
 
 ```shell
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster process_commit,post_receive gitlab_shell
+/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster process_commit,post_receive gitlab_shell
 ```
 
 ### Monitoring the `sidekiq-cluster` command
@@ -360,7 +380,7 @@ file is written, but this can be changed by passing the `--pidfile` option to
 `sidekiq-cluster`. For example:
 
 ```shell
-/opt/gitlab/embedded/service/gitlab-rails/ee/bin/sidekiq-cluster --pidfile /var/run/gitlab/sidekiq_cluster.pid process_commit
+/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster --pidfile /var/run/gitlab/sidekiq_cluster.pid process_commit
 ```
 
 Keep in mind that the PID file will contain the PID of the `sidekiq-cluster`

@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import $ from 'jquery';
 import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash } from '~/lib/utils/url_utility';
@@ -38,13 +38,13 @@ export default {
   },
   computed: {
     id() {
-      return slugify(this.release.tag_name);
+      return slugify(this.release.tagName);
     },
     assets() {
       return this.release.assets || {};
     },
     hasEvidence() {
-      return Boolean(this.release.evidence_sha);
+      return Boolean(this.release.evidenceSha);
     },
     milestones() {
       return this.release.milestones || [];
@@ -64,7 +64,7 @@ export default {
       return !this.glFeatures.releaseIssueSummary;
     },
     shouldRenderMilestoneInfo() {
-      return Boolean(this.glFeatures.releaseIssueSummary && !_.isEmpty(this.release.milestones));
+      return Boolean(this.glFeatures.releaseIssueSummary && !isEmpty(this.release.milestones));
     },
   },
 
@@ -93,7 +93,10 @@ export default {
     <release-block-header :release="release" />
     <div class="card-body">
       <div v-if="shouldRenderMilestoneInfo">
-        <release-block-milestone-info :milestones="milestones" />
+        <release-block-milestone-info
+          :milestones="milestones"
+          :open-issues-path="release._links.issuesUrl"
+        />
         <hr class="mb-3 mt-0" />
       </div>
 
@@ -102,7 +105,7 @@ export default {
       <evidence-block v-if="hasEvidence && shouldShowEvidence" :release="release" />
 
       <div ref="gfm-content" class="card-text prepend-top-default">
-        <div v-html="release.description_html"></div>
+        <div v-html="release.descriptionHtml"></div>
       </div>
     </div>
 
@@ -110,11 +113,11 @@ export default {
       v-if="shouldShowFooter"
       class="card-footer"
       :commit="release.commit"
-      :commit-path="release.commit_path"
-      :tag-name="release.tag_name"
-      :tag-path="release.tag_path"
+      :commit-path="release.commitPath"
+      :tag-name="release.tagName"
+      :tag-path="release.tagPath"
       :author="release.author"
-      :released-at="release.released_at"
+      :released-at="release.releasedAt"
     />
   </div>
 </template>

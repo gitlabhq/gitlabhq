@@ -58,7 +58,7 @@ which could arise (especially with testing against browser specific features).
 
 ### Differences to Karma
 
-- Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab-foss/issues/58205).
+- Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/26982).
 - Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default. See also its [limitations](#limitations-of-jsdom) below.
 - Jest does not have access to Webpack loaders or aliases.
   The aliases used by Jest are defined in its [own config](https://gitlab.com/gitlab-org/gitlab/blob/master/jest.config.js).
@@ -81,7 +81,7 @@ This comes with a number of limitations, namely:
 - [No element sizes or positions](https://github.com/jsdom/jsdom/blob/15.1.1/lib/jsdom/living/nodes/Element-impl.js#L334-L371)
 - [No layout engine](https://github.com/jsdom/jsdom/issues/1322) in general
 
-See also the issue for [support running Jest tests in browsers](https://gitlab.com/gitlab-org/gitlab-foss/issues/58205).
+See also the issue for [support running Jest tests in browsers](https://gitlab.com/gitlab-org/gitlab/-/issues/26982).
 
 ### Debugging Jest tests
 
@@ -782,7 +782,7 @@ All tests in `spec/javascripts/` will eventually be migrated to `spec/frontend/`
 
 Before May 2018, `features/` also contained feature tests run by Spinach. These tests were removed from the codebase in May 2018 ([#23036](https://gitlab.com/gitlab-org/gitlab-foss/issues/23036)).
 
-See also [Notes on testing Vue components](../fe_guide/vue.html#testing-vue-components).
+See also [Notes on testing Vue components](../fe_guide/vue.md#testing-vue-components).
 
 ## Test helpers
 

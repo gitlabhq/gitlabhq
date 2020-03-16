@@ -25,7 +25,7 @@ describe API::Statistics, 'Statistics' do
       it "returns authentication error" do
         get api(path, nil)
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -35,7 +35,7 @@ describe API::Statistics, 'Statistics' do
       it "returns forbidden error" do
         get api(path, user)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -45,7 +45,7 @@ describe API::Statistics, 'Statistics' do
       it 'matches the response schema' do
         get api(path, admin)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('statistics')
       end
 

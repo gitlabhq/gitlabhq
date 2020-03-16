@@ -11,6 +11,7 @@ module ErrorTracking
       )
 
       compose_response(response) do
+        project_error_tracking_setting.expire_issues_cache
         response[:closed_issue_iid] = update_related_issue&.iid
       end
     end

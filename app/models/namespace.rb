@@ -68,6 +68,7 @@ class Namespace < ApplicationRecord
   after_destroy :rm_dir
 
   scope :for_user, -> { where('type IS NULL') }
+  scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
@@ -129,13 +130,17 @@ class Namespace < ApplicationRecord
       return unless host.ends_with?(gitlab_host)
 
       name = host.delete_suffix(gitlab_host)
-      Namespace.find_by_full_path(name)
+      Namespace.where(parent_id: nil).find_by_path(name)
     end
 
     # overridden in ee
     def reset_ci_minutes!(namespace_id)
       false
     end
+  end
+
+  def default_branch_protection
+    super || Gitlab::CurrentSettings.default_branch_protection
   end
 
   def visibility_level_field
@@ -326,7 +331,10 @@ class Namespace < ApplicationRecord
   end
 
   def pages_virtual_domain
-    Pages::VirtualDomain.new(all_projects_with_pages, trim_prefix: full_path)
+    Pages::VirtualDomain.new(
+      all_projects_with_pages.includes(:route, :project_feature),
+      trim_prefix: full_path
+    )
   end
 
   def closest_setting(name)
@@ -368,7 +376,7 @@ class Namespace < ApplicationRecord
 
   def nesting_level_allowed
     if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
-      errors.add(:parent_id, "has too deep level of nesting")
+      errors.add(:parent_id, 'has too deep level of nesting')
     end
   end
 

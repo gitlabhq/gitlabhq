@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlTable, GlPagination, GlLoadingIcon } from '@gitlab/ui';
+import { GlTable, GlPagination, GlSkeletonLoader } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import stubChildren from 'helpers/stub_children';
 import component from '~/registry/explorer/pages/details.vue';
@@ -14,8 +14,7 @@ describe('Details Page', () => {
 
   const findDeleteModal = () => wrapper.find(GlModal);
   const findPagination = () => wrapper.find(GlPagination);
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
-  const findTagsTable = () => wrapper.find(GlTable);
+  const findSkeletonLoader = () => wrapper.find(GlSkeletonLoader);
   const findMainCheckbox = () => wrapper.find({ ref: 'mainCheckbox' });
   const findFirstRowItem = ref => wrapper.find({ ref });
   const findBulkDeleteButton = () => wrapper.find({ ref: 'bulkDeleteButton' });
@@ -33,7 +32,7 @@ describe('Details Page', () => {
         ...stubChildren(component),
         GlModal,
         GlSprintf: false,
-        GlTable: false,
+        GlTable,
       },
       mocks: {
         $route: {
@@ -53,18 +52,19 @@ describe('Details Page', () => {
   });
 
   describe('when isLoading is true', () => {
-    beforeAll(() => store.commit(SET_MAIN_LOADING, true));
+    beforeEach(() => {
+      store.dispatch('receiveTagsListSuccess', { ...tagsListResponse, data: [] });
+      store.commit(SET_MAIN_LOADING, true);
+    });
 
     afterAll(() => store.commit(SET_MAIN_LOADING, false));
 
-    it('has a loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(true);
+    it('has a skeleton loader', () => {
+      expect(findSkeletonLoader().exists()).toBe(true);
     });
 
-    it('does not have a main content', () => {
-      expect(findTagsTable().exists()).toBe(false);
-      expect(findPagination().exists()).toBe(false);
-      expect(findDeleteModal().exists()).toBe(false);
+    it('does not have list items', () => {
+      expect(findFirstRowItem('rowCheckbox').exists()).toBe(false);
     });
   });
 
@@ -219,7 +219,7 @@ describe('Details Page', () => {
       dispatchSpy.mockResolvedValue();
       wrapper.setData({ currentPage: 2 });
       expect(store.dispatch).toHaveBeenCalledWith('requestTagsList', {
-        id: wrapper.vm.$route.params.id,
+        params: wrapper.vm.$route.params.id,
         pagination: { page: 2 },
       });
     });

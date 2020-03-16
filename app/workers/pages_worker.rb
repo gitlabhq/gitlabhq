@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PagesWorker
+class PagesWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   sidekiq_options retry: 3

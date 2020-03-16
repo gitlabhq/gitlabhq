@@ -1,0 +1,5 @@
+---
+title: Add airgap support to Dependency Scanning template
+merge_request: 26145
+author:
+type: changed

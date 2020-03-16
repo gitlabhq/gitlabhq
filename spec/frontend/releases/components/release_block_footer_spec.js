@@ -24,7 +24,7 @@ describe('Release block footer', () => {
   const factory = (props = {}) => {
     wrapper = mount(ReleaseBlockFooter, {
       propsData: {
-        ...convertObjectPropsToCamelCase(releaseClone),
+        ...convertObjectPropsToCamelCase(releaseClone, { deep: true }),
         ...props,
       },
     });

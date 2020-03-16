@@ -11,6 +11,7 @@ class PagesDomain < ApplicationRecord
 
   belongs_to :project
   has_many :acme_orders, class_name: "PagesDomainAcmeOrder"
+  has_many :serverless_domain_clusters, class_name: 'Serverless::DomainCluster', inverse_of: :pages_domain
 
   validates :domain, hostname: { allow_numeric_hostname: true }
   validates :domain, uniqueness: { case_sensitive: false }
@@ -66,6 +67,10 @@ class PagesDomain < ApplicationRecord
   scope :with_logging_info, -> { includes(project: [:namespace, :route]) }
 
   scope :instance_serverless, -> { where(wildcard: true, scope: :instance, usage: :serverless) }
+
+  def self.find_by_domain_case_insensitive(domain)
+    find_by("LOWER(domain) = LOWER(?)", domain)
+  end
 
   def verified?
     !!verified_at

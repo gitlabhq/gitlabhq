@@ -195,6 +195,7 @@ describe Gitlab::Profiler do
 
   describe '.print_by_total_time' do
     let(:stdout) { StringIO.new }
+    let(:regexp) { /^\s+\d+\.\d+\s+(\d+\.\d+)/ }
 
     let(:output) do
       stdout.rewind
@@ -202,6 +203,8 @@ describe Gitlab::Profiler do
     end
 
     let_it_be(:result) do
+      Thread.new { sleep 1 }
+
       RubyProf.profile do
         sleep 0.1
         1.to_s
@@ -215,14 +218,19 @@ describe Gitlab::Profiler do
     it 'prints a profile result sorted by total time' do
       described_class.print_by_total_time(result)
 
-      total_times =
-        output
-          .scan(/^\s+\d+\.\d+\s+(\d+\.\d+)/)
-          .map { |(total)| total.to_f }
-
       expect(output).to include('Kernel#sleep')
-      expect(total_times).to eq(total_times.sort.reverse)
-      expect(total_times).not_to eq(total_times.uniq)
+
+      thread_profiles = output.split('Sort by: total_time').select { |x| x =~ regexp }
+
+      thread_profiles.each do |profile|
+        total_times =
+          profile
+            .scan(regexp)
+            .map { |(total)| total.to_f }
+
+        expect(total_times).to eq(total_times.sort.reverse)
+        expect(total_times).not_to eq(total_times.uniq)
+      end
     end
 
     it 'accepts a max_percent option' do

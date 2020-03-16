@@ -8,6 +8,9 @@ NOTE: **Note:** There is some additional configuration near the bottom for
 additional GitLab application servers. It's important to read and understand
 these additional steps before proceeding with GitLab installation.
 
+NOTE: **Note:** [Cloud Object Storage service](object_storage.md) with [Gitaly](gitaly.md)
+is recommended over [NFS](nfs.md) wherever possible for improved performance.
+
 1. If necessary, install the NFS client utility packages using the following
    commands:
 

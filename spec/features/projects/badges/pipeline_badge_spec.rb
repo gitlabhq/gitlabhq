@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Pipeline Badge' do
-  set(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :repository, :public) }
   let(:ref) { project.default_branch }
 
   context 'when the project has a pipeline' do

@@ -7,7 +7,7 @@ import {
 
 /**
  * This method is used to validate if the graph data format for a chart component
- * that needs a time series as a response from a prometheus query (query_range) is
+ * that needs a time series as a response from a prometheus query (queryRange) is
  * of a valid format or not.
  * @param {Object} graphData  the graph data response from a prometheus request
  * @returns {boolean} whether the graphData format is correct

@@ -8,7 +8,7 @@ Every API call to search must be authenticated.
 
 Search globally across the GitLab instance.
 
-```
+```plaintext
 GET /search
 ```
 
@@ -255,6 +255,8 @@ Example response:
 
 ### Scope: snippet_blobs
 
+This scope will be disabled after GitLab 13.0.
+
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/search?scope=snippet_blobs&search=test
 ```
@@ -410,7 +412,7 @@ Search within the specified group.
 
 If a user is not a member of a group and the group is private, a `GET` request on that group will result to a `404` status code.
 
-```
+```plaintext
 GET /groups/:id/search
 ```
 
@@ -751,7 +753,7 @@ Search within the specified project.
 
 If a user is not a member of a project and the project is private, a `GET` request on that project will result to a `404` status code.
 
-```
+```plaintext
 GET /projects/:id/search
 ```
 

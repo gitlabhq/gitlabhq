@@ -1,0 +1,5 @@
+---
+title: Fix N+1 in Group milestone view
+merge_request: 26051
+author:
+type: performance

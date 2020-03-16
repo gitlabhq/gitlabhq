@@ -42,8 +42,20 @@ module Gitlab
       "project.wiki.bundle"
     end
 
+    def snippet_repo_bundle_dir
+      'snippets'
+    end
+
+    def snippets_repo_bundle_path(absolute_path)
+      File.join(absolute_path, ::Gitlab::ImportExport.snippet_repo_bundle_dir)
+    end
+
+    def snippet_repo_bundle_filename_for(snippet)
+      "#{snippet.hexdigest}.bundle"
+    end
+
     def config_file
-      Rails.root.join('lib/gitlab/import_export/import_export.yml')
+      Rails.root.join('lib/gitlab/import_export/project/import_export.yml')
     end
 
     def version_filename
@@ -77,7 +89,7 @@ module Gitlab
     end
 
     def group_config_file
-      Rails.root.join('lib/gitlab/import_export/group_import_export.yml')
+      Rails.root.join('lib/gitlab/import_export/group/import_export.yml')
     end
   end
 end

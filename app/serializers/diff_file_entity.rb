@@ -53,7 +53,7 @@ class DiffFileEntity < DiffFileBaseEntity
   end
 
   # Used for inline diffs
-  expose :highlighted_diff_lines, using: DiffLineEntity, if: -> (diff_file, options) { inline_diff_view?(options) && diff_file.text? } do |diff_file|
+  expose :highlighted_diff_lines, using: DiffLineEntity, if: -> (diff_file, options) { inline_diff_view?(options, diff_file) && diff_file.text? } do |diff_file|
     diff_file.diff_lines_for_serializer
   end
 
@@ -62,19 +62,19 @@ class DiffFileEntity < DiffFileBaseEntity
   end
 
   # Used for parallel diffs
-  expose :parallel_diff_lines, using: DiffLineParallelEntity, if: -> (diff_file, options) { parallel_diff_view?(options) && diff_file.text? }
+  expose :parallel_diff_lines, using: DiffLineParallelEntity, if: -> (diff_file, options) { parallel_diff_view?(options, diff_file) && diff_file.text? }
 
   private
 
-  def parallel_diff_view?(options)
-    return true unless Feature.enabled?(:single_mr_diff_view)
+  def parallel_diff_view?(options, diff_file)
+    return true unless Feature.enabled?(:single_mr_diff_view, diff_file.repository.project, default_enabled: true)
 
     # If we're not rendering inline, we must be rendering parallel
-    !inline_diff_view?(options)
+    !inline_diff_view?(options, diff_file)
   end
 
-  def inline_diff_view?(options)
-    return true unless Feature.enabled?(:single_mr_diff_view)
+  def inline_diff_view?(options, diff_file)
+    return true unless Feature.enabled?(:single_mr_diff_view, diff_file.repository.project, default_enabled: true)
 
     # If nothing is present, inline will be the default.
     options.fetch(:diff_view, :inline).to_sym == :inline

@@ -1,0 +1,5 @@
+---
+title: Add avatar upload support for create and update group APIs
+merge_request: 25751
+author: Rajendra Kadam
+type: added

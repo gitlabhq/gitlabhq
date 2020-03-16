@@ -5,6 +5,7 @@
     "iid": { "type": "integer" },
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
+    "closed": { "type": "boolean" },
     "due_date": { "type": "date" },
     "project_id": { "type": "integer" },
     "relative_position": { "type": ["integer", "null"] },

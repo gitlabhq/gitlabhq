@@ -31,7 +31,7 @@ class ProjectSnippetPolicy < BasePolicy
          ~can?(:read_all_resources))
   end.prevent :read_snippet
 
-  rule { internal_snippet & ~is_author & ~admin }.policy do
+  rule { internal_snippet & ~is_author & ~admin & ~project.maintainer }.policy do
     prevent :update_snippet
     prevent :admin_snippet
   end
@@ -42,7 +42,7 @@ class ProjectSnippetPolicy < BasePolicy
     prevent :admin_snippet
   end
 
-  rule { is_author | admin }.policy do
+  rule { is_author | admin | project.maintainer }.policy do
     enable :read_snippet
     enable :update_snippet
     enable :admin_snippet

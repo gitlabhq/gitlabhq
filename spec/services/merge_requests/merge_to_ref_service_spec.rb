@@ -91,6 +91,17 @@ describe MergeRequests::MergeToRefService do
 
     it_behaves_like 'successfully evaluates pre-condition checks'
 
+    it 'returns an error when Gitlab::Git::CommandError is raised during merge' do
+      allow(project.repository).to receive(:merge_to_ref) do
+        raise Gitlab::Git::CommandError.new('Failed to create merge commit')
+      end
+
+      result = service.execute(merge_request)
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('Failed to create merge commit')
+    end
+
     context 'commit history comparison with regular MergeService' do
       before do
         # The merge service needs an authorized user while merge-to-ref

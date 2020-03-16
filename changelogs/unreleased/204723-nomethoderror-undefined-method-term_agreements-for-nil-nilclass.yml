@@ -1,0 +1,5 @@
+---
+title: Require a logged in user to accept or decline a term
+merge_request: 24771
+author:
+type: fixed

@@ -46,6 +46,18 @@ module Types
     field :milestones, Types::MilestoneType.connection_type, null: true,
           description: 'Find milestones',
           resolver: Resolvers::MilestoneResolver
+
+    field :boards,
+          Types::BoardType.connection_type,
+          null: true,
+          description: 'Boards of the group',
+          resolver: Resolvers::BoardsResolver
+
+    field :board,
+          Types::BoardType,
+          null: true,
+          description: 'A single board of the group',
+          resolver: Resolvers::BoardsResolver.single
   end
 end
 

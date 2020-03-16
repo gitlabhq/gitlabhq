@@ -35,7 +35,7 @@ describe API::Badges do
 
             get api("/#{source_type.pluralize}/#{source.id}/badges", user)
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.size).to eq(badges_count)
@@ -80,7 +80,7 @@ describe API::Badges do
 
               get api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", user)
 
-              expect(response).to have_gitlab_http_status(200)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(json_response['name']).to eq(badge.name)
               expect(json_response['id']).to eq(badge.id)
               expect(json_response['link_url']).to eq(badge.link_url)
@@ -120,7 +120,7 @@ describe API::Badges do
               post api("/#{source_type.pluralize}/#{source.id}/badges", user),
                    params: { link_url: example_url, image_url: example_url2 }
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -132,7 +132,7 @@ describe API::Badges do
             post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
                 params: { name: example_name, link_url: example_url, image_url: example_url2 }
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
           end.to change { source.badges.count }.by(1)
 
           expect(json_response['name']).to eq(example_name)
@@ -146,21 +146,21 @@ describe API::Badges do
         post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
              params: { link_url: example_url }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when image_url is not given' do
         post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
              params: { image_url: example_url2 }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when link_url or image_url is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
              params: { link_url: 'whatever', image_url: 'whatever' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
   end
@@ -192,7 +192,7 @@ describe API::Badges do
               put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", user),
                   params: { link_url: example_url }
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -203,7 +203,7 @@ describe API::Badges do
           put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer),
               params: { name: example_name, link_url: example_url, image_url: example_url2 }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['name']).to eq(example_name)
           expect(json_response['link_url']).to eq(example_url)
           expect(json_response['image_url']).to eq(example_url2)
@@ -215,7 +215,7 @@ describe API::Badges do
         put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer),
             params: { link_url: 'whatever', image_url: 'whatever' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
   end
@@ -240,7 +240,7 @@ describe API::Badges do
 
               delete api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", user)
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -251,7 +251,7 @@ describe API::Badges do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer)
 
-            expect(response).to have_gitlab_http_status(204)
+            expect(response).to have_gitlab_http_status(:no_content)
           end.to change { source.badges.count }.by(-1)
         end
 
@@ -263,7 +263,7 @@ describe API::Badges do
       it 'returns 404 if badge does not exist' do
         delete api("/#{source_type.pluralize}/#{source.id}/badges/123", maintainer)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -290,7 +290,7 @@ describe API::Badges do
 
               get api("/#{source_type.pluralize}/#{source.id}/badges/render?link_url=#{example_url}&image_url=#{example_url2}", user)
 
-              expect(response).to have_gitlab_http_status(403)
+              expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
         end
@@ -300,7 +300,7 @@ describe API::Badges do
         it 'gets the rendered badge values' do
           get api("/#{source_type.pluralize}/#{source.id}/badges/render?link_url=#{example_url}&image_url=#{example_url2}", maintainer)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
 
           expect(json_response.keys).to contain_exactly('name', 'link_url', 'rendered_link_url', 'image_url', 'rendered_image_url')
           expect(json_response['link_url']).to eq(example_url)
@@ -313,19 +313,19 @@ describe API::Badges do
       it 'returns 400 when link_url is not given' do
         get api("/#{source_type.pluralize}/#{source.id}/badges/render?link_url=#{example_url}", maintainer)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when image_url is not given' do
         get api("/#{source_type.pluralize}/#{source.id}/badges/render?image_url=#{example_url}", maintainer)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when link_url or image_url is not valid' do
         get api("/#{source_type.pluralize}/#{source.id}/badges/render?link_url=whatever&image_url=whatever", maintainer)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
   end
@@ -335,7 +335,7 @@ describe API::Badges do
       it 'cannot delete badges owned by the project group' do
         delete api("/projects/#{project.id}/badges/#{project_group.badges.first.id}", maintainer)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

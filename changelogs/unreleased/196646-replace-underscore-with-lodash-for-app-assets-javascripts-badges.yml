@@ -1,0 +1,5 @@
+---
+title: Replace underscore with lodash for ./app/assets/javascripts/badges
+merge_request: 24966
+author: Jacopo Beschi @jacopo-beschi
+type: changed

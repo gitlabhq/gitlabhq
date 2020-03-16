@@ -68,10 +68,10 @@ exports[`Repository last commit component renders commit widget 1`] = `
         <gl-link-stub
           class="js-commit-pipeline"
           href="https://test.com/pipeline"
-          title="Commit: failed"
+          title="Pipeline: failed"
         >
           <ci-icon-stub
-            aria-label="Commit: failed"
+            aria-label="Pipeline: failed"
             cssclasses=""
             size="24"
             status="[object Object]"
@@ -174,10 +174,10 @@ exports[`Repository last commit component renders the signature HTML as returned
         <gl-link-stub
           class="js-commit-pipeline"
           href="https://test.com/pipeline"
-          title="Commit: failed"
+          title="Pipeline: failed"
         >
           <ci-icon-stub
-            aria-label="Commit: failed"
+            aria-label="Pipeline: failed"
             cssclasses=""
             size="24"
             status="[object Object]"

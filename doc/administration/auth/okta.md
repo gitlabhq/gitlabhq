@@ -42,21 +42,6 @@ Now that the Okta app is configured, it's time to enable it in GitLab.
 
 ## Configure GitLab
 
-1. On your GitLab server, open the configuration file:
-
-   **For Omnibus GitLab installations**
-
-   ```shell
-   sudo editor /etc/gitlab/gitlab.rb
-   ```
-
-   **For installations from source**
-
-   ```shell
-   cd /home/git/gitlab
-   sudo -u git -H editor config/gitlab.yml
-   ```
-
 1. See [Initial OmniAuth Configuration](../../integration/omniauth.md#initial-omniauth-configuration)
    for initial settings.
 
@@ -66,12 +51,18 @@ Now that the Okta app is configured, it's time to enable it in GitLab.
 
    **For Omnibus GitLab installations**
 
+   Edit `/etc/gitlab/gitlab.rb`:
+
    ```ruby
    gitlab_rails['omniauth_allow_single_sign_on'] = ['saml']
    gitlab_rails['omniauth_block_auto_created_users'] = false
    ```
 
+   ---
+
    **For installations from source**
+
+   Edit `config/gitlab.yml`:
 
    ```yaml
    allow_single_sign_on: ["saml"]
@@ -83,11 +74,17 @@ Now that the Okta app is configured, it's time to enable it in GitLab.
 
    **For Omnibus GitLab installations**
 
+   Edit `/etc/gitlab/gitlab.rb`:
+
    ```ruby
    gitlab_rails['omniauth_auto_link_saml_user'] = true
    ```
 
+   ---
+
    **For installations from source**
+
+   Edit `config/gitlab.yml`:
 
    ```yaml
    auto_link_saml_user: true

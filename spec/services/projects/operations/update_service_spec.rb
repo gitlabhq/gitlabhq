@@ -298,55 +298,28 @@ describe Projects::Operations::UpdateService do
             manual_configuration: "0"
           })
         end
-        let(:prometheus_params) do
-          {
-            "type" => "PrometheusService",
-            "title" => nil,
-            "active" => true,
-            "properties" => { "api_url" => "http://example.prometheus.com", "manual_configuration" => "0" },
-            "push_events" => true,
-            "issues_events" => true,
-            "merge_requests_events" => true,
-            "tag_push_events" => true,
-            "note_events" => true,
-            "category" => "monitoring",
-            "default" => false,
-            "wiki_page_events" => true,
-            "pipeline_events" => true,
-            "confidential_issues_events" => true,
-            "commit_events" => true,
-            "job_events" => true,
-            "confidential_note_events" => true,
-            "deployment_events" => false,
-            "description" => nil,
-            "comment_on_event_enabled" => true,
-            "template" => false
-          }
-        end
         let(:params) do
           {
             prometheus_integration_attributes: {
-              api_url: 'http://new.prometheus.com',
-              manual_configuration: '1'
+              'api_url' => 'http://new.prometheus.com',
+              'manual_configuration' => '1'
             }
           }
         end
 
         it 'uses Project#find_or_initialize_service to include instance defined defaults and pass them to Projects::UpdateService', :aggregate_failures do
           project_update_service = double(Projects::UpdateService)
-          prometheus_update_params = prometheus_params.merge('properties' => {
-            'api_url' => 'http://new.prometheus.com',
-            'manual_configuration' => '1'
-          })
 
           expect(project)
             .to receive(:find_or_initialize_service)
             .with('prometheus')
             .and_return(prometheus_service)
-          expect(Projects::UpdateService)
-            .to receive(:new)
-            .with(project, user, { prometheus_service_attributes: prometheus_update_params })
-            .and_return(project_update_service)
+          expect(Projects::UpdateService).to receive(:new) do |project_arg, user_arg, update_params_hash|
+            expect(project_arg).to eq project
+            expect(user_arg).to eq user
+            expect(update_params_hash[:prometheus_service_attributes]).to include('properties' => { 'api_url' => 'http://new.prometheus.com', 'manual_configuration' => '1' })
+            expect(update_params_hash[:prometheus_service_attributes]).not_to include(*%w(id project_id created_at updated_at))
+          end.and_return(project_update_service)
           expect(project_update_service).to receive(:execute)
 
           subject.execute

@@ -28,7 +28,8 @@ module Ci
       license_scanning: 'gl-license-scanning-report.json',
       performance: 'performance.json',
       metrics: 'metrics.txt',
-      lsif: 'lsif.json'
+      lsif: 'lsif.json',
+      dotenv: '.env'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -43,6 +44,7 @@ module Ci
       metrics_referee: :gzip,
       network_referee: :gzip,
       lsif: :gzip,
+      dotenv: :gzip,
 
       # All these file formats use `raw` as we need to store them uncompressed
       # for Frontend to fetch the files and do analysis
@@ -74,7 +76,7 @@ module Ci
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
     scope :with_files_stored_remotely, -> { where(file_store: ::JobArtifactUploader::Store::REMOTE) }
-    scope :for_sha, ->(sha) { joins(job: :pipeline).where(ci_pipelines: { sha: sha }) }
+    scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
 
     scope :with_file_types, -> (file_types) do
       types = self.file_types.select { |file_type| file_types.include?(file_type) }.values
@@ -118,7 +120,8 @@ module Ci
       metrics: 12, ## EE-specific
       metrics_referee: 13, ## runner referees
       network_referee: 14, ## runner referees
-      lsif: 15 # LSIF data for code navigation
+      lsif: 15, # LSIF data for code navigation
+      dotenv: 16
     }
 
     enum file_format: {
@@ -148,7 +151,7 @@ module Ci
 
     def valid_file_format?
       unless TYPE_AND_FORMAT_PAIRS[self.file_type&.to_sym] == self.file_format&.to_sym
-        errors.add(:file_format, 'Invalid file format with specified file type')
+        errors.add(:base, _('Invalid file format with specified file type'))
       end
     end
 

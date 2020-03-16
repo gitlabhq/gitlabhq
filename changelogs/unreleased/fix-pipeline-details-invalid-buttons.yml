@@ -1,0 +1,5 @@
+---
+title: Fix pipeline details page initialisation on invalid pipeline
+merge_request: 25302
+author: Fabio Huser
+type: fixed

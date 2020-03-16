@@ -4,7 +4,7 @@
 #js-vue-sidebar-assignees{ data: { field: "#{issuable_type}", signed_in: signed_in } }
   .title.hide-collapsed
     = _('Assignee')
-    = icon('spinner spin')
+    .spinner.spinner-sm.align-bottom
 
 .selectbox.hide-collapsed
   - if assignees.none?

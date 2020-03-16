@@ -25,7 +25,7 @@ allow GitLab to send messages only to *one* room.
 1. In the "Send messages to this room by posting this URL" column, you should
    see a URL in the format:
 
-```
+```plaintext
 https://api.hipchat.com/v2/room/<room>/notification?auth_token=<token>
 ```
 

@@ -1,6 +1,6 @@
 # Resource label events API
 
-Resource label events keep track about who, when, and which label was added or removed to an issuable.
+Resource label events keep track about who, when, and which label was added to, or removed from, an issuable.
 
 ## Issues
 
@@ -8,7 +8,7 @@ Resource label events keep track about who, when, and which label was added or r
 
 Gets a list of all label events for a single issue.
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/resource_label_events
 ```
 
@@ -72,7 +72,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Returns a single label event for a specific project issue
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/resource_label_events/:resource_label_event_id
 ```
 
@@ -94,7 +94,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Gets a list of all label events for a single epic.
 
-```
+```plaintext
 GET /groups/:id/epics/:epic_id/resource_label_events
 ```
 
@@ -158,7 +158,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Returns a single label event for a specific group epic
 
-```
+```plaintext
 GET /groups/:id/epics/:epic_id/resource_label_events/:resource_label_event_id
 ```
 
@@ -180,7 +180,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 
 Gets a list of all label events for a single merge request.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_label_events
 ```
 
@@ -244,7 +244,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Returns a single label event for a specific project merge request
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_label_events/:resource_label_event_id
 ```
 

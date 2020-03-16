@@ -1,6 +1,8 @@
 <script>
 import { GlTooltipDirective, GlLink, GlBadge } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
+import { BACK_URL_PARAM } from '~/releases/constants';
+import { setUrlParams } from '~/lib/utils/url_utility';
 
 export default {
   name: 'ReleaseBlockHeader',
@@ -20,7 +22,15 @@ export default {
   },
   computed: {
     editLink() {
-      return this.release._links?.edit_url;
+      if (this.release._links?.editUrl) {
+        const queryParams = {
+          [BACK_URL_PARAM]: window.location.href,
+        };
+
+        return setUrlParams(queryParams, this.release._links.editUrl);
+      }
+
+      return undefined;
     },
     selfLink() {
       return this.release._links?.self;
@@ -36,7 +46,7 @@ export default {
         {{ release.name }}
       </gl-link>
       <template v-else>{{ release.name }}</template>
-      <gl-badge v-if="release.upcoming_release" variant="warning" class="align-middle">{{
+      <gl-badge v-if="release.upcomingRelease" variant="warning" class="align-middle">{{
         __('Upcoming Release')
       }}</gl-badge>
     </h2>

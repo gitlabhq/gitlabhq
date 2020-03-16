@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { debounce } from 'lodash';
 import InputValidator from '~/validators/input_validator';
 
 import axios from '~/lib/utils/axios_utils';
@@ -20,7 +20,7 @@ export default class UsernameValidator extends InputValidator {
     const container = opts.container || '';
     const validateLengthElements = document.querySelectorAll(`${container} .js-validate-username`);
 
-    this.debounceValidateInput = _.debounce(inputDomElement => {
+    this.debounceValidateInput = debounce(inputDomElement => {
       UsernameValidator.validateUsernameInput(inputDomElement);
     }, debounceTimeoutDuration);
 

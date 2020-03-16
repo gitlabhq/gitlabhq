@@ -3,6 +3,8 @@
 require "spec_helper"
 
 describe "User creates wiki page" do
+  include WikiHelpers
+
   let(:user) { create(:user) }
   let(:wiki) { ProjectWiki.new(project, user) }
   let(:project) { create(:project) }
@@ -14,8 +16,10 @@ describe "User creates wiki page" do
   end
 
   context "when wiki is empty" do
-    before do
+    before do |example|
       visit(project_wikis_path(project))
+
+      wait_for_svg_to_be_loaded(example)
 
       click_link "Create your first page"
     end
@@ -45,7 +49,7 @@ describe "User creates wiki page" do
         expect(page).to have_content("Create New Page")
       end
 
-      it "shows non-escaped link in the pages list", :quarantine do
+      it "shows non-escaped link in the pages list" do
         fill_in(:wiki_title, with: "one/two/three-test")
 
         page.within(".wiki-form") do
@@ -163,7 +167,7 @@ describe "User creates wiki page" do
         expect(page).to have_link('Link to Home', href: "/#{project.full_path}/-/wikis/home")
       end
 
-      it_behaves_like 'wiki file attachments', :quarantine
+      it_behaves_like 'wiki file attachments'
     end
 
     context "in a group namespace", :js do
@@ -175,7 +179,7 @@ describe "User creates wiki page" do
         expect(page).to have_field("wiki[message]", with: "Create home")
       end
 
-      it "creates a page from the home page", :quarantine do
+      it "creates a page from the home page" do
         page.within(".wiki-form") do
           fill_in(:wiki_content, with: "My awesome wiki!")
 

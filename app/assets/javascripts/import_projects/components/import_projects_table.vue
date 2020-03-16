@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { throttle } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
@@ -67,7 +67,7 @@ export default {
       this.setFilter(target.value);
     },
 
-    throttledFetchRepos: _.throttle(function fetch() {
+    throttledFetchRepos: throttle(function fetch() {
       eventHub.$off('importAll');
       this.fetchRepos();
     }, reposFetchThrottleDelay),

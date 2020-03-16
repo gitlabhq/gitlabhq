@@ -20,26 +20,37 @@ describe ProjectSnippetPolicy do
   subject { described_class.new(current_user, snippet) }
 
   shared_examples 'regular user access rights' do
-    context 'project team member (non guest)' do
-      before do
-        project.add_developer(current_user)
+    context 'not snippet author' do
+      context 'project team member (non guest)' do
+        before do
+          project.add_developer(current_user)
+        end
+
+        it do
+          expect_allowed(:read_snippet, :create_note)
+          expect_disallowed(*author_permissions)
+        end
       end
 
-      it do
-        expect_allowed(:read_snippet, :create_note)
-        expect_disallowed(*author_permissions)
-      end
-    end
+      context 'project team member (guest)' do
+        before do
+          project.add_guest(current_user)
+        end
 
-    context 'project team member (guest)' do
-      before do
-        project.add_guest(current_user)
-      end
-
-      context 'not snippet author' do
         it do
           expect_allowed(:read_snippet, :create_note)
           expect_disallowed(:admin_snippet)
+        end
+      end
+
+      context 'project team member (maintainer)' do
+        before do
+          project.add_maintainer(current_user)
+        end
+
+        it do
+          expect_allowed(:read_snippet, :create_note)
+          expect_allowed(*author_permissions)
         end
       end
     end
@@ -66,6 +77,17 @@ describe ProjectSnippetPolicy do
         it do
           expect_allowed(:read_snippet, :create_note)
           expect_disallowed(:admin_snippet)
+        end
+      end
+
+      context 'project team member (maintainer)' do
+        before do
+          project.add_maintainer(current_user)
+        end
+
+        it do
+          expect_allowed(:read_snippet, :create_note)
+          expect_allowed(*author_permissions)
         end
       end
 

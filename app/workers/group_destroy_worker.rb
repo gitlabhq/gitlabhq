@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GroupDestroyWorker
+class GroupDestroyWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ExceptionBacktrace
 

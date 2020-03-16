@@ -1,0 +1,5 @@
+---
+title: Move namespace of Secure Sidekiq queues
+merge_request: 24340
+author:
+type: other

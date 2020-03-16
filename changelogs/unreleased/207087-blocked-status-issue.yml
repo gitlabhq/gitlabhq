@@ -1,0 +1,5 @@
+---
+title: Don't show issue as blocked on the issue board if blocking issue is closed
+merge_request: 25817
+author:
+type: fixed

@@ -52,7 +52,7 @@ describe('IDE commit form', () => {
       vm.$store.state.stagedFiles.push('test');
 
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('p').textContent).toContain('1 staged and 1 unstaged changes');
+        expect(vm.$el.querySelector('p').textContent).toContain('1 changed file');
         done();
       });
     });

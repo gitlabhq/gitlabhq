@@ -35,6 +35,10 @@ Having an extra job in your pipeline that checks for those vulnerabilities,
 and the fact that they are displayed inside a merge request, makes it very easy
 to perform audits for your Docker-based apps.
 
+[//]: # "NOTE: The container scanning tool references the following heading in the code, so if you"
+[//]: # "      make a change to this heading, make sure to update the documentation URLs used in the"
+[//]: # "      container scanning tool (https://gitlab.com/gitlab-org/security-products/analyzers/klar)"
+
 ## Requirements
 
 To enable Container Scanning in your pipeline, you need:
@@ -65,7 +69,7 @@ To enable Container Scanning in your pipeline, you need:
     services:
       - docker:19.03.1-dind
     variables:
-      IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_REF_SHA
+      IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
     script:
       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
       - docker build -t $IMAGE_TAG .
@@ -103,23 +107,19 @@ artifact available. Behind the scenes, the
 [GitLab Klar analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar/)
 is used and runs the scans.
 
-## Example
-
-The following is a sample `.gitlab-ci.yml` that will build your Docker Image, push it to the container registry and run Container Scanning.
+The following is a sample `.gitlab-ci.yml` that will build your Docker image,
+push it to the Container Registry, and run Container Scanning:
 
 ```yaml
 variables:
   DOCKER_DRIVER: overlay2
 
 services:
-  - docker:stable-dind
+  - docker:19.03.5-dind
 
 stages:
   - build
   - test
-
-include:
-  - template: Container-Scanning.gitlab-ci.yml
 
 build:
   image: docker:stable
@@ -131,17 +131,54 @@ build:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker build -t $IMAGE .
     - docker push $IMAGE
+
+include:
+  - template: Container-Scanning.gitlab-ci.yml
 ```
 
-## Vulnerability Whitelisting
+### Customizing the Container Scanning settings
 
-If you want to whitelist specific vulnerabilities, you'll need to:
+You can change container scanning settings by using the [`variables`](../../../ci/yaml/README.md#variables)
+parameter in your `.gitlab-ci.yml` to change [environment variables](#available-variables).
 
-   1. Set [`GIT_STRATEGY: fetch`](../../../ci/yaml/README.md#git-strategy) in your `.gitlab-ci.yml` file by following the instructions described in the
-   [overriding the Container Scanning template](#overriding-the-container-scanning-template) section of this document.
-   1. Define the whitelisted vulnerabilities in a YAML file named `clair-whitelist.yml` which must use the format described
-   in the [following whitelist example file](https://github.com/arminc/clair-scanner/blob/v12/example-whitelist.yaml).
-   1. Add the `clair-whitelist.yml` file to the Git repository of your project
+In the following example, we [include](../../../ci/yaml/README.md#include) the template and also
+set the `CLAIR_OUTPUT` variable to `High`:
+
+```yaml
+include:
+  template: Container-Scanning.gitlab-ci.yml
+
+variables:
+  CLAIR_OUTPUT: High
+```
+
+The `CLAIR_OUTPUT` variable defined in the main `gitlab-ci.yml` will overwrite what's
+defined in `Container-Scanning.gitlab-ci.yml`, changing the Container Scanning behavior.
+
+[//]: # "NOTE: The container scanning tool references the following heading in the code, so if you"
+[//]: # "      make a change to this heading, make sure to update the documentation URLs used in the"
+[//]: # "      container scanning tool (https://gitlab.com/gitlab-org/security-products/analyzers/klar)"
+
+#### Available variables
+
+Container Scanning can be [configured](#customizing-the-container-scanning-settings)
+using environment variables.
+
+| Environment Variable           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Default                                                                                                         |
+| ------                         | ------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | ------                                                                                                          |
+| `KLAR_TRACE`                   | Set to true to enable more verbose output from klar.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `"false"`                                                                                                       |
+| `DOCKER_USER`                  | Username for accessing a Docker registry requiring authentication.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `$CI_REGISTRY_USER`                                                                                             |
+| `DOCKER_PASSWORD`              | Password for accessing a Docker registry requiring authentication.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `$CI_REGISTRY_PASSWORD`                                                                                         |
+| `CLAIR_OUTPUT`                 | Severity level threshold. Vulnerabilities with severity level higher than or equal to this threshold will be outputted. Supported levels are `Unknown`, `Negligible`, `Low`, `Medium`, `High`, `Critical` and `Defcon1`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `Unknown`                                                                                                       |
+| `REGISTRY_INSECURE`            | Allow [Klar](https://github.com/optiopay/klar) to access insecure registries (HTTP only). Should only be set to `true` when testing the image locally.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `"false"`                                                                                                       |
+| `DOCKER_INSECURE`              | Allow [Klar](https://github.com/optiopay/klar) to access secure Docker registries using HTTPS with bad (or self-signed) SSL certificates.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `"false"`                                                                                                       |
+| `CLAIR_VULNERABILITIES_DB_URL` | (**DEPRECATED - use `CLAIR_DB_CONNECTION_STRING` instead**) This variable is explicitly set in the [services section](https://gitlab.com/gitlab-org/gitlab/-/blob/898c5da43504eba87b749625da50098d345b60d6/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml#L23) of the `Container-Scanning.gitlab-ci.yml` file and defaults to `clair-vulnerabilities-db`. This value represents the address that the [Postgres server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db) is running on and **shouldn't be changed** unless you're running the image locally as described in the [Running the standalone Container Scanning Tool](#running-the-standalone-container-scanning-tool) section.                                      | `clair-vulnerabilities-db`                                                                                      |
+| `CLAIR_DB_CONNECTION_STRING`   | This variable represents the [connection string](https://www.postgresql.org/docs/9.3/libpq-connect.html#AEN39692) to the [Postgres server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db) database and **shouldn't be changed** unless you're running the image locally as described in the [Running the standalone Container Scanning Tool](#running-the-standalone-container-scanning-tool) section. The host value for the connection string must match the [alias](https://gitlab.com/gitlab-org/gitlab/-/blob/898c5da43504eba87b749625da50098d345b60d6/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml#L23) value of the `Container-Scanning.gitlab-ci.yml` template file, which defaults to `clair-vulnerabilities-db`. | `postgresql://postgres:password@clair-vulnerabilities-db:5432/postgres?sslmode=disable&statement_timeout=60000` |
+| `CI_APPLICATION_REPOSITORY`    | Docker repository URL for the image to be scanned.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG`                                                                        |
+| `CI_APPLICATION_TAG`           | Docker respository tag for the image to be scanned.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `$CI_COMMIT_SHA`                                                                                                |
+| `CLAIR_DB_IMAGE`               | The Docker image name and tag for the [Postgres server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db). It can be useful to override this value with a specific version, for example, to provide a consistent set of vulnerabilities for integration testing purposes, or to refer to a locally hosted vulnerabilities database for an on-premise air-gapped installation.                                                                                                                                                                                                                                                                                                                                                                      | `arminc/clair-db:latest`                                                                                        |
+| `CLAIR_DB_IMAGE_TAG`           | (**DEPRECATED - use `CLAIR_DB_IMAGE` instead**) The Docker image tag for the [Postgres server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db). It can be useful to override this value with a specific version, for example, to provide a consistent set of vulnerabilities for integration testing purposes.                                                                                                                                                                                                                                                                                                                                                                                                                                   | `latest`                                                                                                        |
+| `DOCKERFILE_PATH`              | The path to the `Dockerfile` to be used for generating remediations. By default, the scanner will look for a file named `Dockerfile` in the root directory of the project, so this variable should only be configured if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details.                                                                                                                                                                                                                                                                                                                                                                          | `Dockerfile`                                                                                                    |
 
 ### Overriding the Container Scanning template
 
@@ -151,68 +188,30 @@ template inclusion and specify any additional keys under it. For example:
 
 ```yaml
 include:
-  - template: Container-Scanning.gitlab-ci.yml
+  template: Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
     GIT_STRATEGY: fetch
 ```
 
-### Available variables
+### Vulnerability whitelisting
 
-Container Scanning can be [configured](#overriding-the-container-scanning-template)
-using environment variables.
+If you want to whitelist specific vulnerabilities, you'll need to:
 
-| Environment Variable           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Default                                  |
-| ------                         | ------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | ------                                   |
-| `KLAR_TRACE`                   | Set to true to enable more verbose output from klar.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `"false"`                                |
-| `DOCKER_USER`                  | Username for accessing a Docker registry requiring authentication.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `$CI_REGISTRY_USER`                      |
-| `DOCKER_PASSWORD`              | Password for accessing a Docker registry requiring authentication.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `$CI_REGISTRY_PASSWORD`                  |
-| `CLAIR_OUTPUT`                 | Severity level threshold. Vulnerabilities with severity level higher than or equal to this threshold will be outputted. Supported levels are `Unknown`, `Negligible`, `Low`, `Medium`, `High`, `Critical` and `Defcon1`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `Unknown`                                |
-| `REGISTRY_INSECURE`            | Allow [Klar](https://github.com/optiopay/klar) to access insecure registries (HTTP only). Should only be set to `true` when testing the image locally.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `"false"`                                |
-| `CLAIR_VULNERABILITIES_DB_URL` | This variable is explicitly set in the [services section](https://gitlab.com/gitlab-org/gitlab/blob/30522ca8b901223ac8c32b633d8d67f340b159c1/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml#L17-19) of the `Container-Scanning.gitlab-ci.yml` file and defaults to `clair-vulnerabilities-db`. This value represents the address that the [postgres server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db) is running on and **shouldn't be changed** unless you're running the image locally as described in the [Running the scanning tool](https://gitlab.com/gitlab-org/security-products/analyzers/klar/#running-the-scanning-tool) section of the [GitLab klar analyzer readme](https://gitlab.com/gitlab-org/security-products/analyzers/klar). | `clair-vulnerabilities-db`               |
-| `CI_APPLICATION_REPOSITORY`    | Docker repository URL for the image to be scanned.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` |
-| `CI_APPLICATION_TAG`           | Docker respository tag for the image to be scanned.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `$CI_COMMIT_SHA`                         |
-| `CLAIR_DB_IMAGE`               | The Docker image name and tag for the [Postgres server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db). It can be useful to override this value with a specific version, for example, to provide a consistent set of vulnerabilities for integration testing purposes, or to refer to a locally hosted vulnerabilities database for an on-premise air-gapped installation.                                                                                                                                                                                                                                                                                                                                                                                                | `arminc/clair-db:latest`                 |
-| `CLAIR_DB_IMAGE_TAG`           | (**DEPRECATED - use `CLAIR_DB_IMAGE` instead**) The Docker image tag for the [Postgres server hosting the vulnerabilities definitions](https://hub.docker.com/r/arminc/clair-db). It can be useful to override this value with a specific version, for example, to provide a consistent set of vulnerabilities for integration testing purposes.                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `latest`                                 |
-| `DOCKERFILE_PATH`              | The path to the `Dockerfile` to be used for generating remediations.  By default, the scanner will look for a file named `Dockerfile` in the root directory of the project, so this variable should only be configured if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details.                                                                                                                                                                                                                                                                                                                                                                                                    | `Dockerfile`                             |
+1. Set `GIT_STRATEGY: fetch` in your `.gitlab-ci.yml` file by following the instructions described in the
+   [overriding the Container Scanning template](#overriding-the-container-scanning-template) section of this document.
+1. Define the whitelisted vulnerabilities in a YAML file named `clair-whitelist.yml` which must use the format described
+   in the [whitelist example file](https://github.com/arminc/clair-scanner/blob/v12/example-whitelist.yaml).
+1. Add the `clair-whitelist.yml` file to the Git repository of your project.
 
-## Security Dashboard
-
-The Security Dashboard is a good place to get an overview of all the security
-vulnerabilities in your groups, projects and pipelines. Read more about the
-[Security Dashboard](../security_dashboard/index.md).
-
-## Interacting with the vulnerabilities
-
-Once a vulnerability is found, you can interact with it. Read more on how to
-[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
-
-## Solutions for vulnerabilities (auto-remediation)
-
-Some vulnerabilities can be fixed by applying the solution that GitLab
-automatically generates.
-
-To enable remediation support, the scanning tool _must_ have access to the `Dockerfile` specified by
-the `DOCKERFILE_PATH` environment variable. To ensure that the scanning tool has access to this
-file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/yaml/README.md#git-strategy) in
-your `.gitlab-ci.yml` file by following the instructions described in this document's
-[overriding the Container Scanning template](#overriding-the-container-scanning-template) section.
-
-Read more about the [solutions for vulnerabilities](../index.md#solutions-for-vulnerabilities-auto-remediation).
-
-## Vulnerabilities database update
-
-For more information about the vulnerabilities database update, check the
-[maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
-
-## Running Container Scanning in an offline air-gapped installation
+### Running Container Scanning in an offline, air-gapped installation
 
 Container Scanning can be executed on an offline air-gapped GitLab Ultimate installation using the following process:
 
 1. Host the following Docker images on a [local Docker container registry](../../packages/container_registry/index.md):
    - [arminc/clair-db vulnerabilities database](https://hub.docker.com/r/arminc/clair-db)
-   - [GitLab klar analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/klar)
+   - GitLab klar analyzer: `registry.gitlab.com/gitlab-org/security-products/analyzers/klar`
 1. [Override the container scanning template](#overriding-the-container-scanning-template) in your `.gitlab-ci.yml` file to refer to the Docker images hosted on your local Docker container registry:
 
    ```yaml
@@ -225,13 +224,17 @@ Container Scanning can be executed on an offline air-gapped GitLab Ultimate inst
        CLAIR_DB_IMAGE: $CI_REGISTRY/namespace/clair-vulnerabilities-db
    ```
 
-It may be worthwhile to set up a [scheduled pipeline](../../project/pipelines/schedules.md) to automatically build a new version of the vulnerabilities database on a preset schedule. You can use the following `.gitlab-yml.ci` as a template:
+1. If your local Docker container registry is running securely over `HTTPS`, but you're using a
+   self-signed certificate, then you must set `DOCKER_INSECURE: true` in the above
+   `container_scanning` section of your `.gitlab-ci.yml`.
+
+It may be worthwhile to set up a [scheduled pipeline](../../../ci/pipelines/schedules.md) to automatically build a new version of the vulnerabilities database on a preset schedule. You can use the following `.gitlab-yml.ci` as a template:
 
 ```yaml
 image: docker:stable
 
 services:
-  - docker:stable-dind
+  - docker:19.03.5-dind
 
 stages:
   - build
@@ -246,6 +249,40 @@ build_latest_vulnerabilities:
 ```
 
 The above template will work for a GitLab Docker registry running on a local installation, however, if you're using a non-GitLab Docker registry, you'll need to change the `$CI_REGISTRY` value and the `docker login` credentials to match the details of your local registry.
+
+## Running the standalone Container Scanning Tool
+
+It's possible to run the [GitLab Container Scanning Tool](https://gitlab.com/gitlab-org/security-products/analyzers/klar)
+against a Docker container without needing to run it within the context of a CI job. To scan an
+image directly, follow these steps:
+
+1. Run [Docker Desktop](https://www.docker.com/products/docker-desktop) or [Docker Machine](https://github.com/docker/machine).
+1. Run the latest [prefilled vulnerabilities database](https://cloud.docker.com/repository/docker/arminc/clair-db) Docker image:
+
+   ```shell
+   docker run -p 5432:5432 -d --name clair-db arminc/clair-db:latest
+   ```
+
+1. Configure an environment variable to point to your local machine's IP address (or insert your IP address instead of the `LOCAL_MACHINE_IP_ADDRESS` variable in the `CLAIR_DB_CONNECTION_STRING` in the next step):
+
+   ```shell
+   export LOCAL_MACHINE_IP_ADDRESS=your.local.ip.address
+   ```
+
+1. Run the analyzer's Docker image, passing the image and tag you want to analyze in the `CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG` environment variables:
+
+   ```shell
+   docker run \
+     --interactive --rm \
+     --volume "$PWD":/tmp/app \
+     -e CI_PROJECT_DIR=/tmp/app \
+     -e CLAIR_DB_CONNECTION_STRING="postgresql://postgres:password@${LOCAL_MACHINE_IP_ADDRESS}:5432/postgres?sslmode=disable&statement_timeout=60000" \
+     -e CI_APPLICATION_REPOSITORY=registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256 \
+     -e CI_APPLICATION_TAG=bc09fe2e0721dfaeee79364115aeedf2174cce0947b9ae5fe7c33312ee019a4e \
+     registry.gitlab.com/gitlab-org/security-products/analyzers/klar
+   ```
+
+The results are stored in `gl-container-scanning-report.json`.
 
 ## Reports JSON format
 
@@ -310,6 +347,9 @@ it highlighted:
 }
 ```
 
+CAUTION: **Deprecation:**
+Beginning with GitLab 12.9, container scanning no longer reports `undefined` severity and confidence levels.
+
 Here is the description of the report file structure nodes and their meaning. All fields are mandatory to be present in
 the report JSON unless stated otherwise. Presence of optional fields depends on the underlying analyzers being used.
 
@@ -317,7 +357,7 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 |------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `version`                                            | Report syntax version used to generate this JSON.                                                                                                                                                                                                                                                                                                                                          |
 | `vulnerabilities`                                    | Array of vulnerability objects.                                                                                                                                                                                                                                                                                                                                                            |
-| `vulnerabilities[].category`                         | Where this vulnerability belongs (SAST, Container Scanning etc.). For Container Scanning, it will always be `container_scanning`.                                                                                                                                                                                                                                                          |
+| `vulnerabilities[].category`                         | Where this vulnerability belongs (for example, SAST or Container Scanning). For Container Scanning, it will always be `container_scanning`.                                                                                                                                                                                                                                                          |
 | `vulnerabilities[].message`                          | A short text that describes the vulnerability, it may include occurrence's specific information. Optional.                                                                                                                                                                                                                                                                                 |
 | `vulnerabilities[].description`                      | A long text that describes the vulnerability. Optional.                                                                                                                                                                                                                                                                                                                                    |
 | `vulnerabilities[].cve`                              | A fingerprint string value that represents a concrete occurrence of the vulnerability. It's used to determine whether two vulnerability occurrences are same or different. May not be 100% accurate. **This is NOT a [CVE](https://cve.mitre.org/)**.                                                                                                                                      |
@@ -348,12 +388,39 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `remediations[].summary`                             | Overview of how the vulnerabilities have been fixed.                                                                                                                                                                                                                                                                                                                                       |
 | `remediations[].diff`                                | base64-encoded remediation code diff, compatible with [`git apply`](https://git-scm.com/docs/git-format-patch#_discussion).                                                                                                                                                                                                                                                                |
 
+## Security Dashboard
+
+The [Security Dashboard](../security_dashboard/index.md) shows you an overview of all
+the security vulnerabilities in your groups, projects and pipelines.
+
+## Vulnerabilities database update
+
+For more information about the vulnerabilities database update, check the
+[maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
+
+## Interacting with the vulnerabilities
+
+Once a vulnerability is found, you can [interact with it](../index.md#interacting-with-the-vulnerabilities).
+
+## Solutions for vulnerabilities (auto-remediation)
+
+Some vulnerabilities can be fixed by applying the solution that GitLab
+automatically generates.
+
+To enable remediation support, the scanning tool _must_ have access to the `Dockerfile` specified by
+the `DOCKERFILE_PATH` environment variable. To ensure that the scanning tool has access to this
+file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/yaml/README.md#git-strategy) in
+your `.gitlab-ci.yml` file by following the instructions described in this document's
+[overriding the Container Scanning template](#overriding-the-container-scanning-template) section.
+
+Read more about the [solutions for vulnerabilities](../index.md#solutions-for-vulnerabilities-auto-remediation).
+
 ## Troubleshooting
 
 ### docker: Error response from daemon: failed to copy xattrs
 
 When the GitLab Runner uses the Docker executor and NFS is used
-(e.g., `/var/lib/docker` is on an NFS mount), Container Scanning might fail with
+(for example, `/var/lib/docker` is on an NFS mount), Container Scanning might fail with
 an error like the following:
 
 ```text

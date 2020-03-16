@@ -1,0 +1,5 @@
+---
+title: Automatically include embedded metrics for GitLab alert incidents
+merge_request: 25277
+author:
+type: added

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PagesDomainSslRenewalWorker
+class PagesDomainSslRenewalWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :pages

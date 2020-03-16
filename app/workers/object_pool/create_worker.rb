@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ObjectPool
-  class CreateWorker
+  class CreateWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include ObjectPoolQueue
     include ExclusiveLeaseGuard

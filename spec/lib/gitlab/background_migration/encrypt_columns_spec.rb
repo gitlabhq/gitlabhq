@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::EncryptColumns, :migration, schema: 20180910115836 do
+describe Gitlab::BackgroundMigration::EncryptColumns, schema: 20180910115836 do
   let(:model) { Gitlab::BackgroundMigration::Models::EncryptColumns::WebHook }
   let(:web_hooks) { table(:web_hooks) }
 

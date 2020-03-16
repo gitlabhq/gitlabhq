@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module DeclarativePolicy
-  PREFERRED_SCOPE_KEY = :"DeclarativePolicy.preferred_scope"
+  module PreferredScope
+    PREFERRED_SCOPE_KEY = :"DeclarativePolicy.preferred_scope"
 
-  class << self
     def with_preferred_scope(scope)
       Thread.current[PREFERRED_SCOPE_KEY], old_scope = scope, Thread.current[PREFERRED_SCOPE_KEY]
       yield

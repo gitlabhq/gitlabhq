@@ -288,9 +288,9 @@ export default {
   [types.REQUEST_DESCRIPTION_VERSION](state) {
     state.isLoadingDescriptionVersion = true;
   },
-  [types.RECEIVE_DESCRIPTION_VERSION](state, descriptionVersion) {
-    state.isLoadingDescriptionVersion = false;
-    state.descriptionVersion = descriptionVersion;
+  [types.RECEIVE_DESCRIPTION_VERSION](state, { descriptionVersion, versionId }) {
+    const descriptionVersions = { ...state.descriptionVersions, [versionId]: descriptionVersion };
+    Object.assign(state, { descriptionVersions, isLoadingDescriptionVersion: false });
   },
   [types.RECEIVE_DESCRIPTION_VERSION_ERROR](state) {
     state.isLoadingDescriptionVersion = false;
@@ -300,7 +300,7 @@ export default {
   },
   [types.RECEIVE_DELETE_DESCRIPTION_VERSION](state, descriptionVersion) {
     state.isLoadingDescriptionVersion = false;
-    state.descriptionVersion = descriptionVersion;
+    Object.assign(state.descriptionVersions, descriptionVersion);
   },
   [types.RECEIVE_DELETE_DESCRIPTION_VERSION_ERROR](state) {
     state.isLoadingDescriptionVersion = false;

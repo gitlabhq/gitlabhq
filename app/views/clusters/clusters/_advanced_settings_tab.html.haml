@@ -1,0 +1,6 @@
+- active = params[:tab] == 'settings'
+
+- if can_admin_cluster?(current_user, @cluster)
+  %li.nav-item{ role: 'presentation' }
+    %a#cluster-settings-tab.nav-link{ class: active_when(active), href: clusterable.cluster_path(@cluster.id, params: {tab: 'settings'}) }
+      %span= _('Advanced Settings')

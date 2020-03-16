@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { take } from 'lodash';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import sanitize from 'sanitize-html';
 import { FREQUENT_ITEMS, HOUR_IN_MS } from './constants';
@@ -31,7 +31,7 @@ export const getTopFrequentItems = items => {
     return 0;
   });
 
-  return _.first(frequentItems, frequentItemsCount);
+  return take(frequentItems, frequentItemsCount);
 };
 
 export const updateExistingFrequentItem = (frequentItem, item) => {

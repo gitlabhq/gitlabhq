@@ -84,6 +84,7 @@ module TestEnv
 
   TMP_TEST_PATH = Rails.root.join('tmp', 'tests', '**')
   REPOS_STORAGE = 'default'.freeze
+  SECOND_STORAGE_PATH = Rails.root.join('tmp', 'tests', 'second_storage')
 
   # Test environment
   #
@@ -103,6 +104,9 @@ module TestEnv
     setup_gitlab_shell
 
     setup_gitaly
+
+    # Feature specs are run through Workhorse
+    setup_workhorse
 
     # Create repository for FactoryBot.create(:project)
     setup_factory_repo
@@ -138,6 +142,7 @@ module TestEnv
     end
 
     FileUtils.mkdir_p(repos_path)
+    FileUtils.mkdir_p(SECOND_STORAGE_PATH)
     FileUtils.mkdir_p(backup_path)
     FileUtils.mkdir_p(pages_path)
     FileUtils.mkdir_p(artifacts_path)
@@ -172,8 +177,6 @@ module TestEnv
       # Gitaly has been spawned outside this process already
       return
     end
-
-    FileUtils.mkdir_p("tmp/tests/second_storage") unless File.exist?("tmp/tests/second_storage")
 
     spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
     Bundler.with_original_env do
@@ -216,6 +219,52 @@ module TestEnv
 
   def gitaly_url
     ENV.fetch('GITALY_REPO_URL', nil)
+  end
+
+  def setup_workhorse
+    install_workhorse_args = [workhorse_dir, workhorse_url].compact.join(',')
+
+    component_timed_setup(
+      'GitLab Workhorse',
+      install_dir: workhorse_dir,
+      version: Gitlab::Workhorse.version,
+      task: "gitlab:workhorse:install[#{install_workhorse_args}]"
+    )
+  end
+
+  def workhorse_dir
+    @workhorse_path ||= File.join('tmp', 'tests', 'gitlab-workhorse')
+  end
+
+  def with_workhorse(workhorse_dir, host, port, upstream, &blk)
+    host = "[#{host}]" if host.include?(':')
+    listen_addr = [host, port].join(':')
+
+    workhorse_pid = spawn(
+      File.join(workhorse_dir, 'gitlab-workhorse'),
+      '-authSocket', upstream,
+      '-documentRoot', Rails.root.join('public').to_s,
+      '-listenAddr', listen_addr,
+      '-secretPath', Gitlab::Workhorse.secret_path.to_s,
+      # TODO: Needed for workhorse + redis features.
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/209245
+      #
+      # '-config', '',
+      '-logFile', 'log/workhorse-test.log',
+      '-logFormat', 'structured',
+      '-developmentMode' # to serve assets and rich error messages
+    )
+
+    begin
+      yield
+    ensure
+      Process.kill('TERM', workhorse_pid)
+      Process.wait(workhorse_pid)
+    end
+  end
+
+  def workhorse_url
+    ENV.fetch('GITLAB_WORKHORSE_URL', nil)
   end
 
   def setup_factory_repo
@@ -347,6 +396,8 @@ module TestEnv
       gitlab-test_bare
       gitlab-test-fork
       gitlab-test-fork_bare
+      gitlab-workhorse
+      gitlab_workhorse_secret
     ]
   end
 

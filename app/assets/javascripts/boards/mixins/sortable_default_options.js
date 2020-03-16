@@ -26,7 +26,6 @@ export function getBoardSortableDefaultOptions(obj) {
     scrollSpeed: 20,
     onStart: sortableStart,
     onEnd: sortableEnd,
-    fallbackTolerance: 1,
   });
 
   Object.keys(obj).forEach(key => {

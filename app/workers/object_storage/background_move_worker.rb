@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ObjectStorage
-  class BackgroundMoveWorker
+  class BackgroundMoveWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include ObjectStorageQueue
 

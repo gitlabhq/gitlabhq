@@ -11,8 +11,9 @@ describe Gitlab::Metrics::Dashboard::Stages::GrafanaFormatter do
   describe '#transform!' do
     let(:grafana_dashboard) { JSON.parse(fixture_file('grafana/simplified_dashboard_response.json'), symbolize_names: true) }
     let(:datasource) { JSON.parse(fixture_file('grafana/datasource_response.json'), symbolize_names: true) }
+    let(:expected_dashboard) { JSON.parse(fixture_file('grafana/expected_grafana_embed.json'), symbolize_names: true) }
 
-    let(:dashboard) { described_class.new(project, {}, params).transform! }
+    subject(:dashboard) { described_class.new(project, {}, params).transform! }
 
     let(:params) do
       {
@@ -23,83 +24,34 @@ describe Gitlab::Metrics::Dashboard::Stages::GrafanaFormatter do
     end
 
     context 'when the query and resources are configured correctly' do
-      let(:expected_dashboard) { JSON.parse(fixture_file('grafana/expected_grafana_embed.json'), symbolize_names: true) }
+      it { is_expected.to eq expected_dashboard }
+    end
 
-      it 'generates a gitlab-yml formatted dashboard' do
-        expect(dashboard).to eq(expected_dashboard)
+    context 'when a panelId is not included in the grafana_url' do
+      before do
+        params[:grafana_url].gsub('&panelId=8', '')
+      end
+
+      it { is_expected.to eq expected_dashboard }
+
+      context 'when there is also no valid panel in the dashboard' do
+        before do
+          params[:grafana_dashboard][:dashboard][:panels] = []
+        end
+
+        it 'raises a processing error' do
+          expect { dashboard }.to raise_error(::Gitlab::Metrics::Dashboard::Errors::DashboardProcessingError)
+        end
       end
     end
 
-    context 'when the inputs are invalid' do
-      shared_examples_for 'processing error' do
-        it 'raises a processing error' do
-          expect { dashboard }
-            .to raise_error(Gitlab::Metrics::Dashboard::Stages::InputFormatValidator::DashboardProcessingError)
-        end
+    context 'when an input is invalid' do
+      before do
+        params[:datasource][:access] = 'not-proxy'
       end
 
-      context 'when the datasource is not proxyable' do
-        before do
-          params[:datasource][:access] = 'not-proxy'
-        end
-
-        it_behaves_like 'processing error'
-      end
-
-      context 'when query param "panelId" is not specified' do
-        before do
-          params[:grafana_url].gsub!('panelId=8', '')
-        end
-
-        it_behaves_like 'processing error'
-      end
-
-      context 'when query param "from" is not specified' do
-        before do
-          params[:grafana_url].gsub!('from=1570397739557', '')
-        end
-
-        it_behaves_like 'processing error'
-      end
-
-      context 'when query param "to" is not specified' do
-        before do
-          params[:grafana_url].gsub!('to=1570484139557', '')
-        end
-
-        it_behaves_like 'processing error'
-      end
-
-      context 'when the panel is not a graph' do
-        before do
-          params[:grafana_dashboard][:dashboard][:panels][0][:type] = 'singlestat'
-        end
-
-        it_behaves_like 'processing error'
-      end
-
-      context 'when the panel is not a line graph' do
-        before do
-          params[:grafana_dashboard][:dashboard][:panels][0][:lines] = false
-        end
-
-        it_behaves_like 'processing error'
-      end
-
-      context 'when the query dashboard includes undefined variables' do
-        before do
-          params[:grafana_url].gsub!('&var-instance=localhost:9121', '')
-        end
-
-        it_behaves_like 'processing error'
-      end
-
-      context 'when the expression contains unsupported global variables' do
-        before do
-          params[:grafana_dashboard][:dashboard][:panels][0][:targets][0][:expr] = 'sum(important_metric[$__interval_ms])'
-        end
-
-        it_behaves_like 'processing error'
+      it 'raises a processing error' do
+        expect { dashboard }.to raise_error(::Gitlab::Metrics::Dashboard::Errors::DashboardProcessingError)
       end
     end
   end

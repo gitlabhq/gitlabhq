@@ -7,22 +7,12 @@ We will use GitLab's native Kubernetes integration, so you will not need
 to create a Kubernetes cluster manually using the Google Cloud Platform console.
 We will create and deploy a simple application that we create from a GitLab template.
 
-These instructions will also work for a self-hosted GitLab instance. However, you will
+These instructions will also work for a self-managed GitLab instance. However, you will
 need to ensure your own [Runners are configured](../../ci/runners/README.md) and
 [Google OAuth is enabled](../../integration/google.md).
 
 **Note**: GitLab's Web Application Firewall is deployed with [Ingress](../../user/clusters/applications.md#Ingress),
 so it will be available to your applications no matter how you deploy them to Kubernetes.
-
-## Enable or disable ModSecurity
-
-ModSecurity is enabled by default on GitLab.com. You can toggle the feature flag to false by running the following command in the Rails console:
-
-```ruby
-Feature.disable(:ingress_modsecurity)
-```
-
-Once disabled, you must uninstall and reinstall your Ingress application for the changes to take effect. See the [Feature Flag](../../user/project/operations/feature_flags.md) documentation for more information.
 
 ## Configuring your Google account
 
@@ -80,11 +70,11 @@ under which this application will be deployed.
    ![Google auth](../autodevops/img/guide_google_auth_v12_3.png)
 
 1. The last step is to provide the cluster details.
-    1. Give it a name, leave the environment scope as is, and choose the GCP project under which the cluster
-   will be created (per the instructions to [configure your Google account](#configuring-your-google-account), a project should have already been created for you).
-    1. Choose the [region/zone](https://cloud.google.com/compute/docs/regions-zones/) under which the cluster will be created.
-    1. Enter the number of nodes you want it to have.
-    1. Choose the [machine type](https://cloud.google.com/compute/docs/machine-types).
+   1. Give it a name, leave the environment scope as is, and choose the GCP project under which the cluster
+      will be created (per the instructions to [configure your Google account](#configuring-your-google-account), a project should have already been created for you).
+   1. Choose the [region/zone](https://cloud.google.com/compute/docs/regions-zones/) under which the cluster will be created.
+   1. Enter the number of nodes you want it to have.
+   1. Choose the [machine type](https://cloud.google.com/compute/docs/machine-types).
 
    ![GitLab GKE cluster details](../autodevops/img/guide_gitlab_gke_details_v12_3.png)
 
@@ -112,10 +102,9 @@ Once it is installed, the other applications that rely on it will each have thei
 
 For this guide, we need to install Ingress. Ingress provides load balancing,
 SSL termination, and name-based virtual hosting, using NGINX behind
-the scenes. Make sure that the **Enable Web Application Firewall** button is checked
-before installing.
+the scenes. Make sure to switch the toogle to the enabled position before installing.
 
-![Cluster applications](./img/guide_waf_ingress_installation.png)
+![Cluster applications](./img/guide_waf_ingress_installation_v12_9.png)
 
 After Ingress is installed, wait a few seconds and copy the IP address that
 is displayed in order to add in your base **Domain** at the top of the page. For
@@ -180,40 +169,40 @@ your cluster either using [Cloud Shell](https://cloud.google.com/shell/) or the 
 
 1. After connecting to your cluster, check if the Ingress-NGINX controller is running and ModSecurity is enabled.
 
-    This is done by running the following commands:
+   This is done by running the following commands:
 
-    ```bash
-    $ kubectl get pods -n gitlab-managed-apps | grep 'ingress-controller'
-    ingress-nginx-ingress-controller-55f9cf6584-dxljn        2/2     Running
+   ```shell
+   $ kubectl get pods -n gitlab-managed-apps | grep 'ingress-controller'
+   ingress-nginx-ingress-controller-55f9cf6584-dxljn        2/2     Running
 
-    $ kubectl -n gitlab-managed-apps exec -it $(kubectl get pods -n gitlab-managed-apps | grep 'ingress-controller' | awk '{print $1}') -- cat /etc/nginx/nginx.conf | grep 'modsecurity on;'
-            modsecurity on;
-    ```
+   $ kubectl -n gitlab-managed-apps exec -it $(kubectl get pods -n gitlab-managed-apps | grep 'ingress-controller' | awk '{print $1}') -- cat /etc/nginx/nginx.conf | grep 'modsecurity on;'
+           modsecurity on;
+   ```
 
 1. Verify the Rails application has been installed properly.
 
-    ```bash
-    $ kubectl get ns
-    auto-devv-2-16730183-production     Active
+   ```shell
+   $ kubectl get ns
+   auto-devv-2-16730183-production     Active
 
-    $ kubectl get pods -n auto-devv-2-16730183-production
-    NAME                                   READY   STATUS    RESTARTS
-    production-5778cfcfcd-nqjcm            1/1     Running   0
-    production-postgres-6449f8cc98-r7xgg   1/1     Running   0
-    ```
+   $ kubectl get pods -n auto-devv-2-16730183-production
+   NAME                                   READY   STATUS    RESTARTS
+   production-5778cfcfcd-nqjcm            1/1     Running   0
+   production-postgres-6449f8cc98-r7xgg   1/1     Running   0
+   ```
 
 1. To make sure the Rails application is responding, send a request to it by running:
 
-    ```bash
-    $ kubectl get ing -n auto-devv-2-16730183-production
-    NAME  HOSTS  PORTS
-    production-auto-deploy  fjdiaz-auto-devv-2.34.68.60.207.nip.io,le-16730183.34.68.60.207.nip.io  80, 443
+   ```shell
+   $ kubectl get ing -n auto-devv-2-16730183-production
+   NAME  HOSTS  PORTS
+   production-auto-deploy  fjdiaz-auto-devv-2.34.68.60.207.nip.io,le-16730183.34.68.60.207.nip.io  80, 443
 
-    $ curl --location --insecure fjdiaz-auto-devv-2.34.68.60.207.nip.io | grep 'Rails!' --after 2 --before 2
-    <body>
-        <p>You're on Rails!</p>
-    </body>
-    ```
+   $ curl --location --insecure fjdiaz-auto-devv-2.34.68.60.207.nip.io | grep 'Rails!' --after 2 --before 2
+   <body>
+       <p>You're on Rails!</p>
+   </body>
+   ```
 
 Now that we have confirmed our system is properly setup, we can go ahead and test
 the WAF with OWASP CRS!
@@ -223,7 +212,7 @@ the WAF with OWASP CRS!
 Now let's send a potentially malicious request, as if we were a scanner,
 checking for vulnerabilities within our application and examine the modsecurity logs:
 
-```bash
+```shell
 $ curl --location --insecure fjdiaz-auto-devv-2.34.68.60.207.nip.io --header "User-Agent: absinthe" | grep 'Rails!' --after 2 --before 2
 <body>
     <p>You're on Rails!</p>

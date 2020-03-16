@@ -36,20 +36,22 @@ RSpec.shared_examples 'issues list service' do
       expect(issues).to eq [opened_issue2, reopened_issue1, opened_issue1]
     end
 
-    it 'returns closed issues when listing issues from Closed' do
-      params = { board_id: board.id, id: closed.id }
-
-      issues = described_class.new(parent, user, params).execute
-
-      expect(issues).to eq [closed_issue4, closed_issue2, closed_issue5, closed_issue3, closed_issue1]
-    end
-
     it 'returns opened issues that have label list applied when listing issues from a label list' do
       params = { board_id: board.id, id: list1.id }
 
       issues = described_class.new(parent, user, params).execute
 
       expect(issues).to eq [list1_issue3, list1_issue1, list1_issue2]
+    end
+  end
+
+  context 'issues are ordered by date of closing' do
+    it 'returns closed issues when listing issues from Closed' do
+      params = { board_id: board.id, id: closed.id }
+
+      issues = described_class.new(parent, user, params).execute
+
+      expect(issues).to eq [closed_issue1, closed_issue2, closed_issue3, closed_issue4, closed_issue5]
     end
   end
 

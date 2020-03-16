@@ -5,7 +5,8 @@
 # How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
 
 variables:
-  DS_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+  SECURITY_SCANNER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products"
+  DS_ANALYZER_IMAGE_PREFIX: "$SECURITY_SCANNER_IMAGE_PREFIX/analyzers"
   DS_DEFAULT_ANALYZERS: "bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python"
   DS_MAJOR_VERSION: 2
   DS_DISABLE_DIND: "false"
@@ -59,10 +60,12 @@ dependency_scanning:
           BUNDLER_AUDIT_UPDATE_DISABLED \
           BUNDLER_AUDIT_ADVISORY_DB_URL \
           BUNDLER_AUDIT_ADVISORY_DB_REF_NAME \
+          RETIREJS_JS_ADVISORY_DB \
+          RETIREJS_NODE_ADVISORY_DB \
         ) \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
-        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_VERSION" /code
+        "$SECURITY_SCANNER_IMAGE_PREFIX/dependency-scanning:$DS_VERSION" /code
   artifacts:
     reports:
       dependency_scanning: gl-dependency-scanning-report.json

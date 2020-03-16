@@ -41,6 +41,7 @@ groups:
    - [Label](../project/labels.md)
    - My-reaction
    - Confidential
+   - Epic ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/195704) in GitLab 12.9)
    - Search for this text
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
@@ -118,7 +119,7 @@ Your [To-Do List](../todos.md#gitlab-to-do-list) can be searched by "to do" and 
 You can [filter](../todos.md#filtering-your-to-do-list) them per project,
 author, type, and action. Also, you can sort them by
 [**Label priority**](../../user/project/labels.md#label-priority),
-**Last created** and **Oldest created**.
+**Last created**, and **Oldest created**.
 
 ## Projects
 

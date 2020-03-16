@@ -1,0 +1,5 @@
+---
+title: Fix timezones for popovers.
+merge_request: 24942
+author:
+type: fixed

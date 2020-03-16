@@ -7,6 +7,8 @@ module Gitlab
         class Build < Seed::Base
           include Gitlab::Utils::StrongMemoize
 
+          EnvironmentCreationFailure = Class.new(StandardError)
+
           delegate :dig, to: :@seed_attributes
 
           # When the `ci_dag_limit_needs` is enabled it uses the lower limit
@@ -77,12 +79,37 @@ module Gitlab
               if bridge?
                 ::Ci::Bridge.new(attributes)
               else
-                ::Ci::Build.new(attributes).tap do |job|
-                  job.deployment = Seed::Deployment.new(job).to_resource
-                  job.resource_group = Seed::Build::ResourceGroup.new(job, @resource_group_key).to_resource
+                ::Ci::Build.new(attributes).tap do |build|
+                  build.assign_attributes(self.class.environment_attributes_for(build))
+                  build.resource_group = Seed::Build::ResourceGroup.new(build, @resource_group_key).to_resource
                 end
               end
             end
+          end
+
+          def self.environment_attributes_for(build)
+            return {} unless build.has_environment?
+
+            environment = Seed::Environment.new(build).to_resource
+
+            # If there is a validation error on environment creation, such as
+            # the name contains invalid character, the build falls back to a
+            # non-environment job.
+            unless environment.persisted?
+              Gitlab::ErrorTracking.track_exception(
+                EnvironmentCreationFailure.new,
+                project_id: build.project_id,
+                reason: environment.errors.full_messages.to_sentence)
+
+              return { environment: nil }
+            end
+
+            {
+              deployment: Seed::Deployment.new(build, environment).to_resource,
+              metadata_attributes: {
+                expanded_environment_name: environment.name
+              }
+            }
           end
 
           private

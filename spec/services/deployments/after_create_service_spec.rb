@@ -49,7 +49,7 @@ describe Deployments::AfterCreateService do
     it 'creates ref' do
       expect_any_instance_of(Repository)
         .to receive(:create_ref)
-        .with(deployment.ref, deployment.send(:ref_path))
+        .with(deployment.sha, "refs/environments/production/deployments/#{deployment.iid}")
 
       service.execute
     end
@@ -175,6 +175,26 @@ describe Deployments::AfterCreateService do
       end
 
       it { is_expected.to eq('http://review/host') }
+    end
+
+    context 'when job variables are generated during runtime' do
+      let(:job) do
+        create(:ci_build,
+               :with_deployment,
+               pipeline: pipeline,
+               environment: 'review/$CI_COMMIT_REF_NAME',
+               project: project,
+               job_variables: [job_variable],
+               options: { environment: { name: 'review/$CI_COMMIT_REF_NAME', url: 'http://$DYNAMIC_ENV_URL' } })
+      end
+
+      let(:job_variable) do
+        build(:ci_job_variable, :dotenv_source, key: 'DYNAMIC_ENV_URL', value: 'abc.test.com')
+      end
+
+      it 'expands the environment URL from the dynamic variable' do
+        is_expected.to eq('http://abc.test.com')
+      end
     end
 
     context 'when yaml environment does not have url' do

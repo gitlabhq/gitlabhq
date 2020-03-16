@@ -7,8 +7,14 @@ describe PagesDomain do
 
   subject(:pages_domain) { described_class.new }
 
+  # Locking in date due to cert expiration date https://gitlab.com/gitlab-org/gitlab/-/issues/210557#note_304749257
+  around do |example|
+    Timecop.travel(Time.new(2020, 3, 12)) { example.run }
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_many(:serverless_domain_clusters) }
   end
 
   describe 'validate domain' do
@@ -640,6 +646,14 @@ describe PagesDomain do
           project.reload.pages_metadatum&.deployed
         }.from(nil).to(true)
       end
+    end
+  end
+
+  describe '.find_by_domain_case_insensitive' do
+    it 'lookup is case-insensitive' do
+      pages_domain = create(:pages_domain, domain: "Pages.IO")
+
+      expect(PagesDomain.find_by_domain_case_insensitive('pages.io')).to eq(pages_domain)
     end
   end
 end

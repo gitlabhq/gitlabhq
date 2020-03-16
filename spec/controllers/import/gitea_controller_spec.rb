@@ -28,10 +28,24 @@ describe Import::GiteaController do
 
   describe "GET status" do
     it_behaves_like 'a GitHub-ish import controller: GET status' do
+      let(:extra_assign_expectations) { { gitea_host_url: host_url } }
+
       before do
         assign_host_url
       end
-      let(:extra_assign_expectations) { { gitea_host_url: host_url } }
+
+      context 'when host url is local or not http' do
+        %w[https://localhost:3000 http://192.168.0.1 ftp://testing].each do |url|
+          let(:host_url) { url }
+
+          it 'denies network request' do
+            get :status, format: :json
+
+            expect(controller).to redirect_to(new_import_url)
+            expect(flash[:alert]).to eq('Specified URL cannot be used.')
+          end
+        end
+      end
     end
   end
 

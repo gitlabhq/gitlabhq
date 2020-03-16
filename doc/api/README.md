@@ -260,7 +260,7 @@ returned with status code `404`:
 Example of a valid API call and a request using cURL with sudo request,
 providing a username:
 
-```
+```plaintext
 GET /projects?private_token=<your_access_token>&sudo=username
 ```
 
@@ -271,7 +271,7 @@ curl --header "Private-Token: <your_access_token>" --header "Sudo: username" "ht
 Example of a valid API call and a request using cURL with sudo request,
 providing an ID:
 
-```
+```plaintext
 GET /projects?private_token=<your_access_token>&sudo=23
 ```
 
@@ -355,7 +355,7 @@ curl --head --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example
 
 The response will then be:
 
-```
+```http
 HTTP/1.1 200 OK
 Cache-Control: no-cache
 Content-Length: 1103
@@ -415,7 +415,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 The response header includes a link to the next page. For example:
 
-```
+```http
 HTTP/1.1 200 OK
 ...
 Link: <https://gitlab.example.com/api/v4/projects?pagination=keyset&per_page=50&order_by=id&sort=asc&id_after=42>; rel="next"
@@ -444,7 +444,7 @@ URL-encoded.
 
 For example, `/` is represented by `%2F`:
 
-```
+```plaintext
 GET /api/v4/projects/diaspora%2Fdiaspora
 ```
 
@@ -460,7 +460,7 @@ URL-encoded.
 
 For example, `/` is represented by `%2F`:
 
-```
+```plaintext
 GET /api/v4/projects/1/branches/my%2Fbranch/commits
 ```
 
@@ -540,7 +540,7 @@ Such errors appear in two cases:
 
 When an attribute is missing, you will get something like:
 
-```
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 {
@@ -551,7 +551,7 @@ Content-Type: application/json
 When a validation error occurs, error messages will be different. They will
 hold all details of validation errors:
 
-```
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 {
@@ -589,7 +589,7 @@ follows:
 
 When you try to access an API URL that does not exist you will receive 404 Not Found.
 
-```
+```http
 HTTP/1.1 404 Not Found
 Content-Type: application/json
 {
@@ -604,13 +604,13 @@ to a [W3 recommendation](http://www.w3.org/Addressing/URL/4_URI_Recommentations.
 causes a `+` to be interpreted as a space. For example, in an ISO 8601 date, you may want to pass
 a time in Mountain Standard Time, such as:
 
-```
+```plaintext
 2017-10-17T23:11:13.000+05:30
 ```
 
 The correct encoding for the query parameter would be:
 
-```
+```plaintext
 2017-10-17T23:11:13.000%2B05:30
 ```
 

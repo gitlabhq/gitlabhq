@@ -1,0 +1,5 @@
+---
+title: Improve performance of Repository#merged_branch_names
+merge_request: 26005
+author:
+type: performance

@@ -3,14 +3,15 @@
 class GitlabDanger
   LOCAL_RULES ||= %w[
     changes_size
-    gemfile
     documentation
     frozen_string
     duplicate_yarn_dependencies
     prettier
     eslint
+    karma
     database
     commit_messages
+    telemetry
   ].freeze
 
   CI_ONLY_RULES ||= %w[

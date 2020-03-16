@@ -9,7 +9,7 @@ describe API::Search do
   let_it_be(:repo_project) { create(:project, :public, :repository, group: group) }
 
   shared_examples 'response is correct' do |schema:, size: 1|
-    it { expect(response).to have_gitlab_http_status(200) }
+    it { expect(response).to have_gitlab_http_status(:ok) }
     it { expect(response).to match_response_schema(schema) }
     it { expect(response).to include_limited_pagination_headers }
     it { expect(json_response.size).to eq(size) }
@@ -20,7 +20,7 @@ describe API::Search do
       it 'returns 401 error' do
         get api('/search'), params: { scope: 'projects', search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -28,7 +28,7 @@ describe API::Search do
       it 'returns 400 error' do
         get api('/search', user), params: { scope: 'unsupported', search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
@@ -36,7 +36,7 @@ describe API::Search do
       it 'returns 400 error' do
         get api('/search', user), params: { search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
@@ -115,7 +115,7 @@ describe API::Search do
           end
 
           it 'returns 400 error' do
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
       end
@@ -147,7 +147,7 @@ describe API::Search do
       it 'returns 401 error' do
         get api("/groups/#{group.id}/search"), params: { scope: 'projects', search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -155,7 +155,7 @@ describe API::Search do
       it 'returns 400 error' do
         get api("/groups/#{group.id}/search", user), params: { scope: 'unsupported', search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
@@ -163,7 +163,7 @@ describe API::Search do
       it 'returns 400 error' do
         get api("/groups/#{group.id}/search", user), params: { search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
@@ -171,7 +171,7 @@ describe API::Search do
       it 'returns 404 error' do
         get api('/groups/0/search', user), params: { scope: 'issues', search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -181,7 +181,7 @@ describe API::Search do
 
         get api("/groups/#{private_group.id}/search", user), params: { scope: 'issues', search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -254,7 +254,7 @@ describe API::Search do
           end
 
           it 'returns 400 error' do
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
       end
@@ -277,7 +277,7 @@ describe API::Search do
       it 'returns 401 error' do
         get api("/projects/#{project.id}/search"), params: { scope: 'issues', search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -285,7 +285,7 @@ describe API::Search do
       it 'returns 400 error' do
         get api("/projects/#{project.id}/search", user), params: { scope: 'unsupported', search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
@@ -293,7 +293,7 @@ describe API::Search do
       it 'returns 400 error' do
         get api("/projects/#{project.id}/search", user), params: { search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
 
@@ -301,7 +301,7 @@ describe API::Search do
       it 'returns 404 error' do
         get api('/projects/0/search', user), params: { scope: 'issues', search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -311,7 +311,7 @@ describe API::Search do
 
         get api("/projects/#{project.id}/search", user), params: { scope: 'issues', search: 'awesome' }
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -383,7 +383,7 @@ describe API::Search do
           end
 
           it 'returns 400 error' do
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
       end
@@ -436,7 +436,7 @@ describe API::Search do
           it 'by filename' do
             get api("/projects/#{repo_project.id}/search", user), params: { scope: 'blobs', search: 'mon filename:PROCESS.md' }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.size).to eq(2)
             expect(json_response.first['path']).to eq('PROCESS.md')
             expect(json_response.first['filename']).to eq('PROCESS.md')
@@ -445,21 +445,21 @@ describe API::Search do
           it 'by path' do
             get api("/projects/#{repo_project.id}/search", user), params: { scope: 'blobs', search: 'mon path:markdown' }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.size).to eq(8)
           end
 
           it 'by extension' do
             get api("/projects/#{repo_project.id}/search", user), params: { scope: 'blobs', search: 'mon extension:md' }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.size).to eq(11)
           end
 
           it 'by ref' do
             get api("/projects/#{repo_project.id}/search", user), params: { scope: 'blobs', search: 'This file is used in tests for ci_environments_status', ref: 'pages-deploy' }
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.size).to eq(1)
           end
         end

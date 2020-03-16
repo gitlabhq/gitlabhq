@@ -1,0 +1,5 @@
+---
+title: 'Update Ingress chart version to 1.29.7'
+merge_request: 25949
+author:
+type: added

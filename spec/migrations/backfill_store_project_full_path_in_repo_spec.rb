@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require Rails.root.join('db', 'post_migrate', '20181010133639_backfill_store_project_full_path_in_repo.rb')
 
-describe BackfillStoreProjectFullPathInRepo, :migration do
+describe BackfillStoreProjectFullPathInRepo do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:group) { namespaces.create!(name: 'foo', path: 'foo') }

@@ -151,6 +151,14 @@ class IssueTrackerService < Service
     result
   end
 
+  def support_close_issue?
+    false
+  end
+
+  def support_cross_reference?
+    false
+  end
+
   private
 
   def enabled_in_gitlab_config
@@ -168,7 +176,7 @@ class IssueTrackerService < Service
     return if project.blank?
 
     if project.services.external_issue_trackers.where.not(id: id).any?
-      errors.add(:base, 'Another issue tracker is already in use. Only one issue tracker service can be active at a time')
+      errors.add(:base, _('Another issue tracker is already in use. Only one issue tracker service can be active at a time'))
     end
   end
 end

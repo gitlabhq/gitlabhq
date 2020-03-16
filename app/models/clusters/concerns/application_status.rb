@@ -92,7 +92,10 @@ module Clusters
             # When installing any application we are also performing an update
             # of tiller (see Gitlab::Kubernetes::Helm::ClientCommand) so
             # therefore we need to reflect that in the database.
-            application.cluster.application_helm.update!(version: Gitlab::Kubernetes::Helm::HELM_VERSION)
+
+            unless ::Gitlab::Kubernetes::Helm.local_tiller_enabled?
+              application.cluster.application_helm.update!(version: Gitlab::Kubernetes::Helm::HELM_VERSION)
+            end
           end
 
           after_transition any => [:uninstalling], :use_transactions => false do |application, _|

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ExpireBuildInstanceArtifactsWorker
+class ExpireBuildInstanceArtifactsWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :continuous_integration

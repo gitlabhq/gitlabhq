@@ -69,7 +69,7 @@ module Gitlab
     end
 
     def entry_path(entry)
-      File.join(*[path, entry[:file_name]].compact)
+      File.join(*[path, entry[:file_name]].compact).force_encoding(Encoding::ASCII_8BIT)
     end
 
     def build_entry(entry)

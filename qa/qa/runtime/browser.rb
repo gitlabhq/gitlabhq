@@ -122,8 +122,10 @@ module QA
           driver.browser.save_screenshot(path)
         end
 
+        Capybara::Screenshot.append_timestamp = false
+
         Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
-          ::File.join(QA::Runtime::Namespace.name, example.file_path.sub('./qa/specs/features/', ''))
+          ::File.join(QA::Runtime::Namespace.name, example.full_description.downcase.parameterize(separator: "_")[0..99])
         end
 
         Capybara.configure do |config|

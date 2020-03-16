@@ -16,7 +16,7 @@ The following changes are needed to enable Shibboleth:
 
 1. Protect OmniAuth Shibboleth callback URL:
 
-   ```
+   ```apache
    <Location /users/auth/shibboleth/callback>
      AuthType shibboleth
      ShibRequestSetting requireSession 1
@@ -36,7 +36,7 @@ The following changes are needed to enable Shibboleth:
 
 1. Exclude Shibboleth URLs from rewriting. Add `RewriteCond %{REQUEST_URI} !/Shibboleth.sso` and `RewriteCond %{REQUEST_URI} !/shibboleth-sp`. Config should look like this:
 
-   ```
+   ```apache
    # Apache equivalent of Nginx try files
    RewriteEngine on
    RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
@@ -46,8 +46,12 @@ The following changes are needed to enable Shibboleth:
    RequestHeader set X_FORWARDED_PROTO 'https'
    ```
 
-1. Edit `/etc/gitlab/gitlab.rb` configuration file to enable OmniAuth and add
-   Shibboleth as an OmniAuth provider. User attributes will be sent from the
+   **NOTE:**
+   Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
+   earlier version, you'll need to explicitly enable it in `/etc/gitlab/gitlab.rb`.
+
+1. In addition, add Shibboleth to `/etc/gitlab/gitlab.rb` as an OmniAuth provider.
+   User attributes will be sent from the
    Apache reverse proxy to GitLab as headers with the names from the Shibboleth
    attribute mapping. Therefore the values of the `args` hash
    should be in the form of `"HTTP_ATTRIBUTE"`. The keys in the hash are arguments
@@ -71,7 +75,6 @@ The following changes are needed to enable Shibboleth:
 
    gitlab_rails['omniauth_allow_single_sign_on'] = true
    gitlab_rails['omniauth_block_auto_created_users'] = false
-   gitlab_rails['omniauth_enabled'] = true
    gitlab_rails['omniauth_providers'] = [
      {
        "name"  => "'shibboleth"',

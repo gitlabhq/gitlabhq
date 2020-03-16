@@ -23,6 +23,9 @@ describe('DiffFile', () => {
     vm.$destroy();
   });
 
+  const findDiffContent = () => vm.$el.querySelector('.diff-content');
+  const isVisible = el => el.style.display !== 'none';
+
   describe('template', () => {
     it('should render component with file header, file content components', done => {
       const el = vm.$el;
@@ -69,13 +72,13 @@ describe('DiffFile', () => {
 
     describe('collapsed', () => {
       it('should not have file content', done => {
-        expect(vm.$el.querySelectorAll('.diff-content').length).toEqual(1);
+        expect(isVisible(findDiffContent())).toBe(true);
         expect(vm.isCollapsed).toEqual(false);
         vm.isCollapsed = true;
         vm.file.renderIt = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.querySelectorAll('.diff-content').length).toEqual(0);
+          expect(isVisible(findDiffContent())).toBe(false);
 
           done();
         });

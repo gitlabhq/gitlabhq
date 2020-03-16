@@ -29,8 +29,7 @@
           ":title" => "buttonText",
           ":ref" => "'button'" }
 
-        = icon('spin spinner', 'v-if' => 'loading', class: 'loading', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
-        %div{ 'v-else' => '' }
+        %div
           %template{ 'v-if' => 'isResolved' }
             = render 'shared/icons/icon_status_success_solid.svg'
           %template{ 'v-else' => '' }
@@ -40,7 +39,6 @@
   - if note.emoji_awardable?
     .note-actions-item
       = button_tag title: 'Add reaction', class: "note-action-button note-emoji-button js-add-award js-note-emoji has-tooltip btn btn-transparent", data: { position: 'right', container: 'body' } do
-        = icon('spinner spin')
         %span{ class: 'link-highlight award-control-icon-neutral' }= sprite_icon('slight-smile')
         %span{ class: 'link-highlight award-control-icon-positive' }= sprite_icon('smiley')
         %span{ class: 'link-highlight award-control-icon-super-positive' }= sprite_icon('smile')

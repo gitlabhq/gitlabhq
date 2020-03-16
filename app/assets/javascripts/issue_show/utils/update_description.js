@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 /**
  * Function that replaces the open attribute for the <details> element.
  *
@@ -10,7 +8,7 @@ import _ from 'underscore';
 const updateDescription = (descriptionHtml = '', details) => {
   let detailNodes = details;
 
-  if (_.isEmpty(details)) {
+  if (!details.length) {
     detailNodes = [];
   }
 

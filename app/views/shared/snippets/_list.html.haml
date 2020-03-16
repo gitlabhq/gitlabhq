@@ -8,4 +8,4 @@
     %ul.content-list
       = render partial: 'shared/snippets/snippet', collection: @snippets, locals: { link_project: link_project }
 
-    = paginate @snippets, theme: 'gitlab', remote: remote
+    = paginate_collection @snippets, remote: remote

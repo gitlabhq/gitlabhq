@@ -45,7 +45,13 @@ export default {
 
     <template v-else>
       <blob-content-error v-if="viewerError" :viewer-error="viewerError" />
-      <component :is="viewer" v-else ref="contentViewer" :content="content" />
+      <component
+        :is="viewer"
+        v-else
+        ref="contentViewer"
+        :content="content"
+        :type="activeViewer.fileType"
+      />
     </template>
   </div>
 </template>

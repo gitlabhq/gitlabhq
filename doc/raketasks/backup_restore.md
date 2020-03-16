@@ -115,7 +115,7 @@ also running Unicorn/Puma and/or Sidekiq.
 
 Example output:
 
-```
+```plaintext
 Dumping database tables:
 - Dumping table events... [DONE]
 - Dumping table issues... [DONE]
@@ -269,6 +269,31 @@ For installations from source:
 
 ```shell
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=production
+```
+
+### Skipping tar creation
+
+The last part of creating a backup is generation of a `.tar` file containing
+all the parts. In some cases (for example, if the backup is picked up by other
+backup software) creating a `.tar` file might be wasted effort or even directly
+harmful, so you can skip this step by adding `tar` to the `SKIP` environment
+variable.
+
+Adding `tar` to the `SKIP` variable leaves the files and directories containing the
+backup in the directory used for the intermediate files. These files will be
+overwritten when a new backup is created, so you should make sure they are copied
+elsewhere, because you can only have one backup on the system.
+
+For Omnibus GitLab packages:
+
+```shell
+sudo gitlab-backup create SKIP=tar
+```
+
+For installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create SKIP=tar RAILS_ENV=production
 ```
 
 ### Uploading backups to a remote (cloud) storage
@@ -465,7 +490,7 @@ For installations from source:
 Note: This option only works for remote storage. If you want to group your backups
 you can pass a `DIRECTORY` environment variable:
 
-```
+```shell
 sudo gitlab-backup create DIRECTORY=daily
 sudo gitlab-backup create DIRECTORY=weekly
 ```
@@ -586,7 +611,7 @@ crontab -e
 
 There, add the following line to schedule the backup for everyday at 2 AM:
 
-```
+```plaintext
 0 2 * * * /opt/gitlab/bin/gitlab-backup create CRON=1
 ```
 
@@ -614,7 +639,7 @@ sudo -u git crontab -e # Edit the crontab for the git user
 
 Add the following lines at the bottom:
 
-```
+```plaintext
 # Create a full backup of the GitLab repositories and SQL database every day at 4am
 0 4 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production CRON=1
 ```
@@ -658,6 +683,10 @@ lose access to your GitLab server.
 
 You may also want to restore any TLS keys, certificates, or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
+Starting with GitLab 12.9 if an untarred backup (like the ones made with
+`SKIP=tar`) is found, and no backup is chosen with `BACKUP=<timestamp>`, the
+untarred backup is used.
+
 Depending on your case, you might want to run the restore command with one or
 more of the following options:
 
@@ -674,7 +703,7 @@ Read more on [configuring NFS mounts](../administration/high_availability/nfs.md
 
 ### Restore for installation from source
 
-```
+```shell
 # Stop processes that are connected to the database
 sudo service gitlab stop
 
@@ -683,7 +712,7 @@ bundle exec rake gitlab:backup:restore RAILS_ENV=production
 
 Example output:
 
-```
+```plaintext
 Unpacking backup... [DONE]
 Restoring database tables:
 -- create_table("events", {:force=>true})
@@ -853,7 +882,7 @@ will have all your repositories, but not any other data.
 
 If you are using backup restore procedures you might encounter the following warnings:
 
-```
+```plaintext
 psql:/var/opt/gitlab/backups/db/database.sql:22: ERROR:  must be owner of extension plpgsql
 psql:/var/opt/gitlab/backups/db/database.sql:2931: WARNING:  no privileges could be revoked for "public" (two occurrences)
 psql:/var/opt/gitlab/backups/db/database.sql:2933: WARNING:  no privileges were granted for "public" (two occurrences)
@@ -1003,7 +1032,7 @@ GitLab instance after restoring the registry data.
 
 These failures will mention permission issues in the registry logs, like:
 
-```
+```plaintext
 level=error
 msg="response completed with error"
 err.code=unknown

@@ -17,8 +17,7 @@ class Snippet < ApplicationRecord
   include HasRepository
   extend ::Gitlab::Utils::Override
 
-  ignore_column :storage_version, remove_with: '12.9', remove_after: '2020-03-22'
-  ignore_column :repository_storage, remove_with: '12.10', remove_after: '2020-04-22'
+  ignore_column :repository_storage, remove_with: '12.10', remove_after: '2020-03-22'
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
@@ -161,6 +160,10 @@ class Snippet < ApplicationRecord
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
   end
 
+  def self.find_by_id_and_project(id:, project:)
+    Snippet.find_by(id: id, project: project)
+  end
+
   def initialize(attributes = {})
     # We can't use default_value_for because the database has a default
     # value of 0 for visibility_level. If someone attempts to create a
@@ -189,16 +192,14 @@ class Snippet < ApplicationRecord
     end
   end
 
-  def self.content_types
-    [
-      ".rb", ".py", ".pl", ".scala", ".c", ".cpp", ".java",
-      ".haml", ".html", ".sass", ".scss", ".xml", ".php", ".erb",
-      ".js", ".sh", ".coffee", ".yml", ".md"
-    ]
+  def blob
+    @blob ||= Blob.decorate(SnippetBlob.new(self), self)
   end
 
-  def blob
-    @blob ||= Blob.decorate(SnippetBlob.new(self), nil)
+  def blobs
+    return [] unless repository_exists?
+
+    repository.ls_files(repository.root_ref).map { |file| Blob.lazy(self, repository.root_ref, file) }
   end
 
   def hook_attrs
@@ -209,7 +210,7 @@ class Snippet < ApplicationRecord
     super.to_s
   end
 
-  def sanitized_file_name
+  def self.sanitized_file_name(file_name)
     file_name.gsub(/[^a-zA-Z0-9_\-\.]+/, '')
   end
 
@@ -258,7 +259,7 @@ class Snippet < ApplicationRecord
   end
 
   def repository
-    @repository ||= Repository.new(full_path, self, disk_path: disk_path, repo_type: Gitlab::GlRepository::SNIPPET)
+    @repository ||= Repository.new(full_path, self, shard: repository_storage, disk_path: disk_path, repo_type: Gitlab::GlRepository::SNIPPET)
   end
 
   def storage
@@ -286,11 +287,10 @@ class Snippet < ApplicationRecord
   end
 
   def create_repository
-    return if repository_exists?
+    return if repository_exists? && snippet_repository
 
     repository.create_if_not_exists
-
-    track_snippet_repository if repository_exists?
+    track_snippet_repository
   end
 
   def track_snippet_repository
@@ -298,8 +298,16 @@ class Snippet < ApplicationRecord
     repository.update!(shard_name: repository_storage, disk_path: disk_path)
   end
 
+  def can_cache_field?(field)
+    field != :content || MarkupHelper.gitlab_markdown?(file_name)
+  end
+
+  def hexdigest
+    Digest::SHA256.hexdigest("#{title}#{description}#{created_at}#{updated_at}")
+  end
+
   class << self
-    # Searches for snippets with a matching title or file name.
+    # Searches for snippets with a matching title, description or file name.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
     #
@@ -307,7 +315,7 @@ class Snippet < ApplicationRecord
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      fuzzy_search(query, [:title, :file_name])
+      fuzzy_search(query, [:title, :description, :file_name])
     end
 
     # Searches for snippets with matching content.

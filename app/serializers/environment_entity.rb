@@ -47,6 +47,22 @@ class EnvironmentEntity < Grape::Entity
     environment.available? && can?(current_user, :stop_environment, environment)
   end
 
+  expose :logs_path, if: -> (*) { can_read_pod_logs? } do |environment|
+    project_logs_path(environment.project, environment_name: environment.name)
+  end
+
+  expose :logs_api_path, if: -> (*) { can_read_pod_logs? } do |environment|
+    if environment.elastic_stack_available?
+      elasticsearch_project_logs_path(environment.project, environment_name: environment.name, format: :json)
+    else
+      k8s_project_logs_path(environment.project, environment_name: environment.name, format: :json)
+    end
+  end
+
+  expose :enable_advanced_logs_querying, if: -> (*) { can_read_pod_logs? } do |environment|
+    environment.elastic_stack_available?
+  end
+
   private
 
   alias_method :environment, :object
@@ -61,6 +77,10 @@ class EnvironmentEntity < Grape::Entity
 
   def can_update_environment?
     can?(current_user, :update_environment, environment)
+  end
+
+  def can_read_pod_logs?
+    can?(current_user, :read_pod_logs, environment.project)
   end
 
   def cluster_platform_kubernetes?

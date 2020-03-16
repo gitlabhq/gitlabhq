@@ -1,0 +1,5 @@
+---
+title: Fixes project import failures when user is not part of any groups
+merge_request: 26038
+author:
+type: fixed

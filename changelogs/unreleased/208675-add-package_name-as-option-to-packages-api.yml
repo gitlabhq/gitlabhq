@@ -1,0 +1,5 @@
+---
+title: Added package_name as filter parameter to packages API
+merge_request: 26291
+author:
+type: added

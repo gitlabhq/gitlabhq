@@ -46,8 +46,8 @@ More detailed information on how the gem and its commands work is available in t
 
 Libraries with the following licenses are acceptable for use:
 
-- [The MIT License](https://choosealicense.com/licenses/mit/) (the MIT Expat License specifically): The MIT License requires that the license itself is included with all copies of the source. It is a permissive (non-copyleft) license as defined by the Open Source Initiative.
-- [LGPL](https://choosealicense.com/licenses/lgpl-3.0/) (version 2, version 3): GPL constraints regarding modification and redistribution under the same license are not required of projects using an LGPL library, only upon modification of the LGPL-licensed library itself.
+- [MIT License](https://choosealicense.com/licenses/mit/) (the MIT Expat License specifically): The MIT License requires that the license itself is included with all copies of the source. It is a permissive (non-copyleft) license as defined by the Open Source Initiative.
+- [GNU Lesser General Public License (GNU LGPL)](https://choosealicense.com/licenses/lgpl-3.0/) (version 2, version 3): GPL constraints regarding modification and redistribution under the same license are not required of projects using an LGPL library, only upon modification of the LGPL-licensed library itself.
 - [Apache 2.0 License](https://choosealicense.com/licenses/apache-2.0/): A permissive license that also provides an express grant of patent rights from contributors to users.
 - [Ruby 1.8 License][ruby-1.8]: Dual-licensed under either itself or the GPLv2, defer to the Ruby License itself. Acceptable because of point 3b: "You may distribute the software in object code or binary form, provided that you do at least ONE of the following: b) accompany the distribution with the machine-readable source of the software."
 - [Ruby 1.9 License][ruby-1.9]: Dual-licensed under either itself or the BSD 2-Clause License, defer to BSD 2-Clause.
@@ -57,6 +57,7 @@ Libraries with the following licenses are acceptable for use:
 - [Creative Commons Zero (CC0)][CC0]: A public domain dedication, recommended as a way to disclaim copyright on your work to the maximum extent possible.
 - [Unlicense][UNLICENSE]: Another public domain dedication.
 - [OWFa 1.0][OWFa1]: An open-source license and patent grant designed for specifications.
+- [JSON License](https://www.json.org/license.html): Equivalent to the MIT license plus the statement, "The Software shall be used for Good, not Evil."
 
 ## Unacceptable Licenses
 

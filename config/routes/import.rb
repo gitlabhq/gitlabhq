@@ -60,6 +60,7 @@ namespace :import do
 
   resource :gitlab_project, only: [:create, :new] do
     post :create
+    post :authorize
   end
 
   resource :manifest, only: [:create, :new], controller: :manifest do

@@ -1,0 +1,5 @@
+---
+title: Project repositories are no longer cloned by default when running DAST
+merge_request: 25320
+author:
+type: performance

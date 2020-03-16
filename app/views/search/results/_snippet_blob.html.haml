@@ -23,7 +23,7 @@
         %i.fa.fa-file
         %strong= snippet.file_name
     - if markup?(snippet.file_name)
-      .file-content.md.md-file
+      .file-content.md
         - snippet_chunks.each do |chunk|
           - unless chunk[:data].empty?
             = markup(snippet.file_name, chunk[:data])

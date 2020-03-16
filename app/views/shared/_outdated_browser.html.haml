@@ -1,8 +1,15 @@
 - if outdated_browser?
-  .flash-container
-    .flash-alert.text-center
-      GitLab may not work properly because you are using an outdated web browser.
+  .gl-alert.gl-alert-danger.outdated-browser{ :role => "alert" }
+    = sprite_icon('error', size: 16, css_class: "gl-alert-icon gl-alert-icon-no-title gl-icon")
+    .gl-alert-body
+      - if browser.ie? && browser.version.to_i == 11
+        - feedback_link_url = 'https://gitlab.com/gitlab-org/gitlab/issues/197987'
+        - feedback_link_start = '<a href="%{url}" class="gl-link" target="_blank" rel="noopener noreferrer">'.html_safe % { url: feedback_link_url }
+        = s_('OutdatedBrowser|From May 2020 GitLab no longer supports Internet Explorer 11.')
+        %br
+        = s_('OutdatedBrowser|You can provide feedback %{feedback_link_start}on this issue%{feedback_link_end} or via your usual support channels.').html_safe % { feedback_link_start: feedback_link_start, feedback_link_end: '</a>'.html_safe }
+      - else
+        = s_('OutdatedBrowser|GitLab may not work properly, because you are using an outdated web browser.')
       %br
-      Please install a
-      = link_to 'supported web browser', help_page_path('install/requirements', anchor: 'supported-web-browsers')
-      for a better experience.
+      - browser_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('install/requirements', anchor: 'supported-web-browsers') }
+      = s_('OutdatedBrowser|Please install a %{browser_link_start}supported web browser%{browser_link_end} for a better experience.').html_safe % { browser_link_start: browser_link_start, browser_link_end: '</a>'.html_safe }

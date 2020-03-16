@@ -12,7 +12,7 @@ describe API::Lint do
       it 'passes validation' do
         post api('/ci/lint'), params: { content: yaml_content }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Hash
         expect(json_response['status']).to eq('valid')
         expect(json_response['errors']).to eq([])
@@ -23,7 +23,7 @@ describe API::Lint do
       it 'responds with errors about invalid syntax' do
         post api('/ci/lint'), params: { content: 'invalid content' }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['status']).to eq('invalid')
         expect(json_response['errors']).to eq(['Invalid configuration format'])
       end
@@ -31,7 +31,7 @@ describe API::Lint do
       it "responds with errors about invalid configuration" do
         post api('/ci/lint'), params: { content: '{ image: "ruby:2.1",  services: ["postgres"] }' }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['status']).to eq('invalid')
         expect(json_response['errors']).to eq(['jobs config should contain at least one visible job'])
       end
@@ -41,7 +41,7 @@ describe API::Lint do
       it 'responds with validation error about missing content' do
         post api('/ci/lint')
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('content is missing')
       end
     end

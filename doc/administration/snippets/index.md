@@ -40,7 +40,7 @@ The steps to configure this setting through the Rails console are:
    sudo gitlab-rails console
 
    # For installations from source
-   sudo -u git -H bundle exec rails console production
+   sudo -u git -H bundle exec rails console -e production
    ```
 
 1. Update the snippets maximum file size:

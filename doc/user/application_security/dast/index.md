@@ -307,6 +307,7 @@ DAST can be [configured](#customizing-the-dast-settings) using environment varia
 | `DAST_TARGET_AVAILABILITY_TIMEOUT` | no | Time limit in seconds to wait for target availability. Scan is attempted nevertheless if it runs out. Integer. Defaults to `60`. |
 | `DAST_FULL_SCAN_ENABLED` | no | Switches the tool to execute [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
 | `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED` | no | Requires [domain validation](#domain-validation) when running DAST full scans. Boolean. `true`, `True`, or `1` are considered as true value, otherwise false. Defaults to `false`. |
+| `DAST_AUTO_UPDATE_ADDONS` | no | Set to `false` to pin the versions of ZAProxy add-ons to those provided with the DAST image. Defaults to `true`. |
 
 ### DAST command-line options
 
@@ -349,6 +350,36 @@ dast:
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
     - /analyze -z"-config replacer.full_list\(0\).description=auth -config replacer.full_list\(0\).enabled=true -config replacer.full_list\(0\).matchtype=REQ_HEADER -config replacer.full_list\(0\).matchstr=Authorization -config replacer.full_list\(0\).regex=false -config replacer.full_list\(0\).replacement=TOKEN" -t $DAST_WEBSITE
 ```
+
+### Cloning the project's repository
+
+The DAST job does not require the project's repository to be present when running, so by default
+[`GIT_STRATEGY`](../../../ci/yaml/README.md#git-strategy) is set to `none`.
+
+## Running DAST in an offline air-gapped installation
+
+DAST can be executed on an offline air-gapped GitLab Ultimate installation using the following process:
+
+1. Host the DAST image `registry.gitlab.com/gitlab-org/security-products/dast:latest` in your local
+   Docker container registry.
+1. Add the following configuration to your `.gitlab-ci.yml` file. You must replace `image` to refer
+   to the DAST Docker image hosted on your local Docker container registry:
+
+   ```yaml
+   include:
+     - template: DAST.gitlab-ci.yml
+
+   dast:
+     image: registry.example.com/namespace/dast:latest
+     script:
+        - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
+        - /analyze -t $DAST_WEBSITE --auto-update-addons false -z"-silent"
+   ```
+
+The option `--auto-update-addons false` instructs ZAP not to update add-ons.
+
+The option `-z` passes the quoted `-silent` parameter to ZAP. The `-silent` parameter ensures ZAP
+does not make any unsolicited requests including checking for updates.
 
 ## Reports
 

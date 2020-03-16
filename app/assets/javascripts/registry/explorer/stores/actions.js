@@ -68,31 +68,28 @@ export const requestDeleteTag = ({ commit, dispatch, state }, { tag, params }) =
     .delete(tag.destroy_path)
     .then(() => {
       createFlash(DELETE_TAG_SUCCESS_MESSAGE, 'success');
-      dispatch('requestTagsList', { pagination: state.tagsPagination, params });
+      return dispatch('requestTagsList', { pagination: state.tagsPagination, params });
     })
     .catch(() => {
       createFlash(DELETE_TAG_ERROR_MESSAGE);
-    })
-    .finally(() => {
       commit(types.SET_MAIN_LOADING, false);
     });
 };
 
 export const requestDeleteTags = ({ commit, dispatch, state }, { ids, params }) => {
   commit(types.SET_MAIN_LOADING, true);
-  const { id } = decodeAndParse(params);
-  const url = `/${state.config.projectPath}/registry/repository/${id}/tags/bulk_destroy`;
+  const { tags_path } = decodeAndParse(params);
+
+  const url = tags_path.replace('?format=json', '/bulk_destroy');
 
   return axios
     .delete(url, { params: { ids } })
     .then(() => {
       createFlash(DELETE_TAGS_SUCCESS_MESSAGE, 'success');
-      dispatch('requestTagsList', { pagination: state.tagsPagination, params });
+      return dispatch('requestTagsList', { pagination: state.tagsPagination, params });
     })
     .catch(() => {
       createFlash(DELETE_TAGS_ERROR_MESSAGE);
-    })
-    .finally(() => {
       commit(types.SET_MAIN_LOADING, false);
     });
 };

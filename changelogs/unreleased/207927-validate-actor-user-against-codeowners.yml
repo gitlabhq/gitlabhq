@@ -1,0 +1,5 @@
+---
+title: Validate actor against CODEOWNERS entries
+merge_request:
+author:
+type: fixed

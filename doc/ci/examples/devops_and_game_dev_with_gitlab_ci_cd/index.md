@@ -63,7 +63,7 @@ Next, we'll create a small subset of tests that exemplify most of the states I e
 this `Weapon` class to go through. To get started, create a folder called `lib/tests`
 and add the following code to a new file `weaponTests.ts`:
 
-```ts
+```typescript
 import { expect } from 'chai';
 import { Weapon, BulletFactory } from '../lib/weapon';
 
@@ -114,7 +114,7 @@ describe('Weapon', () => {
 To build and run these tests using gulp, let's also add the following gulp functions
 to the existing `gulpfile.js` file:
 
-```ts
+```typescript
 gulp.task('build-test', function () {
     return gulp.src('src/tests/**/*.ts', { read: false })
     .pipe(tap(function (file) {
@@ -140,7 +140,7 @@ to trigger the weapon. In the `src/lib` folder create a `weapon.ts` file. We'll 
 to it: `Weapon` and `BulletFactory` which will encapsulate Phaser's **sprite** and
 **group** objects, and the logic specific to our game.
 
-```ts
+```typescript
 export class Weapon {
     private isTriggered: boolean = false;
     private currentTimer: number = 0;
@@ -210,7 +210,7 @@ export class BulletFactory {
 Lastly, we'll redo our entry point, `game.ts`, to tie together both `Player` and `Weapon` objects
 as well as add them to the update loop. Here is what the updated `game.ts` file looks like:
 
-```ts
+```typescript
 import { Player } from "./player";
 import { Weapon, BulletFactory } from "./weapon";
 

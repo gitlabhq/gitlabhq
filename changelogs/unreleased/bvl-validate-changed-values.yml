@@ -1,0 +1,5 @@
+---
+title: Fix saving preferences with unrelated changes when gitaly timeouts became invalid.
+merge_request: 26292
+author:
+type: fixed

@@ -244,6 +244,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def render_update_error
     action = valid_setting_panels.include?(action_name) ? action_name : :general
 
+    flash[:alert] = _('Application settings update failed')
+
     render action
   end
 

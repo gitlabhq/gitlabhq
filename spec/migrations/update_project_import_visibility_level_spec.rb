@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20181219130552_update_project_import_visibility_level.rb')
 
-describe UpdateProjectImportVisibilityLevel, :migration do
+describe UpdateProjectImportVisibilityLevel do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:project) { projects.find_by_name(name) }

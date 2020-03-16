@@ -1,0 +1,5 @@
+---
+title: Remove duplicate authorization refresh for group members on project creation
+merge_request:
+author:
+type: performance

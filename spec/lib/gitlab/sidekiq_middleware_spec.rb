@@ -46,7 +46,8 @@ describe Gitlab::SidekiqMiddleware do
        Gitlab::SidekiqMiddleware::MemoryKiller,
        Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
        Gitlab::SidekiqMiddleware::WorkerContext::Server,
-       Gitlab::SidekiqMiddleware::AdminMode::Server
+       Gitlab::SidekiqMiddleware::AdminMode::Server,
+       Gitlab::SidekiqMiddleware::DuplicateJobs::Server
       ]
     end
     let(:enabled_sidekiq_middlewares) { all_sidekiq_middlewares - disabled_sidekiq_middlewares }
@@ -117,7 +118,8 @@ describe Gitlab::SidekiqMiddleware do
         Gitlab::SidekiqMiddleware::ClientMetrics,
         Gitlab::SidekiqMiddleware::WorkerContext::Client,
         Labkit::Middleware::Sidekiq::Client,
-        Gitlab::SidekiqMiddleware::AdminMode::Client
+        Gitlab::SidekiqMiddleware::AdminMode::Client,
+        Gitlab::SidekiqMiddleware::DuplicateJobs::Client
       ]
     end
 

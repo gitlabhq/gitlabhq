@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Groups > Labels > User sees links to issuables' do
-  set(:group) { create(:group, :public) }
+  let_it_be(:group) { create(:group, :public) }
 
   before do
     create(:group_label, group: group, title: 'bug')

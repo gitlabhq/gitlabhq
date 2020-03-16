@@ -86,7 +86,7 @@ describe Clusters::UpdateService do
         it 'rejects changes' do
           is_expected.to eq(false)
 
-          expect(cluster.errors.full_messages).to include('cannot modify during creation')
+          expect(cluster.errors.full_messages).to include('Cannot modify provider during creation')
         end
       end
     end

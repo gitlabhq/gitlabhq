@@ -1,5 +1,5 @@
+import { last } from 'lodash';
 import AvailableDropdownMappings from 'ee_else_ce/filtered_search/available_dropdown_mappings';
-import _ from 'underscore';
 import DropLab from '~/droplab/drop_lab';
 import FilteredSearchContainer from './container';
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
@@ -13,6 +13,7 @@ export default class FilteredSearchDropdownManager {
     labelsEndpoint = '',
     milestonesEndpoint = '',
     releasesEndpoint = '',
+    epicsEndpoint = '',
     tokenizer,
     page,
     isGroup,
@@ -27,6 +28,7 @@ export default class FilteredSearchDropdownManager {
     this.labelsEndpoint = removeTrailingSlash(labelsEndpoint);
     this.milestonesEndpoint = removeTrailingSlash(milestonesEndpoint);
     this.releasesEndpoint = removeTrailingSlash(releasesEndpoint);
+    this.epicsEndpoint = removeTrailingSlash(epicsEndpoint);
     this.tokenizer = tokenizer;
     this.filteredSearchTokenKeys = filteredSearchTokenKeys || FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
@@ -54,16 +56,8 @@ export default class FilteredSearchDropdownManager {
 
   setupMapping() {
     const supportedTokens = this.filteredSearchTokenKeys.getKeys();
-    const availableMappings = new AvailableDropdownMappings(
-      this.container,
-      this.runnerTagsEndpoint,
-      this.labelsEndpoint,
-      this.milestonesEndpoint,
-      this.releasesEndpoint,
-      this.groupsOnly,
-      this.includeAncestorGroups,
-      this.includeDescendantGroups,
-    );
+
+    const availableMappings = new AvailableDropdownMappings({ ...this });
 
     this.mapping = availableMappings.getAllowedMappings(supportedTokens);
   }
@@ -190,8 +184,8 @@ export default class FilteredSearchDropdownManager {
       // Eg. token = 'label:'
 
       const split = lastToken.split(':');
-      const dropdownName = _.last(split[0].split(' '));
-      const possibleOperatorToken = _.last(split[1]);
+      const dropdownName = last(split[0].split(' '));
+      const possibleOperatorToken = last(split[1]);
 
       const hasOperator = FilteredSearchVisualTokens.permissibleOperatorValues.includes(
         possibleOperatorToken && possibleOperatorToken.trim(),

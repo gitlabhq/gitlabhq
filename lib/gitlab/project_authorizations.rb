@@ -62,6 +62,7 @@ module Gitlab
       cte = Gitlab::SQL::RecursiveCTE.new(:namespaces_cte)
       members = Member.arel_table
       namespaces = Namespace.arel_table
+      group_group_links = GroupGroupLink.arel_table
 
       # Namespaces the user is a member of.
       cte << user.groups
@@ -69,7 +70,10 @@ module Gitlab
         .except(:order)
 
       # Namespaces shared with any of the group
-      cte << Group.select([namespaces[:id], 'group_group_links.group_access AS access_level'])
+      cte << Group.select([namespaces[:id],
+                           least(members[:access_level],
+                                 group_group_links[:group_access],
+                                 'access_level')])
                   .joins(join_group_group_links)
                   .joins(join_members_on_group_group_links)
 

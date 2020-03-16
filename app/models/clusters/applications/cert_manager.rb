@@ -3,8 +3,8 @@
 module Clusters
   module Applications
     class CertManager < ApplicationRecord
-      VERSION = 'v0.9.1'
-      CRD_VERSION = '0.9'
+      VERSION = 'v0.10.1'
+      CRD_VERSION = '0.10'
 
       self.table_name = 'clusters_applications_cert_managers'
 

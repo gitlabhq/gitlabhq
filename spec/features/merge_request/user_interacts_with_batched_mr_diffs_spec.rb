@@ -10,7 +10,7 @@ describe 'Batch diffs', :js do
   let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'empty-branch') }
 
   before do
-    stub_feature_flags(single_mr_diff_view: true)
+    stub_feature_flags(single_mr_diff_view: { enabled: true, thing: project })
     stub_feature_flags(diffs_batch_load: true)
 
     sign_in(project.owner)

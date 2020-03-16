@@ -6,6 +6,10 @@ describe Projects::RepositoriesController do
   let(:project) { create(:project, :repository) }
 
   describe "GET archive" do
+    before do
+      allow(controller).to receive(:archive_rate_limit_reached?).and_return(false)
+    end
+
     context 'as a guest' do
       it 'responds with redirect in correct format' do
         get :archive, params: { namespace_id: project.namespace, project_id: project, id: "master" }, format: "zip"
@@ -93,6 +97,16 @@ describe Projects::RepositoriesController do
           get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: "html"
 
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      describe 'rate limiting' do
+        it 'rate limits user when thresholds hit' do
+          expect(controller).to receive(:archive_rate_limit_reached?).and_return(true)
+
+          get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: "html"
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
         end
       end
 

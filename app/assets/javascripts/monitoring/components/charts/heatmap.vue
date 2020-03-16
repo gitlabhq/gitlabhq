@@ -2,13 +2,11 @@
 import { GlResizeObserverDirective } from '@gitlab/ui';
 import { GlHeatmap } from '@gitlab/ui/dist/charts';
 import dateformat from 'dateformat';
-import PrometheusHeader from '../shared/prometheus_header.vue';
 import { graphDataValidatorForValues } from '../../utils';
 
 export default {
   components: {
     GlHeatmap,
-    PrometheusHeader,
   },
   directives: {
     GlResizeObserverDirective,
@@ -65,8 +63,7 @@ export default {
 };
 </script>
 <template>
-  <div v-gl-resize-observer-directive="onResize" class="prometheus-graph col-12 col-lg-6">
-    <prometheus-header :graph-title="graphData.title" />
+  <div v-gl-resize-observer-directive="onResize" class="col-12 col-lg-6">
     <gl-heatmap
       ref="heatmapChart"
       v-bind="$attrs"

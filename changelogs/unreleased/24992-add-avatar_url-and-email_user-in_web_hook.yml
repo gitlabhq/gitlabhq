@@ -1,5 +1,0 @@
----
-title: add avatar_url in job webhook, and email in pipeline webhook
-merge_request: 24992
-author: Guillaume Micouin
-type: added

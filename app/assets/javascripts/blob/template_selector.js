@@ -92,10 +92,10 @@ export default class TemplateSelector {
   }
 
   startLoadingSpinner() {
-    this.$dropdownIcon.addClass('fa-spinner fa-spin').removeClass('fa-chevron-down');
+    this.$dropdownIcon.addClass('spinner').removeClass('fa-chevron-down');
   }
 
   stopLoadingSpinner() {
-    this.$dropdownIcon.addClass('fa-chevron-down').removeClass('fa-spinner fa-spin');
+    this.$dropdownIcon.addClass('fa-chevron-down').removeClass('spinner');
   }
 }

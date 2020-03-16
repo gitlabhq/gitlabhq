@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
-  set(:build) { create(:ci_build, :running) }
+  let_it_be(:build) { create(:ci_build, :running) }
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)

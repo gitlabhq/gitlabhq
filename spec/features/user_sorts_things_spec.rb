@@ -10,10 +10,10 @@ describe "User sorts things" do
   include Spec::Support::Helpers::Features::SortingHelpers
   include DashboardHelper
 
-  set(:project) { create(:project_empty_repo, :public) }
-  set(:current_user) { create(:user) } # Using `current_user` instead of just `user` because of the hardoced call in `assigned_mrs_dashboard_path` which is used below.
-  set(:issue) { create(:issue, project: project, author: current_user) }
-  set(:merge_request) { create(:merge_request, target_project: project, source_project: project, author: current_user) }
+  let_it_be(:project) { create(:project_empty_repo, :public) }
+  let_it_be(:current_user) { create(:user) } # Using `current_user` instead of just `user` because of the hardoced call in `assigned_mrs_dashboard_path` which is used below.
+  let_it_be(:issue) { create(:issue, project: project, author: current_user) }
+  let_it_be(:merge_request) { create(:merge_request, target_project: project, source_project: project, author: current_user) }
 
   before do
     project.add_developer(current_user)

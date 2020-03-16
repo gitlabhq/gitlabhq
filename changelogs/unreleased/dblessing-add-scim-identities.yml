@@ -1,0 +1,6 @@
+---
+title: Create scim_identities table in preparation for newer SCIM features in the
+  future
+merge_request: 26124
+author:
+type: added

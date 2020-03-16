@@ -38,14 +38,14 @@ If you follow the instructions you can publish `MyProject` by running
 `npm publish` from the root directory.
 
 Publishing `Foo` is almost exactly the same, you simply have to follow the steps
-while in the `Foo` directory. `Foo` will need it's own `package.json` file,
-which can be added manually or using `npm init`. And it will need it's own
+while in the `Foo` directory. `Foo` will need its own `package.json` file,
+which can be added manually or using `npm init`. And it will need its own
 configuration settings. Since you are publishing to the same place, if you
 used `npm config set` to set the registry for the parent project, then no
 additional setup is necessary. If you used a `.npmrc` file, you will need an
 additional `.npmrc` file in the `Foo` directory (be sure to add `.npmrc` files
 to the `.gitignore` file or use environment variables in place of your access
-tokens to preven them from being exposed). It can be identical to the
+tokens to prevent them from being exposed). It can be identical to the
 one you used in `MyProject`. You can now run `npm publish` from the `Foo`
 directory and you will be able to publish `Foo` separately from `MyProject`
 

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import _ from 'underscore';
+import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
 import { __ } from '~/locale';
@@ -25,16 +25,18 @@ export default () => {
 
   $broadcastMessageType.on('change', () => {
     const $broadcastMessageColorFormGroup = $('.js-broadcast-message-background-color-form-group');
+    const $broadcastMessageDismissableFormGroup = $('.js-broadcast-message-dismissable-form-group');
     const $broadcastNotificationMessagePreview = $('.js-broadcast-notification-message-preview');
 
     $broadcastMessageColorFormGroup.toggleClass('hidden');
+    $broadcastMessageDismissableFormGroup.toggleClass('hidden');
     $broadcastBannerMessagePreview.toggleClass('hidden');
     $broadcastNotificationMessagePreview.toggleClass('hidden');
   });
 
   $broadcastMessage.on(
     'input',
-    _.debounce(function onMessageInput() {
+    debounce(function onMessageInput() {
       const message = $(this).val();
       if (message === '') {
         $jsBroadcastMessagePreview.text(__('Your message here'));

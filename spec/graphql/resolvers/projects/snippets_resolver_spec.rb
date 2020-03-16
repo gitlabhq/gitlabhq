@@ -75,6 +75,16 @@ describe Resolvers::Projects::SnippetsResolver do
         expect(resolve_snippets(context: { current_user: other_user }, args: { ids: project_snippet.to_global_id })).to be_empty
       end
     end
+
+    context 'when project snippets are disabled' do
+      it 'raises an error' do
+        disabled_snippet_project = create(:project, :snippets_disabled)
+        disabled_snippet_project.add_developer(current_user)
+
+        expect(SnippetsFinder).not_to receive(:new)
+        expect { resolve_snippets(obj: disabled_snippet_project) }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      end
+    end
   end
 
   def resolve_snippets(args: {}, context: { current_user: current_user }, obj: project)

@@ -123,7 +123,7 @@ settings page which provides self-explanatory examples.
 When a rerun of a pipeline is triggered, the information is exposed in GitLab's
 UI under the **Jobs** page and the jobs are marked as triggered 'by API'.
 
-![Marked rebuilds as  on jobs page](img/builds_page.png)
+![Marked rebuilds as on jobs page](img/builds_page.png)
 
 ---
 
@@ -167,7 +167,7 @@ build_docs:
   - tags
 ```
 
-Now, whenever a new tag is pushed on project A, the job will run and the
+This means that whenever a new tag is pushed on project A, the job will run and the
 `build_docs` job will be executed, triggering a rebuild of project B. The
 `stage: deploy` ensures that this job will run only after all jobs with
 `stage: test` complete successfully.
@@ -256,7 +256,7 @@ of all types of variables.
 
 >**Note:**
 The following behavior can also be achieved through GitLab's UI with
-[pipeline schedules](../../user/project/pipelines/schedules.md).
+[pipeline schedules](../pipelines/schedules.md).
 
 Whether you craft a script or just run cURL directly, you can trigger jobs
 in conjunction with cron. The example below triggers a job on the `master`

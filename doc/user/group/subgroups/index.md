@@ -6,7 +6,7 @@ type: reference, howto, concepts
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2772) in GitLab 9.0.
 
-Subgroups, also known as nested groups or hierarchical groups, allow you to have up to 20
+GitLab supports up to 20 levels of subgroups, also known as nested groups or hierarchical groups.
 levels of groups.
 
 By using subgroups you can do the following:
@@ -63,9 +63,6 @@ Another example of GitLab as a company would be the following:
   - Category Subgroup - Executive team
 
 ---
-
-The maximum subgroups a group can have, including the first one in the
-hierarchy, is 21.
 
 When performing actions such as transferring or importing a project between
 subgroups, the behavior is the same as when performing these actions at the

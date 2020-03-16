@@ -6,6 +6,8 @@ module Gitlab
       class LogrageWithTimestamp
         include Gitlab::EncodingHelper
 
+        EMPTY_ARRAY = [].freeze
+
         def call(severity, datetime, _, data)
           time = data.delete :time
           data[:params] = process_params(data)
@@ -16,29 +18,27 @@ module Gitlab
             duration: time[:total],
             db: time[:db],
             view: time[:view]
-          }.merge(data)
-          ::Lograge.formatter.call(attributes) + "\n"
+          }.merge!(data)
+
+          ::Lograge.formatter.call(attributes) << "\n"
         end
 
         private
 
         def process_params(data)
-          return [] unless data.has_key?(:params)
+          return EMPTY_ARRAY unless data.has_key?(:params)
 
-          params_array =
-            data[:params]
-              .each_pair
-              .map { |k, v| { key: k, value: utf8_encode_values(v) } }
+          params_array = data[:params].map { |k, v| { key: k, value: utf8_encode_values(v) } }
 
-          Gitlab::Utils::LogLimitedArray.log_limited_array(params_array)
+          Gitlab::Utils::LogLimitedArray.log_limited_array(params_array, sentinel: Gitlab::Lograge::CustomOptions::LIMITED_ARRAY_SENTINEL)
         end
 
         def utf8_encode_values(data)
           case data
           when Hash
-            data.merge(data) { |k, v| utf8_encode_values(v) }
+            data.merge!(data) { |k, v| utf8_encode_values(v) }
           when Array
-            data.map { |v| utf8_encode_values(v) }
+            data.map! { |v| utf8_encode_values(v) }
           when String
             encode_utf8(data)
           end

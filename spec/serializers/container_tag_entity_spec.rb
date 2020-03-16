@@ -3,14 +3,10 @@
 require 'spec_helper'
 
 describe ContainerTagEntity do
-  let(:entity) do
-    described_class.new(tag, request: request)
-  end
-
-  set(:project) { create(:project) }
-  set(:user) { create(:user) }
-  set(:repository) { create(:container_repository, name: 'image', project: project) }
-
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:repository) { create(:container_repository, name: 'image', project: project) }
+  let(:entity) { described_class.new(tag, request: request) }
   let(:request) { double('request') }
   let(:tag) { repository.tag('test') }
 

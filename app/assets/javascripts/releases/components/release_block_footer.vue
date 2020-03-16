@@ -66,9 +66,9 @@ export default {
       <icon ref="commitIcon" name="commit" class="mr-1" />
       <div v-gl-tooltip.bottom :title="commit.title">
         <gl-link v-if="commitPath" :href="commitPath">
-          {{ commit.short_id }}
+          {{ commit.shortId }}
         </gl-link>
-        <span v-else>{{ commit.short_id }}</span>
+        <span v-else>{{ commit.shortId }}</span>
       </div>
     </div>
 
@@ -100,8 +100,8 @@ export default {
       <div v-if="author" class="d-flex">
         <span class="text-secondary">{{ __('by') }}&nbsp;</span>
         <user-avatar-link
-          :link-href="author.web_url"
-          :img-src="author.avatar_url"
+          :link-href="author.webUrl"
+          :img-src="author.avatarUrl"
           :img-alt="userImageAltDescription"
           :tooltip-text="author.username"
           tooltip-placement="bottom"

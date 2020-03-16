@@ -1,0 +1,5 @@
+---
+title: Ensure temp export data is removed if Group/Project export failed
+merge_request: 25828
+author:
+type: fixed

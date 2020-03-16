@@ -23,6 +23,6 @@ module Spam
       end
     end
 
-    alias_method :spammable, :spam_log
+    alias_method :target, :spam_log
   end
 end

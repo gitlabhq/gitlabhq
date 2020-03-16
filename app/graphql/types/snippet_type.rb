@@ -62,6 +62,7 @@ module Types
 
     field :blob, type: Types::Snippets::BlobType,
           description: 'Snippet blob',
+          calls_gitaly: true,
           null: false
 
     markdown_field :description_html, null: true, method: :description

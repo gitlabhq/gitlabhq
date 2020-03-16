@@ -51,8 +51,10 @@ describe EnvironmentStatus do
   # - source: /files\/(.+)/
   #   public: '\1'
   describe '#changes' do
+    subject { environment_status.changes }
+
     it 'contains only added and modified public pages' do
-      expect(environment_status.changes).to contain_exactly(
+      expect(subject).to contain_exactly(
         {
           path: 'ruby-style-guide.html',
           external_url: "#{environment.external_url}/ruby-style-guide.html"
@@ -62,6 +64,18 @@ describe EnvironmentStatus do
         }
       )
     end
+  end
+
+  describe '#changed_paths' do
+    subject { environment_status.changed_urls }
+
+    it { is_expected.to contain_exactly("#{environment.external_url}/ruby-style-guide.html", "#{environment.external_url}/html/page.html") }
+  end
+
+  describe '#changed_urls' do
+    subject { environment_status.changed_paths }
+
+    it { is_expected.to contain_exactly('ruby-style-guide.html', 'html/page.html') }
   end
 
   describe '.for_merge_request' do

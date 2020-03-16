@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable @gitlab/vue-i18n/no-bare-strings */
-import _ from 'underscore';
+import { uniqueId } from 'lodash';
 import { GlLink, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -36,13 +36,13 @@ export default {
     counts() {
       return [
         {
-          id: _.uniqueId(),
+          id: uniqueId(),
           icon: 'thumb-up',
           tooltipTitle: __('Upvotes'),
           count: this.suggestion.upvotes,
         },
         {
-          id: _.uniqueId(),
+          id: uniqueId(),
           icon: 'comment',
           tooltipTitle: __('Comments'),
           count: this.suggestion.userNotesCount,

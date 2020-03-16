@@ -11,7 +11,7 @@ describe API::Appearance, 'Appearance' do
       it "returns 403" do
         get api("/application/appearance", user)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -19,7 +19,7 @@ describe API::Appearance, 'Appearance' do
       it "returns appearance" do
         get api("/application/appearance", admin)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Hash
         expect(json_response['description']).to eq('')
         expect(json_response['email_header_and_footer_enabled']).to be(false)
@@ -41,7 +41,7 @@ describe API::Appearance, 'Appearance' do
       it "returns 403" do
         put api("/application/appearance", user), params: { title: "Test" }
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -54,7 +54,7 @@ describe API::Appearance, 'Appearance' do
             new_project_guidelines: "Please read the FAQs for help."
           }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Hash
           expect(json_response['description']).to eq('gitlab-test.example.com')
           expect(json_response['email_header_and_footer_enabled']).to be(false)
@@ -82,7 +82,7 @@ describe API::Appearance, 'Appearance' do
 
           put api("/application/appearance", admin), params: settings
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           settings.each do |attribute, value|
             expect(Appearance.current.public_send(attribute)).to eq(value)
           end
@@ -92,14 +92,14 @@ describe API::Appearance, 'Appearance' do
           it "with message_font_color" do
             put api("/application/appearance", admin), params: { message_font_color: "No Color" }
 
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']['message_font_color']).to contain_exactly('must be a valid color code')
           end
 
           it "with message_background_color" do
             put api("/application/appearance", admin), params: { message_background_color: "#1" }
 
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']['message_background_color']).to contain_exactly('must be a valid color code')
           end
         end
@@ -115,7 +115,7 @@ describe API::Appearance, 'Appearance' do
             favicon: fixture_file_upload("spec/fixtures/dk.png", "image/png")
           }
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['logo']).to eq("/uploads/-/system/appearance/logo/#{appearance.id}/dk.png")
           expect(json_response['header_logo']).to eq("/uploads/-/system/appearance/header_logo/#{appearance.id}/dk.png")
           expect(json_response['favicon']).to eq("/uploads/-/system/appearance/favicon/#{appearance.id}/dk.png")
@@ -125,14 +125,14 @@ describe API::Appearance, 'Appearance' do
           it "with string instead of file" do
             put api("/application/appearance", admin), params: { logo: 'not-a-file.png' }
 
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['error']).to eq("logo is invalid")
           end
 
           it "with .svg file instead of .png" do
             put api("/application/appearance", admin), params: { favicon: fixture_file_upload("spec/fixtures/logo_sample.svg", "image/svg") }
 
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']['favicon']).to contain_exactly("You are not allowed to upload \"svg\" files, allowed types: png, ico")
           end
         end

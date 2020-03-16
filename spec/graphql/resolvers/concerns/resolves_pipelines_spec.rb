@@ -17,11 +17,11 @@ describe ResolvesPipelines do
 
   let(:current_user) { create(:user) }
 
-  set(:project) { create(:project, :private) }
-  set(:pipeline) { create(:ci_pipeline, project: project) }
-  set(:failed_pipeline) { create(:ci_pipeline, :failed, project: project) }
-  set(:ref_pipeline) { create(:ci_pipeline, project: project, ref: 'awesome-feature') }
-  set(:sha_pipeline) { create(:ci_pipeline, project: project, sha: 'deadbeef') }
+  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:failed_pipeline) { create(:ci_pipeline, :failed, project: project) }
+  let_it_be(:ref_pipeline) { create(:ci_pipeline, project: project, ref: 'awesome-feature') }
+  let_it_be(:sha_pipeline) { create(:ci_pipeline, project: project, sha: 'deadbeef') }
 
   before do
     project.add_developer(current_user)

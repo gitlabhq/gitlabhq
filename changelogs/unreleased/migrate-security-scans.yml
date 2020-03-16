@@ -1,0 +1,5 @@
+---
+title: Schedule worker to migrate security job artifacts to security scans
+merge_request: 24125
+author:
+type: other

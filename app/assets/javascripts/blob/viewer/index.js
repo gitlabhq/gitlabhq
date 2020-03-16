@@ -5,10 +5,43 @@ import { handleLocationHash } from '../../lib/utils/common_utils';
 import axios from '../../lib/utils/axios_utils';
 import { __ } from '~/locale';
 
+const loadRichBlobViewer = type => {
+  switch (type) {
+    case 'balsamiq':
+      return import(/* webpackChunkName: 'balsamiq_viewer' */ '../balsamiq_viewer');
+    case 'notebook':
+      return import(/* webpackChunkName: 'notebook_viewer' */ '../notebook_viewer');
+    case 'openapi':
+      return import(/* webpackChunkName: 'openapi_viewer' */ '../openapi_viewer');
+    case 'pdf':
+      return import(/* webpackChunkName: 'pdf_viewer' */ '../pdf_viewer');
+    case 'sketch':
+      return import(/* webpackChunkName: 'sketch_viewer' */ '../sketch_viewer');
+    case 'stl':
+      return import(/* webpackChunkName: 'stl_viewer' */ '../stl_viewer');
+    default:
+      return Promise.resolve();
+  }
+};
+
+export const handleBlobRichViewer = (viewer, type) => {
+  if (!viewer || !type) return;
+
+  loadRichBlobViewer(type)
+    .then(module => module?.default(viewer))
+    .catch(error => {
+      Flash(__('Error loading file viewer.'));
+      throw error;
+    });
+};
+
 export default class BlobViewer {
   constructor() {
+    const viewer = document.querySelector('.blob-viewer[data-type="rich"]');
+    const type = viewer?.dataset?.richType;
     BlobViewer.initAuxiliaryViewer();
-    BlobViewer.initRichViewer();
+
+    handleBlobRichViewer(viewer, type);
 
     this.initMainViewers();
   }
@@ -18,42 +51,6 @@ export default class BlobViewer {
     if (!auxiliaryViewer) return;
 
     BlobViewer.loadViewer(auxiliaryViewer);
-  }
-
-  static initRichViewer() {
-    const viewer = document.querySelector('.blob-viewer[data-type="rich"]');
-    if (!viewer || !viewer.dataset.richType) return;
-
-    const initViewer = promise =>
-      promise
-        .then(module => module.default(viewer))
-        .catch(error => {
-          Flash(__('Error loading file viewer.'));
-          throw error;
-        });
-
-    switch (viewer.dataset.richType) {
-      case 'balsamiq':
-        initViewer(import(/* webpackChunkName: 'balsamiq_viewer' */ '../balsamiq_viewer'));
-        break;
-      case 'notebook':
-        initViewer(import(/* webpackChunkName: 'notebook_viewer' */ '../notebook_viewer'));
-        break;
-      case 'openapi':
-        initViewer(import(/* webpackChunkName: 'openapi_viewer' */ '../openapi_viewer'));
-        break;
-      case 'pdf':
-        initViewer(import(/* webpackChunkName: 'pdf_viewer' */ '../pdf_viewer'));
-        break;
-      case 'sketch':
-        initViewer(import(/* webpackChunkName: 'sketch_viewer' */ '../sketch_viewer'));
-        break;
-      case 'stl':
-        initViewer(import(/* webpackChunkName: 'stl_viewer' */ '../stl_viewer'));
-        break;
-      default:
-        break;
-    }
   }
 
   initMainViewers() {

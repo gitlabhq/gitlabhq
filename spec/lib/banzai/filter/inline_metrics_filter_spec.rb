@@ -5,66 +5,31 @@ require 'spec_helper'
 describe Banzai::Filter::InlineMetricsFilter do
   include FilterSpecHelper
 
-  let(:input) { %(<a href="#{url}">example</a>) }
-  let(:doc) { filter(input) }
+  let(:params) { ['foo', 'bar', 12] }
+  let(:query_params) { {} }
 
-  context 'when the document has an external link' do
-    let(:url) { 'https://foo.com' }
+  let(:trigger_url) { urls.metrics_namespace_project_environment_url(*params, query_params) }
+  let(:dashboard_url) { urls.metrics_dashboard_namespace_project_environment_url(*params, **query_params, embedded: true) }
 
-    it 'leaves regular non-metrics links unchanged' do
-      expect(doc.to_s).to eq(input)
+  it_behaves_like 'a metrics embed filter'
+
+  context 'with query params specified' do
+    let(:query_params) do
+      {
+        dashboard: 'config/prometheus/common_metrics.yml',
+        group: 'System metrics (Kubernetes)',
+        title: 'Core Usage (Pod Average)',
+        y_label: 'Cores per Pod'
+      }
     end
+
+    it_behaves_like 'a metrics embed filter'
   end
 
-  context 'when the document has a metrics dashboard link' do
-    let(:params) { ['foo', 'bar', 12] }
-    let(:url) { urls.metrics_namespace_project_environment_url(*params) }
+  it 'leaves links to other dashboards unchanged' do
+    url = urls.namespace_project_grafana_api_metrics_dashboard_url('foo', 'bar')
+    input = %(<a href="#{url}">example</a>)
 
-    it 'leaves the original link unchanged' do
-      expect(doc.at_css('a').to_s).to eq(input)
-    end
-
-    it 'appends a metrics charts placeholder with dashboard url after metrics links' do
-      node = doc.at_css('.js-render-metrics')
-      expect(node).to be_present
-
-      dashboard_url = urls.metrics_dashboard_namespace_project_environment_url(*params, embedded: true)
-      expect(node.attribute('data-dashboard-url').to_s).to eq(dashboard_url)
-    end
-
-    context 'when the metrics dashboard link is part of a paragraph' do
-      let(:paragraph) { %(This is an <a href="#{url}">example</a> of metrics.) }
-      let(:input) { %(<p>#{paragraph}</p>) }
-
-      it 'appends the charts placeholder after the enclosing paragraph' do
-        expect(doc.at_css('p').to_s).to include(paragraph)
-        expect(doc.at_css('.js-render-metrics')).to be_present
-      end
-    end
-
-    context 'with dashboard params specified' do
-      let(:params) do
-        [
-          'foo',
-          'bar',
-          12,
-          {
-            embedded: true,
-            dashboard: 'config/prometheus/common_metrics.yml',
-            group: 'System metrics (Kubernetes)',
-            title: 'Core Usage (Pod Average)',
-            y_label: 'Cores per Pod'
-          }
-        ]
-      end
-
-      it 'appends a metrics charts placeholder with dashboard url after metrics links' do
-        node = doc.at_css('.js-render-metrics')
-        expect(node).to be_present
-
-        dashboard_url = urls.metrics_dashboard_namespace_project_environment_url(*params)
-        expect(node.attribute('data-dashboard-url').to_s).to eq(dashboard_url)
-      end
-    end
+    expect(filter(input).to_s).to eq(input)
   end
 end

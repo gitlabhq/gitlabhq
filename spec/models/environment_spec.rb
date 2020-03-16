@@ -325,26 +325,6 @@ describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#first_deployment_for' do
-    let(:project)       { create(:project, :repository) }
-    let!(:deployment)   { create(:deployment, :succeed, environment: environment, ref: commit.parent.id) }
-    let!(:deployment1)  { create(:deployment, :succeed, environment: environment, ref: commit.id) }
-    let(:head_commit)   { project.commit }
-    let(:commit)        { project.commit.parent }
-
-    it 'returns deployment id for the environment', :sidekiq_might_not_need_inline do
-      expect(environment.first_deployment_for(commit.id)).to eq deployment1
-    end
-
-    it 'return nil when no deployment is found' do
-      expect(environment.first_deployment_for(head_commit.id)).to eq nil
-    end
-
-    it 'returns a UTF-8 ref', :sidekiq_might_not_need_inline do
-      expect(environment.first_deployment_for(commit.id).ref).to be_utf8
-    end
-  end
-
   describe '#environment_type' do
     subject { environment.environment_type }
 
@@ -1264,6 +1244,14 @@ describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '.for_id_and_slug' do
+    subject { described_class.for_id_and_slug(environment.id, environment.slug) }
+
+    let(:environment) { create(:environment) }
+
+    it { is_expected.not_to be_nil }
+  end
+
   describe '.find_or_create_by_name' do
     it 'finds an existing environment if it exists' do
       env = create(:environment)
@@ -1276,6 +1264,41 @@ describe Environment, :use_clean_rails_memory_store_caching do
 
       expect(env).to be_an_instance_of(described_class)
       expect(env).to be_persisted
+    end
+  end
+
+  describe '#elastic_stack_available?' do
+    let!(:cluster) { create(:cluster, :project, :provided_by_user, projects: [project]) }
+    let!(:deployment) { create(:deployment, :success, environment: environment, project: project, cluster: cluster) }
+
+    context 'when app does not exist' do
+      it 'returns false' do
+        expect(environment.elastic_stack_available?).to be(false)
+      end
+    end
+
+    context 'when app exists' do
+      let!(:application) { create(:clusters_applications_elastic_stack, cluster: cluster) }
+
+      it 'returns false' do
+        expect(environment.elastic_stack_available?).to be(false)
+      end
+    end
+
+    context 'when app is installed' do
+      let!(:application) { create(:clusters_applications_elastic_stack, :installed, cluster: cluster) }
+
+      it 'returns true' do
+        expect(environment.elastic_stack_available?).to be(true)
+      end
+    end
+
+    context 'when app is updated' do
+      let!(:application) { create(:clusters_applications_elastic_stack, :updated, cluster: cluster) }
+
+      it 'returns true' do
+        expect(environment.elastic_stack_available?).to be(true)
+      end
     end
   end
 end

@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { last } from 'lodash';
 import recentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import { getParameterByName, getUrlParamsArray } from '~/lib/utils/common_utils';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
@@ -45,6 +45,11 @@ export default class FilteredSearchManager {
       this.filteredSearchTokenKeys.enableMultipleAssignees();
     }
 
+    const { epicsEndpoint } = this.filteredSearchInput.dataset;
+    if (!epicsEndpoint && this.filteredSearchTokenKeys.removeEpicToken) {
+      this.filteredSearchTokenKeys.removeEpicToken();
+    }
+
     this.recentSearchesStore = new RecentSearchesStore({
       isLocalStorageAvailable: RecentSearchesService.isAvailable(),
       allowedKeys: this.filteredSearchTokenKeys.getKeys(),
@@ -88,12 +93,20 @@ export default class FilteredSearchManager {
     if (this.filteredSearchInput) {
       this.tokenizer = FilteredSearchTokenizer;
 
+      const {
+        runnerTagsEndpoint = '',
+        labelsEndpoint = '',
+        milestonesEndpoint = '',
+        releasesEndpoint = '',
+        epicsEndpoint = '',
+      } = this.filteredSearchInput.dataset;
+
       this.dropdownManager = new FilteredSearchDropdownManager({
-        runnerTagsEndpoint:
-          this.filteredSearchInput.getAttribute('data-runner-tags-endpoint') || '',
-        labelsEndpoint: this.filteredSearchInput.getAttribute('data-labels-endpoint') || '',
-        milestonesEndpoint: this.filteredSearchInput.getAttribute('data-milestones-endpoint') || '',
-        releasesEndpoint: this.filteredSearchInput.getAttribute('data-releases-endpoint') || '',
+        runnerTagsEndpoint,
+        labelsEndpoint,
+        milestonesEndpoint,
+        releasesEndpoint,
+        epicsEndpoint,
         tokenizer: this.tokenizer,
         page: this.page,
         isGroup: this.isGroup,
@@ -443,7 +456,7 @@ export default class FilteredSearchManager {
 
       if (fragments.length > 1) {
         const inputValues = fragments[0].split(' ');
-        const tokenKey = _.last(inputValues);
+        const tokenKey = last(inputValues);
 
         if (inputValues.length > 1) {
           inputValues.pop();
@@ -458,33 +471,6 @@ export default class FilteredSearchManager {
           capitalizeTokenValue: this.filteredSearchTokenKeys.shouldCapitalizeTokenValue(tokenKey),
         });
         input.value = input.value.replace(`${tokenKey}:`, '');
-      }
-
-      const splitSearchToken = searchToken && searchToken.split(' ');
-      let lastSearchToken = _.last(splitSearchToken);
-      lastSearchToken = lastSearchToken?.toLowerCase();
-
-      /**
-       * If user writes "milestone", a known token, in the input, we should not
-       * wait for leading colon to flush it as a filter token.
-       */
-      if (this.filteredSearchTokenKeys.getKeys().includes(lastSearchToken)) {
-        if (splitSearchToken.length > 1) {
-          splitSearchToken.pop();
-          const searchVisualTokens = splitSearchToken.join(' ');
-
-          input.value = input.value.replace(searchVisualTokens, '');
-          FilteredSearchVisualTokens.addSearchVisualToken(searchVisualTokens);
-        }
-        FilteredSearchVisualTokens.addFilterVisualToken(lastSearchToken, null, null, {
-          uppercaseTokenName: this.filteredSearchTokenKeys.shouldUppercaseTokenName(
-            lastSearchToken,
-          ),
-          capitalizeTokenValue: this.filteredSearchTokenKeys.shouldCapitalizeTokenValue(
-            lastSearchToken,
-          ),
-        });
-        input.value = input.value.replace(lastSearchToken, '');
       }
     } else if (!isLastVisualTokenValid && !FilteredSearchVisualTokens.getLastTokenOperator()) {
       const tokenKey = FilteredSearchVisualTokens.getLastTokenPartial();

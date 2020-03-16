@@ -33,7 +33,7 @@ describe Gitlab::GitAccessWiki do
         end
 
         it 'does not give access to upload wiki code' do
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "You can't push code to a read-only GitLab instance.")
+          expect { subject }.to raise_error(Gitlab::GitAccess::ForbiddenError, "You can't push code to a read-only GitLab instance.")
         end
       end
     end
@@ -70,7 +70,7 @@ describe Gitlab::GitAccessWiki do
       it 'does not give access to download wiki code' do
         project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
 
-        expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to download code from this project.')
+        expect { subject }.to raise_error(Gitlab::GitAccess::ForbiddenError, 'You are not allowed to download code from this project.')
       end
     end
   end

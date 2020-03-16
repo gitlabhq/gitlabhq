@@ -6,10 +6,12 @@ describe('Snippet header component', () => {
   let wrapper;
   const title = 'The property of Thor';
   const description = 'Do not touch this hammer';
+  const descriptionHtml = `<h2>${description}</h2>`;
   const snippet = {
     snippet: {
       title,
       description,
+      descriptionHtml,
     },
   };
 
@@ -35,7 +37,7 @@ describe('Snippet header component', () => {
   it('renders snippets title and description', () => {
     createComponent();
     expect(wrapper.text().trim()).toContain(title);
-    expect(wrapper.text().trim()).toContain(description);
+    expect(wrapper.find('.js-snippet-description').element.innerHTML).toBe(descriptionHtml);
   });
 
   it('does not render recent changes time stamp if there were no updates', () => {

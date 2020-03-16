@@ -9,7 +9,7 @@ values.
 
 Get a list of all persisted features, with its gate values.
 
-```
+```plaintext
 GET /features
 ```
 
@@ -50,7 +50,7 @@ Set a feature's gate value. If a feature with the given name doesn't exist yet
 it will be created. The value can be a boolean, or an integer to indicate
 percentage of time.
 
-```
+```plaintext
 POST /features/:name
 ```
 
@@ -93,6 +93,6 @@ Example response:
 
 Removes a feature gate. Response is equal when the gate exists, or doesn't.
 
-```
+```plaintext
 DELETE /features/:name
 ```

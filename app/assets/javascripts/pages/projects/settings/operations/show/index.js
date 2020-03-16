@@ -7,5 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   mountErrorTrackingForm();
   mountOperationSettings();
   mountGrafanaIntegration();
-  initSettingsPanels();
+  if (!IS_EE) {
+    initSettingsPanels();
+  }
 });

@@ -87,8 +87,8 @@ Reconfiguring GitLab should occur in the event that something in its
 configuration (`/etc/gitlab/gitlab.rb`) has changed.
 
 When you run this command, [Chef], the underlying configuration management
-application that powers Omnibus GitLab, will make sure that all directories,
-permissions, services, etc., are in place and in the same shape that they were
+application that powers Omnibus GitLab, will make sure that all things like directories,
+permissions, and services are in place and in the same shape that they were
 initially shipped.
 
 It will also restart GitLab components where needed, if any of their
@@ -128,7 +128,7 @@ The GitLab MailRoom email processor with pid 28114 is running.
 GitLab and all its components are up and running.
 ```
 
-This should restart Unicorn, Sidekiq, GitLab Workhorse and [Mailroom][]
+This should restart Unicorn, Sidekiq, GitLab Workhorse, and [Mailroom][]
 (if enabled). The init service file that does all the magic can be found on
 your server in `/etc/init.d/gitlab`.
 
@@ -149,8 +149,8 @@ If you are using other init systems, like systemd, you can check the
 
 There is no single command to restart the entire GitLab application installed via
 the [cloud native Helm Chart](https://docs.gitlab.com/charts/). Usually, it should be
-enough to restart a specific component separately (`gitaly`, `unicorn`,
-`workhorse`, `gitlab-shell`, etc.) by deleting all the pods related to it:
+enough to restart a specific component separately (for example, `gitaly`, `unicorn`,
+`workhorse`, or `gitlab-shell`) by deleting all the pods related to it:
 
 ```shell
 kubectl delete pods -l release=<helm release name>,app=<component name>

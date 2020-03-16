@@ -7,8 +7,8 @@ module Gitlab
 
       attr_reader :klass
       delegate :feature_category_not_owned?, :get_feature_category,
-               :get_weight, :get_worker_resource_boundary,
-               :latency_sensitive_worker?, :queue, :queue_namespace,
+               :get_urgency, :get_weight, :get_worker_resource_boundary,
+               :idempotent?, :queue, :queue_namespace,
                :worker_has_external_dependencies?,
                to: :klass
 
@@ -49,9 +49,10 @@ module Gitlab
           name: queue,
           feature_category: get_feature_category,
           has_external_dependencies: worker_has_external_dependencies?,
-          latency_sensitive: latency_sensitive_worker?,
+          urgency: get_urgency,
           resource_boundary: get_worker_resource_boundary,
-          weight: get_weight
+          weight: get_weight,
+          idempotent: idempotent?
         }
       end
 

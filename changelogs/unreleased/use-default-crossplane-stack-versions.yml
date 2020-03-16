@@ -1,0 +1,5 @@
+---
+title: Fix installation of GitLab-managed crossplane chart
+merge_request: 27040
+author:
+type: fixed

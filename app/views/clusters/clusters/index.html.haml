@@ -18,13 +18,16 @@
         %strong
           = link_to _('More information'), help_page_path('user/group/clusters/index', anchor: 'cluster-precedence')
 
-    .clusters-table.js-clusters-list
-      .gl-responsive-table-row.table-row-header{ role: "row" }
-        .table-section.section-60{ role: "rowheader" }
-          = s_("ClusterIntegration|Kubernetes cluster")
-        .table-section.section-30{ role: "rowheader" }
-          = s_("ClusterIntegration|Environment scope")
-        .table-section.section-10{ role: "rowheader" }
-      - @clusters.each do |cluster|
-        = render "cluster", cluster: cluster.present(current_user: current_user)
-    = paginate @clusters, theme: "gitlab"
+    - if Feature.enabled?(:clusters_list_redesign)
+      #js-clusters-list-app{ data: { endpoint: 'todo/add/endpoint' } }
+    - else
+      .clusters-table.js-clusters-list
+        .gl-responsive-table-row.table-row-header{ role: "row" }
+          .table-section.section-60{ role: "rowheader" }
+            = s_("ClusterIntegration|Kubernetes cluster")
+          .table-section.section-30{ role: "rowheader" }
+            = s_("ClusterIntegration|Environment scope")
+          .table-section.section-10{ role: "rowheader" }
+        - @clusters.each do |cluster|
+          = render "cluster", cluster: cluster.present(current_user: current_user)
+      = paginate @clusters, theme: "gitlab"

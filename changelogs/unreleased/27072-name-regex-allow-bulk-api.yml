@@ -1,0 +1,5 @@
+---
+title: Add name_regex_keep param to container registry bulk delete API endpoint
+merge_request: 25484
+author:
+type: added

@@ -6,7 +6,7 @@ module QA
       it 'user rebases source branch of merge request' do
         Flow::Login.sign_in
 
-        project = Resource::Project.fabricate! do |project|
+        project = Resource::Project.fabricate_via_api! do |project|
           project.name = "only-fast-forward"
         end
         project.visit!

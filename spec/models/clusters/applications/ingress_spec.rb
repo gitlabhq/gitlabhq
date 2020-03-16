@@ -102,7 +102,7 @@ describe Clusters::Applications::Ingress do
     it 'is initialized with ingress arguments' do
       expect(subject.name).to eq('ingress')
       expect(subject.chart).to eq('stable/nginx-ingress')
-      expect(subject.version).to eq('1.29.3')
+      expect(subject.version).to eq('1.29.7')
       expect(subject).to be_rbac
       expect(subject.files).to eq(ingress.files)
     end
@@ -119,7 +119,7 @@ describe Clusters::Applications::Ingress do
       let(:ingress) { create(:clusters_applications_ingress, :errored, version: 'nginx') }
 
       it 'is initialized with the locked version' do
-        expect(subject.version).to eq('1.29.3')
+        expect(subject.version).to eq('1.29.7')
       end
     end
   end
@@ -135,6 +135,7 @@ describe Clusters::Applications::Ingress do
       expect(values).to include('repository')
       expect(values).to include('stats')
       expect(values).to include('podAnnotations')
+      expect(values).to include('clusterIP')
     end
   end
 
@@ -176,6 +177,7 @@ describe Clusters::Applications::Ingress do
     context 'when modsecurity_enabled is disabled' do
       before do
         allow(subject).to receive(:cluster).and_return(cluster)
+        allow(subject).to receive(:modsecurity_enabled).and_return(false)
       end
 
       it 'excludes modsecurity module enablement' do

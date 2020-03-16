@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180710162338_add_foreign_key_from_notification_settings_to_users.rb')
 
-describe AddForeignKeyFromNotificationSettingsToUsers, :migration do
+describe AddForeignKeyFromNotificationSettingsToUsers do
   let(:notification_settings) { table(:notification_settings) }
   let(:users) { table(:users) }
   let(:projects) { table(:projects) }

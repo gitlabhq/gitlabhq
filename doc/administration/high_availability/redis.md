@@ -14,17 +14,15 @@ The following are the requirements for providing your own Redis instance:
   [Merge Trains](../../ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/index.md).
 - Standalone Redis or Redis high availability with Sentinel are supported. Redis
   Cluster is not supported.
-- Managed Redis from cloud providers such as AWS Elasticache will work. If these
+- Managed Redis from cloud providers such as AWS ElastiCache will work. If these
   services support high availability, be sure it is not the Redis Cluster type.
 
 Note the Redis node's IP address or hostname, port, and password (if required).
 These will be necessary when configuring the GitLab application servers later.
 
-## Redis in a Scaled Environment
+## Redis in a Scaled and Highly Available Environment
 
-This section is relevant for [Scaled Architecture](README.md#scalable-architecture-examples)
-environments including [Basic Scaling](README.md#basic-scaling) and
-[Full Scaling](README.md#full-scaling).
+This section is relevant for [Scalable and Highly Available Setups](README.md).
 
 ### Provide your own Redis instance **(CORE ONLY)**
 
@@ -85,22 +83,8 @@ Omnibus:
 Advanced configuration options are supported and can be added if
 needed.
 
-Continue configuration of other components by going
-[back to Scaled Architectures](README.md#scalable-architecture-examples)
-
-## Redis with High Availability
-
-This section is relevant for [High Availability Architecture](README.md#high-availability-architecture-examples)
-environments including [Horizontal](README.md#horizontal),
-[Hybrid](README.md#hybrid), and
-[Fully Distributed](README.md#fully-distributed).
-
-### Provide your own Redis instance **(CORE ONLY)**
-
-If you want to use your own deployed Redis instance(s),
-see [Provide your own Redis instance](#provide-your-own-redis-instance-core-only)
-for more details. However, you can use the GitLab Omnibus package to easily
-deploy the bundled Redis.
+Continue configuration of other components by going back to the
+[Scaling and High Availability](README.md#gitlab-components-and-configuration-instructions) page.
 
 ### High Availability with GitLab Omnibus **(PREMIUM ONLY)**
 
@@ -878,7 +862,7 @@ mailroom['enable'] = false
 redis['master'] = false
 ```
 
-You can find the relevant attributes defined in [gitlab_rails.rb][omnifile].
+You can find the relevant attributes defined in [`gitlab_rails.rb`][omnifile].
 
 ## Troubleshooting
 
@@ -952,7 +936,7 @@ and `redis['master_pasword']` as you defined for your sentinel node.
 
 The way the Redis connector `redis-rb` works with sentinel is a bit
 non-intuitive. We try to hide the complexity in omnibus, but it still requires
-a few extra configs.
+a few extra configurations.
 
 ---
 
@@ -966,7 +950,7 @@ To make sure your configuration is correct:
    sudo gitlab-rails console
 
    # For source installations
-   sudo -u git rails console production
+   sudo -u git rails console -e production
    ```
 
 1. Run in the console:

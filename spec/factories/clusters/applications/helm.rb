@@ -73,39 +73,71 @@ FactoryBot.define do
     factory :clusters_applications_ingress, class: 'Clusters::Applications::Ingress' do
       modsecurity_enabled { false }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+
+      trait :no_helm_installed do
+        cluster factory: %i(cluster provided_by_gcp)
+      end
     end
 
     factory :clusters_applications_cert_manager, class: 'Clusters::Applications::CertManager' do
       email { 'admin@example.com' }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+
+      trait :no_helm_installed do
+        cluster factory: %i(cluster provided_by_gcp)
+      end
     end
 
     factory :clusters_applications_elastic_stack, class: 'Clusters::Applications::ElasticStack' do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+
+      trait :no_helm_installed do
+        cluster factory: %i(cluster provided_by_gcp)
+      end
     end
 
     factory :clusters_applications_crossplane, class: 'Clusters::Applications::Crossplane' do
       stack { 'gcp' }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+
+      trait :no_helm_installed do
+        cluster factory: %i(cluster provided_by_gcp)
+      end
     end
 
     factory :clusters_applications_prometheus, class: 'Clusters::Applications::Prometheus' do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+
+      trait :no_helm_installed do
+        cluster factory: %i(cluster provided_by_gcp)
+      end
     end
 
     factory :clusters_applications_runner, class: 'Clusters::Applications::Runner' do
       runner factory: %i(ci_runner)
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+
+      trait :no_helm_installed do
+        cluster factory: %i(cluster provided_by_gcp)
+      end
     end
 
     factory :clusters_applications_knative, class: 'Clusters::Applications::Knative' do
       hostname { 'example.com' }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+
+      trait :no_helm_installed do
+        cluster factory: %i(cluster provided_by_gcp)
+      end
     end
 
     factory :clusters_applications_jupyter, class: 'Clusters::Applications::Jupyter' do
       oauth_application factory: :oauth_application
       cluster factory: %i(cluster with_installed_helm provided_by_gcp project)
+
+      trait :no_helm_installed do
+        cluster factory: %i(cluster provided_by_gcp)
+      end
     end
   end
 end

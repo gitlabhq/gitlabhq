@@ -1,10 +1,28 @@
 # frozen_string_literal: true
 
 class AuditEventService
+  # Instantiates a new service
+  #
+  # @param [User] author the user who authors the change
+  # @param [User, Project, Group] entity the scope which audit event belongs to
+  #   This param is also used to determine the visibility of the audit event.
+  #   - Project: events are visible at Project and Instance level
+  #   - Group: events are visible at Group and Instance level
+  #   - User: events are visible at Instance level
+  # @param [Hash] details extra data of audit event
+  #
+  # @return [AuditEventService]
   def initialize(author, entity, details = {})
-    @author, @entity, @details = author, entity, details
+    @author = author
+    @entity = entity
+    @details = details
   end
 
+  # Builds the @details attribute for authentication
+  #
+  # This uses the @author as the target object being audited
+  #
+  # @return [AuditEventService]
   def for_authentication
     @details = {
       with: @details[:with],
@@ -16,11 +34,15 @@ class AuditEventService
     self
   end
 
+  # Writes event to a file and creates an event record in DB
+  #
+  # @return [SecurityEvent] persited if saves and non-persisted if fails
   def security_event
     log_security_event_to_file
     log_security_event_to_database
   end
 
+  # Writes event to a file
   def log_security_event_to_file
     file_logger.info(base_payload.merge(formatted_details))
   end

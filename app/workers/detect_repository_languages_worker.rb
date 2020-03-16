@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DetectRepositoryLanguagesWorker
+class DetectRepositoryLanguagesWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ExceptionBacktrace
   include ExclusiveLeaseGuard

@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { debounce } from 'lodash';
 import { mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
@@ -21,7 +21,7 @@ export default {
     },
   },
   watch: {
-    searchQuery: _.debounce(function debounceSearchQuery() {
+    searchQuery: debounce(function debounceSearchQuery() {
       this.setSearchQuery(this.searchQuery);
     }, 500),
   },

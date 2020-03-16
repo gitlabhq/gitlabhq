@@ -1,5 +1,0 @@
----
-title: Pin Auto DevOps Docker-in-Docker service image to work around pull timeouts
-merge_request: 25286
-author:
-type: fixed

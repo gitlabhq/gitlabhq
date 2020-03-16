@@ -47,6 +47,31 @@ describe 'Issue Boards', :js do
     end
   end
 
+  context 'closed issues' do
+    let!(:issue7) { create(:closed_issue, project: project, title: 'Closed issue 1', closed_at: 1.day.ago) }
+    let!(:issue8) { create(:closed_issue, project: project, title: 'Closed issue 2', closed_at: 1.week.ago) }
+    let!(:issue9) { create(:closed_issue, project: project, title: 'Closed issue 3', closed_at: 2.weeks.ago) }
+
+    before do
+      visit project_board_path(project, board)
+      wait_for_requests
+
+      expect(page).to have_selector('.board', count: 3)
+    end
+
+    it 'orders issues by closed_at' do
+      wait_for_requests
+
+      page.within(find('.board:nth-child(3)')) do
+        first, second, third = all('.board-card').to_a
+
+        expect(first).to have_content(issue7.title)
+        expect(second).to have_content(issue8.title)
+        expect(third).to have_content(issue9.title)
+      end
+    end
+  end
+
   context 'ordering in list' do
     before do
       visit project_board_path(project, board)

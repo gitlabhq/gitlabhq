@@ -7,6 +7,9 @@ exports[`JumpToNextDiscussionButton matches the snapshot 1`] = `
 >
   <button
     class="btn btn-default discussion-next-btn"
+    data-track-event="click_button"
+    data-track-label="mr_next_unresolved_thread"
+    data-track-property="click_next_unresolved_thread"
     title="Jump to next unresolved thread"
   >
     <icon-stub

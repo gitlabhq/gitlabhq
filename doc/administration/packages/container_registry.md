@@ -619,7 +619,7 @@ provided by `gitlab-ctl`.
 
 Consider the following example, where you first build the image:
 
-```bash
+```shell
 # This builds a image with content of sha256:111111
 docker build -t my.registry.com/my.group/my.project:latest .
 docker push my.registry.com/my.group/my.project:latest
@@ -627,7 +627,7 @@ docker push my.registry.com/my.group/my.project:latest
 
 Now, you do overwrite `:latest` with a new version:
 
-```bash
+```shell
 # This builds a image with content of sha256:222222
 docker build -t my.registry.com/my.group/my.project:latest .
 docker push my.registry.com/my.group/my.project:latest
@@ -736,10 +736,14 @@ To enable the read-only mode:
 
    This will set the Container Registry into the read only mode.
 
-1. Next, trigger the garbage collect command:
+1. Next, trigger one of the garbage collect commands:
 
    ```sh
+   # Recycling unused tags
    sudo /opt/gitlab/embedded/bin/registry garbage-collect /var/opt/gitlab/registry/config.yml
+
+   # Removing unused layers not referenced by manifests
+   sudo /opt/gitlab/embedded/bin/registry garbage-collect -m /var/opt/gitlab/registry/config.yml
    ```
 
    This will start the garbage collection, which might take some time to complete.
@@ -774,7 +778,7 @@ once a week.
 
 Create a file under `/etc/cron.d/registry-garbage-collect`:
 
-```bash
+```shell
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 

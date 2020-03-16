@@ -194,4 +194,36 @@ describe Clusters::Kubernetes::ConfigureIstioIngressService, '#execute' do
       )
     end
   end
+
+  context 'when there is an error' do
+    before do
+      cluster.application_knative = create(:clusters_applications_knative)
+
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:configure_passthrough).and_raise(error)
+      end
+    end
+
+    context 'Kubeclient::HttpError' do
+      let(:error) { Kubeclient::HttpError.new(404, nil, nil) }
+
+      it 'puts Knative into an errored state' do
+        subject
+
+        expect(cluster.application_knative).to be_errored
+        expect(cluster.application_knative.status_reason).to eq('Kubernetes error: 404')
+      end
+    end
+
+    context 'StandardError' do
+      let(:error) { RuntimeError.new('something went wrong') }
+
+      it 'puts Knative into an errored state' do
+        subject
+
+        expect(cluster.application_knative).to be_errored
+        expect(cluster.application_knative.status_reason).to eq('Failed to update.')
+      end
+    end
+  end
 end

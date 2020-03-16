@@ -165,6 +165,16 @@ export default {
     showContainerRegistryPublicNote() {
       return this.visibilityLevel === visibilityOptions.PUBLIC;
     },
+
+    repositoryHelpText() {
+      if (this.visibilityLevel === visibilityOptions.PRIVATE) {
+        return s__('ProjectSettings|View and edit files in this project');
+      }
+
+      return s__(
+        'ProjectSettings|View and edit files in this project. Non-project members will only have read access',
+      );
+    },
   },
 
   watch: {
@@ -225,6 +235,7 @@ export default {
   <div>
     <div class="project-visibility-setting">
       <project-setting-row
+        ref="project-visibility-settings"
         :help-path="visibilityHelpPath"
         :label="s__('ProjectSettings|Project visibility')"
       >
@@ -270,6 +281,7 @@ export default {
     </div>
     <div :class="{ 'highlight-changes': highlightChangesClass }" class="project-feature-settings">
       <project-setting-row
+        ref="issues-settings"
         :label="s__('ProjectSettings|Issues')"
         :help-text="s__('ProjectSettings|Lightweight issue tracking system for this project')"
       >
@@ -280,8 +292,9 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
+        ref="repository-settings"
         :label="s__('ProjectSettings|Repository')"
-        :help-text="s__('ProjectSettings|View and edit files in this project')"
+        :help-text="repositoryHelpText"
       >
         <project-feature-setting
           v-model="repositoryAccessLevel"
@@ -291,6 +304,7 @@ export default {
       </project-setting-row>
       <div class="project-feature-setting-group">
         <project-setting-row
+          ref="merge-request-settings"
           :label="s__('ProjectSettings|Merge requests')"
           :help-text="s__('ProjectSettings|Submit changes to be merged upstream')"
         >
@@ -302,6 +316,7 @@ export default {
           />
         </project-setting-row>
         <project-setting-row
+          ref="fork-settings"
           :label="s__('ProjectSettings|Forks')"
           :help-text="
             s__('ProjectSettings|Allow users to make copies of your repository to a new project')
@@ -315,6 +330,7 @@ export default {
           />
         </project-setting-row>
         <project-setting-row
+          ref="pipeline-settings"
           :label="s__('ProjectSettings|Pipelines')"
           :help-text="s__('ProjectSettings|Build, test, and deploy your changes')"
         >
@@ -327,6 +343,7 @@ export default {
         </project-setting-row>
         <project-setting-row
           v-if="registryAvailable"
+          ref="container-registry-settings"
           :help-path="registryHelpPath"
           :label="s__('ProjectSettings|Container registry')"
           :help-text="
@@ -348,6 +365,7 @@ export default {
         </project-setting-row>
         <project-setting-row
           v-if="lfsAvailable"
+          ref="git-lfs-settings"
           :help-path="lfsHelpPath"
           :label="s__('ProjectSettings|Git Large File Storage')"
           :help-text="
@@ -362,6 +380,7 @@ export default {
         </project-setting-row>
         <project-setting-row
           v-if="packagesAvailable"
+          ref="package-settings"
           :help-path="packagesHelpPath"
           :label="s__('ProjectSettings|Packages')"
           :help-text="
@@ -376,6 +395,7 @@ export default {
         </project-setting-row>
       </div>
       <project-setting-row
+        ref="wiki-settings"
         :label="s__('ProjectSettings|Wiki')"
         :help-text="s__('ProjectSettings|Pages for project documentation')"
       >
@@ -386,6 +406,7 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
+        ref="snippet-settings"
         :label="s__('ProjectSettings|Snippets')"
         :help-text="s__('ProjectSettings|Share code pastes with others out of Git repository')"
       >
@@ -397,6 +418,7 @@ export default {
       </project-setting-row>
       <project-setting-row
         v-if="pagesAvailable && pagesAccessControlEnabled"
+        ref="pages-settings"
         :help-path="pagesHelpPath"
         :label="s__('ProjectSettings|Pages')"
         :help-text="
@@ -410,7 +432,7 @@ export default {
         />
       </project-setting-row>
     </div>
-    <project-setting-row v-if="canDisableEmails" class="mb-3">
+    <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">
       <label class="js-emails-disabled">
         <input :value="emailsDisabled" type="hidden" name="project[emails_disabled]" />
         <input v-model="emailsDisabled" type="checkbox" />

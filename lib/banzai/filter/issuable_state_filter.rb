@@ -18,7 +18,7 @@ module Banzai
         issuables = extractor.extract([doc])
 
         issuables.each do |node, issuable|
-          next if !can_read_cross_project? && cross_reference?(issuable)
+          next if !can_read_cross_project? && cross_referenced?(issuable)
 
           if VISIBLE_STATES.include?(issuable.state) && issuable_reference?(node.inner_html, issuable)
             state = moved_issue?(issuable) ? s_("IssuableStatus|moved") : issuable.state
@@ -39,7 +39,7 @@ module Banzai
         CGI.unescapeHTML(text) == issuable.reference_link_text(project || group)
       end
 
-      def cross_reference?(issuable)
+      def cross_referenced?(issuable)
         return true if issuable.project != project
         return true if issuable.respond_to?(:group) && issuable.group != group
 

@@ -262,14 +262,6 @@ p.each do |project|
 end
 ```
 
-### Identify un-indexed projects
-
-```ruby
-Project.find_each do |project|
-  puts "id #{project.id}: #{project.namespace.name.to_s}/#{project.name.to_s}" if project.index_status.nil?
-end
-```
-
 ## Wikis
 
 ### Recreate
@@ -634,7 +626,7 @@ EE::Gitlab::LDAP::Sync::Group.execute_all_providers(group)
 
 # Run a GroupSync for a single group (10.6+)
 group = Group.find_by(name: 'my_gitlab_group')
-EE::Gitlab::Auth::LDAP::Sync::Group.execute_all_providers(group)
+EE::Gitlab::Auth::Ldap::Sync::Group.execute_all_providers(group)
 
 # Query an LDAP group directly (10.6-)
 adapter = Gitlab::LDAP::Adapter.new('ldapmain') # If `main` is the LDAP provider
@@ -643,20 +635,20 @@ ldap_group.member_dns
 ldap_group.member_uids
 
 # Query an LDAP group directly (10.6+)
-adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain') # If `main` is the LDAP provider
-ldap_group = EE::Gitlab::Auth::LDAP::Group.find_by_cn('group_cn_here', adapter)
+adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain') # If `main` is the LDAP provider
+ldap_group = EE::Gitlab::Auth::Ldap::Group.find_by_cn('group_cn_here', adapter)
 ldap_group.member_dns
 ldap_group.member_uids
 
 # Lookup a particular user (10.6+)
 # This could expose potential errors connecting to and/or querying LDAP that may seem to
 # fail silently in the GitLab UI
-adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain') # If `main` is the LDAP provider
-user = Gitlab::Auth::LDAP::Person.find_by_uid('<username>',adapter)
+adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain') # If `main` is the LDAP provider
+user = Gitlab::Auth::Ldap::Person.find_by_uid('<username>',adapter)
 
 # Query the LDAP server directly (10.6+)
 ## For an example, see https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ee/gitlab/auth/ldap/adapter.rb
-adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain')
+adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain')
 options = {
     # the :base is required
     # use adapter.config.base for the base or .group_base for the group_base
@@ -761,12 +753,6 @@ Ci::Pipeline.where(project_id: p.id).where(status: 'pending').each {|p| p.cancel
 Ci::Pipeline.where(project_id: p.id).where(status: 'pending').count
 ```
 
-### Manually modify runner minutes
-
-```ruby
-Namespace.find_by_full_path("user/proj").namespace_statistics.update(shared_runners_seconds: 27360)
-```
-
 ### Remove artifacts more than a week old
 
 The Latest version of these steps can be found in the [job artifacts documentation](../job_artifacts.md)
@@ -806,21 +792,6 @@ build.dependencies.each do |d| { puts "status: #{d.status}, finished at: #{d.fin
   completed: #{d.complete?}, artifacts_expired: #{d.artifacts_expired?}, erased: #{d.erased?}" }
 ```
 
-### Disable strict artifact checking (Introduced in GitLab 10.3.0)
-
-See [job artifacts documentation](../job_artifacts.md#validation-for-dependencies).
-
-```ruby
-Feature.enable('ci_disable_validates_dependencies')
-```
-
-### Remove CI traces older than 6 months
-
-```ruby
-current_user = User.find_by_email('cindy@gitlap.com')
-Ci::Build.where("finished_at < ?", 6.months.ago.to_date).each {|b| puts b.id; b.erase(erased_by: current_user) if b.erasable?};nil
-```
-
 ### Try CI service
 
 ```ruby
@@ -836,6 +807,12 @@ Project.all.each do |p|
   p.auto_devops_attributes={"enabled"=>"0"}
   p.save
 end
+```
+
+### Obtain runners registration token
+
+```ruby
+Gitlab::CurrentSettings.current_application_settings.runners_registration_token
 ```
 
 ## License
@@ -959,12 +936,6 @@ end
 
 ## Sidekiq
 
-### Size of a queue
-
-```ruby
-Sidekiq::Queue.new('background_migration').size
-```
-
 ### Kill a worker's Sidekiq jobs
 
 ```ruby
@@ -1009,12 +980,6 @@ See <https://github.com/mperham/sidekiq/wiki/Signals#ttin>.
 
 ```shell
 /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket
-```
-
-### Connect to Redis (HA)
-
-```shell
-/opt/gitlab/embedded/bin/redis-cli -h <host ip> -a <password>
 ```
 
 ## LFS

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import '~/gl_dropdown';
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import { __ } from '~/locale';
 
 function isValidProjectId(id) {
@@ -49,7 +49,7 @@ class SidebarMoveIssue {
       renderRow: project => `
         <li>
           <a href="#" class="js-move-issue-dropdown-item">
-            ${_.escape(project.name_with_namespace)}
+            ${esc(project.name_with_namespace)}
           </a>
         </li>
       `,

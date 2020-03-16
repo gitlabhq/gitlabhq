@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-class PipelineProcessWorker
+class PipelineProcessWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include PipelineQueue
 
   queue_namespace :pipeline_processing
   feature_category :continuous_integration
-  latency_sensitive_worker!
+  urgency :high
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id, build_ids = nil)

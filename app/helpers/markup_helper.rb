@@ -79,7 +79,7 @@ module MarkupHelper
     md = markdown_field(object, attribute, options.merge(post_process: false))
     return unless md.present?
 
-    tags = %w(a gl-emoji b pre code p span)
+    tags = %w(a gl-emoji b strong i em pre code p span)
     tags << 'img' if options[:allow_images]
 
     text = truncate_visible(md, max_chars || md.length)
@@ -88,7 +88,7 @@ module MarkupHelper
       text,
       tags: tags,
       attributes: Rails::Html::WhiteListSanitizer.allowed_attributes +
-          %w(style data-src data-name data-unicode-version data-iid data-project-path data-mr-title)
+          %w(style data-src data-name data-unicode-version data-iid data-project-path data-mr-title data-html)
     )
 
     # since <img> tags are stripped, this can leave empty <a> tags hanging around
@@ -233,7 +233,7 @@ module MarkupHelper
 
   def strip_empty_link_tags(text)
     scrubber = Loofah::Scrubber.new do |node|
-      node.remove if node.name == 'a' && node.content.blank?
+      node.remove if node.name == 'a' && node.children.empty?
     end
 
     sanitize text, scrubber: scrubber

@@ -12,7 +12,8 @@
     "authored_date",
     "committer_name",
     "committer_email",
-    "committed_date"
+    "committed_date",
+    "web_url"
   ],
   "properties" : {
     "id": { "type": ["string", "null"] },
@@ -32,6 +33,7 @@
     "authored_date": { "type": "date" },
     "committer_name": { "type": "string" },
     "committer_email": { "type": "string" },
-    "committed_date": { "type": "date" }
+    "committed_date": { "type": "date" },
+    "web_url": { "type": "string" }
   }
 }

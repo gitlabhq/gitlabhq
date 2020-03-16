@@ -98,6 +98,7 @@ module Projects
       setup_authorizations
 
       current_user.invalidate_personal_projects_count
+      create_prometheus_service
 
       create_readme if @initialize_with_readme
     end
@@ -168,6 +169,20 @@ module Projects
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def create_prometheus_service
+      service = @project.find_or_initialize_service(::PrometheusService.to_param)
+
+      if service.prometheus_available?
+        service.save!
+      else
+        @project.prometheus_service = nil
+      end
+
+    rescue ActiveRecord::RecordInvalid => e
+      Gitlab::ErrorTracking.track_exception(e, extra: { project_id: project.id })
+      @project.prometheus_service = nil
+    end
 
     def set_project_name_from_path
       # Set project name from path

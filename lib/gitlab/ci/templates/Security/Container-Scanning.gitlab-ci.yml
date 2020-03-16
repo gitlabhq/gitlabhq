@@ -5,9 +5,7 @@ variables:
 
 container_scanning:
   stage: test
-  image:
-    name: registry.gitlab.com/gitlab-org/security-products/analyzers/klar:$CS_MAJOR_VERSION
-    entrypoint: []
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/klar:$CS_MAJOR_VERSION
   variables:
     # By default, use the latest clair vulnerabilities database, however, allow it to be overridden here with a specific image
     # to enable container scanning to run offline, or to provide a consistent list of vulnerabilities for integration testing purposes
@@ -22,10 +20,7 @@ container_scanning:
     - name: $CLAIR_DB_IMAGE
       alias: clair-vulnerabilities-db
   script:
-    # the kubernetes executor currently ignores the Docker image entrypoint value, so the start.sh script must
-    # be explicitly executed here in order for this to work with both the kubernetes and docker executors
-    # see this issue for more details https://gitlab.com/gitlab-org/gitlab-runner/issues/4125
-    - /container-scanner/start.sh
+    - /analyzer run
   artifacts:
     reports:
       container_scanning: gl-container-scanning-report.json

@@ -8,7 +8,7 @@ GitLab uses [Redis](https://redis.io) for three distinct purposes:
 
 Every application process is configured to use the same Redis servers, so they
 can be used for inter-process communication in cases where [PostgreSQL](sql.md)
-is less appropriate, for example, transient state or data that is written much
+is less appropriate. For example, transient state or data that is written much
 more often than it is read.
 
 If [Geo](geo.md) is enabled, each Geo node gets its own, independent Redis

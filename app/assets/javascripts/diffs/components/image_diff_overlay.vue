@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import _ from 'underscore';
+import { isArray } from 'lodash';
 import imageDiffMixin from 'ee_else_ce/diffs/mixins/image_diff';
 import Icon from '~/vue_shared/components/icon.vue';
 
@@ -46,7 +46,7 @@ export default {
       return this.getCommentFormForDiffFile(this.fileHash);
     },
     allDiscussions() {
-      return _.isArray(this.discussions) ? this.discussions : [this.discussions];
+      return isArray(this.discussions) ? this.discussions : [this.discussions];
     },
   },
   methods: {

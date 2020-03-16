@@ -312,6 +312,10 @@ class ProjectPolicy < BasePolicy
     enable :destroy_artifacts
     enable :daily_statistics
     enable :admin_operations
+    enable :read_deploy_token
+    enable :create_deploy_token
+    enable :read_pod_logs
+    enable :destroy_deploy_token
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
@@ -467,6 +471,8 @@ class ProjectPolicy < BasePolicy
   rule { blocked }.policy do
     prevent :create_pipeline
   end
+
+  rule { admin }.enable :change_repository_storage
 
   private
 

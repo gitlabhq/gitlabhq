@@ -1,3 +1,5 @@
+import { mapToDashboardViewModel } from '~/monitoring/stores/utils';
+
 // This import path needs to be relative for now because this mock data is used in
 // Karma specs too, where the helpers/test_constants alias can not be resolved
 import { TEST_HOST } from '../helpers/test_constants';
@@ -240,95 +242,75 @@ export const metricsNewGroupsAPIResponse = [
   },
 ];
 
+const metricsResult = [
+  {
+    metric: {},
+    values: [
+      [1563272065.589, '10.396484375'],
+      [1563272125.589, '10.333984375'],
+      [1563272185.589, '10.333984375'],
+      [1563272245.589, '10.333984375'],
+      [1563272305.589, '10.333984375'],
+      [1563272365.589, '10.333984375'],
+      [1563272425.589, '10.38671875'],
+      [1563272485.589, '10.333984375'],
+      [1563272545.589, '10.333984375'],
+      [1563272605.589, '10.333984375'],
+      [1563272665.589, '10.333984375'],
+      [1563272725.589, '10.333984375'],
+      [1563272785.589, '10.396484375'],
+      [1563272845.589, '10.333984375'],
+      [1563272905.589, '10.333984375'],
+      [1563272965.589, '10.3984375'],
+      [1563273025.589, '10.337890625'],
+      [1563273085.589, '10.34765625'],
+      [1563273145.589, '10.337890625'],
+      [1563273205.589, '10.337890625'],
+      [1563273265.589, '10.337890625'],
+      [1563273325.589, '10.337890625'],
+      [1563273385.589, '10.337890625'],
+      [1563273445.589, '10.337890625'],
+      [1563273505.589, '10.337890625'],
+      [1563273565.589, '10.337890625'],
+      [1563273625.589, '10.337890625'],
+      [1563273685.589, '10.337890625'],
+      [1563273745.589, '10.337890625'],
+      [1563273805.589, '10.337890625'],
+      [1563273865.589, '10.390625'],
+      [1563273925.589, '10.390625'],
+    ],
+  },
+];
+
 export const mockedEmptyResult = {
   metricId: '1_response_metrics_nginx_ingress_throughput_status_code',
   result: [],
 };
 
+export const mockedEmptyThroughputResult = {
+  metricId: 'undefined_response_metrics_nginx_ingress_16_throughput_status_code',
+  result: [],
+};
+
 export const mockedQueryResultPayload = {
-  metricId: '17_system_metrics_kubernetes_container_memory_average',
-  result: [
-    {
-      metric: {},
-      values: [
-        [1563272065.589, '10.396484375'],
-        [1563272125.589, '10.333984375'],
-        [1563272185.589, '10.333984375'],
-        [1563272245.589, '10.333984375'],
-        [1563272305.589, '10.333984375'],
-        [1563272365.589, '10.333984375'],
-        [1563272425.589, '10.38671875'],
-        [1563272485.589, '10.333984375'],
-        [1563272545.589, '10.333984375'],
-        [1563272605.589, '10.333984375'],
-        [1563272665.589, '10.333984375'],
-        [1563272725.589, '10.333984375'],
-        [1563272785.589, '10.396484375'],
-        [1563272845.589, '10.333984375'],
-        [1563272905.589, '10.333984375'],
-        [1563272965.589, '10.3984375'],
-        [1563273025.589, '10.337890625'],
-        [1563273085.589, '10.34765625'],
-        [1563273145.589, '10.337890625'],
-        [1563273205.589, '10.337890625'],
-        [1563273265.589, '10.337890625'],
-        [1563273325.589, '10.337890625'],
-        [1563273385.589, '10.337890625'],
-        [1563273445.589, '10.337890625'],
-        [1563273505.589, '10.337890625'],
-        [1563273565.589, '10.337890625'],
-        [1563273625.589, '10.337890625'],
-        [1563273685.589, '10.337890625'],
-        [1563273745.589, '10.337890625'],
-        [1563273805.589, '10.337890625'],
-        [1563273865.589, '10.390625'],
-        [1563273925.589, '10.390625'],
-      ],
-    },
-  ],
+  metricId: '12_system_metrics_kubernetes_container_memory_total',
+  result: metricsResult,
 };
 
 export const mockedQueryResultPayloadCoresTotal = {
   metricId: '13_system_metrics_kubernetes_container_cores_total',
-  result: [
-    {
-      metric: {},
-      values: [
-        [1563272065.589, '9.396484375'],
-        [1563272125.589, '9.333984375'],
-        [1563272185.589, '9.333984375'],
-        [1563272245.589, '9.333984375'],
-        [1563272305.589, '9.333984375'],
-        [1563272365.589, '9.333984375'],
-        [1563272425.589, '9.38671875'],
-        [1563272485.589, '9.333984375'],
-        [1563272545.589, '9.333984375'],
-        [1563272605.589, '9.333984375'],
-        [1563272665.589, '9.333984375'],
-        [1563272725.589, '9.333984375'],
-        [1563272785.589, '9.396484375'],
-        [1563272845.589, '9.333984375'],
-        [1563272905.589, '9.333984375'],
-        [1563272965.589, '9.3984375'],
-        [1563273025.589, '9.337890625'],
-        [1563273085.589, '9.34765625'],
-        [1563273145.589, '9.337890625'],
-        [1563273205.589, '9.337890625'],
-        [1563273265.589, '9.337890625'],
-        [1563273325.589, '9.337890625'],
-        [1563273385.589, '9.337890625'],
-        [1563273445.589, '9.337890625'],
-        [1563273505.589, '9.337890625'],
-        [1563273565.589, '9.337890625'],
-        [1563273625.589, '9.337890625'],
-        [1563273685.589, '9.337890625'],
-        [1563273745.589, '9.337890625'],
-        [1563273805.589, '9.337890625'],
-        [1563273865.589, '9.390625'],
-        [1563273925.589, '9.390625'],
-      ],
-    },
-  ],
+  result: metricsResult,
+};
+
+export const mockedQueryResultFixture = {
+  // First metric in fixture `metrics_dashboard/environment_metrics_dashboard.json`
+  metricId: 'undefined_response_metrics_nginx_ingress_throughput_status_code',
+  result: metricsResult,
+};
+
+export const mockedQueryResultFixtureStatusCode = {
+  metricId: 'undefined_response_metrics_nginx_ingress_latency_pod_average',
+  result: metricsResult,
 };
 
 const extraEnvironmentData = new Array(15).fill(null).map((_, idx) => ({
@@ -378,74 +360,110 @@ export const environmentData = [
   },
 ].concat(extraEnvironmentData);
 
-export const metricsDashboardResponse = {
-  dashboard: {
-    dashboard: 'Environment metrics',
-    priority: 1,
-    panel_groups: [
-      {
-        group: 'System metrics (Kubernetes)',
-        priority: 5,
-        panels: [
-          {
-            title: 'Memory Usage (Total)',
-            type: 'area-chart',
-            y_label: 'Total Memory Used',
-            weight: 4,
-            metrics: [
-              {
-                id: 'system_metrics_kubernetes_container_memory_total',
-                query_range:
-                  'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1024/1024/1024',
-                label: 'Total',
-                unit: 'GB',
-                metric_id: 12,
-                prometheus_endpoint_path: 'http://test',
-              },
-            ],
-          },
-          {
-            title: 'Core Usage (Total)',
-            type: 'area-chart',
-            y_label: 'Total Cores',
-            weight: 3,
-            metrics: [
-              {
-                id: 'system_metrics_kubernetes_container_cores_total',
-                query_range:
-                  'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job)',
-                label: 'Total',
-                unit: 'cores',
-                metric_id: 13,
-              },
-            ],
-          },
-          {
-            title: 'Memory Usage (Pod average)',
-            type: 'line-chart',
-            y_label: 'Memory Used per Pod',
-            weight: 2,
-            metrics: [
-              {
-                id: 'system_metrics_kubernetes_container_memory_average',
-                query_range:
-                  'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024',
-                label: 'Pod average',
-                unit: 'MB',
-                metric_id: 14,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  status: 'success',
-};
-
 export const metricsDashboardPayload = {
   dashboard: 'Environment metrics',
+  priority: 1,
   panel_groups: [
+    {
+      group: 'System metrics (Kubernetes)',
+      priority: 5,
+      panels: [
+        {
+          title: 'Memory Usage (Total)',
+          type: 'area-chart',
+          y_label: 'Total Memory Used',
+          weight: 4,
+          y_axis: {
+            format: 'megabytes',
+          },
+          metrics: [
+            {
+              id: 'system_metrics_kubernetes_container_memory_total',
+              query_range:
+                'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1000/1000',
+              label: 'Total',
+              unit: 'MB',
+              metric_id: 12,
+              prometheus_endpoint_path: 'http://test',
+            },
+          ],
+        },
+        {
+          title: 'Core Usage (Total)',
+          type: 'area-chart',
+          y_label: 'Total Cores',
+          weight: 3,
+          metrics: [
+            {
+              id: 'system_metrics_kubernetes_container_cores_total',
+              query_range:
+                'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job)',
+              label: 'Total',
+              unit: 'cores',
+              metric_id: 13,
+            },
+          ],
+        },
+        {
+          title: 'Memory Usage (Pod average)',
+          type: 'line-chart',
+          y_label: 'Memory Used per Pod',
+          weight: 2,
+          metrics: [
+            {
+              id: 'system_metrics_kubernetes_container_memory_average',
+              query_range:
+                'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024',
+              label: 'Pod average',
+              unit: 'MB',
+              metric_id: 14,
+            },
+          ],
+        },
+        {
+          title: 'memories',
+          type: 'area-chart',
+          y_label: 'memories',
+          metrics: [
+            {
+              id: 'metric_of_ages_1000',
+              label: 'memory_1000',
+              unit: 'count',
+              prometheus_endpoint_path: '/root',
+              metric_id: 20,
+            },
+            {
+              id: 'metric_of_ages_1001',
+              label: 'memory_1000',
+              unit: 'count',
+              prometheus_endpoint_path: '/root',
+              metric_id: 21,
+            },
+            {
+              id: 'metric_of_ages_1002',
+              label: 'memory_1000',
+              unit: 'count',
+              prometheus_endpoint_path: '/root',
+              metric_id: 22,
+            },
+            {
+              id: 'metric_of_ages_1003',
+              label: 'memory_1000',
+              unit: 'count',
+              prometheus_endpoint_path: '/root',
+              metric_id: 23,
+            },
+            {
+              id: 'metric_of_ages_1004',
+              label: 'memory_1004',
+              unit: 'count',
+              prometheus_endpoint_path: '/root',
+              metric_id: 24,
+            },
+          ],
+        },
+      ],
+    },
     {
       group: 'Response metrics (NGINX Ingress VTS)',
       priority: 10,
@@ -470,53 +488,20 @@ export const metricsDashboardPayload = {
         },
       ],
     },
-    {
-      group: 'System metrics (Kubernetes)',
-      priority: 5,
-      panels: [
-        {
-          title: 'Memory Usage (Pod average)',
-          type: 'area-chart',
-          y_label: 'Memory Used per Pod',
-          weight: 2,
-          metrics: [
-            {
-              id: 'system_metrics_kubernetes_container_memory_average',
-              query_range:
-                'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024',
-              label: 'Pod average',
-              unit: 'MB',
-              metric_id: 17,
-              prometheus_endpoint_path:
-                '/root/autodevops-deploy/environments/32/prometheus/api/v1/query_range?query=avg%28sum%28container_memory_usage_bytes%7Bcontainer_name%21%3D%22POD%22%2Cpod_name%3D~%22%5E%25%7Bci_environment_slug%7D-%28%5B%5Ec%5D.%2A%7Cc%28%5B%5Ea%5D%7Ca%28%5B%5En%5D%7Cn%28%5B%5Ea%5D%7Ca%28%5B%5Er%5D%7Cr%5B%5Ey%5D%29%29%29%29.%2A%7C%29-%28.%2A%29%22%2Cnamespace%3D%22%25%7Bkube_namespace%7D%22%7D%29+by+%28job%29%29+without+%28job%29+%2F+count%28avg%28container_memory_usage_bytes%7Bcontainer_name%21%3D%22POD%22%2Cpod_name%3D~%22%5E%25%7Bci_environment_slug%7D-%28%5B%5Ec%5D.%2A%7Cc%28%5B%5Ea%5D%7Ca%28%5B%5En%5D%7Cn%28%5B%5Ea%5D%7Ca%28%5B%5Er%5D%7Cr%5B%5Ey%5D%29%29%29%29.%2A%7C%29-%28.%2A%29%22%2Cnamespace%3D%22%25%7Bkube_namespace%7D%22%7D%29+without+%28job%29%29+%2F1024%2F1024',
-              appearance: {
-                line: {
-                  width: 2,
-                },
-              },
-            },
-          ],
-        },
-        {
-          title: 'Core Usage (Total)',
-          type: 'area-chart',
-          y_label: 'Total Cores',
-          weight: 3,
-          metrics: [
-            {
-              id: 'system_metrics_kubernetes_container_cores_total',
-              query_range:
-                'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job)',
-              label: 'Total',
-              unit: 'cores',
-              metric_id: 13,
-            },
-          ],
-        },
-      ],
-    },
   ],
 };
+
+/**
+ * Mock of response of metrics_dashboard.json
+ */
+export const metricsDashboardResponse = {
+  all_dashboards: [],
+  dashboard: metricsDashboardPayload,
+  metrics_data: {},
+  status: 'success',
+};
+
+export const metricsDashboardViewModel = mapToDashboardViewModel(metricsDashboardPayload);
 
 const customDashboardsData = new Array(30).fill(null).map((_, idx) => ({
   default: false,
@@ -538,6 +523,12 @@ export const dashboardGitResponse = [
   },
   ...customDashboardsData,
 ];
+
+export const mockDashboardsErrorResponse = {
+  all_dashboards: customDashboardsData,
+  message: "Each 'panel_group' must define an array :panels",
+  status: 'error',
+};
 
 export const graphDataPrometheusQuery = {
   title: 'Super Chart A2',

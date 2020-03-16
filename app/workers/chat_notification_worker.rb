@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-class ChatNotificationWorker
+class ChatNotificationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   TimeoutExceeded = Class.new(StandardError)
 
   sidekiq_options retry: false
   feature_category :chatops
-  latency_sensitive_worker!
+  urgency :high
   weight 2
 
   # TODO: break this into multiple jobs

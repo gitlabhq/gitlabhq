@@ -14,7 +14,7 @@ module Types
 
     field :id, GraphQL::ID_TYPE, null: false,
           description: 'ID of the merge request'
-    field :iid, GraphQL::STRING_TYPE, null: false,
+    field :iid, GraphQL::ID_TYPE, null: false,
           description: 'Internal ID of the merge request'
     field :title, GraphQL::STRING_TYPE, null: false,
           description: 'Title of the merge request'

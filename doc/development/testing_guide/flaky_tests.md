@@ -44,9 +44,8 @@ On our CI, we use [rspec-retry] to automatically retry a failing example a few
 times (see [`spec/spec_helper.rb`] for the precise retries count).
 
 We also use a home-made `RspecFlaky::Listener` listener which records flaky
-examples in a JSON report file on `master` (`retrieve-tests-metadata` and `update-tests-metadata` jobs), and warns when a new flaky example
-is detected in any other branch (`flaky-examples-check` job). In the future, the
-`flaky-examples-check` job will not be allowed to fail.
+examples in a JSON report file on `master` (`retrieve-tests-metadata` and
+`update-tests-metadata` jobs).
 
 This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13021>.
 

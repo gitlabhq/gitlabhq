@@ -444,61 +444,6 @@ eos
     it { is_expected.to respond_to(:id) }
   end
 
-  describe '#closes_issues' do
-    let(:issue) { create :issue, project: project }
-    let(:other_project) { create(:project, :public) }
-    let(:other_issue) { create :issue, project: other_project }
-    let(:committer) { create :user }
-
-    before do
-      project.add_developer(committer)
-      other_project.add_developer(committer)
-    end
-
-    it 'detects issues that this commit is marked as closing' do
-      ext_ref = "#{other_project.full_path}##{other_issue.iid}"
-
-      allow(commit).to receive_messages(
-        safe_message: "Fixes ##{issue.iid} and #{ext_ref}",
-        committer_email: committer.email
-      )
-
-      expect(commit.closes_issues).to include(issue)
-      expect(commit.closes_issues).to include(other_issue)
-    end
-
-    it 'ignores referenced issues when auto-close is disabled' do
-      project.update!(autoclose_referenced_issues: false)
-
-      allow(commit).to receive_messages(
-        safe_message: "Fixes ##{issue.iid}",
-        committer_email: committer.email
-      )
-
-      expect(commit.closes_issues).to be_empty
-    end
-
-    context 'with personal snippet' do
-      let(:commit) { personal_snippet.commit }
-
-      it 'does not call Gitlab::ClosingIssueExtractor' do
-        expect(Gitlab::ClosingIssueExtractor).not_to receive(:new)
-
-        commit.closes_issues
-      end
-    end
-
-    context 'with project snippet' do
-      let(:commit) { project_snippet.commit }
-
-      it 'does not call Gitlab::ClosingIssueExtractor' do
-        expect(Gitlab::ClosingIssueExtractor).not_to receive(:new)
-
-        commit.closes_issues
-      end
-    end
-  end
-
   it_behaves_like 'a mentionable' do
     subject { create(:project, :repository).commit }
 
@@ -775,32 +720,6 @@ eos
     end
   end
 
-  describe '#merge_requests' do
-    let!(:project) { create(:project, :repository) }
-    let!(:merge_request1) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
-    let!(:merge_request2) { create(:merge_request, source_project: project, source_branch: 'merged-target', target_branch: 'feature') }
-    let(:commit1) { merge_request1.merge_request_diff.commits.last }
-    let(:commit2) { merge_request1.merge_request_diff.commits.first }
-
-    it 'returns merge_requests that introduced that commit' do
-      expect(commit1.merge_requests).to contain_exactly(merge_request1, merge_request2)
-      expect(commit2.merge_requests).to contain_exactly(merge_request1)
-    end
-
-    context 'with personal snippet' do
-      it 'returns empty relation' do
-        expect(personal_snippet.repository.commit.merge_requests).to eq MergeRequest.none
-      end
-    end
-
-    context 'with project snippet' do
-      it 'returns empty relation' do
-        expect(project_snippet.project).not_to receive(:merge_requests)
-        expect(project_snippet.repository.commit.merge_requests).to eq MergeRequest.none
-      end
-    end
-  end
-
   describe 'signed commits' do
     let(:gpg_signed_commit) { project.commit_by(oid: '0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
     let(:x509_signed_commit) { project.commit_by(oid: '189a6c924013fc3fe40d6f1ec1dc20214183bc97') }
@@ -819,6 +738,31 @@ eos
       expect(x509_signed_commit.has_signature?).to be_truthy
       expect(unsigned_commit.has_signature?).to be_falsey
       expect(commit.has_signature?).to be_falsey
+    end
+  end
+
+  describe '#has_been_reverted?' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue, author: user, project: project) }
+
+    it 'returns true if the commit has been reverted' do
+      create(:note_on_issue,
+             noteable: issue,
+             system: true,
+             note: commit.revert_description(user),
+             project: issue.project)
+
+      expect_next_instance_of(Commit) do |revert_commit|
+        expect(revert_commit).to receive(:reverts_commit?)
+          .with(commit, user)
+          .and_return(true)
+      end
+
+      expect(commit.has_been_reverted?(user, issue.notes_with_associations)).to eq(true)
+    end
+
+    it 'returns false if the commit has not been reverted' do
+      expect(commit.has_been_reverted?(user, issue.notes_with_associations)).to eq(false)
     end
   end
 end

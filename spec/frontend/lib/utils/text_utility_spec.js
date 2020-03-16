@@ -94,8 +94,27 @@ describe('text_utility', () => {
   });
 
   describe('convertToCamelCase', () => {
-    it('converts snake_case string to camelCase string', () => {
-      expect(textUtils.convertToCamelCase('snake_case')).toBe('snakeCase');
+    it.each`
+      txt                         | result
+      ${'a_snake_cased_string'}   | ${'aSnakeCasedString'}
+      ${'_leading_underscore'}    | ${'_leadingUnderscore'}
+      ${'__leading_underscores'}  | ${'__leadingUnderscores'}
+      ${'trailing_underscore_'}   | ${'trailingUnderscore_'}
+      ${'trailing_underscores__'} | ${'trailingUnderscores__'}
+    `('converts string "$txt" to "$result"', ({ txt, result }) => {
+      expect(textUtils.convertToCamelCase(txt)).toBe(result);
+    });
+
+    it.each`
+      txt
+      ${'__withoutMiddleUnderscores__'}
+      ${''}
+      ${'with spaces'}
+      ${'with\nnew\r\nlines'}
+      ${'_'}
+      ${'___'}
+    `('does not modify string "$txt"', ({ txt }) => {
+      expect(textUtils.convertToCamelCase(txt)).toBe(txt);
     });
   });
 

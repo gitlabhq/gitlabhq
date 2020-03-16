@@ -10,16 +10,6 @@ module Projects
         render_show
       end
 
-      def create_deploy_token
-        @new_deploy_token = DeployTokens::CreateService.new(@project, current_user, deploy_token_params).execute
-
-        if @new_deploy_token.persisted?
-          flash.now[:notice] = s_('DeployTokens|Your new project deploy token has been created.')
-        end
-
-        render_show
-      end
-
       def cleanup
         cleanup_params = params.require(:project).permit(:bfg_object_map)
         result = Projects::UpdateService.new(project, current_user, cleanup_params).execute
@@ -37,10 +27,6 @@ module Projects
       private
 
       def render_show
-        @deploy_keys = DeployKeysPresenter.new(@project, current_user: current_user)
-        @deploy_tokens = @project.deploy_tokens.active
-
-        define_deploy_token
         define_protected_refs
         remote_mirror
 
@@ -92,14 +78,6 @@ module Projects
         gon.push(protectable_tags_for_dropdown)
         gon.push(protectable_branches_for_dropdown)
         gon.push(access_levels_options)
-      end
-
-      def define_deploy_token
-        @new_deploy_token ||= DeployToken.new
-      end
-
-      def deploy_token_params
-        params.require(:deploy_token).permit(:name, :expires_at, :read_repository, :read_registry, :username)
       end
     end
   end

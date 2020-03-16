@@ -28,7 +28,7 @@ describe Groups::Registry::RepositoriesController do
       expect { get(endpoint) }.not_to exceed_all_query_limit(control_count)
 
       # sanity check that response is 200
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       repositories = json_response
       expect(repositories.count).to eq(5)
     end

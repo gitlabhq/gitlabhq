@@ -31,6 +31,14 @@ describe Gitlab::Utils do
     it 'does nothing for a safe string' do
       expect(check_path_traversal!('./foo')).to eq('./foo')
     end
+
+    it 'does nothing if an absolute path is allowed' do
+      expect(check_path_traversal!('/etc/folder/path', allowed_absolute: true)). to eq('/etc/folder/path')
+    end
+
+    it 'raises exception if an absolute path is not allowed' do
+      expect { check_path_traversal!('/etc/folder/path') }.to raise_error(/Invalid path/)
+    end
   end
 
   describe '.slugify' do
@@ -281,6 +289,20 @@ describe Gitlab::Utils do
       expect(described_class.string_to_ip_object('[::ffff:a9fe:a864]')).to eq(IPAddr.new('::ffff:a9fe:a864'))
       expect(described_class.string_to_ip_object('127.0.0.0/28')).to eq(IPAddr.new('127.0.0.0/28'))
       expect(described_class.string_to_ip_object('1:0:0:0:0:0:0:0/124')).to eq(IPAddr.new('1:0:0:0:0:0:0:0/124'))
+    end
+  end
+
+  describe '.parse_url' do
+    it 'returns Addressable::URI object' do
+      expect(described_class.parse_url('http://gitlab.com')).to be_instance_of(Addressable::URI)
+    end
+
+    it 'returns nil when URI cannot be parsed' do
+      expect(described_class.parse_url('://gitlab.com')).to be nil
+    end
+
+    it 'returns nil with invalid parameter' do
+      expect(described_class.parse_url(1)).to be nil
     end
   end
 end

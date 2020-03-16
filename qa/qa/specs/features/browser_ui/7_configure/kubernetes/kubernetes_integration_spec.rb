@@ -2,10 +2,9 @@
 
 module QA
   context 'Configure' do
-    # This test requires GITLAB_QA_ADMIN_ACCESS_TOKEN to be specified
-    describe 'Kubernetes Cluster Integration', :orchestrated, :kubernetes, :requires_admin, :skip do
+    describe 'Kubernetes Cluster Integration', :orchestrated, :kubernetes, :requires_admin do
       context 'Project Clusters' do
-        let(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::K3d).create! }
+        let(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::K3s).create! }
         let(:project) do
           Resource::Project.fabricate_via_api! do |project|
             project.name = 'project-with-k8s'
@@ -21,7 +20,7 @@ module QA
           cluster.remove!
         end
 
-        it 'can create and associate a project cluster', :smoke do
+        it 'can create and associate a project cluster', :smoke, quarantine: { type: :new } do
           Resource::KubernetesCluster.fabricate_via_browser_ui! do |k8s_cluster|
             k8s_cluster.project = project
             k8s_cluster.cluster = cluster
@@ -33,18 +32,6 @@ module QA
 
           Page::Project::Operations::Kubernetes::Index.perform do |index|
             expect(index).to have_cluster(cluster)
-          end
-        end
-
-        it 'installs helm and tiller on a gitlab managed app' do
-          Resource::KubernetesCluster.fabricate_via_browser_ui! do |k8s_cluster|
-            k8s_cluster.project = project
-            k8s_cluster.cluster = cluster
-            k8s_cluster.install_helm_tiller = true
-          end
-
-          Page::Project::Operations::Kubernetes::Show.perform do |show|
-            expect(show).to have_application_installed(:helm)
           end
         end
       end

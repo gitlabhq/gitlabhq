@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class ArchiveTracesCronWorker
+  class ArchiveTracesCronWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 

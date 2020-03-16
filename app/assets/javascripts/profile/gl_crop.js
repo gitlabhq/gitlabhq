@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import 'cropper';
-import _ from 'underscore';
+import { isString } from 'lodash';
 
 (() => {
   // Matches everything but the file name
@@ -29,7 +29,7 @@ import _ from 'underscore';
       this.onModalShow = this.onModalShow.bind(this);
       this.onPickImageClick = this.onPickImageClick.bind(this);
       this.fileInput = $(input);
-      this.modalCropImg = _.isString(this.modalCropImg) ? $(this.modalCropImg) : this.modalCropImg;
+      this.modalCropImg = isString(this.modalCropImg) ? $(this.modalCropImg) : this.modalCropImg;
       this.fileInput
         .attr('name', `${this.fileInput.attr('name')}-trigger`)
         .attr('id', `${this.fileInput.attr('id')}-trigger`);
@@ -47,9 +47,9 @@ import _ from 'underscore';
       this.filename = this.getElement(filename);
       this.previewImage = this.getElement(previewImage);
       this.pickImageEl = this.getElement(pickImageEl);
-      this.modalCrop = _.isString(modalCrop) ? $(modalCrop) : modalCrop;
-      this.uploadImageBtn = _.isString(uploadImageBtn) ? $(uploadImageBtn) : uploadImageBtn;
-      this.modalCropImg = _.isString(modalCropImg) ? $(modalCropImg) : modalCropImg;
+      this.modalCrop = isString(modalCrop) ? $(modalCrop) : modalCrop;
+      this.uploadImageBtn = isString(uploadImageBtn) ? $(uploadImageBtn) : uploadImageBtn;
+      this.modalCropImg = isString(modalCropImg) ? $(modalCropImg) : modalCropImg;
       this.cropActionsBtn = this.modalCrop.find('[data-method]');
       this.bindEvents();
     }

@@ -2,16 +2,15 @@
 
 require 'spec_helper'
 
-describe 'User creates snippet', :js do
-  let(:user) { create(:user) }
-
+shared_examples_for 'snippet editor' do
   def description_field
-    find('.js-description-input input,textarea')
+    find('.js-description-input').find('input,textarea')
   end
 
   before do
     stub_feature_flags(allow_possible_spam: false)
     stub_feature_flags(snippets_vue: false)
+    stub_feature_flags(monaco_snippets: flag)
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
     Gitlab::CurrentSettings.update!(
@@ -33,7 +32,8 @@ describe 'User creates snippet', :js do
 
     find('#personal_snippet_visibility_level_20').set(true)
     page.within('.file-editor') do
-      find('.ace_text-input', visible: false).send_keys 'Hello World!'
+      el = flag == true ? find('.inputarea') : find('.ace_text-input', visible: false)
+      el.send_keys 'Hello World!'
     end
   end
 
@@ -77,6 +77,22 @@ describe 'User creates snippet', :js do
 
       expect(page).not_to have_css('.recaptcha')
       expect(page).to have_content('My Snippet Title')
+    end
+  end
+end
+
+describe 'User creates snippet', :js do
+  let_it_be(:user) { create(:user) }
+
+  context 'when using Monaco' do
+    it_behaves_like "snippet editor" do
+      let(:flag) { true }
+    end
+  end
+
+  context 'when using ACE' do
+    it_behaves_like "snippet editor" do
+      let(:flag) { false }
     end
   end
 end

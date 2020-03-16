@@ -195,11 +195,11 @@ We have following jobs in queue:
 
 With the fair usage algorithm jobs are assigned in following order:
 
-1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (i.e. all projects)
+1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (that is, all projects)
 1. Job 4 is next, because 4 is now the lowest job number from projects with no running jobs (Project 1 has a job running)
 1. Job 6 is next, because 6 is now the lowest job number from projects with no running jobs (Projects 1 and 2 have jobs running)
 1. Job 2 is next, because, of projects with the lowest number of jobs running (each has 1), it is the lowest job number
-1. Job 5 is next, because Project 1 now has 2 jobs running, and between Projects 2 and 3, Job 5 is the lowest remaining job number
+1. Job 5 is next, because Project 1 now has 2 jobs running and Job 5 is the lowest remaining job number between Projects 2 and 3.
 1. Lastly we choose Job 3... because it's the only job left
 
 ---
@@ -217,7 +217,7 @@ We have following jobs in queue:
 
 With the fair usage algorithm jobs are assigned in following order:
 
-1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (i.e. all projects)
+1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (that is, all projects)
 1. We finish job 1
 1. Job 2 is next, because, having finished Job 1, all projects have 0 jobs running again, and 2 is the lowest available job number
 1. Job 4 is next, because with Project 1 running a job, 4 is the lowest number from projects running no jobs (Projects 2 and 3)
@@ -307,7 +307,7 @@ Example 2:
 For each Runner you can specify a _maximum job timeout_. Such timeout,
 if smaller than [project defined timeout], will take the precedence. This
 feature can be used to prevent Shared Runner from being appropriated
-by a project by setting a ridiculous big timeout (e.g. one week).
+by a project by setting a ridiculous big timeout (for example, one week).
 
 When not configured, Runner will not override project timeout.
 
@@ -337,8 +337,8 @@ How this feature will work:
 ### Be careful with sensitive information
 
 With some [Runner Executors](https://docs.gitlab.com/runner/executors/README.html),
-if you can run a job on the Runner, you can get access to any code it runs
-and get the token of the Runner. With shared Runners, this means that anyone
+if you can run a job on the Runner, you can get full access to the file system,
+and thus any code it runs as well as the token of the Runner. With shared Runners, this means that anyone
 that runs jobs on the Runner, can access anyone else's code that runs on the
 Runner.
 
@@ -422,4 +422,4 @@ You can find the IP address of a Runner for a specific project by:
 [register]: https://docs.gitlab.com/runner/register/
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
-[project defined timeout]: ../../user/project/pipelines/settings.html#timeout
+[project defined timeout]: ../pipelines/settings.md#timeout

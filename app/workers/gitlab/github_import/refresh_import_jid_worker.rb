@@ -2,7 +2,7 @@
 
 module Gitlab
   module GithubImport
-    class RefreshImportJidWorker
+    class RefreshImportJidWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
       include GithubImport::Queue
 

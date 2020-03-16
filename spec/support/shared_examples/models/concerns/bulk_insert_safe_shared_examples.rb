@@ -35,4 +35,44 @@ RSpec.shared_examples 'a BulkInsertSafe model' do |klass|
       expect { target_class.belongs_to(:other_record) }.not_to raise_error
     end
   end
+
+  describe '.bulk_insert!' do
+    context 'when all items are valid' do
+      it 'inserts them all' do
+        items = valid_items_for_bulk_insertion
+
+        expect(items).not_to be_empty
+        expect { target_class.bulk_insert!(items) }.to change { target_class.count }.by(items.size)
+      end
+
+      it 'returns true' do
+        items = valid_items_for_bulk_insertion
+
+        expect(items).not_to be_empty
+        expect(target_class.bulk_insert!(items)).to be true
+      end
+    end
+
+    context 'when some items are invalid' do
+      it 'does not insert any of them and raises an error' do
+        items = invalid_items_for_bulk_insertion
+
+        # it is not always possible to create invalid items
+        if items.any?
+          expect { target_class.bulk_insert!(items) }.to raise_error(ActiveRecord::RecordInvalid)
+          expect(target_class.count).to eq(0)
+        end
+      end
+
+      it 'inserts them anyway when bypassing validations' do
+        items = invalid_items_for_bulk_insertion
+
+        # it is not always possible to create invalid items
+        if items.any?
+          expect(target_class.bulk_insert!(items, validate: false)).to be(true)
+          expect(target_class.count).to eq(items.size)
+        end
+      end
+    end
+  end
 end

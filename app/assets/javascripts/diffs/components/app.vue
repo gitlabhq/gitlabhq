@@ -398,7 +398,7 @@ export default {
           }"
         >
           <commit-widget v-if="commit" :commit="commit" />
-          <div v-if="isBatchLoading" class="loading"><gl-loading-icon /></div>
+          <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
           <template v-else-if="renderDiffFiles">
             <diff-file
               v-for="file in diffFiles"

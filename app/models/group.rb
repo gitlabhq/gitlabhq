@@ -59,6 +59,9 @@ class Group < Namespace
 
   has_many :import_failures, inverse_of: :group
 
+  has_many :group_deploy_tokens
+  has_many :deploy_tokens, through: :group_deploy_tokens
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects
@@ -403,11 +406,15 @@ class Group < Namespace
   end
 
   def ci_variables_for(ref, project)
-    list_of_ids = [self] + ancestors
-    variables = Ci::GroupVariable.where(group: list_of_ids)
-    variables = variables.unprotected unless project.protected_for?(ref)
-    variables = variables.group_by(&:group_id)
-    list_of_ids.reverse.flat_map { |group| variables[group.id] }.compact
+    cache_key = "ci_variables_for:group:#{self&.id}:project:#{project&.id}:ref:#{ref}"
+
+    ::Gitlab::SafeRequestStore.fetch(cache_key) do
+      list_of_ids = [self] + ancestors
+      variables = Ci::GroupVariable.where(group: list_of_ids)
+      variables = variables.unprotected unless project.protected_for?(ref)
+      variables = variables.group_by(&:group_id)
+      list_of_ids.reverse.flat_map { |group| variables[group.id] }.compact
+    end
   end
 
   def group_member(user)
@@ -509,16 +516,27 @@ class Group < Namespace
 
     group_group_links_query = GroupGroupLink.where(shared_group_id: self_and_ancestors_ids)
     cte = Gitlab::SQL::CTE.new(:group_group_links_cte, group_group_links_query)
+    cte_alias = cte.table.alias(GroupGroupLink.table_name)
 
     link = GroupGroupLink
              .with(cte.to_arel)
+             .select(smallest_value_arel([cte_alias[:group_access], group_member_table[:access_level]],
+                                         'group_access'))
              .from([group_member_table, cte.alias_to(group_group_link_table)])
              .where(group_member_table[:user_id].eq(user.id))
+             .where(group_member_table[:requested_at].eq(nil))
              .where(group_member_table[:source_id].eq(group_group_link_table[:shared_with_group_id]))
+             .where(group_member_table[:source_type].eq('Namespace'))
              .reorder(Arel::Nodes::Descending.new(group_group_link_table[:group_access]))
              .first
 
     link&.group_access
+  end
+
+  def smallest_value_arel(args, column_alias)
+    Arel::Nodes::As.new(
+      Arel::Nodes::NamedFunction.new('LEAST', args),
+      Arel::Nodes::SqlLiteral.new(column_alias))
   end
 
   def self.groups_including_descendants_by(group_ids)

@@ -345,7 +345,7 @@ pages:
 ### Using a custom Certificate Authority (CA)
 
 When using certificates issued by a custom CA, [Access Control](../../user/project/pages/pages_access_control.md#gitlab-pages-access-control) and
-the [online view of HTML job artifacts](../../user/project/pipelines/job_artifacts.md#browsing-artifacts)
+the [online view of HTML job artifacts](../../ci/pipelines/job_artifacts.md#browsing-artifacts)
 will fail to work if the custom CA is not recognized.
 
 This usually results in this error:
@@ -360,16 +360,16 @@ that method from working. Use the following workaround:
 
 1. Append your GitLab server TLS/SSL certficate to `/opt/gitlab/embedded/ssl/certs/cacert.pem` where `gitlab-domain-example.com` is your GitLab application URL
 
-    ```shell
-    printf "\ngitlab-domain-example.com\n===========================\n" | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
-    echo -n | openssl s_client -connect gitlab-domain-example.com:443  | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
-    ```
+   ```shell
+   printf "\ngitlab-domain-example.com\n===========================\n" | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
+   echo -n | openssl s_client -connect gitlab-domain-example.com:443  | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
+   ```
 
 1. [Restart](../restart_gitlab.md) the GitLab Pages Daemon. For GitLab Omnibus instances:
 
-    ```shell
-    sudo gitlab-ctl restart gitlab-pages
-    ```
+   ```shell
+   sudo gitlab-ctl restart gitlab-pages
+   ```
 
 CAUTION: **Caution:**
 Some GitLab Omnibus upgrades will revert this workaround and you'll need to apply it again.

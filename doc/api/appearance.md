@@ -9,7 +9,7 @@ Appearance API allows you to maintain GitLab's appearance as if using the GitLab
 
 List the current appearance configuration of the GitLab instance.
 
-```
+```plaintext
 GET /application/appearance
 ```
 
@@ -39,7 +39,7 @@ Example response:
 
 Use an API call to modify GitLab instance appearance configuration.
 
-```
+```plaintext
 PUT /application/appearance
 ```
 

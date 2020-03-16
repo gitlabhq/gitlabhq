@@ -8,7 +8,7 @@ describe 'User edits snippet', :js do
   let(:file_name) { 'test.rb' }
   let(:content) { 'puts "test"' }
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content, author: user) }
 
   before do
@@ -57,5 +57,22 @@ describe 'User edits snippet', :js do
 
     expect(page).to have_no_xpath("//i[@class='fa fa-lock']")
     expect(page).to have_xpath("//i[@class='fa fa-globe']")
+  end
+
+  context 'when the git operation fails' do
+    before do
+      allow_next_instance_of(Snippets::UpdateService) do |instance|
+        allow(instance).to receive(:create_commit).and_raise(StandardError)
+      end
+
+      fill_in 'personal_snippet_title', with: 'New Snippet Title'
+
+      click_button('Save changes')
+    end
+
+    it 'renders edit page and displays the error' do
+      expect(page.find('.flash-container span').text).to eq('Error updating the snippet')
+      expect(page).to have_content('Edit Snippet')
+    end
   end
 end

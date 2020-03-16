@@ -16,6 +16,11 @@ export default {
     GlTooltip,
   },
   props: {
+    closed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     date: {
       type: String,
       required: true,
@@ -66,7 +71,7 @@ export default {
       return getDayDifference(today, this.issueDueDate);
     },
     isPastDue() {
-      if (this.timeDifference >= 0) return false;
+      if (this.timeDifference >= 0 || this.closed) return false;
       return true;
     },
     standardDateFormat() {
@@ -92,7 +97,8 @@ export default {
       }}</time>
     </span>
     <gl-tooltip :target="() => $refs.issueDueDate" :placement="tooltipPlacement">
-      <span class="bold">{{ __('Due date') }}</span> <br />
+      <span class="bold">{{ __('Due date') }}</span>
+      <br />
       <span :class="{ 'text-danger-muted': isPastDue }">{{ title }}</span>
     </gl-tooltip>
   </span>

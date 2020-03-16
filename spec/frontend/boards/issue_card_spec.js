@@ -8,6 +8,7 @@ import '~/boards/models/list';
 import IssueCardInner from '~/boards/components/issue_card_inner.vue';
 import { listObj } from '../../javascripts/boards/mock_data';
 import store from '~/boards/stores';
+import { GlLabel } from '@gitlab/ui';
 
 describe('Issue card component', () => {
   const user = new ListAssignee({
@@ -20,7 +21,7 @@ describe('Issue card component', () => {
   const label1 = new ListLabel({
     id: 3,
     title: 'testing 123',
-    color: 'blue',
+    color: '#000CFF',
     text_color: 'white',
     description: 'test',
   });
@@ -50,6 +51,9 @@ describe('Issue card component', () => {
         rootPath: '/',
       },
       store,
+      stubs: {
+        GlLabel: true,
+      },
     });
   });
 
@@ -151,23 +155,26 @@ describe('Issue card component', () => {
 
     describe('assignee default avatar', () => {
       beforeEach(done => {
+        global.gon.default_avatar_url = 'default_avatar';
+
         wrapper.setProps({
           issue: {
             ...wrapper.props('issue'),
             assignees: [
-              new ListAssignee(
-                {
-                  id: 1,
-                  name: 'testing 123',
-                  username: 'test',
-                },
-                'default_avatar',
-              ),
+              new ListAssignee({
+                id: 1,
+                name: 'testing 123',
+                username: 'test',
+              }),
             ],
           },
         });
 
         wrapper.vm.$nextTick(done);
+      });
+
+      afterEach(() => {
+        global.gon.default_avatar_url = null;
       });
 
       it('displays defaults avatar if users avatar is null', () => {
@@ -290,25 +297,11 @@ describe('Issue card component', () => {
     });
 
     it('does not render list label but renders all other labels', () => {
-      expect(wrapper.findAll('.badge').length).toBe(1);
-    });
-
-    it('renders label', () => {
-      const nodes = wrapper.findAll('.badge').wrappers.map(label => label.attributes('title'));
-
-      expect(nodes.includes(label1.description)).toBe(true);
-    });
-
-    it('sets label description as title', () => {
-      expect(wrapper.find('.badge').attributes('title')).toContain(label1.description);
-    });
-
-    it('sets background color of button', () => {
-      const nodes = wrapper
-        .findAll('.badge')
-        .wrappers.map(label => label.element.style.backgroundColor);
-
-      expect(nodes.includes(label1.color)).toBe(true);
+      expect(wrapper.findAll(GlLabel).length).toBe(1);
+      const label = wrapper.find(GlLabel);
+      expect(label.props('title')).toEqual(label1.title);
+      expect(label.props('description')).toEqual(label1.description);
+      expect(label.props('backgroundColor')).toEqual(label1.color);
     });
 
     it('does not render label if label does not have an ID', done => {
@@ -321,7 +314,7 @@ describe('Issue card component', () => {
       wrapper.vm
         .$nextTick()
         .then(() => {
-          expect(wrapper.findAll('.badge').length).toBe(1);
+          expect(wrapper.findAll(GlLabel).length).toBe(1);
           expect(wrapper.text()).not.toContain('closed');
           done();
         })

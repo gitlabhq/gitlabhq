@@ -36,7 +36,7 @@ describe API::ImportGithub do
         personal_access_token: token,
         repo_id: 1234
       }
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response).to be_a Hash
       expect(json_response['name']).to eq(project.name)
     end
@@ -50,7 +50,7 @@ describe API::ImportGithub do
         repo_id: 1234
       }
 
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
   end
 end

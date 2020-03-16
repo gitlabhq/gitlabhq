@@ -54,10 +54,10 @@ describe('Changed file icon', () => {
   });
 
   describe.each`
-    file             | iconName                 | tooltipText                | desc
-    ${changedFile()} | ${'file-modified'}       | ${'Unstaged modification'} | ${'with file changed'}
-    ${stagedFile()}  | ${'file-modified-solid'} | ${'Staged modification'}   | ${'with file staged'}
-    ${newFile()}     | ${'file-addition'}       | ${'Unstaged addition'}     | ${'with file new'}
+    file             | iconName                 | tooltipText   | desc
+    ${changedFile()} | ${'file-modified'}       | ${'Modified'} | ${'with file changed'}
+    ${stagedFile()}  | ${'file-modified-solid'} | ${'Modified'} | ${'with file staged'}
+    ${newFile()}     | ${'file-addition'}       | ${'Added'}    | ${'with file new'}
   `('$desc', ({ file, iconName, tooltipText }) => {
     beforeEach(() => {
       factory({ file });

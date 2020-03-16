@@ -34,7 +34,7 @@ describe Gitlab::Checks::DiffCheck do
 
       context 'when change is sent by a different user' do
         it 'raises an error if the user is not allowed to update the file' do
-          expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "The path 'README' is locked in Git LFS by #{lock.user.name}")
+          expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, "The path 'README' is locked in Git LFS by #{lock.user.name}")
         end
       end
 

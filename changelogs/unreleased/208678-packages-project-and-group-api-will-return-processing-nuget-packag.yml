@@ -1,0 +1,5 @@
+---
+title: Fixed bug where processing NuGet packages are returned from the Packages API
+merge_request: 26270
+author:
+type: fixed

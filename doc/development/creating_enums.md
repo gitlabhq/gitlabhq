@@ -8,7 +8,7 @@ To use this type, add `limit: 2` to the migration that creates the column.
 
 Example:
 
-```rb
+```ruby
 def change
   add_column :ci_job_artifacts, :file_format, :integer, limit: 2
 end

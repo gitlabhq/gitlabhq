@@ -37,7 +37,7 @@ module Milestoneable
     private
 
     def milestone_is_valid
-      errors.add(:milestone_id, message: "is invalid") if respond_to?(:milestone_id) && milestone_id.present? && !milestone_available?
+      errors.add(:milestone_id, 'is invalid') if respond_to?(:milestone_id) && milestone_id.present? && !milestone_available?
     end
   end
 

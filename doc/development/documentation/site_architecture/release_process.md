@@ -70,9 +70,9 @@ this needs to happen when the stable branches for all products have been created
 
 1. Run the raketask to create the single version:
 
-    ```shell
-    ./bin/rake "release:single[12.0]"
-    ```
+   ```shell
+   ./bin/rake "release:single[12.0]"
+   ```
 
     A new `Dockerfile.12.0` should have been created and committed to a new branch.
 
@@ -127,16 +127,6 @@ version and rotates the old one:
 
    - `online`: The 3 latest stable versions.
    - `offline`: All the previous versions offered as an offline archive.
-
-1. **Add the new offline version in the 404 page redirect script:**
-
-   Since we're deprecating the oldest version each month, we need to redirect
-   those URLs in order not to create [404 entries](https://gitlab.com/gitlab-org/gitlab-docs/issues/221).
-   There's a temporary hack for now:
-
-   1. Edit `content/404.html`, making sure all offline versions under
-      `content/_data/versions.yaml` are in the JavaScript snippet at the end of
-      the document.
 
 1. **Update the `:latest` and `:archives` Docker images:**
 

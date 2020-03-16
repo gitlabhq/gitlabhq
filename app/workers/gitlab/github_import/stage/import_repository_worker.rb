@@ -3,7 +3,7 @@
 module Gitlab
   module GithubImport
     module Stage
-      class ImportRepositoryWorker
+      class ImportRepositoryWorker # rubocop:disable Scalability/IdempotentWorker
         include ApplicationWorker
         include GithubImport::Queue
         include StageMethods

@@ -1,0 +1,5 @@
+---
+title: Use clearer error message for pages deploy job when the SHA is outdated
+merge_request: 25659
+author:
+type: other

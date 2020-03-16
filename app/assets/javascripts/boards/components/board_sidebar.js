@@ -2,6 +2,7 @@
 
 import $ from 'jquery';
 import Vue from 'vue';
+import { GlLabel } from '@gitlab/ui';
 import Flash from '~/flash';
 import { sprintf, __ } from '~/locale';
 import Sidebar from '~/right_sidebar';
@@ -22,6 +23,7 @@ export default Vue.extend({
   components: {
     AssigneeTitle,
     Assignees,
+    GlLabel,
     SidebarEpicsSelect: () =>
       import('ee_component/sidebar/components/sidebar_item_epics_select.vue'),
     RemoveBtn,
@@ -66,6 +68,9 @@ export default Vue.extend({
     },
     selectedLabels() {
       return this.hasLabels ? this.issue.labels.map(l => l.title).join(',') : '';
+    },
+    helpLink() {
+      return boardsStore.scopedLabels.helpLink;
     },
   },
   watch: {
@@ -146,9 +151,6 @@ export default Vue.extend({
     },
     showScopedLabels(label) {
       return boardsStore.scopedLabels.enabled && isScopedLabel(label);
-    },
-    helpLink() {
-      return boardsStore.scopedLabels.helpLink;
     },
   },
 });

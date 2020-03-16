@@ -9,10 +9,10 @@ module Gitlab
       private
 
       def create_labels(worker_class, queue)
-        labels = { queue: queue.to_s, latency_sensitive: FALSE_LABEL, external_dependencies: FALSE_LABEL, feature_category: "", boundary: "" }
+        labels = { queue: queue.to_s, urgency: "", external_dependencies: FALSE_LABEL, feature_category: "", boundary: "" }
         return labels unless worker_class && worker_class.include?(WorkerAttributes)
 
-        labels[:latency_sensitive] = bool_as_label(worker_class.latency_sensitive_worker?)
+        labels[:urgency] = worker_class.get_urgency.to_s
         labels[:external_dependencies] = bool_as_label(worker_class.worker_has_external_dependencies?)
 
         feature_category = worker_class.get_feature_category

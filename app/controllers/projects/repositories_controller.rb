@@ -3,11 +3,13 @@
 class Projects::RepositoriesController < Projects::ApplicationController
   include ExtractsPath
   include StaticObjectExternalStorage
+  include Gitlab::RateLimitHelpers
 
   prepend_before_action(only: [:archive]) { authenticate_sessionless_user!(:archive) }
 
   # Authorize
   before_action :require_non_empty_project, except: :create
+  before_action :archive_rate_limit!, only: :archive
   before_action :assign_archive_vars, only: :archive
   before_action :assign_append_sha, only: :archive
   before_action :authorize_download_code!
@@ -33,6 +35,12 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   private
+
+  def archive_rate_limit!
+    if archive_rate_limit_reached?(current_user, @project)
+      render plain: ::Gitlab::RateLimitHelpers::ARCHIVE_RATE_LIMIT_REACHED_MESSAGE, status: :too_many_requests
+    end
+  end
 
   def repo_params
     @repo_params ||= { ref: @ref, path: params[:path], format: params[:format], append_sha: @append_sha }

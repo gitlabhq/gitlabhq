@@ -1,0 +1,5 @@
+---
+title: Allow creating default branch in snippet repositories
+merge_request: 26294
+author:
+type: fixed

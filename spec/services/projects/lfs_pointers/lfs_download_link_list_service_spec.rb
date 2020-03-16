@@ -8,18 +8,27 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
   let(:new_oids) { { 'oid1' => 123, 'oid2' => 125 } }
   let(:remote_uri) { URI.parse(lfs_endpoint) }
 
-  let(:objects_response) do
-    body = new_oids.map do |oid, size|
+  let(:request_object) { HTTParty::Request.new(Net::HTTP::Post, '/') }
+  let(:parsed_block) { lambda {} }
+  let(:success_net_response) { Net::HTTPOK.new('', '', '') }
+  let(:response) { Gitlab::HTTP::Response.new(request_object, net_response, parsed_block) }
+
+  def objects_response(oids)
+    body = oids.map do |oid, size|
       {
-        'oid' => oid,
-        'size' => size,
+        'oid' => oid, 'size' => size,
         'actions' => {
           'download' => { 'href' => "#{import_url}/gitlab-lfs/objects/#{oid}" }
         }
       }
     end
 
-    Struct.new(:success?, :objects).new(true, body)
+    Struct.new(:success?, :objects).new(true, body).to_json
+  end
+
+  def custom_response(net_response, body = nil)
+    allow(net_response).to receive(:body).and_return(body)
+    Gitlab::HTTP::Response.new(request_object, net_response, parsed_block)
   end
 
   let(:invalid_object_response) do
@@ -33,9 +42,8 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
 
   before do
     allow(project).to receive(:lfs_enabled?).and_return(true)
-    response = instance_double(Gitlab::HTTP::Response)
-    allow(response).to receive(:body).and_return(objects_response.to_json)
-    allow(response).to receive(:success?).and_return(true)
+
+    response = custom_response(success_net_response, objects_response(new_oids))
     allow(Gitlab::HTTP).to receive(:post).and_return(response)
   end
 
@@ -43,6 +51,102 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
     it 'retrieves each download link of every non existent lfs object' do
       subject.execute(new_oids).each do |lfs_download_object|
         expect(lfs_download_object.link).to eq "#{import_url}/gitlab-lfs/objects/#{lfs_download_object.oid}"
+      end
+    end
+
+    context 'when lfs objects size is larger than the batch size' do
+      def stub_successful_request(batch)
+        response = custom_response(success_net_response, objects_response(batch))
+        stub_request(batch, response)
+      end
+
+      def stub_entity_too_large_error_request(batch)
+        entity_too_large_net_response = Net::HTTPRequestEntityTooLarge.new('', '', '')
+        response = custom_response(entity_too_large_net_response)
+        stub_request(batch, response)
+      end
+
+      def stub_request(batch, response)
+        expect(Gitlab::HTTP).to receive(:post).with(
+          remote_uri,
+          {
+            body: { operation: 'download', objects: batch.map { |k, v| { oid: k, size: v } } }.to_json,
+            headers: subject.send(:headers)
+          }
+        ).and_return(response)
+      end
+
+      let(:new_oids) { { 'oid1' => 123, 'oid2' => 125, 'oid3' => 126, 'oid4' => 127, 'oid5' => 128 } }
+
+      context 'when batch size' do
+        before do
+          stub_const("#{described_class.name}::REQUEST_BATCH_SIZE", 2)
+
+          data = new_oids.to_a
+          stub_successful_request([data[0], data[1]])
+          stub_successful_request([data[2], data[3]])
+          stub_successful_request([data[4]])
+        end
+
+        it 'retreives them in batches' do
+          subject.execute(new_oids).each do |lfs_download_object|
+            expect(lfs_download_object.link).to eq "#{import_url}/gitlab-lfs/objects/#{lfs_download_object.oid}"
+          end
+        end
+      end
+
+      context 'when request fails with PayloadTooLarge error' do
+        let(:error_class) { described_class::DownloadLinksRequestEntityTooLargeError }
+
+        context 'when the smaller batch eventually works' do
+          before do
+            stub_const("#{described_class.name}::REQUEST_BATCH_SIZE", 5)
+
+            data = new_oids.to_a
+
+            # with the batch size of 5
+            stub_entity_too_large_error_request(data)
+
+            # with the batch size of 2
+            stub_successful_request([data[0], data[1]])
+            stub_successful_request([data[2], data[3]])
+            stub_successful_request([data[4]])
+          end
+
+          it 'retreives them eventually and logs exceptions' do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+              an_instance_of(error_class), project_id: project.id, batch_size: 5, oids_count: 5
+            )
+
+            subject.execute(new_oids).each do |lfs_download_object|
+              expect(lfs_download_object.link).to eq "#{import_url}/gitlab-lfs/objects/#{lfs_download_object.oid}"
+            end
+          end
+        end
+
+        context 'when batch size cannot be any smaller' do
+          before do
+            stub_const("#{described_class.name}::REQUEST_BATCH_SIZE", 5)
+
+            data = new_oids.to_a
+
+            # with the batch size of 5
+            stub_entity_too_large_error_request(data)
+
+            # with the batch size of 2
+            stub_entity_too_large_error_request([data[0], data[1]])
+          end
+
+          it 'raises an error and logs exceptions' do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+              an_instance_of(error_class), project_id: project.id, batch_size: 5, oids_count: 5
+            )
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+              an_instance_of(error_class), project_id: project.id, batch_size: 2, oids_count: 5
+            )
+            expect { subject.execute(new_oids) }.to raise_error(described_class::DownloadLinksError)
+          end
+        end
       end
     end
 
@@ -87,17 +191,22 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
   end
 
   describe '#get_download_links' do
-    it 'raise error if request fails' do
-      allow(Gitlab::HTTP).to receive(:post).and_return(Struct.new(:success?, :message).new(false, 'Failed request'))
+    context 'if request fails' do
+      before do
+        request_timeout_net_response = Net::HTTPRequestTimeout.new('', '', '')
+        response = custom_response(request_timeout_net_response)
+        allow(Gitlab::HTTP).to receive(:post).and_return(response)
+      end
 
-      expect { subject.send(:get_download_links, new_oids) }.to raise_error(described_class::DownloadLinksError)
+      it 'raises an error' do
+        expect { subject.send(:get_download_links, new_oids) }.to raise_error(described_class::DownloadLinksError)
+      end
     end
 
     shared_examples 'JSON parse errors' do |body|
-      it 'raises error' do
-        response = instance_double(Gitlab::HTTP::Response)
+      it 'raises an error' do
+        response = custom_response(success_net_response)
         allow(response).to receive(:body).and_return(body)
-        allow(response).to receive(:success?).and_return(true)
         allow(Gitlab::HTTP).to receive(:post).and_return(response)
 
         expect { subject.send(:get_download_links, new_oids) }.to raise_error(described_class::DownloadLinksError)

@@ -33,6 +33,12 @@ module Clusters
               FETCH_IP_ADDRESS_DELAY, application.name, application.id)
           end
         end
+
+        after_transition any => [:installed, :updated] do |application|
+          application.run_after_commit do
+            ClusterConfigureIstioWorker.perform_async(application.cluster_id)
+          end
+        end
       end
 
       default_value_for :version, VERSION
@@ -41,12 +47,22 @@ module Clusters
 
       scope :for_cluster, -> (cluster) { where(cluster: cluster) }
 
+      has_one :pages_domain, through: :serverless_domain_cluster
+
       def chart
         'knative/knative'
       end
 
       def values
         { "domain" => hostname }.to_yaml
+      end
+
+      def available_domains
+        PagesDomain.instance_serverless
+      end
+
+      def find_available_domain(pages_domain_id)
+        available_domains.find_by(id: pages_domain_id)
       end
 
       def allowed_to_uninstall?

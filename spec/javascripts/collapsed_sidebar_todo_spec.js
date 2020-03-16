@@ -1,5 +1,5 @@
 /* eslint-disable no-new */
-import _ from 'underscore';
+import { clone } from 'lodash';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import Sidebar from '~/right_sidebar';
@@ -24,13 +24,13 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     mock = new MockAdapter(axios);
 
     mock.onPost(`${gl.TEST_HOST}/frontend-fixtures/issues-project/todos`).reply(() => {
-      const response = _.clone(todoData);
+      const response = clone(todoData);
 
       return [200, response];
     });
 
     mock.onDelete(/(.*)\/dashboard\/todos\/\d+$/).reply(() => {
-      const response = _.clone(todoData);
+      const response = clone(todoData);
       delete response.delete_path;
 
       return [200, response];

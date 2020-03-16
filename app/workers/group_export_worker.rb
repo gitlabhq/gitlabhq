@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GroupExportWorker
+class GroupExportWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ExceptionBacktrace
 

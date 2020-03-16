@@ -17,7 +17,7 @@ describe 'lograge', type: :request do
   end
 
   let(:limited_params) do
-    large_params.slice(:a, :b).map { |k, v| { key: k.to_s, value: v } } + ['...']
+    large_params.slice(:a, :b).map { |k, v| { key: k.to_s, value: v } } + [{ key: 'truncated', value: '...' }]
   end
 
   context 'for API requests' do

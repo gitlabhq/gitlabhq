@@ -4,7 +4,7 @@
 
 Returns a list of project milestones.
 
-```
+```plaintext
 GET /projects/:id/milestones
 GET /projects/:id/milestones?iids[]=42
 GET /projects/:id/milestones?iids[]=42&iids[]=43
@@ -51,7 +51,7 @@ Example Response:
 
 Gets a single project milestone.
 
-```
+```plaintext
 GET /projects/:id/milestones/:milestone_id
 ```
 
@@ -64,7 +64,7 @@ Parameters:
 
 Creates a new project milestone.
 
-```
+```plaintext
 POST /projects/:id/milestones
 ```
 
@@ -80,7 +80,7 @@ Parameters:
 
 Updates an existing project milestone.
 
-```
+```plaintext
 PUT /projects/:id/milestones/:milestone_id
 ```
 
@@ -98,7 +98,7 @@ Parameters:
 
 Only for users with Developer access to the project.
 
-```
+```plaintext
 DELETE /projects/:id/milestones/:milestone_id
 ```
 
@@ -111,7 +111,7 @@ Parameters:
 
 Gets all issues assigned to a single project milestone.
 
-```
+```plaintext
 GET /projects/:id/milestones/:milestone_id/issues
 ```
 
@@ -124,7 +124,7 @@ Parameters:
 
 Gets all merge requests assigned to a single project milestone.
 
-```
+```plaintext
 GET /projects/:id/milestones/:milestone_id/merge_requests
 ```
 
@@ -139,7 +139,7 @@ Parameters:
 
 Only for users with Developer access to the group.
 
-```
+```plaintext
 POST /projects/:id/milestones/:milestone_id/promote
 ```
 
@@ -154,7 +154,7 @@ Parameters:
 
 Gets all burndown chart events for a single milestone.
 
-```
+```plaintext
 GET /projects/:id/milestones/:milestone_id/burndown_events
 ```
 

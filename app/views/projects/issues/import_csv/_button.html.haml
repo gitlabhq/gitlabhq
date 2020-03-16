@@ -7,3 +7,5 @@
   - else
     = _('Import CSV')
 
+- if Feature.enabled?(:jira_issue_import, @project)
+  = link_to _("Import Jira issues"), project_import_jira_path(@project), class: "btn btn-default"

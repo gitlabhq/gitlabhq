@@ -93,6 +93,9 @@ class GroupPolicy < BasePolicy
     enable :create_cluster
     enable :update_cluster
     enable :admin_cluster
+    enable :destroy_deploy_token
+    enable :read_deploy_token
+    enable :create_deploy_token
   end
 
   rule { owner }.policy do

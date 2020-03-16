@@ -639,8 +639,8 @@ describe 'Git HTTP requests' do
 
                 context 'when LDAP is configured' do
                   before do
-                    allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
-                    allow_any_instance_of(Gitlab::Auth::LDAP::Authentication)
+                    allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(true)
+                    allow_any_instance_of(Gitlab::Auth::Ldap::Authentication)
                       .to receive(:login).and_return(nil)
                   end
 
@@ -862,8 +862,8 @@ describe 'Git HTTP requests' do
 
     before do
       allow(Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_return(true)
-      allow_any_instance_of(Gitlab::Auth::LDAP::Authentication).to receive(:login).and_return(nil)
-      allow_any_instance_of(Gitlab::Auth::LDAP::Authentication).to receive(:login).with(user.username, user.password).and_return(user)
+      allow_any_instance_of(Gitlab::Auth::Ldap::Authentication).to receive(:login).and_return(nil)
+      allow_any_instance_of(Gitlab::Auth::Ldap::Authentication).to receive(:login).with(user.username, user.password).and_return(user)
     end
 
     it_behaves_like 'pulls require Basic HTTP Authentication'

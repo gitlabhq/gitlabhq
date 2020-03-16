@@ -1,5 +1,0 @@
----
-title: Separate protected and issuable entities into own class files
-merge_request: 24221
-author: Rajendra Kadam
-type: added

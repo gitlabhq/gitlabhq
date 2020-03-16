@@ -6,7 +6,7 @@
 # used to belong to. Projects in this state should be rare.
 # The worker will reject doing anything for projects that *do* have a
 # namespace. For those use ProjectDestroyWorker instead.
-class NamespacelessProjectDestroyWorker
+class NamespacelessProjectDestroyWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ExceptionBacktrace
 

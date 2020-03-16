@@ -1,7 +1,7 @@
 <script>
-import _ from 'underscore';
+import { sortBy } from 'lodash';
 import { mapState } from 'vuex';
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlLabel, GlTooltipDirective } from '@gitlab/ui';
 import issueCardInner from 'ee_else_ce/boards/mixins/issue_card_inner';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -10,18 +10,17 @@ import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
 import boardsStore from '../stores/boards_store';
-import IssueCardInnerScopedLabel from './issue_card_inner_scoped_label.vue';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
   components: {
+    GlLabel,
     Icon,
     UserAvatarLink,
     TooltipOnTruncate,
     IssueDueDate,
     IssueTimeEstimate,
     IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
-    IssueCardInnerScopedLabel,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -101,10 +100,7 @@ export default {
       return !groupId ? referencePath.split('#')[0] : null;
     },
     orderedLabels() {
-      return _.chain(this.issue.labels)
-        .filter(this.isNonListLabel)
-        .sortBy('title')
-        .value();
+      return sortBy(this.issue.labels.filter(this.isNonListLabel), 'title');
     },
     helpLink() {
       return boardsStore.scopedLabels.helpLink;
@@ -145,12 +141,6 @@ export default {
 
       boardsStore.toggleFilter(filter);
     },
-    labelStyle(label) {
-      return {
-        backgroundColor: label.color,
-        color: label.textColor,
-      };
-    },
     showScopedLabel(label) {
       return boardsStore.scopedLabels.enabled && isScopedLabel(label);
     },
@@ -177,34 +167,23 @@ export default {
           class="confidential-icon append-right-4"
           :aria-label="__('Confidential')"
         />
-        <a :href="issue.path" :title="issue.title" class="js-no-trigger" @mousemove.stop>
-          {{ issue.title }}
-        </a>
+        <a :href="issue.path" :title="issue.title" class="js-no-trigger" @mousemove.stop>{{
+          issue.title
+        }}</a>
       </h4>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels prepend-top-4 d-flex flex-wrap">
       <template v-for="label in orderedLabels">
-        <issue-card-inner-scoped-label
-          v-if="showScopedLabel(label)"
+        <gl-label
           :key="label.id"
-          :label="label"
-          :label-style="labelStyle(label)"
+          :background-color="label.color"
+          :title="label.title"
+          :description="label.description"
+          size="sm"
+          :scoped="showScopedLabel(label)"
           :scoped-labels-documentation-link="helpLink"
-          @scoped-label-click="filterByLabel($event)"
-        />
-
-        <button
-          v-else
-          :key="label.id"
-          v-gl-tooltip
-          :style="labelStyle(label)"
-          :title="label.description"
-          class="badge color-label append-right-4 prepend-top-4"
-          type="button"
           @click="filterByLabel(label)"
-        >
-          {{ label.title }}
-        </button>
+        />
       </template>
     </div>
     <div class="board-card-footer d-flex justify-content-between align-items-end">
@@ -225,7 +204,7 @@ export default {
           #{{ issue.iid }}
         </span>
         <span class="board-info-items prepend-top-8 d-inline-block">
-          <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" />
+          <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" :closed="issue.closed" />
           <issue-time-estimate v-if="issue.timeEstimate" :estimate="issue.timeEstimate" />
           <issue-card-weight
             v-if="validIssueWeight"

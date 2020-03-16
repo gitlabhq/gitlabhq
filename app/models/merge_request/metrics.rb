@@ -6,3 +6,5 @@ class MergeRequest::Metrics < ApplicationRecord
   belongs_to :latest_closed_by, class_name: 'User'
   belongs_to :merged_by, class_name: 'User'
 end
+
+MergeRequest::Metrics.prepend_if_ee('EE::MergeRequest::Metrics')
