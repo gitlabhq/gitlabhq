@@ -361,16 +361,31 @@ module ApplicationSettingImplementation
 
   def separate_whitelists(string_array)
     string_array.reduce([[], []]) do |(ip_whitelist, domain_whitelist), string|
-      ip_obj = Gitlab::Utils.string_to_ip_object(string)
+      address, port = parse_addr_and_port(string)
+
+      ip_obj = Gitlab::Utils.string_to_ip_object(address)
 
       if ip_obj
-        ip_whitelist << ip_obj
+        ip_whitelist << Gitlab::UrlBlockers::IpWhitelistEntry.new(ip_obj, port: port)
       else
-        domain_whitelist << string
+        domain_whitelist << Gitlab::UrlBlockers::DomainWhitelistEntry.new(address, port: port)
       end
 
       [ip_whitelist, domain_whitelist]
     end
+  end
+
+  def parse_addr_and_port(str)
+    case str
+    when /\A\[(?<address> .* )\]:(?<port> \d+ )\z/x      # string like "[::1]:80"
+      address, port = $~[:address], $~[:port]
+    when /\A(?<address> [^:]+ ):(?<port> \d+ )\z/x       # string like "127.0.0.1:80"
+      address, port = $~[:address], $~[:port]
+    else                                                 # string with no port number
+      address, port = str, nil
+    end
+
+    [address, port&.to_i]
   end
 
   def array_to_string(arr)

@@ -389,7 +389,7 @@ To purchase additional minutes for your personal namespace:
 
 1. Click your avatar, then go to **Settings > Pipeline quota**.
 1. Locate the subscription card that's linked to your personal namespace on GitLab.com, click **Buy more CI minutes**, and complete the details about the transaction. Once we have processed your payment, the extra CI minutes will be synced to your Group.
-1. To confirm the available CI minutes for your personal projects, click your avatar, then go to **Settings > Pipeline quota**.  
+1. To confirm the available CI minutes for your personal projects, click your avatar, then go to **Settings > Pipeline quota**.
    The **Additional minutes** displayed now includes the purchased additional CI minutes, plus any minutes rolled over from last month.
 
 Be aware that:

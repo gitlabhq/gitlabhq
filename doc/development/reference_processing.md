@@ -43,7 +43,7 @@ Subclasses of `AbstractReferenceFilter` generally do not override `#call`; inste
 a minimum implementation of `AbstractReferenceFilter` should define:
 
 - `.reference_type`: The type of domain object.
-  
+
   This is usually a keyword, and is used to set the `data-reference-type` attribute
   on the generated link, and is an important part of the interaction with the
   corresponding `ReferenceParser` (see below).

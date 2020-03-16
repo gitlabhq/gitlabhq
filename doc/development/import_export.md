@@ -195,17 +195,17 @@ module Gitlab
 The [current version history](../user/project/settings/import_export.md) also displays the equivalent GitLab version
 and it is useful for knowing which versions won't be compatible between them.
 
-| Exporting GitLab version   | Importing GitLab version   |  
-| -------------------------- | -------------------------- |  
-| 11.7 to current            | 11.7 to current            |  
-| 11.1 to 11.6               | 11.1 to 11.6               |  
-| 10.8 to 11.0               | 10.8 to 11.0               |  
-| 10.4 to 10.7               | 10.4 to 10.7               |  
-| ...                        | ...                        |  
-| 8.10.3 to 8.11             | 8.10.3 to 8.11             |  
-| 8.10.0 to 8.10.2           | 8.10.0 to 8.10.2           |  
-| 8.9.5 to 8.9.11            | 8.9.5 to 8.9.11            |  
-| 8.9.0 to 8.9.4             | 8.9.0 to 8.9.4             |  
+| Exporting GitLab version   | Importing GitLab version   |
+| -------------------------- | -------------------------- |
+| 11.7 to current            | 11.7 to current            |
+| 11.1 to 11.6               | 11.1 to 11.6               |
+| 10.8 to 11.0               | 10.8 to 11.0               |
+| 10.4 to 10.7               | 10.4 to 10.7               |
+| ...                        | ...                        |
+| 8.10.3 to 8.11             | 8.10.3 to 8.11             |
+| 8.10.0 to 8.10.2           | 8.10.0 to 8.10.2           |
+| 8.9.5 to 8.9.11            | 8.9.5 to 8.9.11            |
+| 8.9.0 to 8.9.4             | 8.9.0 to 8.9.4             |
 
 ### When to bump the version up
 

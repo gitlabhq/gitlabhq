@@ -19,7 +19,7 @@ Unfortunately, it's not so easy and that workflow won't work. Deleting files in
 a commit doesn't actually reduce the size of the repo since the earlier commits
 and blobs are still around. What you need to do is rewrite history with Git's
 [`filter-branch` option](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#The-Nuclear-Option:-filter-branch),
-or an open source community-maintained tool like the  
+or an open source community-maintained tool like the
 [BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 
 Note that even with that method, until `git gc` runs on the GitLab side, the

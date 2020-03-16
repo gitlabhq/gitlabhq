@@ -180,18 +180,6 @@ These are shortcuts to your last 4 visited boards.
 When you're revisiting an issue board in a project or group with multiple boards,
 GitLab will automatically load the last board you visited.
 
-### Multi-select Issue Cards
-
-As the name suggest, multi-select issue cards allows more than one issue card
-to be dragged and dropped across different lists. This becomes helpful while
-moving and grooming a lot of issues at once.
-
-You can multi-select an issue card by pressing `CTRL` + `Left mouse click` on
-Windows or `CMD` + `Left mouse click` on MacOS. Once done, start by dragging one
-of the issue card you have selected and drop it in the new list you want.
-
-![Multi-select Issue Cards](img/issue_boards_multi_select.png)
-
 ### Configurable Issue Boards **(STARTER)**
 
 > Introduced in [GitLab Starter Edition 10.2](https://about.gitlab.com/releases/2017/11/22/gitlab-10-2-released/#issue-boards-configuration).
@@ -466,6 +454,19 @@ When dragging issues between lists, different behavior occurs depending on the s
 | From Closed                | Issue reopened     | -            | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned     |
 | From label `A` list        | `A` removed        | Issue closed | `A` removed<br/>`B` added    | `Bob` assigned                        |
 | From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added                    | `Alice` unassigned<br/>`Bob` assigned |
+
+### Multi-select issue cards
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18954) in GitLab 12.4.
+
+You can select multiple issue cards, then drag the group to another position within the list, or to another list. This makes it faster to reorder many issues at once.
+
+To select and move multiple cards:
+
+1. Select each card with <kbd>Ctrl</kbd>+`Click` on Windows or Linux, or <kbd>Cmd</kbd>+`Click` on MacOS.
+1. Drag one of the selected cards to another position or list and all selected cards will be moved.
+
+![Multi-select Issue Cards](img/issue_boards_multi_select_v12_4.png)
 
 ## Tips
 

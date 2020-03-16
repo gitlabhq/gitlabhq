@@ -149,12 +149,12 @@ import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';
 
 describe('my component', () => {
   let trackingSpy;
-  
+
   beforeEach(() => {
     const vm = mountComponent(MyComponent);
     trackingSpy = mockTracking('_category_', vm.$el, spyOn);
   });
-  
+
   it('tracks an event when toggled', () => {
     triggerEvent('a.toggle');
 

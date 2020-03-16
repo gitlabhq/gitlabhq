@@ -54,7 +54,7 @@ The way you install the Go indexer depends on your version of GitLab:
 
 ### GitLab Omnibus
 
-Since GitLab 11.8 the Go indexer is included in GitLab Omnibus.  
+Since GitLab 11.8 the Go indexer is included in GitLab Omnibus.
 The former Ruby-based indexer was removed in [GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/issues/6481).
 
 ### From source

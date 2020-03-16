@@ -49,7 +49,7 @@ module Gitlab
         return [uri, nil] unless address_info
 
         ip_address = ip_address(address_info)
-        return [uri, nil] if domain_whitelisted?(uri) || ip_whitelisted?(ip_address)
+        return [uri, nil] if domain_whitelisted?(uri) || ip_whitelisted?(ip_address, port: get_port(uri))
 
         protected_uri_with_hostname = enforce_uri_hostname(ip_address, uri, dns_rebind_protection)
 
@@ -254,11 +254,11 @@ module Gitlab
       end
 
       def domain_whitelisted?(uri)
-        Gitlab::UrlBlockers::UrlWhitelist.domain_whitelisted?(uri.normalized_host)
+        Gitlab::UrlBlockers::UrlWhitelist.domain_whitelisted?(uri.normalized_host, port: get_port(uri))
       end
 
-      def ip_whitelisted?(ip_address)
-        Gitlab::UrlBlockers::UrlWhitelist.ip_whitelisted?(ip_address)
+      def ip_whitelisted?(ip_address, port: nil)
+        Gitlab::UrlBlockers::UrlWhitelist.ip_whitelisted?(ip_address, port: port)
       end
 
       def config

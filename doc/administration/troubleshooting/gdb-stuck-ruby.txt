@@ -1,6 +1,6 @@
 # Here's the script I'll use to demonstrate - it just loops forever:
 
-$ cat test.rb 
+$ cat test.rb
 #!/usr/bin/env ruby
 
 loop do
@@ -75,7 +75,7 @@ Thread 1 (Thread 0xb74d76c0 (LWP 1343)):
     at eval.c:5778
 #5  rb_call0 (klass=3075304600, recv=3075299660, id=9393, oid=9393, argc=1, argv=0xbf85f490, body=0xb74c85a8, flags=2)
     at eval.c:5928
-#6  0x0805e35d in rb_call (klass=3075304600, recv=3075299660, mid=9393, argc=1, argv=0xbf85f490, scope=1, 
+#6  0x0805e35d in rb_call (klass=3075304600, recv=3075299660, mid=9393, argc=1, argv=0xbf85f490, scope=1,
     self=<optimized out>) at eval.c:6176
 #7  0x080651ec in rb_eval (self=3075299660, n=0xb74c4e1c) at eval.c:3521
 #8  0x0805c31c in rb_yield_0 (val=6, self=3075299660, klass=<optimized out>, flags=0, avalue=0) at eval.c:5095
@@ -139,4 +139,4 @@ A debugging session is active.
 
 Quit anyway? (y or n) y
 Detaching from program: /opt/vagrant_ruby/bin/ruby, process 1343
-$ 
+$

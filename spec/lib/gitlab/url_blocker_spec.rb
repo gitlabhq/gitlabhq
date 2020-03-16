@@ -501,6 +501,18 @@ describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
               it_behaves_like 'dns rebinding checks'
             end
           end
+
+          context 'with ports' do
+            let(:whitelist) do
+              ["127.0.0.1:2000"]
+            end
+
+            it 'allows domain with port when resolved ip has port whitelisted' do
+              stub_domain_resolv("www.resolve-domain.com", '127.0.0.1') do
+                expect(described_class).not_to be_blocked_url("http://www.resolve-domain.com:2000", url_blocker_attributes)
+              end
+            end
+          end
         end
       end
 

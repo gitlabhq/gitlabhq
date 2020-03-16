@@ -278,7 +278,7 @@ and where the `message` repeats the `location` field:
         It takes around 50k characters to block for 2 seconds making this a low severity issue."
 }
 ```
-  
+
 The `description` might explain how the vulnerability works or give context about the exploit.
 It should not repeat the other fields of the vulnerability object.
 In particular, the `description` should not repeat the `location` (what is affected)

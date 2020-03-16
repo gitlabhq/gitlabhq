@@ -71,16 +71,24 @@ use IDNA encoding.
 The whitelist can hold a maximum of 1000 entries. Each entry can be a maximum of
 255 characters.
 
+You can whitelist a particular port by specifying it in the whitelist entry.
+For example `127.0.0.1:8080` will only allow connections to port 8080 on `127.0.0.1`.
+If no port is mentioned, all ports on that IP/domain are whitelisted. An IP range
+will whitelist all ports on all IPs in that range.
+
 Example:
 
 ```text
 example.com;gitlab.example.com
 127.0.0.1,1:0:0:0:0:0:0:1
 127.0.0.0/8 1:0:0:0:0:0:0:0/124
+[1:0:0:0:0:0:0:1]:8080
+127.0.0.1:8080
+example.com:8080
 ```
 
 NOTE: **Note:**
-Wildcards (`*.example.com`) and ports (`127.0.0.1:3000`) are not currently supported.
+Wildcards (`*.example.com`) are not currently supported.
 
 <!-- ## Troubleshooting
 
