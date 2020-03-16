@@ -12,7 +12,7 @@ GET /projects/:id/pipelines
 |-----------|---------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `scope`   | string  | no       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
-| `status`  | string  | no       | The status of pipelines, one of: `running`, `pending`, `success`, `failed`, `canceled`, `skipped` |
+| `status`  | string  | no       | The status of pipelines, one of: `running`, `pending`, `success`, `failed`, `canceled`, `skipped`, `created` |
 | `ref`     | string  | no       | The ref of pipelines |
 | `sha`     | string  | no       | The sha of pipelines |
 | `yaml_errors`| boolean  | no       | Returns pipelines with invalid configurations |
