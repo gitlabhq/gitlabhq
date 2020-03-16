@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.8.7 (2020-03-16)
+
+### Fixed (1 change, 1 of them is from the community)
+
+- Fix crl_url parsing and certificate visualization. !25876 (Roger Meier)
+
+
 ## 12.8.6 (2020-03-11)
 
 ### Security (1 change)
