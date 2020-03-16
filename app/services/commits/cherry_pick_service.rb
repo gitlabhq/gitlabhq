@@ -11,8 +11,6 @@ module Commits
     private
 
     def track_mr_picking(pick_sha)
-      return unless Feature.enabled?(:track_mr_picking, project)
-
       merge_request = project.merge_requests.by_merge_commit_sha(@commit.sha).first
       return unless merge_request
 

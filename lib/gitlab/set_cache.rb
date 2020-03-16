@@ -14,8 +14,11 @@ module Gitlab
       "#{key}:set"
     end
 
-    def expire(key)
-      with { |redis| redis.del(cache_key(key)) }
+    def expire(*keys)
+      with do |redis|
+        keys = keys.map { |key| cache_key(key) }
+        unlink_or_delete(redis, keys)
+      end
     end
 
     def exist?(key)
@@ -50,6 +53,16 @@ module Gitlab
 
     def with(&blk)
       Gitlab::Redis::Cache.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
+    end
+
+    def unlink_or_delete(redis, keys)
+      if Feature.enabled?(:repository_set_cache_unlink, default_enabled: true)
+        redis.unlink(*keys)
+      else
+        redis.del(*keys)
+      end
+    rescue ::Redis::CommandError
+      redis.del(*keys)
     end
   end
 end

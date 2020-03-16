@@ -1,0 +1,5 @@
+---
+title: Swap to UNLINK for Redis set cache
+merge_request: 27116
+author:
+type: performance

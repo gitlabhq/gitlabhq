@@ -1125,7 +1125,7 @@ ActiveRecord::Schema.define(version: 2020_03_12_163407) do
     t.integer "management_project_id"
     t.integer "cleanup_status", limit: 2, default: 1, null: false
     t.text "cleanup_status_reason"
-    t.index ["enabled"], name: "index_clusters_on_enabled"
+    t.index ["enabled", "provider_type", "id"], name: "index_clusters_on_enabled_and_provider_type_and_id"
     t.index ["management_project_id"], name: "index_clusters_on_management_project_id", where: "(management_project_id IS NOT NULL)"
     t.index ["user_id"], name: "index_clusters_on_user_id"
   end

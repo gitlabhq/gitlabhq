@@ -166,6 +166,10 @@ environment, you can use the [GitLab Development Kit (GDK)](https://gitlab.com/g
 Please refer to the instructions in the [QA README](https://gitlab.com/gitlab-org/gitlab/tree/master/qa/README.md#how-can-i-use-it)
 and the section below.
 
+### Running tests that require special setup
+
+Learn how to perform [tests that require special setup or consideration to run on your local environment](running_tests_that_require_special_setup.md).
+
 ## How do I write tests?
 
 In order to write new tests, you first need to learn more about GitLab QA

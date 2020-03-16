@@ -88,11 +88,14 @@ or over the size limit, you can [reduce your repository size with Git](../projec
 
 ## IP range
 
-GitLab.com, CI/CD, and related services are deployed into Google Cloud Platform (GCP). Any
-IP based firewall can be configured by looking up all
-[IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges).
+GitLab.com is using the IP range `34.74.90.64/28` for traffic from its Web/API
+fleet. You can expect connections from webhooks or repository mirroring to come
+from those IPs and whitelist them.
 
-[Static endpoints](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/97) are being considered.
+For connections from CI/CD runners we are not providing static IP addresses.
+All our runners are deployed into Google Cloud Platform (GCP) - any IP based
+firewall can be configured by looking up all
+[IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges).
 
 ## Maximum number of webhooks
 

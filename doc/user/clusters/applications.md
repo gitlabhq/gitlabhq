@@ -297,6 +297,25 @@ Ingress with the recent changes.
 
 ![Disabling WAF](../../topics/web_application_firewall/img/guide_waf_ingress_save_changes_v12_9.png)
 
+##### Viewing Web Application Firewall traffic
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14707) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+
+You can view Web Application Firewall traffic by navigating to your project's
+**Security & Compliance > Threat Monitoring** page.
+
+From there, you can see tracked over time:
+
+- The total amount of traffic to your application.
+- The proportion of traffic that is considered anomalous by the Web Application
+  Firewall's default [OWASP ruleset](https://www.modsecurity.org/CRS/Documentation/).
+
+If a significant percentage of traffic is anomalous, it should be investigated
+for potential threats, which can be done by
+[examining the application logs](#web-application-firewall-modsecurity).
+
+![Threat Monitoring](img/threat_monitoring_v12_9.png)
+
 ### JupyterHub
 
 > - Introduced in GitLab 11.0 for project-level clusters.

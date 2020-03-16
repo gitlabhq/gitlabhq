@@ -253,7 +253,7 @@ describe ::SystemNotes::MergeRequestsService do
     end
 
     it "posts the 'picked merge request' system note" do
-      expect(subject.note).to eq("picked this merge request into branch [`#{branch_name}`](/#{project.full_path}/-/tree/#{branch_name}) with commit #{commit_sha}")
+      expect(subject.note).to eq("picked the changes into the branch [`#{branch_name}`](/#{project.full_path}/-/tree/#{branch_name}) with commit #{commit_sha}")
     end
 
     it 'links the merge request and the cherry-pick commit' do

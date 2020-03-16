@@ -124,6 +124,8 @@ the following preparations into account.
 - Follow the [guidelines on dropping columns](what_requires_downtime.md#dropping-columns).
 - Generally it's best practice (but not a hard rule) to remove indexes and foreign keys in a post-deployment migration.
   - Exceptions include removing indexes and foreign keys for small tables.
+- If you're adding a composite index, another index might become redundant, so remove that in the same migration.
+  For example adding `index(column_A, column_B, column_C)` makes the indexes `index(column_A, column_B)` and `index(column_A)` redundant.
 
 ### How to review for database
 

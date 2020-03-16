@@ -81,6 +81,33 @@ describe SubmoduleHelper do
       end
     end
 
+    context 'submodule on gist.github.com' do
+      it 'detects ssh' do
+        stub_url('git@gist.github.com:gitlab-org/gitlab-foss.git')
+        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+      end
+
+      it 'detects http' do
+        stub_url('http://gist.github.com/gitlab-org/gitlab-foss.git')
+        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+      end
+
+      it 'detects https' do
+        stub_url('https://gist.github.com/gitlab-org/gitlab-foss.git')
+        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+      end
+
+      it 'handles urls with no .git on the end' do
+        stub_url('http://gist.github.com/gitlab-org/gitlab-foss')
+        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+      end
+
+      it 'returns original with non-standard url' do
+        stub_url('http://gist.github.com/another/gitlab-org/gitlab-foss.git')
+        is_expected.to eq([repo.submodule_url_for, nil])
+      end
+    end
+
     context 'submodule on github.com' do
       it 'detects ssh' do
         stub_url('git@github.com:gitlab-org/gitlab-foss.git')

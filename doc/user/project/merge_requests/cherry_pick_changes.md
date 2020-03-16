@@ -21,6 +21,20 @@ where you can choose to either:
 - Cherry-pick the changes directly into the selected branch.
 - Create a new merge request with the cherry-picked changes.
 
+### Cherry-pick tracking
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2675) in GitLab 12.9.
+
+When you cherry-pick a merge commit, GitLab will output a system note to the related merge
+request thread crosslinking the new commit and the existing merge request.
+
+![Cherry-pick tracking in Merge Request timeline](img/cherry_pick_mr_timeline_v12_9.png)
+
+Each deployment's [list of associated merge requests](../../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment) will include cherry-picked merge commits.
+
+NOTE: **Note:**
+We only track cherry-pick executed from GitLab (both UI and API). Support for [tracking cherry-picked commits through the command line](https://gitlab.com/gitlab-org/gitlab/issues/202215) is planned for a future release.
+
 ## Cherry-picking a commit
 
 You can cherry-pick a commit from the commit details page:

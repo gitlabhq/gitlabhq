@@ -252,7 +252,7 @@ on [Git Credential Storage documentation](https://git-scm.com/book/en/v2/Git-Too
 
 GitLab checks files to detect LFS pointers on push. If LFS pointers are detected, GitLab tries to verify that those files already exist in LFS on GitLab.
 
-Verify that LFS in installed locally and consider a manual push with `git lfs push --all`.
+Verify that LFS is installed locally and consider a manual push with `git lfs push --all`.
 
 If you are storing LFS files outside of GitLab you can disable LFS on the project by setting `lfs_enabled: false` with the [projects API](../../api/projects.md#edit-project).
 

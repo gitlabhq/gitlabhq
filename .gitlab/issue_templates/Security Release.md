@@ -4,6 +4,10 @@
 Set the title to: `Security Release: 12.2.X, 12.1.X, and 12.0.X`
 -->
 
+:warning: **Only Release Managers and members of the AppSec team can edit the description of this issue**
+
+-------
+
 ## Releases tasks
 
 - https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/release-manager.md
@@ -23,22 +27,6 @@ in the "Linked issues" section below this issue description.
 :warning: If your security issues are not marked as related to this release
 tracking issue, their merge requests may not be included in the security
 release.
-
-## Issues in Omnibus-GitLab
-
-Omnibus security fixes need to be added manually to this issue description
-using and below the following template:
-
-```markdown
-* {https://gitlab.com/gitlab-org/security/gitlab/issues/ link}
-
-| Version | MR |
-|---------|----|
-| 12.2 | {https://dev.gitlab.org/gitlab/omnibus-gitlab/merge_requests/ link} |
-| 12.1 | {https://dev.gitlab.org/gitlab/omnibus-gitlab/merge_requests/ link} |
-| 12.0 | {https://dev.gitlab.org/gitlab/omnibus-gitlab/merge_requests/ link} |
-| master | {https://dev.gitlab.org/gitlab/omnibus-gitlab/merge_requests/ link} |
-```
 
 ## QA
 {QA issue link}

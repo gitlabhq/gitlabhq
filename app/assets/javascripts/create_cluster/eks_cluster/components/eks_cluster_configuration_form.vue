@@ -1,6 +1,6 @@
 <script>
 import { createNamespacedHelpers, mapState, mapActions } from 'vuex';
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import { GlFormInput, GlFormCheckbox } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import ClusterFormDropdown from '~/create_cluster/components/cluster_form_dropdown.vue';
@@ -133,7 +133,7 @@ export default {
         : s__('ClusterIntegration|Create Kubernetes cluster');
     },
     kubernetesIntegrationHelpText() {
-      const escapedUrl = _.escape(this.kubernetesIntegrationHelpPath);
+      const escapedUrl = esc(this.kubernetesIntegrationHelpPath);
 
       return sprintf(
         s__(
@@ -245,7 +245,7 @@ export default {
       );
     },
     gitlabManagedHelpText() {
-      const escapedUrl = _.escape(this.gitlabManagedClusterHelpPath);
+      const escapedUrl = esc(this.gitlabManagedClusterHelpPath);
 
       return sprintf(
         s__(

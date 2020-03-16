@@ -1,9 +1,10 @@
 - if show_no_ssh_key_message?
-  .no-ssh-key-message.alert.alert-warning
-    - add_ssh_key_link = link_to s_('MissingSSHKeyWarningLink|add an SSH key'), profile_keys_path, class: 'alert-link'
-    - ssh_message = _("You won't be able to pull or push project code via SSH until you %{add_ssh_key_link} to your profile") % { add_ssh_key_link: add_ssh_key_link }
-    = ssh_message.html_safe
-    .alert-link-group
-      = link_to _("Don't show again"), profile_path(user: {hide_no_ssh_key: true}), method: :put, class: 'alert-link'
-      |
-      = link_to _('Remind later'), '#', class: 'hide-no-ssh-message alert-link'
+  %div{ class: 'no-ssh-key-message gl-alert gl-alert-warning', role: 'alert' }
+    = sprite_icon('warning', size: 16, css_class: 'gl-icon s16 gl-alert-icon gl-alert-icon-no-title')
+    %button{ class: 'gl-alert-dismiss hide-no-ssh-message', type: 'button', 'aria-label': 'Dismiss' }
+      = sprite_icon('close', size: 16, css_class: 'gl-icon s16')
+    .gl-alert-body
+      = s_("MissingSSHKeyWarningLink|You won't be able to pull or push project code via SSH until you add an SSH key to your profile").html_safe
+    .gl-alert-actions
+      = link_to s_('MissingSSHKeyWarningLink|Add SSH key'), profile_keys_path, class: "btn gl-alert-action btn-warning btn-md new-gl-button"
+      = link_to s_("MissingSSHKeyWarningLink|Don't show again"), profile_path(user: {hide_no_ssh_key: true}), method: :put, role: 'button', class: 'btn gl-alert-action btn-md btn-warning btn-secondary new-gl-button'

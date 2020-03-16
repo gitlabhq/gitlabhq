@@ -44,7 +44,7 @@ class Ability
 
     # Returns an Array of MergeRequests that can be read by the given user.
     #
-    # merge_requests - MRs out of which to collect mr's readable by the user.
+    # merge_requests - MRs out of which to collect MRs readable by the user.
     # user - The User for which to check the merge_requests
     # filters - A hash of abilities and filters to apply if the user lacks this
     #           ability

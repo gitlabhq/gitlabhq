@@ -1,0 +1,6 @@
+---
+title: Fix Conan package download_urls and snapshot to return files based on requested
+  conan_package_reference
+merge_request: 27250
+author:
+type: fixed

@@ -51,12 +51,52 @@ describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
   end
 
   describe '#expire' do
-    it 'expires the given key from the cache' do
-      cache.write(:foo, ['value'])
+    subject { cache.expire(*keys) }
 
+    before do
+      cache.write(:foo, ['value'])
+      cache.write(:bar, ['value2'])
+    end
+
+    it 'actually wrote the values' do
       expect(cache.read(:foo)).to contain_exactly('value')
-      expect(cache.expire(:foo)).to eq(1)
-      expect(cache.read(:foo)).to be_empty
+      expect(cache.read(:bar)).to contain_exactly('value2')
+    end
+
+    context 'single key' do
+      let(:keys) { %w(foo) }
+
+      it { is_expected.to eq(1) }
+
+      it 'deletes the given key from the cache' do
+        subject
+
+        expect(cache.read(:foo)).to be_empty
+      end
+    end
+
+    context 'multiple keys' do
+      let(:keys) { %w(foo bar) }
+
+      it { is_expected.to eq(2) }
+
+      it 'deletes the given keys from the cache' do
+        subject
+
+        expect(cache.read(:foo)).to be_empty
+        expect(cache.read(:bar)).to be_empty
+      end
+    end
+
+    context "unlink isn't supported" do
+      before do
+        allow_any_instance_of(Redis).to receive(:unlink) { raise ::Redis::CommandError }
+      end
+
+      it 'still deletes the given key' do
+        expect(cache.expire(:foo)).to eq(1)
+        expect(cache.read(:foo)).to be_empty
+      end
     end
   end
 

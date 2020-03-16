@@ -56,6 +56,7 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/danger/ @gl-quality/eng-prod
 /scripts/ @gl-quality/eng-prod
 /scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
+.editorconfig @gl-quality/eng-prod
 
 # Telemetry owner files
 /ee/lib/gitlab/usage_data_counters/ @gitlab-org/growth/telemetry

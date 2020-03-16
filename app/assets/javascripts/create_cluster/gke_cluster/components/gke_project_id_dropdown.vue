@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { s__, sprintf } from '~/locale';
 
@@ -65,7 +65,7 @@ export default {
         s__(message),
         {
           docsLinkEnd: '&nbsp;<i class="fa fa-external-link" aria-hidden="true"></i></a>',
-          docsLinkStart: `<a href="${_.escape(
+          docsLinkStart: `<a href="${esc(
             this.docsUrl,
           )}" target="_blank" rel="noopener noreferrer">`,
         },
@@ -119,7 +119,7 @@ export default {
     ...mapActions({ setItem: 'setProject' }),
     fetchSuccessHandler() {
       if (this.defaultValue) {
-        const projectToSelect = _.find(this.items, item => item.projectId === this.defaultValue);
+        const projectToSelect = this.items.find(item => item.projectId === this.defaultValue);
 
         if (projectToSelect) {
           this.setItem(projectToSelect);

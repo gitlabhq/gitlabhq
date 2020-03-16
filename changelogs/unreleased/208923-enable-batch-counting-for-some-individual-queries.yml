@@ -1,0 +1,5 @@
+---
+title: Optimize clusters counters query performance in usage data
+merge_request: 26887
+author:
+type: performance
