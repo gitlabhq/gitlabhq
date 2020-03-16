@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, n__, s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
@@ -10,6 +10,7 @@ export default {
   name: 'RelatedMergeRequests',
   components: {
     Icon,
+    GlLink,
     GlLoadingIcon,
     RelatedIssuableItem,
   },
@@ -64,10 +65,19 @@ export default {
 </script>
 
 <template>
-  <div v-if="isFetchingMergeRequests || (!isFetchingMergeRequests && totalCount)">
+  <div
+    v-if="isFetchingMergeRequests || (!isFetchingMergeRequests && totalCount)"
+    id="related-merge-requests"
+  >
     <div id="merge-requests" class="card card-slim mt-3">
       <div class="card-header">
-        <div class="card-title mt-0 mb-0 h5 merge-requests-title">
+        <div class="card-title mt-0 mb-0 h5 merge-requests-title position-relative">
+          <gl-link
+            id="user-content-related-merge-requests"
+            class="anchor position-absolute text-decoration-none"
+            href="#related-merge-requests"
+            aria-hidden="true"
+          />
           <span class="mr-1">
             {{ __('Related merge requests') }}
           </span>

@@ -284,3 +284,22 @@ ul.related-merge-requests > li {
     text-align: right;
   }
 }
+
+.issue-details {
+  .card-title {
+    a.anchor {
+      left: -16px;
+      top: 4px;
+      outline: none;
+
+      &::after {
+        content: image-url('icon_anchor.svg');
+        @include invisible(hidden);
+      }
+    }
+
+    &:hover > a.anchor::after {
+      @include invisible(visible);
+    }
+  }
+}

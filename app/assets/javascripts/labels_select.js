@@ -495,6 +495,10 @@ export default class LabelsSelect {
       ].join(''),
     );
 
+    const rightLabelTextColor = ({ label, escapeStr }) => {
+      return escapeStr(label.text_color === '#FFFFFF' ? label.color : label.text_color);
+    };
+
     const infoIconTemplate = _.template(
       [
         '<a href="<%= scopedLabelsDocumentationLink %>" class="gl-link gl-label-icon" target="_blank" rel="noopener">',
@@ -510,7 +514,7 @@ export default class LabelsSelect {
         spanOpenTag,
         '<%- label.title.slice(0, label.title.lastIndexOf("::")) %>',
         '</span>',
-        '<span class="gl-label-text" style="color: <%= escapeStr(label.color) %>;">',
+        '<span class="gl-label-text" style="color: <%= rightLabelTextColor({ label, escapeStr }) %>;">',
         '<%- label.title.slice(label.title.lastIndexOf("::") + 2) %>',
         '</span>',
         '</a>',
@@ -536,7 +540,7 @@ export default class LabelsSelect {
         '<% _.each(labels, function(label){ %>',
         '<% if (isScopedLabel(label) && enableScopedLabels) { %>',
         '<span class="d-inline-block position-relative scoped-label-wrapper">',
-        '<%= scopedLabelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, infoIconTemplate, scopedLabelsDocumentationLink, tooltipTitleTemplate, escapeStr, linkAttrs: \'data-html="true"\' }) %>',
+        '<%= scopedLabelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, rightLabelTextColor, infoIconTemplate, scopedLabelsDocumentationLink, tooltipTitleTemplate, escapeStr, linkAttrs: \'data-html="true"\' }) %>',
         '</span>',
         '<% } else { %>',
         '<%= labelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, tooltipTitleTemplate, escapeStr, linkAttrs: "" }) %>',
@@ -548,6 +552,7 @@ export default class LabelsSelect {
     return tpl({
       ...tplData,
       labelTemplate,
+      rightLabelTextColor,
       infoIconTemplate,
       scopedLabelTemplate,
       tooltipTitleTemplate,

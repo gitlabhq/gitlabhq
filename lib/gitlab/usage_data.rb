@@ -84,7 +84,7 @@ module Gitlab
             issues: count(Issue),
             issues_created_from_gitlab_error_tracking_ui: count(SentryIssue),
             issues_with_associated_zoom_link: count(ZoomMeeting.added_to_issue),
-            issues_using_zoom_quick_actions: count(ZoomMeeting.select(:issue_id).distinct, batch: false),
+            issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
             issues_with_embedded_grafana_charts_approx: ::Gitlab::GrafanaEmbedUsageData.issue_count,
             incident_issues: count(::Issue.authored(::User.alert_bot)),
             keys: count(Key),

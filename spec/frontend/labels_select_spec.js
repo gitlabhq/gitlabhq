@@ -23,6 +23,16 @@ const mockScopedLabels = [
   },
 ];
 
+const mockScopedLabels2 = [
+  {
+    id: 28,
+    title: 'Foo::Bar2',
+    description: 'Foobar2',
+    color: '#FFFFFF',
+    text_color: '#000000',
+  },
+];
+
 describe('LabelsSelect', () => {
   describe('getLabelTemplate', () => {
     describe('when normal label is present', () => {
@@ -108,10 +118,44 @@ describe('LabelsSelect', () => {
         expect($labelEl.find('span.gl-label-text').attr('style')).toBe(
           `background-color: ${label.color}; color: ${label.text_color};`,
         );
+        expect(
+          $labelEl
+            .find('span.gl-label-text')
+            .last()
+            .attr('style'),
+        ).toBe(`color: ${label.color};`);
       });
 
       it('generated label item has a badge class', () => {
         expect($labelEl.find('span').hasClass('gl-label-text')).toEqual(true);
+      });
+    });
+
+    describe('when scoped label is present, with text color not white', () => {
+      const label = mockScopedLabels2[0];
+      let $labelEl;
+
+      beforeEach(() => {
+        $labelEl = $(
+          LabelsSelect.getLabelTemplate({
+            labels: mockScopedLabels2,
+            issueUpdateURL: mockUrl,
+            enableScopedLabels: true,
+            scopedLabelsDocumentationLink: 'docs-link',
+          }),
+        );
+      });
+
+      it('generated label item template has correct label styles', () => {
+        expect($labelEl.find('span.gl-label-text').attr('style')).toBe(
+          `background-color: ${label.color}; color: ${label.text_color};`,
+        );
+        expect(
+          $labelEl
+            .find('span.gl-label-text')
+            .last()
+            .attr('style'),
+        ).toBe(`color: ${label.text_color};`);
       });
     });
   });

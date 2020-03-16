@@ -20484,13 +20484,16 @@ msgstr ""
 msgid "Threat Monitoring"
 msgstr ""
 
-msgid "ThreatMonitoring|A Web Application Firewall (WAF) provides monitoring and rules to protect production applications. GitLab adds the modsecurity WAF plug-in when you install the Ingress app in your Kubernetes cluster."
-msgstr ""
-
 msgid "ThreatMonitoring|Anomalous Requests"
 msgstr ""
 
 msgid "ThreatMonitoring|At this time, threat monitoring only supports WAF data."
+msgstr ""
+
+msgid "ThreatMonitoring|Container Network Policy"
+msgstr ""
+
+msgid "ThreatMonitoring|Dropped Packets"
 msgstr ""
 
 msgid "ThreatMonitoring|Environment"
@@ -20499,16 +20502,22 @@ msgstr ""
 msgid "ThreatMonitoring|No traffic to display"
 msgstr ""
 
+msgid "ThreatMonitoring|Operations Per Second"
+msgstr ""
+
+msgid "ThreatMonitoring|Packet Activity"
+msgstr ""
+
 msgid "ThreatMonitoring|Requests"
 msgstr ""
 
 msgid "ThreatMonitoring|Show last"
 msgstr ""
 
-msgid "ThreatMonitoring|Something went wrong, unable to fetch WAF statistics"
+msgid "ThreatMonitoring|Something went wrong, unable to fetch environments"
 msgstr ""
 
-msgid "ThreatMonitoring|Something went wrong, unable to fetch environments"
+msgid "ThreatMonitoring|Something went wrong, unable to fetch statistics"
 msgstr ""
 
 msgid "ThreatMonitoring|The graph below is an overview of traffic coming to your application as tracked by the Web Application Firewall (WAF). View the docs for instructions on how to access the WAF logs to see what type of malicious traffic is trying to access your app. The docs link is also accessible by clicking the \"?\" icon next to the title below."
@@ -20520,13 +20529,25 @@ msgstr ""
 msgid "ThreatMonitoring|Threat Monitoring help page link"
 msgstr ""
 
+msgid "ThreatMonitoring|Threat monitoring is not enabled"
+msgstr ""
+
+msgid "ThreatMonitoring|Threat monitoring provides security monitoring and rules to protect production applications."
+msgstr ""
+
 msgid "ThreatMonitoring|Time"
+msgstr ""
+
+msgid "ThreatMonitoring|Total Packets"
 msgstr ""
 
 msgid "ThreatMonitoring|Total Requests"
 msgstr ""
 
-msgid "ThreatMonitoring|Web Application Firewall not enabled"
+msgid "ThreatMonitoring|Web Application Firewall"
+msgstr ""
+
+msgid "ThreatMonitoring|While it's rare to have no traffic coming to your application, it can happen. In any event, we ask that you double check your settings to make sure you've set up the Network Policies correctly."
 msgstr ""
 
 msgid "ThreatMonitoring|While it's rare to have no traffic coming to your application, it can happen. In any event, we ask that you double check your settings to make sure you've set up the WAF correctly."

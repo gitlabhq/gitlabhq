@@ -44,15 +44,6 @@ describe('Registry Settings App', () => {
     expect(store.dispatch).toHaveBeenCalledWith('fetchSettings');
   });
 
-  it('show a toast if fetchSettings fails', () => {
-    mountComponent({ dispatchMock: 'mockRejectedValue' });
-    return wrapper.vm.$nextTick().then(() =>
-      expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(FETCH_SETTINGS_ERROR_MESSAGE, {
-        type: 'error',
-      }),
-    );
-  });
-
   it('renders the setting form', () => {
     mountComponent();
     expect(findSettingsComponent().exists()).toBe(true);
@@ -68,7 +59,23 @@ describe('Registry Settings App', () => {
     });
 
     it('shows an alert', () => {
-      expect(findAlert().exists()).toBe(true);
+      expect(findAlert().html()).toContain(
+        'Currently, the Container Registry tag expiration feature is not available',
+      );
+    });
+  });
+
+  describe('fetchSettingsError', () => {
+    beforeEach(() => {
+      mountComponent({ dispatchMock: 'mockRejectedValue' });
+    });
+
+    it('the form is hidden', () => {
+      expect(findSettingsComponent().exists()).toBe(false);
+    });
+
+    it('shows an alert', () => {
+      expect(findAlert().html()).toContain(FETCH_SETTINGS_ERROR_MESSAGE);
     });
   });
 });

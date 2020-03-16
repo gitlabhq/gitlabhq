@@ -158,10 +158,6 @@
   a:not(.btn) {
     color: inherit;
 
-    .gl-label-text:hover {
-      color: inherit;
-    }
-
     &:hover {
       color: $blue-800;
 
