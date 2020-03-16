@@ -13,6 +13,8 @@ First of all, our [Quick Start Guide](../quick_start/README.md) contains a good 
 You may also be interested in [Auto DevOps](../../topics/autodevops/index.md) which can potentially be used to build, test,
 and deploy your applications with little to no configuration needed at all.
 
+For advanced CI/CD teams, [templates](#templates) can enable the reuse of pipeline configurations.
+
 Otherwise, read on for important information that will help you get the ball rolling. Welcome
 to GitLab!
 
@@ -56,6 +58,12 @@ There are some high level differences between the products worth mentioning:
 - You can control which jobs run in which cases, depending on how they are triggered,
   with the [`rules` syntax](../yaml/README.md#rules).
 - GitLab [pipeline scheduling concepts](../pipelines/schedules.md) are also different than with Jenkins.
+- You can reuse pipeline configurations using the [`include` keyword](../yaml/README.md#include)
+  and [templates](#templates). Your templates can be kept in a central repo (with different
+  permissions), and then any project can use them. This central project could also
+  contain scripts or other reusable code.
+- You can also use the [`extends` keyword](../yaml/README.md#extends) to reuse configuration
+  within a single pipeline configuration.
 - All jobs within a single stage always run in parallel, and all stages run in sequence. We are planning
   to allow certain jobs to break this sequencing as needed with our [directed acyclic graph](https://gitlab.com/gitlab-org/gitlab-foss/issues/47063)
   feature.
@@ -120,8 +128,9 @@ and manage.
 
 That said, we do of course still value DRY (don't repeat yourself) principles and want to ensure that
 behaviors of your jobs can be codified once and applied as needed. You can use the `extends:` syntax to
-[templatize your jobs](../yaml/README.md#extends), and `include:` can be used to [bring in entire sets of behaviors](../yaml/README.md#include)
-to pipelines in different projects.
+[reuse configuration in your jobs](../yaml/README.md#extends), and `include:` can
+be used to [reuse pipeline configurations](../yaml/README.md#include) in pipelines
+in different projects:
 
 ```yaml
 .in-docker:
@@ -140,7 +149,8 @@ rspec:
 
 Artifacts may work a bit differently than you've used them with Jenkins. In GitLab, any job can define
 a set of artifacts to be saved by using the `artifacts:` keyword. This can be configured to point to a file
-or set of files that can then be persisted from job to job. Read more on our detailed [artifacts documentation](../pipelines/job_artifacts.md)
+or set of files that can then be persisted from job to job. Read more on our detailed
+[artifacts documentation](../pipelines/job_artifacts.md):
 
 ```yaml
 pdf:
@@ -166,6 +176,19 @@ need to configure anything to have these appear.
 If they aren't working as expected, or if you'd like to see what's available, our [CI feature index](../README.md#feature-set) has the full list
 of bundled features and links to the documentation for each.
 
+### Templates
+
+For advanced CI/CD teams, project templates can enable the reuse of pipeline configurations,
+as well as encourage inner sourcing.
+
+In self-managed GitLab instances, you can build an [Instance Template Repository](../../user/admin_area/settings/instance_template_repository.md).
+Development teams across the whole organization can select templates from a dropdown menu.
+A group administrator is able to set a group to use as the source for the
+[custom project templates](../../user/admin_area/custom_project_templates.md), which can
+be used by all projects in the group. An instance adminsitrator can set a group as
+the source for [instance project templates](../../user/group/custom_project_templates.md),
+which can be used by projects in that instance.
+
 ## Converting Declarative Jenkinsfiles
 
 Declarative Jenkinsfiles contain "Sections" and "Directives" which are used to control the behavior of your
@@ -186,7 +209,7 @@ to different Runners (execution agents).
 
 The `agent` section also allows you to define which Docker images should be used for execution, for which we use
 the [`image`](../yaml/README.md#image) keyword. The `image` can be set on a single job or at the top level, in which
-case it will apply to all jobs in the pipeline.
+case it will apply to all jobs in the pipeline:
 
 ```yaml
 my_job:
@@ -198,7 +221,7 @@ my_job:
 
 The `post` section defines the actions that should be performed at the end of the pipeline. GitLab also supports
 this through the use of stages. You can define your stages as follows, and any jobs assigned to the `before_pipeline`
-or `after_pipeline` stages will run as expected. You can call these stages anything you like.
+or `after_pipeline` stages will run as expected. You can call these stages anything you like:
 
 ```yaml
 stages:
@@ -209,7 +232,8 @@ stages:
   - after_pipeline
 ```
 
-Setting a step to be performed before and after any job can be done via the [`before_script` and `after_script` keywords](../yaml/README.md#before_script-and-after_script).
+Setting a step to be performed before and after any job can be done via the
+[`before_script` and `after_script` keywords](../yaml/README.md#before_script-and-after_script):
 
 ```yaml
 default:
@@ -242,7 +266,7 @@ my_job:
 #### `steps`
 
 The `steps` section is equivalent to the [`script` section](../yaml/README.md#script) of an individual job. This is
-a simple YAML array with each line representing an individual command to be run.
+a simple YAML array with each line representing an individual command to be run:
 
 ```yaml
 my_job:
@@ -259,7 +283,7 @@ my_job:
 In GitLab, we use the [`variables` keyword](../yaml/README.md#variables) to define different variables at runtime.
 These can also be set up through the GitLab UI, under CI/CD settings. See also our [general documentation on variables](../variables/README.md),
 including the section on [protected variables](../variables/README.md#protected-environment-variables) which can be used
-to limit access to certain variables to certain environments or runners.
+to limit access to certain variables to certain environments or runners:
 
 ```yaml
 variables:
@@ -302,7 +326,8 @@ variable entry.
 
 GitLab does support a [`when` keyword](../yaml/README.md#when) which is used to indicate when a job should be
 run in case of (or despite) failure, but most of the logic for controlling pipelines can be found in
-our very powerful [`only/except` rules system](../yaml/README.md#onlyexcept-basic) (see also our [advanced syntax](../yaml/README.md#onlyexcept-basic))
+our very powerful [`only/except` rules system](../yaml/README.md#onlyexcept-basic)
+(see also our [advanced syntax](../yaml/README.md#onlyexcept-basic)):
 
 ```yaml
 my_job:

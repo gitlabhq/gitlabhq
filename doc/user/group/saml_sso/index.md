@@ -51,10 +51,8 @@ We recommend setting the NameID format to `Persistent` unless using a field (suc
 
 ### SSO enforcement
 
-SSO enforcement was:
-
-- [Introduced in GitLab 11.8](https://gitlab.com/gitlab-org/gitlab/issues/5291).
-- [Improved upon in GitLab 11.11 with ongoing enforcement in the GitLab UI](https://gitlab.com/gitlab-org/gitlab/issues/9255).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5291) in GitLab 11.8.
+- [Improved](https://gitlab.com/gitlab-org/gitlab/issues/9255) in GitLab 11.11 with ongoing enforcement in the GitLab UI.
 
 With this option enabled, users must use your group's GitLab single sign on URL to be added to the group or be added via SCIM. Users cannot be added manually, and may only access project/group resources via the UI by signing in through the SSO URL.
 
@@ -66,7 +64,7 @@ When SSO enforcement is enabled for a group, users cannot share a project in the
 
 #### Group-managed accounts
 
-> [Introduced in GitLab 12.1](https://gitlab.com/groups/gitlab-org/-/epics/709).
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/709) in GitLab 12.1.
 
 When SSO is being enforced, groups can enable an additional level of protection by enforcing the creation of dedicated user accounts to access the group.
 
@@ -90,7 +88,7 @@ Since use of the group-managed account requires the use of SSO, users of group-m
 
 ##### Credentials inventory for Group-managed accounts **(ULTIMATE)**
 
-> [Introduced in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/38133)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/38133) in GitLab 12.8.
 
 Owners who manage user accounts in a group can view the following details of personal access tokens and SSH keys:
 
@@ -104,7 +102,7 @@ This feature is similar to the [Credentials inventory for self-managed instances
 
 ##### Outer forks restriction for Group-managed accounts
 
-> [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/34648)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34648) in GitLab 12.9.
 
 Groups with enabled group-managed accounts can allow or disallow forking of projects outside of root group
 by using separate toggle. If forking is disallowed any project of given root group or its subgroups can be forked to
@@ -112,11 +110,12 @@ a subgroup of the same root group only.
 
 ##### Other restrictions for Group-managed accounts
 
-> [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/12420)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12420) in GitLab 12.9.
+
 Projects within groups with enabled group-managed accounts are not to be shared with:
 
-- Groups outside of the parent group
-- Members who are not users managed by this group
+- Groups outside of the parent group.
+- Members who are not users managed by this group.
 
 This restriction also applies to projects forked from or to those groups.
 
