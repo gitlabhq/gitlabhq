@@ -20,8 +20,7 @@ directly affect the way that any user or administrator interacts with GitLab.
 Regardless of the type of issue or merge request, certain labels are required when documentation
 is added or updated. The following are added by the issue or merge request author:
 
-- An appropriate [type label](../contributing/issue_workflow.md#type-labels). For example,
-  `~backstage`.
+- An appropriate [type label](../contributing/issue_workflow.md#type-labels).
 - The [stage label](../contributing/issue_workflow.md#stage-labels) and
   [group label](../contributing/issue_workflow.md#group-labels). For example, `~devops::create` and
   `~group::source code`.
@@ -377,8 +376,10 @@ For complex features split over multiple merge requests:
 
 ## For all other documentation
 
-These documentation changes are not associated with the release of a new or updated feature, and are
-therefore labeled `backstage` in GitLab, rather than `feature`. They may include:
+Documentation changes that are not associated with the release of a new or updated feature
+do not take the `~feature` label, but still need the `~documentation` label.
+
+They may include:
 
 - Documentation created or updated to improve accuracy, completeness, ease of use, or any reason
   other than a [feature change](#for-a-product-change).

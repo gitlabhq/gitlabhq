@@ -40,7 +40,7 @@ scheduling into milestones. Labelling is a task for everyone.
 
 Most issues will have labels for at least one of the following:
 
-- Type: `~feature`, `~bug`, `~backstage`, etc.
+- Type: `~feature`, `~bug`, `~backstage`, `~documentation`, etc.
 - Stage: `~"devops::plan"`, `~"devops::create"`, etc.
 - Group: `~"group::source code"`, `~"group::knowledge"`, `~"group::editor"`, etc.
 - Category: `~"Category:Code Analytics"`, `~"Category:DevOps Score"`, `~"Category:Templates"`, etc.
@@ -70,6 +70,7 @@ The current type labels are:
 - ~backstage
 - ~"support request"
 - ~meta
+- ~documentation
 
 A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.

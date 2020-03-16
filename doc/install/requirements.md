@@ -186,6 +186,23 @@ As long as you have enough available CPU and memory capacity, it's okay to incre
 
 To change the Unicorn workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
 
+## Puma Workers
+
+For most instances we recommend using: max(CPU cores * 0.9, 2) = Puma workers.
+For example a node with 4 cores would have 3 Unicorn workers.
+
+For all machines that have 4GB and up we recommend a minimum of three Puma workers.
+If you have a 2GB machine we recommend to configure only one Puma worker to prevent excessive swapping.
+
+By default each Puma worker runs with 4 threads. We do not recommend setting more,
+due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock) works.
+
+For cases when you have to use [Legacy Rugged code](../development/gitaly.md#legacy-rugged-code) it is recommended to set number of threads to 1.
+
+As long as you have enough available CPU and memory capacity, it's okay to increase the number of Puma workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
+
+To change the Puma workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Puma settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/puma.html).
+
 ## Redis and Sidekiq
 
 Redis stores all user sessions and the background task queue.

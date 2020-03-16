@@ -5,7 +5,8 @@ THROUGHPUT_LABELS = [
   'security',
   'bug',
   'feature',
-  'backstage'
+  'backstage',
+  'documentation'
 ].freeze
 
 if gitlab.mr_body.size < 5

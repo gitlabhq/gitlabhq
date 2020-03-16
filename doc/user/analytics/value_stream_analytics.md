@@ -25,12 +25,7 @@ calculates a separate median for each stage.
 
 Value Stream Analytics is available:
 
-- From GitLab 12.3, at the group level in the analytics workspace (top navigation bar) at
-  **Analytics > Value Stream Analytics**. **(PREMIUM)**
-
-  In the future, multiple groups will be selectable which will effectively make this an
-  instance-level feature.
-
+- From GitLab 12.9, at the group level via **Group > Analytics > Value Stream**. **(PREMIUM)**
 - At the project level via **Project > Value Stream Analytics**.
 
 There are seven stages that are tracked as part of the Value Stream Analytics calculations.

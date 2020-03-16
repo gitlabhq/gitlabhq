@@ -2899,6 +2899,31 @@ trigger_job:
     strategy: depend
 ```
 
+##### Trigger child pipeline with generated configuration file
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/35632) in GitLab 12.9.
+
+You can also trigger a child pipeline from a [dynamically generated configuration file](../parent_child_pipelines.md#dynamic-child-pipelines):
+
+```yaml
+generate-config:
+  stage: build
+  script: generate-ci-config > generated-config.yml
+  artifacts:
+    paths:
+      - generated-config.yml
+
+child-pipeline:
+  stage: test
+  trigger:
+    include:
+      - artifact: generated-config.yml
+        job: generate-config
+```
+
+The `generated-config.yml` is extracted from the artifacts and used as the configuration
+for triggering the child pipeline.
+
 #### Linking pipelines with `trigger:strategy`
 
 By default, the `trigger` job completes with the `success` status

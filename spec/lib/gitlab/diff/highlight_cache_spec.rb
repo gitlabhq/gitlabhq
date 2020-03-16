@@ -53,26 +53,22 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
                              fallback_diff_refs: diffs.fallback_diff_refs)
     end
 
-    it 'does not calculate highlighting when reading from cache' do
+    before do
       cache.write_if_empty
       cache.decorate(diff_file)
+    end
 
+    it 'does not calculate highlighting when reading from cache' do
       expect_any_instance_of(Gitlab::Diff::Highlight).not_to receive(:highlight)
 
       diff_file.highlighted_diff_lines
     end
 
     it 'assigns highlighted diff lines to the DiffFile' do
-      cache.write_if_empty
-      cache.decorate(diff_file)
-
       expect(diff_file.highlighted_diff_lines.size).to be > 5
     end
 
     it 'assigns highlighted diff lines which rich_text are HTML-safe' do
-      cache.write_if_empty
-      cache.decorate(diff_file)
-
       rich_texts = diff_file.highlighted_diff_lines.map(&:rich_text)
 
       expect(rich_texts).to all(be_html_safe)

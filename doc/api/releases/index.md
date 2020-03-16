@@ -308,7 +308,12 @@ Example response:
          }
       ],
       "links":[
-
+         {
+            "id":3,
+            "name":"hoge",
+            "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
+            "external":true
+         }
       ],
       "evidence_url":"https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json"
    },
@@ -334,13 +339,14 @@ POST /projects/:id/releases
 | `assets:links`     | array of hash   | no                          | An array of assets links.                                                                                                        |
 | `assets:links:name`| string          | required by: `assets:links` | The name of the link.                                                                                                            |
 | `assets:links:url` | string          | required by: `assets:links` | The url of the link.                                                                                                             |
+| `assets:links:filepath` | string     | no | Optional path for a [Direct Asset link](../../user/project/releases.md).
 | `released_at`      | datetime        | no                          | The date when the release will be/was ready. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 
 Example request:
 
 ```shell
 curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" \
-     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com" }] } }' \
+     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com", "filepath": "/binaries/linux-amd64" }] } }' \
      --request POST https://gitlab.example.com/api/v4/projects/24/releases
 ```
 
@@ -441,7 +447,7 @@ Example response:
          {
             "id":3,
             "name":"hoge",
-            "url":"https://google.com",
+            "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
             "external":true
          }
       ],

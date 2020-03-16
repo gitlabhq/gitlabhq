@@ -3757,7 +3757,7 @@ input IssueSetConfidentialInput {
   """
   The iid of the issue to mutate
   """
-  iid: ID!
+  iid: String!
 
   """
   The project the issue to mutate is in
@@ -3802,7 +3802,7 @@ input IssueSetDueDateInput {
   """
   The iid of the issue to mutate
   """
-  iid: ID!
+  iid: String!
 
   """
   The project the issue to mutate is in
@@ -3842,7 +3842,7 @@ input IssueSetWeightInput {
   """
   The iid of the issue to mutate
   """
-  iid: ID!
+  iid: String!
 
   """
   The project the issue to mutate is in
@@ -4150,7 +4150,7 @@ type MergeRequest implements Noteable {
   """
   Internal ID of the merge request
   """
-  iid: ID!
+  iid: String!
 
   """
   Commit SHA of the merge request if merge is in progress
@@ -4550,7 +4550,7 @@ input MergeRequestSetAssigneesInput {
   """
   The iid of the merge request to mutate
   """
-  iid: ID!
+  iid: String!
 
   """
   The operation to perform. Defaults to REPLACE.
@@ -4595,7 +4595,7 @@ input MergeRequestSetLabelsInput {
   """
   The iid of the merge request to mutate
   """
-  iid: ID!
+  iid: String!
 
   """
   The Label IDs to set. Replaces existing labels by default.
@@ -4645,7 +4645,7 @@ input MergeRequestSetLockedInput {
   """
   The iid of the merge request to mutate
   """
-  iid: ID!
+  iid: String!
 
   """
   Whether or not to lock the merge request.
@@ -4690,7 +4690,7 @@ input MergeRequestSetMilestoneInput {
   """
   The iid of the merge request to mutate
   """
-  iid: ID!
+  iid: String!
 
   """
   The milestone to assign to the merge request.
@@ -4735,7 +4735,7 @@ input MergeRequestSetSubscriptionInput {
   """
   The iid of the merge request to mutate
   """
-  iid: ID!
+  iid: String!
 
   """
   The project the merge request to mutate is in
@@ -4780,7 +4780,7 @@ input MergeRequestSetWipInput {
   """
   The iid of the merge request to mutate
   """
-  iid: ID!
+  iid: String!
 
   """
   The project the merge request to mutate is in
@@ -5351,7 +5351,7 @@ type Pipeline {
   """
   Internal ID of the pipeline
   """
-  iid: ID!
+  iid: String!
 
   """
   SHA of the pipeline's commit
@@ -5629,12 +5629,12 @@ type Project {
     """
     IID of the issue. For example, "1"
     """
-    iid: ID
+    iid: String
 
     """
     List of IIDs of issues. For example, [1, 2]
     """
-    iids: [ID!]
+    iids: [String!]
 
     """
     Labels applied to this issue
@@ -5724,12 +5724,12 @@ type Project {
     """
     IID of the issue. For example, "1"
     """
-    iid: ID
+    iid: String
 
     """
     List of IIDs of issues. For example, [1, 2]
     """
-    iids: [ID!]
+    iids: [String!]
 
     """
     Labels applied to this issue
@@ -5799,12 +5799,12 @@ type Project {
     """
     The IID of the merge request, e.g., "1"
     """
-    iid: ID
+    iid: String
 
     """
     The list of IIDs of issues, e.g., [1, 2]
     """
-    iids: [ID!]
+    iids: [String!]
   ): MergeRequest
 
   """
@@ -5829,12 +5829,12 @@ type Project {
     """
     The IID of the merge request, e.g., "1"
     """
-    iid: ID
+    iid: String
 
     """
     The list of IIDs of issues, e.g., [1, 2]
     """
-    iids: [ID!]
+    iids: [String!]
 
     """
     Returns the last _n_ elements from the list.
@@ -8112,7 +8112,7 @@ input UpdateIssueInput {
   """
   The iid of the issue to mutate
   """
-  iid: ID!
+  iid: String!
 
   """
   The project the issue to mutate is in

@@ -67,7 +67,43 @@ links from your GitLab instance.
 NOTE: **NOTE**
 You can manipulate links of each release entry with [Release Links API](../../../api/releases/links.md)
 
-#### Releases associated with milestones
+#### Permanent links to Release assets
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27300) in GitLab 12.9.
+
+The assets associated with a Release are accessible through a permanent URL.
+GitLab will always redirect this URL to the actual asset
+location, so even if the assets move to a different location, you can continue
+to use the same URL. This is defined during [link creation](../../../api/releases/links.md#create-a-link) or [updating](../../../api/releases/links.md#update-a-link).
+
+Each asset has a name, a URL of the *actual* asset location, and optionally, a
+`filepath` parameter, which, if you specify it, will create a URL pointing
+to the asset for the Release. The format of the URL is:
+
+```html
+https://host/namespace/project/releases/:release/downloads/:filepath
+```
+
+If you have an asset for the `v11.9.0-rc2` release in the `gitlab-org`
+namespace and `gitlab-runner` project on `gitlab.com`, for example:
+
+```json
+{
+  "name": "linux amd64",
+  "filepath": "/binaries/gitlab-runner-linux-amd64",
+  "url": "https://gitlab-runner-downloads.s3.amazonaws.com/v11.9.0-rc2/binaries/gitlab-runner-linux-amd64"
+}
+```
+
+This asset has a direct link of:
+
+```html
+https://gitlab.com/gitlab-org/gitlab-runner/releases/v11.9.0-rc2/downloads/binaries/gitlab-runner-linux-amd64
+```
+
+The physical location of the asset can change at any time and the direct link will remain unchanged.
+
+### Releases associated with milestones
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/29020) in GitLab 12.5.
 
