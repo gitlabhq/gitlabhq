@@ -18,7 +18,7 @@ module Gitlab
       def save(tree, dir_path, filename)
         mkdir_p(dir_path)
 
-        tree_json = JSON.generate(tree)
+        tree_json = ::JSON.generate(tree)
 
         File.write(File.join(dir_path, filename), tree_json)
       end

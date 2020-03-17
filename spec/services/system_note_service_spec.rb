@@ -625,4 +625,14 @@ describe SystemNoteService do
       described_class.discussion_lock(issuable, double)
     end
   end
+
+  describe '.auto_resolve_prometheus_alert' do
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:auto_resolve_prometheus_alert)
+      end
+
+      described_class.auto_resolve_prometheus_alert(noteable, project, author)
+    end
+  end
 end

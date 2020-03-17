@@ -81,6 +81,8 @@ already reserved for category labels).
 The descriptions on the [labels page](https://gitlab.com/groups/gitlab-org/-/labels)
 explain what falls under each type label.
 
+The GitLab handbook documents [when something is a bug and when it is a feature request.](https://about.gitlab.com/handbook/product/product-management/process/feature-or-bug.html)
+
 ### Facet labels
 
 Sometimes it's useful to refine the type of an issue. In those cases, you can

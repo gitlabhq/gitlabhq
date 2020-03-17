@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
+import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'spec/test_constants';
 import Mousetrap from 'mousetrap';
 import App from '~/diffs/components/app.vue';
@@ -12,14 +13,17 @@ import CommitWidget from '~/diffs/components/commit_widget.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import createDiffsStore from '../create_diffs_store';
+import axios from '~/lib/utils/axios_utils';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 const mergeRequestDiff = { version_index: 1 };
+const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
 
 describe('diffs/components/app', () => {
   const oldMrTabs = window.mrTabs;
   let store;
   let wrapper;
+  let mock;
 
   function createComponent(props = {}, extendStore = () => {}) {
     const localVue = createLocalVue();
@@ -34,7 +38,7 @@ describe('diffs/components/app', () => {
     wrapper = shallowMount(localVue.extend(App), {
       localVue,
       propsData: {
-        endpoint: `${TEST_HOST}/diff/endpoint`,
+        endpoint: TEST_ENDPOINT,
         endpointMetadata: `${TEST_HOST}/diff/endpointMetadata`,
         endpointBatch: `${TEST_HOST}/diff/endpointBatch`,
         projectPath: 'namespace/project',
@@ -61,8 +65,12 @@ describe('diffs/components/app', () => {
 
   beforeEach(() => {
     // setup globals (needed for component to mount :/)
-    window.mrTabs = jasmine.createSpyObj('mrTabs', ['resetViewContainer']);
-    window.mrTabs.expandViewContainer = jasmine.createSpy();
+    window.mrTabs = {
+      resetViewContainer: jest.fn(),
+    };
+    window.mrTabs.expandViewContainer = jest.fn();
+    mock = new MockAdapter(axios);
+    mock.onGet(TEST_ENDPOINT).reply(200, {});
   });
 
   afterEach(() => {
@@ -71,6 +79,8 @@ describe('diffs/components/app', () => {
 
     // reset component
     wrapper.destroy();
+
+    mock.restore();
   });
 
   describe('fetch diff methods', () => {
@@ -80,15 +90,15 @@ describe('diffs/components/app', () => {
         store.state.notes.discussions = 'test';
         return Promise.resolve({ real_size: 100 });
       };
-      spyOn(window, 'requestIdleCallback').and.callFake(fn => fn());
+      jest.spyOn(window, 'requestIdleCallback').mockImplementation(fn => fn());
       createComponent();
-      spyOn(wrapper.vm, 'fetchDiffFiles').and.callFake(fetchResolver);
-      spyOn(wrapper.vm, 'fetchDiffFilesMeta').and.callFake(fetchResolver);
-      spyOn(wrapper.vm, 'fetchDiffFilesBatch').and.callFake(fetchResolver);
-      spyOn(wrapper.vm, 'setDiscussions');
-      spyOn(wrapper.vm, 'startRenderDiffsQueue');
-      spyOn(wrapper.vm, 'unwatchDiscussions');
-      spyOn(wrapper.vm, 'unwatchRetrievingBatches');
+      jest.spyOn(wrapper.vm, 'fetchDiffFiles').mockImplementation(fetchResolver);
+      jest.spyOn(wrapper.vm, 'fetchDiffFilesMeta').mockImplementation(fetchResolver);
+      jest.spyOn(wrapper.vm, 'fetchDiffFilesBatch').mockImplementation(fetchResolver);
+      jest.spyOn(wrapper.vm, 'setDiscussions').mockImplementation(() => {});
+      jest.spyOn(wrapper.vm, 'startRenderDiffsQueue').mockImplementation(() => {});
+      jest.spyOn(wrapper.vm, 'unwatchDiscussions').mockImplementation(() => {});
+      jest.spyOn(wrapper.vm, 'unwatchRetrievingBatches').mockImplementation(() => {});
       store.state.diffs.retrievingBatches = true;
       store.state.diffs.diffFiles = [];
       wrapper.vm.$nextTick(done);
@@ -236,7 +246,7 @@ describe('diffs/components/app', () => {
       wrapper.vm.fetchData(false);
 
       expect(wrapper.vm.fetchDiffFiles).toHaveBeenCalled();
-      setTimeout(() => {
+      setImmediate(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).not.toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
@@ -255,7 +265,7 @@ describe('diffs/components/app', () => {
       wrapper.vm.fetchData(false);
 
       expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
-      setTimeout(() => {
+      setImmediate(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
@@ -272,7 +282,7 @@ describe('diffs/components/app', () => {
       wrapper.vm.fetchData(false);
 
       expect(wrapper.vm.fetchDiffFiles).not.toHaveBeenCalled();
-      setTimeout(() => {
+      setImmediate(() => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
@@ -350,23 +360,21 @@ describe('diffs/components/app', () => {
       });
 
       // Component uses $nextTick so we wait until that has finished
-      setTimeout(() => {
+      setImmediate(() => {
         expect(store.state.diffs.highlightedRow).toBe('ABC_123');
 
         done();
       });
     });
 
-    it('marks current diff file based on currently highlighted row', done => {
+    it('marks current diff file based on currently highlighted row', () => {
       createComponent({
         shouldShow: true,
       });
 
       // Component uses $nextTick so we wait until that has finished
-      setTimeout(() => {
+      return wrapper.vm.$nextTick().then(() => {
         expect(store.state.diffs.currentDiffFileId).toBe('ABC');
-
-        done();
       });
     });
   });
@@ -403,7 +411,7 @@ describe('diffs/components/app', () => {
     });
 
     // Component uses $nextTick so we wait until that has finished
-    setTimeout(() => {
+    setImmediate(() => {
       expect(store.state.diffs.currentDiffFileId).toBe('ABC');
 
       done();
@@ -449,7 +457,7 @@ describe('diffs/components/app', () => {
 
     describe('visible app', () => {
       beforeEach(() => {
-        spy = jasmine.createSpy('spy');
+        spy = jest.fn();
 
         createComponent({
           shouldShow: true,
@@ -459,21 +467,18 @@ describe('diffs/components/app', () => {
         });
       });
 
-      it('calls `jumpToFile()` with correct parameter whenever pre-defined key is pressed', done => {
-        wrapper.vm
-          .$nextTick()
-          .then(() => {
-            Object.keys(mappings).forEach(function(key) {
-              Mousetrap.trigger(key);
+      it.each(Object.keys(mappings))(
+        'calls `jumpToFile()` with correct parameter whenever pre-defined %s is pressed',
+        key => {
+          return wrapper.vm.$nextTick().then(() => {
+            expect(spy).not.toHaveBeenCalled();
 
-              expect(spy.calls.mostRecent().args).toEqual([mappings[key]]);
-            });
+            Mousetrap.trigger(key);
 
-            expect(spy.calls.count()).toEqual(Object.keys(mappings).length);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+            expect(spy).toHaveBeenCalledWith(mappings[key]);
+          });
+        },
+      );
 
       it('does not call `jumpToFile()` when unknown key is pressed', done => {
         wrapper.vm
@@ -490,7 +495,7 @@ describe('diffs/components/app', () => {
 
     describe('hideen app', () => {
       beforeEach(() => {
-        spy = jasmine.createSpy('spy');
+        spy = jest.fn();
 
         createComponent({
           shouldShow: false,
@@ -504,7 +509,7 @@ describe('diffs/components/app', () => {
         wrapper.vm
           .$nextTick()
           .then(() => {
-            Object.keys(mappings).forEach(function(key) {
+            Object.keys(mappings).forEach(key => {
               Mousetrap.trigger(key);
 
               expect(spy).not.toHaveBeenCalled();
@@ -520,7 +525,7 @@ describe('diffs/components/app', () => {
     let spy;
 
     beforeEach(() => {
-      spy = jasmine.createSpy();
+      spy = jest.fn();
 
       createComponent({}, () => {
         store.state.diffs.diffFiles = [
@@ -545,15 +550,15 @@ describe('diffs/components/app', () => {
         .then(() => {
           wrapper.vm.jumpToFile(+1);
 
-          expect(spy.calls.mostRecent().args).toEqual(['222.js']);
+          expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['222.js']);
           store.state.diffs.currentDiffFileId = '222';
           wrapper.vm.jumpToFile(+1);
 
-          expect(spy.calls.mostRecent().args).toEqual(['333.js']);
+          expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['333.js']);
           store.state.diffs.currentDiffFileId = '333';
           wrapper.vm.jumpToFile(-1);
 
-          expect(spy.calls.mostRecent().args).toEqual(['222.js']);
+          expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['222.js']);
         })
         .then(done)
         .catch(done.fail);
@@ -602,7 +607,7 @@ describe('diffs/components/app', () => {
 
       expect(wrapper.contains(CompareVersions)).toBe(true);
       expect(wrapper.find(CompareVersions).props()).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           targetBranch: {
             branchName: 'target-branch',
             versionIndex: -1,
@@ -625,7 +630,7 @@ describe('diffs/components/app', () => {
 
       expect(wrapper.contains(HiddenFilesWarning)).toBe(true);
       expect(wrapper.find(HiddenFilesWarning).props()).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           total: '5',
           plainDiffPath: 'plain diff path',
           emailPatchPath: 'email patch path',
@@ -663,7 +668,7 @@ describe('diffs/components/app', () => {
     let toggleShowTreeList;
 
     beforeEach(() => {
-      toggleShowTreeList = jasmine.createSpy('toggleShowTreeList');
+      toggleShowTreeList = jest.fn();
     });
 
     afterEach(() => {

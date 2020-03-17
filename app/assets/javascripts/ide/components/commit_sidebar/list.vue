@@ -94,7 +94,7 @@ export default {
             data-boundary="viewport"
             @click="openDiscardModal"
           >
-            <icon :size="16" name="remove-all" class="ml-auto mr-auto" />
+            <icon :size="16" name="remove-all" class="ml-auto mr-auto position-top-0" />
           </button>
         </div>
       </div>

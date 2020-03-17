@@ -40,6 +40,7 @@ stop_review:
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
+  dependencies: []
   when: manual
   allow_failure: true
   only:

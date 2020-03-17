@@ -26,15 +26,17 @@ export default {
   modalInfo: {
     closeText: s__('EnableReviewApp|Close'),
     copyToClipboardText: s__('EnableReviewApp|Copy snippet text'),
-    copyString: `deploy_review
+    copyString: `deploy_review:
   stage: deploy
   script:
     - echo "Deploy a review app"
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
-  only: branches
-  except: master`,
+  only:
+    - branches
+  except:
+    - master`,
     id: 'enable-review-app-info',
     title: s__('ReviewApp|Enable Review App'),
   },

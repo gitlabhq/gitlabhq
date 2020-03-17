@@ -1,5 +1,3 @@
-import $ from 'jquery';
-import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
 import flash from '~/flash';
@@ -70,7 +68,7 @@ const Api = {
   },
 
   // Return groups list. Filtered by query
-  groups(query, options, callback = $.noop) {
+  groups(query, options, callback = () => {}) {
     const url = Api.buildUrl(Api.groupsPath);
     return axios
       .get(url, {
@@ -108,7 +106,7 @@ const Api = {
   },
 
   // Return projects list. Filtered by query
-  projects(query, options, callback = _.noop) {
+  projects(query, options, callback = () => {}) {
     const url = Api.buildUrl(Api.projectsPath);
     const defaults = {
       search: query,
