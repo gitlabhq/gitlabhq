@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class ElasticStack < ApplicationRecord
-      VERSION = '1.8.0'
+      VERSION = '1.9.0'
 
       ELASTICSEARCH_PORT = 9200
 

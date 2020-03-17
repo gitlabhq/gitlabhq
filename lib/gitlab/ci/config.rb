@@ -76,10 +76,7 @@ module Gitlab
         initial_config = Gitlab::Config::Loader::Yaml.new(config).load!
         initial_config = Config::External::Processor.new(initial_config, @context).perform
         initial_config = Config::Extendable.new(initial_config).to_hash
-
-        if Feature.enabled?(:ci_pre_post_pipeline_stages, @context.project, default_enabled: true)
-          initial_config = Config::EdgeStagesInjector.new(initial_config).to_hash
-        end
+        initial_config = Config::EdgeStagesInjector.new(initial_config).to_hash
 
         initial_config
       end

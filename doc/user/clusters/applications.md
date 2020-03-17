@@ -488,6 +488,41 @@ The Elastic Stack cluster application is intended as a log aggregation solution 
 [Advanced Global Search](../search/advanced_global_search.md) functionality, which uses a separate
 Elasticsearch cluster.
 
+#### Optional: deploy Kibana to perform advanced queries
+
+If you are an advanced user and have direct access to your Kubernetes cluster using `kubectl` and `helm`, you can deploy Kibana manually.
+
+The following assumes that `helm` has been [initialized](https://v2.helm.sh/docs/helm/) with `helm init`.
+
+Save the following to `kibana.yml`:
+
+```yaml
+elasticsearch:
+  enabled: false
+
+logstash:
+  enabled: false
+
+kibana:
+  enabled: true
+  env:
+    ELASTICSEARCH_HOSTS: http://elastic-stack-elasticsearch-client.gitlab-managed-apps.svc.cluster.local:9200
+```
+
+Then install it on your cluster:
+
+```shell
+helm install --name kibana stable/elastic-stack --values kibana.yml
+```
+
+To access kibana, forward the port to your local machine:
+
+```shell
+kubectl port-forward svc/kibana 5601:443
+```
+
+Then, you can visit Kibana at `http://localhost:5601`.
+
 ### Future apps
 
 Interested in contributing a new GitLab managed app? Visit the

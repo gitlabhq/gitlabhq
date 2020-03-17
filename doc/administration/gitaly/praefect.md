@@ -423,6 +423,12 @@ documentation](index.md#3-gitaly-server-configuration).
    gitlab-ctl reconfigure
    ```
 
+1. To ensure that Gitaly [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2521), [restart Gitaly](../restart_gitlab.md#omnibus-gitlab-restart):
+
+   ```shell
+   gitlab-ctl restart gitaly
+   ```
+
 **Complete these steps for each Gitaly node!**
 
 After all Gitaly nodes are configured, you can run the Praefect connection

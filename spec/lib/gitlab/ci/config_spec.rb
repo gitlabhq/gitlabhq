@@ -79,26 +79,6 @@ describe Gitlab::Ci::Config do
 
         it { is_expected.to eq %w[.pre stage1 stage2 .post] }
       end
-
-      context 'with feature disabled' do
-        before do
-          stub_feature_flags(ci_pre_post_pipeline_stages: false)
-        end
-
-        let(:yml) do
-          <<-EOS
-            stages:
-              - stage1
-              - stage2
-            job1:
-              stage: stage1
-              script:
-                - ls
-          EOS
-        end
-
-        it { is_expected.to eq %w[stage1 stage2] }
-      end
     end
   end
 

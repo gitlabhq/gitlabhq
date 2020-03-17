@@ -8,7 +8,7 @@ GitLab's documentation is [intended as the single source of truth (SSOT)](https:
 
 In addition to this page, the following resources can help you craft and contribute documentation:
 
-- [Style Guide](styleguide.md) - What belongs in the docs, language guidelines, Markdown standards to follow, and more.
+- [Style Guide](styleguide.md) - What belongs in the docs, language guidelines, Markdown standards to follow, links, and more.
 - [Structure and template](structure.md) - Learn the typical parts of a doc page and how to write each one.
 - [Documentation process](workflow.md).
 - [Markdown Guide](../../user/markdown.md) - A reference for all Markdown syntax supported by GitLab.
@@ -116,8 +116,9 @@ Things to note:
 - The above `git grep` command will search recursively in the directory you run
   it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
   and will print the file and the line where this file is mentioned.
-  You may ask why the two greps. Since we use relative paths to link to
-  documentation, sometimes it might be useful to search a path deeper.
+  You may ask why the two greps. Since [we use relative paths to link to
+  documentation](styleguide.md#links)
+  , sometimes it might be useful to search a path deeper.
 - The `*.md` extension is not used when a document is linked to GitLab's
   built-in help page, that's why we omit it in `git grep`.
 - Use the checklist on the "Change documentation location" MR description template.

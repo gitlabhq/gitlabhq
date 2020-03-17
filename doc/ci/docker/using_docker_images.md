@@ -489,7 +489,7 @@ Look for the `[runners.docker]` section:
 
 ```toml
 [runners.docker]
-  image = "ruby:2.1"
+  image = "ruby:latest"
   services = ["mysql:latest", "postgres:latest"]
 ```
 

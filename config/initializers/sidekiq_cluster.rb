@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if ENV['ENABLE_SIDEKIQ_CLUSTER'] && Gitlab.ee?
+if ENV['ENABLE_SIDEKIQ_CLUSTER']
   Thread.new do
     Thread.current.abort_on_exception = true
 

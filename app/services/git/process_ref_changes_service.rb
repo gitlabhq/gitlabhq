@@ -35,7 +35,7 @@ module Git
     end
 
     def execute_project_hooks?(changes)
-      (changes.size <= Gitlab::CurrentSettings.push_event_hooks_limit) || Feature.enabled?(:git_push_execute_all_project_hooks, project)
+      changes.size <= Gitlab::CurrentSettings.push_event_hooks_limit
     end
 
     def process_changes(ref_type, action, changes, execute_project_hooks:)

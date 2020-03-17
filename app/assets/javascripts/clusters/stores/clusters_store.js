@@ -12,6 +12,7 @@ import {
   INSTALL_EVENT,
   UPDATE_EVENT,
   UNINSTALL_EVENT,
+  ELASTIC_STACK,
 } from '../constants';
 import transitionApplicationState from '../services/application_state_machine';
 
@@ -237,6 +238,9 @@ export default class ClusterStore {
       } else if (appId === RUNNER) {
         this.state.applications.runner.version = version;
         this.state.applications.runner.updateAvailable = updateAvailable;
+      } else if (appId === ELASTIC_STACK) {
+        this.state.applications.elastic_stack.version = version;
+        this.state.applications.elastic_stack.updateAvailable = updateAvailable;
       }
     });
   }

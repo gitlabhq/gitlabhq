@@ -460,6 +460,9 @@ For example, the following are equivalent configuration:
     - b
   ```
 
+NOTE: **Note:**
+A pipeline will not be created if it only contains jobs in `.pre` or `.post` stages.
+
 ### `stage`
 
 `stage` is defined per-job and relies on [`stages`](#stages) which is defined
