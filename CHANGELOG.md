@@ -4,7 +4,6 @@ entry.
 
 ## 12.8.7 (2020-03-16)
 
-- No changes.
 ### Fixed (1 change, 1 of them is from the community)
 
 - Fix crl_url parsing and certificate visualization. !25876 (Roger Meier)
