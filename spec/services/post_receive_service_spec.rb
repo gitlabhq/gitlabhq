@@ -234,7 +234,7 @@ describe PostReceiveService do
 
   context 'with a redirected data' do
     it 'returns redirected message on the response' do
-      project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'http', 'foo/baz')
+      project_moved = Gitlab::Checks::ProjectMoved.new(project.repository, user, 'http', 'foo/baz')
       project_moved.add_message
 
       expect(subject).to include(build_basic_message(project_moved.message))
@@ -243,7 +243,7 @@ describe PostReceiveService do
 
   context 'with new project data' do
     it 'returns new project message on the response' do
-      project_created = Gitlab::Checks::ProjectCreated.new(project, user, 'http')
+      project_created = Gitlab::Checks::ProjectCreated.new(project.repository, user, 'http')
       project_created.add_message
 
       expect(subject).to include(build_basic_message(project_created.message))

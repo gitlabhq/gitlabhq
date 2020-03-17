@@ -2,8 +2,8 @@
 
 ## Puma
 
-GitLab plans to use [Puma](https://github.com/puma/puma) to replace
-[Unicorn](https://bogomips.org/unicorn/).
+As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced [Unicorn](https://bogomips.org/unicorn/).
+as the default web server.
 
 ## Why switch to Puma?
 

@@ -39,11 +39,11 @@ module Gitlab
 
     override :check_project!
     def check_project!(cmd, changes)
-      if snippet.is_a?(ProjectSnippet)
-        check_namespace!
-        check_project_accessibility!
-        # TODO add add_project_moved_message! to handle non-project repo https://gitlab.com/gitlab-org/gitlab/issues/205646
-      end
+      return unless snippet.is_a?(ProjectSnippet)
+
+      check_namespace!
+      check_project_accessibility!
+      add_project_moved_message!
     end
 
     override :check_push_access!

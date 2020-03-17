@@ -21,12 +21,12 @@ describe ExpireJobCacheWorker do
           allow(Gitlab::EtagCaching::Store).to receive(:new) { spy_store }
 
           expect(spy_store).to receive(:touch)
-            .exactly(IdempotentWorkerHelper::WORKER_EXEC_TIMES).times
+            .exactly(worker_exec_times).times
             .with(pipeline_path)
             .and_call_original
 
           expect(spy_store).to receive(:touch)
-            .exactly(IdempotentWorkerHelper::WORKER_EXEC_TIMES).times
+            .exactly(worker_exec_times).times
             .with(job_path)
             .and_call_original
 

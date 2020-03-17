@@ -18,6 +18,13 @@ describe 'Project navbar' do
     }
   end
 
+  let(:requirements_nav_item) do
+    {
+      nav_item: _('Requirements'),
+      nav_sub_items: [_('List')]
+    }
+  end
+
   let(:structure) do
     [
       {
@@ -54,6 +61,7 @@ describe 'Project navbar' do
         nav_item: _('Merge Requests'),
         nav_sub_items: []
       },
+      (requirements_nav_item if Gitlab.ee?),
       {
         nav_item: _('CI / CD'),
         nav_sub_items: [
@@ -100,6 +108,7 @@ describe 'Project navbar' do
   end
 
   before do
+    stub_licensed_features(requirements: false)
     project.add_maintainer(user)
     sign_in(user)
   end
@@ -117,6 +126,16 @@ describe 'Project navbar' do
 
         analytics_nav_item[:nav_sub_items] << _('Issues')
         analytics_nav_item[:nav_sub_items].sort!
+
+        visit project_path(project)
+      end
+
+      it_behaves_like 'verified navigation bar'
+    end
+
+    context 'when requirements is available' do
+      before do
+        stub_licensed_features(requirements: true)
 
         visit project_path(project)
       end

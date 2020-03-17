@@ -5,10 +5,10 @@ module Gitlab
     class ProjectMoved < PostPushMessage
       REDIRECT_NAMESPACE = "redirect_namespace"
 
-      def initialize(project, user, protocol, redirected_path)
+      def initialize(repository, user, protocol, redirected_path)
         @redirected_path = redirected_path
 
-        super(project, user, protocol)
+        super(repository, user, protocol)
       end
 
       def message

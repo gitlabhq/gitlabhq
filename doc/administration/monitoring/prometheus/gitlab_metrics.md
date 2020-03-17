@@ -182,7 +182,7 @@ Unicorn specific metrics, when Unicorn is used.
 | `unicorn_queued_connections` | Gauge | 11.0  | The number of queued Unicorn connections           |
 | `unicorn_workers`            | Gauge | 12.0  | The number of Unicorn workers                      |
 
-## Puma Metrics **(EXPERIMENTAL)**
+## Puma Metrics
 
 When Puma is used instead of Unicorn, the following metrics are available:
 

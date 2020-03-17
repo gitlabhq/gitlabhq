@@ -19,8 +19,7 @@ module Gitlab
 
         # Removing the suffix (.wiki, .design, ...) from the project path
         full_path = repo_path.chomp(type.path_suffix)
-        container, project, was_redirected = find_container(type, full_path)
-        redirected_path = repo_path if was_redirected
+        container, project, redirected_path = find_container(type, full_path)
 
         return [container, project, type, redirected_path] if container
       end
@@ -33,22 +32,23 @@ module Gitlab
 
     def self.find_container(type, full_path)
       if type.snippet?
-        snippet, was_redirected = find_snippet(full_path)
+        snippet, redirected_path = find_snippet(full_path)
 
-        [snippet, snippet&.project, was_redirected]
+        [snippet, snippet&.project, redirected_path]
       else
-        project, was_redirected = find_project(full_path)
+        project, redirected_path = find_project(full_path)
 
-        [project, project, was_redirected]
+        [project, project, redirected_path]
       end
     end
 
     def self.find_project(project_path)
-      return [nil, false] if project_path.blank?
+      return [nil, nil] if project_path.blank?
 
       project = Project.find_by_full_path(project_path, follow_redirects: true)
+      redirected_path = redirected?(project, project_path) ? project_path : nil
 
-      [project, redirected?(project, project_path)]
+      [project, redirected_path]
     end
 
     def self.redirected?(project, project_path)
@@ -59,12 +59,12 @@ module Gitlab
     # - snippets/1
     # - h5bp/html5-boilerplate/snippets/53
     def self.find_snippet(snippet_path)
-      return [nil, false] if snippet_path.blank?
+      return [nil, nil] if snippet_path.blank?
 
       snippet_id, project_path = extract_snippet_info(snippet_path)
-      project, was_redirected = find_project(project_path)
+      project, redirected_path = find_project(project_path)
 
-      [Snippet.find_by_id_and_project(id: snippet_id, project: project), was_redirected]
+      [Snippet.find_by_id_and_project(id: snippet_id, project: project), redirected_path]
     end
 
     def self.extract_snippet_info(snippet_path)

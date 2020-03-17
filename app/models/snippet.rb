@@ -283,6 +283,10 @@ class Snippet < ApplicationRecord
     end
   end
 
+  def url_to_repo
+    Gitlab::Shell.url_to_repo(full_path.delete('@'))
+  end
+
   def repository_storage
     snippet_repository&.shard_name ||
       Gitlab::CurrentSettings.pick_repository_storage

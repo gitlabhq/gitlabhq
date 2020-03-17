@@ -188,7 +188,7 @@ module Gitlab
     def add_project_moved_message!
       return if redirected_path.nil?
 
-      project_moved = Checks::ProjectMoved.new(project, user, protocol, redirected_path)
+      project_moved = Checks::ProjectMoved.new(repository, user, protocol, redirected_path)
 
       project_moved.add_message
     end
@@ -250,7 +250,7 @@ module Gitlab
       @project = project
       user_access.project = @project
 
-      Checks::ProjectCreated.new(project, user, protocol).add_message
+      Checks::ProjectCreated.new(repository, user, protocol).add_message
     end
 
     def check_repository_existence!

@@ -457,16 +457,13 @@ sudo chmod -R u+rwX shared/artifacts/
 # Change the permissions of the directory where GitLab Pages are stored
 sudo chmod -R ug+rwX shared/pages/
 
-# Copy the example Unicorn config
-sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+# Copy the example Puma config
+sudo -u git -H cp config/puma.rb.example config/puma.rb
 
-# Find number of cores
-nproc
-
-# Enable cluster mode if you expect to have a high load instance
-# Set the number of workers to at least the number of cores
-# Ex. change the amount of workers to 3 for 2GB RAM server
-sudo -u git -H editor config/unicorn.rb
+# Refer to https://github.com/puma/puma#configuration for more information.
+# You should scale Puma workers and threads based on the number of CPU
+# cores you have available. You can get that number via the `nproc` command.
+sudo -u git -H editor config/puma.rb
 
 # Copy the example Rack attack config
 sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
@@ -495,8 +492,8 @@ sudo -u git -H editor config/resque.yml
 ```
 
 CAUTION: **Caution:**
-Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
-If you want to use Puma web server, see [Using Puma](#using-puma) for the additional steps.
+Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
+If you want to use the Unicorn web server, see [Using Unicorn](#using-unicorn) for the additional steps.
 
 NOTE: **Note:**
 If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
@@ -947,23 +944,22 @@ You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, 
 
 Apart from the always supported Markdown style, there are other rich text files that GitLab can display. But you might have to install a dependency to do so. See the [`github-markup` gem README](https://github.com/gitlabhq/markup#markups) for more information.
 
-### Using Puma
+### Using Unicorn
 
-Puma is a multi-threaded HTTP 1.1 server for Ruby applications.
+As of GitLab 12.9, [Puma](https://github.com/puma/puma) has replaced Unicorn as the default web server for installations from source.
+If you want to switch back to Unicorn, follow these steps:
 
-To use GitLab with Puma:
-
-1. Finish GitLab setup so you have it up and running.
-1. Copy the supplied example Puma config file into place:
+1. Finish the GitLab setup so you have it up and running.
+1. Copy the supplied example Unicorn config file into place:
 
    ```shell
    cd /home/git/gitlab
 
    # Copy config file for the web server
-   sudo -u git -H cp config/puma.rb.example config/puma.rb
+   sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
    ```
 
-1. Edit the system `init.d` script to use `EXPERIMENTAL_PUMA=1` flag. If you have `/etc/default/gitlab`, then you should edit it instead.
+1. Edit the system `init.d` script to set the `USE_UNICORN=1` flag. If you have `/etc/default/gitlab`, then you should edit it instead.
 1. Restart GitLab.
 
 ## Troubleshooting

@@ -16775,6 +16775,9 @@ msgstr ""
 msgid "Require users to prove ownership of custom domains"
 msgstr ""
 
+msgid "Requirements"
+msgstr ""
+
 msgid "Requires approval from %{names}."
 msgid_plural "Requires %{count} more approvals from %{names}."
 msgstr[0] ""

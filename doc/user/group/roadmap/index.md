@@ -14,7 +14,7 @@ shows such a visualization for all the epics which are under a group and/or its 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5164) in GitLab 12.9.
 
 On the epic bars, you can see their title, progress, and completed weight percentage.
-When you hover over an epic bar, a popover appears with its description, start and due dates, and weight completed.
+When you hover over an epic bar, a popover appears with its title, start and due dates, and weight completed.
 
 ![roadmap view](img/roadmap_view_v12_9.png)
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe ApplicationWorker do
-  let(:worker) do
+  let_it_be(:worker) do
     Class.new do
       def self.name
         'Gitlab::Foo::Bar::DummyWorker'
@@ -13,9 +13,48 @@ describe ApplicationWorker do
     end
   end
 
+  let(:instance) { worker.new }
+
   describe 'Sidekiq options' do
     it 'sets the queue name based on the class name' do
       expect(worker.sidekiq_options['queue']).to eq('foo_bar_dummy')
+    end
+  end
+
+  describe '#structured_payload' do
+    let(:payload) { {} }
+
+    subject(:result) { instance.structured_payload(payload) }
+
+    it 'adds worker related payload' do
+      instance.jid = 'a jid'
+
+      expect(result).to include(
+        'class' => worker.class,
+        'job_status' => 'running',
+        'queue' => worker.queue,
+        'jid' => instance.jid
+      )
+    end
+
+    it 'adds labkit context' do
+      user = build_stubbed(:user, username: 'jane-doe')
+
+      instance.with_context(user: user) do
+        expect(result).to include('meta.user' => user.username)
+      end
+    end
+
+    it 'adds custom payload converting stringified keys' do
+      payload[:message] = 'some message'
+
+      expect(result).to include('message' => payload[:message])
+    end
+
+    it 'does not override predefined context keys with custom payload' do
+      payload['class'] = 'custom value'
+
+      expect(result).to include('class' => worker.class)
     end
   end
 

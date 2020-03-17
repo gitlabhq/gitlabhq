@@ -232,6 +232,8 @@
   - 2
 - - service_desk_email_receiver
   - 1
+- - status_page_publish_incident
+  - 1
 - - sync_seat_link_request
   - 1
 - - system_hook_push

@@ -3,8 +3,8 @@
 module Gitlab
   module Checks
     class PostPushMessage
-      def initialize(project, user, protocol)
-        @project = project
+      def initialize(repository, user, protocol)
+        @repository = repository
         @user = user
         @protocol = protocol
       end
@@ -34,14 +34,21 @@ module Gitlab
 
       protected
 
-      attr_reader :project, :user, :protocol
+      attr_reader :repository, :user, :protocol
+
+      delegate :project, to: :repository, allow_nil: true
+      delegate :container, to: :repository, allow_nil: false
 
       def self.message_key(user_id, project_id)
         raise NotImplementedError
       end
 
       def url_to_repo
-        protocol == 'ssh' ? project.ssh_url_to_repo : project.http_url_to_repo
+        protocol == 'ssh' ? message_subject.ssh_url_to_repo : message_subject.http_url_to_repo
+      end
+
+      def message_subject
+        repository.repo_type.wiki? ? project.wiki : container
       end
     end
   end

@@ -16,6 +16,8 @@
 #   end
 #
 RSpec.shared_examples 'an idempotent worker' do
+  let(:worker_exec_times) { IdempotentWorkerHelper::WORKER_EXEC_TIMES }
+
   # Avoid stubbing calls for a more accurate run.
   subject do
     defined?(job_args) ? perform_multiple(job_args) : perform_multiple

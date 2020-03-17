@@ -566,6 +566,51 @@ GitLab Pages are part of the [regular backup][backup], so there is no separate b
 You should strongly consider running GitLab Pages under a different hostname
 than GitLab to prevent XSS attacks.
 
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
+
+## Troubleshooting
+
+### `open /etc/ssl/ca-bundle.pem: permission denied`
+
+GitLab Pages runs inside a `chroot` jail, usually in a uniquely numbered directory like
+`/tmp/gitlab-pages-*`.
+
+Within the jail, a bundle of trusted certificates is
+provided at `/etc/ssl/ca-bundle.pem`. It's
+[copied there](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/51)
+from `/opt/gitlab/embedded/ssl/certs/cacert.pem`
+as part of starting up Pages.
+
+If the permissions on the source file are incorrect (they should be `0644`) then
+the file inside the `chroot` jail will also be wrong.
+
+Pages will log errors in `/var/log/gitlab/gitlab-pages/current` like:
+
+```plaintext
+x509: failed to load system roots and no roots provided
+open /etc/ssl/ca-bundle.pem: permission denied
+```
+
+The use of a `chroot` jail makes this error misleading, as it is not
+referring to `/etc/ssl` on the root filesystem.
+
+The fix is to correct the source file permissions and restart Pages:
+
+```shell
+sudo chmod 644 /opt/gitlab/embedded/ssl/certs/cacert.pem
+sudo gitlab-ctl restart gitlab-pages
+```
+
 [backup]: ../../raketasks/backup_restore.md
 [ce-14605]: https://gitlab.com/gitlab-org/gitlab-foss/issues/14605
 [ee-80]: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80
