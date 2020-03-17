@@ -5,7 +5,7 @@
     - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('ci/variables/README', anchor: 'protected-variables') }
     = s_('Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
 
-- if Feature.enabled?(:new_variables_ui, @project || @group)
+- if Feature.enabled?(:new_variables_ui, @project || @group, default_enabled: true)
   - is_group = !@group.nil?
 
   #js-ci-project-variables{ data: { endpoint: save_endpoint, project_id: @project&.id || '', group: is_group.to_s, maskable_regex: ci_variable_maskable_regex} }

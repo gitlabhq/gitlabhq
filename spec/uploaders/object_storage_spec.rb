@@ -272,7 +272,7 @@ describe ObjectStorage do
             end
 
             it "to raise an error" do
-              expect { subject }.to raise_error(/Object Storage is not enabled/)
+              expect { subject }.to raise_error(/Object Storage is not enabled for JobArtifactUploader/)
             end
           end
 

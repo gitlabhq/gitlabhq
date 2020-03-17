@@ -60,10 +60,10 @@ class Projects::PipelinesController < Projects::ApplicationController
       .new(project, current_user, create_params)
       .execute(:web, ignore_skip_ci: true, save_on_errors: false)
 
-    if @pipeline.persisted?
+    if @pipeline.created_successfully?
       redirect_to project_pipeline_path(project, @pipeline)
     else
-      render 'new'
+      render 'new', status: :bad_request
     end
   end
 

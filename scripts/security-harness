@@ -28,7 +28,7 @@ HOOK_DATA = <<~HOOK
 
   if [ -e "$harness" ]
   then
-    if [["$url" != *"gitlab-org/security/"*]]
+    if [[ "$url" != *"gitlab-org/security/"* ]]
     then
       echo "Pushing to remotes other than gitlab.com/gitlab-org/security has been disabled!"
       echo "Run scripts/security-harness to disable this check."

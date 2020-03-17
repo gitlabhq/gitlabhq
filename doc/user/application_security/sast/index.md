@@ -25,7 +25,7 @@ that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 GitLab checks the SAST report, compares the found vulnerabilities between the
 source and target branches, and shows the information right on the merge request.
 
-![SAST Widget](img/sast.png)
+![SAST Widget](img/sast_v12_9.png)
 
 The results are sorted by the priority of the vulnerability:
 

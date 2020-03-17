@@ -36,11 +36,13 @@ describe Gitlab::SidekiqCluster::CLI do
       end
 
       it 'allows the special * selector' do
+        worker_queues = %w(foo bar baz)
+
+        expect(Gitlab::SidekiqConfig::CliMethods)
+          .to receive(:worker_queues).and_return(worker_queues)
+
         expect(Gitlab::SidekiqCluster)
-          .to receive(:start).with(
-            [Gitlab::SidekiqConfig::CliMethods.worker_queues],
-            default_options
-          )
+          .to receive(:start).with([worker_queues], default_options)
 
         cli.run(%w(*))
       end
@@ -157,15 +159,17 @@ describe Gitlab::SidekiqCluster::CLI do
                   .with([['chat_notification'], ['project_export']], default_options)
                   .and_return([])
 
-          cli.run(%w(--experimental-queue-selector feature_category=chatops&urgency=high resource_boundary=memory&feature_category=importers))
+          cli.run(%w(--experimental-queue-selector feature_category=chatops&has_external_dependencies=true resource_boundary=memory&feature_category=importers))
         end
 
         it 'allows the special * selector' do
+          worker_queues = %w(foo bar baz)
+
+          expect(Gitlab::SidekiqConfig::CliMethods)
+            .to receive(:worker_queues).and_return(worker_queues)
+
           expect(Gitlab::SidekiqCluster)
-            .to receive(:start).with(
-              [Gitlab::SidekiqConfig::CliMethods.worker_queues],
-              default_options
-            )
+            .to receive(:start).with([worker_queues], default_options)
 
           cli.run(%w(--experimental-queue-selector *))
         end

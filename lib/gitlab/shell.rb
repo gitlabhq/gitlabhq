@@ -1,10 +1,16 @@
 # frozen_string_literal: true
 
-# Gitaly note: SSH key operations are not part of Gitaly so will never be migrated.
-
 require 'securerandom'
 
 module Gitlab
+  # This class is an artifact of a time when common repository operations were
+  # performed by calling out to scripts in the gitlab-shell project. Now, these
+  # operations are all performed by Gitaly, and are mostly accessible through
+  # the Repository class. Prefer using a Repository to functionality here.
+  #
+  # Legacy code relating to namespaces still relies on Gitlab::Shell; it can be
+  # converted to a module once https://gitlab.com/groups/gitlab-org/-/epics/2320
+  # is completed. https://gitlab.com/gitlab-org/gitlab/-/issues/25095 tracks it.
   class Shell
     Error = Class.new(StandardError)
 
@@ -77,47 +83,6 @@ module Gitlab
       end
     end
 
-    # Import wiki repository from external service
-    #
-    # @param [Project] project
-    # @param [Gitlab::LegacyGithubImport::WikiFormatter, Gitlab::BitbucketImport::WikiFormatter] wiki_formatter
-    # @return [Boolean] whether repository could be imported
-    def import_wiki_repository(project, wiki_formatter)
-      import_repository(project.repository_storage, wiki_formatter.disk_path, wiki_formatter.import_url, project.wiki.full_path)
-    end
-
-    # Import project repository from external service
-    #
-    # @param [Project] project
-    # @return [Boolean] whether repository could be imported
-    def import_project_repository(project)
-      import_repository(project.repository_storage, project.disk_path, project.import_url, project.full_path)
-    end
-
-    # Import repository
-    #
-    # @example Import a repository
-    #   import_repository("nfs-file06", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git", "gitlab/gitlab-ci")
-    #
-    # @param [String] storage  project's storage name
-    # @param [String] disk_path project path on disk
-    # @param [String] url from external resource to import from
-    # @param [String] gl_project_path project name
-    # @return [Boolean] whether repository could be imported
-    def import_repository(storage, disk_path, url, gl_project_path)
-      if url.start_with?('.', '/')
-        raise Error.new("don't use disk paths with import_repository: #{url.inspect}")
-      end
-
-      relative_path = "#{disk_path}.git"
-      cmd = GitalyGitlabProjects.new(storage, relative_path, gl_project_path)
-
-      success = cmd.import_project(url, git_timeout)
-      raise Error, cmd.output unless success
-
-      success
-    end
-
     # Move or rename a repository
     #
     # @example Move/rename a repository
@@ -127,6 +92,8 @@ module Gitlab
     # @param [String] disk_path current project path on disk
     # @param [String] new_disk_path new project path on disk
     # @return [Boolean] whether repository could be moved/renamed on disk
+    #
+    # @deprecated
     def mv_repository(storage, disk_path, new_disk_path)
       return false if disk_path.empty? || new_disk_path.empty?
 
@@ -139,17 +106,6 @@ module Gitlab
       false
     end
 
-    # Fork repository to new path
-    #
-    # @param [Project] source_project forked-from Project
-    # @param [Project] target_project forked-to Project
-    def fork_repository(source_project, target_project)
-      forked_from_relative_path = "#{source_project.disk_path}.git"
-      fork_args = [target_project.repository_storage, "#{target_project.disk_path}.git", target_project.full_path]
-
-      GitalyGitlabProjects.new(source_project.repository_storage, forked_from_relative_path, source_project.full_path).fork_repository(*fork_args)
-    end
-
     # Removes a repository from file system, using rm_diretory which is an alias
     # for rm_namespace. Given the underlying implementation removes the name
     # passed as second argument on the passed storage.
@@ -159,6 +115,8 @@ module Gitlab
     #
     # @param [String] storage project's storage path
     # @param [String] disk_path current project path on disk
+    #
+    # @deprecated
     def remove_repository(storage, disk_path)
       return false if disk_path.empty?
 
@@ -179,6 +137,8 @@ module Gitlab
     #
     # @param [String] storage project's storage path
     # @param [String] name namespace name
+    #
+    # @deprecated
     def add_namespace(storage, name)
       Gitlab::GitalyClient.allow_n_plus_1_calls do
         Gitlab::GitalyClient::NamespaceService.new(storage).add(name)
@@ -195,6 +155,8 @@ module Gitlab
     #
     # @param [String] storage project's storage path
     # @param [String] name namespace name
+    #
+    # @deprecated
     def rm_namespace(storage, name)
       Gitlab::GitalyClient::NamespaceService.new(storage).remove(name)
     rescue GRPC::InvalidArgument => e
@@ -210,6 +172,8 @@ module Gitlab
     # @param [String] storage project's storage path
     # @param [String] old_name current namespace name
     # @param [String] new_name new namespace name
+    #
+    # @deprecated
     def mv_namespace(storage, old_name, new_name)
       Gitlab::GitalyClient::NamespaceService.new(storage).rename(old_name, new_name)
     rescue GRPC::InvalidArgument => e
@@ -226,67 +190,12 @@ module Gitlab
     # @return [Boolean] whether repository exists or not
     # @param [String] storage project's storage path
     # @param [Object] dir_name repository dir name
+    #
+    # @deprecated
     def repository_exists?(storage, dir_name)
       Gitlab::Git::Repository.new(storage, dir_name, nil, nil).exists?
     rescue GRPC::Internal
       false
-    end
-
-    protected
-
-    def full_path(storage, dir_name)
-      raise ArgumentError.new("Directory name can't be blank") if dir_name.blank?
-
-      File.join(Gitlab.config.repositories.storages[storage].legacy_disk_path, dir_name)
-    end
-
-    private
-
-    def git_timeout
-      Gitlab.config.gitlab_shell.git_timeout
-    end
-
-    def wrapped_gitaly_errors
-      yield
-    rescue GRPC::NotFound, GRPC::BadStatus => e
-      # Old Popen code returns [Error, output] to the caller, so we
-      # need to do the same here...
-      raise Error, e
-    end
-
-    class GitalyGitlabProjects
-      attr_reader :shard_name, :repository_relative_path, :output, :gl_project_path
-
-      def initialize(shard_name, repository_relative_path, gl_project_path)
-        @shard_name = shard_name
-        @repository_relative_path = repository_relative_path
-        @output = ''
-        @gl_project_path = gl_project_path
-      end
-
-      def import_project(source, _timeout)
-        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil, gl_project_path)
-
-        Gitlab::GitalyClient::RepositoryService.new(raw_repository).import_repository(source)
-        true
-      rescue GRPC::BadStatus => e
-        @output = e.message
-        false
-      end
-
-      def fork_repository(new_shard_name, new_repository_relative_path, new_project_name)
-        target_repository = Gitlab::Git::Repository.new(new_shard_name, new_repository_relative_path, nil, new_project_name)
-        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil, gl_project_path)
-
-        Gitlab::GitalyClient::RepositoryService.new(target_repository).fork_repository(raw_repository)
-      rescue GRPC::BadStatus => e
-        logger.error "fork-repository failed: #{e.message}"
-        false
-      end
-
-      def logger
-        Rails.logger # rubocop:disable Gitlab/RailsLogger
-      end
     end
   end
 end

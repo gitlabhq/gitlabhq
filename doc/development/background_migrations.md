@@ -301,12 +301,13 @@ It is required to write tests for:
 - The background migration itself.
 - A cleanup migration.
 
-You can use the `:migration` RSpec tag when testing the migrations.
+The `:migration` and `schema: :latest` RSpec tags are automatically set for
+background migration specs.
 See the
 [Testing Rails migrations](testing_guide/testing_migrations_guide.md#testing-a-non-activerecordmigration-class)
 style guide.
 
-When you do that, keep in mind that `before` and `after` RSpec hooks are going
+Keep in mind that `before` and `after` RSpec hooks are going
 to migrate you database down and up, which can result in other background
 migrations being called. That means that using `spy` test doubles with
 `have_received` is encouraged, instead of using regular test doubles, because

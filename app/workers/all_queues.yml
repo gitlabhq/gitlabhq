@@ -866,8 +866,8 @@
   :idempotent: 
 - :name: chat_notification
   :feature_category: :chatops
-  :has_external_dependencies: 
-  :urgency: :high
+  :has_external_dependencies: true
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration, schema: :latest do
+describe Gitlab::BackgroundMigration do
   describe '.queue' do
     it 'returns background migration worker queue' do
       expect(described_class.queue)

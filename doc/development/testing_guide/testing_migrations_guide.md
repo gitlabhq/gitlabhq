@@ -158,7 +158,9 @@ end
 
 To test a non-`ActiveRecord::Migration` test (a background migration),
 you will need to manually provide a required schema version. Please add a
-schema tag to a context that you want to switch the database schema within.
+`schema` tag to a context that you want to switch the database schema within.
+
+If not set, `schema` defaults to `:latest`.
 
 Example:
 

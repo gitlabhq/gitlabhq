@@ -634,7 +634,8 @@ describe Projects::PipelinesController do
       it 'does not persist a pipeline' do
         expect { post_request }.not_to change { project.ci_pipelines.count }
 
-        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response).to render_template('new')
       end
     end
 

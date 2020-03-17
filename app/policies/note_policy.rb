@@ -12,6 +12,7 @@ class NotePolicy < BasePolicy
   condition(:editable, scope: :subject) { @subject.editable? }
 
   condition(:can_read_noteable) { can?(:"read_#{@subject.noteable_ability_name}") }
+  condition(:commit_is_deleted) { @subject.for_commit? && @subject.noteable.blank? }
 
   condition(:is_visible) { @subject.system_note_with_references_visible_for?(@user) }
 
@@ -25,10 +26,14 @@ class NotePolicy < BasePolicy
 
   # If user can't read the issue/MR/etc then they should not be allowed to do anything to their own notes
   rule { ~can_read_noteable }.policy do
-    prevent :read_note
     prevent :admin_note
     prevent :resolve_note
     prevent :award_emoji
+  end
+
+  # Special rule for deleted commits
+  rule { ~(can_read_noteable | commit_is_deleted) }.policy do
+    prevent :read_note
   end
 
   rule { is_author }.policy do

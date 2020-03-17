@@ -81,6 +81,11 @@ RSpec.configure do |config|
       metadata[:migration] = true if metadata[:level] == :migration
     end
 
+    # Do not overwrite schema if it's already set
+    unless metadata.key?(:schema)
+      metadata[:schema] = :latest if quality_level.background_migration?(location)
+    end
+
     # Do not overwrite type if it's already set
     unless metadata.key?(:type)
       match = location.match(%r{/spec/([^/]+)/})

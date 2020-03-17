@@ -3,6 +3,7 @@ import { __ } from '~/locale';
 import { mapActions, mapState } from 'vuex';
 import { ADD_CI_VARIABLE_MODAL_ID } from '../constants';
 import {
+  GlButton,
   GlModal,
   GlFormSelect,
   GlFormGroup,
@@ -16,6 +17,7 @@ import {
 export default {
   modalId: ADD_CI_VARIABLE_MODAL_ID,
   components: {
+    GlButton,
     GlModal,
     GlFormSelect,
     GlFormGroup,
@@ -66,20 +68,6 @@ export default {
         attributes: { variant: 'success', disabled: !this.canSubmit },
       };
     },
-    deleteAction() {
-      if (this.variableBeingEdited) {
-        return {
-          text: __('Delete variable'),
-          attributes: { variant: 'danger', category: 'secondary' },
-        };
-      }
-      return null;
-    },
-    cancelAction() {
-      return {
-        text: __('Cancel'),
-      };
-    },
     maskedFeedback() {
       return __('This variable can not be masked');
     },
@@ -99,6 +87,7 @@ export default {
       } else {
         this.addVariable();
       }
+      this.hideModal();
     },
     resetModalHandler() {
       if (this.variableBeingEdited) {
@@ -107,20 +96,23 @@ export default {
         this.clearModal();
       }
     },
+    hideModal() {
+      this.$refs.modal.hide();
+    },
+    deleteVarAndClose() {
+      this.deleteVariable(this.variableBeingEdited);
+      this.hideModal();
+    },
   },
 };
 </script>
 
 <template>
   <gl-modal
+    ref="modal"
     :modal-id="$options.modalId"
     :title="modalActionText"
-    :action-primary="primaryAction"
-    :action-secondary="deleteAction"
-    :action-cancel="cancelAction"
-    @ok="updateOrAddVariable"
     @hidden="resetModalHandler"
-    @secondary="deleteVariable(variableBeingEdited)"
   >
     <form>
       <gl-form-group :label="__('Key')" label-for="ci-variable-key">
@@ -210,5 +202,23 @@ export default {
         </gl-form-checkbox>
       </gl-form-group>
     </form>
+    <template #modal-footer>
+      <gl-button @click="hideModal">{{ __('Cancel') }}</gl-button>
+      <gl-button
+        v-if="variableBeingEdited"
+        ref="deleteCiVariable"
+        category="secondary"
+        variant="danger"
+        @click="deleteVarAndClose"
+        >{{ __('Delete variable') }}</gl-button
+      >
+      <gl-button
+        ref="updateOrAddVariable"
+        :disabled="!canSubmit"
+        variant="success"
+        @click="updateOrAddVariable"
+        >{{ modalActionText }}
+      </gl-button>
+    </template>
   </gl-modal>
 </template>

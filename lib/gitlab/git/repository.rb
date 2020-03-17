@@ -793,6 +793,14 @@ module Gitlab
         end
       end
 
+      def import_repository(url)
+        raise ArgumentError, "don't use disk paths with import_repository: #{url.inspect}" if url.start_with?('.', '/')
+
+        wrapped_gitaly_errors do
+          gitaly_repository_client.import_repository(url)
+        end
+      end
+
       def blob_at(sha, path)
         Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
       end

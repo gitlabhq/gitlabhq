@@ -35,6 +35,18 @@ describe NotePolicy do
       end
     end
 
+    context 'when the noteable is a deleted commit' do
+      let(:commit) { nil }
+      let(:note) { create(:note_on_commit, commit_id: '12345678', author: user, project: project) }
+
+      it 'allows to read' do
+        expect(policy).to be_allowed(:read_note)
+        expect(policy).to be_disallowed(:admin_note)
+        expect(policy).to be_disallowed(:resolve_note)
+        expect(policy).to be_disallowed(:award_emoji)
+      end
+    end
+
     context 'when the noteable is a commit' do
       let(:commit) { project.repository.head_commit }
       let(:note) { create(:note_on_commit, commit_id: commit.id, author: user, project: project) }

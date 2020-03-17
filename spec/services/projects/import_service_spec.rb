@@ -122,7 +122,7 @@ describe Projects::ImportService do
         end
 
         it 'succeeds if repository import is successful' do
-          expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_return(true)
+          expect(project.repository).to receive(:import_repository).and_return(true)
           expect_any_instance_of(Gitlab::BitbucketImport::Importer).to receive(:execute).and_return(true)
           expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return(status: :success)
 
@@ -132,7 +132,9 @@ describe Projects::ImportService do
         end
 
         it 'fails if repository import fails' do
-          expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_raise(Gitlab::Shell::Error.new('Failed to import the repository /a/b/c'))
+          expect(project.repository)
+            .to receive(:import_repository)
+            .and_raise(Gitlab::Git::CommandError, 'Failed to import the repository /a/b/c')
 
           result = subject.execute
 
@@ -144,7 +146,7 @@ describe Projects::ImportService do
           it 'logs the error' do
             error_message = 'error message'
 
-            expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_return(true)
+            expect(project.repository).to receive(:import_repository).and_return(true)
             expect_any_instance_of(Gitlab::BitbucketImport::Importer).to receive(:execute).and_return(true)
             expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return(status: :error, message: error_message)
             expect(Gitlab::AppLogger).to receive(:error).with("The Lfs import process failed. #{error_message}")
@@ -155,7 +157,7 @@ describe Projects::ImportService do
 
         context 'when repository import scheduled' do
           before do
-            allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_return(true)
+            expect(project.repository).to receive(:import_repository).and_return(true)
             allow(subject).to receive(:import_data)
           end
 

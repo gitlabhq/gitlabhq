@@ -43,6 +43,7 @@ eslint-report.html
 /config/redis.shared_state.yml
 /config/unicorn.rb
 /config/puma.rb
+/config/puma_actioncable.rb
 /config/secrets.yml
 /config/sidekiq.yml
 /config/registry.key

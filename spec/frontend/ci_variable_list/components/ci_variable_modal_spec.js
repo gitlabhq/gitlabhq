@@ -1,9 +1,10 @@
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { GlModal } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import CiVariableModal from '~/ci_variable_list/components/ci_variable_modal.vue';
 import createStore from '~/ci_variable_list/store';
 import mockData from '../services/mock_data';
+import ModalStub from '../stubs';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -15,12 +16,23 @@ describe('Ci variable modal', () => {
   const createComponent = () => {
     store = createStore();
     wrapper = shallowMount(CiVariableModal, {
+      stubs: {
+        GlModal: ModalStub,
+      },
       localVue,
       store,
     });
   };
 
-  const findModal = () => wrapper.find(GlModal);
+  const findModal = () => wrapper.find(ModalStub);
+  const addOrUpdateButton = index =>
+    findModal()
+      .findAll(GlButton)
+      .at(index);
+  const deleteVariableButton = () =>
+    findModal()
+      .findAll(GlButton)
+      .at(1);
 
   beforeEach(() => {
     createComponent();
@@ -32,7 +44,7 @@ describe('Ci variable modal', () => {
   });
 
   it('button is disabled when no key/value pair are present', () => {
-    expect(findModal().props('actionPrimary').attributes.disabled).toBeTruthy();
+    expect(addOrUpdateButton(1).attributes('disabled')).toBeTruthy();
   });
 
   describe('Adding a new variable', () => {
@@ -42,11 +54,11 @@ describe('Ci variable modal', () => {
     });
 
     it('button is enabled when key/value pair are present', () => {
-      expect(findModal().props('actionPrimary').attributes.disabled).toBeFalsy();
+      expect(addOrUpdateButton(1).attributes('disabled')).toBeFalsy();
     });
 
     it('Add variable button dispatches addVariable action', () => {
-      findModal().vm.$emit('ok');
+      addOrUpdateButton(1).vm.$emit('click');
       expect(store.dispatch).toHaveBeenCalledWith('addVariable');
     });
 
@@ -63,11 +75,11 @@ describe('Ci variable modal', () => {
     });
 
     it('button text is Update variable when updating', () => {
-      expect(wrapper.vm.modalActionText).toBe('Update variable');
+      expect(addOrUpdateButton(2).text()).toBe('Update variable');
     });
 
     it('Update variable button dispatches updateVariable with correct variable', () => {
-      findModal().vm.$emit('ok');
+      addOrUpdateButton(2).vm.$emit('click');
       expect(store.dispatch).toHaveBeenCalledWith(
         'updateVariable',
         store.state.variableBeingEdited,
@@ -80,7 +92,7 @@ describe('Ci variable modal', () => {
     });
 
     it('dispatches deleteVariable with correct variable to delete', () => {
-      findModal().vm.$emit('secondary');
+      deleteVariableButton().vm.$emit('click');
       expect(store.dispatch).toHaveBeenCalledWith('deleteVariable', mockData.mockVariables[0]);
     });
   });

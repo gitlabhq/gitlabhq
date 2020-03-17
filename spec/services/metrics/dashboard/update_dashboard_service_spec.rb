@@ -27,7 +27,14 @@ describe Metrics::Dashboard::UpdateDashboardService, :use_clean_rails_memory_sto
     end
 
     context 'user does not have push right to repository' do
-      it_behaves_like 'misconfigured dashboard service response', :forbidden, "You are not allowed to push into this branch. Create another branch or open a merge request."
+      it 'returns an appropriate message and status code', :aggregate_failures do
+        result = service_call
+
+        expect(result.keys).to contain_exactly(:message, :http_status, :status, :last_step)
+        expect(result[:status]).to eq(:error)
+        expect(result[:http_status]).to eq(:forbidden)
+        expect(result[:message]).to eq("You are not allowed to push into this branch. Create another branch or open a merge request.")
+      end
     end
 
     context 'with rights to push to the repository' do
@@ -39,13 +46,27 @@ describe Metrics::Dashboard::UpdateDashboardService, :use_clean_rails_memory_sto
         context 'with a yml extension' do
           let(:file_name) { 'config/prometheus/../database.yml' }
 
-          it_behaves_like 'misconfigured dashboard service response', :bad_request, "A file with this name doesn't exist"
+          it 'returns an appropriate message and status code', :aggregate_failures do
+            result = service_call
+
+            expect(result.keys).to contain_exactly(:message, :http_status, :status, :last_step)
+            expect(result[:status]).to eq(:error)
+            expect(result[:http_status]).to eq(:bad_request)
+            expect(result[:message]).to eq("A file with this name doesn't exist")
+          end
         end
 
         context 'without a yml extension' do
           let(:file_name) { '../../..../etc/passwd' }
 
-          it_behaves_like 'misconfigured dashboard service response', :bad_request, "The file name should have a .yml extension"
+          it 'returns an appropriate message and status code', :aggregate_failures do
+            result = service_call
+
+            expect(result.keys).to contain_exactly(:message, :http_status, :status, :last_step)
+            expect(result[:status]).to eq(:error)
+            expect(result[:http_status]).to eq(:bad_request)
+            expect(result[:message]).to eq("The file name should have a .yml extension")
+          end
         end
       end
 
@@ -60,7 +81,14 @@ describe Metrics::Dashboard::UpdateDashboardService, :use_clean_rails_memory_sto
           project.repository.add_branch(user, branch, 'master')
         end
 
-        it_behaves_like 'misconfigured dashboard service response', :bad_request, "There was an error updating the dashboard, branch named: existing_branch already exists."
+        it 'returns an appropriate message and status code', :aggregate_failures do
+          result = service_call
+
+          expect(result.keys).to contain_exactly(:message, :http_status, :status, :last_step)
+          expect(result[:status]).to eq(:error)
+          expect(result[:http_status]).to eq(:bad_request)
+          expect(result[:message]).to eq("There was an error updating the dashboard, branch named: existing_branch already exists.")
+        end
       end
 
       context 'Files::UpdateService success' do

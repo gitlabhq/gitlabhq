@@ -2138,6 +2138,33 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#import_repository' do
+    let_it_be(:project) { create(:project) }
+
+    let(:repository) { project.repository }
+    let(:url) { 'http://invalid.invalid' }
+
+    it 'raises an error if a relative path is provided' do
+      expect { repository.import_repository('/foo') }.to raise_error(ArgumentError, /disk path/)
+    end
+
+    it 'raises an error if an absolute path is provided' do
+      expect { repository.import_repository('./foo') }.to raise_error(ArgumentError, /disk path/)
+    end
+
+    it 'delegates to Gitaly' do
+      expect_next_instance_of(Gitlab::GitalyClient::RepositoryService) do |svc|
+        expect(svc).to receive(:import_repository).with(url).and_return(nil)
+      end
+
+      repository.import_repository(url)
+    end
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :import_repository do
+      subject { repository.import_repository('http://invalid.invalid') }
+    end
+  end
+
   describe '#replicate' do
     let(:new_repository) do
       Gitlab::Git::Repository.new('test_second_storage', TEST_REPO_PATH, '', 'group/project')
