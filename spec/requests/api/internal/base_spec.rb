@@ -12,6 +12,7 @@ describe API::Internal::Base do
 
   let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
   let_it_be(:project_snippet) { create(:project_snippet, :repository, author: user, project: project) }
+  let(:snippet_changes) { "#{TestEnv::BRANCH_SHA['snippet/single-file']} #{TestEnv::BRANCH_SHA['snippet/edit-file']} refs/heads/snippet/edit-file" }
 
   describe "GET /internal/check" do
     it do
@@ -336,7 +337,7 @@ describe API::Internal::Base do
       end
 
       context 'git push with personal snippet' do
-        subject { push(key, personal_snippet, env: env.to_json) }
+        subject { push(key, personal_snippet, env: env.to_json, changes: snippet_changes) }
 
         it 'responds with success' do
           subject
@@ -371,7 +372,7 @@ describe API::Internal::Base do
       end
 
       context 'git push with project snippet' do
-        subject { push(key, project_snippet, env: env.to_json) }
+        subject { push(key, project_snippet, env: env.to_json, changes: snippet_changes) }
 
         it 'responds with success' do
           subject
@@ -1104,9 +1105,11 @@ describe API::Internal::Base do
     )
   end
 
-  def push(key, container, protocol = 'ssh', env: nil)
+  def push(key, container, protocol = 'ssh', env: nil, changes: nil)
+    changes ||= 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master'
+
     params = {
-      changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
+      changes: changes,
       key_id: key.id,
       project: full_path_for(container),
       gl_repository: gl_repository_for(container),

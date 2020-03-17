@@ -1,0 +1,5 @@
+---
+title: Introduce a feature flag for Notifications for when pipelines are fixed
+merge_request: 26682
+author: Jacopo Beschi @jacopo-beschi
+type: changed

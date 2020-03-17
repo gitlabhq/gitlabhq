@@ -7,7 +7,6 @@ describe 'Projects > Show > User manages notifications', :js do
 
   before do
     sign_in(project.owner)
-    visit project_path(project)
   end
 
   def click_notifications_button
@@ -15,6 +14,7 @@ describe 'Projects > Show > User manages notifications', :js do
   end
 
   it 'changes the notification setting' do
+    visit project_path(project)
     click_notifications_button
     click_link 'On mention'
 
@@ -26,6 +26,7 @@ describe 'Projects > Show > User manages notifications', :js do
   end
 
   it 'changes the notification setting to disabled' do
+    visit project_path(project)
     click_notifications_button
     click_link 'Disabled'
 
@@ -50,11 +51,13 @@ describe 'Projects > Show > User manages notifications', :js do
         :reassign_merge_request,
         :merge_merge_request,
         :failed_pipeline,
+        :fixed_pipeline,
         :success_pipeline
       ]
     end
 
     it 'shows notification settings checkbox' do
+      visit project_path(project)
       click_notifications_button
       page.find('a[data-notification-level="custom"]').click
 
@@ -64,12 +67,27 @@ describe 'Projects > Show > User manages notifications', :js do
         end
       end
     end
+
+    context 'when ci_pipeline_fixed_notifications is disabled' do
+      before do
+        stub_feature_flags(ci_pipeline_fixed_notifications: false)
+      end
+
+      it 'hides fixed_pipeline checkbox' do
+        visit project_path(project)
+        click_notifications_button
+        page.find('a[data-notification-level="custom"]').click
+
+        expect(page).not_to have_selector("input[name='notification_setting[fixed_pipeline]']")
+      end
+    end
   end
 
   context 'when project emails are disabled' do
     let(:project) { create(:project, :public, :repository, emails_disabled: true) }
 
     it 'is disabled' do
+      visit project_path(project)
       expect(page).to have_selector('.notifications-btn.disabled', visible: true)
     end
   end

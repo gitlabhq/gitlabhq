@@ -2509,27 +2509,53 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
-    context 'with success pipeline' do
-      before do
-        perform_enqueued_jobs do
+    shared_examples 'enqueues the notification worker' do
+      it 'enqueues PipelineUpdateCiRefStatusWorker' do
+        expect(PipelineUpdateCiRefStatusWorker).to receive(:perform_async).with(pipeline.id)
+        expect(PipelineNotificationWorker).not_to receive(:perform_async).with(pipeline.id)
+
+        pipeline.succeed
+      end
+
+      context 'when ci_pipeline_fixed_notifications is disabled' do
+        before do
+          stub_feature_flags(ci_pipeline_fixed_notifications: false)
+        end
+
+        it 'enqueues PipelineNotificationWorker' do
+          expect(PipelineUpdateCiRefStatusWorker).not_to receive(:perform_async).with(pipeline.id)
+          expect(PipelineNotificationWorker).to receive(:perform_async).with(pipeline.id)
+
           pipeline.succeed
         end
       end
-
-      it_behaves_like 'sending a notification'
     end
 
-    context 'with failed pipeline' do
-      before do
-        perform_enqueued_jobs do
-          create(:ci_build, :failed, pipeline: pipeline)
-          create(:generic_commit_status, :failed, pipeline: pipeline)
-
-          pipeline.drop
+    context 'with success pipeline' do
+      it_behaves_like 'sending a notification' do
+        before do
+          perform_enqueued_jobs do
+            pipeline.succeed
+          end
         end
       end
 
-      it_behaves_like 'sending a notification'
+      it_behaves_like 'enqueues the notification worker'
+    end
+
+    context 'with failed pipeline' do
+      it_behaves_like 'sending a notification' do
+        before do
+          perform_enqueued_jobs do
+            create(:ci_build, :failed, pipeline: pipeline)
+            create(:generic_commit_status, :failed, pipeline: pipeline)
+
+            pipeline.drop
+          end
+        end
+      end
+
+      it_behaves_like 'enqueues the notification worker'
     end
 
     context 'with skipped pipeline' do

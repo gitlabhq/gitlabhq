@@ -20,13 +20,10 @@ module Gitlab
         @logger.append_message("Running checks for ref: #{@branch_name || @tag_name}")
       end
 
-      def exec
+      def validate!
         if creation? || deletion?
           raise GitAccess::ForbiddenError, ERROR_MESSAGES[:create_delete_branch]
         end
-
-        # TODO: https://gitlab.com/gitlab-org/gitlab/issues/205628
-        # Check operation will not result in more than one file in the repository
 
         true
       end

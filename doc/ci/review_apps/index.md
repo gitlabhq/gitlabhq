@@ -188,6 +188,9 @@ With Visual Reviews, you can provide a feedback form to your Review Apps so
 that reviewers can post comments directly from the app back to the merge request
 that spawned the Review App.
 
+NOTE: **Note:** Visual Reviews currently only work for public projects. Support for private
+and internal projects [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/42750).
+
 ### Configuring Visual Reviews
 
 Ensure that the `anonymous_visual_review_feedback` feature flag is enabled.

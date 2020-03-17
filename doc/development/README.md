@@ -181,11 +181,11 @@ Complementary reads:
 - [Externalization](i18n/externalization.md)
 - [Translation](i18n/translation.md)
 
-## Event tracking guides
+## Telemetry guides
 
-- [Introduction](event_tracking/index.md)
-- [Frontend tracking guide](event_tracking/frontend.md)
-- [Backend tracking guide](event_tracking/backend.md)
+- [Introduction](../telemetry/index.md)
+- [Frontend tracking guide](../telemetry/frontend.md)
+- [Backend tracking guide](../telemetry/backend.md)
 
 ## Experiment Guide
 

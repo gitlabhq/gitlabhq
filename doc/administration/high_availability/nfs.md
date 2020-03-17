@@ -54,6 +54,8 @@ management between systems:
 
 ### Improving NFS performance with GitLab
 
+#### Improving NFS performance with Unicorn
+
 NOTE: **Note:** From GitLab 12.1, it will automatically be detected if Rugged can and should be used per storage.
 
 If you previously enabled Rugged using the feature flag, you will need to unset the feature flag by using:
@@ -61,6 +63,16 @@ If you previously enabled Rugged using the feature flag, you will need to unset 
 ```shell
 sudo gitlab-rake gitlab:features:unset_rugged
 ```
+
+If the Rugged feature flag is explicitly set to either true or false, GitLab will use the value explicitly set.
+
+#### Improving NFS performance with Puma
+
+NOTE: **Note:** From GitLab 12.7, Rugged auto-detection is disabled if Puma thread count is greater than 1.
+
+If you want to use Rugged with Puma, it is recommended to [set Puma thread count to 1](https://docs.gitlab.com/omnibus/settings/puma.html#puma-settings).
+
+If you want to use Rugged with Puma thread count more than 1, Rugged can be enabled using the [feature flag](../../development/gitaly.md#legacy-rugged-code)
 
 If the Rugged feature flag is explicitly set to either true or false, GitLab will use the value explicitly set.
 

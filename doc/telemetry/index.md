@@ -44,7 +44,7 @@ From the backend, the events that are tracked will likely consist of things like
 
 See [Backend tracking guide](backend.md).
 
-Also, see [Instrumenting Ruby code](../instrumentation.md) if you are instrumenting application performance metrics for Ruby code.
+Also, see [Instrumenting Ruby code](../development/instrumentation.md) if you are instrumenting application performance metrics for Ruby code.
 
 ## Enabling tracking
 

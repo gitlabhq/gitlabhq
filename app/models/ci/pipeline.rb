@@ -236,7 +236,11 @@ module Ci
 
       after_transition any => [:success, :failed] do |pipeline|
         pipeline.run_after_commit do
-          PipelineUpdateCiRefStatusWorker.perform_async(pipeline.id)
+          if Feature.enabled?(:ci_pipeline_fixed_notifications)
+            PipelineUpdateCiRefStatusWorker.perform_async(pipeline.id)
+          else
+            PipelineNotificationWorker.perform_async(pipeline.id)
+          end
         end
       end
 

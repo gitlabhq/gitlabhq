@@ -5,6 +5,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 const changedFile = () => ({ changed: true });
 const stagedFile = () => ({ changed: true, staged: true });
 const newFile = () => ({ changed: true, tempFile: true });
+const deletedFile = () => ({ changed: false, tempFile: false, staged: false, deleted: true });
 const unchangedFile = () => ({ changed: false, tempFile: false, staged: false, deleted: false });
 
 describe('Changed file icon', () => {
@@ -58,6 +59,7 @@ describe('Changed file icon', () => {
     ${changedFile()} | ${'file-modified'}       | ${'Modified'} | ${'with file changed'}
     ${stagedFile()}  | ${'file-modified-solid'} | ${'Modified'} | ${'with file staged'}
     ${newFile()}     | ${'file-addition'}       | ${'Added'}    | ${'with file new'}
+    ${deletedFile()} | ${'file-deletion'}       | ${'Deleted'}  | ${'with file deleted'}
   `('$desc', ({ file, iconName, tooltipText }) => {
     beforeEach(() => {
       factory({ file });

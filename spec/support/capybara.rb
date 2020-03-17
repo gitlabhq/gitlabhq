@@ -126,6 +126,12 @@ RSpec.configure do |config|
     Capybara.raise_server_errors = false
 
     example.run
+
+    if example.metadata[:screenshot]
+      screenshot = example.metadata[:screenshot][:image] || example.metadata[:screenshot][:html]
+      example.metadata[:stdout] = %{[[ATTACHMENT|#{screenshot}]]}
+    end
+
   ensure
     Capybara.raise_server_errors = true
   end

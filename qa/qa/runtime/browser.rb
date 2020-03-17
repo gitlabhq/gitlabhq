@@ -44,10 +44,20 @@ module QA
         new.visit(address, page_class, &block)
       end
 
+      # rubocop: disable Metrics/AbcSize
       def self.configure!
         RSpec.configure do |config|
           config.define_derived_metadata(file_path: %r{/qa/specs/features/}) do |metadata|
             metadata[:type] = :feature
+          end
+
+          config.around(:each) do |example|
+            example.run
+
+            if example.metadata[:screenshot]
+              screenshot = example.metadata[:screenshot][:image] || example.metadata[:screenshot][:html]
+              example.metadata[:stdout] = %{[[ATTACHMENT|#{screenshot}]]}
+            end
           end
         end
 
@@ -140,6 +150,7 @@ module QA
           config.default_normalize_ws = true
         end
       end
+      # rubocop: enable Metrics/AbcSize
 
       class Session
         include Capybara::DSL
