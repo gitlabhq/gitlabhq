@@ -320,6 +320,13 @@ class Note < ApplicationRecord
     super(noteable_type.to_s.classify.constantize.base_class.to_s)
   end
 
+  def noteable_assignee_or_author?(user)
+    return false unless user
+    return noteable.assignee_or_author?(user) if [MergeRequest, Issue].include?(noteable.class)
+
+    noteable.author_id == user.id
+  end
+
   def special_role=(role)
     raise "Role is undefined, #{role} not found in #{SpecialRole.values}" unless SpecialRole.value?(role)
 
@@ -337,7 +344,7 @@ class Note < ApplicationRecord
   end
 
   def confidential?
-    noteable.try(:confidential?)
+    confidential || noteable.try(:confidential?)
   end
 
   def editable?

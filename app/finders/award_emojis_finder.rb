@@ -41,7 +41,7 @@ class AwardEmojisFinder
   def validate_name_param
     return unless params[:name]
 
-    raise ArgumentError, 'Invalid name param' unless params[:name].in?(Gitlab::Emoji.emojis_names)
+    raise ArgumentError, 'Invalid name param' unless params[:name].to_s.in?(Gitlab::Emoji.emojis_names)
   end
 
   def validate_awarded_by_param

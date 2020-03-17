@@ -408,7 +408,6 @@ GFM will recognize the following:
 | merge request                   | `!123`                     | `namespace/project!123`                 | `project!123`                  |
 | snippet                         | `$123`                     | `namespace/project$123`                 | `project$123`                  |
 | epic **(ULTIMATE)**             | `&123`                     | `group1/subgroup&123`                   |                                |
-| design **(PREMIUM)**            | `#123[file.jpg]` or `#123["file.png"]` | `group1/subgroup#123[file.png]`         | `project#123[file.png]`         |
 | label by ID                     | `~123`                     | `namespace/project~123`                 | `project~123`                  |
 | one-word label by name          | `~bug`                     | `namespace/project~bug`                 | `project~bug`                  |
 | multi-word label by name        | `~"feature request"`       | `namespace/project~"feature request"`   | `project~"feature request"`    |
@@ -420,6 +419,12 @@ GFM will recognize the following:
 | commit range comparison         | `9ba12248...b19a04f5`      | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`  |
 | repository file references      | `[README](doc/README)`     |                                         |                                |
 | repository file line references | `[README](doc/README#L13)` |                                         |                                |
+
+In addition to this, links to some objects are also recognized and formatted. Some examples of these are:
+
+- Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, which will be rendered as `#1234 (note1)`
+- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/issues/1234/designs"`, which will be rendered as `#1234 (designs)`.
+  **(PREMIUM)**
 
 ### Task lists
 

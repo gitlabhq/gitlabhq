@@ -387,6 +387,22 @@ describe Gitlab::UsageData do
           expect(described_class.count(relation, fallback: 15, batch: false)).to eq(15)
         end
       end
+
+      describe '#distinct_count' do
+        let(:relation) { double(:relation) }
+
+        it 'returns the count when counting succeeds' do
+          allow(relation).to receive(:distinct_count_by).and_return(1)
+
+          expect(described_class.distinct_count(relation, batch: false)).to eq(1)
+        end
+
+        it 'returns the fallback value when counting fails' do
+          allow(relation).to receive(:distinct_count_by).and_raise(ActiveRecord::StatementInvalid.new(''))
+
+          expect(described_class.distinct_count(relation, fallback: 15, batch: false)).to eq(15)
+        end
+      end
     end
   end
 end

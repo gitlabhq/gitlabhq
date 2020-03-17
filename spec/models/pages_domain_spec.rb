@@ -7,11 +7,6 @@ describe PagesDomain do
 
   subject(:pages_domain) { described_class.new }
 
-  # Locking in date due to cert expiration date https://gitlab.com/gitlab-org/gitlab/-/issues/210557#note_304749257
-  around do |example|
-    Timecop.travel(Time.new(2020, 3, 12)) { example.run }
-  end
-
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:serverless_domain_clusters) }
@@ -102,8 +97,8 @@ describe PagesDomain do
     it 'saves validity time' do
       domain.save
 
-      expect(domain.certificate_valid_not_before).to be_like_time(Time.parse("2016-02-12 14:32:00 UTC"))
-      expect(domain.certificate_valid_not_after).to be_like_time(Time.parse("2020-04-12 14:32:00 UTC"))
+      expect(domain.certificate_valid_not_before).to be_like_time(Time.parse("2020-03-16 14:20:34 UTC"))
+      expect(domain.certificate_valid_not_after).to be_like_time(Time.parse("2220-01-28 14:20:34 UTC"))
     end
   end
 

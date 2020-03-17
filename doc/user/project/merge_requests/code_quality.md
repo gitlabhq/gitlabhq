@@ -16,7 +16,7 @@ Code Quality:
   subscription.
 - Runs in [pipelines](../../../ci/pipelines/index.md) using a Docker image built in the
   [GitLab Code
-  Quality](https://gitlab.com/gitlab-org/security-products/codequality) project using [default Code Climate configurations](https://gitlab.com/gitlab-org/security-products/codequality/-/tree/master/codeclimate_defaults).
+  Quality](https://gitlab.com/gitlab-org/ci-cd/codequality) project using [default Code Climate configurations](https://gitlab.com/gitlab-org/ci-cd/codequality/-/tree/master/codeclimate_defaults).
 - Can make use of a [template](#example-configuration).
 - Is available with [Auto
   DevOps](../../../topics/autodevops/index.md#auto-code-quality-starter).
@@ -135,14 +135,14 @@ code_quality:
         --env SOURCE_CODE="$PWD"
         --volume "$PWD":/code
         --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+        "registry.gitlab.com/gitlab-org/ci-cd/codequality:$SP_VERSION" /code
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
 ```
 
 In GitLab 12.6, Code Quality switched to the
-[new versioning scheme](https://gitlab.com/gitlab-org/security-products/codequality/-/merge_requests/38).
+[new versioning scheme](https://gitlab.com/gitlab-org/ci-cd/codequality#versioning-and-release-cycle).
 It is highly recommended to include the Code Quality template as shown in the
 [example configuration](#example-configuration), which uses the new versioning scheme.
 If not using the template, the `SP_VERSION` variable can be hardcoded to use the
@@ -162,7 +162,7 @@ code_quality:
         --env SOURCE_CODE="$PWD"
         --volume "$PWD":/code
         --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+        "registry.gitlab.com/gitlab-org/ci-cd/codequality:$SP_VERSION" /code
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
@@ -184,7 +184,7 @@ code_quality:
         --env SOURCE_CODE="$PWD"
         --volume "$PWD":/code
         --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+        "registry.gitlab.com/gitlab-org/ci-cd/codequality:$SP_VERSION" /code
   artifacts:
       paths: [gl-code-quality-report.json]
 ```
@@ -216,7 +216,7 @@ The Code Quality job supports environment variables that users can set to
 configure job execution at runtime.
 
 For a list of available environment variables, see
-[Environment variables](https://gitlab.com/gitlab-org/security-products/codequality/blob/master/README.md#environment-variables).
+[Environment variables](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables).
 
 ## Implementing a custom tool
 

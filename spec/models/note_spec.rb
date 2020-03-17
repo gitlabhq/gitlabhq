@@ -270,18 +270,35 @@ describe Note do
     end
   end
 
-  describe "confidential?" do
-    it "delegates to noteable" do
-      issue_note = build(:note, :on_issue)
-      confidential_note = build(:note, noteable: create(:issue, confidential: true))
+  describe '#confidential?' do
+    context 'when note is not confidential' do
+      it 'is true when a noteable is confidential' do
+        issue = create(:issue, :confidential)
+        note = build(:note, noteable: issue, project: issue.project)
 
-      expect(issue_note.confidential?).to be_falsy
-      expect(confidential_note.confidential?).to be_truthy
+        expect(note.confidential?).to be_truthy
+      end
+
+      it 'is false when a noteable is not confidential' do
+        issue = create(:issue, confidential: false)
+        note = build(:note, noteable: issue, project: issue.project)
+
+        expect(note.confidential?).to be_falsy
+      end
+
+      it "is falsey when noteable can't be confidential" do
+        commit_note = build(:note_on_commit)
+
+        expect(commit_note.confidential?).to be_falsy
+      end
     end
+    context 'when note is confidential' do
+      it 'is true even when a noteable is not confidential' do
+        issue = create(:issue, confidential: false)
+        note = build(:note, :confidential, noteable: issue, project: issue.project)
 
-    it "is falsey when noteable can't be confidential" do
-      commit_note = build(:note_on_commit)
-      expect(commit_note.confidential?).to be_falsy
+        expect(note.confidential?).to be_truthy
+      end
     end
   end
 
@@ -1228,6 +1245,70 @@ describe Note do
         expect(notes.count).to eq(2)
         expect(notes.first.id).to eq(note1.id)
         expect(notes.second.id).to eq(note2.id)
+      end
+    end
+
+    describe '#noteable_assignee_or_author' do
+      let(:user) { create(:user) }
+      let(:noteable) { create(:issue) }
+      let(:note) { create(:note, project: noteable.project, noteable: noteable) }
+
+      subject { note.noteable_assignee_or_author?(user) }
+
+      shared_examples 'assignee check' do
+        context 'when the provided user is one of the assignees' do
+          before do
+            note.noteable.update(assignees: [user, create(:user)])
+          end
+
+          it 'returns true' do
+            expect(subject).to be_truthy
+          end
+        end
+      end
+
+      shared_examples 'author check' do
+        context 'when the provided user is the author' do
+          before do
+            note.noteable.update(author: user)
+          end
+
+          it 'returns true' do
+            expect(subject).to be_truthy
+          end
+        end
+
+        context 'when the provided user is neither author nor assignee' do
+          it 'returns true' do
+            expect(subject).to be_falsey
+          end
+        end
+      end
+
+      context 'when user is nil' do
+        let(:user) { nil }
+
+        it 'returns false' do
+          expect(subject).to be_falsey
+        end
+      end
+
+      context 'when noteable is an issue' do
+        it_behaves_like 'author check'
+        it_behaves_like 'assignee check'
+      end
+
+      context 'when noteable is a merge request' do
+        let(:noteable) { create(:merge_request) }
+
+        it_behaves_like 'author check'
+        it_behaves_like 'assignee check'
+      end
+
+      context 'when noteable is a snippet' do
+        let(:noteable) { create(:personal_snippet) }
+
+        it_behaves_like 'author check'
       end
     end
   end

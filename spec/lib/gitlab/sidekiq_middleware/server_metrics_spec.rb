@@ -67,7 +67,7 @@ describe Gitlab::SidekiqMiddleware::ServerMetrics do
             allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(monotonic_time_before, monotonic_time_after)
             allow(Gitlab::InstrumentationHelper).to receive(:queue_duration_for_job).with(job).and_return(queue_duration_for_job)
             allow(ActiveRecord::LogSubscriber).to receive(:runtime).and_return(db_duration * 1000)
-            allow(Gitlab::GitalyClient).to receive(:query_time).and_return(gitaly_duration)
+            allow(subject).to receive(:get_gitaly_time).and_return(gitaly_duration)
 
             expect(running_jobs_metric).to receive(:increment).with(labels, 1)
             expect(running_jobs_metric).to receive(:increment).with(labels, -1)

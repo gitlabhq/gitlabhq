@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ZoomMeeting < ApplicationRecord
+  include UsageStatistics
+
   belongs_to :project, optional: false
   belongs_to :issue, optional: false
 
@@ -22,11 +24,5 @@ class ZoomMeeting < ApplicationRecord
 
   def self.canonical_meeting_url(issue)
     canonical_meeting(issue)&.url
-  end
-
-  def self.distinct_count_by(column = nil, fallback = -1)
-    distinct.count(column)
-  rescue ActiveRecord::StatementInvalid
-    fallback
   end
 end

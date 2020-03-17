@@ -46,7 +46,7 @@ module Gitlab
           @metrics[:sidekiq_jobs_cpu_seconds].observe(labels, job_thread_cputime)
           @metrics[:sidekiq_jobs_completion_seconds].observe(labels, monotonic_time)
           @metrics[:sidekiq_jobs_db_seconds].observe(labels, ActiveRecord::LogSubscriber.runtime / 1000)
-          @metrics[:sidekiq_jobs_gitaly_seconds].observe(labels, Gitlab::GitalyClient.query_time)
+          @metrics[:sidekiq_jobs_gitaly_seconds].observe(labels, get_gitaly_time(job))
         end
       end
 
@@ -68,6 +68,10 @@ module Gitlab
 
       def get_thread_cputime
         defined?(Process::CLOCK_THREAD_CPUTIME_ID) ? Process.clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID) : 0
+      end
+
+      def get_gitaly_time(job)
+        job.fetch(:gitaly_duration, 0) / 1000.0
       end
     end
   end

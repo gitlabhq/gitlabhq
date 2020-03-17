@@ -14,6 +14,7 @@ class Discussion
             :author,
             :noteable,
             :commit_id,
+            :confidential?,
             :for_commit?,
             :for_merge_request?,
             :noteable_ability_name,

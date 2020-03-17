@@ -48,6 +48,7 @@ FactoryBot.define do
     trait :secret do
       visibility_level { Snippet::PUBLIC }
       secret { true }
+      project { nil }
     end
   end
 end

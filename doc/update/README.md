@@ -50,6 +50,7 @@ However, for this to work there are the following requirements:
    migrations](../development/post_deployment_migrations.md) (included in
    zero downtime update steps below).
 - You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
+- Multi-node GitLab instance. Single-node instances may experience brief interruptions as services restart.
 
 Most of the time you can safely upgrade from a patch release to the next minor
 release if the patch release is not the latest. For example, upgrading from

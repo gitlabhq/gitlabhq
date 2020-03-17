@@ -420,7 +420,7 @@ tests, it's up to you to add them.
 ### Auto Code Quality **(STARTER)**
 
 Auto Code Quality uses the
-[Code Quality image](https://gitlab.com/gitlab-org/security-products/codequality) to run
+[Code Quality image](https://gitlab.com/gitlab-org/ci-cd/codequality) to run
 static analysis and other code checks on the current code. The report is
 created, and is uploaded as an artifact which you can later download and check
 out.
