@@ -820,6 +820,14 @@ module Ci
       end
     end
 
+    def coverage_reports
+      Gitlab::Ci::Reports::CoverageReports.new.tap do |coverage_reports|
+        builds.latest.with_reports(Ci::JobArtifact.coverage_reports).each do |build|
+          build.collect_coverage_reports!(coverage_reports)
+        end
+      end
+    end
+
     def has_exposed_artifacts?
       complete? && builds.latest.with_exposed_artifacts.exists?
     end

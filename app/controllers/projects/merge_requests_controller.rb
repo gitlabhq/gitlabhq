@@ -14,7 +14,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   skip_before_action :merge_request, only: [:index, :bulk_update]
   before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
-  before_action :authorize_read_actual_head_pipeline!, only: [:test_reports, :exposed_artifacts]
+  before_action :authorize_read_actual_head_pipeline!, only: [:test_reports, :exposed_artifacts, :coverage_reports]
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
@@ -63,6 +63,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
         @current_user_data = UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json
         @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
+        @coverage_path = coverage_reports_project_merge_request_path(@project, @merge_request, format: :json) if @merge_request.has_coverage_reports?
 
         set_pipeline_variables
 
@@ -129,6 +130,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def test_reports
     reports_response(@merge_request.compare_test_reports)
+  end
+
+  def coverage_reports
+    if @merge_request.has_coverage_reports?
+      reports_response(@merge_request.find_coverage_reports)
+    else
+      head :no_content
+    end
   end
 
   def exposed_artifacts

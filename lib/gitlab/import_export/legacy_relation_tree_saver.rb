@@ -2,7 +2,7 @@
 
 module Gitlab
   module ImportExport
-    class RelationTreeSaver
+    class LegacyRelationTreeSaver
       include Gitlab::ImportExport::CommandLineUtil
 
       def serialize(exportable, relations_tree)

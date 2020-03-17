@@ -5,7 +5,7 @@ module API
     class Discussion < Grape::Entity
       expose :id
       expose :individual_note?, as: :individual_note
-      expose :notes, using: Entities::Note
+      expose :notes, using: Entities::NoteWithGitlabEmployeeBadge
     end
   end
 end

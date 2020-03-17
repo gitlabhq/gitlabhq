@@ -49,7 +49,7 @@ module Gitlab
         end
 
         def tree_saver
-          @tree_saver ||= RelationTreeSaver.new
+          @tree_saver ||= LegacyRelationTreeSaver.new
         end
       end
     end

@@ -41,6 +41,7 @@ describe('diffs/components/app', () => {
         endpoint: TEST_ENDPOINT,
         endpointMetadata: `${TEST_HOST}/diff/endpointMetadata`,
         endpointBatch: `${TEST_HOST}/diff/endpointBatch`,
+        endpointCoverage: `${TEST_HOST}/diff/endpointCoverage`,
         projectPath: 'namespace/project',
         currentUser: {},
         changesEmptyStateIllustration: '',
@@ -95,6 +96,7 @@ describe('diffs/components/app', () => {
       jest.spyOn(wrapper.vm, 'fetchDiffFiles').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchDiffFilesMeta').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'fetchDiffFilesBatch').mockImplementation(fetchResolver);
+      jest.spyOn(wrapper.vm, 'fetchCoverageFiles').mockImplementation(fetchResolver);
       jest.spyOn(wrapper.vm, 'setDiscussions').mockImplementation(() => {});
       jest.spyOn(wrapper.vm, 'startRenderDiffsQueue').mockImplementation(() => {});
       jest.spyOn(wrapper.vm, 'unwatchDiscussions').mockImplementation(() => {});
@@ -250,6 +252,7 @@ describe('diffs/components/app', () => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).not.toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).not.toHaveBeenCalled();
+        expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
         expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
         expect(wrapper.vm.diffFilesLength).toEqual(100);
         expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
@@ -269,6 +272,7 @@ describe('diffs/components/app', () => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
+        expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
         expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
         expect(wrapper.vm.diffFilesLength).toEqual(100);
         expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();
@@ -286,6 +290,7 @@ describe('diffs/components/app', () => {
         expect(wrapper.vm.startRenderDiffsQueue).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
         expect(wrapper.vm.fetchDiffFilesBatch).toHaveBeenCalled();
+        expect(wrapper.vm.fetchCoverageFiles).toHaveBeenCalled();
         expect(wrapper.vm.unwatchDiscussions).toHaveBeenCalled();
         expect(wrapper.vm.diffFilesLength).toEqual(100);
         expect(wrapper.vm.unwatchRetrievingBatches).toHaveBeenCalled();

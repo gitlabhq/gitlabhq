@@ -12,6 +12,7 @@ import actions, {
   fetchDiffFiles,
   fetchDiffFilesBatch,
   fetchDiffFilesMeta,
+  fetchCoverageFiles,
   assignDiscussionsToDiff,
   removeDiscussionsFromDiff,
   startRenderDiffsQueue,
@@ -73,6 +74,7 @@ describe('DiffsStoreActions', () => {
       const endpoint = '/diffs/set/endpoint';
       const endpointMetadata = '/diffs/set/endpoint/metadata';
       const endpointBatch = '/diffs/set/endpoint/batch';
+      const endpointCoverage = '/diffs/set/coverage_reports';
       const projectPath = '/root/project';
       const dismissEndpoint = '/-/user_callouts';
       const showSuggestPopover = false;
@@ -84,6 +86,7 @@ describe('DiffsStoreActions', () => {
           endpoint,
           endpointBatch,
           endpointMetadata,
+          endpointCoverage,
           projectPath,
           dismissEndpoint,
           showSuggestPopover,
@@ -93,6 +96,7 @@ describe('DiffsStoreActions', () => {
           endpoint: '',
           endpointBatch: '',
           endpointMetadata: '',
+          endpointCoverage: '',
           projectPath: '',
           dismissEndpoint: '',
           showSuggestPopover: true,
@@ -105,6 +109,7 @@ describe('DiffsStoreActions', () => {
               endpoint,
               endpointMetadata,
               endpointBatch,
+              endpointCoverage,
               projectPath,
               dismissEndpoint,
               showSuggestPopover,
@@ -314,6 +319,44 @@ describe('DiffsStoreActions', () => {
             done();
           },
         );
+      });
+    });
+  });
+
+  describe('fetchCoverageFiles', () => {
+    let mock;
+    const endpointCoverage = '/fetch';
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => mock.restore());
+
+    it('should commit SET_COVERAGE_DATA with received response', done => {
+      const data = { files: { 'app.js': { '1': 0, '2': 1 } } };
+
+      mock.onGet(endpointCoverage).reply(200, { data });
+
+      testAction(
+        fetchCoverageFiles,
+        {},
+        { endpointCoverage },
+        [{ type: types.SET_COVERAGE_DATA, payload: { data } }],
+        [],
+        done,
+      );
+    });
+
+    it('should show flash on API error', done => {
+      const flashSpy = spyOnDependency(actions, 'createFlash');
+
+      mock.onGet(endpointCoverage).reply(400);
+
+      testAction(fetchCoverageFiles, {}, { endpointCoverage }, [], [], () => {
+        expect(flashSpy).toHaveBeenCalledTimes(1);
+        expect(flashSpy).toHaveBeenCalledWith(jasmine.stringMatching('Something went wrong'));
+        done();
       });
     });
   });

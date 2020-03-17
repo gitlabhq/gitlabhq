@@ -9,7 +9,8 @@ module Gitlab
 
       def self.parsers
         {
-          junit: ::Gitlab::Ci::Parsers::Test::Junit
+          junit: ::Gitlab::Ci::Parsers::Test::Junit,
+          cobertura: ::Gitlab::Ci::Parsers::Coverage::Cobertura
         }
       end
 

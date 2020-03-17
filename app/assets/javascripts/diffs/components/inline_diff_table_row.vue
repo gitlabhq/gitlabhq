@@ -1,5 +1,6 @@
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import { GlTooltipDirective } from '@gitlab/ui';
 import DiffTableCell from './diff_table_cell.vue';
 import {
   MATCH_LINE_TYPE,
@@ -15,8 +16,15 @@ export default {
   components: {
     DiffTableCell,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     fileHash: {
+      type: String,
+      required: true,
+    },
+    filePath: {
       type: String,
       required: true,
     },
@@ -40,6 +48,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('diffs', ['fileLineCoverage']),
     ...mapState({
       isHighlighted(state) {
         return this.line.line_code !== null && this.line.line_code === state.diffs.highlightedRow;
@@ -61,6 +70,9 @@ export default {
     },
     isMatchLine() {
       return this.line.type === MATCH_LINE_TYPE;
+    },
+    coverageState() {
+      return this.fileLineCoverage(this.filePath, this.line.new_line);
     },
   },
   created() {
@@ -114,13 +126,19 @@ export default {
       class="diff-line-num new_line qa-new-diff-line"
     />
     <td
+      v-gl-tooltip.hover
+      :title="coverageState.text"
+      :class="[line.type, coverageState.class, { hll: isHighlighted }]"
+      class="line-coverage"
+    ></td>
+    <td
       :class="[
         line.type,
         {
           hll: isHighlighted,
         },
       ]"
-      class="line_content"
+      class="line_content with-coverage"
       v-html="line.rich_text"
     ></td>
   </tr>

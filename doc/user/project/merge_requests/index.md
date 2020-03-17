@@ -102,6 +102,7 @@ or link to useful information directly in the merge request page:
 | [Multi-Project pipelines](../../../ci/multi_project_pipelines.md) **(PREMIUM)**                        | When you set up GitLab CI/CD across multiple projects, you can visualize the entire pipeline, including all cross-project interdependencies.                                                              |
 | [Pipelines for merge requests](../../../ci/merge_request_pipelines/index.md)                           | Customize a specific pipeline structure for merge requests in order to speed the cycle up by running only important jobs.                                                                                 |
 | [Pipeline Graphs](../../../ci/pipelines/index.md#visualizing-pipelines)                                      | View the status of pipelines within the merge request, including the deployment process.                                                                                                                  |
+| [Test Coverage visualization](test_coverage_visualization.md)                                          | See test coverage results for merge requests, within the file diff.                                                                                                                                       |
 
 ### Security Reports **(ULTIMATE)**
 

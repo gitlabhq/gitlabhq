@@ -11,6 +11,7 @@ module Ci
     NotSupportedAdapterError = Class.new(StandardError)
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
+    COVERAGE_REPORT_FILE_TYPES = %w[cobertura].freeze
     NON_ERASABLE_FILE_TYPES = %w[trace].freeze
     DEFAULT_FILE_NAMES = {
       archive: nil,
@@ -29,7 +30,8 @@ module Ci
       performance: 'performance.json',
       metrics: 'metrics.txt',
       lsif: 'lsif.json',
-      dotenv: '.env'
+      dotenv: '.env',
+      cobertura: 'cobertura-coverage.xml'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -45,6 +47,7 @@ module Ci
       network_referee: :gzip,
       lsif: :gzip,
       dotenv: :gzip,
+      cobertura: :gzip,
 
       # All these file formats use `raw` as we need to store them uncompressed
       # for Frontend to fetch the files and do analysis
@@ -92,6 +95,10 @@ module Ci
       with_file_types(TEST_REPORT_FILE_TYPES)
     end
 
+    scope :coverage_reports, -> do
+      with_file_types(COVERAGE_REPORT_FILE_TYPES)
+    end
+
     scope :erasable, -> do
       types = self.file_types.reject { |file_type| NON_ERASABLE_FILE_TYPES.include?(file_type) }.values
 
@@ -121,7 +128,8 @@ module Ci
       metrics_referee: 13, ## runner referees
       network_referee: 14, ## runner referees
       lsif: 15, # LSIF data for code navigation
-      dotenv: 16
+      dotenv: 16,
+      cobertura: 17
     }
 
     enum file_format: {

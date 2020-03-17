@@ -916,6 +916,14 @@ module Ci
       end
     end
 
+    def collect_coverage_reports!(coverage_report)
+      each_report(Ci::JobArtifact::COVERAGE_REPORT_FILE_TYPES) do |file_type, blob|
+        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, coverage_report)
+      end
+
+      coverage_report
+    end
+
     def report_artifacts
       job_artifacts.with_reports
     end

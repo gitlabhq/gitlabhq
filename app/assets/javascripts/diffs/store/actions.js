@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import Cookies from 'js-cookie';
+import Poll from '~/lib/utils/poll';
 import axios from '~/lib/utils/axios_utils';
+import httpStatusCodes from '~/lib/utils/http_status';
 import createFlash from '~/flash';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
 import TreeWorker from '../workers/tree_worker';
@@ -43,6 +45,7 @@ export const setBaseConfig = ({ commit }, options) => {
     endpoint,
     endpointMetadata,
     endpointBatch,
+    endpointCoverage,
     projectPath,
     dismissEndpoint,
     showSuggestPopover,
@@ -52,6 +55,7 @@ export const setBaseConfig = ({ commit }, options) => {
     endpoint,
     endpointMetadata,
     endpointBatch,
+    endpointCoverage,
     projectPath,
     dismissEndpoint,
     showSuggestPopover,
@@ -168,6 +172,26 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
       return data;
     })
     .catch(() => worker.terminate());
+};
+
+export const fetchCoverageFiles = ({ commit, state }) => {
+  const coveragePoll = new Poll({
+    resource: {
+      getCoverageReports: endpoint => axios.get(endpoint),
+    },
+    data: state.endpointCoverage,
+    method: 'getCoverageReports',
+    successCallback: ({ status, data }) => {
+      if (status === httpStatusCodes.OK) {
+        commit(types.SET_COVERAGE_DATA, data);
+
+        coveragePoll.stop();
+      }
+    },
+    errorCallback: () => createFlash(__('Something went wrong on our end. Please try again!')),
+  });
+
+  coveragePoll.makeRequest();
 };
 
 export const setHighlightedRow = ({ commit }, lineCode) => {

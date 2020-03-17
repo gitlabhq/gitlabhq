@@ -54,7 +54,16 @@ module Projects
       end
 
       def project_tree_saver
-        Gitlab::ImportExport::Project::TreeSaver.new(project: project, current_user: current_user, shared: shared, params: params)
+        tree_saver_class.new(project: project, current_user: current_user, shared: shared, params: params)
+      end
+
+      def tree_saver_class
+        if ::Feature.enabled?(:streaming_serializer, project)
+          Gitlab::ImportExport::Project::TreeSaver
+        else
+          # Once we remove :streaming_serializer feature flag, Project::LegacyTreeSaver should be removed as well
+          Gitlab::ImportExport::Project::LegacyTreeSaver
+        end
       end
 
       def uploads_saver

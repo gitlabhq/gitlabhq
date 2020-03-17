@@ -3946,6 +3946,53 @@ describe Ci::Build do
     end
   end
 
+  describe '#collect_coverage_reports!' do
+    subject { build.collect_coverage_reports!(coverage_report) }
+
+    let(:coverage_report) { Gitlab::Ci::Reports::CoverageReports.new }
+
+    it { expect(coverage_report.files).to eq({}) }
+
+    context 'when build has a coverage report' do
+      context 'when there is a Cobertura coverage report from simplecov-cobertura' do
+        before do
+          create(:ci_job_artifact, :cobertura, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the coverage report' do
+          expect { subject }.not_to raise_error
+
+          expect(coverage_report.files.keys).to match_array(['app/controllers/abuse_reports_controller.rb'])
+          expect(coverage_report.files['app/controllers/abuse_reports_controller.rb'].count).to eq(23)
+        end
+      end
+
+      context 'when there is a Cobertura coverage report from gocov-xml' do
+        before do
+          create(:ci_job_artifact, :coverage_gocov_xml, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the coverage report' do
+          expect { subject }.not_to raise_error
+
+          expect(coverage_report.files.keys).to match_array(['auth/token.go', 'auth/rpccredentials.go'])
+          expect(coverage_report.files['auth/token.go'].count).to eq(49)
+          expect(coverage_report.files['auth/rpccredentials.go'].count).to eq(10)
+        end
+      end
+
+      context 'when there is a corrupted Cobertura coverage report' do
+        before do
+          create(:ci_job_artifact, :coverage_with_corrupted_data, job: build, project: build.project)
+        end
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Coverage::Cobertura::CoberturaParserError)
+        end
+      end
+    end
+  end
+
   describe '#report_artifacts' do
     subject { build.report_artifacts }
 

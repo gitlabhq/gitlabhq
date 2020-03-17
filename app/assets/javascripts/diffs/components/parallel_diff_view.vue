@@ -47,8 +47,10 @@ export default {
   >
     <colgroup>
       <col style="width: 50px;" />
+      <col style="width: 8px;" />
       <col />
       <col style="width: 50px;" />
+      <col style="width: 8px;" />
       <col />
     </colgroup>
     <tbody>
@@ -64,6 +66,7 @@ export default {
         <parallel-diff-table-row
           :key="line.line_code"
           :file-hash="diffFile.file_hash"
+          :file-path="diffFile.file_path"
           :context-lines-path="diffFile.context_lines_path"
           :line="line"
           :is-bottom="index + 1 === diffLinesLength"

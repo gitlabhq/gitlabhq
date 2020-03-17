@@ -4335,4 +4335,27 @@ describe User, :do_not_mock_admin_mode do
       it { expect(user.user_detail).to be_persisted }
     end
   end
+
+  describe '#gitlab_employee?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { user.gitlab_employee? }
+
+    where(:email, :is_com, :expected_result) do
+      'test@gitlab.com'   | true  | true
+      'test@example.com'  | true  | false
+      'test@gitlab.com'   | false | false
+      'test@example.com'  | false | false
+    end
+
+    with_them do
+      let(:user) { build(:user, email: email) }
+
+      before do
+        allow(Gitlab).to receive(:com?).and_return(is_com)
+      end
+
+      it { is_expected.to be expected_result }
+    end
+  end
 end

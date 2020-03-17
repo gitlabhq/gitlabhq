@@ -13,6 +13,7 @@ localVue.use(Vuex);
 describe('EksClusterConfigurationForm', () => {
   let store;
   let actions;
+  let getters;
   let state;
   let rolesState;
   let regionsState;
@@ -29,8 +30,7 @@ describe('EksClusterConfigurationForm', () => {
   let securityGroupsActions;
   let vm;
 
-  beforeEach(() => {
-    state = eksClusterFormState();
+  const createStore = (config = {}) => {
     actions = {
       createCluster: jest.fn(),
       setClusterName: jest.fn(),
@@ -64,29 +64,44 @@ describe('EksClusterConfigurationForm', () => {
     securityGroupsActions = {
       fetchItems: jest.fn(),
     };
+    state = {
+      ...eksClusterFormState(),
+      ...config.initialState,
+    };
     rolesState = {
       ...clusterDropdownStoreState(),
+      ...config.rolesState,
     };
     regionsState = {
       ...clusterDropdownStoreState(),
+      ...config.regionsState,
     };
     vpcsState = {
       ...clusterDropdownStoreState(),
+      ...config.vpcsState,
     };
     subnetsState = {
       ...clusterDropdownStoreState(),
+      ...config.subnetsState,
     };
     keyPairsState = {
       ...clusterDropdownStoreState(),
+      ...config.keyPairsState,
     };
     securityGroupsState = {
       ...clusterDropdownStoreState(),
+      ...config.securityGroupsState,
     };
     instanceTypesState = {
       ...clusterDropdownStoreState(),
+      ...config.instanceTypesState,
+    };
+    getters = {
+      subnetValid: config?.getters?.subnetValid || (() => false),
     };
     store = new Vuex.Store({
       state,
+      getters,
       actions,
       modules: {
         vpcs: {
@@ -125,9 +140,29 @@ describe('EksClusterConfigurationForm', () => {
         },
       },
     });
-  });
+  };
 
-  beforeEach(() => {
+  const createValidStateStore = initialState => {
+    createStore({
+      initialState: {
+        clusterName: 'cluster name',
+        environmentScope: '*',
+        selectedRegion: 'region',
+        selectedRole: 'role',
+        selectedKeyPair: 'key pair',
+        selectedVpc: 'vpc',
+        selectedSubnet: ['subnet 1', 'subnet 2'],
+        selectedSecurityGroup: 'group',
+        selectedInstanceType: 'small-1',
+        ...initialState,
+      },
+      getters: {
+        subnetValid: () => true,
+      },
+    });
+  };
+
+  const buildWrapper = () => {
     vm = shallowMount(EksClusterConfigurationForm, {
       localVue,
       store,
@@ -137,26 +172,16 @@ describe('EksClusterConfigurationForm', () => {
         externalLinkIcon: '',
       },
     });
+  };
+
+  beforeEach(() => {
+    createStore();
+    buildWrapper();
   });
 
   afterEach(() => {
     vm.destroy();
   });
-
-  const setAllConfigurationFields = () => {
-    store.replaceState({
-      ...state,
-      clusterName: 'cluster name',
-      environmentScope: '*',
-      selectedRegion: 'region',
-      selectedRole: 'role',
-      selectedKeyPair: 'key pair',
-      selectedVpc: 'vpc',
-      selectedSubnet: 'subnet',
-      selectedSecurityGroup: 'group',
-      selectedInstanceType: 'small-1',
-    });
-  };
 
   const findCreateClusterButton = () => vm.find('.js-create-cluster');
   const findClusterNameInput = () => vm.find('[id=eks-cluster-name]');
@@ -310,12 +335,29 @@ describe('EksClusterConfigurationForm', () => {
     expect(findSubnetDropdown().props('items')).toBe(subnetsState.items);
   });
 
-  it('sets SubnetDropdown hasErrors to true when loading subnets fails', () => {
-    subnetsState.loadingItemsError = new Error();
-
-    return Vue.nextTick().then(() => {
-      expect(findSubnetDropdown().props('hasErrors')).toEqual(true);
+  it('displays a validation error in the subnet dropdown when loading subnets fails', () => {
+    createStore({
+      subnetsState: {
+        loadingItemsError: new Error(),
+      },
     });
+    buildWrapper();
+
+    expect(findSubnetDropdown().props('hasErrors')).toEqual(true);
+  });
+
+  it('displays a validation error in the subnet dropdown  when a single subnet is selected', () => {
+    createStore({
+      initialState: {
+        selectedSubnet: ['subnet 1'],
+      },
+    });
+    buildWrapper();
+
+    expect(findSubnetDropdown().props('hasErrors')).toEqual(true);
+    expect(findSubnetDropdown().props('errorMessage')).toEqual(
+      'You should select at least two subnets',
+    );
   });
 
   it('disables SecurityGroupDropdown when no vpc is selected', () => {
@@ -386,11 +428,7 @@ describe('EksClusterConfigurationForm', () => {
     });
 
     it('cleans selected subnet', () => {
-      expect(actions.setSubnet).toHaveBeenCalledWith(
-        expect.anything(),
-        { subnet: null },
-        undefined,
-      );
+      expect(actions.setSubnet).toHaveBeenCalledWith(expect.anything(), { subnet: [] }, undefined);
     });
 
     it('cleans selected security group', () => {
@@ -464,11 +502,7 @@ describe('EksClusterConfigurationForm', () => {
     });
 
     it('cleans selected subnet', () => {
-      expect(actions.setSubnet).toHaveBeenCalledWith(
-        expect.anything(),
-        { subnet: null },
-        undefined,
-      );
+      expect(actions.setSubnet).toHaveBeenCalledWith(expect.anything(), { subnet: [] }, undefined);
     });
 
     it('cleans selected security group', () => {
@@ -573,22 +607,19 @@ describe('EksClusterConfigurationForm', () => {
   });
 
   describe('when all cluster configuration fields are set', () => {
-    beforeEach(() => {
-      setAllConfigurationFields();
-    });
-
     it('enables create cluster button', () => {
+      createValidStateStore();
+      buildWrapper();
       expect(findCreateClusterButton().props('disabled')).toBe(false);
     });
   });
 
   describe('when at least one cluster configuration field is not set', () => {
     beforeEach(() => {
-      setAllConfigurationFields();
-      store.replaceState({
-        ...state,
-        clusterName: '',
+      createValidStateStore({
+        clusterName: null,
       });
+      buildWrapper();
     });
 
     it('disables create cluster button', () => {
@@ -596,13 +627,12 @@ describe('EksClusterConfigurationForm', () => {
     });
   });
 
-  describe('when isCreatingCluster', () => {
+  describe('when is creating cluster', () => {
     beforeEach(() => {
-      setAllConfigurationFields();
-      store.replaceState({
-        ...state,
+      createValidStateStore({
         isCreatingCluster: true,
       });
+      buildWrapper();
     });
 
     it('sets create cluster button as loading', () => {

@@ -1,0 +1,76 @@
+#!/bin/sh
+
+cd $(dirname $0)/..
+app_root=$(pwd)
+sidekiq_pidfile="$app_root/tmp/pids/sidekiq-cluster.pid"
+sidekiq_logfile="$app_root/log/sidekiq.log"
+gitlab_user=$(ls -l config.ru | awk '{print $3}')
+
+warn()
+{
+  echo "$@" 1>&2
+}
+
+get_sidekiq_pid() 
+{
+  if [ ! -f $sidekiq_pidfile ]; then
+    warn "No pidfile found at $sidekiq_pidfile; is Sidekiq running?"
+    return
+  fi
+
+  cat $sidekiq_pidfile
+}
+
+stop()
+{
+  sidekiq_pid=$(get_sidekiq_pid)
+
+  if [ $sidekiq_pid ]; then
+    kill -TERM $sidekiq_pid
+  fi
+}
+
+restart()
+{
+  if [ -f $sidekiq_pidfile ]; then
+    stop
+  fi
+
+  warn "Sidekiq output will be written to $sidekiq_logfile"
+  start_sidekiq >> $sidekiq_logfile 2>&1
+}
+
+start_sidekiq()
+{
+  cmd="exec"
+  chpst=$(which chpst)
+
+  if [ -n "$chpst" ]; then
+    cmd="${cmd} ${chpst} -P"
+  fi
+
+  # sidekiq-cluster expects '*' '*' arguments (one wildcard for each process).
+  for (( i=1; i<=$SIDEKIQ_WORKERS; i++ ))
+  do
+    processes_args+=("*")
+  done
+
+  ${cmd} bin/sidekiq-cluster "${processes_args[@]}" -P $sidekiq_pidfile -e $RAILS_ENV
+}
+
+case "$1" in
+  stop)
+    stop
+    ;;
+  start)
+    restart &
+    ;;
+  start_foreground)
+    start_sidekiq
+    ;;
+  restart)
+    restart &
+    ;;
+  *)
+    echo "Usage: RAILS_ENV=<env> SIDEKIQ_WORKERS=<n> $0 {stop|start|start_foreground|restart}"
+esac

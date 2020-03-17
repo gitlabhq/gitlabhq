@@ -21,7 +21,7 @@ export default () => ({
   selectedRole: '',
   selectedKeyPair: '',
   selectedVpc: '',
-  selectedSubnet: '',
+  selectedSubnet: [],
   selectedSecurityGroup: '',
   selectedInstanceType: 'm5.large',
   nodeCount: '3',

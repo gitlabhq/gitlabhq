@@ -14,6 +14,7 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
     post :rebase
     get :test_reports
     get :exposed_artifacts
+    get :coverage_reports
 
     scope constraints: ->(req) { req.format == :json }, as: :json do
       get :commits

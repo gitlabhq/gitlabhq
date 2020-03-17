@@ -109,6 +109,29 @@ Plan.default.limits.update!(ci_project_subscriptions: 500)
 
 NOTE: **Note:** Set the limit to `0` to disable it.
 
+### Number of pipeline schedules
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29566) in GitLab 12.10.
+
+The total number of pipeline schedules can be limited per project. This limit is
+checked each time a new pipeline schedule is created. If a new pipeline schedule
+would cause the total number of pipeline schedules to exceed the limit, the
+pipeline schedule will not be created.
+
+On GitLab.com, different limits are [defined per plan](../user/gitlab_com/index.md#gitlab-cicd),
+and they affect all projects under that plan.
+
+On self-managed instances ([GitLab Starter](https://about.gitlab.com/pricing/#self-managed)
+or higher tiers), this limit is defined for the `default` plan that affects all
+projects. By default, there is no limit.
+
+To set this limit on a self-managed installation, run the following in the
+[GitLab Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session):
+
+```ruby
+Plan.default.limits.update!(ci_pipeline_schedules: 100)
+```
+
 ## Environment data on Deploy Boards
 
 [Deploy Boards](../user/project/deploy_boards.md) load information from Kubernetes about

@@ -1810,6 +1810,9 @@ msgstr ""
 msgid "An error occurred while enabling Service Desk."
 msgstr ""
 
+msgid "An error occurred while fetching coverage reports."
+msgstr ""
+
 msgid "An error occurred while fetching environments."
 msgstr ""
 
@@ -4820,6 +4823,9 @@ msgid "ClusterIntegration|You must grant access to your organization’s AWS res
 msgstr ""
 
 msgid "ClusterIntegration|You must have an RBAC-enabled cluster to install Knative."
+msgstr ""
+
+msgid "ClusterIntegration|You should select at least two subnets"
 msgstr ""
 
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
@@ -13325,6 +13331,9 @@ msgstr ""
 msgid "No template"
 msgstr ""
 
+msgid "No test coverage"
+msgstr ""
+
 msgid "No thanks, don't show this again"
 msgstr ""
 
@@ -19471,6 +19480,11 @@ msgstr ""
 
 msgid "Test coverage parsing"
 msgstr ""
+
+msgid "Test coverage: %d hit"
+msgid_plural "Test coverage: %d hits"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Test failed."
 msgstr ""

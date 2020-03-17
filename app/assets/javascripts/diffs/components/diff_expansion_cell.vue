@@ -54,7 +54,7 @@ export default {
     colspan: {
       type: Number,
       required: false,
-      default: 3,
+      default: 4,
     },
   },
   computed: {

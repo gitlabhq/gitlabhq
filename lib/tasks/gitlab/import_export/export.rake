@@ -19,7 +19,6 @@ namespace :gitlab do
 
         if ENV['EXPORT_DEBUG'].present?
           ActiveRecord::Base.logger = logger
-          Gitlab::Metrics::Exporter::SidekiqExporter.instance.start
           logger.level = Logger::DEBUG
         else
           logger.level = Logger::INFO

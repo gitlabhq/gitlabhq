@@ -567,6 +567,10 @@ class MergeRequest < ApplicationRecord
     diffs.modified_paths
   end
 
+  def new_paths
+    diffs.diff_files.map(&:new_path)
+  end
+
   def diff_base_commit
     if merge_request_diff.persisted?
       merge_request_diff.base_commit
@@ -1295,6 +1299,24 @@ class MergeRequest < ApplicationRecord
     compare_reports(Ci::CompareTestReportsService)
   end
 
+  def has_coverage_reports?
+    return false unless Feature.enabled?(:coverage_report_view, project)
+
+    actual_head_pipeline&.has_reports?(Ci::JobArtifact.coverage_reports)
+  end
+
+  # TODO: this method and compare_test_reports use the same
+  # result type, which is handled by the controller's #reports_response.
+  # we should minimize mistakes by isolating the common parts.
+  # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
+  def find_coverage_reports
+    unless has_coverage_reports?
+      return { status: :error, status_reason: 'This merge request does not have coverage reports' }
+    end
+
+    compare_reports(Ci::GenerateCoverageReportsService)
+  end
+
   def has_exposed_artifacts?
     return false unless Feature.enabled?(:ci_expose_arbitrary_artifacts_in_mr, default_enabled: true)
 
@@ -1318,7 +1340,7 @@ class MergeRequest < ApplicationRecord
   # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
   def compare_reports(service_class, current_user = nil)
     with_reactive_cache(service_class.name, current_user&.id) do |data|
-      unless service_class.new(project, current_user)
+      unless service_class.new(project, current_user, id: id)
         .latest?(base_pipeline, actual_head_pipeline, data)
         raise InvalidateReactiveCache
       end
@@ -1335,7 +1357,7 @@ class MergeRequest < ApplicationRecord
     raise NameError, service_class unless service_class < Ci::CompareReportsBaseService
 
     current_user = User.find_by(id: current_user_id)
-    service_class.new(project, current_user).execute(base_pipeline, actual_head_pipeline)
+    service_class.new(project, current_user, id: id).execute(base_pipeline, actual_head_pipeline)
   end
 
   def all_commits

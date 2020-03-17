@@ -51,6 +51,15 @@
       @include match-line;
     }
 
+    .line-coverage {
+      @include line-coverage-border-color($green-500, $orange-500);
+
+      &.old,
+      &.new {
+        background-color: $white-normal;
+      }
+    }
+
     .diff-line-num {
       &.old {
         a {
@@ -83,6 +92,7 @@
     &:not(.diff-expanded) + .diff-expanded,
     &.diff-expanded + .line_holder:not(.diff-expanded) {
       > .diff-line-num,
+      > .line-coverage,
       > .line_content {
         border-top: 1px solid $none-expanded-border;
       }
@@ -90,6 +100,7 @@
 
     &.diff-expanded {
       > .diff-line-num,
+      > .line-coverage,
       > .line_content {
         background: $none-expanded-bg;
         border-color: $none-expanded-bg;

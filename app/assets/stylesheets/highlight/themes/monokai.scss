@@ -17,6 +17,8 @@ $monokai-diff-border: #808080;
 $monokai-highlight-bg: #ffe792;
 $monokai-over-bg: #9f9ab5;
 $monokai-expanded-bg: #3e3e3e;
+$monokai-coverage: #a6e22e;
+$monokai-no-coverage: #fd971f;
 
 $monokai-new-bg: rgba(166, 226, 46, 0.1);
 $monokai-new-idiff: rgba(166, 226, 46, 0.15);
@@ -124,12 +126,18 @@ $monokai-gi: #a6e22e;
     }
 
     td.diff-line-num.hll:not(.empty-cell),
+    td.line-coverage.hll:not(.empty-cell),
     td.line_content.hll:not(.empty-cell) {
       background-color: $monokai-line-empty-bg;
       border-color: $monokai-line-empty-border;
     }
 
+    .line-coverage {
+      @include line-coverage-border-color($monokai-coverage, $monokai-no-coverage);
+    }
+
     .diff-line-num.new,
+    .line-coverage.new,
     .line_content.new {
       @include diff-background($monokai-new-bg, $monokai-new-idiff, $monokai-diff-border);
 
@@ -140,6 +148,7 @@ $monokai-gi: #a6e22e;
     }
 
     .diff-line-num.old,
+    .line-coverage.old,
     .line_content.old {
       @include diff-background($monokai-old-bg, $monokai-old-idiff, $monokai-diff-border);
 
@@ -168,6 +177,7 @@ $monokai-gi: #a6e22e;
     &:not(.diff-expanded) + .diff-expanded,
     &.diff-expanded + .line_holder:not(.diff-expanded) {
       > .diff-line-num,
+      > .line-coverage,
       > .line_content {
         border-top: 1px solid $black;
       }
@@ -175,6 +185,7 @@ $monokai-gi: #a6e22e;
 
     &.diff-expanded {
       > .diff-line-num,
+      > .line-coverage,
       > .line_content {
         background: $monokai-expanded-bg;
         border-color: $monokai-expanded-bg;

@@ -51,7 +51,7 @@ export default {
 
 <template>
   <tr v-if="shouldRender" :class="className" class="notes_holder">
-    <td class="notes-content" colspan="3">
+    <td class="notes-content" colspan="4">
       <div class="content">
         <diff-discussions
           v-if="line.discussions.length"

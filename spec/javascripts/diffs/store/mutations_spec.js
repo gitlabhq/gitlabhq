@@ -123,6 +123,17 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('SET_COVERAGE_DATA', () => {
+    it('should set coverage data properly', () => {
+      const state = { coverageFiles: {} };
+      const coverage = { 'app.js': { '1': 0, '2': 1 } };
+
+      mutations[types.SET_COVERAGE_DATA](state, coverage);
+
+      expect(state.coverageFiles).toEqual(coverage);
+    });
+  });
+
   describe('SET_DIFF_VIEW_TYPE', () => {
     it('should set diff view type properly', () => {
       const state = {};

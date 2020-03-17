@@ -3148,6 +3148,7 @@ ActiveRecord::Schema.define(version: 2020_03_12_163407) do
     t.integer "project_hooks", default: 0, null: false
     t.integer "group_hooks", default: 0, null: false
     t.integer "ci_project_subscriptions", default: 0, null: false
+    t.integer "ci_pipeline_schedules", default: 0, null: false
     t.index ["plan_id"], name: "index_plan_limits_on_plan_id", unique: true
   end
 

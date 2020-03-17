@@ -120,6 +120,7 @@ The following API resources are available outside of project and group contexts 
 | [Events](events.md)                                | `/events`, `/users/:id/events` (also available for projects)            |
 | [Feature flags](features.md)                       | `/features`                                                             |
 | [Geo Nodes](geo_nodes.md) **(PREMIUM ONLY)**       | `/geo_nodes`                                                            |
+| [Group Activity Analytics](group_activity_analytics.md) **(STARTER)**  | `/analytics/group_activity/{issues_count | merge_requests_count}`  |
 | [Import repository from GitHub](import.md)         | `/import/github`                                                        |
 | [Issues](issues.md)                                | `/issues` (also available for groups and projects)                      |
 | [Issues Statistics](issues_statistics.md)          | `/issues_statistics` (also available for groups and projects)           |

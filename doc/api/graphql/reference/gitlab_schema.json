@@ -5847,7 +5847,7 @@
             },
             {
               "name": "descendantWeightSum",
-              "description": "Total weight of open and closed issues in the epic and its descendants. Available only when feature flag `unfiltered_epic_aggregates` is enabled.",
+              "description": "Total weight of open and closed issues in the epic and its descendants",
               "args": [
 
               ],
