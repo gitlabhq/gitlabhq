@@ -456,7 +456,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 1.86.0'
+gem 'gitaly', '~> 12.9.0.pre.rc4'
 
 gem 'grpc', '~> 1.24.0'
 

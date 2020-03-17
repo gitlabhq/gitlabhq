@@ -628,8 +628,17 @@ do not use this option until further notice.
 
 ### Links to internal documentation
 
-- To link to internal documentation, use relative links, not absolute URLs.
-  Use `../` to navigate to high-level directories. Links should not refer to root.
+NOTE: **Note:**
+_Internal_ refers to documentation in the same project. When linking to documentation in
+separate projects (for example, linking to Omnibus docs from GitLab docs), you must use absolute
+URLs.
+
+To link to internal documentation:
+
+- Use relative links to Markdown files in the same repository.
+- Do not use absolute URLs or URLs from `docs.gitlab.com`.
+- Use `../` to navigate to higher-level directories.
+- Do not link relative to root. For example, `/ee/user/gitlab_com/index.md`.
 
   Don't:
 
@@ -652,8 +661,7 @@ do not use this option until further notice.
   - `../../issues/tags.md`
   - `../../issues/tags.md#stages`
 
-- Using the Markdown extension is necessary for the [`/help`](index.md#gitlab-help)
-  section of GitLab.
+- Use the Markdown extension for the [`/help`](index.md#gitlab-help) section of GitLab.
 
 ### Links requiring permissions
 

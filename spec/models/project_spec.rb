@@ -1401,6 +1401,22 @@ describe Project do
 
       expect(project.repository_storage).to eq('picked')
     end
+
+    it 'picks from the latest available storage', :request_store do
+      stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+      Gitlab::CurrentSettings.current_application_settings
+
+      settings = ApplicationSetting.last
+      settings.repository_storages = %w(picked)
+      settings.save!
+
+      expect(Gitlab::CurrentSettings.repository_storages).to eq(%w(default))
+
+      project
+
+      expect(project.repository.storage).to eq('picked')
+      expect(Gitlab::CurrentSettings.repository_storages).to eq(%w(picked))
+    end
   end
 
   context 'shared runners by default' do
