@@ -3,9 +3,9 @@
 module Ci
   class Variable < ApplicationRecord
     extend Gitlab::Ci::Model
-    include HasVariable
+    include Ci::HasVariable
     include Presentable
-    include Maskable
+    include Ci::Maskable
     prepend HasEnvironmentScope
 
     belongs_to :project

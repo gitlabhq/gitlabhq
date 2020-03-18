@@ -17,7 +17,13 @@ GitLab monitors its own internal service metrics, and makes them available at th
 `/-/metrics` endpoint. Unlike other [Prometheus](https://prometheus.io) exporters, in order to access
 it, the client IP needs to be [included in a whitelist](../ip_whitelist.md).
 
-For Omnibus and Chart installations, these metrics are automatically enabled and collected as of [GitLab 9.4](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1702). For source installations or earlier versions, these metrics will need to be enabled manually and collected by a Prometheus server.
+For Omnibus and Chart installations, these metrics are automatically enabled
+and collected as of [GitLab
+9.4](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/1702). For
+source installations or earlier versions, these metrics will need to be enabled
+manually and collected by a Prometheus server.
+
+See also [Sidekiq metrics](#sidekiq-metrics) for how to enable and view metrics from Sidekiq nodes.
 
 ## Metrics available
 
@@ -105,10 +111,12 @@ The following metrics can be controlled by feature flags:
 | `gitlab_method_call_duration_seconds`                          | `prometheus_metrics_method_instrumentation`                        |
 | `gitlab_view_rendering_duration_seconds`                       | `prometheus_metrics_view_instrumentation`                          |
 
-## Sidekiq Metrics available for Geo **(PREMIUM)**
+## Sidekiq metrics
 
-Sidekiq jobs may also gather metrics, and these metrics can be accessed if the Sidekiq exporter is enabled (e.g. via
-the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
+Sidekiq jobs may also gather metrics, and these metrics can be accessed if the
+Sidekiq exporter is enabled (for example, using the `monitoring.sidekiq_exporter`
+configuration option in `gitlab.yml`. These metrics are served from the
+`/metrics` path on the configured port.
 
 | Metric                                         | Type    | Since | Description | Labels |
 |:---------------------------------------------- |:------- |:----- |:----------- |:------ |
@@ -145,6 +153,7 @@ the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
 | `geo_repositories_checked_failed_count`        | Gauge   | 11.1  | Number of repositories that have a failure from `git fsck` | url |
 | `geo_repositories_retrying_verification_count` | Gauge   | 11.2  | Number of repositories verification failures that Geo is actively trying to correct on secondary  | url |
 | `geo_wikis_retrying_verification_count`        | Gauge   | 11.2  | Number of wikis verification failures that Geo is actively trying to correct on secondary | url |
+| `global_search_bulk_cron_queue_size`           | Gauge   | 12.10 | Number of database records waiting to be synchronized to Elasticsearch | |
 
 ## Database load balancing metrics **(PREMIUM ONLY)**
 

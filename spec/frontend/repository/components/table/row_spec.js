@@ -4,7 +4,10 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import TableRow from '~/repository/components/table/row.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 
-jest.mock('~/lib/utils/url_utility');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
+}));
 
 let vm;
 let $router;

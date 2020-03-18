@@ -3,9 +3,9 @@
 module Ci
   class GroupVariable < ApplicationRecord
     extend Gitlab::Ci::Model
-    include HasVariable
+    include Ci::HasVariable
     include Presentable
-    include Maskable
+    include Ci::Maskable
 
     belongs_to :group, class_name: "::Group"
 

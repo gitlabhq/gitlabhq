@@ -1,7 +1,7 @@
 <script>
 import { escapeRegExp } from 'lodash';
 import { GlBadge, GlLink, GlSkeletonLoading, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, escapeFileUrl } from '~/lib/utils/url_utility';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import { getIconName } from '../../utils/icon';
@@ -92,7 +92,7 @@ export default {
   computed: {
     routerLinkTo() {
       return this.isFolder
-        ? { path: `/-/tree/${escape(this.ref)}/${encodeURIComponent(this.path)}` }
+        ? { path: `/-/tree/${escape(this.ref)}/${escapeFileUrl(this.path)}` }
         : null;
     },
     iconName() {

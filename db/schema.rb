@@ -3507,7 +3507,7 @@ ActiveRecord::Schema.define(version: 2020_03_13_123934) do
     t.index ["id"], name: "index_on_id_partial_with_legacy_storage", where: "((storage_version < 2) OR (storage_version IS NULL))"
     t.index ["id"], name: "index_projects_on_id_partial_for_visibility", unique: true, where: "(visibility_level = ANY (ARRAY[10, 20]))"
     t.index ["id"], name: "index_projects_on_id_service_desk_enabled", where: "(service_desk_enabled = true)"
-    t.index ["id"], name: "index_projects_on_mirror_and_mirror_trigger_builds_both_true", where: "((mirror IS TRUE) AND (mirror_trigger_builds IS TRUE))"
+    t.index ["id"], name: "index_projects_on_mirror_id_where_mirror_and_trigger_builds", where: "((mirror = true) AND (mirror_trigger_builds = true))"
     t.index ["last_activity_at", "id"], name: "index_projects_api_last_activity_at_id_desc", order: { id: :desc }
     t.index ["last_activity_at", "id"], name: "index_projects_api_vis20_last_activity_at", where: "(visibility_level = 20)"
     t.index ["last_activity_at", "id"], name: "index_projects_on_last_activity_at_and_id"

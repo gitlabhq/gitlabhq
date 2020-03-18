@@ -83,16 +83,6 @@ describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
         it_behaves_like 'version and gemfile files'
       end
 
-      context 'with feature flag disabled' do
-        let(:files) { ['VERSION', 'Gemfile.zip'] }
-
-        before do
-          stub_feature_flags(ci_file_based_cache: false)
-        end
-
-        it_behaves_like 'default key'
-      end
-
       context 'with files ending with /' do
         let(:files) { ['Gemfile.zip/'] }
 

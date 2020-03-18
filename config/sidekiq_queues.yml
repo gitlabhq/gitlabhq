@@ -128,6 +128,8 @@
   - 1
 - - jira_connect
   - 1
+- - jira_importer
+  - 1
 - - ldap_group_sync
   - 2
 - - mail_scheduler

@@ -2353,6 +2353,63 @@ describe Project do
         expect(project.add_import_job).to eq(import_jid)
       end
     end
+
+    context 'jira import' do
+      it 'schedules a jira import job' do
+        project = create(:project, import_type: 'jira')
+
+        expect(Gitlab::JiraImport::Stage::StartImportWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
+        expect(project.add_import_job).to eq(import_jid)
+      end
+    end
+  end
+
+  describe '#jira_import?' do
+    subject(:project) { build(:project, import_type: 'jira') }
+
+    it { expect(project.jira_import?).to be true }
+    it { expect(project.import?).to be true }
+  end
+
+  describe '#jira_force_import?' do
+    let(:imported_jira_project) do
+      JiraImportData::JiraProjectDetails.new('xx', Time.now.strftime('%Y-%m-%d %H:%M:%S'), { user_id: 1, name: 'root' })
+    end
+    let(:jira_import_data) do
+      data = JiraImportData.new
+      data << imported_jira_project
+      data.force_import!
+      data
+    end
+
+    subject(:project) { build(:project, import_type: 'jira', import_data: jira_import_data) }
+
+    it { expect(project.jira_force_import?).to be true }
+  end
+
+  describe '#remove_import_data' do
+    let(:import_data) { ProjectImportData.new(data: { 'test' => 'some data' }) }
+
+    context 'when jira import' do
+      let!(:project) { create(:project, import_type: 'jira', import_data: import_data) }
+
+      it 'does not remove import data' do
+        expect(project.mirror?).to be false
+        expect(project.jira_import?).to be true
+        expect { project.remove_import_data }.not_to change { ProjectImportData.count }
+      end
+    end
+
+    context 'when not mirror neither jira import' do
+      let(:user) { create(:user) }
+      let!(:project) { create(:project, import_type: 'github', import_data: import_data) }
+
+      it 'removes import data' do
+        expect(project.mirror?).to be false
+        expect(project.jira_import?).to be false
+        expect { project.remove_import_data }.to change { ProjectImportData.count }.by(-1)
+      end
+    end
   end
 
   describe '#gitlab_project_import?' do

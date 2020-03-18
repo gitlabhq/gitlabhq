@@ -40,6 +40,16 @@ describe Milestones::TransferService do
           expect(new_milestone.project_milestone?).to be_truthy
         end
 
+        context 'when milestone is from an ancestor group' do
+          let(:old_group_ancestor) { create(:group) }
+          let(:old_group) { create(:group, parent: old_group_ancestor) }
+          let(:group_milestone) { create(:milestone, group: old_group_ancestor)}
+
+          it 'recreates the missing group milestones at project level' do
+            expect { service.execute }.to change(project.milestones, :count).by(1)
+          end
+        end
+
         it 'deletes milestone issue counters cache for both milestones' do
           new_milestone = create(:milestone, project: project, title: group_milestone.title)
 

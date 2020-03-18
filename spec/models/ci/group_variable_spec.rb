@@ -8,7 +8,7 @@ describe Ci::GroupVariable do
   it_behaves_like "CI variable"
 
   it { is_expected.to include_module(Presentable) }
-  it { is_expected.to include_module(Maskable) }
+  it { is_expected.to include_module(Ci::Maskable) }
   it { is_expected.to validate_uniqueness_of(:key).scoped_to(:group_id).with_message(/\(\w+\) has already been taken/) }
 
   describe '.unprotected' do

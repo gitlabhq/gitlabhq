@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Maskable do
+describe Ci::Maskable do
   let(:variable) { build(:ci_variable) }
 
   describe 'masked value validations' do
@@ -34,7 +34,7 @@ describe Maskable do
   end
 
   describe 'REGEX' do
-    subject { Maskable::REGEX }
+    subject { Ci::Maskable::REGEX }
 
     it 'does not match strings shorter than 8 letters' do
       expect(subject.match?('hello')).to eq(false)

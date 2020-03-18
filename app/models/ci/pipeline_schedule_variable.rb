@@ -3,7 +3,7 @@
 module Ci
   class PipelineScheduleVariable < ApplicationRecord
     extend Gitlab::Ci::Model
-    include HasVariable
+    include Ci::HasVariable
 
     belongs_to :pipeline_schedule
 

@@ -51,8 +51,6 @@ module Gitlab
             end
 
             def hash_of_the_latest_changes
-              return unless Feature.enabled?(:ci_file_based_cache, @pipeline.project, default_enabled: true)
-
               ids = files.map { |path| last_commit_id_for_path(path) }
               ids = ids.compact.sort.uniq
 

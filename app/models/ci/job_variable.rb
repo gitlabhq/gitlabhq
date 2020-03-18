@@ -3,7 +3,7 @@
 module Ci
   class JobVariable < ApplicationRecord
     extend Gitlab::Ci::Model
-    include NewHasVariable
+    include Ci::NewHasVariable
     include BulkInsertSafe
 
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id

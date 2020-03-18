@@ -42,11 +42,13 @@ module Projects
       def schedule_import(params)
         import_data = @project.create_or_update_import_data(data: {}).becomes(JiraImportData)
 
-        import_data << JiraImportData::JiraProjectDetails.new(
+        jira_project_details = JiraImportData::JiraProjectDetails.new(
           params[:jira_project_key],
           Time.now.strftime('%Y-%m-%d %H:%M:%S'),
           { user_id: current_user.id, name: current_user.name }
         )
+        import_data << jira_project_details
+        import_data.force_import!
 
         @project.import_type = 'jira'
         @project.import_state.schedule if @project.save

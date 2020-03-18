@@ -46,7 +46,7 @@ module Milestones
       Milestone.joins(:issues)
         .where(
           issues: { project_id: project.id },
-          group_id: old_group.id
+          group_id: old_group.self_and_ancestors
         )
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -56,7 +56,7 @@ module Milestones
       Milestone.joins(:merge_requests)
         .where(
           merge_requests: { target_project_id: project.id },
-          group_id: old_group.id
+          group_id: old_group.self_and_ancestors
         )
     end
     # rubocop: enable CodeReuse/ActiveRecord

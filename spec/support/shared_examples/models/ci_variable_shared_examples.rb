@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'CI variable' do
-  it { is_expected.to include_module(HasVariable) }
+  it { is_expected.to include_module(Ci::HasVariable) }
 
   describe "variable type" do
     it 'defines variable types' do

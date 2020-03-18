@@ -546,6 +546,9 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'
+  Settings.cron_jobs['elastic_metrics_update_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['elastic_metrics_update_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['elastic_metrics_update_worker']['job_class'] ||= 'ElasticMetricsUpdateWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} 0 * * *"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'

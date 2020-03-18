@@ -13,8 +13,6 @@ module Gitlab
       sidekiq_options dead: false
       feature_category :importers
 
-      private
-
       # The known importer stages and their corresponding Sidekiq workers.
       STAGES = {
         issues_and_diff_notes: Stage::ImportIssuesAndDiffNotesWorker,
@@ -22,6 +20,8 @@ module Gitlab
         lfs_objects: Stage::ImportLfsObjectsWorker,
         finish: Stage::FinishImportWorker
       }.freeze
+
+      private
 
       def next_stage_worker(next_stage)
         STAGES.fetch(next_stage.to_sym)
