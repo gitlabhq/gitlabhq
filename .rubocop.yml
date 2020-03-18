@@ -299,7 +299,11 @@ RSpec/ImplicitSubject:
   Enabled: false
 
 RSpec/LeakyConstantDeclaration:
-  Enabled: false
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+    - 'qa/spec/**/*.rb'
 
 RSpec/EmptyLineAfterHook:
   Enabled: false

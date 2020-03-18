@@ -34,6 +34,7 @@ class Service < ApplicationRecord
 
   validates :project_id, presence: true, unless: -> { template? || instance? }
   validates :project_id, absence: true, if: -> { template? || instance? }
+  validates :type, uniqueness: { scope: :project_id }, unless: -> { template? || instance? }, on: :create
   validates :type, presence: true
   validates :template, uniqueness: { scope: :type }, if: -> { template? }
   validates :instance, uniqueness: { scope: :type }, if: -> { instance? }

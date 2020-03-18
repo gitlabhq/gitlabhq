@@ -7312,7 +7312,7 @@
       "tag_push_events": true,
       "note_events": true,
       "job_events": true,
-      "type": "AssemblaService",
+      "type": "AsanaService",
       "category": "common",
       "default": false,
       "wiki_page_events": true
