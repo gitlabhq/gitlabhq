@@ -43,7 +43,7 @@ module PodLogs
     end
 
     def check_container_name(result)
-      pod_details = result[:raw_pods].first { |p| p.metadata.name == result[:pod_name] }
+      pod_details = result[:raw_pods].find { |p| p.metadata.name == result[:pod_name] }
       containers = pod_details.spec.containers.map(&:name)
 
       # select first container if not specified

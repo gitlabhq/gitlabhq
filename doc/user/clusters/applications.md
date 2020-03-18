@@ -588,6 +588,15 @@ output of the [Helm
 Tiller](https://v2.helm.sh/docs/install/#running-tiller-locally) binary
 will be saved as a [CI job artifact](../../ci/pipelines/job_artifacts.md).
 
+### Important notes
+
+Note the following:
+
+- When you set the value for `installed` key back to `false`, the application will be
+  unprovisioned from the cluster.
+- If you update `.gitlab/managed-apps/<application>/values.yaml` with new values, the
+  application will be redeployed.
+
 ### Install Ingress using GitLab CI
 
 To install Ingress, define the `.gitlab/managed-apps/config.yaml` file

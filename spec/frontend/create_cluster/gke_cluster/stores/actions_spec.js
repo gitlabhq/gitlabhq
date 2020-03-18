@@ -1,16 +1,18 @@
 import testAction from 'helpers/vuex_action_helper';
+import createState from '~/create_cluster/gke_cluster/store/state';
+import * as types from '~/create_cluster/gke_cluster/store/mutation_types';
 import * as actions from '~/create_cluster/gke_cluster/store/actions';
-import { createStore } from '~/create_cluster/gke_cluster/store';
 import gapi from '../helpers';
-import { selectedProjectMock, selectedZoneMock, selectedMachineTypeMock } from '../mock_data';
+import {
+  selectedProjectMock,
+  selectedZoneMock,
+  selectedMachineTypeMock,
+  gapiProjectsResponseMock,
+  gapiZonesResponseMock,
+  gapiMachineTypesResponseMock,
+} from '../mock_data';
 
 describe('GCP Cluster Dropdown Store Actions', () => {
-  let store;
-
-  beforeEach(() => {
-    store = createStore();
-  });
-
   describe('setProject', () => {
     it('should set project', done => {
       testAction(
@@ -76,16 +78,16 @@ describe('GCP Cluster Dropdown Store Actions', () => {
     });
 
     describe('fetchProjects', () => {
-      it('fetches projects from Google API', done => {
-        store
-          .dispatch('fetchProjects')
-          .then(() => {
-            expect(store.state.projects[0].projectId).toEqual(selectedProjectMock.projectId);
-            expect(store.state.projects[0].name).toEqual(selectedProjectMock.name);
+      it('fetches projects from Google API', () => {
+        const state = createState();
 
-            done();
-          })
-          .catch(done.fail);
+        return testAction(
+          actions.fetchProjects,
+          null,
+          state,
+          [{ type: types.SET_PROJECTS, payload: gapiProjectsResponseMock.projects }],
+          [],
+        );
       });
     });
 
@@ -112,28 +114,30 @@ describe('GCP Cluster Dropdown Store Actions', () => {
     });
 
     describe('fetchZones', () => {
-      it('fetches zones from Google API', done => {
-        store
-          .dispatch('fetchZones')
-          .then(() => {
-            expect(store.state.zones[0].name).toEqual(selectedZoneMock);
+      it('fetches zones from Google API', () => {
+        const state = createState();
 
-            done();
-          })
-          .catch(done.fail);
+        return testAction(
+          actions.fetchZones,
+          null,
+          state,
+          [{ type: types.SET_ZONES, payload: gapiZonesResponseMock.items }],
+          [],
+        );
       });
     });
 
     describe('fetchMachineTypes', () => {
-      it('fetches machine types from Google API', done => {
-        store
-          .dispatch('fetchMachineTypes')
-          .then(() => {
-            expect(store.state.machineTypes[0].name).toEqual(selectedMachineTypeMock);
+      it('fetches machine types from Google API', () => {
+        const state = createState();
 
-            done();
-          })
-          .catch(done.fail);
+        return testAction(
+          actions.fetchMachineTypes,
+          null,
+          state,
+          [{ type: types.SET_MACHINE_TYPES, payload: gapiMachineTypesResponseMock.items }],
+          [],
+        );
       });
     });
   });

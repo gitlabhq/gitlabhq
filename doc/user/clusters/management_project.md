@@ -14,7 +14,7 @@ privileges.
 
 This can be useful for:
 
-- Creating pipelines to install cluster-wide applications into your cluster.
+- Creating pipelines to install cluster-wide applications into your cluster, see [Install using GitLab CI (alpha)](applications.md#install-using-gitlab-ci-alpha) for details.
 - Any jobs that require `cluster-admin` privileges.
 
 ## Permissions
@@ -46,6 +46,8 @@ To select a cluster management project to use:
    - [Project-level cluster](../project/clusters/index.md), navigate to your project's
      **Operations > Kubernetes** page.
    - [Group-level cluster](../group/clusters/index.md), navigate to your group's **Kubernetes**
+     page.
+   - [Instance-level cluster](../instance/clusters/index.md), navigate to Admin Area's **Kubernetes**
      page.
 1. Select the project using **Cluster management project field** in the **Advanced settings**
    section.

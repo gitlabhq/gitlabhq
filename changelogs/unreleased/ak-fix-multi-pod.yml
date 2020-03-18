@@ -1,0 +1,5 @@
+---
+title: Fix access to logs when multiple pods exist
+merge_request: 27008
+author:
+type: fixed

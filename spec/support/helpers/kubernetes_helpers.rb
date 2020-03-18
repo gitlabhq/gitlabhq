@@ -489,7 +489,7 @@ module KubernetesHelpers
 
   # This is a partial response, it will have many more elements in reality but
   # these are the ones we care about at the moment
-  def kube_pod(name: "kube-pod", environment_slug: "production", namespace: "project-namespace", project_slug: "project-path-slug", status: "Running", track: nil)
+  def kube_pod(name: "kube-pod", container_name: "container-0", environment_slug: "production", namespace: "project-namespace", project_slug: "project-path-slug", status: "Running", track: nil)
     {
       "metadata" => {
         "name" => name,
@@ -506,8 +506,8 @@ module KubernetesHelpers
       },
       "spec" => {
         "containers" => [
-          { "name" => "container-0" },
-          { "name" => "container-1" }
+          { "name" => "#{container_name}" },
+          { "name" => "#{container_name}-1" }
         ]
       },
       "status" => { "phase" => status }
