@@ -24,7 +24,7 @@ FactoryBot.define do
     end
 
     trait :bot do
-      bot_type { User.bot_types[:alert_bot] }
+      user_type { :alert_bot }
     end
 
     trait :external do

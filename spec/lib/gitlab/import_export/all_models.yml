@@ -208,6 +208,7 @@ ci_pipelines:
 - vulnerability_findings
 - pipeline_config
 - security_scans
+- daily_report_results
 pipeline_variables:
 - pipeline
 stages:
@@ -470,6 +471,7 @@ project:
 - status_page_setting
 - requirements
 - export_jobs
+- daily_report_results
 award_emoji:
 - awardable
 - user

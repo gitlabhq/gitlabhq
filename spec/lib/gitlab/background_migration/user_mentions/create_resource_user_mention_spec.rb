@@ -12,6 +12,7 @@ describe Gitlab::BackgroundMigration::UserMentions::CreateResourceUserMention, s
     let(:namespaces) { table(:namespaces) }
     let(:projects) { table(:projects) }
     let(:notes) { table(:notes) }
+    let(:routes) { table(:routes) }
 
     let(:author) { users.create!(email: 'author@example.com', notification_email: 'author@example.com', name: 'author', username: 'author', projects_limit: 10, state: 'active') }
     let(:member) { users.create!(email: 'member@example.com', notification_email: 'member@example.com', name: 'member', username: 'member', projects_limit: 10, state: 'active') }
@@ -32,13 +33,14 @@ describe Gitlab::BackgroundMigration::UserMentions::CreateResourceUserMention, s
 
     before do
       # build personal namespaces and routes for users
-      mentioned_users.each { |u| u.becomes(User).save! }
+      mentioned_users.each do |u|
+        namespace = namespaces.create!(path: u.username, name: u.name, runners_token: "my-token-u#{u.id}", owner_id: u.id, type: nil)
+        routes.create!(path: namespace.path, source_type: 'Namespace', source_id: namespace.id)
+      end
 
       # build namespaces and routes for groups
       mentioned_groups.each do |gr|
-        gr.name += '-org'
-        gr.path += '-org'
-        gr.becomes(Namespace).save!
+        routes.create!(path: gr.path, source_type: 'Namespace', source_id: gr.id)
       end
     end
 

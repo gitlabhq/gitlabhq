@@ -24,7 +24,7 @@ module Gitlab
           end
 
           def for_project_noteable?
-            !for_personal_snippet?
+            !for_personal_snippet? && !for_epic?
           end
 
           def skip_project_check?

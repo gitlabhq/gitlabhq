@@ -13,12 +13,12 @@ import {
   GlDropdownDivider,
   GlTooltipDirective,
   GlPagination,
-  GlButtonGroup,
 } from '@gitlab/ui';
 import AccessorUtils from '~/lib/utils/accessor';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
 import { isEmpty } from 'lodash';
+import ErrorTrackingActions from './error_tracking_actions.vue';
 
 export const tableDataClass = 'table-col d-flex d-md-table-cell align-items-center';
 
@@ -26,10 +26,6 @@ export default {
   FIRST_PAGE: 1,
   PREV_PAGE: 1,
   NEXT_PAGE: 2,
-  statusButtons: [
-    { status: 'ignored', icon: 'eye-slash', title: __('Ignore') },
-    { status: 'resolved', icon: 'check-circle', title: __('Resolve') },
-  ],
   fields: [
     {
       key: 'error',
@@ -58,12 +54,7 @@ export default {
     {
       key: 'status',
       label: '',
-      tdClass: `table-col d-none d-md-table-cell align-items-center pl-md-0`,
-    },
-    {
-      key: 'details',
-      tdClass: 'table-col d-md-none d-flex align-items-center rounded-bottom bg-secondary',
-      thClass: 'invisible w-0',
+      tdClass: `${tableDataClass}`,
     },
   ],
   statusFilters: {
@@ -89,7 +80,7 @@ export default {
     GlFormInput,
     GlPagination,
     TimeAgo,
-    GlButtonGroup,
+    ErrorTrackingActions,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -206,7 +197,7 @@ export default {
       this.filterValue = label;
       return this.filterByStatus(status);
     },
-    updateIssueStatus(errorId, status) {
+    updateIssueStatus({ errorId, status }) {
       this.updateStatus({
         endpoint: this.getIssueUpdatePath(errorId),
         status,
@@ -220,8 +211,10 @@ export default {
 <template>
   <div class="error-list">
     <div v-if="errorTrackingEnabled">
-      <div class="row flex-column flex-sm-row align-items-sm-center row-top m-0 mt-sm-2 p-0 p-sm-3">
-        <div class="search-box flex-fill mr-sm-2 my-3 m-sm-0 p-3 p-sm-0 bg-secondary">
+      <div
+        class="row flex-column flex-md-row align-items-md-center m-0 mt-sm-2 p-3 p-sm-3 bg-secondary border"
+      >
+        <div class="search-box flex-fill mb-1 mb-md-0">
           <div class="filtered-search-box mb-0">
             <gl-dropdown
               :text="__('Recent searches')"
@@ -273,7 +266,7 @@ export default {
 
         <gl-dropdown
           :text="$options.statusFilters[statusFilter]"
-          class="status-dropdown mr-2"
+          class="status-dropdown mx-md-1 mb-1 mb-md-0"
           menu-class="dropdown"
           :disabled="loading"
         >
@@ -366,46 +359,7 @@ export default {
             </div>
           </template>
           <template #cell(status)="errors">
-            <gl-button-group>
-              <gl-button
-                v-for="button in $options.statusButtons"
-                :key="button.status"
-                :ref="button.title.toLowerCase() + 'Error'"
-                v-gl-tooltip.hover
-                :title="button.title"
-                @click="updateIssueStatus(errors.item.id, button.status)"
-              >
-                <gl-icon :name="button.icon" :size="12" />
-              </gl-button>
-            </gl-button-group>
-          </template>
-          <template #cell(details)="errors">
-            <gl-button
-              category="primary"
-              variant="info"
-              block
-              class="mb-1 mt-2"
-              @click="updateIssueStatus(errors.item.id, 'resolved')"
-            >
-              {{ __('Resolve') }}
-            </gl-button>
-            <gl-button
-              category="secondary"
-              variant="default"
-              block
-              class="mb-2"
-              @click="updateIssueStatus(errors.item.id, 'ignored')"
-            >
-              {{ __('Ignore') }}
-            </gl-button>
-            <gl-button
-              :href="getDetailsLink(errors.item.id)"
-              category="secondary"
-              variant="info"
-              class="d-block mb-2"
-            >
-              {{ __('More details') }}
-            </gl-button>
+            <error-tracking-actions :error="errors.item" @update-issue-status="updateIssueStatus" />
           </template>
           <template #empty>
             {{ __('No errors to display.') }}

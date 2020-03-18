@@ -21,6 +21,7 @@ class User < ApplicationRecord
   include OptionallySearch
   include FromUnion
   include BatchDestroyDependentAssociations
+  include IgnorableColumns
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -59,8 +60,9 @@ class User < ApplicationRecord
 
   MINIMUM_INACTIVE_DAYS = 180
 
-  enum bot_type: ::UserBotTypeEnums.bots
   enum user_type: ::UserTypeEnums.types
+
+  ignore_column :bot_type, remove_with: '12.11', remove_after: '2020-04-22'
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
@@ -337,8 +339,9 @@ class User < ApplicationRecord
   scope :with_emails, -> { preload(:emails) }
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
   scope :with_public_profile, -> { where(private_profile: false) }
-  scope :bots, -> { where.not(bot_type: nil) }
-  scope :humans, -> { where(user_type: nil, bot_type: nil) }
+  scope :bots, -> { where(user_type: UserTypeEnums.bots.values) }
+  scope :not_bots, -> { humans.or(where.not(user_type: UserTypeEnums.bots.values)) }
+  scope :humans, -> { where(user_type: nil) }
 
   scope :with_expiring_and_not_notified_personal_access_tokens, ->(at) do
     where('EXISTS (?)',
@@ -618,7 +621,7 @@ class User < ApplicationRecord
     def alert_bot
       email_pattern = "alert%s@#{Settings.gitlab.host}"
 
-      unique_internal(where(bot_type: :alert_bot), 'alert-bot', email_pattern) do |u|
+      unique_internal(where(user_type: :alert_bot), 'alert-bot', email_pattern) do |u|
         u.bio = 'The GitLab alert bot'
         u.name = 'GitLab Alert Bot'
       end
@@ -640,7 +643,7 @@ class User < ApplicationRecord
   end
 
   def bot?
-    bot_type.present?
+    UserTypeEnums.bots.has_key?(user_type)
   end
 
   def internal?
@@ -652,7 +655,7 @@ class User < ApplicationRecord
   end
 
   def self.non_internal
-    without_ghosts.humans
+    without_ghosts.not_bots
   end
 
   #

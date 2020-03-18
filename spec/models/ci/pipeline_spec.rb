@@ -1120,7 +1120,7 @@ describe Ci::Pipeline, :mailer do
           let(:from_status) { status }
 
           it 'schedules pipeline success worker' do
-            expect(PipelineSuccessWorker).to receive(:perform_async).with(pipeline.id)
+            expect(Ci::DailyReportResultsWorker).to receive(:perform_in).with(10.minutes, pipeline.id)
 
             pipeline.succeed
           end
@@ -3112,6 +3112,27 @@ describe Ci::Pipeline, :mailer do
           end
         end
       end
+    end
+  end
+
+  describe '#source_ref_path' do
+    subject { pipeline.source_ref_path }
+
+    context 'when pipeline is for a branch' do
+      it { is_expected.to eq(Gitlab::Git::BRANCH_REF_PREFIX + pipeline.source_ref.to_s) }
+    end
+
+    context 'when pipeline is for a merge request' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:pipeline) { create(:ci_pipeline, project: project, head_pipeline_of: merge_request) }
+
+      it { is_expected.to eq(Gitlab::Git::BRANCH_REF_PREFIX + pipeline.source_ref.to_s) }
+    end
+
+    context 'when pipeline is for a tag' do
+      let(:pipeline) { create(:ci_pipeline, project: project, tag: true) }
+
+      it { is_expected.to eq(Gitlab::Git::TAG_REF_PREFIX + pipeline.source_ref.to_s) }
     end
   end
 end

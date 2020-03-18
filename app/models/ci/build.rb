@@ -174,6 +174,8 @@ module Ci
               pipeline: Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE)
     end
 
+    scope :with_coverage, -> { where.not(coverage: nil) }
+
     acts_as_taggable
 
     add_authentication_token_field :token, encrypted: :optional

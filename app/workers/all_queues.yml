@@ -605,6 +605,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+- :name: pipeline_background:ci_daily_report_results
+  :feature_category: :continuous_integration
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
 - :name: pipeline_cache:expire_job_cache
   :feature_category: :continuous_integration
   :has_external_dependencies: 
@@ -739,13 +746,6 @@
   :weight: 5
   :idempotent: 
 - :name: pipeline_processing:pipeline_process
-  :feature_category: :continuous_integration
-  :has_external_dependencies: 
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 5
-  :idempotent: 
-- :name: pipeline_processing:pipeline_success
   :feature_category: :continuous_integration
   :has_external_dependencies: 
   :urgency: :high

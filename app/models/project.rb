@@ -314,6 +314,8 @@ class Project < ApplicationRecord
 
   has_many :import_failures, inverse_of: :project
 
+  has_many :daily_report_results, class_name: 'Ci::DailyReportResult'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data

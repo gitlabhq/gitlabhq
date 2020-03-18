@@ -4244,12 +4244,12 @@ describe User, :do_not_mock_admin_mode do
     let!(:non_internal) { [user] }
     let!(:internal) { [ghost, alert_bot] }
 
-    it 'returns non internal users' do
+    it 'returns internal users' do
       expect(described_class.internal).to eq(internal)
       expect(internal.all?(&:internal?)).to eq(true)
     end
 
-    it 'returns internal users' do
+    it 'returns non internal users' do
       expect(described_class.non_internal).to eq(non_internal)
       expect(non_internal.all?(&:internal?)).to eq(false)
     end

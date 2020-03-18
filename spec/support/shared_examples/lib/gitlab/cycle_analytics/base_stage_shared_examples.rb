@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-shared_examples 'base stage' do
-  ISSUES_MEDIAN = 30.minutes.to_i
+ISSUES_MEDIAN = 30.minutes.to_i
 
+shared_examples 'base stage' do
   let(:stage) { described_class.new(options: { project: double }) }
 
   before do

@@ -22,14 +22,6 @@ shared_examples 'resource mentions migration' do |migration_class, resource_clas
 end
 
 shared_examples 'resource notes mentions migration' do |migration_class, resource_class|
-  before do
-    note1.becomes(Note).save!
-    note2.becomes(Note).save!
-    note3.becomes(Note).save!
-    note4.becomes(Note).save!
-    note5.becomes(Note).save(validate: false)
-  end
-
   it 'migrates mentions from note' do
     join = migration_class::JOIN
     conditions = migration_class::QUERY_CONDITIONS

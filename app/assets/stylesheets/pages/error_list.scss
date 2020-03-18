@@ -1,5 +1,3 @@
-$gray-border: 1px solid $border-color;
-
 .error-list {
   .sort-control {
     .btn {
@@ -13,19 +11,14 @@ $gray-border: 1px solid $border-color;
     }
   }
 
-  @include media-breakpoint-up(sm) {
-    .row-top {
-      border: $gray-border;
-      background-color: $gray-50;
-    }
-  }
-
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(sm) {
     .error-list-table {
       .table-col {
         min-height: 68px;
 
         &:last-child {
+          background-color: $gray-normal;
+
           &::before {
             content: none !important;
           }
