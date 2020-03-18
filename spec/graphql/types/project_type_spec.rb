@@ -27,7 +27,7 @@ describe GitlabSchema.types['Project'] do
       boards
     ]
 
-    is_expected.to include_graphql_fields(*expected_fields)
+    expect(described_class).to include_graphql_fields(*expected_fields)
   end
 
   describe 'issue field' do

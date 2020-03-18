@@ -15,7 +15,7 @@ RSpec.shared_context 'group and project boards query context' do
       board_parent_type,
       { 'fullPath' => board_parent.full_path },
       <<~BOARDS
-        boards(#{board_params}) {
+        #{field_with_params('boards', board_params)} {
           pageInfo {
             startCursor
             endCursor
@@ -35,7 +35,7 @@ RSpec.shared_context 'group and project boards query context' do
       board_parent_type,
       { 'fullPath' => board_parent.full_path },
       <<~BOARD
-        board(#{board_params}) {
+        #{field_with_params('board', board_params)} {
           #{all_graphql_fields_for('board'.classify)}
         }
       BOARD

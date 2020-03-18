@@ -12,7 +12,7 @@ describe GitlabSchema.types['User'] do
       user_permissions snippets name username avatarUrl webUrl todos
     ]
 
-    is_expected.to have_graphql_fields(*expected_fields)
+    expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
   describe 'snippets field' do

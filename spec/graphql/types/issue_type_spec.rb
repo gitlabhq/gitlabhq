@@ -9,7 +9,7 @@ describe GitlabSchema.types['Issue'] do
 
   it { expect(described_class).to require_graphql_authorizations(:read_issue) }
 
-  it { expect(described_class.interfaces).to include(Types::Notes::NoteableType.to_graphql) }
+  it { expect(described_class.interfaces).to include(Types::Notes::NoteableType) }
 
   it 'has specific fields' do
     fields = %i[iid title description state reference author assignees participants labels milestone due_date

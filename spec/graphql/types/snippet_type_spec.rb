@@ -10,7 +10,7 @@ describe GitlabSchema.types['Snippet'] do
                        :web_url, :raw_url, :notes, :discussions,
                        :user_permissions, :description_html, :blob]
 
-    is_expected.to have_graphql_fields(*expected_fields)
+    expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
   describe 'authorizations' do

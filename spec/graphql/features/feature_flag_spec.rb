@@ -9,7 +9,7 @@ describe 'Graphql Field feature flags' do
 
   let(:feature_flag) { 'test_feature' }
   let(:test_object) { double(name: 'My name') }
-  let(:query_string) { '{ item() { name } }' }
+  let(:query_string) { '{ item { name } }' }
   let(:result) { execute_query(query_type)['data'] }
 
   subject { result }

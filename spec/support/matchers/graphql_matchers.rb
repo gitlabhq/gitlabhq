@@ -2,7 +2,7 @@
 
 RSpec::Matchers.define :require_graphql_authorizations do |*expected|
   match do |field|
-    expect(field.metadata[:authorize]).to eq(*expected)
+    expect(field.to_graphql.metadata[:authorize]).to eq(*expected)
   end
 end
 
@@ -87,13 +87,13 @@ end
 
 RSpec::Matchers.define :have_graphql_type do |expected|
   match do |field|
-    expect(field.type).to eq(expected.to_graphql)
+    expect(field.type).to eq(expected)
   end
 end
 
 RSpec::Matchers.define :have_non_null_graphql_type do |expected|
   match do |field|
-    expect(field.type).to eq(!expected.to_graphql)
+    expect(field.type.to_graphql).to eq(!expected.to_graphql)
   end
 end
 
@@ -101,16 +101,16 @@ RSpec::Matchers.define :have_graphql_resolver do |expected|
   match do |field|
     case expected
     when Method
-      expect(field.metadata[:type_class].resolve_proc).to eq(expected)
+      expect(field.to_graphql.metadata[:type_class].resolve_proc).to eq(expected)
     else
-      expect(field.metadata[:type_class].resolver).to eq(expected)
+      expect(field.to_graphql.metadata[:type_class].resolver).to eq(expected)
     end
   end
 end
 
 RSpec::Matchers.define :have_graphql_extension do |expected|
   match do |field|
-    expect(field.metadata[:type_class].extensions).to include(expected)
+    expect(field.to_graphql.metadata[:type_class].extensions).to include(expected)
   end
 end
 

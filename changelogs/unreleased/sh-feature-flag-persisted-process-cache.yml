@@ -1,0 +1,5 @@
+---
+title: Move feature flag list into process cache
+merge_request: 27511
+author:
+type: performance

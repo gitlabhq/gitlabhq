@@ -8,6 +8,6 @@ describe GitlabSchema.types['NotePermissions'] do
       :read_note, :create_note, :admin_note, :resolve_note, :award_emoji
     ]
 
-    is_expected.to have_graphql_fields(expected_permissions)
+    expect(described_class).to have_graphql_fields(expected_permissions)
   end
 end

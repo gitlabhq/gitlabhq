@@ -21,7 +21,7 @@ module Gitlab
         process_commits do |commit|
           validate_once(commit) do
             commit.raw_deltas.each do |diff|
-              file_paths << (diff.new_path || diff.old_path)
+              file_paths.concat([diff.new_path, diff.old_path].compact)
 
               validate_diff(diff)
             end

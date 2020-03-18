@@ -23,10 +23,6 @@ module RuboCop
         NULL_OFFENSE = 'Boolean columns on the `%s` table should disallow nulls.'.freeze
         DEFAULT_AND_NULL_OFFENSE = 'Boolean columns on the `%s` table should have a default and should disallow nulls. You may wish to use `add_column_with_default`.'.freeze
 
-        SMALL_TABLES = %i[
-          application_settings
-        ].freeze
-
         def_node_matcher :add_column?, <<~PATTERN
           (send nil? :add_column $...)
         PATTERN
@@ -41,7 +37,7 @@ module RuboCop
           table, _, type = matched.to_a.take(3).map(&:children).map(&:first)
           opts = matched[3]
 
-          return unless SMALL_TABLES.include?(table) && type == :boolean
+          return unless WHITELISTED_TABLES.include?(table) && type == :boolean
 
           no_default = no_default?(opts)
           nulls_allowed = nulls_allowed?(opts)

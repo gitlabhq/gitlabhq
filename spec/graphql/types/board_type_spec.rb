@@ -10,6 +10,6 @@ describe GitlabSchema.types['Board'] do
   it 'has specific fields' do
     expected_fields = %w[id name]
 
-    is_expected.to include_graphql_fields(*expected_fields)
+    expect(described_class).to include_graphql_fields(*expected_fields)
   end
 end

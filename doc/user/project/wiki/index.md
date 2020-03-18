@@ -93,6 +93,11 @@ To edit a page, simply click on the **Edit** button. From there on, you can
 change its content. When done, click **Save changes** for the changes to take
 effect.
 
+### Adding a table of contents
+
+To generate a table of contents from the headings in a Wiki page, use the `[[_TOC_]]` tag.
+For an example, see [Table of contents](../../markdown.md#table-of-contents).
+
 ## Deleting a wiki page
 
 NOTE: **Note:**

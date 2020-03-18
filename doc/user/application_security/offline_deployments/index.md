@@ -13,7 +13,7 @@ connected to the internet, in what is sometimes known as an offline,
 limited connectivity, Local Area Network (LAN), Intranet, or "air-gap"
 environment.
 
-In this situation, the GitLab instance can be one, or more, servers and services running in a network that can talk to one another, but have zero, or perhaps very restricted access to the internet. Assume anything within the GitLab instance and supporting infrastrusture (private maven repository for example) can be accessed via local network connection. Assume any files from the internet must come in via physical media (USB drive, hard drive).
+In this situation, the GitLab instance can be one, or more, servers and services running in a network that can talk to one another, but have zero, or perhaps very restricted access to the internet. Assume anything within the GitLab instance and supporting infrastructure (private Maven repository for example) can be accessed via local network connection. Assume any files from the internet must come in via physical media (USB drive, hard drive).
 
 GitLab scanners generally will connect to the internet to download the
 latest sets of signatures, rules, and patches. A few extra steps are necessary

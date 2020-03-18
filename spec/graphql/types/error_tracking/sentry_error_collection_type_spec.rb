@@ -15,7 +15,7 @@ describe GitlabSchema.types['SentryErrorCollection'] do
       error_stack_trace
     ]
 
-    is_expected.to have_graphql_fields(*expected_fields)
+    expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
   describe 'errors field' do

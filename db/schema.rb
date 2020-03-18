@@ -3919,6 +3919,7 @@ ActiveRecord::Schema.define(version: 2020_03_13_123934) do
     t.string "note_type"
     t.text "position"
     t.string "in_reply_to_discussion_id"
+    t.index ["noteable_id"], name: "index_sent_notifications_on_noteable_type_noteable_id", where: "((noteable_type)::text = 'Issue'::text)"
     t.index ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true
   end
 

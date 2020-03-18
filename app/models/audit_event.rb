@@ -13,10 +13,17 @@ class AuditEvent < ApplicationRecord
 
   scope :by_entity_type, -> (entity_type) { where(entity_type: entity_type) }
   scope :by_entity_id, -> (entity_id) { where(entity_id: entity_id) }
-  scope :order_by_id_desc, -> { order(id: :desc) }
-  scope :order_by_id_asc, -> { order(id: :asc) }
 
   after_initialize :initialize_details
+
+  def self.order_by(method)
+    case method.to_s
+    when 'created_asc'
+      order(id: :asc)
+    else
+      order(id: :desc)
+    end
+  end
 
   def initialize_details
     self.details = {} if details.nil?

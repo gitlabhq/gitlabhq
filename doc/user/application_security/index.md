@@ -7,9 +7,11 @@ type: reference, howto
 GitLab can check your application for security vulnerabilities that may lead to unauthorized access,
 data leaks, denial of services, and more. GitLab reports vulnerabilities in the merge request so you
 can fix them before merging. The [Security Dashboard](security_dashboard/index.md) provides a
-high-level view of vulnerabilities detected in your projects, pipeline, and groups. With the
-information provided, you can immediately begin risk analysis and remediation.
+high-level view of vulnerabilities detected in your projects, pipeline, and groups. The [Threat Monitoring](threat_monitoring/index.md)
+page provides runtime security metrics for application environments. With the information provided,
+you can immediately begin risk analysis and remediation.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of application security with GitLab, see
 [Security Deep Dive](https://www.youtube.com/watch?v=k4vEJnGYy84).
 

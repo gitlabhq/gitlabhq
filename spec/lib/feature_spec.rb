@@ -42,7 +42,7 @@ describe Feature do
         .once
         .and_call_original
 
-      expect(Gitlab::ThreadMemoryCache.cache_backend)
+      expect(Gitlab::ProcessMemoryCache.cache_backend)
         .to receive(:fetch)
         .once
         .with('flipper:persisted_names', expires_in: 1.minute)

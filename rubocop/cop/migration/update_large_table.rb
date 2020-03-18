@@ -19,26 +19,6 @@ module RuboCop
               'complete, and should be avoided unless absolutely ' \
               'necessary'.freeze
 
-        LARGE_TABLES = %i[
-          ci_build_trace_sections
-          ci_builds
-          ci_job_artifacts
-          ci_pipelines
-          ci_stages
-          events
-          issues
-          merge_request_diff_commits
-          merge_request_diff_files
-          merge_request_diffs
-          merge_requests
-          namespaces
-          notes
-          projects
-          project_ci_cd_settings
-          routes
-          users
-        ].freeze
-
         BATCH_UPDATE_METHODS = %w[
           :add_column_with_default
           :change_column_type_concurrently
@@ -59,7 +39,7 @@ module RuboCop
           update_method = matches.first
           table = matches.last.to_a.first
 
-          return unless LARGE_TABLES.include?(table)
+          return unless BLACKLISTED_TABLES.include?(table)
 
           add_offense(node, location: :expression, message: format(MSG, update_method, table))
         end

@@ -10,8 +10,8 @@ describe GitlabSchema.types['Environment'] do
       name id
     ]
 
-    is_expected.to have_graphql_fields(*expected_fields)
+    expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
-  it { is_expected.to require_graphql_authorizations(:read_environment) }
+  it { expect(described_class).to require_graphql_authorizations(:read_environment) }
 end

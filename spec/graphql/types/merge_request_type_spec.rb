@@ -7,7 +7,7 @@ describe GitlabSchema.types['MergeRequest'] do
 
   it { expect(described_class).to require_graphql_authorizations(:read_merge_request) }
 
-  it { expect(described_class.interfaces).to include(Types::Notes::NoteableType.to_graphql) }
+  it { expect(described_class.interfaces).to include(Types::Notes::NoteableType) }
 
   it 'has the expected fields' do
     expected_fields = %w[
@@ -25,6 +25,6 @@ describe GitlabSchema.types['MergeRequest'] do
       total_time_spent reference
     ]
 
-    is_expected.to have_graphql_fields(*expected_fields)
+    expect(described_class).to have_graphql_fields(*expected_fields)
   end
 end

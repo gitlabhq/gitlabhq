@@ -291,6 +291,8 @@
 ###############
 .pages:rules:
   rules:
+    - <<: *if-not-ee
+      when: never
     - <<: *if-dot-com-gitlab-org-master
       changes: *code-backstage-qa-patterns
       when: on_success

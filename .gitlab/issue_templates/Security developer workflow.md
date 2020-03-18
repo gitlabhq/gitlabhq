@@ -21,7 +21,7 @@ Set the title to: `Description of the original issue`
 - [ ] Create a merge request targeting `master` on `gitlab.com/gitlab-org/security` and use the [Security Release merge request template].
 - [ ] Follow the same [code review process]: Assign to a reviewer, then to a maintainer.
 
-After your merge request has being approved according to our [approval guidelines], you're ready to prepare the backports
+After your merge request has been approved according to our [approval guidelines], you're ready to prepare the backports
 
 ## Backports
 

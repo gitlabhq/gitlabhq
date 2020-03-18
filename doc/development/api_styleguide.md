@@ -11,6 +11,12 @@ to access them as we do in Rails views), local variables are fine.
 
 Always use an [Entity] to present the endpoint's payload.
 
+## Documentation
+
+API endpoints must come with [documentation](documentation/styleguide.md#api), unless it is internal or behind a feature flag.
+The docs should be in the same merge request, or, if strictly necessary,
+in a follow-up with the same milestone as the original merge request.  
+
 ## Methods and parameters description
 
 Every method must be described using the [Grape DSL](https://github.com/ruby-grape/grape#describing-methods)

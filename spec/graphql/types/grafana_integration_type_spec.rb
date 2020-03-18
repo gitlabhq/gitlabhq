@@ -18,5 +18,5 @@ describe GitlabSchema.types['GrafanaIntegration'] do
 
   it { expect(described_class).to require_graphql_authorizations(:admin_operations) }
 
-  it { is_expected.to have_graphql_fields(*expected_fields) }
+  it { expect(described_class).to have_graphql_fields(*expected_fields) }
 end

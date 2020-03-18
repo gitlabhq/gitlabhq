@@ -456,7 +456,7 @@ GEM
     graphiql-rails (1.4.10)
       railties
       sprockets-rails
-    graphql (1.9.19)
+    graphql (1.10.5)
     graphql-docs (1.6.0)
       commonmarker (~> 0.16)
       escape_utils (~> 1.2)
@@ -1252,7 +1252,7 @@ DEPENDENCIES
   grape-path-helpers (~> 1.2)
   grape_logging (~> 1.7)
   graphiql-rails (~> 1.4.10)
-  graphql (~> 1.9.19)
+  graphql (~> 1.10.5)
   graphql-docs (~> 1.6.0)
   grpc (~> 1.24.0)
   gssapi

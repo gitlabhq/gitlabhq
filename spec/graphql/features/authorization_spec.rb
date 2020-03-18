@@ -9,7 +9,7 @@ describe 'Gitlab::Graphql::Authorization' do
   let(:permission_single) { :foo }
   let(:permission_collection) { [:foo, :bar] }
   let(:test_object) { double(name: 'My name') }
-  let(:query_string) { '{ item() { name } }' }
+  let(:query_string) { '{ item { name } }' }
   let(:result) { execute_query(query_type)['data'] }
 
   subject { result['item'] }
@@ -177,7 +177,7 @@ describe 'Gitlab::Graphql::Authorization' do
   end
 
   describe 'type authorizations when applied to a relay connection' do
-    let(:query_string) { '{ item() { edges { node { name } } } }' }
+    let(:query_string) { '{ item { edges { node { name } } } }' }
     let(:second_test_object) { double(name: 'Second thing') }
 
     let(:type) do

@@ -8,6 +8,6 @@ describe GitlabSchema.types['SnippetBlob'] do
                        :raw_path, :size, :binary, :name, :path,
                        :simple_viewer, :rich_viewer, :mode]
 
-    is_expected.to have_graphql_fields(*expected_fields)
+    expect(described_class).to have_graphql_fields(*expected_fields)
   end
 end

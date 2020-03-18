@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe Types::Notes::NoteableType do
-  it { is_expected.to have_graphql_fields(:notes, :discussions) }
+  it { expect(described_class).to have_graphql_fields(:notes, :discussions) }
 
   describe ".resolve_type" do
     it 'knows the correct type for objects' do
