@@ -35,8 +35,9 @@ class ApplicationController < ActionController::Base
   before_action :check_impersonation_availability
   before_action :required_signup_info
 
+  prepend_around_action :set_current_context
+
   around_action :sessionless_bypass_admin_mode!, if: :sessionless_user?
-  around_action :set_current_context
   around_action :set_locale
   around_action :set_session_storage
   around_action :set_current_admin

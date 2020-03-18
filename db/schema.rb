@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_12_163407) do
+ActiveRecord::Schema.define(version: 2020_03_13_123934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -2442,6 +2442,7 @@ ActiveRecord::Schema.define(version: 2020_03_12_163407) do
     t.index ["invite_token"], name: "index_members_on_invite_token", unique: true
     t.index ["requested_at"], name: "index_members_on_requested_at"
     t.index ["source_id", "source_type"], name: "index_members_on_source_id_and_source_type"
+    t.index ["user_id", "created_at"], name: "index_members_on_user_id_created_at", where: "((ldap = true) AND ((type)::text = 'GroupMember'::text) AND ((source_type)::text = 'Namespace'::text))"
     t.index ["user_id"], name: "index_members_on_user_id"
   end
 

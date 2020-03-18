@@ -8,7 +8,8 @@ module Banzai
       def self.filters
         @filters ||= FilterArray[
           *internal_link_filters,
-          Filter::AbsoluteLinkFilter
+          Filter::AbsoluteLinkFilter,
+          Filter::BroadcastMessagePlaceholdersFilter
         ]
       end
 

@@ -217,6 +217,9 @@ msgstr ""
 msgid "%{authorsName}'s thread"
 msgstr ""
 
+msgid "%{buy_now_link_start}Buy now!%{link_end}"
+msgstr ""
+
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr ""
 
@@ -2410,6 +2413,12 @@ msgid "AsanaService|User Personal Access Token. User must have access to task, a
 msgstr ""
 
 msgid "Ascending"
+msgstr ""
+
+msgid "Ask an admin to upload a new license to ensure uninterrupted service."
+msgstr ""
+
+msgid "Ask an admin to upload a new license to restore service."
 msgstr ""
 
 msgid "Ask your group maintainer to set up a group Runner."
@@ -16153,6 +16162,12 @@ msgstr ""
 msgid "Pushes"
 msgstr ""
 
+msgid "Pushing code and creation of issues and merge requests has been disabled."
+msgstr ""
+
+msgid "Pushing code and creation of issues and merge requests will be disabled on %{disabled_on}."
+msgstr ""
+
 msgid "PushoverService|%{user_name} deleted branch \"%{ref}\"."
 msgstr ""
 
@@ -21573,6 +21588,12 @@ msgstr ""
 msgid "Upload a certificate for your domain with all intermediates"
 msgstr ""
 
+msgid "Upload a new license in the admin area to ensure uninterrupted service."
+msgstr ""
+
+msgid "Upload a new license in the admin area to restore service."
+msgstr ""
+
 msgid "Upload a private key for your certificate"
 msgstr ""
 
@@ -23302,7 +23323,13 @@ msgstr ""
 msgid "Your issues will be imported in the background. Once finished, you'll get a confirmation email."
 msgstr ""
 
+msgid "Your license expired on %{expires_at}."
+msgstr ""
+
 msgid "Your license is valid from"
+msgstr ""
+
+msgid "Your license will expire in %{remaining_days}."
 msgstr ""
 
 msgid "Your message here"
@@ -23333,6 +23360,12 @@ msgid "Your projects"
 msgstr ""
 
 msgid "Your request for access has been queued for review."
+msgstr ""
+
+msgid "Your trial license expired on %{expires_at}."
+msgstr ""
+
+msgid "Your trial license will expire in %{remaining_days}."
 msgstr ""
 
 msgid "Zoom meeting added"

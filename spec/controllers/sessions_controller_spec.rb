@@ -497,13 +497,13 @@ describe SessionsController do
   end
 
   describe '#set_current_context' do
+    let_it_be(:user) { create(:user) }
+
     before do
       set_devise_mapping(context: @request)
     end
 
     context 'when signed in' do
-      let_it_be(:user) { create(:user) }
-
       before do
         sign_in(user)
       end
@@ -533,6 +533,26 @@ describe SessionsController do
         end
 
         get :new
+      end
+    end
+
+    context 'when the user becomes locked' do
+      before do
+        user.update!(failed_attempts: User.maximum_attempts.pred)
+      end
+
+      it 'sets the caller_id in the context' do
+        allow_any_instance_of(User).to receive(:lock_access!).and_wrap_original do |m, *args|
+          expect(Labkit::Context.current.to_h)
+            .to include('meta.caller_id' => 'SessionsController#create')
+          expect(Labkit::Context.current.to_h)
+            .not_to include('meta.user')
+
+          m.call(*args)
+        end
+
+        post(:create,
+             params: { user: { login: user.username, password: user.password.succ } })
       end
     end
   end
