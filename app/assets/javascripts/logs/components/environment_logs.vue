@@ -5,15 +5,17 @@ import {
   GlSprintf,
   GlAlert,
   GlDropdown,
+  GlDropdownDivider,
   GlDropdownItem,
   GlFormGroup,
   GlSearchBoxByClick,
   GlInfiniteScroll,
 } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import LogControlButtons from './log_control_buttons.vue';
 
-import { timeRanges, defaultTimeRange } from '~/monitoring/constants';
+import { timeRanges, defaultTimeRange } from '~/vue_shared/constants';
 import { timeRangeFromUrl } from '~/monitoring/utils';
 import { formatDate } from '../utils';
 
@@ -22,6 +24,7 @@ export default {
     GlSprintf,
     GlAlert,
     GlDropdown,
+    GlDropdownDivider,
     GlDropdownItem,
     GlFormGroup,
     GlSearchBoxByClick,
@@ -89,6 +92,16 @@ export default {
     },
     shouldShowElasticStackCallout() {
       return !this.isElasticStackCalloutDismissed && this.disableAdvancedControls;
+    },
+
+    podDropdownText() {
+      if (this.pods.current) {
+        return this.pods.current;
+      } else if (this.advancedFeaturesEnabled) {
+        // "All pods" is a valid option when advanced querying is available
+        return s__('Environments|All pods');
+      }
+      return s__('Environments|No pod selected');
     },
   },
   mounted() {
@@ -178,11 +191,17 @@ export default {
         >
           <gl-dropdown
             id="pods-dropdown"
-            :text="pods.current || s__('Environments|No pods to display')"
+            :text="podDropdownText"
             :disabled="environments.isLoading"
             class="d-flex gl-h-32 js-pods-dropdown"
             toggle-class="dropdown-menu-toggle"
           >
+            <template v-if="advancedFeaturesEnabled">
+              <gl-dropdown-item key="all-pods" @click="showPodLogs(null)">
+                {{ s__('Environments|All pods') }}
+              </gl-dropdown-item>
+              <gl-dropdown-divider />
+            </template>
             <gl-dropdown-item
               v-for="podName in pods.options"
               :key="podName"

@@ -7,7 +7,7 @@ import { mockProjectDir } from '../mock_data';
 
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import { createStore } from '~/monitoring/stores';
-import { defaultTimeRange } from '~/monitoring/constants';
+import { defaultTimeRange } from '~/vue_shared/constants';
 import { propsData } from '../init_utils';
 
 jest.mock('~/flash');

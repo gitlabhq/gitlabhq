@@ -1,7 +1,7 @@
 import { formatDate } from '../utils';
 
-const mapTrace = ({ timestamp = null, message = '' }) =>
-  [timestamp ? formatDate(timestamp) : '', message].join(' | ');
+const mapTrace = ({ timestamp = null, pod = '', message = '' }) =>
+  [timestamp ? formatDate(timestamp) : '', pod, message].join(' | ');
 
 export const trace = state => state.logs.lines.map(mapTrace).join('\n');
 

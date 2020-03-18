@@ -55,22 +55,10 @@ module PodLogs
       return error(_('Cluster does not exist')) if cluster.nil?
       return error(_('Namespace is empty')) if namespace.blank?
 
+      result[:pod_name] = params['pod_name'].presence
+      result[:container_name] = params['container_name'].presence
+
       success(result)
-    end
-
-    def check_param_lengths(_result)
-      pod_name = params['pod_name'].presence
-      container_name = params['container_name'].presence
-
-      if pod_name&.length.to_i > K8S_NAME_MAX_LENGTH
-        return error(_('pod_name cannot be larger than %{max_length}'\
-          ' chars' % { max_length: K8S_NAME_MAX_LENGTH }))
-      elsif container_name&.length.to_i > K8S_NAME_MAX_LENGTH
-        return error(_('container_name cannot be larger than'\
-          ' %{max_length} chars' % { max_length: K8S_NAME_MAX_LENGTH }))
-      end
-
-      success(pod_name: pod_name, container_name: container_name)
     end
 
     def get_raw_pods(result)
@@ -81,40 +69,6 @@ module PodLogs
 
     def get_pod_names(result)
       result[:pods] = result[:raw_pods].map(&:metadata).map(&:name)
-
-      success(result)
-    end
-
-    def check_pod_name(result)
-      # If pod_name is not received as parameter, get the pod logs of the first
-      # pod of this namespace.
-      result[:pod_name] ||= result[:pods].first
-
-      unless result[:pod_name]
-        return error(_('No pods available'))
-      end
-
-      unless result[:pods].include?(result[:pod_name])
-        return error(_('Pod does not exist'))
-      end
-
-      success(result)
-    end
-
-    def check_container_name(result)
-      pod_details = result[:raw_pods].first { |p| p.metadata.name == result[:pod_name] }
-      containers = pod_details.spec.containers.map(&:name)
-
-      # select first container if not specified
-      result[:container_name] ||= containers.first
-
-      unless result[:container_name]
-        return error(_('No containers available'))
-      end
-
-      unless containers.include?(result[:container_name])
-        return error(_('Container does not exist'))
-      end
 
       success(result)
     end

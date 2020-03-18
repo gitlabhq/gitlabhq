@@ -78,6 +78,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
         label-size="sm"
       >
         <date-time-picker-stub
+          customenabled="true"
           options="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
           value="[object Object]"
         />

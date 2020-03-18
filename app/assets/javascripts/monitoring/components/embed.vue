@@ -3,7 +3,8 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { timeRangeFromUrl, removeTimeRangeParams } from '../utils';
-import { sidebarAnimationDuration, defaultTimeRange } from '../constants';
+import { sidebarAnimationDuration } from '../constants';
+import { defaultTimeRange } from '~/vue_shared/constants';
 
 let sidebarMutationObserver;
 

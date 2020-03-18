@@ -300,9 +300,10 @@ describe('EnvironmentLogs', () => {
       const items = findPodsDropdown().findAll(GlDropdownItem);
 
       expect(findPodsDropdown().props('text')).toBe(mockPodName);
-      expect(items.length).toBe(mockPods.length);
+      expect(items.length).toBe(mockPods.length + 1);
+      expect(items.at(0).text()).toBe('All pods');
       mockPods.forEach((pod, i) => {
-        const item = items.at(i);
+        const item = items.at(i + 1);
         expect(item.text()).toBe(pod);
       });
     });
@@ -345,7 +346,7 @@ describe('EnvironmentLogs', () => {
 
         expect(dispatch).not.toHaveBeenCalledWith(`${module}/showPodLogs`, expect.anything());
 
-        items.at(index).vm.$emit('click');
+        items.at(index + 1).vm.$emit('click');
 
         expect(dispatch).toHaveBeenCalledWith(`${module}/showPodLogs`, mockPods[index]);
       });

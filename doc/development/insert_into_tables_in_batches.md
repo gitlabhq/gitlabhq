@@ -32,17 +32,39 @@ The `BulkInsertSafe` concern has two functions:
 
 - It performs checks against your model class to ensure that it does not use ActiveRecord
   APIs that are not safe to use with respect to bulk insertions (more on that below).
-- It adds a new class method `bulk_insert!`, which you can use to insert many records at once.
+- It adds new class methods `bulk_insert!` and `bulk_upsert!`, which you can use to insert many records at once.
 
-## Insert records via `bulk_insert!`
+## Insert records with `bulk_insert!` and `bulk_upsert!`
 
-If the target class passes the checks performed by `BulkInsertSafe`, you can proceed to use
-the `bulk_insert!` class method as follows:
+If the target class passes the checks performed by `BulkInsertSafe`, you can insert an array of
+ActiveRecord model objects as follows:
 
 ```ruby
 records = [MyModel.new, ...]
 
 MyModel.bulk_insert!(records)
+```
+
+Note that calls to `bulk_insert!` will always attempt to insert _new records_. If instead
+you would like to replace existing records with new values, while still inserting those
+that do not already exist, then you can use `bulk_upsert!`:
+
+```ruby
+records = [MyModel.new, existing_model, ...]
+
+MyModel.bulk_upsert!(records, unique_by: [:name])
+```
+
+In this example, `unique_by` specifies the columns by which records are considered to be
+unique and as such will be updated if they existed prior to insertion. For example, if
+`existing_model` has a `name` attribute, and if a record with the same `name` value already
+exists, its fields will be updated with those of `existing_model`.
+
+The `unique_by` parameter can also be passed as a `Symbol`, in which case it specifies
+a database index by which a column is considered unique:
+
+```ruby
+MyModel.bulk_insert!(records, unique_by: :index_on_name)
 ```
 
 ### Record validation
@@ -73,6 +95,23 @@ Assuming the same number of 950 records, this would result in 10 batches being w
 Since this will also affect the number of `INSERT`s that occur, make sure you measure the
 performance impact this might have on your code. There is a trade-off between the number of
 `INSERT` statements the database has to process and the size and cost of each `INSERT`.
+
+### Handling duplicate records
+
+NOTE: **Note:**
+This parameter applies only to `bulk_insert!`. If you intend to update existing
+records, use `bulk_upsert!` instead.
+
+It may happen that some records you are trying to insert already exist, which would result in
+primary key conflicts. There are two ways to address this problem: failing fast by raising an
+error or skipping duplicate records. The default behavior of `bulk_insert!` is to fail fast
+and raise an `ActiveRecord::RecordNotUnique` error.
+
+If this is undesirable, you can instead skip duplicate records with the `skip_duplicates` flag:
+
+```ruby
+MyModel.bulk_insert!(records, skip_duplicates: true)
+```
 
 ### Requirements for safe bulk insertions
 
@@ -145,11 +184,12 @@ simply be treated as if you had invoked `save` from outside the block.
 
 There are a few restrictions to how these APIs can be used:
 
-- Bulk inserts only work for new records; `UPDATE`s or "upserts" are not supported yet.
 - `ON CONFLICT` behavior cannot currently be configured; an error will be raised on primary key conflicts.
 - `BulkInsertableAssociations` furthermore has the following restrictions:
   - only compatible with `has_many` relations.
   - does not support `has_many through: ...` relations.
+- Writing [`jsonb`](https://www.postgresql.org/docs/current/datatype-json.html) content is
+[not currently supported](https://gitlab.com/gitlab-org/gitlab/-/issues/210560).
 
 Moreover, input data should either be limited to around 1000 records at most,
 or already batched prior to calling bulk insert. The `INSERT` statement will run in a single

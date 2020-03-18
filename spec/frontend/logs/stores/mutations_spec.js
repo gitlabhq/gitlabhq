@@ -223,17 +223,6 @@ describe('Logs Store Mutations', () => {
     });
   });
 
-  describe('REQUEST_PODS_DATA', () => {
-    it('receives pods data', () => {
-      mutations[types.REQUEST_PODS_DATA](state);
-
-      expect(state.pods).toEqual(
-        expect.objectContaining({
-          options: [],
-        }),
-      );
-    });
-  });
   describe('RECEIVE_PODS_DATA_SUCCESS', () => {
     it('receives pods data success', () => {
       mutations[types.RECEIVE_PODS_DATA_SUCCESS](state, mockPods);

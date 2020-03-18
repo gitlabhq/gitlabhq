@@ -13,7 +13,7 @@ import {
   fetchMoreLogsPrepend,
 } from '~/logs/stores/actions';
 
-import { defaultTimeRange } from '~/monitoring/constants';
+import { defaultTimeRange } from '~/vue_shared/constants';
 
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
@@ -172,14 +172,13 @@ describe('Logs Store actions', () => {
     describe('fetchLogs', () => {
       beforeEach(() => {
         expectedMutations = [
-          { type: types.REQUEST_PODS_DATA },
           { type: types.REQUEST_LOGS_DATA },
-          { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
-          { type: types.RECEIVE_PODS_DATA_SUCCESS, payload: mockPods },
           {
             type: types.RECEIVE_LOGS_DATA_SUCCESS,
             payload: { logs: mockLogsResult, cursor: mockNextCursor },
           },
+          { type: types.SET_CURRENT_POD_NAME, payload: mockPodName },
+          { type: types.RECEIVE_PODS_DATA_SUCCESS, payload: mockPods },
         ];
 
         expectedActions = [];
@@ -364,7 +363,6 @@ describe('Logs Store actions', () => {
         null,
         state,
         [
-          { type: types.REQUEST_PODS_DATA },
           { type: types.REQUEST_LOGS_DATA },
           { type: types.RECEIVE_PODS_DATA_ERROR },
           { type: types.RECEIVE_LOGS_DATA_ERROR },

@@ -82,7 +82,6 @@ export const setTimeRange = ({ dispatch, commit }, timeRange) => {
 
 export const showEnvironment = ({ dispatch, commit }, environmentName) => {
   commit(types.SET_PROJECT_ENVIRONMENT, environmentName);
-  commit(types.SET_CURRENT_POD_NAME, null);
   dispatch('fetchLogs');
 };
 
@@ -107,16 +106,16 @@ export const fetchEnvironments = ({ commit, dispatch }, environmentsPath) => {
 };
 
 export const fetchLogs = ({ commit, state }) => {
-  commit(types.REQUEST_PODS_DATA);
   commit(types.REQUEST_LOGS_DATA);
 
   return requestLogsUntilData(state)
     .then(({ data }) => {
       const { pod_name, pods, logs, cursor } = data;
+      commit(types.RECEIVE_LOGS_DATA_SUCCESS, { logs, cursor });
+
       commit(types.SET_CURRENT_POD_NAME, pod_name);
 
       commit(types.RECEIVE_PODS_DATA_SUCCESS, pods);
-      commit(types.RECEIVE_LOGS_DATA_SUCCESS, { logs, cursor });
     })
     .catch(() => {
       commit(types.RECEIVE_PODS_DATA_ERROR);

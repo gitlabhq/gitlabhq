@@ -6001,6 +6001,76 @@ type Project {
   requestAccessEnabled: Boolean
 
   """
+  Find a single requirement. Available only when feature flag `requirements_management` is enabled.
+  """
+  requirement(
+    """
+    IID of the requirement, e.g., "1"
+    """
+    iid: ID
+
+    """
+    List of IIDs of requirements, e.g., [1, 2]
+    """
+    iids: [ID!]
+
+    """
+    List requirements by sort order
+    """
+    sort: Sort
+
+    """
+    Filter requirements by state
+    """
+    state: RequirementState
+  ): Requirement
+
+  """
+  Find requirements. Available only when feature flag `requirements_management` is enabled.
+  """
+  requirements(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    IID of the requirement, e.g., "1"
+    """
+    iid: ID
+
+    """
+    List of IIDs of requirements, e.g., [1, 2]
+    """
+    iids: [ID!]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    List requirements by sort order
+    """
+    sort: Sort
+
+    """
+    Filter requirements by state
+    """
+    state: RequirementState
+  ): RequirementConnection
+
+  """
   Detailed version of a Sentry error on the project
   """
   sentryDetailedError(
@@ -6662,6 +6732,41 @@ type Requirement {
   Permissions for the current user on the resource
   """
   userPermissions: RequirementPermissions!
+}
+
+"""
+The connection type for Requirement.
+"""
+type RequirementConnection {
+  """
+  A list of edges.
+  """
+  edges: [RequirementEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Requirement]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type RequirementEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Requirement
 }
 
 """
@@ -7461,6 +7566,31 @@ type SnippetPermissions {
   Indicates the user can perform `update_snippet` on this resource
   """
   updateSnippet: Boolean!
+}
+
+"""
+Common sort values
+"""
+enum Sort {
+  """
+  Created at ascending order
+  """
+  created_asc
+
+  """
+  Created at descending order
+  """
+  created_desc
+
+  """
+  Updated at ascending order
+  """
+  updated_asc
+
+  """
+  Updated at descending order
+  """
+  updated_desc
 }
 
 type Submodule implements Entry {

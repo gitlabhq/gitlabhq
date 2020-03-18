@@ -33,7 +33,8 @@
   ],
   "_source": [
     "@timestamp",
-    "message"
+    "message",
+    "kubernetes.pod.name"
   ],
   "size": 500
 }

@@ -19,7 +19,12 @@
         "_score": null,
         "_source": {
           "message": "10.8.2.1 - - [25/Oct/2019:08:03:22 UTC] \"GET / HTTP/1.1\" 200 13",
-          "@timestamp": "2019-12-13T14:35:34.034Z"
+          "@timestamp": "2019-12-13T14:35:34.034Z",
+          "kubernetes": {
+            "pod": {
+              "name": "production-6866bc8974-m4sk4"
+            }
+          }
         },
         "sort": [
           9999998,
@@ -33,7 +38,12 @@
         "_score": null,
         "_source": {
           "message": "10.8.2.1 - - [27/Oct/2019:23:49:54 UTC] \"GET / HTTP/1.1\" 200 13",
-          "@timestamp": "2019-12-13T14:35:35.034Z"
+          "@timestamp": "2019-12-13T14:35:35.034Z",
+          "kubernetes": {
+            "pod": {
+              "name": "production-6866bc8974-m4sk4"
+            }
+          }
         },
         "sort": [
           9999949,
@@ -47,7 +57,12 @@
         "_score": null,
         "_source": {
           "message": "10.8.2.1 - - [04/Nov/2019:23:09:24 UTC] \"GET / HTTP/1.1\" 200 13",
-          "@timestamp": "2019-12-13T14:35:36.034Z"
+          "@timestamp": "2019-12-13T14:35:36.034Z",
+          "kubernetes": {
+            "pod": {
+              "name": "production-6866bc8974-m4sk4"
+            }
+          }
         },
         "sort": [
           9999944,
@@ -61,7 +76,12 @@
         "_score": null,
         "_source": {
           "message": "- -\u003e /",
-          "@timestamp": "2019-12-13T14:35:37.034Z"
+          "@timestamp": "2019-12-13T14:35:37.034Z",
+          "kubernetes": {
+            "pod": {
+              "name": "production-6866bc8974-m4sk4"
+            }
+          }
         },
         "sort": [
           9999934,

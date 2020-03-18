@@ -1,6 +1,6 @@
 apply:
   stage: deploy
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.11.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.12.0"
   environment:
     name: production
   variables:
@@ -16,6 +16,7 @@ apply:
     PROMETHEUS_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/prometheus/values.yaml
     ELASTIC_STACK_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/elastic-stack/values.yaml
     VAULT_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/vault/values.yaml
+    CROSSPLANE_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/crossplane/values.yaml
   script:
     - gitlab-managed-apps /usr/local/share/gitlab-managed-apps/helmfile.yaml
   only:

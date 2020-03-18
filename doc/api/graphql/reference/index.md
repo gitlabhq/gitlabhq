@@ -898,6 +898,7 @@ Information about pagination in a connection.
 | `removeSourceBranchAfterMerge` | Boolean | Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project |
 | `repository` | Repository | Git repository of the project |
 | `requestAccessEnabled` | Boolean | Indicates if users can request member access to the project |
+| `requirement` | Requirement | Find a single requirement. Available only when feature flag `requirements_management` is enabled. |
 | `sentryDetailedError` | SentryDetailedError | Detailed version of a Sentry error on the project |
 | `sentryErrors` | SentryErrorCollection | Paginated collection of Sentry errors on the project |
 | `serviceDeskAddress` | String | E-mail address of the service desk. |

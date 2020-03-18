@@ -43,6 +43,11 @@ export default {
       required: false,
       default: () => defaultTimeRanges,
     },
+    customEnabled: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -166,6 +171,7 @@ export default {
     >
       <div class="d-flex justify-content-between gl-p-2">
         <gl-form-group
+          v-if="customEnabled"
           :label="__('Custom range')"
           label-for="custom-from-time"
           label-class="gl-pb-1"

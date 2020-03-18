@@ -12,7 +12,7 @@ module Gitlab
         @client = client
       end
 
-      def pod_logs(namespace, pod_name, container_name: nil, search: nil, start_time: nil, end_time: nil, cursor: nil)
+      def pod_logs(namespace, pod_name: nil, container_name: nil, search: nil, start_time: nil, end_time: nil, cursor: nil)
         query = { bool: { must: [] } }.tap do |q|
           filter_pod_name(q, pod_name)
           filter_namespace(q, namespace)
@@ -38,7 +38,7 @@ module Gitlab
             { "offset": { order: :desc } }
           ],
           # only return these fields in the response
-          _source: ["@timestamp", "message"],
+          _source: ["@timestamp", "message", "kubernetes.pod.name"],
           # fixed limit for now, we should support paginated queries
           size: ::Gitlab::Elasticsearch::Logs::LOGS_LIMIT
         }
@@ -51,6 +51,9 @@ module Gitlab
       end
 
       def filter_pod_name(query, pod_name)
+        # We can filter by "all pods" with a null pod_name
+        return if pod_name.nil?
+
         query[:bool][:must] << {
           match_phrase: {
             "kubernetes.pod.name" => {
@@ -113,7 +116,8 @@ module Gitlab
         results = results.map do |hit|
           {
             timestamp: hit["_source"]["@timestamp"],
-            message: hit["_source"]["message"]
+            message: hit["_source"]["message"],
+            pod: hit["_source"]["kubernetes"]["pod"]["name"]
           }
         end
 

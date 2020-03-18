@@ -3,11 +3,8 @@
 module PodLogs
   class ElasticsearchService < PodLogs::BaseService
     steps :check_arguments,
-          :check_param_lengths,
           :get_raw_pods,
           :get_pod_names,
-          :check_pod_name,
-          :check_container_name,
           :check_times,
           :check_search,
           :check_cursor,
@@ -53,7 +50,7 @@ module PodLogs
 
       response = ::Gitlab::Elasticsearch::Logs.new(client).pod_logs(
         namespace,
-        result[:pod_name],
+        pod_name: result[:pod_name],
         container_name: result[:container_name],
         search: result[:search],
         start_time: result[:start],

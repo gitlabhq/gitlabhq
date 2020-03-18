@@ -8,7 +8,6 @@ module PodLogs
     EncodingHelperError = Class.new(StandardError)
 
     steps :check_arguments,
-          :check_param_lengths,
           :get_raw_pods,
           :get_pod_names,
           :check_pod_name,
@@ -21,6 +20,50 @@ module PodLogs
     self.reactive_cache_worker_finder = ->(id, _cache_key, namespace, params) { new(::Clusters::Cluster.find(id), namespace, params: params) }
 
     private
+
+    def check_pod_name(result)
+      # If pod_name is not received as parameter, get the pod logs of the first
+      # pod of this namespace.
+      result[:pod_name] ||= result[:pods].first
+
+      unless result[:pod_name]
+        return error(_('No pods available'))
+      end
+
+      unless result[:pod_name].length.to_i <= K8S_NAME_MAX_LENGTH
+        return error(_('pod_name cannot be larger than %{max_length}'\
+          ' chars' % { max_length: K8S_NAME_MAX_LENGTH }))
+      end
+
+      unless result[:pods].include?(result[:pod_name])
+        return error(_('Pod does not exist'))
+      end
+
+      success(result)
+    end
+
+    def check_container_name(result)
+      pod_details = result[:raw_pods].first { |p| p.metadata.name == result[:pod_name] }
+      containers = pod_details.spec.containers.map(&:name)
+
+      # select first container if not specified
+      result[:container_name] ||= containers.first
+
+      unless result[:container_name]
+        return error(_('No containers available'))
+      end
+
+      unless result[:container_name].length.to_i <= K8S_NAME_MAX_LENGTH
+        return error(_('container_name cannot be larger than'\
+          ' %{max_length} chars' % { max_length: K8S_NAME_MAX_LENGTH }))
+      end
+
+      unless containers.include?(result[:container_name])
+        return error(_('Container does not exist'))
+      end
+
+      success(result)
+    end
 
     def pod_logs(result)
       result[:logs] = cluster.kubeclient.get_pod_log(
@@ -62,7 +105,8 @@ module PodLogs
         values = line.split(' ', 2)
         {
           timestamp: values[0],
-          message: values[1]
+          message: values[1],
+          pod: result[:pod_name]
         }
       end
 

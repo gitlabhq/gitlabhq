@@ -1,4 +1,4 @@
-import { timeRanges, defaultTimeRange } from '~/monitoring/constants';
+import { timeRanges, defaultTimeRange } from '~/vue_shared/constants';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 
 export default () => ({

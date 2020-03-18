@@ -1,8 +1,9 @@
 import * as types from './mutation_types';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 
-const mapLine = ({ timestamp, message }) => ({
+const mapLine = ({ timestamp, pod, message }) => ({
   timestamp,
+  pod,
   message,
 });
 
@@ -21,6 +22,10 @@ export default {
   // Environments Data
   [types.SET_PROJECT_ENVIRONMENT](state, environmentName) {
     state.environments.current = environmentName;
+
+    // Clear current pod options
+    state.pods.current = null;
+    state.pods.options = [];
   },
   [types.REQUEST_ENVIRONMENTS_DATA](state) {
     state.environments.options = [];
@@ -80,9 +85,6 @@ export default {
   // Pods data
   [types.SET_CURRENT_POD_NAME](state, podName) {
     state.pods.current = podName;
-  },
-  [types.REQUEST_PODS_DATA](state) {
-    state.pods.options = [];
   },
   [types.RECEIVE_PODS_DATA_SUCCESS](state, podOptions) {
     state.pods.options = podOptions;

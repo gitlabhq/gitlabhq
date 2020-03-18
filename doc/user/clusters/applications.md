@@ -548,6 +548,7 @@ Supported applications:
 - [Sentry](#install-sentry-using-gitlab-ci)
 - [GitLab Runner](#install-gitlab-runner-using-gitlab-ci)
 - [Cilium](#install-cilium-using-gitlab-ci)
+- [Vault](#install-vault-using-gitlab-ci)
 - [JupyterHub](#install-jupyterhub-using-gitlab-ci)
 - [Elastic Stack](#install-elastic-stack-using-gitlab-ci)
 - [Crossplane](#install-crossplane-using-gitlab-ci)
@@ -812,6 +813,95 @@ agent:
   monitor:
     enabled: false
 ```
+
+### Install Vault using GitLab CI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9982) in GitLab 12.9.
+
+[Hashicorp Vault](https://vaultproject.io/) is a secrets management solution which
+can be used to safely manage and store passwords, credentials, certificates and more. A Vault
+installation could be leveraged to provide a single secure data store for credentials
+used in your applications, GitLab CI jobs, and more. It could also serve as a way of
+providing SSL/TLS certificates to systems and deployments in your infrastructure. Leveraging
+Vault as a single source for all these credentials allows greater security by having
+a single source of access, control, and auditability around all your sensitive
+credentials and certificates.
+
+To install Vault, enable it in the `.gitlab/managed-apps/config.yaml` file:
+
+```yaml
+vault:
+  installed: true
+```
+
+By default you will get a basic Vault setup with no high availability nor any scalable
+storage backend. This is enough for simple testing and small scale deployments, though has limits
+to how much it can scale, and as it is a single instance deployment, you will experience downtime
+when upgrading the Vault application.
+
+To optimally use Vault in a production environment, it's ideal to have a good understanding
+of the internals of Vault and how to configure it. This can be done by reading the
+[the Vault documentation](https://www.vaultproject.io/docs/internals/) as well as
+the Vault Helm chart [values.yaml file](https://github.com/hashicorp/vault-helm/blob/v0.3.3/values.yaml).
+
+At a minimum you will likely set up:
+
+- A [seal](https://www.vaultproject.io/docs/configuration/seal/) for extra encryption
+  of the master key.
+- A [storage backend](https://www.vaultproject.io/docs/configuration/storage/) that is
+  suitable for environment and storage security requirements.
+- [HA Mode](https://www.vaultproject.io/docs/concepts/ha/).
+- [The Vault UI](https://www.vaultproject.io/docs/configuration/ui/).
+
+The following is an example values file (`.gitlab/managed-apps/vault/values.yaml`)
+that configures Google Key Management Service for auto-unseal, using a Google Cloud Storage backend, enabling
+the Vault UI, and enabling HA with 3 pod replicas. The `storage` and `seal` stanzas
+below are examples and should be replaced with settings specific to your environment.
+
+```yaml
+# Enable the Vault WebUI
+ui:
+  enabled: true
+server:
+  # Disable the built in data storage volume as it's not safe for Hight Availablity mode
+  dataStorage:
+    enabled: false
+  # Enable High Availability Mode
+  ha:
+    enabled: true
+    # Configure Vault to listen on port 8200 for normal traffic and port 8201 for inter-cluster traffic
+    config: |
+      listener "tcp" {
+        tls_disable = 1
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+      }
+      # Configure Vault to store its data in a GCS Bucket backend
+      storage "gcs" {
+        path = "gcs://my-vault-storage/vault-bucket"
+        ha_enabled = "true"
+      }
+      # Configure Vault to automatically unseal storage using a GKMS key
+      seal "gcpckms" {
+         project     = "vault-helm-dev-246514"
+         region      = "global"
+         key_ring    = "vault-helm-unseal-kr"
+         crypto_key  = "vault-helm-unseal-key"
+      }
+```
+
+Once you have successfully installed Vault, you will need to [initialize the Vault](https://learn.hashicorp.com/vault/getting-started/deploy#initializing-the-vault)
+and obtain the initial root token. You will need access to your Kubernetes cluster that Vault has been deployed into in order to do this.
+To initialise the Vault, get a shell to one of the Vault pods running inside Kubernetes (typically this is done by using the `kubectl` command line tool).
+Once you have a shell into the pod, run the `vault operator init` command:
+
+```shell
+kubectl -n gitlab-managed-apps exec -it vault-0 sh
+/ $ vault operator init
+```
+
+This should give you your unseal keys and initial root token. Make sure to note these down
+and keep these safe as you will need them to unseal the Vault throughout its lifecycle.
 
 ### Install JupyterHub using GitLab CI
 

@@ -31,7 +31,8 @@ import DashboardsDropdown from './dashboards_dropdown.vue';
 
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { getAddMetricTrackingOptions, timeRangeToUrl, timeRangeFromUrl } from '../utils';
-import { defaultTimeRange, timeRanges, metricStates } from '../constants';
+import { metricStates } from '../constants';
+import { defaultTimeRange, timeRanges } from '~/vue_shared/constants';
 
 export default {
   components: {
