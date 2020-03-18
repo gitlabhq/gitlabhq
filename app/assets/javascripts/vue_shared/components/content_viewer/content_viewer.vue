@@ -8,6 +8,7 @@ export default {
     content: {
       type: String,
       default: '',
+      required: false,
     },
     path: {
       type: String,

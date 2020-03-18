@@ -170,7 +170,8 @@ A single design
 | `filename` | String! | The filename of the design |
 | `fullPath` | String! | The full path to the design file |
 | `id` | ID! | The ID of this design |
-| `image` | String! | The URL of the image |
+| `image` | String! | The URL of the full-sized image |
+| `imageV432x230` | String | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated |
 | `issue` | Issue! | The issue the design belongs to |
 | `notesCount` | Int! | The total count of user-created notes for this design |
 | `project` | Project! | The project the design belongs to |
@@ -187,7 +188,8 @@ A design pinned to a specific version. The image field reflects the design as of
 | `filename` | String! | The filename of the design |
 | `fullPath` | String! | The full path to the design file |
 | `id` | ID! | The ID of this design |
-| `image` | String! | The URL of the image |
+| `image` | String! | The URL of the full-sized image |
+| `imageV432x230` | String | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated |
 | `issue` | Issue! | The issue the design belongs to |
 | `notesCount` | Int! | The total count of user-created notes for this design |
 | `project` | Project! | The project the design belongs to |

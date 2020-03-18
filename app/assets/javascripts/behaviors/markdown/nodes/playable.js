@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-/* eslint-disable @gitlab/i18n/no-non-i18n-strings */
+/* eslint-disable @gitlab/require-i18n-strings */
 
 import { Node } from 'tiptap';
 import { defaultMarkdownSerializer } from 'prosemirror-markdown';

@@ -43,6 +43,7 @@ export default {
     throttleDuration: {
       type: Number,
       default: 200,
+      required: false,
     },
     boardBaseUrl: {
       type: String,

@@ -4,7 +4,7 @@ import UncollapsedAssigneeList from '../assignees/uncollapsed_assignee_list.vue'
 
 export default {
   // name: 'Assignees' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives
-  // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+  // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'Assignees',
   components: {
     CollapsedAssigneeList,

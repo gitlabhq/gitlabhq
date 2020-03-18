@@ -1,7 +1,8 @@
-mutation ($projectPath: ID!, $iid: String!, $healthStatus: HealthStatus) {
-  updateIssue(input: { projectPath: $projectPath, iid: $iid, healthStatus: $healthStatus}) {
+mutation($projectPath: ID!, $iid: String!, $healthStatus: HealthStatus) {
+  updateIssue(input: { projectPath: $projectPath, iid: $iid, healthStatus: $healthStatus }) {
     issue {
       healthStatus
     }
+    errors
   }
 }

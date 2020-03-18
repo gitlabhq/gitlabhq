@@ -17,7 +17,7 @@ static analysis offenses before committing locally.
 In your GitLab source directory run:
 
 ```shell
-cd tooling/overcommit && make && cd -
+make -C tooling/overcommit
 ```
 
 Then before a commit is created, Overcommit will automatically check for

@@ -49,7 +49,7 @@ window.$ = jQuery;
 // Add nonce to jQuery script handler
 jQuery.ajaxSetup({
   converters: {
-    // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings, func-names
+    // eslint-disable-next-line @gitlab/require-i18n-strings, func-names
     'text script': function(text) {
       jQuery.globalEval(text, { nonce: getCspNonceValue() });
       return text;

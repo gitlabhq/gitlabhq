@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 # We don't have auto-loading here
-require_relative '../lib/gitlab'
 require_relative '../lib/gitlab/popen'
 require_relative '../lib/gitlab/popen/runner'
 

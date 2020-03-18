@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
+/* eslint-disable @gitlab/vue-require-i18n-strings */
 import { mapActions, mapState, mapGetters } from 'vuex';
 import IdeStatusList from 'ee_else_ce/ide/components/ide_status_list.vue';
 import IdeStatusMr from './ide_status_mr.vue';

@@ -42,7 +42,7 @@ import { setFaviconOverlay } from '../lib/utils/common_utils';
 export default {
   el: '#js-vue-mr-widget',
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
-  // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+  // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'MRWidget',
   components: {
     Loading,

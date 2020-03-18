@@ -15,8 +15,8 @@
 #
 # Uncomment the following lines to make the configuration take effect.
 
-# Make sure to run `cd tooling/overcommit && make && cd -`
-gemfile: 'tooling/overcommit/gems.rb'
+# Make sure to run `make -C tooling/overcommit`
+gemfile: 'tooling/overcommit/Gemfile'
 
 PostCheckout:
   BundleInstall:

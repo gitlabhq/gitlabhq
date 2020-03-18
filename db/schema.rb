@@ -3977,6 +3977,7 @@ ActiveRecord::Schema.define(version: 2020_03_13_123934) do
     t.boolean "instance", default: false, null: false
     t.index ["project_id", "type"], name: "index_services_on_project_id_and_type"
     t.index ["template"], name: "index_services_on_template"
+    t.index ["type", "id", "template"], name: "index_services_on_type_and_id_and_template_when_active", where: "(active = true)"
     t.index ["type", "instance"], name: "index_services_on_type_and_instance", unique: true, where: "(instance IS TRUE)"
     t.index ["type", "template"], name: "index_services_on_type_and_template", unique: true, where: "(template IS TRUE)"
     t.index ["type"], name: "index_services_on_type"

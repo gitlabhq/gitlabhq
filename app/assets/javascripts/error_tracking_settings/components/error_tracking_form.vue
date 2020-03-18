@@ -24,7 +24,7 @@ export default {
       <label class="label-bold" for="error-tracking-api-host">{{ __('Sentry API URL') }}</label>
       <div class="row">
         <div class="col-8 col-md-9 gl-pr-0">
-          <!-- eslint-disable @gitlab/vue-i18n/no-bare-attribute-strings -->
+          <!-- eslint-disable @gitlab/vue-require-i18n-attribute-strings -->
           <gl-form-input
             id="error-tracking-api-host"
             :value="apiHost"
@@ -39,7 +39,7 @@ export default {
               )
             }}
           </p>
-          <!-- eslint-enable @gitlab/vue-i18n/no-bare-attribute-strings -->
+          <!-- eslint-enable @gitlab/vue-require-i18n-attribute-strings -->
         </div>
       </div>
     </div>

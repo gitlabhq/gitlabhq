@@ -14,15 +14,15 @@ export default {
   computed: {
     ...mapState(['config']),
     dockerBuildCommand() {
-      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+      // eslint-disable-next-line @gitlab/require-i18n-strings
       return `docker build -t ${this.config.repositoryUrl} .`;
     },
     dockerPushCommand() {
-      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+      // eslint-disable-next-line @gitlab/require-i18n-strings
       return `docker push ${this.config.repositoryUrl}`;
     },
     dockerLoginCommand() {
-      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+      // eslint-disable-next-line @gitlab/require-i18n-strings
       return `docker login ${this.config.registryHostUrlWithPort}`;
     },
   },

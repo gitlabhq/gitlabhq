@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
+/* eslint-disable @gitlab/vue-require-i18n-strings */
 import { __ } from '~/locale';
 import ModalFilters from './filters';
 import ModalTabs from './tabs.vue';

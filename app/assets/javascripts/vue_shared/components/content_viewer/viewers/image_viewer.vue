@@ -16,6 +16,7 @@ export default {
     renderInfo: {
       type: Boolean,
       default: true,
+      required: false,
     },
     innerCssClasses: {
       type: [Array, Object, String],

@@ -24,6 +24,7 @@ export default {
     isLastDeployment: {
       type: Boolean,
       default: true,
+      required: false,
     },
 
     environment: {

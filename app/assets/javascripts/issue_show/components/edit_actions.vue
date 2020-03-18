@@ -1,5 +1,5 @@
 <script>
-/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
+/* eslint-disable @gitlab/vue-require-i18n-strings */
 import { __, sprintf } from '~/locale';
 import updateMixin from '../mixins/update';
 import eventHub from '../event_hub';

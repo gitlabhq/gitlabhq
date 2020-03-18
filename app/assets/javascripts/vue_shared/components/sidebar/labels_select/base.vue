@@ -77,12 +77,12 @@ export default {
     },
     enableScopedLabels: {
       type: Boolean,
-      require: false,
+      required: false,
       default: false,
     },
     scopedLabelsDocumentationLink: {
       type: String,
-      require: false,
+      required: false,
       default: '#',
     },
   },

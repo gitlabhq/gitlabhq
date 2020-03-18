@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'webrick'
+require 'prometheus/client/rack/exporter'
+
 module Gitlab
   module Metrics
     module Exporter

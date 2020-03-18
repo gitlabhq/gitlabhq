@@ -22,6 +22,7 @@ export default {
     ingressDnsHelpPath: {
       type: String,
       default: '',
+      required: false,
     },
   },
   computed: {

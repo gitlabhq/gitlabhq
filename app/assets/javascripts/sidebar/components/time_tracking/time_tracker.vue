@@ -40,6 +40,7 @@ export default {
     limitToHours: {
       type: Boolean,
       default: false,
+      required: false,
     },
     rootPath: {
       type: String,

@@ -184,6 +184,7 @@ module Types
           Types::BoardType.connection_type,
           null: true,
           description: 'Boards of the project',
+          max_page_size: 2000,
           resolver: Resolvers::BoardsResolver
 
     field :board,

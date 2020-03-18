@@ -10,7 +10,7 @@ const durationToMillis = duration => {
   if (Object.entries(duration).length === 1 && Number.isFinite(duration.seconds)) {
     return secondsToMilliseconds(duration.seconds);
   }
-  // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+  // eslint-disable-next-line @gitlab/require-i18n-strings
   throw new Error('Invalid duration: only `seconds` is supported');
 };
 
@@ -131,7 +131,7 @@ const convertOpenToFixed = ({ anchor, direction }) => {
  * Handles invalid date ranges
  */
 const handleInvalidRange = () => {
-  // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+  // eslint-disable-next-line @gitlab/require-i18n-strings
   throw new Error('The input range does not have the right format.');
 };
 

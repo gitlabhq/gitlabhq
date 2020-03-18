@@ -1,4 +1,4 @@
-/* eslint-disable func-names, consistent-return, no-return-assign, no-else-return, @gitlab/i18n/no-non-i18n-strings */
+/* eslint-disable func-names, consistent-return, no-return-assign, no-else-return, @gitlab/require-i18n-strings */
 
 import $ from 'jquery';
 import RefSelectDropdown from './ref_select_dropdown';

@@ -28,7 +28,7 @@ export const graphDataValidatorForValues = (isValues, graphData) => {
   );
 };
 
-/* eslint-disable @gitlab/i18n/no-non-i18n-strings */
+/* eslint-disable @gitlab/require-i18n-strings */
 /**
  * Checks that element that triggered event is located on cluster health check dashboard
  * @param {HTMLElement}  element to check against

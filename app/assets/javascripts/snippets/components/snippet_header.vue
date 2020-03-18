@@ -137,7 +137,10 @@ export default {
           mutation: DeleteSnippetMutation,
           variables: { id: this.snippet.id },
         })
-        .then(() => {
+        .then(({ data }) => {
+          if (data?.destroySnippet?.errors) {
+            throw new Error(data?.destroySnippet?.errors[0]);
+          }
           this.isDeleting = false;
           this.errorMessage = undefined;
           this.closeDeleteModal();

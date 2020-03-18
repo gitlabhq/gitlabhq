@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'gitlab/graphql/docs/renderer'
 
 describe Gitlab::Graphql::Docs::Renderer do
   describe '#contents' do

@@ -766,13 +766,11 @@
   resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.5.tgz#5f6bfe6baaef360daa9b038fa78798d7a6a916b4"
   integrity sha512-282Dn3SPVsUHVDhMsXgfnv+Rzog0uxecjttxGRQvxh25es1+xvkGQFsvJfkSKJ3X1kHVkSjKf+Tt5Rra+Jhp9g==
 
-"@gitlab/eslint-config@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-config/-/eslint-config-3.0.0.tgz#9a93662ffefb7792d5d0d96d876c316f2c393315"
-  integrity sha512-wlMpcl4q4hTnvmdPB9yuD+ZIi39P2ZCSfp3LQYSvbSXCF3POfyjRRe4tK7cerKrawjmJmII8YvNnIg2Ip9eKnQ==
+"@gitlab/eslint-plugin@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-2.0.0.tgz#4eedd16cf95cf82dc359c1b220d4f5a08361df9c"
+  integrity sha512-ctmsGnCuokhfh/5goLdz3NdBIUpwTMkx/17QxxutxkWW7yOGMPIY8Na+WhjnUSdst8Wjwzexc+snbh5NMs8H/A==
   dependencies:
-    "@gitlab/eslint-plugin-i18n" "^1.1.0"
-    "@gitlab/eslint-plugin-vue-i18n" "^2.0.0"
     babel-eslint "^10.0.3"
     eslint-config-airbnb-base "^14.0.0"
     eslint-config-prettier "^6.10.0"
@@ -780,20 +778,7 @@
     eslint-plugin-filenames "^1.3.2"
     eslint-plugin-import "^2.20.1"
     eslint-plugin-promise "^4.2.1"
-    eslint-plugin-vue "^6.0.1"
-
-"@gitlab/eslint-plugin-i18n@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin-i18n/-/eslint-plugin-i18n-1.1.0.tgz#e494d599e644ce3a094ea85f87dbbda41a924c5e"
-  integrity sha512-Cwm7sLtQnUDqvxE9Ez8UMslyosPCpMVLxBnFb+2n6QcBZmXRao4aNSVRkmlsDZYgYegWhOGn3Qq3MLy4BSqauQ==
-  dependencies:
-    requireindex "~1.1.0"
-
-"@gitlab/eslint-plugin-vue-i18n@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin-vue-i18n/-/eslint-plugin-vue-i18n-2.0.0.tgz#5a01912d9d5a7524539d678f09cac6fa57d6d838"
-  integrity sha512-z72ysu5AgjL/oWPckvNrMWUnkcFJhtZT0oqeSgN97NyktrvYMMpAOjSSeu2Nv+HLTD5vk9w/fG3zskp/qgT+lw==
-  dependencies:
+    eslint-plugin-vue "^6.2.1"
     vue-eslint-parser "^7.0.0"
 
 "@gitlab/svgs@^1.113.0":
@@ -4408,11 +4393,12 @@ eslint-plugin-promise@^4.2.1:
   resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-4.2.1.tgz#845fd8b2260ad8f82564c1222fce44ad71d9418a"
   integrity sha512-VoM09vT7bfA7D+upt+FjeBO5eHIJQBUWki1aPvB+vbNiHS3+oGIJGIeyBtKQTME6UPXXy3vV07OL1tHd3ANuDw==
 
-eslint-plugin-vue@^6.0.1:
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-6.1.2.tgz#4b05c28c83c0ec912669b64dbd998bb8bf692ef6"
-  integrity sha512-M75oAB+2a/LNkLKRbeEaS07EjzjIUaV7/hYoHAfRFeeF8ZMmCbahUn8nQLsLP85mkar24+zDU3QW2iT1JRsACw==
+eslint-plugin-vue@^6.2.1:
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-6.2.2.tgz#27fecd9a3a24789b0f111ecdd540a9e56198e0fe"
+  integrity sha512-Nhc+oVAHm0uz/PkJAWscwIT4ijTrK5fqNqz9QB1D35SbbuMG1uB6Yr5AJpvPSWg+WOw7nYNswerYh0kOk64gqQ==
   dependencies:
+    natural-compare "^1.4.0"
     semver "^5.6.0"
     vue-eslint-parser "^7.0.0"
 
@@ -9871,11 +9857,6 @@ require-package-name@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/require-package-name/-/require-package-name-2.0.1.tgz#c11e97276b65b8e2923f75dabf5fb2ef0c3841b9"
   integrity sha1-wR6XJ2tluOKSP3Xav1+y7ww4Qbk=
-
-requireindex@~1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.1.0.tgz#e5404b81557ef75db6e49c5a72004893fe03e162"
-  integrity sha1-5UBLgVV+91225JxacgBIk/4D4WI=
 
 requires-port@^1.0.0:
   version "1.0.0"

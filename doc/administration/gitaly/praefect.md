@@ -28,7 +28,7 @@ reference architecture additionally requires:
 - 1 PostgreSQL server (PostgreSQL 9.6 or newer)
 - 3 Gitaly nodes (1 primary, 2 secondary)
 
-![Alpha architecture diagram](img/praefect_architecture_v12_9.png)
+![Alpha architecture diagram](img/praefect_architecture_v12_10.png)
 
 See the [design
 document](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md)

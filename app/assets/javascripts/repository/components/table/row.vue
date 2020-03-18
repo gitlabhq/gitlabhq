@@ -151,7 +151,7 @@ export default {
       >
         {{ fullPath }}
       </component>
-      <!-- eslint-disable-next-line @gitlab/vue-i18n/no-bare-strings -->
+      <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
       <gl-badge v-if="lfsOid" variant="default" class="label-lfs ml-1">LFS</gl-badge>
       <template v-if="isSubmodule">
         @ <gl-link :href="submoduleTreeUrl" class="commit-sha">{{ shortSha }}</gl-link>

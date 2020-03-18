@@ -36,6 +36,7 @@ export default Vue.extend({
     list: {
       type: Object,
       default: () => ({}),
+      required: false,
     },
     disabled: {
       type: Boolean,
@@ -94,7 +95,7 @@ export default Vue.extend({
       return this.list.type !== ListType.blank && this.list.type !== ListType.promotion;
     },
     uniqueKey() {
-      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+      // eslint-disable-next-line @gitlab/require-i18n-strings
       return `boards.${this.boardId}.${this.list.type}.${this.list.id}`;
     },
     helpLink() {

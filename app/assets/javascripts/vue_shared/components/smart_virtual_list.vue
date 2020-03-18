@@ -8,9 +8,9 @@ export default {
     size: { type: Number, required: true },
     length: { type: Number, required: true },
     remain: { type: Number, required: true },
-    rtag: { type: String, default: 'div' },
-    wtag: { type: String, default: 'div' },
-    wclass: { type: String, default: null },
+    rtag: { type: String, default: 'div', required: false },
+    wtag: { type: String, default: 'div', required: false },
+    wclass: { type: String, default: null, required: false },
   },
 };
 </script>

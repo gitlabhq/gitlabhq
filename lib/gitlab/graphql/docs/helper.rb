@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-return if Rails.env.production?
-
 module Gitlab
   module Graphql
     module Docs

@@ -1,4 +1,4 @@
-/* eslint-disable @gitlab/i18n/no-non-i18n-strings */
+/* eslint-disable @gitlab/require-i18n-strings */
 import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
 

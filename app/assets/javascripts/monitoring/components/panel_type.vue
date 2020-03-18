@@ -95,7 +95,7 @@ export default {
     csvText() {
       const chartData = this.graphData.metrics[0].result[0].values;
       const yLabel = this.graphData.y_label;
-      const header = `timestamp,${yLabel}\r\n`; // eslint-disable-line @gitlab/i18n/no-non-i18n-strings
+      const header = `timestamp,${yLabel}\r\n`; // eslint-disable-line @gitlab/require-i18n-strings
       return chartData.reduce((csv, data) => {
         const row = data.join(',');
         return `${csv}${row}\r\n`;

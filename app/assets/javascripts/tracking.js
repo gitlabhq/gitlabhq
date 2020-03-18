@@ -54,7 +54,7 @@ export default class Tracking {
 
   static event(category = document.body.dataset.page, action = 'generic', data = {}) {
     if (!this.enabled()) return false;
-    // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+    // eslint-disable-next-line @gitlab/require-i18n-strings
     if (!category) throw new Error('Tracking: no category provided for tracking.');
 
     const { label, property, value, context } = data;

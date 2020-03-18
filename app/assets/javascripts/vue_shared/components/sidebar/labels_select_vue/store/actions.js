@@ -45,7 +45,7 @@ export const createLabel = ({ state, dispatch }, label) => {
         dispatch('receiveCreateLabelSuccess');
         dispatch('toggleDropdownContentsCreateView');
       } else {
-        // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+        // eslint-disable-next-line @gitlab/require-i18n-strings
         throw new Error('Error Creating Label');
       }
     })

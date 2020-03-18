@@ -34,6 +34,7 @@ export default Vue.extend({
     currentUser: {
       type: Object,
       default: () => ({}),
+      required: false,
     },
   },
   data() {

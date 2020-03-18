@@ -13,29 +13,36 @@ export default {
     list: {
       type: Object,
       default: () => ({}),
+      required: false,
     },
     issue: {
       type: Object,
       default: () => ({}),
+      required: false,
     },
     issueLinkBase: {
       type: String,
       default: '',
+      required: false,
     },
     disabled: {
       type: Boolean,
       default: false,
+      required: false,
     },
     index: {
       type: Number,
       default: 0,
+      required: false,
     },
     rootPath: {
       type: String,
       default: '',
+      required: false,
     },
     groupId: {
       type: Number,
+      required: false,
     },
   },
   data() {

@@ -19,7 +19,7 @@ function loadModalsConfigurationFromHtml(modalsElement) {
   const modalsConfiguration = {};
 
   if (!modalsElement) {
-    /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
+    /* eslint-disable-next-line @gitlab/require-i18n-strings */
     throw new Error('Modals content element not found!');
   }
 

@@ -313,19 +313,16 @@ describe Issue do
   end
 
   describe '#moved?' do
-    let(:issue) { create(:issue) }
+    context 'when issue has not been moved' do
+      subject { build_stubbed(:issue) }
 
-    subject { issue.moved? }
-
-    context 'issue not moved' do
-      it { is_expected.to eq false }
+      it { is_expected.not_to be_moved }
     end
 
-    context 'issue already moved' do
-      let(:moved_to_issue) { create(:issue) }
-      let(:issue) { create(:issue, moved_to: moved_to_issue) }
+    context 'when issue has already been moved' do
+      subject { build_stubbed(:issue, moved_to: build_stubbed(:issue)) }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be_moved }
     end
   end
 

@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     cellType(type) {
-      return `${type}-cell`; // eslint-disable-line @gitlab/i18n/no-non-i18n-strings
+      return `${type}-cell`; // eslint-disable-line @gitlab/require-i18n-strings
     },
   },
 };

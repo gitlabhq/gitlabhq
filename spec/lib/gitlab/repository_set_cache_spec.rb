@@ -88,6 +88,12 @@ describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
       end
     end
 
+    context 'no keys' do
+      let(:keys) { [] }
+
+      it { is_expected.to eq(0) }
+    end
+
     context "unlink isn't supported" do
       before do
         allow_any_instance_of(Redis).to receive(:unlink) { raise ::Redis::CommandError }

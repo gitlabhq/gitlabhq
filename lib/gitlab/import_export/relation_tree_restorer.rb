@@ -28,7 +28,7 @@ module Gitlab
             update_params!
 
             bulk_inserts_enabled = @importable.class == ::Project &&
-              Feature.enabled?(:import_bulk_inserts, @importable.group)
+              Feature.enabled?(:import_bulk_inserts, @importable.group, default_enabled: true)
             BulkInsertableAssociations.with_bulk_insert(enabled: bulk_inserts_enabled) do
               fix_ci_pipelines_not_sorted_on_legacy_project_json!
               create_relations!

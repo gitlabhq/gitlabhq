@@ -1,4 +1,4 @@
-/* eslint-disable @gitlab/i18n/no-non-i18n-strings, import/prefer-default-export */
+/* eslint-disable @gitlab/require-i18n-strings, import/prefer-default-export */
 
 /**
  * Tracks snowplow event when User clicks on error link to Sentry

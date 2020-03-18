@@ -1,6 +1,6 @@
 extends:
-  - '@gitlab'
-  - plugin:promise/recommended
+  - plugin:@gitlab/default
+  - plugin:@gitlab/i18n
   - plugin:no-jquery/slim
   - plugin:no-jquery/deprecated-3.4
 globals:
@@ -16,9 +16,6 @@ settings:
     webpack:
       config: './config/webpack.config.js'
 rules:
-  "@gitlab/i18n/no-non-i18n-strings": error
-  "@gitlab/vue-i18n/no-bare-strings": error
-  "@gitlab/vue-i18n/no-bare-attribute-strings": error
   import/no-commonjs: error
   no-underscore-dangle:
     - error
@@ -54,4 +51,4 @@ overrides:
   - files:
       - '**/spec/**/*'
     rules:
-      "@gitlab/i18n/no-non-i18n-strings": off
+      "@gitlab/require-i18n-strings": off

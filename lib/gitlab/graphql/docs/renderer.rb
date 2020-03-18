@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-return if Rails.env.production?
+require 'gitlab/graphql/docs/helper'
 
 module Gitlab
   module Graphql

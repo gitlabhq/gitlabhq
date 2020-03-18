@@ -2247,6 +2247,9 @@ msgstr ""
 msgid "Archive project"
 msgstr ""
 
+msgid "Archived"
+msgstr ""
+
 msgid "Archived project! Repository and other project resources are read only"
 msgstr ""
 
@@ -8776,6 +8779,9 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
+msgid "Filter by %{issuable_type} that are currently archived."
+msgstr ""
+
 msgid "Filter by %{issuable_type} that are currently closed."
 msgstr ""
 
@@ -13110,6 +13116,9 @@ msgid "New project"
 msgstr ""
 
 msgid "New release"
+msgstr ""
+
+msgid "New requirement"
 msgstr ""
 
 msgid "New runners registration token has been generated!"

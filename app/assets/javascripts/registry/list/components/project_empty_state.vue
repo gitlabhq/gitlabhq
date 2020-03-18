@@ -37,15 +37,15 @@ export default {
   },
   computed: {
     dockerBuildCommand() {
-      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+      // eslint-disable-next-line @gitlab/require-i18n-strings
       return `docker build -t ${this.repositoryUrl} .`;
     },
     dockerPushCommand() {
-      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+      // eslint-disable-next-line @gitlab/require-i18n-strings
       return `docker push ${this.repositoryUrl}`;
     },
     dockerLoginCommand() {
-      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+      // eslint-disable-next-line @gitlab/require-i18n-strings
       return `docker login ${this.registryHostUrlWithPort}`;
     },
     noContainerImagesText() {

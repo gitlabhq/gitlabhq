@@ -14,7 +14,10 @@ module Gitlab
       "#{key}:set"
     end
 
+    # Returns the number of keys deleted by Redis
     def expire(*keys)
+      return 0 if keys.empty?
+
       with do |redis|
         keys = keys.map { |key| cache_key(key) }
         unlink_or_delete(redis, keys)

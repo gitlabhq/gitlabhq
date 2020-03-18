@@ -22,6 +22,7 @@ export default {
     metadata: {
       type: Object,
       default: () => ({}),
+      required: false,
     },
   },
   methods: {

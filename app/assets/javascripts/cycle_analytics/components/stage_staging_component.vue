@@ -16,10 +16,12 @@ export default {
     items: {
       type: Array,
       default: () => [],
+      required: false,
     },
     stage: {
       type: Object,
       default: () => ({}),
+      required: false,
     },
   },
   computed: {
