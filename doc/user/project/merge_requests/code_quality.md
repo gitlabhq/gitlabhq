@@ -228,7 +228,7 @@ do this:
    artifact](../../../ci/yaml/README.md#artifactsreportscodequality-starter).
 1. Configure your tool to generate the Code Quality report artifact as a JSON
    file that implements subset of the [Code Climate
-   spec](https://github.com/codeclimate/spec/blob/master/SPEC.md#data-types).
+   spec](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types).
 
 The Code Quality report artifact JSON file must contain an array of objects
 with the following properties:
