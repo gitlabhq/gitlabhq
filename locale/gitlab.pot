@@ -7723,6 +7723,9 @@ msgstr ""
 msgid "Environments|Environments are places where code gets deployed, such as staging or production."
 msgstr ""
 
+msgid "Environments|Filter by pod"
+msgstr ""
+
 msgid "Environments|Install Elastic Stack on your cluster to enable advanced querying capabilities such as full text search."
 msgstr ""
 
@@ -7733,9 +7736,6 @@ msgid "Environments|Learn about environments"
 msgstr ""
 
 msgid "Environments|Learn more about stopping environments"
-msgstr ""
-
-msgid "Environments|Logs from"
 msgstr ""
 
 msgid "Environments|Logs from %{start} to %{end}."
@@ -7751,6 +7751,9 @@ msgid "Environments|No deployments yet"
 msgstr ""
 
 msgid "Environments|No pod selected"
+msgstr ""
+
+msgid "Environments|No pods to display"
 msgstr ""
 
 msgid "Environments|Note that this action will stop the environment, but it will %{emphasisStart}not%{emphasisEnd} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ciConfigLinkStart}.gitlab-ci.yml%{ciConfigLinkEnd} file."
@@ -7792,10 +7795,10 @@ msgstr ""
 msgid "Environments|Search"
 msgstr ""
 
-msgid "Environments|Show all"
+msgid "Environments|Select environment"
 msgstr ""
 
-msgid "Environments|Show last"
+msgid "Environments|Show all"
 msgstr ""
 
 msgid "Environments|Stop"

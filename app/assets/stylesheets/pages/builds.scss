@@ -379,7 +379,7 @@
   }
 
   .top-bar {
-    @include build-trace-top-bar($gl-line-height * 5);
+    @include build-trace-top-bar($gl-line-height * 3);
     position: relative;
     top: 0;
 

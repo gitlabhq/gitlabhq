@@ -494,7 +494,9 @@ Below we describe the different pathing that HTTP vs. SSH Git requests will take
 
 ### Web Request (80/443)
 
-TODO
+When you make a Git request over HTTP, the request first takes the same steps as a web HTTP request
+through NGINX and GitLab Workhorse. However, the GitLab Workhorse then diverts the request towards
+Gitaly, which processes it directly.
 
 ### SSH Request (22)
 

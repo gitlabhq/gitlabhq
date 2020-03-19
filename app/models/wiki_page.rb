@@ -21,6 +21,14 @@ class WikiPage
     ActiveModel::Name.new(self, nil, 'wiki')
   end
 
+  def eql?(other)
+    return false unless other.present? && other.is_a?(self.class)
+
+    slug == other.slug && wiki.project == other.wiki.project
+  end
+
+  alias_method :==, :eql?
+
   # Sorts and groups pages by directory.
   #
   # pages - an array of WikiPage objects.
@@ -58,6 +66,7 @@ class WikiPage
 
   # The GitLab ProjectWiki instance.
   attr_reader :wiki
+  delegate :project, to: :wiki
 
   # The raw Gitlab::Git::WikiPage instance.
   attr_reader :page
@@ -70,6 +79,10 @@ class WikiPage
     Gitlab::HookData::WikiPageBuilder.new(self).build
   end
 
+  # Construct a new WikiPage
+  #
+  # @param [ProjectWiki] wiki
+  # @param [Gitlab::Git::WikiPage] page
   def initialize(wiki, page = nil)
     @wiki       = wiki
     @page       = page

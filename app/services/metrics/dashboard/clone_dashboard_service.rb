@@ -16,7 +16,7 @@ module Metrics
         def sequences
           @sequences ||= {
             ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH => [::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
-                                                                             ::Gitlab::Metrics::Dashboard::Stages::ProjectMetricsInserter,
+                                                                             ::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
                                                                              ::Gitlab::Metrics::Dashboard::Stages::Sorter].freeze
           }.freeze
         end

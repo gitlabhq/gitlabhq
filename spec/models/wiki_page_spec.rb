@@ -606,12 +606,36 @@ describe WikiPage do
       expect(subject).to eq(subject)
     end
 
-    it 'returns false for updated wiki page' do
+    it 'returns true for updated wiki page' do
       subject.update(content: "Updated content")
-      updated_page = wiki.find_page('test page')
+      updated_page = wiki.find_page(existing_page.slug)
 
       expect(updated_page).not_to be_nil
-      expect(updated_page).not_to eq(subject)
+      expect(updated_page).to eq(subject)
+    end
+
+    it 'returns false for a completely different wiki page' do
+      other_page = create(:wiki_page)
+
+      expect(subject.slug).not_to eq(other_page.slug)
+      expect(subject.project).not_to eq(other_page.project)
+      expect(subject).not_to eq(other_page)
+    end
+
+    it 'returns false for page with different slug on same project' do
+      other_page = create(:wiki_page, project: subject.project)
+
+      expect(subject.slug).not_to eq(other_page.slug)
+      expect(subject.project).to eq(other_page.project)
+      expect(subject).not_to eq(other_page)
+    end
+
+    it 'returns false for page with the same slug on a different project' do
+      other_page = create(:wiki_page, title: existing_page.slug)
+
+      expect(subject.slug).to eq(other_page.slug)
+      expect(subject.project).not_to eq(other_page.project)
+      expect(subject).not_to eq(other_page)
     end
   end
 

@@ -83,7 +83,7 @@ describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_stor
           allow(::Gitlab::Metrics::Dashboard::Processor).to receive(:new).and_return(double(process: file_content_hash))
         end
 
-        it_behaves_like 'valid dashboard cloning process', ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH, [STAGES::CommonMetricsInserter, STAGES::ProjectMetricsInserter, STAGES::Sorter]
+        it_behaves_like 'valid dashboard cloning process', ::Metrics::Dashboard::SystemDashboardService::DASHBOARD_PATH, [STAGES::CommonMetricsInserter, STAGES::CustomMetricsInserter, STAGES::Sorter]
 
         context 'selected branch already exists' do
           let(:branch) { 'existing_branch' }

@@ -3,8 +3,10 @@ import { throttle } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import {
   GlSprintf,
+  GlIcon,
   GlAlert,
   GlDropdown,
+  GlDropdownHeader,
   GlDropdownDivider,
   GlDropdownItem,
   GlFormGroup,
@@ -22,8 +24,10 @@ import { formatDate } from '../utils';
 export default {
   components: {
     GlSprintf,
+    GlIcon,
     GlAlert,
     GlDropdown,
+    GlDropdownHeader,
     GlDropdownDivider,
     GlDropdownItem,
     GlFormGroup,
@@ -124,6 +128,12 @@ export default {
       'fetchMoreLogsPrepend',
     ]),
 
+    isCurrentEnvironment(envName) {
+      return envName === this.environments.current;
+    },
+    isCurrentPod(podName) {
+      return podName === this.pods.current;
+    },
     topReached() {
       if (!this.logs.isLoading) {
         this.fetchMoreLogsPrepend();
@@ -161,7 +171,6 @@ export default {
       <div class="row mx-n1">
         <gl-form-group
           id="environments-dropdown-fg"
-          :label="s__('Environments|Environment')"
           label-size="sm"
           label-for="environments-dropdown"
           class="col-3 px-1"
@@ -173,18 +182,27 @@ export default {
             class="d-flex gl-h-32 js-environments-dropdown"
             toggle-class="dropdown-menu-toggle"
           >
+            <gl-dropdown-header class="text-center">
+              {{ s__('Environments|Select environment') }}
+            </gl-dropdown-header>
             <gl-dropdown-item
               v-for="env in environments.options"
               :key="env.id"
               @click="showEnvironment(env.name)"
             >
-              {{ env.name }}
+              <div class="d-flex">
+                <gl-icon
+                  :class="{ invisible: !isCurrentEnvironment(env.name) }"
+                  name="status_success_borderless"
+                />
+                <div class="flex-grow-1">{{ env.name }}</div>
+              </div>
             </gl-dropdown-item>
           </gl-dropdown>
         </gl-form-group>
+
         <gl-form-group
           id="pods-dropdown-fg"
-          :label="s__('Environments|Logs from')"
           label-size="sm"
           label-for="pods-dropdown"
           class="col-3 px-1"
@@ -196,43 +214,45 @@ export default {
             class="d-flex gl-h-32 js-pods-dropdown"
             toggle-class="dropdown-menu-toggle"
           >
+            <gl-dropdown-header class="text-center">
+              {{ s__('Environments|Filter by pod') }}
+            </gl-dropdown-header>
+
             <template v-if="advancedFeaturesEnabled">
               <gl-dropdown-item key="all-pods" @click="showPodLogs(null)">
-                {{ s__('Environments|All pods') }}
+                <div class="d-flex">
+                  <gl-icon
+                    :class="{ invisible: !isCurrentPod(null) }"
+                    name="status_success_borderless"
+                  />
+                  <div class="flex-grow-1">{{ s__('Environments|All pods') }}</div>
+                </div>
               </gl-dropdown-item>
               <gl-dropdown-divider />
             </template>
+
+            <gl-dropdown-item v-if="!pods.options.length" :disabled="true">
+              <span class="text-muted">
+                {{ s__('Environments|No pods to display') }}
+              </span>
+            </gl-dropdown-item>
             <gl-dropdown-item
               v-for="podName in pods.options"
               :key="podName"
+              class="text-nowrap"
               @click="showPodLogs(podName)"
             >
-              {{ podName }}
+              <div class="d-flex">
+                <gl-icon
+                  :class="{ invisible: !isCurrentPod(podName) }"
+                  name="status_success_borderless"
+                />
+                <div class="flex-grow-1">{{ podName }}</div>
+              </div>
             </gl-dropdown-item>
           </gl-dropdown>
         </gl-form-group>
-        <gl-form-group
-          id="dates-fg"
-          :label="s__('Environments|Show last')"
-          label-size="sm"
-          label-for="time-window-dropdown"
-          class="col-3 px-1"
-        >
-          <date-time-picker
-            ref="dateTimePicker"
-            v-model="timeRangeModel"
-            class="w-100 gl-h-32"
-            :disabled="disableAdvancedControls"
-            :options="timeRanges"
-          />
-        </gl-form-group>
-        <gl-form-group
-          id="search-fg"
-          :label="s__('Environments|Search')"
-          label-size="sm"
-          label-for="search"
-          class="col-3 px-1"
-        >
+        <gl-form-group id="search-fg" label-size="sm" label-for="search" class="col-3 px-1">
           <gl-search-box-by-click
             v-model.trim="searchQuery"
             :disabled="disableAdvancedControls"
@@ -243,11 +263,27 @@ export default {
             @submit="setSearch(searchQuery)"
           />
         </gl-form-group>
+
+        <gl-form-group
+          id="dates-fg"
+          label-size="sm"
+          label-for="time-window-dropdown"
+          class="col-3 px-1"
+        >
+          <date-time-picker
+            ref="dateTimePicker"
+            v-model="timeRangeModel"
+            class="w-100 gl-h-32"
+            right
+            :disabled="disableAdvancedControls"
+            :options="timeRanges"
+          />
+        </gl-form-group>
       </div>
 
       <log-control-buttons
         ref="scrollButtons"
-        class="controllers align-self-end mb-1"
+        class="controllers"
         :scroll-down-button-disabled="scrollDownButtonDisabled"
         @refresh="showPodLogs(pods.current)"
         @scrollDown="scrollDown"

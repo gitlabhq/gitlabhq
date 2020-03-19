@@ -4,7 +4,7 @@ module Gitlab
   module Metrics
     module Dashboard
       module Stages
-        class ProjectMetricsInserter < BaseStage
+        class CustomMetricsInserter < BaseStage
           # Inserts project-specific metrics into the dashboard
           # config. If there are no project-specific metrics,
           # this will have no effect.

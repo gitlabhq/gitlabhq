@@ -167,30 +167,30 @@ describe Types::BaseField do
         end
       end
     end
+  end
 
-    describe '#description' do
-      context 'feature flag given' do
-        let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, feature_flag: flag, null: false, description: 'Test description') }
-        let(:flag) { :test_flag }
+  describe '#description' do
+    context 'feature flag given' do
+      let(:field) { described_class.new(name: 'test', type: GraphQL::STRING_TYPE, feature_flag: flag, null: false, description: 'Test description') }
+      let(:flag) { :test_flag }
 
-        it 'prepends the description' do
-          expect(field.description). to eq 'Test description. Available only when feature flag `test_flag` is enabled.'
+      it 'prepends the description' do
+        expect(field.description). to eq 'Test description. Available only when feature flag `test_flag` is enabled.'
+      end
+
+      context 'falsey feature_flag values' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:flag, :feature_value) do
+          ''  | false
+          ''  | true
+          nil | false
+          nil | true
         end
 
-        context 'falsey feature_flag values' do
-          using RSpec::Parameterized::TableSyntax
-
-          where(:flag, :feature_value) do
-            ''  | false
-            ''  | true
-            nil | false
-            nil | true
-          end
-
-          with_them do
-            it 'returns the correct description' do
-              expect(field.description).to eq('Test description')
-            end
+        with_them do
+          it 'returns the correct description' do
+            expect(field.description).to eq('Test description')
           end
         end
       end

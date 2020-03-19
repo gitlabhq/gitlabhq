@@ -19,10 +19,11 @@ class ProjectWiki
   DIRECTION_DESC = 'desc'
   DIRECTION_ASC = 'asc'
 
+  attr_reader :project, :user
+
   # Returns a string describing what went wrong after
   # an operation fails.
   attr_reader :error_message
-  attr_reader :project
 
   def initialize(project, user = nil)
     @project = project
@@ -196,9 +197,9 @@ class ProjectWiki
 
   def commit_details(action, message = nil, title = nil)
     commit_message = message.presence || default_message(action, title)
-    git_user = Gitlab::Git::User.from_gitlab(@user)
+    git_user = Gitlab::Git::User.from_gitlab(user)
 
-    Gitlab::Git::Wiki::CommitDetails.new(@user.id,
+    Gitlab::Git::Wiki::CommitDetails.new(user.id,
                                          git_user.username,
                                          git_user.name,
                                          git_user.email,
@@ -206,7 +207,7 @@ class ProjectWiki
   end
 
   def default_message(action, title)
-    "#{@user.username} #{action} page: #{title}"
+    "#{user.username} #{action} page: #{title}"
   end
 
   def update_project_activity

@@ -11,8 +11,8 @@ describe Gitlab::Metrics::Dashboard::Processor do
     let(:sequence) do
       [
         Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
-        Gitlab::Metrics::Dashboard::Stages::ProjectMetricsInserter,
-        Gitlab::Metrics::Dashboard::Stages::ProjectMetricsDetailsInserter,
+        Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter,
+        Gitlab::Metrics::Dashboard::Stages::CustomMetricsDetailsInserter,
         Gitlab::Metrics::Dashboard::Stages::EndpointInserter,
         Gitlab::Metrics::Dashboard::Stages::Sorter
       ]

@@ -4,7 +4,7 @@ module Gitlab
   module Metrics
     module Dashboard
       module Stages
-        class ProjectMetricsDetailsInserter < BaseStage
+        class CustomMetricsDetailsInserter < BaseStage
           def transform!
             dashboard[:panel_groups].each do |panel_group|
               next unless panel_group

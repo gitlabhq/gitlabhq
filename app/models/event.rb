@@ -6,6 +6,7 @@ class Event < ApplicationRecord
   include Presentable
   include DeleteWithLimit
   include CreatedAtFilterable
+  include Gitlab::Utils::StrongMemoize
 
   default_scope { reorder(nil) }
 
@@ -42,7 +43,8 @@ class Event < ApplicationRecord
     note:           Note,
     project:        Project,
     snippet:        Snippet,
-    user:           User
+    user:           User,
+    wiki:           WikiPage::Meta
   ).freeze
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
@@ -79,6 +81,7 @@ class Event < ApplicationRecord
   scope :recent, -> { reorder(id: :desc) }
   scope :code_push, -> { where(action: PUSHED) }
   scope :merged, -> { where(action: MERGED) }
+  scope :for_wiki_page, -> { where(target_type: WikiPage::Meta.name) }
 
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association
@@ -197,6 +200,14 @@ class Event < ApplicationRecord
     created_action? && !target && target_type.nil?
   end
 
+  def created_wiki_page?
+    wiki_page? && action == CREATED
+  end
+
+  def updated_wiki_page?
+    wiki_page? && action == UPDATED
+  end
+
   def created_target?
     created_action? && target
   end
@@ -217,6 +228,10 @@ class Event < ApplicationRecord
     target_type == "MergeRequest"
   end
 
+  def wiki_page?
+    target_type == WikiPage::Meta.name
+  end
+
   def milestone
     target if milestone?
   end
@@ -227,6 +242,14 @@ class Event < ApplicationRecord
 
   def merge_request
     target if merge_request?
+  end
+
+  def wiki_page
+    strong_memoize(:wiki_page) do
+      next unless wiki_page?
+
+      ProjectWiki.new(project, author).find_page(target.canonical_slug)
+    end
   end
 
   def note
@@ -250,6 +273,10 @@ class Event < ApplicationRecord
       'destroyed'
     elsif commented_action?
       "commented on"
+    elsif created_wiki_page?
+      'created'
+    elsif updated_wiki_page?
+      'updated'
     elsif created_project_action?
       created_project_action_name
     else
@@ -362,6 +389,8 @@ class Event < ApplicationRecord
                         :read_snippet
                       elsif milestone?
                         :read_milestone
+                      elsif wiki_page?
+                        :read_wiki
                       end
                     end
   end

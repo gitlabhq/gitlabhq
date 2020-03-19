@@ -9,7 +9,7 @@ module Metrics
       DASHBOARD_NAME = 'Default'
 
       SEQUENCE = [
-        STAGES::ProjectMetricsInserter,
+        STAGES::CustomMetricsInserter,
         STAGES::EndpointInserter,
         STAGES::Sorter
       ].freeze
