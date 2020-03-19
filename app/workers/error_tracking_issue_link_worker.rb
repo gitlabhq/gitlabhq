@@ -63,6 +63,10 @@ class ErrorTrackingIssueLinkWorker # rubocop:disable Scalability/IdempotentWorke
     sentry_client
       .repos(organization_slug)
       .find { |repo| repo.project_id == issue.project_id && repo.status == 'active' }
+  rescue Sentry::Client::Error => e
+    logger.info("Unable to retrieve Sentry repo for organization #{organization_slug}, id #{sentry_issue_id}, with error: #{e.message}")
+
+    nil
   end
 
   def organization_slug

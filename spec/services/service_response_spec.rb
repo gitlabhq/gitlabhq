@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require_relative '../../app/services/service_response'
+
+ActiveSupport::Dependencies.autoload_paths << 'app/services'
 
 describe ServiceResponse do
   describe '.success' do

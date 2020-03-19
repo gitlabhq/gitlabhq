@@ -3,7 +3,6 @@
 return if Rails.env.production?
 
 require 'graphql/rake_task'
-require 'gitlab/graphql/docs/renderer'
 
 namespace :gitlab do
   OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference")

@@ -4,7 +4,8 @@ Issues are the fundamental medium for collaborating on ideas and planning work i
 
 ## Overview
 
-The GitLab issue tracker is an advanced tool for collaboratively developing ideas, solving problems, and planning work.
+The GitLab issue tracker is an advanced tool for collaboratively developing ideas, solving problems,
+and planning work.
 
 Issues can allow sharing and discussion of proposals before, and during,
 their implementation between:
@@ -116,8 +117,8 @@ You can sort a list of issues in several ways, for example by issue creation dat
 
 ![Issue board](img/issue_board.png)
 
-[Issue boards](../issue_board.md) are Kanban boards with columns that display issues based on their labels
-or their assignees**(PREMIUM)**. They offer the flexibility to manage issues using
+[Issue boards](../issue_board.md) are Kanban boards with columns that display issues based on their
+labels or their assignees**(PREMIUM)**. They offer the flexibility to manage issues using
 highly customizable workflows.
 
 You can reorder issues within a column. If you drag an issue card to another column, its
@@ -200,3 +201,18 @@ Feature.enable(:save_issuable_health_status)
 - [Issues API](../../../api/issues.md)
 - Configure an [external issue tracker](../../../integration/external-issue-tracker.md)
   such as Jira, Redmine, or Bugzilla.
+
+## Limits
+
+This section gives an overview of limits of Issues and an overview of their background.
+
+### Description and comment length
+
+> Introduced in [GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61974).
+
+Descriptions and comments on [issuable](../../../development/issuable-like-models.md) can be no
+longer than 1 million characters.
+
+Previously, there was no limit to issuable description size, which created a
+[possibility of a DoS attack](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61974) by allowing
+very long descriptions. It's possible that we will set this limit to a lower number in the future.

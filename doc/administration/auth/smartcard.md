@@ -49,7 +49,7 @@ Certificate:
         Subject: CN=Gitlab User, emailAddress=gitlab-user@example.com
 ```
 
-### Authentication against a local database with X.509 certificates and SAN extensions **(PREMIUM ONLY)**
+### Authentication against a local database with X.509 certificates and SAN extension
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8605) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
 
@@ -135,6 +135,12 @@ attribute. As a prerequisite, you must use an LDAP server that:
      listen *:3444 ssl;
      ```
 
+   - It can also be configured to run on a different hostname:
+
+     ```plaintext
+     listen smartcard.example.com:443 ssl;
+     ```
+
    - The additional NGINX server context must be configured to require the client
      side certificate:
 
@@ -156,7 +162,7 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
    ```plaintext
    server {
-       listen *:3444 ssl;
+       listen smartcard.example.com:3443 ssl;
 
        # certificate for configuring SSL
        ssl_certificate /path/to/example.com.crt;
@@ -195,9 +201,15 @@ attribute. As a prerequisite, you must use an LDAP server that:
      # Path to a file containing a CA certificate
      ca_file: '/etc/ssl/certs/CA.pem'
 
-     # Port where the client side certificate is requested by NGINX
-     client_certificate_required_port: 3444
+     # Host and port where the client side certificate is requested by the
+     # webserver (NGINX/Apache)
+     client_certificate_required_host: smartcard.example.com
+     client_certificate_required_port: 3443
    ```
+
+   NOTE: **Note**
+   Assign a value to at least one of the following variables:
+   `client_certificate_required_host` or `client_certificate_required_port`.
 
 1. Save the file and [restart](../restart_gitlab.md#installations-from-source)
    GitLab for the changes to take effect.

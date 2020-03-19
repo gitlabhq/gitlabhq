@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'fogbugz'
 
 describe Gitlab::FogbugzImport::Importer do
   let(:project) { create(:project_empty_repo) }

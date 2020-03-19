@@ -350,6 +350,14 @@ You can [award an emoji](../../award_emojis.md) to that epic or its comments.
 
 You can [turn on notifications](../../profile/notifications.md) to be alerted about epic events.
 
+## Limits
+
+This section gives an overview of limits of Epics and an overview of their background.
+
+### Description and comment length
+
+See [Issues: Description and comment length](../../project/issues/index.md#description-and-comment-length)
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

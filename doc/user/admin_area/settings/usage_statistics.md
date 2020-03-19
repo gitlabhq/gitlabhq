@@ -402,6 +402,7 @@ but commented out to help encourage others to add to it in the future. -->
 |groups|usage_activity_by_stage|manage|
 |ldap_keys|usage_activity_by_stage|manage|
 |ldap_users: 0|usage_activity_by_stage|manage|
+|users_created|usage_activity_by_stage|manage|
 |clusters|usage_activity_by_stage|monitor|
 |clusters_applications_prometheus|usage_activity_by_stage|monitor|
 |operations_dashboard_default_dashboard|usage_activity_by_stage|monitor|

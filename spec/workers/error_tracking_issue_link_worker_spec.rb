@@ -95,5 +95,19 @@ describe ErrorTrackingIssueLinkWorker do
 
       it_behaves_like 'attempts to create a link via plugin'
     end
+
+    context 'when Sentry repos request errors' do
+      it 'falls back to creating a link via plugin' do
+        expect_next_instance_of(Sentry::Client) do |client|
+          expect(client).to receive(:repos).with('sentry-org').and_raise(Sentry::Client::Error)
+          expect(client)
+            .to receive(:create_issue_link)
+            .with(nil, sentry_issue.sentry_issue_identifier, issue)
+            .and_return(true)
+        end
+
+        expect(subject).to be true
+      end
+    end
   end
 end

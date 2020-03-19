@@ -10,12 +10,12 @@ to source code that exist as commits on a given Git branch.
 ![Merge request view](img/merge_request.png)
 
 A Merge Request (**MR**) is the basis of GitLab as a code collaboration and version
-control platform. It is as simple as the name implies: a _request_ to _merge_ one
+control platform. It's exactly as the name implies: a _request_ to _merge_ one
 branch into another.
 
 ## Use cases
 
-A. Consider you are a software developer working in a team:
+A. Consider you're a software developer working in a team:
 
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
@@ -61,7 +61,7 @@ So far, the navigation tabs present in merge requests to display **Discussion**,
 widget.
 
 To facilitate this navigation without having to scroll up and down through the page
-to find these tabs, based on user feedback, we are experimenting with a new positioning
+to find these tabs, based on user feedback, we're experimenting with a new positioning
 of these tabs. They are now located at the top of the merge request, with a new
 **Overview** tab, containing the description of the merge request followed by the
 widget. Next to **Overview**, you can find **Pipelines**, **Commits**, and **Changes**.
@@ -124,3 +124,11 @@ There are two main ways to have a merge request flow with GitLab:
 1. Working with forks of an authoritative project
 
 [Learn more about the authorization for merge requests.](authorization_for_merge_requests.md)
+
+## Limits
+
+This section gives an overview of limits of Merge Requests and an overview of their background.
+
+### Description and comment length
+
+See [Issues: Description and comment length](../issues/index.md#description-and-comment-length)

@@ -32,8 +32,6 @@ module Gitlab
 
     config.active_record.sqlite3.represent_boolean_as_integer = true
 
-    config.autoloader = :zeitwerk
-
     # Sidekiq uses eager loading, but directories not in the standard Rails
     # directories must be added to the eager load paths:
     # https://github.com/mperham/sidekiq/wiki/FAQ#why-doesnt-sidekiq-autoload-my-rails-application-code
