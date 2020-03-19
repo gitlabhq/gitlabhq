@@ -872,8 +872,9 @@ standby nodes.
 If a node fails, it can be removed from the cluster, or added back as a standby
 after it has been restored to service.
 
-- If you want to remove the node from the cluster, on any other node in the
-  cluster, run:
+##### Remove a standby from the cluster
+
+  From any other node in the cluster, run:
 
   ```shell
   gitlab-ctl repmgr standby unregister --node=X
@@ -893,13 +894,15 @@ after it has been restored to service.
   959789412
   ```
 
-  Then you will use this id to unregister the node:
+  Then you will use this ID to unregister the node:
 
   ```shell
   gitlab-ctl repmgr standby unregister --node=959789412
   ```
+  
+##### Add a node as a standby server
 
-- To add the node as a standby server:
+  From the stnadby node, run:
 
   ```shell
   gitlab-ctl repmgr standby follow NEW_MASTER
@@ -911,6 +914,28 @@ after it has been restored to service.
   If there are any clients that are still attempting to write to the old master,
   this will cause a split, and the old master will need to be resynced from
   scratch by performing a `gitlab-ctl repmgr standby setup NEW_MASTER`.
+
+##### Add a failed master back into the cluster as a standby node
+  
+  Once `repmgrd` and PostgreSQL are runnning, the node will need to follow the new
+  as a standby node.
+  
+  ```
+  gitlab-ctl repmgr standby follow NEW_MASTER
+  ```
+  
+  Once the node is following the new master as a standby, the node needs to be
+  [unregistered from the cluster on the new master node](#remove-a-standby-from-the-cluster).
+  
+  Once the old master node has been unregistered from the cluster, it will need
+  to be setup as a new standby:
+  
+  ```
+  gitlab-ctl repmgr standby setup NEW_MASTER
+  ```
+  
+  Failure to unregister and readd the old master node can lead to subsequent failovers
+  not working.
 
 #### Alternate configurations
 

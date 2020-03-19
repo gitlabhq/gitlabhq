@@ -23,7 +23,7 @@ module QA
       def fabricate!
         project.visit!
 
-        Page::Project::Menu.perform(&:go_to_repository_settings)
+        Page::Project::Menu.perform(&:go_to_ci_cd_settings)
 
         Page::Project::Settings::CICD.perform do |setting|
           setting.expand_deploy_keys do |page|

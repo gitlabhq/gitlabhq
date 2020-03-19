@@ -160,18 +160,6 @@ GIT_CURL_VERBOSE=1 GIT_TRACE=1 git clone <repository>
 
 ## Projects
 
-### Find projects
-
-```ruby
-# A single project
-project = Project.find_by_full_path('PROJECT_PATH')
-
-# All projects in a particular namespace. Can be a username, a group
-# ('gitlab-org'), or even include subgroups ('gitlab-org/distribution')
-namespace = Namespace.find_by_full_path('NAMESPACE_PATH')
-projects = namespace.all_projects
-```
-
 ### Clear a project's cache
 
 ```ruby
@@ -407,35 +395,6 @@ end
 
 ## Users
 
-### Finding users
-
-```ruby
-# By username
-user = User.find_by(username: '')
-
-# By primary email
-user = User.find_by(email: '')
-
-# By any email (primary or secondary)
-user = User.find_by_any_email('')
-
-# Admins
-User.admins
-admin = User.admins.first
-```
-
-### Block
-
-```ruby
-User.find_by_username().block!
-```
-
-### Unblock
-
-```ruby
-User.find_by_username().active
-```
-
 ### Skip reconfirmation
 
 ```ruby
@@ -474,13 +433,6 @@ User.find(123).personal_access_tokens.create(
   impersonation: false,
   scopes: [:api]
 )
-```
-
-### Disable 2FA on a user
-
-```ruby
-user = User.find_by_username('username')
-user.disable_two_factor!
 ```
 
 ### Active users & Historical users
@@ -544,20 +496,6 @@ user.max_member_access_for_project project.id
 user = User.find_by_username 'username'
 group = Group.find_by_full_path 'group'
 user.max_member_access_for_group group.id
-```
-
-### Change user password
-
-```ruby
-password = "your password"
-user = User.find_by_username('your username')
-password_attributes = {
-  password: password,
-  password_confirmation: password,
-  password_automatically_set: false
-}
-
-result = Users::UpdateService.new(user, password_attributes.merge(user: user)).execute
 ```
 
 ## Groups
@@ -705,13 +643,6 @@ conflicting_permanent_redirects.destroy_all
 ```
 
 ## Merge Requests
-
-### Find Merge Request
-
-```ruby
-m = project.merge_requests.find_by(iid: <IID>)
-m = MergeRequest.find_by_title('NEEDS UNIQUE TITLE!!!')
-```
 
 ### Close a merge request properly (if merged but still marked as open)
 
