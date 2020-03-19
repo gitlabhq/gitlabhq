@@ -47,3 +47,11 @@ export const EXPIRATION_POLICY_ALERT_FULL_MESSAGE = s__(
 export const EXPIRATION_POLICY_ALERT_SHORT_MESSAGE = s__(
   'ContainerRegistry|The retention and expiration policy for this Container Registry has been enabled. For more information visit the %{linkStart}documentation%{linkEnd}',
 );
+
+export const QUICK_START = s__('ContainerRegistry|Quick Start');
+export const LOGIN_COMMAND_LABEL = s__('ContainerRegistry|Login');
+export const COPY_LOGIN_TITLE = s__('ContainerRegistry|Copy login command');
+export const BUILD_COMMAND_LABEL = s__('ContainerRegistry|Build an image');
+export const COPY_BUILD_TITLE = s__('ContainerRegistry|Copy build command');
+export const PUSH_COMMAND_LABEL = s__('ContainerRegistry|Push an image');
+export const COPY_PUSH_TITLE = s__('ContainerRegistry|Copy push command');

@@ -1012,6 +1012,7 @@ POST /projects
 | `issues_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `repository_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `merge_requests_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `forking_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `builds_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
@@ -1080,6 +1081,7 @@ POST /projects/user/:user_id
 | `issues_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `repository_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `merge_requests_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `forking_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `builds_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |
@@ -1147,6 +1149,7 @@ PUT /projects/:id
 | `issues_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `repository_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `merge_requests_access_level` | string | no | One of `disabled`, `private` or `enabled` |
+| `forking_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `builds_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `wiki_access_level` | string | no | One of `disabled`, `private` or `enabled` |
 | `snippets_access_level` | string | no | One of `disabled`, `private` or `enabled` |

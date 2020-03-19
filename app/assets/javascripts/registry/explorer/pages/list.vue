@@ -16,6 +16,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ProjectEmptyState from '../components/project_empty_state.vue';
 import GroupEmptyState from '../components/group_empty_state.vue';
 import ProjectPolicyAlert from '../components/project_policy_alert.vue';
+import QuickstartDropdown from '../components/quickstart_dropdown.vue';
 
 export default {
   name: 'RegistryListApp',
@@ -26,6 +27,7 @@ export default {
     GroupEmptyState,
     ProjectPolicyAlert,
     ClipboardButton,
+    QuickstartDropdown,
     GlButton,
     GlIcon,
     GlModal,
@@ -61,6 +63,9 @@ export default {
       set(page) {
         this.requestImagesList({ page });
       },
+    },
+    showQuickStartDropdown() {
+      return Boolean(!this.isLoading && !this.config?.isGroupPage && this.images?.length);
     },
   },
   methods: {
@@ -114,7 +119,10 @@ export default {
 
     <template v-else>
       <div>
-        <h4>{{ s__('ContainerRegistry|Container Registry') }}</h4>
+        <div class="d-flex justify-content-between align-items-center">
+          <h4>{{ s__('ContainerRegistry|Container Registry') }}</h4>
+          <quickstart-dropdown v-if="showQuickStartDropdown" class="d-none d-sm-block" />
+        </div>
         <p>
           <gl-sprintf
             :message="

@@ -5274,6 +5274,9 @@ msgstr ""
 msgid "ContainerRegistry|Automatically remove extra images that aren't designed to be kept."
 msgstr ""
 
+msgid "ContainerRegistry|Build an image"
+msgstr ""
+
 msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
@@ -5328,10 +5331,16 @@ msgstr ""
 msgid "ContainerRegistry|Last Updated"
 msgstr ""
 
+msgid "ContainerRegistry|Login"
+msgstr ""
+
 msgid "ContainerRegistry|Missing or insufficient permission, delete button disabled"
 msgstr ""
 
 msgid "ContainerRegistry|Number of tags to retain:"
+msgstr ""
+
+msgid "ContainerRegistry|Push an image"
 msgstr ""
 
 msgid "ContainerRegistry|Quick Start"

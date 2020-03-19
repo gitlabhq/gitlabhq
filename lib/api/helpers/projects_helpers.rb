@@ -24,6 +24,7 @@ module API
         optional :issues_access_level, type: String, values: %w(disabled private enabled), desc: 'Issues access level. One of `disabled`, `private` or `enabled`'
         optional :repository_access_level, type: String, values: %w(disabled private enabled), desc: 'Repository access level. One of `disabled`, `private` or `enabled`'
         optional :merge_requests_access_level, type: String, values: %w(disabled private enabled), desc: 'Merge requests access level. One of `disabled`, `private` or `enabled`'
+        optional :forking_access_level, type: String, values: %w(disabled private enabled), desc: 'Forks access level. One of `disabled`, `private` or `enabled`'
         optional :wiki_access_level, type: String, values: %w(disabled private enabled), desc: 'Wiki access level. One of `disabled`, `private` or `enabled`'
         optional :builds_access_level, type: String, values: %w(disabled private enabled), desc: 'Builds access level. One of `disabled`, `private` or `enabled`'
         optional :snippets_access_level, type: String, values: %w(disabled private enabled), desc: 'Snippets access level. One of `disabled`, `private` or `enabled`'
@@ -104,6 +105,7 @@ module API
           :default_branch,
           :description,
           :emails_disabled,
+          :forking_access_level,
           :issues_access_level,
           :lfs_enabled,
           :merge_requests_access_level,

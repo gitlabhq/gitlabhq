@@ -23,9 +23,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 Example response:
 
 ```json
-[
-  { issues_count : 10 }
-]
+{ "issues_count": 10 }
 ```
 
 ## Get count of recently created merge requests for group
@@ -49,7 +47,5 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 Example response:
 
 ```json
-[
-  { merge_requests_count : 10 }
-]
+{ "merge_requests_count": 10 }
 ```

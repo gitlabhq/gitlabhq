@@ -78,14 +78,15 @@
       .card-footer
         = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
-    - if @group.shared_projects.any?
+    - shared_projects = @group.shared_projects.sort_by(&:name)
+    - unless shared_projects.empty?
       .card
         .card-header
           = _('Projects shared with %{group_name}') % { group_name: @group.name }
           %span.badge.badge-pill
-            #{@group.shared_projects.count}
+            #{shared_projects.size}
         %ul.content-list
-          - @group.shared_projects.sort_by(&:name).each do |project|
+          - shared_projects.each do |project|
             %li
               %strong
                 = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]

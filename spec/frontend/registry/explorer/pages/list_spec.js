@@ -3,6 +3,9 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlPagination, GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import component from '~/registry/explorer/pages/list.vue';
+import QuickstartDropdown from '~/registry/explorer/components/quickstart_dropdown.vue';
+import GroupEmptyState from '~/registry/explorer/components/group_empty_state.vue';
+import ProjectEmptyState from '~/registry/explorer/components/project_empty_state.vue';
 import store from '~/registry/explorer/stores/';
 import { SET_MAIN_LOADING } from '~/registry/explorer/stores/mutation_types/';
 import { imagesListResponse } from '../mock_data';
@@ -24,6 +27,9 @@ describe('List Page', () => {
   const findDetailsLink = () => wrapper.find({ ref: 'detailsLink' });
   const findClipboardButton = () => wrapper.find({ ref: 'clipboardButton' });
   const findPagination = () => wrapper.find(GlPagination);
+  const findQuickStartDropdown = () => wrapper.find(QuickstartDropdown);
+  const findProjectEmptyState = () => wrapper.find(ProjectEmptyState);
+  const findGroupEmptyState = () => wrapper.find(GroupEmptyState);
 
   beforeEach(() => {
     wrapper = shallowMount(component, {
@@ -76,7 +82,7 @@ describe('List Page', () => {
     });
   });
 
-  describe('when isLoading is true', () => {
+  describe('isLoading is true', () => {
     beforeAll(() => store.commit(SET_MAIN_LOADING, true));
 
     afterAll(() => store.commit(SET_MAIN_LOADING, false));
@@ -88,9 +94,49 @@ describe('List Page', () => {
     it('imagesList is not visible', () => {
       expect(findImagesList().exists()).toBe(false);
     });
+
+    it('quick start is not visible', () => {
+      expect(findQuickStartDropdown().exists()).toBe(false);
+    });
   });
 
-  describe('list', () => {
+  describe('list is empty', () => {
+    beforeEach(() => {
+      store.dispatch('receiveImagesListSuccess', { data: [] });
+    });
+
+    it('quick start is not visible', () => {
+      expect(findQuickStartDropdown().exists()).toBe(false);
+    });
+
+    it('project empty state is visible', () => {
+      expect(findProjectEmptyState().exists()).toBe(true);
+    });
+
+    describe('is group page is true', () => {
+      beforeAll(() => {
+        store.dispatch('setInitialState', { isGroupPage: true });
+      });
+
+      afterAll(() => {
+        store.dispatch('setInitialState', { isGroupPage: undefined });
+      });
+
+      it('group empty state is visible', () => {
+        expect(findGroupEmptyState().exists()).toBe(true);
+      });
+
+      it('quick start is not visible', () => {
+        expect(findQuickStartDropdown().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('list is not empty', () => {
+    it('quick start is visible', () => {
+      expect(findQuickStartDropdown().exists()).toBe(true);
+    });
+
     describe('listElement', () => {
       let listElements;
       let firstElement;

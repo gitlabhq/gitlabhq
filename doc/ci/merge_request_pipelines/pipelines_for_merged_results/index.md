@@ -45,7 +45,7 @@ In addition, pipelines for merged results have the following limitations:
   see [#11934](https://gitlab.com/gitlab-org/gitlab/issues/11934).
 - This feature is not available for
   [fast forward merges](../../../user/project/merge_requests/fast_forward_merge.md) yet.
-  To follow progress, see [#58226](https://gitlab.com/gitlab-org/gitlab-foss/issues/58226).
+  To follow progress, see [#58226](https://gitlab.com/gitlab-org/gitlab/-/issues/26996).
 
 ## Enabling Pipelines for Merged Results
 

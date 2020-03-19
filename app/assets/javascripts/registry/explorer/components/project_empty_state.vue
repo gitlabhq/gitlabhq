@@ -1,7 +1,9 @@
 <script>
 import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
+import { mapState, mapGetters } from 'vuex';
+import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { mapState } from 'vuex';
+import { COPY_LOGIN_TITLE, COPY_BUILD_TITLE, COPY_PUSH_TITLE, QUICK_START } from '../constants';
 
 export default {
   name: 'ProjectEmptyState',
@@ -11,20 +13,24 @@ export default {
     GlSprintf,
     GlLink,
   },
+  i18n: {
+    quickStart: QUICK_START,
+    copyLoginTitle: COPY_LOGIN_TITLE,
+    copyBuildTitle: COPY_BUILD_TITLE,
+    copyPushTitle: COPY_PUSH_TITLE,
+    introText: s__(
+      `ContainerRegistry|With the Container Registry, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}`,
+    ),
+    notLoggedInMessage: s__(
+      `ContainerRegistry|If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}Personal Access Token%{personalAccessTokensDocLinkEnd} instead of a password.`,
+    ),
+    addImageText: s__(
+      'ContainerRegistry|You can add an image to this registry with the following commands:',
+    ),
+  },
   computed: {
     ...mapState(['config']),
-    dockerBuildCommand() {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `docker build -t ${this.config.repositoryUrl} .`;
-    },
-    dockerPushCommand() {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `docker push ${this.config.repositoryUrl}`;
-    },
-    dockerLoginCommand() {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `docker login ${this.config.registryHostUrlWithPort}`;
-    },
+    ...mapGetters(['dockerBuildCommand', 'dockerPushCommand', 'dockerLoginCommand']),
   },
 };
 </script>
@@ -36,28 +42,15 @@ export default {
   >
     <template #description>
       <p class="js-no-container-images-text">
-        <gl-sprintf
-          :message="
-            s__(`ContainerRegistry|With the Container Registry, every project can have its own space to
-            store its Docker images. %{docLinkStart}More Information%{docLinkEnd}`)
-          "
-        >
+        <gl-sprintf :message="$options.i18n.introText">
           <template #docLink="{content}">
             <gl-link :href="config.helpPagePath" target="_blank">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </p>
-      <h5>{{ s__('ContainerRegistry|Quick Start') }}</h5>
+      <h5>{{ $options.i18n.quickStart }}</h5>
       <p class="js-not-logged-in-to-registry-text">
-        <gl-sprintf
-          :message="
-            s__(`ContainerRegistry|If you are not already logged in, you need to authenticate to
-             the Container Registry by using your GitLab username and password. If you have
-             %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a
-             %{personalAccessTokensDocLinkStart}Personal Access Token%{personalAccessTokensDocLinkEnd}
-            instead of a password.`)
-          "
-        >
+        <gl-sprintf :message="$options.i18n.notLoggedInMessage">
           <template #twofaDocLink="{content}">
             <gl-link :href="config.twoFactorAuthHelpLink" target="_blank">{{ content }}</gl-link>
           </template>
@@ -73,18 +66,14 @@ export default {
         <span class="input-group-append">
           <clipboard-button
             :text="dockerLoginCommand"
-            :title="s__('ContainerRegistry|Copy login command')"
+            :title="$options.i18n.copyLoginTitle"
             class="input-group-text"
           />
         </span>
       </div>
       <p></p>
       <p>
-        {{
-          s__(
-            'ContainerRegistry|You can add an image to this registry with the following commands:',
-          )
-        }}
+        {{ $options.i18n.addImageText }}
       </p>
 
       <div class="input-group append-bottom-10">
@@ -92,7 +81,7 @@ export default {
         <span class="input-group-append">
           <clipboard-button
             :text="dockerBuildCommand"
-            :title="s__('ContainerRegistry|Copy build command')"
+            :title="$options.i18n.copyBuildTitle"
             class="input-group-text"
           />
         </span>
@@ -103,7 +92,7 @@ export default {
         <span class="input-group-append">
           <clipboard-button
             :text="dockerPushCommand"
-            :title="s__('ContainerRegistry|Copy push command')"
+            :title="$options.i18n.copyPushTitle"
             class="input-group-text"
           />
         </span>

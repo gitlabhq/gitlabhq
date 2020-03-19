@@ -3,6 +3,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
 import { GlEmptyState } from '../stubs';
 import projectEmptyState from '~/registry/explorer/components/project_empty_state.vue';
+import * as getters from '~/registry/explorer/stores/getters';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -23,6 +24,7 @@ describe('Registry Project Empty state', () => {
           noContainersImage: 'bazFoo',
         },
       },
+      getters,
     });
     wrapper = shallowMount(projectEmptyState, {
       localVue,

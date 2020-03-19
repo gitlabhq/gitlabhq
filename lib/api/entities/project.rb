@@ -59,6 +59,7 @@ module API
       expose(:issues_access_level) { |project, options| project.project_feature.string_access_level(:issues) }
       expose(:repository_access_level) { |project, options| project.project_feature.string_access_level(:repository) }
       expose(:merge_requests_access_level) { |project, options| project.project_feature.string_access_level(:merge_requests) }
+      expose(:forking_access_level) { |project, options| project.project_feature.string_access_level(:forking) }
       expose(:wiki_access_level) { |project, options| project.project_feature.string_access_level(:wiki) }
       expose(:builds_access_level) { |project, options| project.project_feature.string_access_level(:builds) }
       expose(:snippets_access_level) { |project, options| project.project_feature.string_access_level(:snippets) }

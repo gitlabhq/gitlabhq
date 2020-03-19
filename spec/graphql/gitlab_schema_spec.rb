@@ -52,12 +52,6 @@ describe GitlabSchema do
     expect(connection).to eq(Gitlab::Graphql::Connections::FilterableArrayConnection)
   end
 
-  it 'paginates OffsetActiveRecordRelation using `Pagination::OffsetActiveRecordRelationConnection`' do
-    connection = implementations[Gitlab::Graphql::Pagination::Relations::OffsetActiveRecordRelation.name]
-
-    expect(connection).to eq(Gitlab::Graphql::Pagination::OffsetActiveRecordRelationConnection)
-  end
-
   describe '.execute' do
     context 'for different types of users' do
       context 'when no context' do
