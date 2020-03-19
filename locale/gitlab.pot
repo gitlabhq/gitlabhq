@@ -4126,6 +4126,9 @@ msgstr ""
 msgid "ClusterIntegration|Base domain"
 msgstr ""
 
+msgid "ClusterIntegration|Blocking mode"
+msgstr ""
+
 msgid "ClusterIntegration|CA Certificate"
 msgstr ""
 
@@ -4324,6 +4327,9 @@ msgstr ""
 msgid "ClusterIntegration|Gitlab Integration"
 msgstr ""
 
+msgid "ClusterIntegration|Global default"
+msgstr ""
+
 msgid "ClusterIntegration|Google Cloud Platform project"
 msgstr ""
 
@@ -4481,6 +4487,9 @@ msgid "ClusterIntegration|Loading subnets"
 msgstr ""
 
 msgid "ClusterIntegration|Loading subnetworks"
+msgstr ""
+
+msgid "ClusterIntegration|Logging mode"
 msgstr ""
 
 msgid "ClusterIntegration|Machine type"
@@ -4709,6 +4718,9 @@ msgid "ClusterIntegration|Service token is required."
 msgstr ""
 
 msgid "ClusterIntegration|Set a prefix for your namespaces. If not set, defaults to your project path. If modified, existing environments will use their current namespaces until the cluster cache is cleared."
+msgstr ""
+
+msgid "ClusterIntegration|Set the global mode for the WAF in this cluster. This can be overridden at the environmental level."
 msgstr ""
 
 msgid "ClusterIntegration|Show"

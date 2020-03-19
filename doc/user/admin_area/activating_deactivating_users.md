@@ -36,7 +36,7 @@ A user can be deactivated from the Admin Area. To do this:
 Please note that for the deactivation option to be visible to an admin, the user:
 
 - Must be currently active.
-- Should not have any activity in the last 180 days.
+- Must not have any signins or activity in the last 180 days.
 
 Users can also be deactivated using the [GitLab API](../../api/users.md#deactivate-user).
 

@@ -41,3 +41,10 @@ RSpec.shared_examples 'update with repository actions' do
     end
   end
 end
+
+RSpec.shared_examples 'snippet response without repository URLs' do
+  it 'skip inclusion of repository URLs' do
+    expect(json_response).not_to have_key('ssh_url_to_repo')
+    expect(json_response).not_to have_key('http_url_to_repo')
+  end
+end

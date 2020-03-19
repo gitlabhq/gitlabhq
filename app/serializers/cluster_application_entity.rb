@@ -15,4 +15,5 @@ class ClusterApplicationEntity < Grape::Entity
   expose :can_uninstall?, as: :can_uninstall
   expose :available_domains, using: Serverless::DomainEntity, if: -> (e, _) { e.respond_to?(:available_domains) }
   expose :pages_domain, using: Serverless::DomainEntity, if: -> (e, _) { e.respond_to?(:pages_domain) }
+  expose :modsecurity_mode, if: -> (e, _) { e.respond_to?(:modsecurity_mode) }
 end

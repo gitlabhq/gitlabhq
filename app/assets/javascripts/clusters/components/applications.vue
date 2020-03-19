@@ -313,6 +313,7 @@ Crossplane runs inside your Kubernetes cluster and supports secure connectivity 
         :install-failed="applications.ingress.installFailed"
         :install-application-request-params="{
           modsecurity_enabled: applications.ingress.modsecurity_enabled,
+          modsecurity_mode: applications.ingress.modsecurity_mode,
         }"
         :uninstallable="applications.ingress.uninstallable"
         :uninstall-successful="applications.ingress.uninstallSuccessful"

@@ -53,9 +53,11 @@ export default class ClusterStore {
           ...applicationInitialState,
           title: s__('ClusterIntegration|Ingress'),
           modsecurity_enabled: false,
+          modsecurity_mode: null,
           externalIp: null,
           externalHostname: null,
           isEditingModSecurityEnabled: false,
+          isEditingModSecurityMode: false,
           updateFailed: false,
         },
         cert_manager: {
@@ -213,6 +215,9 @@ export default class ClusterStore {
         this.state.applications.ingress.externalHostname = serverAppEntry.external_hostname;
         if (!this.state.applications.ingress.isEditingModSecurityEnabled) {
           this.state.applications.ingress.modsecurity_enabled = serverAppEntry.modsecurity_enabled;
+        }
+        if (!this.state.applications.ingress.isEditingModSecurityMode) {
+          this.state.applications.ingress.modsecurity_mode = serverAppEntry.modsecurity_mode;
         }
       } else if (appId === CERT_MANAGER) {
         this.state.applications.cert_manager.email =

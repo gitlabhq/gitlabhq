@@ -82,6 +82,7 @@ describe('Clusters Store', () => {
             externalHostname: null,
             installed: false,
             isEditingModSecurityEnabled: false,
+            isEditingModSecurityMode: false,
             installFailed: true,
             uninstallable: false,
             updateFailed: false,
@@ -89,6 +90,7 @@ describe('Clusters Store', () => {
             uninstallFailed: false,
             validationError: null,
             modsecurity_enabled: false,
+            modsecurity_mode: undefined,
           },
           runner: {
             title: 'GitLab Runner',

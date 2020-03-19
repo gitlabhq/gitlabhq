@@ -312,6 +312,10 @@ class Snippet < ApplicationRecord
     Digest::SHA256.hexdigest("#{title}#{description}#{created_at}#{updated_at}")
   end
 
+  def versioned_enabled_for?(user)
+    repository_exists? && ::Feature.enabled?(:version_snippets, user)
+  end
+
   class << self
     # Searches for snippets with a matching title, description or file name.
     #

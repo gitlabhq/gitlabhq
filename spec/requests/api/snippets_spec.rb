@@ -139,8 +139,8 @@ describe API::Snippets do
   describe 'GET /snippets/:id' do
     let_it_be(:admin) { create(:user, :admin) }
     let_it_be(:author) { create(:user) }
-    let_it_be(:private_snippet) { create(:personal_snippet, :private, author: author) }
-    let_it_be(:internal_snippet) { create(:personal_snippet, :internal, author: author) }
+    let_it_be(:private_snippet) { create(:personal_snippet, :repository, :private, author: author) }
+    let_it_be(:internal_snippet) { create(:personal_snippet, :repository, :internal, author: author) }
 
     it 'requires authentication' do
       get api("/snippets/#{private_snippet.id}", nil)
@@ -157,6 +157,18 @@ describe API::Snippets do
       expect(json_response['description']).to eq(private_snippet.description)
       expect(json_response['file_name']).to eq(private_snippet.file_name)
       expect(json_response['visibility']).to eq(private_snippet.visibility)
+      expect(json_response['ssh_url_to_repo']).to eq(private_snippet.ssh_url_to_repo)
+      expect(json_response['http_url_to_repo']).to eq(private_snippet.http_url_to_repo)
+    end
+
+    context 'when feature flag :version_snippets is disabled' do
+      before do
+        stub_feature_flags(version_snippets: false)
+
+        get api("/snippets/#{private_snippet.id}", author)
+      end
+
+      it_behaves_like 'snippet response without repository URLs'
     end
 
     it 'shows private snippets to an admin' do

@@ -11,6 +11,14 @@ class SnippetPresenter < Gitlab::View::Presenter::Delegated
     Gitlab::UrlBuilder.build(snippet, raw: true)
   end
 
+  def ssh_url_to_repo
+    snippet.ssh_url_to_repo if snippet.versioned_enabled_for?(current_user)
+  end
+
+  def http_url_to_repo
+    snippet.http_url_to_repo if snippet.versioned_enabled_for?(current_user)
+  end
+
   def can_read_snippet?
     can_access_resource?("read")
   end

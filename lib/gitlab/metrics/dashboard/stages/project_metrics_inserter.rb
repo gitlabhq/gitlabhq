@@ -75,6 +75,7 @@ module Gitlab
 
           def find_metric(metrics, metric)
             return unless metrics
+            return unless metric.identifier
 
             metrics.find { |m| m[:id] == metric.identifier }
           end

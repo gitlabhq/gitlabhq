@@ -6,6 +6,9 @@ module Clusters
       VERSION = '1.29.7'
       INGRESS_CONTAINER_NAME = 'nginx-ingress-controller'
       MODSECURITY_LOG_CONTAINER_NAME = 'modsecurity-log'
+      MODSECURITY_MODE_LOGGING = "DetectionOnly"
+      MODSECURITY_MODE_BLOCKING = "On"
+      MODSECURITY_OWASP_RULES_FILE = "/etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf"
 
       self.table_name = 'clusters_applications_ingress'
 
@@ -18,10 +21,13 @@ module Clusters
       default_value_for :ingress_type, :nginx
       default_value_for :modsecurity_enabled, true
       default_value_for :version, VERSION
+      default_value_for :modsecurity_mode, :logging
 
       enum ingress_type: {
         nginx: 1
       }
+
+      enum modsecurity_mode: { logging: 0, blocking: 1 }
 
       FETCH_IP_ADDRESS_DELAY = 30.seconds
       MODSEC_SIDECAR_INITIAL_DELAY_SECONDS = 10
@@ -82,7 +88,8 @@ module Clusters
           "controller" => {
             "config" => {
               "enable-modsecurity" => "true",
-              "enable-owasp-modsecurity-crs" => "true",
+              "enable-owasp-modsecurity-crs" => "false",
+              "modsecurity-snippet" => modsecurity_snippet_content,
               "modsecurity.conf" => modsecurity_config_content
             },
             "extraContainers" => [
@@ -156,6 +163,11 @@ module Clusters
 
       def application_jupyter_nil_or_installable?
         cluster.application_jupyter.nil? || cluster.application_jupyter&.installable?
+      end
+
+      def modsecurity_snippet_content
+        sec_rule_engine = logging? ? MODSECURITY_MODE_LOGGING : MODSECURITY_MODE_BLOCKING
+        "SecRuleEngine #{sec_rule_engine}\nInclude #{MODSECURITY_OWASP_RULES_FILE}"
       end
     end
   end

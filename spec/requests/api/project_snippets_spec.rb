@@ -85,7 +85,7 @@ describe API::ProjectSnippets do
 
   describe 'GET /projects/:project_id/snippets/:id' do
     let(:user) { create(:user) }
-    let(:snippet) { create(:project_snippet, :public, project: project) }
+    let(:snippet) { create(:project_snippet, :public, :repository, project: project) }
 
     it 'returns snippet json' do
       get api("/projects/#{project.id}/snippets/#{snippet.id}", user)
@@ -95,6 +95,18 @@ describe API::ProjectSnippets do
       expect(json_response['title']).to eq(snippet.title)
       expect(json_response['description']).to eq(snippet.description)
       expect(json_response['file_name']).to eq(snippet.file_name)
+      expect(json_response['ssh_url_to_repo']).to eq(snippet.ssh_url_to_repo)
+      expect(json_response['http_url_to_repo']).to eq(snippet.http_url_to_repo)
+    end
+
+    context 'when feature flag :version_snippets is disabled' do
+      before do
+        stub_feature_flags(version_snippets: false)
+
+        get api("/projects/#{project.id}/snippets/#{snippet.id}", user)
+      end
+
+      it_behaves_like 'snippet response without repository URLs'
     end
 
     it 'returns 404 for invalid snippet id' do

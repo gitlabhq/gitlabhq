@@ -140,13 +140,10 @@ describe Clusters::Applications::Ingress do
   end
 
   describe '#values' do
-    let(:project) { build(:project) }
-    let(:cluster) { build(:cluster, projects: [project]) }
+    subject { ingress }
 
     context 'when modsecurity_enabled is enabled' do
       before do
-        allow(subject).to receive(:cluster).and_return(cluster)
-
         allow(subject).to receive(:modsecurity_enabled).and_return(true)
       end
 
@@ -154,8 +151,24 @@ describe Clusters::Applications::Ingress do
         expect(subject.values).to include("enable-modsecurity: 'true'")
       end
 
-      it 'includes modsecurity core ruleset enablement' do
-        expect(subject.values).to include("enable-owasp-modsecurity-crs: 'true'")
+      it 'includes modsecurity core ruleset enablement set to false' do
+        expect(subject.values).to include("enable-owasp-modsecurity-crs: 'false'")
+      end
+
+      it 'includes modsecurity snippet with information related to security rules' do
+        expect(subject.values).to include("SecRuleEngine DetectionOnly")
+        expect(subject.values).to include("Include #{described_class::MODSECURITY_OWASP_RULES_FILE}")
+      end
+
+      context 'when modsecurity_mode is set to :blocking' do
+        before do
+          subject.blocking!
+        end
+
+        it 'includes modsecurity snippet with information related to security rules' do
+          expect(subject.values).to include("SecRuleEngine On")
+          expect(subject.values).to include("Include #{described_class::MODSECURITY_OWASP_RULES_FILE}")
+        end
       end
 
       it 'includes modsecurity.conf content' do
@@ -176,7 +189,6 @@ describe Clusters::Applications::Ingress do
 
     context 'when modsecurity_enabled is disabled' do
       before do
-        allow(subject).to receive(:cluster).and_return(cluster)
         allow(subject).to receive(:modsecurity_enabled).and_return(false)
       end
 

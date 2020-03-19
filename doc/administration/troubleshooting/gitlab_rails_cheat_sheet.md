@@ -840,7 +840,7 @@ GitLab Rails console:
 
 ```ruby
 projects_and_size = []
-# a list of projects you want to look at, can get these however
+# You need to specify the projects that you want to look through. You can get these in any manner.
 projects = Project.last(100)
 
 projects.each do |p|

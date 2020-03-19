@@ -38,6 +38,7 @@
         "email": { "type": ["string", "null"] },
         "stack": { "type": ["string", "null"] },
         "modsecurity_enabled": { "type": ["boolean", "null"] },
+        "modsecurity_mode": {"type": ["integer", "0"]},
         "update_available": { "type": ["boolean", "null"] },
         "can_uninstall": { "type": "boolean" },
         "available_domains": {

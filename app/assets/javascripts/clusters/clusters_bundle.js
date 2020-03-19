@@ -256,7 +256,8 @@ export default class Clusters {
     eventHub.$on('uninstallApplication', data => this.uninstallApplication(data));
     eventHub.$on('setCrossplaneProviderStack', data => this.setCrossplaneProviderStack(data));
     eventHub.$on('setIngressModSecurityEnabled', data => this.setIngressModSecurityEnabled(data));
-    eventHub.$on('resetIngressModSecurityEnabled', id => this.resetIngressModSecurityEnabled(id));
+    eventHub.$on('setIngressModSecurityMode', data => this.setIngressModSecurityMode(data));
+    eventHub.$on('resetIngressModSecurityChanges', id => this.resetIngressModSecurityChanges(id));
     // Add event listener to all the banner close buttons
     this.addBannerCloseHandler(this.unreachableContainer, 'unreachable');
     this.addBannerCloseHandler(this.authenticationFailureContainer, 'authentication_failure');
@@ -271,7 +272,8 @@ export default class Clusters {
     eventHub.$off('setCrossplaneProviderStack');
     eventHub.$off('uninstallApplication');
     eventHub.$off('setIngressModSecurityEnabled');
-    eventHub.$off('resetIngressModSecurityEnabled');
+    eventHub.$off('setIngressModSecurityMode');
+    eventHub.$off('resetIngressModSecurityChanges');
   }
 
   initPolling(method, successCallback, errorCallback) {
@@ -525,8 +527,14 @@ export default class Clusters {
     this.store.updateAppProperty(id, 'modsecurity_enabled', modSecurityEnabled);
   }
 
-  resetIngressModSecurityEnabled(id) {
+  setIngressModSecurityMode({ id, modSecurityMode }) {
+    this.store.updateAppProperty(id, 'isEditingModSecurityMode', true);
+    this.store.updateAppProperty(id, 'modsecurity_mode', modSecurityMode);
+  }
+
+  resetIngressModSecurityChanges(id) {
     this.store.updateAppProperty(id, 'isEditingModSecurityEnabled', false);
+    this.store.updateAppProperty(id, 'isEditingModSecurityMode', false);
   }
 
   destroy() {

@@ -1016,6 +1016,15 @@ When updating the `gitaly['listen_addr']` or `gitaly['prometheus_listen_addr']` 
 
 When this occurs, performing a `sudo gitlab-ctl restart` will resolve the issue. This will no longer be necessary after [this issue](https://gitlab.com/gitlab-org/gitaly/issues/2521) is resolved.
 
+### Permission denied errors appearing in Gitaly logs when accessing repositories from a standalone Gitaly node
+
+If this error occurs even though file permissions are correct, it's likely that
+the Gitaly node is experiencing
+[clock drift](https://en.wikipedia.org/wiki/Clock_drift).
+
+Please ensure that the GitLab and Gitaly nodes are synchronized and use an NTP time
+server to keep them synchronized if possible.
+
 ### Praefect
 
 Praefect is an experimental daemon that allows for replication of the Git data.

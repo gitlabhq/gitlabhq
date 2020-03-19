@@ -1161,9 +1161,11 @@ Represents a snippet entry
 | `description` | String | Description of the snippet |
 | `descriptionHtml` | String | The GitLab Flavored Markdown rendering of `description` |
 | `fileName` | String | File Name of the snippet |
+| `httpUrlToRepo` | String | HTTP URL to the snippet repository |
 | `id` | ID! | Id of the snippet |
 | `project` | Project | The project the snippet is associated with |
 | `rawUrl` | String! | Raw URL of the snippet |
+| `sshUrlToRepo` | String | SSH URL to the snippet repository |
 | `title` | String! | Title of the snippet |
 | `updatedAt` | Time! | Timestamp this snippet was updated |
 | `userPermissions` | SnippetPermissions! | Permissions for the current user on the resource |

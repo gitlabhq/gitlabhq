@@ -66,3 +66,6 @@ export const APPLICATIONS = [
 ];
 
 export const INGRESS_DOMAIN_SUFFIX = '.nip.io';
+
+export const LOGGING_MODE = 'logging';
+export const BLOCKING_MODE = 'blocking';

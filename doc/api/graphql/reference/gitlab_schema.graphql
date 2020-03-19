@@ -7356,6 +7356,11 @@ type Snippet implements Noteable {
   fileName: String
 
   """
+  HTTP URL to the snippet repository
+  """
+  httpUrlToRepo: String
+
+  """
   Id of the snippet
   """
   id: ID!
@@ -7394,6 +7399,11 @@ type Snippet implements Noteable {
   Raw URL of the snippet
   """
   rawUrl: String!
+
+  """
+  SSH URL to the snippet repository
+  """
+  sshUrlToRepo: String
 
   """
   Title of the snippet
