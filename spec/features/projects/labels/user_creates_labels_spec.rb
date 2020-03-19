@@ -3,8 +3,8 @@
 require "spec_helper"
 
 describe "User creates labels" do
-  set(:project) { create(:project_empty_repo, :public) }
-  set(:user) { create(:user) }
+  let_it_be(:project) { create(:project_empty_repo, :public) }
+  let_it_be(:user) { create(:user) }
 
   shared_examples_for "label creation" do
     it "creates new label" do
@@ -66,7 +66,7 @@ describe "User creates labels" do
   end
 
   context "in another project" do
-    set(:another_project) { create(:project_empty_repo, :public) }
+    let_it_be(:another_project) { create(:project_empty_repo, :public) }
 
     before do
       create(:label, project: project, title: "bug") # Create label for `project` (not `another_project`) project.

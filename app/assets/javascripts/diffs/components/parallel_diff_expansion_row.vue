@@ -49,7 +49,7 @@ export default {
         :line="line.left"
         :is-top="isTop"
         :is-bottom="isBottom"
-        :colspan="4"
+        :colspan="6"
       />
     </template>
   </tr>

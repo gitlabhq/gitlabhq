@@ -25,8 +25,18 @@ specify themselves as a code owner, all before the new changes
 get merged to the default branch.
 
 When a file matches multiple entries in the `CODEOWNERS` file,
-the users from all entries are displayed on the blob page of
-the given file.
+the users from last pattern matching the file are displayed on the
+blob page of the given file. For example, you have the following
+`CODEOWNERS` file:
+
+```
+README.md @user1
+
+# This line would also match the file README.md
+*.md @user2
+```
+
+The user that would show for `README.md` would be `@user2`.
 
 ## Approvals by Code Owners
 

@@ -58,7 +58,7 @@ describe API::Discussions do
         post api("/projects/#{project.id}/merge_requests/#{noteable['iid']}/discussions", user),
           params: { body: 'hi!', position: position }
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
   end

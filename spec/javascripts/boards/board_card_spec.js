@@ -32,7 +32,7 @@ describe('Board card', () => {
     const label1 = new ListLabel({
       id: 3,
       title: 'testing 123',
-      color: 'blue',
+      color: '#000cff',
       text_color: 'white',
       description: 'test',
     });
@@ -151,12 +151,6 @@ describe('Board card', () => {
 
     it('does not set detail issue if link is clicked', () => {
       triggerEvent('mouseup', vm.$el.querySelector('a'));
-
-      expect(boardsStore.detail.issue).toEqual({});
-    });
-
-    it('does not set detail issue if button is clicked', () => {
-      triggerEvent('mouseup', vm.$el.querySelector('button'));
 
       expect(boardsStore.detail.issue).toEqual({});
     });

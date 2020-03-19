@@ -59,7 +59,7 @@ module ProjectForksHelper
         bare_repo: TestEnv.forked_repo_path_bare,
         refs: TestEnv::FORKED_BRANCH_SHA
       )
-      forked_project.repository.after_import
+      forked_project.repository.expire_content_cache
 
       forked_project
     end

@@ -144,7 +144,7 @@ module SystemNotes
     #
     # Returns Boolean
     def cross_reference_disallowed?(mentioner)
-      return true if noteable.is_a?(ExternalIssue) && !noteable.project.jira_tracker_active?
+      return true if noteable.is_a?(ExternalIssue) && !noteable.project&.external_references_supported?
       return false unless mentioner.is_a?(MergeRequest)
       return false unless noteable.is_a?(Commit)
 
@@ -284,6 +284,12 @@ module SystemNotes
 
     def close_after_error_tracking_resolve
       body = _('resolved the corresponding error and closed the issue.')
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'closed'))
+    end
+
+    def auto_resolve_prometheus_alert
+      body = 'automatically closed this issue because the alert resolved.'
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'closed'))
     end

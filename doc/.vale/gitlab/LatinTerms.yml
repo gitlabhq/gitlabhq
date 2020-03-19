@@ -1,0 +1,17 @@
+---
+# Checks for use of latin terms..
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: substitution
+message: Use "%s" instead of "%s," but consider rewriting the sentence.
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+level: warning
+nonword: true
+ignorecase: true
+swap:
+  e\.g\.: for example
+  e\. g\.: for example
+  i\.e\.: that is
+  i\. e\.: that is
+  etc\.: and so on
+  et cetera: and so on

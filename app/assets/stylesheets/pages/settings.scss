@@ -130,6 +130,10 @@
   border-radius: $border-radius-base;
 }
 
+.empty-variables {
+  padding: 20px 0;
+}
+
 .warning-title {
   color: $orange-500;
 }
@@ -370,3 +374,31 @@
 .push-pull-table {
   margin-top: 1em;
 }
+
+.ci-variable-table {
+  table {
+    thead {
+      border-bottom: 1px solid $white-normal;
+    }
+
+    tr {
+      td,
+      th {
+        padding-left: 0;
+      }
+
+      th {
+        background-color: transparent;
+        font-weight: $gl-font-weight-bold;
+        border: 0;
+      }
+    }
+  }
+
+  @media(max-width: map-get($grid-breakpoints, lg)-1) {
+    .truncated-container {
+      justify-content: flex-end;
+    }
+  }
+}
+

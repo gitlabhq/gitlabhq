@@ -30,6 +30,8 @@ The following metrics are available:
 | `gitlab_cache_misses_total`                                    | Counter   |                   10.2 | Cache read miss                                                                                     | controller, action                                  |
 | `gitlab_cache_operation_duration_seconds`                      | Histogram |                   10.2 | Cache access time                                                                                   |                                                     |
 | `gitlab_cache_operations_total`                                | Counter   |                   12.2 | Cache operations by controller/action                                                               | controller, action, operation                       |
+| `job_waiter_started_total`                                     | Counter   |                   12.9 | Number of batches of jobs started where a web request is waiting for the jobs to complete           | worker                                              |
+| `job_waiter_timeouts_total`                                    | Counter   |                   12.9 | Number of batches of jobs that timed out where a web request is waiting for the jobs to complete    | worker                                              |
 | `gitlab_database_transaction_seconds`                          | Histogram |                   12.1 | Time spent in database transactions, in seconds                                                     |                                                     |
 | `gitlab_method_call_duration_seconds`                          | Histogram |                   10.2 | Method calls real duration                                                                          | controller, action, module, method                  |
 | `gitlab_page_out_of_bounds`                                    | Counter   |                   12.8 | Counter for the PageLimiter pagination limit being hit                                              | controller, action, bot                             |
@@ -84,13 +86,15 @@ The following metrics are available:
 | `failed_login_captcha_total`                                   | Gauge     |                   11.0 | Counter of failed CAPTCHA attempts during login                                                     |                                                     |
 | `successful_login_captcha_total`                               | Gauge     |                   11.0 | Counter of successful CAPTCHA attempts during login                                                 |                                                     |
 | `auto_devops_pipelines_completed_total`                        | Counter   |                   12.7 | Counter of completed Auto DevOps pipelines, labeled by status                                       |                                                     |
-| `sidekiq_jobs_cpu_seconds`                                     | Histogram |                   12.4 | Seconds of cpu time to run Sidekiq job                                                              |                                                     |
-| `sidekiq_jobs_completion_seconds`                              | Histogram |                   12.2 | Seconds to complete Sidekiq job                                                                     |                                                     |
-| `sidekiq_jobs_queue_duration_seconds`                          | Histogram |                   12.5 | Duration in seconds that a Sidekiq job was queued before being executed                             |                                                     |
-| `sidekiq_jobs_failed_total`                                    | Counter   |                   12.2 | Sidekiq jobs failed                                                                                 |                                                     |
-| `sidekiq_jobs_retried_total`                                   | Counter   |                   12.2 | Sidekiq jobs retried                                                                                |                                                     |
-| `sidekiq_running_jobs`                                         | Gauge     |                   12.2 | Number of Sidekiq jobs running                                                                      |                                                     |
-| `sidekiq_concurrency`                                          | Gauge     |                   12.5 | Maximum number of Sidekiq jobs                                                                      |                                                     |
+| `sidekiq_jobs_cpu_seconds`                                     | Histogram |                   12.4 | Seconds of cpu time to run Sidekiq job                                                              | queue, boundary, external_dependencies, feature_category, job_status, urgency |
+| `sidekiq_jobs_completion_seconds`                              | Histogram |                   12.2 | Seconds to complete Sidekiq job                                                                     | queue, boundary, external_dependencies, feature_category, job_status, urgency |
+| `sidekiq_jobs_db_seconds`                                      | Histogram |                   12.9 | Seconds of DB time to run Sidekiq job                                                               | queue, boundary, external_dependencies, feature_category, job_status, urgency |
+| `sidekiq_jobs_gitaly_seconds`                                  | Histogram |                   12.9 | Seconds of Gitaly time to run Sidekiq job                                                           | queue, boundary, external_dependencies, feature_category, job_status, urgency |
+| `sidekiq_jobs_queue_duration_seconds`                          | Histogram |                   12.5 | Duration in seconds that a Sidekiq job was queued before being executed                             | queue, boundary, external_dependencies, feature_category, urgency |
+| `sidekiq_jobs_failed_total`                                    | Counter   |                   12.2 | Sidekiq jobs failed                                                                                 | queue, boundary, external_dependencies, feature_category, urgency |
+| `sidekiq_jobs_retried_total`                                   | Counter   |                   12.2 | Sidekiq jobs retried                                                                                | queue, boundary, external_dependencies, feature_category, urgency |
+| `sidekiq_running_jobs`                                         | Gauge     |                   12.2 | Number of Sidekiq jobs running                                                                      | queue, boundary, external_dependencies, feature_category, urgency |
+| `sidekiq_concurrency`                                          | Gauge     |                   12.5 | Maximum number of Sidekiq jobs                                                                      |                                                                   |
 
 ## Metrics controlled by a feature flag
 
@@ -178,7 +182,7 @@ Unicorn specific metrics, when Unicorn is used.
 | `unicorn_queued_connections` | Gauge | 11.0  | The number of queued Unicorn connections           |
 | `unicorn_workers`            | Gauge | 12.0  | The number of Unicorn workers                      |
 
-## Puma Metrics **(EXPERIMENTAL)**
+## Puma Metrics
 
 When Puma is used instead of Unicorn, the following metrics are available:
 

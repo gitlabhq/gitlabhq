@@ -14,7 +14,7 @@ describe API::ProjectEvents do
       it 'returns 404 for private project' do
         get api("/projects/#{private_project.id}/events")
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'returns 200 status for a public project' do
@@ -22,7 +22,7 @@ describe API::ProjectEvents do
 
         get api("/projects/#{public_project.id}/events")
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -36,14 +36,14 @@ describe API::ProjectEvents do
       it 'returns only accessible events' do
         get api("/projects/#{public_project.id}/events", non_member)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.size).to eq(1)
       end
 
       it 'returns all events when the user has access' do
         get api("/projects/#{public_project.id}/events", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.size).to eq(2)
       end
     end
@@ -92,7 +92,7 @@ describe API::ProjectEvents do
       it 'returns 404' do
         get api("/projects/#{private_project.id}/events", non_member)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -100,7 +100,7 @@ describe API::ProjectEvents do
       it 'returns project events' do
         get api("/projects/#{private_project.id}/events?action=closed&target_type=issue&after=2016-12-1&before=2016-12-31", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
@@ -109,7 +109,7 @@ describe API::ProjectEvents do
       it 'returns 404 if project does not exist' do
         get api("/projects/1234/events", user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       context 'when the requesting token does not have "api" scope' do
@@ -118,7 +118,7 @@ describe API::ProjectEvents do
         it 'returns a "403" response' do
           get api("/projects/#{private_project.id}/events", personal_access_token: token)
 
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -142,7 +142,7 @@ describe API::ProjectEvents do
           get api("/projects/#{private_project.id}/events", user), params: { target_type: :merge_request }
         end.not_to exceed_all_query_limit(control_count)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response.size).to eq(2)
         expect(json_response.map { |r| r['target_id'] }).to match_array([merge_request1.id, merge_request2.id])

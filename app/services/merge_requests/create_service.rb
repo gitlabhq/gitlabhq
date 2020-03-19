@@ -13,19 +13,20 @@ module MergeRequests
       create(merge_request)
     end
 
-    def before_create(merge_request)
-      # current_user (defined in BaseService) is not available within run_after_commit block
-      user = current_user
-      merge_request.run_after_commit do
-        NewMergeRequestWorker.perform_async(merge_request.id, user.id)
-      end
-    end
-
     def after_create(issuable)
+      # Add new items to MergeRequests::AfterCreateService if they can
+      # be performed in Sidekiq
+      NewMergeRequestWorker.perform_async(issuable.id, current_user.id)
+
       todo_service.new_merge_request(issuable, current_user)
       issuable.cache_merge_request_closes_issues!(current_user)
-      create_pipeline_for(issuable, current_user)
-      issuable.update_head_pipeline
+
+      # https://gitlab.com/gitlab-org/gitlab/issues/208813
+      unless ::Feature.enabled?(:create_merge_request_pipelines_in_sidekiq, project)
+        create_pipeline_for(issuable, current_user)
+        issuable.update_head_pipeline
+      end
+
       Gitlab::UsageDataCounters::MergeRequestCounter.count(:create)
       link_lfs_objects(issuable)
 

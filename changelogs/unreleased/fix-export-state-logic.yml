@@ -1,0 +1,5 @@
+---
+title: Fix logic to determine project export state and add regeneration_in_progress state
+merge_request: 23664
+author:
+type: fixed

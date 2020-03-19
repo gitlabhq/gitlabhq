@@ -36,7 +36,8 @@ Example response:
         "id":1,
         "active": false,
         "target_path": "*/welcome",
-        "broadcast_type": "banner"
+        "broadcast_type": "banner",
+        "dismissable": false
     }
 ]
 ```
@@ -73,7 +74,8 @@ Example response:
     "id":1,
     "active":false,
     "target_path": "*/welcome",
-    "broadcast_type": "banner"
+    "broadcast_type": "banner",
+    "dismissable": false
 }
 ```
 
@@ -87,15 +89,16 @@ POST /broadcast_messages
 
 Parameters:
 
-| Attribute   | Type     | Required | Description                                           |
-|:------------|:---------|:---------|:------------------------------------------------------|
-| `message`   | string   | yes      | Message to display.                                   |
-| `starts_at` | datetime | no       | Starting time (defaults to current time).             |
-| `ends_at`   | datetime | no       | Ending time (defaults to one hour from current time). |
-| `color`     | string   | no       | Background color hex code.                            |
-| `font`      | string   | no       | Foreground color hex code.                            |
-| `target_path`| string  | no       | Target path of the broadcast message.                 |
-| `broadcast_type`| string | no     | Appearance type (defaults to banner)                  |
+| Attribute       | Type     | Required | Description                                           |
+|:----------------|:---------|:---------|:------------------------------------------------------|
+| `message`       | string   | yes      | Message to display.                                   |
+| `starts_at`     | datetime | no       | Starting time (defaults to current time).             |
+| `ends_at`       | datetime | no       | Ending time (defaults to one hour from current time). |
+| `color`         | string   | no       | Background color hex code.                            |
+| `font`          | string   | no       | Foreground color hex code.                            |
+| `target_path`   | string   | no       | Target path of the broadcast message.                 |
+| `broadcast_type`| string   | no       | Appearance type (defaults to banner)                  |
+| `dismissable`   | boolean  | no       | Can the user dismiss the message?                     |
 
 Example request:
 
@@ -116,6 +119,7 @@ Example response:
     "active": true,
     "target_path": "*/welcome",
     "broadcast_type": "notification",
+    "dismissable": false
 }
 ```
 
@@ -129,16 +133,17 @@ PUT /broadcast_messages/:id
 
 Parameters:
 
-| Attribute   | Type     | Required | Description                        |
-|:------------|:---------|:---------|:-----------------------------------|
-| `id`        | integer  | yes      | ID of broadcast message to update. |
-| `message`   | string   | no       | Message to display.                |
-| `starts_at` | datetime | no       | Starting time.                     |
-| `ends_at`   | datetime | no       | Ending time.                       |
-| `color`     | string   | no       | Background color hex code.         |
-| `font`      | string   | no       | Foreground color hex code.         |
-| `target_path`| string  | no       | Target path of the broadcast message. |
-| `broadcast_type`| string | no     | Appearance type (defaults to banner) |
+| Attribute       | Type     | Required | Description                           |
+|:----------------|:---------|:---------|:--------------------------------------|
+| `id`            | integer  | yes      | ID of broadcast message to update.    |
+| `message`       | string   | no       | Message to display.                   |
+| `starts_at`     | datetime | no       | Starting time.                        |
+| `ends_at`       | datetime | no       | Ending time.                          |
+| `color`         | string   | no       | Background color hex code.            |
+| `font`          | string   | no       | Foreground color hex code.            |
+| `target_path`   | string   | no       | Target path of the broadcast message. |
+| `broadcast_type`| string   | no       | Appearance type (defaults to banner)  |
+| `dismissable`   | boolean  | no       | Can the user dismiss the message?     |
 
 Example request:
 
@@ -159,6 +164,7 @@ Example response:
     "active": true,
     "target_path": "*/welcome",
     "broadcast_type": "notification",
+    "dismissable": false
 }
 ```
 

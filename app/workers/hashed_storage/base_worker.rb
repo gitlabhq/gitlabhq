@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module HashedStorage
-  class BaseWorker
+  class BaseWorker # rubocop:disable Scalability/IdempotentWorker
     include ExclusiveLeaseGuard
     include WorkerAttributes
 

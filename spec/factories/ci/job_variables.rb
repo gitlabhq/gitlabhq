@@ -6,5 +6,9 @@ FactoryBot.define do
     value { 'VARIABLE_VALUE' }
 
     job factory: :ci_build
+
+    trait :dotenv_source do
+      source { :dotenv }
+    end
   end
 end

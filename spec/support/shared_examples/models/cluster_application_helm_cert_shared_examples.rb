@@ -28,22 +28,46 @@ RSpec.shared_examples 'cluster application helm specs' do |application_name|
   describe '#files' do
     subject { application.files }
 
-    context 'when the helm application does not have a ca_cert' do
+    context 'managed_apps_local_tiller feature flag is disabled' do
       before do
-        application.cluster.application_helm.ca_cert = nil
+        stub_feature_flags(managed_apps_local_tiller: false)
       end
 
-      it 'does not include cert files when there is no ca_cert entry' do
-        expect(subject).not_to include(:'ca.pem', :'cert.pem', :'key.pem')
+      context 'when the helm application does not have a ca_cert' do
+        before do
+          application.cluster.application_helm.ca_cert = nil
+        end
+
+        it 'does not include cert files when there is no ca_cert entry' do
+          expect(subject).not_to include(:'ca.pem', :'cert.pem', :'key.pem')
+        end
+      end
+
+      it 'includes cert files when there is a ca_cert entry' do
+        expect(subject).to include(:'ca.pem', :'cert.pem', :'key.pem')
+        expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
+
+        cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
+        expect(cert.not_after).to be < 60.minutes.from_now
       end
     end
 
-    it 'includes cert files when there is a ca_cert entry' do
-      expect(subject).to include(:'ca.pem', :'cert.pem', :'key.pem')
-      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
+    context 'managed_apps_local_tiller feature flag is enabled' do
+      before do
+        stub_feature_flags(managed_apps_local_tiller: true)
+      end
 
-      cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
-      expect(cert.not_after).to be < 60.minutes.from_now
+      it 'does not include cert files' do
+        expect(subject).not_to include(:'ca.pem', :'cert.pem', :'key.pem')
+      end
+
+      context 'when cluster does not have helm installed' do
+        let(:application) { create(application_name, :no_helm_installed) }
+
+        it 'does not include cert files' do
+          expect(subject).not_to include(:'ca.pem', :'cert.pem', :'key.pem')
+        end
+      end
     end
   end
 end

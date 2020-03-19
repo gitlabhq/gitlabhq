@@ -9,7 +9,7 @@ request on that project will result to a `404` status code.
 
 Lists Issue Boards in the given project.
 
-```
+```plaintext
 GET /projects/:id/boards
 ```
 
@@ -83,7 +83,7 @@ Example response:
 
 Get a single board.
 
-```
+```plaintext
 GET /projects/:id/boards/:board_id
 ```
 
@@ -157,7 +157,7 @@ Example response:
 
 Creates a board.
 
-```
+```plaintext
 POST /projects/:id/boards
 ```
 
@@ -233,7 +233,7 @@ Example response:
 
 Updates a board.
 
-```
+```plaintext
 PUT /projects/:id/boards/:board_id
 ```
 
@@ -312,7 +312,7 @@ Example response:
 
 Deletes a board.
 
-```
+```plaintext
 DELETE /projects/:id/boards/:board_id
 ```
 
@@ -330,7 +330,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitl
 Get a list of the board's lists.
 Does not include `open` and `closed` lists
 
-```
+```plaintext
 GET /projects/:id/boards/:board_id/lists
 ```
 
@@ -387,7 +387,7 @@ Example response:
 
 Get a single board list.
 
-```
+```plaintext
 GET /projects/:id/boards/:board_id/lists/:list_id
 ```
 
@@ -421,7 +421,7 @@ Example response:
 
 Creates a new Issue Board list.
 
-```
+```plaintext
 POST /projects/:id/boards/:board_id/lists
 ```
 
@@ -463,7 +463,7 @@ Example response:
 
 Updates an existing Issue Board list. This call is used to change list position.
 
-```
+```plaintext
 PUT /projects/:id/boards/:board_id/lists/:list_id
 ```
 
@@ -498,7 +498,7 @@ Example response:
 
 Only for admins and project owners. Deletes the board list in question.
 
-```
+```plaintext
 DELETE /projects/:id/boards/:board_id/lists/:list_id
 ```
 

@@ -1,0 +1,5 @@
+---
+title: Add API endpoint for deleting project deploy tokens
+merge_request: 25220
+author:
+type: added

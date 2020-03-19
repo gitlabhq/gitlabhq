@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180702134423_generate_missing_routes.rb')
 
-describe GenerateMissingRoutes, :migration do
+describe GenerateMissingRoutes do
   describe '#up' do
     let(:namespaces) { table(:namespaces) }
     let(:projects) { table(:projects) }

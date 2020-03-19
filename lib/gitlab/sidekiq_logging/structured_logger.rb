@@ -6,6 +6,8 @@ require 'active_record/log_subscriber'
 module Gitlab
   module SidekiqLogging
     class StructuredLogger
+      include LogsJobs
+
       def call(job, queue)
         started_time = get_time
         base_payload = parse_job(job)
@@ -23,10 +25,6 @@ module Gitlab
       end
 
       private
-
-      def base_message(payload)
-        "#{payload['class']} JID-#{payload['jid']}"
-      end
 
       def add_instrumentation_keys!(job, output_payload)
         output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper::KEYS))
@@ -74,20 +72,6 @@ module Gitlab
         # supported OS version can be found at: https://www.rubydoc.info/stdlib/core/2.1.6/Process:clock_gettime
         payload['cpu_s'] = time[:cputime].round(6) if time[:cputime] > 0
         payload['completed_at'] = Time.now.utc.to_f
-      end
-
-      def parse_job(job)
-        # Error information from the previous try is in the payload for
-        # displaying in the Sidekiq UI, but is very confusing in logs!
-        job = job.except('error_backtrace', 'error_class', 'error_message')
-
-        # Add process id params
-        job['pid'] = ::Process.pid
-
-        job.delete('args') unless ENV['SIDEKIQ_LOG_ARGUMENTS']
-        job['args'] = Gitlab::Utils::LogLimitedArray.log_limited_array(job['args']) if job['args']
-
-        job
       end
 
       def elapsed(t0)

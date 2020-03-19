@@ -19,11 +19,11 @@ module Gitlab
 
     def check_change_access!
       unless user_access.can_do_action?(:create_wiki)
-        raise UnauthorizedError, ERROR_MESSAGES[:write_to_wiki]
+        raise ForbiddenError, ERROR_MESSAGES[:write_to_wiki]
       end
 
       if Gitlab::Database.read_only?
-        raise UnauthorizedError, push_to_read_only_message
+        raise ForbiddenError, push_to_read_only_message
       end
 
       true

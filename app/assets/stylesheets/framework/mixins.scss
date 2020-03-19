@@ -257,7 +257,6 @@
     width: 15px;
     height: 15px;
     display: $svg-display;
-    fill: $gl-text-color;
     top: $svg-top;
   }
 
@@ -401,4 +400,22 @@
   font-size: 9px;
   line-height: 16px;
   text-align: center;
+}
+
+@mixin middle-dot-divider {
+  &::after {
+    // Duplicate `content` property used as a fallback
+    // scss-lint:disable DuplicateProperty
+    content: '\00B7'; // middle dot fallback if browser does not support alternative content
+    content: '\00B7' / ''; // tell screen readers to ignore the content https://www.w3.org/TR/css-content-3/#accessibility
+    padding: 0 0.375rem;
+    font-weight: $gl-font-weight-bold;
+  }
+
+  &:last-child {
+    &::after {
+      content: '';
+      padding: 0;
+    }
+  }
 }

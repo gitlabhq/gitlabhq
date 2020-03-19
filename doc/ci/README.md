@@ -50,6 +50,7 @@ To get started with GitLab CI/CD, we recommend you read through
 the following documents:
 
 - [How GitLab CI/CD works](introduction/index.md#how-gitlab-cicd-works).
+- [Fundamental pipeline architectures](pipelines/pipeline_architectures.md).
 - [GitLab CI/CD basic workflow](introduction/index.md#basic-cicd-workflow).
 - [Step-by-step guide for writing `.gitlab-ci.yml` for the first time](../user/project/pages/getting_started_part_four.md).
 
@@ -79,13 +80,13 @@ GitLab CI/CD supports numerous configuration options:
 
 | Configuration | Description  |
 |:--------------|:-------------|
-| [Pipelines](pipelines.md) | Structure your CI/CD process through pipelines. |
+| [Pipelines](pipelines/index.md) | Structure your CI/CD process through pipelines. |
 | [Environment variables](variables/README.md) | Reuse values based on a variable/value key pair. |
 | [Environments](environments.md) | Deploy your application to different environments (e.g., staging, production). |
-| [Job artifacts](../user/project/pipelines/job_artifacts.md) | Output, use, and reuse job artifacts. |
+| [Job artifacts](pipelines/job_artifacts.md) | Output, use, and reuse job artifacts. |
 | [Cache dependencies](caching/index.md) | Cache your dependencies for a faster execution. |
-| [Schedule pipelines](../user/project/pipelines/schedules.md) | Schedule pipelines to run as often as you need. |
-| [Custom path for `.gitlab-ci.yml`](../user/project/pipelines/settings.md#custom-ci-configuration-path) | Define a custom path for the CI/CD configuration file. |
+| [Schedule pipelines](pipelines/schedules.md) | Schedule pipelines to run as often as you need. |
+| [Custom path for `.gitlab-ci.yml`](pipelines/settings.md#custom-ci-configuration-path) | Define a custom path for the CI/CD configuration file. |
 | [Git submodules for CI/CD](git_submodules.md) | Configure jobs for using Git submodules.|
 | [SSH keys for CI/CD](ssh_keys/README.md) | Using SSH keys in your CI pipelines. |
 | [Pipelines triggers](triggers/README.md) | Trigger pipelines through the API. |
@@ -132,7 +133,7 @@ Its feature set is listed on the table below according to DevOps stages.
 | **Secure** ||
 | [Container Scanning](../user/application_security/container_scanning/index.md) **(ULTIMATE)** | Check your Docker containers for known vulnerabilities.|
 | [Dependency Scanning](../user/application_security/dependency_scanning/index.md) **(ULTIMATE)** | Analyze your dependencies for known vulnerabilities. |
-| [License Compliance](../user/application_security/license_compliance/index.md) **(ULTIMATE)** | Search your project dependencies for their licenses. |
+| [License Compliance](../user/compliance/license_compliance/index.md) **(ULTIMATE)** | Search your project dependencies for their licenses. |
 | [Security Test reports](../user/application_security/index.md) **(ULTIMATE)** | Check for app vulnerabilities. |
 
 ## Examples
@@ -148,7 +149,7 @@ As a GitLab administrator, you can change the default behavior
 of GitLab CI/CD for:
 
 - An [entire GitLab instance](../user/admin_area/settings/continuous_integration.md).
-- Specific projects, using [pipelines settings](../user/project/pipelines/settings.md).
+- Specific projects, using [pipelines settings](pipelines/settings.md).
 
 See also:
 

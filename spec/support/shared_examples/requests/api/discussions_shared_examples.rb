@@ -55,6 +55,58 @@ RSpec.shared_examples 'with cross-reference system notes' do
 end
 
 RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name, can_reply_to_individual_notes: false|
+  shared_examples 'is_gitlab_employee attribute presence' do
+    subject { get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user) }
+
+    before do
+      allow(Gitlab).to receive(:com?).and_return(true)
+      user.update(email: email)
+      user.confirm
+    end
+
+    context 'when author is a gitlab employee' do
+      let(:email) { 'test@gitlab.com' }
+
+      it 'returns is_gitlab_employee as true' do
+        subject
+
+        expect(json_response.first["notes"].first["author"]['is_gitlab_employee']).to be true
+      end
+    end
+
+    shared_examples 'non inclusion of gitlab employee badge' do
+      it 'does not include is_gitlab_employee attribute' do
+        subject
+
+        expect(json_response.first["notes"].first["author"]).not_to have_key('is_gitlab_employee')
+      end
+    end
+
+    context 'when author is not a gitlab employee' do
+      let(:email) { 'test@example.com' }
+
+      it_behaves_like 'non inclusion of gitlab employee badge'
+    end
+
+    describe 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(gitlab_employee_badge: false)
+      end
+
+      context 'when author is a gitlab employee' do
+        let(:email) { 'test@gitlab.com' }
+
+        it_behaves_like 'non inclusion of gitlab employee badge'
+      end
+
+      context 'when author is not a gitlab employee' do
+        let(:email) { 'test@example.com' }
+
+        it_behaves_like 'non inclusion of gitlab employee badge'
+      end
+    end
+  end
+
   describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions" do
     it "returns an array of discussions" do
       get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user)
@@ -78,6 +130,8 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    it_behaves_like 'is_gitlab_employee attribute presence'
   end
 
   describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id" do
@@ -196,6 +250,8 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
         end
       end
     end
+
+    it_behaves_like 'is_gitlab_employee attribute presence'
   end
 
   describe "POST /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id/notes" do

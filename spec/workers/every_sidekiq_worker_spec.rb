@@ -71,30 +71,30 @@ describe 'Every Sidekiq worker' do
     # concurrency, so that each job can consume a large amounts of memory. For this reason, on
     # GitLab.com, when a large number of memory-bound jobs arrive at once, we let them queue up
     # rather than scaling the hardware to meet the SLO. For this reason, memory-bound,
-    # latency-sensitive jobs are explicitly discouraged and disabled.
-    it 'is (exclusively) memory-bound or latency-sentitive, not both', :aggregate_failures do
-      latency_sensitive_workers = workers_without_defaults
-                  .select(&:latency_sensitive_worker?)
+    # high urgency jobs are explicitly discouraged and disabled.
+    it 'is (exclusively) memory-bound or high urgency, not both', :aggregate_failures do
+      high_urgency_workers = workers_without_defaults
+                               .select { |worker| worker.get_urgency == :high }
 
-      latency_sensitive_workers.each do |worker|
-        expect(worker.get_worker_resource_boundary).not_to eq(:memory), "#{worker.inspect} cannot be both memory-bound and latency sensitive"
+      high_urgency_workers.each do |worker|
+        expect(worker.get_worker_resource_boundary).not_to eq(:memory), "#{worker.inspect} cannot be both memory-bound and high urgency"
       end
     end
 
-    # In high traffic installations, such as GitLab.com, `latency_sensitive` workers run in a
-    # dedicated fleet. In order to ensure short queue times, `latency_sensitive` jobs have strict
+    # In high traffic installations, such as GitLab.com, `urgency :high` workers run in a
+    # dedicated fleet. In order to ensure short queue times, `urgency :high` jobs have strict
     # SLOs in order to ensure throughput. However, when a worker depends on an external service,
     # such as a user's k8s cluster or a third-party internet service, we cannot guarantee latency,
     # and therefore throughput. An outage to an 3rd party service could therefore impact throughput
-    # on other latency_sensitive jobs, leading to degradation through the GitLab application.
-    # Please see doc/development/sidekiq_style_guide.md#Jobs-with-External-Dependencies for more
+    # on other high urgency jobs, leading to degradation through the GitLab application.
+    # Please see doc/development/sidekiq_style_guide.md#jobs-with-external-dependencies for more
     # details.
-    it 'has (exclusively) external dependencies or is latency-sentitive, not both', :aggregate_failures do
-      latency_sensitive_workers = workers_without_defaults
-                  .select(&:latency_sensitive_worker?)
+    it 'has (exclusively) external dependencies or is high urgency, not both', :aggregate_failures do
+      high_urgency_workers = workers_without_defaults
+                               .select { |worker| worker.get_urgency == :high }
 
-      latency_sensitive_workers.each do |worker|
-        expect(worker.worker_has_external_dependencies?).to be_falsey, "#{worker.inspect} cannot have both external dependencies and be latency sensitive"
+      high_urgency_workers.each do |worker|
+        expect(worker.worker_has_external_dependencies?).to be_falsey, "#{worker.inspect} cannot have both external dependencies and be high urgency"
       end
     end
   end

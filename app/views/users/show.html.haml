@@ -4,30 +4,31 @@
 - page_title       @user.blocked? ? s_('UserProfile|Blocked user') : @user.name
 - page_description @user.bio
 - header_title     @user.name, user_path(@user)
+- link_classes = "flex-grow-1 mx-1 "
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 .user-profile
   .cover-block.user-cover-block{ class: [('border-bottom' if profile_tabs.empty?)] }
-    .cover-controls
+    = render layout: 'users/cover_controls' do
       - if @user == current_user
-        = link_to profile_path, class: 'btn btn-default has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile' do
+        = link_to profile_path, class: link_classes + 'btn btn-default has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile' do
           = icon('pencil')
       - elsif current_user
         - if @user.abuse_report
-          %button.btn.btn-danger{ title: s_('UserProfile|Already reported for abuse'),
+          %button{ class: link_classes + 'btn btn-danger mr-1', title: s_('UserProfile|Already reported for abuse'),
             data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } }
             = icon('exclamation-circle')
         - else
-          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn',
+          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: link_classes + 'btn',
             title: s_('UserProfile|Report abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = icon('exclamation-circle')
       - if can?(current_user, :read_user_profile, @user)
-        = link_to user_path(@user, rss_url_options), class: 'btn btn-default has-tooltip', title: s_('UserProfile|Subscribe'), 'aria-label': 'Subscribe' do
+        = link_to user_path(@user, rss_url_options), class: link_classes + 'btn btn-default has-tooltip', title: s_('UserProfile|Subscribe'), 'aria-label': 'Subscribe' do
           = icon('rss')
       - if current_user && current_user.admin?
-        = link_to [:admin, @user], class: 'btn btn-default', title: s_('UserProfile|View user in admin area'),
+        = link_to [:admin, @user], class: link_classes + 'btn btn-default', title: s_('UserProfile|View user in admin area'),
           data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
           = icon('users')
 
@@ -51,10 +52,18 @@
               = emoji_icon(@user.status.emoji)
               = markdown_field(@user.status, :message)
           = render "users/profile_basic_info"
-          .cover-desc.cgray
-            - unless @user.public_email.blank?
-              .profile-link-holder.middle-dot-divider
-                = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link'
+          .cover-desc.cgray.mb-1.mb-sm-2
+            - unless @user.location.blank?
+              .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mb-1.mb-sm-0
+                = sprite_icon('location', size: 16, css_class: 'vertical-align-sub fgray')
+                %span.vertical-align-middle
+                  = @user.location
+            - unless work_information(@user).blank?
+              .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline
+                = sprite_icon('work', size: 16, css_class: 'vertical-align-middle fgray')
+                %span.vertical-align-middle
+                  = work_information(@user)
+          .cover-desc.cgray.mb-1.mb-sm-2
             - unless @user.skype.blank?
               .profile-link-holder.middle-dot-divider
                 = link_to "skype:#{@user.skype}", title: "Skype" do
@@ -64,24 +73,18 @@
                 = link_to linkedin_url(@user), title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow' do
                   = icon('linkedin-square')
             - unless @user.twitter.blank?
-              .profile-link-holder.middle-dot-divider
+              .profile-link-holder.middle-dot-divider-sm
                 = link_to twitter_url(@user), title: "Twitter", target: '_blank', rel: 'noopener noreferrer nofollow' do
                   = icon('twitter-square')
             - unless @user.website_url.blank?
-              .profile-link-holder.middle-dot-divider
+              .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mt-1.mt-sm-0
                 = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'me noopener noreferrer nofollow'
-            - unless @user.location.blank?
-              .profile-link-holder.middle-dot-divider
-                = sprite_icon('location', size: 16, css_class: 'vertical-align-sub')
-                = @user.location
-            - unless @user.organization.blank?
-              .profile-link-holder.middle-dot-divider
-                = sprite_icon('work', size: 16, css_class: 'vertical-align-sub')
-                = @user.organization
-
+            - unless @user.public_email.blank?
+              .profile-link-holder.middle-dot-divider-sm.d-block.d-sm-inline.mt-1.mt-sm-0
+                = link_to @user.public_email, "mailto:#{@user.public_email}", class: 'text-link'
         - if @user.bio.present?
           .cover-desc.cgray
-            %p.profile-user-bio
+            %p.profile-user-bio.font-italic
               = @user.bio
 
     - unless profile_tabs.empty?

@@ -22,22 +22,21 @@ repository is too large the import can timeout.
 
 There is also the option of [connecting your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md). **(PREMIUM)**
 
-## Migrating from self-hosted GitLab to GitLab.com
+## Migrating from self-managed GitLab to GitLab.com
 
-If you only need to migrate Git repos, you can [import each project by URL](repo_by_url.md), but issues and merge requests can't be imported.
+If you only need to migrate Git repos, you can [import each project by URL](repo_by_url.md). Issues and merge requests can't be imported.
 
 If you want to retain all metadata like issues and merge requests, you can use
-the [import/export feature](../settings/import_export.md) to export projects from self-hosted GitLab and import those projects into GitLab.com.
+the [import/export feature](../settings/import_export.md) to export projects from self-managed GitLab and import those projects into GitLab.com.
+
+All GitLab user associations (such as comment author) will be changed to the user importing the project. For more information, please see [the import notes](../settings/import_export.md#important-notes).
+
+If you need to migrate all data over, you can leverage our [API](../../../api/README.md) to migrate from self-managed to GitLab.com.
+The order of assets to migrate from a self-managed instance to GitLab.com is the following:
 
 NOTE: **Note:**
-This approach assumes all users from the self-hosted instance have already been migrated.
-If the users haven't been migrated yet, the user conducting the import
-will take the place of all references to the missing user(s).
+When migrating to GitLab.com, users would need to be manually created unless [SCIM](../../../user/group/saml_sso/scim_setup.md) is going to be used. Creating users with the API is limited to self-managed instances as it requires administrator access.
 
-If you need to migrate all data over, you can leverage our [API](../../../api/README.md) to migrate from self-hosted to GitLab.com.
-The order of assets to migrate from a self-hosted instance to GitLab is the following:
-
-1. [Users](../../../api/users.md)
 1. [Groups](../../../api/groups.md)
 1. [Projects](../../../api/projects.md)
 1. [Project variables](../../../api/project_level_variables.md)
@@ -47,12 +46,14 @@ Keep in mind the limitations of the [import/export feature](../settings/import_e
 You will still need to migrate your Container Registry over a series of
 Docker pulls and pushes and re-run any CI pipelines to retrieve any build artifacts.
 
-## Migrating between two self-hosted GitLab instances
+## Migrating between two self-managed GitLab instances
 
-The best method for migrating a project from one GitLab instance to another,
+The best method for migrating from one GitLab instance to another,
 perhaps from an old server to a new server for example, is to
-[back up the project](../../../raketasks/backup_restore.md),
+[back up the instance](../../../raketasks/backup_restore.md),
 then restore it on the new server.
 
 In the event of merging two GitLab instances together (for example, both instances have existing data on them and one can't be wiped),
-refer to the instructions in [Migrating from self-hosted GitLab to GitLab.com](#migrating-from-self-hosted-gitlab-to-gitlabcom).
+refer to the instructions in [Migrating from self-managed GitLab to GitLab.com](#migrating-from-self-managed-gitlab-to-gitlabcom).
+
+Additionally, you can migrate users using the [Users API](../../../api/users.md) with an admin user.

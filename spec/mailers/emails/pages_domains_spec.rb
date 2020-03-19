@@ -7,8 +7,8 @@ describe Emails::PagesDomains do
   include EmailSpec::Matchers
   include_context 'gitlab email notification'
 
-  set(:domain) { create(:pages_domain, project: project) }
-  set(:user) { project.creator }
+  let_it_be(:domain, reload: true) { create(:pages_domain, project: project) }
+  let_it_be(:user) { project.creator }
 
   shared_examples 'a pages domain email' do
     let(:recipient) { user }

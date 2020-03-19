@@ -1,6 +1,6 @@
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { GlEmptyState, GlLoadingIcon, GlFormInput, GlPagination } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon, GlFormInput, GlPagination, GlDropdown } from '@gitlab/ui';
 import stubChildren from 'helpers/stub_children';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
 import errorsList from './list_mock.json';
@@ -15,9 +15,19 @@ describe('ErrorTrackingList', () => {
 
   const findErrorListTable = () => wrapper.find('table');
   const findErrorListRows = () => wrapper.findAll('tbody tr');
-  const findSortDropdown = () => wrapper.find('.sort-dropdown');
+  const dropdownsArray = () => wrapper.findAll(GlDropdown);
   const findRecentSearchesDropdown = () =>
-    wrapper.find('.filtered-search-history-dropdown-wrapper');
+    dropdownsArray()
+      .at(0)
+      .find(GlDropdown);
+  const findStatusFilterDropdown = () =>
+    dropdownsArray()
+      .at(1)
+      .find(GlDropdown);
+  const findSortDropdown = () =>
+    dropdownsArray()
+      .at(2)
+      .find(GlDropdown);
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findPagination = () => wrapper.find(GlPagination);
 
@@ -60,6 +70,7 @@ describe('ErrorTrackingList', () => {
       fetchPaginatedResults: jest.fn(),
       updateStatus: jest.fn(),
       removeIgnoredResolvedErrors: jest.fn(),
+      filterByStatus: jest.fn(),
     };
 
     const state = {
@@ -167,9 +178,15 @@ describe('ErrorTrackingList', () => {
       });
 
       it('it sorts by fields', () => {
-        const findSortItem = () => wrapper.find('.dropdown-item');
+        const findSortItem = () => findSortDropdown().find('.dropdown-item');
         findSortItem().trigger('click');
         expect(actions.sortByField).toHaveBeenCalled();
+      });
+
+      it('it filters by status', () => {
+        const findStatusFilter = () => findStatusFilterDropdown().find('.dropdown-item');
+        findStatusFilter().trigger('click');
+        expect(actions.filterByStatus).toHaveBeenCalled();
       });
     });
   });
@@ -215,7 +232,7 @@ describe('ErrorTrackingList', () => {
       expect(wrapper.find(GlEmptyState).exists()).toBe(true);
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findErrorListTable().exists()).toBe(false);
-      expect(findSortDropdown().exists()).toBe(false);
+      expect(dropdownsArray().length).toBe(0);
     });
   });
 

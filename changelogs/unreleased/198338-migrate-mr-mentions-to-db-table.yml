@@ -1,0 +1,5 @@
+---
+title: Migrate mentions for merge requests to DB table
+merge_request: 25826
+author:
+type: changed

@@ -331,25 +331,19 @@ RSpec/MissingExampleGroupArgument:
 RSpec/UnspecifiedException:
   Enabled: false
 
-# Work in progress. See https://gitlab.com/gitlab-org/gitlab/issues/196163
 RSpec/HaveGitlabHttpStatus:
   Enabled: true
   Exclude:
     - 'spec/support/matchers/have_gitlab_http_status.rb'
   Include:
-    - 'spec/support/**/*'
-    - 'ee/spec/support/**/*'
-    - 'spec/features/**/*'
-    - 'ee/spec/features/**/*'
-    - 'spec/controllers/**/*'
-    - 'ee/spec/controllers/**/*'
-    - 'spec/requests/*.rb'
-    - 'ee/spec/requests/*.rb'
-    - 'spec/requests/api/*/**/*.rb'
-    - 'ee/spec/requests/api/*/**/*.rb'
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
 
 Style/MultilineWhenThen:
   Enabled: false
 
 Style/FloatDivision:
   Enabled: false
+
+Cop/BanCatchThrow:
+  Enabled: true

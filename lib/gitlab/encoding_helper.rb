@@ -50,7 +50,7 @@ module Gitlab
       detect && detect[:type] == :binary
     end
 
-    def encode_utf8(message)
+    def encode_utf8(message, replace: "")
       message = force_encode_utf8(message)
       return message if message.valid_encoding?
 
@@ -64,7 +64,7 @@ module Gitlab
           ''
         end
       else
-        clean(message)
+        clean(message, replace: replace)
       end
     rescue ArgumentError
       nil
@@ -94,8 +94,13 @@ module Gitlab
       message.force_encoding("UTF-8")
     end
 
-    def clean(message)
-      message.encode("UTF-16BE", undef: :replace, invalid: :replace, replace: "".encode("UTF-16BE"))
+    def clean(message, replace: "")
+      message.encode(
+        "UTF-16BE",
+        undef: :replace,
+        invalid: :replace,
+        replace: replace.encode("UTF-16BE")
+      )
         .encode("UTF-8")
         .gsub("\0".encode("UTF-8"), "")
     end

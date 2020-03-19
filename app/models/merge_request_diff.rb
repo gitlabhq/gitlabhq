@@ -7,6 +7,7 @@ class MergeRequestDiff < ApplicationRecord
   include EachBatch
   include Gitlab::Utils::StrongMemoize
   include ObjectStorage::BackgroundMove
+  include BulkInsertableAssociations
 
   # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100

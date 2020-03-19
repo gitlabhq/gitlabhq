@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { last } from 'lodash';
 import FilteredSearchContainer from './container';
 import FilteredSearchTokenizer from './filtered_search_tokenizer';
 import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
@@ -70,11 +70,11 @@ export default class DropdownUtils {
 
     if (!allowMultiple && itemInExistingTokens) {
       updatedItem.droplab_hidden = true;
-    } else if (!isSearchItem && (!lastKey || _.last(searchInput.split('')) === ' ')) {
+    } else if (!isSearchItem && (!lastKey || last(searchInput.split('')) === ' ')) {
       updatedItem.droplab_hidden = false;
     } else if (lastKey) {
       const split = lastKey.split(':');
-      const tokenName = _.last(split[0].split(' '));
+      const tokenName = last(split[0].split(' '));
 
       const match = isSearchItem
         ? allowedKeys.some(key => key.startsWith(tokenName.toLowerCase()))
@@ -129,7 +129,7 @@ export default class DropdownUtils {
     const values = [];
 
     if (untilInput) {
-      const inputIndex = _.findIndex(tokens, t => t.classList.contains('input-token'));
+      const inputIndex = tokens.findIndex(t => t.classList.contains('input-token'));
       // Add one to include input-token to the tokens array
       tokens.splice(inputIndex + 1);
     }

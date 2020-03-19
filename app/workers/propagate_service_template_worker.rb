@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Worker for updating any project specific caches.
-class PropagateServiceTemplateWorker
+class PropagateServiceTemplateWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :source_code_management

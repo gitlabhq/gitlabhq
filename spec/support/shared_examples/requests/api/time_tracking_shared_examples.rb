@@ -109,7 +109,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
         end
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['time_spent'].first).to match(/exceeds the total time spent/)
+        expect(json_response['message']['base'].first).to eq(_('Time to subtract exceeds the total time spent'))
       end
     end
   end

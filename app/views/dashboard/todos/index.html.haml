@@ -26,12 +26,12 @@
     .nav-controls
       - if @todos.any?(&:pending?)
         .append-right-default
-          = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading js-todos-mark-all', method: :delete, data: { href: destroy_all_dashboard_todos_path(todos_filter_params) } do
+          = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading d-flex align-items-center js-todos-mark-all', method: :delete, data: { href: destroy_all_dashboard_todos_path(todos_filter_params) } do
             Mark all as done
-            = icon('spinner spin')
-          = link_to bulk_restore_dashboard_todos_path, class: 'btn btn-loading js-todos-undo-all hidden', method: :patch , data: { href: bulk_restore_dashboard_todos_path(todos_filter_params) } do
+            %span.spinner.ml-1
+          = link_to bulk_restore_dashboard_todos_path, class: 'btn btn-loading d-flex align-items-center js-todos-undo-all hidden', method: :patch , data: { href: bulk_restore_dashboard_todos_path(todos_filter_params) } do
             Undo mark all as done
-            = icon('spinner spin')
+            %span.spinner.ml-1
 
   .todos-filters
     .issues-details-filters.row-content-block.second-block

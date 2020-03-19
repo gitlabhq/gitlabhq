@@ -34,6 +34,7 @@ The OpenID Connect will provide you with a client details and secret for you to 
    gitlab_rails['omniauth_providers'] = [
      { 'name' => 'openid_connect',
        'label' => '<your_oidc_label>',
+       'icon' => '<custom_provider_icon>',
        'args' => {
          'name' => 'openid_connect',
          'scope' => ['openid','profile'],
@@ -42,6 +43,7 @@ The OpenID Connect will provide you with a client details and secret for you to 
          'discovery' => true,
          'client_auth_method' => 'query',
          'uid_field' => '<uid_field>',
+         'send_scope_to_token_endpoint' => 'false',
          'client_options' => {
            'identifier' => '<your_oidc_client_id>',
            'secret' => '<your_oidc_client_secret>',
@@ -57,6 +59,7 @@ The OpenID Connect will provide you with a client details and secret for you to 
    ```yaml
      - { name: 'openid_connect',
          label: '<your_oidc_label>',
+         icon: '<custom_provider_icon>',
          args: {
            name: 'openid_connect',
            scope: ['openid','profile'],
@@ -65,6 +68,7 @@ The OpenID Connect will provide you with a client details and secret for you to 
            discovery: true,
            client_auth_method: 'query',
            uid_field: '<uid_field>',
+           send_scope_to_token_endpoint: false,
            client_options: {
              identifier: '<your_oidc_client_id>',
              secret: '<your_oidc_client_secret>',
@@ -80,6 +84,8 @@ The OpenID Connect will provide you with a client details and secret for you to 
 
 1. For the configuration above, change the values for the provider to match your OpenID Connect client setup. Use the following as a guide:
    - `<your_oidc_label>` is the label that will be displayed on the login page.
+   - `<custom_provider_icon>` (optional) is the icon that will be displayed on the login page. Icons for the major social login platforms are built-in into GitLab,
+     but can be overridden by specifying this parameter. Both local paths and absolute URLs are accepted.
    - `<your_oidc_url>` (optional) is the URL that points to the OpenID Connect provider. For example, `https://example.com/auth/realms/your-realm`.
      If this value is not provided, the URL is constructed from the `client_options` in the following format: `<client_options.scheme>://<client_options.host>:<client_options.port>`.
    - If `discovery` is set to `true`, the OpenID Connect provider will try to auto discover the client options using `<your_oidc_url>/.well-known/openid-configuration`. Defaults to `false`.
@@ -92,6 +98,8 @@ The OpenID Connect will provide you with a client details and secret for you to 
      - If not specified, defaults to `basic`.
    - `<uid_field>` (optional) is the field name from the `user_info` details that will be used as `uid` value. For example, `preferred_username`.
      If this value is not provided or the field with the configured value is missing from the `user_info` details, the `uid` will use the `sub` field.
+   - `send_scope_to_token_endpoint` is `true` by default. In other words, the `scope` parameter is normally included in requests to the token endpoint.
+     However, if your OpenID Connect provider does not accept the `scope` parameter in such requests, set this to `false`.
    - `client_options` are the OpenID Connect client-specific options. Specifically:
      - `identifier` is the client identifier as configured in the OpenID Connect service provider.
      - `secret` is the client secret as configured in the OpenID Connect service provider.

@@ -6,9 +6,12 @@ module Groups
       skip_cross_project_access_check :show
       before_action :authorize_admin_group!
       before_action :authorize_update_max_artifacts_size!, only: [:update]
+      before_action do
+        push_frontend_feature_flag(:new_variables_ui, @group, default_enabled: true)
+      end
+      before_action :define_variables, only: [:show, :create_deploy_token]
 
       def show
-        define_ci_variables
       end
 
       def update
@@ -38,13 +41,34 @@ module Groups
         redirect_to group_settings_ci_cd_path
       end
 
+      def create_deploy_token
+        @new_deploy_token = Groups::DeployTokens::CreateService.new(@group, current_user, deploy_token_params).execute
+
+        if @new_deploy_token.persisted?
+          flash.now[:notice] = s_('DeployTokens|Your new group deploy token has been created.')
+        end
+
+        render 'show'
+      end
+
       private
+
+      def define_variables
+        define_ci_variables
+        define_deploy_token_variables
+      end
 
       def define_ci_variables
         @variable = Ci::GroupVariable.new(group: group)
           .present(current_user: current_user)
         @variables = group.variables.order_key_asc
           .map { |variable| variable.present(current_user: current_user) }
+      end
+
+      def define_deploy_token_variables
+        @deploy_tokens = @group.deploy_tokens.active
+
+        @new_deploy_token = DeployToken.new
       end
 
       def authorize_admin_group!
@@ -69,6 +93,10 @@ module Groups
 
       def update_group_params
         params.require(:group).permit(:max_artifacts_size)
+      end
+
+      def deploy_token_params
+        params.require(:deploy_token).permit(:name, :expires_at, :read_repository, :read_registry, :username)
       end
     end
   end

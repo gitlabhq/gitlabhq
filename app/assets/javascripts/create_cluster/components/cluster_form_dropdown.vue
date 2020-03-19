@@ -1,11 +1,12 @@
 <script>
+import { isNil } from 'lodash';
 import $ from 'jquery';
 import { GlIcon } from '@gitlab/ui';
 import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
-const toArray = value => [].concat(value);
+const toArray = value => (isNil(value) ? [] : [].concat(value));
 const itemsProp = (items, prop) => items.map(item => item[prop]);
 const defaultSearchFn = (searchQuery, labelProp) => item =>
   item[labelProp].toLowerCase().indexOf(searchQuery) > -1;

@@ -5,7 +5,8 @@ module Ci
     CLONE_ACCESSORS = %i[pipeline project ref tag options name
                          allow_failure stage stage_id stage_idx trigger_request
                          yaml_variables when environment coverage_regex
-                         description tag_list protected needs resource_group scheduling_type].freeze
+                         description tag_list protected needs_attributes
+                         resource_group scheduling_type].freeze
 
     def execute(build)
       reprocess!(build).tap do |new_build|
@@ -51,7 +52,7 @@ module Ci
 
     def create_build!(attributes)
       build = project.builds.new(attributes)
-      build.deployment = ::Gitlab::Ci::Pipeline::Seed::Deployment.new(build).to_resource
+      build.assign_attributes(::Gitlab::Ci::Pipeline::Seed::Build.environment_attributes_for(build))
       build.retried = false
       build.save!
       build

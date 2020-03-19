@@ -1,5 +1,3 @@
-import { __ } from '~/locale';
-
 export const PROMETHEUS_TIMEOUT = 120000; // TWO_MINUTES
 
 /**
@@ -89,37 +87,3 @@ export const dateFormats = {
   timeOfDay: 'h:MM TT',
   default: 'dd mmm yyyy, h:MMTT',
 };
-
-export const timeRanges = [
-  {
-    label: __('30 minutes'),
-    duration: { seconds: 60 * 30 },
-  },
-  {
-    label: __('3 hours'),
-    duration: { seconds: 60 * 60 * 3 },
-  },
-  {
-    label: __('8 hours'),
-    duration: { seconds: 60 * 60 * 8 },
-    default: true,
-  },
-  {
-    label: __('1 day'),
-    duration: { seconds: 60 * 60 * 24 * 1 },
-  },
-  {
-    label: __('3 days'),
-    duration: { seconds: 60 * 60 * 24 * 3 },
-  },
-  {
-    label: __('1 week'),
-    duration: { seconds: 60 * 60 * 24 * 7 * 1 },
-  },
-  {
-    label: __('1 month'),
-    duration: { seconds: 60 * 60 * 24 * 30 },
-  },
-];
-
-export const defaultTimeRange = timeRanges.find(tr => tr.default);

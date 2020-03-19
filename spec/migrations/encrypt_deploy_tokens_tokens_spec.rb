@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require Rails.root.join('db', 'post_migrate', '20190711201818_encrypt_deploy_tokens_tokens.rb')
 
-describe EncryptDeployTokensTokens, :migration do
+describe EncryptDeployTokensTokens do
   let(:migration) { described_class.new }
   let(:deployment_tokens) { table(:deploy_tokens) }
   let(:plaintext) { "secret-token" }

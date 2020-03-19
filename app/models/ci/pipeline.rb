@@ -11,10 +11,14 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
     include EnumWithNil
-    include HasRef
+    include Ci::HasRef
     include ShaAttribute
     include FromUnion
     include UpdatedAtFilterable
+
+    PROJECT_ROUTE_AND_NAMESPACE_ROUTE = {
+      project: [:project_feature, :route, { namespace: :route }]
+    }.freeze
 
     BridgeStatusError = Class.new(StandardError)
 
@@ -59,6 +63,14 @@ module Ci
     has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_pipeline_id
 
     has_one :source_pipeline, class_name: 'Ci::Sources::Pipeline', inverse_of: :pipeline
+
+    has_one :ref_status, ->(pipeline) {
+      # We use .read_attribute to save 1 extra unneeded query to load the :project.
+      unscope(:where)
+        .where(project_id: pipeline.read_attribute(:project_id), ref: pipeline.ref, tag: pipeline.tag)
+      # Sadly :inverse_of is not supported (yet) by Rails for composite PKs.
+    }, class_name: 'Ci::Ref', inverse_of: :pipelines
+
     has_one :chat_data, class_name: 'Ci::PipelineChatData'
 
     has_many :triggered_pipelines, through: :sourced_pipelines, source: :pipeline
@@ -215,6 +227,7 @@ module Ci
       end
 
       after_transition created: :pending do |pipeline|
+        next if Feature.enabled?(:ci_drop_bridge_on_downstream_errors, pipeline.project, default_enabled: true)
         next unless pipeline.bridge_triggered?
         next if pipeline.bridge_waiting?
 
@@ -223,7 +236,11 @@ module Ci
 
       after_transition any => [:success, :failed] do |pipeline|
         pipeline.run_after_commit do
-          PipelineNotificationWorker.perform_async(pipeline.id)
+          if Feature.enabled?(:ci_pipeline_fixed_notifications)
+            PipelineUpdateCiRefStatusWorker.perform_async(pipeline.id)
+          else
+            PipelineNotificationWorker.perform_async(pipeline.id)
+          end
         end
       end
 
@@ -595,7 +612,7 @@ module Ci
     # Manually set the notes for a Ci::Pipeline
     # There is no ActiveRecord relation between Ci::Pipeline and notes
     # as they are related to a commit sha. This method helps importing
-    # them using the +Gitlab::ImportExport::ProjectRelationFactory+ class.
+    # them using the +Gitlab::ImportExport::Project::RelationFactory+ class.
     def notes=(notes)
       notes.each do |note|
         note[:id] = nil
@@ -744,6 +761,8 @@ module Ci
       raise BridgeStatusError unless source_bridge.active?
 
       source_bridge.success!
+    rescue => e
+      Gitlab::ErrorTracking.track_exception(e, pipeline_id: id)
     end
 
     def bridge_triggered?
@@ -762,10 +781,18 @@ module Ci
       child_pipelines.exists?
     end
 
+    def created_successfully?
+      persisted? && failure_reason.blank?
+    end
+
     def detailed_status(current_user)
       Gitlab::Ci::Status::Pipeline::Factory
         .new(self, current_user)
         .fabricate!
+    end
+
+    def find_job_with_archive_artifacts(name)
+      builds.latest.with_artifacts_archive.find_by_name(name)
     end
 
     def latest_builds_with_artifacts
@@ -790,6 +817,14 @@ module Ci
     def test_reports_count
       Rails.cache.fetch(['project', project.id, 'pipeline', id, 'test_reports_count'], force: false) do
         test_reports.total_count
+      end
+    end
+
+    def coverage_reports
+      Gitlab::Ci::Reports::CoverageReports.new.tap do |coverage_reports|
+        builds.latest.with_reports(Ci::JobArtifact.coverage_reports).each do |build|
+          build.collect_coverage_reports!(coverage_reports)
+        end
       end
     end
 

@@ -1,0 +1,5 @@
+---
+title: Remove .fa-spinner from app/views/projects/forks
+merge_request: 25034
+author: nuwe1
+type: other

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module TodosDestroyer
-  class EntityLeaveWorker
+  class EntityLeaveWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include TodosDestroyerQueue
 

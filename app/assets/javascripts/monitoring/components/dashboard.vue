@@ -19,7 +19,7 @@ import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { s__ } from '~/locale';
 import createFlash from '~/flash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { mergeUrlParams, redirectTo } from '~/lib/utils/url_utility';
+import { mergeUrlParams, redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
 import Icon from '~/vue_shared/components/icon.vue';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
@@ -31,7 +31,8 @@ import DashboardsDropdown from './dashboards_dropdown.vue';
 
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { getAddMetricTrackingOptions, timeRangeToUrl, timeRangeFromUrl } from '../utils';
-import { defaultTimeRange, timeRanges, metricStates } from '../constants';
+import { metricStates } from '../constants';
+import { defaultTimeRange, timeRanges } from '~/vue_shared/constants';
 
 export default {
   components: {
@@ -351,6 +352,10 @@ export default {
       };
       redirectTo(mergeUrlParams(params, window.location.href));
     },
+
+    refreshDashboard() {
+      refreshCurrentPage();
+    },
   },
   addMetric: {
     title: s__('Metrics|Add metric'),
@@ -438,7 +443,7 @@ export default {
           :label="s__('Metrics|Show last')"
           label-size="sm"
           label-for="monitor-time-window-dropdown"
-          class="col-sm-6 col-md-6 col-lg-4"
+          class="col-sm-auto col-md-auto col-lg-auto"
         >
           <date-time-picker
             ref="dateTimePicker"
@@ -447,6 +452,18 @@ export default {
             @input="onDateTimePickerInput"
             @invalid="onDateTimePickerInvalid"
           />
+        </gl-form-group>
+
+        <gl-form-group class="col-sm-2 col-md-2 col-lg-1 refresh-dashboard-button">
+          <gl-button
+            ref="refreshDashboardBtn"
+            v-gl-tooltip
+            variant="default"
+            :title="s__('Metrics|Reload this page')"
+            @click="refreshDashboard"
+          >
+            <icon name="repeat" />
+          </gl-button>
         </gl-form-group>
 
         <gl-form-group
@@ -468,6 +485,7 @@ export default {
               ref="addMetricBtn"
               v-gl-modal="$options.addMetric.modalId"
               variant="outline-success"
+              data-qa-selector="add_metric_button"
               class="mr-2 mt-1"
               >{{ $options.addMetric.title }}</gl-button
             >
@@ -522,7 +540,7 @@ export default {
 
     <div v-if="!showEmptyState">
       <graph-group
-        v-for="(groupData, index) in dashboard.panel_groups"
+        v-for="(groupData, index) in dashboard.panelGroups"
         :key="`${groupData.group}.${groupData.priority}`"
         :name="groupData.group"
         :show-panels="showPanels"

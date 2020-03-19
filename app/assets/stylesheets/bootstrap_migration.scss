@@ -120,8 +120,8 @@ kbd {
 
 code {
   padding: 2px 4px;
-  color: $red-600;
-  background-color: $red-100;
+  color: $code-color;
+  background-color: $gray-100;
   border-radius: $border-radius-default;
 
   .code > & {

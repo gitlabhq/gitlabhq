@@ -4,7 +4,7 @@
 
 Get a list of deployments in a project.
 
-```
+```plaintext
 GET /projects/:id/deployments
 ```
 
@@ -177,7 +177,7 @@ Example of response
 
 ## Get a specific deployment
 
-```
+```plaintext
 GET /projects/:id/deployments/:deployment_id
 ```
 
@@ -265,7 +265,7 @@ Example of response
 
 ## Create a deployment
 
-```
+```plaintext
 POST /projects/:id/deployments
 ```
 
@@ -319,7 +319,7 @@ Example of a response:
 
 ## Updating a deployment
 
-```
+```plaintext
 PUT /projects/:id/deployments/:deployment_id
 ```
 
@@ -366,7 +366,7 @@ Example of a response:
 
 This API retrieves the list of merge requests shipped with a given deployment:
 
-```
+```plaintext
 GET /projects/:id/deployments/:deployment_id/merge_requests
 ```
 

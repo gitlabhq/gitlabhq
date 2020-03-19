@@ -22,7 +22,7 @@ module Metrics
         # for additional info on defining custom dashboards.
         def valid_params?(params)
           [
-            params[:embedded],
+            embedded?(params[:embedded]),
             params[:group].present?,
             params[:title].present?,
             params[:y_label]

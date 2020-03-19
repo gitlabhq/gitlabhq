@@ -48,6 +48,6 @@ describe Mutations::Todos::MarkAllDone do
   end
 
   def mutation_for(user)
-    described_class.new(object: nil, context: { current_user: user })
+    described_class.new(object: nil, context: { current_user: user }, field: nil)
   end
 end

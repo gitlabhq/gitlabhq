@@ -1,0 +1,5 @@
+---
+title: Replace undefined severity with unknown severity for occurrences
+merge_request: 26085
+author:
+type: other

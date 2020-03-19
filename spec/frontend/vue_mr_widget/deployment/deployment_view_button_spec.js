@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import DeploymentViewButton from '~/vue_merge_request_widget/components/deployment/deployment_view_button.vue';
 import ReviewAppLink from '~/vue_merge_request_widget/components/review_app_link.vue';
-import deploymentMockData from './deployment_mock_data';
+import { deploymentMockData } from './deployment_mock_data';
 
 const appButtonText = {
   text: 'View app',

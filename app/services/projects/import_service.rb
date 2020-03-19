@@ -2,8 +2,6 @@
 
 module Projects
   class ImportService < BaseService
-    include Gitlab::ShellAdapter
-
     Error = Class.new(StandardError)
 
     # Returns true if this importer is supposed to perform its work in the
@@ -72,9 +70,9 @@ module Projects
         project.ensure_repository
         project.repository.fetch_as_mirror(project.import_url, refmap: refmap)
       else
-        gitlab_shell.import_project_repository(project)
+        project.repository.import_repository(project.import_url)
       end
-    rescue Gitlab::Shell::Error => e
+    rescue ::Gitlab::Git::CommandError => e
       # Expire cache to prevent scenarios such as:
       # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
       # 2. Retried import, repo is broken or not imported but +exists?+ still returns true

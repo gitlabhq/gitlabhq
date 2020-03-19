@@ -176,8 +176,20 @@ describe NotificationRecipient do
             )
           end
 
-          before do
-            notification_setting.update!(failed_pipeline: true)
+          it 'returns true' do
+            expect(recipient.suitable_notification_level?).to eq true
+          end
+        end
+
+        context "when action is fixed_pipeline" do
+          let(:recipient) do
+            described_class.new(
+              user,
+              :watch,
+              custom_action: :fixed_pipeline,
+              target: target,
+              project: project
+            )
           end
 
           it 'returns true' do
@@ -185,7 +197,7 @@ describe NotificationRecipient do
           end
         end
 
-        context "when action is not failed_pipeline" do
+        context "when action is not fixed_pipeline or failed_pipeline" do
           let(:recipient) do
             described_class.new(
               user,
@@ -194,10 +206,6 @@ describe NotificationRecipient do
               target: target,
               project: project
             )
-          end
-
-          before do
-            notification_setting.update!(success_pipeline: true)
           end
 
           it 'returns false' do
@@ -307,6 +315,26 @@ describe NotificationRecipient do
 
           it 'returns false' do
             expect(recipient.suitable_notification_level?).to eq false
+          end
+        end
+
+        context 'when custom_action is fixed_pipeline and success_pipeline event is enabled' do
+          let(:recipient) do
+            described_class.new(
+              user,
+              :watch,
+              custom_action: :fixed_pipeline,
+              target: target,
+              project: project
+            )
+          end
+
+          before do
+            notification_setting.update!(success_pipeline: true)
+          end
+
+          it 'returns true' do
+            expect(recipient.suitable_notification_level?).to eq true
           end
         end
       end

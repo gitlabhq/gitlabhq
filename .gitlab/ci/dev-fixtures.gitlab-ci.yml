@@ -1,13 +1,11 @@
 .run-dev-fixtures:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .default-before_script
     - .use-pg9
   stage: test
   needs: ["setup-test-env"]
-  dependencies: ["setup-test-env"]
   variables:
     FIXTURE_PATH: "db/fixtures/development"
     SEED_CYCLE_ANALYTICS: "true"

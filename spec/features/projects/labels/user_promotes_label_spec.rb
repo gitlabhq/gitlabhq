@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe 'User promotes label' do
-  set(:group) { create(:group) }
-  set(:user) { create(:user) }
-  set(:project) { create(:project, namespace: group) }
-  set(:label) { create(:label, project: project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, namespace: group) }
+  let_it_be(:label) { create(:label, project: project) }
 
   context 'when user can admin group labels' do
     before do

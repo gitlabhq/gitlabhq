@@ -15,6 +15,11 @@ class GraphqlController < ApplicationController
   before_action :authorize_access_api!
   before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
 
+  # Since we deactivate authentication from the main ApplicationController and
+  # defer it to :authorize_access_api!, we need to override the bypass session
+  # callback execution order here
+  around_action :sessionless_bypass_admin_mode!, if: :sessionless_user?
+
   def execute
     result = multiplex? ? execute_multiplex : execute_query
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Chain::Command do
-  set(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
 
   describe '#initialize' do
     subject do

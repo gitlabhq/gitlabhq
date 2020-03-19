@@ -14,3 +14,5 @@
 
   - title = "Replace #{@blob.name}"
   = render 'projects/blob/upload', title: title, placeholder: title, button_title: 'Replace file', form_path: project_update_blob_path(@project, @id), method: :put
+
+= render partial: 'pipeline_tour_success' if show_suggest_pipeline_creation_celebration?

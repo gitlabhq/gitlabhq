@@ -2,20 +2,22 @@
 
 module Projects
   class LsifDataService
-    attr_reader :file, :project, :path, :commit_id,
-      :docs, :doc_ranges, :ranges, :def_refs, :hover_refs
+    attr_reader :file, :project, :commit_id, :docs,
+      :doc_ranges, :ranges, :def_refs, :hover_refs
 
     CACHE_EXPIRE_IN = 1.hour
 
-    def initialize(file, project, params)
+    def initialize(file, project, commit_id)
       @file = file
       @project = project
-      @path = params[:path]
-      @commit_id = params[:commit_id]
+      @commit_id = commit_id
+
+      fetch_data!
     end
 
-    def execute
-      fetch_data!
+    def execute(path)
+      doc_id = find_doc_id(docs, path)
+      dir_absolute_path = docs[doc_id]&.delete_suffix(path)
 
       doc_ranges[doc_id]&.map do |range_id|
         location, ref_id = ranges[range_id].values_at('loc', 'ref_id')
@@ -26,7 +28,7 @@ module Projects
           end_line: line_data.last,
           start_char: column_data.first,
           end_char: column_data.last,
-          definition_url: definition_url_for(def_refs[ref_id]),
+          definition_url: definition_url_for(def_refs[ref_id], dir_absolute_path),
           hover: highlighted_hover(hover_refs[ref_id])
         }
       end
@@ -58,8 +60,8 @@ module Projects
       @hover_refs = data['hover_refs']
     end
 
-    def doc_id
-      @doc_id ||= docs.reduce(nil) do |doc_id, (id, doc_path)|
+    def find_doc_id(docs, path)
+      docs.reduce(nil) do |doc_id, (id, doc_path)|
         next doc_id unless doc_path =~ /#{path}$/
 
         if doc_id.nil? || docs[doc_id].size > doc_path.size
@@ -70,11 +72,7 @@ module Projects
       end
     end
 
-    def dir_absolute_path
-      @dir_absolute_path ||= docs[doc_id]&.delete_suffix(path)
-    end
-
-    def definition_url_for(ref_id)
+    def definition_url_for(ref_id, dir_absolute_path)
       return unless range = ranges[ref_id]
 
       def_doc_id, location = range.values_at('doc_id', 'loc')

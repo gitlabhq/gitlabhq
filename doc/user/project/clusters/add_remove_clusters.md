@@ -5,7 +5,7 @@ GitLab offers integrated cluster creation for the following Kubernetes providers
 - Google Kubernetes Engine (GKE).
 - Amazon Elastic Kubernetes Service (EKS).
 
-In addition, GitLab can integrate with any standard Kubernetes provider, either on-premise or hosted.
+GitLab can also integrate with any standard Kubernetes provider, either on-premise or hosted.
 
 TIP: **Tip:**
 Every new Google Cloud Platform (GCP) account receives [$300 in credit upon sign up](https://console.cloud.google.com/freetrial),

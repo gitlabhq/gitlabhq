@@ -22,6 +22,7 @@ FactoryBot.define do
 
     factory :ci_pipeline do
       trait :invalid do
+        status { :failed }
         yaml_errors { 'invalid YAML' }
         failure_reason { :config_error }
       end
@@ -63,6 +64,14 @@ FactoryBot.define do
 
         after(:build) do |pipeline, evaluator|
           pipeline.builds << build(:ci_build, :test_reports, pipeline: pipeline, project: pipeline.project)
+        end
+      end
+
+      trait :with_coverage_reports do
+        status { :success }
+
+        after(:build) do |pipeline, evaluator|
+          pipeline.builds << build(:ci_build, :coverage_reports, pipeline: pipeline, project: pipeline.project)
         end
       end
 

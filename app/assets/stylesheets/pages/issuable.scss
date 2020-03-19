@@ -86,14 +86,19 @@
 }
 
 .issuable-show-labels {
-  a {
+  .gl-label {
     margin-bottom: 5px;
     margin-right: 5px;
+  }
+
+  a {
     display: inline-block;
 
     .color-label {
       padding: 4px $grid-size;
       border-radius: $label-border-radius;
+      margin-right: 4px;
+      margin-bottom: 4px;
     }
 
     &:hover .color-label {
@@ -159,9 +164,25 @@
       .avatar {
         border-color: rgba($gray-normal, 0.2);
       }
-
     }
+  }
 
+  a.gl-label-icon {
+    color: $gray-500;
+  }
+
+  .gl-label .gl-label-link:hover {
+    text-decoration: none;
+    color: inherit;
+
+    .gl-label-text:last-of-type {
+      text-decoration: underline;
+    }
+  }
+
+  .gl-label .gl-label-icon:hover {
+    text-decoration: none;
+    color: $gray-500;
   }
 
   .btn-link {
@@ -800,10 +821,22 @@
 
       a {
         color: $gl-text-color;
+      }
 
-        .fa {
-          color: $gl-text-color-secondary;
+      .gl-label-link {
+        color: inherit;
+
+        &:hover {
+          text-decoration: none;
+
+          .gl-label-text:last-of-type {
+            text-decoration: underline;
+          }
         }
+      }
+
+      .gl-label-icon {
+        color: $gray-500;
       }
     }
 

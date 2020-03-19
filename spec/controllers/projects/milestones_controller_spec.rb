@@ -135,6 +135,10 @@ describe Projects::MilestonesController do
   end
 
   describe "#destroy" do
+    before do
+      stub_feature_flags(track_resource_milestone_change_events: false)
+    end
+
     it "removes milestone" do
       expect(issue.milestone_id).to eq(milestone.id)
 

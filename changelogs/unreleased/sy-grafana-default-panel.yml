@@ -1,0 +1,5 @@
+---
+title: Default to first valid panel in unspecified Grafana embeds
+merge_request: 21932
+author:
+type: changed

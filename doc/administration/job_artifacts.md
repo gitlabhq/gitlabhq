@@ -3,7 +3,7 @@
 > - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
 > - Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format changed to `ZIP`.
 > - Starting with GitLab 8.17, builds are renamed to jobs.
-> - This is the administration documentation. For the user guide see [pipelines/job_artifacts](../user/project/pipelines/job_artifacts.md).
+> - This is the administration documentation. For the user guide see [pipelines/job_artifacts](../ci/pipelines/job_artifacts.md).
 
 Artifacts is a list of files and directories which are attached to a job after it
 finishes. This feature is enabled by default in all GitLab installations. Keep reading
@@ -79,7 +79,7 @@ _The artifacts are stored by default in
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1762) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-> - Since version 9.5, artifacts are [browsable](../user/project/pipelines/job_artifacts.md#browsing-artifacts),
+> - Since version 9.5, artifacts are [browsable](../ci/pipelines/job_artifacts.md#browsing-artifacts),
 >   when object storage is enabled. 9.4 lacks this feature.
 > - Since version 10.6, available in [GitLab Core](https://about.gitlab.com/pricing/)
 > - Since version 11.0, we support `direct_upload` to S3.
@@ -160,6 +160,11 @@ _The artifacts are stored by default in
    gitlab-rake gitlab:artifacts:migrate
    ```
 
+CAUTION: **CAUTION:**
+JUnit test report artifact (`junit.xml.gz`) migration
+[is not supported](https://gitlab.com/gitlab-org/gitlab/issues/27698)
+by the `gitlab:artifacts:migrate` script.
+
 **In installations from source:**
 
 _The artifacts are stored by default in
@@ -188,13 +193,25 @@ _The artifacts are stored by default in
    sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
    ```
 
+CAUTION: **CAUTION:**
+JUnit test report artifact (`junit.xml.gz`) migration
+[is not supported](https://gitlab.com/gitlab-org/gitlab/issues/27698)
+by the `gitlab:artifacts:migrate` script.
+
 ### Migrating from object storage to local storage
+
+**In Omnibus installations:**
 
 In order to migrate back to local storage:
 
-1. Set both `direct_upload` and `background_upload` to false under the artifacts object storage settings. Don't forget to restart GitLab.
-1. Run `rake gitlab:artifacts:migrate_to_local` on your console.
-1. Disable `object_storage` for artifacts in `gitlab.rb`. Remember to restart GitLab afterwards.
+1. Set both `direct_upload` and `background_upload` to false in `gitlab.rb`, under the artifacts object storage settings.
+1. [reconfigure GitLab][].
+1. Run `gitlab-rake gitlab:artifacts:migrate_to_local`.
+1. Disable object_storage for artifacts in `gitlab.rb`:
+   - Set `gitlab_rails['artifacts_object_store_enabled'] = false`.
+   - Comment out all other `artifacts_object_store` settings, including the entire
+     `artifacts_object_store_connection` section, including the closing `}`.
+1. [reconfigure GitLab][].
 
 ## Expiring artifacts
 
@@ -369,7 +386,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
 
    NOTE: **NOTE:**
    This step will also erase artifacts that users have chosen to
-   ["keep"](../user/project/pipelines/job_artifacts.md#browsing-artifacts).
+   ["keep"](../ci/pipelines/job_artifacts.md#browsing-artifacts).
 
    ```ruby
    builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)

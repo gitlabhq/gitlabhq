@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { property, isEqual } from 'lodash';
 import { truncatePathMiddleToLength } from '~/lib/utils/text_utility';
 import { diffModes, diffViewerModes } from '~/ide/constants';
 import {
@@ -13,6 +13,8 @@ import {
   LINES_TO_BE_RENDERED_DIRECTLY,
   MAX_LINES_TO_BE_RENDERED,
   TREE_TYPE,
+  INLINE_DIFF_VIEW_TYPE,
+  PARALLEL_DIFF_VIEW_TYPE,
 } from '../constants';
 
 export function findDiffFile(files, match, matchKey = 'file_hash') {
@@ -93,8 +95,7 @@ export function getNoteFormData(params) {
 export const findIndexInInlineLines = (lines, lineNumbers) => {
   const { oldLineNumber, newLineNumber } = lineNumbers;
 
-  return _.findIndex(
-    lines,
+  return lines.findIndex(
     line => line.old_line === oldLineNumber && line.new_line === newLineNumber,
   );
 };
@@ -102,8 +103,7 @@ export const findIndexInInlineLines = (lines, lineNumbers) => {
 export const findIndexInParallelLines = (lines, lineNumbers) => {
   const { oldLineNumber, newLineNumber } = lineNumbers;
 
-  return _.findIndex(
-    lines,
+  return lines.findIndex(
     line =>
       line.left &&
       line.right &&
@@ -112,13 +112,32 @@ export const findIndexInParallelLines = (lines, lineNumbers) => {
   );
 };
 
+const indexGettersByViewType = {
+  [INLINE_DIFF_VIEW_TYPE]: findIndexInInlineLines,
+  [PARALLEL_DIFF_VIEW_TYPE]: findIndexInParallelLines,
+};
+
+export const getPreviousLineIndex = (diffViewType, file, lineNumbers) => {
+  const findIndex = indexGettersByViewType[diffViewType];
+  const lines = {
+    [INLINE_DIFF_VIEW_TYPE]: file.highlighted_diff_lines,
+    [PARALLEL_DIFF_VIEW_TYPE]: file.parallel_diff_lines,
+  };
+
+  return findIndex && findIndex(lines[diffViewType], lineNumbers);
+};
+
 export function removeMatchLine(diffFile, lineNumbers, bottom) {
   const indexForInline = findIndexInInlineLines(diffFile.highlighted_diff_lines, lineNumbers);
   const indexForParallel = findIndexInParallelLines(diffFile.parallel_diff_lines, lineNumbers);
   const factor = bottom ? 1 : -1;
 
-  diffFile.highlighted_diff_lines.splice(indexForInline + factor, 1);
-  diffFile.parallel_diff_lines.splice(indexForParallel + factor, 1);
+  if (indexForInline > -1) {
+    diffFile.highlighted_diff_lines.splice(indexForInline + factor, 1);
+  }
+  if (indexForParallel > -1) {
+    diffFile.parallel_diff_lines.splice(indexForParallel + factor, 1);
+  }
 }
 
 export function addLineReferences(lines, lineNumbers, bottom, isExpandDown, nextLineNumbers) {
@@ -160,8 +179,8 @@ export function addLineReferences(lines, lineNumbers, bottom, isExpandDown, next
   return linesWithNumbers;
 }
 
-export function addContextLines(options) {
-  const { inlineLines, parallelLines, contextLines, lineNumbers, isExpandDown } = options;
+function addParallelContextLines(options) {
+  const { parallelLines, contextLines, lineNumbers, isExpandDown } = options;
   const normalizedParallelLines = contextLines.map(line => ({
     left: line,
     right: line,
@@ -170,14 +189,37 @@ export function addContextLines(options) {
   const factor = isExpandDown ? 1 : 0;
 
   if (!isExpandDown && options.bottom) {
-    inlineLines.push(...contextLines);
     parallelLines.push(...normalizedParallelLines);
   } else {
-    const inlineIndex = findIndexInInlineLines(inlineLines, lineNumbers);
     const parallelIndex = findIndexInParallelLines(parallelLines, lineNumbers);
 
-    inlineLines.splice(inlineIndex + factor, 0, ...contextLines);
     parallelLines.splice(parallelIndex + factor, 0, ...normalizedParallelLines);
+  }
+}
+
+function addInlineContextLines(options) {
+  const { inlineLines, contextLines, lineNumbers, isExpandDown } = options;
+  const factor = isExpandDown ? 1 : 0;
+
+  if (!isExpandDown && options.bottom) {
+    inlineLines.push(...contextLines);
+  } else {
+    const inlineIndex = findIndexInInlineLines(inlineLines, lineNumbers);
+
+    inlineLines.splice(inlineIndex + factor, 0, ...contextLines);
+  }
+}
+
+export function addContextLines(options) {
+  const { diffViewType } = options;
+  const contextLineHandlers = {
+    [INLINE_DIFF_VIEW_TYPE]: addInlineContextLines,
+    [PARALLEL_DIFF_VIEW_TYPE]: addParallelContextLines,
+  };
+  const contextLineHandler = contextLineHandlers[diffViewType];
+
+  if (contextLineHandler) {
+    contextLineHandler(options);
   }
 }
 
@@ -400,7 +442,7 @@ export function isDiscussionApplicableToLine({ discussion, diffPosition, latestD
     const originalRefs = discussion.original_position;
     const refs = discussion.position;
 
-    return _.isEqual(refs, diffPositionCopy) || _.isEqual(originalRefs, diffPositionCopy);
+    return isEqual(refs, diffPositionCopy) || isEqual(originalRefs, diffPositionCopy);
   }
 
   // eslint-disable-next-line
@@ -536,10 +578,10 @@ export const convertExpandLines = ({
   for (let i = 0, diffLinesLength = diffLines.length; i < diffLinesLength; i += 1) {
     const line = diffLines[i];
 
-    if (_.property(typeKey)(line) === 'match') {
+    if (property(typeKey)(line) === 'match') {
       const beforeLine = diffLines[i - 1];
       const afterLine = diffLines[i + 1];
-      const newLineProperty = _.property(newLineKey);
+      const newLineProperty = property(newLineKey);
       const beforeLineIndex = newLineProperty(beforeLine) || 0;
       const afterLineIndex = newLineProperty(afterLine) - 1 || dataLength;
 
@@ -547,7 +589,7 @@ export const convertExpandLines = ({
         ...data.slice(beforeLineIndex, afterLineIndex).map((l, index) =>
           mapLine({
             line: Object.assign(l, { hasForm: false, discussions: [] }),
-            oldLine: (_.property(oldLineKey)(beforeLine) || 0) + index + 1,
+            oldLine: (property(oldLineKey)(beforeLine) || 0) + index + 1,
             newLine: (newLineProperty(beforeLine) || 0) + index + 1,
           }),
         ),

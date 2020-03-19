@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Projects::ProtectDefaultBranchService do
   let(:service) { described_class.new(project) }
-  let(:project) { instance_spy(Project) }
+  let(:project) { create(:project) }
 
   describe '#execute' do
     before do
@@ -147,7 +147,7 @@ describe Projects::ProtectDefaultBranchService do
   describe '#protect_branch?' do
     context 'when default branch protection is disabled' do
       it 'returns false' do
-        allow(Gitlab::CurrentSettings)
+        allow(project.namespace)
           .to receive(:default_branch_protection)
           .and_return(Gitlab::Access::PROTECTION_NONE)
 
@@ -157,7 +157,7 @@ describe Projects::ProtectDefaultBranchService do
 
     context 'when default branch protection is enabled' do
       before do
-        allow(Gitlab::CurrentSettings)
+        allow(project.namespace)
           .to receive(:default_branch_protection)
           .and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
@@ -199,7 +199,7 @@ describe Projects::ProtectDefaultBranchService do
   describe '#push_access_level' do
     context 'when developers can push' do
       it 'returns the DEVELOPER access level' do
-        allow(Gitlab::CurrentSettings)
+        allow(project.namespace)
           .to receive(:default_branch_protection)
           .and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
@@ -209,7 +209,7 @@ describe Projects::ProtectDefaultBranchService do
 
     context 'when developers can not push' do
       it 'returns the MAINTAINER access level' do
-        allow(Gitlab::CurrentSettings)
+        allow(project.namespace)
           .to receive(:default_branch_protection)
           .and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
@@ -221,7 +221,7 @@ describe Projects::ProtectDefaultBranchService do
   describe '#merge_access_level' do
     context 'when developers can merge' do
       it 'returns the DEVELOPER access level' do
-        allow(Gitlab::CurrentSettings)
+        allow(project.namespace)
           .to receive(:default_branch_protection)
           .and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
@@ -231,7 +231,7 @@ describe Projects::ProtectDefaultBranchService do
 
     context 'when developers can not merge' do
       it 'returns the MAINTAINER access level' do
-        allow(Gitlab::CurrentSettings)
+        allow(project.namespace)
           .to receive(:default_branch_protection)
           .and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 

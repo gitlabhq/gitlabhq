@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Projects::Registry::RepositoriesController do
-  let(:user)    { create(:user) }
+  let(:user) { create(:user) }
   let(:project) { create(:project, :private) }
 
   before do
@@ -88,7 +88,7 @@ describe Projects::Registry::RepositoriesController do
 
       context 'with :vue_container_registry_explorer feature flag disabled' do
         before do
-          stub_feature_flags(vue_container_registry_explorer: false)
+          stub_feature_flags(vue_container_registry_explorer: { enabled: false, thing: project.group })
           stub_container_registry_tags(repository: project.full_path,
                                        tags: %w[rc1 latest])
         end

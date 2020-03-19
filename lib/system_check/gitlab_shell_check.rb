@@ -50,7 +50,7 @@ module SystemCheck
     end
 
     def gitlab_shell_version
-      Gitlab::Shell.new.version
+      Gitlab::Shell.version
     end
   end
 end

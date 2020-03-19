@@ -91,7 +91,7 @@ It is possible to use [quick actions](quick_actions.md) within description templ
 
 Here is an example for a Bug report template:
 
-```
+```plaintext
 Summary
 
 (Summarize the bug encountered concisely)

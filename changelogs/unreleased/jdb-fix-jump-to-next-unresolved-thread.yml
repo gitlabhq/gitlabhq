@@ -1,0 +1,5 @@
+---
+title: Fix Jump to next unresolved thread
+merge_request: 24728
+author:
+type: fixed

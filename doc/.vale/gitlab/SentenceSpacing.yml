@@ -1,0 +1,15 @@
+---
+# Check for the following in common content scenarios:
+#
+# - No spaces.
+# - More than one space.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: existence
+message: '"%s" must contain one and only one space.'
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#punctuation
+level: error
+nonword: true
+tokens:
+  - '[a-z][.?!,][A-Z]'
+  - '[\w.?!,\(\)\-":] {2,}[\w.?!,\(\)\-":]'

@@ -1,0 +1,5 @@
+---
+title: Rescue elasticsearch server error in pod logs
+merge_request: 25367
+author:
+type: fixed

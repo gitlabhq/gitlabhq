@@ -20,7 +20,7 @@ describe API::Deployments do
       it 'returns projects deployments sorted by id asc' do
         get api("/projects/#{project.id}/deployments", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(3)
@@ -74,7 +74,7 @@ describe API::Deployments do
           let(:order_by) { 'wrong_sorting_value' }
 
           it 'returns error' do
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
 
@@ -82,7 +82,7 @@ describe API::Deployments do
           let(:sort) { 'wrong_sorting_direction' }
 
           it 'returns error' do
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
       end
@@ -92,7 +92,7 @@ describe API::Deployments do
       it 'returns a 404 status code' do
         get api("/projects/#{project.id}/deployments", non_member)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -105,7 +105,7 @@ describe API::Deployments do
       it 'returns the projects deployment' do
         get api("/projects/#{project.id}/deployments/#{deployment.id}", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['sha']).to match /\A\h{40}\z/
         expect(json_response['id']).to eq(deployment.id)
       end
@@ -115,7 +115,7 @@ describe API::Deployments do
       it 'returns a 404 status code' do
         get api("/projects/#{project.id}/deployments/#{deployment.id}", non_member)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -159,7 +159,7 @@ describe API::Deployments do
           }
         )
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
 
         expect(json_response['sha']).to eq(sha)
         expect(json_response['ref']).to eq('master')
@@ -178,7 +178,7 @@ describe API::Deployments do
           }
         )
 
-        expect(response).to have_gitlab_http_status(500)
+        expect(response).to have_gitlab_http_status(:internal_server_error)
       end
 
       it 'links any merged merge requests to the deployment', :sidekiq_inline do
@@ -228,7 +228,7 @@ describe API::Deployments do
           }
         )
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
 
         expect(json_response['sha']).to eq(sha)
         expect(json_response['ref']).to eq('master')
@@ -312,7 +312,7 @@ describe API::Deployments do
           }
         )
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -341,7 +341,7 @@ describe API::Deployments do
           params: { status: 'success' }
         )
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
 
       it 'updates a deployment without an associated build' do
@@ -350,7 +350,7 @@ describe API::Deployments do
           params: { status: 'success' }
         )
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['status']).to eq('success')
       end
 
@@ -390,7 +390,7 @@ describe API::Deployments do
           params: { status: 'success' }
         )
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
 
       it 'updates a deployment without an associated build' do
@@ -399,7 +399,7 @@ describe API::Deployments do
           params: { status: 'success' }
         )
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['status']).to eq('success')
       end
     end
@@ -411,7 +411,7 @@ describe API::Deployments do
           params: { status: 'success' }
         )
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -428,7 +428,7 @@ describe API::Deployments do
       it 'returns a 404 status code' do
         subject
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -443,7 +443,8 @@ describe API::Deployments do
 
         subject
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
         expect(json_response.map { |d| d['id'] }).to contain_exactly(merge_request1.id, merge_request2.id)
       end
 
@@ -451,7 +452,7 @@ describe API::Deployments do
         it 'returns an empty array' do
           subject
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to eq([])
         end
       end
@@ -468,7 +469,7 @@ describe API::Deployments do
       it 'succeeds', :aggregate_failures do
         subject
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.size).to eq(1)
       end
 

@@ -2,7 +2,7 @@
 
 module Clusters
   module Applications
-    class ActivateServiceWorker
+    class ActivateServiceWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
       include ClusterQueue
 

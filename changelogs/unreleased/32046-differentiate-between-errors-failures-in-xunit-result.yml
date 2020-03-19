@@ -1,0 +1,5 @@
+---
+title: Differentiate between errors and failures in xUnit result
+merge_request: 23476
+author:
+type: changed

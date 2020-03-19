@@ -1,0 +1,5 @@
+---
+title: Migrated from .fa-spinner to .spinner in 'app/assets/javascripts/notes.js
+merge_request: 24916
+author: Raihan Kabir (gitlab/rk4bir)
+type: changed

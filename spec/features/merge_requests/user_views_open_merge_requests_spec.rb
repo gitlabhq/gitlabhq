@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'User views open merge requests' do
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   shared_examples_for 'shows merge requests' do
     it 'shows merge requests' do
@@ -12,7 +12,7 @@ describe 'User views open merge requests' do
   end
 
   context 'when project is public' do
-    set(:project) { create(:project, :public, :repository) }
+    let_it_be(:project) { create(:project, :public, :repository) }
 
     context 'when not signed in' do
       context "when the target branch is the project's default branch" do
@@ -114,7 +114,7 @@ describe 'User views open merge requests' do
   context 'when project is internal' do
     let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
-    set(:project) { create(:project, :internal, :repository) }
+    let_it_be(:project) { create(:project, :internal, :repository) }
 
     context 'when signed in' do
       before do

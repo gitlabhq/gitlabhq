@@ -127,7 +127,7 @@ module QA
             click_element(:edit_link_labels)
 
             labels.each do |label|
-              has_element?(:labels_block, text: label)
+              has_element?(:labels_block, text: label, wait: 0)
             end
 
             refresh

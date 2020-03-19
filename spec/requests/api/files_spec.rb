@@ -7,6 +7,8 @@ describe API::Files do
   let!(:project) { create(:project, :repository, namespace: user.namespace ) }
   let(:guest) { create(:user) { |u| project.add_guest(u) } }
   let(:file_path) { "files%2Fruby%2Fpopen%2Erb" }
+  let(:rouge_file_path) { "%2e%2e%2f" }
+  let(:invalid_file_message) { 'file_path should be a valid file path' }
   let(:params) do
     {
       ref: 'master'
@@ -55,10 +57,16 @@ describe API::Files do
 
   describe "HEAD /projects/:id/repository/files/:file_path" do
     shared_examples_for 'repository files' do
+      it 'returns 400 when file path is invalid' do
+        head api(route(rouge_file_path), current_user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
       it 'returns file attributes in headers' do
         head api(route(file_path), current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers['X-Gitlab-File-Path']).to eq(CGI.unescape(file_path))
         expect(response.headers['X-Gitlab-File-Name']).to eq('popen.rb')
         expect(response.headers['X-Gitlab-Last-Commit-Id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
@@ -72,7 +80,7 @@ describe API::Files do
 
         head api(route(file_path), current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers['X-Gitlab-File-Name']).to eq('commit.js.coffee')
         expect(response.headers['X-Gitlab-Content-Sha256']).to eq('08785f04375b47f81f46e68cc125d5ef368aa20576ddb53f91f4d83f1d04b929')
       end
@@ -81,7 +89,7 @@ describe API::Files do
         it "responds with a 400 status" do
           head api(route("any%2Ffile"), current_user)
 
-          expect(response).to have_gitlab_http_status(400)
+          expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
 
@@ -91,7 +99,7 @@ describe API::Files do
 
           head api(route('app%2Fmodels%2Fapplication%2Erb'), current_user), params: params
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -101,7 +109,7 @@ describe API::Files do
         it "responds with a 403 status" do
           head api(route(file_path), current_user), params: params
 
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -119,7 +127,7 @@ describe API::Files do
 
         head api(route(file_path), current_user), params: params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -145,10 +153,17 @@ describe API::Files do
 
   describe "GET /projects/:id/repository/files/:file_path" do
     shared_examples_for 'repository files' do
+      it 'returns 400 for invalid file path' do
+        get api(route(rouge_file_path), current_user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq(invalid_file_message)
+      end
+
       it 'returns file attributes as json' do
         get api(route(file_path), current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['file_path']).to eq(CGI.unescape(file_path))
         expect(json_response['file_name']).to eq('popen.rb')
         expect(json_response['last_commit_id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
@@ -161,7 +176,7 @@ describe API::Files do
 
         get api(route(file_path), current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type).to eq('application/json')
       end
 
@@ -172,7 +187,7 @@ describe API::Files do
 
         get api(route(file_path), current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['file_name']).to eq('commit.js.coffee')
         expect(json_response['content_sha256']).to eq('08785f04375b47f81f46e68cc125d5ef368aa20576ddb53f91f4d83f1d04b929')
         expect(Base64.decode64(json_response['content']).lines.first).to eq("class Commit\n")
@@ -184,7 +199,7 @@ describe API::Files do
 
         get api(url, current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
       end
 
@@ -193,7 +208,7 @@ describe API::Files do
 
         get api(url, current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'sets inline content disposition by default' do
@@ -294,7 +309,7 @@ describe API::Files do
       it 'returns file attributes in headers' do
         head api(route(file_path) + '/blame', current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers['X-Gitlab-File-Path']).to eq(CGI.unescape(file_path))
         expect(response.headers['X-Gitlab-File-Name']).to eq('popen.rb')
         expect(response.headers['X-Gitlab-Last-Commit-Id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
@@ -302,10 +317,17 @@ describe API::Files do
           .to eq('c440cd09bae50c4632cc58638ad33c6aa375b6109d811e76a9cc3a613c1e8887')
       end
 
+      it 'returns 400 when file path is invalid' do
+        get api(route(rouge_file_path) + '/blame', current_user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq(invalid_file_message)
+      end
+
       it 'returns blame file attributes as json' do
         get api(route(file_path) + '/blame', current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.map { |x| x['lines'].size }).to eq(expected_blame_range_sizes)
         expect(json_response.map { |x| x['commit']['id'] }).to eq(expected_blame_range_commit_ids)
         range = json_response[0]
@@ -329,7 +351,7 @@ describe API::Files do
 
         get api(url, current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'returns file by commit sha' do
@@ -339,7 +361,7 @@ describe API::Files do
 
         get api(route(file_path) + '/blame', current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       context 'when mandatory params are not given' do
@@ -411,20 +433,27 @@ describe API::Files do
 
         get api(route(file_path) + '/blame', personal_access_token: token), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
 
   describe "GET /projects/:id/repository/files/:file_path/raw" do
     shared_examples_for 'repository raw files' do
+      it 'returns 400 when file path is invalid' do
+        get api(route(rouge_file_path) + "/raw", current_user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq(invalid_file_message)
+      end
+
       it 'returns raw file info' do
         url = route(file_path) + "/raw"
         expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
         get api(url, current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'returns raw file info for files with dots' do
@@ -433,7 +462,7 @@ describe API::Files do
 
         get api(url, current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'returns file by commit sha' do
@@ -444,7 +473,7 @@ describe API::Files do
 
         get api(route(file_path) + "/raw", current_user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'sets no-cache headers' do
@@ -520,7 +549,7 @@ describe API::Files do
 
         get api(route(file_path) + "/raw", personal_access_token: token), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end
@@ -535,10 +564,17 @@ describe API::Files do
       }
     end
 
+    it 'returns 400 when file path is invalid' do
+      post api(route(rouge_file_path), user), params: params
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq(invalid_file_message)
+    end
+
     it "creates a new file in project repo" do
       post api(route(file_path), user), params: params
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response["file_path"]).to eq(CGI.unescape(file_path))
       last_commit = project.repository.commit.raw
       expect(last_commit.author_email).to eq(user.email)
@@ -548,7 +584,7 @@ describe API::Files do
     it "returns a 400 bad request if no mandatory params given" do
       post api(route("any%2Etxt"), user)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'returns a 400 bad request if the commit message is empty' do
@@ -556,7 +592,7 @@ describe API::Files do
 
       post api(route(file_path), user), params: params
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "returns a 400 if editor fails to create file" do
@@ -566,7 +602,7 @@ describe API::Files do
 
       post api(route("any%2Etxt"), user), params: params
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     context 'with PATs' do
@@ -575,7 +611,7 @@ describe API::Files do
 
         post api(route(file_path), personal_access_token: token), params: params
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
 
       it 'returns 201 with `api` scope' do
@@ -583,7 +619,7 @@ describe API::Files do
 
         post api(route(file_path), personal_access_token: token), params: params
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
       end
     end
 
@@ -593,7 +629,7 @@ describe API::Files do
 
         post api(route("new_file_with_author%2Etxt"), user), params: params
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(response.content_type).to eq('application/json')
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(author_email)
@@ -607,7 +643,7 @@ describe API::Files do
       it "creates a new file in project repo" do
         post api(route("newfile%2Erb"), user), params: params
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['file_path']).to eq('newfile.rb')
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(user.email)
@@ -628,7 +664,7 @@ describe API::Files do
     it "updates existing file in project repo" do
       put api(route(file_path), user), params: params
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['file_path']).to eq(CGI.unescape(file_path))
       last_commit = project.repository.commit.raw
       expect(last_commit.author_email).to eq(user.email)
@@ -640,7 +676,7 @@ describe API::Files do
 
       put api(route(file_path), user), params: params
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "returns a 400 bad request if update existing file with stale last commit id" do
@@ -648,7 +684,7 @@ describe API::Files do
 
       put api(route(file_path), user), params: params_with_stale_id
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['message']).to eq(_('You are attempting to update a file that has changed since you started editing it.'))
     end
 
@@ -659,13 +695,24 @@ describe API::Files do
 
       put api(route(file_path), user), params: params_with_correct_id
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it "returns 400 when file path is invalid" do
+      last_commit = Gitlab::Git::Commit
+                        .last_for_path(project.repository, 'master', URI.unescape(file_path))
+      params_with_correct_id = params.merge(last_commit_id: last_commit.id)
+
+      put api(route(rouge_file_path), user), params: params_with_correct_id
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq(invalid_file_message)
     end
 
     it "returns a 400 bad request if no params given" do
       put api(route(file_path), user)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     context "when specifying an author" do
@@ -674,7 +721,7 @@ describe API::Files do
 
         put api(route(file_path), user), params: params
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(author_email)
         expect(last_commit.author_name).to eq(author_name)
@@ -690,16 +737,23 @@ describe API::Files do
       }
     end
 
+    it 'returns 400 when file path is invalid' do
+      delete api(route(rouge_file_path), user), params: params
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq(invalid_file_message)
+    end
+
     it "deletes existing file in project repo" do
       delete api(route(file_path), user), params: params
 
-      expect(response).to have_gitlab_http_status(204)
+      expect(response).to have_gitlab_http_status(:no_content)
     end
 
     it "returns a 400 bad request if no params given" do
       delete api(route(file_path), user)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'returns a 400 bad request if the commit message is empty' do
@@ -707,7 +761,7 @@ describe API::Files do
 
       delete api(route(file_path), user), params: params
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "returns a 400 if fails to delete file" do
@@ -717,7 +771,7 @@ describe API::Files do
 
       delete api(route(file_path), user), params: params
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     context "when specifying an author" do
@@ -726,7 +780,7 @@ describe API::Files do
 
         delete api(route(file_path), user), params: params
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end
     end
   end
@@ -754,7 +808,7 @@ describe API::Files do
     it "remains unchanged" do
       get api(route(file_path), user), params: get_params
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['file_path']).to eq(CGI.unescape(file_path))
       expect(json_response['file_name']).to eq(CGI.unescape(file_path))
       expect(json_response['content']).to eq(put_params[:content])

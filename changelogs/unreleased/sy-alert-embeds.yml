@@ -1,0 +1,5 @@
+---
+title: Add support for alert-based metric embeds in GFM
+merge_request: 25075
+author:
+type: added

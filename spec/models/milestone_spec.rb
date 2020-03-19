@@ -3,6 +3,18 @@
 require 'spec_helper'
 
 describe Milestone do
+  describe 'MilestoneStruct#serializable_hash' do
+    let(:predefined_milestone) { described_class::MilestoneStruct.new('Test Milestone', '#test', 1) }
+
+    it 'presents the predefined milestone as a hash' do
+      expect(predefined_milestone.serializable_hash).to eq(
+        title: predefined_milestone.title,
+        name: predefined_milestone.name,
+        id: predefined_milestone.id
+      )
+    end
+  end
+
   describe 'modules' do
     context 'with a project' do
       it_behaves_like 'AtomicInternalId' do
@@ -179,6 +191,16 @@ describe Milestone do
     end
   end
 
+  describe '.predefined_id?' do
+    it 'returns true for a predefined Milestone ID' do
+      expect(Milestone.predefined_id?(described_class::Upcoming.id)).to be true
+    end
+
+    it 'returns false for a Milestone ID that is not predefined' do
+      expect(Milestone.predefined_id?(milestone.id)).to be false
+    end
+  end
+
   describe '.order_by_name_asc' do
     it 'sorts by name ascending' do
       milestone1 = create(:milestone, title: 'Foo')
@@ -209,17 +231,17 @@ describe Milestone do
   describe "#percent_complete" do
     it "does not count open issues" do
       milestone.issues << issue
-      expect(milestone.percent_complete(user)).to eq(0)
+      expect(milestone.percent_complete).to eq(0)
     end
 
     it "counts closed issues" do
       issue.close
       milestone.issues << issue
-      expect(milestone.percent_complete(user)).to eq(100)
+      expect(milestone.percent_complete).to eq(100)
     end
 
     it "recovers from dividing by zero" do
-      expect(milestone.percent_complete(user)).to eq(0)
+      expect(milestone.percent_complete).to eq(0)
     end
   end
 

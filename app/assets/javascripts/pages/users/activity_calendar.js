@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import _ from 'underscore';
+import { last } from 'lodash';
 import { scaleLinear, scaleThreshold } from 'd3-scale';
 import { select } from 'd3-selection';
 import dateFormat from 'dateformat';
@@ -164,11 +164,11 @@ export default class ActivityCalendar {
       .enter()
       .append('g')
       .attr('transform', (group, i) => {
-        _.each(group, (stamp, a) => {
+        group.forEach((stamp, a) => {
           if (a === 0 && stamp.day === this.firstDayOfWeek) {
             const month = stamp.date.getMonth();
             const x = this.daySizeWithSpace * i + 1 + this.daySizeWithSpace;
-            const lastMonth = _.last(this.months);
+            const lastMonth = last(this.months);
             if (
               lastMonth == null ||
               (month !== lastMonth.month && x - this.daySizeWithSpace !== lastMonth.x)

@@ -2,7 +2,12 @@
 
 In this tutorial, you will find different examples, and the steps involved, in the creation of end-to-end (_e2e_) tests for GitLab CE and GitLab EE, using GitLab QA.
 
-> When referring to end-to-end tests in this document, this means testing a specific feature end-to-end, such as a user logging in, the creation of a project, the management of labels, breaking down epics into sub-epics and issues, etc.
+When referring to end-to-end tests in this document, this means testing a specific feature end-to-end such as:
+
+- A user logging in.
+- The creation of a project.
+- The management of labels.
+- Breaking down epics into sub-epics and issues.
 
 ## Important information before we start writing tests
 
@@ -34,7 +39,7 @@ Sometimes you may notice that there is already good coverage in lower test level
 
 - Take a look at the [How to test at the correct level?](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md#how-to-test-at-the-correct-level) section of the [Testing levels](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md) document
 
-- Look into the frequency in which such a feature is changed  (_Stable features that don't change very often might not be worth covering with end-to-end tests if they're already covered in lower levels_)
+- Look into the frequency in which such a feature is changed (_Stable features that don't change very often might not be worth covering with end-to-end tests if they're already covered in lower levels_)
 
 - Finally, discuss with the developer(s) involved in developing the feature and the tests themselves, to get their feeling
 
@@ -209,7 +214,11 @@ First, we remove the duplication of strings by defining the global variables `@i
 
 Then, by creating a reusable `select_label_and_refresh` method, we remove the code duplication of this action, and later we can move this method to a Page Object class that will be created for easier maintenance purposes.
 
-> Notice that the reusable method is created at the bottom of the file. The reason for that is that reading the code should be similar to reading a newspaper, where high-level information is at the top, like the title and summary of the news, while low level, or more specific information, is at the bottom (this helps readability).
+Notice that the reusable method is created at the bottom of the file. This helps readability,
+where reading the code should be similar to reading a newspaper:
+
+- High-level information is at the top, like the title and summary of the news.
+- Low level, or more specific information, is at the bottom.
 
 ### 5. Tests' pre-conditions using resources and Page Objects
 
@@ -353,7 +362,7 @@ You can think of [Resources] as anything that can be created on GitLab CE or EE,
 
 With that in mind, resources can be a project, an epic, an issue, a label, a commit, etc.
 
-As you saw in the tests' pre-conditions and the optimization sections, we're already creating some of these resources, and we are doing that by calling the `fabricate_via_api!` method.
+As you saw in the tests' pre-conditions and the optimization sections, we're already creating some of these resources. We are doing that by calling the `fabricate_via_api!` method.
 
 > We could be using the `fabricate!` method instead, which would use the `fabricate_via_api!` method if it exists, and fallback to GUI fabrication otherwise, but we recommend being explicit to make it clear what the test does. Also, we always recommend fabricating resources via API since this makes tests faster and more reliable.
 

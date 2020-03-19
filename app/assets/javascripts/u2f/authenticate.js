@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import _ from 'underscore';
+import { template as lodashTemplate, omit } from 'lodash';
 import importU2FLibrary from './util';
 import U2FError from './error';
 
@@ -37,7 +37,7 @@ export default class U2FAuthenticate {
     // Note: The server library fixes this behaviour in (unreleased) version 1.0.0.
     // This can be removed once we upgrade.
     // https://github.com/castle/ruby-u2f/commit/103f428071a81cd3d5f80c2e77d522d5029946a4
-    this.signRequests = u2fParams.sign_requests.map(request => _(request).omit('challenge'));
+    this.signRequests = u2fParams.sign_requests.map(request => omit(request, 'challenge'));
 
     this.templates = {
       setup: '#js-authenticate-u2f-setup',
@@ -74,7 +74,7 @@ export default class U2FAuthenticate {
 
   renderTemplate(name, params) {
     const templateString = $(this.templates[name]).html();
-    const template = _.template(templateString);
+    const template = lodashTemplate(templateString);
     return this.container.html(template(params));
   }
 

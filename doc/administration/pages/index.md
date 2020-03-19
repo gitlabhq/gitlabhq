@@ -345,7 +345,7 @@ pages:
 ### Using a custom Certificate Authority (CA)
 
 When using certificates issued by a custom CA, [Access Control](../../user/project/pages/pages_access_control.md#gitlab-pages-access-control) and
-the [online view of HTML job artifacts](../../user/project/pipelines/job_artifacts.md#browsing-artifacts)
+the [online view of HTML job artifacts](../../ci/pipelines/job_artifacts.md#browsing-artifacts)
 will fail to work if the custom CA is not recognized.
 
 This usually results in this error:
@@ -360,16 +360,16 @@ that method from working. Use the following workaround:
 
 1. Append your GitLab server TLS/SSL certficate to `/opt/gitlab/embedded/ssl/certs/cacert.pem` where `gitlab-domain-example.com` is your GitLab application URL
 
-    ```shell
-    printf "\ngitlab-domain-example.com\n===========================\n" | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
-    echo -n | openssl s_client -connect gitlab-domain-example.com:443  | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
-    ```
+   ```shell
+   printf "\ngitlab-domain-example.com\n===========================\n" | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
+   echo -n | openssl s_client -connect gitlab-domain-example.com:443  | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
+   ```
 
 1. [Restart](../restart_gitlab.md) the GitLab Pages Daemon. For GitLab Omnibus instances:
 
-    ```shell
-    sudo gitlab-ctl restart gitlab-pages
-    ```
+   ```shell
+   sudo gitlab-ctl restart gitlab-pages
+   ```
 
 CAUTION: **Caution:**
 Some GitLab Omnibus upgrades will revert this workaround and you'll need to apply it again.
@@ -565,6 +565,51 @@ GitLab Pages are part of the [regular backup][backup], so there is no separate b
 
 You should strongly consider running GitLab Pages under a different hostname
 than GitLab to prevent XSS attacks.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
+
+## Troubleshooting
+
+### `open /etc/ssl/ca-bundle.pem: permission denied`
+
+GitLab Pages runs inside a `chroot` jail, usually in a uniquely numbered directory like
+`/tmp/gitlab-pages-*`.
+
+Within the jail, a bundle of trusted certificates is
+provided at `/etc/ssl/ca-bundle.pem`. It's
+[copied there](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/51)
+from `/opt/gitlab/embedded/ssl/certs/cacert.pem`
+as part of starting up Pages.
+
+If the permissions on the source file are incorrect (they should be `0644`) then
+the file inside the `chroot` jail will also be wrong.
+
+Pages will log errors in `/var/log/gitlab/gitlab-pages/current` like:
+
+```plaintext
+x509: failed to load system roots and no roots provided
+open /etc/ssl/ca-bundle.pem: permission denied
+```
+
+The use of a `chroot` jail makes this error misleading, as it is not
+referring to `/etc/ssl` on the root filesystem.
+
+The fix is to correct the source file permissions and restart Pages:
+
+```shell
+sudo chmod 644 /opt/gitlab/embedded/ssl/certs/cacert.pem
+sudo gitlab-ctl restart gitlab-pages
+```
 
 [backup]: ../../raketasks/backup_restore.md
 [ce-14605]: https://gitlab.com/gitlab-org/gitlab-foss/issues/14605

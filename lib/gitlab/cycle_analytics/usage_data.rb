@@ -3,13 +3,30 @@
 module Gitlab
   module CycleAnalytics
     class UsageData
+      include Gitlab::Utils::StrongMemoize
       PROJECTS_LIMIT = 10
 
-      attr_reader :projects, :options
+      attr_reader :options
 
       def initialize
-        @projects = Project.sorted_by_activity.limit(PROJECTS_LIMIT)
         @options = { from: 7.days.ago }
+      end
+
+      def projects
+        strong_memoize(:projects) do
+          projects = Project.where.not(last_activity_at: nil).order(last_activity_at: :desc).limit(10) +
+                     Project.where.not(last_repository_updated_at: nil).order(last_repository_updated_at: :desc).limit(10)
+
+          projects = projects.uniq.sort_by do |project|
+            [project.last_activity_at, project.last_repository_updated_at].min
+          end
+
+          if projects.size < 10
+            projects.concat(Project.where(last_activity_at: nil, last_repository_updated_at: nil).limit(10))
+          end
+
+          projects.uniq.first(10)
+        end
       end
 
       def to_json(*)

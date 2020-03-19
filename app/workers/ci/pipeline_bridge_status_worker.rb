@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 module Ci
-  class PipelineBridgeStatusWorker
+  class PipelineBridgeStatusWorker # rubocop:disable Scalability/IdempotentWorker
     include ::ApplicationWorker
     include ::PipelineQueue
 
-    latency_sensitive_worker!
+    urgency :high
     worker_resource_boundary :cpu
 
     def perform(pipeline_id)

@@ -297,7 +297,7 @@ For a list of known issues, visit GitLab's [public issue tracker].
 [staticgen]: https://www.staticgen.com/
 [pages-jekyll]: https://gitlab.com/pages/jekyll
 [metarefresh]: https://en.wikipedia.org/wiki/Meta_refresh
-[public issue tracker]: https://gitlab.com/gitlab-org/gitlab-foss/issues?label_name=pages
+[public issue tracker]: https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages
 [quick start guide]: ../../../ci/quick_start/README.md
 [pages-index-guide]: index.md
 [pages-quick]: getting_started_part_one.md

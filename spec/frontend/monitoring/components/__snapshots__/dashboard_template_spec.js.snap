@@ -72,15 +72,31 @@ exports[`Dashboard template matches the default snapshot 1`] = `
       </gl-form-group-stub>
        
       <gl-form-group-stub
-        class="col-sm-6 col-md-6 col-lg-4"
+        class="col-sm-auto col-md-auto col-lg-auto"
         label="Show last"
         label-for="monitor-time-window-dropdown"
         label-size="sm"
       >
         <date-time-picker-stub
+          customenabled="true"
           options="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
           value="[object Object]"
         />
+      </gl-form-group-stub>
+       
+      <gl-form-group-stub
+        class="col-sm-2 col-md-2 col-lg-1 refresh-dashboard-button"
+      >
+        <gl-button-stub
+          size="md"
+          title="Reload this page"
+          variant="default"
+        >
+          <icon-stub
+            name="repeat"
+            size="16"
+          />
+        </gl-button-stub>
       </gl-form-group-stub>
        
       <!---->

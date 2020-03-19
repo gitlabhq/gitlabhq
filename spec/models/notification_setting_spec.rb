@@ -110,7 +110,8 @@ RSpec.describe NotificationSetting do
         :reassign_merge_request,
         :merge_merge_request,
         :failed_pipeline,
-        :success_pipeline
+        :success_pipeline,
+        :fixed_pipeline
       )
     end
 

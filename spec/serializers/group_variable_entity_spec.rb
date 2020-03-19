@@ -10,7 +10,7 @@ describe GroupVariableEntity do
     subject { entity.as_json }
 
     it 'contains required fields' do
-      expect(subject).to include(:id, :key, :value, :protected)
+      expect(subject).to include(:id, :key, :value, :protected, :variable_type)
     end
   end
 end

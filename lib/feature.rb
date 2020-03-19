@@ -38,7 +38,7 @@ class Feature
         begin
           # We saw on GitLab.com, this database request was called 2300
           # times/s. Let's cache it for a minute to avoid that load.
-          Gitlab::ThreadMemoryCache.cache_backend.fetch('flipper:persisted_names', expires_in: 1.minute) do
+          Gitlab::ProcessMemoryCache.cache_backend.fetch('flipper:persisted_names', expires_in: 1.minute) do
             FlipperFeature.feature_names
           end
         end
@@ -134,7 +134,11 @@ class Feature
     end
 
     def l1_cache_backend
-      Gitlab::ThreadMemoryCache.cache_backend
+      if Gitlab::Utils.to_boolean(ENV['USE_THREAD_MEMORY_CACHE'])
+        Gitlab::ThreadMemoryCache.cache_backend
+      else
+        Gitlab::ProcessMemoryCache.cache_backend
+      end
     end
 
     def l2_cache_backend

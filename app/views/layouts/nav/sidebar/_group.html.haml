@@ -1,4 +1,3 @@
-- should_display_analytics_pages_in_sidebar = Feature.enabled?(:analytics_pages_under_group_analytics_sidebar, @group, default_enabled: true)
 - issues_count = group_issues_count(state: 'opened')
 - merge_requests_count = group_merge_requests_count(state: 'opened')
 
@@ -13,8 +12,7 @@
     %ul.sidebar-top-level-items.qa-group-sidebar
       - if group_sidebar_link?(:overview)
         - paths = group_overview_nav_link_paths
-        - paths << 'contribution_analytics#show' unless should_display_analytics_pages_in_sidebar
-        = nav_link(path: paths, unless: -> { should_display_analytics_pages_in_sidebar && current_path?('groups/contribution_analytics#show') }, html_options: { class: 'home' }) do
+        = nav_link(path: paths, unless: -> { current_path?('groups/contribution_analytics#show') }, html_options: { class: 'home' }) do
           = link_to group_path(@group) do
             .nav-icon-container
               = sprite_icon('home')
@@ -45,19 +43,10 @@
                   %span
                     = _('Activity')
 
-            - unless should_display_analytics_pages_in_sidebar
-              - if group_sidebar_link?(:contribution_analytics)
-                = nav_link(path: 'contribution_analytics#show') do
-                  = link_to group_contribution_analytics_path(@group), title: _('Contribution Analytics'), data: { placement: 'right', qa_selector: 'contribution_analytics_link' } do
-                    %span
-                      = _('Contribution Analytics')
-
-              = render_if_exists 'layouts/nav/group_insights_link'
-
       = render_if_exists "layouts/nav/ee/epic_link", group: @group
 
       - if group_sidebar_link?(:issues)
-        = nav_link(path: group_issues_sub_menu_items, unless: -> { should_display_analytics_pages_in_sidebar && current_path?('issues_analytics#show') }) do
+        = nav_link(path: group_issues_sub_menu_items, unless: -> { current_path?('issues_analytics#show') }) do
           = link_to issues_group_path(@group), data: { qa_selector: 'group_issues_item' } do
             .nav-icon-container
               = sprite_icon('issues')
@@ -83,9 +72,6 @@
                 = link_to group_boards_path(@group), title: boards_link_text, data: { qa_selector: 'group_issue_boards_link' } do
                   %span
                     = boards_link_text
-
-            - unless should_display_analytics_pages_in_sidebar
-              = render_if_exists 'layouts/nav/issues_analytics_link'
 
             - if group_sidebar_link?(:labels)
               = nav_link(path: 'labels#index') do

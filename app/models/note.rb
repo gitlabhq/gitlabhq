@@ -223,7 +223,7 @@ class Note < ApplicationRecord
   end
 
   # rubocop: disable CodeReuse/ServiceClass
-  def cross_reference?
+  def system_note_with_references?
     return unless system?
 
     if force_cross_reference_regex_check?
@@ -290,6 +290,19 @@ class Note < ApplicationRecord
     @commit ||= project.commit(commit_id) if commit_id.present?
   end
 
+  # Notes on merge requests and commits can be traced back to one or several
+  # MRs. This method returns a relation if the note is for one of these types,
+  # or nil if it is a note on some other object.
+  def merge_requests
+    if for_commit?
+      project.merge_requests.by_commit_sha(commit_id)
+    elsif for_merge_request?
+      MergeRequest.id_in(noteable_id)
+    else
+      nil
+    end
+  end
+
   # override to return commits, which are not active record
   def noteable
     return commit if for_commit?
@@ -305,6 +318,13 @@ class Note < ApplicationRecord
   #        For more information visit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
   def noteable_type=(noteable_type)
     super(noteable_type.to_s.classify.constantize.base_class.to_s)
+  end
+
+  def noteable_assignee_or_author?(user)
+    return false unless user
+    return noteable.assignee_or_author?(user) if [MergeRequest, Issue].include?(noteable.class)
+
+    noteable.author_id == user.id
   end
 
   def special_role=(role)
@@ -324,7 +344,7 @@ class Note < ApplicationRecord
   end
 
   def confidential?
-    noteable.try(:confidential?)
+    confidential || noteable.try(:confidential?)
   end
 
   def editable?
@@ -339,12 +359,10 @@ class Note < ApplicationRecord
     super
   end
 
-  def cross_reference_not_visible_for?(user)
-    cross_reference? && !all_referenced_mentionables_allowed?(user)
-  end
-
-  def visible_for?(user)
-    !cross_reference_not_visible_for?(user) && system_note_viewable_by?(user)
+  # This method is to be used for checking read permissions on a note instead of `system_note_with_references_visible_for?`
+  def readable_by?(user)
+    # note_policy accounts for #system_note_with_references_visible_for?(user) check when granting read access
+    Ability.allowed?(user, :read_note, self)
   end
 
   def award_emoji?
@@ -502,6 +520,10 @@ class Note < ApplicationRecord
     return Note.none unless noteable.present?
 
     noteable.user_mentions.where(note: self)
+  end
+
+  def system_note_with_references_visible_for?(user)
+    (!system_note_with_references? || all_referenced_mentionables_allowed?(user)) && system_note_viewable_by?(user)
   end
 
   private

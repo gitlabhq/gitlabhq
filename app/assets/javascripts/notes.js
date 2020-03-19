@@ -1808,11 +1808,7 @@ export default class Notes {
     $editingNote.removeClass('is-editing fade-in-full').addClass('being-posted fade-in-half');
     $editingNote
       .find('.note-headline-meta a')
-      .html(
-        `<i class="fa fa-spinner fa-spin" aria-label="${__(
-          'Comment is being updated',
-        )}" aria-hidden="true"></i>`,
-      );
+      .html('<span class="spinner align-text-bottom"></span>');
 
     // Make request to update comment on server
     axios
@@ -1825,7 +1821,7 @@ export default class Notes {
         // Submission failed, revert back to original note
         $noteBodyText.html(escape(cachedNoteBodyText));
         $editingNote.removeClass('being-posted fade-in');
-        $editingNote.find('.fa.fa-spinner').remove();
+        $editingNote.find('.spinner').remove();
 
         // Show Flash message about failure
         this.updateNoteError();

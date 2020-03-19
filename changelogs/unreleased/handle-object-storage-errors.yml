@@ -1,0 +1,5 @@
+---
+title: Return 503 to the Runner when the object storage is unavailable
+merge_request: 25822
+author:
+type: fixed

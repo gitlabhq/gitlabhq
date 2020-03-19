@@ -3,24 +3,29 @@
 require 'spec_helper'
 
 describe Gitlab::Checks::ProjectCreated, :clean_gitlab_redis_shared_state do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
+  let(:protocol) { 'http' }
+  let(:git_user) { user }
+  let(:repository) { project.repository }
+
+  subject { described_class.new(repository, git_user, 'http') }
 
   describe '.fetch_message' do
     context 'with a project created message queue' do
-      let(:project_created) { described_class.new(project, user, 'http') }
-
       before do
-        project_created.add_message
+        subject.add_message
       end
 
       it 'returns project created message' do
-        expect(described_class.fetch_message(user.id, project.id)).to eq(project_created.message)
+        expect(described_class.fetch_message(user.id, project.id)).to eq(subject.message)
       end
 
       it 'deletes the project created message from redis' do
         expect(Gitlab::Redis::SharedState.with { |redis| redis.get("project_created:#{user.id}:#{project.id}") }).not_to be_nil
+
         described_class.fetch_message(user.id, project.id)
+
         expect(Gitlab::Redis::SharedState.with { |redis| redis.get("project_created:#{user.id}:#{project.id}") }).to be_nil
       end
     end
@@ -34,15 +39,15 @@ describe Gitlab::Checks::ProjectCreated, :clean_gitlab_redis_shared_state do
 
   describe '#add_message' do
     it 'queues a project created message' do
-      project_created = described_class.new(project, user, 'http')
-
-      expect(project_created.add_message).to eq('OK')
+      expect(subject.add_message).to eq('OK')
     end
 
-    it 'handles anonymous push' do
-      project_created = described_class.new(nil, user, 'http')
+    context 'when user is nil' do
+      let(:git_user) { nil }
 
-      expect(project_created.add_message).to be_nil
+      it 'handles anonymous push' do
+        expect(subject.add_message).to be_nil
+      end
     end
   end
 end

@@ -1,0 +1,6 @@
+{
+  "type": "array",
+  "items": {
+    "$ref": "deploy_token.json"
+  }
+}

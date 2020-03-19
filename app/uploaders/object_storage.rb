@@ -394,7 +394,7 @@ module ObjectStorage
     def storage_for(store)
       case store
       when Store::REMOTE
-        raise 'Object Storage is not enabled' unless self.class.object_store_enabled?
+        raise "Object Storage is not enabled for #{self.class}" unless self.class.object_store_enabled?
 
         CarrierWave::Storage::Fog.new(self)
       when Store::LOCAL

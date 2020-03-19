@@ -60,7 +60,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must registe
 
    For installation from source:
 
-   ```
+   ```yaml
    - { name: 'ultraauth',
        app_id: 'OPENID_CLIENT_ID',
        app_secret: 'OPENID_CLIENT_SECRET',

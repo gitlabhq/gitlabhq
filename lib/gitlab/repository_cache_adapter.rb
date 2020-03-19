@@ -237,7 +237,7 @@ module Gitlab
     end
 
     def expire_redis_set_method_caches(methods)
-      methods.each { |name| redis_set_cache.expire(name) }
+      redis_set_cache.expire(*methods)
     end
 
     def expire_redis_hash_method_caches(methods)

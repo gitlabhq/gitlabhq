@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190418132125_populate_project_statistics_packages_size.rb')
 
-describe PopulateProjectStatisticsPackagesSize, :migration do
+describe PopulateProjectStatisticsPackagesSize do
   let(:project_statistics) { table(:project_statistics) }
   let(:namespaces)         { table(:namespaces) }
   let(:projects)           { table(:projects) }

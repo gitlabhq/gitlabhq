@@ -28,7 +28,14 @@ RSpec.describe Quality::TestLevel do
     context 'when level is migration' do
       it 'returns a pattern' do
         expect(subject.pattern(:migration))
-          .to eq("spec/{migrations,lib/gitlab/background_migration}{,/**/}*_spec.rb")
+          .to eq("spec/{migrations}{,/**/}*_spec.rb")
+      end
+    end
+
+    context 'when level is background_migration' do
+      it 'returns a pattern' do
+        expect(subject.pattern(:background_migration))
+          .to eq("spec/{lib/gitlab/background_migration,lib/ee/gitlab/background_migration}{,/**/}*_spec.rb")
       end
     end
 
@@ -89,7 +96,14 @@ RSpec.describe Quality::TestLevel do
     context 'when level is migration' do
       it 'returns a regexp' do
         expect(subject.regexp(:migration))
-          .to eq(%r{spec/(migrations|lib/gitlab/background_migration)})
+          .to eq(%r{spec/(migrations)})
+      end
+    end
+
+    context 'when level is background_migration' do
+      it 'returns a regexp' do
+        expect(subject.regexp(:background_migration))
+          .to eq(%r{spec/(lib/gitlab/background_migration|lib/ee/gitlab/background_migration)})
       end
     end
 
@@ -134,12 +148,16 @@ RSpec.describe Quality::TestLevel do
       expect(subject.level_for('spec/migrations/add_default_and_free_plans_spec.rb')).to eq(:migration)
     end
 
-    it 'returns the correct level for a background_migration test' do
+    it 'returns the correct level for a background migration test' do
       expect(subject.level_for('spec/lib/gitlab/background_migration/archive_legacy_traces_spec.rb')).to eq(:migration)
     end
 
     it 'returns the correct level for a geo migration test' do
       expect(described_class.new('ee/').level_for('ee/spec/migrations/geo/migrate_ci_job_artifacts_to_separate_registry_spec.rb')).to eq(:migration)
+    end
+
+    it 'returns the correct level for a EE-namespaced background migration test' do
+      expect(described_class.new('ee/').level_for('ee/spec/lib/ee/gitlab/background_migration/prune_orphaned_geo_events_spec.rb')).to eq(:migration)
     end
 
     it 'returns the correct level for an integration test' do
@@ -154,6 +172,28 @@ RSpec.describe Quality::TestLevel do
       expect { subject.level_for('spec/unknown/foo_spec.rb') }
         .to raise_error(described_class::UnknownTestLevelError,
           %r{Test level for spec/unknown/foo_spec.rb couldn't be set. Please rename the file properly or change the test level detection regexes in .+/lib/quality/test_level.rb.})
+    end
+  end
+
+  describe '#background_migration?' do
+    it 'returns false for a unit test' do
+      expect(subject.background_migration?('spec/models/abuse_report_spec.rb')).to be(false)
+    end
+
+    it 'returns true for a migration test' do
+      expect(subject.background_migration?('spec/migrations/add_default_and_free_plans_spec.rb')).to be(false)
+    end
+
+    it 'returns true for a background migration test' do
+      expect(subject.background_migration?('spec/lib/gitlab/background_migration/archive_legacy_traces_spec.rb')).to be(true)
+    end
+
+    it 'returns true for a geo migration test' do
+      expect(described_class.new('ee/').background_migration?('ee/spec/migrations/geo/migrate_ci_job_artifacts_to_separate_registry_spec.rb')).to be(false)
+    end
+
+    it 'returns true for a EE-namespaced background migration test' do
+      expect(described_class.new('ee/').background_migration?('ee/spec/lib/ee/gitlab/background_migration/prune_orphaned_geo_events_spec.rb')).to be(true)
     end
   end
 end

@@ -149,10 +149,12 @@ describe Gitlab::BackgroundMigration::LegacyUploadMover do
 
     context 'when an upload belongs to a legacy_diff_note' do
       let!(:merge_request) { create(:merge_request, source_project: project) }
+
       let!(:note) do
         create(:legacy_diff_note_on_merge_request,
           note: 'some note', project: project, noteable: merge_request)
       end
+
       let(:legacy_upload) do
         create(:upload, :with_file, :attachment_upload,
                path: "uploads/-/system/note/attachment/#{note.id}/#{filename}", model: note)
@@ -191,6 +193,17 @@ describe Gitlab::BackgroundMigration::LegacyUploadMover do
         end
 
         it_behaves_like 'move error'
+      end
+
+      context 'when upload has mount_point nil' do
+        let(:legacy_upload) do
+          create(:upload, :with_file, :attachment_upload,
+                 path: "uploads/-/system/note/attachment/#{note.id}/#{filename}", model: note, mount_point: nil)
+        end
+
+        it_behaves_like 'migrates the file correctly'
+        it_behaves_like 'legacy local file'
+        it_behaves_like 'legacy upload deletion'
       end
 
       context 'when the file can be handled correctly' do

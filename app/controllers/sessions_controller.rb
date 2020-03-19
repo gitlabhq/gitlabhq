@@ -39,7 +39,7 @@ class SessionsController < Devise::SessionsController
   # would cause the CSRF token to be cleared and then
   # RequestForgeryProtection#verify_authenticity_token would fail because of
   # token mismatch.
-  protect_from_forgery with: :exception, prepend: true
+  protect_from_forgery with: :exception, prepend: true, except: :destroy
 
   CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'
   MAX_FAILED_LOGIN_ATTEMPTS = 5
@@ -271,8 +271,8 @@ class SessionsController < Devise::SessionsController
 
   def ldap_servers
     @ldap_servers ||= begin
-      if Gitlab::Auth::LDAP::Config.sign_in_enabled?
-        Gitlab::Auth::LDAP::Config.available_servers
+      if Gitlab::Auth::Ldap::Config.sign_in_enabled?
+        Gitlab::Auth::Ldap::Config.available_servers
       else
         []
       end

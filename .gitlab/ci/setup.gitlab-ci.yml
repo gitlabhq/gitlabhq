@@ -2,7 +2,6 @@
 # rubygems.org in the future.
 cache gems:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .default-before_script
@@ -21,14 +20,14 @@ cache gems:
 
 .minimal-job:
   extends:
-    - .default-tags
     - .default-retry
-  dependencies: []
+  needs: []
 
 gitlab_git_test:
   extends:
     - .minimal-job
     - .setup:rules:gitlab_git_test
+  stage: test
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
 
@@ -36,5 +35,6 @@ no_ee_check:
   extends:
     - .minimal-job
     - .setup:rules:no_ee_check
+  stage: test
   script:
     - scripts/no-ee-check

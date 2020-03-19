@@ -1,0 +1,5 @@
+---
+title: Fix backend validation of numeric emoji names
+merge_request: 27101
+author:
+type: fixed

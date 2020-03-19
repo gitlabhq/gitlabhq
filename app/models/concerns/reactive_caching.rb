@@ -52,6 +52,13 @@ module ReactiveCaching
       end
     end
 
+    def with_reactive_cache_set(resource, opts, &blk)
+      data = with_reactive_cache(resource, opts, &blk)
+      save_keys_in_set(resource, opts) if data
+
+      data
+    end
+
     # This method is used for debugging purposes and should not be used otherwise.
     def without_reactive_cache(*args, &blk)
       return with_reactive_cache(*args, &blk) unless Rails.env.development?
@@ -63,6 +70,12 @@ module ReactiveCaching
     def clear_reactive_cache!(*args)
       Rails.cache.delete(full_reactive_cache_key(*args))
       Rails.cache.delete(alive_reactive_cache_key(*args))
+    end
+
+    def clear_reactive_cache_set!(*args)
+      cache_key = full_reactive_cache_key(args)
+
+      reactive_set_cache.clear_cache!(cache_key)
     end
 
     def exclusively_update_reactive_cache!(*args)
@@ -85,6 +98,16 @@ module ReactiveCaching
     end
 
     private
+
+    def save_keys_in_set(resource, opts)
+      cache_key = full_reactive_cache_key(resource)
+
+      reactive_set_cache.write(cache_key, "#{cache_key}:#{opts}")
+    end
+
+    def reactive_set_cache
+      Gitlab::ReactiveCacheSetCache.new(expires_in: reactive_cache_lifetime)
+    end
 
     def refresh_reactive_cache!(*args)
       clear_reactive_cache!(*args)

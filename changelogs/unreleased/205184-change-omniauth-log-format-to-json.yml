@@ -1,0 +1,5 @@
+---
+title: Change OmniAuth log format to JSON
+merge_request: 25086
+author:
+type: other

@@ -12,7 +12,6 @@ module Gitlab
           validations do
             validates :config, type: Hash
             validates :config, allowed_keys: ALLOWED_KEYS
-            validates :config, presence: true
           end
 
           entry :rules, Entry::Rules,

@@ -137,9 +137,13 @@ describe Clusters::Applications::CreateService do
         let(:params) do
           {
             application: 'knative',
-            hostname: 'example.com'
+            hostname: 'example.com',
+            pages_domain_id: domain.id
           }
         end
+
+        let(:domain) { create(:pages_domain, :instance_serverless) }
+        let(:associate_domain_service) { double('AssociateDomainService') }
 
         before do
           expect_any_instance_of(Clusters::Applications::Knative)
@@ -157,6 +161,20 @@ describe Clusters::Applications::CreateService do
 
         it 'sets the hostname' do
           expect(subject.hostname).to eq('example.com')
+        end
+
+        it 'executes AssociateDomainService' do
+          expect(Serverless::AssociateDomainService).to receive(:new) do |knative, args|
+            expect(knative).to be_a(Clusters::Applications::Knative)
+            expect(args[:pages_domain_id]).to eq(params[:pages_domain_id])
+            expect(args[:creator]).to eq(user)
+
+            associate_domain_service
+          end
+
+          expect(associate_domain_service).to receive(:execute)
+
+          subject
         end
       end
 

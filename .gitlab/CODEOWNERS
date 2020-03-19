@@ -8,19 +8,29 @@
 
 # Technical writing team are the default reviewers for all markdown docs
 *.md @gl-docsteam
+/doc/ @gl-docsteam
 
 # Frontend maintainers should see everything in `app/assets/`
-app/assets/ @gitlab-org/maintainers/frontend
 *.scss @annabeldunstone @gitlab-org/maintainers/frontend
-/scripts/frontend/ @gitlab-org/maintainers/frontend
+*.js @gitlab-org/maintainers/frontend
+/app/assets/ @gitlab-org/maintainers/frontend
+/ee/app/assets/ @gitlab-org/maintainers/frontend
+/spec/javascripts/ @gitlab-org/maintainers/frontend
+/ee/spec/javascripts/ @gitlab-org/maintainers/frontend
+/spec/frontend/ @gitlab-org/maintainers/frontend
+/ee/spec/frontend/ @gitlab-org/maintainers/frontend
 
 # Database maintainers should review changes in `db/`
-db/ @gitlab-org/maintainers/database
-lib/gitlab/background_migration/ @gitlab-org/maintainers/database
-lib/gitlab/database/ @gitlab-org/maintainers/database
-lib/gitlab/sql/ @gitlab-org/maintainers/database
-lib/gitlab/github_import/ @gitlab-org/maintainers/database
+/db/ @gitlab-org/maintainers/database
 /ee/db/ @gitlab-org/maintainers/database
+/lib/gitlab/background_migration/ @gitlab-org/maintainers/database
+/ee/lib/ee/gitlab/background_migration/ @gitlab-org/maintainers/database
+/lib/gitlab/database/ @gitlab-org/maintainers/database
+/ee/lib/gitlab/database/ @gitlab-org/maintainers/database
+/lib/gitlab/sql/ @gitlab-org/maintainers/database
+/lib/gitlab/github_import/ @gitlab-org/maintainers/database
+/app/finders/ @gitlab-org/maintainers/database
+/ee/app/finders/ @gitlab-org/maintainers/database
 
 # Feature specific owners
 /ee/lib/gitlab/code_owners/ @reprazent
@@ -38,11 +48,20 @@ lib/gitlab/github_import/ @gitlab-org/maintainers/database
 # Engineering Productivity owned files
 /.gitlab-ci.yml @gl-quality/eng-prod
 /.gitlab/ci/ @gl-quality/eng-prod
+/.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
+/.gitlab/ci/releases.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/delivery
 /.gitlab/CODEOWNERS @gl-quality/eng-prod
 Dangerfile @gl-quality/eng-prod
 /danger/ @gl-quality/eng-prod
 /lib/gitlab/danger/ @gl-quality/eng-prod
 /scripts/ @gl-quality/eng-prod
+/scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
+.editorconfig @gl-quality/eng-prod
 
-# Delivery owner files
-/.gitlab/ci/releases.gitlab-ci.yml @gitlab-org/delivery
+# Telemetry owner files
+/ee/lib/gitlab/usage_data_counters/ @gitlab-org/growth/telemetry
+/ee/lib/ee/gitlab/usage_data.rb @gitlab-org/growth/telemetry
+/lib/gitlab/grafana_embed_usage_data.rb @gitlab-org/growth/telemetry
+/lib/gitlab/usage_data.rb @gitlab-org/growth/telemetry
+/lib/gitlab/cycle_analytics/usage_data.rb @gitlab-org/growth/telemetry
+/lib/gitlab/usage_data_counters/ @gitlab-org/growth/telemetry

@@ -37,6 +37,10 @@ module Gitlab
       def developer_can_merge?
         level == PROTECTION_DEV_CAN_MERGE
       end
+
+      def fully_protected?
+        level == PROTECTION_FULL
+      end
     end
   end
 end

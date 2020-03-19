@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::GlobalId do
   describe '.build' do
-    set(:object) { create(:issue) }
+    let_it_be(:object) { create(:issue) }
 
     it 'returns a standard GlobalId if only object is passed' do
       expect(described_class.build(object).to_s).to eq(object.to_global_id.to_s)

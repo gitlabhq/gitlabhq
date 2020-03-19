@@ -13,20 +13,25 @@ assets output by your CI system to use them, not just the raw source
 code.
 
 GitLab's **Releases** are a way to track deliverables in your project. Consider them
-a snapshot in time of the source, build output, and other metadata or artifacts
+a snapshot in time of the source, build output, artifacts, and other metadata
 associated with a released version of your code.
-
-There are several ways to create a Release:
-
-- In the interface, when you create a new Git tag.
-- In the interface, by adding a release note to an existing Git tag.
-- Using the [Releases API](../../../api/releases/index.md): we recommend doing this as one of the last
-  steps in your CI/CD release pipeline.
 
 ## Getting started with Releases
 
 Start by giving a [description](#release-description) to the Release and
 including its [assets](#release-assets), as follows.
+
+## Release versioning
+
+Release versions are manually assigned by the user in the Release title. GitLab uses [Semantic Versioning](https://semver.org/) for our releases, and we recommend you do too. Use `(Major).(Minor).(Patch)`, as detailed in the [GitLab Policy for Versioning](../../../policy/maintenance.md#versioning).
+
+For example, for GitLab version `10.5.7`:
+
+- `10` represents the major version. The major release was `10.0.0`, but often referred to as `10.0`.
+- `5` represents the minor version. The minor release was `10.5.0`, but often referred to as `10.5`.
+- `7` represents the patch number.
+
+Any part of the version number can be multiple digits, for example, `13.10.11`.
 
 ### Release description
 
@@ -62,7 +67,43 @@ links from your GitLab instance.
 NOTE: **NOTE**
 You can manipulate links of each release entry with [Release Links API](../../../api/releases/links.md)
 
-#### Releases associated with milestones
+#### Permanent links to Release assets
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/27300) in GitLab 12.9.
+
+The assets associated with a Release are accessible through a permanent URL.
+GitLab will always redirect this URL to the actual asset
+location, so even if the assets move to a different location, you can continue
+to use the same URL. This is defined during [link creation](../../../api/releases/links.md#create-a-link) or [updating](../../../api/releases/links.md#update-a-link).
+
+Each asset has a name, a URL of the *actual* asset location, and optionally, a
+`filepath` parameter, which, if you specify it, will create a URL pointing
+to the asset for the Release. The format of the URL is:
+
+```html
+https://host/namespace/project/releases/:release/downloads/:filepath
+```
+
+If you have an asset for the `v11.9.0-rc2` release in the `gitlab-org`
+namespace and `gitlab-runner` project on `gitlab.com`, for example:
+
+```json
+{
+  "name": "linux amd64",
+  "filepath": "/binaries/gitlab-runner-linux-amd64",
+  "url": "https://gitlab-runner-downloads.s3.amazonaws.com/v11.9.0-rc2/binaries/gitlab-runner-linux-amd64"
+}
+```
+
+This asset has a direct link of:
+
+```html
+https://gitlab.com/gitlab-org/gitlab-runner/releases/v11.9.0-rc2/downloads/binaries/gitlab-runner-linux-amd64
+```
+
+The physical location of the asset can change at any time and the direct link will remain unchanged.
+
+### Releases associated with milestones
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/29020) in GitLab 12.5.
 
@@ -71,10 +112,11 @@ Releases can optionally be associated with one or more
 by including a `milestones` array in your requests to the
 [Releases API](../../../api/releases/index.md#create-a-release).
 
-Releases display this association with the **Milestone** indicator near
-the top of the Release block on the **Project overview > Releases** page.
+Releases display this association with the **Milestone** indicator in the top
+section of the Release block on the **Project overview > Releases** page, along
+with some statistics about the issues in the milestone(s).
 
-![A Release with one associated milestone](img/release_with_milestone_v12_5.png)
+![A Release with one associated milestone](img/release_with_milestone_v12_9.png)
 
 Below is an example of milestones with no Releases, one Release, and two
 Releases, respectively.
@@ -92,7 +134,7 @@ associated with a large number of Releases.
 Navigate to **Project > Releases** in order to see the list of releases for a given
 project.
 
-![Releases list](img/releases.png)
+![Releases list](img/releases_v12_9.png)
 
 ### Number of Releases
 
@@ -104,7 +146,7 @@ it takes you to the list of Releases.
 ![Number of Releases](img/releases_count_v12_8.png "Incremental counter of Releases")
 
 For private projects, the number of Releases is displayed to users with Reporter
-[permissions](../../permissions.md#releases-permissions) or higher. For public projects,
+[permissions](../../permissions.md#project-members-permissions) or higher. For public projects,
 it is displayed to every user regardless of their permission level.
 
 ### Upcoming Releases
@@ -116,6 +158,29 @@ the `released_at` date and time is reached, an **Upcoming Release** badge will a
 Release tag. Once the `released_at` date and time has passed, the badge is automatically removed.
 
 ![An upcoming release](img/upcoming_release_v12_7.png)
+
+## Creating a Release
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32812) in GitLab
+  12.9, Releases can be created directly through the GitLab Releases UI.
+
+NOTE: **Note:**
+Only users with Developer permissions or higher can create Releases.
+Read more about [Release permissions](../../../user/permissions.md#project-members-permissions).
+
+To create a new Release through the GitLab UI:
+
+1. Navigate to **Project overview > Releases** and click the **New release** button.
+1. On the **New Tag** page, fill out the tag details.
+1. Optionally, in the **Release notes** field, enter the Release's description.
+   If you leave this field empty, only a tag will be created.
+   If you populate it, both a tag and a Release will be created.
+1. Click **Create tag**.
+
+If you created a release, you can view it at **Project overview > Releases**.
+
+You can also create a Release using the [Releases API](../../../api/releases/index.md#create-a-release):
+we recommend doing this as one of the last steps in your CI/CD release pipeline.
 
 ## Editing a release
 

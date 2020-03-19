@@ -21,8 +21,19 @@ module Issues
     def process_csv
       csv_data = @csv_io.open(&:read).force_encoding(Encoding::UTF_8)
 
-      CSV.new(csv_data, col_sep: detect_col_sep(csv_data.lines.first), headers: true).each.with_index(2) do |row, line_no|
-        issue = Issues::CreateService.new(@project, @user, title: row[0], description: row[1]).execute
+      csv_parsing_params = {
+        col_sep: detect_col_sep(csv_data.lines.first),
+        headers: true,
+        header_converters: :symbol
+      }
+
+      CSV.new(csv_data, csv_parsing_params).each.with_index(2) do |row, line_no|
+        issue_attributes = {
+          title:       row[:title],
+          description: row[:description]
+        }
+
+        issue = Issues::CreateService.new(@project, @user, issue_attributes).execute
 
         if issue.persisted?
           @results[:success] += 1

@@ -117,23 +117,18 @@ if (IS_EE) {
   });
 }
 
-// if there is a compiled DLL with a matching hash string, use it
 let dll;
 
 if (VENDOR_DLL && !IS_PRODUCTION) {
   const dllHash = vendorDllHash();
   const dllCachePath = path.join(ROOT_PATH, `tmp/cache/webpack-dlls/${dllHash}`);
-  if (fs.existsSync(dllCachePath)) {
-    console.log(`Using vendor DLL found at: ${dllCachePath}`);
-    dll = {
-      manifestPath: path.join(dllCachePath, 'vendor.dll.manifest.json'),
-      cacheFrom: dllCachePath,
-      cacheTo: path.join(ROOT_PATH, `public/assets/webpack/dll.${dllHash}/`),
-      publicPath: `dll.${dllHash}/vendor.dll.bundle.js`,
-    };
-  } else {
-    console.log(`Warning: No vendor DLL found at: ${dllCachePath}. DllPlugin disabled.`);
-  }
+  dll = {
+    manifestPath: path.join(dllCachePath, 'vendor.dll.manifest.json'),
+    cacheFrom: dllCachePath,
+    cacheTo: path.join(ROOT_PATH, `public/assets/webpack/dll.${dllHash}/`),
+    publicPath: `dll.${dllHash}/vendor.dll.bundle.js`,
+    exists: null,
+  };
 }
 
 module.exports = {
@@ -166,7 +161,9 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        exclude: path => /node_modules|vendor[\\/]assets/.test(path) && !/\.vue\.js/.test(path),
+        exclude: path =>
+          /node_modules\/(?!tributejs)|node_modules|vendor[\\/]assets/.test(path) &&
+          !/\.vue\.js/.test(path),
         loader: 'babel-loader',
         options: {
           cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
@@ -313,6 +310,51 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
     }),
+
+    // if DLLs are enabled, detect whether the DLL exists and create it automatically if necessary
+    dll && {
+      apply(compiler) {
+        compiler.hooks.beforeCompile.tapAsync('DllAutoCompilePlugin', (params, callback) => {
+          if (dll.exists) {
+            callback();
+          } else if (fs.existsSync(dll.manifestPath)) {
+            console.log(`Using vendor DLL found at: ${dll.cacheFrom}`);
+            dll.exists = true;
+            callback();
+          } else {
+            console.log(
+              `Warning: No vendor DLL found at: ${dll.cacheFrom}. Compiling DLL automatically.`,
+            );
+
+            const dllConfig = require('./webpack.vendor.config.js');
+            const dllCompiler = webpack(dllConfig);
+
+            dllCompiler.run((err, stats) => {
+              if (err) {
+                return callback(err);
+              }
+
+              const info = stats.toJson();
+
+              if (stats.hasErrors()) {
+                console.error(info.errors.join('\n\n'));
+                return callback('DLL not compiled successfully.');
+              }
+
+              if (stats.hasWarnings()) {
+                console.warn(info.warnings.join('\n\n'));
+                console.warn('DLL compiled with warnings.');
+              } else {
+                console.log('DLL compiled successfully.');
+              }
+
+              dll.exists = true;
+              callback();
+            });
+          }
+        });
+      },
+    },
 
     // reference our compiled DLL modules
     dll &&

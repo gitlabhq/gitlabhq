@@ -33,6 +33,6 @@ namespace :sidekiq do
   task :launchd do
     deprecation_warning!
 
-    system(*%w(bin/background_jobs start_no_deamonize))
+    system(*%w(bin/background_jobs start_silent))
   end
 end

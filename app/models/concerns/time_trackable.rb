@@ -77,7 +77,7 @@ module TimeTrackable
     return if time_spent.nil? || time_spent == :reset
 
     if time_spent < 0 && (time_spent.abs > original_total_time_spent)
-      errors.add(:time_spent, 'Time to subtract exceeds the total time spent')
+      errors.add(:base, _('Time to subtract exceeds the total time spent'))
     end
   end
 

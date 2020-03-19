@@ -1,0 +1,5 @@
+---
+title: Move sidekiq-cluster script to Core
+merge_request: 26703
+author:
+type: other

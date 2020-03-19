@@ -6,7 +6,7 @@
 
 Returns a list of group milestones.
 
-```
+```plaintext
 GET /groups/:id/milestones
 GET /groups/:id/milestones?iids[]=42
 GET /groups/:id/milestones?iids[]=42&iids[]=43
@@ -53,7 +53,7 @@ Example Response:
 
 Gets a single group milestone.
 
-```
+```plaintext
 GET /groups/:id/milestones/:milestone_id
 ```
 
@@ -66,7 +66,7 @@ Parameters:
 
 Creates a new group milestone.
 
-```
+```plaintext
 POST /groups/:id/milestones
 ```
 
@@ -82,7 +82,7 @@ Parameters:
 
 Updates an existing group milestone.
 
-```
+```plaintext
 PUT /groups/:id/milestones/:milestone_id
 ```
 
@@ -100,7 +100,7 @@ Parameters:
 
 Only for users with Developer access to the group.
 
-```
+```plaintext
 DELETE /groups/:id/milestones/:milestone_id
 ```
 
@@ -113,7 +113,7 @@ Parameters:
 
 Gets all issues assigned to a single group milestone.
 
-```
+```plaintext
 GET /groups/:id/milestones/:milestone_id/issues
 ```
 
@@ -126,7 +126,7 @@ Parameters:
 
 Gets all merge requests assigned to a single group milestone.
 
-```
+```plaintext
 GET /groups/:id/milestones/:milestone_id/merge_requests
 ```
 
@@ -143,7 +143,7 @@ Parameters:
 
 Get all burndown chart events for a single milestone.
 
-```
+```plaintext
 GET /groups/:id/milestones/:milestone_id/burndown_events
 ```
 

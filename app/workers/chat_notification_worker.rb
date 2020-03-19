@@ -1,19 +1,15 @@
 # frozen_string_literal: true
 
-class ChatNotificationWorker
+class ChatNotificationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   TimeoutExceeded = Class.new(StandardError)
 
   sidekiq_options retry: false
   feature_category :chatops
-  latency_sensitive_worker!
+  urgency :low # Can't be high as it has external dependencies
   weight 2
-
-  # TODO: break this into multiple jobs
-  # as the `responder` uses external dependencies
-  # See https://gitlab.com/gitlab-com/gl-infra/scalability/issues/34
-  # worker_has_external_dependencies!
+  worker_has_external_dependencies!
 
   RESCHEDULE_INTERVAL = 2.seconds
   RESCHEDULE_TIMEOUT = 5.minutes

@@ -44,12 +44,14 @@ describe('Diff File Row component', () => {
       level: 4,
       file: {},
       hideFileStats: false,
+      showTooltip: true,
     });
 
     expect(wrapper.find(ChangedFileIcon).props()).toEqual(
       expect.objectContaining({
         file: {},
         size: 16,
+        showTooltip: true,
       }),
     );
   });

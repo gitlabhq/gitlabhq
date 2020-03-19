@@ -11,6 +11,8 @@ module API
         optional :visibility, type: String,
                  values: Gitlab::VisibilityLevel.string_values,
                  desc: 'The visibility of the group'
+        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
+        optional :avatar, type: File, desc: 'Avatar image for the group' # rubocop:disable Scalability/FileUploads
         optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
         optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users in this group to setup Two-factor authentication'
         optional :two_factor_grace_period, type: Integer, desc: 'Time before Two-factor authentication is enforced'
@@ -21,6 +23,7 @@ module API
         optional :mentions_disabled, type: Boolean, desc: 'Disable a group from getting mentioned'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
+        optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to master'
       end
 
       params :optional_params_ee do

@@ -72,20 +72,21 @@ migration classes must be defined in the namespace
 
 ## Scheduling
 
-Scheduling a background migration should be done in a post-deployment migration.
+Scheduling a background migration should be done in a post-deployment
+migration that includes `Gitlab::Database::MigrationHelpers`
 To do so, simply use the following code while
 replacing the class name and arguments with whatever values are necessary for
 your migration:
 
 ```ruby
-BackgroundMigrationWorker.perform_async('BackgroundMigrationClassName', [arg1, arg2, ...])
+migrate_async('BackgroundMigrationClassName', [arg1, arg2, ...])
 ```
 
 Usually it's better to enqueue jobs in bulk, for this you can use
-`BackgroundMigrationWorker.bulk_perform_async`:
+`bulk_migrate_async`:
 
 ```ruby
-BackgroundMigrationWorker.bulk_perform_async(
+bulk_migrate_async(
   [['BackgroundMigrationClassName', [1]],
    ['BackgroundMigrationClassName', [2]]]
 )
@@ -105,7 +106,7 @@ If you would like to schedule jobs in bulk with a delay, you can use
 jobs = [['BackgroundMigrationClassName', [1]],
         ['BackgroundMigrationClassName', [2]]]
 
-BackgroundMigrationWorker.bulk_perform_in(5.minutes, jobs)
+bulk_migrate_in(5.minutes, jobs)
 ```
 
 ### Rescheduling background migrations
@@ -300,12 +301,13 @@ It is required to write tests for:
 - The background migration itself.
 - A cleanup migration.
 
-You can use the `:migration` RSpec tag when testing the migrations.
+The `:migration` and `schema: :latest` RSpec tags are automatically set for
+background migration specs.
 See the
 [Testing Rails migrations](testing_guide/testing_migrations_guide.md#testing-a-non-activerecordmigration-class)
 style guide.
 
-When you do that, keep in mind that `before` and `after` RSpec hooks are going
+Keep in mind that `before` and `after` RSpec hooks are going
 to migrate you database down and up, which can result in other background
 migrations being called. That means that using `spy` test doubles with
 `have_received` is encouraged, instead of using regular test doubles, because
@@ -329,6 +331,6 @@ for more details.
    or ask someone to measure on production).
 
 [migrations-readme]: https://gitlab.com/gitlab-org/gitlab/blob/master/spec/migrations/README.md
-[issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab-foss/issues/35351
+[issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab/issues/18839
 [reliable-sidekiq]: https://gitlab.com/gitlab-org/gitlab-foss/issues/36791
 [import-export]: ../user/project/settings/import_export.md

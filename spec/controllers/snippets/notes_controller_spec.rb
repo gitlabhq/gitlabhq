@@ -108,7 +108,7 @@ describe Snippets::NotesController do
 
         sign_in(user)
 
-        expect_any_instance_of(Note).to receive(:cross_reference_not_visible_for?).and_return(true)
+        expect_any_instance_of(Note).to receive(:readable_by?).and_return(false)
       end
 
       it "does not return any note" do

@@ -27,7 +27,7 @@ describe BlobHelper do
   end
 
   describe "#edit_blob_link" do
-    let(:namespace) { create(:namespace, name: 'gitlab' )}
+    let(:namespace) { create(:namespace, name: 'gitlab') }
     let(:project) { create(:project, :repository, namespace: namespace) }
 
     before do
@@ -201,6 +201,95 @@ describe BlobHelper do
           expect(helper.blob_render_error_options(viewer)).to include(/download it/)
         end
       end
+    end
+
+    describe '#show_suggest_pipeline_creation_celebration?' do
+      let(:current_user) { create(:user) }
+
+      before do
+        assign(:project, project)
+        assign(:blob, blob)
+        assign(:commit, double('Commit', sha: 'whatever'))
+        helper.request.cookies["suggest_gitlab_ci_yml_commit_#{project.id}"] = 'true'
+        allow(helper).to receive(:current_user).and_return(current_user)
+      end
+
+      context 'when file is a pipeline config file' do
+        let(:data) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
+        let(:blob) { fake_blob(path: Gitlab::FileDetector::PATTERNS[:gitlab_ci], data: data) }
+
+        context 'experiment enabled' do
+          before do
+            allow(helper).to receive(:experiment_enabled?).and_return(true)
+          end
+
+          it 'is true' do
+            expect(helper.show_suggest_pipeline_creation_celebration?).to be_truthy
+          end
+
+          context 'file is invalid format' do
+            let(:data) { 'foo' }
+
+            it 'is false' do
+              expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
+            end
+          end
+
+          context 'does not use the default ci config' do
+            before do
+              project.ci_config_path = 'something_bad'
+            end
+
+            it 'is false' do
+              expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
+            end
+          end
+
+          context 'does not have the needed cookie' do
+            before do
+              helper.request.cookies.delete "suggest_gitlab_ci_yml_commit_#{project.id}"
+            end
+
+            it 'is false' do
+              expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
+            end
+          end
+        end
+
+        context 'experiment disabled' do
+          before do
+            allow(helper).to receive(:experiment_enabled?).and_return(false)
+          end
+
+          it 'is false' do
+            expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
+          end
+        end
+      end
+
+      context 'when file is not a pipeline config file' do
+        let(:blob) { fake_blob(path: 'LICENSE') }
+
+        context 'experiment enabled' do
+          before do
+            allow(helper).to receive(:experiment_enabled?).and_return(true)
+          end
+
+          it 'is false' do
+            expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
+          end
+        end
+      end
+    end
+  end
+
+  describe 'suggest_pipeline_commit_cookie_name' do
+    let(:project) { create(:project) }
+
+    it 'uses project id to make up the cookie name' do
+      assign(:project, project)
+
+      expect(helper.suggest_pipeline_commit_cookie_name).to eq "suggest_gitlab_ci_yml_commit_#{project.id}"
     end
   end
 

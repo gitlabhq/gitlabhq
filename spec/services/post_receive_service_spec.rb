@@ -5,8 +5,10 @@ require 'spec_helper'
 describe PostReceiveService do
   include Gitlab::Routing
 
-  let_it_be(:project) { create(:project, :repository, :wiki_repo) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
+  let_it_be(:project_snippet) { create(:project_snippet, :repository, project: project, author: user) }
+  let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
 
   let(:identifier) { 'key-123' }
   let(:gl_repository) { "project-#{project.id}" }
@@ -14,6 +16,7 @@ describe PostReceiveService do
   let(:secret_token) { Gitlab::Shell.secret_token }
   let(:reference_counter) { double('ReferenceCounter') }
   let(:push_options) { ['ci.skip', 'another push option'] }
+  let(:repository) { project.repository }
 
   let(:changes) do
     "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{branch_name}"
@@ -29,112 +32,189 @@ describe PostReceiveService do
     }
   end
 
-  let(:response) { PostReceiveService.new(user, project, params).execute }
+  let(:service) { described_class.new(user, repository, project, params) }
+  let(:response) { service.execute }
 
   subject { response.messages.as_json }
 
-  it 'enqueues a PostReceive worker job' do
-    expect(PostReceive).to receive(:perform_async)
-      .with(gl_repository, identifier, changes, { ci: { skip: true } })
+  context 'when project is nil' do
+    let(:gl_repository) { "snippet-#{personal_snippet.id}" }
+    let(:project) { nil }
+    let(:repository) { personal_snippet.repository }
 
-    subject
-  end
-
-  it 'decreases the reference counter and returns the result' do
-    expect(Gitlab::ReferenceCounter).to receive(:new).with(gl_repository)
-      .and_return(reference_counter)
-    expect(reference_counter).to receive(:decrease).and_return(true)
-
-    expect(response.reference_counter_decreased).to be(true)
-  end
-
-  it 'returns link to create new merge request' do
-    message = <<~MESSAGE.strip
-      To create a merge request for #{branch_name}, visit:
-        http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}
-    MESSAGE
-
-    expect(subject).to include(build_basic_message(message))
-  end
-
-  it 'returns the link to an existing merge request when it exists' do
-    merge_request = create(:merge_request, source_project: project, source_branch: branch_name, target_branch: 'master')
-    message = <<~MESSAGE.strip
-      View merge request for feature:
-        #{project_merge_request_url(project, merge_request)}
-    MESSAGE
-
-    expect(subject).to include(build_basic_message(message))
-  end
-
-  context 'when printing_merge_request_link_enabled is false' do
-    let(:project) { create(:project, printing_merge_request_link_enabled: false) }
-
-    it 'returns no merge request messages' do
-      expect(subject).to be_blank
+    it 'does not return error' do
+      expect(subject).to be_empty
     end
   end
 
-  it 'does not invoke MergeRequests::PushOptionsHandlerService' do
-    expect(MergeRequests::PushOptionsHandlerService).not_to receive(:new)
+  context 'when repository is nil' do
+    let(:repository) { nil }
 
-    subject
+    it 'does not return error' do
+      expect(subject).to be_empty
+    end
   end
 
-  context 'when there are merge_request push options' do
-    let(:params) { super().merge(push_options: ['merge_request.create']) }
+  context 'when both repository and project are nil' do
+    let(:gl_repository) { "snippet-#{personal_snippet.id}" }
+    let(:project) { nil }
+    let(:repository) { nil }
 
-    before do
-      project.add_developer(user)
+    it 'does not return error' do
+      expect(subject).to be_empty
     end
+  end
 
-    it 'invokes MergeRequests::PushOptionsHandlerService' do
-      expect(MergeRequests::PushOptionsHandlerService).to receive(:new).and_call_original
+  shared_examples 'post_receive_service actions' do
+    it 'enqueues a PostReceive worker job' do
+      expect(PostReceive).to receive(:perform_async)
+        .with(gl_repository, identifier, changes, { ci: { skip: true } })
 
       subject
     end
 
-    it 'creates a new merge request' do
-      expect { Sidekiq::Testing.fake! { subject } }.to change(MergeRequest, :count).by(1)
-    end
+    it 'decreases the reference counter and returns the result' do
+      expect(Gitlab::ReferenceCounter).to receive(:new).with(gl_repository)
+        .and_return(reference_counter)
+      expect(reference_counter).to receive(:decrease).and_return(true)
 
-    it 'links to the newly created merge request' do
+      expect(response.reference_counter_decreased).to be(true)
+    end
+  end
+
+  context 'with Project' do
+    it_behaves_like 'post_receive_service actions'
+
+    it 'returns link to create new merge request' do
       message = <<~MESSAGE.strip
-        View merge request for #{branch_name}:
-          http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/1
+        To create a merge request for #{branch_name}, visit:
+          http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}
       MESSAGE
 
       expect(subject).to include(build_basic_message(message))
     end
 
-    it 'adds errors on the service instance to warnings' do
-      expect_any_instance_of(
-        MergeRequests::PushOptionsHandlerService
-      ).to receive(:errors).at_least(:once).and_return(['my error'])
+    it 'returns the link to an existing merge request when it exists' do
+      merge_request = create(:merge_request, source_project: project, source_branch: branch_name, target_branch: 'master')
+      message = <<~MESSAGE.strip
+        View merge request for feature:
+          #{project_merge_request_url(project, merge_request)}
+      MESSAGE
 
-      message = "WARNINGS:\nError encountered with push options 'merge_request.create': my error"
-
-      expect(subject).to include(build_alert_message(message))
+      expect(subject).to include(build_basic_message(message))
     end
 
-    it 'adds ActiveRecord errors on invalid MergeRequest records to warnings' do
-      invalid_merge_request = MergeRequest.new
-      invalid_merge_request.errors.add(:base, 'my error')
-      message = "WARNINGS:\nError encountered with push options 'merge_request.create': my error"
+    context 'when printing_merge_request_link_enabled is false' do
+      let(:project) { create(:project, printing_merge_request_link_enabled: false) }
 
-      expect_any_instance_of(
-        MergeRequests::CreateService
-      ).to receive(:execute).and_return(invalid_merge_request)
+      it 'returns no merge request messages' do
+        expect(subject).to be_blank
+      end
+    end
 
-      expect(subject).to include(build_alert_message(message))
+    it 'does not invoke MergeRequests::PushOptionsHandlerService' do
+      expect(MergeRequests::PushOptionsHandlerService).not_to receive(:new)
+
+      subject
+    end
+
+    context 'when there are merge_request push options' do
+      let(:params) { super().merge(push_options: ['merge_request.create']) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'invokes MergeRequests::PushOptionsHandlerService' do
+        expect(MergeRequests::PushOptionsHandlerService).to receive(:new).and_call_original
+
+        subject
+      end
+
+      it 'creates a new merge request' do
+        expect { Sidekiq::Testing.fake! { subject } }.to change(MergeRequest, :count).by(1)
+      end
+
+      it 'links to the newly created merge request' do
+        message = <<~MESSAGE.strip
+          View merge request for #{branch_name}:
+            http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/1
+        MESSAGE
+
+        expect(subject).to include(build_basic_message(message))
+      end
+
+      it 'adds errors on the service instance to warnings' do
+        expect_any_instance_of(
+          MergeRequests::PushOptionsHandlerService
+        ).to receive(:errors).at_least(:once).and_return(['my error'])
+
+        message = "WARNINGS:\nError encountered with push options 'merge_request.create': my error"
+
+        expect(subject).to include(build_alert_message(message))
+      end
+
+      it 'adds ActiveRecord errors on invalid MergeRequest records to warnings' do
+        invalid_merge_request = MergeRequest.new
+        invalid_merge_request.errors.add(:base, 'my error')
+        message = "WARNINGS:\nError encountered with push options 'merge_request.create': my error"
+
+        expect_any_instance_of(
+          MergeRequests::CreateService
+        ).to receive(:execute).and_return(invalid_merge_request)
+
+        expect(subject).to include(build_alert_message(message))
+      end
     end
   end
 
-  context 'broadcast message exists' do
+  context 'with PersonalSnippet' do
+    let(:gl_repository) { "snippet-#{personal_snippet.id}" }
+    let(:repository) { personal_snippet.repository }
+
+    it_behaves_like 'post_receive_service actions'
+
+    it 'does not return link to create new merge request' do
+      expect(subject).to be_empty
+    end
+
+    it 'does not return the link to an existing merge request when it exists' do
+      create(:merge_request, source_project: project, source_branch: branch_name, target_branch: 'master')
+
+      expect(subject).to be_empty
+    end
+  end
+
+  context 'with ProjectSnippet' do
+    let(:gl_repository) { "snippet-#{project_snippet.id}" }
+    let(:repository) { project_snippet.repository }
+
+    it_behaves_like 'post_receive_service actions'
+
+    it 'does not return link to create new merge request' do
+      expect(subject).to be_empty
+    end
+
+    it 'does not return the link to an existing merge request when it exists' do
+      create(:merge_request, source_project: project, source_branch: branch_name, target_branch: 'master')
+
+      expect(subject).to be_empty
+    end
+  end
+
+  context 'broadcast message banner exists' do
     it 'outputs a broadcast message' do
-      broadcast_message = create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now)
+      broadcast_message = create(:broadcast_message)
 
       expect(subject).to include(build_alert_message(broadcast_message.message))
+    end
+  end
+
+  context 'broadcast message notification exists' do
+    it 'does not output a broadcast message' do
+      create(:broadcast_message, :notification)
+
+      expect(has_alert_messages?(subject)).to be_falsey
     end
   end
 
@@ -154,7 +234,7 @@ describe PostReceiveService do
 
   context 'with a redirected data' do
     it 'returns redirected message on the response' do
-      project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'http', 'foo/baz')
+      project_moved = Gitlab::Checks::ProjectMoved.new(project.repository, user, 'http', 'foo/baz')
       project_moved.add_message
 
       expect(subject).to include(build_basic_message(project_moved.message))
@@ -163,10 +243,54 @@ describe PostReceiveService do
 
   context 'with new project data' do
     it 'returns new project message on the response' do
-      project_created = Gitlab::Checks::ProjectCreated.new(project, user, 'http')
+      project_created = Gitlab::Checks::ProjectCreated.new(project.repository, user, 'http')
       project_created.add_message
 
       expect(subject).to include(build_basic_message(project_created.message))
+    end
+  end
+
+  describe '#process_mr_push_options' do
+    context 'when repository belongs to a snippet' do
+      context 'with PersonalSnippet' do
+        let(:repository) { personal_snippet.repository }
+
+        it 'returns an error message' do
+          result = service.process_mr_push_options(push_options, changes)
+
+          expect(result).to match('Push options are only supported for projects')
+        end
+      end
+
+      context 'with ProjectSnippet' do
+        let(:repository) { project_snippet.repository }
+
+        it 'returns an error message' do
+          result = service.process_mr_push_options(push_options, changes)
+
+          expect(result).to match('Push options are only supported for projects')
+        end
+      end
+    end
+  end
+
+  describe '#merge_request_urls' do
+    context 'when repository belongs to a snippet' do
+      context 'with PersonalSnippet' do
+        let(:repository) { personal_snippet.repository }
+
+        it 'returns an empty array' do
+          expect(service.merge_request_urls).to be_empty
+        end
+      end
+
+      context 'with ProjectSnippet' do
+        let(:repository) { project_snippet.repository }
+
+        it 'returns an empty array' do
+          expect(service.merge_request_urls).to be_empty
+        end
+      end
     end
   end
 

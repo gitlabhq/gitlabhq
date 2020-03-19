@@ -44,12 +44,6 @@ describe Releases::UpdateService do
       it_behaves_like 'a failed update'
     end
 
-    context 'with an invalid update' do
-      let(:new_description) { '' }
-
-      it_behaves_like 'a failed update'
-    end
-
     context 'when a milestone is passed in' do
       let(:milestone) { create(:milestone, project: project, title: 'v1.0') }
       let(:params_with_milestone) { params.merge!({ milestones: [new_title] }) }

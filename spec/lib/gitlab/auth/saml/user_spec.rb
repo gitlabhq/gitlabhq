@@ -19,7 +19,7 @@ describe Gitlab::Auth::Saml::User do
       email: 'john@mail.com'
     }
   end
-  let(:ldap_user) { Gitlab::Auth::LDAP::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
+  let(:ldap_user) { Gitlab::Auth::Ldap::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
 
   describe '#save' do
     before do
@@ -161,10 +161,10 @@ describe Gitlab::Auth::Saml::User do
               allow(ldap_user).to receive(:username) { uid }
               allow(ldap_user).to receive(:email) { %w(john@mail.com john2@example.com) }
               allow(ldap_user).to receive(:dn) { dn }
-              allow(Gitlab::Auth::LDAP::Adapter).to receive(:new).and_return(adapter)
-              allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_uid).with(uid, adapter).and_return(ldap_user)
-              allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).with(dn, adapter).and_return(ldap_user)
-              allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_email).with('john@mail.com', adapter).and_return(ldap_user)
+              allow(Gitlab::Auth::Ldap::Adapter).to receive(:new).and_return(adapter)
+              allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).with(uid, adapter).and_return(ldap_user)
+              allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_dn).with(dn, adapter).and_return(ldap_user)
+              allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_email).with('john@mail.com', adapter).and_return(ldap_user)
             end
 
             context 'and no account for the LDAP user' do
@@ -212,10 +212,10 @@ describe Gitlab::Auth::Saml::User do
                   nil_types = uid_types - [uid_type]
 
                   nil_types.each do |type|
-                    allow(Gitlab::Auth::LDAP::Person).to receive(:"find_by_#{type}").and_return(nil)
+                    allow(Gitlab::Auth::Ldap::Person).to receive(:"find_by_#{type}").and_return(nil)
                   end
 
-                  allow(Gitlab::Auth::LDAP::Person).to receive(:"find_by_#{uid_type}").and_return(ldap_user)
+                  allow(Gitlab::Auth::Ldap::Person).to receive(:"find_by_#{uid_type}").and_return(ldap_user)
                 end
 
                 it 'adds the omniauth identity to the LDAP account' do
@@ -282,7 +282,7 @@ describe Gitlab::Auth::Saml::User do
               it 'adds the LDAP identity to the existing SAML user' do
                 create(:omniauth_user, email: 'john@mail.com', extern_uid: dn, provider: 'saml', username: 'john')
 
-                allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_uid).with(dn, adapter).and_return(ldap_user)
+                allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).with(dn, adapter).and_return(ldap_user)
 
                 local_hash = OmniAuth::AuthHash.new(uid: dn, provider: provider, info: info_hash)
                 local_saml_user = described_class.new(local_hash)

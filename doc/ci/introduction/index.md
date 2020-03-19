@@ -206,7 +206,7 @@ With GitLab CI/CD you can also:
 - Easily set up your app's entire lifecycle with [Auto DevOps](../../topics/autodevops/index.md).
 - Deploy your app to different [environments](../environments.md).
 - Install your own [GitLab Runner](https://docs.gitlab.com/runner/).
-- [Schedule pipelines](../../user/project/pipelines/schedules.md).
+- [Schedule pipelines](../pipelines/schedules.md).
 - Check for app vulnerabilities with [Security Test reports](../../user/application_security/index.md). **(ULTIMATE)**
 
 To see all CI/CD features, navigate back to the [CI/CD index](../README.md).

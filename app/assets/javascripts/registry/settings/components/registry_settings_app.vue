@@ -18,14 +18,23 @@ export default {
     unavailableFeatureText: s__(
       'ContainerRegistry|Currently, the Container Registry tag expiration feature is not available for projects created before GitLab version 12.8. For updates and more information, visit Issue %{linkStart}#196124%{linkEnd}',
     ),
+    fetchSettingsErrorText: FETCH_SETTINGS_ERROR_MESSAGE,
+  },
+  data() {
+    return {
+      fetchSettingsError: false,
+    };
   },
   computed: {
     ...mapState(['isDisabled']),
+    showSettingForm() {
+      return !this.isDisabled && !this.fetchSettingsError;
+    },
   },
   mounted() {
-    this.fetchSettings().catch(() =>
-      this.$toast.show(FETCH_SETTINGS_ERROR_MESSAGE, { type: 'error' }),
-    );
+    this.fetchSettings().catch(() => {
+      this.fetchSettingsError = true;
+    });
   },
   methods: {
     ...mapActions(['fetchSettings']),
@@ -48,17 +57,22 @@ export default {
         }}
       </li>
     </ul>
-    <settings-form v-if="!isDisabled" />
-    <gl-alert v-else :dismissible="false">
-      <p>
-        <gl-sprintf :message="$options.i18n.unavailableFeatureText">
-          <template #link="{content}">
-            <gl-link href="https://gitlab.com/gitlab-org/gitlab/issues/196124" target="_blank">
-              {{ content }}
-            </gl-link>
-          </template>
-        </gl-sprintf>
-      </p>
-    </gl-alert>
+    <settings-form v-if="showSettingForm" />
+    <template v-else>
+      <gl-alert v-if="isDisabled" :dismissible="false">
+        <p>
+          <gl-sprintf :message="$options.i18n.unavailableFeatureText">
+            <template #link="{content}">
+              <gl-link href="https://gitlab.com/gitlab-org/gitlab/issues/196124" target="_blank">
+                {{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </p>
+      </gl-alert>
+      <gl-alert v-else-if="fetchSettingsError" variant="warning" :dismissible="false">
+        <gl-sprintf :message="$options.i18n.fetchSettingsErrorText" />
+      </gl-alert>
+    </template>
   </div>
 </template>

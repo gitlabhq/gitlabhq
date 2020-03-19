@@ -4,7 +4,7 @@ module Users
   class TermsController < ApplicationController
     include InternalRedirect
 
-    skip_before_action :authenticate_user!
+    skip_before_action :authenticate_user!, only: [:index]
     skip_before_action :enforce_terms!
     skip_before_action :check_password_expiration
     skip_before_action :check_two_factor_requirement

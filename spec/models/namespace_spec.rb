@@ -201,6 +201,26 @@ describe Namespace do
       expect(described_class.find_by_pages_host(host)).to eq(namespace)
     end
 
+    context 'when there is non-top-level group with searched name' do
+      before do
+        create(:group, :nested, path: 'pages')
+      end
+
+      it 'ignores this group' do
+        host = "pages.#{Settings.pages.host.upcase}"
+
+        expect(described_class.find_by_pages_host(host)).to be_nil
+      end
+
+      it 'finds right top level group' do
+        group = create(:group, path: 'pages')
+
+        host = "pages.#{Settings.pages.host.upcase}"
+
+        expect(described_class.find_by_pages_host(host)).to eq(group)
+      end
+    end
+
     it "returns no result if the provided host is not subdomain of the Pages host" do
       create(:namespace, name: 'namespace.io')
       host = "namespace.io"
@@ -528,6 +548,41 @@ describe Namespace do
     it "cleans the path and makes sure it's available" do
       expect(described_class.clean_path("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")
       expect(described_class.clean_path("--%+--valid_*&%name=.git.%.atom.atom.@email.com")).to eq("valid_name")
+    end
+  end
+
+  describe "#default_branch_protection" do
+    let(:namespace) { create(:namespace) }
+    let(:default_branch_protection) { nil }
+    let(:group) { create(:group, default_branch_protection: default_branch_protection) }
+
+    before do
+      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+    end
+
+    context 'for a namespace' do
+      # Unlike a group, the settings of a namespace cannot be altered
+      # via the UI or the API.
+
+      it 'returns the instance level setting' do
+        expect(namespace.default_branch_protection).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+      end
+    end
+
+    context 'for a group' do
+      context 'that has not altered the default value' do
+        it 'returns the instance level setting' do
+          expect(group.default_branch_protection).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        end
+      end
+
+      context 'that has altered the default value' do
+        let(:default_branch_protection) { Gitlab::Access::PROTECTION_FULL }
+
+        it 'returns the group level setting' do
+          expect(group.default_branch_protection).to eq(default_branch_protection)
+        end
+      end
     end
   end
 
@@ -982,6 +1037,24 @@ describe Namespace do
           expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
           expect(virtual_domain.lookup_paths).not_to be_empty
         end
+      end
+
+      it 'preloads project_feature and route' do
+        project2 = create(:project, namespace: namespace)
+        project3 = create(:project, namespace: namespace)
+
+        project.mark_pages_as_deployed
+        project2.mark_pages_as_deployed
+        project3.mark_pages_as_deployed
+
+        virtual_domain = namespace.pages_virtual_domain
+
+        queries = ActiveRecord::QueryRecorder.new { virtual_domain.lookup_paths }
+
+        # 1 to load projects
+        # 1 to preload project features
+        # 1 to load routes
+        expect(queries.count).to eq(3)
       end
     end
   end

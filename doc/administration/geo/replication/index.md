@@ -12,7 +12,8 @@ Replication with Geo is the solution for widely distributed development teams.
 
 Fetching large repositories can take a long time for teams located far from a single GitLab instance.
 
-Geo provides local, read-only instances of your GitLab instances, reducing the time it takes to clone and fetch large repositories and speeding up development.
+Geo provides local, read-only instances of your GitLab instances. This can reduce the time it takes
+to clone and fetch large repositories, speeding up development.
 
 NOTE: **Note:**
 Check the [requirements](#requirements-for-running-geo) carefully before setting up Geo.
@@ -30,7 +31,7 @@ Implementing Geo provides the following benefits:
 
 - Reduce from minutes to seconds the time taken for your distributed developers to clone and fetch large repositories and projects.
 - Enable all of your developers to contribute ideas and work in parallel, no matter where they are.
-- Balance the load between your **primary** and **secondary** nodes, or offload your automated tests to a **secondary** node.
+- Balance the read-only load between your **primary** and **secondary** nodes.
 
 In addition, it:
 
@@ -249,6 +250,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - [Selective synchronization](configuration.md#selective-synchronization) applies only to files and repositories. Other datasets are replicated to the **secondary** node in full, making it inappropriate for use as an access control mechanism.
 - Object pools for forked project deduplication work only on the **primary** node, and are duplicated on the **secondary** node.
 - [External merge request diffs](../../merge_request_diffs.md) will not be replicated if they are on-disk, and viewing merge requests will fail. However, external MR diffs in object storage **are** supported. The default configuration (in-database) does work.
+- GitLab Runners cannot register with a **secondary** node. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/issues/3294).
 
 ### Limitations on replication/verification
 
@@ -268,7 +270,7 @@ For answers to common questions, see the [Geo FAQ](faq.md).
 
 Since GitLab 9.5, Geo stores structured log messages in a `geo.log` file. For Omnibus installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
 
-This file contains information about when Geo attempts to sync repositories and files. Each line in the file contains a separate JSON entry that can be ingested into Elasticsearch, Splunk, etc.
+This file contains information about when Geo attempts to sync repositories and files. Each line in the file contains a separate JSON entry that can be ingested into. For example, Elasticsearch or Splunk.
 
 For example:
 

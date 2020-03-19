@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RemoteMirrorNotificationWorker
+class RemoteMirrorNotificationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :source_code_management

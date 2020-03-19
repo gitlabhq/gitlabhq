@@ -1,0 +1,5 @@
+---
+title: Fix bug committing snippet content when creating the snippet
+merge_request: 26287
+author:
+type: fixed

@@ -64,7 +64,7 @@ To enable the Twitter OmniAuth provider you must register your application with 
 
    For installations from source:
 
-   ```
+   ```yaml
      - { name: 'twitter', app_id: 'YOUR_APP_ID',
        app_secret: 'YOUR_APP_SECRET' }
    ```

@@ -1,0 +1,5 @@
+---
+title: Fix Kubernetes namespace resolution for new DeploymentCluster records
+merge_request: 25853
+author:
+type: fixed

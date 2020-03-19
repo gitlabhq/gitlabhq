@@ -25,8 +25,7 @@
 - code_quality
 - code_review
 - collection
-- compliance_controls
-- compliance_frameworks
+- compliance_management
 - container_network_security
 - container_registry
 - container_scanning
@@ -37,7 +36,7 @@
 - dependency_proxy
 - dependency_scanning
 - design_management
-- devops_score
+- devops_reports
 - digital_experience_management
 - disaster_recovery
 - dynamic_application_security_testing
@@ -52,6 +51,7 @@
 - gitaly
 - gitlab_handbook
 - gitter
+- global_search
 - helm_chart_registry
 - importers
 - incident_management
@@ -61,6 +61,8 @@
 - interactive_application_security_testing
 - internationalization
 - issue_tracking
+- jenkins_importer
+- jira_importer
 - jupyter_notebooks
 - kanban_boards
 - kubernetes_management
@@ -70,13 +72,14 @@
 - load_testing
 - logging
 - malware_scanning
-- merge_trains
 - metrics
 - omnibus_package
 - package_registry
 - pages
+- pki_management
+- planning_analytics
 - quality_management
-- release_governance
+- release_evidence
 - release_orchestration
 - requirements_management
 - responsible_disclosure
@@ -86,7 +89,6 @@
 - runner
 - runtime_application_self_protection
 - sdk
-- search
 - secret_detection
 - secrets_management
 - serverless
@@ -97,8 +99,6 @@
 - static_site_editor
 - status_page
 - subgroups
-- system_testing
-- teams
 - templates
 - threat_detection
 - time_tracking
@@ -113,4 +113,3 @@
 - web_ide
 - web_performance
 - wiki
-- workspaces

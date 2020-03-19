@@ -1,0 +1,5 @@
+---
+title: Fix issue importer so it matches issue export format
+merge_request: 25896
+author:
+type: fixed

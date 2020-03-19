@@ -1,0 +1,5 @@
+---
+title: Handle Gitaly failure when fetching license
+merge_request: 24310
+author:
+type: fixed

@@ -14,7 +14,7 @@ describe BroadcastMessagesHelper do
 
       context 'when last broadcast message is hidden' do
         before do
-          helper.request.cookies["hide_broadcast_notification_message_#{broadcast_message_2.id}"] = 'true'
+          helper.request.cookies["hide_broadcast_message_#{broadcast_message_2.id}"] = 'true'
         end
 
         it { is_expected.to eq broadcast_message_1 }
@@ -27,7 +27,12 @@ describe BroadcastMessagesHelper do
   end
 
   describe 'broadcast_message' do
+    let_it_be(:user) { create(:user) }
     let(:current_broadcast_message) { BroadcastMessage.new(message: 'Current Message') }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
 
     it 'returns nil when no current message' do
       expect(helper.broadcast_message(nil)).to be_nil

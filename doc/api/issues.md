@@ -26,7 +26,7 @@ Get all issues the authenticated user has access to. By default it
 returns only issues created by the current user. To get all issues,
 use parameter `scope=all`.
 
-```
+```plaintext
 GET /issues
 GET /issues?state=opened
 GET /issues?state=closed
@@ -47,7 +47,7 @@ GET /issues?confidential=true
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `state`             | string           | no         | Return `all` issues or just those that are `opened` or `closed`                                                                                       |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413)|
+| `with_labels_details` | boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413)|
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.                             |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_ |
@@ -65,7 +65,7 @@ GET /issues?confidential=true
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                                                   |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                                                    |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                                                   |
-| `confidential`      | Boolean          | no         | Filter confidential or public issues.                                                                                                               |
+| `confidential`      | boolean          | no         | Filter confidential or public issues.                                                                                                               |
 | `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
 
 ```shell
@@ -181,7 +181,7 @@ the `weight` parameter:
 
 Get a list of a group's issues.
 
-```
+```plaintext
 GET /groups/:id/issues
 GET /groups/:id/issues?state=opened
 GET /groups/:id/issues?state=closed
@@ -203,7 +203,7 @@ GET /groups/:id/issues?confidential=true
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                 |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
+| `with_labels_details` | boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                 |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
@@ -220,9 +220,9 @@ GET /groups/:id/issues?confidential=true
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
-| `confidential`     | Boolean          | no         | Filter confidential or public issues.                                                                                         |
+| `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
-| `non_archived`      | Boolean          | no         | Return issues from non archived projects. Default is true. _(Introduced in [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23785))_ |
+| `non_archived`      | boolean          | no         | Return issues from non archived projects. Default is true. _(Introduced in [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23785))_ |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4/issues
@@ -336,7 +336,7 @@ the `weight` parameter:
 
 Get a list of a project's issues.
 
-```
+```plaintext
 GET /projects/:id/issues
 GET /projects/:id/issues?state=opened
 GET /projects/:id/issues?state=closed
@@ -359,7 +359,7 @@ GET /projects/:id/issues?confidential=true
 | `iids[]`            | integer array    | no         | Return only the milestone having the given `iid`                                                                              |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
-| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. `description_html` Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
+| `with_labels_details` | boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. `description_html` Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_ |
@@ -375,7 +375,7 @@ GET /projects/:id/issues?confidential=true
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
-| `confidential`     | Boolean          | no         | Filter confidential or public issues.                                                                                         |
+| `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
 | `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
 
 ```shell
@@ -497,7 +497,7 @@ the `weight` parameter:
 
 Get a single project issue.
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid
 ```
 
@@ -637,7 +637,7 @@ Please use `iid` of the `epic` attribute instead.
 
 Creates a new project issue.
 
-```
+```plaintext
 POST /projects/:id/issues
 ```
 
@@ -745,7 +745,7 @@ the `weight` parameter:
 Updates an existing project issue. This call is also used to mark an issue as
 closed.
 
-```
+```plaintext
 PUT /projects/:id/issues/:issue_iid
 ```
 
@@ -760,7 +760,7 @@ PUT /projects/:id/issues/:issue_iid
 | `milestone_id` | integer | no       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
 | `labels`       | string  | no       | Comma-separated label names for an issue. Set to an empty string to unassign all labels.                   |
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
-| `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
+| `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights). Empty string or null values are not accepted.|
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
 | `weight` **(STARTER)** | integer | no | The weight of the issue. Valid values are greater than or equal to 0. 0                                                                    |
 | `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
@@ -851,15 +851,20 @@ the `weight` parameter:
 }
 ```
 
-**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+NOTE: **Note:**
+At least one of following parameters is required to be passed for the request to be successful: `:assignee_id`, `:assignee_ids`, `:confidential`, `:created_at`, `:description`, `:discussion_locked`, `:due_date`, `:labels`, `:milestone_id`, `:state_event`, or `:title`.
 
-**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+NOTE: **Note**:
+`assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+NOTE: **Note**:
+The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Delete an issue
 
 Only for admins and project owners. Deletes the issue in question.
 
-```
+```plaintext
 DELETE /projects/:id/issues/:issue_iid
 ```
 
@@ -881,7 +886,7 @@ issue, error `400` together with an explaining error message is returned.
 If a given label and/or milestone with the same name also exists in the target
 project, it will then be assigned to the issue that is being moved.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/move
 ```
 
@@ -988,7 +993,7 @@ Subscribes the authenticated user to an issue to receive notifications.
 If the user is already subscribed to the issue, the status code `304`
 is returned.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/subscribe
 ```
 
@@ -1094,7 +1099,7 @@ Unsubscribes the authenticated user from the issue to not receive notifications
 from it. If the user is not subscribed to the issue, the
 status code `304` is returned.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/unsubscribe
 ```
 
@@ -1165,7 +1170,7 @@ Manually creates a todo for the current user on an issue. If
 there already exists a todo for the user on that issue, status code `304` is
 returned.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/todo
 ```
 
@@ -1279,7 +1284,7 @@ Example response:
 
 Sets an estimated time of work for this issue.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/time_estimate
 ```
 
@@ -1308,7 +1313,7 @@ Example response:
 
 Resets the estimated time for this issue to 0 seconds.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/reset_time_estimate
 ```
 
@@ -1336,7 +1341,7 @@ Example response:
 
 Adds spent time for this issue
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/add_spent_time
 ```
 
@@ -1365,7 +1370,7 @@ Example response:
 
 Resets the total spent time for this issue to 0 seconds.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/reset_spent_time
 ```
 
@@ -1391,7 +1396,7 @@ Example response:
 
 ## Get time tracking stats
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/time_stats
 ```
 
@@ -1419,7 +1424,7 @@ Example response:
 
 Get all the merge requests that are related to the issue.
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_id/related_merge_requests
 ```
 
@@ -1575,7 +1580,7 @@ Example response:
 
 Get all the merge requests that will close issue when merged.
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/closed_by
 ```
 
@@ -1648,7 +1653,7 @@ Example response:
 
 ## Participants on issues
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/participants
 ```
 
@@ -1692,7 +1697,7 @@ Comments are done via the [notes](notes.md) resource.
 
 Available only for admins.
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/user_agent_detail
 ```
 

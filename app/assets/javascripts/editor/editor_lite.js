@@ -1,5 +1,5 @@
 import { editor as monacoEditor, languages as monacoLanguages, Uri } from 'monaco-editor';
-import whiteTheme from '~/ide/lib/themes/white';
+import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 import { defaultEditorOptions } from '~/ide/lib/editor_options';
 import { clearDomElement } from './utils';
 
@@ -11,6 +11,7 @@ export default class Editor {
     this.instance = null;
     this.model = null;
     this.options = {
+      extraEditorClassName: 'gl-editor-lite',
       ...defaultEditorOptions,
       ...options,
     };
@@ -19,8 +20,10 @@ export default class Editor {
   }
 
   static setupMonacoTheme() {
-    monacoEditor.defineTheme('white', whiteTheme);
-    monacoEditor.setTheme('white');
+    const themeName = window.gon?.user_color_scheme || DEFAULT_THEME;
+    const theme = themes.find(t => t.name === themeName);
+    if (theme) monacoEditor.defineTheme(themeName, theme.data);
+    monacoEditor.setTheme(theme ? themeName : DEFAULT_THEME);
   }
 
   createInstance({ el = undefined, blobPath = '', blobContent = '' } = {}) {

@@ -122,7 +122,7 @@ export default {
 
 <template>
   <tr v-if="shouldRender" :class="className" class="notes_holder">
-    <td class="notes-content parallel old" colspan="2">
+    <td class="notes-content parallel old" colspan="3">
       <div v-if="shouldRenderDiscussionsOnLeft" class="content">
         <diff-discussions
           :discussions="line.left.discussions"
@@ -147,7 +147,7 @@ export default {
         </template>
       </diff-discussion-reply>
     </td>
-    <td class="notes-content parallel new" colspan="2">
+    <td class="notes-content parallel new" colspan="3">
       <div v-if="shouldRenderDiscussionsOnRight" class="content">
         <diff-discussions
           :discussions="line.right.discussions"

@@ -93,23 +93,26 @@ module Banzai
         end
 
         presenter = object.present(issuable_subject: parent)
-        LabelsHelper.render_colored_label(presenter, label_suffix: label_suffix, title: tooltip_title(presenter))
+        LabelsHelper.render_colored_label(presenter, suffix: label_suffix)
       end
 
-      def tooltip_title(label)
-        nil
+      def wrap_link(link, label)
+        presenter = label.present(issuable_subject: project || group)
+        LabelsHelper.wrap_label_html(link, small: true, label: presenter)
       end
 
       def full_path_ref?(matches)
         matches[:namespace] && matches[:project]
       end
 
+      def reference_class(type, tooltip: true)
+        super + ' gl-link gl-label-link'
+      end
+
       def object_link_title(object, matches)
-        # use title of wrapped element instead
-        nil
+        presenter = object.present(issuable_subject: project || group)
+        LabelsHelper.label_tooltip_title(presenter)
       end
     end
   end
 end
-
-Banzai::Filter::LabelReferenceFilter.prepend_if_ee('EE::Banzai::Filter::LabelReferenceFilter')

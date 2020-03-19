@@ -9,9 +9,12 @@ exports[`Remove cluster confirmation modal renders splitbutton with modal includ
       class="btn btn-danger"
       type="button"
     >
-      
-    Remove integration and resources
-    
+      <span
+        class="gl-dropdown-toggle-text"
+      >
+        Remove integration and resources
+      </span>
+       
       <!---->
     </button>
     <button

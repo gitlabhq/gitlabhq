@@ -1,6 +1,6 @@
 apply:
   stage: deploy
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.8.0"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v0.12.0"
   environment:
     name: production
   variables:
@@ -11,9 +11,12 @@ apply:
     SENTRY_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/sentry/values.yaml
     GITLAB_RUNNER_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/gitlab-runner/values.yaml
     CILIUM_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/cilium/values.yaml
+    CILIUM_HUBBLE_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/cilium/hubble-values.yaml
     JUPYTERHUB_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/jupyterhub/values.yaml
     PROMETHEUS_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/prometheus/values.yaml
     ELASTIC_STACK_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/elastic-stack/values.yaml
+    VAULT_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/vault/values.yaml
+    CROSSPLANE_VALUES_FILE: $CI_PROJECT_DIR/.gitlab/managed-apps/crossplane/values.yaml
   script:
     - gitlab-managed-apps /usr/local/share/gitlab-managed-apps/helmfile.yaml
   only:

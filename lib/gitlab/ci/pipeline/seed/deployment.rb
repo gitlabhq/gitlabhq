@@ -7,9 +7,9 @@ module Gitlab
         class Deployment < Seed::Base
           attr_reader :job, :environment
 
-          def initialize(job)
+          def initialize(job, environment)
             @job = job
-            @environment = Seed::Environment.new(@job)
+            @environment = environment
           end
 
           def to_resource
@@ -17,19 +17,18 @@ module Gitlab
             return unless job.starts_environment?
 
             deployment = ::Deployment.new(attributes)
-            deployment.environment = environment.to_resource
 
             # If there is a validation error on environment creation, such as
             # the name contains invalid character, the job will fall back to a
             # non-environment job.
             return unless deployment.valid? && deployment.environment.persisted?
 
-            if cluster_id = deployment.environment.deployment_platform&.cluster_id
+            if cluster = deployment.environment.deployment_platform&.cluster
               # double write cluster_id until 12.9: https://gitlab.com/gitlab-org/gitlab/issues/202628
-              deployment.cluster_id = cluster_id
+              deployment.cluster_id = cluster.id
               deployment.deployment_cluster = ::DeploymentCluster.new(
-                cluster_id: cluster_id,
-                kubernetes_namespace: deployment.environment.deployment_namespace
+                cluster_id: cluster.id,
+                kubernetes_namespace: cluster.kubernetes_namespace_for(deployment.environment, deployable: job)
               )
             end
 
@@ -45,6 +44,7 @@ module Gitlab
           def attributes
             {
               project: job.project,
+              environment: environment,
               user: job.user,
               ref: job.ref,
               tag: job.tag,

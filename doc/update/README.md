@@ -50,6 +50,7 @@ However, for this to work there are the following requirements:
    migrations](../development/post_deployment_migrations.md) (included in
    zero downtime update steps below).
 - You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
+- Multi-node GitLab instance. Single-node instances may experience brief interruptions as services restart.
 
 Most of the time you can safely upgrade from a patch release to the next minor
 release if the patch release is not the latest. For example, upgrading from
@@ -115,15 +116,33 @@ following command:
 
 **For Omnibus installations**
 
+If using GitLab 12.9 and newer, run:
+
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
 
+If using GitLab 12.8 and older, run the following using a Rails console:
+
+```ruby
+puts Sidekiq::Queue.new("background_migration").size
+Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.size
+```
+
 **For installations from source**
 
-```
+If using GitLab 12.9 and newer, run:
+
+```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+```
+
+If using GitLab 12.8 and older, run the following using a Rails console:
+
+```ruby
+puts Sidekiq::Queue.new("background_migration").size
+Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.size
 ```
 
 ## Upgrading to a new major version

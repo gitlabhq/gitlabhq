@@ -1,9 +1,7 @@
 # GitLab self monitoring project
 
-NOTE: **Note:**
-This feature is available behind a feature flag called `self_monitoring_project`
-since [12.7](https://gitlab.com/gitlab-org/gitlab/issues/32351). The feature flag
-will be removed once we [add dashboards to display metrics](https://gitlab.com/groups/gitlab-org/-/epics/2367).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32351) in GitLab 12.7, behind a disabled feature flag (`self_monitoring_project`).
+> - The feature flag was removed and the Self Monitoring Project was [made generally available](https://gitlab.com/gitlab-org/gitlab/issues/198511) in GitLab 12.8.
 
 GitLab has been adding the ability for administrators to see insights into the health of
 their GitLab instance. In order to surface this experience in a native way, similar to how
@@ -19,7 +17,7 @@ members to the group in order to give them maintainer access to the project.
 
 This project will be used for self monitoring your GitLab instance.
 
-## Activating the self monitoring project
+## Creating the self monitoring project
 
 1. Navigate to **Admin Area > Settings > Metrics and profiling**, and expand the **Self monitoring** section.
 1. Toggle the **Create Project** button on.
@@ -28,10 +26,11 @@ created, GitLab displays a message with a link to the project. The project
 will also be linked in the help text above the **Create Project** button. You can also
 find the project under **Projects > Your projects**.
 
-## Deactivating the self monitoring project
+## Deleting the self monitoring project
 
 CAUTION: **Warning:**
-If you deactivate the self monitoring project, it will be permanently deleted.
+If you delete the self monitoring project, you will lose any changes made to the
+project. If you create the project again, it will be created in its default state.
 
 1. Navigate to **Admin Area > Settings > Metrics and profiling**, and expand the **Self monitoring** section.
 1. Toggle the **Create Project** button off.
@@ -64,3 +63,29 @@ You can add custom metrics in the self monitoring project by:
 
 1. [Duplicating](../../../user/project/integrations/prometheus.md#duplicating-a-gitlab-defined-dashboard) the default dashboard.
 1. [Editing](../../../user/project/integrations/prometheus.md#view-and-edit-the-source-file-of-a-custom-dashboard) the newly created dashboard file and configuring it with [dashboard YAML properties](../../../user/project/integrations/prometheus.md#dashboard-yaml-properties).
+
+## Troubleshooting
+
+### Getting error message in logs: `Could not create instance administrators group. Errors: ["You don’t have permission to create groups."]`
+
+There is [a bug](https://gitlab.com/gitlab-org/gitlab/issues/208676) which causes
+project creation to fail with the following error (which appears in the log file)
+when the first admin user is an
+[external user](../../../user/permissions.md#external-users-core-only):
+
+```text
+Could not create instance administrators group. Errors: ["You don’t have permission to create groups."]
+```
+
+Run the following in a Rails console to check if the first admin user is an external user:
+
+```ruby
+User.admins.active.first.external?
+```
+
+If this returns true, the first admin user is an external user.
+
+If you face this issue, you can temporarily
+[make the admin user a non-external user](../../../user/permissions.md#external-users-core-only)
+and then try to create the project.
+Once the project is created, the admin user can be changed back to an external user.

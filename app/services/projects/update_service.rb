@@ -13,6 +13,10 @@ module Projects
 
       ensure_wiki_exists if enabling_wiki?
 
+      if changing_storage_size?
+        project.change_repository_storage(params.delete(:repository_storage))
+      end
+
       yield if block_given?
 
       validate_classification_label(project, :external_authorization_classification_label)
@@ -139,6 +143,13 @@ module Projects
 
     def changing_pages_https_only?
       project.previous_changes.include?(:pages_https_only)
+    end
+
+    def changing_storage_size?
+      new_repository_storage = params[:repository_storage]
+
+      new_repository_storage && project.repository.exists? &&
+        can?(current_user, :change_repository_storage, project)
     end
   end
 end

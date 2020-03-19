@@ -175,9 +175,12 @@ describe Gitlab::Danger::Helper do
       'spec/javascripts/foo' | :frontend
       'spec/frontend/bar'    | :frontend
       'vendor/assets/foo'    | :frontend
+      'babel.config.js'      | :frontend
       'jest.config.js'       | :frontend
       'package.json'         | :frontend
       'yarn.lock'            | :frontend
+      'config/foo.js'        | :frontend
+      'config/deep/foo.js'   | :frontend
 
       'ee/app/assets/foo'       | :frontend
       'ee/app/views/foo'        | :frontend
@@ -218,6 +221,9 @@ describe Gitlab::Danger::Helper do
       'scripts/foo'                                           | :engineering_productivity
       'lib/gitlab/danger/foo'                                 | :engineering_productivity
       'ee/lib/gitlab/danger/foo'                              | :engineering_productivity
+      '.overcommit.yml.example'                               | :engineering_productivity
+      '.editorconfig'                                         | :engineering_productivity
+      'tooling/overcommit/foo'                                | :engineering_productivity
 
       'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | :backend
 

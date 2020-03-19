@@ -284,6 +284,17 @@ describe SnippetsFinder do
         expect(described_class.new(user).execute).to contain_exactly(private_personal_snippet, internal_personal_snippet, public_personal_snippet)
       end
     end
+
+    context 'when project snippets are disabled' do
+      it 'returns quickly' do
+        disabled_snippets_project = create(:project, :snippets_disabled)
+        finder = described_class.new(user, project: disabled_snippets_project.id)
+
+        expect(finder).not_to receive(:init_collection)
+        expect(Snippet).to receive(:none).and_call_original
+        expect(finder.execute).to be_empty
+      end
+    end
   end
 
   it_behaves_like 'snippet visibility'

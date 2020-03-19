@@ -118,19 +118,22 @@ module Gitlab
           \.haml-lint_todo.yml |
           babel\.config\.js |
           jest\.config\.js |
-          karma\.config\.js |
-          webpack\.config\.js |
           package\.json |
           yarn\.lock |
+          config/.+\.js |
           \.gitlab/ci/frontend\.gitlab-ci\.yml
         )\z}x => :frontend,
 
         %r{\A(ee/)?db/(?!fixtures)[^/]+} => :database,
         %r{\A(ee/)?lib/gitlab/(database|background_migration|sql|github_import)(/|\.rb)} => :database,
         %r{\A(app/models/project_authorization|app/services/users/refresh_authorized_projects_service)(/|\.rb)} => :database,
+        %r{\A(ee/)?app/finders/} => :database,
         %r{\Arubocop/cop/migration(/|\.rb)} => :database,
 
         %r{\A(\.gitlab-ci\.yml\z|\.gitlab\/ci)} => :engineering_productivity,
+        %r{\A\.overcommit\.yml\.example\z} => :engineering_productivity,
+        %r{\Atooling/overcommit/} => :engineering_productivity,
+        %r{\A.editorconfig\z} => :engineering_productivity,
         %r{Dangerfile\z} => :engineering_productivity,
         %r{\A(ee/)?(danger/|lib/gitlab/danger/)} => :engineering_productivity,
         %r{\A(ee/)?scripts/} => :engineering_productivity,

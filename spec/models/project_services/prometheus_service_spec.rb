@@ -176,6 +176,15 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
         it 'returns true' do
           expect(service.prometheus_available?).to be(true)
         end
+
+        it 'avoids N+1 queries' do
+          service
+          5.times do |i|
+            other_cluster = create(:cluster_for_group, :with_installed_helm, groups: [group], environment_scope: i)
+            create(:clusters_applications_prometheus, :installing, cluster: other_cluster)
+          end
+          expect { service.prometheus_available? }.not_to exceed_query_limit(1)
+        end
       end
 
       context 'cluster belongs to gitlab instance' do

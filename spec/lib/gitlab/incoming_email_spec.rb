@@ -89,6 +89,17 @@ describe Gitlab::IncomingEmail do
     it 'does not match emails with extra bits' do
       expect(described_class.key_from_address('somereplies+somekey@example.com.someotherdomain.com')).to be nil
     end
+
+    context 'when a custom wildcard address is used' do
+      let(:wildcard_address) { 'custom.address+%{key}@example.com' }
+
+      it 'finds key if email matches address pattern' do
+        key = described_class.key_from_address(
+          'custom.address+foo@example.com', wildcard_address: wildcard_address
+        )
+        expect(key).to eq('foo')
+      end
+    end
   end
 
   context 'self.key_from_fallback_message_id' do

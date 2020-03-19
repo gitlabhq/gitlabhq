@@ -1,0 +1,5 @@
+---
+title: Fix error messages for dashboard clonning process.
+merge_request: 26290
+author:
+type: fixed

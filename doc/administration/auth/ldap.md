@@ -405,7 +405,7 @@ production:
 Tip: If you want to limit access to the nested members of an Active Directory
 group, you can use the following syntax:
 
-```text
+```plaintext
 (memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
 ```
 
@@ -423,13 +423,13 @@ The `user_filter` DN can contain special characters. For example:
 
 - A comma:
 
-  ```text
+  ```plaintext
   OU=GitLab, Inc,DC=gitlab,DC=com
   ```
 
 - Open and close brackets:
 
-  ```text
+  ```plaintext
   OU=Gitlab (Inc),DC=gitlab,DC=com
   ```
 
@@ -438,13 +438,13 @@ The `user_filter` DN can contain special characters. For example:
 
 - Escape commas with `\2C`. For example:
 
-  ```text
+  ```plaintext
   OU=GitLab\2C Inc,DC=gitlab,DC=com
   ```
 
 - Escape open and close brackets with `\28` and `\29`, respectively. For example:
 
-  ```text
+  ```plaintext
   OU=Gitlab \28Inc\29,DC=gitlab,DC=com
   ```
 
@@ -461,7 +461,8 @@ LDAP email address, and then sign into GitLab via their LDAP credentials.
 
 ## Enabling LDAP username lowercase
 
-Some LDAP servers, depending on their configurations, can return uppercase usernames. This can lead to several confusing issues like, for example, creating links or namespaces with uppercase names.
+Some LDAP servers, depending on their configurations, can return uppercase usernames.
+This can lead to several confusing issues such as creating links or namespaces with uppercase names.
 
 GitLab can automatically lowercase usernames provided by the LDAP server by enabling
 the configuration option `lowercase_usernames`. By default, this configuration option is `false`.
@@ -602,7 +603,7 @@ GitLab. Common combinations are `encryption: 'plain'` and `port: 389`, OR
 
 If GitLab cannot reach your LDAP endpoint, you will see a message like this:
 
-```
+```plaintext
 Could not authenticate you from Ldapmain because "Connection timed out - user specified timeout".
 ```
 

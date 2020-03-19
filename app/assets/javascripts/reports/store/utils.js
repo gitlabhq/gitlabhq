@@ -11,9 +11,10 @@ const textBuilder = results => {
   const { failed, errored, resolved, total } = results;
 
   const failedOrErrored = (failed || 0) + (errored || 0);
-  const failedString = failedOrErrored
-    ? n__('%d failed/error test result', '%d failed/error test results', failedOrErrored)
-    : null;
+  const failedString = failed ? n__('%d failed', '%d failed', failed) : null;
+  const erroredString = errored ? n__('%d error', '%d errors', errored) : null;
+  const combinedString =
+    failed && errored ? `${failedString}, ${erroredString}` : failedString || erroredString;
   const resolvedString = resolved
     ? n__('%d fixed test result', '%d fixed test results', resolved)
     : null;
@@ -23,12 +24,12 @@ const textBuilder = results => {
 
   if (failedOrErrored) {
     if (resolved) {
-      resultsString = sprintf(s__('Reports|%{failedString} and %{resolvedString}'), {
-        failedString,
+      resultsString = sprintf(s__('Reports|%{combinedString} and %{resolvedString}'), {
+        combinedString,
         resolvedString,
       });
     } else {
-      resultsString = failedString;
+      resultsString = combinedString;
     }
   } else if (resolved) {
     resultsString = resolvedString;

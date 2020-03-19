@@ -4,6 +4,7 @@
 
 - expanded = expanded_by_default?
 - general_expanded = @project.errors.empty? ? expanded : true
+- deploy_token_description = s_('DeployTokens|Deploy tokens allow read-only access to your repository and registry images.')
 
 %section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if general_expanded) }
   .settings-header
@@ -50,6 +51,10 @@
     = render 'ci/variables/header', expanded: expanded
   .settings-content
     = render 'ci/variables/index', save_endpoint: project_variables_path(@project)
+
+= render "shared/deploy_tokens/index", group_or_project: @project, description: deploy_token_description
+
+= render @deploy_keys
 
 %section.settings.no-animate#js-pipeline-triggers{ class: ('expanded' if expanded) }
   .settings-header

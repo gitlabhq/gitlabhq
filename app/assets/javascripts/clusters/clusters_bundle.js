@@ -255,6 +255,8 @@ export default class Clusters {
     eventHub.$on('setKnativeHostname', data => this.setKnativeHostname(data));
     eventHub.$on('uninstallApplication', data => this.uninstallApplication(data));
     eventHub.$on('setCrossplaneProviderStack', data => this.setCrossplaneProviderStack(data));
+    eventHub.$on('setIngressModSecurityEnabled', data => this.setIngressModSecurityEnabled(data));
+    eventHub.$on('resetIngressModSecurityEnabled', id => this.resetIngressModSecurityEnabled(id));
     // Add event listener to all the banner close buttons
     this.addBannerCloseHandler(this.unreachableContainer, 'unreachable');
     this.addBannerCloseHandler(this.authenticationFailureContainer, 'authentication_failure');
@@ -268,6 +270,8 @@ export default class Clusters {
     eventHub.$off('setKnativeHostname');
     eventHub.$off('setCrossplaneProviderStack');
     eventHub.$off('uninstallApplication');
+    eventHub.$off('setIngressModSecurityEnabled');
+    eventHub.$off('resetIngressModSecurityEnabled');
   }
 
   initPolling(method, successCallback, errorCallback) {
@@ -313,10 +317,13 @@ export default class Clusters {
 
     this.checkForNewInstalls(prevApplicationMap, this.store.state.applications);
     this.updateContainer(prevStatus, this.store.state.status, this.store.state.statusReason);
-    this.toggleIngressDomainHelpText(
-      prevApplicationMap[INGRESS],
-      this.store.state.applications[INGRESS],
-    );
+
+    if (this.ingressDomainHelpText) {
+      this.toggleIngressDomainHelpText(
+        prevApplicationMap[INGRESS],
+        this.store.state.applications[INGRESS],
+      );
+    }
   }
 
   showToken() {
@@ -511,6 +518,15 @@ export default class Clusters {
     const appId = data.id;
     this.store.updateAppProperty(appId, 'stack', data.stack.code);
     this.store.updateAppProperty(appId, 'validationError', null);
+  }
+
+  setIngressModSecurityEnabled({ id, modSecurityEnabled }) {
+    this.store.updateAppProperty(id, 'isEditingModSecurityEnabled', true);
+    this.store.updateAppProperty(id, 'modsecurity_enabled', modSecurityEnabled);
+  }
+
+  resetIngressModSecurityEnabled(id) {
+    this.store.updateAppProperty(id, 'isEditingModSecurityEnabled', false);
   }
 
   destroy() {

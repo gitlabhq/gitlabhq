@@ -1,6 +1,7 @@
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import $ from 'jquery';
+import { GlTooltipDirective } from '@gitlab/ui';
 import DiffTableCell from './diff_table_cell.vue';
 import {
   MATCH_LINE_TYPE,
@@ -18,8 +19,15 @@ export default {
   components: {
     DiffTableCell,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     fileHash: {
+      type: String,
+      required: true,
+    },
+    filePath: {
       type: String,
       required: true,
     },
@@ -44,6 +52,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('diffs', ['fileLineCoverage']),
     ...mapState({
       isHighlighted(state) {
         const lineCode =
@@ -82,6 +91,9 @@ export default {
     isMatchLineRight() {
       return this.line.right && this.line.right.type === MATCH_LINE_TYPE;
     },
+    coverageState() {
+      return this.fileLineCoverage(this.filePath, this.line.right.new_line);
+    },
   },
   created() {
     this.newLineType = NEW_LINE_TYPE;
@@ -99,7 +111,7 @@ export default {
       const allCellsInHoveringRow = Array.from(e.currentTarget.children);
       const hoverIndex = allCellsInHoveringRow.indexOf(hoveringCell);
 
-      if (hoverIndex >= 2) {
+      if (hoverIndex >= 3) {
         this.isRightHover = isHover;
       } else {
         this.isLeftHover = isHover;
@@ -143,17 +155,19 @@ export default {
         line-position="left"
         class="diff-line-num old_line"
       />
+      <td :class="parallelViewLeftLineType" class="line-coverage left-side"></td>
       <td
         :id="line.left.line_code"
         :class="parallelViewLeftLineType"
-        class="line_content parallel left-side"
+        class="line_content with-coverage parallel left-side"
         @mousedown="handleParallelLineMouseDown"
         v-html="line.left.rich_text"
       ></td>
     </template>
     <template v-else>
       <td class="diff-line-num old_line empty-cell"></td>
-      <td class="line_content parallel left-side empty-cell"></td>
+      <td class="line-coverage left-side empty-cell"></td>
+      <td class="line_content with-coverage parallel left-side empty-cell"></td>
     </template>
     <template v-if="line.right && !isMatchLineRight">
       <diff-table-cell
@@ -170,6 +184,12 @@ export default {
         class="diff-line-num new_line"
       />
       <td
+        v-gl-tooltip.hover
+        :title="coverageState.text"
+        :class="[line.right.type, coverageState.class, { hll: isHighlighted }]"
+        class="line-coverage right-side"
+      ></td>
+      <td
         :id="line.right.line_code"
         :class="[
           line.right.type,
@@ -177,14 +197,15 @@ export default {
             hll: isHighlighted,
           },
         ]"
-        class="line_content parallel right-side"
+        class="line_content with-coverage parallel right-side"
         @mousedown="handleParallelLineMouseDown"
         v-html="line.right.rich_text"
       ></td>
     </template>
     <template v-else>
       <td class="diff-line-num old_line empty-cell"></td>
-      <td class="line_content parallel right-side empty-cell"></td>
+      <td class="line-coverage right-side empty-cell"></td>
+      <td class="line_content with-coverage parallel right-side empty-cell"></td>
     </template>
   </tr>
 </template>

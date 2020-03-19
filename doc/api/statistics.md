@@ -8,7 +8,7 @@ administrator in order to perform this action.
 NOTE: **Note:**
 These statistics are approximate.
 
-```
+```plaintext
 GET /application/statistics
 ```
 

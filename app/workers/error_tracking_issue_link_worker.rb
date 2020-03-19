@@ -5,7 +5,7 @@
 # If a link to a different GitLab issue exists, a new link
 #   will still be created, but will not be visible in Sentry
 #   until the prior link is deleted.
-class ErrorTrackingIssueLinkWorker
+class ErrorTrackingIssueLinkWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ExclusiveLeaseGuard
   include Gitlab::Utils::StrongMemoize
@@ -26,8 +26,8 @@ class ErrorTrackingIssueLinkWorker
       logger.info("Linking Sentry issue #{sentry_issue_id} to GitLab issue #{issue.id}")
 
       sentry_client.create_issue_link(integration_id, sentry_issue_id, issue)
-    rescue Sentry::Client::Error
-      logger.info("Failed to link Sentry issue #{sentry_issue_id} to GitLab issue #{issue.id}")
+    rescue Sentry::Client::Error => e
+      logger.info("Failed to link Sentry issue #{sentry_issue_id} to GitLab issue #{issue.id} with error: #{e.message}")
     end
   end
 

@@ -1,0 +1,5 @@
+---
+title: Add api endpoint for listing deploy tokens for a group
+merge_request: 25219
+author:
+type: added

@@ -1,0 +1,5 @@
+---
+title: Use new codequality docker image from ci-cd group
+merge_request: 27098
+author:
+type: other

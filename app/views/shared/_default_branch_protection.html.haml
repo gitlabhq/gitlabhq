@@ -1,0 +1,3 @@
+.form-group
+  = f.label :default_branch_protection, class: 'label-bold'
+  = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, selected_level), {}, class: 'form-control'

@@ -23,6 +23,8 @@ $solarized-light-hll-bg: #ddd8c5;
 $solarized-light-over-bg: #ded7fc;
 $solarized-light-expanded-border: #d2cdbd;
 $solarized-light-expanded-bg: #ece6d4;
+$solarized-light-coverage: #859900;
+$solarized-light-no-coverage: #cb4b16;
 $solarized-light-c: #93a1a1;
 $solarized-light-err: #586e75;
 $solarized-light-g: #586e75;
@@ -135,12 +137,18 @@ $solarized-light-il: #2aa198;
     }
 
     td.diff-line-num.hll:not(.empty-cell),
+    td.line-coverage.hll:not(.empty-cell),
     td.line_content.hll:not(.empty-cell) {
       background-color: $solarized-light-hll-bg;
       border-color: darken($solarized-light-hll-bg, 15%);
     }
 
+    .line-coverage {
+      @include line-coverage-border-color($solarized-light-coverage, $solarized-light-no-coverage);
+    }
+
     .diff-line-num.new,
+    .line-coverage.new,
     .line_content.new {
       @include diff-background($solarized-light-new-bg,
       $solarized-light-new-idiff, $solarized-light-border);
@@ -152,6 +160,7 @@ $solarized-light-il: #2aa198;
     }
 
     .diff-line-num.old,
+    .line-coverage.old,
     .line_content.old {
       @include diff-background($solarized-light-old-bg, $solarized-light-old-idiff, $solarized-light-border);
 
@@ -180,6 +189,7 @@ $solarized-light-il: #2aa198;
     &:not(.diff-expanded) + .diff-expanded,
     &.diff-expanded + .line_holder:not(.diff-expanded) {
       > .diff-line-num,
+      > .line-coverage,
       > .line_content {
         border-top: 1px solid $solarized-light-expanded-border;
       }
@@ -187,6 +197,7 @@ $solarized-light-il: #2aa198;
 
     &.diff-expanded {
       > .diff-line-num,
+      > .line-coverage,
       > .line_content {
         background: $solarized-light-expanded-bg;
         border-color: $solarized-light-expanded-bg;

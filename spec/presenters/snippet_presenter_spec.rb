@@ -143,4 +143,24 @@ describe SnippetPresenter do
       expect(subject).to be_truthy
     end
   end
+
+  describe '#blob' do
+    let(:snippet) { personal_snippet }
+
+    subject { presenter.blob }
+
+    context 'when snippet does not have a repository' do
+      it 'returns SnippetBlob' do
+        expect(subject).to eq snippet.blob
+      end
+    end
+
+    context 'when snippet has a repository' do
+      let(:snippet) { create(:snippet, :repository, author: user) }
+
+      it 'returns repository first blob' do
+        expect(subject).to eq snippet.blobs.first
+      end
+    end
+  end
 end

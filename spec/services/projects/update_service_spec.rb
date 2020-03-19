@@ -12,7 +12,6 @@ describe Projects::UpdateService do
   end
 
   describe '#execute' do
-    let(:gitlab_shell) { Gitlab::Shell.new }
     let(:admin) { create(:admin) }
 
     context 'when changing visibility level' do
@@ -303,18 +302,17 @@ describe Projects::UpdateService do
     end
 
     context 'when renaming a project' do
-      let(:repository_storage) { 'default' }
-      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
+      let(:fake_repo_path) { File.join(TestEnv.repos_path, user.namespace.full_path, 'existing.git') }
 
       context 'with legacy storage' do
         let(:project) { create(:project, :legacy_storage, :repository, creator: user, namespace: user.namespace) }
 
         before do
-          gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing", user.namespace.full_path)
+          TestEnv.create_bare_repository(fake_repo_path)
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage, "#{user.namespace.full_path}/existing")
+          FileUtils.rm_rf(fake_repo_path)
         end
 
         it 'does not allow renaming when new path matches existing repository on disk' do
@@ -610,6 +608,25 @@ describe Projects::UpdateService do
 
         it { is_expected.to eq(false) }
       end
+    end
+  end
+
+  describe 'repository_storage' do
+    let(:admin) { create(:admin) }
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :repository) }
+    let(:opts) { { repository_storage: 'test_second_storage' } }
+
+    it 'calls the change repository storage method if the storage changed' do
+      expect(project).to receive(:change_repository_storage).with('test_second_storage')
+
+      update_project(project, admin, opts).inspect
+    end
+
+    it "doesn't call the change repository storage for non-admin users" do
+      expect(project).not_to receive(:change_repository_storage)
+
+      update_project(project, user, opts).inspect
     end
   end
 

@@ -183,8 +183,8 @@ describe IssuablesHelper do
       @project = issue.project
 
       expected_data = {
-        endpoint: "/#{@project.full_path}/issues/#{issue.iid}",
-        updateEndpoint: "/#{@project.full_path}/issues/#{issue.iid}.json",
+        endpoint: "/#{@project.full_path}/-/issues/#{issue.iid}",
+        updateEndpoint: "/#{@project.full_path}/-/issues/#{issue.iid}.json",
         canUpdate: true,
         canDestroy: true,
         issuableRef: "##{issue.iid}",

@@ -178,4 +178,42 @@ describe UsersHelper do
       end
     end
   end
+
+  describe '#work_information' do
+    subject { helper.work_information(user) }
+
+    context 'when both job_title and organization are present' do
+      let(:user) { build(:user, organization: 'GitLab', job_title: 'Frontend Engineer') }
+
+      it 'returns job title concatenated with organization' do
+        is_expected.to eq('Frontend Engineer at GitLab')
+      end
+    end
+
+    context 'when only organization is present' do
+      let(:user) { build(:user, organization: 'GitLab') }
+
+      it "returns organization" do
+        is_expected.to eq('GitLab')
+      end
+    end
+
+    context 'when only job_title is present' do
+      let(:user) { build(:user, job_title: 'Frontend Engineer') }
+
+      it 'returns job title' do
+        is_expected.to eq('Frontend Engineer')
+      end
+    end
+
+    context 'when neither organization nor job_title are present' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when user parameter is nil' do
+      let(:user) { nil }
+
+      it { is_expected.to be_nil }
+    end
+  end
 end

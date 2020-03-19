@@ -5,9 +5,9 @@ require 'spec_helper'
 describe Resolvers::ProjectPipelinesResolver do
   include GraphqlHelpers
 
-  set(:project) { create(:project) }
-  set(:pipeline) { create(:ci_pipeline, project: project) }
-  set(:other_pipeline) { create(:ci_pipeline) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:other_pipeline) { create(:ci_pipeline) }
   let(:current_user) { create(:user) }
 
   before do

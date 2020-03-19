@@ -188,6 +188,9 @@ With Visual Reviews, you can provide a feedback form to your Review Apps so
 that reviewers can post comments directly from the app back to the merge request
 that spawned the Review App.
 
+NOTE: **Note:** Visual Reviews currently only work for public projects. Support for private
+and internal projects [is planned](https://gitlab.com/gitlab-org/gitlab/-/issues/42750).
+
 ### Configuring Visual Reviews
 
 Ensure that the `anonymous_visual_review_feedback` feature flag is enabled.
@@ -200,7 +203,8 @@ Feature.enable(:anonymous_visual_review_feedback)
 The feedback form is served through a script you add to pages in your Review App.
 If you have [Developer permissions](../../user/permissions.md) to the project,
 you can access it by clicking the **Review** button in the **Pipeline** section
-of the merge request.
+of the merge request. The form modal will also show a dropdown for changed pages
+if [route maps](#route-maps) are configured in the project.
 
 ![review button](img/review_button.png)
 

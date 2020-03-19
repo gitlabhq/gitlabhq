@@ -1,0 +1,5 @@
+---
+title: Replace avatar and favicon upload type consistency validation with content whitelist validation
+merge_request: 25401
+author:
+type: changed

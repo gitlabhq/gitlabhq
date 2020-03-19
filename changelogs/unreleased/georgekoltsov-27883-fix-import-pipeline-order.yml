@@ -1,0 +1,5 @@
+---
+title: Fix reversed pipeline order on Project Import
+merge_request: 26390
+author:
+type: fixed

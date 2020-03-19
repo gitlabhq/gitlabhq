@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { uniq } from 'lodash';
 import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';
 
@@ -18,7 +18,7 @@ export function filterEmojiNames(filter) {
 }
 
 export function filterEmojiNamesByAlias(filter) {
-  return _.uniq(filterEmojiNames(filter).map(name => normalizeEmojiName(name)));
+  return uniq(filterEmojiNames(filter).map(name => normalizeEmojiName(name)));
 }
 
 let emojiCategoryMap;

@@ -29,8 +29,7 @@ module Banzai
           Filter::AudioLinkFilter,
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
-          Filter::InlineMetricsFilter,
-          Filter::InlineGrafanaMetricsFilter,
+          *metrics_filters,
           Filter::TableOfContentsFilter,
           Filter::TableOfContentsTagFilter,
           Filter::AutolinkFilter,
@@ -45,6 +44,13 @@ module Banzai
           Filter::InlineDiffFilter,
 
           Filter::SetDirectionFilter
+        ]
+      end
+
+      def self.metrics_filters
+        [
+          Filter::InlineMetricsFilter,
+          Filter::InlineGrafanaMetricsFilter
         ]
       end
 

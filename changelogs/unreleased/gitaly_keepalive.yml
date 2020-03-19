@@ -1,0 +1,5 @@
+---
+title: Enable client-side GRPC keepalive for Gitaly
+merge_request: 26536
+author:
+type: changed

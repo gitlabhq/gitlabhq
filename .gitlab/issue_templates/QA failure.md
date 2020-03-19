@@ -40,7 +40,10 @@ Attach the screenshot and HTML snapshot of the page from the job's artifacts:
 /due in 2 weeks
 
 <!-- Base labels. -->
-/label ~Quality ~QA ~bug ~S1
+/label ~Quality ~QA ~test
+
+<!-- Test failure type label, please use just one.-->
+/label ~"failure::broken-test" ~"failure::flaky-test" ~"failure::stale-test" ~"failure::test-environment" ~"failure::investigating"
 
 <!--
 Choose the stage that appears in the test path, e.g. ~"devops::create" for

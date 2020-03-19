@@ -8,7 +8,7 @@ Available only in APIv4.
 
 Get all wiki pages for a given project.
 
-```
+```plaintext
 GET /projects/:id/wikis
 ```
 
@@ -49,7 +49,7 @@ Example response:
 
 Get a wiki page for a given project.
 
-```
+```plaintext
 GET /projects/:id/wikis/:slug
 ```
 
@@ -77,7 +77,7 @@ Example response:
 
 Creates a new wiki page for the given repository with the given title, slug, and content.
 
-```
+```plaintext
 POST /projects/:id/wikis
 ```
 
@@ -107,7 +107,7 @@ Example response:
 
 Updates an existing wiki page. At least one parameter is required to update the wiki page.
 
-```
+```plaintext
 PUT /projects/:id/wikis/:slug
 ```
 
@@ -138,7 +138,7 @@ Example response:
 
 Deletes a wiki page with a given slug.
 
-```
+```plaintext
 DELETE /projects/:id/wikis/:slug
 ```
 
@@ -160,7 +160,7 @@ On success the HTTP status code is `204` and no JSON response is expected.
 Uploads a file to the attachment folder inside the wiki's repository. The
  attachment folder is the `uploads` folder.
 
-```
+```plaintext
 POST /projects/:id/wikis/attachments
 ```
 

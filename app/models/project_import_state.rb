@@ -98,6 +98,10 @@ class ProjectImportState < ApplicationRecord
 
     Gitlab::SidekiqStatus.set(jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
   end
+
+  def self.jid_by(project_id:, status:)
+    select(:jid).with_status(status).find_by(project_id: project_id)
+  end
 end
 
 ProjectImportState.prepend_if_ee('EE::ProjectImportState')

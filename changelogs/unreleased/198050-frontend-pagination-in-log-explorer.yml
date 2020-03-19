@@ -1,0 +1,5 @@
+---
+title: More logs entries are loaded when logs are scrolled to the top
+merge_request: 26254
+author:
+type: added

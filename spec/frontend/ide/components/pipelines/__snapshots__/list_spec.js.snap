@@ -8,6 +8,7 @@ exports[`IDE pipelines list when loaded renders empty state when no latestPipeli
    
   <empty-state-stub
     cansetci="true"
+    class="mb-auto mt-auto"
     emptystatesvgpath="http://test.host"
     helppagepath="http://test.host"
   />

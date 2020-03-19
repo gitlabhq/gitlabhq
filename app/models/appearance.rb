@@ -38,7 +38,7 @@ class Appearance < ApplicationRecord
 
   def single_appearance_row
     if self.class.any?
-      errors.add(:single_appearance_row, 'Only 1 appearances row can exist')
+      errors.add(:base, _('Only 1 appearances row can exist'))
     end
   end
 

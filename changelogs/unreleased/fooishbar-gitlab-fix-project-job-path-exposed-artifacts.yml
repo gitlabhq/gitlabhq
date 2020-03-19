@@ -1,0 +1,5 @@
+---
+title: Fix links to exposed artifacts in MRs from forks
+merge_request: 25868
+author: Daniel Stone
+type: fixed

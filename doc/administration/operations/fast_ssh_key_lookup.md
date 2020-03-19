@@ -54,8 +54,10 @@ Add the following to your `sshd_config` file. This is usually located at
 Omnibus Docker:
 
 ```plaintext
-AuthorizedKeysCommand /opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check git %u %k
-AuthorizedKeysCommandUser git
+Match User git    # Apply the AuthorizedKeysCommands to the git user only
+  AuthorizedKeysCommand /opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check git %u %k
+  AuthorizedKeysCommandUser git
+Match all    # End match, settings apply to all users again
 ```
 
 Reload OpenSSH:

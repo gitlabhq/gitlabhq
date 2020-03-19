@@ -1,5 +1,6 @@
 - page_title "UI Development Kit", "Help"
 - lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fermentum nisi sapien, non consequat lectus aliquam ultrices. Suspendisse sodales est euismod nunc condimentum, a consectetur diam ornare."
+- link_classes = "flex-grow-1 mx-1 "
 
 .gitlab-ui-dev-kit
   %h1 GitLab UI development kit
@@ -64,7 +65,12 @@
     Cover block for profile page with avatar, name and description
     %code .cover-block
   .example
-    .cover-block
+    .cover-block.user-cover-block
+      = render layout: 'users/cover_controls' do
+        = link_to '#', class: link_classes + 'btn btn-default' do
+          = icon('pencil')
+        = link_to '#', class: link_classes + 'btn btn-default' do
+          = icon('rss')
       .avatar-holder
         = image_tag avatar_icon_for_email('admin@example.com', 90), class: "avatar s90", alt: ''
       .cover-title
@@ -72,13 +78,6 @@
 
       .cover-desc.cgray
         = lorem
-
-      .cover-controls
-        = link_to '#', class: 'btn btn-default' do
-          = icon('pencil')
-        &nbsp;
-        = link_to '#', class: 'btn btn-default' do
-          = icon('rss')
 
   %h2#lists Lists
 
@@ -323,8 +322,8 @@
           .dropdown-footer
             %strong Tip:
             If an author is not a member of this project, you can still filter by their name while using the search field.
-          .dropdown-loading
-            = icon('spinner spin')
+          .dropdown-loading.text-center
+            .spinner.spinner-md.mt-8
 
   .example
     %div
@@ -404,8 +403,8 @@
             %input.dropdown-input-field{ type: "search", placeholder: "Filter results" }
             = icon('search')
           .dropdown-content
-          .dropdown-loading
-            = icon('spinner spin')
+          .dropdown-loading.text-center
+            .spinner.spinner-md.mt-8
 
   .example
     %div

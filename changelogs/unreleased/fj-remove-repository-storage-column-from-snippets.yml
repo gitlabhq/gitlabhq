@@ -1,0 +1,5 @@
+---
+title: Remove repository_storage column from snippets
+merge_request: 25699
+author:
+type: other

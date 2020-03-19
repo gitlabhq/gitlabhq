@@ -115,9 +115,25 @@ module Issues
     end
 
     def handle_milestone_change(issue)
-      return if skip_milestone_email
-
       return unless issue.previous_changes.include?('milestone_id')
+
+      invalidate_milestone_issue_counters(issue)
+      send_milestone_change_notification(issue)
+    end
+
+    def invalidate_milestone_issue_counters(issue)
+      issue.previous_changes['milestone_id'].each do |milestone_id|
+        next unless milestone_id
+
+        milestone = Milestone.find_by_id(milestone_id)
+
+        delete_milestone_closed_issue_counter_cache(milestone)
+        delete_milestone_total_issue_counter_cache(milestone)
+      end
+    end
+
+    def send_milestone_change_notification(issue)
+      return if skip_milestone_email
 
       if issue.milestone.nil?
         notification_service.async.removed_milestone_issue(issue, current_user)

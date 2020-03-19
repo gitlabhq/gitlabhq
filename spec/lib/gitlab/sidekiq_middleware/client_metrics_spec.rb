@@ -9,7 +9,7 @@ describe Gitlab::SidekiqMiddleware::ClientMetrics do
     let(:queue) { :test }
     let(:worker_class) { worker.class }
     let(:job) { {} }
-    let(:default_labels) { { queue: queue.to_s, boundary: "", external_dependencies: "no", feature_category: "", latency_sensitive: "no" } }
+    let(:default_labels) { { queue: queue.to_s, boundary: "", external_dependencies: "no", feature_category: "", urgency: "low" } }
 
     shared_examples "a metrics client middleware" do
       context "with mocked prometheus" do
@@ -46,17 +46,17 @@ describe Gitlab::SidekiqMiddleware::ClientMetrics do
 
       it_behaves_like "a metrics client middleware" do
         let(:worker) { TestNonAttributedWorker.new }
-        let(:labels) { default_labels }
+        let(:labels) { default_labels.merge(urgency: "") }
       end
     end
 
     context "when workers are attributed" do
-      def create_attributed_worker_class(latency_sensitive, external_dependencies, resource_boundary, category)
+      def create_attributed_worker_class(urgency, external_dependencies, resource_boundary, category)
         klass = Class.new do
           include Sidekiq::Worker
           include WorkerAttributes
 
-          latency_sensitive_worker! if latency_sensitive
+          urgency urgency if urgency
           worker_has_external_dependencies! if external_dependencies
           worker_resource_boundary resource_boundary unless resource_boundary == :unknown
           feature_category category unless category.nil?
@@ -64,17 +64,24 @@ describe Gitlab::SidekiqMiddleware::ClientMetrics do
         stub_const("TestAttributedWorker", klass)
       end
 
-      let(:latency_sensitive) { false }
+      let(:urgency) { nil }
       let(:external_dependencies) { false }
       let(:resource_boundary) { :unknown }
       let(:feature_category) { nil }
-      let(:worker_class) { create_attributed_worker_class(latency_sensitive, external_dependencies, resource_boundary, feature_category) }
+      let(:worker_class) { create_attributed_worker_class(urgency, external_dependencies, resource_boundary, feature_category) }
       let(:worker) { worker_class.new }
 
-      context "latency sensitive" do
+      context "high urgency" do
         it_behaves_like "a metrics client middleware" do
-          let(:latency_sensitive) { true }
-          let(:labels) { default_labels.merge(latency_sensitive: "yes") }
+          let(:urgency) { :high }
+          let(:labels) { default_labels.merge(urgency: "high") }
+        end
+      end
+
+      context "no urgency" do
+        it_behaves_like "a metrics client middleware" do
+          let(:urgency) { :throttled }
+          let(:labels) { default_labels.merge(urgency: "throttled") }
         end
       end
 
@@ -108,11 +115,11 @@ describe Gitlab::SidekiqMiddleware::ClientMetrics do
 
       context "combined" do
         it_behaves_like "a metrics client middleware" do
-          let(:latency_sensitive) { true }
+          let(:urgency) { :high }
           let(:external_dependencies) { true }
           let(:resource_boundary) { :cpu }
           let(:feature_category) { :authentication }
-          let(:labels) { default_labels.merge(latency_sensitive: "yes", external_dependencies: "yes", boundary: "cpu", feature_category: "authentication") }
+          let(:labels) { default_labels.merge(urgency: "high", external_dependencies: "yes", boundary: "cpu", feature_category: "authentication") }
         end
       end
     end

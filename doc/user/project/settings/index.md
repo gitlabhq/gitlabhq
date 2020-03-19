@@ -115,7 +115,7 @@ no longer actively maintained. Projects that have been archived can also be
 unarchived. Only project Owners and Admin users have the
 [permissions](../../permissions.md#project-members-permissions) to archive a project.
 
-When a project is archived, the repository, issues, merge requests and all
+When a project is archived, the repository, issues, merge requests, and all
 other features are read-only. Archived projects are also hidden
 in project listings.
 
@@ -204,7 +204,7 @@ namespace if needed.
 #### Remove a project
 
 NOTE: **Note:**
-Only project owners and admins have [permissions]((../../permissions.md#project-members-permissions) to remove a project.
+Only project owners and admins have [permissions](../../permissions.md#project-members-permissions) to remove a project.
 
 To remove a project:
 
@@ -215,9 +215,12 @@ To remove a project:
 This action either:
 
 - Removes a project including all associated resources (issues, merge requests etc).
-- Since [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/32935), on [Premium or Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a project for deletion. The deletion will happen 7 days later by default, but this can be changed in the [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
+- Since [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/issues/32935), on
+  [GitLab Premium or GitLab.com Silver](https://about.gitlab.com/pricing/) or higher tiers, marks a project for
+  deletion. The deletion will happen 7 days later by default, but this can be changed in the
+  [instance settings](../../admin_area/settings/visibility_and_access_controls.md#default-deletion-adjourned-period-premium-only).
 
-### Restore a project **(PREMIUM)**
+#### Restore a project **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32935) in GitLab 12.6.
 
@@ -233,6 +236,9 @@ of which you're not a member.
 If you want to use the fork for yourself and don't need to send
 [merge requests](../merge_requests.md) to the upstream project,
 you can safely remove the fork relationship.
+
+CAUTION: **Caution:**
+Once removed, the fork relationship cannot be restored. You will no longer be able to send merge requests to the source, and if anyone has forked your project, their fork will also lose the relationship.
 
 To do so:
 

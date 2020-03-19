@@ -9,6 +9,12 @@ describe Settings do
     end
   end
 
+  describe '.load_dynamic_cron_schedules!' do
+    it 'generates a valid cron schedule' do
+      expect(Fugit::Cron.parse(described_class.load_dynamic_cron_schedules!)).to be_a(Fugit::Cron)
+    end
+  end
+
   describe '.attr_encrypted_db_key_base_truncated' do
     it 'is a string with maximum 32 bytes size' do
       expect(described_class.attr_encrypted_db_key_base_truncated.bytesize)

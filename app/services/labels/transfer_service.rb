@@ -49,7 +49,7 @@ module Labels
       Label.joins(:issues)
         .where(
           issues: { project_id: project.id },
-          labels: { type: 'GroupLabel', group_id: old_group.id }
+          labels: { type: 'GroupLabel', group_id: old_group.self_and_ancestors }
         )
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -59,14 +59,14 @@ module Labels
       Label.joins(:merge_requests)
         .where(
           merge_requests: { target_project_id: project.id },
-          labels: { type: 'GroupLabel', group_id: old_group.id }
+          labels: { type: 'GroupLabel', group_id: old_group.self_and_ancestors }
         )
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     def find_or_create_label!(label)
       params    = label.attributes.slice('title', 'description', 'color')
-      new_label = FindOrCreateService.new(current_user, project, params).execute
+      new_label = FindOrCreateService.new(current_user, project, params.merge(include_ancestor_groups: true)).execute
 
       new_label.id
     end

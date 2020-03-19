@@ -4,7 +4,7 @@
 
 Get list of a project's variables.
 
-```
+```plaintext
 GET /projects/:id/variables
 ```
 
@@ -12,7 +12,7 @@ GET /projects/:id/variables
 |-----------|---------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
-```
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables"
 ```
 
@@ -35,7 +35,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Get the details of a project's specific variable.
 
-```
+```plaintext
 GET /projects/:id/variables/:key
 ```
 
@@ -44,7 +44,7 @@ GET /projects/:id/variables/:key
 | `id`      | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user   |
 | `key`     | string  | yes      | The `key` of a variable |
 
-```
+```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/TEST_VARIABLE_1"
 ```
 
@@ -62,7 +62,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Create a new variable.
 
-```
+```plaintext
 POST /projects/:id/variables
 ```
 
@@ -76,7 +76,7 @@ POST /projects/:id/variables
 | `masked`            | boolean | no       | Whether the variable is masked |
 | `environment_scope` | string  | no       | The `environment_scope` of the variable |
 
-```
+```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables" --form "key=NEW_VARIABLE" --form "value=new value"
 ```
 
@@ -95,7 +95,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 
 Update a project's variable.
 
-```
+```plaintext
 PUT /projects/:id/variables/:key
 ```
 
@@ -109,7 +109,7 @@ PUT /projects/:id/variables/:key
 | `masked`            | boolean | no       | Whether the variable is masked |
 | `environment_scope` | string  | no       | The `environment_scope` of the variable |
 
-```
+```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/NEW_VARIABLE" --form "value=updated value"
 ```
 
@@ -128,7 +128,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 Remove a project's variable.
 
-```
+```plaintext
 DELETE /projects/:id/variables/:key
 ```
 
@@ -137,6 +137,6 @@ DELETE /projects/:id/variables/:key
 | `id`      | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user     |
 | `key`     | string  | yes      | The `key` of a variable |
 
-```
+```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/variables/VARIABLE_1"
 ```

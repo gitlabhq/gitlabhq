@@ -1,5 +1,5 @@
 import sqljs from 'sql.js';
-import { template as _template } from 'underscore';
+import { template as _template } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { successCodes } from '~/lib/utils/http_status';
 

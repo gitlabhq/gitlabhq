@@ -52,6 +52,13 @@ bundle exec guard
 
 When using spring and guard together, use `SPRING=1 bundle exec guard` instead to make use of spring.
 
+Use [Factory Doctor](https://test-prof.evilmartians.io/#/factory_doctor.md) to find cases on un-necessary database manipulation, which can cause slow tests.
+
+```shell
+# run test for path
+FDOC=1 bin/rspec spec/[path]/[to]/[spec].rb
+```
+
 ### General guidelines
 
 - Use a single, top-level `describe ClassName` block.

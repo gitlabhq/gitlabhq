@@ -17,27 +17,28 @@ First, in your `.gitlab-ci.yml` add:
 
 ```yaml
 services:
-  - postgres:latest
+  - postgres:12.2-alpine
 
 variables:
   POSTGRES_DB: nice_marmot
   POSTGRES_USER: runner
   POSTGRES_PASSWORD: ""
+  POSTGRES_HOST_AUTH_METHOD: trust
 ```
 
 NOTE: **Note:**
-The `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD` variables can't be set in
-the GitLab UI. To set them, assign them to a variable
+The `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_HOST_AUTH_METHOD`
+variables can't be set in the GitLab UI. To set them, assign them to a variable
 [in the UI](../variables/README.md#via-the-ui), and then assign that
-variable to the `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD` variables in
-your `.gitlab-ci.yml`.
+variable to the `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_HOST_AUTH_METHOD`
+variables in your `.gitlab-ci.yml`.
 
 And then configure your application to use the database, for example:
 
 ```yaml
 Host: postgres
 User: runner
-Password:
+Password: ''
 Database: nice_marmot
 ```
 
@@ -118,7 +119,7 @@ We have set up an [Example PostgreSQL Project][postgres-example-repo] for your
 convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
 available [shared runners](../runners/README.md).
 
-Want to hack on it? Simply fork it, commit and push  your changes. Within a few
+Want to hack on it? Simply fork it, commit and push your changes. Within a few
 moments the changes will be picked by a public runner and the job will begin.
 
 [hub-pg]: https://hub.docker.com/_/postgres

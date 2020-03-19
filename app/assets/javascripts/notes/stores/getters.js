@@ -28,6 +28,8 @@ export const getUserData = state => state.userData || {};
 
 export const getUserDataByProp = state => prop => state.userData && state.userData[prop];
 
+export const descriptionVersions = state => state.descriptionVersions;
+
 export const notesById = state =>
   state.discussions.reduce((acc, note) => {
     note.notes.every(n => Object.assign(acc, { [n.id]: n }));

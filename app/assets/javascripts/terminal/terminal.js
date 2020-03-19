@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { throttle } from 'lodash';
 import $ from 'jquery';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
@@ -85,7 +85,7 @@ export default class GLTerminal {
 
   addScrollListener(onScrollLimit) {
     const viewport = this.container.querySelector('.xterm-viewport');
-    const listener = _.throttle(() => {
+    const listener = throttle(() => {
       onScrollLimit({
         canScrollUp: canScrollUp(viewport, SCROLL_MARGIN),
         canScrollDown: canScrollDown(viewport, SCROLL_MARGIN),

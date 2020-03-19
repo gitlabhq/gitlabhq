@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Projects settings' do
-  set(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
   let(:user) { project.owner }
   let(:panel) { find('.general-settings', match: :first) }
   let(:button) { panel.find('.btn.js-settings-toggle') }

@@ -45,7 +45,7 @@ describe 'Admin mode', :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode
       it 'can enter admin mode' do
         visit new_admin_session_path
 
-        fill_in 'password', with: admin.password
+        fill_in 'user_password', with: admin.password
 
         click_button 'Enter Admin Mode'
 
@@ -60,7 +60,7 @@ describe 'Admin mode', :clean_gitlab_redis_shared_state, :do_not_mock_admin_mode
         it 'can enter admin mode' do
           visit new_admin_session_path
 
-          fill_in 'password', with: admin.password
+          fill_in 'user_password', with: admin.password
 
           click_button 'Enter Admin Mode'
 

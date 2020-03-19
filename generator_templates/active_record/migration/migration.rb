@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-# See http://doc.gitlab.com/ce/development/migration_style_guide.html
+# See https://docs.gitlab.com/ee/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
 class <%= migration_class_name %> < ActiveRecord::Migration[<%= ActiveRecord::Migration.current_version %>]
-  include Gitlab::Database::MigrationHelpers
+  # Uncomment the following include if you require helper functions:
+  # include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false

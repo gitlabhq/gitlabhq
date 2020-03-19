@@ -63,13 +63,13 @@ GitLab provides two different options for the uploading mechanism: "Direct uploa
 
 **Option 1. Direct upload**
 
-1. User pushes an lfs file to the GitLab instance
+1. User pushes an `lfs` file to the GitLab instance
 1. GitLab-workhorse uploads the file directly to the external object storage
 1. GitLab-workhorse notifies GitLab-rails that the upload process is complete
 
 **Option 2. Background upload**
 
-1. User pushes an lfs file to the GitLab instance
+1. User pushes an `lfs` file to the GitLab instance
 1. GitLab-rails stores the file in the local file storage
 1. GitLab-rails then uploads the file to the external object storage asynchronously
 
@@ -127,7 +127,7 @@ Here is a configuration example with Rackspace Cloud Files.
 NOTE: **Note:**
 Regardless of whether the container has public access enabled or disabled, Fog will
 use the TempURL method to grant access to LFS objects. If you see errors in logs referencing
-instantiating storage with a temp-url-key, ensure that you have set they key properly
+instantiating storage with a temp-url-key, ensure that you have set the key properly
 on the Rackspace API and in `gitlab.rb`. You can verify the value of the key Rackspace
 has set by sending a GET request with token header to the service access endpoint URL
 and comparing the output of the returned headers.
@@ -261,7 +261,7 @@ See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/-/mer
 
 ## Known limitations
 
-- Support for removing unreferenced LFS objects was added in 8.14 onwards.
+- Support for removing unreferenced LFS objects was added in 8.14 onward.
 - LFS authentications via SSH was added with GitLab 8.12.
 - Only compatible with the Git LFS client versions 1.1.0 and up, or 1.0.2.
 - The storage statistics currently count each LFS object multiple times for

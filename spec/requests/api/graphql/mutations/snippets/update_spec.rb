@@ -56,7 +56,7 @@ describe 'Updating a Snippet' do
       it 'returns the updated Snippet' do
         post_graphql_mutation(mutation, current_user: current_user)
 
-        expect(mutation_response['snippet']['blob']['richData']).to match(updated_content)
+        expect(mutation_response['snippet']['blob']['richData']).to be_nil
         expect(mutation_response['snippet']['blob']['plainData']).to match(updated_content)
         expect(mutation_response['snippet']['title']).to eq(updated_title)
         expect(mutation_response['snippet']['description']).to eq(updated_description)
@@ -78,7 +78,7 @@ describe 'Updating a Snippet' do
         it 'returns the Snippet with its original values' do
           post_graphql_mutation(mutation, current_user: current_user)
 
-          expect(mutation_response['snippet']['blob']['richData']).to match(original_content)
+          expect(mutation_response['snippet']['blob']['richData']).to be_nil
           expect(mutation_response['snippet']['blob']['plainData']).to match(original_content)
           expect(mutation_response['snippet']['title']).to eq(original_title)
           expect(mutation_response['snippet']['description']).to eq(original_description)
@@ -91,7 +91,7 @@ describe 'Updating a Snippet' do
 
   describe 'PersonalSnippet' do
     it_behaves_like 'graphql update actions' do
-      let_it_be(:snippet) do
+      let(:snippet) do
         create(:personal_snippet,
                :private,
                file_name: original_file_name,
@@ -104,7 +104,7 @@ describe 'Updating a Snippet' do
 
   describe 'ProjectSnippet' do
     let_it_be(:project) { create(:project, :private) }
-    let_it_be(:snippet) do
+    let(:snippet) do
       create(:project_snippet,
              :private,
              project: project,

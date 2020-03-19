@@ -38,6 +38,8 @@ module SubmoduleHelper
          url_helpers.namespace_project_tree_path(namespace, project, submodule_item_id)]
       elsif relative_self_url?(url)
         relative_self_links(url, submodule_item_id, repository.project)
+      elsif gist_github_dot_com_url?(url)
+        gist_github_com_tree_links(namespace, project, submodule_item_id)
       elsif github_dot_com_url?(url)
         github_com_tree_links(namespace, project, submodule_item_id)
       elsif gitlab_dot_com_url?(url)
@@ -51,6 +53,10 @@ module SubmoduleHelper
   end
 
   protected
+
+  def gist_github_dot_com_url?(url)
+    url =~ %r{gist\.github\.com[/:][^/]+/[^/]+\Z}
+  end
 
   def github_dot_com_url?(url)
     url =~ %r{github\.com[/:][^/]+/[^/]+\Z}
@@ -66,7 +72,7 @@ module SubmoduleHelper
                                      project].join('')
 
     url_with_dotgit = url_no_dotgit + '.git'
-    url_with_dotgit == Gitlab::Shell.new.url_to_repo([namespace, '/', project].join(''))
+    url_with_dotgit == Gitlab::Shell.url_to_repo([namespace, '/', project].join(''))
   end
 
   def relative_self_url?(url)
@@ -76,6 +82,11 @@ module SubmoduleHelper
   def gitlab_com_tree_links(namespace, project, commit)
     base = ['https://gitlab.com/', namespace, '/', project].join('')
     [base, [base, '/-/tree/', commit].join('')]
+  end
+
+  def gist_github_com_tree_links(namespace, project, commit)
+    base = ['https://gist.github.com/', namespace, '/', project].join('')
+    [base, [base, commit].join('/')]
   end
 
   def github_com_tree_links(namespace, project, commit)

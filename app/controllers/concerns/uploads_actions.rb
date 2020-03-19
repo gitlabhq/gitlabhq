@@ -9,6 +9,7 @@ module UploadsActions
 
   included do
     prepend_before_action :set_request_format_from_path_extension
+    skip_before_action :default_cache_headers, only: :show
     rescue_from FileUploader::InvalidSecret, with: :render_404
   end
 
@@ -34,10 +35,6 @@ module UploadsActions
   #
   def show
     return render_404 unless uploader&.exists?
-
-    # We need to reset caching from the applications controller to get rid of the no-store value
-    headers['Cache-Control'] = ''
-    headers['Pragma'] = ''
 
     ttl, directives = *cache_settings
     ttl ||= 0

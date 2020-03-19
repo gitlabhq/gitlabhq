@@ -260,12 +260,14 @@ module Issuable
 
       highest_priority = highest_label_priority(params).to_sql
 
-      select_columns = [
-        "#{table_name}.*",
-        "(#{highest_priority}) AS highest_priority"
-      ] + extra_select_columns
+      # When using CTE make sure to select the same columns that are on the group_by clause.
+      # This prevents errors when ignored columns are present in the database.
+      issuable_columns = with_cte ? issue_grouping_columns(use_cte: with_cte) : "#{table_name}.*"
 
-      select(select_columns.join(', '))
+      extra_select_columns = extra_select_columns.unshift("(#{highest_priority}) AS highest_priority")
+
+      select(issuable_columns)
+        .select(extra_select_columns)
         .group(issue_grouping_columns(use_cte: with_cte))
         .reorder(Gitlab::Database.nulls_last_order('highest_priority', direction))
     end
@@ -301,7 +303,7 @@ module Issuable
     # Returns an array of arel columns
     def issue_grouping_columns(use_cte: false)
       if use_cte
-        [arel_table[:state]] + attribute_names.map { |attr| arel_table[attr.to_sym] }
+        attribute_names.map { |attr| arel_table[attr.to_sym] }
       else
         arel_table[:id]
       end

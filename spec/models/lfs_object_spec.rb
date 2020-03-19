@@ -13,6 +13,15 @@ describe LfsObject do
         expect(described_class.not_linked_to_project(project)).to contain_exactly(other_lfs_object)
       end
     end
+
+    describe '.for_oids' do
+      it 'returns the correct LfsObjects' do
+        lfs_object_1, lfs_object_2 = create_list(:lfs_object, 2)
+
+        expect(described_class.for_oids(lfs_object_1.oid)).to contain_exactly(lfs_object_1)
+        expect(described_class.for_oids([lfs_object_1.oid, lfs_object_2.oid])).to contain_exactly(lfs_object_1, lfs_object_2)
+      end
+    end
   end
 
   it 'has a distinct has_many :projects relation through lfs_objects_projects' do

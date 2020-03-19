@@ -5,7 +5,7 @@
 Retrieve version information for this GitLab instance. Responds `200 OK` for
 authenticated users.
 
-```
+```plaintext
 GET /version
 ```
 

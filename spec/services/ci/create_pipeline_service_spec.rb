@@ -985,6 +985,7 @@ describe Ci::CreatePipelineService do
           expect(pipeline).to be_persisted
           expect(build).to be_kind_of(Ci::Build)
           expect(build.options).to eq(config[:release].except(:stage, :only).with_indifferent_access)
+          expect(build).to be_persisted
         end
       end
 

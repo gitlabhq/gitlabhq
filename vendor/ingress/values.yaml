@@ -6,3 +6,8 @@ controller:
   podAnnotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "10254"
+  service:
+    clusterIP: "-"
+defaultBackend:
+  service:
+    clusterIP: "-"

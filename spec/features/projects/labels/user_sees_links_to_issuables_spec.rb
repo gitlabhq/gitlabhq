@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Projects > Labels > User sees links to issuables' do
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     label # creates the label
@@ -50,7 +50,7 @@ describe 'Projects > Labels > User sees links to issuables' do
   end
 
   context 'with a group label' do
-    set(:group) { create(:group) }
+    let_it_be(:group) { create(:group) }
     let(:label) { create(:group_label, group: group, title: 'bug') }
 
     context 'when merge requests and issues are enabled for the project' do

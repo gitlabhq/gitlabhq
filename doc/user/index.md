@@ -14,7 +14,7 @@ and upgrade your GitLab instance.
 
 Admin privileges for [GitLab.com](https://gitlab.com/) are restricted to the GitLab team.
 
-For more information on configuring GitLab self-managed instances, see [Administrator documentation](../administration/index.md).
+For more information on configuring GitLab self-managed instances, see the [Administrator documentation](../administration/index.md).
 
 ## Overview
 

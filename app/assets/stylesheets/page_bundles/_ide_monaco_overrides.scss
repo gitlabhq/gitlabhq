@@ -1,0 +1,146 @@
+
+// stylelint-disable selector-class-pattern
+// stylelint-disable selector-max-compound-selectors
+// stylelint-disable stylelint-gitlab/duplicate-selectors
+// stylelint-disable stylelint-gitlab/utility-classes
+
+.blob-editor-container {
+  flex: 1;
+  height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .vertical-center {
+    min-height: auto;
+  }
+
+  .monaco-editor .lines-content .cigr {
+    display: none;
+  }
+
+  .monaco-editor .selected-text {
+    z-index: 1;
+  }
+
+  .monaco-editor .view-lines {
+    z-index: 2;
+  }
+
+  .is-readonly,
+  .editor.original {
+    .view-lines {
+      cursor: default;
+    }
+
+    .cursors-layer {
+      display: none;
+    }
+  }
+
+  .is-deleted {
+    .editor.modified {
+      .margin-view-overlays,
+      .lines-content,
+      .decorationsOverviewRuler {
+        // !important to override monaco inline styles
+        display: none !important;
+      }
+    }
+
+    .diffOverviewRuler.modified {
+      // !important to override monaco inline styles
+      display: none !important;
+    }
+  }
+
+  .is-added {
+    .editor.original {
+      .margin-view-overlays,
+      .lines-content,
+      .decorationsOverviewRuler {
+        // !important to override monaco inline styles
+        display: none !important;
+      }
+    }
+
+    .diffOverviewRuler.original {
+      // !important to override monaco inline styles
+      display: none !important;
+    }
+  }
+
+  .monaco-diff-editor.vs {
+    .editor.modified {
+      box-shadow: none;
+    }
+
+    .diagonal-fill {
+      display: none !important;
+    }
+
+    .diffOverview {
+      background-color: $white-light;
+      border-left: 1px solid $white-dark;
+      cursor: ns-resize;
+    }
+
+    .diffViewport {
+      display: none;
+    }
+
+    .char-insert {
+      background-color: $line-added-dark;
+    }
+
+    .char-delete {
+      background-color: $line-removed-dark;
+    }
+
+    .line-numbers {
+      color: $black-transparent;
+    }
+
+    .view-overlays {
+      .line-insert {
+        background-color: $line-added;
+      }
+
+      .line-delete {
+        background-color: $line-removed;
+      }
+    }
+
+    .margin {
+      background-color: $white-light;
+      border-right: 1px solid $gray-100;
+
+      .line-insert {
+        border-right: 1px solid $line-added-dark;
+      }
+
+      .line-delete {
+        border-right: 1px solid $line-removed-dark;
+      }
+    }
+
+    .margin-view-overlays .insert-sign,
+    .margin-view-overlays .delete-sign {
+      opacity: 0.4;
+    }
+  }
+}
+
+.multi-file-editor-holder {
+  height: 100%;
+  min-height: 0; // firefox fix
+
+  &.is-readonly .vs,
+  .vs .editor.original {
+    .monaco-editor,
+    .monaco-editor-background,
+    .monaco-editor .inputarea.ime-input {
+      background-color: $gray-50;
+    }
+  }
+}

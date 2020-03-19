@@ -118,7 +118,7 @@ describe MergeRequests::MergeService do
 
       it 'closes GitLab issue tracker issues' do
         issue  = create :issue, project: project
-        commit = double('commit', safe_message: "Fixes #{issue.to_reference}")
+        commit = instance_double('commit', safe_message: "Fixes #{issue.to_reference}", date: Time.now, authored_date: Time.now)
         allow(merge_request).to receive(:commits).and_return([commit])
         merge_request.cache_merge_request_closes_issues!
 
@@ -158,7 +158,7 @@ describe MergeRequests::MergeService do
           end
 
           it 'does not close issue' do
-            allow(jira_tracker).to receive_messages(jira_issue_transition_id: nil)
+            jira_tracker.update(jira_issue_transition_id: nil)
 
             expect_any_instance_of(JiraService).not_to receive(:transition_issue)
 

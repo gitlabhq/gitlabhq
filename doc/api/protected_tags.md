@@ -6,7 +6,7 @@
 
 Currently, these levels are recognized:
 
-```
+```plaintext
 0  => No access
 30 => Developer access
 40 => Maintainer access
@@ -17,7 +17,7 @@ Currently, these levels are recognized:
 Gets a list of protected tags from a project.
 This function takes pagination parameters `page` and `per_page` to restrict the list of protected tags.
 
-```
+```plaintext
 GET /projects/:id/protected_tags
 ```
 
@@ -51,7 +51,7 @@ Example response:
 Gets a single protected tag or wildcard protected tag.
 The pagination parameters `page` and `per_page` can be used to restrict the list of protected tags.
 
-```
+```plaintext
 GET /projects/:id/protected_tags/:name
 ```
 
@@ -83,7 +83,7 @@ Example response:
 Protects a single repository tag or several project repository
 tags using a wildcard protected tag.
 
-```
+```plaintext
 POST /projects/:id/protected_tags
 ```
 
@@ -115,7 +115,7 @@ Example response:
 
 Unprotects the given protected tag or wildcard protected tag.
 
-```
+```plaintext
 DELETE /projects/:id/protected_tags/:name
 ```
 

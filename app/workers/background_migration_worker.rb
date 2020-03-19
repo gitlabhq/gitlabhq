@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class BackgroundMigrationWorker
+class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category_not_owned!
@@ -22,17 +22,19 @@ class BackgroundMigrationWorker
   # class_name - The class name of the background migration to run.
   # arguments - The arguments to pass to the migration class.
   def perform(class_name, arguments = [])
-    should_perform, ttl = perform_and_ttl(class_name)
+    with_context(caller_id: class_name.to_s) do
+      should_perform, ttl = perform_and_ttl(class_name)
 
-    if should_perform
-      Gitlab::BackgroundMigration.perform(class_name, arguments)
-    else
-      # If the lease could not be obtained this means either another process is
-      # running a migration of this class or we ran one recently. In this case
-      # we'll reschedule the job in such a way that it is picked up again around
-      # the time the lease expires.
-      self.class
-        .perform_in(ttl || self.class.minimum_interval, class_name, arguments)
+      if should_perform
+        Gitlab::BackgroundMigration.perform(class_name, arguments)
+      else
+        # If the lease could not be obtained this means either another process is
+        # running a migration of this class or we ran one recently. In this case
+        # we'll reschedule the job in such a way that it is picked up again around
+        # the time the lease expires.
+        self.class
+          .perform_in(ttl || self.class.minimum_interval, class_name, arguments)
+      end
     end
   end
 

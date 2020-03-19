@@ -1,0 +1,53 @@
+---
+# Checks for use of common and uncommon contractions.
+#
+# For a list of all options, see https://errata-ai.github.io/vale/styles/
+extends: substitution
+message: Use "%s" instead of "%s" in most cases.
+link: https://docs.gitlab.com/ee/development/documentation/styleguide.html#language
+level: suggestion
+nonword: false
+ignorecase: true
+swap:
+
+  # Common contractions are ok
+  it is: it's
+  can not: can't
+  cannot: can't
+  do not: don't
+  have not: haven't
+  that is: that's
+  we are: we're
+  will not: won't
+  would not: wouldn't
+  you are: you're
+  you have: you've
+
+  # Uncommon contractions are not ok
+  aren't: are not
+  couldn't: could not
+  didn't: did not
+  doesn't: does not
+  hasn't: has not
+  how'll: how will
+  how's: how is
+  isn't: is not
+  it'll: it will
+  shouldn't: should not
+  that'll: that will
+  they'll: they will
+  they're: they are
+  wasn't: was not
+  weren't: were not
+  we'll: we will
+  we've: we have
+  what's: what is
+  what'll: what will
+  when's: when is
+  when'll: when will
+  where's: where is
+  where'll: where will
+  who's: who is
+  who'll: who will
+  why's: why is
+  why'll: why will

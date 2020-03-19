@@ -57,7 +57,7 @@ describe 'task completion status response' do
           get api("#{path}?iids[]=#{taskable.iid}", user)
         end
 
-        it { expect(response).to have_gitlab_http_status(200) }
+        it { expect(response).to have_gitlab_http_status(:ok) }
 
         it 'returns the expected results' do
           expect(json_response).to be_an Array

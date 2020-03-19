@@ -112,7 +112,7 @@ describe('Dashboard', () => {
       setupComponentStore(component);
 
       return Vue.nextTick().then(() => {
-        [, promPanel] = component.$el.querySelectorAll('.prometheus-panel');
+        [promPanel] = component.$el.querySelectorAll('.prometheus-panel');
         promGroup = promPanel.querySelector('.prometheus-graph-group');
         panelToggle = promPanel.querySelector('.js-graph-group-toggle');
         chart = promGroup.querySelector('.position-relative svg');

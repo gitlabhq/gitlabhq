@@ -72,7 +72,7 @@ describe API::Notes do
           it "returns an empty array" do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", user)
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response).to be_empty
@@ -86,7 +86,7 @@ describe API::Notes do
             it "returns 404" do
               get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", user)
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
         end
@@ -95,7 +95,7 @@ describe API::Notes do
           it "returns a non-empty array" do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", private_user)
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.first['body']).to eq(cross_reference_note.note)
@@ -114,7 +114,7 @@ describe API::Notes do
 
           shared_examples 'a notes request' do
             it 'is a note array response' do
-              expect(response).to have_gitlab_http_status(200)
+              expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).to be_an Array
             end
@@ -177,7 +177,7 @@ describe API::Notes do
           it "returns a 404 error" do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes/#{cross_reference_note.id}", user)
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
 
           context "when issue is confidential" do
@@ -188,7 +188,7 @@ describe API::Notes do
             it "returns 404" do
               get api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{issue_note.id}", private_user)
 
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
         end
@@ -197,7 +197,7 @@ describe API::Notes do
           it "returns an issue note by id" do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes/#{cross_reference_note.id}", private_user)
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['body']).to eq(cross_reference_note.note)
           end
         end
@@ -237,7 +237,7 @@ describe API::Notes do
         it 'returns 200 status' do
           subject
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
         end
 
         it 'creates a new note' do
@@ -251,7 +251,7 @@ describe API::Notes do
         it 'returns 403 status' do
           subject
 
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
 
         it 'does not create a new note' do

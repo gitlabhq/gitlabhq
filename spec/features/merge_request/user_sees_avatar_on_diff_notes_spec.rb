@@ -190,7 +190,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
 
   def find_line(line_code)
     line = find("[id='#{line_code}']")
-    line = line.find(:xpath, 'preceding-sibling::*[1][self::td]') if line.tag_name == 'td'
+    line = line.find(:xpath, 'preceding-sibling::*[1][self::td]/preceding-sibling::*[1][self::td]') if line.tag_name == 'td'
     line
   end
 end

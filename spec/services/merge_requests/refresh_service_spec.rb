@@ -148,7 +148,7 @@ describe MergeRequests::RefreshService do
 
     describe 'Pipelines for merge requests' do
       before do
-        stub_ci_pipeline_yaml_file(YAML.dump(config))
+        stub_ci_pipeline_yaml_file(config)
       end
 
       subject { service.new(project, @user).execute(@oldrev, @newrev, ref) }
@@ -158,13 +158,13 @@ describe MergeRequests::RefreshService do
 
       context "when .gitlab-ci.yml has merge_requests keywords" do
         let(:config) do
-          {
+          YAML.dump({
             test: {
               stage: 'test',
               script: 'echo',
               only: ['merge_requests']
             }
-          }
+          })
         end
 
         it 'create detached merge request pipeline with commits' do
@@ -255,21 +255,67 @@ describe MergeRequests::RefreshService do
             end.not_to change { @merge_request.pipelines_for_merge_request.count }
           end
         end
+
+        context 'when the pipeline should be skipped' do
+          it 'saves a skipped detached merge request pipeline' do
+            project.repository.create_file(@user, 'new-file.txt', 'A new file',
+                                           message: '[skip ci] This is a test',
+                                           branch_name: 'master')
+
+            expect { subject }
+              .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
+            expect(@merge_request.pipelines_for_merge_request.last).to be_skipped
+          end
+        end
       end
 
       context "when .gitlab-ci.yml does not have merge_requests keywords" do
         let(:config) do
-          {
+          YAML.dump({
             test: {
               stage: 'test',
               script: 'echo'
             }
-          }
+          })
         end
 
         it 'does not create a detached merge request pipeline' do
           expect { subject }
             .not_to change { @merge_request.pipelines_for_merge_request.count }
+        end
+      end
+
+      context 'when .gitlab-ci.yml is invalid' do
+        let(:config) { 'invalid yaml file' }
+
+        it 'persists a pipeline with config error' do
+          expect { subject }
+            .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
+          expect(@merge_request.pipelines_for_merge_request.last).to be_failed
+          expect(@merge_request.pipelines_for_merge_request.last).to be_config_error
+        end
+      end
+
+      context 'when .gitlab-ci.yml file is valid but has a logical error' do
+        let(:config) do
+          YAML.dump({
+            build: {
+              script: 'echo "Valid yaml syntax, but..."',
+              only: ['master']
+            },
+            test: {
+              script: 'echo "... I depend on build, which does not run."',
+              only: ['merge_request'],
+              needs: ['build']
+            }
+          })
+        end
+
+        it 'persists a pipeline with config error' do
+          expect { subject }
+            .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
+          expect(@merge_request.pipelines_for_merge_request.last).to be_failed
+          expect(@merge_request.pipelines_for_merge_request.last).to be_config_error
         end
       end
     end

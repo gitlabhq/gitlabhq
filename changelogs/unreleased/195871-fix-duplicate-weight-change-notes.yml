@@ -1,0 +1,5 @@
+---
+title: Ensure weight changes no longer render duplicate system notes
+merge_request: 26014
+author:
+type: fixed

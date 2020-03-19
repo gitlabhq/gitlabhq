@@ -495,4 +495,65 @@ describe SessionsController do
       expect(session[:failed_login_attempts]).to eq(1)
     end
   end
+
+  describe '#set_current_context' do
+    let_it_be(:user) { create(:user) }
+
+    before do
+      set_devise_mapping(context: @request)
+    end
+
+    context 'when signed in' do
+      before do
+        sign_in(user)
+      end
+
+      it 'sets the username and caller_id in the context' do
+        expect(controller).to receive(:destroy).and_wrap_original do |m, *args|
+          expect(Labkit::Context.current.to_h)
+            .to include('meta.user' => user.username,
+                        'meta.caller_id' => 'SessionsController#destroy')
+
+          m.call(*args)
+        end
+
+        delete :destroy
+      end
+    end
+
+    context 'when not signed in' do
+      it 'sets the caller_id in the context' do
+        expect(controller).to receive(:new).and_wrap_original do |m, *args|
+          expect(Labkit::Context.current.to_h)
+            .to include('meta.caller_id' => 'SessionsController#new')
+          expect(Labkit::Context.current.to_h)
+            .not_to include('meta.user')
+
+          m.call(*args)
+        end
+
+        get :new
+      end
+    end
+
+    context 'when the user becomes locked' do
+      before do
+        user.update!(failed_attempts: User.maximum_attempts.pred)
+      end
+
+      it 'sets the caller_id in the context' do
+        allow_any_instance_of(User).to receive(:lock_access!).and_wrap_original do |m, *args|
+          expect(Labkit::Context.current.to_h)
+            .to include('meta.caller_id' => 'SessionsController#create')
+          expect(Labkit::Context.current.to_h)
+            .not_to include('meta.user')
+
+          m.call(*args)
+        end
+
+        post(:create,
+             params: { user: { login: user.username, password: user.password.succ } })
+      end
+    end
+  end
 end

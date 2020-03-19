@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
-import SidebarService from '~/sidebar/services/sidebar_service';
+import SidebarService, { gqClient } from '~/sidebar/services/sidebar_service';
 import Mock from './mock_data';
 
 const { mediator: mediatorMockData } = Mock;
@@ -44,12 +44,18 @@ describe('Sidebar mediator', function() {
   it('fetches the data', done => {
     const mockData = Mock.responseMap.GET[mediatorMockData.endpoint];
     mock.onGet(mediatorMockData.endpoint).reply(200, mockData);
+
+    const mockGraphQlData = Mock.graphQlResponseData;
+    spyOn(gqClient, 'query').and.returnValue({
+      data: mockGraphQlData,
+    });
+
     spyOn(this.mediator, 'processFetchedData').and.callThrough();
 
     this.mediator
       .fetch()
       .then(() => {
-        expect(this.mediator.processFetchedData).toHaveBeenCalledWith(mockData);
+        expect(this.mediator.processFetchedData).toHaveBeenCalledWith(mockData, mockGraphQlData);
       })
       .then(done)
       .catch(done.fail);

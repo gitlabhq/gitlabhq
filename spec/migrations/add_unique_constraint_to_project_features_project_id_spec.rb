@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180511174224_add_unique_constraint_to_project_features_project_id.rb')
 
-describe AddUniqueConstraintToProjectFeaturesProjectId, :migration do
+describe AddUniqueConstraintToProjectFeaturesProjectId do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:features) { table(:project_features) }

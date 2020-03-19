@@ -9,8 +9,9 @@ module Gitlab
       ATTRIBUTE_METHODS = {
         feature_category: :get_feature_category,
         has_external_dependencies: :worker_has_external_dependencies?,
-        latency_sensitive: :latency_sensitive_worker?,
+        urgency: :get_urgency,
         resource_boundary: :get_worker_resource_boundary,
+        idempotent: :idempotent?,
         weight: :get_weight
       }.freeze
 

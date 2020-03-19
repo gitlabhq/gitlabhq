@@ -1293,7 +1293,35 @@ describe Ci::Build do
                  environment: 'review/$APP_HOST')
         end
 
-        it { is_expected.to eq('review/host') }
+        it 'returns an expanded environment name with a list of variables' do
+          expect(build).to receive(:simple_variables).once.and_call_original
+
+          is_expected.to eq('review/host')
+        end
+
+        context 'when build metadata has already persisted the expanded environment name' do
+          before do
+            build.metadata.expanded_environment_name = 'review/host'
+          end
+
+          it 'returns a persisted expanded environment name without a list of variables' do
+            expect(build).not_to receive(:simple_variables)
+
+            is_expected.to eq('review/host')
+          end
+
+          context 'when ci_persisted_expanded_environment_name feature flag is disabled' do
+            before do
+              stub_feature_flags(ci_persisted_expanded_environment_name: false)
+            end
+
+            it 'returns an expanded environment name with a list of variables' do
+              expect(build).to receive(:simple_variables).once.and_call_original
+
+              is_expected.to eq('review/host')
+            end
+          end
+        end
       end
 
       context 'when using persisted variables' do
@@ -2504,6 +2532,83 @@ describe Ci::Build do
             received_variables = subject.map { |variable| variable.fetch(:key) }
 
             expect(received_variables).to eq expected_variables
+          end
+        end
+      end
+    end
+
+    describe 'CHANGED_PAGES variables' do
+      let(:route_map_yaml) do
+        <<~ROUTEMAP
+        - source: 'bar/branch-test.txt'
+          public: '/bar/branches'
+        - source: 'with space/README.md'
+          public: '/README'
+        ROUTEMAP
+      end
+
+      before do
+        allow_any_instance_of(Project)
+          .to receive(:route_map_for).with(/.+/)
+          .and_return(Gitlab::RouteMap.new(route_map_yaml))
+      end
+
+      context 'with a deployment environment and a merge request' do
+        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+        let(:environment)   { create(:environment, project: merge_request.project, name: "foo-#{project.default_branch}") }
+        let(:build)         { create(:ci_build, pipeline: pipeline, environment: environment.name) }
+
+        let(:full_urls) do
+          [
+            File.join(environment.external_url, '/bar/branches'),
+            File.join(environment.external_url, '/README')
+          ]
+        end
+
+        it 'populates CI_MERGE_REQUEST_CHANGED_PAGES_* variables' do
+          expect(subject).to include(
+            {
+              key: 'CI_MERGE_REQUEST_CHANGED_PAGE_PATHS',
+              value: '/bar/branches,/README',
+              public: true,
+              masked: false
+            },
+            {
+              key: 'CI_MERGE_REQUEST_CHANGED_PAGE_URLS',
+              value: full_urls.join(','),
+              public: true,
+              masked: false
+            }
+          )
+        end
+
+        context 'with a deployment environment and no merge request' do
+          let(:environment)   { create(:environment, project: project, name: "foo-#{project.default_branch}") }
+          let(:build)         { create(:ci_build, pipeline: pipeline, environment: environment.name) }
+
+          it 'does not append CHANGED_PAGES variables' do
+            ci_variables = subject.select { |var| var[:key] =~ /MERGE_REQUEST_CHANGED_PAGES/ }
+
+            expect(ci_variables).to be_empty
+          end
+        end
+
+        context 'with no deployment environment and a present merge request' do
+          let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project, target_project: project) }
+          let(:build)         { create(:ci_build, pipeline: merge_request.all_pipelines.take) }
+
+          it 'does not append CHANGED_PAGES variables' do
+            ci_variables = subject.select { |var| var[:key] =~ /MERGE_REQUEST_CHANGED_PAGES/ }
+
+            expect(ci_variables).to be_empty
+          end
+        end
+
+        context 'with no deployment environment and no merge request' do
+          it 'does not append CHANGED_PAGES variables' do
+            ci_variables = subject.select { |var| var[:key] =~ /MERGE_REQUEST_CHANGED_PAGES/ }
+
+            expect(ci_variables).to be_empty
           end
         end
       end
@@ -3836,6 +3941,53 @@ describe Ci::Build do
 
         it 'raises an error' do
           expect { subject }.to raise_error(Gitlab::Ci::Parsers::Test::Junit::JunitParserError)
+        end
+      end
+    end
+  end
+
+  describe '#collect_coverage_reports!' do
+    subject { build.collect_coverage_reports!(coverage_report) }
+
+    let(:coverage_report) { Gitlab::Ci::Reports::CoverageReports.new }
+
+    it { expect(coverage_report.files).to eq({}) }
+
+    context 'when build has a coverage report' do
+      context 'when there is a Cobertura coverage report from simplecov-cobertura' do
+        before do
+          create(:ci_job_artifact, :cobertura, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the coverage report' do
+          expect { subject }.not_to raise_error
+
+          expect(coverage_report.files.keys).to match_array(['app/controllers/abuse_reports_controller.rb'])
+          expect(coverage_report.files['app/controllers/abuse_reports_controller.rb'].count).to eq(23)
+        end
+      end
+
+      context 'when there is a Cobertura coverage report from gocov-xml' do
+        before do
+          create(:ci_job_artifact, :coverage_gocov_xml, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the coverage report' do
+          expect { subject }.not_to raise_error
+
+          expect(coverage_report.files.keys).to match_array(['auth/token.go', 'auth/rpccredentials.go'])
+          expect(coverage_report.files['auth/token.go'].count).to eq(49)
+          expect(coverage_report.files['auth/rpccredentials.go'].count).to eq(10)
+        end
+      end
+
+      context 'when there is a corrupted Cobertura coverage report' do
+        before do
+          create(:ci_job_artifact, :coverage_with_corrupted_data, job: build, project: build.project)
+        end
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Coverage::Cobertura::CoberturaParserError)
         end
       end
     end

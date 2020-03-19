@@ -6,7 +6,7 @@ module QA
       it 'user squashes commits while merging' do
         Flow::Login.sign_in
 
-        project = Resource::Project.fabricate! do |project|
+        project = Resource::Project.fabricate_via_api! do |project|
           project.name = "squash-before-merge"
         end
 

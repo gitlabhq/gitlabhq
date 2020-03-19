@@ -11,6 +11,10 @@ describe Gitlab::Prometheus::QueryVariables do
     subject { described_class.call(environment) }
 
     it { is_expected.to include(ci_environment_slug: slug) }
+    it { is_expected.to include(ci_project_name: project.name) }
+    it { is_expected.to include(ci_project_namespace: project.namespace.name) }
+    it { is_expected.to include(ci_project_path: project.full_path) }
+    it { is_expected.to include(ci_environment_name: environment.name) }
 
     it do
       is_expected.to include(environment_filter:

@@ -5,8 +5,18 @@ module Ci
   class CreateCrossProjectPipelineService < ::BaseService
     include Gitlab::Utils::StrongMemoize
 
+    DuplicateDownstreamPipelineError = Class.new(StandardError)
+
     def execute(bridge)
       @bridge = bridge
+
+      if bridge.has_downstream_pipeline?
+        Gitlab::ErrorTracking.track_exception(
+          DuplicateDownstreamPipelineError.new,
+          bridge_id: @bridge.id, project_id: @bridge.project_id
+        )
+        return
+      end
 
       pipeline_params = @bridge.downstream_pipeline_params
       target_ref = pipeline_params.dig(:target_revision, :ref)
@@ -18,19 +28,36 @@ module Ci
         current_user,
         pipeline_params.fetch(:target_revision))
 
-      service.execute(
+      downstream_pipeline = service.execute(
         pipeline_params.fetch(:source), pipeline_params[:execute_params]) do |pipeline|
-          @bridge.sourced_pipelines.build(
-            source_pipeline: @bridge.pipeline,
-            source_project: @bridge.project,
-            project: @bridge.downstream_project,
-            pipeline: pipeline)
-
           pipeline.variables.build(@bridge.downstream_variables)
         end
+
+      downstream_pipeline.tap do |pipeline|
+        next if Feature.disabled?(:ci_drop_bridge_on_downstream_errors, project, default_enabled: true)
+
+        update_bridge_status!(@bridge, pipeline)
+      end
     end
 
     private
+
+    def update_bridge_status!(bridge, pipeline)
+      Gitlab::OptimisticLocking.retry_lock(bridge) do |subject|
+        if pipeline.created_successfully?
+          # If bridge uses `strategy:depend` we leave it running
+          # and update the status when the downstream pipeline completes.
+          subject.success! unless subject.dependent?
+        else
+          subject.drop!(:downstream_pipeline_creation_failed)
+        end
+      end
+    rescue StateMachines::InvalidTransition => e
+      Gitlab::ErrorTracking.track_exception(
+        Ci::Bridge::InvalidTransitionError.new(e.message),
+        bridge_id: bridge.id,
+        downstream_pipeline_id: pipeline.id)
+    end
 
     def ensure_preconditions!(target_ref)
       unless downstream_project_accessible?

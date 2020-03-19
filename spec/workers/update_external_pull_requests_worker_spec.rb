@@ -4,8 +4,8 @@ require 'spec_helper'
 
 describe UpdateExternalPullRequestsWorker do
   describe '#perform' do
-    set(:project) { create(:project, import_source: 'tanuki/repository') }
-    set(:user) { create(:user) }
+    let_it_be(:project) { create(:project, import_source: 'tanuki/repository') }
+    let_it_be(:user) { create(:user) }
     let(:worker) { described_class.new }
 
     before do

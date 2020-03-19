@@ -1,0 +1,5 @@
+---
+title: Migrate mentions for commit notes to commit_user_mentions DB table
+merge_request: 23859
+author:
+type: changed

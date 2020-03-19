@@ -43,7 +43,7 @@ describe('Wip', () => {
       is_new_mr_data: true,
     };
 
-    describe('removeWIP', () => {
+    describe('handleRemoveWIP', () => {
       it('should make a request to service and handle response', done => {
         const vm = createComponent();
 
@@ -57,7 +57,7 @@ describe('Wip', () => {
           }),
         );
 
-        vm.removeWIP();
+        vm.handleRemoveWIP();
         setTimeout(() => {
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);

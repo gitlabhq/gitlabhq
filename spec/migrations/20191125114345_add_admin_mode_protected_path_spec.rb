@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20191125114345_add_admin_mode_protected_path.rb')
 
-describe AddAdminModeProtectedPath, :migration do
+describe AddAdminModeProtectedPath do
   ADMIN_MODE_ENDPOINT = '/admin/session'
 
   subject(:migration) { described_class.new }

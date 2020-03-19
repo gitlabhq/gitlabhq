@@ -5,7 +5,7 @@ if Gitlab::Runtime.console?
 
   puts '-' * 80
   puts " GitLab:".ljust(justify) + "#{Gitlab::VERSION} (#{Gitlab.revision}) #{Gitlab.ee? ? 'EE' : 'FOSS'}"
-  puts " GitLab Shell:".ljust(justify) + "#{Gitlab::VersionInfo.parse(Gitlab::Shell.new.version)}"
+  puts " GitLab Shell:".ljust(justify) + "#{Gitlab::VersionInfo.parse(Gitlab::Shell.version)}"
 
   if Gitlab::Database.exists?
     puts " #{Gitlab::Database.human_adapter_name}:".ljust(justify) + Gitlab::Database.version

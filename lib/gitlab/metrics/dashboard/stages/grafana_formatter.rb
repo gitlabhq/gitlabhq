@@ -13,12 +13,7 @@ module Gitlab
           # Reformats the specified panel in the Gitlab
           # dashboard-yml format
           def transform!
-            InputFormatValidator.new(
-              grafana_dashboard,
-              datasource,
-              panel,
-              query_params
-            ).validate!
+            validate_input!
 
             new_dashboard = formatted_dashboard
 
@@ -27,6 +22,17 @@ module Gitlab
           end
 
           private
+
+          def validate_input!
+            ::Grafana::Validator.new(
+              grafana_dashboard,
+              datasource,
+              panel,
+              query_params
+            ).validate!
+          rescue ::Grafana::Validator::Error => e
+            raise ::Gitlab::Metrics::Dashboard::Errors::DashboardProcessingError, e.message
+          end
 
           def formatted_dashboard
             { panel_groups: [{ panels: [formatted_panel] }] }
@@ -56,9 +62,23 @@ module Gitlab
           def panel
             strong_memoize(:panel) do
               grafana_dashboard[:dashboard][:panels].find do |panel|
-                panel[:id].to_s == query_params[:panelId]
+                query_params[:panelId] ? matching_panel?(panel) : valid_panel?(panel)
               end
             end
+          end
+
+          # Determines whether a given panel is the one
+          # specified by the linked grafana url
+          def matching_panel?(panel)
+            panel[:id].to_s == query_params[:panelId]
+          end
+
+          # Determines whether any given panel has the potenial
+          # to return valid results from grafana/prometheus
+          def valid_panel?(panel)
+            ::Grafana::Validator
+              .new(grafana_dashboard, datasource, panel, query_params)
+              .valid?
           end
 
           # Grafana url query parameters. Includes information
@@ -139,83 +159,6 @@ module Gitlab
           # The URL specifying which Grafana panel to embed
           def grafana_url
             params[:grafana_url]
-          end
-        end
-
-        class InputFormatValidator
-          include ::Gitlab::Metrics::Dashboard::Errors
-
-          attr_reader :grafana_dashboard, :datasource, :panel, :query_params
-
-          UNSUPPORTED_GRAFANA_GLOBAL_VARS = %w(
-            $__interval_ms
-            $__timeFilter
-            $__name
-            $timeFilter
-            $interval
-          ).freeze
-
-          def initialize(grafana_dashboard, datasource, panel, query_params)
-            @grafana_dashboard = grafana_dashboard
-            @datasource = datasource
-            @panel = panel
-            @query_params = query_params
-          end
-
-          def validate!
-            validate_query_params!
-            validate_datasource!
-            validate_panel_type!
-            validate_variable_definitions!
-            validate_global_variables!
-          end
-
-          private
-
-          def validate_datasource!
-            return if datasource[:access] == 'proxy' && datasource[:type] == 'prometheus'
-
-            raise_error 'Only Prometheus datasources with proxy access in Grafana are supported.'
-          end
-
-          def validate_query_params!
-            return if [:panelId, :from, :to].all? { |param| query_params.include?(param) }
-
-            raise_error 'Grafana query parameters must include panelId, from, and to.'
-          end
-
-          def validate_panel_type!
-            return if panel[:type] == 'graph' && panel[:lines]
-
-            raise_error 'Panel type must be a line graph.'
-          end
-
-          def validate_variable_definitions!
-            return unless grafana_dashboard[:dashboard][:templating]
-
-            return if grafana_dashboard[:dashboard][:templating][:list].all? do |variable|
-              query_params[:"var-#{variable[:name]}"].present?
-            end
-
-            raise_error 'All Grafana variables must be defined in the query parameters.'
-          end
-
-          def validate_global_variables!
-            return unless panel_contains_unsupported_vars?
-
-            raise_error 'Prometheus must not include'
-          end
-
-          def panel_contains_unsupported_vars?
-            panel[:targets].any? do |target|
-              UNSUPPORTED_GRAFANA_GLOBAL_VARS.any? do |variable|
-                target[:expr].include?(variable)
-              end
-            end
-          end
-
-          def raise_error(message)
-            raise DashboardProcessingError.new(message)
           end
         end
       end

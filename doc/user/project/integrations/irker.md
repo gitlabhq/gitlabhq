@@ -11,7 +11,7 @@ See the project homepage for further info: <https://gitlab.com/esr/irker>
 You will first need an Irker daemon. You can download the Irker code from its
 repository on <https://gitlab.com/esr/irker>:
 
-```
+```shell
 git clone https://gitlab.com/esr/irker.git
 ```
 

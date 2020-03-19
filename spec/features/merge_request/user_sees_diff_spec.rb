@@ -61,10 +61,6 @@ describe 'Merge request > User sees diff', :js do
     let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, target_project: project, author: author_user) }
     let(:changelog_id) { Digest::SHA1.hexdigest("CHANGELOG") }
 
-    before do
-      forked_project.repository.after_import
-    end
-
     context 'as author' do
       it 'shows direct edit link', :sidekiq_might_not_need_inline do
         sign_in(author_user)

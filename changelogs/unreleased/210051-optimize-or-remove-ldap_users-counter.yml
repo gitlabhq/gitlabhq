@@ -1,0 +1,5 @@
+---
+title: Optimize members counters query performance in usage data
+merge_request: 27197
+author:
+type: performance

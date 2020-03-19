@@ -8,6 +8,7 @@ import {
   userDataMock,
   noteableDataMock,
   individualNote,
+  notesWithDescriptionChanges,
 } from '../mock_data';
 
 const RESOLVED_NOTE = { resolvable: true, resolved: true };
@@ -577,6 +578,29 @@ describe('Notes Store mutations', () => {
       mutations.REMOVE_CONVERTED_DISCUSSION(state, discussion.id);
 
       expect(state.convertedDisscussionIds).not.toContain(discussion.id);
+    });
+  });
+
+  describe('RECEIVE_DESCRIPTION_VERSION', () => {
+    const descriptionVersion = notesWithDescriptionChanges[0].notes[0].note;
+    const versionId = notesWithDescriptionChanges[0].notes[0].id;
+    const state = {};
+
+    it('adds a descriptionVersion', () => {
+      mutations.RECEIVE_DESCRIPTION_VERSION(state, { descriptionVersion, versionId });
+      expect(state.descriptionVersions[versionId]).toBe(descriptionVersion);
+    });
+  });
+
+  describe('RECEIVE_DELETE_DESCRIPTION_VERSION', () => {
+    const descriptionVersion = notesWithDescriptionChanges[0].notes[0].note;
+    const versionId = notesWithDescriptionChanges[0].notes[0].id;
+    const state = { descriptionVersions: { [versionId]: descriptionVersion } };
+    const deleted = 'Deleted';
+
+    it('updates descriptionVersion to "Deleted"', () => {
+      mutations.RECEIVE_DELETE_DESCRIPTION_VERSION(state, { [versionId]: deleted });
+      expect(state.descriptionVersions[versionId]).toBe(deleted);
     });
   });
 });

@@ -33,6 +33,9 @@ In addition to having a basic familiarity with [AWS](https://docs.aws.amazon.com
 - [To create or upload an SSH key](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
   to connect to the instance via SSH
 - A domain name for the GitLab instance
+- An SSL/TLS certificate to secure your domain. If you do not already own one, you can provision a free public SSL/TLS certificate through [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)(ACM) for use with the [Elastic Load Balancer](#load-balancer) we'll create.
+
+NOTE: **Note:** It can take a few hours to validate a certificate provisioned through ACM. To avoid delays later, request your certificate as soon as possible.
 
 ## Architecture
 
@@ -49,12 +52,10 @@ Here's a list of the AWS services we will use, with links to pricing information
   will apply. If you want to run it on a dedicated or reserved instance,
   consult the [EC2 pricing page](https://aws.amazon.com/ec2/pricing/) for more
   information on the cost.
-- **EBS**: We will also use an EBS volume to store the Git data. See the
-  [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/).
 - **S3**: We will use S3 to store backups, artifacts, LFS objects, etc. See the
   [Amazon S3 pricing](https://aws.amazon.com/s3/pricing/).
-- **ALB**: An Application Load Balancer will be used to route requests to the
-  GitLab instance. See the [Amazon ELB pricing](https://aws.amazon.com/elasticloadbalancing/pricing/).
+- **ELB**: A Classic Load Balancer will be used to route requests to the
+  GitLab instances. See the [Amazon ELB pricing](https://aws.amazon.com/elasticloadbalancing/pricing/).
 - **RDS**: An Amazon Relational Database Service using PostgreSQL will be used
   to provide a High Availability database configuration. See the
   [Amazon RDS pricing](https://aws.amazon.com/rds/postgresql/pricing/).
@@ -199,13 +200,10 @@ create the actual RDS instance.
 ### RDS Subnet Group
 
 1. Navigate to the RDS dashboard and select **Subnet Groups** from the left menu.
-1. Give it a name (`gitlab-rds-group`), a description, and choose the VPC from
-   the VPC dropdown.
-1. Click "Add all the subnets related to this VPC" and
-   remove the public ones, we only want the **private subnets**.
-   In the end, you should see `10.0.1.0/24` and `10.0.3.0/24` (as
-   we defined them in the [subnets section](#subnets)).
-   Click **Create** when ready.
+1. Click on **Create DB Subnet Group**.
+1. Under **Subnet group details**, enter a name (we'll use `gitlab-rds-group`), a description, and choose the `gitlab-vpc` from the VPC dropdown.
+1. Under **Add subnets**, click **Add all the subnets related to this VPC** and remove the public ones, we only want the **private subnets**. In the end, you should see `10.0.1.0/24` and `10.0.3.0/24` (as we defined them in the [subnets section](#subnets)).
+1. Click **Create** when ready.
 
    ![RDS Subnet Group](img/rds_subnet_group.png)
 
@@ -214,33 +212,31 @@ create the actual RDS instance.
 Now, it's time to create the database:
 
 1. Select **Databases** from the left menu and click **Create database**.
-1. Select PostgreSQL and click **Next**.
-1. Since this is a production server, let's choose "Production". Click **Next**.
-1. Let's see the instance specifications:
-   1. Leave the license model as is (`postgresql-license`).
-   1. For the version, select the latest of the 9.6 series (check the
-      [database requirements](../../install/requirements.md#postgresql-requirements))
-      if there are any updates on this).
-   1. For the size, let's select a `t2.medium` instance.
-   1. Multi-AZ-deployment is recommended as redundancy, so choose "Create
-      replica in different zone". Read more at
-      [High Availability (Multi-AZ)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
-   1. A Provisioned IOPS (SSD) storage type is best suited for HA (though you can
-      choose a General Purpose (SSD) to reduce the costs). Read more about it at
-      [Storage for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
+1. Select **Standard Create** for the database creation method.
+1. Select **PostgreSQL** as the database engine and select **PostgreSQL 10.9-R1** from the version dropdown menu (check the [database requirements](../../install/requirements.md#postgresql-requirements) to see if there are any updates on this for your chosen version of GitLab).
+1. Since this is a production server, let's choose **Production** from the **Templates** section.
+1. Under **Settings**, set a DB instance identifier, a master username, and a master password. We'll use `gitlab-db-ha`, `gitlab`, and a very secure password respectively. Make a note of these as we'll need them later.
+1. For the DB instance size, select **Standard classes** and select an instance size that meets your requirements from the dropdown menu. We'll use a `db.m4.large` instance.
+1. Under **Storage**, configure the following:
+   1. Select **Provisioned IOPS (SSD)** from the storage type dropdown menu. Provisioned IOPS (SSD) storage is best suited for HA (though you can choose General Purpose (SSD) to reduce the costs). Read more about it at [Storage for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
+   1. Allocate storage and set provisioned IOPS. We'll use the minimum values, `100` and `1000`, respectively.
+   1. Enable storage autoscaling (optional) and set a maximum storage threshold.
+1. Under **Availability & durability**, select **Create a standby instance** to have a standby RDS instance provisioned in a different Availability Zone. Read more at [High Availability (Multi-AZ)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
+1. Under **Connectivity**, configure the following:
+   1. Select the VPC we created earlier (`gitlab-vpc`) from the **Virtual Private Cloud (VPC)** dropdown menu.
+   1. Expand the **Additional connectivity configuration** section and select the subnet group (`gitlab-rds-group`) we created earlier.
+   1. Set public accessibility to **No**.
+   1. Under **VPC security group**, select **Create new** and enter a name. We'll use `gitlab-rds-sec-group`.
+   1. Leave the database port as the default `5432`.
+1. For **Database authentication**, select **Password authentication**.
+1. Expand the **Additional configuration** section and complete the following:
+   1. The initial database name. We'll use `gitlabhq_production`.
+   1. Configure your preferred backup settings.
+   1. The only other change we'll make here is to disable auto minor version updates under **Maintenance**.
+   1. Leave all the other settings as is or tweak according to your needs.
+   1. Once you're happy, click **Create database**.
 
-1. The rest of the settings on this page request a DB instance identifier, username
-   and a master password. We've chosen to use `gitlab-db-ha`, `gitlab` and a
-   very secure password respectively. Keep these in hand for later.
-1. Click **Next** to proceed to the advanced settings.
-1. Make sure to choose our GitLab VPC, our subnet group, set public accessibility to
-   **No**, and to leave it to create a new security group. The only additional
-   change which will be helpful is the database name for which we can use
-   `gitlabhq_production`. At the very bottom, there's an option to enable
-   auto updates to minor versions. You may want to turn it off.
-1. When done, click **Create database**.
-
-Now that the database is created, let's move on to setting up Redis with ElasticCache.
+Now that the database is created, let's move on to setting up Redis with ElastiCache.
 
 ## Redis with ElastiCache
 
@@ -291,28 +287,91 @@ and add a custom TCP rule for port `6379` accessible within itself.
 
 ## Load Balancer
 
-On the EC2 dashboard, look for Load Balancer on the left column:
+On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 
 1. Click the **Create Load Balancer** button.
-   1. Choose the Application Load Balancer.
-   1. Give it a name (`gitlab-loadbalancer`) and set the scheme to "internet-facing".
-   1. In the "Listeners" section, make sure it has HTTP and HTTPS.
-   1. In the "Availability Zones" section, select the `gitlab-vpc` we have created
-      and associate the **public subnets**.
-1. Click **Configure Security Settings** to go to the next section to
-   select the TLS certificate. When done, go to the next step.
-1. In the "Security Groups" section, create a new one by giving it a name
-   (`gitlab-loadbalancer-sec-group`) and allow both HTTP ad HTTPS traffic
+   1. Choose the **Classic Load Balancer**.
+   1. Give it a name (we'll use `gitlab-loadbalancer`) and for the **Create LB Inside** option, select `gitlab-vpc` from the dropdown menu.
+   1. In the **Listeners** section, set HTTP port 80, HTTPS port 443, and TCP port 22 for both load balancer and instance protocols and ports.
+   1. In the **Select Subnets** section, select both public subnets from the list.
+1. Click **Assign Security Groups** and select **Create a new security group**, give it a name
+   (we'll use `gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
    from anywhere (`0.0.0.0/0, ::/0`).
-1. In the next step, configure the routing and select an existing target group
-   (`gitlab-public`). The Load Balancer Health will allow us to indicate where to
-   ping and what makes up a healthy or unhealthy instance.
-1. Leave the "Register Targets" section as is, and finally review the settings
-   and create the ELB.
+1. Click **Configure Security Settings** and select an SSL/TLS certificate from ACM or upload a certificate to IAM.
+1. Click **Configure Health Check** and set up a health check for your EC2 instances.
+   1. For **Ping Protocol**, select HTTP.
+   1. For **Ping Port**, enter 80.
+   1. For **Ping Path**, enter `/explore`. (We use `/explore` as it's a public endpoint that does
+   not require authorization.)
+   1. Keep the default **Advanced Details** or adjust them according to your needs.
+1. Click **Add EC2 Instances** but, as we don't have any instances to add yet, come back
+to your load balancer after creating your GitLab instances and add them.
+1. Click **Add Tags** and add any tags you need.
+1. Click **Review and Create**, review all your settings, and click **Create** if you're happy.
 
 After the Load Balancer is up and running, you can revisit your Security
-Groups to refine the access only through the ELB and any other requirement
+Groups to refine the access only through the ELB and any other requirements
 you might have.
+
+### Configure DNS for Load Balancer
+
+On the Route 53 dashboard, click **Hosted zones** in the left navigation bar:
+
+1. Select an existing hosted zone or, if you do not already have one for your domain, click **Create Hosted Zone**, enter your domain name, and click **Create**.
+1. Click **Create Record Set** and provide the following values:
+    1. **Name:** Use the domain name (the default value) or enter a subdomain.
+    1. **Type:** Select **A - IPv4 address**.
+    1. **Alias Target:** Find the **ELB Classic Load Balancers** section and select the classic load balancer we created earlier.
+    1. **Routing Policy:** We'll use **Simple** but you can choose a different policy based on your use case.
+    1. **Evaluate Target Health:** We'll set this to **No** but you can choose to have the load balancer route traffic based on target health.
+    1. Click **Create**.
+1. Update your DNS records with your domain registrar. The steps for doing this vary depending on which registrar you use and is beyond the scope of this guide.
+
+## Setting up Bastion Hosts
+
+Since our GitLab instances will be in private subnets, we need a way to connect to these instances via SSH to make configuration changes, perform upgrades, etc. One way of doing this is via a [bastion host](https://en.wikipedia.org/wiki/Bastion_host), sometimes also referred to as a jump box.
+
+TIP: **Tip:** If you do not want to maintain bastion hosts, you can set up [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) for access to instances. This is beyond the scope of this document.
+
+### Create Bastion Host A
+
+1. Navigate to the EC2 Dashboard and click on **Launch instance**.
+1. Select the **Ubuntu Server 18.04 LTS (HVM)** AMI.
+1. Choose an instance type. We'll use a `t2.micro` as we'll only use the bastion host to SSH into our other instances.
+1. Click **Configure Instance Details**.
+   1. Under **Network**, select the `gitlab-vpc` from the dropdown menu.
+   1. Under **Subnet**, select the public subnet we created earlier (`gitlab-public-10.0.0.0`).
+   1. Double check that under **Auto-assign Public IP** you have **Use subnet setting (Enable)** selected.
+   1. Leave everything else as default and click **Add Storage**.
+1. For storage, we'll leave everything as default and only add an 8GB root volume. We won't store anything on this instance.
+1. Click **Add Tags** and on the next screen click **Add Tag**.
+   1. We’ll only set `Key: Name` and `Value: Bastion Host A`.
+1. Click **Configure Security Group**.
+   1. Select **Create a new security group**, enter a **Security group name** (we'll use `bastion-sec-group`), and add a description.
+   1. We'll enable SSH access from anywhere (`0.0.0.0/0`). If you want stricter security, specify a single IP address or an IP address range in CIDR notation.
+   1. Click **Review and Launch**
+1. Review all your settings and, if you're happy, click **Launch**.
+1. Acknowledge that you have access to an existing key pair or create a new one. Click **Launch Instance**.
+
+Confirm that you can SSH into the instance:
+
+1. On the EC2 Dashboard, click on **Instances** in the left menu.
+1. Select **Bastion Host A** from your list of instances.
+1. Click **Connect** and follow the connection instructions.
+1. If you are able to connect successfully, let's move on to setting up our second bastion host for redundancy.
+
+### Create Bastion Host B
+
+1. Create an EC2 instance following the same steps as above with the following changes:
+   1. For the **Subnet**, select the second public subnet we created earlier (`gitlab-public-10.0.2.0`).
+   1. Under the **Add Tags** section, we’ll set `Key: Name` and `Value: Bastion Host B` so that we can easily identify our two instances.
+   1. For the security group, select the existing `bastion-sec-group` we created above.
+
+### Use SSH Agent Forwarding
+
+EC2 instances running Linux use private key files for SSH authentication. You'll connect to your bastion host using an SSH client and the private key file stored on your client. Since the private key file is not present on the bastion host, you will not be able to connect to your instances in private subnets.
+
+Storing private key files on your bastion host is a bad idea. To get around this, use SSH agent forwarding on your client. See [Securely Connect to Linux Instances Running in a Private Amazon VPC](https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-running-in-a-private-amazon-vpc/) for a step-by-step guide on how to use SSH agent forwarding.
 
 ## Deploying GitLab inside an auto scaling group
 
@@ -484,7 +543,7 @@ If everything looks good, you should be able to reach GitLab in your browser.
 
 ### Setting up Gitaly
 
-CAUTION: **Caution:** In this architecture, having a single Gitaly server creates a single point of failure. This limitation will be removed once [Gitaly HA](https://gitlab.com/groups/gitlab-org/-/epics/842) is released.  
+CAUTION: **Caution:** In this architecture, having a single Gitaly server creates a single point of failure. This limitation will be removed once [Gitaly HA](https://gitlab.com/groups/gitlab-org/-/epics/842) is released.
 
 Gitaly is a service that provides high-level RPC access to Git repositories.
 It should be enabled and configured on a separate EC2 instance in one of the
@@ -509,7 +568,7 @@ Let's create an EC2 instance where we'll install Gitaly:
 1. Click **Review and launch** followed by **Launch** if you're happy with your settings.
 1. Finally, acknowledge that you have access to the selected private key file or create a new one. Click **Launch Instances**.
 
-  > **Optional:** Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above.
+  > **Optional:** Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above. See the [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/).
 
 Now that we have our EC2 instance ready, follow the [documentation to install GitLab and set up Gitaly on its own server](../../administration/gitaly/index.md#running-gitaly-on-its-own-server).
 
@@ -639,7 +698,7 @@ And the more complex the solution, the more work is involved in setting up and
 maintaining it.
 
 Have a read through these other resources and feel free to
-[open an issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/new)
+[open an issue](https://gitlab.com/gitlab-org/gitlab/issues/new)
 to request additional material:
 
 - [GitLab High Availability](../../administration/high_availability/README.md):

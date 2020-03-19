@@ -514,6 +514,10 @@ table.code {
           position: absolute;
           left: 0.5em;
         }
+
+        &.with-coverage::before {
+          left: 0;
+        }
       }
 
       &.new {
@@ -521,6 +525,10 @@ table.code {
           content: '+';
           position: absolute;
           left: 0.5em;
+        }
+
+        &.with-coverage::before {
+          left: 0;
         }
       }
     }

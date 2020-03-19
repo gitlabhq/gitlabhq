@@ -10,6 +10,8 @@ module Boards
       end
 
       def execute
+        return fetch_issues.order_closed_date_desc if list&.closed?
+
         fetch_issues.order_by_position_and_priority(with_cte: can_attempt_search_optimization?)
       end
 

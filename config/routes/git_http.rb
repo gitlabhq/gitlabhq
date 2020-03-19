@@ -32,6 +32,14 @@ concern :lfsable do
   end
 end
 
+# Git route for personal and project snippets
+scope(path: ':namespace_id/:repository_id',
+      format: nil,
+      constraints: { namespace_id: Gitlab::PathRegex.personal_and_project_snippets_path_regex, repository_id: /\d+\.git/ },
+      module: :repositories) do
+  concerns :gitactionable
+end
+
 scope(path: '*namespace_id/:repository_id',
       format: nil,
       constraints: { namespace_id: Gitlab::PathRegex.full_namespace_route_regex }) do

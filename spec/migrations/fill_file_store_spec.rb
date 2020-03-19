@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180424151928_fill_file_store')
 
-describe FillFileStore, :migration do
+describe FillFileStore do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:builds) { table(:ci_builds) }

@@ -15,6 +15,7 @@
 .slide-enter-from-element {
   &.slide-enter,
   &.slide-leave-to {
+    position: absolute;
     transform: translateX(-150%);
   }
 }
@@ -22,6 +23,7 @@
 .slide-enter-to-element {
   &.slide-enter,
   &.slide-leave-to {
+    position: absolute;
     transform: translateX(150%);
   }
 }

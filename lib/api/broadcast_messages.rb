@@ -36,6 +36,7 @@ module API
         optional :font, type: String, desc: 'Foreground color'
         optional :target_path, type: String, desc: 'Target path'
         optional :broadcast_type, type: String, values: BroadcastMessage.broadcast_types.keys, desc: 'Broadcast type. Defaults to banner', default: -> { 'banner' }
+        optional :dismissable, type: Boolean, desc: 'Is dismissable'
       end
       post do
         authenticated_as_admin!
@@ -75,6 +76,7 @@ module API
         optional :font, type: String, desc: 'Foreground color'
         optional :target_path, type: String, desc: 'Target path'
         optional :broadcast_type, type: String, values: BroadcastMessage.broadcast_types.keys, desc: 'Broadcast Type'
+        optional :dismissable, type: Boolean, desc: 'Is dismissable'
       end
       put ':id' do
         authenticated_as_admin!

@@ -24,7 +24,7 @@ class Release < ApplicationRecord
 
   accepts_nested_attributes_for :links, allow_destroy: true
 
-  validates :description, :project, :tag, presence: true
+  validates :project, :tag, presence: true
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
 
   scope :sorted, -> { order(released_at: :desc) }

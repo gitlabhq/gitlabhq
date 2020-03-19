@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { range as rge } from 'lodash';
 import Vue from 'vue';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import app from '~/releases/components/app_index.vue';
@@ -12,6 +12,8 @@ import {
   release,
   releases,
 } from '../mock_data';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import waitForPromises from 'spec/helpers/wait_for_promises';
 
 describe('Releases App ', () => {
   const Component = Vue.extend(app);
@@ -21,13 +23,16 @@ describe('Releases App ', () => {
 
   const props = {
     projectId: 'gitlab-ce',
-    documentationLink: 'help/releases',
+    documentationPath: 'help/releases',
     illustrationPath: 'illustration/path',
   };
 
   beforeEach(() => {
-    store = createStore({ list: listModule });
-    releasesPagination = _.range(21).map(index => ({ ...release, tag_name: `${index}.00` }));
+    store = createStore({ modules: { list: listModule } });
+    releasesPagination = rge(21).map(index => ({
+      ...convertObjectPropsToCamelCase(release, { deep: true }),
+      tagName: `${index}.00`,
+    }));
   });
 
   afterEach(() => {
@@ -47,9 +52,9 @@ describe('Releases App ', () => {
       expect(vm.$el.querySelector('.js-success-state')).toBeNull();
       expect(vm.$el.querySelector('.gl-pagination')).toBeNull();
 
-      setTimeout(() => {
-        done();
-      }, 0);
+      waitForPromises()
+        .then(done)
+        .catch(done.fail);
     });
   });
 
@@ -62,14 +67,16 @@ describe('Releases App ', () => {
     });
 
     it('renders success state', done => {
-      setTimeout(() => {
-        expect(vm.$el.querySelector('.js-loading')).toBeNull();
-        expect(vm.$el.querySelector('.js-empty-state')).toBeNull();
-        expect(vm.$el.querySelector('.js-success-state')).not.toBeNull();
-        expect(vm.$el.querySelector('.gl-pagination')).toBeNull();
+      waitForPromises()
+        .then(() => {
+          expect(vm.$el.querySelector('.js-loading')).toBeNull();
+          expect(vm.$el.querySelector('.js-empty-state')).toBeNull();
+          expect(vm.$el.querySelector('.js-success-state')).not.toBeNull();
+          expect(vm.$el.querySelector('.gl-pagination')).toBeNull();
 
-        done();
-      }, 0);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
@@ -82,14 +89,16 @@ describe('Releases App ', () => {
     });
 
     it('renders success state', done => {
-      setTimeout(() => {
-        expect(vm.$el.querySelector('.js-loading')).toBeNull();
-        expect(vm.$el.querySelector('.js-empty-state')).toBeNull();
-        expect(vm.$el.querySelector('.js-success-state')).not.toBeNull();
-        expect(vm.$el.querySelector('.gl-pagination')).not.toBeNull();
+      waitForPromises()
+        .then(() => {
+          expect(vm.$el.querySelector('.js-loading')).toBeNull();
+          expect(vm.$el.querySelector('.js-empty-state')).toBeNull();
+          expect(vm.$el.querySelector('.js-success-state')).not.toBeNull();
+          expect(vm.$el.querySelector('.gl-pagination')).not.toBeNull();
 
-        done();
-      }, 0);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
@@ -100,14 +109,76 @@ describe('Releases App ', () => {
     });
 
     it('renders empty state', done => {
-      setTimeout(() => {
-        expect(vm.$el.querySelector('.js-loading')).toBeNull();
-        expect(vm.$el.querySelector('.js-empty-state')).not.toBeNull();
-        expect(vm.$el.querySelector('.js-success-state')).toBeNull();
-        expect(vm.$el.querySelector('.gl-pagination')).toBeNull();
+      waitForPromises()
+        .then(() => {
+          expect(vm.$el.querySelector('.js-loading')).toBeNull();
+          expect(vm.$el.querySelector('.js-empty-state')).not.toBeNull();
+          expect(vm.$el.querySelector('.js-success-state')).toBeNull();
+          expect(vm.$el.querySelector('.gl-pagination')).toBeNull();
 
-        done();
-      }, 0);
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
+
+  describe('"New release" button', () => {
+    const findNewReleaseButton = () => vm.$el.querySelector('.js-new-release-btn');
+
+    beforeEach(() => {
+      spyOn(api, 'releases').and.returnValue(Promise.resolve({ data: [], headers: {} }));
+    });
+
+    const factory = additionalProps => {
+      vm = mountComponentWithStore(Component, {
+        props: {
+          ...props,
+          ...additionalProps,
+        },
+        store,
+      });
+    };
+
+    describe('when the user is allowed to create a new Release', () => {
+      const newReleasePath = 'path/to/new/release';
+
+      beforeEach(() => {
+        factory({ newReleasePath });
+      });
+
+      it('renders the "New release" button', done => {
+        waitForPromises()
+          .then(() => {
+            expect(findNewReleaseButton()).not.toBeNull();
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('renders the "New release" button with the correct href', done => {
+        waitForPromises()
+          .then(() => {
+            expect(findNewReleaseButton().getAttribute('href')).toBe(newReleasePath);
+
+            done();
+          })
+          .catch(done.fail);
+      });
+    });
+
+    describe('when the user is not allowed to create a new Release', () => {
+      beforeEach(() => factory());
+
+      it('does not render the "New release" button', done => {
+        waitForPromises()
+          .then(() => {
+            expect(findNewReleaseButton()).toBeNull();
+
+            done();
+          })
+          .catch(done.fail);
+      });
     });
   });
 });

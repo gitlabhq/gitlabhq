@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
   before_action :ldap_security_check
   around_action :sentry_context
   before_action :default_headers
+  before_action :default_cache_headers
   before_action :add_gon_variables, if: :html_request?
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
@@ -34,7 +35,9 @@ class ApplicationController < ActionController::Base
   before_action :check_impersonation_availability
   before_action :required_signup_info
 
-  around_action :set_current_context
+  prepend_around_action :set_current_context
+
+  around_action :sessionless_bypass_admin_mode!, if: :sessionless_user?
   around_action :set_locale
   around_action :set_session_storage
   around_action :set_current_admin
@@ -147,10 +150,6 @@ class ApplicationController < ActionController::Base
       payload[:username] = logged_user.try(:username)
     end
 
-    if response.status == 422 && response.body.present? && response.content_type == 'application/json'
-      payload[:response] = response.body
-    end
-
     payload[:queue_duration] = request.env[::Gitlab::Middleware::RailsQueueDuration::GITLAB_RAILS_QUEUE_DURATION_KEY]
   end
 
@@ -258,7 +257,9 @@ class ApplicationController < ActionController::Base
     headers['X-XSS-Protection'] = '1; mode=block'
     headers['X-UA-Compatible'] = 'IE=edge'
     headers['X-Content-Type-Options'] = 'nosniff'
+  end
 
+  def default_cache_headers
     if current_user
       headers['Cache-Control'] = default_cache_control
       headers['Pragma'] = 'no-cache' # HTTP 1.0 compatibility
@@ -307,7 +308,7 @@ class ApplicationController < ActionController::Base
     if current_user && current_user.requires_ldap_check?
       return unless current_user.try_obtain_ldap_lease
 
-      unless Gitlab::Auth::LDAP::Access.allowed?(current_user)
+      unless Gitlab::Auth::Ldap::Access.allowed?(current_user)
         sign_out current_user
         flash[:alert] = _("Access denied for your LDAP account.")
         redirect_to new_user_session_path

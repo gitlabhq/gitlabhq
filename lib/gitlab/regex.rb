@@ -112,7 +112,7 @@ module Gitlab
     # Based on Jira's project key format
     # https://confluence.atlassian.com/adminjiraserver073/changing-the-project-key-format-861253229.html
     def jira_issue_key_regex
-      @jira_issue_key_regex ||= /[A-Z][A-Z_0-9]+-\d+/
+      @jira_issue_key_regex ||= /[A-Z][A-Z_0-9]+-\d+\b/
     end
 
     def jira_transition_id_regex
@@ -143,6 +143,10 @@ module Gitlab
 
     def utc_date_regex
       @utc_date_regex ||= /\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/.freeze
+    end
+
+    def issue
+      @issue ||= /(?<issue>\d+\b)/
     end
   end
 end

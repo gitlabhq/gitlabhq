@@ -1,12 +1,12 @@
 # Pipeline schedules API
 
-You can read more about [pipeline schedules](../user/project/pipelines/schedules.md).
+You can read more about [pipeline schedules](../ci/pipelines/schedules.md).
 
 ## Get all pipeline schedules
 
 Get a list of the pipeline schedules of a project.
 
-```
+```plaintext
 GET /projects/:id/pipeline_schedules
 ```
 
@@ -47,7 +47,7 @@ curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/
 
 Get the pipeline schedule of a project.
 
-```
+```plaintext
 GET /projects/:id/pipeline_schedules/:pipeline_schedule_id
 ```
 
@@ -99,7 +99,7 @@ curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/
 
 Create a new pipeline schedule of a project.
 
-```
+```plaintext
 POST /projects/:id/pipeline_schedules
 ```
 
@@ -141,9 +141,9 @@ curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form descri
 
 ## Edit a pipeline schedule
 
-Updates the pipeline schedule  of a project. Once the update is done, it will be rescheduled automatically.
+Updates the pipeline schedule of a project. Once the update is done, it will be rescheduled automatically.
 
-```
+```plaintext
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 ```
 
@@ -193,7 +193,7 @@ curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form cron="0
 
 Update the owner of the pipeline schedule of a project.
 
-```
+```plaintext
 POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership
 ```
 
@@ -238,7 +238,7 @@ curl --request POST --header "PRIVATE-TOKEN: hf2CvZXB9w8Uc5pZKpSB" "https://gitl
 
 Delete the pipeline schedule of a project.
 
-```
+```plaintext
 DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id
 ```
 
@@ -317,7 +317,7 @@ Example response:
 
 Create a new variable of a pipeline schedule.
 
-```
+```plaintext
 POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
 ```
 
@@ -345,7 +345,7 @@ curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "key=N
 
 Updates the variable of a pipeline schedule.
 
-```
+```plaintext
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 ```
 
@@ -373,7 +373,7 @@ curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "value=
 
 Delete the variable of a pipeline schedule.
 
-```
+```plaintext
 DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 ```
 

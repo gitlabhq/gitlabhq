@@ -1,0 +1,6 @@
+---
+title: 'Show notices in Admin area when detected any of these cases: Puma, multi-threaded
+  Puma, multi-threaded Puma + Rugged'
+merge_request: 21403
+author:
+type: added

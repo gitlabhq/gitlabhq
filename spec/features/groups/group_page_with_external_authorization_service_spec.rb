@@ -47,7 +47,7 @@ describe 'The group page' do
         expect(page).to have_link('Group overview')
         expect(page).to have_link('Details')
         expect(page).not_to have_link('Activity')
-        expect(page).not_to have_link('Contribution Analytics')
+        expect(page).not_to have_link('Contribution')
 
         expect(page).not_to have_link('Issues')
         expect(page).not_to have_link('Merge Requests')

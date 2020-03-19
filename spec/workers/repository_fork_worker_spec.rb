@@ -13,7 +13,6 @@ describe RepositoryForkWorker do
 
   describe "#perform" do
     let(:project) { create(:project, :public, :repository) }
-    let(:shell) { Gitlab::Shell.new }
     let(:forked_project) { create(:project, :repository, :import_scheduled) }
 
     before do
@@ -21,12 +20,17 @@ describe RepositoryForkWorker do
     end
 
     shared_examples 'RepositoryForkWorker performing' do
-      before do
-        allow(subject).to receive(:gitlab_shell).and_return(shell)
-      end
+      def expect_fork_repository(success:)
+        allow(::Gitlab::GitalyClient::RepositoryService).to receive(:new).and_call_original
+        expect_next_instance_of(::Gitlab::GitalyClient::RepositoryService, forked_project.repository.raw) do |svc|
+          exp = expect(svc).to receive(:fork_repository).with(project.repository.raw)
 
-      def expect_fork_repository
-        expect(shell).to receive(:fork_repository).with(project, forked_project)
+          if success
+            exp.and_return(true)
+          else
+            exp.and_raise(GRPC::BadStatus, 'Fork failed in tests')
+          end
+        end
       end
 
       describe 'when a worker was reset without cleanup' do
@@ -35,20 +39,20 @@ describe RepositoryForkWorker do
         it 'creates a new repository from a fork' do
           allow(subject).to receive(:jid).and_return(jid)
 
-          expect_fork_repository.and_return(true)
+          expect_fork_repository(success: true)
 
           perform!
         end
       end
 
       it "creates a new repository from a fork" do
-        expect_fork_repository.and_return(true)
+        expect_fork_repository(success: true)
 
         perform!
       end
 
       it 'protects the default branch' do
-        expect_fork_repository.and_return(true)
+        expect_fork_repository(success: true)
 
         perform!
 
@@ -56,7 +60,7 @@ describe RepositoryForkWorker do
       end
 
       it 'flushes various caches' do
-        expect_fork_repository.and_return(true)
+        expect_fork_repository(success: true)
 
         # Works around https://github.com/rspec/rspec-mocks/issues/910
         expect(Project).to receive(:find).with(forked_project.id).and_return(forked_project)
@@ -75,15 +79,15 @@ describe RepositoryForkWorker do
       it 'handles bad fork' do
         error_message = "Unable to fork project #{forked_project.id} for repository #{project.disk_path} -> #{forked_project.disk_path}: Failed to create fork repository"
 
-        expect_fork_repository.and_return(false)
+        expect_fork_repository(success: false)
 
         expect { perform! }.to raise_error(StandardError, error_message)
       end
 
       it 'calls Projects::LfsPointers::LfsLinkService#execute with OIDs of source project LFS objects' do
-        expect_fork_repository.and_return(true)
+        expect_fork_repository(success: true)
         expect_next_instance_of(Projects::LfsPointers::LfsLinkService) do |service|
-          expect(service).to receive(:execute).with(project.lfs_objects_oids)
+          expect(service).to receive(:execute).with(project.all_lfs_objects_oids)
         end
 
         perform!
@@ -92,7 +96,7 @@ describe RepositoryForkWorker do
       it "handles LFS objects link failure" do
         error_message = "Unable to fork project #{forked_project.id} for repository #{project.disk_path} -> #{forked_project.disk_path}: Source project has too many LFS objects"
 
-        expect_fork_repository.and_return(true)
+        expect_fork_repository(success: true)
         expect_next_instance_of(Projects::LfsPointers::LfsLinkService) do |service|
           expect(service).to receive(:execute).and_raise(Projects::LfsPointers::LfsLinkService::TooManyOidsError)
         end

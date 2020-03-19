@@ -1,0 +1,5 @@
+---
+title: Hides the "Allowed to fail" tag on jobs that are successful
+merge_request: 25458
+author:
+type: changed

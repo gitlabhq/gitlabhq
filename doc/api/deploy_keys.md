@@ -4,7 +4,7 @@
 
 Get a list of all deploy keys across all projects of the GitLab instance. This endpoint requires admin access.
 
-```
+```plaintext
 GET /deploy_keys
 ```
 
@@ -35,7 +35,7 @@ Example response:
 
 Get a list of a project's deploy keys.
 
-```
+```plaintext
 GET /projects/:id/deploy_keys
 ```
 
@@ -72,7 +72,7 @@ Example response:
 
 Get a single key.
 
-```
+```plaintext
 GET /projects/:id/deploy_keys/:key_id
 ```
 
@@ -106,7 +106,7 @@ Creates a new deploy key for a project.
 If the deploy key already exists in another project, it will be joined to current
 project only if original one is accessible by the same user.
 
-```
+```plaintext
 POST /projects/:id/deploy_keys
 ```
 
@@ -137,7 +137,7 @@ Example response:
 
 Updates a deploy key for a project.
 
-```
+```plaintext
 PUT /projects/:id/deploy_keys/:key_id
 ```
 
@@ -167,7 +167,7 @@ Example response:
 
 Removes a deploy key from the project. If the deploy key is used only for this project, it will be deleted from the system.
 
-```
+```plaintext
 DELETE /projects/:id/deploy_keys/:key_id
 ```
 

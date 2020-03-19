@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class NewReleaseWorker
+class NewReleaseWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   queue_namespace :notifications

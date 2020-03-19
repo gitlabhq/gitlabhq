@@ -1,0 +1,5 @@
+---
+title: 27880 Make release notes optional and do not delete release when they are removed
+merge_request: 26231
+author: Pavlo Dudchenko
+type: changed

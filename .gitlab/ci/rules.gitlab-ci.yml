@@ -22,6 +22,9 @@
 .if-merge-request: &if-merge-request
   if: '$CI_MERGE_REQUEST_IID'
 
+.if-nightly-master-schedule: &if-nightly-master-schedule
+  if: '$NIGHTLY && $CI_COMMIT_REF_NAME == "master" && $CI_PIPELINE_SOURCE == "schedule"'
+
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
@@ -76,6 +79,9 @@
   - "{package.json,yarn.lock}"
   - "{,ee/}{app,bin,config,db,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+
+.frontend-dependency-patterns: &frontend-dependency-patterns
+  - "{package.json,yarn.lock}"
 
 .qa-patterns: &qa-patterns
   - ".dockerignore"
@@ -267,6 +273,9 @@
   rules:
     - <<: *if-master-refs
       when: on_success
+    - <<: *if-merge-request
+      changes: *frontend-dependency-patterns
+      when: on_success
 
 ################
 # Memory rules #
@@ -340,6 +349,12 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-master-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.rails:rules:nightly-master-refs-code-backstage:
+  rules:
+    - <<: *if-nightly-master-schedule
       changes: *code-backstage-patterns
       when: on_success
 
@@ -483,13 +498,6 @@
     - <<: *if-dot-com-ee-schedule
       changes: *code-backstage-patterns
       when: on_success
-
-.test-metadata:rules:flaky-examples-check:
-  rules:
-    - <<: *if-merge-request
-      changes: *code-backstage-patterns
-      when: on_success
-
 
 ##############
 # YAML rules #

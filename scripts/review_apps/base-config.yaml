@@ -17,10 +17,10 @@ gitlab:
     resources:
       requests:
         cpu: 1200m
-        memory: 240M
+        memory: 245M
       limits:
         cpu: 1800m
-        memory: 360M
+        memory: 367M
     persistence:
       size: 10G
   gitlab-exporter:
@@ -51,11 +51,11 @@ gitlab:
   sidekiq:
     resources:
       requests:
-        cpu: 650m
-        memory: 1018M
+        cpu: 855m
+        memory: 1071M
       limits:
-        cpu: 975m
-        memory: 1527M
+        cpu: 1282m
+        memory: 1606M
     hpa:
       targetAverageValue: 650m
   task-runner:
@@ -69,11 +69,11 @@ gitlab:
   unicorn:
     resources:
       requests:
-        cpu: 525m
-        memory: 1711M
+        cpu: 746m
+        memory: 1873M
       limits:
-        cpu: 787m
-        memory: 2566M
+        cpu: 1119m
+        memory: 2809M
     deployment:
       readinessProbe:
         initialDelaySeconds: 5  # Default is 0
@@ -140,10 +140,10 @@ postgresql:
     enabled: false
   resources:
     requests:
-      cpu: 300m
+      cpu: 347m
       memory: 250M
     limits:
-      cpu: 450m
+      cpu: 520m
       memory: 375M
 prometheus:
   install: false

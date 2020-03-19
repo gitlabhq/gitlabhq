@@ -1,6 +1,19 @@
-// polyfill Element.classList and DOMTokenList with classList.js
+/**
+ * Polyfill
+ * @what Element.classList
+ * @why In order to align browser features
+ * @browsers Internet Explorer 11
+ * @see https://caniuse.com/#feat=classlist
+ */
 import 'classlist-polyfill';
 
+/**
+ * Polyfill
+ * @what Element.closest
+ * @why In order to align browser features
+ * @browsers Internet Explorer 11
+ * @see https://caniuse.com/#feat=element-closest
+ */
 Element.prototype.closest =
   Element.prototype.closest ||
   function closest(selector, selectedElement = this) {
@@ -10,6 +23,13 @@ Element.prototype.closest =
       : Element.prototype.closest(selector, selectedElement.parentElement);
   };
 
+/**
+ * Polyfill
+ * @what Element.matches
+ * @why In order to align browser features
+ * @browsers Internet Explorer 11
+ * @see https://caniuse.com/#feat=mdn-api_element_matches
+ */
 Element.prototype.matches =
   Element.prototype.matches ||
   Element.prototype.matchesSelector ||
@@ -26,7 +46,15 @@ Element.prototype.matches =
     return i > -1;
   };
 
-// From the polyfill on MDN, https://developer.mozilla.org/en-US/docs/Web/API/ChildNode/remove#Polyfill
+/**
+ * Polyfill
+ * @what ChildNode.remove, Element.remove, CharacterData.remove, DocumentType.remove
+ * @why In order to align browser features
+ * @browsers Internet Explorer 11
+ * @see https://caniuse.com/#feat=childnode-remove
+ *
+ * From the polyfill on MDN, https://developer.mozilla.org/en-US/docs/Web/API/ChildNode/remove#Polyfill
+ */
 (arr => {
   arr.forEach(item => {
     if (Object.prototype.hasOwnProperty.call(item, 'remove')) {

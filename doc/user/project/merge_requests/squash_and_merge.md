@@ -29,6 +29,9 @@ The squashed commit's commit message will be either:
 - Taken from the first multi-line commit message in the merge.
 - The merge request's title if no multi-line commit message is found.
 
+NOTE: **Note:**
+This only takes effect if there are at least 2 commits. As there is nothing to squash, the commit message does not change if there is only 1 commit.
+
 It can be customized before merging a merge request.
 
 ![A squash commit message editor](img/squash_mr_message.png)

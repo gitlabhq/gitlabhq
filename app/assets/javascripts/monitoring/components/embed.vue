@@ -3,7 +3,8 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import { timeRangeFromUrl, removeTimeRangeParams } from '../utils';
-import { sidebarAnimationDuration, defaultTimeRange } from '../constants';
+import { sidebarAnimationDuration } from '../constants';
+import { defaultTimeRange } from '~/vue_shared/constants';
 
 let sidebarMutationObserver;
 
@@ -28,10 +29,10 @@ export default {
     ...mapState('monitoringDashboard', ['dashboard']),
     ...mapGetters('monitoringDashboard', ['metricsWithData']),
     charts() {
-      if (!this.dashboard || !this.dashboard.panel_groups) {
+      if (!this.dashboard || !this.dashboard.panelGroups) {
         return [];
       }
-      const groupWithMetrics = this.dashboard.panel_groups.find(group =>
+      const groupWithMetrics = this.dashboard.panelGroups.find(group =>
         group.panels.find(chart => this.chartHasData(chart)),
       ) || { panels: [] };
 
@@ -67,7 +68,7 @@ export default {
       'setShowErrorBanner',
     ]),
     chartHasData(chart) {
-      return chart.metrics.some(metric => this.metricsWithData().includes(metric.metric_id));
+      return chart.metrics.some(metric => this.metricsWithData().includes(metric.metricId));
     },
     onSidebarMutation() {
       setTimeout(() => {

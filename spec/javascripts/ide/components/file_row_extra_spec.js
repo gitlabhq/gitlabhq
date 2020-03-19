@@ -41,30 +41,20 @@ describe('IDE extra file row component', () => {
 
   describe('folderChangesTooltip', () => {
     it('returns undefined when changes count is 0', () => {
+      changesCount = 0;
+
       expect(vm.folderChangesTooltip).toBe(undefined);
     });
 
-    it('returns unstaged changes text', () => {
-      changesCount = 1;
-      unstagedFilesCount = 1;
+    [{ input: 1, output: '1 changed file' }, { input: 2, output: '2 changed files' }].forEach(
+      ({ input, output }) => {
+        it('returns changed files count if changes count is not 0', () => {
+          changesCount = input;
 
-      expect(vm.folderChangesTooltip).toBe('1 unstaged change');
-    });
-
-    it('returns staged changes text', () => {
-      changesCount = 1;
-      stagedFilesCount = 1;
-
-      expect(vm.folderChangesTooltip).toBe('1 staged change');
-    });
-
-    it('returns staged and unstaged changes text', () => {
-      changesCount = 1;
-      stagedFilesCount = 1;
-      unstagedFilesCount = 1;
-
-      expect(vm.folderChangesTooltip).toBe('1 staged and 1 unstaged changes');
-    });
+          expect(vm.folderChangesTooltip).toBe(output);
+        });
+      },
+    );
   });
 
   describe('show tree changes count', () => {

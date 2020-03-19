@@ -5,8 +5,8 @@ require 'spec_helper'
 describe 'Project > Commit > View user status' do
   include RepoHelpers
 
-  set(:project) { create(:project, :repository) }
-  set(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
   let(:commit_author) { create(:user, email: sample_commit.author_email) }
 
   before do

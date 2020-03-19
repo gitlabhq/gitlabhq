@@ -25,7 +25,7 @@ describe Ci::JobArtifact do
     end
 
     it_behaves_like 'UpdateProjectStatistics' do
-      subject { build(:ci_job_artifact, :archive, size: 106365) }
+      subject { build(:ci_job_artifact, :archive, size: 107464) }
     end
   end
 
@@ -35,7 +35,7 @@ describe Ci::JobArtifact do
     end
 
     it_behaves_like 'UpdateProjectStatistics' do
-      subject { build(:ci_job_artifact, :archive, size: 106365) }
+      subject { build(:ci_job_artifact, :archive, size: 107464) }
     end
   end
 
@@ -64,6 +64,22 @@ describe Ci::JobArtifact do
     end
 
     context 'when there are no test reports' do
+      let!(:artifact) { create(:ci_job_artifact, :archive) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe '.coverage_reports' do
+    subject { described_class.coverage_reports }
+
+    context 'when there is a coverage report' do
+      let!(:artifact) { create(:ci_job_artifact, :cobertura) }
+
+      it { is_expected.to eq([artifact]) }
+    end
+
+    context 'when there are no coverage reports' do
       let!(:artifact) { create(:ci_job_artifact, :archive) }
 
       it { is_expected.to be_empty }
@@ -113,13 +129,14 @@ describe Ci::JobArtifact do
 
   describe '.for_sha' do
     it 'returns job artifacts for a given pipeline sha' do
-      first_pipeline = create(:ci_pipeline)
-      second_pipeline = create(:ci_pipeline, sha: Digest::SHA1.hexdigest(SecureRandom.hex))
+      project = create(:project)
+      first_pipeline = create(:ci_pipeline, project: project)
+      second_pipeline = create(:ci_pipeline, project: project, sha: Digest::SHA1.hexdigest(SecureRandom.hex))
       first_artifact = create(:ci_job_artifact, job: create(:ci_build, pipeline: first_pipeline))
       second_artifact = create(:ci_job_artifact, job: create(:ci_build, pipeline: second_pipeline))
 
-      expect(described_class.for_sha(first_pipeline.sha)).to eq([first_artifact])
-      expect(described_class.for_sha(second_pipeline.sha)).to eq([second_artifact])
+      expect(described_class.for_sha(first_pipeline.sha, project.id)).to eq([first_artifact])
+      expect(described_class.for_sha(second_pipeline.sha, project.id)).to eq([second_artifact])
     end
   end
 
@@ -172,7 +189,7 @@ describe Ci::JobArtifact do
     let(:artifact) { create(:ci_job_artifact, :archive, project: project) }
 
     it 'sets the size from the file size' do
-      expect(artifact.size).to eq(106365)
+      expect(artifact.size).to eq(107464)
     end
   end
 

@@ -80,19 +80,12 @@ describe Gitlab::BitbucketImport::Importer do
   end
 
   let(:importer) { described_class.new(project) }
-  let(:gitlab_shell) { double }
-
+  let(:sample) { RepoHelpers.sample_compare }
   let(:issues_statuses_sample_data) do
     {
       count: sample_issues_statuses.count,
       values: sample_issues_statuses
     }
-  end
-
-  let(:sample) { RepoHelpers.sample_compare }
-
-  before do
-    allow(importer).to receive(:gitlab_shell) { gitlab_shell }
   end
 
   subject { described_class.new(project) }
@@ -316,7 +309,7 @@ describe Gitlab::BitbucketImport::Importer do
     describe 'wiki import' do
       it 'is skipped when the wiki exists' do
         expect(project.wiki).to receive(:repository_exists?) { true }
-        expect(importer.gitlab_shell).not_to receive(:import_wiki_repository)
+        expect(project.wiki.repository).not_to receive(:import_repository)
 
         importer.execute
 
@@ -325,7 +318,7 @@ describe Gitlab::BitbucketImport::Importer do
 
       it 'imports to the project disk_path' do
         expect(project.wiki).to receive(:repository_exists?) { false }
-        expect(importer.gitlab_shell).to receive(:import_wiki_repository)
+        expect(project.wiki.repository).to receive(:import_repository)
 
         importer.execute
 

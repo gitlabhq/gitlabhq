@@ -22,7 +22,7 @@ module Milestones
         milestones_to_transfer.find_each do |milestone|
           new_milestone = find_or_create_milestone(milestone)
 
-          update_issues_milestone(milestone.id, new_milestone&.id)
+          update_issues_milestone(milestone, new_milestone)
           update_merge_requests_milestone(milestone.id, new_milestone&.id)
         end
       end
@@ -68,9 +68,12 @@ module Milestones
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def update_issues_milestone(old_milestone_id, new_milestone_id)
-      Issue.where(project: project, milestone_id: old_milestone_id)
-        .update_all(milestone_id: new_milestone_id)
+    def update_issues_milestone(old_milestone, new_milestone)
+      Issue.where(project: project, milestone_id: old_milestone.id)
+        .update_all(milestone_id: new_milestone&.id)
+
+      delete_milestone_issues_caches(old_milestone)
+      delete_milestone_issues_caches(new_milestone)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -80,5 +83,12 @@ module Milestones
         .update_all(milestone_id: new_milestone_id)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def delete_milestone_issues_caches(milestone)
+      return unless milestone
+
+      Milestones::IssuesCountService.new(milestone).delete_cache
+      Milestones::ClosedIssuesCountService.new(milestone).delete_cache
+    end
   end
 end

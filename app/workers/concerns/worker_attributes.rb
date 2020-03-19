@@ -4,8 +4,11 @@ module WorkerAttributes
   extend ActiveSupport::Concern
 
   # Resource boundaries that workers can declare through the
-  # `worker_resource_boundary` attribute
+  # `resource_boundary` attribute
   VALID_RESOURCE_BOUNDARIES = [:memory, :cpu, :unknown].freeze
+
+  # Urgencies that workers can declare through the `urgencies` attribute
+  VALID_URGENCIES = [:high, :low, :throttled].freeze
 
   NAMESPACE_WEIGHTS = {
     auto_devops: 2,
@@ -47,21 +50,22 @@ module WorkerAttributes
       get_worker_attribute(:feature_category) == :not_owned
     end
 
-    # This should be set for jobs that need to be run immediately, or, if
-    # they are delayed, risk creating inconsistencies in the application
-    # that could being perceived by the user as incorrect behavior
-    # (ie, a bug)
-    # See doc/development/sidekiq_style_guide.md#Latency-Sensitive-Jobs
+    # This should be set to :high for jobs that need to be run
+    # immediately, or, if they are delayed, risk creating
+    # inconsistencies in the application that could being perceived by
+    # the user as incorrect behavior (ie, a bug)
+    #
+    # See
+    # doc/development/sidekiq_style_guide.md#urgency
     # for details
-    def latency_sensitive_worker!
-      worker_attributes[:latency_sensitive] = true
+    def urgency(urgency)
+      raise "Invalid urgency: #{urgency}" unless VALID_URGENCIES.include?(urgency)
+
+      worker_attributes[:urgency] = urgency
     end
 
-    # Returns a truthy value if the worker is latency sensitive.
-    # See doc/development/sidekiq_style_guide.md#Latency-Sensitive-Jobs
-    # for details
-    def latency_sensitive_worker?
-      worker_attributes[:latency_sensitive]
+    def get_urgency
+      worker_attributes[:urgency] || :low
     end
 
     # Set this attribute on a job when it will call to services outside of the
@@ -87,6 +91,14 @@ module WorkerAttributes
 
     def get_worker_resource_boundary
       worker_attributes[:resource_boundary] || :unknown
+    end
+
+    def idempotent!
+      worker_attributes[:idempotent] = true
+    end
+
+    def idempotent?
+      worker_attributes[:idempotent]
     end
 
     def weight(value)

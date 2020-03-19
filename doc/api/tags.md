@@ -6,7 +6,7 @@ Get a list of repository tags from a project, sorted by name in reverse
 alphabetical order. This endpoint can be accessed without authentication if the
 repository is publicly accessible.
 
-```
+```plaintext
 GET /projects/:id/repository/tags
 ```
 
@@ -57,7 +57,7 @@ Parameters:
 Get a specific repository tag determined by its name. This endpoint can be
 accessed without authentication if the repository is publicly accessible.
 
-```
+```plaintext
 GET /projects/:id/repository/tags/:tag_name
 ```
 
@@ -104,7 +104,7 @@ Example Response:
 
 Creates a new tag in the repository that points to the supplied ref.
 
-```
+```plaintext
 POST /projects/:id/repository/tags
 ```
 
@@ -164,7 +164,7 @@ status code `405` with an explaining error message is returned.
 
 Deletes a tag of a repository with given name.
 
-```
+```plaintext
 DELETE /projects/:id/repository/tags/:tag_name
 ```
 
@@ -178,7 +178,7 @@ Parameters:
 Add release notes to the existing Git tag. If there
 already exists a release for the given tag, status code `409` is returned.
 
-```
+```plaintext
 POST /projects/:id/repository/tags/:tag_name/release
 ```
 
@@ -210,7 +210,7 @@ Response:
 
 Updates the release notes of a given release.
 
-```
+```plaintext
 PUT /projects/:id/repository/tags/:tag_name/release
 ```
 

@@ -520,6 +520,21 @@ describe Deployment do
     end
   end
 
+  describe '#create_ref' do
+    let(:deployment) { build(:deployment) }
+
+    subject { deployment.create_ref }
+
+    it 'creates a ref using the sha' do
+      expect(deployment.project.repository).to receive(:create_ref).with(
+        deployment.sha,
+        "refs/environments/#{deployment.environment.name}/deployments/#{deployment.iid}"
+      )
+
+      subject
+    end
+  end
+
   describe '#playable_build' do
     subject { deployment.playable_build }
 

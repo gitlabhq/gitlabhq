@@ -11,7 +11,7 @@ describe BackgroundMigrationWorker, :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe '.perform' do
+  describe '#perform' do
     it 'performs a background migration' do
       expect(Gitlab::BackgroundMigration)
         .to receive(:perform)
@@ -49,6 +49,14 @@ describe BackgroundMigrationWorker, :clean_gitlab_redis_shared_state do
       expect(described_class)
         .to receive(:perform_in)
         .with(a_kind_of(Numeric), 'Foo', [10, 20])
+
+      worker.perform('Foo', [10, 20])
+    end
+
+    it 'sets the class that will be executed as the caller_id' do
+      expect(Gitlab::BackgroundMigration).to receive(:perform) do
+        expect(Labkit::Context.current.to_h).to include('meta.caller_id' => 'Foo')
+      end
 
       worker.perform('Foo', [10, 20])
     end

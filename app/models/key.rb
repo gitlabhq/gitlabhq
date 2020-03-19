@@ -6,6 +6,7 @@ class Key < ApplicationRecord
   include AfterCommitQueue
   include Sortable
   include Sha256Attribute
+  include Expirable
 
   sha256_attribute :fingerprint_sha256
 
@@ -30,10 +31,10 @@ class Key < ApplicationRecord
 
   delegate :name, :email, to: :user, prefix: true
 
-  after_commit :add_to_shell, on: :create
+  after_commit :add_to_authorized_keys, on: :create
   after_create :post_create_hook
   after_create :refresh_user_cache
-  after_commit :remove_from_shell, on: :destroy
+  after_commit :remove_from_authorized_keys, on: :destroy
   after_destroy :post_destroy_hook
   after_destroy :refresh_user_cache
 
@@ -79,12 +80,10 @@ class Key < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def add_to_shell
-    GitlabShellWorker.perform_async(
-      :add_key,
-      shell_id,
-      key
-    )
+  def add_to_authorized_keys
+    return unless Gitlab::CurrentSettings.authorized_keys_enabled?
+
+    AuthorizedKeysWorker.perform_async(:add_key, shell_id, key)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -93,11 +92,10 @@ class Key < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def remove_from_shell
-    GitlabShellWorker.perform_async(
-      :remove_key,
-      shell_id
-    )
+  def remove_from_authorized_keys
+    return unless Gitlab::CurrentSettings.authorized_keys_enabled?
+
+    AuthorizedKeysWorker.perform_async(:remove_key, shell_id)
   end
 
   # rubocop: disable CodeReuse/ServiceClass

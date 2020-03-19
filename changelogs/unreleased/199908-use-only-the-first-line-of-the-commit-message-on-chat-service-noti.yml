@@ -1,0 +1,5 @@
+---
+title: Use only the first line of the commit message on chat service notification
+merge_request: 25224
+author: Takuya Noguchi
+type: changed

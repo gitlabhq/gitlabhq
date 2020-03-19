@@ -413,6 +413,7 @@ img.emoji {
 .prepend-left-20 { margin-left: 20px; }
 .prepend-left-32 { margin-left: 32px; }
 .prepend-left-64 { margin-left: 64px; }
+.append-right-2 { margin-right: 2px; }
 .append-right-4 { margin-right: 4px; }
 .append-right-5 { margin-right: 5px; }
 .append-right-8 { margin-right: 8px; }
@@ -424,6 +425,7 @@ img.emoji {
 .append-right-48 { margin-right: 48px; }
 .prepend-right-32 { margin-right: 32px; }
 .append-bottom-0 { margin-bottom: 0; }
+.append-bottom-2 { margin-bottom: 2px; }
 .append-bottom-4 { margin-bottom: $gl-padding-4; }
 .append-bottom-5 { margin-bottom: 5px; }
 .append-bottom-8 { margin-bottom: $grid-size; }
@@ -521,6 +523,8 @@ img.emoji {
 .cursor-pointer {
   cursor: pointer;
 }
+
+.cursor-not-allowed { cursor: not-allowed; }
 
 // this needs to use "!important" due to some very specific styles
 // around buttons

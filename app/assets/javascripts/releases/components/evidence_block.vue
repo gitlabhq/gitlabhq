@@ -25,16 +25,16 @@ export default {
   },
   computed: {
     evidenceTitle() {
-      return sprintf(__('%{tag}-evidence.json'), { tag: this.release.tag_name });
+      return sprintf(__('%{tag}-evidence.json'), { tag: this.release.tagName });
     },
     evidenceUrl() {
-      return this.release.assets && this.release.assets.evidence_file_path;
+      return this.release.assets && this.release.assets.evidenceFilePath;
     },
     shortSha() {
       return truncateSha(this.sha);
     },
     sha() {
-      return this.release.evidence_sha;
+      return this.release.evidenceSha;
     },
   },
 };
@@ -67,7 +67,7 @@ export default {
         </template>
       </expand-button>
       <clipboard-button
-        :title="__('Copy commit SHA')"
+        :title="__('Copy evidence SHA')"
         :text="sha"
         css-class="btn-default btn-transparent btn-clipboard"
       />

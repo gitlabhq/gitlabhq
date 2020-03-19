@@ -111,7 +111,10 @@ class SentNotification < ApplicationRecord
     note = create_reply('Test', dryrun: true)
 
     unless note.valid?
-      self.errors.add(:base, "Note parameters are invalid: #{note.errors.full_messages.to_sentence}")
+      self.errors.add(
+        :base, _("Note parameters are invalid: %{errors}") %
+          { errors: note.errors.full_messages.to_sentence }
+      )
     end
   end
 

@@ -35,7 +35,7 @@ describe 'Projects > Settings > For a forked project', :js do
       end
 
       it 'renders form for incident management' do
-        expect(page).to have_selector('h4', text: 'Incidents')
+        expect(page).to have_selector('h3', text: 'Incidents')
       end
 
       it 'sets correct default values' do

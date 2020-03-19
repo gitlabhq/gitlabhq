@@ -29,7 +29,7 @@ describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memory_stor
     end
 
     context 'user does not have push right to repository' do
-      it_behaves_like 'misconfigured dashboard service response', :forbidden, %q(You can't commit to this project)
+      it_behaves_like 'misconfigured dashboard service response', :forbidden, %q(You are not allowed to push into this branch. Create another branch or open a merge request.)
     end
 
     context 'with rights to push to the repository' do

@@ -7,7 +7,7 @@
 Returns a list of todos. When no filter is applied, it returns all pending todos
 for the current user. Different filters allow the user to precise the request.
 
-```
+```plaintext
 GET /todos
 ```
 
@@ -184,7 +184,7 @@ Example Response:
 Marks a single pending todo given by its ID for the current user as done. The
 todo marked as done is returned in the response.
 
-```
+```plaintext
 POST /todos/:id/mark_as_done
 ```
 
@@ -280,7 +280,7 @@ Example Response:
 
 Marks all pending todos for the current user as done. It returns the HTTP status code `204` with an empty response.
 
-```
+```plaintext
 POST /todos/mark_as_done
 ```
 

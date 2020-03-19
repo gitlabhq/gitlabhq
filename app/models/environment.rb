@@ -95,6 +95,10 @@ class Environment < ApplicationRecord
     end
   end
 
+  def self.for_id_and_slug(id, slug)
+    find_by(id: id, slug: slug)
+  end
+
   def self.max_deployment_id_sql
     Deployment.select(Deployment.arel_table[:id].maximum)
     .where(Deployment.arel_table[:environment_id].eq(arel_table[:id]))
@@ -187,15 +191,6 @@ class Environment < ApplicationRecord
 
   def update_merge_request_metrics?
     folder_name == "production"
-  end
-
-  def first_deployment_for(commit_sha)
-    ref = project.repository.ref_name_for_sha(ref_path, commit_sha)
-
-    return unless ref
-
-    deployment_iid = ref.split('/').last
-    deployments.find_by(iid: deployment_iid)
   end
 
   def ref_path
@@ -333,6 +328,10 @@ class Environment < ApplicationRecord
     return unless parsed_result = ChronicDuration.parse(value)
 
     self.auto_stop_at = parsed_result.seconds.from_now
+  end
+
+  def elastic_stack_available?
+    !!deployment_platform&.cluster&.application_elastic_stack&.available?
   end
 
   private

@@ -3,11 +3,9 @@
     - options = { milestone_title: @milestone.title, label_name: label.title }
 
     %li.no-border
-      %span.label-row
-        %span.label-name
-          = render_label(label, tooltip: false, link: milestones_label_path(options))
-        %span.prepend-description-left
-          = markdown_field(label, :description)
+      = render_label(label, tooltip: false, link: milestones_label_path(options))
+      %span.prepend-description-left
+        = markdown_field(label, :description)
 
       .float-right.d-none.d-lg-block.d-xl-block
         = link_to milestones_label_path(options.merge(state: 'opened')), class: 'btn btn-transparent btn-action' do

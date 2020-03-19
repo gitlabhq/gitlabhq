@@ -1,0 +1,5 @@
+---
+title: Replaced underscore with lodash for app/assets/javascripts/lib
+merge_request: 25042
+author: Shubham Pandey
+type: other

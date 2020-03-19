@@ -1,0 +1,34 @@
+%p.profile-settings-content
+  = s_("DeployTokens|Pick a name for the application, and we'll give you a unique deploy token.")
+
+= form_for token, url: create_deploy_token_path(group_or_project, anchor: 'js-deploy-tokens'), method: :post do |f|
+  = form_errors(token)
+
+  .form-group
+    = f.label :name, class: 'label-bold'
+    = f.text_field :name, class: 'form-control qa-deploy-token-name', required: true
+
+  .form-group
+    = f.label :expires_at, class: 'label-bold'
+    = f.text_field :expires_at, class: 'datepicker form-control qa-deploy-token-expires-at', value: f.object.expires_at
+
+  .form-group
+    = f.label :username, class: 'label-bold'
+    = f.text_field :username, class: 'form-control qa-deploy-token-username'
+    .text-secondary= s_('DeployTokens|Default format is "gitlab+deploy-token-{n}". Enter custom username if you want to change it.')
+
+  .form-group
+    = f.label :scopes, class: 'label-bold'
+    %fieldset.form-group.form-check
+      = f.check_box :read_repository, class: 'form-check-input qa-deploy-token-read-repository'
+      = label_tag ("deploy_token_read_repository"), 'read_repository', class: 'label-bold form-check-label'
+      .text-secondary= s_('DeployTokens|Allows read-only access to the repository')
+
+    - if container_registry_enabled?(group_or_project)
+      %fieldset.form-group.form-check
+        = f.check_box :read_registry, class: 'form-check-input qa-deploy-token-read-registry'
+        = label_tag ("deploy_token_read_registry"), 'read_registry', class: 'label-bold form-check-label'
+        .text-secondary= s_('DeployTokens|Allows read-only access to the registry images')
+
+  .prepend-top-default
+    = f.submit s_('DeployTokens|Create deploy token'), class: 'btn btn-success qa-create-deploy-token'

@@ -13,6 +13,7 @@ describe Releases::Link do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:url) }
     it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_length_of(:filepath).is_at_most(128) }
 
     context 'when url is invalid' do
       let(:link) { build(:release_link, url: 'hoge') }
@@ -40,6 +41,16 @@ describe Releases::Link do
           create(:release_link, url: 'http://gitlab.com', release: release)
         end.to raise_error(ActiveRecord::RecordInvalid)
       end
+    end
+  end
+
+  context 'when duplicate filepath is added to a release' do
+    let!(:link) { create(:release_link, filepath: '/binaries/gitlab-runner-linux-amd64', release: release) }
+
+    it 'raises an error' do
+      expect do
+        create(:release_link, filepath: '/binaries/gitlab-runner-linux-amd64', release: release)
+      end.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 
@@ -98,6 +109,40 @@ describe Releases::Link do
 
       it 'will be invalid' do
         expect(link).to be_invalid
+      end
+    end
+  end
+
+  describe 'FILEPATH_REGEX with table' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:link) { build(:release_link)}
+
+    where(:reason, :filepath, :result) do
+      'cannot contain `//`'         | '/https//www.example.com'     | be_invalid
+      'cannot start with `//`'      | '//www.example.com'           | be_invalid
+      'cannot contain a `?`'        | '/example.com/?stuff=true'    | be_invalid
+      'cannot contain a `:`'        | '/example:5000'               | be_invalid
+      'cannot end in a `-`'         | '/binaries/awesome-app.dmg-'  | be_invalid
+      'cannot end in a `.`'         | '/binaries/awesome-app.dmg.'  | be_invalid
+      'cannot end in a `_`'         | '/binaries/awesome-app.dmg_'  | be_invalid
+      'cannot start with a `.`'     | '.binaries/awesome-app.dmg'   | be_invalid
+      'cannot start with a `-`'     | '-binaries/awesome-app.dmg'   | be_invalid
+      'cannot start with a `_`'     | '_binaries/awesome-app.dmg'   | be_invalid
+      'cannot start with a number'  | '3binaries/awesome-app.dmg'   | be_invalid
+      'cannot start with a letter'  | 'binaries/awesome-app.dmg'    | be_invalid
+      'cannot contain accents'      | '/binarïes/âwésome-app.dmg'   | be_invalid
+      'can end in a character'      | '/binaries/awesome-app.dmg'   | be_valid
+      'can end in a number'         | '/binaries/awesome-app-1'     | be_valid
+      'can contain one or more dots, dashes or underscores' | '/sub_tr__ee.ex..ample-2--1/v99.com' | be_valid
+      'can contain multiple non-sequential slashes' | '/example.com/path/to/file.exe' | be_valid
+      'can be nil' | nil | be_valid
+    end
+
+    with_them do
+      specify do
+        link.filepath = filepath
+        expect(link).to result
       end
     end
   end

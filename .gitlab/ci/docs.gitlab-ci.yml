@@ -1,6 +1,5 @@
 .review-docs:
   extends:
-    - .default-tags
     - .default-retry
     - .docs:rules:review-docs
   allow_failure: true
@@ -16,6 +15,7 @@
     name: review-docs/$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID
     # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are CI variables
     # Discussion: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14236/diffs#note_40140693
+    auto_stop_in: 2 weeks
     url: http://docs-preview-$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
   before_script:
@@ -41,18 +41,17 @@ review-docs-cleanup:
 
 docs lint:
   extends:
-    - .default-tags
     - .default-retry
     - .docs:rules:docs-lint
-  image: "registry.gitlab.com/gitlab-org/gitlab-docs:docs-lint"
+  image: "registry.gitlab.com/gitlab-org/gitlab-docs:lint"
   stage: test
-  dependencies: []
+  needs: []
   script:
     - scripts/lint-doc.sh
-    # Lint Markdown
-    - markdownlint --config .markdownlint.json 'doc/**/*.md'
     # Prepare docs for build
-    - mv doc/ /tmp/gitlab-docs/content/$DOCS_GITLAB_REPO_SUFFIX
+    # The path must be 'ee/' because we have hardcoded links relying on it
+    # https://gitlab.com/gitlab-org/gitlab-docs/-/blob/887850752fc0e72856da6632db132f005ba77f16/content/index.erb#L44-63
+    - mv doc/ /tmp/gitlab-docs/content/ee
     - cd /tmp/gitlab-docs
     # Build HTML from Markdown
     - bundle exec nanoc
@@ -63,7 +62,6 @@ docs lint:
 
 graphql-reference-verify:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .default-before_script

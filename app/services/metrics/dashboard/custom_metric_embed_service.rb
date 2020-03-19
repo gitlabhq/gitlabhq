@@ -18,7 +18,7 @@ module Metrics
         # custom metrics from the DB.
         def valid_params?(params)
           [
-            params[:embedded],
+            embedded?(params[:embedded]),
             valid_dashboard?(params[:dashboard_path]),
             valid_group_title?(params[:group]),
             params[:title].present?,

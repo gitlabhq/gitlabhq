@@ -1,0 +1,5 @@
+---
+title: Add Prometheus metrics for Gitaly and database time in background jobs
+merge_request: 26384
+author:
+type: changed

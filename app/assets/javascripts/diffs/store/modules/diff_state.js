@@ -17,6 +17,7 @@ export default () => ({
   commit: null,
   startVersion: null,
   diffFiles: [],
+  coverageFiles: {},
   mergeRequestDiffs: [],
   mergeRequestDiff: null,
   diffViewType: viewTypeFromQueryString || viewTypeFromCookie || defaultViewType,

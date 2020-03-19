@@ -20,6 +20,8 @@ en:
         token: "Grafana HTTP API Token"
         grafana_url: "Grafana API URL"
         grafana_enabled: "Grafana integration enabled"
+      user/user_detail:
+        job_title: 'Job title'
   views:
     pagination:
       previous: "Prev"

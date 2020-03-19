@@ -94,14 +94,6 @@ module Gitlab
         end
       end
 
-      def log_error(details)
-        @logger.error(log_base_data.merge(details))
-      end
-
-      def log_debug(details)
-        @logger.debug(log_base_data.merge(details))
-      end
-
       def log_base_data
         log = {
           importer:        'Import/Export',

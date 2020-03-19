@@ -6,7 +6,7 @@ module Gitlab
     module UserMentions
       module Models
         class Note < ActiveRecord::Base
-          include IsolatedMentionable
+          include Concerns::IsolatedMentionable
           include CacheMarkdownField
 
           self.table_name = 'notes'
@@ -20,7 +20,7 @@ module Gitlab
           belongs_to :project
 
           def for_personal_snippet?
-            noteable.class.name == 'PersonalSnippet'
+            noteable && noteable.class.name == 'PersonalSnippet'
           end
 
           def for_project_noteable?
@@ -32,7 +32,7 @@ module Gitlab
           end
 
           def for_epic?
-            noteable.class.name == 'Epic'
+            noteable && noteable_type == 'Epic'
           end
 
           def user_mention_resource_id
@@ -41,6 +41,14 @@ module Gitlab
 
           def user_mention_note_id
             id
+          end
+
+          def noteable
+            super unless for_commit?
+          end
+
+          def for_commit?
+            noteable_type == "Commit"
           end
 
           private
@@ -52,6 +60,8 @@ module Gitlab
           end
 
           def banzai_context_params
+            return {} unless noteable
+
             { group: noteable.group, label_url_method: :group_epics_url }
           end
         end

@@ -49,7 +49,7 @@ describe Sentry::Client::Issue do
     it_behaves_like 'calls sentry api'
 
     it_behaves_like 'issues have correct return type', Gitlab::ErrorTracking::Error
-    it_behaves_like 'issues have correct length', 2
+    it_behaves_like 'issues have correct length', 3
 
     shared_examples 'has correct external_url' do
       context 'external_url' do
@@ -184,7 +184,7 @@ describe Sentry::Client::Issue do
       it_behaves_like 'calls sentry api'
 
       it_behaves_like 'issues have correct return type', Gitlab::ErrorTracking::Error
-      it_behaves_like 'issues have correct length', 2
+      it_behaves_like 'issues have correct length', 3
     end
 
     context 'when cursor is present' do
@@ -194,7 +194,7 @@ describe Sentry::Client::Issue do
       it_behaves_like 'calls sentry api'
 
       it_behaves_like 'issues have correct return type', Gitlab::ErrorTracking::Error
-      it_behaves_like 'issues have correct length', 2
+      it_behaves_like 'issues have correct length', 3
     end
   end
 
@@ -252,6 +252,34 @@ describe Sentry::Client::Issue do
 
       it 'has a correct GitLab issue url' do
         expect(subject.gitlab_issue).to eq('https://gitlab.com/gitlab-org/gitlab/issues/1')
+      end
+
+      context 'when issue annotations exist' do
+        before do
+          issue_sample_response['annotations'] = [
+            nil,
+            '',
+            "<a href=\"http://github.com/issues/6\">github-issue-6</a>",
+            "<div>annotation</a>",
+            "<a href=\"http://localhost/gitlab-org/gitlab/issues/2\">gitlab-org/gitlab#2</a>"
+          ]
+          stub_sentry_request(sentry_request_url, body: issue_sample_response)
+        end
+
+        it 'has a correct GitLab issue url' do
+          expect(subject.gitlab_issue).to eq('http://localhost/gitlab-org/gitlab/issues/2')
+        end
+      end
+
+      context 'when no GitLab issue is linked' do
+        before do
+          issue_sample_response['pluginIssues'] = []
+          stub_sentry_request(sentry_request_url, body: issue_sample_response)
+        end
+
+        it 'does not find a GitLab issue' do
+          expect(subject.gitlab_issue).to be_nil
+        end
       end
 
       it 'has the correct tags' do

@@ -1,0 +1,5 @@
+---
+title: Inject CSP values when repository static objects external caching is enabled
+merge_request: 25711
+author:
+type: fixed

@@ -35,6 +35,12 @@ module Clusters
             application.oauth_application = create_oauth_application(application, request)
           end
 
+          if application.instance_of?(Knative)
+            Serverless::AssociateDomainService
+              .new(application, pages_domain_id: params[:pages_domain_id], creator: current_user)
+              .execute
+          end
+
           worker = worker_class(application)
 
           application.make_scheduled!

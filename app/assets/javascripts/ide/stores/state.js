@@ -34,4 +34,5 @@ export default () => ({
   clientsidePreviewEnabled: false,
   renderWhitespaceInCode: false,
   editorTheme: DEFAULT_THEME,
+  codesandboxBundlerUrl: null,
 });

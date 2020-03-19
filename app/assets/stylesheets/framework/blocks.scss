@@ -161,13 +161,17 @@
   }
 
   .cover-controls {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    @include media-breakpoint-up(sm) {
+      position: absolute;
+      top: 1rem;
+      right: 1.25rem;
+    }
 
     &.left {
-      left: 10px;
-      right: auto;
+      @include media-breakpoint-up(sm) {
+        left: 1.25rem;
+        right: auto;
+      }
     }
   }
 

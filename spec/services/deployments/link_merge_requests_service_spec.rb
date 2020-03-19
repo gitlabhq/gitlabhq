@@ -133,51 +133,32 @@ describe Deployments::LinkMergeRequestsService do
       expect(deploy.merge_requests).to include(mr1, picked_mr)
     end
 
-    context 'when :track_mr_picking feature flag is disabled' do
-      before do
-        stub_feature_flags(track_mr_picking: false)
-      end
+    it "doesn't link the same merge_request twice" do
+      create(:merge_request, :merged, merge_commit_sha: mr1_merge_commit_sha,
+             source_project: project)
 
-      it 'does not link picked merge requests' do
-        environment = create(:environment, project: project)
-        deploy =
-          create(:deployment, :success, project: project, environment: environment)
+      picked_mr = create(:merge_request, :merged, merge_commit_sha: '123abc',
+                         source_project: project)
 
-        picked_mr = create(
-          :merge_request,
-          :merged,
-          merge_commit_sha: '123abc',
-          source_project: project,
-          target_project: project
-        )
+      # the first MR includes c1c67abba which is a cherry-pick of the fake picked_mr merge request
+      create(:track_mr_picking_note, noteable: picked_mr, project: project, commit_id: 'c1c67abbaf91f624347bb3ae96eabe3a1b742478')
 
-        mr1 = create(
-          :merge_request,
-          :merged,
-          merge_commit_sha: mr1_merge_commit_sha,
-          source_project: project,
-          target_project: project
-        )
+      environment = create(:environment, project: project)
+      old_deploy =
+        create(:deployment, :success, project: project, environment: environment)
 
-        # mr1 includes c1c67abba which is a cherry-pick of the fake picked_mr merge request
-        create(:track_mr_picking_note, noteable: picked_mr, project: project, commit_id: 'c1c67abbaf91f624347bb3ae96eabe3a1b742478')
+      # manually linking all the MRs to the old_deploy
+      old_deploy.link_merge_requests(project.merge_requests)
 
-        mr2 = create(
-          :merge_request,
-          :merged,
-          merge_commit_sha: mr2_merge_commit_sha,
-          source_project: project,
-          target_project: project
-        )
+      deploy =
+        create(:deployment, :success, project: project, environment: environment)
 
-        described_class.new(deploy).link_merge_requests_for_range(
-          first_deployment_sha,
-          mr2_merge_commit_sha
-        )
+      described_class.new(deploy).link_merge_requests_for_range(
+        first_deployment_sha,
+        mr1_merge_commit_sha
+      )
 
-        expect(deploy.merge_requests).to include(mr1, mr2)
-        expect(deploy.merge_requests).not_to include(picked_mr)
-      end
+      expect(deploy.merge_requests).to be_empty
     end
   end
 

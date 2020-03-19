@@ -22,6 +22,16 @@ module Projects
         end
       end
 
+      def update
+        result = ::Metrics::Dashboard::UpdateDashboardService.new(project, current_user, dashboard_params.merge(file_content_params)).execute
+
+        if result[:status] == :success
+          respond_update_success(result)
+        else
+          respond_error(result)
+        end
+      end
+
       private
 
       def respond_success(result)
@@ -43,6 +53,19 @@ module Projects
         flash[:notice] = message.html_safe
       end
 
+      def respond_update_success(result)
+        set_web_ide_link_update_notice(result.dig(:dashboard, :path))
+        respond_to do |format|
+          format.json { render status: result.delete(:http_status), json: result }
+        end
+      end
+
+      def set_web_ide_link_update_notice(new_dashboard_path)
+        web_ide_link_start = "<a href=\"#{ide_edit_path(project, redirect_safe_branch_name, new_dashboard_path)}\">"
+        message = _("Your dashboard has been updated. You can %{web_ide_link_start}edit it here%{web_ide_link_end}.") % { web_ide_link_start: web_ide_link_start, web_ide_link_end: "</a>" }
+        flash[:notice] = message.html_safe
+      end
+
       def validate_required_params!
         params.require(%i(branch file_name dashboard commit_message))
       end
@@ -53,6 +76,31 @@ module Projects
 
       def dashboard_params
         params.permit(%i(branch file_name dashboard commit_message)).to_h
+      end
+
+      def file_content_params
+        params.permit(
+          file_content: [
+            :dashboard,
+            panel_groups: [
+              :group,
+              :priority,
+              panels: [
+                :type,
+                :title,
+                :y_label,
+                :weight,
+                metrics: [
+                  :id,
+                  :unit,
+                  :label,
+                  :query,
+                  :query_range
+                ]
+              ]
+            ]
+          ]
+        )
       end
     end
   end

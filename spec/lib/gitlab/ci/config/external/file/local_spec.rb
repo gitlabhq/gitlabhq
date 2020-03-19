@@ -3,15 +3,22 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Local do
-  set(:project) { create(:project, :repository) }
-  set(:user) { create(:user) }
-
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
   let(:sha) { '12345' }
-  let(:context_params) { { project: project, sha: sha, user: user } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
-
   let(:params) { { local: location } }
   let(:local_file) { described_class.new(params, context) }
+  let(:parent_pipeline) { double(:parent_pipeline) }
+
+  let(:context_params) do
+    {
+      project: project,
+      sha: sha,
+      user: user,
+      parent_pipeline: parent_pipeline
+    }
+  end
 
   before do
     allow_any_instance_of(Gitlab::Ci::Config::External::Context)
@@ -119,7 +126,11 @@ describe Gitlab::Ci::Config::External::File::Local do
     subject { local_file.send(:expand_context_attrs) }
 
     it 'inherits project, user and sha' do
-      is_expected.to include(user: user, project: project, sha: sha)
+      is_expected.to include(
+        user: user,
+        project: project,
+        sha: sha,
+        parent_pipeline: parent_pipeline)
     end
   end
 

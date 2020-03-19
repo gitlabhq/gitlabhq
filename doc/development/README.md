@@ -9,8 +9,20 @@ description: 'Learn how to contribute to GitLab.'
 
 - Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)
 - [GitLab contributing guide](contributing/index.md)
-  - [Issues workflow](contributing/issue_workflow.md) (issue tracker guidelines, triaging, labels, feature proposals, issue weight, regression issues, technical and UX debt)
-  - [Merge requests workflow](contributing/merge_request_workflow.md) (merge request guidelines, contribution acceptance criteria, definition of done, dependencies)
+  - [Issues workflow](contributing/issue_workflow.md). For information on:
+    - Issue tracker guidelines.
+    - Triaging.
+    - Labels.
+    - Feature proposals.
+    - Issue weight.
+    - Regression issues.
+    - Technical or UX debt.
+  - [Merge requests workflow](contributing/merge_request_workflow.md). For
+    information on:
+    - Merge request guidelines.
+    - Contribution acceptance criteria.
+    - Definition of done.
+    - Dependencies.
   - [Style guides](contributing/style_guides.md)
   - [Implement design & UI elements](contributing/design.md)
 - [GitLab Architecture Overview](architecture.md)
@@ -22,6 +34,7 @@ description: 'Learn how to contribute to GitLab.'
 
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed
 - [Database review guidelines](database_review.md) for reviewing database-related changes and complex SQL queries, and having them reviewed
+- [Secure coding guidelines](https://gitlab.com/gitlab-com/gl-security/security-guidelines)
 - [Pipelines for the GitLab project](pipelines.md)
 
 Complementary reads:
@@ -31,7 +44,7 @@ Complementary reads:
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Danger bot](dangerbot.md)
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
-- [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLabbers)
+- [Requesting access to Chatops on GitLab.com](chatops_on_gitlabcom.md#requesting-access) (for GitLab team members)
 
 ## UX and Frontend guides
 
@@ -84,6 +97,7 @@ Complementary reads:
 - [Issue types vs first-class types](issue_types.md)
 - [Application limits](application_limits.md)
 - [Redis guidelines](redis.md)
+- [Rails initializers](rails_initializers.md)
 
 ## Performance guides
 
@@ -131,6 +145,7 @@ Complementary reads:
 - [Hash indexes](hash_indexes.md)
 - [Storing SHA1 hashes as binary](sha1_as_binary.md)
 - [Iterating tables in batches](iterating_tables_in_batches.md)
+- [Insert into tables in batches](insert_into_tables_in_batches.md)
 - [Ordering table columns](ordering_table_columns.md)
 - [Verifying database capabilities](verifying_database_capabilities.md)
 - [Database Debugging and Troubleshooting](database_debugging.md)
@@ -148,6 +163,7 @@ Complementary reads:
 
 - [Jira Connect app](integrations/jira_connect.md)
 - [Security Scanners](integrations/secure.md)
+- [Secure Partner Integration](integrations/secure_partner_integration.md)
 
 ## Testing guides
 
@@ -166,11 +182,11 @@ Complementary reads:
 - [Externalization](i18n/externalization.md)
 - [Translation](i18n/translation.md)
 
-## Event tracking guides
+## Telemetry guides
 
-- [Introduction](event_tracking/index.md)
-- [Frontend tracking guide](event_tracking/frontend.md)
-- [Backend tracking guide](event_tracking/backend.md)
+- [Introduction](../telemetry/index.md)
+- [Frontend tracking guide](../telemetry/frontend.md)
+- [Backend tracking guide](../telemetry/backend.md)
 
 ## Experiment Guide
 
@@ -199,6 +215,7 @@ Complementary reads:
 ## Other Development guides
 
 - [Defining relations between files using projections](projections.md)
+- [Reference processing](./reference_processing.md)
 
 ## Other GitLab Development Kit (GDK) guides
 

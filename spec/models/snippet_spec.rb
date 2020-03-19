@@ -149,7 +149,7 @@ describe Snippet do
   end
 
   describe '.search' do
-    let(:snippet) { create(:snippet, title: 'test snippet') }
+    let(:snippet) { create(:snippet, title: 'test snippet', description: 'description') }
 
     it 'returns snippets with a matching title' do
       expect(described_class.search(snippet.title)).to eq([snippet])
@@ -173,6 +173,10 @@ describe Snippet do
 
     it 'returns snippets with a matching file name regardless of the casing' do
       expect(described_class.search(snippet.file_name.upcase)).to eq([snippet])
+    end
+
+    it 'returns snippets with a matching description' do
+      expect(described_class.search(snippet.description)).to eq([snippet])
     end
   end
 
@@ -511,6 +515,32 @@ describe Snippet do
     end
   end
 
+  describe '#blobs' do
+    let(:snippet) { create(:snippet) }
+
+    context 'when repository does not exist' do
+      it 'returns empty array' do
+        expect(snippet.blobs).to be_empty
+      end
+    end
+
+    context 'when repository exists' do
+      let(:snippet) { create(:snippet, :repository) }
+
+      it 'returns array of blobs' do
+        expect(snippet.blobs).to all(be_a(Blob))
+      end
+    end
+
+    it 'returns a blob representing the snippet data' do
+      blob = snippet.blob
+
+      expect(blob).to be_a(Blob)
+      expect(blob.path).to eq(snippet.file_name)
+      expect(blob.data).to eq(snippet.content)
+    end
+  end
+
   describe '#to_json' do
     let(:snippet) { build(:snippet) }
 
@@ -536,7 +566,7 @@ describe Snippet do
   end
 
   describe '#track_snippet_repository' do
-    let(:snippet) { create(:snippet, :repository) }
+    let(:snippet) { create(:snippet) }
 
     context 'when a snippet repository entry does not exist' do
       it 'creates a new entry' do
@@ -554,7 +584,8 @@ describe Snippet do
     end
 
     context 'when a tracking entry exists' do
-      let!(:snippet_repository) { create(:snippet_repository, snippet: snippet) }
+      let!(:snippet) { create(:snippet, :repository) }
+      let(:snippet_repository) { snippet.snippet_repository }
       let!(:shard) { create(:shard, name: 'foo') }
 
       it 'does not create a new entry in the database' do
@@ -592,7 +623,7 @@ describe Snippet do
     end
 
     context 'when repository exists' do
-      let(:snippet) { create(:snippet, :repository) }
+      let!(:snippet) { create(:snippet, :repository) }
 
       it 'does not try to create repository' do
         expect(snippet.repository).not_to receive(:after_create)
@@ -600,10 +631,23 @@ describe Snippet do
         expect(snippet.create_repository).to be_nil
       end
 
-      it 'does not track snippet repository' do
-        expect do
-          snippet.create_repository
-        end.not_to change(SnippetRepository, :count)
+      context 'when snippet_repository exists' do
+        it 'does not create a new snippet repository' do
+          expect do
+            snippet.create_repository
+          end.not_to change(SnippetRepository, :count)
+        end
+      end
+
+      context 'when snippet_repository does not exist' do
+        it 'creates a snippet_repository' do
+          snippet.snippet_repository.destroy
+          snippet.reload
+
+          expect do
+            snippet.create_repository
+          end.to change(SnippetRepository, :count).by(1)
+        end
       end
     end
   end
@@ -629,6 +673,44 @@ describe Snippet do
 
         expect(snippet.repository_storage).to eq 'foo'
       end
+    end
+  end
+
+  describe '#can_cache_field?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:snippet) { create(:snippet, file_name: file_name) }
+
+    subject { snippet.can_cache_field?(field) }
+
+    where(:field, :file_name, :result) do
+      :title       | nil           | true
+      :title       | 'foo.bar'     | true
+      :description | nil           | true
+      :description | 'foo.bar'     | true
+      :content     | nil           | false
+      :content     | 'bar.foo'     | false
+      :content     | 'markdown.md' | true
+    end
+
+    with_them do
+      it { is_expected.to eq result }
+    end
+  end
+
+  describe '#url_to_repo' do
+    subject { snippet.url_to_repo }
+
+    context 'with personal snippet' do
+      let(:snippet) { create(:personal_snippet) }
+
+      it { is_expected.to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "snippets/#{snippet.id}.git") }
+    end
+
+    context 'with project snippet' do
+      let(:snippet) { create(:project_snippet) }
+
+      it { is_expected.to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "#{snippet.project.full_path}/snippets/#{snippet.id}.git") }
     end
   end
 end

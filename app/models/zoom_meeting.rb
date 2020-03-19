@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ZoomMeeting < ApplicationRecord
+  include UsageStatistics
+
   belongs_to :project, optional: false
   belongs_to :issue, optional: false
 

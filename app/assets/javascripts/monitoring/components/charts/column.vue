@@ -5,6 +5,7 @@ import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import { chartHeight } from '../../constants';
 import { makeDataSeries } from '~/helpers/monitor_helper';
 import { graphDataValidatorForValues } from '../../utils';
+import { getYAxisOptions, getChartGrid } from './options';
 
 export default {
   components: {
@@ -41,15 +42,25 @@ export default {
         values: queryData[0].data,
       };
     },
+    chartOptions() {
+      const yAxis = {
+        ...getYAxisOptions(this.graphData.yAxis),
+        scale: false,
+      };
+
+      return {
+        grid: getChartGrid(),
+        yAxis,
+        dataZoom: this.dataZoomConfig,
+      };
+    },
     xAxisTitle() {
       return this.graphData.metrics[0].result[0].x_label !== undefined
         ? this.graphData.metrics[0].result[0].x_label
         : '';
     },
     yAxisTitle() {
-      return this.graphData.metrics[0].result[0].y_label !== undefined
-        ? this.graphData.metrics[0].result[0].y_label
-        : '';
+      return this.chartOptions.yAxis.name;
     },
     xAxisType() {
       return this.graphData.x_type !== undefined ? this.graphData.x_type : 'category';
@@ -58,11 +69,6 @@ export default {
       const handleIcon = this.svgs['scroll-handle'];
 
       return handleIcon ? { handleIcon } : {};
-    },
-    chartOptions() {
-      return {
-        dataZoom: this.dataZoomConfig,
-      };
     },
   },
   created() {
@@ -90,11 +96,7 @@ export default {
 };
 </script>
 <template>
-  <div v-gl-resize-observer-directive="onResize" class="prometheus-graph">
-    <div class="prometheus-graph-header">
-      <h5 ref="graphTitle" class="prometheus-graph-title">{{ graphData.title }}</h5>
-      <div ref="graphWidgets" class="prometheus-graph-widgets"><slot></slot></div>
-    </div>
+  <div v-gl-resize-observer-directive="onResize">
     <gl-column-chart
       ref="columnChart"
       v-bind="$attrs"

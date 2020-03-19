@@ -31,7 +31,7 @@ module VisibilityLevelHelper
   def project_visibility_level_description(level)
     case level
     when Gitlab::VisibilityLevel::PRIVATE
-      _("Project access must be granted explicitly to each user.")
+      _("Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.")
     when Gitlab::VisibilityLevel::INTERNAL
       _("The project can be accessed by any logged in user.")
     when Gitlab::VisibilityLevel::PUBLIC

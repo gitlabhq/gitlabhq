@@ -67,13 +67,13 @@ describe Projects::Tags::ReleasesController do
       expect(response).to have_gitlab_http_status(:found)
     end
 
-    it 'deletes release when description is empty' do
-      initial_releases_count = project.releases.count
+    it 'does not delete release when description is empty' do
+      expect do
+        update_release(tag, "")
+      end.not_to change { project.releases.count }
 
-      response = update_release(release.tag, "")
+      expect(release.reload.description).to eq("")
 
-      expect(initial_releases_count).to eq(1)
-      expect(project.releases.count).to eq(0)
       expect(response).to have_gitlab_http_status(:found)
     end
 

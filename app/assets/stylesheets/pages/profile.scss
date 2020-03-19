@@ -74,17 +74,12 @@
 
 // Middle dot divider between each element in a list of items.
 .middle-dot-divider {
-  &::after {
-    content: '\00B7'; // Middle Dot
-    padding: 0 6px;
-    font-weight: $gl-font-weight-bold;
-  }
+  @include middle-dot-divider;
+}
 
-  &:last-child {
-    &::after {
-      content: '';
-      padding: 0;
-    }
+.middle-dot-divider-sm {
+  @include media-breakpoint-up(sm) {
+    @include middle-dot-divider;
   }
 }
 
@@ -115,6 +110,14 @@
     @include media-breakpoint-up(sm) {
       float: left;
     }
+  }
+}
+
+.ssh-keys-list {
+  .last-used-at,
+  .expires,
+  .key-created-at {
+    line-height: 32px;
   }
 }
 
@@ -194,10 +197,6 @@
 }
 
 .user-profile {
-  .cover-controls a {
-    margin-left: 5px;
-  }
-
   .profile-header {
     margin: 0 $gl-padding;
 

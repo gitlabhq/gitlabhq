@@ -59,9 +59,19 @@ $status-box-line-height: 26px;
   }
 
   .issuable-row {
-    span a {
-      color: $gl-text-color;
-      word-wrap: break-word;
+    span {
+      a {
+        color: $gl-text-color;
+        word-wrap: break-word;
+      }
+
+      .gl-label-link {
+        color: inherit;
+      }
+
+      .gl-label-icon {
+        color: $gray-500;
+      }
     }
   }
 

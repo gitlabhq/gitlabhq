@@ -22,7 +22,7 @@ Read more on [pagination](README.md#pagination).
 
 Gets a list of all notes for a single issue.
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/notes
 GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
 ```
@@ -87,7 +87,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Returns a single note for a specific project issue
 
-```
+```plaintext
 GET /projects/:id/issues/:issue_iid/notes/:note_id
 ```
 
@@ -105,7 +105,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Creates a new note to a single project issue.
 
-```
+```plaintext
 POST /projects/:id/issues/:issue_iid/notes
 ```
 
@@ -124,7 +124,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 
 Modify existing note of an issue.
 
-```
+```plaintext
 PUT /projects/:id/issues/:issue_iid/notes/:note_id
 ```
 
@@ -143,7 +143,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.
 
 Deletes an existing note of an issue.
 
-```
+```plaintext
 DELETE /projects/:id/issues/:issue_iid/notes/:note_id
 ```
 
@@ -165,7 +165,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitl
 
 Gets a list of all notes for a single snippet. Snippet notes are comments users can post to a snippet.
 
-```
+```plaintext
 GET /projects/:id/snippets/:snippet_id/notes
 GET /projects/:id/snippets/:snippet_id/notes?sort=asc&order_by=updated_at
 ```
@@ -185,7 +185,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Returns a single note for a given snippet.
 
-```
+```plaintext
 GET /projects/:id/snippets/:snippet_id/notes/:note_id
 ```
 
@@ -223,7 +223,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 Creates a new note for a single snippet. Snippet notes are comments users can post to a snippet.
 If you create a note where the body only contains an Award Emoji, you'll receive this object back.
 
-```
+```plaintext
 POST /projects/:id/snippets/:snippet_id/notes
 ```
 
@@ -242,7 +242,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 
 Modify existing note of a snippet.
 
-```
+```plaintext
 PUT /projects/:id/snippets/:snippet_id/notes/:note_id
 ```
 
@@ -261,7 +261,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.
 
 Deletes an existing note of a snippet.
 
-```
+```plaintext
 DELETE /projects/:id/snippets/:snippet_id/notes/:note_id
 ```
 
@@ -283,7 +283,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitl
 
 Gets a list of all notes for a single merge request.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/notes
 GET /projects/:id/merge_requests/:merge_request_iid/notes?sort=asc&order_by=updated_at
 ```
@@ -303,7 +303,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Returns a single note for a given merge request.
 
-```
+```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/notes/:note_id
 ```
 
@@ -346,7 +346,7 @@ Creates a new note for a single merge request.
 If you create a note where the body only contains an Award Emoji, you'll receive
 this object back.
 
-```
+```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/notes
 ```
 
@@ -361,7 +361,7 @@ Parameters:
 
 Modify existing note of a merge request.
 
-```
+```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/notes/:note_id
 ```
 
@@ -380,7 +380,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.
 
 Deletes an existing note of a merge request.
 
-```
+```plaintext
 DELETE /projects/:id/merge_requests/:merge_request_iid/notes/:note_id
 ```
 
@@ -402,7 +402,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitl
 
 Gets a list of all notes for a single epic. Epic notes are comments users can post to an epic.
 
-```
+```plaintext
 GET /groups/:id/epics/:epic_id/notes
 GET /groups/:id/epics/:epic_id/notes?sort=asc&order_by=updated_at
 ```
@@ -422,7 +422,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Returns a single note for a given epic.
 
-```
+```plaintext
 GET /groups/:id/epics/:epic_id/notes/:note_id
 ```
 
@@ -462,7 +462,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 Creates a new note for a single epic. Epic notes are comments users can post to an epic.
 If you create a note where the body only contains an Award Emoji, you'll receive this object back.
 
-```
+```plaintext
 POST /groups/:id/epics/:epic_id/notes
 ```
 
@@ -482,7 +482,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 
 Modify existing note of an epic.
 
-```
+```plaintext
 PUT /groups/:id/epics/:epic_id/notes/:note_id
 ```
 
@@ -503,7 +503,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.
 
 Deletes an existing note of an epic.
 
-```
+```plaintext
 DELETE /groups/:id/epics/:epic_id/notes/:note_id
 ```
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::ResetMergeStatus, :migration, schema: 20190528180441 do
+describe Gitlab::BackgroundMigration::ResetMergeStatus, schema: 20190528180441 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:namespace) { namespaces.create(name: 'gitlab', path: 'gitlab-org') }

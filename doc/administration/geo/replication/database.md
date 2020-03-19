@@ -469,7 +469,7 @@ work:
 
 1. On the **primary** Geo database, enter the PostgreSQL on the console as an
    admin user. If you are using an Omnibus-managed database, log onto the **primary**
-   node that is running the PostgreSQL database (the default Omnibus database name is gitlabhq_production):
+   node that is running the PostgreSQL database (the default Omnibus database name is `gitlabhq_production`):
 
    ```shell
     sudo \
@@ -495,7 +495,7 @@ work:
 
 1. On the **secondary** nodes, change `/etc/gitlab/gitlab.rb`:
 
-   ```
+   ```ruby
    geo_postgresql['fdw_external_user'] = 'gitlab_geo_fdw'
    ```
 

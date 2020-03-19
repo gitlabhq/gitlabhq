@@ -61,8 +61,6 @@ module Gitlab
             description: 'Default artifacts.',
             inherit: false
 
-          helpers :before_script, :image, :services, :after_script, :cache
-
           private
 
           def overwrite_entry(deps, key, current_entry)

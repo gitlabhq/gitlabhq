@@ -1,5 +1,4 @@
 <script>
-import _ from 'underscore';
 import { GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -48,7 +47,7 @@ export default {
   },
   computed: {
     isSearchEmpty() {
-      return _.isEmpty(this.search);
+      return !this.search.length;
     },
     showSuggestions() {
       return !this.isSearchEmpty && this.issues.length && !this.loading;

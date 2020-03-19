@@ -13,7 +13,7 @@ resources available online.
 
 Get all license templates.
 
-```
+```plaintext
 GET /templates/licenses
 ```
 
@@ -110,7 +110,7 @@ Example response:
 Get a single license template. You can pass parameters to replace the license
 placeholder.
 
-```
+```plaintext
 GET /templates/licenses/:key
 ```
 

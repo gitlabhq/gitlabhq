@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# This is needed for sidekiq-cluster
+require 'json'
+
 module Gitlab
   module SidekiqLogging
     class JSONFormatter

@@ -214,22 +214,96 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
       it { is_expected.to be_a(::Ci::Build) }
       it { is_expected.to be_valid }
 
-      context 'when job has environment name' do
-        let(:attributes) { { name: 'rspec', ref: 'master', environment: 'production' } }
-
+      shared_examples_for 'deployment job' do
         it 'returns a job with deployment' do
           expect(subject.deployment).not_to be_nil
           expect(subject.deployment.deployable).to eq(subject)
-          expect(subject.deployment.environment.name).to eq('production')
+          expect(subject.deployment.environment.name).to eq(expected_environment_name)
         end
+      end
+
+      shared_examples_for 'non-deployment job' do
+        it 'returns a job without deployment' do
+          expect(subject.deployment).to be_nil
+        end
+      end
+
+      shared_examples_for 'ensures environment existence' do
+        it 'has environment' do
+          expect(subject).to be_has_environment
+          expect(subject.environment).to eq(environment_name)
+          expect(subject.metadata.expanded_environment_name).to eq(expected_environment_name)
+          expect(Environment.exists?(name: expected_environment_name)).to eq(true)
+        end
+      end
+
+      shared_examples_for 'ensures environment inexistence' do
+        it 'does not have environment' do
+          expect(subject).not_to be_has_environment
+          expect(subject.environment).to be_nil
+          expect(subject.metadata.expanded_environment_name).to be_nil
+          expect(Environment.exists?(name: expected_environment_name)).to eq(false)
+        end
+      end
+
+      context 'when job deploys to production' do
+        let(:environment_name) { 'production' }
+        let(:expected_environment_name) { 'production' }
+        let(:attributes) { { name: 'deploy', ref: 'master', environment: 'production' } }
+
+        it_behaves_like 'deployment job'
+        it_behaves_like 'ensures environment existence'
 
         context 'when the environment name is invalid' do
-          let(:attributes) { { name: 'rspec', ref: 'master', environment: '!!!' } }
+          let(:attributes) { { name: 'deploy', ref: 'master', environment: '!!!' } }
 
-          it 'returns a job without deployment' do
-            expect(subject.deployment).to be_nil
+          it_behaves_like 'non-deployment job'
+          it_behaves_like 'ensures environment inexistence'
+
+          it 'tracks an exception' do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception)
+              .with(an_instance_of(described_class::EnvironmentCreationFailure),
+                    project_id: project.id,
+                    reason: %q{Name can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.', and spaces, but it cannot start or end with '/'})
+              .once
+
+            subject
           end
         end
+      end
+
+      context 'when job starts a review app' do
+        let(:environment_name) { 'review/$CI_COMMIT_REF_NAME' }
+        let(:expected_environment_name) { "review/#{pipeline.ref}" }
+
+        let(:attributes) do
+          {
+            name: 'deploy', ref: 'master', environment: environment_name,
+            options: { environment: { name: environment_name } }
+          }
+        end
+
+        it_behaves_like 'deployment job'
+        it_behaves_like 'ensures environment existence'
+      end
+
+      context 'when job stops a review app' do
+        let(:environment_name) { 'review/$CI_COMMIT_REF_NAME' }
+        let(:expected_environment_name) { "review/#{pipeline.ref}" }
+
+        let(:attributes) do
+          {
+            name: 'deploy', ref: 'master', environment: environment_name,
+            options: { environment: { name: environment_name, action: 'stop' } }
+          }
+        end
+
+        it 'returns a job without deployment' do
+          expect(subject.deployment).to be_nil
+        end
+
+        it_behaves_like 'non-deployment job'
+        it_behaves_like 'ensures environment existence'
       end
 
       context 'when job belongs to a resource group' do

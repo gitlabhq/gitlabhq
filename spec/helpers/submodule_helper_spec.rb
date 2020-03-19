@@ -23,14 +23,30 @@ describe SubmoduleHelper do
       it 'detects ssh on standard port' do
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(22) # set this just to be sure
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
-        stub_url([config.user, '@', config.host, ':gitlab-org/gitlab-foss.git'].join(''))
+        stub_url([config.ssh_user, '@', config.host, ':gitlab-org/gitlab-foss.git'].join(''))
+        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
+      end
+
+      it 'detects ssh on standard port without a username' do
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(22) # set this just to be sure
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_user).and_return('')
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
+        stub_url([config.host, ':gitlab-org/gitlab-foss.git'].join(''))
         expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
       end
 
       it 'detects ssh on non-standard port' do
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(2222)
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
-        stub_url(['ssh://', config.user, '@', config.host, ':2222/gitlab-org/gitlab-foss.git'].join(''))
+        stub_url(['ssh://', config.ssh_user, '@', config.host, ':2222/gitlab-org/gitlab-foss.git'].join(''))
+        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
+      end
+
+      it 'detects ssh on non-standard port without a username' do
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(2222)
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_user).and_return('')
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
+        stub_url(['ssh://', config.host, ':2222/gitlab-org/gitlab-foss.git'].join(''))
         expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
       end
 
@@ -62,6 +78,33 @@ describe SubmoduleHelper do
         allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
         stub_url(['http://', config.host, '/gitlab/root/gitlab-org/sub/gitlab-foss.git'].join(''))
         expect(subject).to eq([namespace_project_path('gitlab-org/sub', 'gitlab-foss'), namespace_project_tree_path('gitlab-org/sub', 'gitlab-foss', 'hash')])
+      end
+    end
+
+    context 'submodule on gist.github.com' do
+      it 'detects ssh' do
+        stub_url('git@gist.github.com:gitlab-org/gitlab-foss.git')
+        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+      end
+
+      it 'detects http' do
+        stub_url('http://gist.github.com/gitlab-org/gitlab-foss.git')
+        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+      end
+
+      it 'detects https' do
+        stub_url('https://gist.github.com/gitlab-org/gitlab-foss.git')
+        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+      end
+
+      it 'handles urls with no .git on the end' do
+        stub_url('http://gist.github.com/gitlab-org/gitlab-foss')
+        is_expected.to eq(['https://gist.github.com/gitlab-org/gitlab-foss', 'https://gist.github.com/gitlab-org/gitlab-foss/hash'])
+      end
+
+      it 'returns original with non-standard url' do
+        stub_url('http://gist.github.com/another/gitlab-org/gitlab-foss.git')
+        is_expected.to eq([repo.submodule_url_for, nil])
       end
     end
 

@@ -1,5 +1,6 @@
 import { editor as monacoEditor, Uri } from 'monaco-editor';
 import Editor from '~/editor/editor_lite';
+import { DEFAULT_THEME, themes } from '~/ide/lib/themes';
 
 describe('Base editor', () => {
   let editorEl;
@@ -106,6 +107,54 @@ describe('Base editor', () => {
 
       expect(spy).not.toHaveBeenCalled();
       expect(editor.model.getLanguageIdentifier().language).toEqual('plaintext');
+    });
+  });
+
+  describe('syntax highlighting theme', () => {
+    let themeDefineSpy;
+    let themeSetSpy;
+    let defaultScheme;
+
+    beforeEach(() => {
+      themeDefineSpy = spyOn(monacoEditor, 'defineTheme');
+      themeSetSpy = spyOn(monacoEditor, 'setTheme');
+      defaultScheme = window.gon.user_color_scheme;
+    });
+
+    afterEach(() => {
+      window.gon.user_color_scheme = defaultScheme;
+    });
+
+    it('sets default syntax highlighting theme', () => {
+      const expectedTheme = themes.find(t => t.name === DEFAULT_THEME);
+
+      editor = new Editor();
+
+      expect(themeDefineSpy).toHaveBeenCalledWith(DEFAULT_THEME, expectedTheme.data);
+      expect(themeSetSpy).toHaveBeenCalledWith(DEFAULT_THEME);
+    });
+
+    it('sets correct theme if it is set in users preferences', () => {
+      const expectedTheme = themes.find(t => t.name !== DEFAULT_THEME);
+
+      expect(expectedTheme.name).not.toBe(DEFAULT_THEME);
+
+      window.gon.user_color_scheme = expectedTheme.name;
+      editor = new Editor();
+
+      expect(themeDefineSpy).toHaveBeenCalledWith(expectedTheme.name, expectedTheme.data);
+      expect(themeSetSpy).toHaveBeenCalledWith(expectedTheme.name);
+    });
+
+    it('falls back to default theme if a selected one is not supported yet', () => {
+      const name = 'non-existent-theme';
+      const nonExistentTheme = { name };
+
+      window.gon.user_color_scheme = nonExistentTheme.name;
+      editor = new Editor();
+
+      expect(themeDefineSpy).not.toHaveBeenCalled();
+      expect(themeSetSpy).toHaveBeenCalledWith(DEFAULT_THEME);
     });
   });
 });

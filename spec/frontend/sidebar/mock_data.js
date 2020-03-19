@@ -178,8 +178,17 @@ const RESPONSE_MAP = {
   },
 };
 
+const graphQlResponseData = {
+  project: {
+    issue: {
+      healthStatus: 'onTrack',
+    },
+  },
+};
+
 const mockData = {
   responseMap: RESPONSE_MAP,
+  graphQlResponseData,
   mediator: {
     endpoint: '/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar_extras',
     toggleSubscriptionEndpoint: '/gitlab-org/gitlab-shell/issues/5/toggle_subscription',
@@ -195,6 +204,7 @@ const mockData = {
     },
     rootPath: '/',
     fullPath: '/gitlab-org/gitlab-shell',
+    iid: 1,
   },
   time: {
     time_estimate: 3600,

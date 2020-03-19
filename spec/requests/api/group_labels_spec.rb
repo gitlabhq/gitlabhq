@@ -15,7 +15,7 @@ describe API::GroupLabels do
     it 'returns all available labels for the group' do
       get api("/groups/#{group.id}/labels", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response).to all(match_schema('public_api/v4/labels/label'))
@@ -27,7 +27,7 @@ describe API::GroupLabels do
       it 'includes counts in the response' do
         get api("/groups/#{group.id}/labels", user), params: { with_counts: true }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response).to all(match_schema('public_api/v4/labels/label_with_counts'))
@@ -42,7 +42,7 @@ describe API::GroupLabels do
       it 'returns all available labels for the group and ancestor groups' do
         get api("/groups/#{subgroup.id}/labels", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response).to all(match_schema('public_api/v4/labels/label'))
@@ -55,7 +55,7 @@ describe API::GroupLabels do
       it 'returns all available labels for the group but not for ancestor groups' do
         get api("/groups/#{subgroup.id}/labels", user), params: { include_ancestor_groups: false }
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response).to all(match_schema('public_api/v4/labels/label'))
@@ -69,7 +69,7 @@ describe API::GroupLabels do
     it 'returns a single label for the group' do
       get api("/groups/#{group.id}/labels/#{group_label1.name}", user)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['name']).to eq(group_label1.name)
       expect(json_response['color']).to eq(group_label1.color)
       expect(json_response['description']).to eq(group_label1.description)
@@ -85,7 +85,7 @@ describe API::GroupLabels do
              description: 'test'
            }
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq('Foo')
       expect(json_response['color']).to eq('#FFAABB')
       expect(json_response['description']).to eq('test')
@@ -107,13 +107,13 @@ describe API::GroupLabels do
     it 'returns a 400 bad request if name not given' do
       post api("/groups/#{group.id}/labels", user), params: { color: '#FFAABB' }
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'returns a 400 bad request if color is not given' do
       post api("/groups/#{group.id}/labels", user), params: { name: 'Foobar' }
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it 'returns 409 if label already exists' do
@@ -123,7 +123,7 @@ describe API::GroupLabels do
              color: '#FFAABB'
            }
 
-      expect(response).to have_gitlab_http_status(409)
+      expect(response).to have_gitlab_http_status(:conflict)
       expect(json_response['message']).to eq('Label already exists')
     end
   end
@@ -132,20 +132,20 @@ describe API::GroupLabels do
     it 'returns 204 for existing label' do
       delete api("/groups/#{group.id}/labels", user), params: { name: group_label1.name }
 
-      expect(response).to have_gitlab_http_status(204)
+      expect(response).to have_gitlab_http_status(:no_content)
     end
 
     it 'returns 404 for non existing label' do
       delete api("/groups/#{group.id}/labels", user), params: { name: 'not_exists' }
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Label Not Found')
     end
 
     it 'returns 400 for wrong parameters' do
       delete api("/groups/#{group.id}/labels", user)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "does not delete parent's group labels" do
@@ -154,7 +154,7 @@ describe API::GroupLabels do
 
       delete api("/groups/#{subgroup.id}/labels", user), params: { name: subgroup_label.name }
 
-      expect(response).to have_gitlab_http_status(204)
+      expect(response).to have_gitlab_http_status(:no_content)
       expect(subgroup.labels.size).to eq(0)
       expect(group.labels).to include(group_label1)
     end
@@ -169,13 +169,13 @@ describe API::GroupLabels do
     it 'returns 204 for existing label' do
       delete api("/groups/#{group.id}/labels/#{group_label1.name}", user)
 
-      expect(response).to have_gitlab_http_status(204)
+      expect(response).to have_gitlab_http_status(:no_content)
     end
 
     it 'returns 404 for non existing label' do
       delete api("/groups/#{group.id}/labels/not_exists", user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Label Not Found')
     end
 
@@ -185,7 +185,7 @@ describe API::GroupLabels do
 
       delete api("/groups/#{subgroup.id}/labels/#{subgroup_label.name}", user)
 
-      expect(response).to have_gitlab_http_status(204)
+      expect(response).to have_gitlab_http_status(:no_content)
       expect(subgroup.labels.size).to eq(0)
       expect(group.labels).to include(group_label1)
     end
@@ -205,7 +205,7 @@ describe API::GroupLabels do
             description: 'test'
           }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['name']).to eq('New Label')
       expect(json_response['color']).to eq('#FFFFFF')
       expect(json_response['description']).to eq('test')
@@ -221,7 +221,7 @@ describe API::GroupLabels do
             new_name: 'New Label'
           }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(subgroup.labels[0].name).to eq('New Label')
       expect(group_label1.name).to eq('feature')
     end
@@ -233,20 +233,20 @@ describe API::GroupLabels do
             new_name: 'label3'
           }
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns 400 if no label name given' do
       put api("/groups/#{group.id}/labels", user), params: { new_name: group_label1.name }
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('label_id, name are missing, exactly one parameter must be provided')
     end
 
     it 'returns 400 if no new parameters given' do
       put api("/groups/#{group.id}/labels", user), params: { name: group_label1.name }
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('new_name, color, description are missing, '\
                                            'at least one parameter must be provided')
     end
@@ -261,7 +261,7 @@ describe API::GroupLabels do
             description: 'test'
           }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['name']).to eq('New Label')
       expect(json_response['color']).to eq('#FFFFFF')
       expect(json_response['description']).to eq('test')
@@ -276,7 +276,7 @@ describe API::GroupLabels do
             new_name: 'New Label'
           }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(subgroup.labels[0].name).to eq('New Label')
       expect(group_label1.name).to eq('feature')
     end
@@ -287,13 +287,13 @@ describe API::GroupLabels do
             new_name: 'label3'
           }
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns 400 if no new parameters given' do
       put api("/groups/#{group.id}/labels/#{group_label1.name}", user)
 
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('new_name, color, description are missing, '\
                                            'at least one parameter must be provided')
     end
@@ -304,7 +304,7 @@ describe API::GroupLabels do
       it 'subscribes to the label' do
         post api("/groups/#{group.id}/labels/#{group_label1.title}/subscribe", user)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(group_label1.title)
         expect(json_response['subscribed']).to be_truthy
       end
@@ -314,7 +314,7 @@ describe API::GroupLabels do
       it 'subscribes to the label' do
         post api("/groups/#{group.id}/labels/#{group_label1.id}/subscribe", user)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(group_label1.title)
         expect(json_response['subscribed']).to be_truthy
       end
@@ -328,7 +328,7 @@ describe API::GroupLabels do
       it 'returns 304' do
         post api("/groups/#{group.id}/labels/#{group_label1.id}/subscribe", user)
 
-        expect(response).to have_gitlab_http_status(304)
+        expect(response).to have_gitlab_http_status(:not_modified)
       end
     end
 
@@ -336,7 +336,7 @@ describe API::GroupLabels do
       it 'returns 404 error' do
         post api("/groups/#{group.id}/labels/1234/subscribe", user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -350,7 +350,7 @@ describe API::GroupLabels do
       it 'unsubscribes from the label' do
         post api("/groups/#{group.id}/labels/#{group_label1.title}/unsubscribe", user)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(group_label1.title)
         expect(json_response['subscribed']).to be_falsey
       end
@@ -360,7 +360,7 @@ describe API::GroupLabels do
       it 'unsubscribes from the label' do
         post api("/groups/#{group.id}/labels/#{group_label1.id}/unsubscribe", user)
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq(group_label1.title)
         expect(json_response['subscribed']).to be_falsey
       end
@@ -374,7 +374,7 @@ describe API::GroupLabels do
       it 'returns 304' do
         post api("/groups/#{group.id}/labels/#{group_label1.id}/unsubscribe", user)
 
-        expect(response).to have_gitlab_http_status(304)
+        expect(response).to have_gitlab_http_status(:not_modified)
       end
     end
 
@@ -382,7 +382,7 @@ describe API::GroupLabels do
       it 'returns 404 error' do
         post api("/groups/#{group.id}/labels/1234/unsubscribe", user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

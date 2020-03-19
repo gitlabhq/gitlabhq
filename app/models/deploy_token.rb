@@ -105,7 +105,7 @@ class DeployToken < ApplicationRecord
   end
 
   def ensure_at_least_one_scope
-    errors.add(:base, "Scopes can't be blank") unless read_repository || read_registry
+    errors.add(:base, _("Scopes can't be blank")) unless read_repository || read_registry
   end
 
   def default_username

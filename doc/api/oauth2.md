@@ -49,7 +49,7 @@ The web application flow is:
 1. Request authorization code. To do that, you should redirect the user to the
    `/oauth/authorize` endpoint with the following GET parameters:
 
-   ```
+   ```plaintext
    https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES
    ```
 
@@ -60,7 +60,7 @@ The web application flow is:
    would request `read_user` and `profile` scopes). The redirect will
    include the GET `code` parameter, for example:
 
-   ```
+   ```plaintext
    http://myapp.com/oauth/redirect?code=1234567890&state=YOUR_UNIQUE_STATE_HASH
    ```
 
@@ -112,7 +112,7 @@ easily accessible, therefore secrets can leak easily.
 To request the access token, you should redirect the user to the
 `/oauth/authorize` endpoint using `token` response type:
 
-```
+```plaintext
 https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=token&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES
 ```
 
@@ -124,7 +124,7 @@ would request `read_user` and `profile` scopes). The redirect
 will include a fragment with `access_token` as well as token details in GET
 parameters, for example:
 
-```
+```plaintext
 http://myapp.com/oauth/redirect#access_token=ABCDExyz123&state=YOUR_UNIQUE_STATE_HASH&token_type=bearer&expires_in=3600
 ```
 
@@ -182,7 +182,7 @@ curl --data "@auth.txt" --request POST https://gitlab.example.com/oauth/token
 
 Then, you'll receive the access token back in the response:
 
-```
+```json
 {
   "access_token": "1f0af717251950dbd4d73154fdf0a474a5c5119adad999683f5b450c460726aa",
   "token_type": "bearer",
@@ -192,7 +192,7 @@ Then, you'll receive the access token back in the response:
 
 For testing, you can use the `oauth2` Ruby gem:
 
-```
+```ruby
 client = OAuth2::Client.new('the_client_id', 'the_client_secret', :site => "http://example.com")
 access_token = client.password.get_token('user@example.com', 'secret')
 puts access_token.token
@@ -203,33 +203,36 @@ puts access_token.token
 The `access token` allows you to make requests to the API on behalf of a user.
 You can pass the token either as GET parameter:
 
-```
+```plaintext
 GET https://gitlab.example.com/api/v4/user?access_token=OAUTH-TOKEN
 ```
 
 or you can put the token to the Authorization header:
 
-```
+```shell
 curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v4/user
 ```
 
 ## Retrieving the Token Info
 
-To verify the details of a token you can call the `token/info` endpoint. This is provided from the doorkeeper gem (see [`/oauth/token/info`](https://github.com/doorkeeper-gem/doorkeeper/wiki/API-endpoint-descriptions-and-examples#get----oauthtokeninfo)).
+To verify the details of a token, use the `token/info` endpoint provided by the Doorkeeper gem.
+For more information, see [`/oauth/token/info`](https://github.com/doorkeeper-gem/doorkeeper/wiki/API-endpoint-descriptions-and-examples#get----oauthtokeninfo).
 
-You will need to supply the access token, either as a parameter
+You must supply the access token, either:
 
-```
-GET https://gitlab.example.com/oauth/token/info?access_token=OAUTH-TOKEN
-```
+- As a parameter:
 
-Or in the Authorization header:
+   ```plaintext
+   GET https://gitlab.example.com/oauth/token/info?access_token=<OAUTH-TOKEN>
+   ```
 
-```
-curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/oauth/token/info
-```
+- In the Authorization header:
 
-You will receive the following in response:
+   ```shell
+   curl --header "Authorization: Bearer <OAUTH-TOKEN>" https://gitlab.example.com/oauth/token/info
+   ```
+
+The following is an example response:
 
 ```json
 {
@@ -241,5 +244,11 @@ You will receive the following in response:
 }
 ```
 
-CAUTION: **Deprecated fields:**
-The fields `scopes` and `expires_in_seconds` are also included in the response. They are aliases for `scope` and `expires_in` respectively and have been included to prevent breaking changes introduced in [doorkeeper 5.0.2](https://github.com/doorkeeper-gem/doorkeeper/wiki/Migration-from-old-versions#from-4x-to-5x). Please don't rely on these fields as they will be removed in a later release.
+### Deprecated fields
+
+The fields `scopes` and `expires_in_seconds` are included in the response.
+
+These are aliases for `scope` and `expires_in` respectively, and have been included to
+prevent breaking changes introduced in [doorkeeper 5.0.2](https://github.com/doorkeeper-gem/doorkeeper/wiki/Migration-from-old-versions#from-4x-to-5x).
+
+Don't rely on these fields as they will be removed in a later release.

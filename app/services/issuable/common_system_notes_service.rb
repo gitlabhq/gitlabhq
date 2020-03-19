@@ -22,12 +22,16 @@ module Issuable
         end
 
         create_due_date_note if issuable.previous_changes.include?('due_date')
-        create_milestone_note if issuable.previous_changes.include?('milestone_id')
+        create_milestone_note if has_milestone_changes?
         create_labels_note(old_labels) if old_labels && issuable.labels != old_labels
       end
     end
 
     private
+
+    def has_milestone_changes?
+      issuable.previous_changes.include?('milestone_id')
+    end
 
     def handle_time_tracking_note
       if issuable.previous_changes.include?('time_estimate')
@@ -95,7 +99,16 @@ module Issuable
     end
 
     def create_milestone_note
-      SystemNoteService.change_milestone(issuable, issuable.project, current_user, issuable.milestone)
+      if milestone_changes_tracking_enabled?
+        # Creates a synthetic note
+        ResourceEvents::ChangeMilestoneService.new(issuable, current_user).execute
+      else
+        SystemNoteService.change_milestone(issuable, issuable.project, current_user, issuable.milestone)
+      end
+    end
+
+    def milestone_changes_tracking_enabled?
+      ::Feature.enabled?(:track_resource_milestone_change_events, issuable.project)
     end
 
     def create_due_date_note

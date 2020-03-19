@@ -4,7 +4,7 @@
 
 Get a list of repository commits in a project.
 
-```
+```plaintext
 GET /projects/:id/repository/commits
 ```
 
@@ -32,8 +32,8 @@ Example response:
     "id": "ed899a2f4b50b4370feeea94676502b42383c746",
     "short_id": "ed899a2f4b5",
     "title": "Replace sanitize with escape once",
-    "author_name": "Dmitriy Zaporozhets",
-    "author_email": "dzaporozhets@sphereconsultinginc.com",
+    "author_name": "Example User",
+    "author_email": "user@example.com",
     "authored_date": "2012-09-20T11:50:22+03:00",
     "committer_name": "Administrator",
     "committer_email": "admin@example.com",
@@ -42,21 +42,23 @@ Example response:
     "message": "Replace sanitize with escape once",
     "parent_ids": [
       "6104942438c14ec7bd21c6cd5bd995272b3faff6"
-    ]
+    ],
+    "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
   },
   {
     "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
     "short_id": "6104942438c",
     "title": "Sanitize for network graph",
     "author_name": "randx",
-    "author_email": "dmitriy.zaporozhets@gmail.com",
-    "committer_name": "Dmitriy",
-    "committer_email": "dmitriy.zaporozhets@gmail.com",
+    "author_email": "user@example.com",
+    "committer_name": "ExampleName",
+    "committer_email": "user@example.com",
     "created_at": "2012-09-20T09:06:12+03:00",
     "message": "Sanitize for network graph",
     "parent_ids": [
       "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
-    ]
+    ],
+    "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
   }
 ]
 ```
@@ -67,7 +69,7 @@ Example response:
 
 Create a commit by posting a JSON payload
 
-```
+```plaintext
 POST /projects/:id/repository/commits
 ```
 
@@ -140,10 +142,10 @@ Example response:
   "id": "ed899a2f4b50b4370feeea94676502b42383c746",
   "short_id": "ed899a2f4b5",
   "title": "some commit message",
-  "author_name": "Dmitriy Zaporozhets",
-  "author_email": "dzaporozhets@sphereconsultinginc.com",
-  "committer_name": "Dmitriy Zaporozhets",
-  "committer_email": "dzaporozhets@sphereconsultinginc.com",
+  "author_name": "Example User",
+  "author_email": "user@example.com",
+  "committer_name": "Example User",
+  "committer_email": "user@example.com",
   "created_at": "2016-09-20T09:26:24.000-07:00",
   "message": "some commit message",
   "parent_ids": [
@@ -156,7 +158,8 @@ Example response:
     "deletions": 2,
     "total": 4
   },
-  "status": null
+  "status": null,
+  "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
 }
 ```
 
@@ -190,7 +193,7 @@ curl --request POST \
 
 Get a specific commit identified by the commit hash or name of a branch or tag.
 
-```
+```plaintext
 GET /projects/:id/repository/commits/:sha
 ```
 
@@ -214,9 +217,9 @@ Example response:
   "short_id": "6104942438c",
   "title": "Sanitize for network graph",
   "author_name": "randx",
-  "author_email": "dmitriy.zaporozhets@gmail.com",
+  "author_email": "user@example.com",
   "committer_name": "Dmitriy",
-  "committer_email": "dmitriy.zaporozhets@gmail.com",
+  "committer_email": "user@example.com",
   "created_at": "2012-09-20T09:06:12+03:00",
   "message": "Sanitize for network graph",
   "committed_date": "2012-09-20T09:06:12+03:00",
@@ -235,7 +238,8 @@ Example response:
     "deletions": 10,
     "total": 25
   },
-  "status": "running"
+  "status": "running",
+  "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/6104942438c14ec7bd21c6cd5bd995272b3faff6"
 }
 ```
 
@@ -246,7 +250,7 @@ Example response:
 Get all references (from branches or tags) a commit is pushed to.
 The pagination parameters `page` and `per_page` can be used to restrict the list of references.
 
-```
+```plaintext
 GET /projects/:id/repository/commits/:sha/refs
 ```
 
@@ -280,7 +284,7 @@ Example response:
 
 Cherry picks a commit to a given branch.
 
-```
+```plaintext
 POST /projects/:id/repository/commits/:sha/cherry_pick
 ```
 
@@ -303,18 +307,19 @@ Example response:
   "id": "8b090c1b79a14f2bd9e8a738f717824ff53aebad",
   "short_id": "8b090c1b",
   "title": "Feature added",
-  "author_name": "Dmitriy Zaporozhets",
-  "author_email": "dmitriy.zaporozhets@gmail.com",
+  "author_name": "Example User",
+  "author_email": "user@example.com",
   "authored_date": "2016-12-12T20:10:39.000+01:00",
   "created_at": "2016-12-12T20:10:39.000+01:00",
   "committer_name": "Administrator",
   "committer_email": "admin@example.com",
   "committed_date": "2016-12-12T20:10:39.000+01:00",
   "title": "Feature added",
-  "message": "Feature added\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
+  "message": "Feature added\n\nSigned-off-by: Example User <user@example.com>\n",
   "parent_ids": [
     "a738f717824ff53aebad8b090c1b79a14f2bd9e8"
-  ]
+  ],
+  "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/8b090c1b79a14f2bd9e8a738f717824ff53aebad"
 }
 ```
 
@@ -339,7 +344,7 @@ conflict.
 
 Reverts a commit in a given branch.
 
-```
+```plaintext
 POST /projects/:id/repository/commits/:sha/revert
 ```
 
@@ -370,7 +375,8 @@ Example response:
   "authored_date":"2018-11-08T15:55:26.000Z",
   "committer_name":"Administrator",
   "committer_email":"admin@example.com",
-  "committed_date":"2018-11-08T15:55:26.000Z"
+  "committed_date":"2018-11-08T15:55:26.000Z",
+  "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/8b090c1b79a14f2bd9e8a738f717824ff53aebad"
 }
 ```
 
@@ -391,7 +397,7 @@ changeset was empty, likely due to the change having already been reverted.
 
 Get the diff of a commit in a project.
 
-```
+```plaintext
 GET /projects/:id/repository/commits/:sha/diff
 ```
 
@@ -427,7 +433,7 @@ Example response:
 
 Get the comments of a commit in a project.
 
-```
+```plaintext
 GET /projects/:id/repository/commits/:sha/comments
 ```
 
@@ -478,7 +484,7 @@ cases below is valid:
 In any of the above cases, the response of `line`, `line_type` and `path` is
 set to `null`.
 
-```
+```plaintext
 POST /projects/:id/repository/commits/:sha/comments
 ```
 
@@ -524,7 +530,7 @@ Since GitLab 8.1, this is the new commit status API.
 List the statuses of a commit in a project.
 The pagination parameters `page` and `per_page` can be used to restrict the list of references.
 
-```
+```plaintext
 GET /projects/:id/repository/commits/:sha/statuses
 ```
 
@@ -598,7 +604,7 @@ Example response:
 
 Adds or updates a build status of a commit.
 
-```
+```plaintext
 POST /projects/:id/statuses/:sha
 ```
 
@@ -651,7 +657,7 @@ Example response:
 
 Get a list of Merge Requests related to the specified commit.
 
-```
+```plaintext
 GET /projects/:id/repository/commits/:sha/merge_requests
 ```
 
@@ -720,7 +726,7 @@ Example response:
 Get the [GPG signature from a commit](../user/project/repository/gpg_signed_commits/index.md),
 if it is signed. For unsigned commits, it results in a 404 response.
 
-```
+```plaintext
 GET /projects/:id/repository/commits/:sha/signature
 ```
 

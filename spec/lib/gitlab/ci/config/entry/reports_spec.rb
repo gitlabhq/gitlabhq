@@ -44,6 +44,8 @@ describe Gitlab::Ci::Config::Entry::Reports do
         :license_scanning | 'gl-license-scanning-report.json'
         :performance | 'performance.json'
         :lsif | 'lsif.json'
+        :dotenv | 'build.dotenv'
+        :cobertura | 'cobertura-coverage.xml'
       end
 
       with_them do

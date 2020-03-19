@@ -9,7 +9,6 @@
 # needs any special behavior.
 module HasRepository
   extend ActiveSupport::Concern
-  include Gitlab::ShellAdapter
   include AfterCommitQueue
   include Referable
   include Gitlab::Utils::StrongMemoize
@@ -19,7 +18,7 @@ module HasRepository
   def valid_repo?
     repository.exists?
   rescue
-    errors.add(:path, _('Invalid repository path'))
+    errors.add(:base, _('Invalid repository path'))
     false
   end
 
@@ -78,7 +77,7 @@ module HasRepository
   end
 
   def url_to_repo
-    gitlab_shell.url_to_repo(full_path)
+    Gitlab::Shell.url_to_repo(full_path)
   end
 
   def ssh_url_to_repo

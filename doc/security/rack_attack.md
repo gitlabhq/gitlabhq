@@ -60,7 +60,7 @@ default['gitlab']['gitlab-rails']['rack_attack_protected_paths'] = [
 
 This header is included in responses to blocked requests:
 
-```
+```plaintext
 Retry-After: 60
 ```
 
@@ -109,7 +109,7 @@ No response headers are provided.
 
 1. Reconfigure GitLab:
 
-   ```
+   ```shell
    sudo gitlab-ctl reconfigure
    ```
 
@@ -202,7 +202,7 @@ the load balancer. In that case, you will need to:
 1. Whitelist the load balancer's IP address(es) in the Rack Attack [settings](#settings).
 1. Reconfigure GitLab:
 
-   ```
+   ```shell
    sudo gitlab-ctl reconfigure
    ```
 

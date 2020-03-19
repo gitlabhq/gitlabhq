@@ -344,9 +344,9 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '.with_reports' do
-    subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
-
     context 'when pipeline has a test report' do
+      subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
+
       let!(:pipeline_with_report) { create(:ci_pipeline, :with_test_reports) }
 
       it 'selects the pipeline' do
@@ -354,7 +354,19 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
+    context 'when pipeline has a coverage report' do
+      subject { described_class.with_reports(Ci::JobArtifact.coverage_reports) }
+
+      let!(:pipeline_with_report) { create(:ci_pipeline, :with_coverage_reports) }
+
+      it 'selects the pipeline' do
+        is_expected.to eq([pipeline_with_report])
+      end
+    end
+
     context 'when pipeline does not have metrics reports' do
+      subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
+
       let!(:pipeline_without_report) { create(:ci_empty_pipeline) }
 
       it 'does not select the pipeline' do
@@ -2509,27 +2521,53 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
-    context 'with success pipeline' do
-      before do
-        perform_enqueued_jobs do
+    shared_examples 'enqueues the notification worker' do
+      it 'enqueues PipelineUpdateCiRefStatusWorker' do
+        expect(PipelineUpdateCiRefStatusWorker).to receive(:perform_async).with(pipeline.id)
+        expect(PipelineNotificationWorker).not_to receive(:perform_async).with(pipeline.id)
+
+        pipeline.succeed
+      end
+
+      context 'when ci_pipeline_fixed_notifications is disabled' do
+        before do
+          stub_feature_flags(ci_pipeline_fixed_notifications: false)
+        end
+
+        it 'enqueues PipelineNotificationWorker' do
+          expect(PipelineUpdateCiRefStatusWorker).not_to receive(:perform_async).with(pipeline.id)
+          expect(PipelineNotificationWorker).to receive(:perform_async).with(pipeline.id)
+
           pipeline.succeed
         end
       end
-
-      it_behaves_like 'sending a notification'
     end
 
-    context 'with failed pipeline' do
-      before do
-        perform_enqueued_jobs do
-          create(:ci_build, :failed, pipeline: pipeline)
-          create(:generic_commit_status, :failed, pipeline: pipeline)
-
-          pipeline.drop
+    context 'with success pipeline' do
+      it_behaves_like 'sending a notification' do
+        before do
+          perform_enqueued_jobs do
+            pipeline.succeed
+          end
         end
       end
 
-      it_behaves_like 'sending a notification'
+      it_behaves_like 'enqueues the notification worker'
+    end
+
+    context 'with failed pipeline' do
+      it_behaves_like 'sending a notification' do
+        before do
+          perform_enqueued_jobs do
+            create(:ci_build, :failed, pipeline: pipeline)
+            create(:generic_commit_status, :failed, pipeline: pipeline)
+
+            pipeline.drop
+          end
+        end
+      end
+
+      it_behaves_like 'enqueues the notification worker'
     end
 
     context 'with skipped pipeline' do
@@ -2550,6 +2588,19 @@ describe Ci::Pipeline, :mailer do
       end
 
       it_behaves_like 'not sending any notification'
+    end
+  end
+
+  describe '#find_job_with_archive_artifacts' do
+    let!(:old_job) { create(:ci_build, name: 'rspec', retried: true, pipeline: pipeline) }
+    let!(:job_without_artifacts) { create(:ci_build, name: 'rspec', pipeline: pipeline) }
+    let!(:expected_job) { create(:ci_build, :artifacts, name: 'rspec', pipeline: pipeline ) }
+    let!(:different_job) { create(:ci_build, name: 'deploy', pipeline: pipeline) }
+
+    subject { pipeline.find_job_with_archive_artifacts('rspec') }
+
+    it 'finds the expected job' do
+      expect(subject).to eq(expected_job)
     end
   end
 
@@ -2691,6 +2742,43 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#coverage_reports' do
+    subject { pipeline.coverage_reports }
+
+    context 'when pipeline has multiple builds with coverage reports' do
+      let!(:build_rspec) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline, project: project) }
+      let!(:build_golang) { create(:ci_build, :success, name: 'golang', pipeline: pipeline, project: project) }
+
+      before do
+        create(:ci_job_artifact, :cobertura, job: build_rspec, project: project)
+        create(:ci_job_artifact, :coverage_gocov_xml, job: build_golang, project: project)
+      end
+
+      it 'returns coverage reports with collected data' do
+        expect(subject.files.keys).to match_array([
+          "auth/token.go",
+          "auth/rpccredentials.go",
+          "app/controllers/abuse_reports_controller.rb"
+        ])
+      end
+
+      context 'when builds are retried' do
+        let!(:build_rspec) { create(:ci_build, :retried, :success, name: 'rspec', pipeline: pipeline, project: project) }
+        let!(:build_golang) { create(:ci_build, :retried, :success, name: 'golang', pipeline: pipeline, project: project) }
+
+        it 'does not take retried builds into account' do
+          expect(subject.files).to eql({})
+        end
+      end
+    end
+
+    context 'when pipeline does not have any builds with coverage reports' do
+      it 'returns empty coverage reports' do
+        expect(subject.files).to eql({})
+      end
+    end
+  end
+
   describe '#total_size' do
     let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
     let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
@@ -2809,6 +2897,30 @@ describe Ci::Pipeline, :mailer do
 
       it 'returns empty string' do
         is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '#created_successfully?' do
+    subject { pipeline.created_successfully? }
+
+    context 'when pipeline is not persisted' do
+      let(:pipeline) { build(:ci_pipeline) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when pipeline is persisted' do
+      context 'when pipeline has failure reasons' do
+        let(:pipeline) { create(:ci_pipeline, failure_reason: :config_error) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when pipeline has no failure reasons' do
+        let(:pipeline) { create(:ci_pipeline, failure_reason: nil) }
+
+        it { is_expected.to be_truthy }
       end
     end
   end
@@ -2960,8 +3072,7 @@ describe Ci::Pipeline, :mailer do
           it 'can not update bridge status if is not active' do
             bridge.success!
 
-            expect { pipeline.update_bridge_status! }
-              .to raise_error Ci::Pipeline::BridgeStatusError
+            expect { pipeline.update_bridge_status! }.not_to change { bridge.status }
           end
         end
       end
@@ -2992,9 +3103,12 @@ describe Ci::Pipeline, :mailer do
         end
 
         describe '#update_bridge_status!' do
-          it 'can not update upstream job status' do
-            expect { pipeline.update_bridge_status! }
-              .to raise_error ArgumentError
+          it 'tracks an ArgumentError and does not update upstream job status' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:track_exception)
+              .with(instance_of(ArgumentError), pipeline_id: pipeline.id)
+
+            pipeline.update_bridge_status!
           end
         end
       end

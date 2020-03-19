@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module MailScheduler
-  class IssueDueWorker
+  class IssueDueWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include MailSchedulerQueue
 

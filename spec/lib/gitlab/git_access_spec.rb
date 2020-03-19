@@ -32,8 +32,8 @@ describe Gitlab::GitAccess do
 
       it 'blocks ssh git push and pull' do
         aggregate_failures do
-          expect { push_access_check }.to raise_unauthorized('Git access over SSH is not allowed')
-          expect { pull_access_check }.to raise_unauthorized('Git access over SSH is not allowed')
+          expect { push_access_check }.to raise_forbidden('Git access over SSH is not allowed')
+          expect { pull_access_check }.to raise_forbidden('Git access over SSH is not allowed')
         end
       end
     end
@@ -48,8 +48,8 @@ describe Gitlab::GitAccess do
 
       it 'blocks http push and pull' do
         aggregate_failures do
-          expect { push_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
-          expect { pull_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
+          expect { push_access_check }.to raise_forbidden('Git access over HTTP is not allowed')
+          expect { pull_access_check }.to raise_forbidden('Git access over HTTP is not allowed')
         end
       end
 
@@ -58,7 +58,7 @@ describe Gitlab::GitAccess do
 
         it "doesn't block http pull" do
           aggregate_failures do
-            expect { pull_access_check }.not_to raise_unauthorized('Git access over HTTP is not allowed')
+            expect { pull_access_check }.not_to raise_forbidden('Git access over HTTP is not allowed')
           end
         end
 
@@ -67,7 +67,7 @@ describe Gitlab::GitAccess do
 
           it "doesn't block http pull" do
             aggregate_failures do
-              expect { pull_access_check }.not_to raise_unauthorized('Git access over HTTP is not allowed')
+              expect { pull_access_check }.not_to raise_forbidden('Git access over HTTP is not allowed')
             end
           end
         end
@@ -165,7 +165,7 @@ describe Gitlab::GitAccess do
           end
 
           it 'does not block pushes with "not found"' do
-            expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload])
+            expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload])
           end
         end
 
@@ -178,7 +178,7 @@ describe Gitlab::GitAccess do
             end
 
             it 'blocks the push' do
-              expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
+              expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:upload])
             end
           end
 
@@ -208,7 +208,7 @@ describe Gitlab::GitAccess do
           end
 
           it 'does not block pushes with "not found"' do
-            expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
+            expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:upload])
           end
         end
 
@@ -240,7 +240,7 @@ describe Gitlab::GitAccess do
         let(:access) do
           described_class.new(actor, nil,
             protocol, authentication_abilities: authentication_abilities,
-                      project_path: project_path, namespace_path: namespace_path,
+                      repository_path: project_path, namespace_path: namespace_path,
                       redirected_path: redirected_path)
         end
 
@@ -259,7 +259,7 @@ describe Gitlab::GitAccess do
         let(:access) do
           described_class.new(actor, nil,
             protocol, authentication_abilities: authentication_abilities,
-                      project_path: project_path, namespace_path: namespace_path,
+                      repository_path: project_path, namespace_path: namespace_path,
                       redirected_path: redirected_path)
         end
 
@@ -285,8 +285,8 @@ describe Gitlab::GitAccess do
 
       it 'does not allow keys which are too small', :aggregate_failures do
         expect(actor).not_to be_valid
-        expect { pull_access_check }.to raise_unauthorized('Your SSH key must be at least 4096 bits.')
-        expect { push_access_check }.to raise_unauthorized('Your SSH key must be at least 4096 bits.')
+        expect { pull_access_check }.to raise_forbidden('Your SSH key must be at least 4096 bits.')
+        expect { push_access_check }.to raise_forbidden('Your SSH key must be at least 4096 bits.')
       end
     end
 
@@ -297,8 +297,8 @@ describe Gitlab::GitAccess do
 
       it 'does not allow keys which are too small', :aggregate_failures do
         expect(actor).not_to be_valid
-        expect { pull_access_check }.to raise_unauthorized(/Your SSH key type is forbidden/)
-        expect { push_access_check }.to raise_unauthorized(/Your SSH key type is forbidden/)
+        expect { pull_access_check }.to raise_forbidden(/Your SSH key type is forbidden/)
+        expect { push_access_check }.to raise_forbidden(/Your SSH key type is forbidden/)
       end
     end
   end
@@ -363,7 +363,7 @@ describe Gitlab::GitAccess do
       let(:authentication_abilities) { [] }
 
       it 'raises unauthorized with download error' do
-        expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_download])
+        expect { pull_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_download])
       end
 
       context 'when authentication abilities include download code' do
@@ -387,7 +387,7 @@ describe Gitlab::GitAccess do
       let(:authentication_abilities) { [] }
 
       it 'raises unauthorized with push error' do
-        expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload])
+        expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload])
       end
 
       context 'when authentication abilities include push code' do
@@ -414,7 +414,7 @@ describe Gitlab::GitAccess do
         end
 
         context 'when calling git-upload-pack' do
-          it { expect { pull_access_check }.to raise_unauthorized('Pulling over HTTP is not allowed.') }
+          it { expect { pull_access_check }.to raise_forbidden('Pulling over HTTP is not allowed.') }
         end
 
         context 'when calling git-receive-pack' do
@@ -428,7 +428,7 @@ describe Gitlab::GitAccess do
         end
 
         context 'when calling git-receive-pack' do
-          it { expect { push_access_check }.to raise_unauthorized('Pushing over HTTP is not allowed.') }
+          it { expect { push_access_check }.to raise_forbidden('Pushing over HTTP is not allowed.') }
         end
 
         context 'when calling git-upload-pack' do
@@ -445,7 +445,7 @@ describe Gitlab::GitAccess do
         allow(Gitlab::Database).to receive(:read_only?) { true }
       end
 
-      it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:cannot_push_to_read_only]) }
+      it { expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:cannot_push_to_read_only]) }
     end
   end
 
@@ -453,7 +453,7 @@ describe Gitlab::GitAccess do
     let(:access) do
       described_class.new(actor, project,
         protocol, authentication_abilities: authentication_abilities,
-                  project_path: project_path, namespace_path: namespace_path,
+                  repository_path: project_path, namespace_path: namespace_path,
                   redirected_path: redirected_path)
     end
 
@@ -559,21 +559,21 @@ describe Gitlab::GitAccess do
     it 'disallows guests to pull' do
       project.add_guest(user)
 
-      expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:download])
+      expect { pull_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:download])
     end
 
     it 'disallows blocked users to pull' do
       project.add_maintainer(user)
       user.block
 
-      expect { pull_access_check }.to raise_unauthorized('Your account has been blocked.')
+      expect { pull_access_check }.to raise_forbidden('Your account has been blocked.')
     end
 
     it 'disallows deactivated users to pull' do
       project.add_maintainer(user)
       user.deactivate!
 
-      expect { pull_access_check }.to raise_unauthorized("Your account has been deactivated by your administrator. Please log back in from a web browser to reactivate your account at #{Gitlab.config.gitlab.url}")
+      expect { pull_access_check }.to raise_forbidden("Your account has been deactivated by your administrator. Please log back in from a web browser to reactivate your account at #{Gitlab.config.gitlab.url}")
     end
 
     context 'when the project repository does not exist' do
@@ -598,7 +598,7 @@ describe Gitlab::GitAccess do
         let(:public_project) { create(:project, :public, :repository) }
         let(:project_path) { public_project.path }
         let(:namespace_path) { public_project.namespace.path }
-        let(:access) { described_class.new(nil, public_project, 'web', authentication_abilities: [:download_code], project_path: project_path, namespace_path: namespace_path) }
+        let(:access) { described_class.new(nil, public_project, 'web', authentication_abilities: [:download_code], repository_path: project_path, namespace_path: namespace_path) }
 
         context 'when repository is enabled' do
           it 'give access to download code' do
@@ -610,7 +610,7 @@ describe Gitlab::GitAccess do
           it 'does not give access to download code' do
             public_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
 
-            expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:download])
+            expect { pull_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:download])
           end
         end
       end
@@ -722,7 +722,7 @@ describe Gitlab::GitAccess do
 
         context 'when is not member of the project' do
           context 'pull code' do
-            it { expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:download]) }
+            it { expect { pull_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:download]) }
           end
         end
       end
@@ -828,7 +828,7 @@ describe Gitlab::GitAccess do
                 expect(&check).not_to raise_error,
                   -> { "expected #{action} to be allowed" }
               else
-                expect(&check).to raise_error(Gitlab::GitAccess::UnauthorizedError),
+                expect(&check).to raise_error(Gitlab::GitAccess::ForbiddenError),
                   -> { "expected #{action} to be disallowed" }
               end
             end
@@ -965,7 +965,7 @@ describe Gitlab::GitAccess do
       it 'does not allow deactivated users to push' do
         user.deactivate!
 
-        expect { push_access_check }.to raise_unauthorized("Your account has been deactivated by your administrator. Please log back in from a web browser to reactivate your account at #{Gitlab.config.gitlab.url}")
+        expect { push_access_check }.to raise_forbidden("Your account has been deactivated by your administrator. Please log back in from a web browser to reactivate your account at #{Gitlab.config.gitlab.url}")
       end
 
       it 'cleans up the files' do
@@ -1009,26 +1009,26 @@ describe Gitlab::GitAccess do
         project.add_reporter(user)
       end
 
-      it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
+      it { expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload]) }
     end
 
     context 'when unauthorized' do
       context 'to public project' do
         let(:project) { create(:project, :public, :repository) }
 
-        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
+        it { expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload]) }
       end
 
       context 'to internal project' do
         let(:project) { create(:project, :internal, :repository) }
 
-        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
+        it { expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload]) }
       end
 
       context 'to private project' do
         let(:project) { create(:project, :private, :repository) }
 
-        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:auth_upload]) }
+        it { expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload]) }
       end
     end
   end
@@ -1039,7 +1039,7 @@ describe Gitlab::GitAccess do
     it 'denies push access' do
       project.add_maintainer(user)
 
-      expect { push_access_check }.to raise_unauthorized('The repository is temporarily read-only. Please try again later.')
+      expect { push_access_check }.to raise_forbidden('The repository is temporarily read-only. Please try again later.')
     end
   end
 
@@ -1060,7 +1060,7 @@ describe Gitlab::GitAccess do
         context 'to public project' do
           let(:project) { create(:project, :public, :repository) }
 
-          it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:deploy_key_upload]) }
+          it { expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:deploy_key_upload]) }
         end
 
         context 'to internal project' do
@@ -1083,14 +1083,14 @@ describe Gitlab::GitAccess do
           key.deploy_keys_projects.create(project: project, can_push: false)
         end
 
-        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:deploy_key_upload]) }
+        it { expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:deploy_key_upload]) }
       end
 
       context 'when unauthorized' do
         context 'to public project' do
           let(:project) { create(:project, :public, :repository) }
 
-          it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:deploy_key_upload]) }
+          it { expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:deploy_key_upload]) }
         end
 
         context 'to internal project' do
@@ -1121,7 +1121,7 @@ describe Gitlab::GitAccess do
 
       it 'blocks access when the user did not accept terms', :aggregate_failures do
         actions.each do |action|
-          expect { action.call }.to raise_unauthorized(/must accept the Terms of Service in order to perform this action/)
+          expect { action.call }.to raise_forbidden(/must accept the Terms of Service in order to perform this action/)
         end
       end
 
@@ -1203,7 +1203,7 @@ describe Gitlab::GitAccess do
   def access
     described_class.new(actor, project, protocol,
                         authentication_abilities: authentication_abilities,
-                        namespace_path: namespace_path, project_path: project_path,
+                        namespace_path: namespace_path, repository_path: project_path,
                         redirected_path: redirected_path, auth_result_type: auth_result_type)
   end
 
@@ -1211,8 +1211,8 @@ describe Gitlab::GitAccess do
     access.check('git-receive-pack', changes)
   end
 
-  def raise_unauthorized(message)
-    raise_error(Gitlab::GitAccess::UnauthorizedError, message)
+  def raise_forbidden(message)
+    raise_error(Gitlab::GitAccess::ForbiddenError, message)
   end
 
   def raise_not_found

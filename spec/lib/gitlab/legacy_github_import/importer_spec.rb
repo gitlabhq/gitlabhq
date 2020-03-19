@@ -45,7 +45,7 @@ describe Gitlab::LegacyGithubImport::Importer do
       allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
 
       allow_any_instance_of(Octokit::Client).to receive(:rate_limit!).and_raise(Octokit::NotFound)
-      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_raise(Gitlab::Shell::Error)
+      allow(project.wiki.repository).to receive(:import_repository).and_raise(Gitlab::Git::CommandError)
 
       allow_any_instance_of(Octokit::Client).to receive(:user).and_return(octocat)
       allow_any_instance_of(Octokit::Client).to receive(:labels).and_return([label1, label2])
@@ -169,13 +169,9 @@ describe Gitlab::LegacyGithubImport::Importer do
         errors: [
           { type: :label, url: "#{api_root}/repos/octocat/Hello-World/labels/bug", errors: "Validation failed: Title can't be blank, Title is invalid" },
           { type: :issue, url: "#{api_root}/repos/octocat/Hello-World/issues/1348", errors: "Validation failed: Title can't be blank" },
-          { type: :wiki, errors: "Gitlab::Shell::Error" }
+          { type: :wiki, errors: "Gitlab::Git::CommandError" }
         ]
       }
-
-      unless project.gitea_import?
-        error[:errors] << { type: :release, url: "#{api_root}/repos/octocat/Hello-World/releases/2", errors: "Validation failed: Description can't be blank" }
-      end
 
       described_class.new(project).execute
 

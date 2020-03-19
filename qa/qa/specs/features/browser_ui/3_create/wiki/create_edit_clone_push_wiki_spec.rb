@@ -6,7 +6,7 @@ module QA
       it 'user creates, edits, clones, and pushes to the wiki' do
         Flow::Login.sign_in
 
-        wiki = Resource::Wiki.fabricate! do |resource|
+        wiki = Resource::Wiki.fabricate_via_browser_ui! do |resource|
           resource.title = 'Home'
           resource.content = '# My First Wiki Content'
           resource.message = 'Update home'

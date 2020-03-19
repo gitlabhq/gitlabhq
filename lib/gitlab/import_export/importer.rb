@@ -35,7 +35,7 @@ module Gitlab
 
       def restorers
         [repo_restorer, wiki_restorer, project_tree, avatar_restorer,
-         uploads_restorer, lfs_restorer, statistics_restorer]
+         uploads_restorer, lfs_restorer, statistics_restorer, snippets_repo_restorer]
       end
 
       def import_file
@@ -49,7 +49,7 @@ module Gitlab
       end
 
       def project_tree
-        @project_tree ||= Gitlab::ImportExport::ProjectTreeRestorer.new(user: current_user,
+        @project_tree ||= Gitlab::ImportExport::Project::TreeRestorer.new(user: current_user,
                                                                         shared: shared,
                                                                         project: project)
       end
@@ -77,6 +77,12 @@ module Gitlab
 
       def lfs_restorer
         Gitlab::ImportExport::LfsRestorer.new(project: project, shared: shared)
+      end
+
+      def snippets_repo_restorer
+        Gitlab::ImportExport::SnippetsRepoRestorer.new(project: project,
+                                                       shared: shared,
+                                                       user: current_user)
       end
 
       def statistics_restorer
@@ -125,7 +131,7 @@ module Gitlab
 
       def project_to_overwrite
         strong_memoize(:project_to_overwrite) do
-          Project.find_by_full_path("#{project.namespace.full_path}/#{original_path}")
+          ::Project.find_by_full_path("#{project.namespace.full_path}/#{original_path}")
         end
       end
     end

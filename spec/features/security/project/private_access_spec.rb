@@ -5,7 +5,7 @@ require 'spec_helper'
 describe "Private Project Access" do
   include AccessMatchers
 
-  set(:project) { create(:project, :private, :repository, public_builds: false) }
+  let_it_be(:project, reload: true) { create(:project, :private, :repository, public_builds: false) }
 
   describe "Project should be private" do
     describe '#private?' do

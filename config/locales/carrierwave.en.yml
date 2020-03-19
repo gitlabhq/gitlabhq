@@ -6,8 +6,8 @@ en:
       carrierwave_download_error: could not be downloaded
       extension_whitelist_error: "You are not allowed to upload %{extension} files, allowed types: %{allowed_types}"
       extension_blacklist_error: "You are not allowed to upload %{extension} files, prohibited types: %{prohibited_types}"
-      content_type_whitelist_error: "You are not allowed to upload %{content_type} files"
-      content_type_blacklist_error: "You are not allowed to upload %{content_type} files"
+      content_type_whitelist_error: "file format is not supported. Please try one of the following supported formats: %{allowed_types}"
+      content_type_blacklist_error: "You are not allowed to upload %{content_type} files, prohibited types: %{allowed_types}"
       rmagick_processing_error: "Failed to manipulate with rmagick, maybe it is not an image?"
       mini_magick_processing_error: "Failed to manipulate with MiniMagick, maybe it is not an image? Original Error: %{e}"
       min_size_error: "File size should be greater than %{min_size}"

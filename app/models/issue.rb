@@ -15,6 +15,7 @@ class Issue < ApplicationRecord
   include ThrottledTouch
   include LabelEventable
   include IgnorableColumns
+  include MilestoneEventable
 
   DueDateStruct                   = Struct.new(:title, :name).freeze
   NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze
@@ -43,6 +44,8 @@ class Issue < ApplicationRecord
   has_many :assignees, class_name: "User", through: :issue_assignees
   has_many :zoom_meetings
   has_many :user_mentions, class_name: "IssueUserMention", dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :sent_notifications, as: :noteable
+
   has_one :sentry_issue
 
   accepts_nested_attributes_for :sentry_issue
@@ -64,6 +67,7 @@ class Issue < ApplicationRecord
   scope :order_due_date_desc, -> { reorder(::Gitlab::Database.nulls_last_order('due_date', 'DESC')) }
   scope :order_closest_future_date, -> { reorder(Arel.sql('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC')) }
   scope :order_relative_position_asc, -> { reorder(::Gitlab::Database.nulls_last_order('relative_position', 'ASC')) }
+  scope :order_closed_date_desc, -> { reorder(closed_at: :desc) }
 
   scope :preload_associated_models, -> { preload(:labels, project: :namespace) }
   scope :with_api_entity_associations, -> { preload(:timelogs, :assignees, :author, :notes, :labels, project: [:route, { namespace: :route }] ) }
@@ -73,7 +77,7 @@ class Issue < ApplicationRecord
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
 
-  ignore_column :state, remove_with: '12.7', remove_after: '2019-12-22'
+  ignore_column :state, remove_with: '12.10', remove_after: '2020-03-22'
 
   after_commit :expire_etag_cache, unless: :importing?
   after_save :ensure_metrics, unless: :importing?
@@ -128,12 +132,12 @@ class Issue < ApplicationRecord
   def self.reference_pattern
     @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}(?<issue>\d+)
+      #{Regexp.escape(reference_prefix)}#{Gitlab::Regex.issue}
     }x
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("issues", /(?<issue>\d+)/)
+    @link_reference_pattern ||= super("issues", Gitlab::Regex.issue)
   end
 
   def self.reference_valid?(reference)
@@ -300,6 +304,10 @@ class Issue < ApplicationRecord
 
   def labels_hook_attrs
     labels.map(&:hook_attrs)
+  end
+
+  def previous_updated_at
+    previous_changes['updated_at']&.first || updated_at
   end
 
   private

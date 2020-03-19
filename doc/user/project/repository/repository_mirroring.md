@@ -69,6 +69,11 @@ Changes pushed to files in the repository are automatically pushed to the remote
 In the case of a diverged branch, you will see an error indicated at the **Mirroring repositories**
 section.
 
+### Configuring push mirrors through the API
+
+You can also create and modify project push mirrors through the
+[remote mirrors API](../../../api/remote_mirrors.md).
+
 ### Push only protected branches **(CORE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3350) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.

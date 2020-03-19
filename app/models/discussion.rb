@@ -14,12 +14,14 @@ class Discussion
             :author,
             :noteable,
             :commit_id,
+            :confidential?,
             :for_commit?,
             :for_merge_request?,
             :noteable_ability_name,
             :to_ability_name,
             :editable?,
-            :visible_for?,
+            :system_note_with_references_visible_for?,
+            :resource_parent,
 
             to: :first_note
 

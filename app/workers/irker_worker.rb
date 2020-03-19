@@ -3,7 +3,7 @@
 require 'json'
 require 'socket'
 
-class IrkerWorker
+class IrkerWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   feature_category :integrations

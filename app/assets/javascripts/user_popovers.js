@@ -39,6 +39,7 @@ const populateUserInfo = user => {
           location: userData.location,
           bio: userData.bio,
           organization: userData.organization,
+          jobTitle: userData.job_title,
           loaded: true,
         });
       }

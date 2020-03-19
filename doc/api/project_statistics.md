@@ -8,7 +8,7 @@ Retrieving the statistics requires write access to the repository.
 Currently only HTTP fetches statistics are returned.
 Fetches statistics includes both clones and pulls count and are HTTP only, SSH fetches are not included.
 
-```
+```plaintext
 GET /projects/:id/statistics
 ```
 

@@ -10,7 +10,7 @@ But if the login feature is already covered with end-to-end tests through the GU
 
 Let's say that, on average, the process to perform a successful login through the GUI takes 2 seconds.
 
-Now, realize that almost all tests need the user to be logged in, and that we need every test to run in isolation, meaning that tests cannot interfere with each other. This would  mean that for every test the user needs to log in, and "waste 2 seconds".
+Now, realize that almost all tests need the user to be logged in, and that we need every test to run in isolation, meaning that tests cannot interfere with each other. This would mean that for every test the user needs to log in, and "waste 2 seconds".
 
 Now, multiply the number of tests per 2 seconds, and as your test suite grows, the time to run it grows with it, and this is not sustainable.
 

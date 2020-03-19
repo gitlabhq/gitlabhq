@@ -8,33 +8,21 @@ module Gitlab
         # Entry that represents a concrete CI/CD job.
         #
         class Job < ::Gitlab::Config::Entry::Node
-          include ::Gitlab::Config::Entry::Configurable
-          include ::Gitlab::Config::Entry::Attributable
-          include ::Gitlab::Config::Entry::Inheritable
+          include ::Gitlab::Ci::Config::Entry::Processable
 
           ALLOWED_WHEN = %w[on_success on_failure always manual delayed].freeze
-          ALLOWED_KEYS = %i[tags script only except rules type image services
-                            allow_failure type stage when start_in artifacts cache
-                            dependencies before_script needs after_script variables
-                            environment coverage retry parallel extends interruptible timeout
+          ALLOWED_KEYS = %i[tags script type image services
+                            allow_failure type when start_in artifacts cache
+                            dependencies before_script needs after_script
+                            environment coverage retry parallel interruptible timeout
                             resource_group release].freeze
 
           REQUIRED_BY_NEEDS = %i[stage].freeze
 
           validations do
-            validates :config, type: Hash
-            validates :config, allowed_keys: ALLOWED_KEYS
+            validates :config, allowed_keys: ALLOWED_KEYS + PROCESSABLE_ALLOWED_KEYS
             validates :config, required_keys: REQUIRED_BY_NEEDS, if: :has_needs?
-            validates :config, presence: true
             validates :script, presence: true
-            validates :name, presence: true
-            validates :name, type: Symbol
-            validates :config,
-              disallowed_keys: {
-                in: %i[only except when start_in],
-                message: 'key may not be used with `rules`'
-              },
-              if: :has_rules?
             validates :config,
               disallowed_keys: {
                 in: %i[release],
@@ -53,8 +41,6 @@ module Gitlab
               }
 
               validates :dependencies, array_of_strings: true
-              validates :extends, array_of_strings_or_string: true
-              validates :rules, array_of_hashes: true
               validates :resource_group, type: String
             end
 
@@ -79,10 +65,6 @@ module Gitlab
 
           entry :script, Entry::Commands,
             description: 'Commands that will be executed in this job.',
-            inherit: false
-
-          entry :stage, Entry::Stage,
-            description: 'Pipeline stage this job will be executed into.',
             inherit: false
 
           entry :type, Entry::Stage,
@@ -125,29 +107,9 @@ module Gitlab
             description: 'Artifacts configuration for this job.',
             inherit: true
 
-          entry :only, Entry::Policy,
-            description: 'Refs policy this job will be executed for.',
-            default: ::Gitlab::Ci::Config::Entry::Policy::DEFAULT_ONLY,
-            inherit: false
-
-          entry :except, Entry::Policy,
-            description: 'Refs policy this job will be executed for.',
-            inherit: false
-
-          entry :rules, Entry::Rules,
-            description: 'List of evaluable Rules to determine job inclusion.',
-            inherit: false,
-            metadata: {
-              allowed_when: %w[on_success on_failure always never manual delayed].freeze
-            }
-
           entry :needs, Entry::Needs,
             description: 'Needs configuration for this job.',
             metadata: { allowed_needs: %i[job cross_dependency] },
-            inherit: false
-
-          entry :variables, Entry::Variables,
-            description: 'Environment variables available for this job.',
             inherit: false
 
           entry :environment, Entry::Environment,
@@ -162,13 +124,8 @@ module Gitlab
             description: 'This job will produce a release.',
             inherit: false
 
-          helpers :before_script, :script, :stage, :type, :after_script,
-                  :cache, :image, :services, :only, :except, :variables,
-                  :artifacts, :environment, :coverage, :retry, :rules,
-                  :parallel, :needs, :interruptible, :release, :tags
-
           attributes :script, :tags, :allow_failure, :when, :dependencies,
-                     :needs, :retry, :parallel, :extends, :start_in, :rules,
+                     :needs, :retry, :parallel, :start_in,
                      :interruptible, :timeout, :resource_group, :release
 
           def self.matching?(name, config)
@@ -187,29 +144,7 @@ module Gitlab
               end
 
               @entries.delete(:type)
-
-              has_workflow_rules = deps&.workflow&.has_rules?
-
-              # If workflow:rules: or rules: are used
-              # they are considered not compatible
-              # with `only/except` defaults
-              #
-              # Context: https://gitlab.com/gitlab-org/gitlab/merge_requests/21742
-              if has_rules? || has_workflow_rules
-                # Remove only/except defaults
-                # defaults are not considered as defined
-                @entries.delete(:only) unless only_defined?
-                @entries.delete(:except) unless except_defined?
-              end
             end
-          end
-
-          def name
-            @metadata[:name]
-          end
-
-          def value
-            @config.merge(to_hash.compact)
           end
 
           def manual_action?
@@ -220,38 +155,26 @@ module Gitlab
             self.when == 'delayed'
           end
 
-          def has_rules?
-            @config.try(:key?, :rules)
-          end
-
           def ignored?
             allow_failure.nil? ? manual_action? : allow_failure
           end
 
-          private
-
-          def overwrite_entry(deps, key, current_entry)
-            deps.default[key] unless current_entry.specified?
-          end
-
-          def to_hash
-            { name: name,
+          def value
+            super.merge(
               before_script: before_script_value,
               script: script_value,
               image: image_value,
               services: services_value,
-              stage: stage_value,
               cache: cache_value,
               tags: tags_value,
-              only: only_value,
-              except: except_value,
-              rules: has_rules? ? rules_value : nil,
-              variables: variables_defined? ? variables_value : {},
+              when: self.when,
+              start_in: self.start_in,
+              dependencies: dependencies,
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,
               coverage: coverage_defined? ? coverage_value : nil,
               retry: retry_defined? ? retry_value : nil,
-              parallel: parallel_defined? ? parallel_value.to_i : nil,
+              parallel: has_parallel? ? parallel.to_i : nil,
               interruptible: interruptible_defined? ? interruptible_value : nil,
               timeout: has_timeout? ? ChronicDuration.parse(timeout.to_s) : nil,
               artifacts: artifacts_value,
@@ -260,7 +183,8 @@ module Gitlab
               ignore: ignored?,
               needs: needs_defined? ? needs_value : nil,
               resource_group: resource_group,
-              scheduling_type: needs_defined? ? :dag : :stage }
+              scheduling_type: needs_defined? ? :dag : :stage
+            ).compact
           end
         end
       end

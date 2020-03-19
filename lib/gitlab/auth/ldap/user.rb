@@ -8,10 +8,10 @@
 #
 module Gitlab
   module Auth
-    module LDAP
+    module Ldap
       class User < Gitlab::Auth::OAuth::User
         extend ::Gitlab::Utils::Override
-        prepend_if_ee('::EE::Gitlab::Auth::LDAP::User') # rubocop: disable Cop/InjectEnterpriseEditionModule
+        prepend_if_ee('::EE::Gitlab::Auth::Ldap::User') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
         class << self
           # rubocop: disable CodeReuse/ActiveRecord
@@ -46,7 +46,7 @@ module Gitlab
         end
 
         def allowed?
-          Gitlab::Auth::LDAP::Access.allowed?(gl_user)
+          Gitlab::Auth::Ldap::Access.allowed?(gl_user)
         end
 
         def valid_sign_in?
@@ -54,11 +54,11 @@ module Gitlab
         end
 
         def ldap_config
-          Gitlab::Auth::LDAP::Config.new(auth_hash.provider)
+          Gitlab::Auth::Ldap::Config.new(auth_hash.provider)
         end
 
         def auth_hash=(auth_hash)
-          @auth_hash = Gitlab::Auth::LDAP::AuthHash.new(auth_hash)
+          @auth_hash = Gitlab::Auth::Ldap::AuthHash.new(auth_hash)
         end
       end
     end

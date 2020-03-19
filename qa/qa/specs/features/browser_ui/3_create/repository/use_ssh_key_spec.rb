@@ -11,18 +11,16 @@ module QA
       it 'user adds an ssh key and pushes code to the repository' do
         Flow::Login.sign_in
 
-        key = Resource::SSHKey.fabricate! do |resource|
+        key = Resource::SSHKey.fabricate_via_api! do |resource|
           resource.title = key_title
         end
 
-        project_push = Resource::Repository::ProjectPush.fabricate! do |push|
+        Resource::Repository::ProjectPush.fabricate! do |push|
           push.ssh_key = key
           push.file_name = 'README.md'
           push.file_content = '# Test Use SSH Key'
           push.commit_message = 'Add README.md'
-        end
-
-        project_push.project.visit!
+        end.project.visit!
 
         expect(page).to have_content('README.md')
         expect(page).to have_content('Test Use SSH Key')

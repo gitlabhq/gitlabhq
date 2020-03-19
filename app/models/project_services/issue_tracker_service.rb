@@ -19,9 +19,9 @@ class IssueTrackerService < Service
   # overridden patterns. See ReferenceRegexes.external_pattern
   def self.reference_pattern(only_long: false)
     if only_long
-      /(\b[A-Z][A-Z0-9_]*-)(?<issue>\d+)/
+      /(\b[A-Z][A-Z0-9_]*-)#{Gitlab::Regex.issue}/
     else
-      /(\b[A-Z][A-Z0-9_]*-|#{Issue.reference_prefix})(?<issue>\d+)/
+      /(\b[A-Z][A-Z0-9_]*-|#{Issue.reference_prefix})#{Gitlab::Regex.issue}/
     end
   end
 
@@ -151,6 +151,14 @@ class IssueTrackerService < Service
     result
   end
 
+  def support_close_issue?
+    false
+  end
+
+  def support_cross_reference?
+    false
+  end
+
   private
 
   def enabled_in_gitlab_config
@@ -168,7 +176,7 @@ class IssueTrackerService < Service
     return if project.blank?
 
     if project.services.external_issue_trackers.where.not(id: id).any?
-      errors.add(:base, 'Another issue tracker is already in use. Only one issue tracker service can be active at a time')
+      errors.add(:base, _('Another issue tracker is already in use. Only one issue tracker service can be active at a time'))
     end
   end
 end

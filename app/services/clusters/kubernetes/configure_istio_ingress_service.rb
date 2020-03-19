@@ -27,6 +27,10 @@ module Clusters
         return configure_certificates if serverless_domain_cluster
 
         configure_passthrough
+      rescue Kubeclient::HttpError => e
+        knative.make_errored!(_('Kubernetes error: %{error_code}') % { error_code: e.error_code })
+      rescue StandardError
+        knative.make_errored!(_('Failed to update.'))
       end
 
       private

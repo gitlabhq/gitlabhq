@@ -6,7 +6,7 @@ module Gitlab
   class GitAccess
     include Gitlab::Utils::StrongMemoize
 
-    UnauthorizedError = Class.new(StandardError)
+    ForbiddenError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
     ProjectCreationError = Class.new(StandardError)
     TimeoutError = Class.new(StandardError)
@@ -43,15 +43,15 @@ module Gitlab
     PUSH_COMMANDS = %w{git-receive-pack}.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes, :logger
+    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :repository_path, :redirected_path, :auth_result_type, :changes, :logger
 
-    def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, project_path: nil, redirected_path: nil, auth_result_type: nil)
+    def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, repository_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor    = actor
       @project  = project
       @protocol = protocol
-      @authentication_abilities = authentication_abilities
+      @authentication_abilities = Array(authentication_abilities)
       @namespace_path = namespace_path || project&.namespace&.full_path
-      @project_path = project_path || project&.path
+      @repository_path = repository_path || project&.path
       @redirected_path = redirected_path
       @auth_result_type = auth_result_type
     end
@@ -60,7 +60,6 @@ module Gitlab
       @logger = Checks::TimedLogger.new(timeout: INTERNAL_TIMEOUT, header: LOG_HEADER)
       @changes = changes
 
-      check_namespace!
       check_protocol!
       check_valid_actor!
       check_active_user!
@@ -72,11 +71,7 @@ module Gitlab
       return custom_action if custom_action
 
       check_db_accessibility!(cmd)
-
-      ensure_project_on_push!(cmd, changes)
-
-      check_project_accessibility!
-      add_project_moved_message!
+      check_project!(changes, cmd)
       check_repository_existence!
 
       case cmd
@@ -86,7 +81,7 @@ module Gitlab
         check_push_access!
       end
 
-      success_result(cmd)
+      success_result
     end
 
     def guest_can_download_code?
@@ -113,19 +108,38 @@ module Gitlab
 
     private
 
+    def check_project!(changes, cmd)
+      check_namespace!
+      ensure_project_on_push!(cmd, changes)
+      check_project_accessibility!
+      add_project_moved_message!
+    end
+
     def check_custom_action(cmd)
       nil
     end
 
-    def check_for_console_messages(cmd)
+    def check_for_console_messages
+      return console_messages unless key?
+
+      key_status = Gitlab::Auth::KeyStatusChecker.new(actor)
+
+      if key_status.show_console_message?
+        console_messages.push(key_status.console_message)
+      else
+        console_messages
+      end
+    end
+
+    def console_messages
       []
     end
 
     def check_valid_actor!
-      return unless actor.is_a?(Key)
+      return unless key?
 
       unless actor.valid?
-        raise UnauthorizedError, "Your SSH key #{actor.errors[:key].first}."
+        raise ForbiddenError, "Your SSH key #{actor.errors[:key].first}."
       end
     end
 
@@ -133,7 +147,7 @@ module Gitlab
       return if request_from_ci_build?
 
       unless protocol_allowed?
-        raise UnauthorizedError, "Git access over #{protocol.upcase} is not allowed"
+        raise ForbiddenError, "Git access over #{protocol.upcase} is not allowed"
       end
     end
 
@@ -148,7 +162,7 @@ module Gitlab
 
       unless user_access.allowed?
         message = Gitlab::Auth::UserAccessDeniedReason.new(user).rejection_message
-        raise UnauthorizedError, message
+        raise ForbiddenError, message
       end
     end
 
@@ -156,11 +170,11 @@ module Gitlab
       case cmd
       when *DOWNLOAD_COMMANDS
         unless authentication_abilities.include?(:download_code) || authentication_abilities.include?(:build_download_code)
-          raise UnauthorizedError, ERROR_MESSAGES[:auth_download]
+          raise ForbiddenError, ERROR_MESSAGES[:auth_download]
         end
       when *PUSH_COMMANDS
         unless authentication_abilities.include?(:push_code)
-          raise UnauthorizedError, ERROR_MESSAGES[:auth_upload]
+          raise ForbiddenError, ERROR_MESSAGES[:auth_upload]
         end
       end
     end
@@ -174,7 +188,7 @@ module Gitlab
     def add_project_moved_message!
       return if redirected_path.nil?
 
-      project_moved = Checks::ProjectMoved.new(project, user, protocol, redirected_path)
+      project_moved = Checks::ProjectMoved.new(repository, user, protocol, redirected_path)
 
       project_moved.add_message
     end
@@ -189,19 +203,19 @@ module Gitlab
 
     def check_upload_pack_disabled!
       if http? && upload_pack_disabled_over_http?
-        raise UnauthorizedError, ERROR_MESSAGES[:upload_pack_disabled_over_http]
+        raise ForbiddenError, ERROR_MESSAGES[:upload_pack_disabled_over_http]
       end
     end
 
     def check_receive_pack_disabled!
       if http? && receive_pack_disabled_over_http?
-        raise UnauthorizedError, ERROR_MESSAGES[:receive_pack_disabled_over_http]
+        raise ForbiddenError, ERROR_MESSAGES[:receive_pack_disabled_over_http]
       end
     end
 
     def check_command_existence!(cmd)
       unless ALL_COMMANDS.include?(cmd)
-        raise UnauthorizedError, ERROR_MESSAGES[:command_not_allowed]
+        raise ForbiddenError, ERROR_MESSAGES[:command_not_allowed]
       end
     end
 
@@ -209,7 +223,7 @@ module Gitlab
       return unless receive_pack?(cmd)
 
       if Gitlab::Database.read_only?
-        raise UnauthorizedError, push_to_read_only_message
+        raise ForbiddenError, push_to_read_only_message
       end
     end
 
@@ -222,7 +236,7 @@ module Gitlab
       return unless user&.can?(:create_projects, namespace)
 
       project_params = {
-        path: project_path,
+        path: repository_path,
         namespace_id: namespace.id,
         visibility_level: Gitlab::VisibilityLevel::PRIVATE
       }
@@ -236,7 +250,7 @@ module Gitlab
       @project = project
       user_access.project = @project
 
-      Checks::ProjectCreated.new(project, user, protocol).add_message
+      Checks::ProjectCreated.new(repository, user, protocol).add_message
     end
 
     def check_repository_existence!
@@ -253,23 +267,23 @@ module Gitlab
         guest_can_download_code?
 
       unless passed
-        raise UnauthorizedError, ERROR_MESSAGES[:download]
+        raise ForbiddenError, ERROR_MESSAGES[:download]
       end
     end
 
     def check_push_access!
       if project.repository_read_only?
-        raise UnauthorizedError, ERROR_MESSAGES[:read_only]
+        raise ForbiddenError, ERROR_MESSAGES[:read_only]
       end
 
       if deploy_key?
         unless deploy_key.can_push_to?(project)
-          raise UnauthorizedError, ERROR_MESSAGES[:deploy_key_upload]
+          raise ForbiddenError, ERROR_MESSAGES[:deploy_key_upload]
         end
       elsif user
         # User access is verified in check_change_access!
       else
-        raise UnauthorizedError, ERROR_MESSAGES[:upload]
+        raise ForbiddenError, ERROR_MESSAGES[:upload]
       end
 
       check_change_access!
@@ -284,7 +298,7 @@ module Gitlab
           project.any_branch_allows_collaboration?(user_access.user)
 
         unless can_push
-          raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:push_code]
+          raise ForbiddenError, ERROR_MESSAGES[:push_code]
         end
       else
         # If there are worktrees with a HEAD pointing to a non-existent object,
@@ -338,6 +352,10 @@ module Gitlab
       actor == :ci
     end
 
+    def key?
+      actor.is_a?(Key)
+    end
+
     def can_read_project?
       if deploy_key?
         deploy_key.has_access_to?(project)
@@ -372,8 +390,8 @@ module Gitlab
 
     protected
 
-    def success_result(cmd)
-      ::Gitlab::GitAccessResult::Success.new(console_messages: check_for_console_messages(cmd))
+    def success_result
+      ::Gitlab::GitAccessResult::Success.new(console_messages: check_for_console_messages)
     end
 
     def changes_list

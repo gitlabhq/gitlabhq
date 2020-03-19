@@ -1,0 +1,5 @@
+---
+title: Migrate mentions for design notes to design_user_mentions DB table
+merge_request: 23704
+author:
+type: changed

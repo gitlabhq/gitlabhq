@@ -20,7 +20,7 @@ describe Clusters::Applications::ElasticStack do
     it 'is initialized with elastic stack arguments' do
       expect(subject.name).to eq('elastic-stack')
       expect(subject.chart).to eq('stable/elastic-stack')
-      expect(subject.version).to eq('1.8.0')
+      expect(subject.version).to eq('1.9.0')
       expect(subject).to be_rbac
       expect(subject.files).to eq(elastic_stack.files)
     end
@@ -37,7 +37,7 @@ describe Clusters::Applications::ElasticStack do
       let(:elastic_stack) { create(:clusters_applications_elastic_stack, :errored, version: '0.0.1') }
 
       it 'is initialized with the locked version' do
-        expect(subject.version).to eq('1.8.0')
+        expect(subject.version).to eq('1.9.0')
       end
     end
   end

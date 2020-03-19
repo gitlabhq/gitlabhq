@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::HookData::IssuableBuilder do
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   # This shared example requires a `builder` and `user` variable
   shared_examples 'issuable hook data' do |kind|

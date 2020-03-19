@@ -143,16 +143,11 @@ describe "Issues > User edits issue", :js do
         end
 
         it 'allows user to unselect themselves' do
-          issue2 = create(:issue, project: project, author: user)
+          issue2 = create(:issue, project: project, author: user, assignees: [user])
 
           visit project_issue_path(project, issue2)
 
           page.within '.assignee' do
-            click_link 'Edit'
-            click_link user.name
-
-            close_dropdown_menu_if_visible
-
             page.within '.value .author' do
               expect(page).to have_content user.name
             end

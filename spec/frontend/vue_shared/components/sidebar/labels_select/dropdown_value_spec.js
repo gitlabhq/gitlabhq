@@ -1,31 +1,26 @@
 import { mount } from '@vue/test-utils';
-import { hexToRgb } from '~/lib/utils/color_utils';
 import DropdownValueComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_value.vue';
-import DropdownValueScopedLabel from '~/vue_shared/components/sidebar/labels_select/dropdown_value_scoped_label.vue';
+import { GlLabel } from '@gitlab/ui';
 
 import {
   mockConfig,
   mockLabels,
 } from '../../../../../javascripts/vue_shared/components/sidebar/labels_select/mock_data';
 
-const labelStyles = {
-  textColor: '#FFFFFF',
-  color: '#BADA55',
-};
 const createComponent = (
   labels = mockLabels,
   labelFilterBasePath = mockConfig.labelFilterBasePath,
-) => {
-  labels.forEach(label => Object.assign(label, labelStyles));
-
-  return mount(DropdownValueComponent, {
+) =>
+  mount(DropdownValueComponent, {
     propsData: {
       labels,
       labelFilterBasePath,
       enableScopedLabels: true,
     },
+    stubs: {
+      GlLabel: true,
+    },
   });
-};
 
 describe('DropdownValueComponent', () => {
   let vm;
@@ -56,24 +51,17 @@ describe('DropdownValueComponent', () => {
   describe('methods', () => {
     describe('labelFilterUrl', () => {
       it('returns URL string starting with labelFilterBasePath and encoded label.title', () => {
-        expect(vm.find(DropdownValueScopedLabel).props('labelFilterUrl')).toBe(
-          '/gitlab-org/my-project/issues?label_name[]=Foo%3A%3ABar',
+        expect(vm.find(GlLabel).props('target')).toBe(
+          '/gitlab-org/my-project/issues?label_name[]=Foo%20Label',
         );
-      });
-    });
-
-    describe('labelStyle', () => {
-      it('returns object with `color` & `backgroundColor` properties from label.textColor & label.color', () => {
-        expect(vm.find(DropdownValueScopedLabel).props('labelStyle')).toEqual({
-          color: labelStyles.textColor,
-          backgroundColor: labelStyles.color,
-        });
       });
     });
 
     describe('showScopedLabels', () => {
       it('returns true if the label is scoped label', () => {
-        expect(vm.findAll(DropdownValueScopedLabel).length).toEqual(1);
+        const labels = vm.findAll(GlLabel);
+        expect(labels.length).toEqual(2);
+        expect(labels.at(1).props('scoped')).toBe(true);
       });
     });
   });
@@ -95,33 +83,10 @@ describe('DropdownValueComponent', () => {
       vmEmptyLabels.destroy();
     });
 
-    it('renders label element with filter URL', () => {
-      expect(vm.find('a').attributes('href')).toBe(
-        '/gitlab-org/my-project/issues?label_name[]=Foo%20Label',
-      );
-    });
-
-    it('renders label element and styles based on label details', () => {
-      const labelEl = vm.find('a span.badge.color-label');
+    it('renders DropdownValueComponent element', () => {
+      const labelEl = vm.find(GlLabel);
 
       expect(labelEl.exists()).toBe(true);
-      expect(labelEl.attributes('style')).toContain(
-        `background-color: rgb(${hexToRgb(labelStyles.color).join(', ')});`,
-      );
-      expect(labelEl.text().trim()).toBe(mockLabels[0].title);
-    });
-
-    describe('label is of scoped-label type', () => {
-      it('renders a scoped-label-wrapper span to incorporate 2 anchors', () => {
-        expect(vm.find('span.scoped-label-wrapper').exists()).toBe(true);
-      });
-
-      it('renders anchor tag containing question icon', () => {
-        const anchor = vm.find('.scoped-label-wrapper a.scoped-label');
-
-        expect(anchor.exists()).toBe(true);
-        expect(anchor.find('i.fa-question-circle').exists()).toBe(true);
-      });
     });
   });
 });

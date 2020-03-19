@@ -1,0 +1,5 @@
+---
+title: Fix an issue with Group Import members with Owner access level being imported with Maintainer access level. Owner access level is now preserved
+merge_request: 25595
+author:
+type: fixed

@@ -14,7 +14,7 @@ describe 'User views services' do
   end
 
   it 'shows the list of available services' do
-    expect(page).to have_content('Project services')
+    expect(page).to have_content('Integrations')
     expect(page).to have_content('Campfire')
     expect(page).to have_content('HipChat')
     expect(page).to have_content('Assembla')

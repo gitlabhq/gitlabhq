@@ -21,6 +21,21 @@ RSpec.configure do |config|
     ActionController::Base.cache_store = caching_store
   end
 
+  config.around(:each, :use_clean_rails_redis_caching) do |example|
+    original_null_store = Rails.cache
+    caching_config_hash = Gitlab::Redis::Cache.params
+    caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
+    Rails.cache = ActiveSupport::Cache::RedisCacheStore.new(caching_config_hash)
+
+    redis_cache_cleanup!
+
+    example.run
+
+    redis_cache_cleanup!
+
+    Rails.cache = original_null_store
+  end
+
   config.around(:each, :use_sql_query_cache) do |example|
     ActiveRecord::Base.cache do
       example.run

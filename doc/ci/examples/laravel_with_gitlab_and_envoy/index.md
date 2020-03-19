@@ -22,7 +22,7 @@ and you know how to use GitLab.
 
 Laravel is a high quality web framework written in PHP.
 It has a great community with a [fantastic documentation](https://laravel.com/docs).
-Aside from the usual routing, controllers, requests, responses, views, and (blade) templates, out of the box Laravel provides plenty of additional services such as cache, events, localization, authentication and many others.
+Aside from the usual routing, controllers, requests, responses, views, and (blade) templates, out of the box Laravel provides plenty of additional services such as cache, events, localization, authentication, and many others.
 
 We will use [Envoy](https://laravel.com/docs/master/envoy) as an SSH task runner based on PHP.
 It uses a clean, minimal [Blade syntax](https://laravel.com/docs/master/blade) to set up tasks that can run on remote servers, such as, cloning your project from the repository, installing the Composer dependencies, and running [Artisan commands](https://laravel.com/docs/master/artisan).
@@ -82,7 +82,7 @@ git push -u origin master
 ## Configure the production server
 
 Before we begin setting up Envoy and GitLab CI/CD, let's quickly make sure the production server is ready for deployment.
-We have installed LEMP stack which stands for Linux, NGINX, MySQL and PHP on our Ubuntu 16.04.
+We have installed LEMP stack which stands for Linux, NGINX, MySQL, and PHP on our Ubuntu 16.04.
 
 ### Create a new user
 
@@ -194,7 +194,7 @@ To start, we create an `Envoy.blade.php` in the root of our app with a simple ta
 @endtask
 ```
 
-As you may expect, we have an array within `@servers` directive at the top of the file, which contains a key named `web` with a value of the server's address (e.g. `deployer@192.168.1.1`).
+As you may expect, we have an array within `@servers` directive at the top of the file, which contains a key named `web` with a value of the server's address (for example, `deployer@192.168.1.1`).
 Then within our `@task` directive we define the bash commands that should be run on the server when the task is executed.
 
 On the local machine use the `run` command to run Envoy tasks.

@@ -88,5 +88,17 @@ describe Gitlab::Ci::Reports::TestCase do
         expect { test_case }.to raise_error(ArgumentError)
       end
     end
+
+    context 'when attachment is present' do
+      let(:attachment_test_case) { build(:test_case, :with_attachment) }
+
+      it "initializes the attachment if present" do
+        expect(attachment_test_case.attachment).to eq("some/path.png")
+      end
+
+      it '#has_attachment?' do
+        expect(attachment_test_case.has_attachment?).to be_truthy
+      end
+    end
   end
 end

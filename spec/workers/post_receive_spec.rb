@@ -34,6 +34,31 @@ describe PostReceive do
       expect(Gitlab::GitLogger).to receive(:error).with("POST-RECEIVE: #{error_message}")
       expect(perform).to be(false)
     end
+
+    context 'with PersonalSnippet' do
+      let(:gl_repository) { "snippet-#{snippet.id}" }
+      let(:snippet) { create(:personal_snippet, author: project.owner) }
+
+      it 'does not log an error' do
+        expect(Gitlab::GitLogger).not_to receive(:error)
+        expect(Gitlab::GitPostReceive).to receive(:new).and_call_original
+        expect_any_instance_of(described_class) do |instance|
+          expect(instance).to receive(:process_snippet_changes)
+        end
+
+        perform
+      end
+    end
+
+    context 'with ProjectSnippet' do
+      let(:gl_repository) { "snippet-#{snippet.id}" }
+      let(:snippet) { create(:snippet, type: 'ProjectSnippet', project: nil, author: project.owner) }
+
+      it 'returns false and logs an error' do
+        expect(Gitlab::GitLogger).to receive(:error).with("POST-RECEIVE: #{error_message}")
+        expect(perform).to be(false)
+      end
+    end
   end
 
   describe "#process_project_changes" do
@@ -44,7 +69,7 @@ describe PostReceive do
       before do
         allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(empty_project.owner)
         # Need to mock here so we can expect calls on project
-        allow(Gitlab::GlRepository).to receive(:parse).and_return([empty_project, Gitlab::GlRepository::PROJECT])
+        allow(Gitlab::GlRepository).to receive(:parse).and_return([empty_project, empty_project, Gitlab::GlRepository::PROJECT])
       end
 
       it 'expire the status cache' do
@@ -97,7 +122,7 @@ describe PostReceive do
 
       before do
         allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)
-        allow(Gitlab::GlRepository).to receive(:parse).and_return([project, Gitlab::GlRepository::PROJECT])
+        allow(Gitlab::GlRepository).to receive(:parse).and_return([project, project, Gitlab::GlRepository::PROJECT])
       end
 
       shared_examples 'updating remote mirrors' do
@@ -176,7 +201,7 @@ describe PostReceive do
         end
 
         before do
-          expect(Gitlab::GlRepository).to receive(:parse).and_return([project, Gitlab::GlRepository::PROJECT])
+          expect(Gitlab::GlRepository).to receive(:parse).and_return([project, project, Gitlab::GlRepository::PROJECT])
         end
 
         it 'does not expire branches cache' do
@@ -256,7 +281,7 @@ describe PostReceive do
 
     before do
       # Need to mock here so we can expect calls on project
-      allow(Gitlab::GlRepository).to receive(:parse).and_return([project, Gitlab::GlRepository::WIKI])
+      allow(Gitlab::GlRepository).to receive(:parse).and_return([project, project, Gitlab::GlRepository::WIKI])
     end
 
     it 'updates project activity' do
@@ -331,6 +356,84 @@ describe PostReceive do
       expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.owner.id, any_args)
 
       perform
+    end
+  end
+
+  describe '#process_snippet_changes' do
+    let(:gl_repository) { "snippet-#{snippet.id}" }
+
+    before do
+      # Need to mock here so we can expect calls on project
+      allow(Gitlab::GlRepository).to receive(:parse).and_return([snippet, snippet.project, Gitlab::GlRepository::SNIPPET])
+    end
+
+    shared_examples 'snippet changes actions' do
+      context 'unidentified user' do
+        let!(:key_id) { '' }
+
+        it 'returns false' do
+          expect(perform).to be false
+        end
+      end
+
+      context 'with changes' do
+        context 'branches' do
+          let(:changes) do
+            <<~EOF
+                123456 789012 refs/heads/tést1
+                123456 789012 refs/heads/tést2
+            EOF
+          end
+
+          it 'expires the branches cache' do
+            expect(snippet.repository).to receive(:expire_branches_cache).once
+
+            perform
+          end
+
+          it 'expires the status cache' do
+            expect(snippet.repository).to receive(:empty?).and_return(true)
+            expect(snippet.repository).to receive(:expire_status_cache)
+
+            perform
+          end
+        end
+
+        context 'tags' do
+          let(:changes) do
+            <<~EOF
+              654321 210987 refs/tags/tag1
+              654322 210986 refs/tags/tag2
+              654323 210985 refs/tags/tag3
+            EOF
+          end
+
+          it 'does not expire branches cache' do
+            expect(snippet.repository).not_to receive(:expire_branches_cache)
+
+            perform
+          end
+
+          it 'only invalidates tags once' do
+            expect(snippet.repository).to receive(:expire_caches_for_tags).once.and_call_original
+            expect(snippet.repository).to receive(:expire_tags_cache).once.and_call_original
+
+            perform
+          end
+        end
+      end
+    end
+
+    context 'with PersonalSnippet' do
+      let!(:snippet) { create(:personal_snippet, :repository, author: project.owner) }
+
+      it_behaves_like 'snippet changes actions'
+    end
+
+    context 'with ProjectSnippet' do
+      let!(:snippet) { create(:project_snippet, :repository, project: project, author: project.owner) }
+
+      it_behaves_like 'snippet changes actions'
     end
   end
 end

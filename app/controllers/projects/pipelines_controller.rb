@@ -22,7 +22,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @pipelines = PipelinesFinder
+    @pipelines = Ci::PipelinesFinder
       .new(project, current_user, scope: @scope)
       .execute
       .page(params[:page])
@@ -60,10 +60,10 @@ class Projects::PipelinesController < Projects::ApplicationController
       .new(project, current_user, create_params)
       .execute(:web, ignore_skip_ci: true, save_on_errors: false)
 
-    if @pipeline.persisted?
+    if @pipeline.created_successfully?
       redirect_to project_pipeline_path(project, @pipeline)
     else
-      render 'new'
+      render 'new', status: :bad_request
     end
   end
 
@@ -251,7 +251,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def limited_pipelines_count(project, scope = nil)
-    finder = PipelinesFinder.new(project, current_user, scope: scope)
+    finder = Ci::PipelinesFinder.new(project, current_user, scope: scope)
 
     view_context.limited_counter_with_delimiter(finder.execute)
   end

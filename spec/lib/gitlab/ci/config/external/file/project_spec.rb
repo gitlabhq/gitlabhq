@@ -3,14 +3,22 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Project do
-  set(:context_project) { create(:project) }
-  set(:project) { create(:project, :repository) }
-  set(:user) { create(:user) }
-
+  let_it_be(:context_project) { create(:project) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
   let(:context_user) { user }
-  let(:context_params) { { project: context_project, sha: '12345', user: context_user } }
+  let(:parent_pipeline) { double(:parent_pipeline) }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:project_file) { described_class.new(params, context) }
+
+  let(:context_params) do
+    {
+      project: context_project,
+      sha: '12345',
+      user: context_user,
+      parent_pipeline: parent_pipeline
+    }
+  end
 
   before do
     project.add_developer(user)
@@ -153,7 +161,11 @@ describe Gitlab::Ci::Config::External::File::Project do
     subject { project_file.send(:expand_context_attrs) }
 
     it 'inherits user, and target project and sha' do
-      is_expected.to include(user: user, project: project, sha: project.commit('master').id)
+      is_expected.to include(
+        user: user,
+        project: project,
+        sha: project.commit('master').id,
+        parent_pipeline: parent_pipeline)
     end
   end
 

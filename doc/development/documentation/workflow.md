@@ -20,8 +20,7 @@ directly affect the way that any user or administrator interacts with GitLab.
 Regardless of the type of issue or merge request, certain labels are required when documentation
 is added or updated. The following are added by the issue or merge request author:
 
-- An appropriate [type label](../contributing/issue_workflow.md#type-labels). For example,
-  `~backstage`.
+- An appropriate [type label](../contributing/issue_workflow.md#type-labels).
 - The [stage label](../contributing/issue_workflow.md#stage-labels) and
   [group label](../contributing/issue_workflow.md#group-labels). For example, `~devops::create` and
   `~group::source code`.
@@ -118,7 +117,7 @@ Reviewers help ensure:
 Prior to merging, documentation changes committed by the developer must be reviewed by:
 
 - The code reviewer for the merge request. This is known as a technical review.
-- Optionally, others involved in the work, such as other developers or the Product Manager.
+- Optionally, others involved in the work such as other developers or the Product Manager.
 - The Technical Writer for the DevOps stage group, except in exceptional circumstances where a
   [post-merge review](#post-merge-reviews) can be requested.
 - A maintainer of the project.
@@ -137,11 +136,11 @@ For issues requiring any new or updated documentation, the Product Manager must:
 - Confirm or add the [documentation requirements](#documentation-requirements).
 - Ensure the issue contains:
   - Any new or updated feature name.
-  - Overview, description, and use cases, as required by the
-    [documentation structure and template](structure.md), when applicable.
+  - Overview, description, and use cases when applicable (as required by the
+    [documentation structure and template](structure.md)).
 
-Everyone is encouraged to draft the documentation requirements in the issue, but a Product Manager
-will do the following:
+Everyone is encouraged to draft the documentation requirements in the issue. However, a Product
+Manager will:
 
 - When the issue is assigned a release milestone, review and update the Documentation details.
 - By the kickoff, finalize the documentation details.
@@ -238,7 +237,7 @@ The following details should be included:
 - What concepts and procedures should the documentation guide and enable the user to understand or
   accomplish?
 - To this end, what new page(s) are needed, if any? What pages or subsections need updates?
-  Consider user, admin, and API documentation changes and additions.
+  Consider changes and additions to user, admin, and API documentation.
 - For any guide or instruction set, should it help address a single use case, or be flexible to
   address a certain range of use cases?
 - Do we need to update a previously recommended workflow? Should we link the new feature from
@@ -248,10 +247,139 @@ The following details should be included:
 - Include suggested titles of any pages or subsection headings, if applicable.
 - List any documentation that should be cross-linked, if applicable.
 
+### Including docs with code
+
+Currently, the Technical Writing team strongly encourages including documentation in
+the same merge request as the code that it relates to, but this is not strictly mandatory.
+It's still common for documentation to be added in an MR separate from the feature MR.
+
+Engineering teams may elect to adopt a workflow where it is **mandatory** that docs
+are included in the code MR, as part of their [definition of done](../contributing/merge_request_workflow.md#definition-of-done).
+When a team adopts this workflow, that team's engineers must include their docs in the **same**
+MR as their feature code, at all times.
+
+#### Downsides of separate docs MRs
+
+A workflow that has documentation separated into its own MR has many downsides.
+
+If the documentation merges **before** the feature:
+
+- GitLab.com users might try to use the feature before it's released, driving support tickets.
+- If the feature is delayed, the documentation might not be pulled/reverted in time and could be
+  accidentally included in the self-managed package for that release.
+
+If the documentation merges **after** the feature:
+
+- The feature might be included in the self-managed package, but without any documentation
+  if the docs MR misses the cutoff.
+- A feature might show up in the GitLab.com UI before any documentation exists for it.
+  Users surprised by this feature will search for documentation and won't find it, possibly driving
+  support tickets.
+
+Having two separate MRs means:
+
+- Two different people might be responsible for merging one feature, which is not workable
+  with an asynchronous work style. The feature might merge while the technical writer is asleep,
+  creating a potentially lengthy delay between the two merges.
+- If the docs MR is assigned to the same maintainer as responsible for the feature
+  code MR, they will have to review and juggle two MRs instead of dealing with just one.
+
+Documentation quality might be lower, because:
+
+- Having docs in a separate MR will mean far fewer people will see and verify them,
+  increasing the likelihood that issues will be missed.
+- In a "split" workflow, engineers might only create the documentation MR once the
+  feature MR is ready, or almost ready. This gives the technical writer little time
+  to learn about the feature in order to do a good review. It also increases pressure
+  on them to review and merge faster than desired, letting problems slip in due to haste.
+
+#### Benefits of always including docs with code
+
+Including docs with code (and doing it early in the development process) has many benefits:
+
+- There are no timing issues connected to releases:
+  - If a feature slips to the next release, the documentation slips too.
+  - If the feature *just* makes it into a release, the docs *just* make it in too.
+  - If a feature makes it to GitLab.com early, the documentation will be ready for
+    our early adopters.
+- Only a single person will be responsible for merging the feature (the code maintainer).
+- The technical writer will have more time to gain an understanding of the feature
+  and will be better able to verify the content of the docs in the Review App or GDK.
+  They will also be able to offer advice for improving the UI text or offer additional use cases.
+- The documentation will have increased visibility:
+  - Everyone involved in the merge request will see the docs. This could include product
+    managers, multiple engineers with deep domain knowledge, as well as the code reviewers
+    and maintainer. They will be more likely to catch issues with examples, as well
+    as background or concepts that the technical writer may not be aware of.
+  - Increasing visibility of the documentation also has the side effect of improving
+    *other* engineers' documentation. By reviewing each other's MRs, each engineer's
+    own documentation skills will improve.
+- Thinking about the documentation early can help engineers generate better examples,
+  as they will need to think about what examples a user will want, and will need to
+  make sure the code they write implements that example properly.
+
+#### Docs with code as a workflow
+
+In order to have docs included with code as a mandatory workflow, some changes might
+need to happen to a team's current workflow:
+
+- The engineers must strive to include the docs early in the development process,
+  to give ample time for review, not just from the technical writer, but also the
+  code reviewer and maintainer.
+- Reviewers and maintainers must also review the docs during code reviews, to make
+  sure the described processes match the expected use of the feature, and that examples
+  are correct. They do *not* need to worry about style, grammar, and so on.
+- The technical writer must be assigned the MR directly and not only pinged. Thanks
+  to the ability to have [multiple assignees for any MR](../../user/project/merge_requests/getting_started.md#multiple-assignees-starter),
+  this can be done at any time, but must be before the code maintainer review. It's
+  common to have both the docs and code reviews happening at the same time, with the
+  author, reviewer and technical writer discussing the docs together.
+- When the docs are ready, the technical writer will click **Approve** and usually
+  will no longer be involved in the MR. If the feature changes during code review and
+  the docs are updated, the technical writer must be reassigned the MR to verify the
+  update.
+- Maintainers are allowed to merge features with the docs "as-is", even if the technical
+  writer has not given final approval yet. The **docs reviews must not be blockers**. Therefore
+  it's important to get the docs included and assigned to the technical writers early.
+  If the feature is merged before final docs approval, the maintainer must create
+  a [post-merge follow-up issue](#post-merge-reviews), and assign it to both the engineer
+  and technical writer.
+
+Maintainers are allowed to merge features with the docs "as-is" even if the
+technical writer has not given final approval yet but the merge request has
+all other required approvals.
+
+You can visualize the parallel workflow for code and docs reviews as:
+
+```mermaid
+graph TD
+  A("Feature MR Created (Engineer)") --> |Assign| B("Code Review (reviewer)")
+  B --> |"Approve / Reassign"| C("Code Review (maintainer)")
+  C --> |Approve| F("Merge (maintainer)")
+  A --> D("Docs Added (Engineer)")
+  D --> |Assign| E("Docs Review (Tech Writer)")
+  E --> |Approve| F
+```
+
+For complex features split over multiple merge requests:
+
+- If a merge request is implementing components for a future feature, but the components
+  are not accessible to users yet, then no documentation should be included.
+- If a merge request will expose a feature to users in any way, such as an enabled
+  UI element, an API endpoint, or anything similar, then that MR **must** have docs.
+  Note that this may mean multiple docs additions could happen in the buildup to the
+  implementation of a single large feature, for example API docs and feature usage docs.
+- If it's unclear which engineer should add the feature documentation into their
+  MR, the engineering manager should decide during planning, and tie the documentation
+  to the last MR that must be merged before a feature is considered released.
+  This is often, but not always, a frontend MR.
+
 ## For all other documentation
 
-These documentation changes are not associated with the release of a new or updated feature, and are
-therefore labeled `backstage` in GitLab, rather than `feature`. They may include:
+Documentation changes that are not associated with the release of a new or updated feature
+do not take the `~feature` label, but still need the `~documentation` label.
+
+They may include:
 
 - Documentation created or updated to improve accuracy, completeness, ease of use, or any reason
   other than a [feature change](#for-a-product-change).

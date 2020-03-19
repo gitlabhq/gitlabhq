@@ -4,13 +4,13 @@ module Lfs
   class LockFileService < BaseService
     def execute
       unless can?(current_user, :push_code, project)
-        raise Gitlab::GitAccess::UnauthorizedError, 'You have no permissions'
+        raise Gitlab::GitAccess::ForbiddenError, 'You have no permissions'
       end
 
       create_lock!
     rescue ActiveRecord::RecordNotUnique
       error('already locked', 409, current_lock)
-    rescue Gitlab::GitAccess::UnauthorizedError => ex
+    rescue Gitlab::GitAccess::ForbiddenError => ex
       error(ex.message, 403)
     rescue => ex
       error(ex.message, 500)

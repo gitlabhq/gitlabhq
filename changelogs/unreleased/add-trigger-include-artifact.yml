@@ -1,0 +1,5 @@
+---
+title: 'Create child pipelines dynamically using content from artifact as CI configuration'
+merge_request: 23790
+author:
+type: fixed

@@ -13,6 +13,22 @@ If Danger is asking you to change something about your merge request, it's best
 just to make the change. If you want to learn how Danger works, or make changes
 to the existing rules, then this is the document for you.
 
+## Danger comments in merge requests
+
+Danger only posts one comment and updates its content on subsequent
+`danger-review` runs. Given this, it's usually one of the first few comments
+in a merge request if not the first. If you didn't see it, try to look
+from the start of the merge request.
+
+### Advantages
+
+- You don't get email notifications each time `danger-review` runs.
+
+### Disadvantages
+
+- It's not obvious Danger will update the old comment, thus you need to
+  pay attention to it if it is updated or not.
+
 ## Run Danger locally
 
 A subset of the current checks can be run locally with the following rake task:
@@ -70,12 +86,6 @@ the need as part of the product in a future version of GitLab!
 
 Implement each task as an isolated piece of functionality and place it in its
 own directory under `danger` as `danger/<task-name>/Dangerfile`.
-
-Add a line to the top-level `Dangerfile` to ensure it is loaded like:
-
-```ruby
-danger.import_dangerfile('danger/<task-name>')
-```
 
 Each task should be isolated from the others, and able to function in isolation.
 If there is code that should be shared between multiple tasks, add a plugin to

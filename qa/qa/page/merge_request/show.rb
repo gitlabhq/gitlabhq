@@ -14,6 +14,7 @@ module QA
           element :dropdown_toggle
           element :download_email_patches
           element :download_plain_diff
+          element :open_in_web_ide_button
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_pipeline.vue' do
@@ -218,6 +219,10 @@ module QA
 
         def wait_for_loading
           finished_loading? && has_no_element?(:skeleton_note)
+        end
+
+        def click_open_in_web_ide
+          click_element :open_in_web_ide_button
         end
       end
     end

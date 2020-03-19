@@ -215,6 +215,14 @@ describe Gitlab::ImportExport::FastHashSerializer do
     expect(subject['boards'].first['lists']).not_to be_empty
   end
 
+  context 'relation ordering' do
+    it 'orders exported pipelines by primary key' do
+      expected_order = project.ci_pipelines.reorder(:id).ids
+
+      expect(subject['ci_pipelines'].pluck('id')).to eq(expected_order)
+    end
+  end
+
   def setup_project
     release = create(:release)
     group = create(:group)
@@ -245,6 +253,8 @@ describe Gitlab::ImportExport::FastHashSerializer do
     ci_build = create(:ci_build, project: project, when: nil)
     ci_build.pipeline.update(project: project)
     create(:commit_status, project: project, pipeline: ci_build.pipeline)
+
+    create_list(:ci_pipeline, 5, :success, project: project)
 
     create(:milestone, project: project)
     create(:discussion_note, noteable: issue, project: project)

@@ -54,6 +54,7 @@ module API
         optional :auto_devops_enabled, type: Boolean, desc: 'Flag indication if Auto DevOps is enabled'
         optional :auto_devops_deploy_strategy, type: String, values: %w(continuous manual timed_incremental), desc: 'Auto Deploy strategy'
         optional :autoclose_referenced_issues, type: Boolean, desc: 'Flag indication if referenced issues auto-closing is enabled'
+        optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
       end
 
       params :optional_project_params_ee do
@@ -125,6 +126,7 @@ module API
           :wiki_access_level,
           :avatar,
           :suggestion_commit_message,
+          :repository_storage,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

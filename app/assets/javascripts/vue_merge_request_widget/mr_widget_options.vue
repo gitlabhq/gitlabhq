@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
@@ -118,7 +118,7 @@ export default {
       return this.mr.allowCollaboration && this.mr.isOpen;
     },
     shouldRenderMergedPipeline() {
-      return this.mr.state === 'merged' && !_.isEmpty(this.mr.mergePipeline);
+      return this.mr.state === 'merged' && !isEmpty(this.mr.mergePipeline);
     },
     showMergePipelineForkWarning() {
       return Boolean(
@@ -212,6 +212,8 @@ export default {
       return new MRWidgetService(this.getServiceEndpoints(store));
     },
     checkStatus(cb, isRebased) {
+      if (document.visibilityState !== 'visible') return Promise.resolve();
+
       return this.service
         .checkStatus()
         .then(({ data }) => {
@@ -362,6 +364,8 @@ export default {
       v-if="shouldSuggestPipelines"
       class="mr-widget-workflow"
       :pipeline-path="mr.mergeRequestAddCiConfigPath"
+      :pipeline-svg-path="mr.pipelinesEmptySvgPath"
+      :human-access="mr.humanAccess.toLowerCase()"
     />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"

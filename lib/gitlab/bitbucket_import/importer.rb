@@ -3,8 +3,6 @@
 module Gitlab
   module BitbucketImport
     class Importer
-      include Gitlab::ShellAdapter
-
       LABELS = [{ title: 'bug', color: '#FF0000' },
                 { title: 'enhancement', color: '#428BCA' },
                 { title: 'proposal', color: '#69D100' },
@@ -80,7 +78,7 @@ module Gitlab
 
         wiki = WikiFormatter.new(project)
 
-        gitlab_shell.import_wiki_repository(project, wiki)
+        project.wiki.repository.import_repository(wiki.import_url)
       rescue StandardError => e
         errors << { type: :wiki, errors: e.message }
       end

@@ -3,9 +3,9 @@
 # Load a specific server configuration
 module Gitlab
   module Auth
-    module LDAP
+    module Ldap
       class Config
-        prepend_if_ee('::EE::Gitlab::Auth::LDAP::Config') # rubocop: disable Cop/InjectEnterpriseEditionModule
+        prepend_if_ee('::EE::Gitlab::Auth::Ldap::Config') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
         NET_LDAP_ENCRYPTION_METHOD = {
           simple_tls: :simple_tls,

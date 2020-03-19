@@ -1,0 +1,5 @@
+---
+title: Validate that users selects at least two subnets in EKS Form
+merge_request: 26936
+author:
+type: fixed

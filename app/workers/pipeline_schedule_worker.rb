@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PipelineScheduleWorker
+class PipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include CronjobQueue
 

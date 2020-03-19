@@ -216,6 +216,22 @@ describe Gitlab::QuickActions::Extractor do
       expect(msg).to eq "hello\nworld\nthis is great? SHRUG"
     end
 
+    it 'extracts and performs multiple substitution commands' do
+      msg = %(hello\nworld\n/reopen\n/shrug this is great?\n/shrug meh)
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq [['reopen'], ['shrug', 'this is great?'], %w(shrug meh)]
+      expect(msg).to eq "hello\nworld\nthis is great? SHRUG\nmeh SHRUG"
+    end
+
+    it 'does not extract substitution command in inline code' do
+      msg = %(hello\nworld\n/reopen\n`/tableflip this is great`?)
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to eq [['reopen']]
+      expect(msg).to eq "hello\nworld\n`/tableflip this is great`?"
+    end
+
     it 'extracts and performs substitution commands case insensitive' do
       msg = %(hello\nworld\n/reOpen\n/sHRuG this is great?)
       msg, commands = extractor.extract_commands(msg)
@@ -268,6 +284,33 @@ describe Gitlab::QuickActions::Extractor do
 
     it 'does not extract commands inside a HTML tag' do
       msg = "Hello\r\n<div>\r\nThis is some text\r\n/close\r\n/assign @user\r\n</div>\r\n\r\nWorld"
+      expected = msg.delete("\r")
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to be_empty
+      expect(msg).to eq expected
+    end
+
+    it 'does not extract commands in multiline inline code on seperated rows' do
+      msg = "Hello\r\n`\r\nThis is some text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
+      expected = msg.delete("\r")
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to be_empty
+      expect(msg).to eq expected
+    end
+
+    it 'does not extract commands in multiline inline code starting from text' do
+      msg = "Hello `This is some text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
+      expected = msg.delete("\r")
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to be_empty
+      expect(msg).to eq expected
+    end
+
+    it 'does not extract commands in inline code' do
+      msg = "`This is some text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
       expected = msg.delete("\r")
       msg, commands = extractor.extract_commands(msg)
 

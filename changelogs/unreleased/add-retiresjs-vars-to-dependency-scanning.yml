@@ -1,0 +1,5 @@
+---
+title: Add vars to allow air-gapped usage of Retire.js (Dependency Scanning)
+merge_request: 26463
+author:
+type: added

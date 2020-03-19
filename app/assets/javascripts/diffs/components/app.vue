@@ -50,6 +50,11 @@ export default {
       type: String,
       required: true,
     },
+    endpointCoverage: {
+      type: String,
+      required: false,
+      default: '',
+    },
     projectPath: {
       type: String,
       required: true,
@@ -169,6 +174,7 @@ export default {
       endpoint: this.endpoint,
       endpointMetadata: this.endpointMetadata,
       endpointBatch: this.endpointBatch,
+      endpointCoverage: this.endpointCoverage,
       projectPath: this.projectPath,
       dismissEndpoint: this.dismissEndpoint,
       showSuggestPopover: this.showSuggestPopover,
@@ -218,6 +224,7 @@ export default {
       'fetchDiffFiles',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
+      'fetchCoverageFiles',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
       'setHighlightedRow',
@@ -290,6 +297,10 @@ export default {
           .catch(() => {
             createFlash(__('Something went wrong on our end. Please try again!'));
           });
+      }
+
+      if (this.endpointCoverage) {
+        this.fetchCoverageFiles();
       }
 
       if (!this.isNotesFetched) {
@@ -398,7 +409,7 @@ export default {
           }"
         >
           <commit-widget v-if="commit" :commit="commit" />
-          <div v-if="isBatchLoading" class="loading"><gl-loading-icon /></div>
+          <div v-if="isBatchLoading" class="loading"><gl-loading-icon size="lg" /></div>
           <template v-else-if="renderDiffFiles">
             <diff-file
               v-for="file in diffFiles"

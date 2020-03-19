@@ -44,9 +44,8 @@ On our CI, we use [rspec-retry] to automatically retry a failing example a few
 times (see [`spec/spec_helper.rb`] for the precise retries count).
 
 We also use a home-made `RspecFlaky::Listener` listener which records flaky
-examples in a JSON report file on `master` (`retrieve-tests-metadata` and `update-tests-metadata` jobs), and warns when a new flaky example
-is detected in any other branch (`flaky-examples-check` job). In the future, the
-`flaky-examples-check` job will not be allowed to fail.
+examples in a JSON report file on `master` (`retrieve-tests-metadata` and
+`update-tests-metadata` jobs).
 
 This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13021>.
 
@@ -87,6 +86,7 @@ For instance `RETRIES=1 bin/rspec ...` would retry the failing examples once.
   - [Dropdowns rendering upward or downward due to window size and scroll position](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17660)
   - [Lazy loaded images can cause Capybara to misclick](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18713)
 - [Triggering JS events before the event handlers are set up](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18742)
+- [Wait for the image to be lazy-loaded when asserting on a Markdown image's src attribute](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25408)
 
 #### Capybara viewport size related issues
 

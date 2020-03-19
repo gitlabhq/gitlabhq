@@ -3,7 +3,7 @@
 module QA
   context 'Release' do
     describe 'Deploy key creation' do
-      it 'user adds a deploy key' do
+      it 'user adds a deploy key', quarantine: 'https://gitlab.com/gitlab-org/gitlab/issues/208761' do
         Flow::Login.sign_in
 
         key = Runtime::Key::RSA.new
@@ -17,7 +17,7 @@ module QA
 
         expect(deploy_key.md5_fingerprint).to eq key.md5_fingerprint
 
-        Page::Project::Settings::Repository.perform do |setting|
+        Page::Project::Settings::CICD.perform do |setting|
           setting.expand_deploy_keys do |keys|
             expect(keys).to have_key(deploy_key_title, key.md5_fingerprint)
           end

@@ -3,8 +3,6 @@
 module Gitlab
   module LegacyGithubImport
     class Importer
-      include Gitlab::ShellAdapter
-
       def self.refmap
         Gitlab::GithubImport.refmap
       end
@@ -264,11 +262,11 @@ module Gitlab
       end
 
       def import_wiki
-        unless project.wiki.repository_exists?
-          wiki = WikiFormatter.new(project)
-          gitlab_shell.import_wiki_repository(project, wiki)
-        end
-      rescue Gitlab::Shell::Error => e
+        return if project.wiki.repository_exists?
+
+        wiki = WikiFormatter.new(project)
+        project.wiki.repository.import_repository(wiki.import_url)
+      rescue ::Gitlab::Git::CommandError => e
         # GitHub error message when the wiki repo has not been created,
         # this means that repo has wiki enabled, but have no pages. So,
         # we can skip the import.

@@ -16,7 +16,7 @@ FactoryBot.define do
 
     page { OpenStruct.new(url_path: 'some-name') }
     association :wiki, factory: :project_wiki, strategy: :build
-    initialize_with { new(wiki, page, true) }
+    initialize_with { new(wiki, page) }
 
     before(:create) do |page, evaluator|
       page.attributes = evaluator.attrs

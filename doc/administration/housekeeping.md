@@ -15,7 +15,7 @@ The housekeeping function runs `repack` or `gc` depending on the
 
 For example in the following scenario a `git repack -d` will be executed:
 
-- Project: pushes since gc counter (`pushes_since_gc`) = `10`
+- Project: pushes since GC counter (`pushes_since_gc`) = `10`
 - Git GC period = `200`
 - Full repack period = `50`
 
@@ -23,7 +23,7 @@ When the `pushes_since_gc` value is 50 a `repack -A -d --pack-kept-objects` will
 the `pushes_since_gc` value is 200 a `git gc` will be run.
 
 - `git gc` ([man page](https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-gc.html)) runs a number of housekeeping tasks,
-  such as compressing filerevisions (to reduce disk space and increase performance)
+  such as compressing file revisions (to reduce disk space and increase performance)
   and removing unreachable objects which may have been created from prior invocations of
   `git add`.
 - `git repack` ([man page](https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-repack.html)) re-organize existing packs into a single, more efficient pack.

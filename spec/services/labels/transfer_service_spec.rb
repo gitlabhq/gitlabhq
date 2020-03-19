@@ -4,65 +4,101 @@ require 'spec_helper'
 
 describe Labels::TransferService do
   describe '#execute' do
-    let(:user)    { create(:admin) }
-    let(:group_1) { create(:group) }
-    let(:group_2) { create(:group) }
-    let(:group_3) { create(:group) }
-    let(:project_1) { create(:project, namespace: group_2) }
-    let(:project_2) { create(:project, namespace: group_3) }
-    let(:project_3) { create(:project, namespace: group_1) }
+    let_it_be(:user) { create(:admin) }
 
-    let(:group_label_1) { create(:group_label, group: group_1, name: 'Group Label 1') }
-    let(:group_label_2) { create(:group_label, group: group_1, name: 'Group Label 2') }
-    let(:group_label_3) { create(:group_label, group: group_1, name: 'Group Label 3') }
-    let(:group_label_4) { create(:group_label, group: group_2, name: 'Group Label 4') }
-    let(:group_label_5) { create(:group_label, group: group_3, name: 'Group Label 5') }
-    let(:project_label_1) { create(:label, project: project_1, name: 'Project Label 1') }
+    let_it_be(:old_group_ancestor) { create(:group) }
+    let_it_be(:old_group) { create(:group, parent: old_group_ancestor) }
 
-    subject(:service) { described_class.new(user, group_1, project_1) }
+    let_it_be(:new_group) { create(:group) }
 
-    before do
-      create(:labeled_issue, project: project_1, labels: [group_label_1])
-      create(:labeled_issue, project: project_1, labels: [group_label_4])
-      create(:labeled_issue, project: project_1, labels: [project_label_1])
-      create(:labeled_issue, project: project_2, labels: [group_label_5])
-      create(:labeled_issue, project: project_3, labels: [group_label_1])
-      create(:labeled_merge_request, source_project: project_1, labels: [group_label_1, group_label_2])
-      create(:labeled_merge_request, source_project: project_2, labels: [group_label_5])
+    let_it_be(:project) { create(:project, :repository, group: new_group) }
+
+    subject(:service) { described_class.new(user, old_group, project) }
+
+    it 'recreates missing group labels at project level and assigns them to the issuables' do
+      old_group_label_1 = create(:group_label, group: old_group)
+      old_group_label_2 = create(:group_label, group: old_group)
+
+      labeled_issue = create(:labeled_issue, project: project, labels: [old_group_label_1])
+      labeled_merge_request = create(:labeled_merge_request, source_project: project, labels: [old_group_label_2])
+
+      expect { service.execute }.to change(project.labels, :count).by(2)
+      expect(labeled_issue.reload.labels).to contain_exactly(project.labels.find_by_title(old_group_label_1.title))
+      expect(labeled_merge_request.reload.labels).to contain_exactly(project.labels.find_by_title(old_group_label_2.title))
     end
 
-    it 'recreates the missing group labels at project level' do
-      expect { service.execute }.to change(project_1.labels, :count).by(2)
+    it 'recreates missing ancestor group labels at project level and assigns them to the issuables' do
+      old_group_ancestor_label_1 = create(:group_label, group: old_group_ancestor)
+      old_group_ancestor_label_2 = create(:group_label, group: old_group_ancestor)
+
+      labeled_issue = create(:labeled_issue, project: project, labels: [old_group_ancestor_label_1])
+      labeled_merge_request = create(:labeled_merge_request, source_project: project, labels: [old_group_ancestor_label_2])
+
+      expect { service.execute }.to change(project.labels, :count).by(2)
+      expect(labeled_issue.reload.labels).to contain_exactly(project.labels.find_by_title(old_group_ancestor_label_1.title))
+      expect(labeled_merge_request.reload.labels).to contain_exactly(project.labels.find_by_title(old_group_ancestor_label_2.title))
     end
 
     it 'recreates label priorities related to the missing group labels' do
-      create(:label_priority, project: project_1, label: group_label_1, priority: 1)
+      old_group_label = create(:group_label, group: old_group)
+      create(:labeled_issue, project: project, labels: [old_group_label])
+      create(:label_priority, project: project, label: old_group_label, priority: 1)
 
       service.execute
 
-      new_project_label = project_1.labels.find_by(title: group_label_1.title)
-      expect(new_project_label.id).not_to eq group_label_1.id
+      new_project_label = project.labels.find_by(title: old_group_label.title)
+      expect(new_project_label.id).not_to eq old_group_label.id
       expect(new_project_label.priorities).not_to be_empty
     end
 
     it 'does not recreate missing group labels that are not applied to issues or merge requests' do
+      old_group_label = create(:group_label, group: old_group)
+
       service.execute
 
-      expect(project_1.labels.where(title: group_label_3.title)).to be_empty
+      expect(project.labels.where(title: old_group_label.title)).to be_empty
     end
 
     it 'does not recreate missing group labels that already exist in the project group' do
+      old_group_label = create(:group_label, group: old_group)
+      labeled_issue = create(:labeled_issue, project: project, labels: [old_group_label])
+
+      new_group_label = create(:group_label, group: new_group, title: old_group_label.title)
+
       service.execute
 
-      expect(project_1.labels.where(title: group_label_4.title)).to be_empty
+      expect(project.labels.where(title: old_group_label.title)).to be_empty
+      expect(labeled_issue.reload.labels).to contain_exactly(new_group_label)
     end
 
     it 'updates only label links in the given project' do
+      old_group_label = create(:group_label, group: old_group)
+      other_project = create(:project, group: old_group)
+
+      labeled_issue = create(:labeled_issue, project: project, labels: [old_group_label])
+      other_project_labeled_issue = create(:labeled_issue, project: other_project, labels: [old_group_label])
+
       service.execute
 
-      targets = LabelLink.where(label_id: group_label_1.id).map(&:target)
+      expect(labeled_issue.reload.labels).not_to include(old_group_label)
+      expect(other_project_labeled_issue.reload.labels).to contain_exactly(old_group_label)
+    end
 
-      expect(targets).to eq(project_3.issues)
+    context 'when moving within the same ancestor group' do
+      let(:other_subgroup) { create(:group, parent: old_group_ancestor) }
+      let(:project) { create(:project, :repository, group: other_subgroup) }
+
+      it 'does not recreate ancestor group labels' do
+        old_group_ancestor_label_1 = create(:group_label, group: old_group_ancestor)
+        old_group_ancestor_label_2 = create(:group_label, group: old_group_ancestor)
+
+        labeled_issue = create(:labeled_issue, project: project, labels: [old_group_ancestor_label_1])
+        labeled_merge_request = create(:labeled_merge_request, source_project: project, labels: [old_group_ancestor_label_2])
+
+        expect { service.execute }.not_to change(project.labels, :count)
+        expect(labeled_issue.reload.labels).to contain_exactly(old_group_ancestor_label_1)
+        expect(labeled_merge_request.reload.labels).to contain_exactly(old_group_ancestor_label_2)
+      end
     end
   end
 end

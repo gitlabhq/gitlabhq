@@ -183,6 +183,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :gitaly_timeout_default,
             presence: true,
+            if: :gitaly_timeout_default_changed?,
             numericality: {
               only_integer: true,
               greater_than_or_equal_to: 0,
@@ -191,6 +192,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :gitaly_timeout_medium,
             presence: true,
+            if: :gitaly_timeout_medium_changed?,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :gitaly_timeout_medium,
             numericality: { less_than_or_equal_to: :gitaly_timeout_default },
@@ -201,6 +203,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :gitaly_timeout_fast,
             presence: true,
+            if: :gitaly_timeout_fast_changed?,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :gitaly_timeout_fast,
             numericality: { less_than_or_equal_to: :gitaly_timeout_default },
@@ -253,6 +256,8 @@ class ApplicationSetting < ApplicationRecord
             numericality: { greater_than_or_equal_to: 0 }
 
   validates :snippet_size_limit, numericality: { only_integer: true, greater_than: 0 }
+
+  validate :email_restrictions_regex_valid?
 
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
@@ -404,6 +409,14 @@ class ApplicationSetting < ApplicationRecord
 
   def recaptcha_or_login_protection_enabled
     recaptcha_enabled || login_recaptcha_protection_enabled
+  end
+
+  def email_restrictions_regex_valid?
+    return if email_restrictions.blank?
+
+    Gitlab::UntrustedRegexp.new(email_restrictions)
+  rescue RegexpError
+    errors.add(:email_restrictions, _('is not a valid regular expression'))
   end
 
   private

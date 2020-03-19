@@ -54,7 +54,7 @@ export default class MRWidgetService {
     return axios.post(this.endpoints.rebasePath);
   }
 
-  static stopEnvironment(url) {
+  static executeInlineAction(url) {
     return axios.post(url);
   }
 

@@ -10,7 +10,7 @@ module Ci
     include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
-    include HasRef
+    include Ci::HasRef
     include IgnorableColumns
 
     BuildArchivedError = Class.new(StandardError)
@@ -59,15 +59,11 @@ module Ci
     ##
     # Since Gitlab 11.5, deployments records started being created right after
     # `ci_builds` creation. We can look up a relevant `environment` through
-    # `deployment` relation today. This is much more efficient than expanding
-    # environment name with variables.
+    # `deployment` relation today.
     # (See more https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22380)
     #
-    # However, we have to still expand environment name if it's a stop action,
-    # because `deployment` persists information for start action only.
-    #
-    # We will follow up this by persisting expanded name in build metadata or
-    # persisting stop action in database.
+    # Since Gitlab 12.9, we started persisting the expanded environment name to
+    # avoid repeated variables expansion in `action: stop` builds as well.
     def persisted_environment
       return unless has_environment?
 
@@ -173,8 +169,10 @@ module Ci
     scope :queued_before, ->(time) { where(arel_table[:queued_at].lt(time)) }
     scope :order_id_desc, -> { order('ci_builds.id DESC') }
 
-    PROJECT_ROUTE_AND_NAMESPACE_ROUTE = { project: [:project_feature, :route, { namespace: :route }] }.freeze
-    scope :preload_project_and_pipeline_project, -> { preload(PROJECT_ROUTE_AND_NAMESPACE_ROUTE, pipeline: PROJECT_ROUTE_AND_NAMESPACE_ROUTE) }
+    scope :preload_project_and_pipeline_project, -> do
+      preload(Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
+              pipeline: Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE)
+    end
 
     acts_as_taggable
 
@@ -463,7 +461,14 @@ module Ci
       return unless has_environment?
 
       strong_memoize(:expanded_environment_name) do
-        ExpandVariables.expand(environment, -> { simple_variables })
+        # We're using a persisted expanded environment name in order to avoid
+        # variable expansion per request.
+        if Feature.enabled?(:ci_persisted_expanded_environment_name, project, default_enabled: true) &&
+          metadata&.expanded_environment_name.present?
+          metadata.expanded_environment_name
+        else
+          ExpandVariables.expand(environment, -> { simple_variables })
+        end
       end
     end
 
@@ -529,6 +534,7 @@ module Ci
           .concat(persisted_variables)
           .concat(scoped_variables)
           .concat(job_variables)
+          .concat(environment_changed_page_variables)
           .concat(persisted_environment_variables)
           .to_runner_variables
       end
@@ -564,6 +570,15 @@ module Ci
         # and we need to make sure that CI_ENVIRONMENT_NAME and
         # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
         variables.append(key: 'CI_ENVIRONMENT_URL', value: environment_url) if environment_url
+      end
+    end
+
+    def environment_changed_page_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless environment_status
+
+        variables.append(key: 'CI_MERGE_REQUEST_CHANGED_PAGE_PATHS', value: environment_status.changed_paths.join(','))
+        variables.append(key: 'CI_MERGE_REQUEST_CHANGED_PAGE_URLS', value: environment_status.changed_urls.join(','))
       end
     end
 
@@ -901,6 +916,14 @@ module Ci
       end
     end
 
+    def collect_coverage_reports!(coverage_report)
+      each_report(Ci::JobArtifact::COVERAGE_REPORT_FILE_TYPES) do |file_type, blob|
+        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, coverage_report)
+      end
+
+      coverage_report
+    end
+
     def report_artifacts
       job_artifacts.with_reports
     end
@@ -966,6 +989,14 @@ module Ci
 
     def environment_url
       options&.dig(:environment, :url) || persisted_environment&.external_url
+    end
+
+    def environment_status
+      strong_memoize(:environment_status) do
+        if has_environment? && merge_request
+          EnvironmentStatus.new(project, persisted_environment, merge_request, pipeline.sha)
+        end
+      end
     end
 
     # The format of the retry option changed in GitLab 11.5: Before it was

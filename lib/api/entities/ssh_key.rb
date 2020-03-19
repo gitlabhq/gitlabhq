@@ -3,7 +3,7 @@
 module API
   module Entities
     class SSHKey < Grape::Entity
-      expose :id, :title, :key, :created_at
+      expose :id, :title, :key, :created_at, :expires_at
     end
   end
 end

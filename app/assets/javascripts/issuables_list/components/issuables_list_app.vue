@@ -1,9 +1,14 @@
 <script>
-import { omit } from 'underscore';
+import { toNumber, omit } from 'lodash';
 import { GlEmptyState, GlPagination, GlSkeletonLoading } from '@gitlab/ui';
 import flash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { scrollToElement, urlParamsToObject } from '~/lib/utils/common_utils';
+import {
+  scrollToElement,
+  urlParamsToObject,
+  historyPushState,
+  getParameterByName,
+} from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import initManualOrdering from '~/manual_ordering';
 import Issuable from './issuable.vue';
@@ -14,6 +19,7 @@ import {
   PAGE_SIZE_MANUAL,
   LOADING_LIST_ITEMS_LENGTH,
 } from '../constants';
+import { setUrlParams } from '~/lib/utils/url_utility';
 import issueableEventHub from '../eventhub';
 
 export default {
@@ -56,7 +62,10 @@ export default {
       isBulkEditing: false,
       issuables: [],
       loading: false,
-      page: 1,
+      page:
+        getParameterByName('page', window.location.href) !== null
+          ? toNumber(getParameterByName('page'))
+          : 1,
       selection: {},
       totalItems: 0,
     };
@@ -189,6 +198,12 @@ export default {
       if (newPage === this.page) return;
 
       scrollToElement('#content-body');
+
+      // NOTE: This allows for the params to be updated on pagination
+      historyPushState(
+        setUrlParams({ ...this.filters, page: newPage }, window.location.href, true),
+      );
+
       this.fetchIssuables(newPage);
     },
     onSelectAll() {

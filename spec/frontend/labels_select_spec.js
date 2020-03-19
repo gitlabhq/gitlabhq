@@ -23,6 +23,16 @@ const mockScopedLabels = [
   },
 ];
 
+const mockScopedLabels2 = [
+  {
+    id: 28,
+    title: 'Foo::Bar2',
+    description: 'Foobar2',
+    color: '#FFFFFF',
+    text_color: '#000000',
+  },
+];
+
 describe('LabelsSelect', () => {
   describe('getLabelTemplate', () => {
     describe('when normal label is present', () => {
@@ -41,29 +51,29 @@ describe('LabelsSelect', () => {
       });
 
       it('generated label item template has correct label URL', () => {
-        expect($labelEl.attr('href')).toBe('/foo/bar?label_name[]=Foo%20Label');
+        expect($labelEl.find('a').attr('href')).toBe('/foo/bar?label_name[]=Foo%20Label');
       });
 
       it('generated label item template has correct label title', () => {
-        expect($labelEl.find('span.label').text()).toBe(label.title);
+        expect($labelEl.find('span.gl-label-text').text()).toBe(label.title);
       });
 
       it('generated label item template has label description as title attribute', () => {
-        expect($labelEl.find('span.label').attr('title')).toBe(label.description);
+        expect($labelEl.find('a').attr('title')).toBe(label.description);
       });
 
       it('generated label item template has correct label styles', () => {
-        expect($labelEl.find('span.label').attr('style')).toBe(
+        expect($labelEl.find('span.gl-label-text').attr('style')).toBe(
           `background-color: ${label.color}; color: ${label.text_color};`,
         );
       });
 
-      it('generated label item has a badge class', () => {
-        expect($labelEl.find('span').hasClass('badge')).toEqual(true);
+      it('generated label item has a gl-label-text class', () => {
+        expect($labelEl.find('span').hasClass('gl-label-text')).toEqual(true);
       });
 
-      it('generated label item template does not have scoped-label class', () => {
-        expect($labelEl.find('.scoped-label')).toHaveLength(0);
+      it('generated label item template does not have gl-label-icon class', () => {
+        expect($labelEl.find('.gl-label-icon')).toHaveLength(0);
       });
     });
 
@@ -87,29 +97,65 @@ describe('LabelsSelect', () => {
       });
 
       it('generated label item template has correct label title', () => {
-        expect($labelEl.find('span.label').text()).toBe(label.title);
+        const scopedTitle = label.title.split('::');
+        expect($labelEl.find('span.gl-label-text').text()).toContain(scopedTitle[0]);
+        expect($labelEl.find('span.gl-label-text').text()).toContain(scopedTitle[1]);
       });
 
       it('generated label item template has html flag as true', () => {
-        expect($labelEl.find('span.label').attr('data-html')).toBe('true');
+        expect($labelEl.find('a').attr('data-html')).toBe('true');
       });
 
       it('generated label item template has question icon', () => {
         expect($labelEl.find('i.fa-question-circle')).toHaveLength(1);
       });
 
-      it('generated label item template has scoped-label class', () => {
-        expect($labelEl.find('.scoped-label')).toHaveLength(1);
+      it('generated label item template has gl-label-icon class', () => {
+        expect($labelEl.find('.gl-label-icon')).toHaveLength(1);
       });
 
       it('generated label item template has correct label styles', () => {
-        expect($labelEl.find('span.label').attr('style')).toBe(
+        expect($labelEl.find('span.gl-label-text').attr('style')).toBe(
           `background-color: ${label.color}; color: ${label.text_color};`,
         );
+        expect(
+          $labelEl
+            .find('span.gl-label-text')
+            .last()
+            .attr('style'),
+        ).toBe(`color: ${label.color};`);
       });
 
       it('generated label item has a badge class', () => {
-        expect($labelEl.find('span').hasClass('badge')).toEqual(true);
+        expect($labelEl.find('span').hasClass('gl-label-text')).toEqual(true);
+      });
+    });
+
+    describe('when scoped label is present, with text color not white', () => {
+      const label = mockScopedLabels2[0];
+      let $labelEl;
+
+      beforeEach(() => {
+        $labelEl = $(
+          LabelsSelect.getLabelTemplate({
+            labels: mockScopedLabels2,
+            issueUpdateURL: mockUrl,
+            enableScopedLabels: true,
+            scopedLabelsDocumentationLink: 'docs-link',
+          }),
+        );
+      });
+
+      it('generated label item template has correct label styles', () => {
+        expect($labelEl.find('span.gl-label-text').attr('style')).toBe(
+          `background-color: ${label.color}; color: ${label.text_color};`,
+        );
+        expect(
+          $labelEl
+            .find('span.gl-label-text')
+            .last()
+            .attr('style'),
+        ).toBe(`color: ${label.text_color};`);
       });
     });
   });

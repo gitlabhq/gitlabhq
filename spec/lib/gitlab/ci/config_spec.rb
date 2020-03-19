@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Gitlab::Ci::Config do
   include StubRequests
 
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
@@ -78,26 +78,6 @@ describe Gitlab::Ci::Config do
         end
 
         it { is_expected.to eq %w[.pre stage1 stage2 .post] }
-      end
-
-      context 'with feature disabled' do
-        before do
-          stub_feature_flags(ci_pre_post_pipeline_stages: false)
-        end
-
-        let(:yml) do
-          <<-EOS
-            stages:
-              - stage1
-              - stage2
-            job1:
-              stage: stage1
-              script:
-                - ls
-          EOS
-        end
-
-        it { is_expected.to eq %w[stage1 stage2] }
       end
     end
   end
@@ -376,23 +356,6 @@ describe Gitlab::Ci::Config do
       end
     end
 
-    context 'when context expansion timeout is disabled' do
-      before do
-        allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
-          allow(instance).to receive(:check_execution_time!).and_call_original
-        end
-
-        allow(Feature)
-          .to receive(:enabled?)
-          .with(:ci_limit_yaml_expansion, project, default_enabled: true)
-          .and_return(false)
-      end
-
-      it 'does not raises errors' do
-        expect { config }.not_to raise_error
-      end
-    end
-
     describe 'external file version' do
       context 'when external local file SHA is defined' do
         it 'is using a defined value' do
@@ -539,6 +502,77 @@ describe Gitlab::Ci::Config do
             }
           })
         end
+      end
+    end
+
+    context 'when including file from artifact' do
+      let(:config) do
+        described_class.new(
+          gitlab_ci_yml,
+          project: nil,
+          sha: nil,
+          user: nil,
+          parent_pipeline: parent_pipeline)
+      end
+
+      let(:gitlab_ci_yml) do
+        <<~HEREDOC
+        include:
+          - artifact: generated.yml
+            job: rspec
+        HEREDOC
+      end
+
+      let(:parent_pipeline) { nil }
+
+      context 'when used in the context of a child pipeline' do
+        # This job has ci_build_artifacts.zip artifact archive which
+        # contains generated.yml
+        let!(:job) { create(:ci_build, :artifacts, name: 'rspec', pipeline: parent_pipeline) }
+        let(:parent_pipeline) { create(:ci_pipeline) }
+
+        it 'returns valid config' do
+          expect(config).to be_valid
+        end
+
+        context 'when job key is missing' do
+          let(:gitlab_ci_yml) do
+            <<~HEREDOC
+            include:
+              - artifact: generated.yml
+            HEREDOC
+          end
+
+          it 'raises an error' do
+            expect { config }.to raise_error(
+              described_class::ConfigError,
+              'Job must be provided when including configs from artifacts'
+            )
+          end
+        end
+
+        context 'when artifact key is missing' do
+          let(:gitlab_ci_yml) do
+            <<~HEREDOC
+            include:
+              - job: rspec
+            HEREDOC
+          end
+
+          it 'raises an error' do
+            expect { config }.to raise_error(
+              described_class::ConfigError,
+              /needs to match exactly one accessor!/
+            )
+          end
+        end
+      end
+
+      it 'disallows the use in parent pipelines' do
+        expect { config }.to raise_error(
+          described_class::ConfigError,
+          'Including configs from artifacts is only allowed when triggering child pipelines'
+        )
       end
     end
   end

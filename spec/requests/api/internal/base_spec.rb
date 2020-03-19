@@ -10,6 +10,10 @@ describe API::Internal::Base do
   let(:gl_repository) { "project-#{project.id}" }
   let(:reference_counter) { double('ReferenceCounter') }
 
+  let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
+  let_it_be(:project_snippet) { create(:project_snippet, :repository, author: user, project: project) }
+  let(:snippet_changes) { "#{TestEnv::BRANCH_SHA['snippet/single-file']} #{TestEnv::BRANCH_SHA['snippet/edit-file']} refs/heads/snippet/edit-file" }
+
   describe "GET /internal/check" do
     it do
       expect_any_instance_of(Redis).to receive(:ping).and_return('PONG')
@@ -259,6 +263,8 @@ describe API::Internal::Base do
 
   describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
     context "access granted" do
+      let(:env) { {} }
+
       around do |example|
         Timecop.freeze { example.run }
       end
@@ -267,36 +273,42 @@ describe API::Internal::Base do
         project.add_developer(user)
       end
 
-      context 'with env passed as a JSON' do
-        let(:gl_repository) { Gitlab::GlRepository::WIKI.identifier_for_container(project) }
+      shared_examples 'sets hook env' do
+        context 'with env passed as a JSON' do
+          let(:obj_dir_relative) { './objects' }
+          let(:alt_obj_dirs_relative) { ['./alt-objects-1', './alt-objects-2'] }
+          let(:env) do
+            {
+              GIT_OBJECT_DIRECTORY_RELATIVE: obj_dir_relative,
+              GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE: alt_obj_dirs_relative
+            }
+          end
 
-        it 'sets env in RequestStore' do
-          obj_dir_relative = './objects'
-          alt_obj_dirs_relative = ['./alt-objects-1', './alt-objects-2']
+          it 'sets env in RequestStore' do
+            expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, env.stringify_keys)
 
-          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, {
-            'GIT_OBJECT_DIRECTORY_RELATIVE' => obj_dir_relative,
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => alt_obj_dirs_relative
-          })
+            subject
 
-          push(key, project.wiki, env: {
-            GIT_OBJECT_DIRECTORY_RELATIVE: obj_dir_relative,
-            GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE: alt_obj_dirs_relative
-          }.to_json)
-
-          expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
       end
 
       context "git push with project.wiki" do
+        subject { push(key, project.wiki, env: env.to_json) }
+
         it 'responds with success' do
-          push(key, project.wiki)
+          subject
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user.reload.last_activity_on).to be_nil
+        end
+
+        it_behaves_like 'sets hook env' do
+          let(:gl_repository) { Gitlab::GlRepository::WIKI.identifier_for_container(project) }
         end
       end
 
@@ -309,6 +321,88 @@ describe API::Internal::Base do
           expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user.reload.last_activity_on).to eql(Date.today)
+        end
+      end
+
+      shared_examples 'snippets with disabled feature flag' do
+        context 'when feature flag :version_snippets is disabled' do
+          it 'returns 404' do
+            stub_feature_flags(version_snippets: false)
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
+      context 'git push with personal snippet' do
+        subject { push(key, personal_snippet, env: env.to_json, changes: snippet_changes) }
+
+        it 'responds with success' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response["status"]).to be_truthy
+          expect(json_response["gl_project_path"]).to eq(personal_snippet.repository.full_path)
+          expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
+          expect(user.reload.last_activity_on).to be_nil
+        end
+
+        it_behaves_like 'snippets with disabled feature flag'
+        it_behaves_like 'sets hook env' do
+          let(:gl_repository) { Gitlab::GlRepository::SNIPPET.identifier_for_container(personal_snippet) }
+        end
+      end
+
+      context 'git pull with personal snippet' do
+        it 'responds with success' do
+          pull(key, personal_snippet)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response["status"]).to be_truthy
+          expect(json_response["gl_project_path"]).to eq(personal_snippet.repository.full_path)
+          expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
+          expect(user.reload.last_activity_on).to eql(Date.today)
+        end
+
+        it_behaves_like 'snippets with disabled feature flag' do
+          subject { pull(key, personal_snippet) }
+        end
+      end
+
+      context 'git push with project snippet' do
+        subject { push(key, project_snippet, env: env.to_json, changes: snippet_changes) }
+
+        it 'responds with success' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response["status"]).to be_truthy
+          expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
+          expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
+          expect(user.reload.last_activity_on).to be_nil
+        end
+
+        it_behaves_like 'snippets with disabled feature flag'
+        it_behaves_like 'sets hook env' do
+          let(:gl_repository) { Gitlab::GlRepository::SNIPPET.identifier_for_container(project_snippet) }
+        end
+      end
+
+      context 'git pull with project snippet' do
+        it 'responds with success' do
+          pull(key, project_snippet)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response["status"]).to be_truthy
+          expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
+          expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
+          expect(user.reload.last_activity_on).to eql(Date.today)
+        end
+
+        it_behaves_like 'snippets with disabled feature flag' do
+          subject { pull(key, project_snippet) }
         end
       end
 
@@ -393,10 +487,28 @@ describe API::Internal::Base do
         end
       end
 
-      it_behaves_like 'storing arguments in the application context' do
-        let(:expected_params) { { user: key.user.username, project: project.full_path } }
+      context 'with Project' do
+        it_behaves_like 'storing arguments in the application context' do
+          let(:expected_params) { { user: key.user.username, project: project.full_path } }
 
-        subject { push(key, project) }
+          subject { push(key, project) }
+        end
+      end
+
+      context 'with PersonalSnippet' do
+        it_behaves_like 'storing arguments in the application context' do
+          let(:expected_params) { { user: key.user.username } }
+
+          subject { push(key, personal_snippet) }
+        end
+      end
+
+      context 'with ProjectSnippet' do
+        it_behaves_like 'storing arguments in the application context' do
+          let(:expected_params) { { user: key.user.username, project: project_snippet.project.full_path } }
+
+          subject { push(key, project_snippet) }
+        end
       end
     end
 
@@ -450,7 +562,7 @@ describe API::Internal::Base do
           {
             authentication_abilities: [:read_project, :download_code, :push_code],
             namespace_path: project.namespace.path,
-            project_path: project.path,
+            repository_path: project.path,
             redirected_path: nil
           }
         ).and_return(access_checker)
@@ -478,30 +590,35 @@ describe API::Internal::Base do
         project.add_developer(user)
       end
 
-      context "git pull" do
-        context "with no console message" do
-          it "has the correct payload" do
+      context 'git pull' do
+        context 'with a key that has expired' do
+          let(:key) { create(:key, user: user, expires_at: 2.days.ago) }
+
+          it 'includes the `key expired` message in the response' do
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['gl_console_messages']).to eq(['INFO: Your SSH key has expired. Please generate a new key.'])
+          end
+        end
+
+        context 'with a key that will expire in the next 7 days' do
+          let(:key) { create(:key, user: user, expires_at: 2.days.from_now) }
+
+          it 'includes the `key expiring soon` message in the response' do
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['gl_console_messages']).to eq(['INFO: Your SSH key is expiring soon. Please generate a new key.'])
+          end
+        end
+
+        context 'with a key that has no expiry' do
+          it 'does not include any message in the response' do
             pull(key, project)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['gl_console_messages']).to eq([])
-          end
-        end
-
-        context "with a console message" do
-          let(:console_messages) { ['message for the console'] }
-
-          it "has the correct payload" do
-            expect_next_instance_of(Gitlab::GitAccess) do |access|
-              expect(access).to receive(:check_for_console_messages)
-                                  .with('git-upload-pack')
-                                  .and_return(console_messages)
-            end
-
-            pull(key, project)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['gl_console_messages']).to eq(console_messages)
           end
         end
       end
@@ -654,7 +771,7 @@ describe API::Internal::Base do
       it 'rejects the SSH push' do
         push(key, project)
 
-        expect(response.status).to eq(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
         expect(json_response['status']).to be_falsey
         expect(json_response['message']).to eq 'Git access over SSH is not allowed'
       end
@@ -662,7 +779,7 @@ describe API::Internal::Base do
       it 'rejects the SSH pull' do
         pull(key, project)
 
-        expect(response.status).to eq(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
         expect(json_response['status']).to be_falsey
         expect(json_response['message']).to eq 'Git access over SSH is not allowed'
       end
@@ -676,7 +793,7 @@ describe API::Internal::Base do
       it 'rejects the HTTP push' do
         push(key, project, 'http')
 
-        expect(response.status).to eq(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
         expect(json_response['status']).to be_falsey
         expect(json_response['message']).to eq 'Git access over HTTP is not allowed'
       end
@@ -684,7 +801,7 @@ describe API::Internal::Base do
       it 'rejects the HTTP pull' do
         pull(key, project, 'http')
 
-        expect(response.status).to eq(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
         expect(json_response['status']).to be_falsey
         expect(json_response['message']).to eq 'Git access over HTTP is not allowed'
       end
@@ -835,22 +952,60 @@ describe API::Internal::Base do
       allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(user)
     end
 
-    it 'executes PostReceiveService' do
-      message = <<~MESSAGE.strip
-        To create a merge request for #{branch_name}, visit:
-          http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}
-      MESSAGE
+    context 'with Project' do
+      it 'executes PostReceiveService' do
+        message = <<~MESSAGE.strip
+          To create a merge request for #{branch_name}, visit:
+            http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}
+        MESSAGE
 
-      subject
+        subject
 
-      expect(json_response).to eq({
-        'messages' => [{ 'message' => message, 'type' => 'basic' }],
-        'reference_counter_decreased' => true
-      })
+        expect(json_response).to eq({
+          'messages' => [{ 'message' => message, 'type' => 'basic' }],
+          'reference_counter_decreased' => true
+        })
+      end
+
+      it_behaves_like 'storing arguments in the application context' do
+        let(:expected_params) { { user: user.username, project: project.full_path } }
+      end
     end
 
-    it_behaves_like 'storing arguments in the application context' do
-      let(:expected_params) { { user: user.username, project: project.full_path } }
+    context 'with PersonalSnippet' do
+      let(:gl_repository) { "snippet-#{personal_snippet.id}" }
+
+      it 'executes PostReceiveService' do
+        subject
+
+        expect(json_response).to eq({
+          'messages' => [],
+          'reference_counter_decreased' => true
+        })
+      end
+
+      it_behaves_like 'storing arguments in the application context' do
+        let(:expected_params) { { user: key.user.username } }
+        let(:gl_repository) { "snippet-#{personal_snippet.id}" }
+      end
+    end
+
+    context 'with ProjectSnippet' do
+      let(:gl_repository) { "snippet-#{project_snippet.id}" }
+
+      it 'executes PostReceiveService' do
+        subject
+
+        expect(json_response).to eq({
+          'messages' => [],
+          'reference_counter_decreased' => true
+        })
+      end
+
+      it_behaves_like 'storing arguments in the application context' do
+        let(:expected_params) { { user: key.user.username, project: project_snippet.project.full_path } }
+        let(:gl_repository) { "snippet-#{project_snippet.id}" }
+      end
     end
 
     context 'with an orphaned write deploy key' do
@@ -866,16 +1021,32 @@ describe API::Internal::Base do
     end
 
     context 'when project is nil' do
-      let(:gl_repository) { 'project-foo' }
+      context 'with Project' do
+        let(:gl_repository) { 'project-foo' }
 
-      it 'does not try to notify that project moved' do
-        allow(Gitlab::GlRepository).to receive(:parse).and_return([nil, Gitlab::GlRepository::PROJECT])
+        it 'does not try to notify that project moved' do
+          allow(Gitlab::GlRepository).to receive(:parse).and_return([nil, nil, Gitlab::GlRepository::PROJECT])
 
-        expect(Gitlab::Checks::ProjectMoved).not_to receive(:fetch_message)
+          expect(Gitlab::Checks::ProjectMoved).not_to receive(:fetch_message)
 
-        subject
+          subject
 
-        expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'with PersonalSnippet' do
+        let(:gl_repository) { "snippet-#{personal_snippet.id}" }
+
+        it 'does not try to notify that project moved' do
+          allow(Gitlab::GlRepository).to receive(:parse).and_return([personal_snippet, nil, Gitlab::GlRepository::PROJECT])
+
+          expect(Gitlab::Checks::ProjectMoved).not_to receive(:fetch_message)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
   end
@@ -896,24 +1067,37 @@ describe API::Internal::Base do
     end
   end
 
-  def gl_repository_for(project_or_wiki)
-    case project_or_wiki
+  def gl_repository_for(container)
+    case container
     when ProjectWiki
-      Gitlab::GlRepository::WIKI.identifier_for_container(project_or_wiki.project)
+      Gitlab::GlRepository::WIKI.identifier_for_container(container.project)
     when Project
-      Gitlab::GlRepository::PROJECT.identifier_for_container(project_or_wiki)
+      Gitlab::GlRepository::PROJECT.identifier_for_container(container)
+    when Snippet
+      Gitlab::GlRepository::SNIPPET.identifier_for_container(container)
     else
       nil
     end
   end
 
-  def pull(key, project, protocol = 'ssh')
+  def full_path_for(container)
+    case container
+    when PersonalSnippet
+      "snippets/#{container.id}"
+    when ProjectSnippet
+      "#{container.project.full_path}/snippets/#{container.id}"
+    else
+      container.full_path
+    end
+  end
+
+  def pull(key, container, protocol = 'ssh')
     post(
       api("/internal/allowed"),
       params: {
         key_id: key.id,
-        project: project.full_path,
-        gl_repository: gl_repository_for(project),
+        project: full_path_for(container),
+        gl_repository: gl_repository_for(container),
         action: 'git-upload-pack',
         secret_token: secret_token,
         protocol: protocol
@@ -921,12 +1105,14 @@ describe API::Internal::Base do
     )
   end
 
-  def push(key, project, protocol = 'ssh', env: nil)
+  def push(key, container, protocol = 'ssh', env: nil, changes: nil)
+    changes ||= 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master'
+
     params = {
-      changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
+      changes: changes,
       key_id: key.id,
-      project: project.full_path,
-      gl_repository: gl_repository_for(project),
+      project: full_path_for(container),
+      gl_repository: gl_repository_for(container),
       action: 'git-receive-pack',
       secret_token: secret_token,
       protocol: protocol,
@@ -939,14 +1125,14 @@ describe API::Internal::Base do
     )
   end
 
-  def archive(key, project)
+  def archive(key, container)
     post(
       api("/internal/allowed"),
       params: {
         ref: 'master',
         key_id: key.id,
-        project: project.full_path,
-        gl_repository: gl_repository_for(project),
+        project: full_path_for(container),
+        gl_repository: gl_repository_for(container),
         action: 'git-upload-archive',
         secret_token: secret_token,
         protocol: 'ssh'

@@ -17,8 +17,16 @@ module Gitlab
         tree_by_key(:project)
       end
 
+      def project_relation_names
+        attributes_finder.find_relations_tree(:project).keys
+      end
+
       def group_tree
         tree_by_key(:group)
+      end
+
+      def group_relation_names
+        attributes_finder.find_relations_tree(:group).keys
       end
 
       def group_members_tree

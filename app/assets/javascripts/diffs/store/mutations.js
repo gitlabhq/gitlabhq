@@ -16,6 +16,7 @@ export default {
       endpoint,
       endpointMetadata,
       endpointBatch,
+      endpointCoverage,
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
@@ -25,6 +26,7 @@ export default {
       endpoint,
       endpointMetadata,
       endpointBatch,
+      endpointCoverage,
       projectPath,
       dismissEndpoint,
       showSuggestPopover,
@@ -67,6 +69,10 @@ export default {
       ...convertObjectPropsToCamelCase(data),
       diffFiles: files,
     });
+  },
+
+  [types.SET_COVERAGE_DATA](state, coverageFiles) {
+    Object.assign(state, { coverageFiles });
   },
 
   [types.RENDER_FILE](state, file) {
@@ -140,6 +146,7 @@ export default {
     addContextLines({
       inlineLines: diffFile.highlighted_diff_lines,
       parallelLines: diffFile.parallel_diff_lines,
+      diffViewType: state.diffViewType,
       contextLines: lines,
       bottom,
       lineNumbers,

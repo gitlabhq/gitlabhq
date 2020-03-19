@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PagesDomainRemovalCronWorker
+class PagesDomainRemovalCronWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include CronjobQueue
 

@@ -3,7 +3,7 @@
 module API
   module Helpers
     module InternalHelpers
-      attr_reader :redirected_path
+      attr_reader :redirected_path, :container
 
       delegate :wiki?, to: :repo_type
 
@@ -22,10 +22,10 @@ module API
       end
 
       def access_checker_for(actor, protocol)
-        access_checker_klass.new(actor.key_or_user, project, protocol,
+        access_checker_klass.new(actor.key_or_user, container, protocol,
           authentication_abilities: ssh_authentication_abilities,
           namespace_path: namespace_path,
-          project_path: project_path,
+          repository_path: project_path,
           redirected_path: redirected_path)
       end
 
@@ -80,7 +80,7 @@ module API
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def set_project
-        @project, @repo_type, @redirected_path =
+        @container, @project, @repo_type, @redirected_path =
           if params[:gl_repository]
             Gitlab::GlRepository.parse(params[:gl_repository])
           elsif params[:project]
@@ -92,17 +92,17 @@ module API
       # Project id to pass between components that don't share/don't have
       # access to the same filesystem mounts
       def gl_repository
-        repo_type.identifier_for_container(project)
+        repo_type.identifier_for_container(container)
       end
 
-      def gl_project_path
+      def gl_repository_path
         repository.full_path
       end
 
       # Return the repository depending on whether we want the wiki or the
       # regular repository
       def repository
-        @repository ||= repo_type.repository_for(project)
+        @repository ||= repo_type.repository_for(container)
       end
 
       # Return the Gitaly Address if it is enabled
@@ -111,8 +111,8 @@ module API
 
         {
           repository: repository.gitaly_repository,
-          address: Gitlab::GitalyClient.address(project.repository_storage),
-          token: Gitlab::GitalyClient.token(project.repository_storage),
+          address: Gitlab::GitalyClient.address(container.repository_storage),
+          token: Gitlab::GitalyClient.token(container.repository_storage),
           features: Feature::Gitaly.server_feature_flags
         }
       end

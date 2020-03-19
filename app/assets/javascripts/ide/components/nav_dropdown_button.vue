@@ -31,8 +31,8 @@ export default {
 
 <template>
   <dropdown-button>
-    <span class="row">
-      <span class="col-auto text-truncate" :class="{ 'col-7': showMergeRequests }">
+    <span class="row flex-nowrap">
+      <span class="col-auto flex-fill text-truncate">
         <icon :size="16" :aria-label="__('Current Branch')" name="branch" /> {{ branchLabel }}
       </span>
       <span v-if="showMergeRequests" class="col-5 pl-0 text-truncate">

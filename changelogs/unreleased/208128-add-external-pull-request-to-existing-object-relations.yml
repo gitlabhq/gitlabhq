@@ -1,0 +1,5 @@
+---
+title: Fix ImportFailure when restore ci_pipelines:external_pull_request relation
+merge_request: 26041
+author:
+type: fixed

@@ -7,6 +7,7 @@ module Ci
     CreateError = Class.new(StandardError)
 
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
+                Gitlab::Ci::Pipeline::Chain::Build::Associations,
                 Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
                 Gitlab::Ci::Pipeline::Chain::Validate::Repository,
                 Gitlab::Ci::Pipeline::Chain::Config::Content,

@@ -21,6 +21,12 @@ and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/8e78ea7f326b2ef6
 Everything covered in this deep dive was accurate as of GitLab 11.9, and while specific
 details may have changed since then, it should still serve as a good introduction.
 
+## GraphiQL
+
+GraphiQL is an interactive GraphQL API explorer where you can play around with existing queries.
+You can access it in any GitLab environment on `https://<your-gitlab-site.com>/-/graphql-explorer`.
+For example, the one for [GitLab.com](https://gitlab.com/-/graphql-explorer).
+
 ## Authentication
 
 Authentication happens through the `GraphqlController`, right now this
@@ -76,6 +82,28 @@ a new presenter specifically for GraphQL.
 The presenter is initialized using the object resolved by a field, and
 the context.
 
+### Nullable fields
+
+GraphQL allows fields to be be "nullable" or "non-nullable". The former means
+that `null` may be returned instead of a value of the specified type. **In
+general**, you should prefer using nullable fields to non-nullable ones, for
+the following reasons:
+
+- It's common for data to switch from required to not-required, and back again
+- Even when there is no prospect of a field becoming optional, it may not be **available** at query time
+  - For instance, the `content` of a blob may need to be looked up from Gitaly
+  - If the `content` is nullable, we can return a **partial** response, instead of failing the whole query
+- Changing from a non-nullable field to a nullable field is difficult with a versionless schema
+
+Non-nullable fields should only be used when a field is required, very unlikely
+to become optional in the future, and very easy to calculate. An example would
+be `id` fields.
+
+Further reading:
+
+- [GraphQL Best Practices Guide](https://graphql.org/learn/best-practices/#nullability)
+- [Using nullability in GraphQL](https://blog.apollographql.com/using-nullability-in-graphql-2254f84c4ed7)
+
 ### Exposing Global IDs
 
 When exposing an `ID` field on a type, we will by default try to
@@ -101,7 +129,7 @@ pagination models.
 
 To expose a collection of resources we can use a connection type. This wraps the array with default pagination fields. For example a query for project-pipelines could look like this:
 
-```
+```graphql
 query($project_path: ID!) {
   project(fullPath: $project_path) {
     pipelines(first: 2) {
@@ -159,7 +187,7 @@ look like this:
 To get the next page, the cursor of the last known element could be
 passed:
 
-```
+```graphql
 query($project_path: ID!) {
   project(fullPath: $project_path) {
     pipelines(first: 2, after: "Njc=") {
@@ -239,7 +267,7 @@ the field depending on if the feature has been enabled or not.
 
 GraphQL feature flags use the common
 [GitLab feature flag](../development/feature_flags.md) system, and can be added to a
-field using the `feature_key` property.
+field using the `feature_flag` property.
 
 For example:
 
@@ -247,11 +275,11 @@ For example:
 field :test_field, type: GraphQL::STRING_TYPE,
       null: false,
       description: 'Some test field',
-      feature_key: :some_feature_key
+      feature_flag: :some_feature_flag
 ```
 
 In the above example, the `test_field` field will only be returned if
-the `some_feature_key` feature flag is enabled.
+the `some_feature_flag` feature flag is enabled.
 
 If the feature flag is not enabled, an error will be returned saying the field does not exist.
 
@@ -297,7 +325,6 @@ module Types
     value 'CLOSED', value: 'closed', description: 'An closed Epic'
   end
 end
-
 ```
 
 ## Descriptions
@@ -314,7 +341,7 @@ field :id, GraphQL::ID_TYPE, description: 'ID of the resource'
 
 Descriptions of fields and arguments are viewable to users through:
 
-- The [GraphiQL explorer](../api/graphql/#graphiql).
+- The [GraphiQL explorer](#graphiql).
 - The [static GraphQL API reference](../api/graphql/#reference).
 
 ### Description styleguide
@@ -614,6 +641,37 @@ When a user is not allowed to perform the action, or an object is not
 found, we should raise a
 `Gitlab::Graphql::Errors::ResourceNotAvailable` error. Which will be
 correctly rendered to the clients.
+
+## Validating arguments
+
+For validations of single arguments, use the
+[`prepare` option](https://github.com/rmosolgo/graphql-ruby/blob/master/guides/fields/arguments.md)
+as normal.
+
+Sometimes a mutation or resolver may accept a number of optional
+arguments, but still want to validate that at least one of the optional
+arguments were given. In this situation, consider using the `#ready?`
+method within your mutation or resolver to provide the validation. The
+`#ready?` method will be called before any work is done within the
+`#resolve` method.
+
+Example:
+
+```ruby
+def ready?(**args)
+  if args.values_at(:body, :position).compact.blank?
+    raise Gitlab::Graphql::Errors::ArgumentError,
+          'body or position arguments are required'
+  end
+
+  # Always remember to call `#super`
+  super(args)
+end
+```
+
+In the future this may be able to be done using `InputUnions` if
+[this RFC](https://github.com/graphql/graphql-spec/blob/master/rfcs/InputUnion.md)
+is merged.
 
 ## GitLab's custom scalars
 

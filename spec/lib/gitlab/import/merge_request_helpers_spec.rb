@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::Import::MergeRequestHelpers, type: :helper do
-  set(:project) { create(:project, :repository) }
-  set(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
 
   describe '.create_merge_request_without_hooks' do
     let(:iid) { 42 }

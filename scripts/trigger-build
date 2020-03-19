@@ -16,6 +16,14 @@ module Trigger
     %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME'])
   end
 
+  def self.non_empty_variable_value(variable)
+    variable_value = ENV[variable]
+
+    return if variable_value.nil? || variable_value.empty?
+
+    variable_value
+  end
+
   class Base
     def invoke!(post_comment: false, downstream_job_name: nil)
       pipeline_variables = variables
@@ -84,13 +92,15 @@ module Trigger
     end
 
     def base_variables
+      # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA for omnibus checkouts due to pipeline for merged results,
+      # and fallback to CI_COMMIT_SHA for the `detached` pipelines.
       {
         'GITLAB_REF_SLUG' => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_REF_SLUG'],
         'TRIGGERED_USER' => ENV['TRIGGERED_USER'] || ENV['GITLAB_USER_NAME'],
         'TRIGGER_SOURCE' => ENV['CI_JOB_URL'],
         'TOP_UPSTREAM_SOURCE_PROJECT' => ENV['CI_PROJECT_PATH'],
         'TOP_UPSTREAM_SOURCE_JOB' => ENV['CI_JOB_URL'],
-        'TOP_UPSTREAM_SOURCE_SHA' => ENV['CI_COMMIT_SHA'],
+        'TOP_UPSTREAM_SOURCE_SHA' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
         'TOP_UPSTREAM_SOURCE_REF' => ENV['CI_COMMIT_REF_NAME'],
         'TOP_UPSTREAM_MERGE_REQUEST_PROJECT_ID' => ENV['CI_MERGE_REQUEST_PROJECT_ID'],
         'TOP_UPSTREAM_MERGE_REQUEST_IID' => ENV['CI_MERGE_REQUEST_IID']
@@ -125,8 +135,10 @@ module Trigger
     end
 
     def extra_variables
+      # Use CI_MERGE_REQUEST_SOURCE_BRANCH_SHA for omnibus checkouts due to pipeline for merged results
+      # and fallback to CI_COMMIT_SHA for the `detached` pipelines.
       {
-        'GITLAB_VERSION' => ENV['CI_COMMIT_SHA'],
+        'GITLAB_VERSION' => Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
         'ALTERNATIVE_SOURCES' => 'true',
         'ee' => Trigger.ee? ? 'true' : 'false',
         'QA_BRANCH' => ENV['QA_BRANCH'] || 'master'
@@ -164,11 +176,9 @@ module Trigger
       edition = Trigger.ee? ? 'EE' : 'CE'
 
       {
-        # Back-compatibility until https://gitlab.com/gitlab-org/build/CNG/merge_requests/189 is merged
-        "GITLAB_#{edition}_VERSION" => ENV['CI_COMMIT_REF_NAME'],
-        "GITLAB_VERSION" => ENV['CI_COMMIT_REF_NAME'],
+        "GITLAB_VERSION" => ENV['CI_COMMIT_SHA'],
         "GITLAB_TAG" => ENV['CI_COMMIT_TAG'],
-        "GITLAB_ASSETS_TAG" => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_REF_SLUG'],
+        "GITLAB_ASSETS_TAG" => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_SHA'],
         "FORCE_RAILS_IMAGE_BUILDS" => 'true',
         "#{edition}_PIPELINE" => 'true'
       }
@@ -192,7 +202,7 @@ module Trigger
 
       Gitlab.create_commit_comment(
         ENV['CI_PROJECT_PATH'],
-        ENV['CI_COMMIT_SHA'],
+        Trigger.non_empty_variable_value('CI_MERGE_REQUEST_SOURCE_BRANCH_SHA') || ENV['CI_COMMIT_SHA'],
         "The [`#{ENV['CI_JOB_NAME']}`](#{ENV['CI_JOB_URL']}) job from pipeline #{ENV['CI_PIPELINE_URL']} triggered #{downstream_pipeline.web_url} downstream.")
 
     rescue Gitlab::Error::Error => error

@@ -7,6 +7,7 @@ import { APPLICATIONS_MOCK_STATE } from '../services/mock_data';
 import eventHub from '~/clusters/event_hub';
 import KnativeDomainEditor from '~/clusters/components/knative_domain_editor.vue';
 import CrossplaneProviderStack from '~/clusters/components/crossplane_provider_stack.vue';
+import IngressModsecuritySettings from '~/clusters/components/ingress_modsecurity_settings.vue';
 
 describe('Applications', () => {
   let vm;
@@ -156,6 +157,30 @@ describe('Applications', () => {
   });
 
   describe('Ingress application', () => {
+    describe('with nested component', () => {
+      const propsData = {
+        applications: {
+          ...APPLICATIONS_MOCK_STATE,
+          ingress: {
+            title: 'Ingress',
+            status: 'installed',
+          },
+        },
+      };
+
+      let wrapper;
+      beforeEach(() => {
+        wrapper = shallowMount(Applications, { propsData });
+      });
+      afterEach(() => {
+        wrapper.destroy();
+      });
+      it('renders IngressModsecuritySettings', () => {
+        const modsecuritySettings = wrapper.find(IngressModsecuritySettings);
+        expect(modsecuritySettings.exists()).toBe(true);
+      });
+    });
+
     describe('when installed', () => {
       describe('with ip address', () => {
         it('renders ip address with a clipboard button', () => {

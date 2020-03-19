@@ -68,7 +68,7 @@ Let's consider the following scenario:
 A unique job token is generated for each job and provides the user read
 access all projects that would be normally accessible to the user creating that
 job. The unique job token does not have any write permissions, but there
-is a [proposal to add support](https://gitlab.com/gitlab-org/gitlab-foss/issues/18106).
+is a [proposal to add support](https://gitlab.com/gitlab-org/gitlab/issues/35067).
 
 We try to make sure that this token doesn't leak by:
 
@@ -101,14 +101,14 @@ allowing pulling and pushing Docker images from within the CI job.
 
 GitLab would create a special checkout URL like:
 
-```
+```plaintext
 https://gitlab-ci-token:<project-runners-token>/gitlab.com/gitlab-org/gitlab-foss.git
 ```
 
 And then the users could also use it in their CI jobs all Docker related
 commands to interact with GitLab Container Registry. For example:
 
-```
+```shell
 docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
 ```
 
@@ -173,14 +173,14 @@ As a user:
 The [Job environment variable][jobenv] `CI_JOB_TOKEN` can be used to
 authenticate any clones of dependent repositories. For example:
 
-```
+```shell
 git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/<user>/<mydependentrepo>.git
 ```
 
 It can also be used for system-wide authentication
 (only do this in a docker container, it will overwrite ~/.netrc):
 
-```
+```shell
 echo -e "machine gitlab.com\nlogin gitlab-ci-token\npassword ${CI_JOB_TOKEN}" > ~/.netrc
 ```
 

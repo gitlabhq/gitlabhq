@@ -2,7 +2,7 @@
 
 ## Issue tracker guidelines
 
-**[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab-foss/issues)** for similar entries before
+**[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/issues)** for similar entries before
 submitting your own, there's a good chance somebody else had the same issue or
 feature proposal. Show your support with an award emoji and/or join the
 discussion.
@@ -35,12 +35,12 @@ project.
 ## Labels
 
 To allow for asynchronous issue handling, we use [milestones](https://gitlab.com/groups/gitlab-org/-/milestones)
-and [labels](https://gitlab.com/gitlab-org/gitlab-foss/-/labels). Leads and product managers handle most of the
+and [labels](https://gitlab.com/gitlab-org/gitlab/-/labels). Leads and product managers handle most of the
 scheduling into milestones. Labelling is a task for everyone.
 
 Most issues will have labels for at least one of the following:
 
-- Type: `~feature`, `~bug`, `~backstage`, etc.
+- Type: `~feature`, `~bug`, `~backstage`, `~documentation`, etc.
 - Stage: `~"devops::plan"`, `~"devops::create"`, etc.
 - Group: `~"group::source code"`, `~"group::knowledge"`, `~"group::editor"`, etc.
 - Category: `~"Category:Code Analytics"`, `~"Category:DevOps Score"`, `~"Category:Templates"`, etc.
@@ -53,10 +53,10 @@ Most issues will have labels for at least one of the following:
 - Severity: ~`S1`, `~S2`, `~S3`, `~S4`
 
 All labels, their meaning and priority are defined on the
-[labels page](https://gitlab.com/gitlab-org/gitlab-foss/-/labels).
+[labels page](https://gitlab.com/gitlab-org/gitlab/-/labels).
 
 If you come across an issue that has none of these, and you're allowed to set
-labels, you can _always_ add the team and type, and often also the subject.
+labels, you can _always_ add the type, stage, group, and often the category/feature labels.
 
 ### Type labels
 
@@ -70,15 +70,18 @@ The current type labels are:
 - ~backstage
 - ~"support request"
 - ~meta
+- ~documentation
 
 A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.
 
 Type labels are always lowercase, and can have any color, besides blue (which is
-already reserved for subject labels).
+already reserved for category labels).
 
 The descriptions on the [labels page](https://gitlab.com/groups/gitlab-org/-/labels)
 explain what falls under each type label.
+
+The GitLab handbook documents [when something is a bug and when it is a feature request](https://about.gitlab.com/handbook/product/product-management/process/feature-or-bug.html).
 
 ### Facet labels
 
@@ -89,7 +92,7 @@ Following is a non-exhaustive list of facet labels:
 
 - ~enhancement: This label can refine an issue that has the ~feature label.
 - ~"master:broken": This label can refine an issue that has the ~bug label.
-- ~"master:flaky": This label can refine an issue that has the ~bug label.
+- ~"failure::flaky-test": This label can refine an issue that has the ~bug label.
 - ~"technical debt": This label can refine an issue that has the ~backstage label.
 - ~"static analysis": This label can refine an issue that has the ~backstage label.
 - ~"ci-build": This label can refine an issue that has the ~backstage label.
@@ -137,7 +140,7 @@ their color is `#A8D695`.
 with `_` replaced with a space.
 
 For instance, the "Continuous Integration" group is represented by the
-~"group::continuous integration"  label in the `gitlab-org` group since its key
+~"group::continuous integration" label in the `gitlab-org` group since its key
 under `stages.manage.groups` is `continuous_integration`.
 
 The current group labels can be found by [searching the labels list for `group::`](https://gitlab.com/groups/gitlab-org/-/labels?search=group::).
@@ -286,12 +289,12 @@ This label documents the planned timeline & urgency which is used to measure aga
 Severity labels help us clearly communicate the impact of a ~bug on users.
 There can be multiple facets of the impact. The below is a guideline.
 
-| Label | Meaning           | Functionality                                         | Affected Users                   | GitLab.com Availability                            | Performance Degradation      |
-|-------|-------------------|-------------------------------------------------------|----------------------------------|----------------------------------------------------|------------------------------|
-| ~S1   | Blocker           | Unusable feature with no workaround, user is blocked  | Impacts 50% or more of users     | Outage, Significant impact on all of GitLab.com    |                                                       |
-| ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Impacts between 25%-50% of users | Significant impact on large portions of GitLab.com | Degradation is guaranteed to occur in the near future |
-| ~S3   | Major Severity    | Broken feature with an acceptable workaround          | Impacts up to 25% of users       | Limited impact on important portions of GitLab.com | Degradation is likely to occur in the near future     |
-| ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Impacts less than 5% of users    | Minor impact on GitLab.com                         | Degradation _may_ occur but it's not likely           |
+| Label | Meaning           | Functionality                                         | Affected Users                   | GitLab.com Availability                            | Performance Degradation                               | API/Web Response time[^1]  |
+|-------|-------------------|-------------------------------------------------------|----------------------------------|----------------------------------------------------|-------------------------------------------------------|----------------------------|
+| ~S1   | Blocker           | Unusable feature with no workaround, user is blocked  | Impacts 50% or more of users     | Outage, Significant impact on all of GitLab.com    |                                                       | Above 9000ms to timing out |
+| ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Impacts between 25%-50% of users | Significant impact on large portions of GitLab.com | Degradation is guaranteed to occur in the near future | Between 2000ms and 9000ms  |
+| ~S3   | Major Severity    | Broken feature with an acceptable workaround          | Impacts up to 25% of users       | Limited impact on important portions of GitLab.com | Degradation is likely to occur in the near future     | Between 1000ms and 2000ms  |
+| ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Impacts less than 5% of users    | Minor impact on GitLab.com                         | Degradation _may_ occur but it's not likely           | Between 500ms and 1000ms   |
 
 If a bug seems to fall between two severity labels, assign it to the higher-severity label.
 
@@ -372,14 +375,11 @@ A recent example of this was the issue for
 
 ## Feature proposals
 
-To create a feature proposal for CE, open an issue on the
-[issue tracker of CE](https://gitlab.com/gitlab-org/gitlab-foss/issues).
-
-For feature proposals for EE, open an issue on the
-[issue tracker of EE](https://gitlab.com/gitlab-org/gitlab/issues).
+To create a feature proposal, open an issue on the
+[issue tracker](https://gitlab.com/gitlab-org/gitlab/issues).
 
 In order to help track the feature proposals, we have created a
-[`feature`](https://gitlab.com/gitlab-org/gitlab-foss/issues?label_name=feature) label. For the time being, users that are not members
+[`feature`](https://gitlab.com/gitlab-org/gitlab/issues?label_name=feature) label. For the time being, users that are not members
 of the project cannot add labels. You can instead ask one of the [core team](https://about.gitlab.com/community/core-team/)
 members to add the label ~feature to the issue or add the following
 code snippet right after your description in a new line: `~feature`.
@@ -441,7 +441,7 @@ addressed.
 ## Technical and UX debt
 
 In order to track things that can be improved in GitLab's codebase,
-we use the ~"technical debt" label in [GitLab's issue tracker](https://gitlab.com/gitlab-org/gitlab-foss/issues).
+we use the ~"technical debt" label in [GitLab's issue tracker](https://gitlab.com/gitlab-org/gitlab/issues).
 For missed user experience requirements, we use the ~"UX debt" label.
 
 These labels should be added to issues that describe things that can be improved,
@@ -505,3 +505,8 @@ to be involved in some capacity when work begins on the follow-up issue.
 ---
 
 [Return to Contributing documentation](index.md)
+
+[^1]: Our current response time standard is based on the TTFB P90 results of the
+      GitLab Performance Tool (GPT) being run against the 10k-user reference
+      environment. This run happens nightly and results are outputted to the
+      [wiki on the GPT project.](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k)

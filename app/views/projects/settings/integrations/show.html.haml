@@ -1,5 +1,15 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- breadcrumb_title _("Integrations Settings")
+- breadcrumb_title _('Integration Settings')
 - page_title _('Integrations')
-= render 'projects/hooks/index'
+
+- if show_webhooks_moved_alert?
+  .gl-alert.gl-alert-info.js-webhooks-moved-alert.prepend-top-default{ role: 'alert', data: { feature_id: UserCalloutsHelper::WEBHOOKS_MOVED, dismiss_endpoint: user_callouts_path } }
+    = sprite_icon('information-o', size: 16, css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
+    %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
+      = sprite_icon('close', size: 16, css_class: 'gl-icon')
+    .gl-alert-body
+      = _('Webhooks have moved. They can now be found under the Settings menu.')
+    .gl-alert-actions
+      = link_to _('Go to Webhooks'), project_hooks_path(@project), class: 'btn gl-alert-action btn-info new-gl-button'
+
 = render 'projects/services/index'

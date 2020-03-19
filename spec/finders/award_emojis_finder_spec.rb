@@ -20,6 +20,11 @@ describe AwardEmojisFinder do
       )
     end
 
+    it 'does not raise an error if `name` is numeric' do
+      subject = described_class.new(issue_1, { name: 100 })
+      expect { subject.execute }.not_to raise_error
+    end
+
     it 'raises an error if `awarded_by` is invalid' do
       expectation = [ArgumentError, 'Invalid awarded_by param']
 

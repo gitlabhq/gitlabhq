@@ -11,7 +11,7 @@ Read more about [system hooks](../system_hooks/system_hooks.md).
 
 Get a list of all system hooks.
 
-```
+```plaintext
 GET /hooks
 ```
 
@@ -42,7 +42,7 @@ Example response:
 
 Add a new system hook.
 
-```
+```plaintext
 POST /hooks
 ```
 
@@ -81,7 +81,7 @@ Example response:
 
 ## Test system hook
 
-```
+```plaintext
 GET /hooks/:id
 ```
 
@@ -112,7 +112,7 @@ Example response:
 
 Deletes a system hook.
 
-```
+```plaintext
 DELETE /hooks/:id
 ```
 

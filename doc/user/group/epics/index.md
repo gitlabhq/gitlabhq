@@ -5,7 +5,7 @@ type: reference, howto
 # Epics **(PREMIUM)**
 
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
-> - In [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/37081), single-level Epics were moved to Premium tier.
+> - In [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/37081), single-level Epics were moved to the Premium tier.
 
 Epics let you manage your portfolio of projects more efficiently and with less
 effort by tracking groups of issues that share a theme, across projects and
@@ -23,7 +23,7 @@ graph TD
     Parent_epic --> Issue1
     Parent_epic --> Child_epic
     Child_epic --> Issue2
-````
+```
 
 ## Use cases
 
@@ -156,10 +156,12 @@ These are dynamic dates which are recalculated if any of the following occur:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 to replace **From milestones**.
 
-If you select **Inherited** for the start date, GitLab will scan all child epics and issues assigned to the epic,
-and will set the start date to match the earliest found start date or milestone. Similarly, if you select
-**Inherited** for the due date, GitLab will set the due date to match the latest due date or milestone
-found among its child epics and issues.
+If you select:
+
+- **Inherited** for the start date, GitLab will scan all child epics and issues assigned to the epic,
+  and will set the start date to match the earliest found start date or milestone.
+- **Inherited** for the due date, GitLab will set the due date to match the latest due date or
+  milestone found among its child epics and issues.
 
 These are dynamic dates and recalculated if any of the following occur:
 
@@ -180,7 +182,9 @@ If your epic contains one or more [child epics](#multi-level-child-epics-ultimat
 have a [start or due date](#start-date-and-due-date), a
 [roadmap](../roadmap/index.md) view of the child epics is listed under the parent epic.
 
-![Child epics roadmap](img/epic_view_roadmap_v12.3.png)
+![Child epics roadmap](img/epic_view_roadmap_v12_9.png)
+
+---
 
 ## Reordering issues and child epics
 
@@ -238,6 +242,8 @@ You can always reopen it using the reopen button.
 
 ![reopen epic - button](img/button_reopen_epic.png)
 
+---
+
 ### Using quick actions
 
 You can close or reopen an epic using [Quick actions](../../project/quick_actions.md)
@@ -249,9 +255,12 @@ link in the issue sidebar.
 
 ![containing epic](img/containing_epic.png)
 
+---
+
 ## Promoting an issue to an epic
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3777) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3777) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
+> - In [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/37081), it was moved to the Premium tier.
 
 If you have [permissions](../../permissions.md) to close an issue and create an
 epic in the parent group, you can promote an issue to an epic with the `/promote`
@@ -274,10 +283,11 @@ The following issue metadata will be copied to the epic:
 
 ## Searching for an epic from epics list page
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
+> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
+> - In [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/37081), it was moved to the Premium tier.
 
 You can search for an epic from the list of epics using filtered search bar (similar to
-that of Issues and Merge requests) based on following parameters:
+that of Issues and Merge Requests) based on following parameters:
 
 - Title or description
 - Author name / username
@@ -285,21 +295,25 @@ that of Issues and Merge requests) based on following parameters:
 
 ![epics search](img/epics_search.png)
 
-To search, go to the list of epics and click on the field **Search or filter results...**.
+To search, go to the list of epics and click on the field **Search or filter results**.
 It will display a dropdown menu, from which you can add an author. You can also enter plain
 text to search by epic title or description. When done, press <kbd>Enter</kbd> on your
 keyboard to filter the list.
 
 You can also sort epics list by:
 
-- **Created date**
-- **Last updated**
-- **Start date**
-- **Due date**
+- Created date
+- Last updated
+- Start date
+- Due date
 
-Each option contains a button that can toggle the order between **ascending** and **descending**. The sort option and order will be persisted to be used wherever epics are browsed including the [roadmap](../roadmap/index.md).
+Each option contains a button that can toggle the order between **Ascending** and **Descending**.
+The sort option and order is saved and used wherever you browse epics, including the
+[Roadmap](../roadmap/index.md).
 
 ![epics sort](img/epics_sort.png)
+
+---
 
 ## Permissions
 
@@ -313,7 +327,7 @@ Note that for a given group, the visibility of all projects must be the same as
 the group, or less restrictive. That means if you have access to a group's epic,
 then you already have access to its projects' issues.
 
-You may also consult the [group permissions table](../../permissions.md#group-members-permissions).
+You can also consult the [group permissions table](../../permissions.md#group-members-permissions).
 
 ## Thread
 
@@ -321,20 +335,20 @@ You may also consult the [group permissions table](../../permissions.md#group-me
   These text fields also fully support
   [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
 
-## Comment, or start a thread
+## Comment or start a thread
 
-Once you wrote your comment, you can either:
+Once you write your comment, you can either:
 
-- Click "Comment" and your comment will be published.
-- Click "Start thread": start a thread within that epic's discussion to discuss specific points.
+- Click **Comment**, and your comment will be published.
+- Click **Start thread**, and you will start a thread within that epic's discussion.
 
 ## Award emoji
 
-- You can [award an emoji](../../award_emojis.md) to that epic or its comments.
+You can [award an emoji](../../award_emojis.md) to that epic or its comments.
 
 ## Notifications
 
-- [Receive notifications](../../profile/notifications.md) for epic events.
+You can [turn on notifications](../../profile/notifications.md) to be alerted about epic events.
 
 <!-- ## Troubleshooting
 

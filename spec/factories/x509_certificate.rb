@@ -8,5 +8,6 @@ FactoryBot.define do
     email { 'gitlab@example.org' }
     serial_number { 278969561018901340486471282831158785578 }
     x509_issuer
+    certificate_status { :good }
   end
 end

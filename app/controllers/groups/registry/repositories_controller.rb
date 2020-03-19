@@ -17,7 +17,7 @@ module Groups
             serializer = ContainerRepositoriesSerializer
               .new(current_user: current_user)
 
-            if Feature.enabled?(:vue_container_registry_explorer)
+            if Feature.enabled?(:vue_container_registry_explorer, group)
               render json: serializer.with_pagination(request, response)
                 .represent_read_only(@images)
             else

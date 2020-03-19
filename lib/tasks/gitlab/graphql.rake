@@ -8,13 +8,25 @@ namespace :gitlab do
   OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference")
   TEMPLATES_DIR = 'lib/gitlab/graphql/docs/templates/'
 
+  # Make all feature flags enabled so that all feature flag
+  # controlled fields are considered visible and are output.
+  # Also avoids pipeline failures in case developer
+  # dumps schema with flags disabled locally before pushing
+  task enable_feature_flags: :environment do
+    class Feature
+      def self.enabled?(*args)
+        true
+      end
+    end
+  end
+
   # Defines tasks for dumping the GraphQL schema:
   # - gitlab:graphql:schema:dump
   # - gitlab:graphql:schema:idl
   # - gitlab:graphql:schema:json
   GraphQL::RakeTask.new(
     schema_name: 'GitlabSchema',
-    dependencies: [:environment],
+    dependencies: [:environment, :enable_feature_flags],
     directory: OUTPUT_DIR,
     idl_outfile: "gitlab_schema.graphql",
     json_outfile: "gitlab_schema.json"
@@ -22,7 +34,7 @@ namespace :gitlab do
 
   namespace :graphql do
     desc 'GitLab | GraphQL | Generate GraphQL docs'
-    task compile_docs: :environment do
+    task compile_docs: [:environment, :enable_feature_flags] do
       renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema.graphql_definition, render_options)
 
       renderer.write
@@ -31,7 +43,7 @@ namespace :gitlab do
     end
 
     desc 'GitLab | GraphQL | Check if GraphQL docs are up to date'
-    task check_docs: :environment do
+    task check_docs: [:environment, :enable_feature_flags] do
       renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema.graphql_definition, render_options)
 
       doc = File.read(Rails.root.join(OUTPUT_DIR, 'index.md'))
@@ -45,7 +57,7 @@ namespace :gitlab do
     end
 
     desc 'GitLab | GraphQL | Check if GraphQL schemas are up to date'
-    task check_schema: :environment do
+    task check_schema: [:environment, :enable_feature_flags] do
       idl_doc = File.read(Rails.root.join(OUTPUT_DIR, 'gitlab_schema.graphql'))
       json_doc = File.read(Rails.root.join(OUTPUT_DIR, 'gitlab_schema.json'))
 

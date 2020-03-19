@@ -2,7 +2,11 @@ import * as types from './mutation_types';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import api from '~/api';
-import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
+import {
+  normalizeHeaders,
+  parseIntPagination,
+  convertObjectPropsToCamelCase,
+} from '~/lib/utils/common_utils';
 
 /**
  * Commits a mutation to update the state while the main endpoint is being requested.
@@ -28,7 +32,11 @@ export const fetchReleases = ({ dispatch }, { page = '1', projectId }) => {
 
 export const receiveReleasesSuccess = ({ commit }, { data, headers }) => {
   const pageInfo = parseIntPagination(normalizeHeaders(headers));
-  commit(types.RECEIVE_RELEASES_SUCCESS, { data, pageInfo });
+  const camelCasedReleases = convertObjectPropsToCamelCase(data, { deep: true });
+  commit(types.RECEIVE_RELEASES_SUCCESS, {
+    data: camelCasedReleases,
+    pageInfo,
+  });
 };
 
 export const receiveReleasesError = ({ commit }) => {

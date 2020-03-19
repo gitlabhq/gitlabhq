@@ -7,6 +7,7 @@ class PersonalSnippetPolicy < BasePolicy
 
   rule { public_snippet }.policy do
     enable :read_snippet
+    enable :read_note
     enable :create_note
   end
 
@@ -14,11 +15,13 @@ class PersonalSnippetPolicy < BasePolicy
     enable :read_snippet
     enable :update_snippet
     enable :admin_snippet
+    enable :read_note
     enable :create_note
   end
 
   rule { internal_snippet & ~external_user }.policy do
     enable :read_snippet
+    enable :read_note
     enable :create_note
   end
 

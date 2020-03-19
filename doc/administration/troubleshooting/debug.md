@@ -11,13 +11,13 @@ an SMTP server, but you're not seeing mail delivered. Here's how to check the se
 1. Run a Rails console:
 
    ```shell
-   sudo gitlab-rails console production
+   sudo gitlab-rails console -e production
    ```
 
    or for source installs:
 
    ```shell
-   bundle exec rails console production
+   bundle exec rails console -e production
    ```
 
 1. Look at the ActionMailer `delivery_method` to make sure it matches what you
@@ -33,7 +33,7 @@ an SMTP server, but you're not seeing mail delivered. Here's how to check the se
 
    ```ruby
    irb(main):002:0> ActionMailer::Base.smtp_settings
-   => {:address=>"localhost", :port=>25, :domain=>"localhost.localdomain", :user_name=>nil, :password=>nil, :authentication=>nil, :enable_starttls_auto=>true}```
+   => {:address=>"localhost", :port=>25, :domain=>"localhost.localdomain", :user_name=>nil, :password=>nil, :authentication=>nil, :enable_starttls_auto=>true}
    ```
 
    In the example above, the SMTP server is configured for the local machine. If this is intended, you may need to check your local mail
@@ -56,13 +56,13 @@ For more advanced issues, `gdb` is a must-have tool for debugging issues.
 
 To install on Ubuntu/Debian:
 
-```
+```shell
 sudo apt-get install gdb
 ```
 
 On CentOS:
 
-```
+```shell
 sudo yum install gdb
 ```
 
@@ -103,14 +103,14 @@ downtime. Otherwise skip to the next section.
 1. Run `sudo gdb -p <PID>` to attach to the Unicorn process.
 1. In the gdb window, type:
 
-   ```
+   ```plaintext
    call (void) rb_backtrace()
    ```
 
 1. This forces the process to generate a Ruby backtrace. Check
    `/var/log/gitlab/unicorn/unicorn_stderr.log` for the backtace. For example, you may see:
 
-   ```ruby
+   ```plaintext
    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:33:in `block in start'
    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:33:in `loop'
    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:36:in `block (2 levels) in start'
@@ -124,13 +124,13 @@ downtime. Otherwise skip to the next section.
 
 1. To see the current threads, run:
 
-   ```
+   ```plaintext
    thread apply all bt
    ```
 
 1. Once you're done debugging with `gdb`, be sure to detach from the process and exit:
 
-   ```
+   ```plaintext
    detach
    exit
    ```
@@ -162,7 +162,7 @@ separate Rails process to debug the issue:
 1. Create a Personal Access Token for your user (Profile Settings -> Access Tokens).
 1. Bring up the GitLab Rails console. For omnibus users, run:
 
-   ```
+   ```shell
    sudo gitlab-rails console
    ```
 

@@ -68,12 +68,12 @@ RSpec.shared_examples 'application settings examples' do
       setting.outbound_local_requests_whitelist_raw = 'example.com'
 
       expect(setting.outbound_local_requests_whitelist_arrays).to contain_exactly(
-        [], ['example.com']
+        [], [an_object_having_attributes(domain: 'example.com')]
       )
 
       setting.outbound_local_requests_whitelist_raw = 'gitlab.com'
       expect(setting.outbound_local_requests_whitelist_arrays).to contain_exactly(
-        [], ['gitlab.com']
+        [], [an_object_having_attributes(domain: 'gitlab.com')]
       )
     end
   end
@@ -81,15 +81,42 @@ RSpec.shared_examples 'application settings examples' do
   context 'outbound_local_requests_whitelist_arrays' do
     it 'separates the IPs and domains' do
       setting.outbound_local_requests_whitelist = [
-        '192.168.1.1', '127.0.0.0/28', 'www.example.com', 'example.com',
-        '::ffff:a00:2', '1:0:0:0:0:0:0:0/124', 'subdomain.example.com'
+        '192.168.1.1',
+        '127.0.0.0/28',
+        '::ffff:a00:2',
+        '1:0:0:0:0:0:0:0/124',
+        'example.com',
+        'subdomain.example.com',
+        'www.example.com',
+        '::',
+        '1::',
+        '::1',
+        '1:2:3:4:5::7:8',
+        '[1:2:3:4:5::7:8]',
+        '[2001:db8:85a3:8d3:1319:8a2e:370:7348]:443',
+        'www.example2.com:8080',
+        'example.com:8080'
       ]
 
       ip_whitelist = [
-        IPAddr.new('192.168.1.1'), IPAddr.new('127.0.0.0/8'),
-        IPAddr.new('::ffff:a00:2'), IPAddr.new('1:0:0:0:0:0:0:0/124')
+        an_object_having_attributes(ip: IPAddr.new('192.168.1.1')),
+        an_object_having_attributes(ip: IPAddr.new('127.0.0.0/8')),
+        an_object_having_attributes(ip: IPAddr.new('::ffff:a00:2')),
+        an_object_having_attributes(ip: IPAddr.new('1:0:0:0:0:0:0:0/124')),
+        an_object_having_attributes(ip: IPAddr.new('::')),
+        an_object_having_attributes(ip: IPAddr.new('1::')),
+        an_object_having_attributes(ip: IPAddr.new('::1')),
+        an_object_having_attributes(ip: IPAddr.new('1:2:3:4:5::7:8')),
+        an_object_having_attributes(ip: IPAddr.new('[1:2:3:4:5::7:8]')),
+        an_object_having_attributes(ip: IPAddr.new('[2001:db8:85a3:8d3:1319:8a2e:370:7348]'), port: 443)
       ]
-      domain_whitelist = ['www.example.com', 'example.com', 'subdomain.example.com']
+      domain_whitelist = [
+        an_object_having_attributes(domain: 'example.com'),
+        an_object_having_attributes(domain: 'subdomain.example.com'),
+        an_object_having_attributes(domain: 'www.example.com'),
+        an_object_having_attributes(domain: 'www.example2.com', port: 8080),
+        an_object_having_attributes(domain: 'example.com', port: 8080)
+      ]
 
       expect(setting.outbound_local_requests_whitelist_arrays).to contain_exactly(
         ip_whitelist, domain_whitelist
@@ -117,7 +144,7 @@ RSpec.shared_examples 'application settings examples' do
 
       expect(setting.outbound_local_requests_whitelist_arrays).to contain_exactly(
         [],
-        ['example.com']
+        [an_object_having_attributes(domain: 'example.com')]
       )
 
       setting.add_to_outbound_local_requests_whitelist(
@@ -126,7 +153,7 @@ RSpec.shared_examples 'application settings examples' do
 
       expect(setting.outbound_local_requests_whitelist_arrays).to contain_exactly(
         [],
-        ['example.com', 'gitlab.com']
+        [an_object_having_attributes(domain: 'example.com'), an_object_having_attributes(domain: 'gitlab.com')]
       )
     end
 
@@ -137,7 +164,7 @@ RSpec.shared_examples 'application settings examples' do
 
       expect(setting.outbound_local_requests_whitelist).to contain_exactly('gitlab.com')
       expect(setting.outbound_local_requests_whitelist_arrays).to contain_exactly(
-        [], ['gitlab.com']
+        [], [an_object_having_attributes(domain: 'gitlab.com')]
       )
     end
 

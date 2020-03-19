@@ -31,7 +31,7 @@ describe ExpireBuildInstanceArtifactsWorker do
     end
 
     context 'with not yet expired artifacts' do
-      set(:build) do
+      let_it_be(:build) do
         create(:ci_build, :artifacts, artifacts_expire_at: Time.now + 7.days)
       end
 

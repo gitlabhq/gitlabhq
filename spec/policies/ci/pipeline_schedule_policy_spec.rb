@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Ci::PipelineSchedulePolicy, :models do
-  set(:user) { create(:user) }
-  set(:project) { create(:project, :repository) }
-  set(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:pipeline_schedule, reload: true) { create(:ci_pipeline_schedule, :nightly, project: project) }
 
   let(:policy) do
     described_class.new(user, pipeline_schedule)

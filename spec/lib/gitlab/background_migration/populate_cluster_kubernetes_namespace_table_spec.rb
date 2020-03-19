@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::PopulateClusterKubernetesNamespaceTable, :migration, schema: 20181022173835 do
+describe Gitlab::BackgroundMigration::PopulateClusterKubernetesNamespaceTable, schema: 20181022173835 do
   include MigrationHelpers::ClusterHelpers
 
   let(:migration) { described_class.new }

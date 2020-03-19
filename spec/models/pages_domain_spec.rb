@@ -9,6 +9,7 @@ describe PagesDomain do
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_many(:serverless_domain_clusters) }
   end
 
   describe 'validate domain' do
@@ -640,6 +641,14 @@ describe PagesDomain do
           project.reload.pages_metadatum&.deployed
         }.from(nil).to(true)
       end
+    end
+  end
+
+  describe '.find_by_domain_case_insensitive' do
+    it 'lookup is case-insensitive' do
+      pages_domain = create(:pages_domain, domain: "Pages.IO")
+
+      expect(PagesDomain.find_by_domain_case_insensitive('pages.io')).to eq(pages_domain)
     end
   end
 end

@@ -3,9 +3,9 @@
 require "spec_helper"
 
 describe "User edits labels" do
-  set(:project) { create(:project_empty_repo, :public) }
-  set(:label) { create(:label, project: project) }
-  set(:user) { create(:user) }
+  let_it_be(:project) { create(:project_empty_repo, :public) }
+  let_it_be(:label) { create(:label, project: project) }
+  let_it_be(:user) { create(:user) }
 
   before do
     project.add_maintainer(user)

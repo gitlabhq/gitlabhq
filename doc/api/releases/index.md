@@ -9,7 +9,7 @@
 
 Paginated list of Releases, sorted by `released_at`.
 
-```
+```plaintext
 GET /projects/:id/releases
 ```
 
@@ -70,7 +70,11 @@ Example response:
             "updated_at":"2019-07-12T19:45:44.256Z",
             "due_date":"2019-08-16T11:00:00.256Z",
             "start_date":"2019-07-30T12:00:00.256Z",
-            "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1"
+            "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1",
+            "issue_stats": {
+               "total": 98,
+               "closed": 76
+            }
          },
          {
             "id":52,
@@ -83,7 +87,11 @@ Example response:
             "updated_at":"2019-07-16T14:00:12.256Z",
             "due_date":"2019-08-16T11:00:00.256Z",
             "start_date":"2019-07-30T12:00:00.256Z",
-            "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2"
+            "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2",
+            "issue_stats": {
+               "total": 24,
+               "closed": 21
+            }
          }
       ],
       "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
@@ -191,7 +199,7 @@ Example response:
 
 Get a Release for the given tag.
 
-```
+```plaintext
 GET /projects/:id/releases/:tag_name
 ```
 
@@ -252,7 +260,11 @@ Example response:
          "updated_at":"2019-07-12T19:45:44.256Z",
          "due_date":"2019-08-16T11:00:00.256Z",
          "start_date":"2019-07-30T12:00:00.256Z",
-         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1"
+         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1",
+         "issue_stats": {
+            "total": 98,
+            "closed": 76
+         }
        },
        {
          "id":52,
@@ -265,7 +277,11 @@ Example response:
          "updated_at":"2019-07-16T14:00:12.256Z",
          "due_date":"2019-08-16T11:00:00.256Z",
          "start_date":"2019-07-30T12:00:00.256Z",
-         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2"
+         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2",
+         "issue_stats": {
+            "total": 24,
+            "closed": 21
+         }
        }
    ],
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
@@ -292,7 +308,12 @@ Example response:
          }
       ],
       "links":[
-
+         {
+            "id":3,
+            "name":"hoge",
+            "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
+            "external":true
+         }
       ],
       "evidence_url":"https://gitlab.example.com/root/awesome-app/-/releases/v0.1/evidence.json"
    },
@@ -303,7 +324,7 @@ Example response:
 
 Create a Release. You need push access to the repository to create a Release.
 
-```
+```plaintext
 POST /projects/:id/releases
 ```
 
@@ -312,19 +333,20 @@ POST /projects/:id/releases
 | `id`               | integer/string  | yes                         | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                                              |
 | `name`             | string          | no                          | The release name.                                                                                                                |
 | `tag_name`         | string          | yes                         | The tag where the release will be created from.                                                                                  |
-| `description`      | string          | yes                         | The description of the release. You can use [Markdown](../../user/markdown.md).                                                  |
+| `description`      | string          | no                          | The description of the release. You can use [Markdown](../../user/markdown.md).                                                  |
 | `ref`              | string          | yes, if `tag_name` doesn't exist | If `tag_name` doesn't exist, the release will be created from `ref`. It can be a commit SHA, another tag name, or a branch name. |
 | `milestones`       | array of string | no                          | The title of each milestone the release is associated with.                                                                      |
 | `assets:links`     | array of hash   | no                          | An array of assets links.                                                                                                        |
 | `assets:links:name`| string          | required by: `assets:links` | The name of the link.                                                                                                            |
 | `assets:links:url` | string          | required by: `assets:links` | The url of the link.                                                                                                             |
+| `assets:links:filepath` | string     | no | Optional path for a [Direct Asset link](../../user/project/releases.md).
 | `released_at`      | datetime        | no                          | The date when the release will be/was ready. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 
 Example request:
 
 ```shell
 curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" \
-     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com" }] } }' \
+     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestones": ["v1.0", "v1.0-rc"], "assets": { "links": [{ "name": "hoge", "url": "https://google.com", "filepath": "/binaries/linux-amd64" }] } }' \
      --request POST https://gitlab.example.com/api/v4/projects/24/releases
 ```
 
@@ -374,7 +396,11 @@ Example response:
          "updated_at":"2019-07-12T19:45:44.256Z",
          "due_date":"2019-08-16T11:00:00.256Z",
          "start_date":"2019-07-30T12:00:00.256Z",
-         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1"
+         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/1",
+         "issue_stats": {
+            "total": 99,
+            "closed": 76
+         }
        },
        {
          "id":52,
@@ -387,7 +413,11 @@ Example response:
          "updated_at":"2019-07-16T14:00:12.256Z",
          "due_date":"2019-08-16T11:00:00.256Z",
          "start_date":"2019-07-30T12:00:00.256Z",
-         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2"
+         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2",
+         "issue_stats": {
+            "total": 24,
+            "closed": 21
+         }
        }
    ],
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
@@ -417,7 +447,7 @@ Example response:
          {
             "id":3,
             "name":"hoge",
-            "url":"https://google.com",
+            "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
             "external":true
          }
       ],
@@ -430,7 +460,7 @@ Example response:
 
 Update a Release.
 
-```
+```plaintext
 PUT /projects/:id/releases/:tag_name
 ```
 
@@ -495,7 +525,11 @@ Example response:
          "updated_at":"2019-09-01T13:00:00.256Z",
          "due_date":"2019-09-20T13:00:00.256Z",
          "start_date":"2019-09-05T12:00:00.256Z",
-         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/3"
+         "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/3",
+         "issue_stats": {
+            "opened": 11,
+            "closed": 78
+         }
       }
    ],
    "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
@@ -533,7 +567,7 @@ Example response:
 
 Delete a Release. Deleting a Release will not delete the associated tag.
 
-```
+```plaintext
 DELETE /projects/:id/releases/:tag_name
 ```
 

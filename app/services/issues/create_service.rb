@@ -29,6 +29,7 @@ module Issues
       todo_service.new_issue(issuable, current_user)
       user_agent_detail_service.create
       resolve_discussions_with_issue(issuable)
+      delete_milestone_total_issue_counter_cache(issuable.milestone)
 
       super
     end

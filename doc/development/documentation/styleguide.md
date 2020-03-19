@@ -17,13 +17,11 @@ that apply to all GitLab content, not just documentation.
 
 ### Why a single source of truth
 
-The documentation is the SSOT for all information related to the implementation, usage, and troubleshooting of GitLab products and features. It evolves continually, in keeping with new products and features, and with improvements for clarity, accuracy, and completeness.
+The documentation of GitLab products and features is the SSOT for all information related to implementation, usage, and troubleshooting. It evolves continually, in keeping with new products and features, and with improvements for clarity, accuracy, and completeness.
 
 This policy prevents information silos, ensuring that it remains easy to find information about GitLab products.
 
 It also informs decisions about the kinds of content we include in our documentation.
-
-The documentation is a continually evolving SSOT for all information related to the implementation, usage, and troubleshooting of GitLab products and features.
 
 ### All information
 
@@ -34,7 +32,7 @@ For the Troubleshooting sections, people in GitLab Support can merge additions t
 
 ### All media types
 
-Include any media types/sources if the content is relevant to readers. You can freely include or link presentations, diagrams, videos, etc.; no matter who it was originally composed for, if it is helpful to any of our audiences, we can include it.
+Include any media types/sources if the content is relevant to readers. You can freely include or link presentations, diagrams, videos, and so on; no matter who it was originally composed for, if it is helpful to any of our audiences, we can include it.
 
 - If you use an image that has a separate source file (for example, a vector or diagram format), link the image to the source file so that it may be reused or updated by anyone.
 - Do not copy and paste content from other sources unless it is a limited quotation with the source cited. Typically it is better to either rephrase relevant information in your own words or link out to the other source.
@@ -63,13 +61,17 @@ Instead, link to the SSOT and explain why it is important to consume the informa
 
 ### Organize by topic, not by type
 
-Beyond top-level audience-type folders (e.g. `administration`), we organize content by topic, not by type, so that it can be located as easily as possible within the single-source-of-truth (SSOT) section for the subject matter.
+Beyond top-level audience-type folders (for example, `administration`), we organize content by topic, not by type, so that it can be located as easily as possible within the single-source-of-truth (SSOT) section for the subject matter.
 
-For example, do not create groupings of similar media types (e.g. glossaries, FAQs, or sets of all articles or videos).
+For example, do not create groupings of similar media types. For example:
+
+- Glossaries.
+- FAQs.
+- Sets of all articles or videos.
 
 Such grouping of content by type makes
 it difficult to browse for the information you need and difficult to maintain up-to-date content.
-Instead, organize content by its subject (e.g. everything related to CI goes together)
+Instead, organize content by its subject (for example, everything related to CI goes together)
 and cross-link between any related content.
 
 ### Docs-first methodology
@@ -79,7 +81,10 @@ We employ a **docs-first methodology** to help ensure that the docs remain a com
 - If the answer to a question exists in documentation, share the link to the docs instead of rephrasing the information.
 - When you encounter new information not available in GitLab’s documentation (for example, when working on a support case or testing a feature), your first step should be to create a merge request (MR) to add this information to the docs. You can then share the MR in order to communicate this information.
 
-New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can always add a Troubleshooting section to a doc if none exists, or un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#template-for-new-docs), if present.
+New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can either:
+
+- Add a Troubleshooting section to a doc if none exists.
+- Un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#template-for-new-docs), if present.
 
 The more we reflexively add useful information to the docs, the more (and more successfully) the docs will be used to efficiently accomplish tasks and solve problems.
 
@@ -98,7 +103,7 @@ Ruby gem will support all [GFM markup](../../user/markdown.md) in the future. Th
 all markup that is supported for display in the GitLab application itself. For now,
 use regular Markdown markup, following the rules in the linked style guide.
 
-Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
+Note that Kramdown-specific markup (for example, `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
 
 Hard-coded HTML is valid, although it's discouraged to be used while we have `/help`. HTML is permitted as long as:
 
@@ -256,15 +261,6 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
     Some features are also objects. For example, "GitLab's Merge Requests support X" and
     "Create a new merge request for Z."
 
-- Use common contractions when it helps create a friendly and informal tone, especially in tutorials and [UIs](https://design.gitlab.com/content/punctuation/#contractions).
-  - Do use contractions like: _it's_, _can't_, _wouldn't_, _you're_, _you've_, _haven't_, don't, _we're_, _that's_, and _won't_. Contractions in instructional documentation such as tutorials can help create a friendly and informal tone.
-  - Avoid less common contractions such as: _he'd_, _it'll_, _should've_, and _there'd_.
-  - Do not use contractions in reference documentation. Examples:
-    - You cannot set a limit higher than 1000.
-    - For `parameter1`, the default is 10.
-  - Do not use contractions with a proper noun and a verb, such as _GitLab's creating X_.
-  - Avoid using contractions when you need to emphasize a negative, such as "Do **not** install X with Y."
-
 - Avoid use of the future tense:
   - Instead of "after you execute this command, GitLab will display the result", use "after you execute this command, GitLab displays the result".
   - Only use the future tense to convey when the action or result will actually occur at a future time.
@@ -280,6 +276,58 @@ as even native users of English might misunderstand them.
   - Instead of "i.e.", use "that is."
   - Instead of "e.g.", use "for example," "such as," "for instance," or "like."
   - Instead of "etc.", either use "and so on" or consider editing it out, since it can be vague.
+
+### Contractions
+
+- Use common contractions when it helps create a friendly and informal tone, especially in tutorials, instructional documentation, and [UIs](https://design.gitlab.com/content/punctuation/#contractions).
+
+| Do       | Don't     |
+|----------|-----------|
+| it's     | it is     |
+| can't    | cannot    |
+| wouldn't | would not |
+| you're   | you are   |
+| you've   | you have  |
+| haven't  | have not  |
+| don't    | do not    |
+| we're    | we are    |
+| that's'  | that is   |
+| won't    | will not  |
+
+- Avoid less common contractions:
+
+| Do           | Don't       |
+|--------------|-------------|
+| he would     | he'd        |
+| it will      | it'll       |
+| should have  | should've   |
+| there would  | there'd     |
+
+- Do not use contractions with a proper noun and a verb. For example:
+
+| Do                   | Don't               |
+|----------------------|---------------------|
+| GitLab is creating X | GitLab's creating X |
+
+- Do not use contractions when you need to emphasize a negative. For example:
+
+| Do                          | Don't                      |
+|-----------------------------|----------------------------|
+| Do **not** install X with Y | **Don't** install X with Y |
+
+- Do not use contractions in reference documentation. For example:
+
+| Do                                       | Don't                      |
+|------------------------------------------|----------------------------|
+| Do **not** set a limit greater than 1000 | **Don't** set a limit greater than 1000 |
+| For `parameter1`, the default is 10      | For `parameter1`, the default's 10     |
+
+- Avoid contractions in error messages. Examples:
+
+| Do                                       | Don't                      |
+|------------------------------------------|----------------------------|
+| Requests to localhost are not allowed    | Requests to localhost aren't allowed |
+| Specified URL cannot be used             | Specified URL can't be used          |
 
 ## Text
 
@@ -428,7 +476,7 @@ as the list item. This can be done with:
 Items nested in lists should always align with the first character of the list item.
 In unordered lists (using `-`), this means two spaces for each level of indentation:
 
-~~~md
+````markdown
 - Unordered list item 1
 
   A line nested using 2 spaces to align with the `U` above.
@@ -447,11 +495,11 @@ In unordered lists (using `-`), this means two spaces for each level of indentat
 - Unordered list item 4
 
   ![an image that will nest inside list item 4](image.png)
-~~~
+````
 
 For ordered lists, use three spaces for each level of indentation:
 
-~~~md
+````markdown
 1. Ordered list item 1
 
    A line nested using 3 spaces to align with the `O` above.
@@ -470,7 +518,7 @@ For ordered lists, use three spaces for each level of indentation:
 1. Ordered list item 4
 
    ![an image that will nest inside list item 4](image.png)
-~~~
+````
 
 You can nest full lists inside other lists using the same rules as above. If you wish
 to mix types, that is also possible, as long as you don't mix items at the same level:
@@ -540,6 +588,10 @@ Keep heading titles clear and direct. Make every word count. To accommodate sear
 | GitLab Release and Maintenance Policy | This section covers GitLab's Release and Maintenance Policy |
 | Backport to older releases | Backporting to older releases |
 
+NOTE: **Note:**
+If you change an existing title, be careful. Any such changes may affect not only [links](#anchor-links)
+within the page, but may also affect links from GitLab itself, as well as external links, to GitLab documentation.
+
 ### Anchor links
 
 Headings generate anchor links automatically when rendered. `## This is an example`
@@ -576,42 +628,40 @@ do not use this option until further notice.
 
 ### Links to internal documentation
 
-- To link to internal documentation, use relative links, not full URLs.
-  Use `../` to navigate to high-level directories. Links should not refer to root.
+NOTE: **Note:**
+_Internal_ refers to documentation in the same project. When linking to documentation in
+separate projects (for example, linking to Omnibus docs from GitLab docs), you must use absolute
+URLs.
+
+To link to internal documentation:
+
+- Use relative links to Markdown files in the same repository.
+- Do not use absolute URLs or URLs from `docs.gitlab.com`.
+- Use `../` to navigate to higher-level directories.
+- Do not link relative to root. For example, `/ee/user/gitlab_com/index.md`.
 
   Don't:
 
-  ```md
-  [Geo Troubleshooting](https://docs.gitlab.com/ee/administration/geo/replication/troubleshooting.html)
-  [Geo Troubleshooting](/ee/administration/geo/replication/troubleshooting.md)
-  ```
+  - `https://docs.gitlab.com/ee/administration/geo/replication/troubleshooting.html`
+  - `/ee/administration/geo/replication/troubleshooting.md`
 
-  Do:
-
-  ```md
-  [Geo Troubleshooting](../../geo/replication/troubleshooting.md)
-  ```
+  Do: `../../geo/replication/troubleshooting.md`
 
 - Always add the file name `file.md` at the end of the link with the `.md` extension, not `.html`.
 
   Don't:
 
-  ```md
-  [merge requests](../../merge_requests/)
-  [issues](../../issues/tags.html)
-  [issue tags](../../issues/tags.html#stages)
-  ```
+  - `../../merge_requests/`
+  - `../../issues/tags.html`
+  - `../../issues/tags.html#stages`
 
   Do:
 
-  ```md
-  [merge requests](../../merge_requests/index.md)
-  [issues](../../issues/tags.md)
-  [issue tags](../../issues/tags.md#stages)
-  ```
+  - `../../merge_requests/index.md`
+  - `../../issues/tags.md`
+  - `../../issues/tags.md#stages`
 
-- Using the Markdown extension is necessary for the [`/help`](index.md#gitlab-help)
-  section of GitLab.
+- Use the Markdown extension for the [`/help`](index.md#gitlab-help) section of GitLab.
 
 ### Links requiring permissions
 
@@ -783,33 +833,64 @@ nicely on different mobile devices.
 - When providing a shell command and its output, prefix the shell command with `$` and
   leave a blank line between the command and the output.
 - When providing a command without output, don't prefix the shell command with `$`.
+- If you need to include triple backticks inside a code block, use four backticks
+  for the codeblock fences instead of three.
 - For regular code blocks, always use a highlighting class corresponding to the
   language for better readability. Examples:
 
-  ~~~md
+  ````markdown
   ```ruby
   Ruby code
   ```
 
-  ```js
+  ```javascript
   JavaScript code
   ```
 
-  ```md
+  ```markdown
   [Markdown code example](example.md)
   ```
 
-  ```text
+  ```plaintext
   Code or text for which no specific highlighting class is available.
   ```
-  ~~~
+  ````
 
-- To display raw Markdown instead of rendered Markdown, you can use triple backticks
-  with `md`, like the `Markdown code` example above, unless you want to include triple
-  backticks in the code block as well. In that case, use triple tildes (`~~~`) instead.
-- [Syntax highlighting for code blocks](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers)
-  is available for many languages. Use `shell` instead of `bash` or `sh` for shell output.
-- For a complete reference on code blocks, check the [Kramdown guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#code-blocks).
+Syntax highlighting is required for code blocks added to the GitLab documentation.
+Refer to the table below for the most common language classes, or check the
+[complete list](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers)
+of language classes available.
+
+| Preferred language tags | Language aliases and notes                                                   |
+|-------------------------|------------------------------------------------------------------------------|
+| `asciidoc`              |                                                                              |
+| `dockerfile`            | Alias: `docker`.                                                             |
+| `elixir`                |                                                                              |
+| `erb`                   |                                                                              |
+| `golang`                | Alias: `go`.                                                                 |
+| `graphql`               |                                                                              |
+| `haml`                  |                                                                              |
+| `html`                  |                                                                              |
+| `ini`                   | For some simple config files that are not in TOML format.                    |
+| `javascript`            | Alias `js`.                                                                  |
+| `json`                  |                                                                              |
+| `markdown`              | Alias: `md`.                                                                 |
+| `mermaid`               |                                                                              |
+| `nginx`                 |                                                                              |
+| `perl`                  |                                                                              |
+| `php`                   |                                                                              |
+| `plaintext`             | Examples with no defined language, such as output from shell commands or API calls. If a codeblock has no language, it defaults to `plaintext`. Alias: `text`. |
+| `prometheus`            | Prometheus configuration examples.                                           |
+| `python`                |                                                                              |
+| `ruby`                  | Alias: `rb`.                                                                 |
+| `shell`                 | Aliases: `bash` or `sh`.                                                     |
+| `sql`                   |                                                                              |
+| `toml`                  | Runner configuration examples, and other toml formatted configuration files. |
+| `typescript`            | Alias: `ts`.                                                                 |
+| `xml`                   |                                                                              |
+| `yaml`                  | Alias: `yml`.                                                                |
+
+For a complete reference on code blocks, check the [Kramdown guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#code-blocks).
 
 ## GitLab SVG icons
 
@@ -1120,7 +1201,7 @@ keyword "only":
 - For GitLab Premium: `**(PREMIUM ONLY)**`.
 - For GitLab Ultimate: `**(ULTIMATE ONLY)**`.
 
-For GitLab.com only tiers (when the feature is not available for self-hosted instances):
+For GitLab.com only tiers (when the feature is not available for self-managed instances):
 
 - For GitLab Free and higher tiers: `**(FREE ONLY)**`.
 - For GitLab Bronze and higher tiers: `**(BRONZE ONLY)**`.
@@ -1291,7 +1372,7 @@ on this document. Further explanation is given below.
 
 The following can be used as a template to get started:
 
-~~~md
+````markdown
 ## Descriptive title
 
 One or two sentence description of what endpoint does.
@@ -1319,7 +1400,7 @@ Example response:
   }
 ]
 ```
-~~~
+````
 
 ### Fake tokens
 

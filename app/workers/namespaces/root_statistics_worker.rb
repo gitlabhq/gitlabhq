@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Namespaces
-  class RootStatisticsWorker
+  class RootStatisticsWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
     queue_namespace :update_namespace_statistics
@@ -16,13 +16,7 @@ module Namespaces
 
       namespace.aggregation_schedule.destroy
     rescue ::Namespaces::StatisticsRefresherService::RefresherError, ActiveRecord::RecordNotFound => ex
-      log_error(namespace.full_path, ex.message) if namespace
-    end
-
-    private
-
-    def log_error(namespace_path, error_message)
-      Gitlab::SidekiqLogger.error("Namespace statistics can't be updated for #{namespace_path}: #{error_message}")
+      Gitlab::ErrorTracking.track_exception(ex, namespace_id: namespace_id, namespace: namespace&.full_path)
     end
   end
 end

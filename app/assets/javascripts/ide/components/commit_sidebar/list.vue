@@ -17,27 +17,11 @@ export default {
     tooltip,
   },
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
     fileList: {
       type: Array,
       required: true,
     },
     iconName: {
-      type: String,
-      required: true,
-    },
-    action: {
-      type: String,
-      required: true,
-    },
-    actionBtnText: {
-      type: String,
-      required: true,
-    },
-    actionBtnIcon: {
       type: String,
       required: true,
     },
@@ -63,9 +47,9 @@ export default {
   },
   computed: {
     titleText() {
-      return sprintf(__('%{title} changes'), {
-        title: this.title,
-      });
+      if (!this.title) return __('Changes');
+
+      return sprintf(__('%{title} changes'), { title: this.title });
     },
     filesLength() {
       return this.fileList.length;
@@ -73,17 +57,16 @@ export default {
   },
   methods: {
     ...mapActions(['stageAllChanges', 'unstageAllChanges', 'discardAllChanges']),
-    actionBtnClicked() {
-      this[this.action]();
-
-      $(this.$refs.actionBtn).tooltip('hide');
-    },
     openDiscardModal() {
       $('#discard-all-changes').modal('show');
     },
+    unstageAndDiscardAllChanges() {
+      this.unstageAllChanges();
+      this.discardAllChanges();
+    },
   },
   discardModalText: __(
-    "You will lose all the unstaged changes you've made in this project. This action cannot be undone.",
+    "You will lose all uncommitted changes you've made in this project. This action cannot be undone.",
   ),
 };
 </script>
@@ -95,24 +78,6 @@ export default {
         <icon v-once :name="iconName" :size="18" class="append-right-8" />
         <strong> {{ titleText }} </strong>
         <div class="d-flex ml-auto">
-          <button
-            ref="actionBtn"
-            v-tooltip
-            :title="actionBtnText"
-            :aria-label="actionBtnText"
-            :disabled="!filesLength"
-            :class="{
-              'disabled-content': !filesLength,
-            }"
-            type="button"
-            class="d-flex ide-staged-action-btn p-0 border-0 align-items-center"
-            data-placement="bottom"
-            data-container="body"
-            data-boundary="viewport"
-            @click="actionBtnClicked"
-          >
-            <icon :name="actionBtnIcon" :size="16" class="ml-auto mr-auto" />
-          </button>
           <button
             v-if="!stagedList"
             v-tooltip
@@ -129,7 +94,7 @@ export default {
             data-boundary="viewport"
             @click="openDiscardModal"
           >
-            <icon :size="16" name="remove-all" class="ml-auto mr-auto" />
+            <icon :size="16" name="remove-all" class="ml-auto mr-auto position-top-0" />
           </button>
         </div>
       </div>
@@ -151,9 +116,9 @@ export default {
       v-if="!stagedList"
       id="discard-all-changes"
       :footer-primary-button-text="__('Discard all changes')"
-      :header-title-text="__('Discard all unstaged changes?')"
+      :header-title-text="__('Discard all changes?')"
       footer-primary-button-variant="danger"
-      @submit="discardAllChanges"
+      @submit="unstageAndDiscardAllChanges"
     >
       {{ $options.discardModalText }}
     </gl-modal>

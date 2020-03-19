@@ -7,7 +7,7 @@ type: concepts, howto
 [x509](https://en.wikipedia.org/wiki/X.509) is a standard format for public key
 certificates issued by a public or private Public Key Infrastructure (PKI).
 Personal x509 certificates are used for authentication or signing purposes
-such as SMIME, but beside that, Git supports signing of commits and tags
+such as SMIME, but Git also supports signing of commits and tags
 with x509 certificates in a similar way as with [GPG](../gpg_signed_commits/index.md).
 The main difference is the trust anchor which is the PKI for x509 certificates
 instead of a web of trust with GPG.

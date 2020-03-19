@@ -10,8 +10,9 @@
           = provider_image_tag(provider)
         %span
           = label_for_provider(provider)
-  %fieldset.remember-me
-    %label
-      = check_box_tag :remember_me, nil, false, class: 'remember-me-checkbox'
-      %span
-        Remember me
+  - unless defined?(hide_remember_me) && hide_remember_me
+    %fieldset.remember-me
+      %label
+        = check_box_tag :remember_me, nil, false, class: 'remember-me-checkbox'
+        %span
+          Remember me

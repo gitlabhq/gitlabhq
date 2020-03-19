@@ -7,7 +7,10 @@ module Quality
     TEST_LEVEL_FOLDERS = {
       migration: %w[
         migrations
+      ],
+      background_migration: %w[
         lib/gitlab/background_migration
+        lib/ee/gitlab/background_migration
       ],
       unit: %w[
         bin
@@ -69,7 +72,7 @@ module Quality
       case file_path
       # Detect migration first since some background migration tests are under
       # spec/lib/gitlab/background_migration and tests under spec/lib are unit by default
-      when regexp(:migration)
+      when regexp(:migration), regexp(:background_migration)
         :migration
       when regexp(:unit)
         :unit
@@ -80,6 +83,10 @@ module Quality
       else
         raise UnknownTestLevelError, "Test level for #{file_path} couldn't be set. Please rename the file properly or change the test level detection regexes in #{__FILE__}."
       end
+    end
+
+    def background_migration?(file_path)
+      !!(file_path =~ regexp(:background_migration))
     end
 
     private

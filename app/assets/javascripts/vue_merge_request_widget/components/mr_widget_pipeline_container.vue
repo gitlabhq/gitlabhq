@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isNumber } from 'lodash';
 import ArtifactsApp from './artifacts_list_app.vue';
 import Deployment from './deployment/deployment.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
@@ -67,7 +67,7 @@ export default {
       return this.mr.visualReviewAppAvailable && this.glFeatures.anonymousVisualReviewFeedback;
     },
     showMergeTrainPositionIndicator() {
-      return _.isNumber(this.mr.mergeTrainIndex);
+      return isNumber(this.mr.mergeTrainIndex);
     },
   },
 };

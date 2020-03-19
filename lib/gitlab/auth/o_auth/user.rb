@@ -111,7 +111,7 @@ module Gitlab
         def find_or_build_ldap_user
           return unless ldap_person
 
-          user = Gitlab::Auth::LDAP::User.find_by_uid_and_provider(ldap_person.dn, ldap_person.provider)
+          user = Gitlab::Auth::Ldap::User.find_by_uid_and_provider(ldap_person.dn, ldap_person.provider)
           if user
             log.info "LDAP account found for user #{user.username}. Building new #{auth_hash.provider} identity."
             return user
@@ -141,8 +141,8 @@ module Gitlab
           return @ldap_person if defined?(@ldap_person)
 
           # Look for a corresponding person with same uid in any of the configured LDAP providers
-          Gitlab::Auth::LDAP::Config.providers.each do |provider|
-            adapter = Gitlab::Auth::LDAP::Adapter.new(provider)
+          Gitlab::Auth::Ldap::Config.providers.each do |provider|
+            adapter = Gitlab::Auth::Ldap::Adapter.new(provider)
             @ldap_person = find_ldap_person(auth_hash, adapter)
             break if @ldap_person
           end
@@ -150,15 +150,15 @@ module Gitlab
         end
 
         def find_ldap_person(auth_hash, adapter)
-          Gitlab::Auth::LDAP::Person.find_by_uid(auth_hash.uid, adapter) ||
-            Gitlab::Auth::LDAP::Person.find_by_email(auth_hash.uid, adapter) ||
-            Gitlab::Auth::LDAP::Person.find_by_dn(auth_hash.uid, adapter)
-        rescue Gitlab::Auth::LDAP::LDAPConnectionError
+          Gitlab::Auth::Ldap::Person.find_by_uid(auth_hash.uid, adapter) ||
+            Gitlab::Auth::Ldap::Person.find_by_email(auth_hash.uid, adapter) ||
+            Gitlab::Auth::Ldap::Person.find_by_dn(auth_hash.uid, adapter)
+        rescue Gitlab::Auth::Ldap::LdapConnectionError
           nil
         end
 
         def ldap_config
-          Gitlab::Auth::LDAP::Config.new(ldap_person.provider) if ldap_person
+          Gitlab::Auth::Ldap::Config.new(ldap_person.provider) if ldap_person
         end
 
         def needs_blocking?

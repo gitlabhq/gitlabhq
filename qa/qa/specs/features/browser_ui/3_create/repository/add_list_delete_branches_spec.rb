@@ -18,7 +18,7 @@ module QA
       before do
         Flow::Login.sign_in
 
-        project = Resource::Project.fabricate! do |proj|
+        project = Resource::Project.fabricate_via_api! do |proj|
           proj.name = 'project-qa-test'
           proj.description = 'project for qa test'
         end

@@ -35,12 +35,14 @@ module Gitlab
 
       def log_create_failed(error)
         logger.error({
-          exception: error.class.name,
+          exception: {
+            class: error.class.name,
+            message: error.message
+          },
           status_code: error.error_code,
           namespace: name,
           class_name: self.class.name,
-          event: :failed_to_create_namespace,
-          message: error.message
+          event: :failed_to_create_namespace
         })
       end
 

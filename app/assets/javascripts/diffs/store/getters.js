@@ -1,3 +1,4 @@
+import { __, n__ } from '~/locale';
 import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '../constants';
 
 export const isParallelView = state => state.diffViewType === PARALLEL_DIFF_VIEW_TYPE;
@@ -97,6 +98,29 @@ export const allBlobs = (state, getters) =>
 
 export const getCommentFormForDiffFile = state => fileHash =>
   state.commentForms.find(form => form.fileHash === fileHash);
+
+/**
+ * Returns the test coverage hits for a specific line of a given file
+ * @param {string} file
+ * @param {number} line
+ * @returns {number}
+ */
+export const fileLineCoverage = state => (file, line) => {
+  if (!state.coverageFiles.files) return {};
+  const fileCoverage = state.coverageFiles.files[file];
+  if (!fileCoverage) return {};
+  const lineCoverage = fileCoverage[String(line)];
+
+  if (lineCoverage === 0) {
+    return { text: __('No test coverage'), class: 'no-coverage' };
+  } else if (lineCoverage >= 0) {
+    return {
+      text: n__('Test coverage: %d hit', 'Test coverage: %d hits', lineCoverage),
+      class: 'coverage',
+    };
+  }
+  return {};
+};
 
 /**
  * Returns index of a currently selected diff in diffFiles

@@ -11,11 +11,11 @@ describe 'GitlabSchema configurations' do
     describe 'timeouts' do
       context 'when timeout is reached' do
         it 'shows an error' do
-          Timecop.scale(50000000) do # ludicrously large number because the timeout has to happen before the query even begins
-            subject
+          allow_any_instance_of(Gitlab::Graphql::Timeout).to receive(:max_seconds).and_return(0)
 
-            expect_graphql_errors_to_include /Timeout/
-          end
+          subject
+
+          expect_graphql_errors_to_include /Timeout/
         end
       end
     end
@@ -140,7 +140,7 @@ describe 'GitlabSchema configurations' do
     end
 
     it_behaves_like 'imposing query limits' do
-      it "fails all queries when only one of the queries is too complex" do
+      it 'fails all queries when only one of the queries is too complex' do
         # The `project` query above has a complexity of 5
         allow(GitlabSchema).to receive(:max_query_complexity).and_return 4
 

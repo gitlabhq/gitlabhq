@@ -9,7 +9,11 @@ particular group or project. If a user is both in a project's group and the
 project itself, the highest permission level is used.
 
 On public and internal projects the Guest role is not enforced. All users will
-be able to create issues, leave comments, and clone or download the project code.
+be able to:
+
+- Create issues.
+- Leave comments.
+- Clone or download the project code.
 
 When a member leaves a team's project, all the assigned [Issues](project/issues/index.md) and [Merge Requests](project/merge_requests/index.md)
 will be unassigned automatically.
@@ -65,6 +69,7 @@ The following table depicts the various user permission levels in a project.
 | See related issues                                | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Create confidential issue                         | ✓ (*1*) | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues                          | (*2*)   | ✓          | ✓           | ✓        | ✓      |
+| View [Releases](project/releases/index.md)        | ✓ (*6*) | ✓          | ✓           | ✓        | ✓      |
 | Assign issues                                     |         | ✓          | ✓           | ✓        | ✓      |
 | Label issues                                      |         | ✓          | ✓           | ✓        | ✓      |
 | Set issue weight                                  |         | ✓          | ✓           | ✓        | ✓      |
@@ -79,6 +84,7 @@ The following table depicts the various user permission levels in a project.
 | See a list of merge requests                      |         | ✓          | ✓           | ✓        | ✓      |
 | View project statistics                           |         | ✓          | ✓           | ✓        | ✓      |
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
+| Create/edit/delete [Releases](project/releases/index.md)|   |            | ✓           | ✓        | ✓      |
 | Pull from [Conan repository](packages/conan_repository/index.md), [Maven repository](packages/maven_repository/index.md), or [NPM registry](packages/npm_registry/index.md) **(PREMIUM)** |         | ✓          | ✓           | ✓        | ✓      |
 | Publish to [Conan repository](packages/conan_repository/index.md), [Maven repository](packages/maven_repository/index.md), or [NPM registry](packages/npm_registry/index.md) **(PREMIUM)** |         |            | ✓           | ✓        | ✓      |
 | Upload [Design Management](project/issues/design_management.md) files **(PREMIUM)** |         |            | ✓           | ✓        | ✓      |
@@ -116,6 +122,7 @@ The following table depicts the various user permission levels in a project.
 | Turn on/off protected branch push for devs        |         |            |             | ✓        | ✓      |
 | Enable/disable tag protections                    |         |            |             | ✓        | ✓      |
 | Edit project                                      |         |            |             | ✓        | ✓      |
+| Edit project badges                               |         |            |             | ✓        | ✓      |
 | Add deploy keys to project                        |         |            |             | ✓        | ✓      |
 | Configure project hooks                           |         |            |             | ✓        | ✓      |
 | Manage Runners                                    |         |            |             | ✓        | ✓      |
@@ -141,11 +148,13 @@ The following table depicts the various user permission levels in a project.
 | Remove protected branches (*4*)                   |         |            |             |          |        |
 
 \* Owner permission is only available at the group or personal namespace level (and for instance admins) and is inherited by its projects.
-(*1*): Guest users are able to perform this action on public and internal projects, but not private projects.
-(*2*): Guest users can only view the confidential issues they created themselves.
-(*3*): If **Public pipelines** is enabled in **Project Settings > CI/CD**.
-(*4*): Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [Protected Branches](./project/protected_branches.md).
-(*5*): If the [branch is protected](./project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings), this depends on the access Developers and Maintainers are given.
+
+1. Guest users are able to perform this action on public and internal projects, but not private projects.
+1. Guest users can only view the confidential issues they created themselves.
+1. If **Public pipelines** is enabled in **Project Settings > CI/CD**.
+1. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [Protected Branches](./project/protected_branches.md).
+1. If the [branch is protected](./project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings), this depends on the access Developers and Maintainers are given.
+1. Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see repository information like tags and commits.
 
 ## Project features permissions
 
@@ -192,17 +201,6 @@ Confidential issues can be accessed by reporters and higher permission levels,
 as well as by guest users that create a confidential issue. To learn more,
 read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
 
-### Releases permissions
-
-[Project Releases](project/releases/index.md) can be read by project
-members with Reporter, Developer, Maintainer, and Owner permissions.
-Guest users can access Release pages for downloading assets but
-are not allowed to download the source code nor see repository
-information such as tags and commits.
-
-Releases can be created, updated, or deleted via [Releases APIs](../api/releases/index.md)
-by project Developers, Maintainers, and Owners.
-
 ## Group members permissions
 
 NOTE: **Note:**
@@ -234,12 +232,12 @@ group.
 | Disable notification emails                            |       |          |           |            | ✓     |
 | View/manage group-level Kubernetes cluster             |       |          |           | ✓          | ✓     |
 
-- (1): Groups can be set to [allow either Owners or Owners and
+1. Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)
-- (2): Introduced in GitLab 12.2.
-- (3): Default project creation role can be changed at:
-  - The [instance level](admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
-  - The [group level](group/index.html#default-project-creation-level).
+1. Introduced in GitLab 12.2.
+1. Default project creation role can be changed at:
+   - The [instance level](admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
+   - The [group level](group/index.md#default-project-creation-level).
 
 ### Subgroup permissions
 
@@ -265,7 +263,7 @@ External users:
   logged out).
 
 Access can be granted by adding the user as member to the project or group.
-They will, like usual users, receive a role in the project or group with all
+Like usual users, they will receive a role in the project or group with all
 the abilities that are mentioned in the [permissions table above](#project-members-permissions).
 For example, if an external user is added as Guest, and your project is
 private, they will not have access to the code; you would need to grant the external
@@ -380,7 +378,7 @@ instance and project. In addition, all admins can use the admin interface under
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
 
-- *1*: Only if the job was triggered by the user
+1. Only if the job was triggered by the user
 
 ### Job permissions
 
@@ -409,8 +407,8 @@ users:
 | Push container images to other projects     |                 |             |          |         |
 | Push source and LFS                         |                 |             |          |         |
 
-- *1*: Only if the user is not an external one
-- *2*: Only if the user is a member of the project
+1. Only if the user is not an external one
+1. Only if the user is a member of the project
 
 ### New CI job permissions model
 
@@ -422,7 +420,7 @@ read through the documentation on the [new CI/CD permissions model](project/new_
 The permission to merge or push to protected branches is used to define if a user can
 run CI/CD pipelines and execute actions on jobs that are related to those branches.
 
-See [Security on protected branches](../ci/pipelines.md#security-on-protected-branches)
+See [Security on protected branches](../ci/pipelines/index.md#security-on-protected-branches)
 for details about the pipelines security model.
 
 ## LDAP users permissions

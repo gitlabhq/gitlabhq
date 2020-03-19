@@ -29,3 +29,15 @@
     color: $link;
   }
 }
+
+@mixin line-coverage-border-color($coverage, $no-coverage) {
+  transition: border-left 0.1s ease-out;
+
+  &.coverage {
+    border-left: 3px solid $coverage;
+  }
+
+  &.no-coverage {
+    border-left: 3px solid $no-coverage;
+  }
+}

@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 describe DeploymentSerializer do
-  set(:project) { create(:project, :repository) }
-  set(:user) { create(:user, email: project.commit.author_email) }
-
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user, email: project.commit.author_email) }
   let(:resource) { create(:deployment, project: project, sha: project.commit.id) }
   let(:serializer) { described_class.new(request) }
 

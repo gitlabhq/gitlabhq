@@ -1,0 +1,5 @@
+---
+title: Migrated from .fa-spinner to .spinner in app/assets/javascripts/create_merge_request_dropdown.js
+merge_request: 24917
+author: Raihan Kabir (gitlab/rk4bir)
+type: changed

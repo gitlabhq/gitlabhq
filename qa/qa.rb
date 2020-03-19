@@ -296,7 +296,9 @@ module QA
           autoload :Show, 'qa/page/project/operations/kubernetes/show'
         end
 
-        autoload :Metrics, 'qa/page/project/operations/metrics'
+        module Metrics
+          autoload :Show, 'qa/page/project/operations/metrics/show'
+        end
       end
 
       module Wiki
@@ -427,6 +429,7 @@ module QA
       autoload :Gcloud, 'qa/service/cluster_provider/gcloud'
       autoload :Minikube, 'qa/service/cluster_provider/minikube'
       autoload :K3d, 'qa/service/cluster_provider/k3d'
+      autoload :K3s, 'qa/service/cluster_provider/k3s'
     end
 
     module DockerRun
@@ -438,6 +441,7 @@ module QA
       autoload :GitlabRunner, 'qa/service/docker_run/gitlab_runner'
       autoload :MailHog, 'qa/service/docker_run/mail_hog'
       autoload :SamlIdp, 'qa/service/docker_run/saml_idp'
+      autoload :K3s, 'qa/service/docker_run/k3s'
     end
   end
 

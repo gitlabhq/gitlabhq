@@ -1,5 +1,10 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
+
 export default {
+  components: {
+    GlLoadingIcon,
+  },
   props: {
     canEdit: {
       type: Boolean,
@@ -13,7 +18,7 @@ export default {
   <div class="title hide-collapsed append-bottom-10">
     {{ __('Labels') }}
     <template v-if="canEdit">
-      <i aria-hidden="true" class="fa fa-spinner fa-spin block-loading" data-hidden="true"> </i>
+      <gl-loading-icon inline class="align-text-top block-loading" />
       <button
         type="button"
         class="edit-link btn btn-blank float-right js-sidebar-dropdown-toggle"

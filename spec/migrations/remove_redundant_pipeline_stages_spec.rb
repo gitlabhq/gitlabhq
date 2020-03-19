@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180119121225_remove_redundant_pipeline_stages.rb')
 
-describe RemoveRedundantPipelineStages, :migration do
+describe RemoveRedundantPipelineStages do
   let(:projects) { table(:projects) }
   let(:pipelines) { table(:ci_pipelines) }
   let(:stages) { table(:ci_stages) }

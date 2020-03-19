@@ -4,7 +4,7 @@ class RegistrationsController < Devise::RegistrationsController
   include Recaptcha::Verify
   include AcceptsPendingInvitations
   include RecaptchaExperimentHelper
-  include InvisibleCaptcha
+  include InvisibleCaptchaOnSignup
 
   layout :choose_layout
 

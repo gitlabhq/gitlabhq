@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class ElasticStack < ApplicationRecord
-      VERSION = '1.8.0'
+      VERSION = '1.9.0'
 
       ELASTICSEARCH_PORT = 9200
 
@@ -14,9 +14,6 @@ module Clusters
       include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
       include ::Gitlab::Utils::StrongMemoize
-
-      include IgnorableColumns
-      ignore_column :kibana_hostname, remove_with: '12.9', remove_after: '2020-02-22'
 
       default_value_for :version, VERSION
 

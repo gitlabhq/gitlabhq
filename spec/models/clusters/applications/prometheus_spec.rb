@@ -274,7 +274,8 @@ describe Clusters::Applications::Prometheus do
     subject { application.files_with_replaced_values({ hello: :world }) }
 
     it 'does not modify #files' do
-      expect(subject[:'values.yaml']).not_to eq(files)
+      expect(subject[:'values.yaml']).not_to eq(files[:'values.yaml'])
+
       expect(files[:'values.yaml']).to eq(application.values)
     end
 
@@ -282,27 +283,17 @@ describe Clusters::Applications::Prometheus do
       expect(subject[:'values.yaml']).to eq({ hello: :world })
     end
 
-    it 'includes cert files' do
-      expect(subject[:'ca.pem']).to be_present
-      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
+    it 'uses values from #files, except for values.yaml' do
+      allow(application).to receive(:files).and_return({
+        'values.yaml': 'some value specific to files',
+        'file_a.txt': 'file_a',
+        'file_b.txt': 'file_b'
+      })
 
-      expect(subject[:'cert.pem']).to be_present
-      expect(subject[:'key.pem']).to be_present
-
-      cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
-      expect(cert.not_after).to be < 60.minutes.from_now
-    end
-
-    context 'when the helm application does not have a ca_cert' do
-      before do
-        application.cluster.application_helm.ca_cert = nil
-      end
-
-      it 'does not include cert files' do
-        expect(subject[:'ca.pem']).not_to be_present
-        expect(subject[:'cert.pem']).not_to be_present
-        expect(subject[:'key.pem']).not_to be_present
-      end
+      expect(subject.except(:'values.yaml')).to eq({
+        'file_a.txt': 'file_a',
+        'file_b.txt': 'file_b'
+      })
     end
   end
 
@@ -337,6 +328,48 @@ describe Clusters::Applications::Prometheus do
       let(:cluster) { create(:cluster) }
 
       it { is_expected.to be_falsy }
+    end
+  end
+
+  describe 'alert manager token' do
+    subject { create(:clusters_applications_prometheus) }
+
+    context 'when not set' do
+      it 'is empty by default' do
+        expect(subject.alert_manager_token).to be_nil
+        expect(subject.encrypted_alert_manager_token).to be_nil
+        expect(subject.encrypted_alert_manager_token_iv).to be_nil
+      end
+
+      describe '#generate_alert_manager_token!' do
+        it 'generates a token' do
+          subject.generate_alert_manager_token!
+
+          expect(subject.alert_manager_token).to match(/\A\h{32}\z/)
+        end
+      end
+    end
+
+    context 'when set' do
+      let(:token) { SecureRandom.hex }
+
+      before do
+        subject.update!(alert_manager_token: token)
+      end
+
+      it 'reads the token' do
+        expect(subject.alert_manager_token).to eq(token)
+        expect(subject.encrypted_alert_manager_token).not_to be_nil
+        expect(subject.encrypted_alert_manager_token_iv).not_to be_nil
+      end
+
+      describe '#generate_alert_manager_token!' do
+        it 'does not re-generate the token' do
+          subject.generate_alert_manager_token!
+
+          expect(subject.alert_manager_token).to eq(token)
+        end
+      end
     end
   end
 end

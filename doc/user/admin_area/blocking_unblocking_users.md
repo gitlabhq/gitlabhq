@@ -30,7 +30,7 @@ Personal projects, and group and user history of the blocked user will be left i
 Users can also be blocked using the [GitLab API](../../api/users.md#block-user).
 
 NOTE: **Note:**
-A blocked user does not consume a [seat](../../subscriptions/index.md#managing-subscriptions).
+A blocked user does not consume a [seat](../../subscriptions/index.md#choosing-the-number-of-users).
 
 ## Unblocking a user
 
@@ -45,4 +45,4 @@ Users can also be unblocked using the [GitLab API](../../api/users.md#unblock-us
 
 NOTE: **Note:**
 Unblocking a user will change the user's state to active and it consumes a
-[seat](../../subscriptions/index.md#managing-subscriptions).
+[seat](../../subscriptions/index.md#choosing-the-number-of-users).

@@ -8,7 +8,7 @@ class YoutrackService < IssueTrackerService
     if only_long
       /(?<issue>\b[A-Za-z][A-Za-z0-9_]*-\d+\b)/
     else
-      /(?<issue>\b[A-Za-z][A-Za-z0-9_]*-\d+\b)|(#{Issue.reference_prefix}(?<issue>\d+))/
+      /(?<issue>\b[A-Za-z][A-Za-z0-9_]*-\d+\b)|(#{Issue.reference_prefix}#{Gitlab::Regex.issue})/
     end
   end
 

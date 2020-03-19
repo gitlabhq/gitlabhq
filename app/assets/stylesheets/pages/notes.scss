@@ -283,7 +283,7 @@ $note-form-margin-left: 72px;
         text-transform: lowercase;
       }
 
-      a {
+      a:not(.gl-link) {
         color: $blue-600;
       }
 
@@ -316,7 +316,7 @@ $note-form-margin-left: 72px;
         .btn.delete-description-history {
           position: absolute;
           top: 18px;
-          right: 0;
+          right: 10px;
         }
 
         pre {
@@ -670,6 +670,16 @@ $note-form-margin-left: 72px;
 
   a:hover {
     text-decoration: underline;
+  }
+
+  .gl-label-link:hover,
+  .gl-label-icon:hover {
+    text-decoration: none;
+    color: inherit;
+
+    .gl-label-text:last-of-type {
+      text-decoration: underline;
+    }
   }
 }
 

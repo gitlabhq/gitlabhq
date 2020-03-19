@@ -35,6 +35,11 @@ module Gitlab
         docstring 'blob.truncated? == false'
       end
 
+      define_histogram :gitlab_blob_size do
+        docstring 'Gitlab::Git::Blob size'
+        buckets [1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000]
+      end
+
       class << self
         def find(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
           tree_entry(repository, sha, path, limit)
@@ -122,6 +127,9 @@ module Gitlab
         # Retain the actual size before it is encoded
         @loaded_size = @data.bytesize if @data
         @loaded_all_data = @loaded_size == size
+
+        record_metric_blob_size
+        record_metric_truncated(truncated?)
       end
 
       def binary_in_repo?
@@ -157,7 +165,9 @@ module Gitlab
       end
 
       def truncated?
-        size && (size > loaded_size)
+        return false unless size && loaded_size
+
+        size > loaded_size
       end
 
       # Valid LFS object pointer is a text file consisting of
@@ -196,6 +206,20 @@ module Gitlab
       alias_method :external_size, :lfs_size
 
       private
+
+      def record_metric_blob_size
+        return unless size
+
+        self.class.gitlab_blob_size.observe({}, size)
+      end
+
+      def record_metric_truncated(bool)
+        if bool
+          self.class.gitlab_blob_truncated_true.increment
+        else
+          self.class.gitlab_blob_truncated_false.increment
+        end
+      end
 
       def has_lfs_version_key?
         !empty? && text_in_repo? && data.start_with?("version https://git-lfs.github.com/spec")

@@ -21,4 +21,8 @@ RSpec.shared_examples 'allows project key on reference pattern' do |url_attr|
     expect(described_class.reference_pattern.match('3EXT_EXT-1234')).to eq nil
     expect(described_class.reference_pattern.match('EXT_EXT-1234')[0]).to eq 'EXT_EXT-1234'
   end
+
+  it 'does not allow issue number to finish with a letter' do
+    expect(described_class.reference_pattern.match('EXT-123A')).to eq(nil)
+  end
 end

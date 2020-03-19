@@ -1,5 +1,4 @@
 <script>
-import _ from 'underscore';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
@@ -53,6 +52,7 @@ export default {
         .then(res => res.data)
         .then(data => {
           eventHub.$emit('UpdateWidgetData', data);
+          eventHub.$emit('MRWidgetUpdateRequested');
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;
@@ -71,7 +71,7 @@ export default {
         .merge(options)
         .then(res => res.data)
         .then(data => {
-          if (_.includes(AUTO_MERGE_STRATEGIES, data.status)) {
+          if (AUTO_MERGE_STRATEGIES.includes(data.status)) {
             eventHub.$emit('MRWidgetUpdateRequested');
           }
         })

@@ -69,8 +69,8 @@ describe('Embed', () => {
 
   describe('metrics are available', () => {
     beforeEach(() => {
-      store.state.monitoringDashboard.dashboard.panel_groups = groups;
-      store.state.monitoringDashboard.dashboard.panel_groups[0].panels = metricsData;
+      store.state.monitoringDashboard.dashboard.panelGroups = groups;
+      store.state.monitoringDashboard.dashboard.panelGroups[0].panels = metricsData;
 
       metricsWithDataGetter.mockReturnValue(metricsWithData);
 

@@ -75,5 +75,47 @@ describe Issuable::Clone::AttributesRewriter do
 
       expect(new_issue.reload.milestone).to eq(milestone)
     end
+
+    context 'with existing milestone events' do
+      let!(:milestone1_project1) { create(:milestone, title: 'milestone1', project: project1) }
+      let!(:milestone2_project1) { create(:milestone, title: 'milestone2', project: project1) }
+      let!(:milestone3_project1) { create(:milestone, title: 'milestone3', project: project1) }
+
+      let!(:milestone1_project2) { create(:milestone, title: 'milestone1', project: project2) }
+      let!(:milestone2_project2) { create(:milestone, title: 'milestone2', project: project2) }
+
+      before do
+        original_issue.update(milestone: milestone2_project1)
+
+        create_event(milestone1_project1)
+        create_event(milestone2_project1)
+        create_event(milestone1_project1, 'remove')
+        create_event(milestone3_project1)
+      end
+
+      it 'copies existing resource milestone events' do
+        subject.execute
+
+        new_issue_milestone_events = new_issue.reload.resource_milestone_events
+        expect(new_issue_milestone_events.count).to eq(3)
+
+        expect_milestone_event(new_issue_milestone_events.first, milestone: milestone1_project2, action: 'add', state: 'opened')
+        expect_milestone_event(new_issue_milestone_events.second, milestone: milestone2_project2, action: 'add', state: 'opened')
+        expect_milestone_event(new_issue_milestone_events.third, milestone: milestone1_project2, action: 'remove', state: 'opened')
+      end
+
+      def create_event(milestone, action = 'add')
+        create(:resource_milestone_event, issue: original_issue, milestone: milestone, action: action)
+      end
+
+      def expect_milestone_event(event, expected_attrs)
+        expect(event.milestone_id).to eq(expected_attrs[:milestone].id)
+        expect(event.action).to eq(expected_attrs[:action])
+        expect(event.state).to eq(expected_attrs[:state])
+
+        expect(event.reference).to be_nil
+        expect(event.reference_html).to be_nil
+      end
+    end
   end
 end

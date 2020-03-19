@@ -6,6 +6,7 @@ describe Gitlab::Ci::Config::Entry::Job do
   let(:entry) { described_class.new(config, name: :rspec) }
 
   it_behaves_like 'with inheritable CI config' do
+    let(:config) { { script: 'echo' } }
     let(:inheritable_key) { 'default' }
     let(:inheritable_class) { Gitlab::Ci::Config::Entry::Default }
 
@@ -14,6 +15,10 @@ describe Gitlab::Ci::Config::Entry::Job do
     # as they do not have sense in context of Job
     let(:ignored_inheritable_columns) do
       %i[]
+    end
+
+    before do
+      allow(entry).to receive_message_chain(:inherit_entry, :default_entry, :inherit?).and_return(true)
     end
   end
 
@@ -24,7 +29,8 @@ describe Gitlab::Ci::Config::Entry::Job do
       let(:result) do
         %i[before_script script stage type after_script cache
            image services only except rules needs variables artifacts
-           environment coverage retry interruptible timeout release tags]
+           environment coverage retry interruptible timeout release tags
+           inherit]
       end
 
       it { is_expected.to match_array result }
@@ -500,7 +506,13 @@ describe Gitlab::Ci::Config::Entry::Job do
     let(:unspecified) { double('unspecified', 'specified?' => false) }
     let(:default) { double('default', '[]' => unspecified) }
     let(:workflow) { double('workflow', 'has_rules?' => false) }
-    let(:deps) { double('deps', 'default' => default, '[]' => unspecified, 'workflow' => workflow) }
+
+    let(:deps) do
+      double('deps',
+        'default_entry' => default,
+        'workflow_entry' => workflow,
+        'variables_value' => nil)
+    end
 
     context 'when job config overrides default config' do
       before do

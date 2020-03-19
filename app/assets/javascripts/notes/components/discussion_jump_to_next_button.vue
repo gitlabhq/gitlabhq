@@ -12,6 +12,12 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [discussionNavigation],
+  props: {
+    fromDiscussionId: {
+      type: String,
+      required: true,
+    },
+  },
 };
 </script>
 
@@ -22,7 +28,10 @@ export default {
       v-gl-tooltip
       class="btn btn-default discussion-next-btn"
       :title="s__('MergeRequests|Jump to next unresolved thread')"
-      @click="jumpToNextDiscussion"
+      data-track-event="click_button"
+      data-track-label="mr_next_unresolved_thread"
+      data-track-property="click_next_unresolved_thread"
+      @click="jumpToNextRelativeDiscussion(fromDiscussionId)"
     >
       <icon name="comment-next" />
     </button>

@@ -49,8 +49,7 @@ module Clusters
         {
           "clusterStacks" => {
              self.stack => {
-               "deploy" => true,
-                  "version" => "alpha"
+               "deploy" => true
             }
           }
         }

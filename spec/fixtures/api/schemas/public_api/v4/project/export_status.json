@@ -13,9 +13,10 @@
           "type": "string",
           "enum": [
             "none",
+            "queued",
             "started",
             "finished",
-            "after_export_action"
+            "regeneration_in_progress"
           ]
         }
       }

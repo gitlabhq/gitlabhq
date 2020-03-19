@@ -3,7 +3,7 @@ import testAction from 'helpers/vuex_action_helper';
 import Tracking from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
-import { backOff } from '~/lib/utils/common_utils';
+import * as commonUtils from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 
 import store from '~/monitoring/stores';
@@ -28,11 +28,11 @@ import {
   deploymentData,
   environmentData,
   metricsDashboardResponse,
-  metricsDashboardPayload,
+  metricsDashboardViewModel,
   dashboardGitResponse,
+  mockDashboardsErrorResponse,
 } from '../mock_data';
 
-jest.mock('~/lib/utils/common_utils');
 jest.mock('~/flash');
 
 const resetStore = str => {
@@ -44,14 +44,17 @@ const resetStore = str => {
 };
 
 describe('Monitoring store actions', () => {
+  const { convertObjectPropsToCamelCase } = commonUtils;
+
   let mock;
+
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
     // Mock `backOff` function to remove exponential algorithm delay.
     jest.useFakeTimers();
 
-    backOff.mockImplementation(callback => {
+    jest.spyOn(commonUtils, 'backOff').mockImplementation(callback => {
       const q = new Promise((resolve, reject) => {
         const stop = arg => (arg instanceof Error ? reject(arg) : resolve(arg));
         const next = () => callback(next, stop);
@@ -69,7 +72,7 @@ describe('Monitoring store actions', () => {
     resetStore(store);
     mock.reset();
 
-    backOff.mockReset();
+    commonUtils.backOff.mockReset();
     createFlash.mockReset();
   });
 
@@ -115,7 +118,6 @@ describe('Monitoring store actions', () => {
 
     afterEach(() => {
       resetStore(store);
-      jest.restoreAllMocks();
     });
 
     it('setting SET_ENVIRONMENTS_FILTER should dispatch fetchEnvironmentsData', () => {
@@ -256,9 +258,11 @@ describe('Monitoring store actions', () => {
   describe('fetchDashboard', () => {
     let dispatch;
     let state;
+    let commit;
     const response = metricsDashboardResponse;
     beforeEach(() => {
       dispatch = jest.fn();
+      commit = jest.fn();
       state = storeState();
       state.dashboardEndpoint = '/dashboard';
     });
@@ -269,6 +273,7 @@ describe('Monitoring store actions', () => {
       fetchDashboard(
         {
           state,
+          commit,
           dispatch,
         },
         params,
@@ -286,19 +291,21 @@ describe('Monitoring store actions', () => {
 
     describe('on failure', () => {
       let result;
-      let errorResponse;
       beforeEach(() => {
         const params = {};
         result = () => {
-          mock.onGet(state.dashboardEndpoint).replyOnce(500, errorResponse);
-          return fetchDashboard({ state, dispatch }, params);
+          mock.onGet(state.dashboardEndpoint).replyOnce(500, mockDashboardsErrorResponse);
+          return fetchDashboard({ state, commit, dispatch }, params);
         };
       });
 
       it('dispatches a failure action', done => {
-        errorResponse = {};
         result()
           .then(() => {
+            expect(commit).toHaveBeenCalledWith(
+              types.SET_ALL_DASHBOARDS,
+              mockDashboardsErrorResponse.all_dashboards,
+            );
             expect(dispatch).toHaveBeenCalledWith(
               'receiveMetricsDashboardFailure',
               new Error('Request failed with status code 500'),
@@ -310,15 +317,15 @@ describe('Monitoring store actions', () => {
       });
 
       it('dispatches a failure action when a message is returned', done => {
-        const message = 'Something went wrong with Prometheus!';
-        errorResponse = { message };
         result()
           .then(() => {
             expect(dispatch).toHaveBeenCalledWith(
               'receiveMetricsDashboardFailure',
               new Error('Request failed with status code 500'),
             );
-            expect(createFlash).toHaveBeenCalledWith(expect.stringContaining(message));
+            expect(createFlash).toHaveBeenCalledWith(
+              expect.stringContaining(mockDashboardsErrorResponse.message),
+            );
             done();
           })
           .catch(done.fail);
@@ -365,6 +372,7 @@ describe('Monitoring store actions', () => {
       );
       expect(commit).toHaveBeenCalledWith(
         types.RECEIVE_METRICS_DATA_SUCCESS,
+
         metricsDashboardResponse.dashboard,
       );
       expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetrics', params);
@@ -443,8 +451,11 @@ describe('Monitoring store actions', () => {
         .catch(done.fail);
     });
     it('dispatches fetchPrometheusMetric for each panel query', done => {
-      state.dashboard.panel_groups = metricsDashboardResponse.dashboard.panel_groups;
-      const [metric] = state.dashboard.panel_groups[0].panels[0].metrics;
+      state.dashboard.panelGroups = convertObjectPropsToCamelCase(
+        metricsDashboardResponse.dashboard.panel_groups,
+      );
+
+      const [metric] = state.dashboard.panelGroups[0].panels[0].metrics;
       const getters = {
         metricsWithData: () => [metric.id],
       };
@@ -473,16 +484,16 @@ describe('Monitoring store actions', () => {
     });
 
     it('dispatches fetchPrometheusMetric for each panel query, handles an error', done => {
-      state.dashboard.panel_groups = metricsDashboardResponse.dashboard.panel_groups;
-      const metric = state.dashboard.panel_groups[0].panels[0].metrics[0];
+      state.dashboard.panelGroups = metricsDashboardViewModel.panelGroups;
+      const metric = state.dashboard.panelGroups[0].panels[0].metrics[0];
 
-      // Mock having one out of three metrics failing
+      // Mock having one out of four metrics failing
       dispatch.mockRejectedValueOnce(new Error('Error fetching this metric'));
       dispatch.mockResolvedValue();
 
       fetchPrometheusMetrics({ state, commit, dispatch }, params)
         .then(() => {
-          expect(dispatch).toHaveBeenCalledTimes(3);
+          expect(dispatch).toHaveBeenCalledTimes(9); // one per metric
           expect(dispatch).toHaveBeenCalledWith('fetchPrometheusMetric', {
             metric,
             params,
@@ -508,7 +519,12 @@ describe('Monitoring store actions', () => {
     beforeEach(() => {
       state = storeState();
       [metric] = metricsDashboardResponse.dashboard.panel_groups[0].panels[0].metrics;
-      [data] = metricsDashboardPayload.panel_groups[0].panels[0].metrics;
+      metric = convertObjectPropsToCamelCase(metric, { deep: true });
+
+      data = {
+        metricId: metric.metricId,
+        result: [1582065167.353, 5, 1582065599.353],
+      };
     });
 
     it('commits result', done => {
@@ -522,13 +538,13 @@ describe('Monitoring store actions', () => {
           {
             type: types.REQUEST_METRIC_RESULT,
             payload: {
-              metricId: metric.metric_id,
+              metricId: metric.metricId,
             },
           },
           {
             type: types.RECEIVE_METRIC_RESULT_SUCCESS,
             payload: {
-              metricId: metric.metric_id,
+              metricId: metric.metricId,
               result: data.result,
             },
           },
@@ -556,13 +572,13 @@ describe('Monitoring store actions', () => {
           {
             type: types.REQUEST_METRIC_RESULT,
             payload: {
-              metricId: metric.metric_id,
+              metricId: metric.metricId,
             },
           },
           {
             type: types.RECEIVE_METRIC_RESULT_SUCCESS,
             payload: {
-              metricId: metric.metric_id,
+              metricId: metric.metricId,
               result: data.result,
             },
           },
@@ -592,13 +608,13 @@ describe('Monitoring store actions', () => {
           {
             type: types.REQUEST_METRIC_RESULT,
             payload: {
-              metricId: metric.metric_id,
+              metricId: metric.metricId,
             },
           },
           {
             type: types.RECEIVE_METRIC_RESULT_FAILURE,
             payload: {
-              metricId: metric.metric_id,
+              metricId: metric.metricId,
               error,
             },
           },

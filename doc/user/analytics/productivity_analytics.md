@@ -8,11 +8,9 @@ For many companies, the development cycle is a blackbox and getting an estimate 
 long, on average, it takes to deliver features is an enormous endeavor.
 
 While [Value Stream Analytics](../project/cycle_analytics.md) focuses on the entire
-Software Development Life Cycle (SDLC) process, Productivity Analytics provides a way for Engineering Management to drill down in a systematic way to uncover patterns and causes for success or failure at an individual, project or group level.
+Software Development Life Cycle (SDLC) process, Productivity Analytics provides a way for Engineering Management to drill down in a systematic way to uncover patterns and causes for success or failure at an individual, project, or group level.
 
 Productivity can slow down for many reasons ranging from degrading code base to quickly growing teams. In order to investigate, department or team leaders can start by visualizing the time it takes for merge requests to be merged.
-
-By default, a data migration job covering three months of historical data will kick off when deploying Productivity Analytics for the first time.
 
 ## Supported features
 
@@ -20,7 +18,7 @@ Productivity Analytics allows GitLab users to:
 
 - Visualize typical merge request (MR) lifetime and statistics. Use a histogram that shows the distribution of the time elapsed between creating and merging merge requests.
 - Drill down into the most time consuming merge requests, select a number of outliers, and filter down all subsequent charts to investigate potential causes.
-- Filter by group, project, author, label, milestone, or a specific date range. Filter down, for example, to the merge requests of a specific author in a group or project during a milestone or specific date range.
+- Filter by group, project, author, label, milestone, or a specific date range. For example, filter down to the merge requests of a specific author in a group or project during a milestone or specific date range.
 - Measure velocity over time. Visualize the trends of each metric from the charts above over time in order to observe progress. Zoom in on a particular date range if you notice outliers.
 
 ## Accessing metrics and visualizations

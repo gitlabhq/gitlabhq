@@ -3,10 +3,9 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Chain::Validate::Repository do
-  set(:project) { create(:project, :repository) }
-  set(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
   let(:pipeline) { build_stubbed(:ci_pipeline) }
-
   let!(:step) { described_class.new(pipeline, command) }
 
   before do

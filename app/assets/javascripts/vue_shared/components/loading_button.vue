@@ -1,22 +1,11 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 /* eslint-disable vue/require-default-prop */
-/* This is a re-usable vue component for rendering a button
-    that will probably be sending off ajax requests and need
-    to show the loading status by setting the `loading` option.
-    This can also be used for initial page load when you don't
-    know the action of the button yet by setting
-    `loading: true, label: undefined`.
-
-    Sample configuration:
-
-    <loading-button
-      :loading="true"
-      :label="Hello"
-      @click="..."
-    />
-
-  */
+/*
+This component will be deprecated in favor of gl-button.
+https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-button--loading-button
+https://gitlab.com/gitlab-org/gitlab/issues/207412
+*/
 
 export default {
   components: {

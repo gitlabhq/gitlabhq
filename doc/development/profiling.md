@@ -120,3 +120,16 @@ Bullet will log query problems to both the Rails log as well as the Chrome
 console.
 
 As a follow up to finding `N+1` queries with Bullet, consider writing a [QueryRecoder test](query_recorder.md) to prevent a regression.
+
+## Settings that impact performance
+
+1. `development` environment by default works with hot-reloading enabled, this makes Rails to check file changes every request, and create a potential contention lock, as hot reload is single threaded.
+1. `development` environment can load code lazily once the request is fired which results in first request to always be slow.
+
+To disable those features for profiling/benchmarking set the `RAILS_PROFILE` environment variable to `true` before starting GitLab. For example when using GDK:
+
+- create a file [`env.runit`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/master/doc/runit.md#modifying-environment-configuration-for-services) in the root GDK directory
+- add `export RAILS_PROFILE=true` to your `env.runit` file
+- restart GDK with `gdk restart`
+
+*This environment variable is only applicable for the development mode.*

@@ -3,6 +3,7 @@ image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.5-golang-1.1
 stages:
   - sync
   - prepare
+  - fixtures
   - test
   - post-test
   - review-prepare
@@ -10,6 +11,29 @@ stages:
   - qa
   - post-qa
   - pages
+
+# always use `gitlab-org` runners
+default:
+  tags:
+    - gitlab-org
+
+workflow:
+  rules:
+    # If `$FORCE_GITLAB_CI` is set, create a pipeline.
+    - if: '$FORCE_GITLAB_CI'
+    # For merge requests, create a pipeline.
+    - if: '$CI_MERGE_REQUEST_IID'
+    # For `master` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    # For tags, create a pipeline.
+    - if: '$CI_COMMIT_TAG'
+    # If `$GITLAB_INTERNAL` isn't set, don't create a pipeline.
+    - if: '$GITLAB_INTERNAL == null'
+      when: never
+    # For stable, auto-deploy, and security branches, create a pipeline.
+    - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable(-ee)?$/'
+    - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
+    - if: '$CI_COMMIT_BRANCH =~ /^security\//'
 
 variables:
   RAILS_ENV: "test"

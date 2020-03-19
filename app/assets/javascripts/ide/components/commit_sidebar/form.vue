@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { sprintf, __ } from '~/locale';
+import { n__, __ } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
@@ -26,15 +26,7 @@ export default {
     ...mapGetters(['hasChanges']),
     ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     overviewText() {
-      return sprintf(
-        __(
-          '<strong>%{stagedFilesLength} staged</strong> and <strong>%{changedFilesLength} unstaged</strong> changes',
-        ),
-        {
-          stagedFilesLength: this.stagedFiles.length,
-          changedFilesLength: this.changedFiles.length,
-        },
-      );
+      return n__('%d changed file', '%d changed files', this.stagedFiles.length);
     },
     commitButtonText() {
       return this.stagedFiles.length ? __('Commit') : __('Stage & Commit');
@@ -125,7 +117,7 @@ export default {
         >
           {{ __('Commit…') }}
         </button>
-        <p class="text-center" v-html="overviewText"></p>
+        <p class="text-center bold">{{ overviewText }}</p>
       </div>
       <form v-if="!isCompact" ref="formEl" @submit.prevent.stop="commitChanges">
         <transition name="fade"> <success-message v-show="lastCommitMsg" /> </transition>

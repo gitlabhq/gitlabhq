@@ -4,11 +4,11 @@
 
 = render_dashboard_gold_trial(current_user)
 
-.page-title-holder.d-flex.align-items-center
+.page-title-holder.d-flex.align-items-start.flex-column.flex-sm-row.align-items-sm-center
   %h1.page-title= _('Merge Requests')
 
   - if current_user
-    .page-title-controls
+    .page-title-controls.ml-0.mb-3.ml-sm-auto.mb-sm-0
       = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request", with_feature_enabled: 'merge_requests', type: :merge_requests
 
 .top-area

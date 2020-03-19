@@ -2,12 +2,14 @@
 
 module BroadcastMessagesHelper
   def current_broadcast_banner_messages
-    BroadcastMessage.current_banner_messages(request.path)
+    BroadcastMessage.current_banner_messages(request.path).select do |message|
+      cookies["hide_broadcast_message_#{message.id}"].blank?
+    end
   end
 
   def current_broadcast_notification_message
     not_hidden_messages = BroadcastMessage.current_notification_messages(request.path).select do |message|
-      cookies["hide_broadcast_notification_message_#{message.id}"].blank?
+      cookies["hide_broadcast_message_#{message.id}"].blank?
     end
     not_hidden_messages.last
   end
@@ -45,7 +47,15 @@ module BroadcastMessagesHelper
   end
 
   def render_broadcast_message(broadcast_message)
-    Banzai.render_field(broadcast_message, :message).html_safe
+    if Feature.enabled?(:broadcast_message_placeholders)
+      Banzai.render_and_post_process(broadcast_message.message, {
+        current_user: current_user,
+        skip_project_check: true,
+        broadcast_message_placeholders: true
+      }).html_safe
+    else
+      Banzai.render_field(broadcast_message, :message).html_safe
+    end
   end
 
   def broadcast_type_options

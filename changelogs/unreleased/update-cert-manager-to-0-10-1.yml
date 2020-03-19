@@ -1,0 +1,5 @@
+---
+title: Use cert-manager 0.10 instead of 0.9 for new chart installations
+merge_request: 26345
+author:
+type: changed

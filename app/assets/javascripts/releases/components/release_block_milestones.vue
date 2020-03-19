@@ -38,7 +38,7 @@ export default {
         :key="milestone.id"
         v-gl-tooltip
         :title="milestone.description"
-        :href="milestone.web_url"
+        :href="milestone.webUrl"
         class="mx-1 js-milestone-link"
       >
         {{ milestone.title }}

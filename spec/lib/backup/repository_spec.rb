@@ -50,9 +50,9 @@ describe Backup::Repository do
 
     describe 'command failure' do
       before do
-        allow_next_instance_of(Gitlab::Shell) do |instance|
-          allow(instance).to receive(:create_repository).and_return(false)
-        end
+        # Allow us to set expectations on the project directly
+        expect(Project).to receive(:find_each).and_yield(project)
+        expect(project.repository).to receive(:create_repository) { raise 'Fail in tests' }
       end
 
       context 'hashed storage' do

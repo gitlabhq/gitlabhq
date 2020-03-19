@@ -44,7 +44,7 @@ some steps to migrate your projects. There is no automatic import since GitLab
 doesn't know anything about any projects which existed on Gemnasium.com.
 Security features are free for public (open-source) projects hosted on GitLab.com.
 
-### If your project is hosted on GitLab (`https://gitlab.com` / self-hosted)
+### If your project is hosted on GitLab (`https://gitlab.com` / self-managed)
 
 You're almost set! If you're already using
 [Auto DevOps](../../../topics/autodevops/), you are already covered.
@@ -102,5 +102,5 @@ back to both GitLab and GitHub when completed.
 
 NOTE: **Note:**
 If you don't commit very often to your project, you may want to use
-[scheduled pipelines](../pipelines/schedules.md) to run the job on a regular
+[scheduled pipelines](../../../ci/pipelines/schedules.md) to run the job on a regular
 basis.

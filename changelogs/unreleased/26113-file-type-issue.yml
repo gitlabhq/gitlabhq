@@ -1,0 +1,6 @@
+---
+title: Fix issues with non-ASCII plain text files being incorrectly uploaded as binary
+  in the Web IDE
+merge_request: 26360
+author:
+type: fixed

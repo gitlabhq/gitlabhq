@@ -9,42 +9,43 @@ pipeline](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6665).
 
 ```mermaid
 graph TD
-    build-qa-image -->|once the `prepare` stage is done| gitlab:assets:compile
-    gitlab:assets:compile -->|once the `gitlab:assets:compile` job is done| review-build-cng
-    review-build-cng -.->|triggers a CNG-mirror pipeline and wait for it to be done| CNG-mirror
-    CNG-mirror -.->|polls until completed| review-build-cng
-    review-build-cng -->|once the `review-build-cng` job is done| review-deploy
-    review-deploy -->|once the `review-deploy` job is done| review-qa-smoke
+  A["build-qa-image, gitlab:assets:compile pull-cache<br/>(canonical default refs only)"];
+  B[review-build-cng];
+  C[review-deploy];
+  D[CNG-mirror];
+  E[review-qa-smoke];
 
-subgraph "1. gitlab-foss/gitlab `prepare` stage"
-    build-qa-image
-    end
+  A -->|once the `prepare` stage is done| B
+  B -.->|triggers a CNG-mirror pipeline and wait for it to be done| D
+  D -.->|polls until completed| B
+  B -->|once the `review-build-cng` job is done| C
+  C -->|once the `review-deploy` job is done| E
 
-subgraph "2. gitlab-foss/gitlab `test` stage"
-    gitlab:assets:compile
-    end
+subgraph "1. gitlab `prepare` stage"
+  A
+  end
 
-subgraph "3. gitlab-foss/gitlab `review-prepare` stage"
-    review-build-cng
-    end
+subgraph "2. gitlab `review-prepare` stage"
+  B
+  end
 
-subgraph "4. gitlab-foss/gitlab `review` stage"
-    review-deploy["review-deploy<br><br>Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps-ce` or `review-apps-ee`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
-    end
+subgraph "3. gitlab `review` stage"
+  C["review-deploy<br><br>Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps-ce` or `review-apps-ee`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
+  end
 
-subgraph "5. gitlab-foss/gitlab `qa` stage"
-    review-qa-smoke[review-qa-smoke<br><br>gitlab-qa runs the smoke suite against the Review App.]
-    end
+subgraph "4. gitlab `qa` stage"
+  E[review-qa-smoke<br><br>gitlab-qa runs the smoke suite against the Review App.]
+  end
 
 subgraph "CNG-mirror pipeline"
-    CNG-mirror>Cloud Native images are built];
-    end
+  D>Cloud Native images are built];
+  end
 ```
 
 ### Detailed explanation
 
 1. On every [pipeline][gitlab-pipeline] during the `test` stage, the
-   [`gitlab:assets:compile`][gitlab:assets:compile] job is automatically started.
+   [`gitlab:assets:compile`][gitlab:assets:compile pull-cache] job is automatically started.
    - Once it's done, it starts the [`review-build-cng`][review-build-cng]
      manual job since the [`CNG-mirror`][cng-mirror] pipeline triggered in the
      following step depends on it.
@@ -79,26 +80,38 @@ subgraph "CNG-mirror pipeline"
 **Additional notes:**
 
 - If the `review-deploy` job keep failing (note that we already retry it twice),
-  please post a message in the `#quality` channel and/or create a ~Quality ~bug
+  please post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"ep::review apps"` `~bug`
   issue with a link to your merge request. Note that the deployment failure can
   reveal an actual problem introduced in your merge request (i.e. this isn't
   necessarily a transient failure)!
-- If the `review-qa-smoke` job keep failing (note that we already retry it twice),
+- If the `review-qa-smoke` job keeps failing (note that we already retry it twice),
   please check the job's logs: you could discover an actual problem introduced in
   your merge request. You can also download the artifacts to see screenshots of
   the page at the time the failures occurred. If you don't find the cause of the
   failure or if it seems unrelated to your change, please post a message in the
   `#quality` channel and/or create a ~Quality ~bug issue with a link to your
   merge request.
-- The manual [`review-stop`][gitlab-ci-yml] in the `test` stage can be used to
+- The manual `review-stop` can be used to
   stop a Review App manually, and is also started by GitLab once a merge
   request's branch is deleted after being merged.
-- Review Apps are cleaned up regularly via a pipeline schedule that runs
-  the [`schedule:review-cleanup`][gitlab-ci-yml] job.
 - The Kubernetes cluster is connected to the `gitlab-{ce,ee}` projects using
   [GitLab's Kubernetes integration][gitlab-k8s-integration]. This basically
   allows to have a link to the Review App directly from the merge request
   widget.
+
+### Auto-stopping of Review Apps
+
+Review Apps are automatically stopped 2 days after the last deployment thanks to
+the [Environment auto-stop](../../ci/environments.md#environments-auto-stop) feature.
+
+If you need your Review App to stay up for a longer time, you can
+[pin its environment](../../ci/environments.md#auto-stop-example) or retry the
+`review-deploy` job to update the "latest deployed at" time.
+
+The `review-cleanup` job that automatically runs in scheduled
+pipelines (and is manual in merge request) stops stale Review Apps after 5 days,
+deletes their environment after 6 days, and cleans up any dangling Helm releases
+and Kubernetes resources after 7 days.
 
 ## QA runs
 
@@ -206,12 +219,12 @@ aids in identifying load spikes on the cluster, and if nodes are problematic or 
 
 **Potential cause:**
 
-That could be a sign that the [`schedule:review-cleanup`][gitlab-ci-yml] job is
+That could be a sign that the `review-cleanup` job is
 failing to cleanup stale Review Apps and Kubernetes resources.
 
 **Where to look for further debugging:**
 
-Look at the latest `schedule:review-cleanup` job log, and identify look for any
+Look at the latest `review-cleanup` job log, and identify look for any
 unexpected failure.
 
 ### p99 CPU utilization is at 100% for most of the nodes and/or many components
@@ -270,7 +283,7 @@ kubectl get cm --sort-by='{.metadata.creationTimestamp}' | grep 'review-' | grep
 
 ### Using K9s
 
-[K9s] is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
+[K9s] is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
 
 - In K9s you can sort or add filters by typing the `/` character
   - `-lrelease=<review-app-slug>` - filters down to all pods for a release. This aids in determining what is having issues in a single deployment
@@ -376,10 +389,10 @@ find a way to limit it to only us.**
 - [Stern](https://github.com/wercker/stern) - enables cross pod log tailing based on label/field selectors
 
 [charts-1068]: https://gitlab.com/gitlab-org/charts/gitlab/issues/1068
-[gitlab-pipeline]: https://gitlab.com/gitlab-org/gitlab-foss/pipelines/44362587
-[gitlab:assets:compile]: https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/149511610
-[review-build-cng]: https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/149511623
-[review-deploy]: https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/149511624
+[gitlab-pipeline]: https://gitlab.com/gitlab-org/gitlab/pipelines/125315730
+[gitlab:assets:compile pull-cache]: https://gitlab.com/gitlab-org/gitlab/-/jobs/467724487
+[review-build-cng]: https://gitlab.com/gitlab-org/gitlab/-/jobs/467724808
+[review-deploy]: https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810
 [cng-mirror]: https://gitlab.com/gitlab-org/build/CNG-mirror
 [cng]: https://gitlab.com/gitlab-org/build/CNG
 [cng-mirror-pipeline]: https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657
@@ -387,13 +400,11 @@ find a way to limit it to only us.**
 [helm-chart]: https://gitlab.com/gitlab-org/charts/gitlab/
 [review-apps-ce]: https://console.cloud.google.com/kubernetes/clusters/details/us-central1-a/review-apps-ce?project=gitlab-review-apps
 [review-apps-ee]: https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps-ee?project=gitlab-review-apps
-[review-apps.sh]: https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/review-apps.sh
-[automated_cleanup.rb]: https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/automated_cleanup.rb
-[Auto-DevOps.gitlab-ci.yml]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
-[gitlab-ci-yml]: https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml
+[review-apps.sh]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/review-apps.sh
+[automated_cleanup.rb]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/review_apps/automated_cleanup.rb
+[Auto-DevOps.gitlab-ci.yml]: https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [gitlab-k8s-integration]: ../../user/project/clusters/index.md
 [K9s]: https://github.com/derailed/k9s
-[password-bug]: https://gitlab.com/gitlab-org/gitlab-foss/issues/53621
 
 ---
 

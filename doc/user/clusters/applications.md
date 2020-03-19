@@ -9,10 +9,6 @@ and [deployments](../../ci/environments.md) when using [Auto DevOps](../../topic
 You can install them after you
 [create a cluster](../project/clusters/add_remove_clusters.md).
 
-Interested in contributing a new GitLab managed app? Visit the
-[development guidelines page](../../development/kubernetes.md#gitlab-managed-apps)
-to get started.
-
 ## Installing applications
 
 Applications managed by GitLab will be installed onto the `gitlab-managed-apps` namespace.
@@ -26,8 +22,9 @@ This namespace:
 To see a list of available applications to install. For a:
 
 - [Project-level cluster](../project/clusters/index.md), navigate to your project's
-  **Operations > Kubernetes**.
-- [Group-level cluster](../group/clusters/index.md), navigate to your group's **Kubernetes** page.
+  **{cloud-gear}** **Operations > Kubernetes**.
+- [Group-level cluster](../group/clusters/index.md), navigate to your group's
+  **{cloud-gear}** **Kubernetes** page.
 
 Install Helm first as it's used to install other applications.
 
@@ -117,7 +114,7 @@ service included with GitLab that coordinates the jobs.
 
 If the project is on GitLab.com, shared Runners are available
 (the first 2000 minutes are free, you can
-[buy more later](../../subscriptions/index.md#extra-shared-runners-pipeline-minutes))
+[buy more later](../../subscriptions/index.md#purchasing-additional-ci-minutes))
 and you do not have to deploy one if they are enough for your needs. If a
 project-specific Runner is desired, or there are no shared Runners, it is easy
 to deploy one.
@@ -257,7 +254,7 @@ use an A record. If your external endpoint is a hostname, use a CNAME record.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21966) in GitLab 12.7.
 
-A Web Application Firewall (WAF) is able to examine traffic being sent/received
+A Web Application Firewall (WAF) examines traffic being sent or received,
 and can block malicious traffic before it reaches your application. The benefits
 of a WAF are:
 
@@ -266,7 +263,7 @@ of a WAF are:
 - Access control for your application
 - Highly configurable logging and blocking rules
 
-Out of the box, GitLab provides you with a WAF known as [`ModSecurity`](https://www.modsecurity.org/)
+Out of the box, GitLab provides you with a WAF known as [`ModSecurity`](https://www.modsecurity.org/).
 
 ModSecurity is a toolkit for real-time web application monitoring, logging,
 and access control. With GitLab's offering, the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/),
@@ -282,24 +279,42 @@ This feature:
   kubectl logs -n gitlab-managed-apps $(kubectl get pod -n gitlab-managed-apps -l app=nginx-ingress,component=controller --no-headers=true -o custom-columns=:metadata.name) modsecurity-log -f
   ```
 
-To enable ModSecurity, check the **Enable Web Application Firewall** checkbox
-when installing your [Ingress application](#ingress).
+To enable WAF, switch its respective toggle to the enabled position when installing or updating [Ingress application](#ingress).
 
 If this is your first time using GitLab's WAF, we recommend you follow the
 [quick start guide](../../topics/web_application_firewall/quick_start_guide.md).
 
-There is a small performance overhead by enabling ModSecurity. However,
-if this is considered significant for your application, you can disable it.
-
 There is a small performance overhead by enabling ModSecurity. If this is
 considered significant for your application, you can disable ModSecurity's
-rule engine for your deployed application by setting
-[the deployment variable](../../topics/autodevops/index.md)
+rule engine for your deployed application in any of the following ways:
+
+1. Setting [the deployment variable](../../topics/autodevops/index.md)
 `AUTO_DEVOPS_MODSECURITY_SEC_RULE_ENGINE` to `Off`. This will prevent ModSecurity
 from processing any requests for the given application or environment.
 
-To permanently disable it, you must [uninstall](#uninstalling-applications) and
-reinstall your Ingress application for the changes to take effect.
+1. Switching its respective toggle to the disabled position and applying changes through the **Save changes** button. This will reinstall
+Ingress with the recent changes.
+
+![Disabling WAF](../../topics/web_application_firewall/img/guide_waf_ingress_save_changes_v12_9.png)
+
+##### Viewing Web Application Firewall traffic
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14707) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+
+You can view Web Application Firewall traffic by navigating to your project's
+**Security & Compliance > Threat Monitoring** page.
+
+From there, you can see tracked over time:
+
+- The total amount of traffic to your application.
+- The proportion of traffic that is considered anomalous by the Web Application
+  Firewall's default [OWASP ruleset](https://www.modsecurity.org/CRS/Documentation/).
+
+If a significant percentage of traffic is anomalous, it should be investigated
+for potential threats, which can be done by
+[examining the application logs](#web-application-firewall-modsecurity).
+
+![Threat Monitoring](img/threat_monitoring_v12_9.png)
 
 ### JupyterHub
 
@@ -468,6 +483,52 @@ The chart will deploy 5 Elasticsearch nodes: 2 masters, 2 data and 1 client node
 with resource requests totalling 0.125 CPU and 4.5GB RAM. Each data node requests 1.5GB of memory,
 which makes it incompatible with clusters of `f1-micro` and `g1-small` instance types.
 
+NOTE: **Note:**
+The Elastic Stack cluster application is intended as a log aggregation solution and is not related to our
+[Advanced Global Search](../search/advanced_global_search.md) functionality, which uses a separate
+Elasticsearch cluster.
+
+#### Optional: deploy Kibana to perform advanced queries
+
+If you are an advanced user and have direct access to your Kubernetes cluster using `kubectl` and `helm`, you can deploy Kibana manually.
+
+The following assumes that `helm` has been [initialized](https://v2.helm.sh/docs/helm/) with `helm init`.
+
+Save the following to `kibana.yml`:
+
+```yaml
+elasticsearch:
+  enabled: false
+
+logstash:
+  enabled: false
+
+kibana:
+  enabled: true
+  env:
+    ELASTICSEARCH_HOSTS: http://elastic-stack-elasticsearch-client.gitlab-managed-apps.svc.cluster.local:9200
+```
+
+Then install it on your cluster:
+
+```shell
+helm install --name kibana stable/elastic-stack --values kibana.yml
+```
+
+To access kibana, forward the port to your local machine:
+
+```shell
+kubectl port-forward svc/kibana 5601:443
+```
+
+Then, you can visit Kibana at `http://localhost:5601`.
+
+### Future apps
+
+Interested in contributing a new GitLab managed app? Visit the
+[development guidelines page](../../development/kubernetes.md#gitlab-managed-apps)
+to get started.
+
 ## Install using GitLab CI (alpha)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20822) in GitLab 12.6.
@@ -487,8 +548,10 @@ Supported applications:
 - [Sentry](#install-sentry-using-gitlab-ci)
 - [GitLab Runner](#install-gitlab-runner-using-gitlab-ci)
 - [Cilium](#install-cilium-using-gitlab-ci)
+- [Vault](#install-vault-using-gitlab-ci)
 - [JupyterHub](#install-jupyterhub-using-gitlab-ci)
 - [Elastic Stack](#install-elastic-stack-using-gitlab-ci)
+- [Crossplane](#install-crossplane-using-gitlab-ci)
 
 ### Usage
 
@@ -501,20 +564,20 @@ To install applications using GitLab CI:
 1. Connect the cluster to a [cluster management project](management_project.md).
 1. In that project, add a `.gitlab-ci.yml` file with the following content:
 
-    ```yaml
-    include:
-      - template: Managed-Cluster-Applications.gitlab-ci.yml
-    ```
+   ```yaml
+   include:
+     - template: Managed-Cluster-Applications.gitlab-ci.yml
+   ```
 
 1. Add a `.gitlab/managed-apps/config.yaml` file to define which
   applications you would like to install. Define the `installed` key as
   `true` to install the application and `false` to uninstall the
   application. For example, to install Ingress:
 
-    ```yaml
-    ingress:
-      installed: true
-    ```
+   ```yaml
+   ingress:
+     installed: true
+   ```
 
 1. Optionally, define `.gitlab/managed-apps/<application>/values.yaml` file to
    customize values for the installed application.
@@ -523,7 +586,7 @@ A GitLab CI pipeline will then run on the `master` branch to install the
 applications you have configured. In case of pipeline failure, the
 output of the [Helm
 Tiller](https://v2.helm.sh/docs/install/#running-tiller-locally) binary
-will be saved as a [CI job artifact](../project/pipelines/job_artifacts.md).
+will be saved as a [CI job artifact](../../ci/pipelines/job_artifacts.md).
 
 ### Install Ingress using GitLab CI
 
@@ -658,7 +721,7 @@ GitLab Runner is installed into the `gitlab-managed-apps` namespace of your clus
 
 In order for GitLab Runner to function, you **must** specify the following:
 
-- `gitlabUrl` - the GitLab server full URL (e.g., `https://example.gitlab.com`) to register the Runner against.
+- `gitlabUrl` - the GitLab server full URL (for example, `https://example.gitlab.com`) to register the Runner against.
 - `runnerRegistrationToken` - The registration token for adding new Runners to GitLab. This must be
   [retrieved from your GitLab instance](../../ci/runners/README.md).
 
@@ -680,7 +743,7 @@ available configuration options.
 [Cilium](https://cilium.io/) is a networking plugin for Kubernetes
 that you can use to implement support for
 [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
-resources.
+resources. For more information on [Network Policies](../../topics/autodevops/index.md#network-policy), see the documentation.
 
 Enable Cilium in the `.gitlab/managed-apps/config.yaml` file to install it:
 
@@ -693,7 +756,7 @@ cilium:
 ```
 
 The `clusterType` variable enables the recommended Helm variables for
-a corresponding cluster type, the default value is blank. You can
+a corresponding cluster type. The default value is blank. You can
 check the recommended variables for each cluster type in the official
 documentation:
 
@@ -720,13 +783,13 @@ information.
 By default, Cilium will drop all non-whitelisted packets upon policy
 deployment. The audit mode is scheduled for release in
 [Cilium 1.8](https://github.com/cilium/cilium/pull/9970). In the audit
-mode non-whitelisted packets will not be dropped, instead audit
-notifications will be generated. GitLab provides alternative Docker
+mode, non-whitelisted packets will not be dropped, and audit
+notifications will be generated instead. GitLab provides alternative Docker
 images for Cilium with the audit patch included. You can switch to the
 custom build and enable the audit mode by adding the following to
 `.gitlab/managed-apps/cilium/values.yaml`:
 
-```yml
+```yaml
 global:
   registry: registry.gitlab.com/gitlab-org/defend/cilium
   policyAuditMode: true
@@ -737,25 +800,115 @@ agent:
 ```
 
 The Cilium monitor log for traffic is logged out by the
-`cilium-monitor` sidecar container. You can check these logs via:
+`cilium-monitor` sidecar container. You can check these logs with the following command:
 
 ```shell
 kubectl -n gitlab-managed-apps logs cilium-XXXX cilium-monitor
 ```
 
-You can disable the monitor log via `.gitlab/managed-apps/cilium/values.yaml`:
+You can disable the monitor log in `.gitlab/managed-apps/cilium/values.yaml`:
 
-```yml
+```yaml
 agent:
   monitor:
     enabled: false
 ```
 
+### Install Vault using GitLab CI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9982) in GitLab 12.9.
+
+[Hashicorp Vault](https://vaultproject.io/) is a secrets management solution which
+can be used to safely manage and store passwords, credentials, certificates and more. A Vault
+installation could be leveraged to provide a single secure data store for credentials
+used in your applications, GitLab CI jobs, and more. It could also serve as a way of
+providing SSL/TLS certificates to systems and deployments in your infrastructure. Leveraging
+Vault as a single source for all these credentials allows greater security by having
+a single source of access, control, and auditability around all your sensitive
+credentials and certificates.
+
+To install Vault, enable it in the `.gitlab/managed-apps/config.yaml` file:
+
+```yaml
+vault:
+  installed: true
+```
+
+By default you will get a basic Vault setup with no high availability nor any scalable
+storage backend. This is enough for simple testing and small scale deployments, though has limits
+to how much it can scale, and as it is a single instance deployment, you will experience downtime
+when upgrading the Vault application.
+
+To optimally use Vault in a production environment, it's ideal to have a good understanding
+of the internals of Vault and how to configure it. This can be done by reading the
+[the Vault documentation](https://www.vaultproject.io/docs/internals/) as well as
+the Vault Helm chart [values.yaml file](https://github.com/hashicorp/vault-helm/blob/v0.3.3/values.yaml).
+
+At a minimum you will likely set up:
+
+- A [seal](https://www.vaultproject.io/docs/configuration/seal/) for extra encryption
+  of the master key.
+- A [storage backend](https://www.vaultproject.io/docs/configuration/storage/) that is
+  suitable for environment and storage security requirements.
+- [HA Mode](https://www.vaultproject.io/docs/concepts/ha/).
+- [The Vault UI](https://www.vaultproject.io/docs/configuration/ui/).
+
+The following is an example values file (`.gitlab/managed-apps/vault/values.yaml`)
+that configures Google Key Management Service for auto-unseal, using a Google Cloud Storage backend, enabling
+the Vault UI, and enabling HA with 3 pod replicas. The `storage` and `seal` stanzas
+below are examples and should be replaced with settings specific to your environment.
+
+```yaml
+# Enable the Vault WebUI
+ui:
+  enabled: true
+server:
+  # Disable the built in data storage volume as it's not safe for Hight Availablity mode
+  dataStorage:
+    enabled: false
+  # Enable High Availability Mode
+  ha:
+    enabled: true
+    # Configure Vault to listen on port 8200 for normal traffic and port 8201 for inter-cluster traffic
+    config: |
+      listener "tcp" {
+        tls_disable = 1
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+      }
+      # Configure Vault to store its data in a GCS Bucket backend
+      storage "gcs" {
+        path = "gcs://my-vault-storage/vault-bucket"
+        ha_enabled = "true"
+      }
+      # Configure Vault to automatically unseal storage using a GKMS key
+      seal "gcpckms" {
+         project     = "vault-helm-dev-246514"
+         region      = "global"
+         key_ring    = "vault-helm-unseal-kr"
+         crypto_key  = "vault-helm-unseal-key"
+      }
+```
+
+Once you have successfully installed Vault, you will need to [initialize the Vault](https://learn.hashicorp.com/vault/getting-started/deploy#initializing-the-vault)
+and obtain the initial root token. You will need access to your Kubernetes cluster that Vault has been deployed into in order to do this.
+To initialise the Vault, get a shell to one of the Vault pods running inside Kubernetes (typically this is done by using the `kubectl` command line tool).
+Once you have a shell into the pod, run the `vault operator init` command:
+
+```shell
+kubectl -n gitlab-managed-apps exec -it vault-0 sh
+/ $ vault operator init
+```
+
+This should give you your unseal keys and initial root token. Make sure to note these down
+and keep these safe as you will need them to unseal the Vault throughout its lifecycle.
+
 ### Install JupyterHub using GitLab CI
 
 > [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/40) in GitLab 12.8.
 
-Enable JupyterHub in the `.gitlab/managed-apps/config.yaml` file to install it:
+JupyterHub is installed using GitLab CI by defining configuration in
+`.gitlab/managed-apps/config.yaml` as follows:
 
 ```yaml
 jupyterhub:
@@ -764,33 +917,40 @@ jupyterhub:
   gitlabGroupWhitelist: []
 ```
 
-`gitlabProjectIdWhitelist` restricts GitLab authentication to only members of the specified projects. `gitlabGroupWhitelist` restricts GitLab authentication to only members of the specified groups. Specifying an empty array for both will allow any user on the GitLab instance to log in.
+In the configuration:
 
-JupyterHub is installed into the `gitlab-managed-apps` namespace of your
-cluster.
+- `gitlabProjectIdWhitelist` restricts GitLab authentication to only members of the specified projects.
+- `gitlabGroupWhitelist` restricts GitLab authentication to only members of the specified groups.
+- Specifying an empty array for both will allow any user on the GitLab instance to sign in.
 
-In order for JupyterHub to function, you must setup an [OAuth Application](../../integration/oauth_provider.md). Using the following values:
+JupyterHub is installed into the `gitlab-managed-apps` namespace of your cluster.
 
-- "Redirect URI" to `http://<JupyterHub Host>/hub/oauth_callback`
-- "Scope" to `api read_repository write_repository`
+For JupyterHub to function, you must set up an [OAuth Application](../../integration/oauth_provider.md).
+Set:
 
-In addition the following variables must be specified using [CI variables](../../ci/variables/README.md):
+- "Redirect URI" to `http://<JupyterHub Host>/hub/oauth_callback`.
+- "Scope" to `api read_repository write_repository`.
 
-- `JUPYTERHUB_PROXY_SECRET_TOKEN` will set [`proxy.secretToken`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#proxy-secrettoken). Generate this using `openssl rand -hex 32`.
-- `JUPYTERHUB_COOKIE_SECRET` will set [`hub.cookieSecret`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#hub-cookiesecret). Generate this using `openssl rand -hex 32`.
-- `JUPYTERHUB_HOST` is the hostname used for the installation (e.g., `jupyter.example.gitlab.com`).
-- `JUPYTERHUB_GITLAB_HOST` is the hostname of the GitLab instance used for authentication (e.g., `example.gitlab.com`).
-- `JUPYTERHUB_AUTH_CRYPTO_KEY` will set [`auth.state.cryptoKey`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#auth-state-cryptokey). Generate this using `openssl rand -hex 32`.
-- `JUPYTERHUB_AUTH_GITLAB_CLIENT_ID` the "Application ID" for the OAuth Application.
-- `JUPYTERHUB_AUTH_GITLAB_CLIENT_SECRET` the "Secret" for the OAuth Application.
+In addition, the following variables must be specified using [CI variables](../../ci/variables/README.md):
 
-By default JupyterHub will be installed using a
+| CI Variable                            | Description                                                                                                                                                         |
+|:---------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `JUPYTERHUB_PROXY_SECRET_TOKEN`        | Sets [`proxy.secretToken`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#proxy-secrettoken). Generate using `openssl rand -hex 32`.             |
+| `JUPYTERHUB_COOKIE_SECRET`             | Sets [`hub.cookieSecret`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#hub-cookiesecret). Generate using `openssl rand -hex 32`.               |
+| `JUPYTERHUB_HOST`                      | Hostname used for the installation. For example, `jupyter.gitlab.example.com`.                                                                                      |
+| `JUPYTERHUB_GITLAB_HOST`               | Hostname of the GitLab instance used for authentication. For example, `gitlab.example.com`.                                                                         |
+| `JUPYTERHUB_AUTH_CRYPTO_KEY`           | Sets [`auth.state.cryptoKey`](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html#auth-state-cryptokey). Generate using `openssl rand -hex 32`. |
+| `JUPYTERHUB_AUTH_GITLAB_CLIENT_ID`     | "Application ID" for the OAuth Application.                                                                                                                         |
+| `JUPYTERHUB_AUTH_GITLAB_CLIENT_SECRET` | "Secret" for the OAuth Application.                                                                                                                                 |
+
+By default, JupyterHub will be installed using a
 [default values file](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/blob/master/src/default-data/jupyterhub/values.yaml.gotmpl).
-You can customize the installation of JupyterHub by defining
-`.gitlab/managed-apps/jupyterhub/values.yaml` file in your cluster management
-project. Refer to the
-[chart reference](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html)
-for the available configuration options.
+You can customize the installation of JupyterHub by defining a
+`.gitlab/managed-apps/jupyterhub/values.yaml` file in your cluster management project.
+
+Refer to the
+[chart reference](https://zero-to-jupyterhub.readthedocs.io/en/stable/reference.html) for the
+available configuration options.
 
 ### Install Elastic Stack using GitLab CI
 
@@ -817,7 +977,31 @@ management project. Refer to the
 available configuration options.
 
 NOTE: **Note:**
-In this alpha implementation of installing Elastic Stack through CI, reading the environment pod logs through Elasticsearch is unsupported. This is supported if [installed via the UI](#elastic-stack).
+In this alpha implementation of installing Elastic Stack through CI, reading the environment logs through Elasticsearch is unsupported. This is supported if [installed via the UI](#elastic-stack).
+
+### Install Crossplane using GitLab CI
+
+> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/cluster-applications/-/merge_requests/68) in GitLab 12.9.
+
+Crossplane is installed using GitLab CI by defining configuration in
+`.gitlab/managed-apps/config.yaml`.
+
+The following configuration is required to install Crossplane using GitLab CI:
+
+```yaml
+Crossplane:
+  installed: true
+```
+
+Crossplane is installed into the `gitlab-managed-apps` namespace of your cluster.
+
+You can check the default [values.yaml](https://github.com/crossplane/crossplane/blob/master/cluster/charts/crossplane/values.yaml.tmpl) we set for this chart.
+
+You can customize the installation of Crossplane by defining
+`.gitlab/managed-apps/crossplane/values.yaml` file in your cluster
+management project. Refer to the
+[chart](https://github.com/crossplane/crossplane/tree/master/cluster/charts/crossplane#configuration) for the
+available configuration options. Note that this link points to the docs for the current development release, which may differ from the version you have installed. You can check out a specific version in the branch/tag switcher.
 
 ## Upgrading applications
 

@@ -121,10 +121,7 @@ Rails.application.routes.draw do
       draw :country
       draw :country_state
       draw :subscription
-
-      constraints(-> (*) { Gitlab::Analytics.any_features_enabled? }) do
-        draw :analytics
-      end
+      draw :analytics
     end
 
     if ENV['GITLAB_CHAOS_SECRET'] || Rails.env.development? || Rails.env.test?
@@ -136,6 +133,9 @@ Rails.application.routes.draw do
         get :kill
       end
     end
+
+    # Notification settings
+    resources :notification_settings, only: [:create, :update]
   end
 
   concern :clusterable do
@@ -183,9 +183,6 @@ Rails.application.routes.draw do
 
   # Spam reports
   resources :abuse_reports, only: [:new, :create]
-
-  # Notification settings
-  resources :notification_settings, only: [:create, :update]
 
   resources :groups, only: [:index, :new, :create] do
     post :preview_markdown

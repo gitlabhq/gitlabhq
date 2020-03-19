@@ -3,10 +3,10 @@
 module Gitlab
   class GitPostReceive
     include Gitlab::Identifier
-    attr_reader :project, :identifier, :changes, :push_options
+    attr_reader :container, :identifier, :changes, :push_options
 
-    def initialize(project, identifier, changes, push_options = {})
-      @project = project
+    def initialize(container, identifier, changes, push_options = {})
+      @container = container
       @identifier = identifier
       @changes = parse_changes(changes)
       @push_options = push_options
@@ -27,10 +27,10 @@ module Gitlab
     def includes_default_branch?
       # If the branch doesn't have a default branch yet, we presume the
       # first branch pushed will be the default.
-      return true unless project.default_branch.present?
+      return true unless container.default_branch.present?
 
       changes.branch_changes.any? do |change|
-        Gitlab::Git.branch_name(change[:ref]) == project.default_branch
+        Gitlab::Git.branch_name(change[:ref]) == container.default_branch
       end
     end
 

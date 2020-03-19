@@ -96,6 +96,50 @@ Read through [the global navigation documentation](global_nav.md) to understand:
 TBA
 -->
 
+## Pipelines
+
+The pipeline in the `gitlab-docs` project:
+
+- Tests changes to the docs site code.
+- Builds the Docker images used in various pipeline jobs.
+- Builds and deploys the docs site itself.
+- Generates the review apps when the `review-docs-deploy` job is triggered.
+
+### Rebuild the docs site Docker images
+
+Once a week on Mondays, a scheduled pipeline runs and rebuilds the Docker images
+used in various pipeline jobs, like `docs-lint`. The Docker image configuration files are
+located at <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/master/dockerfiles>.
+
+If you need to rebuild the Docker images immediately (must have maintainer level permissions):
+
+CAUTION: **Caution**
+If you change the dockerfile configuration and rebuild the images, you can break the master
+pipeline in the main `gitlab` repo as well as in `gitlab-docs`. Create an image with
+a different name first and test it to ensure you do not break the pipelines.
+
+1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI / CD > Pipelines**.
+1. Click the **Run Pipeline** button.
+1. See that a new pipeline is running. The jobs that build the images are in the first
+   stage, `build-images`. You can click the pipeline number to see the larger pipeline
+   graph, or click the first (`build-images`) stage in the mini pipeline graph to
+   expose the jobs that build the images.
+1. Click the **play** (**{play}**) button next to the images you want to rebuild.
+   - Normally, you do not need to rebuild the `image:gitlab-docs-base` image, as it
+     rarely changes. If it does need to be rebuilt, be sure to only run `image:docs-lint`
+     after it is finished rebuilding.
+
+### Deploy the docs site
+
+Every four hours a scheduled pipeline builds and deploys the docs site. The pipeline
+fetches the current docs from the main project's master branch, builds it with Nanoc
+and deploys it to <https://docs.gitlab.com>.
+
+If you need to build and deploy the site immediately (must have maintainer level permissions):
+
+1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI / CD > Schedules**.
+1. For the `Build docs.gitlab.com every 4 hours` scheduled pipeline, click the **play** (**{play}**) button.
+
 ## Using YAML data files
 
 The easiest way to achieve something similar to
@@ -186,7 +230,7 @@ for its search function. This is how it works:
 NOTE: **For GitLab employees:**
 The credentials to access the Algolia dashboard are stored in 1Password. If you
 want to receive weekly reports of the search usage, search the Google doc with
-title "Email, Slack, and GitLab Groups and Aliases", search for `docsearch`,
+title `Email, Slack, and GitLab Groups and Aliases`, search for `docsearch`,
 and add a comment with your email to be added to the alias that gets the weekly
 reports.
 

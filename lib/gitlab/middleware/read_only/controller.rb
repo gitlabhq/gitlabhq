@@ -90,12 +90,14 @@ module Gitlab
 
         # Overridden in EE module
         def whitelisted_routes
-          grack_route? || internal_route? || lfs_route? || compare_git_revisions_route? || sidekiq_route? || session_route? || graphql_query?
+          workhorse_passthrough_route? || internal_route? || lfs_route? || compare_git_revisions_route? || sidekiq_route? || session_route? || graphql_query?
         end
 
-        def grack_route?
+        # URL for requests passed through gitlab-workhorse to rails-web
+        # https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/12
+        def workhorse_passthrough_route?
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
-          return false unless
+          return false unless request.post? &&
             request.path.end_with?('.git/git-upload-pack', '.git/git-receive-pack')
 
           WHITELISTED_GIT_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])

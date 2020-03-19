@@ -16,12 +16,11 @@ import {
   GlButtonGroup,
 } from '@gitlab/ui';
 import AccessorUtils from '~/lib/utils/accessor';
-import Icon from '~/vue_shared/components/icon.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
 import { isEmpty } from 'lodash';
 
-export const tableDataClass = 'table-col d-flex d-sm-table-cell align-items-center';
+export const tableDataClass = 'table-col d-flex d-md-table-cell align-items-center';
 
 export default {
   FIRST_PAGE: 1,
@@ -36,7 +35,7 @@ export default {
       key: 'error',
       label: __('Error'),
       thClass: 'w-60p',
-      tdClass: `${tableDataClass} px-3`,
+      tdClass: `${tableDataClass} px-3 rounded-top`,
     },
     {
       key: 'events',
@@ -59,14 +58,19 @@ export default {
     {
       key: 'status',
       label: '',
-      tdClass: `${tableDataClass} text-right`,
+      tdClass: `table-col d-none d-md-table-cell align-items-center pl-md-0`,
     },
     {
       key: 'details',
-      tdClass: 'table-col d-sm-none d-flex align-items-center',
+      tdClass: 'table-col d-md-none d-flex align-items-center rounded-bottom bg-secondary',
       thClass: 'invisible w-0',
     },
   ],
+  statusFilters: {
+    unresolved: __('Unresolved'),
+    ignored: __('Ignored'),
+    resolved: __('Resolved'),
+  },
   sortFields: {
     last_seen: __('Last Seen'),
     first_seen: __('First Seen'),
@@ -83,7 +87,6 @@ export default {
     GlLoadingIcon,
     GlTable,
     GlFormInput,
-    Icon,
     GlPagination,
     TimeAgo,
     GlButtonGroup,
@@ -136,6 +139,7 @@ export default {
       'sortField',
       'recentSearches',
       'pagination',
+      'statusFilter',
       'cursor',
     ]),
     paginationRequired() {
@@ -169,6 +173,7 @@ export default {
       'fetchPaginatedResults',
       'updateStatus',
       'removeIgnoredResolvedErrors',
+      'filterByStatus',
     ]),
     setSearchText(text) {
       this.errorSearchQuery = text;
@@ -191,8 +196,15 @@ export default {
     isCurrentSortField(field) {
       return field === this.sortField;
     },
+    isCurrentStatusFilter(filter) {
+      return filter === this.statusFilter;
+    },
     getIssueUpdatePath(errorId) {
       return `/${this.projectPath}/-/error_tracking/${errorId}.json`;
+    },
+    filterErrors(status, label) {
+      this.filterValue = label;
+      return this.filterByStatus(status);
     },
     updateIssueStatus(errorId, status) {
       this.updateStatus({
@@ -209,7 +221,7 @@ export default {
   <div class="error-list">
     <div v-if="errorTrackingEnabled">
       <div class="row flex-column flex-sm-row align-items-sm-center row-top m-0 mt-sm-2 p-0 p-sm-3">
-        <div class="search-box flex-fill mr-sm-2 my-3 m-sm-0 p-3 p-sm-0">
+        <div class="search-box flex-fill mr-sm-2 my-3 m-sm-0 p-3 p-sm-0 bg-secondary">
           <div class="filtered-search-box mb-0">
             <gl-dropdown
               :text="__('Recent searches')"
@@ -260,11 +272,32 @@ export default {
         </div>
 
         <gl-dropdown
-          class="sort-control"
+          :text="$options.statusFilters[statusFilter]"
+          class="status-dropdown mr-2"
+          menu-class="dropdown"
+          :disabled="loading"
+        >
+          <gl-dropdown-item
+            v-for="(label, status) in $options.statusFilters"
+            :key="status"
+            @click="filterErrors(status, label)"
+          >
+            <span class="d-flex">
+              <gl-icon
+                class="flex-shrink-0 append-right-4"
+                :class="{ invisible: !isCurrentStatusFilter(status) }"
+                name="mobile-issue-close"
+              />
+              {{ label }}
+            </span>
+          </gl-dropdown-item>
+        </gl-dropdown>
+
+        <gl-dropdown
           :text="$options.sortFields[sortField]"
           left
           :disabled="loading"
-          menu-class="sort-dropdown"
+          menu-class="dropdown"
         >
           <gl-dropdown-item
             v-for="(label, field) in $options.sortFields"
@@ -272,7 +305,7 @@ export default {
             @click="sortByField(field)"
           >
             <span class="d-flex">
-              <icon
+              <gl-icon
                 class="flex-shrink-0 append-right-4"
                 :class="{ invisible: !isCurrentSortField(field) }"
                 name="mobile-issue-close"
@@ -288,25 +321,25 @@ export default {
       </div>
 
       <template v-else>
-        <h4 class="d-block d-sm-none my-3">{{ __('Open errors') }}</h4>
+        <h4 class="d-block d-md-none my-3">{{ __('Open errors') }}</h4>
 
         <gl-table
-          class="mt-3"
+          class="error-list-table mt-3"
           :items="errors"
           :fields="$options.fields"
           :show-empty="true"
           fixed
-          stacked="sm"
+          stacked="md"
           tbody-tr-class="table-row mb-4"
         >
           <template #head(error)>
-            <div class="d-none d-sm-block">{{ __('Open errors') }}</div>
+            <div class="d-none d-md-block">{{ __('Open errors') }}</div>
           </template>
           <template #head(events)="data">
-            <div class="text-sm-right">{{ data.label }}</div>
+            <div class="text-md-right">{{ data.label }}</div>
           </template>
           <template #head(users)="data">
-            <div class="text-sm-right">{{ data.label }}</div>
+            <div class="text-md-right">{{ data.label }}</div>
           </template>
 
           <template #cell(error)="errors">
@@ -328,7 +361,7 @@ export default {
           </template>
 
           <template #cell(lastSeen)="errors">
-            <div class="text-md-left text-right">
+            <div class="text-lg-left text-right">
               <time-ago :time="errors.item.lastSeen" class="text-secondary" />
             </div>
           </template>
@@ -348,9 +381,28 @@ export default {
           </template>
           <template #cell(details)="errors">
             <gl-button
+              category="primary"
+              variant="info"
+              block
+              class="mb-1 mt-2"
+              @click="updateIssueStatus(errors.item.id, 'resolved')"
+            >
+              {{ __('Resolve') }}
+            </gl-button>
+            <gl-button
+              category="secondary"
+              variant="default"
+              block
+              class="mb-2"
+              @click="updateIssueStatus(errors.item.id, 'ignored')"
+            >
+              {{ __('Ignore') }}
+            </gl-button>
+            <gl-button
               :href="getDetailsLink(errors.item.id)"
-              variant="outline-info"
-              class="d-block"
+              category="secondary"
+              variant="info"
+              class="d-block mb-2"
             >
               {{ __('More details') }}
             </gl-button>

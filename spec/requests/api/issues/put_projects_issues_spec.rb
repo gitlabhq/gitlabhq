@@ -4,8 +4,9 @@ require 'spec_helper'
 
 describe API::Issues do
   let_it_be(:user) { create(:user) }
+  let_it_be(:owner) { create(:owner) }
   let_it_be(:project, reload: true) do
-    create(:project, :public, creator_id: user.id, namespace: user.namespace)
+    create(:project, :public, creator_id: owner.id, namespace: owner.namespace)
   end
 
   let(:user2)             { create(:user) }
@@ -97,7 +98,7 @@ describe API::Issues do
           labels: 'label, label?, label&foo, ?, &'
         }
 
-      expect(response.status).to eq(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to include 'label'
       expect(json_response['labels']).to include 'label?'
       expect(json_response['labels']).to include 'label&foo'
@@ -112,7 +113,7 @@ describe API::Issues do
           labels: ['label', 'label?', 'label&foo, ?, &']
         }
 
-      expect(response.status).to eq(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to include 'label'
       expect(json_response['labels']).to include 'label?'
       expect(json_response['labels']).to include 'label&foo'
@@ -349,7 +350,7 @@ describe API::Issues do
     it 'allows special label names' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         params: { labels: 'label:foo, label-bar,label_bar,label/bar,label?bar,label&bar,?,&' }
-      expect(response.status).to eq(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to include 'label:foo'
       expect(json_response['labels']).to include 'label-bar'
       expect(json_response['labels']).to include 'label_bar'
@@ -363,7 +364,7 @@ describe API::Issues do
     it 'allows special label names with labels param as array' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         params: { labels: ['label:foo', 'label-bar', 'label_bar', 'label/bar,label?bar,label&bar,?,&'] }
-      expect(response.status).to eq(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['labels']).to include 'label:foo'
       expect(json_response['labels']).to include 'label-bar'
       expect(json_response['labels']).to include 'label_bar'
@@ -400,15 +401,49 @@ describe API::Issues do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['state']).to eq 'opened'
     end
+  end
 
-    context 'when an admin or owner makes the request' do
+  describe 'PUT /projects/:id/issues/:issue_iid to update updated_at param' do
+    context 'when reporter makes request' do
       it 'accepts the update date to be set' do
         update_time = 2.weeks.ago
+
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
-          params: { labels: 'label3', state_event: 'close', updated_at: update_time }
+            params: { title: 'some new title', updated_at: update_time }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['labels']).to include 'label3'
+        expect(json_response['title']).to include 'some new title'
+        expect(Time.parse(json_response['updated_at'])).not_to be_like_time(update_time)
+      end
+    end
+
+    context 'when admin or owner makes the request' do
+      it 'not allow to set null for updated_at' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", owner), params: { updated_at: nil }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'not allow to set blank for updated_at' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", owner), params: { updated_at: '' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'not allow to set invalid format for updated_at' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", owner), params: { updated_at: 'invalid-format' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'accepts the update date to be set' do
+        update_time = 2.weeks.ago
+        put api("/projects/#{project.id}/issues/#{issue.iid}", owner),
+            params: { title: 'some new title', updated_at: update_time }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['title']).to include 'some new title'
+
         expect(Time.parse(json_response['updated_at'])).to be_like_time(update_time)
       end
     end

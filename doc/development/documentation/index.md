@@ -8,7 +8,7 @@ GitLab's documentation is [intended as the single source of truth (SSOT)](https:
 
 In addition to this page, the following resources can help you craft and contribute documentation:
 
-- [Style Guide](styleguide.md) - What belongs in the docs, language guidelines, Markdown standards to follow, and more.
+- [Style Guide](styleguide.md) - What belongs in the docs, language guidelines, Markdown standards to follow, links, and more.
 - [Structure and template](structure.md) - Learn the typical parts of a doc page and how to write each one.
 - [Documentation process](workflow.md).
 - [Markdown Guide](../../user/markdown.md) - A reference for all Markdown syntax supported by GitLab.
@@ -16,7 +16,7 @@ In addition to this page, the following resources can help you craft and contrib
 
 ## Source files and rendered web locations
 
-Documentation for GitLab, GitLab Runner, Omnibus GitLab and Charts is published to <https://docs.gitlab.com>. Documentation for GitLab is also published within the application at `/help` on the domain of the GitLab instance.
+Documentation for GitLab, GitLab Runner, Omnibus GitLab, and Charts is published to <https://docs.gitlab.com>. Documentation for GitLab is also published within the application at `/help` on the domain of the GitLab instance.
 At `/help`, only help for your current edition and version is included. Help for other versions is available at <https://docs.gitlab.com/archives/>.
 
 The source of the documentation exists within the codebase of each GitLab application in the following repository locations:
@@ -116,8 +116,9 @@ Things to note:
 - The above `git grep` command will search recursively in the directory you run
   it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
   and will print the file and the line where this file is mentioned.
-  You may ask why the two greps. Since we use relative paths to link to
-  documentation, sometimes it might be useful to search a path deeper.
+  You may ask why the two greps. Since [we use relative paths to link to
+  documentation](styleguide.md#links)
+  , sometimes it might be useful to search a path deeper.
 - The `*.md` extension is not used when a document is linked to GitLab's
   built-in help page, that's why we omit it in `git grep`.
 - Use the checklist on the "Change documentation location" MR description template.
@@ -393,15 +394,14 @@ merge request with new or changed docs is submitted, are:
 - [`docs lint`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L48):
   Runs several tests on the content of the docs themselves:
   - [`lint-doc.sh` script](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/lint-doc.sh)
-    checks that:
+    runs the following checks and linters:
     - All cURL examples use the long flags (ex: `--header`, not `-H`).
     - The `CHANGELOG.md` does not contain duplicate versions.
     - No files in `doc/` are executable.
     - No new `README.md` was added.
-  - [markdownlint](#markdownlint).
-  - Nanoc tests, which you can [run locally](#previewing-the-changes-live) before
-    pushing to GitLab by executing the command `bundle exec nanoc check internal_links`
-    (or `internal_anchors`) on your local [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory:
+    - [markdownlint](#markdownlint).
+    - [Vale](#vale).
+  - Nanoc tests:
     - [`internal_links`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L67)
       checks that all internal links (ex: `[link](../index.md)`) are valid.
     - [`internal_anchors`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L69)
@@ -409,6 +409,60 @@ merge request with new or changed docs is submitted, are:
       are valid.
 - If any code or the `doc/README.md` file is changed, a full pipeline will run, which
   runs tests for [`/help`](#gitlab-help-tests).
+
+### Running tests & lint checks locally
+
+Apart from [previewing your changes locally](#previewing-the-changes-live), you can also run all lint checks
+and Nanoc tests locally.
+
+#### Nanoc tests
+
+To execute Nanoc tests locally:
+
+1. Navigate to the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
+1. Run:
+
+   ```shell
+   # Check for broken internal links
+   bundle exec nanoc check internal_links
+
+   # Check for broken external links (might take a lot of time to complete).
+   # This test is set to be allowed to fail and is run only in the gitlab-docs project CI
+   bundle exec nanoc check internal_anchors
+   ```
+
+#### Lint checks
+
+Lint checks are performed by the [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/lint-doc.sh)
+script and can be executed as follows:
+
+1. Navigate to the `gitlab` directory.
+1. Run:
+
+   ```shell
+   MD_DOC_PATH=path/to/my_doc.md scripts/lint-doc.sh
+   ```
+
+Where `MD_DOC_PATH` points to the file or directory you would like to run lint checks for.
+If you omit it completely, it will default to the `doc/` directory.
+The output should be similar to:
+
+```
+=> Linting documents at path /path/to/gitlab as <user>...
+=> Checking for cURL short options...
+=> Checking for CHANGELOG.md duplicate entries...
+=> Checking /path/to/gitlab/doc for executable permissions...
+=> Checking for new README.md files...
+=> Linting markdown style...
+=> Linting prose...
+✔ 0 errors, 0 warnings and 0 suggestions in 1 file.
+✔ Linting passed
+```
+
+Note that this requires you to either have the required lint tools installed on your machine,
+or a working Docker installation, in which case an image with these tools pre-installed will be used.
+
+For more information on available linters refer to the [linting](#linting) section.
 
 ### Linting
 

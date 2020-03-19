@@ -5,22 +5,6 @@ if Labkit::Tracing.enabled?
     config.middleware.insert_after Labkit::Middleware::Rack, ::Labkit::Tracing::RackMiddleware
   end
 
-  # Instrument the Sidekiq client
-  Sidekiq.configure_client do |config|
-    config.client_middleware do |chain|
-      chain.add Labkit::Tracing::Sidekiq::ClientMiddleware
-    end
-  end
-
-  # Instrument Sidekiq server calls when running Sidekiq server
-  if Gitlab::Runtime.sidekiq?
-    Sidekiq.configure_server do |config|
-      config.server_middleware do |chain|
-        chain.add Labkit::Tracing::Sidekiq::ServerMiddleware
-      end
-    end
-  end
-
   # Instrument Redis
   Labkit::Tracing::Redis.instrument
 

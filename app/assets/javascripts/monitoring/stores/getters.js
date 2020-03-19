@@ -11,7 +11,7 @@ const metricsIdsInPanel = panel =>
  * states in all the metric in the dashboard or group.
  */
 export const getMetricStates = state => groupKey => {
-  let groups = state.dashboard.panel_groups;
+  let groups = state.dashboard.panelGroups;
   if (groupKey) {
     groups = groups.filter(group => group.key === groupKey);
   }
@@ -43,7 +43,7 @@ export const getMetricStates = state => groupKey => {
  * filtered by group key.
  */
 export const metricsWithData = state => groupKey => {
-  let groups = state.dashboard.panel_groups;
+  let groups = state.dashboard.panelGroups;
   if (groupKey) {
     groups = groups.filter(group => group.key === groupKey);
   }

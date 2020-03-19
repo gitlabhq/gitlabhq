@@ -77,6 +77,18 @@ describe Projects::MergeRequestsController do
         end
       end
 
+      context 'when diff is missing' do
+        render_views
+
+        it 'renders merge request page' do
+          merge_request.merge_request_diff.destroy
+
+          go(format: :html)
+
+          expect(response).to be_successful
+        end
+      end
+
       it "renders merge request page" do
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
 
@@ -962,6 +974,136 @@ describe Projects::MergeRequestsController do
           }
         }
       end
+
+      it 'returns no content' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(response.body).to be_empty
+      end
+    end
+  end
+
+  describe 'GET coverage_reports' do
+    let(:merge_request) do
+      create(:merge_request,
+        :with_merge_request_pipeline,
+        target_project: project,
+        source_project: project)
+    end
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+        :success,
+        project: merge_request.source_project,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha)
+    end
+
+    before do
+      allow_any_instance_of(MergeRequest)
+        .to receive(:find_coverage_reports)
+        .and_return(report)
+
+      allow_any_instance_of(MergeRequest)
+        .to receive(:actual_head_pipeline)
+        .and_return(pipeline)
+    end
+
+    subject do
+      get :coverage_reports, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid
+      },
+      format: :json
+    end
+
+    describe 'permissions on a public project with private CI/CD' do
+      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:report) { { status: :parsed, data: [] } }
+
+      context 'while signed out' do
+        before do
+          sign_out(user)
+        end
+
+        it 'responds with a 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response.body).to be_blank
+        end
+      end
+
+      context 'while signed in as an unrelated user' do
+        before do
+          sign_in(create(:user))
+        end
+
+        it 'responds with a 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response.body).to be_blank
+        end
+      end
+    end
+
+    context 'when pipeline has jobs with coverage reports' do
+      before do
+        allow_any_instance_of(MergeRequest)
+          .to receive(:has_coverage_reports?)
+          .and_return(true)
+      end
+
+      context 'when processing coverage reports is in progress' do
+        let(:report) { { status: :parsing } }
+
+        it 'sends polling interval' do
+          expect(Gitlab::PollingInterval).to receive(:set_header)
+
+          subject
+        end
+
+        it 'returns 204 HTTP status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'when processing coverage reports is completed' do
+        let(:report) { { status: :parsed, data: pipeline.coverage_reports } }
+
+        it 'returns coverage reports' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq({ 'files' => {} })
+        end
+      end
+
+      context 'when user created corrupted coverage reports' do
+        let(:report) { { status: :error, status_reason: 'Failed to parse coverage reports' } }
+
+        it 'does not send polling interval' do
+          expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+          subject
+        end
+
+        it 'returns 400 HTTP status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response).to eq({ 'status_reason' => 'Failed to parse coverage reports' })
+        end
+      end
+    end
+
+    context 'when pipeline does not have jobs with coverage reports' do
+      let(:report) { double }
 
       it 'returns no content' do
         subject

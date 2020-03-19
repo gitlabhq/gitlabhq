@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ObjectPool
-  class JoinWorker
+  class JoinWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
     include ObjectPoolQueue
 

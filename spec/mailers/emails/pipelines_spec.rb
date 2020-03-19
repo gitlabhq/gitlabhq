@@ -6,7 +6,7 @@ require 'email_spec'
 describe Emails::Pipelines do
   include EmailSpec::Matchers
 
-  set(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
 
   shared_examples_for 'correct pipeline information' do
     it 'has a correct information' do
@@ -104,6 +104,19 @@ describe Emails::Pipelines do
     it_behaves_like 'correct pipeline information' do
       let(:status) { 'failed' }
       let(:status_text) { 'Your pipeline has failed.' }
+    end
+  end
+
+  describe '#pipeline_fixed_email' do
+    subject { Notify.pipeline_fixed_email(pipeline, pipeline.user.try(:email)) }
+
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: ref, sha: sha) }
+    let(:ref) { 'master' }
+    let(:sha) { project.commit(ref).sha }
+
+    it_behaves_like 'correct pipeline information' do
+      let(:status) { 'been fixed' }
+      let(:status_text) { 'Your pipeline has been fixed!' }
     end
   end
 end

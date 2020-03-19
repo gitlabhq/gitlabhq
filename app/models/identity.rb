@@ -25,7 +25,7 @@ class Identity < ApplicationRecord
 
   def self.normalize_uid(provider, uid)
     if Gitlab::Auth::OAuth::Provider.ldap_provider?(provider)
-      Gitlab::Auth::LDAP::Person.normalize_dn(uid)
+      Gitlab::Auth::Ldap::Person.normalize_dn(uid)
     else
       uid.to_s
     end

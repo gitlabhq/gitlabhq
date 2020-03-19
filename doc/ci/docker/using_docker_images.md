@@ -12,7 +12,7 @@ run applications in independent "containers" that are run within a single Linux
 instance. [Docker Hub][hub] has a rich database of pre-built images that can be
 used to test and build your applications.
 
-Docker, when used with GitLab CI, runs each job in a separate and isolated
+When used with GitLab CI, Docker runs each job in a separate and isolated
 container using the predefined image that is set up in
 [`.gitlab-ci.yml`](../yaml/README.md).
 
@@ -397,7 +397,7 @@ Before the new extended Docker configuration options, you would need to create
 your own image based on the `super/sql:latest` image, add the default command,
 and then use it in job's configuration, like:
 
-```Dockerfile
+```dockerfile
 # my-super-sql:latest image's Dockerfile
 
 FROM super/sql:latest
@@ -489,7 +489,7 @@ Look for the `[runners.docker]` section:
 
 ```toml
 [runners.docker]
-  image = "ruby:2.1"
+  image = "ruby:latest"
   services = ["mysql:latest", "postgres:latest"]
 ```
 
@@ -588,7 +588,7 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
   # Example output to copy
   bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
   ```
-  
+
   Create the Docker JSON configuration content as follows:
 
   ```json
@@ -693,7 +693,7 @@ To configure credentials store, follow these steps:
        }
      ```
 
-   - Or, if you are running self-hosted Runners, add the above JSON to
+   - Or, if you are running self-managed Runners, add the above JSON to
      `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner will read this config file
      and will use the needed helper for this specific repository.
 
@@ -726,7 +726,7 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
      }
      ```
 
-   - Or, if you are running self-hosted Runners,
+   - Or, if you are running self-managed Runners,
      add the above JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.
      GitLab Runner will read this config file and will use the needed helper for this
      specific repository.

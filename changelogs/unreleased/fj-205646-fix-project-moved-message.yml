@@ -1,0 +1,5 @@
+---
+title: Fix project moved message after git operation
+merge_request: 27341
+author:
+type: fixed

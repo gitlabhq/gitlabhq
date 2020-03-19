@@ -8,6 +8,7 @@ require 'active_record/railtie'
 require 'action_controller/railtie'
 require 'action_view/railtie'
 require 'action_mailer/railtie'
+require 'action_cable/engine'
 require 'rails/test_unit/railtie'
 
 Bundler.require(*Rails.groups)
@@ -258,7 +259,7 @@ module Gitlab
     # Full list of options:
     # https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html#method-c-new
     caching_config_hash = Gitlab::Redis::Cache.params
-    caching_config_hash[:compress] = false
+    caching_config_hash[:compress] = Gitlab::Utils.to_boolean(ENV.fetch('ENABLE_REDIS_CACHE_COMPRESSION', '1'))
     caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
     caching_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     if Gitlab::Runtime.multi_threaded?
@@ -283,6 +284,20 @@ module Gitlab
 
     config.generators do |g|
       g.factory_bot false
+    end
+
+    # This empty initializer forces the :let_zeitwerk_take_over initializer to run before we load
+    # initializers in config/initializers. This is done because autoloading before Zeitwerk takes
+    # over is deprecated but our initializers do a lot of autoloading.
+    # See https://gitlab.com/gitlab-org/gitlab/issues/197346 for more details
+    initializer :move_initializers, before: :load_config_initializers, after: :let_zeitwerk_take_over do
+    end
+
+    # We need this for initializers that need to be run before Zeitwerk is loaded
+    initializer :before_zeitwerk, before: :let_zeitwerk_take_over, after: :prepend_helpers_path do
+      Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].sort.each do |initializer|
+        load_config_initializer(initializer)
+      end
     end
 
     config.after_initialize do

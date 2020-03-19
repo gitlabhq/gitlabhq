@@ -8,16 +8,16 @@ Epics are available only in Ultimate. If epics feature is not available a `403` 
 
 ## List issues for an epic
 
-Gets all issues that are assigned to an epic and the authenticated user has  access to.
+Gets all issues that are assigned to an epic and the authenticated user has access to.
 
-```
+```plaintext
 GET /groups/:id/epics/:epic_iid/issues
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
-| `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
+| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5/issues/
@@ -106,15 +106,15 @@ Example response:
 
 Creates an epic - issue association. If the issue in question belongs to another epic it is unassigned from that epic.
 
-```
+```plaintext
 POST /groups/:id/epics/:epic_iid/issues/:issue_id
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
-| `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
-| `issue_id`          | integer/string   | yes        | The ID  of the issue.          |
+| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
+| `issue_id`          | integer/string   | yes        | The ID of the issue.          |
 
 ```shell
 curl --header POST "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5/issues/55
@@ -212,15 +212,15 @@ Example response:
 
 Removes an epic - issue association.
 
-```
+```plaintext
 DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 ```
 
 | Attribute           | Type             | Required   | Description                                                                                          |
 | ------------------- | ---------------- | ---------- | -----------------------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
-| `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.                |
-| `epic_issue_id`     | integer/string   | yes        | The ID  of the issue - epic association.     |
+| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.                |
+| `epic_issue_id`     | integer/string   | yes        | The ID of the issue - epic association.     |
 
 ```shell
 curl --header DELETE "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5/issues/11
@@ -318,14 +318,14 @@ Example response:
 
 Updates an epic - issue association.
 
-```
+```plaintext
 PUT /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 ```
 
 | Attribute           | Type             | Required   | Description                                                                                          |
 | ------------------- | ---------------- | ---------- | -----------------------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
-| `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.                |
+| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.                |
 | `epic_issue_id`     | integer/string   | yes        | The ID of the issue - epic association.     |
 | `move_before_id`    | integer/string   | no         | The ID of the issue - epic association that should be placed before the link in the question.     |
 | `move_after_id`     | integer/string   | no         | The ID of the issue - epic association that should be placed after the link in the question.     |

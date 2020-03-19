@@ -4,17 +4,9 @@ description: "Set and configure Git protocol v2"
 
 # Configuring Git Protocol v2
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/46555) in GitLab 11.4.
-> Temporarily disabled (see [confidential issue](../user/project/issues/confidential_issues.md)
-> `https://gitlab.com/gitlab-org/gitlab-foss/issues/55769`) in GitLab 11.5.8, 11.6.6, 11.7.1, and 11.8+.
-
-NOTE: **Note:**
-Git protocol v2 support has been temporarily disabled
-because a feature used to hide certain internal references does not function when it
-is enabled, and this has a security impact. Once this problem has been resolved,
-protocol v2 support will be re-enabled. For more information, see the
-[confidential issue](../user/project/issues/confidential_issues.md)
-`https://gitlab.com/gitlab-org/gitlab-foss/issues/55769`.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/46555) in GitLab 11.4.
+> - [Temporarily disabled](https://gitlab.com/gitlab-org/gitlab-foss/issues/55769) in GitLab 11.5.8, 11.6.6, 11.7.1, and 11.8+.
+> - [Re-enabled](https://gitlab.com/gitlab-org/gitlab/issues/27828) in GitLab 12.8.
 
 Git protocol v2 improves the v1 wire protocol in several ways and is
 enabled by default in GitLab for HTTP requests. In order to enable SSH,
@@ -43,10 +35,14 @@ the SSH configuration of your server by adding the line below to the `/etc/ssh/s
 AcceptEnv GIT_PROTOCOL
 ```
 
-Once configured, restart the SSH daemon. In Ubuntu, run:
+Once configured, restart the SSH daemon for the change to take effect:
 
 ```shell
-sudo service ssh restart
+# CentOS 6 / RHEL 6
+sudo service sshd restart
+
+# All other supported distributions
+sudo systemctl restart ssh
 ```
 
 ## Instructions
@@ -110,3 +106,15 @@ debug1: Sending env GIT_PROTOCOL = version=2
 
 For the server side, you can use the [same examples from HTTP](#http-connections), changing the
 URL to use SSH.
+
+### Observe Git protocol version of connections
+
+To observe what Git protocol versions are being used in a
+production environment, you can use the following Prometheus query:
+
+```prometheus
+sum(rate(gitaly_git_protocol_requests_total[1m])) by (grpc_method,git_protocol,grpc_service)
+```
+
+You can view what Git protocol versions are being used on GitLab.com at
+<https://dashboards.gitlab.com/d/pqlQq0xik/git-protocol-versions>.

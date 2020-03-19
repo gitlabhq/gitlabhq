@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # This spec is a lightweight version of:
-#   * project_tree_restorer_spec.rb
+#   * project/tree_restorer_spec.rb
 #
 # In depth testing is being done in the above specs.
 # This spec tests that restore project works
@@ -25,7 +25,7 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
     described_class.new(
       user:             user,
       shared:           shared,
-      tree_hash:        tree_hash,
+      relation_reader:  relation_reader,
       importable:       importable,
       object_builder:   object_builder,
       members_mapper:   members_mapper,
@@ -36,14 +36,7 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
 
   subject { relation_tree_restorer.restore }
 
-  context 'when restoring a project' do
-    let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/project.json' }
-    let(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
-    let(:object_builder) { Gitlab::ImportExport::GroupProjectObjectBuilder }
-    let(:relation_factory) { Gitlab::ImportExport::ProjectRelationFactory }
-    let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
-    let(:tree_hash) { importable_hash }
-
+  shared_examples 'import project successfully' do
     it 'restores project tree' do
       expect(subject).to eq(true)
     end
@@ -64,6 +57,20 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
         expect(project.project_badges.count).to eq(2)
         expect(project.snippets.count).to eq(1)
       end
+    end
+  end
+
+  context 'when restoring a project' do
+    let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/project.json' }
+    let(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
+    let(:object_builder) { Gitlab::ImportExport::Project::ObjectBuilder }
+    let(:relation_factory) { Gitlab::ImportExport::Project::RelationFactory }
+    let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
+
+    context 'using legacy reader' do
+      let(:relation_reader) { Gitlab::ImportExport::JSON::LegacyReader::File.new(path, reader.project_relation_names) }
+
+      it_behaves_like 'import project successfully'
     end
   end
 end

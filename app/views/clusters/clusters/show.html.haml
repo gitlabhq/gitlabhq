@@ -5,8 +5,6 @@
 - manage_prometheus_path = edit_project_service_path(@cluster.project, 'prometheus') if @project
 - cluster_environments_path = clusterable.environments_cluster_path(@cluster)
 
-- expanded = expanded_by_default?
-
 - status_path = clusterable.cluster_status_cluster_path(@cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster)
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
   install_helm_path: clusterable.install_applications_cluster_path(@cluster, :helm),
@@ -44,7 +42,19 @@
   %h4= @cluster.name
   = render 'banner'
 
-  - if cluster_environments_path.present?
-    = render_if_exists 'clusters/clusters/cluster_environments', expanded: expanded
-  - else
-    = render 'configure', expanded: expanded
+  - if cluster_created?(@cluster)
+    .js-toggle-container
+      %ul.nav-links.mobile-separator.nav.nav-tabs{ role: 'tablist' }
+        = render 'details_tab'
+        = render_if_exists 'clusters/clusters/environments_tab'
+        = render_if_exists 'clusters/clusters/health_tab'
+        = render 'applications_tab'
+        = render 'advanced_settings_tab'
+
+      .tab-content.py-3
+        .tab-pane.active{ role: 'tabpanel' }
+          = render_cluster_info_tab_content(params[:tab], expanded_by_default?)
+
+
+
+

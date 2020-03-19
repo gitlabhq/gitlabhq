@@ -9,9 +9,12 @@
 
 <!-- Outline the tasks with issues that you need evaluate as a part of the implementation issue -->
 
-- [ ] Add task
-- [ ] Add task
-- [ ] Add task
+- [ ] Determine feasibility of the feature
+- [ ] Create issue for implementation or update existing implementation issue description with implementation proposal 
+- [ ] Set weight on implementation issue
+- [ ] If weight is greater than 5, break issue into smaller issues
+- [ ] Add task 
+- [ ] Add task 
 
 ### Risks and Implementation Considerations 
 

@@ -41,7 +41,7 @@ for Push and Tag events, but we never display commits.
 
 **Request header**:
 
-```
+```plaintext
 X-Gitlab-Event: System Hook
 ```
 
@@ -296,7 +296,7 @@ If the user is blocked via LDAP, `state` will be `ldap_blocked`.
 }
 ```
 
-`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab-foss/issues/39675>.
+`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/issues/20011>.
 
 **Group removed:**
 
@@ -313,7 +313,7 @@ If the user is blocked via LDAP, `state` will be `ldap_blocked`.
 }
 ```
 
-`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab-foss/issues/39675>.
+`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/issues/20011>.
 
 **Group renamed:**
 
@@ -333,7 +333,7 @@ If the user is blocked via LDAP, `state` will be `ldap_blocked`.
 }
 ```
 
-`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab-foss/issues/39675>.
+`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab/issues/20011>.
 
 **New Group Member:**
 
@@ -396,7 +396,7 @@ It generates one event per modified branch.
 
 **Request header**:
 
-```
+```plaintext
 X-Gitlab-Event: System Hook
 ```
 
@@ -446,8 +446,8 @@ X-Gitlab-Event: System Hook
       "timestamp": "2013-05-13T18:18:08+00:00",
       "url": "https://dev.gitlab.org/gitlab/gitlabhq/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
       "author": {
-        "name": "Dmitriy Zaporozhets",
-        "email": "dmitriy.zaporozhets@gmail.com"
+        "name": "Example User",
+        "email": "user@example.com"
       }
     }
   ],
@@ -462,7 +462,7 @@ It generates one event per modified tag.
 
 **Request header**:
 
-```
+```plaintext
 X-Gitlab-Event: System Hook
 ```
 
@@ -516,7 +516,7 @@ updated/merged/closed or a commit is added in the source branch.
 
 **Request header**:
 
-```
+```plaintext
 X-Gitlab-Event: System Hook
 ```
 
@@ -643,7 +643,7 @@ Triggered only once when you push to the repository (including tags).
 
 **Request header**:
 
-```
+```plaintext
 X-Gitlab-Event: System Hook
 ```
 

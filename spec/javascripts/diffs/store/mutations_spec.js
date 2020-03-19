@@ -123,6 +123,17 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('SET_COVERAGE_DATA', () => {
+    it('should set coverage data properly', () => {
+      const state = { coverageFiles: {} };
+      const coverage = { 'app.js': { '1': 0, '2': 1 } };
+
+      mutations[types.SET_COVERAGE_DATA](state, coverage);
+
+      expect(state.coverageFiles).toEqual(coverage);
+    });
+  });
+
   describe('SET_DIFF_VIEW_TYPE', () => {
     it('should set diff view type properly', () => {
       const state = {};
@@ -167,7 +178,7 @@ describe('DiffsStoreMutations', () => {
         highlighted_diff_lines: [],
         parallel_diff_lines: [],
       };
-      const state = { diffFiles: [diffFile] };
+      const state = { diffFiles: [diffFile], diffViewType: 'viewType' };
       const lines = [{ old_line: 1, new_line: 1 }];
 
       const findDiffFileSpy = spyOnDependency(mutations, 'findDiffFile').and.returnValue(diffFile);
@@ -195,6 +206,7 @@ describe('DiffsStoreMutations', () => {
       expect(addContextLinesSpy).toHaveBeenCalledWith({
         inlineLines: diffFile.highlighted_diff_lines,
         parallelLines: diffFile.parallel_diff_lines,
+        diffViewType: 'viewType',
         contextLines: options.contextLines,
         bottom: options.params.bottom,
         lineNumbers: options.lineNumbers,

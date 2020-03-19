@@ -151,6 +151,7 @@ pre.code,
   &:not(.diff-expanded) + .diff-expanded,
   &.diff-expanded + .line_holder:not(.diff-expanded) {
     > .diff-line-num,
+    > .line-coverage,
     > .line_content {
       border-top: 1px solid $white-expanded-border;
     }
@@ -158,6 +159,7 @@ pre.code,
 
   &.diff-expanded {
     > .diff-line-num,
+    > .line-coverage,
     > .line_content {
       background: $white-expanded-bg;
       border-color: $white-expanded-bg;
@@ -191,6 +193,22 @@ pre.code,
 
     &.match {
       @include match-line;
+    }
+
+    &.hll:not(.empty-cell) {
+      background-color: $line-select-yellow;
+    }
+  }
+
+  .line-coverage {
+    @include line-coverage-border-color($green-500, $orange-500);
+
+    &.old {
+      background-color: $line-removed;
+    }
+
+    &.new {
+      background-color: $line-added;
     }
 
     &.hll:not(.empty-cell) {

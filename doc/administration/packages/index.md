@@ -119,6 +119,9 @@ upload packages:
    }
    ```
 
+   NOTE: **Note:**
+   Some build tools, like Gradle, must make `HEAD` requests to Amazon S3 to pull a dependency’s metadata. The `gitlab_rails['packages_object_store_proxy_download']` property must be set to `true`. Without this setting, GitLab won't act as a proxy to the Amazon S3 service, and will instead return the signed URL. This will cause a `HTTP 403 Forbidden` response, since Amazon S3 expects a signed URL.
+
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 

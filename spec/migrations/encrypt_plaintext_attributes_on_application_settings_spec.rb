@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20191120115530_encrypt_plaintext_attributes_on_application_settings.rb')
 
-describe EncryptPlaintextAttributesOnApplicationSettings, :migration do
+describe EncryptPlaintextAttributesOnApplicationSettings do
   let(:migration) { described_class.new }
   let(:application_settings) { table(:application_settings) }
   let(:plaintext) { 'secret-token' }

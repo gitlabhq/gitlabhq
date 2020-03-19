@@ -18,7 +18,6 @@
 module WithUploads
   extend ActiveSupport::Concern
   include FastDestroyAll::Helpers
-  include FeatureGate
 
   # Currently there is no simple way how to select only not-mounted
   # uploads, it should be all FileUploaders so we select them by

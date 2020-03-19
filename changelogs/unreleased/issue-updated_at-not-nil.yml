@@ -1,0 +1,5 @@
+---
+title: Add validation for updated_at parameter in update Issue API
+merge_request: 25201
+author: Filip Stybel
+type: fixed

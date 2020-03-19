@@ -103,7 +103,7 @@ graph RL
   For complex Vuex mutations, you should separate the tests from other parts of the Vuex store to simplify problem-solving.
 
 #### When *not* to use unit tests
-  
+
 - **Non-exported functions or classes**:
   Anything not exported from a module can be considered private or an implementation detail, and doesn't need to be tested.
 - **Constants**:
@@ -200,7 +200,7 @@ graph RL
 - **All server requests**:
   Similar to unit tests, when running component tests, the backend may not be reachable, so all outgoing requests need to be mocked.
 - **Asynchronous background operations**:
-  Similar to unit tests, background operations cannot be stopped or waited on, so they will continue running in the following tests and cause side effects.
+  Similar to unit tests, background operations cannot be stopped or waited on. This means they will continue running in the following tests and cause side effects.
 - **Child components**:
   Every component is tested individually, so child components are mocked.
   See also [`shallowMount()`](https://vue-test-utils.vuejs.org/api/#shallowmount)
@@ -314,7 +314,7 @@ controller.instance_variable_set(:@user, user)
 
 and use methods which are deprecated in Rails 5 ([#23768]).
 
-[#23768]: https://gitlab.com/gitlab-org/gitlab-foss/issues/23768
+[#23768]: https://gitlab.com/gitlab-org/gitlab/-/issues/16260
 
 ### About Karma
 

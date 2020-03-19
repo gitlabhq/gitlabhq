@@ -371,8 +371,11 @@
 }
 
 .btn-loading {
-  &:not(.disabled) .fa {
-    display: none;
+  &:not(.disabled) {
+    .fa,
+    .spinner {
+      display: none;
+    }
   }
 
   .fa {

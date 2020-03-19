@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 describe 'Root explore' do
-  set(:public_project) { create(:project, :public) }
-  set(:archived_project) { create(:project, :archived) }
-  set(:internal_project) { create(:project, :internal) }
-  set(:private_project) { create(:project, :private) }
+  let_it_be(:public_project) { create(:project, :public) }
+  let_it_be(:archived_project) { create(:project, :archived) }
+  let_it_be(:internal_project) { create(:project, :internal) }
+  let_it_be(:private_project) { create(:project, :private) }
 
   before do
     allow(Gitlab).to receive(:com?).and_return(true)
   end
 
   context 'when logged in' do
-    set(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
     before do
       sign_in(user)

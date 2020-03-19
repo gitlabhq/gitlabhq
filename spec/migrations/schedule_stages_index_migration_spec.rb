@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180420080616_schedule_stages_index_migration')
 
-describe ScheduleStagesIndexMigration, :migration do
+describe ScheduleStagesIndexMigration do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:pipelines) { table(:ci_pipelines) }

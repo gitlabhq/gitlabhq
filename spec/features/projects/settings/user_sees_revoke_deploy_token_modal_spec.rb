@@ -11,7 +11,7 @@ describe 'Repository Settings > User sees revoke deploy token modal', :js do
   before do
     project.add_role(user, role)
     sign_in(user)
-    visit(project_settings_repository_path(project))
+    visit(project_settings_ci_cd_path(project))
     click_link('Revoke')
   end
 

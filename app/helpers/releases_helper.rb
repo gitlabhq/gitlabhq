@@ -17,7 +17,9 @@ module ReleasesHelper
       project_id: @project.id,
       illustration_path: illustration,
       documentation_path: help_page
-    }
+    }.tap do |data|
+      data[:new_release_path] = new_project_tag_path(@project) if can?(current_user, :create_release, @project)
+    end
   end
 
   def data_for_edit_release_page

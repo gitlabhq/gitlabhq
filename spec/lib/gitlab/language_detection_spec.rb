@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Gitlab::LanguageDetection do
-  set(:project) { create(:project, :repository) }
-  set(:ruby) { create(:programming_language, name: 'Ruby') }
-  set(:haskell) { create(:programming_language, name: 'Haskell') }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
+  let_it_be(:haskell) { create(:programming_language, name: 'Haskell') }
   let(:repository) { project.repository }
   let(:detection) do
     [{ value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },

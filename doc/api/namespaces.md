@@ -12,7 +12,7 @@ For users and groups supported API calls see the [users](users.md) and
 Get a list of the namespaces of the authenticated user. If the user is an
 administrator, a list of all namespaces in the GitLab instance is shown.
 
-```
+```plaintext
 GET /namespaces
 ```
 
@@ -74,7 +74,7 @@ NOTE: **Note:** Only group maintainers/owners are presented with `members_count_
 
 Get all namespaces that match a string in their name or path.
 
-```
+```plaintext
 GET /namespaces?search=foobar
 ```
 
@@ -108,7 +108,7 @@ Example response:
 
 Get a namespace by ID.
 
-```
+```plaintext
 GET /namespaces/:id
 ```
 

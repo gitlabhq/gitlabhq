@@ -42,10 +42,7 @@ export default {
 };
 </script>
 <template>
-  <div class="prometheus-graph">
-    <div class="prometheus-graph-header">
-      <h5 ref="graphTitle" class="prometheus-graph-title">{{ graphTitle }}</h5>
-    </div>
+  <div>
     <gl-single-stat :value="statValue" :title="graphTitle" variant="success" />
   </div>
 </template>

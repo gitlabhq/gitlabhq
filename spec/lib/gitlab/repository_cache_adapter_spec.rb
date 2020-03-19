@@ -211,8 +211,7 @@ describe Gitlab::RepositoryCacheAdapter do
     it 'expires the caches of the given methods' do
       expect(cache).to receive(:expire).with(:rendered_readme)
       expect(cache).to receive(:expire).with(:branch_names)
-      expect(redis_set_cache).to receive(:expire).with(:rendered_readme)
-      expect(redis_set_cache).to receive(:expire).with(:branch_names)
+      expect(redis_set_cache).to receive(:expire).with(:rendered_readme, :branch_names)
       expect(redis_hash_cache).to receive(:delete).with(:rendered_readme)
       expect(redis_hash_cache).to receive(:delete).with(:branch_names)
 

@@ -1,0 +1,5 @@
+---
+title: 'Add index on LOWER(domain) for pages_domains'
+merge_request: 25664
+author:
+type: other

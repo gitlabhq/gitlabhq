@@ -25,6 +25,28 @@ module Gitlab
           fields.sort_by { |field| field[:name] }
         end
 
+        def render_field(field)
+          '| %s | %s | %s |' % [
+            render_field_name(field),
+            render_field_type(field[:type][:info]),
+            render_field_description(field)
+            ]
+        end
+
+        def render_field_name(field)
+          rendered_name = "`#{field[:name]}`"
+          rendered_name += ' **{warning-solid}**' if field[:is_deprecated]
+          rendered_name
+        end
+
+        # Returns the field description. If the field has been deprecated,
+        # the deprecation reason will be returned in place of the description.
+        def render_field_description(field)
+          return field[:description] unless field[:is_deprecated]
+
+          "**Deprecated:** #{field[:deprecation_reason]}"
+        end
+
         # Some fields types are arrays of other types and are displayed
         # on docs wrapped in square brackets, for example: [String!].
         # This makes GitLab docs renderer thinks they are links so here

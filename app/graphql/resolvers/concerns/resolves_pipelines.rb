@@ -30,6 +30,6 @@ module ResolvesPipelines
   end
 
   def resolve_pipelines(project, params = {})
-    PipelinesFinder.new(project, context[:current_user], params).execute
+    Ci::PipelinesFinder.new(project, context[:current_user], params).execute
   end
 end

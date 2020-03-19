@@ -142,6 +142,12 @@ module API
       end
     end
 
+    def check_namespace_access(namespace)
+      return namespace if can?(current_user, :read_namespace, namespace)
+
+      not_found!('Namespace')
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
     def find_namespace(id)
       if id.to_s =~ /^\d+$/
@@ -153,13 +159,15 @@ module API
     # rubocop: enable CodeReuse/ActiveRecord
 
     def find_namespace!(id)
-      namespace = find_namespace(id)
+      check_namespace_access(find_namespace(id))
+    end
 
-      if can?(current_user, :read_namespace, namespace)
-        namespace
-      else
-        not_found!('Namespace')
-      end
+    def find_namespace_by_path(path)
+      Namespace.find_by_full_path(path)
+    end
+
+    def find_namespace_by_path!(path)
+      check_namespace_access(find_namespace_by_path(path))
     end
 
     def find_branch!(branch_name)
@@ -357,6 +365,10 @@ module API
 
     def not_allowed!
       render_api_error!('405 Method Not Allowed', 405)
+    end
+
+    def service_unavailable!
+      render_api_error!('503 Service Unavailable', 503)
     end
 
     def conflict!(message = nil)

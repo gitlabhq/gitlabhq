@@ -1,0 +1,5 @@
+---
+title: Only load usage ping cron schedule for Sidekiq
+merge_request: 25325
+author:
+type: other

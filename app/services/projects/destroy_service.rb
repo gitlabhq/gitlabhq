@@ -47,7 +47,7 @@ module Projects
 
     private
 
-    def trash_repositories!
+    def trash_project_repositories!
       unless remove_repository(project.repository)
         raise_error(s_('DeleteProject|Failed to remove project repository. Please try again or contact administrator.'))
       end
@@ -55,6 +55,18 @@ module Projects
       unless remove_repository(project.wiki.repository)
         raise_error(s_('DeleteProject|Failed to remove wiki repository. Please try again or contact administrator.'))
       end
+    end
+
+    def trash_relation_repositories!
+      unless remove_snippets
+        raise_error(s_('DeleteProject|Failed to remove project snippets. Please try again or contact administrator.'))
+      end
+    end
+
+    def remove_snippets
+      response = Snippets::BulkDestroyService.new(current_user, project.snippets).execute
+
+      response.success?
     end
 
     def remove_repository(repository)
@@ -95,7 +107,8 @@ module Projects
 
       Project.transaction do
         log_destroy_event
-        trash_repositories!
+        trash_relation_repositories!
+        trash_project_repositories!
 
         # Rails attempts to load all related records into memory before
         # destroying: https://github.com/rails/rails/issues/22510
@@ -103,7 +116,7 @@ module Projects
         #
         # Exclude container repositories because its before_destroy would be
         # called multiple times, and it doesn't destroy any database records.
-        project.destroy_dependent_associations_in_batches(exclude: [:container_repositories])
+        project.destroy_dependent_associations_in_batches(exclude: [:container_repositories, :snippets])
         project.destroy!
       end
     end

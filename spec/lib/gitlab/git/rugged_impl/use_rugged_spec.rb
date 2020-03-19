@@ -152,6 +152,43 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
     end
   end
 
+  describe '#rugged_enabled_through_feature_flag?' do
+    subject { wrapper.send(:rugged_enabled_through_feature_flag?) }
+
+    before do
+      allow(Feature).to receive(:enabled?).with(:feature_key_1).and_return(true)
+      allow(Feature).to receive(:enabled?).with(:feature_key_2).and_return(true)
+      allow(Feature).to receive(:enabled?).with(:feature_key_3).and_return(false)
+      allow(Feature).to receive(:enabled?).with(:feature_key_4).and_return(false)
+
+      stub_const('Gitlab::Git::RuggedImpl::Repository::FEATURE_FLAGS', feature_keys)
+    end
+
+    context 'no feature keys given' do
+      let(:feature_keys) { [] }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'all features are enabled' do
+      let(:feature_keys) { [:feature_key_1, :feature_key_2] }
+
+      it { is_expected.to be_truthy}
+    end
+
+    context 'all features are not enabled' do
+      let(:feature_keys) { [:feature_key_3, :feature_key_4] }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'some feature is enabled' do
+      let(:feature_keys) { [:feature_key_4, :feature_key_2] }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   def create_temporary_gitaly_metadata_file
     tmp = Tempfile.new('.gitaly-metadata')
     gitaly_metadata = {

@@ -1,5 +1,5 @@
 # Full project: https://gitlab.com/pages/middleman
-image: ruby:2.3
+image: ruby:2.6
 
 cache:
   paths:

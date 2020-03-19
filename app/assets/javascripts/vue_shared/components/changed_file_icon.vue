@@ -1,8 +1,8 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
-import { __, sprintf } from '~/locale';
 import { getCommitIconMap } from '~/ide/utils';
+import { __ } from '~/locale';
 
 export default {
   components: {
@@ -49,19 +49,17 @@ export default {
       return `${this.changedIcon} float-left d-block`;
     },
     tooltipTitle() {
-      if (!this.showTooltip || !this.file.changed) return undefined;
-
-      const type = this.file.tempFile ? 'addition' : 'modification';
-
-      if (this.file.staged) {
-        return sprintf(__('Staged %{type}'), {
-          type,
-        });
+      if (!this.showTooltip) {
+        return undefined;
+      } else if (this.file.deleted) {
+        return __('Deleted');
+      } else if (this.file.tempFile) {
+        return __('Added');
+      } else if (this.file.changed) {
+        return __('Modified');
       }
 
-      return sprintf(__('Unstaged %{type}'), {
-        type,
-      });
+      return undefined;
     },
     showIcon() {
       return (

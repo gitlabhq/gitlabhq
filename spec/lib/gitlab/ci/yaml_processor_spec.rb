@@ -509,28 +509,48 @@ module Gitlab
 
         describe "before_script" do
           context "in global context" do
-            let(:config) do
-              {
-                before_script: ["global script"],
-                test: { script: ["script"] }
-              }
+            using RSpec::Parameterized::TableSyntax
+
+            where(:inherit, :result) do
+              nil | ["global script"]
+              { default: false } | nil
+              { default: true } | ["global script"]
+              { default: %w[before_script] } | ["global script"]
+              { default: %w[image] } | nil
             end
 
-            it "return commands with scripts concatenated" do
-              expect(subject[:options][:before_script]).to eq(["global script"])
-            end
-          end
+            with_them do
+              let(:config) do
+                {
+                  before_script: ["global script"],
+                  test: { script: ["script"], inherit: inherit }
+                }
+              end
 
-          context "in default context" do
-            let(:config) do
-              {
-                default: { before_script: ["global script"] },
-                test: { script: ["script"] }
-              }
+              it { expect(subject[:options][:before_script]).to eq(result) }
             end
 
-            it "return commands with scripts concatenated" do
-              expect(subject[:options][:before_script]).to eq(["global script"])
+            context "in default context" do
+              using RSpec::Parameterized::TableSyntax
+
+              where(:inherit, :result) do
+                nil | ["global script"]
+                { default: false } | nil
+                { default: true } | ["global script"]
+                { default: %w[before_script] } | ["global script"]
+                { default: %w[image] } | nil
+              end
+
+              with_them do
+                let(:config) do
+                  {
+                    default: { before_script: ["global script"] },
+                    test: { script: ["script"], inherit: inherit }
+                  }
+                end
+
+                it { expect(subject[:options][:before_script]).to eq(result) }
+              end
             end
           end
 
@@ -793,7 +813,7 @@ module Gitlab
 
         context 'when job and global variables are defined' do
           let(:global_variables) do
-            { 'VAR1' => 'global1', 'VAR3' => 'global3' }
+            { 'VAR1' => 'global1', 'VAR3' => 'global3', 'VAR4' => 'global4' }
           end
           let(:job_variables) do
             { 'VAR1' => 'value1', 'VAR2' => 'value2' }
@@ -802,16 +822,44 @@ module Gitlab
             {
               before_script: ['pwd'],
               variables: global_variables,
-              rspec: { script: 'rspec', variables: job_variables }
+              rspec: { script: 'rspec', variables: job_variables, inherit: inherit }
             }
           end
 
-          it 'returns all unique variables' do
-            expect(subject).to contain_exactly(
-              { key: 'VAR3', value: 'global3', public: true },
-              { key: 'VAR1', value: 'value1', public: true },
-              { key: 'VAR2', value: 'value2', public: true }
-            )
+          context 'when no inheritance is specified' do
+            let(:inherit) { }
+
+            it 'returns all unique variables' do
+              expect(subject).to contain_exactly(
+                { key: 'VAR4', value: 'global4', public: true },
+                { key: 'VAR3', value: 'global3', public: true },
+                { key: 'VAR1', value: 'value1', public: true },
+                { key: 'VAR2', value: 'value2', public: true }
+              )
+            end
+          end
+
+          context 'when inheritance is disabled' do
+            let(:inherit) { { variables: false } }
+
+            it 'does not inherit variables' do
+              expect(subject).to contain_exactly(
+                { key: 'VAR1', value: 'value1', public: true },
+                { key: 'VAR2', value: 'value2', public: true }
+              )
+            end
+          end
+
+          context 'when specific variables are to inherited' do
+            let(:inherit) { { variables: %w[VAR1 VAR4] } }
+
+            it 'returns all unique variables and inherits only specified variables' do
+              expect(subject).to contain_exactly(
+                { key: 'VAR4', value: 'global4', public: true },
+                { key: 'VAR1', value: 'value1', public: true },
+                { key: 'VAR2', value: 'value2', public: true }
+              )
+            end
           end
         end
 
@@ -2419,7 +2467,9 @@ module Gitlab
 
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
-            expect(subject.errors).to eq(['jobs:rspec config contains unknown keys: bad_tags', 'jobs:rspec rules should be an array of hashes'])
+            expect(subject.errors).to contain_exactly(
+              'jobs:rspec config contains unknown keys: bad_tags',
+              'jobs:rspec rules should be an array of hashes')
             expect(subject.content).to be_blank
           end
         end

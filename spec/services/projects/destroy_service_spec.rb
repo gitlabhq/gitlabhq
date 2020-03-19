@@ -124,7 +124,7 @@ describe Projects::DestroyService do
       allow(project.repository).to receive(:before_delete).and_raise(::Gitlab::Git::CommandError)
       allow(Gitlab::GitLogger).to receive(:warn).with(
         class: Repositories::DestroyService.name,
-        project_id: project.id,
+        container_id: project.id,
         disk_path: project.disk_path,
         message: 'Gitlab::Git::CommandError').and_call_original
     end
@@ -334,6 +334,39 @@ describe Projects::DestroyService do
           .with(10.minutes, :remove_repository, project.repository_storage, removal_path(project.wiki.disk_path))
 
         destroy_project(project, user, {})
+      end
+    end
+  end
+
+  context 'snippets' do
+    let!(:snippet1) { create(:project_snippet, project: project, author: user) }
+    let!(:snippet2) { create(:project_snippet, project: project, author: user) }
+
+    it 'does not include snippets when deleting in batches' do
+      expect(project).to receive(:destroy_dependent_associations_in_batches).with({ exclude: [:container_repositories, :snippets] })
+
+      destroy_project(project, user)
+    end
+
+    it 'calls the bulk snippet destroy service' do
+      expect(project.snippets.count).to eq 2
+
+      expect(Snippets::BulkDestroyService).to receive(:new)
+        .with(user, project.snippets).and_call_original
+
+      expect do
+        destroy_project(project, user)
+      end.to change(Snippet, :count).by(-2)
+    end
+
+    context 'when an error is raised deleting snippets' do
+      it 'does not delete project' do
+        allow_next_instance_of(Snippets::BulkDestroyService) do |instance|
+          allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: 'foo'))
+        end
+
+        expect(destroy_project(project, user)).to be_falsey
+        expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_truthy
       end
     end
   end

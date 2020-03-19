@@ -93,7 +93,7 @@ describe Groups::Registry::RepositoriesController do
 
     context 'with :vue_container_registry_explorer feature flag disabled' do
       before do
-        stub_feature_flags(vue_container_registry_explorer: false)
+        stub_feature_flags(vue_container_registry_explorer: { enabled: false, thing: group })
       end
 
       it 'has the correct response schema' do

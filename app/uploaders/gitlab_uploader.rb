@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GitlabUploader < CarrierWave::Uploader::Base
+  include ContentTypeWhitelist::Concern
+
   class_attribute :options
 
   class << self

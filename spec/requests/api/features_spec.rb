@@ -46,19 +46,19 @@ describe API::Features do
     it 'returns a 401 for anonymous users' do
       get api('/features')
 
-      expect(response).to have_gitlab_http_status(401)
+      expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
     it 'returns a 403 for users' do
       get api('/features', user)
 
-      expect(response).to have_gitlab_http_status(403)
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     it 'returns the feature list for admins' do
       get api('/features', admin)
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to match_array(expected_features)
     end
   end
@@ -70,20 +70,20 @@ describe API::Features do
       it 'returns a 401 for anonymous users' do
         post api("/features/#{feature_name}")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
       it 'returns a 403 for users' do
         post api("/features/#{feature_name}", user)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
 
       context 'when passed value=true' do
         it 'creates an enabled feature' do
           post api("/features/#{feature_name}", admin), params: { value: 'true' }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'on',
@@ -93,7 +93,7 @@ describe API::Features do
         it 'creates an enabled feature for the given Flipper group when passed feature_group=perf_team' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', feature_group: 'perf_team' }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'conditional',
@@ -106,7 +106,7 @@ describe API::Features do
         it 'creates an enabled feature for the given user when passed user=username' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'conditional',
@@ -119,7 +119,7 @@ describe API::Features do
         it 'creates an enabled feature for the given user and feature group when passed user=username and feature_group=perf_team' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username, feature_group: 'perf_team' }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response['name']).to eq('my_feature')
           expect(json_response['state']).to eq('conditional')
           expect(json_response['gates']).to contain_exactly(
@@ -137,7 +137,7 @@ describe API::Features do
           it 'sets the feature gate' do
             post api("/features/#{feature_name}", admin), params: { value: 'true', project: project.full_path }
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to eq(
               'name' => 'my_feature',
               'state' => 'conditional',
@@ -152,7 +152,7 @@ describe API::Features do
           it 'sets no new values' do
             post api("/features/#{feature_name}", admin), params: { value: 'true', project: 'mep/to/the/mep/mep' }
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to eq(
               "name" => "my_feature",
               "state" => "off",
@@ -171,7 +171,7 @@ describe API::Features do
 
             post api("/features/#{feature_name}", admin), params: { value: 'true', group: group.full_path }
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to eq(
               'name' => 'my_feature',
               'state' => 'conditional',
@@ -186,7 +186,7 @@ describe API::Features do
           it 'sets no new values and keeps the feature disabled' do
             post api("/features/#{feature_name}", admin), params: { value: 'true', group: 'not/a/group' }
 
-            expect(response).to have_gitlab_http_status(201)
+            expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to eq(
               "name" => "my_feature",
               "state" => "off",
@@ -201,7 +201,7 @@ describe API::Features do
       it 'creates a feature with the given percentage if passed an integer' do
         post api("/features/#{feature_name}", admin), params: { value: '50' }
 
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(json_response).to eq(
           'name' => 'my_feature',
           'state' => 'conditional',
@@ -223,7 +223,7 @@ describe API::Features do
         it 'enables the feature' do
           post api("/features/#{feature_name}", admin), params: { value: 'true' }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'on',
@@ -233,7 +233,7 @@ describe API::Features do
         it 'enables the feature for the given Flipper group when passed feature_group=perf_team' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', feature_group: 'perf_team' }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'conditional',
@@ -246,7 +246,7 @@ describe API::Features do
         it 'enables the feature for the given user when passed user=username' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'conditional',
@@ -264,7 +264,7 @@ describe API::Features do
 
           post api("/features/#{feature_name}", admin), params: { value: 'false' }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'off',
@@ -277,7 +277,7 @@ describe API::Features do
 
           post api("/features/#{feature_name}", admin), params: { value: 'false', feature_group: 'perf_team' }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'off',
@@ -290,7 +290,7 @@ describe API::Features do
 
           post api("/features/#{feature_name}", admin), params: { value: 'false', user: user.username }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'off',
@@ -306,7 +306,7 @@ describe API::Features do
         it 'updates the percentage of time if passed an integer' do
           post api("/features/#{feature_name}", admin), params: { value: '30' }
 
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to eq(
             'name' => 'my_feature',
             'state' => 'conditional',
@@ -326,13 +326,13 @@ describe API::Features do
       it 'returns a 401 for anonymous users' do
         delete api("/features/#{feature_name}")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
       it 'returns a 403 for users' do
         delete api("/features/#{feature_name}", user)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -340,7 +340,7 @@ describe API::Features do
       it 'returns 204 when the value is not set' do
         delete api("/features/#{feature_name}", admin)
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end
 
       context 'when the gate value was set' do
@@ -351,7 +351,7 @@ describe API::Features do
         it 'deletes an enabled feature' do
           delete api("/features/#{feature_name}", admin)
 
-          expect(response).to have_gitlab_http_status(204)
+          expect(response).to have_gitlab_http_status(:no_content)
           expect(Feature.get(feature_name)).not_to be_enabled
         end
       end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180531220618_change_default_value_for_dsa_key_restriction.rb')
 
-describe ChangeDefaultValueForDsaKeyRestriction, :migration do
+describe ChangeDefaultValueForDsaKeyRestriction do
   let(:application_settings) { table(:application_settings) }
 
   before do

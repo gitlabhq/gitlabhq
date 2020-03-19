@@ -68,7 +68,7 @@ export default {
       data-placement="bottom"
       class="edit-group btn btn-xs no-expand"
     >
-      <icon name="settings" class="position-top-0" />
+      <icon name="settings" class="position-top-0 align-middle" />
     </a>
   </div>
 </template>

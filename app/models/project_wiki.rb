@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class ProjectWiki
-  include Gitlab::ShellAdapter
   include Storage::LegacyProjectWiki
+  include Gitlab::Utils::StrongMemoize
 
   MARKUPS = {
     'Markdown' => :markdown,
@@ -47,7 +47,7 @@ class ProjectWiki
   end
 
   def url_to_repo
-    gitlab_shell.url_to_repo(full_path)
+    Gitlab::Shell.url_to_repo(full_path)
   end
 
   def ssh_url_to_repo
@@ -64,14 +64,15 @@ class ProjectWiki
 
   # Returns the Gitlab::Git::Wiki object.
   def wiki
-    @wiki ||= begin
-      gl_repository = Gitlab::GlRepository::WIKI.identifier_for_container(project)
-      raw_repository = Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', gl_repository, full_path)
+    strong_memoize(:wiki) do
+      repository.create_if_not_exists
+      raise CouldNotCreateWikiError unless repository_exists?
 
-      create_repo!(raw_repository) unless raw_repository.exists?
-
-      Gitlab::Git::Wiki.new(raw_repository)
+      Gitlab::Git::Wiki.new(repository.raw)
     end
+  rescue => err
+    Gitlab::ErrorTracking.track_exception(err, project_wiki: { project_id: project.id, full_path: full_path, disk_path: disk_path })
+    raise CouldNotCreateWikiError
   end
 
   def repository_exists?
@@ -107,7 +108,7 @@ class ProjectWiki
       direction_desc: direction == DIRECTION_DESC,
       load_content: load_content
     ).map do |page|
-      WikiPage.new(self, page, true)
+      WikiPage.new(self, page)
     end
   end
 
@@ -122,7 +123,7 @@ class ProjectWiki
     page_title, page_dir = page_title_and_dir(title)
 
     if page = wiki.page(title: page_title, version: version, dir: page_dir)
-      WikiPage.new(self, page, true)
+      WikiPage.new(self, page)
     end
   end
 
@@ -170,7 +171,7 @@ class ProjectWiki
   end
 
   def repository
-    @repository ||= Repository.new(full_path, @project, disk_path: disk_path, repo_type: Gitlab::GlRepository::WIKI)
+    @repository ||= Repository.new(full_path, @project, shard: repository_storage, disk_path: disk_path, repo_type: Gitlab::GlRepository::WIKI)
   end
 
   def default_branch
@@ -192,14 +193,6 @@ class ProjectWiki
   end
 
   private
-
-  def create_repo!(raw_repository)
-    gitlab_shell.create_wiki_repository(project)
-
-    raise CouldNotCreateWikiError unless raw_repository.exists?
-
-    repository.after_create
-  end
 
   def commit_details(action, message = nil, title = nil)
     commit_message = message.presence || default_message(action, title)

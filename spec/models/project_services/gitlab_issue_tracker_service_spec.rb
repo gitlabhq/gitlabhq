@@ -33,9 +33,9 @@ describe GitlabIssueTrackerService do
       end
 
       it 'gives the correct path' do
-        expect(service.project_url).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.full_path}/issues")
-        expect(service.new_issue_url).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.full_path}/issues/new")
-        expect(service.issue_url(432)).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.full_path}/issues/432")
+        expect(service.project_url).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.full_path}/-/issues")
+        expect(service.new_issue_url).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.full_path}/-/issues/new")
+        expect(service.issue_url(432)).to eq("http://#{Gitlab.config.gitlab.host}/gitlab/root/#{project.full_path}/-/issues/432")
       end
     end
 
@@ -45,9 +45,9 @@ describe GitlabIssueTrackerService do
       end
 
       it 'gives the correct path' do
-        expect(service.issue_tracker_path).to eq("/gitlab/root/#{project.full_path}/issues")
-        expect(service.new_issue_path).to eq("/gitlab/root/#{project.full_path}/issues/new")
-        expect(service.issue_path(432)).to eq("/gitlab/root/#{project.full_path}/issues/432")
+        expect(service.issue_tracker_path).to eq("/gitlab/root/#{project.full_path}/-/issues")
+        expect(service.new_issue_path).to eq("/gitlab/root/#{project.full_path}/-/issues/new")
+        expect(service.issue_path(432)).to eq("/gitlab/root/#{project.full_path}/-/issues/432")
       end
     end
   end

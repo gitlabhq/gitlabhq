@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Chain::Populate do
-  set(:project) { create(:project, :repository) }
-  set(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
 
   let(:pipeline) do
     build(:ci_pipeline, project: project, ref: 'master', user: user)

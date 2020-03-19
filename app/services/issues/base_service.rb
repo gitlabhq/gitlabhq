@@ -34,6 +34,18 @@ module Issues
     def update_project_counter_caches?(issue)
       super || issue.confidential_changed?
     end
+
+    def delete_milestone_closed_issue_counter_cache(milestone)
+      return unless milestone
+
+      Milestones::ClosedIssuesCountService.new(milestone).delete_cache
+    end
+
+    def delete_milestone_total_issue_counter_cache(milestone)
+      return unless milestone
+
+      Milestones::IssuesCountService.new(milestone).delete_cache
+    end
   end
 end
 

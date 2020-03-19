@@ -48,7 +48,8 @@ module Quality
       resource_names = raw_resource_names
       command = [
         'delete',
-        %(--namespace "#{namespace}")
+        %(--namespace "#{namespace}"),
+        '--ignore-not-found'
       ]
 
       Array(release_name).each do |release|

@@ -56,24 +56,114 @@ describe API::Internal::Pages do
           end
         end
 
+        context 'serverless domain' do
+          let(:namespace) { create(:namespace, name: 'gitlab-org') }
+          let(:project) { create(:project, namespace: namespace, name: 'gitlab-ce') }
+          let(:environment) { create(:environment, project: project) }
+          let(:pages_domain) { create(:pages_domain, domain: 'serverless.gitlab.io') }
+          let(:knative_without_ingress) { create(:clusters_applications_knative) }
+          let(:knative_with_ingress) { create(:clusters_applications_knative, external_ip: '10.0.0.1') }
+
+          context 'without a knative ingress gateway IP' do
+            let!(:serverless_domain_cluster) do
+              create(
+                :serverless_domain_cluster,
+                uuid: 'abcdef12345678',
+                pages_domain: pages_domain,
+                knative: knative_without_ingress
+              )
+            end
+
+            let(:serverless_domain) do
+              create(
+                :serverless_domain,
+                serverless_domain_cluster: serverless_domain_cluster,
+                environment: environment
+              )
+            end
+
+            it 'responds with 204 no content' do
+              query_host(serverless_domain.uri.host)
+
+              expect(response).to have_gitlab_http_status(:no_content)
+              expect(response.body).to be_empty
+            end
+          end
+
+          context 'with a knative ingress gateway IP' do
+            let!(:serverless_domain_cluster) do
+              create(
+                :serverless_domain_cluster,
+                uuid: 'abcdef12345678',
+                pages_domain: pages_domain,
+                knative: knative_with_ingress
+              )
+            end
+
+            let(:serverless_domain) do
+              create(
+                :serverless_domain,
+                serverless_domain_cluster: serverless_domain_cluster,
+                environment: environment
+              )
+            end
+
+            it 'responds with proxy configuration' do
+              query_host(serverless_domain.uri.host)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to match_response_schema('internal/serverless/virtual_domain')
+
+              expect(json_response['certificate']).to eq(pages_domain.certificate)
+              expect(json_response['key']).to eq(pages_domain.key)
+
+              expect(json_response['lookup_paths']).to eq(
+                [
+                  {
+                    'source' => {
+                      'type' => 'serverless',
+                      'service' => "test-function.#{project.name}-#{project.id}-#{environment.slug}.#{serverless_domain_cluster.knative.hostname}",
+                      'cluster' => {
+                        'hostname' => serverless_domain_cluster.knative.hostname,
+                        'address' => serverless_domain_cluster.knative.external_ip,
+                        'port' => 443,
+                        'cert' => serverless_domain_cluster.certificate,
+                        'key' => serverless_domain_cluster.key
+                      }
+                    }
+                  }
+                ]
+              )
+            end
+          end
+        end
+
         context 'custom domain' do
           let(:namespace) { create(:namespace, name: 'gitlab-org') }
           let(:project) { create(:project, namespace: namespace, name: 'gitlab-ce') }
-          let!(:pages_domain) { create(:pages_domain, domain: 'pages.gitlab.io', project: project) }
+          let!(:pages_domain) { create(:pages_domain, domain: 'pages.io', project: project) }
 
           context 'when there are no pages deployed for the related project' do
             it 'responds with 204 No Content' do
-              query_host('pages.gitlab.io')
+              query_host('pages.io')
 
               expect(response).to have_gitlab_http_status(:no_content)
             end
           end
 
           context 'when there are pages deployed for the related project' do
+            it 'domain lookup is case insensitive' do
+              deploy_pages(project)
+
+              query_host('Pages.IO')
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
             it 'responds with the correct domain configuration' do
               deploy_pages(project)
 
-              query_host('pages.gitlab.io')
+              query_host('pages.io')
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('internal/pages/virtual_domain')

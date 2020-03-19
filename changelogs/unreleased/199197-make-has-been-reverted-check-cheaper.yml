@@ -1,0 +1,5 @@
+---
+title: Improve performance of the "has this commit been reverted?" check
+merge_request: 26784
+author:
+type: performance

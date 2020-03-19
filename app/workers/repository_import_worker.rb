@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RepositoryImportWorker
+class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
   include ExceptionBacktrace
   include ProjectStartImport

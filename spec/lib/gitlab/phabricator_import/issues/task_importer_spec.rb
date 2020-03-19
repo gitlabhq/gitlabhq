@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe Gitlab::PhabricatorImport::Issues::TaskImporter do
-  set(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
   let(:task) do
     Gitlab::PhabricatorImport::Representation::Task.new(
       {

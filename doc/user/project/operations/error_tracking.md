@@ -41,8 +41,8 @@ You may also want to enable Sentry's GitLab integration by following the steps i
 NOTE: **Note:**
 You will need at least Reporter [permissions](../../permissions.md) to view the Error Tracking list.
 
-The Error Tracking list may be found at **Operations > Error Tracking** in your project's sidebar.
-Errors can be filtered by title or sorted by Frequency, First Seen or Last Seen. Errors are always sorted in descending order by the field specified.
+You can find the Error Tracking list at **Operations > Error Tracking** in your project's sidebar.
+Here, you can filter errors by title or by status (one of Ignored , Resolved, or Unresolved) and sort in descending order by Frequency, First Seen, or Last Seen. By default, the error list is ordered by Last Seen and filtered to Unresolved errors.
 
 ![Error Tracking list](img/error_tracking_list_v12_6.png)
 

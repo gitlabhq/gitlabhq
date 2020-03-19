@@ -241,6 +241,10 @@ module SystemNoteService
   def zoom_link_removed(issue, project, author)
     ::SystemNotes::ZoomService.new(noteable: issue, project: project, author: author).zoom_link_removed
   end
+
+  def auto_resolve_prometheus_alert(noteable, project, author)
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).auto_resolve_prometheus_alert
+  end
 end
 
 SystemNoteService.prepend_if_ee('EE::SystemNoteService')

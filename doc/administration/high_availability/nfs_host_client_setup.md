@@ -25,7 +25,7 @@ Using EFS may negatively impact performance. Please review the [relevant documen
 
 ### Step 1 - Install NFS Server on Host
 
-Installing the nfs-kernel-server package allows you to share directories with the clients running the GitLab application.
+Installing the `nfs-kernel-server` package allows you to share directories with the clients running the GitLab application.
 
 ```shell
 apt-get update
@@ -61,7 +61,7 @@ inside your HA environment to the NFS server configured above.
 
 ### Step 1 - Install NFS Common on Client
 
-The nfs-common provides NFS functionality without installing server components which
+The `nfs-common` provides NFS functionality without installing server components which
 we don't need running on the application nodes.
 
 ```shell
@@ -126,7 +126,7 @@ by a firewall, then you will need to reconfigure that firewall to allow NFS comm
 
 [This guide from TDLP](http://tldp.org/HOWTO/NFS-HOWTO/security.html#FIREWALLS)
 covers the basics of using NFS in a firewalled environment. Additionally, we encourage you to
-search for and review the specific documentation for your OS/distro and your firewall software.
+search for and review the specific documentation for your operating system or distribution and your firewall software.
 
 Example for Ubuntu:
 

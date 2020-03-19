@@ -1,0 +1,5 @@
+---
+title: Add package_type as a filter option to the packages list API endpoint
+merge_request: 25816
+author:
+type: added

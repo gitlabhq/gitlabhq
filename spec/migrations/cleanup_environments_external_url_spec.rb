@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20181108091549_cleanup_environments_external_url.rb')
 
-describe CleanupEnvironmentsExternalUrl, :migration do
+describe CleanupEnvironmentsExternalUrl do
   let(:environments)    { table(:environments) }
   let(:invalid_entries) { environments.where(environments.arel_table[:external_url].matches('javascript://%')) }
   let(:namespaces)      { table(:namespaces) }

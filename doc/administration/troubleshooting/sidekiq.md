@@ -18,6 +18,26 @@ troubleshooting steps that will help you diagnose the bottleneck.
 > may be using all available CPU, or have a Ruby Global Interpreter Lock,
 > preventing other threads from continuing.
 
+## Log arguments to Sidekiq jobs
+
+If you want to see what arguments are being passed to Sidekiq jobs you can set
+the `SIDEKIQ_LOG_ARGUMENTS` [environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html) to `1` (true).
+
+Example:
+
+```
+gitlab_rails['env'] = {"SIDEKIQ_LOG_ARGUMENTS" => "1"}
+```
+
+Please note: It is not recommend to enable this setting in production because some
+Sidekiq jobs (such as sending a password reset email) take secret arguments (for
+example the password reset token).
+
+When using [Sidekiq JSON logging](../logs.md#sidekiqlog),
+arguments logs are limited to a maximum size of 10 kilobytes of text;
+any arguments after this limit will be discarded and replaced with a
+single argument containing the string `"..."`.
+
 ## Thread dump
 
 Send the Sidekiq process ID the `TTIN` signal and it will output thread
@@ -31,7 +51,7 @@ Check in `/var/log/gitlab/sidekiq/current` or `$GITLAB_HOME/log/sidekiq.log` for
 the backtrace output. The backtraces will be lengthy and generally start with
 several `WARN` level messages. Here's an example of a single thread's backtrace:
 
-```
+```plaintext
 2016-04-13T06:21:20.022Z 31517 TID-orn4urby0 WARN: ActiveRecord::RecordNotFound: Couldn't find Note with 'id'=3375386
 2016-04-13T06:21:20.022Z 31517 TID-orn4urby0 WARN: /opt/gitlab/embedded/service/gem/ruby/2.1.0/gems/activerecord-4.2.5.2/lib/active_record/core.rb:155:in `find'
 /opt/gitlab/embedded/service/gitlab-rails/app/workers/new_note_worker.rb:7:in `perform'
@@ -55,7 +75,7 @@ respond to the `TTIN` signal, this is a good next step.
 
 If `perf` is not installed on your system, install it with `apt-get` or `yum`:
 
-```
+```shell
 # Debian
 sudo apt-get install linux-tools
 
@@ -68,13 +88,13 @@ sudo yum install perf
 
 Run perf against the Sidekiq PID:
 
-```
+```shell
 sudo perf record -p <sidekiq_pid>
 ```
 
 Let this run for 30-60 seconds and then press Ctrl-C. Then view the perf report:
 
-```
+```shell
 sudo perf report
 
 # Sample output
@@ -102,13 +122,13 @@ of the process (Sidekiq will not process jobs while `gdb` is attached).
 
 Start by attaching to the Sidekiq PID:
 
-```
+```shell
 gdb -p <sidekiq_pid>
 ```
 
 Then gather information on all the threads:
 
-```
+```plaintext
 info threads
 
 # Example output
@@ -129,7 +149,7 @@ from /opt/gitlab/embedded/service/gem/ruby/2.1.0/gems/nokogiri-1.6.7.2/lib/nokog
 If you see a suspicious thread, like the Nokogiri one above, you may want
 to get more information:
 
-```
+```plaintext
 thread 21
 bt
 
@@ -147,7 +167,7 @@ bt
 
 To output a backtrace from all threads at once:
 
-```
+```plaintext
 set pagination off
 thread apply all bt
 ```
@@ -155,7 +175,7 @@ thread apply all bt
 Once you're done debugging with `gdb`, be sure to detach from the process and
 exit:
 
-```
+```plaintext
 detach
 exit
 ```
@@ -287,4 +307,4 @@ has number of drawbacks, as mentioned in [Why Ruby’s Timeout is dangerous (and
 > - while creating an object to save to the database afterwards
 > - in any of your code, regardless of whether it could have possibly raised an exception before
 >
-> Nobody writes code to defend against an exception being raised on literally any line. That’s not even possible. So Thread.raise is  basically like a sneak attack on your code that could result in almost anything. It would probably be okay if it were pure-functional code that did not modify any state. But this is Ruby, so that’s unlikely :)
+> Nobody writes code to defend against an exception being raised on literally any line. That’s not even possible. So Thread.raise is basically like a sneak attack on your code that could result in almost anything. It would probably be okay if it were pure-functional code that did not modify any state. But this is Ruby, so that’s unlikely :)

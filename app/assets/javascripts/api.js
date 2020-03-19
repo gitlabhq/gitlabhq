@@ -1,5 +1,3 @@
-import $ from 'jquery';
-import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
 import flash from '~/flash';
@@ -47,6 +45,7 @@ const Api = {
   adminStatisticsPath: '/api/:version/application/statistics',
   pipelineSinglePath: '/api/:version/projects/:id/pipelines/:pipeline_id',
   lsifPath: '/api/:version/projects/:id/commits/:commit_id/lsif/info',
+  environmentsPath: '/api/:version/projects/:id/environments',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -69,7 +68,7 @@ const Api = {
   },
 
   // Return groups list. Filtered by query
-  groups(query, options, callback = $.noop) {
+  groups(query, options, callback = () => {}) {
     const url = Api.buildUrl(Api.groupsPath);
     return axios
       .get(url, {
@@ -107,7 +106,7 @@ const Api = {
   },
 
   // Return projects list. Filtered by query
-  projects(query, options, callback = _.noop) {
+  projects(query, options, callback = () => {}) {
     const url = Api.buildUrl(Api.projectsPath);
     const defaults = {
       search: query,
@@ -475,12 +474,17 @@ const Api = {
     return axios.get(url);
   },
 
-  lsifData(projectPath, commitId, path) {
+  lsifData(projectPath, commitId, paths) {
     const url = Api.buildUrl(this.lsifPath)
       .replace(':id', encodeURIComponent(projectPath))
       .replace(':commit_id', commitId);
 
-    return axios.get(url, { params: { path } });
+    return axios.get(url, { params: { paths } });
+  },
+
+  environments(id) {
+    const url = Api.buildUrl(this.environmentsPath).replace(':id', encodeURIComponent(id));
+    return axios.get(url);
   },
 
   buildUrl(url) {

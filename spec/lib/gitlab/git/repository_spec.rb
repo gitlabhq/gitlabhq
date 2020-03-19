@@ -492,50 +492,6 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
-  describe '#fetch_repository_as_mirror' do
-    let(:new_repository) do
-      Gitlab::Git::Repository.new('default', 'my_project.git', '', 'group/project')
-    end
-
-    subject { new_repository.fetch_repository_as_mirror(repository) }
-
-    before do
-      Gitlab::Shell.new.create_repository('default', 'my_project', 'group/project')
-    end
-
-    after do
-      Gitlab::Shell.new.remove_repository('default', 'my_project')
-    end
-
-    it 'fetches a repository as a mirror remote' do
-      subject
-
-      expect(refs(new_repository_path)).to eq(refs(repository_path))
-    end
-
-    context 'with keep-around refs' do
-      let(:sha) { SeedRepo::Commit::ID }
-      let(:keep_around_ref) { "refs/keep-around/#{sha}" }
-      let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
-
-      before do
-        repository_rugged.references.create(keep_around_ref, sha, force: true)
-        repository_rugged.references.create(tmp_ref, sha, force: true)
-      end
-
-      it 'includes the temporary and keep-around refs' do
-        subject
-
-        expect(refs(new_repository_path)).to include(keep_around_ref)
-        expect(refs(new_repository_path)).to include(tmp_ref)
-      end
-    end
-
-    def new_repository_path
-      File.join(TestEnv.repos_path, new_repository.relative_path)
-    end
-  end
-
   describe '#fetch_remote' do
     it 'delegates to the gitaly RepositoryService' do
       ssh_auth = double(:ssh_auth)
@@ -2178,6 +2134,78 @@ describe Gitlab::Git::Repository, :seed_helper do
         repository.remove
 
         expect(repository.raw_repository.exists?).to be false
+      end
+    end
+  end
+
+  describe '#import_repository' do
+    let_it_be(:project) { create(:project) }
+
+    let(:repository) { project.repository }
+    let(:url) { 'http://invalid.invalid' }
+
+    it 'raises an error if a relative path is provided' do
+      expect { repository.import_repository('/foo') }.to raise_error(ArgumentError, /disk path/)
+    end
+
+    it 'raises an error if an absolute path is provided' do
+      expect { repository.import_repository('./foo') }.to raise_error(ArgumentError, /disk path/)
+    end
+
+    it 'delegates to Gitaly' do
+      expect_next_instance_of(Gitlab::GitalyClient::RepositoryService) do |svc|
+        expect(svc).to receive(:import_repository).with(url).and_return(nil)
+      end
+
+      repository.import_repository(url)
+    end
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :import_repository do
+      subject { repository.import_repository('http://invalid.invalid') }
+    end
+  end
+
+  describe '#replicate' do
+    let(:new_repository) do
+      Gitlab::Git::Repository.new('test_second_storage', TEST_REPO_PATH, '', 'group/project')
+    end
+    let(:new_repository_path) { File.join(TestEnv::SECOND_STORAGE_PATH, new_repository.relative_path) }
+
+    subject { new_repository.replicate(repository) }
+
+    before do
+      stub_storage_settings('test_second_storage' => {
+        'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
+        'path' => TestEnv::SECOND_STORAGE_PATH
+      })
+      new_repository.create_repository
+    end
+
+    after do
+      new_repository.remove
+    end
+
+    it 'mirrors the source repository' do
+      subject
+
+      expect(refs(new_repository_path)).to eq(refs(repository_path))
+    end
+
+    context 'with keep-around refs' do
+      let(:sha) { SeedRepo::Commit::ID }
+      let(:keep_around_ref) { "refs/keep-around/#{sha}" }
+      let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
+
+      before do
+        repository.write_ref(keep_around_ref, sha)
+        repository.write_ref(tmp_ref, sha)
+      end
+
+      it 'includes the temporary and keep-around refs' do
+        subject
+
+        expect(refs(new_repository_path)).to include(keep_around_ref)
+        expect(refs(new_repository_path)).to include(tmp_ref)
       end
     end
   end

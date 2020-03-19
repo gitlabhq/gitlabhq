@@ -159,7 +159,7 @@ rescues `StandardError` which can make it harder to debug issues in an
 development environment. The current workaround is to temporarily
 comment out the `rescue` in your local development source.
 
-You can also follow the installation pod logs to debug issues related to
+You can also follow the installation logs to debug issues related to
 installation. Once the installation/upgrade is underway, wait for the
 pod to be created. Then run the following to obtain the pods logs as
 they are written:

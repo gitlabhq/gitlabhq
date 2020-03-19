@@ -18,7 +18,7 @@ you can.
 
 Not being able to version control large binaries is a big problem for many
 larger organizations.
-Videos, photos, audio, compiled binaries and many other types of files are too
+Videos, photos, audio, compiled binaries, and many other types of files are too
 large. As a workaround, people keep artwork-in-progress in a Dropbox folder and
 only check in the final result. This results in using outdated files, not
 having a complete history and increases the risk of losing work.
@@ -41,15 +41,15 @@ configuration options required to enable it.
 
 `git-annex` needs to be installed both on the server and the client side.
 
-For Debian-like systems (e.g., Debian, Ubuntu) this can be achieved by running:
+For Debian-like systems (for example, Debian and Ubuntu) this can be achieved by running:
 
-```
+```shell
 sudo apt-get update && sudo apt-get install git-annex
 ```
 
-For RedHat-like systems (e.g., CentOS, RHEL) this can be achieved by running:
+For RedHat-like systems (for example, CentOS and RHEL) this can be achieved by running:
 
-```
+```shell
 sudo yum install epel-release && sudo yum install git-annex
 ```
 
@@ -108,7 +108,7 @@ git annex sync --content         # sync the Git repo and large file to the GitLa
 
 The output should look like this:
 
-```
+```plaintext
 commit
 On branch master
 Your branch is ahead of 'origin/master' by 1 commit.
@@ -154,7 +154,7 @@ are turned into symbolic links that point to data in `.git/annex/objects/`.
 
 The `debian.iso` file in the example will contain the symbolic link:
 
-```
+```plaintext
 .git/annex/objects/ZW/1k/SHA256E-s82701--6384039733b5035b559efd5a2e25a493ab6e09aabfd5162cc03f6f0ec238429d.png/SHA256E-s82701--6384039733b5035b559efd5a2e25a493ab6e09aabfd5162cc03f6f0ec238429d.iso
 ```
 
@@ -216,14 +216,14 @@ and the files are pushed to the GitLab repository.
 If you get hit by this, you can run the following command inside the repository
 that the warning was raised:
 
-```
+```shell
 git config remote.origin.annex-ignore false
 ```
 
 Consecutive runs of `git annex sync --content` **should not** produce this
 warning and the output should look like this:
 
-```
+```plaintext
 commit  ok
 pull origin
 ok

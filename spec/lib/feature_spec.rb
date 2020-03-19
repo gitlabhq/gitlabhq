@@ -42,7 +42,7 @@ describe Feature do
         .once
         .and_call_original
 
-      expect(Gitlab::ThreadMemoryCache.cache_backend)
+      expect(Gitlab::ProcessMemoryCache.cache_backend)
         .to receive(:fetch)
         .once
         .with('flipper:persisted_names', expires_in: 1.minute)
@@ -146,7 +146,15 @@ describe Feature do
       expect(described_class.enabled?(:enabled_feature_flag)).to be_truthy
     end
 
-    it { expect(described_class.l1_cache_backend).to eq(Gitlab::ThreadMemoryCache.cache_backend) }
+    context 'with USE_THREAD_MEMORY_CACHE defined' do
+      before do
+        stub_env('USE_THREAD_MEMORY_CACHE', '1')
+      end
+
+      it { expect(described_class.l1_cache_backend).to eq(Gitlab::ThreadMemoryCache.cache_backend) }
+    end
+
+    it { expect(described_class.l1_cache_backend).to eq(Gitlab::ProcessMemoryCache.cache_backend) }
     it { expect(described_class.l2_cache_backend).to eq(Rails.cache) }
 
     it 'caches the status in L1 and L2 caches',

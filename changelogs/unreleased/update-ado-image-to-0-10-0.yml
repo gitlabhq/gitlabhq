@@ -1,0 +1,5 @@
+---
+title: Update Auto DevOps deployment template's auto-deploy-image to v0.10.0 (updates the included glibc)
+merge_request: 25920
+author:
+type: other

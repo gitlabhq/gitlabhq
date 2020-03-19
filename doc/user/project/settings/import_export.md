@@ -12,6 +12,7 @@ See also:
 
 - [Project import/export API](../../../api/project_import_export.md)
 - [Project import/export administration rake tasks](../../../administration/raketasks/project_import_export.md) **(CORE ONLY)**
+- [Group import/export API](../../../api/group_import_export.md)
 
 To set up a project import/export:
 
@@ -28,10 +29,11 @@ Note the following:
 - Exports are stored in a temporary [shared directory](../../../development/shared_files.md)
   and are deleted every 24 hours by a specific worker.
 - Group members are exported as project members, as long as the user has
-  maintainer or admin access to the group where the exported project lives. Import admins should map users by email address.
+  maintainer or admin access to the group where the exported project lives.
+- Project members with owner access will be imported as maintainers.
+- Using an admin account to import will map users by email address (self-managed only).
   Otherwise, a supplementary comment is left to mention that the original author and
   the MRs, notes, or issues will be owned by the importer.
-- Project members with owner access will be imported as maintainers.
 - If an imported project contains merge requests originating from forks,
   then new branches associated with such merge requests will be created
   within a project during the import/export. Thus, the number of branches
@@ -41,22 +43,23 @@ Note the following:
 
 The following table lists updates to Import/Export:
 
-| GitLab version   | Import/Export schema version |
-| ---------------- | --------------------- |
-| 11.1 to current  | 0.2.4                 |
-| 10.8             | 0.2.3                 |
-| 10.4             | 0.2.2                 |
-| 10.3             | 0.2.1                 |
-| 10.0             | 0.2.0                 |
-| 9.4.0            | 0.1.8                 |
-| 9.2.0            | 0.1.7                 |
-| 8.17.0           | 0.1.6                 |
-| 8.13.0           | 0.1.5                 |
-| 8.12.0           | 0.1.4                 |
-| 8.10.3           | 0.1.3                 |
-| 8.10.0           | 0.1.2                 |
-| 8.9.5            | 0.1.1                 |
-| 8.9.0            | 0.1.0                 |
+| Exporting GitLab version   | Importing GitLab version   |
+| -------------------------- | -------------------------- |
+| 11.7 to current            | 11.7 to current            |
+| 11.1 to 11.6               | 11.1 to 11.6               |
+| 10.8 to 11.0               | 10.8 to 11.0               |
+| 10.4 to 10.7               | 10.4 to 10.7               |
+| 10.3                       | 10.3                       |
+| 10.0 to 10.2               | 10.0 to 10.2               |
+| 9.4 to 9.6                 | 9.4 to 9.6                 |
+| 9.2 to 9.3                 | 9.2 to 9.3                 |
+| 8.17 to 9.1                | 8.17 to 9.1                |
+| 8.13 to 8.16               | 8.13 to 8.16               |
+| 8.12                       | 8.12                       |
+| 8.10.3 to 8.11             | 8.10.3 to 8.11             |
+| 8.10.0 to 8.10.2           | 8.10.0 to 8.10.2           |
+| 8.9.5 to 8.9.11            | 8.9.5 to 8.9.11            |
+| 8.9.0 to 8.9.4             | 8.9.0 to 8.9.4             |
 
 Projects can be exported and imported only between versions of GitLab with matching Import/Export versions.
 
@@ -75,6 +78,7 @@ The following items will be exported:
 - Design Management files and data **(PREMIUM)**
 - LFS objects
 - Issue boards
+- Pipelines history
 
 The following items will NOT be exported:
 
@@ -89,7 +93,7 @@ The following items will NOT be exported:
 
 NOTE: **Note:**
 For more details on the specific data persisted in a project export, see the
-[`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/import_export/import_export.yml) file.
+[`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/import_export/project/import_export.yml) file.
 
 ## Exporting a project and its data
 
@@ -139,4 +143,4 @@ To help avoid abuse, users are rate limited to:
 | ---------------- | --------------------------- |
 | Export           | 1 project per 5 minutes     |
 | Download export  | 10 projects per 10 minutes  |
-| Import           | 30 projects per 10 minutes  |
+| Import           | 30 projects per 5 minutes  |

@@ -19,6 +19,9 @@ module Gitlab
   class JobWaiter
     KEY_PREFIX = "gitlab:job_waiter"
 
+    STARTED_METRIC = :gitlab_job_waiter_started_total
+    TIMEOUTS_METRIC = :gitlab_job_waiter_timeouts_total
+
     def self.notify(key, jid)
       Gitlab::Redis::SharedState.with { |redis| redis.lpush(key, jid) }
     end
@@ -27,15 +30,16 @@ module Gitlab
       key.is_a?(String) && key =~ /\A#{KEY_PREFIX}:\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/
     end
 
-    attr_reader :key, :finished
+    attr_reader :key, :finished, :worker_label
     attr_accessor :jobs_remaining
 
     # jobs_remaining - the number of jobs left to wait for
     # key - The key of this waiter.
-    def initialize(jobs_remaining = 0, key = "#{KEY_PREFIX}:#{SecureRandom.uuid}")
+    def initialize(jobs_remaining = 0, key = "#{KEY_PREFIX}:#{SecureRandom.uuid}", worker_label: nil)
       @key = key
       @jobs_remaining = jobs_remaining
       @finished = []
+      @worker_label = worker_label
     end
 
     # Waits for all the jobs to be completed.
@@ -45,6 +49,7 @@ module Gitlab
     #           long to process, or is never processed.
     def wait(timeout = 10)
       deadline = Time.now.utc + timeout
+      increment_counter(STARTED_METRIC)
 
       Gitlab::Redis::SharedState.with do |redis|
         # Fallback key expiry: allow a long grace period to reduce the chance of
@@ -60,7 +65,12 @@ module Gitlab
           break if seconds_left <= 0
 
           list, jid = redis.blpop(key, timeout: seconds_left)
-          break unless list && jid # timed out
+
+          # timed out
+          unless list && jid
+            increment_counter(TIMEOUTS_METRIC)
+            break
+          end
 
           @finished << jid
           @jobs_remaining -= 1
@@ -71,6 +81,21 @@ module Gitlab
       end
 
       finished
+    end
+
+    private
+
+    def increment_counter(metric)
+      return unless worker_label
+
+      metrics[metric].increment(worker: worker_label)
+    end
+
+    def metrics
+      @metrics ||= {
+        STARTED_METRIC => Gitlab::Metrics.counter(STARTED_METRIC, 'JobWaiter attempts started'),
+        TIMEOUTS_METRIC => Gitlab::Metrics.counter(TIMEOUTS_METRIC, 'JobWaiter attempts timed out')
+      }
     end
   end
 end

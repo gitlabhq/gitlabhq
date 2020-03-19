@@ -66,7 +66,7 @@ describe API::Jobs do
 
     context 'authorized user' do
       it 'returns project jobs' do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
       end
@@ -122,7 +122,7 @@ describe API::Jobs do
         let(:query) { { 'scope' => 'pending' } }
 
         it do
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Array
         end
       end
@@ -131,7 +131,7 @@ describe API::Jobs do
         let(:query) { { scope: %w(pending running) } }
 
         it do
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Array
         end
       end
@@ -139,7 +139,7 @@ describe API::Jobs do
       context 'respond 400 when scope contains invalid state' do
         let(:query) { { scope: %w(unknown running) } }
 
-        it { expect(response).to have_gitlab_http_status(400) }
+        it { expect(response).to have_gitlab_http_status(:bad_request) }
       end
     end
 
@@ -148,7 +148,7 @@ describe API::Jobs do
         let(:api_user) { nil }
 
         it 'does not return project jobs' do
-          expect(response).to have_gitlab_http_status(401)
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
       end
 
@@ -156,7 +156,7 @@ describe API::Jobs do
         let(:api_user) { guest }
 
         it 'does not return project jobs' do
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -178,7 +178,7 @@ describe API::Jobs do
 
     context 'authorized user' do
       it 'returns pipeline jobs' do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
       end
@@ -210,7 +210,7 @@ describe API::Jobs do
         let(:query) { { 'scope' => 'pending' } }
 
         it do
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Array
         end
       end
@@ -219,7 +219,7 @@ describe API::Jobs do
         let(:query) { { scope: %w(pending running) } }
 
         it do
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_an Array
         end
       end
@@ -227,7 +227,7 @@ describe API::Jobs do
       context 'respond 400 when scope contains invalid state' do
         let(:query) { { scope: %w(unknown running) } }
 
-        it { expect(response).to have_gitlab_http_status(400) }
+        it { expect(response).to have_gitlab_http_status(:bad_request) }
       end
 
       context 'jobs in different pipelines' do
@@ -257,7 +257,7 @@ describe API::Jobs do
         let(:api_user) { nil }
 
         it 'does not return jobs' do
-          expect(response).to have_gitlab_http_status(401)
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
       end
 
@@ -265,7 +265,7 @@ describe API::Jobs do
         let(:api_user) { guest }
 
         it 'does not return jobs' do
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -280,7 +280,7 @@ describe API::Jobs do
 
     context 'authorized user' do
       it 'returns specific job data' do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq(job.id)
         expect(json_response['status']).to eq(job.status)
         expect(json_response['stage']).to eq(job.stage)
@@ -319,7 +319,7 @@ describe API::Jobs do
       let(:api_user) { nil }
 
       it 'does not return specific job data' do
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end
@@ -339,7 +339,7 @@ describe API::Jobs do
       end
 
       it 'returns status 401 (unauthorized)' do
-        expect(response).to have_http_status :unauthorized
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
@@ -349,7 +349,7 @@ describe API::Jobs do
       end
 
       it 'returns status 403 (forbidden)' do
-        expect(response).to have_http_status :forbidden
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -362,7 +362,7 @@ describe API::Jobs do
       end
 
       it 'returns status 204 (no content)' do
-        expect(response).to have_http_status :no_content
+        expect(response).to have_gitlab_http_status(:no_content)
       end
     end
   end
@@ -386,7 +386,7 @@ describe API::Jobs do
 
             get_artifact_file(artifact)
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
 
@@ -398,7 +398,7 @@ describe API::Jobs do
 
             get_artifact_file(artifact)
 
-            expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
 
@@ -410,7 +410,7 @@ describe API::Jobs do
 
             get_artifact_file(artifact)
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -423,7 +423,7 @@ describe API::Jobs do
 
           get_artifact_file(artifact)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
                         'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
@@ -435,7 +435,7 @@ describe API::Jobs do
       it 'does not return job artifact file' do
         get_artifact_file('some/artifact')
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -453,7 +453,7 @@ describe API::Jobs do
       end
 
       it 'returns specific job artifacts' do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers.to_h).to include(download_headers)
         expect(response.body).to match_file(job.artifacts_file.file.file)
       end
@@ -476,7 +476,7 @@ describe API::Jobs do
             let(:api_user) { nil }
 
             it 'does not return specific job artifacts' do
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
         end
@@ -507,7 +507,7 @@ describe API::Jobs do
 
           context 'when proxy download is disabled' do
             it 'returns location redirect' do
-              expect(response).to have_gitlab_http_status(302)
+              expect(response).to have_gitlab_http_status(:found)
             end
           end
 
@@ -521,7 +521,7 @@ describe API::Jobs do
             let(:api_user) { nil }
 
             it 'does not return specific job artifacts' do
-              expect(response).to have_gitlab_http_status(404)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
         end
@@ -557,7 +557,7 @@ describe API::Jobs do
 
       it 'does not find a resource in a private project' do
         expect(project).to be_private
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -569,7 +569,7 @@ describe API::Jobs do
       end
 
       it 'gives 403' do
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -604,7 +604,7 @@ describe API::Jobs do
               %Q(attachment; filename="#{job.artifacts_file.filename}"; filename*=UTF-8''#{job.artifacts_file.filename}) }
           end
 
-          it { expect(response).to have_http_status(:ok) }
+          it { expect(response).to have_gitlab_http_status(:ok) }
           it { expect(response.headers.to_h).to include(download_headers) }
         end
 
@@ -619,7 +619,7 @@ describe API::Jobs do
           end
 
           it 'returns location redirect' do
-            expect(response).to have_http_status(:found)
+            expect(response).to have_gitlab_http_status(:found)
           end
         end
       end
@@ -677,7 +677,7 @@ describe API::Jobs do
           let(:public_builds) { true }
 
           it 'allows to access artifacts', :sidekiq_might_not_need_inline do
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response.headers.to_h)
               .to include('Content-Type' => 'application/json',
                           'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
@@ -689,7 +689,7 @@ describe API::Jobs do
           let(:public_builds) { false }
 
           it 'rejects access to artifacts' do
-            expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(:forbidden)
             expect(json_response).to have_key('message')
             expect(response.headers.to_h)
               .not_to include('Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
@@ -701,7 +701,7 @@ describe API::Jobs do
           let(:public_builds) { true }
 
           it 'rejects access and hides existence of artifacts' do
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
             expect(json_response).to have_key('message')
             expect(response.headers.to_h)
               .not_to include('Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
@@ -720,7 +720,7 @@ describe API::Jobs do
 
           get_artifact_file(artifact)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
                         'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
@@ -737,7 +737,7 @@ describe API::Jobs do
         it 'returns a specific artifact file for a valid path', :sidekiq_might_not_need_inline do
           get_artifact_file(artifact, 'improve/awesome')
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
                         'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
@@ -773,7 +773,7 @@ describe API::Jobs do
       it 'does not return job artifact file' do
         get_artifact_file('some/artifact')
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -803,7 +803,7 @@ describe API::Jobs do
         end
 
         it 'returns specific job trace' do
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to eq(job.trace.raw)
         end
       end
@@ -812,7 +812,7 @@ describe API::Jobs do
         let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
         it 'returns specific job trace' do
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to eq(job.trace.raw)
         end
       end
@@ -821,7 +821,7 @@ describe API::Jobs do
         let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
         it 'returns specific job trace' do
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to eq(job.trace.raw)
         end
       end
@@ -831,7 +831,7 @@ describe API::Jobs do
       let(:api_user) { nil }
 
       it 'does not return specific job trace' do
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end
@@ -844,7 +844,7 @@ describe API::Jobs do
     context 'authorized user' do
       context 'user with :update_build persmission' do
         it 'cancels running or pending job' do
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(project.builds.first.status).to eq('success')
         end
       end
@@ -853,7 +853,7 @@ describe API::Jobs do
         let(:api_user) { reporter }
 
         it 'does not cancel job' do
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -862,7 +862,7 @@ describe API::Jobs do
       let(:api_user) { nil }
 
       it 'does not cancel job' do
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end
@@ -877,7 +877,7 @@ describe API::Jobs do
     context 'authorized user' do
       context 'user with :update_build permission' do
         it 'retries non-running job' do
-          expect(response).to have_gitlab_http_status(201)
+          expect(response).to have_gitlab_http_status(:created)
           expect(project.builds.first.status).to eq('canceled')
           expect(json_response['status']).to eq('pending')
         end
@@ -887,7 +887,7 @@ describe API::Jobs do
         let(:api_user) { reporter }
 
         it 'does not retry job' do
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -896,7 +896,7 @@ describe API::Jobs do
       let(:api_user) { nil }
 
       it 'does not retry job' do
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end
@@ -914,7 +914,7 @@ describe API::Jobs do
       let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
 
       it 'erases job content' do
-        expect(response).to have_gitlab_http_status(201)
+        expect(response).to have_gitlab_http_status(:created)
         expect(job.job_artifacts.count).to eq(0)
         expect(job.trace.exist?).to be_falsy
         expect(job.artifacts_file.present?).to be_falsy
@@ -934,7 +934,7 @@ describe API::Jobs do
       let(:job) { create(:ci_build, :trace_live, project: project, pipeline: pipeline) }
 
       it 'responds with forbidden' do
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -945,13 +945,13 @@ describe API::Jobs do
       context 'when the build was created by the developer' do
         let(:owner) { user }
 
-        it { expect(response).to have_gitlab_http_status(201) }
+        it { expect(response).to have_gitlab_http_status(:created) }
       end
 
       context 'when the build was created by the other' do
         let(:owner) { create(:user) }
 
-        it { expect(response).to have_gitlab_http_status(403) }
+        it { expect(response).to have_gitlab_http_status(:forbidden) }
       end
     end
   end
@@ -968,7 +968,7 @@ describe API::Jobs do
       end
 
       it 'keeps artifacts' do
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(job.reload.artifacts_expire_at).to be_nil
       end
     end
@@ -977,7 +977,7 @@ describe API::Jobs do
       let(:job) { create(:ci_build, project: project, pipeline: pipeline) }
 
       it 'responds with not found' do
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -992,7 +992,7 @@ describe API::Jobs do
 
       context 'when user is authorized to trigger a manual action' do
         it 'plays the job' do
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['user']['id']).to eq(user.id)
           expect(json_response['id']).to eq(job.id)
           expect(job.reload).to be_pending
@@ -1005,7 +1005,7 @@ describe API::Jobs do
 
           it 'does not trigger a manual action' do
             expect(job.reload).to be_manual
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
 
@@ -1014,7 +1014,7 @@ describe API::Jobs do
 
           it 'does not trigger a manual action' do
             expect(job.reload).to be_manual
-            expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
       end
@@ -1022,7 +1022,7 @@ describe API::Jobs do
 
     context 'on a non-playable job' do
       it 'returns a status code 400, Bad Request' do
-        expect(response).to have_gitlab_http_status 400
+        expect(response).to have_gitlab_http_status(:bad_request)
         expect(response.body).to match("Unplayable Job")
       end
     end

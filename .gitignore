@@ -30,6 +30,7 @@ eslint-report.html
 /app/assets/javascripts/locale/**/app.js
 /backups/*
 /config/aws.yml
+/config/cable.yml
 /config/database*.yml
 /config/gitlab.yml
 /config/gitlab_ci.yml
@@ -42,6 +43,7 @@ eslint-report.html
 /config/redis.shared_state.yml
 /config/unicorn.rb
 /config/puma.rb
+/config/puma_actioncable.rb
 /config/secrets.yml
 /config/sidekiq.yml
 /config/registry.key
@@ -54,7 +56,7 @@ eslint-report.html
 /dump.rdb
 /jsconfig.json
 /log/*.log*
-/node_modules/
+/node_modules
 /nohup.out
 /public/assets/
 /public/uploads.*

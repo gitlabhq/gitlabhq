@@ -36,6 +36,7 @@ contains some settings that are common for all providers.
 - [OpenID Connect](../administration/auth/oidc.md)
 - [UltraAuth](ultra_auth.md)
 - [Salesforce](salesforce.md)
+- [AWS Cognito](../administration/auth/cognito.md)
 
 ## Initial OmniAuth Configuration
 
@@ -51,7 +52,7 @@ that are in common for all providers that we need to consider.
   be created manually or they will not be able to sign in via OmniAuth.
 - `auto_link_ldap_user` can be used if you have [LDAP / ActiveDirectory](ldap.md)
   integration enabled. It defaults to false. When enabled, users automatically
-  created through OmniAuth will be linked to their LDAP entry as well.
+  created through an OmniAuth provider will have their LDAP identity created in GitLab as well.
 - `block_auto_created_users` defaults to `true`. If `true` auto created users will
   be blocked by default and will have to be unblocked by an administrator before
   they are able to sign in.
@@ -80,9 +81,6 @@ To change these settings:
   and change:
 
   ```ruby
-  # Versions prior to 11.4 require this to be set to true
-  # gitlab_rails['omniauth_enabled'] = nil
-
   # CAUTION!
   # This allows users to login without having a user account first. Define the allowed providers
   # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.

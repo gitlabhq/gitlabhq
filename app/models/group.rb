@@ -59,6 +59,9 @@ class Group < Namespace
 
   has_many :import_failures, inverse_of: :group
 
+  has_many :group_deploy_tokens
+  has_many :deploy_tokens, through: :group_deploy_tokens
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects
@@ -403,11 +406,15 @@ class Group < Namespace
   end
 
   def ci_variables_for(ref, project)
-    list_of_ids = [self] + ancestors
-    variables = Ci::GroupVariable.where(group: list_of_ids)
-    variables = variables.unprotected unless project.protected_for?(ref)
-    variables = variables.group_by(&:group_id)
-    list_of_ids.reverse.flat_map { |group| variables[group.id] }.compact
+    cache_key = "ci_variables_for:group:#{self&.id}:project:#{project&.id}:ref:#{ref}"
+
+    ::Gitlab::SafeRequestStore.fetch(cache_key) do
+      list_of_ids = [self] + ancestors
+      variables = Ci::GroupVariable.where(group: list_of_ids)
+      variables = variables.unprotected unless project.protected_for?(ref)
+      variables = variables.group_by(&:group_id)
+      list_of_ids.reverse.flat_map { |group| variables[group.id] }.compact
+    end
   end
 
   def group_member(user)

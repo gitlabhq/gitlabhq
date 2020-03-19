@@ -226,9 +226,9 @@ Devise.setup do |config|
     manager.failure_app = Gitlab::DeviseFailure
   end
 
-  if Gitlab::Auth::LDAP::Config.enabled?
-    Gitlab::Auth::LDAP::Config.providers.each do |provider|
-      ldap_config = Gitlab::Auth::LDAP::Config.new(provider)
+  if Gitlab::Auth::Ldap::Config.enabled?
+    Gitlab::Auth::Ldap::Config.providers.each do |provider|
+      ldap_config = Gitlab::Auth::Ldap::Config.new(provider)
       config.omniauth(provider, ldap_config.omniauth_options)
     end
   end

@@ -111,6 +111,22 @@ describe Gitlab::X509::Commit do
           expect(signature.x509_certificate.x509_issuer).to have_attributes(user1_issuer_attributes)
           expect(signature.persisted?).to be_truthy
         end
+
+        context 'revoked certificate' do
+          let(:x509_issuer) { create(:x509_issuer, user1_issuer_attributes) }
+          let!(:x509_certificate) { create(:x509_certificate, user1_certificate_attributes.merge(x509_issuer_id: x509_issuer.id, certificate_status: :revoked)) }
+
+          it 'returns an unverified signature' do
+            expect(signature).to have_attributes(
+              commit_sha: commit_sha,
+              project: project,
+              verification_status: 'unverified'
+            )
+            expect(signature.x509_certificate).to have_attributes(user1_certificate_attributes)
+            expect(signature.x509_certificate.x509_issuer).to have_attributes(user1_issuer_attributes)
+            expect(signature.persisted?).to be_truthy
+          end
+        end
       end
 
       context 'without trusted certificate within store' do

@@ -1,0 +1,5 @@
+---
+title: 'Fixes stop_review job upon expired artifacts from previous stages'
+merge_request: 27258
+author: Jack Lei
+type: fixed

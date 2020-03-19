@@ -35,6 +35,6 @@ export default {
 <template>
   <file-row :file="file" v-bind="$attrs" v-on="$listeners">
     <file-row-stats v-if="showFileRowStats" :file="file" class="mr-1" />
-    <changed-file-icon :file="file" :size="16" />
+    <changed-file-icon :file="file" :size="16" :show-tooltip="true" />
   </file-row>
 </template>

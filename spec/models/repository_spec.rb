@@ -320,6 +320,21 @@ describe Repository do
       end
     end
 
+    context "when 'author' is set" do
+      it "returns commits from that author" do
+        commit = repository.commits(nil, limit: 1).first
+        known_author = "#{commit.author_name} <#{commit.author_email}>"
+
+        expect(repository.commits(nil, author: known_author, limit: 1)).not_to be_empty
+      end
+
+      it "doesn't returns commits from an unknown author" do
+        unknown_author = "The Man With No Name <zapp@brannigan.com>"
+
+        expect(repository.commits(nil, author: unknown_author, limit: 1)).to be_empty
+      end
+    end
+
     context "when 'all' flag is set" do
       it 'returns every commit from the repository' do
         expect(repository.commits(nil, all: true, limit: 60).size).to eq(60)
@@ -1911,32 +1926,6 @@ describe Repository do
       expect(repository).to receive(:repository_event).with(:push_tag)
 
       repository.before_push_tag
-    end
-  end
-
-  describe '#after_import' do
-    subject { repository.after_import }
-
-    it 'flushes and builds the cache' do
-      expect(repository).to receive(:expire_content_cache)
-
-      subject
-    end
-
-    it 'calls DetectRepositoryLanguagesWorker' do
-      expect(DetectRepositoryLanguagesWorker).to receive(:perform_async)
-
-      subject
-    end
-
-    context 'with a wiki repository' do
-      let(:repository) { project.wiki.repository }
-
-      it 'does not call DetectRepositoryLanguagesWorker' do
-        expect(DetectRepositoryLanguagesWorker).not_to receive(:perform_async)
-
-        subject
-      end
     end
   end
 

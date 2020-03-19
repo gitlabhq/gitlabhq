@@ -152,6 +152,12 @@ module Gitlab
         end
       end
 
+      def replicate(source_repository)
+        wrapped_gitaly_errors do
+          gitaly_repository_client.replicate(source_repository)
+        end
+      end
+
       def expire_has_local_branches_cache
         clear_memoization(:has_local_branches)
       end
@@ -322,6 +328,7 @@ module Gitlab
           limit: 10,
           offset: 0,
           path: nil,
+          author: nil,
           follow: false,
           skip_merges: false,
           after: nil,
@@ -766,12 +773,6 @@ module Gitlab
         !has_visible_content?
       end
 
-      def fetch_repository_as_mirror(repository)
-        wrapped_gitaly_errors do
-          gitaly_remote_client.fetch_internal_remote(repository)
-        end
-      end
-
       # Fetch remote for repository
       #
       # remote - remote name
@@ -789,6 +790,14 @@ module Gitlab
             prune: prune,
             timeout: GITLAB_PROJECTS_TIMEOUT
           )
+        end
+      end
+
+      def import_repository(url)
+        raise ArgumentError, "don't use disk paths with import_repository: #{url.inspect}" if url.start_with?('.', '/')
+
+        wrapped_gitaly_errors do
+          gitaly_repository_client.import_repository(url)
         end
       end
 
@@ -841,10 +850,9 @@ module Gitlab
         end
       end
 
-      def squash(user, squash_id, branch:, start_sha:, end_sha:, author:, message:)
+      def squash(user, squash_id, start_sha:, end_sha:, author:, message:)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_squash(user, squash_id, branch,
-              start_sha, end_sha, author, message)
+          gitaly_operation_client.user_squash(user, squash_id, start_sha, end_sha, author, message)
         end
       end
 

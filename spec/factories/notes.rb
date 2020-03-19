@@ -164,6 +164,10 @@ FactoryBot.define do
       attachment { fixture_file_upload("spec/fixtures/git-cheat-sheet.pdf", "application/pdf") }
     end
 
+    trait :confidential do
+      confidential { true }
+    end
+
     transient do
       in_reply_to { nil }
     end

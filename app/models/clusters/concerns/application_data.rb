@@ -23,13 +23,19 @@ module Clusters
         @files ||= begin
           files = { 'values.yaml': values }
 
-          files.merge!(certificate_files) if cluster.application_helm.has_ssl?
+          files.merge!(certificate_files) if use_tiller_ssl?
 
           files
         end
       end
 
       private
+
+      def use_tiller_ssl?
+        return false if ::Gitlab::Kubernetes::Helm.local_tiller_enabled?
+
+        cluster.application_helm.has_ssl?
+      end
 
       def certificate_files
         {

@@ -42,7 +42,7 @@ Please consider using a virtual machine to run GitLab.
 
 ### Ruby versions
 
-GitLab requires Ruby (MRI) 2.6. Beginning in GitLab 12.2, we  no longer support Ruby 2.5 and lower.
+GitLab requires Ruby (MRI) 2.6. Beginning in GitLab 12.2, we no longer support Ruby 2.5 and lower.
 
 You must use the standard MRI implementation of Ruby.
 We love [JRuby](https://www.jruby.org/) and [Rubinius](https://rubinius.com), but GitLab
@@ -59,16 +59,16 @@ GitLab 11.11 and higher only supports Git 2.21.x and newer, and
 
 ### Node.js versions
 
-Beginning in GitLab 11.8, we only support Node.js 8.10.0 or higher, and dropped
-support for Node.js 6.
+Beginning in GitLab 12.9, we only support node.js 10.13.0 or higher, and we have dropped
+support for node.js 8. (node.js 6 support was dropped in GitLab 11.8)
 
 We recommend Node 12.x, as it is faster.
 
 GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets, which requires a minimum
-version of Node.js 8.10.0.
+version of Node.js 10.13.0.
 
 You can check which version you are running with `node -v`. If you are running
-a version older than `v8.10.0`, you need to update to a newer version. You
+a version older than `v10.13.0`, you need to update to a newer version. You
 can find instructions to install from community maintained packages or compile
 from source at the [Node.js website](https://nodejs.org/en/download).
 
@@ -186,6 +186,23 @@ As long as you have enough available CPU and memory capacity, it's okay to incre
 
 To change the Unicorn workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/unicorn.html).
 
+## Puma Workers
+
+For most instances we recommend using: max(CPU cores * 0.9, 2) = Puma workers.
+For example a node with 4 cores would have 3 Unicorn workers.
+
+For all machines that have 4GB and up we recommend a minimum of three Puma workers.
+If you have a 2GB machine we recommend to configure only one Puma worker to prevent excessive swapping.
+
+By default each Puma worker runs with 4 threads. We do not recommend setting more,
+due to how [Ruby MRI multi-threading](https://en.wikipedia.org/wiki/Global_interpreter_lock) works.
+
+For cases when you have to use [Legacy Rugged code](../development/gitaly.md#legacy-rugged-code) it is recommended to set number of threads to 1.
+
+As long as you have enough available CPU and memory capacity, it's okay to increase the number of Puma workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
+
+To change the Puma workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Puma settings in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/puma.html).
+
 ## Redis and Sidekiq
 
 Redis stores all user sessions and the background task queue.
@@ -236,18 +253,21 @@ For reference, GitLab.com's [auto-scaling shared runner](../user/gitlab_com/inde
 
 ## Supported web browsers
 
+CAUTION: **Caution:** With GitLab 13.0 (May 2020) we are removing official support for Internet Explorer 11.
+With the release of GitLab 13.4 (September 2020) we will remove all code that supports Internet Explorer 11.
+You can provide feedback [on this issue](https://gitlab.com/gitlab-org/gitlab/issues/197987) or via your usual support channels.
+
 GitLab supports the following web browsers:
 
 - Firefox
 - Chrome/Chromium
 - Safari
 - Microsoft Edge
-- Internet Explorer 11
+- Internet Explorer 11 (until May 2020)
 
 For the listed web browsers, GitLab supports:
 
 - The current and previous major versions of browsers except Internet Explorer.
-- Only version 11 of Internet Explorer.
 - The current minor version of a supported major version.
 
 NOTE: **Note:** We do not support running GitLab with JavaScript disabled in the browser and have no plans of supporting that

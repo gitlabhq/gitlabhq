@@ -11,7 +11,7 @@ module Gitlab
         include ApplicationWorker
         include GithubImport::Queue
         include ReschedulingMethods
-        include NotifyUponDeath
+        include Gitlab::NotifyUponDeath
 
         feature_category :importers
         worker_has_external_dependencies!

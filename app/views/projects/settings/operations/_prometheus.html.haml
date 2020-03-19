@@ -1,0 +1,19 @@
+%section.settings.no-animate.js-prometheus-settings
+  .settings-header
+    %h4
+      = _('Prometheus')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = _('Expand')
+    %p
+      = _('Link Prometheus monitoring to GitLab.')
+      = link_to _('More information'), help_page_path('user/project/integrations/prometheus'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    - if @project
+      = render 'projects/settings/operations/configuration_banner', project: @project, service: service
+
+    %b.append-bottom-default
+      = s_('PrometheusService|Manual configuration')
+
+    - unless service.editable?
+      .info-well
+        = s_('PrometheusService|To enable manual configuration, uninstall Prometheus from your clusters')

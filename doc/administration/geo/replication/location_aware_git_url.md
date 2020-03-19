@@ -37,7 +37,7 @@ In any case, you require:
 - A Route53 Hosted Zone managing your domain.
 
 If you have not yet setup a Geo **primary** node and **secondary** node, please consult
-[the Geo setup instructions](https://docs.gitlab.com/ee/administration/geo/replication/#setup-instructions).
+[the Geo setup instructions](index.md#setup-instructions).
 
 ## Create a traffic policy
 

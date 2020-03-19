@@ -11,8 +11,9 @@ describe Gitlab::SidekiqConfig::Worker do
       get_feature_category: attributes[:feature_category],
       get_weight: attributes[:weight],
       get_worker_resource_boundary: attributes[:resource_boundary],
-      latency_sensitive_worker?: attributes[:latency_sensitive],
-      worker_has_external_dependencies?: attributes[:has_external_dependencies]
+      get_urgency: attributes[:urgency],
+      worker_has_external_dependencies?: attributes[:has_external_dependencies],
+      idempotent?: attributes[:idempotent]
     )
 
     described_class.new(inner_worker, ee: false)
@@ -46,7 +47,7 @@ describe Gitlab::SidekiqConfig::Worker do
   describe 'delegations' do
     [
       :feature_category_not_owned?, :get_feature_category, :get_weight,
-      :get_worker_resource_boundary, :latency_sensitive_worker?, :queue,
+      :get_worker_resource_boundary, :get_urgency, :queue,
       :queue_namespace, :worker_has_external_dependencies?
     ].each do |meth|
       it "delegates #{meth} to the worker class" do
@@ -87,17 +88,19 @@ describe Gitlab::SidekiqConfig::Worker do
       attributes_a = {
         feature_category: :source_code_management,
         has_external_dependencies: false,
-        latency_sensitive: false,
+        urgency: :low,
         resource_boundary: :memory,
-        weight: 2
+        weight: 2,
+        idempotent: true
       }
 
       attributes_b = {
         feature_category: :not_owned,
         has_external_dependencies: true,
-        latency_sensitive: true,
+        urgency: :high,
         resource_boundary: :unknown,
-        weight: 1
+        weight: 3,
+        idempotent: false
       }
 
       worker_a = create_worker(queue: 'a', **attributes_a)

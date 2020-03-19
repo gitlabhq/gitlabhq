@@ -5,15 +5,15 @@ module Projects
     class ExportService < BaseService
       def execute(after_export_strategy = nil, options = {})
         unless project.template_source? || can?(current_user, :admin_project, project)
-          raise ::Gitlab::ImportExport::Error.new(
-            "User with ID: %s does not have permission to Project %s with ID: %s." %
-              [current_user.id, project.name, project.id])
+          raise ::Gitlab::ImportExport::Error.permission_error(current_user, project)
         end
 
         @shared = project.import_export_shared
 
         save_all!
         execute_after_export_action(after_export_strategy)
+      ensure
+        cleanup
       end
 
       private
@@ -24,7 +24,7 @@ module Projects
         return unless after_export_strategy
 
         unless after_export_strategy.execute(current_user, project)
-          cleanup_and_notify_error
+          notify_error
         end
       end
 
@@ -33,7 +33,7 @@ module Projects
           Gitlab::ImportExport::Saver.save(exportable: project, shared: shared)
           notify_success
         else
-          cleanup_and_notify_error!
+          notify_error!
         end
       end
 
@@ -42,7 +42,7 @@ module Projects
       end
 
       def exporters
-        [version_saver, avatar_saver, project_tree_saver, uploads_saver, repo_saver, wiki_repo_saver, lfs_saver]
+        [version_saver, avatar_saver, project_tree_saver, uploads_saver, repo_saver, wiki_repo_saver, lfs_saver, snippets_repo_saver]
       end
 
       def version_saver
@@ -54,7 +54,16 @@ module Projects
       end
 
       def project_tree_saver
-        Gitlab::ImportExport::ProjectTreeSaver.new(project: project, current_user: current_user, shared: shared, params: params)
+        tree_saver_class.new(project: project, current_user: current_user, shared: shared, params: params)
+      end
+
+      def tree_saver_class
+        if ::Feature.enabled?(:streaming_serializer, project)
+          Gitlab::ImportExport::Project::TreeSaver
+        else
+          # Once we remove :streaming_serializer feature flag, Project::LegacyTreeSaver should be removed as well
+          Gitlab::ImportExport::Project::LegacyTreeSaver
+        end
       end
 
       def uploads_saver
@@ -73,16 +82,16 @@ module Projects
         Gitlab::ImportExport::LfsSaver.new(project: project, shared: shared)
       end
 
-      def cleanup_and_notify_error
-        Rails.logger.error("Import/Export - Project #{project.name} with ID: #{project.id} export error - #{shared.errors.join(', ')}") # rubocop:disable Gitlab/RailsLogger
-
-        FileUtils.rm_rf(shared.export_path)
-
-        notify_error
+      def snippets_repo_saver
+        Gitlab::ImportExport::SnippetsRepoSaver.new(current_user: current_user, project: project, shared: shared)
       end
 
-      def cleanup_and_notify_error!
-        cleanup_and_notify_error
+      def cleanup
+        FileUtils.rm_rf(shared.archive_path) if shared&.archive_path
+      end
+
+      def notify_error!
+        notify_error
 
         raise Gitlab::ImportExport::Error.new(shared.errors.to_sentence)
       end
@@ -92,6 +101,8 @@ module Projects
       end
 
       def notify_error
+        Rails.logger.error("Import/Export - Project #{project.name} with ID: #{project.id} export error - #{shared.errors.join(', ')}") # rubocop:disable Gitlab/RailsLogger
+
         notification_service.project_not_exported(project, current_user, shared.errors)
       end
     end

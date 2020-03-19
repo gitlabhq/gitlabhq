@@ -53,26 +53,22 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
                              fallback_diff_refs: diffs.fallback_diff_refs)
     end
 
-    it 'does not calculate highlighting when reading from cache' do
+    before do
       cache.write_if_empty
       cache.decorate(diff_file)
+    end
 
+    it 'does not calculate highlighting when reading from cache' do
       expect_any_instance_of(Gitlab::Diff::Highlight).not_to receive(:highlight)
 
       diff_file.highlighted_diff_lines
     end
 
     it 'assigns highlighted diff lines to the DiffFile' do
-      cache.write_if_empty
-      cache.decorate(diff_file)
-
       expect(diff_file.highlighted_diff_lines.size).to be > 5
     end
 
     it 'assigns highlighted diff lines which rich_text are HTML-safe' do
-      cache.write_if_empty
-      cache.decorate(diff_file)
-
       rich_texts = diff_file.highlighted_diff_lines.map(&:rich_text)
 
       expect(rich_texts).to all(be_html_safe)
@@ -99,6 +95,28 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
   describe '#write_if_empty' do
     it_behaves_like 'caches missing entries' do
       let(:paths) { merge_request.diffs.raw_diff_files.select(&:text?).map(&:file_path) }
+    end
+
+    it 'updates memory usage metrics if Redis version >= 4' do
+      allow_next_instance_of(Redis) do |redis|
+        allow(redis).to receive(:info).and_return({ "redis_version" => "4.0.0" })
+
+        expect(described_class.gitlab_redis_diff_caching_memory_usage_bytes)
+          .to receive(:observe).and_call_original
+
+        cache.send(:write_to_redis_hash, diff_hash)
+      end
+    end
+
+    it 'does not update memory usage metrics if Redis version < 4' do
+      allow_next_instance_of(Redis) do |redis|
+        allow(redis).to receive(:info).and_return({ "redis_version" => "3.0.0" })
+
+        expect(described_class.gitlab_redis_diff_caching_memory_usage_bytes)
+          .not_to receive(:observe).and_call_original
+
+        cache.send(:write_to_redis_hash, diff_hash)
+      end
     end
 
     context 'different diff_collections for the same diffable' do
@@ -148,6 +166,14 @@ describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
   describe 'metrics' do
     it 'defines :gitlab_redis_diff_caching_memory_usage_bytes histogram' do
       expect(described_class).to respond_to(:gitlab_redis_diff_caching_memory_usage_bytes)
+    end
+
+    it 'defines :gitlab_redis_diff_caching_hit' do
+      expect(described_class).to respond_to(:gitlab_redis_diff_caching_hit)
+    end
+
+    it 'defines :gitlab_redis_diff_caching_miss' do
+      expect(described_class).to respond_to(:gitlab_redis_diff_caching_miss)
     end
   end
 end

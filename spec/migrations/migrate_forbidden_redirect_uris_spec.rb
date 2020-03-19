@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20181026091631_migrate_forbidden_redirect_uris.rb')
 
-describe MigrateForbiddenRedirectUris, :migration do
+describe MigrateForbiddenRedirectUris do
   let(:oauth_application) { table(:oauth_applications) }
   let(:oauth_access_grant) { table(:oauth_access_grants) }
 

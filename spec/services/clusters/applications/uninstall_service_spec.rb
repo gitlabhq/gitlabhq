@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Clusters::Applications::UninstallService, '#execute' do
   let(:application) { create(:clusters_applications_prometheus, :scheduled) }
   let(:service) { described_class.new(application) }
-  let(:helm_client) { instance_double(Gitlab::Kubernetes::Helm::Api) }
+  let(:helm_client) { instance_double(Gitlab::Kubernetes::Helm::API) }
   let(:worker_class) { Clusters::Applications::WaitForUninstallAppWorker }
 
   before do

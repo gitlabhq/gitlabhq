@@ -16,9 +16,17 @@ describe GitlabSchema.types['Group'] do
       web_url avatar_url share_with_group_lock project_creation_level
       subgroup_creation_level require_two_factor_authentication
       two_factor_grace_period auto_devops_enabled emails_disabled
-      mentions_disabled parent
+      mentions_disabled parent boards
     ]
 
     is_expected.to include_graphql_fields(*expected_fields)
+  end
+
+  describe 'boards field' do
+    subject { described_class.fields['boards'] }
+
+    it 'returns boards' do
+      is_expected.to have_graphql_type(Types::BoardType.connection_type)
+    end
   end
 end

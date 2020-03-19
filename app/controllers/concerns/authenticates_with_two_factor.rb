@@ -3,8 +3,6 @@
 # == AuthenticatesWithTwoFactor
 #
 # Controller concern to handle two-factor authentication
-#
-# Upon inclusion, skips `require_no_authentication` on `:create`.
 module AuthenticatesWithTwoFactor
   extend ActiveSupport::Concern
 

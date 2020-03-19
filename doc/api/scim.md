@@ -122,7 +122,7 @@ Parameters:
 | `userName`   | string      | yes | Username of the user. |
 | `emails`     | JSON string | yes | Work email. |
 | `name`       | JSON string | yes | Name of the user. |
-| `meta`       | string      | no  | Resource type (`User'). |
+| `meta`       | string      | no  | Resource type (`User`). |
 
 Example request:
 
@@ -219,7 +219,7 @@ They match an expression as specified in [the RFC7644 filtering section](https:/
 
 Example:
 
-```
+```plaintext
 id eq a-b-c-d
 ```
 

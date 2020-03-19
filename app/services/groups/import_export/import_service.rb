@@ -12,15 +12,14 @@ module Groups
       end
 
       def execute
-        validate_user_permissions
+        if valid_user_permissions? && import_file && restorer.restore
+          notify_success
 
-        if import_file && restorer.restore
           @group
         else
-          raise StandardError.new(@shared.errors.to_sentence)
+          notify_error!
         end
-      rescue => e
-        raise StandardError.new(e.message)
+
       ensure
         remove_import_file
       end
@@ -34,7 +33,7 @@ module Groups
       end
 
       def restorer
-        @restorer ||= Gitlab::ImportExport::GroupTreeRestorer.new(user: @current_user,
+        @restorer ||= Gitlab::ImportExport::Group::TreeRestorer.new(user: @current_user,
                                                                   shared: @shared,
                                                                   group: @group,
                                                                   group_hash: nil)
@@ -49,12 +48,36 @@ module Groups
         upload.save!
       end
 
-      def validate_user_permissions
-        unless current_user.can?(:admin_group, group)
-          raise ::Gitlab::ImportExport::Error.new(
-            "User with ID: %s does not have permission to Group %s with ID: %s." %
-              [current_user.id, group.name, group.id])
+      def valid_user_permissions?
+        if current_user.can?(:admin_group, group)
+          true
+        else
+          @shared.error(::Gitlab::ImportExport::Error.permission_error(current_user, group))
+
+          false
         end
+      end
+
+      def notify_success
+        @shared.logger.info(
+          group_id:   @group.id,
+          group_name: @group.name,
+          message:    'Group Import/Export: Import succeeded'
+        )
+      end
+
+      def notify_error
+        @shared.logger.error(
+          group_id:   @group.id,
+          group_name: @group.name,
+          message:    "Group Import/Export: Errors occurred, see '#{Gitlab::ErrorTracking::Logger.file_name}' for details"
+        )
+      end
+
+      def notify_error!
+        notify_error
+
+        raise Gitlab::ImportExport::Error.new(@shared.errors.to_sentence)
       end
     end
   end

@@ -5,17 +5,18 @@ require 'spec_helper'
 describe 'import/gitlab_projects/new.html.haml' do
   include Devise::Test::ControllerHelpers
 
-  let(:user) { build_stubbed(:user, namespace: build_stubbed(:namespace)) }
+  let(:namespace) { build_stubbed(:namespace) }
+  let(:user) { build_stubbed(:user, namespace: namespace) }
 
   before do
     allow(view).to receive(:current_user).and_return(user)
   end
 
   context 'when the user has no other namespaces' do
-    it 'shows a namespace_id hidden field tag' do
+    it 'adds a namespace_id hidden field tag with the namespace id as value' do
       render
 
-      expect(rendered).to have_css('input[name="namespace_id"]', count: 1, visible: false)
+      expect(rendered).to have_css("input[name='namespace_id'][value='#{namespace.id}']", count: 1, visible: false)
     end
   end
 

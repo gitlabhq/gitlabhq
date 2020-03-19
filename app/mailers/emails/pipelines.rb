@@ -10,6 +10,10 @@ module Emails
       pipeline_mail(pipeline, recipients, 'failed')
     end
 
+    def pipeline_fixed_email(pipeline, recipients)
+      pipeline_mail(pipeline, recipients, 'been fixed')
+    end
+
     private
 
     def pipeline_mail(pipeline, recipients, status)

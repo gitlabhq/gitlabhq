@@ -15,22 +15,24 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       segment ':id/commits/:commit_id' do
         params do
-          requires :path, type: String, desc: 'The path of a file'
+          requires :paths, type: Array, desc: 'The paths of the files'
         end
         get 'lsif/info' do
           authorize! :download_code, user_project
 
           artifact =
-            @project.job_artifacts
+            Ci::JobArtifact
               .with_file_types(['lsif'])
-              .for_sha(params[:commit_id])
+              .for_sha(params[:commit_id], @project.id)
               .last
 
           not_found! unless artifact
           authorize! :read_pipeline, artifact.job.pipeline
           file_too_large! if artifact.file.cached_size > MAX_FILE_SIZE
 
-          ::Projects::LsifDataService.new(artifact.file, @project, params).execute
+          service = ::Projects::LsifDataService.new(artifact.file, @project, params[:commit_id])
+
+          params[:paths].to_h { |path| [path, service.execute(path)] }
         end
       end
     end

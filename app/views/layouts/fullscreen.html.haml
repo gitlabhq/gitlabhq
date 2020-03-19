@@ -5,9 +5,9 @@
     = render 'peek/bar'
     = header_message
     = render partial: "layouts/header/default", locals: { project: @project, group: @group }
-    = render 'shared/outdated_browser'
     .mobile-overlay
     .alert-wrapper
+      = render 'shared/outdated_browser'
       = render "layouts/broadcast"
       = yield :flash_message
       = render "layouts/flash"

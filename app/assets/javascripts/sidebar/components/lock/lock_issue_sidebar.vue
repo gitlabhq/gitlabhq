@@ -63,7 +63,9 @@ export default {
 
   methods: {
     toggleForm() {
-      this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
+      if (this.isEditable) {
+        this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
+      }
     },
     updateLockedAttribute(locked) {
       this.mediator.service

@@ -64,7 +64,7 @@ describe AwardEmojiHelper do
       it 'returns correct url' do
         @project = issue.project
 
-        expected_url = "/#{@project.namespace.path}/#{@project.path}/issues/#{issue.iid}/toggle_award_emoji"
+        expected_url = "/#{@project.namespace.path}/#{@project.path}/-/issues/#{issue.iid}/toggle_award_emoji"
 
         expect(subject).to eq(expected_url)
       end

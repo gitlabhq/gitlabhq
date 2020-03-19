@@ -48,6 +48,10 @@ module QA
             element :start_new_mr_checkbox
           end
 
+          view 'app/assets/javascripts/ide/components/repo_editor.vue' do
+            element :editor_container
+          end
+
           def has_file?(file_name)
             within_element(:file_list) do
               page.has_content? file_name
@@ -112,6 +116,17 @@ module QA
             end
 
             raise "The changes do not appear to have been committed successfully." unless commit_success_msg_shown
+          end
+
+          def add_to_modified_content(content)
+            finished_loading?
+            modified_text_area.set content
+          end
+
+          def modified_text_area
+            within_element(:editor_container) do
+              find('.modified textarea.inputarea')
+            end
           end
         end
       end

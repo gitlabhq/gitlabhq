@@ -82,5 +82,47 @@
       "name": "Internal"
     },
     "statusDetails": {}
+  },
+  {
+    "lastSeen": "2018-12-31T12:00:11Z",
+    "numComments": 0,
+    "userCount": 0,
+    "stats": {
+      "24h": [
+        [
+          1546437600,
+          0
+        ]
+      ]
+    },
+    "culprit": "sentry.tasks.reports.deliver_organization_user_report",
+    "title": "Service unknown",
+    "id": "12",
+    "assignedTo": null,
+    "logger": null,
+    "type": "error",
+    "annotations": [],
+    "metadata": {
+      "type": "gaierror",
+      "value": "Service unknown"
+    },
+    "status": "ignored",
+    "subscriptionDetails": null,
+    "isPublic": false,
+    "hasSeen": false,
+    "shortId": "INTERNAL-4",
+    "shareId": null,
+    "firstSeen": "2018-12-17T12:00:14Z",
+    "count": "70",
+    "permalink": "35.228.54.90/sentry/internal/issues/12/",
+    "level": "error",
+    "isSubscribed": true,
+    "isBookmarked": false,
+    "project": {
+      "slug": "internal",
+      "id": "1",
+      "name": "Internal"
+    },
+    "statusDetails": {}
   }
 ]

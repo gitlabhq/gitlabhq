@@ -1,0 +1,5 @@
+---
+title: Added CI_MERGE_REQUEST_CHANGED_PAGE_* to Predefined Variables reference
+merge_request: 25256
+author:
+type: added

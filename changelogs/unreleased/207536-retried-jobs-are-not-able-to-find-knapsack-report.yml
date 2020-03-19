@@ -1,0 +1,5 @@
+---
+title: Keep needs association on the retried build
+merge_request: 25888
+author:
+type: fixed

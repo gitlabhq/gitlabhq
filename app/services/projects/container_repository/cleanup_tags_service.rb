@@ -61,10 +61,15 @@ module Projects
       end
 
       def filter_by_name(tags)
-        regex = Gitlab::UntrustedRegexp.new("\\A#{params['name_regex']}\\z")
+        # Technical Debt: https://gitlab.com/gitlab-org/gitlab/issues/207267
+        # name_regex to be removed when container_expiration_policies is updated
+        # to have both regex columns
+        regex_delete = Gitlab::UntrustedRegexp.new("\\A#{params['name_regex_delete'] || params['name_regex']}\\z")
+        regex_retain = Gitlab::UntrustedRegexp.new("\\A#{params['name_regex_keep']}\\z")
 
         tags.select do |tag|
-          regex.scan(tag.name).any?
+          # regex_retain will override any overlapping matches by regex_delete
+          regex_delete.match?(tag.name) && !regex_retain.match?(tag.name)
         end
       end
 

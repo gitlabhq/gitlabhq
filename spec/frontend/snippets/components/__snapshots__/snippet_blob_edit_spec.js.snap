@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snippet Blob Edit component rendering matches the snapshot 1`] = `
+<div
+  class="form-group file-editor"
+>
+  <label>
+    File
+  </label>
+   
+  <div
+    class="file-holder snippet"
+  >
+    <blob-header-edit-stub
+      value="lorem.txt"
+    />
+     
+    <blob-content-edit-stub
+      filename="lorem.txt"
+      value="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    />
+  </div>
+</div>
+`;

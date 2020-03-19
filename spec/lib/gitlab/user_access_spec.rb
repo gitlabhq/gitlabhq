@@ -57,32 +57,27 @@ describe Gitlab::UserAccess do
         expect(project_access.can_push_to_branch?('master')).to be_truthy
       end
 
-      it 'returns false if user is developer and project is fully protected' do
-        empty_project.add_developer(user)
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
+      context 'when the user is a developer' do
+        using RSpec::Parameterized::TableSyntax
 
-        expect(project_access.can_push_to_branch?('master')).to be_falsey
-      end
+        before do
+          empty_project.add_developer(user)
+        end
 
-      it 'returns false if user is developer and it is not allowed to push new commits but can merge into branch' do
-        empty_project.add_developer(user)
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        where(:default_branch_protection_level, :result) do
+          Gitlab::Access::PROTECTION_NONE          | true
+          Gitlab::Access::PROTECTION_DEV_CAN_PUSH  | true
+          Gitlab::Access::PROTECTION_DEV_CAN_MERGE | false
+          Gitlab::Access::PROTECTION_FULL          | false
+        end
 
-        expect(project_access.can_push_to_branch?('master')).to be_falsey
-      end
+        with_them do
+          it do
+            expect(empty_project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level).at_least(:once)
 
-      it 'returns true if user is developer and project is unprotected' do
-        empty_project.add_developer(user)
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-
-        expect(project_access.can_push_to_branch?('master')).to be_truthy
-      end
-
-      it 'returns true if user is developer and project grants developers permission' do
-        empty_project.add_developer(user)
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
-
-        expect(project_access.can_push_to_branch?('master')).to be_truthy
+            expect(project_access.can_push_to_branch?('master')).to eq(result)
+          end
+        end
       end
     end
 

@@ -11,11 +11,11 @@ comments: false
 
 ## Subtree Aliases
 
-- Add: `git subtree add --prefix <target-folder> <url> <branch> --squash`.
-- Pull: `git subtree add --prefix <target-folder> <url> <branch> --squash`.
-- Push: `git subtree add --prefix <target-folder> <url> <branch>`.
+- Add: `git subtree add --prefix <target-folder> <url> <branch> --squash`
+- Pull: `git subtree pull --prefix <target-folder> <url> <branch> --squash`
+- Push: `git subtree add --prefix <target-folder> <url> <branch>`
 - Ex: `git config alias.sbp 'subtree pull --prefix st /
-  git@gitlab.com:balameb/subtree-nested-example.git master --squash'`.
+  git@gitlab.com:balameb/subtree-nested-example.git master --squash'`
 
 ```shell
   # Add an alias

@@ -27,7 +27,7 @@ they are static, hence we are not dealing with server-side scripts
 nor credit card transactions, then why do we need secure connections?
 
 Back in the 1990s, where HTTPS came out, [SSL](https://en.wikipedia.org/wiki/Transport_Layer_Security#SSL_1.0.2C_2.0_and_3.0) was considered a "special"
-security measure, necessary just for big companies, like banks and shoppings sites
+security measure, necessary just for big companies like banks and shopping sites
 with financial transactions.
 Now we have a different picture. [According to Josh Aas](https://letsencrypt.org/2015/10/29/phishing-and-malware.html), Executive Director at [ISRG](https://en.wikipedia.org/wiki/Internet_Security_Research_Group):
 

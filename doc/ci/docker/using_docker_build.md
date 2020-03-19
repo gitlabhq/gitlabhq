@@ -114,9 +114,9 @@ Docker-in-Docker works well, and is the recommended configuration, but it is
 not without its own challenges:
 
 - When using docker-in-docker, each job is in a clean environment without the past
-  history. Concurrent jobs work fine because every build gets it's own
+  history. Concurrent jobs work fine because every build gets its own
   instance of Docker engine so they won't conflict with each other. But this
-  also means jobs can be slower because there's no caching of layers.
+  also means that jobs can be slower because there's no caching of layers.
 - By default, Docker 17.09 and higher uses `--storage-driver overlay2` which is
   the recommended storage driver. See [Using the overlayfs driver](#using-the-overlayfs-driver)
   for details.
@@ -127,14 +127,14 @@ not without its own challenges:
   and use it as your mount point (for a more thorough explanation, check [issue
   #41227](https://gitlab.com/gitlab-org/gitlab-foss/issues/41227)):
 
-    ```yaml
-    variables:
-      MOUNT_POINT: /builds/$CI_PROJECT_PATH/mnt
+  ```yaml
+  variables:
+    MOUNT_POINT: /builds/$CI_PROJECT_PATH/mnt
 
-    script:
-      - mkdir -p "$MOUNT_POINT"
-      - docker run -v "$MOUNT_POINT:/mnt" my-docker-image
-    ```
+  script:
+    - mkdir -p "$MOUNT_POINT"
+    - docker run -v "$MOUNT_POINT:/mnt" my-docker-image
+  ```
 
 An example project using this approach can be found here: <https://gitlab.com/gitlab-examples/docker>.
 
@@ -198,7 +198,7 @@ support this.
      [runners.cache]
        [runners.cache.s3]
        [runners.cache.gcs]
-    ```
+   ```
 
 1. You can now use `docker` in the build script (note the inclusion of the
    `docker:19.03.1-dind` service):

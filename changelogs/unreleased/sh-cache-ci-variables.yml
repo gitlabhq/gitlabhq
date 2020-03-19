@@ -1,0 +1,5 @@
+---
+title: Memoize loading of CI variables
+merge_request: 26147
+author:
+type: performance

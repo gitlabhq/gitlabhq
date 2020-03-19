@@ -26,7 +26,7 @@ module FilteredSearchHelpers
   # Select a label clicking in the search dropdown instead
   # of entering label names on the input.
   def select_label_on_dropdown(label_title)
-    input_filtered_search("label=", submit: false)
+    input_filtered_search("label:=", submit: false)
 
     within('#js-dropdown-label') do
       wait_for_requests
@@ -71,7 +71,7 @@ module FilteredSearchHelpers
   end
 
   def init_label_search
-    filtered_search.set('label=')
+    filtered_search.set('label:=')
     # This ensures the dropdown is shown
     expect(find('#js-dropdown-label')).not_to have_css('.filter-dropdown-loading')
   end

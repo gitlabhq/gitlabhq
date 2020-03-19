@@ -4,12 +4,14 @@ import mutations from '~/monitoring/stores/mutations';
 import * as types from '~/monitoring/stores/mutation_types';
 import state from '~/monitoring/stores/state';
 import { metricStates } from '~/monitoring/constants';
-import {
-  metricsDashboardPayload,
-  deploymentData,
-  metricsDashboardResponse,
-  dashboardGitResponse,
-} from '../mock_data';
+
+import { deploymentData, dashboardGitResponse } from '../mock_data';
+import { getJSONFixture } from '../../helpers/fixtures';
+
+const metricsDashboardFixture = getJSONFixture(
+  'metrics_dashboard/environment_metrics_dashboard.json',
+);
+const metricsDashboardPayload = metricsDashboardFixture.dashboard;
 
 describe('Monitoring mutations', () => {
   let stateCopy;
@@ -17,42 +19,46 @@ describe('Monitoring mutations', () => {
   beforeEach(() => {
     stateCopy = state();
   });
+
   describe('RECEIVE_METRICS_DATA_SUCCESS', () => {
     let payload;
-    const getGroups = () => stateCopy.dashboard.panel_groups;
+    const getGroups = () => stateCopy.dashboard.panelGroups;
 
     beforeEach(() => {
-      stateCopy.dashboard.panel_groups = [];
+      stateCopy.dashboard.panelGroups = [];
       payload = metricsDashboardPayload;
     });
     it('adds a key to the group', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
       const groups = getGroups();
 
-      expect(groups[0].key).toBe('response-metrics-nginx-ingress-vts-0');
-      expect(groups[1].key).toBe('system-metrics-kubernetes-1');
+      expect(groups[0].key).toBe('system-metrics-kubernetes-0');
+      expect(groups[1].key).toBe('response-metrics-nginx-ingress-vts-1');
+      expect(groups[2].key).toBe('response-metrics-nginx-ingress-2');
     });
     it('normalizes values', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
-      const expectedLabel = 'Pod average';
-      const { label, query_range } = getGroups()[1].panels[0].metrics[0];
+      const expectedLabel = 'Pod average (MB)';
+
+      const { label, queryRange } = getGroups()[0].panels[2].metrics[0];
       expect(label).toEqual(expectedLabel);
-      expect(query_range.length).toBeGreaterThan(0);
+      expect(queryRange.length).toBeGreaterThan(0);
     });
-    it('contains two groups, with panels with a metric each', () => {
+    it('contains six groups, with panels with a metric each', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
 
       const groups = getGroups();
 
       expect(groups).toBeDefined();
-      expect(groups).toHaveLength(2);
+      expect(groups).toHaveLength(6);
 
-      expect(groups[0].panels).toHaveLength(1);
+      expect(groups[0].panels).toHaveLength(7);
       expect(groups[0].panels[0].metrics).toHaveLength(1);
+      expect(groups[0].panels[1].metrics).toHaveLength(1);
+      expect(groups[0].panels[2].metrics).toHaveLength(1);
 
-      expect(groups[1].panels).toHaveLength(2);
+      expect(groups[1].panels).toHaveLength(3);
       expect(groups[1].panels[0].metrics).toHaveLength(1);
-      expect(groups[1].panels[1].metrics).toHaveLength(1);
     });
     it('assigns metrics a metric id', () => {
       mutations[types.RECEIVE_METRICS_DATA_SUCCESS](stateCopy, payload);
@@ -60,10 +66,13 @@ describe('Monitoring mutations', () => {
       const groups = getGroups();
 
       expect(groups[0].panels[0].metrics[0].metricId).toEqual(
-        '1_response_metrics_nginx_ingress_throughput_status_code',
+        'undefined_system_metrics_kubernetes_container_memory_total',
       );
       expect(groups[1].panels[0].metrics[0].metricId).toEqual(
-        '17_system_metrics_kubernetes_container_memory_average',
+        'undefined_response_metrics_nginx_ingress_throughput_status_code',
+      );
+      expect(groups[2].panels[0].metrics[0].metricId).toEqual(
+        'undefined_response_metrics_nginx_ingress_16_throughput_status_code',
       );
     });
   });
@@ -123,14 +132,14 @@ describe('Monitoring mutations', () => {
   });
 
   describe('Individual panel/metric results', () => {
-    const metricId = '12_system_metrics_kubernetes_container_memory_total';
+    const metricId = 'undefined_response_metrics_nginx_ingress_throughput_status_code';
     const result = [
       {
         values: [[0, 1], [1, 1], [1, 3]],
       },
     ];
-    const { dashboard } = metricsDashboardResponse;
-    const getMetric = () => stateCopy.dashboard.panel_groups[0].panels[0].metrics[0];
+    const dashboard = metricsDashboardPayload;
+    const getMetric = () => stateCopy.dashboard.panelGroups[1].panels[0].metrics[0];
 
     describe('REQUEST_METRIC_RESULT', () => {
       beforeEach(() => {

@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import { n__, __, sprintf } from '~/locale';
+import { n__ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
@@ -49,16 +49,7 @@ export default {
     folderChangesTooltip() {
       if (this.changesCount === 0) return undefined;
 
-      if (this.folderUnstagedCount > 0 && this.folderStagedCount === 0) {
-        return n__('%d unstaged change', '%d unstaged changes', this.folderUnstagedCount);
-      } else if (this.folderUnstagedCount === 0 && this.folderStagedCount > 0) {
-        return n__('%d staged change', '%d staged changes', this.folderStagedCount);
-      }
-
-      return sprintf(__('%{staged} staged and %{unstaged} unstaged changes'), {
-        unstaged: this.folderUnstagedCount,
-        staged: this.folderStagedCount,
-      });
+      return n__('%d changed file', '%d changed files', this.changesCount);
     },
     showTreeChangesCount() {
       return this.isTree && this.changesCount > 0 && !this.file.opened;

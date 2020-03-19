@@ -230,7 +230,7 @@ describe 'Merge request > User creates image diff notes', :js do
       it_behaves_like 'onion skin'
     end
 
-    describe 'swipe view' do
+    describe 'swipe view', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/209999' do
       before do
         switch_to_swipe_view
       end

@@ -14,6 +14,7 @@ describe Clusters::Applications::Knative do
   before do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
+    allow(ClusterConfigureIstioWorker).to receive(:perform_async)
   end
 
   describe 'associations' do
@@ -44,6 +45,32 @@ describe Clusters::Applications::Knative do
     it 'schedules a ClusterWaitForIngressIpAddressWorker' do
       expect(ClusterWaitForIngressIpAddressWorker).to have_received(:perform_in)
         .with(Clusters::Applications::Knative::FETCH_IP_ADDRESS_DELAY, 'knative', application.id)
+    end
+  end
+
+  describe 'configuring istio ingress gateway' do
+    context 'after installed' do
+      let(:application) { create(:clusters_applications_knative, :installing) }
+
+      before do
+        application.make_installed!
+      end
+
+      it 'schedules a ClusterConfigureIstioWorker' do
+        expect(ClusterConfigureIstioWorker).to have_received(:perform_async).with(application.cluster_id)
+      end
+    end
+
+    context 'after updated' do
+      let(:application) { create(:clusters_applications_knative, :updating) }
+
+      before do
+        application.make_installed!
+      end
+
+      it 'schedules a ClusterConfigureIstioWorker' do
+        expect(ClusterConfigureIstioWorker).to have_received(:perform_async).with(application.cluster_id)
+      end
     end
   end
 
@@ -195,5 +222,35 @@ describe Clusters::Applications::Knative do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:hostname) }
+  end
+
+  describe '#available_domains' do
+    let!(:domain) { create(:pages_domain, :instance_serverless) }
+
+    it 'returns all instance serverless domains' do
+      expect(PagesDomain).to receive(:instance_serverless).and_call_original
+
+      domains = subject.available_domains
+
+      expect(domains.length).to eq(1)
+      expect(domains).to include(domain)
+    end
+  end
+
+  describe '#find_available_domain' do
+    let!(:domain) { create(:pages_domain, :instance_serverless) }
+
+    it 'returns the domain scoped to available domains' do
+      expect(subject).to receive(:available_domains).and_call_original
+      expect(subject.find_available_domain(domain.id)).to eq(domain)
+    end
+  end
+
+  describe '#pages_domain' do
+    let!(:sdc) { create(:serverless_domain_cluster, knative: knative) }
+
+    it 'returns the the associated pages domain' do
+      expect(knative.reload.pages_domain).to eq(sdc.pages_domain)
+    end
   end
 end

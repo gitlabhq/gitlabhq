@@ -1,11 +1,10 @@
 pages:
   extends:
-    - .default-tags
     - .default-retry
     - .default-cache
     - .pages:rules
   stage: pages
-  dependencies: ["coverage", "karma", "gitlab:assets:compile pull-cache"]
+  dependencies: ["rspec:coverage", "karma", "gitlab:assets:compile pull-cache"]
   script:
     - mv public/ .public/
     - mkdir public/

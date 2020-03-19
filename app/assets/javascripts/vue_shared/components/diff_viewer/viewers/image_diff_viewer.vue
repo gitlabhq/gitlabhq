@@ -112,6 +112,7 @@ export default {
       <div class="image">
         <image-viewer
           :path="imagePath"
+          :file-size="isNew ? newSize : oldSize"
           :inner-css-classes="[
             'frame',
             {

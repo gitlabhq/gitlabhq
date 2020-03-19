@@ -26,7 +26,7 @@ describe 'projects/settings/operations/show' do
 
     context 'Settings page ' do
       it 'renders the Operations Settings page' do
-        render
+        render template: "projects/settings/operations/show", locals: { prometheus_service: project.find_or_initialize_service('prometheus') }
 
         expect(rendered).to have_content _('Error Tracking')
         expect(rendered).to have_content _('To link Sentry to GitLab, enter your Sentry URL and Auth Token')

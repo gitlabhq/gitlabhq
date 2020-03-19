@@ -50,7 +50,7 @@ The reason we spread this out across three releases is that dropping a column is
 a destructive operation that can't be rolled back easily.
 
 Following this procedure helps us to make sure there are no deployments to GitLab.com
-and upgrade processes for self-hosted installations that lump together any of these steps.
+and upgrade processes for self-managed installations that lump together any of these steps.
 
 ### Step 1: Ignoring the column (release M)
 
@@ -161,6 +161,9 @@ class CleanupUsersUpdatedAtRename < ActiveRecord::Migration[4.2]
   end
 end
 ```
+
+NOTE: **Note:** If you're renaming a large table, please carefully consider the state when the first migration has run but the second cleanup migration hasn't been run yet.
+With [Canary](https://about.gitlab.com/handbook/engineering/infrastructure/library/canary/) it is possible that the system runs in this state for a significant amount of time.
 
 ## Changing Column Constraints
 

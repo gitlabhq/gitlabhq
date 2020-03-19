@@ -16,7 +16,7 @@ module VersionedDescription
   def save_description_version
     self.saved_description_version = nil
 
-    return unless Feature.enabled?(:save_description_versions, issuing_parent)
+    return unless Feature.enabled?(:save_description_versions, issuing_parent, default_enabled: true)
     return unless saved_change_to_description?
 
     unless description_versions.exists?

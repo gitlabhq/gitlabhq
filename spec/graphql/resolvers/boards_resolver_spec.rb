@@ -45,6 +45,21 @@ describe Resolvers::BoardsResolver do
         expect(resolve_boards).to eq [board1]
       end
     end
+
+    context 'when querying for a single board' do
+      let(:board1) { create(:board, name: 'One', resource_parent: board_parent) }
+
+      it 'returns specified board' do
+        expect(resolve_boards(args: { id: global_id_of(board1) })).to eq [board1]
+      end
+
+      it 'returns nil if board not found' do
+        outside_parent = create(board_parent.class.underscore.to_sym)
+        outside_board  = create(:board, name: 'outside board', resource_parent: outside_parent)
+
+        expect(resolve_boards(args: { id: global_id_of(outside_board) })).to eq Board.none
+      end
+    end
   end
 
   describe '#resolve' do

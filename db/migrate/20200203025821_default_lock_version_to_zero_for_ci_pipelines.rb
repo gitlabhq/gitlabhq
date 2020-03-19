@@ -9,9 +9,15 @@ class DefaultLockVersionToZeroForCiPipelines < ActiveRecord::Migration[6.0]
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
-  def change
+  def up
     with_lock_retries do
       change_column_default :ci_pipelines, :lock_version, from: nil, to: 0
+    end
+  end
+
+  def down
+    with_lock_retries do
+      change_column_default :ci_pipelines, :lock_version, from: 0, to: nil
     end
   end
 end

@@ -61,18 +61,6 @@ describe Commits::CherryPickService do
         expect(mr_notes.length).to eq(1)
         expect(mr_notes[0].commit_id).to eq(result[:result])
       end
-
-      context 'when :track_mr_picking feature flag is disabled' do
-        before do
-          stub_feature_flags(track_mr_picking: false)
-        end
-
-        it 'does not add system notes' do
-          expect do
-            cherry_pick(merge_commit_sha, branch_name)
-          end.not_to change { Note.count }
-        end
-      end
     end
 
     def find_cherry_pick_notes(noteable)

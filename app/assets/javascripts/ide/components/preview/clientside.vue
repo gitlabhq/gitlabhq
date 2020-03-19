@@ -21,7 +21,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['entries', 'promotionSvgPath', 'links']),
+    ...mapState(['entries', 'promotionSvgPath', 'links', 'codesandboxBundlerUrl']),
     ...mapGetters(['packageJson', 'currentProject']),
     normalizedEntries() {
       return Object.keys(this.entries).reduce((acc, path) => {
@@ -106,12 +106,7 @@ export default {
       return this.loadFileContent(this.mainEntry)
         .then(() => this.$nextTick())
         .then(() => {
-          this.initManager('#ide-preview', this.sandboxOpts, {
-            fileResolver: {
-              isFile: p => Promise.resolve(Boolean(this.entries[createPathWithExt(p)])),
-              readFile: p => this.loadFileContent(createPathWithExt(p)).then(content => content),
-            },
-          });
+          this.initManager();
 
           this.listener = listen(e => {
             switch (e.type) {
@@ -139,8 +134,18 @@ export default {
         this.manager.updatePreview(this.sandboxOpts);
       }, 250);
     },
-    initManager(el, opts, resolver) {
-      this.manager = new Manager(el, opts, resolver);
+    initManager() {
+      const { codesandboxBundlerUrl: bundlerURL } = this;
+
+      const settings = {
+        fileResolver: {
+          isFile: p => Promise.resolve(Boolean(this.entries[createPathWithExt(p)])),
+          readFile: p => this.loadFileContent(createPathWithExt(p)).then(content => content),
+        },
+        ...(bundlerURL ? { bundlerURL } : {}),
+      };
+
+      this.manager = new Manager('#ide-preview', this.sandboxOpts, settings);
     },
   },
 };

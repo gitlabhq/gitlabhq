@@ -10,7 +10,7 @@ import IssueProject from './project';
 import boardsStore from '../stores/boards_store';
 
 class ListIssue {
-  constructor(obj, defaultAvatar) {
+  constructor(obj) {
     this.subscribed = obj.subscribed;
     this.labels = [];
     this.assignees = [];
@@ -19,42 +19,14 @@ class ListIssue {
     this.isFetching = {
       subscriptions: true,
     };
+    this.closed = obj.closed;
     this.isLoading = {};
 
-    this.refreshData(obj, defaultAvatar);
+    this.refreshData(obj);
   }
 
-  refreshData(obj, defaultAvatar) {
-    this.id = obj.id;
-    this.iid = obj.iid;
-    this.title = obj.title;
-    this.confidential = obj.confidential;
-    this.dueDate = obj.due_date;
-    this.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
-    this.referencePath = obj.reference_path;
-    this.path = obj.real_path;
-    this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
-    this.project_id = obj.project_id;
-    this.timeEstimate = obj.time_estimate;
-    this.assignableLabelsEndpoint = obj.assignable_labels_endpoint;
-    this.blocked = obj.blocked;
-
-    if (obj.project) {
-      this.project = new IssueProject(obj.project);
-    }
-
-    if (obj.milestone) {
-      this.milestone = new ListMilestone(obj.milestone);
-      this.milestone_id = obj.milestone.id;
-    }
-
-    if (obj.labels) {
-      this.labels = obj.labels.map(label => new ListLabel(label));
-    }
-
-    if (obj.assignees) {
-      this.assignees = obj.assignees.map(a => new ListAssignee(a, defaultAvatar));
-    }
+  refreshData(obj) {
+    boardsStore.refreshIssueData(this, obj);
   }
 
   addLabel(label) {

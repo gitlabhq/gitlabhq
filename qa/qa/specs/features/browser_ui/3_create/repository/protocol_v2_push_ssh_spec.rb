@@ -11,30 +11,25 @@ module QA
 
       let(:key_title) { "key for ssh tests #{Time.now.to_f}" }
       let(:ssh_key) do
-        Resource::SSHKey.fabricate! do |resource|
+        Resource::SSHKey.fabricate_via_api! do |resource|
           resource.title = key_title
         end
       end
 
       around do |example|
-        # Create an SSH key to be used with Git
+        # Create an SSH key to be used with Git, then remove it after the test
         Flow::Login.sign_in
         ssh_key
 
         example.run
 
-        # Remove the SSH key
-        Flow::Login.sign_in
-        Page::Main::Menu.perform(&:click_settings_link)
-        Page::Profile::Menu.perform(&:click_ssh_keys)
-        Page::Profile::SSHKeys.perform do |ssh_keys|
-          ssh_keys.remove_key(key_title)
-        end
+        ssh_key.remove_via_api!
+
+        Page::Main::Menu.perform(&:sign_out_if_signed_in)
       end
 
       it 'user pushes to the repository' do
-        # Create a project to push to
-        project = Resource::Project.fabricate! do |project|
+        project = Resource::Project.fabricate_via_api! do |project|
           project.name = 'git-protocol-project'
         end
 
@@ -68,11 +63,8 @@ module QA
         project.visit!
         project.wait_for_push_new_branch
 
-        # Check that the push worked
         expect(page).to have_content(file_name)
         expect(page).to have_content(file_content)
-
-        # And check that the correct Git protocol was used
         expect(git_protocol_reported).to eq(git_protocol)
       end
     end

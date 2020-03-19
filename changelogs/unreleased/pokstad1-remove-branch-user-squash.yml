@@ -1,0 +1,5 @@
+---
+title: Upgrade Gitaly gem and fix UserSquash RPC usage
+merge_request: 27372
+author:
+type: other

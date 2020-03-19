@@ -122,12 +122,12 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
 
 - **Markdown**
 
-  ~~~markdown
+  ````markdown
   ```plantuml
   Bob -> Alice : hello
   Alice -> Bob : hi
   ```
-  ~~~
+  ````
 
 - **AsciiDoc**
 
@@ -149,9 +149,9 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
      Alice -> Bob: hi
   ```
 
-   You can also use the `uml::` directive for compatibility with [sphinxcontrib-plantuml](https://pypi.org/project/sphinxcontrib-plantuml/), but please note that we currently only support the `caption` option.
+   You can also use the `uml::` directive for compatibility with [`sphinxcontrib-plantuml`](https://pypi.org/project/sphinxcontrib-plantuml/), but please note that we currently only support the `caption` option.
 
-The above blocks will be converted to an HTML img tag with source pointing to the
+The above blocks will be converted to an HTML image tag with source pointing to the
 PlantUML instance. If the PlantUML server is correctly configured, this should
 render a nice diagram instead of the block:
 
@@ -172,7 +172,7 @@ Some parameters can be added to the AsciiDoc block definition:
 - *format*: Can be either `png` or `svg`. Note that `svg` is not supported by
   all browsers so use with care. The default is `png`.
 - *id*: A CSS id added to the diagram HTML tag.
-- *width*: Width attribute added to the img tag.
-- *height*: Height attribute added to the img tag.
+- *width*: Width attribute added to the image tag.
+- *height*: Height attribute added to the image tag.
 
 Markdown does not support any parameters and will always use PNG format.

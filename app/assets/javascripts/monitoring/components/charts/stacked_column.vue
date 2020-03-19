@@ -81,11 +81,7 @@ export default {
 };
 </script>
 <template>
-  <div v-gl-resize-observer-directive="onResize" class="prometheus-graph">
-    <div class="prometheus-graph-header">
-      <h5 ref="graphTitle" class="prometheus-graph-title">{{ graphData.title }}</h5>
-      <div ref="graphWidgets" class="prometheus-graph-widgets"><slot></slot></div>
-    </div>
+  <div v-gl-resize-observer-directive="onResize">
     <gl-stacked-column-chart
       ref="chart"
       v-bind="$attrs"

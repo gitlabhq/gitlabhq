@@ -19,9 +19,12 @@ describe 'User views a wiki page' do
     sign_in(user)
   end
 
-  context 'when wiki is empty' do
+  context 'when wiki is empty', :js do
     before do
-      visit(project_wikis_path(project))
+      visit project_wikis_path(project)
+
+      wait_for_svg_to_be_loaded
+
       click_link "Create your first page"
 
       fill_in(:wiki_title, with: 'one/two/three-test')
@@ -30,9 +33,11 @@ describe 'User views a wiki page' do
         fill_in(:wiki_content, with: 'wiki content')
         click_on('Create page')
       end
+
+      expect(page).to have_content('Wiki was successfully updated.')
     end
 
-    it 'shows the history of a page that has a path', :js do
+    it 'shows the history of a page that has a path' do
       expect(current_path).to include('one/two/three-test')
 
       first(:link, text: 'three').click
@@ -45,7 +50,7 @@ describe 'User views a wiki page' do
       end
     end
 
-    it 'shows an old version of a page', :js do
+    it 'shows an old version of a page' do
       expect(current_path).to include('one/two/three-test')
       expect(find('.wiki-pages')).to have_content('three')
 
@@ -59,8 +64,10 @@ describe 'User views a wiki page' do
       expect(page).to have_content('Edit Page')
 
       fill_in('Content', with: 'Updated Wiki Content')
-
       click_on('Save changes')
+
+      expect(page).to have_content('Wiki was successfully updated.')
+
       click_on('Page history')
 
       page.within(:css, '.nav-text') do
@@ -129,6 +136,36 @@ describe 'User views a wiki page' do
     end
   end
 
+  context 'when a page has special characters in its title' do
+    let(:title) { '<foo> !@#$%^&*()[]{}=_+\'"\\|<>? <bar>' }
+
+    before do
+      wiki_page.update(title: title )
+    end
+
+    it 'preserves the special characters' do
+      visit(project_wiki_path(project, wiki_page))
+
+      expect(page).to have_css('.wiki-page-title', text: title)
+      expect(page).to have_css('.wiki-pages li', text: title)
+    end
+  end
+
+  context 'when a page has XSS in its title or content' do
+    let(:title) { '<script>alert("title")<script>' }
+
+    before do
+      wiki_page.update(title: title, content: 'foo <script>alert("content")</script> bar')
+    end
+
+    it 'safely displays the page' do
+      visit(project_wiki_path(project, wiki_page))
+
+      expect(page).to have_css('.wiki-page-title', text: title)
+      expect(page).to have_content('foo bar')
+    end
+  end
+
   context 'when a page has XSS in its message' do
     before do
       wiki_page.update(message: '<script>alert(true)<script>', content: 'XSS update')
@@ -162,9 +199,12 @@ describe 'User views a wiki page' do
   end
 
   it 'opens a default wiki page', :js do
-    visit(project_path(project))
+    visit project_path(project)
 
     find('.shortcuts-wiki').click
+
+    wait_for_svg_to_be_loaded
+
     click_link "Create your first page"
 
     expect(page).to have_content('Create New Page')

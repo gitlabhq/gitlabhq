@@ -16,14 +16,9 @@ describe Snippets::UpdateService do
       }
     end
     let(:updater) { user }
+    let(:service) { Snippets::UpdateService.new(project, updater, options) }
 
-    subject do
-      Snippets::UpdateService.new(
-        project,
-        updater,
-        options
-      ).execute(snippet)
-    end
+    subject { service.execute(snippet) }
 
     shared_examples 'a service that updates a snippet' do
       it 'updates a snippet with the provided attributes' do
@@ -98,9 +93,109 @@ describe Snippets::UpdateService do
       end
     end
 
+    shared_examples 'creates repository and creates file' do
+      it 'creates repository' do
+        expect(snippet.repository).not_to exist
+
+        subject
+
+        expect(snippet.repository).to exist
+      end
+
+      it 'commits the files to the repository' do
+        subject
+
+        expect(snippet.blobs.count).to eq 1
+
+        blob = snippet.repository.blob_at('master', options[:file_name])
+
+        expect(blob.data).to eq options[:content]
+      end
+
+      context 'when the repository does not exist' do
+        it 'does not try to commit file' do
+          allow(snippet).to receive(:repository_exists?).and_return(false)
+
+          expect(service).not_to receive(:create_commit)
+
+          subject
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(version_snippets: false)
+        end
+
+        it 'does not create repository' do
+          subject
+
+          expect(snippet.repository).not_to exist
+        end
+
+        it 'does not try to commit file' do
+          expect(service).not_to receive(:create_commit)
+
+          subject
+        end
+      end
+
+      it 'returns error when the commit action fails' do
+        allow_next_instance_of(SnippetRepository) do |instance|
+          allow(instance).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError)
+        end
+
+        response = subject
+
+        expect(response).to be_error
+        expect(response.payload[:snippet].errors.full_messages).to eq ['Repository Error updating the snippet']
+      end
+    end
+
+    shared_examples 'updates repository content' do
+      it 'commit the files to the repository' do
+        blob = snippet.blobs.first
+        options[:file_name] = blob.path + '_new'
+
+        expect(blob.data).not_to eq(options[:content])
+
+        subject
+
+        blob = snippet.blobs.first
+
+        expect(blob.path).to eq(options[:file_name])
+        expect(blob.data).to eq(options[:content])
+      end
+
+      it 'returns error when the commit action fails' do
+        allow(snippet.snippet_repository).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError)
+
+        response = subject
+
+        expect(response).to be_error
+        expect(response.payload[:snippet].errors.full_messages).to eq ['Repository Error updating the snippet']
+      end
+
+      it 'returns error if snippet does not have a snippet_repository' do
+        allow(snippet).to receive(:snippet_repository).and_return(nil)
+
+        expect(subject).to be_error
+      end
+
+      context 'when the repository does not exist' do
+        it 'does not try to commit file' do
+          allow(snippet).to receive(:repository_exists?).and_return(false)
+
+          expect(service).not_to receive(:create_commit)
+
+          subject
+        end
+      end
+    end
+
     context 'when Project Snippet' do
       let_it_be(:project) { create(:project) }
-      let!(:snippet) { create(:project_snippet, author: user, project: project) }
+      let!(:snippet) { create(:project_snippet, :repository, author: user, project: project) }
 
       before do
         project.add_developer(user)
@@ -109,15 +204,29 @@ describe Snippets::UpdateService do
       it_behaves_like 'a service that updates a snippet'
       it_behaves_like 'public visibility level restrictions apply'
       it_behaves_like 'snippet update data is tracked'
+      it_behaves_like 'updates repository content'
+
+      context 'when snippet does not have a repository' do
+        let!(:snippet) { create(:project_snippet, author: user, project: project) }
+
+        it_behaves_like 'creates repository and creates file'
+      end
     end
 
     context 'when PersonalSnippet' do
       let(:project) { nil }
-      let!(:snippet) { create(:personal_snippet, author: user) }
+      let!(:snippet) { create(:personal_snippet, :repository, author: user) }
 
       it_behaves_like 'a service that updates a snippet'
       it_behaves_like 'public visibility level restrictions apply'
       it_behaves_like 'snippet update data is tracked'
+      it_behaves_like 'updates repository content'
+
+      context 'when snippet does not have a repository' do
+        let!(:snippet) { create(:personal_snippet, author: user, project: project) }
+
+        it_behaves_like 'creates repository and creates file'
+      end
     end
   end
 end

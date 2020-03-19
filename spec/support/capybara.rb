@@ -17,10 +17,23 @@ JS_CONSOLE_FILTER = Regexp.union([
   '"[HMR] Waiting for update signal from WDS..."',
   '"[WDS] Hot Module Replacement enabled."',
   '"[WDS] Live Reloading enabled."',
-  "Download the Vue Devtools extension"
+  'Download the Vue Devtools extension',
+  'Download the Apollo DevTools'
 ])
 
 CAPYBARA_WINDOW_SIZE = [1366, 768].freeze
+
+# Run Workhorse on the given host and port, proxying to Puma on a UNIX socket,
+# for a closer-to-production experience
+Capybara.register_server :puma_via_workhorse do |app, port, host, **options|
+  file = Tempfile.new
+  socket_path = file.path
+  file.close! # We just want the filename
+
+  TestEnv.with_workhorse(TestEnv.workhorse_dir, host, port, socket_path) do
+    Capybara.servers[:puma].call(app, nil, socket_path, **options)
+  end
+end
 
 Capybara.register_driver :chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
@@ -59,13 +72,18 @@ Capybara.register_driver :chrome do |app|
   )
 end
 
-Capybara.server = :webrick
+Capybara.server = :puma_via_workhorse
 Capybara.javascript_driver = :chrome
 Capybara.default_max_wait_time = timeout
 Capybara.ignore_hidden_elements = true
 Capybara.default_normalize_ws = true
 Capybara.enable_aria_label = true
 
+Capybara::Screenshot.append_timestamp = false
+
+Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
+  example.full_description.downcase.parameterize(separator: "_")[0..99]
+end
 # Keep only the screenshots generated from the last failing test suite
 Capybara::Screenshot.prune_strategy = :keep_last_run
 # From https://github.com/mattheworiordan/capybara-screenshot/issues/84#issuecomment-41219326
@@ -98,6 +116,24 @@ RSpec.configure do |config|
       rescue # ?
       end
     end
+  end
+
+  # The :capybara_ignore_server_errors metadata means unhandled exceptions raised
+  # by the application under test will not necessarily fail the server. This is
+  # useful when testing conditions that are expected to raise a 500 error in
+  # production; it should not be used on the happy path.
+  config.around(:each, :capybara_ignore_server_errors) do |example|
+    Capybara.raise_server_errors = false
+
+    example.run
+
+    if example.metadata[:screenshot]
+      screenshot = example.metadata[:screenshot][:image] || example.metadata[:screenshot][:html]
+      example.metadata[:stdout] = %{[[ATTACHMENT|#{screenshot}]]}
+    end
+
+  ensure
+    Capybara.raise_server_errors = true
   end
 
   config.after(:example, :js) do |example|

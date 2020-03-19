@@ -94,7 +94,8 @@ Ideally all nodes will have a `Status` of `alive`.
 
 ### Restarting the server cluster
 
-**Note**: This section only applies to server agents. It is safe to restart client agents whenever needed.
+NOTE: **Note:**
+This section only applies to server agents. It is safe to restart client agents whenever needed.
 
 If it is necessary to restart the server cluster, it is important to do this in a controlled fashion in order to maintain quorum. If quorum is lost, you will need to follow the Consul [outage recovery](#outage-recovery) process to recover the cluster.
 

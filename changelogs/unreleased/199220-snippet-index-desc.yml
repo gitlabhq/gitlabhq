@@ -1,0 +1,5 @@
+---
+title: Add trigram index on snippet description
+merge_request: 26341
+author:
+type: performance

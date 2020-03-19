@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Auth::LDAP::Person do
+describe Gitlab::Auth::Ldap::Person do
   include LdapHelpers
 
   let(:entry) { ldap_user_entry('john.doe') }
@@ -61,7 +61,7 @@ describe Gitlab::Auth::LDAP::Person do
           }
         }
       )
-      config = Gitlab::Auth::LDAP::Config.new('ldapmain')
+      config = Gitlab::Auth::Ldap::Config.new('ldapmain')
       ldap_attributes = described_class.ldap_attributes(config)
 
       expect(ldap_attributes).to match_array(%w(dn uid cn mail memberof))

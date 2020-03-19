@@ -226,6 +226,7 @@ class Commit
     data = {
       id: id,
       message: safe_message,
+      title: title,
       timestamp: committed_date.xmlschema,
       url: Gitlab::UrlBuilder.build(self),
       author: {
@@ -239,14 +240,6 @@ class Commit
     end
 
     data
-  end
-
-  # Discover issues should be closed when this commit is pushed to a project's
-  # default branch.
-  def closes_issues(current_user = self.committer)
-    return unless repository.repo_type.project?
-
-    Gitlab::ClosingIssueExtractor.new(project, current_user).closed_by_message(safe_message)
   end
 
   def lazy_author
@@ -296,14 +289,6 @@ class Commit
 
   def notes_with_associations
     notes.includes(:author, :award_emoji)
-  end
-
-  def merge_requests
-    strong_memoize(:merge_requests) do
-      next MergeRequest.none unless repository.repo_type.project? && project
-
-      project.merge_requests.by_commit_sha(sha)
-    end
   end
 
   def method_missing(method, *args, &block)
@@ -414,7 +399,7 @@ class Commit
   end
 
   def has_been_reverted?(current_user, notes_association = nil)
-    ext = all_references(current_user)
+    ext = Gitlab::ReferenceExtractor.new(project, current_user)
     notes_association ||= notes_with_associations
 
     notes_association.system.each do |note|

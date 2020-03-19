@@ -1,0 +1,5 @@
+---
+title: Fix 500 Error when using Gitea Importer
+merge_request: 26166
+author:
+type: fixed

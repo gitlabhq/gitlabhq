@@ -13,15 +13,13 @@
 
   .page-title,
   .modal-title {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     .modal-title-with-label span {
       vertical-align: middle;
       display: inline-block;
-    }
-
-    .color-label {
-      font-size: $gl-font-size;
-      padding: $gl-vert-padding $label-padding-modal;
-      vertical-align: middle;
     }
   }
 

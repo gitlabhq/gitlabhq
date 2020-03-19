@@ -1,0 +1,5 @@
+---
+title: Enable Workhorse upload acceleration for Project Import API
+merge_request: 25361
+author:
+type: performance

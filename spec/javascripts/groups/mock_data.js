@@ -14,7 +14,8 @@ export const GROUP_VISIBILITY_TYPE = {
 export const PROJECT_VISIBILITY_TYPE = {
   public: 'Public - The project can be accessed without any authentication.',
   internal: 'Internal - The project can be accessed by any logged in user.',
-  private: 'Private - Project access must be granted explicitly to each user.',
+  private:
+    'Private - Project access must be granted explicitly to each user. If this project is part of a group, access will be granted to members of the group.',
 };
 
 export const VISIBILITY_TYPE_ICON = {

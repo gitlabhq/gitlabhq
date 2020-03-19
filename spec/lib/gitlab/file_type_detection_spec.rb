@@ -2,6 +2,35 @@
 require 'spec_helper'
 
 describe Gitlab::FileTypeDetection do
+  describe '.extension_match?' do
+    let(:extensions) { %w[foo bar] }
+
+    it 'returns false when filename is blank' do
+      expect(described_class.extension_match?(nil, extensions)).to eq(false)
+      expect(described_class.extension_match?('', extensions)).to eq(false)
+    end
+
+    it 'returns true when filename matches extensions' do
+      expect(described_class.extension_match?('file.foo', extensions)).to eq(true)
+      expect(described_class.extension_match?('file.bar', extensions)).to eq(true)
+    end
+
+    it 'returns false when filename does not match extensions' do
+      expect(described_class.extension_match?('file.baz', extensions)).to eq(false)
+    end
+
+    it 'can match case insensitive filenames' do
+      expect(described_class.extension_match?('file.FOO', extensions)).to eq(true)
+    end
+
+    it 'can match filenames with periods' do
+      expect(described_class.extension_match?('my.file.foo', extensions)).to eq(true)
+    end
+
+    it 'can match filenames with directories' do
+      expect(described_class.extension_match?('my/file.foo', extensions)).to eq(true)
+    end
+  end
   context 'when class is an uploader' do
     let(:uploader) do
       example_uploader = Class.new(CarrierWave::Uploader::Base) do

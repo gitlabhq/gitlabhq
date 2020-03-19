@@ -14,6 +14,7 @@ describe('ParallelDiffTableRow', () => {
       vm = createComponentWithStore(Vue.extend(ParallelDiffTableRow), createStore(), {
         line: thisLine,
         fileHash: diffFileMockData.file_hash,
+        filePath: diffFileMockData.file_path,
         contextLinesPath: 'contextLinesPath',
         isHighlighted: false,
       }).$mount();
@@ -52,6 +53,7 @@ describe('ParallelDiffTableRow', () => {
       vm = createComponentWithStore(Vue.extend(ParallelDiffTableRow), createStore(), {
         line: thisLine,
         fileHash: diffFileMockData.file_hash,
+        filePath: diffFileMockData.file_path,
         contextLinesPath: 'contextLinesPath',
         isHighlighted: false,
       }).$mount();
@@ -80,6 +82,66 @@ describe('ParallelDiffTableRow', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+
+    describe('sets coverage title and class', () => {
+      it('for lines with coverage', done => {
+        vm.$nextTick()
+          .then(() => {
+            const name = diffFileMockData.file_path;
+            const line = rightLine.new_line;
+
+            vm.$store.state.diffs.coverageFiles = { files: { [name]: { [line]: 5 } } };
+
+            return vm.$nextTick();
+          })
+          .then(() => {
+            const coverage = vm.$el.querySelector('.line-coverage.right-side');
+
+            expect(coverage.title).toContain('Test coverage: 5 hits');
+            expect(coverage.classList).toContain('coverage');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('for lines without coverage', done => {
+        vm.$nextTick()
+          .then(() => {
+            const name = diffFileMockData.file_path;
+            const line = rightLine.new_line;
+
+            vm.$store.state.diffs.coverageFiles = { files: { [name]: { [line]: 0 } } };
+
+            return vm.$nextTick();
+          })
+          .then(() => {
+            const coverage = vm.$el.querySelector('.line-coverage.right-side');
+
+            expect(coverage.title).toContain('No test coverage');
+            expect(coverage.classList).toContain('no-coverage');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('for unknown lines', done => {
+        vm.$nextTick()
+          .then(() => {
+            vm.$store.state.diffs.coverageFiles = {};
+
+            return vm.$nextTick();
+          })
+          .then(() => {
+            const coverage = vm.$el.querySelector('.line-coverage.right-side');
+
+            expect(coverage.title).not.toContain('Coverage');
+            expect(coverage.classList).not.toContain('coverage');
+            expect(coverage.classList).not.toContain('no-coverage');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
     });
   });
 });

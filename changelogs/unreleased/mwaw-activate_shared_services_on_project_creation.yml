@@ -1,0 +1,6 @@
+---
+title: Activate Prometheus integration service for newly created project if this project
+  has access to shared Prometheus application.
+merge_request: 24676
+author:
+type: fixed

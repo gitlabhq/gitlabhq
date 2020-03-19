@@ -44,7 +44,7 @@ describe API::GroupExport do
         it 'downloads exported group archive' do
           get api(download_path, user)
 
-          expect(response).to have_gitlab_http_status(200)
+          expect(response).to have_gitlab_http_status(:ok)
         end
 
         context 'when export_file.file does not exist' do
@@ -57,7 +57,7 @@ describe API::GroupExport do
           it 'returns 404' do
             get api(download_path, user)
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end
@@ -66,7 +66,7 @@ describe API::GroupExport do
         it 'returns 404' do
           get api(download_path, user)
 
-          expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -79,7 +79,7 @@ describe API::GroupExport do
       it 'responds with 404 Not Found' do
         get api(download_path, user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -98,7 +98,7 @@ describe API::GroupExport do
         it 'accepts download' do
           post api(path, user)
 
-          expect(response).to have_gitlab_http_status(202)
+          expect(response).to have_gitlab_http_status(:accepted)
         end
       end
 
@@ -110,7 +110,7 @@ describe API::GroupExport do
         it 'forbids the request' do
           post api(path, user)
 
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -123,7 +123,7 @@ describe API::GroupExport do
       it 'responds with 404 Not Found' do
         post api(path, user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

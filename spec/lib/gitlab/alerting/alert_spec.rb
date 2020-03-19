@@ -17,6 +17,12 @@ describe Gitlab::Alerting::Alert do
     end
   end
 
+  shared_context 'full query' do
+    before do
+      payload['generatorURL'] = 'http://localhost:9090/graph?g0.expr=vector%281%29'
+    end
+  end
+
   shared_examples 'invalid alert' do
     it 'is invalid' do
       expect(alert).not_to be_valid
@@ -180,10 +186,7 @@ describe Gitlab::Alerting::Alert do
 
     context 'with gitlab alert' do
       include_context 'gitlab alert'
-
-      before do
-        payload['generatorURL'] = 'http://localhost:9090/graph?g0.expr=vector%281%29'
-      end
+      include_context 'full query'
 
       it { is_expected.to eq(gitlab_alert.full_query) }
     end

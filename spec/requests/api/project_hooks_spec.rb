@@ -25,7 +25,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       it "returns project hooks" do
         get api("/projects/#{project.id}/hooks", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
         expect(response).to include_pagination_headers
         expect(json_response.count).to eq(1)
@@ -49,7 +49,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       it "does not access project hooks" do
         get api("/projects/#{project.id}/hooks", user3)
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end
@@ -59,7 +59,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       it "returns a project hook" do
         get api("/projects/#{project.id}/hooks/#{hook.id}", user)
 
-        expect(response).to have_gitlab_http_status(200)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['url']).to eq(hook.url)
         expect(json_response['issues_events']).to eq(hook.issues_events)
         expect(json_response['confidential_issues_events']).to eq(hook.confidential_issues_events)
@@ -77,14 +77,14 @@ describe API::ProjectHooks, 'ProjectHooks' do
       it "returns a 404 error if hook id is not available" do
         get api("/projects/#{project.id}/hooks/1234", user)
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
     context "unauthorized user" do
       it "does not access an existing hook" do
         get api("/projects/#{project.id}/hooks/#{hook.id}", user3)
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end
@@ -96,7 +96,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
           params: { url: "http://example.com", issues_events: true, confidential_issues_events: true, wiki_page_events: true, job_events: true, push_events_branch_filter: 'some-feature-branch' }
       end.to change {project.hooks.count}.by(1)
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response['url']).to eq('http://example.com')
       expect(json_response['issues_events']).to eq(true)
       expect(json_response['confidential_issues_events']).to eq(true)
@@ -120,7 +120,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
         post api("/projects/#{project.id}/hooks", user), params: { url: "http://example.com", token: token }
       end.to change {project.hooks.count}.by(1)
 
-      expect(response).to have_gitlab_http_status(201)
+      expect(response).to have_gitlab_http_status(:created)
       expect(json_response["url"]).to eq("http://example.com")
       expect(json_response).not_to include("token")
 
@@ -132,17 +132,17 @@ describe API::ProjectHooks, 'ProjectHooks' do
 
     it "returns a 400 error if url not given" do
       post api("/projects/#{project.id}/hooks", user)
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "returns a 422 error if url not valid" do
       post api("/projects/#{project.id}/hooks", user), params: { url: "ftp://example.com" }
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
     it "returns a 422 error if branch filter is not valid" do
       post api("/projects/#{project.id}/hooks", user), params: { url: "http://example.com", push_events_branch_filter: '~badbranchname/' }
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
   end
 
@@ -151,7 +151,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       put api("/projects/#{project.id}/hooks/#{hook.id}", user),
         params: { url: 'http://example.org', push_events: false, job_events: true }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['url']).to eq('http://example.org')
       expect(json_response['issues_events']).to eq(hook.issues_events)
       expect(json_response['confidential_issues_events']).to eq(hook.confidential_issues_events)
@@ -171,7 +171,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
 
       put api("/projects/#{project.id}/hooks/#{hook.id}", user), params: { url: "http://example.org", token: token }
 
-      expect(response).to have_gitlab_http_status(200)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response["url"]).to eq("http://example.org")
       expect(json_response).not_to include("token")
 
@@ -181,17 +181,17 @@ describe API::ProjectHooks, 'ProjectHooks' do
 
     it "returns 404 error if hook id not found" do
       put api("/projects/#{project.id}/hooks/1234", user), params: { url: 'http://example.org' }
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it "returns 400 error if url is not given" do
       put api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      expect(response).to have_gitlab_http_status(400)
+      expect(response).to have_gitlab_http_status(:bad_request)
     end
 
     it "returns a 422 error if url is not valid" do
       put api("/projects/#{project.id}/hooks/#{hook.id}", user), params: { url: 'ftp://example.com' }
-      expect(response).to have_gitlab_http_status(422)
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
   end
 
@@ -200,19 +200,19 @@ describe API::ProjectHooks, 'ProjectHooks' do
       expect do
         delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end.to change {project.hooks.count}.by(-1)
     end
 
     it "returns a 404 error when deleting non existent hook" do
       delete api("/projects/#{project.id}/hooks/42", user)
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it "returns a 404 error if hook id not given" do
       delete api("/projects/#{project.id}/hooks", user)
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it "returns a 404 if a user attempts to delete project hooks they do not own" do
@@ -221,7 +221,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       other_project.add_maintainer(test_user)
 
       delete api("/projects/#{other_project.id}/hooks/#{hook.id}", test_user)
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(:not_found)
       expect(WebHook.exists?(hook.id)).to be_truthy
     end
 

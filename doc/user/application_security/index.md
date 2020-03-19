@@ -13,18 +13,45 @@ information provided, you can immediately begin risk analysis and remediation.
 For an overview of application security with GitLab, see
 [Security Deep Dive](https://www.youtube.com/watch?v=k4vEJnGYy84).
 
+## Quick start
+
+Get started quickly with Dependency Scanning, License Scanning, and Static Application Security
+Testing (SAST) by adding the following to your `.gitlab-ci.yml`:
+
+```yaml
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
+```
+
+To add Dynamic Application Security Testing (DAST) scanning, add the following to your
+`.gitlab-ci.yml` and replace `https://staging.example.com` with a staging server's web address:
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+variables:
+  DAST_WEBSITE: https://staging.example.com
+```
+
+To ensure the DAST scanner runs *after* deploying the application to the staging server, review the [DAST full documentation](dast/index.md).
+
+To add Container Scanning, follow the steps listed in the [Container Scanning documentation](container_scanning/index.md#requirements).
+
+To further configure any of the other scanners, refer to each scanner's documentation.
+
 ## Security scanning tools
 
 GitLab uses the following tools to scan and report known vulnerabilities found in your project.
 
 | Secure scanning tool                                                         | Description                                                            |
 |:-----------------------------------------------------------------------------|:-----------------------------------------------------------------------|
-| [Compliance Dashboard](compliance_dashboard/index.md) **(ULTIMATE)**         | View the most recent Merge Request activity in a group.                |
 | [Container Scanning](container_scanning/index.md) **(ULTIMATE)**             | Scan Docker containers for known vulnerabilities.                      |
 | [Dependency List](dependency_list/index.md) **(ULTIMATE)**                   | View your project's dependencies and their known vulnerabilities.      |
 | [Dependency Scanning](dependency_scanning/index.md) **(ULTIMATE)**           | Analyze your dependencies for known vulnerabilities.                   |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) **(ULTIMATE)**  | Analyze running web applications for known vulnerabilities.            |
-| [License Compliance](license_compliance/index.md) **(ULTIMATE)**             | Search your project's dependencies for their licenses.                 |
 | [Security Dashboard](security_dashboard/index.md) **(ULTIMATE)**             | View vulnerabilities in all your projects and groups.                  |
 | [Static Application Security Testing (SAST)](sast/index.md) **(ULTIMATE)**   | Analyze source code for known vulnerabilities.                         |
 
@@ -35,7 +62,7 @@ The scanning tools and vulnerabilities database are updated regularly.
 | Secure scanning tool                                         | Vulnerabilities database updates          |
 |:-------------------------------------------------------------|-------------------------------------------|
 | [Container Scanning](container_scanning/index.md)            | Uses `clair`. The latest `clair-db` version is used for each job by running the [`latest` docker image tag](https://gitlab.com/gitlab-org/gitlab/blob/438a0a56dc0882f22bdd82e700554525f552d91b/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml#L37). The `clair-db` database [is updated daily according to the author](https://github.com/arminc/clair-local-scan#clair-server-or-local). |
-| [Dependency Scanning](dependency_scanning/index.md)          | Relies on `bundler-audit` (for Rubygems), `retire.js` (for NPM packages), and `gemnasium` (GitLab's own tool for all libraries). Both `bundler-audit` and `retire.js` fetch their vulnerabilities data from GitHub repositories, so vulnerabilities added to `ruby-advisory-db` and `retire.js` are immediately available. The tools themselves are updated once per month if there's a new version. The [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is updated at least once a week. |
+| [Dependency Scanning](dependency_scanning/index.md)          | Relies on `bundler-audit` (for Rubygems), `retire.js` (for NPM packages), and `gemnasium` (GitLab's own tool for all libraries). Both `bundler-audit` and `retire.js` fetch their vulnerabilities data from GitHub repositories, so vulnerabilities added to `ruby-advisory-db` and `retire.js` are immediately available. The tools themselves are updated once per month if there's a new version. The [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is updated at least once a week. See our [current measurement of time from CVE being issued to our product being updated](https://about.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) | The scanning engine is updated on a periodic basis. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/master/Dockerfile#L1). The scanning rules are downloaded at scan runtime. |
 | [Static Application Security Testing (SAST)](sast/index.md)  | Relies exclusively on [the tools GitLab wraps](sast/index.md#supported-languages-and-frameworks). The underlying analyzers are updated at least once per month if a relevant update is available. The vulnerabilities database is updated by the upstream tools. |
 
@@ -85,6 +112,19 @@ Once added, you can edit or delete it. This allows you to add and update
 context for a vulnerability as you learn more over time.
 
 ![Dismissed vulnerability comment](img/dismissed_info_v12_3.png)
+
+#### Dismissing multiple vulnerabilities
+
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+
+You can dismiss multiple vulnerabilities at once, providing an optional reason.
+Selecting the checkboxes on the side of each vulnerability in the list will select that individual vulnerability.
+Alternatively, you can select all the vulnerabilities in the list by selecting the checkbox in the table header.
+Deselecting the checkbox in the header will deselect all the vulnerabilities in the list.
+Once you have selected some vulnerabilities, a menu appears at the top of the table that allows you to select a dismissal reason.
+Pressing the "Dismiss Selected" button will dismiss all the selected vulnerabilities at once, with the reason you chose.
+
+![Multiple vulnerability dismissal](img/multi_select_v12_9.png)
 
 ### Creating an issue for a vulnerability
 
@@ -175,7 +215,9 @@ An approval is optional when a security report:
 - Contains no new vulnerabilities.
 - Contains only new vulnerabilities of `low` or `medium` severity.
 
-### Enabling License Approvals within a project
+## Enabling License Approvals within a project
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
 To enable License Approvals, a [project approval rule](../project/merge_requests/merge_request_approvals.md#multiple-approval-rules-premium)
 must be created with the case-sensitive name `License-Check`. This approval group must be set
@@ -183,7 +225,7 @@ with the number of approvals required greater than zero.
 
 Once this group is added to your project, the approval rule is enabled for all Merge Requests. To
 configure how this rule behaves, you can choose which licenses to `approve` or `blacklist` in the
-[project policies for License Compliance](license_compliance/index.md#project-policies-for-license-compliance)
+[project policies for License Compliance](../compliance/license_compliance/index.md#project-policies-for-license-compliance)
 section.
 
 Any code changes cause the approvals required to reset.
@@ -197,6 +239,44 @@ An approval is optional when a license report:
 
 - Contains no software license violations.
 - Contains only new licenses that are `approved` or unknown.
+
+## Working in an offline environment
+
+It is possible to run most of the GitLab security scanners when not
+connected to the internet, in what is sometimes known as an offline,
+limited connectivity, Local Area Network (LAN), Intranet, or "air-gap"
+environment.
+
+Read how to [operate the Secure scanners in an offline environment](offline_deployments/index.md).
+
+## Outdated security reports
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4913) in GitLab 12.7.
+
+When a security report generated for a merge request becomes outdated, the merge request shows a warning
+message in the security widget and prompts you to take an appropriate action.
+
+This can happen in two scenarios:
+
+1. Your [source branch is behind the target branch](#source-branch-is-behind-the-target-branch).
+1. The [target branch security report is out of date](#target-branch-security-report-is-out-of-date).
+
+### Source branch is behind the target branch
+
+This means the most recent common ancestor commit between the target branch and the source branch is
+not the most recent commit on the target branch. This is by far the most common situation.
+
+In this case you must rebase or merge to incorporate the changes from the target branch.
+
+![Incorporate target branch changes](img/outdated_report_branch_v12_9.png)
+
+### Target branch security report is out of date
+
+This can happen for many reasons, including failed jobs or new advisories. When the merge request shows that a
+security report is out of date, you must run a new pipeline on the target branch.
+You can do it quickly by following the hyperlink given to run a new pipeline.
+
+![Run a new pipeline](img/outdated_report_pipeline_v12_9.png)
 
 ## Troubleshooting
 

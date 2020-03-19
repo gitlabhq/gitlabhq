@@ -1,5 +1,5 @@
 FROM ruby:2.6-stretch
-LABEL maintainer "Grzegorz Bizon <grzegorz@gitlab.com>"
+LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"
 ENV DEBIAN_FRONTEND noninteractive
 
 ##

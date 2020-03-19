@@ -10,12 +10,15 @@ describe SearchService do
   let!(:group_member) { create(:group_member, group: accessible_group, user: user) }
 
   let!(:accessible_project) { create(:project, :private, name: 'accessible_project') }
-  let!(:inaccessible_project) { create(:project, :private, name: 'inaccessible_project') }
   let(:note) { create(:note_on_issue, project: accessible_project) }
+
+  let!(:inaccessible_project) { create(:project, :private, name: 'inaccessible_project') }
 
   let(:snippet) { create(:snippet, author: user) }
   let(:group_project) { create(:project, group: accessible_group, name: 'group_project') }
   let(:public_project) { create(:project, :public, name: 'public_project') }
+
+  subject(:search_service) { described_class.new(user, search: search, scope: scope, page: 1) }
 
   before do
     accessible_project.add_maintainer(user)
@@ -291,6 +294,71 @@ describe SearchService do
           search: public_project.name).search_objects
 
         expect(search_objects.first).to eq public_project
+      end
+    end
+
+    context 'redacting search results' do
+      shared_examples 'it redacts incorrect results' do
+        before do
+          allow(Ability).to receive(:allowed?).and_return(allowed)
+        end
+
+        context 'when allowed' do
+          let(:allowed) { true }
+
+          it 'does nothing' do
+            expect(results).not_to be_empty
+            expect(results).to all(be_an(model_class))
+          end
+        end
+
+        context 'when disallowed' do
+          let(:allowed) { false }
+
+          it 'does nothing' do
+            expect(results).to be_empty
+          end
+        end
+      end
+
+      context 'issues' do
+        let(:issue) { create(:issue, project: accessible_project) }
+        let(:scope) { 'issues' }
+        let(:model_class) { Issue }
+        let(:ability) { :read_issue }
+        let(:search) { issue.title }
+        let(:results) { subject.search_objects }
+
+        it_behaves_like 'it redacts incorrect results'
+      end
+
+      context 'notes' do
+        let(:note) { create(:note_on_commit, project: accessible_project) }
+        let(:scope) { 'notes' }
+        let(:model_class) { Note }
+        let(:ability) { :read_note }
+        let(:search) { note.note }
+        let(:results) do
+          described_class.new(
+            user,
+            project_id: accessible_project.id,
+            scope: scope,
+            search: note.note
+          ).search_objects
+        end
+
+        it_behaves_like 'it redacts incorrect results'
+      end
+
+      context 'merge_requests' do
+        let(:scope) { 'merge_requests' }
+        let(:model_class) { MergeRequest }
+        let(:ability) { :read_merge_request }
+        let(:merge_request) { create(:merge_request, source_project: accessible_project, author: user) }
+        let(:search) { merge_request.title }
+        let(:results) { subject.search_objects }
+
+        it_behaves_like 'it redacts incorrect results'
       end
     end
   end

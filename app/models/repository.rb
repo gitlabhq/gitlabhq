@@ -22,7 +22,7 @@ class Repository
 
   include Gitlab::RepositoryCacheAdapter
 
-  attr_accessor :full_path, :disk_path, :container, :repo_type
+  attr_accessor :full_path, :shard, :disk_path, :container, :repo_type
 
   delegate :ref_name_for_sha, to: :raw_repository
   delegate :bundle_to_disk, to: :raw_repository
@@ -65,8 +65,9 @@ class Repository
     xcode_config: :xcode_project?
   }.freeze
 
-  def initialize(full_path, container, disk_path: nil, repo_type: Gitlab::GlRepository::PROJECT)
+  def initialize(full_path, container, shard:, disk_path: nil, repo_type: Gitlab::GlRepository::PROJECT)
     @full_path = full_path
+    @shard = shard
     @disk_path = disk_path || full_path
     @container = container
     @commit_cache = {}
@@ -95,7 +96,7 @@ class Repository
   def path_to_repo
     @path_to_repo ||=
       begin
-        storage = Gitlab.config.repositories.storages[container.repository_storage]
+        storage = Gitlab.config.repositories.storages[shard]
 
         File.expand_path(
           File.join(storage.legacy_disk_path, disk_path + '.git')
@@ -139,6 +140,7 @@ class Repository
       repo: raw_repository,
       ref: ref,
       path: opts[:path],
+      author: opts[:author],
       follow: Array(opts[:path]).length == 1,
       limit: opts[:limit],
       offset: opts[:offset],
@@ -433,15 +435,6 @@ class Repository
   # Runs code after the HEAD of a repository is changed.
   def after_change_head
     expire_all_method_caches
-  end
-
-  # Runs code after a repository has been forked/imported.
-  def after_import
-    expire_content_cache
-
-    return unless repo_type.project?
-
-    DetectRepositoryLanguagesWorker.perform_async(project.id)
   end
 
   # Runs code after a new commit has been pushed.
@@ -909,10 +902,8 @@ class Repository
   def merged_branch_names(branch_names = [])
     # Currently we should skip caching if requesting all branch names
     # This is only used in a few places, notably app/services/branches/delete_merged_service.rb,
-    # and it could potentially result in a very large cache/performance issues with the current
-    # implementation.
-    skip_cache = branch_names.empty? || Feature.disabled?(:merged_branch_names_redis_caching, default_enabled: true)
-    return raw_repository.merged_branch_names(branch_names) if skip_cache
+    # and it could potentially result in a very large cache.
+    return raw_repository.merged_branch_names(branch_names) if branch_names.empty?
 
     cache = redis_hash_cache
 
@@ -1070,8 +1061,7 @@ class Repository
   end
 
   def squash(user, merge_request, message)
-    raw.squash(user, merge_request.id, branch: merge_request.target_branch,
-                                       start_sha: merge_request.diff_start_sha,
+    raw.squash(user, merge_request.id, start_sha: merge_request.diff_start_sha,
                                        end_sha: merge_request.diff_head_sha,
                                        author: merge_request.author,
                                        message: message)
@@ -1180,7 +1170,7 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(container.repository_storage,
+    Gitlab::Git::Repository.new(shard,
                                 disk_path + '.git',
                                 repo_type.identifier_for_container(container),
                                 container.full_path)

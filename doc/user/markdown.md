@@ -131,26 +131,26 @@ Supported formats (named colors are not supported):
 Color written inside backticks will be followed by a color "chip":
 
 ```markdown
-`#F00`  
-`#F00A`  
-`#FF0000`  
-`#FF0000AA`  
-`RGB(0,255,0)`  
-`RGB(0%,100%,0%)`  
-`RGBA(0,255,0,0.3)`  
-`HSL(540,70%,50%)`  
-`HSLA(540,70%,50%,0.3)`  
+- `#F00`
+- `#F00A`
+- `#FF0000`
+- `#FF0000AA`
+- `RGB(0,255,0)`
+- `RGB(0%,100%,0%)`
+- `RGBA(0,255,0,0.3)`
+- `HSL(540,70%,50%)`
+- `HSLA(540,70%,50%,0.3)`
 ```
 
-`#F00`  
-`#F00A`  
-`#FF0000`  
-`#FF0000AA`  
-`RGB(0,255,0)`  
-`RGB(0%,100%,0%)`  
-`RGBA(0,255,0,0.3)`  
-`HSL(540,70%,50%)`  
-`HSLA(540,70%,50%,0.3)`  
+- `#F00`
+- `#F00A`
+- `#FF0000`
+- `#FF0000AA`
+- `RGB(0,255,0)`
+- `RGB(0%,100%,0%)`
+- `RGBA(0,255,0,0.3)`
+- `HSL(540,70%,50%)`
+- `HSLA(540,70%,50%,0.3)`
 
 ### Diagrams and flowcharts
 
@@ -165,7 +165,7 @@ Visit the [official page](https://mermaidjs.github.io/) for more details. If you
 
 In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block:
 
-~~~
+````markdown
 ```mermaid
 graph TD;
   A-->B;
@@ -173,7 +173,7 @@ graph TD;
   B-->D;
   C-->D;
 ```
-~~~
+````
 
 ```mermaid
 graph TD;
@@ -185,7 +185,7 @@ graph TD;
 
 Subgraphs can also be included:
 
-~~~
+````markdown
 ```mermaid
 graph TB
 
@@ -202,7 +202,7 @@ graph TB
   SubGraph1 --> FinalThing[Final Thing]
 end
 ```
-~~~
+````
 
 ```mermaid
 graph TB
@@ -280,27 +280,27 @@ The following delimiters are supported:
 
 - YAML (`---`):
 
-  ~~~yaml
+  ```yaml
   ---
   title: About Front Matter
   example:
   language: yaml
   ---
-  ~~~
+  ```
 
 - TOML (`+++`):
 
-  ~~~toml
+  ```toml
   +++
   title = "About Front Matter"
   [example]
   language = "toml"
   +++
-  ~~~
+  ```
 
 - JSON (`;;;`):
 
-  ~~~json
+  ```json
   ;;;
   {
     "title": "About Front Matter"
@@ -309,7 +309,7 @@ The following delimiters are supported:
     }
   }
   ;;;
-  ~~~
+  ```
 
 Other languages are supported by adding a specifier to any of the existing
 delimiters. For example:
@@ -364,7 +364,7 @@ Math written between dollar signs `$` will be rendered inline with the text. Mat
 inside a [code block](#code-spans-and-blocks) with the language declared as `math`, will be rendered
 on a separate line:
 
-~~~
+````markdown
 This math is inline $`a^2+b^2=c^2`$.
 
 This is on a separate line
@@ -372,7 +372,7 @@ This is on a separate line
 ```math
 a^2+b^2=c^2
 ```
-~~~
+````
 
 This math is inline $`a^2+b^2=c^2`$.
 
@@ -390,7 +390,7 @@ the [asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 ### Special GitLab references
 
 GFM recognizes special GitLab related references. For example, you can easily reference
-an issue, a commit, a team member or even the whole team within a project. GFM will turn
+an issue, a commit, a team member, or even the whole team within a project. GFM will turn
 that reference into a link so you can navigate between them easily.
 
 Additionally, GFM recognizes certain cross-project references, and also has a shorthand
@@ -408,7 +408,6 @@ GFM will recognize the following:
 | merge request                   | `!123`                     | `namespace/project!123`                 | `project!123`                  |
 | snippet                         | `$123`                     | `namespace/project$123`                 | `project$123`                  |
 | epic **(ULTIMATE)**             | `&123`                     | `group1/subgroup&123`                   |                                |
-| design **(PREMIUM)**            | `#123[file.jpg]` or `#123["file.png"]` | `group1/subgroup#123[file.png]`         | `project#123[file.png]`         |
 | label by ID                     | `~123`                     | `namespace/project~123`                 | `project~123`                  |
 | one-word label by name          | `~bug`                     | `namespace/project~bug`                 | `project~bug`                  |
 | multi-word label by name        | `~"feature request"`       | `namespace/project~"feature request"`   | `project~"feature request"`    |
@@ -420,6 +419,12 @@ GFM will recognize the following:
 | commit range comparison         | `9ba12248...b19a04f5`      | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`  |
 | repository file references      | `[README](doc/README)`     |                                         |                                |
 | repository file line references | `[README](doc/README#L13)` |                                         |                                |
+
+In addition to this, links to some objects are also recognized and formatted. Some examples of these are:
+
+- Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, which will be rendered as `#1234 (note1)`
+- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/issues/1234/designs"`, which will be rendered as `#1234 (designs)`.
+  **(PREMIUM)**
 
 ### Task lists
 
@@ -581,7 +586,7 @@ Quote break.
 GFM extends the standard Markdown standard by also supporting multiline blockquotes
 fenced by `>>>`:
 
-```
+```markdown
 >>>
 If you paste a message from somewhere else
 
@@ -613,12 +618,12 @@ Inline `code` has `back-ticks around` it.
 
 ---
 
-Similarly, a whole block of code can be fenced with triple backticks ```` ``` ````,
+Similarly, a whole block of code can be fenced with triple backticks (```` ``` ````),
 triple tildes (`~~~`), or indented 4 or more spaces to achieve a similar effect for
 a larger body of code.
 
-~~~
-```
+````markdown
+```python
 def function():
     #indenting works just fine in the fenced code block
     s = "Python code"
@@ -628,9 +633,9 @@ def function():
     Using 4 spaces
     is like using
     3-backtick fences.
-~~~
+````
 
-```
+```plaintext
 ~~~
 Tildes are OK too.
 ~~~
@@ -638,22 +643,22 @@ Tildes are OK too.
 
 The three examples above render as:
 
-```
+```python
 def function():
     #indenting works just fine in the fenced code block
     s = "Python code"
     print s
 ```
 
-```
+```plaintext
 Using 4 spaces
 is like using
 3-backtick fences.
 ```
 
-~~~
+```plaintext
 Tildes are OK too.
-~~~
+```
 
 #### Colored code and syntax highlighting
 
@@ -665,10 +670,10 @@ highlighting in code blocks. For a list of supported languages visit the
 Syntax highlighting is only supported in code blocks, it is not possible to highlight
 code when it is inline.
 
-Blocks of code are fenced by lines with three back-ticks ```` ``` ```` or three tildes `~~~`, and have
+Blocks of code are fenced by lines with three back-ticks (```` ``` ````) or three tildes (`~~~`), and have
 the language identified at the end of the first fence:
 
-~~~
+````markdown
 ```javascript
 var s = "JavaScript syntax highlighting";
 alert(s);
@@ -692,7 +697,7 @@ No language indicated, so no syntax highlighting.
 s = "There is no highlighting for this."
 But let's throw in a <b>tag</b>.
 ```
-~~~
+````
 
 The four examples above render as:
 
@@ -714,7 +719,7 @@ markdown = Redcarpet.new("Hello World!")
 puts markdown.to_html
 ```
 
-```
+```plaintext
 No language indicated, so no syntax highlighting.
 s = "There is no highlighting for this."
 But let's throw in a <b>tag</b>.
@@ -756,7 +761,7 @@ dealing with code and names that often appear with multiple underscores. As a re
 GFM extends the standard Markdown standard by ignoring multiple underlines in words,
 to allow better rendering of Markdown documents discussing code:
 
-```md
+```markdown
 perform_complicated_task
 
 do_this_and_do_that_and_another_thing
@@ -852,7 +857,7 @@ The IDs are generated from the content of the header according to the following 
 
 Example:
 
-```
+```markdown
 # This header has spaces in it
 ## This header has a :thumbsup: in it
 # This header has Unicode in it: 한글
@@ -973,7 +978,7 @@ class for the list of allowed HTML tags and attributes. In addition to the defau
   <dd>Is something people use sometimes.</dd>
 
   <dt>Markdown in HTML</dt>
-  <dd>Does *not* work **very** well. HTML <em>tags</em> will <b>always</b> work.</dd>
+  <dd>Does *not* work **very** well. HTML <em>tags</em> will <b>work</b>, in most cases.</dd>
 </dl>
 ```
 
@@ -982,7 +987,7 @@ class for the list of allowed HTML tags and attributes. In addition to the defau
   <dd>Is something people use sometimes.</dd>
 
   <dt>Markdown in HTML</dt>
-  <dd>Does *not* work **very** well. HTML <em>tags</em> will <b>always</b> work.</dd>
+  <dd>Does *not* work **very** well. HTML <em>tags</em> will <b>work</b>, in most cases.</dd>
 </dl>
 
 ---
@@ -993,12 +998,12 @@ are separated into their own lines:
 ```html
 <dl>
   <dt>Markdown in HTML</dt>
-  <dd>Does *not* work **very** well. HTML tags will always work.</dd>
+  <dd>Does *not* work **very** well. HTML tags will work, in most cases.</dd>
 
   <dt>Markdown in HTML</dt>
   <dd>
 
-  Does *not* work **very** well. HTML tags will always work.
+  Does *not* work **very** well. HTML tags will work, in most cases.
 
   </dd>
 </dl>
@@ -1008,12 +1013,12 @@ are separated into their own lines:
 
 <dl>
   <dt>Markdown in HTML</dt>
-  <dd>Does *not* work **very** well. HTML tags will always work.</dd>
+  <dd>Does *not* work **very** well. HTML tags will work, in most cases.</dd>
 
   <dt>Markdown in HTML</dt>
   <dd>
 
-  Does <em>not</em> work <b>very</b> well. HTML tags will always work.
+  Does <em>not</em> work <b>very</b> well. HTML tags will work, in most cases.
 
   </dd>
 </dl>
@@ -1148,7 +1153,7 @@ A new line due to the previous backslash.
 
 There are two ways to create links, inline-style and reference-style:
 
-```md
+```markdown
 - This is an [inline-style link](https://www.google.com)
 - This is a [link to a repository file in the same directory](index.md)
 - This is a [relative link to a readme one directory higher](../README.md)
@@ -1319,7 +1324,7 @@ the paragraph will appear outside the list, instead of properly indented under t
 
 Example:
 
-```
+```markdown
 1. First ordered list item
 
   Paragraph of first item.

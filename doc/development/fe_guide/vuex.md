@@ -1,12 +1,19 @@
 # Vuex
 
-To manage the state of an application you should use [Vuex][vuex-docs].
+When there's a clear benefit to separating state management from components (e.g. due to state complexity) we recommend using [Vuex][vuex-docs] over any other Flux pattern. Otherwise, feel free to manage state within the components.
+
+Vuex should be strongly considered when:
+
+- You expect multiple parts of the application to react to state changes
+- There's a need to share data between multiple components
+- There are complex interactions with Backend, e.g. multiple API calls
+- The app involves interacting with backend via both traditional REST API and GraphQL (especially when moving the REST API over to GraphQL is a pending backend task)
 
 _Note:_ All of the below is explained in more detail in the official [Vuex documentation][vuex-docs].
 
 ## Separation of concerns
 
-Vuex is composed of State, Getters, Mutations, Actions and Modules.
+Vuex is composed of State, Getters, Mutations, Actions, and Modules.
 
 When a user clicks on an action, we need to `dispatch` it. This action will `commit` a mutation that will change the state.
 _Note:_ The action itself will not update the state, only a mutation should update the state.

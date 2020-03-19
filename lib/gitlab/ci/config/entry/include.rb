@@ -10,7 +10,7 @@ module Gitlab
         class Include < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Validatable
 
-          ALLOWED_KEYS = %i[local file remote template].freeze
+          ALLOWED_KEYS = %i[local file remote template artifact job].freeze
 
           validations do
             validates :config, hash_or_string: true

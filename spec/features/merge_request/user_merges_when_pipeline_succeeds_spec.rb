@@ -64,6 +64,10 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
         before do
           click_button "Merge when pipeline succeeds"
           click_link "Cancel automatic merge"
+
+          wait_for_requests
+
+          expect(page).to have_content 'Merge when pipeline succeeds', wait: 0
         end
 
         it_behaves_like 'Merge when pipeline succeeds activator'

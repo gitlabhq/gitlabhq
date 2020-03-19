@@ -282,4 +282,34 @@ describe('Diffs Module Getters', () => {
       expect(getters.currentDiffIndex(localState)).toEqual(0);
     });
   });
+
+  describe('fileLineCoverage', () => {
+    beforeEach(() => {
+      Object.assign(localState.coverageFiles, { files: { 'app.js': { '1': 0, '2': 5 } } });
+    });
+
+    it('returns empty object when no coverage data is available', () => {
+      Object.assign(localState.coverageFiles, {});
+
+      expect(getters.fileLineCoverage(localState)('test.js', 2)).toEqual({});
+    });
+
+    it('returns empty object when unknown filename is passed', () => {
+      expect(getters.fileLineCoverage(localState)('test.js', 2)).toEqual({});
+    });
+
+    it('returns no-coverage info when correct filename and line is passed', () => {
+      expect(getters.fileLineCoverage(localState)('app.js', 1)).toEqual({
+        text: 'No test coverage',
+        class: 'no-coverage',
+      });
+    });
+
+    it('returns coverage info when correct filename and line is passed', () => {
+      expect(getters.fileLineCoverage(localState)('app.js', 2)).toEqual({
+        text: 'Test coverage: 5 hits',
+        class: 'coverage',
+      });
+    });
+  });
 });

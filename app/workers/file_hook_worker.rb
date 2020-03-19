@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class FileHookWorker
+class FileHookWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   sidekiq_options retry: false

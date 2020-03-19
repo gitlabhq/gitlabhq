@@ -1,0 +1,5 @@
+---
+title: Reorder exported relations by primary_key when using Project Export
+merge_request: 27117
+author:
+type: fixed

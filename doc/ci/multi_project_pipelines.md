@@ -2,26 +2,18 @@
 type: reference
 ---
 
-# Multi-project pipelines **(PREMIUM)**
+# Multi-project pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2121) in
-[GitLab Premium 9.3](https://about.gitlab.com/releases/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
+> - [Introduced](https://about.gitlab.com/releases/2015/08/22/gitlab-7-14-released/#build-triggers-api-gitlab-ci) in GitLab 7.14, as Build Triggers.
+> - [Made available](https://gitlab.com/gitlab-org/gitlab/issues/199224) in all tiers in GitLab 12.8.
 
-When you set up [GitLab CI/CD](README.md) across multiple projects, you can visualize
-the entire pipeline, including all cross-project inter-dependencies.
+You can set up [GitLab CI/CD](README.md) across multiple projects, so that a pipeline
+in one project can trigger a pipeline in another project.
 
 ## Overview
 
-GitLab CI/CD is a powerful continuous integration tool that works not only per project, but also across projects. When you
-configure GitLab CI for your project, you can visualize the stages
-of your [jobs](pipelines.md#configuring-pipelines) on a [pipeline graph](pipelines.md#visualizing-pipelines).
-
-![Multi-project pipeline graph](img/multi_project_pipeline_graph.png)
-
-In the Merge Request Widget, multi-project pipeline mini-graphs are displayed,
-and when hovering or tapping (on touchscreen devices) they will expand and be shown adjacent to each other.
-
-![Multi-project mini graph](img/multi_pipeline_mini_graph.gif)
+GitLab CI/CD is a powerful continuous integration tool that works not only per project,
+but also across projects with multi-project pipelines.
 
 Multi-project pipelines are useful for larger products that require cross-project inter-dependencies, such as those
 adopting a [microservices architecture](https://about.gitlab.com/blog/2016/08/16/trends-in-version-control-land-microservices/).
@@ -29,6 +21,9 @@ adopting a [microservices architecture](https://about.gitlab.com/blog/2016/08/16
 For a demonstration of how cross-functional development teams can use cross-pipeline
 triggering to trigger multiple pipelines for different microservices projects, see
 [Cross-project Pipeline Triggering and Visualization](https://about.gitlab.com/handbook/marketing/product-marketing/demo/#cross-project-pipeline-triggering-and-visualization-may-2019---1110).
+
+Additionally, it's possible to visualize the entire pipeline, including all cross-project
+inter-dependencies. **(PREMIUM)**
 
 ## Use cases
 
@@ -38,9 +33,26 @@ Let's assume you deploy your web app from different projects in GitLab:
 - One for the paid version add-ons, which also pass through builds and tests
 - One for the documentation, which also builds, tests, and deploys with an SSG
 
-With Multi-Project Pipelines, you can visualize the entire pipeline, including all stages of builds and tests for the three projects.
+With Multi-Project Pipelines you can visualize the entire pipeline, including all build and test stages for the three projects.
+
+## Multi-project pipeline visualization **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2121) in [GitLab Premium 9.3](https://about.gitlab.com/releases/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
+
+When you configure GitLab CI for your project, you can visualize the stages of your
+[jobs](pipelines/index.md#configuring-pipelines) on a [pipeline graph](pipelines/index.md#visualizing-pipelines).
+
+![Multi-project pipeline graph](img/multi_project_pipeline_graph.png)
+
+In the Merge Request Widget, multi-project pipeline mini-graphs are displayed,
+and when hovering or tapping (on touchscreen devices) they will expand and be shown adjacent to each other.
+
+![Multi-project mini graph](img/multi_pipeline_mini_graph.gif)
 
 ## Triggering multi-project pipelines through API
+
+> - Use of `CI_JOB_TOKEN` for multi-project pipelines was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2017) in [GitLab Premium][ee] 9.3.
+> - Use of `CI_JOB_TOKEN` for multi-project pipelines was [made available](https://gitlab.com/gitlab-org/gitlab/issues/31573) in all tiers in GitLab 12.4.
 
 When you use the [`CI_JOB_TOKEN` to trigger pipelines](triggers/README.md#ci-job-token), GitLab
 recognizes the source of the job token, and thus internally ties these pipelines
@@ -52,7 +64,7 @@ outbound connections for upstream and downstream pipeline dependencies.
 ## Creating multi-project pipelines from `.gitlab-ci.yml`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/issues/199224) to GitLab Core in 12.8.
+> - [Made available](https://gitlab.com/gitlab-org/gitlab/issues/199224) in all tiers in 12.8.
 
 ### Triggering a downstream pipeline using a bridge job
 
@@ -227,3 +239,19 @@ Some features are not implemented yet. For example, support for environments.
 - `only` and `except`
 - `when` (only with `on_success`, `on_failure`, and `always` values)
 - `extends`
+
+## Trigger a pipeline when an upstream project is rebuilt
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9045) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8.
+
+You can trigger a pipeline in your project whenever a pipeline finishes for a new
+tag in a different project:
+
+1. Go to the project's **Settings > CI / CD** page, and expand the **Pipeline subscriptions** section.
+1. Enter the path to the project you want to subscribe to.
+1. Click subscribe.
+
+Any pipelines that complete successfully for new tags in the subscribed project
+will now trigger a pipeline on the current project's default branch. The maximum
+number of upstream pipeline subscriptions is 2, for both the upstream and
+downstream projects.

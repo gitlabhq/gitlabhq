@@ -109,11 +109,33 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
       expect(pipeline.source_bridge).to be_a ::Ci::Bridge
     end
 
-    it 'updates bridge status when downstream pipeline gets proceesed' do
+    it 'updates bridge status when downstream pipeline gets processed' do
       pipeline = service.execute(bridge)
 
       expect(pipeline.reload).to be_pending
       expect(bridge.reload).to be_success
+    end
+
+    context 'when bridge job has already any downstream pipelines' do
+      before do
+        bridge.sourced_pipelines.create!(
+          source_pipeline: bridge.pipeline,
+          source_project: bridge.project,
+          project: bridge.project,
+          pipeline: create(:ci_pipeline, project: bridge.project)
+        )
+      end
+
+      it 'logs an error and exits' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(
+            instance_of(Ci::CreateCrossProjectPipelineService::DuplicateDownstreamPipelineError),
+            bridge_id: bridge.id, project_id: bridge.project.id)
+          .and_call_original
+        expect(Ci::CreatePipelineService).not_to receive(:new)
+        expect(service.execute(bridge)).to be_nil
+      end
     end
 
     context 'when target ref is not specified' do
@@ -125,6 +147,35 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
         pipeline = service.execute(bridge)
 
         expect(pipeline.ref).to eq 'master'
+      end
+    end
+
+    context 'when downstream pipeline has yaml configuration error' do
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(job: { invalid: 'yaml' }))
+      end
+
+      it 'creates only one new pipeline' do
+        expect { service.execute(bridge) }
+          .to change { Ci::Pipeline.count }.by(1)
+      end
+
+      it 'creates a new pipeline in a downstream project' do
+        pipeline = service.execute(bridge)
+
+        expect(pipeline.user).to eq bridge.user
+        expect(pipeline.project).to eq downstream_project
+        expect(bridge.sourced_pipelines.first.pipeline).to eq pipeline
+        expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
+        expect(pipeline.source_bridge).to eq bridge
+        expect(pipeline.source_bridge).to be_a ::Ci::Bridge
+      end
+
+      it 'updates the bridge status when downstream pipeline gets processed' do
+        pipeline = service.execute(bridge)
+
+        expect(pipeline.reload).to be_failed
+        expect(bridge.reload).to be_failed
       end
     end
 
@@ -173,7 +224,7 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
             expect(pipeline.source_bridge).to be_a ::Ci::Bridge
           end
 
-          it 'updates bridge status when downstream pipeline gets proceesed' do
+          it 'updates bridge status when downstream pipeline gets processed' do
             pipeline = service.execute(bridge)
 
             expect(pipeline.reload).to be_pending
@@ -210,6 +261,22 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
         end
 
         it_behaves_like 'creates a child pipeline'
+
+        it 'updates the bridge job to success' do
+          expect { service.execute(bridge) }.to change { bridge.status }.to 'success'
+        end
+
+        context 'when bridge uses "depend" strategy' do
+          let(:trigger) do
+            {
+              trigger: { include: 'child-pipeline.yml', strategy: 'depend' }
+            }
+          end
+
+          it 'does not update the bridge job status' do
+            expect { service.execute(bridge) }.not_to change { bridge.status }
+          end
+        end
 
         context 'when latest sha for the ref changed in the meantime' do
           before do
@@ -264,6 +331,54 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
             expect(bridge.failure_reason).to eq 'bridge_pipeline_is_child_pipeline'
           end
         end
+      end
+    end
+
+    context 'when downstream pipeline creation errors out' do
+      let(:stub_config) { false }
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(invalid: { yaml: 'error' }))
+      end
+
+      it 'creates only one new pipeline' do
+        expect { service.execute(bridge) }
+          .to change { Ci::Pipeline.count }.by(1)
+      end
+
+      it 'creates a new pipeline in the downstream project' do
+        pipeline = service.execute(bridge)
+
+        expect(pipeline.user).to eq bridge.user
+        expect(pipeline.project).to eq downstream_project
+      end
+
+      it 'drops the bridge' do
+        pipeline = service.execute(bridge)
+
+        expect(pipeline.reload).to be_failed
+        expect(bridge.reload).to be_failed
+        expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
+      end
+    end
+
+    context 'when bridge job status update raises state machine errors' do
+      let(:stub_config) { false }
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(invalid: { yaml: 'error' }))
+        bridge.drop!
+      end
+
+      it 'tracks the exception' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(
+            instance_of(Ci::Bridge::InvalidTransitionError),
+            bridge_id: bridge.id,
+            downstream_pipeline_id: kind_of(Numeric))
+
+        service.execute(bridge)
       end
     end
 

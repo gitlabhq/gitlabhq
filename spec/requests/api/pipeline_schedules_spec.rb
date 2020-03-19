@@ -289,7 +289,7 @@ describe API::PipelineSchedules do
           delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", maintainer)
         end.to change { project.pipeline_schedules.count }.by(-1)
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(:no_content)
       end
 
       it 'responds with 404 Not Found if requesting non-existing pipeline_schedule' do

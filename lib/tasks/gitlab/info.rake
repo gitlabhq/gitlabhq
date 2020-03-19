@@ -82,15 +82,10 @@ namespace :gitlab do
       puts "Using Omniauth:\t#{Gitlab::Auth.omniauth_enabled? ? "yes".color(:green) : "no"}"
       puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if Gitlab::Auth.omniauth_enabled?
 
-      # check Gitolite version
-      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.path}/VERSION"
-      if File.readable?(gitlab_shell_version_file)
-        gitlab_shell_version = File.read(gitlab_shell_version_file)
-      end
-
+      # check Gitlab Shell version
       puts ""
       puts "GitLab Shell".color(:yellow)
-      puts "Version:\t#{gitlab_shell_version || "unknown".color(:red)}"
+      puts "Version:\t#{Gitlab::Shell.version || "unknown".color(:red)}"
       puts "Repository storage paths:"
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         Gitlab.config.repositories.storages.each do |name, repository_storage|

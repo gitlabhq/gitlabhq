@@ -12,11 +12,7 @@ class Projects::Tags::ReleasesController < Projects::ApplicationController
   end
 
   def update
-    if release_params[:description].present?
-      release.update(release_params)
-    else
-      release.destroy
-    end
+    release.update(release_params) if release.persisted? || release_params[:description].present?
 
     redirect_to project_tag_path(@project, tag.name)
   end

@@ -1,0 +1,46 @@
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "kubernetes.pod.name": {
+              "query": "production-6866bc8974-m4sk4"
+            }
+          }
+        },
+        {
+          "match_phrase": {
+            "kubernetes.namespace": {
+              "query": "autodevops-deploy-9-production"
+            }
+          }
+        },
+        {
+          "match_phrase": {
+            "kubernetes.container.name": {
+              "query": "auto-deploy-app"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "sort": [
+    {
+      "@timestamp": {
+        "order": "desc"
+      }
+    },
+    {
+      "offset": {
+        "order": "desc"
+      }
+    }
+  ],
+  "_source": [
+    "@timestamp",
+    "message"
+  ],
+  "size": 500
+}

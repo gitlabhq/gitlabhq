@@ -1,0 +1,15 @@
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{js,json,vue,scss,rb,haml,yml}]
+indent_size = 2
+
+[*.{js,json,vue,scss,rb,haml,yml,md}]
+indent_style = space
+charset = utf-8

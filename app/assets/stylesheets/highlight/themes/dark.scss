@@ -24,6 +24,8 @@ $dark-pre-hll-bg: #373b41;
 $dark-hll-bg: #373b41;
 $dark-over-bg: #9f9ab5;
 $dark-expanded-bg: #3e3e3e;
+$dark-coverage: #b5bd68;
+$dark-no-coverage: #de935f;
 $dark-c: #969896;
 $dark-err: #c66;
 $dark-k: #b294bb;
@@ -124,12 +126,18 @@ $dark-il: #de935f;
     }
 
     td.diff-line-num.hll:not(.empty-cell),
+    td.line-coverage.hll:not(.empty-cell),
     td.line_content.hll:not(.empty-cell) {
       background-color: $dark-diff-not-empty-bg;
       border-color: darken($dark-diff-not-empty-bg, 15%);
     }
 
+    .line-coverage {
+      @include line-coverage-border-color($dark-coverage, $dark-no-coverage);
+    }
+
     .diff-line-num.new,
+    .line-coverage.new,
     .line_content.new {
       @include diff-background($dark-new-bg, $dark-new-idiff, $dark-border);
 
@@ -140,6 +148,7 @@ $dark-il: #de935f;
     }
 
     .diff-line-num.old,
+    .line-coverage.old,
     .line_content.old {
       @include diff-background($dark-old-bg, $dark-old-idiff, $dark-border);
 
@@ -168,6 +177,7 @@ $dark-il: #de935f;
     &:not(.diff-expanded) + .diff-expanded,
     &.diff-expanded + .line_holder:not(.diff-expanded) {
       > .diff-line-num,
+      > .line-coverage,
       > .line_content {
         border-top: 1px solid $black;
       }
@@ -175,6 +185,7 @@ $dark-il: #de935f;
 
     &.diff-expanded {
       > .diff-line-num,
+      > .line-coverage,
       > .line_content {
         background: $dark-expanded-bg;
         border-color: $dark-expanded-bg;

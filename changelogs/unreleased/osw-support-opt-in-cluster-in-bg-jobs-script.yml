@@ -1,0 +1,5 @@
+---
+title: Support sidekiq-cluster supervision through bin/background_jobs
+merge_request: 27042
+author:
+type: added

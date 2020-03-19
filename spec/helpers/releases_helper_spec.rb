@@ -18,16 +18,31 @@ describe ReleasesHelper do
   context 'url helpers' do
     let(:project) { build(:project, namespace: create(:group)) }
     let(:release) { create(:release, project: project) }
+    let(:user) { create(:user) }
+    let(:can_user_create_release) { false }
+    let(:common_keys) { [:project_id, :illustration_path, :documentation_path] }
 
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@release, release)
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?)
+                    .with(user, :create_release, project)
+                    .and_return(can_user_create_release)
     end
 
     describe '#data_for_releases_page' do
-      it 'has the needed data to display release blocks' do
-        keys = %i(project_id illustration_path documentation_path)
-        expect(helper.data_for_releases_page.keys).to eq(keys)
+      it 'includes the required data for displaying release blocks' do
+        expect(helper.data_for_releases_page.keys).to contain_exactly(*common_keys)
+      end
+
+      context 'when the user is allowed to create a new release' do
+        let(:can_user_create_release) { true }
+
+        it 'includes new_release_path' do
+          expect(helper.data_for_releases_page.keys).to contain_exactly(*common_keys, :new_release_path)
+          expect(helper.data_for_releases_page[:new_release_path]).to eq(new_project_tag_path(project))
+        end
       end
     end
 

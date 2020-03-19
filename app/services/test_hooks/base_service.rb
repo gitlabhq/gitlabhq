@@ -18,7 +18,7 @@ module TestHooks
         return error('Testing not available for this hook')
       end
 
-      error_message = catch(:validation_error) do
+      error_message = catch(:validation_error) do # rubocop:disable Cop/BanCatchThrow
         sample_data = self.__send__(trigger_data_method) # rubocop:disable GitlabSecurity/PublicSend
 
         return hook.execute(sample_data, trigger_key) # rubocop:disable Cop/AvoidReturnFromBlocks

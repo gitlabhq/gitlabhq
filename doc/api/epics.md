@@ -41,7 +41,7 @@ NOTE: **Note**
 
 Gets all epics of the requested group and its subgroups.
 
-```
+```plaintext
 GET /groups/:id/epics
 GET /groups/:id/epics?author_id=5
 GET /groups/:id/epics?labels=bug,reproduced
@@ -53,7 +53,7 @@ GET /groups/:id/epics?state=opened
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user               |
 | `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                 |
 | `labels`            | string           | no         | Return epics matching a comma separated list of labels names. Label names from the epic group or a parent group can be used |
-| `with_labels_details` | Boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413)|
+| `with_labels_details` | boolean        | no         | If `true`, response will return more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Introduced in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413)|
 | `order_by`          | string           | no         | Return epics ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
 | `sort`              | string           | no         | Return epics sorted in `asc` or `desc` order. Default is `desc`                                                             |
 | `search`            | string           | no         | Search epics against their `title` and `description`                                                                        |
@@ -160,14 +160,14 @@ Example response:
 
 Gets a single epic
 
-```
+```plaintext
 GET /groups/:id/epics/:epic_iid
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
-| `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
+| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5
@@ -228,7 +228,7 @@ Starting with GitLab [11.3][ee-6448], `start_date` and `end_date` should no long
 directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
 `*_fixed` fields instead.
 
-```
+```plaintext
 POST /groups/:id/epics
 ```
 
@@ -302,14 +302,14 @@ Starting with GitLab [11.3][ee-6448], `start_date` and `end_date` should no long
 directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
 `*_fixed` fields instead.
 
-```
+```plaintext
 PUT /groups/:id/epics/:epic_iid
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
-| `epic_iid`          | integer/string   | yes        | The internal ID  of the epic  |
+| `epic_iid`          | integer/string   | yes        | The internal ID of the epic  |
 | `title`             | string           | no         | The title of an epic |
 | `description`       | string           | no         | The description of an epic. Limited to 1,048,576 characters.  |
 | `labels`            | string           | no         | The comma separated list of labels |
@@ -372,14 +372,14 @@ Example response:
 
 Deletes an epic
 
-```
+```plaintext
 DELETE /groups/:id/epics/:epic_iid
 ```
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
-| `epic_iid`          | integer/string   | yes        | The internal ID  of the epic.  |
+| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
 curl --header DELETE "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics/5
@@ -391,7 +391,7 @@ Manually creates a todo for the current user on an epic. If
 there already exists a todo for the user on that epic, status code `304` is
 returned.
 
-```
+```plaintext
 POST /groups/:id/epics/:epic_iid/todo
 ```
 

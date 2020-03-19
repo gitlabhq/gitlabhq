@@ -308,6 +308,7 @@ export default {
         'is-added': file.tempFile,
       }"
       class="multi-file-editor-holder"
+      data-qa-selector="editor_container"
       @focusout="triggerFilesChange"
     ></div>
     <content-viewer

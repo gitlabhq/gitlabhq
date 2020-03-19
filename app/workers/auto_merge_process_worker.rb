@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AutoMergeProcessWorker
+class AutoMergeProcessWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
   queue_namespace :auto_merge

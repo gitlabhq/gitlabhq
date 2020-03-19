@@ -24,11 +24,11 @@ describe 'forked project import' do
   end
 
   let(:saver) do
-    Gitlab::ImportExport::ProjectTreeSaver.new(project: project_with_repo, current_user: user, shared: shared)
+    Gitlab::ImportExport::Project::TreeSaver.new(project: project_with_repo, current_user: user, shared: shared)
   end
 
   let(:restorer) do
-    Gitlab::ImportExport::ProjectTreeRestorer.new(user: user, shared: shared, project: project)
+    Gitlab::ImportExport::Project::TreeRestorer.new(user: user, shared: shared, project: project)
   end
 
   before do

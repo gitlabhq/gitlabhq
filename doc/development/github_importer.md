@@ -9,7 +9,7 @@ importer and a parallel importer. The Rake task `import:github` uses the
 sequential importer, while everything else uses the parallel importer. The
 difference between these two importers is quite simple: the sequential importer
 does all work in a single thread, making it more useful for debugging purposes
-or Rake tasks. The parallel importer on the other hand uses Sidekiq.
+or Rake tasks. The parallel importer, on the other hand, uses Sidekiq.
 
 ## Requirements
 
@@ -31,9 +31,9 @@ The importer's codebase is broken up into the following directories:
 
 ## Architecture overview
 
-When a GitHub project is imported we schedule and execute a job for the
-`RepositoryImportworker` worker as all other importers. However, unlike other
-importers we don't immediately perform the work necessary. Instead work is
+When a GitHub project is imported, we schedule and execute a job for the
+`RepositoryImportWorker` worker as all other importers. However, unlike other
+importers, we don't immediately perform the work necessary. Instead work is
 divided into separate stages, with each stage consisting out of a set of Sidekiq
 jobs that are executed. Between every stage a job is scheduled that periodically
 checks if all work of the current stage is completed, advancing the import
@@ -65,9 +65,9 @@ This worker will import all pull requests. For every pull request a job for the
 
 ### 5. Stage::ImportIssuesAndDiffNotesWorker
 
-This worker will import all issues and pull request comments. For every issue we
+This worker will import all issues and pull request comments. For every issue, we
 schedule a job for the `Gitlab::GithubImport::ImportIssueWorker` worker. For
-pull request comments we instead schedule jobs for the
+pull request comments, we instead schedule jobs for the
 `Gitlab::GithubImport::DiffNoteImporter` worker.
 
 This worker processes both issues and diff notes in parallel so we don't need to
@@ -82,7 +82,7 @@ project.
 ### 6. Stage::ImportNotesWorker
 
 This worker imports regular comments for both issues and pull requests. For
-every comment we schedule a job for the
+every comment, we schedule a job for the
 `Gitlab::GithubImport::ImportNoteWorker` worker.
 
 Regular comments have to be imported at the end since the GitHub API used
@@ -116,14 +116,14 @@ schedule the worker of the next stage.
 
 To reduce the number of `AdvanceStageWorker` jobs scheduled this worker will
 briefly wait for jobs to complete before deciding what the next action should
-be. For small projects this may slow down the import process a bit, but it will
+be. For small projects, this may slow down the import process a bit, but it will
 also reduce pressure on the system as a whole.
 
 ## Refreshing import JIDs
 
 GitLab includes a worker called `StuckImportJobsWorker` that will periodically
 run and mark project imports as failed if they have been running for more than
-15 hours. For GitHub projects this poses a bit of a problem: importing large
+15 hours. For GitHub projects, this poses a bit of a problem: importing large
 projects could take several hours depending on how often we hit the GitHub rate
 limit (more on this below), but we don't want `StuckImportJobsWorker` to mark
 our import as failed because of this.
@@ -137,7 +137,7 @@ long we're still performing work.
 
 ## GitHub rate limit
 
-GitHub has a rate limit of 5 000 API calls per hour. The number of requests
+GitHub has a rate limit of 5,000 API calls per hour. The number of requests
 necessary to import a project is largely dominated by the number of unique users
 involved in a project (e.g. issue authors). Other data such as issue pages
 and comments typically only requires a few dozen requests to import. This is
@@ -176,11 +176,11 @@ There are two types of lookups we cache:
    in our GitLab database.
 
 The expiration time of these keys is 24 hours. When retrieving the cache of a
-positive lookups we refresh the TTL automatically. The TTL of false lookups is
+positive lookup, we refresh the TTL automatically. The TTL of false lookups is
 never refreshed.
 
-Because of this caching layer it's possible newly registered GitLab accounts
-won't be linked to their corresponding GitHub accounts. This however will sort
+Because of this caching layer, it's possible newly registered GitLab accounts
+won't be linked to their corresponding GitHub accounts. This, however, will sort
 itself out once the cached keys expire.
 
 The user cache lookup is shared across projects. This means that the more
@@ -194,12 +194,12 @@ The code for this resides in:
 ## Mapping labels and milestones
 
 To reduce pressure on the database we do not query it when setting labels and
-milestones on issues and merge requests. Instead we cache this data when we
+milestones on issues and merge requests. Instead, we cache this data when we
 import labels and milestones, then we reuse this cache when assigning them to
 issues/merge requests. Similar to the user lookups these cache keys are expired
 automatically after 24 hours of not being used.
 
-Unlike the user lookup caches these label and milestone caches are scoped to the
+Unlike the user lookup caches, these label and milestone caches are scoped to the
 project that is being imported.
 
 The code for this resides in:

@@ -1,6 +1,6 @@
 <script>
-import { createNamespacedHelpers, mapState, mapActions } from 'vuex';
-import _ from 'underscore';
+import { createNamespacedHelpers, mapState, mapActions, mapGetters } from 'vuex';
+import { escape as esc } from 'lodash';
 import { GlFormInput, GlFormCheckbox } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import ClusterFormDropdown from '~/create_cluster/components/cluster_form_dropdown.vue';
@@ -61,6 +61,7 @@ export default {
       'gitlabManagedCluster',
       'isCreatingCluster',
     ]),
+    ...mapGetters(['subnetValid']),
     ...mapRolesState({
       roles: 'items',
       isLoadingRoles: 'isLoadingItems',
@@ -119,7 +120,7 @@ export default {
         !this.selectedRegion ||
         !this.selectedKeyPair ||
         !this.selectedVpc ||
-        !this.selectedSubnet ||
+        !this.subnetValid ||
         !this.selectedRole ||
         !this.selectedSecurityGroup ||
         !this.selectedInstanceType ||
@@ -127,13 +128,16 @@ export default {
         this.isCreatingCluster
       );
     },
+    displaySubnetError() {
+      return Boolean(this.loadingSubnetsError) || this.selectedSubnet?.length === 1;
+    },
     createClusterButtonLabel() {
       return this.isCreatingCluster
         ? s__('ClusterIntegration|Creating Kubernetes cluster')
         : s__('ClusterIntegration|Create Kubernetes cluster');
     },
     kubernetesIntegrationHelpText() {
-      const escapedUrl = _.escape(this.kubernetesIntegrationHelpPath);
+      const escapedUrl = esc(this.kubernetesIntegrationHelpPath);
 
       return sprintf(
         s__(
@@ -216,6 +220,13 @@ export default {
         false,
       );
     },
+    subnetValidationErrorText() {
+      if (this.loadingSubnetsError) {
+        return s__('ClusterIntegration|Could not load subnets for the selected VPC');
+      }
+
+      return s__('ClusterIntegration|You should select at least two subnets');
+    },
     securityGroupDropdownHelpText() {
       return sprintf(
         s__(
@@ -245,7 +256,7 @@ export default {
       );
     },
     gitlabManagedHelpText() {
-      const escapedUrl = _.escape(this.gitlabManagedClusterHelpPath);
+      const escapedUrl = esc(this.gitlabManagedClusterHelpPath);
 
       return sprintf(
         s__(
@@ -289,14 +300,14 @@ export default {
       this.setRegion({ region });
       this.setVpc({ vpc: null });
       this.setKeyPair({ keyPair: null });
-      this.setSubnet({ subnet: null });
+      this.setSubnet({ subnet: [] });
       this.setSecurityGroup({ securityGroup: null });
       this.fetchVpcs({ region });
       this.fetchKeyPairs({ region });
     },
     setVpcAndFetchSubnets(vpc) {
       this.setVpc({ vpc });
-      this.setSubnet({ subnet: null });
+      this.setSubnet({ subnet: [] });
       this.setSecurityGroup({ securityGroup: null });
       this.fetchSubnets({ vpc, region: this.selectedRegion });
       this.fetchSecurityGroups({ vpc, region: this.selectedRegion });
@@ -436,8 +447,8 @@ export default {
         :placeholder="s__('ClusterIntergation|Select a subnet')"
         :search-field-placeholder="s__('ClusterIntegration|Search subnets')"
         :empty-text="s__('ClusterIntegration|No subnet found')"
-        :has-errors="Boolean(loadingSubnetsError)"
-        :error-message="s__('ClusterIntegration|Could not load subnets for the selected VPC')"
+        :has-errors="displaySubnetError"
+        :error-message="subnetValidationErrorText"
         @input="setSubnet({ subnet: $event })"
       />
       <p class="form-text text-muted" v-html="subnetDropdownHelpText"></p>

@@ -7,7 +7,8 @@ module Gitlab
         LABELS = {
           "github"         => "GitHub",
           "gitlab"         => "GitLab.com",
-          "google_oauth2"  => "Google"
+          "google_oauth2"  => "Google",
+          "azure_oauth2"   => "Azure AD"
         }.freeze
 
         def self.authentication(user, provider)
@@ -17,7 +18,7 @@ module Gitlab
           authenticator =
             case provider
             when /^ldap/
-              Gitlab::Auth::LDAP::Authentication
+              Gitlab::Auth::Ldap::Authentication
             when 'database'
               Gitlab::Auth::Database::Authentication
             end
@@ -59,8 +60,8 @@ module Gitlab
         def self.config_for(name)
           name = name.to_s
           if ldap_provider?(name)
-            if Gitlab::Auth::LDAP::Config.valid_provider?(name)
-              Gitlab::Auth::LDAP::Config.new(name).options
+            if Gitlab::Auth::Ldap::Config.valid_provider?(name)
+              Gitlab::Auth::Ldap::Config.new(name).options
             else
               nil
             end
@@ -73,6 +74,12 @@ module Gitlab
           name = name.to_s
           config = config_for(name)
           (config && config['label']) || LABELS[name] || name.titleize
+        end
+
+        def self.icon_for(name)
+          name = name.to_s
+          config = config_for(name)
+          config && config['icon']
         end
       end
     end

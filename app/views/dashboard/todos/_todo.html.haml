@@ -48,14 +48,14 @@
 
   - if todo.pending?
     .todo-actions
-      = link_to dashboard_todo_path(todo), method: :delete, class: 'btn btn-loading js-done-todo', data: { href: dashboard_todo_path(todo) } do
+      = link_to dashboard_todo_path(todo), method: :delete, class: 'btn btn-loading d-flex align-items-center js-done-todo', data: { href: dashboard_todo_path(todo) } do
         Done
-        = icon('spinner spin')
-      = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'btn btn-loading js-undo-todo hidden', data: { href: restore_dashboard_todo_path(todo) } do
+        %span.spinner.ml-1
+      = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'btn btn-loading d-flex align-items-center js-undo-todo hidden', data: { href: restore_dashboard_todo_path(todo) } do
         Undo
-        = icon('spinner spin')
+        %span.spinner.ml-1
   - else
     .todo-actions
-      = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'btn btn-loading js-add-todo', data: { href: restore_dashboard_todo_path(todo) } do
+      = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'btn btn-loading d-flex align-items-center js-add-todo', data: { href: restore_dashboard_todo_path(todo) } do
         Add a To Do
-        = icon('spinner spin')
+        %span.spinner.ml-1

@@ -9,5 +9,5 @@ the following snippet in the rails console.
 
 ```ruby
 u = User.find(1)
-Project.last(100).each { |p| p.set_create_timestamps && p.add_maintainer(u, current_user: u) } # Change 100 to whatever number of projects you need access to
+Project.last(100).each { |p| p.set_timestamps_for_create && p.add_maintainer(u, current_user: u) } # Change 100 to whatever number of projects you need access to
 ```

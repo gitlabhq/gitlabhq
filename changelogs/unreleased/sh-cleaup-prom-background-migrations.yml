@@ -1,0 +1,5 @@
+---
+title: Clean stale background migration jobs
+merge_request: 25707
+author:
+type: fixed

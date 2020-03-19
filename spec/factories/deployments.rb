@@ -7,7 +7,7 @@ FactoryBot.define do
     tag { false }
     user { nil }
     project { nil }
-    deployable factory: :ci_build
+    deployable { association :ci_build, environment: environment.name, project: environment.project }
     environment factory: :environment
 
     after(:build) do |deployment, evaluator|

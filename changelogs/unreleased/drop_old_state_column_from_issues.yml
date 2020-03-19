@@ -1,0 +1,5 @@
+---
+title: Remove state column from issues and merge_requests
+merge_request: 25561
+author:
+type: deprecated

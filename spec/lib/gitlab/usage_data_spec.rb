@@ -27,7 +27,7 @@ describe Gitlab::UsageData do
           create(:service, project: projects[1], type: 'SlackService', active: true)
           create(:service, project: projects[2], type: 'SlackService', active: true)
           create(:service, project: projects[2], type: 'MattermostService', active: false)
-          create(:service, project: projects[2], type: 'MattermostService', active: true, template: true)
+          create(:service, :template, type: 'MattermostService', active: true)
           create(:service, project: projects[2], type: 'CustomIssueTrackerService', active: true)
           create(:project_error_tracking_setting, project: projects[0])
           create(:project_error_tracking_setting, project: projects[1], enabled: false)
@@ -324,6 +324,24 @@ describe Gitlab::UsageData do
         end
       end
 
+      describe '#cycle_analytics_usage_data' do
+        subject { described_class.cycle_analytics_usage_data }
+
+        it 'works when queries time out in new' do
+          allow(Gitlab::CycleAnalytics::UsageData)
+            .to receive(:new).and_raise(ActiveRecord::StatementInvalid.new(''))
+
+          expect { subject }.not_to raise_error
+        end
+
+        it 'works when queries time out in to_json' do
+          allow_any_instance_of(Gitlab::CycleAnalytics::UsageData)
+            .to receive(:to_json).and_raise(ActiveRecord::StatementInvalid.new(''))
+
+          expect { subject }.not_to raise_error
+        end
+      end
+
       describe '#ingress_modsecurity_usage' do
         subject { described_class.ingress_modsecurity_usage }
 
@@ -370,26 +388,19 @@ describe Gitlab::UsageData do
         end
       end
 
-      describe '#approximate_counts' do
-        it 'gets approximate counts for selected models', :aggregate_failures do
-          create(:label)
+      describe '#distinct_count' do
+        let(:relation) { double(:relation) }
 
-          expect(Gitlab::Database::Count).to receive(:approximate_counts)
-                                               .with(described_class::APPROXIMATE_COUNT_MODELS).once.and_call_original
+        it 'returns the count when counting succeeds' do
+          allow(relation).to receive(:distinct_count_by).and_return(1)
 
-          counts = described_class.approximate_counts.values
-
-          expect(counts.count).to eq(described_class::APPROXIMATE_COUNT_MODELS.count)
-          expect(counts.any? { |count| count < 0 }).to be_falsey
+          expect(described_class.distinct_count(relation, batch: false)).to eq(1)
         end
 
-        it 'returns default values if counts can not be retrieved', :aggregate_failures do
-          described_class::APPROXIMATE_COUNT_MODELS.map do |model|
-            model.name.underscore.pluralize.to_sym
-          end
+        it 'returns the fallback value when counting fails' do
+          allow(relation).to receive(:distinct_count_by).and_raise(ActiveRecord::StatementInvalid.new(''))
 
-          expect(Gitlab::Database::Count).to receive(:approximate_counts).and_return({})
-          expect(described_class.approximate_counts.values.uniq).to eq([-1])
+          expect(described_class.distinct_count(relation, fallback: 15, batch: false)).to eq(15)
         end
       end
     end

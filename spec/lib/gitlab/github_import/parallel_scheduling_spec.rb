@@ -57,7 +57,7 @@ describe Gitlab::GithubImport::ParallelScheduling do
 
       expect(importer).to receive(:parallel_import)
 
-      expect(Gitlab::GithubImport::Caching)
+      expect(Gitlab::Cache::Import::Caching)
         .to receive(:expire)
         .with(importer.already_imported_cache_key, a_kind_of(Numeric))
 
@@ -287,7 +287,7 @@ describe Gitlab::GithubImport::ParallelScheduling do
         .with(object)
         .and_return(object.id)
 
-      expect(Gitlab::GithubImport::Caching)
+      expect(Gitlab::Cache::Import::Caching)
         .to receive(:set_add)
         .with(importer.already_imported_cache_key, object.id)
         .and_call_original

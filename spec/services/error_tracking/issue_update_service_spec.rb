@@ -43,6 +43,12 @@ describe ErrorTracking::IssueUpdateService do
           update_service.execute
         end
 
+        it 'clears the reactive cache' do
+          expect(error_tracking_setting).to receive(:expire_issues_cache)
+
+          result
+        end
+
         context 'related issue and resolving' do
           let(:issue) { create(:issue, project: project) }
           let(:sentry_issue) { create(:sentry_issue, issue: issue) }

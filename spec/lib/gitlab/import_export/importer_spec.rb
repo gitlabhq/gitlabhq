@@ -50,7 +50,8 @@ describe Gitlab::ImportExport::Importer do
         Gitlab::ImportExport::WikiRestorer,
         Gitlab::ImportExport::UploadsRestorer,
         Gitlab::ImportExport::LfsRestorer,
-        Gitlab::ImportExport::StatisticsRestorer
+        Gitlab::ImportExport::StatisticsRestorer,
+        Gitlab::ImportExport::SnippetsRepoRestorer
       ].each do |restorer|
         it "calls the #{restorer}" do
           fake_restorer = double(restorer.to_s)
@@ -63,7 +64,7 @@ describe Gitlab::ImportExport::Importer do
       end
 
       it 'restores the ProjectTree' do
-        expect(Gitlab::ImportExport::ProjectTreeRestorer).to receive(:new).and_call_original
+        expect(Gitlab::ImportExport::Project::TreeRestorer).to receive(:new).and_call_original
 
         importer.execute
       end

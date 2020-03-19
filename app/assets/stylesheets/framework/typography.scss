@@ -59,7 +59,7 @@
     max-width: 100%;
   }
 
-  &:not(.md-file) img:not(.emoji) {
+  &:not(.md) img:not(.emoji) {
     border: 1px solid $white-normal;
     padding: 5px;
     margin: 5px 0;
@@ -592,7 +592,7 @@ pre {
   word-wrap: break-word;
   color: $gl-text-color;
   background-color: $gray-light;
-  border: 1px solid $border-color;
+  border: 1px solid $gray-200;
   border-radius: $border-radius-small;
 }
 

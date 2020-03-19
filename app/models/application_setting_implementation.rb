@@ -62,6 +62,8 @@ module ApplicationSettingImplementation
         eks_account_id: nil,
         eks_access_key_id: nil,
         eks_secret_access_key: nil,
+        email_restrictions_enabled: false,
+        email_restrictions: nil,
         first_day_of_week: 0,
         gitaly_timeout_default: 55,
         gitaly_timeout_fast: 10,
@@ -217,22 +219,15 @@ module ApplicationSettingImplementation
     self.outbound_local_requests_whitelist.uniq!
   end
 
+  # This method separates out the strings stored in the
+  # application_setting.outbound_local_requests_whitelist array into 2 arrays;
+  # an array of IPAddr objects (`[IPAddr.new('127.0.0.1')]`), and an array of
+  # domain strings (`['www.example.com']`).
   def outbound_local_requests_whitelist_arrays
     strong_memoize(:outbound_local_requests_whitelist_arrays) do
       next [[], []] unless self.outbound_local_requests_whitelist
 
-      ip_whitelist = []
-      domain_whitelist = []
-
-      self.outbound_local_requests_whitelist.each do |str|
-        ip_obj = Gitlab::Utils.string_to_ip_object(str)
-
-        if ip_obj
-          ip_whitelist << ip_obj
-        else
-          domain_whitelist << str
-        end
-      end
+      ip_whitelist, domain_whitelist = separate_whitelists(self.outbound_local_requests_whitelist)
 
       [ip_whitelist, domain_whitelist]
     end
@@ -356,7 +351,42 @@ module ApplicationSettingImplementation
     static_objects_external_storage_url.present?
   end
 
+  # This will eventually be configurable
+  # https://gitlab.com/gitlab-org/gitlab/issues/208161
+  def web_ide_clientside_preview_bundler_url
+    'https://sandbox-prod.gitlab-static.net'
+  end
+
   private
+
+  def separate_whitelists(string_array)
+    string_array.reduce([[], []]) do |(ip_whitelist, domain_whitelist), string|
+      address, port = parse_addr_and_port(string)
+
+      ip_obj = Gitlab::Utils.string_to_ip_object(address)
+
+      if ip_obj
+        ip_whitelist << Gitlab::UrlBlockers::IpWhitelistEntry.new(ip_obj, port: port)
+      else
+        domain_whitelist << Gitlab::UrlBlockers::DomainWhitelistEntry.new(address, port: port)
+      end
+
+      [ip_whitelist, domain_whitelist]
+    end
+  end
+
+  def parse_addr_and_port(str)
+    case str
+    when /\A\[(?<address> .* )\]:(?<port> \d+ )\z/x      # string like "[::1]:80"
+      address, port = $~[:address], $~[:port]
+    when /\A(?<address> [^:]+ ):(?<port> \d+ )\z/x       # string like "127.0.0.1:80"
+      address, port = $~[:address], $~[:port]
+    else                                                 # string with no port number
+      address, port = str, nil
+    end
+
+    [address, port&.to_i]
+  end
 
   def array_to_string(arr)
     arr&.join("\n")
@@ -387,7 +417,7 @@ module ApplicationSettingImplementation
   def terms_exist
     return unless enforce_terms?
 
-    errors.add(:terms, "You need to set terms to be enforced") unless terms.present?
+    errors.add(:base, _('You need to set terms to be enforced')) unless terms.present?
   end
 
   def expire_performance_bar_allowed_user_ids_cache

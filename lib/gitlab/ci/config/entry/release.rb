@@ -33,8 +33,6 @@ module Gitlab
             validates :description, type: String, presence: true
           end
 
-          helpers :assets
-
           def value
             @config[:assets] = assets_value if @config.key?(:assets)
             @config

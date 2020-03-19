@@ -129,10 +129,10 @@ describe 'Issue Boards new issue', :js do
   end
 
   context 'group boards' do
-    set(:group) { create(:group, :public) }
-    set(:project) { create(:project, namespace: group) }
-    set(:group_board) { create(:board, group: group) }
-    set(:list) { create(:list, board: group_board, position: 0) }
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:project) { create(:project, namespace: group) }
+    let_it_be(:group_board) { create(:board, group: group) }
+    let_it_be(:list) { create(:list, board: group_board, position: 0) }
 
     context 'for unauthorized users' do
       before do

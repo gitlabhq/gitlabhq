@@ -13,7 +13,8 @@ module Gitlab
     end
 
     def url
-      case object
+      # Objects are sometimes wrapped in a BatchLoader instance
+      case object.itself
       when Commit
         commit_url
       when Issue
@@ -33,7 +34,7 @@ module Gitlab
       when User
         user_url(object)
       else
-        raise NotImplementedError.new("No URL builder defined for #{object.class}")
+        raise NotImplementedError.new("No URL builder defined for #{object.inspect}")
       end
     end
 

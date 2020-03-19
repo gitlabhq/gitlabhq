@@ -11,9 +11,8 @@ dependency proxies, see the [user guide](../../user/group/dependency_proxy/index
 
 NOTE: **Note:**
 Dependency proxy requires the Puma web server to be enabled.
-Puma support is EXPERIMENTAL at this time.
 
-To enable the Dependency proxy feature:
+To enable the dependency proxy feature:
 
 **Omnibus GitLab installations**
 
@@ -37,7 +36,9 @@ To enable the Dependency proxy feature:
    ```
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source "How to restart GitLab") for the changes to take effect.
-1. Enable the [Puma web server](../../install/installation.md#using-puma).
+
+Since Puma is already the default web server for installations from source as of GitLab 12.9,
+no further changes are needed.
 
 ## Changing the storage path
 

@@ -11,7 +11,6 @@ import {
 } from '../../mock_data';
 import MonitorTimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
 
-const mockWidgets = 'mockWidgets';
 const mockProjectPath = `${TEST_HOST}${mockProjectDir}`;
 
 jest.mock('~/lib/utils/icon_utils'); // mock getSvgIconPathContent
@@ -35,9 +34,6 @@ describe('Anomaly chart component', () => {
   const setupAnomalyChart = props => {
     wrapper = shallowMount(Anomaly, {
       propsData: { ...props },
-      slots: {
-        default: mockWidgets,
-      },
     });
   };
   const findTimeSeries = () => wrapper.find(MonitorTimeSeriesChart);

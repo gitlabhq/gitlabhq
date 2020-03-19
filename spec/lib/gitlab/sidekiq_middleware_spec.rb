@@ -8,6 +8,8 @@ describe Gitlab::SidekiqMiddleware do
     include Sidekiq::Worker
 
     def perform(_arg)
+      Gitlab::SafeRequestStore['gitaly_call_actual'] = 1
+      Gitlab::GitalyClient.query_time = 5
     end
   end
 
@@ -46,7 +48,8 @@ describe Gitlab::SidekiqMiddleware do
        Gitlab::SidekiqMiddleware::MemoryKiller,
        Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
        Gitlab::SidekiqMiddleware::WorkerContext::Server,
-       Gitlab::SidekiqMiddleware::AdminMode::Server
+       Gitlab::SidekiqMiddleware::AdminMode::Server,
+       Gitlab::SidekiqMiddleware::DuplicateJobs::Server
       ]
     end
     let(:enabled_sidekiq_middlewares) { all_sidekiq_middlewares - disabled_sidekiq_middlewares }
@@ -98,6 +101,24 @@ describe Gitlab::SidekiqMiddleware do
       it "passes through server middlewares" do
         worker_class.perform_async(*job_args)
       end
+
+      context "server metrics" do
+        let(:gitaly_histogram) { double(:gitaly_histogram) }
+
+        before do
+          allow(Gitlab::Metrics).to receive(:histogram).and_call_original
+
+          allow(Gitlab::Metrics).to receive(:histogram)
+                                      .with(:sidekiq_jobs_gitaly_seconds, anything, anything, anything)
+                                      .and_return(gitaly_histogram)
+        end
+
+        it "records correct Gitaly duration" do
+          expect(gitaly_histogram).to receive(:observe).with(anything, 5.0)
+
+          worker_class.perform_async(*job_args)
+        end
+      end
     end
   end
 
@@ -117,7 +138,8 @@ describe Gitlab::SidekiqMiddleware do
         Gitlab::SidekiqMiddleware::ClientMetrics,
         Gitlab::SidekiqMiddleware::WorkerContext::Client,
         Labkit::Middleware::Sidekiq::Client,
-        Gitlab::SidekiqMiddleware::AdminMode::Client
+        Gitlab::SidekiqMiddleware::AdminMode::Client,
+        Gitlab::SidekiqMiddleware::DuplicateJobs::Client
       ]
     end
 

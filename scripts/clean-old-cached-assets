@@ -2,5 +2,7 @@
 
 # Clean up cached files that are older than 4 days
 find tmp/cache/assets/sprockets/ -type f -mtime +4 -execdir rm -- "{}" \;
+find tmp/cache/webpack-dlls/ -maxdepth 1 -type d -mtime +4 -exec rm -rf -- "{}" \;
 
 du -d 0 -h tmp/cache/assets/sprockets | cut -f1 | xargs -I % echo "tmp/cache/assets/sprockets/ is currently %"
+du -d 0 -h tmp/cache/webpack-dlls | cut -f1 | xargs -I % echo "tmp/cache/webpack-dlls is currently %"

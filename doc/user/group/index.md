@@ -181,6 +181,21 @@ of a group:
   1. Give a different member **Owner** permissions.
   1. Have the new owner sign in and remove **Owner** permissions from you.
 
+## Changing the default branch protection of a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7583) in GitLab 12.9.
+
+By default, every group inherits the branch protection set at the global level.
+
+To change this setting for a specific group:
+
+1. Go to the group's **{settings}** **Settings > General** page.
+1. Expand the **Permissions, LFS, 2FA** section.
+1. Select the desired option in the **Default branch protection** dropdown list.
+1. Click **Save changes**.
+
+To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
+
 ## Add projects to a group
 
 There are two different ways to add a new project to a group:
@@ -241,10 +256,9 @@ and give all group members access to the project at once.
 
 Alternatively, you can [lock the sharing with group feature](#share-with-group-lock).
 
-## Sharing a group with another group **(CORE ONLY)**
+## Sharing a group with another group
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/18328) in GitLab 12.7.
-> This feature has been [disabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/issues/1635).
 
 Similarly to [sharing a project with a group](#sharing-a-project-with-a-group),
 you can share a group with another group to give direct group members access
@@ -332,7 +346,7 @@ Changing a group's path can have unintended side effects. Read
 before proceeding.
 
 If you are vacating the path so it can be claimed by another group or user,
-you may need to rename the group, too, since both names and paths must
+you may need to rename the group too, since both names and paths must
 be unique.
 
 To change your group path:

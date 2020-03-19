@@ -78,7 +78,7 @@ class ExternalPullRequest < ApplicationRecord
 
   def not_from_fork
     if from_fork?
-      errors.add(:base, 'Pull requests from fork are not supported')
+      errors.add(:base, _('Pull requests from fork are not supported'))
     end
   end
 

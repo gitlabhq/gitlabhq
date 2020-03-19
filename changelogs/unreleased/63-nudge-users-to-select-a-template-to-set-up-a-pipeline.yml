@@ -1,0 +1,5 @@
+---
+title: Nudge users to select a gitlab-ci.yml template
+merge_request: 24622
+author:
+type: added

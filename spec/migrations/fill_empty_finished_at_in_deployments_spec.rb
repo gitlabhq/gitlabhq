@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20181030135124_fill_empty_finished_at_in_deployments')
 
-describe FillEmptyFinishedAtInDeployments, :migration do
+describe FillEmptyFinishedAtInDeployments do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:environments) { table(:environments) }

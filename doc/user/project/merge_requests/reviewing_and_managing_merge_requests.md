@@ -120,7 +120,7 @@ be disabled. If the pipeline fails to deploy, the deployment info will be hidden
 
 ![Merge request pipeline](img/merge_request_pipeline.png)
 
-For more information, [read about pipelines](../../../ci/pipelines.md).
+For more information, [read about pipelines](../../../ci/pipelines/index.md).
 
 ### Merge when pipeline succeeds (MWPS)
 

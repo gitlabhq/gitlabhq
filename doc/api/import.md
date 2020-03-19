@@ -4,7 +4,7 @@
 
 Import your projects from GitHub to GitLab via the API.
 
-```
+```plaintext
 POST /import/github
 ```
 

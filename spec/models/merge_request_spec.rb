@@ -276,6 +276,8 @@ describe MergeRequest do
   end
 
   describe 'respond to' do
+    subject { build(:merge_request) }
+
     it { is_expected.to respond_to(:unchecked?) }
     it { is_expected.to respond_to(:checking?) }
     it { is_expected.to respond_to(:can_be_merged?) }
@@ -662,13 +664,12 @@ describe MergeRequest do
   end
 
   describe '#raw_diffs' do
-    let(:merge_request) { build(:merge_request) }
     let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
 
     context 'when there are MR diffs' do
-      it 'delegates to the MR diffs' do
-        merge_request.merge_request_diff = MergeRequestDiff.new
+      let(:merge_request) { create(:merge_request, :with_diffs) }
 
+      it 'delegates to the MR diffs' do
         expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(options)
 
         merge_request.raw_diffs(options)
@@ -676,6 +677,8 @@ describe MergeRequest do
     end
 
     context 'when there are no MR diffs' do
+      let(:merge_request) { build(:merge_request) }
+
       it 'delegates to the compare object' do
         merge_request.compare = double(:compare)
 
@@ -902,6 +905,16 @@ describe MergeRequest do
       it 'returns affected file paths for merge_request_diff' do
         expect(merge_request.modified_paths).to eq(paths)
       end
+    end
+  end
+
+  describe '#new_paths' do
+    let(:merge_request) do
+      create(:merge_request, source_branch: 'expand-collapse-files', target_branch: 'master')
+    end
+
+    it 'returns new path of changed files' do
+      expect(merge_request.new_paths.count).to eq(105)
     end
   end
 
@@ -1578,6 +1591,24 @@ describe MergeRequest do
     end
   end
 
+  describe '#has_coverage_reports?' do
+    subject { merge_request.has_coverage_reports? }
+
+    let(:project) { create(:project, :repository) }
+
+    context 'when head pipeline has coverage reports' do
+      let(:merge_request) { create(:merge_request, :with_coverage_reports, source_project: project) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when head pipeline does not have coverage reports' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#calculate_reactive_cache' do
     let(:project) { create(:project, :repository) }
     let(:merge_request) { create(:merge_request, source_project: project) }
@@ -1648,6 +1679,60 @@ describe MergeRequest do
         context 'when cached results is not latest' do
           before do
             allow_next_instance_of(Ci::GenerateExposedArtifactsReportService) do |service|
+              allow(service).to receive(:latest?).and_return(false)
+            end
+          end
+
+          it 'raises and InvalidateReactiveCache error' do
+            expect { subject }.to raise_error(ReactiveCaching::InvalidateReactiveCache)
+          end
+        end
+      end
+    end
+  end
+
+  describe '#find_coverage_reports' do
+    let(:project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, :with_coverage_reports, source_project: project) }
+    let(:pipeline) { merge_request.head_pipeline }
+
+    subject { merge_request.find_coverage_reports }
+
+    context 'when head pipeline has coverage reports' do
+      let!(:job) do
+        create(:ci_build, options: { artifacts: { reports: { cobertura: ['cobertura-coverage.xml'] } } }, pipeline: pipeline)
+      end
+
+      let!(:artifacts_metadata) { create(:ci_job_artifact, :metadata, job: job) }
+
+      context 'when reactive cache worker is parsing results asynchronously' do
+        it 'returns status' do
+          expect(subject[:status]).to eq(:parsing)
+        end
+      end
+
+      context 'when reactive cache worker is inline' do
+        before do
+          synchronous_reactive_cache(merge_request)
+        end
+
+        it 'returns status and data' do
+          expect(subject[:status]).to eq(:parsed)
+        end
+
+        context 'when an error occurrs' do
+          before do
+            merge_request.update!(head_pipeline: nil)
+          end
+
+          it 'returns an error message' do
+            expect(subject[:status]).to eq(:error)
+          end
+        end
+
+        context 'when cached results is not latest' do
+          before do
+            allow_next_instance_of(Ci::GenerateCoverageReportsService) do |service|
               allow(service).to receive(:latest?).and_return(false)
             end
           end

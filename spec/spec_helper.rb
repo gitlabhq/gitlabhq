@@ -76,11 +76,21 @@ RSpec.configure do |config|
     metadata[:level] = quality_level.level_for(location)
     metadata[:api] = true if location =~ %r{/spec/requests/api/}
 
-    # do not overwrite type if it's already set
-    next if metadata.key?(:type)
+    # Do not overwrite migration if it's already set
+    unless metadata.key?(:migration)
+      metadata[:migration] = true if metadata[:level] == :migration
+    end
 
-    match = location.match(%r{/spec/([^/]+)/})
-    metadata[:type] = match[1].singularize.to_sym if match
+    # Do not overwrite schema if it's already set
+    unless metadata.key?(:schema)
+      metadata[:schema] = :latest if quality_level.background_migration?(location)
+    end
+
+    # Do not overwrite type if it's already set
+    unless metadata.key?(:type)
+      match = location.match(%r{/spec/([^/]+)/})
+      metadata[:type] = match[1].singularize.to_sym if match
+    end
   end
 
   config.include LicenseHelpers
@@ -119,6 +129,7 @@ RSpec.configure do |config|
   config.include PolicyHelpers, type: :policy
   config.include MemoryUsageHelper
   config.include ExpectRequestWithStatus, type: :request
+  config.include IdempotentWorkerHelper, type: :worker
   config.include RailsHelpers
 
   if ENV['CI'] || ENV['RETRIES']
@@ -192,8 +203,10 @@ RSpec.configure do |config|
     # expect(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
     allow(Gitlab::Git::KeepAround).to receive(:execute)
 
-    # Clear thread cache and Sidekiq queues
-    Gitlab::ThreadMemoryCache.cache_backend.clear
+    [Gitlab::ThreadMemoryCache, Gitlab::ProcessMemoryCache].each do |cache|
+      cache.cache_backend.clear
+    end
+
     Sidekiq::Worker.clear_all
 
     # Temporary patch to force admin mode to be active by default in tests when
