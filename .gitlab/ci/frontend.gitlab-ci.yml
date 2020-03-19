@@ -37,6 +37,8 @@
     paths:
       - webpack-report/
       - assets-compile.log
+      # We consume these files in GitLab UI for integration tests:
+      # https://gitlab.com/gitlab-org/gitlab-ui/-/blob/e88493b3c855aea30bf60baee692a64606b0eb1e/.storybook/preview-head.pug#L1
       - public/assets/application-*.css
       - public/assets/application-*.css.gz
     when: always

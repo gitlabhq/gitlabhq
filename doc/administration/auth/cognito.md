@@ -26,7 +26,7 @@ The following steps enable AWS Cognito as an authentication provider:
    - **Callback URL** - `https://gitlab.example.com/users/auth/cognito/callback`
      - Substitute the URL of your GitLab instance for `gitlab.example.com`
    - **Allowed OAuth Flows** - Authorization code grant
-   - **Allowed OAuth Scopes** - `email` and `openid`
+   - **Allowed OAuth2 Scopes** - `email`, `openid`, and `profile`
 
 1. Save changes for the app client settings.
 1. Under **Domain name** include the AWS domain name for your AWS Cognito application.
@@ -54,15 +54,17 @@ Include the code block in the `/etc/gitlab/gitlab.rb` file:
        "app_id" => "CLIENT ID",
        "app_secret" => "CLIENT SECRET",
        "args" => {
+         "scope" => "openid profile email",
          client_options: {
            'site' => 'https://your_domain.auth.your_region.amazoncognito.com',
-           'authorize_url' => '/login',
+           'authorize_url' => '/oauth2/authorize',
            'token_url' => '/oauth2/token',
            'user_info_url' => '/oauth2/userInfo'
          },
          user_response_structure: {
            root_path: [],
-           attributes: { nickname: 'email'}
+           id_path: ['sub'],
+           attributes: { nickname: 'email', name: 'email', email: 'email' }
          },
          name: 'cognito',
          strategy_class: "OmniAuth::Strategies::OAuth2Generic"

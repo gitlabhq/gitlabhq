@@ -3134,6 +3134,8 @@ describe User, :do_not_mock_admin_mode do
       expect(ghost).to be_persisted
       expect(ghost.namespace).not_to be_nil
       expect(ghost.namespace).to be_persisted
+      expect(ghost.user_type).to eq 'ghost'
+      expect(ghost.ghost).to eq true
     end
 
     it "does not create a second ghost user if one is already present" do

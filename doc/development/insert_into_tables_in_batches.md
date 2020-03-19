@@ -184,10 +184,9 @@ simply be treated as if you had invoked `save` from outside the block.
 
 There are a few restrictions to how these APIs can be used:
 
-- `ON CONFLICT` behavior cannot currently be configured; an error will be raised on primary key conflicts.
-- `BulkInsertableAssociations` furthermore has the following restrictions:
-  - only compatible with `has_many` relations.
-  - does not support `has_many through: ...` relations.
+- `BulkInsertableAssociations`:
+  - It is currently only compatible with `has_many` relations.
+  - It does not yet support `has_many through: ...` relations.
 - Writing [`jsonb`](https://www.postgresql.org/docs/current/datatype-json.html) content is
 [not currently supported](https://gitlab.com/gitlab-org/gitlab/-/issues/210560).
 
