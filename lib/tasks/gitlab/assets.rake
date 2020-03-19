@@ -1,3 +1,48 @@
+# frozen_string_literal: true
+
+require 'fileutils'
+
+module Tasks
+  module Gitlab
+    module Assets
+      FOSS_ASSET_FOLDERS = %w[app/assets app/views fixtures/emojis vendor/assets/javascripts].freeze
+      EE_ASSET_FOLDERS = %w[ee/app/assets ee/app/views].freeze
+      JS_ASSET_PATTERNS = %w[*.js config/**/*.js].freeze
+      JS_ASSET_FILES = %w[package.json yarn.lock].freeze
+      MASTER_MD5_HASH_FILE = 'master-assets-hash.txt'
+      HEAD_MD5_HASH_FILE = 'assets-hash.txt'
+      PUBLIC_ASSETS_WEBPACK_DIR = 'public/assets/webpack'
+
+      def self.md5_of_assets_impacting_webpack_compilation
+        start_time = Time.now
+        asset_files = assets_impacting_webpack_compilation
+        puts "Generating the MD5 hash for #{assets_impacting_webpack_compilation.size} Webpack-related assets..."
+
+        asset_file_md5s = asset_files.map do |asset_file|
+          Digest::MD5.file(asset_file).hexdigest
+        end
+
+        Digest::MD5.hexdigest(asset_file_md5s.join).tap { |md5| puts "=> MD5 generated in #{Time.now - start_time}: #{md5}" }
+      end
+
+      def self.assets_impacting_webpack_compilation
+        assets_folders = FOSS_ASSET_FOLDERS
+        assets_folders += EE_ASSET_FOLDERS if ::Gitlab.ee?
+
+        asset_files = Dir.glob(JS_ASSET_PATTERNS)
+        asset_files += JS_ASSET_FILES
+
+        assets_folders.each do |folder|
+          asset_files.concat(Dir.glob(["#{folder}/**/*.*"]))
+        end
+
+        asset_files
+      end
+      private_class_method :assets_impacting_webpack_compilation
+    end
+  end
+end
+
 namespace :gitlab do
   namespace :assets do
     desc 'GitLab | Assets | Compile all frontend assets'
@@ -8,9 +53,35 @@ namespace :gitlab do
         yarn:check
         gettext:po_to_json
         rake:assets:precompile
-        webpack:compile
+        gitlab:assets:compile_webpack_if_needed
         gitlab:assets:fix_urls
-      ].each(&Gitlab::TaskHelpers.method(:invoke_and_time_task))
+      ].each(&::Gitlab::TaskHelpers.method(:invoke_and_time_task))
+    end
+
+    desc 'GitLab | Assets | Compile all Webpack assets'
+    task :compile_webpack_if_needed do
+      FileUtils.mv(Tasks::Gitlab::Assets::HEAD_MD5_HASH_FILE, Tasks::Gitlab::Assets::MASTER_MD5_HASH_FILE, force: true)
+
+      master_assets_md5 =
+        if File.exist?(Tasks::Gitlab::Assets::MASTER_MD5_HASH_FILE)
+          File.read(Tasks::Gitlab::Assets::MASTER_MD5_HASH_FILE)
+        else
+          'missing!'
+        end
+
+      head_assets_md5 = Tasks::Gitlab::Assets.md5_of_assets_impacting_webpack_compilation.tap do |md5|
+        File.write(Tasks::Gitlab::Assets::HEAD_MD5_HASH_FILE, md5)
+      end
+
+      puts "Webpack assets MD5 for `master`: #{master_assets_md5}"
+      puts "Webpack assets MD5 for `HEAD`: #{head_assets_md5}"
+
+      public_assets_webpack_dir_exists = Dir.exist?(Tasks::Gitlab::Assets::PUBLIC_ASSETS_WEBPACK_DIR)
+
+      if head_assets_md5 != master_assets_md5 || !public_assets_webpack_dir_exists
+        FileUtils.rm_r(Tasks::Gitlab::Assets::PUBLIC_ASSETS_WEBPACK_DIR) if public_assets_webpack_dir_exists
+        Rake::Task['webpack:compile'].invoke
+      end
     end
 
     desc 'GitLab | Assets | Clean up old compiled frontend assets'

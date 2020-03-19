@@ -16,7 +16,7 @@
 %head{ prefix: "og: http://ogp.me/ns#" }
   %meta{ charset: "utf-8" }
 
-  - if Feature.enabled?('asset_host_prefetch') && ActionController::Base.asset_host
+  - if ActionController::Base.asset_host
     %link{ rel: 'dns-prefetch', href: ActionController::Base.asset_host }
     %link{ rel: 'preconnnect', href: ActionController::Base.asset_host, crossorigin: '' }
 

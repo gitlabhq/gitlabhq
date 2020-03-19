@@ -327,6 +327,7 @@ export default {
     </gl-table>
 
     <gl-pagination
+      v-if="!isLoading"
       ref="pagination"
       v-model="currentPage"
       :per-page="tagsPagination.perPage"

@@ -77,7 +77,7 @@ module Gitlab
         return false unless user
 
         Gitlab::SafeRequestStore.fetch(admin_mode_rs_key) do
-          user.admin? && any_session_with_admin_mode?
+          user.admin? && session_with_admin_mode?
         end
       end
 
@@ -136,19 +136,10 @@ module Gitlab
         @current_session ||= Gitlab::NamespacedSessionStore.new(SESSION_STORE_KEY)
       end
 
-      def any_session_with_admin_mode?
+      def session_with_admin_mode?
         return true if bypass_session?
-        return true if current_session_data.initiated? && current_session_data[ADMIN_MODE_START_TIME_KEY].to_i > MAX_ADMIN_MODE_TIME.ago.to_i
 
-        all_sessions.any? do |session|
-          session[ADMIN_MODE_START_TIME_KEY].to_i > MAX_ADMIN_MODE_TIME.ago.to_i
-        end
-      end
-
-      def all_sessions
-        @all_sessions ||= ActiveSession.list_sessions(user).lazy.map do |session|
-          Gitlab::NamespacedSessionStore.new(SESSION_STORE_KEY, session.with_indifferent_access )
-        end
+        current_session_data.initiated? && current_session_data[ADMIN_MODE_START_TIME_KEY].to_i > MAX_ADMIN_MODE_TIME.ago.to_i
       end
 
       def admin_mode_requested_in_grace_period?

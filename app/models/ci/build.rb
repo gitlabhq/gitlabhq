@@ -598,19 +598,15 @@ module Ci
     end
 
     def merge_request
-      return @merge_request if defined?(@merge_request)
+      strong_memoize(:merge_request) do
+        merge_requests = MergeRequest.includes(:latest_merge_request_diff)
+          .where(source_branch: ref, source_project: pipeline.project)
+          .reorder(iid: :desc)
 
-      @merge_request ||=
-        begin
-          merge_requests = MergeRequest.includes(:latest_merge_request_diff)
-            .where(source_branch: ref,
-                   source_project: pipeline.project)
-            .reorder(iid: :desc)
-
-          merge_requests.find do |merge_request|
-            merge_request.commit_shas.include?(pipeline.sha)
-          end
+        merge_requests.find do |merge_request|
+          merge_request.commit_shas.include?(pipeline.sha)
         end
+      end
     end
 
     def repo_url

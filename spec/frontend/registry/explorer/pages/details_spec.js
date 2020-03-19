@@ -66,6 +66,10 @@ describe('Details Page', () => {
     it('does not have list items', () => {
       expect(findFirstRowItem('rowCheckbox').exists()).toBe(false);
     });
+
+    it('does not show pagination', () => {
+      expect(findPagination().exists()).toBe(false);
+    });
   });
 
   describe('table', () => {

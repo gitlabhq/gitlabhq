@@ -34,8 +34,6 @@ describe BugzillaService do
   end
 
   context 'overriding properties' do
-    let(:default_title) { 'JIRA' }
-    let(:default_description) { 'JiraService|Jira issue tracker' }
     let(:url) { 'http://bugzilla.example.com' }
     let(:access_params) do
       { project_url: url, issues_url: url, new_issue_url: url }

@@ -3,90 +3,21 @@
 require 'spec_helper'
 
 describe 'Group navbar' do
-  let(:user) { create(:user) }
-  let(:group) { create(:group) }
+  include NavbarStructureHelper
 
-  let(:analytics_nav_item) do
-    {
-      nav_item: _('Analytics'),
-      nav_sub_items: [
-        _('Contribution')
-      ]
-    }
-  end
+  include_context 'group navbar structure'
 
-  let(:structure) do
-    [
-      {
-        nav_item: _('Group overview'),
-        nav_sub_items: [
-          _('Details'),
-          _('Activity')
-        ]
-      },
-      {
-        nav_item: _('Issues'),
-        nav_sub_items: [
-          _('List'),
-          _('Board'),
-          _('Labels'),
-          _('Milestones')
-        ]
-      },
-      {
-        nav_item: _('Merge Requests'),
-        nav_sub_items: []
-      },
-      {
-        nav_item: _('Kubernetes'),
-        nav_sub_items: []
-      },
-      (analytics_nav_item if Gitlab.ee?),
-      {
-        nav_item: _('Members'),
-        nav_sub_items: []
-      }
-    ]
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+
+  before do
+    group.add_maintainer(user)
+    sign_in(user)
   end
 
   it_behaves_like 'verified navigation bar' do
     before do
-      group.add_maintainer(user)
-      sign_in(user)
-
       visit group_path(group)
-    end
-  end
-
-  if Gitlab.ee?
-    context 'when productivity analytics is available' do
-      before do
-        stub_licensed_features(productivity_analytics: true)
-
-        analytics_nav_item[:nav_sub_items] << _('Productivity')
-
-        group.add_maintainer(user)
-        sign_in(user)
-
-        visit group_path(group)
-      end
-
-      it_behaves_like 'verified navigation bar'
-    end
-
-    context 'when value stream analytics is available' do
-      before do
-        stub_licensed_features(cycle_analytics_for_groups: true)
-
-        analytics_nav_item[:nav_sub_items] << _('Value Stream')
-
-        group.add_maintainer(user)
-        sign_in(user)
-
-        visit group_path(group)
-      end
-
-      it_behaves_like 'verified navigation bar'
     end
   end
 end

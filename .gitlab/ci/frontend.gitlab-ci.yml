@@ -2,6 +2,8 @@
   cache:
     paths:
       - vendor/ruby/
+      - public/assets/webpack/
+      - assets-hash.txt
       - .yarn-cache/
       - tmp/cache/assets/sprockets
       - tmp/cache/babel-loader
@@ -28,18 +30,24 @@
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
   cache:
-    key: "assets-compile:production:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:tmp_cache_webpack:v9"
+    key: "assets-compile:production:v1"
   artifacts:
     name: webpack-report
     expire_in: 31d
     paths:
       - webpack-report/
-      - public/assets/
+      - assets-compile.log
+      - public/assets/application-*.css
+      - public/assets/application-*.css.gz
+    when: always
   script:
     - node --version
     - retry yarn install --frozen-lockfile --production --cache-folder .yarn-cache --prefer-offline
     - free -m
-    - retry bundle exec rake gitlab:assets:compile
+    - time bin/rake gitlab:assets:compile > assets-compile.log 2>&1
+    # TODO: Change the image tag to be the MD5 of assets files and skip image building if the image exists
+    # We'll also need to pass GITLAB_ASSETS_TAG to the trigerred omnibus-gitlab pipeline similarly to how we do it for trigerred CNG pipelines
+    # https://gitlab.com/gitlab-org/gitlab/issues/208389
     - time scripts/build_assets_image
     - scripts/clean-old-cached-assets
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
@@ -71,7 +79,7 @@ gitlab:assets:compile pull-cache:
     - node --version
     - retry yarn install --frozen-lockfile --cache-folder .yarn-cache --prefer-offline
     - free -m
-    - retry bundle exec rake gitlab:assets:compile
+    - time bin/rake gitlab:assets:compile > assets-compile.log 2>&1
     - scripts/clean-old-cached-assets
   variables:
     SETUP_DB: "false"
@@ -79,12 +87,13 @@ gitlab:assets:compile pull-cache:
     NODE_OPTIONS: --max_old_space_size=3584
     WEBPACK_VENDOR_DLL: "true"
   cache:
-    key: "assets-compile:v9"
+    key: "assets-compile:test:v1"
   artifacts:
     expire_in: 7d
     paths:
       - node_modules
       - public/assets
+      - assets-compile.log
 
 compile-assets pull-push-cache:
   extends:
@@ -100,7 +109,7 @@ compile-assets pull-push-cache as-if-foss:
     - .as-if-foss
   cache:
     policy: pull-push
-    key: "assets-compile:v9:foss"
+    key: "assets-compile:test:as-if-foss:v1"
 
 compile-assets pull-cache:
   extends:
@@ -116,7 +125,7 @@ compile-assets pull-cache as-if-foss:
     - .as-if-foss
   cache:
     policy: pull
-    key: "assets-compile:v9:foss"
+    key: "assets-compile:test:as-if-foss:v1"
 
 .frontend-fixtures-base:
   extends:
