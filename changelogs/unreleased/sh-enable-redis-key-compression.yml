@@ -1,5 +1,0 @@
----
-title: Enable Redis cache key compression
-merge_request: 27254
-author:
-type: performance

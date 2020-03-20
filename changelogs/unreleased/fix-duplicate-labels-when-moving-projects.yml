@@ -1,5 +1,0 @@
----
-title: Fix duplicate labels when moving projects within the same ancestor group
-merge_request: 27261
-author:
-type: fixed

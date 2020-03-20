@@ -1,5 +1,0 @@
----
-title: Correctly send notification on pipeline retry
-merge_request: 26803
-author: Jacopo Beschi @jacopo-beschi
-type: fixed

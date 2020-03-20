@@ -1,5 +1,0 @@
----
-title: Allow access to /version API endpoint with read_user scope
-merge_request: 25211
-author:
-type: changed

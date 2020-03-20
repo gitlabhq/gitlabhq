@@ -1,5 +1,0 @@
----
-title: Cache milestone issue counters and make them independent of user permissions
-merge_request: 21554
-author:
-type: performance

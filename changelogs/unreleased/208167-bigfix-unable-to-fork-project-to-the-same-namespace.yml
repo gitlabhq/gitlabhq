@@ -1,5 +1,0 @@
----
-title: Allow to fork to the same namespace and different path via API call
-merge_request: 26062
-author:
-type: fixed

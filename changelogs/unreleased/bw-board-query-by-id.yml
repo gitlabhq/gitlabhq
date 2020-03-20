@@ -1,5 +1,0 @@
----
-title: Allow group/project board to be queried by ID via GraphQL
-merge_request: 24825
-author:
-type: added

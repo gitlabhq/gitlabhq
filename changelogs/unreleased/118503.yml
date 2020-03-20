@@ -1,5 +1,0 @@
----
-title: Fix infinite spinner on error detail page
-merge_request: 26188
-author:
-type: fixed
