@@ -5,7 +5,12 @@ module QA
     module Project
       class Show < Page::Base
         include Page::Component::ClonePanel
+        include Page::Component::Breadcrumbs
         include Page::Project::SubMenus::Settings
+
+        view 'app/assets/javascripts/repository/components/preview/index.vue' do
+          element :blob_viewer_content
+        end
 
         view 'app/assets/javascripts/repository/components/table/row.vue' do
           element :file_name_link
@@ -90,7 +95,7 @@ module QA
 
         def click_file(filename)
           within_element(:file_tree_table) do
-            click_on filename
+            click_element(:file_name_link, text: filename)
           end
         end
 
@@ -113,6 +118,10 @@ module QA
 
         def has_name?(name)
           has_element?(:project_name_content, text: name)
+        end
+
+        def has_readme_content?(text)
+          has_element?(:blob_viewer_content, text: text)
         end
 
         def last_commit_content

@@ -24,8 +24,10 @@ module QA
 
         Page::Project::Show.perform(&:wait_for_viewers_to_load)
 
-        expect(page).to have_content('README.md')
-        expect(page).to have_content('This is a test project')
+        Page::Project::Show.perform do |project|
+          expect(project).to have_file('README.md')
+          expect(project).to have_readme_content('This is a test project')
+        end
       end
     end
   end

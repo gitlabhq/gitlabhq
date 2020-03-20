@@ -434,7 +434,49 @@ class MergeRequestDiff < ApplicationRecord
     merge_request_diff_files.reset
   end
 
+  # Transactionally migrate the current merge_request_diff_files entries from
+  # external storage, back to the database. This is the rollback operation for
+  # +migrate_files_to_external_storage!+
+  #
+  # If this diff isn't in external storage, the method is a no-op.
+  def migrate_files_to_database!
+    return unless stored_externally?
+    return if merge_request_diff_files.count == 0
+
+    rows = convert_external_diffs_to_database
+
+    transaction do
+      MergeRequestDiffFile.where(merge_request_diff_id: id).delete_all
+      Gitlab::Database.bulk_insert('merge_request_diff_files', rows)
+      update!(stored_externally: false)
+    end
+
+    # Only delete the external diff file after the contents have been saved to
+    # the database
+    remove_external_diff!
+    merge_request_diff_files.reset
+  end
+
   private
+
+  def convert_external_diffs_to_database
+    opening_external_diff do |external_file|
+      merge_request_diff_files.map do |diff_file|
+        row = diff_file.attributes.except('diff')
+
+        raise "Diff file lacks external diff offset or size: #{row.inspect}" unless
+          row['external_diff_offset'] && row['external_diff_size']
+
+        # The diff in the external file is already base64-encoded if necessary,
+        # matching the 'binary' attribute of the row. Reading it directly allows
+        # a cycle of decode-encode to be skipped
+        external_file.seek(row.delete('external_diff_offset'))
+        row['diff'] = external_file.read(row.delete('external_diff_size'))
+
+        row
+      end
+    end
+  end
 
   def diffs_in_batch_collection(batch_page, batch_size, diff_options:)
     Gitlab::Diff::FileCollection::MergeRequestDiffBatch.new(self,

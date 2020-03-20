@@ -156,6 +156,41 @@ describe MergeRequestDiff do
     end
   end
 
+  describe '#migrate_files_to_database!' do
+    let(:diff) { create(:merge_request).merge_request_diff }
+
+    it 'converts from external to in-database storage' do
+      stub_external_diffs_setting(enabled: true)
+
+      expect(diff).to be_stored_externally
+      expect(diff).to receive(:update!).and_call_original
+
+      file = diff.external_diff
+      file_data = file.read
+      diff.migrate_files_to_database!
+
+      expect(diff).not_to be_stored_externally
+      expect(file).not_to exist
+      expect(diff.merge_request_diff_files.map(&:diff).join('')).to eq(file_data)
+    end
+
+    it 'does nothing with an in-database diff' do
+      expect(diff).not_to be_stored_externally
+      expect(diff).not_to receive(:update!)
+
+      diff.migrate_files_to_database!
+    end
+
+    it 'does nothing with an empty diff' do
+      stub_external_diffs_setting(enabled: true)
+      MergeRequestDiffFile.where(merge_request_diff_id: diff.id).delete_all
+
+      expect(diff).not_to receive(:update!)
+
+      diff.migrate_files_to_database!
+    end
+  end
+
   describe '#latest?' do
     let!(:mr) { create(:merge_request, :with_diffs) }
     let!(:first_diff) { mr.merge_request_diff }

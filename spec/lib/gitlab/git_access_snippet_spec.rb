@@ -209,6 +209,16 @@ describe Gitlab::GitAccessSnippet do
 
       expect { push_access_check }.to raise_forbidden('foo')
     end
+
+    context 'when feature flag :snippet_count_check is disabled' do
+      it 'does not check push file count' do
+        stub_feature_flags(snippet_count_check: false)
+
+        expect(Gitlab::Checks::PushFileCountCheck).not_to receive(:new)
+
+        expect { push_access_check }.not_to raise_error
+      end
+    end
   end
 
   private

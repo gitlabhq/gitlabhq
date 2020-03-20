@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'shellwords'
 
 describe 'bin/sidekiq-cluster' do
   using RSpec::Parameterized::TableSyntax
@@ -18,9 +19,9 @@ describe 'bin/sidekiq-cluster' do
         output, status = Gitlab::Popen.popen(cmd, Rails.root.to_s)
 
         expect(status).to be(0)
-        expect(output).to include('"bundle", "exec", "sidekiq"')
-        expect(output).to include(included)
-        expect(output).not_to include(excluded)
+        expect(output).to include('bundle exec sidekiq')
+        expect(Shellwords.split(output)).to include(included)
+        expect(Shellwords.split(output)).not_to include(excluded)
       end
     end
   end
@@ -36,9 +37,9 @@ describe 'bin/sidekiq-cluster' do
         output, status = Gitlab::Popen.popen(cmd, Rails.root.to_s)
 
         expect(status).to be(0)
-        expect(output).to include('"bundle", "exec", "sidekiq"')
-        expect(output).to include('-qdefault,1')
-        expect(output).to include('-qcronjob:ci_archive_traces_cron,1')
+        expect(output).to include('bundle exec sidekiq')
+        expect(Shellwords.split(output)).to include('-qdefault,1')
+        expect(Shellwords.split(output)).to include('-qcronjob:ci_archive_traces_cron,1')
       end
     end
   end

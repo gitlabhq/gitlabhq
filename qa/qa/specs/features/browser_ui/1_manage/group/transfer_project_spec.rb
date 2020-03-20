@@ -47,8 +47,8 @@ module QA
         Page::Project::Settings::Main.perform(&:click_project)
 
         Page::Project::Show.perform do |project|
-          expect(project).to have_text(target_group.path)
-          expect(project).to have_text(edited_readme_content)
+          expect(project).to have_breadcrumb(target_group.path)
+          expect(project).to have_readme_content(edited_readme_content)
         end
       end
     end

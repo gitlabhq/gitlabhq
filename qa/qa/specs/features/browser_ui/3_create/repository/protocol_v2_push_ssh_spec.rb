@@ -60,12 +60,15 @@ module QA
           end
         end
 
-        project.visit!
         project.wait_for_push_new_branch
+        project.visit!
 
-        expect(page).to have_content(file_name)
-        expect(page).to have_content(file_content)
         expect(git_protocol_reported).to eq(git_protocol)
+
+        Page::Project::Show.perform do |show|
+          expect(show).to have_file(file_name)
+          expect(show).to have_readme_content(file_content)
+        end
       end
     end
   end

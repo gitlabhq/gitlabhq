@@ -98,7 +98,10 @@ module Gitlab
 
     def check_single_change_access(change)
       Checks::SnippetCheck.new(change, logger: logger).validate!
-      Checks::PushFileCountCheck.new(change, repository: repository, limit: Snippet::MAX_FILE_COUNT, logger: logger).validate!
+
+      if Feature.enabled?(:snippet_count_check)
+        Checks::PushFileCountCheck.new(change, repository: repository, limit: Snippet::MAX_FILE_COUNT, logger: logger).validate!
+      end
     rescue Checks::TimedLogger::TimeoutError
       raise TimeoutError, logger.full_message
     end

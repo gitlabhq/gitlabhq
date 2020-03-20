@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'shellwords'
+
 module Gitlab
   module SidekiqCluster
     # The signals that should terminate both the master and workers.
@@ -73,9 +75,9 @@ module Gitlab
       counts = count_by_queue(queues)
 
       cmd = %w[bundle exec sidekiq]
-      cmd << "-c #{self.concurrency(queues, min_concurrency, max_concurrency)}"
+      cmd << "-c#{self.concurrency(queues, min_concurrency, max_concurrency)}"
       cmd << "-e#{env}"
-      cmd << "-gqueues: #{proc_details(counts)}"
+      cmd << "-gqueues:#{proc_details(counts)}"
       cmd << "-r#{directory}"
 
       counts.each do |queue, count|
@@ -83,7 +85,7 @@ module Gitlab
       end
 
       if dryrun
-        puts "Sidekiq command: #{cmd}" # rubocop:disable Rails/Output
+        puts Shellwords.join(cmd) # rubocop:disable Rails/Output
         return
       end
 
@@ -112,7 +114,7 @@ module Gitlab
         else
           "#{queue} (#{count})"
         end
-      end.join(', ')
+      end.join(',')
     end
 
     def self.concurrency(queues, min_concurrency, max_concurrency)

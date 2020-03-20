@@ -64,7 +64,9 @@ module Gitlab
             'No queues found, you must select at least one queue'
         end
 
-        @logger.info("Starting cluster with #{queue_groups.length} processes")
+        unless @dryrun
+          @logger.info("Starting cluster with #{queue_groups.length} processes")
+        end
 
         @processes = SidekiqCluster.start(
           queue_groups,
