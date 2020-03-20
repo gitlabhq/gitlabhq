@@ -1,5 +1,0 @@
----
-title: Fix package file finder for conan packages with a conan_package_reference filter
-merge_request: 26240
-author:
-type: fixed

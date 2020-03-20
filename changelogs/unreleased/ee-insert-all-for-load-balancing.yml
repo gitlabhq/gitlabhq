@@ -1,5 +1,0 @@
----
-title: Support Rails 6 `insert_all!`
-merge_request: 26595
-author:
-type: fixed

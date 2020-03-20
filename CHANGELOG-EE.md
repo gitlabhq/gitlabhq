@@ -1,5 +1,136 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.9.0 (2020-03-22)
+
+### Removed (1 change)
+
+- Remove Security Dashboard button from project page. !24781
+
+### Fixed (20 changes)
+
+- Ensure User IDs are Removed When Moving to All Users Strategy. !25190
+- Fix dismissed vulnerability comment updates. !25328
+- Generate illustrations URLs in the backend. !25375
+- Check user role for each of namespaces while deciding if it is using a paid seat in it. !25437
+- Change MR approval popover to use hover trigger. !25494
+- Change copy of Welcome screen. !25526
+- Fix weight not showing in linked issues. !25718
+- Scope name uniqueness of approval rules to type. !25875
+- Pass correct Time object to Value Stream Management DataCollector. !25885
+- API for Namespace members has correct boolean if user using paid seat. !25988
+- Set the default SSL cert path environment variables when invoking indexer. !26036
+- Add pagination to Instance Level Security Dashboard project selector. !26138
+- Exclude creation event from audit changes. !26140
+- Resolve Usage Ping timeouts on security_products_usage for large hosts. !26296
+- Fix SCIM API not creating new users. !26514
+- BulkIndexer change _routing -> routing to support ES 7. !26639
+- Ensure design events are correctly visible. !26708
+- Add support for async search within Epics dropdown. !26980
+- Fix configuration issue for License Compliance. !27016
+- Geo - Fix ambiguous reference column while loading migrated local files to clean up. !27252
+
+### Changed (22 changes, 1 of them is from the community)
+
+- Add auto_renew attribute to gitlab_subscriptions and expose via api. !24896 (jejacks0n)
+- Remove admin user count from Users statistics. !25337
+- Improve error messages in the Dependency List. !25369
+- Do not automatically add approvers as participants of each merge request. !25546
+- Improve loading UX in the License Management list. !25620
+- Improve audit log & events header layout. !25821
+- Adjust the MR approval rule to use a smaller modal. !25955
+- Resolve Code review start time doesnt account for approvals. !25997
+- Prevent 'Invite group' for groups outside a group-managed account group. !26081
+- Improve language when MR Security Report is outdated. !26150
+- Prevent projects from being shared outside a group with managed accounts. !26163
+- Prevent projects from being shared outside a group with managed accounts for forked projects. !26186
+- Extract time range information to be reused. !26431
+- Restrict inviting outside group to a project forked from a group with enforced SSO. !26456
+- Add severity badge to security reports. !26715
+- Consider MR reassign as code review start. !26891
+- Add application limits for Ci::PipelineSchedule. !27004
+- Update license compliance policy classifications text in the UI. !27058
+- Remove approval metric recalculation when approval was removed. !27071
+- Move Value Stream Analytics to the group level. !27304
+- Remove release tag filter from Issues Analytics. !208903
+- Change dependency & license scan pipeline text message.
+
+### Performance (4 changes)
+
+- Optimize service desk issue counters query performance in usage data. !26445
+- Preload database records in bulk indexing. !26754
+- Geo: Make the LFS registry the SSOT to optimize query performance. !27154
+- Remove feature flag elastic_bulk_incremental_updates. !27293
+
+### Added (58 changes, 9 of them are from the community)
+
+- Audit number of required approvals changes. !7531
+- Add weight and progress information in Roadmap Epic bars. !18957
+- Adds the ability to dismiss multiple vulnerabilities. !21480
+- Add code quality tab to pipeline view. !21527
+- Add milestones to roadmap. !22748
+- Add Threat Monitoring page. !22911
+- Add epic in filtered search. !22958
+- Add deep links for cycle analytics. !23493
+- Allow existing users to transfer their account to SAML Group managed accounts. !24329
+- Use snowplow for user error reporting in trial. !24430
+- Time period for usage activity by stage in usage data. !24431
+- Adds sorting to group packages api. !24432
+- Export Board Milestones in Group Export. !24606
+- Add possibility to search for epics by partial iids using GraphQL. !24673
+- Add restrict outer forks functionality for group SAML. !24698
+- Release Jira connect feature. !24818
+- Adds project_path sorting to group package API. !24833
+- Add webhook limits for groups. !25129
+- Default design images to 100% of viewport width. !25327
+- Add npm_package_requests_forwarding to application settings. !25346
+- Add bot count to Users statistics in Admin Area. !25355
+- Adding CODEOWNER approval metrics for merge requests. !25386
+- Separate 4 ee entities into own class file. !25400 (Rajendra Kadam)
+- Improve zoom reset after resizing window in Design Management. !25406
+- Introduce Project level issues analytics. !25417
+- Add tooltip to guests count in Users Statistics. !25433
+- Separate epic, epic_issue, linked epic ee entities into own class file. !25592 (Rajendra Kadam)
+- Add API endpoints for Group Activity Analytics. !25606
+- Add GraphQL mutation to set the epic of an issue. !25628
+- Add merge request metrics first approved at timestamp. !25681
+- Separate ee entities into own class file. !25709 (Rajendra Kadam)
+- Embed cluster health metrics in GitLab-flavored Markdown. !25739
+- Always show the Design Tab on Issues but indicate user if feature is not available. !25796
+- Status page settings. !25820
+- Audit user blocked via API. !25872
+- Create a vulnerability-list component. !25927
+- Audit project MR approval permission changes. !25959
+- Add health status data to the epic GraphQL endpoint. !25989
+- Display correct approval rules based on target branch in Edit MR form. !26053
+- Activate triggering webhooks from a subgroup feature. !26070
+- Separate vulnerabilities, feature flags, dependency entities into own class files. !26088 (Rajendra Kadam)
+- Support drag-and-drop design uploads in Design Management. !26139
+- Add distinct user count of secure stage items to usage ping. !26194
+- Support drag-and-drop on existing designs in Design Management. !26446
+- Add worker to sync paid seats info daily in the background. !26467
+- Separate project alias, build info, package entities into own class files. !26493 (Rajendra Kadam)
+- Support async loading & search of projects within Epics Tree. !26661
+- Add code review reassign metric structure. !26664
+- Separate npm, subs and geo entities into own class file. !26674 (Rajendra Kadam)
+- Separate geo_node and license entities into own class file. !26685 (Rajendra Kadam)
+- Separate merge request approval entities into own class files. !26860 (Rajendra Kadam)
+- Include snippet description as part of snippet title search (advanced search, Elasticsearch reindexing required). !26870
+- Add Roadmap GraphQL and unfiltered epic aggregates. !26919
+- Add NPM package requests forwarding to npmjs.org. !26932
+- Separate approval entities into own class files. !27336 (Rajendra Kadam)
+- View description changes history of issues, epics and merge requests. !27445
+- Enable license compliance policies tab for on prem installs.
+- Add a bulk processor for ES incremental updates.
+
+### Other (5 changes, 1 of them is from the community)
+
+- Refactor WeightSelect to use gitlab-ui dropdown. !20770
+- Update to new severity badge design. !25489
+- Rename close_{at,by} to dismissed_{at,by} in Vulnerabilities. !25609 (Michał Zając)
+- Style MR approval popover link to be consistent text size. !25657
+- Allow users to be marked as service users. !202680
+
+
 ## 12.8.7 (2020-03-16)
 
 ### Fixed (1 change)

@@ -1,5 +1,0 @@
----
-title: Fix user registration when smartcard authentication is enabled
-merge_request: 26800
-author:
-type: fixed

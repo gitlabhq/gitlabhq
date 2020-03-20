@@ -1,5 +1,0 @@
----
-title: Fix capybara screenshots path name for rails configuration
-merge_request: 27002
-author:
-type: fixed

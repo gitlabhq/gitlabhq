@@ -1,5 +1,0 @@
----
-title: Use batch counters instead of approximate counters in usage data
-merge_request: 27218
-author:
-type: performance

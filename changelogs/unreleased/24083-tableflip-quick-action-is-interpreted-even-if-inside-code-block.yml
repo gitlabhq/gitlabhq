@@ -1,5 +1,0 @@
----
-title: 'Fix: tableflip quick action is interpreted even if inside code block'
-merge_request:
-author: Pavlo Dudchenko
-type: fixed

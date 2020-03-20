@@ -1,5 +1,0 @@
----
-title: Prevent unauthorized users to lock an issue from the collapsed sidebar.
-merge_request: 26324
-author: Gilang Gumilar
-type: fixed

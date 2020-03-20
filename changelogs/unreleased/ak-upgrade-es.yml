@@ -1,5 +1,0 @@
----
-title: Upgrade Elastic Stack helm chart to 1.9.0
-merge_request: 27011
-author:
-type: changed
