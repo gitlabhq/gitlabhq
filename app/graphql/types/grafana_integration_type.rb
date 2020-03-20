@@ -18,8 +18,8 @@ module Types
           description: 'Timestamp of the issue\'s last activity'
 
     field :token, GraphQL::STRING_TYPE, null: false,
-          deprecation_reason: 'Plain text token has been masked for security reasons',
-          description: 'API token for the Grafana integration. Field is permanently masked.'
+          deprecated: { reason: 'Plain text token has been masked for security reasons', milestone: 12.7 },
+          description: 'API token for the Grafana integration'
 
     def token
       object.masked_token

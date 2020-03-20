@@ -306,7 +306,7 @@ type Commit {
   id: ID!
 
   """
-  Latest pipeline of the commit
+  Latest pipeline of the commit. Deprecated in 12.5: Use `pipelines`
   """
   latestPipeline(
     """
@@ -323,7 +323,7 @@ type Commit {
     Filter pipelines by their status
     """
     status: PipelineStatusEnum
-  ): Pipeline @deprecated(reason: "Use pipelines")
+  ): Pipeline @deprecated(reason: "Use `pipelines`. Deprecated in 12.5")
 
   """
   Raw commit message
@@ -2493,9 +2493,9 @@ type EpicIssue implements Noteable {
   designCollection: DesignCollection
 
   """
-  Deprecated. Use `designCollection`
+  The designs associated with this issue. Deprecated in 12.2: Use `designCollection`
   """
-  designs: DesignCollection @deprecated(reason: "Use designCollection")
+  designs: DesignCollection @deprecated(reason: "Use `designCollection`. Deprecated in 12.2")
 
   """
   Indicates discussion is locked on the issue
@@ -2548,7 +2548,7 @@ type EpicIssue implements Noteable {
   epicIssueId: ID!
 
   """
-  Current health status. Available only when feature flag `save_issuable_health_status` is enabled.
+  Current health status. Available only when feature flag `save_issuable_health_status` is enabled
   """
   healthStatus: HealthStatus
 
@@ -2984,9 +2984,9 @@ type GrafanaIntegration {
   id: ID!
 
   """
-  API token for the Grafana integration. Field is permanently masked.
+  API token for the Grafana integration. Deprecated in 12.7: Plain text token has been masked for security reasons
   """
-  token: String! @deprecated(reason: "Plain text token has been masked for security reasons")
+  token: String! @deprecated(reason: "Plain text token has been masked for security reasons. Deprecated in 12.7")
 
   """
   Timestamp of the issue's last activity
@@ -3489,9 +3489,9 @@ type Issue implements Noteable {
   designCollection: DesignCollection
 
   """
-  Deprecated. Use `designCollection`
+  The designs associated with this issue. Deprecated in 12.2: Use `designCollection`
   """
-  designs: DesignCollection @deprecated(reason: "Use designCollection")
+  designs: DesignCollection @deprecated(reason: "Use `designCollection`. Deprecated in 12.2")
 
   """
   Indicates discussion is locked on the issue
@@ -3539,7 +3539,7 @@ type Issue implements Noteable {
   epic: Epic
 
   """
-  Current health status. Available only when feature flag `save_issuable_health_status` is enabled.
+  Current health status. Available only when feature flag `save_issuable_health_status` is enabled
   """
   healthStatus: HealthStatus
 
@@ -4242,9 +4242,9 @@ type MergeRequest implements Noteable {
   ): LabelConnection
 
   """
-  Deprecated - renamed to defaultMergeCommitMessage
+  Default merge commit message of the merge request. Deprecated in 11.8: Use `defaultMergeCommitMessage`
   """
-  mergeCommitMessage: String @deprecated(reason: "Renamed to defaultMergeCommitMessage")
+  mergeCommitMessage: String @deprecated(reason: "Use `defaultMergeCommitMessage`. Deprecated in 11.8")
 
   """
   SHA of the merge request commit (set once merged)
@@ -6191,7 +6191,7 @@ type Project {
   visibility: String
 
   """
-  Vulnerabilities reported on the project. Available only when feature flag `first_class_vulnerabilities` is enabled.
+  Vulnerabilities reported on the project. Available only when feature flag `first_class_vulnerabilities` is enabled
   """
   vulnerabilities(
     """

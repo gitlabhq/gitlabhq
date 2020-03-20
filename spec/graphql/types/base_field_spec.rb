@@ -175,7 +175,7 @@ describe Types::BaseField do
       let(:flag) { :test_flag }
 
       it 'prepends the description' do
-        expect(field.description). to eq 'Test description. Available only when feature flag `test_flag` is enabled.'
+        expect(field.description). to eq 'Test description. Available only when feature flag `test_flag` is enabled'
       end
 
       context 'falsey feature_flag values' do
@@ -194,6 +194,66 @@ describe Types::BaseField do
           end
         end
       end
+    end
+  end
+
+  describe '`deprecated` property' do
+    def test_field(args = {})
+      base_args = { name: 'test', type: GraphQL::STRING_TYPE, null: true }
+
+      described_class.new(**base_args.merge(args))
+    end
+
+    describe 'validations' do
+      it 'raises an informative error if `deprecation_reason` is used' do
+        expect { test_field(deprecation_reason: 'foo') }.to raise_error(
+          ArgumentError,
+          'Use `deprecated` property instead of `deprecation_reason`. ' \
+          'See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-fields'
+        )
+      end
+
+      it 'raises an error if a required property is missing', :aggregate_failures do
+        expect { test_field(deprecated: { milestone: 1.0 }) }.to raise_error(
+          ArgumentError,
+          'Please provide a `reason` within `deprecated`'
+        )
+        expect { test_field(deprecated: { reason: 'Deprecation reason' }) }.to raise_error(
+          ArgumentError,
+          'Please provide a `milestone` within `deprecated`'
+        )
+      end
+    end
+
+    it 'adds a formatted `deprecated_reason` to the field' do
+      field = test_field(deprecated: { milestone: 1.0, reason: 'Deprecation reason' })
+
+      expect(field.deprecation_reason).to eq('Deprecation reason. Deprecated in 1.0')
+    end
+
+    it 'appends to the description if given' do
+      field = test_field(
+        deprecated: { milestone: 1.0, reason: 'Deprecation reason' },
+        description: 'Field description'
+      )
+
+      expect(field.description).to eq('Field description. Deprecated in 1.0: Deprecation reason')
+    end
+
+    it 'does not append to the description if it is absent' do
+      field = test_field(deprecated: { milestone: 1.0, reason: 'Deprecation reason' })
+
+      expect(field.description).to be_nil
+    end
+
+    it 'interacts well with the `feature_flag` property' do
+      field = test_field(
+        deprecated: { milestone: 1.0, reason: 'Deprecation reason' },
+        description: 'Field description',
+        feature_flag: 'foo_flag'
+      )
+
+      expect(field.description).to eq('Field description. Available only when feature flag `foo_flag` is enabled. Deprecated in 1.0: Deprecation reason')
     end
   end
 end

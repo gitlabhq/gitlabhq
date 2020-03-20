@@ -96,6 +96,10 @@ The hooks are searched and executed in this order:
 The hooks of the same type are executed in order and execution stops on the
 first script exiting with a non-zero value.
 
+For `<project>.git` you'll need to
+[translate your project name into the hashed storage format](repository_storage_types.md#translating-hashed-storage-paths)
+that GitLab uses.
+
 ## Custom error messages
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5073) in GitLab 8.10.

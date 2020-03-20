@@ -90,6 +90,10 @@ The Java analyzers can also be used for variants like the
 [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html),
 [Grails](https://grails.org/) and the [Maven wrapper](https://github.com/takari/maven-wrapper).
 
+## Contribute your scanner
+
+The [Security Scanner Integration](../../../development/integrations/secure.md) documentation explains how to integrate other security scanners into GitLab.
+
 ## Configuration
 
 NOTE: **Note:**

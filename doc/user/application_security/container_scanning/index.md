@@ -25,6 +25,10 @@ merge request.
 
 ![Container Scanning Widget](img/container_scanning_v12_9.png)
 
+## Contribute your scanner
+
+The [Security Scanner Integration](../../../development/integrations/secure.md) documentation explains how to integrate other security scanners into GitLab.
+
 ## Use cases
 
 If you distribute your application with Docker, then there's a great chance

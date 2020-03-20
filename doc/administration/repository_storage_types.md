@@ -78,6 +78,58 @@ by another folder with the next 2 characters. They are both stored in a special
 "@hashed/#{hash[0..1]}/#{hash[2..3]}/#{hash}.wiki.git"
 ```
 
+### Translating hashed storage paths
+
+Troubleshooting problems with the Git repositories, adding hooks, and other
+tasks will require you translate between the human readable project name
+and the hashed storage path.
+
+#### From project name to hashed path
+
+The hashed path is shown on the project's page in the [admin area](../user/admin_area/index.md#administering-projects).
+
+To access the Projects page, go to **Admin Area > Overview > Projects** and then
+open up the page for the project.
+
+The "Gitaly relative path" is shown there, for example:
+
+```
+"@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git"
+```
+
+This is the path under `/var/opt/gitlab/git-data/repositories/` on a
+default Omnibus installation.
+
+In a [Rails console](troubleshooting/debug.md#starting-a-rails-console),
+get this information using either the numeric project ID or the full path:
+
+```ruby
+Project.find(16).disk_path
+Project.find_by_full_path('group/project').disk_path
+```
+
+#### From hashed path to project name
+
+To translate from a hashed storage path to a project name:
+
+1. Start a [Rails console](troubleshooting/debug.md#starting-a-rails-console).
+1. Run the following:
+
+```ruby
+ProjectRepository.find_by(disk_path: '@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9').project
+```
+
+The quoted string in that command is the directory tree you'll find on your
+GitLab server. For example, on a default Omnibus installation this would be
+`/var/opt/gitlab/git-data/repositories/@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`
+with `.git` from the end of the directory name removed.
+
+The output includes the project id and the project name:
+
+```
+=> #<Project id:16 it/supportteam/ticketsystem>
+```
+
 ### Hashed object pools
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/issues/1606) in GitLab 12.1.

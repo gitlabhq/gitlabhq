@@ -6,7 +6,7 @@ describe Gitlab::Graphql::Docs::Renderer do
   describe '#contents' do
     # Returns a Schema that uses the given `type`
     def mock_schema(type)
-      query_type = Class.new(GraphQL::Schema::Object) do
+      query_type = Class.new(Types::BaseObject) do
         graphql_name 'QueryType'
 
         field :foo, type, null: true
@@ -27,7 +27,7 @@ describe Gitlab::Graphql::Docs::Renderer do
 
     context 'A type with a field with a [Array] return type' do
       let(:type) do
-        Class.new(GraphQL::Schema::Object) do
+        Class.new(Types::BaseObject) do
           graphql_name 'ArrayTest'
 
           field :foo, [GraphQL::STRING_TYPE], null: false, description: 'A description'
@@ -49,7 +49,7 @@ describe Gitlab::Graphql::Docs::Renderer do
 
     context 'A type with fields defined in reverse alphabetical order' do
       let(:type) do
-        Class.new(GraphQL::Schema::Object) do
+        Class.new(Types::BaseObject) do
           graphql_name 'OrderingTest'
 
           field :foo, GraphQL::STRING_TYPE, null: false, description: 'A description of foo field'
@@ -73,10 +73,10 @@ describe Gitlab::Graphql::Docs::Renderer do
 
     context 'A type with a deprecated field' do
       let(:type) do
-        Class.new(GraphQL::Schema::Object) do
+        Class.new(Types::BaseObject) do
           graphql_name 'DeprecatedTest'
 
-          field :foo, GraphQL::STRING_TYPE, null: false, deprecation_reason: 'This is deprecated', description: 'A description'
+          field :foo, GraphQL::STRING_TYPE, null: false, deprecated: { reason: 'This is deprecated', milestone: 1.0 }, description: 'A description'
         end
       end
 
@@ -86,7 +86,7 @@ describe Gitlab::Graphql::Docs::Renderer do
 
           | Name  | Type  | Description |
           | ---   |  ---- | ----------  |
-          | `foo` **{warning-solid}** | String! | **Deprecated:** This is deprecated |
+          | `foo` **{warning-solid}** | String! | **Deprecated:** This is deprecated. Deprecated in 1.0 |
         DOC
 
         is_expected.to include(expectation)

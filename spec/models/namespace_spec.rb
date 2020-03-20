@@ -194,7 +194,7 @@ describe Namespace do
 
   describe '.find_by_pages_host' do
     it 'finds namespace by GitLab Pages host and is case-insensitive' do
-      namespace = create(:namespace, name: 'topnamespace')
+      namespace = create(:namespace, name: 'topNAMEspace', path: 'topNAMEspace')
       create(:namespace, name: 'annother_namespace')
       host = "TopNamespace.#{Settings.pages.host.upcase}"
 

@@ -283,6 +283,51 @@ the `some_feature_flag` feature flag is enabled.
 
 If the feature flag is not enabled, an error will be returned saying the field does not exist.
 
+## Deprecating fields
+
+GitLab's GraphQL API is versionless, which means we maintain backwards
+compatibility with older versions of the API with every change. Rather
+than removing a field, we need to _deprecate_ the field instead. In
+future, GitLab
+[may remove deprecated fields](https://gitlab.com/gitlab-org/gitlab/issues/32292).
+
+Fields are deprecated using the `deprecated` property. The value
+of the property is a `Hash` of:
+
+- `reason` - Reason for the deprecation.
+- `milestone` - Milestone that the field was deprecated.
+
+Example:
+
+```ruby
+field :token, GraphQL::STRING_TYPE, null: true,
+      deprecated: { reason: 'Login via token has been removed', milestone: 10.0 },
+      description: 'Token for login'
+```
+
+The original `description:` of the field should be maintained, and should
+_not_ be updated to mention the deprecation.
+
+### Deprecation reason styleguide
+
+Where the reason for deprecation is due to the field being replaced
+with another field, the `reason` must be:
+
+```plaintext
+Use `otherFieldName`
+```
+
+Example:
+
+```ruby
+field :designs, ::Types::DesignManagement::DesignCollectionType, null: true,
+      deprecated: { reason: 'Use `designCollection`', milestone: 10.0 },
+      description: 'The designs associated with this issue',
+```
+
+If the field is not being replaced by another field, a descriptive
+deprecation `reason` should be given.
+
 ## Enums
 
 GitLab GraphQL enums are defined in `app/graphql/types`. When defining new enums, the

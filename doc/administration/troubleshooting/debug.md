@@ -3,22 +3,32 @@
 Sometimes things don't work the way they should. Here are some tips on debugging issues out
 in production.
 
+## Starting a Rails console
+
+Troubleshooting and debugging often requires a rails console.
+
+**For Omnibus installations**
+
+```shell
+sudo gitlab-rails console
+```
+
+---
+
+**For installations from source**
+
+```shell
+bundle exec rails console production
+```
+
+Kubernetes: the console is in the task-runner pod, refer to our [Kubernetes cheat sheet](kubernetes_cheat_sheet.md#gitlab-specific-kubernetes-information) for details.
+
 ## Mail not working
 
 A common problem is that mails are not being sent for some reason. Suppose you configured
 an SMTP server, but you're not seeing mail delivered. Here's how to check the settings:
 
-1. Run a Rails console:
-
-   ```shell
-   sudo gitlab-rails console -e production
-   ```
-
-   or for source installs:
-
-   ```shell
-   bundle exec rails console -e production
-   ```
+1. Run a [Rails console.](#starting-a-rails-console)
 
 1. Look at the ActionMailer `delivery_method` to make sure it matches what you
    intended. If you configured SMTP, it should say `:smtp`. If you're using
@@ -160,22 +170,17 @@ separate Rails process to debug the issue:
 1. Log in to your GitLab account.
 1. Copy the URL that is causing problems (e.g. `https://gitlab.com/ABC`).
 1. Create a Personal Access Token for your user (Profile Settings -> Access Tokens).
-1. Bring up the GitLab Rails console. For omnibus users, run:
-
-   ```shell
-   sudo gitlab-rails console
-   ```
-
+1. Bring up the [GitLab Rails console.](#starting-a-rails-console)
 1. At the Rails console, run:
 
    ```ruby
-   [1] pry(main)> app.get '<URL FROM STEP 2>/?private_token=<TOKEN FROM STEP 3>'
+   app.get '<URL FROM STEP 2>/?private_token=<TOKEN FROM STEP 3>'
    ```
 
    For example:
 
    ```ruby
-   [1] pry(main)> app.get 'https://gitlab.com/gitlab-org/gitlab-foss/issues/1?private_token=123456'
+   app.get 'https://gitlab.com/gitlab-org/gitlab-foss/issues/1?private_token=123456'
    ```
 
 1. In a new window, run `top`. It should show this ruby process using 100% CPU. Write down the PID.

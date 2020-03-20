@@ -968,7 +968,7 @@
             },
             {
               "name": "latestPipeline",
-              "description": "Latest pipeline of the commit",
+              "description": "Latest pipeline of the commit. Deprecated in 12.5: Use `pipelines`",
               "args": [
                 {
                   "name": "status",
@@ -1007,7 +1007,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use pipelines"
+              "deprecationReason": "Use `pipelines`. Deprecated in 12.5"
             },
             {
               "name": "message",
@@ -7244,7 +7244,7 @@
             },
             {
               "name": "designs",
-              "description": "Deprecated. Use `designCollection`",
+              "description": "The designs associated with this issue. Deprecated in 12.2: Use `designCollection`",
               "args": [
 
               ],
@@ -7254,7 +7254,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use designCollection"
+              "deprecationReason": "Use `designCollection`. Deprecated in 12.2"
             },
             {
               "name": "discussionLocked",
@@ -7397,7 +7397,7 @@
             },
             {
               "name": "healthStatus",
-              "description": "Current health status. Available only when feature flag `save_issuable_health_status` is enabled.",
+              "description": "Current health status. Available only when feature flag `save_issuable_health_status` is enabled",
               "args": [
 
               ],
@@ -8659,7 +8659,7 @@
             },
             {
               "name": "token",
-              "description": "API token for the Grafana integration. Field is permanently masked.",
+              "description": "API token for the Grafana integration. Deprecated in 12.7: Plain text token has been masked for security reasons",
               "args": [
 
               ],
@@ -8673,7 +8673,7 @@
                 }
               },
               "isDeprecated": true,
-              "deprecationReason": "Plain text token has been masked for security reasons"
+              "deprecationReason": "Plain text token has been masked for security reasons. Deprecated in 12.7"
             },
             {
               "name": "updatedAt",
@@ -9990,7 +9990,7 @@
             },
             {
               "name": "designs",
-              "description": "Deprecated. Use `designCollection`",
+              "description": "The designs associated with this issue. Deprecated in 12.2: Use `designCollection`",
               "args": [
 
               ],
@@ -10000,7 +10000,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use designCollection"
+              "deprecationReason": "Use `designCollection`. Deprecated in 12.2"
             },
             {
               "name": "discussionLocked",
@@ -10125,7 +10125,7 @@
             },
             {
               "name": "healthStatus",
-              "description": "Current health status. Available only when feature flag `save_issuable_health_status` is enabled.",
+              "description": "Current health status. Available only when feature flag `save_issuable_health_status` is enabled",
               "args": [
 
               ],
@@ -12105,7 +12105,7 @@
             },
             {
               "name": "mergeCommitMessage",
-              "description": "Deprecated - renamed to defaultMergeCommitMessage",
+              "description": "Default merge commit message of the merge request. Deprecated in 11.8: Use `defaultMergeCommitMessage`",
               "args": [
 
               ],
@@ -12115,7 +12115,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Renamed to defaultMergeCommitMessage"
+              "deprecationReason": "Use `defaultMergeCommitMessage`. Deprecated in 11.8"
             },
             {
               "name": "mergeCommitSha",
@@ -18522,7 +18522,7 @@
             },
             {
               "name": "vulnerabilities",
-              "description": "Vulnerabilities reported on the project. Available only when feature flag `first_class_vulnerabilities` is enabled.",
+              "description": "Vulnerabilities reported on the project. Available only when feature flag `first_class_vulnerabilities` is enabled",
               "args": [
                 {
                   "name": "after",

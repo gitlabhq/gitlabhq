@@ -12,6 +12,7 @@ module Types
       kwargs[:complexity] = field_complexity(kwargs[:resolver_class], kwargs[:complexity])
       @feature_flag = kwargs[:feature_flag]
       kwargs = check_feature_flag(kwargs)
+      kwargs = handle_deprecated(kwargs)
 
       super(*args, **kwargs, &block)
     end
@@ -41,7 +42,7 @@ module Types
     attr_reader :feature_flag
 
     def feature_documentation_message(key, description)
-      "#{description}. Available only when feature flag `#{key}` is enabled."
+      "#{description}. Available only when feature flag `#{key}` is enabled"
     end
 
     def check_feature_flag(args)
@@ -49,6 +50,27 @@ module Types
       args.delete(:feature_flag)
 
       args
+    end
+
+    def handle_deprecated(kwargs)
+      if kwargs[:deprecation_reason].present?
+        raise ArgumentError, 'Use `deprecated` property instead of `deprecation_reason`. ' \
+                             'See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-fields'
+      end
+
+      deprecation = kwargs.delete(:deprecated)
+      return kwargs unless deprecation
+
+      milestone, reason = deprecation.values_at(:milestone, :reason).map(&:presence)
+
+      raise ArgumentError, 'Please provide a `milestone` within `deprecated`' unless milestone
+      raise ArgumentError, 'Please provide a `reason` within `deprecated`' unless reason
+
+      deprecated_in = "Deprecated in #{milestone}"
+      kwargs[:deprecation_reason] = "#{reason}. #{deprecated_in}"
+      kwargs[:description] += ". #{deprecated_in}: #{reason}" if kwargs[:description]
+
+      kwargs
     end
 
     def field_complexity(resolver_class, current)

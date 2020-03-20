@@ -67,6 +67,10 @@ The following languages and dependency managers are supported.
 | Scala ([sbt](https://www.scala-sbt.org/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | Go ([Go Modules](https://github.com/golang/go/wiki/Modules)) | yes ([alpha](https://gitlab.com/gitlab-org/gitlab/issues/7132)) | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 
+## Contribute your scanner
+
+The [Security Scanner Integration](../../../development/integrations/secure.md) documentation explains how to integrate other security scanners into GitLab.
+
 ## Configuration
 
 For GitLab 11.9 and later, to enable Dependency Scanning, you must
