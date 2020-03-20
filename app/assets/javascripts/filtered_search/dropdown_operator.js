@@ -24,10 +24,12 @@ export default class DropdownOperator extends FilteredSearchDropdown {
 
     if (selected.tagName === 'LI') {
       if (selected.hasAttribute('data-value')) {
+        const name = FilteredSearchVisualTokens.getLastTokenPartial();
         const operator = selected.dataset.value;
+
         FilteredSearchVisualTokens.removeLastTokenPartial();
         FilteredSearchDropdownManager.addWordToInput({
-          tokenName: this.filter,
+          tokenName: name,
           tokenOperator: operator,
           clicked: false,
         });
@@ -38,8 +40,6 @@ export default class DropdownOperator extends FilteredSearchDropdown {
   }
 
   renderContent(forceShowList = false) {
-    this.filter = FilteredSearchVisualTokens.getLastTokenPartial();
-
     const dropdownData = [
       {
         tag: 'equal',

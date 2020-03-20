@@ -268,6 +268,11 @@ See [Analyzer settings](#analyzer-settings) for the complete list of available o
 
 SAST can be [configured](#customizing-the-sast-settings) using environment variables.
 
+#### Custom Certificate Authority
+
+To trust a custom Certificate Authority, set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle
+of CA certs that you want to trust within the SAST environment.
+
 #### Docker images
 
 The following are Docker image-related variables.

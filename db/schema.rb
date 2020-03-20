@@ -1606,6 +1606,7 @@ ActiveRecord::Schema.define(version: 2020_03_19_203901) do
     t.integer "start_date_sourcing_epic_id"
     t.integer "due_date_sourcing_epic_id"
     t.integer "health_status", limit: 2
+    t.string "external_key", limit: 255
     t.index "group_id, ((iid)::character varying) varchar_pattern_ops", name: "index_epics_on_group_id_and_iid_varchar_pattern"
     t.index ["assignee_id"], name: "index_epics_on_assignee_id"
     t.index ["author_id"], name: "index_epics_on_author_id"
@@ -1613,6 +1614,7 @@ ActiveRecord::Schema.define(version: 2020_03_19_203901) do
     t.index ["due_date_sourcing_epic_id"], name: "index_epics_on_due_date_sourcing_epic_id", where: "(due_date_sourcing_epic_id IS NOT NULL)"
     t.index ["due_date_sourcing_milestone_id"], name: "index_epics_on_due_date_sourcing_milestone_id"
     t.index ["end_date"], name: "index_epics_on_end_date"
+    t.index ["group_id", "external_key"], name: "index_epics_on_group_id_and_external_key", unique: true, where: "(external_key IS NOT NULL)"
     t.index ["group_id"], name: "index_epics_on_group_id"
     t.index ["iid"], name: "index_epics_on_iid"
     t.index ["lock_version"], name: "index_epics_on_lock_version", where: "(lock_version IS NULL)"
@@ -2222,6 +2224,7 @@ ActiveRecord::Schema.define(version: 2020_03_19_203901) do
     t.integer "duplicated_to_id"
     t.integer "promoted_to_epic_id"
     t.integer "health_status", limit: 2
+    t.string "external_key", limit: 255
     t.index ["author_id", "id", "created_at"], name: "index_issues_on_author_id_and_id_and_created_at"
     t.index ["author_id"], name: "index_issues_on_author_id"
     t.index ["closed_by_id"], name: "index_issues_on_closed_by_id"
@@ -2233,6 +2236,7 @@ ActiveRecord::Schema.define(version: 2020_03_19_203901) do
     t.index ["moved_to_id"], name: "index_issues_on_moved_to_id", where: "(moved_to_id IS NOT NULL)"
     t.index ["project_id", "created_at", "id", "state_id"], name: "idx_issues_on_project_id_and_created_at_and_id_and_state_id"
     t.index ["project_id", "due_date", "id", "state_id"], name: "idx_issues_on_project_id_and_due_date_and_id_and_state_id", where: "(due_date IS NOT NULL)"
+    t.index ["project_id", "external_key"], name: "index_issues_on_project_id_and_external_key", unique: true, where: "(external_key IS NOT NULL)"
     t.index ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true
     t.index ["project_id", "relative_position", "state_id", "id"], name: "idx_issues_on_project_id_and_rel_position_and_state_id_and_id", order: { id: :desc }
     t.index ["project_id", "updated_at", "id", "state_id"], name: "idx_issues_on_project_id_and_updated_at_and_id_and_state_id"

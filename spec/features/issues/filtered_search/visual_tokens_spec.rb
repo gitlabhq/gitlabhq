@@ -162,4 +162,17 @@ describe 'Visual tokens', :js do
       ])
     end
   end
+
+  it 'does retain hint token when mix of typing and clicks are performed' do
+    input_filtered_search('label:', extra_space: false, submit: false)
+
+    expect(page).to have_css('#js-dropdown-operator', visible: true)
+
+    find('#js-dropdown-operator li[data-value="="]').click
+
+    token = page.all('.tokens-container .js-visual-token')[0]
+
+    expect(token.find('.name').text).to eq('Label')
+    expect(token.find('.operator').text).to eq('=')
+  end
 end

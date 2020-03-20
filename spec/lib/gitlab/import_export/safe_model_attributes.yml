@@ -31,6 +31,7 @@ Issue:
 - last_edited_by_id
 - discussion_locked
 - health_status
+- external_key
 Event:
 - id
 - target_type
@@ -843,6 +844,7 @@ Epic:
   - start_date_sourcing_epic_id
   - due_date_sourcing_epic_id
   - health_status
+  - external_key
 EpicIssue:
   - id
   - relative_position

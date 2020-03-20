@@ -4,6 +4,11 @@ module SnippetsActions
   extend ActiveSupport::Concern
 
   def edit
+    # We need to load some info from the existing blob
+    snippet.content = blob.data
+    snippet.file_name = blob.path
+
+    render 'edit'
   end
 
   def raw
@@ -24,6 +29,18 @@ module SnippetsActions
   end
 
   private
+
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  def blob
+    return unless snippet
+
+    @blob ||= if Feature.enabled?(:version_snippets, current_user) && !snippet.repository.empty?
+                snippet.blobs.first
+              else
+                snippet.blob
+              end
+  end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def convert_line_endings(content)
     params[:line_ending] == 'raw' ? content : content.gsub(/\r\n/, "\n")

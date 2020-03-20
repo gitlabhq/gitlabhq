@@ -47,26 +47,26 @@ describe 'Explore Groups page', :js do
     expect(page).to have_content(group.full_name)
     expect(page).to have_content(public_group.full_name)
     expect(page).not_to have_content(private_group.full_name)
-    expect(page.all('.js-groups-list-holder .content-list li').length).to eq 2
+    expect(page.all('.js-groups-list-holder .groups-list li').length).to eq 2
   end
 
   it 'shows non-archived projects count' do
     # Initially project is not archived
-    expect(find('.js-groups-list-holder .content-list li:first-child .stats .number-projects')).to have_text("1")
+    expect(find('.js-groups-list-holder .groups-list li:first-child .stats .number-projects')).to have_text("1")
 
     # Archive project
     ::Projects::UpdateService.new(empty_project, user, archived: true).execute
     visit explore_groups_path
 
     # Check project count
-    expect(find('.js-groups-list-holder .content-list li:first-child .stats .number-projects')).to have_text("0")
+    expect(find('.js-groups-list-holder .groups-list li:first-child .stats .number-projects')).to have_text("0")
 
     # Unarchive project
     ::Projects::UpdateService.new(empty_project, user, archived: false).execute
     visit explore_groups_path
 
     # Check project count
-    expect(find('.js-groups-list-holder .content-list li:first-child .stats .number-projects')).to have_text("1")
+    expect(find('.js-groups-list-holder .groups-list li:first-child .stats .number-projects')).to have_text("1")
   end
 
   describe 'landing component' do

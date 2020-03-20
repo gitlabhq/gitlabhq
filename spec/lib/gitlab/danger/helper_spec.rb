@@ -206,7 +206,6 @@ describe Gitlab::Danger::Helper do
 
       'Gemfile'        | :backend
       'Gemfile.lock'   | :backend
-      'Procfile'       | :backend
       'Rakefile'       | :backend
       'FOO_VERSION'    | :backend
 

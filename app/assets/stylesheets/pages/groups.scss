@@ -8,16 +8,37 @@
   }
 }
 
+.groups-list {
+  @include basic-list;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+
+  .group-row-contents .controls > .btn:last-child {
+    margin: 0;
+  }
+
+  li {
+    .title {
+      font-weight: 600;
+    }
+
+    a {
+      color: $gray-900;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
 .group-root-path {
   max-width: 40vw;
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: nowrap;
-}
-
-.content-list .group-name {
-  font-weight: $gl-font-weight-bold;
-  color: $pages-group-name-color;
 }
 
 .group-row {
@@ -320,10 +341,6 @@ table.pipeline-project-metrics tr td {
     .folder-caret {
       opacity: 0;
     }
-  }
-
-  .content-list li:last-child {
-    padding-bottom: 0;
   }
 
   .group-list-tree {

@@ -126,16 +126,6 @@ class SnippetsController < ApplicationController
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet
 
-  def blob
-    return unless snippet
-
-    @blob ||= if Feature.enabled?(:version_snippets, current_user) && !snippet.repository.empty?
-                snippet.blobs.first
-              else
-                snippet.blob
-              end
-  end
-
   def spammable_path
     snippet_path(@snippet)
   end

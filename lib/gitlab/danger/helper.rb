@@ -144,7 +144,7 @@ module Gitlab
         %r{\A(ee/)?spec/(?!javascripts|frontend)[^/]+} => :backend,
         %r{\A(ee/)?vendor/(?!assets)[^/]+} => :backend,
         %r{\A(ee/)?vendor/(languages\.yml|licenses\.csv)\z} => :backend,
-        %r{\A(Gemfile|Gemfile.lock|Procfile|Rakefile)\z} => :backend,
+        %r{\A(Gemfile|Gemfile.lock|Rakefile)\z} => :backend,
         %r{\A[A-Z_]+_VERSION\z} => :backend,
         %r{\A\.rubocop(_todo)?\.yml\z} => :backend,
 

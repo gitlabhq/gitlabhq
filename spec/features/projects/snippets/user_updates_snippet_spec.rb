@@ -2,13 +2,17 @@
 
 require 'spec_helper'
 
-describe 'Projects > Snippets > User updates a snippet' do
+describe 'Projects > Snippets > User updates a snippet', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, namespace: user.namespace) }
-  let!(:snippet) { create(:project_snippet, project: project, author: user) }
+  let_it_be(:snippet, reload: true) { create(:project_snippet, :repository, project: project, author: user) }
+
+  let(:version_snippet_enabled) { true }
 
   before do
     stub_feature_flags(snippets_vue: false)
+    stub_feature_flags(version_snippets: version_snippet_enabled)
+
     project.add_maintainer(user)
     sign_in(user)
 
@@ -16,6 +20,29 @@ describe 'Projects > Snippets > User updates a snippet' do
 
     page.within('.detail-page-header') do
       first(:link, 'Edit').click
+    end
+    wait_for_all_requests
+  end
+
+  it 'displays the snippet blob path and content' do
+    blob = snippet.blobs.first
+
+    aggregate_failures do
+      expect(page.find_field('project_snippet_file_name').value).to eq blob.path
+      expect(page.find('.file-content')).to have_content(blob.data.strip)
+      expect(page.find('.snippet-file-content', visible: false).value).to eq blob.data
+    end
+  end
+
+  context 'when feature flag :version_snippets is disabled' do
+    let(:version_snippet_enabled) { false }
+
+    it 'displays the snippet file_name and content' do
+      aggregate_failures do
+        expect(page.find_field('project_snippet_file_name').value).to eq snippet.file_name
+        expect(page.find('.file-content')).to have_content(snippet.content)
+        expect(page.find('.snippet-file-content', visible: false).value).to eq snippet.content
+      end
     end
   end
 

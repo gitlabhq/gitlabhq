@@ -10,8 +10,29 @@ export default () => {
   const $broadcastMessageType = $('.js-broadcast-message-type');
   const $broadcastBannerMessagePreview = $('.js-broadcast-banner-message-preview');
   const $broadcastMessage = $('.js-broadcast-message-message');
-  const previewPath = $broadcastMessage.data('previewPath');
   const $jsBroadcastMessagePreview = $('.js-broadcast-message-preview');
+
+  const reloadPreview = function reloadPreview() {
+    const previewPath = $broadcastMessage.data('previewPath');
+    const message = $broadcastMessage.val();
+    const type = $broadcastMessageType.val();
+
+    if (message === '') {
+      $jsBroadcastMessagePreview.text(__('Your message here'));
+    } else {
+      axios
+        .post(previewPath, {
+          broadcast_message: {
+            message,
+            broadcast_type: type,
+          },
+        })
+        .then(({ data }) => {
+          $jsBroadcastMessagePreview.html(data.message);
+        })
+        .catch(() => flash(__('An error occurred while rendering preview broadcast message')));
+    }
+  };
 
   $broadcastMessageColor.on('input', function onMessageColorInput() {
     const previewColor = $(this).val();
@@ -32,26 +53,14 @@ export default () => {
     $broadcastMessageDismissableFormGroup.toggleClass('hidden');
     $broadcastBannerMessagePreview.toggleClass('hidden');
     $broadcastNotificationMessagePreview.toggleClass('hidden');
+
+    reloadPreview();
   });
 
   $broadcastMessage.on(
     'input',
-    debounce(function onMessageInput() {
-      const message = $(this).val();
-      if (message === '') {
-        $jsBroadcastMessagePreview.text(__('Your message here'));
-      } else {
-        axios
-          .post(previewPath, {
-            broadcast_message: {
-              message,
-            },
-          })
-          .then(({ data }) => {
-            $jsBroadcastMessagePreview.html(data.message);
-          })
-          .catch(() => flash(__('An error occurred while rendering preview broadcast message')));
-      }
+    debounce(() => {
+      reloadPreview();
     }, 250),
   );
 

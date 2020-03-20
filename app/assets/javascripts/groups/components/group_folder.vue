@@ -35,7 +35,7 @@ export default {
 </script>
 
 <template>
-  <ul class="content-list group-list-tree">
+  <ul class="groups-list group-list-tree">
     <group-item
       v-for="(group, index) in groups"
       :key="index"

@@ -77,7 +77,7 @@ describe 'Dashboard Groups page', :js do
       expect(page).to have_content(group.name)
       expect(page).to have_content(nested_group.parent.name)
       expect(page).not_to have_content(another_group.name)
-      expect(page.all('.js-groups-list-holder .content-list li').length).to eq 2
+      expect(page.all('.js-groups-list-holder .groups-list li').length).to eq 2
     end
   end
 
