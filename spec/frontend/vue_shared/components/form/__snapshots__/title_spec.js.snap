@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Title edit field matches the snapshot 1`] = `
+<gl-form-group-stub
+  label="Title"
+  label-for="title-field-edit"
+>
+  <gl-form-input-stub
+    id="title-field-edit"
+  />
+</gl-form-group-stub>
+`;
