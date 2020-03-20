@@ -1,5 +1,0 @@
----
-title: Don't track MR deployment multiple times
-merge_request: 25537
-author:
-type: fixed

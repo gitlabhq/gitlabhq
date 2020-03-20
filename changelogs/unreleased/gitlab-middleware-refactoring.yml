@@ -1,5 +1,0 @@
----
-title: Refactor workhorse passthrough URL checker
-merge_request: 26157
-author: Takuya Noguchi
-type: performance

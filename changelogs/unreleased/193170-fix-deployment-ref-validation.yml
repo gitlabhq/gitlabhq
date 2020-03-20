@@ -1,5 +1,0 @@
----
-title: Use of sha instead of ref when creating a new ref on deployment creation.
-merge_request: 23170
-author:
-type: fixed

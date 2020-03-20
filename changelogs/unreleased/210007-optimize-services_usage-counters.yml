@@ -1,5 +1,0 @@
----
-title: Optimize services usage counters using batch counters
-merge_request: 26973
-author:
-type: performance

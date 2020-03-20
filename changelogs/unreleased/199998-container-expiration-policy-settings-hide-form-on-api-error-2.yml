@@ -1,5 +1,0 @@
----
-title: Container expiration policy settings hide form on API error
-merge_request: 26303
-author:
-type: fixed

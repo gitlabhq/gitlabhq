@@ -1,5 +1,0 @@
----
-title: Improved MR toggle file performance by hiding instead of removing
-merge_request: 26181
-author:
-type: performance

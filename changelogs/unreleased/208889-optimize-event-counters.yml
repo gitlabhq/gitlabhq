@@ -1,5 +1,0 @@
----
-title: Optimize event counters query performance in usage data
-merge_request: 26444
-author:
-type: performance
