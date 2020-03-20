@@ -15,7 +15,7 @@
 build-qa-image:
   extends:
     - .review-docker
-    - .review:rules:mr-and-schedule
+    - .review:rules:mr-and-schedule-auto
   stage: prepare
   script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
@@ -45,7 +45,7 @@ review-cleanup:
 review-build-cng:
   extends:
     - .default-retry
-    - .review:rules:mr-and-schedule
+    - .review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise
   image: ruby:2.6-alpine
   stage: review-prepare
   before_script:
@@ -57,6 +57,9 @@ review-build-cng:
       artifacts: false
   script:
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
+    # When the job is manual, review-deploy is also manual and we don't want people
+    # to have to manually start the jobs in sequence, so we do it for them.
+    - '[ -z $CI_JOB_MANUAL ] || play_job "review-deploy"'
 
 .review-workflow-base:
   extends:
@@ -76,11 +79,9 @@ review-build-cng:
 review-deploy:
   extends:
     - .review-workflow-base
-    - .review:rules:mr-and-schedule
+    - .review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise
   stage: review
-  needs:
-    - job: review-build-cng
-      artifacts: false
+  dependencies: []
   resource_group: "review/${CI_COMMIT_REF_NAME}"
   allow_failure: true
   before_script:
@@ -100,6 +101,10 @@ review-deploy:
     - download_chart
     - date
     - deploy || (display_deployment_debug && exit 1)
+    # When the job is manual, review-qa-smoke is also manual and we don't want people
+    # to have to manually start the jobs in sequence, so we do it for them.
+    - '[ -z $CI_JOB_MANUAL ] || play_job "review-qa-smoke"'
+    - '[ -z $CI_JOB_MANUAL ] || play_job "review-performance"'
   artifacts:
     paths: [environment_url.txt]
     expire_in: 2 days
@@ -140,9 +145,9 @@ review-stop:
 .review-qa-base:
   extends: .review-docker
   stage: qa
-  needs:
-    - job: review-deploy
-      artifacts: true
+  # This is needed so that manual jobs with needs don't block the pipeline.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
+  dependencies: ["review-deploy"]
   allow_failure: true
   variables:
     QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
@@ -172,7 +177,7 @@ review-stop:
 review-qa-smoke:
   extends:
     - .review-qa-base
-    - .review:rules:mr-only-auto
+    - .review:rules:mr-only-auto-if-frontend-manual-otherwise
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
@@ -189,11 +194,11 @@ review-qa-all:
 review-performance:
   extends:
     - .review-docker
-    - .review:rules:mr-and-schedule
+    - .review:rules:mr-and-schedule-auto-if-frontend-manual-otherwise
   stage: qa
-  needs:
-    - job: review-deploy
-      artifacts: true
+  # This is needed so that manual jobs with needs don't block the pipeline.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
+  dependencies: ["review-deploy"]
   allow_failure: true
   before_script:
     - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"

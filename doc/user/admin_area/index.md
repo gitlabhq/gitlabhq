@@ -51,7 +51,7 @@ The Dashboard is the default view of the Admin Area, and is made up of the follo
 | Section    | Description                                                                                                                                              |
 |:-----------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Projects   | The total number of projects, up to 10 of the latest projects, and the option of creating a new project.                                                 |
-| Users      | The total number of users, up to 10 of the latest users, and the option of creating a new user.                                                          |
+| Users      | The total number of users, up to 10 of the latest users, the option of creating a new user, and a link to [**Users statistics**](#users-statistics).                       |
 | Groups     | The total number of groups, up to 10 of the latest groups, and the option of creating a new group.                                                       |
 | Statistics | Totals of all elements of the GitLab instance.                                                                                                           |
 | Features   | All features available on the GitLab instance. Enabled features are marked with a green circle icon, and disabled features are marked with a power icon. |
@@ -133,6 +133,19 @@ By default the sort dropdown shows **Name**.
 To search for users, enter your criteria in the search field. The user search is case
 insensitive, and applies partial matching to name and username. To search for an email address,
 you must provide the complete email address.
+
+#### Users statistics
+
+The **Users statistics** page provides an overview of user accounts by role. Use this information
+when validating seat usage of your subscription.
+
+The page displays subtotals of all users matching criteria such as _Users with highest role
+Maintainer_ and _Blocked users_.
+
+The **Total users** is calculated as: **Active users** + **Blocked users**.
+
+GitLab billing is based on the number of active users. For details of active users, see
+[Choosing the number of users](../../subscriptions/index.md#choosing-the-number-of-users).
 
 ### Administering Groups
 

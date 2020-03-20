@@ -1,0 +1,28 @@
+%p
+  = _('An alert has been triggered in %{project_path}.') % { project_path: @alert.project_full_path }
+
+- if description = @alert.description
+  %p
+    = _('Description:')
+    = description
+
+- if env_name = @alert.environment_name
+  %p
+    = _('Environment:')
+    = env_name
+
+- if metric_query = @alert.metric_query
+  %p
+    = _('Metric:')
+
+    %pre
+      = metric_query
+
+- if @alert.show_incident_issues_link?
+  %p
+    = link_to(_('View incident issues.'), @alert.incident_issues_link)
+
+- if @alert.show_performance_dashboard_link?
+  %p
+    = link_to(_('View performance dashboard.'), @alert.performance_dashboard_link)
+

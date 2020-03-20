@@ -41,7 +41,7 @@ class Admin::ServicesController < Admin::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def service
-    @service ||= Service.where(id: params[:id], template: true).first
+    @service ||= Service.find_by(id: params[:id], template: true)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

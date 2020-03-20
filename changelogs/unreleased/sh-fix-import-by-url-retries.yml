@@ -1,0 +1,5 @@
+---
+title: Ensure import by URL works after a failed import
+merge_request: 27546
+author:
+type: fixed

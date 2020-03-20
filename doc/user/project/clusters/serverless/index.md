@@ -245,7 +245,7 @@ project):
 
    ```yaml
    include:
-     template: Serverless.gitlab-ci.yml
+     - template: Serverless.gitlab-ci.yml
 
    functions:build:
      extends: .serverless:build:functions
@@ -462,7 +462,7 @@ Add the following `.gitlab-ci.yml` to the root of your repository
 
 ```yaml
 include:
-  template: Serverless.gitlab-ci.yml
+  - template: Serverless.gitlab-ci.yml
 
 build:
   extends: .serverless:build:image

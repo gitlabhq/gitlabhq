@@ -55,6 +55,19 @@ module Emails
            reply_to:  @message.reply_to,
            subject:   @message.subject)
     end
+
+    def prometheus_alert_fired_email(project_id, user_id, alert_payload)
+      @project = ::Project.find(project_id)
+      user = ::User.find(user_id)
+
+      @alert = ::Gitlab::Alerting::Alert
+        .new(project: @project, payload: alert_payload)
+        .present
+      return unless @alert.valid?
+
+      subject_text = "Alert: #{@alert.full_title}"
+      mail(to: user.notification_email_for(@project.group), subject: subject(subject_text))
+    end
   end
 end
 

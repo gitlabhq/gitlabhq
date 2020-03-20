@@ -133,7 +133,9 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/README.md#anch
 |------------------------------|--------------------------------------------------------------------------|
 | `yaml-patterns`              | Only create job for YAML-related changes.                                |
 | `docs-patterns`              | Only create job for docs-related changes.                                |
-| `backstage-patterns`         | Only create job for backstage-related changes.                           |
+| `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (i.e. `package.json`, and `yarn.lock`). changes.                                |
+| `frontend-patterns`          | Only create job for frontend-related changes.                           |
+| `backstage-patterns`         | Only create job for backstage-related changes (i.e. Danger, fixtures, RuboCop, specs).                           |
 | `code-patterns`              | Only create job for code-related changes.                                |
 | `qa-patterns`                | Only create job for QA-related changes.                                  |
 | `code-backstage-patterns`    | Combination of `code-patterns` and `backstage-patterns`.                 |

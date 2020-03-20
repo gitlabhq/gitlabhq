@@ -2783,6 +2783,41 @@ describe NotificationService, :mailer do
     end
   end
 
+  describe '#prometheus_alerts_fired' do
+    let!(:project) { create(:project) }
+    let!(:prometheus_alert) { create(:prometheus_alert, project: project) }
+    let!(:master) { create(:user) }
+    let!(:developer) { create(:user) }
+
+    before do
+      project.add_master(master)
+    end
+
+    it 'sends the email to owners and masters' do
+      expect(Notify).to receive(:prometheus_alert_fired_email).with(project.id, master.id, prometheus_alert).and_call_original
+      expect(Notify).to receive(:prometheus_alert_fired_email).with(project.id, project.owner.id, prometheus_alert).and_call_original
+      expect(Notify).not_to receive(:prometheus_alert_fired_email).with(project.id, developer.id, prometheus_alert)
+
+      subject.prometheus_alerts_fired(prometheus_alert.project, [prometheus_alert])
+    end
+
+    it_behaves_like 'project emails are disabled' do
+      before do
+        allow_next_instance_of(::Gitlab::Alerting::Alert) do |instance|
+          allow(instance).to receive(:valid?).and_return(true)
+        end
+      end
+
+      let(:alert_params) { { 'labels' => { 'gitlab_alert_id' => 'unknown' } } }
+      let(:notification_target)  { prometheus_alert.project }
+      let(:notification_trigger) { subject.prometheus_alerts_fired(prometheus_alert.project, [alert_params]) }
+
+      around do |example|
+        perform_enqueued_jobs { example.run }
+      end
+    end
+  end
+
   def build_team(project)
     @u_watcher               = create_global_setting_for(create(:user), :watch)
     @u_participating         = create_global_setting_for(create(:user), :participating)

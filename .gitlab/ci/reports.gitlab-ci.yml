@@ -157,9 +157,9 @@ dast:
   extends:
     - .default-retry
     - .reports:rules:dast
-  needs:
-    - job: review-deploy
-      artifacts: true
+  # This is needed so that manual jobs with needs don't block the pipeline.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/199979.
+  dependencies: ["review-deploy"]
   stage: qa  # GitLab-specific
   image:
     name: "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION"

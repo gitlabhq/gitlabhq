@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_16_111759) do
+ActiveRecord::Schema.define(version: 2020_03_18_152134) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3057,6 +3057,7 @@ ActiveRecord::Schema.define(version: 2020_03_16_111759) do
     t.binary "file_sha1"
     t.string "file_name", null: false
     t.text "file", null: false
+    t.binary "file_sha256"
     t.index ["package_id", "file_name"], name: "index_packages_package_files_on_package_id_and_file_name"
   end
 

@@ -523,6 +523,14 @@ class NotificationService
     end
   end
 
+  def prometheus_alerts_fired(project, alerts)
+    return if project.emails_disabled?
+
+    owners_and_maintainers_without_invites(project).to_a.product(alerts).each do |recipient, alert|
+      mailer.prometheus_alert_fired_email(project.id, recipient.user.id, alert).deliver_later
+    end
+  end
+
   protected
 
   def new_resource_email(target, method)
@@ -617,6 +625,16 @@ class NotificationService
   end
 
   private
+
+  def owners_and_maintainers_without_invites(project)
+    recipients = project.members.active_without_invites_and_requests.owners_and_maintainers
+
+    if recipients.empty? && project.group
+      recipients = project.group.members.active_without_invites_and_requests.owners_and_maintainers
+    end
+
+    recipients
+  end
 
   def project_maintainers_recipients(target, action:)
     NotificationRecipients::BuildService.build_project_maintainers_recipients(target, action: action)
