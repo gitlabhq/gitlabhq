@@ -252,6 +252,10 @@
   - 1
 - - upload_checksum
   - 1
+- - vulnerability_exports_export
+  - 1
+- - vulnerability_exports_export_deletion
+  - 1
 - - web_hook
   - 1
 - - x509_certificate_revoke

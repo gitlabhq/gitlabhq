@@ -91,4 +91,20 @@ describe 'layouts/nav/sidebar/_admin' do
     it_behaves_like 'page has active tab', 'Monitoring'
     it_behaves_like 'page has active sub tab', 'Background Jobs'
   end
+
+  context 'on settings' do
+    before do
+      render
+    end
+
+    it 'includes General link' do
+      expect(rendered).to have_link('General', href: general_admin_application_settings_path)
+    end
+
+    context 'when GitLab FOSS' do
+      it 'does not include Templates link' do
+        expect(rendered).not_to have_link('Templates', href: '/admin/application_settings/templates')
+      end
+    end
+  end
 end

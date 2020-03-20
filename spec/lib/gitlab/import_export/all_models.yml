@@ -431,6 +431,7 @@ project:
 - sourced_pipelines
 - prometheus_metrics
 - vulnerabilities
+- vulnerability_exports
 - vulnerability_findings
 - vulnerability_feedback
 - vulnerability_identifiers

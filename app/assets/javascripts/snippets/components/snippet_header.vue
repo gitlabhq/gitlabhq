@@ -138,7 +138,7 @@ export default {
           variables: { id: this.snippet.id },
         })
         .then(({ data }) => {
-          if (data?.destroySnippet?.errors) {
+          if (data?.destroySnippet?.errors.length) {
             throw new Error(data?.destroySnippet?.errors[0]);
           }
           this.isDeleting = false;

@@ -67,17 +67,6 @@ describe Types::BaseField do
           expect(field.to_graphql.complexity.call({}, { first: 1 }, 2)).to eq 2
           expect(field.to_graphql.complexity.call({}, { first: 1, foo: true }, 2)).to eq 4
         end
-
-        context 'when graphql_resolver_complexity is disabled' do
-          before do
-            stub_feature_flags(graphql_resolver_complexity: false)
-          end
-
-          it 'sets default field complexity' do
-            expect(field.to_graphql.complexity.call({}, {}, 2)).to eq 1
-            expect(field.to_graphql.complexity.call({}, { first: 50 }, 2)).to eq 1
-          end
-        end
       end
 
       context 'and is not a connection' do

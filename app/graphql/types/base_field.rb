@@ -90,8 +90,6 @@ module Types
       # proc because we set complexity depending on arguments and number of
       # items which can be loaded.
       proc do |ctx, args, child_complexity|
-        next base_complexity unless resolver_complexity_enabled?(ctx)
-
         # Resolvers may add extra complexity depending on used arguments
         complexity = child_complexity + self.resolver&.try(:resolver_complexity, args, child_complexity: child_complexity).to_i
         complexity += 1 if calls_gitaly?
@@ -99,10 +97,6 @@ module Types
 
         complexity.to_i
       end
-    end
-
-    def resolver_complexity_enabled?(ctx)
-      ctx.fetch(:graphql_resolver_complexity_flag) { |key| ctx[key] = Feature.enabled?(:graphql_resolver_complexity) }
     end
 
     def connection_complexity_multiplier(ctx, args)

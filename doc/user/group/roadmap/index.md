@@ -6,15 +6,15 @@ type: reference
 
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
 > - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/198062), Roadmaps were moved to the Premium tier.
+> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/issues/5164) and later, the epic bars show their title, progress, and completed weight percentage.
 
 An Epic within a group containing **Start date** and/or **Due date**
 can be visualized in a form of a timeline (e.g. a Gantt chart). The Epics Roadmap page
 shows such a visualization for all the epics which are under a group and/or its subgroups.
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5164) in GitLab 12.9.
-
 On the epic bars, you can see their title, progress, and completed weight percentage.
-When you hover over an epic bar, a popover appears with its title, start and due dates, and weight completed.
+When you hover over an epic bar, a popover appears with its title, start and due dates, and weight
+completed.
 
 ![roadmap view](img/roadmap_view_v12_9.png)
 

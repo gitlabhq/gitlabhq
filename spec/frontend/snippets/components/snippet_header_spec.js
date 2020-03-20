@@ -32,7 +32,9 @@ describe('Snippet header component', () => {
   const errorMsg = 'Foo bar';
   const err = { message: errorMsg };
 
-  const resolveMutate = jest.fn(() => Promise.resolve({ data: {} }));
+  const resolveMutate = jest.fn(() =>
+    Promise.resolve({ data: { destroySnippet: { errors: [] } } }),
+  );
   const rejectMutation = jest.fn(() => Promise.reject(err));
 
   const mutationTypes = {

@@ -104,9 +104,9 @@ This feature is similar to the [Credentials inventory for self-managed instances
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/34648) in GitLab 12.9.
 
-Groups with enabled group-managed accounts can allow or disallow forking of projects outside of root group
-by using separate toggle. If forking is disallowed any project of given root group or its subgroups can be forked to
-a subgroup of the same root group only.
+Groups with group-managed accounts can disallow forking of projects to destinations outside the group.
+To do so, enable the "Prohibit outer forks" option in **Settings > SAML SSO**.
+When enabled, projects within the group can only be forked to other destinations within the group (including its subgroups).
 
 ##### Other restrictions for Group-managed accounts
 

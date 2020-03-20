@@ -165,7 +165,6 @@ describe 'GraphQL' do
 
     before do
       stub_const('GitlabSchema::DEFAULT_MAX_COMPLEXITY', 6)
-      stub_feature_flags(graphql_resolver_complexity: true)
     end
 
     context 'when fetching single resource' do
@@ -185,18 +184,6 @@ describe 'GraphQL' do
         post_graphql(query)
 
         expect_graphql_errors_to_include(/which exceeds max complexity/)
-      end
-
-      context 'when graphql_resolver_complexity is disabled' do
-        before do
-          stub_feature_flags(graphql_resolver_complexity: false)
-        end
-
-        it 'processes the query' do
-          post_graphql(query)
-
-          expect(graphql_errors).to be_nil
-        end
       end
     end
   end

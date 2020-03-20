@@ -4535,6 +4535,21 @@ ActiveRecord::Schema.define(version: 2020_03_19_203901) do
     t.index ["updated_by_id"], name: "index_vulnerabilities_on_updated_by_id"
   end
 
+  create_table "vulnerability_exports", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.datetime_with_timezone "started_at"
+    t.datetime_with_timezone "finished_at"
+    t.string "status", limit: 255, null: false
+    t.string "file", limit: 255
+    t.bigint "project_id", null: false
+    t.bigint "author_id", null: false
+    t.integer "file_store"
+    t.integer "format", limit: 2, default: 0, null: false
+    t.index ["author_id"], name: "index_vulnerability_exports_on_author_id"
+    t.index ["project_id", "id"], name: "index_vulnerability_exports_on_project_id_and_id", unique: true
+  end
+
   create_table "vulnerability_feedback", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -5220,6 +5235,8 @@ ActiveRecord::Schema.define(version: 2020_03_19_203901) do
   add_foreign_key "vulnerabilities", "users", column: "last_edited_by_id", name: "fk_1302949740", on_delete: :nullify
   add_foreign_key "vulnerabilities", "users", column: "resolved_by_id", name: "fk_76bc5f5455", on_delete: :nullify
   add_foreign_key "vulnerabilities", "users", column: "updated_by_id", name: "fk_7ac31eacb9", on_delete: :nullify
+  add_foreign_key "vulnerability_exports", "projects", on_delete: :cascade
+  add_foreign_key "vulnerability_exports", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "vulnerability_feedback", "ci_pipelines", column: "pipeline_id", on_delete: :nullify
   add_foreign_key "vulnerability_feedback", "issues", on_delete: :nullify
   add_foreign_key "vulnerability_feedback", "merge_requests", name: "fk_563ff1912e", on_delete: :nullify

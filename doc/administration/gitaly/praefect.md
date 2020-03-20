@@ -44,6 +44,7 @@ package (highly recommended), follow the steps below:
 1. [Configuring the Praefect proxy/router](#praefect)
 1. [Configuring each Gitaly node](#gitaly) (once for each Gitaly node)
 1. [Updating the GitLab server configuration](#gitlab)
+1. [Configure Grafana](#grafana)
 
 ### Preparation
 
@@ -532,8 +533,6 @@ Particular attention should be shown to:
        ]
      }
    ]
-
-   grafana['disable_login_form'] = false
    ```
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
@@ -548,12 +547,6 @@ Particular attention should be shown to:
    gitlab-rake gitlab:gitaly:check
    ```
 
-1. Set the Grafana admin password. This command will prompt you to enter a new password:
-
-   ```shell
-   gitlab-ctl set-grafana-password
-   ```
-
 1. Update the **Repository storage** settings from **Admin Area > Settings >
    Repository > Repository storage** to make the newly configured Praefect
    cluster the storage location for new Git repositories.
@@ -565,11 +558,6 @@ Particular attention should be shown to:
    "Initialize repository with a README" box so that there is content in the
    repository that viewed. If the project is created, and you can see the
    README file, it works!
-
-1. Inspect metrics by browsing to `/-/grafana` on your GitLab server.
-   Log in with `admin` / `GRAFANA_PASSWORD`. Go to 'Explore' and query
-   `gitlab_build_info` to verify that you are getting metrics from all your
-   machines.
 
 Congratulations! You have configured a highly available Praefect cluster.
 
@@ -693,6 +681,49 @@ NOTE: **Note:**: Currently this feature is supported for setups that only have 1
 for example behind a load balancer, `failover_enabled` should be disabled. The reason is The reason is because there
 is no coordination that currently happens across different Praefect instances, so there could be a situation where
 two Praefect instances think two different Gitaly nodes are the primary.
+
+## Grafana
+
+Grafana is included with GitLab, and can be used to monitor your Praefect
+cluster. See [Grafana Dashboard
+Service](https://docs.gitlab.com/omnibus/settings/grafana.html)
+for detailed documentation.
+
+To get started quickly:
+
+1. SSH into the **GitLab** node and login as root:
+
+   ```shell
+   sudo -i
+   ```
+
+1. Enable the Grafana login form by editing `/etc/gitlab/gitlab.rb`.
+
+   ```ruby
+   grafana['disable_login_form'] = false
+   ```
+
+1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
+   GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
+1. Set the Grafana admin password. This command will prompt you to enter a new
+   password:
+
+   ```shell
+   gitlab-ctl set-grafana-password
+   ```
+
+1. In your web browser, open `/-/grafana` (e.g.
+   `https://gitlab.example.com/-/grafana`) on your GitLab server.
+
+   Login using the password you set, and the username `admin`.
+
+1. Go to **Explore** and query `gitlab_build_info` to verify that you are
+   getting metrics from all your machines.
 
 ## Migrating existing repositories to Praefect
 
