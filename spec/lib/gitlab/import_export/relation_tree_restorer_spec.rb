@@ -60,6 +60,38 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
     end
   end
 
+  shared_examples 'logging of relations creation' do
+    context 'when log_import_export_relation_creation feature flag is enabled' do
+      before do
+        stub_feature_flags(log_import_export_relation_creation: { enabled: true, thing: group })
+      end
+
+      it 'logs top-level relation creation' do
+        expect(relation_tree_restorer.shared.logger)
+          .to receive(:info)
+          .with(hash_including(message: '[Project/Group Import] Created new object relation'))
+          .at_least(:once)
+
+        subject
+      end
+    end
+
+    context 'when log_import_export_relation_creation feature flag is disabled' do
+      before do
+        stub_feature_flags(log_import_export_relation_creation: { enabled: false, thing: group })
+      end
+
+      it 'does not log top-level relation creation' do
+        expect(relation_tree_restorer.shared.logger)
+          .to receive(:info)
+          .with(hash_including(message: '[Project/Group Import] Created new object relation'))
+          .never
+
+        subject
+      end
+    end
+  end
+
   context 'when restoring a project' do
     let(:path) { 'spec/fixtures/lib/gitlab/import_export/complex/project.json' }
     let(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
@@ -71,6 +103,30 @@ describe Gitlab::ImportExport::RelationTreeRestorer do
       let(:relation_reader) { Gitlab::ImportExport::JSON::LegacyReader::File.new(path, reader.project_relation_names) }
 
       it_behaves_like 'import project successfully'
+
+      context 'logging of relations creation' do
+        let(:group) { create(:group) }
+        let(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project', group: group) }
+
+        include_examples 'logging of relations creation'
+      end
     end
+  end
+
+  context 'when restoring a group' do
+    let(:path) { 'spec/fixtures/lib/gitlab/import_export/group_exports/no_children/group.json' }
+    let(:group) { create(:group) }
+    let(:importable) { create(:group, parent: group) }
+    let(:object_builder) { Gitlab::ImportExport::Group::ObjectBuilder }
+    let(:relation_factory) { Gitlab::ImportExport::Group::RelationFactory }
+    let(:relation_reader) { Gitlab::ImportExport::JSON::LegacyReader::File.new(path, reader.group_relation_names) }
+    let(:reader) do
+      Gitlab::ImportExport::Reader.new(
+        shared: shared,
+        config: Gitlab::ImportExport::Config.new(config: Gitlab::ImportExport.group_config_file).to_h
+      )
+    end
+
+    include_examples 'logging of relations creation'
   end
 end

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { createStore } from 'ee_else_ce/mr_notes/stores';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 import diffFileMockDataReadable from '../mock_data/diff_file';
@@ -16,7 +16,7 @@ describe('DiffFile', () => {
       file: JSON.parse(JSON.stringify(diffFileMockDataReadable)),
       canCurrentUserFork: false,
     }).$mount();
-    trackingSpy = mockTracking('_category_', vm.$el, spyOn);
+    trackingSpy = mockTracking('_category_', vm.$el, jest.spyOn);
   });
 
   afterEach(() => {
@@ -164,7 +164,7 @@ describe('DiffFile', () => {
       });
 
       it('should update store state', done => {
-        spyOn(vm.$store, 'dispatch');
+        jest.spyOn(vm.$store, 'dispatch').mockImplementation(() => {});
 
         vm.isCollapsed = true;
 
@@ -211,7 +211,7 @@ describe('DiffFile', () => {
 
   describe('watch collapsed', () => {
     it('calls handleLoadCollapsedDiff if collapsed changed & file has no lines', done => {
-      spyOn(vm, 'handleLoadCollapsedDiff');
+      jest.spyOn(vm, 'handleLoadCollapsedDiff').mockImplementation(() => {});
 
       vm.file.highlighted_diff_lines = undefined;
       vm.file.parallel_diff_lines = [];
@@ -237,7 +237,7 @@ describe('DiffFile', () => {
         canCurrentUserFork: false,
       }).$mount();
 
-      spyOn(vm, 'handleLoadCollapsedDiff');
+      jest.spyOn(vm, 'handleLoadCollapsedDiff').mockImplementation(() => {});
 
       vm.file.highlighted_diff_lines = undefined;
       vm.file.parallel_diff_lines = [];

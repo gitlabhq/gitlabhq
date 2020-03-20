@@ -64,9 +64,12 @@ Parameters:
 
 NOTE: **Note:**
 [Starting in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/29984),
-the mergeability (`merge_status`) of each merge request will be checked
+when `async_merge_request_check_mergeability` feature flag is enabled, the
+mergeability (`merge_status`) of each merge request will be checked
 asynchronously when a request is made to this endpoint. Poll this API endpoint
-to get updated status.
+to get updated status. This affects the `has_conflicts` property as it is
+dependent on the `merge_status`. It'll return `false` unless `merge_status` is
+`cannot_be_merged`.
 
 ```json
 [
@@ -538,9 +541,12 @@ Parameters:
 
 NOTE: **Note:**
 [Starting in GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/issues/29984),
-the mergeability (`merge_status`) of a merge request will be checked
+when `async_merge_request_check_mergeability` feature flag is enabled, the
+mergeability (`merge_status`) of a merge request will be checked
 asynchronously when a request is made to this endpoint. Poll this API endpoint
-to get updated status.
+to get updated status. This affects the `has_conflicts` property as it is
+dependent on the `merge_status`. It'll return `false` unless `merge_status` is
+`cannot_be_merged`.
 
 ```json
 {

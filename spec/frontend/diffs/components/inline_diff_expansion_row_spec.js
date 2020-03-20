@@ -1,14 +1,14 @@
 import Vue from 'vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/mr_notes/stores';
-import ParallelDiffExpansionRow from '~/diffs/components/parallel_diff_expansion_row.vue';
+import InlineDiffExpansionRow from '~/diffs/components/inline_diff_expansion_row.vue';
 import diffFileMockData from '../mock_data/diff_file';
 
-describe('ParallelDiffExpansionRow', () => {
+describe('InlineDiffExpansionRow', () => {
   const matchLine = diffFileMockData.highlighted_diff_lines[5];
 
   const createComponent = (options = {}) => {
-    const cmp = Vue.extend(ParallelDiffExpansionRow);
+    const cmp = Vue.extend(InlineDiffExpansionRow);
     const defaults = {
       fileHash: diffFileMockData.file_hash,
       contextLinesPath: 'contextLinesPath',

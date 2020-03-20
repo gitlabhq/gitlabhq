@@ -57,7 +57,7 @@ describe('DiffDiscussions', () => {
 
     it('dispatches toggleDiscussion when clicking collapse button', () => {
       createComponent({ shouldCollapseDiscussions: true });
-      spyOn(wrapper.vm.$store, 'dispatch').and.stub();
+      jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation();
       const diffNotesToggle = findDiffNotesToggle();
       diffNotesToggle.trigger('click');
 
@@ -74,7 +74,7 @@ describe('DiffDiscussions', () => {
 
       expect(diffNotesToggle.text().trim()).toBe('1');
       expect(diffNotesToggle.classes()).toEqual(
-        jasmine.arrayContaining(['btn-transparent', 'badge', 'badge-pill']),
+        expect.arrayContaining(['btn-transparent', 'badge', 'badge-pill']),
       );
     });
 

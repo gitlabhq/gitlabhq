@@ -3,6 +3,7 @@ import mutations from '~/diffs/store/mutations';
 import * as types from '~/diffs/store/mutation_types';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import diffFileMockData from '../mock_data/diff_file';
+import * as utils from '~/diffs/store/utils';
 
 describe('DiffsStoreMutations', () => {
   describe('SET_BASE_CONFIG', () => {
@@ -181,21 +182,21 @@ describe('DiffsStoreMutations', () => {
       const state = { diffFiles: [diffFile], diffViewType: 'viewType' };
       const lines = [{ old_line: 1, new_line: 1 }];
 
-      const findDiffFileSpy = spyOnDependency(mutations, 'findDiffFile').and.returnValue(diffFile);
-      const removeMatchLineSpy = spyOnDependency(mutations, 'removeMatchLine');
-      const lineRefSpy = spyOnDependency(mutations, 'addLineReferences').and.returnValue(lines);
-      const addContextLinesSpy = spyOnDependency(mutations, 'addContextLines');
+      jest.spyOn(utils, 'findDiffFile').mockImplementation(() => diffFile);
+      jest.spyOn(utils, 'removeMatchLine').mockImplementation(() => null);
+      jest.spyOn(utils, 'addLineReferences').mockImplementation(() => lines);
+      jest.spyOn(utils, 'addContextLines').mockImplementation(() => null);
 
       mutations[types.ADD_CONTEXT_LINES](state, options);
 
-      expect(findDiffFileSpy).toHaveBeenCalledWith(state.diffFiles, options.fileHash);
-      expect(removeMatchLineSpy).toHaveBeenCalledWith(
+      expect(utils.findDiffFile).toHaveBeenCalledWith(state.diffFiles, options.fileHash);
+      expect(utils.removeMatchLine).toHaveBeenCalledWith(
         diffFile,
         options.lineNumbers,
         options.params.bottom,
       );
 
-      expect(lineRefSpy).toHaveBeenCalledWith(
+      expect(utils.addLineReferences).toHaveBeenCalledWith(
         options.contextLines,
         options.lineNumbers,
         options.params.bottom,
@@ -203,7 +204,7 @@ describe('DiffsStoreMutations', () => {
         options.nextLineNumbers,
       );
 
-      expect(addContextLinesSpy).toHaveBeenCalledWith({
+      expect(utils.addContextLines).toHaveBeenCalledWith({
         inlineLines: diffFile.highlighted_diff_lines,
         parallelLines: diffFile.parallel_diff_lines,
         diffViewType: 'viewType',

@@ -463,7 +463,7 @@ describe('DiffsStoreUtils', () => {
 
       expect(updatedFilesList).toEqual([
         mock,
-        jasmine.objectContaining({
+        expect.objectContaining({
           content_sha: 'ABC',
           file_hash: 'DEF',
         }),

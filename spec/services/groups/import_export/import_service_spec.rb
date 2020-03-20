@@ -15,6 +15,10 @@ describe Groups::ImportExport::ImportService do
 
     before do
       ImportExportUpload.create(group: group, import_file: import_file)
+
+      allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
+      allow(import_logger).to receive(:error)
+      allow(import_logger).to receive(:info)
     end
 
     context 'when user has correct permissions' do
@@ -29,13 +33,11 @@ describe Groups::ImportExport::ImportService do
       end
 
       it 'logs the import success' do
-        allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
-
         expect(import_logger).to receive(:info).with(
           group_id:   group.id,
           group_name: group.name,
           message:    'Group Import/Export: Import succeeded'
-        )
+        ).once
 
         subject
       end
@@ -45,8 +47,6 @@ describe Groups::ImportExport::ImportService do
       let(:user) { create(:user) }
 
       it 'logs the error and raises an exception' do
-        allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
-
         expect(import_logger).to receive(:error).with(
           group_id:   group.id,
           group_name: group.name,
@@ -71,16 +71,12 @@ describe Groups::ImportExport::ImportService do
     context 'when there are errors with the import file' do
       let(:import_file) { fixture_file_upload('spec/fixtures/symlink_export.tar.gz') }
 
-      before do
-        allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
-      end
-
       it 'logs the error and raises an exception' do
         expect(import_logger).to receive(:error).with(
           group_id:   group.id,
           group_name: group.name,
           message:    a_string_including('Errors occurred')
-        )
+        ).once
 
         expect { subject }.to raise_error(Gitlab::ImportExport::Error)
       end

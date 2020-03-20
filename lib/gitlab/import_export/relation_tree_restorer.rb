@@ -71,6 +71,7 @@ module Gitlab
 
         import_failure_service.with_retry(action: 'relation_object.save!', relation_key: relation_key, relation_index: relation_index) do
           relation_object.save!
+          log_relation_creation(@importable, relation_key, relation_object)
         end
       rescue => e
         import_failure_service.log_import_failure(
@@ -217,6 +218,25 @@ module Gitlab
         return unless relation_reader.legacy?
 
         relation_reader.sort_ci_pipelines_by_id
+      end
+
+      # Enable logging of each top-level relation creation when Importing
+      # into a Group if feature flag is enabled
+      def log_relation_creation(importable, relation_key, relation_object)
+        root_ancestor_group = importable.try(:root_ancestor)
+
+        return unless root_ancestor_group
+        return unless root_ancestor_group.instance_of?(::Group)
+        return unless Feature.enabled?(:log_import_export_relation_creation, root_ancestor_group)
+
+        @shared.logger.info(
+          importable_type: importable.class.to_s,
+          importable_id: importable.id,
+          relation_key: relation_key,
+          relation_id: relation_object.id,
+          author_id: relation_object.try(:author_id),
+          message: '[Project/Group Import] Created new object relation'
+        )
       end
     end
   end

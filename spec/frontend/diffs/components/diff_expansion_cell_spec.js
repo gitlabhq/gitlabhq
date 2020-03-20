@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { cloneDeep } from 'lodash';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import { createStore } from '~/mr_notes/stores';
 import DiffExpansionCell from '~/diffs/components/diff_expansion_cell.vue';
 import { getPreviousLineIndex } from '~/diffs/store/utils';
@@ -69,7 +69,7 @@ describe('DiffExpansionCell', () => {
     mockLine = getLine(mockFile, INLINE_DIFF_VIEW_TYPE, LINE_TO_USE);
     store = createStore();
     store.state.diffs.diffFiles = [mockFile];
-    spyOn(store, 'dispatch').and.returnValue(Promise.resolve());
+    jest.spyOn(store, 'dispatch').mockReturnValue(Promise.resolve());
   });
 
   const createComponent = (options = {}) => {

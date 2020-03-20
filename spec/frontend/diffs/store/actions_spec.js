@@ -1,13 +1,13 @@
 import MockAdapter from 'axios-mock-adapter';
 import Cookies from 'js-cookie';
-import mockDiffFile from 'spec/diffs/mock_data/diff_file';
+import mockDiffFile from 'jest/diffs/mock_data/diff_file';
 import {
   DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
   DIFFS_PER_PAGE,
 } from '~/diffs/constants';
-import actions, {
+import {
   setBaseConfig,
   fetchDiffFiles,
   fetchDiffFilesBatch,
@@ -48,14 +48,28 @@ import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import testAction from '../../helpers/vuex_action_helper';
+import * as utils from '~/diffs/store/utils';
+import * as commonUtils from '~/lib/utils/common_utils';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import createFlash from '~/flash';
+
+jest.mock('~/flash', () => jest.fn());
 
 describe('DiffsStoreActions', () => {
+  useLocalStorageSpy();
+
   const originalMethods = {
     requestAnimationFrame: global.requestAnimationFrame,
     requestIdleCallback: global.requestIdleCallback,
   };
 
   beforeEach(() => {
+    jest.spyOn(window.history, 'pushState');
+    jest.spyOn(commonUtils, 'historyPushState');
+    jest.spyOn(commonUtils, 'handleLocationHash').mockImplementation(() => null);
+    jest.spyOn(commonUtils, 'scrollToElement').mockImplementation(() => null);
+    jest.spyOn(utils, 'convertExpandLines').mockImplementation(() => null);
+    jest.spyOn(utils, 'idleCallback').mockImplementation(() => null);
     ['requestAnimationFrame', 'requestIdleCallback'].forEach(method => {
       global[method] = cb => {
         cb();
@@ -67,6 +81,7 @@ describe('DiffsStoreActions', () => {
     ['requestAnimationFrame', 'requestIdleCallback'].forEach(method => {
       global[method] = originalMethods[method];
     });
+    createFlash.mockClear();
   });
 
   describe('setBaseConfig', () => {
@@ -349,13 +364,11 @@ describe('DiffsStoreActions', () => {
     });
 
     it('should show flash on API error', done => {
-      const flashSpy = spyOnDependency(actions, 'createFlash');
-
       mock.onGet(endpointCoverage).reply(400);
 
       testAction(fetchCoverageFiles, {}, { endpointCoverage }, [], [], () => {
-        expect(flashSpy).toHaveBeenCalledTimes(1);
-        expect(flashSpy).toHaveBeenCalledWith(jasmine.stringMatching('Something went wrong'));
+        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createFlash).toHaveBeenCalledWith(expect.stringMatching('Something went wrong'));
         done();
       });
     });
@@ -566,10 +579,10 @@ describe('DiffsStoreActions', () => {
         [{ type: types.SET_DIFF_VIEW_TYPE, payload: INLINE_DIFF_VIEW_TYPE }],
         [],
         () => {
-          setTimeout(() => {
+          setImmediate(() => {
             expect(Cookies.get('diff_view')).toEqual(INLINE_DIFF_VIEW_TYPE);
             done();
-          }, 0);
+          });
         },
       );
     });
@@ -584,10 +597,10 @@ describe('DiffsStoreActions', () => {
         [{ type: types.SET_DIFF_VIEW_TYPE, payload: PARALLEL_DIFF_VIEW_TYPE }],
         [],
         () => {
-          setTimeout(() => {
+          setImmediate(() => {
             expect(Cookies.get(DIFF_VIEW_COOKIE_NAME)).toEqual(PARALLEL_DIFF_VIEW_TYPE);
             done();
-          }, 0);
+          });
         },
       );
     });
@@ -661,7 +674,7 @@ describe('DiffsStoreActions', () => {
       const file = { hash: 123, load_collapsed_diff_url: '/load/collapsed/diff/url' };
       const data = { hash: 123, parallelDiffLines: [{ lineCode: 1 }] };
       const mock = new MockAdapter(axios);
-      const commit = jasmine.createSpy('commit');
+      const commit = jest.fn();
       mock.onGet(file.loadCollapsedDiffUrl).reply(200, data);
 
       loadCollapsedDiff({ commit, getters: { commitId: null }, state }, file)
@@ -680,7 +693,7 @@ describe('DiffsStoreActions', () => {
         commitId: null,
       };
 
-      spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
+      jest.spyOn(axios, 'get').mockReturnValue(Promise.resolve({ data: {} }));
 
       loadCollapsedDiff({ commit() {}, getters, state }, file);
 
@@ -695,7 +708,7 @@ describe('DiffsStoreActions', () => {
         commitId: '123',
       };
 
-      spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
+      jest.spyOn(axios, 'get').mockReturnValue(Promise.resolve({ data: {} }));
 
       loadCollapsedDiff({ commit() {}, getters, state }, file);
 
@@ -725,12 +738,12 @@ describe('DiffsStoreActions', () => {
   describe('toggleFileDiscussions', () => {
     it('should dispatch collapseDiscussion when all discussions are expanded', () => {
       const getters = {
-        getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ id: 1 }]),
-        diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(true),
-        diffHasAllCollapsedDiscussions: jasmine.createSpy().and.returnValue(false),
+        getDiffFileDiscussions: jest.fn(() => [{ id: 1 }]),
+        diffHasAllExpandedDiscussions: jest.fn(() => true),
+        diffHasAllCollapsedDiscussions: jest.fn(() => false),
       };
 
-      const dispatch = jasmine.createSpy('dispatch');
+      const dispatch = jest.fn();
 
       toggleFileDiscussions({ getters, dispatch });
 
@@ -743,12 +756,12 @@ describe('DiffsStoreActions', () => {
 
     it('should dispatch expandDiscussion when all discussions are collapsed', () => {
       const getters = {
-        getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ id: 1 }]),
-        diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(false),
-        diffHasAllCollapsedDiscussions: jasmine.createSpy().and.returnValue(true),
+        getDiffFileDiscussions: jest.fn(() => [{ id: 1 }]),
+        diffHasAllExpandedDiscussions: jest.fn(() => false),
+        diffHasAllCollapsedDiscussions: jest.fn(() => true),
       };
 
-      const dispatch = jasmine.createSpy();
+      const dispatch = jest.fn();
 
       toggleFileDiscussions({ getters, dispatch });
 
@@ -761,12 +774,12 @@ describe('DiffsStoreActions', () => {
 
     it('should dispatch expandDiscussion when some discussions are collapsed and others are expanded for the collapsed discussion', () => {
       const getters = {
-        getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ expanded: false, id: 1 }]),
-        diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(false),
-        diffHasAllCollapsedDiscussions: jasmine.createSpy().and.returnValue(false),
+        getDiffFileDiscussions: jest.fn(() => [{ expanded: false, id: 1 }]),
+        diffHasAllExpandedDiscussions: jest.fn(() => false),
+        diffHasAllCollapsedDiscussions: jest.fn(() => false),
       };
 
-      const dispatch = jasmine.createSpy();
+      const dispatch = jest.fn();
 
       toggleFileDiscussions({ getters, dispatch });
 
@@ -786,27 +799,21 @@ describe('DiffsStoreActions', () => {
     it('should not call handleLocationHash when there is not hash', () => {
       window.location.hash = '';
 
-      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
-
       scrollToLineIfNeededInline({}, lineMock);
 
-      expect(handleLocationHashSpy).not.toHaveBeenCalled();
+      expect(commonUtils.handleLocationHash).not.toHaveBeenCalled();
     });
 
     it('should not call handleLocationHash when the hash does not match any line', () => {
       window.location.hash = 'XYZ_456';
 
-      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
-
       scrollToLineIfNeededInline({}, lineMock);
 
-      expect(handleLocationHashSpy).not.toHaveBeenCalled();
+      expect(commonUtils.handleLocationHash).not.toHaveBeenCalled();
     });
 
     it('should call handleLocationHash only when the hash matches a line', () => {
       window.location.hash = 'ABC_123';
-
-      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
 
       scrollToLineIfNeededInline(
         {},
@@ -822,8 +829,8 @@ describe('DiffsStoreActions', () => {
         },
       );
 
-      expect(handleLocationHashSpy).toHaveBeenCalled();
-      expect(handleLocationHashSpy).toHaveBeenCalledTimes(1);
+      expect(commonUtils.handleLocationHash).toHaveBeenCalled();
+      expect(commonUtils.handleLocationHash).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -838,27 +845,21 @@ describe('DiffsStoreActions', () => {
     it('should not call handleLocationHash when there is not hash', () => {
       window.location.hash = '';
 
-      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
-
       scrollToLineIfNeededParallel({}, lineMock);
 
-      expect(handleLocationHashSpy).not.toHaveBeenCalled();
+      expect(commonUtils.handleLocationHash).not.toHaveBeenCalled();
     });
 
     it('should not call handleLocationHash when the hash does not match any line', () => {
       window.location.hash = 'XYZ_456';
 
-      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
-
       scrollToLineIfNeededParallel({}, lineMock);
 
-      expect(handleLocationHashSpy).not.toHaveBeenCalled();
+      expect(commonUtils.handleLocationHash).not.toHaveBeenCalled();
     });
 
     it('should call handleLocationHash only when the hash matches a line', () => {
       window.location.hash = 'ABC_123';
-
-      const handleLocationHashSpy = spyOnDependency(actions, 'handleLocationHash').and.stub();
 
       scrollToLineIfNeededParallel(
         {},
@@ -880,8 +881,8 @@ describe('DiffsStoreActions', () => {
         },
       );
 
-      expect(handleLocationHashSpy).toHaveBeenCalled();
-      expect(handleLocationHashSpy).toHaveBeenCalledTimes(1);
+      expect(commonUtils.handleLocationHash).toHaveBeenCalled();
+      expect(commonUtils.handleLocationHash).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -898,7 +899,7 @@ describe('DiffsStoreActions', () => {
           id: commitId,
         },
       };
-      const dispatch = jasmine.createSpy('dispatch').and.callFake(name => {
+      const dispatch = jest.fn(name => {
         switch (name) {
           case 'saveNote':
             return Promise.resolve({
@@ -913,17 +914,16 @@ describe('DiffsStoreActions', () => {
 
       saveDiffDiscussion({ state, dispatch }, { note, formData })
         .then(() => {
-          const { calls } = dispatch;
+          expect(dispatch).toHaveBeenCalledTimes(5);
+          expect(dispatch).toHaveBeenNthCalledWith(1, 'saveNote', expect.any(Object), {
+            root: true,
+          });
 
-          expect(calls.count()).toBe(5);
-          expect(calls.argsFor(0)).toEqual(['saveNote', jasmine.any(Object), { root: true }]);
-
-          const postData = calls.argsFor(0)[1];
-
+          const postData = dispatch.mock.calls[0][1];
           expect(postData.data.note.commit_id).toBe(commitId);
 
-          expect(calls.argsFor(1)).toEqual(['updateDiscussion', 'test', { root: true }]);
-          expect(calls.argsFor(2)).toEqual(['assignDiscussionsToDiff', ['discussion']]);
+          expect(dispatch).toHaveBeenNthCalledWith(2, 'updateDiscussion', 'test', { root: true });
+          expect(dispatch).toHaveBeenNthCalledWith(3, 'assignDiscussionsToDiff', ['discussion']);
         })
         .then(done)
         .catch(done.fail);
@@ -947,12 +947,7 @@ describe('DiffsStoreActions', () => {
     let commit;
 
     beforeEach(() => {
-      commit = jasmine.createSpy();
-      jasmine.clock().install();
-    });
-
-    afterEach(() => {
-      jasmine.clock().uninstall();
+      commit = jest.fn();
     });
 
     it('updates location hash', () => {
@@ -990,7 +985,7 @@ describe('DiffsStoreActions', () => {
     });
 
     it('updates localStorage', () => {
-      spyOn(localStorage, 'setItem');
+      jest.spyOn(localStorage, 'setItem').mockImplementation(() => {});
 
       toggleShowTreeList({ commit() {}, state: { showTreeList: true } });
 
@@ -998,7 +993,7 @@ describe('DiffsStoreActions', () => {
     });
 
     it('does not update localStorage', () => {
-      spyOn(localStorage, 'setItem');
+      jest.spyOn(localStorage, 'setItem').mockImplementation(() => {});
 
       toggleShowTreeList({ commit() {}, state: { showTreeList: true } }, false);
 
@@ -1027,7 +1022,6 @@ describe('DiffsStoreActions', () => {
     };
     let commit;
     let $emit;
-    let scrollToElement;
     const state = ({ collapsed, renderIt }) => ({
       diffFiles: [
         {
@@ -1041,9 +1035,8 @@ describe('DiffsStoreActions', () => {
     });
 
     beforeEach(() => {
-      commit = jasmine.createSpy('commit');
-      scrollToElement = spyOnDependency(actions, 'scrollToElement').and.stub();
-      $emit = spyOn(eventHub, '$emit');
+      commit = jest.fn();
+      $emit = jest.spyOn(eventHub, '$emit');
     });
 
     it('renders and expands file for the given discussion id', () => {
@@ -1053,7 +1046,7 @@ describe('DiffsStoreActions', () => {
 
       expect(commit).toHaveBeenCalledWith('RENDER_FILE', localState.diffFiles[0]);
       expect($emit).toHaveBeenCalledTimes(1);
-      expect(scrollToElement).toHaveBeenCalledTimes(1);
+      expect(commonUtils.scrollToElement).toHaveBeenCalledTimes(1);
     });
 
     it('jumps to discussion on already rendered and expanded file', () => {
@@ -1063,7 +1056,7 @@ describe('DiffsStoreActions', () => {
 
       expect(commit).not.toHaveBeenCalled();
       expect($emit).toHaveBeenCalledTimes(1);
-      expect(scrollToElement).not.toHaveBeenCalled();
+      expect(commonUtils.scrollToElement).not.toHaveBeenCalled();
     });
   });
 
@@ -1080,8 +1073,6 @@ describe('DiffsStoreActions', () => {
     });
 
     it('sets localStorage', () => {
-      spyOn(localStorage, 'setItem').and.stub();
-
       setRenderTreeList({ commit() {} }, true);
 
       expect(localStorage.setItem).toHaveBeenCalledWith('mr_diff_tree_list', true);
@@ -1090,7 +1081,7 @@ describe('DiffsStoreActions', () => {
 
   describe('setShowWhitespace', () => {
     beforeEach(() => {
-      spyOn(eventHub, '$emit').and.stub();
+      jest.spyOn(eventHub, '$emit').mockImplementation();
     });
 
     it('commits SET_SHOW_WHITESPACE', done => {
@@ -1105,41 +1096,30 @@ describe('DiffsStoreActions', () => {
     });
 
     it('sets localStorage', () => {
-      spyOn(localStorage, 'setItem').and.stub();
-
       setShowWhitespace({ commit() {} }, { showWhitespace: true });
 
       expect(localStorage.setItem).toHaveBeenCalledWith('mr_show_whitespace', true);
     });
 
     it('calls history pushState', () => {
-      spyOn(localStorage, 'setItem').and.stub();
-      spyOn(window.history, 'pushState').and.stub();
-
       setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
 
       expect(window.history.pushState).toHaveBeenCalled();
     });
 
     it('calls history pushState with merged params', () => {
-      const originalPushState = window.history;
-
-      originalPushState.pushState({}, '', '?test=1');
-
-      spyOn(localStorage, 'setItem').and.stub();
-      spyOn(window.history, 'pushState').and.stub();
+      window.history.pushState({}, '', '?test=1');
 
       setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
 
-      expect(window.history.pushState.calls.mostRecent().args[2]).toMatch(/(.*)\?test=1&w=0/);
+      expect(
+        window.history.pushState.mock.calls[window.history.pushState.mock.calls.length - 1][2],
+      ).toMatch(/(.*)\?test=1&w=0/);
 
-      originalPushState.pushState({}, '', '?');
+      window.history.pushState({}, '', '?');
     });
 
     it('emits eventHub event', () => {
-      spyOn(localStorage, 'setItem').and.stub();
-      spyOn(window.history, 'pushState').and.stub();
-
       setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
 
       expect(eventHub.$emit).toHaveBeenCalledWith('refetchDiffData');
@@ -1284,13 +1264,13 @@ describe('DiffsStoreActions', () => {
 
   describe('setExpandedDiffLines', () => {
     beforeEach(() => {
-      spyOnDependency(actions, 'idleCallback').and.callFake(cb => {
+      utils.idleCallback.mockImplementation(cb => {
         cb({ timeRemaining: () => 50 });
       });
     });
 
     it('commits SET_CURRENT_VIEW_DIFF_FILE_LINES when lines less than MAX_RENDERING_DIFF_LINES', done => {
-      spyOnDependency(actions, 'convertExpandLines').and.callFake(() => ['test']);
+      utils.convertExpandLines.mockImplementation(() => ['test']);
 
       testAction(
         setExpandedDiffLines,
@@ -1313,7 +1293,7 @@ describe('DiffsStoreActions', () => {
 
     it('commits ADD_CURRENT_VIEW_DIFF_FILE_LINES when lines more than MAX_RENDERING_DIFF_LINES', done => {
       const lines = new Array(501).fill().map((_, i) => `line-${i}`);
-      spyOnDependency(actions, 'convertExpandLines').and.callFake(() => lines);
+      utils.convertExpandLines.mockReturnValue(lines);
 
       testAction(
         setExpandedDiffLines,
@@ -1347,7 +1327,7 @@ describe('DiffsStoreActions', () => {
       const mock = new MockAdapter(axios);
       mock.onPost(state.dismissEndpoint).reply(200, {});
 
-      spyOn(axios, 'post').and.callThrough();
+      jest.spyOn(axios, 'post');
 
       testAction(
         setSuggestPopoverDismissed,
