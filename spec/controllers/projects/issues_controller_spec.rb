@@ -1390,6 +1390,61 @@ describe Projects::IssuesController do
         expect(note_json['author']['status_tooltip_html']).to be_present
       end
 
+      context 'is_gitlab_employee attribute' do
+        subject { get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid } }
+
+        before do
+          allow(Gitlab).to receive(:com?).and_return(true)
+          note_user = discussion.author
+          note_user.update(email: email)
+          note_user.confirm
+        end
+
+        shared_examples 'non inclusion of gitlab employee badge' do
+          it 'does not render the is_gitlab_employee attribute' do
+            subject
+
+            note_json = json_response.first['notes'].first
+
+            expect(note_json['author']['is_gitlab_employee']).to be nil
+          end
+        end
+
+        context 'when user is a gitlab employee' do
+          let(:email) { 'test@gitlab.com' }
+
+          it 'renders the is_gitlab_employee attribute' do
+            subject
+
+            note_json = json_response.first['notes'].first
+
+            expect(note_json['author']['is_gitlab_employee']).to be true
+          end
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(gitlab_employee_badge: false)
+            end
+
+            it_behaves_like 'non inclusion of gitlab employee badge'
+          end
+        end
+
+        context 'when user is not a gitlab employee' do
+          let(:email) { 'test@example.com' }
+
+          it_behaves_like 'non inclusion of gitlab employee badge'
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(gitlab_employee_badge: false)
+            end
+
+            it_behaves_like 'non inclusion of gitlab employee badge'
+          end
+        end
+      end
+
       it 'does not cause an extra query for the status' do
         control = ActiveRecord::QueryRecorder.new do
           get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }

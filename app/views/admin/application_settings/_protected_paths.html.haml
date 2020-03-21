@@ -6,7 +6,7 @@
       .bs-callout.bs-callout-danger
         - relative_url_link = 'https://docs.gitlab.com/ee/user/admin_area/settings/protected_paths.html#migrate-settings-from-gitlab-123-and-earlier'
         - relative_url_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: relative_url_link }
-        = _("Omnibus Protected Paths throttle is active. From 12.4, Omnibus throttle is deprecated and will be removed in a future release. Please read the %{relative_url_link_start}Migrating Protected Paths documentation%{relative_url_link_end}.").html_safe % { relative_url_link_start: relative_url_link_start, relative_url_link_end: '</a>'.html_safe }
+        = _("Omnibus Protected Paths throttle is active, and takes priority over these settings. From 12.4, Omnibus throttle is deprecated and will be removed in a future release. Please read the %{relative_url_link_start}Migrating Protected Paths documentation%{relative_url_link_end}.").html_safe % { relative_url_link_start: relative_url_link_start, relative_url_link_end: '</a>'.html_safe }
 
     .form-group
       .form-check

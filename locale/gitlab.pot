@@ -5172,7 +5172,7 @@ msgstr ""
 msgid "Configure limits on the number of inbound alerts able to be sent to a project."
 msgstr ""
 
-msgid "Configure paths to be protected by Rack Attack. A web server restart is required after changing these settings."
+msgid "Configure paths to be protected by Rack Attack."
 msgstr ""
 
 msgid "Configure repository mirroring."
@@ -13652,7 +13652,7 @@ msgstr ""
 msgid "OmniAuth"
 msgstr ""
 
-msgid "Omnibus Protected Paths throttle is active. From 12.4, Omnibus throttle is deprecated and will be removed in a future release. Please read the %{relative_url_link_start}Migrating Protected Paths documentation%{relative_url_link_end}."
+msgid "Omnibus Protected Paths throttle is active, and takes priority over these settings. From 12.4, Omnibus throttle is deprecated and will be removed in a future release. Please read the %{relative_url_link_start}Migrating Protected Paths documentation%{relative_url_link_end}."
 msgstr ""
 
 msgid "On track"

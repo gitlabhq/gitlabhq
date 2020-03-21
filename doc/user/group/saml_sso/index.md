@@ -8,7 +8,7 @@ type: reference, howto
 
 SAML on GitLab.com allows users to be added to a group. Those users can then sign in to GitLab.com. If such users don't already have an account on the GitLab instance, they can create one when signing in for the first time.
 
-If you follow our guidance to automate user provisioning using [SCIM](scim_setup.md) or [group managed accounts](#group-managed-accounts), you do not need to create such accounts manually.
+If you follow our guidance to automate user provisioning using [SCIM](scim_setup.md) or [group-managed accounts](#group-managed-accounts), you do not need to create such accounts manually.
 
 User synchronization for GitLab.com is partially supported using [SCIM](scim_setup.md).
 
@@ -85,6 +85,15 @@ Since use of the group-managed account requires the use of SSO, users of group-m
 
 - The user will be unable to access the group (their credentials will no longer work on the identity provider when prompted to SSO).
 - Contributions in the group (e.g. issues, merge requests) will remain intact.
+
+##### Feature flag
+
+Currently the group-managed accounts feature is behind a feature flag: `group_managed_accounts`. The flag is disabled by default.
+To activate the feature, ask a GitLab administrator with Rails console access to run:
+
+```ruby
+Feature.enable(:group_managed_accounts)
+```
 
 ##### Credentials inventory for Group-managed accounts **(ULTIMATE)**
 

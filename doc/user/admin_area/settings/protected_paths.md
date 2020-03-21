@@ -4,7 +4,11 @@ type: reference
 
 # Protected paths **(CORE ONLY)**
 
-GitLab protects the following paths with Rack Attack by default:
+Rate limiting is a common technique used to improve the security and durability
+of a web application. For more details, see
+[Rate limits](../../../security/rate_limits.md).
+
+GitLab rate limits the following paths with Rack Attack by default:
 
 ```plaintext
 '/users/password',

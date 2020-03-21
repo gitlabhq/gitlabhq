@@ -387,7 +387,7 @@ Parameters:
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
 | `location`                           | No       | User's location                                                                                                                                         |
-| `name`                               | No       | Name                                                                                                                                                    |
+| `name`                               | Yes      | Name                                                                                                                                                    |
 | `organization`                       | No       | Organization name                                                                                                                                       |
 | `password`                           | No       | Password                                                                                                                                                |
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (will be converted to false)                                                                 |

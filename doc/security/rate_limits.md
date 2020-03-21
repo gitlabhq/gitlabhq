@@ -24,6 +24,7 @@ similarly mitigated by a rate limit.
 
 - [User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md).
 - [Rate limits on raw endpoints](../user/admin_area/settings/rate_limits_on_raw_endpoints.md)
+- [Protected paths](../user/admin_area/settings/protected_paths.md).
 
 ## Rack Attack initializer
 

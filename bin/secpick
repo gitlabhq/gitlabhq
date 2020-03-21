@@ -120,7 +120,7 @@ module Secpick
             options[:branch] = branch
           end
 
-          opts.on('-s', '--sha abcd', 'SHA or SHA range to cherry pick') do |sha|
+          opts.on('-s', '--sha abcd', 'SHA or SHA range to cherry pick (optional, defaults to current)') do |sha|
             options[:sha] = sha
           end
 
@@ -155,6 +155,7 @@ module Secpick
 
         parser.parse!
 
+        options[:sha] ||= `git rev-parse HEAD`
         options[:branch] ||= `git rev-parse --abbrev-ref HEAD`
         options[:remote] ||= DEFAULT_REMOTE
 
