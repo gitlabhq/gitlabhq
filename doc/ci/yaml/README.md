@@ -279,7 +279,7 @@ storing the exit code in a variable:
 ```yaml
 job:
   script:
-    - false && true; exit_code=$?
+    - false || exit_code=$?
     - if [ $exit_code -ne 0 ]; then echo "Previous command failed"; fi;
 ```
 
