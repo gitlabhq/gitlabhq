@@ -31,7 +31,7 @@ current version with `cat VERSION`).
 cd /home/git/gitlab
 
 sudo -u git -H git fetch --all
-sudo -u git -H git checkout -- Gemfile.lock db/schema.rb locale
+sudo -u git -H git checkout -- Gemfile.lock db/structure.sql locale
 sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
 ```
 

@@ -18,7 +18,7 @@ users. We will discuss each component below.
 
 The PostgreSQL database holds all metadata for projects, issues, merge
 requests, users, etc. The schema is managed by the Rails application
-[db/schema.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/db/schema.rb).
+[db/structure.sql](https://gitlab.com/gitlab-org/gitlab/blob/master/db/structure.sql).
 
 GitLab Web/API servers and Sidekiq nodes talk directly to the database via a
 Rails object relational model (ORM). Most SQL queries are accessed via this

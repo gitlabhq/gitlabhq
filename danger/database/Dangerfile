@@ -31,7 +31,7 @@ MSG
 
 DATABASE_APPROVED_LABEL = 'database::approved'
 
-non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/schema\.rb}).empty?
+non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/structure\.sql}).empty?
 geo_db_schema_updated = !git.modified_files.grep(%r{\Aee/db/geo/schema\.rb}).empty?
 
 non_geo_migration_created = !git.added_files.grep(%r{\A(db/(post_)?migrate)/}).empty?
@@ -40,7 +40,7 @@ geo_migration_created = !git.added_files.grep(%r{\Aee/db/geo/(post_)?migrate/}).
 format_str = gitlab_danger.ci? ? SCHEMA_NOT_UPDATED_MESSAGE_FULL : SCHEMA_NOT_UPDATED_MESSAGE_SHORT
 
 if non_geo_migration_created && !non_geo_db_schema_updated
-  warn format(format_str, migrations: 'migrations', schema: gitlab_danger.html_link("db/schema.rb"))
+  warn format(format_str, migrations: 'migrations', schema: gitlab_danger.html_link("db/structure.sql"))
 end
 
 if geo_migration_created && !geo_db_schema_updated

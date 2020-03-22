@@ -50,7 +50,7 @@ namespace :gitlab do
       else
         # Add post-migrate paths to ensure we mark all migrations as up
         Gitlab::Database.add_post_migrate_path_to_rails(force: true)
-        Rake::Task['db:schema:load'].invoke
+        Rake::Task['db:structure:load'].invoke
         Rake::Task['db:seed_fu'].invoke
       end
     end
@@ -77,6 +77,21 @@ namespace :gitlab do
       task setup_ee: %w[geo:db:drop geo:db:create geo:db:schema:load geo:db:migrate]
     else
       task :setup_ee
+    end
+
+    desc 'This adjusts and cleans db/structure.sql - it runs after db:structure:dump'
+    task :clean_structure_sql do
+      structure_file = 'db/structure.sql'
+      schema = File.read(structure_file)
+
+      File.open(structure_file, 'wb+') do |io|
+        Gitlab::Database::SchemaCleaner.new(schema).clean(io)
+      end
+    end
+
+    # Inform Rake that gitlab:schema:fix_structure_sql should be run every time rake db:structure:dump is run
+    Rake::Task['db:structure:dump'].enhance do
+      Rake::Task['gitlab:db:clean_structure_sql'].invoke
     end
   end
 end

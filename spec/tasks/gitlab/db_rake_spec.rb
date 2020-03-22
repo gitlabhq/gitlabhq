@@ -16,7 +16,7 @@ describe 'gitlab:db namespace rake task' do
   before do
     # Stub out db tasks
     allow(Rake::Task['db:migrate']).to receive(:invoke).and_return(true)
-    allow(Rake::Task['db:schema:load']).to receive(:invoke).and_return(true)
+    allow(Rake::Task['db:structure:load']).to receive(:invoke).and_return(true)
     allow(Rake::Task['db:seed_fu']).to receive(:invoke).and_return(true)
   end
 
@@ -24,14 +24,14 @@ describe 'gitlab:db namespace rake task' do
     it 'invokes db:migrate when schema has already been loaded' do
       allow(ActiveRecord::Base.connection).to receive(:tables).and_return(%w[table1 table2])
       expect(Rake::Task['db:migrate']).to receive(:invoke)
-      expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
+      expect(Rake::Task['db:structure:load']).not_to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
       expect { run_rake_task('gitlab:db:configure') }.not_to raise_error
     end
 
     it 'invokes db:shema:load and db:seed_fu when schema is not loaded' do
       allow(ActiveRecord::Base.connection).to receive(:tables).and_return([])
-      expect(Rake::Task['db:schema:load']).to receive(:invoke)
+      expect(Rake::Task['db:structure:load']).to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).to receive(:invoke)
       expect(Rake::Task['db:migrate']).not_to receive(:invoke)
       expect { run_rake_task('gitlab:db:configure') }.not_to raise_error
@@ -39,7 +39,7 @@ describe 'gitlab:db namespace rake task' do
 
     it 'invokes db:shema:load and db:seed_fu when there is only a single table present' do
       allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['default'])
-      expect(Rake::Task['db:schema:load']).to receive(:invoke)
+      expect(Rake::Task['db:structure:load']).to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).to receive(:invoke)
       expect(Rake::Task['db:migrate']).not_to receive(:invoke)
       expect { run_rake_task('gitlab:db:configure') }.not_to raise_error
@@ -48,7 +48,7 @@ describe 'gitlab:db namespace rake task' do
     it 'does not invoke any other rake tasks during an error' do
       allow(ActiveRecord::Base).to receive(:connection).and_raise(RuntimeError, 'error')
       expect(Rake::Task['db:migrate']).not_to receive(:invoke)
-      expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
+      expect(Rake::Task['db:structure:load']).not_to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
       expect { run_rake_task('gitlab:db:configure') }.to raise_error(RuntimeError, 'error')
       # unstub connection so that the database cleaner still works
@@ -57,8 +57,8 @@ describe 'gitlab:db namespace rake task' do
 
     it 'does not invoke seed after a failed schema_load' do
       allow(ActiveRecord::Base.connection).to receive(:tables).and_return([])
-      allow(Rake::Task['db:schema:load']).to receive(:invoke).and_raise(RuntimeError, 'error')
-      expect(Rake::Task['db:schema:load']).to receive(:invoke)
+      allow(Rake::Task['db:structure:load']).to receive(:invoke).and_raise(RuntimeError, 'error')
+      expect(Rake::Task['db:structure:load']).to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
       expect(Rake::Task['db:migrate']).not_to receive(:invoke)
       expect { run_rake_task('gitlab:db:configure') }.to raise_error(RuntimeError, 'error')
@@ -79,7 +79,7 @@ describe 'gitlab:db namespace rake task' do
       it 'adds post deployment migrations before schema load if the schema is not already loaded' do
         allow(ActiveRecord::Base.connection).to receive(:tables).and_return([])
         expect(Gitlab::Database).to receive(:add_post_migrate_path_to_rails).and_call_original
-        expect(Rake::Task['db:schema:load']).to receive(:invoke)
+        expect(Rake::Task['db:structure:load']).to receive(:invoke)
         expect(Rake::Task['db:seed_fu']).to receive(:invoke)
         expect(Rake::Task['db:migrate']).not_to receive(:invoke)
         expect { run_rake_task('gitlab:db:configure') }.not_to raise_error
@@ -90,7 +90,7 @@ describe 'gitlab:db namespace rake task' do
         allow(ActiveRecord::Base.connection).to receive(:tables).and_return(%w[table1 table2])
         expect(Rake::Task['db:migrate']).to receive(:invoke)
         expect(Gitlab::Database).not_to receive(:add_post_migrate_path_to_rails)
-        expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
+        expect(Rake::Task['db:structure:load']).not_to receive(:invoke)
         expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
         expect { run_rake_task('gitlab:db:configure') }.not_to raise_error
         expect(rails_paths['db/migrate'].include?(File.join(Rails.root, 'db', 'post_migrate'))).to be(false)

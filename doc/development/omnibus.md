@@ -12,7 +12,7 @@ extra security. The Omnibus reconfigure script contains commands that give
 write access to the `git` user only where needed.
 
 For example, the `git` user is allowed to write in the `log/` directory, in
-`public/uploads`, and they are allowed to rewrite the `db/schema.rb` file.
+`public/uploads`, and they are allowed to rewrite the `db/structure.sql` file.
 
 In other cases, the reconfigure script tricks GitLab into not trying to write a
 file. For instance, GitLab will generate a `.secret` file if it cannot find one

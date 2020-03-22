@@ -23,11 +23,7 @@ describe 'gitlab:app namespace rake task' do
   end
 
   before(:all) do
-    Rake.application.rake_require 'tasks/gitlab/helpers'
-    Rake.application.rake_require 'tasks/gitlab/backup'
-    Rake.application.rake_require 'tasks/gitlab/shell'
-    Rake.application.rake_require 'tasks/gitlab/db'
-    Rake.application.rake_require 'tasks/cache'
+    Rails.application.load_tasks
 
     # empty task as env is already loaded
     Rake::Task.define_task :environment

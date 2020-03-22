@@ -81,7 +81,7 @@ the following preparations into account.
 
 #### Preparation when adding migrations
 
-- Ensure `db/schema.rb` is updated.
+- Ensure `db/structure.sql` is updated.
 - Make migrations reversible by using the `change` method or include a `down` method when using `up`.
   - Include either a rollback procedure or describe how to rollback changes.
 - Add the output of the migration(s) to the MR description.
@@ -137,7 +137,7 @@ the following preparations into account.
     - [Check indexes are present for foreign keys](migration_style_guide.md#adding-foreign-key-constraints)
   - Ensure that migrations execute in a transaction or only contain
     concurrent index/foreign key helpers (with transactions disabled)
-  - Check consistency with `db/schema.rb` and that migrations are [reversible](migration_style_guide.md#reversibility)
+  - Check consistency with `db/structure.sql` and that migrations are [reversible](migration_style_guide.md#reversibility)
   - Check queries timing (If any): Queries executed in a migration
     need to fit comfortably within `15s` - preferably much less than that - on GitLab.com.
   - For column removals, make sure the column has been [ignored in a previous release](what_requires_downtime.md#dropping-columns)

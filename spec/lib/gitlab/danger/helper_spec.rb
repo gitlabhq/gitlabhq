@@ -229,6 +229,7 @@ describe Gitlab::Danger::Helper do
       'ee/FOO_VERSION' | :unknown
 
       'db/schema.rb'                                              | :database
+      'db/structure.sql'                                          | :database
       'db/migrate/foo'                                            | :database
       'db/post_migrate/foo'                                       | :database
       'ee/db/migrate/foo'                                         | :database

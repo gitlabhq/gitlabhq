@@ -165,7 +165,7 @@ sudo make prefix=/usr/local install
 cd /home/git/gitlab
 
 sudo -u git -H git fetch --all --prune
-sudo -u git -H git checkout -- db/schema.rb # local changes will be restored automatically
+sudo -u git -H git checkout -- db/structure.sql # local changes will be restored automatically
 sudo -u git -H git checkout -- locale
 ```
 
