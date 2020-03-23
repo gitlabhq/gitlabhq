@@ -7397,7 +7397,7 @@
             },
             {
               "name": "healthStatus",
-              "description": "Current health status. Available only when feature flag `save_issuable_health_status` is enabled",
+              "description": "Current health status. Returns null if `save_issuable_health_status` feature flag is disabled.",
               "args": [
 
               ],
@@ -10125,7 +10125,7 @@
             },
             {
               "name": "healthStatus",
-              "description": "Current health status. Available only when feature flag `save_issuable_health_status` is enabled",
+              "description": "Current health status. Returns null if `save_issuable_health_status` feature flag is disabled.",
               "args": [
 
               ],

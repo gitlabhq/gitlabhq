@@ -1,0 +1,5 @@
+---
+title: Update board scopes when promoting a label
+merge_request: 27662
+author:
+type: fixed

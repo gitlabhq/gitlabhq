@@ -5,9 +5,11 @@ import Api from '~/api';
 import { __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import refreshCounts from './refresh_counts';
+import setHighlightClass from './highlight_blob_search_result';
 
 export default class Search {
   constructor() {
+    setHighlightClass();
     const $groupDropdown = $('.js-search-group-dropdown');
     const $projectDropdown = $('.js-search-project-dropdown');
 

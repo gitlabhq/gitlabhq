@@ -13,13 +13,8 @@ module Labels
         new_label = clone_label_to_group_label(label)
 
         label_ids_for_merge(new_label).find_in_batches(batch_size: BATCH_SIZE) do |batched_ids|
-          update_issuables(new_label, batched_ids)
-          update_resource_label_events(new_label, batched_ids)
-          update_issue_board_lists(new_label, batched_ids)
-          update_priorities(new_label, batched_ids)
-          subscribe_users(new_label, batched_ids)
-          # Order is important, project labels need to be last
-          update_project_labels(batched_ids)
+          update_old_label_relations(new_label, batched_ids)
+          destroy_project_labels(batched_ids)
         end
 
         # We skipped validations during creation. Let's run them now, after deleting conflicting labels
@@ -31,6 +26,14 @@ module Labels
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
+
+    def update_old_label_relations(new_label, old_label_ids)
+      update_issuables(new_label, old_label_ids)
+      update_resource_label_events(new_label, old_label_ids)
+      update_issue_board_lists(new_label, old_label_ids)
+      update_priorities(new_label, old_label_ids)
+      subscribe_users(new_label, old_label_ids)
+    end
 
     # rubocop: disable CodeReuse/ActiveRecord
     def subscribe_users(new_label, label_ids)
@@ -86,7 +89,7 @@ module Labels
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def update_project_labels(label_ids)
+    def destroy_project_labels(label_ids)
       Label.where(id: label_ids).destroy_all # rubocop: disable DestroyAll
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -105,3 +108,5 @@ module Labels
     end
   end
 end
+
+Labels::PromoteService.prepend_if_ee('EE::Labels::PromoteService')

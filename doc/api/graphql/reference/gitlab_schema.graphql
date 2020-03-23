@@ -2548,7 +2548,7 @@ type EpicIssue implements Noteable {
   epicIssueId: ID!
 
   """
-  Current health status. Available only when feature flag `save_issuable_health_status` is enabled
+  Current health status. Returns null if `save_issuable_health_status` feature flag is disabled.
   """
   healthStatus: HealthStatus
 
@@ -3539,7 +3539,7 @@ type Issue implements Noteable {
   epic: Epic
 
   """
-  Current health status. Available only when feature flag `save_issuable_health_status` is enabled
+  Current health status. Returns null if `save_issuable_health_status` feature flag is disabled.
   """
   healthStatus: HealthStatus
 

@@ -1,8 +1,10 @@
 import $ from 'jquery';
 import Api from '~/api';
 import Search from '~/pages/search/show/search';
+import setHighlightClass from '~/pages/search/show/highlight_blob_search_result';
 
 jest.mock('~/api');
+jest.mock('~/pages/search/show/highlight_blob_search_result');
 
 describe('Search', () => {
   const fixturePath = 'search/show.html';
@@ -16,27 +18,41 @@ describe('Search', () => {
 
   preloadFixtures(fixturePath);
 
-  beforeEach(() => {
-    loadFixtures(fixturePath);
-    new Search(); // eslint-disable-line no-new
-  });
-
-  it('requests groups from backend when filtering', () => {
-    jest.spyOn(Api, 'groups').mockImplementation(term => {
-      expect(term).toBe(searchTerm);
+  describe('constructor side effects', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
     });
 
-    const inputElement = fillDropdownInput('.js-search-group-dropdown');
+    it('highlights lines with search terms in blob search results', () => {
+      new Search(); // eslint-disable-line no-new
 
-    $(inputElement).trigger('input');
+      expect(setHighlightClass).toHaveBeenCalled();
+    });
   });
 
-  it('requests projects from backend when filtering', () => {
-    jest.spyOn(Api, 'projects').mockImplementation(term => {
-      expect(term).toBe(searchTerm);
+  describe('dropdown behavior', () => {
+    beforeEach(() => {
+      loadFixtures(fixturePath);
+      new Search(); // eslint-disable-line no-new
     });
-    const inputElement = fillDropdownInput('.js-search-project-dropdown');
 
-    $(inputElement).trigger('input');
+    it('requests groups from backend when filtering', () => {
+      jest.spyOn(Api, 'groups').mockImplementation(term => {
+        expect(term).toBe(searchTerm);
+      });
+
+      const inputElement = fillDropdownInput('.js-search-group-dropdown');
+
+      $(inputElement).trigger('input');
+    });
+
+    it('requests projects from backend when filtering', () => {
+      jest.spyOn(Api, 'projects').mockImplementation(term => {
+        expect(term).toBe(searchTerm);
+      });
+      const inputElement = fillDropdownInput('.js-search-project-dropdown');
+
+      $(inputElement).trigger('input');
+    });
   });
 });

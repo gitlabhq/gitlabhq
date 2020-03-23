@@ -9,7 +9,7 @@ class Admin::Serverless::DomainsController < Admin::ApplicationController
   end
 
   def create
-    if PagesDomain.instance_serverless.count > 0
+    if PagesDomain.instance_serverless.exists?
       return redirect_to admin_serverless_domains_path, notice: _('An instance-level serverless domain already exists.')
     end
 
@@ -31,7 +31,7 @@ class Admin::Serverless::DomainsController < Admin::ApplicationController
   end
 
   def destroy
-    if domain.serverless_domain_clusters.count > 0
+    if domain.serverless_domain_clusters.exists?
       return redirect_to admin_serverless_domains_path,
                          status: :conflict,
                          notice: _('Domain cannot be deleted while associated to one or more clusters.')
