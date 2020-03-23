@@ -16433,6 +16433,9 @@ msgstr ""
 msgid "Release|Something went wrong while saving the release details"
 msgstr ""
 
+msgid "Remediated: needs review"
+msgstr ""
+
 msgid "Remember me"
 msgstr ""
 
@@ -19961,6 +19964,9 @@ msgstr ""
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
+msgid "The vulnerability is no longer detected. Verify the vulnerability has been fixed or removed before changing its status."
+msgstr ""
+
 msgid "There are no GPG keys associated with this account."
 msgstr ""
 
@@ -22362,6 +22368,9 @@ msgid "Vulnerabilities over time"
 msgstr ""
 
 msgid "Vulnerability List"
+msgstr ""
+
+msgid "Vulnerability remediated. Review before resolving."
 msgstr ""
 
 msgid "Vulnerability-Check"

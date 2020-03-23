@@ -51,8 +51,9 @@ module Snippets
           # the changes
           create_commit(snippet) if snippet.repository_exists?
         end
-      rescue
+      rescue => e
         snippet.errors.add(:repository, 'Error updating the snippet')
+        log_error(e.message)
 
         false
       end

@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { isString, isEmpty } from 'lodash';
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
@@ -56,7 +56,7 @@ export default {
       required: false,
       default: undefined,
       validator: ref =>
-        _.isUndefined(ref) || (_.isFinite(ref.iid) && _.isString(ref.path) && !_.isEmpty(ref.path)),
+        ref === undefined || (Number.isFinite(ref.iid) && isString(ref.path) && !isEmpty(ref.path)),
     },
 
     /**

@@ -22,6 +22,7 @@ describe('ProjectSelector component', () => {
 
   beforeEach(() => {
     jasmine.clock().install();
+    jasmine.clock().mockDate();
 
     wrapper = mount(Vue.extend(ProjectSelector), {
       localVue,

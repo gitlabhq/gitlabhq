@@ -167,13 +167,23 @@ describe Snippets::UpdateService do
         expect(blob.data).to eq(options[:content])
       end
 
-      it 'returns error when the commit action fails' do
-        allow(snippet.snippet_repository).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError)
+      context 'when an error is raised' do
+        before do
+          allow(snippet.snippet_repository).to receive(:multi_files_action).and_raise(SnippetRepository::CommitError, 'foobar')
+        end
 
-        response = subject
+        it 'logs the error' do
+          expect(Gitlab::AppLogger).to receive(:error).with('foobar')
 
-        expect(response).to be_error
-        expect(response.payload[:snippet].errors.full_messages).to eq ['Repository Error updating the snippet']
+          subject
+        end
+
+        it 'returns error with generic error message' do
+          response = subject
+
+          expect(response).to be_error
+          expect(response.payload[:snippet].errors.full_messages).to eq ['Repository Error updating the snippet']
+        end
       end
 
       it 'returns error if snippet does not have a snippet_repository' do

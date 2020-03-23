@@ -359,31 +359,16 @@ describe('common_utils', () => {
   });
 
   describe('parseBoolean', () => {
-    const { parseBoolean } = commonUtils;
-
-    it('returns true for "true"', () => {
-      expect(parseBoolean('true')).toEqual(true);
-    });
-
-    it('returns false for "false"', () => {
-      expect(parseBoolean('false')).toEqual(false);
-    });
-
-    it('returns false for "something"', () => {
-      expect(parseBoolean('something')).toEqual(false);
-    });
-
-    it('returns false for null', () => {
-      expect(parseBoolean(null)).toEqual(false);
-    });
-
-    it('is idempotent', () => {
-      const input = ['true', 'false', 'something', null];
-      input.forEach(value => {
-        const result = parseBoolean(value);
-
-        expect(parseBoolean(result)).toBe(result);
-      });
+    it.each`
+      input          | expected
+      ${'true'}      | ${true}
+      ${'false'}     | ${false}
+      ${'something'} | ${false}
+      ${null}        | ${false}
+      ${true}        | ${true}
+      ${false}       | ${false}
+    `('returns $expected for $input', ({ input, expected }) => {
+      expect(commonUtils.parseBoolean(input)).toBe(expected);
     });
   });
 

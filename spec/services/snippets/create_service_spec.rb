@@ -199,6 +199,12 @@ describe Snippets::CreateService do
           expect(SnippetRepository.count).to be_zero
         end
 
+        it 'logs the error' do
+          expect(Gitlab::AppLogger).to receive(:error).with('foobar')
+
+          subject
+        end
+
         it 'returns the error' do
           response = subject
 

@@ -1,5 +1,5 @@
 <script>
-import _ from 'underscore';
+import { throttle } from 'lodash';
 import { pixeliseValue } from '../../../lib/utils/dom_utils';
 import ImageViewer from '../../../content_viewer/viewers/image_viewer.vue';
 
@@ -98,7 +98,7 @@ export default {
       this.swipeOldImgInfo = imgInfo;
       this.prepareSwipe();
     },
-    resize: _.throttle(function throttledResize() {
+    resize: throttle(function throttledResize() {
       this.swipeBarPos = 0;
       this.swipeWrapWidth = 0;
       this.prepareSwipe();

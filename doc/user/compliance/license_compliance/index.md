@@ -189,6 +189,38 @@ to explicitly add `-DskipTests` to your options.
 If you still need to run tests during `mvn install`, add `-DskipTests=false` to
 `MAVEN_CLI_OPTS`.
 
+#### Using private Maven repos
+
+If you have a private Maven repository that requires login credentials, you can use the
+`MAVEN_CLI_OPTS` variable to specify a custom [`settings.xml`](http://maven.apache.org/settings.html)
+file.
+
+For example, you may have a settings file like this in your project source:
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>my-server</id>
+      <username>${private.username}</username>
+      <username>${private.password}</username>
+    </server>
+  </servers>
+</settings>
+```
+
+You can use this file through the following declaration in your `gitlab-ci.yml` file:
+
+```yaml
+license_scanning:
+  variables:
+    MAVEN_CLI_OPTS: --settings settings.xml -Dprivate.username=foo -Dprivate.password=bar
+```
+
+NOTE: **Note:**
+If you don't want to expose the credentials in your `.gitlab-ci.yml` file, then
+you can [set the variable in your project's settings](../../../ci/variables/README.md#via-the-ui).
+
 ### Selecting the version of Python
 
 > - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.

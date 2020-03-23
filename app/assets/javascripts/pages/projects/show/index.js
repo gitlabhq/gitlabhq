@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   leaveByUrl('project');
 
   if (document.getElementById('js-tree-list')) {
+    initBlob();
     import('ee_else_ce/repository')
       .then(m => m.default())
       .catch(e => {

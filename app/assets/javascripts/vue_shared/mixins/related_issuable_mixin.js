@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import { sprintf, __ } from '~/locale';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import tooltip from '~/vue_shared/directives/tooltip';
@@ -130,7 +130,7 @@ const mixins = {
       return this.assignees.length > 0;
     },
     hasMilestone() {
-      return !_.isEmpty(this.milestone);
+      return !isEmpty(this.milestone);
     },
     iconName() {
       if (this.isMergeRequest && this.isMerged) {

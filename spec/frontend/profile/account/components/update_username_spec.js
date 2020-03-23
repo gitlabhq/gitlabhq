@@ -1,13 +1,14 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { TEST_HOST } from 'helpers/test_constants';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 
 import updateUsername from '~/profile/account/components/update_username.vue';
 
 describe('UpdateUsername component', () => {
-  const rootUrl = gl.TEST_HOST;
-  const actionUrl = `${gl.TEST_HOST}/update/username`;
+  const rootUrl = TEST_HOST;
+  const actionUrl = `${TEST_HOST}/update/username`;
   const username = 'hasnoname';
   const newUsername = 'new_username';
   let Component;
@@ -106,7 +107,7 @@ describe('UpdateUsername component', () => {
     const { confirmModalBtn } = findElements();
 
     axiosMock.onPut(actionUrl).replyOnce(() => [200, { message: 'Username changed' }]);
-    spyOn(axios, 'put').and.callThrough();
+    jest.spyOn(axios, 'put');
 
     vm.newUsername = newUsername;
 

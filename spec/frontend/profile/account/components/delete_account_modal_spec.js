@@ -1,10 +1,11 @@
 import Vue from 'vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { TEST_HOST } from 'helpers/test_constants';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import deleteAccountModal from '~/profile/account/components/delete_account_modal.vue';
 
 describe('DeleteAccountModal component', () => {
-  const actionUrl = `${gl.TEST_HOST}/delete/user`;
+  const actionUrl = `${TEST_HOST}/delete/user`;
   const username = 'hasnoname';
   let Component;
   let vm;
@@ -43,7 +44,7 @@ describe('DeleteAccountModal component', () => {
 
     it('does not accept empty password', done => {
       const { form, input, submitButton } = findElements();
-      spyOn(form, 'submit');
+      jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = '';
       input.dispatchEvent(new Event('input'));
 
@@ -61,7 +62,7 @@ describe('DeleteAccountModal component', () => {
 
     it('submits form with password', done => {
       const { form, input, submitButton } = findElements();
-      spyOn(form, 'submit');
+      jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = 'anything';
       input.dispatchEvent(new Event('input'));
 
@@ -95,7 +96,7 @@ describe('DeleteAccountModal component', () => {
 
     it('does not accept wrong username', done => {
       const { form, input, submitButton } = findElements();
-      spyOn(form, 'submit');
+      jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = 'this is wrong';
       input.dispatchEvent(new Event('input'));
 
@@ -113,7 +114,7 @@ describe('DeleteAccountModal component', () => {
 
     it('submits form with correct username', done => {
       const { form, input, submitButton } = findElements();
-      spyOn(form, 'submit');
+      jest.spyOn(form, 'submit').mockImplementation(() => {});
       input.value = username;
       input.dispatchEvent(new Event('input'));
 

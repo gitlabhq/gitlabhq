@@ -251,9 +251,10 @@ class GfmAutoComplete {
           });
 
           // Cache assignees list for easier filtering later
-          assignees = SidebarMediator.singleton?.store?.assignees?.map(
-            assignee => `${assignee.username} ${assignee.name}`,
-          );
+          assignees =
+            SidebarMediator.singleton?.store?.assignees?.map(
+              assignee => `${assignee.username} ${assignee.name}`,
+            ) || [];
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;

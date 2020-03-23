@@ -1,11 +1,11 @@
 <script>
 import { GlLink } from '@gitlab/ui';
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import { __, sprintf } from '~/locale';
 import icon from '../../../vue_shared/components/icon.vue';
 
 function buildDocsLinkStart(path) {
-  return `<a href="${_.escape(path)}" target="_blank" rel="noopener noreferrer">`;
+  return `<a href="${esc(path)}" target="_blank" rel="noopener noreferrer">`;
 }
 
 export default {

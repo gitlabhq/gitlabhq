@@ -1,10 +1,9 @@
 <script>
-import _ from 'underscore';
-
+import { isString } from 'lodash';
 import { GlDropdown, GlDropdownDivider, GlDropdownItem } from '@gitlab/ui';
 
 const isValidItem = item =>
-  _.isString(item.eventName) && _.isString(item.title) && _.isString(item.description);
+  isString(item.eventName) && isString(item.title) && isString(item.description);
 
 export default {
   components: {

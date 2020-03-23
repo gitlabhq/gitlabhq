@@ -50,6 +50,7 @@ module Snippets
       snippet_saved
     rescue => e # Rescuing all because we can receive Creation exceptions, GRPC exceptions, Git exceptions, ...
       snippet.errors.add(:base, e.message)
+      log_error(e.message)
 
       # If the commit action failed we need to remove the repository if exists
       snippet.repository.remove if snippet.repository_exists?
