@@ -54,7 +54,8 @@
           "cached_markdown_version": { "type": "integer" },
           "human_access": { "type": ["string", "null"] },
           "toggle_award_path": { "type": "string" },
-          "path": { "type": "string" }
+          "path": { "type": "string" },
+          "commands_changes": { "type": "object", "additionalProperties": true }
         },
         "required": [
           "id", "attachment", "author", "created_at", "updated_at",

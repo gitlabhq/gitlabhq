@@ -25,6 +25,14 @@ module API
 
       # Avoid N+1 queries as much as possible
       expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }
+
+      expose(:commands_changes) { |note| note.commands_changes || {} }
+    end
+
+    # To be returned if the note was command-only
+    class NoteCommands < Grape::Entity
+      expose(:commands_changes) { |note| note.commands_changes || {} }
+      expose(:summary) { |note| note.errors[:commands_only] }
     end
   end
 end

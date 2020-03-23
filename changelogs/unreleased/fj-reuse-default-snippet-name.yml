@@ -1,0 +1,5 @@
+---
+title: Reuse default generated snippet file name in repository
+merge_request: 27673
+author:
+type: fixed

@@ -302,7 +302,7 @@ describe API::Groups do
 
       before do
         group1.add_developer(user2)
-        group3.add_master(user2)
+        group3.add_maintainer(user2)
       end
 
       it 'returns an array of groups the user has at least master access' do

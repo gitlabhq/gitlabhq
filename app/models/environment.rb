@@ -14,6 +14,7 @@ class Environment < ApplicationRecord
   has_many :successful_deployments, -> { success }, class_name: 'Deployment'
   has_many :active_deployments, -> { active }, class_name: 'Deployment'
   has_many :prometheus_alerts, inverse_of: :environment
+  has_many :self_managed_prometheus_alert_events, inverse_of: :environment
 
   has_one :last_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment'
   has_one :last_deployable, through: :last_deployment, source: 'deployable', source_type: 'CommitStatus'

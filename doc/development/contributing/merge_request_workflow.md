@@ -77,6 +77,7 @@ request is as follows:
    1. The merge request author resolves only the threads they have fully addressed.
       If there's an open reply or thread, a suggestion, a question, or anything else,
       the thread should be left to be resolved by the reviewer.
+   1. It should not be assumed that all feedback requires their recommended changes to be incorporated into the MR before it is merged. It is a judgment call by the MR author and the reviewer as to if this is required, or if a follow-up issue should be created to address the feedback in the future after the MR in question is merged.
 1. If your MR touches code that executes shell commands, reads or opens files, or
    handles paths to files on disk, make sure it adheres to the
    [shell command guidelines](../shell_commands.md)

@@ -19,6 +19,7 @@
         },
         "additionalProperties": false
       },
+      "commands_changes": { "type": "object", "additionalProperties": true },
       "created_at": { "type": "date" },
       "updated_at": { "type": "date" },
       "system": { "type": "boolean" },

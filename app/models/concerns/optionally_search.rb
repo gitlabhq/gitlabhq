@@ -12,8 +12,8 @@ module OptionallySearch
     end
 
     # Optionally limits a result set to those matching the given search query.
-    def optionally_search(query = nil)
-      query.present? ? search(query) : all
+    def optionally_search(query = nil, **options)
+      query.present? ? search(query, **options) : all
     end
   end
 end

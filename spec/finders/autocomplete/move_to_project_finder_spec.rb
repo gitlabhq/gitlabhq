@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Autocomplete::MoveToProjectFinder do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
 
   let(:no_access_project) { create(:project) }
   let(:guest_project) { create(:project) }
@@ -91,6 +91,15 @@ describe Autocomplete::MoveToProjectFinder do
 
         expect(described_class.new(user, project_id: project.id, search: 'wadus').execute.to_a)
           .to eq([wadus_project])
+      end
+
+      it 'allows searching by parent namespace' do
+        group = create(:group)
+        other_project = create(:project, group: group)
+        other_project.add_maintainer(user)
+
+        expect(described_class.new(user, project_id: project.id, search: group.name).execute.to_a)
+          .to contain_exactly(other_project)
       end
     end
   end

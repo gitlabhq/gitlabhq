@@ -193,6 +193,12 @@ describe Snippets::CreateService do
           subject
         end
 
+        it 'destroys the snippet_repository' do
+          subject
+
+          expect(SnippetRepository.count).to be_zero
+        end
+
         it 'returns the error' do
           response = subject
 

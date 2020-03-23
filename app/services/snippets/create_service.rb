@@ -38,19 +38,16 @@ module Snippets
     private
 
     def save_and_commit(snippet)
-      result = snippet.with_transaction_returning_status do
-        (snippet.save && snippet.store_mentions!).tap do |saved|
-          break false unless saved
-
-          if Feature.enabled?(:version_snippets, current_user)
-            create_repository_for(snippet)
-          end
-        end
+      snippet_saved = snippet.with_transaction_returning_status do
+        snippet.save && snippet.store_mentions!
       end
 
-      create_commit(snippet) if result && snippet.repository_exists?
+      if snippet_saved && Feature.enabled?(:version_snippets, current_user)
+        create_repository_for(snippet)
+        create_commit(snippet)
+      end
 
-      result
+      snippet_saved
     rescue => e # Rescuing all because we can receive Creation exceptions, GRPC exceptions, Git exceptions, ...
       snippet.errors.add(:base, e.message)
 

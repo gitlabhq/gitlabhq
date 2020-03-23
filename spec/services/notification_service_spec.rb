@@ -2790,7 +2790,7 @@ describe NotificationService, :mailer do
     let!(:developer) { create(:user) }
 
     before do
-      project.add_master(master)
+      project.add_maintainer(master)
     end
 
     it 'sends the email to owners and masters' do

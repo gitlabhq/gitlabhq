@@ -159,7 +159,11 @@ module Secpick
         options[:branch] ||= `git rev-parse --abbrev-ref HEAD`
         options[:remote] ||= DEFAULT_REMOTE
 
-        abort("Missing options. Use #{$0} --help to see the list of options available".red) if options.value?(nil)
+        nil_options = options.select {|_, v| v.nil? }
+        unless nil_options.empty?
+          abort("Missing: #{nil_options.keys.join(', ')}. Use #{$0} --help to see the list of options available".red)
+        end
+
         abort("Wrong version format #{options[:version].bold}".red) unless options[:version] =~ /\A\d*\-\d*\Z/
       end
     end

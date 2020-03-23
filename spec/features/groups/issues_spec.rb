@@ -100,6 +100,8 @@ describe 'Group issues page' do
         find('.empty-state .js-lazy-loaded')
         find('.new-project-item-link').click
 
+        find('.select2-input').set(group.name)
+
         page.within('.select2-results') do
           expect(page).to have_content(project.full_name)
           expect(page).not_to have_content(project_with_issues_disabled.full_name)

@@ -22,9 +22,19 @@ describe OptionallySearch do
       it 'delegates to the search method' do
         expect(model)
           .to receive(:search)
-          .with('foo')
+          .with('foo', {})
 
         model.optionally_search('foo')
+      end
+    end
+
+    context 'when an option is provided' do
+      it 'delegates to the search method' do
+        expect(model)
+          .to receive(:search)
+          .with('foo', some_option: true)
+
+        model.optionally_search('foo', some_option: true)
       end
     end
 

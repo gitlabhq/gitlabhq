@@ -78,10 +78,15 @@ const checkFileWithOptions = (filePath, options) =>
         passedCount += 1;
       } else {
         if (!didWarn) {
-          console.log(warningMessage);
+          // \x1b[31m  make text red
+          // \x1b[1m   make text bold
+          // %s        warningMessage
+          // \x1b[0m   reset text color (so logs after aren't red)
+          const redBoldText = '\x1b[1m\x1b[31;1m%s\x1b[0m';
+          console.log(redBoldText, warningMessage);
           didWarn = true;
         }
-        console.log(`Prettify Manually : ${filePath}`);
+        console.log(`yarn prettier --write ${filePath}`);
         failedCount += 1;
       }
     }

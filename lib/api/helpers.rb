@@ -505,6 +505,7 @@ module API
       finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
       finder_params[:archived] = archived_param unless params[:archived].nil?
       finder_params[:search] = params[:search] if params[:search]
+      finder_params[:search_namespaces] = true if params[:search_namespaces].present?
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
       finder_params[:min_access_level] = params[:min_access_level] if params[:min_access_level]

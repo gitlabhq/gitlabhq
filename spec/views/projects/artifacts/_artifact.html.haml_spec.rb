@@ -38,7 +38,7 @@ RSpec.describe "projects/artifacts/_artifact.html.haml" do
       let(:user) { create(:user) }
 
       it 'has a delete button' do
-        allow_any_instance_of(ProjectTeam).to receive(:max_member_access).and_return(Gitlab::Access::MASTER)
+        allow_any_instance_of(ProjectTeam).to receive(:max_member_access).and_return(Gitlab::Access::MAINTAINER)
         render_partial
 
         expect(rendered).to have_link('Delete artifacts', href: project_artifact_path(project, project.job_artifacts.first))

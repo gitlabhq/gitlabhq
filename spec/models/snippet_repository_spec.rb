@@ -140,6 +140,41 @@ describe SnippetRepository do
     let_it_be(:named_snippet) { { file_path: 'fee.txt', content: 'bar', action: :create } }
     let_it_be(:unnamed_snippet) { { file_path: '', content: 'dummy', action: :create } }
 
+    context 'when existing file has a default name' do
+      let(:default_name) { 'snippetfile1.txt' }
+      let(:new_file) { { file_path: '', content: 'bar' } }
+      let(:existing_file) { { previous_path: default_name, file_path: '', content: 'new_content' } }
+
+      before do
+        expect(blob_at(snippet, default_name)).to be_nil
+
+        snippet_repository.multi_files_action(user, [new_file], commit_opts)
+
+        expect(blob_at(snippet, default_name)).to be
+      end
+
+      it 'reuses the existing file name' do
+        snippet_repository.multi_files_action(user, [existing_file], commit_opts)
+
+        blob = blob_at(snippet, default_name)
+        expect(blob.data).to eq existing_file[:content]
+      end
+    end
+
+    context 'when file name consists of one or several whitespaces' do
+      let(:default_name) { 'snippetfile1.txt' }
+      let(:new_file) { { file_path: ' ', content: 'bar' } }
+
+      it 'assigns a new name to the file' do
+        expect(blob_at(snippet, default_name)).to be_nil
+
+        snippet_repository.multi_files_action(user, [new_file], commit_opts)
+
+        blob = blob_at(snippet, default_name)
+        expect(blob.data).to eq new_file[:content]
+      end
+    end
+
     context 'when some files are not named' do
       let(:data) { [named_snippet] + Array.new(2) { unnamed_snippet.clone } }
 

@@ -48,13 +48,25 @@ class SnippetRepository < ApplicationRecord
     next_index = get_last_empty_file_index + 1
 
     files.each do |file_entry|
+      file_entry[:file_path] = file_path_for(file_entry, next_index) { next_index += 1 }
       file_entry[:action] = infer_action(file_entry) unless file_entry[:action]
-
-      if file_entry[:file_path].blank?
-        file_entry[:file_path] = build_empty_file_name(next_index)
-        next_index += 1
-      end
     end
+  end
+
+  def file_path_for(file_entry, next_index)
+    return file_entry[:file_path] if file_entry[:file_path].present?
+    return file_entry[:previous_path] if reuse_previous_path?(file_entry)
+
+    build_empty_file_name(next_index).tap { yield }
+  end
+
+  # If the user removed the file_path and the previous_path
+  # matches the EMPTY_FILE_PATTERN, we don't need to
+  # rename the file and build a new empty file name,
+  # we can just reuse the existing file name
+  def reuse_previous_path?(file_entry)
+    file_entry[:file_path].blank? &&
+      EMPTY_FILE_PATTERN.match?(file_entry[:previous_path])
   end
 
   def infer_action(file_entry)

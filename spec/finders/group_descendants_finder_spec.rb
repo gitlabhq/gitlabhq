@@ -123,7 +123,7 @@ describe GroupDescendantsFinder do
       project = create(:project, namespace: group)
       other_project = create(:project)
       other_project.project_group_links.create(group: group,
-                                               group_access: ProjectGroupLink::MASTER)
+                                               group_access: ProjectGroupLink::MAINTAINER)
 
       expect(finder.execute).to contain_exactly(project)
     end

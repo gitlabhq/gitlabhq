@@ -255,6 +255,8 @@ class Project < ApplicationRecord
 
   has_many :prometheus_metrics
   has_many :prometheus_alerts, inverse_of: :project
+  has_many :prometheus_alert_events, inverse_of: :project
+  has_many :self_managed_prometheus_alert_events, inverse_of: :project
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
@@ -349,7 +351,6 @@ class Project < ApplicationRecord
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_role, to: :team
-  delegate :add_master, to: :team # @deprecated
   delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
   delegate :root_ancestor, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
@@ -591,9 +592,9 @@ class Project < ApplicationRecord
     # case-insensitive.
     #
     # query - The search query as a String.
-    def search(query)
-      if Feature.enabled?(:project_search_by_full_path, default_enabled: true)
-        joins(:route).fuzzy_search(query, [Route.arel_table[:path], :name, :description])
+    def search(query, include_namespace: false)
+      if include_namespace && Feature.enabled?(:project_search_by_full_path, default_enabled: true)
+        joins(:route).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name], :description])
       else
         fuzzy_search(query, [:path, :name, :description])
       end

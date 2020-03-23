@@ -6,22 +6,22 @@ describe ProjectsFinder, :do_not_mock_admin_mode do
   include AdminModeHelper
 
   describe '#execute' do
-    let(:user) { create(:user) }
-    let(:group) { create(:group, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group, :public) }
 
-    let!(:private_project) do
+    let_it_be(:private_project) do
       create(:project, :private, name: 'A', path: 'A')
     end
 
-    let!(:internal_project) do
+    let_it_be(:internal_project) do
       create(:project, :internal, group: group, name: 'B', path: 'B')
     end
 
-    let!(:public_project) do
+    let_it_be(:public_project) do
       create(:project, :public, group: group, name: 'C', path: 'C')
     end
 
-    let!(:shared_project) do
+    let_it_be(:shared_project) do
       create(:project, :private, name: 'D', path: 'D')
     end
 
@@ -137,6 +137,12 @@ describe ProjectsFinder, :do_not_mock_admin_mode do
         let(:params) { { name: 'C' } }
 
         it { is_expected.to eq([public_project]) }
+      end
+
+      describe 'filter by group name' do
+        let(:params) { { name: group.name, search_namespaces: true } }
+
+        it { is_expected.to eq([public_project, internal_project]) }
       end
 
       describe 'filter by archived' do

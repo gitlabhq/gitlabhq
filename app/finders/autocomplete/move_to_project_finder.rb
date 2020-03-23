@@ -25,7 +25,7 @@ module Autocomplete
     def execute
       current_user
         .projects_where_can_admin_issues
-        .optionally_search(search)
+        .optionally_search(search, include_namespace: true)
         .excluding_project(project_id)
         .eager_load_namespace_and_owner
         .sorted_by_name_asc_limited(LIMIT)

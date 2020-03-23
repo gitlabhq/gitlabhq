@@ -76,10 +76,8 @@ class Member < ApplicationRecord
   scope :developers, -> { active.where(access_level: DEVELOPER) }
   scope :maintainers, -> { active.where(access_level: MAINTAINER) }
   scope :non_guests, -> { where('members.access_level > ?', GUEST) }
-  scope :masters, -> { maintainers } # @deprecated
-  scope :owners,  -> { active.where(access_level: OWNER) }
+  scope :owners, -> { active.where(access_level: OWNER) }
   scope :owners_and_maintainers, -> { active.where(access_level: [OWNER, MAINTAINER]) }
-  scope :owners_and_masters,  -> { owners_and_maintainers } # @deprecated
   scope :with_user, -> (user) { where(user: user) }
 
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }

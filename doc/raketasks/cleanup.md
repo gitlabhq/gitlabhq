@@ -1,5 +1,61 @@
 # Cleanup
 
+## Remove unreferenced LFS files from filesystem
+
+DANGER: **Danger:**
+Do not run this within 12 hours of a GitLab upgrade. This is to ensure that all background migrations have finished, which otherwise may lead to data loss.
+
+When you remove LFS files from a repository's history, they become orphaned and continue to consume disk space. With this rake task, you can remove invalid references from the database, which
+will allow garbage collection of LFS files.
+
+For example:
+
+```shell
+# omnibus-gitlab
+sudo gitlab-rake gitlab:cleanup:orphan_lfs_file_references PROJECT_PATH="gitlab-org/gitlab-foss"
+
+# installation from source
+bundle exec rake gitlab:cleanup:orphan_lfs_file_references RAILS_ENV=production PROJECT_PATH="gitlab-org/gitlab-foss"
+```
+
+You can also specify the project with `PROJECT_ID` instead of `PROJECT_PATH`.
+
+For example:
+
+```shell
+$ sudo gitlab-rake gitlab:cleanup:orphan_lfs_file_references PROJECT_PATH="gitlab-org/gitlab-foss"
+I, [2019-12-13T16:35:31.764962 #82356]  INFO -- :  Looking for orphan LFS files for project GitLab Org / GitLab Foss
+I, [2019-12-13T16:35:31.923659 #82356]  INFO -- :  Removed invalid references: 12
+```
+
+By default, this task does not delete anything but shows how many file references it can
+delete. Run the command with `DRY_RUN=false` if you actually want to
+delete the references. You can also use `LIMIT={number}` parameter to limit the number of deleted references.
+
+Note that this rake task only removes the references to LFS files. Unreferenced LFS files will be garbage-collected
+later (once a day). If you need to garbage collect them immediately, run
+`rake gitlab:cleanup:orphan_lfs_files` described below.
+
+## Remove unreferenced LFS files
+
+Unreferenced LFS files are removed on a daily basis but you can remove them immediately if
+you need to. For example:
+
+```shell
+# omnibus-gitlab
+sudo gitlab-rake gitlab:cleanup:orphan_lfs_files
+
+# installation from source
+bundle exec rake gitlab:cleanup:orphan_lfs_files
+```
+
+Example output:
+
+```shell
+$ sudo gitlab-rake gitlab:cleanup:orphan_lfs_files
+I, [2020-01-08T20:51:17.148765 #43765]  INFO -- : Removed unreferenced LFS files: 12
+```
+
 ## Remove garbage from filesystem
 
 Clean up local project upload files if they don't exist in GitLab database. The

@@ -1,0 +1,5 @@
+---
+title: Create a rake task to cleanup unused LFS files
+merge_request: 21747
+author:
+type: added

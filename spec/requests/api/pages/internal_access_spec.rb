@@ -19,7 +19,7 @@ describe "Internal Project Pages Access" do
   before do
     allow(Gitlab.config.pages).to receive(:access_control).and_return(true)
     group.add_owner(owner)
-    project.add_master(master)
+    project.add_maintainer(master)
     project.add_developer(developer)
     project.add_reporter(reporter)
     project.add_guest(guest)

@@ -172,6 +172,8 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
 
       if parent_type == 'projects'
         context 'by a project owner' do
+          let(:user) { project.owner }
+
           it 'sets the creation time on the new note' do
             post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params
 

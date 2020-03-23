@@ -92,6 +92,8 @@ describe Metrics::Dashboard::UpdateDashboardService, :use_clean_rails_memory_sto
       end
 
       context 'Files::UpdateService success' do
+        let(:merge_request) { project.merge_requests.last }
+
         before do
           allow(::Files::UpdateService).to receive(:new).and_return(double(execute: { status: :success }))
         end
@@ -107,6 +109,31 @@ describe Metrics::Dashboard::UpdateDashboardService, :use_clean_rails_memory_sto
           expect(service_call[:status]).to be :success
           expect(service_call[:http_status]).to be :created
           expect(service_call[:dashboard]).to match dashboard_details
+          expect(service_call[:merge_request]).to eq(Gitlab::UrlBuilder.build(merge_request))
+        end
+
+        context 'when the merge request does not succeed' do
+          let(:error_message) { 'There was an error' }
+
+          let(:merge_request) do
+            build(:merge_request, target_project: project, source_project: project, author: user)
+          end
+
+          before do
+            merge_request.errors.add(:base, error_message)
+            allow_next_instance_of(::MergeRequests::CreateService) do |mr|
+              allow(mr).to receive(:execute).and_return(merge_request)
+            end
+          end
+
+          it 'returns an appropriate message and status code', :aggregate_failures do
+            result = service_call
+
+            expect(result.keys).to contain_exactly(:message, :http_status, :status, :last_step)
+            expect(result[:status]).to eq(:error)
+            expect(result[:http_status]).to eq(:bad_request)
+            expect(result[:message]).to eq(error_message)
+          end
         end
 
         context 'with escaped characters in file name' do
@@ -120,6 +147,25 @@ describe Metrics::Dashboard::UpdateDashboardService, :use_clean_rails_memory_sto
               system_dashboard: false
             }
 
+            expect(service_call[:status]).to be :success
+            expect(service_call[:http_status]).to be :created
+            expect(service_call[:dashboard]).to match dashboard_details
+          end
+        end
+
+        context 'when pushing to the default branch' do
+          let(:branch) { 'master' }
+
+          it 'does not create a merge request', :aggregate_failures do
+            dashboard_details = {
+              path: '.gitlab/dashboards/custom_dashboard.yml',
+              display_name: 'custom_dashboard.yml',
+              default: false,
+              system_dashboard: false
+            }
+
+            expect(::MergeRequests::CreateService).not_to receive(:new)
+            expect(service_call.keys).to contain_exactly(:dashboard, :http_status, :status)
             expect(service_call[:status]).to be :success
             expect(service_call[:http_status]).to be :created
             expect(service_call[:dashboard]).to match dashboard_details

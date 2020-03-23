@@ -31,10 +31,11 @@ describe('Repository parent row component', () => {
   });
 
   it.each`
-    path                  | to
-    ${'app'}              | ${'/-/tree/master/'}
-    ${'app/assets'}       | ${'/-/tree/master/app'}
-    ${'app/assets#/test'} | ${'/-/tree/master/app/assets%23'}
+    path                        | to
+    ${'app'}                    | ${'/-/tree/master/'}
+    ${'app/assets'}             | ${'/-/tree/master/app'}
+    ${'app/assets#/test'}       | ${'/-/tree/master/app/assets%23'}
+    ${'app/assets#/test/world'} | ${'/-/tree/master/app/assets%23/test'}
   `('renders link in $path to $to', ({ path, to }) => {
     factory(path);
 

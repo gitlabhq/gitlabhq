@@ -25,9 +25,6 @@ class ProjectTeam
     add_user(user, :maintainer, current_user: current_user)
   end
 
-  # @deprecated
-  alias_method :add_master, :add_maintainer
-
   def add_role(user, role, current_user: nil)
     public_send(:"add_#{role}", user, current_user: current_user) # rubocop:disable GitlabSecurity/PublicSend
   end
@@ -98,9 +95,6 @@ class ProjectTeam
     @maintainers ||= fetch_members(Gitlab::Access::MAINTAINER)
   end
 
-  # @deprecated
-  alias_method :masters, :maintainers
-
   def owners
     @owners ||=
       if group
@@ -155,9 +149,6 @@ class ProjectTeam
   def maintainer?(user)
     max_member_access(user.id) == Gitlab::Access::MAINTAINER
   end
-
-  # @deprecated
-  alias_method :master?, :maintainer?
 
   # Checks if `user` is authorized for this project, with at least the
   # `min_access_level` (if given).

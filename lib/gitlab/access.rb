@@ -14,8 +14,6 @@ module Gitlab
     REPORTER   = 20
     DEVELOPER  = 30
     MAINTAINER = 40
-    # @deprecated
-    MASTER     = MAINTAINER
     OWNER      = 50
 
     # Branch protection settings

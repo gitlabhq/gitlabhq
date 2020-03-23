@@ -7,7 +7,6 @@ class ProjectGroupLink < ApplicationRecord
   REPORTER  = 20
   DEVELOPER = 30
   MAINTAINER = 40
-  MASTER = MAINTAINER # @deprecated
 
   belongs_to :project
   belongs_to :group

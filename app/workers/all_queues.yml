@@ -528,6 +528,13 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: 
+- :name: incident_management:incident_management_process_prometheus_alert
+  :feature_category: :incident_management
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 2
+  :idempotent: 
 - :name: jira_importer:jira_import_advance_stage
   :feature_category: :importers
   :has_external_dependencies: 

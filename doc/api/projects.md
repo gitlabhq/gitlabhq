@@ -46,6 +46,7 @@ GET /projects
 | `order_by`                    | string  | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort`                        | string  | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search`                      | string  | no | Return list of projects matching the search criteria |
+| `search_namespaces`           | boolean | no | Include ancestor namespaces when matching search criteria. Default is `false` |
 | `simple`                      | boolean | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
 | `owned`                       | boolean | no | Limit by projects explicitly owned by the current user |
 | `membership`                  | boolean | no | Limit by projects that the current user is a member of |

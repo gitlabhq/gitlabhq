@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class LfsObjectsProject < ApplicationRecord
+  include ::EachBatch
+
   belongs_to :project
   belongs_to :lfs_object
 

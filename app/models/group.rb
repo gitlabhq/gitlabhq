@@ -245,9 +245,6 @@ class Group < Namespace
     add_user(user, :maintainer, current_user: current_user)
   end
 
-  # @deprecated
-  alias_method :add_master, :add_maintainer
-
   def add_owner(user, current_user = nil)
     add_user(user, :owner, current_user: current_user)
   end
@@ -273,9 +270,6 @@ class Group < Namespace
   def has_container_repository_including_subgroups?
     ::ContainerRepository.for_group_and_its_subgroups(self).exists?
   end
-
-  # @deprecated
-  alias_method :has_master?, :has_maintainer?
 
   # Check if user is a last owner of the group.
   def last_owner?(user)

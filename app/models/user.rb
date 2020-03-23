@@ -1693,9 +1693,6 @@ class User < ApplicationRecord
     end
   end
 
-  # @deprecated
-  alias_method :owned_or_masters_groups, :owned_or_maintainers_groups
-
   protected
 
   # override, from Devise::Validatable

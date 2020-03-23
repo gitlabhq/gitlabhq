@@ -134,7 +134,9 @@ export default {
           },
           {
             attrs: {
-              href: `${this.newBlobPath}/${this.currentPath ? escape(this.currentPath) : ''}`,
+              href: `${this.newBlobPath}/${
+                this.currentPath ? encodeURIComponent(this.currentPath) : ''
+              }`,
               class: 'qa-new-file-option',
             },
             text: __('New file'),

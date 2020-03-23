@@ -12,7 +12,8 @@ module Metrics
       steps :check_push_authorized,
         :check_branch_name,
         :check_file_type,
-        :update_file
+        :update_file,
+        :create_merge_request
 
       def execute
         execute_steps
@@ -46,6 +47,23 @@ module Metrics
           success(result.merge(file_update_response, http_status: :created, dashboard: dashboard_details))
         else
           error(file_update_response[:message], :bad_request)
+        end
+      end
+
+      def create_merge_request(result)
+        return success(result) if project.default_branch == branch
+
+        merge_request_params = {
+          source_branch: branch,
+          target_branch: project.default_branch,
+          title: params[:commit_message]
+        }
+        merge_request = ::MergeRequests::CreateService.new(project, current_user, merge_request_params).execute
+
+        if merge_request.persisted?
+          success(result.merge(merge_request: Gitlab::UrlBuilder.build(merge_request)))
+        else
+          error(merge_request.errors.full_messages.join(','), :bad_request)
         end
       end
 

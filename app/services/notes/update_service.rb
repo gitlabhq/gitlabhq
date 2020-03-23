@@ -55,6 +55,8 @@ module Notes
       # We must add the error after we call #save because errors are reset
       # when #save is called
       note.errors.add(:commands_only, message.presence || _('Commands did not apply'))
+      # Allow consumers to detect problems applying commands
+      note.errors.add(:commands, _('Commands did not apply')) unless message.present?
 
       Notes::DestroyService.new(project, current_user).execute(note)
     end

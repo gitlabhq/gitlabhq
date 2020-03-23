@@ -362,6 +362,21 @@ describe API::Projects do
         end
       end
 
+      context 'and using search and search_namespaces is true' do
+        let(:group) { create(:group) }
+        let!(:project_in_group) { create(:project, group: group) }
+
+        before do
+          group.add_guest(user)
+        end
+
+        it_behaves_like 'projects response' do
+          let(:filter) { { search: group.name, search_namespaces: true } }
+          let(:current_user) { user }
+          let(:projects) { [project_in_group] }
+        end
+      end
+
       context 'and using id_after' do
         it_behaves_like 'projects response' do
           let(:filter) { { id_after: project2.id } }
