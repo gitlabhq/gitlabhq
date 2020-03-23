@@ -72,6 +72,19 @@ describe('File row component', () => {
     });
   });
 
+  it('is marked as viewed if clicked', () => {
+    createComponent({
+      file: {
+        ...file(),
+        type: 'blob',
+        fileHash: '#123456789',
+      },
+      level: 0,
+      viewedFiles: ['#123456789'],
+    });
+    expect(wrapper.classes()).toContain('is-viewed');
+  });
+
   it('indents row based on level', () => {
     createComponent({
       file: file('t4'),

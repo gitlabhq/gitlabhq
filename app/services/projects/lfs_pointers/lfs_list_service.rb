@@ -4,14 +4,12 @@
 module Projects
   module LfsPointers
     class LfsListService < BaseService
-      REV = 'HEAD'
-
       # Retrieve all lfs blob pointers and returns a hash
       # with the structure { lfs_file_oid => lfs_file_size }
       def execute
         return {} unless project&.lfs_enabled?
 
-        Gitlab::Git::LfsChanges.new(project.repository, REV)
+        Gitlab::Git::LfsChanges.new(project.repository)
                                .all_pointers
                                .map! { |blob| [blob.lfs_oid, blob.lfs_size] }
                                .to_h

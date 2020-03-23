@@ -215,7 +215,7 @@ describe Ci::CreateCrossProjectPipelineService, '#execute' do
             pipeline = service.execute(bridge)
             pipeline.reload
 
-            expect(pipeline.builds.map(&:name)).to eq %w[rspec echo]
+            expect(pipeline.builds.map(&:name)).to match_array(%w[rspec echo])
             expect(pipeline.user).to eq bridge.user
             expect(pipeline.project).to eq bridge.project
             expect(bridge.sourced_pipelines.first.pipeline).to eq pipeline

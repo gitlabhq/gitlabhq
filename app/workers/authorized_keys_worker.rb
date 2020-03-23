@@ -3,7 +3,7 @@
 class AuthorizedKeysWorker
   include ApplicationWorker
 
-  PERMITTED_ACTIONS = [:add_key, :remove_key].freeze
+  PERMITTED_ACTIONS = %w[add_key remove_key].freeze
 
   feature_category :source_code_management
   urgency :high
@@ -13,11 +13,13 @@ class AuthorizedKeysWorker
   def perform(action, *args)
     return unless Gitlab::CurrentSettings.authorized_keys_enabled?
 
-    case action
-    when :add_key
+    case action.to_s
+    when 'add_key'
       authorized_keys.add_key(*args)
-    when :remove_key
+    when 'remove_key'
       authorized_keys.remove_key(*args)
+    else
+      raise "Unknown action: #{action.inspect}"
     end
   end
 

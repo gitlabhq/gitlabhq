@@ -55,6 +55,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isActive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
@@ -158,6 +163,9 @@ export default {
   <div
     ref="header"
     class="js-file-title file-title file-title-flex-parent"
+    :class="{
+      'is-active': isActive,
+    }"
     @click.self="handleToggleFile"
   >
     <div class="file-header-content">

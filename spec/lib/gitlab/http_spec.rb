@@ -100,4 +100,127 @@ describe Gitlab::HTTP do
       expect { described_class.head('http://example.org') }.to raise_error(Gitlab::HTTP::RedirectionTooDeep)
     end
   end
+
+  describe '.try_get' do
+    let(:path) { 'http://example.org' }
+
+    let(:extra_log_info_proc) do
+      proc do |error, url, options|
+        { klass: error.class, url: url, options: options }
+      end
+    end
+
+    let(:request_options) do
+      {
+        verify: false,
+        basic_auth: { username: 'user', password: 'pass' }
+      }
+    end
+
+    described_class::HTTP_ERRORS.each do |exception_class|
+      context "with #{exception_class}" do
+        let(:klass) { exception_class }
+
+        context 'with path' do
+          before do
+            expect(described_class).to receive(:get)
+              .with(path, {})
+              .and_raise(klass)
+          end
+
+          it 'handles requests without extra_log_info' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:log_exception)
+              .with(instance_of(klass), {})
+
+            expect(described_class.try_get(path)).to be_nil
+          end
+
+          it 'handles requests with extra_log_info as hash' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:log_exception)
+              .with(instance_of(klass), { a: :b })
+
+            expect(described_class.try_get(path, extra_log_info: { a: :b })).to be_nil
+          end
+
+          it 'handles requests with extra_log_info as proc' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:log_exception)
+              .with(instance_of(klass), { url: path, klass: klass, options: {} })
+
+            expect(described_class.try_get(path, extra_log_info: extra_log_info_proc)).to be_nil
+          end
+        end
+
+        context 'with path and options' do
+          before do
+            expect(described_class).to receive(:get)
+              .with(path, request_options)
+              .and_raise(klass)
+          end
+
+          it 'handles requests without extra_log_info' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:log_exception)
+              .with(instance_of(klass), {})
+
+            expect(described_class.try_get(path, request_options)).to be_nil
+          end
+
+          it 'handles requests with extra_log_info as hash' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:log_exception)
+              .with(instance_of(klass), { a: :b })
+
+            expect(described_class.try_get(path, **request_options, extra_log_info: { a: :b })).to be_nil
+          end
+
+          it 'handles requests with extra_log_info as proc' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:log_exception)
+              .with(instance_of(klass), { klass: klass, url: path, options: request_options })
+
+            expect(described_class.try_get(path, **request_options, extra_log_info: extra_log_info_proc)).to be_nil
+          end
+        end
+
+        context 'with path, options, and block' do
+          let(:block) do
+            proc {}
+          end
+
+          before do
+            expect(described_class).to receive(:get)
+              .with(path, request_options, &block)
+              .and_raise(klass)
+          end
+
+          it 'handles requests without extra_log_info' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:log_exception)
+              .with(instance_of(klass), {})
+
+            expect(described_class.try_get(path, request_options, &block)).to be_nil
+          end
+
+          it 'handles requests with extra_log_info as hash' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:log_exception)
+              .with(instance_of(klass), { a: :b })
+
+            expect(described_class.try_get(path, **request_options, extra_log_info: { a: :b }, &block)).to be_nil
+          end
+
+          it 'handles requests with extra_log_info as proc' do
+            expect(Gitlab::ErrorTracking)
+              .to receive(:log_exception)
+              .with(instance_of(klass), { klass: klass, url: path, options: request_options })
+
+            expect(described_class.try_get(path, **request_options, extra_log_info: extra_log_info_proc, &block)).to be_nil
+          end
+        end
+      end
+    end
+  end
 end

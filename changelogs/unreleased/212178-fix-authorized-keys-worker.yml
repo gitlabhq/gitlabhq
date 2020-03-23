@@ -1,0 +1,5 @@
+---
+title: Fix updating the authorized_keys file
+merge_request: 27798
+author:
+type: fixed

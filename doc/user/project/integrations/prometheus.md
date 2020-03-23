@@ -589,7 +589,7 @@ When viewing a custom dashboard of a project, you can view the original
 
 From each of the panels in the dashboard, you can access the context menu by clicking the **{ellipsis_v}** **More actions** dropdown box above the upper right corner of the panel to take actions related to the chart's data.
 
-![Context Menu](img/panel_context_menu_v12_8.png)
+![Context Menu](img/panel_context_menu_v12_10.png)
 
 The options are:
 

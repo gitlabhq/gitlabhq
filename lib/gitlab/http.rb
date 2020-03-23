@@ -25,5 +25,17 @@ module Gitlab
     rescue HTTParty::RedirectionTooDeep
       raise RedirectionTooDeep
     end
+
+    def self.try_get(path, options = {}, &block)
+      log_info = options.delete(:extra_log_info)
+      self.get(path, options, &block)
+
+    rescue *HTTP_ERRORS => e
+      extra_info = log_info || {}
+      extra_info = log_info.call(e, path, options) if log_info.respond_to?(:call)
+
+      Gitlab::ErrorTracking.log_exception(e, extra_info)
+      nil
+    end
   end
 end

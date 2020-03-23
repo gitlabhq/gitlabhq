@@ -61,6 +61,7 @@ describe('DiffFileHeader component', () => {
   const findTitleLink = () => wrapper.find({ ref: 'titleWrapper' });
   const findExpandButton = () => wrapper.find({ ref: 'expandDiffToFullFileButton' });
   const findFileActions = () => wrapper.find('.file-actions');
+  const findActiveHeader = () => wrapper.find('.is-active');
   const findModeChangedLine = () => wrapper.find({ ref: 'fileMode' });
   const findLfsLabel = () => wrapper.find('.label-lfs');
   const findToggleDiscussionsButton = () => wrapper.find({ ref: 'toggleDiscussionsButton' });
@@ -141,6 +142,11 @@ describe('DiffFileHeader component', () => {
   it('displays a copy to clipboard button', () => {
     createComponent();
     expect(wrapper.find(ClipboardButton).exists()).toBe(true);
+  });
+
+  it('contains a active header class if this is the active file header', () => {
+    createComponent({ isActive: true });
+    expect(findActiveHeader().exists()).toBe(true);
   });
 
   describe('for submodule', () => {

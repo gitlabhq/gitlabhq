@@ -73,6 +73,9 @@ from teams other than your own.
    **approved by a [UX lead](https://about.gitlab.com/company/team/)**.
 1. If your merge request includes a new dependency or a filesystem change, it must be
    **approved by a [Distribution team member](https://about.gitlab.com/company/team/)**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/#how-to-work-with-distribution) for more details.
+1. If your merge request includes documentation changes, it must be **approved
+   by a [Technical writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers)**, based on
+   the appropriate [product category](https://about.gitlab.com/handbook/product/categories/).
 
 #### Security requirements
 
@@ -84,12 +87,17 @@ The responsibility to find the best solution and implement it lies with the
 merge request author.
 
 Before assigning a merge request to a maintainer for approval and merge, they
-should be confident that it actually solves the problem it was meant to solve,
-that it does so in the most appropriate way, that it satisfies all requirements,
-and that there are no remaining bugs, logical problems, uncovered edge cases,
-or known vulnerabilities. The best way to do this, and to avoid unnecessary
-back-and-forth with reviewers, is to perform a self-review of your own merge
-request, following the [Code Review](#reviewing-a-merge-request) guidelines.
+should be confident that:
+
+- It actually solves the problem it was meant to solve.
+- It does so in the most appropriate way.
+- It satisfies all requirements.
+- There are no remaining bugs, logical problems, uncovered edge cases,
+  or known vulnerabilities.
+
+The best way to do this, and to avoid unnecessary back-and-forth with reviewers,
+is to perform a self-review of your own merge request, following the
+[Code Review](#reviewing-a-merge-request) guidelines.
 
 To reach the required level of confidence in their solution, an author is expected
 to involve other people in the investigation and implementation processes as
@@ -110,11 +118,11 @@ request diff alerting the reviewer to anything important as well as for anything
 that demands further explanation or attention. Examples of content that may
 warrant a comment could be:
 
-- The addition of a linting rule (Rubocop, JS etc)
-- The addition of a library (Ruby gem, JS lib etc)
-- Where not obvious, a link to the parent class or method
-- Any benchmarking performed to complement the change
-- Potentially insecure code
+- The addition of a linting rule (Rubocop, JS etc).
+- The addition of a library (Ruby gem, JS lib etc).
+- Where not obvious, a link to the parent class or method.
+- Any benchmarking performed to complement the change.
+- Potentially insecure code.
 
 Avoid:
 
@@ -233,6 +241,11 @@ first time.
   addressed. If there's an open reply, an open thread, a suggestion,
   a question, or anything else, the thread should be left to be resolved
   by the reviewer.
+- It should not be assumed that all feedback requires their recommended changes
+  to be incorporated into the MR before it is merged. It is a judgment call by
+  the MR author and the reviewer as to if this is required, or if a follow-up
+  issue should be created to address the feedback in the future after the MR in
+  question is merged.
 - Push commits based on earlier rounds of feedback as isolated commits to the
   branch. Do not squash until the branch is ready to merge. Reviewers should be
   able to read individual updates based on their earlier feedback.

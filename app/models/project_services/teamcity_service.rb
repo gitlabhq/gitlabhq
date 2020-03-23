@@ -86,7 +86,11 @@ class TeamcityService < CiService
   def calculate_reactive_cache(sha, ref)
     response = get_path("httpAuth/app/rest/builds/branch:unspecified:any,revision:#{sha}")
 
-    { build_page: read_build_page(response), commit_status: read_commit_status(response) }
+    if response
+      { build_page: read_build_page(response), commit_status: read_commit_status(response) }
+    else
+      { build_page: teamcity_url, commit_status: :error }
+    end
   end
 
   def execute(data)
@@ -149,7 +153,7 @@ class TeamcityService < CiService
   end
 
   def get_path(path)
-    Gitlab::HTTP.get(build_url(path), verify: false, basic_auth: basic_auth)
+    Gitlab::HTTP.try_get(build_url(path), verify: false, basic_auth: basic_auth, extra_log_info: { project_id: project_id })
   end
 
   def post_to_build_queue(data, branch)

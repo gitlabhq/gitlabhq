@@ -284,6 +284,9 @@ export default {
   },
   [types.UPDATE_CURRENT_DIFF_FILE_ID](state, fileId) {
     state.currentDiffFileId = fileId;
+    if (!state.viewedDiffFileIds.includes(fileId)) {
+      state.viewedDiffFileIds = [fileId, ...state.viewedDiffFileIds];
+    }
   },
   [types.OPEN_DIFF_FILE_COMMENT_FORM](state, formData) {
     state.commentForms.push({

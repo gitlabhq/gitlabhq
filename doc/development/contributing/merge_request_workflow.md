@@ -48,13 +48,8 @@ request is as follows:
    but do not change the commit history if you're working on shared branches though.
 1. Push the commit(s) to your working branch in your fork.
 1. Submit a merge request (MR) to the `master` branch in the main GitLab project.
-   1. Your merge request needs at least 1 approval, but feel free to require more.
-      For instance if you're touching both backend and frontend code, it's a good idea
-      to require 2 approvals: 1 from a backend maintainer and 1 from a frontend
-      maintainer.
-   1. If you're submitting changes to documentation, you'll need approval from a technical
-      writer, based on the appropriate [product category](https://about.gitlab.com/handbook/product/categories/).
-      Only assign the MR to them when it's ready for docs review.
+   1. Your merge request needs at least 1 approval, but depending on your changes
+      you might need additional approvals. Refer to the [Approval guidelines](../code_review.md#approval-guidelines).
    1. You don't have to select any specific approvers, but you can if you really want
       specific people to approve your merge request.
 1. The MR title should describe the change you want to make.
@@ -66,18 +61,12 @@ request is as follows:
    1. Mention the issue(s) your merge request solves, using the `Solves #XXX` or
       `Closes #XXX` syntax to [auto-close](../../user/project/issues/managing_issues.md#closing-issues-automatically)
       the issue(s) once the merge request is merged.
-1. If you're allowed to (Core team members, for example), set a relevant milestone
-   and [labels](issue_workflow.md).
-1. If the MR changes the UI, you'll need approval from a Product Designer (UX), based on the appropriate [product category](https://about.gitlab.com/handbook/product/categories/). UI changes should use available components from the GitLab Design System, [Pajamas](https://design.gitlab.com/). The MR must include *Before* and *After* screenshots.
+1. If you're allowed to, set a relevant milestone and [labels](issue_workflow.md).
+1. UI changes should use available components from the GitLab Design System,
+   [Pajamas](https://design.gitlab.com/). The MR must include *Before* and
+   *After* screenshots.
 1. If the MR changes CSS classes, please include the list of affected pages, which
    can be found by running `grep css-class ./app -R`.
-1. Be prepared to answer questions and incorporate feedback into your MR with new
-   commits. Once you have fully addressed a suggestion from a reviewer, click the
-   "Resolve thread" button beneath it to mark it resolved.
-   1. The merge request author resolves only the threads they have fully addressed.
-      If there's an open reply or thread, a suggestion, a question, or anything else,
-      the thread should be left to be resolved by the reviewer.
-   1. It should not be assumed that all feedback requires their recommended changes to be incorporated into the MR before it is merged. It is a judgment call by the MR author and the reviewer as to if this is required, or if a follow-up issue should be created to address the feedback in the future after the MR in question is merged.
 1. If your MR touches code that executes shell commands, reads or opens files, or
    handles paths to files on disk, make sure it adheres to the
    [shell command guidelines](../shell_commands.md)
@@ -98,6 +87,10 @@ request is as follows:
    `doc/update/upgrading_from_source.md` in the same merge request. If these
    instructions are specific to a version, add them to the "Version specific
    upgrading instructions" section.
+1. Read and adhere to
+   [The responsibility of the merge request author](../code_review.md#the-responsibility-of-the-merge-request-author).
+1. Read and follow
+   [Having your merge request reviewed](../code_review.md#having-your-merge-request-reviewed).
 
 If you would like quick feedback on your merge request feel free to mention someone
 from the [core team](https://about.gitlab.com/community/core-team/) or one of the

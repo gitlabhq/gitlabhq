@@ -3,7 +3,7 @@
 module Gitlab
   module Git
     class LfsChanges
-      def initialize(repository, newrev)
+      def initialize(repository, newrev = nil)
         @repository = repository
         @newrev = newrev
       end

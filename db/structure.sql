@@ -3944,7 +3944,8 @@ CREATE TABLE public.namespaces (
     max_artifacts_size integer,
     mentions_disabled boolean,
     default_branch_protection smallint,
-    unlock_membership_to_ldap boolean
+    unlock_membership_to_ldap boolean,
+    max_personal_access_token_lifetime integer
 );
 
 CREATE SEQUENCE public.namespaces_id_seq
@@ -9656,7 +9657,7 @@ CREATE INDEX index_projects_on_name_and_id ON public.projects USING btree (name,
 
 CREATE INDEX index_projects_on_name_trigram ON public.projects USING gin (name public.gin_trgm_ops);
 
-CREATE INDEX index_projects_on_namespace_id ON public.projects USING btree (namespace_id);
+CREATE INDEX index_projects_on_namespace_id_and_id ON public.projects USING btree (namespace_id, id);
 
 CREATE INDEX index_projects_on_path_and_id ON public.projects USING btree (path, id);
 
@@ -12701,6 +12702,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200313101649'),
 ('20200313123934'),
 ('20200316111759'),
+('20200316162648'),
 ('20200316173312'),
 ('20200317142110'),
 ('20200318152134'),
@@ -12708,5 +12710,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200318163148'),
 ('20200318164448'),
 ('20200318165448'),
-('20200319203901');
+('20200319203901'),
+('20200323075043');
 

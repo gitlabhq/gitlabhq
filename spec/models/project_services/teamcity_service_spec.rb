@@ -7,6 +7,7 @@ describe TeamcityService, :use_clean_rails_memory_store_caching do
   include StubRequests
 
   let(:teamcity_url) { 'http://gitlab.com/teamcity' }
+  let(:teamcity_full_url) { 'http://gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,revision:123' }
   let(:project) { create(:project) }
 
   subject(:service) do
@@ -165,6 +166,16 @@ describe TeamcityService, :use_clean_rails_memory_store_caching do
           is_expected.to eq('http://gitlab.com/teamcity/viewLog.html?buildId=666&buildTypeId=foo')
         end
       end
+
+      it 'returns the teamcity_url when teamcity is unreachable' do
+        stub_full_request(teamcity_full_url).to_raise(Errno::ECONNREFUSED)
+
+        expect(Gitlab::ErrorTracking)
+          .to receive(:log_exception)
+          .with(instance_of(Errno::ECONNREFUSED), project_id: project.id)
+
+        is_expected.to eq(teamcity_url)
+      end
     end
 
     context 'commit_status' do
@@ -202,6 +213,16 @@ describe TeamcityService, :use_clean_rails_memory_store_caching do
 
       it 'sets commit status to :error when build status is unknown' do
         stub_request(build_status: 'FOO BAR!')
+
+        is_expected.to eq(:error)
+      end
+
+      it 'sets commit status to :error when teamcity is unreachable' do
+        stub_full_request(teamcity_full_url).to_raise(Errno::ECONNREFUSED)
+
+        expect(Gitlab::ErrorTracking)
+          .to receive(:log_exception)
+          .with(instance_of(Errno::ECONNREFUSED), project_id: project.id)
 
         is_expected.to eq(:error)
       end
@@ -300,7 +321,6 @@ describe TeamcityService, :use_clean_rails_memory_store_caching do
   end
 
   def stub_request(status: 200, body: nil, build_status: 'success')
-    teamcity_full_url = 'http://gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,revision:123'
     auth = %w(mic password)
 
     body ||= %Q({"build":{"status":"#{build_status}","id":"666"}})
