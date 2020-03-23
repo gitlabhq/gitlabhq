@@ -763,7 +763,7 @@ You must use a Kubernetes network plugin that implements support for
 `NetworkPolicy`. The default network plugin for Kubernetes (`kubenet`)
 [does not implement](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/#kubenet)
 support for it. The [Cilium](https://cilium.io/) network plugin can be
-installed as a [cluster application](../../user/clusters/applications.md#install-cilium-using-gitlab-ci)
+installed as a [cluster application](../../user/clusters/applications.md#install-cilium-using-gitlab-cicd)
 to enable support for network policies.
 
 You can enable deployment of a network policy by setting the following
@@ -799,7 +799,7 @@ networkPolicy:
 ```
 
 For more information on how to install Network Policies, see
-[Install Cilium using GitLab CI](../../user/clusters/applications.md#install-cilium-using-gitlab-ci).
+[Install Cilium using GitLab CI](../../user/clusters/applications.md#install-cilium-using-gitlab-cicd).
 
 #### Web Application Firewall (ModSecurity) customization
 

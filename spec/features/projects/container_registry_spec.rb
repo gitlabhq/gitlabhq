@@ -149,10 +149,34 @@ describe 'Container Registry', :js do
         end
 
         it('pagination navigate to the second page') do
-          pagination = find('.gl-pagination')
-          pagination.click_link('2')
+          visit_second_page
           expect(page).to have_content '20'
         end
+      end
+    end
+
+    context 'when there are more than 10 images' do
+      before do
+        create_list(:container_repository, 12, project: project)
+        project.container_repositories << container_repository
+        visit_container_registry
+      end
+
+      it 'shows pagination' do
+        expect(page).to have_css '.gl-pagination'
+      end
+
+      it 'pagination goes to second page' do
+        visit_second_page
+        expect(page).to have_content 'my/image'
+      end
+
+      it 'pagination is preserved after navigating back from details' do
+        visit_second_page
+        click_link 'my/image'
+        breadcrumb = find '.breadcrumbs'
+        breadcrumb.click_link 'Container Registry'
+        expect(page).to have_content 'my/image'
       end
     end
   end
@@ -163,6 +187,11 @@ describe 'Container Registry', :js do
 
   def visit_container_registry_details(name)
     visit_container_registry
-    click_link(name)
+    click_link name
+  end
+
+  def visit_second_page
+    pagination = find '.gl-pagination'
+    pagination.click_link '2'
   end
 end

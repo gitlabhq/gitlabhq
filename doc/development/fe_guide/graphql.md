@@ -35,9 +35,9 @@ of the client doing compilation of queries.
 
 To distinguish queries from mutations and fragments, the following naming convention is recommended:
 
-- `allUsers.query.graphql` for queries;
-- `addUser.mutation.graphql` for mutations;
-- `basicUser.fragment.graphql` for fragments.
+- `all_users.query.graphql` for queries;
+- `add_user.mutation.graphql` for mutations;
+- `basic_user.fragment.graphql` for fragments.
 
 ### Fragments
 
@@ -56,8 +56,8 @@ fragment DesignListItem on Design {
 Fragments can be stored in separate files, imported and used in queries, mutations, or other fragments.
 
 ```javascript
-#import "./designList.fragment.graphql"
-#import "./diffRefs.fragment.graphql"
+#import "./design_list.fragment.graphql"
+#import "./diff_refs.fragment.graphql"
 
 fragment DesignItem on Design {
   ...DesignListItem
@@ -255,6 +255,42 @@ export default {
       },
     }
   },
+};
+```
+
+### Manually triggering queries
+
+Queries on a component's `apollo` property are made automatically when the component is created.
+Some components instead want the network request made on-demand, for example a dropdown with lazy-loaded items.
+
+There are two ways to do this:
+
+1. Use the `skip` property
+
+```javascript
+export default {
+  apollo: {
+    user: {
+      query: QUERY_IMPORT,
+      skip() {
+        // only make the query when dropdown is open
+        return !this.isOpen;
+      },
+    }
+  },
+};
+```
+
+1. Using `addSmartQuery`
+
+You can manually create the Smart Query in your method.
+
+```javascript
+handleClick() {
+  this.$apollo.addSmartQuery('user', {
+    // this takes the same values as you'd have in the `apollo` section
+    query: QUERY_IMPORT,
+  }),
 };
 ```
 

@@ -24,10 +24,10 @@ export default {
     },
     lastCrumb() {
       const { children } = last(this.crumbs);
-      const { tagName, classList } = first(children);
+      const { tagName, className } = first(children);
       return {
         tagName,
-        classList: [...classList],
+        className,
         text: this.$route.meta.nameGenerator(this.$route),
         path: { to: this.$route.name },
       };
@@ -41,7 +41,7 @@ export default {
     <li
       v-for="(crumb, index) in rootCrumbs"
       :key="index"
-      :class="crumb.classList"
+      :class="crumb.className"
       v-html="crumb.innerHTML"
     ></li>
     <li v-if="!isRootRoute">
@@ -51,7 +51,7 @@ export default {
       <component :is="divider.tagName" :class="divider.classList" v-html="divider.innerHTML" />
     </li>
     <li>
-      <component :is="lastCrumb.tagName" ref="lastCrumb" :class="lastCrumb.classList">
+      <component :is="lastCrumb.tagName" ref="lastCrumb" :class="lastCrumb.className">
         <router-link ref="childRouteLink" :to="lastCrumb.path">{{ lastCrumb.text }}</router-link>
       </component>
     </li>

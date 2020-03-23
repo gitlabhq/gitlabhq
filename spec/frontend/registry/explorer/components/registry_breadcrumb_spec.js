@@ -7,14 +7,14 @@ describe('Registry Breadcrumb', () => {
   const nameGenerator = jest.fn();
 
   const crumb = {
-    classList: ['foo', 'bar'],
+    className: 'foo bar',
     tagName: 'div',
     innerHTML: 'baz',
     querySelector: jest.fn(),
     children: [
       {
         tagName: 'a',
-        classList: ['foo'],
+        className: 'foo',
       },
     ],
   };
@@ -25,7 +25,7 @@ describe('Registry Breadcrumb', () => {
     innerHTML: 'foo',
   };
 
-  const crumbs = [crumb, { ...crumb, innerHTML: 'foo' }, { ...crumb, classList: ['baz'] }];
+  const crumbs = [crumb, { ...crumb, innerHTML: 'foo' }, { ...crumb, className: 'baz' }];
 
   const routes = [
     { name: 'foo', meta: { nameGenerator, root: true } },
@@ -121,7 +121,11 @@ describe('Registry Breadcrumb', () => {
     });
 
     it('has the same classes as the last children of the crumbs', () => {
-      expect(findLastCrumb().classes()).toEqual(lastChildren.classList);
+      expect(
+        findLastCrumb()
+          .classes()
+          .join(' '),
+      ).toEqual(lastChildren.className);
     });
 
     it('has a link to the current route', () => {
