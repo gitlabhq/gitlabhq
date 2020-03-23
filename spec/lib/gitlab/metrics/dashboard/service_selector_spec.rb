@@ -15,7 +15,7 @@ describe Gitlab::Metrics::Dashboard::ServiceSelector do
     context 'when just the dashboard path is provided' do
       let(:arguments) { { dashboard_path: '.gitlab/dashboards/test.yml' } }
 
-      it { is_expected.to be Metrics::Dashboard::ProjectDashboardService }
+      it { is_expected.to be Metrics::Dashboard::CustomDashboardService }
 
       context 'when the path is for the system dashboard' do
         let(:arguments) { { dashboard_path: system_dashboard_path } }

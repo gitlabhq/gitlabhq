@@ -5,7 +5,7 @@
 # Use Gitlab::Metrics::Dashboard::Finder to retrive dashboards.
 module Metrics
   module Dashboard
-    class ProjectDashboardService < ::Metrics::Dashboard::BaseService
+    class CustomDashboardService < ::Metrics::Dashboard::BaseService
       DASHBOARD_ROOT = ".gitlab/dashboards"
 
       class << self

@@ -306,7 +306,7 @@ module API
         context_commits =
           paginate(merge_request.merge_request_context_commits).map(&:to_commit)
 
-        present context_commits, with: Entities::Commit
+        present context_commits, with: Entities::CommitWithLink, type: :full, request: merge_request
       end
 
       params do

@@ -1,4 +1,5 @@
 import './element_scroll_into_view';
+import './element_scroll_by';
 import './form_element';
 import './get_client_rects';
 import './inner_text';

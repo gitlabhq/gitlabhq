@@ -7,7 +7,7 @@ module Metrics
       include Stepable
 
       ALLOWED_FILE_TYPE = '.yml'
-      USER_DASHBOARDS_DIR = ::Metrics::Dashboard::ProjectDashboardService::DASHBOARD_ROOT
+      USER_DASHBOARDS_DIR = ::Metrics::Dashboard::CustomDashboardService::DASHBOARD_ROOT
 
       steps :check_push_authorized,
         :check_branch_name,
@@ -117,7 +117,7 @@ module Metrics
       def dashboard_details
         {
           path: update_dashboard_path,
-          display_name: ::Metrics::Dashboard::ProjectDashboardService.name_for_path(update_dashboard_path),
+          display_name: ::Metrics::Dashboard::CustomDashboardService.name_for_path(update_dashboard_path),
           default: false,
           system_dashboard: false
         }

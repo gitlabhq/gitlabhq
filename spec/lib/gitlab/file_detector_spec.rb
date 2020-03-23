@@ -96,14 +96,25 @@ describe Gitlab::FileDetector do
         'swagger.yml', 'swagger.yaml', 'swagger.json',
         'gitlab_swagger.yml', 'openapi_gitlab.yml',
         'OpenAPI.YML', 'openapi.Yaml', 'openapi.JSON',
-        'openapi.gitlab.yml', 'gitlab.openapi.yml'
+        'openapi.gitlab.yml', 'gitlab.openapi.yml',
+        'attention/openapi.yml', 'attention/swagger.yml',
+        'attention/gitlab_swagger.yml', 'attention/openapi_gitlab.yml',
+        'openapi/openapi.yml', 'openapi/swagger.yml',
+        'openapi/my_openapi.yml', 'openapi/swagger_one.yml'
       ]
 
       openapi_types.each do |type_name|
         expect(described_class.type_of(type_name)).to eq(:openapi)
       end
 
-      expect(described_class.type_of('openapiyml')).to be_nil
+      openapi_bad_types = [
+        'openapiyml',
+        'openapi/attention.yaml', 'swagger/attention.yaml'
+      ]
+
+      openapi_bad_types.each do |type_name|
+        expect(described_class.type_of(type_name)).to be_nil
+      end
     end
   end
 end

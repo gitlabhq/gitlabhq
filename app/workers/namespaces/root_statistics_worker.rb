@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 module Namespaces
-  class RootStatisticsWorker # rubocop:disable Scalability/IdempotentWorker
+  class RootStatisticsWorker
     include ApplicationWorker
 
     queue_namespace :update_namespace_statistics
     feature_category :source_code_management
+    idempotent!
 
     def perform(namespace_id)
       namespace = Namespace.find(namespace_id)

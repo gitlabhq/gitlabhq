@@ -273,7 +273,7 @@
       changes: *code-backstage-patterns
       when: on_success
 
-.frontend:rules:default-frontend-jobs-as-if-foss:
+.frontend:rules:default-frontend-jobs-no-foss:
   rules:
     - <<: *if-not-ee
       when: never

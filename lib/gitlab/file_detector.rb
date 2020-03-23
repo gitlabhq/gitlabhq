@@ -40,7 +40,7 @@ module Gitlab
       yarn_lock: 'yarn.lock',
 
       # OpenAPI Specification files
-      openapi: %r{.*(openapi|swagger).*\.(yaml|yml|json)\z}i
+      openapi: %r{[^/]*(openapi|swagger)[^/]*\.(yaml|yml|json)\z}i
     }.freeze
 
     # Returns an Array of file types based on the given paths.

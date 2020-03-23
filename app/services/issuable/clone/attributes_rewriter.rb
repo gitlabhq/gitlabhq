@@ -74,7 +74,7 @@ module Issuable
 
           if matching_destination_milestone.present?
             event.attributes
-              .except('id', 'reference', 'reference_html')
+              .except('id')
               .merge(entity_key => new_entity.id,
                      'milestone_id' => matching_destination_milestone.id,
                      'action' => ResourceMilestoneEvent.actions[event.action],

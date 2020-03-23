@@ -74,4 +74,19 @@ describe Namespaces::RootStatisticsWorker, '#perform' do
       worker.perform(group.id)
     end
   end
+
+  it_behaves_like 'an idempotent worker' do
+    let(:job_args) { [group.id] }
+
+    it 'deletes one aggregation schedule' do
+      # Make sure the group and it's aggregation schedule are created before
+      # counting
+      group
+
+      expect { worker.perform(*job_args) }
+        .to change { Namespace::AggregationSchedule.count }.by(-1)
+      expect { worker.perform(*job_args) }
+        .not_to change { Namespace::AggregationSchedule.count }
+    end
+  end
 end

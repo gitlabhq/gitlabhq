@@ -78,7 +78,7 @@ module Gitlab
           end
 
           def project_service
-            ::Metrics::Dashboard::ProjectDashboardService
+            ::Metrics::Dashboard::CustomDashboardService
           end
 
           def self_monitoring_service

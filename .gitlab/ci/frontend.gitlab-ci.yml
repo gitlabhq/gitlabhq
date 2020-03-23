@@ -163,7 +163,7 @@ frontend-fixtures:
 frontend-fixtures-as-if-foss:
   extends:
     - .frontend-fixtures-base
-    - .frontend:rules:default-frontend-jobs-as-if-foss
+    - .frontend:rules:default-frontend-jobs-no-foss
     - .as-if-foss
 
 .frontend-job-base:
@@ -206,7 +206,7 @@ karma:
 karma-as-if-foss:
   extends:
     - .karma-base
-    - .frontend:rules:default-frontend-jobs-as-if-foss
+    - .frontend:rules:default-frontend-jobs-no-foss
     - .as-if-foss
   needs: ["frontend-fixtures-as-if-foss"]
 
@@ -241,7 +241,7 @@ jest:
 jest-as-if-foss:
   extends:
     - .jest-base
-    - .frontend:rules:default-frontend-jobs-as-if-foss
+    - .frontend:rules:default-frontend-jobs-no-foss
     - .as-if-foss
   needs: ["frontend-fixtures-as-if-foss"]
   cache:
@@ -250,7 +250,7 @@ jest-as-if-foss:
 coverage-frontend:
   extends:
     - .default-retry
-    - .frontend:rules:default-frontend-jobs
+    - .frontend:rules:default-frontend-jobs-no-foss
   needs: ["jest"]
   stage: post-test
   before_script:

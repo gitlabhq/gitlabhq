@@ -33,9 +33,9 @@ module QA
         create_many_branches
         create_many_new_files
         create_mr_with_many_commits
+        create_many_issues
 
         methods_arr = [
-          method(:create_many_issues),
           method(:create_many_labels),
           method(:create_many_todos),
           method(:create_many_merge_requests),
@@ -104,6 +104,7 @@ module QA
       def create_many_new_files
         create_a_new_file_api_req("hello.txt", "master", "#{@group_name}%2F#{@project_name}", "hello", "my new content")
         30.times do |i|
+          create_a_new_file_api_req("hello#{i}.txt", "master", "#{@group_name}%2F#{@project_name}", "hello", "my new content")
           create_a_new_file_api_req("hello#{i}.txt", "branch#{i}", "#{@group_name}%2F#{@project_name}", "hello", "my new content")
         end
 
@@ -137,7 +138,7 @@ module QA
         16.times do |i|
           faker_line_arr = Faker::Lorem.sentences(1500)
           content = faker_line_arr.join("\n\r")
-          create_a_new_file_api_req("hello#{i}.txt", "master", "#{@group_name}%2F#{@project_name}", "Add hello#{i}.txt", content)
+          create_a_new_file_api_req("hello#{i + 100}.txt", "master", "#{@group_name}%2F#{@project_name}", "Add hello#{i + 100}.txt", content)
           content_arr[i] = faker_line_arr
         end
 
@@ -147,7 +148,7 @@ module QA
           missed_line_array = content_arr[i].each_slice(2).map(&:first)
           content = missed_line_array.join("\n\rIm new!:D \n\r ")
 
-          update_file_api_req("hello#{i}.txt", "performance", "#{@group_name}%2F#{@project_name}", "Update hello#{i}.txt", content)
+          update_file_api_req("hello#{i + 100}.txt", "performance", "#{@group_name}%2F#{@project_name}", "Update hello#{i + 100}.txt", content)
         end
 
         create_mr_response = create_a_merge_request_api_req("#{@group_name}%2F#{@project_name}", "performance", "master", "Large_MR")
@@ -182,7 +183,7 @@ module QA
 
       def create_diff_note(iid, file_count, line_count, head_sha, start_sha, base_sha, line_type)
         post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/merge_requests/#{iid}/discussions").url,
-             "" "body=\"Let us discuss\"&
+          "" "body=\"Let us discuss\"&
           position[position_type]=text&
           position[new_path]=hello#{file_count}.txt&
           position[old_path]=hello#{file_count}.txt&

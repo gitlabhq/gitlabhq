@@ -410,8 +410,16 @@ class MergeRequest < ApplicationRecord
     "#{project.to_reference_base(from, full: full)}#{reference}"
   end
 
-  def context_commits
-    @context_commits ||= merge_request_context_commits.map(&:to_commit)
+  def context_commits(limit: nil)
+    @context_commits ||= merge_request_context_commits.limit(limit).map(&:to_commit)
+  end
+
+  def recent_context_commits
+    context_commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE)
+  end
+
+  def context_commits_count
+    context_commits.count
   end
 
   def commits(limit: nil)

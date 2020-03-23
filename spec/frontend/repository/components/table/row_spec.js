@@ -1,13 +1,7 @@
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import { GlBadge, GlLink, GlLoadingIcon } from '@gitlab/ui';
-import { visitUrl } from '~/lib/utils/url_utility';
 import TableRow from '~/repository/components/table/row.vue';
 import Icon from '~/vue_shared/components/icon.vue';
-
-jest.mock('~/lib/utils/url_utility', () => ({
-  ...jest.requireActual('~/lib/utils/url_utility'),
-  visitUrl: jest.fn(),
-}));
 
 let vm;
 let $router;
@@ -88,31 +82,6 @@ describe('Repository table row component', () => {
   });
 
   it.each`
-    type        | pushes
-    ${'tree'}   | ${true}
-    ${'file'}   | ${false}
-    ${'commit'} | ${false}
-  `('pushes new router if type $type is tree', ({ type, pushes }) => {
-    factory({
-      id: '1',
-      sha: '123',
-      path: 'test',
-      type,
-      currentPath: '/',
-    });
-
-    return vm.vm.$nextTick().then(() => {
-      vm.trigger('click');
-
-      if (pushes) {
-        expect($router.push).toHaveBeenCalledWith({ path: '/-/tree/master/test' });
-      } else {
-        expect($router.push).not.toHaveBeenCalled();
-      }
-    });
-  });
-
-  it.each`
     path
     ${'test#'}
     ${'Änderungen'}
@@ -132,7 +101,7 @@ describe('Repository table row component', () => {
     });
   });
 
-  it('pushes new route for directory with hash', () => {
+  it('renders link for directory with hash', () => {
     factory({
       id: '1',
       sha: '123',
@@ -142,36 +111,7 @@ describe('Repository table row component', () => {
     });
 
     return vm.vm.$nextTick().then(() => {
-      vm.trigger('click');
-
-      expect($router.push).toHaveBeenCalledWith({ path: '/-/tree/master/test%23' });
-    });
-  });
-
-  it.each`
-    type        | pushes
-    ${'tree'}   | ${true}
-    ${'file'}   | ${false}
-    ${'commit'} | ${false}
-  `('calls visitUrl if $type is not tree', ({ type, pushes }) => {
-    factory({
-      id: '1',
-      sha: '123',
-      path: 'test',
-      type,
-      currentPath: '/',
-    });
-
-    return vm.vm.$nextTick().then(() => {
-      vm.trigger('click');
-
-      if (pushes) {
-        expect(visitUrl).not.toHaveBeenCalled();
-      } else {
-        const [url, external] = visitUrl.mock.calls[0];
-        expect(url).toBe('https://test.com');
-        expect(external).toBeFalsy();
-      }
+      expect(vm.find('.tree-item-link').props('to')).toEqual({ path: '/-/tree/master/test%23' });
     });
   });
 

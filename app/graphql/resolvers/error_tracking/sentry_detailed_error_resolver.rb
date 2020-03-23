@@ -9,7 +9,7 @@ module Resolvers
 
       def resolve(**args)
         current_user = context[:current_user]
-        issue_id = GlobalID.parse(args[:id]).model_id
+        issue_id = GlobalID.parse(args[:id])&.model_id
 
         # Get data from Sentry
         response = ::ErrorTracking::IssueDetailsService.new(

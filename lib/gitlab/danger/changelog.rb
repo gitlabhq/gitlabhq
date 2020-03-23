@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def found
-        git.added_files.find { |path| path =~ %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} }
+        @found ||= git.added_files.find { |path| path =~ %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} }
       end
 
       def presented_no_changelog_labels
@@ -22,12 +22,8 @@ module Gitlab
         gitlab.mr_json["title"].gsub(/^WIP: */, '').gsub(/`/, '\\\`')
       end
 
-      def ee_changelog?(changelog_path)
-        changelog_path =~ /unreleased-ee/
-      end
-
-      def ce_port_changelog?(changelog_path)
-        helper.ee? && !ee_changelog?(changelog_path)
+      def ee_changelog?
+        found.start_with?('ee/')
       end
 
       private

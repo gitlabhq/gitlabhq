@@ -21,7 +21,13 @@ GITLAB_DOCS_REPO = 'gitlab-org/gitlab-docs'.freeze
 # kicked the review app.
 #
 def docs_branch
-  "docs-preview-#{slug}-#{ENV["CI_MERGE_REQUEST_IID"]}"
+  # Check if CI_MERGE_REQUEST_IID is present. This requires pipelines
+  # for merge requests to be enabled.
+  if ENV["CI_MERGE_REQUEST_IID"].nil?
+    "docs-preview-#{slug}-#{ENV["CI_COMMIT_REF_SLUG"]}"
+  else
+    "docs-preview-#{slug}-#{ENV["CI_MERGE_REQUEST_IID"]}"
+  end
 end
 
 #

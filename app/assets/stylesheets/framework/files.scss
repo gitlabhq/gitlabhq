@@ -511,3 +511,21 @@ span.idiff {
 .code-navigation-popover {
   max-width: 450px;
 }
+
+.tree-item-link {
+  &:not(.is-submodule) {
+    span {
+      z-index: 2;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+  }
+}

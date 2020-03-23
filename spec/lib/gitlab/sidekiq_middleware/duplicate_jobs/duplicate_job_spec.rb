@@ -129,7 +129,8 @@ describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gitlab_r
       before do
         allow(AuthorizedProjectsWorker).to receive(:idempotent?).and_return(idempotent)
         allow(duplicate_job).to receive(:duplicate?).and_return(duplicate)
-        stub_feature_flags(drop_duplicate_sidekiq_jobs: feature_enabled)
+        allow(Gitlab::SidekiqMiddleware::DuplicateJobs)
+          .to receive(:drop_duplicates?).with(queue).and_return(feature_enabled)
       end
 
       it 'is droppable when all conditions are met' do

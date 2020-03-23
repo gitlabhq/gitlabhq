@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Metrics::Dashboard::ProjectDashboardService, :use_clean_rails_memory_store_caching do
+describe Metrics::Dashboard::CustomDashboardService, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
   let_it_be(:user) { create(:user) }

@@ -112,9 +112,6 @@ describe Issuable::Clone::AttributesRewriter do
         expect(event.milestone_id).to eq(expected_attrs[:milestone].id)
         expect(event.action).to eq(expected_attrs[:action])
         expect(event.state).to eq(expected_attrs[:state])
-
-        expect(event.reference).to be_nil
-        expect(event.reference_html).to be_nil
       end
     end
   end

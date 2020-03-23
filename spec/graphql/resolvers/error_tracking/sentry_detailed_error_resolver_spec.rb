@@ -18,6 +18,16 @@ describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
       .and_return issue_details_service
   end
 
+  shared_examples 'it resolves to nil' do
+    it 'resolves to nil' do
+      allow(issue_details_service).to receive(:execute)
+        .and_return(issue: nil)
+
+      result = resolve_error(args)
+      expect(result).to be_nil
+    end
+  end
+
   describe '#resolve' do
     let(:args) { { id: issue_global_id(1234) } }
 
@@ -32,7 +42,7 @@ describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
 
       before do
         allow(issue_details_service).to receive(:execute)
-          .and_return({ issue: detailed_error })
+          .and_return(issue: detailed_error)
       end
 
       it 'resolves to a detailed error' do
@@ -44,12 +54,14 @@ describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
       end
     end
 
-    it 'resolves to nil if no match' do
-      allow(issue_details_service).to receive(:execute)
-        .and_return({ issue: nil })
+    context 'if id does not match issue' do
+      it_behaves_like 'it resolves to nil'
+    end
 
-      result = resolve_error(args)
-      expect(result).to eq nil
+    context 'blank id' do
+      let(:args) { { id: '' } }
+
+      it_behaves_like 'it resolves to nil'
     end
   end
 

@@ -1,7 +1,7 @@
 <script>
 import { escapeRegExp } from 'lodash';
 import { GlBadge, GlLink, GlSkeletonLoading, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
-import { visitUrl, escapeFileUrl } from '~/lib/utils/url_utility';
+import { escapeFileUrl } from '~/lib/utils/url_utility';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import { getIconName } from '../../utils/icon';
@@ -117,39 +117,37 @@ export default {
       return this.commit && this.commit.lockLabel;
     },
   },
-  methods: {
-    openRow(e) {
-      if (e.target.tagName === 'A') return;
-
-      if (this.isFolder && !e.metaKey) {
-        this.$router.push(this.routerLinkTo);
-      } else {
-        visitUrl(this.url, e.metaKey);
-      }
-    },
-  },
 };
 </script>
 
 <template>
-  <tr :class="`file_${id}`" class="tree-item" @click="openRow">
-    <td class="tree-item-file-name">
+  <tr class="tree-item">
+    <td class="tree-item-file-name cursor-default position-relative">
       <gl-loading-icon
         v-if="path === loadingPath"
         size="sm"
         inline
         class="d-inline-block align-text-bottom fa-fw"
       />
-      <i v-else :aria-label="type" role="img" :class="iconName" class="fa fa-fw"></i>
       <component
         :is="linkComponent"
         ref="link"
         :to="routerLinkTo"
         :href="url"
-        class="str-truncated"
+        :class="{
+          'is-submodule': isSubmodule,
+        }"
+        class="tree-item-link str-truncated"
         data-qa-selector="file_name_link"
       >
-        {{ fullPath }}
+        <i
+          v-if="!loadingPath"
+          :aria-label="type"
+          role="img"
+          :class="iconName"
+          class="fa fa-fw mr-1"
+        ></i
+        ><span class="position-relative">{{ fullPath }}</span>
       </component>
       <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
       <gl-badge v-if="lfsOid" variant="default" class="label-lfs ml-1">LFS</gl-badge>
@@ -165,7 +163,7 @@ export default {
         class="ml-2 vertical-align-middle"
       />
     </td>
-    <td class="d-none d-sm-table-cell tree-commit">
+    <td class="d-none d-sm-table-cell tree-commit cursor-default">
       <gl-link
         v-if="commit"
         :href="commit.commitPath"
@@ -176,7 +174,7 @@ export default {
       </gl-link>
       <gl-skeleton-loading v-else :lines="1" class="h-auto" />
     </td>
-    <td class="tree-time-ago text-right">
+    <td class="tree-time-ago text-right cursor-default">
       <timeago-tooltip v-if="commit" :time="commit.committedDate" />
       <gl-skeleton-loading v-else :lines="1" class="ml-auto h-auto w-50" />
     </td>

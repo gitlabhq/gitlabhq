@@ -8,7 +8,7 @@ module Resolvers
                 description: 'ID of the Sentry issue'
 
       def resolve(**args)
-        issue_id = GlobalID.parse(args[:id]).model_id
+        issue_id = GlobalID.parse(args[:id])&.model_id
 
         # Get data from Sentry
         response = ::ErrorTracking::IssueLatestEventService.new(

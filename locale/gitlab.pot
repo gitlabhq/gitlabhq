@@ -9166,18 +9166,6 @@ msgstr ""
 msgid "GeoNodes|Last event ID seen from primary"
 msgstr ""
 
-msgid "GeoNodes|Learn more about Repository checksum progress"
-msgstr ""
-
-msgid "GeoNodes|Learn more about Repository verification"
-msgstr ""
-
-msgid "GeoNodes|Learn more about Wiki checksum progress"
-msgstr ""
-
-msgid "GeoNodes|Learn more about Wiki verification"
-msgstr ""
-
 msgid "GeoNodes|Loading nodes"
 msgstr ""
 
@@ -9208,6 +9196,9 @@ msgstr ""
 msgid "GeoNodes|Removing a Geo secondary node stops the synchronization to that node. Are you sure?"
 msgstr ""
 
+msgid "GeoNodes|Replicated data is verified with the %{nodeText} using checksums"
+msgstr ""
+
 msgid "GeoNodes|Replication slot WAL"
 msgstr ""
 
@@ -9215,12 +9206,6 @@ msgid "GeoNodes|Replication slots"
 msgstr ""
 
 msgid "GeoNodes|Repositories"
-msgstr ""
-
-msgid "GeoNodes|Repositories checksummed for verification with their counterparts on Secondary nodes"
-msgstr ""
-
-msgid "GeoNodes|Repositories verified with their counterparts on the Primary node"
 msgstr ""
 
 msgid "GeoNodes|Repository checksum progress"
@@ -9274,16 +9259,16 @@ msgstr ""
 msgid "GeoNodes|Wikis"
 msgstr ""
 
-msgid "GeoNodes|Wikis checksummed for verification with their counterparts on Secondary nodes"
-msgstr ""
-
-msgid "GeoNodes|Wikis verified with their counterparts on the Primary node"
-msgstr ""
-
 msgid "GeoNodes|With %{geo} you can install a special read-only and replicated instance anywhere. Before you add nodes, follow the %{instructions} in the exact order they appear."
 msgstr ""
 
 msgid "GeoNodes|You have configured Geo nodes using an insecure HTTP connection. We recommend the use of HTTPS."
+msgstr ""
+
+msgid "GeoNodes|primary node"
+msgstr ""
+
+msgid "GeoNodes|secondary nodes"
 msgstr ""
 
 msgid "Geo|%{name} is scheduled for forced re-download"
@@ -22762,9 +22747,6 @@ msgstr ""
 msgid "Wiki|Edit Page"
 msgstr ""
 
-msgid "Wiki|More Pages"
-msgstr ""
-
 msgid "Wiki|New page"
 msgstr ""
 
@@ -22781,6 +22763,9 @@ msgid "Wiki|Pages"
 msgstr ""
 
 msgid "Wiki|Title"
+msgstr ""
+
+msgid "Wiki|View All Pages"
 msgstr ""
 
 msgid "Wiki|Wiki Pages"

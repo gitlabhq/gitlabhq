@@ -200,6 +200,35 @@ GitlabSecurity/PublicSend:
     - 'ee/lib/**/*.rake'
     - 'ee/spec/**/*'
 
+Gitlab/DuplicateSpecLocation:
+  Exclude:
+    - ee/spec/controllers/groups_controller_spec.rb
+    - ee/spec/controllers/projects/jobs_controller_spec.rb
+    - ee/spec/helpers/auth_helper_spec.rb
+    - ee/spec/lib/gitlab/gl_repository_spec.rb
+    - ee/spec/lib/gitlab/usage_data_spec.rb
+    - ee/spec/models/namespace_spec.rb
+    - ee/spec/models/note_spec.rb
+    - ee/spec/serializers/environment_entity_spec.rb
+    - ee/spec/services/issues/create_service_spec.rb
+    - ee/spec/services/merge_requests/create_service_spec.rb
+    - ee/spec/services/merge_requests/refresh_service_spec.rb
+    - ee/spec/services/merge_requests/update_service_spec.rb
+    - ee/spec/services/system_hooks_service_spec.rb
+    - ee/spec/controllers/ee/groups_controller_spec.rb
+    - ee/spec/controllers/ee/projects/jobs_controller_spec.rb
+    - ee/spec/helpers/ee/auth_helper_spec.rb
+    - ee/spec/lib/ee/gitlab/gl_repository_spec.rb
+    - ee/spec/lib/ee/gitlab/usage_data_spec.rb
+    - ee/spec/models/ee/namespace_spec.rb
+    - ee/spec/models/ee/note_spec.rb
+    - ee/spec/serializers/ee/environment_entity_spec.rb
+    - ee/spec/services/ee/issues/create_service_spec.rb
+    - ee/spec/services/ee/merge_requests/create_service_spec.rb
+    - ee/spec/services/ee/merge_requests/refresh_service_spec.rb
+    - ee/spec/services/ee/merge_requests/update_service_spec.rb
+    - ee/spec/services/ee/system_hooks_service_spec.rb
+
 Cop/InjectEnterpriseEditionModule:
   Enabled: true
   Exclude:

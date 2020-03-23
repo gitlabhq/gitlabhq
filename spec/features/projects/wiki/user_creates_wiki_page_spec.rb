@@ -312,7 +312,6 @@ describe "User creates wiki page" do
         visit(project_wikis_path(project))
 
         expect(page).to have_content('another')
-        expect(page).to have_content('More Pages')
       end
 
       context 'when there is a customized sidebar' do
@@ -324,9 +323,22 @@ describe "User creates wiki page" do
           visit(project_wikis_path(project))
 
           expect(page).to have_content('My customized sidebar')
-          expect(page).to have_content('More Pages')
           expect(page).not_to have_content('Another')
         end
+      end
+    end
+
+    context 'when there are more than 15 existing pages' do
+      before do
+        create(:wiki_page, wiki: wiki, attrs: { title: 'home', content: 'home' })
+        (1..14).each { |i| create(:wiki_page, wiki: wiki, attrs: { title: "page-#{i}", content: "page #{i}" }) }
+      end
+
+      it 'renders a default sidebar when there is no customized sidebar' do
+        visit(project_wikis_path(project))
+
+        expect(page).to have_content('View All Pages')
+        expect(page).to have_content('page 1')
       end
     end
   end

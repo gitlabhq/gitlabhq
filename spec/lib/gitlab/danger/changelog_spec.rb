@@ -76,10 +76,10 @@ describe Gitlab::Danger::Changelog do
 
     context 'added files contain a changelog' do
       [
-        'changelogs/unreleased/entry.md',
-        'ee/changelogs/unreleased/entry.md',
-        'changelogs/unreleased-ee/entry.md',
-        'ee/changelogs/unreleased-ee/entry.md'
+        'changelogs/unreleased/entry.yml',
+        'ee/changelogs/unreleased/entry.yml',
+        'changelogs/unreleased-ee/entry.yml',
+        'ee/changelogs/unreleased-ee/entry.yml'
       ].each do |file_path|
         let(:added_files) { [file_path] }
 
@@ -107,46 +107,22 @@ describe Gitlab::Danger::Changelog do
   end
 
   describe '#ee_changelog?' do
-    context 'is ee changelog' do
-      [
-        'changelogs/unreleased-ee/entry.md',
-        'ee/changelogs/unreleased-ee/entry.md'
-      ].each do |file_path|
-        subject { changelog.ee_changelog?(file_path) }
+    subject { changelog.ee_changelog? }
 
-        it { is_expected.to be_truthy }
-      end
+    before do
+      allow(changelog).to receive(:found).and_return(file_path)
+    end
+
+    context 'is ee changelog' do
+      let(:file_path) { 'ee/changelogs/unreleased/entry.yml' }
+
+      it { is_expected.to be_truthy }
     end
 
     context 'is not ee changelog' do
-      [
-        'changelogs/unreleased/entry.md',
-        'ee/changelogs/unreleased/entry.md'
-      ].each do |file_path|
-        subject { changelog.ee_changelog?(file_path) }
+      let(:file_path) { 'changelogs/unreleased/entry.yml' }
 
-        it { is_expected.to be_falsy }
-      end
-    end
-  end
-
-  describe '#ce_port_changelog?' do
-    where(:helper_ee?, :file_path, :expected) do
-      true  | 'changelogs/unreleased-ee/entry.md'    | false
-      true  | 'ee/changelogs/unreleased-ee/entry.md' | false
-      false | 'changelogs/unreleased-ee/entry.md'    | false
-      false | 'ee/changelogs/unreleased-ee/entry.md' | false
-      true  | 'changelogs/unreleased/entry.md'       | true
-      true  | 'ee/changelogs/unreleased/entry.md'    | true
-      false | 'changelogs/unreleased/entry.md'       | false
-      false | 'ee/changelogs/unreleased/entry.md'    | false
-    end
-
-    with_them do
-      let(:ee?) { helper_ee? }
-      subject { changelog.ce_port_changelog?(file_path) }
-
-      it { is_expected.to eq(expected) }
+      it { is_expected.to be_falsy }
     end
   end
 end
