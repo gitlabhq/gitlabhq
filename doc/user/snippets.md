@@ -22,6 +22,33 @@ and private. See [Public access](../public_access/public_access.md) for more inf
 Project snippets are always related to a specific project.
 See [Project features](project/index.md#project-features) for more information.
 
+## Create a snippet
+
+To create a personal snippet, click the plus icon (**{plus-square-o}**)
+on the top navigation and select **New snippet** from the dropdown menu:
+
+![New personal snippet from non-project pages](img/new_personal_snippet_v12_10.png)
+
+If you're on a project's page but you want to create a new personal snippet,
+click the plus icon (**{plus-square-o}**) and select **New snippet** from the
+lower part of the dropdown (**GitLab** on GitLab.com; **Your Instance** on
+self-managed instances):
+
+![New personal snippet from project pages](img/new_personal_snippet_from_project_v12_10.png)
+
+To create a project snippet, navigate to your project's page and click the
+plus icon (**{plus-square-o}**), then select **New snippet** from the upper
+part of the dropdown (**This project**).
+
+![New personal snippet from project pages](img/new_project_snippet_from_project_v12_10.png)
+
+From there, add the **Title**, **Description**, and a **File** name with the
+appropriate extension (for example, `example.rb`, `index.html`).
+
+CAUTION: **Warning:**
+Make sure to add the file name to get code highlighting and to avoid this
+[copy-pasting bug](https://gitlab.com/gitlab-org/gitlab/-/issues/22870).
+
 ## Discover snippets
 
 There are two main ways of how you can discover snippets in GitLab.

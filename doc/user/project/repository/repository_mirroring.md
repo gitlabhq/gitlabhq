@@ -110,9 +110,6 @@ The repository will push soon. To force a push, click the appropriate button.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51) in GitLab Enterprise Edition 8.2.
 > - [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab/issues/10871) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.11.
 
-NOTE: **Note:** This feature [is available for free](https://gitlab.com/gitlab-org/gitlab/issues/10361) to
-GitLab.com users until March 22nd, 2020.
-
 You can set up a repository to automatically have its branches, tags, and commits updated from an
 upstream repository.
 
