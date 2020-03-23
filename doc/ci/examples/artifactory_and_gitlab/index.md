@@ -20,7 +20,7 @@ You'll create two different projects:
 - `simple-maven-dep`: the app built and deployed to Artifactory (see the [simple-maven-dep](https://gitlab.com/gitlab-examples/maven/simple-maven-dep) example project)
 - `simple-maven-app`: the app using the previous one as a dependency (see the [simple-maven-app](https://gitlab.com/gitlab-examples/maven/simple-maven-app) example project)
 
-We assume that you already have a GitLab account on [GitLab.com](https://gitlab.com/), and that you know the basic usage of Git and [GitLab CI/CD](https://about.gitlab.com/product/continuous-integration/).
+We assume that you already have a GitLab account on [GitLab.com](https://gitlab.com/), and that you know the basic usage of Git and [GitLab CI/CD](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/).
 We also assume that an Artifactory instance is available and reachable from the internet, and that you have valid credentials to deploy on it.
 
 ## Create the simple Maven dependency
@@ -104,7 +104,7 @@ parameter in `.gitlab-ci.yml` to use the custom location instead of the default 
 
 ### Configure GitLab CI/CD for `simple-maven-dep`
 
-Now it's time we set up [GitLab CI/CD](https://about.gitlab.com/product/continuous-integration/) to automatically build, test and deploy the dependency!
+Now it's time we set up [GitLab CI/CD](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/) to automatically build, test and deploy the dependency!
 
 GitLab CI/CD uses a file in the root of the repo, named `.gitlab-ci.yml`, to read the definitions for jobs
 that will be executed by the configured GitLab Runners. You can read more about this file in the [GitLab Documentation](../../yaml/README.md).
@@ -233,7 +233,7 @@ Now you are ready to use the Artifactory repository to resolve dependencies and 
 
 You need a last step to have everything in place: configure the `.gitlab-ci.yml` file for this project, as you already did for `simple-maven-dep`.
 
-You want to leverage [GitLab CI/CD](https://about.gitlab.com/product/continuous-integration/) to automatically build, test and run your awesome application,
+You want to leverage [GitLab CI/CD](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/) to automatically build, test and run your awesome application,
 and see if you can get the greeting as expected!
 
 All you need to do is to add the following `.gitlab-ci.yml` to the repo:

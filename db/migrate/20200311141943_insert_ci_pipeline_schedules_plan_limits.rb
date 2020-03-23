@@ -5,7 +5,7 @@ class InsertCiPipelineSchedulesPlanLimits < ActiveRecord::Migration[6.0]
 
   DOWNTIME = false
 
-  def change
+  def up
     return unless Gitlab.com?
 
     create_or_update_plan_limit('ci_pipeline_schedules', 'free', 10)

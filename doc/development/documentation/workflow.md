@@ -91,7 +91,7 @@ the Product Manager and Technical Writer for a given issue:
   including:
   - Documentation [Structure and template](structure.md) page.
   - [Style Guide](styleguide.md).
-  - [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
+  - [Markdown Guide](https://about.gitlab.com/handbook/engineering/ux/technical-writing/markdown-guide/).
 - Contact the Technical Writer for the relevant [DevOps stage](https://about.gitlab.com/handbook/product/technical-writing/index.html#assignments)
   in your issue or merge request, or within `#docs` on GitLab Slack, if you:
   - Need any help to choose the correct place for documentation.
@@ -408,7 +408,7 @@ To update GitLab documentation:
 1. Follow the described standards and processes listed on the page, including:
    - The [Structure and template](structure.md) page.
    - The [Style Guide](styleguide.md).
-   - The [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
+   - The [Markdown Guide](https://about.gitlab.com/handbook/engineering/ux/technical-writing/markdown-guide/).
 1. Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
 
 TIP: **Tip:**

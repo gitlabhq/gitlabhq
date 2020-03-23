@@ -32,7 +32,7 @@ CAUTION: **Important:**
 OAuth specification advises sending the `state` parameter with each request to
 `/oauth/authorize`. We highly recommended sending a unique value with each request
 and validate it against the one in the redirect request. This is important in
-order to prevent [CSRF attacks](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)).
+order to prevent [CSRF attacks](https://wiki.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)).
 The `state` parameter really should have been a requirement in the standard!
 
 In the following sections you will find detailed instructions on how to obtain

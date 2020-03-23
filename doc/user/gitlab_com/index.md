@@ -52,7 +52,7 @@ Host gitlab.com
 
 ## GitLab Pages
 
-Below are the settings for [GitLab Pages](https://about.gitlab.com/product/pages/).
+Below are the settings for [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
 
 | Setting                     | GitLab.com        | Default       |
 | --------------------------- | ----------------  | ------------- |

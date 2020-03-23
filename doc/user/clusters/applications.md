@@ -212,7 +212,7 @@ kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-contro
 For Istio/Knative, the command will be different:
 
 ```shell
-kubectl get svc --namespace=istio-system knative-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
+kubectl get svc --namespace=istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
 ```
 
 Otherwise, you can list the IP addresses of all load balancers:

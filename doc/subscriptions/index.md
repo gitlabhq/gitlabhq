@@ -239,7 +239,7 @@ The following will be emailed to you:
 
 ### Seat Link
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208832) in [GitLab Starter](https://about.gitlab.com/pricing) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208832) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.9.
 
 Seat Link allows us to provide our self-managed customers with prorated charges for user growth throughout the year using a quarterly reconciliation process.
 

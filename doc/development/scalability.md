@@ -128,7 +128,7 @@ replica if its replication lag is low (e.g. WAL data behind by < 100
 megabytes).
 
 More [details are in a blog
-post](https://about.gitlab.com/2017/10/02/scaling-the-gitlab-database/).
+post](https://about.gitlab.com/blog/2017/10/02/scaling-the-gitlab-database/).
 
 ### PgBouncer
 

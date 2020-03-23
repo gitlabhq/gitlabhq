@@ -99,7 +99,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 1. [Due Dates and Milestones for GitLab Issues](https://about.gitlab.com/blog/2016/08/05/feature-highlight-set-dates-for-issues/)
 1. [How to Use GitLab Labels](https://about.gitlab.com/blog/2016/08/17/using-gitlab-labels/)
 1. [Applying GitLab Labels Automatically](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/)
-1. [GitLab Issue Board - Product Page](https://about.gitlab.com/product/issueboard/)
+1. [GitLab Issue Board - Product Page](https://about.gitlab.com/stages-devops-lifecycle/issueboard/)
 1. [An Overview of GitLab Issue Board](https://about.gitlab.com/blog/2016/08/22/announcing-the-gitlab-issue-board/)
 1. [Designing GitLab Issue Board](https://about.gitlab.com/blog/2016/08/31/designing-issue-boards/)
 1. [From Idea to Production with GitLab - Video](https://www.youtube.com/watch?v=25pHyknRgEo&index=14&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
@@ -107,7 +107,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 ### 2.3. Continuous Integration
 
 1. [Operating Systems, Servers, VMs, Containers and Unix - Video](https://www.youtube.com/watch?v=V61kL6IC-zY&index=8&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
-1. [GitLab CI - Product Page](https://about.gitlab.com/product/continuous-integration/)
+1. [GitLab CI - Product Page](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/)
 1. [Getting started with GitLab and GitLab CI](https://about.gitlab.com/blog/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/)
 1. [GitLab Container Registry](https://about.gitlab.com/blog/2016/05/23/gitlab-container-registry/)
 1. [GitLab and Docker - Video](https://www.youtube.com/watch?v=ugOrCcbdHko&index=12&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
@@ -181,7 +181,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 ### 3.8 Cycle Analytics
 
 1. [GitLab Cycle Analytics Overview](https://about.gitlab.com/blog/2016/09/21/cycle-analytics-feature-highlight/)
-1. [GitLab Cycle Analytics - Product Page](https://about.gitlab.com/product/cycle-analytics/)
+1. [GitLab Cycle Analytics - Product Page](https://about.gitlab.com/stages-devops-lifecycle/cycle-analytics/)
 
 ### 3.9. Integrations
 

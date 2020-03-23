@@ -1,6 +1,6 @@
 # Pages API
 
-Endpoints for managing [GitLab Pages](https://about.gitlab.com/product/pages/).
+Endpoints for managing [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
 
 The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/index.md) and [using](../user/project/pages/index.md) the feature.
 

@@ -17,7 +17,7 @@ services.
 
 [GitLab Omnibus can help you install Grafana (recommended)](https://docs.gitlab.com/omnibus/settings/grafana.html)
 or Grafana supplies package repositories (Yum/Apt) for easy installation.
-See [Grafana installation documentation](https://grafana.com/docs/installation/)
+See [Grafana installation documentation](https://grafana.com/docs/grafana/latest/installation/)
 for detailed steps.
 
 NOTE: **Note:**
@@ -152,13 +152,13 @@ However, you should **not** reinstate your old data _except_ under one of the fo
 If you require access to your old Grafana data but do not meet one of these criteria, you may consider:
 
 1. Reinstating it temporarily.
-1. [Exporting the dashboards](https://grafana.com/docs/reference/export_import/#exporting-a-dashboard) you need.
-1. Refreshing the data and [re-importing your dashboards](https://grafana.com/docs/reference/export_import/#importing-a-dashboard).
+1. [Exporting the dashboards](https://grafana.com/docs/grafana/latest/reference/export_import/#exporting-a-dashboard) you need.
+1. Refreshing the data and [re-importing your dashboards](https://grafana.com/docs/grafana/latest/reference/export_import/#importing-a-dashboard).
 
 DANGER: **Danger:**
 This poses a temporary vulnerability while your old Grafana data is in use and the decision to do so should be weighed carefully with your need to access existing data and dashboards.
 
-For more information and further mitigation details, please refer to our [blog post on the security release](https://about.gitlab.com/blog/2019/08/12/critical-security-release-gitlab-12-dot-1-dot-6-released/).
+For more information and further mitigation details, please refer to our [blog post on the security release](https://about.gitlab.com/releases/2019/08/12/critical-security-release-gitlab-12-dot-1-dot-6-released/).
 
 ---
 
