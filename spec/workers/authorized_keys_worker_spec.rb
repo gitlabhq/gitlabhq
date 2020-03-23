@@ -17,7 +17,7 @@ describe AuthorizedKeysWorker do
             expect(instance).to receive(:add_key).with('foo', 'bar')
           end
 
-          worker.perform(:add_key, 'foo', 'bar')
+          worker.perform('add_key', 'foo', 'bar')
         end
       end
 
@@ -27,15 +27,17 @@ describe AuthorizedKeysWorker do
             expect(instance).to receive(:remove_key).with('foo', 'bar')
           end
 
-          worker.perform(:remove_key, 'foo', 'bar')
+          worker.perform('remove_key', 'foo', 'bar')
         end
       end
 
       describe 'all other commands' do
-        it 'does nothing' do
+        it 'raises an error' do
           expect(Gitlab::AuthorizedKeys).not_to receive(:new)
 
-          worker.perform(:foo, 'bar', 'baz')
+          expect do
+            worker.perform('foo', 'bar', 'baz')
+          end.to raise_error('Unknown action: "foo"')
         end
       end
     end
@@ -48,7 +50,7 @@ describe AuthorizedKeysWorker do
       it 'does nothing' do
         expect(Gitlab::AuthorizedKeys).not_to receive(:new)
 
-        worker.perform(:add_key, 'foo', 'bar')
+        worker.perform('add_key', 'foo', 'bar')
       end
     end
   end

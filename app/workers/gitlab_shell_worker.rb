@@ -13,7 +13,7 @@ class GitlabShellWorker # rubocop:disable Scalability/IdempotentWorker
     # enqueued in the previous release, so handle them here.
     #
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/25095 for more details
-    if AuthorizedKeysWorker::PERMITTED_ACTIONS.include?(action)
+    if AuthorizedKeysWorker::PERMITTED_ACTIONS.include?(action.to_s)
       AuthorizedKeysWorker.new.perform(action, *arg)
 
       return

@@ -12,7 +12,7 @@ describe GitlabShellWorker do
           expect(instance).to receive(:add_key).with('foo', 'bar')
         end
 
-        worker.perform(:add_key, 'foo', 'bar')
+        worker.perform('add_key', 'foo', 'bar')
       end
     end
 
@@ -22,7 +22,7 @@ describe GitlabShellWorker do
           expect(instance).to receive(:remove_key).with('foo', 'bar')
         end
 
-        worker.perform(:remove_key, 'foo', 'bar')
+        worker.perform('remove_key', 'foo', 'bar')
       end
     end
 
@@ -32,7 +32,7 @@ describe GitlabShellWorker do
           expect(instance).to receive(:foo).with('bar', 'baz')
         end
 
-        worker.perform(:foo, 'bar', 'baz')
+        worker.perform('foo', 'bar', 'baz')
       end
     end
   end
