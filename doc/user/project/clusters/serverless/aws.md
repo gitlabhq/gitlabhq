@@ -379,7 +379,7 @@ control to AWS Lambda, API Gateway, CloudFormation, and IAM resources.
 ### Crafting the `.gitlab-ci.yml` file
 
 In a [`.gitlab-ci.yml`](../../../../ci/yaml/README.md) file in the root of your project,
-add the following and replace <S3_bucket_name> with the name of the S3 bucket where you
+add the following and replace `<S3_bucket_name>` with the name of the S3 bucket where you
 want to store your package:
 
 ```yaml
@@ -468,8 +468,8 @@ First, test the function.
 
 SAM provides a default event in `events/event.json` that includes a message body of:
 
-```json
-{\“message\”: \“hello world\”}
+```plaintext
+{\"message\": \"hello world\"}
 ```
 
 If you pass that event into the `HelloWorldFunction`, it should respond with the same
