@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
-class Evidence < ApplicationRecord
+class Releases::Evidence < ApplicationRecord
   include ShaAttribute
+  include Presentable
 
-  belongs_to :release
+  belongs_to :release, inverse_of: :evidences
 
   before_validation :generate_summary_and_sha
 
   default_scope { order(created_at: :asc) }
 
   sha_attribute :summary_sha
+  alias_attribute :collected_at, :created_at
 
   def milestones
     @milestones ||= release.milestones.includes(:issues)

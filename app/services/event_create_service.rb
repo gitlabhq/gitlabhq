@@ -8,6 +8,8 @@
 #   EventCreateService.new.new_issue(issue, current_user)
 #
 class EventCreateService
+  IllegalActionError = Class.new(StandardError)
+
   def open_issue(issue, current_user)
     create_record_event(issue, current_user, Event::CREATED)
   end
@@ -78,6 +80,19 @@ class EventCreateService
 
   def bulk_push(project, current_user, push_data)
     create_push_event(BulkPushEventPayloadService, project, current_user, push_data)
+  end
+
+  # Create a new wiki page event
+  #
+  # @param [WikiPage::Meta] wiki_page_meta The event target
+  # @param [User] current_user The event author
+  # @param [Integer] action One of the Event::WIKI_ACTIONS
+  def wiki_event(wiki_page_meta, current_user, action)
+    return unless Feature.enabled?(:wiki_events)
+
+    raise IllegalActionError, action unless Event::WIKI_ACTIONS.include?(action)
+
+    create_record_event(wiki_page_meta, current_user, action)
   end
 
   private

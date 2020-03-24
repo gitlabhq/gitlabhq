@@ -43,7 +43,6 @@ export const release = {
   description_html: '<p data-sourcepos="1:1-1:21" dir="auto">A super nice release!</p>',
   created_at: '2019-08-26T17:54:04.952Z',
   released_at: '2019-08-26T17:54:04.807Z',
-  evidence_sha: 'fb3a125fd69a0e5048ebfb0ba43eb32ce4911520dd8d',
   author: {
     id: 1,
     name: 'Administrator',
@@ -69,10 +68,28 @@ export const release = {
   commit_path: '/root/release-test/commit/c22b0728d1b465f82898c884d32b01aa642f96c1',
   upcoming_release: false,
   milestones,
+  evidences: [
+    {
+      filepath:
+        'https://20592.qa-tunnel.gitlab.info/root/test-deployments/-/releases/v1.1.2/evidences/1.json',
+      sha: 'fb3a125fd69a0e5048ebfb0ba43eb32ce4911520dd8d',
+      collected_at: '2018-10-19 15:43:20 +0200',
+    },
+    {
+      filepath:
+        'https://20592.qa-tunnel.gitlab.info/root/test-deployments/-/releases/v1.1.2/evidences/2.json',
+      sha: '6ebd17a66e6a861175735416e49cf677678029805712dd71bb805c609e2d9108',
+      collected_at: '2018-10-19 15:43:20 +0200',
+    },
+    {
+      filepath:
+        'https://20592.qa-tunnel.gitlab.info/root/test-deployments/-/releases/v1.1.2/evidences/3.json',
+      sha: '2f65beaf275c3cb4b4e24fb01d481cc475d69c957830833f15338384816b5cba',
+      collected_at: '2018-10-19 15:43:20 +0200',
+    },
+  ],
   assets: {
     count: 5,
-    evidence_file_path:
-      'https://20592.qa-tunnel.gitlab.info/root/test-deployments/-/releases/v1.1.2/evidence.json',
     sources: [
       {
         format: 'zip',

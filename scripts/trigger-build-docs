@@ -72,15 +72,17 @@ end
 # Define suffix in review app URL based on project
 #
 def slug
-  case ENV["CI_PROJECT_NAME"]
-  when 'gitlab-foss'
+  case ENV["CI_PROJECT_PATH"]
+  when 'gitlab-org/gitlab-foss'
     'ce'
-  when 'gitlab'
+  when 'gitlab-org/gitlab'
     'ee'
-  when 'gitlab-runner'
+  when 'gitlab-org/gitlab-runner'
     'runner'
-  when 'omnibus-gitlab'
+  when 'gitlab-org/omnibus-gitlab'
     'omnibus'
+  when 'gitlab-org/charts/gitlab'
+    'charts'
   end
 end
 

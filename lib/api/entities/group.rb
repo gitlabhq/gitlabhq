@@ -19,6 +19,7 @@ module API
       end
       expose :request_access_enabled
       expose :full_name, :full_path
+      expose :created_at
       expose :parent_id
 
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes

@@ -16,7 +16,7 @@ class Release < ApplicationRecord
 
   has_many :milestone_releases
   has_many :milestones, through: :milestone_releases
-  has_one :evidence
+  has_many :evidences, inverse_of: :release, class_name: 'Releases::Evidence'
 
   default_value_for :released_at, allows_nil: false do
     Time.zone.now
@@ -28,7 +28,7 @@ class Release < ApplicationRecord
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
 
   scope :sorted, -> { order(released_at: :desc) }
-  scope :preloaded, -> { includes(project: :namespace) }
+  scope :preloaded, -> { includes(:evidences, :milestones, project: [:project_feature, :route, { namespace: :route }]) }
   scope :with_project_and_namespace, -> { includes(project: :namespace) }
   scope :recent, -> { sorted.limit(MAX_NUMBER_TO_DISPLAY) }
 
@@ -66,27 +66,27 @@ class Release < ApplicationRecord
   end
 
   def upcoming_release?
-    released_at.present? && released_at > Time.zone.now
+    released_at.present? && released_at.to_i > Time.zone.now.to_i
   end
 
   def historical_release?
-    released_at.present? && released_at < created_at
+    released_at.present? && released_at.to_i < created_at.to_i
   end
 
   def name
     self.read_attribute(:name) || tag
   end
 
+  def milestone_titles
+    self.milestones.map {|m| m.title }.sort.join(", ")
+  end
+
   def evidence_sha
-    evidence&.summary_sha
+    evidences.first&.summary_sha
   end
 
   def evidence_summary
-    evidence&.summary || {}
-  end
-
-  def milestone_titles
-    self.milestones.map {|m| m.title }.sort.join(", ")
+    evidences.first&.summary || {}
   end
 
   private

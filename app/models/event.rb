@@ -36,6 +36,8 @@ class Event < ApplicationRecord
     expired:    EXPIRED
   ).freeze
 
+  WIKI_ACTIONS = [CREATED, UPDATED, DESTROYED].freeze
+
   TARGET_TYPES = HashWithIndifferentAccess.new(
     issue:          Issue,
     milestone:      Milestone,
@@ -81,7 +83,10 @@ class Event < ApplicationRecord
   scope :recent, -> { reorder(id: :desc) }
   scope :code_push, -> { where(action: PUSHED) }
   scope :merged, -> { where(action: MERGED) }
-  scope :for_wiki_page, -> { where(target_type: WikiPage::Meta.name) }
+  scope :for_wiki_page, -> { where(target_type: 'WikiPage::Meta') }
+
+  # Needed to implement feature flag: can be removed when feature flag is removed
+  scope :not_wiki_page, -> { where('target_type IS NULL or target_type <> ?', 'WikiPage::Meta') }
 
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association
@@ -229,7 +234,7 @@ class Event < ApplicationRecord
   end
 
   def wiki_page?
-    target_type == WikiPage::Meta.name
+    target_type == 'WikiPage::Meta'
   end
 
   def milestone

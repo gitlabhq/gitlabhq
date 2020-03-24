@@ -153,6 +153,46 @@ describe EventCreateService do
     end
   end
 
+  describe '#wiki_event' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:wiki_page) { create(:wiki_page) }
+    let_it_be(:meta) { create(:wiki_page_meta, :for_wiki_page, wiki_page: wiki_page) }
+
+    Event::WIKI_ACTIONS.each do |action|
+      context "The action is #{action}" do
+        let(:event) { service.wiki_event(meta, user, action) }
+
+        it 'creates the event' do
+          expect(event).to have_attributes(
+            wiki_page?: true,
+            valid?: true,
+            persisted?: true,
+            action: action,
+            wiki_page: wiki_page
+          )
+        end
+
+        context 'the feature is disabled' do
+          before do
+            stub_feature_flags(wiki_events: false)
+          end
+
+          it 'does not create the event' do
+            expect { event }.not_to change(Event, :count)
+          end
+        end
+      end
+    end
+
+    (Event::ACTIONS.values - Event::WIKI_ACTIONS).each do |bad_action|
+      context "The action is #{bad_action}" do
+        it 'raises an error' do
+          expect { service.wiki_event(meta, user, bad_action) }.to raise_error(described_class::IllegalActionError)
+        end
+      end
+    end
+  end
+
   describe '#push', :clean_gitlab_redis_shared_state do
     let(:project) { create(:project) }
     let(:user) { create(:user) }

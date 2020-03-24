@@ -22,6 +22,7 @@ module API
       expose :commit_path, expose_nil: false
       expose :tag_path, expose_nil: false
       expose :evidence_sha, expose_nil: false, if: ->(_, _) { can_download_code? }
+
       expose :assets do
         expose :assets_count, as: :count do |release, _|
           assets_to_exclude = can_download_code? ? [] : [:sources]
@@ -33,6 +34,7 @@ module API
         end
         expose :evidence_file_path, expose_nil: false, if: ->(_, _) { can_download_code? }
       end
+      expose :evidences, using: Entities::Releases::Evidence, expose_nil: false, if: ->(_, _) { can_download_code? }
       expose :_links do
         expose :self_url, as: :self, expose_nil: false
         expose :merge_requests_url, expose_nil: false

@@ -8,6 +8,8 @@ module StubExperiments
   # Examples
   # - `stub_experiment(signup_flow: false)` ... Disable `signup_flow` experiment globally.
   def stub_experiment(experiments)
+    allow(Gitlab::Experimentation).to receive(:enabled?).and_call_original
+
     experiments.each do |experiment_key, enabled|
       allow(Gitlab::Experimentation).to receive(:enabled?).with(experiment_key) { enabled }
     end
@@ -20,6 +22,8 @@ module StubExperiments
   # Examples
   # - `stub_experiment_for_user(signup_flow: false)` ... Disable `signup_flow` experiment for user.
   def stub_experiment_for_user(experiments)
+    allow(Gitlab::Experimentation).to receive(:enabled_for_user?).and_call_original
+
     experiments.each do |experiment_key, enabled|
       allow(Gitlab::Experimentation).to receive(:enabled_for_user?).with(experiment_key, anything) { enabled }
     end

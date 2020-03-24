@@ -1,0 +1,5 @@
+---
+title: Cache ES enabled namespaces and projects
+merge_request: 27348
+author:
+type: performance

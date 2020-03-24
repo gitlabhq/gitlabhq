@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "required" : [
+    "sha",
+    "filepath",
+    "collected_at"
+  ],
+  "properties" : {
+    "sha": { "type": "string" },
+    "filepath": { "type": "string" },
+    "collected_at": { "type": "date" }
+  },
+  "additionalProperties": false
+}

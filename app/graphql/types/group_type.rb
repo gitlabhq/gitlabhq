@@ -43,6 +43,12 @@ module Types
           description: 'Parent group',
           resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, obj.parent_id).find }
 
+    field :issues,
+          Types::IssueType.connection_type,
+          null: true,
+          description: 'Issues of the group',
+          resolver: Resolvers::IssuesResolver
+
     field :milestones, Types::MilestoneType.connection_type, null: true,
           description: 'Find milestones',
           resolver: Resolvers::MilestoneResolver

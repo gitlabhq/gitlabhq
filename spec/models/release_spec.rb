@@ -15,7 +15,7 @@ RSpec.describe Release do
     it { is_expected.to have_many(:links).class_name('Releases::Link') }
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:milestone_releases) }
-    it { is_expected.to have_one(:evidence) }
+    it { is_expected.to have_many(:evidences).class_name('Releases::Evidence') }
   end
 
   describe 'validation' do
@@ -97,7 +97,7 @@ RSpec.describe Release do
     describe '#create_evidence!' do
       context 'when a release is created' do
         it 'creates one Evidence object too' do
-          expect { release_with_evidence }.to change(Evidence, :count).by(1)
+          expect { release_with_evidence }.to change(Releases::Evidence, :count).by(1)
         end
       end
     end
@@ -106,7 +106,7 @@ RSpec.describe Release do
       it 'also deletes the associated evidence' do
         release_with_evidence
 
-        expect { release_with_evidence.destroy }.to change(Evidence, :count).by(-1)
+        expect { release_with_evidence.destroy }.to change(Releases::Evidence, :count).by(-1)
       end
     end
   end
@@ -155,7 +155,7 @@ RSpec.describe Release do
     context 'when a release was created with evidence collection' do
       let!(:release) { create(:release, :with_evidence) }
 
-      it { is_expected.to eq(release.evidence.summary_sha) }
+      it { is_expected.to eq(release.evidences.first.summary_sha) }
     end
   end
 
@@ -171,7 +171,7 @@ RSpec.describe Release do
     context 'when a release was created with evidence collection' do
       let!(:release) { create(:release, :with_evidence) }
 
-      it { is_expected.to eq(release.evidence.summary) }
+      it { is_expected.to eq(release.evidences.first.summary) }
     end
   end
 

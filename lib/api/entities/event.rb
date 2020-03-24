@@ -9,6 +9,7 @@ module API
       expose :created_at
       expose :note, using: Entities::Note, if: ->(event, options) { event.note? }
       expose :author, using: Entities::UserBasic, if: ->(event, options) { event.author }
+      expose :wiki_page, using: Entities::WikiPageBasic, if: ->(event, _options) { event.wiki_page? }
 
       expose :push_event_payload,
         as: :push_data,

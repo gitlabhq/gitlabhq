@@ -9,6 +9,7 @@ class EventFilter
   ISSUE = 'issue'
   COMMENTS = 'comments'
   TEAM = 'team'
+  WIKI = 'wiki'
 
   def initialize(filter)
     # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
@@ -22,6 +23,8 @@ class EventFilter
 
   # rubocop: disable CodeReuse/ActiveRecord
   def apply_filter(events)
+    events = apply_feature_flags(events)
+
     case filter
     when PUSH
       events.where(action: Event::PUSHED)
@@ -33,6 +36,8 @@ class EventFilter
       events.where(action: [Event::JOINED, Event::LEFT, Event::EXPIRED])
     when ISSUE
       events.where(action: [Event::CREATED, Event::UPDATED, Event::CLOSED, Event::REOPENED], target_type: 'Issue')
+    when WIKI
+      wiki_events(events)
     else
       events
     end
@@ -41,8 +46,20 @@ class EventFilter
 
   private
 
+  def apply_feature_flags(events)
+    return events.not_wiki_page unless Feature.enabled?(:wiki_events)
+
+    events
+  end
+
+  def wiki_events(events)
+    return events unless Feature.enabled?(:wiki_events)
+
+    events.for_wiki_page
+  end
+
   def filters
-    [ALL, PUSH, MERGED, ISSUE, COMMENTS, TEAM]
+    [ALL, PUSH, MERGED, ISSUE, COMMENTS, TEAM, WIKI]
   end
 end
 

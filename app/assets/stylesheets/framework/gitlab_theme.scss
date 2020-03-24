@@ -68,6 +68,23 @@
             .header-user-avatar {
               border-color: $search-and-nav-links;
             }
+
+            .header-user-notification-dot {
+              border: 2px solid $nav-svg-color;
+            }
+          }
+
+          &:focus:hover,
+          &:focus {
+            &.header-user-dropdown-toggle .header-user-notification-dot {
+              border-color: $white-light;
+            }
+          }
+
+          &:hover {
+            &.header-user-dropdown-toggle .header-user-notification-dot {
+              border-color: $nav-svg-color + 33;
+            }
           }
 
           &:hover,

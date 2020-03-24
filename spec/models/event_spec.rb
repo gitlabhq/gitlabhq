@@ -454,9 +454,10 @@ describe Event do
     end
   end
 
-  describe '.for_wiki_page' do
+  describe 'wiki_page predicate scopes' do
     let_it_be(:events) do
       [
+        create(:push_event),
         create(:closed_issue_event),
         create(:wiki_page_event),
         create(:closed_issue_event),
@@ -465,10 +466,22 @@ describe Event do
       ]
     end
 
-    it 'only contains the wiki page events' do
-      wiki_events = events.select(&:wiki_page?)
+    describe '.for_wiki_page' do
+      it 'only contains the wiki page events' do
+        wiki_events = events.select(&:wiki_page?)
 
-      expect(described_class.for_wiki_page).to match_array(wiki_events)
+        expect(events).not_to match_array(wiki_events)
+        expect(described_class.for_wiki_page).to match_array(wiki_events)
+      end
+    end
+
+    describe '.not_wiki_page' do
+      it 'does not contain the wiki page events' do
+        non_wiki_events = events.reject(&:wiki_page?)
+
+        expect(events).not_to match_array(non_wiki_events)
+        expect(described_class.not_wiki_page).to match_array(non_wiki_events)
+      end
     end
   end
 

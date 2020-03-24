@@ -65,6 +65,10 @@ module NavHelper
     %w(groups#issues labels#index milestones#index boards#index boards#show)
   end
 
+  def show_user_notification_dot?
+    experiment_enabled?(:ci_notification_dot)
+  end
+
   private
 
   def get_header_links

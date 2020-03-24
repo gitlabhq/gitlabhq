@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Evidence do
+describe Releases::Evidence do
   let_it_be(:project) { create(:project) }
   let(:release) { create(:release, project: project) }
   let(:schema_file) { 'evidences/evidence' }

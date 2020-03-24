@@ -190,6 +190,15 @@ export default {
     });
   },
 
+  [types.SET_EXPAND_DISCUSSIONS](state, { discussionIds, expanded }) {
+    if (discussionIds?.length) {
+      discussionIds.forEach(discussionId => {
+        const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+        Object.assign(discussion, { expanded });
+      });
+    }
+  },
+
   [types.UPDATE_NOTE](state, note) {
     const noteObj = utils.findNoteObjectById(state.discussions, note.discussion_id);
 

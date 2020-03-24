@@ -71,6 +71,7 @@ describe API::Groups do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
+        expect(json_response.first['created_at']).to be_present
         expect(json_response)
           .to satisfy_one { |group| group['name'] == group1.name }
       end
@@ -121,6 +122,15 @@ describe API::Groups do
         expect(json_response).to be_an Array
         expect(json_response.first).not_to include 'statistics'
       end
+
+      it "includes a created_at timestamp" do
+        get api("/groups", user1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.first['created_at']).to be_present
+      end
     end
 
     context "when authenticated as admin" do
@@ -150,6 +160,15 @@ describe API::Groups do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first).not_to include('statistics')
+      end
+
+      it "includes a created_at timestamp" do
+        get api("/groups", admin)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.first['created_at']).to be_present
       end
 
       it "includes statistics if requested" do
@@ -357,6 +376,7 @@ describe API::Groups do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).not_to include('runners_token')
+        expect(json_response).to include('created_at')
       end
 
       it 'returns only public projects in the group' do
@@ -407,6 +427,7 @@ describe API::Groups do
         expect(json_response['full_name']).to eq(group1.full_name)
         expect(json_response['full_path']).to eq(group1.full_path)
         expect(json_response['parent_id']).to eq(group1.parent_id)
+        expect(json_response['created_at']).to be_present
         expect(json_response['projects']).to be_an Array
         expect(json_response['projects'].length).to eq(2)
         expect(json_response['shared_projects']).to be_an Array
@@ -613,6 +634,7 @@ describe API::Groups do
         expect(json_response['subgroup_creation_level']).to eq("maintainer")
         expect(json_response['request_access_enabled']).to eq(true)
         expect(json_response['parent_id']).to eq(nil)
+        expect(json_response['created_at']).to be_present
         expect(json_response['projects']).to be_an Array
         expect(json_response['projects'].length).to eq(2)
         expect(json_response['shared_projects']).to be_an Array

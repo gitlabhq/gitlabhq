@@ -261,8 +261,6 @@ class MergeRequest < ApplicationRecord
     includes(:metrics)
   end
 
-  ignore_column :state, remove_with: '12.10', remove_after: '2020-03-22'
-
   after_save :keep_around_commit, unless: :importing?
 
   alias_attribute :project, :target_project

@@ -3220,6 +3220,106 @@ type Group {
   id: ID!
 
   """
+  Issues of the group
+  """
+  issues(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    ID of a user assigned to the issues, "none" and "any" values supported
+    """
+    assigneeId: String
+
+    """
+    Username of a user assigned to the issues
+    """
+    assigneeUsername: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Issues closed after this date
+    """
+    closedAfter: Time
+
+    """
+    Issues closed before this date
+    """
+    closedBefore: Time
+
+    """
+    Issues created after this date
+    """
+    createdAfter: Time
+
+    """
+    Issues created before this date
+    """
+    createdBefore: Time
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    IID of the issue. For example, "1"
+    """
+    iid: String
+
+    """
+    List of IIDs of issues. For example, [1, 2]
+    """
+    iids: [String!]
+
+    """
+    Labels applied to this issue
+    """
+    labelName: [String]
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Milestones applied to this issue
+    """
+    milestoneTitle: [String]
+
+    """
+    Search query for finding issues by title or description
+    """
+    search: String
+
+    """
+    Sort issues by this criteria
+    """
+    sort: IssueSort = created_desc
+
+    """
+    Current state of this issue
+    """
+    state: IssuableState
+
+    """
+    Issues updated after this date
+    """
+    updatedAfter: Time
+
+    """
+    Issues updated before this date
+    """
+    updatedBefore: Time
+  ): IssueConnection
+
+  """
   Indicates if Large File Storage (LFS) is enabled for namespace
   """
   lfsEnabled: Boolean

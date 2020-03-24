@@ -7,10 +7,22 @@ module WikiPages
       page = WikiPage.new(project_wiki)
 
       if page.create(@params)
-        execute_hooks(page, 'create')
+        execute_hooks(page)
       end
 
       page
+    end
+
+    def usage_counter_action
+      :create
+    end
+
+    def external_action
+      'create'
+    end
+
+    def event_action
+      Event::CREATED
     end
   end
 end

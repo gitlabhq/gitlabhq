@@ -49,7 +49,8 @@ GET /groups
     "full_name": "Foobar Group",
     "full_path": "foo-bar",
     "file_template_project_id": 1,
-    "parent_id": null
+    "parent_id": null,
+    "created_at": "2020-01-15T12:36:29.590Z"
   }
 ]
 ```
@@ -85,6 +86,7 @@ GET /groups?statistics=true
     "full_path": "foo-bar",
     "file_template_project_id": 1,
     "parent_id": null,
+    "created_at": "2020-01-15T12:36:29.590Z",
     "statistics": {
       "storage_size" : 212,
       "repository_size" : 33,
@@ -157,7 +159,8 @@ GET /groups/:id/subgroups
     "full_name": "Foobar Group",
     "full_path": "foo-bar",
     "file_template_project_id": 1,
-    "parent_id": 123
+    "parent_id": 123,
+    "created_at": "2020-01-15T12:36:29.590Z"
   }
 ]
 ```
@@ -282,6 +285,7 @@ Example response:
   "runners_token": "ba324ca7b1c77fc20bb9",
   "file_template_project_id": 1,
   "parent_id": null,
+  "created_at": "2020-01-15T12:36:29.590Z",
   "projects": [
     {
       "id": 7,
@@ -591,6 +595,7 @@ Example response:
   "full_path": "foo-bar",
   "file_template_project_id": 1,
   "parent_id": null,
+  "created_at": "2020-01-15T12:36:29.590Z",
   "projects": [
     {
       "id": 9,

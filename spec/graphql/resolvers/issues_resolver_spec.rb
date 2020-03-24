@@ -7,15 +7,20 @@ describe Resolvers::IssuesResolver do
 
   let(:current_user) { create(:user) }
 
-  context "with a project" do
-    let_it_be(:project)   { create(:project) }
-    let_it_be(:milestone) { create(:milestone, project: project) }
-    let_it_be(:assignee)  { create(:user) }
-    let_it_be(:issue1)    { create(:issue, project: project, state: :opened, created_at: 3.hours.ago, updated_at: 3.hours.ago, milestone: milestone) }
-    let_it_be(:issue2)    { create(:issue, project: project, state: :closed, title: 'foo', created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at: 1.hour.ago, assignees: [assignee]) }
-    let_it_be(:label1)    { create(:label, project: project) }
-    let_it_be(:label2)    { create(:label, project: project) }
+  let_it_be(:group)         { create(:group) }
+  let_it_be(:project)       { create(:project, group: group) }
+  let_it_be(:other_project) { create(:project, group: group) }
 
+  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be(:assignee)  { create(:user) }
+  let_it_be(:issue1)    { create(:issue, project: project, state: :opened, created_at: 3.hours.ago, updated_at: 3.hours.ago, milestone: milestone) }
+  let_it_be(:issue2)    { create(:issue, project: project, state: :closed, title: 'foo', created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at: 1.hour.ago, assignees: [assignee]) }
+  let_it_be(:issue3)    { create(:issue, project: other_project, state: :closed, title: 'foo', created_at: 1.hour.ago, updated_at: 1.hour.ago, closed_at: 1.hour.ago, assignees: [assignee]) }
+  let_it_be(:issue4)    { create(:issue) }
+  let_it_be(:label1)    { create(:label, project: project) }
+  let_it_be(:label2)    { create(:label, project: project) }
+
+  context "with a project" do
     before do
       project.add_developer(current_user)
       create(:label_link, label: label1, target: issue1)
@@ -180,6 +185,20 @@ describe Resolvers::IssuesResolver do
         end
 
         expect(resolve_issues(iids: iids)).to contain_exactly(issue1, issue2)
+      end
+    end
+  end
+
+  context "with a group" do
+    before do
+      group.add_developer(current_user)
+    end
+
+    describe '#resolve' do
+      it 'finds all group issues' do
+        result = resolve(described_class, obj: group, ctx: { current_user: current_user })
+
+        expect(result).to contain_exactly(issue1, issue2, issue3)
       end
     end
   end

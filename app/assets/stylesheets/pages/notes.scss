@@ -842,11 +842,11 @@ $note-form-margin-left: 72px;
     white-space: nowrap;
   }
 
-  .btn-group {
-    margin-left: -4px;
+  .discussion-next-btn {
+    border-radius: 0;
   }
 
-  .discussion-next-btn {
+  .toggle-all-discussions-btn {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
@@ -859,7 +859,6 @@ $note-form-margin-left: 72px;
     }
 
     &.discussion-create-issue-btn {
-      margin-left: -4px;
       border-radius: 0;
       border-right: 0;
 
@@ -873,6 +872,10 @@ $note-form-margin-left: 72px;
         }
       }
     }
+
+    &.discussion-next-btn {
+      border-right: 0;
+    }
   }
 }
 
@@ -884,12 +887,9 @@ $note-form-margin-left: 72px;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
   font-size: $gl-btn-small-font-size;
-
-  &.has-next-btn {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: 0;
-  }
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 0;
 
   .line-resolve-btn {
     margin-right: 5px;

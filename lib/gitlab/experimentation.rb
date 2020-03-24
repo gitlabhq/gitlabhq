@@ -28,6 +28,12 @@ module Gitlab
         environment: ::Gitlab.dev_env_or_com?,
         enabled_ratio: 0.1,
         tracking_category: 'Growth::Expansion::Experiment::SuggestPipeline'
+      },
+      ci_notification_dot: {
+        feature_toggle: :ci_notification_dot,
+        environment: ::Gitlab.dev_env_or_com?,
+        enabled_ratio: 0.1,
+        tracking_category: 'Growth::Expansion::Experiment::CiNotificationDot'
       }
     }.freeze
 

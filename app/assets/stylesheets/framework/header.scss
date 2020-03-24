@@ -567,6 +567,14 @@
   border: 1px solid $gray-normal;
 }
 
+.header-user-notification-dot {
+  background-color: $orange-500;
+  height: 10px;
+  width: 10px;
+  right: 8px;
+  top: -8px;
+}
+
 .with-performance-bar .navbar-gitlab {
   top: $performance-bar-height;
 }

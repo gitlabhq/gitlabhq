@@ -6,21 +6,23 @@ describe WikiPages::BaseService do
   let(:project) { double('project') }
   let(:user) { double('user') }
 
-  subject(:service) { described_class.new(project, user, {}) }
-
   describe '#increment_usage' do
     counter = Gitlab::UsageDataCounters::WikiPageCounter
     error = counter::UnknownEvent
 
-    it 'raises an error on unknown events' do
-      expect { subject.send(:increment_usage, :bad_event) }.to raise_error error
-    end
+    let(:subject) { bad_service_class.new(project, user, {}) }
 
-    context 'the event is valid' do
-      counter::KNOWN_EVENTS.each do |e|
-        it "updates the #{e} counter" do
-          expect { subject.send(:increment_usage, e) }.to change { counter.read(e) }
+    context 'the class implements usage_counter_action incorrectly' do
+      let(:bad_service_class) do
+        Class.new(described_class) do
+          def usage_counter_action
+            :bad_event
+          end
         end
+      end
+
+      it 'raises an error on unknown events' do
+        expect { subject.send(:increment_usage) }.to raise_error(error)
       end
     end
   end

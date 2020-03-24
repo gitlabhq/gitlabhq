@@ -117,4 +117,24 @@ describe NavHelper, :do_not_mock_admin_mode do
 
     it { is_expected.to all(be_a(String)) }
   end
+
+  describe '.show_user_notification_dot?' do
+    subject { helper.show_user_notification_dot? }
+
+    context 'when experiment is disabled' do
+      before do
+        allow(helper).to receive(:experiment_enabled?).with(:ci_notification_dot).and_return(false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when experiment is enabled' do
+      before do
+        allow(helper).to receive(:experiment_enabled?).with(:ci_notification_dot).and_return(true)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

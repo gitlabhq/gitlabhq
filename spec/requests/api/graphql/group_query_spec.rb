@@ -51,6 +51,7 @@ describe 'getting group information', :do_not_mock_admin_mode do
 
       it "returns one of user1's groups" do
         project = create(:project, namespace: group2, path: 'Foo')
+        issue = create(:issue, project: create(:project, group: group1))
         create(:project_group_link, project: project, group: group1)
 
         post_graphql(group_query(group1), current_user: user1)
@@ -67,6 +68,8 @@ describe 'getting group information', :do_not_mock_admin_mode do
         expect(graphql_data['group']['fullName']).to eq(group1.full_name)
         expect(graphql_data['group']['fullPath']).to eq(group1.full_path)
         expect(graphql_data['group']['parentId']).to eq(group1.parent_id)
+        expect(graphql_data['group']['issues']['nodes'].count).to eq(1)
+        expect(graphql_data['group']['issues']['nodes'][0]['iid']).to eq(issue.iid.to_s)
       end
 
       it "does not return a non existing group" do

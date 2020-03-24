@@ -4,7 +4,7 @@ module API
   module Helpers
     ##
     # This module makes it possible to use `app/presenters` with
-    # Grape Entities. It instantiates model presenter and passes
+    # Grape Entities. It instantiates the model presenter and passes
     # options defined in the API endpoint to the presenter itself.
     #
     #   present object, with: Entities::Something,
@@ -22,6 +22,7 @@ module API
       extend ActiveSupport::Concern
 
       def initialize(object, options = {})
+        options = options.opts_hash if options.is_a?(Grape::Entity::Options)
         super(object.present(options), options)
       end
     end

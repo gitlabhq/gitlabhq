@@ -104,6 +104,21 @@ describe API::Releases do
       expect(json_response.first['upcoming_release']).to eq(false)
     end
 
+    it 'avoids N+1 queries' do
+      create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
+
+      control_count = ActiveRecord::QueryRecorder.new do
+        get api("/projects/#{project.id}/releases", maintainer)
+      end.count
+
+      create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
+      create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
+
+      expect do
+        get api("/projects/#{project.id}/releases", maintainer)
+      end.not_to exceed_query_limit(control_count)
+    end
+
     context 'when tag does not exist in git repository' do
       let!(:release) { create(:release, project: project, tag: 'v1.1.5') }
 
@@ -725,7 +740,7 @@ describe API::Releases do
         end
 
         it 'does not create an Evidence object', :sidekiq_inline do
-          expect { subject }.not_to change(Evidence, :count)
+          expect { subject }.not_to change(Releases::Evidence, :count)
         end
 
         it 'is a historical release' do
@@ -755,7 +770,7 @@ describe API::Releases do
         end
 
         it 'creates Evidence', :sidekiq_inline do
-          expect { subject }.to change(Evidence, :count).by(1)
+          expect { subject }.to change(Releases::Evidence, :count).by(1)
         end
 
         it 'is not a historical release' do
@@ -785,7 +800,7 @@ describe API::Releases do
         end
 
         it 'creates Evidence', :sidekiq_inline do
-          expect { subject }.to change(Evidence, :count).by(1)
+          expect { subject }.to change(Releases::Evidence, :count).by(1)
         end
 
         it 'is not a historical release' do

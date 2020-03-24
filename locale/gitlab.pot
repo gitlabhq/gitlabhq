@@ -22,6 +22,9 @@ msgstr ""
 msgid " (from %{timeoutSource})"
 msgstr ""
 
+msgid " Collected %{time}"
+msgstr ""
+
 msgid " Please sign in."
 msgstr ""
 
@@ -475,7 +478,7 @@ msgstr ""
 msgid "%{tags} tags per image name"
 msgstr ""
 
-msgid "%{tag}-evidence.json"
+msgid "%{tag}-%{evidence}-%{filename}"
 msgstr ""
 
 msgid "%{template_project_id} is unknown or invalid"
@@ -21004,6 +21007,9 @@ msgid "Toggle Markdown preview"
 msgstr ""
 
 msgid "Toggle Sidebar"
+msgstr ""
+
+msgid "Toggle all threads"
 msgstr ""
 
 msgid "Toggle backtrace"

@@ -8,22 +8,68 @@ describe EventCollection do
     let_it_be(:project) { create(:project_empty_repo, group: group) }
     let_it_be(:projects) { Project.where(id: project.id) }
     let_it_be(:user) { create(:user) }
+    let_it_be(:merge_request) { create(:merge_request) }
 
     context 'with project events' do
-      before do
-        20.times do
-          event = create(:push_event, project: project, author: user)
-
-          create(:push_event_payload, event: event)
+      let_it_be(:push_event_payloads) do
+        Array.new(9) do
+          create(:push_event_payload,
+                 event: create(:push_event, project: project, author: user))
         end
-
-        create(:closed_issue_event, project: project, author: user)
       end
 
-      it 'returns an Array of events' do
+      let_it_be(:merge_request_events) { create_list(:event, 10, :commented, project: project, target: merge_request) }
+      let_it_be(:closed_issue_event) { create(:closed_issue_event, project: project, author: user) }
+      let_it_be(:wiki_page_event) { create(:wiki_page_event, project: project) }
+      let(:push_events) { push_event_payloads.map(&:event) }
+
+      it 'returns an Array of events', :aggregate_failures do
+        most_recent_20_events = [
+          wiki_page_event,
+          closed_issue_event,
+          *push_events,
+          *merge_request_events
+        ].sort_by(&:id).reverse.take(20)
         events = described_class.new(projects).to_a
 
         expect(events).to be_an_instance_of(Array)
+        expect(events).to match_array(most_recent_20_events)
+      end
+
+      context 'the wiki_events feature flag is disabled' do
+        before do
+          stub_feature_flags(wiki_events: false)
+        end
+
+        it 'omits the wiki page events when using to_a' do
+          events = described_class.new(projects).to_a
+
+          expect(events).not_to include(wiki_page_event)
+        end
+
+        it 'omits the wiki page events when using all_project_events' do
+          events = described_class.new(projects).all_project_events
+
+          expect(events).not_to include(wiki_page_event)
+        end
+      end
+
+      context 'the wiki_events feature flag is enabled' do
+        before do
+          stub_feature_flags(wiki_events: true)
+        end
+
+        it 'includes the wiki page events when using to_a' do
+          events = described_class.new(projects).to_a
+
+          expect(events).to include(wiki_page_event)
+        end
+
+        it 'includes the wiki page events when using all_project_events' do
+          events = described_class.new(projects).all_project_events
+
+          expect(events).to include(wiki_page_event)
+        end
       end
 
       it 'applies a limit to the number of events' do
@@ -44,12 +90,25 @@ describe EventCollection do
         expect(events).to be_empty
       end
 
-      it 'allows filtering of events using an EventFilter' do
+      it 'allows filtering of events using an EventFilter, returning single item' do
         filter = EventFilter.new(EventFilter::ISSUE)
         events = described_class.new(projects, filter: filter).to_a
 
-        expect(events.length).to eq(1)
-        expect(events[0].action).to eq(Event::CLOSED)
+        expect(events).to contain_exactly(closed_issue_event)
+      end
+
+      it 'allows filtering of events using an EventFilter, returning several items' do
+        filter = EventFilter.new(EventFilter::COMMENTS)
+        events = described_class.new(projects, filter: filter).to_a
+
+        expect(events).to match_array(merge_request_events)
+      end
+
+      it 'allows filtering of events using an EventFilter, returning pushes' do
+        filter = EventFilter.new(EventFilter::PUSH)
+        events = described_class.new(projects, filter: filter).to_a
+
+        expect(events).to match_array(push_events)
       end
     end
 

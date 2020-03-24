@@ -75,17 +75,66 @@ describe('DiscussionCounter component', () => {
     });
 
     it.each`
-      title              | resolved | hasNextBtn | isActive | icon                     | groupLength
-      ${'hasNextButton'} | ${false} | ${true}    | ${false} | ${'check-circle'}        | ${2}
-      ${'allResolved'}   | ${true}  | ${false}   | ${true}  | ${'check-circle-filled'} | ${0}
-    `('renders correctly if $title', ({ resolved, hasNextBtn, isActive, icon, groupLength }) => {
+      title                | resolved | isActive | icon                     | groupLength
+      ${'not allResolved'} | ${false} | ${false} | ${'check-circle'}        | ${3}
+      ${'allResolved'}     | ${true}  | ${true}  | ${'check-circle-filled'} | ${1}
+    `('renders correctly if $title', ({ resolved, isActive, icon, groupLength }) => {
       updateStore({ resolvable: true, resolved });
       wrapper = shallowMount(DiscussionCounter, { store, localVue });
 
-      expect(wrapper.find(`.has-next-btn`).exists()).toBe(hasNextBtn);
       expect(wrapper.find(`.is-active`).exists()).toBe(isActive);
       expect(wrapper.find({ name: icon }).exists()).toBe(true);
       expect(wrapper.findAll('[role="group"').length).toBe(groupLength);
+    });
+  });
+
+  describe('toggle all threads button', () => {
+    let toggleAllButton;
+    const updateStoreWithExpanded = expanded => {
+      const discussion = { ...discussionMock, expanded };
+      store.commit(types.SET_INITIAL_DISCUSSIONS, [discussion]);
+      store.dispatch('updateResolvableDiscussionsCounts');
+      wrapper = shallowMount(DiscussionCounter, { store, localVue });
+      toggleAllButton = wrapper.find('.toggle-all-discussions-btn');
+    };
+
+    afterEach(() => wrapper.destroy());
+
+    it('calls button handler when clicked', () => {
+      updateStoreWithExpanded(true);
+
+      wrapper.setMethods({ handleExpandDiscussions: jest.fn() });
+      toggleAllButton.trigger('click');
+
+      expect(wrapper.vm.handleExpandDiscussions).toHaveBeenCalledTimes(1);
+    });
+
+    it('collapses all discussions if expanded', () => {
+      updateStoreWithExpanded(true);
+
+      expect(wrapper.vm.allExpanded).toBe(true);
+      expect(toggleAllButton.find({ name: 'angle-up' }).exists()).toBe(true);
+
+      toggleAllButton.trigger('click');
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.vm.allExpanded).toBe(false);
+        expect(toggleAllButton.find({ name: 'angle-down' }).exists()).toBe(true);
+      });
+    });
+
+    it('expands all discussions if collapsed', () => {
+      updateStoreWithExpanded(false);
+
+      expect(wrapper.vm.allExpanded).toBe(false);
+      expect(toggleAllButton.find({ name: 'angle-down' }).exists()).toBe(true);
+
+      toggleAllButton.trigger('click');
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.vm.allExpanded).toBe(true);
+        expect(toggleAllButton.find({ name: 'angle-up' }).exists()).toBe(true);
+      });
     });
   });
 });

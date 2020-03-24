@@ -78,8 +78,6 @@ class Issue < ApplicationRecord
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
 
-  ignore_column :state, remove_with: '12.10', remove_after: '2020-03-22'
-
   after_commit :expire_etag_cache, unless: :importing?
   after_save :ensure_metrics, unless: :importing?
 
