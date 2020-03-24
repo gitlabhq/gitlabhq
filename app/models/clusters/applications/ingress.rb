@@ -50,7 +50,7 @@ module Clusters
       end
 
       def allowed_to_uninstall?
-        external_ip_or_hostname? && application_jupyter_nil_or_installable?
+        external_ip_or_hostname? && !application_jupyter_installed?
       end
 
       def install_command
@@ -161,8 +161,8 @@ module Clusters
         YAML.load_file(chart_values_file).deep_merge!(specification)
       end
 
-      def application_jupyter_nil_or_installable?
-        cluster.application_jupyter.nil? || cluster.application_jupyter&.installable?
+      def application_jupyter_installed?
+        cluster.application_jupyter&.installed?
       end
 
       def modsecurity_snippet_content

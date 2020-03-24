@@ -2411,6 +2411,12 @@ class Project < ApplicationRecord
     branch_protection.fully_protected? || branch_protection.developer_can_merge?
   end
 
+  def environments_for_scope(scope)
+    quoted_scope = ::Gitlab::SQL::Glob.q(scope)
+
+    environments.where("name LIKE (#{::Gitlab::SQL::Glob.to_like(quoted_scope)})") # rubocop:disable GitlabSecurity/SqlInjection
+  end
+
   private
 
   def closest_namespace_setting(name)

@@ -71,6 +71,32 @@ describe Users::UpdateService do
       expect(user.job_title).to eq('Backend Engineer')
     end
 
+    context 'updating canonical email' do
+      context 'if email was changed' do
+        subject do
+          update_user(user, email: 'user+extrastuff@example.com')
+        end
+
+        it 'calls canonicalize_email' do
+          expect_next_instance_of(Users::UpdateCanonicalEmailService) do |service|
+            expect(service).to receive(:execute)
+          end
+
+          subject
+        end
+      end
+
+      context 'if email was NOT changed' do
+        subject do
+          update_user(user, job_title: 'supreme leader of the universe')
+        end
+
+        it 'skips update canonicalize email service call' do
+          expect { subject }.not_to change { user.user_canonical_email }
+        end
+      end
+    end
+
     def update_user(user, opts)
       described_class.new(user, opts.merge(user: user)).execute
     end

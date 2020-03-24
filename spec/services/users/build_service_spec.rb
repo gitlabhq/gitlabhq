@@ -16,6 +16,14 @@ describe Users::BuildService do
         expect(service.execute).to be_valid
       end
 
+      context 'calls the UpdateCanonicalEmailService' do
+        specify do
+          expect(Users::UpdateCanonicalEmailService).to receive(:new).and_call_original
+
+          service.execute
+        end
+      end
+
       context 'allowed params' do
         let(:params) do
           {

@@ -6110,6 +6110,23 @@ CREATE SEQUENCE public.user_callouts_id_seq
 
 ALTER SEQUENCE public.user_callouts_id_seq OWNED BY public.user_callouts.id;
 
+CREATE TABLE public.user_canonical_emails (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    canonical_email character varying NOT NULL
+);
+
+CREATE SEQUENCE public.user_canonical_emails_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.user_canonical_emails_id_seq OWNED BY public.user_canonical_emails.id;
+
 CREATE TABLE public.user_custom_attributes (
     id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -7302,6 +7319,8 @@ ALTER TABLE ONLY public.user_agent_details ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY public.user_callouts ALTER COLUMN id SET DEFAULT nextval('public.user_callouts_id_seq'::regclass);
 
+ALTER TABLE ONLY public.user_canonical_emails ALTER COLUMN id SET DEFAULT nextval('public.user_canonical_emails_id_seq'::regclass);
+
 ALTER TABLE ONLY public.user_custom_attributes ALTER COLUMN id SET DEFAULT nextval('public.user_custom_attributes_id_seq'::regclass);
 
 ALTER TABLE ONLY public.user_details ALTER COLUMN user_id SET DEFAULT nextval('public.user_details_user_id_seq'::regclass);
@@ -8205,6 +8224,9 @@ ALTER TABLE ONLY public.user_agent_details
 
 ALTER TABLE ONLY public.user_callouts
     ADD CONSTRAINT user_callouts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.user_canonical_emails
+    ADD CONSTRAINT user_canonical_emails_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.user_custom_attributes
     ADD CONSTRAINT user_custom_attributes_pkey PRIMARY KEY (id);
@@ -9963,6 +9985,12 @@ CREATE INDEX index_user_callouts_on_user_id ON public.user_callouts USING btree 
 
 CREATE UNIQUE INDEX index_user_callouts_on_user_id_and_feature_name ON public.user_callouts USING btree (user_id, feature_name);
 
+CREATE INDEX index_user_canonical_emails_on_canonical_email ON public.user_canonical_emails USING btree (canonical_email);
+
+CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id ON public.user_canonical_emails USING btree (user_id);
+
+CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id_and_canonical_email ON public.user_canonical_emails USING btree (user_id, canonical_email);
+
 CREATE INDEX index_user_custom_attributes_on_key_and_value ON public.user_custom_attributes USING btree (key, value);
 
 CREATE UNIQUE INDEX index_user_custom_attributes_on_user_id_and_key ON public.user_custom_attributes USING btree (user_id, key);
@@ -11484,6 +11512,9 @@ ALTER TABLE ONLY public.labels
 ALTER TABLE ONLY public.project_feature_usages
     ADD CONSTRAINT fk_rails_c22a50024b FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY public.user_canonical_emails
+    ADD CONSTRAINT fk_rails_c2bd828b51 FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.project_repositories
     ADD CONSTRAINT fk_rails_c3258dc63b FOREIGN KEY (shard_id) REFERENCES public.shards(id) ON DELETE RESTRICT;
 
@@ -12614,6 +12645,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200213204737'),
 ('20200213220159'),
 ('20200213220211'),
+('20200214025454'),
 ('20200214034836'),
 ('20200214085940'),
 ('20200214214934'),

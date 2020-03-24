@@ -5938,6 +5938,24 @@ describe Project do
     end
   end
 
+  describe '#environments_for_scope' do
+    let_it_be(:project, reload: true) { create(:project) }
+
+    before do
+      create_list(:environment, 2, project: project)
+    end
+
+    it 'retrieves all project environments when using the * wildcard' do
+      expect(project.environments_for_scope("*")).to eq(project.environments)
+    end
+
+    it 'retrieves a specific project environment when using the name of that environment' do
+      environment = project.environments.first
+
+      expect(project.environments_for_scope(environment.name)).to eq([environment])
+    end
+  end
+
   def finish_job(export_job)
     export_job.start
     export_job.finish

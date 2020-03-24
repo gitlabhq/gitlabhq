@@ -21,26 +21,60 @@ describe Clusters::Applications::Ingress do
   describe '#can_uninstall?' do
     subject { ingress.can_uninstall? }
 
-    it 'returns true if external ip is set and no application exists' do
-      ingress.external_ip = 'IP'
+    context 'with jupyter installed' do
+      before do
+        create(:clusters_applications_jupyter, :installed, cluster: ingress.cluster)
+      end
 
-      is_expected.to be_truthy
+      it 'returns false if external_ip_or_hostname? is true' do
+        ingress.external_ip = 'IP'
+
+        is_expected.to be_falsey
+      end
+
+      it 'returns false if external_ip_or_hostname? is false' do
+        is_expected.to be_falsey
+      end
     end
 
-    it 'returns false if application_jupyter_nil_or_installable? is false' do
-      create(:clusters_applications_jupyter, :installed, cluster: ingress.cluster)
+    context 'with jupyter installable' do
+      before do
+        create(:clusters_applications_jupyter, :installable, cluster: ingress.cluster)
+      end
 
-      is_expected.to be_falsey
+      it 'returns true if external_ip_or_hostname? is true' do
+        ingress.external_ip = 'IP'
+
+        is_expected.to be_truthy
+      end
+
+      it 'returns false if external_ip_or_hostname? is false' do
+        is_expected.to be_falsey
+      end
     end
 
-    it 'returns false if application_elastic_stack_nil_or_installable? is false' do
-      create(:clusters_applications_elastic_stack, :installed, cluster: ingress.cluster)
+    context 'with jupyter nil' do
+      it 'returns false if external_ip_or_hostname? is false' do
+        is_expected.to be_falsey
+      end
 
-      is_expected.to be_falsey
-    end
+      context 'if external_ip_or_hostname? is true' do
+        context 'with IP' do
+          before do
+            ingress.external_ip = 'IP'
+          end
 
-    it 'returns false if external_ip_or_hostname? is false' do
-      is_expected.to be_falsey
+          it { is_expected.to be_truthy }
+        end
+
+        context 'with hostname' do
+          before do
+            ingress.external_hostname = 'example.com'
+          end
+
+          it { is_expected.to be_truthy }
+        end
+      end
     end
   end
 

@@ -20,7 +20,11 @@ pre.commit-message {
 }
 
 .gl-label-scoped {
-  box-shadow: 0 0 0 2px currentColor inset;
+  border: 2px solid currentColor;
+  box-sizing: border-box;
+  display: inline-block;
+  height: 17px;
+  line-height: 14px;
 }
 
 .gl-label-text {

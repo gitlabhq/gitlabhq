@@ -21,6 +21,7 @@ module Users
       discard_read_only_attributes
       assign_attributes
       assign_identity
+      build_canonical_email
 
       if @user.save(validate: validate) && update_status
         notify_success(user_exists)
@@ -39,6 +40,12 @@ module Users
     end
 
     private
+
+    def build_canonical_email
+      return unless @user.email_changed?
+
+      Users::UpdateCanonicalEmailService.new(user: @user).execute
+    end
 
     def update_status
       return true unless @status_params

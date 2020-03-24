@@ -67,7 +67,7 @@ test:
 
 This feature comes with the `:coverage_report_view` feature flag disabled by
 default. This feature is disabled due to some performance issues with very large
-data sets. When [the performance issue](https://gitlab.com/gitlab-org/gitlab/issues/37725)
+data sets. When [the performance issue](https://gitlab.com/gitlab-org/gitlab/issues/211410)
 is resolved, the feature will be enabled by default.
 
 To enable this feature, ask a GitLab administrator with Rails console access to

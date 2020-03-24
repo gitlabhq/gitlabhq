@@ -35,6 +35,16 @@ module Clusters
               .perform_async(application.cluster_id, ::PrometheusService.to_param) # rubocop:disable CodeReuse/ServiceClass
           end
         end
+
+        after_transition any => :updating do |application|
+          application.update(last_update_started_at: Time.now)
+        end
+      end
+
+      def updated_since?(timestamp)
+        last_update_started_at &&
+          last_update_started_at > timestamp &&
+          !update_errored?
       end
 
       def chart
@@ -148,5 +158,3 @@ module Clusters
     end
   end
 end
-
-Clusters::Applications::Prometheus.prepend_if_ee('EE::Clusters::Applications::Prometheus')

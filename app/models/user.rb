@@ -168,6 +168,7 @@ class User < ApplicationRecord
   has_one :user_preference
   has_one :user_detail
   has_one :user_highest_role
+  has_one :user_canonical_email
 
   #
   # Validations

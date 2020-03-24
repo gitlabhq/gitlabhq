@@ -325,6 +325,13 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
+- :name: gcp_cluster:cluster_update_app
+  :feature_category: :kubernetes_management
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: 
 - :name: gcp_cluster:cluster_upgrade_app
   :feature_category: :kubernetes_management
   :has_external_dependencies: true
@@ -337,6 +344,13 @@
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: 
+- :name: gcp_cluster:cluster_wait_for_app_update
+  :feature_category: :kubernetes_management
+  :has_external_dependencies: 
+  :urgency: :low
+  :resource_boundary: :unknown
   :weight: 1
   :idempotent: 
 - :name: gcp_cluster:cluster_wait_for_ingress_ip_address
