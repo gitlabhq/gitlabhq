@@ -1,0 +1,5 @@
+---
+title: External user can not create personal snippet through API
+merge_request:
+author:
+type: security

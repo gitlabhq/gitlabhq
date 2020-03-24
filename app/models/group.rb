@@ -70,6 +70,9 @@ class Group < Namespace
   validates :variables, variable_duplicates: true
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :name,
+    format: { with: Gitlab::Regex.group_name_regex,
+              message: Gitlab::Regex.group_name_regex_message }
 
   add_authentication_token_field :runners_token, encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
 

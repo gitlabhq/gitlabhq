@@ -16,6 +16,14 @@ module Gitlab
       "It must start with letter, digit, emoji or '_'."
     end
 
+    def group_name_regex
+      project_name_regex
+    end
+
+    def group_name_regex_message
+      project_name_regex_message
+    end
+
     ##
     # Docker Distribution Registry repository / tag name rules
     #

@@ -318,7 +318,7 @@ module ObjectStorage
     def cache!(new_file = sanitized_file)
       # We intercept ::UploadedFile which might be stored on remote storage
       # We use that for "accelerated" uploads, where we store result on remote storage
-      if new_file.is_a?(::UploadedFile) && new_file.remote_id
+      if new_file.is_a?(::UploadedFile) && new_file.remote_id.present?
         return cache_remote_file!(new_file.remote_id, new_file.original_filename)
       end
 

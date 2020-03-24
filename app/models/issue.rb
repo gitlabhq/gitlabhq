@@ -327,10 +327,8 @@ class Issue < ApplicationRecord
       true
     elsif project.owner == user
       true
-    elsif confidential?
-      author == user ||
-        assignees.include?(user) ||
-        project.team.member?(user, Gitlab::Access::REPORTER)
+    elsif confidential? && !assignee_or_author?(user)
+      project.team.member?(user, Gitlab::Access::REPORTER)
     else
       project.public? ||
         project.internal? && !user.external? ||
