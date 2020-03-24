@@ -162,6 +162,9 @@ to customize their Value Stream Analytics.
 GitLab allows users to hide default stages and create custom stages that align better to their
 development workflow.
 
+NOTE: **Note:**
+Customizability is [only available for group-level](https://gitlab.com/gitlab-org/gitlab/-/issues/35823#note_272558950) Value Stream Analytics.
+
 ### Adding a stage
 
 In the following example we're creating a new stage that measures and tracks issues from creation

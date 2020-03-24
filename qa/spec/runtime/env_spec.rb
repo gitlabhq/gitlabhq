@@ -271,6 +271,12 @@ describe QA::Runtime::Env do
       env_key: 'QA_CAN_TEST_ADMIN_FEATURES',
       default: true
 
+    it_behaves_like 'boolean method with parameter',
+      method: :can_test?,
+      param: :praefect,
+      env_key: 'QA_CAN_TEST_PRAEFECT',
+      default: true
+
     it 'raises ArgumentError if feature is unknown' do
       expect { described_class.can_test? :foo }.to raise_error(ArgumentError, 'Unknown feature "foo"')
     end

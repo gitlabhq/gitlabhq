@@ -17,6 +17,28 @@ module QA
           expect(project).to have_readme_content('This is a test project')
         end
       end
+
+      it 'pushes to a project using a specific Praefect repository storage', :smoke, :requires_admin, :requires_praefect, quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/276', type: :new } do
+        Flow::Login.sign_in_as_admin
+
+        project = Resource::Project.fabricate_via_api! do |storage_project|
+          storage_project.name = 'specific-repository-storage'
+          storage_project.repository_storage = QA::Runtime::Env.praefect_repository_storage
+        end
+
+        Resource::Repository::Push.fabricate! do |push|
+          push.repository_http_uri = project.repository_http_location.uri
+          push.file_name = 'README.md'
+          push.file_content = "# This is a test project named #{project.name}"
+          push.commit_message = 'Add README.md'
+          push.new_branch = true
+        end
+
+        project.visit!
+
+        expect(page).to have_content('README.md')
+        expect(page).to have_content("This is a test project named #{project.name}")
+      end
     end
   end
 end

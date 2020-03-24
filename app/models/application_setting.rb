@@ -257,7 +257,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :snippet_size_limit, numericality: { only_integer: true, greater_than: 0 }
 
-  validate :email_restrictions_regex_valid?
+  validates :email_restrictions, untrusted_regexp: true
 
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
@@ -409,14 +409,6 @@ class ApplicationSetting < ApplicationRecord
 
   def recaptcha_or_login_protection_enabled
     recaptcha_enabled || login_recaptcha_protection_enabled
-  end
-
-  def email_restrictions_regex_valid?
-    return if email_restrictions.blank?
-
-    Gitlab::UntrustedRegexp.new(email_restrictions)
-  rescue RegexpError
-    errors.add(:email_restrictions, _('is not a valid regular expression'))
   end
 
   private

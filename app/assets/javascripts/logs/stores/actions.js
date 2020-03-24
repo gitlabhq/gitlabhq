@@ -46,8 +46,8 @@ const requestLogsUntilData = state => {
   if (state.timeRange.current) {
     try {
       const { start, end } = convertToFixedRange(state.timeRange.current);
-      params.start = start;
-      params.end = end;
+      params.start_time = start;
+      params.end_time = end;
     } catch {
       flashTimeRangeWarning();
     }

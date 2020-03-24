@@ -86,8 +86,8 @@ export const fetchDashboard = ({ state, commit, dispatch }) => {
 
   if (state.timeRange) {
     const { start, end } = convertToFixedRange(state.timeRange);
-    params.start = start;
-    params.end = end;
+    params.start_time = start;
+    params.end_time = end;
   }
 
   if (state.currentDashboard) {
@@ -139,16 +139,16 @@ function fetchPrometheusResult(prometheusEndpoint, params) {
  * @param {metric} metric
  */
 export const fetchPrometheusMetric = ({ commit }, { metric, params }) => {
-  const { start, end } = params;
-  const timeDiff = (new Date(end) - new Date(start)) / 1000;
+  const { start_time, end_time } = params;
+  const timeDiff = (new Date(end_time) - new Date(start_time)) / 1000;
 
   const minStep = 60;
   const queryDataPoints = 600;
   const step = Math.max(minStep, Math.ceil(timeDiff / queryDataPoints));
 
   const queryParams = {
-    start,
-    end,
+    start_time,
+    end_time,
     step,
   };
 

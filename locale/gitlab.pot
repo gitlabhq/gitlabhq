@@ -23939,9 +23939,6 @@ msgstr ""
 msgid "is not a valid X509 certificate."
 msgstr ""
 
-msgid "is not a valid regular expression"
-msgstr ""
-
 msgid "is not allowed for sign-up"
 msgstr ""
 

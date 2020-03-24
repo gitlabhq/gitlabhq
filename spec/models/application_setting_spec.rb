@@ -715,7 +715,7 @@ describe ApplicationSetting do
         subject.email_restrictions = '+'
 
         expect(subject).not_to be_valid
-        expect(subject.errors.messages[:email_restrictions].first).to eq(_('is not a valid regular expression'))
+        expect(subject.errors.messages[:email_restrictions].first).to eq(_('not valid RE2 syntax: no argument for repetition operator: +'))
       end
     end
 

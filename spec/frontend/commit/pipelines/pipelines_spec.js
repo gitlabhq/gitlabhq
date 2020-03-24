@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import Api from '~/api';
 import pipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 
-describe('Pipelines table in Commits and Merge requests', function() {
+describe('Pipelines table in Commits and Merge requests', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';
   let pipeline;
   let PipelinesTable;
@@ -37,19 +37,19 @@ describe('Pipelines table in Commits and Merge requests', function() {
 
   describe('successful request', () => {
     describe('without pipelines', () => {
-      beforeEach(function() {
+      beforeEach(() => {
         mock.onGet('endpoint.json').reply(200, []);
 
         vm = mountComponent(PipelinesTable, props);
       });
 
-      it('should render the empty state', function(done) {
-        setTimeout(() => {
+      it('should render the empty state', done => {
+        setImmediate(() => {
           expect(vm.$el.querySelector('.empty-state')).toBeDefined();
           expect(vm.$el.querySelector('.realtime-loading')).toBe(null);
           expect(vm.$el.querySelector('.js-pipelines-error-state')).toBe(null);
           done();
-        }, 0);
+        });
       });
     });
 
@@ -60,19 +60,19 @@ describe('Pipelines table in Commits and Merge requests', function() {
       });
 
       it('should render a table with the received pipelines', done => {
-        setTimeout(() => {
+        setImmediate(() => {
           expect(vm.$el.querySelectorAll('.ci-table .commit').length).toEqual(1);
           expect(vm.$el.querySelector('.realtime-loading')).toBe(null);
           expect(vm.$el.querySelector('.empty-state')).toBe(null);
           expect(vm.$el.querySelector('.js-pipelines-error-state')).toBe(null);
           done();
-        }, 0);
+        });
       });
 
       describe('with pagination', () => {
         it('should make an API request when using pagination', done => {
-          setTimeout(() => {
-            spyOn(vm, 'updateContent');
+          setImmediate(() => {
+            jest.spyOn(vm, 'updateContent').mockImplementation(() => {});
 
             vm.store.state.pageInfo = {
               page: 1,
@@ -135,7 +135,7 @@ describe('Pipelines table in Commits and Merge requests', function() {
           }),
         );
 
-        setTimeout(() => {
+        setImmediate(() => {
           expect(vm.$el.querySelector('.js-run-mr-pipeline')).not.toBeNull();
           done();
         });
@@ -156,7 +156,7 @@ describe('Pipelines table in Commits and Merge requests', function() {
           }),
         );
 
-        setTimeout(() => {
+        setImmediate(() => {
           expect(vm.$el.querySelector('.js-run-mr-pipeline')).toBeNull();
           done();
         });
@@ -177,7 +177,7 @@ describe('Pipelines table in Commits and Merge requests', function() {
           }),
         );
 
-        setTimeout(() => {
+        setImmediate(() => {
           expect(vm.$el.querySelector('.js-run-mr-pipeline')).toBeNull();
           done();
         });
@@ -198,7 +198,7 @@ describe('Pipelines table in Commits and Merge requests', function() {
           }),
         );
 
-        setTimeout(() => {
+        setImmediate(() => {
           expect(vm.$el.querySelector('.js-run-mr-pipeline')).toBeNull();
           done();
         });
@@ -222,15 +222,15 @@ describe('Pipelines table in Commits and Merge requests', function() {
       });
 
       it('updates the loading state', done => {
-        spyOn(Api, 'postMergeRequestPipeline').and.returnValue(Promise.resolve());
+        jest.spyOn(Api, 'postMergeRequestPipeline').mockReturnValue(Promise.resolve());
 
-        setTimeout(() => {
+        setImmediate(() => {
           vm.$el.querySelector('.js-run-mr-pipeline').click();
 
           vm.$nextTick(() => {
             expect(vm.state.isRunningMergeRequestPipeline).toBe(true);
 
-            setTimeout(() => {
+            setImmediate(() => {
               expect(vm.state.isRunningMergeRequestPipeline).toBe(false);
 
               done();
@@ -248,14 +248,14 @@ describe('Pipelines table in Commits and Merge requests', function() {
       vm = mountComponent(PipelinesTable, props);
     });
 
-    it('should render error state', function(done) {
-      setTimeout(() => {
+    it('should render error state', done => {
+      setImmediate(() => {
         expect(vm.$el.querySelector('.js-pipelines-error-state')).toBeDefined();
         expect(vm.$el.querySelector('.realtime-loading')).toBe(null);
         expect(vm.$el.querySelector('.js-empty-state')).toBe(null);
         expect(vm.$el.querySelector('.ci-table')).toBe(null);
         done();
-      }, 0);
+      });
     });
   });
 });

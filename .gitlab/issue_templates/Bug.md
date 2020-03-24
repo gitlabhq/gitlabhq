@@ -45,6 +45,7 @@ logs, and code as it's tough to read otherwise.)
 
 <details>
 <summary>Expand for output related to GitLab environment info</summary>
+
 <pre>
 
 (For installations with omnibus-gitlab package run and paste the output of:

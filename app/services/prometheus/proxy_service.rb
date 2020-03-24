@@ -114,11 +114,23 @@ module Prometheus
     end
 
     def filter_params(params, path)
+      params = substitute_params(params)
+
       params.slice(*PROXY_SUPPORT.dig(path, :params))
     end
 
     def can_proxy?
       PROXY_SUPPORT.dig(@path, :method)&.include?(@method)
+    end
+
+    def substitute_params(params)
+      start_time = params[:start_time]
+      end_time   = params[:end_time]
+
+      params['start'] = start_time if start_time
+      params['end']   = end_time if end_time
+
+      params
     end
   end
 end

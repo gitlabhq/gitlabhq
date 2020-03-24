@@ -22,7 +22,7 @@ describe Gitlab::Prometheus::Queries::KnativeInvocationQuery do
     it 'has the query, but no data' do
       expect(client).to receive(:query_range).with(
         'sum(ceil(rate(istio_requests_total{destination_service_namespace="test-ns", destination_service=~"test-name.*"}[1m])*60))',
-        hash_including(:start, :stop)
+        hash_including(:start_time, :end_time)
       )
 
       subject.query(serverless_func.id)

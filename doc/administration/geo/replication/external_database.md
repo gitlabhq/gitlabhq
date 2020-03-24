@@ -196,7 +196,7 @@ the tracking database on port 5432.
    GEO_DB_PORT="5432"
 
    query_exec () {
-     gitlab-psql -h $GEO_DB_HOST -d $GEO_DB_NAME -p $GEO_DB_PORT -c "${1}"
+     gitlab-psql -h $GEO_DB_HOST -U $GEO_DB_USER -d $GEO_DB_NAME -p $GEO_DB_PORT -c "${1}"
    }
 
    query_exec "CREATE EXTENSION postgres_fdw;"

@@ -509,8 +509,8 @@ describe('Monitoring store actions', () => {
   });
   describe('fetchPrometheusMetric', () => {
     const params = {
-      start: '2019-08-06T12:40:02.184Z',
-      end: '2019-08-06T20:40:02.184Z',
+      start_time: '2019-08-06T12:40:02.184Z',
+      end_time: '2019-08-06T20:40:02.184Z',
     };
     let metric;
     let state;

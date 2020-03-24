@@ -202,8 +202,8 @@ describe('Logs Store actions', () => {
         return testAction(fetchLogs, null, state, expectedMutations, expectedActions, () => {
           expect(latestGetParams()).toEqual({
             pod_name: mockPodName,
-            start: mockFixedRange.start,
-            end: mockFixedRange.end,
+            start_time: mockFixedRange.start,
+            end_time: mockFixedRange.end,
             cursor: mockCursor,
           });
         });
@@ -280,8 +280,8 @@ describe('Logs Store actions', () => {
           () => {
             expect(latestGetParams()).toEqual({
               pod_name: mockPodName,
-              start: mockFixedRange.start,
-              end: mockFixedRange.end,
+              start_time: mockFixedRange.start,
+              end_time: mockFixedRange.end,
               cursor: mockCursor,
             });
           },

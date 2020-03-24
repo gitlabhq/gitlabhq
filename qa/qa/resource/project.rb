@@ -8,6 +8,7 @@ module QA
       include Events::Project
       include Members
 
+      attr_accessor :repository_storage # requires admin access
       attr_writer :initialize_with_readme
       attr_writer :auto_devops_enabled
       attr_writer :visibility
@@ -115,6 +116,8 @@ module QA
           post_body[:namespace_id] = group.id
           post_body[:path] = name
         end
+
+        post_body[:repository_storage] = repository_storage if repository_storage
 
         post_body
       end

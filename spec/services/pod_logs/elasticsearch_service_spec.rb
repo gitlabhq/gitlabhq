@@ -27,8 +27,8 @@ describe ::PodLogs::ElasticsearchService do
     context 'with start and end provided and valid' do
       let(:params) do
         {
-          'start' => start_time,
-          'end' => end_time
+          'start_time' => start_time,
+          'end_time' => end_time
         }
       end
 
@@ -36,8 +36,8 @@ describe ::PodLogs::ElasticsearchService do
         result = subject.send(:check_times, {})
 
         expect(result[:status]).to eq(:success)
-        expect(result[:start]).to eq(start_time)
-        expect(result[:end]).to eq(end_time)
+        expect(result[:start_time]).to eq(start_time)
+        expect(result[:end_time]).to eq(end_time)
       end
     end
 
@@ -57,8 +57,8 @@ describe ::PodLogs::ElasticsearchService do
     context 'with start valid and end invalid' do
       let(:params) do
         {
-          'start' => start_time,
-          'end' => 'invalid date'
+          'start_time' => start_time,
+          'end_time' => 'invalid date'
         }
       end
 
@@ -73,8 +73,8 @@ describe ::PodLogs::ElasticsearchService do
     context 'with start invalid and end valid' do
       let(:params) do
         {
-          'start' => 'invalid date',
-          'end' => end_time
+          'start_time' => 'invalid date',
+          'end_time' => end_time
         }
       end
 
@@ -153,8 +153,8 @@ describe ::PodLogs::ElasticsearchService do
         pod_name: pod_name,
         container_name: container_name,
         search: search,
-        start: start_time,
-        end: end_time,
+        start_time: start_time,
+        end_time: end_time,
         cursor: cursor
       }
     end

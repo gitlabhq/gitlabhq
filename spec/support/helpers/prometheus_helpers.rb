@@ -31,15 +31,15 @@ module PrometheusHelpers
     "https://prometheus.example.com/api/v1/query?#{query}"
   end
 
-  def prometheus_query_range_url(prometheus_query, start: 8.hours.ago, stop: Time.now, step: nil)
-    start = start.to_f
-    stop = stop.to_f
-    step ||= Gitlab::PrometheusClient.compute_step(start, stop)
+  def prometheus_query_range_url(prometheus_query, start_time: 8.hours.ago, end_time: Time.now, step: nil)
+    start_time = start_time.to_f
+    end_time = end_time.to_f
+    step ||= Gitlab::PrometheusClient.compute_step(start_time, end_time)
 
     query = {
       query: prometheus_query,
-      start: start,
-      end: stop,
+      start: start_time,
+      end: end_time,
       step: step
     }.to_query
 
@@ -50,11 +50,11 @@ module PrometheusHelpers
     "https://prometheus.example.com/api/v1/label/#{name}/values"
   end
 
-  def prometheus_series_url(*matches, start: 8.hours.ago, stop: Time.now)
+  def prometheus_series_url(*matches, start_time: 8.hours.ago, end_time: Time.now)
     query = {
       match: matches,
-      start: start.to_f,
-      end: stop.to_f
+      start: start_time.to_f,
+      end: end_time.to_f
     }.to_query
     "https://prometheus.example.com/api/v1/series?#{query}"
   end

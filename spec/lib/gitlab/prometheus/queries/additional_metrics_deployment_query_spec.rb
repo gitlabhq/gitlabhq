@@ -14,8 +14,8 @@ describe Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery do
 
     it 'queries using specific time' do
       expect(client).to receive(:query_range).with(anything,
-                                                   start: (deployment.created_at - 30.minutes).to_f,
-                                                   stop: (deployment.created_at + 30.minutes).to_f)
+                                                   start_time: (deployment.created_at - 30.minutes).to_f,
+                                                   end_time: (deployment.created_at + 30.minutes).to_f)
 
       expect(query_result).not_to be_nil
     end

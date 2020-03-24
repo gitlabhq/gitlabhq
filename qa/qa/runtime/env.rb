@@ -15,7 +15,8 @@ module QA
       # supports the given feature
       SUPPORTED_FEATURES = {
         git_protocol_v2: 'QA_CAN_TEST_GIT_PROTOCOL_V2',
-        admin: 'QA_CAN_TEST_ADMIN_FEATURES'
+        admin: 'QA_CAN_TEST_ADMIN_FEATURES',
+        praefect: 'QA_CAN_TEST_PRAEFECT'
       }.freeze
 
       def supported_features
@@ -24,6 +25,10 @@ module QA
 
       def additional_repository_storage
         ENV['QA_ADDITIONAL_REPOSITORY_STORAGE']
+      end
+
+      def praefect_repository_storage
+        ENV['QA_PRAEFECT_REPOSITORY_STORAGE']
       end
 
       def admin_password

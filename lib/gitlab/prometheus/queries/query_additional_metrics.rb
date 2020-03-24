@@ -59,7 +59,7 @@ module Gitlab
           result =
             if query.key?(:query_range)
               query[:query_range] %= context
-              client_query_range(query[:query_range], start: context[:timeframe_start], stop: context[:timeframe_end])
+              client_query_range(query[:query_range], start_time: context[:timeframe_start], end_time: context[:timeframe_end])
             else
               query[:query] %= context
               client_query(query[:query], time: context[:timeframe_end])

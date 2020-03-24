@@ -43,7 +43,7 @@ module Gitlab
           series = metric_groups.flat_map(&:metrics).flat_map(&:required_metrics).uniq
 
           lookup = series.each_slice(MAX_QUERY_ITEMS).flat_map do |batched_series|
-            client_series(*batched_series, start: timeframe_start, stop: timeframe_end)
+            client_series(*batched_series, start_time: timeframe_start, end_time: timeframe_end)
               .select(&method(:has_matching_label?))
               .map { |series_info| [series_info['__name__'], true] }
           end

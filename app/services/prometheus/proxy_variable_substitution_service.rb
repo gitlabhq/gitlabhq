@@ -6,6 +6,7 @@ module Prometheus
 
     steps :validate_variables,
       :add_params_to_result,
+      :substitute_params,
       :substitute_ruby_variables,
       :substitute_liquid_variables
 
@@ -31,6 +32,16 @@ module Prometheus
 
     def add_params_to_result(result)
       result[:params] = params
+
+      success(result)
+    end
+
+    def substitute_params(result)
+      start_time = result[:params][:start_time]
+      end_time = result[:params][:end_time]
+
+      result[:params][:start] = start_time if start_time
+      result[:params][:end]   = end_time if end_time
 
       success(result)
     end

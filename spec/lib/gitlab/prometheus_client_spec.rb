@@ -193,23 +193,23 @@ describe Gitlab::PrometheusClient do
       let(:time_stop) { Time.now.in_time_zone("Warsaw") }
       let(:time_start) { time_stop - 8.hours }
 
-      let(:query_url) { prometheus_query_range_url(prometheus_query, start: time_start.utc.to_f, stop: time_stop.utc.to_f) }
+      let(:query_url) { prometheus_query_range_url(prometheus_query, start_time: time_start.utc.to_f, end_time: time_stop.utc.to_f) }
 
       it 'passed dates are properly converted to utc' do
         req_stub = stub_prometheus_request(query_url, body: prometheus_values_body('vector'))
 
-        subject.query_range(prometheus_query, start: time_start, stop: time_stop)
+        subject.query_range(prometheus_query, start_time: time_start, end_time: time_stop)
         expect(req_stub).to have_been_requested
       end
     end
 
     context 'when a start time is passed' do
-      let(:query_url) { prometheus_query_range_url(prometheus_query, start: 2.hours.ago) }
+      let(:query_url) { prometheus_query_range_url(prometheus_query, start_time: 2.hours.ago) }
 
       it 'passed it in the requested URL' do
         req_stub = stub_prometheus_request(query_url, body: prometheus_values_body('vector'))
 
-        subject.query_range(prometheus_query, start: 2.hours.ago)
+        subject.query_range(prometheus_query, start_time: 2.hours.ago)
         expect(req_stub).to have_been_requested
       end
     end
