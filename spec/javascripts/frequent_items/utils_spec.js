@@ -108,5 +108,23 @@ describe('Frequent Items utils spec', () => {
 
       expect(sanitizeItem(input)).toEqual({ name: 'test', namespace: 'test', id: 1 });
     });
+
+    it("skips `name` key if it doesn't exist on the item", () => {
+      const input = {
+        namespace: '<br>test',
+        id: 1,
+      };
+
+      expect(sanitizeItem(input)).toEqual({ namespace: 'test', id: 1 });
+    });
+
+    it("skips `namespace` key if it doesn't exist on the item", () => {
+      const input = {
+        name: '<br><b>test</b>',
+        id: 1,
+      };
+
+      expect(sanitizeItem(input)).toEqual({ name: 'test', id: 1 });
+    });
   });
 });
