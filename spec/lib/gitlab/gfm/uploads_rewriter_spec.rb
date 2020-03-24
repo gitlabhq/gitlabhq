@@ -68,6 +68,16 @@ describe Gitlab::Gfm::UploadsRewriter do
       expect(moved_text.scan(/\A\[.*?\]/).count).to eq(1)
     end
 
+    context 'path traversal in file name' do
+      let(:text) do
+        "![a](/uploads/11111111111111111111111111111111/../../../../../../../../../../../../../../etc/passwd)"
+      end
+
+      it 'throw an error' do
+        expect { rewriter.rewrite(new_project) }.to raise_error(an_instance_of(StandardError).and having_attributes(message: "Invalid path"))
+      end
+    end
+
     context "file are stored locally" do
       include_examples "files are accessible"
     end

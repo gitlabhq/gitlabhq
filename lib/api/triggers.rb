@@ -109,6 +109,8 @@ module API
         trigger = user_project.triggers.find(params.delete(:trigger_id))
         break not_found!('Trigger') unless trigger
 
+        authorize! :admin_trigger, trigger
+
         if trigger.update(declared_params(include_missing: false))
           present trigger, with: Entities::Trigger, current_user: current_user
         else

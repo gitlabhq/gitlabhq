@@ -523,7 +523,12 @@ describe Banzai::Filter::LabelReferenceFilter do
     end
 
     context 'when group name has HTML entities' do
-      let(:another_group) { create(:group, name: '<img src=x onerror=alert(1)>', path: 'another_group') }
+      let(:another_group) { create(:group, name: 'random', path: 'another_group') }
+
+      before do
+        another_group.name = "<img src=x onerror=alert(1)>"
+        another_group.save!(validate: false)
+      end
 
       it 'escapes the HTML entities' do
         expect(result.text)

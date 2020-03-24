@@ -3,6 +3,7 @@
 class Import::FogbugzController < Import::BaseController
   before_action :verify_fogbugz_import_enabled
   before_action :user_map, only: [:new_user_map, :create_user_map]
+  before_action :verify_blocked_uri, only: :callback
 
   rescue_from Fogbugz::AuthenticationException, with: :fogbugz_unauthorized
 
@@ -105,5 +106,22 @@ class Import::FogbugzController < Import::BaseController
 
   def verify_fogbugz_import_enabled
     render_404 unless fogbugz_import_enabled?
+  end
+
+  def verify_blocked_uri
+    Gitlab::UrlBlocker.validate!(
+      params[:uri],
+      {
+        allow_localhost: allow_local_requests?,
+        allow_local_network: allow_local_requests?,
+        schemes: %w(http https)
+      }
+    )
+  rescue Gitlab::UrlBlocker::BlockedUrlError => e
+    redirect_to new_import_fogbugz_url, alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }
+  end
+
+  def allow_local_requests?
+    Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
   end
 end
