@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapState } from 'vuex';
-import _ from 'underscore';
+import { debounce } from 'lodash';
 import { GlLoadingIcon } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import Item from './item.vue';
@@ -39,7 +39,7 @@ export default {
     loadBranches() {
       this.fetchBranches({ search: this.search });
     },
-    searchBranches: _.debounce(function debounceSearch() {
+    searchBranches: debounce(function debounceSearch() {
       this.loadBranches();
     }, 250),
     focusSearch() {

@@ -149,8 +149,57 @@ describe Service do
     end
   end
 
-  describe "Template" do
+  describe 'template' do
     let(:project) { create(:project) }
+
+    shared_examples 'retrieves service templates' do
+      it 'returns the available service templates' do
+        expect(Service.find_or_create_templates.pluck(:type)).to match_array(Service.available_services_types)
+      end
+    end
+
+    describe '.find_or_create_templates' do
+      it 'creates service templates' do
+        expect { Service.find_or_create_templates }.to change { Service.count }.from(0).to(Service.available_services_names.size)
+      end
+
+      it_behaves_like 'retrieves service templates'
+
+      context 'with all existing templates' do
+        before do
+          Service.insert_all(
+            Service.available_services_types.map { |type| { template: true, type: type } }
+          )
+        end
+
+        it 'does not create service templates' do
+          expect { Service.find_or_create_templates }.to change { Service.count }.by(0)
+        end
+
+        it_behaves_like 'retrieves service templates'
+
+        context 'with a previous existing service (Previous) and a new service (Asana)' do
+          before do
+            Service.insert(type: 'PreviousService', template: true)
+            Service.delete_by(type: 'AsanaService', template: true)
+          end
+
+          it_behaves_like 'retrieves service templates'
+        end
+      end
+
+      context 'with a few existing templates' do
+        before do
+          create(:jira_service, :template)
+        end
+
+        it 'creates the rest of the service templates' do
+          expect { Service.find_or_create_templates }.to change { Service.count }.from(1).to(Service.available_services_names.size)
+        end
+
+        it_behaves_like 'retrieves service templates'
+      end
+    end
 
     describe '.build_from_template' do
       context 'when template is invalid' do

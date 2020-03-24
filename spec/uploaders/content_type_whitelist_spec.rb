@@ -18,6 +18,7 @@ describe ContentTypeWhitelist do
     let(:path) { File.join('spec', 'fixtures', 'rails_sample.jpg') }
 
     it_behaves_like 'accepted carrierwave upload'
+    it_behaves_like 'upload with content type', 'image/jpeg'
   end
 
   context 'upload non-whitelisted file content type' do

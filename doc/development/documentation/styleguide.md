@@ -150,8 +150,6 @@ For example:
 
 ## Structure
 
-### Organize by topic, not by type
-
 Because we want documentation to be a SSOT, we should [organize by topic, not by type](#organize-by-topic-not-by-type).
 
 ### Folder structure overview
@@ -619,6 +617,22 @@ do not use this option until further notice.
 
 ## Links
 
+Links are important in GitLab documentation. They allow you to [link instead of summarizing](#link-instead-of-summarize)
+to help preserve an [SSoT](#why-a-single-source-of-truth) within GitLab documentation.
+
+We include guidance for links in the following categories:
+
+- How to set up [anchor links](#anchor-links) for headings.
+- How to set up [criteria](#basic-link-criteria) for configuring a link.
+- What to set up when [linking to a `help`](../documentation/index.md#linking-to-help) page.
+- How to set up [links to internal documentation](#links-to-internal-documentation) for cross-references.
+- When to use [links requiring permissions](#links-requiring-permissions).
+- How to set up a [link to a video](#link-to-video).
+- How to [include links with version text](#text-for-documentation-requiring-version-text).
+- How to [link to specific lines of code](#link-to-specific-lines-of-code)
+
+### Basic link criteria
+
 - Use inline link Markdown markup `[Text](https://example.com)`.
   It's easier to read, review, and maintain. **Do not** use `[Text][identifier]`.
 
@@ -687,6 +701,19 @@ Example:
 ```md
 For more information, see the [confidential issue](../../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab-foss/issues/<issue_number>`.
 ```
+
+### Link to specific lines of code
+
+When linking to specifics lines within a file, link to a commit instead of to the branch.
+Lines of code change through time, therefore, linking to a line by using the commit link
+ensures the user lands on the line you're referring to.
+
+- **Do:** `[link to line 3](https://gitlab.com/gitlab-org/gitlab/-/blob/11f17c56d8b7f0b752562d78a4298a3a95b5ce66/.gitlab/issue_templates/Feature%20proposal.md#L3)`
+- **Don't:** `[link to line 3](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal.md#L3).`
+
+If that linked expression is no longer in that line of the file due to further commits, you
+can still search the file for that query. In this case, update the document to ensure it
+links to the most recent version of the file.
 
 ## Navigation
 
@@ -1361,7 +1388,7 @@ on this document. Further explanation is given below.
 
 - Every method must have the REST API request. For example:
 
-  ```
+  ```plaintext
   GET /projects/:id/repository/branches
   ```
 

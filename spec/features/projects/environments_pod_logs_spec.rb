@@ -29,7 +29,7 @@ describe 'Environment > Pod Logs', :js do
     wait_for_requests
 
     page.within('.js-environments-dropdown') do
-      toggle = find(".dropdown-menu-toggle:not([disabled])")
+      toggle = find(".dropdown-toggle:not([disabled])")
 
       expect(toggle).to have_content(environment.name)
 
@@ -47,8 +47,8 @@ describe 'Environment > Pod Logs', :js do
 
       wait_for_requests
 
-      page.within('.js-pods-dropdown') do
-        find(".dropdown-menu-toggle:not([disabled])").click
+      page.within('.qa-pods-dropdown') do
+        find(".dropdown-toggle:not([disabled])").click
 
         dropdown_items = find(".dropdown-menu").all(".dropdown-item:not([disabled])")
         expect(dropdown_items.size).to eq(1)

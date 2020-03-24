@@ -1,10 +1,50 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 require 'rspec-parameterized'
 
 describe Gitlab::InstrumentationHelper do
   using RSpec::Parameterized::TableSyntax
+
+  describe '.add_instrumentation_data', :request_store do
+    let(:payload) { {} }
+
+    subject { described_class.add_instrumentation_data(payload) }
+
+    it 'adds nothing' do
+      subject
+
+      expect(payload).to eq({})
+    end
+
+    context 'when Gitaly calls are made' do
+      it 'adds Gitaly data and omits Redis data' do
+        project = create(:project)
+        RequestStore.clear!
+        project.repository.exists?
+
+        subject
+
+        expect(payload[:gitaly_calls]).to eq(1)
+        expect(payload[:gitaly_duration]).to be >= 0
+        expect(payload[:redis_calls]).to be_nil
+        expect(payload[:redis_duration_ms]).to be_nil
+      end
+    end
+
+    context 'when Redis calls are made' do
+      it 'adds Redis data and omits Gitaly data' do
+        Gitlab::Redis::Cache.with { |redis| redis.get('test-instrumentation') }
+
+        subject
+
+        expect(payload[:redis_calls]).to eq(1)
+        expect(payload[:redis_duration_ms]).to be >= 0
+        expect(payload[:gitaly_calls]).to be_nil
+        expect(payload[:gitaly_duration]).to be_nil
+      end
+    end
+  end
 
   describe '.queue_duration_for_job' do
     where(:enqueued_at, :created_at, :time_now, :expected_duration) do

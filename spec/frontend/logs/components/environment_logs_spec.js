@@ -1,7 +1,5 @@
-import Vue from 'vue';
-import { GlSprintf, GlIcon, GlDropdown, GlDropdownItem, GlSearchBoxByClick } from '@gitlab/ui';
+import { GlSprintf, GlIcon, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
 import EnvironmentLogs from '~/logs/components/environment_logs.vue';
 
 import { createStore } from '~/logs/stores';
@@ -13,7 +11,6 @@ import {
   mockLogsResult,
   mockTrace,
   mockPodName,
-  mockSearch,
   mockEnvironmentsEndpoint,
   mockDocumentationPath,
 } from '../mock_data';
@@ -29,7 +26,6 @@ jest.mock('lodash/throttle', () =>
 );
 
 describe('EnvironmentLogs', () => {
-  let EnvironmentLogsComponent;
   let store;
   let dispatch;
   let wrapper;
@@ -44,13 +40,9 @@ describe('EnvironmentLogs', () => {
   const updateControlBtnsMock = jest.fn();
 
   const findEnvironmentsDropdown = () => wrapper.find('.js-environments-dropdown');
-  const findPodsDropdown = () => wrapper.find('.js-pods-dropdown');
-  const findPodsDropdownItems = () =>
-    findPodsDropdown()
-      .findAll(GlDropdownItem)
-      .filter(itm => !itm.attributes('disabled'));
-  const findSearchBar = () => wrapper.find('.js-logs-search');
-  const findTimeRangePicker = () => wrapper.find({ ref: 'dateTimePicker' });
+
+  const findSimpleFilters = () => wrapper.find({ ref: 'log-simple-filters' });
+  const findAdvancedFilters = () => wrapper.find({ ref: 'log-advanced-filters' });
   const findInfoAlert = () => wrapper.find('.js-elasticsearch-alert');
   const findLogControlButtons = () => wrapper.find({ name: 'log-control-buttons-stub' });
 
@@ -79,7 +71,7 @@ describe('EnvironmentLogs', () => {
   };
 
   const initWrapper = () => {
-    wrapper = shallowMount(EnvironmentLogsComponent, {
+    wrapper = shallowMount(EnvironmentLogs, {
       propsData,
       store,
       stubs: {
@@ -111,7 +103,6 @@ describe('EnvironmentLogs', () => {
   beforeEach(() => {
     store = createStore();
     state = store.state.environmentLogs;
-    EnvironmentLogsComponent = Vue.extend(EnvironmentLogs);
 
     jest.spyOn(store, 'dispatch').mockResolvedValue();
 
@@ -132,17 +123,10 @@ describe('EnvironmentLogs', () => {
     expect(wrapper.isVueInstance()).toBe(true);
     expect(wrapper.isEmpty()).toBe(false);
 
-    // top bar
     expect(findEnvironmentsDropdown().is(GlDropdown)).toBe(true);
-    expect(findPodsDropdown().is(GlDropdown)).toBe(true);
+    expect(findSimpleFilters().exists()).toBe(true);
     expect(findLogControlButtons().exists()).toBe(true);
 
-    expect(findSearchBar().exists()).toBe(true);
-    expect(findSearchBar().is(GlSearchBoxByClick)).toBe(true);
-    expect(findTimeRangePicker().exists()).toBe(true);
-    expect(findTimeRangePicker().is(DateTimePicker)).toBe(true);
-
-    // log trace
     expect(findInfiniteScroll().exists()).toBe(true);
     expect(findLogTrace().exists()).toBe(true);
   });
@@ -179,20 +163,6 @@ describe('EnvironmentLogs', () => {
     it('displays a disabled environments dropdown', () => {
       expect(findEnvironmentsDropdown().attributes('disabled')).toBe('true');
       expect(findEnvironmentsDropdown().findAll(GlDropdownItem).length).toBe(0);
-    });
-
-    it('displays a disabled pods dropdown', () => {
-      expect(findPodsDropdown().attributes('disabled')).toBe('true');
-      expect(findPodsDropdownItems()).toHaveLength(0);
-    });
-
-    it('displays a disabled search bar', () => {
-      expect(findSearchBar().exists()).toBe(true);
-      expect(findSearchBar().attributes('disabled')).toBe('true');
-    });
-
-    it('displays a disabled time window dropdown', () => {
-      expect(findTimeRangePicker().attributes('disabled')).toBe('true');
     });
 
     it('does not update buttons state', () => {
@@ -237,16 +207,13 @@ describe('EnvironmentLogs', () => {
       initWrapper();
     });
 
-    it('displays a disabled time window dropdown', () => {
-      expect(findTimeRangePicker().attributes('disabled')).toBe('true');
-    });
-
-    it('displays a disabled search bar', () => {
-      expect(findSearchBar().attributes('disabled')).toBe('true');
-    });
-
     it('displays an alert to upgrade to ES', () => {
       expect(findInfoAlert().exists()).toBe(true);
+    });
+
+    it('displays simple filters for kubernetes logs API', () => {
+      expect(findSimpleFilters().exists()).toBe(true);
+      expect(findAdvancedFilters().exists()).toBe(false);
     });
   });
 
@@ -271,21 +238,6 @@ describe('EnvironmentLogs', () => {
       updateControlBtnsMock.mockReset();
     });
 
-    it('displays an enabled search bar', () => {
-      expect(findSearchBar().attributes('disabled')).toBeFalsy();
-
-      // input a query and click `search`
-      findSearchBar().vm.$emit('input', mockSearch);
-      findSearchBar().vm.$emit('submit');
-
-      expect(dispatch).toHaveBeenCalledWith(`${module}/setInitData`, expect.any(Object));
-      expect(dispatch).toHaveBeenCalledWith(`${module}/setSearch`, mockSearch);
-    });
-
-    it('displays an enabled time window dropdown', () => {
-      expect(findTimeRangePicker().attributes('disabled')).toBeFalsy();
-    });
-
     it('does not display an alert to upgrade to ES', () => {
       expect(findInfoAlert().exists()).toBe(false);
     });
@@ -306,42 +258,21 @@ describe('EnvironmentLogs', () => {
         const item = items.at(i);
 
         if (item.text() !== mockEnvName) {
-          expect(item.find(GlIcon).classes()).toContain('invisible');
+          expect(item.find(GlIcon).classes('invisible')).toBe(true);
         } else {
-          // selected
-          expect(item.find(GlIcon).classes()).not.toContain('invisible');
+          expect(item.find(GlIcon).classes('invisible')).toBe(false);
         }
       });
     });
 
-    it('populates pods dropdown', () => {
-      const items = findPodsDropdownItems();
-
-      expect(findPodsDropdown().props('text')).toBe(mockPodName);
-      expect(items.length).toBe(mockPods.length + 1);
-      expect(items.at(0).text()).toBe('All pods');
-      mockPods.forEach((pod, i) => {
-        const item = items.at(i + 1);
-        expect(item.text()).toBe(pod);
-      });
+    it('displays advanced filters for elasticsearch logs API', () => {
+      expect(findSimpleFilters().exists()).toBe(false);
+      expect(findAdvancedFilters().exists()).toBe(true);
     });
 
     it('shows infinite scroll with height and no content', () => {
       expect(getInfiniteScrollAttr('max-list-height')).toBeGreaterThan(0);
       expect(getInfiniteScrollAttr('fetched-items')).toBe(mockTrace.length);
-    });
-
-    it('dropdown has one pod selected', () => {
-      const items = findPodsDropdownItems();
-      mockPods.forEach((pod, i) => {
-        const item = items.at(i);
-        if (item.text() !== mockPodName) {
-          expect(item.find(GlIcon).classes()).toContain('invisible');
-        } else {
-          // selected
-          expect(item.find(GlIcon).classes()).not.toContain('invisible');
-        }
-      });
     });
 
     it('populates logs trace', () => {
@@ -369,17 +300,6 @@ describe('EnvironmentLogs', () => {
           `${module}/showEnvironment`,
           mockEnvironments[index].name,
         );
-      });
-
-      it('pod name, trace is refreshed', () => {
-        const items = findPodsDropdownItems();
-        const index = 2; // any pod
-
-        expect(dispatch).not.toHaveBeenCalledWith(`${module}/showPodLogs`, expect.anything());
-
-        items.at(index + 1).vm.$emit('click');
-
-        expect(dispatch).toHaveBeenCalledWith(`${module}/showPodLogs`, mockPods[index]);
       });
 
       it('refresh button, trace is refreshed', () => {

@@ -122,12 +122,14 @@ If using GitLab 12.9 and newer, run:
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
 
-If using GitLab 12.8 and older, run the following using a Rails console:
+If using GitLab 12.8 and older, run the following using a [Rails console](../administration/troubleshooting/debug.md#starting-a-rails-console):
 
 ```ruby
 puts Sidekiq::Queue.new("background_migration").size
 Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.size
 ```
+
+---
 
 **For installations from source**
 
@@ -138,12 +140,15 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
 
-If using GitLab 12.8 and older, run the following using a Rails console:
+If using GitLab 12.8 and older, run the following using a [Rails console](../administration/troubleshooting/debug.md#starting-a-rails-console):
 
 ```ruby
 puts Sidekiq::Queue.new("background_migration").size
 Sidekiq::ScheduledSet.new.select { |r| r.klass == 'BackgroundMigrationWorker' }.size
 ```
+
+There is also a [rake task](../administration/raketasks/maintenance.md#display-status-of-database-migrations)
+for displaying the status of each database migration.
 
 ## Upgrading to a new major version
 

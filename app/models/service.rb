@@ -46,6 +46,7 @@ class Service < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :without_defaults, -> { where(default: false) }
   scope :by_type, -> (type) { where(type: type) }
+  scope :templates, -> { where(template: true, type: available_services_types) }
 
   scope :push_hooks, -> { where(push_events: true, active: true) }
   scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
@@ -259,14 +260,32 @@ class Service < ApplicationRecord
     self.category == :issue_tracker
   end
 
+  # Find all service templates; if some of them do not exist, create them
+  # within a transaction to perform the lowest possible SQL queries.
+  def self.find_or_create_templates
+    create_nonexistent_templates
+    templates
+  end
+
+  private_class_method def self.create_nonexistent_templates
+    nonexistent_services = available_services_types - templates.map(&:type)
+    return if nonexistent_services.empty?
+
+    transaction do
+      nonexistent_services.each do |service_type|
+        service_type.constantize.create(template: true)
+      end
+    end
+  end
+
   def self.available_services_names
     service_names = %w[
       alerts
       asana
       assembla
       bamboo
-      buildkite
       bugzilla
+      buildkite
       campfire
       custom_issue_tracker
       discord
@@ -278,20 +297,20 @@ class Service < ApplicationRecord
       hipchat
       irker
       jira
-      mattermost_slash_commands
       mattermost
+      mattermost_slash_commands
+      microsoft_teams
       packagist
       pipelines_email
       pivotaltracker
       prometheus
       pushover
       redmine
-      youtrack
-      slack_slash_commands
       slack
+      slack_slash_commands
       teamcity
-      microsoft_teams
       unify_circuit
+      youtrack
     ]
 
     if Rails.env.development?
@@ -299,6 +318,10 @@ class Service < ApplicationRecord
     end
 
     service_names.sort_by(&:downcase)
+  end
+
+  def self.available_services_types
+    available_services_names.map { |service_name| "#{service_name}_service".camelize }
   end
 
   def self.build_from_template(project_id, template)

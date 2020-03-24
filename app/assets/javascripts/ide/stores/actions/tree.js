@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { defer } from 'lodash';
 import { __ } from '../../../locale';
 import service from '../../services';
 import * as types from '../mutation_types';
@@ -71,7 +71,7 @@ export const getFiles = ({ state, commit, dispatch }, payload = {}) =>
 
           // Defer setting the directory data because this triggers some intense rendering.
           // The entries is all we need to load the file editor.
-          _.defer(() => dispatch('setDirectoryData', { projectId, branchId, treeList }));
+          defer(() => dispatch('setDirectoryData', { projectId, branchId, treeList }));
 
           resolve();
         })

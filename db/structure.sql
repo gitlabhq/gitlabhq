@@ -8603,6 +8603,8 @@ CREATE INDEX index_ci_builds_on_upstream_pipeline_id ON public.ci_builds USING b
 
 CREATE INDEX index_ci_builds_on_user_id ON public.ci_builds USING btree (user_id);
 
+CREATE INDEX index_ci_builds_on_user_id_and_created_at_and_type_eq_ci_build ON public.ci_builds USING btree (user_id, created_at) WHERE ((type)::text = 'Ci::Build'::text);
+
 CREATE INDEX index_ci_builds_project_id_and_status_for_live_jobs_partial2 ON public.ci_builds USING btree (project_id, status) WHERE (((type)::text = 'Ci::Build'::text) AND ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text])));
 
 CREATE UNIQUE INDEX index_ci_builds_runner_session_on_build_id ON public.ci_builds_runner_session USING btree (build_id);
@@ -12746,5 +12748,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200318165448'),
 ('20200318175008'),
 ('20200319203901'),
-('20200323075043');
+('20200323075043'),
+('20200323122201');
 

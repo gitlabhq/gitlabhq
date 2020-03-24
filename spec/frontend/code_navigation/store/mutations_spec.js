@@ -11,14 +11,12 @@ describe('Code navigation mutations', () => {
   describe('SET_INITIAL_DATA', () => {
     it('sets initial data', () => {
       mutations.SET_INITIAL_DATA(state, {
-        projectPath: 'test',
-        commitId: '123',
-        blobPath: 'index.js',
+        codeNavUrl: 'https://test.com/builds/1005',
+        definitionPathPrefix: 'https://test.com/blob/master',
       });
 
-      expect(state.projectPath).toBe('test');
-      expect(state.commitId).toBe('123');
-      expect(state.blobPath).toBe('index.js');
+      expect(state.codeNavUrl).toBe('https://test.com/builds/1005');
+      expect(state.definitionPathPrefix).toBe('https://test.com/blob/master');
     });
   });
 

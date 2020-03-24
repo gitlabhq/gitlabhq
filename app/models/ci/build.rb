@@ -33,6 +33,8 @@ module Ci
       scheduler_failure: 2
     }.freeze
 
+    CODE_NAVIGATION_JOB_NAME = 'code_navigation'
+
     has_one :deployment, as: :deployable, class_name: 'Deployment'
     has_one :resource, class_name: 'Ci::Resource', inverse_of: :build
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'

@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import _ from 'underscore';
+import { isEmpty } from 'lodash';
 import { Manager } from 'smooshpack';
 import { listen } from 'codesandbox-api';
 import { GlLoadingIcon } from '@gitlab/ui';
@@ -78,7 +78,7 @@ export default {
       .then(() => this.initPreview());
   },
   beforeDestroy() {
-    if (!_.isEmpty(this.manager)) {
+    if (!isEmpty(this.manager)) {
       this.manager.listener();
     }
     this.manager = {};
@@ -125,7 +125,7 @@ export default {
       clearTimeout(this.timeout);
 
       this.timeout = setTimeout(() => {
-        if (_.isEmpty(this.manager)) {
+        if (isEmpty(this.manager)) {
           this.initPreview();
 
           return;

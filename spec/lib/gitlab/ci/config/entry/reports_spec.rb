@@ -46,6 +46,7 @@ describe Gitlab::Ci::Config::Entry::Reports do
         :lsif | 'lsif.json'
         :dotenv | 'build.dotenv'
         :cobertura | 'cobertura-coverage.xml'
+        :terraform | 'tfplan.json'
       end
 
       with_them do

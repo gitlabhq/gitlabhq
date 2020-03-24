@@ -1,6 +1,5 @@
 <script>
 import { mapActions, mapState } from 'vuex';
-import _ from 'underscore';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import ResizablePanel from '../resizable_panel.vue';
@@ -55,7 +54,7 @@ export default {
       return this.extensionTabs.filter(tab => tab.show);
     },
     tabViews() {
-      return _.flatten(this.tabs.map(tab => tab.views));
+      return this.tabs.map(tab => tab.views).flat();
     },
     aliveTabViews() {
       return this.tabViews.filter(view => this.isAliveView(view.name));

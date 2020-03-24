@@ -97,5 +97,12 @@ describe JobArtifactUploader do
 
     it_behaves_like "migrates", to_store: described_class::Store::REMOTE
     it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
+
+    # CI job artifacts usually are shown as text/plain, but they contain
+    # escape characters so MIME detectors usually fail to determine what
+    # the Content-Type is.
+    it 'does not set Content-Type' do
+      expect(uploader.file.content_type).to be_blank
+    end
   end
 end

@@ -1,4 +1,4 @@
-import api from '~/api';
+import axios from '~/lib/utils/axios_utils';
 import * as types from './mutation_types';
 import { getCurrentHoverElement, setCurrentHoverElement, addInteractionClass } from '../utils';
 
@@ -12,11 +12,10 @@ export default {
   fetchData({ commit, dispatch, state }) {
     commit(types.REQUEST_DATA);
 
-    api
-      .lsifData(state.projectPath, state.commitId, [state.blobPath])
+    axios
+      .get(state.codeNavUrl)
       .then(({ data }) => {
-        const dataForPath = data[state.blobPath];
-        const normalizedData = dataForPath.reduce((acc, d) => {
+        const normalizedData = data.reduce((acc, d) => {
           if (d.hover) {
             acc[`${d.start_line}:${d.start_char}`] = d;
             addInteractionClass(d);

@@ -180,6 +180,13 @@ detach
 exit
 ```
 
+## Sidekiq kill signals
+
+TTIN was described above as the signal to print backtraces for logging, however
+Sidekiq responds to other signals as well. For example, TSTP and TERM can be used
+to gracefully shut Sidekiq down, see
+[the Sidekiq Signals docs](https://github.com/mperham/sidekiq/wiki/Signals#ttin).
+
 ## Check for blocking queries
 
 Sometimes the speed at which Sidekiq processes jobs can be so fast that it can
@@ -260,9 +267,34 @@ end
 
 ### Remove Sidekiq jobs for given parameters (destructive)
 
+The general method to kill jobs conditionally is the following:
+
 ```ruby
-# for jobs like this:
-# RepositoryImportWorker.new.perform_async(100)
+queue = Sidekiq::Queue.new('<queue name>')
+queue.each { |job| job.delete if <condition>}
+```
+
+NOTE: **Note:** This will remove jobs that are queued but not started, running jobs will not be killed. Have a look at the section below for cancelling running jobs.
+
+In the method above, `<queue-name>` is the name of the queue that contains the job(s) you want to delete and `<condition>` will decide which jobs get deleted.
+
+Commonly, `<condition>` references the job arguments, which depend on the type of job in question. To find the arguments for a specific queue, you can have a look at the `perform` function of the related worker file, commonly found at `/app/workers/<queue-name>_worker.rb`.
+
+For example, `repository_import` has `project_id` as the job argument, while `update_merge_requests` has `project_id, user_id, oldrev, newrev, ref`.
+
+NOTE: **Note:** Arguments need to be referenced by their sequence id using `job.args[<id>]` because `job.args` is a list of all arguments provided to the Sidekiq job.
+
+Here are some examples:
+
+```ruby
+queue = Sidekiq::Queue.new('update_merge_requests')
+# In this example, we want to remove any update_merge_requests jobs
+# for the Project with ID 125 and ref `ref/heads/my_branch`
+queue.each { |job| job.delete if job.args[0] == 125 and job.args[4] == 'ref/heads/my_branch' }
+```
+
+```ruby
+# Cancelling jobs like: `RepositoryImportWorker.new.perform_async(100)`
 id_list = [100]
 
 queue = Sidekiq::Queue.new('repository_import')

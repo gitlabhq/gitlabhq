@@ -379,25 +379,19 @@
   }
 
   .top-bar {
-    @include build-trace-top-bar($gl-line-height * 3);
-    position: relative;
-    top: 0;
+    .date-time-picker-wrapper,
+    .dropdown-toggle {
+      @include media-breakpoint-up(md) {
+        width: 140px;
+      }
 
-    .dropdown-menu-toggle {
-      width: 200px;
-
-      @include media-breakpoint-up(sm) {
-        width: 300px;
+      @include media-breakpoint-up(lg) {
+        width: 160px;
       }
     }
 
     .controllers {
-      @include build-controllers(16px, flex-end, true, 2);
-    }
-
-    .refresh-control {
-      @include build-controllers(16px, flex-end, true, 0);
-      margin-left: 2px;
+      @include build-controllers(16px, flex-end, false, 2);
     }
   }
 

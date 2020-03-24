@@ -5,5 +5,9 @@ const mapTrace = ({ timestamp = null, pod = '', message = '' }) =>
 
 export const trace = state => state.logs.lines.map(mapTrace).join('\n');
 
-// prevent babel-plugin-rewire from generating an invalid default during karma tests
-export default () => {};
+export const showAdvancedFilters = state => {
+  const environment = state.environments.options.find(
+    ({ name }) => name === state.environments.current,
+  );
+  return Boolean(environment?.enable_advanced_logs_querying);
+};

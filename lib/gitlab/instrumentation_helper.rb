@@ -4,7 +4,7 @@ module Gitlab
   module InstrumentationHelper
     extend self
 
-    KEYS = %i(gitaly_calls gitaly_duration rugged_calls rugged_duration_ms).freeze
+    KEYS = %i(gitaly_calls gitaly_duration rugged_calls rugged_duration_ms redis_calls redis_duration_ms).freeze
 
     def add_instrumentation_data(payload)
       gitaly_calls = Gitlab::GitalyClient.get_request_count
@@ -19,6 +19,13 @@ module Gitlab
       if rugged_calls > 0
         payload[:rugged_calls] = rugged_calls
         payload[:rugged_duration_ms] = Gitlab::RuggedInstrumentation.query_time_ms
+      end
+
+      redis_calls = Gitlab::Instrumentation::Redis.get_request_count
+
+      if redis_calls > 0
+        payload[:redis_calls] = redis_calls
+        payload[:redis_duration_ms] = Gitlab::Instrumentation::Redis.query_time_ms
       end
     end
 

@@ -7,7 +7,7 @@ export default {
     Popover,
   },
   computed: {
-    ...mapState(['currentDefinition', 'currentDefinitionPosition']),
+    ...mapState(['currentDefinition', 'currentDefinitionPosition', 'definitionPathPrefix']),
   },
   mounted() {
     this.blobViewer = document.querySelector('.blob-viewer');
@@ -39,5 +39,6 @@ export default {
     v-if="currentDefinition"
     :position="currentDefinitionPosition"
     :data="currentDefinition"
+    :definition-path-prefix="definitionPathPrefix"
   />
 </template>

@@ -1,39 +1,5 @@
 # frozen_string_literal: true
 
-require 'redis'
-
-module Gitlab
-  module Peek
-    module RedisInstrumented
-      def call(*args, &block)
-        start = Time.now
-        super(*args, &block)
-      ensure
-        duration = (Time.now - start)
-        add_call_details(duration, args)
-      end
-
-      private
-
-      def add_call_details(duration, args)
-        return unless Gitlab::PerformanceBar.enabled_for_request?
-        # redis-rb passes an array (e.g. [:get, key])
-        return unless args.length == 1
-
-        detail_store << {
-          cmd: args.first,
-          duration: duration,
-          backtrace: ::Gitlab::BacktraceCleaner.clean_backtrace(caller)
-        }
-      end
-
-      def detail_store
-        ::Gitlab::SafeRequestStore['redis_call_details'] ||= []
-      end
-    end
-  end
-end
-
 module Peek
   module Views
     class RedisDetailed < DetailedView
@@ -62,8 +28,4 @@ module Peek
       end
     end
   end
-end
-
-class Redis::Client
-  prepend Gitlab::Peek::RedisInstrumented
 end

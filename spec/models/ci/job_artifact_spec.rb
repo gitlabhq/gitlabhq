@@ -140,6 +140,18 @@ describe Ci::JobArtifact do
     end
   end
 
+  describe '.for_job_name' do
+    it 'returns job artifacts for a given job name' do
+      first_job = create(:ci_build, name: 'first')
+      second_job = create(:ci_build, name: 'second')
+      first_artifact = create(:ci_job_artifact, job: first_job)
+      second_artifact = create(:ci_job_artifact, job: second_job)
+
+      expect(described_class.for_job_name(first_job.name)).to eq([first_artifact])
+      expect(described_class.for_job_name(second_job.name)).to eq([second_artifact])
+    end
+  end
+
   describe 'callbacks' do
     subject { create(:ci_job_artifact, :archive) }
 

@@ -39,6 +39,7 @@ module QA
     autoload :MailHog, 'qa/runtime/mail_hog'
     autoload :IPAddress, 'qa/runtime/ip_address'
     autoload :Search, 'qa/runtime/search'
+    autoload :Project, 'qa/runtime/project'
     autoload :ApplicationSettings, 'qa/runtime/application_settings'
 
     module API

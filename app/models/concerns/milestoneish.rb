@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Milestoneish
+  DISPLAY_ISSUES_LIMIT = 3000
+
   def total_issues_count
     @total_issues_count ||= Milestones::IssuesCountService.new(self).count
   end
@@ -55,7 +57,15 @@ module Milestoneish
   end
 
   def sorted_issues(user)
-    issues_visible_to_user(user).preload_associated_models.sort_by_attribute('label_priority')
+    # This method is used on milestone view to filter opened assigned, opened unassigned and closed issues columns.
+    # We want a limit of DISPLAY_ISSUES_LIMIT for total issues present on all columns.
+    limited_ids =
+      issues_visible_to_user(user).sort_by_attribute('label_priority').limit(DISPLAY_ISSUES_LIMIT)
+
+    Issue
+      .where(id: Issue.select(:id).from(limited_ids))
+      .preload_associated_models
+      .sort_by_attribute('label_priority')
   end
 
   def sorted_merge_requests(user)

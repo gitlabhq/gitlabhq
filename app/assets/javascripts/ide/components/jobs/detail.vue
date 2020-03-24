@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapState } from 'vuex';
-import _ from 'underscore';
+import { throttle } from 'lodash';
 import { __ } from '../../../locale';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
@@ -53,7 +53,7 @@ export default {
         this.$refs.buildTrace.scrollTo(0, 0);
       }
     },
-    scrollBuildLog: _.throttle(function buildLogScrollDebounce() {
+    scrollBuildLog: throttle(function buildLogScrollDebounce() {
       const { scrollTop } = this.$refs.buildTrace;
       const { offsetHeight, scrollHeight } = this.$refs.buildTrace;
 

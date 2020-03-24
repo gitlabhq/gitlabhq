@@ -1,5 +1,5 @@
 import { Range } from 'monaco-editor';
-import { throttle } from 'underscore';
+import { throttle } from 'lodash';
 import DirtyDiffWorker from './diff_worker';
 import Disposable from '../common/disposable';
 

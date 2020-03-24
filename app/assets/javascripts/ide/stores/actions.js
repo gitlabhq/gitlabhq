@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import { __, sprintf } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import flash from '~/flash';
@@ -296,7 +296,7 @@ export const getBranchData = ({ commit, state }, { projectId, branchId, force = 
                 sprintf(
                   __('Branch not loaded - %{branchId}'),
                   {
-                    branchId: `<strong>${_.escape(projectId)}/${_.escape(branchId)}</strong>`,
+                    branchId: `<strong>${esc(projectId)}/${esc(branchId)}</strong>`,
                   },
                   false,
                 ),

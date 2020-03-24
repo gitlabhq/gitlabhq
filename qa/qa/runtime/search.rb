@@ -42,6 +42,22 @@ module QA
         end
       end
 
+      def elasticsearch_on?(api_client)
+        elasticsearch_state_request = Runtime::API::Request.new(api_client, '/application/settings')
+        response = get elasticsearch_state_request.url
+
+        parse_body(response)[:elasticsearch_search] && parse_body(response)[:elasticsearch_indexing]
+      end
+
+      def disable_elasticsearch(api_client)
+        disable_elasticsearch_request = Runtime::API::Request.new(api_client, '/application/settings')
+        put disable_elasticsearch_request.url, elasticsearch_search: false, elasticsearch_indexing: false
+      end
+
+      def create_search_request(api_client, scope, search_term)
+        Runtime::API::Request.new(api_client, '/search', scope: scope, search: search_term)
+      end
+
       def find_code(file_name, search_term)
         find_target_in_scope('blobs', search_term) do |record|
           record[:filename] == file_name && record[:data].include?(search_term)

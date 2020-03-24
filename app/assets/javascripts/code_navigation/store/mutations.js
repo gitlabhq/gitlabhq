@@ -1,10 +1,9 @@
 import * as types from './mutation_types';
 
 export default {
-  [types.SET_INITIAL_DATA](state, { projectPath, commitId, blobPath }) {
-    state.projectPath = projectPath;
-    state.commitId = commitId;
-    state.blobPath = blobPath;
+  [types.SET_INITIAL_DATA](state, { codeNavUrl, definitionPathPrefix }) {
+    state.codeNavUrl = codeNavUrl;
+    state.definitionPathPrefix = definitionPathPrefix;
   },
   [types.REQUEST_DATA](state) {
     state.loading = true;

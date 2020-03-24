@@ -9,6 +9,8 @@ import { branches } from '../../mock_data';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
+jest.mock('lodash/debounce', () => jest.fn);
+
 describe('IDE branches search list', () => {
   let wrapper;
   const fetchBranchesMock = jest.fn();

@@ -8,18 +8,17 @@ describe Projects::BlobController do
   let(:project) { create(:project, :public, :repository) }
 
   describe "GET show" do
+    def request
+      get(:show, params: { namespace_id: project.namespace, project_id: project, id: id })
+    end
+
     render_views
 
     context 'with file path' do
       before do
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
 
-        get(:show,
-            params: {
-              namespace_id: project.namespace,
-              project_id: project,
-              id: id
-            })
+        request
       end
 
       context "valid branch, valid file" do
@@ -116,6 +115,32 @@ describe Projects::BlobController do
         it 'redirects' do
           expect(subject)
             .to redirect_to("/#{project.full_path}/-/tree/markdown/doc")
+        end
+      end
+    end
+
+    context 'when there is an artifact with code navigation data' do
+      let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id) }
+      let!(:job) { create(:ci_build, pipeline: pipeline, name: Ci::Build::CODE_NAVIGATION_JOB_NAME) }
+      let!(:artifact) { create(:ci_job_artifact, :lsif, job: job) }
+
+      let(:id) { 'master/README.md' }
+
+      it 'assigns code_navigation_build variable' do
+        request
+
+        expect(assigns[:code_navigation_build]).to eq(job)
+      end
+
+      context 'when code_navigation feature is disabled' do
+        before do
+          stub_feature_flags(code_navigation: false)
+        end
+
+        it 'does not assign code_navigation_build variable' do
+          request
+
+          expect(assigns[:code_navigation_build]).to be_nil
         end
       end
     end

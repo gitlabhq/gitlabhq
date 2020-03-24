@@ -27,12 +27,10 @@ describe('Code navigation actions', () => {
 
   describe('fetchData', () => {
     let mock;
-    const state = {
-      projectPath: 'gitlab-org/gitlab',
-      commitId: '123',
-      blobPath: 'index',
-    };
-    const apiUrl = '/api/1/projects/gitlab-org%2Fgitlab/commits/123/lsif/info';
+
+    const codeNavUrl =
+      'gitlab-org/gitlab-shell/-/jobs/1114/artifacts/raw/lsif/cmd/check/main.go.json';
+    const state = { codeNavUrl };
 
     beforeEach(() => {
       window.gon = { api_version: '1' };
@@ -45,20 +43,18 @@ describe('Code navigation actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(apiUrl).replyOnce(200, {
-          index: [
-            {
-              start_line: 0,
-              start_char: 0,
-              hover: { value: '123' },
-            },
-            {
-              start_line: 1,
-              start_char: 0,
-              hover: null,
-            },
-          ],
-        });
+        mock.onGet(codeNavUrl).replyOnce(200, [
+          {
+            start_line: 0,
+            start_char: 0,
+            hover: { value: '123' },
+          },
+          {
+            start_line: 1,
+            start_char: 0,
+            hover: null,
+          },
+        ]);
       });
 
       it('commits REQUEST_DATA_SUCCESS with normalized data', done => {
@@ -106,7 +102,7 @@ describe('Code navigation actions', () => {
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(apiUrl).replyOnce(500);
+        mock.onGet(codeNavUrl).replyOnce(500);
       });
 
       it('dispatches requestDataError', done => {

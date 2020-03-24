@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { escape as esc } from 'lodash';
 import flash from '~/flash';
 import { __, sprintf } from '~/locale';
 import service from '../../services';
@@ -73,7 +73,7 @@ export const showBranchNotFoundError = ({ dispatch }, branchId) => {
     text: sprintf(
       __("Branch %{branchName} was not found in this project's repository."),
       {
-        branchName: `<strong>${_.escape(branchId)}</strong>`,
+        branchName: `<strong>${esc(branchId)}</strong>`,
       },
       false,
     ),
@@ -154,7 +154,7 @@ export const openBranch = ({ dispatch, state, getters }, { projectId, branchId, 
             sprintf(
               __('An error occurred while getting files for - %{branchId}'),
               {
-                branchId: `<strong>${_.escape(projectId)}/${_.escape(branchId)}</strong>`,
+                branchId: `<strong>${esc(projectId)}/${esc(branchId)}</strong>`,
               },
               false,
             ),

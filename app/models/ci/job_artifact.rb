@@ -31,7 +31,8 @@ module Ci
       metrics: 'metrics.txt',
       lsif: 'lsif.json',
       dotenv: '.env',
-      cobertura: 'cobertura-coverage.xml'
+      cobertura: 'cobertura-coverage.xml',
+      terraform: 'tfplan.json'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -59,7 +60,8 @@ module Ci
       dast: :raw,
       license_management: :raw,
       license_scanning: :raw,
-      performance: :raw
+      performance: :raw,
+      terraform: :raw
     }.freeze
 
     TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze
@@ -80,6 +82,7 @@ module Ci
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
     scope :with_files_stored_remotely, -> { where(file_store: ::JobArtifactUploader::Store::REMOTE) }
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
+    scope :for_job_name, ->(name) { joins(:job).where(ci_builds: { name: name }) }
 
     scope :with_file_types, -> (file_types) do
       types = self.file_types.select { |file_type| file_types.include?(file_type) }.values
@@ -129,7 +132,8 @@ module Ci
       network_referee: 14, ## runner referees
       lsif: 15, # LSIF data for code navigation
       dotenv: 16,
-      cobertura: 17
+      cobertura: 17,
+      terraform: 18 # Transformed json
     }
 
     enum file_format: {

@@ -16,6 +16,7 @@ function factory(initialState = {}) {
     state: {
       ...createState(),
       ...initialState,
+      definitionPathPrefix: 'https://test.com/blob/master',
     },
     actions: {
       fetchData,

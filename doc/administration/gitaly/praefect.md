@@ -757,10 +757,7 @@ Repositories may be moved from one storage location using the [Repository
 API](../../api/projects.html#edit-project):
 
 ```shell
-curl --request PUT \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --data "repository_storage=praefect" \
-  https://example.gitlab.com/api/v4/projects/123
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "repository_storage=praefect" https://example.gitlab.com/api/v4/projects/123
 ```
 
 ## Debugging Praefect

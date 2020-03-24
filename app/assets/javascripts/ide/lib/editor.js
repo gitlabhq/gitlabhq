@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { debounce } from 'lodash';
 import { editor as monacoEditor, KeyCode, KeyMod } from 'monaco-editor';
 import store from '../stores';
 import DecorationsController from './decorations/controller';
@@ -38,7 +38,7 @@ export default class Editor {
 
     setupThemes();
 
-    this.debouncedUpdate = _.debounce(() => {
+    this.debouncedUpdate = debounce(() => {
       this.updateDimensions();
     }, 200);
   }
