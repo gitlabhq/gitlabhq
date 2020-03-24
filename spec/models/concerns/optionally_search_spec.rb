@@ -3,28 +3,39 @@
 require 'spec_helper'
 
 describe OptionallySearch do
-  let(:model) do
-    Class.new(ActiveRecord::Base) do
-      self.table_name = 'users'
-
-      include OptionallySearch
-    end
-  end
-
   describe '.search' do
+    let(:model) do
+      Class.new do
+        include OptionallySearch
+      end
+    end
+
     it 'raises NotImplementedError' do
       expect { model.search('foo') }.to raise_error(NotImplementedError)
     end
   end
 
   describe '.optionally_search' do
+    let(:model) do
+      Class.new(ActiveRecord::Base) do
+        self.table_name = 'users'
+
+        include OptionallySearch
+
+        def self.search(query, **options)
+          [query, options]
+        end
+      end
+    end
+
     context 'when a query is given' do
       it 'delegates to the search method' do
         expect(model)
           .to receive(:search)
           .with('foo', {})
+          .and_call_original
 
-        model.optionally_search('foo')
+        expect(model.optionally_search('foo')).to eq(['foo', {}])
       end
     end
 
@@ -33,8 +44,9 @@ describe OptionallySearch do
         expect(model)
           .to receive(:search)
           .with('foo', some_option: true)
+          .and_call_original
 
-        model.optionally_search('foo', some_option: true)
+        expect(model.optionally_search('foo', some_option: true)).to eq(['foo', { some_option: true }])
       end
     end
 

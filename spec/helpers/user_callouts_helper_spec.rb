@@ -47,6 +47,26 @@ describe UserCalloutsHelper do
     end
   end
 
+  describe '.show_admin_integrations_moved?' do
+    subject { helper.show_admin_integrations_moved? }
+
+    context 'when user has not dismissed' do
+      before do
+        allow(helper).to receive(:user_dismissed?).with(described_class::ADMIN_INTEGRATIONS_MOVED) { false }
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user dismissed' do
+      before do
+        allow(helper).to receive(:user_dismissed?).with(described_class::ADMIN_INTEGRATIONS_MOVED) { true }
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe '.render_flash_user_callout' do
     it 'renders the flash_user_callout partial' do
       expect(helper).to receive(:render)

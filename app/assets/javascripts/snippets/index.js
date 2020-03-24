@@ -3,19 +3,16 @@ import Translate from '~/vue_shared/translate';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 
-import SnippetsApp from './components/app.vue';
+import SnippetsApp from './components/show.vue';
 
 Vue.use(VueApollo);
 Vue.use(Translate);
 
-export default () => {
-  const el = document.getElementById('js-snippet-view');
-
+function appFactory(el, Component) {
   if (!el) {
     return false;
   }
 
-  const { snippetGid } = el.dataset;
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
   });
@@ -24,11 +21,17 @@ export default () => {
     el,
     apolloProvider,
     render(createElement) {
-      return createElement(SnippetsApp, {
+      return createElement(Component, {
         props: {
-          snippetGid,
+          ...el.dataset,
         },
       });
     },
   });
+}
+
+export const SnippetShowInit = () => {
+  appFactory(document.getElementById('js-snippet-view'), SnippetsApp);
 };
+
+export default () => {};

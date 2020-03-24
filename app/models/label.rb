@@ -138,7 +138,7 @@ class Label < ApplicationRecord
   # query - The search query as a String.
   #
   # Returns an ActiveRecord::Relation.
-  def self.search(query)
+  def self.search(query, **options)
     fuzzy_search(query, [:title, :description])
   end
 

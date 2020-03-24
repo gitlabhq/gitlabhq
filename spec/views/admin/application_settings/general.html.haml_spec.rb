@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-describe 'admin/application_settings/integrations.html.haml' do
+describe 'admin/application_settings/general.html.haml' do
   let(:app_settings) { build(:application_setting) }
+  let(:user) { create(:admin) }
 
   describe 'sourcegraph integration' do
     let(:sourcegraph_flag) { true }
@@ -11,6 +12,7 @@ describe 'admin/application_settings/integrations.html.haml' do
     before do
       assign(:application_setting, app_settings)
       allow(Gitlab::Sourcegraph).to receive(:feature_available?).and_return(sourcegraph_flag)
+      allow(view).to receive(:current_user).and_return(user)
     end
 
     context 'when sourcegraph feature is enabled' do

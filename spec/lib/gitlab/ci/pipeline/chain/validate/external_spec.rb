@@ -67,6 +67,12 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::External do
 
         expect(step.break?).to be false
       end
+
+      it 'logs the authorization' do
+        expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline authorized', project_id: project.id, user_id: user.id)
+
+        perform!
+      end
     end
 
     context 'when validation return false' do
@@ -85,6 +91,12 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::External do
         perform!
 
         expect(step.break?).to be true
+      end
+
+      it 'logs the authorization' do
+        expect(Gitlab::AppLogger).to receive(:info).with(message: 'Pipeline not authorized', project_id: project.id, user_id: user.id)
+
+        perform!
       end
     end
   end

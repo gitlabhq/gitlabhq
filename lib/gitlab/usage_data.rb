@@ -218,9 +218,9 @@ module Gitlab
           results[:projects_jira_server_active] += counts[:server].count if counts[:server]
           results[:projects_jira_cloud_active] += counts[:cloud].count if counts[:cloud]
           if results[:projects_jira_active] == -1
-            results[:projects_jira_active] = count(services, batch: false)
+            results[:projects_jira_active] = services.size
           else
-            results[:projects_jira_active] += count(services, batch: false)
+            results[:projects_jira_active] += services.size
           end
         end
 

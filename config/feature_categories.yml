@@ -9,6 +9,7 @@
 ---
 - accessibility_testing
 - analysis
+- api
 - attack_emulation
 - audit_events
 - audit_reports
@@ -24,14 +25,16 @@
 - code_analytics
 - code_quality
 - code_review
+- code_testing
 - collection
 - compliance_management
+- container_behavior_analytics
 - container_network_security
 - container_registry
 - container_scanning
 - continuous_delivery
 - continuous_integration
-- ddos_protection
+- database
 - dependency_firewall
 - dependency_proxy
 - dependency_scanning
@@ -43,8 +46,8 @@
 - epics
 - error_tracking
 - feature_flags
-- frontend_foundation
-- fuzzing
+- foundations
+- fuzz-testing
 - gdk
 - geo_replication
 - git_lfs
@@ -72,6 +75,7 @@
 - load_testing
 - logging
 - malware_scanning
+- merge_trains
 - metrics
 - omnibus_package
 - package_registry
@@ -87,8 +91,6 @@
 - roadmaps
 - runbooks
 - runner
-- runtime_application_self_protection
-- sdk
 - secret_detection
 - secrets_management
 - serverless
@@ -100,10 +102,8 @@
 - status_page
 - subgroups
 - templates
-- threat_detection
 - time_tracking
 - tracing
-- unit_testing
 - usability_testing
 - users
 - value_stream_management

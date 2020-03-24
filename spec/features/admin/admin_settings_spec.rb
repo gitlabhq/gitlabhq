@@ -194,12 +194,6 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.terminal_max_session_time).to eq(15)
       end
-    end
-
-    context 'Integrations page' do
-      before do
-        visit integrations_admin_application_settings_path
-      end
 
       it 'Enable hiding third party offers' do
         page.within('.as-third-party-offers') do
@@ -238,6 +232,25 @@ describe 'Admin updates settings', :clean_gitlab_redis_shared_state, :do_not_moc
         click_link 'Slack notifications'
 
         expect(find_field('Deployment')).not_to be_checked
+      end
+    end
+
+    context 'Integration page', :js do
+      before do
+        visit integrations_admin_application_settings_path
+      end
+
+      it 'allows user to dismiss deprecation notice' do
+        expect(page).to have_content('Some settings have moved')
+
+        click_button 'Dismiss'
+        wait_for_requests
+
+        expect(page).not_to have_content('Some settings have moved')
+
+        visit integrations_admin_application_settings_path
+
+        expect(page).not_to have_content('Some settings have moved')
       end
     end
 

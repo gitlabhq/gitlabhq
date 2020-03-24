@@ -18,6 +18,7 @@ module QA
             click_build_when_change_is_pushed_to_gitlab
             set_publish_status_to_gitlab
             click_save
+            wait_for_configuration_to_save
           end
 
           private
@@ -54,6 +55,12 @@ module QA
 
           def select_publish_build_status_to_gitlab
             click_link "Publish build status to GitLab"
+          end
+
+          def wait_for_configuration_to_save
+            QA::Support::Waiter.wait_until(sleep_interval: 1.0) do
+              !page.current_url.include?(@path)
+            end
           end
         end
       end

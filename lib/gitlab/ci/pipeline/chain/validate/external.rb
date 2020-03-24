@@ -13,7 +13,12 @@ module Gitlab
             VALIDATION_REQUEST_TIMEOUT = 5
 
             def perform!
-              error('External validation failed', drop_reason: :external_validation_failure) unless validate_external
+              pipeline_authorized = validate_external
+
+              log_message = pipeline_authorized ? 'authorized' : 'not authorized'
+              Gitlab::AppLogger.info(message: "Pipeline #{log_message}", project_id: @pipeline.project.id, user_id: @pipeline.user.id)
+
+              error('External validation failed', drop_reason: :external_validation_failure) unless pipeline_authorized
             end
 
             def break?

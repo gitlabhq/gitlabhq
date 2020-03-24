@@ -62,6 +62,10 @@ module ServicesHelper
     !current_controller?("admin/services") && service.deprecated?
   end
 
+  def edit_integration_path(integration)
+    edit_admin_application_settings_integration_path(integration)
+  end
+
   extend self
 end
 

@@ -1346,13 +1346,25 @@ msgstr ""
 msgid "AdminProjects|Delete project"
 msgstr ""
 
+msgid "AdminSettings|Apply integration settings to all Projects"
+msgstr ""
+
 msgid "AdminSettings|Auto DevOps domain"
+msgstr ""
+
+msgid "AdminSettings|Elasticsearch, PlantUML, Slack application, Third party offers, Snowplow, Amazon EKS have moved to Settings > General."
 msgstr ""
 
 msgid "AdminSettings|Enable shared runners for new projects"
 msgstr ""
 
 msgid "AdminSettings|Environment variables are protected by default"
+msgstr ""
+
+msgid "AdminSettings|Go to General Settings"
+msgstr ""
+
+msgid "AdminSettings|Integrations configured here will automatically apply to all projects on this instance."
 msgstr ""
 
 msgid "AdminSettings|No required pipeline"
@@ -1368,6 +1380,9 @@ msgid "AdminSettings|Select a template"
 msgstr ""
 
 msgid "AdminSettings|Set an instance-wide auto included %{link_start}pipeline configuration%{link_end}. This pipeline configuration will be run after the project's own configuration."
+msgstr ""
+
+msgid "AdminSettings|Some settings have moved"
 msgstr ""
 
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
@@ -8458,6 +8473,9 @@ msgstr ""
 msgid "Failed to load errors from Sentry. Error message: %{errorMessage}"
 msgstr ""
 
+msgid "Failed to load group activity metrics. Please try again."
+msgstr ""
+
 msgid "Failed to load groups & users."
 msgstr ""
 
@@ -10015,6 +10033,15 @@ msgstr ""
 msgid "Group: %{name}"
 msgstr ""
 
+msgid "GroupActivyMetrics|Issues created"
+msgstr ""
+
+msgid "GroupActivyMetrics|Merge Requests created"
+msgstr ""
+
+msgid "GroupActivyMetrics|Recent activity (last 90 days)"
+msgstr ""
+
 msgid "GroupRoadmap|%{dateWord} – No end date"
 msgstr ""
 
@@ -10941,6 +10968,9 @@ msgid "Instance does not support multiple Kubernetes clusters"
 msgstr ""
 
 msgid "Instance license"
+msgstr ""
+
+msgid "Integration"
 msgstr ""
 
 msgid "Integration Settings"

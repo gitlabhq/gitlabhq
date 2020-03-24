@@ -1,4 +1,4 @@
-import SnippetApp from '~/snippets/components/app.vue';
+import SnippetApp from '~/snippets/components/show.vue';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
 import SnippetTitle from '~/snippets/components/snippet_title.vue';
 import SnippetBlob from '~/snippets/components/snippet_blob_view.vue';

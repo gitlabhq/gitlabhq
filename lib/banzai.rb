@@ -8,6 +8,10 @@ module Banzai
     post_process(render(text, context), context)
   end
 
+  def self.render_field_and_post_process(object, field, context = {})
+    post_process(render_field(object, field, context), context)
+  end
+
   def self.render(text, context = {})
     Renderer.render(text, context)
   end

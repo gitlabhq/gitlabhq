@@ -48,7 +48,7 @@ module BroadcastMessagesHelper
 
   def render_broadcast_message(broadcast_message)
     if Feature.enabled?(:broadcast_message_placeholders)
-      Banzai.render_and_post_process(broadcast_message.message, {
+      Banzai.render_field_and_post_process(broadcast_message, :message, {
         current_user: current_user,
         skip_project_check: true,
         broadcast_message_placeholders: true

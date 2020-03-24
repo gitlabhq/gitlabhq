@@ -3,7 +3,7 @@
 class BackgroundMigrationWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  feature_category_not_owned!
+  feature_category :database
 
   # The minimum amount of time between processing two jobs of the same migration
   # class.

@@ -928,7 +928,7 @@
   :weight: 2
   :idempotent: true
 - :name: background_migration
-  :feature_category: :not_owned
+  :feature_category: :database
   :has_external_dependencies: 
   :urgency: :low
   :resource_boundary: :unknown

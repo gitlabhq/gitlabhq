@@ -68,4 +68,16 @@ describe 'Broadcast Messages' do
 
     expect(page).to have_content "Hi #{user.name}"
   end
+
+  it 'renders broadcast message with placeholders and styled links' do
+    create(:broadcast_message, broadcast_type: 'notification', message: "Hi {{name}} <a href='gitlab.com' style='color: purple'>click</a>")
+
+    user = create(:user)
+    sign_in(user)
+
+    visit root_path
+
+    expected_html = "<p>Hi #{user.name} <a href=\"gitlab.com\" style=\"color: purple\">click</a></p>"
+    expect(page.body).to include(expected_html)
+  end
 end

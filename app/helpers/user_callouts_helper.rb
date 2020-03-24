@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 module UserCalloutsHelper
+  ADMIN_INTEGRATIONS_MOVED = 'admin_integrations_moved'
   GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'
   GCP_SIGNUP_OFFER = 'gcp_signup_offer'
   SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
   TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
   WEBHOOKS_MOVED = 'webhooks_moved'
+
+  def show_admin_integrations_moved?
+    !user_dismissed?(ADMIN_INTEGRATIONS_MOVED)
+  end
 
   def show_gke_cluster_integration_callout?(project)
     can?(current_user, :create_cluster, project) &&

@@ -27,6 +27,16 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     define_method(action) { perform_update if submitted? }
   end
 
+  def integrations
+    if Feature.enabled?(:instance_level_integrations)
+      # TODO: Update this with actual integrations
+      # To be fixed with https://gitlab.com/gitlab-org/gitlab/-/issues/199388
+      @integrations = []
+    end
+
+    perform_update if submitted?
+  end
+
   def update
     perform_update
   end

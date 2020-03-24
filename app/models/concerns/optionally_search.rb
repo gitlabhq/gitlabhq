@@ -4,7 +4,7 @@ module OptionallySearch
   extend ActiveSupport::Concern
 
   class_methods do
-    def search(*)
+    def search(query, **options)
       raise(
         NotImplementedError,
         'Your model must implement the "search" class method'
