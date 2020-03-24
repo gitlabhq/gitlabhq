@@ -1,12 +1,6 @@
 import * as types from './mutation_types';
 
 export default {
-  [types.SET_INITIAL_STATE](state, initialState) {
-    Object.keys(state).forEach(key => {
-      state[key] = initialState[key];
-    });
-  },
-
   [types.REQUEST_RELEASE](state) {
     state.isFetchingRelease = true;
   },

@@ -24,7 +24,14 @@ describe('Release detail actions', () => {
   let error;
 
   beforeEach(() => {
-    state = createState();
+    state = createState({
+      projectId: '18',
+      tagName: 'v1.3',
+      releasesPagePath: 'path/to/releases/page',
+      markdownDocsPath: 'path/to/markdown/docs',
+      markdownPreviewPath: 'path/to/markdown/preview',
+      updateReleaseApiDocsPath: 'path/to/api/docs',
+    });
     release = cloneDeep(originalRelease);
     mock = new MockAdapter(axios);
     gon.api_version = 'v4';
@@ -34,16 +41,6 @@ describe('Release detail actions', () => {
 
   afterEach(() => {
     mock.restore();
-  });
-
-  describe('setInitialState', () => {
-    it(`commits ${types.SET_INITIAL_STATE} with the provided object`, () => {
-      const initialState = {};
-
-      return testAction(actions.setInitialState, initialState, state, [
-        { type: types.SET_INITIAL_STATE, payload: initialState },
-      ]);
-    });
   });
 
   describe('requestRelease', () => {

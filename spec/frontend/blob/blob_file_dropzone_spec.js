@@ -5,10 +5,6 @@ describe('BlobFileDropzone', () => {
   preloadFixtures('blob/show.html');
   let dropzone;
   let replaceFileButton;
-  const jQueryMock = {
-    enable: jest.fn(),
-    disable: jest.fn(),
-  };
 
   beforeEach(() => {
     loadFixtures('blob/show.html');
@@ -18,7 +14,6 @@ describe('BlobFileDropzone', () => {
     dropzone = $('.js-upload-blob-form .dropzone').get(0).dropzone;
     dropzone.processQueue = jest.fn();
     replaceFileButton = $('#submit-all');
-    $.fn.extend(jQueryMock);
   });
 
   describe('submit button', () => {
@@ -43,7 +38,7 @@ describe('BlobFileDropzone', () => {
       replaceFileButton.click();
 
       expect(window.alert).not.toHaveBeenCalled();
-      expect(jQueryMock.enable).toHaveBeenCalled();
+      expect(replaceFileButton.is(':disabled')).toEqual(true);
       expect(dropzone.processQueue).toHaveBeenCalled();
     });
   });

@@ -5,9 +5,6 @@ import { s__ } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
-export const setInitialState = ({ commit }, initialState) =>
-  commit(types.SET_INITIAL_STATE, initialState);
-
 export const requestRelease = ({ commit }) => commit(types.REQUEST_RELEASE);
 export const receiveReleaseSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_RELEASE_SUCCESS, data);

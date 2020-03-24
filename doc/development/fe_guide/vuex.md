@@ -246,20 +246,95 @@ From [vuex mutations docs](https://vuex.vuejs.org/guide/mutations.html):
 export const ADD_USER = 'ADD_USER';
 ```
 
-### How to include the store in your application
+### Initializing a store's state
 
-The store should be included in the main component of your application:
+It's common for a Vuex store to need some initial state before its `action`s can
+be used. Often this includes data like API endpoints, documentation URLs, or
+IDs.
+
+To set this initial state, pass it as a parameter to your store's creation
+function when mounting your Vue component:
 
 ```javascript
-  // app.vue
-  import store from './store'; // it will include the index.js file
+// in the Vue app's initialization script (e.g. mount_show.js)
 
-  export default {
-    name: 'application',
-    store,
-    ...
-  };
+import Vue from 'vue';
+import createStore from './stores';
+import AwesomeVueApp from './components/awesome_vue_app.vue'
+
+export default () => {
+  const el = document.getElementById('js-awesome-vue-app');
+
+  return new Vue({
+    el,
+    store: createStore(el.dataset),
+    render: h => h(AwesomeVueApp)
+  });
+};
 ```
+
+The store function, in turn, can pass this data along to the state's creation
+function:
+
+```javascript
+// in store/index.js
+
+import * as actions from './actions';
+import mutations from './mutations';
+import createState from './state';
+
+export default initialState => ({
+  actions,
+  mutations,
+  state: createState(initialState),
+});
+```
+
+And the state function can accept this initial data as a parameter and bake it
+into the `state` object it returns:
+
+```javascript
+// in store/state.js
+
+export default ({
+  projectId,
+  documentationPath,
+  anOptionalProperty = true
+}) => ({
+  projectId,
+  documentationPath,
+  anOptionalProperty,
+
+  // other state properties here
+});
+```
+
+#### Why not just ...spread the initial state?
+
+The astute reader will see an opportunity to cut out a few lines of code from
+the example above:
+
+```javascript
+// Don't do this!
+
+export default initialState => ({
+  ...initialState,
+
+  // other state properties here
+});
+```
+
+We've made the conscious decision to avoid this pattern to aid in the
+discoverability and searchability of our frontend codebase. The reasoning for
+this is described in [this
+discussion](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/56#note_302514865):
+
+> Consider a `someStateKey` is being used in the store state. You _may_ not be
+> able to grep for it directly if it was provided only by `el.dataset`. Instead,
+> you'd have to grep for `some_state_key`, since it could have come from a rails
+> template. The reverse is also true: if you're looking at a rails template, you
+> might wonder what uses `some_state_key`, but you'd _have_ to grep for
+> `someStateKey`
 
 ### Communicating with the Store
 

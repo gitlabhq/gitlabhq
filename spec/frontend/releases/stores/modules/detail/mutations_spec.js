@@ -5,115 +5,106 @@
  * is resolved
  */
 
-import state from '~/releases/stores/modules/detail/state';
+import createState from '~/releases/stores/modules/detail/state';
 import mutations from '~/releases/stores/modules/detail/mutations';
 import * as types from '~/releases/stores/modules/detail/mutation_types';
 import { release } from '../../../mock_data';
 
 describe('Release detail mutations', () => {
-  let stateClone;
+  let state;
   let releaseClone;
 
   beforeEach(() => {
-    stateClone = state();
-    releaseClone = JSON.parse(JSON.stringify(release));
-  });
-
-  describe(types.SET_INITIAL_STATE, () => {
-    it('populates the state with initial values', () => {
-      const initialState = {
-        projectId: '18',
-        tagName: 'v1.3',
-        releasesPagePath: 'path/to/releases/page',
-        markdownDocsPath: 'path/to/markdown/docs',
-        markdownPreviewPath: 'path/to/markdown/preview',
-      };
-
-      mutations[types.SET_INITIAL_STATE](stateClone, initialState);
-
-      expect(stateClone).toEqual(expect.objectContaining(initialState));
+    state = createState({
+      projectId: '18',
+      tagName: 'v1.3',
+      releasesPagePath: 'path/to/releases/page',
+      markdownDocsPath: 'path/to/markdown/docs',
+      markdownPreviewPath: 'path/to/markdown/preview',
+      updateReleaseApiDocsPath: 'path/to/api/docs',
     });
+    releaseClone = JSON.parse(JSON.stringify(release));
   });
 
   describe(types.REQUEST_RELEASE, () => {
     it('set state.isFetchingRelease to true', () => {
-      mutations[types.REQUEST_RELEASE](stateClone);
+      mutations[types.REQUEST_RELEASE](state);
 
-      expect(stateClone.isFetchingRelease).toEqual(true);
+      expect(state.isFetchingRelease).toEqual(true);
     });
   });
 
   describe(types.RECEIVE_RELEASE_SUCCESS, () => {
     it('handles a successful response from the server', () => {
-      mutations[types.RECEIVE_RELEASE_SUCCESS](stateClone, releaseClone);
+      mutations[types.RECEIVE_RELEASE_SUCCESS](state, releaseClone);
 
-      expect(stateClone.fetchError).toEqual(undefined);
+      expect(state.fetchError).toEqual(undefined);
 
-      expect(stateClone.isFetchingRelease).toEqual(false);
+      expect(state.isFetchingRelease).toEqual(false);
 
-      expect(stateClone.release).toEqual(releaseClone);
+      expect(state.release).toEqual(releaseClone);
     });
   });
 
   describe(types.RECEIVE_RELEASE_ERROR, () => {
     it('handles an unsuccessful response from the server', () => {
       const error = { message: 'An error occurred!' };
-      mutations[types.RECEIVE_RELEASE_ERROR](stateClone, error);
+      mutations[types.RECEIVE_RELEASE_ERROR](state, error);
 
-      expect(stateClone.isFetchingRelease).toEqual(false);
+      expect(state.isFetchingRelease).toEqual(false);
 
-      expect(stateClone.release).toBeUndefined();
+      expect(state.release).toBeUndefined();
 
-      expect(stateClone.fetchError).toEqual(error);
+      expect(state.fetchError).toEqual(error);
     });
   });
 
   describe(types.UPDATE_RELEASE_TITLE, () => {
     it("updates the release's title", () => {
-      stateClone.release = releaseClone;
+      state.release = releaseClone;
       const newTitle = 'The new release title';
-      mutations[types.UPDATE_RELEASE_TITLE](stateClone, newTitle);
+      mutations[types.UPDATE_RELEASE_TITLE](state, newTitle);
 
-      expect(stateClone.release.name).toEqual(newTitle);
+      expect(state.release.name).toEqual(newTitle);
     });
   });
 
   describe(types.UPDATE_RELEASE_NOTES, () => {
     it("updates the release's notes", () => {
-      stateClone.release = releaseClone;
+      state.release = releaseClone;
       const newNotes = 'The new release notes';
-      mutations[types.UPDATE_RELEASE_NOTES](stateClone, newNotes);
+      mutations[types.UPDATE_RELEASE_NOTES](state, newNotes);
 
-      expect(stateClone.release.description).toEqual(newNotes);
+      expect(state.release.description).toEqual(newNotes);
     });
   });
 
   describe(types.REQUEST_UPDATE_RELEASE, () => {
     it('set state.isUpdatingRelease to true', () => {
-      mutations[types.REQUEST_UPDATE_RELEASE](stateClone);
+      mutations[types.REQUEST_UPDATE_RELEASE](state);
 
-      expect(stateClone.isUpdatingRelease).toEqual(true);
+      expect(state.isUpdatingRelease).toEqual(true);
     });
   });
 
   describe(types.RECEIVE_UPDATE_RELEASE_SUCCESS, () => {
     it('handles a successful response from the server', () => {
-      mutations[types.RECEIVE_UPDATE_RELEASE_SUCCESS](stateClone, releaseClone);
+      mutations[types.RECEIVE_UPDATE_RELEASE_SUCCESS](state, releaseClone);
 
-      expect(stateClone.updateError).toEqual(undefined);
+      expect(state.updateError).toEqual(undefined);
 
-      expect(stateClone.isUpdatingRelease).toEqual(false);
+      expect(state.isUpdatingRelease).toEqual(false);
     });
   });
 
   describe(types.RECEIVE_UPDATE_RELEASE_ERROR, () => {
     it('handles an unsuccessful response from the server', () => {
       const error = { message: 'An error occurred!' };
-      mutations[types.RECEIVE_UPDATE_RELEASE_ERROR](stateClone, error);
+      mutations[types.RECEIVE_UPDATE_RELEASE_ERROR](state, error);
 
-      expect(stateClone.isUpdatingRelease).toEqual(false);
+      expect(state.isUpdatingRelease).toEqual(false);
 
-      expect(stateClone.updateError).toEqual(error);
+      expect(state.updateError).toEqual(error);
     });
   });
 });

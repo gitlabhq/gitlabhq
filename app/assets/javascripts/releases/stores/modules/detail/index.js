@@ -1,10 +1,10 @@
 import * as actions from './actions';
 import mutations from './mutations';
-import state from './state';
+import createState from './state';
 
-export default {
+export default initialState => ({
   namespaced: true,
   actions,
   mutations,
-  state,
-};
+  state: createState(initialState),
+});

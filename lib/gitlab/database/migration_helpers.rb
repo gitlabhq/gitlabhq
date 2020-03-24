@@ -1121,11 +1121,14 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       def create_or_update_plan_limit(limit_name, plan_name, limit_value)
+        limit_name_quoted = quote_column_name(limit_name)
+        plan_name_quoted = quote(plan_name)
+        limit_value_quoted = quote(limit_value)
+
         execute <<~SQL
-          INSERT INTO plan_limits (plan_id, #{quote_column_name(limit_name)})
-          VALUES
-            ((SELECT id FROM plans WHERE name = #{quote(plan_name)} LIMIT 1), #{quote(limit_value)})
-          ON CONFLICT (plan_id) DO UPDATE SET #{quote_column_name(limit_name)} = EXCLUDED.#{quote_column_name(limit_name)};
+          INSERT INTO plan_limits (plan_id, #{limit_name_quoted})
+          SELECT id, #{limit_value_quoted} FROM plans WHERE name = #{plan_name_quoted} LIMIT 1
+          ON CONFLICT (plan_id) DO UPDATE SET #{limit_name_quoted} = EXCLUDED.#{limit_name_quoted};
         SQL
       end
 

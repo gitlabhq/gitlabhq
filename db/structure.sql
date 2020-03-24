@@ -4508,10 +4508,10 @@ CREATE TABLE public.plan_limits (
     ci_active_pipelines integer DEFAULT 0 NOT NULL,
     ci_pipeline_size integer DEFAULT 0 NOT NULL,
     ci_active_jobs integer DEFAULT 0 NOT NULL,
-    project_hooks integer DEFAULT 0 NOT NULL,
-    group_hooks integer DEFAULT 0 NOT NULL,
-    ci_project_subscriptions integer DEFAULT 0 NOT NULL,
-    ci_pipeline_schedules integer DEFAULT 0 NOT NULL
+    project_hooks integer DEFAULT 100 NOT NULL,
+    group_hooks integer DEFAULT 50 NOT NULL,
+    ci_project_subscriptions integer DEFAULT 2 NOT NULL,
+    ci_pipeline_schedules integer DEFAULT 10 NOT NULL
 );
 
 CREATE SEQUENCE public.plan_limits_id_seq
@@ -12747,6 +12747,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200318164448'),
 ('20200318165448'),
 ('20200318175008'),
+('20200319123041'),
 ('20200319203901'),
 ('20200323075043'),
 ('20200323122201');

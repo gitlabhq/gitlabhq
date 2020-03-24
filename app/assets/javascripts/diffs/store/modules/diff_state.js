@@ -26,7 +26,6 @@ export default () => ({
   showTreeList: true,
   currentDiffFileId: '',
   projectPath: '',
-  viewedDiffFileIds: [],
   commentForms: [],
   highlightedRow: null,
   renderTreeList: true,

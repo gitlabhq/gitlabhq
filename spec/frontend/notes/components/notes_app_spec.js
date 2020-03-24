@@ -1,4 +1,4 @@
-import $ from 'helpers/jquery';
+import $ from 'jquery';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 import { mount } from '@vue/test-utils';

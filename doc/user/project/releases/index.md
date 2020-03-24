@@ -332,6 +332,19 @@ background job.
 
 If a past `released_at` is used, no Evidence is collected for the Release.
 
+## GitLab Releaser
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-releaser/-/merge_requests/6) in GitLab 12.10.
+
+GitLab Releaser is a CLI tool for managing GitLab Releases from the command line or from
+GitLab CI/CD's configuration file, `.gitlab-ci.yml`.
+
+With it, you can create, update, modify, and delete Releases right through the
+terminal.
+
+Read the [GitLab Releaser documentation](https://gitlab.com/gitlab-org/gitlab-releaser/-/tree/master/docs/index.md)
+for details.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

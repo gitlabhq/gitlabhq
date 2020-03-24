@@ -18,16 +18,6 @@ export default {
       type: Number,
       required: true,
     },
-    activeFile: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    viewedFiles: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   computed: {
     isTree() {
@@ -44,8 +34,8 @@ export default {
     fileClass() {
       return {
         'file-open': this.isBlob && this.file.opened,
-        'is-active': this.isBlob && (this.file.active || this.activeFile === this.file.fileHash),
-        'is-viewed': this.isBlob && this.viewedFiles.includes(this.file.fileHash),
+        'is-active': this.isBlob && this.file.active,
+        folder: this.isTree,
         'is-open': this.file.opened,
       };
     },
@@ -117,23 +107,15 @@ export default {
     v-else
     :class="fileClass"
     :title="file.name"
-    class="file-row text-left px-1 py-2 ml-n2 d-flex align-items-center"
+    class="file-row"
     role="button"
     @click="clickFile"
     @mouseleave="$emit('mouseleave', $event)"
   >
-    <div class="file-row-name-container w-100 d-flex align-items-center">
-      <span
-        ref="textOutput"
-        :style="levelIndentation"
-        class="file-row-name str-truncated d-inline-block"
-        :class="[
-          { 'folder font-weight-normal': isTree },
-          fileClass['is-viewed'] ? 'font-weight-normal' : 'font-weight-bold',
-        ]"
-      >
+    <div class="file-row-name-container">
+      <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">
         <file-icon
-          class="file-row-icon align-middle mr-1"
+          class="file-row-icon"
           :class="{ 'text-secondary': file.type === 'tree' }"
           :file-name="file.name"
           :loading="file.loading"
@@ -150,8 +132,14 @@ export default {
 
 <style>
 .file-row {
+  display: flex;
+  align-items: center;
   height: 32px;
+  padding: 4px 8px;
+  margin-left: -8px;
+  margin-right: -8px;
   border-radius: 3px;
+  text-align: left;
   cursor: pointer;
 }
 
@@ -169,15 +157,24 @@ export default {
 }
 
 .file-row-name-container {
+  display: flex;
+  width: 100%;
+  align-items: center;
   overflow: visible;
 }
 
 .file-row-name {
+  display: inline-block;
   flex: 1;
   max-width: inherit;
-  height: 20px;
+  height: 19px;
   line-height: 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.file-row-name .file-row-icon {
+  margin-right: 2px;
+  vertical-align: middle;
 }
 </style>

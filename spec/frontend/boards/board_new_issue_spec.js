@@ -1,6 +1,5 @@
 /* global List */
 
-import $ from 'jquery';
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -15,9 +14,6 @@ describe('Issue boards new issue form', () => {
   let list;
   let mock;
   let newIssueMock;
-  const jQueryMock = {
-    enable: jest.fn(),
-  };
   const promiseReturn = {
     data: {
       iid: 100,
@@ -52,8 +48,6 @@ describe('Issue boards new issue form', () => {
         list,
       },
     }).$mount(document.querySelector('.test-container'));
-
-    $.fn.extend(jQueryMock);
 
     return Vue.nextTick();
   });
@@ -118,7 +112,7 @@ describe('Issue boards new issue form', () => {
       return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
-          expect(jQueryMock.enable).toHaveBeenCalled();
+          expect(vm.$el.querySelector('.btn-success').disabled).toBe(false);
         });
     });
 

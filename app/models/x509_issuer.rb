@@ -7,7 +7,7 @@ class X509Issuer < ApplicationRecord
   validates :subject_key_identifier, presence: true, format: { with: /\A(\h{2}:){19}\h{2}\z/ }
   # rfc 5280 - 4.1.2.4  Issuer
   validates :subject, presence: true
-  # rfc 5280 - 4.2.1.14  CRL Distribution Points
+  # rfc 5280 - 4.2.1.13  CRL Distribution Points
   # cRLDistributionPoints extension using URI:http
   validates :crl_url, presence: true, public_url: true
 

@@ -169,6 +169,10 @@ module X509Helpers
       SIGNEDDATA
     end
 
+    def signed_commit_time
+      Time.at(1561027326)
+    end
+
     def certificate_crl
       'http://ch.siemens.com/pki?ZZZZZZA2.crl'
     end

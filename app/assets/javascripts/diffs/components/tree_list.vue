@@ -26,7 +26,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('diffs', ['tree', 'renderTreeList', 'currentDiffFileId', 'viewedDiffFileIds']),
+    ...mapState('diffs', ['tree', 'renderTreeList']),
     ...mapGetters('diffs', ['allBlobs']),
     filteredTreeList() {
       const search = this.search.toLowerCase().trim();
@@ -96,8 +96,6 @@ export default {
           :level="0"
           :hide-file-stats="hideFileStats"
           :file-row-component="$options.DiffFileRow"
-          :active-file="currentDiffFileId"
-          :viewed-files="viewedDiffFileIds"
           @toggleTreeOpen="toggleTreeOpen"
           @clickFile="scrollToFile"
         />

@@ -20,40 +20,45 @@ limits](https://about.gitlab.com/handbook/product/#introducing-application-limit
 In the `plan_limits` table, you have to create a new column and insert the
 limit values. It's recommended to create separate migration script files.
 
-1. Add new column to the `plan_limits` table with non-null default value 0, eg:
+1. Add new column to the `plan_limits` table with non-null default value
+   that represents desired limit, eg:
 
-   ```ruby
-   add_column(:plan_limits, :project_hooks, :integer, default: 0, null: false)
-   ```
+  ```ruby
+  add_column(:plan_limits, :project_hooks, :integer, default: 100, null: false)
+  ```
 
-   NOTE: **Note:** Plan limits entries set to `0` mean that limits are not
-   enabled.
+  NOTE: **Note:** Plan limits entries set to `0` mean that limits are not
+  enabled. You should use this setting only in special and documented circumstances.
 
-1. Insert plan limits values into the database using
-   `create_or_update_plan_limit` migration helper, eg:
+1. (Optionally) Create the database migration that fine-tunes each level with
+    a desired limit using `create_or_update_plan_limit` migration helper, eg:
 
-   ```ruby
-   def up
-     return unless Gitlab.com?
+  ```ruby
+  class InsertProjectHooksPlanLimits < ActiveRecord::Migration[5.2]
+    include Gitlab::Database::MigrationHelpers
 
-     create_or_update_plan_limit('project_hooks', 'free', 100)
-     create_or_update_plan_limit('project_hooks', 'bronze', 100)
-     create_or_update_plan_limit('project_hooks', 'silver', 100)
-     create_or_update_plan_limit('project_hooks', 'gold', 100)
-   end
+    DOWNTIME = false
 
-   def down
-     return unless Gitlab.com?
+    def up
+      create_or_update_plan_limit('project_hooks', 'default', 0)
+      create_or_update_plan_limit('project_hooks', 'free', 10)
+      create_or_update_plan_limit('project_hooks', 'bronze', 20)
+      create_or_update_plan_limit('project_hooks', 'silver', 30)
+      create_or_update_plan_limit('project_hooks', 'gold', 100)
+    end
 
-     create_or_update_plan_limit('project_hooks', 'free', 0)
-     create_or_update_plan_limit('project_hooks', 'bronze', 0)
-     create_or_update_plan_limit('project_hooks', 'silver', 0)
-     create_or_update_plan_limit('project_hooks', 'gold', 0)
-   end
-   ```
+    def down
+      create_or_update_plan_limit('project_hooks', 'default', 0)
+      create_or_update_plan_limit('project_hooks', 'free', 0)
+      create_or_update_plan_limit('project_hooks', 'bronze', 0)
+      create_or_update_plan_limit('project_hooks', 'silver', 0)
+      create_or_update_plan_limit('project_hooks', 'gold', 0)
+    end
+  end
+  ```
 
-NOTE: **Note:** Some plans exist only on GitLab.com. You can check if the
-migration is running on GitLab.com with `Gitlab.com?`.
+NOTE: **Note:** Some plans exist only on GitLab.com. This will be no-op
+for plans that do not exist.
 
 ### Plan limits validation
 

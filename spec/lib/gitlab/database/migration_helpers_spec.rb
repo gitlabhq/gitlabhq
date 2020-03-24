@@ -1542,15 +1542,53 @@ describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#create_or_update_plan_limit' do
-    it 'creates or updates plan limits' do
+    class self::Plan < ActiveRecord::Base
+      self.table_name = 'plans'
+    end
+
+    class self::PlanLimits < ActiveRecord::Base
+      self.table_name = 'plan_limits'
+    end
+
+    it 'properly escapes names' do
       expect(model).to receive(:execute).with <<~SQL
         INSERT INTO plan_limits (plan_id, "project_hooks")
-        VALUES
-          ((SELECT id FROM plans WHERE name = 'free' LIMIT 1), '10')
+        SELECT id, '10' FROM plans WHERE name = 'free' LIMIT 1
         ON CONFLICT (plan_id) DO UPDATE SET "project_hooks" = EXCLUDED."project_hooks";
       SQL
 
       model.create_or_update_plan_limit('project_hooks', 'free', 10)
+    end
+
+    context 'when plan does not exist' do
+      it 'does not create any plan limits' do
+        expect { model.create_or_update_plan_limit('project_hooks', 'plan_name', 10) }
+          .not_to change { self.class::PlanLimits.count }
+      end
+    end
+
+    context 'when plan does exist' do
+      let!(:plan) { self.class::Plan.create!(name: 'plan_name') }
+
+      context 'when limit does not exist' do
+        it 'inserts a new plan limits' do
+          expect { model.create_or_update_plan_limit('project_hooks', 'plan_name', 10) }
+            .to change { self.class::PlanLimits.count }.by(1)
+
+          expect(self.class::PlanLimits.pluck(:project_hooks)).to contain_exactly(10)
+        end
+      end
+
+      context 'when limit does exist' do
+        let!(:plan_limit) { self.class::PlanLimits.create!(plan_id: plan.id) }
+
+        it 'updates an existing plan limits' do
+          expect { model.create_or_update_plan_limit('project_hooks', 'plan_name', 999) }
+            .not_to change { self.class::PlanLimits.count }
+
+          expect(plan_limit.reload.project_hooks).to eq(999)
+        end
+      end
     end
   end
 

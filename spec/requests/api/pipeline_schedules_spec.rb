@@ -46,7 +46,7 @@ describe API::PipelineSchedules do
           get api("/projects/#{project.id}/pipeline_schedules", developer)
         end.count
 
-        create_pipeline_schedules(10)
+        create_pipeline_schedules(5)
 
         expect do
           get api("/projects/#{project.id}/pipeline_schedules", developer)
