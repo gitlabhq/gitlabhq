@@ -25,7 +25,7 @@ the `SIDEKIQ_LOG_ARGUMENTS` [environment variable](https://docs.gitlab.com/omnib
 
 Example:
 
-```
+```ruby
 gitlab_rails['env'] = {"SIDEKIQ_LOG_ARGUMENTS" => "1"}
 ```
 
@@ -43,7 +43,7 @@ single argument containing the string `"..."`.
 Send the Sidekiq process ID the `TTIN` signal and it will output thread
 backtraces in the log file.
 
-```
+```shell
 kill -TTIN <sidekiq_pid>
 ```
 
@@ -95,7 +95,7 @@ sudo perf record -p <sidekiq_pid>
 Let this run for 30-60 seconds and then press Ctrl-C. Then view the perf report:
 
 ```shell
-sudo perf report
+$ sudo perf report
 
 # Sample output
 Samples: 348K of event 'cycles', Event count (approx.): 280908431073

@@ -118,7 +118,7 @@ downtime. Otherwise skip to the next section.
    ```
 
 1. This forces the process to generate a Ruby backtrace. Check
-   `/var/log/gitlab/unicorn/unicorn_stderr.log` for the backtace. For example, you may see:
+   `/var/log/gitlab/unicorn/unicorn_stderr.log` for the backtrace. For example, you may see:
 
    ```plaintext
    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:33:in `block in start'

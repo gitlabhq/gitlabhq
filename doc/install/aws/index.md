@@ -487,7 +487,7 @@ gitlab=# \q
 
 ---
 
-### Configuring GitLab to connect with postgres and Redis
+### Configuring GitLab to connect with PostgreSQL and Redis
 
 Edit the `gitlab.rb` file at `/etc/gitlab/gitlab.rb`
 find the `external_url 'http://gitlab.example.com'` option and change it

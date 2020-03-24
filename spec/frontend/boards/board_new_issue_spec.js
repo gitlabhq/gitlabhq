@@ -1,5 +1,6 @@
 /* global List */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -14,6 +15,9 @@ describe('Issue boards new issue form', () => {
   let list;
   let mock;
   let newIssueMock;
+  const jQueryMock = {
+    enable: jest.fn(),
+  };
   const promiseReturn = {
     data: {
       iid: 100,
@@ -28,7 +32,7 @@ describe('Issue boards new issue form', () => {
     return vm.submit(dummySubmitEvent);
   };
 
-  beforeEach(done => {
+  beforeEach(() => {
     setFixtures('<div class="test-container"></div>');
 
     const BoardNewIssueComp = Vue.extend(boardNewIssue);
@@ -41,7 +45,7 @@ describe('Issue boards new issue form', () => {
     list = new List(listObj);
 
     newIssueMock = Promise.resolve(promiseReturn);
-    spyOn(list, 'newIssue').and.callFake(() => newIssueMock);
+    jest.spyOn(list, 'newIssue').mockImplementation(() => newIssueMock);
 
     vm = new BoardNewIssueComp({
       propsData: {
@@ -49,9 +53,9 @@ describe('Issue boards new issue form', () => {
       },
     }).$mount(document.querySelector('.test-container'));
 
-    Vue.nextTick()
-      .then(done)
-      .catch(done.fail);
+    $.fn.extend(jQueryMock);
+
+    return Vue.nextTick();
   });
 
   afterEach(() => {
@@ -59,142 +63,116 @@ describe('Issue boards new issue form', () => {
     mock.restore();
   });
 
-  it('calls submit if submit button is clicked', done => {
-    spyOn(vm, 'submit').and.callFake(e => e.preventDefault());
+  it('calls submit if submit button is clicked', () => {
+    jest.spyOn(vm, 'submit').mockImplementation(e => e.preventDefault());
     vm.title = 'Testing Title';
 
-    Vue.nextTick()
-      .then(() => {
-        vm.$el.querySelector('.btn-success').click();
+    return Vue.nextTick().then(() => {
+      vm.$el.querySelector('.btn-success').click();
 
-        expect(vm.submit.calls.count()).toBe(1);
-      })
-      .then(done)
-      .catch(done.fail);
+      expect(vm.submit.mock.calls.length).toBe(1);
+    });
   });
 
   it('disables submit button if title is empty', () => {
     expect(vm.$el.querySelector('.btn-success').disabled).toBe(true);
   });
 
-  it('enables submit button if title is not empty', done => {
+  it('enables submit button if title is not empty', () => {
     vm.title = 'Testing Title';
 
-    Vue.nextTick()
-      .then(() => {
-        expect(vm.$el.querySelector('.form-control').value).toBe('Testing Title');
-        expect(vm.$el.querySelector('.btn-success').disabled).not.toBe(true);
-      })
-      .then(done)
-      .catch(done.fail);
+    return Vue.nextTick().then(() => {
+      expect(vm.$el.querySelector('.form-control').value).toBe('Testing Title');
+      expect(vm.$el.querySelector('.btn-success').disabled).not.toBe(true);
+    });
   });
 
-  it('clears title after clicking cancel', done => {
+  it('clears title after clicking cancel', () => {
     vm.$el.querySelector('.btn-default').click();
 
-    Vue.nextTick()
-      .then(() => {
-        expect(vm.title).toBe('');
-      })
-      .then(done)
-      .catch(done.fail);
+    return Vue.nextTick().then(() => {
+      expect(vm.title).toBe('');
+    });
   });
 
-  it('does not create new issue if title is empty', done => {
-    submitIssue()
-      .then(() => {
-        expect(list.newIssue).not.toHaveBeenCalled();
-      })
-      .then(done)
-      .catch(done.fail);
+  it('does not create new issue if title is empty', () => {
+    return submitIssue().then(() => {
+      expect(list.newIssue).not.toHaveBeenCalled();
+    });
   });
 
   describe('submit success', () => {
-    it('creates new issue', done => {
+    it('creates new issue', () => {
       vm.title = 'submit title';
 
-      Vue.nextTick()
+      return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
           expect(list.newIssue).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
+        });
     });
 
-    it('enables button after submit', done => {
+    it('enables button after submit', () => {
       vm.title = 'submit issue';
 
-      Vue.nextTick()
+      return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
-          expect(vm.$el.querySelector('.btn-success').disabled).toBe(false);
-        })
-        .then(done)
-        .catch(done.fail);
+          expect(jQueryMock.enable).toHaveBeenCalled();
+        });
     });
 
-    it('clears title after submit', done => {
+    it('clears title after submit', () => {
       vm.title = 'submit issue';
 
-      Vue.nextTick()
+      return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
           expect(vm.title).toBe('');
-        })
-        .then(done)
-        .catch(done.fail);
+        });
     });
 
-    it('sets detail issue after submit', done => {
+    it('sets detail issue after submit', () => {
       expect(boardsStore.detail.issue.title).toBe(undefined);
       vm.title = 'submit issue';
 
-      Vue.nextTick()
+      return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
           expect(boardsStore.detail.issue.title).toBe('submit issue');
-        })
-        .then(done)
-        .catch(done.fail);
+        });
     });
 
-    it('sets detail list after submit', done => {
+    it('sets detail list after submit', () => {
       vm.title = 'submit issue';
 
-      Vue.nextTick()
+      return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
           expect(boardsStore.detail.list.id).toBe(list.id);
-        })
-        .then(done)
-        .catch(done.fail);
+        });
     });
 
-    it('sets detail weight after submit', done => {
+    it('sets detail weight after submit', () => {
       boardsStore.weightFeatureAvailable = true;
       vm.title = 'submit issue';
 
-      Vue.nextTick()
+      return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
           expect(boardsStore.detail.list.weight).toBe(list.weight);
-        })
-        .then(done)
-        .catch(done.fail);
+        });
     });
 
-    it('does not set detail weight after submit', done => {
+    it('does not set detail weight after submit', () => {
       boardsStore.weightFeatureAvailable = false;
       vm.title = 'submit issue';
 
-      Vue.nextTick()
+      return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
           expect(boardsStore.detail.list.weight).toBe(list.weight);
-        })
-        .then(done)
-        .catch(done.fail);
+        });
     });
   });
 
@@ -204,24 +182,21 @@ describe('Issue boards new issue form', () => {
       vm.title = 'error';
     });
 
-    it('removes issue', done => {
-      Vue.nextTick()
+    it('removes issue', () => {
+      const lengthBefore = list.issues.length;
+      return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
-          expect(list.issues.length).toBe(1);
-        })
-        .then(done)
-        .catch(done.fail);
+          expect(list.issues.length).toBe(lengthBefore);
+        });
     });
 
-    it('shows error', done => {
-      Vue.nextTick()
+    it('shows error', () => {
+      return Vue.nextTick()
         .then(submitIssue)
         .then(() => {
           expect(vm.error).toBe(true);
-        })
-        .then(done)
-        .catch(done.fail);
+        });
     });
   });
 });

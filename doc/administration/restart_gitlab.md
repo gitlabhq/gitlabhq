@@ -37,7 +37,7 @@ sudo gitlab-ctl restart
 
 The output should be similar to this:
 
-```
+```plaintext
 ok: run: gitlab-workhorse: (pid 11291) 1s
 ok: run: logrotate: (pid 11299) 0s
 ok: run: mailroom: (pid 11306) 0s
@@ -103,13 +103,13 @@ depend on those files.
 If you have followed the official installation guide to [install GitLab from
 source][install], run the following command to restart GitLab:
 
-```
+```shell
 sudo service gitlab restart
 ```
 
 The output should be similar to this:
 
-```
+```plaintext
 Shutting down GitLab Unicorn
 Shutting down GitLab Sidekiq
 Shutting down GitLab Workhorse

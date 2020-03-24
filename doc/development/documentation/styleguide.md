@@ -1132,25 +1132,27 @@ a helpful link back to how the feature was developed.
 
 - For features that need to declare the GitLab version that the feature was introduced. Text similar
   to the following should be added immediately below the heading as a blockquote:
-
-  ```md
-  > Introduced in GitLab 11.3.
-  ```
+  - `> Introduced in GitLab 11.3.`.
 
 - Whenever possible, version text should have a link to the issue, merge request, or epic that introduced the feature.
   An issue is preferred over a merge request, and a merge request is preferred over an epic. For example:
-
-  ```md
-  > [Introduced](<link-to-issue>) in GitLab 11.3.
-  ```
+  - `> [Introduced](<link-to-issue>) in GitLab 11.3.`.
 
 - If the feature is only available in GitLab Enterprise Edition, mention
   the [paid tier](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers)
   the feature is available in:
+  - `> [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.`.
+
+- If listing information for multiple version as a feature evolves, add the information to a
+  block-quoted bullet list. For example:
 
   ```md
-  > [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
+  > - [Introduced](<link-to-issue>) in GitLab 11.3.
+  > - Enabled by default in GitLab 11.4.
   ```
+
+NOTE: **Note:**
+Version text must be on its own line and surounded by blank lines to render correctly.
 
 ### Importance of referencing GitLab versions and tiers
 

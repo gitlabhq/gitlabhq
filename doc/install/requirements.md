@@ -147,7 +147,7 @@ Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
 GitLab database. This extension can be enabled (using a PostgreSQL super user)
 by running the following query for every database:
 
-```
+```sql
 CREATE EXTENSION pg_trgm;
 ```
 
@@ -170,7 +170,7 @@ If you are using [GitLab Geo](../development/geo.md):
   [postgres_fdw](https://www.postgresql.org/docs/9.6/postgres-fdw.html)
   extension.
 
-```
+```sql
 CREATE EXTENSION postgres_fdw;
 ```
 

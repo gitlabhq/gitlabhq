@@ -43,7 +43,7 @@ The list below is not exhaustive, but contains many of the most commonly used co
 To create a text file from the command line, for example `README.md`, follow these
 steps:
 
-```
+```shell
 touch README.md
 nano README.md
 #### ADD YOUR INFORMATION
@@ -59,14 +59,14 @@ It is easy to delete (remove) a file or directory, but be careful:
 DANGER: **Danger:**
 This will **permanently** delete a file.
 
-```
+```shell
 rm NAME-OF-FILE
 ```
 
 DANGER: **Danger:**
 This will **permanently** delete a directory and **all** of its contents.
 
-```
+```shell
 rm -r NAME-OF-DIRECTORY
 ```
 
@@ -77,14 +77,14 @@ and then execute any of them again, if needed.
 
 First, list the commands you executed previously:
 
-```
+```shell
 history
 ```
 
 Then, choose a command from the list and check the number next to the command (`123`,
 for example) . Execute the same full command with:
 
-```
+```shell
 !123
 ```
 
@@ -95,7 +95,7 @@ need administrator's rights to execute commands that affect the system, or try t
 protected data, for example. You can use `sudo` to execute these commands, but you
 will likely be asked for an administrator password.
 
-```
+```shell
 sudo RESTRICTED-COMMAND
 ```
 

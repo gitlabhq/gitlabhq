@@ -373,7 +373,7 @@ Either way, the resulting Docker image is automatically pushed to the
 
 #### Auto Build using a Dockerfile
 
-If a project's repository contains a `Dockerfile`, Auto Build will use
+If a project's repository contains a `Dockerfile` at its root, Auto Build will use
 `docker build` to create a Docker image.
 
 If you are also using Auto Review Apps and Auto Deploy and choose to provide
@@ -1351,8 +1351,7 @@ service:
 
 #### Deploy policy for staging and production environments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/-/merge_requests/160)
-in GitLab 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/-/merge_requests/160) in GitLab 10.8.
 
 TIP: **Tip:**
 You can also set this inside your [project's settings](#deployment-strategy).
@@ -1370,8 +1369,7 @@ you when you're ready to manually deploy to production.
 
 #### Deploy policy for canary environments **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/-/merge_requests/171)
-in GitLab 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/-/merge_requests/171) in GitLab 11.0.
 
 A [canary environment](../../user/project/canary_deployments.md) can be used
 before any changes are deployed to production.

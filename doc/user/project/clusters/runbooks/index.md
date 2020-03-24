@@ -120,7 +120,7 @@ VARIABLE_VALUE = project.variables.get('PRIVATE_TOKEN').value
 ### 5. Configure an operation
 
 For this example we'll use the "**Run SQL queries in Notebook**" section in the sample runbook to query
-a postgres database. The first 4 lines of the section define the variables that are required for this query to function.
+a PostgreSQL database. The first 4 lines of the section define the variables that are required for this query to function.
 
 ```sql
 %env DB_USER={project.variables.get('DB_USER').value}
@@ -136,7 +136,7 @@ Create the matching variables in your project's **Settings >> CI/CD >> Variables
 Back in Jupyter, click the "Run SQL queries in Notebook" heading and the click *Run*. The results will be
 displayed in-line as follows:
 
-![postgres query](img/postgres-query.png)
+![PostgreSQL query](img/postgres-query.png)
 
 You can try other operations such as running shell scripts or interacting with a Kubernetes cluster. Visit the
 [Nurtch Documentation](http://docs.nurtch.com/) for more information.

@@ -55,10 +55,10 @@ sequenceDiagram
 
 ## Usage Ping **(CORE ONLY)**
 
-> [Introduced][ee-557] in GitLab Enterprise Edition 8.10. More statistics
-[were added][ee-735] in GitLab Enterprise Edition
-8.12. [Moved to GitLab Core][ce-23361] in 9.1. More statistics
-[were added][ee-6602] in GitLab Ultimate 11.2.
+> - [Introduced][ee-557] in GitLab Enterprise Edition 8.10.
+> - More statistics [were added][ee-735] in GitLab Enterprise Edition 8.12.
+> - [Moved to GitLab Core][ce-23361] in 9.1.
+> - More statistics [were added][ee-6602] in GitLab Ultimate 11.2.
 
 GitLab sends a weekly payload containing usage data to GitLab Inc. The usage
 ping uses high-level data to help our product, support, and sales teams. It does

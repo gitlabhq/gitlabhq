@@ -181,7 +181,7 @@ execution latency requirements (but also has lower scheduling targets).
 ## Jobs with External Dependencies
 
 Most background jobs in the GitLab application communicate with other GitLab
-services. For example, Postgres, Redis, Gitaly, and Object Storage. These are considered
+services. For example, PostgreSQL, Redis, Gitaly, and Object Storage. These are considered
 to be "internal" dependencies for a job.
 
 However, some jobs will be dependent on external services in order to complete
@@ -224,7 +224,7 @@ Workers that are constrained by CPU or memory resource limitations should be
 annotated with the `worker_resource_boundary` method.
 
 Most workers tend to spend most of their time blocked, wait on network responses
-from other services such as Redis, Postgres and Gitaly. Since Sidekiq is a
+from other services such as Redis, PostgreSQL, and Gitaly. Since Sidekiq is a
 multithreaded environment, these jobs can be scheduled with high concurrency.
 
 Some workers, however, spend large amounts of time _on-CPU_ running logic in

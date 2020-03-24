@@ -21,9 +21,9 @@ verification methods:
 | Database | Application data in PostgreSQL                | Native                                      | Native               |
 | Database | Redis                                         | _N/A_ (*1*)                                 | _N/A_                |
 | Database | Elasticsearch                                 | Native                                      | Native               |
-| Database | Personal snippets                             | Postgres Replication                        | Postgres Replication |
-| Database | Project snippets                              | Postgres Replication                        | Postgres Replication |
-| Database | SSH public keys                               | Postgres Replication                        | Postgres Replication |
+| Database | Personal snippets                             | PostgreSQL Replication                        | PostgreSQL Replication |
+| Database | Project snippets                              | PostgreSQL Replication                        | PostgreSQL Replication |
+| Database | SSH public keys                               | PostgreSQL Replication                        | PostgreSQL Replication |
 | Git      | Project repository                            | Geo with Gitaly                             | Gitaly Checksum      |
 | Git      | Project wiki repository                       | Geo with Gitaly                             | Gitaly Checksum      |
 | Git      | Project designs repository                    | Geo with Gitaly                             | Gitaly Checksum      |

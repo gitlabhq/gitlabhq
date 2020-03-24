@@ -181,8 +181,7 @@ Impersonation tokens are used exactly like regular personal access tokens, and c
 
 #### Disable impersonation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/40385) in GitLab
-11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/40385) in GitLab 11.6.
 
 By default, impersonation is enabled. To disable impersonation:
 

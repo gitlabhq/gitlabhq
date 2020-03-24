@@ -1,7 +1,7 @@
 # Web IDE
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4539) in [GitLab Ultimate][ee] 10.4.
-> [Brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/issues/44157) in 10.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4539) in [GitLab Ultimate][ee] 10.4.
+> - [Brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-foss/issues/44157) in 10.7.
 
 The Web IDE editor makes it faster and easier to contribute changes to your
 projects by providing an advanced editor with commit staging.

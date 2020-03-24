@@ -77,6 +77,6 @@ gitlab-runner register \
   --docker-services latest
 ```
 
-With the command above, you create a Runner that uses the [ruby:2.6](https://hub.docker.com/_/ruby) image and uses a [postgres](https://hub.docker.com/_/postgres) database.
+With the command above, you create a Runner that uses the [ruby:2.6](https://hub.docker.com/_/ruby) image and uses a [PostgreSQL](https://hub.docker.com/_/postgres) database.
 
 To access the PostgreSQL database, connect to `host: postgres` as user `postgres` with no password.

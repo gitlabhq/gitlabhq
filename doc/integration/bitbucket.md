@@ -57,7 +57,7 @@ you to use.
 
    And grant at least the following permissions:
 
-   ```
+   ```plaintext
    Account: Email, Read
    Projects: Read
    Repositories: Read
@@ -77,7 +77,7 @@ you to use.
 
 1. On your GitLab server, open the configuration file:
 
-   ```
+   ```shell
    # For Omnibus packages
    sudo editor /etc/gitlab/gitlab.rb
 

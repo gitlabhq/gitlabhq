@@ -201,7 +201,7 @@ When Puma is used instead of Unicorn, the following metrics are available:
 | `puma_running_workers`                         | Gauge   | 12.0  | Number of booted workers |
 | `puma_stale_workers`                           | Gauge   | 12.0  | Number of old workers |
 | `puma_running`                                 | Gauge   | 12.0  | Number of running threads |
-| `puma_queued_connections`                      | Gauge   | 12.0  | Number of connections in that worker's "todo" set waiting for a worker thread |
+| `puma_queued_connections`                      | Gauge   | 12.0  | Number of connections in that worker's "to do" set waiting for a worker thread |
 | `puma_active_connections`                      | Gauge   | 12.0  | Number of threads processing a request |
 | `puma_pool_capacity`                           | Gauge   | 12.0  | Number of requests the worker is capable of taking right now |
 | `puma_max_threads`                             | Gauge   | 12.0  | Maximum number of worker threads |

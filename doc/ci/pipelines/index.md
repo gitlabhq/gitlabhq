@@ -110,8 +110,7 @@ For example:
 
 ### Expanding and collapsing job log sections
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/14664) in GitLab
-> 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/14664) in GitLab 12.0.
 
 Job logs are divided into sections that can be collapsed or expanded. Each section will display
 the duration.

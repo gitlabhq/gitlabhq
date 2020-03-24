@@ -134,7 +134,7 @@ on adding these events into GitLab:
 
 The current architecture of audit events is not prepared to receive a very high amount of records.
 It may make the user interface for your project or audit logs very busy, and the disk space consumed by the
-`audit_events` Postgres table will increase considerably. It's disabled by default
+`audit_events` PostgreSQL table will increase considerably. It's disabled by default
 to prevent performance degradations on GitLab instances with very high Git write traffic.
 
 In an upcoming release, Audit Logs for Git push events will be enabled

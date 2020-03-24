@@ -350,8 +350,7 @@ Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gi
 
 ### Starting multiple services from the same image
 
-> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended
-configuration options](#extended-docker-configuration-options).
+> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](#extended-docker-configuration-options).
 
 Before the new extended Docker configuration options, the following configuration
 would not work properly:
@@ -384,8 +383,7 @@ in `.gitlab-ci.yml` file.
 
 ### Setting a command for the service
 
-> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended
-configuration options](#extended-docker-configuration-options).
+> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](#extended-docker-configuration-options).
 
 Let's assume you have a `super/sql:latest` image with some SQL database
 inside it and you would like to use it as a service for your job. Let's also
@@ -426,8 +424,7 @@ As you can see, the syntax of `command` is similar to [Dockerfile's `CMD`][cmd].
 
 ### Overriding the entrypoint of an image
 
-> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended
-configuration options](#extended-docker-configuration-options).
+> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](#extended-docker-configuration-options).
 
 Before showing the available entrypoint override methods, let's describe shortly
 how the Runner starts and uses a Docker image for the containers used in the

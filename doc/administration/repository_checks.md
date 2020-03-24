@@ -1,7 +1,6 @@
 # Repository checks
 
-> [Introduced][ce-3232] in GitLab 8.7. It is OFF by default because it still
-causes too many false alarms.
+> [Introduced][ce-3232] in GitLab 8.7.
 
 Git has a built-in mechanism, [`git fsck`][git-fsck], to verify the
 integrity of all data committed to a repository. GitLab administrators
@@ -10,6 +9,9 @@ admin panel. The checks run asynchronously so it may take a few minutes
 before the check result is visible on the project admin page. If the
 checks failed you can see their output on the admin log page under
 'repocheck.log'.
+
+NOTE: **Note:**
+It is OFF by default because it still causes too many false alarms.
 
 ## Periodic checks
 

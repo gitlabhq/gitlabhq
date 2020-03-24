@@ -129,7 +129,7 @@ Done!
 
 ## LDAP Check
 
-The LDAP check Rake task will test the bind_dn and password credentials
+The LDAP check Rake task will test the bind DN and password credentials
 (if configured) and will list a sample of LDAP users. This task is also
 executed as part of the `gitlab:check` task, but can run independently.
 See [LDAP Rake Tasks - LDAP Check](ldap.md#check) for details.

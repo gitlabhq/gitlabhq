@@ -41,7 +41,7 @@ To enable the CAS OmniAuth provider you must register your application with your
 
    For installations from source:
 
-   ```
+   ```yaml
    - { name: 'cas3',
        label: 'cas',
        args: {

@@ -1,7 +1,7 @@
 # File hooks
 
-> Introduced in GitLab 10.6.
-> Until 12.8 the feature name was Plugins.
+> - Introduced in GitLab 10.6.
+> - Until GitLab 12.8, the feature name was Plugins.
 
 With custom file hooks, GitLab administrators can introduce custom integrations
 without modifying GitLab's source code.

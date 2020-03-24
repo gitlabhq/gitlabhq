@@ -25,10 +25,11 @@ GitLab supports two authentication methods:
 
 ### Authentication against a local database with X.509 certificates
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/726) in
-[GitLab Premium](https://about.gitlab.com/pricing/) 11.6 as an experimental
-feature. Smartcard authentication against local databases may change or be
-removed completely in future releases.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/726) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.6 as an experimental feature.
+
+CAUTION: **Caution:**
+Smartcard authentication against local databases may change or be removed completely in future
+releases.
 
 Smartcards with X.509 certificates can be used to authenticate with GitLab.
 

@@ -19,7 +19,7 @@ running on.
 ## strace-parser
 
 [strace-parser](https://gitlab.com/wchandler/strace-parser) is a small tool to analyze
-and summarize raw strace data.
+and summarize raw `strace` data.
 
 ## Pritaly
 

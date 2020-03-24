@@ -651,8 +651,8 @@ different queries. The only _rule_ is that you _must always measure_ your query
 (preferably using a production-like database) using `EXPLAIN (ANALYZE, BUFFERS)`
 and related tools such as:
 
-- <https://explain.depesz.com/>
-- <http://tatiyants.com/postgres-query-plan-visualization/>
+- [`explain.depesz.com`](https://explain.depesz.com/).
+- [Pev](http://tatiyants.com/postgres-query-plan-visualization/).
 
 ## Producing query plans
 
@@ -707,7 +707,13 @@ For more information about the available options, run:
 
 ### `#database-lab`
 
-Another tool GitLab employees can use is a chatbot powered by [Joe](https://gitlab.com/postgres-ai/joe) which uses [Database Lab](https://gitlab.com/postgres-ai/database-lab) to instantly provide developers with their own clone of the production database. Joe is available in the [`#database-lab`](https://gitlab.slack.com/archives/CLJMDRD8C) channel on Slack.
+Another tool GitLab employees can use is a chatbot powered by [Joe](https://gitlab.com/postgres-ai/joe)
+which uses [Database Lab](https://gitlab.com/postgres-ai/database-lab) to instantly provide developers
+with their own clone of the production database.
+
+Joe is available in the
+[`#database-lab`](https://gitlab.slack.com/archives/CLJMDRD8C) channel on Slack.
+
 Unlike chatops, it gives you a way to execute DDL statements (like creating indexes and tables) and get query plan not only for `SELECT` but also `UPDATE` and `DELETE`.
 
 For example, in order to test new index you can do the following:

@@ -184,7 +184,7 @@ Sometimes though, you may encounter some issues, like OpenShift not running
 when booting up the VM. The web UI may not responding or you may see issues
 when trying to login with `oc`, like:
 
-```
+```plaintext
 The connection to the server 10.2.2.2:8443 was refused - did you specify the right host or port?
 ```
 
@@ -403,7 +403,7 @@ Let's see how to do that using the following steps.
 
    The output will be similar to:
 
-   ```
+   ```plaintext
    NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
    gitlab-ce              172.30.243.177   <none>        22/TCP,80/TCP   5d
    gitlab-ce-postgresql   172.30.116.75    <none>        5432/TCP        5d
@@ -436,7 +436,7 @@ Let's see how to do that using the following steps.
 
    which will return something like:
 
-   ```
+   ```plaintext
    NAME          DESIRED   CURRENT   AGE
    gitlab-ce-2   2         2         5d
    ```

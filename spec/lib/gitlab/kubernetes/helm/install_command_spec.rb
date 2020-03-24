@@ -41,6 +41,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       <<~EOS.squish
       helm upgrade app-name chart-name
         --install
+        --atomic
+        --cleanup-on-fail
         --reset-values
         --version 1.2.3
         --set rbac.create\\=false,rbac.enabled\\=false
@@ -79,6 +81,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS.squish
         helm upgrade app-name chart-name
         --install
+        --atomic
+        --cleanup-on-fail
         --reset-values
         #{tls_flags}
         --version 1.2.3
@@ -109,6 +113,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS.squish
         helm upgrade app-name chart-name
           --install
+          --atomic
+          --cleanup-on-fail
           --reset-values
           --version 1.2.3
           --set rbac.create\\=true,rbac.enabled\\=true
@@ -140,6 +146,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS.squish
         helm upgrade app-name chart-name
           --install
+          --atomic
+          --cleanup-on-fail
           --reset-values
           --version 1.2.3
           --set rbac.create\\=false,rbac.enabled\\=false
@@ -171,6 +179,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS.squish
         helm upgrade app-name chart-name
           --install
+          --atomic
+          --cleanup-on-fail
           --reset-values
           --version 1.2.3
           --set rbac.create\\=false,rbac.enabled\\=false
@@ -200,6 +210,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS.squish
         helm upgrade app-name chart-name
            --install
+           --atomic
+           --cleanup-on-fail
            --reset-values
            --version 1.2.3
            --set rbac.create\\=false,rbac.enabled\\=false
@@ -229,6 +241,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS.squish
         helm upgrade app-name chart-name
           --install
+          --atomic
+          --cleanup-on-fail
           --reset-values
           --set rbac.create\\=false,rbac.enabled\\=false
           --namespace gitlab-managed-apps

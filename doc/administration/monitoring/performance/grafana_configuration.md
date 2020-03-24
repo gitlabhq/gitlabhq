@@ -39,8 +39,8 @@ Test Connection to ensure the configuration is correct.
 - **Name**: `InfluxDB`
 - **Default**: Checked
 - **Type**: `InfluxDB 0.9.x` (Even if you're using InfluxDB 0.10.x)
-- **Url**: `https://localhost:8086` (Or the remote URL if you've installed InfluxDB
-  on a separate server)
+- For the URL, use `https://localhost:8086`, or provide the remote URL if you've installed InfluxDB
+  on a separate server
 - **Access**: `proxy`
 - **Database**: `gitlab`
 - **User**: `admin` (Or the username configured when setting up InfluxDB)
@@ -52,7 +52,7 @@ Test Connection to ensure the configuration is correct.
 
 If you intend to import the GitLab provided Grafana dashboards, you will need to
 set up the right retention policies and continuous queries. The easiest way of
-doing this is by using the [influxdb-management](https://gitlab.com/gitlab-org/influxdb-management)
+doing this is by using the [InfluxDB Management](https://gitlab.com/gitlab-org/influxdb-management)
 repository.
 
 To use this repository you must first clone it:
@@ -74,7 +74,7 @@ and then editing the `.env` file to contain the correct InfluxDB settings. Once
 configured you can simply run `bundle exec rake` and the InfluxDB database will
 be configured for you.
 
-For more information see the [influxdb-management README](https://gitlab.com/gitlab-org/influxdb-management/blob/master/README.md).
+For more information see the [InfluxDB Management README](https://gitlab.com/gitlab-org/influxdb-management/blob/master/README.md).
 
 ## Import Dashboards
 

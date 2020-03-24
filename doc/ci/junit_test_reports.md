@@ -4,8 +4,7 @@ type: reference
 
 # JUnit test reports
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/45318) in GitLab 11.2.
-Requires GitLab Runner 11.2 and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/45318) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
 ## Overview
 

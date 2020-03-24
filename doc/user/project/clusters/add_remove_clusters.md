@@ -660,14 +660,14 @@ kubectl create clusterrolebinding permissive-binding \
 
 Amazon EKS doesn't have a default Storage Class out of the box, which means
 requests for persistent volumes will not be automatically fulfilled. As part
-of Auto DevOps, the deployed Postgres instance requests persistent storage,
+of Auto DevOps, the deployed PostgreSQL instance requests persistent storage,
 and without a default storage class it will fail to start.
 
 If a default Storage Class doesn't already exist and is desired, follow Amazon's
 [guide on storage classes](https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html)
 to create one.
 
-Alternatively, disable Postgres by setting the project variable
+Alternatively, disable PostgreSQL by setting the project variable
 [`POSTGRES_ENABLED`](../../../topics/autodevops/#environment-variables) to `false`.
 
 #### Deploy the app to EKS

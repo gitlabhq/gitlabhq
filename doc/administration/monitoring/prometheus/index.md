@@ -268,42 +268,42 @@ export Prometheus metrics.
 The node exporter allows you to measure various machine resources, such as
 memory, disk, and CPU utilization.
 
-[➔ Read more about the node exporter.](node_exporter.md)
+[Read more about the node exporter](node_exporter.md).
 
 ### Redis exporter
 
 The Redis exporter allows you to measure various Redis metrics.
 
-[➔ Read more about the Redis exporter.](redis_exporter.md)
+[Read more about the Redis exporter](redis_exporter.md).
 
-### Postgres exporter
+### PostgreSQL exporter
 
-The Postgres exporter allows you to measure various PostgreSQL metrics.
+The PostgreSQL exporter allows you to measure various PostgreSQL metrics.
 
-[➔ Read more about the Postgres exporter.](postgres_exporter.md)
+[Read more about the PostgreSQL exporter](postgres_exporter.md).
 
 ### PgBouncer exporter
 
 The PgBouncer exporter allows you to measure various PgBouncer metrics.
 
-[➔ Read more about the PgBouncer exporter.](pgbouncer_exporter.md)
+[Read more about the PgBouncer exporter](pgbouncer_exporter.md).
 
 ### Registry exporter
 
 The Registry exporter allows you to measure various Registry metrics.
 
-[➔ Read more about the Registry exporter.](registry_exporter.md)
+[Read more about the Registry exporter](registry_exporter.md).
 
 ### GitLab exporter
 
 The GitLab exporter allows you to measure various GitLab metrics, pulled from Redis and the database.
 
-[➔ Read more about the GitLab exporter.](gitlab_exporter.md)
+[Read more about the GitLab exporter](gitlab_exporter.md).
 
 ## Configuring Prometheus to monitor Kubernetes
 
-> Introduced in GitLab 9.0.
-> Pod monitoring introduced in GitLab 9.4.
+> - Introduced in GitLab 9.0.
+> - Pod monitoring introduced in GitLab 9.4.
 
 If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][prometheus integration] to monitor them.
 

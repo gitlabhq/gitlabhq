@@ -35,7 +35,7 @@ which you can set it up:
    the Pages daemon is installed, so you will have to share it via network.
 1. Run the Pages daemon in the same server as GitLab, listening on the same IP
    but on different ports. In that case, you will have to proxy the traffic with
-   a loadbalancer. If you choose that route note that you should use TCP load
+   a load balancer. If you choose that route note that you should use TCP load
    balancing for HTTPS. If you use TLS-termination (HTTPS-load balancing) the
    pages will not be able to be served with user provided certificates. For
    HTTP it's OK to use HTTP or TCP load balancing.
@@ -51,7 +51,7 @@ Before proceeding with the Pages configuration, make sure that:
    this document we assume that to be `example.io`.
 1. You have configured a **wildcard DNS record** for that domain.
 1. You have installed the `zip` and `unzip` packages in the same server that
-   GitLab is installed since they are needed to compress/uncompress the
+   GitLab is installed since they are needed to compress and decompress the
    Pages artifacts.
 1. (Optional) You have a **wildcard certificate** for the Pages domain if you
    decide to serve Pages (`*.example.io`) under HTTPS.
@@ -388,7 +388,7 @@ Each request to view a resource in a private site is authenticated by Pages
 using that token. For each request it receives, it makes a request to the GitLab
 API to check that the user is authorized to read that site.
 
-From [GitLab 12.8](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/3689) onwards,
+From [GitLab 12.8](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/3689) onward,
 Access Control parameters for Pages are set in a configuration file, which
 by convention is named `gitlab-pages-config`. The configuration file is passed to
 pages using the `-config flag` or CONFIG environment variable.

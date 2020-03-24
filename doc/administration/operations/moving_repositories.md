@@ -31,7 +31,7 @@ If you want to see progress, replace `-xf` with `-xvf`.
 ### Tar pipe to another server
 
 You can also use a tar pipe to copy data to another server. If your
-`git` user has SSH access to the newserver as `git@newserver`, you
+`git` user has SSH access to the new server as `git@newserver`, you
 can pipe the data through SSH.
 
 ```shell

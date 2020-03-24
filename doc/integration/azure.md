@@ -67,7 +67,7 @@ To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your ap
 
    For installations from source:
 
-   ```
+   ```yaml
    - { name: 'azure_oauth2',
      args: { client_id: "CLIENT ID",
      client_secret: "CLIENT SECRET",

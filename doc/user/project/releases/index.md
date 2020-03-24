@@ -161,8 +161,7 @@ Release tag. Once the `released_at` date and time has passed, the badge is autom
 
 ## Creating a Release
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32812) in GitLab
-  12.9, Releases can be created directly through the GitLab Releases UI.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32812) in GitLab 12.9, Releases can be created directly through the GitLab Releases UI.
 
 NOTE: **Note:**
 Only users with Developer permissions or higher can create Releases.

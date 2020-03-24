@@ -86,8 +86,7 @@ artifacts, as described in the [troubleshooting documentation](../../../administ
 
 ## Shared Runners pipeline minutes quota **(STARTER ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1078)
-in GitLab Starter 8.16.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1078) in GitLab Starter 8.16.
 
 If you have enabled shared Runners for your GitLab instance, you can limit their
 usage by setting a maximum number of pipeline minutes that a group can use on

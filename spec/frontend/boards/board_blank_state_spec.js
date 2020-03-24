@@ -11,9 +11,9 @@ describe('Boards blank state', () => {
 
     boardsStore.create();
 
-    spyOn(boardsStore, 'addList').and.stub();
-    spyOn(boardsStore, 'removeList').and.stub();
-    spyOn(boardsStore, 'generateDefaultLists').and.callFake(
+    jest.spyOn(boardsStore, 'addList').mockImplementation();
+    jest.spyOn(boardsStore, 'removeList').mockImplementation();
+    jest.spyOn(boardsStore, 'generateDefaultLists').mockImplementation(
       () =>
         new Promise((resolve, reject) => {
           if (fail) {
@@ -39,7 +39,7 @@ describe('Boards blank state', () => {
 
     vm = new Comp();
 
-    setTimeout(() => {
+    setImmediate(() => {
       vm.$mount();
       done();
     });
@@ -60,7 +60,7 @@ describe('Boards blank state', () => {
   it('clears blank state', done => {
     vm.$el.querySelector('.btn-default').click();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(boardsStore.welcomeIsHidden()).toBeTruthy();
 
       done();
@@ -70,15 +70,11 @@ describe('Boards blank state', () => {
   it('creates pre-defined labels', done => {
     vm.$el.querySelector('.btn-success').click();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(boardsStore.addList).toHaveBeenCalledTimes(2);
-      expect(boardsStore.addList).toHaveBeenCalledWith(
-        jasmine.objectContaining({ title: 'To Do' }),
-      );
+      expect(boardsStore.addList).toHaveBeenCalledWith(expect.objectContaining({ title: 'To Do' }));
 
-      expect(boardsStore.addList).toHaveBeenCalledWith(
-        jasmine.objectContaining({ title: 'Doing' }),
-      );
+      expect(boardsStore.addList).toHaveBeenCalledWith(expect.objectContaining({ title: 'Doing' }));
 
       done();
     });
@@ -89,7 +85,7 @@ describe('Boards blank state', () => {
 
     vm.$el.querySelector('.btn-success').click();
 
-    setTimeout(() => {
+    setImmediate(() => {
       expect(boardsStore.welcomeIsHidden()).toBeFalsy();
       expect(boardsStore.removeList).toHaveBeenCalledWith(undefined, 'label');
 

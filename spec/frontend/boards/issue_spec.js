@@ -174,7 +174,7 @@ describe('Issue model', () => {
 
   describe('update', () => {
     it('passes assignee ids when there are assignees', done => {
-      spyOn(axios, 'patch').and.callFake((url, data) => {
+      jest.spyOn(axios, 'patch').mockImplementation((url, data) => {
         expect(data.issue.assignee_ids).toEqual([1]);
         done();
         return Promise.resolve();
@@ -184,7 +184,7 @@ describe('Issue model', () => {
     });
 
     it('passes assignee ids of [0] when there are no assignees', done => {
-      spyOn(axios, 'patch').and.callFake((url, data) => {
+      jest.spyOn(axios, 'patch').mockImplementation((url, data) => {
         expect(data.issue.assignee_ids).toEqual([0]);
         done();
         return Promise.resolve();

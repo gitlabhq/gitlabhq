@@ -212,7 +212,7 @@ specific environments, e.g. `staging`.
 1. Once connected to the pod, run the following command to restore the database.
 
    - You will be asked for the database password, the default is `testing-password`.
-   - `USERNAME` is the username you have configured for postgres. The default is `user`.
+   - `USERNAME` is the username you have configured for PostgreSQL. The default is `user`.
    - `DATABASE_NAME` is usually the environment name.
 
    ```sh

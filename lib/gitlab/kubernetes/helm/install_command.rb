@@ -44,6 +44,7 @@ module Gitlab
         def install_command
           command = ['helm', 'upgrade', name, chart] +
             install_flag +
+            rollback_support_flag +
             reset_values_flag +
             tls_flags_if_remote_tiller +
             optional_version_flag +
@@ -82,6 +83,10 @@ module Gitlab
           return [] unless version
 
           ['--version', version]
+        end
+
+        def rollback_support_flag
+          ['--atomic', '--cleanup-on-fail']
         end
       end
     end

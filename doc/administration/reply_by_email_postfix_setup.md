@@ -184,13 +184,13 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
    imapd start
    ```
 
-1. The courier-authdaemon isn't started after installation. Without it, imap authentication will fail:
+1. The `courier-authdaemon` isn't started after installation. Without it, IMAP authentication will fail:
 
    ```shell
    sudo service courier-authdaemon start
    ```
 
-   You can also configure courier-authdaemon to start on boot:
+   You can also configure `courier-authdaemon` to start on boot:
 
    ```shell
    sudo systemctl enable courier-authdaemon

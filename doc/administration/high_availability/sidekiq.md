@@ -55,7 +55,7 @@ you want using steps 1 and 2 from the GitLab downloads page.
    gitlab_rails['gitaly_token'] = 'YOUR_TOKEN'
    ```
 
-1. Setup Sidekiq's connection to Postgres:
+1. Setup Sidekiq's connection to PostgreSQL:
 
    ```ruby
    gitlab_rails['db_host'] = '10.10.1.30'
@@ -66,7 +66,7 @@ you want using steps 1 and 2 from the GitLab downloads page.
    gitlab_rails['auto_migrate'] = false
    ```
 
-   Remember to add the Sidekiq nodes to the Postgres whitelist:
+   Remember to add the Sidekiq nodes to the PostgreSQL whitelist:
 
    ```ruby
    postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.1/32 10.10.1.30/32 10.10.1.31/32 10.10.1.32/32 10.10.1.33/32 10.10.1.38/32)

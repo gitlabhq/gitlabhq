@@ -9627,6 +9627,8 @@ CREATE INDEX index_projects_on_creator_id_and_created_at ON public.projects USIN
 
 CREATE INDEX index_projects_on_description_trigram ON public.projects USING gin (description public.gin_trgm_ops);
 
+CREATE INDEX index_projects_on_id_and_archived_and_pending_delete ON public.projects USING btree (id) WHERE ((archived = false) AND (pending_delete = false));
+
 CREATE UNIQUE INDEX index_projects_on_id_partial_for_visibility ON public.projects USING btree (id) WHERE (visibility_level = ANY (ARRAY[10, 20]));
 
 CREATE INDEX index_projects_on_id_service_desk_enabled ON public.projects USING btree (id) WHERE (service_desk_enabled = true);
@@ -12710,6 +12712,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200318163148'),
 ('20200318164448'),
 ('20200318165448'),
+('20200318175008'),
 ('20200319203901'),
 ('20200323075043');
 

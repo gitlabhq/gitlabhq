@@ -143,9 +143,9 @@ kubectl describe globaladdress.compute.gcp.crossplane.io gitlab-ad-globaladdress
 
 ## Setting up Resource classes
 
-Resource classes are a way of defining a configuration for the required managed service. We will define the Postgres Resource class
+Resource classes are a way of defining a configuration for the required managed service. We will define the PostgreSQL Resource class
 
-- Define a gcp-postgres-standard.yaml resourceclass which contains
+- Define a `gcp-postgres-standard.yaml` resourceclass which contains
 
 1. A default CloudSQLInstanceClass.
 1. A CloudSQLInstanceClass with labels.
@@ -285,4 +285,4 @@ serverCACertificateSha1Fingerprint:   40 bytes
 ## Connect to the PostgreSQL instance
 
 Follow this [GCP guide](https://cloud.google.com/sql/docs/postgres/connect-kubernetes-engine) if you
-would like to connect to the newly provisioned Postgres database instance on CloudSQL.
+would like to connect to the newly provisioned PostgreSQL database instance on CloudSQL.

@@ -33,7 +33,7 @@ uploading user SSH keys to GitLab entirely.
 
 How to fully set up SSH certificates is outside the scope of this
 document. See [OpenSSH's
-PROTOCOL.certkeys](https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL.certkeys?annotate=HEAD)
+`PROTOCOL.certkeys`](https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/ssh/PROTOCOL.certkeys?annotate=HEAD)
 for how it works, and e.g. [RedHat's documentation about
 it](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-using_openssh_certificate_authentication).
 

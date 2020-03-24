@@ -205,7 +205,7 @@ Using [`ReactiveCaching`](utilities.md#reactivecaching) is one of the best solut
 
 **Summary:** You should avoid accessing to external services like Gitaly during database
 transactions, otherwise it leads to severe contention problems
-as an open transaction basically blocks the release of a Postgres backend connection.
+as an open transaction basically blocks the release of a PostgreSQL backend connection.
 
 For keeping transaction as minimal as possible, please consider using `AfterCommitQueue`
 module or `after_commit` AR hook.

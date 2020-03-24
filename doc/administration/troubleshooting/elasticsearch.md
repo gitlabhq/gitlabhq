@@ -8,7 +8,7 @@ Troubleshooting Elasticsearch requires:
 ## Common terminology
 
 - **Lucene**: A full-text search library written in Java.
-- **Near Realtime (NRT)**: Refers to the slight latency from the time to index a
+- **Near real time (NRT)**: Refers to the slight latency from the time to index a
   document to the time when it becomes searchable.
 - **Cluster**: A collection of one or more nodes that work together to hold all
   the data, providing indexing and search capabilities.
@@ -271,7 +271,7 @@ Generally speaking, ensure:
 - The Elasticsearch server have enough RAM and CPU cores.
 - That sharding **is** being used.
 
-Going into some more detail here, if Elasticsearch is running on the same server as GitLab, resource contention is **very** likely to occur. Ideally, Elasticsearch, which requires ample resources, should be running on its own server (maybe coupled with logstash and kibana).
+Going into some more detail here, if Elasticsearch is running on the same server as GitLab, resource contention is **very** likely to occur. Ideally, Elasticsearch, which requires ample resources, should be running on its own server (maybe coupled with Logstash and Kibana).
 
 When it comes to Elasticsearch, RAM is the key resource. Elasticsearch themselves recommend:
 

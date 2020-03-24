@@ -21,7 +21,7 @@ The `JenkinsService` and `GithubService` classes are only available in the Enter
 so if you downgrade to the Community Edition, you'll come across the following
 error:
 
-```
+```plaintext
 Completed 500 Internal Server Error in 497ms (ActiveRecord: 32.2ms)
 
 ActionView::Template::Error (The single-table inheritance mechanism failed to locate the subclass: 'JenkinsService'. This
@@ -32,7 +32,7 @@ use another column for that information.)
 
 or
 
-```
+```plaintext
 Completed 500 Internal Server Error in 497ms (ActiveRecord: 32.2ms)
 
 ActionView::Template::Error (The single-table inheritance mechanism failed to locate the subclass: 'GithubService'. This

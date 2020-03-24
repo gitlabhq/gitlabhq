@@ -33,7 +33,7 @@ page was open. Only the first two requests per unique URL are captured.
 
 ## Request warnings
 
-For requests exceeding pre-defined limits, a warning icon will be shown
+For requests exceeding predefined limits, a warning icon will be shown
 next to the failing metric, along with an explanation. In this example,
 the Gitaly call duration exceeded the threshold:
 

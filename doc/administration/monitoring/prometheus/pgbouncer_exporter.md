@@ -22,8 +22,8 @@ To enable the PgBouncer exporter:
 Prometheus will now automatically begin collecting performance data from
 the PgBouncer exporter exposed under `localhost:9188`.
 
-The PgBouncer exporter will also be enabled by default if the [pgbouncer_role][postgres roles]
-is enabled.
+The PgBouncer exporter will also be enabled by default if the [`pgbouncer_role`][postgres roles]
+role is enabled.
 
 [← Back to the main Prometheus page](index.md)
 

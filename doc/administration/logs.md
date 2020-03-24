@@ -13,7 +13,7 @@ This guide talks about how to read and use these system log files.
 This file lives in `/var/log/gitlab/gitlab-rails/production_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/production_json.log` for
 installations from source. When GitLab is running in an environment
-other than production, the corresponding logfile is shown here.
+other than production, the corresponding log file is shown here.
 
 It contains a structured log for Rails controller requests received from
 GitLab, thanks to [Lograge](https://github.com/roidrage/lograge/). Note that
@@ -105,7 +105,7 @@ NOTE: **Note:** Starting with GitLab 12.5, if an error occurs, an
 This file lives in `/var/log/gitlab/gitlab-rails/production.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/production.log` for
 installations from source. (When GitLab is running in an environment
-other than production, the corresponding logfile is shown here.)
+other than production, the corresponding log file is shown here.)
 
 It contains information about all performed requests. You can see the
 URL and type of request, IP address, and what parts of code were

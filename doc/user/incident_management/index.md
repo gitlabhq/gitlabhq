@@ -95,8 +95,8 @@ The options are:
 
 ##### View logs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/201846) in GitLab Ultimate 12.8.
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to [GitLab Core](https://about.gitlab.com/pricing/) 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/201846) in GitLab Ultimate 12.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) to [GitLab Core](https://about.gitlab.com/pricing/) 12.9.
 
 This can be useful if you are triaging an application incident and need to
 [explore logs](../project/integrations/prometheus.md#view-logs-ultimate)

@@ -90,14 +90,14 @@ here's how you configure GitLab to be aware of the change:
 
 1. Edit the config file of Omnibus GitLab using your favorite text editor:
 
-   ```
+   ```shell
    sudo vim /etc/gitlab/gitlab.rb
    ```
 
 1. Set the `external_url` value to the domain name you wish GitLab to have
    **without** `https`:
 
-   ```
+   ```ruby
    external_url 'http://gitlab.example.com'
    ```
 
@@ -105,7 +105,7 @@ here's how you configure GitLab to be aware of the change:
 
 1. Reconfigure GitLab for the changes to take effect:
 
-   ```
+   ```shell
    sudo gitlab-ctl reconfigure
    ```
 

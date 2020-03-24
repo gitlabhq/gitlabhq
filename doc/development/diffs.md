@@ -26,7 +26,7 @@ The diffs fetching process _limits_ single file diff sizes and the overall size 
 then persisted on `merge_request_diff_files` table.
 
 Even though diffs larger than 10% of the value of `ApplicationSettings#diff_max_patch_bytes` are collapsed,
-we still keep them on Postgres. However, diff files larger than defined _safety limits_
+we still keep them on PostgreSQL. However, diff files larger than defined _safety limits_
 (see the [Diff limits section](#diff-limits)) are _not_ persisted in the database.
 
 In order to present diffs information on the Merge Request diffs page, we:

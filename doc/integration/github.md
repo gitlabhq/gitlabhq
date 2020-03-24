@@ -69,7 +69,7 @@ Follow these steps to incorporate the GitHub OAuth 2 app in your GitLab server:
 
    For GitHub.com:
 
-   ```
+   ```yaml
    - { name: 'github', app_id: 'YOUR_APP_ID',
      app_secret: 'YOUR_APP_SECRET',
      args: { scope: 'user:email' } }
@@ -77,7 +77,7 @@ Follow these steps to incorporate the GitHub OAuth 2 app in your GitLab server:
 
    For GitHub Enterprise:
 
-   ```
+   ```yaml
    - { name: 'github', app_id: 'YOUR_APP_ID',
      app_secret: 'YOUR_APP_SECRET',
      url: "https://github.example.com/",
@@ -124,7 +124,7 @@ omnibus_gitconfig['system'] = { "http" => ["sslVerify = false"] }
 
 For installation from source:
 
-```
+```yaml
 - { name: 'github', app_id: 'YOUR_APP_ID',
   app_secret: 'YOUR_APP_SECRET',
   url: "https://github.example.com/",
@@ -134,7 +134,7 @@ For installation from source:
 
 You will also need to disable Git SSL verification on the server hosting GitLab.
 
-```
+```shell
 git config --global http.sslVerify false
 ```
 

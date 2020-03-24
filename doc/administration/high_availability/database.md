@@ -146,7 +146,7 @@ Each service in the package comes with a set of [default ports](https://docs.git
 - Application servers connect to either PgBouncer directly via its [default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#pgbouncer) or via a configured Internal Load Balancer (TCP) that serves multiple PgBouncers.
 - PgBouncer connects to the primary database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
 - Repmgr connects to the database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
-- Postgres secondaries connect to the primary database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
+- PostgreSQL secondaries connect to the primary database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
 - Consul servers and agents connect to each others [Consul default ports](https://docs.gitlab.com/omnibus/package-information/defaults.html#consul)
 
 #### Required information
@@ -899,7 +899,7 @@ after it has been restored to service.
   ```shell
   gitlab-ctl repmgr standby unregister --node=959789412
   ```
-  
+
 ##### Add a node as a standby server
 
   From the stnadby node, run:
@@ -916,24 +916,24 @@ after it has been restored to service.
   scratch by performing a `gitlab-ctl repmgr standby setup NEW_MASTER`.
 
 ##### Add a failed master back into the cluster as a standby node
-  
+
   Once `repmgrd` and PostgreSQL are runnning, the node will need to follow the new
   as a standby node.
-  
+
   ```
   gitlab-ctl repmgr standby follow NEW_MASTER
   ```
-  
+
   Once the node is following the new master as a standby, the node needs to be
   [unregistered from the cluster on the new master node](#remove-a-standby-from-the-cluster).
-  
+
   Once the old master node has been unregistered from the cluster, it will need
   to be setup as a new standby:
-  
+
   ```
   gitlab-ctl repmgr standby setup NEW_MASTER
   ```
-  
+
   Failure to unregister and readd the old master node can lead to subsequent failovers
   not working.
 

@@ -162,7 +162,7 @@ and they will assist you with any issues you are having.
   kubectl get secret <secret-name> -ojsonpath={.data.password} | base64 --decode ; echo
   ```
 
-- How to connect to a GitLab Postgres database:
+- How to connect to a GitLab PostgreSQL database:
 
   ```shell
   kubectl exec -it <task-runner-pod-name> -- /srv/gitlab/bin/rails dbconsole -p

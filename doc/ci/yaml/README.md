@@ -2218,8 +2218,7 @@ job:
 
 #### `artifacts:reports`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20390) in
-GitLab 11.2. Requires GitLab Runner 11.2 and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20390) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
 The `reports` keyword is used for collecting test reports, code quality reports, and security reports from jobs.
 It also exposes these reports in GitLab's UI (merge requests, pipeline views, and security dashboards).
@@ -2235,8 +2234,7 @@ If you also want the ability to browse the report output files, include the
 
 ##### `artifacts:reports:junit`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20390) in
-GitLab 11.2. Requires GitLab Runner 11.2 and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20390) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
 The `junit` report collects [JUnit XML files](https://www.ibm.com/support/knowledgecenter/en/SSQ2R2_14.1.0/com.ibm.rsar.analysis.codereview.cobol.doc/topics/cac_useresults_junit.html)
 as artifacts. Although JUnit was originally developed in Java, there are many
@@ -2288,8 +2286,7 @@ There are a couple of limitations on top of the [original dotenv rules](https://
 
 ##### `artifacts:reports:cobertura`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3708) in GitLab 12.9.
-> Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3708) in GitLab 12.9. Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
 
 The `cobertura` report collects [Cobertura coverage XML files](../../user/project/merge_requests/test_coverage_visualization.md).
 The collected Cobertura coverage reports will be uploaded to GitLab as an artifact
@@ -3620,9 +3617,11 @@ Learn more about [variables and their priority][variables].
 
 #### Git strategy
 
-> Introduced in GitLab 8.9 as an experimental feature. May change or be removed
-> completely in future releases. `GIT_STRATEGY=none` requires GitLab Runner
-> v1.7+.
+> - Introduced in GitLab 8.9 as an experimental feature.
+> - `GIT_STRATEGY=none` requires GitLab Runner v1.7+.
+
+CAUTION: **Caution:**
+May change or be removed completely in future releases.
 
 You can set the `GIT_STRATEGY` used for getting recent application code, either
 globally or per-job in the [`variables`](#variables) section. If left
@@ -3783,8 +3782,10 @@ You can set them globally or per-job in the [`variables`](#variables) section.
 
 #### Shallow cloning
 
-> Introduced in GitLab 8.9 as an experimental feature. May change in future
-releases or be removed completely.
+> Introduced in GitLab 8.9 as an experimental feature.
+
+CAUTION: **Caution:**
+May change in future releases or be removed completely.
 
 You can specify the depth of fetching and cloning using `GIT_DEPTH`. This allows
 shallow cloning of the repository which can significantly speed up cloning for

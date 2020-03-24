@@ -376,7 +376,7 @@ terminal window:
 
 Once the update process has completed, you'll see a message like this:
 
-```
+```plaintext
 Upgrade complete! If your GitLab server is misbehaving try running
 
    sudo gitlab-ctl restart

@@ -6,6 +6,8 @@ description: "Automatic Let's Encrypt SSL certificates for GitLab Pages."
 # GitLab Pages integration with Let's Encrypt
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/28996) in GitLab 12.1. For versions earlier than GitLab 12.1, see the [manual Let's Encrypt instructions](../lets_encrypt_for_gitlab_pages.md).
+
+NOTE: **Note:**
 This feature is in **beta** and may still have bugs. See all the related issues linked from this [issue's description](https://gitlab.com/gitlab-org/gitlab-foss/issues/28996) for more information.
 
 The GitLab Pages integration with Let's Encrypt (LE) allows you

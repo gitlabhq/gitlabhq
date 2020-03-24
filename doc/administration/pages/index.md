@@ -38,7 +38,7 @@ which you can set it up:
    the Pages daemon is installed, so you will have to share it via network.
 - Run the Pages daemon in the same server as GitLab, listening on the same IP
    but on different ports. In that case, you will have to proxy the traffic with
-   a loadbalancer. If you choose that route note that you should use TCP load
+   a load balancer. If you choose that route note that you should use TCP load
    balancing for HTTPS. If you use TLS-termination (HTTPS-load balancing) the
    pages will not be able to be served with user provided certificates. For
    HTTP it's OK to use HTTP or TCP load balancing.
@@ -256,7 +256,7 @@ GitLab supports [custom domain verification](../../user/project/pages/custom_dom
 When adding a custom domain, users will be required to prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
 
-If your userbase is private or otherwise trusted, you can disable the
+If your user base is private or otherwise trusted, you can disable the
 verification requirement. Navigate to **Admin Area > Settings > Preferences** and
 uncheck **Require users to prove ownership of custom domains** in the **Pages** section.
 This setting is enabled by default.
@@ -358,7 +358,7 @@ For Omnibus, normally this would be fixed by [installing a custom CA in GitLab O
 but a [bug](https://gitlab.com/gitlab-org/gitlab/issues/25411) is currently preventing
 that method from working. Use the following workaround:
 
-1. Append your GitLab server TLS/SSL certficate to `/opt/gitlab/embedded/ssl/certs/cacert.pem` where `gitlab-domain-example.com` is your GitLab application URL
+1. Append your GitLab server TLS/SSL certificate to `/opt/gitlab/embedded/ssl/certs/cacert.pem` where `gitlab-domain-example.com` is your GitLab application URL
 
    ```shell
    printf "\ngitlab-domain-example.com\n===========================\n" | sudo tee --append /opt/gitlab/embedded/ssl/certs/cacert.pem
@@ -582,7 +582,7 @@ but commented out to help encourage others to add to it in the future. -->
 
 ### `open /etc/ssl/ca-bundle.pem: permission denied`
 
-GitLab Pages runs inside a `chroot` jail, usually in a uniquely numbered directory like
+GitLab Pages runs inside a chroot jail, usually in a uniquely numbered directory like
 `/tmp/gitlab-pages-*`.
 
 Within the jail, a bundle of trusted certificates is
@@ -592,7 +592,7 @@ from `/opt/gitlab/embedded/ssl/certs/cacert.pem`
 as part of starting up Pages.
 
 If the permissions on the source file are incorrect (they should be `0644`) then
-the file inside the `chroot` jail will also be wrong.
+the file inside the chroot jail will also be wrong.
 
 Pages will log errors in `/var/log/gitlab/gitlab-pages/current` like:
 
@@ -601,7 +601,7 @@ x509: failed to load system roots and no roots provided
 open /etc/ssl/ca-bundle.pem: permission denied
 ```
 
-The use of a `chroot` jail makes this error misleading, as it is not
+The use of a chroot jail makes this error misleading, as it is not
 referring to `/etc/ssl` on the root filesystem.
 
 The fix is to correct the source file permissions and restart Pages:

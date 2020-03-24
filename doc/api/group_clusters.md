@@ -1,7 +1,6 @@
 # Group clusters API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30213)
-in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30213) in GitLab 12.1.
 
 NOTE: **Note:**
 User will need at least maintainer access for the group to use these endpoints.

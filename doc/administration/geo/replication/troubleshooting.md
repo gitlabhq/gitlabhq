@@ -242,7 +242,7 @@ sudo gitlab-rake gitlab:geo:check
    Checking Geo ... Finished
    ```
 
-   When performing a Postgres major version (9 > 10) update this is expected. Follow:
+   When performing a PostgreSQL major version (9 > 10) update this is expected. Follow:
 
    - [initiate-the-replication-process](database.md#step-3-initiate-the-replication-process)
    - [Geo database has an outdated FDW remote schema](troubleshooting.md#geo-database-has-an-outdated-fdw-remote-schema-error)
