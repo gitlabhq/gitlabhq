@@ -171,6 +171,8 @@ module Gitlab
 
           if valid_oauth_token?(token)
             user = User.find_by(id: token.resource_owner_id)
+            return unless user.can?(:log_in)
+
             Gitlab::Auth::Result.new(user, nil, :oauth, full_authentication_abilities)
           end
         end
@@ -182,7 +184,7 @@ module Gitlab
 
         token = PersonalAccessTokensFinder.new(state: 'active').find_by_token(password)
 
-        if token && valid_scoped_token?(token, all_available_scopes)
+        if token && valid_scoped_token?(token, all_available_scopes) && token.user.can?(:log_in)
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
         end
       end
@@ -260,6 +262,8 @@ module Gitlab
         return unless build.project.builds_enabled?
 
         if build.user
+          return unless build.user.can?(:log_in)
+
           # If user is assigned to build, use restricted credentials of user
           Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities)
         else

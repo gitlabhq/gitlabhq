@@ -76,7 +76,7 @@ module WorkhorseHelpers
       "#{key}.size" => file.size
     }.tap do |params|
       params["#{key}.path"] = file.path if file.path
-      params["#{key}.remote_id"] = file.remote_id if file.respond_to?(:remote_id) && file.remote_id
+      params["#{key}.remote_id"] = file.remote_id if file.respond_to?(:remote_id) && file.remote_id.present?
     end
   end
 
