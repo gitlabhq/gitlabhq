@@ -32,6 +32,9 @@ describe Gitlab::ImportExport::AttributeCleaner do
       'issue_ids' => [1, 2, 3],
       'merge_request_ids' => [1, 2, 3],
       'note_ids' => [1, 2, 3],
+      'remote_attachment_url' => 'http://something.dodgy',
+      'remote_attachment_request_header' => 'bad value',
+      'remote_attachment_urls' => %w(http://something.dodgy http://something.okay),
       'attributes' => {
         'issue_ids' => [1, 2, 3],
         'merge_request_ids' => [1, 2, 3],
