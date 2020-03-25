@@ -52,6 +52,12 @@ describe Resolvers::MergeRequestsResolver do
 
       expect(result).to be_empty
     end
+
+    it 'resolves an unknown project to be empty' do
+      result = batch_sync { resolve_mr(nil, iid: iid_1) }
+
+      expect(result.compact).to be_empty
+    end
   end
 
   def resolve_mr(project, args)

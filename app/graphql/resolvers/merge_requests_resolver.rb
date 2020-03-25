@@ -15,7 +15,8 @@ module Resolvers
     alias_method :project, :object
 
     def resolve(**args)
-      return unless project.present?
+      project = object.respond_to?(:sync) ? object.sync : object
+      return MergeRequest.none if project.nil?
 
       args[:iids] ||= [args[:iid]].compact
 

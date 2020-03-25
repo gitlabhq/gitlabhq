@@ -4,7 +4,7 @@ type: reference
 
 # Working with the bundled PgBouncer service **(PREMIUM ONLY)**
 
-As part of its High Availability stack, GitLab Premium includes a bundled version of [PgBouncer](https://pgbouncer.github.io/) that can be managed through `/etc/gitlab/gitlab.rb`. PgBouncer is used to seamlessly migrate database connections between servers in a failover scenario. Additionally, it can be used in a non-HA setup to pool connections, speeding up response time while reducing resource usage.
+As part of its High Availability stack, GitLab Premium includes a bundled version of [PgBouncer](http://www.pgbouncer.org/) that can be managed through `/etc/gitlab/gitlab.rb`. PgBouncer is used to seamlessly migrate database connections between servers in a failover scenario. Additionally, it can be used in a non-HA setup to pool connections, speeding up response time while reducing resource usage.
 
 In a HA setup, it's recommended to run a PgBouncer node separately for each database node with an internal load balancer (TCP) serving each accordingly.
 

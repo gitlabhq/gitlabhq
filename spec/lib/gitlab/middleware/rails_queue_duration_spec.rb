@@ -9,7 +9,7 @@ describe Gitlab::Middleware::RailsQueueDuration do
   let(:transaction) { Gitlab::Metrics::WebTransaction.new(env) }
 
   before do
-    expect(app).to receive(:call).with(env).and_return('yay')
+    allow(app).to receive(:call).with(env).and_return('yay')
   end
 
   describe '#call' do
@@ -41,6 +41,13 @@ describe Gitlab::Middleware::RailsQueueDuration do
         Timecop.freeze(Time.at(3)) do
           expect(middleware.call(env)).to eq('yay')
         end
+      end
+
+      it 'creates a metric with a docstring' do
+        metric = middleware.send(:metric_rails_queue_duration_seconds)
+
+        expect(metric).to be_instance_of(Prometheus::Client::Histogram)
+        expect(metric.docstring).to eq('Measures latency between GitLab Workhorse forwarding a request to Rails')
       end
     end
   end

@@ -125,18 +125,18 @@ Component statuses are linked to configuration documentation for each component.
 
 | Component | Description | [Omnibus GitLab](https://docs.gitlab.com/omnibus/) | [GitLab chart](https://docs.gitlab.com/charts/) | [Minikube Minimal](https://docs.gitlab.com/charts/development/minikube/#deploying-gitlab-with-minimal-settings) | [GitLab.com](https://gitlab.com) | [Source](../install/installation.md) | [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) | CE/EE |
 | --------- | ----------- |:--------------------:|:------------------:|:-----:|:--------:|:--------:|:-------:|:-------:|
-| [NGINX](#nginx) | Routes requests to appropriate components, terminates SSL | [✅][nginx-omnibus] | [✅][nginx-charts] | [⚙][nginx-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⤓][nginx-source] | ❌ | CE & EE |
+| [NGINX](#nginx) | Routes requests to appropriate components, terminates SSL | [✅][nginx-omnibus] | [✅][nginx-charts] | [⚙][nginx-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture) | [⤓][nginx-source] | ❌ | CE & EE |
 | [Unicorn (GitLab Rails)](#unicorn) | Handles requests for the web interface and API | [✅][unicorn-omnibus] | [✅][unicorn-charts] | [✅][unicorn-charts] | [✅](../user/gitlab_com/index.md#unicorn) | [⚙][unicorn-source] | [✅][gitlab-yml] | CE & EE |
 | [Sidekiq](#sidekiq) | Background jobs processor | [✅][sidekiq-omnibus] | [✅][sidekiq-charts] | [✅](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html) | [✅](../user/gitlab_com/index.md#sidekiq) | [✅][gitlab-yml] | [✅][gitlab-yml] | CE & EE |
-| [Gitaly](#gitaly) | Git RPC service for handling all Git calls made by GitLab | [✅][gitaly-omnibus] | [✅][gitaly-charts] | [✅][gitaly-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][gitaly-source] | ✅ | CE & EE |
-| [Praefect](#praefect) | A transparent proxy between any Git client and Gitaly storage nodes. | [✅][gitaly-omnibus] | [❌][gitaly-charts] | [❌][gitaly-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][praefect-source] | ✅ | CE & EE |
-| [GitLab Workhorse](#gitlab-workhorse) | Smart reverse proxy, handles large HTTP requests | [✅][workhorse-omnibus] | [✅][workhorse-charts] | [✅][workhorse-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][workhorse-source] | ✅ | CE & EE |
-| [GitLab Shell](#gitlab-shell) | Handles `git` over SSH sessions | [✅][shell-omnibus] | [✅][shell-charts] | [✅][shell-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][shell-source] | [✅][gitlab-yml] | CE & EE |
+| [Gitaly](#gitaly) | Git RPC service for handling all Git calls made by GitLab | [✅][gitaly-omnibus] | [✅][gitaly-charts] | [✅][gitaly-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture) | [⚙][gitaly-source] | ✅ | CE & EE |
+| [Praefect](#praefect) | A transparent proxy between any Git client and Gitaly storage nodes. | [✅][gitaly-omnibus] | [❌][gitaly-charts] | [❌][gitaly-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture) | [⚙][praefect-source] | ✅ | CE & EE |
+| [GitLab Workhorse](#gitlab-workhorse) | Smart reverse proxy, handles large HTTP requests | [✅][workhorse-omnibus] | [✅][workhorse-charts] | [✅][workhorse-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture) | [⚙][workhorse-source] | ✅ | CE & EE |
+| [GitLab Shell](#gitlab-shell) | Handles `git` over SSH sessions | [✅][shell-omnibus] | [✅][shell-charts] | [✅][shell-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture) | [⚙][shell-source] | [✅][gitlab-yml] | CE & EE |
 | [GitLab Pages](#gitlab-pages) | Hosts static websites | [⚙][pages-omnibus] | [❌][pages-charts] | [❌][pages-charts] | [✅](../user/gitlab_com/index.md#gitlab-pages) | [⚙][pages-source] | [⚙][pages-gdk] | CE & EE  |
 | [Registry](#registry) | Container registry, allows pushing and pulling of images | [⚙][registry-omnibus] | [✅][registry-charts] | [✅][registry-charts] | [✅](../user/packages/container_registry/index.md#build-and-push-images-using-gitlab-cicd) | [⤓][registry-source] | [⚙][registry-gdk] | CE & EE  |
-| [Redis](#redis) | Caching service | [✅][redis-omnibus] | [✅][redis-omnibus] | [✅][redis-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⤓][redis-source] | ✅ | CE & EE |
+| [Redis](#redis) | Caching service | [✅][redis-omnibus] | [✅][redis-omnibus] | [✅][redis-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture) | [⤓][redis-source] | ✅ | CE & EE |
 | [PostgreSQL](#postgresql) | Database | [✅][postgres-omnibus] | [✅][postgres-charts] | [✅][postgres-charts] | [✅](../user/gitlab_com/index.md#postgresql) | [⤓][postgres-source] | ✅ | CE & EE |
-| [PgBouncer](#pgbouncer) | Database connection pooling, failover | [⚙][pgbouncer-omnibus] | [❌][pgbouncer-charts] | [❌][pgbouncer-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#database-architecture) | ❌ | ❌ | EE Only |
+| [PgBouncer](#pgbouncer) | Database connection pooling, failover | [⚙][pgbouncer-omnibus] | [❌][pgbouncer-charts] | [❌][pgbouncer-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#database-architecture) | ❌ | ❌ | EE Only |
 | [Consul](#consul) | Database node discovery, failover | [⚙][consul-omnibus] | [❌][consul-charts] | [❌][consul-charts] | [✅](../user/gitlab_com/index.md#consul) | ❌ | ❌ | EE Only |
 | [GitLab self-monitoring: Prometheus](#prometheus) | Time-series database, metrics collection, and query service | [✅][prometheus-omnibus] | [✅][prometheus-charts] | [⚙][prometheus-charts] | [✅](../user/gitlab_com/index.md#prometheus) | ❌ | ❌ | CE & EE |
 | [GitLab self-monitoring: Alertmanager](#alertmanager) | Deduplicates, groups, and routes alerts from Prometheus | [⚙][alertmanager-omnibus] | [✅][alertmanager-charts] |  [⚙][alertmanager-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
@@ -149,10 +149,10 @@ Component statuses are linked to configuration documentation for each component.
 | [GitLab Exporter](#gitlab-exporter) | Generates a variety of GitLab metrics | [✅][gitlab-exporter-omnibus] | [✅][gitlab-exporter-charts] | [✅][gitlab-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [Node Exporter](#node-exporter) | Prometheus endpoint with system metrics | [✅][node-exporter-omnibus] | [N/A][node-exporter-charts] | [N/A][node-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [Mattermost](#mattermost) | Open-source Slack alternative | [⚙][mattermost-omnibus] | [⤓][mattermost-charts] | [⤓][mattermost-charts] | [⤓](../user/project/integrations/mattermost.md) | ❌ | ❌ | CE & EE |
-| [MinIO](#minio) | Object storage service | [⤓][minio-omnibus] | [✅][minio-charts] | [✅][minio-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#storage-architecture) | ❌ | [⚙][minio-gdk] | CE & EE |
+| [MinIO](#minio) | Object storage service | [⤓][minio-omnibus] | [✅][minio-charts] | [✅][minio-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#storage-architecture) | ❌ | [⚙][minio-gdk] | CE & EE |
 | [Runner](#gitlab-runner) | Executes GitLab CI jobs | [⤓][runner-omnibus] | [✅][runner-charts] | [⚙][runner-charts] | [✅](../user/gitlab_com/index.md#shared-runners) | [⚙][runner-source] | [⚙][runner-gdk] | CE & EE |
 | [Database Migrations](#database-migrations) | Database migrations | [✅][database-migrations-omnibus] | [✅][database-migrations-charts] | [✅][database-migrations-charts] | ✅ | [⚙][database-migrations-source] | ✅ | CE & EE |
-| [Certificate Management](#certificate-management) | TLS Settings, Let's Encrypt | [✅][certificate-management-omnibus] | [✅][certificate-management-charts] | [⚙][certificate-management-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#secrets-management) | [⚙][certificate-management-source] | [⚙][certificate-management-gdk] | CE & EE |
+| [Certificate Management](#certificate-management) | TLS Settings, Let's Encrypt | [✅][certificate-management-omnibus] | [✅][certificate-management-charts] | [⚙][certificate-management-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#secrets-management) | [⚙][certificate-management-source] | [⚙][certificate-management-gdk] | CE & EE |
 | [GitLab Geo Node](#gitlab-geo) | Geographically distributed GitLab nodes | [⚙][geo-omnibus] | [❌][geo-charts] | [❌][geo-charts] | ✅ | ❌ | [⚙][geo-gdk] | EE Only |
 | [LDAP Authentication](#ldap-authentication) | Authenticate users against centralized LDAP directory | [⤓][ldap-omnibus] | [⤓][ldap-charts] | [⤓][ldap-charts] | [❌](https://about.gitlab.com/pricing/#gitlab-com) | [⤓][gitlab-yml] | [⤓][ldap-gdk] | CE & EE |
 | [Outbound email (SMTP)](#outbound-email) | Send email messages to users | [⤓][outbound-email-omnibus] | [⤓][outbound-email-charts] | [⤓][outbound-email-charts] | [✅](../user/gitlab_com/index.md#mail-configuration) | [⤓][gitlab-yml] | [⤓][gitlab-yml] | CE & EE |
@@ -446,7 +446,7 @@ Sidekiq is a Ruby background job processor that pulls jobs from the Redis queue 
 - Layer: Core Service (Processor)
 - Process: `unicorn`
 
-[Unicorn](https://bogomips.org/unicorn/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often process output you will see this as `bundle` or `config.ru` depending on the GitLab version.
+[Unicorn](https://yhbt.net/unicorn/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often process output you will see this as `bundle` or `config.ru` depending on the GitLab version.
 
 #### LDAP Authentication
 
@@ -494,13 +494,108 @@ Below we describe the different pathing that HTTP vs. SSH Git requests will take
 
 ### Web Request (80/443)
 
-When you make a Git request over HTTP, the request first takes the same steps as a web HTTP request
-through NGINX and GitLab Workhorse. However, the GitLab Workhorse then diverts the request towards
-Gitaly, which processes it directly.
+Git operations over HTTP use the stateless "smart" protocol described in the
+[Git documentation](https://git-scm.com/docs/http-protocol), but responsibility
+for handling these operations is split across several GitLab components.
+
+Here is a sequence diagram for `git fetch`. Note that all requests pass through
+NGINX as well as any other HTTP load balancers, but are not transformed in any
+way by them. All paths are presented relative to a `/namespace/project.git` URL.
+
+```mermaid
+sequenceDiagram
+    participant Git on client
+    participant NGINX
+    participant Workhorse
+    participant Rails
+    participant Gitaly
+    participant Git on server
+
+    Note left of Git on client: git fetch<br/>info-refs
+    Git on client->>+Workhorse: GET /info/refs?service=git-upload-pack
+    Workhorse->>+Rails: GET /info/refs?service=git-upload-pack
+    Note right of Rails: Auth check
+    Rails-->>-Workhorse: Gitlab::Workhorse.git_http_ok
+    Workhorse->>+Gitaly: SmartHTTPService.InfoRefsUploadPack request
+    Gitaly->>+Git on server: git upload-pack --stateless-rpc --advertise-refs
+    Git on server-->>-Gitaly: git upload-pack response
+    Gitaly-->>-Workhorse: SmartHTTPService.InfoRefsUploadPack response
+    Workhorse-->>-Git on client: 200 OK
+
+    Note left of Git on client: git fetch<br/>fetch-pack
+    Git on client->>+Workhorse: POST /git-upload-pack
+    Workhorse->>+Rails: POST /git-upload-pack
+    Note right of Rails: Auth check
+    Rails-->>-Workhorse: Gitlab::Workhorse.git_http_ok
+    Workhorse->>+Gitaly: SmartHTTPService.PostUploadPack request
+    Gitaly->>+Git on server: git upload-pack --stateless-rpc
+    Git on server-->>-Gitaly: git upload-pack response
+    Gitaly-->>-Workhorse: SmartHTTPService.PostUploadPack response
+    Workhorse-->>-Git on client: 200 OK
+```
+
+The sequence is similar for `git push`, except `git-receive-pack` is used
+instead of `git-upload-pack`.
 
 ### SSH Request (22)
 
-TODO
+Git operations over SSH can use the stateful protocol described in the
+[Git documentation](https://git-scm.com/docs/pack-protocol#_ssh_transport), but
+responsibility for handling them is split across several GitLab components.
+
+No GitLab components speak SSH directly - all SSH connections are made between
+Git on the client machine and the SSH server, which terminates the connection.
+To the SSH server, all connections are authenticated as the `git` user; GitLab
+users are differentiated by the SSH key presented by the client.
+
+Here is a sequence diagram for `git fetch`, assuming [Fast SSH key lookup](../administration/operations/fast_ssh_key_lookup.md)
+is enabled. Note that `AuthorizedKeysCommand` is an executable provided by
+[GitLab Shell](#gitlab-shell):
+
+```mermaid
+sequenceDiagram
+    participant Git on client
+    participant SSH server
+    participant AuthorizedKeysCommand
+    participant GitLab Shell
+    participant Rails
+    participant Gitaly
+    participant Git on server
+
+    Note left of Git on client: git fetch
+    Git on client->>SSH server: git fetch-pack
+    SSH server-->>AuthorizedKeysCommand: gitlab-shell-authorized-keys-check git AAAA...
+    AuthorizedKeysCommand-->>Rails: GET /internal/api/authorized_keys?key=AAAA...
+    Note right of Rails: Lookup key ID
+    Rails-->>SSH server: 200 OK, command="gitlab-shell upload-pack key_id=1"
+    SSH server-->>GitLab Shell: gitlab-shell upload-pack key_id=1
+    GitLab Shell-->>Rails: GET /internal/api/allowed?action=upload_pack&key_id=1
+    Note right of Rails: Auth check
+    Rails-->>GitLab Shell: 200 OK, { gitaly: ... }
+    GitLab Shell-->>Gitaly: SSHService.SSHUploadPack bidirectional request
+    Gitaly-->>Git on server: git upload-pack
+    Git on server->>Git on client: SSHService.SSHUploadPack bidirectional response
+```
+
+The `git push` operation is very similar, except `git receive-pack` is used
+instead of `git upload-pack`.
+
+If fast SSH key lookups are not enabled, the SSH server reads from the
+`~git/.ssh/authorized_keys` file to determine what command to run for a given
+SSH session. This is kept up to date by an [`AuthorizedKeysWorker`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/workers/authorized_keys_worker.rb)
+in Rails, scheduled to run whenever an SSH key is modified by a user.
+
+[SSH certificates](../administration/operations/ssh_certificates.md) may be used
+instead of keys. In this case, `AuthorizedKeysCommand` is replaced with an
+`AuthorizedPrincipalsCommand`. This extracts a username from the certificate
+without using the Rails internal API, which is used instead of `key_id` in the
+`/api/internal/allowed` call later.
+
+GitLab Shell also has a few operations that do not involve Gitaly, such as
+resetting two-factor authentication codes. These are handled in the same way,
+except there is no round-trip into Gitaly - Rails performs the action as part
+of the [internal API](internal_api.md) call, and GitLab Shell streams the
+response back to the user directly.
 
 ## System Layout
 

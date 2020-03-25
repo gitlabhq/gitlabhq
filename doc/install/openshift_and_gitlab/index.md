@@ -36,7 +36,7 @@ test OpenShift easily:
 
 - [VirtualBox]
 - [Vagrant]
-- [OpenShift Client](https://docs.okd.io/latest/cli_reference/get_started_cli.html) (`oc` for short)
+- [OpenShift Client](https://docs.okd.io/3.11/cli_reference/get_started_cli.html) (`oc` for short)
 
 It is also important to mention that for the purposes of this tutorial, the
 latest Origin release is used:
@@ -99,7 +99,7 @@ landing page looks like:
 
 ![openshift web console](img/web-console.png)
 
-You can see that a number of [projects](https://docs.okd.io/latest/dev_guide/projects.html) are already created for testing purposes.
+You can see that a number of [projects](https://docs.okd.io/3.11/dev_guide/projects.html) are already created for testing purposes.
 
 If you head over the `openshift-infra` project, a number of services with their
 respective pods are there to explore.
@@ -107,7 +107,7 @@ respective pods are there to explore.
 ![openshift web console](img/openshift-infra-project.png)
 
 We are not going to explore the whole interface, but if you want to learn about
-the key concepts of OpenShift, read the [core concepts reference](https://docs.okd.io/latest/architecture/core_concepts/index.html)
+the key concepts of OpenShift, read the [core concepts reference](https://docs.okd.io/3.11/architecture/core_concepts/index.html)
 in the official documentation.
 
 ### Explore the OpenShift CLI
@@ -115,7 +115,7 @@ in the official documentation.
 OpenShift Client (`oc`), is a powerful CLI tool that talks to the OpenShift API
 and performs pretty much everything you can do from the web UI and much more.
 
-Assuming you have [installed](https://docs.okd.io/latest/cli_reference/get_started_cli.html) it, let's explore some of its main
+Assuming you have [installed](https://docs.okd.io/3.11/cli_reference/get_started_cli.html) it, let's explore some of its main
 functionalities.
 
 Let's first see the version of `oc`:
@@ -172,7 +172,7 @@ The last command should spit a bunch of information about the statuses of the
 pods and the services, which if you look closely is what we encountered in the
 second image when we explored the web console.
 
-You can always read more about `oc` in the [OpenShift CLI documentation](https://docs.okd.io/latest/cli_reference/get_started_cli.html).
+You can always read more about `oc` in the [OpenShift CLI documentation](https://docs.okd.io/3.11/cli_reference/get_started_cli.html).
 
 ### Troubleshooting the all-in-one VM
 
@@ -248,7 +248,7 @@ The next step is to import the OpenShift template for GitLab.
 
 ### Import the template
 
-The [template](https://docs.okd.io/latest/architecture/core_concepts/templates.html) is basically a JSON file which describes a set of
+The [template](https://docs.okd.io/3.11/architecture/core_concepts/templates.html) is basically a JSON file which describes a set of
 related object definitions to be created together, as well as a set of
 parameters for those objects.
 
@@ -364,7 +364,7 @@ of resources, you'd be happy to know that you can scale up with the push of a
 button.
 
 In the **Overview** page just click the up arrow button in the pod where
-GitLab is. The change is instant and you can see the number of [replicas](https://docs.okd.io/latest/architecture/core_concepts/deployments.html#replication-controllers) now
+GitLab is. The change is instant and you can see the number of [replicas](https://docs.okd.io/3.11/architecture/core_concepts/deployments.html#replication-controllers) now
 running scaled to 2.
 
 ![GitLab scale](img/gitlab-scale.png)
@@ -382,7 +382,7 @@ scale up. If a pod is in pending state for too long, you can navigate to
 ### Scale GitLab using the `oc` CLI
 
 Using `oc` is super easy to scale up the replicas of a pod. You may want to
-skim through the [basic CLI operations](https://docs.okd.io/latest/cli_reference/basic_cli_operations.html) to get a taste how the CLI
+skim through the [basic CLI operations](https://docs.okd.io/3.11/cli_reference/basic_cli_operations.html) to get a taste how the CLI
 commands are used. Pay extra attention to the object types as we will use some
 of them and their abbreviated versions below.
 
@@ -455,7 +455,7 @@ In case you were wondering whether there is an option to autoscale a pod based
 on the resources of your server, the answer is yes, of course there is.
 
 We will not expand on this matter, but feel free to read the documentation on
-OpenShift's website about [autoscaling](https://docs.okd.io/latest/dev_guide/pod_autoscaling.html).
+OpenShift's website about [autoscaling](https://docs.okd.io/3.11/dev_guide/pod_autoscaling.html).
 
 ## Current limitations
 
@@ -470,7 +470,7 @@ bother us. In any case, it is something to keep in mind when deploying GitLab
 on a production cluster.
 
 In order to deploy GitLab on a production cluster, you will need to assign the
-GitLab service account to the `anyuid` [Security Context Constraints](https://docs.okd.io/latest/admin_guide/manage_scc.html).
+GitLab service account to the `anyuid` [Security Context Constraints](https://docs.okd.io/3.11/admin_guide/manage_scc.html).
 
 For OpenShift v3.0, you will need to do this manually:
 

@@ -179,6 +179,16 @@ describe ProjectPresenter do
       end
     end
 
+    describe '#storage_anchor_data' do
+      it 'returns storage data' do
+        expect(presenter.storage_anchor_data).to have_attributes(
+          is_link: true,
+          label:  a_string_including('0 Bytes'),
+          link: nil
+        )
+      end
+    end
+
     describe '#releases_anchor_data' do
       it 'does not return release count' do
         expect(presenter.releases_anchor_data).to be_nil
@@ -225,6 +235,16 @@ describe ProjectPresenter do
     describe '#files_anchor_data' do
       it 'returns files data' do
         expect(presenter.files_anchor_data).to have_attributes(
+          is_link: true,
+          label:  a_string_including('0 Bytes'),
+          link: presenter.project_tree_path(project)
+        )
+      end
+    end
+
+    describe '#storage_anchor_data' do
+      it 'returns storage data' do
+        expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
           label:  a_string_including('0 Bytes'),
           link: presenter.project_tree_path(project)

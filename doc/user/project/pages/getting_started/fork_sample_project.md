@@ -48,13 +48,21 @@ You can also take some **optional** further steps:
 
 - _Remove the fork relationship._ The fork relationship is necessary to contribute back to the project you originally forked from. If you don't have any intentions to do so, you can remove it. To do so, navigate to your project's **Settings**, expand **Advanced settings**, and scroll down to **Remove fork relationship**:
 
-  ![remove fork relationship](../img/remove_fork_relationship.png)
+  ![Remove fork relationship](../img/remove_fork_relationship.png)
 
 - _Make it a user or group website._ To turn a **project website** forked
   from the Pages group into a **user/group** website, you'll need to:
   - Rename it to `namespace.gitlab.io`: go to your project's
     **Settings > General** and expand **Advanced**. Scroll down to
-    **Rename repository** and change the path to `namespace.gitlab.io`.
+    **Change path** and change the path to `namespace.gitlab.io`.
+
+    For example, consider the group `https://gitlab.com/gitlab-tests`:
+   `gitlab-tests` is the group's namespace, the repository path should be set
+    to `gitlab-tests.gitlab.io` (yes, weird like that), and the
+    resulting URL for your Pages website will be `https://gitlab-tests.gitlab.io`.
+
+    ![Change repo's path](../img/change_path_v12_10.png)
+
   - Adjust your SSG's [base URL](../getting_started_part_one.md#urls-and-baseurls) from `"project-name"` to
     `""`. This setting will be at a different place for each SSG, as each of them
     have their own structure and file tree. Most likely, it will be in the SSG's

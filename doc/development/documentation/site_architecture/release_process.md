@@ -92,7 +92,7 @@ this needs to happen when the stable branches for all products have been created
    tagged with the branch name you created in the first step. In the end, the
    image will be uploaded in the [Container Registry](https://gitlab.com/gitlab-org/gitlab-docs/container_registry)
    and it will be listed under the
-   [`registry` environment folder](https://gitlab.com/gitlab-org/gitlab-docs/environments/folders/registry).
+   [`registry` environment folder](https://gitlab.com/gitlab-org/gitlab-docs/-/environments/folders/registry).
 
 Optionally, you can test locally by building the image and running it:
 
@@ -179,11 +179,11 @@ The dropdown merge requests should have now been merged into their respective
 version (stable branch), which will trigger another pipeline. At this point,
 you need to only babysit the pipelines and make sure they don't fail:
 
-1. Check the [pipelines page](https://gitlab.com/gitlab-org/gitlab-docs/pipelines)
+1. Check the pipelines page: `https://gitlab.com/gitlab-org/gitlab-docs/pipelines`
    and make sure all stable branches have green pipelines.
 1. After all the pipelines of the online versions succeed, merge the release merge request.
-1. Finally, run the [Build docker images weekly](https://gitlab.com/gitlab-org/gitlab-docs/pipeline_schedules)
-   pipeline that will build the `:latest` and `:archives` Docker images.
+1. Finally, from `https://gitlab.com/gitlab-org/gitlab-docs/pipeline_schedules` run
+   the `Build docker images weekly` pipeline that will build the `:latest` and `:archives` Docker images.
 
 Once the scheduled pipeline succeeds, the docs site will be deployed with all
 new versions online.
@@ -191,8 +191,7 @@ new versions online.
 ## Update an old Docker image with new upstream docs content
 
 If there are any changes to any of the stable branches of the products that are
-not included in the single Docker image, just
-[rerun the pipeline](https://gitlab.com/gitlab-org/gitlab-docs/pipelines/new)
+not included in the single Docker image, just rerun the pipeline (`https://gitlab.com/gitlab-org/gitlab-docs/pipelines/new`)
 for the version in question.
 
 ## Porting new website changes to old versions
@@ -239,7 +238,7 @@ branches for 12.2 were used, this wouldn't have failed, but as we can see from
 the [`compile_dev` job](https://gitlab.com/gitlab-org/gitlab-docs/-/jobs/328042427),
 the `master` branches were pulled.
 
-To fix this, [re-run the pipeline](https://gitlab.com/gitlab-org/gitlab-docs/pipelines/new)
+To fix this, re-run the pipeline (`https://gitlab.com/gitlab-org/gitlab-docs/pipelines/new`)
 for the `update-12-2-for-release-12-4` branch, by including the following environment variables:
 
 - `BRANCH_CE` set to `12-2-stable`

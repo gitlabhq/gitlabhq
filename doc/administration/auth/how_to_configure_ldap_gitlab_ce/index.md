@@ -21,7 +21,7 @@ There are many commercial and open source [directory servers](https://en.wikiped
 For example, [Active Directory](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/hh831484(v=ws.11)) is generally favored in a primarily Windows environment, as this allows quick integration with existing services. Other popular directory services include:
 
 - [Oracle Internet Directory](https://www.oracle.com/middleware/technologies/internet-directory.html)
-- [OpenLDAP](http://www.openldap.org/)
+- [OpenLDAP](https://www.openldap.org/)
 - [389 Directory](http://directory.fedoraproject.org/)
 - [OpenDJ (Renamed to Forgerock Directory Services)](https://www.forgerock.com/platform/directory-services)
 - [ApacheDS](https://directory.apache.org/)

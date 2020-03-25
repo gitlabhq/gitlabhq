@@ -154,7 +154,7 @@ Color written inside backticks will be followed by a color "chip":
 
 ### Diagrams and flowcharts
 
-It's possible to generate diagrams and flowcharts from text in GitLab using [Mermaid](https://mermaidjs.github.io/) or [PlantUML](http://plantuml.com).
+It's possible to generate diagrams and flowcharts from text in GitLab using [Mermaid](https://mermaidjs.github.io/) or [PlantUML](https://plantuml.com).
 
 #### Mermaid
 

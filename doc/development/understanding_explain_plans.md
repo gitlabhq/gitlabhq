@@ -765,5 +765,5 @@ exec ROLLBACK
 ## Further reading
 
 A more extensive guide on understanding query plans can be found in
-the [presentation](https://www.dalibo.org/_media/understanding_explain.pdf)
-from [Dalibo.org](https://www.dalibo.org/en/).
+the [presentation](https://public.dalibo.com/exports/conferences/_archives/_2012/201211_explain/understanding_explain.pdf)
+from [Dalibo.org](https://www.dalibo.com/en/).

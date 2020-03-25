@@ -168,3 +168,26 @@ NOTE: **Note:** Set the limit to `0` to disable it.
 ## Wiki limits
 
 - [Length restrictions for file and directory names](../user/project/wiki/index.md#length-restrictions-for-file-and-directory-names).
+
+## Push Event Limits
+
+### Webhooks and Project Services
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31009) in GitLab 12.4.
+
+Total number of changes (branches or tags) in a single push. If changes are more
+than the specified limit, hooks won't be executed.
+
+More information can be found in these docs:
+
+- [Webhooks push events](../user/project/integrations/webhooks.md#push-events)
+- [Project services push hooks limit](../user/project/integrations/project_services.md#push-hooks-limit)
+
+### Activities
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31007) in GitLab 12.4.
+
+Total number of changes (branches or tags) in a single push to determine whether
+individual push events or bulk push event will be created.
+
+More information can be found in the [Push event activities limit and bulk push events documentation](../user/admin_area/settings/push_event_activities_limit.md).

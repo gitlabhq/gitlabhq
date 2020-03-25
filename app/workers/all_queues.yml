@@ -1224,7 +1224,7 @@
 - :name: project_export
   :feature_category: :importers
   :has_external_dependencies: 
-  :urgency: :low
+  :urgency: :throttled
   :resource_boundary: :memory
   :weight: 1
   :idempotent: 

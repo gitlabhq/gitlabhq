@@ -2,7 +2,7 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8537) in GitLab 8.16.
 
-When [PlantUML](http://plantuml.com) integration is enabled and configured in
+When [PlantUML](https://plantuml.com) integration is enabled and configured in
 GitLab we are able to create simple diagrams in AsciiDoc and Markdown documents
 created in snippets, wikis, and repos.
 
@@ -161,10 +161,10 @@ Alice -> Bob : hi
 ```
 
 Inside the block you can add any of the supported diagrams by PlantUML such as
-[Sequence](http://plantuml.com/sequence-diagram), [Use Case](http://plantuml.com/use-case-diagram),
-[Class](http://plantuml.com/class-diagram), [Activity](http://plantuml.com/activity-diagram-legacy),
-[Component](http://plantuml.com/component-diagram), [State](http://plantuml.com/state-diagram),
-and [Object](http://plantuml.com/object-diagram) diagrams. You do not need to use the PlantUML
+[Sequence](https://plantuml.com/sequence-diagram), [Use Case](https://plantuml.com/use-case-diagram),
+[Class](https://plantuml.com/class-diagram), [Activity](https://plantuml.com/activity-diagram-legacy),
+[Component](https://plantuml.com/component-diagram), [State](https://plantuml.com/state-diagram),
+and [Object](https://plantuml.com/object-diagram) diagrams. You do not need to use the PlantUML
 diagram delimiters `@startuml`/`@enduml` as these are replaced by the AsciiDoc `plantuml` block.
 
 Some parameters can be added to the AsciiDoc block definition:

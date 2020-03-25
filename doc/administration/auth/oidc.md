@@ -128,7 +128,7 @@ different providers with Omnibus GitLab.
 ### Google
 
 See the [Google
-documentation](https://developers.google.com/identity/protocols/OpenIDConnect)
+documentation](https://developers.google.com/identity/protocols/oauth2/openid-connect)
 for more details:
 
 ```ruby

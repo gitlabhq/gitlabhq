@@ -32,6 +32,7 @@ module Gitlab
       def metric_rails_queue_duration_seconds
         @metric_rails_queue_duration_seconds ||= Gitlab::Metrics.histogram(
           :gitlab_rails_queue_duration_seconds,
+          'Measures latency between GitLab Workhorse forwarding a request to Rails',
           Gitlab::Metrics::Transaction::BASE_LABELS
         )
       end

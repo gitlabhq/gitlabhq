@@ -731,7 +731,7 @@ use a Ruby gem (library) called
 the form of a C library.
 
 Over time it has become clear to use that Rugged, and particularly
-Rugged in combination with the [Unicorn](https://bogomips.org/unicorn/)
+Rugged in combination with the [Unicorn](https://yhbt.net/unicorn/)
 web server, is extremely efficient. Because libgit2 is a *library* and
 not an external process, there was very little overhead between GitLab
 application code that tried to look up data in Git repositories, and the

@@ -59,6 +59,12 @@ describe Mutations::ResolvesIssuable do
 
         expect(result).to be_nil
       end
+
+      it 'returns nil if parent path is empty' do
+        result = mutation.resolve_issuable(type: type, parent_path: "", iid: issuable.iid)
+
+        expect(result).to be_nil
+      end
     end
   end
 
