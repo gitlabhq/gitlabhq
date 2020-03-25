@@ -275,6 +275,18 @@ describe API::Repositories do
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
       end
+
+      context "when hotlinking detection is enabled" do
+        before do
+          Feature.enable(:repository_archive_hotlinking_interception)
+        end
+
+        it_behaves_like "hotlink interceptor" do
+          let(:http_request) do
+            get api(route, current_user), headers: headers
+          end
+        end
+      end
     end
 
     context 'when unauthenticated', 'and project is public' do
