@@ -15,4 +15,6 @@
       = render_if_exists 'events/epics_filter'
     - if comments_visible?
       = event_filter_link EventFilter::COMMENTS, _('Comments'), s_('EventFilterBy|Filter by comments')
+    - if Feature.enabled?(:wiki_events) && (@project.nil? || @project.has_wiki?)
+      = event_filter_link EventFilter::WIKI, _('Wiki'), s_('EventFilterBy|Filter by wiki')
     = event_filter_link EventFilter::TEAM, _('Team'), s_('EventFilterBy|Filter by team')

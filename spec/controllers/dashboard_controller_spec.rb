@@ -31,6 +31,8 @@ describe DashboardController do
 
     before do
       create(:event, :created, project: project, target: create(:issue))
+      create(:wiki_page_event, :created, project: project)
+      create(:wiki_page_event, :updated, project: project)
 
       sign_in(user)
 
@@ -45,7 +47,7 @@ describe DashboardController do
       it 'returns count' do
         get :activity, params: { format: :json }
 
-        expect(json_response['count']).to eq(1)
+        expect(json_response['count']).to eq(3)
       end
     end
 

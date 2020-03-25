@@ -55,9 +55,11 @@ describe Gitlab::ImportExport::SnippetRepoRestorer do
     let(:snippet_bundle_path) { File.join(bundle_path, "#{snippet_with_repo.hexdigest}.bundle") }
     let(:result) { exporter.save }
 
-    it 'creates the repository from the bundle' do
+    before do
       expect(exporter.save).to be_truthy
+    end
 
+    it 'creates the repository from the bundle' do
       expect(snippet.repository_exists?).to be_falsey
       expect(snippet.snippet_repository).to be_nil
       expect(snippet.repository).to receive(:create_from_bundle).and_call_original
@@ -65,6 +67,15 @@ describe Gitlab::ImportExport::SnippetRepoRestorer do
       expect(restorer.restore).to be_truthy
       expect(snippet.repository_exists?).to be_truthy
       expect(snippet.snippet_repository).not_to be_nil
+    end
+
+    it 'sets same shard in snippet repository as in the repository storage' do
+      expect(snippet).to receive(:repository_storage).and_return('picked')
+      expect(snippet.repository).to receive(:create_from_bundle)
+
+      restorer.restore
+
+      expect(snippet.snippet_repository.shard_name).to eq 'picked'
     end
   end
 end

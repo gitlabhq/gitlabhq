@@ -16,7 +16,7 @@ FactoryBot.define do
 
     options do
       {
-        image: 'ruby:2.1',
+        image: 'ruby:2.7',
         services: ['postgres'],
         script: ['ls -a']
       }
@@ -336,7 +336,7 @@ FactoryBot.define do
     trait :extended_options do
       options do
         {
-          image: { name: 'ruby:2.1', entrypoint: '/bin/sh' },
+          image: { name: 'ruby:2.7', entrypoint: '/bin/sh' },
           services: ['postgres', { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' }],
           script: %w(echo),
           after_script: %w(ls date),

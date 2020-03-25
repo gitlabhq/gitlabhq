@@ -6,7 +6,7 @@ describe Gitlab::Config::Loader::Yaml do
   let(:loader) { described_class.new(yml) }
 
   context 'when yaml syntax is correct' do
-    let(:yml) { 'image: ruby:2.2' }
+    let(:yml) { 'image: ruby:2.7' }
 
     describe '#valid?' do
       it 'returns true' do
@@ -16,7 +16,7 @@ describe Gitlab::Config::Loader::Yaml do
 
     describe '#load!' do
       it 'returns a valid hash' do
-        expect(loader.load!).to eq(image: 'ruby:2.2')
+        expect(loader.load!).to eq(image: 'ruby:2.7')
       end
     end
   end

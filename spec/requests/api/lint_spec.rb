@@ -29,7 +29,7 @@ describe API::Lint do
       end
 
       it "responds with errors about invalid configuration" do
-        post api('/ci/lint'), params: { content: '{ image: "ruby:2.1",  services: ["postgres"] }' }
+        post api('/ci/lint'), params: { content: '{ image: "ruby:2.7",  services: ["postgres"] }' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['status']).to eq('invalid')

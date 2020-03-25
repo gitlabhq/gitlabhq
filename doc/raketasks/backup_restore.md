@@ -170,6 +170,9 @@ back up the volume where the configuration files are stored. If you have created
 the GitLab container according to the documentation, it should be under
 `/srv/gitlab/config`.
 
+For [GitLab Helm chart Installations](https://gitlab.com/gitlab-org/charts/gitlab) on a
+Kubernetes cluster, you must follow the [Backup the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#backup-the-secrets) instructions.  
+
 You may also want to back up any TLS keys and certificates, and your
 [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 

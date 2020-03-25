@@ -31,6 +31,10 @@ import {
   LIST_LABEL_IMAGE_ID,
   LIST_LABEL_SIZE,
   LIST_LABEL_LAST_UPDATED,
+  DELETE_TAG_SUCCESS_MESSAGE,
+  DELETE_TAG_ERROR_MESSAGE,
+  DELETE_TAGS_SUCCESS_MESSAGE,
+  DELETE_TAGS_ERROR_MESSAGE,
 } from '../constants';
 
 export default {
@@ -176,17 +180,37 @@ export default {
     },
     handleSingleDelete(itemToDelete) {
       this.itemsToBeDeleted = [];
-      this.requestDeleteTag({ tag: itemToDelete, params: this.$route.params.id });
+      return this.requestDeleteTag({ tag: itemToDelete, params: this.$route.params.id })
+        .then(() =>
+          this.$toast.show(DELETE_TAG_SUCCESS_MESSAGE, {
+            type: 'success',
+          }),
+        )
+        .catch(() =>
+          this.$toast.show(DELETE_TAG_ERROR_MESSAGE, {
+            type: 'error',
+          }),
+        );
     },
     handleMultipleDelete() {
       const { itemsToBeDeleted } = this;
       this.itemsToBeDeleted = [];
       this.selectedItems = [];
 
-      this.requestDeleteTags({
+      return this.requestDeleteTags({
         ids: itemsToBeDeleted.map(x => this.tags[x].name),
         params: this.$route.params.id,
-      });
+      })
+        .then(() =>
+          this.$toast.show(DELETE_TAGS_SUCCESS_MESSAGE, {
+            type: 'success',
+          }),
+        )
+        .catch(() =>
+          this.$toast.show(DELETE_TAGS_ERROR_MESSAGE, {
+            type: 'error',
+          }),
+        );
     },
     onDeletionConfirmed() {
       this.track('confirm_delete');

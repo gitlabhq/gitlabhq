@@ -88,6 +88,85 @@ describe EventsHelper do
     end
   end
 
+  describe '#event_preposition' do
+    context 'for wiki page events' do
+      let(:event) { create(:wiki_page_event) }
+
+      it 'returns a suitable phrase' do
+        expect(helper.event_preposition(event)).to eq('in the wiki for')
+      end
+    end
+
+    context 'for push action events' do
+      let(:event) { create(:push_event) }
+
+      it 'returns a suitable phrase' do
+        expect(helper.event_preposition(event)).to eq('at')
+      end
+    end
+
+    context 'for commented actions' do
+      let(:event) { create(:event, :commented) }
+
+      it 'returns a suitable phrase' do
+        expect(helper.event_preposition(event)).to eq('at')
+      end
+    end
+
+    context 'for any event with a target' do
+      let(:event) { create(:event, target: create(:issue)) }
+
+      it 'returns a suitable phrase' do
+        expect(helper.event_preposition(event)).to eq('at')
+      end
+    end
+
+    context 'for milestone events' do
+      let(:event) { create(:event, target: create(:milestone)) }
+
+      it 'returns a suitable phrase' do
+        expect(helper.event_preposition(event)).to eq('in')
+      end
+    end
+
+    context 'for non-matching events' do
+      let(:event) { create(:event, :created) }
+
+      it 'returns no preposition' do
+        expect(helper.event_preposition(event)).to be_nil
+      end
+    end
+  end
+
+  describe 'event_wiki_page_target_url' do
+    let(:project) { create(:project) }
+    let(:wiki_page) { create(:wiki_page, wiki: create(:project_wiki, project: project)) }
+    let(:event) { create(:wiki_page_event, project: project, wiki_page: wiki_page) }
+
+    it 'links to the wiki page' do
+      url = helper.project_wiki_url(project, wiki_page.slug)
+
+      expect(helper.event_wiki_page_target_url(event)).to eq(url)
+    end
+  end
+
+  describe '#event_wiki_title_html' do
+    let(:event) { create(:wiki_page_event) }
+
+    it 'produces a suitable title chunk' do
+      url = helper.event_wiki_page_target_url(event)
+      title = event.target_title
+      html = [
+        "<span class=\"event-target-type append-right-4\">wiki page</span>",
+        "<a title=\"#{title}\" class=\"has-tooltip event-target-link append-right-4\" href=\"#{url}\">",
+        title,
+        "</a>"
+      ].join
+
+      expect(helper.event_wiki_title_html(event)).to eq(html)
+    end
+  end
+
   describe '#event_note_target_url' do
     let(:project) { create(:project, :public, :repository) }
     let(:event) { create(:event, project: project) }

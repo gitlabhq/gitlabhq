@@ -41,7 +41,8 @@ describe Projects::ContainerRepository::CleanupTagsService do
       let(:params) { {} }
 
       it 'does not remove anything' do
-        expect_any_instance_of(ContainerRegistry::Client).not_to receive(:delete_repository_tag_by_digest)
+        expect_any_instance_of(Projects::ContainerRepository::DeleteTagsService)
+          .not_to receive(:execute)
 
         is_expected.to include(status: :success, deleted: [])
       end
@@ -49,15 +50,10 @@ describe Projects::ContainerRepository::CleanupTagsService do
 
     context 'when regex matching everything is specified' do
       shared_examples 'removes all matches' do
-        it 'does remove B* and C' do
-          # The :A cannot be removed as config is shared with :latest
-          # The :E cannot be removed as it does not have valid manifest
+        it 'does remove all tags except latest' do
+          expect_delete(%w(A Ba Bb C D E))
 
-          expect_delete('sha256:configB').twice
-          expect_delete('sha256:configC')
-          expect_delete('sha256:configD')
-
-          is_expected.to include(status: :success, deleted: %w(D Bb Ba C))
+          is_expected.to include(status: :success, deleted: %w(A Ba Bb C D E))
         end
       end
 
@@ -82,10 +78,9 @@ describe Projects::ContainerRepository::CleanupTagsService do
       end
 
       it 'does remove C and D' do
-        expect_delete('sha256:configC')
-        expect_delete('sha256:configD')
+        expect_delete(%w(C D))
 
-        is_expected.to include(status: :success, deleted: %w(D C))
+        is_expected.to include(status: :success, deleted: %w(C D))
       end
 
       context 'with overriding allow regex' do
@@ -95,7 +90,7 @@ describe Projects::ContainerRepository::CleanupTagsService do
         end
 
         it 'does not remove C' do
-          expect_delete('sha256:configD')
+          expect_delete(%w(D))
 
           is_expected.to include(status: :success, deleted: %w(D))
         end
@@ -108,22 +103,10 @@ describe Projects::ContainerRepository::CleanupTagsService do
         end
 
         it 'does not remove C' do
-          expect_delete('sha256:configD')
+          expect_delete(%w(D))
 
           is_expected.to include(status: :success, deleted: %w(D))
         end
-      end
-    end
-
-    context 'when removing a tagged image that is used by another tag' do
-      let(:params) do
-        { 'name_regex_delete' => 'Ba' }
-      end
-
-      it 'does not remove the tag' do
-        # Issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/21405
-
-        is_expected.to include(status: :success, deleted: [])
       end
     end
 
@@ -134,10 +117,38 @@ describe Projects::ContainerRepository::CleanupTagsService do
       end
 
       it 'does not remove B*' do
-        expect_delete('sha256:configC')
-        expect_delete('sha256:configD')
+        expect_delete(%w(A C D E))
 
-        is_expected.to include(status: :success, deleted: %w(D C))
+        is_expected.to include(status: :success, deleted: %w(A C D E))
+      end
+    end
+
+    context 'when keeping only N tags' do
+      let(:params) do
+        { 'name_regex' => 'A|B.*|C',
+          'keep_n' => 1 }
+      end
+
+      it 'sorts tags by date' do
+        expect_delete(%w(Bb Ba C))
+
+        expect(service).to receive(:order_by_date).and_call_original
+
+        is_expected.to include(status: :success, deleted: %w(Bb Ba C))
+      end
+    end
+
+    context 'when not keeping N tags' do
+      let(:params) do
+        { 'name_regex' => 'A|B.*|C' }
+      end
+
+      it 'does not sort tags by date' do
+        expect_delete(%w(A Ba Bb C))
+
+        expect(service).not_to receive(:order_by_date)
+
+        is_expected.to include(status: :success, deleted: %w(A Ba Bb C))
       end
     end
 
@@ -147,10 +158,10 @@ describe Projects::ContainerRepository::CleanupTagsService do
           'keep_n' => 3 }
       end
 
-      it 'does remove C as it is oldest' do
-        expect_delete('sha256:configC')
+      it 'does remove B* and C as they are the oldest' do
+        expect_delete(%w(Bb Ba C))
 
-        is_expected.to include(status: :success, deleted: %w(C))
+        is_expected.to include(status: :success, deleted: %w(Bb Ba C))
       end
     end
 
@@ -161,10 +172,9 @@ describe Projects::ContainerRepository::CleanupTagsService do
       end
 
       it 'does remove B* and C as they are older than 1 day' do
-        expect_delete('sha256:configB').twice
-        expect_delete('sha256:configC')
+        expect_delete(%w(Ba Bb C))
 
-        is_expected.to include(status: :success, deleted: %w(Bb Ba C))
+        is_expected.to include(status: :success, deleted: %w(Ba Bb C))
       end
     end
 
@@ -176,8 +186,7 @@ describe Projects::ContainerRepository::CleanupTagsService do
       end
 
       it 'does remove B* and C' do
-        expect_delete('sha256:configB').twice
-        expect_delete('sha256:configC')
+        expect_delete(%w(Bb Ba C))
 
         is_expected.to include(status: :success, deleted: %w(Bb Ba C))
       end
@@ -195,8 +204,7 @@ describe Projects::ContainerRepository::CleanupTagsService do
         end
 
         it 'succeeds without a user' do
-          expect_delete('sha256:configB').twice
-          expect_delete('sha256:configC')
+          expect_delete(%w(Bb Ba C))
 
           is_expected.to include(status: :success, deleted: %w(Bb Ba C))
         end
@@ -238,9 +246,14 @@ describe Projects::ContainerRepository::CleanupTagsService do
     end
   end
 
-  def expect_delete(digest)
-    expect_any_instance_of(ContainerRegistry::Client)
-      .to receive(:delete_repository_tag_by_digest)
-      .with(repository.path, digest) { true }
+  def expect_delete(tags)
+    expect(Projects::ContainerRepository::DeleteTagsService)
+      .to receive(:new)
+      .with(repository.project, user, tags: tags)
+      .and_call_original
+
+    expect_any_instance_of(Projects::ContainerRepository::DeleteTagsService)
+      .to receive(:execute)
+      .with(repository) { { status: :success, deleted: tags } }
   end
 end

@@ -8,8 +8,13 @@ import GroupEmptyState from '~/registry/explorer/components/group_empty_state.vu
 import ProjectEmptyState from '~/registry/explorer/components/project_empty_state.vue';
 import store from '~/registry/explorer/stores/';
 import { SET_MAIN_LOADING } from '~/registry/explorer/stores/mutation_types/';
+import {
+  DELETE_IMAGE_SUCCESS_MESSAGE,
+  DELETE_IMAGE_ERROR_MESSAGE,
+} from '~/registry/explorer/constants';
 import { imagesListResponse } from '../mock_data';
 import { GlModal, GlEmptyState } from '../stubs';
+import { $toast } from '../../shared/mocks';
 
 const localVue = createLocalVue();
 localVue.use(VueRouter);
@@ -39,6 +44,9 @@ describe('List Page', () => {
         GlModal,
         GlEmptyState,
         GlSprintf,
+      },
+      mocks: {
+        $toast,
       },
     });
     dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -174,11 +182,29 @@ describe('List Page', () => {
           const itemToDelete = wrapper.vm.images[0];
           wrapper.setData({ itemToDelete });
           findDeleteModal().vm.$emit('ok');
-          return wrapper.vm.$nextTick().then(() => {
-            expect(store.dispatch).toHaveBeenCalledWith(
-              'requestDeleteImage',
-              itemToDelete.destroy_path,
-            );
+          expect(store.dispatch).toHaveBeenCalledWith(
+            'requestDeleteImage',
+            itemToDelete.destroy_path,
+          );
+        });
+
+        it('should show a success toast when delete request is successful', () => {
+          dispatchSpy.mockResolvedValue();
+          return wrapper.vm.handleDeleteImage().then(() => {
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_IMAGE_SUCCESS_MESSAGE, {
+              type: 'success',
+            });
+            expect(wrapper.vm.itemToDelete).toEqual({});
+          });
+        });
+
+        it('should show a error toast when delete request fails', () => {
+          dispatchSpy.mockRejectedValue();
+          return wrapper.vm.handleDeleteImage().then(() => {
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_IMAGE_ERROR_MESSAGE, {
+              type: 'error',
+            });
+            expect(wrapper.vm.itemToDelete).toEqual({});
           });
         });
       });
@@ -227,7 +253,7 @@ describe('List Page', () => {
 
       beforeEach(() => {
         jest.spyOn(Tracking, 'event');
-        dispatchSpy.mockReturnValue();
+        dispatchSpy.mockResolvedValue();
       });
 
       it('send an event when delete button is clicked', () => {
@@ -235,13 +261,14 @@ describe('List Page', () => {
         deleteBtn.vm.$emit('click');
         testTrackingCall('click_button');
       });
+
       it('send an event when cancel is pressed on modal', () => {
         const deleteModal = findDeleteModal();
         deleteModal.vm.$emit('cancel');
         testTrackingCall('cancel_delete');
       });
+
       it('send an event when confirm is clicked on modal', () => {
-        dispatchSpy.mockReturnValue();
         const deleteModal = findDeleteModal();
         deleteModal.vm.$emit('ok');
         testTrackingCall('confirm_delete');

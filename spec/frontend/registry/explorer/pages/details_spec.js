@@ -5,8 +5,15 @@ import stubChildren from 'helpers/stub_children';
 import component from '~/registry/explorer/pages/details.vue';
 import store from '~/registry/explorer/stores/';
 import { SET_MAIN_LOADING } from '~/registry/explorer/stores/mutation_types/';
+import {
+  DELETE_TAG_SUCCESS_MESSAGE,
+  DELETE_TAG_ERROR_MESSAGE,
+  DELETE_TAGS_SUCCESS_MESSAGE,
+  DELETE_TAGS_ERROR_MESSAGE,
+} from '~/registry/explorer/constants';
 import { tagsListResponse } from '../mock_data';
 import { GlModal } from '../stubs';
+import { $toast } from '../../shared/mocks';
 
 describe('Details Page', () => {
   let wrapper;
@@ -40,6 +47,7 @@ describe('Details Page', () => {
             id: routeId,
           },
         },
+        $toast,
       },
     });
     dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -249,13 +257,11 @@ describe('Details Page', () => {
         });
       });
 
-      it('when only one element is selected', () => {
-        const deleteModal = findDeleteModal();
+      describe('when only one element is selected', () => {
+        it('execute the delete and remove selection', () => {
+          wrapper.setData({ itemsToBeDeleted: [0] });
+          findDeleteModal().vm.$emit('ok');
 
-        wrapper.setData({ itemsToBeDeleted: [0] });
-        deleteModal.vm.$emit('ok');
-
-        return wrapper.vm.$nextTick().then(() => {
           expect(store.dispatch).toHaveBeenCalledWith('requestDeleteTag', {
             tag: store.state.tags[0],
             params: wrapper.vm.$route.params.id,
@@ -264,15 +270,33 @@ describe('Details Page', () => {
           expect(wrapper.vm.itemsToBeDeleted).toEqual([]);
           expect(findCheckedCheckboxes()).toHaveLength(0);
         });
+
+        it('show success toast on successful delete', () => {
+          return wrapper.vm.handleSingleDelete(0).then(() => {
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_TAG_SUCCESS_MESSAGE, {
+              type: 'success',
+            });
+          });
+        });
+
+        it('show error toast on erred delete', () => {
+          dispatchSpy.mockRejectedValue();
+          return wrapper.vm.handleSingleDelete(0).then(() => {
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_TAG_ERROR_MESSAGE, {
+              type: 'error',
+            });
+          });
+        });
       });
 
-      it('when multiple elements are selected', () => {
-        const deleteModal = findDeleteModal();
+      describe('when multiple elements are selected', () => {
+        beforeEach(() => {
+          wrapper.setData({ itemsToBeDeleted: [0, 1] });
+        });
 
-        wrapper.setData({ itemsToBeDeleted: [0, 1] });
-        deleteModal.vm.$emit('ok');
+        it('execute the delete and remove selection', () => {
+          findDeleteModal().vm.$emit('ok');
 
-        return wrapper.vm.$nextTick().then(() => {
           expect(store.dispatch).toHaveBeenCalledWith('requestDeleteTags', {
             ids: store.state.tags.map(t => t.name),
             params: wrapper.vm.$route.params.id,
@@ -280,6 +304,23 @@ describe('Details Page', () => {
           // itemsToBeDeleted is not represented in the DOM, is used as parking variable between selected and deleted items
           expect(wrapper.vm.itemsToBeDeleted).toEqual([]);
           expect(findCheckedCheckboxes()).toHaveLength(0);
+        });
+
+        it('show success toast on successful delete', () => {
+          return wrapper.vm.handleMultipleDelete(0).then(() => {
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_TAGS_SUCCESS_MESSAGE, {
+              type: 'success',
+            });
+          });
+        });
+
+        it('show error toast on erred delete', () => {
+          dispatchSpy.mockRejectedValue();
+          return wrapper.vm.handleMultipleDelete(0).then(() => {
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith(DELETE_TAGS_ERROR_MESSAGE, {
+              type: 'error',
+            });
+          });
         });
       });
     });

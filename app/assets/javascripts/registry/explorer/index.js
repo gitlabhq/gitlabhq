@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { GlToast } from '@gitlab/ui';
 import Translate from '~/vue_shared/translate';
 import RegistryExplorer from './pages/index.vue';
 import RegistryBreadcrumb from './components/registry_breadcrumb.vue';
@@ -6,6 +7,7 @@ import { createStore } from './stores';
 import createRouter from './router';
 
 Vue.use(Translate);
+Vue.use(GlToast);
 
 export default () => {
   const el = document.getElementById('js-container-registry');

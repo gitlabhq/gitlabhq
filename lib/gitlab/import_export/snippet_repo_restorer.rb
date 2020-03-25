@@ -30,7 +30,7 @@ module Gitlab
 
       def create_repository_from_bundle
         repository.create_from_bundle(path_to_bundle)
-        snippet.track_snippet_repository
+        snippet.track_snippet_repository(repository.storage)
       end
 
       def create_repository_from_db

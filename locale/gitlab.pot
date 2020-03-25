@@ -5291,6 +5291,9 @@ msgstr ""
 msgid "ContainerRegistry|Build an image"
 msgstr ""
 
+msgid "ContainerRegistry|Compressed Size"
+msgstr ""
+
 msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
@@ -5429,6 +5432,9 @@ msgid "ContainerRegistry|There are no container images available in this group"
 msgstr ""
 
 msgid "ContainerRegistry|There are no container images stored for this project"
+msgstr ""
+
+msgid "ContainerRegistry|This Registry contains deleted image tag data. Remember to run  %{docLinkStart}garbage collection%{docLinkEnd} to remove the stale data from storage."
 msgstr ""
 
 msgid "ContainerRegistry|This image has no active tags"
@@ -8176,6 +8182,9 @@ msgid "EventFilterBy|Filter by push events"
 msgstr ""
 
 msgid "EventFilterBy|Filter by team"
+msgstr ""
+
+msgid "EventFilterBy|Filter by wiki"
 msgstr ""
 
 msgid "Events"
@@ -24703,6 +24712,9 @@ msgid "vulnerability|Undo dismiss"
 msgstr ""
 
 msgid "vulnerability|dismissed"
+msgstr ""
+
+msgid "wiki page"
 msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."

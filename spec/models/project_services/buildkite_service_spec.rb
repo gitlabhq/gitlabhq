@@ -84,6 +84,10 @@ describe BuildkiteService, :use_clean_rails_memory_store_caching do
 
     describe '#calculate_reactive_cache' do
       describe '#commit_status' do
+        let(:buildkite_full_url) do
+          'https://gitlab.buildkite.com/status/secret-sauce-status-token.json?commit=123'
+        end
+
         subject { service.calculate_reactive_cache('123', 'unused')[:commit_status] }
 
         it 'sets commit status to :error when status is 500' do
@@ -103,13 +107,25 @@ describe BuildkiteService, :use_clean_rails_memory_store_caching do
 
           is_expected.to eq('Great Success')
         end
+
+        Gitlab::HTTP::HTTP_ERRORS.each do |http_error|
+          it "sets commit status to :error with a #{http_error.name} error" do
+            WebMock.stub_request(:get, buildkite_full_url)
+              .to_raise(http_error)
+
+            expect(Gitlab::ErrorTracking)
+              .to receive(:log_exception)
+              .with(instance_of(http_error), project_id: project.id)
+
+            is_expected.to eq(:error)
+          end
+        end
       end
     end
   end
 
   def stub_request(status: 200, body: nil)
     body ||= %q({"status":"success"})
-    buildkite_full_url = 'https://gitlab.buildkite.com/status/secret-sauce-status-token.json?commit=123'
 
     stub_full_request(buildkite_full_url)
       .to_return(status: status,

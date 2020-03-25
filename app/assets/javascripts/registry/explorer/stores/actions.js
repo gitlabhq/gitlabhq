@@ -6,16 +6,12 @@ import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
   FETCH_TAGS_LIST_ERROR_MESSAGE,
-  DELETE_TAG_SUCCESS_MESSAGE,
-  DELETE_TAG_ERROR_MESSAGE,
-  DELETE_TAGS_SUCCESS_MESSAGE,
-  DELETE_TAGS_ERROR_MESSAGE,
-  DELETE_IMAGE_ERROR_MESSAGE,
-  DELETE_IMAGE_SUCCESS_MESSAGE,
 } from '../constants';
 import { decodeAndParse } from '../utils';
 
 export const setInitialState = ({ commit }, data) => commit(types.SET_INITIAL_STATE, data);
+export const setShowGarbageCollectionTip = ({ commit }, data) =>
+  commit(types.SET_SHOW_GARBAGE_COLLECTION_TIP, data);
 
 export const receiveImagesListSuccess = ({ commit }, { data, headers }) => {
   commit(types.SET_IMAGES_LIST_SUCCESS, data);
@@ -67,11 +63,10 @@ export const requestDeleteTag = ({ commit, dispatch, state }, { tag, params }) =
   return axios
     .delete(tag.destroy_path)
     .then(() => {
-      createFlash(DELETE_TAG_SUCCESS_MESSAGE, 'success');
+      dispatch('setShowGarbageCollectionTip', true);
       return dispatch('requestTagsList', { pagination: state.tagsPagination, params });
     })
     .catch(() => {
-      createFlash(DELETE_TAG_ERROR_MESSAGE);
       commit(types.SET_MAIN_LOADING, false);
     });
 };
@@ -85,11 +80,10 @@ export const requestDeleteTags = ({ commit, dispatch, state }, { ids, params }) 
   return axios
     .delete(url, { params: { ids } })
     .then(() => {
-      createFlash(DELETE_TAGS_SUCCESS_MESSAGE, 'success');
+      dispatch('setShowGarbageCollectionTip', true);
       return dispatch('requestTagsList', { pagination: state.tagsPagination, params });
     })
     .catch(() => {
-      createFlash(DELETE_TAGS_ERROR_MESSAGE);
       commit(types.SET_MAIN_LOADING, false);
     });
 };
@@ -100,11 +94,8 @@ export const requestDeleteImage = ({ commit, dispatch, state }, destroyPath) => 
   return axios
     .delete(destroyPath)
     .then(() => {
+      dispatch('setShowGarbageCollectionTip', true);
       dispatch('requestImagesList', { pagination: state.pagination });
-      createFlash(DELETE_IMAGE_SUCCESS_MESSAGE, 'success');
-    })
-    .catch(() => {
-      createFlash(DELETE_IMAGE_ERROR_MESSAGE);
     })
     .finally(() => {
       commit(types.SET_MAIN_LOADING, false);

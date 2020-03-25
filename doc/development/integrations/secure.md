@@ -70,7 +70,7 @@ mysec_dependency_scanning:
 `gl-sast-report.json` is an example file path. See [the Output file section](#output-file) for more details.
 It is processed as a SAST report because it is declared as such in the job definition.
 
-### Rules
+### Policies
 
 Scanning jobs should be skipped unless the corresponding feature is listed
 in the `GITLAB_FEATURES` variable (comma-separated list of values).
@@ -103,11 +103,9 @@ mysec_dependency_scanning:
         $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bjava\b/
 ```
 
-The [`only/except`](../../ci/yaml/README.md#onlyexcept-basic) keywords
-as well as the new [`rules`](../../ci/yaml/README.md#rules) keyword
-make possible to trigger the job depending on the branch, or when some particular file changes.
-Such rules should be defined by users based on their needs,
-and should not be predefined in the job definition of the scanner.
+Any additional job policy should only be configured by users based on their needs.
+For instance, predefined policies should not trigger the scanning job
+for a particular branch or when a particular set of files changes.
 
 ## Docker image
 

@@ -106,6 +106,10 @@ describe DroneCiService, :use_clean_rails_memory_store_caching do
           WebMock.stub_request(:get, commit_status_path)
             .to_raise(http_error)
 
+          expect(Gitlab::ErrorTracking)
+            .to receive(:log_exception)
+            .with(instance_of(http_error), project_id: project.id)
+
           is_expected.to eq(:error)
         end
       end

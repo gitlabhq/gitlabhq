@@ -50,10 +50,12 @@ class DroneCiService < CiService
   end
 
   def calculate_reactive_cache(sha, ref)
-    response = Gitlab::HTTP.get(commit_status_path(sha, ref), verify: enable_ssl_verification)
+    response = Gitlab::HTTP.try_get(commit_status_path(sha, ref),
+      verify: enable_ssl_verification,
+      extra_log_info: { project_id: project_id })
 
     status =
-      if response.code == 200 && response['status']
+      if response && response.code == 200 && response['status']
         case response['status']
         when 'killed'
           :canceled
@@ -68,8 +70,6 @@ class DroneCiService < CiService
       end
 
     { commit_status: status }
-  rescue *Gitlab::HTTP::HTTP_ERRORS
-    { commit_status: :error }
   end
 
   def build_page(sha, ref)

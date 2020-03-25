@@ -20,7 +20,7 @@ describe Gitlab::Ci::Config do
   context 'when config is valid' do
     let(:yml) do
       <<-EOS
-        image: ruby:2.2
+        image: ruby:2.7
 
         rspec:
           script:
@@ -32,7 +32,7 @@ describe Gitlab::Ci::Config do
     describe '#to_hash' do
       it 'returns hash created from string' do
         hash = {
-          image: 'ruby:2.2',
+          image: 'ruby:2.7',
           rspec: {
             script: ['gem install rspec',
                      'rspec']
@@ -85,7 +85,7 @@ describe Gitlab::Ci::Config do
   context 'when using extendable hash' do
     let(:yml) do
       <<-EOS
-        image: ruby:2.2
+        image: ruby:2.7
 
         rspec:
           script: rspec
@@ -98,7 +98,7 @@ describe Gitlab::Ci::Config do
 
     it 'correctly extends the hash' do
       hash = {
-        image: 'ruby:2.2',
+        image: 'ruby:2.7',
         rspec: { script: 'rspec' },
         test: {
           extends: 'rspec',
@@ -188,7 +188,7 @@ describe Gitlab::Ci::Config do
         let(:yml) do
           <<-EOS
             image:
-              name: ruby:2.2
+              name: ruby:2.7
               ports:
                 - 80
           EOS
@@ -202,12 +202,12 @@ describe Gitlab::Ci::Config do
       context 'in the job image' do
         let(:yml) do
           <<-EOS
-            image: ruby:2.2
+            image: ruby:2.7
 
             test:
               script: rspec
               image:
-                name: ruby:2.2
+                name: ruby:2.7
                 ports:
                   - 80
           EOS
@@ -221,11 +221,11 @@ describe Gitlab::Ci::Config do
       context 'in the services' do
         let(:yml) do
           <<-EOS
-            image: ruby:2.2
+            image: ruby:2.7
 
             test:
               script: rspec
-              image: ruby:2.2
+              image: ruby:2.7
               services:
                 - name: test
                   alias: test
@@ -266,7 +266,7 @@ describe Gitlab::Ci::Config do
         - #{local_location}
         - #{remote_location}
 
-      image: ruby:2.2
+      image: ruby:2.7
       HEREDOC
     end
 
@@ -296,7 +296,7 @@ describe Gitlab::Ci::Config do
         }
         composed_hash = {
           before_script: before_script_values,
-          image: "ruby:2.2",
+          image: "ruby:2.7",
           rspec: { script: ["bundle exec rspec"] },
           variables: variables
         }
@@ -381,7 +381,7 @@ describe Gitlab::Ci::Config do
         include:
           - #{remote_location}
 
-        image: ruby:2.2
+        image: ruby:2.7
         HEREDOC
       end
 
@@ -392,7 +392,7 @@ describe Gitlab::Ci::Config do
       end
 
       it 'takes precedence' do
-        expect(config.to_hash).to eq({ image: 'ruby:2.2' })
+        expect(config.to_hash).to eq({ image: 'ruby:2.7' })
       end
     end
 

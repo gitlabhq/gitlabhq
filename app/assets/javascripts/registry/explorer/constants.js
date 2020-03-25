@@ -34,7 +34,7 @@ export const LIST_KEY_CHECKBOX = 'checkbox';
 
 export const LIST_LABEL_TAG = s__('ContainerRegistry|Tag');
 export const LIST_LABEL_IMAGE_ID = s__('ContainerRegistry|Image ID');
-export const LIST_LABEL_SIZE = s__('ContainerRegistry|Size');
+export const LIST_LABEL_SIZE = s__('ContainerRegistry|Compressed Size');
 export const LIST_LABEL_LAST_UPDATED = s__('ContainerRegistry|Last Updated');
 
 export const EXPIRATION_POLICY_ALERT_TITLE = s__(

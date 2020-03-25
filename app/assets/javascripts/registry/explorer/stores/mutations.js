@@ -7,6 +7,7 @@ export default {
       ...config,
       expirationPolicy: config.expirationPolicy ? JSON.parse(config.expirationPolicy) : undefined,
       isGroupPage: config.isGroupPage !== undefined,
+      isAdmin: config.isAdmin !== undefined,
     };
   },
 
@@ -20,6 +21,10 @@ export default {
 
   [types.SET_MAIN_LOADING](state, isLoading) {
     state.isLoading = isLoading;
+  },
+
+  [types.SET_SHOW_GARBAGE_COLLECTION_TIP](state, showGarbageCollectionTip) {
+    state.showGarbageCollectionTip = showGarbageCollectionTip;
   },
 
   [types.SET_PAGINATION](state, headers) {

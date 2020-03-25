@@ -1310,7 +1310,9 @@ CREATE TABLE public.ci_runners (
     ip_address character varying,
     maximum_timeout integer,
     runner_type smallint NOT NULL,
-    token_encrypted character varying
+    token_encrypted character varying,
+    public_projects_minutes_cost_factor double precision DEFAULT 0.0 NOT NULL,
+    private_projects_minutes_cost_factor double precision DEFAULT 1.0 NOT NULL
 );
 
 CREATE SEQUENCE public.ci_runners_id_seq
@@ -4449,7 +4451,8 @@ CREATE TABLE public.pages_domains (
     certificate_source smallint DEFAULT 0 NOT NULL,
     wildcard boolean DEFAULT false NOT NULL,
     usage smallint DEFAULT 0 NOT NULL,
-    scope smallint DEFAULT 2 NOT NULL
+    scope smallint DEFAULT 2 NOT NULL,
+    auto_ssl_failed boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE public.pages_domains_id_seq
@@ -6611,6 +6614,24 @@ CREATE SEQUENCE public.vulnerability_scanners_id_seq
 
 ALTER SEQUENCE public.vulnerability_scanners_id_seq OWNED BY public.vulnerability_scanners.id;
 
+CREATE TABLE public.vulnerability_user_mentions (
+    id bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    note_id integer,
+    mentioned_users_ids integer[],
+    mentioned_projects_ids integer[],
+    mentioned_groups_ids integer[]
+);
+
+CREATE SEQUENCE public.vulnerability_user_mentions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.vulnerability_user_mentions_id_seq OWNED BY public.vulnerability_user_mentions.id;
+
 CREATE TABLE public.web_hook_logs (
     id integer NOT NULL,
     web_hook_id integer NOT NULL,
@@ -7357,6 +7378,8 @@ ALTER TABLE ONLY public.vulnerability_occurrence_pipelines ALTER COLUMN id SET D
 ALTER TABLE ONLY public.vulnerability_occurrences ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_occurrences_id_seq'::regclass);
 
 ALTER TABLE ONLY public.vulnerability_scanners ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_scanners_id_seq'::regclass);
+
+ALTER TABLE ONLY public.vulnerability_user_mentions ALTER COLUMN id SET DEFAULT nextval('public.vulnerability_user_mentions_id_seq'::regclass);
 
 ALTER TABLE ONLY public.web_hook_logs ALTER COLUMN id SET DEFAULT nextval('public.web_hook_logs_id_seq'::regclass);
 
@@ -8285,6 +8308,9 @@ ALTER TABLE ONLY public.vulnerability_occurrences
 
 ALTER TABLE ONLY public.vulnerability_scanners
     ADD CONSTRAINT vulnerability_scanners_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.vulnerability_user_mentions
+    ADD CONSTRAINT vulnerability_user_mentions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY public.web_hook_logs
     ADD CONSTRAINT web_hook_logs_pkey PRIMARY KEY (id);
@@ -10128,6 +10154,12 @@ CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON public.vulne
 
 CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id ON public.vulnerability_scanners USING btree (project_id, external_id);
 
+CREATE UNIQUE INDEX index_vulnerability_user_mentions_on_note_id ON public.vulnerability_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
+
+CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id ON public.vulnerability_user_mentions USING btree (vulnerability_id) WHERE (note_id IS NULL);
+
+CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id_and_note_id ON public.vulnerability_user_mentions USING btree (vulnerability_id, note_id);
+
 CREATE INDEX index_web_hook_logs_on_created_at_and_web_hook_id ON public.web_hook_logs USING btree (created_at, web_hook_id);
 
 CREATE INDEX index_web_hook_logs_on_web_hook_id ON public.web_hook_logs USING btree (web_hook_id);
@@ -10843,6 +10875,9 @@ ALTER TABLE ONLY public.open_project_tracker_data
 ALTER TABLE ONLY public.gpg_signatures
     ADD CONSTRAINT fk_rails_19d4f1c6f9 FOREIGN KEY (gpg_key_subkey_id) REFERENCES public.gpg_key_subkeys(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY public.vulnerability_user_mentions
+    ADD CONSTRAINT fk_rails_1a41c485cd FOREIGN KEY (vulnerability_id) REFERENCES public.vulnerabilities(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY public.board_assignees
     ADD CONSTRAINT fk_rails_1c0ff59e82 FOREIGN KEY (assignee_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
@@ -11379,6 +11414,9 @@ ALTER TABLE ONLY public.namespace_root_storage_statistics
 
 ALTER TABLE ONLY public.project_aliases
     ADD CONSTRAINT fk_rails_a1804f74a7 FOREIGN KEY (project_id) REFERENCES public.projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.vulnerability_user_mentions
+    ADD CONSTRAINT fk_rails_a18600f210 FOREIGN KEY (note_id) REFERENCES public.notes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.todos
     ADD CONSTRAINT fk_rails_a27c483435 FOREIGN KEY (group_id) REFERENCES public.namespaces(id) ON DELETE CASCADE;
@@ -12742,6 +12780,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200316162648'),
 ('20200316173312'),
 ('20200317142110'),
+('20200318140400'),
 ('20200318152134'),
 ('20200318162148'),
 ('20200318163148'),
@@ -12750,6 +12789,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200318175008'),
 ('20200319123041'),
 ('20200319203901'),
+('20200320112455'),
+('20200320123839'),
 ('20200323075043'),
 ('20200323122201'),
 ('20200324115359');

@@ -7,6 +7,10 @@
 
   a {
     color: $gl-text-color;
+
+    &.link {
+      color: $blue-600;
+    }
   }
 
   .author-link {

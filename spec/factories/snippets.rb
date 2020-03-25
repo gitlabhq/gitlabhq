@@ -28,7 +28,7 @@ FactoryBot.define do
           bare_repo: TestEnv.factory_repo_path_bare,
           refs: TestEnv::BRANCH_SHA)
 
-        snippet.track_snippet_repository
+        snippet.track_snippet_repository(snippet.repository.storage)
       end
     end
 

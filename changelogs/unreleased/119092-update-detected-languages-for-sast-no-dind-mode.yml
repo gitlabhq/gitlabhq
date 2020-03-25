@@ -1,0 +1,5 @@
+---
+title: Update detected languages for sast in no dind mode
+merge_request: 27831
+author:
+type: fixed

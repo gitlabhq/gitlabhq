@@ -178,6 +178,7 @@ CAUTION: **Warning:**
 By default, `nuget` checks the official source at `nuget.org` first. If you have a package in the
 GitLab NuGet Repository with the same name as a package at `nuget.org`, you must specify the source
 name or the wrong package will be installed.
+
 Install the latest version of a package using the following command:
 
 ```shell

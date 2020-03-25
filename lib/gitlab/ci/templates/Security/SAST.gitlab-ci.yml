@@ -184,7 +184,7 @@ spotbugs-sast:
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/ &&
           $SAST_DEFAULT_ANALYZERS =~ /spotbugs/ &&
-          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /java\b/
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\b(groovy|java|scala)\b/
 
 tslint-sast:
   extends: .sast-analyzer

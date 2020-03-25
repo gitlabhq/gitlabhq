@@ -1,4 +1,4 @@
-# Dependency Proxy **(ULTIMATE ONLY)**
+# Dependency Proxy **(PREMIUM ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7934) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
 

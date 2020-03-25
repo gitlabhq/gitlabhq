@@ -8,51 +8,28 @@ module Projects
         return error('access denied') unless can_destroy?
 
         tags = container_repository.tags
-        tags_by_digest = group_by_digest(tags)
-
         tags = without_latest(tags)
         tags = filter_by_name(tags)
-        tags = with_manifest(tags)
-        tags = order_by_date(tags)
         tags = filter_keep_n(tags)
         tags = filter_by_older_than(tags)
 
-        deleted_tags = delete_tags(tags, tags_by_digest)
-
-        success(deleted: deleted_tags.map(&:name))
+        delete_tags(container_repository, tags)
       end
 
       private
 
-      def delete_tags(tags_to_delete, tags_by_digest)
-        deleted_digests = group_by_digest(tags_to_delete).select do |digest, tags|
-          delete_tag_digest(tags, tags_by_digest[digest])
-        end
+      def delete_tags(container_repository, tags)
+        return success(deleted: []) unless tags.any?
 
-        deleted_digests.values.flatten
-      end
+        tag_names = tags.map(&:name)
 
-      def delete_tag_digest(tags, other_tags)
-        # Issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/21405
-        # we have to remove all tags due
-        # to Docker Distribution bug unable
-        # to delete single tag
-        return unless tags.count == other_tags.count
-
-        # delete all tags
-        tags.map(&:unsafe_delete)
-      end
-
-      def group_by_digest(tags)
-        tags.group_by(&:digest)
+        Projects::ContainerRepository::DeleteTagsService
+          .new(container_repository.project, current_user, tags: tag_names)
+          .execute(container_repository)
       end
 
       def without_latest(tags)
         tags.reject(&:latest?)
-      end
-
-      def with_manifest(tags)
-        tags.select(&:valid?)
       end
 
       def order_by_date(tags)
@@ -74,6 +51,9 @@ module Projects
       end
 
       def filter_keep_n(tags)
+        return tags unless params['keep_n']
+
+        tags = order_by_date(tags)
         tags.drop(params['keep_n'].to_i)
       end
 

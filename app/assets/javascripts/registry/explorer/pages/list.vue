@@ -12,11 +12,13 @@ import {
   GlSkeletonLoader,
 } from '@gitlab/ui';
 import Tracking from '~/tracking';
+import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ProjectEmptyState from '../components/project_empty_state.vue';
 import GroupEmptyState from '../components/group_empty_state.vue';
 import ProjectPolicyAlert from '../components/project_policy_alert.vue';
 import QuickstartDropdown from '../components/quickstart_dropdown.vue';
+import { DELETE_IMAGE_SUCCESS_MESSAGE, DELETE_IMAGE_ERROR_MESSAGE } from '../constants';
 
 export default {
   name: 'RegistryListApp',
@@ -43,6 +45,23 @@ export default {
     repeat: 10,
     width: 1000,
     height: 40,
+  },
+  i18n: {
+    containerRegistryTitle: s__('ContainerRegistry|Container Registry'),
+    connectionErrorTitle: s__('ContainerRegistry|Docker connection error'),
+    connectionErrorMessage: s__(
+      `ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. %{docLinkStart}More Information%{docLinkEnd}`,
+    ),
+    introText: s__(
+      `ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}`,
+    ),
+    deleteButtonDisabled: s__(
+      'ContainerRegistry|Missing or insufficient permission, delete button disabled',
+    ),
+    removeRepositoryLabel: s__('ContainerRegistry|Remove repository'),
+    removeRepositoryModalText: s__(
+      'ContainerRegistry|You are about to remove repository %{title}. Once you confirm, this repository will be permanently deleted.',
+    ),
   },
   data() {
     return {
@@ -76,10 +95,22 @@ export default {
       this.itemToDelete = item;
       this.$refs.deleteModal.show();
     },
-    handleDeleteRepository() {
+    handleDeleteImage() {
       this.track('confirm_delete');
-      this.requestDeleteImage(this.itemToDelete.destroy_path);
-      this.itemToDelete = {};
+      return this.requestDeleteImage(this.itemToDelete.destroy_path)
+        .then(() =>
+          this.$toast.show(DELETE_IMAGE_SUCCESS_MESSAGE, {
+            type: 'success',
+          }),
+        )
+        .catch(() =>
+          this.$toast.show(DELETE_IMAGE_ERROR_MESSAGE, {
+            type: 'error',
+          }),
+        )
+        .finally(() => {
+          this.itemToDelete = {};
+        });
     },
     encodeListItem(item) {
       const params = JSON.stringify({ name: item.path, tags_path: item.tags_path, id: item.id });
@@ -95,18 +126,12 @@ export default {
 
     <gl-empty-state
       v-if="config.characterError"
-      :title="s__('ContainerRegistry|Docker connection error')"
+      :title="$options.i18n.connectionErrorTitle"
       :svg-path="config.containersErrorImage"
     >
       <template #description>
         <p>
-          <gl-sprintf
-            :message="
-              s__(`ContainerRegistry|We are having trouble connecting to Docker, which could be due to an
-            issue with your project name or path.
-            %{docLinkStart}More Information%{docLinkEnd}`)
-            "
-          >
+          <gl-sprintf :message="$options.i18n.connectionErrorMessage">
             <template #docLink="{content}">
               <gl-link :href="`${config.helpPagePath}#docker-connection-error`" target="_blank">
                 {{ content }}
@@ -120,17 +145,11 @@ export default {
     <template v-else>
       <div>
         <div class="d-flex justify-content-between align-items-center">
-          <h4>{{ s__('ContainerRegistry|Container Registry') }}</h4>
+          <h4>{{ $options.i18n.containerRegistryTitle }}</h4>
           <quickstart-dropdown v-if="showQuickStartDropdown" class="d-none d-sm-block" />
         </div>
         <p>
-          <gl-sprintf
-            :message="
-              s__(`ContainerRegistry|With the Docker Container Registry integrated into GitLab, every
-            project can have its own space to store its Docker images.
-            %{docLinkStart}More Information%{docLinkEnd}`)
-            "
-          >
+          <gl-sprintf :message="$options.i18n.introText">
             <template #docLink="{content}">
               <gl-link :href="config.helpPagePath" target="_blank">
                 {{ content }}
@@ -180,16 +199,14 @@ export default {
             <div
               v-gl-tooltip="{ disabled: listItem.destroy_path }"
               class="d-none d-sm-block"
-              :title="
-                s__('ContainerRegistry|Missing or insufficient permission, delete button disabled')
-              "
+              :title="$options.i18n.deleteButtonDisabled"
             >
               <gl-button
                 ref="deleteImageButton"
                 v-gl-tooltip
                 :disabled="!listItem.destroy_path"
-                :title="s__('ContainerRegistry|Remove repository')"
-                :aria-label="s__('ContainerRegistry|Remove repository')"
+                :title="$options.i18n.removeRepositoryLabel"
+                :aria-label="$options.i18n.removeRepositoryLabel"
                 class="btn-inverted"
                 variant="danger"
                 @click="deleteImage(listItem)"
@@ -217,16 +234,12 @@ export default {
         ref="deleteModal"
         modal-id="delete-image-modal"
         ok-variant="danger"
-        @ok="handleDeleteRepository"
+        @ok="handleDeleteImage"
         @cancel="track('cancel_delete')"
       >
-        <template #modal-title>{{ s__('ContainerRegistry|Remove repository') }}</template>
+        <template #modal-title>{{ $options.i18n.removeRepositoryLabel }}</template>
         <p>
-          <gl-sprintf
-            :message=" s__(
-                'ContainerRegistry|You are about to remove repository %{title}. Once you confirm, this repository will be permanently deleted.',
-              ),"
-          >
+          <gl-sprintf :message="$options.i18n.removeRepositoryModalText">
             <template #title>
               <b>{{ itemToDelete.path }}</b>
             </template>

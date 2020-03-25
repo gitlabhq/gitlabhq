@@ -38,6 +38,17 @@ describe('Actions RegistryExplorer Store', () => {
     );
   });
 
+  it('setShowGarbageCollectionTip', done => {
+    testAction(
+      actions.setShowGarbageCollectionTip,
+      true,
+      null,
+      [{ type: types.SET_SHOW_GARBAGE_COLLECTION_TIP, payload: true }],
+      [],
+      done,
+    );
+  });
+
   describe('receives api responses', () => {
     const response = {
       data: [1, 2, 3],
@@ -183,18 +194,19 @@ describe('Actions RegistryExplorer Store', () => {
         [{ type: types.SET_MAIN_LOADING, payload: true }],
         [
           {
+            type: 'setShowGarbageCollectionTip',
+            payload: true,
+          },
+          {
             type: 'requestTagsList',
             payload: { pagination: {}, params },
           },
         ],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
+        done,
       );
     });
 
-    it('should show flash message on error', done => {
+    it('should turn off loading on error', done => {
       testAction(
         actions.requestDeleteTag,
         {
@@ -208,10 +220,7 @@ describe('Actions RegistryExplorer Store', () => {
           { type: types.SET_MAIN_LOADING, payload: false },
         ],
         [],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
+        done,
       );
     });
   });
@@ -235,18 +244,19 @@ describe('Actions RegistryExplorer Store', () => {
         [{ type: types.SET_MAIN_LOADING, payload: true }],
         [
           {
+            type: 'setShowGarbageCollectionTip',
+            payload: true,
+          },
+          {
             type: 'requestTagsList',
             payload: { pagination: {}, params },
           },
         ],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
+        done,
       );
     });
 
-    it('should show flash message on error', done => {
+    it('should turn off loading on error', done => {
       mock.onDelete(url).replyOnce(500);
 
       testAction(
@@ -263,17 +273,14 @@ describe('Actions RegistryExplorer Store', () => {
           { type: types.SET_MAIN_LOADING, payload: false },
         ],
         [],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
+        done,
       );
     });
   });
 
   describe('request delete single image', () => {
+    const deletePath = 'delete/path';
     it('successfully performs the delete request', done => {
-      const deletePath = 'delete/path';
       mock.onDelete(deletePath).replyOnce(200);
 
       testAction(
@@ -288,32 +295,32 @@ describe('Actions RegistryExplorer Store', () => {
         ],
         [
           {
+            type: 'setShowGarbageCollectionTip',
+            payload: true,
+          },
+          {
             type: 'requestImagesList',
             payload: { pagination: {} },
           },
         ],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
+        done,
       );
     });
 
-    it('should show flash message on error', done => {
+    it('should turn off loading on error', done => {
+      mock.onDelete(deletePath).replyOnce(400);
       testAction(
         actions.requestDeleteImage,
-        null,
+        deletePath,
         {},
         [
           { type: types.SET_MAIN_LOADING, payload: true },
           { type: types.SET_MAIN_LOADING, payload: false },
         ],
         [],
-        () => {
-          expect(createFlash).toHaveBeenCalled();
-          done();
-        },
-      );
+      ).catch(() => {
+        done();
+      });
     });
   });
 });

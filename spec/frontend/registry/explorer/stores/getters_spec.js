@@ -49,4 +49,22 @@ describe('Getters RegistryExplorer  store', () => {
       expect(getters[getter](state)).toBe(expectedPieces.join(' '));
     });
   });
+
+  describe('showGarbageCollection', () => {
+    it.each`
+      result   | showGarbageCollectionTip | isAdmin
+      ${true}  | ${true}                  | ${true}
+      ${false} | ${true}                  | ${false}
+      ${false} | ${false}                 | ${true}
+    `(
+      'return $result when showGarbageCollectionTip $showGarbageCollectionTip and isAdmin is $isAdmin',
+      ({ result, showGarbageCollectionTip, isAdmin }) => {
+        state = {
+          config: { isAdmin },
+          showGarbageCollectionTip,
+        };
+        expect(getters.showGarbageCollection(state)).toBe(result);
+      },
+    );
+  });
 });

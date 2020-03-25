@@ -73,10 +73,10 @@ class BuildkiteService < CiService
   end
 
   def calculate_reactive_cache(sha, ref)
-    response = Gitlab::HTTP.get(commit_status_path(sha), verify: false)
+    response = Gitlab::HTTP.try_get(commit_status_path(sha), request_options)
 
     status =
-      if response.code == 200 && response['status']
+      if response&.code == 200 && response['status']
         response['status']
       else
         :error
@@ -116,5 +116,9 @@ class BuildkiteService < CiService
     else
       ENDPOINT
     end
+  end
+
+  def request_options
+    { verify: false, extra_log_info: { project_id: project_id } }
   end
 end

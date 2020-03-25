@@ -9,7 +9,7 @@ describe Gitlab::Ci::Build::Image do
     subject { described_class.from_image(job) }
 
     context 'when image is defined in job' do
-      let(:image_name) { 'ruby:2.1' }
+      let(:image_name) { 'ruby:2.7' }
       let(:job) { create(:ci_build, options: { image: image_name } ) }
 
       context 'when image is defined as string' do

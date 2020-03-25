@@ -293,12 +293,12 @@ class Snippet < ApplicationRecord
     return if repository_exists? && snippet_repository
 
     repository.create_if_not_exists
-    track_snippet_repository
+    track_snippet_repository(repository.storage)
   end
 
-  def track_snippet_repository
-    repository = snippet_repository || build_snippet_repository
-    repository.update!(shard_name: repository_storage, disk_path: disk_path)
+  def track_snippet_repository(shard)
+    snippet_repo = snippet_repository || build_snippet_repository
+    snippet_repo.update!(shard_name: shard, disk_path: disk_path)
   end
 
   def can_cache_field?(field)

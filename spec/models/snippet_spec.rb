@@ -567,18 +567,21 @@ describe Snippet do
 
   describe '#track_snippet_repository' do
     let(:snippet) { create(:snippet) }
+    let(:shard_name) { 'foo' }
+
+    subject { snippet.track_snippet_repository(shard_name) }
 
     context 'when a snippet repository entry does not exist' do
       it 'creates a new entry' do
-        expect { snippet.track_snippet_repository }.to change(snippet, :snippet_repository)
+        expect { subject }.to change(snippet, :snippet_repository)
       end
 
       it 'tracks the snippet storage location' do
-        snippet.track_snippet_repository
+        subject
 
         expect(snippet.snippet_repository).to have_attributes(
           disk_path: snippet.disk_path,
-          shard_name: snippet.repository_storage
+          shard_name: shard_name
         )
       end
     end
@@ -586,21 +589,20 @@ describe Snippet do
     context 'when a tracking entry exists' do
       let!(:snippet) { create(:snippet, :repository) }
       let(:snippet_repository) { snippet.snippet_repository }
-      let!(:shard) { create(:shard, name: 'foo') }
+      let(:shard_name) { 'bar' }
 
       it 'does not create a new entry in the database' do
-        expect { snippet.track_snippet_repository }.not_to change(snippet, :snippet_repository)
+        expect { subject }.not_to change(snippet, :snippet_repository)
       end
 
       it 'updates the snippet storage location' do
         allow(snippet).to receive(:disk_path).and_return('fancy/new/path')
-        allow(snippet).to receive(:repository_storage).and_return('foo')
 
-        snippet.track_snippet_repository
+        subject
 
         expect(snippet.snippet_repository).to have_attributes(
           disk_path: 'fancy/new/path',
-          shard_name: 'foo'
+          shard_name: shard_name
         )
       end
     end
@@ -609,17 +611,29 @@ describe Snippet do
   describe '#create_repository' do
     let(:snippet) { create(:snippet) }
 
+    subject { snippet.create_repository }
+
     it 'creates the repository' do
       expect(snippet.repository).to receive(:after_create).and_call_original
 
-      expect(snippet.create_repository).to be_truthy
+      expect(subject).to be_truthy
       expect(snippet.repository.exists?).to be_truthy
     end
 
     it 'tracks snippet repository' do
       expect do
-        snippet.create_repository
+        subject
       end.to change(SnippetRepository, :count).by(1)
+    end
+
+    it 'sets same shard in snippet repository as in the repository storage' do
+      expect(snippet).to receive(:repository_storage).and_return('picked')
+      expect(snippet).to receive(:repository_exists?).and_return(false)
+      expect(snippet.repository).to receive(:create_if_not_exists)
+
+      subject
+
+      expect(snippet.snippet_repository.shard_name).to eq 'picked'
     end
 
     context 'when repository exists' do

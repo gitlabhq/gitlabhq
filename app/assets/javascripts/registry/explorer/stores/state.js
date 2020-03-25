@@ -1,5 +1,6 @@
 export default () => ({
   isLoading: false,
+  showGarbageCollectionTip: false,
   config: {},
   images: [],
   tags: [],

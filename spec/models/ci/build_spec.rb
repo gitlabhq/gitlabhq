@@ -1882,7 +1882,7 @@ describe Ci::Build do
   describe '#options' do
     let(:options) do
       {
-        image: "ruby:2.1",
+        image: "ruby:2.7",
         services: ["postgres"],
         script: ["ls -a"]
       }
@@ -1893,11 +1893,11 @@ describe Ci::Build do
     end
 
     it 'allows to access with keys' do
-      expect(build.options[:image]).to eq('ruby:2.1')
+      expect(build.options[:image]).to eq('ruby:2.7')
     end
 
     it 'allows to access with strings' do
-      expect(build.options['image']).to eq('ruby:2.1')
+      expect(build.options['image']).to eq('ruby:2.7')
     end
 
     context 'when ci_build_metadata_config is set' do

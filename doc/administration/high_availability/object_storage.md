@@ -22,7 +22,7 @@ For configuring GitLab to use Object Storage refer to the following guides:
 1. Configure [object storage for container registry](../packages/container_registry.md#container-registry-storage-driver) (optional feature).
 1. Configure [object storage for Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage) (optional feature).
 1. Configure [object storage for packages](../packages/index.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
-1. Configure [object storage for dependency proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(ULTIMATE ONLY)**
+1. Configure [object storage for dependency proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature). **(PREMIUM ONLY)**
 1. Configure [object storage for Pseudonymizer](../pseudonymizer.md#configuration) (optional feature). **(ULTIMATE ONLY)**
 
 NOTE: **Note:**

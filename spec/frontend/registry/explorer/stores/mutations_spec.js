@@ -10,7 +10,12 @@ describe('Mutations Registry Explorer Store', () => {
 
   describe('SET_INITIAL_STATE', () => {
     it('should set the initial state', () => {
-      const payload = { endpoint: 'foo', isGroupPage: true, expirationPolicy: { foo: 'bar' } };
+      const payload = {
+        endpoint: 'foo',
+        isGroupPage: true,
+        expirationPolicy: { foo: 'bar' },
+        isAdmin: true,
+      };
       const expectedState = { ...mockState, config: payload };
       mutations[types.SET_INITIAL_STATE](mockState, {
         ...payload,
@@ -45,6 +50,15 @@ describe('Mutations Registry Explorer Store', () => {
     it('should set the isLoading', () => {
       const expectedState = { ...mockState, isLoading: true };
       mutations[types.SET_MAIN_LOADING](mockState, true);
+
+      expect(mockState).toEqual(expectedState);
+    });
+  });
+
+  describe('SET_SHOW_GARBAGE_COLLECTION_TIP', () => {
+    it('should set the showGarbageCollectionTip', () => {
+      const expectedState = { ...mockState, showGarbageCollectionTip: true };
+      mutations[types.SET_SHOW_GARBAGE_COLLECTION_TIP](mockState, true);
 
       expect(mockState).toEqual(expectedState);
     });
