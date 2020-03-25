@@ -22,7 +22,7 @@ _Note:_ The action itself will not update the state, only a mutation should upda
 
 When using Vuex at GitLab, separate these concerns into different files to improve readability:
 
-```
+```plaintext
 └── store
   ├── index.js          # where we assemble modules and export the store
   ├── actions.js        # actions

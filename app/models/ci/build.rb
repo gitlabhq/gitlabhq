@@ -513,14 +513,6 @@ module Ci
       success? && !deployment.try(:last?)
     end
 
-    def depends_on_builds
-      # Get builds of the same type
-      latest_builds = self.pipeline.builds.latest
-
-      # Return builds from previous stages
-      latest_builds.where('stage_idx < ?', stage_idx)
-    end
-
     def triggered_by?(current_user)
       user == current_user
     end
@@ -825,41 +817,15 @@ module Ci
     end
 
     def all_dependencies
-      (dependencies + cross_dependencies).uniq
-    end
-
-    def dependencies
-      return [] if empty_dependencies?
-
-      depended_jobs = depends_on_builds
-
-      # find all jobs that are needed
-      if Feature.enabled?(:ci_dag_support, project, default_enabled: true) && scheduling_type_dag?
-        depended_jobs = depended_jobs.where(name: needs.artifacts.select(:name))
-      end
-
-      # find all jobs that are dependent on
-      if options[:dependencies].present?
-        depended_jobs = depended_jobs.where(name: options[:dependencies])
-      end
-
-      # if both needs and dependencies are used,
-      # the end result will be an intersection between them
-      depended_jobs
-    end
-
-    def cross_dependencies
-      []
-    end
-
-    def empty_dependencies?
-      options[:dependencies]&.empty?
+      dependencies.all
     end
 
     def has_valid_build_dependencies?
-      return true if Feature.enabled?('ci_disable_validates_dependencies')
+      dependencies.valid?
+    end
 
-      dependencies.all?(&:valid_dependency?)
+    def invalid_dependencies
+      dependencies.invalid_local
     end
 
     def valid_dependency?
@@ -867,10 +833,6 @@ module Ci
       return false if erased?
 
       true
-    end
-
-    def invalid_dependencies
-      dependencies.reject(&:valid_dependency?)
     end
 
     def runner_required_feature_names
@@ -949,6 +911,12 @@ module Ci
     end
 
     private
+
+    def dependencies
+      strong_memoize(:dependencies) do
+        Ci::Processable::Dependencies.new(self)
+      end
+    end
 
     def build_data
       @build_data ||= Gitlab::DataBuilder::Build.build(self)

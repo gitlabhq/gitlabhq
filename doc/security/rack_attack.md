@@ -177,13 +177,13 @@ In case you want to remove a blocked IP, follow these steps:
 1. You can remove the block using the following syntax, replacing `<ip>` with
    the actual IP that is blacklisted:
 
-   ```
+   ```plaintext
    del cache:gitlab:rack::attack:allow2ban:ban:<ip>
    ```
 
 1. Confirm that the key with the IP no longer shows up:
 
-   ```
+   ```plaintext
    keys *rack::attack*
    ```
 

@@ -17,7 +17,7 @@ Line breaks are not preserved.
 
 Line comments, which are lines that start with `//`, are skipped:
 
-```
+```asciidoc
 // this is a comment
 ```
 

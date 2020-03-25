@@ -15,7 +15,7 @@ GitLab.com will generate an application ID and secret key for you to use.
    - Name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
    - Redirect URI:
 
-   ```
+   ```plaintext
    http://your-gitlab.example.com/import/gitlab/callback
    http://your-gitlab.example.com/users/auth/gitlab/callback
    ```
@@ -63,7 +63,7 @@ GitLab.com will generate an application ID and secret key for you to use.
 
    For installations from source:
 
-   ```
+   ```yaml
    - { name: 'gitlab', app_id: 'YOUR_APP_ID',
      app_secret: 'YOUR_APP_SECRET',
      args: { scope: 'api' } }

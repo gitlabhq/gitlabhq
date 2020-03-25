@@ -121,8 +121,8 @@ In this case, the guidance we had from development was to drop deadlock_timeout 
 
 PostgresSQL defaults:
 
-- statement_timeout = 0 (never)
-- idle_in_transaction_session_timeout = 0 (never)
+- `statement_timeout = 0` (never)
+- `idle_in_transaction_session_timeout = 0` (never)
 
 Comments in issue [#1](https://gitlab.com/gitlab-org/gitlab/issues/30528) indicate that these should both be set to at least a number of minutes for all Omnibus installations (so they don't hang indefinitely). However, 15s for statement_timeout is very short, and will only be effective if the underlying infrastructure is very performant.
 
@@ -136,7 +136,7 @@ puts c.execute('SHOW idle_in_transaction_session_timeout').to_a ;"
 
 It may take a little while to respond.
 
-```
+```ruby
 {"statement_timeout"=>"1min"}
 {"lock_timeout"=>"0"}
 {"idle_in_transaction_session_timeout"=>"1min"}

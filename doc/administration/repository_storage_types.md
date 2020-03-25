@@ -93,7 +93,7 @@ open up the page for the project.
 
 The "Gitaly relative path" is shown there, for example:
 
-```
+```plaintext
 "@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git"
 ```
 
@@ -126,7 +126,7 @@ with `.git` from the end of the directory name removed.
 
 The output includes the project id and the project name:
 
-```
+```plaintext
 => #<Project id:16 it/supportteam/ticketsystem>
 ```
 

@@ -71,19 +71,21 @@ Make the difference between options and arguments clear to the argument parsers 
 
 To understand what `--` does, consider the problem below.
 
-```
+```shell
 # Example
 $ echo hello > -l
 $ cat -l
+
 cat: illegal option -- l
 usage: cat [-benstuv] [file ...]
 ```
 
 In the example above, the argument parser of `cat` assumes that `-l` is an option. The solution in the example above is to make it clear to `cat` that `-l` is really an argument, not an option. Many Unix command line tools follow the convention of separating options from arguments with `--`.
 
-```
+```shell
 # Example (continued)
 $ cat -- -l
+
 hello
 ```
 
@@ -203,7 +205,7 @@ validates :import_url, format: { with: URI.regexp(%w(ssh git http https)) }
 
 Suppose the user submits the following as their import URL:
 
-```
+```plaintext
 file://git:/tmp/lol
 ```
 

@@ -34,7 +34,7 @@ Gitaly.
 When called from Gitaly in a `pre-receive` hook the changes are passed
 and those are validated to determine if the push is allowed.
 
-```
+```plaintext
 POST /internal/allowed
 ```
 
@@ -57,7 +57,7 @@ curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" --da
 
 Example response:
 
-```
+```json
 {
   "status": true,
   "gl_repository": "project-3",
@@ -103,7 +103,7 @@ Example request:
 curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" --data "key_id=11&project=gnuwget/wget2" http://localhost:3001/api/v4/internal/lfs_authenticate
 ```
 
-```
+```json
 {
   "username": "root",
   "lfs_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImFjdG9yIjoicm9vdCJ9LCJqdGkiOiIyYWJhZDcxZC0xNDFlLTQ2NGUtOTZlMi1mODllYWRiMGVmZTYiLCJpYXQiOjE1NzAxMTc2NzYsIm5iZiI6MTU3MDExNzY3MSwiZXhwIjoxNTcwMTE5NDc2fQ.g7atlBw1QMY7QEBVPE0LZ8ZlKtaRzaMRmNn41r2YITM",
@@ -126,7 +126,7 @@ lookup](../administration/operations/fast_ssh_key_lookup.md).
 |:----------|:-------|:---------|:------------|
 | `key`     | string | yes      | SSH key as passed by OpenSSH to GitLab-shell |
 
-```
+```plaintext
 GET /internal/authorized_keys
 ```
 
@@ -138,7 +138,7 @@ curl --request GET --header "Gitlab-Shared-Secret: <Base64 encoded secret>""http
 
 Example response:
 
-```
+```json
 {
   "id": 11,
   "title": "admin@example.com",
@@ -161,7 +161,7 @@ discovers the user associated with an SSH key.
 | `key_id` | integer | no | The id of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
 | `username` | string | no | Username of the user being looked up, used by GitLab-shell when authenticating using a certificate |
 
-```
+```plaintext
 GET /internal/discover
 ```
 
@@ -173,7 +173,7 @@ curl --request GET --header "Gitlab-Shared-Secret: <Base64 encoded secret>" "htt
 
 Example response:
 
-```
+```json
 {
   "id": 7,
   "name": "Dede Eichmann",
@@ -190,7 +190,7 @@ Example response:
 This get's some generic information about the instance. This is used
 by Geo nodes to get information about eachother
 
-```
+```plaintext
 GET /internal/check
 ```
 
@@ -202,7 +202,7 @@ curl --request GET --header "Gitlab-Shared-Secret: <Base64 encoded secret>" "htt
 
 Example response:
 
-```
+```json
 {
   "api_version": "v4",
   "gitlab_version": "12.3.0-pre",
@@ -226,7 +226,7 @@ recovery codes based on their SSH key
 | `key_id`  | integer | no | The id of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
 | `user_id` | integer | no | **Deprecated** User_id for which to generate new recovery codes |
 
-```
+```plaintext
 GET /internal/two_factor_recovery_codes
 ```
 
@@ -238,7 +238,7 @@ curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" --d
 
 Example response:
 
-```
+```json
 {
   "success": true,
   "recovery_codes": [
@@ -269,7 +269,7 @@ for a push that might be accepted.
 |:----------|:-------|:---------|:------------|
 | `gl_repository` | string | yes | repository identifier for the repository receiving the push |
 
-```
+```plaintext
 POST /internal/pre_receive
 ```
 
@@ -281,7 +281,7 @@ curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" --d
 
 Example response:
 
-```
+```json
 {
   "reference_counter_increased": true
 }
@@ -301,7 +301,7 @@ the user.
 | `push_options` | string array | no | array of push options |
 | `changes` | string | no | refs to be updated in the push in the format `oldrev newrev refname\n`. |
 
-```
+```plaintext
 POST /internal/post_receive
 ```
 
@@ -313,7 +313,7 @@ curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded secret>" --d
 
 Example response:
 
-```
+```json
 {
   "messages": [
     {

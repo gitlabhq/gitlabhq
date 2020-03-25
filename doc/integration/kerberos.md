@@ -33,7 +33,7 @@ system's Kerberos settings.
 The keytab is a sensitive file and must be readable by the GitLab user. Set
 ownership and protect the file appropriately:
 
-```
+```shell
 sudo chown git /etc/http.keytab
 sudo chmod 0600 /etc/http.keytab
 ```
@@ -243,7 +243,7 @@ With Kerberos SPNEGO authentication, the browser is expected to send a list of
 mechanisms it supports to GitLab. If it doesn't support any of the mechanisms
 GitLab supports, authentication will fail with a message like this in the log:
 
-```
+```plaintext
 OmniauthKerberosSpnegoController: failed to process Negotiate/Kerberos authentication: gss_accept_sec_context did not return GSS_S_COMPLETE: An unsupported mechanism was requested Unknown error
 ```
 
@@ -282,7 +282,7 @@ fatal: Authentication failed for '<KRB5 path>'
 If you are using Git v2.11 or newer and see the above error when cloning, you can
 set the `http.emptyAuth` Git option to `true` to fix this:
 
-```
+```shell
 git config --global http.emptyAuth true
 ```
 

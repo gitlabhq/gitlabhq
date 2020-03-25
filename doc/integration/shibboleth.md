@@ -66,7 +66,7 @@ The following changes are needed to enable Shibboleth:
 
    The file should look like this:
 
-   ```
+   ```ruby
    external_url 'https://gitlab.example.com'
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
 
@@ -101,7 +101,7 @@ On the sign in page, there should now be a "Sign in with: Shibboleth" icon below
 The order of the first 2 Location directives is important. If they are reversed,
 you will not get a Shibboleth session!
 
-```
+```plaintext
 <Location />
   Require all granted
   ProxyPassReverse http://127.0.0.1:8181

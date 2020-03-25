@@ -294,7 +294,7 @@ git push origin <branch> -f
 
 You may end up with a commit log that looks like this:
 
-```
+```plaintext
 Fix issue #13
 Test
 Fix

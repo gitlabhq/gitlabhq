@@ -149,7 +149,7 @@ Using local Apollo Cache is handy when we have a need to mock some GraphQL API r
 
 For example, we have a [fragment](#fragments) on `DesignVersion` used in our queries:
 
-```
+```javascript
 fragment VersionListItem on DesignVersion {
   id
   sha
@@ -158,7 +158,7 @@ fragment VersionListItem on DesignVersion {
 
 We need to fetch also version author and the 'created at' property to display them in the versions dropdown but these changes are still not implemented in our API. We can change the existing fragment to get a mocked response for these new fields:
 
-```
+```javascript
 fragment VersionListItem on DesignVersion {
   id
   sha

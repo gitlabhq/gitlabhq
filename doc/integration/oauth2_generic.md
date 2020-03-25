@@ -26,7 +26,7 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 
    The redirect URI you provide when registering the application should be:
 
-   ```
+   ```plaintext
    http://your-gitlab.host.com/users/auth/oauth2_generic/callback
    ```
 

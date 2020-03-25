@@ -184,7 +184,7 @@ If the current version is `v12p1`, and we need to create a new version for `v12p
 
 You might get an error such as
 
-```
+```plaintext
 [2018-10-31T15:54:19,762][WARN ][o.e.c.r.a.DiskThresholdMonitor] [pval5Ct]
    flood stage disk watermark [95%] exceeded on
    [pval5Ct7SieH90t5MykM5w][pval5Ct][/usr/local/var/lib/elasticsearch/nodes/0] free: 56.2gb[3%],
@@ -195,20 +195,20 @@ This is because you've exceeded the disk space threshold - it thinks you don't h
 
 In addition, the `read_only_allow_delete` setting will be set to `true`. It will block indexing, `forcemerge`, etc
 
-```
+```shell
 curl "http://localhost:9200/gitlab-development/_settings?pretty"
 ```
 
 Add this to your `elasticsearch.yml` file:
 
-```
+```yaml
 # turn off the disk allocator
 cluster.routing.allocation.disk.threshold_enabled: false
 ```
 
 _or_
 
-```
+```yaml
 # set your own limits
 cluster.routing.allocation.disk.threshold_enabled: true
 cluster.routing.allocation.disk.watermark.flood_stage: 5gb   # ES 6.x only

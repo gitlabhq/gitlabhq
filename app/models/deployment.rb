@@ -7,6 +7,7 @@ class Deployment < ApplicationRecord
   include UpdatedAtFilterable
   include Importable
   include Gitlab::Utils::StrongMemoize
+  include FastDestroyAll
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
@@ -111,6 +112,26 @@ class Deployment < ApplicationRecord
 
   def self.find_successful_deployment!(iid)
     success.find_by!(iid: iid)
+  end
+
+  class << self
+    ##
+    # FastDestroyAll concerns
+    def begin_fast_destroy
+      preload(:project).find_each.map do |deployment|
+        [deployment.project, deployment.ref_path]
+      end
+    end
+
+    ##
+    # FastDestroyAll concerns
+    def finalize_fast_destroy(params)
+      by_project = params.group_by(&:shift)
+
+      by_project.each do |project, ref_paths|
+        project.repository.delete_refs(*ref_paths.flatten)
+      end
+    end
   end
 
   def commit
@@ -280,11 +301,11 @@ class Deployment < ApplicationRecord
     errors.add(:ref, _('The branch or tag does not exist'))
   end
 
-  private
-
   def ref_path
     File.join(environment.ref_path, 'deployments', iid.to_s)
   end
+
+  private
 
   def legacy_finished_at
     self.created_at if success? && !read_attribute(:finished_at)

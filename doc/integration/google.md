@@ -28,7 +28,7 @@ In Google's side:
    - **Authorized redirect URIs** - Enter your domain name followed by the
      callback URIs one at a time:
 
-     ```
+     ```plaintext
      https://gitlab.example.com/users/auth/google_oauth2/callback
      https://gitlab.example.com/-/google_api/auth/callback
      ```

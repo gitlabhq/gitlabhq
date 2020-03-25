@@ -129,7 +129,7 @@ To ease configuration, most IdP accept a metadata URL for the application to pro
 configuration information to the IdP. To build the metadata URL for GitLab, append
 `users/auth/saml/metadata` to the HTTPS URL of your GitLab installation, for instance:
 
-```
+```plaintext
 https://gitlab.example.com/users/auth/saml/metadata
 ```
 

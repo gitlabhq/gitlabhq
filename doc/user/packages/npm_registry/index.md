@@ -224,7 +224,7 @@ it is not possible due to a naming collision. For example:
 
 The regex that is used for naming is validating all package names from all package managers:
 
-```
+```plaintext
 /\A\@?(([\w\-\.\+]*)\/)*([\w\-\.]+)@?(([\w\-\.\+]*)\/)*([\w\-\.]*)\z/
 ```
 

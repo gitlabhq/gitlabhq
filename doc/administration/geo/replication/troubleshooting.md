@@ -612,7 +612,7 @@ To check the configuration:
 
    If everything is working, you should see something like this:
 
-   ```
+   ```plaintext
    gitlabhq_geo_production=# SELECT * from information_schema.foreign_tables;
      foreign_table_catalog  | foreign_table_schema |               foreign_table_name                | foreign_server_catalog  | foreign_server_name
    -------------------------+----------------------+-------------------------------------------------+-------------------------+---------------------

@@ -53,6 +53,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
              
             <gl-search-box-by-type-stub
               class="m-2"
+              clearbuttontitle="Clear"
               value=""
             />
              

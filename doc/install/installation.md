@@ -329,7 +329,7 @@ use of extensions and concurrent index removal, you need at least PostgreSQL 9.2
 
 1. Check if the `pg_trgm` extension is enabled:
 
-   ```shell
+   ```sql
    SELECT true AS enabled
    FROM pg_available_extensions
    WHERE name = 'pg_trgm'
@@ -338,7 +338,7 @@ use of extensions and concurrent index removal, you need at least PostgreSQL 9.2
 
    If the extension is enabled this will produce the following output:
 
-   ```
+   ```plaintext
    enabled
    ---------
     t

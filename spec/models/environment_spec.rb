@@ -1301,4 +1301,13 @@ describe Environment, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe '#destroy' do
+    it 'remove the deployment refs from gitaly' do
+      deployment = create(:deployment, :success, environment: environment, project: project)
+      deployment.create_ref
+
+      expect { environment.destroy }.to change { project.commit(deployment.ref_path) }.to(nil)
+    end
+  end
 end

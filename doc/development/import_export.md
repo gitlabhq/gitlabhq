@@ -63,7 +63,7 @@ class StuckImportJobsWorker
 Marked stuck import jobs as failed. JIDs: xyz
 ```
 
-```
+```plaintext
   +-----------+    +-----------------------------------+
   |Export Job |--->| Calls ActiveRecord `as_json` and  |
   +-----------+    | `to_json` on all project models   |

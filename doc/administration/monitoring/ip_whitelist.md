@@ -2,6 +2,9 @@
 
 > Introduced in GitLab 9.4.
 
+NOTE: **Note:**
+We intend to [rename IP whitelist as `IP allowlist`](https://gitlab.com/gitlab-org/gitlab/-/issues/7554).
+
 GitLab provides some [monitoring endpoints] that provide health check information
 when probed.
 

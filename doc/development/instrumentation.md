@@ -87,7 +87,7 @@ Ruby code. In case of the above snippet you'd run the following:
 
 This will print out something along the lines of:
 
-```
+```plaintext
 From: /path/to/your/gitlab/lib/gitlab/metrics/instrumentation.rb @ line 148:
 Owner: #<Module:0x0055f0865c6d50>
 Visibility: public

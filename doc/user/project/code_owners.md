@@ -29,7 +29,7 @@ the users from last pattern matching the file are displayed on the
 blob page of the given file. For example, you have the following
 `CODEOWNERS` file:
 
-```
+```plaintext
 README.md @user1
 
 # This line would also match the file README.md
@@ -68,7 +68,7 @@ escaped using `\#` to address files for which the name starts with a
 
 Example `CODEOWNERS` file:
 
-```
+```plaintext
 # This is an example code owners file, lines starting with a `#` will
 # be ignored.
 

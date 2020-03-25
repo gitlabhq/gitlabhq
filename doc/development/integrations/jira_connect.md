@@ -31,7 +31,7 @@ The following are required to install and test the app:
 
       For example:
 
-      ```
+      ```plaintext
       https://xxxx.serveo.net/-/jira_connect/app_descriptor.json
       ```
 

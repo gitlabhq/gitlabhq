@@ -518,7 +518,7 @@ For SAST with all [supported languages and frameworks](#supported-languages-and-
 import the following default SAST analyzer images from `registry.gitlab.com` to your local "offline"
 registry:
 
-```
+```plaintext
 registry.gitlab.com/gitlab-org/security-products/analyzers/bandit:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/brakeman:2
 registry.gitlab.com/gitlab-org/security-products/analyzers/eslint:2

@@ -488,7 +488,7 @@ The linter will take the following into account:
 
 The errors are grouped per file, and per message ID:
 
-```
+```plaintext
 Errors in `locale/zh_HK/gitlab.po`:
   PO-syntax errors
     SimplePoParser::ParserErrorSyntax error in lines

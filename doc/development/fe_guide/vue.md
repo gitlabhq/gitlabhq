@@ -25,7 +25,7 @@ In some features implemented with Vue.js, like the [issue board][issue-boards]
 or [environments table][environments-table]
 you can find a clear separation of concerns:
 
-```
+```plaintext
 new_feature
 ├── components
 │   └── component.vue

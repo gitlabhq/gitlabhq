@@ -27,7 +27,7 @@ On the other hand, if an icon is crucial to understand the context we should do 
 
 In forms we should use the `for` attribute in the label statement:
 
-```
+```html
 <div>
   <label for="name">Fill in your name:</label>
   <input type="text" id="name" name="name">

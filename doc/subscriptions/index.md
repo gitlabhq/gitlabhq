@@ -248,12 +248,15 @@ Seat Link sends to GitLab daily a count of all users in connected self-managed i
 Seat Link is mandatory because we need the user count data to enable prorated billing. Seat Link provides **only** the following information to GitLab:
 
 - Date
-- Historical maximum user count
 - License key
+- Historical maximum user count
 
-Here is an example of the POST request:
+For air-gapped or closed network customers, the existing [true-up model](#users-over-license) will be used. Prorated charges are not possible without user count data.
 
-```plaintext
+<details>
+<summary>Click here to view example content of a Seat Link POST request.</summary>
+
+<pre><code>
 {
   date: '2020-01-29',
   license_key: 'ZXlKa1lYUmhJam9pWm5WNmVsTjVZekZ2YTJoV2NucDBh
@@ -292,9 +295,9 @@ SlRORE4xUjFaYVJGb3JlWGM5UFZ4dUlpd2lhWFlpt2lKV00yRnNVbk5RTjJk
 Sg0KU1hNMGExaE9SVGR2V2pKQlBUMWNiaUo5DQo=',
   max_historical_user_count: 10
 }
-```
+</code></pre>
 
-For air-gapped or closed network customers, the existing [true-up model](#users-over-license) will be used. Prorated charges are not possible without user count data.
+</details>
 
 ### Renew or change a GitLab.com subscription
 

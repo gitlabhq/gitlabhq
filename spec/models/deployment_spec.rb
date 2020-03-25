@@ -623,4 +623,26 @@ describe Deployment do
       expect(deploy.errors[:ref]).not_to be_empty
     end
   end
+
+  describe '.fast_destroy_all' do
+    it 'cleans path_refs for destroyed environments' do
+      project = create(:project, :repository)
+      environment = create(:environment, project: project)
+
+      destroyed_deployments = create_list(:deployment, 2, :success, environment: environment, project: project)
+      other_deployments = create_list(:deployment, 2, :success, environment: environment, project: project)
+
+      (destroyed_deployments + other_deployments).each(&:create_ref)
+
+      described_class.where(id: destroyed_deployments.map(&:id)).fast_destroy_all
+
+      destroyed_deployments.each do |deployment|
+        expect(project.commit(deployment.ref_path)).to be_nil
+      end
+
+      other_deployments.each do |deployment|
+        expect(project.commit(deployment.ref_path)).not_to be_nil
+      end
+    end
+  end
 end

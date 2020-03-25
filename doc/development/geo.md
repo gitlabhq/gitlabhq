@@ -134,7 +134,7 @@ The **secondary** node authenticates itself via a [JWT request](https://jwt.io/)
 When the **secondary** node wishes to download a file, it sends an
 HTTP request with the `Authorization` header:
 
-```
+```plaintext
 Authorization: GL-Geo <access_key>:<JWT payload>
 ```
 
@@ -146,7 +146,7 @@ file for the right database ID. For example, for an LFS object, the
 request must also include the SHA256 sum of the file. An example JWT
 payload looks like:
 
-```
+```yaml
 { "data": { sha256: "31806bb23580caab78040f8c45d329f5016b0115" }, iat: "1234567890" }
 ```
 
@@ -199,13 +199,13 @@ contains the schema and migrations for this database.
 
 To write a migration for the database, use the `GeoMigrationGenerator`:
 
-```
+```shell
 rails g geo_migration [args] [options]
 ```
 
 To migrate the tracking database, run:
 
-```
+```shell
 bundle exec rake geo:db:migrate
 ```
 
@@ -252,7 +252,7 @@ Failure to do this will prevent the **secondary** node from
 functioning properly. The **secondary** node will generate error
 messages, as the following PostgreSQL error:
 
-```
+```sql
 ERROR:  relation "gitlab_secondary.ci_job_artifacts" does not exist at character 323
 STATEMENT:                SELECT a.attname, format_type(a.atttypid, a.atttypmod),
                           pg_get_expr(d.adbin, d.adrelid), a.attnotnull, a.atttypid, a.atttypmod

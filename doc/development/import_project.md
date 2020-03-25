@@ -148,7 +148,7 @@ In this section we'll detail any known issues we've seen when trying to import a
 
 If you're attempting to import a large project into a development environment, you may see Gitaly throw an error about too many calls or invocations, for example:
 
-```
+```plaintext
 Error importing repository into qa-perf-testing/gitlabhq - GitalyClient#call called 31 times from single request. Potential n+1?
 ```
 

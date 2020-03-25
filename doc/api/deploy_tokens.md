@@ -82,7 +82,7 @@ Example response:
 
 Creates a new deploy token for a project.
 
-```
+```plaintext
 POST /projects/:id/deploy_tokens
 ```
 
@@ -119,7 +119,7 @@ Example response:
 
 Removes a deploy token from the project.
 
-```
+```plaintext
 DELETE /projects/:id/deploy_tokens/:token_id
 ```
 
@@ -144,7 +144,7 @@ These endpoints require group maintainer access or higher.
 
 Get a list of a group's deploy tokens
 
-```
+```plaintext
 GET /groups/:id/deploy_tokens
 ```
 
@@ -183,7 +183,7 @@ Example response:
 
 Creates a new deploy token for a group.
 
-```
+```plaintext
 POST /groups/:id/deploy_tokens
 ```
 
@@ -222,7 +222,7 @@ Example response:
 
 Removes a deploy token from the group.
 
-```
+```plaintext
 DELETE /groups/:id/deploy_tokens/:token_id
 ```
 

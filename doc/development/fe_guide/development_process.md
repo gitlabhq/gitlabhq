@@ -10,9 +10,9 @@ Copy the content over to your issue or merge request and if something doesn't ap
 
 This checklist is intended to help us during development of bigger features/refactorings, it's not a "use it always and every point always matches" list.
 
-Please use your best judgement when to use it and please contribute new points through merge requests if something comes to your mind.
+Please use your best judgment when to use it and please contribute new points through merge requests if something comes to your mind.
 
-```
+```markdown
 ### Frontend development
 
 #### Planning development

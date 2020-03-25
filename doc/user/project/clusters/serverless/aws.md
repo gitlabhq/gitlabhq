@@ -140,7 +140,7 @@ NOTE: **Note:**
 In your GitLab deploy stage log, there will be output containing your AWS Lambda endpoint URL.
 The log line will look similar to this:
 
-```
+```plaintext
 endpoints:
   GET - https://u768nzby1j.execute-api.us-east-1.amazonaws.com/production/hello
 ```

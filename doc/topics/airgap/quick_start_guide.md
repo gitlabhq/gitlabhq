@@ -150,7 +150,7 @@ sudo update-ca-certificates
 
 If all goes well, this is what you should see:
 
-```
+```plaintext
 1 added, 0 removed; done.
 Running hooks in /etc/ca-certificates/update.d...
 done.

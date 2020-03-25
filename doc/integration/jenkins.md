@@ -160,7 +160,7 @@ in the `gitlab.rb` config file, followed by the [`gitlab-ctl reconfigure` comman
 If you don't find the errors above, but do find *duplicate* entries like below (in `/var/log/gitlab/gitlab-rail`), this
 could also indicate that [webhook requests are timing out](../user/project/integrations/webhooks.md#receiving-duplicate-or-multiple-webhook-requests-triggered-by-one-event):
 
-```
+```plaintext
 2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
 2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
 ```

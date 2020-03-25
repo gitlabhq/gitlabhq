@@ -7,13 +7,13 @@ support subgroups, GitLab project and group routes use the wildcard
 character to match project and group routes. For example, we might have
 a path such as:
 
-```
+```plaintext
 /gitlab-com/customer-success/north-america/west/customerA
 ```
 
 However, paths can be ambiguous. Consider the following example:
 
-```
+```plaintext
 /gitlab-com/edit
 ```
 
@@ -29,7 +29,7 @@ number of [reserved names](../user/reserved_names.md).
 
 We have a number of global routes. For example:
 
-```
+```plaintext
 /-/health
 /-/metrics
 ```
@@ -40,7 +40,7 @@ Every group route must be under the `/-/` scope.
 
 Examples:
 
-```
+```plaintext
 gitlab-org/-/edit
 gitlab-org/-/activity
 gitlab-org/-/security/dashboard
@@ -56,7 +56,7 @@ client or other software requires something different.
 
 Examples:
 
-```
+```plaintext
 gitlab-org/gitlab/-/activity
 gitlab-org/gitlab/-/jobs/123
 gitlab-org/gitlab/-/settings/repository

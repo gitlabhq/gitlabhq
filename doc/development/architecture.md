@@ -207,7 +207,7 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
 
 #### Elasticsearch
 
-- [Project page](https://github.com/elastic/elasticsearch/blob/master/README.textile)
+- [Project page](https://github.com/elastic/elasticsearch/blob/master/README.asciidoc)
 - Configuration: [Omnibus][elasticsearch-omnibus], [Charts][elasticsearch-charts], [Source][elasticsearch-source], [GDK][elasticsearch-gdk]
 - Layer: Core Service (Data)
 

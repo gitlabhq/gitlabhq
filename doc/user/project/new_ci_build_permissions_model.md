@@ -213,7 +213,7 @@ project for which the job is triggered.
 
 This is how an example usage can look like:
 
-```
+```yaml
 test:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY

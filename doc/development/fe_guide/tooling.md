@@ -64,36 +64,36 @@ The easiest way to include prettier in your workflow is by setting up your prefe
 
 Please take care that you only let Prettier format the same file types as the global Yarn script does (.js, .vue, and .scss). In VSCode by example you can easily exclude file formats in your settings file:
 
-```
+```json
   "prettier.disableLanguages": [
       "json",
       "markdown"
-  ],
+  ]
 ```
 
 ### Yarn Script
 
 The following yarn scripts are available to do global formatting:
 
-```
+```shell
 yarn prettier-staged-save
 ```
 
 Updates all currently staged files (based on `git diff`) with Prettier and saves the needed changes.
 
-```
+```shell
 yarn prettier-staged
 ```
 
 Checks all currently staged files (based on `git diff`) with Prettier and log which files would need manual updating to the console.
 
-```
+```shell
 yarn prettier-all
 ```
 
 Checks all files with Prettier and logs which files need manual updating to the console.
 
-```
+```shell
 yarn prettier-all-save
 ```
 
@@ -103,13 +103,13 @@ The source of these Yarn scripts can be found in `/scripts/frontend/prettier.js`
 
 #### Scripts during Conversion period
 
-```
+```shell
 node ./scripts/frontend/prettier.js check-all ./vendor/
 ```
 
 This will go over all files in a specific folder check it.
 
-```
+```shell
 node ./scripts/frontend/prettier.js save-all ./vendor/
 ```
 

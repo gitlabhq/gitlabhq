@@ -60,7 +60,7 @@ hash of the project ID instead, if project migrates to the new approach (introdu
 Files are stored at multiple locations and use different path schemes.
 All the `GitlabUploader` derived classes should comply with this path segment schema:
 
-```
+```plaintext
 |   GitlabUploader
 | ----------------------- + ------------------------- + --------------------------------- + -------------------------------- |
 | `<gitlab_root>/public/` | `uploads/-/system/`       | `user/avatar/:id/`                | `:filename`                      |

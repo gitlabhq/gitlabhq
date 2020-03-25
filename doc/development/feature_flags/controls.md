@@ -12,7 +12,7 @@ Follow the Chatops document to [request access](../chatops_on_gitlabcom.md#reque
 Once you are added to the project test if your access propagated,
 run:
 
-```
+```shell
 /chatops run feature --help
 ```
 
@@ -70,7 +70,7 @@ and <https://dev.gitlab.org>.
 For example, to enable a feature for 25% of all users, run the following in
 Slack:
 
-```
+```shell
 /chatops run feature set new_navigation_bar 25 --dev
 /chatops run feature set new_navigation_bar 25 --staging
 ```
@@ -92,7 +92,7 @@ feature enabled, you can roll out the change to GitLab.com.
 Similar to above, to enable a feature for 25% of all users, run the following in
 Slack:
 
-```
+```shell
 /chatops run feature set new_navigation_bar 25
 ```
 
@@ -117,13 +117,13 @@ Feature gates can also be actor based, for example a feature could first be
 enabled for only the `gitlab` project. The project is passed by supplying a
 `--project` flag:
 
-```
+```shell
 /chatops run feature set --project=gitlab-org/gitlab some_feature true
 ```
 
 For groups the `--group` flag is available:
 
-```
+```shell
 /chatops run feature set --group=gitlab-org some_feature true
 ```
 
@@ -131,7 +131,7 @@ Note that actor-based gates are applied before percentages. For example, conside
 `group/project` as `gitlab-org/gitlab` and a given example feature as `some_feature`, if
 you run these 2 commands:
 
-```
+```shell
 /chatops run feature set --project=gitlab-org/gitlab some_feature true
 /chatops run feature set some_feature 25
 ```

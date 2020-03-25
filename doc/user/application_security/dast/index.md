@@ -217,7 +217,7 @@ It's also possible to add the `Gitlab-DAST-Permission` header via a proxy.
 
 The following config allows NGINX to act as a reverse proxy and add the `Gitlab-DAST-Permission` [header](http://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header):
 
-```
+```nginx
 # default.conf
 server {
     listen 80;
@@ -237,7 +237,7 @@ to add the `Gitlab-DAST-Permission` [header](https://httpd.apache.org/docs/curre
 
 To do so, add the following lines to `httpd.conf`:
 
-```
+```plaintext
 # httpd.conf
 LoadModule proxy_module modules/mod_proxy.so
 LoadModule proxy_connect_module modules/mod_proxy_connect.so
@@ -472,7 +472,7 @@ Since it keeps most of its information in memory during a scan,
 it is possible for DAST to run out of memory while scanning large applications.
 This results in the following error:
 
-```
+```plaintext
 [zap.out] java.lang.OutOfMemoryError: Java heap space
 ```
 

@@ -52,7 +52,7 @@ bundle exec rake gitlab:import:all_users_to_all_groups RAILS_ENV=production
 
 - Enable this setting to keep new users blocked until they have been cleared by the admin (default: false).
 
-```
+```plaintext
 block_auto_created_users: false
 ```
 

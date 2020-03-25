@@ -60,7 +60,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
 
    For installation from source:
 
-   ```
+   ```yaml
    - { name: 'salesforce',
        app_id: 'SALESFORCE_CLIENT_ID',
        app_secret: 'SALESFORCE_CLIENT_SECRET'

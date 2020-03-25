@@ -294,7 +294,7 @@ Please check this [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules)
 
 1. Tag order in `.vue` file
 
-   ```
+   ```html
    <script>
      // ...
    </script>

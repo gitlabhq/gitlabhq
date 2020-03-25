@@ -101,7 +101,7 @@ end
   in a prepended module, which is very likely the case in EE. We could see
   error like this:
 
-  ```
+  ```plaintext
   1.1) Failure/Error: expect_any_instance_of(ApplicationSetting).to receive_messages(messages)
        Using `any_instance` to stub a method (elasticsearch_indexing) that has been defined on a prepended module (EE::ApplicationSetting) is not supported.
   ```

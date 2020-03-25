@@ -920,7 +920,7 @@ after it has been restored to service.
   Once `repmgrd` and PostgreSQL are runnning, the node will need to follow the new
   as a standby node.
 
-  ```
+  ```shell
   gitlab-ctl repmgr standby follow NEW_MASTER
   ```
 
@@ -930,7 +930,7 @@ after it has been restored to service.
   Once the old master node has been unregistered from the cluster, it will need
   to be setup as a new standby:
 
-  ```
+  ```shell
   gitlab-ctl repmgr standby setup NEW_MASTER
   ```
 

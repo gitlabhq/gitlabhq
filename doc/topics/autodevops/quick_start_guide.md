@@ -239,7 +239,7 @@ After a few minutes you'll notice that there was a failure in a test.
 This means there's a test that was 'broken' by our change.
 Navigating into the `test` job that failed, you can see what the broken test is:
 
-```
+```plaintext
 Failure:
 WelcomeControllerTest#test_should_get_index [/app/test/controllers/welcome_controller_test.rb:7]:
 <You're on Rails!> expected but was
