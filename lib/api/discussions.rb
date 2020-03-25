@@ -28,10 +28,10 @@ module API
         get ":id/#{noteables_path}/:noteable_id/discussions" do
           noteable = find_noteable(noteable_type, params[:noteable_id])
 
-          notes = readable_discussion_notes(noteable)
-          discussions = Kaminari.paginate_array(Discussion.build_collection(notes, noteable))
+          discussion_ids = paginate(noteable.discussion_ids_relation)
+          notes = readable_discussion_notes(noteable, discussion_ids)
 
-          present paginate(discussions), with: Entities::Discussion
+          present Discussion.build_collection(notes, noteable), with: Entities::Discussion
         end
 
         desc "Get a single #{noteable_type.to_s.downcase} discussion" do
@@ -221,10 +221,9 @@ module API
 
     helpers do
       # rubocop: disable CodeReuse/ActiveRecord
-      def readable_discussion_notes(noteable, discussion_id = nil)
+      def readable_discussion_notes(noteable, discussion_ids)
         notes = noteable.notes
-        notes = notes.where(discussion_id: discussion_id) if discussion_id
-        notes = notes
+          .where(discussion_id: discussion_ids)
           .inc_relations_for_view
           .includes(:noteable)
           .fresh

@@ -75,7 +75,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             put :reset_registration_token
           end
 
-          resource :operations, only: [:show, :update]
+          resource :operations, only: [:show, :update] do
+            member do
+              post :reset_alerting_token
+            end
+          end
+
           resource :integrations, only: [:show]
 
           resource :repository, only: [:show], controller: :repository do

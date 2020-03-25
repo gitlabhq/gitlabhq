@@ -171,7 +171,15 @@ describe API::Environments do
 
   describe 'DELETE /projects/:id/environments/:environment_id' do
     context 'as a maintainer' do
-      it 'returns a 200 for an existing environment' do
+      it "rejects the requests in environment isn't stopped" do
+        delete api("/projects/#{project.id}/environments/#{environment.id}", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      it 'returns a 200 for stopped environment' do
+        environment.stop
+
         delete api("/projects/#{project.id}/environments/#{environment.id}", user)
 
         expect(response).to have_gitlab_http_status(:no_content)
@@ -185,6 +193,10 @@ describe API::Environments do
       end
 
       it_behaves_like '412 response' do
+        before do
+          environment.stop
+        end
+
         let(:request) { api("/projects/#{project.id}/environments/#{environment.id}", user) }
       end
     end

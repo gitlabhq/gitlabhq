@@ -4,6 +4,9 @@ module Projects
   module Settings
     class OperationsController < Projects::ApplicationController
       before_action :authorize_admin_operations!
+      before_action :authorize_read_prometheus_alerts!, only: [:reset_alerting_token]
+
+      respond_to :json, only: [:reset_alerting_token]
 
       helper_method :error_tracking_setting
 
@@ -27,7 +30,23 @@ module Projects
         end
       end
 
+      def reset_alerting_token
+        result = ::Projects::Operations::UpdateService
+          .new(project, current_user, alerting_params)
+          .execute
+
+        if result[:status] == :success
+          render json: { token: project.alerting_setting.token }
+        else
+          render json: {}, status: :unprocessable_entity
+        end
+      end
+
       private
+
+      def alerting_params
+        { alerting_setting_attributes: { regenerate_token: true } }
+      end
 
       def prometheus_service
         project.find_or_initialize_service(::PrometheusService.to_param)

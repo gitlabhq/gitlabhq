@@ -79,6 +79,12 @@ module Noteable
       .discussions(self)
   end
 
+  def discussion_ids_relation
+    notes.select(:discussion_id)
+      .group(:discussion_id)
+      .order('MIN(created_at), MIN(id)')
+  end
+
   def capped_notes_count(max)
     notes.limit(max).count
   end

@@ -5,8 +5,9 @@ require 'rspec-parameterized'
 
 describe Gitlab::SidekiqCluster::CLI do
   let(:cli) { described_class.new('/dev/null') }
+  let(:timeout) { described_class::DEFAULT_SOFT_TIMEOUT_SECONDS }
   let(:default_options) do
-    { env: 'test', directory: Dir.pwd, max_concurrency: 50, min_concurrency: 0, dryrun: false }
+    { env: 'test', directory: Dir.pwd, max_concurrency: 50, min_concurrency: 0, dryrun: false, timeout: timeout }
   end
 
   before do
@@ -77,6 +78,22 @@ describe Gitlab::SidekiqCluster::CLI do
                                               .and_return([])
 
           cli.run(%w(foo,bar,baz solo --min-concurrency 2))
+        end
+      end
+
+      context '-timeout flag' do
+        it 'when given', 'starts Sidekiq workers with given timeout' do
+          expect(Gitlab::SidekiqCluster).to receive(:start)
+            .with([['foo']], default_options.merge(timeout: 10))
+
+          cli.run(%w(foo --timeout 10))
+        end
+
+        it 'when not given', 'starts Sidekiq workers with default timeout' do
+          expect(Gitlab::SidekiqCluster).to receive(:start)
+            .with([['foo']], default_options.merge(timeout: described_class::DEFAULT_SOFT_TIMEOUT_SECONDS))
+
+          cli.run(%w(foo))
         end
       end
 
@@ -222,7 +239,8 @@ describe Gitlab::SidekiqCluster::CLI do
         .with([], :KILL)
 
       stub_const("Gitlab::SidekiqCluster::CLI::CHECK_TERMINATE_INTERVAL_SECONDS", 0.1)
-      stub_const("Gitlab::SidekiqCluster::CLI::TERMINATE_TIMEOUT_SECONDS", 1)
+      allow(cli).to receive(:terminate_timeout_seconds) { 1 }
+
       cli.wait_for_termination
     end
 
@@ -251,7 +269,8 @@ describe Gitlab::SidekiqCluster::CLI do
         cli.run(%w(foo))
 
         stub_const("Gitlab::SidekiqCluster::CLI::CHECK_TERMINATE_INTERVAL_SECONDS", 0.1)
-        stub_const("Gitlab::SidekiqCluster::CLI::TERMINATE_TIMEOUT_SECONDS", 1)
+        allow(cli).to receive(:terminate_timeout_seconds) { 1 }
+
         cli.wait_for_termination
       end
     end

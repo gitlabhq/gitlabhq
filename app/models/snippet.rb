@@ -19,8 +19,6 @@ class Snippet < ApplicationRecord
 
   MAX_FILE_COUNT = 1
 
-  ignore_column :repository_storage, remove_with: '12.10', remove_after: '2020-03-22'
-
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
   cache_markdown_field :content

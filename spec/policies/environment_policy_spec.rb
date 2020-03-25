@@ -86,6 +86,50 @@ describe EnvironmentPolicy do
           it { expect(policy).to be_allowed :stop_environment }
         end
       end
+
+      describe '#destroy_environment' do
+        let(:environment) do
+          create(:environment, project: project)
+        end
+
+        where(:access_level, :allowed?) do
+          nil         | false
+          :guest      | false
+          :reporter   | false
+          :developer  | true
+          :maintainer | true
+        end
+
+        with_them do
+          before do
+            project.add_user(user, access_level) unless access_level.nil?
+          end
+
+          it { expect(policy).to be_disallowed :destroy_environment }
+
+          context 'when environment is stopped' do
+            before do
+              environment.stop!
+            end
+
+            it { expect(policy.allowed?(:destroy_environment)).to be allowed? }
+          end
+        end
+
+        context 'when an admin user' do
+          let(:user) { create(:user, :admin) }
+
+          it { expect(policy).to be_disallowed :destroy_environment }
+
+          context 'when environment is stopped' do
+            before do
+              environment.stop!
+            end
+
+            it { expect(policy).to be_allowed :destroy_environment }
+          end
+        end
+      end
     end
 
     context 'when project is public' do

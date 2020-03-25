@@ -4,6 +4,7 @@
 module GitlabRoutingHelper
   extend ActiveSupport::Concern
 
+  include API::Helpers::RelatedResourcesHelpers
   included do
     Gitlab::Routing.includes_helpers(self)
   end
@@ -27,6 +28,10 @@ module GitlabRoutingHelper
 
   def environment_metrics_path(environment, *args)
     metrics_project_environment_path(environment.project, environment, *args)
+  end
+
+  def environment_delete_path(environment, *args)
+    expose_path(api_v4_projects_environments_path(id: environment.project.id, environment_id: environment.id))
   end
 
   def issue_path(entity, *args)

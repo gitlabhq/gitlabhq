@@ -449,6 +449,19 @@ describe CommitStatus do
     end
   end
 
+  describe '.match_id_and_lock_version' do
+    let(:status_1) { create_status(lock_version: 1) }
+    let(:status_2) { create_status(lock_version: 2) }
+
+    it 'returns statuses that match the given id and lock versions' do
+      params = [
+        { id: status_1.id, lock_version: 1 },
+        { id: status_2.id, lock_version: 3 }
+      ]
+      expect(described_class.match_id_and_lock_version(params)).to contain_exactly(status_1)
+    end
+  end
+
   describe '#before_sha' do
     subject { commit_status.before_sha }
 

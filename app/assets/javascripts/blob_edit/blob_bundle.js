@@ -5,6 +5,7 @@ import NewCommitForm from '../new_commit_form';
 import EditBlob from './edit_blob';
 import BlobFileDropzone from '../blob/blob_file_dropzone';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
+import { setCookie } from '~/lib/utils/common_utils';
 
 export default () => {
   const editBlobForm = $('.js-edit-blob-form');
@@ -60,6 +61,16 @@ export default () => {
   }
 
   if (suggestEl) {
+    const commitButton = document.querySelector('#commit-changes');
+
     initPopover(suggestEl);
+
+    if (commitButton) {
+      const commitCookieName = `suggest_gitlab_ci_yml_commit_${suggestEl.dataset.dismissKey}`;
+
+      commitButton.addEventListener('click', () => {
+        setCookie(commitCookieName, true);
+      });
+    }
   }
 };

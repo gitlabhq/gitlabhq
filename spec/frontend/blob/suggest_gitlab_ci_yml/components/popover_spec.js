@@ -1,6 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 import Popover from '~/blob/suggest_gitlab_ci_yml/components/popover.vue';
-import Cookies from 'js-cookie';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import * as utils from '~/lib/utils/common_utils';
 
@@ -10,9 +9,11 @@ jest.mock('~/lib/utils/common_utils', () => ({
 }));
 
 const target = 'gitlab-ci-yml-selector';
-const dismissKey = 'suggest_gitlab_ci_yml_99';
+const dismissKey = '99';
 const defaultTrackLabel = 'suggest_gitlab_ci_yml';
 const commitTrackLabel = 'suggest_commit_first_project_gitlab_ci_yml';
+
+const dismissCookie = 'suggest_gitlab_ci_yml_99';
 const humanAccess = 'owner';
 
 describe('Suggest gitlab-ci.yml Popover', () => {
@@ -46,7 +47,8 @@ describe('Suggest gitlab-ci.yml Popover', () => {
 
   describe('when the dismiss cookie is set', () => {
     beforeEach(() => {
-      Cookies.set(dismissKey, true);
+      utils.setCookie(dismissCookie, true);
+
       createWrapper(defaultTrackLabel);
     });
 
@@ -55,7 +57,7 @@ describe('Suggest gitlab-ci.yml Popover', () => {
     });
 
     afterEach(() => {
-      Cookies.remove(dismissKey);
+      utils.removeCookie(dismissCookie);
     });
   });
 

@@ -44,7 +44,10 @@
           "build_path": { "type": "string" }
         }
       ]
-    }
+    },
+    "can_delete": { "type": "boolean" }
+    ,
+    "delete_path": { "type": "string" }
   },
   "additionalProperties": false
 }

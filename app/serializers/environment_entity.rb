@@ -28,6 +28,10 @@ class EnvironmentEntity < Grape::Entity
     cancel_auto_stop_project_environment_path(environment.project, environment)
   end
 
+  expose :delete_path do |environment|
+    environment_delete_path(environment)
+  end
+
   expose :cluster_type, if: ->(environment, _) { cluster_platform_kubernetes? } do |environment|
     cluster.cluster_type
   end
@@ -61,6 +65,10 @@ class EnvironmentEntity < Grape::Entity
 
   expose :enable_advanced_logs_querying, if: -> (*) { can_read_pod_logs? } do |environment|
     environment.elastic_stack_available?
+  end
+
+  expose :can_delete do |environment|
+    can?(current_user, :destroy_environment, environment)
   end
 
   private

@@ -50,4 +50,8 @@ module EnvironmentsHelper
       "cluster-applications-documentation-path" => help_page_path('user/clusters/applications.md', anchor: 'elastic-stack')
     }
   end
+
+  def can_destroy_environment?(environment)
+    can?(current_user, :destroy_environment, environment)
+  end
 end

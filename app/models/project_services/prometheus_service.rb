@@ -81,7 +81,7 @@ class PrometheusService < MonitoringService
   def prometheus_client
     return unless should_return_client?
 
-    Gitlab::PrometheusClient.new(api_url)
+    Gitlab::PrometheusClient.new(api_url, allow_local_requests: allow_local_api_url?)
   end
 
   def prometheus_available?
@@ -94,7 +94,8 @@ class PrometheusService < MonitoringService
   end
 
   def allow_local_api_url?
-    self_monitoring_project? && internal_prometheus_url?
+    allow_local_requests_from_web_hooks_and_services? ||
+    (self_monitoring_project? && internal_prometheus_url?)
   end
 
   def configured?
@@ -109,6 +110,10 @@ class PrometheusService < MonitoringService
 
   def internal_prometheus_url?
     api_url.present? && api_url == ::Gitlab::Prometheus::Internal.uri
+  end
+
+  def allow_local_requests_from_web_hooks_and_services?
+    current_settings.allow_local_requests_from_web_hooks_and_services?
   end
 
   def should_return_client?

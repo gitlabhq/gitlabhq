@@ -27,6 +27,10 @@ export default {
   data() {
     const store = new EnvironmentsStore();
 
+    const isDetailView = document.body.contains(
+      document.getElementById('environments-detail-view'),
+    );
+
     return {
       store,
       state: store.state,
@@ -36,7 +40,9 @@ export default {
       page: getParameterByName('page') || '1',
       requestData: {},
       environmentInStopModal: {},
+      environmentInDeleteModal: {},
       environmentInRollbackModal: {},
+      isDetailView,
     };
   },
 
@@ -121,6 +127,10 @@ export default {
       this.environmentInStopModal = environment;
     },
 
+    updateDeleteModal(environment) {
+      this.environmentInDeleteModal = environment;
+    },
+
     updateRollbackModal(environment) {
       this.environmentInRollbackModal = environment;
     },
@@ -131,6 +141,30 @@ export default {
         'Environments|An error occurred while stopping the environment, please try again',
       );
       this.postAction({ endpoint, errorMessage });
+    },
+
+    deleteEnvironment(environment) {
+      const endpoint = environment.delete_path;
+      const mountedToShow = environment.mounted_to_show;
+      const errorMessage = s__(
+        'Environments|An error occurred while deleting the environment. Check if the environment stopped; if not, stop it and try again.',
+      );
+
+      this.service
+        .deleteAction(endpoint)
+        .then(() => {
+          if (!mountedToShow) {
+            // Reload as a first solution to bust the ETag cache
+            window.location.reload();
+            return;
+          }
+          const url = window.location.href.split('/');
+          url.pop();
+          window.location.href = url.join('/');
+        })
+        .catch(() => {
+          Flash(errorMessage);
+        });
     },
 
     rollbackEnvironment(environment) {
@@ -178,35 +212,41 @@ export default {
     this.service = new EnvironmentsService(this.endpoint);
     this.requestData = { page: this.page, scope: this.scope, nested: true };
 
-    this.poll = new Poll({
-      resource: this.service,
-      method: 'fetchEnvironments',
-      data: this.requestData,
-      successCallback: this.successCallback,
-      errorCallback: this.errorCallback,
-      notificationCallback: isMakingRequest => {
-        this.isMakingRequest = isMakingRequest;
-      },
-    });
+    if (!this.isDetailView) {
+      this.poll = new Poll({
+        resource: this.service,
+        method: 'fetchEnvironments',
+        data: this.requestData,
+        successCallback: this.successCallback,
+        errorCallback: this.errorCallback,
+        notificationCallback: isMakingRequest => {
+          this.isMakingRequest = isMakingRequest;
+        },
+      });
 
-    if (!Visibility.hidden()) {
-      this.isLoading = true;
-      this.poll.makeRequest();
-    } else {
-      this.fetchEnvironments();
+      if (!Visibility.hidden()) {
+        this.isLoading = true;
+        this.poll.makeRequest();
+      } else {
+        this.fetchEnvironments();
+      }
+
+      Visibility.change(() => {
+        if (!Visibility.hidden()) {
+          this.poll.restart();
+        } else {
+          this.poll.stop();
+        }
+      });
     }
 
-    Visibility.change(() => {
-      if (!Visibility.hidden()) {
-        this.poll.restart();
-      } else {
-        this.poll.stop();
-      }
-    });
-
     eventHub.$on('postAction', this.postAction);
+
     eventHub.$on('requestStopEnvironment', this.updateStopModal);
     eventHub.$on('stopEnvironment', this.stopEnvironment);
+
+    eventHub.$on('requestDeleteEnvironment', this.updateDeleteModal);
+    eventHub.$on('deleteEnvironment', this.deleteEnvironment);
 
     eventHub.$on('requestRollbackEnvironment', this.updateRollbackModal);
     eventHub.$on('rollbackEnvironment', this.rollbackEnvironment);
@@ -216,8 +256,12 @@ export default {
 
   beforeDestroy() {
     eventHub.$off('postAction', this.postAction);
+
     eventHub.$off('requestStopEnvironment', this.updateStopModal);
     eventHub.$off('stopEnvironment', this.stopEnvironment);
+
+    eventHub.$off('requestDeleteEnvironment', this.updateDeleteModal);
+    eventHub.$off('deleteEnvironment', this.deleteEnvironment);
 
     eventHub.$off('requestRollbackEnvironment', this.updateRollbackModal);
     eventHub.$off('rollbackEnvironment', this.rollbackEnvironment);

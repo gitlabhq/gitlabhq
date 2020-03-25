@@ -40,7 +40,7 @@ module Gitlab
       end
 
       def lfs_oids_from_repository
-        project.repository.gitaly_blob_client.get_all_lfs_pointers(nil).map(&:lfs_oid)
+        project.repository.gitaly_blob_client.get_all_lfs_pointers.map(&:lfs_oid)
       end
 
       def orphan_oids

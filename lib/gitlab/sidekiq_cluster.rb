@@ -62,21 +62,28 @@ module Gitlab
     # directory - The directory of the Rails application.
     #
     # Returns an Array containing the PIDs of the started processes.
-    def self.start(queues, env: :development, directory: Dir.pwd, max_concurrency: 50, min_concurrency: 0, dryrun: false)
+    def self.start(queues, env: :development, directory: Dir.pwd, max_concurrency: 50, min_concurrency: 0, timeout: CLI::DEFAULT_SOFT_TIMEOUT_SECONDS, dryrun: false)
       queues.map.with_index do |pair, index|
-        start_sidekiq(pair, env: env, directory: directory, max_concurrency: max_concurrency, min_concurrency: min_concurrency, worker_id: index, dryrun: dryrun)
+        start_sidekiq(pair, env: env,
+                            directory: directory,
+                            max_concurrency: max_concurrency,
+                            min_concurrency: min_concurrency,
+                            worker_id: index,
+                            timeout: timeout,
+                            dryrun: dryrun)
       end
     end
 
     # Starts a Sidekiq process that processes _only_ the given queues.
     #
     # Returns the PID of the started process.
-    def self.start_sidekiq(queues, env:, directory:, max_concurrency:, min_concurrency:, worker_id:, dryrun:)
+    def self.start_sidekiq(queues, env:, directory:, max_concurrency:, min_concurrency:, worker_id:, timeout:, dryrun:)
       counts = count_by_queue(queues)
 
       cmd = %w[bundle exec sidekiq]
       cmd << "-c#{self.concurrency(queues, min_concurrency, max_concurrency)}"
       cmd << "-e#{env}"
+      cmd << "-t#{timeout}"
       cmd << "-gqueues:#{proc_details(counts)}"
       cmd << "-r#{directory}"
 

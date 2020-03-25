@@ -62,13 +62,16 @@ class CommitStatus < ApplicationRecord
     preload(project: :namespace)
   end
 
-  scope :match_id_and_lock_version, -> (slice) do
+  scope :match_id_and_lock_version, -> (items) do
     # it expects that items are an array of attributes to match
     # each hash needs to have `id` and `lock_version`
-    slice.inject(self) do |relation, item|
-      match = CommitStatus.where(item.slice(:id, :lock_version))
+    or_conditions = items.inject(none) do |relation, item|
+      match = CommitStatus.default_scoped.where(item.slice(:id, :lock_version))
+
       relation.or(match)
     end
+
+    merge(or_conditions)
   end
 
   # We use `CommitStatusEnums.failure_reasons` here so that EE can more easily

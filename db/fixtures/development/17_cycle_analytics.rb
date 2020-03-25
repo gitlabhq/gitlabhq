@@ -30,7 +30,7 @@ class Gitlab::Seeder::CycleAnalytics
   REVIEW_STAGE_MAX_DURATION_IN_HOURS = 72
   DEPLOYMENT_MAX_DURATION_IN_HOURS = 48
 
-  def self.seeder_base_on_env(project)
+  def self.seeder_based_on_env(project)
     if ENV[FLAG]
       self.new(project: project)
     elsif ENV[PERF_TEST]
@@ -194,7 +194,7 @@ Gitlab::Seeder.quiet do
   project_id = ENV['CYCLE_ANALYTICS_SEED_PROJECT_ID']
   project = Project.find(project_id) if project_id
 
-  seeder = Gitlab::Seeder::CycleAnalytics.seeder_base_on_env(project)
+  seeder = Gitlab::Seeder::CycleAnalytics.seeder_based_on_env(project)
 
   if seeder
     seeder.seed!

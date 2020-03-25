@@ -62,6 +62,21 @@ describe Noteable do
     end
   end
 
+  describe '#discussion_ids_relation' do
+    it 'returns ordered discussion_ids' do
+      discussion_ids = subject.discussion_ids_relation.pluck(:discussion_id)
+
+      expect(discussion_ids).to eq([
+        active_diff_note1,
+        active_diff_note3,
+        outdated_diff_note1,
+        discussion_note1,
+        note1,
+        note2
+      ].map(&:discussion_id))
+    end
+  end
+
   describe '#grouped_diff_discussions' do
     let(:grouped_diff_discussions) { subject.grouped_diff_discussions }
 

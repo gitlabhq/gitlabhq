@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def all_pointers
-        @repository.gitaly_blob_client.get_all_lfs_pointers(@newrev)
+        @repository.gitaly_blob_client.get_all_lfs_pointers
       end
     end
   end

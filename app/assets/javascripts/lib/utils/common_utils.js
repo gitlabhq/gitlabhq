@@ -9,6 +9,7 @@ import { getLocationHash } from './url_utility';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';
 import { isFunction } from 'lodash';
+import Cookies from 'js-cookie';
 
 export const getPagePath = (index = 0) => {
   const page = $('body').attr('data-page') || '';
@@ -902,3 +903,10 @@ window.gl.utils = {
   spriteIcon,
   imagePath,
 };
+
+// Methods to set and get Cookie
+export const setCookie = (name, value) => Cookies.set(name, value, { expires: 365 });
+
+export const getCookie = name => Cookies.get(name);
+
+export const removeCookie = name => Cookies.remove(name);

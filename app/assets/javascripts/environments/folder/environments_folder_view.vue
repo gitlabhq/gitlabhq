@@ -3,10 +3,12 @@ import folderMixin from 'ee_else_ce/environments/mixins/environments_folder_view
 import environmentsMixin from '../mixins/environments_mixin';
 import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 import StopEnvironmentModal from '../components/stop_environment_modal.vue';
+import DeleteEnvironmentModal from '../components/delete_environment_modal.vue';
 
 export default {
   components: {
     StopEnvironmentModal,
+    DeleteEnvironmentModal,
   },
 
   mixins: [environmentsMixin, CIPaginationMixin, folderMixin],
@@ -39,6 +41,7 @@ export default {
 <template>
   <div :class="cssContainerClass">
     <stop-environment-modal :environment="environmentInStopModal" />
+    <delete-environment-modal :environment="environmentInDeleteModal" />
 
     <h4 class="js-folder-name environments-folder-name">
       {{ s__('Environments|Environments') }} /

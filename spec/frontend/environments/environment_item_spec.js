@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils';
 import { format } from 'timeago.js';
 import EnvironmentItem from '~/environments/components/environment_item.vue';
 import PinComponent from '~/environments/components/environment_pin.vue';
+import DeleteComponent from '~/environments/components/environment_delete.vue';
 
 import { environment, folder, tableData } from './mock_data';
 
@@ -54,6 +55,10 @@ describe('Environment item', () => {
         expect(wrapper.find('.environment-created-date-timeago').text()).toContain(formattedDate);
       });
 
+      it('should not render the delete button', () => {
+        expect(wrapper.find(DeleteComponent).exists()).toBe(false);
+      });
+
       describe('With user information', () => {
         it('should render user avatar with link to profile', () => {
           expect(wrapper.find('.js-deploy-user-container').attributes('href')).toEqual(
@@ -98,7 +103,7 @@ describe('Environment item', () => {
           expect(findAutoStop().exists()).toBe(false);
         });
 
-        it('should not render the suto-stop button', () => {
+        it('should not render the auto-stop button', () => {
           expect(wrapper.find(PinComponent).exists()).toBe(false);
         });
       });
@@ -203,6 +208,24 @@ describe('Environment item', () => {
 
     it('should render the number of children in a badge', () => {
       expect(wrapper.find('.folder-name .badge').text()).toContain(folder.size);
+    });
+  });
+
+  describe('When environment can be deleted', () => {
+    beforeEach(() => {
+      factory({
+        propsData: {
+          model: {
+            can_delete: true,
+            delete_path: 'http://0.0.0.0:3000/api/v4/projects/8/environments/45',
+          },
+          tableData,
+        },
+      });
+    });
+
+    it('should render the delete button', () => {
+      expect(wrapper.find(DeleteComponent).exists()).toBe(true);
     });
   });
 });

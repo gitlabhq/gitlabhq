@@ -131,10 +131,9 @@ module Gitlab
         map_lfs_pointers(response)
       end
 
-      def get_all_lfs_pointers(revision)
-        request = Gitaly::GetNewLFSPointersRequest.new(
-          repository: @gitaly_repo,
-          revision: encode_binary(revision)
+      def get_all_lfs_pointers
+        request = Gitaly::GetAllLFSPointersRequest.new(
+          repository: @gitaly_repo
         )
 
         response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_all_lfs_pointers, request, timeout: GitalyClient.medium_timeout)

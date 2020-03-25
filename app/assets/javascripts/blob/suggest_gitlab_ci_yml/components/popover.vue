@@ -1,7 +1,6 @@
 <script>
 import { GlPopover, GlSprintf, GlButton, GlIcon } from '@gitlab/ui';
-import Cookies from 'js-cookie';
-import { parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
+import { parseBoolean, scrollToElement, setCookie, getCookie } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { glEmojiTag } from '~/emoji';
 import Tracking from '~/tracking';
@@ -51,7 +50,7 @@ export default {
   },
   data() {
     return {
-      popoverDismissed: parseBoolean(Cookies.get(this.dismissKey)),
+      popoverDismissed: parseBoolean(getCookie(`${this.trackLabel}_${this.dismissKey}`)),
       tracking: {
         label: this.trackLabel,
         property: this.humanAccess,
@@ -68,17 +67,27 @@ export default {
     emoji() {
       return popoverStates[this.trackLabel].emoji || '';
     },
+    dismissCookieName() {
+      return `${this.trackLabel}_${this.dismissKey}`;
+    },
+    commitCookieName() {
+      return `suggest_gitlab_ci_yml_commit_${this.dismissKey}`;
+    },
   },
   mounted() {
-    if (this.trackLabel === 'suggest_commit_first_project_gitlab_ci_yml' && !this.popoverDismissed)
+    if (
+      this.trackLabel === 'suggest_commit_first_project_gitlab_ci_yml' &&
+      !this.popoverDismissed
+    ) {
       scrollToElement(document.querySelector(this.target));
+    }
 
     this.trackOnShow();
   },
   methods: {
     onDismiss() {
       this.popoverDismissed = true;
-      Cookies.set(this.dismissKey, this.popoverDismissed, { expires: 365 });
+      setCookie(this.dismissCookieName, this.popoverDismissed);
     },
     trackOnShow() {
       if (!this.popoverDismissed) this.track();

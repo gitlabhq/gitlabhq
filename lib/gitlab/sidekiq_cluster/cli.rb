@@ -8,9 +8,17 @@ module Gitlab
   module SidekiqCluster
     class CLI
       CHECK_TERMINATE_INTERVAL_SECONDS = 1
-      # How long to wait in total when asking for a clean termination
-      # Sidekiq default to self-terminate is 25s
-      TERMINATE_TIMEOUT_SECONDS = 30
+
+      # How long to wait when asking for a clean termination.
+      # It maps the Sidekiq default timeout:
+      # https://github.com/mperham/sidekiq/wiki/Signals#term
+      #
+      # This value is passed to Sidekiq's `-t` if none
+      # is given through arguments.
+      DEFAULT_SOFT_TIMEOUT_SECONDS = 25
+
+      # After surpassing the soft timeout.
+      DEFAULT_HARD_TIMEOUT_SECONDS = 5
 
       CommandError = Class.new(StandardError)
 
@@ -74,7 +82,8 @@ module Gitlab
           directory: @rails_path,
           max_concurrency: @max_concurrency,
           min_concurrency: @min_concurrency,
-          dryrun: @dryrun
+          dryrun: @dryrun,
+          timeout: soft_timeout_seconds
         )
 
         return if @dryrun
@@ -86,6 +95,15 @@ module Gitlab
 
       def write_pid
         SidekiqCluster.write_pid(@pid) if @pid
+      end
+
+      def soft_timeout_seconds
+        @soft_timeout_seconds || DEFAULT_SOFT_TIMEOUT_SECONDS
+      end
+
+      # The amount of time it'll wait for killing the alive Sidekiq processes.
+      def hard_timeout_seconds
+        soft_timeout_seconds + DEFAULT_HARD_TIMEOUT_SECONDS
       end
 
       def monotonic_time
@@ -101,7 +119,7 @@ module Gitlab
       end
 
       def wait_for_termination
-        deadline = monotonic_time + TERMINATE_TIMEOUT_SECONDS
+        deadline = monotonic_time + hard_timeout_seconds
         sleep(CHECK_TERMINATE_INTERVAL_SECONDS) while continue_waiting?(deadline)
 
         hard_stop_stuck_pids
@@ -174,6 +192,10 @@ module Gitlab
 
           opt.on('-i', '--interval INT', 'The number of seconds to wait between worker checks') do |int|
             @interval = int.to_i
+          end
+
+          opt.on('-t', '--timeout INT', 'Graceful timeout for all running processes') do |timeout|
+            @soft_timeout_seconds = timeout.to_i
           end
 
           opt.on('-d', '--dryrun', 'Print commands that would be run without this flag, and quit') do |int|

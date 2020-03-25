@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe 'User follows pipeline suggest nudge spec when feature is enabled', :js do
+  include CookieHelper
+
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project, :empty_repo) }
 
@@ -37,6 +39,12 @@ describe 'User follows pipeline suggest nudge spec when feature is enabled', :js
         page.within(popover_selector) do
           expect(page).to have_content('1/2: Choose a template')
         end
+      end
+
+      it 'sets the commit cookie when the Commit button is clicked' do
+        click_button 'Commit changes'
+
+        expect(get_cookie("suggest_gitlab_ci_yml_commit_#{project.id}")).to be_present
       end
     end
 

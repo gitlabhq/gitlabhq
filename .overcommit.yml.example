@@ -28,7 +28,9 @@ PreCommit:
   EsLint:
     enabled: true
     # https://github.com/sds/overcommit/issues/338
-    command: './node_modules/eslint/bin/eslint.js'
+    required_executable: 'yarn'
+    command: ['yarn', 'eslint']
+    flags: []
   HamlLint:
     enabled: true
   MergeConflicts:

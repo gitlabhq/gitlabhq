@@ -13,10 +13,28 @@ module Projects
 
       def project_update_params
         error_tracking_params
+          .merge(alerting_setting_params)
           .merge(metrics_setting_params)
           .merge(grafana_integration_params)
           .merge(prometheus_integration_params)
           .merge(incident_management_setting_params)
+      end
+
+      def alerting_setting_params
+        return {} unless can?(current_user, :read_prometheus_alerts, project)
+
+        attr = params[:alerting_setting_attributes]
+        return {} unless attr
+
+        regenerate_token = attr.delete(:regenerate_token)
+
+        if regenerate_token
+          attr[:token] = nil
+        else
+          attr = attr.except(:token)
+        end
+
+        { alerting_setting_attributes: attr }
       end
 
       def metrics_setting_params
