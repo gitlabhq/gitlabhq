@@ -13,3 +13,4 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | `:quarantine`     | The test has been [quarantined](https://about.gitlab.com/handbook/engineering/quality/guidelines/debugging-qa-test-failures/#quarantining-tests), will run in a separate job that only includes quarantined tests, and is allowed to fail. The test will be skipped in its regular job so that if it fails it will not hold up the pipeline. |
 | `:reliable`       | The test has been [promoted to a reliable test](https://about.gitlab.com/handbook/engineering/quality/guidelines/reliable-tests/#promoting-an-existing-test-to-reliable) meaning it passes consistently in all pipelines, including merge requests. |
 | `:requires_admin` | The test requires an admin account. Tests with the tag are excluded when run against Canary and Production environments. |
+| `:runner`         | The test depends on and will set up a GitLab Runner instance, typically to run a pipeline. |

@@ -547,16 +547,26 @@ The more challenging part are mocks, which can be used for functions or even dep
 
 ### Manual module mocks
 
-Jest supports [manual module mocks](https://jestjs.io/docs/en/manual-mocks) by placing a mock in a `__mocks__/` directory next to the source module. **Don't do this.** We want to keep all of our test-related code in one place (the `spec/` folder), and the logic that Jest uses to apply mocks from `__mocks__/` is rather inconsistent.
+Manual mocks are used to mock modules across the entire Jest environment. This is a very powerful testing tool that helps simplify
+unit testing by mocking out modules which cannot be easily consumned in our test environment.
 
-Instead, our test runner detects manual mocks from `spec/frontend/mocks/`. Any mock placed here is automatically picked up and injected whenever you import its source module.
+> NOTE: Do not use manual mocks if a mock should not be consistently applied (i.e. it's only needed by a few specs).
+> Instead, consider using `jest.mock` in the relevant spec file.
+
+#### Where should I put manual mocks?
+
+Jest supports [manual module mocks](https://jestjs.io/docs/en/manual-mocks) by placing a mock in a `__mocks__/` directory next to the source module
+(e.g. `app/assets/javascripts/ide/__mocks__`). **Don't do this.** We want to keep all of our test-related code in one place (the `spec/` folder).
+
+If a manual mock is needed for a `node_modules` package, please use the `spec/frontend/__mocks__` folder. Here's an example of
+a [Jest mock for the package `monaco-editor`](https://gitlab.com/gitlab-org/gitlab/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js#L1).
+
+If a manual mock is needed for a CE module, please place it in `spec/frontend/mocks/ce`.
 
 - Files in `spec/frontend/mocks/ce` will mock the corresponding CE module from `app/assets/javascripts`, mirroring the source module's path.
   - Example: `spec/frontend/mocks/ce/lib/utils/axios_utils` will mock the module `~/lib/utils/axios_utils`.
-- Files in `spec/frontend/mocks/node` will mock NPM packages of the same name or path.
 - We don't support mocking EE modules yet.
-
-If a mock is found for which a source module doesn't exist, the test suite will fail. 'Virtual' mocks, or mocks that don't have a 1-to-1 association with a source module, are not supported yet.
+- If a mock is found for which a source module doesn't exist, the test suite will fail. 'Virtual' mocks, or mocks that don't have a 1-to-1 association with a source module, are not supported yet.
 
 ### Writing a mock
 

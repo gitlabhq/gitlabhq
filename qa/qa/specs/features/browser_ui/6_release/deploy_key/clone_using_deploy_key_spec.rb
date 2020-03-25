@@ -3,7 +3,7 @@
 require 'digest/sha1'
 
 module QA
-  context 'Release', :docker do
+  context 'Release', :docker, :runner do
     describe 'Git clone using a deploy key' do
       before do
         Flow::Login.sign_in
@@ -16,7 +16,7 @@ module QA
 
         @repository_location = @project.repository_ssh_location
 
-        Resource::Runner.fabricate_via_api! do |resource|
+        @runner = Resource::Runner.fabricate_via_api! do |resource|
           resource.project = @project
           resource.name = @runner_name
           resource.tags = %w[qa docker]
@@ -25,7 +25,7 @@ module QA
       end
 
       after do
-        Service::DockerRun::GitlabRunner.new(@runner_name).remove!
+        @runner.remove_via_api!
       end
 
       keys = [

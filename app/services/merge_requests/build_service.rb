@@ -220,7 +220,7 @@ module MergeRequests
     def append_closes_description
       return unless issue&.to_reference.present?
 
-      closes_issue = "Closes #{issue.to_reference}"
+      closes_issue = "#{target_project.autoclose_referenced_issues ? 'Closes' : 'Related to'} #{issue.to_reference}"
 
       if description.present?
         descr_parts = [merge_request.description, closes_issue]

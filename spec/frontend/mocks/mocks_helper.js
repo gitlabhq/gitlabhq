@@ -16,7 +16,6 @@ const prefixMap = [
   // E.g. the mock ce/foo/bar maps to require path ~/foo/bar
   { mocksRoot: 'ce', requirePrefix: '~' },
   // { mocksRoot: 'ee', requirePrefix: 'ee' }, // We'll deal with EE-specific mocks later
-  { mocksRoot: 'node', requirePrefix: '' },
   // { mocksRoot: 'virtual', requirePrefix: '' }, // We'll deal with virtual mocks later
 ];
 

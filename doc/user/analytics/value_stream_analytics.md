@@ -205,8 +205,11 @@ This stage would not work because the end event has already happened when the st
 To prevent such invalid stages, the UI prohibits incompatible start and end events. After you select
 the start event, the stop event dropdown will only list the compatible events.
 
-NOTE: **Note:**
-The ability to re-order the stages is [planned](https://gitlab.com/gitlab-org/gitlab/issues/196698).
+### Re-ordering stages
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196698) in GitLab 12.10.
+
+Once a custom stage has been added, you can "drag and drop" stages to rearrange their order. These changes are automatically saved to the system.
 
 ### Label based stages
 

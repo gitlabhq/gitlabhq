@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Verify', :docker do
+  context 'Verify', :docker, :runner do
     describe 'Pipeline creation and processing' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:max_wait) { 30 }
@@ -12,7 +12,7 @@ module QA
         end
       end
 
-      before do
+      let!(:runner) do
         Resource::Runner.fabricate! do |runner|
           runner.project = project
           runner.name = executor
@@ -21,7 +21,7 @@ module QA
       end
 
       after do
-        Service::DockerRun::GitlabRunner.new(executor).remove!
+        runner.remove_via_api!
       end
 
       it 'users creates a pipeline which gets processed', :smoke do

@@ -415,6 +415,84 @@ test += " world"
 When adding new Ruby files, please check that you can add the above header,
 as omitting it may lead to style check failures.
 
+## Reading from files and other data sources
+
+Ruby offers several convenience functions that deal with file contents specifically
+or I/O streams in general. Functions such as `IO.read` and `IO.readlines` make
+it easy to read data into memory, but they can be inefficient when the
+data grows large. Because these functions read the entire contents of a data
+source into memory, memory use will grow by _at least_ the size of the data source.
+In the case of `readlines`, it will grow even further, due to extra bookkeeping
+the Ruby VM has to perform to represent each line.
+
+Consider the following program, which reads a text file that is 750MB on disk:
+
+```ruby
+File.readlines('large_file.txt').each do |line|
+  puts line
+end
+```
+
+Here is a process memory reading from while the program was running, showing
+how we indeed kept the entire file in memory (RSS reported in kilobytes):
+
+```shell
+$ ps -o rss -p <pid>
+
+RSS
+783436
+```
+
+And here is an excerpt of what the garbage collector was doing:
+
+```ruby
+pp GC.stat
+
+{
+ :heap_live_slots=>2346848,
+ :malloc_increase_bytes=>30895288,
+ ...
+}
+```
+
+We can see that `heap_live_slots` (the number of reachable objects) jumped to ~2.3M,
+which is roughly two orders of magnitude more compared to reading the file line by
+line instead. It was not just the raw memory usage that increased, but also how the garbage collector (GC)
+responded to this change in anticipation of future memory use. We can see that `malloc_increase_bytes` jumped
+to ~30MB, which compares to just ~4kB for a "fresh" Ruby program. This figure specifies how
+much additional heap space the Ruby GC will claim from the operating system next time it runs out of memory.
+Not only did we occupy more memory, we also changed the behavior of the application
+to increase memory use at a faster rate.
+
+The `IO.read` function exhibits similar behavior, with the difference that no extra memory will
+be allocated for each line object.
+
+### Recommendations
+
+Instead of reading data sources into memory in full, it is better to read them line by line
+instead. This is not always an option, for instance when you need to convert a YAML file
+into a Ruby `Hash`, but whenever you have data where each row represents some entity that
+can be processed and then discarded, you can use the following approaches.
+
+First, replace calls to `readlines.each` with either `each` or `each_line`.
+The `each_line` and `each` functions read the data source line by line without keeping
+already visited lines in memory:
+
+```ruby
+File.new('file').each { |line| puts line }
+```
+
+Alternatively, you can read individual lines explicitly using `IO.readline` or `IO.gets` functions:
+
+```ruby
+while line = file.readline
+   # process line
+end
+```
+
+This might be preferable if there is a condition that allows exiting the loop early, saving not
+just memory but also unnecessary time spent in CPU and I/O for processing lines you're not interested in.
+
 ## Anti-Patterns
 
 This is a collection of [anti-patterns][anti-pattern] that should be avoided

@@ -34,9 +34,8 @@ describe('mocks_helper.js', () => {
 
   it('enumerates through mock file roots', () => {
     setupManualMocks();
-    expect(fs.existsSync).toHaveBeenCalledTimes(2);
+    expect(fs.existsSync).toHaveBeenCalledTimes(1);
     expect(fs.existsSync).toHaveBeenNthCalledWith(1, absPath('ce'));
-    expect(fs.existsSync).toHaveBeenNthCalledWith(2, absPath('node'));
 
     expect(readdir.sync).toHaveBeenCalledTimes(0);
   });
@@ -66,19 +65,6 @@ describe('mocks_helper.js', () => {
     expect(setMock).toHaveBeenNthCalledWith(2, '~/lib/utils/util', './ce/lib/utils/util');
   });
 
-  it('sets up mocks for node_modules', () => {
-    fs.existsSync.mockImplementation(root => root.endsWith('node'));
-    readdir.sync.mockReturnValue(['jquery', '@babel/core']);
-    setupManualMocks();
-
-    expect(readdir.sync).toHaveBeenCalledTimes(1);
-    expect(readdir.sync.mock.calls[0][0]).toBe(absPath('node'));
-
-    expect(setMock).toHaveBeenCalledTimes(2);
-    expect(setMock).toHaveBeenNthCalledWith(1, 'jquery', './node/jquery');
-    expect(setMock).toHaveBeenNthCalledWith(2, '@babel/core', './node/@babel/core');
-  });
-
   it('sets up mocks for all roots', () => {
     const files = {
       [absPath('ce')]: ['root', 'lib/utils/util'],
@@ -89,15 +75,12 @@ describe('mocks_helper.js', () => {
     readdir.sync.mockImplementation(root => files[root]);
     setupManualMocks();
 
-    expect(readdir.sync).toHaveBeenCalledTimes(2);
+    expect(readdir.sync).toHaveBeenCalledTimes(1);
     expect(readdir.sync.mock.calls[0][0]).toBe(absPath('ce'));
-    expect(readdir.sync.mock.calls[1][0]).toBe(absPath('node'));
 
-    expect(setMock).toHaveBeenCalledTimes(4);
+    expect(setMock).toHaveBeenCalledTimes(2);
     expect(setMock).toHaveBeenNthCalledWith(1, '~/root', './ce/root');
     expect(setMock).toHaveBeenNthCalledWith(2, '~/lib/utils/util', './ce/lib/utils/util');
-    expect(setMock).toHaveBeenNthCalledWith(3, 'jquery', './node/jquery');
-    expect(setMock).toHaveBeenNthCalledWith(4, '@babel/core', './node/@babel/core');
   });
 
   it('fails when given a virtual mock', () => {

@@ -7,6 +7,7 @@
  The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
 
 ```plaintext
+0 => No access
 10 => Guest access
 20 => Reporter access
 30 => Developer access
