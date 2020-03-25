@@ -1,0 +1,5 @@
+---
+title: Enable streaming serializer feature flag by default.
+merge_request: 27813
+author:
+type: performance

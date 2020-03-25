@@ -6,6 +6,7 @@ describe API::Releases do
   let(:project) { create(:project, :repository, :private) }
   let(:maintainer) { create(:user) }
   let(:reporter) { create(:user) }
+  let(:developer) { create(:user) }
   let(:guest) { create(:user) }
   let(:non_project_member) { create(:user) }
   let(:commit) { create(:commit, project: project) }
@@ -15,6 +16,7 @@ describe API::Releases do
     project.add_maintainer(maintainer)
     project.add_reporter(reporter)
     project.add_guest(guest)
+    project.add_developer(developer)
 
     project.repository.add_tag(maintainer, 'v0.1', commit.id)
     project.repository.add_tag(maintainer, 'v0.2', commit.id)
@@ -246,6 +248,24 @@ describe API::Releases do
           .to match_array(release.sources.map(&:format))
         expect(json_response['assets']['sources'].map { |h| h['url'] })
           .to match_array(release.sources.map(&:url))
+      end
+
+      context 'with evidence' do
+        let!(:evidence) { create(:evidence, release: release) }
+
+        it 'returns the evidence' do
+          get api("/projects/#{project.id}/releases/v0.1", maintainer)
+
+          expect(json_response['evidences'].count).to eq(1)
+        end
+
+        it '#collected_at' do
+          Timecop.freeze(Time.now.round) do
+            get api("/projects/#{project.id}/releases/v0.1", maintainer)
+
+            expect(json_response['evidences'].first['collected_at'].to_datetime.to_i).to be_within(1.minute).of(release.evidences.first.created_at.to_i)
+          end
+        end
       end
 
       context 'when release has link asset' do

@@ -150,6 +150,10 @@ module API
         authorize! :download_code, release
       end
 
+      def authorize_create_evidence!
+        # This is a separate method so that EE can extend its behaviour
+      end
+
       def release
         @release ||= user_project.releases.find_by_tag(params[:tag])
       end

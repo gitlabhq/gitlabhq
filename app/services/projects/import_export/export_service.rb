@@ -58,7 +58,7 @@ module Projects
       end
 
       def tree_saver_class
-        if ::Feature.enabled?(:streaming_serializer, project)
+        if ::Feature.enabled?(:streaming_serializer, project, default_enabled: true)
           Gitlab::ImportExport::Project::TreeSaver
         else
           # Once we remove :streaming_serializer feature flag, Project::LegacyTreeSaver should be removed as well

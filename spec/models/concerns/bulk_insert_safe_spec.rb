@@ -129,9 +129,36 @@ describe BulkInsertSafe do
         end.not_to change { described_class.count }
       end
 
-      it 'does nothing and returns true when items are empty' do
-        expect(described_class.bulk_insert!([])).to be(true)
+      it 'does nothing and returns an empty array when items are empty' do
+        expect(described_class.bulk_insert!([])).to eq([])
         expect(described_class.count).to eq(0)
+      end
+
+      context 'with returns option set' do
+        context 'when is set to :ids' do
+          it 'return an array with the primary key values for all inserted records' do
+            items = described_class.valid_list(1)
+
+            expect(described_class.bulk_insert!(items, returns: :ids)).to contain_exactly(a_kind_of(Integer))
+          end
+        end
+
+        context 'when is set to nil' do
+          it 'returns an empty array' do
+            items = described_class.valid_list(1)
+
+            expect(described_class.bulk_insert!(items, returns: nil)).to eq([])
+          end
+        end
+
+        context 'when is set to anything else' do
+          it 'raises an error' do
+            items = described_class.valid_list(1)
+
+            expect { described_class.bulk_insert!([items], returns: [:id, :name]) }
+              .to raise_error(ArgumentError, "returns needs to be :ids or nil")
+          end
+        end
       end
     end
 

@@ -168,9 +168,9 @@ module Gitlab
     # rubocop: enable CodeReuse/ActiveRecord
 
     def self.print_by_total_time(result, options = {})
-      default_options = { sort_method: :total_time }
+      default_options = { sort_method: :total_time, filter_by: :total_time }
 
-      Gitlab::Profiler::TotalTimeFlatPrinter.new(result).print(STDOUT, default_options.merge(options))
+      RubyProf::FlatPrinter.new(result).print(STDOUT, default_options.merge(options))
     end
   end
 end

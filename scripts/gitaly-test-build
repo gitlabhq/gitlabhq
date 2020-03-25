@@ -17,13 +17,16 @@ class GitalyTestBuild
     check_gitaly_config!
 
     # Starting gitaly further validates its configuration
-    pid = start_gitaly
-    Process.kill('TERM', pid)
+    gitaly_pid = start_gitaly
+    praefect_pid = start_praefect
+    Process.kill('TERM', gitaly_pid)
+    Process.kill('TERM', praefect_pid)
 
     # Make the 'gitaly' executable look newer than 'GITALY_SERVER_VERSION'.
     # Without this a gitaly executable created in the setup-test-env job
     # will look stale compared to GITALY_SERVER_VERSION.
     FileUtils.touch(File.join(tmp_tests_gitaly_dir, 'gitaly'), mtime: Time.now + (1 << 24))
+    FileUtils.touch(File.join(tmp_tests_gitaly_dir, 'praefect'), mtime: Time.now + (1 << 24))
   end
 end
 

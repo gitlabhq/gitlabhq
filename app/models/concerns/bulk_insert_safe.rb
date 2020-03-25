@@ -68,6 +68,9 @@ module BulkInsertSafe
     # @param [Boolean] validate          Whether validations should run on [items]
     # @param [Integer] batch_size        How many items should at most be inserted at once
     # @param [Boolean] skip_duplicates   Marks duplicates as allowed, and skips inserting them
+    # @param [Symbol]  returns           Pass :ids to return an array with the primary key values
+    #                                    for all inserted records or nil to omit the underlying
+    #                                    RETURNING SQL clause entirely.
     # @param [Proc]    handle_attributes Block that will receive each item attribute hash
     #                                    prior to insertion for further processing
     #
@@ -78,10 +81,11 @@ module BulkInsertSafe
     #
     # @return true if operation succeeded, throws otherwise.
     #
-    def bulk_insert!(items, validate: true, skip_duplicates: false, batch_size: DEFAULT_BATCH_SIZE, &handle_attributes)
+    def bulk_insert!(items, validate: true, skip_duplicates: false, returns: nil, batch_size: DEFAULT_BATCH_SIZE, &handle_attributes)
       _bulk_insert_all!(items,
         validate: validate,
         on_duplicate: skip_duplicates ? :skip : :raise,
+        returns: returns,
         unique_by: nil,
         batch_size: batch_size,
         &handle_attributes)
@@ -94,6 +98,9 @@ module BulkInsertSafe
     # @param [Boolean] validate          Whether validations should run on [items]
     # @param [Integer] batch_size        How many items should at most be inserted at once
     # @param [Symbol/Array] unique_by    Defines index or columns to use to consider item duplicate
+    # @param [Symbol]  returns           Pass :ids to return an array with the primary key values
+    #                                    for all inserted or updated records or nil to omit the
+    #                                    underlying RETURNING SQL clause entirely.
     # @param [Proc]    handle_attributes Block that will receive each item attribute hash
     #                                    prior to insertion for further processing
     #
@@ -109,10 +116,11 @@ module BulkInsertSafe
     #
     # @return true if operation succeeded, throws otherwise.
     #
-    def bulk_upsert!(items, unique_by:, validate: true, batch_size: DEFAULT_BATCH_SIZE, &handle_attributes)
+    def bulk_upsert!(items, unique_by:, returns: nil, validate: true, batch_size: DEFAULT_BATCH_SIZE, &handle_attributes)
       _bulk_insert_all!(items,
         validate: validate,
         on_duplicate: :update,
+        returns: returns,
         unique_by: unique_by,
         batch_size: batch_size,
         &handle_attributes)
@@ -120,21 +128,30 @@ module BulkInsertSafe
 
     private
 
-    def _bulk_insert_all!(items, on_duplicate:, unique_by:, validate:, batch_size:, &handle_attributes)
-      return true if items.empty?
+    def _bulk_insert_all!(items, on_duplicate:, returns:, unique_by:, validate:, batch_size:, &handle_attributes)
+      return [] if items.empty?
+
+      returning =
+        case returns
+        when :ids
+          [primary_key]
+        when nil
+          false
+        else
+          raise ArgumentError, "returns needs to be :ids or nil"
+        end
 
       transaction do
-        items.each_slice(batch_size) do |item_batch|
+        items.each_slice(batch_size).flat_map do |item_batch|
           attributes = _bulk_insert_item_attributes(
             item_batch, validate, &handle_attributes)
 
           ActiveRecord::InsertAll
-            .new(self, attributes, on_duplicate: on_duplicate, unique_by: unique_by)
-            .execute
+              .new(self, attributes, on_duplicate: on_duplicate, returning: returning, unique_by: unique_by)
+              .execute
+              .pluck(primary_key)
         end
       end
-
-      true
     end
 
     def _bulk_insert_item_attributes(items, validate_items)
