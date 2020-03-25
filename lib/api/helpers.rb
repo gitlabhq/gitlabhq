@@ -359,6 +359,10 @@ module API
       render_api_error!('405 Method Not Allowed', 405)
     end
 
+    def not_acceptable!
+      render_api_error!('406 Not Acceptable', 406)
+    end
+
     def conflict!(message = nil)
       render_api_error!(message || '409 Conflict', 409)
     end
