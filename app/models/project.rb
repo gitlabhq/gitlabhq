@@ -67,10 +67,7 @@ class Project < ApplicationRecord
   default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) do
-    # We need to ensure application settings are fresh when we pick
-    # a repository storage to use.
-    Gitlab::CurrentSettings.expire_current_application_settings
-    Gitlab::CurrentSettings.pick_repository_storage
+    pick_repository_storage
   end
 
   default_value_for(:shared_runners_enabled) { Gitlab::CurrentSettings.shared_runners_enabled }

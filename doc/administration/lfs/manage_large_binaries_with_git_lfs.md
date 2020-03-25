@@ -93,6 +93,13 @@ git lfs fetch origin master
 
 Read the documentation on how to [migrate an existing Git repo with Git LFS](../../topics/git/migrate_to_git_lfs/index.md).
 
+### Removing objects from LFS
+
+To remove objects from LFS:
+
+1. Use [BFG-Cleaner](../../user/project/repository/reducing_the_repo_size_using_git.md#using-the-bfg-repo-cleaner) or [filter-branch](../../user/project/repository/reducing_the_repo_size_using_git.md#using-git-filter-branch) to remove the objects from the repository.
+1. Delete the relevant LFS lines for the objects you have removed from your `.gitattributes` file and commit those changes.
+
 ## File Locking
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/35856) in GitLab 10.5.

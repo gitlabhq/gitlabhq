@@ -168,4 +168,37 @@ RSpec.shared_examples 'model with repository' do
     it { is_expected.to respond_to(:base_dir) }
     it { is_expected.to respond_to(:disk_path) }
   end
+
+  describe '.pick_repository_storage' do
+    subject { described_class.pick_repository_storage }
+
+    before do
+      storages = {
+        'default' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories'),
+        'picked'  => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories')
+      }
+      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+    end
+
+    it 'picks storage from ApplicationSetting' do
+      expect_next_instance_of(ApplicationSetting) do |instance|
+        expect(instance).to receive(:pick_repository_storage).and_return('picked')
+      end
+
+      expect(subject).to eq('picked')
+    end
+
+    it 'picks from the latest available storage', :request_store do
+      stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+      Gitlab::CurrentSettings.current_application_settings
+
+      settings = ApplicationSetting.last
+      settings.repository_storages = %w(picked)
+      settings.save!
+
+      expect(Gitlab::CurrentSettings.repository_storages).to eq(%w(default))
+      expect(subject).to eq('picked')
+      expect(Gitlab::CurrentSettings.repository_storages).to eq(%w(picked))
+    end
+  end
 end

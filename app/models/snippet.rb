@@ -288,8 +288,7 @@ class Snippet < ApplicationRecord
   end
 
   def repository_storage
-    snippet_repository&.shard_name ||
-      Gitlab::CurrentSettings.pick_repository_storage
+    snippet_repository&.shard_name || self.class.pick_repository_storage
   end
 
   def create_repository

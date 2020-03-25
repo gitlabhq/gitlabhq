@@ -14,7 +14,7 @@ see fit.
 
 ## Issue triaging
 
-Our issue triage policies are [described in our handbook](https://about.gitlab.com/handbook/engineering/issue-triage/).
+Our issue triage policies are [described in our handbook](https://about.gitlab.com/handbook/engineering/quality/issue-triage/).
 You are very welcome to help the GitLab team triage issues.
 We also organize [issue bash events](https://gitlab.com/gitlab-org/gitlab-foss/issues/17815)
 once every quarter.

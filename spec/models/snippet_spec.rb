@@ -655,10 +655,18 @@ describe Snippet do
   describe '#repository_storage' do
     let(:snippet) { create(:snippet) }
 
-    it 'returns default repository storage' do
-      expect(Gitlab::CurrentSettings).to receive(:pick_repository_storage)
+    subject { snippet.repository_storage }
 
-      snippet.repository_storage
+    before do
+      expect_next_instance_of(ApplicationSetting) do |instance|
+        expect(instance).to receive(:pick_repository_storage).and_return('picked')
+      end
+    end
+
+    it 'returns repository storage from ApplicationSetting' do
+      expect(described_class).to receive(:pick_repository_storage).and_call_original
+
+      expect(subject).to eq 'picked'
     end
 
     context 'when snippet_project is already created' do
@@ -669,9 +677,7 @@ describe Snippet do
       end
 
       it 'returns repository_storage from snippet_project' do
-        expect(Gitlab::CurrentSettings).not_to receive(:pick_repository_storage)
-
-        expect(snippet.repository_storage).to eq 'foo'
+        expect(subject).to eq 'foo'
       end
     end
   end

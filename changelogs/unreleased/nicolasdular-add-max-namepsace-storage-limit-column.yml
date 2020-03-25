@@ -1,0 +1,5 @@
+---
+title: Add namespace_storage_size_limit to application settings
+merge_request: 27786
+author:
+type: added

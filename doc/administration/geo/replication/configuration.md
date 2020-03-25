@@ -314,6 +314,19 @@ It is important to note that selective synchronization:
      Selective synchronization restrictions are implemented on the **secondary** nodes,
      not the **primary** node.
 
+### Git operations on unreplicated respositories
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2562) in GitLab 12.10.
+
+Git clone, pull, and push operations over HTTP(S) are supported for repositories that
+exist on the **primary** node but not on **secondary** nodes. This situation can occur
+when:
+
+- Selective synchronization does not include the project attached to the repository.
+- The repository is actively being replicated but has not completed yet.
+
+SSH [support is planned](https://gitlab.com/groups/gitlab-org/-/epics/2562).
+
 ## Upgrading Geo
 
 See the [updating the Geo nodes document](updating_the_geo_nodes.md).

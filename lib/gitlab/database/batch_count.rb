@@ -32,8 +32,8 @@ module Gitlab
       MAX_ALLOWED_LOOPS = 10_000
       SLEEP_TIME_IN_SECONDS = 0.01 # 10 msec sleep
       # Each query should take <<500ms https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22705
-      DEFAULT_DISTINCT_BATCH_SIZE = 100_000
-      DEFAULT_BATCH_SIZE = 10_000
+      DEFAULT_DISTINCT_BATCH_SIZE = 10_000
+      DEFAULT_BATCH_SIZE = 100_000
 
       def initialize(relation, column: nil)
         @relation = relation
@@ -51,7 +51,7 @@ module Gitlab
         raise "The mode #{mode.inspect} is not supported" unless [:itself, :distinct].include?(mode)
 
         # non-distinct have better performance
-        batch_size ||= mode == :distinct ? DEFAULT_BATCH_SIZE : DEFAULT_DISTINCT_BATCH_SIZE
+        batch_size ||= mode == :distinct ? DEFAULT_DISTINCT_BATCH_SIZE : DEFAULT_BATCH_SIZE
 
         start = @relation.minimum(@column) || 0
         finish = @relation.maximum(@column) || 0

@@ -77,6 +77,7 @@ module Ci
       track_exception(error, job, params)
       error(error.message, :service_unavailable)
     rescue => error
+      track_exception(error, job, params)
       error(error.message, :bad_request)
     end
 

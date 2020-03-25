@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 
 import settingsPanel from '~/pages/projects/shared/permissions/components/settings_panel.vue';
 import {
@@ -32,6 +32,8 @@ const defaultProps = {
   registryHelpPath: '/help/user/packages/container_registry/index',
   lfsAvailable: true,
   lfsHelpPath: '/help/workflow/lfs/manage_large_binaries_with_git_lfs',
+  lfsObjectsExist: false,
+  lfsObjectsRemovalHelpPath: `/help/administration/lfs/manage_large_binaries_with_git_lfs#removing-objects-from-lfs`,
   pagesAvailable: true,
   pagesAccessControlEnabled: false,
   pagesAccessControlForced: false,
@@ -43,20 +45,24 @@ const defaultProps = {
 describe('Settings Panel', () => {
   let wrapper;
 
-  const mountComponent = customProps => {
-    const propsData = { ...defaultProps, ...customProps };
-    return shallowMount(settingsPanel, { propsData });
+  const mountComponent = (
+    { currentSettings = {}, ...customProps } = {},
+    mountFn = shallowMount,
+  ) => {
+    const propsData = {
+      ...defaultProps,
+      ...customProps,
+      currentSettings: { ...defaultProps.currentSettings, ...currentSettings },
+    };
+
+    return mountFn(settingsPanel, { propsData });
   };
 
   const overrideCurrentSettings = (currentSettingsProps, extraProps = {}) => {
-    return mountComponent({
-      ...extraProps,
-      currentSettings: {
-        ...defaultProps.currentSettings,
-        ...currentSettingsProps,
-      },
-    });
+    return mountComponent({ ...extraProps, currentSettings: currentSettingsProps });
   };
+
+  const findLFSSettingsMessage = () => wrapper.find({ ref: 'git-lfs-settings' }).find('p');
 
   beforeEach(() => {
     wrapper = mountComponent();
@@ -333,6 +339,40 @@ describe('Settings Panel', () => {
 
       expect(wrapper.find('[name="project[lfs_enabled]"]').props().disabledInput).toEqual(true);
     });
+
+    describe.each`
+      lfsObjectsExist | lfsEnabled | isShown
+      ${true}         | ${true}    | ${false}
+      ${true}         | ${false}   | ${true}
+      ${false}        | ${true}    | ${false}
+      ${false}        | ${false}   | ${false}
+    `(
+      'with (lfsObjectsExist = $lfsObjectsExist, lfsEnabled = $lfsEnabled)',
+      ({ lfsObjectsExist, lfsEnabled, isShown }) => {
+        beforeEach(() => {
+          wrapper = mountComponent({ lfsObjectsExist, currentSettings: { lfsEnabled } }, mount);
+        });
+
+        if (isShown) {
+          it('shows warning message', () => {
+            const message = findLFSSettingsMessage();
+            const link = message.find('a');
+
+            expect(message.text()).toContain(
+              'LFS objects from this repository are still available to forks',
+            );
+            expect(link.text()).toEqual('How do I remove them?');
+            expect(link.attributes('href')).toEqual(
+              '/help/administration/lfs/manage_large_binaries_with_git_lfs#removing-objects-from-lfs',
+            );
+          });
+        } else {
+          it('does not show warning message', () => {
+            expect(findLFSSettingsMessage().exists()).toEqual(false);
+          });
+        }
+      },
+    );
   });
 
   describe('Packages', () => {

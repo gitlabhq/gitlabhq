@@ -1391,34 +1391,13 @@ describe Project do
   context 'repository storage by default' do
     let(:project) { build(:project) }
 
-    before do
-      storages = {
-        'default' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories'),
-        'picked'  => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/repositories')
-      }
-      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
-    end
-
     it 'picks storage from ApplicationSetting' do
-      expect_any_instance_of(ApplicationSetting).to receive(:pick_repository_storage).and_return('picked')
+      expect_next_instance_of(ApplicationSetting) do |instance|
+        expect(instance).to receive(:pick_repository_storage).and_return('picked')
+      end
+      expect(described_class).to receive(:pick_repository_storage).and_call_original
 
       expect(project.repository_storage).to eq('picked')
-    end
-
-    it 'picks from the latest available storage', :request_store do
-      stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-      Gitlab::CurrentSettings.current_application_settings
-
-      settings = ApplicationSetting.last
-      settings.repository_storages = %w(picked)
-      settings.save!
-
-      expect(Gitlab::CurrentSettings.repository_storages).to eq(%w(default))
-
-      project
-
-      expect(project.repository.storage).to eq('picked')
-      expect(Gitlab::CurrentSettings.repository_storages).to eq(%w(picked))
     end
   end
 

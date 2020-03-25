@@ -603,6 +603,8 @@ module ProjectsHelper
       registryHelpPath: help_page_path('user/packages/container_registry/index'),
       lfsAvailable: Gitlab.config.lfs.enabled,
       lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs'),
+      lfsObjectsExist: project.lfs_objects.exists?,
+      lfsObjectsRemovalHelpPath: help_page_path('administration/lfs/manage_large_binaries_with_git_lfs', anchor: 'removing-objects-from-lfs'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
       pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,

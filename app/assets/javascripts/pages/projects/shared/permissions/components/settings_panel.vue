@@ -1,4 +1,6 @@
 <script>
+import { GlSprintf, GlLink } from '@gitlab/ui';
+
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { s__ } from '~/locale';
 import projectFeatureSetting from './project_feature_setting.vue';
@@ -19,6 +21,8 @@ export default {
     projectFeatureSetting,
     projectFeatureToggle,
     projectSettingRow,
+    GlSprintf,
+    GlLink,
   },
   mixins: [settingsMixin],
 
@@ -63,6 +67,16 @@ export default {
       default: '',
     },
     lfsHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    lfsObjectsExist: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    lfsObjectsRemovalHelpPath: {
       type: String,
       required: false,
       default: '',
@@ -377,6 +391,23 @@ export default {
             :disabled-input="!repositoryEnabled"
             name="project[lfs_enabled]"
           />
+          <p v-if="!lfsEnabled && lfsObjectsExist">
+            <gl-sprintf
+              :message="
+                s__(
+                  'ProjectSettings|LFS objects from this repository are still available to forks. %{linkStart}How do I remove them?%{linkEnd}',
+                )
+              "
+            >
+              <template #link="{ content }">
+                <span class="d-block">
+                  <gl-link :href="lfsObjectsRemovalHelpPath" target="_blank">
+                    {{ content }}
+                  </gl-link>
+                </span>
+              </template>
+            </gl-sprintf>
+          </p>
         </project-setting-row>
         <project-setting-row
           v-if="packagesAvailable"

@@ -395,7 +395,8 @@ CREATE TABLE public.application_settings (
     prevent_merge_requests_committers_approval boolean DEFAULT false NOT NULL,
     email_restrictions_enabled boolean DEFAULT false NOT NULL,
     email_restrictions text,
-    npm_package_requests_forwarding boolean DEFAULT true NOT NULL
+    npm_package_requests_forwarding boolean DEFAULT true NOT NULL,
+    namespace_storage_size_limit bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE public.application_settings_id_seq
@@ -12750,5 +12751,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200319123041'),
 ('20200319203901'),
 ('20200323075043'),
-('20200323122201');
+('20200323122201'),
+('20200324115359');
 

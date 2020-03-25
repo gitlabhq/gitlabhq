@@ -94,3 +94,5 @@ Note the following:
   to allow project imports into the desired group structure.
 - Imported groups are given a `private` visibility level, unless imported into a parent group.
 - If imported into a parent group, subgroups will inherit a similar level of visibility, unless otherwise restricted.
+- To preserve the member list and their respective permissions on imported groups,
+  review the users in these groups. Make sure these users exist before importing the desired groups.

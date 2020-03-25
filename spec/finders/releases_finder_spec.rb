@@ -52,6 +52,18 @@ describe ReleasesFinder do
           subject
         end
       end
+
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27716
+      context 'when tag is nil' do
+        before do
+          v1_0_0.update_column(:tag, nil)
+        end
+
+        it 'ignores rows with a nil tag' do
+          expect(subject.size).to eq(1)
+          expect(subject).to eq([v1_1_0])
+        end
+      end
     end
   end
 end
