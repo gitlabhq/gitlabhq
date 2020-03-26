@@ -47,11 +47,11 @@ describe ClusterUpdateAppWorker do
     end
 
     context 'with exclusive lease' do
+      let_it_be(:user) { create(:user) }
       let(:application) { create(:clusters_applications_prometheus, :installed) }
       let(:lease_key) { "#{described_class.name.underscore}-#{application.id}" }
 
       before do
-        allow(Gitlab::ExclusiveLease).to receive(:new)
         stub_exclusive_lease_taken(lease_key)
       end
 
@@ -61,8 +61,10 @@ describe ClusterUpdateAppWorker do
         subject.perform(application.name, application.id, project.id, Time.now)
       end
 
-      it 'does not allow same app to be updated concurrently by different project' do
-        project1 = create(:project)
+      it 'does not allow same app to be updated concurrently by different project', :aggregate_failures do
+        stub_exclusive_lease("refresh_authorized_projects:#{user.id}")
+        stub_exclusive_lease("update_highest_role:#{user.id}")
+        project1 = create(:project, namespace: create(:namespace, owner: user))
 
         expect(Clusters::Applications::PrometheusUpdateService).not_to receive(:new)
 
@@ -81,10 +83,13 @@ describe ClusterUpdateAppWorker do
         subject.perform(application2.name, application2.id, project.id, Time.now)
       end
 
-      it 'allows different app to be updated by different project' do
+      it 'allows different app to be updated by different project', :aggregate_failures do
         application2 = create(:clusters_applications_prometheus, :installed)
         lease_key2 = "#{described_class.name.underscore}-#{application2.id}"
-        project2 = create(:project)
+
+        stub_exclusive_lease("refresh_authorized_projects:#{user.id}")
+        stub_exclusive_lease("update_highest_role:#{user.id}")
+        project2 = create(:project, namespace: create(:namespace, owner: user))
 
         stub_exclusive_lease(lease_key2)
 

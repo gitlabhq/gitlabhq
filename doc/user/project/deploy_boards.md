@@ -102,6 +102,34 @@ navigate to the environments page under **Operations > Environments**.
 Deploy Boards are visible by default. You can explicitly click
 the triangle next to their respective environment name in order to hide them.
 
+### Example manifest file
+
+The following example is an extract of a Kubernetes manifest deployment file, using the two annotations `app.gitlab.com/env` and `app.gitlab.com/app` to enable the **Deploy Boards**:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "APPLICATION_NAME"
+  annotations:
+    app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
+    app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "APPLICATION_NAME"
+  template:
+    metadata:
+      labels:
+        app: "APPLICATION_NAME"
+      annotations:
+        app.gitlab.com/app: ${CI_PROJECT_PATH_SLUG}
+        app.gitlab.com/env: ${CI_ENVIRONMENT_SLUG}
+```
+
+The annotations will be applied to the deployments, replica sets, and pods. By changing the number of replicas, like `kubectl scale --replicas=3 deploy APPLICATION_NAME -n ${KUBE_NAMESPACE}`, you can follow the instances' pods from the board.
+
 ## Canary Deployments
 
 A popular CI strategy, where a small portion of the fleet is updated to the new

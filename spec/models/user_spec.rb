@@ -4360,4 +4360,24 @@ describe User, :do_not_mock_admin_mode do
       it { is_expected.to be expected_result }
     end
   end
+
+  describe '#current_highest_access_level' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when no memberships exist' do
+      it 'returns nil' do
+        expect(user.current_highest_access_level).to be_nil
+      end
+    end
+
+    context 'when memberships exist' do
+      it 'returns the highest access level for non requested memberships' do
+        create(:group_member, :reporter, user_id: user.id)
+        create(:project_member, :guest, user_id: user.id)
+        create(:project_member, :maintainer, user_id: user.id, requested_at: Time.current)
+
+        expect(user.current_highest_access_level).to eq(Gitlab::Access::REPORTER)
+      end
+    end
+  end
 end

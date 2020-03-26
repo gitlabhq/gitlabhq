@@ -99,6 +99,8 @@ describe('Panel Type component', () => {
   });
 
   describe('when graph data is available', () => {
+    const findTimeChart = () => wrapper.find({ ref: 'timeChart' });
+
     beforeEach(() => {
       createWrapper({
         graphData: graphDataPrometheusQueryRange,
@@ -120,6 +122,21 @@ describe('Panel Type component', () => {
 
     it('sets no clipboard copy link on dropdown by default', () => {
       expect(findCopyLink().exists()).toBe(false);
+    });
+
+    it('should emit `timerange` event when a zooming in/out in a chart occcurs', () => {
+      const timeRange = {
+        start: '2020-01-01T00:00:00.000Z',
+        end: '2020-01-01T01:00:00.000Z',
+      };
+
+      jest.spyOn(wrapper.vm, '$emit');
+
+      findTimeChart().vm.$emit('datazoom', timeRange);
+
+      return wrapper.vm.$nextTick(() => {
+        expect(wrapper.vm.$emit).toHaveBeenCalledWith('timerangezoom', timeRange);
+      });
     });
 
     describe('Time Series Chart panel type', () => {

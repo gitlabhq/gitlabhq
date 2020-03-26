@@ -58,13 +58,13 @@ export default {
 </script>
 
 <template>
-  <div class="labels-select-contents-create">
+  <div class="labels-select-contents-create js-labels-create">
     <div class="dropdown-title d-flex align-items-center pt-0 pb-2">
       <gl-button
         :aria-label="__('Go back')"
         variant="link"
         size="sm"
-        class="dropdown-header-button p-0"
+        class="js-btn-back dropdown-header-button p-0"
         @click="toggleDropdownContentsCreateView"
       >
         <gl-icon name="arrow-left" />
@@ -116,7 +116,7 @@ export default {
         <gl-loading-icon v-show="labelCreateInProgress" :inline="true" class="mr-1" />
         {{ __('Create') }}
       </gl-button>
-      <gl-button class="pull-right" @click="toggleDropdownContentsCreateView">
+      <gl-button class="pull-right js-btn-cancel-create" @click="toggleDropdownContentsCreateView">
         {{ __('Cancel') }}
       </gl-button>
     </div>

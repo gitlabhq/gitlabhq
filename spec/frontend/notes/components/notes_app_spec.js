@@ -1,25 +1,43 @@
 import $ from 'jquery';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
-import { mount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { setTestTimeout } from 'helpers/timeout';
 import axios from '~/lib/utils/axios_utils';
 import NotesApp from '~/notes/components/notes_app.vue';
+import CommentForm from '~/notes/components/comment_form.vue';
 import createStore from '~/notes/stores';
+import * as constants from '~/notes/constants';
 import '~/behaviors/markdown/render_gfm';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-foss/issues/62491)
 import * as mockData from '../../notes/mock_data';
 import * as urlUtility from '~/lib/utils/url_utility';
+import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 
 jest.mock('~/user_popovers', () => jest.fn());
 
 setTestTimeout(1000);
+
+const TYPE_COMMENT_FORM = 'comment-form';
+const TYPE_NOTES_LIST = 'notes-list';
+
+const propsData = {
+  noteableData: mockData.noteableDataMock,
+  notesData: mockData.notesDataMock,
+  userData: mockData.userDataMock,
+};
 
 describe('note_app', () => {
   let axiosMock;
   let mountComponent;
   let wrapper;
   let store;
+
+  const getComponentOrder = () => {
+    return wrapper
+      .findAll('#notes-list,.js-comment-form')
+      .wrappers.map(node => (node.is(CommentForm) ? TYPE_COMMENT_FORM : TYPE_NOTES_LIST));
+  };
 
   /**
    * waits for fetchNotes() to complete
@@ -43,13 +61,7 @@ describe('note_app', () => {
     axiosMock = new AxiosMockAdapter(axios);
 
     store = createStore();
-    mountComponent = data => {
-      const propsData = data || {
-        noteableData: mockData.noteableDataMock,
-        notesData: mockData.notesDataMock,
-        userData: mockData.userDataMock,
-      };
-
+    mountComponent = () => {
       return mount(
         {
           components: {
@@ -344,6 +356,41 @@ describe('note_app', () => {
       window.dispatchEvent(new Event('hashchange'), hash);
 
       expect(setTargetNoteHash).toHaveBeenCalled();
+    });
+  });
+
+  describe('when sort direction is desc', () => {
+    beforeEach(() => {
+      store = createStore();
+      store.state.discussionSortOrder = constants.DESC;
+      wrapper = shallowMount(NotesApp, {
+        propsData,
+        store,
+        stubs: {
+          'ordered-layout': OrderedLayout,
+        },
+      });
+    });
+
+    it('finds CommentForm before notes list', () => {
+      expect(getComponentOrder()).toStrictEqual([TYPE_COMMENT_FORM, TYPE_NOTES_LIST]);
+    });
+  });
+
+  describe('when sort direction is asc', () => {
+    beforeEach(() => {
+      store = createStore();
+      wrapper = shallowMount(NotesApp, {
+        propsData,
+        store,
+        stubs: {
+          'ordered-layout': OrderedLayout,
+        },
+      });
+    });
+
+    it('finds CommentForm after notes list', () => {
+      expect(getComponentOrder()).toStrictEqual([TYPE_NOTES_LIST, TYPE_COMMENT_FORM]);
     });
   });
 });

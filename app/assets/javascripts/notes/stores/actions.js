@@ -69,6 +69,10 @@ export const updateDiscussion = ({ commit, state }, discussion) => {
   return utils.findNoteObjectById(state.discussions, discussion.id);
 };
 
+export const setDiscussionSortDirection = ({ commit }, direction) => {
+  commit(types.SET_DISCUSSIONS_SORT, direction);
+};
+
 export const removeNote = ({ commit, dispatch, state }, note) => {
   const discussion = state.discussions.find(({ id }) => id === note.discussion_id);
 

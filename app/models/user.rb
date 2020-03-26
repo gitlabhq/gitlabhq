@@ -1694,6 +1694,11 @@ class User < ApplicationRecord
     end
   end
 
+  # Load the current highest access by looking directly at the user's memberships
+  def current_highest_access_level
+    members.non_request.maximum(:access_level)
+  end
+
   protected
 
   # override, from Devise::Validatable

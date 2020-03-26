@@ -263,6 +263,10 @@ export default {
     discussion.truncated_diff_lines = utils.prepareDiffLines(diffLines);
   },
 
+  [types.SET_DISCUSSIONS_SORT](state, sort) {
+    state.discussionSortOrder = sort;
+  },
+
   [types.DISABLE_COMMENTS](state, value) {
     state.commentsDisabled = value;
   },

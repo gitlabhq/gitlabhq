@@ -1,7 +1,13 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import createFlash from '~/flash';
-import { queryToObject, redirectTo, removeParams, mergeUrlParams } from '~/lib/utils/url_utility';
+import {
+  queryToObject,
+  redirectTo,
+  removeParams,
+  mergeUrlParams,
+  updateHistory,
+} from '~/lib/utils/url_utility';
 import axios from '~/lib/utils/axios_utils';
 import { mockProjectDir } from '../mock_data';
 
@@ -135,6 +141,25 @@ describe('dashboard invalid url parameters', () => {
       // redirect to with new parameters
       expect(mergeUrlParams).toHaveBeenCalledWith({ duration_seconds: '120' }, toUrl);
       expect(redirectTo).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('changes the url when a panel moves the time slider', () => {
+    const timeRange = {
+      start: '2020-01-01T00:00:00.000Z',
+      end: '2020-01-01T01:00:00.000Z',
+    };
+
+    queryToObject.mockReturnValue(timeRange);
+
+    createMountedWrapper();
+
+    return wrapper.vm.$nextTick().then(() => {
+      wrapper.vm.onTimeRangeZoom(timeRange);
+
+      expect(updateHistory).toHaveBeenCalled();
+      expect(wrapper.vm.selectedTimeRange.start.toString()).toBe(timeRange.start);
+      expect(wrapper.vm.selectedTimeRange.end.toString()).toBe(timeRange.end);
     });
   });
 });

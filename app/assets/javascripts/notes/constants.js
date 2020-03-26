@@ -19,6 +19,8 @@ export const DISCUSSION_FILTERS_DEFAULT_VALUE = 0;
 export const DISCUSSION_TAB_LABEL = 'show';
 export const NOTE_UNDERSCORE = 'note_';
 export const TIME_DIFFERENCE_VALUE = 10;
+export const ASC = 'asc';
+export const DESC = 'desc';
 
 export const NOTEABLE_TYPE_MAPPING = {
   Issue: ISSUE_NOTEABLE_TYPE,

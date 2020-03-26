@@ -5718,7 +5718,7 @@ describe Project do
     subject { project.limited_protected_branches(1) }
 
     it 'returns limited number of protected branches based on specified limit' do
-      expect(subject).to eq([another_protected_branch])
+      expect(subject.count).to eq(1)
     end
   end
 

@@ -1,4 +1,5 @@
 <script>
+import $ from 'jquery';
 import Vue from 'vue';
 import Vuex, { mapState, mapActions } from 'vuex';
 import { __ } from '~/locale';
@@ -149,9 +150,16 @@ export default {
      * the dropdown while dropdown is visible.
      */
     handleDocumentClick({ target }) {
+      // This approach of element detection is needed
+      // as the dropdown wrapper is not using `GlDropdown` as
+      // it will also require us to use `BDropdownForm`
+      // which is yet to be implemented in GitLab UI.
       if (
         this.showDropdownButton &&
         this.showDropdownContents &&
+        !$(target).parents('.js-btn-back').length &&
+        !$(target).parents('.js-labels-list').length &&
+        !target?.classList.contains('js-btn-cancel-create') &&
         !target?.classList.contains('js-sidebar-dropdown-toggle') &&
         !this.$refs.dropdownButtonCollapsed?.$el.contains(target) &&
         !this.$refs.dropdownContents?.$el.contains(target)

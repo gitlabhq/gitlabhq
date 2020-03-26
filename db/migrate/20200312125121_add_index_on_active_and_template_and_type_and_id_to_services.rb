@@ -13,6 +13,6 @@ class AddIndexOnActiveAndTemplateAndTypeAndIdToServices < ActiveRecord::Migratio
   end
 
   def down
-    remove_concurrent_index :services, INDEX_NAME
+    remove_concurrent_index_by_name :services, INDEX_NAME
   end
 end

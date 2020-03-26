@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import mutations from '~/notes/stores/mutations';
-import { DISCUSSION_NOTE } from '~/notes/constants';
+import { DISCUSSION_NOTE, ASC, DESC } from '~/notes/constants';
 import {
   note,
   discussionMock,
@@ -22,7 +22,10 @@ describe('Notes Store mutations', () => {
     let noteData;
 
     beforeEach(() => {
-      state = { discussions: [] };
+      state = {
+        discussions: [],
+        discussionSortOrder: ASC,
+      };
       noteData = {
         expanded: true,
         id: note.discussion_id,
@@ -34,9 +37,7 @@ describe('Notes Store mutations', () => {
     });
 
     it('should add a new note to an array of notes', () => {
-      expect(state).toEqual({
-        discussions: [noteData],
-      });
+      expect(state).toEqual(expect.objectContaining({ discussions: [noteData] }));
 
       expect(state.discussions.length).toBe(1);
     });
@@ -647,6 +648,20 @@ describe('Notes Store mutations', () => {
     it('updates descriptionVersion to "Deleted"', () => {
       mutations.RECEIVE_DELETE_DESCRIPTION_VERSION(state, { [versionId]: deleted });
       expect(state.descriptionVersions[versionId]).toBe(deleted);
+    });
+  });
+
+  describe('SET_DISCUSSIONS_SORT', () => {
+    let state;
+
+    beforeEach(() => {
+      state = { discussionSortOrder: ASC };
+    });
+
+    it('sets sort order', () => {
+      mutations.SET_DISCUSSIONS_SORT(state, DESC);
+
+      expect(state.discussionSortOrder).toBe(DESC);
     });
   });
 });

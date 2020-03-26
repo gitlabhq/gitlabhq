@@ -100,6 +100,7 @@ class Member < ApplicationRecord
   after_destroy :destroy_notification_setting
   after_destroy :post_destroy_hook, unless: :pending?
   after_commit :refresh_member_authorized_projects
+  after_commit :update_highest_role
 
   default_value_for :notification_level, NotificationSetting.levels[:global]
 
@@ -459,6 +460,22 @@ class Member < ApplicationRecord
       errors.add(:access_level, s_("should be greater than or equal to %{access} inherited membership from group %{group_name}") % error_parameters)
     end
   end
+
+  # Triggers the service to schedule a Sidekiq job to update the highest role
+  # for a User
+  #
+  # The job will be called outside of a transaction in order to ensure the changes
+  # for a Member to be commited before attempting to update the highest role.
+  # rubocop: disable CodeReuse/ServiceClass
+  def update_highest_role
+    return unless user_id.present?
+    return unless previous_changes[:access_level].present?
+
+    run_after_commit_or_now do
+      Members::UpdateHighestRoleService.new(user_id).execute
+    end
+  end
+  # rubocop: enable CodeReuse/ServiceClass
 end
 
 Member.prepend_if_ee('EE::Member')

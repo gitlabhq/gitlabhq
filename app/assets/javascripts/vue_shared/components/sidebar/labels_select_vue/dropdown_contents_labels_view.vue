@@ -117,7 +117,7 @@ export default {
 </script>
 
 <template>
-  <div class="labels-select-contents-list" @keydown="handleKeyDown">
+  <div class="labels-select-contents-list js-labels-list" @keydown="handleKeyDown">
     <gl-loading-icon
       v-if="labelsFetchInProgress"
       class="labels-fetch-loading position-absolute d-flex align-items-center w-100 h-100"

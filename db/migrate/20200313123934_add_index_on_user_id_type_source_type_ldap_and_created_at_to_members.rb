@@ -13,6 +13,6 @@ class AddIndexOnUserIdTypeSourceTypeLdapAndCreatedAtToMembers < ActiveRecord::Mi
   end
 
   def down
-    remove_concurrent_index :members, INDEX_NAME
+    remove_concurrent_index_by_name :members, INDEX_NAME
   end
 end

@@ -14,6 +14,6 @@ class AddIndexOnUserAndCreatedAtToCiBuilds < ActiveRecord::Migration[6.0]
   end
 
   def down
-    remove_concurrent_index :ci_builds, INDEX_NAME
+    remove_concurrent_index_by_name :ci_builds, INDEX_NAME
   end
 end

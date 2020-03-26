@@ -902,4 +902,17 @@ describe('Actions Notes Store', () => {
       ]);
     });
   });
+
+  describe('setDiscussionSortDirection', () => {
+    it('calls the correct mutation with the correct args', done => {
+      testAction(
+        actions.setDiscussionSortDirection,
+        notesConstants.DESC,
+        {},
+        [{ type: mutationTypes.SET_DISCUSSIONS_SORT, payload: notesConstants.DESC }],
+        [],
+        done,
+      );
+    });
+  });
 });

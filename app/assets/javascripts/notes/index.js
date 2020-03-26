@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import notesApp from './components/notes_app.vue';
 import initDiscussionFilters from './discussion_filters';
+import initSortDiscussions from './sort_discussions';
 import createStore from './stores';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -50,4 +51,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   initDiscussionFilters(store);
+  initSortDiscussions(store);
 });

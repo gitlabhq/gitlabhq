@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Member do
+  using RSpec::Parameterized::TableSyntax
+
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end
@@ -580,6 +582,56 @@ describe Member do
       member.destroy
 
       expect(user.authorized_projects).not_to include(project)
+    end
+  end
+
+  context 'when after_commit :update_highest_role' do
+    where(:member_type, :source_type) do
+      :project_member | :project
+      :group_member   | :group
+    end
+
+    with_them do
+      describe 'create member' do
+        it 'initializes a new Members::UpdateHighestRoleService object' do
+          source = create(source_type) # source owner initializes a new service object too
+          user = create(:user)
+
+          expect(Members::UpdateHighestRoleService).to receive(:new).with(user.id).and_call_original
+
+          create(member_type, :guest, user: user, source_type => source)
+        end
+      end
+
+      context 'when member exists' do
+        let!(:member) { create(member_type) }
+
+        describe 'update member' do
+          context 'when access level was changed' do
+            it 'initializes a new Members::UpdateHighestRoleService object' do
+              expect(Members::UpdateHighestRoleService).to receive(:new).with(member.user_id).and_call_original
+
+              member.update(access_level: Gitlab::Access::GUEST)
+            end
+          end
+
+          context 'when access level was not changed' do
+            it 'does not initialize a new Members::UpdateHighestRoleService object' do
+              expect(Members::UpdateHighestRoleService).not_to receive(:new).with(member.user_id)
+
+              member.update(notification_level: NotificationSetting.levels[:disabled])
+            end
+          end
+        end
+
+        describe 'destroy member' do
+          it 'initializes a new Members::UpdateHighestRoleService object' do
+            expect(Members::UpdateHighestRoleService).to receive(:new).with(member.user_id).and_call_original
+
+            member.destroy
+          end
+        end
+      end
     end
   end
 end

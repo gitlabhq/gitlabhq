@@ -244,6 +244,8 @@
   - 1
 - - update_external_pull_requests
   - 3
+- - update_highest_role
+  - 2
 - - update_merge_requests
   - 3
 - - update_namespace_statistics

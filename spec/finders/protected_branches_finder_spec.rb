@@ -30,7 +30,7 @@ describe ProtectedBranchesFinder do
       end
 
       it 'returns limited protected branches of project' do
-        expect(subject).to eq([another_protected_branch])
+        expect(subject.count).to eq(1)
       end
     end
   end

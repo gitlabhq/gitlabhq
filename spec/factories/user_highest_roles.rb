@@ -2,14 +2,13 @@
 
 FactoryBot.define do
   factory :user_highest_role do
+    highest_access_level { nil }
     user
 
-    trait :maintainer do
-      highest_access_level { Gitlab::Access::MAINTAINER }
-    end
-
-    trait :developer do
-      highest_access_level { Gitlab::Access::DEVELOPER }
-    end
+    trait(:guest)      { highest_access_level { GroupMember::GUEST } }
+    trait(:reporter)   { highest_access_level { GroupMember::REPORTER } }
+    trait(:developer)  { highest_access_level { GroupMember::DEVELOPER } }
+    trait(:maintainer) { highest_access_level { GroupMember::MAINTAINER } }
+    trait(:owner)      { highest_access_level { GroupMember::OWNER } }
   end
 end

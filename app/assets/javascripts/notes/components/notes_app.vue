@@ -12,6 +12,7 @@ import commentForm from './comment_form.vue';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
 import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
+import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import { __ } from '~/locale';
 import initUserPopovers from '~/user_popovers';
@@ -27,6 +28,7 @@ export default {
     placeholderSystemNote,
     skeletonLoadingContainer,
     discussionFilterNote,
+    OrderedLayout,
   },
   props: {
     noteableData: {
@@ -70,7 +72,11 @@ export default {
       'getNoteableData',
       'userCanReply',
       'discussionTabCounter',
+      'sortDirection',
     ]),
+    sortDirDesc() {
+      return this.sortDirection === constants.DESC;
+    },
     discussionTabCounterText() {
       return this.isLoading ? '' : this.discussionTabCounter;
     },
@@ -90,6 +96,9 @@ export default {
     },
     canReply() {
       return this.userCanReply && !this.commentsDisabled;
+    },
+    slotKeys() {
+      return this.sortDirDesc ? ['form', 'comments'] : ['comments', 'form'];
     },
   },
   watch: {
@@ -156,6 +165,9 @@ export default {
       'convertToDiscussion',
       'stopPolling',
     ]),
+    discussionIsIndividualNoteAndNotConverted(discussion) {
+      return discussion.individual_note && !this.convertedDisscussionIds.includes(discussion.id);
+    },
     handleHashChanged() {
       const noteId = this.checkLocationHash();
 
@@ -232,44 +244,51 @@ export default {
 
 <template>
   <div v-show="shouldShow" id="notes">
-    <ul id="notes-list" class="notes main-notes-list timeline">
-      <template v-for="discussion in allDiscussions">
-        <skeleton-loading-container v-if="discussion.isSkeletonNote" :key="discussion.id" />
-        <template v-else-if="discussion.isPlaceholderNote">
-          <placeholder-system-note
-            v-if="discussion.placeholderType === $options.systemNote"
-            :key="discussion.id"
-            :note="discussion.notes[0]"
-          />
-          <placeholder-note v-else :key="discussion.id" :note="discussion.notes[0]" />
-        </template>
-        <template
-          v-else-if="discussion.individual_note && !convertedDisscussionIds.includes(discussion.id)"
-        >
-          <system-note
-            v-if="discussion.notes[0].system"
-            :key="discussion.id"
-            :note="discussion.notes[0]"
-          />
-          <noteable-note
-            v-else
-            :key="discussion.id"
-            :note="discussion.notes[0]"
-            :show-reply-button="canReply"
-            @startReplying="startReplying(discussion.id)"
-          />
-        </template>
-        <noteable-discussion
-          v-else
-          :key="discussion.id"
-          :discussion="discussion"
-          :render-diff-file="true"
-          :help-page-path="helpPagePath"
+    <ordered-layout :slot-keys="slotKeys">
+      <template #form>
+        <comment-form
+          v-if="!commentsDisabled"
+          class="js-comment-form"
+          :noteable-type="noteableType"
         />
       </template>
-      <discussion-filter-note v-show="commentsDisabled" />
-    </ul>
-
-    <comment-form v-if="!commentsDisabled" :noteable-type="noteableType" />
+      <template #comments>
+        <ul id="notes-list" class="notes main-notes-list timeline">
+          <template v-for="discussion in allDiscussions">
+            <skeleton-loading-container v-if="discussion.isSkeletonNote" :key="discussion.id" />
+            <template v-else-if="discussion.isPlaceholderNote">
+              <placeholder-system-note
+                v-if="discussion.placeholderType === $options.systemNote"
+                :key="discussion.id"
+                :note="discussion.notes[0]"
+              />
+              <placeholder-note v-else :key="discussion.id" :note="discussion.notes[0]" />
+            </template>
+            <template v-else-if="discussionIsIndividualNoteAndNotConverted(discussion)">
+              <system-note
+                v-if="discussion.notes[0].system"
+                :key="discussion.id"
+                :note="discussion.notes[0]"
+              />
+              <noteable-note
+                v-else
+                :key="discussion.id"
+                :note="discussion.notes[0]"
+                :show-reply-button="canReply"
+                @startReplying="startReplying(discussion.id)"
+              />
+            </template>
+            <noteable-discussion
+              v-else
+              :key="discussion.id"
+              :discussion="discussion"
+              :render-diff-file="true"
+              :help-page-path="helpPagePath"
+            />
+          </template>
+          <discussion-filter-note v-show="commentsDisabled" />
+        </ul>
+      </template>
+    </ordered-layout>
   </div>
 </template>

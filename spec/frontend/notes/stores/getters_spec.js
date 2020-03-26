@@ -1,4 +1,5 @@
 import * as getters from '~/notes/stores/getters';
+import { DESC } from '~/notes/constants';
 import {
   notesDataMock,
   userDataMock,
@@ -36,6 +37,7 @@ describe('Getters Notes Store', () => {
       userData: userDataMock,
       noteableData: noteableDataMock,
       descriptionVersions: 'descriptionVersions',
+      discussionSortOrder: DESC,
     };
   });
 
@@ -390,6 +392,12 @@ describe('Getters Notes Store', () => {
   describe('descriptionVersions', () => {
     it('should return `descriptionVersions`', () => {
       expect(getters.descriptionVersions(state)).toEqual('descriptionVersions');
+    });
+  });
+
+  describe('sortDirection', () => {
+    it('should return `discussionSortOrder`', () => {
+      expect(getters.sortDirection(state)).toBe(DESC);
     });
   });
 });
