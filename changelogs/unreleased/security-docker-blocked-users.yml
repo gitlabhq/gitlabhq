@@ -1,5 +1,0 @@
----
-title: Reject all container registry requests from blocked users
-merge_request:
-author:
-type: security
