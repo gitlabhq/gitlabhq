@@ -1,5 +1,0 @@
----
-title: Restrict mirroring changes to admins only when mirroring is disabled
-merge_request:
-author:
-type: security

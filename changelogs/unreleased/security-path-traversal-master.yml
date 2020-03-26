@@ -1,5 +1,0 @@
----
-title: Fix UploadRewriter Path Traversal vulnerability
-merge_request:
-author:
-type: security
